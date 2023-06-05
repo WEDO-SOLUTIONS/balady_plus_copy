@@ -1,0 +1,20 @@
+import '../../../dependency_injection/dependency_injection_exports.dart'
+    show sl;
+import '../../utils_exports.dart' show EnvType;
+
+enum ApiPOST {
+  login,
+  services,
+  requests,
+  bills(prefix: "newBill/"),
+  profile(suffix: "/addProfile"),
+  refreshToken,
+  ;
+
+  const ApiPOST({this.prefix, this.suffix});
+  final String? prefix;
+  final String? suffix;
+
+  String get url => _domain + (prefix ?? '') + name + (suffix ?? '');
+  String get _domain => sl<EnvType>().domain;
+}
