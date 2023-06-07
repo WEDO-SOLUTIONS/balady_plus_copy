@@ -62,6 +62,54 @@ class AppStyle {
     height: 1.0,
   );
 
+  static final sectionTitleStyle = TextStyle(
+    fontSize: 18.0,
+    fontWeight: AppFontWeight.bold.fontWeight,
+    color: AppColor.blackModern900Light,
+    fontFamily: fontFamily,
+    height: 1.0,
+  );
+
+  static final tagStyle = TextStyle(
+    fontSize: 11.0,
+    fontWeight: AppFontWeight.bold.fontWeight,
+    color: AppColor.blackModern50Light,
+    fontFamily: fontFamily,
+    height: 1.0,
+  );
+
+  static final serviceTitleStyle = TextStyle(
+    fontSize: 14.0,
+    fontWeight: AppFontWeight.bold.fontWeight,
+    color: AppColor.blackModern900Light,
+    fontFamily: fontFamily,
+    height: 1.0,
+  );
+
+  static final serviceDescriptionStyle = TextStyle(
+    fontSize: 12.0,
+    fontWeight: AppFontWeight.semiBold.fontWeight,
+    color: AppColor.blackModern900Light.withOpacity(0.6),
+    fontFamily: fontFamily,
+    height: 1.0,
+  );
+
+  static final semiBoldTextStyle = TextStyle(
+    fontSize: 12.0,
+    fontWeight: AppFontWeight.semiBold.fontWeight,
+    color: AppColor.blackModern900Light,
+    fontFamily: fontFamily,
+    height: 1.0,
+  );
+
+  static final blackTextStyle = TextStyle(
+    fontSize: 16.0,
+    fontWeight: AppFontWeight.black.fontWeight,
+    color: AppColor.blackModern900Light,
+    fontFamily: fontFamily,
+    height: 1.0,
+  );
+
   /// Padding
   static const defaultPadding = EdgeInsets.symmetric(
     horizontal: UIHelper.mediumPadding,

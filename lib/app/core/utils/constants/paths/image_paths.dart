@@ -5,4 +5,6 @@ const _jpg = '.jpg';
 class ImagePath {
   static const logo = '${_imagePath}logo_white_img$_png';
   static const logo2 = '${_imagePath}splash_bg_img$_jpg';
+  static const sendImage = '${_imagePath}send_image$_png';
+  static const camera = '${_imagePath}camera$_png';
 }

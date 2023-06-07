@@ -4,6 +4,7 @@ enum AppFontWeight {
   light(fontWeight: FontWeight.w300),
   regular(fontWeight: FontWeight.w400),
   medium(fontWeight: FontWeight.w500),
+  semiBold(fontWeight: FontWeight.w600),
   bold(fontWeight: FontWeight.w700),
   black(fontWeight: FontWeight.w900),
   ;
