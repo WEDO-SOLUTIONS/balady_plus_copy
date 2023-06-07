@@ -2,7 +2,12 @@ import 'package:flutter/material.dart';
 
 import '../../../../../core/utils/utils_exports.dart' show AppColor;
 import '../../../home_exports.dart'
-    show ImportantServices, NewServices, ShareWithUs;
+    show
+        GameChallenge,
+        ImportantServices,
+        NewServices,
+        PrayerTimes,
+        ShareWithUs;
 
 class HomeBottomSheet extends StatelessWidget {
   const HomeBottomSheet({super.key});
@@ -41,6 +46,8 @@ class HomeBottomSheet extends StatelessWidget {
               const ImportantServices(),
               const ShareWithUs(),
               const NewServices(),
+              const GameChallenge(),
+              const PrayerTimes(),
             ],
           ),
         ),

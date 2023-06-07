@@ -7,4 +7,5 @@ class ImagePath {
   static const logo2 = '${_imagePath}splash_bg_img$_jpg';
   static const sendImage = '${_imagePath}send_image$_png';
   static const camera = '${_imagePath}camera$_png';
+  static const gameChallenge = '${_imagePath}game_challenge$_png';
 }

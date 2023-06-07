@@ -110,6 +110,14 @@ class AppStyle {
     height: 1.0,
   );
 
+  static final prayerTimeStyle = TextStyle(
+    fontSize: 8.0,
+    fontWeight: AppFontWeight.light.fontWeight,
+    color: AppColor.black54,
+    fontFamily: fontFamily,
+    height: 1.0,
+  );
+
   /// Padding
   static const defaultPadding = EdgeInsets.symmetric(
     horizontal: UIHelper.mediumPadding,

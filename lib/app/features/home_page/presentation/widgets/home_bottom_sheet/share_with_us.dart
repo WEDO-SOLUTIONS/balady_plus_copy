@@ -18,7 +18,7 @@ class ShareWithUs extends StatelessWidget {
       title: "shareWithUs".tr(),
       child: Container(
         width: double.infinity,
-        height: 250,
+        height: 220,
         margin: const EdgeInsets.all(16),
         decoration: const BoxDecoration(
           borderRadius: BorderRadius.all(Radius.circular(16)),
@@ -46,11 +46,7 @@ class ShareWithUs extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Image.asset(
-                    ImagePath.camera,
-                    width: 80,
-                    height: 80,
-                  ),
+                  Image.asset(ImagePath.camera),
                   const SizedBox(height: 8),
                   CustomTextWidget(
                     "shareWithUs".tr(),

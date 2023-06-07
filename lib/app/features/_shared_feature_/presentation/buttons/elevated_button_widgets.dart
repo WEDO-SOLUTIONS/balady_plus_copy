@@ -37,4 +37,28 @@ class ElevatedButtonWidget extends _ElevatedButton {
           text: "sendImage".tr(),
           onPressed: onPressed,
         ));
+  ElevatedButtonWidget.startGame({required VoidCallback onPressed})
+      : super(CustomElevatedButtonWidget(
+          btnColor: AppColor.secondary600Light,
+          textStyle: AppStyle.elevatedButtonStyle.copyWith(
+            color: AppColor.blackModern50Light,
+            fontSize: 12,
+          ),
+          btnHeight: 40,
+          btnWidth: 150,
+          text: "startGame".tr(),
+          onPressed: onPressed,
+        ));
+  ElevatedButtonWidget.allPrayerTimes({required VoidCallback onPressed})
+      : super(CustomElevatedButtonWidget(
+          btnColor: AppColor.primary800Light,
+          textStyle: AppStyle.elevatedButtonStyle.copyWith(
+            color: AppColor.blackModern50Light,
+            fontSize: 12,
+          ),
+          btnHeight: 40,
+          btnWidth: 150,
+          text: "allTimes".tr(),
+          onPressed: onPressed,
+        ));
 }
