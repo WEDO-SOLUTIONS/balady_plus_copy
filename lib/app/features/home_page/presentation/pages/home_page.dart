@@ -9,17 +9,11 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return const Scaffold(
       body: HomeContainer(
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              Stack(
-                children: [
-                  HomeMap(),
-                  HomeBottomSheet(),
-                ],
-              ),
-            ],
-          ),
+        child: Stack(
+          children: [
+            HomeMap(),
+            HomeBottomSheet(),
+          ],
         ),
       ),
     );
