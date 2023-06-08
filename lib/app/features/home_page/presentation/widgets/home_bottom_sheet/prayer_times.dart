@@ -31,31 +31,32 @@ class PrayerTimes extends StatelessWidget {
         ),
         child: Column(
           children: [
-            const Row(
+            //  SizedBox(
+            //   height: 60,
+            //   child: ListView.builder(
+            //     scrollDirection: Axis.horizontal,
+            //     itemCount: Prayers.values.length,
+            //     itemBuilder: (context, index) => Expanded(
+            //       child: PrayerIcon(
+            //         prayer: Prayers.values[index],
+            //         time: "05:00",
+            //         isNextPrayer: Prayers.values[index] == Prayers.asr,
+            //       ),
+            //     ),
+            //   ),
+            // ),
+            Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                PrayerIcon(
-                  prayer: Prayers.fajr,
-                  time: "05:00",
+              children: List.generate(
+                Prayers.values.length,
+                (index) => Expanded(
+                  child: PrayerIcon(
+                    prayer: Prayers.values[index],
+                    time: "05:00",
+                    isNextPrayer: Prayers.values[index] == Prayers.asr,
+                  ),
                 ),
-                PrayerIcon(
-                  prayer: Prayers.dhuhr,
-                  time: "05:00",
-                ),
-                PrayerIcon(
-                  prayer: Prayers.asr,
-                  time: "05:00",
-                  isNextPrayer: true,
-                ),
-                PrayerIcon(
-                  prayer: Prayers.maghrib,
-                  time: "05:00",
-                ),
-                PrayerIcon(
-                  prayer: Prayers.isha,
-                  time: "05:00",
-                ),
-              ],
+              ),
             ),
             const SizedBox(height: 16),
             ElevatedButtonWidget.allPrayerTimes(
