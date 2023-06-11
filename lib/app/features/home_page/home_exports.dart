@@ -29,5 +29,4 @@ export 'presentation/widgets/home_map/home_map.dart';
 export 'presentation/widgets/home_tag.dart';
 export 'presentation/widgets/services/important_services.dart';
 export 'presentation/widgets/services/new_services.dart';
-export 'presentation/widgets/services/service_args.dart';
 export 'presentation/widgets/services/service_card.dart';

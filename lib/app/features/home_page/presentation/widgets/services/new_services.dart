@@ -1,49 +1,30 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
-import '../../../home_exports.dart' show HomeSection, ServiceArgs, ServiceCard;
+import '../../../../services/services_exports.dart'
+    show ServicesCubit, ServicesState;
+import '../../../home_exports.dart' show HomeSection, ServiceCard;
 
-class NewServices extends StatefulWidget {
+class NewServices extends StatelessWidget {
   const NewServices({super.key});
-
-  @override
-  State<NewServices> createState() => _NewServicesState();
-}
-
-class _NewServicesState extends State<NewServices> {
-  final List<ServiceArgs> services = [];
-
-  @override
-  void initState() {
-    super.initState();
-    _getServices();
-  }
-
-  Future<void> _getServices() async {
-    final String data = await DefaultAssetBundle.of(context)
-        .loadString("assets/services/important_services.json");
-    final List<dynamic> servicesData = await json.decode(data);
-    for (var element in servicesData) {
-      services.add(ServiceArgs.fromMap(element));
-    }
-    services.removeAt(0);
-    setState(() {});
-  }
 
   @override
   Widget build(BuildContext context) {
     return HomeSection(
       title: "newServices".tr(),
       isNew: true,
-      child: Column(
-        children: List.generate(services.length, (index) {
-          return ServiceCard(
-            args: services[index],
-            fullWidth: true,
+      child: BlocBuilder<ServicesCubit, ServicesState>(
+        builder: (context, state) {
+          return Column(
+            children: List.generate(state.newServices.length, (index) {
+              return ServiceCard(
+                service: state.newServices[index],
+                fullWidth: true,
+              );
+            }),
           );
-        }),
+        },
       ),
     );
   }

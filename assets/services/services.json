@@ -1,0 +1,406 @@
+{
+  "public_services": [
+    {
+      "id": 1,
+      "icon": "holy_quran",
+      "3d_icon": null,
+      "order": 1,
+      "isNew": false,
+      "isImportant": false,
+      "action": {
+        "type": "page",
+        "value": "/holy-quran"
+      },
+      "ar": {
+        "title": "المصحف الشريف",
+        "description": null
+      },
+      "en": {
+        "title": "Holy Quran",
+        "description": null
+      }
+    },
+    {
+      "id": 2,
+      "icon": "prayer_times",
+      "3d_icon": null,
+      "order": 2,
+      "isNew": false,
+      "isImportant": false,
+      "action": {
+        "type": "page",
+        "value": "/prayer-times"
+      },
+      "ar": {
+        "title": "أوقات الصلاة",
+        "description": null
+      },
+      "en": {
+        "title": "Prayer Times",
+        "description": null
+      }
+    },
+    {
+      "id": 3,
+      "icon": "azkar",
+      "3d_icon": null,
+      "order": 3,
+      "isNew": false,
+      "isImportant": false,
+      "action": {
+        "type": "page",
+        "value": "/azkar"
+      },
+      "ar": {
+        "title": "الأذكار",
+        "description": null
+      },
+      "en": {
+        "title": "Azkar",
+        "description": null
+      }
+    },
+    {
+      "id": 4,
+      "icon": "zamzam_points",
+      "3d_icon": null,
+      "order": 4,
+      "isNew": false,
+      "isImportant": false,
+      "action": {
+        "type": "page",
+        "value": "/zamazem"
+      },
+      "ar": {
+        "title": "نقاط توزيع ماء زمزم",
+        "description": null
+      },
+      "en": {
+        "title": "Zamzam Points",
+        "description": null
+      }
+    },
+    {
+      "id": 5,
+      "icon": "scanner",
+      "3d_icon": null,
+      "order": 5,
+      "isNew": false,
+      "isImportant": false,
+      "action": {
+        "type": "page",
+        "value": "/scanner"
+      },
+      "ar": {
+        "title": "ماسح الرمز السريع",
+        "description": null
+      },
+      "en": {
+        "title": "QR Scanner",
+        "description": null
+      }
+    }
+  ],
+  "municipal_services": [
+    {
+      "id": 1,
+      "icon": "send_image",
+      "3d_icon": null,
+      "order": 1,
+      "isNew": false,
+      "isImportant": false,
+      "action": {
+        "type": "page",
+        "value": "/send-image"
+      },
+      "ar": {
+        "title": "صور وارسل",
+        "description": "حسن المشهد الحضاري لمدينتك وبلغ عن مظاهر التشوه البصري"
+      },
+      "en": {
+        "title": "Send Image",
+        "description": "Improve the civil scene of your city and report visual pollution"
+      }
+    },
+    {
+      "id": 2,
+      "icon": "general_inquiries",
+      "3d_icon": null,
+      "order": 2,
+      "isNew": false,
+      "isImportant": true,
+      "action": {
+        "type": "page",
+        "value": "/general-inquiries"
+      },
+      "ar": {
+        "title": "الإستفسارات العامة",
+        "description": "ارسل استفسارك عن كل خدمه"
+      },
+      "en": {
+        "title": "General Inquiries",
+        "description": "Send your inquiry about any service"
+      }
+    },
+    {
+      "id": 3,
+      "icon": "supporter",
+      "3d_icon": null,
+      "order": 3,
+      "isNew": false,
+      "isImportant": true,
+      "action": {
+        "type": "page",
+        "value": "/supporter"
+      },
+      "ar": {
+        "title": "داعم",
+        "description": "دعم المشاريع البلدية"
+      },
+      "en": {
+        "title": "Supporter",
+        "description": "Support municipal projects"
+      }
+    },
+    {
+      "id": 4,
+      "icon": "schedule_date",
+      "3d_icon": null,
+      "order": 4,
+      "isNew": false,
+      "isImportant": false,
+      "action": {
+        "type": "page",
+        "value": "/schedule-date"
+      },
+      "ar": {
+        "title": "حجز موعد الكتروني",
+        "description": "حجز موعد للمراجعة"
+      },
+      "en": {
+        "title": "Schedule Date",
+        "description": "Schedule a date for visit"
+      }
+    },
+    {
+      "id": 5,
+      "icon": "request_service",
+      "3d_icon": null,
+      "order": 5,
+      "isNew": false,
+      "isImportant": false,
+      "action": {
+        "type": "page",
+        "value": "/request-service"
+      },
+      "ar": {
+        "title": "طلب خدمة بلدية",
+        "description": "طلب خدمة بلدية"
+      },
+      "en": {
+        "title": "Request Service",
+        "description": "Request a municipal service"
+      }
+    },
+    {
+      "id": 6,
+      "icon": "objections",
+      "3d_icon": null,
+      "order": 6,
+      "isNew": false,
+      "isImportant": false,
+      "action": {
+        "type": "page",
+        "value": "/objections"
+      },
+      "ar": {
+        "title": "الاعتراضات والتظلمات",
+        "description": "الاعتراضات والتظلمات"
+      },
+      "en": {
+        "title": "Objections",
+        "description": "Objections and complaints"
+      }
+    },
+    {
+      "id": 7,
+      "icon": "search_status",
+      "3d_icon": null,
+      "order": 7,
+      "isNew": false,
+      "isImportant": false,
+      "action": {
+        "type": "page",
+        "value": "/search-status"
+      },
+      "ar": {
+        "title": "الاستعلامات",
+        "description": "الاستعلامات"
+      },
+      "en": {
+        "title": "Search Status",
+        "description": "Search Status"
+      }
+    },
+    {
+      "id": 8,
+      "icon": "transaction_inquery",
+      "3d_icon": null,
+      "order": 8,
+      "isNew": true,
+      "isImportant": false,
+      "action": {
+        "type": "page",
+        "value": "/transaction-inquery"
+      },
+      "ar": {
+        "title": "استعلام عن معاملة",
+        "description": "يمكنك الآن حجز موعد عبر التطبيق !"
+      },
+      "en": {
+        "title": "Transaction Inquery",
+        "description": "You can now book an appointment through the app!"
+      }
+    },
+    {
+      "id": 9,
+      "icon": "damaged_cars",
+      "3d_icon": null,
+      "order": 9,
+      "isNew": false,
+      "isImportant": false,
+      "action": {
+        "type": "page",
+        "value": "/damaged-cars"
+      },
+      "ar": {
+        "title": "السيارات التالفة",
+        "description": "السيارات التالفة"
+      },
+      "en": {
+        "title": "Damaged Cars",
+        "description": "Damaged Cars"
+      }
+    },
+    {
+      "id": 10,
+      "icon": "your_opnion_matter",
+      "3d_icon": null,
+      "order": 10,
+      "isNew": true,
+      "isImportant": false,
+      "action": {
+        "type": "page",
+        "value": "/your-opnion-matter"
+      },
+      "ar": {
+        "title": "رأيك يفرق",
+        "description": "يمكنك الآن حجز موعد عبر التطبيق !"
+      },
+      "en": {
+        "title": "Your Opnion Matter",
+        "description": "You can now book an appointment through the app!"
+      }
+    },
+    {
+      "id": 11,
+      "icon": "issue_trade_license",
+      "3d_icon": null,
+      "order": 11,
+      "isNew": false,
+      "isImportant": false,
+      "action": {
+        "type": "page",
+        "value": "/issue-trade-license"
+      },
+      "ar": {
+        "title": "إصدار رخصة تجارية",
+        "description": "إصدار رخصة تجارية"
+      },
+      "en": {
+        "title": "Issue Trade License",
+        "description": "Issue Trade License"
+      }
+    },
+    {
+      "id": 12,
+      "icon": "fee_calculator",
+      "3d_icon": null,
+      "order": 12,
+      "isNew": false,
+      "isImportant": false,
+      "action": {
+        "type": "page",
+        "value": "/fee-calculator"
+      },
+      "ar": {
+        "title": "حاسبة الرسوم",
+        "description": "حاسبة الرسوم"
+      },
+      "en": {
+        "title": "Fee Calculator",
+        "description": "Fee Calculator"
+      }
+    },
+    {
+      "id": 13,
+      "icon": "municipal_advisor",
+      "3d_icon": null,
+      "order": 13,
+      "isNew": false,
+      "isImportant": false,
+      "action": {
+        "type": "page",
+        "value": "/municipal-advisor"
+      },
+      "ar": {
+        "title": "المستشار البلدي",
+        "description": "المستشار البلدي"
+      },
+      "en": {
+        "title": "Municipal Advisor",
+        "description": "Municipal Advisor"
+      }
+    },
+    {
+      "id": 14,
+      "icon": "move_diseased",
+      "3d_icon": null,
+      "order": 14,
+      "isNew": false,
+      "isImportant": false,
+      "action": {
+        "type": "page",
+        "value": "/move-diseased"
+      },
+      "ar": {
+        "title": "نقل وتجهيز الموتي",
+        "description": "نقل وتجهيز الموتي"
+      },
+      "en": {
+        "title": "Move Diseased",
+        "description": "Move Diseased"
+      }
+    },
+    {
+      "id": 15,
+      "icon": "issue_health_certificate",
+      "3d_icon": null,
+      "order": 15,
+      "isNew": false,
+      "isImportant": false,
+      "action": {
+        "type": "page",
+        "value": "/issue-health-certificate"
+      },
+      "ar": {
+        "title": "إصدار شهادة صحية",
+        "description": "إصدار شهادة صحية"
+      },
+      "en": {
+        "title": "Issue Health Certificate",
+        "description": "Issue Health Certificate"
+      }
+    }
+  ]
+}

@@ -2,6 +2,7 @@ const _svgIconPath = 'assets/icons/svg/';
 const _svgPrayerIconPath = 'assets/icons/svg/prayers/';
 const _svgWeatherIconPath = 'assets/icons/svg/weather/';
 const _svgMapIconPath = 'assets/icons/svg/map/';
+const _svgServicesIconPath = 'assets/icons/svg/services/';
 const _svg = '.svg';
 
 const _pngIconPath = 'assets/icons/png/';
@@ -26,6 +27,9 @@ class IconPath {
   static const asr = '${_svgPrayerIconPath}iconSalahAsr$_svg';
   static const maghrib = '${_svgPrayerIconPath}iconSalahMaghreb$_svg';
   static const isha = '${_svgPrayerIconPath}iconSalahIsha$_svg';
+
+  // Services
+  static serviceIcon(String name) => '$_svgServicesIconPath$name$_svg';
 
   // Weather
   static const partlyClouded = '${_svgWeatherIconPath}partly_clouded$_svg';
