@@ -20,7 +20,11 @@ class ProfilePage extends StatelessWidget {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              const ProfileCard(),
+              ProfileCard(
+                onTap: () {},
+                selected: true,
+                isListItem: false,
+              ),
               ...List.generate(
                 ProfileSections.profileSections.length,
                 (index) => ProfileListCard(

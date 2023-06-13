@@ -1,55 +1,41 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/utils/utils_exports.dart'
-    show AppColor, AppStyle, ContextConversion;
-import '../../shared_feature_exports.dart'
-    show CustomTextWidget, IconButtonWidget;
+import '../../../../core/utils/utils_exports.dart' show AppColor, AppStyle;
+import '../../shared_feature_exports.dart' show CustomTextWidget;
 
 class DefaultAppBarWidget extends StatelessWidget
     implements PreferredSizeWidget {
-  /// It can be String or Widget
-  final dynamic title;
-  final bool hideCloseButton;
-  final VoidCallback? onClose;
-  final Widget? leading;
+  final String? title;
+  final PreferredSizeWidget? bottom;
+  final List<Widget>? actions;
+
   const DefaultAppBarWidget({
     super.key,
-    this.hideCloseButton = false,
     this.title,
-    this.onClose,
-    this.leading,
+    this.bottom,
+    this.actions,
   });
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      backgroundColor: AppColor.white,
-      elevation: 1.0,
-      automaticallyImplyLeading: false,
-      leadingWidth: 0.0,
-      titleSpacing: 0.0,
-      centerTitle: true,
-      title: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            //
-            CustomTextWidget(
-              title ?? "",
-              textAlign: TextAlign.center,
-              textStyle: AppStyle.appBarTitleTextStyle,
-            ),
-            //
-            const SizedBox(width: 40.0, height: 40.0),
-            //
-            if (leading != null) leading!,
-          ],
-        ),
+      backgroundColor: AppColor.scaffoldBackground,
+      title: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          CustomTextWidget(
+            title ?? "",
+            textAlign: TextAlign.center,
+            textStyle: AppStyle.appBarTitleTextStyle,
+          ),
+        ],
       ),
+      bottom: bottom,
+      actions: actions,
     );
   }
 
   @override
-  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
+  Size get preferredSize =>
+      Size.fromHeight(kToolbarHeight + (bottom?.preferredSize.height ?? 0));
 }

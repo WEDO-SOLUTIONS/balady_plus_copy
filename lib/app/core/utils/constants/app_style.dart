@@ -165,11 +165,33 @@ class AppStyle {
     height: 1.0,
   );
 
-
   static final profileTypeTextStyle = TextStyle(
     fontSize: 16.0,
     fontWeight: AppFontWeight.semiBold.fontWeight,
     color: AppColor.blackModern50Light.withOpacity(0.6),
+    fontFamily: fontFamily,
+    height: 1.0,
+  );
+
+  static final nearbyItemTitleTextStyle = TextStyle(
+    fontSize: 13.0,
+    fontWeight: AppFontWeight.bold.fontWeight,
+    color: AppColor.blackModern700Light,
+    fontFamily: fontFamily,
+    height: 1.0,
+  );
+
+  static final nearbyItemSubTitleTextStyle = TextStyle(
+    fontSize: 9.0,
+    fontWeight: AppFontWeight.semiBold.fontWeight,
+    color: AppColor.black42,
+    fontFamily: fontFamily,
+    height: 1.0,
+  );
+  static final profileListBetaTextStyle = TextStyle(
+    fontSize: 12.0,
+    fontWeight: AppFontWeight.bold.fontWeight,
+    color: AppColor.blue600Light,
     fontFamily: fontFamily,
     height: 1.0,
   );

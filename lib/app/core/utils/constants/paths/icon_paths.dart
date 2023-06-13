@@ -4,6 +4,7 @@ const _svgWeatherIconPath = 'assets/icons/svg/weather/';
 const _svgMapIconPath = 'assets/icons/svg/map/';
 const _svgServicesIconPath = 'assets/icons/svg/services/';
 const _svgProfileIconPath = 'assets/icons/svg/profile/';
+const _svgNearbyIconPath = 'assets/icons/svg/nearby/';
 const _svg = '.svg';
 
 const _pngIconPath = 'assets/icons/png/';
@@ -15,6 +16,8 @@ class IconPath {
   static const close = '${_svgIconPath}arrow_back_icon$_svg';
   static const upload = '${_svgIconPath}arrow_back_icon$_svg';
   static const search = '${_svgIconPath}search_icon$_svg';
+  static const filter = '${_svgIconPath}filter$_svg';
+  static const appBarSearch = '${_svgIconPath}appbar_search$_svg';
 
   // Bottom-Nav-Bar
   static const home = '${_svgIconPath}home_icon$_svg';
@@ -49,6 +52,9 @@ class IconPath {
   static const aboutBalady = '${_svgProfileIconPath}about_balady$_svg';
   static const arrowDown = '${_svgProfileIconPath}arrow_down$_svg';
   static const leftArrow = '${_svgProfileIconPath}left_arrow$_svg';
+
+  // Nearby
+  static nearbyIcon(String name) => '$_svgNearbyIconPath$name$_svg';
 
   // Weather
   static const partlyClouded = '${_svgWeatherIconPath}partly_clouded$_svg';

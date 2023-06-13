@@ -46,7 +46,6 @@ class ServiceCard extends StatelessWidget {
               child: HomeTag(
                 title: service.tag!,
                 backgroundColor: AppColor.iceBlue,
-                textColor: AppColor.greyishBrown,
                 fontSize: 8.0,
               ),
             ),

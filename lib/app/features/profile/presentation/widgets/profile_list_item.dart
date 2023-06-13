@@ -2,6 +2,7 @@ import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
 import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../core/utils/utils_exports.dart' show AppColor, AppStyle;
 import '../../../home_page/home_exports.dart' show CircleIcon;
@@ -35,6 +36,12 @@ class ProfileListItem extends StatelessWidget {
               textStyle: AppStyle.profileListTitleTextStyle,
             ),
             const Spacer(),
+            if (item.beta)
+              CustomTextWidget(
+                "beta".tr(),
+                textStyle: AppStyle.profileListBetaTextStyle,
+              ),
+            const SizedBox(width: 16),
             SvgPicture.asset(IconPath.leftArrow),
           ],
         ),

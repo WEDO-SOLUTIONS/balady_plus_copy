@@ -53,6 +53,26 @@ class AppColor {
   static const secondary300Light = Color(0xffb9d09f);
   static const secondary900Light = Color(0xff4f8a0f);
   static const secondary800Light = Color(0xff619627);
+  static const dirtBrown = Color(0xff8d5a39);
+  static const dullOrange = Color(0xffc8a83a);
+  static const terraCotta = Color(0xffd26f33);
+  static const salmon = Color(0xfff97777);
+  static const black42 = Color(0x6b111111);
+  static const base00LightPrimary = Color(0xffffffff);
+  static const blue50Light = Color(0xfff9ede6);
+  static const base900Light = Color(0xff1a1a1a);
+  static const base700LightTertiary = Color(0xb21a1a1a);
+  static const blue100Light = Color(0xfff4dbcc);
+  static const blue200Light = Color(0xffeec9b3);
+  static const blue300Light = Color(0xffe9b799);
+  static const blue400Light = Color(0xffe3a580);
+  static const blackModern200Light = Color(0xffe4e4e7);
+  static const blackModern300Light = Color(0xffd4d4d8);
+  static const blackModern400Light = Color(0xffa1a1aa);
+  static const primary400Light = Color(0xff81b1b1);
+  static const secondary100Light = Color(0xffdce8cf);
+  static const secondary400Light = Color(0xffa7c587);
+  static const geyser = Color(0xffCDE0E0);
 
   static const scaffoldBackground = Color(0xfff5f8fa);
 }

@@ -13,11 +13,13 @@
       },
       "ar": {
         "title": "المصحف الشريف",
-        "description": null
+        "description": null,
+        "tag": null
       },
       "en": {
         "title": "Holy Quran",
-        "description": null
+        "description": null,
+        "tag": null
       }
     },
     {
@@ -53,11 +55,13 @@
       },
       "ar": {
         "title": "الأذكار",
-        "description": null
+        "description": null,
+        "tag": null
       },
       "en": {
         "title": "Azkar",
-        "description": null
+        "description": null,
+        "tag": null
       }
     },
     {
@@ -73,11 +77,13 @@
       },
       "ar": {
         "title": "نقاط توزيع ماء زمزم",
-        "description": null
+        "description": null,
+        "tag": null
       },
       "en": {
         "title": "Zamzam Points",
-        "description": null
+        "description": null,
+        "tag": null
       }
     },
     {
@@ -93,11 +99,13 @@
       },
       "ar": {
         "title": "ماسح الرمز السريع",
-        "description": null
+        "description": null,
+        "tag": null
       },
       "en": {
         "title": "QR Scanner",
-        "description": null
+        "description": null,
+        "tag": null
       }
     }
   ],
@@ -115,11 +123,13 @@
       },
       "ar": {
         "title": "صور وارسل",
-        "description": "حسن المشهد الحضاري لمدينتك وبلغ عن مظاهر التشوه البصري"
+        "description": "حسن المشهد الحضاري لمدينتك وبلغ عن مظاهر التشوه البصري",
+        "tag": null
       },
       "en": {
         "title": "Send Image",
-        "description": "Improve the civil scene of your city and report visual pollution"
+        "description": "Improve the civil scene of your city and report visual pollution",
+        "tag": null
       }
     },
     {
@@ -135,11 +145,13 @@
       },
       "ar": {
         "title": "الإستفسارات العامة",
-        "description": "ارسل استفسارك عن كل خدمه"
+        "description": "ارسل استفسارك عن كل خدمه",
+        "tag": "الخدمات"
       },
       "en": {
         "title": "General Inquiries",
-        "description": "Send your inquiry about any service"
+        "description": "Send your inquiry about any service",
+        "tag": "Services"
       }
     },
     {
@@ -155,11 +167,13 @@
       },
       "ar": {
         "title": "داعم",
-        "description": "دعم المشاريع البلدية"
+        "description": null,
+        "tag": null
       },
       "en": {
         "title": "Supporter",
-        "description": "Support municipal projects"
+        "description": null,
+        "tag": null
       }
     },
     {
@@ -175,11 +189,13 @@
       },
       "ar": {
         "title": "حجز موعد الكتروني",
-        "description": "حجز موعد للمراجعة"
+        "description": null,
+        "tag": null
       },
       "en": {
         "title": "Schedule Date",
-        "description": "Schedule a date for visit"
+        "description": null,
+        "tag": null
       }
     },
     {
@@ -195,11 +211,13 @@
       },
       "ar": {
         "title": "طلب خدمة بلدية",
-        "description": "طلب خدمة بلدية"
+        "description": null,
+        "tag": null
       },
       "en": {
         "title": "Request Service",
-        "description": "Request a municipal service"
+        "description": null,
+        "tag": null
       }
     },
     {
@@ -215,11 +233,13 @@
       },
       "ar": {
         "title": "الاعتراضات والتظلمات",
-        "description": "الاعتراضات والتظلمات"
+        "description": null,
+        "tag": null
       },
       "en": {
         "title": "Objections",
-        "description": "Objections and complaints"
+        "description": null,
+        "tag": null
       }
     },
     {
@@ -235,11 +255,13 @@
       },
       "ar": {
         "title": "الاستعلامات",
-        "description": "الاستعلامات"
+        "description": null,
+        "tag": null
       },
       "en": {
         "title": "Search Status",
-        "description": "Search Status"
+        "description": null,
+        "tag": null
       }
     },
     {
@@ -255,11 +277,13 @@
       },
       "ar": {
         "title": "استعلام عن معاملة",
-        "description": "يمكنك الآن حجز موعد عبر التطبيق !"
+        "description": "يمكنك الآن حجز موعد عبر التطبيق !",
+        "tag": null
       },
       "en": {
         "title": "Transaction Inquery",
-        "description": "You can now book an appointment through the app!"
+        "description": "You can now book an appointment through the app!",
+        "tag": null
       }
     },
     {
@@ -275,11 +299,13 @@
       },
       "ar": {
         "title": "السيارات التالفة",
-        "description": "السيارات التالفة"
+        "description": null,
+        "tag": null
       },
       "en": {
         "title": "Damaged Cars",
-        "description": "Damaged Cars"
+        "description": null,
+        "tag": null
       }
     },
     {
@@ -295,11 +321,13 @@
       },
       "ar": {
         "title": "رأيك يفرق",
-        "description": "يمكنك الآن حجز موعد عبر التطبيق !"
+        "description": "يمكنك الآن حجز موعد عبر التطبيق !",
+        "tag": null
       },
       "en": {
         "title": "Your Opnion Matter",
-        "description": "You can now book an appointment through the app!"
+        "description": "You can now book an appointment through the app!",
+        "tag": null
       }
     },
     {
@@ -315,11 +343,13 @@
       },
       "ar": {
         "title": "إصدار رخصة تجارية",
-        "description": "إصدار رخصة تجارية"
+        "description": null,
+        "tag": null
       },
       "en": {
         "title": "Issue Trade License",
-        "description": "Issue Trade License"
+        "description": null,
+        "tag": null
       }
     },
     {
@@ -335,11 +365,13 @@
       },
       "ar": {
         "title": "حاسبة الرسوم",
-        "description": "حاسبة الرسوم"
+        "description": null,
+        "tag": null
       },
       "en": {
         "title": "Fee Calculator",
-        "description": "Fee Calculator"
+        "description": null,
+        "tag": null
       }
     },
     {
@@ -355,11 +387,13 @@
       },
       "ar": {
         "title": "المستشار البلدي",
-        "description": "المستشار البلدي"
+        "description": null,
+        "tag": null
       },
       "en": {
         "title": "Municipal Advisor",
-        "description": "Municipal Advisor"
+        "description": null,
+        "tag": null
       }
     },
     {
@@ -375,11 +409,13 @@
       },
       "ar": {
         "title": "نقل وتجهيز الموتي",
-        "description": "نقل وتجهيز الموتي"
+        "description": null,
+        "tag": null
       },
       "en": {
         "title": "Move Diseased",
-        "description": "Move Diseased"
+        "description": null,
+        "tag": null
       }
     },
     {
@@ -395,11 +431,13 @@
       },
       "ar": {
         "title": "إصدار شهادة صحية",
-        "description": "إصدار شهادة صحية"
+        "description": null,
+        "tag": null
       },
       "en": {
         "title": "Issue Health Certificate",
-        "description": "Issue Health Certificate"
+        "description": null,
+        "tag": null
       }
     }
   ]

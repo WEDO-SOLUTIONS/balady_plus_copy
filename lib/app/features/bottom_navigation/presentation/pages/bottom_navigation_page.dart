@@ -6,8 +6,8 @@ import '../../../../core/dependency_injection/dependency_injection_exports.dart'
     show sl;
 import '../../../../core/services/services_exports.dart' show NavigationService;
 import '../../../../core/utils/utils_exports.dart' show BottomNavBar;
-import '../../../activities/activities_exports.dart' show ActivitiesPage;
 import '../../../home_page/presentation/pages/home_page.dart';
+import '../../../nearby/nearby_exports.dart' show NearbyPage;
 import '../../../profile/profile_exports.dart' show ProfilePage;
 import '../../../services/services_exports.dart'
     show ServicesCubit, ServicesPage;
@@ -61,7 +61,7 @@ class _BottomNavigationPageState extends State<BottomNavigationPage> {
             // Home-Page
             HomePage(),
             // Services-Page
-            ActivitiesPage(),
+            NearbyPage(),
             // Activities-Page
             ServicesPage(),
             // Profile-Page

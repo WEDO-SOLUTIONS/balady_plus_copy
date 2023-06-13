@@ -45,6 +45,7 @@ export 'presentation/cards/card_structure.dart';
 
 /// presentation -> components
 export 'presentation/components/bottom_sheets/action_buttons_component.dart';
+export 'presentation/components/bottom_sheets/bottom_sheet_title.dart';
 export 'presentation/components/bottom_sheets/close_request_bottom_sheet_component.dart';
 export 'presentation/components/bottom_sheets/draggable_sheet_component.dart';
 export 'presentation/components/bottom_sheets/draggable_sheet_card.dart';

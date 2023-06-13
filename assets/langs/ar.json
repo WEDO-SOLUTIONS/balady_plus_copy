@@ -114,6 +114,14 @@
   "help": "المساعدة",
   "rate_app": "تقييم التطبيق",
   "about_balady": "عن بلدي",
+  "choose_profile": "اختر الحساب",
+
+  "_nearbyComment": "أى شئ يخص قريب مني",
+  "coffee": "مقهى",
+  "restaurant": "مطعم",
+  "hotel": "فندق",
+  "mosque": "مسجد",
+
 
   "_globalComment": "أى شئ يخص الكلمات العامة",
   "selectFromHere": "إختر من هنا",
@@ -146,6 +154,8 @@
   "file": "ملف",
   "camera": "الكاميرا",
   "gallery": "الاستوديو",
+  "all": "الكل",
+  "beta": "نسخة تجريبية",
 
   "_errorsComment": "أى شئ يخص رسائل الاخطاء",
   "errorNoDataToDisplay": "لا يوجد بيانات لعرضها فى الوقت الحالى.",
