@@ -131,6 +131,8 @@ export 'presentation/widgets/glowing_scroll_widget.dart';
 export 'presentation/widgets/more_actions_widget.dart';
 export 'presentation/widgets/shimmer_effect_widget.dart';
 export 'presentation/widgets/widget_label.dart';
+export 'presentation/widgets/default_appbar_widget.dart';
+export 'presentation/widgets/tab_page_container.dart';
 
 //
 

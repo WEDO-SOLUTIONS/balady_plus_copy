@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:localize_and_translate/localize_and_translate.dart'
-    show Translation;
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
-import '../../../../core/utils/utils_exports.dart' show AppColor, AppStyle;
 import '../../../_shared_feature_/shared_feature_exports.dart'
-    show CustomTextWidget;
+    show TabPageContainer, DefaultAppBarWidget;
+import '../../services_exports.dart';
 
 class ServicesPage extends StatelessWidget {
   const ServicesPage({super.key});
@@ -12,16 +12,31 @@ class ServicesPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: CustomTextWidget(
-          "services".tr(),
-          textStyle:
-              AppStyle.mainTextSecondaryStyle.copyWith(color: AppColor.white),
-        ),
+      appBar: DefaultAppBarWidget(
+        title: "services".tr(),
+        hideCloseButton: true,
       ),
-      body: Center(
-        child: CustomTextWidget("services".tr()),
+      body: TabPageContainer(
+        child: BlocBuilder<ServicesCubit, ServicesState>(
+          builder: (context, state) {
+            return SingleChildScrollView(
+              child: Column(
+                children: [
+                  ServicesList(
+                    title: "public_services".tr(),
+                    services: state.publicServices,
+                    crossAxisCount: 5,
+                  ),
+                  const SizedBox(height: 16),
+                  ServicesList(
+                    title: "municipal_services".tr(),
+                    services: state.municipalServices,
+                  ),
+                ],
+              ),
+            );
+          },
+        ),
       ),
     );
   }

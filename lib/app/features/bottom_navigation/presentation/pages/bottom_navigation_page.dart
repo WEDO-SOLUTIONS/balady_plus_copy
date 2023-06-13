@@ -8,7 +8,7 @@ import '../../../../core/services/services_exports.dart' show NavigationService;
 import '../../../../core/utils/utils_exports.dart' show BottomNavBar;
 import '../../../activities/activities_exports.dart' show ActivitiesPage;
 import '../../../home_page/presentation/pages/home_page.dart';
-import '../../../more/more_exports.dart' show MorePage;
+import '../../../profile/profile_exports.dart' show ProfilePage;
 import '../../../services/services_exports.dart'
     show ServicesCubit, ServicesPage;
 import '../../bottom_navigation_exports.dart'
@@ -61,11 +61,11 @@ class _BottomNavigationPageState extends State<BottomNavigationPage> {
             // Home-Page
             HomePage(),
             // Services-Page
-            ServicesPage(),
-            // Activities-Page
             ActivitiesPage(),
+            // Activities-Page
+            ServicesPage(),
             // Profile-Page
-            MorePage(),
+            ProfilePage(),
           ],
         ),
         bottomNavigationBar: BottomNavBarWidget(

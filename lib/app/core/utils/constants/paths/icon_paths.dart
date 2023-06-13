@@ -3,6 +3,7 @@ const _svgPrayerIconPath = 'assets/icons/svg/prayers/';
 const _svgWeatherIconPath = 'assets/icons/svg/weather/';
 const _svgMapIconPath = 'assets/icons/svg/map/';
 const _svgServicesIconPath = 'assets/icons/svg/services/';
+const _svgProfileIconPath = 'assets/icons/svg/profile/';
 const _svg = '.svg';
 
 const _pngIconPath = 'assets/icons/png/';
@@ -30,6 +31,24 @@ class IconPath {
 
   // Services
   static serviceIcon(String name) => '$_svgServicesIconPath$name$_svg';
+
+  // Profile
+  static const profileIcon = '${_svgProfileIconPath}user$_svg';
+  static const personalInformation = '${_svgProfileIconPath}user$_svg';
+  static const dashboard = '${_svgProfileIconPath}dashboard$_svg';
+  static const orders = '${_svgProfileIconPath}orders$_svg';
+  static const licenses = '${_svgProfileIconPath}licenses$_svg';
+  static const invoices = '${_svgProfileIconPath}invoices$_svg';
+  static const reports = '${_svgProfileIconPath}user$_svg';
+  static const violations = '${_svgProfileIconPath}violations$_svg';
+  static const objections = '${_svgProfileIconPath}objections$_svg';
+  static const appiontments = '${_svgProfileIconPath}appiontments$_svg';
+  static const settings = '${_svgProfileIconPath}settings$_svg';
+  static const help = '${_svgProfileIconPath}help$_svg';
+  static const rateApp = '${_svgProfileIconPath}settings$_svg';
+  static const aboutBalady = '${_svgProfileIconPath}about_balady$_svg';
+  static const arrowDown = '${_svgProfileIconPath}arrow_down$_svg';
+  static const leftArrow = '${_svgProfileIconPath}left_arrow$_svg';
 
   // Weather
   static const partlyClouded = '${_svgWeatherIconPath}partly_clouded$_svg';

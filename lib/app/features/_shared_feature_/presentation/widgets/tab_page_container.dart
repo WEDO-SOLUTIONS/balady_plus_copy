@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/utils/utils_exports.dart' show AppColor;
 
-class HomeContainer extends StatelessWidget {
+class TabPageContainer extends StatelessWidget {
   final Widget child;
-  const HomeContainer({
+  const TabPageContainer({
     super.key,
     required this.child,
   });

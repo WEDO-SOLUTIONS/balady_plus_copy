@@ -30,9 +30,10 @@ class App extends StatelessWidget {
         navigatorKey: NavigationService.navigatorKey,
         theme: ThemeData(
           primaryColor: AppColor.blue,
-          scaffoldBackgroundColor: AppColor.white,
+          scaffoldBackgroundColor: AppColor.scaffoldBackground,
           fontFamily: AppConfig.appFontType,
           appBarTheme: const AppBarTheme(backgroundColor: AppColor.blue),
+          
         ),
         builder: BotToastInit(),
         navigatorObservers: [BotToastNavigatorObserver()],

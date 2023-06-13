@@ -118,6 +118,62 @@ class AppStyle {
     height: 1.0,
   );
 
+  static final serviceIconTextStyle = TextStyle(
+    fontSize: 9.0,
+    color: AppColor.blackModern700Light,
+    fontWeight: AppFontWeight.bold.fontWeight,
+    fontFamily: fontFamily,
+    height: 1.0,
+  );
+
+  static final serviceListTitleTextStyle = TextStyle(
+    color: AppColor.blackModern500Light,
+    fontWeight: AppFontWeight.bold.fontWeight,
+    fontSize: 15.0,
+    fontFamily: fontFamily,
+    height: 1.0,
+  );
+
+  static final appBarTitleTextStyle = TextStyle(
+    fontSize: 20.0,
+    color: AppColor.blackModern700Light,
+    fontWeight: AppFontWeight.bold.fontWeight,
+    fontFamily: fontFamily,
+    height: 1.0,
+  );
+
+  static final profileListTitleTextStyle = TextStyle(
+    fontSize: 14.0,
+    color: AppColor.blackModern600Light,
+    fontWeight: AppFontWeight.bold.fontWeight,
+    fontFamily: fontFamily,
+    height: 1.0,
+  );
+  static final profileSectionTitleTextStyle = TextStyle(
+    fontSize: 18.0,
+    color: AppColor.blackModern500Light,
+    fontWeight: AppFontWeight.bold.fontWeight,
+    fontFamily: fontFamily,
+    height: 1.0,
+  );
+
+  static final profileNameTextStyle = TextStyle(
+    fontSize: 16.0,
+    fontWeight: AppFontWeight.black.fontWeight,
+    color: AppColor.blackModern50Light,
+    fontFamily: fontFamily,
+    height: 1.0,
+  );
+
+
+  static final profileTypeTextStyle = TextStyle(
+    fontSize: 16.0,
+    fontWeight: AppFontWeight.semiBold.fontWeight,
+    color: AppColor.blackModern50Light.withOpacity(0.6),
+    fontFamily: fontFamily,
+    height: 1.0,
+  );
+
   /// Padding
   static const defaultPadding = EdgeInsets.symmetric(
     horizontal: UIHelper.mediumPadding,

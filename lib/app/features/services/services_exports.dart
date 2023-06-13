@@ -28,3 +28,5 @@ export 'presentation/cubit/services_cubit/services_cubit.dart';
 export 'presentation/pages/services_page.dart';
 
 /// presentation -> widgets
+export 'presentation/widgets/services_list.dart';
+export 'presentation/widgets/service_icon.dart';

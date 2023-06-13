@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../home_exports.dart' show HomeBottomSheet, HomeContainer, HomeMap;
+import '../../../_shared_feature_/shared_feature_exports.dart' show TabPageContainer;
+import '../../home_exports.dart' show HomeBottomSheet, HomeMap;
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -8,7 +9,7 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
-      body: HomeContainer(
+      body: TabPageContainer(
         child: Stack(
           children: [
             HomeMap(),
