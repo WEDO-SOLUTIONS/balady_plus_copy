@@ -39,7 +39,6 @@ class AppColor {
   static const backDesktopBg800 = Color(0xff37474f);
   static const secondary500Light = Color(0xff95b96f);
   static const blue500Light = Color(0xffdd9366);
-  static const backWebWhite = Color(0xffffffff);
   static const secondary50Light = Color(0xffedf3e7);
   static const secondary200Light = Color(0xffcadcb7);
   static const lightFullBlackWhite = Color(0xffffffff);
@@ -73,6 +72,9 @@ class AppColor {
   static const secondary100Light = Color(0xffdce8cf);
   static const secondary400Light = Color(0xffa7c587);
   static const geyser = Color(0xffCDE0E0);
-
+  static const veryLightPink0 = Color(0x00f2f2f2);
+  static const primary900Light16 = Color(0x29036362);
   static const scaffoldBackground = Color(0xfff5f8fa);
+  static const macaroniAndCheese = Color(0xffedb629);
+  static const primary50Light40 = Color(0x66e6efef);
 }

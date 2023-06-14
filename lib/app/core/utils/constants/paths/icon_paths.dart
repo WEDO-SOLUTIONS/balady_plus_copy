@@ -18,6 +18,7 @@ class IconPath {
   static const search = '${_svgIconPath}search_icon$_svg';
   static const filter = '${_svgIconPath}filter$_svg';
   static const appBarSearch = '${_svgIconPath}appbar_search$_svg';
+  static const billIcon = '${_svgIconPath}bill_icon$_svg';
 
   // Bottom-Nav-Bar
   static const home = '${_svgIconPath}home_icon$_svg';
@@ -39,7 +40,7 @@ class IconPath {
   static const profileIcon = '${_svgProfileIconPath}user$_svg';
   static const personalInformation = '${_svgProfileIconPath}user$_svg';
   static const dashboard = '${_svgProfileIconPath}dashboard$_svg';
-  static const orders = '${_svgProfileIconPath}orders$_svg';
+  static const requests = '${_svgProfileIconPath}requests$_svg';
   static const licenses = '${_svgProfileIconPath}licenses$_svg';
   static const invoices = '${_svgProfileIconPath}invoices$_svg';
   static const reports = '${_svgProfileIconPath}user$_svg';

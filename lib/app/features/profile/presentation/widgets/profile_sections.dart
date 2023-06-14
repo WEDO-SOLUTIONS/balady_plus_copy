@@ -1,6 +1,6 @@
 import 'package:localize_and_translate/localize_and_translate.dart';
 
-import '../../../../core/utils/utils_exports.dart' show IconPath;
+import '../../../../core/utils/utils_exports.dart' show IconPath, RouteName;
 import '../../profile_exports.dart';
 
 class ProfileSections {
@@ -19,12 +19,12 @@ class ProfileSections {
             title: "dashboard".tr(),
             icon: IconPath.dashboard,
             beta: true,
-            route: "",
+            route: RouteName.dashboard,
           ),
           ProfileItem(
-            title: "orders".tr(),
-            icon: IconPath.orders,
-            route: "",
+            title: "requests".tr(),
+            icon: IconPath.requests,
+            route: RouteName.requests,
           ),
           ProfileItem(
             title: "licenses".tr(),

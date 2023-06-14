@@ -11,6 +11,7 @@ import '../../features/_shared_feature_/shared_feature_exports.dart'
     show BridgeParams, DropDownItem, FileInfo;
 import '../dependency_injection/dependency_injection_exports.dart'
     show
+        DashboardInjection,
         EntryPointInjection,
         LookupInjection,
         OTPInjection,
@@ -41,6 +42,10 @@ void initialize() {
   SignUpInjection.init();
   //? Services
   ServicesInjection.init();
+
+  //! Profile
+  //? Dashboard
+  DashboardInjection.init();
 
   //! Core
   sl.registerLazySingleton(() => WebService(dio: sl()));

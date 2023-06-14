@@ -20,15 +20,21 @@ class DefaultAppBarWidget extends StatelessWidget
   Widget build(BuildContext context) {
     return AppBar(
       backgroundColor: AppColor.scaffoldBackground,
-      title: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          CustomTextWidget(
-            title ?? "",
-            textAlign: TextAlign.center,
-            textStyle: AppStyle.appBarTitleTextStyle,
-          ),
-        ],
+      elevation: 0,
+      leading: Navigator.canPop(context)
+          ? IconButton(
+              icon: const Icon(
+                Icons.arrow_back_ios,
+                color: AppColor.blackModern900Light,
+              ),
+              onPressed: () => Navigator.of(context).pop(),
+            )
+          : null,
+      centerTitle: false,
+      title: CustomTextWidget(
+        title ?? "",
+        textAlign: TextAlign.center,
+        textStyle: AppStyle.appBarTitleTextStyle,
       ),
       bottom: bottom,
       actions: actions,
