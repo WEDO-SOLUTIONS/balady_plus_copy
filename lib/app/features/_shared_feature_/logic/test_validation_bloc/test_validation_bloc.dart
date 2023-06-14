@@ -1,6 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:formz/formz.dart' show Formz, FormzStatusX;
+import 'package:formz/formz.dart' show Formz;
 
 import '../../../../core/dependency_injection/dependency_injection_exports.dart'
     show sl;

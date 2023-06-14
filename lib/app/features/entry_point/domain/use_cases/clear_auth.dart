@@ -1,17 +1,16 @@
 import 'package:dartz/dartz.dart' show Either;
 
 import '../../../../core/errors/errors_exports.dart' show Failure;
-import '../../../../core/services/services_exports.dart' show NoType, UseCase;
-import '../../entry_point_exports.dart'
-    show EntryPointParams, EntryPointRepository;
+import '../../../../core/services/services_exports.dart' show UseCase, NoParams;
+import '../../entry_point_exports.dart';
+import 'package:flutter_appauth/flutter_appauth.dart';
 
-class ClearAuth with UseCase<NoType, EntryPointParams> {
+class ClearAuth extends UseCase<EndSessionResponse, NoParams> {
   final EntryPointRepository repository;
 
   ClearAuth({required this.repository});
-
   @override
-  Future<Either<Failure, NoType>> call(EntryPointParams params) async {
-    return await repository.clearAuth(params.key);
+  Future<Either<Failure, EndSessionResponse>> call(NoParams params) async {
+    return await repository.clearAuth();
   }
 }

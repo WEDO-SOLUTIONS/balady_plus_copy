@@ -1,35 +1,74 @@
+import 'package:balady_plus/app/features/entry_point/presentation/cubit/auth_cubit.dart';
+
 import '../../../features/entry_point/entry_point_exports.dart'
     show
+        CheckAuth,
+        CheckSSOProfile,
         ClearAuth,
         EntryPointLocalDataSource,
-        EntryPointLocalDataSourceImplementation,
-        EntryPointParams,
+        EntryPointLocalDataSourceImpl,
+        EntryPointRemoteDataSource,
+        EntryPointRemoteDataSourceImpl,
         EntryPointRepository,
-        EntryPointRepositoryImplementation,
-        FetchAuth,
-        PersistAuth,
-        UpdateAuth;
+        EntryPointRepositoryImpl,
+        GetAPIgeeToken,
+        GetCookie,
+        GetForceVersion,
+        GetProfile,
+        GetToken,
+        Logout,
+        RefreshToken,
+        SaveAuth,
+        SaveSSOProfile;
 import '../dependency_injection_exports.dart' show sl;
 
 class EntryPointInjection {
   static void init() {
+    sl.registerLazySingleton(() => EntryPointCubit(
+        clearAuth: sl(),
+        // checkProfile: sl(),
+        getProfile: sl(),
+        saveSSOProfile: sl(),
+        checkSSOProfile: sl(),
+        getToken: sl(),
+        refreshToken: sl(),
+        saveAuth: sl(),
+        getCookie: sl(),
+        getAPIgeeToken: sl(),
+        logout: sl(),
+        checkAuth: sl(),
+        forceVersion: sl()));
+
     //! Use Case
+    sl.registerLazySingleton(() => GetToken(repository: sl()));
     sl.registerLazySingleton(() => ClearAuth(repository: sl()));
-    sl.registerLazySingleton(() => FetchAuth(repository: sl()));
-    sl.registerLazySingleton(() => PersistAuth(repository: sl()));
-    sl.registerLazySingleton(() => UpdateAuth(repository: sl()));
+    sl.registerLazySingleton(() => SaveAuth(repository: sl()));
+    sl.registerLazySingleton(() => RefreshToken(repository: sl()));
+    sl.registerLazySingleton(() => CheckAuth(repository: sl()));
+    sl.registerLazySingleton(() => SaveSSOProfile(repository: sl()));
+    sl.registerLazySingleton(() => CheckSSOProfile(repository: sl()));
+
+    sl.registerLazySingleton(() => GetProfile(repository: sl()));
+    sl.registerLazySingleton(() => GetCookie(repository: sl()));
+    sl.registerLazySingleton(() => GetAPIgeeToken(repository: sl()));
+
+    sl.registerLazySingleton(() => Logout(repository: sl()));
+    sl.registerLazySingleton(() => GetForceVersion(repository: sl()));
 
     //! Entities
-    sl.registerLazySingleton(() => const EntryPointParams());
 
     //! Repository
     sl.registerLazySingleton<EntryPointRepository>(
-      () => EntryPointRepositoryImplementation(localDataSource: sl()),
+      () => EntryPointRepositoryImpl(
+          localDataSource: sl(), remoteDataSource: sl()),
     );
 
     //! Data Sources
     sl.registerLazySingleton<EntryPointLocalDataSource>(
-      () => EntryPointLocalDataSourceImplementation(secureStorage: sl()),
+      () => EntryPointLocalDataSourceImpl(),
+    );
+    sl.registerLazySingleton<EntryPointRemoteDataSource>(
+      () => EntryPointRemoteDataSourceImpl(webService: sl()),
     );
   }
 }

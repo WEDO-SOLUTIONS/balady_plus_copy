@@ -1,7 +1,6 @@
-import 'package:balady_plus/app/core/services/services_exports.dart';
 import 'package:equatable/equatable.dart' show Equatable;
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:formz/formz.dart' show Formz, FormzStatusX;
+import 'package:formz/formz.dart' show Formz;
 import 'package:localize_and_translate/localize_and_translate.dart'
     show Translation;
 //import 'package:test_package/app/core/services/services_exports.dart';
@@ -9,12 +8,10 @@ import 'package:localize_and_translate/localize_and_translate.dart'
 
 import '../../../../../../core/dependency_injection/dependency_injection_exports.dart'
     show sl;
-import '../../../../../../core/errors/errors_exports.dart' show ServerFailure;
 import '../../../../../_shared_feature_/shared_feature_exports.dart'
     show AuthData, PhoneNumberValidation, RequiredFieldValidation;
 import '../../../../../../core/utils/utils_exports.dart' show BlocStatus;
-import '../../../../../entry_point/entry_point_exports.dart'
-    show EntryPointCubit;
+import '../../../../../entry_point/presentation/cubit/auth_cubit.dart';
 import '../../../sign_in_exports.dart'
     show SignInByPhoneNumber, SignInByUsernameAndPassword, SignInParams;
 

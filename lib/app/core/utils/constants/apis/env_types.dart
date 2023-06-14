@@ -1,5 +1,5 @@
 enum EnvType {
-  dev(domain: "https://apiservicesdev.balady.gov.sa/"),
+  dev(domain: "https://apiservicesstg.balady.gov.sa/"),
   stg(domain: "https://apiservicesstg.balady.gov.sa/"),
   prod(domain: "https://apiservices.balady.gov.sa/"),
   ;

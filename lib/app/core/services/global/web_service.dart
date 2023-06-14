@@ -8,8 +8,6 @@ import '../../../core/dependency_injection/dependency_injection_exports.dart'
     show sl;
 import '../../../features/_shared_feature_/shared_feature_exports.dart'
     show AuthData, AuthDataModel;
-import '../../../features/entry_point/entry_point_exports.dart'
-    show EntryPointCubit;
 import '../../errors/errors_exports.dart'
     show
         BadRequestException,
@@ -24,7 +22,15 @@ import '../../errors/errors_exports.dart'
         TokenNotFoundException,
         UnAuthorizedException;
 import '../../utils/utils_exports.dart'
-    show ApiHeader, ApiPOST, ApiParam, CommonFunctions, EnvType, Log, WithDelay;
+    show
+        ApiHeader,
+        ApiPOST,
+        ApiParam,
+        CommonFunctions,
+        CommonProperties,
+        EnvType,
+        Log,
+        WithDelay;
 import '../services_exports.dart' show NavigationService, NetworkConnection;
 
 // Please using any technique to create singleton WebService (GetIt)
@@ -39,6 +45,9 @@ class WebService {
     dio.options.headers = {};
     dio.interceptors.add(AppInterceptors());
   }
+  WebService.newDio({
+    required this.dio,
+  }) {}
 }
 
 class AppInterceptors extends Interceptor {
@@ -64,14 +73,14 @@ class AppInterceptors extends Interceptor {
     }
 
     // if the request doesn't need token, then just continue to the next interceptor
-    if (options.headers[ApiHeader.requiresToken] == false) {
+    /*if (options.headers[ApiHeader.requiresToken] == false) {
       // and remove the auxiliary header
       options.headers.remove(ApiHeader.requiresToken);
       "Perform request without token".warningLog();
       return handler.next(options);
-    }
+    }*/
 
-    if (!sl.isRegistered<AuthData>()) {
+    /* if (!sl.isRegistered<AuthData>()) {
       "AuthData not registered/found in service locator".errorLog();
       return handler.next(options);
     }
@@ -110,10 +119,16 @@ class AppInterceptors extends Interceptor {
     } else {
       CommonFunctions.signOut();
       return handler.reject(TokenHasExpiredException(options));
-    }
+    }*/
 
-    options.headers['Authorization'] = 'Bearer $accessToken';
+    final url = options.uri.toString();
+    final method = options.method;
+    final verifyingKEY = CommonFunctions.hashRequest(url, method);
+    options.headers
+        .putIfAbsent(ApiHeader.verifyingKEY.name, () => verifyingKEY);
 
+    options.headers['Authorization'] = 'Bearer ${CommonProperties.token}';
+    print(options.headers);
     return handler.next(options);
   }
 

@@ -85,6 +85,31 @@ dependencies:
   intl: ^0.18.0
   # A flutter package to select a country from a list of countries.
   country_picker: ^2.0.16
+  camera:
+  # lutter plugin to find available maps installed on a device and launch them with a marker or show directions.
+  map_launcher: ^2.4.0
+  # Hashing
+  crypto: ^3.0.1
+  # A universal barcode and QR code scanner
+  mobile_scanner: ^2.1.0
+  # Location
+  geolocator: ^8.2.0
+  # Permissions
+  permission_handler: ^8.3.0
+  # Get current device information
+  device_info_plus: ^8.0.0
+  # API for querying information about an application package
+  package_info_plus: ^3.0.3
+  # parses Adobe After Effects animations
+  lottie: ^2.2.0
+  # Generate Unique ID
+  uuid: ^3.0.7
+  hijri: ^3.0.0
+  flutter_appauth:
+    path: flutter_appauth/flutter_appauth
+  webview_flutter: ^3.0.0
+  flutter_inappwebview: ^5.3.2
+  version: ^2.0.0
   #test_package:
  #   path: packages/test_package
 

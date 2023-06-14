@@ -3,11 +3,11 @@ enum ApiParam {
   username,
   phoneNumber,
   password,
-  // identityNo(customName: "idNumber"),
   identityNo,
   idNumber,
   refreshToken,
-  ;
+  type,
+  appID;
 
   // const ApiParam({this.customName});
   // final String? customName;

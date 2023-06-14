@@ -7,6 +7,9 @@ enum ApiGET {
   requests,
   bills(prefix: "newBill/"),
   profile(suffix: "/addProfile"),
+  userinfo(
+    prefix: "connect/ ",
+  ),
   lookups,
   ;
 

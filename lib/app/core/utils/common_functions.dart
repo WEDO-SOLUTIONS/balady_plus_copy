@@ -1,7 +1,10 @@
-import 'dart:convert' show base64Decode, base64Encode;
+import 'dart:convert' show base64Decode, base64Encode, utf8;
 import 'dart:io' show File;
 import 'dart:typed_data' show Uint8List;
 
+import 'package:balady_plus/app/core/utils/constants/remote_config.dart';
+import 'package:crypto/crypto.dart';
+import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart' show PlatformFile;
 import 'package:intl/intl.dart' show DateFormat;
 import 'package:open_file/open_file.dart' show OpenFile;
@@ -10,13 +13,17 @@ import 'package:path_provider/path_provider.dart' show getTemporaryDirectory;
 import 'package:flutter_bloc/flutter_bloc.dart' show EventTransformer;
 import 'package:stream_transform/stream_transform.dart' show RateLimit, Switch;
 import 'package:url_launcher/url_launcher.dart' show canLaunchUrl, launchUrl;
+import 'package:uuid/uuid.dart';
 
+import '../../features/_shared_feature_/data/entities/device_details.dart';
 import '../../features/_shared_feature_/shared_feature_exports.dart'
     show AuthData, BridgeParams, FileInfo;
+import '../../features/entry_point/presentation/cubit/auth_cubit.dart';
 import '../dependency_injection/dependency_injection_exports.dart' show sl;
-import '../services/services_exports.dart' show EntryPointBridge;
+import '../services/services_exports.dart'
+    show AppInterceptors, EntryPointBridge;
 import './utils_exports.dart'
-    show AppConfig, AppLanguage, MimeType, UIHelper, WithDelay;
+    show AppConfig, AppLanguage, EnvType, MimeType, UIHelper, WithDelay;
 
 class CommonFunctions {
   static EventTransformer<Event> debounce<Event>([Duration? duration]) =>
@@ -74,6 +81,17 @@ class CommonFunctions {
         ? DateFormat('dd-MM-yyyy')
             .format(dateStr.add(duration ?? const Duration()))
         : '';
+  }
+
+  static Dio getDio({required String baseUrl}) {
+    Dio dio = Dio();
+    dio.options.baseUrl = sl<EnvType>().domain;
+    dio.options.connectTimeout = 5000;
+    dio.options.receiveTimeout = 5000;
+    dio.options.sendTimeout = 5000;
+    dio.options.headers = {};
+    dio.interceptors.add(AppInterceptors());
+    return dio;
   }
 
   static Future<void> createOpenTempFile(
@@ -134,6 +152,63 @@ class CommonFunctions {
     return englishNumbers;
   }
 
+  static String generateUUID() {
+    try {
+      const uuid = Uuid();
+      String v1UUID = uuid.v1();
+      final deviceDetails = sl<DeviceDetails>();
+      String v5UUID = uuid.v5(v1UUID, deviceDetails.deviceId);
+      if (v5UUID.isNotEmpty) {
+        return v5UUID.replaceAll("-", "");
+      } else if (v1UUID.isNotEmpty) {
+        return v1UUID.replaceAll("-", "");
+      } else {
+        return DateTime.now().millisecondsSinceEpoch.toString();
+      }
+    } catch (ex) {
+      return DateTime.now().millisecondsSinceEpoch.toString();
+    }
+  }
+
+  static String hashRequest(
+    String url,
+    String method, {
+    String? body,
+    bool authorization = false,
+    String? corelationId,
+  }) {
+    //var encodedURL = Uri.encodeComponent(url);
+
+    String message = "";
+    message = url + method;
+
+    if (corelationId != null) message += corelationId;
+    //if (authorization) message += 'Bearer $token';
+
+    if (body != null) {
+      message += body.replaceAll(RegExp(r'^/\\n/g'), "");
+    }
+    /*message.errorLog();
+    ;
+    body.errorLog();*/
+
+    message.trim();
+    var key = utf8.encode(RemoteConfig.hmCode);
+    var bytes = utf8.encode(message);
+
+    var hmacSha256 = Hmac(sha256, key);
+    var digest = hmacSha256.convert(bytes);
+    String base64 = base64Encode(digest.bytes);
+    return base64;
+  }
+
   static bool get isAuthed => sl.isRegistered<AuthData>();
   static bool get isAppAR => AppConfig.languageCode == AppLanguage.ar.name;
+}
+
+class CommonProperties {
+  // static String token = sl<EntryPointCubit>().state.token?.token ?? "";
+
+  static String token =
+      "eyJhbGciOiJSUzI1NiIsImtpZCI6IjhFRDBCN0UzRjNDOTFBOEQwMUU3MEMxRUM4MTNGQTJBRjgxOEQ5MUZSUzI1NiIsIng1dCI6Imp0QzM0X1BKR28wQjV3d2V5QlA2S3ZnWTJSOCIsInR5cCI6ImF0K2p3dCJ9.eyJpc3MiOiJodHRwczovL3Nzb2FwcGRldi5tb21yYS5nb3Yuc2EiLCJuYmYiOjE2ODY2NTAzMjksImlhdCI6MTY4NjY1MDMyOSwiZXhwIjoxNjg3NTE0MzI5LCJhdWQiOlsiR2lzQXBpIiwiaHR0cHM6Ly9zc29hcHBkZXYubW9tcmEuZ292LnNhL3Jlc291cmNlcyJdLCJzY29wZSI6WyJvcGVuaWQiLCJwcm9maWxlIiwiR2lzQXBpIiwib2ZmbGluZV9hY2Nlc3MiXSwiYW1yIjpbInB3ZCJdLCJjbGllbnRfaWQiOiJCYWxhZHkuTW9tdGF0aGVsLkFQUCIsInN1YiI6IjdjMzY2Nzc4LWEwMjEtNDcwNy04MjQzLTdjM2RmNTljN2ZmOCIsImF1dGhfdGltZSI6MTY4NjY1MDMyOCwiaWRwIjoibG9jYWwiLCJuYW1lIjoiMjExMTY5MjU5MiIsIm1haWwiOiJtLmFobWVkQGlubm9zb2Z0Lm1leHgiLCJzZXgiOiIxIiwiZG9iIjoiMzEvMDUvMTk5NSIsInBob25lIjoiMDU5Mjg0MjI3NSIsImFyX25hbWUiOiLZhdit2YXZiNivINmF2K3Zhdiv2KjZh9in2KHYp9mE2K_ZitmGICDYp9it2YXYryIsImVuX25hbWUiOiJNQUhNT1VEIE1PSEFNRURCQUhBRUxESSAgQUhNRUQiLCJpZF9ubyI6IjIxMTE2OTI1OTIiLCJuaWQiOiIyMDciLCJuYXRpb25hbGl0eSI6ItmF2LXYsSIsImlkX3R5cGUiOiIyIiwic25hbWUiOiLZhdit2YXZiNivLNmF2K3Zhdiv2KjZh9in2KHYp9mE2K_ZitmGLCzYp9it2YXYryIsInNpZCI6IjhCMDI5NTQzMDI0Mzk5NTRCMEJENjI3MzFGNEU2RDE2IiwianRpIjoiQkJDMzI3QzYyMTQ0QzAwOTRCRDVEMzZCOThFMDc0NTgifQ.Q1fXhvrc_HROU3KC_07BIIIGz44BKCrLA5tjU1IpUT2vw0CXBIczEFBrIP05ustjIirQhGWZ-dY9rYDXxqivZ-TnYTtROs1fPi9Z3pT1_tjqWKinFCFNW3GhY2JV2BsCjrzK51WTJkUHbJJB9NowmMpD5jnjB5fQEo671_8gFuL3uzmYcjdtVF7Y5S1q_lC8oee04LTCQQF2WerTfDCyyo7Y4YCHbF6-b8huFmbK7Pzn7LubmSd1prN9-zwJj93RwoMTIkVrO23Y8wiOkz0rEL0MSn-dXlAYp8A8d9SmoZSxM9QF_ifrFLzENPMpNMR0-GI8xtGBOW0Gy3nJl5B8uw";
 }

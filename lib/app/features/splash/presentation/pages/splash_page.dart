@@ -9,8 +9,7 @@ import '../../../../core/dependency_injection/dependency_injection_exports.dart'
 import '../../../../core/services/services_exports.dart' show EntryPointBridge;
 import '../../../_shared_feature_/shared_feature_exports.dart'
     show BridgeParams;
-import '../../../entry_point/logic/entry_point_cubit/entry_point_cubit.dart'
-    show EntryPointCubit, EntryPointState;
+
 import '../../splash_exports.dart' show SplashAnimator;
 
 class SplashPage extends StatefulWidget {

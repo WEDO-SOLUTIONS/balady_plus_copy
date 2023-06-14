@@ -5,6 +5,8 @@ import 'package:get_it/get_it.dart' show GetIt;
 import 'package:internet_connection_checker/internet_connection_checker.dart'
     show InternetConnectionChecker;
 
+import '../../features/_shared_feature_/data/entities/device_details.dart';
+import '../../features/_shared_feature_/data/entities/package_details.dart';
 import '../../features/_shared_feature_/shared_feature_exports.dart'
     show BridgeParams, DropDownItem, FileInfo;
 import '../dependency_injection/dependency_injection_exports.dart'
@@ -46,7 +48,8 @@ void initialize() {
   sl.registerLazySingleton(() => const EntryPointBridge());
   sl.registerLazySingleton(() => const FileInfo());
   sl.registerLazySingleton(() => DropDownItem.emptyState());
-
+  sl.registerLazySingleton(() => const DeviceDetails());
+  sl.registerLazySingleton(() => const PackageDetails());
   //! External
   sl.registerLazySingleton(() => const FlutterSecureStorage());
   sl.registerLazySingleton(() => InternetConnectionChecker());

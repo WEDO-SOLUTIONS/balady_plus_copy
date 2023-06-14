@@ -19,6 +19,7 @@ export 'data/entities/validators/required_field_validation.dart';
 /// data -> models
 export 'data/models/auth_data_model.dart';
 export 'data/models/drop_down_item_model.dart';
+export 'data/models/response_body_model.dart';
 
 //! Logic
 /// logic -> cubits

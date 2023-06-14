@@ -12,6 +12,7 @@ import '../../../../../core/utils/utils_exports.dart'
 import '../../../../_shared_feature_/shared_feature_exports.dart'
     show BridgeParams, CustomTextWidget, LoadingDialog, MessageDialog;
 import '../../../../entry_point/entry_point_exports.dart' show EntryPointCubit;
+import '../../../../entry_point/presentation/cubit/auth_cubit.dart';
 import '../../sign_in_exports.dart'
     show SignInBloc, SignInBodyWidget, SignInState;
 

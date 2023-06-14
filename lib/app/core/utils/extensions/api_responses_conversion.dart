@@ -2,6 +2,7 @@ import 'package:dio/dio.dart' show Response;
 import 'package:localize_and_translate/localize_and_translate.dart'
     show Translation;
 
+import '../../../features/_shared_feature_/data/models/apigee_response_model.dart';
 import '../utils_exports.dart' show ApiResponse, Log, ResponseDataInMapFormat;
 
 extension APIResponsesConversion on ApiResponse {
@@ -37,21 +38,14 @@ extension APIResponsesConversion on ApiResponse {
 
   String? _handleServerErrorMessage(Response? response) {
     String? message;
-    if (response != null &&
-        response.data != null &&
-        response.data is ResponseDataInMapFormat) {
-      message = _checkErrorMessage(response.data);
-    }
-    return message;
-  }
-
-  String? _checkErrorMessage(ResponseDataInMapFormat response) {
-    String? message;
-    if (response["Message"] != null && response["Message"].isNotEmpty) {
-      message = response['Message'];
-      if (message!.contains("Invalid user name or password")) {
-        message = "errorInvalidCredentials".tr();
-      }
+    print("handle error msg ${response?.data}");
+    if (response != null && response.data != null) {
+      ApigeeResponseModel? m;
+      try {
+        m = ApigeeResponseModel.fromMap(response.data);
+      } catch (ex) {}
+      message =
+          m?.data?.getRefResponseMessage() ?? ("errors_server_error_1").tr();
     }
     return message;
   }

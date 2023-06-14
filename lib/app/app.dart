@@ -9,21 +9,16 @@ import 'package:localize_and_translate/localize_and_translate.dart'
 import './core/services/services_exports.dart' show NavigationService;
 import './core/utils/utils_exports.dart'
     show AppColor, AppConfig, AppRouter, RouteName;
-import './features/entry_point/entry_point_exports.dart' show EntryPointCubit;
 import './core/dependency_injection/dependency_injection_exports.dart' show sl;
+import 'features/entry_point/presentation/cubit/auth_cubit.dart';
 
 class App extends StatelessWidget {
   const App({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<EntryPointCubit>(
-      create: (context) => EntryPointCubit(
-        clearAuth: sl(),
-        fetchAuth: sl(),
-        persistAuth: sl(),
-        updateAuth: sl(),
-      )..onLoadingApp(),
+    return BlocProvider<EntryPointCubit>.value(
+      value: sl<EntryPointCubit>()..onLoadingApp(),
       child: MaterialApp(
         title: 'appNameWord'.tr(),
         debugShowCheckedModeBanner: false,
