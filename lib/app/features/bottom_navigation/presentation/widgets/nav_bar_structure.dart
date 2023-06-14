@@ -21,8 +21,13 @@ class BottomNavBarStructure extends StatelessWidget {
       height: height,
       padding: EdgeInsets.only(bottom: context.bottomPadding * 0.5),
       decoration: const BoxDecoration(
-        color: AppColor.white,
-        border: Border(top: BorderSide(color: AppColor.blue, width: 0.5)),
+        gradient: LinearGradient(
+          colors: [
+            AppColor.blueGreen,
+            AppColor.darkSeaGreen,
+            AppColor.primary900Light
+          ],
+        ),
       ),
       child: Row(
         children: [
