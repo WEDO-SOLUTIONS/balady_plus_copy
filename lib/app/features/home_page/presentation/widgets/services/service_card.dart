@@ -4,15 +4,16 @@ import '../../../../../core/utils/utils_exports.dart'
     show AppColor, AppStyle, IconPath;
 import '../../../../_shared_feature_/shared_feature_exports.dart'
     show CustomTextWidget, DrawIconBasedTypeWidget;
-import '../../../home_exports.dart' show ServiceArgs, HomeTag;
+import '../../../../services/services_exports.dart' show ServiceEntity;
+import '../../../home_exports.dart' show HomeTag;
 
 class ServiceCard extends StatelessWidget {
-  final ServiceArgs args;
+  final ServiceEntity service;
   final bool fullWidth;
 
   const ServiceCard({
     super.key,
-    required this.args,
+    required this.service,
     this.fullWidth = false,
   });
 
@@ -37,22 +38,21 @@ class ServiceCard extends StatelessWidget {
       ),
       child: Stack(
         children: [
-          if (args.tag != null)
+          if (service.tag != null)
             Positioned.directional(
               top: 0,
               end: 0,
               textDirection: TextDirection.rtl,
               child: HomeTag(
-                title: args.tag!,
+                title: service.tag!,
                 backgroundColor: AppColor.iceBlue,
-                textColor: AppColor.greyishBrown,
                 fontSize: 8.0,
               ),
             ),
           Row(
             children: [
               const DrawIconBasedTypeWidget(
-                icon: IconPath.nearby, //args.image,
+                icon: IconPath.nearby, //service.image,
                 iconSize: 68,
               ),
               const SizedBox(width: 16),
@@ -61,7 +61,7 @@ class ServiceCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   CustomTextWidget(
-                    args.title,
+                    service.title,
                     textStyle: AppStyle.serviceTitleStyle,
                   ),
                   const SizedBox(height: 4),
@@ -70,7 +70,7 @@ class ServiceCard extends StatelessWidget {
                     child: Row(
                       children: [
                         CustomTextWidget(
-                          args.description,
+                          service.description ?? "",
                           textStyle: AppStyle.semiBoldTextStyle,
                         ),
                         const Spacer(),

@@ -71,11 +71,7 @@ class _DraggableSheetCardState extends State<DraggableSheetCard> {
                         duration: const Duration(milliseconds: 500),
                         curve: Curves.easeOutBack,
                       );
-                      controller.animateTo(
-                        0,
-                        duration: const Duration(milliseconds: 500),
-                        curve: Curves.easeOutBack,
-                      );
+                      controller.jumpTo(0);
                     }
                   },
                   child: const DrawLineWidget(

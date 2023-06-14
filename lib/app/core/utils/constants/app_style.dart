@@ -118,6 +118,84 @@ class AppStyle {
     height: 1.0,
   );
 
+  static final serviceIconTextStyle = TextStyle(
+    fontSize: 9.0,
+    color: AppColor.blackModern700Light,
+    fontWeight: AppFontWeight.bold.fontWeight,
+    fontFamily: fontFamily,
+    height: 1.0,
+  );
+
+  static final serviceListTitleTextStyle = TextStyle(
+    color: AppColor.blackModern500Light,
+    fontWeight: AppFontWeight.bold.fontWeight,
+    fontSize: 15.0,
+    fontFamily: fontFamily,
+    height: 1.0,
+  );
+
+  static final appBarTitleTextStyle = TextStyle(
+    fontSize: 20.0,
+    color: AppColor.blackModern700Light,
+    fontWeight: AppFontWeight.bold.fontWeight,
+    fontFamily: fontFamily,
+    height: 1.0,
+  );
+
+  static final profileListTitleTextStyle = TextStyle(
+    fontSize: 14.0,
+    color: AppColor.blackModern600Light,
+    fontWeight: AppFontWeight.bold.fontWeight,
+    fontFamily: fontFamily,
+    height: 1.0,
+  );
+  static final profileSectionTitleTextStyle = TextStyle(
+    fontSize: 18.0,
+    color: AppColor.blackModern500Light,
+    fontWeight: AppFontWeight.bold.fontWeight,
+    fontFamily: fontFamily,
+    height: 1.0,
+  );
+
+  static final profileNameTextStyle = TextStyle(
+    fontSize: 16.0,
+    fontWeight: AppFontWeight.black.fontWeight,
+    color: AppColor.blackModern50Light,
+    fontFamily: fontFamily,
+    height: 1.0,
+  );
+
+  static final profileTypeTextStyle = TextStyle(
+    fontSize: 16.0,
+    fontWeight: AppFontWeight.semiBold.fontWeight,
+    color: AppColor.blackModern50Light.withOpacity(0.6),
+    fontFamily: fontFamily,
+    height: 1.0,
+  );
+
+  static final nearbyItemTitleTextStyle = TextStyle(
+    fontSize: 13.0,
+    fontWeight: AppFontWeight.bold.fontWeight,
+    color: AppColor.blackModern700Light,
+    fontFamily: fontFamily,
+    height: 1.0,
+  );
+
+  static final nearbyItemSubTitleTextStyle = TextStyle(
+    fontSize: 9.0,
+    fontWeight: AppFontWeight.semiBold.fontWeight,
+    color: AppColor.black42,
+    fontFamily: fontFamily,
+    height: 1.0,
+  );
+  static final profileListBetaTextStyle = TextStyle(
+    fontSize: 12.0,
+    fontWeight: AppFontWeight.bold.fontWeight,
+    color: AppColor.blue600Light,
+    fontFamily: fontFamily,
+    height: 1.0,
+  );
+
   /// Padding
   static const defaultPadding = EdgeInsets.symmetric(
     horizontal: UIHelper.mediumPadding,

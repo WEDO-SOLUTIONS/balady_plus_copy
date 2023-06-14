@@ -8,21 +8,23 @@ class CircleIcon extends StatelessWidget {
   const CircleIcon({
     Key? key,
     required this.icon,
-    this.iconSize = 48,
+    this.circleSize = 48,
     this.backgroundColor,
     this.iconColor,
+    this.iconSize = 18,
   }) : super(key: key);
 
   final Object icon;
-  final double iconSize;
+  final double circleSize;
   final Color? backgroundColor;
   final Color? iconColor;
+  final double iconSize;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: iconSize,
-      height: iconSize,
+      width: circleSize,
+      height: circleSize,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         color: backgroundColor ?? AppColor.blackModern50Light,
@@ -38,6 +40,7 @@ class CircleIcon extends StatelessWidget {
         child: DrawIconBasedTypeWidget(
           icon: icon,
           iconColor: iconColor,
+          iconSize: iconSize,
         ),
       ),
     );

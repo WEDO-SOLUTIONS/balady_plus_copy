@@ -46,6 +46,7 @@ export 'presentation/cards/card_structure.dart';
 
 /// presentation -> components
 export 'presentation/components/bottom_sheets/action_buttons_component.dart';
+export 'presentation/components/bottom_sheets/bottom_sheet_title.dart';
 export 'presentation/components/bottom_sheets/close_request_bottom_sheet_component.dart';
 export 'presentation/components/bottom_sheets/draggable_sheet_component.dart';
 export 'presentation/components/bottom_sheets/draggable_sheet_card.dart';
@@ -132,6 +133,8 @@ export 'presentation/widgets/glowing_scroll_widget.dart';
 export 'presentation/widgets/more_actions_widget.dart';
 export 'presentation/widgets/shimmer_effect_widget.dart';
 export 'presentation/widgets/widget_label.dart';
+export 'presentation/widgets/default_appbar_widget.dart';
+export 'presentation/widgets/tab_page_container.dart';
 
 //
 

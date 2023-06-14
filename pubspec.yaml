@@ -135,6 +135,8 @@ flutter:
     - assets/icons/svg/prayers/
     - assets/icons/svg/services/
     - assets/icons/svg/weather/
+    - assets/icons/svg/profile/
+    - assets/icons/svg/nearby/
     - assets/icons/png/
     - assets/images/
     - assets/langs/

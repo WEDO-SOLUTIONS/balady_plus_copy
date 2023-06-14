@@ -14,6 +14,7 @@ import '../dependency_injection/dependency_injection_exports.dart'
         EntryPointInjection,
         LookupInjection,
         OTPInjection,
+        ServicesInjection,
         SignInInjection,
         SignUpInjection;
 import '../services/services_exports.dart'
@@ -38,6 +39,8 @@ void initialize() {
   SignInInjection.init();
   //? Sign-Up
   SignUpInjection.init();
+  //? Services
+  ServicesInjection.init();
 
   //! Core
   sl.registerLazySingleton(() => WebService(dio: sl()));

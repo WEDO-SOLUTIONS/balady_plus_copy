@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:localize_and_translate/localize_and_translate.dart'
-    show Translation;
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
-import '../../../../core/utils/utils_exports.dart' show AppColor, AppStyle;
+import '../../../../core/utils/utils_exports.dart' show AppColor, IconPath;
 import '../../../_shared_feature_/shared_feature_exports.dart'
-    show CustomTextWidget;
+    show TabPageContainer, DefaultAppBarWidget;
+import '../../../home_page/home_exports.dart' show CircleIcon;
+import '../../services_exports.dart';
 
 class ServicesPage extends StatelessWidget {
   const ServicesPage({super.key});
@@ -12,16 +14,41 @@ class ServicesPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: CustomTextWidget(
-          "services".tr(),
-          textStyle:
-              AppStyle.mainTextSecondaryStyle.copyWith(color: AppColor.white),
-        ),
+      appBar: DefaultAppBarWidget(
+        title: "services".tr(),
+        actions: const [
+          Padding(
+            padding: EdgeInsets.all(8),
+            child: CircleIcon(
+              backgroundColor: AppColor.primary50Light,
+              icon: IconPath.appBarSearch,
+              circleSize: 48.0,
+              iconSize: 30.0,
+            ),
+          ),
+        ],
       ),
-      body: Center(
-        child: CustomTextWidget("services".tr()),
+      body: TabPageContainer(
+        child: BlocBuilder<ServicesCubit, ServicesState>(
+          builder: (context, state) {
+            return SingleChildScrollView(
+              child: Column(
+                children: [
+                  ServicesList(
+                    title: "public_services".tr(),
+                    services: state.publicServices,
+                    crossAxisCount: 5,
+                  ),
+                  const SizedBox(height: 16),
+                  ServicesList(
+                    title: "municipal_services".tr(),
+                    services: state.municipalServices,
+                  ),
+                ],
+              ),
+            );
+          },
+        ),
       ),
     );
   }

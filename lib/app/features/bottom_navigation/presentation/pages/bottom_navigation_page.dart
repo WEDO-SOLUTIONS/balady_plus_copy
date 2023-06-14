@@ -2,13 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart'
     show BlocProvider, MultiBlocProvider;
 
+import '../../../../core/dependency_injection/dependency_injection_exports.dart'
+    show sl;
 import '../../../../core/services/services_exports.dart' show NavigationService;
 import '../../../../core/utils/utils_exports.dart' show BottomNavBar;
-import '../../../activities/activities_exports.dart' show ActivitiesPage;
-import '../../../component_test/component_test_exports.dart' show HomePage;
 import '../../../home_page/presentation/pages/home_page.dart';
-import '../../../more/more_exports.dart' show MorePage;
-import '../../../services/services_exports.dart' show ServicesPage;
+import '../../../nearby/nearby_exports.dart' show NearbyPage;
+import '../../../profile/profile_exports.dart' show ProfilePage;
+import '../../../services/services_exports.dart'
+    show ServicesCubit, ServicesPage;
 import '../../bottom_navigation_exports.dart'
     show BottomNavBarCubit, BottomNavBarWidget;
 
@@ -41,6 +43,14 @@ class _BottomNavigationPageState extends State<BottomNavigationPage> {
         BlocProvider<BottomNavBarCubit>(
           create: (_) => BottomNavBarCubit(initialNavBar: BottomNavBar.home),
         ),
+        BlocProvider<ServicesCubit>(
+          create: (_) => ServicesCubit(
+            importantServices: sl(),
+            newServices: sl(),
+            municipalServices: sl(),
+            publicServices: sl(),
+          ),
+        ),
       ],
       child: Scaffold(
         key: NavigationService.bottomNavKey,
@@ -51,11 +61,11 @@ class _BottomNavigationPageState extends State<BottomNavigationPage> {
             // Home-Page
             HomePage(),
             // Services-Page
-            ServicesPage(),
+            NearbyPage(),
             // Activities-Page
-            ActivitiesPage(),
+            ServicesPage(),
             // Profile-Page
-            MorePage(),
+            ProfilePage(),
           ],
         ),
         bottomNavigationBar: BottomNavBarWidget(
