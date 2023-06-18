@@ -26,4 +26,6 @@ class RouteName {
   static const qrFacilityRatingRoute = '/qrFacilityRatingRoute';
   static const qrFacilityScreenRoute = '/qrFacilityScreenRoute';
   static const qrScreenRoute = '/qrScreenRoute';
+  static const qrPhotosRoute = '/qrPhotosRoute';
+  static const qrRatingRoute = 'qrRatingRoute';
 }

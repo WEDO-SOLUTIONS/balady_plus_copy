@@ -11,7 +11,6 @@ import './core/dependency_injection/dependency_injection_exports.dart' show sl;
 import './core/services/services_exports.dart' show NavigationService;
 import './core/utils/utils_exports.dart'
     show AppColor, AppConfig, AppRouter, RouteName;
-import './core/dependency_injection/dependency_injection_exports.dart' show sl;
 import 'features/entry_point/presentation/cubit/auth_cubit.dart';
 
 class App extends StatelessWidget {

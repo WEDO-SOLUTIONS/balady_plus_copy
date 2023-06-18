@@ -137,4 +137,20 @@ class IconPath {
   static const qrWhatsupIcon = '${_svgQRIconPath}WhatsApp$_svg';
 
   static const qrOpenLinkIcon = '${_svgQRIconPath}open_link$_svg';
+  static const qrRatingStarIcon = '${_svgQRIconPath}qr_rating_star$_svg';
+
+  static const qrParkingServiceIcon =
+      '${_svgQRIconPath}qr_parking_service$_svg';
+  static const qrParkingIcon = '${_svgQRIconPath}qr_parking$_svg';
+  static const qrDeliveryServiceIcon =
+      '${_svgQRIconPath}qr_delivery_service$_svg';
+  static const qrDisableIcon = '${_svgQRIconPath}qr_disable$_svg';
+
+  static const qrAIcon = '${_pngQRIconPath}tours_rating_icons/a$_png';
+  static const qrBIcon = '${_pngQRIconPath}tours_rating_icons/b$_png';
+  static const qrCIcon = '${_pngQRIconPath}tours_rating_icons/c$_png';
+  static const qrDIcon = '${_pngQRIconPath}tours_rating_icons/d$_png';
+  static const qrLockIcon = '${_pngQRIconPath}tours_rating_icons/lock$_png';
+
+  static const qrStarIcon = '${_pngQRIconPath}greyStar$_png';
 }

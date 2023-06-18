@@ -116,6 +116,16 @@ class AppRouter {
         return MaterialPageRoute(
           builder: (_) => const QrScreen(),
         );
+
+      case RouteName.qrPhotosRoute:
+        return MaterialPageRoute(
+          builder: (_) => const FacilityPhotosScreen(),
+        );
+
+      case RouteName.qrRatingRoute:
+        return MaterialPageRoute(
+          builder: (_) => FacilityRatingScreen(),
+        );
       // error page
       default:
         return MaterialPageRoute(builder: (_) => const SizedBox());

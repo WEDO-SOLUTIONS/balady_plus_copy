@@ -7,9 +7,11 @@ import 'dart:async' show StreamController;
 import 'package:balady_plus/app/features/facility_qr/facility_qr_exports.dart'
     show
         FacilityHeaderWidget,
+        FacilityRatingScreen,
         FeaturesWidget,
-        RatingLine,
+        PhotoSection,
         QRLabelTextWidget,
+        RatingLine,
         WorkingHourDetails;
 
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -27,6 +29,8 @@ import '../../../_shared_feature_/presentation/widgets/buttons/custom_buttons_wi
 
 import '../../../_shared_feature_/shared_feature_exports.dart'
     show
+        BottomSheetDialog,
+        BottomSheetWithActions,
         CustomHorizontalSpace,
         CustomNetworkImageWidget,
         CustomSvgIconWidget,
@@ -35,6 +39,8 @@ import '../../../_shared_feature_/shared_feature_exports.dart'
         DrawLineWidget,
         LabelIconComponent,
         LabelIconSubtitleComponent;
+import '../widgets/facility_details_widgets/facility_rating_widget.dart';
+import '../widgets/facility_details_widgets/qr_classification_widget.dart';
 
 class FacilityScreen extends StatefulWidget {
   const FacilityScreen({Key? key}) : super(key: key);
@@ -169,6 +175,7 @@ class _FacilityScreenState extends State<FacilityScreen> {
                     model.getCoverPhotoUrl(),
                     imageHeight: 200,
                     imageWidth: double.infinity,
+                    ssoAuth: false,
                   ),
                   Container(
                     margin: EdgeInsetsDirectional.only(
@@ -221,7 +228,7 @@ class _FacilityScreenState extends State<FacilityScreen> {
                           //Evaluation Section
                           EvaluationSection(),
                           //Photo Section
-                          //PhotoSection(),
+                          PhotoSection(),
 
                           // Submit Incident Button
                           const SubmitIncidentSection(),
@@ -245,7 +252,21 @@ class FacilityInfoSection extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        QRLabelTextWidget(text: ("تفاصيل العمل والتواصل").tr()),
+        const CustomVerticalSpace(height: 16),
+
+        FacilityHeaderWidget(
+          openNow: viewModel.isOpenNow,
+          facilityAddress: viewModel.getCityAndStreet(),
+          facilityName: viewModel.getFacilityName(),
+        ),
+        const CustomVerticalSpace(height: 32),
+        FacilityRatingWidget(
+          rating: viewModel.getFacilityAvrageRating(),
+          reviews: viewModel.getFacilityTotalRatingCount(),
+        ),
+        const CustomVerticalSpace(height: 50),
+
+        QRLabelTextWidget(text: ("qr_working_details").tr()),
         const CustomVerticalSpace(height: 16),
         if (viewModel.facilityRespoonse != null &&
             viewModel.facilityRespoonse!.data!.result!.workTimes != null)
@@ -261,14 +282,17 @@ class FacilityInfoSection extends StatelessWidget {
           descImg: viewModel.getFacilityClassificationImg(),
         ),*/
         const CustomVerticalSpace(height: 16),
-        LabelIconSubtitleComponent(
-          text: ('rating_tours').tr(),
-          icon: IconPath.qrWebIcon,
-          subtitle: viewModel.getFacilityClassification(),
-          onPress: () {
-            viewModel.launchURL(viewModel.getWebUrl());
-          },
+
+        QRLabelTextWidget(text: ('rating_tours').tr()),
+        const CustomVerticalSpace(height: 16),
+
+        QrClassificationWidget(
+          icon: viewModel.getFacilityClassificationImg(),
+          text: viewModel.getFacilityClassification(),
         ),
+
+        const CustomVerticalSpace(height: 16),
+
         if (viewModel.getWebUrl().isNotEmpty) ...[
           const CustomVerticalSpace(height: 16),
           LabelIconSubtitleComponent(
@@ -321,7 +345,7 @@ class FeaturesSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        QRLabelTextWidget(text: ("الخدمات المقدمة").tr()),
+        QRLabelTextWidget(text: ("qr_service_details").tr()),
         const CustomVerticalSpace(height: 16),
         Wrap(
           direction: Axis.horizontal,
@@ -330,24 +354,26 @@ class FeaturesSection extends StatelessWidget {
             FeaturesWidget(
               title: ("qr_parking_label").tr(),
               available: model.hasParking(),
+              icon: IconPath.qrParkingIcon,
             ),
             FeaturesWidget(
               title: ("qr_vehicle_parkingn_label").tr(),
               available: model.hasVehicleParking(),
+              icon: IconPath.qrParkingServiceIcon,
             ),
             FeaturesWidget(
               title: ("qr_delivery_label").tr(),
               available: model.hasDelivery(),
+              icon: IconPath.qrDeliveryServiceIcon,
             ),
             FeaturesWidget(
               title: ("qr_disable_persons_label").tr(),
               available: model.serveDisabledPersons(),
+              icon: IconPath.qrDisableIcon,
             ),
           ],
         ),
-        const DrawLineWidget(
-          verticalMargin: Constants.semiMediumPadding,
-        ),
+        const CustomVerticalSpace(height: 16),
       ],
     );
   }
@@ -369,7 +395,8 @@ class EvaluationSection extends StatelessWidget {
                 "[]", viewModel.getFacilityTotalRatingCount().toString()),
         img: "rate@3x.png",
       ),*/
-      QRLabelTextWidget(text: ("تفاصيل التقييم").tr()),
+      const CustomVerticalSpace(height: 32),
+      QRLabelTextWidget(text: ("qr_rating_details").tr()),
 
       /*  RateAndReviewWidgetWithoutDivider(
           rate: viewModel.getFacilityAvrageRating(),
@@ -377,7 +404,7 @@ class EvaluationSection extends StatelessWidget {
           */
       const CustomVerticalSpace(height: 16),
       LabelIconSubtitleComponent(
-        text: ('التقييم').tr(),
+        text: ("rating").tr(),
         icon: IconPath.qrRatingIcon,
         subWidget: Padding(
           padding: const EdgeInsets.only(top: 16.0),
@@ -389,24 +416,46 @@ class EvaluationSection extends StatelessWidget {
                   name: e.name ?? "",
                   rating: e.getAverage(),
                 );
-              }).toList())
+              }).toList()),
+              const CustomVerticalSpace(height: 16),
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: const Color(0x82F4F4F5),
+                ),
+                padding: const EdgeInsets.all(16),
+                child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      CustomTextWidget(
+                        "qr_share_opnion".tr(),
+                        fontWeight: AppFontWeight.semiBold,
+                        fontSize: 12,
+                        fontColor: AppColor.blackModern700Light,
+                      ),
+                      EnhancedCustomElevatedButtonWidget(
+                        btnText: "qr_facility_rating".tr(),
+                        btnColor: AppColor.primary900Light,
+                        btnWidth: 129,
+                        btnTextSize: 12,
+                        btnTextWeight: AppFontWeight.bold,
+                        btnHeight: 36,
+                        btnRadius: 8,
+                        btnPressed: () async {
+                          await BottomSheetDialog.showDraggableSheet(context,
+                              child: BottomSheetWithActions(
+                                title: ("review").tr() +
+                                    " " +
+                                    viewModel.getFacilityName(),
+                                body: FacilityRatingScreen(),
+                              ));
+                        },
+                      )
+                    ]),
+              ),
             ],
           ),
         ),
-      ),
-      const CustomVerticalSpace(height: 27),
-      EnhancedCustomElevatedButtonWidget(
-        btnPressed: () {
-          //  NavigationService.navigatorKey.currentState!
-          //      .pushNamed(RouteName.facilityRatingRoute); //MM
-        },
-        btnText: ("evaluate_facility").tr(),
-        btnTextSize: 16,
-        btnTextWeight: AppFontWeight.medium,
-        btnHeight: 56,
-        btnTextColor: AppColor.darkTurquoise,
-        btnBorderColor: AppColor.darkTurquoise,
-        btnColor: AppColor.white,
       ),
     ]);
   }
@@ -420,16 +469,16 @@ class MapSection extends StatelessWidget {
 
     return viewModel.getMapLocation() != null
         ? Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            QRLabelTextWidget(text: ("تفاصيل الموقع").tr()),
+            QRLabelTextWidget(text: ("qr_locatoin_details").tr()),
             CustomVerticalSpace(height: 16),
             LabelIconSubtitleComponent(
-              text: ("العنوان").tr(),
+              text: ("qr_address").tr(),
               icon: IconPath.qrLocationIcon,
               subtitle: viewModel.getCityAndStreet(),
             ),
             CustomVerticalSpace(height: 16),
             LabelIconSubtitleComponent(
-              text: ("ملخص الموقع").tr(),
+              text: ("qr_address_suumery").tr(),
               icon: IconPath.qrLocationIcon,
               subWidget: Container(
                 padding: EdgeInsets.only(top: 16),
@@ -494,7 +543,7 @@ class FacilityContactsInfo extends StatelessWidget {
         viewModel.whatsUpContact().isNotEmpty ||
         viewModel.facebookContact().isNotEmpty) {
       return LabelIconSubtitleComponent(
-          text: ('التواصل الإجتماعي').tr(),
+          text: ("qr_social").tr(),
           icon: IconPath.qrWebIcon,
           subWidget: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -572,10 +621,11 @@ class SubmitIncidentSection extends StatelessWidget {
         },
         btnText: ("submit_incident_facility").tr(),
         btnTextSize: 16,
+        btnRadius: 8,
         btnTextWeight: AppFontWeight.medium,
         btnHeight: 56,
-        btnTextColor: AppColor.redBrown,
-        btnBorderColor: AppColor.redBrown,
+        btnTextColor: Color(0xFFDC2828),
+        btnBorderColor: Color(0xFFDC2828),
         btnColor: AppColor.white,
       ),
       const CustomVerticalSpace(height: 32),

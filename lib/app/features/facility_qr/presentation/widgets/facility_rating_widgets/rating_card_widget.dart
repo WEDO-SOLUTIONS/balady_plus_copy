@@ -6,6 +6,7 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../core/utils/constants/app_colors.dart';
 import '../../../../../core/utils/constants/constants.dart';
+import '../../../../../core/utils/constants/paths/icon_paths.dart';
 import '../../../../_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
 import '../../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 
@@ -155,7 +156,7 @@ class _RatingRowWidgetState extends State<RatingRowWidget> {
     return Column(
       children: [
         Image.asset(
-          Constants.imgPath + "greyStar.png", //MM
+          IconPath.qrStarIcon,
           color: widget.isRedRating
               ? AppColor.redStarRating
               : widget.isYellowRating

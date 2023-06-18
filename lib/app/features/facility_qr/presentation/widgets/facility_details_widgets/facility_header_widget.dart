@@ -1,8 +1,60 @@
+import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:balady_plus/app/core/utils/enums/app_font_weights.dart';
+import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
+import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import 'package:balady_plus/app/features/facility_qr/facility_qr_exports.dart';
 import 'package:flutter/material.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
+import '../../../../../core/utils/enums/enums.dart';
+
+class FacilityHeaderWidget extends StatelessWidget {
+  final String facilityName;
+  final bool openNow;
+  final String facilityAddress;
+
+  const FacilityHeaderWidget(
+      {super.key,
+      required this.facilityAddress,
+      required this.facilityName,
+      required this.openNow});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            CustomTextWidget(
+              facilityName,
+              fontColor: AppColor.blackModern800Light,
+              fontSize: 18,
+              fontWeight: AppFontWeight.bold,
+            ),
+            const CustomHorizontalSpace(width: 24),
+            CustomTextWidget(
+              openNow ? ("lbl_open_now").tr() : ("closed").tr(),
+              fontColor: openNow ? AppColor.secondary900Light : AppColor.red,
+              fontWeight: AppFontWeight.medium,
+              fontSize: 16,
+            )
+          ],
+        ),
+        const CustomVerticalSpace(height: 12),
+        CustomTextWidget(
+          facilityAddress,
+          fontWeight: AppFontWeight.medium,
+          fontSize: 14,
+          fontColor: AppColor.blackModern500Light,
+          textAlign: TextAlign.start,
+        ),
+      ],
+    );
+  }
+}
+
+/*
 import '../../../../../core/utils/constants/app_colors.dart';
 import '../../../../../core/utils/constants/constants.dart';
 import '../../../../../core/utils/constants/paths/icon_paths.dart';
@@ -276,3 +328,4 @@ class FacilityStatusWidget extends StatelessWidget {
     }
   }
 }
+*/
