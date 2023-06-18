@@ -197,7 +197,7 @@ class AppStyle {
     height: 1.0,
   );
 
-  static final dashboardCardTitleTextStle = TextStyle(
+  static final cardTitleTextStle = TextStyle(
     fontSize: 18.0,
     fontWeight: AppFontWeight.bold.fontWeight,
     color: AppColor.blackModern600Light,
@@ -224,6 +224,30 @@ class AppStyle {
     fontSize: 12.0,
     fontWeight: AppFontWeight.semiBold.fontWeight,
     color: AppColor.secondary900Light,
+    fontFamily: fontFamily,
+    height: 1.0,
+  );
+
+  static final requestNumberTextStle = TextStyle(
+    fontSize: 12.0,
+    fontWeight: AppFontWeight.bold.fontWeight,
+    color: AppColor.blackModern500Light,
+    fontFamily: fontFamily,
+    height: 1.0,
+  );
+
+  static final requestParamterTitleTextStle = TextStyle(
+    fontSize: 10.0,
+    fontWeight: AppFontWeight.semiBold.fontWeight,
+    color: AppColor.primary700Light,
+    fontFamily: fontFamily,
+    height: 1.0,
+  );
+
+  static final requestParamterValueTextStle = TextStyle(
+    fontSize: 12.0,
+    fontWeight: AppFontWeight.semiBold.fontWeight,
+    color: AppColor.blackModern500Light,
     fontFamily: fontFamily,
     height: 1.0,
   );

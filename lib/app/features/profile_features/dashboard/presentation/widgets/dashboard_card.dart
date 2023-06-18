@@ -34,7 +34,7 @@ class DashboardCard extends StatelessWidget {
               Expanded(
                 child: CustomTextWidget(
                   card.name,
-                  textStyle: AppStyle.dashboardCardTitleTextStle,
+                  textStyle: AppStyle.cardTitleTextStle,
                 ),
               ),
               DashboardProductDropDown(card: card),

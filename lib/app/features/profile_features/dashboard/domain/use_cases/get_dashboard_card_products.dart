@@ -1,8 +1,9 @@
 import 'package:dartz/dartz.dart';
 
-import '../../../../../core/errors/errors_exports.dart';
-import '../../../../../core/services/services_exports.dart';
-import '../../dashboard_exports.dart';
+import '../../../../../core/errors/errors_exports.dart' show Failure;
+import '../../../../../core/services/services_exports.dart' show UseCase;
+import '../../dashboard_exports.dart'
+    show DashboardProductEntity, DashboardProductsParams, DashboardRepository;
 
 class GetDashboardCardProducts
     extends UseCase<List<DashboardProductEntity>, DashboardProductsParams> {

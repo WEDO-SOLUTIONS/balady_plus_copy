@@ -1,8 +1,16 @@
-import 'package:balady_plus/app/core/errors/failures.dart';
 import 'package:dartz/dartz.dart';
 
-import '../../../../../core/errors/errors_exports.dart' show ServerException;
-import '../../dashboard_exports.dart';
+import '../../../../../core/errors/errors_exports.dart'
+    show Failure, ServerException, ServerFailure;
+import '../../dashboard_exports.dart'
+    show
+        DashboardRepository,
+        DashboardRemoteDataSource,
+        DashboardCardEntity,
+        DashboardProductEntity,
+        DashboardProductsParams,
+        DashboardStatisticsEntity,
+        DashboardStatisticsParams;
 
 class DashboardRepositoryImplementation implements DashboardRepository {
   final DashboardRemoteDataSource remoteDataSource;

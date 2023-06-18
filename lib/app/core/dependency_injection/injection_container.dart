@@ -15,6 +15,7 @@ import '../dependency_injection/dependency_injection_exports.dart'
         EntryPointInjection,
         LookupInjection,
         OTPInjection,
+        RequestsInjection,
         ServicesInjection,
         SignInInjection,
         SignUpInjection;
@@ -46,6 +47,8 @@ void initialize() {
   //! Profile
   //? Dashboard
   DashboardInjection.init();
+  //? Requests
+  RequestsInjection.init();
 
   //! Core
   sl.registerLazySingleton(() => WebService(dio: sl()));

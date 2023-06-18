@@ -61,4 +61,17 @@ class ElevatedButtonWidget extends _ElevatedButton {
           text: "allTimes".tr(),
           onPressed: onPressed,
         ));
+
+  //details
+  ElevatedButtonWidget.details({required VoidCallback onPressed})
+      : super(CustomElevatedButtonWidget(
+          btnColor: AppColor.primary800Light,
+          textStyle: AppStyle.elevatedButtonStyle.copyWith(
+            color: AppColor.blackModern50Light,
+            fontSize: 12,
+          ),
+          btnHeight: 40,
+          text: "details".tr(),
+          onPressed: onPressed,
+        ));
 }

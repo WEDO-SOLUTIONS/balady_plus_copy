@@ -127,9 +127,13 @@
   "request_status": "حالة الطلب",
   "request_type": "نوع الطلب",
   "license_type": "نوع الرخصة",
-  "munipality": "البلدية",
+  "munipality": "الأمانة",
+  "sub_munipality": "البلدية",
+  "creation_date": "تاريخ الإنشاء",
   "last_update": "آخر تحديث",
   "details": "التفاصيل",
+  "request": "طلب",
+  
 
   "_dashboardComment": "أى شئ يخص لوحة البيانات",
   "the_following_data": "البيانات التالية تشمل خدمات محدودة فقط في هذه  النسخة. سيتم تحديثها بكامل البيانات قريباً",

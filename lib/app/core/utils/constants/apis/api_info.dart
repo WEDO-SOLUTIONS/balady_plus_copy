@@ -15,6 +15,20 @@ class ApiUrl {
       '/v1/balady-dashboard/balady-life-style/main-cards/$cardId/products';
   static const dashboardCardStatistics =
       '/v1/balady-dashboard/balady-life-style/statistics';
+  //!Requests
+  static const requests =
+      '/v1/balady-dashboard/requests/my-requestes';
+  static const requestStatuses =
+      '/v1/balady-dashboard/requests/statuses';
+  static const municipalities =
+      '/v1/balady-dashboard/requests/municipalities';
+  static  subMunicipalities(String id) =>
+      '/v1/balady-dashboard/requests/sub-municipalities/$id';
+  static const requestTypes =
+      '/v1/balady-dashboard/requests/main-types';
+  static  requestSubTypes(int id) =>
+      '/v1/balady-dashboard/requests/sub-main-types/$id';
+
 
   //! POST
 
