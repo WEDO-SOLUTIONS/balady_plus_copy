@@ -80,7 +80,7 @@ class _RemoteConfig {
   static final ssoSecret = _initValues<String>(
     devVal: "secret",
     stgVal: "secret",
-    prodVal: "1",
+    prodVal: "secret",
   );
   static final ssoLogOutUrl = _initValues<String>(
     devVal: "com.momra.balady://logout",
@@ -105,7 +105,7 @@ class _RemoteConfig {
 
   static final ssoClient = _initValues<String>(
     devVal: "balady_mobile_app",
-    stgVal: "1",
+    stgVal: "balady_mobile_app",
     prodVal: "1",
   );
 
