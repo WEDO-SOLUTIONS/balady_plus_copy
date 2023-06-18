@@ -100,11 +100,13 @@ class EntryPointCubit extends Cubit<EntryPointState> {
     final failureOrSuccessForToken = await _getToken(NoParams());
 
     await failureOrSuccessForToken.fold((failure) {
+      print(failure);
       emit(state.copyWith(
         status: AuthStatus.failure,
         errorMessage: (failure as ServerFailure).errorMessage,
       ));
     }, (success) async {
+      print("success $success");
       SSOToken token = SSOToken(
           token: success.accessToken,
           refreshToken: success.refreshToken,
@@ -170,14 +172,14 @@ class EntryPointCubit extends Cubit<EntryPointState> {
           //MM  locator<CustomerSoundViewModel>().getUserRequests(showLoad: false);
           //MM  PCPViewModel.checkIfSameLoggedInUser();
 
-          return true;
+          return false;
         }
       }
     });
     //MM EasyLoading.dismiss();
     //MM   sl<VDCategoryBloc>().add(RefreshCategoriesEvent());
     //MM return isLoggedIn;
-    return true;
+    return CommonProperties.isLoggedIn;
   }
 
   Future<void> refreshToken(String refreshToken) async {

@@ -3,7 +3,8 @@ PODS:
     - AppAuth/Core (= 1.4.0)
     - AppAuth/ExternalUserAgent (= 1.4.0)
   - AppAuth/Core (1.4.0)
-  - AppAuth/ExternalUserAgent (1.4.0)
+  - AppAuth/ExternalUserAgent (1.4.0):
+    - AppAuth/Core
   - camera_avfoundation (0.0.1):
     - Flutter
   - device_info_plus (0.0.1):
@@ -144,6 +145,7 @@ PODS:
     - Flutter
 
 DEPENDENCIES:
+  - AppAuth (from `https://github.com/MahmoudMB/AppAuth-iOS.git`)
   - camera_avfoundation (from `.symlinks/plugins/camera_avfoundation/ios`)
   - device_info_plus (from `.symlinks/plugins/device_info_plus/ios`)
   - file_picker (from `.symlinks/plugins/file_picker/ios`)
@@ -165,7 +167,6 @@ DEPENDENCIES:
 
 SPEC REPOS:
   trunk:
-    - AppAuth
     - DKImagePickerController
     - DKPhotoGallery
     - GoogleDataTransport
@@ -186,6 +187,8 @@ SPEC REPOS:
     - SwiftyGif
 
 EXTERNAL SOURCES:
+  AppAuth:
+    :git: https://github.com/MahmoudMB/AppAuth-iOS.git
   camera_avfoundation:
     :path: ".symlinks/plugins/camera_avfoundation/ios"
   device_info_plus:
@@ -223,8 +226,13 @@ EXTERNAL SOURCES:
   webview_flutter_wkwebview:
     :path: ".symlinks/plugins/webview_flutter_wkwebview/ios"
 
+CHECKOUT OPTIONS:
+  AppAuth:
+    :commit: 8c5e04caee987a686e73f4209b38a5ae58259a33
+    :git: https://github.com/MahmoudMB/AppAuth-iOS.git
+
 SPEC CHECKSUMS:
-  AppAuth: 31bcec809a638d7bd2f86ea8a52bd45f6e81e7c7
+  AppAuth: aadc4cc25bef2435551896b5bfa9316b42fde656
   camera_avfoundation: 3125e8cd1a4387f6f31c6c63abb8a55892a9eeeb
   device_info_plus: e5c5da33f982a436e103237c0c85f9031142abed
   DKImagePickerController: b512c28220a2b8ac7419f21c491fc8534b7601ac
@@ -262,6 +270,6 @@ SPEC CHECKSUMS:
   url_launcher_ios: 08a3dfac5fb39e8759aeb0abbd5d9480f30fc8b4
   webview_flutter_wkwebview: b7e70ef1ddded7e69c796c7390ee74180182971f
 
-PODFILE CHECKSUM: ef19549a9bc3046e7bb7d2fab4d021637c0c58a3
+PODFILE CHECKSUM: 49abd12cd147b156b05735515c3de88dafce22b2
 
-COCOAPODS: 1.12.1
+COCOAPODS: 1.11.2

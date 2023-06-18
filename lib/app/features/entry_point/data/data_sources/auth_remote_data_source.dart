@@ -63,14 +63,16 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
             'openid',
             'profile',
             'offline_access',
+            'EmployeeAdminstration.Api',
           ],
         ),
       );
-      // print(response?.accessToken);
+      response?.accessToken.actionLog();
       return response!;
     } catch (error) {
-      throw const ServerException(
-        "",
+      print(error);
+      throw ServerException(
+        error.toString(),
       );
     }
   }
