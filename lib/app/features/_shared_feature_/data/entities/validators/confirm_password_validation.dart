@@ -16,11 +16,11 @@ class ConfirmPasswordValidation extends FormzInput<String, Validation> {
   }) : super.dirty(confirmPassword);
 
   @override
-  Validation? validator(String value) {
-    final enteredValue = value.trim();
-    if (enteredValue.isEmpty) {
+  Validation? validator(String? value) {
+    final password = value ?? '';
+    if (password.isEmpty) {
       return Validation.empty;
-    } else if (enteredValue != originalPassword) {
+    } else if (password != originalPassword) {
       return Validation.passwordMismatch;
     } else {
       return null;

@@ -7,7 +7,10 @@ enum Validation {
   passwordMismatch(message: "passwordMismatchValidation"),
   invalidEndDate(message: "invalidEndDateValidation"),
   phoneNumberStartWith05(message: "phoneNumberStartsValidation"),
-  phoneNumberLengthIs10(message: "phoneNumberLengthValidation");
+  phoneNumberLengthIs10(message: "phoneNumberLengthValidation"),
+  invalidIncidentDesc(message: "incident_desc_limit_error"),
+  invalidName(message: "error_input_only_chars") //MMTr
+  ;
 
   const Validation({required this.message});
   final String message;

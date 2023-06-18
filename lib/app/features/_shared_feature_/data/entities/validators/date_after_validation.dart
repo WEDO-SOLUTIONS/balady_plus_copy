@@ -12,8 +12,9 @@ class DateAfterValidation extends FormzInput<String, Validation> {
   }) : super.dirty(endDate);
 
   @override
-  Validation? validator(String value) {
-    final enteredValue = value.trim();
+  Validation? validator(String? value) {
+    final enteredValue = value ?? '';
+
     if (enteredValue.isEmpty) {
       return Validation.empty;
     } else {

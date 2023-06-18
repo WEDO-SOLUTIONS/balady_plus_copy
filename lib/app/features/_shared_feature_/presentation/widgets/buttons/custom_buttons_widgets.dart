@@ -1,6 +1,10 @@
+import 'package:balady_plus/app/core/utils/constants/keys/general_keys.dart';
 import 'package:flutter/material.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
-import '../../../../../core/utils/utils_exports.dart' show AppColor, AppStyle;
+import '../../../../../core/utils/enums/enums.dart';
+import '../../../../../core/utils/utils_exports.dart'
+    show AppColor, AppFontWeight, AppStyle, CommonFunctions;
 import '../../../shared_feature_exports.dart'
     show
         ClickableWidget,
@@ -19,6 +23,15 @@ class CustomTextButtonWidget extends StatelessWidget {
   final AlignmentGeometry? btnAlignment;
 
   final VoidCallback? onPressed;
+
+  final Color btnTextColor;
+  final double btnTextSize;
+
+  final AppFontWeight btnTextWeight;
+
+  final bool haveUnderline;
+  final Color? underlineColor;
+
   const CustomTextButtonWidget({
     super.key,
     required this.text,
@@ -29,6 +42,11 @@ class CustomTextButtonWidget extends StatelessWidget {
     this.btnEffectColor,
     this.btnAlignment,
     this.onPressed,
+    this.btnTextColor = AppColor.spruce,
+    this.btnTextWeight = AppFontWeight.bold,
+    this.btnTextSize = 18.0,
+    this.haveUnderline = false,
+    this.underlineColor,
   });
 
   @override
@@ -51,6 +69,12 @@ class CustomTextButtonWidget extends StatelessWidget {
       child: CustomTextWidget(
         text,
         textStyle: textStyle ?? AppStyle.textButtonStyle,
+        fontColor: btnTextColor,
+        fontWeight: btnTextWeight,
+        fontSize: btnTextSize,
+        textDecoration:
+            haveUnderline ? TextDecoration.underline : TextDecoration.none,
+        textDecorationColor: underlineColor,
       ),
     );
   }
@@ -210,6 +234,101 @@ class CustomElevatedButtonWidget extends StatelessWidget {
 
   bool get isTextWidget => text != null && text is Widget;
   bool get isTextString => text != null && text is String;
+}
+
+class EnhancedCustomElevatedButtonWidget extends StatelessWidget {
+  final VoidCallback? btnPressed;
+  final Color btnColor;
+  final double btnHeight;
+  final double btnWidth;
+  final double btnRadius;
+  final Color? btnBorderColor;
+  final double btnBorderWidth;
+  final AlignmentGeometry btnAlignment;
+  final String btnText;
+  final Color btnTextColor;
+  final AppFontWeight btnTextWeight;
+  final double btnTextSize;
+  final bool btnTextUnderline;
+  final Color? btnTextUnderlineColor;
+  final double spaceBetweenTextAndIcon;
+  final Widget? icon;
+  final BUTTON_ICON_POSITION buttonIconPosition;
+  final double horizontalMargin;
+  final double verticalMargin;
+
+  const EnhancedCustomElevatedButtonWidget(
+      {Key? key,
+      required this.btnPressed,
+      this.btnColor = AppColor.darkTurquoise,
+      this.btnHeight = 65.0,
+      this.btnWidth = double.infinity,
+      this.btnRadius = 2,
+      this.btnBorderColor,
+      this.btnBorderWidth = 2.0,
+      this.btnAlignment = Alignment.center,
+      required this.btnText,
+      this.buttonIconPosition = BUTTON_ICON_POSITION.right,
+      this.btnTextColor = AppColor.white,
+      this.btnTextWeight = AppFontWeight.medium,
+      this.btnTextSize = 18.0,
+      this.btnTextUnderline = false,
+      this.btnTextUnderlineColor,
+      this.spaceBetweenTextAndIcon = 4.0,
+      this.icon,
+      this.horizontalMargin = 0,
+      this.verticalMargin = 0})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      hoverColor: Colors.transparent,
+      highlightColor: Colors.transparent,
+      splashColor: Colors.transparent,
+      onTap: btnPressed,
+      child: Container(
+        height: btnHeight,
+        width: btnWidth,
+        alignment: btnAlignment,
+        margin: EdgeInsets.symmetric(
+            horizontal: horizontalMargin, vertical: verticalMargin),
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.all(Radius.circular(btnRadius)),
+            border: Border.all(
+              width: btnBorderWidth,
+              color: btnBorderColor ?? btnColor,
+            ),
+            color: btnColor),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (icon != null &&
+                buttonIconPosition == BUTTON_ICON_POSITION.right)
+              icon ?? Container(),
+            if (icon != null &&
+                buttonIconPosition == BUTTON_ICON_POSITION.right)
+              CustomHorizontalSpace(width: spaceBetweenTextAndIcon),
+            CustomTextWidget(
+              btnText,
+              fontColor: btnTextColor,
+              fontWeight: btnTextWeight,
+              fontSize: btnTextSize,
+              textDecoration: btnTextUnderline
+                  ? TextDecoration.underline
+                  : TextDecoration.none,
+              textDecorationColor: btnTextUnderlineColor,
+            ),
+            if (icon != null && buttonIconPosition == BUTTON_ICON_POSITION.left)
+              CustomHorizontalSpace(width: spaceBetweenTextAndIcon),
+            if (icon != null && buttonIconPosition == BUTTON_ICON_POSITION.left)
+              icon ?? Container(),
+          ],
+        ),
+      ),
+    );
+  }
 }
 
 class CustomElevatedStackIconButtonWidget extends StatelessWidget {
@@ -514,6 +633,702 @@ class CustomUnderlineTextdButtonWidget extends StatelessWidget {
           text,
           textStyle: textStyle ?? AppStyle.textButtonStyle,
         ),
+      ),
+    );
+  }
+}
+
+class CustomTextButtonWithIconWidget extends StatelessWidget {
+  final Color? btnBackgroundColor;
+  final Color? btnEffectColor;
+  final AlignmentGeometry? btnAlignment;
+  final VoidCallback? btnPressed;
+  final Widget icon;
+  final BUTTON_ICON_POSITION buttonIconPosition;
+  final MainAxisAlignment mainAxisAlignment;
+  final double spaceBetweenTextAndIcon;
+  final String btnText;
+  final Color btnTextColor;
+  final AppFontWeight btnTextWeight;
+  final double btnTextSize;
+  final bool textUnderline;
+  final Color? textUnderlineColor;
+  final EdgeInsetsGeometry padding;
+  final MainAxisSize mainAxisSize;
+
+  const CustomTextButtonWithIconWidget(
+      {Key? key,
+      this.btnBackgroundColor,
+      this.btnEffectColor,
+      this.btnAlignment,
+      required this.btnPressed,
+      required this.icon,
+      this.buttonIconPosition = BUTTON_ICON_POSITION.left,
+      this.mainAxisAlignment = MainAxisAlignment.center,
+      this.spaceBetweenTextAndIcon = 4.0,
+      required this.btnText,
+      this.btnTextColor = AppColor.spruce,
+      this.btnTextWeight = AppFontWeight.bold,
+      this.btnTextSize = 18.0,
+      this.textUnderline = false,
+      this.textUnderlineColor,
+      this.padding = EdgeInsets.zero,
+      this.mainAxisSize = MainAxisSize.max})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return TextButton(
+      onPressed: btnPressed,
+      style: TextButton.styleFrom(
+        padding: padding,
+        backgroundColor: btnBackgroundColor,
+        alignment: btnAlignment,
+        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+        visualDensity: VisualDensity.compact,
+        primary: btnEffectColor ?? btnBackgroundColor ?? btnTextColor,
+      ),
+      child: Row(
+        mainAxisAlignment: mainAxisAlignment,
+        mainAxisSize: mainAxisSize,
+        children: [
+          if (buttonIconPosition == BUTTON_ICON_POSITION.right) icon,
+          if (buttonIconPosition == BUTTON_ICON_POSITION.right)
+            CustomHorizontalSpace(width: spaceBetweenTextAndIcon),
+          CustomTextWidget(
+            btnText,
+            fontColor: btnTextColor,
+            fontWeight: btnTextWeight,
+            fontSize: btnTextSize,
+            textDecoration:
+                textUnderline ? TextDecoration.underline : TextDecoration.none,
+            textDecorationColor: textUnderlineColor,
+          ),
+          if (buttonIconPosition == BUTTON_ICON_POSITION.left)
+            CustomHorizontalSpace(width: spaceBetweenTextAndIcon),
+          if (buttonIconPosition == BUTTON_ICON_POSITION.left) icon,
+        ],
+      ),
+    );
+  }
+}
+
+class CustomTextButtonWithIconWidgetWithFlexible extends StatelessWidget {
+  final Color? btnBackgroundColor;
+  final Color? btnEffectColor;
+  final AlignmentGeometry? btnAlignment;
+  final VoidCallback? btnPressed;
+  final Widget icon;
+  final BUTTON_ICON_POSITION buttonIconPosition;
+  final MainAxisAlignment mainAxisAlignment;
+  final double spaceBetweenTextAndIcon;
+  final String btnText;
+  final Color btnTextColor;
+  final AppFontWeight btnTextWeight;
+  final double btnTextSize;
+  final bool textUnderline;
+  final Color? textUnderlineColor;
+  final EdgeInsetsGeometry padding;
+
+  const CustomTextButtonWithIconWidgetWithFlexible({
+    Key? key,
+    this.btnBackgroundColor,
+    this.btnEffectColor,
+    this.btnAlignment,
+    required this.btnPressed,
+    required this.icon,
+    this.buttonIconPosition = BUTTON_ICON_POSITION.left,
+    this.mainAxisAlignment = MainAxisAlignment.center,
+    this.spaceBetweenTextAndIcon = 4.0,
+    required this.btnText,
+    this.btnTextColor = AppColor.spruce,
+    this.btnTextWeight = AppFontWeight.bold,
+    this.btnTextSize = 18.0,
+    this.textUnderline = false,
+    this.textUnderlineColor,
+    this.padding = EdgeInsets.zero,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return TextButton(
+      onPressed: btnPressed,
+      style: TextButton.styleFrom(
+        primary: btnEffectColor ?? btnBackgroundColor ?? btnTextColor,
+        backgroundColor: btnBackgroundColor,
+        padding: padding,
+      ),
+      child: Row(
+        mainAxisAlignment: mainAxisAlignment,
+        children: [
+          if (buttonIconPosition == BUTTON_ICON_POSITION.right) icon,
+          if (buttonIconPosition == BUTTON_ICON_POSITION.right)
+            CustomHorizontalSpace(width: spaceBetweenTextAndIcon),
+          Flexible(
+            child: CustomTextWidget(
+              btnText,
+              maxLines: 1,
+              textOverflow: TextOverflow.ellipsis,
+              fontColor: btnTextColor,
+              fontWeight: btnTextWeight,
+              fontSize: btnTextSize,
+              textDecoration: textUnderline
+                  ? TextDecoration.underline
+                  : TextDecoration.none,
+              textDecorationColor: textUnderlineColor,
+            ),
+          ),
+          if (buttonIconPosition == BUTTON_ICON_POSITION.left)
+            CustomHorizontalSpace(width: spaceBetweenTextAndIcon),
+          if (buttonIconPosition == BUTTON_ICON_POSITION.left) icon,
+        ],
+      ),
+    );
+  }
+}
+
+class CustomElevatedButtonWidget1 extends StatelessWidget {
+  final VoidCallback? btnPressed;
+  final Color btnColor;
+  final double btnHeight;
+  final double btnWidth;
+  final double btnRadius;
+  final Color? btnBorderColor;
+  final double btnBorderWidth;
+  final double btnElevation;
+  final AlignmentGeometry btnAlignment;
+  final String btnText;
+  final Color btnTextColor;
+  final AppFontWeight btnTextWeight;
+  final double btnTextSize;
+  final bool btnTextUnderline;
+  final Color? btnTextUnderlineColor;
+  final double spaceBetweenTextAndIcon;
+  final Widget? icon;
+  final BUTTON_ICON_POSITION buttonIconPosition;
+
+  const CustomElevatedButtonWidget1(
+      {Key? key,
+      required this.btnPressed,
+      this.btnColor = AppColor.darkTurquoise,
+      this.btnHeight = 65.0,
+      this.btnWidth = double.infinity,
+      this.btnRadius = 2.5,
+      this.btnBorderColor,
+      this.btnBorderWidth = 2.0,
+      this.btnElevation = 2.0,
+      this.btnAlignment = Alignment.center,
+      required this.btnText,
+      this.buttonIconPosition = BUTTON_ICON_POSITION.right,
+      this.btnTextColor = AppColor.white,
+      this.btnTextWeight = AppFontWeight.medium,
+      this.btnTextSize = 18.0,
+      this.btnTextUnderline = false,
+      this.btnTextUnderlineColor,
+      this.spaceBetweenTextAndIcon = 4.0,
+      this.icon})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+      style: ElevatedButton.styleFrom(
+        padding: EdgeInsets.zero,
+        primary: btnColor,
+        // background
+        // onPrimary: Colors.yellow, // foreground
+        alignment: btnAlignment,
+        elevation: btnElevation,
+        minimumSize: Size(btnWidth, btnHeight),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(btnRadius),
+        ),
+        side: BorderSide(
+          width: btnBorderWidth,
+          color: btnBorderColor ?? btnColor,
+        ),
+      ),
+      onPressed: btnPressed,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (icon != null && buttonIconPosition == BUTTON_ICON_POSITION.right)
+            icon ?? Container(),
+          if (icon != null && buttonIconPosition == BUTTON_ICON_POSITION.right)
+            CustomHorizontalSpace(width: spaceBetweenTextAndIcon),
+          CustomTextWidget(
+            btnText,
+            fontColor: btnTextColor,
+            fontWeight: btnTextWeight,
+            fontSize: btnTextSize,
+            textDecoration: btnTextUnderline
+                ? TextDecoration.underline
+                : TextDecoration.none,
+            textDecorationColor: btnTextUnderlineColor,
+          ),
+          if (icon != null && buttonIconPosition == BUTTON_ICON_POSITION.left)
+            CustomHorizontalSpace(width: spaceBetweenTextAndIcon),
+          if (icon != null && buttonIconPosition == BUTTON_ICON_POSITION.left)
+            icon ?? Container(),
+        ],
+      ),
+    );
+  }
+}
+
+/*
+class CustomElevatedButtonWidget extends StatelessWidget {
+  final VoidCallback? btnPressed;
+  final Color btnColor;
+  final double btnHeight;
+  final double btnWidth;
+  final double btnRadius;
+  final Color? btnBorderColor;
+  final double btnBorderWidth;
+  final AlignmentGeometry btnAlignment;
+  final String btnText;
+  final Color btnTextColor;
+  final FONT_WEIGHT btnTextWeight;
+  final double btnTextSize;
+  final bool btnTextUnderline;
+  final Color? btnTextUnderlineColor;
+  final double spaceBetweenTextAndIcon;
+  final Widget? icon;
+  final BUTTON_ICON_POSITION buttonIconPosition;
+  final double horizontalMargin;
+  final double verticalMargin;
+
+  const CustomElevatedButtonWidget(
+      {Key? key,
+      required this.btnPressed,
+      this.btnColor = AppColors.darkTurquoise,
+      this.btnHeight = 65.0,
+      this.btnWidth = double.infinity,
+      this.btnRadius = 2,
+      this.btnBorderColor,
+      this.btnBorderWidth = 2.0,
+      this.btnAlignment = Alignment.center,
+      required this.btnText,
+      this.buttonIconPosition = BUTTON_ICON_POSITION.right,
+      this.btnTextColor = AppColors.white,
+      this.btnTextWeight = FONT_WEIGHT.medium,
+      this.btnTextSize = 18.0,
+      this.btnTextUnderline = false,
+      this.btnTextUnderlineColor,
+      this.spaceBetweenTextAndIcon = 4.0,
+      this.icon,
+      this.horizontalMargin = 0,
+      this.verticalMargin = 0})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      hoverColor: Colors.transparent,
+      highlightColor: Colors.transparent,
+      splashColor: Colors.transparent,
+      onTap: btnPressed,
+      child: Container(
+        height: btnHeight,
+        width: btnWidth,
+        alignment: btnAlignment,
+        margin: EdgeInsets.symmetric(
+            horizontal: horizontalMargin, vertical: verticalMargin),
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.all(Radius.circular(btnRadius)),
+            border: Border.all(
+              width: btnBorderWidth,
+              color: btnBorderColor ?? btnColor,
+            ),
+            color: btnColor),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (icon != null &&
+                buttonIconPosition == BUTTON_ICON_POSITION.right)
+              icon ?? Container(),
+            if (icon != null &&
+                buttonIconPosition == BUTTON_ICON_POSITION.right)
+              CustomHorizontalSpace(width: spaceBetweenTextAndIcon),
+            CustomTextWidget(
+              btnText,
+              fontColor: btnTextColor,
+              fontWeight: btnTextWeight,
+              fontSize: btnTextSize,
+              textDecoration: btnTextUnderline
+                  ? TextDecoration.underline
+                  : TextDecoration.none,
+              textDecorationColor: btnTextUnderlineColor,
+            ),
+            if (icon != null && buttonIconPosition == BUTTON_ICON_POSITION.left)
+              CustomHorizontalSpace(width: spaceBetweenTextAndIcon),
+            if (icon != null && buttonIconPosition == BUTTON_ICON_POSITION.left)
+              icon ?? Container(),
+          ],
+        ),
+      ),
+    );
+  }
+}
+*/
+class CustomElevatedButtonWithIconWidget1 extends StatelessWidget {
+  final VoidCallback? btnPressed;
+  final Color btnColor;
+  final double btnHeight;
+  final double btnWidth;
+  final double btnRadius;
+  final Color? btnBorderColor;
+  final double btnBorderWidth;
+  final double btnElevation;
+  final AlignmentGeometry btnAlignment;
+  final String btnText;
+  final Color btnTextColor;
+  final AppFontWeight btnTextWeight;
+  final double btnTextSize;
+  final bool btnTextUnderline;
+  final Color? btnTextUnderlineColor;
+  final Widget icon;
+  final BUTTON_ICON_POSITION buttonIconPosition;
+  final MainAxisAlignment mainAxisAlignment;
+  final double spaceBetweenTextAndIcon;
+
+  const CustomElevatedButtonWithIconWidget1({
+    Key? key,
+    required this.btnPressed,
+    this.btnColor = AppColor.darkTurquoise,
+    this.btnHeight = 65.0,
+    this.btnWidth = double.infinity,
+    this.btnRadius = 2.5,
+    this.btnBorderColor,
+    this.btnBorderWidth = 1.0,
+    this.btnElevation = 2.0,
+    this.btnAlignment = Alignment.center,
+    required this.btnText,
+    this.btnTextColor = AppColor.white,
+    this.btnTextWeight = AppFontWeight.medium,
+    this.btnTextSize = 18.0,
+    this.btnTextUnderline = false,
+    this.btnTextUnderlineColor,
+    required this.icon,
+    this.buttonIconPosition = BUTTON_ICON_POSITION.left,
+    this.mainAxisAlignment = MainAxisAlignment.center,
+    this.spaceBetweenTextAndIcon = 4.0,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+      style: ElevatedButton.styleFrom(
+        primary: btnColor,
+        // background
+        // onPrimary: Colors.yellow, // foreground
+        alignment: btnAlignment,
+        elevation: btnElevation,
+        minimumSize: Size(btnWidth, btnHeight),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(btnRadius),
+        ),
+        side: BorderSide(
+          width: btnBorderWidth,
+          color: btnBorderColor ?? btnColor,
+        ),
+        // padding: Edge
+      ),
+      onPressed: btnPressed,
+      child: Row(
+        mainAxisAlignment: mainAxisAlignment,
+        children: [
+          if (buttonIconPosition == BUTTON_ICON_POSITION.right) icon,
+          if (buttonIconPosition == BUTTON_ICON_POSITION.right)
+            CustomHorizontalSpace(width: spaceBetweenTextAndIcon),
+          CustomTextWidget(
+            btnText,
+            fontColor: btnTextColor,
+            fontWeight: btnTextWeight,
+            fontSize: btnTextSize,
+            textDecoration: btnTextUnderline
+                ? TextDecoration.underline
+                : TextDecoration.none,
+            textDecorationColor: btnTextUnderlineColor,
+          ),
+          if (buttonIconPosition == BUTTON_ICON_POSITION.left)
+            CustomHorizontalSpace(width: spaceBetweenTextAndIcon),
+          if (buttonIconPosition == BUTTON_ICON_POSITION.left) icon,
+        ],
+      ),
+    );
+  }
+}
+
+class CustomElevatedButtonWithIconWidget extends StatelessWidget {
+  final VoidCallback? btnPressed;
+  final Color btnColor;
+  final double btnHeight;
+  final double btnWidth;
+  final double btnRadius;
+  final Color? btnBorderColor;
+  final double btnBorderWidth;
+  final double btnElevation;
+  final AlignmentGeometry btnAlignment;
+  final String btnText;
+  final Color btnTextColor;
+  final AppFontWeight btnTextWeight;
+  final double btnTextSize;
+  final bool btnTextUnderline;
+  final Color? btnTextUnderlineColor;
+  final Widget icon;
+  final BUTTON_ICON_POSITION buttonIconPosition;
+  final MainAxisAlignment mainAxisAlignment;
+  final double spaceBetweenTextAndIcon;
+
+  const CustomElevatedButtonWithIconWidget({
+    Key? key,
+    required this.btnPressed,
+    this.btnColor = AppColor.darkTurquoise,
+    this.btnHeight = 65.0,
+    this.btnWidth = double.infinity,
+    this.btnRadius = 2.5,
+    this.btnBorderColor,
+    this.btnBorderWidth = 1.0,
+    this.btnElevation = 2.0,
+    this.btnAlignment = Alignment.center,
+    required this.btnText,
+    this.btnTextColor = AppColor.white,
+    this.btnTextWeight = AppFontWeight.medium,
+    this.btnTextSize = 18.0,
+    this.btnTextUnderline = false,
+    this.btnTextUnderlineColor,
+    required this.icon,
+    this.buttonIconPosition = BUTTON_ICON_POSITION.left,
+    this.mainAxisAlignment = MainAxisAlignment.center,
+    this.spaceBetweenTextAndIcon = 4.0,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+        hoverColor: Colors.transparent,
+        highlightColor: Colors.transparent,
+        splashColor: Colors.transparent,
+        onTap: btnPressed,
+        child: Container(
+          height: btnHeight,
+          width: btnWidth,
+          alignment: btnAlignment,
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.all(Radius.circular(btnRadius)),
+              border: Border.all(
+                width: btnBorderWidth,
+                color: btnBorderColor ?? btnColor,
+              ),
+              color: btnColor),
+          child: Row(
+            mainAxisAlignment: mainAxisAlignment,
+            children: [
+              if (buttonIconPosition == BUTTON_ICON_POSITION.right) icon,
+              if (buttonIconPosition == BUTTON_ICON_POSITION.right)
+                CustomHorizontalSpace(width: spaceBetweenTextAndIcon),
+              CustomTextWidget(
+                btnText,
+                fontColor: btnTextColor,
+                fontWeight: btnTextWeight,
+                fontSize: btnTextSize,
+                textDecoration: btnTextUnderline
+                    ? TextDecoration.underline
+                    : TextDecoration.none,
+                textDecorationColor: btnTextUnderlineColor,
+              ),
+              if (buttonIconPosition == BUTTON_ICON_POSITION.left)
+                CustomHorizontalSpace(width: spaceBetweenTextAndIcon),
+              if (buttonIconPosition == BUTTON_ICON_POSITION.left) icon,
+            ],
+          ),
+        ));
+  }
+}
+
+/*
+class CustomIconButtonWidget extends StatelessWidget {
+  final Color backgroundColor;
+  final Color borderColor;
+  final double borderRadius;
+  final double borderWidth;
+  final double btnWidth;
+  final double btnHeight;
+  final VoidCallback btnPressed;
+  final String? svgIcon;
+  final double svgIconHeight;
+  final double svgIconWidth;
+  final Color? svgIconColor;
+  final IconData? materialIcon;
+  final MATERIAL_ICON_DIRECTION materialIconDirection;
+  final Color materialIconColor;
+  final double materialIconSize;
+  final String image;
+  final Color? imageColor;
+  final bool isVisible;
+
+  const CustomIconButtonWidget(
+      {Key? key,
+      this.backgroundColor = Colors.transparent,
+      this.borderColor = Colors.transparent,
+      this.borderRadius = 4.0,
+      this.borderWidth = 1.0,
+      this.btnHeight = 24.0,
+      this.btnWidth = 24.0,
+      this.image = "",
+      required this.btnPressed,
+      this.svgIcon,
+      this.svgIconHeight = 24.0,
+      this.svgIconWidth = 24.0,
+      this.svgIconColor,
+      this.materialIcon,
+      this.materialIconDirection = MATERIAL_ICON_DIRECTION.left,
+      this.materialIconColor = AppColors.black,
+      this.materialIconSize = 18.0,
+      this.imageColor,
+      this.isVisible = true})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Visibility(
+      visible: isVisible,
+      child: Container(
+        width: btnWidth,
+        height: btnHeight,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: backgroundColor,
+          borderRadius: BorderRadius.circular(borderRadius),
+          border: Border.all(color: borderColor, width: borderWidth),
+        ),
+        child: InkWell(
+          highlightColor: Colors.transparent,
+          splashColor: Colors.transparent,
+          onTap: btnPressed,
+          child: svgIcon != null
+              ? CustomSvgIconWidget(
+                  svgIcon!,
+                  iconHeight: svgIconHeight,
+                  iconWidth: svgIconWidth,
+                  iconColor: svgIconColor,
+                )
+              : RotatedBox(
+                  quarterTurns: _getMaterialIconDirection(),
+                  child: image.isNotEmpty
+                      ? Image.asset(
+                          Constants.imgPath + image,
+                          color: imageColor,
+                        )
+                      : Icon(
+                          materialIcon ?? Icons.arrow_back_ios_new,
+                          color: materialIconColor,
+                          size: materialIconSize,
+                        ),
+                ),
+        ),
+      ),
+    );
+  }
+
+  int _getMaterialIconDirection() {
+    switch (materialIconDirection) {
+      case MATERIAL_ICON_DIRECTION.left:
+        return 0;
+      case MATERIAL_ICON_DIRECTION.up:
+        return 1;
+      case MATERIAL_ICON_DIRECTION.right:
+        return 2;
+      case MATERIAL_ICON_DIRECTION.down:
+        return 3;
+    }
+  }
+}
+
+
+*/
+class CustomInkWellButtonWidget extends StatelessWidget {
+  final VoidCallback? btnPressed;
+  final Widget widget;
+
+  const CustomInkWellButtonWidget({
+    Key? key,
+    required this.btnPressed,
+    required this.widget,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      hoverColor: Colors.transparent,
+      highlightColor: Colors.transparent,
+      splashColor: Colors.transparent,
+      onTap: btnPressed,
+      child: widget,
+    );
+  }
+}
+
+class RotationBasedLanguageWidget extends StatelessWidget {
+  final Widget child;
+  const RotationBasedLanguageWidget({
+    Key? key,
+    required this.child,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return RotatedBox(
+      quarterTurns: CommonFunctions.isAppAR ? 0 : 2,
+      child: child,
+    );
+  }
+}
+
+class LabelTextWithOptional extends StatelessWidget {
+  final String label;
+  final Color labelColor;
+  final double labelSize;
+  final TextAlign labelTextAlign;
+  final bool? showOptional;
+
+  LabelTextWithOptional(
+      {required this.label,
+      this.labelColor = AppColor.baladyDarkGreen2,
+      this.labelSize = 13.0,
+      this.labelTextAlign = TextAlign.start,
+      this.showOptional = false});
+
+  @override
+  Widget build(BuildContext context) {
+    return RichText(
+      textScaleFactor: 1,
+      textAlign: labelTextAlign,
+      text: TextSpan(
+        children: [
+          if (label.isNotEmpty)
+            TextSpan(
+              text: label,
+              style: TextStyle(
+                  color: labelColor,
+                  fontSize: labelSize,
+                  fontFamily: GeneralKey.appFontType,
+                  fontWeight: FontWeight.bold),
+            ),
+          if (showOptional == true) TextSpan(text: " "),
+          if (showOptional == true)
+            TextSpan(
+              text: ('optional').tr(),
+              style: TextStyle(
+                  color: const Color(0xffbabbbb),
+                  fontSize: 13.0,
+                  fontFamily: GeneralKey.appFontType,
+                  fontWeight: FontWeight.bold),
+            ),
+        ],
       ),
     );
   }

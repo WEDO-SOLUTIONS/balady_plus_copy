@@ -308,7 +308,7 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
 
       print(d?.length);*/
 
-      final result = ResponseBodyModel.fromMap(data).data.result;
+      final result = ResponseBodyModel.fromMap(data).data?.result;
       List<TestModel>? d = result != null
           ? List<TestModel>.from(result.map((x) => TestModel.fromMap(x)))
           : null;

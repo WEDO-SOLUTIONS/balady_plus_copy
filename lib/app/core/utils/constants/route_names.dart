@@ -16,4 +16,9 @@ class RouteName {
   static const requests = '/requests';
   static const invoices = '/invoices';
   static const licenses = '/licenses';
+  // -------  VD ---------
+  static const vdCameraPage = '/vdCameraPage';
+  static const vdCreateVDDetailsPage = '/vdCreateVDDetailsPage';
+  static const vdMapRoute = '/vdMapRoute';
+  static const vdGuestOtpScreen = '/vdGuestOtpScreen';
 }
