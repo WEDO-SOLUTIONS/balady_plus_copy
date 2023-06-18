@@ -5,6 +5,7 @@ const _svgMapIconPath = 'assets/icons/svg/map/';
 const _svgServicesIconPath = 'assets/icons/svg/services/';
 const _svgProfileIconPath = 'assets/icons/svg/profile/';
 const _svgNearbyIconPath = 'assets/icons/svg/nearby/';
+const _pngVDIconPath = 'assets/icons/png/vd/';
 const _svg = '.svg';
 
 const _pngIconPath = 'assets/icons/png/';
@@ -81,4 +82,18 @@ class IconPath {
   static const splashScreenQualityLogoImg = '${_pngIconPath}qualityLogo$_png';
 
 //! Splash Screen
+
+//! VD
+  static const vdSearchIcon = '${_pngVDIconPath}vd_search$_png';
+  static const vdCancelIcon = '${_pngVDIconPath}vd_cancel_icon$_png';
+  static const vdSwipeIcon = '${_pngVDIconPath}swipe_vd$_png';
+  static const vdmapSearchIcon = '${_pngVDIconPath}mapSearch@3x$_png';
+  static const vdlocationIcon = '${_pngVDIconPath}location1@3x$_png';
+  static const vdFlashOnIcon = '${_pngVDIconPath}flash-on$_png';
+  static const vdFlashOffIcon = '${_pngVDIconPath}flash-off$_png';
+  static const vdFlashOn1Icon = '${_pngVDIconPath}flash_on@3x$_png';
+  static const vdFlashOff1Icon = '${_pngVDIconPath}flash_off@3x$_png';
+  static const vdButtonCameraIcon = '${_pngVDIconPath}buttonCamera@3x$_png';
+  static const vdarrowLeftIcon = '${_pngVDIconPath}arrowLeft$_png';
+  static const vdAgianIcon = '${_pngVDIconPath}again@3x$_png';
 }

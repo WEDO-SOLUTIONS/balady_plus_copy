@@ -1,20 +1,22 @@
 import 'package:formz/formz.dart' show FormzInput;
 
-import '../../../../../core/utils/utils_exports.dart' show Validation;
+import 'package:balady_plus/app/core/utils/enums/validations.dart';
 
-class PhoneNumberValidation extends FormzInput<String, Validation> {
-  const PhoneNumberValidation.pure({required String value}) : super.pure(value);
-  const PhoneNumberValidation.dirty({required String value})
-      : super.dirty(value);
+class PhoneNumberValidation extends FormzInput<String?, Validation> {
+  const PhoneNumberValidation.pure({String? value}) : super.pure(value);
+  const PhoneNumberValidation.dirty({String? value}) : super.dirty(value);
 
   @override
-  Validation? validator(String value) {
-    final enteredValue = value.trim();
-    if (enteredValue.isEmpty) {
+  Validation? validator(String? value) {
+    final enteredValue = value;
+    if (enteredValue != null && enteredValue.isEmpty) {
       return Validation.empty;
-    } else if (enteredValue.length > 2 && !enteredValue.startsWith("05")) {
+    } else if (enteredValue != null &&
+        enteredValue.length > 2 &&
+        !enteredValue.startsWith("05")) {
       return Validation.phoneNumberStartWith05;
-    } else if (enteredValue.length < 10) {
+    } else if (enteredValue != null &&
+        (enteredValue.length < 10 || enteredValue.length > 10)) {
       return Validation.phoneNumberLengthIs10;
     } else {
       return null;

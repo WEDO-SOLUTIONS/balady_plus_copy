@@ -40,6 +40,27 @@ class ApiUrl {
       '/v1/balady-dashboard/license/sub-main-types/$id';
   static const licenseStatuses = '/v1/balady-dashboard/license/statuses';
 
+// VD
+  static const vdCategories = '/v1/crm/bcg/categories';
+  static const vdSpecialClassifications = '/v1/crm/bcg/special-classifications';
+
+  static const vdSpecialClassificationDetails =
+      '/v1/crm/bcg/special-classification-details';
+
+  static const vdUploadFile = '/v1/crm/upload/bcg/upload-file';
+
+  static const getOTP = '/v1/crm/bcg/otp';
+
+  static const createIncidentRegistered =
+      '/v1/crm/bcg/registered-user/incident';
+  static const createIncidentUnRegistered =
+      '/v1/crm/bcg/unregistered-user/incident';
+
+  static const vdCategoriesRegistered =
+      '/v1/crm/bcg/registered-user/categories';
+
+  static const vdCrExists = '/v1/crm/cr-exists/';
+
   //! POST
 
   //! Delete

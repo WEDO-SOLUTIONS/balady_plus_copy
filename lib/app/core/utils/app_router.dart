@@ -22,6 +22,7 @@ import '../../features/profile_features/requests/requests_exports.dart'
 import '../../features/services/services_exports.dart'
     show ServiceCardsPage, ServiceEntity;
 import '../../features/splash/splash_exports.dart' show SplashPage;
+import '../../features/vd/vd_exports.dart';
 
 class AppRouter {
   static Route<dynamic> allRoutes(RouteSettings settings) {
@@ -72,6 +73,31 @@ class AppRouter {
       // licenses page
       case RouteName.licenses:
         return MaterialPageRoute(builder: (_) => const LicensesPage());
+      // -------  VD ---------
+      case RouteName.vdCameraPage:
+        CameraParamsPage params = settings.arguments as CameraParamsPage;
+
+        return MaterialPageRoute(
+          builder: (_) => VDCameraPage(params: params),
+        );
+      case RouteName.vdCreateVDDetailsPage:
+        // CreateVDParamsPage params = settings.arguments as CreateVDParamsPage;
+        return MaterialPageRoute(
+          builder: (_) => CreateVDDetailsPage(),
+        );
+
+      case RouteName.vdMapRoute:
+        MapScreenParams? params = settings.arguments != null
+            ? settings.arguments as MapScreenParams
+            : null;
+        return MaterialPageRoute(
+          builder: (_) => VDMapScreen(params: params),
+        );
+      case RouteName.vdGuestOtpScreen:
+        return MaterialPageRoute(
+          builder: (_) => VDGuestOtpScreen(),
+        );
+
       // error page
       default:
         return MaterialPageRoute(builder: (_) => const SizedBox());
