@@ -1,8 +1,9 @@
 import 'package:auto_size_text/auto_size_text.dart' show AutoSizeText;
+import 'package:balady_plus/app/core/utils/constants/keys/general_keys.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../../core/utils/utils_exports.dart'
-    show AppFontWeight, AppStyle;
+    show AppColor, AppFontWeight, AppStyle;
 
 class CustomTextWidget extends StatelessWidget {
   final String text;
@@ -15,17 +16,32 @@ class CustomTextWidget extends StatelessWidget {
   final AppFontWeight? fontWeight;
   final double? height;
 
+  final String fontFamily;
+  final Color? fontColor;
+  final TextDecoration? textDecoration;
+  final double? textDecorationThickness;
+  final Color? textDecorationColor;
+  final double? textScaleFactor;
+  final double? letterSpacing;
+
   const CustomTextWidget(
     this.text, {
     super.key,
-    this.textAlign,
-    this.textOverflow,
-    this.textDirection,
     this.maxLines = 1,
     this.textStyle,
     this.fontSize,
     this.fontWeight,
-    this.height,
+    this.letterSpacing,
+    this.textDecorationColor,
+    this.textScaleFactor,
+    this.fontFamily = GeneralKey.appFontType,
+    this.fontColor = AppColor.white,
+    this.height = 1.0,
+    this.textAlign = TextAlign.center,
+    this.textOverflow = TextOverflow.visible,
+    this.textDecoration = TextDecoration.none,
+    this.textDecorationThickness = 1.5,
+    this.textDirection,
   });
 
   @override
@@ -41,6 +57,12 @@ class CustomTextWidget extends StatelessWidget {
             fontSize: fontSize,
             fontWeight: fontWeight?.fontWeight,
             height: height,
+            color: fontColor,
+            fontFamily: fontFamily,
+            decoration: textDecoration,
+            decorationThickness: textDecorationThickness,
+            decorationColor: textDecorationColor ?? fontColor,
+            letterSpacing: letterSpacing,
           ),
     );
   }
@@ -56,19 +78,34 @@ class CustomAutoSizeTextWidget extends StatelessWidget {
   final AppFontWeight? fontWeight;
   final double maxFontSize;
   final double minFontSize;
+  final double? height;
 
-  const CustomAutoSizeTextWidget(
-    this.text, {
-    super.key,
-    this.textAlign,
-    this.textOverflow,
-    this.textDirection,
-    this.maxLines = 1,
-    this.textStyle,
-    this.fontWeight,
-    this.maxFontSize = 16.0,
-    this.minFontSize = 10.0,
-  });
+  final String fontFamily;
+  final Color? fontColor;
+  final TextDecoration? textDecoration;
+  final double? textDecorationThickness;
+  final Color? textDecorationColor;
+  final double? textScaleFactor;
+  final double? letterSpacing;
+
+  const CustomAutoSizeTextWidget(this.text,
+      {super.key,
+      this.textAlign,
+      this.textOverflow,
+      this.textDirection,
+      this.maxLines = 1,
+      this.textStyle,
+      this.fontWeight,
+      this.maxFontSize = 16.0,
+      this.minFontSize = 10.0,
+      this.fontFamily = GeneralKey.appFontType,
+      this.fontColor = AppColor.white,
+      this.height = 1.0,
+      this.textDecoration = TextDecoration.none,
+      this.textDecorationThickness = 1.5,
+      this.letterSpacing,
+      this.textDecorationColor,
+      this.textScaleFactor});
 
   @override
   Widget build(BuildContext context) {
@@ -84,6 +121,13 @@ class CustomAutoSizeTextWidget extends StatelessWidget {
           AppStyle.mainTextSecondaryStyle.copyWith(
             fontSize: maxFontSize,
             fontWeight: fontWeight?.fontWeight,
+            height: height,
+            color: fontColor,
+            fontFamily: fontFamily,
+            decoration: textDecoration,
+            decorationThickness: textDecorationThickness,
+            decorationColor: textDecorationColor ?? fontColor,
+            letterSpacing: letterSpacing,
           ),
     );
   }

@@ -16,31 +16,10 @@ class RemoteConfig {
   static String get cookieURL => _RemoteConfig.cookieURL[env]!;
   static String get ssoClient => _RemoteConfig.ssoClient[env]!;
 
+  static double get mapRadius => _RemoteConfig.mapRadius[env]!;
+  static String get regaClass => _RemoteConfig.regaClass[env]!;
+
   List<String> get munciplities => _RemoteConfig.munciplities[env]!;
-
-  /*//! Second  I
-  String get gis2 {
-    switch (env) {
-      case EnvType.dev:
-        return _RCDev.gis;
-      case EnvType.stg:
-        return _RCStg.gis;
-      case EnvType.prod:
-        return _RCProd.gis;
-    }
-  }*/
-
-  /* //! Second  II
-  String get gis3 => {
-        EnvType.dev: _RCDev.gis,
-        EnvType.stg: _RCStg.gis,
-        EnvType.prod: _RCProd.gis,
-      }[env]!;
-  List<String> get munciplities2 => {
-        EnvType.dev: _RCDev.munciplities,
-        EnvType.stg: _RCStg.munciplities,
-        EnvType.prod: _RCProd.munciplities,
-      }[env]!;*/
 
   static EnvType get env => sl<EnvType>();
 }
@@ -107,6 +86,18 @@ class _RemoteConfig {
     devVal: "balady_mobile_app",
     stgVal: "balady_mobile_app",
     prodVal: "1",
+  );
+
+  static final mapRadius = _initValues<double>(
+    devVal: 2000,
+    stgVal: 2000,
+    prodVal: 2000,
+  );
+
+  static final regaClass = _initValues<String>(
+    devVal: "CG-26",
+    stgVal: "CG-26",
+    prodVal: "CG-11",
   );
 
   static final munciplities = {

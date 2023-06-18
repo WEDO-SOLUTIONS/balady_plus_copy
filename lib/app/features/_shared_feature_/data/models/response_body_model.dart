@@ -1,64 +1,61 @@
-class ResponseBodyModel {
-  final ResponseStatusDetails statusDetails;
-  final ResponseData data;
+import 'package:localize_and_translate/localize_and_translate.dart';
 
-  ResponseBodyModel({required this.statusDetails, required this.data});
+class ResponseBodyModel<T> {
+  StatusDetailsModel? statusDetails;
+  ResponseData<T>? data;
 
-  factory ResponseBodyModel.fromMap(Map<String, dynamic> map) {
-    return ResponseBodyModel(
-      statusDetails: (map['statusDetails'] is List<dynamic>)
-          ? ResponseStatusDetails.fromMap(
-              (map['statusDetails'] as List<dynamic>).first,
-            )
-          : ResponseStatusDetails.fromMap(map['statusDetails']),
-      data: ResponseData.fromMap(map['data']),
-    );
+  ResponseBodyModel({this.data, this.statusDetails});
+
+  factory ResponseBodyModel.fromMap(Map<String, dynamic> json,
+          {T? parsedResult}) =>
+      ResponseBodyModel<T>(
+          statusDetails: json["statusDetails"] != null
+              ? StatusDetailsModel.fromMap(json["statusDetails"])
+              : null,
+          data: json["data"] != null
+              ? ResponseData<T>.fromMap(json["data"],
+                  parsedResult: parsedResult)
+              : null);
+}
+
+class ResponseData<T> {
+  String? responseCode;
+  String? responseMessage;
+  String? correlationId;
+  String? beRequestId;
+  T? result;
+
+  ResponseData(
+      {this.responseCode,
+      this.responseMessage,
+      this.beRequestId,
+      this.correlationId,
+      this.result});
+
+  factory ResponseData.fromMap(Map<String, dynamic> json, {T? parsedResult}) =>
+      ResponseData(
+          responseCode: json["responseCode"] != null
+              ? json["responseCode"].toString()
+              : json["responseCode"],
+          beRequestId: json["beRequestId"],
+          correlationId: json["correlationId"],
+          responseMessage: json["responseMessage"],
+          result: parsedResult);
+
+  String? getRefResponseMessage() {
+    if (beRequestId != null)
+      return (responseMessage ?? "0") +
+          "\n" +
+          ("be_request_error").tr().replaceAll("{}", (beRequestId ?? ""));
+    return responseMessage;
   }
 }
 
-class ResponseStatusDetails {
-  final dynamic code;
-  final String message;
+class StatusDetailsModel {
+  int? code;
+  String? message;
+  StatusDetailsModel({this.code, this.message});
 
-  ResponseStatusDetails({required this.code, required this.message});
-
-  factory ResponseStatusDetails.fromMap(Map<String, dynamic> map) {
-    return ResponseStatusDetails(
-      code: map['code'] ?? 400,
-      message: map['message'] ?? '',
-    );
-  }
-}
-
-/* 
-{statusDetails: {code: 200, message: Ok}, 
-data: {responseCode: 1, responseMessage: success, 
-result: {ReceiptResult: 1, ReferenceNumber: REFID-193}}}
- */
-
-class ResponseData {
-  final dynamic responseCode;
-  final String responseMessage;
-  final dynamic result;
-
-  // Returned when submit visit
-  // final String referenceNumber;
-
-  ResponseData({
-    required this.responseCode,
-    required this.responseMessage,
-    required this.result,
-    //
-    // required this.referenceNumber,
-  });
-
-  factory ResponseData.fromMap(Map<String, dynamic> map) {
-    return ResponseData(
-      responseCode: map['responseCode'] ?? 400,
-      responseMessage: map['responseMessage'] ?? '',
-      result: map['result'],
-      //
-      // referenceNumber: map['ReferenceNumber'] ?? '',
-    );
-  }
+  factory StatusDetailsModel.fromMap(Map<String, dynamic> json) =>
+      StatusDetailsModel(code: json["code"], message: json["message"]);
 }

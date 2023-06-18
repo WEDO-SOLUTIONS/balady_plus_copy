@@ -1,6 +1,6 @@
 import 'package:formz/formz.dart' show FormzInput;
 
-import '../../../../../core/utils/utils_exports.dart' show Validation;
+import 'package:balady_plus/app/core/utils/enums/validations.dart';
 
 class OptionalFieldValidation extends FormzInput<String?, Validation> {
   const OptionalFieldValidation.pure({String? value}) : super.pure(value);
@@ -8,7 +8,7 @@ class OptionalFieldValidation extends FormzInput<String?, Validation> {
 
   @override
   Validation? validator(String? value) {
-    final enteredValue = value?.trim();
+    final enteredValue = value;
     if (enteredValue == null) {
       return null;
     } else if (enteredValue.isEmpty) {
