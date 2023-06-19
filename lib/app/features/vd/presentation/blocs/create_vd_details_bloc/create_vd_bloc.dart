@@ -348,28 +348,15 @@ class CreateVDBloc extends Bloc<CreateVDEvent, CreateVDState> {
         ));
       }
     }, (success) {
-      bool Function(Route<dynamic>) predicate =
-          ModalRoute.withName(RouteName.customerVoiceRoute);
-
-      if (state.isFromHome == true) {
-        predicate = ModalRoute.withName(RouteName.bottomNavigation);
-        NavigationService.navigatorKey.currentState!.pushNamedAndRemoveUntil(
-            RouteName.successRoute, predicate,
-            arguments: SuccessScreenArgs(
-                type: PAGE_TYPE.newVD,
-                fromHomePage: state.isFromHome,
-                thanksMessage: success.responseMessage));
-      } else {
-        NavigationService.navigatorKey.currentState!.pushNamedAndRemoveUntil(
-            RouteName.successRoute, predicate,
-            arguments: SuccessScreenArgs(
-                type: PAGE_TYPE.newVD,
-                fromHomePage: state.isFromHome,
-                thanksMessage: success.data?.responseMessage));
-      }
-      if (CommonProperties.isLoggedIn)
-        locator<CustomerSoundViewModel>().getUserRequests();
-
+      /* bool Function(Route<dynamic>) predicate =
+          ModalRoute.withName(RouteName.bottomNavigation);
+      NavigationService.navigatorKey.currentState!.pushNamedAndRemoveUntil(
+          RouteName.successRoute, predicate,
+          arguments: SuccessScreenArgs(
+              type: PAGE_TYPE.newVD,
+              fromHomePage: state.isFromHome,
+              thanksMessage: success.data?.responseMessage));
+*/
       //MM    Helpers.sendEventToAnalytics(AppEvents.VD_Success_Registered_Submit);
     });
   }
@@ -444,26 +431,15 @@ class CreateVDBloc extends Bloc<CreateVDEvent, CreateVDState> {
       }
     }, (success) {
       print(success);
-      bool Function(Route<dynamic>) predicate =
-          ModalRoute.withName(RoutesNames.customerVoiceRoute);
-
-      if (state.isFromHome == true) {
-        predicate = ModalRoute.withName(RouteName.bottomNavigation);
-        NavigationService.navigatorKey.currentState!.pushNamedAndRemoveUntil(
-            RoutesNames.successRoute, predicate,
-            arguments: SuccessScreenArgs(
-                type: PAGE_TYPE.newVD,
-                fromHomePage: state.isFromHome,
-                thanksMessage: success.data?.responseMessage));
-      } else {
-        NavigationService.navigatorKey.currentState!.pushNamedAndRemoveUntil(
-            RoutesNames.successRoute, predicate,
-            arguments: SuccessScreenArgs(
-                type: PAGE_TYPE.newVD,
-                fromHomePage: state.isFromHome,
-                thanksMessage: success.data?.responseMessage));
-      }
-
+      /*  bool Function(Route<dynamic>) predicate =
+          ModalRoute.withName(RouteName.bottomNavigation);
+      NavigationService.navigatorKey.currentState!.pushNamedAndRemoveUntil(
+          RoutesNames.successRoute, predicate,
+          arguments: SuccessScreenArgs(
+              type: PAGE_TYPE.newVD,
+              fromHomePage: state.isFromHome,
+              thanksMessage: success.data?.responseMessage));
+*/
       if (!CommonProperties.isLoggedIn) {
         sharedPrefs.storeGuestInfo(
             state.firstName, state.lastName, state.mobileNumber);
@@ -591,8 +567,8 @@ class CreateVDBloc extends Bloc<CreateVDEvent, CreateVDState> {
   }
 
   void cancelIncident() {
-    hideKeyboard();
-    bool Function(Route<dynamic>) predicate =
+    hideKeyboard(); //MM
+    /* bool Function(Route<dynamic>) predicate =
         ModalRoute.withName(RoutesNames.customerVoiceRoute);
 
     if (state.isFromHome == true) {
@@ -600,7 +576,7 @@ class CreateVDBloc extends Bloc<CreateVDEvent, CreateVDState> {
       NavigationService.navigatorKey.currentState!.popUntil((predicate));
     } else {
       NavigationService.navigatorKey.currentState!.popUntil((predicate));
-    }
+    }*/
   }
 
   Future<void> _searchForSPLEventHandler(

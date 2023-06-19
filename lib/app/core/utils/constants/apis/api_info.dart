@@ -41,6 +41,7 @@ class ApiUrl {
 
 
 // VD
+  static const gis = '/v1/crm/bcg/gis-info';
   static const vdCategories = '/v1/crm/bcg/categories';
   static const vdSpecialClassifications = '/v1/crm/bcg/special-classifications';
 

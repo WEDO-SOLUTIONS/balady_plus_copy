@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
+import '../../../../../core/services/local/navigation_services.dart';
 import '../../../../../core/utils/utils_exports.dart'
     show AppColor, AppStyle, ImagePath;
+import '../../../../_shared_feature_/presentation/widgets/custom_popups_widgets.dart';
 import '../../../../_shared_feature_/shared_feature_exports.dart'
     show CustomTextWidget, ElevatedButtonWidget;
+import '../../../../vd/presentation/dialogs/vd_types_dialog.dart';
 import '../../../home_exports.dart' show HomeSection;
 
 class ShareWithUs extends StatelessWidget {
@@ -63,7 +66,12 @@ class ShareWithUs extends StatelessWidget {
                   ),
                   const SizedBox(height: 8),
                   ElevatedButtonWidget.sendImage(
-                    onPressed: () {},
+                    onPressed: () async {
+                      await CustomPopUpsWidgets.showBottomSheet(
+                        NavigationService.navigatorKey.currentContext!,
+                        child: VDTypesDialog(),
+                      );
+                    },
                   )
                 ],
               ),
