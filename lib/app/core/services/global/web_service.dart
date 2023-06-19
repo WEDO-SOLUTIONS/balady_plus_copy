@@ -119,7 +119,7 @@ class AppInterceptors extends Interceptor {
         }
         accessToken = newAuthData.accessToken;
       }
-    } else {
+    } else { 
       CommonFunctions.signOut();
       return handler.reject(TokenHasExpiredException(options));
     }*/
