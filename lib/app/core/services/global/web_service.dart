@@ -120,7 +120,7 @@ class AppInterceptors extends Interceptor {
         }
         accessToken = newAuthData.accessToken;
       }
-    } else {
+    } else { 
       CommonFunctions.signOut();
       return handler.reject(TokenHasExpiredException(options));
     }*/
@@ -131,7 +131,7 @@ class AppInterceptors extends Interceptor {
     options.headers
         .putIfAbsent(ApiHeader.verifyingKEY.name, () => verifyingKEY);
 
-    options.headers['Authorization'] = 'Bearer ${CommonProperties.token}';
+    // options.headers['Authorization'] = 'Bearer ${CommonProperties.token}';
     print(options.headers);
     return handler.next(options);
   }
