@@ -195,43 +195,8 @@ class Helpers {
     return "";
   }
 
-  static Future<bool> checkCameraSettings(BuildContext context) async {
-    var status = await Permission.camera.request();
-    if (status == PermissionStatus.permanentlyDenied) {
-      showDialog(
-          context: context, builder: (ctx) => const CameraPermissionDialog());
-      return false;
-    } else if (status != PermissionStatus.granted) {
-      Permission.camera.request();
-      return false;
-    } else {
-      return true;
-    }
-  }
 
-  static Future<bool> checkLocationSettings(BuildContext context) async {
-    ServiceStatus serviceStatus = await Permission.location.serviceStatus;
-    if (serviceStatus != ServiceStatus.disabled) {
-      var status = await Permission.location.request();
-      print(status);
-      if (status == PermissionStatus.permanentlyDenied) {
-        showDialog(
-            context: context,
-            builder: (ctx) => const LocationPermissionDialog());
-        return false;
-      } else if (status != PermissionStatus.granted) {
-        Permission.location.request();
-        return false;
-      } else {
-        return true;
-      }
-    } else {
-      showDialog(
-          context: context, builder: (ctx) => const LocationServiceDialog());
 
-      return false;
-    }
-  }
 
   static Future<LatLng?> getCurrentLocation() async {
     try {

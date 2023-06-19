@@ -15,6 +15,9 @@ import 'package:intl/intl.dart' show DateFormat;
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:open_file/open_file.dart' show OpenFile;
 import 'package:path_provider/path_provider.dart' show getTemporaryDirectory;
+
+import 'package:flutter_bloc/flutter_bloc.dart' show EventTransformer;
+import 'package:permission_handler/permission_handler.dart';
 import 'package:stream_transform/stream_transform.dart' show RateLimit, Switch;
 import 'package:url_launcher/url_launcher.dart' show canLaunchUrl, launchUrl;
 import 'package:uuid/uuid.dart';
@@ -22,6 +25,9 @@ import 'package:uuid/uuid.dart';
 import './utils_exports.dart'
     show AppConfig, AppLanguage, EnvType, MimeType, UIHelper, WithDelay;
 import '../../features/_shared_feature_/data/entities/device_details.dart';
+import '../../features/_shared_feature_/presentation/dialogs/camera_permission_dialog.dart';
+import '../../features/_shared_feature_/presentation/dialogs/location_permission_dialog.dart';
+import '../../features/_shared_feature_/presentation/dialogs/location_service_dialog.dart';
 import '../../features/_shared_feature_/shared_feature_exports.dart'
     show AuthData, BridgeParams, FileInfo;
 import '../../features/entry_point/domain/entities/sso_user_info.dart'
@@ -268,6 +274,44 @@ class CommonFunctions {
       } catch (ex) {
         print(ex);
       }
+    }
+  }
+
+  static Future<bool> checkLocationSettings(BuildContext context) async {
+    ServiceStatus serviceStatus = await Permission.location.serviceStatus;
+    if (serviceStatus != ServiceStatus.disabled) {
+      var status = await Permission.location.request();
+      print(status);
+      if (status == PermissionStatus.permanentlyDenied) {
+        showDialog(
+            context: context,
+            builder: (ctx) => const LocationPermissionDialog());
+        return false;
+      } else if (status != PermissionStatus.granted) {
+        Permission.location.request();
+        return false;
+      } else {
+        return true;
+      }
+    } else {
+      showDialog(
+          context: context, builder: (ctx) => const LocationServiceDialog());
+
+      return false;
+    }
+  }
+
+  static Future<bool> checkCameraSettings(BuildContext context) async {
+    var status = await Permission.camera.request();
+    if (status == PermissionStatus.permanentlyDenied) {
+      showDialog(
+          context: context, builder: (ctx) => const CameraPermissionDialog());
+      return false;
+    } else if (status != PermissionStatus.granted) {
+      Permission.camera.request();
+      return false;
+    } else {
+      return true;
     }
   }
 }

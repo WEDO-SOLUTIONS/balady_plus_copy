@@ -1,14 +1,16 @@
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/vd/vd_exports.dart';
-import 'package:balady_plus/shared/features/_shared_feature_/shared/shared_feature_exports.dart'
-    show CustomShimmerGridViewWidget;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
+import '../../../../core/dependency_injection/injection_container.dart';
+import '../../../../core/utils/constants/constants.dart';
 import '../../../_shared_feature_/presentation/widgets/buttons/custom_buttons_widgets.dart';
+import '../../../_shared_feature_/presentation/widgets/custom_shimmer_list_widget.dart';
 import '../../../_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
 import '../../../_shared_feature_/presentation/widgets/custom_svg_icon_widget copy.dart';
+import '../../../_shared_feature_/presentation/widgets/reload_widget.dart';
 import '../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 
 class VDTypesDialog extends StatefulWidget {
@@ -22,108 +24,114 @@ class VDTypesDialog extends StatefulWidget {
 class _VDTypesDialog extends State<VDTypesDialog> {
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<VDCategoryBloc, VDCategoryState>(
-      listener: (context, state) {
-        if (state.allCategorystatus == BlocStatus.failure) {
-          CommonFunctions.showError(state.errorMessage ?? "");
-        }
-      },
-      builder: (context, state) {
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // button, title,
-            Padding(
-              padding: const EdgeInsets.only(
-                top: GeneralKey.semiMediumPadding,
-                left: GeneralKey.semiMediumPadding,
-                right: GeneralKey.semiMediumPadding,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // close button
-                  CustomTextButtonWidget(
-                    btnPressed: () => Navigator.of(context).pop(),
-                    btnText: Helpers.translatingWord(
-                      "customerVoiceBackButtonWord",
-                    ),
-                    btnTextColor: AppColor.grey1000,
-                    btnTextSize: 17.0,
-                    btnTextWeight: AppFontWeight.medium,
-                  ),
-                  Constants.verticalSpaceMedium,
-                  // title
-                  CustomTextWidget(
-                    ("customerVoiceReportTypeWord").tr(),
-                    fontColor: AppColor.black,
-                    fontSize: 24.0,
-                  ),
-                  const CustomVerticalSpace(height: 18.0),
-                  // subtitle
-                  CustomTextWidget(
-                    ("customerVoiceSelectReportTypeWord").tr(),
-                    fontColor: AppColor.black400,
-                    fontWeight: AppFontWeight.medium,
-                  ),
-                  Constants.verticalSpaceSmall,
-                ],
-              ),
-            ),
-            if (state.allCategorystatus == BlocStatus.loading)
-              Expanded(
-                  child: Padding(
+    return BlocProvider(
+      create: (context) => VDCategoryBloc(getCategories: sl()),
+      child: BlocConsumer<VDCategoryBloc, VDCategoryState>(
+        listener: (context, state) {
+          if (state.allCategorystatus == BlocStatus.failure) {
+            CommonFunctions.showError(state.errorMessage ?? "");
+          }
+        },
+        builder: (context, state) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // button, title,
+              Padding(
                 padding: const EdgeInsets.only(
-                    bottom: GeneralKey.mediumPadding,
-                    left: GeneralKey.semiMediumPadding,
-                    right: GeneralKey.semiMediumPadding,
-                    top: GeneralKey.smallPadding),
-                child: CustomShimmerGridViewWidget(
-                  height: 100,
-                  mainAxisExtent: 150,
+                  top: GeneralKey.semiMediumPadding,
+                  left: GeneralKey.semiMediumPadding,
+                  right: GeneralKey.semiMediumPadding,
                 ),
-              )),
-
-            if (state.allCategorystatus == BlocStatus.failure)
-              Expanded(
-                child: ReloadWidget(onTab: () {
-                  context.read<VDCategoryBloc>().add(GetAllCategories());
-                }),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // close button
+                    CustomTextButtonWidget(
+                      onPressed: () => Navigator.of(context).pop(),
+                      text: ("customerVoiceBackButtonWord").tr(),
+                      btnTextColor: AppColor.grey1000,
+                      btnTextSize: 17.0,
+                      btnTextWeight: AppFontWeight.medium,
+                    ),
+                    Constants.verticalSpaceMedium,
+                    // title
+                    CustomTextWidget(
+                      ("customerVoiceReportTypeWord").tr(),
+                      fontColor: AppColor.black,
+                      fontSize: 24.0,
+                    ),
+                    const CustomVerticalSpace(height: 18.0),
+                    // subtitle
+                    CustomTextWidget(
+                      ("customerVoiceSelectReportTypeWord").tr(),
+                      fontColor: AppColor.black400,
+                      fontWeight: AppFontWeight.medium,
+                    ),
+                    Constants.verticalSpaceSmall,
+                  ],
+                ),
               ),
-            if (state.allCategorystatus == BlocStatus.success)
-              // types
-              Expanded(
-                child: GridView.builder(
-                  physics: const BouncingScrollPhysics(),
+              if (state.allCategorystatus == BlocStatus.loading)
+                Expanded(
+                    child: Padding(
                   padding: const EdgeInsets.only(
                       bottom: GeneralKey.mediumPadding,
                       left: GeneralKey.semiMediumPadding,
                       right: GeneralKey.semiMediumPadding,
                       top: GeneralKey.smallPadding),
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      crossAxisSpacing: 19.0,
-                      mainAxisSpacing: 18.0,
-                      mainAxisExtent: 150),
-                  itemCount: state.allCategories?.length ?? 0,
-                  itemBuilder: (context, index) => VDCardWidgetInDialog(
-                      title: state.allCategories?[index].categoryName ?? "",
-                      icon: state.allCategories?[index].getMainImageUrl() ?? "",
-                      btnPressed: () async {
-                        bool isLocationAvailable =
-                            await Helpers.checkLocationSettings(context);
-                        bool isCameraAllowed =
-                            await Helpers.checkCameraSettings(context);
-                        if (isLocationAvailable && isCameraAllowed)
-                          context.read<VDCategoryBloc>().navigateToCamera(index,
-                              isFromHome: widget.isFromHome ?? false);
-                      }),
+                  child: CustomShimmerGridViewWidget(
+                    height: 100,
+                    mainAxisExtent: 150,
+                  ),
+                )),
+
+              if (state.allCategorystatus == BlocStatus.failure)
+                Expanded(
+                  child: ReloadWidget(onTab: () {
+                    context.read<VDCategoryBloc>().add(GetAllCategories());
+                  }),
                 ),
-              )
-          ],
-        );
-        return Container();
-      },
+              if (state.allCategorystatus == BlocStatus.success)
+                // types
+                Expanded(
+                  child: GridView.builder(
+                    physics: const BouncingScrollPhysics(),
+                    padding: const EdgeInsets.only(
+                        bottom: GeneralKey.mediumPadding,
+                        left: GeneralKey.semiMediumPadding,
+                        right: GeneralKey.semiMediumPadding,
+                        top: GeneralKey.smallPadding),
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            crossAxisSpacing: 19.0,
+                            mainAxisSpacing: 18.0,
+                            mainAxisExtent: 150),
+                    itemCount: state.allCategories?.length ?? 0,
+                    itemBuilder: (context, index) => VDCardWidgetInDialog(
+                        title: state.allCategories?[index].categoryName ?? "",
+                        icon:
+                            state.allCategories?[index].getMainImageUrl() ?? "",
+                        btnPressed: () async {
+                          bool isLocationAvailable =
+                              await CommonFunctions.checkLocationSettings(
+                                  context);
+                          bool isCameraAllowed =
+                              await CommonFunctions.checkCameraSettings(
+                                  context);
+                          if (isLocationAvailable && isCameraAllowed)
+                            context.read<VDCategoryBloc>().navigateToCamera(
+                                index,
+                                isFromHome: widget.isFromHome ?? false);
+                        }),
+                  ),
+                )
+            ],
+          );
+          return Container();
+        },
+      ),
     );
   }
 }

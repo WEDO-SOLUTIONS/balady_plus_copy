@@ -3,6 +3,7 @@ import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/c
 import 'package:flutter/material.dart';
 
 import '../../../../../core/utils/constants/app_colors.dart';
+import '../../../../../core/utils/constants/constants.dart';
 import '../texts/custom_text_widget.dart';
 
 class CustomCheckbox extends StatefulWidget {
@@ -70,7 +71,7 @@ class _CustomCheckboxState extends State<CustomCheckbox> {
                             ? DecorationImage(
                                 image: AssetImage(
                                     Constants.imgPath + "checkbox@3x.png"),
-                                fit: BoxFit.fill,
+                                fit: BoxFit.fill, //MM
                               )
                             : null,
                         border: selected

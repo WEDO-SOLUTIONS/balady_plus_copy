@@ -96,4 +96,5 @@ class IconPath {
   static const vdButtonCameraIcon = '${_pngVDIconPath}buttonCamera@3x$_png';
   static const vdarrowLeftIcon = '${_pngVDIconPath}arrowLeft$_png';
   static const vdAgianIcon = '${_pngVDIconPath}again@3x$_png';
+  static const vdMapMarkerIcon = '${_pngVDIconPath}marker2@3x$_png';
 }
