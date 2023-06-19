@@ -8,9 +8,14 @@ import '../../features/authentication/sign_in/sign_in_exports.dart'
     show SignInPage;
 import '../../features/bottom_navigation/bottom_navigation_exports.dart'
     show BottomNavigationPage;
-import '../../features/profile_features/dashboard/dashboard_exports.dart' show DashBoardPage;
-import '../../features/profile_features/invoices/invoices_exports.dart' show InvoicesPage;
-import '../../features/profile_features/requests/requests_exports.dart' show RequestsPage;
+import '../../features/profile_features/dashboard/dashboard_exports.dart'
+    show DashBoardPage;
+import '../../features/profile_features/invoices/invoices_exports.dart'
+    show InvoicesPage;
+import '../../features/profile_features/licenses/licenses_exports.dart'
+    show LicensesPage;
+import '../../features/profile_features/requests/requests_exports.dart'
+    show RequestsPage;
 import '../../features/splash/splash_exports.dart' show SplashPage;
 
 class AppRouter {
@@ -44,6 +49,9 @@ class AppRouter {
       // invoices page
       case RouteName.invoices:
         return MaterialPageRoute(builder: (_) => const InvoicesPage());
+      // licenses page
+      case RouteName.licenses:
+        return MaterialPageRoute(builder: (_) => const LicensesPage());
       // error page
       default:
         return MaterialPageRoute(builder: (_) => const SizedBox());

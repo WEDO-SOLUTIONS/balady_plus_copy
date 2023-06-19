@@ -30,6 +30,12 @@ class ApiUrl {
   static invoiceSubTypes(int id) =>
       '/v1/balady-dashboard/invoices/sub-main-types/$id';
   static const invoiceStatuses = '/v1/balady-dashboard/invoices/statuses';
+  //! Licenses
+  static const licenses = '/v1/balady-dashboard/license/my-licenses';
+  static const licenseTypes = '/v1/balady-dashboard/license/main-types';
+  static licenseSubTypes(int id) =>
+      '/v1/balady-dashboard/license/sub-main-types/$id';
+  static const licenseStatuses = '/v1/balady-dashboard/license/statuses';
 
   //! POST
 

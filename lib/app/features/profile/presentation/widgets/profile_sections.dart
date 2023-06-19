@@ -29,7 +29,7 @@ class ProfileSections {
           ProfileItem(
             title: "licenses".tr(),
             icon: IconPath.licenses,
-            route: "",
+            route: RouteName.licenses,
           ),
           ProfileItem(
             title: "invoices".tr(),

@@ -141,11 +141,16 @@
   "invoice_date": "تاريخ الفاتورة",
   "invoice_amount": "قيمة الفاتورة",
   "invoice": "فاتورة",
-  
+
+  "_licensesComment": "أى شئ يخص الرخص",
+  "license_no": "رقم الرخصة",
+  "license_status": "حالة الرخصة",
+  "license_date": "تاريخ الرخصة",
+  "license": "رخصة",
+  "license_end_date": "تاريخ إنتهاء الرخصة",
 
   "_dashboardComment": "أى شئ يخص لوحة البيانات",
   "the_following_data": "البيانات التالية تشمل خدمات محدودة فقط في هذه  النسخة. سيتم تحديثها بكامل البيانات قريباً",
-
 
   "_globalComment": "أى شئ يخص الكلمات العامة",
   "selectFromHere": "إختر من هنا",

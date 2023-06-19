@@ -11,4 +11,4 @@ export 'features/sign_up_injection.dart';
 export 'features/profile/dashboard_injection.dart';
 export 'features/profile/requests_injection.dart';
 export 'features/profile/invoices_injection.dart';
-
+export 'features/profile/licenses_injection.dart';
