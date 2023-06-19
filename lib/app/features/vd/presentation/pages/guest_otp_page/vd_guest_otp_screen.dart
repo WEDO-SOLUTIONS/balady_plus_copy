@@ -13,6 +13,7 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:sms_user_consent/sms_user_consent.dart';
 
+import '../../../../../core/utils/constants/constants.dart';
 import '../../../../../core/utils/enums/bloc_status.dart';
 import '../../../../_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
 import '../../../../_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
@@ -65,7 +66,7 @@ class _VDGuestOtpScreen extends State<VDGuestOtpScreen> {
                         mainAxisSize: MainAxisSize.max,
                         children: [
                           Image.asset(
-                            Constants.imgPath + 'resetPass@3x.png',
+                            Constants.imgPath + 'resetPass@3x.png', //MM
                             height: 60,
                             width: 60,
                           ),

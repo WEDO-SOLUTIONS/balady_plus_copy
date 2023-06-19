@@ -1,19 +1,8 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:balady_plus/app/core/core_exports.dart'
-    show
-        AppColors,
-        Constants,
-        CustomTextWidget,
-        FONT_WEIGHT,
-        Helpers,
-        CustomerVoiceType,
-        MapAddressCard;
-import 'package:balady_plus/app/core/shared_local_services/map_utils.dart';
 import 'package:balady_plus/app/core/utils/constants/remote_config.dart';
-import 'package:balady_plus/app/features/customer_voice/customer_voice_exports.dart'
-    show SelectedLocation, GisLocationResult, CustomerVoiceRepository;
+import 'package:balady_plus/app/core/utils/enums/app_font_weights.dart';
 import 'package:balady_plus/app/features/vd/vd_exports.dart'
     show
         MapBloc,
@@ -25,15 +14,20 @@ import 'package:balady_plus/app/features/vd/vd_exports.dart'
         GetCurentUserLocationEvent;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
+//import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_google_places/flutter_google_places.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_maps_webservice/places.dart' as place;
+import 'package:localize_and_translate/localize_and_translate.dart';
 
+import '../../../../core/utils/common_functions.dart';
 import '../../../../core/utils/constants/app_colors.dart';
+import '../../../../core/utils/constants/constants.dart';
 import '../../../../core/utils/constants/paths/icon_paths.dart';
+import '../../../../core/utils/map_utils.dart';
 import '../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
+import 'map_address_card.dart';
 
 class VDMapView extends StatefulWidget {
   final bool showSearch;
@@ -98,7 +92,7 @@ class _VDMapViewState extends State<VDMapView> {
                   GestureDetector(
                     onTap: () async {
                       bool isSuccess =
-                          await Helpers.checkLocationSettings(context);
+                          await CommonFunctions.checkLocationSettings(context);
                       if (isSuccess)
                         context
                             .read<MapBloc>()
@@ -147,26 +141,6 @@ class _VDMapViewState extends State<VDMapView> {
       },
     );
   }
-
-  /*void setMapLoading() {
-    EasyLoading.show();
-    Timer(const Duration(milliseconds: 1300), () async {
-      getCurrentUserLocation();
-      EasyLoading.dismiss();
-    });
-
-    if (Platform.isAndroid) {
-      Timer(const Duration(milliseconds: 1300), () async {
-        setState(() {
-          // mapLoading = false;
-        });
-      });
-    } else {
-      setState(() {
-        //  mapLoading = false;
-      });
-    }
-  }*/
 }
 
 class GoogleMapSection extends StatefulWidget {
@@ -265,7 +239,7 @@ class PinMarkerSection extends StatelessWidget {
                   padding: const EdgeInsets.all(2),
                   margin: const EdgeInsets.only(bottom: 85),
                   child: Text(
-                    Helpers.translatingWord('location_not_allowed_map'),
+                    ('location_not_allowed_map').tr(),
                     textScaleFactor: 1,
                   ),
                 ),
@@ -320,9 +294,9 @@ class MapSearchSection extends StatelessWidget {
               children: <Widget>[
                 Expanded(
                     child: CustomTextWidget(
-                  Helpers.translatingWord("lbl_search_for_place"),
+                  ("lbl_search_for_place").tr(),
                   fontColor: AppColor.black400,
-                  fontWeight: FONT_WEIGHT.medium,
+                  fontWeight: AppFontWeight.medium,
                   fontSize: 17,
                   textAlign: TextAlign.start,
                 )),

@@ -11,6 +11,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../../../../../core/utils/constants/app_colors.dart';
+import '../../../../../core/utils/constants/constants.dart';
 import '../../../../../core/utils/enums/bloc_status.dart';
 import '../../../../_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
 
@@ -70,7 +71,7 @@ class _VDMapScreen extends State<VDMapScreen> {
                             start: 12),
                         child: Image.asset(
                           widget.closeIcon
-                              ? Constants.imgPath + 'exit@3x.png'
+                              ? Constants.imgPath + 'exit@3x.png' //MM
                               : Constants.imgPath + 'exitBack@3x.png',
                           height: 38,
                           width: 38,

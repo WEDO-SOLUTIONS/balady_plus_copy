@@ -78,18 +78,8 @@ class VDRemoteDataSourceImpl extends VDRemoteDataSource {
 
       var data = response.data["data"]?["result"];
 
-      var parsedResult =
-          data != null ? CategoryResponseModel.fromMap(data) : null;
-      final decodedResponse =
-          ApigeeResponseModel<CategoryResponseModel>.fromMap(response.data,
-              parsedResult: parsedResult);
+      final decodedResponse = CategoryResponseModel.fromMap(data);
 
-      if (response.statusCode != 200) {
-        String errorMessage = decodedResponse.data?.responseMessage ??
-            decodedResponse.statusDetails?.message ??
-            "errors_server_error_1".tr();
-        throw ServerException(errorMessage, statusCode: response.statusCode);
-      }
       return decodedResponse.toFuture();
     } on DioError catch (error) {
       throw ServerException(error.toString(),
@@ -99,7 +89,7 @@ class VDRemoteDataSourceImpl extends VDRemoteDataSource {
         throw ex;
       else {
         try {
-          CommonFunctions.sendExceptionLog(exception: ex, response: response);
+          //MM   CommonFunctions.sendExceptionLog(exception: ex, response: response);
         } catch (ex) {}
         throw ServerException(("errors_server_error_2").tr());
       }
@@ -118,16 +108,8 @@ class VDRemoteDataSourceImpl extends VDRemoteDataSource {
       );
 
       var data = response.data["data"];
-      var parsedResult = data != null ? SplResponseModel.fromMap(data) : null;
-      final decodedResponse = ApigeeResponseModel<SplResponseModel>.fromMap(
-          response.data,
-          parsedResult: parsedResult);
-      if (response.statusCode != 200) {
-        String errorMessage = decodedResponse.data?.responseMessage ??
-            decodedResponse.statusDetails?.message ??
-            ("errors_server_error_1").tr();
-        throw ServerException(errorMessage, statusCode: response.statusCode);
-      }
+      final decodedResponse = SplResponseModel.fromMap(data);
+
       return decodedResponse.toFuture();
     } on DioError catch (error) {
       throw ServerException(error.toString(),
@@ -137,7 +119,7 @@ class VDRemoteDataSourceImpl extends VDRemoteDataSource {
         throw ex;
       else {
         try {
-          CommonFunctions.sendExceptionLog(exception: ex, response: response);
+          //MM   CommonFunctions.sendExceptionLog(exception: ex, response: response);
         } catch (ex) {}
         throw ServerException(("errors_server_error_1").tr());
       }
@@ -156,16 +138,8 @@ class VDRemoteDataSourceImpl extends VDRemoteDataSource {
 
       var data = response.data["data"]["result"];
 
-      var parsedResult = data != null ? GISResponseModel.fromMap(data) : null;
-      final decodedResponse = ApigeeResponseModel<GISResponseModel>.fromMap(
-          response.data,
-          parsedResult: parsedResult);
-      if (response.statusCode != 200) {
-        String errorMessage = decodedResponse.data?.responseMessage ??
-            decodedResponse.statusDetails?.message ??
-            ("errors_server_error_1").tr();
-        throw ServerException(errorMessage, statusCode: response.statusCode);
-      }
+      final decodedResponse = GISResponseModel.fromMap(data);
+
       return decodedResponse.toFuture();
     } on DioError catch (error) {
       throw ServerException(error.toString(),
@@ -198,15 +172,8 @@ class VDRemoteDataSourceImpl extends VDRemoteDataSource {
       print(data);
       var parsedResult =
           data != null ? SPLDetailsResponseModel.fromJson(data) : null;
-      final decodedResponse =
-          ApigeeResponseModel<SPLDetailsResponseModel>.fromMap(response.data,
-              parsedResult: parsedResult);
-      if (response.statusCode != 200) {
-        String errorMessage = decodedResponse.data?.responseMessage ??
-            decodedResponse.statusDetails?.message ??
-            ("errors_server_error_1").tr();
-        throw ServerException(errorMessage, statusCode: response.statusCode);
-      }
+      final decodedResponse = SPLDetailsResponseModel.fromJson(response.data);
+
       return decodedResponse.toFuture();
     } on DioError catch (error) {
       throw ServerException(error.toString(),
@@ -237,17 +204,8 @@ class VDRemoteDataSourceImpl extends VDRemoteDataSource {
 
       var data = response.data["data"]["result"];
 
-      var parsedResult =
-          data != null ? UploadFileResponseModel.fromMap(data) : null;
-      final decodedResponse =
-          ApigeeResponseModel<UploadFileResponseModel>.fromMap(response.data,
-              parsedResult: parsedResult);
-      if (response.statusCode != 200) {
-        String errorMessage = decodedResponse.data?.responseMessage ??
-            decodedResponse.statusDetails?.message ??
-            ("errors_server_error_1").tr();
-        throw ServerException(errorMessage, statusCode: response.statusCode);
-      }
+      final decodedResponse = UploadFileResponseModel.fromMap(response.data);
+
       return decodedResponse.toFuture();
     } on DioError catch (error) {
       throw ServerException(error.toString(),
@@ -276,16 +234,8 @@ class VDRemoteDataSourceImpl extends VDRemoteDataSource {
 
       var data = response.data["data"]["result"];
 
-      var parsedResult = data != null ? OTPResponseModel.fromMap(data) : null;
-      final decodedResponse = ApigeeResponseModel<OTPResponseModel>.fromMap(
-          response.data,
-          parsedResult: parsedResult);
-      if (response.statusCode != 200) {
-        String errorMessage = decodedResponse.data?.responseMessage ??
-            decodedResponse.statusDetails?.message ??
-            ("errors_server_error_1").tr();
-        throw ServerException(errorMessage, statusCode: response.statusCode);
-      }
+      final decodedResponse = OTPResponseModel.fromMap(response.data);
+
       return decodedResponse.toFuture();
     } on DioError catch (error) {
       throw ServerException(error.toString(),
@@ -321,12 +271,7 @@ class VDRemoteDataSourceImpl extends VDRemoteDataSource {
       final decodedResponse =
           ResponseBodyModel<CreateIncidentResponseModel>.fromMap(response.data,
               parsedResult: parsedResult);
-      if (response.statusCode != 200) {
-        String errorMessage = decodedResponse.data?.responseMessage ??
-            decodedResponse.statusDetails?.message ??
-            ("errors_server_error_1").tr();
-        throw ServerException(errorMessage, statusCode: response.statusCode);
-      }
+
       return decodedResponse.toFuture();
     } on DioError catch (error) {
       var errorCode;
@@ -368,18 +313,13 @@ class VDRemoteDataSourceImpl extends VDRemoteDataSource {
       final decodedResponse =
           ResponseBodyModel<CreateIncidentResponseModel>.fromMap(response.data,
               parsedResult: parsedResult);
-      if (response.statusCode != 200) {
-        String errorMessage = decodedResponse.data?.responseMessage ??
-            decodedResponse.statusDetails?.message ??
-            ("errors_server_error_1").tr();
-        throw ServerException(errorMessage, statusCode: response.statusCode);
-      }
+
       return decodedResponse.toFuture();
     } on DioError catch (error) {
       var errorCode;
       try {
         final decodedResponse =
-            ApigeeResponseModel<CreateIncidentResponseModel>.fromMap(
+            ResponseBodyModel<CreateIncidentResponseModel>.fromMap(
           error.response?.data,
         );
         errorCode = decodedResponse.data?.responseCode;
@@ -410,15 +350,8 @@ class VDRemoteDataSourceImpl extends VDRemoteDataSource {
 
       var data = response.data["data"]["result"];
       print(data);
-      final decodedResponse =
-          ApigeeResponseModel<bool>.fromMap(response.data, parsedResult: data);
-      if (response.statusCode != 200) {
-        String errorMessage = decodedResponse.data?.responseMessage ??
-            decodedResponse.statusDetails?.message ??
-            ("errors_server_error_1").tr();
-        throw ServerException(errorMessage, statusCode: response.statusCode);
-      }
-      return decodedResponse.toFuture();
+
+      return data.toFuture();
     } on DioError catch (error) {
       throw ServerException(error.toString(),
           statusCode: error.response?.statusCode);
