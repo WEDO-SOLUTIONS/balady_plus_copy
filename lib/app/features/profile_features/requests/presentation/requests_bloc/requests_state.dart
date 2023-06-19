@@ -58,8 +58,8 @@ class RequestsState extends Equatable {
     this.requestNumberQuery,
     this.sortType = SortType.desc,
     this.errorMessage,
-    this.page = 1,
-    this.limit = 20,
+    this.page = 0,
+    this.limit = PaginationConstants.limit,
     this.hasReachedMax = false,
   });
 

@@ -78,13 +78,13 @@ class RequestSubTypeSelectedEvent extends RequestsEvent {
   List<Object> get props => [requestSubtype];
 }
 
-class SearchRequestsByNumberEvent extends RequestsEvent {
-  final String requestNumber;
+class SearchRequestsEvent extends RequestsEvent {
+  final String query;
 
-  const SearchRequestsByNumberEvent({required this.requestNumber});
+  const SearchRequestsEvent({required this.query});
 
   @override
-  List<Object> get props => [requestNumber];
+  List<Object> get props => [query];
 }
 
 class RequestsLoadMoreEvent extends RequestsEvent {}

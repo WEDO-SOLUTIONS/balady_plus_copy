@@ -16,7 +16,8 @@ import '../../requests_exports.dart'
         RequestsBloc,
         RequestsListItem,
         RequestsListShimmer,
-        RequestsState;
+        RequestsState,
+        SearchRequestsEvent;
 
 class RequestsPage extends StatelessWidget {
   const RequestsPage({super.key});
@@ -28,7 +29,13 @@ class RequestsPage extends StatelessWidget {
       child: Scaffold(
         appBar: DefaultAppBarWidget(
           title: 'requests'.tr(),
-          bottom: const AppBarSeachBar(),
+          bottom: AppBarSeachBar(
+            onChanged: (value) {
+              context.read<RequestsBloc>().add(
+                    SearchRequestsEvent(query: value),
+                  );
+            },
+          ),
           actions: const [
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 8),

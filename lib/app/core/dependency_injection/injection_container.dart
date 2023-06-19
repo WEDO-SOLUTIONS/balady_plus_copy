@@ -13,6 +13,7 @@ import '../dependency_injection/dependency_injection_exports.dart'
     show
         DashboardInjection,
         EntryPointInjection,
+        InvoicesInjection,
         LookupInjection,
         OTPInjection,
         RequestsInjection,
@@ -49,6 +50,8 @@ void initialize() {
   DashboardInjection.init();
   //? Requests
   RequestsInjection.init();
+  //? Invoices
+  InvoicesInjection.init();
 
   //! Core
   sl.registerLazySingleton(() => WebService(dio: sl()));

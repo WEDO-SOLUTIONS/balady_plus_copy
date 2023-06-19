@@ -38,7 +38,7 @@ class RequestsParamsModel extends Equatable {
       'identityNumber': identityNumber,
       'query': query,
       'licenceId': licenceId,
-      'requestNumber': requestNumber,
+      'requestNo': requestNumber,
       'page': page,
       'size': size,
       'productId': productId,

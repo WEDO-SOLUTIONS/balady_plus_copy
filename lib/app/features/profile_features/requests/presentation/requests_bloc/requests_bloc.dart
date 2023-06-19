@@ -75,9 +75,9 @@ class RequestsBloc extends Bloc<RequestsEvent, RequestsState> {
       );
     });
 
-    on<SearchRequestsByNumberEvent>((event, emit) async {
+    on<SearchRequestsEvent>((event, emit) async {
       emit(
-        state.copyWith(requestNumberQuery: event.requestNumber),
+        state.copyWith(requestNumberQuery: event.query),
       );
       add(GetRequestsEvent());
     });

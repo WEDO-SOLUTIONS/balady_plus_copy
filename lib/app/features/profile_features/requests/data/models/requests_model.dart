@@ -19,7 +19,7 @@ class RequestsModel extends RequestEntity {
       requestNumber: json['requestNumber'] as int,
       requestNumberAsText: json['requestNumberAsText'] as String? ?? '',
       requestStatusId: json['requestStatusId'] as int,
-      requestStatusName: json['requestStatusName'] as String,
+      requestStatusName: json['dashboardStatusName'] as String,
       requestTypeName: json['requestTypeName'] as String,
       licenseTypeName: json['licenseTypeName'] as String? ?? '',
       municipalityName: json['municipalityName'] as String,

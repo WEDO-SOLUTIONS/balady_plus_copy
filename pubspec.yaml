@@ -52,6 +52,7 @@ dependencies:
   internet_connection_checker: ^1.0.0+1
   # Http client for Dart, which supports Interceptors, Global configuration and others
   dio: ^4.0.6
+  pretty_dio_logger: 1.2.0-beta-1
   ##! Local Storage
   # Store sensitive data in secure storage
   flutter_secure_storage: ^6.0.0
