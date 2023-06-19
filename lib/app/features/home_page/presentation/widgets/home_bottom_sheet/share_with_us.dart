@@ -8,8 +8,9 @@ import '../../../../_shared_feature_/presentation/widgets/custom_popups_widgets.
 import '../../../../_shared_feature_/shared_feature_exports.dart'
     show
         BottomSheetDialog,
-        BottomSheetTitle,
         BottomSheetWithActions,
+        CustomTextWidget,
+        ElevatedButtonWidget,
         CustomTextWidget,
         ElevatedButtonWidget;
 import '../../../../vd/presentation/dialogs/vd_types_dialog.dart';

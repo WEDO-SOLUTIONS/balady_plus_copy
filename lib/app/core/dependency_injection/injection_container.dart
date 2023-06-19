@@ -22,8 +22,8 @@ import '../dependency_injection/dependency_injection_exports.dart'
         ServicesInjection,
         SignInInjection,
         SignUpInjection,
-        VDInjection,
-        OLDInjection;
+        OLDInjection,
+        VDInjection;
 import '../services/services_exports.dart'
     show
         EntryPointBridge,
