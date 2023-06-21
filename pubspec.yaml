@@ -124,6 +124,7 @@ dependencies:
       url: https://github.com/fluttercommunity/flutter_google_places
       #ref: v0.3.2
       ref: e104fa94452ec236dfb27cf5ea54fb72f280bc08
+  flutter_picker: ^2.1.0
   #test_package:
  #   path: packages/test_package
 
@@ -151,9 +152,7 @@ flutter:
     - assets/icons/svg/weather/
     - assets/icons/svg/profile/
     - assets/icons/svg/nearby/
-    - assets/icons/svg/vd/
     - assets/icons/png/
-    - assets/icons/png/vd/
     - assets/images/
     - assets/langs/
     - assets/services/

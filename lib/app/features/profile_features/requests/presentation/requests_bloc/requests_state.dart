@@ -72,20 +72,20 @@ class RequestsState extends Equatable {
     List<RequestEntity>? requests,
     BlocRequestStatus? requestStatusesStatus,
     List<RequestStatusEntity>? requestStatuses,
-    RequestStatusEntity? selectedRequestStatus,
+    Nullable<RequestStatusEntity?>? selectedRequestStatus,
     BlocRequestStatus? municipalitiesStatus,
     List<MunicipalityEntity>? municipalities,
-    MunicipalityEntity? selectedMunicipality,
+    Nullable<MunicipalityEntity?>? selectedMunicipality,
     BlocRequestStatus? subMunicipalitiesStatus,
     List<SubMunicipalityEntity>? subMunicipalities,
-    SubMunicipalityEntity? selectedSubMunicipality,
+    Nullable<SubMunicipalityEntity?>? selectedSubMunicipality,
     BlocRequestStatus? requestTypesStatus,
     List<RequestTypeEntity>? requestTypes,
-    RequestTypeEntity? selectedRequestType,
+    Nullable<RequestTypeEntity?>? selectedRequestType,
     BlocRequestStatus? requestSubTypesStatus,
     List<RequestSubTypeEntity>? requestSubTypes,
-    RequestSubTypeEntity? selectedRequestSubType,
-    DateTime? selectedRequestDate,
+    Nullable<RequestSubTypeEntity?>? selectedRequestSubType,
+    Nullable<DateTime?>? selectedRequestDate,
     String? requestNumberQuery,
     SortType? sortType,
     String? errorMessage,
@@ -99,25 +99,34 @@ class RequestsState extends Equatable {
       requestStatusesStatus:
           requestStatusesStatus ?? this.requestStatusesStatus,
       requestStatuses: requestStatuses ?? this.requestStatuses,
-      selectedRequestStatus:
-          selectedRequestStatus ?? this.selectedRequestStatus,
+      selectedRequestStatus: selectedRequestStatus == null
+          ? this.selectedRequestStatus
+          : selectedRequestStatus.value,
       municipalitiesStatus: municipalitiesStatus ?? this.municipalitiesStatus,
       municipalities: municipalities ?? this.municipalities,
-      selectedMunicipality: selectedMunicipality ?? this.selectedMunicipality,
+      selectedMunicipality: selectedMunicipality == null
+          ? this.selectedMunicipality
+          : selectedMunicipality.value,
       subMunicipalitiesStatus:
           subMunicipalitiesStatus ?? this.subMunicipalitiesStatus,
       subMunicipalities: subMunicipalities ?? this.subMunicipalities,
-      selectedSubMunicipality:
-          selectedSubMunicipality ?? this.selectedSubMunicipality,
+      selectedSubMunicipality: selectedSubMunicipality == null
+          ? this.selectedSubMunicipality
+          : selectedSubMunicipality.value,
       requestTypesStatus: requestTypesStatus ?? this.requestTypesStatus,
       requestTypes: requestTypes ?? this.requestTypes,
-      selectedRequestType: selectedRequestType ?? this.selectedRequestType,
+      selectedRequestType: selectedRequestType == null
+          ? this.selectedRequestType
+          : selectedRequestType.value,
       requestSubTypesStatus:
           requestSubTypesStatus ?? this.requestSubTypesStatus,
       requestSubTypes: requestSubTypes ?? this.requestSubTypes,
-      selectedRequestSubType:
-          selectedRequestSubType ?? this.selectedRequestSubType,
-      selectedRequestDate: selectedRequestDate ?? this.selectedRequestDate,
+      selectedRequestSubType: selectedRequestSubType == null
+          ? this.selectedRequestSubType
+          : selectedRequestSubType.value,
+      selectedRequestDate: selectedRequestDate == null
+          ? this.selectedRequestDate
+          : selectedRequestDate.value,
       requestNumberQuery: requestNumberQuery ?? this.requestNumberQuery,
       sortType: sortType ?? this.sortType,
       errorMessage: errorMessage ?? this.errorMessage,

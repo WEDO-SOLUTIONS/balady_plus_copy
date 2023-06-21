@@ -41,7 +41,6 @@ class LicensesInjection {
         getMunicipalities: sl(),
         getSubMunicipalities: sl(),
         getLicenseTypes: sl(),
-        getLicenseSubTypes: sl(),
       ),
     );
   }

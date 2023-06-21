@@ -1,10 +1,11 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 part of 'invoices_bloc.dart';
 
 abstract class InvoicesEvent extends Equatable {
   const InvoicesEvent();
 
   @override
-  List<Object> get props => [];
+  List<Object?> get props => [];
 }
 
 class GetInvoicesEvent extends InvoicesEvent {}
@@ -18,35 +19,6 @@ class InvoiceStatusSelectedEvent extends InvoicesEvent {
 
   @override
   List<Object> get props => [invoiceStatus];
-}
-
-class GetMunicipalitiesEvent extends InvoicesEvent {}
-
-class MunicipalitySelectedEvent extends InvoicesEvent {
-  final MunicipalityEntity municipality;
-
-  const MunicipalitySelectedEvent({required this.municipality});
-
-  @override
-  List<Object> get props => [municipality];
-}
-
-class GetSubMunicipalitiesEvent extends InvoicesEvent {
-  final MunicipalityEntity municipality;
-
-  const GetSubMunicipalitiesEvent({required this.municipality});
-
-  @override
-  List<Object> get props => [municipality];
-}
-
-class SubMunicipalitySelectedEvent extends InvoicesEvent {
-  final SubMunicipalityEntity subMunicipality;
-
-  const SubMunicipalitySelectedEvent({required this.subMunicipality});
-
-  @override
-  List<Object> get props => [subMunicipality];
 }
 
 class GetInvoiceTypesEvent extends InvoicesEvent {}
@@ -78,10 +50,19 @@ class InvoiceSubTypeSelectedEvent extends InvoicesEvent {
   List<Object> get props => [invoiceSubtype];
 }
 
-class SearchInvoicesEvent extends InvoicesEvent {
+class SearchWithInvoiceNumberEvent extends InvoicesEvent {
   final String query;
 
-  const SearchInvoicesEvent({required this.query});
+  const SearchWithInvoiceNumberEvent({required this.query});
+
+  @override
+  List<Object> get props => [query];
+}
+
+class SearchWithRequestNumberEvent extends InvoicesEvent {
+  final String query;
+
+  const SearchWithRequestNumberEvent({required this.query});
 
   @override
   List<Object> get props => [query];
@@ -91,10 +72,19 @@ class InvoicesLoadLookupsEvent extends InvoicesEvent {}
 
 class InvoicesLoadMoreEvent extends InvoicesEvent {}
 
-class InvoiceDateSelectedEvent extends InvoicesEvent {
+class InvoiceDueDateSelectedEvent extends InvoicesEvent {
   final DateTime date;
 
-  const InvoiceDateSelectedEvent({required this.date});
+  const InvoiceDueDateSelectedEvent({required this.date});
+
+  @override
+  List<Object> get props => [date];
+}
+
+class InvoiceIssueDateSelectedEvent extends InvoicesEvent {
+  final DateTime date;
+
+  const InvoiceIssueDateSelectedEvent({required this.date});
 
   @override
   List<Object> get props => [date];
@@ -112,3 +102,34 @@ class InvoicesSortChangedEvent extends InvoicesEvent {
 class ClearInvoicesFiltersEvent extends InvoicesEvent {}
 
 class ApplyInvoicesFiltersEvent extends InvoicesEvent {}
+
+class ResetInvoicesFiltersEvent extends InvoicesEvent {
+  final String? invoiceNumberQuery;
+  final String? requestNumberQuery;
+  final InvoiceStatusEntity? selectedInvoiceStatus;
+  final InvoiceTypeEntity? selectedInvoiceType;
+  final InvoiceSubTypeEntity? selectedInvoiceSubType;
+  final DateTime? selectedInvoiceDueDate;
+  final DateTime? selectedInvoiceIssueDate;
+
+  const ResetInvoicesFiltersEvent({
+    this.invoiceNumberQuery,
+    this.requestNumberQuery,
+    this.selectedInvoiceStatus,
+    this.selectedInvoiceType,
+    this.selectedInvoiceSubType,
+    this.selectedInvoiceDueDate,
+    this.selectedInvoiceIssueDate,
+  });
+
+  @override
+  List<Object?> get props => [
+        invoiceNumberQuery,
+        requestNumberQuery,
+        selectedInvoiceStatus,
+        selectedInvoiceType,
+        selectedInvoiceSubType,
+        selectedInvoiceDueDate,
+        selectedInvoiceIssueDate,
+      ];
+}

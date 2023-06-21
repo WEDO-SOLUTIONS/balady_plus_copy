@@ -4,12 +4,12 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../../core/utils/utils_exports.dart' show BlocRequestStatus;
 import '../../../../../_shared_feature_/shared_feature_exports.dart'
-    show BottomSheetDialog, BottomSheetList, DraggableSheetComponent, DropDownWithTitle;
-import '../../../requests_exports.dart'
     show
-        RequestTypeSelectedEvent,
-        RequestsBloc,
-        RequestsState;
+        BottomSheetDialog,
+        BottomSheetList,
+        DropDownWithTitle;
+import '../../../requests_exports.dart'
+    show RequestTypeSelectedEvent, RequestsBloc, RequestsState;
 
 class RequestsProductFilter extends StatelessWidget {
   const RequestsProductFilter({super.key});
@@ -31,23 +31,20 @@ class RequestsProductFilter extends StatelessWidget {
                 state.requestTypes.map((e) => e.name).toList();
             BottomSheetDialog.showDraggableSheet(
               context,
-              child: DraggableSheetComponent(
+              child: BottomSheetList(
                 title: "product".tr(),
-                height: 0.8,
-                body: BottomSheetList(
-                  items: items,
-                  selectedValue: state.selectedRequestType?.name,
-                  onTap: (item) {
-                    final requestType =
-                        state.requestTypes.where((e) => e.name == item).first;
-                    context.read<RequestsBloc>().add(
-                          RequestTypeSelectedEvent(
-                            requestType: requestType,
-                          ),
-                        );
-                    Navigator.pop(context);
-                  },
-                ),
+                items: items,
+                selectedValue: state.selectedRequestType?.name,
+                onTap: (item) {
+                  final requestType =
+                      state.requestTypes.where((e) => e.name == item).first;
+                  context.read<RequestsBloc>().add(
+                        RequestTypeSelectedEvent(
+                          requestType: requestType,
+                        ),
+                      );
+                  Navigator.pop(context);
+                },
               ),
             );
           },

@@ -5,14 +5,9 @@ import '../../../../../core/errors/errors_exports.dart'
     show NoDataFoundFailure, ServerFailure;
 import '../../../../../core/services/services_exports.dart' show NoParams;
 import '../../../../../core/utils/utils_exports.dart'
-    show BlocRequestStatus, PaginationConstants, SortType;
+    show BlocRequestStatus, Nullable, PaginationConstants, SortType;
 import '../../../requests/requests_exports.dart'
-    show
-        GetMunicipalities,
-        GetSubMunicipalities,
-        MunicipalityEntity,
-        SubMunicipalityEntity,
-        SubMunicipalityParams;
+    show GetMunicipalities, GetSubMunicipalities;
 import '../../invoices_exports.dart'
     show
         GetInvoiceStatuses,
@@ -55,10 +50,11 @@ class InvoicesBloc extends Bloc<InvoicesEvent, InvoicesState> {
           page: state.page,
           size: PaginationConstants.limit,
           invoiceNumber: state.invoiceNumberQuery,
-          creationDate: state.selectedInvoiceDate?.toIso8601String(),
-          dashboardStatusId: state.selectedInvoiceStatus?.id.toString(),
-          municipalityId: state.selectedMunicipality?.id.toString(),
-          subMunicipalityId: state.selectedSubMunicipality?.id.toString(),
+          requestNumber: state.requestNumberQuery,
+          invoiceStatusId: state.selectedInvoiceStatus?.id.toString(),
+          invoiceTypeId: state.selectedInvoiceType?.id.toString(),
+          issueDate: state.selectedInvoiceIssueDate?.toIso8601String(),
+          dueDate: state.selectedInvoiceDueDate?.toIso8601String(),
           sort: state.sortType,
         ),
       );
@@ -97,11 +93,16 @@ class InvoicesBloc extends Bloc<InvoicesEvent, InvoicesState> {
       );
     });
 
-    on<SearchInvoicesEvent>((event, emit) async {
+    on<SearchWithInvoiceNumberEvent>((event, emit) async {
       emit(
-        state.copyWith(invoiceNumberQuery: event.query),
+        state.copyWith(invoiceNumberQuery: Nullable(event.query.isEmpty ? null : event.query)),
       );
-      add(GetInvoicesEvent());
+    });
+
+    on<SearchWithRequestNumberEvent>((event, emit) async {
+      emit(
+        state.copyWith(requestNumberQuery: Nullable(event.query.isEmpty ? null : event.query)),
+      );
     });
 
     on<InvoicesLoadLookupsEvent>((event, emit) async {
@@ -110,9 +111,6 @@ class InvoicesBloc extends Bloc<InvoicesEvent, InvoicesState> {
       }
       if (state.invoiceStatusesStatus == BlocRequestStatus.initial) {
         add(GetInvoiceStatusesEvent());
-      }
-      if (state.municipalitiesStatus == BlocRequestStatus.initial) {
-        add(GetMunicipalitiesEvent());
       }
     });
 
@@ -148,92 +146,7 @@ class InvoicesBloc extends Bloc<InvoicesEvent, InvoicesState> {
     on<InvoiceStatusSelectedEvent>((event, emit) async {
       emit(
         state.copyWith(
-          selectedInvoiceStatus: event.invoiceStatus,
-        ),
-      );
-    });
-
-    on<GetMunicipalitiesEvent>((event, emit) async {
-      emit(
-        state.copyWith(
-          municipalitiesStatus: BlocRequestStatus.submissionGetLoading,
-        ),
-      );
-
-      final failureOrSuccess = await getMunicipalities(NoParams());
-
-      failureOrSuccess.fold(
-        (failure) {
-          emit(
-            state.copyWith(
-              municipalitiesStatus: BlocRequestStatus.submissionGetFailure,
-              errorMessage: (failure as ServerFailure).errorMessage,
-            ),
-          );
-        },
-        (municipalities) {
-          emit(
-            state.copyWith(
-              municipalitiesStatus: BlocRequestStatus.submissionGetSuccess,
-              municipalities: municipalities,
-            ),
-          );
-        },
-      );
-    });
-
-    on<MunicipalitySelectedEvent>((event, emit) async {
-      if (state.selectedMunicipality?.id == event.municipality.id) {
-        return;
-      }
-      add(GetSubMunicipalitiesEvent(municipality: event.municipality));
-      emit(
-        state.copyWith(
-          selectedMunicipality: event.municipality,
-        ),
-      );
-    });
-
-    on<GetSubMunicipalitiesEvent>((event, emit) async {
-      if (state.selectedMunicipality == null) {
-        return;
-      }
-      emit(
-        state.copyWith(
-          subMunicipalitiesStatus: BlocRequestStatus.submissionGetLoading,
-        ),
-      );
-
-      final failureOrSuccess = await getSubMunicipalities(
-        SubMunicipalityParams(
-          id: state.selectedMunicipality!.municipalId,
-        ),
-      );
-
-      failureOrSuccess.fold(
-        (failure) {
-          emit(
-            state.copyWith(
-              subMunicipalitiesStatus: BlocRequestStatus.submissionGetFailure,
-              errorMessage: (failure as ServerFailure).errorMessage,
-            ),
-          );
-        },
-        (subMunicipalities) {
-          emit(
-            state.copyWith(
-              subMunicipalitiesStatus: BlocRequestStatus.submissionGetSuccess,
-              subMunicipalities: subMunicipalities,
-            ),
-          );
-        },
-      );
-    });
-
-    on<SubMunicipalitySelectedEvent>((event, emit) async {
-      emit(
-        state.copyWith(
-          selectedSubMunicipality: event.subMunicipality,
+          selectedInvoiceStatus: Nullable(event.invoiceStatus),
         ),
       );
     });
@@ -275,7 +188,7 @@ class InvoicesBloc extends Bloc<InvoicesEvent, InvoicesState> {
 
       emit(
         state.copyWith(
-          selectedInvoiceType: event.invoiceType,
+          selectedInvoiceType: Nullable(event.invoiceType),
         ),
       );
     });
@@ -319,7 +232,7 @@ class InvoicesBloc extends Bloc<InvoicesEvent, InvoicesState> {
     on<InvoiceSubTypeSelectedEvent>((event, emit) async {
       emit(
         state.copyWith(
-          selectedInvoiceSubType: event.invoiceSubtype,
+          selectedInvoiceSubType: Nullable(event.invoiceSubtype),
         ),
       );
     });
@@ -337,11 +250,18 @@ class InvoicesBloc extends Bloc<InvoicesEvent, InvoicesState> {
       add(GetInvoicesEvent());
     });
 
-    //InvoiceDateSelectedEvent
-    on<InvoiceDateSelectedEvent>((event, emit) async {
+    on<InvoiceDueDateSelectedEvent>((event, emit) async {
       emit(
         state.copyWith(
-          selectedInvoiceDate: event.date,
+          selectedInvoiceDueDate: Nullable(event.date),
+        ),
+      );
+    });
+
+    on<InvoiceIssueDateSelectedEvent>((event, emit) async {
+      emit(
+        state.copyWith(
+          selectedInvoiceDueDate: Nullable(event.date),
         ),
       );
     });
@@ -355,7 +275,18 @@ class InvoicesBloc extends Bloc<InvoicesEvent, InvoicesState> {
     });
 
     on<ClearInvoicesFiltersEvent>((event, emit) async {
-      emit(state.clearFilters());
+      emit(
+        state.copyWith(
+          selectedInvoiceType: Nullable(null),
+          selectedInvoiceSubType: Nullable(null),
+          selectedInvoiceStatus: Nullable(null),
+          selectedInvoiceDueDate: Nullable(null),
+          selectedInvoiceIssueDate: Nullable(null),
+          invoiceNumberQuery: Nullable(null),
+          requestNumberQuery: Nullable(null),
+          page: 0,
+        ),
+      );
       add(GetInvoicesEvent());
     });
 
@@ -364,6 +295,18 @@ class InvoicesBloc extends Bloc<InvoicesEvent, InvoicesState> {
         page: 0,
       ));
       add(GetInvoicesEvent());
+    });
+
+    on<ResetInvoicesFiltersEvent>((event, emit) async {
+      emit(state.copyWith(
+        selectedInvoiceType: Nullable(event.selectedInvoiceType),
+        selectedInvoiceSubType: Nullable(event.selectedInvoiceSubType),
+        selectedInvoiceDueDate: Nullable(event.selectedInvoiceDueDate),
+        selectedInvoiceIssueDate: Nullable(event.selectedInvoiceIssueDate),
+        selectedInvoiceStatus: Nullable(event.selectedInvoiceStatus),
+        invoiceNumberQuery: Nullable(event.invoiceNumberQuery),
+        requestNumberQuery: Nullable(event.requestNumberQuery),
+      ));
     });
   }
 }

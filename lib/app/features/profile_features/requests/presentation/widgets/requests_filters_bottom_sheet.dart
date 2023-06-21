@@ -1,12 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../_shared_feature_/shared_feature_exports.dart'
-    show ElevatedButtonWidget;
 import '../../requests_exports.dart'
     show
-        ApplyRequestsFiltersEvent,
-        ClearRequestsFiltersEvent,
         RequestsBloc,
         RequestsDateFilter,
         RequestsMunicipalityFilter,
@@ -30,28 +26,15 @@ class RequestsFilterBottomSheet extends StatelessWidget {
       child: SizedBox(
         width: double.infinity,
         child: Builder(builder: (context) {
-          return Column(
+          return const Column(
             children: [
-              const RequestsProductFilter(),
-              const RequestsTypeFilter(),
-              const RequestsDateFilter(),
-              const RequestsStatusFilter(),
-              const RequestsMunicipalityFilter(),
-              const RequestsSubMunicipalityFilter(),
-              const SizedBox(height: 16),
-              ElevatedButtonWidget.apply(onPressed: () {
-                context.read<RequestsBloc>().add(
-                      ApplyRequestsFiltersEvent(),
-                    );
-                Navigator.pop(context);
-              }),
-              const SizedBox(height: 16),
-              ElevatedButtonWidget.deletaAll(onPressed: () {
-                context.read<RequestsBloc>().add(
-                      ClearRequestsFiltersEvent(),
-                    );
-                Navigator.pop(context);
-              }),
+              RequestsProductFilter(),
+              RequestsTypeFilter(),
+              RequestsDateFilter(),
+              RequestsStatusFilter(),
+              RequestsMunicipalityFilter(),
+              RequestsSubMunicipalityFilter(),
+              SizedBox(height: 150),
             ],
           );
         }),

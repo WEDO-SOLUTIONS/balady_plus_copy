@@ -55,6 +55,7 @@ export 'presentation/widgets/filters/request_status_filter.dart';
 export 'presentation/widgets/filters/request_sub_municipality_filter.dart';
 export 'presentation/widgets/filters/request_type_filter.dart';
 export 'presentation/widgets/request_parameter.dart';
+export 'presentation/widgets/requests_filters_actions.dart';
 export 'presentation/widgets/requests_filters_bottom_sheet.dart';
 export 'presentation/widgets/requests_list.dart';
 export 'presentation/widgets/requests_list_item.dart';

@@ -28,7 +28,7 @@ class ProfileCard extends StatelessWidget {
         } else {
           await BottomSheetDialog.showDraggableSheet(
             context,
-            child: BottomSheetTitle(
+            child: BottomSheetWithActions(
               title: "choose_profile".tr(),
               body: Column(
                 mainAxisSize: MainAxisSize.min,

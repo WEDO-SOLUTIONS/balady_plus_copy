@@ -7,18 +7,19 @@ import '../../../../../core/dependency_injection/dependency_injection_exports.da
 import '../../../../_shared_feature_/shared_feature_exports.dart'
     show
         BottomSheetDialog,
+        BottomSheetWithActions,
         DefaultAppBarWidget,
-        DraggableSheetComponent,
         FilterIcon;
-import '../../../requests/requests_exports.dart' show AppBarSeachBar;
 import '../../invoices_exports.dart'
     show
         GetInvoicesEvent,
         InvoicesBloc,
+        InvoicesFilterActions,
         InvoicesFilterBottomSheet,
         InvoicesList,
         InvoicesLoadLookupsEvent,
-        SearchInvoicesEvent;
+        InvoicesState,
+        ResetInvoicesFiltersEvent;
 
 class InvoicesPage extends StatelessWidget {
   const InvoicesPage({super.key});
@@ -32,30 +33,58 @@ class InvoicesPage extends StatelessWidget {
           return Scaffold(
             appBar: DefaultAppBarWidget(
               title: 'invoices'.tr(),
-              bottom: AppBarSeachBar(
-                onChanged: (value) {
-                  context.read<InvoicesBloc>().add(
-                        SearchInvoicesEvent(
-                          query: value,
-                        ),
-                      );
-                },
-              ),
               actions: [
-                FilterIcon(
-                  onTap: () {
-                    context
-                        .read<InvoicesBloc>()
-                        .add(InvoicesLoadLookupsEvent());
-                    BottomSheetDialog.showDraggableSheet(
-                      context,
-                      child: DraggableSheetComponent(
-                        title: "filters".tr(),
-                        height: 0.9,
-                        body: InvoicesFilterBottomSheet(
-                          invoicesBloc: context.read<InvoicesBloc>(),
-                        ),
-                      ),
+                BlocBuilder<InvoicesBloc, InvoicesState>(
+                  builder: (context, state) {
+                    return FilterIcon(
+                      onTap: () async {
+                        context
+                            .read<InvoicesBloc>()
+                            .add(InvoicesLoadLookupsEvent());
+
+                        final selectedInvoiceType = state.selectedInvoiceType;
+                        final selectedInvoiceSubType =
+                            state.selectedInvoiceSubType;
+
+                        final selectedInvoiceStatus =
+                            state.selectedInvoiceStatus;
+                        final selectedInvoiceDueDate =
+                            state.selectedInvoiceDueDate;
+                        final selectedInvoiceIssueDate =
+                            state.selectedInvoiceIssueDate;
+                        final invoiceNumberQuery = state.invoiceNumberQuery;
+                        final requestNumberQuery = state.requestNumberQuery;
+
+                        final bool? actionTaked =
+                            await BottomSheetDialog.showDraggableSheet(
+                          context,
+                          child: BottomSheetWithActions(
+                            title: "filters".tr(),
+                            body: InvoicesFilterBottomSheet(
+                              invoicesBloc: context.read<InvoicesBloc>(),
+                            ),
+                            action: InvoicesFilterActions(
+                              invoicesBloc: context.read<InvoicesBloc>(),
+                            ),
+                          ),
+                        );
+                        if (actionTaked != true && context.mounted) {
+                          context.read<InvoicesBloc>().add(
+                                ResetInvoicesFiltersEvent(
+                                  selectedInvoiceType: selectedInvoiceType,
+                                  selectedInvoiceSubType:
+                                      selectedInvoiceSubType,
+                                  selectedInvoiceStatus: selectedInvoiceStatus,
+                                  selectedInvoiceDueDate:
+                                      selectedInvoiceDueDate,
+                                  selectedInvoiceIssueDate:
+                                      selectedInvoiceIssueDate,
+                                  invoiceNumberQuery: invoiceNumberQuery,
+                                  requestNumberQuery: requestNumberQuery,
+                                ),
+                              );
+                        }
+                      },
                     );
                   },
                 ),

@@ -7,16 +7,19 @@ import '../../../../../core/dependency_injection/dependency_injection_exports.da
 import '../../../../_shared_feature_/shared_feature_exports.dart'
     show
         BottomSheetDialog,
+        BottomSheetWithActions,
         DefaultAppBarWidget,
-        DraggableSheetComponent,
         FilterIcon;
 import '../../requests_exports.dart'
     show
         AppBarSeachBar,
         GetRequestsEvent,
         RequestsBloc,
+        RequestsFilterActions,
         RequestsList,
         RequestsLoadLookupsEvent,
+        RequestsState,
+        ResetRequestsFiltersEvent,
         SearchRequestsEvent;
 import '../widgets/requests_filters_bottom_sheet.dart';
 
@@ -39,18 +42,49 @@ class RequestsPage extends StatelessWidget {
               },
             ),
             actions: [
-              FilterIcon(
-                onTap: () {
-                  context.read<RequestsBloc>().add(RequestsLoadLookupsEvent());
-                  BottomSheetDialog.showDraggableSheet(
-                    context,
-                    child: DraggableSheetComponent(
-                      title: "filters".tr(),
-                      height: 0.9,
-                      body: RequestsFilterBottomSheet(
-                        requestsBloc: context.read<RequestsBloc>(),
-                      ),
-                    ),
+              BlocBuilder<RequestsBloc, RequestsState>(
+                builder: (context, state) {
+                  return FilterIcon(
+                    onTap: () async {
+                      context
+                          .read<RequestsBloc>()
+                          .add(RequestsLoadLookupsEvent());
+                      final selectedRequestStatus = state.selectedRequestStatus;
+                      final selectedMunicipality = state.selectedMunicipality;
+                      final selectedSubMunicipality =
+                          state.selectedSubMunicipality;
+                      final selectedRequestType = state.selectedRequestType;
+                      final selectedRequestSubType =
+                          state.selectedRequestSubType;
+                      final selectedRequestDate = state.selectedRequestDate;
+
+                      final bool? actionTaked =
+                          await BottomSheetDialog.showDraggableSheet(
+                        context,
+                        child: BottomSheetWithActions(
+                          title: "filters".tr(),
+                          body: RequestsFilterBottomSheet(
+                            requestsBloc: context.read<RequestsBloc>(),
+                          ),
+                          action: RequestsFilterActions(
+                            requestsBloc: context.read<RequestsBloc>(),
+                          ),
+                        ),
+                      );
+                      if (actionTaked != true && context.mounted) {
+                        context.read<RequestsBloc>().add(
+                              ResetRequestsFiltersEvent(
+                                selectedRequestStatus: selectedRequestStatus,
+                                selectedMunicipality: selectedMunicipality,
+                                selectedSubMunicipality:
+                                    selectedSubMunicipality,
+                                selectedRequestType: selectedRequestType,
+                                selectedRequestSubType: selectedRequestSubType,
+                                selectedRequestDate: selectedRequestDate,
+                              ),
+                            );
+                      }
+                    },
                   );
                 },
               ),

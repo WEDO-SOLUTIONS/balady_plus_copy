@@ -7,7 +7,6 @@ import '../../../../../_shared_feature_/shared_feature_exports.dart'
     show
         BottomSheetDialog,
         BottomSheetList,
-        DraggableSheetComponent,
         DropDownWithTitle,
         MessageDialog,
         RetryWidget;
@@ -62,24 +61,21 @@ class LicensesSubMunicipalityFilter extends StatelessWidget {
                 state.subMunicipalities.map((e) => e.name).toList();
             BottomSheetDialog.showDraggableSheet(
               context,
-              child: DraggableSheetComponent(
+              child: BottomSheetList(
                 title: "sub_municipality".tr(),
-                height: 0.8,
-                body: BottomSheetList(
-                  items: items,
-                  selectedValue: state.selectedSubMunicipality?.name,
-                  onTap: (item) {
-                    final selectedItem = state.subMunicipalities
-                        .where((e) => e.name == item)
-                        .first;
-                    context.read<LicensesBloc>().add(
-                          SubMunicipalitySelectedEvent(
-                            subMunicipality: selectedItem,
-                          ),
-                        );
-                    Navigator.pop(context);
-                  },
-                ),
+                items: items,
+                selectedValue: state.selectedSubMunicipality?.name,
+                onTap: (item) {
+                  final selectedItem = state.subMunicipalities
+                      .where((e) => e.name == item)
+                      .first;
+                  context.read<LicensesBloc>().add(
+                        SubMunicipalitySelectedEvent(
+                          subMunicipality: selectedItem,
+                        ),
+                      );
+                  Navigator.pop(context);
+                },
               ),
             );
           },

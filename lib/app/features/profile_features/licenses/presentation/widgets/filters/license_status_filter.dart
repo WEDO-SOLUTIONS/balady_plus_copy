@@ -7,7 +7,6 @@ import '../../../../../_shared_feature_/shared_feature_exports.dart'
     show
         BottomSheetDialog,
         BottomSheetList,
-        DraggableSheetComponent,
         DropDownWithTitle;
 import '../../../licenses_exports.dart'
     show LicenseStatusSelectedEvent, LicensesBloc, LicensesState;
@@ -32,24 +31,20 @@ class LicensesStatusFilter extends StatelessWidget {
                 state.licenseStatuses.map((e) => e.name).toList();
             BottomSheetDialog.showDraggableSheet(
               context,
-              child: DraggableSheetComponent(
+              child: BottomSheetList(
                 title: "product".tr(),
-                height: 0.8,
-                body: BottomSheetList(
-                  items: items,
-                  selectedValue: state.selectedLicenseStatus?.name,
-                  onTap: (item) {
-                    final licenseStatus = state.licenseStatuses
-                        .where((e) => e.name == item)
-                        .first;
-                    context.read<LicensesBloc>().add(
-                          LicenseStatusSelectedEvent(
-                            licenseStatus: licenseStatus,
-                          ),
-                        );
-                    Navigator.pop(context);
-                  },
-                ),
+                items: items,
+                selectedValue: state.selectedLicenseStatus?.name,
+                onTap: (item) {
+                  final licenseStatus =
+                      state.licenseStatuses.where((e) => e.name == item).first;
+                  context.read<LicensesBloc>().add(
+                        LicenseStatusSelectedEvent(
+                          licenseStatus: licenseStatus,
+                        ),
+                      );
+                  Navigator.pop(context);
+                },
               ),
             );
           },

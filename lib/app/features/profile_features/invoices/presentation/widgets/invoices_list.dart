@@ -38,6 +38,8 @@ class _InvoicesListState extends State<InvoicesList> {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<InvoicesBloc, InvoicesState>(
+      listenWhen: (previous, current) =>
+          previous.invoicesStatus != current.invoicesStatus,
       listener: (_, state) async {
         switch (state.invoicesStatus) {
           case BlocRequestStatus.submissionGetFailure:

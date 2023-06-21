@@ -7,7 +7,6 @@ import '../../../../../_shared_feature_/shared_feature_exports.dart'
     show
         BottomSheetDialog,
         BottomSheetList,
-        DraggableSheetComponent,
         DropDownWithTitle;
 import '../../../invoices_exports.dart'
     show InvoiceTypeSelectedEvent, InvoicesBloc, InvoicesState;
@@ -32,23 +31,20 @@ class InvoicesProductFilter extends StatelessWidget {
                 state.invoiceTypes.map((e) => e.name).toList();
             BottomSheetDialog.showDraggableSheet(
               context,
-              child: DraggableSheetComponent(
+              child: BottomSheetList(
                 title: "product".tr(),
-                height: 0.8,
-                body: BottomSheetList(
-                  items: items,
-                  selectedValue: state.selectedInvoiceType?.name,
-                  onTap: (item) {
-                    final invoiceType =
-                        state.invoiceTypes.where((e) => e.name == item).first;
-                    context.read<InvoicesBloc>().add(
-                          InvoiceTypeSelectedEvent(
-                            invoiceType: invoiceType,
-                          ),
-                        );
-                    Navigator.pop(context);
-                  },
-                ),
+                items: items,
+                selectedValue: state.selectedInvoiceType?.name,
+                onTap: (item) {
+                  final invoiceType =
+                      state.invoiceTypes.where((e) => e.name == item).first;
+                  context.read<InvoicesBloc>().add(
+                        InvoiceTypeSelectedEvent(
+                          invoiceType: invoiceType,
+                        ),
+                      );
+                  Navigator.pop(context);
+                },
               ),
             );
           },

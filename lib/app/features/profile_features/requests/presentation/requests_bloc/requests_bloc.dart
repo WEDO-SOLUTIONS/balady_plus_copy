@@ -5,7 +5,7 @@ import '../../../../../core/errors/errors_exports.dart'
     show NoDataFoundFailure, ServerFailure;
 import '../../../../../core/services/services_exports.dart' show NoParams;
 import '../../../../../core/utils/utils_exports.dart'
-    show BlocRequestStatus, PaginationConstants, SortType;
+    show BlocRequestStatus, Nullable, PaginationConstants, SortType;
 import '../../requests_exports.dart'
     show
         GetMunicipalities,
@@ -148,7 +148,7 @@ class RequestsBloc extends Bloc<RequestsEvent, RequestsState> {
     on<RequestStatusSelectedEvent>((event, emit) async {
       emit(
         state.copyWith(
-          selectedRequestStatus: event.requestStatus,
+          selectedRequestStatus: Nullable(event.requestStatus),
         ),
       );
     });
@@ -189,7 +189,7 @@ class RequestsBloc extends Bloc<RequestsEvent, RequestsState> {
       add(GetSubMunicipalitiesEvent(municipality: event.municipality));
       emit(
         state.copyWith(
-          selectedMunicipality: event.municipality,
+          selectedMunicipality: Nullable(event.municipality),
         ),
       );
     });
@@ -233,7 +233,7 @@ class RequestsBloc extends Bloc<RequestsEvent, RequestsState> {
     on<SubMunicipalitySelectedEvent>((event, emit) async {
       emit(
         state.copyWith(
-          selectedSubMunicipality: event.subMunicipality,
+          selectedSubMunicipality: Nullable(event.subMunicipality),
         ),
       );
     });
@@ -274,7 +274,7 @@ class RequestsBloc extends Bloc<RequestsEvent, RequestsState> {
       add(GetRequestSubtypesEvent(requestType: event.requestType));
       emit(
         state.copyWith(
-          selectedRequestType: event.requestType,
+          selectedRequestType: Nullable(event.requestType),
         ),
       );
     });
@@ -318,7 +318,7 @@ class RequestsBloc extends Bloc<RequestsEvent, RequestsState> {
     on<RequestSubTypeSelectedEvent>((event, emit) async {
       emit(
         state.copyWith(
-          selectedRequestSubType: event.requestSubtype,
+          selectedRequestSubType: Nullable(event.requestSubtype),
         ),
       );
     });
@@ -340,7 +340,7 @@ class RequestsBloc extends Bloc<RequestsEvent, RequestsState> {
     on<RequestDateSelectedEvent>((event, emit) async {
       emit(
         state.copyWith(
-          selectedRequestDate: event.date,
+          selectedRequestDate: Nullable(event.date),
         ),
       );
     });
@@ -354,7 +354,15 @@ class RequestsBloc extends Bloc<RequestsEvent, RequestsState> {
     });
 
     on<ClearRequestsFiltersEvent>((event, emit) async {
-      emit(state.clearFilters());
+      emit(state.copyWith(
+        selectedRequestStatus: Nullable(null),
+        selectedMunicipality: Nullable(null),
+        selectedSubMunicipality: Nullable(null),
+        selectedRequestType: Nullable(null),
+        selectedRequestSubType: Nullable(null),
+        selectedRequestDate: Nullable(null),
+        page: 0,
+      ));
       add(GetRequestsEvent());
     });
 
@@ -363,6 +371,17 @@ class RequestsBloc extends Bloc<RequestsEvent, RequestsState> {
         page: 0,
       ));
       add(GetRequestsEvent());
+    });
+
+    on<ResetRequestsFiltersEvent>((event, emit) async {
+      emit(state.copyWith(
+        selectedRequestStatus: Nullable(event.selectedRequestStatus),
+        selectedMunicipality: Nullable(event.selectedMunicipality),
+        selectedSubMunicipality: Nullable(event.selectedSubMunicipality),
+        selectedRequestType: Nullable(event.selectedRequestType),
+        selectedRequestSubType: Nullable(event.selectedRequestSubType),
+        selectedRequestDate: Nullable(event.selectedRequestDate),
+      ));
     });
   }
 }

@@ -4,12 +4,7 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../../core/utils/utils_exports.dart' show BlocRequestStatus;
 import '../../../../../_shared_feature_/shared_feature_exports.dart'
-    show
-        BottomSheetDialog,
-        BottomSheetList,
-        DraggableSheetComponent,
-        DropDownWithTitle,
-        MessageDialog;
+    show BottomSheetDialog, BottomSheetList, DropDownWithTitle, MessageDialog;
 import '../../../invoices_exports.dart'
     show InvoiceSubTypeSelectedEvent, InvoicesBloc, InvoicesState;
 
@@ -40,24 +35,20 @@ class InvoicesTypeFilter extends StatelessWidget {
                 state.invoiceSubTypes.map((e) => e.name).toList();
             BottomSheetDialog.showDraggableSheet(
               context,
-              child: DraggableSheetComponent(
+              child: BottomSheetList(
                 title: "invoice_type".tr(),
-                height: 0.8,
-                body: BottomSheetList(
-                  items: items,
-                  selectedValue: state.selectedInvoiceSubType?.name,
-                  onTap: (item) {
-                    final invoiceSubType = state.invoiceSubTypes
-                        .where((e) => e.name == item)
-                        .first;
-                    context.read<InvoicesBloc>().add(
-                          InvoiceSubTypeSelectedEvent(
-                            invoiceSubtype: invoiceSubType,
-                          ),
-                        );
-                    Navigator.pop(context);
-                  },
-                ),
+                items: items,
+                selectedValue: state.selectedInvoiceSubType?.name,
+                onTap: (item) {
+                  final invoiceSubType =
+                      state.invoiceSubTypes.where((e) => e.name == item).first;
+                  context.read<InvoicesBloc>().add(
+                        InvoiceSubTypeSelectedEvent(
+                          invoiceSubtype: invoiceSubType,
+                        ),
+                      );
+                  Navigator.pop(context);
+                },
               ),
             );
           },

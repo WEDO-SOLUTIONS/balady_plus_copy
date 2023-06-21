@@ -19,12 +19,8 @@ class LicensesState extends Equatable {
   final BlocRequestStatus licenseTypesStatus;
   final List<LicenseTypeEntity> licenseTypes;
   final LicenseTypeEntity? selectedLicenseType;
-  //license sub types
-  final BlocRequestStatus licenseSubTypesStatus;
-  final List<LicenseSubTypeEntity> licenseSubTypes;
-  final LicenseSubTypeEntity? selectedLicenseSubType;
   // license Date
-  final DateTime? selectedLicenseDate;
+  final DateTime? selectedLicenseEndDate;
   // license number query
   final String? licenseNumberQuery;
   //sort type
@@ -51,10 +47,7 @@ class LicensesState extends Equatable {
     this.licenseTypesStatus = BlocRequestStatus.initial,
     this.licenseTypes = const [],
     this.selectedLicenseType,
-    this.licenseSubTypesStatus = BlocRequestStatus.initial,
-    this.licenseSubTypes = const [],
-    this.selectedLicenseSubType,
-    this.selectedLicenseDate,
+    this.selectedLicenseEndDate,
     this.licenseNumberQuery,
     this.sortType = SortType.desc,
     this.errorMessage,
@@ -72,20 +65,17 @@ class LicensesState extends Equatable {
     List<LicenseEntity>? licenses,
     BlocRequestStatus? licenseStatusesStatus,
     List<LicenseStatusEntity>? licenseStatuses,
-    LicenseStatusEntity? selectedLicenseStatus,
+    Nullable<LicenseStatusEntity?>? selectedLicenseStatus,
     BlocRequestStatus? municipalitiesStatus,
     List<MunicipalityEntity>? municipalities,
-    MunicipalityEntity? selectedMunicipality,
+    Nullable<MunicipalityEntity?>? selectedMunicipality,
     BlocRequestStatus? subMunicipalitiesStatus,
     List<SubMunicipalityEntity>? subMunicipalities,
-    SubMunicipalityEntity? selectedSubMunicipality,
+    Nullable<SubMunicipalityEntity?>? selectedSubMunicipality,
     BlocRequestStatus? licenseTypesStatus,
     List<LicenseTypeEntity>? licenseTypes,
-    LicenseTypeEntity? selectedLicenseType,
-    BlocRequestStatus? licenseSubTypesStatus,
-    List<LicenseSubTypeEntity>? licenseSubTypes,
-    LicenseSubTypeEntity? selectedLicenseSubType,
-    DateTime? selectedLicenseDate,
+    Nullable<LicenseTypeEntity?>? selectedLicenseType,
+    Nullable<DateTime?>? selectedLicenseDate,
     String? licenseNumberQuery,
     SortType? sortType,
     String? errorMessage,
@@ -99,25 +89,25 @@ class LicensesState extends Equatable {
       licenseStatusesStatus:
           licenseStatusesStatus ?? this.licenseStatusesStatus,
       licenseStatuses: licenseStatuses ?? this.licenseStatuses,
-      selectedLicenseStatus:
-          selectedLicenseStatus ?? this.selectedLicenseStatus,
+      selectedLicenseStatus: selectedLicenseStatus == null
+          ? this.selectedLicenseStatus
+          : selectedLicenseStatus.value,
       municipalitiesStatus: municipalitiesStatus ?? this.municipalitiesStatus,
       municipalities: municipalities ?? this.municipalities,
-      selectedMunicipality: selectedMunicipality ?? this.selectedMunicipality,
+      selectedMunicipality: selectedMunicipality == null
+          ? this.selectedMunicipality
+          : selectedMunicipality.value,
       subMunicipalitiesStatus:
           subMunicipalitiesStatus ?? this.subMunicipalitiesStatus,
       subMunicipalities: subMunicipalities ?? this.subMunicipalities,
-      selectedSubMunicipality:
-          selectedSubMunicipality ?? this.selectedSubMunicipality,
+      selectedSubMunicipality: selectedSubMunicipality == null
+          ? this.selectedSubMunicipality
+          : selectedSubMunicipality.value,
       licenseTypesStatus: licenseTypesStatus ?? this.licenseTypesStatus,
       licenseTypes: licenseTypes ?? this.licenseTypes,
-      selectedLicenseType: selectedLicenseType ?? this.selectedLicenseType,
-      licenseSubTypesStatus:
-          licenseSubTypesStatus ?? this.licenseSubTypesStatus,
-      licenseSubTypes: licenseSubTypes ?? this.licenseSubTypes,
-      selectedLicenseSubType:
-          selectedLicenseSubType ?? this.selectedLicenseSubType,
-      selectedLicenseDate: selectedLicenseDate ?? this.selectedLicenseDate,
+      selectedLicenseType: selectedLicenseType == null
+          ? this.selectedLicenseType
+          : selectedLicenseType.value,
       licenseNumberQuery: licenseNumberQuery ?? this.licenseNumberQuery,
       sortType: sortType ?? this.sortType,
       errorMessage: errorMessage ?? this.errorMessage,
@@ -126,33 +116,6 @@ class LicensesState extends Equatable {
       noMoreData: noMoreData ?? this.noMoreData,
     );
   }
-
-  LicensesState clearFilters() => LicensesState(
-        licensesStatus: licensesStatus,
-        licenses: licenses,
-        licenseStatusesStatus: licenseStatusesStatus,
-        licenseStatuses: licenseStatuses,
-        selectedLicenseStatus: null,
-        municipalitiesStatus: municipalitiesStatus,
-        municipalities: municipalities,
-        selectedMunicipality: null,
-        subMunicipalitiesStatus: subMunicipalitiesStatus,
-        subMunicipalities: subMunicipalities,
-        selectedSubMunicipality: null,
-        licenseTypesStatus: licenseTypesStatus,
-        licenseTypes: licenseTypes,
-        selectedLicenseType: null,
-        licenseSubTypesStatus: licenseSubTypesStatus,
-        licenseSubTypes: licenseSubTypes,
-        selectedLicenseSubType: null,
-        selectedLicenseDate: selectedLicenseDate,
-        licenseNumberQuery: licenseNumberQuery,
-        sortType: sortType,
-        errorMessage: errorMessage,
-        page: page,
-        limit: limit,
-        noMoreData: noMoreData,
-      );
 
   @override
   List<Object?> get props => [
@@ -170,10 +133,7 @@ class LicensesState extends Equatable {
         licenseTypesStatus,
         licenseTypes,
         selectedLicenseType,
-        licenseSubTypesStatus,
-        licenseSubTypes,
-        selectedLicenseSubType,
-        selectedLicenseDate,
+        selectedLicenseEndDate,
         licenseNumberQuery,
         sortType,
         errorMessage,

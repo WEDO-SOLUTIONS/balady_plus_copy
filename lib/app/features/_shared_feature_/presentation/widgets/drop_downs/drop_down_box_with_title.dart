@@ -13,6 +13,7 @@ class DropDownWithTitle extends StatelessWidget {
   final VoidCallback onTap;
   final bool loading;
   final Widget? retryWidget;
+  final bool showArrow;
 
   const DropDownWithTitle({
     super.key,
@@ -21,6 +22,7 @@ class DropDownWithTitle extends StatelessWidget {
     required this.onTap,
     this.loading = false,
     this.retryWidget,
+    this.showArrow = true,
   });
 
   @override
@@ -65,13 +67,14 @@ class DropDownWithTitle extends StatelessWidget {
                       textStyle: AppStyle.dropDownValueTextStle,
                     ),
                     const Spacer(),
-                    SvgPicture.asset(
-                      IconPath.arrowDown,
-                      colorFilter: const ColorFilter.mode(
-                        AppColor.blackModern600Light,
-                        BlendMode.srcIn,
+                    if (showArrow)
+                      SvgPicture.asset(
+                        IconPath.arrowDown,
+                        colorFilter: const ColorFilter.mode(
+                          AppColor.blackModern600Light,
+                          BlendMode.srcIn,
+                        ),
                       ),
-                    ),
                   ],
                 ),
               ),

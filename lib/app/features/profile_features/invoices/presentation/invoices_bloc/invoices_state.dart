@@ -3,18 +3,6 @@ part of 'invoices_bloc.dart';
 class InvoicesState extends Equatable {
   final BlocRequestStatus invoicesStatus;
   final List<InvoiceEntity> invoices;
-  //invoice statuses
-  final BlocRequestStatus invoiceStatusesStatus;
-  final List<InvoiceStatusEntity> invoiceStatuses;
-  final InvoiceStatusEntity? selectedInvoiceStatus;
-  //municipalities
-  final BlocRequestStatus municipalitiesStatus;
-  final List<MunicipalityEntity> municipalities;
-  final MunicipalityEntity? selectedMunicipality;
-  //sub municipalities
-  final BlocRequestStatus subMunicipalitiesStatus;
-  final List<SubMunicipalityEntity> subMunicipalities;
-  final SubMunicipalityEntity? selectedSubMunicipality;
   //invoice types
   final BlocRequestStatus invoiceTypesStatus;
   final List<InvoiceTypeEntity> invoiceTypes;
@@ -23,10 +11,16 @@ class InvoicesState extends Equatable {
   final BlocRequestStatus invoiceSubTypesStatus;
   final List<InvoiceSubTypeEntity> invoiceSubTypes;
   final InvoiceSubTypeEntity? selectedInvoiceSubType;
+  //invoice statuses
+  final BlocRequestStatus invoiceStatusesStatus;
+  final List<InvoiceStatusEntity> invoiceStatuses;
+  final InvoiceStatusEntity? selectedInvoiceStatus;
   // invoice Date
-  final DateTime? selectedInvoiceDate;
+  final DateTime? selectedInvoiceDueDate;
+  final DateTime? selectedInvoiceIssueDate;
   // invoice number query
   final String? invoiceNumberQuery;
+  final String? requestNumberQuery;
   //sort type
   final SortType sortType;
   //error message
@@ -39,23 +33,19 @@ class InvoicesState extends Equatable {
   const InvoicesState({
     this.invoicesStatus = BlocRequestStatus.initial,
     this.invoices = const [],
-    this.invoiceStatusesStatus = BlocRequestStatus.initial,
-    this.invoiceStatuses = const [],
-    this.selectedInvoiceStatus,
-    this.municipalitiesStatus = BlocRequestStatus.initial,
-    this.municipalities = const [],
-    this.selectedMunicipality,
-    this.subMunicipalitiesStatus = BlocRequestStatus.initial,
-    this.subMunicipalities = const [],
-    this.selectedSubMunicipality,
     this.invoiceTypesStatus = BlocRequestStatus.initial,
     this.invoiceTypes = const [],
     this.selectedInvoiceType,
     this.invoiceSubTypesStatus = BlocRequestStatus.initial,
     this.invoiceSubTypes = const [],
     this.selectedInvoiceSubType,
-    this.selectedInvoiceDate,
+    this.invoiceStatusesStatus = BlocRequestStatus.initial,
+    this.invoiceStatuses = const [],
+    this.selectedInvoiceStatus,
+    this.selectedInvoiceDueDate,
+    this.selectedInvoiceIssueDate,
     this.invoiceNumberQuery,
+    this.requestNumberQuery,
     this.sortType = SortType.desc,
     this.errorMessage,
     this.page = 0,
@@ -72,109 +62,73 @@ class InvoicesState extends Equatable {
     List<InvoiceEntity>? invoices,
     BlocRequestStatus? invoiceStatusesStatus,
     List<InvoiceStatusEntity>? invoiceStatuses,
-    InvoiceStatusEntity? selectedInvoiceStatus,
-    BlocRequestStatus? municipalitiesStatus,
-    List<MunicipalityEntity>? municipalities,
-    MunicipalityEntity? selectedMunicipality,
-    BlocRequestStatus? subMunicipalitiesStatus,
-    List<SubMunicipalityEntity>? subMunicipalities,
-    SubMunicipalityEntity? selectedSubMunicipality,
+    Nullable<InvoiceStatusEntity?>? selectedInvoiceStatus,
     BlocRequestStatus? invoiceTypesStatus,
     List<InvoiceTypeEntity>? invoiceTypes,
-    InvoiceTypeEntity? selectedInvoiceType,
+    Nullable<InvoiceTypeEntity?>? selectedInvoiceType,
     BlocRequestStatus? invoiceSubTypesStatus,
     List<InvoiceSubTypeEntity>? invoiceSubTypes,
-    InvoiceSubTypeEntity? selectedInvoiceSubType,
-    DateTime? selectedInvoiceDate,
-    String? invoiceNumberQuery,
+    Nullable<InvoiceSubTypeEntity?>? selectedInvoiceSubType,
+    Nullable<DateTime?>? selectedInvoiceDueDate,
+    Nullable<DateTime?>? selectedInvoiceIssueDate,
+    Nullable<String?>? invoiceNumberQuery,
+    Nullable<String?>? requestNumberQuery,
     SortType? sortType,
     String? errorMessage,
     int? page,
     int? limit,
     bool? noMoreData,
-  }) {
-    return InvoicesState(
-      invoicesStatus: invoicesStatus ?? this.invoicesStatus,
-      invoices: invoices ?? this.invoices,
-      invoiceStatusesStatus:
-          invoiceStatusesStatus ?? this.invoiceStatusesStatus,
-      invoiceStatuses: invoiceStatuses ?? this.invoiceStatuses,
-      selectedInvoiceStatus:
-          selectedInvoiceStatus ?? this.selectedInvoiceStatus,
-      municipalitiesStatus: municipalitiesStatus ?? this.municipalitiesStatus,
-      municipalities: municipalities ?? this.municipalities,
-      selectedMunicipality: selectedMunicipality ?? this.selectedMunicipality,
-      subMunicipalitiesStatus:
-          subMunicipalitiesStatus ?? this.subMunicipalitiesStatus,
-      subMunicipalities: subMunicipalities ?? this.subMunicipalities,
-      selectedSubMunicipality:
-          selectedSubMunicipality ?? this.selectedSubMunicipality,
-      invoiceTypesStatus: invoiceTypesStatus ?? this.invoiceTypesStatus,
-      invoiceTypes: invoiceTypes ?? this.invoiceTypes,
-      selectedInvoiceType: selectedInvoiceType ?? this.selectedInvoiceType,
-      invoiceSubTypesStatus:
-          invoiceSubTypesStatus ?? this.invoiceSubTypesStatus,
-      invoiceSubTypes: invoiceSubTypes ?? this.invoiceSubTypes,
-      selectedInvoiceSubType:
-          selectedInvoiceSubType ?? this.selectedInvoiceSubType,
-      selectedInvoiceDate: selectedInvoiceDate ?? this.selectedInvoiceDate,
-      invoiceNumberQuery: invoiceNumberQuery ?? this.invoiceNumberQuery,
-      sortType: sortType ?? this.sortType,
-      errorMessage: errorMessage ?? this.errorMessage,
-      page: page ?? this.page,
-      limit: limit ?? this.limit,
-      noMoreData: noMoreData ?? this.noMoreData,
-    );
-  }
-
-  InvoicesState clearFilters() => InvoicesState(
-        invoicesStatus: invoicesStatus,
-        invoices: invoices,
-        invoiceStatusesStatus: invoiceStatusesStatus,
-        invoiceStatuses: invoiceStatuses,
-        selectedInvoiceStatus: null,
-        municipalitiesStatus: municipalitiesStatus,
-        municipalities: municipalities,
-        selectedMunicipality: null,
-        subMunicipalitiesStatus: subMunicipalitiesStatus,
-        subMunicipalities: subMunicipalities,
-        selectedSubMunicipality: null,
-        invoiceTypesStatus: invoiceTypesStatus,
-        invoiceTypes: invoiceTypes,
-        selectedInvoiceType: null,
-        invoiceSubTypesStatus: invoiceSubTypesStatus,
-        invoiceSubTypes: invoiceSubTypes,
-        selectedInvoiceSubType: null,
-        selectedInvoiceDate: selectedInvoiceDate,
-        invoiceNumberQuery: invoiceNumberQuery,
-        sortType: sortType,
+  }) =>
+      InvoicesState(
+        invoicesStatus: invoicesStatus ?? this.invoicesStatus,
+        invoices: invoices ?? this.invoices,
+        invoiceStatusesStatus:
+            invoiceStatusesStatus ?? this.invoiceStatusesStatus,
+        invoiceStatuses: invoiceStatuses ?? this.invoiceStatuses,
+        selectedInvoiceStatus:
+            selectedInvoiceStatus == null ? this.selectedInvoiceStatus : selectedInvoiceStatus.value,
+        invoiceTypesStatus: invoiceTypesStatus ?? this.invoiceTypesStatus,
+        invoiceTypes: invoiceTypes ?? this.invoiceTypes,
+        selectedInvoiceType:
+            selectedInvoiceType == null ? this.selectedInvoiceType : selectedInvoiceType.value,
+        invoiceSubTypesStatus:
+            invoiceSubTypesStatus ?? this.invoiceSubTypesStatus,
+        invoiceSubTypes: invoiceSubTypes ?? this.invoiceSubTypes,
+        selectedInvoiceSubType: selectedInvoiceSubType == null
+            ? this.selectedInvoiceSubType
+            : selectedInvoiceSubType.value,
+        selectedInvoiceDueDate:
+            selectedInvoiceDueDate == null ? this.selectedInvoiceDueDate : selectedInvoiceDueDate.value,
+        selectedInvoiceIssueDate:
+            selectedInvoiceIssueDate == null ? this.selectedInvoiceIssueDate : selectedInvoiceIssueDate.value,
+        invoiceNumberQuery:
+            invoiceNumberQuery == null ? this.invoiceNumberQuery : invoiceNumberQuery.value,  
+        requestNumberQuery:
+            requestNumberQuery == null ? this.requestNumberQuery : requestNumberQuery.value,
+        sortType: sortType ?? this.sortType,
         errorMessage: errorMessage,
-        page: page,
-        limit: limit,
-        noMoreData: noMoreData,
+        page: page ?? this.page,
+        limit: limit ?? this.limit,
+        noMoreData: noMoreData ?? this.noMoreData,
       );
 
   @override
   List<Object?> get props => [
         invoicesStatus,
         invoices,
-        invoiceStatusesStatus,
-        invoiceStatuses,
-        selectedInvoiceStatus,
-        municipalitiesStatus,
-        municipalities,
-        selectedMunicipality,
-        subMunicipalitiesStatus,
-        subMunicipalities,
-        selectedSubMunicipality,
         invoiceTypesStatus,
         invoiceTypes,
         selectedInvoiceType,
         invoiceSubTypesStatus,
         invoiceSubTypes,
         selectedInvoiceSubType,
-        selectedInvoiceDate,
+        invoiceStatusesStatus,
+        invoiceStatuses,
+        selectedInvoiceStatus,
+        selectedInvoiceDueDate,
+        selectedInvoiceIssueDate,
         invoiceNumberQuery,
+        requestNumberQuery,
         sortType,
         errorMessage,
         page,

@@ -3,17 +3,14 @@ import '../../invoices_exports.dart' show InvoicesParamsModel;
 class InvoicesPrams extends InvoicesParamsModel {
   const InvoicesPrams({
     super.identityNumber,
-    super.query,
     super.invoiceNumber,
-    super.licenceId,
+    super.requestNumber,
     required super.page,
     required super.size,
-    super.productId,
-    super.requestTypeId,
-    super.dashboardStatusId,
-    super.municipalityId,
-    super.subMunicipalityId,
-    super.creationDate,
+    super.invoiceTypeId,
+    super.invoiceStatusId,
+    super.dueDate,
+    super.issueDate,
     super.sort,
   });
 }

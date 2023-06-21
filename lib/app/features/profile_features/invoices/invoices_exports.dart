@@ -39,13 +39,13 @@ export 'presentation/invoices_bloc/invoices_bloc.dart';
 export 'presentation/pages/invoices_page.dart';
 
 /// presentation -> widgets
-export 'presentation/widgets/filters/invoice_date_filter.dart';
-export 'presentation/widgets/filters/invoice_municipality_filter.dart';
+export 'presentation/widgets/filters/invoice_due_date_filter.dart';
+export 'presentation/widgets/filters/invoice_issue_date_filter.dart';
 export 'presentation/widgets/filters/invoice_product_filter.dart';
 export 'presentation/widgets/filters/invoice_status_filter.dart';
-export 'presentation/widgets/filters/invoice_sub_municipality_filter.dart';
 export 'presentation/widgets/filters/invoice_type_filter.dart';
 export 'presentation/widgets/invoice_parameter.dart';
+export 'presentation/widgets/invoices_filters_actions.dart';
 export 'presentation/widgets/invoices_filters_bottom_sheet.dart';
 export 'presentation/widgets/invoices_list.dart';
 export 'presentation/widgets/invoices_list_item.dart';

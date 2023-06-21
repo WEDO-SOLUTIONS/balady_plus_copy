@@ -5,7 +5,7 @@ import '../../../../../core/errors/errors_exports.dart'
     show NoDataFoundFailure, ServerFailure;
 import '../../../../../core/services/services_exports.dart' show NoParams;
 import '../../../../../core/utils/utils_exports.dart'
-    show BlocRequestStatus, PaginationConstants, SortType;
+    show BlocRequestStatus, Nullable, PaginationConstants, SortType;
 import '../../../requests/requests_exports.dart'
     show
         GetMunicipalities,
@@ -16,13 +16,10 @@ import '../../../requests/requests_exports.dart'
 import '../../licenses_exports.dart'
     show
         GetLicenseStatuses,
-        GetLicenseSubTypes,
         GetLicenseTypes,
         GetLicenses,
         LicenseEntity,
         LicenseStatusEntity,
-        LicenseSubTypeEntity,
-        LicenseSubTypeParams,
         LicenseTypeEntity,
         LicensesPrams;
 
@@ -35,7 +32,6 @@ class LicensesBloc extends Bloc<LicensesEvent, LicensesState> {
   final GetLicenseStatuses getLicenseStatuses;
   final GetMunicipalities getMunicipalities;
   final GetSubMunicipalities getSubMunicipalities;
-  final GetLicenseSubTypes getLicenseSubTypes;
 
   LicensesBloc({
     required this.getLicenses,
@@ -43,7 +39,6 @@ class LicensesBloc extends Bloc<LicensesEvent, LicensesState> {
     required this.getLicenseStatuses,
     required this.getMunicipalities,
     required this.getSubMunicipalities,
-    required this.getLicenseSubTypes,
   }) : super(const LicensesState()) {
     on<GetLicensesEvent>((event, emit) async {
       emit(
@@ -53,11 +48,11 @@ class LicensesBloc extends Bloc<LicensesEvent, LicensesState> {
       final failureOrSuccess = await getLicenses(
         LicensesPrams(
           page: state.page,
-          size: 5, //PaginationConstants.limit,
+          size: PaginationConstants.limit,
           licenseNumber: state.licenseNumberQuery,
           licenceId: state.selectedLicenseType?.id.toString(),
           dashboardStatusId: state.selectedLicenseStatus?.id.toString(),
-          creationDate: state.selectedLicenseDate?.toIso8601String(),
+          creationDate: state.selectedLicenseEndDate?.toIso8601String(),
           municipalityId: state.selectedMunicipality?.id.toString(),
           subMunicipalityId: state.selectedSubMunicipality?.id.toString(),
           sort: state.sortType,
@@ -149,7 +144,7 @@ class LicensesBloc extends Bloc<LicensesEvent, LicensesState> {
     on<LicenseStatusSelectedEvent>((event, emit) async {
       emit(
         state.copyWith(
-          selectedLicenseStatus: event.licenseStatus,
+          selectedLicenseStatus: Nullable(event.licenseStatus),
         ),
       );
     });
@@ -190,7 +185,7 @@ class LicensesBloc extends Bloc<LicensesEvent, LicensesState> {
       add(GetSubMunicipalitiesEvent(municipality: event.municipality));
       emit(
         state.copyWith(
-          selectedMunicipality: event.municipality,
+          selectedMunicipality: Nullable(event.municipality),
         ),
       );
     });
@@ -234,7 +229,7 @@ class LicensesBloc extends Bloc<LicensesEvent, LicensesState> {
     on<SubMunicipalitySelectedEvent>((event, emit) async {
       emit(
         state.copyWith(
-          selectedSubMunicipality: event.subMunicipality,
+          selectedSubMunicipality: Nullable(event.subMunicipality),
         ),
       );
     });
@@ -272,54 +267,10 @@ class LicensesBloc extends Bloc<LicensesEvent, LicensesState> {
       if (state.selectedLicenseType?.id == event.licenseType.id) {
         return;
       }
-      add(GetLicenseSubtypesEvent(licenseType: event.licenseType));
+      // add(GetLicenseSubtypesEvent(licenseType: event.licenseType));
       emit(
         state.copyWith(
-          selectedLicenseType: event.licenseType,
-        ),
-      );
-    });
-
-    on<GetLicenseSubtypesEvent>((event, emit) async {
-      if (state.selectedLicenseType == null) {
-        return;
-      }
-      emit(
-        state.copyWith(
-          licenseSubTypesStatus: BlocRequestStatus.submissionGetLoading,
-        ),
-      );
-
-      final failureOrSuccess = await getLicenseSubTypes(
-        LicenseSubTypeParams(
-          id: state.selectedLicenseType!.id,
-        ),
-      );
-
-      failureOrSuccess.fold(
-        (failure) {
-          emit(
-            state.copyWith(
-              licenseSubTypesStatus: BlocRequestStatus.submissionGetFailure,
-              errorMessage: (failure as ServerFailure).errorMessage,
-            ),
-          );
-        },
-        (requestSubTypes) {
-          emit(
-            state.copyWith(
-              licenseSubTypesStatus: BlocRequestStatus.submissionGetSuccess,
-              licenseSubTypes: requestSubTypes,
-            ),
-          );
-        },
-      );
-    });
-
-    on<LicenseSubTypeSelectedEvent>((event, emit) async {
-      emit(
-        state.copyWith(
-          selectedLicenseSubType: event.licenseSubtype,
+          selectedLicenseType: Nullable(event.licenseType),
         ),
       );
     });
@@ -341,7 +292,7 @@ class LicensesBloc extends Bloc<LicensesEvent, LicensesState> {
     on<LicenseDateSelectedEvent>((event, emit) async {
       emit(
         state.copyWith(
-          selectedLicenseDate: event.date,
+          selectedLicenseDate: Nullable(event.date),
         ),
       );
     });
@@ -353,16 +304,34 @@ class LicensesBloc extends Bloc<LicensesEvent, LicensesState> {
         ),
       );
     });
-    on<ClearLicensesFiltersEvent>((event, emit) async {
-      emit(state.clearFilters());
-      add(GetLicensesEvent());
-    });
 
     on<ApplyLicensesFiltersEvent>((event, emit) async {
       emit(state.copyWith(
         page: 0,
       ));
       add(GetLicensesEvent());
+    });
+
+    on<ClearLicensesFiltersEvent>((event, emit) async {
+      emit(state.copyWith(
+        selectedLicenseStatus: Nullable(null),
+        selectedMunicipality: Nullable(null),
+        selectedSubMunicipality: Nullable(null),
+        selectedLicenseType: Nullable(null),
+        selectedLicenseDate: Nullable(null),
+        page: 0,
+      ));
+      add(GetLicensesEvent());
+    });
+
+    on<ResetLicensesFiltersEvent>((event, emit) async {
+      emit(state.copyWith(
+        selectedLicenseStatus: Nullable(event.selectedLicenseStatus),
+        selectedMunicipality: Nullable(event.selectedMunicipality),
+        selectedSubMunicipality: Nullable(event.selectedSubMunicipality),
+        selectedLicenseType: Nullable(event.selectedLicenseType),
+        selectedLicenseDate: Nullable(event.selectedLicenseDate),
+      ));
     });
   }
 }

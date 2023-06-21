@@ -4,75 +4,55 @@ import '../../../../../core/utils/utils_exports.dart' show SortType;
 
 class InvoicesParamsModel extends Equatable {
   final int? identityNumber;
-  final String? query;
-  final String? licenceId;
   final String? invoiceNumber;
-  final String? invoiceId;
+  final String? requestNumber;
   final int page;
   final int size;
-  final String? productId;
-  final String? requestTypeId;
-  final String? dashboardStatusId;
-  final String? municipalityId;
-  final String? subMunicipalityId;
-  final String? creationDate;
+  final String? invoiceTypeId;
+  final String? invoiceStatusId;
+  final String? dueDate;
+  final String? issueDate;
   final SortType sort;
 
   const InvoicesParamsModel({
     this.identityNumber,
-    this.query,
-    this.licenceId,
     this.invoiceNumber,
-    this.invoiceId,
+    this.requestNumber,
     required this.page,
     required this.size,
-    this.productId,
-    this.requestTypeId,
-    this.dashboardStatusId,
-    this.municipalityId,
-    this.subMunicipalityId,
-    this.creationDate,
+    this.invoiceTypeId,
+    this.invoiceStatusId,
+    this.dueDate,
+    this.issueDate,
     this.sort = SortType.desc,
   });
 
   Map<String, dynamic> toMap() {
     return {
       'identityNumber': identityNumber,
-      'query': query,
-      'licenceId': licenceId,
-      'requestNo': invoiceNumber,
-      'invoiceId': invoiceId,
+      'invoiceNumber': invoiceNumber,
+      'requestNumber': requestNumber,
       'page': page,
       'size': size,
-      'productId': productId,
-      'requestTypeId': requestTypeId,
-      'dashboardStatusId': dashboardStatusId,
-      'municipalityId': municipalityId,
-      'subMunicipalityId': subMunicipalityId,
-      'creationDate': creationDate,
-      'sort': [
-        {
-          "filed": "8",
-          "type": sort.value,
-        }
-      ]
+      'invoiceTypeId': invoiceTypeId,
+      'invoiceStatusId': invoiceStatusId,
+      'dueDate': dueDate,
+      'issueDate': issueDate,
+      'sort': sort,
     };
   }
 
   @override
   List<Object?> get props => [
         identityNumber,
-        query,
         invoiceNumber,
-        licenceId,
+        requestNumber,
         page,
         size,
-        productId,
-        requestTypeId,
-        dashboardStatusId,
-        municipalityId,
-        subMunicipalityId,
-        creationDate,
+        invoiceTypeId,
+        invoiceStatusId,
+        dueDate,
+        issueDate,
         sort,
       ];
 }

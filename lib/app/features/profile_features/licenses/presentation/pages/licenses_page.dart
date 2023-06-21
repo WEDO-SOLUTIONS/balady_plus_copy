@@ -7,17 +7,20 @@ import '../../../../../core/dependency_injection/dependency_injection_exports.da
 import '../../../../_shared_feature_/shared_feature_exports.dart'
     show
         BottomSheetDialog,
+        BottomSheetWithActions,
         DefaultAppBarWidget,
-        DraggableSheetComponent,
         FilterIcon;
 import '../../../requests/requests_exports.dart' show AppBarSeachBar;
 import '../../licenses_exports.dart'
     show
         GetLicensesEvent,
         LicensesBloc,
+        LicensesFilterActions,
         LicensesFilterBottomSheet,
         LicensesList,
         LicensesLoadLookupsEvent,
+        LicensesState,
+        ResetLicensesFiltersEvent,
         SearchLicensesEvent;
 
 class LicensesPage extends StatelessWidget {
@@ -41,18 +44,47 @@ class LicensesPage extends StatelessWidget {
               },
             ),
             actions: [
-              FilterIcon(
-                onTap: () {
-                  context.read<LicensesBloc>().add(LicensesLoadLookupsEvent());
-                  BottomSheetDialog.showDraggableSheet(
-                    context,
-                    child: DraggableSheetComponent(
-                      title: "filters".tr(),
-                      height: 0.9,
-                      body: LicensesFilterBottomSheet(
-                        licensesBloc: context.read<LicensesBloc>(),
-                      ),
-                    ),
+              BlocBuilder<LicensesBloc, LicensesState>(
+                builder: (context, state) {
+                  return FilterIcon(
+                    onTap: () async {
+                      final selectedLicenseStatus = state.selectedLicenseStatus;
+                      final selectedMunicipality = state.selectedMunicipality;
+                      final selectedSubMunicipality =
+                          state.selectedSubMunicipality;
+                      final selectedLicenseType = state.selectedLicenseType;
+
+                      final selectedLicenseDate = state.selectedLicenseEndDate;
+
+                      context
+                          .read<LicensesBloc>()
+                          .add(LicensesLoadLookupsEvent());
+                      final bool? actionTaked =
+                          await BottomSheetDialog.showDraggableSheet(
+                        context,
+                        child: BottomSheetWithActions(
+                          title: "filters".tr(),
+                          body: LicensesFilterBottomSheet(
+                            licensesBloc: context.read<LicensesBloc>(),
+                          ),
+                          action: LicensesFilterActions(
+                            licensesBloc: context.read<LicensesBloc>(),
+                          ),
+                        ),
+                      );
+                      if (actionTaked != true && context.mounted) {
+                        context.read<LicensesBloc>().add(
+                              ResetLicensesFiltersEvent(
+                                selectedLicenseStatus: selectedLicenseStatus,
+                                selectedMunicipality: selectedMunicipality,
+                                selectedSubMunicipality:
+                                    selectedSubMunicipality,
+                                selectedLicenseType: selectedLicenseType,
+                                selectedLicenseDate: selectedLicenseDate,
+                              ),
+                            );
+                      }
+                    },
                   );
                 },
               ),

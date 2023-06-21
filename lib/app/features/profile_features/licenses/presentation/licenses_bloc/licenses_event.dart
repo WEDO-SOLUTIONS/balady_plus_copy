@@ -4,7 +4,7 @@ abstract class LicensesEvent extends Equatable {
   const LicensesEvent();
 
   @override
-  List<Object> get props => [];
+  List<Object?> get props => [];
 }
 
 class GetLicensesEvent extends LicensesEvent {}
@@ -60,23 +60,23 @@ class LicenseTypeSelectedEvent extends LicensesEvent {
   List<Object> get props => [licenseType];
 }
 
-class GetLicenseSubtypesEvent extends LicensesEvent {
-  final LicenseTypeEntity licenseType;
+// class GetLicenseSubtypesEvent extends LicensesEvent {
+//   final LicenseTypeEntity licenseType;
 
-  const GetLicenseSubtypesEvent({required this.licenseType});
+//   const GetLicenseSubtypesEvent({required this.licenseType});
 
-  @override
-  List<Object> get props => [licenseType];
-}
+//   @override
+//   List<Object> get props => [licenseType];
+// }
 
-class LicenseSubTypeSelectedEvent extends LicensesEvent {
-  final LicenseSubTypeEntity licenseSubtype;
+// class LicenseSubTypeSelectedEvent extends LicensesEvent {
+//   final LicenseSubTypeEntity licenseSubtype;
 
-  const LicenseSubTypeSelectedEvent({required this.licenseSubtype});
+//   const LicenseSubTypeSelectedEvent({required this.licenseSubtype});
 
-  @override
-  List<Object> get props => [licenseSubtype];
-}
+//   @override
+//   List<Object> get props => [licenseSubtype];
+// }
 
 class SearchLicensesEvent extends LicensesEvent {
   final String query;
@@ -112,3 +112,28 @@ class LicensesSortChangedEvent extends LicensesEvent {
 class ClearLicensesFiltersEvent extends LicensesEvent {}
 
 class ApplyLicensesFiltersEvent extends LicensesEvent {}
+
+class ResetLicensesFiltersEvent extends LicensesEvent {
+  final LicenseStatusEntity? selectedLicenseStatus;
+  final MunicipalityEntity? selectedMunicipality;
+  final SubMunicipalityEntity? selectedSubMunicipality;
+  final LicenseTypeEntity? selectedLicenseType;
+  final DateTime? selectedLicenseDate;
+
+  const ResetLicensesFiltersEvent({
+    this.selectedLicenseStatus,
+    this.selectedMunicipality,
+    this.selectedSubMunicipality,
+    this.selectedLicenseType,
+    this.selectedLicenseDate,
+  });
+
+  @override
+  List<Object?> get props => [
+        selectedLicenseStatus,
+        selectedMunicipality,
+        selectedSubMunicipality,
+        selectedLicenseType,
+        selectedLicenseDate,
+      ];
+}

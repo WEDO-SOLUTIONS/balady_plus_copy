@@ -4,7 +4,7 @@ abstract class RequestsEvent extends Equatable {
   const RequestsEvent();
 
   @override
-  List<Object> get props => [];
+  List<Object?> get props => [];
 }
 
 class GetRequestsEvent extends RequestsEvent {}
@@ -112,3 +112,31 @@ class RequestsSortChangedEvent extends RequestsEvent {
 class ClearRequestsFiltersEvent extends RequestsEvent {}
 
 class ApplyRequestsFiltersEvent extends RequestsEvent {}
+
+class ResetRequestsFiltersEvent extends RequestsEvent {
+  final RequestStatusEntity? selectedRequestStatus;
+  final MunicipalityEntity? selectedMunicipality;
+  final SubMunicipalityEntity? selectedSubMunicipality;
+  final RequestTypeEntity? selectedRequestType;
+  final RequestSubTypeEntity? selectedRequestSubType;
+  final DateTime? selectedRequestDate;
+
+  const ResetRequestsFiltersEvent({
+    this.selectedRequestStatus,
+    this.selectedMunicipality,
+    this.selectedSubMunicipality,
+    this.selectedRequestType,
+    this.selectedRequestSubType,
+    this.selectedRequestDate,
+  });
+
+  @override
+  List<Object?> get props => [
+        selectedRequestStatus,
+        selectedMunicipality,
+        selectedSubMunicipality,
+        selectedRequestType,
+        selectedRequestSubType,
+        selectedRequestDate,
+      ];
+}
