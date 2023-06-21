@@ -18,7 +18,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.19.4 <3.0.0"
+  sdk: ">=3.0.1 <4.0.0"
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -110,6 +110,19 @@ dependencies:
   webview_flutter: ^3.0.0
   flutter_inappwebview: ^5.3.2
   version: ^2.0.0
+  google_maps_flutter: ^2.3.1
+  share_plus: ^4.5.3
+  pinput: ^2.2.31
+  pin_code_fields: ^7.3.0
+  cached_network_image: ^3.2.2
+  sms_user_consent:
+    git:
+      url: https://github.com/ctnataman/sms_user_consent
+  flutter_google_places:
+    git:
+      url: https://github.com/fluttercommunity/flutter_google_places
+      #ref: v0.3.2
+      ref: e104fa94452ec236dfb27cf5ea54fb72f280bc08
   #test_package:
  #   path: packages/test_package
 
@@ -137,7 +150,9 @@ flutter:
     - assets/icons/svg/weather/
     - assets/icons/svg/profile/
     - assets/icons/svg/nearby/
+    - assets/icons/svg/vd/
     - assets/icons/png/
+    - assets/icons/png/vd/
     - assets/images/
     - assets/langs/
     - assets/services/
