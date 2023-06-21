@@ -64,13 +64,15 @@ class LocationSection extends StatelessWidget {
           label: ("vd_location").tr(),
           hintText: ("lbl_locate_report_from_here").tr(),
           textValue: state.gisResponse?.getFullAddress(),
+          borderRadius: 16,
+          borderType: BORDER_TYPE.none,
           materialIconDirection: CommonFunctions.isAppAR
               ? MATERIAL_ICON_DIRECTION.left
               : MATERIAL_ICON_DIRECTION.right,
           onTap: () {
             context.read<CreateVDBloc>().add(ChangeAddressEvent());
           },
-          icon: const Icon(Icons.location_on, color: AppColor.greenLight),
+          icon: const Icon(Icons.location_on, color: AppColor.primary700Light),
         );
       },
     );

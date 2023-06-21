@@ -106,6 +106,7 @@ dependencies:
   # Generate Unique ID
   uuid: ^3.0.7
   hijri: ^3.0.0
+  
   flutter_appauth:
     path: flutter_appauth/flutter_appauth
   webview_flutter: ^3.0.0
@@ -152,7 +153,9 @@ flutter:
     - assets/icons/svg/weather/
     - assets/icons/svg/profile/
     - assets/icons/svg/nearby/
+    - assets/icons/svg/vd/
     - assets/icons/png/
+    - assets/icons/png/vd/
     - assets/images/
     - assets/langs/
     - assets/services/

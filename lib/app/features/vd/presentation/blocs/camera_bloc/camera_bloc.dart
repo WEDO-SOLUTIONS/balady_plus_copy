@@ -50,6 +50,8 @@ class CameraBloc extends Bloc<CameraEvent, CameraState> {
             selectedCattegory: params.selectedCategory!,
             isFromHome: params.isFromHome)) {
     on<InitCameraEvent>((event, emit) async {
+      //MM
+      // navigateToCreateVDPage();
       emit(state.copyWith(status: BlocStatus.loading));
       try {
         cameras = await availableCameras();
@@ -113,6 +115,10 @@ class CameraBloc extends Bloc<CameraEvent, CameraState> {
 
   Future<void> _getCurrenttUserLocationHandler(
       GetUserLocationEvent e, Emitter emitter) async {
+    navigateToCreateVDPage();
+    return;
+//MM;
+
     if (state.location == null && createVdBloc.state.location == null) {
       Position? position;
       try {
@@ -144,6 +150,7 @@ class CameraBloc extends Bloc<CameraEvent, CameraState> {
 
   Future<void> _takePhotoHandler(TakePhoto e, Emitter emitter) async {
     print("_takePhotoHandler");
+
     if (state.status == BlocStatus.loading) return;
     try {
       emitter(state.copyWith(status: BlocStatus.loading));
@@ -267,12 +274,12 @@ class CameraBloc extends Bloc<CameraEvent, CameraState> {
             location: location,
             gisResponse: gisResponse,
             isFromHome: state.isFromHome ?? false)));
-    SliderUpPage(
+    NavigationService.navigatorKey.currentState?.push(SliderUpPage(
       page: BlocProvider<CreateVDBloc>.value(
         value: createVdBloc,
         child: CreateVDDetailsPage(),
       ),
-    );
+    ));
     // NavigationService.navigatorKey.currentState!.push(MaterialPageRoute(
     //   builder: (context) => BlocProvider<CreateVDBloc>.value(
     //     value: createVdBloc,

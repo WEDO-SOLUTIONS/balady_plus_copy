@@ -30,18 +30,16 @@ class SplTypesCard extends StatelessWidget {
         width: 135,
         padding: EdgeInsets.symmetric(horizontal: 5),
         decoration: BoxDecoration(
-            borderRadius: const BorderRadius.all(Radius.circular(4)),
-            border: Border.all(
-                width: isSelected ? 1.5 : 0.58,
-                color: isSelected ? AppColor.darkTurquoise : AppColor.black200),
-            boxShadow: const [
-              BoxShadow(
-                  color: Color(0x1a000000),
-                  offset: Offset(0, 1),
-                  blurRadius: 15,
-                  spreadRadius: 0)
-            ],
-            color: Colors.white),
+          borderRadius: const BorderRadius.all(Radius.circular(16)),
+          color: isSelected ? AppColor.primary100Light : AppColor.white,
+          boxShadow: const [
+            BoxShadow(
+                color: Color(0x1a000000),
+                offset: Offset(0, 1),
+                blurRadius: 17,
+                spreadRadius: 0)
+          ],
+        ),
         child: Column(
           children: [
             CustomVerticalSpace(height: 20),

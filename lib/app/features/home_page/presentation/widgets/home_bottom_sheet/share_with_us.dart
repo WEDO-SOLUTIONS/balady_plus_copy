@@ -6,7 +6,11 @@ import '../../../../../core/utils/utils_exports.dart'
     show AppColor, AppStyle, ImagePath;
 import '../../../../_shared_feature_/presentation/widgets/custom_popups_widgets.dart';
 import '../../../../_shared_feature_/shared_feature_exports.dart'
-    show CustomTextWidget, ElevatedButtonWidget;
+    show
+        BottomSheetDialog,
+        BottomSheetTitle,
+        CustomTextWidget,
+        ElevatedButtonWidget;
 import '../../../../vd/presentation/dialogs/vd_types_dialog.dart';
 import '../../../home_exports.dart' show HomeSection;
 
@@ -67,9 +71,12 @@ class ShareWithUs extends StatelessWidget {
                   const SizedBox(height: 8),
                   ElevatedButtonWidget.sendImage(
                     onPressed: () async {
-                      await CustomPopUpsWidgets.showBottomSheet(
-                        NavigationService.navigatorKey.currentContext!,
-                        child: VDTypesDialog(),
+                      await BottomSheetDialog.showDraggableSheet(
+                        context,
+                        child: BottomSheetTitle(
+                          title: "اختر نوع البلاغ".tr(), //MM
+                          body: VDTypesDialog(),
+                        ),
                       );
                     },
                   )
