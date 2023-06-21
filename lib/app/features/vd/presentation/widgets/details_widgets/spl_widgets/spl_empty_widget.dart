@@ -5,7 +5,7 @@ class SplEmptyWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Image.asset("assets/images/spl_empty.png",
+    return Image.asset("assets/icons/png/vd/spl_empty.png",
         height: 279, width: MediaQuery.of(context).size.width / 2);
   }
 }

@@ -68,7 +68,7 @@ class CustomTextButtonWidget extends StatelessWidget {
       ),
       child: CustomTextWidget(
         text,
-        textStyle: textStyle ?? AppStyle.textButtonStyle,
+        textStyle: textStyle,
         fontColor: btnTextColor,
         fontWeight: btnTextWeight,
         fontSize: btnTextSize,

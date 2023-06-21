@@ -33,101 +33,84 @@ class _VDTypesDialog extends State<VDTypesDialog> {
           }
         },
         builder: (context, state) {
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // button, title,
-              Padding(
-                padding: const EdgeInsets.only(
-                  top: GeneralKey.semiMediumPadding,
-                  left: GeneralKey.semiMediumPadding,
-                  right: GeneralKey.semiMediumPadding,
-                ),
-                child: Column(
+          return Container(
+            height: MediaQuery.of(context).size.height - 200,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // button, title,
+                Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // close button
-                    CustomTextButtonWidget(
-                      onPressed: () => Navigator.of(context).pop(),
-                      text: ("customerVoiceBackButtonWord").tr(),
-                      btnTextColor: AppColor.grey1000,
-                      btnTextSize: 17.0,
-                      btnTextWeight: AppFontWeight.medium,
-                    ),
-                    Constants.verticalSpaceMedium,
                     // title
                     CustomTextWidget(
-                      ("customerVoiceReportTypeWord").tr(),
-                      fontColor: AppColor.black,
-                      fontSize: 24.0,
+                      ("يرجي تحديد نوع البلاغ الذي تود تقديمه").tr(), //MM
+                      fontColor: AppColor.blackModern500Light,
+                      fontSize: 14.0,
                     ),
-                    const CustomVerticalSpace(height: 18.0),
-                    // subtitle
-                    CustomTextWidget(
-                      ("customerVoiceSelectReportTypeWord").tr(),
-                      fontColor: AppColor.black400,
-                      fontWeight: AppFontWeight.medium,
-                    ),
+
                     Constants.verticalSpaceSmall,
                   ],
                 ),
-              ),
-              if (state.allCategorystatus == BlocStatus.loading)
-                Expanded(
-                    child: Padding(
-                  padding: const EdgeInsets.only(
-                      bottom: GeneralKey.mediumPadding,
-                      left: GeneralKey.semiMediumPadding,
-                      right: GeneralKey.semiMediumPadding,
-                      top: GeneralKey.smallPadding),
-                  child: CustomShimmerGridViewWidget(
-                    height: 100,
-                    mainAxisExtent: 150,
-                  ),
-                )),
-
-              if (state.allCategorystatus == BlocStatus.failure)
-                Expanded(
-                  child: ReloadWidget(onTab: () {
-                    context.read<VDCategoryBloc>().add(GetAllCategories());
-                  }),
-                ),
-              if (state.allCategorystatus == BlocStatus.success)
-                // types
-                Expanded(
-                  child: GridView.builder(
-                    physics: const BouncingScrollPhysics(),
+                if (state.allCategorystatus == BlocStatus.loading)
+                  Expanded(
+                      child: Padding(
                     padding: const EdgeInsets.only(
-                        bottom: GeneralKey.mediumPadding,
+                        /* bottom: GeneralKey.mediumPadding,
                         left: GeneralKey.semiMediumPadding,
                         right: GeneralKey.semiMediumPadding,
-                        top: GeneralKey.smallPadding),
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2,
-                            crossAxisSpacing: 19.0,
-                            mainAxisSpacing: 18.0,
-                            mainAxisExtent: 150),
-                    itemCount: state.allCategories?.length ?? 0,
-                    itemBuilder: (context, index) => VDCardWidgetInDialog(
-                        title: state.allCategories?[index].categoryName ?? "",
-                        icon:
-                            state.allCategories?[index].getMainImageUrl() ?? "",
-                        btnPressed: () async {
-                          bool isLocationAvailable =
-                              await CommonFunctions.checkLocationSettings(
-                                  context);
-                          bool isCameraAllowed =
-                              await CommonFunctions.checkCameraSettings(
-                                  context);
-                          if (isLocationAvailable && isCameraAllowed)
+                        top: GeneralKey.smallPadding*/
+                        ),
+                    child: CustomShimmerGridViewWidget(
+                      height: 100,
+                      mainAxisExtent: 150,
+                    ),
+                  )),
+
+                if (state.allCategorystatus == BlocStatus.failure)
+                  Expanded(
+                    child: ReloadWidget(onTab: () {
+                      context.read<VDCategoryBloc>().add(GetAllCategories());
+                    }),
+                  ),
+                if (state.allCategorystatus == BlocStatus.success)
+                  // types
+                  Expanded(
+                    child: GridView.builder(
+                      physics: const BouncingScrollPhysics(),
+                      padding: const EdgeInsets.only(
+                          /*bottom: GeneralKey.mediumPadding,
+                          left: GeneralKey.semiMediumPadding,
+                          right: GeneralKey.semiMediumPadding,
+                          top: GeneralKey.smallPadding*/
+                          ),
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2,
+                              crossAxisSpacing: 19.0,
+                              mainAxisSpacing: 18.0,
+                              mainAxisExtent: 150),
+                      itemCount: state.allCategories?.length ?? 0,
+                      itemBuilder: (context, index) => VDCardWidgetInDialog(
+                          title: state.allCategories?[index].categoryName ?? "",
+                          icon: state.allCategories?[index].getMainImageUrl() ??
+                              "",
+                          btnPressed: () async {
+                            /*  bool isLocationAvailable =
+                                await CommonFunctions.checkLocationSettings(
+                                    context);
+                            bool isCameraAllowed =
+                                await CommonFunctions.checkCameraSettings(
+                                    context);
+                            if (isLocationAvailable && isCameraAllowed)*/ //MM
                             context.read<VDCategoryBloc>().navigateToCamera(
                                 index,
                                 isFromHome: widget.isFromHome ?? false);
-                        }),
-                  ),
-                )
-            ],
+                          }),
+                    ),
+                  )
+              ],
+            ),
           );
           return Container();
         },
@@ -161,15 +144,15 @@ class VDCardWidgetInDialog extends StatelessWidget {
               child: Container(
                 decoration: BoxDecoration(
                     boxShadow: [
-                      BoxShadow(
+                      /* BoxShadow(
                           color: Color(0x14000000),
                           offset: Offset(0, 2),
                           blurRadius: 5,
-                          spreadRadius: 0)
+                          spreadRadius: 0)*/
                     ],
-                    borderRadius: BorderRadius.circular(24),
-                    color: AppColor.white),
-                height: 134,
+                    borderRadius: BorderRadius.circular(16),
+                    color: Color(0xFFF5F8FA)),
+                height: 141,
               ),
             ),
             Align(

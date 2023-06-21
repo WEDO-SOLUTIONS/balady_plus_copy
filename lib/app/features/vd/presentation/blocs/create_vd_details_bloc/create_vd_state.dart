@@ -81,6 +81,8 @@ class CreateVDState extends Equatable {
           : null;
 
   bool isNextButtonEnabled() {
+    //MM
+    return true;
     //  print("agreeement $currentPageValue");
     if (currentPageValue == 0)
       return gisResponse != null && location != null;

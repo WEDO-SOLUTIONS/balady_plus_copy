@@ -9,6 +9,7 @@ import '../../features/authentication/sign_in/sign_in_exports.dart'
 import '../../features/bottom_navigation/bottom_navigation_exports.dart'
     show BottomNavigationPage;
 import '../../features/entry_point/entry_point_exports.dart' show SsoUserInfo;
+import '../../features/component_test/presentation/pages/components_test_page.dart';
 import '../../features/profile_features/dashboard/dashboard_exports.dart'
     show DashBoardPage;
 import '../../features/profile_features/invoices/invoices_exports.dart'
@@ -78,7 +79,7 @@ class AppRouter {
         CameraParamsPage params = settings.arguments as CameraParamsPage;
 
         return MaterialPageRoute(
-          builder: (_) => VDCameraPage(params: params),
+          builder: (_) => ComponentTest(),
         );
       case RouteName.vdCreateVDDetailsPage:
         // CreateVDParamsPage params = settings.arguments as CreateVDParamsPage;

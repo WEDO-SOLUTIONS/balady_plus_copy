@@ -100,11 +100,10 @@ class _CameraWidgetState extends State<CameraWidget>
                     .add(UpdateScaleLevelEvent(scale: details.scale));
               },
               child: Align(
-                alignment: Alignment.topCenter,
+                alignment: Alignment.center,
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    CustomVerticalSpace(height: 40),
                     Container(
                       width: double.infinity,
                       height: MediaQuery.of(context).size.height / 1.9,
