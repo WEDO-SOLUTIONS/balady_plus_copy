@@ -9,11 +9,11 @@ import '../../../../_shared_feature_/shared_feature_exports.dart';
 import '../../invoices_exports.dart' show InvoiceEntity, InvoiceParameter;
 
 class InvoicesListItem extends StatelessWidget {
-  final InvoiceEntity request;
+  final InvoiceEntity invoice;
 
   const InvoicesListItem({
     super.key,
-    required this.request,
+    required this.invoice,
   });
 
   @override
@@ -44,7 +44,7 @@ class InvoicesListItem extends StatelessWidget {
               // ),
               const Spacer(),
               HomeTag(
-                title: request.invoiceStatusName,
+                title: invoice.invoiceStatusName,
                 backgroundColor: AppColor.secondary100Light,
               ),
             ],
@@ -63,31 +63,27 @@ class InvoicesListItem extends StatelessWidget {
               children: [
                 InvoiceParameter(
                   title: 'invoice_type'.tr(),
-                  value: request.invoiceTypeName,
+                  value: invoice.invoiceTypeName,
                 ),
                 InvoiceParameter(
                   title: 'request_type'.tr(),
-                  value: request.requestTypeName,
-                ),
-                InvoiceParameter(
-                  title: 'munipality'.tr(),
-                  value: request.municipalityName,
+                  value: invoice.requestTypeName,
                 ),
                 InvoiceParameter(
                   title: 'invoice_amount'.tr(),
-                  value: '${request.amount} ${"sar".tr()}',
+                  value: '${invoice.amount} ${"sar".tr()}',
                 ),
                 InvoiceParameter(
                   title: 'request_no'.tr(),
-                  value: '${request.requestNumber}',
+                  value: '${invoice.requestNumber}',
                 ),
                 InvoiceParameter(
                   title: 'creation_date'.tr(),
-                  value: DateFormat.yMd().format(request.creationDate),
+                  value: DateFormat.yMd().format(invoice.creationDate),
                 ),
                 InvoiceParameter(
                   title: 'last_update'.tr(),
-                  value: DateFormat.yMd().format(request.updatedDate),
+                  value: DateFormat.yMd().format(invoice.updatedDate),
                 ),
               ],
             ),

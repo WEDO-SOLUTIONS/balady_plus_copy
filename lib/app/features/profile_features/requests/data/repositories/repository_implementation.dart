@@ -1,7 +1,12 @@
 import 'package:dartz/dartz.dart';
 
 import '../../../../../core/errors/errors_exports.dart'
-    show Failure, ServerException, ServerFailure;
+    show
+        Failure,
+        NoDataFoundException,
+        NoDataFoundFailure,
+        ServerException,
+        ServerFailure;
 import '../../requests_exports.dart'
     show
         RequestsRepository,
@@ -30,6 +35,8 @@ class RequestsRepositoryImplementation implements RequestsRepository {
     try {
       final data = await remoteDataSource.getRequests(params);
       return Right(data);
+    } on NoDataFoundException {
+      return Left(NoDataFoundFailure());
     } on ServerException catch (error) {
       return Left(ServerFailure(error.errorMessage));
     }
@@ -41,6 +48,8 @@ class RequestsRepositoryImplementation implements RequestsRepository {
     try {
       final data = await remoteDataSource.getRequestStatuses();
       return Right(data);
+    } on NoDataFoundException {
+      return Left(NoDataFoundFailure());
     } on ServerException catch (error) {
       return Left(ServerFailure(error.errorMessage));
     }
@@ -51,6 +60,8 @@ class RequestsRepositoryImplementation implements RequestsRepository {
     try {
       final data = await remoteDataSource.getMunicipalities();
       return Right(data);
+    } on NoDataFoundException {
+      return Left(NoDataFoundFailure());
     } on ServerException catch (error) {
       return Left(ServerFailure(error.errorMessage));
     }
@@ -63,6 +74,8 @@ class RequestsRepositoryImplementation implements RequestsRepository {
     try {
       final data = await remoteDataSource.getSubMunicipalities(params);
       return Right(data);
+    } on NoDataFoundException {
+      return Left(NoDataFoundFailure());
     } on ServerException catch (error) {
       return Left(ServerFailure(error.errorMessage));
     }
@@ -73,6 +86,8 @@ class RequestsRepositoryImplementation implements RequestsRepository {
     try {
       final data = await remoteDataSource.getRequestTypes();
       return Right(data);
+    } on NoDataFoundException {
+      return Left(NoDataFoundFailure());
     } on ServerException catch (error) {
       return Left(ServerFailure(error.errorMessage));
     }
@@ -85,6 +100,8 @@ class RequestsRepositoryImplementation implements RequestsRepository {
     try {
       final data = await remoteDataSource.getRequestSubTypes(params);
       return Right(data);
+    } on NoDataFoundException {
+      return Left(NoDataFoundFailure());
     } on ServerException catch (error) {
       return Left(ServerFailure(error.errorMessage));
     }

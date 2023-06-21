@@ -9,11 +9,11 @@ import '../../../../_shared_feature_/shared_feature_exports.dart';
 import '../../licenses_exports.dart' show LicenseEntity, LicenseParameter;
 
 class LicensesListItem extends StatelessWidget {
-  final LicenseEntity request;
+  final LicenseEntity license;
 
   const LicensesListItem({
     super.key,
-    required this.request,
+    required this.license,
   });
 
   @override
@@ -38,12 +38,12 @@ class LicensesListItem extends StatelessWidget {
               const SizedBox(width: 4),
               Expanded(
                 child: CustomTextWidget(
-                  '#${request.licenseNumber}'.tr(),
+                  '#${license.licenseNumber}'.tr(),
                   textStyle: AppStyle.requestNumberTextStle,
                 ),
               ),
               HomeTag(
-                title: request.licenseStatusName,
+                title: license.licenseStatusName,
                 backgroundColor: AppColor.secondary100Light,
               ),
             ],
@@ -62,27 +62,27 @@ class LicensesListItem extends StatelessWidget {
               children: [
                 LicenseParameter(
                   title: 'license_type'.tr(),
-                  value: request.licenseTypeName,
+                  value: license.licenseTypeName,
                 ),
                 LicenseParameter(
                   title: 'request_type'.tr(),
-                  value: request.requestTypeName,
+                  value: license.requestTypeName,
                 ),
                 LicenseParameter(
-                  title: 'munipality'.tr(),
-                  value: request.municipalityName,
+                  title: 'municipality'.tr(),
+                  value: license.municipalityName,
                 ),
                 LicenseParameter(
-                  title: 'sub_munipality'.tr(),
-                  value: request.subMunicipalityName,
+                  title: 'sub_municipality'.tr(),
+                  value: license.subMunicipalityName,
                 ),
                 LicenseParameter(
                   title: 'license_end_date'.tr(),
-                  value: DateFormat.yMd().format(request.licenseEndDate),
+                  value: DateFormat.yMd().format(license.licenseEndDate),
                 ),
                 LicenseParameter(
                   title: 'last_update'.tr(),
-                  value: DateFormat.yMd().format(request.updateTime),
+                  value: DateFormat.yMd().format(license.updateTime),
                 ),
               ],
             ),

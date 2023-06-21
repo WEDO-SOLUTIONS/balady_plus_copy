@@ -6,7 +6,7 @@ class LicensesParamsModel extends Equatable {
   final int? identityNumber;
   final String? query;
   final String? licenceId;
-  final String? requestNumber;
+  final String? licenseNumber;
   final String? invoiceId;
   final int page;
   final int size;
@@ -22,7 +22,7 @@ class LicensesParamsModel extends Equatable {
     this.identityNumber,
     this.query,
     this.licenceId,
-    this.requestNumber,
+    this.licenseNumber,
     this.invoiceId,
     required this.page,
     required this.size,
@@ -40,7 +40,7 @@ class LicensesParamsModel extends Equatable {
       'identityNumber': identityNumber,
       'query': query,
       'licenceId': licenceId,
-      'requestNo': requestNumber,
+      'requestNo': licenseNumber,
       'invoiceId': invoiceId,
       'page': page,
       'size': size,
@@ -63,7 +63,7 @@ class LicensesParamsModel extends Equatable {
   List<Object?> get props => [
         identityNumber,
         query,
-        requestNumber,
+        licenseNumber,
         licenceId,
         page,
         size,

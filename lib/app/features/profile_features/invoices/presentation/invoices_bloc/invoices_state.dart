@@ -1,11 +1,11 @@
 part of 'invoices_bloc.dart';
 
 class InvoicesState extends Equatable {
-  final BlocRequestStatus requestsStatus;
-  final List<InvoiceEntity> requests;
-  //request statuses
-  final BlocRequestStatus requestStatusesStatus;
-  final List<InvoiceStatusEntity> requestStatuses;
+  final BlocRequestStatus invoicesStatus;
+  final List<InvoiceEntity> invoices;
+  //invoice statuses
+  final BlocRequestStatus invoiceStatusesStatus;
+  final List<InvoiceStatusEntity> invoiceStatuses;
   final InvoiceStatusEntity? selectedInvoiceStatus;
   //municipalities
   final BlocRequestStatus municipalitiesStatus;
@@ -15,18 +15,18 @@ class InvoicesState extends Equatable {
   final BlocRequestStatus subMunicipalitiesStatus;
   final List<SubMunicipalityEntity> subMunicipalities;
   final SubMunicipalityEntity? selectedSubMunicipality;
-  //request types
-  final BlocRequestStatus requestTypesStatus;
-  final List<InvoiceTypeEntity> requestTypes;
+  //invoice types
+  final BlocRequestStatus invoiceTypesStatus;
+  final List<InvoiceTypeEntity> invoiceTypes;
   final InvoiceTypeEntity? selectedInvoiceType;
-  //request sub types
-  final BlocRequestStatus requestSubTypesStatus;
-  final List<InvoiceSubTypeEntity> requestSubTypes;
+  //invoice sub types
+  final BlocRequestStatus invoiceSubTypesStatus;
+  final List<InvoiceSubTypeEntity> invoiceSubTypes;
   final InvoiceSubTypeEntity? selectedInvoiceSubType;
-  // request Date
+  // invoice Date
   final DateTime? selectedInvoiceDate;
-  // request number query
-  final String? requestNumberQuery;
+  // invoice number query
+  final String? invoiceNumberQuery;
   //sort type
   final SortType sortType;
   //error message
@@ -34,13 +34,13 @@ class InvoicesState extends Equatable {
   // pagination
   final int page;
   final int limit;
-  final bool hasReachedMax;
+  final bool noMoreData;
 
   const InvoicesState({
-    this.requestsStatus = BlocRequestStatus.initial,
-    this.requests = const [],
-    this.requestStatusesStatus = BlocRequestStatus.initial,
-    this.requestStatuses = const [],
+    this.invoicesStatus = BlocRequestStatus.initial,
+    this.invoices = const [],
+    this.invoiceStatusesStatus = BlocRequestStatus.initial,
+    this.invoiceStatuses = const [],
     this.selectedInvoiceStatus,
     this.municipalitiesStatus = BlocRequestStatus.initial,
     this.municipalities = const [],
@@ -48,28 +48,30 @@ class InvoicesState extends Equatable {
     this.subMunicipalitiesStatus = BlocRequestStatus.initial,
     this.subMunicipalities = const [],
     this.selectedSubMunicipality,
-    this.requestTypesStatus = BlocRequestStatus.initial,
-    this.requestTypes = const [],
+    this.invoiceTypesStatus = BlocRequestStatus.initial,
+    this.invoiceTypes = const [],
     this.selectedInvoiceType,
-    this.requestSubTypesStatus = BlocRequestStatus.initial,
-    this.requestSubTypes = const [],
+    this.invoiceSubTypesStatus = BlocRequestStatus.initial,
+    this.invoiceSubTypes = const [],
     this.selectedInvoiceSubType,
     this.selectedInvoiceDate,
-    this.requestNumberQuery,
+    this.invoiceNumberQuery,
     this.sortType = SortType.desc,
     this.errorMessage,
     this.page = 0,
     this.limit = PaginationConstants.limit,
-    this.hasReachedMax = false,
+    this.noMoreData = false,
   });
 
   String get error => errorMessage ?? '';
+  bool get paginationLoading =>
+      invoicesStatus == BlocRequestStatus.submissionGetLoading && page > 0;
 
   InvoicesState copyWith({
-    BlocRequestStatus? requestsStatus,
-    List<InvoiceEntity>? requests,
-    BlocRequestStatus? requestStatusesStatus,
-    List<InvoiceStatusEntity>? requestStatuses,
+    BlocRequestStatus? invoicesStatus,
+    List<InvoiceEntity>? invoices,
+    BlocRequestStatus? invoiceStatusesStatus,
+    List<InvoiceStatusEntity>? invoiceStatuses,
     InvoiceStatusEntity? selectedInvoiceStatus,
     BlocRequestStatus? municipalitiesStatus,
     List<MunicipalityEntity>? municipalities,
@@ -77,26 +79,26 @@ class InvoicesState extends Equatable {
     BlocRequestStatus? subMunicipalitiesStatus,
     List<SubMunicipalityEntity>? subMunicipalities,
     SubMunicipalityEntity? selectedSubMunicipality,
-    BlocRequestStatus? requestTypesStatus,
-    List<InvoiceTypeEntity>? requestTypes,
+    BlocRequestStatus? invoiceTypesStatus,
+    List<InvoiceTypeEntity>? invoiceTypes,
     InvoiceTypeEntity? selectedInvoiceType,
-    BlocRequestStatus? requestSubTypesStatus,
-    List<InvoiceSubTypeEntity>? requestSubTypes,
+    BlocRequestStatus? invoiceSubTypesStatus,
+    List<InvoiceSubTypeEntity>? invoiceSubTypes,
     InvoiceSubTypeEntity? selectedInvoiceSubType,
     DateTime? selectedInvoiceDate,
-    String? requestNumberQuery,
+    String? invoiceNumberQuery,
     SortType? sortType,
     String? errorMessage,
     int? page,
     int? limit,
-    bool? hasReachedMax,
+    bool? noMoreData,
   }) {
     return InvoicesState(
-      requestsStatus: requestsStatus ?? this.requestsStatus,
-      requests: requests ?? this.requests,
-      requestStatusesStatus:
-          requestStatusesStatus ?? this.requestStatusesStatus,
-      requestStatuses: requestStatuses ?? this.requestStatuses,
+      invoicesStatus: invoicesStatus ?? this.invoicesStatus,
+      invoices: invoices ?? this.invoices,
+      invoiceStatusesStatus:
+          invoiceStatusesStatus ?? this.invoiceStatusesStatus,
+      invoiceStatuses: invoiceStatuses ?? this.invoiceStatuses,
       selectedInvoiceStatus:
           selectedInvoiceStatus ?? this.selectedInvoiceStatus,
       municipalitiesStatus: municipalitiesStatus ?? this.municipalitiesStatus,
@@ -107,30 +109,57 @@ class InvoicesState extends Equatable {
       subMunicipalities: subMunicipalities ?? this.subMunicipalities,
       selectedSubMunicipality:
           selectedSubMunicipality ?? this.selectedSubMunicipality,
-      requestTypesStatus: requestTypesStatus ?? this.requestTypesStatus,
-      requestTypes: requestTypes ?? this.requestTypes,
+      invoiceTypesStatus: invoiceTypesStatus ?? this.invoiceTypesStatus,
+      invoiceTypes: invoiceTypes ?? this.invoiceTypes,
       selectedInvoiceType: selectedInvoiceType ?? this.selectedInvoiceType,
-      requestSubTypesStatus:
-          requestSubTypesStatus ?? this.requestSubTypesStatus,
-      requestSubTypes: requestSubTypes ?? this.requestSubTypes,
+      invoiceSubTypesStatus:
+          invoiceSubTypesStatus ?? this.invoiceSubTypesStatus,
+      invoiceSubTypes: invoiceSubTypes ?? this.invoiceSubTypes,
       selectedInvoiceSubType:
           selectedInvoiceSubType ?? this.selectedInvoiceSubType,
       selectedInvoiceDate: selectedInvoiceDate ?? this.selectedInvoiceDate,
-      requestNumberQuery: requestNumberQuery ?? this.requestNumberQuery,
+      invoiceNumberQuery: invoiceNumberQuery ?? this.invoiceNumberQuery,
       sortType: sortType ?? this.sortType,
       errorMessage: errorMessage ?? this.errorMessage,
       page: page ?? this.page,
       limit: limit ?? this.limit,
-      hasReachedMax: hasReachedMax ?? this.hasReachedMax,
+      noMoreData: noMoreData ?? this.noMoreData,
     );
   }
 
+  InvoicesState clearFilters() => InvoicesState(
+        invoicesStatus: invoicesStatus,
+        invoices: invoices,
+        invoiceStatusesStatus: invoiceStatusesStatus,
+        invoiceStatuses: invoiceStatuses,
+        selectedInvoiceStatus: null,
+        municipalitiesStatus: municipalitiesStatus,
+        municipalities: municipalities,
+        selectedMunicipality: null,
+        subMunicipalitiesStatus: subMunicipalitiesStatus,
+        subMunicipalities: subMunicipalities,
+        selectedSubMunicipality: null,
+        invoiceTypesStatus: invoiceTypesStatus,
+        invoiceTypes: invoiceTypes,
+        selectedInvoiceType: null,
+        invoiceSubTypesStatus: invoiceSubTypesStatus,
+        invoiceSubTypes: invoiceSubTypes,
+        selectedInvoiceSubType: null,
+        selectedInvoiceDate: selectedInvoiceDate,
+        invoiceNumberQuery: invoiceNumberQuery,
+        sortType: sortType,
+        errorMessage: errorMessage,
+        page: page,
+        limit: limit,
+        noMoreData: noMoreData,
+      );
+
   @override
   List<Object?> get props => [
-        requestsStatus,
-        requests,
-        requestStatusesStatus,
-        requestStatuses,
+        invoicesStatus,
+        invoices,
+        invoiceStatusesStatus,
+        invoiceStatuses,
         selectedInvoiceStatus,
         municipalitiesStatus,
         municipalities,
@@ -138,18 +167,18 @@ class InvoicesState extends Equatable {
         subMunicipalitiesStatus,
         subMunicipalities,
         selectedSubMunicipality,
-        requestTypesStatus,
-        requestTypes,
+        invoiceTypesStatus,
+        invoiceTypes,
         selectedInvoiceType,
-        requestSubTypesStatus,
-        requestSubTypes,
+        invoiceSubTypesStatus,
+        invoiceSubTypes,
         selectedInvoiceSubType,
         selectedInvoiceDate,
-        requestNumberQuery,
+        invoiceNumberQuery,
         sortType,
         errorMessage,
         page,
         limit,
-        hasReachedMax,
+        noMoreData,
       ];
 }

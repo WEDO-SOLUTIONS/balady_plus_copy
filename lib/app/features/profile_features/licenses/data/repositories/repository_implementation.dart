@@ -1,7 +1,12 @@
 import 'package:dartz/dartz.dart';
 
 import '../../../../../core/errors/errors_exports.dart'
-    show Failure, ServerException, ServerFailure;
+    show
+        Failure,
+        NoDataFoundException,
+        NoDataFoundFailure,
+        ServerException,
+        ServerFailure;
 import '../../licenses_exports.dart'
     show
         LicensesRepository,
@@ -27,6 +32,8 @@ class LicensesRepositoryImplementation implements LicensesRepository {
     try {
       final data = await remoteDataSource.getLicenses(params);
       return Right(data);
+    } on NoDataFoundException {
+      return Left(NoDataFoundFailure());
     } on ServerException catch (error) {
       return Left(ServerFailure(error.errorMessage));
     }
@@ -38,6 +45,8 @@ class LicensesRepositoryImplementation implements LicensesRepository {
     try {
       final data = await remoteDataSource.getLicenseStatuses();
       return Right(data);
+    } on NoDataFoundException {
+      return Left(NoDataFoundFailure());
     } on ServerException catch (error) {
       return Left(ServerFailure(error.errorMessage));
     }
@@ -48,6 +57,8 @@ class LicensesRepositoryImplementation implements LicensesRepository {
     try {
       final data = await remoteDataSource.getLicenseTypes();
       return Right(data);
+    } on NoDataFoundException {
+      return Left(NoDataFoundFailure());
     } on ServerException catch (error) {
       return Left(ServerFailure(error.errorMessage));
     }
@@ -60,6 +71,8 @@ class LicensesRepositoryImplementation implements LicensesRepository {
     try {
       final data = await remoteDataSource.getLicenseSubTypes(params);
       return Right(data);
+    } on NoDataFoundException {
+      return Left(NoDataFoundFailure());
     } on ServerException catch (error) {
       return Left(ServerFailure(error.errorMessage));
     }

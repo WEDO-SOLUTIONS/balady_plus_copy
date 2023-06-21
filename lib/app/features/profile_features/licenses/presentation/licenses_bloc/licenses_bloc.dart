@@ -1,7 +1,8 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../../core/errors/errors_exports.dart' show ServerFailure;
+import '../../../../../core/errors/errors_exports.dart'
+    show NoDataFoundFailure, ServerFailure;
 import '../../../../../core/services/services_exports.dart' show NoParams;
 import '../../../../../core/utils/utils_exports.dart'
     show BlocRequestStatus, PaginationConstants, SortType;
@@ -46,31 +47,51 @@ class LicensesBloc extends Bloc<LicensesEvent, LicensesState> {
   }) : super(const LicensesState()) {
     on<GetLicensesEvent>((event, emit) async {
       emit(
-        state.copyWith(requestsStatus: BlocRequestStatus.submissionGetLoading),
+        state.copyWith(licensesStatus: BlocRequestStatus.submissionGetLoading),
       );
 
       final failureOrSuccess = await getLicenses(
         LicensesPrams(
           page: state.page,
-          size: PaginationConstants.limit,
-          requestNumber: state.requestNumberQuery,
+          size: 5, //PaginationConstants.limit,
+          licenseNumber: state.licenseNumberQuery,
+          licenceId: state.selectedLicenseType?.id.toString(),
+          dashboardStatusId: state.selectedLicenseStatus?.id.toString(),
+          creationDate: state.selectedLicenseDate?.toIso8601String(),
+          municipalityId: state.selectedMunicipality?.id.toString(),
+          subMunicipalityId: state.selectedSubMunicipality?.id.toString(),
+          sort: state.sortType,
         ),
       );
 
       failureOrSuccess.fold(
         (failure) {
+          if (failure is NoDataFoundFailure) {
+            emit(
+              state.copyWith(
+                licensesStatus: BlocRequestStatus.submissionGetSuccess,
+                noMoreData: true,
+              ),
+            );
+            return;
+          }
           emit(
             state.copyWith(
-              requestsStatus: BlocRequestStatus.submissionGetFailure,
+              licensesStatus: BlocRequestStatus.submissionGetFailure,
               errorMessage: (failure as ServerFailure).errorMessage,
             ),
           );
         },
-        (requests) {
+        (licenses) {
+          List<LicenseEntity> newList = [];
+          if (state.page != 0) {
+            newList.addAll(state.licenses);
+          }
+          newList.addAll(licenses);
           emit(
             state.copyWith(
-              requestsStatus: BlocRequestStatus.submissionGetSuccess,
-              requests: requests,
+              licensesStatus: BlocRequestStatus.submissionGetSuccess,
+              licenses: newList,
             ),
           );
         },
@@ -79,15 +100,27 @@ class LicensesBloc extends Bloc<LicensesEvent, LicensesState> {
 
     on<SearchLicensesEvent>((event, emit) async {
       emit(
-        state.copyWith(requestNumberQuery: event.query),
+        state.copyWith(licenseNumberQuery: event.query),
       );
       add(GetLicensesEvent());
+    });
+
+    on<LicensesLoadLookupsEvent>((event, emit) async {
+      if (state.licenseTypesStatus == BlocRequestStatus.initial) {
+        add(GetLicenseTypesEvent());
+      }
+      if (state.licenseStatusesStatus == BlocRequestStatus.initial) {
+        add(GetLicenseStatusesEvent());
+      }
+      if (state.municipalitiesStatus == BlocRequestStatus.initial) {
+        add(GetMunicipalitiesEvent());
+      }
     });
 
     on<GetLicenseStatusesEvent>((event, emit) async {
       emit(
         state.copyWith(
-          requestStatusesStatus: BlocRequestStatus.submissionGetLoading,
+          licenseStatusesStatus: BlocRequestStatus.submissionGetLoading,
         ),
       );
 
@@ -97,7 +130,7 @@ class LicensesBloc extends Bloc<LicensesEvent, LicensesState> {
         (failure) {
           emit(
             state.copyWith(
-              requestStatusesStatus: BlocRequestStatus.submissionGetFailure,
+              licenseStatusesStatus: BlocRequestStatus.submissionGetFailure,
               errorMessage: (failure as ServerFailure).errorMessage,
             ),
           );
@@ -105,8 +138,8 @@ class LicensesBloc extends Bloc<LicensesEvent, LicensesState> {
         (requestStatuses) {
           emit(
             state.copyWith(
-              requestStatusesStatus: BlocRequestStatus.submissionGetSuccess,
-              requestStatuses: requestStatuses,
+              licenseStatusesStatus: BlocRequestStatus.submissionGetSuccess,
+              licenseStatuses: requestStatuses,
             ),
           );
         },
@@ -116,7 +149,7 @@ class LicensesBloc extends Bloc<LicensesEvent, LicensesState> {
     on<LicenseStatusSelectedEvent>((event, emit) async {
       emit(
         state.copyWith(
-          selectedLicenseStatus: event.requestStatus,
+          selectedLicenseStatus: event.licenseStatus,
         ),
       );
     });
@@ -151,6 +184,10 @@ class LicensesBloc extends Bloc<LicensesEvent, LicensesState> {
     });
 
     on<MunicipalitySelectedEvent>((event, emit) async {
+      if (state.selectedMunicipality?.id == event.municipality.id) {
+        return;
+      }
+      add(GetSubMunicipalitiesEvent(municipality: event.municipality));
       emit(
         state.copyWith(
           selectedMunicipality: event.municipality,
@@ -170,7 +207,7 @@ class LicensesBloc extends Bloc<LicensesEvent, LicensesState> {
 
       final failureOrSuccess = await getSubMunicipalities(
         SubMunicipalityParams(
-          id: state.selectedMunicipality!.id,
+          id: state.selectedMunicipality!.municipalId,
         ),
       );
 
@@ -205,7 +242,7 @@ class LicensesBloc extends Bloc<LicensesEvent, LicensesState> {
     on<GetLicenseTypesEvent>((event, emit) async {
       emit(
         state.copyWith(
-          requestTypesStatus: BlocRequestStatus.submissionGetLoading,
+          licenseTypesStatus: BlocRequestStatus.submissionGetLoading,
         ),
       );
 
@@ -215,7 +252,7 @@ class LicensesBloc extends Bloc<LicensesEvent, LicensesState> {
         (failure) {
           emit(
             state.copyWith(
-              requestTypesStatus: BlocRequestStatus.submissionGetFailure,
+              licenseTypesStatus: BlocRequestStatus.submissionGetFailure,
               errorMessage: (failure as ServerFailure).errorMessage,
             ),
           );
@@ -223,8 +260,8 @@ class LicensesBloc extends Bloc<LicensesEvent, LicensesState> {
         (requestTypes) {
           emit(
             state.copyWith(
-              requestTypesStatus: BlocRequestStatus.submissionGetSuccess,
-              requestTypes: requestTypes,
+              licenseTypesStatus: BlocRequestStatus.submissionGetSuccess,
+              licenseTypes: requestTypes,
             ),
           );
         },
@@ -232,9 +269,13 @@ class LicensesBloc extends Bloc<LicensesEvent, LicensesState> {
     });
 
     on<LicenseTypeSelectedEvent>((event, emit) async {
+      if (state.selectedLicenseType?.id == event.licenseType.id) {
+        return;
+      }
+      add(GetLicenseSubtypesEvent(licenseType: event.licenseType));
       emit(
         state.copyWith(
-          selectedLicenseType: event.requestType,
+          selectedLicenseType: event.licenseType,
         ),
       );
     });
@@ -245,7 +286,7 @@ class LicensesBloc extends Bloc<LicensesEvent, LicensesState> {
       }
       emit(
         state.copyWith(
-          requestSubTypesStatus: BlocRequestStatus.submissionGetLoading,
+          licenseSubTypesStatus: BlocRequestStatus.submissionGetLoading,
         ),
       );
 
@@ -259,7 +300,7 @@ class LicensesBloc extends Bloc<LicensesEvent, LicensesState> {
         (failure) {
           emit(
             state.copyWith(
-              requestSubTypesStatus: BlocRequestStatus.submissionGetFailure,
+              licenseSubTypesStatus: BlocRequestStatus.submissionGetFailure,
               errorMessage: (failure as ServerFailure).errorMessage,
             ),
           );
@@ -267,8 +308,8 @@ class LicensesBloc extends Bloc<LicensesEvent, LicensesState> {
         (requestSubTypes) {
           emit(
             state.copyWith(
-              requestSubTypesStatus: BlocRequestStatus.submissionGetSuccess,
-              requestSubTypes: requestSubTypes,
+              licenseSubTypesStatus: BlocRequestStatus.submissionGetSuccess,
+              licenseSubTypes: requestSubTypes,
             ),
           );
         },
@@ -278,14 +319,14 @@ class LicensesBloc extends Bloc<LicensesEvent, LicensesState> {
     on<LicenseSubTypeSelectedEvent>((event, emit) async {
       emit(
         state.copyWith(
-          selectedLicenseSubType: event.requestSubtype,
+          selectedLicenseSubType: event.licenseSubtype,
         ),
       );
     });
 
     on<LicensesLoadMoreEvent>((event, emit) async {
-      if (state.requestsStatus == BlocRequestStatus.submissionGetLoading ||
-          !state.hasReachedMax) {
+      if (state.licensesStatus != BlocRequestStatus.submissionGetSuccess ||
+          state.noMoreData) {
         return;
       }
       emit(
@@ -311,6 +352,17 @@ class LicensesBloc extends Bloc<LicensesEvent, LicensesState> {
           sortType: event.sortType,
         ),
       );
+    });
+    on<ClearLicensesFiltersEvent>((event, emit) async {
+      emit(state.clearFilters());
+      add(GetLicensesEvent());
+    });
+
+    on<ApplyLicensesFiltersEvent>((event, emit) async {
+      emit(state.copyWith(
+        page: 0,
+      ));
+      add(GetLicensesEvent());
     });
   }
 }

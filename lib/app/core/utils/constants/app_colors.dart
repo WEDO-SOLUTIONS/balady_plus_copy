@@ -77,4 +77,6 @@ class AppColor {
   static const scaffoldBackground = Color(0xfff5f8fa);
   static const macaroniAndCheese = Color(0xffedb629);
   static const primary50Light40 = Color(0x66e6efef);
+  static const vermillion = Color(0xffdc2828);
+  static const primary50Light50 = Color(0x80e6efef);
 }

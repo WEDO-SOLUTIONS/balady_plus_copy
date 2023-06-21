@@ -10,7 +10,7 @@ class MunicipalityModel extends MunicipalityEntity {
   factory MunicipalityModel.fromMap(Map<String, dynamic> json) {
     return MunicipalityModel(
       id: json['id'] as String,
-      municipalId: json['municipalId'] as String,
+      municipalId: json['amanaId'] as String,
       name: json['name'] as String,
     );
   }

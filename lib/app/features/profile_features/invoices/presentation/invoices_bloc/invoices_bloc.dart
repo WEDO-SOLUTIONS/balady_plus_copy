@@ -1,7 +1,8 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../../core/errors/errors_exports.dart' show ServerFailure;
+import '../../../../../core/errors/errors_exports.dart'
+    show NoDataFoundFailure, ServerFailure;
 import '../../../../../core/services/services_exports.dart' show NoParams;
 import '../../../../../core/utils/utils_exports.dart'
     show BlocRequestStatus, PaginationConstants, SortType;
@@ -46,31 +47,50 @@ class InvoicesBloc extends Bloc<InvoicesEvent, InvoicesState> {
   }) : super(const InvoicesState()) {
     on<GetInvoicesEvent>((event, emit) async {
       emit(
-        state.copyWith(requestsStatus: BlocRequestStatus.submissionGetLoading),
+        state.copyWith(invoicesStatus: BlocRequestStatus.submissionGetLoading),
       );
 
       final failureOrSuccess = await getInvoices(
         InvoicesPrams(
           page: state.page,
           size: PaginationConstants.limit,
-          requestNumber: state.requestNumberQuery,
+          invoiceNumber: state.invoiceNumberQuery,
+          creationDate: state.selectedInvoiceDate?.toIso8601String(),
+          dashboardStatusId: state.selectedInvoiceStatus?.id.toString(),
+          municipalityId: state.selectedMunicipality?.id.toString(),
+          subMunicipalityId: state.selectedSubMunicipality?.id.toString(),
+          sort: state.sortType,
         ),
       );
 
       failureOrSuccess.fold(
         (failure) {
+          if (failure is NoDataFoundFailure) {
+            emit(
+              state.copyWith(
+                invoicesStatus: BlocRequestStatus.submissionGetSuccess,
+                noMoreData: true,
+              ),
+            );
+            return;
+          }
           emit(
             state.copyWith(
-              requestsStatus: BlocRequestStatus.submissionGetFailure,
+              invoicesStatus: BlocRequestStatus.submissionGetFailure,
               errorMessage: (failure as ServerFailure).errorMessage,
             ),
           );
         },
-        (requests) {
+        (invoices) {
+          List<InvoiceEntity> newList = [];
+          if (state.page != 0) {
+            newList.addAll(state.invoices);
+          }
+          newList.addAll(invoices);
           emit(
             state.copyWith(
-              requestsStatus: BlocRequestStatus.submissionGetSuccess,
-              requests: requests,
+              invoicesStatus: BlocRequestStatus.submissionGetSuccess,
+              invoices: newList,
             ),
           );
         },
@@ -79,15 +99,27 @@ class InvoicesBloc extends Bloc<InvoicesEvent, InvoicesState> {
 
     on<SearchInvoicesEvent>((event, emit) async {
       emit(
-        state.copyWith(requestNumberQuery: event.query),
+        state.copyWith(invoiceNumberQuery: event.query),
       );
       add(GetInvoicesEvent());
+    });
+
+    on<InvoicesLoadLookupsEvent>((event, emit) async {
+      if (state.invoiceTypesStatus == BlocRequestStatus.initial) {
+        add(GetInvoiceTypesEvent());
+      }
+      if (state.invoiceStatusesStatus == BlocRequestStatus.initial) {
+        add(GetInvoiceStatusesEvent());
+      }
+      if (state.municipalitiesStatus == BlocRequestStatus.initial) {
+        add(GetMunicipalitiesEvent());
+      }
     });
 
     on<GetInvoiceStatusesEvent>((event, emit) async {
       emit(
         state.copyWith(
-          requestStatusesStatus: BlocRequestStatus.submissionGetLoading,
+          invoiceStatusesStatus: BlocRequestStatus.submissionGetLoading,
         ),
       );
 
@@ -97,16 +129,16 @@ class InvoicesBloc extends Bloc<InvoicesEvent, InvoicesState> {
         (failure) {
           emit(
             state.copyWith(
-              requestStatusesStatus: BlocRequestStatus.submissionGetFailure,
+              invoiceStatusesStatus: BlocRequestStatus.submissionGetFailure,
               errorMessage: (failure as ServerFailure).errorMessage,
             ),
           );
         },
-        (requestStatuses) {
+        (invoiceStatuses) {
           emit(
             state.copyWith(
-              requestStatusesStatus: BlocRequestStatus.submissionGetSuccess,
-              requestStatuses: requestStatuses,
+              invoiceStatusesStatus: BlocRequestStatus.submissionGetSuccess,
+              invoiceStatuses: invoiceStatuses,
             ),
           );
         },
@@ -116,7 +148,7 @@ class InvoicesBloc extends Bloc<InvoicesEvent, InvoicesState> {
     on<InvoiceStatusSelectedEvent>((event, emit) async {
       emit(
         state.copyWith(
-          selectedInvoiceStatus: event.requestStatus,
+          selectedInvoiceStatus: event.invoiceStatus,
         ),
       );
     });
@@ -151,6 +183,10 @@ class InvoicesBloc extends Bloc<InvoicesEvent, InvoicesState> {
     });
 
     on<MunicipalitySelectedEvent>((event, emit) async {
+      if (state.selectedMunicipality?.id == event.municipality.id) {
+        return;
+      }
+      add(GetSubMunicipalitiesEvent(municipality: event.municipality));
       emit(
         state.copyWith(
           selectedMunicipality: event.municipality,
@@ -170,7 +206,7 @@ class InvoicesBloc extends Bloc<InvoicesEvent, InvoicesState> {
 
       final failureOrSuccess = await getSubMunicipalities(
         SubMunicipalityParams(
-          id: state.selectedMunicipality!.id,
+          id: state.selectedMunicipality!.municipalId,
         ),
       );
 
@@ -205,7 +241,7 @@ class InvoicesBloc extends Bloc<InvoicesEvent, InvoicesState> {
     on<GetInvoiceTypesEvent>((event, emit) async {
       emit(
         state.copyWith(
-          requestTypesStatus: BlocRequestStatus.submissionGetLoading,
+          invoiceTypesStatus: BlocRequestStatus.submissionGetLoading,
         ),
       );
 
@@ -215,16 +251,16 @@ class InvoicesBloc extends Bloc<InvoicesEvent, InvoicesState> {
         (failure) {
           emit(
             state.copyWith(
-              requestTypesStatus: BlocRequestStatus.submissionGetFailure,
+              invoiceTypesStatus: BlocRequestStatus.submissionGetFailure,
               errorMessage: (failure as ServerFailure).errorMessage,
             ),
           );
         },
-        (requestTypes) {
+        (invoiceTypes) {
           emit(
             state.copyWith(
-              requestTypesStatus: BlocRequestStatus.submissionGetSuccess,
-              requestTypes: requestTypes,
+              invoiceTypesStatus: BlocRequestStatus.submissionGetSuccess,
+              invoiceTypes: invoiceTypes,
             ),
           );
         },
@@ -232,9 +268,14 @@ class InvoicesBloc extends Bloc<InvoicesEvent, InvoicesState> {
     });
 
     on<InvoiceTypeSelectedEvent>((event, emit) async {
+      if (state.selectedInvoiceType?.id == event.invoiceType.id) {
+        return;
+      }
+      add(GetInvoiceSubtypesEvent(invoiceType: event.invoiceType));
+
       emit(
         state.copyWith(
-          selectedInvoiceType: event.requestType,
+          selectedInvoiceType: event.invoiceType,
         ),
       );
     });
@@ -245,7 +286,7 @@ class InvoicesBloc extends Bloc<InvoicesEvent, InvoicesState> {
       }
       emit(
         state.copyWith(
-          requestSubTypesStatus: BlocRequestStatus.submissionGetLoading,
+          invoiceSubTypesStatus: BlocRequestStatus.submissionGetLoading,
         ),
       );
 
@@ -259,16 +300,16 @@ class InvoicesBloc extends Bloc<InvoicesEvent, InvoicesState> {
         (failure) {
           emit(
             state.copyWith(
-              requestSubTypesStatus: BlocRequestStatus.submissionGetFailure,
+              invoiceSubTypesStatus: BlocRequestStatus.submissionGetFailure,
               errorMessage: (failure as ServerFailure).errorMessage,
             ),
           );
         },
-        (requestSubTypes) {
+        (invoiceSubTypes) {
           emit(
             state.copyWith(
-              requestSubTypesStatus: BlocRequestStatus.submissionGetSuccess,
-              requestSubTypes: requestSubTypes,
+              invoiceSubTypesStatus: BlocRequestStatus.submissionGetSuccess,
+              invoiceSubTypes: invoiceSubTypes,
             ),
           );
         },
@@ -278,14 +319,14 @@ class InvoicesBloc extends Bloc<InvoicesEvent, InvoicesState> {
     on<InvoiceSubTypeSelectedEvent>((event, emit) async {
       emit(
         state.copyWith(
-          selectedInvoiceSubType: event.requestSubtype,
+          selectedInvoiceSubType: event.invoiceSubtype,
         ),
       );
     });
 
     on<InvoicesLoadMoreEvent>((event, emit) async {
-      if (state.requestsStatus == BlocRequestStatus.submissionGetLoading ||
-          !state.hasReachedMax) {
+      if (state.invoicesStatus == BlocRequestStatus.submissionGetLoading ||
+          !state.noMoreData) {
         return;
       }
       emit(
@@ -311,6 +352,18 @@ class InvoicesBloc extends Bloc<InvoicesEvent, InvoicesState> {
           sortType: event.sortType,
         ),
       );
+    });
+
+    on<ClearInvoicesFiltersEvent>((event, emit) async {
+      emit(state.clearFilters());
+      add(GetInvoicesEvent());
+    });
+
+    on<ApplyInvoicesFiltersEvent>((event, emit) async {
+      emit(state.copyWith(
+        page: 0,
+      ));
+      add(GetInvoicesEvent());
     });
   }
 }

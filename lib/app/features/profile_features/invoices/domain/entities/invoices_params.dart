@@ -4,7 +4,7 @@ class InvoicesPrams extends InvoicesParamsModel {
   const InvoicesPrams({
     super.identityNumber,
     super.query,
-    super.requestNumber,
+    super.invoiceNumber,
     super.licenceId,
     required super.page,
     required super.size,

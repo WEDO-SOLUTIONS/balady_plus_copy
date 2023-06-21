@@ -1,13 +1,13 @@
 /// data
 /// data -> data sources
 export 'data/data_sources/remote_data_source.dart';
-
-/// data -> models
-export 'data/models/invoices_model.dart';
 export 'data/models/invoice_status_model.dart';
 export 'data/models/invoice_subtype_model.dart';
 export 'data/models/invoice_subtype_params_model.dart';
 export 'data/models/invoice_type_model.dart';
+
+/// data -> models
+export 'data/models/invoices_model.dart';
 export 'data/models/invoices_params_model.dart';
 
 /// data -> repositories
@@ -27,9 +27,9 @@ export 'domain/repositories/repository.dart';
 
 /// domain -> use cases
 export 'domain/use_cases/get_invoice_statuses.dart';
+export 'domain/use_cases/get_invoice_sub_types.dart';
 export 'domain/use_cases/get_invoice_types.dart';
 export 'domain/use_cases/get_invoices.dart';
-export 'domain/use_cases/get_invoice_sub_types.dart';
 
 /// presentation
 /// presentation -> bloc
@@ -39,6 +39,14 @@ export 'presentation/invoices_bloc/invoices_bloc.dart';
 export 'presentation/pages/invoices_page.dart';
 
 /// presentation -> widgets
+export 'presentation/widgets/filters/invoice_date_filter.dart';
+export 'presentation/widgets/filters/invoice_municipality_filter.dart';
+export 'presentation/widgets/filters/invoice_product_filter.dart';
+export 'presentation/widgets/filters/invoice_status_filter.dart';
+export 'presentation/widgets/filters/invoice_sub_municipality_filter.dart';
+export 'presentation/widgets/filters/invoice_type_filter.dart';
+export 'presentation/widgets/invoice_parameter.dart';
+export 'presentation/widgets/invoices_filters_bottom_sheet.dart';
+export 'presentation/widgets/invoices_list.dart';
 export 'presentation/widgets/invoices_list_item.dart';
 export 'presentation/widgets/invoices_list_shimmer.dart';
-export 'presentation/widgets/invoice_parameter.dart';

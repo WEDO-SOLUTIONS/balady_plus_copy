@@ -1,7 +1,8 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../../core/errors/errors_exports.dart' show ServerFailure;
+import '../../../../../core/errors/errors_exports.dart'
+    show NoDataFoundFailure, ServerFailure;
 import '../../../../../core/services/services_exports.dart' show NoParams;
 import '../../../../../core/utils/utils_exports.dart'
     show BlocRequestStatus, PaginationConstants, SortType;
@@ -52,11 +53,27 @@ class RequestsBloc extends Bloc<RequestsEvent, RequestsState> {
           page: state.page,
           size: PaginationConstants.limit,
           requestNumber: state.requestNumberQuery,
+          creationDate: state.selectedRequestDate?.toIso8601String(),
+          dashboardStatusId: state.selectedRequestStatus?.id.toString(),
+          municipalityId: state.selectedMunicipality?.id.toString(),
+          subMunicipalityId: state.selectedSubMunicipality?.id.toString(),
+          productId: state.selectedRequestType?.id.toString(),
+          requestTypeId: state.selectedRequestSubType?.id.toString(),
+          sort: state.sortType,
         ),
       );
 
       failureOrSuccess.fold(
         (failure) {
+          if (failure is NoDataFoundFailure) {
+            emit(
+              state.copyWith(
+                requestsStatus: BlocRequestStatus.submissionGetSuccess,
+                noMoreData: true,
+              ),
+            );
+            return;
+          }
           emit(
             state.copyWith(
               requestsStatus: BlocRequestStatus.submissionGetFailure,
@@ -65,10 +82,15 @@ class RequestsBloc extends Bloc<RequestsEvent, RequestsState> {
           );
         },
         (requests) {
+          List<RequestEntity> newRequests = [];
+          if (state.page != 0) {
+            newRequests.addAll(state.requests);
+          }
+          newRequests.addAll(requests);
           emit(
             state.copyWith(
               requestsStatus: BlocRequestStatus.submissionGetSuccess,
-              requests: requests,
+              requests: newRequests,
             ),
           );
         },
@@ -80,6 +102,18 @@ class RequestsBloc extends Bloc<RequestsEvent, RequestsState> {
         state.copyWith(requestNumberQuery: event.query),
       );
       add(GetRequestsEvent());
+    });
+
+    on<RequestsLoadLookupsEvent>((event, emit) async {
+      if (state.requestTypesStatus == BlocRequestStatus.initial) {
+        add(GetRequestTypesEvent());
+      }
+      if (state.requestStatusesStatus == BlocRequestStatus.initial) {
+        add(GetRequestStatusesEvent());
+      }
+      if (state.municipalitiesStatus == BlocRequestStatus.initial) {
+        add(GetMunicipalitiesEvent());
+      }
     });
 
     on<GetRequestStatusesEvent>((event, emit) async {
@@ -149,6 +183,10 @@ class RequestsBloc extends Bloc<RequestsEvent, RequestsState> {
     });
 
     on<MunicipalitySelectedEvent>((event, emit) async {
+      if (state.selectedMunicipality?.id == event.municipality.id) {
+        return;
+      }
+      add(GetSubMunicipalitiesEvent(municipality: event.municipality));
       emit(
         state.copyWith(
           selectedMunicipality: event.municipality,
@@ -230,6 +268,10 @@ class RequestsBloc extends Bloc<RequestsEvent, RequestsState> {
     });
 
     on<RequestTypeSelectedEvent>((event, emit) async {
+      if (state.selectedRequestType?.id == event.requestType.id) {
+        return;
+      }
+      add(GetRequestSubtypesEvent(requestType: event.requestType));
       emit(
         state.copyWith(
           selectedRequestType: event.requestType,
@@ -282,8 +324,8 @@ class RequestsBloc extends Bloc<RequestsEvent, RequestsState> {
     });
 
     on<RequestsLoadMoreEvent>((event, emit) async {
-      if (state.requestsStatus == BlocRequestStatus.submissionGetLoading ||
-          !state.hasReachedMax) {
+      if (state.requestsStatus != BlocRequestStatus.submissionGetSuccess ||
+          state.noMoreData) {
         return;
       }
       emit(
@@ -309,6 +351,18 @@ class RequestsBloc extends Bloc<RequestsEvent, RequestsState> {
           sortType: event.sortType,
         ),
       );
+    });
+
+    on<ClearRequestsFiltersEvent>((event, emit) async {
+      emit(state.clearFilters());
+      add(GetRequestsEvent());
+    });
+
+    on<ApplyRequestsFiltersEvent>((event, emit) async {
+      emit(state.copyWith(
+        page: 0,
+      ));
+      add(GetRequestsEvent());
     });
   }
 }

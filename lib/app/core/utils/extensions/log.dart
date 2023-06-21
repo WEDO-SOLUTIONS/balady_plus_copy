@@ -5,8 +5,8 @@ extension Log<T> on T {
   void log() => devtools.log(toString());
 
   void successLog() {} // => devtools.log("✅: ${toString()}");
-  void closeLog() => devtools.log("❎: ${toString()}");
-  void warningLog() => devtools.log("🟡: ${toString()}");
-  void errorLog() => devtools.log("🛑: ${toString()}");
-  void actionLog() => devtools.log("🔵: ${toString()}");
+  void closeLog() {} //=> devtools.log("❎: ${toString()}");
+  void warningLog() {} // => devtools.log("🟡: ${toString()}");
+  void errorLog() {} // => devtools.log("🛑: ${toString()}");
+  void actionLog() {} //=> devtools.log("🔵: ${toString()}");
 }

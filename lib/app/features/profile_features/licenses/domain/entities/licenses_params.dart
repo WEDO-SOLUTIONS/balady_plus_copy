@@ -4,7 +4,7 @@ class LicensesPrams extends LicensesParamsModel {
   const LicensesPrams({
     super.identityNumber,
     super.query,
-    super.requestNumber,
+    super.licenseNumber,
     super.licenceId,
     required super.page,
     required super.size,

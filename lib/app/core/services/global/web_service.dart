@@ -8,18 +8,7 @@ import '../../../core/dependency_injection/dependency_injection_exports.dart'
 import '../../../features/_shared_feature_/shared_feature_exports.dart'
     show AuthData, AuthDataModel;
 import '../../errors/errors_exports.dart'
-    show
-        BadRequestException,
-        ConflictException,
-        DeadlineExceededException,
-        FailedToGenerateTokenException,
-        InternalServerErrorException,
-        MethodNotAllowedException,
-        NoInternetConnectionException,
-        RequestNotFoundException,
-        TokenHasExpiredException,
-        TokenNotFoundException,
-        UnAuthorizedException;
+    show BadRequestException, ConflictException, DeadlineExceededException, FailedToGenerateTokenException, InternalServerErrorException, MethodNotAllowedException, NoDataFoundException, NoInternetConnectionException, RequestNotFoundException, TokenHasExpiredException, TokenNotFoundException, UnAuthorizedException;
 import '../../utils/utils_exports.dart'
     show
         ApiHeader,
@@ -148,6 +137,9 @@ class AppInterceptors extends Interceptor {
       case DioErrorType.response:
         switch (err.response?.statusCode) {
           case 400:
+            if(err.response?.data['data']['responseCode'] == '2'){
+              throw NoDataFoundException(err.requestOptions);
+            }
             throw BadRequestException(err.requestOptions, err.response);
           case 401:
             throw UnAuthorizedException(err.requestOptions, err.response);

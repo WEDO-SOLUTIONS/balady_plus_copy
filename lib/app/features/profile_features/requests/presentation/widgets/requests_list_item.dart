@@ -69,11 +69,11 @@ class RequestsListItem extends StatelessWidget {
                   value: request.licenseTypeName,
                 ),
                 RequestParameter(
-                  title: 'munipality'.tr(),
+                  title: 'municipality'.tr(),
                   value: request.municipalityName,
                 ),
                 RequestParameter(
-                  title: 'sub_munipality'.tr(),
+                  title: 'sub_municipality'.tr(),
                   value: request.subMunicipalityName,
                 ),
                 RequestParameter(

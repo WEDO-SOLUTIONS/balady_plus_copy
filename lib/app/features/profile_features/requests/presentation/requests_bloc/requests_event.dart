@@ -87,6 +87,8 @@ class SearchRequestsEvent extends RequestsEvent {
   List<Object> get props => [query];
 }
 
+class RequestsLoadLookupsEvent extends RequestsEvent {}
+
 class RequestsLoadMoreEvent extends RequestsEvent {}
 
 class RequestDateSelectedEvent extends RequestsEvent {
@@ -106,3 +108,7 @@ class RequestsSortChangedEvent extends RequestsEvent {
   @override
   List<Object> get props => [sortType];
 }
+
+class ClearRequestsFiltersEvent extends RequestsEvent {}
+
+class ApplyRequestsFiltersEvent extends RequestsEvent {}

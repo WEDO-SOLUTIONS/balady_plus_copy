@@ -12,12 +12,12 @@ class GetLicensesEvent extends LicensesEvent {}
 class GetLicenseStatusesEvent extends LicensesEvent {}
 
 class LicenseStatusSelectedEvent extends LicensesEvent {
-  final LicenseStatusEntity requestStatus;
+  final LicenseStatusEntity licenseStatus;
 
-  const LicenseStatusSelectedEvent({required this.requestStatus});
+  const LicenseStatusSelectedEvent({required this.licenseStatus});
 
   @override
-  List<Object> get props => [requestStatus];
+  List<Object> get props => [licenseStatus];
 }
 
 class GetMunicipalitiesEvent extends LicensesEvent {}
@@ -52,30 +52,30 @@ class SubMunicipalitySelectedEvent extends LicensesEvent {
 class GetLicenseTypesEvent extends LicensesEvent {}
 
 class LicenseTypeSelectedEvent extends LicensesEvent {
-  final LicenseTypeEntity requestType;
+  final LicenseTypeEntity licenseType;
 
-  const LicenseTypeSelectedEvent({required this.requestType});
+  const LicenseTypeSelectedEvent({required this.licenseType});
 
   @override
-  List<Object> get props => [requestType];
+  List<Object> get props => [licenseType];
 }
 
 class GetLicenseSubtypesEvent extends LicensesEvent {
-  final LicenseTypeEntity requestType;
+  final LicenseTypeEntity licenseType;
 
-  const GetLicenseSubtypesEvent({required this.requestType});
+  const GetLicenseSubtypesEvent({required this.licenseType});
 
   @override
-  List<Object> get props => [requestType];
+  List<Object> get props => [licenseType];
 }
 
 class LicenseSubTypeSelectedEvent extends LicensesEvent {
-  final LicenseSubTypeEntity requestSubtype;
+  final LicenseSubTypeEntity licenseSubtype;
 
-  const LicenseSubTypeSelectedEvent({required this.requestSubtype});
+  const LicenseSubTypeSelectedEvent({required this.licenseSubtype});
 
   @override
-  List<Object> get props => [requestSubtype];
+  List<Object> get props => [licenseSubtype];
 }
 
 class SearchLicensesEvent extends LicensesEvent {
@@ -86,6 +86,8 @@ class SearchLicensesEvent extends LicensesEvent {
   @override
   List<Object> get props => [query];
 }
+
+class LicensesLoadLookupsEvent extends LicensesEvent {}
 
 class LicensesLoadMoreEvent extends LicensesEvent {}
 
@@ -106,3 +108,7 @@ class LicensesSortChangedEvent extends LicensesEvent {
   @override
   List<Object> get props => [sortType];
 }
+
+class ClearLicensesFiltersEvent extends LicensesEvent {}
+
+class ApplyLicensesFiltersEvent extends LicensesEvent {}

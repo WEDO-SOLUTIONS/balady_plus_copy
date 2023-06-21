@@ -34,7 +34,7 @@ class RequestsState extends Equatable {
   // pagination
   final int page;
   final int limit;
-  final bool hasReachedMax;
+  final bool noMoreData;
 
   const RequestsState({
     this.requestsStatus = BlocRequestStatus.initial,
@@ -60,10 +60,12 @@ class RequestsState extends Equatable {
     this.errorMessage,
     this.page = 0,
     this.limit = PaginationConstants.limit,
-    this.hasReachedMax = false,
+    this.noMoreData = false,
   });
 
   String get error => errorMessage ?? '';
+  bool get paginationLoading =>
+      requestsStatus == BlocRequestStatus.submissionGetLoading && page > 0;
 
   RequestsState copyWith({
     BlocRequestStatus? requestsStatus,
@@ -89,7 +91,7 @@ class RequestsState extends Equatable {
     String? errorMessage,
     int? page,
     int? limit,
-    bool? hasReachedMax,
+    bool? noMoreData,
   }) {
     return RequestsState(
       requestsStatus: requestsStatus ?? this.requestsStatus,
@@ -121,9 +123,36 @@ class RequestsState extends Equatable {
       errorMessage: errorMessage ?? this.errorMessage,
       page: page ?? this.page,
       limit: limit ?? this.limit,
-      hasReachedMax: hasReachedMax ?? this.hasReachedMax,
+      noMoreData: noMoreData ?? this.noMoreData,
     );
   }
+
+  RequestsState clearFilters() => RequestsState(
+        requestsStatus: requestsStatus,
+        requests: requests,
+        requestStatusesStatus: requestStatusesStatus,
+        requestStatuses: requestStatuses,
+        selectedRequestStatus: null,
+        municipalitiesStatus: municipalitiesStatus,
+        municipalities: municipalities,
+        selectedMunicipality: null,
+        subMunicipalitiesStatus: subMunicipalitiesStatus,
+        subMunicipalities: subMunicipalities,
+        selectedSubMunicipality: null,
+        requestTypesStatus: requestTypesStatus,
+        requestTypes: requestTypes,
+        selectedRequestType: null,
+        requestSubTypesStatus: requestSubTypesStatus,
+        requestSubTypes: requestSubTypes,
+        selectedRequestSubType: null,
+        selectedRequestDate: null,
+        requestNumberQuery: requestNumberQuery,
+        sortType: sortType,
+        errorMessage: errorMessage,
+        page: page,
+        limit: limit,
+        noMoreData: noMoreData,
+      );
 
   @override
   List<Object?> get props => [
@@ -150,6 +179,6 @@ class RequestsState extends Equatable {
         errorMessage,
         page,
         limit,
-        hasReachedMax,
+        noMoreData,
       ];
 }

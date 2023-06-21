@@ -12,12 +12,12 @@ class GetInvoicesEvent extends InvoicesEvent {}
 class GetInvoiceStatusesEvent extends InvoicesEvent {}
 
 class InvoiceStatusSelectedEvent extends InvoicesEvent {
-  final InvoiceStatusEntity requestStatus;
+  final InvoiceStatusEntity invoiceStatus;
 
-  const InvoiceStatusSelectedEvent({required this.requestStatus});
+  const InvoiceStatusSelectedEvent({required this.invoiceStatus});
 
   @override
-  List<Object> get props => [requestStatus];
+  List<Object> get props => [invoiceStatus];
 }
 
 class GetMunicipalitiesEvent extends InvoicesEvent {}
@@ -52,30 +52,30 @@ class SubMunicipalitySelectedEvent extends InvoicesEvent {
 class GetInvoiceTypesEvent extends InvoicesEvent {}
 
 class InvoiceTypeSelectedEvent extends InvoicesEvent {
-  final InvoiceTypeEntity requestType;
+  final InvoiceTypeEntity invoiceType;
 
-  const InvoiceTypeSelectedEvent({required this.requestType});
+  const InvoiceTypeSelectedEvent({required this.invoiceType});
 
   @override
-  List<Object> get props => [requestType];
+  List<Object> get props => [invoiceType];
 }
 
 class GetInvoiceSubtypesEvent extends InvoicesEvent {
-  final InvoiceTypeEntity requestType;
+  final InvoiceTypeEntity invoiceType;
 
-  const GetInvoiceSubtypesEvent({required this.requestType});
+  const GetInvoiceSubtypesEvent({required this.invoiceType});
 
   @override
-  List<Object> get props => [requestType];
+  List<Object> get props => [invoiceType];
 }
 
 class InvoiceSubTypeSelectedEvent extends InvoicesEvent {
-  final InvoiceSubTypeEntity requestSubtype;
+  final InvoiceSubTypeEntity invoiceSubtype;
 
-  const InvoiceSubTypeSelectedEvent({required this.requestSubtype});
+  const InvoiceSubTypeSelectedEvent({required this.invoiceSubtype});
 
   @override
-  List<Object> get props => [requestSubtype];
+  List<Object> get props => [invoiceSubtype];
 }
 
 class SearchInvoicesEvent extends InvoicesEvent {
@@ -86,6 +86,8 @@ class SearchInvoicesEvent extends InvoicesEvent {
   @override
   List<Object> get props => [query];
 }
+
+class InvoicesLoadLookupsEvent extends InvoicesEvent {}
 
 class InvoicesLoadMoreEvent extends InvoicesEvent {}
 
@@ -106,3 +108,7 @@ class InvoicesSortChangedEvent extends InvoicesEvent {
   @override
   List<Object> get props => [sortType];
 }
+
+class ClearInvoicesFiltersEvent extends InvoicesEvent {}
+
+class ApplyInvoicesFiltersEvent extends InvoicesEvent {}

@@ -22,8 +22,8 @@ class RequestsModel extends RequestEntity {
       requestStatusName: json['dashboardStatusName'] as String,
       requestTypeName: json['requestTypeName'] as String,
       licenseTypeName: json['licenseTypeName'] as String? ?? '',
-      municipalityName: json['municipalityName'] as String,
-      subMunicipalityName: json['subMunicipalityName'] as String,
+      municipalityName: json['municipalityName'] as String? ?? '',
+      subMunicipalityName: json['subMunicipalityName'] as String? ?? '',
       creationDate: DateTime.parse(json['creationDate'] as String),
       lastUpdateDate: DateTime.parse(json['updateTime'] as String),
     );

@@ -1,11 +1,11 @@
 part of 'licenses_bloc.dart';
 
 class LicensesState extends Equatable {
-  final BlocRequestStatus requestsStatus;
-  final List<LicenseEntity> requests;
-  //request statuses
-  final BlocRequestStatus requestStatusesStatus;
-  final List<LicenseStatusEntity> requestStatuses;
+  final BlocRequestStatus licensesStatus;
+  final List<LicenseEntity> licenses;
+  //license statuses
+  final BlocRequestStatus licenseStatusesStatus;
+  final List<LicenseStatusEntity> licenseStatuses;
   final LicenseStatusEntity? selectedLicenseStatus;
   //municipalities
   final BlocRequestStatus municipalitiesStatus;
@@ -15,18 +15,18 @@ class LicensesState extends Equatable {
   final BlocRequestStatus subMunicipalitiesStatus;
   final List<SubMunicipalityEntity> subMunicipalities;
   final SubMunicipalityEntity? selectedSubMunicipality;
-  //request types
-  final BlocRequestStatus requestTypesStatus;
-  final List<LicenseTypeEntity> requestTypes;
+  //license types
+  final BlocRequestStatus licenseTypesStatus;
+  final List<LicenseTypeEntity> licenseTypes;
   final LicenseTypeEntity? selectedLicenseType;
-  //request sub types
-  final BlocRequestStatus requestSubTypesStatus;
-  final List<LicenseSubTypeEntity> requestSubTypes;
+  //license sub types
+  final BlocRequestStatus licenseSubTypesStatus;
+  final List<LicenseSubTypeEntity> licenseSubTypes;
   final LicenseSubTypeEntity? selectedLicenseSubType;
-  // request Date
+  // license Date
   final DateTime? selectedLicenseDate;
-  // request number query
-  final String? requestNumberQuery;
+  // license number query
+  final String? licenseNumberQuery;
   //sort type
   final SortType sortType;
   //error message
@@ -34,13 +34,13 @@ class LicensesState extends Equatable {
   // pagination
   final int page;
   final int limit;
-  final bool hasReachedMax;
+  final bool noMoreData;
 
   const LicensesState({
-    this.requestsStatus = BlocRequestStatus.initial,
-    this.requests = const [],
-    this.requestStatusesStatus = BlocRequestStatus.initial,
-    this.requestStatuses = const [],
+    this.licensesStatus = BlocRequestStatus.initial,
+    this.licenses = const [],
+    this.licenseStatusesStatus = BlocRequestStatus.initial,
+    this.licenseStatuses = const [],
     this.selectedLicenseStatus,
     this.municipalitiesStatus = BlocRequestStatus.initial,
     this.municipalities = const [],
@@ -48,28 +48,30 @@ class LicensesState extends Equatable {
     this.subMunicipalitiesStatus = BlocRequestStatus.initial,
     this.subMunicipalities = const [],
     this.selectedSubMunicipality,
-    this.requestTypesStatus = BlocRequestStatus.initial,
-    this.requestTypes = const [],
+    this.licenseTypesStatus = BlocRequestStatus.initial,
+    this.licenseTypes = const [],
     this.selectedLicenseType,
-    this.requestSubTypesStatus = BlocRequestStatus.initial,
-    this.requestSubTypes = const [],
+    this.licenseSubTypesStatus = BlocRequestStatus.initial,
+    this.licenseSubTypes = const [],
     this.selectedLicenseSubType,
     this.selectedLicenseDate,
-    this.requestNumberQuery,
+    this.licenseNumberQuery,
     this.sortType = SortType.desc,
     this.errorMessage,
     this.page = 0,
     this.limit = PaginationConstants.limit,
-    this.hasReachedMax = false,
+    this.noMoreData = false,
   });
 
   String get error => errorMessage ?? '';
+  bool get paginationLoading =>
+      licensesStatus == BlocRequestStatus.submissionGetLoading && page > 0;
 
   LicensesState copyWith({
-    BlocRequestStatus? requestsStatus,
-    List<LicenseEntity>? requests,
-    BlocRequestStatus? requestStatusesStatus,
-    List<LicenseStatusEntity>? requestStatuses,
+    BlocRequestStatus? licensesStatus,
+    List<LicenseEntity>? licenses,
+    BlocRequestStatus? licenseStatusesStatus,
+    List<LicenseStatusEntity>? licenseStatuses,
     LicenseStatusEntity? selectedLicenseStatus,
     BlocRequestStatus? municipalitiesStatus,
     List<MunicipalityEntity>? municipalities,
@@ -77,26 +79,26 @@ class LicensesState extends Equatable {
     BlocRequestStatus? subMunicipalitiesStatus,
     List<SubMunicipalityEntity>? subMunicipalities,
     SubMunicipalityEntity? selectedSubMunicipality,
-    BlocRequestStatus? requestTypesStatus,
-    List<LicenseTypeEntity>? requestTypes,
+    BlocRequestStatus? licenseTypesStatus,
+    List<LicenseTypeEntity>? licenseTypes,
     LicenseTypeEntity? selectedLicenseType,
-    BlocRequestStatus? requestSubTypesStatus,
-    List<LicenseSubTypeEntity>? requestSubTypes,
+    BlocRequestStatus? licenseSubTypesStatus,
+    List<LicenseSubTypeEntity>? licenseSubTypes,
     LicenseSubTypeEntity? selectedLicenseSubType,
     DateTime? selectedLicenseDate,
-    String? requestNumberQuery,
+    String? licenseNumberQuery,
     SortType? sortType,
     String? errorMessage,
     int? page,
     int? limit,
-    bool? hasReachedMax,
+    bool? noMoreData,
   }) {
     return LicensesState(
-      requestsStatus: requestsStatus ?? this.requestsStatus,
-      requests: requests ?? this.requests,
-      requestStatusesStatus:
-          requestStatusesStatus ?? this.requestStatusesStatus,
-      requestStatuses: requestStatuses ?? this.requestStatuses,
+      licensesStatus: licensesStatus ?? this.licensesStatus,
+      licenses: licenses ?? this.licenses,
+      licenseStatusesStatus:
+          licenseStatusesStatus ?? this.licenseStatusesStatus,
+      licenseStatuses: licenseStatuses ?? this.licenseStatuses,
       selectedLicenseStatus:
           selectedLicenseStatus ?? this.selectedLicenseStatus,
       municipalitiesStatus: municipalitiesStatus ?? this.municipalitiesStatus,
@@ -107,30 +109,57 @@ class LicensesState extends Equatable {
       subMunicipalities: subMunicipalities ?? this.subMunicipalities,
       selectedSubMunicipality:
           selectedSubMunicipality ?? this.selectedSubMunicipality,
-      requestTypesStatus: requestTypesStatus ?? this.requestTypesStatus,
-      requestTypes: requestTypes ?? this.requestTypes,
+      licenseTypesStatus: licenseTypesStatus ?? this.licenseTypesStatus,
+      licenseTypes: licenseTypes ?? this.licenseTypes,
       selectedLicenseType: selectedLicenseType ?? this.selectedLicenseType,
-      requestSubTypesStatus:
-          requestSubTypesStatus ?? this.requestSubTypesStatus,
-      requestSubTypes: requestSubTypes ?? this.requestSubTypes,
+      licenseSubTypesStatus:
+          licenseSubTypesStatus ?? this.licenseSubTypesStatus,
+      licenseSubTypes: licenseSubTypes ?? this.licenseSubTypes,
       selectedLicenseSubType:
           selectedLicenseSubType ?? this.selectedLicenseSubType,
       selectedLicenseDate: selectedLicenseDate ?? this.selectedLicenseDate,
-      requestNumberQuery: requestNumberQuery ?? this.requestNumberQuery,
+      licenseNumberQuery: licenseNumberQuery ?? this.licenseNumberQuery,
       sortType: sortType ?? this.sortType,
       errorMessage: errorMessage ?? this.errorMessage,
       page: page ?? this.page,
       limit: limit ?? this.limit,
-      hasReachedMax: hasReachedMax ?? this.hasReachedMax,
+      noMoreData: noMoreData ?? this.noMoreData,
     );
   }
 
+  LicensesState clearFilters() => LicensesState(
+        licensesStatus: licensesStatus,
+        licenses: licenses,
+        licenseStatusesStatus: licenseStatusesStatus,
+        licenseStatuses: licenseStatuses,
+        selectedLicenseStatus: null,
+        municipalitiesStatus: municipalitiesStatus,
+        municipalities: municipalities,
+        selectedMunicipality: null,
+        subMunicipalitiesStatus: subMunicipalitiesStatus,
+        subMunicipalities: subMunicipalities,
+        selectedSubMunicipality: null,
+        licenseTypesStatus: licenseTypesStatus,
+        licenseTypes: licenseTypes,
+        selectedLicenseType: null,
+        licenseSubTypesStatus: licenseSubTypesStatus,
+        licenseSubTypes: licenseSubTypes,
+        selectedLicenseSubType: null,
+        selectedLicenseDate: selectedLicenseDate,
+        licenseNumberQuery: licenseNumberQuery,
+        sortType: sortType,
+        errorMessage: errorMessage,
+        page: page,
+        limit: limit,
+        noMoreData: noMoreData,
+      );
+
   @override
   List<Object?> get props => [
-        requestsStatus,
-        requests,
-        requestStatusesStatus,
-        requestStatuses,
+        licensesStatus,
+        licenses,
+        licenseStatusesStatus,
+        licenseStatuses,
         selectedLicenseStatus,
         municipalitiesStatus,
         municipalities,
@@ -138,18 +167,18 @@ class LicensesState extends Equatable {
         subMunicipalitiesStatus,
         subMunicipalities,
         selectedSubMunicipality,
-        requestTypesStatus,
-        requestTypes,
+        licenseTypesStatus,
+        licenseTypes,
         selectedLicenseType,
-        requestSubTypesStatus,
-        requestSubTypes,
+        licenseSubTypesStatus,
+        licenseSubTypes,
         selectedLicenseSubType,
         selectedLicenseDate,
-        requestNumberQuery,
+        licenseNumberQuery,
         sortType,
         errorMessage,
         page,
         limit,
-        hasReachedMax,
+        noMoreData,
       ];
 }
