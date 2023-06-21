@@ -285,7 +285,7 @@ class CustomTextFieldWidget extends StatelessWidget {
               radius: borderRadius,
             ),
             focusedBorder: fieldBorderType.inputBorder(
-              color: fieldBorderColor,
+              color: fieldBorderFocusedColor,
               radius: borderRadius,
             ),
             errorBorder: fieldBorderType.inputBorder(
@@ -305,7 +305,8 @@ class CustomTextFieldWidget extends StatelessWidget {
   }
 
   BorderType get fieldBorderType => borderType ?? BorderType.outline;
-  Color get fieldBorderColor => borderColor ?? AppColor.gray;
+  Color get fieldBorderColor => borderColor ?? AppColor.blackModern300Light;
+  Color get fieldBorderFocusedColor => borderColor ?? AppColor.primary900Light;
 }
 
 class CustomTextFieldWidgetWithOptinal extends StatelessWidget {

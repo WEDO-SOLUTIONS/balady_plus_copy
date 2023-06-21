@@ -59,13 +59,13 @@ class _VDCameraPageState extends State<VDCameraPage>
         },
         builder: (context, state) {
           return Scaffold(
-            appBar: CameraAppBar(
+            /*appBar: CameraAppBar(
               flashOnPress: () {
                 context.read<CameraBloc>().add(ToggleCameraFlashEvent());
               },
               isFlashOn: state.isFlashOn,
               showFlashIcon: state.showCamera ?? false,
-            ),
+            ),*/
             body: cameraViewWidgetNew(),
           );
         },

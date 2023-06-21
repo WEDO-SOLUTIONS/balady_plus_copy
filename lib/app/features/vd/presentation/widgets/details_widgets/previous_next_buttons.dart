@@ -26,67 +26,24 @@ class PreviousNextButtons extends StatelessWidget {
         return Container(
           color: Colors.transparent,
           padding: EdgeInsets.only(right: 16, left: 16, top: 5, bottom: 30),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              CustomTextButtonWidget(
-                  btnTextSize: 16,
-                  btnTextColor: AppColor.darkTurquoise,
-                  onPressed: () {
-                    context.read<CreateVDBloc>().add(GoToPreviousPageEvent());
+          child: EnhancedCustomElevatedButtonWidget(
+            btnColor:
+                isButtonDisabled ? AppColor.black200 : AppColor.primary900Light,
+            btnTextColor: isButtonDisabled ? AppColor.black400 : AppColor.white,
+            btnPressed: isButtonDisabled
+                ? () {}
+                : () {
+                    if (!isLastPage) {
+                      context.read<CreateVDBloc>().add(GoToNextPageEvent());
+                    } else {
+                      context.read<CreateVDBloc>().add(SubmitIncidentEvent());
+                    }
                   },
-                  text: ("vd_previous").tr()),
-              !isLastPage
-                  ? EnhancedCustomElevatedButtonWidget(
-                      btnPressed: isButtonDisabled
-                          ? () {}
-                          : () {
-                              context
-                                  .read<CreateVDBloc>()
-                                  .add(GoToNextPageEvent());
-                            },
-                      btnText: ("vd_next").tr(),
-                      btnTextSize: 16,
-                      btnTextWeight: AppFontWeight.bold,
-                      btnHeight: 56,
-                      btnWidth: 105,
-                      icon: Image.asset(
-                        IconPath.vdarrowLeftIcon,
-                        height: 16,
-                        width: 16,
-                        color: isButtonDisabled
-                            ? AppColor.black200
-                            : AppColor.darkTurquoise,
-                      ),
-                      buttonIconPosition: BUTTON_ICON_POSITION.left,
-                      btnBorderColor: isButtonDisabled
-                          ? AppColor.black200
-                          : AppColor.darkTurquoise,
-                      btnColor: Colors.transparent,
-                      btnTextColor: isButtonDisabled
-                          ? AppColor.black200
-                          : AppColor.darkTurquoise,
-                    )
-                  : EnhancedCustomElevatedButtonWidget(
-                      btnColor: isButtonDisabled
-                          ? AppColor.black200
-                          : AppColor.darkTurquoise,
-                      btnTextColor:
-                          isButtonDisabled ? AppColor.black400 : AppColor.white,
-                      btnPressed: isButtonDisabled
-                          ? () {}
-                          : () {
-                              context
-                                  .read<CreateVDBloc>()
-                                  .add(SubmitIncidentEvent());
-                            },
-                      btnText: ("vd_submit_incident").tr(),
-                      btnTextSize: 16,
-                      btnTextWeight: AppFontWeight.bold,
-                      btnHeight: 56,
-                      btnWidth: 142,
-                    )
-            ],
+            btnRadius: 8,
+            btnText: isLastPage ? ("vd_submit_incident").tr() : ("next").tr(),
+            btnTextSize: 16,
+            btnTextWeight: AppFontWeight.bold,
+            btnHeight: 56,
           ),
         );
       },

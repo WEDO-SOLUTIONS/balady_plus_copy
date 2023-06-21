@@ -32,6 +32,7 @@ import '../../features/_shared_feature_/shared_feature_exports.dart'
     show AuthData, BridgeParams, FileInfo;
 import '../../features/entry_point/domain/entities/sso_user_info.dart'
     show SsoUserInfo;
+import '../../features/entry_point/domain/entities/sso_user_info.dart';
 import '../../features/entry_point/presentation/cubit/auth_cubit.dart';
 import '../../features/profile_features/delegators/delegators_exports.dart'
     show DelegatorEntity;

@@ -6,6 +6,8 @@ const _svgServicesIconPath = 'assets/icons/svg/services/';
 const _svgProfileIconPath = 'assets/icons/svg/profile/';
 const _svgNearbyIconPath = 'assets/icons/svg/nearby/';
 const _pngVDIconPath = 'assets/icons/png/vd/';
+const _svgVDIconPath = 'assets/icons/svg/vd/';
+
 const _svg = '.svg';
 
 const _pngIconPath = 'assets/icons/png/';
@@ -97,4 +99,11 @@ class IconPath {
   static const vdarrowLeftIcon = '${_pngVDIconPath}arrowLeft$_png';
   static const vdAgianIcon = '${_pngVDIconPath}again@3x$_png';
   static const vdMapMarkerIcon = '${_pngVDIconPath}marker2@3x$_png';
+  static const vdFlashOffIcon2 = '${_svgVDIconPath}Flash-off$_svg';
+
+  static const vdSummuryDesc = '${_svgVDIconPath}vdSummuryDesc$_svg';
+  static const vdSummuryPhoto = '${_svgVDIconPath}vdSummuryPhoto$_svg';
+  static const vdSummuryPledge = '${_svgVDIconPath}vdSummuryPledge$_svg';
+  static const vdSummurySPL = '${_svgVDIconPath}vdSummurySPL$_svg';
+  static const vdSummuryUserInfo = '${_svgVDIconPath}vdSummuryUserInfo$_svg';
 }
