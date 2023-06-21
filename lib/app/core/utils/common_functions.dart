@@ -418,6 +418,7 @@ class CommonProperties {
   static DelegatorEntity? get selectedDelegator =>
       sl<EntryPointCubit>().state.selectedDelegator;
   static bool get isLoggedIn => sl<EntryPointCubit>().state.token != null;
+  //static SsoUserInfo? userInfo = sl<EntryPointCubit>().state.userInfo;
 
   static LatLng defaultLocation =
       const LatLng(24.76836756001484, 46.720988751704304);
