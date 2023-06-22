@@ -38,7 +38,12 @@ class InvoicesParamsModel extends Equatable {
       'invoiceStatusId': invoiceStatusId,
       'dueDate': dueDate,
       'issueDate': issueDate,
-      'sort': sort,
+      'sort': [
+        {
+          'filed': "8",
+          "type": sort.value,
+        },
+      ],
     };
   }
 

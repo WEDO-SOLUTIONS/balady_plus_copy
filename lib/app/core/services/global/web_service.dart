@@ -8,7 +8,19 @@ import '../../../core/dependency_injection/dependency_injection_exports.dart'
 import '../../../features/_shared_feature_/shared_feature_exports.dart'
     show AuthData, AuthDataModel;
 import '../../errors/errors_exports.dart'
-    show BadRequestException, ConflictException, DeadlineExceededException, FailedToGenerateTokenException, InternalServerErrorException, MethodNotAllowedException, NoDataFoundException, NoInternetConnectionException, RequestNotFoundException, TokenHasExpiredException, TokenNotFoundException, UnAuthorizedException;
+    show
+        BadRequestException,
+        ConflictException,
+        DeadlineExceededException,
+        FailedToGenerateTokenException,
+        InternalServerErrorException,
+        MethodNotAllowedException,
+        NoDataFoundException,
+        NoInternetConnectionException,
+        RequestNotFoundException,
+        TokenHasExpiredException,
+        TokenNotFoundException,
+        UnAuthorizedException;
 import '../../utils/utils_exports.dart'
     show
         ApiHeader,
@@ -27,9 +39,9 @@ class WebService {
 
   WebService({required this.dio}) {
     dio.options.baseUrl = sl<EnvType>().domain;
-    dio.options.connectTimeout = 5000;
-    dio.options.receiveTimeout = 5000;
-    dio.options.sendTimeout = 5000;
+    dio.options.connectTimeout = 60000;
+    dio.options.receiveTimeout = 60000;
+    dio.options.sendTimeout = 60000;
     dio.options.headers = {};
     dio.interceptors.add(AppInterceptors());
     dio.interceptors.add(PrettyDioLogger(
@@ -137,7 +149,7 @@ class AppInterceptors extends Interceptor {
       case DioErrorType.response:
         switch (err.response?.statusCode) {
           case 400:
-            if(err.response?.data['data']['responseCode'] == '2'){
+            if (err.response?.data['data']['responseCode'] == '2') {
               throw NoDataFoundException(err.requestOptions);
             }
             throw BadRequestException(err.requestOptions, err.response);
