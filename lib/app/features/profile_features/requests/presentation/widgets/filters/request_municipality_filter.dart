@@ -2,15 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
-import '../../../../../../core/utils/utils_exports.dart' show BlocRequestStatus;
 import '../../../../../_shared_feature_/shared_feature_exports.dart'
-    show
-        BottomSheetDialog,
-        BottomSheetList,
-        DropDownWithTitle,
-        RetryWidget;
+    show BottomSheetDialog, BottomSheetList, DropDownWithTitle;
 import '../../../requests_exports.dart'
-    show MunicipalitySelectedEvent, RequestsBloc, RequestsState;
+    show
+        GetMunicipalitiesEvent,
+        MunicipalitySelectedEvent,
+        RequestsBloc,
+        RequestsState;
 
 class RequestsMunicipalityFilter extends StatelessWidget {
   const RequestsMunicipalityFilter({super.key});
@@ -22,15 +21,13 @@ class RequestsMunicipalityFilter extends StatelessWidget {
           previous.municipalitiesStatus != current.municipalitiesStatus ||
           previous.selectedMunicipality != current.selectedMunicipality,
       builder: (context, state) {
-        final loading = state.municipalitiesStatus ==
-            BlocRequestStatus.submissionGetLoading;
-        final failed = state.municipalitiesStatus ==
-            BlocRequestStatus.submissionGetFailure;
         return DropDownWithTitle(
           title: "municipality".tr(),
           selectedValue: state.selectedMunicipality?.name,
-          loading: loading,
-          retryWidget: failed ? RetryWidget(onRetry: () {}) : null,
+          status: state.municipalitiesStatus,
+          onRetry: () => context.read<RequestsBloc>().add(
+                GetMunicipalitiesEvent(),
+              ),
           onTap: () {
             final List<String> items =
                 state.municipalities.map((e) => e.name).toList();

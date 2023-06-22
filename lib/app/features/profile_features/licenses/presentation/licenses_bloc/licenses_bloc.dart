@@ -77,7 +77,7 @@ class LicensesBloc extends Bloc<LicensesEvent, LicensesState> {
               state.copyWith(
                 licensesStatus: BlocRequestStatus.submissionGetSuccess,
                 noMoreData: true,
-                // licenses: state.page == 0 ? [] : null,
+                licenses: state.page == 0 ? [] : state.licenses,
               ),
             );
             return;
@@ -331,6 +331,7 @@ class LicensesBloc extends Bloc<LicensesEvent, LicensesState> {
         selectedSubMunicipality: Nullable(null),
         selectedLicenseType: Nullable(null),
         selectedLicenseDate: Nullable(null),
+        sortType: SortType.desc,
         page: 0,
       ));
       add(GetLicensesEvent());
@@ -338,6 +339,7 @@ class LicensesBloc extends Bloc<LicensesEvent, LicensesState> {
 
     on<ResetLicensesFiltersEvent>((event, emit) async {
       emit(state.copyWith(
+        sortType: event.selectedSortType,
         selectedLicenseStatus: Nullable(event.selectedLicenseStatus),
         selectedMunicipality: Nullable(event.selectedMunicipality),
         selectedSubMunicipality: Nullable(event.selectedSubMunicipality),

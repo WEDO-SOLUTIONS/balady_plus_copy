@@ -49,6 +49,7 @@ class RequestsPage extends StatelessWidget {
                       context
                           .read<RequestsBloc>()
                           .add(RequestsLoadLookupsEvent());
+                      final sortType = state.sortType;
                       final selectedRequestStatus = state.selectedRequestStatus;
                       final selectedMunicipality = state.selectedMunicipality;
                       final selectedSubMunicipality =
@@ -74,6 +75,7 @@ class RequestsPage extends StatelessWidget {
                       if (actionTaked != true && context.mounted) {
                         context.read<RequestsBloc>().add(
                               ResetRequestsFiltersEvent(
+                                selectedSortType: sortType,
                                 selectedRequestStatus: selectedRequestStatus,
                                 selectedMunicipality: selectedMunicipality,
                                 selectedSubMunicipality:

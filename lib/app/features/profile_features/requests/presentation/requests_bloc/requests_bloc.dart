@@ -5,7 +5,12 @@ import '../../../../../core/errors/errors_exports.dart'
     show NoDataFoundFailure, ServerFailure;
 import '../../../../../core/services/services_exports.dart' show NoParams;
 import '../../../../../core/utils/utils_exports.dart'
-    show BlocRequestStatus, CommonProperties, Nullable, PaginationConstants, SortType;
+    show
+        BlocRequestStatus,
+        CommonProperties,
+        Nullable,
+        PaginationConstants,
+        SortType;
 import '../../requests_exports.dart'
     show
         GetMunicipalities,
@@ -76,6 +81,7 @@ class RequestsBloc extends Bloc<RequestsEvent, RequestsState> {
               state.copyWith(
                 requestsStatus: BlocRequestStatus.submissionGetSuccess,
                 noMoreData: true,
+                requests: state.page == 0 ? [] : state.requests,
               ),
             );
             return;
@@ -367,6 +373,7 @@ class RequestsBloc extends Bloc<RequestsEvent, RequestsState> {
         selectedRequestType: Nullable(null),
         selectedRequestSubType: Nullable(null),
         selectedRequestDate: Nullable(null),
+        sortType: SortType.desc,
         page: 0,
       ));
       add(GetRequestsEvent());
@@ -381,6 +388,7 @@ class RequestsBloc extends Bloc<RequestsEvent, RequestsState> {
 
     on<ResetRequestsFiltersEvent>((event, emit) async {
       emit(state.copyWith(
+        sortType: event.selectedSortType,
         selectedRequestStatus: Nullable(event.selectedRequestStatus),
         selectedMunicipality: Nullable(event.selectedMunicipality),
         selectedSubMunicipality: Nullable(event.selectedSubMunicipality),

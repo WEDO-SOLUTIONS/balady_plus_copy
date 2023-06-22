@@ -59,6 +59,7 @@ class RequestsRepositoryImplementation implements RequestsRepository {
   Future<Either<Failure, List<MunicipalityEntity>>> getMunicipalities() async {
     try {
       final data = await remoteDataSource.getMunicipalities();
+      // return Left(ServerFailure("testing Errors"));
       return Right(data);
     } on NoDataFoundException {
       return Left(NoDataFoundFailure());

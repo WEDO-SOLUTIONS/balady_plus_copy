@@ -10,6 +10,7 @@ import '../../invoices_exports.dart'
         InvoicesDueDateFilter,
         InvoicesIssueDateFilter,
         InvoicesProductFilter,
+        InvoicesSortFilter,
         InvoicesState,
         InvoicesStatusFilter,
         InvoicesTypeFilter,
@@ -62,7 +63,8 @@ class InvoicesFilterBottomSheet extends StatelessWidget {
                   const InvoicesDueDateFilter(),
                   const InvoicesIssueDateFilter(),
                   const InvoicesStatusFilter(),
-                  const SizedBox(height: 150),
+                  const InvoicesSortFilter(),
+                  const SizedBox(height: 16),
                 ],
               );
             },

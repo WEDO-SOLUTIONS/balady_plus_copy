@@ -40,24 +40,33 @@ class _BottomSheetListState extends State<BottomSheetList> {
           for (var item in widget.items)
             InkWell(
               onTap: () => setState(() => selectedValue = item),
-              child: Row(
-                children: [
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width - 100,
-                    child: CustomTextWidget(
-                      item,
-                      textStyle: AppStyle.listTitleTextStyle,
-                      maxLines: 2,
+              child: Container(
+                height: 56,
+                padding: const EdgeInsetsDirectional.only(start: 12),
+                margin: const EdgeInsets.only(top: 8),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8),
+                  color: AppColor.primary50Light50,
+                ),
+                child: Row(
+                  children: [
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width - 125,
+                      child: CustomTextWidget(
+                        item,
+                        textStyle: AppStyle.listTitleTextStyle,
+                        maxLines: 2,
+                      ),
                     ),
-                  ),
-                  const Spacer(),
-                  Radio(
-                    value: item,
-                    groupValue: selectedValue,
-                    activeColor: AppColor.primary700Light,
-                    onChanged: (_) => setState(() => selectedValue = item),
-                  )
-                ],
+                    const Spacer(),
+                    Radio(
+                      value: item,
+                      groupValue: selectedValue,
+                      activeColor: AppColor.primary700Light,
+                      onChanged: (_) => setState(() => selectedValue = item),
+                    )
+                  ],
+                ),
               ),
             ),
           const SizedBox(height: 50),

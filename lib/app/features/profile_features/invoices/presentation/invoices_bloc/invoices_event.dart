@@ -104,6 +104,7 @@ class ClearInvoicesFiltersEvent extends InvoicesEvent {}
 class ApplyInvoicesFiltersEvent extends InvoicesEvent {}
 
 class ResetInvoicesFiltersEvent extends InvoicesEvent {
+  final SortType selectedSortType;
   final String? invoiceNumberQuery;
   final String? requestNumberQuery;
   final InvoiceStatusEntity? selectedInvoiceStatus;
@@ -113,6 +114,7 @@ class ResetInvoicesFiltersEvent extends InvoicesEvent {
   final DateTime? selectedInvoiceIssueDate;
 
   const ResetInvoicesFiltersEvent({
+    required this.selectedSortType,
     this.invoiceNumberQuery,
     this.requestNumberQuery,
     this.selectedInvoiceStatus,
@@ -124,6 +126,7 @@ class ResetInvoicesFiltersEvent extends InvoicesEvent {
 
   @override
   List<Object?> get props => [
+        selectedSortType,
         invoiceNumberQuery,
         requestNumberQuery,
         selectedInvoiceStatus,

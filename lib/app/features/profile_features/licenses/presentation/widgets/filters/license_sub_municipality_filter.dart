@@ -2,14 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
-import '../../../../../../core/utils/utils_exports.dart' show BlocRequestStatus;
 import '../../../../../_shared_feature_/shared_feature_exports.dart'
-    show
-        BottomSheetDialog,
-        BottomSheetList,
-        DropDownWithTitle,
-        MessageDialog,
-        RetryWidget;
+    show BottomSheetDialog, BottomSheetList, DropDownWithTitle, MessageDialog;
 import '../../../licenses_exports.dart'
     show
         GetSubMunicipalitiesEvent,
@@ -28,28 +22,20 @@ class LicensesSubMunicipalityFilter extends StatelessWidget {
           previous.selectedSubMunicipality != current.selectedSubMunicipality ||
           previous.selectedMunicipality != current.selectedMunicipality,
       builder: (context, state) {
-        final loading = state.subMunicipalitiesStatus ==
-            BlocRequestStatus.submissionGetLoading;
-        final failed = state.subMunicipalitiesStatus ==
-            BlocRequestStatus.submissionGetFailure;
         return DropDownWithTitle(
           title: "sub_municipality".tr(),
           selectedValue: state.selectedSubMunicipality?.name,
-          loading: loading,
-          retryWidget: failed
-              ? RetryWidget(
-                  onRetry: () {
-                    final selectedMunicipality = state.selectedMunicipality;
-                    if (selectedMunicipality != null) {
-                      context.read<LicensesBloc>().add(
-                            GetSubMunicipalitiesEvent(
-                              municipality: selectedMunicipality,
-                            ),
-                          );
-                    }
-                  },
-                )
-              : null,
+          status: state.subMunicipalitiesStatus,
+          onRetry: () {
+            final selectedMunicipality = state.selectedMunicipality;
+            if (selectedMunicipality != null) {
+              context.read<LicensesBloc>().add(
+                    GetSubMunicipalitiesEvent(
+                      municipality: selectedMunicipality,
+                    ),
+                  );
+            }
+          },
           onTap: () {
             if (state.selectedMunicipality == null) {
               MessageDialog.showErrorNotification(

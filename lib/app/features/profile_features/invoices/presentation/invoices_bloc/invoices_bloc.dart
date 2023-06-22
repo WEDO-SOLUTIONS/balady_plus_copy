@@ -5,7 +5,12 @@ import '../../../../../core/errors/errors_exports.dart'
     show NoDataFoundFailure, ServerFailure;
 import '../../../../../core/services/services_exports.dart' show NoParams;
 import '../../../../../core/utils/utils_exports.dart'
-    show BlocRequestStatus, CommonProperties, Nullable, PaginationConstants, SortType;
+    show
+        BlocRequestStatus,
+        CommonProperties,
+        Nullable,
+        PaginationConstants,
+        SortType;
 import '../../../requests/requests_exports.dart'
     show GetMunicipalities, GetSubMunicipalities;
 import '../../invoices_exports.dart'
@@ -71,6 +76,7 @@ class InvoicesBloc extends Bloc<InvoicesEvent, InvoicesState> {
               state.copyWith(
                 invoicesStatus: BlocRequestStatus.submissionGetSuccess,
                 noMoreData: true,
+                invoices: state.page == 0 ? [] : state.invoices,
               ),
             );
             return;
@@ -293,6 +299,7 @@ class InvoicesBloc extends Bloc<InvoicesEvent, InvoicesState> {
           selectedInvoiceIssueDate: Nullable(null),
           invoiceNumberQuery: Nullable(null),
           requestNumberQuery: Nullable(null),
+          sortType: SortType.desc,
           page: 0,
         ),
       );
@@ -308,6 +315,7 @@ class InvoicesBloc extends Bloc<InvoicesEvent, InvoicesState> {
 
     on<ResetInvoicesFiltersEvent>((event, emit) async {
       emit(state.copyWith(
+        sortType: event.selectedSortType,
         selectedInvoiceType: Nullable(event.selectedInvoiceType),
         selectedInvoiceSubType: Nullable(event.selectedInvoiceSubType),
         selectedInvoiceDueDate: Nullable(event.selectedInvoiceDueDate),

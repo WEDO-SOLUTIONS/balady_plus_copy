@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
-import '../../../../../../core/utils/utils_exports.dart' show BlocRequestStatus;
 import '../../../../../_shared_feature_/shared_feature_exports.dart'
-    show
-        BottomSheetDialog,
-        BottomSheetList,
-        DropDownWithTitle;
+    show BottomSheetDialog, BottomSheetList, DropDownWithTitle;
 import '../../../licenses_exports.dart'
-    show LicenseStatusSelectedEvent, LicensesBloc, LicensesState;
+    show
+        GetLicenseStatusesEvent,
+        LicenseStatusSelectedEvent,
+        LicensesBloc,
+        LicensesState;
 
 class LicensesStatusFilter extends StatelessWidget {
   const LicensesStatusFilter({super.key});
@@ -24,8 +24,10 @@ class LicensesStatusFilter extends StatelessWidget {
         return DropDownWithTitle(
           title: "license_status".tr(),
           selectedValue: state.selectedLicenseStatus?.name,
-          loading: state.licenseStatusesStatus ==
-              BlocRequestStatus.submissionGetLoading,
+          status: state.licenseStatusesStatus,
+          onRetry: () => context.read<LicensesBloc>().add(
+                GetLicenseStatusesEvent(),
+              ),
           onTap: () {
             final List<String> items =
                 state.licenseStatuses.map((e) => e.name).toList();

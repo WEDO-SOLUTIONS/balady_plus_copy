@@ -114,6 +114,7 @@ class ClearLicensesFiltersEvent extends LicensesEvent {}
 class ApplyLicensesFiltersEvent extends LicensesEvent {}
 
 class ResetLicensesFiltersEvent extends LicensesEvent {
+  final SortType selectedSortType;
   final LicenseStatusEntity? selectedLicenseStatus;
   final MunicipalityEntity? selectedMunicipality;
   final SubMunicipalityEntity? selectedSubMunicipality;
@@ -121,6 +122,7 @@ class ResetLicensesFiltersEvent extends LicensesEvent {
   final DateTime? selectedLicenseDate;
 
   const ResetLicensesFiltersEvent({
+    required this.selectedSortType,
     this.selectedLicenseStatus,
     this.selectedMunicipality,
     this.selectedSubMunicipality,
@@ -130,6 +132,7 @@ class ResetLicensesFiltersEvent extends LicensesEvent {
 
   @override
   List<Object?> get props => [
+        selectedSortType,
         selectedLicenseStatus,
         selectedMunicipality,
         selectedSubMunicipality,

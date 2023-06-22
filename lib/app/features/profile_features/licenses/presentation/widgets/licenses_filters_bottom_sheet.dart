@@ -6,6 +6,7 @@ import '../../licenses_exports.dart'
         LicensesBloc,
         LicensesDateFilter,
         LicensesMunicipalityFilter,
+        LicensesSortFilter,
         LicensesStatusFilter,
         LicensesSubMunicipalityFilter,
         LicensesTypeFilter;
@@ -32,7 +33,8 @@ class LicensesFilterBottomSheet extends StatelessWidget {
               LicensesDateFilter(),
               LicensesMunicipalityFilter(),
               LicensesSubMunicipalityFilter(),
-              SizedBox(height: 150),
+              LicensesSortFilter(),
+              SizedBox(height: 16),
             ],
           );
         }),
