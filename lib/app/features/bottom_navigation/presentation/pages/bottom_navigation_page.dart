@@ -5,10 +5,13 @@ import 'package:flutter_bloc/flutter_bloc.dart'
 import '../../../../core/dependency_injection/dependency_injection_exports.dart'
     show sl;
 import '../../../../core/services/services_exports.dart' show NavigationService;
-import '../../../../core/utils/utils_exports.dart' show BottomNavBar;
+import '../../../../core/utils/utils_exports.dart'
+    show BottomNavBar, CommonFunctions;
 import '../../../home_page/presentation/pages/home_page.dart';
 import '../../../nearby/nearby_exports.dart' show NearbyPage;
 import '../../../profile/profile_exports.dart' show ProfilePage;
+import '../../../profile_features/delegators/delegators_exports.dart'
+    show DelegatorsCubit;
 import '../../../services/services_exports.dart'
     show ServicesCubit, ServicesPage;
 import '../../bottom_navigation_exports.dart'
@@ -50,6 +53,9 @@ class _BottomNavigationPageState extends State<BottomNavigationPage> {
             municipalServices: sl(),
             publicServices: sl(),
           ),
+        ),
+        BlocProvider<DelegatorsCubit>(
+          create: (_) => sl<DelegatorsCubit>(),
         ),
       ],
       child: Scaffold(

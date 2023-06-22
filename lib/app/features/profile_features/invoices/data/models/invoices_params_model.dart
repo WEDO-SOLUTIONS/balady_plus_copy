@@ -3,7 +3,8 @@ import 'package:equatable/equatable.dart';
 import '../../../../../core/utils/utils_exports.dart' show SortType;
 
 class InvoicesParamsModel extends Equatable {
-  final int? identityNumber;
+  final String? unifiedNationalNumber;
+  final String? identityNumber;
   final String? invoiceNumber;
   final String? requestNumber;
   final int page;
@@ -15,6 +16,7 @@ class InvoicesParamsModel extends Equatable {
   final SortType sort;
 
   const InvoicesParamsModel({
+    this.unifiedNationalNumber,
     this.identityNumber,
     this.invoiceNumber,
     this.requestNumber,
@@ -29,6 +31,7 @@ class InvoicesParamsModel extends Equatable {
 
   Map<String, dynamic> toMap() {
     return {
+      'unifiedNationalNumber': unifiedNationalNumber,
       'identityNumber': identityNumber,
       'invoiceNumber': invoiceNumber,
       'requestNumber': requestNumber,
@@ -49,6 +52,7 @@ class InvoicesParamsModel extends Equatable {
 
   @override
   List<Object?> get props => [
+        unifiedNationalNumber,
         identityNumber,
         invoiceNumber,
         requestNumber,

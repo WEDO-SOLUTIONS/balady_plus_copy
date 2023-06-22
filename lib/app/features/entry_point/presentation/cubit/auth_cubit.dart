@@ -5,14 +5,14 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
+import 'package:webview_flutter/webview_flutter.dart' as c;
 
 import '../../../../core/dependency_injection/injection_container.dart';
 import '../../../../core/errors/failures.dart';
 import '../../../../core/services/services_exports.dart';
-import '../../../../core/utils/enums/auth_status.dart';
 import '../../../../core/utils/utils_exports.dart';
+import '../../../profile_features/delegators/delegators_exports.dart';
 import '../../entry_point_exports.dart';
-import 'package:webview_flutter/webview_flutter.dart' as c;
 
 part 'auth_state.dart';
 
@@ -77,7 +77,7 @@ class EntryPointCubit extends Cubit<EntryPointState> {
       // print("FGGGGG");
       // print(token);
       final failureOrSuccess = await _checkSSOProfile(NoParams());
-      await failureOrSuccess.fold((failure) {}, (profile) {
+      failureOrSuccess.fold((failure) {}, (profile) {
         emit(state.copyWith(
           status: AuthStatus.notAuthenticated,
           token: token,
@@ -237,9 +237,12 @@ class EntryPointCubit extends Cubit<EntryPointState> {
           DateTime.tryParse(state.token?.expirationTime ?? "");
 
       if (expireTime != null) {
-        if (!DateTime.now().add(Duration(minutes: 15)).isBefore(expireTime)) {
-          if (state.token?.refreshToken != null)
+        if (!DateTime.now()
+            .add(const Duration(minutes: 15))
+            .isBefore(expireTime)) {
+          if (state.token?.refreshToken != null) {
             return await refreshToken(state.token!.refreshToken!);
+          }
         }
       }
     }
@@ -253,7 +256,7 @@ class EntryPointCubit extends Cubit<EntryPointState> {
     sharedPrefs.setSSOToken(null);
     //MM sharedPrefs.setUserProfile(null);
     clearSSOInfo();
-    emit(EntryPointState(
+    emit(const EntryPointState(
       status: AuthStatus.notAuthenticated,
     ));
   }
@@ -263,7 +266,7 @@ class EntryPointCubit extends Cubit<EntryPointState> {
     //MM sharedPrefs.setUserProfile(null);
     sharedPrefs.setSSOUserProfile(null);
     clearSSOInfo();
-    emit(EntryPointState(
+    emit(const EntryPointState(
       status: AuthStatus.notAuthenticated,
     ));
     _logout(NoParams());
@@ -289,7 +292,7 @@ class EntryPointCubit extends Cubit<EntryPointState> {
   }
 
   Future<void> checkVersion() async {
-    await Future.delayed(Duration(seconds: 7));
+    await Future.delayed(const Duration(seconds: 7));
     final failureOrSuccessForProfile = await _getForceVersion(NoParams());
     await failureOrSuccessForProfile.fold((failure) async {}, (success) async {
       //s print("SUCCCCCCCCESSSSSS ${success}");
@@ -313,7 +316,7 @@ class EntryPointCubit extends Cubit<EntryPointState> {
     await c.CookieManager().clearCookies();
     try {
       dynamic controller;
-      c.WebView().onWebViewCreated!(controller);
+      const c.WebView().onWebViewCreated!(controller);
       controller.clearCache();
     } catch (ex) {
       print("EXXX $ex");
@@ -327,5 +330,9 @@ class EntryPointCubit extends Cubit<EntryPointState> {
     }, (r) {
       print(r);
     });
+  }
+
+  void selectDelegator(DelegatorEntity? delegator) {
+    emit(state.copyWith(selectedDelegator: Nullable(delegator)));
   }
 }

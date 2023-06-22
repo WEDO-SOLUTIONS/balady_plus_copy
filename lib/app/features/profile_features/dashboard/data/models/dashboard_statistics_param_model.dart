@@ -2,8 +2,8 @@ import 'package:equatable/equatable.dart';
 
 class DashboardStatisticsParamsModel extends Equatable {
   final int? productId;
-  final int? unifiedNationalNumber;
-  final int? identityNumber;
+  final String? unifiedNationalNumber;
+  final String? identityNumber;
   final int mainCardId;
 
   const DashboardStatisticsParamsModel({

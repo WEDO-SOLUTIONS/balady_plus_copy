@@ -10,17 +10,7 @@ import '../../features/_shared_feature_/data/entities/package_details.dart';
 import '../../features/_shared_feature_/shared_feature_exports.dart'
     show BridgeParams, DropDownItem, FileInfo;
 import '../dependency_injection/dependency_injection_exports.dart'
-    show
-        DashboardInjection,
-        EntryPointInjection,
-        InvoicesInjection,
-        LicensesInjection,
-        LookupInjection,
-        OTPInjection,
-        RequestsInjection,
-        ServicesInjection,
-        SignInInjection,
-        SignUpInjection;
+    show DashboardInjection, DelegatorsInjection, EntryPointInjection, InvoicesInjection, LicensesInjection, LookupInjection, OTPInjection, RequestsInjection, ServicesInjection, SignInInjection, SignUpInjection;
 import '../services/services_exports.dart'
     show
         EntryPointBridge,
@@ -47,6 +37,8 @@ void initialize() {
   ServicesInjection.init();
 
   //! Profile
+  //? Delegators
+  DelegatorsInjection.init();
   //? Dashboard
   DashboardInjection.init();
   //? Requests

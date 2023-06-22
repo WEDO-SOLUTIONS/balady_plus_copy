@@ -5,7 +5,7 @@ import '../../../../../core/errors/errors_exports.dart'
     show NoDataFoundFailure, ServerFailure;
 import '../../../../../core/services/services_exports.dart' show NoParams;
 import '../../../../../core/utils/utils_exports.dart'
-    show BlocRequestStatus, Nullable, PaginationConstants, SortType;
+    show BlocRequestStatus, CommonProperties, Nullable, PaginationConstants, SortType;
 import '../../requests_exports.dart'
     show
         GetMunicipalities,
@@ -48,8 +48,14 @@ class RequestsBloc extends Bloc<RequestsEvent, RequestsState> {
         state.copyWith(requestsStatus: BlocRequestStatus.submissionGetLoading),
       );
 
+      final unifiedNationalNumber =
+          CommonProperties.selectedDelegator?.unifiedNationalNumber;
+      final identityNumber = CommonProperties.selectedDelegator?.crNumber;
+
       final failureOrSuccess = await getRequests(
         RequestsPrams(
+          unifiedNationalNumber: unifiedNationalNumber,
+          identityNumber: identityNumber,
           page: state.page,
           size: PaginationConstants.limit,
           requestNumber: state.requestNumberQuery,

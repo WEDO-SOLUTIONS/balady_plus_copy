@@ -2,6 +2,7 @@ import '../../requests_exports.dart' show RequestsParamsModel;
 
 class RequestsPrams extends RequestsParamsModel {
   const RequestsPrams({
+    super.unifiedNationalNumber,
      super.identityNumber,
      super.query,
      super.requestNumber,

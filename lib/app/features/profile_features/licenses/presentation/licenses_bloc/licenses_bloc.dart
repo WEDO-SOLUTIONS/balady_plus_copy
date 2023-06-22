@@ -5,7 +5,12 @@ import '../../../../../core/errors/errors_exports.dart'
     show NoDataFoundFailure, ServerFailure;
 import '../../../../../core/services/services_exports.dart' show NoParams;
 import '../../../../../core/utils/utils_exports.dart'
-    show BlocRequestStatus, Nullable, PaginationConstants, SortType;
+    show
+        BlocRequestStatus,
+        CommonProperties,
+        Nullable,
+        PaginationConstants,
+        SortType;
 import '../../../requests/requests_exports.dart'
     show
         GetMunicipalities,
@@ -45,8 +50,14 @@ class LicensesBloc extends Bloc<LicensesEvent, LicensesState> {
         state.copyWith(licensesStatus: BlocRequestStatus.submissionGetLoading),
       );
 
+      final unifiedNationalNumber =
+          CommonProperties.selectedDelegator?.unifiedNationalNumber;
+      final identityNumber = CommonProperties.selectedDelegator?.crNumber;
+
       final failureOrSuccess = await getLicenses(
         LicensesPrams(
+          unifiedNationalNumber: unifiedNationalNumber,
+          identityNumber: identityNumber,
           page: state.page,
           size: PaginationConstants.limit,
           licenseNumber: state.licenseNumberQuery,
@@ -66,6 +77,7 @@ class LicensesBloc extends Bloc<LicensesEvent, LicensesState> {
               state.copyWith(
                 licensesStatus: BlocRequestStatus.submissionGetSuccess,
                 noMoreData: true,
+                // licenses: state.page == 0 ? [] : null,
               ),
             );
             return;

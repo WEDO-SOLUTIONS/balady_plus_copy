@@ -158,11 +158,11 @@ class AppStyle {
   );
 
   static final profileNameTextStyle = TextStyle(
-    fontSize: 16.0,
+    fontSize: 14.0,
     fontWeight: AppFontWeight.black.fontWeight,
     color: AppColor.blackModern50Light,
     fontFamily: fontFamily,
-    height: 1.0,
+    // height: 1.0,
   );
 
   static final profileTypeTextStyle = TextStyle(

@@ -1,0 +1,34 @@
+import '../../../../features/profile_features/delegators/delegators_exports.dart'
+    show
+        DelegatorsCubit,
+        DelegatorsRemoteDataSource,
+        DelegatorsRemoteDataSourceImplementation,
+        DelegatorsRepository,
+        DelegatorsRepositoryImplementation,
+        GetDelegators;
+        
+import '../../dependency_injection_exports.dart' show sl;
+
+class DelegatorsInjection {
+  static void init() {
+    //! Use Case
+    sl.registerLazySingleton(() => GetDelegators(sl()));
+
+    //! Repository
+    sl.registerLazySingleton<DelegatorsRepository>(
+      () => DelegatorsRepositoryImplementation(
+        remoteDataSource: sl(),
+      ),
+    );
+
+    //! Data Sources
+    sl.registerLazySingleton<DelegatorsRemoteDataSource>(
+      () => DelegatorsRemoteDataSourceImplementation(webService: sl()),
+    );
+
+    //! Cubit
+    sl.registerFactory(
+      () => DelegatorsCubit(sl()),
+    );
+  }
+}
