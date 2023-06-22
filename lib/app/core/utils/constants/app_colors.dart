@@ -80,4 +80,5 @@ class AppColor {
   static const vermillion = Color(0xffdc2828);
   static const primary50Light50 = Color(0x80e6efef);
   static const doveGray = Color(0xff6b6b6b);
+  static const dark5 = Color(0x0d2f3c48);
 }

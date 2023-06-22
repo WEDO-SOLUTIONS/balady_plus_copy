@@ -115,6 +115,7 @@ class ElevatedButtonWidget extends _ElevatedButton {
           text: "choose".tr(),
           onPressed: onPressed,
         ));
+
   ElevatedButtonWidget.signIn({required VoidCallback onPressed})
       : super(CustomElevatedButtonWidget(
           btnColor: AppColor.primary900Light,
@@ -125,6 +126,19 @@ class ElevatedButtonWidget extends _ElevatedButton {
           ),
           btnHeight: 48,
           text: "sign_in".tr(),
+          onPressed: onPressed,
+        ));
+
+  ElevatedButtonWidget.startService({required VoidCallback onPressed})
+      : super(CustomElevatedButtonWidget(
+          btnColor: AppColor.primary800Light,
+          textStyle: AppStyle.elevatedButtonStyle.copyWith(
+            color: AppColor.white,
+            fontWeight: FontWeight.w700,
+            fontSize: 16,
+          ),
+          btnHeight: 56,
+          text: "start_service".tr(),
           onPressed: onPressed,
         ));
 }

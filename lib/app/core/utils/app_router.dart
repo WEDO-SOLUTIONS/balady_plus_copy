@@ -19,6 +19,8 @@ import '../../features/profile_features/personal_information/personal_informatio
     show PersonalInformationPage;
 import '../../features/profile_features/requests/requests_exports.dart'
     show RequestsPage;
+import '../../features/services/services_exports.dart'
+    show ServiceCardsPage, ServiceEntity;
 import '../../features/splash/splash_exports.dart' show SplashPage;
 
 class AppRouter {
@@ -41,6 +43,14 @@ class AppRouter {
       case RouteName.bottomNavigation:
         // return MaterialPageRoute(builder: (_) => const BottomNavigationPage());
         return SliderUpPage(page: const BottomNavigationPage());
+
+      //! Services
+      case RouteName.serviceCards:
+        return MaterialPageRoute(
+          builder: (_) => ServiceCardsPage(
+            service: settings.arguments as ServiceEntity,
+          ),
+        );
 
       //! Setting
       // personalInformation page

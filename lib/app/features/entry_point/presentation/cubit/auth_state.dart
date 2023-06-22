@@ -56,6 +56,7 @@ class EntryPointState extends Equatable {
         cityId,
         blocStatus,
         apigeeToken,
+        selectedDelegator,
       ];
 
   @override

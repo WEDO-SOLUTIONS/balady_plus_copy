@@ -36,6 +36,9 @@ class IconPath {
 
   // Services
   static serviceIcon(String name) => '$_svgServicesIconPath$name$_svg';
+  static const rating = '${_svgServicesIconPath}rating$_svg';
+  static const duration = '${_svgServicesIconPath}duration$_svg';
+  static const warnings = '${_svgServicesIconPath}warnings$_svg';
 
   // Profile
   static const profileIcon = '${_svgProfileIconPath}user$_svg';

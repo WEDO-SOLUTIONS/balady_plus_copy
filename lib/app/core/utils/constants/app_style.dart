@@ -291,6 +291,27 @@ class AppStyle {
     fontFamily: fontFamily,
   );
 
+  static final serviceCardDescriptionTextStyle = TextStyle(
+    fontSize: 14.0,
+    fontWeight: AppFontWeight.semiBold.fontWeight,
+    color: AppColor.blackModern600Light,
+    fontFamily: fontFamily,
+  );
+
+  static final serviceCardParameterTitleTextStyle = TextStyle(
+    fontSize: 13.0,
+    fontWeight: AppFontWeight.bold.fontWeight,
+    color: AppColor.blackModern600Light,
+    fontFamily: fontFamily,
+  );
+
+  static final serviceCardWarningTitleTextStyle = TextStyle(
+    fontSize: 15.0,
+    fontWeight: AppFontWeight.bold.fontWeight,
+    color: AppColor.primary900Light,
+    fontFamily: fontFamily,
+  );
+
   /// Padding
   static const defaultPadding = EdgeInsets.symmetric(
     horizontal: UIHelper.mediumPadding,
