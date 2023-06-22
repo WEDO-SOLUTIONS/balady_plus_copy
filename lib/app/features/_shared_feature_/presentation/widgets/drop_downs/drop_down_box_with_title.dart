@@ -38,7 +38,7 @@ class DropDownWithTitle extends StatelessWidget {
           children: [
             CustomTextWidget(
               title,
-              textStyle: AppStyle.dropDownTitleTextStle,
+              textStyle: AppStyle.dropDownTitleTextStyle,
             ),
             const SizedBox(height: 8),
             if (retryWidget != null)
@@ -64,7 +64,7 @@ class DropDownWithTitle extends StatelessWidget {
                   children: [
                     CustomTextWidget(
                       selectedValue ?? "choose".tr(),
-                      textStyle: AppStyle.dropDownValueTextStle,
+                      textStyle: AppStyle.dropDownValueTextStyle,
                     ),
                     const Spacer(),
                     if (showArrow)

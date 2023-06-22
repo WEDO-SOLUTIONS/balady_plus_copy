@@ -38,7 +38,7 @@ class DateFormCell extends StatelessWidget {
               ),
               CustomTextWidget(
                 value == DateForm.gregorian ? "gregorian".tr() : "hijri".tr(),
-                textStyle: AppStyle.dropDownValueTextStle,
+                textStyle: AppStyle.dropDownValueTextStyle,
               ),
               const SizedBox(width: 8),
             ],

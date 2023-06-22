@@ -30,7 +30,8 @@ class ProfileCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final selected = !isListItem || this.selected;
-    final name = delegator?.entityName ?? userInfo?.name ?? "hi".tr();
+    final name =
+        delegator?.entityName ?? userInfo?.getFirstAndLastName() ?? "hi".tr();
     String type = delegator?.id ?? userInfo?.idNo ?? "in_balady".tr();
     if (!isListItem && delegator == null && userInfo != null) {
       type = "individual_account".tr();

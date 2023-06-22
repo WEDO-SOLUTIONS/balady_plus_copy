@@ -233,7 +233,7 @@ const _fakeUser = SsoUserInfo(
   idType: "",
   sex: "ذكر",
   dob: "23/05/1998",
-  sname: "",
+  sname: "احمد,بن خالد",
   sub: "",
   nationality: "سعودي",
 );

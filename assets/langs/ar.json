@@ -162,6 +162,16 @@
   "_dashboardComment": "أى شئ يخص لوحة البيانات",
   "the_following_data": "البيانات التالية تشمل خدمات محدودة فقط في هذه  النسخة. سيتم تحديثها بكامل البيانات قريباً",
 
+  "_personalInformationComment": "أى شئ يخص المعلومات الشخصية",
+  "full_name": "الإسم بالكامل",
+  "identity": "الهوية",
+  "date_of_birth": "تاريخ الميلاد",
+  "nationality": "الجنسية",
+  "sex": "الجنس",
+  "contact_information": "معلومات الاتصال",
+  "phone_number": "رقم الجوال",
+  
+
   "_globalComment": "أى شئ يخص الكلمات العامة",
   "selectFromHere": "إختر من هنا",
   "fullName": "الإسم بالكامل",

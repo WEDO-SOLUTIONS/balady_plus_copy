@@ -252,7 +252,7 @@ class AppStyle {
     height: 1.0,
   );
 
-  static final dropDownTitleTextStle = TextStyle(
+  static final dropDownTitleTextStyle = TextStyle(
     fontSize: 16.0,
     fontWeight: AppFontWeight.bold.fontWeight,
     color: AppColor.blackModern700Light,
@@ -260,10 +260,26 @@ class AppStyle {
     height: 1.0,
   );
 
-  static final dropDownValueTextStle = TextStyle(
+  static final dropDownValueTextStyle = TextStyle(
     fontSize: 14.0,
     fontWeight: AppFontWeight.semiBold.fontWeight,
     color: AppColor.blackModern700Light,
+    fontFamily: fontFamily,
+    height: 1.0,
+  );
+
+  static final personalInfoParameterTitleTextStyle = TextStyle(
+    fontSize: 12.0,
+    fontWeight: AppFontWeight.semiBold.fontWeight,
+    color: AppColor.primary700Light,
+    fontFamily: fontFamily,
+    height: 1.0,
+  );
+
+  static final personalInfoParameterValueTextStyle = TextStyle(
+    fontSize: 16.0,
+    fontWeight: AppFontWeight.semiBold.fontWeight,
+    color: AppColor.blackModern600Light,
     fontFamily: fontFamily,
     height: 1.0,
   );
