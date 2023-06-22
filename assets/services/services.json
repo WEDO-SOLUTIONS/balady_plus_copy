@@ -118,7 +118,7 @@
       "isNew": false,
       "isImportant": false,
       "action": {
-        "type": "cardPage",
+        "type": "page",
         "value": "/send-image"
       },
       "ar": {
