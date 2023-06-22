@@ -116,7 +116,9 @@
   "about_balady": "عن بلدي",
   "choose_profile": "اختر الحساب",
   "hi": "اهلا بك",
-  "in_balady": "في تطبيق بلدي",
+  "in_balady": "في تطبيق بلدي+",
+  "please_sign_in": "قم بتسجيل الدخول حتى تستطيع استخدام التطبيق بشكل كامل",
+  "sign_in": "تسجيل الدخول",
 
   "_nearbyComment": "أى شئ يخص قريب مني",
   "coffee": "مقهى",
@@ -170,7 +172,6 @@
   "sex": "الجنس",
   "contact_information": "معلومات الاتصال",
   "phone_number": "رقم الجوال",
-  
 
   "_globalComment": "أى شئ يخص الكلمات العامة",
   "selectFromHere": "إختر من هنا",

@@ -284,6 +284,13 @@ class AppStyle {
     height: 1.0,
   );
 
+  static final signInFullTextStyle = TextStyle(
+    fontSize: 14.0,
+    fontWeight: AppFontWeight.bold.fontWeight,
+    color: AppColor.doveGray,
+    fontFamily: fontFamily,
+  );
+
   /// Padding
   static const defaultPadding = EdgeInsets.symmetric(
     horizontal: UIHelper.mediumPadding,

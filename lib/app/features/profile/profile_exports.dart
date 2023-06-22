@@ -20,3 +20,4 @@ export 'presentation/widgets/profile_list_card.dart';
 export 'presentation/widgets/profile_list_item.dart';
 export 'presentation/widgets/profile_section.dart';
 export 'presentation/widgets/profile_sections.dart';
+export 'presentation/widgets/sign_in_card.dart';
