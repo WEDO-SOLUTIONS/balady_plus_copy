@@ -54,7 +54,7 @@ class RequestsRemoteDataSourceImplementation
       final data = response.data;
       data.toString().successLog();
 
-      final result = ResponseBodyModel.fromMap(data).data.result;
+      final result = ResponseBodyModel.fromMap(data).data?.result;
 
       return result
           .map<RequestsModel>(
@@ -89,7 +89,7 @@ class RequestsRemoteDataSourceImplementation
       final data = response.data;
       data.toString().successLog();
 
-      final result = ResponseBodyModel.fromMap(data).data.result;
+      final result = ResponseBodyModel.fromMap(data).data?.result;
 
       return result
           .map<RequestStatusModel>(
@@ -124,7 +124,7 @@ class RequestsRemoteDataSourceImplementation
       final data = response.data;
       data.toString().successLog();
 
-      final result = ResponseBodyModel.fromMap(data).data.result;
+      final result = ResponseBodyModel.fromMap(data).data?.result;
 
       return result
           .map<MunicipalityModel>(
@@ -161,7 +161,7 @@ class RequestsRemoteDataSourceImplementation
       final data = response.data;
       data.toString().successLog();
 
-      final result = ResponseBodyModel.fromMap(data).data.result;
+      final result = ResponseBodyModel.fromMap(data).data?.result;
 
       return result
           .map<SubMunicipalityModel>(
@@ -196,7 +196,7 @@ class RequestsRemoteDataSourceImplementation
       final data = response.data;
       data.toString().successLog();
 
-      final result = ResponseBodyModel.fromMap(data).data.result;
+      final result = ResponseBodyModel.fromMap(data).data?.result;
 
       return result
           .map<RequestTypeModel>(
@@ -233,7 +233,7 @@ class RequestsRemoteDataSourceImplementation
       final data = response.data;
       data.toString().successLog();
 
-      final result = ResponseBodyModel.fromMap(data).data.result;
+      final result = ResponseBodyModel.fromMap(data).data?.result;
 
       return result
           .map<RequestSubTypeModel>(
