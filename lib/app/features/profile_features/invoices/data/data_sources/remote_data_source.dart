@@ -2,7 +2,8 @@ import 'package:dio/dio.dart' show DioError;
 import 'package:localize_and_translate/localize_and_translate.dart'
     show Translation;
 
-import '../../../../../core/errors/errors_exports.dart' show NoDataFoundException, ServerException;
+import '../../../../../core/errors/errors_exports.dart'
+    show NoDataFoundException, ServerException;
 import '../../../../../core/services/services_exports.dart' show WebService;
 import '../../../../../core/utils/utils_exports.dart' show ApiUrl, Log;
 import '../../../../_shared_feature_/shared_feature_exports.dart'
@@ -46,7 +47,7 @@ class InvoicesRemoteDataSourceImplementation
       final data = response.data;
       data.toString().successLog();
 
-      final result = ResponseBodyModel.fromMap(data).data.result;
+      final result = ResponseBodyModel.fromMap(data).data?.result;
 
       return result
           .map<InvoicesModel>(
@@ -81,7 +82,7 @@ class InvoicesRemoteDataSourceImplementation
       final data = response.data;
       data.toString().successLog();
 
-      final result = ResponseBodyModel.fromMap(data).data.result;
+      final result = ResponseBodyModel.fromMap(data).data?.result;
 
       return result
           .map<InvoiceStatusModel>(
@@ -116,7 +117,7 @@ class InvoicesRemoteDataSourceImplementation
       final data = response.data;
       data.toString().successLog();
 
-      final result = ResponseBodyModel.fromMap(data).data.result;
+      final result = ResponseBodyModel.fromMap(data).data?.result;
 
       return result
           .map<InvoiceTypeModel>(
@@ -153,7 +154,7 @@ class InvoicesRemoteDataSourceImplementation
       final data = response.data;
       data.toString().successLog();
 
-      final result = ResponseBodyModel.fromMap(data).data.result;
+      final result = ResponseBodyModel.fromMap(data).data?.result;
 
       return result
           .map<InvoiceSubTypeModel>(

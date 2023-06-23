@@ -12,7 +12,8 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 import '../../../../../_shared_feature_/presentation/picker/Picker.dart';
 import '../../../../../_shared_feature_/presentation/widgets/custom_cupertino_drop_down_widget.dart';
 import '../../../../../_shared_feature_/presentation/widgets/radio_buttons/custom_radio_button_widget copy.dart';
-import '../../../../../_shared_feature_/shared_feature_exports.dart';
+import '../../../../../_shared_feature_/shared_feature_exports.dart'
+    hide Picker, DateTimePickerAdapter;
 
 class TextBoxAddetionalField extends StatefulWidget {
   final String fieldName;
