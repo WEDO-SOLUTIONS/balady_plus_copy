@@ -8,6 +8,7 @@ export 'features/services_injection.dart';
 export 'features/sign_in_injection.dart';
 export 'features/sign_up_injection.dart';
 //? Profile
+export 'features/profile/delegators_injection.dart';
 export 'features/profile/dashboard_injection.dart';
 export 'features/profile/requests_injection.dart';
 export 'features/profile/invoices_injection.dart';

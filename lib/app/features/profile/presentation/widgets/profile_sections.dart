@@ -1,6 +1,7 @@
 import 'package:localize_and_translate/localize_and_translate.dart';
 
-import '../../../../core/utils/utils_exports.dart' show IconPath, RouteName;
+import '../../../../core/utils/utils_exports.dart'
+    show CommonProperties, IconPath, RouteName;
 import '../../profile_exports.dart';
 
 class ProfileSections {
@@ -13,7 +14,8 @@ class ProfileSections {
           ProfileItem(
             title: "personal_information".tr(),
             icon: IconPath.personalInformation,
-            route: "",
+            route: RouteName.personalInformation,
+            args: CommonProperties.userInfo,
           ),
           ProfileItem(
             title: "dashboard".tr(),

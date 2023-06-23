@@ -2,6 +2,7 @@ import '../../invoices_exports.dart' show InvoicesParamsModel;
 
 class InvoicesPrams extends InvoicesParamsModel {
   const InvoicesPrams({
+    super.unifiedNationalNumber,
     super.identityNumber,
     super.invoiceNumber,
     super.requestNumber,

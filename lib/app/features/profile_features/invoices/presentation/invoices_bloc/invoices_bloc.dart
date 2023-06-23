@@ -5,7 +5,7 @@ import '../../../../../core/errors/errors_exports.dart'
     show NoDataFoundFailure, ServerFailure;
 import '../../../../../core/services/services_exports.dart' show NoParams;
 import '../../../../../core/utils/utils_exports.dart'
-    show BlocRequestStatus, Nullable, PaginationConstants, SortType;
+    show BlocRequestStatus, CommonProperties, Nullable, PaginationConstants, SortType;
 import '../../../requests/requests_exports.dart'
     show GetMunicipalities, GetSubMunicipalities;
 import '../../invoices_exports.dart'
@@ -44,9 +44,14 @@ class InvoicesBloc extends Bloc<InvoicesEvent, InvoicesState> {
       emit(
         state.copyWith(invoicesStatus: BlocRequestStatus.submissionGetLoading),
       );
+      final unifiedNationalNumber =
+          CommonProperties.selectedDelegator?.unifiedNationalNumber;
+      final identityNumber = CommonProperties.selectedDelegator?.crNumber;
 
       final failureOrSuccess = await getInvoices(
         InvoicesPrams(
+          unifiedNationalNumber: unifiedNationalNumber,
+          identityNumber: identityNumber,
           page: state.page,
           size: PaginationConstants.limit,
           invoiceNumber: state.invoiceNumberQuery,
@@ -95,13 +100,17 @@ class InvoicesBloc extends Bloc<InvoicesEvent, InvoicesState> {
 
     on<SearchWithInvoiceNumberEvent>((event, emit) async {
       emit(
-        state.copyWith(invoiceNumberQuery: Nullable(event.query.isEmpty ? null : event.query)),
+        state.copyWith(
+            invoiceNumberQuery:
+                Nullable(event.query.isEmpty ? null : event.query)),
       );
     });
 
     on<SearchWithRequestNumberEvent>((event, emit) async {
       emit(
-        state.copyWith(requestNumberQuery: Nullable(event.query.isEmpty ? null : event.query)),
+        state.copyWith(
+            requestNumberQuery:
+                Nullable(event.query.isEmpty ? null : event.query)),
       );
     });
 

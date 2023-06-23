@@ -4,19 +4,20 @@ import 'package:equatable/equatable.dart';
 import 'package:hijri/hijri_calendar.dart';
 
 class SsoUserInfo extends Equatable {
-  const SsoUserInfo(
-      {this.name,
-      this.phone,
-      this.mail,
-      this.arName,
-      this.idNo,
-      this.nid,
-      this.idType,
-      this.sex,
-      this.dob,
-      this.sname,
-      this.sub,
-      this.nationality});
+  const SsoUserInfo({
+    this.name,
+    this.phone,
+    this.mail,
+    this.arName,
+    this.idNo,
+    this.nid,
+    this.idType,
+    this.sex,
+    this.dob,
+    this.sname,
+    this.sub,
+    this.nationality,
+  });
 
   final String? name;
   final String? phone;

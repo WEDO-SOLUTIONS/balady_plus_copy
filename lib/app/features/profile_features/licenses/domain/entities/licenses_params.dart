@@ -2,6 +2,7 @@ import '../../licenses_exports.dart' show LicensesParamsModel;
 
 class LicensesPrams extends LicensesParamsModel {
   const LicensesPrams({
+    super.unifiedNationalNumber,
     super.identityNumber,
     super.query,
     super.licenseNumber,

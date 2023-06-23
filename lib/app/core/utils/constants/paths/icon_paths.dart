@@ -52,6 +52,7 @@ class IconPath {
   static const rateApp = '${_svgProfileIconPath}settings$_svg';
   static const aboutBalady = '${_svgProfileIconPath}about_balady$_svg';
   static const arrowDown = '${_svgProfileIconPath}arrow_down$_svg';
+  static const contactInfo = '${_svgProfileIconPath}contact_info$_svg';
   static const leftArrow = '${_svgProfileIconPath}left_arrow$_svg';
 
   // Nearby

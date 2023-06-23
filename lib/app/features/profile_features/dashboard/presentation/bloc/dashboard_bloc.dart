@@ -3,7 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../core/errors/errors_exports.dart' show ServerFailure;
 import '../../../../../core/services/services_exports.dart' show NoParams;
-import '../../../../../core/utils/utils_exports.dart' show BlocRequestStatus;
+import '../../../../../core/utils/utils_exports.dart'
+    show BlocRequestStatus, CommonProperties;
 import '../../dashboard_exports.dart'
     show
         DashboardCardEntity,
@@ -81,8 +82,13 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
             },
           ),
         );
+        final unifiedNationalNumber =
+            CommonProperties.selectedDelegator?.unifiedNationalNumber;
+        final identityNumber = CommonProperties.selectedDelegator?.crNumber;
         final failureOrSuccess = await getDashboardStatistics(
           DashboardStatisticsParams(
+            unifiedNationalNumber: unifiedNationalNumber,
+            identityNumber: identityNumber,
             mainCardId: event.card.id,
             productId: event.product?.id,
           ),

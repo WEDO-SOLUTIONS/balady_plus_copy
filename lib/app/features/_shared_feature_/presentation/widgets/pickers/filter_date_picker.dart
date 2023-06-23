@@ -52,7 +52,7 @@ class _FilterDatePickerState extends State<FilterDatePicker> {
         const SizedBox(height: 8),
         CustomTextWidget(
           "date_form".tr(),
-          textStyle: AppStyle.dropDownTitleTextStle,
+          textStyle: AppStyle.dropDownTitleTextStyle,
         ),
         DateFromSelector(
           initialDateForm: _dateForm,
@@ -96,7 +96,7 @@ class _FilterDatePickerState extends State<FilterDatePicker> {
       confirmText: 'choose'.tr(),
       title: CustomTextWidget(
         widget.title,
-        textStyle: AppStyle.dropDownTitleTextStle,
+        textStyle: AppStyle.dropDownTitleTextStyle,
       ),
       hideHeader: false,
       adapter: hijri_picker.DateTimePickerAdapter(
@@ -134,7 +134,7 @@ class _FilterDatePickerState extends State<FilterDatePicker> {
       confirmText: 'choose'.tr(),
       title: CustomTextWidget(
         widget.title,
-        textStyle: AppStyle.dropDownTitleTextStle,
+        textStyle: AppStyle.dropDownTitleTextStyle,
       ),
       hideHeader: false,
       adapter: DateTimePickerAdapter(

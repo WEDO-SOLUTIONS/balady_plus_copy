@@ -8,8 +8,9 @@ class RouteName {
   static const error = '/error';
 
   //! Setting
-  static const requests = '/requests';
+  static const personalInformation = '/personalInformation';
   static const dashboard = '/dashboard';
+  static const requests = '/requests';
   static const invoices = '/invoices';
   static const licenses = '/licenses';
 }

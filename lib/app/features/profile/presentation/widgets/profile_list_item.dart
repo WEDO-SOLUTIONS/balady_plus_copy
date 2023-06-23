@@ -20,7 +20,7 @@ class ProfileListItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        context.pushNamedRoute(item.route);
+        context.pushNamedRoute(item.route, arguments: item.args);
       },
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 8),

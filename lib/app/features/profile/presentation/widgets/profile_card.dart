@@ -1,55 +1,54 @@
-import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../core/utils/constants/app_style.dart';
 import '../../../../core/utils/utils_exports.dart' show IconPath, AppColor;
+import '../../../_shared_feature_/shared_feature_exports.dart'
+    show BottomSheetDialog, CustomAutoSizeTextWidget, CustomTextWidget;
+import '../../../entry_point/entry_point_exports.dart' show SsoUserInfo;
+import '../../../entry_point/presentation/cubit/auth_cubit.dart';
 import '../../../home_page/home_exports.dart' show CircleIcon;
+import '../../../profile_features/delegators/delegators_exports.dart'
+    show DelegatorEntity, DelegatorList, DelegatorsCubit;
 
 class ProfileCard extends StatelessWidget {
+  final SsoUserInfo? userInfo;
+  final DelegatorEntity? delegator;
   final bool selected;
-  final VoidCallback onTap;
   final bool isListItem;
 
   const ProfileCard({
     super.key,
+    this.userInfo,
+    this.delegator,
     this.selected = false,
-    required this.onTap,
-    this.isListItem = false,
+    this.isListItem = true,
   });
 
   @override
   Widget build(BuildContext context) {
+    final selected = !isListItem || this.selected;
+    final name =
+        delegator?.entityName ?? userInfo?.getFirstAndLastName() ?? "hi".tr();
+    String type = delegator?.id ?? userInfo?.idNo ?? "in_balady".tr();
+    if (!isListItem && delegator == null && userInfo != null) {
+      type = "individual_account".tr();
+    }
+
     return InkWell(
       onTap: () async {
         if (isListItem) {
-          onTap();
+          context.read<DelegatorsCubit>().selectDelegator(delegator);
+          context.read<EntryPointCubit>().selectDelegator(delegator);
+          Navigator.of(context).pop();
         } else {
+          context.read<DelegatorsCubit>().getDelegators();
           await BottomSheetDialog.showDraggableSheet(
             context,
-            child: BottomSheetWithActions(
-              title: "choose_profile".tr(),
-              body: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  ProfileCard(
-                    onTap: () {},
-                    selected: false,
-                    isListItem: true,
-                  ),
-                  ProfileCard(
-                    onTap: () {},
-                    selected: true,
-                    isListItem: true,
-                  ),
-                  ProfileCard(
-                    onTap: () {},
-                    selected: false,
-                    isListItem: true,
-                  ),
-                ],
-              ),
+            child: DelegatorList(
+              delegatorsCubit: context.read<DelegatorsCubit>(),
             ),
           );
         }
@@ -59,7 +58,7 @@ class ProfileCard extends StatelessWidget {
             ? const EdgeInsets.symmetric(vertical: 8)
             : const EdgeInsets.all(16),
         padding: const EdgeInsets.all(16),
-        height: 80,
+        // height: 80,
         decoration: BoxDecoration(
           color: selected
               ? AppColor.primary900Light
@@ -80,16 +79,21 @@ class ProfileCard extends StatelessWidget {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                CustomTextWidget(
-                  "محمد بن خالد",
-                  textStyle: AppStyle.profileNameTextStyle.copyWith(
+                SizedBox(
+                  width: MediaQuery.of(context).size.width - 150,
+                  child: CustomAutoSizeTextWidget(
+                    name,
+                    textStyle: AppStyle.profileNameTextStyle.copyWith(
                       color: selected
                           ? AppColor.blackModern50Light
-                          : AppColor.blackModern600Light),
+                          : AppColor.blackModern600Light,
+                    ),
+                    maxLines: 2,
+                  ),
                 ),
                 const SizedBox(height: 8),
                 CustomTextWidget(
-                  "حساب فرد",
+                  type,
                   textStyle: AppStyle.profileTypeTextStyle.copyWith(
                     color: selected
                         ? AppColor.blackModern50Light.withOpacity(0.6)
@@ -99,7 +103,7 @@ class ProfileCard extends StatelessWidget {
               ],
             ),
             const Spacer(),
-            if (!isListItem)
+            if (!isListItem && (userInfo != null || delegator != null))
               SvgPicture.asset(
                 IconPath.arrowDown,
               )
