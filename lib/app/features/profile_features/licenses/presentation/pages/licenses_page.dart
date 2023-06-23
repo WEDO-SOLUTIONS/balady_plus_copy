@@ -48,6 +48,7 @@ class LicensesPage extends StatelessWidget {
                 builder: (context, state) {
                   return FilterIcon(
                     onTap: () async {
+                      final sortType = state.sortType;
                       final selectedLicenseStatus = state.selectedLicenseStatus;
                       final selectedMunicipality = state.selectedMunicipality;
                       final selectedSubMunicipality =
@@ -75,6 +76,7 @@ class LicensesPage extends StatelessWidget {
                       if (actionTaked != true && context.mounted) {
                         context.read<LicensesBloc>().add(
                               ResetLicensesFiltersEvent(
+                                selectedSortType: sortType,
                                 selectedLicenseStatus: selectedLicenseStatus,
                                 selectedMunicipality: selectedMunicipality,
                                 selectedSubMunicipality:

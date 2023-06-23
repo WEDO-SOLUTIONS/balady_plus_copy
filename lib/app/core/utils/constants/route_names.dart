@@ -7,6 +7,9 @@ class RouteName {
   static const menu = '/menu';
   static const error = '/error';
 
+  //! Services
+  static const serviceCards = '/serviceCards';
+
   //! Setting
   static const personalInformation = '/personalInformation';
   static const dashboard = '/dashboard';

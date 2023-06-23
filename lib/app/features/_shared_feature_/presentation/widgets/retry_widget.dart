@@ -6,11 +6,11 @@ import '../../shared_feature_exports.dart' show CustomTextWidget;
 
 class RetryWidget extends StatelessWidget {
   final double height;
-  final VoidCallback onRetry;
+  final VoidCallback? onRetry;
 
   const RetryWidget({
     super.key,
-    required this.onRetry,
+    this.onRetry,
     this.height = 50,
   });
 

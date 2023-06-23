@@ -114,6 +114,7 @@ class ClearRequestsFiltersEvent extends RequestsEvent {}
 class ApplyRequestsFiltersEvent extends RequestsEvent {}
 
 class ResetRequestsFiltersEvent extends RequestsEvent {
+  final SortType selectedSortType;
   final RequestStatusEntity? selectedRequestStatus;
   final MunicipalityEntity? selectedMunicipality;
   final SubMunicipalityEntity? selectedSubMunicipality;
@@ -122,6 +123,7 @@ class ResetRequestsFiltersEvent extends RequestsEvent {
   final DateTime? selectedRequestDate;
 
   const ResetRequestsFiltersEvent({
+    required this.selectedSortType,
     this.selectedRequestStatus,
     this.selectedMunicipality,
     this.selectedSubMunicipality,
@@ -132,6 +134,7 @@ class ResetRequestsFiltersEvent extends RequestsEvent {
 
   @override
   List<Object?> get props => [
+        selectedSortType,
         selectedRequestStatus,
         selectedMunicipality,
         selectedSubMunicipality,

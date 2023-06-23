@@ -1,4 +1,5 @@
 import 'package:balady_plus/app/features/services/domain/entities/service_action_entity.dart';
+import 'package:balady_plus/app/features/services/domain/entities/service_card_entity.dart';
 import 'package:equatable/equatable.dart';
 
 class ServiceEntity extends Equatable {
@@ -11,6 +12,8 @@ class ServiceEntity extends Equatable {
   final String? description;
   final String? tag;
   final ServiceActionEntity action;
+  final List<ServiceCardEntity> cards;
+  final String? warning;
 
   const ServiceEntity({
     required this.title,
@@ -22,6 +25,8 @@ class ServiceEntity extends Equatable {
     this.description,
     this.tag,
     required this.action,
+    this.cards = const [],
+    this.warning,
   });
 
   @override
@@ -35,5 +40,7 @@ class ServiceEntity extends Equatable {
         description,
         tag,
         action,
+        cards,
+        warning,
       ];
 }

@@ -4,9 +4,10 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../core/utils/utils_exports.dart' show BlocRequestStatus;
 import '../../../../_shared_feature_/shared_feature_exports.dart'
-    show MessageDialog, ShimmerEffectWidget;
+    show MessageDialog, RetryWidget, ShimmerEffectWidget;
 import '../../requests_exports.dart'
     show
+        GetRequestsEvent,
         RequestsBloc,
         RequestsListItem,
         RequestsListShimmer,
@@ -38,22 +39,29 @@ class _RequestsListState extends State<RequestsList> {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<RequestsBloc, RequestsState>(
+      listenWhen: (previous, current) =>
+          previous.requestsStatus != current.requestsStatus,
       listener: (_, state) async {
-        switch (state.requestsStatus) {
-          case BlocRequestStatus.submissionGetFailure:
-            MessageDialog.showErrorNotification(msg: state.error);
-            break;
-          default:
-            break;
+        if (state.requestsStatus == BlocRequestStatus.submissionGetFailure &&
+            state.page != 0) {
+          MessageDialog.showErrorNotification(msg: state.error);
         }
       },
       builder: (context, state) {
-        if (state.requestsStatus == BlocRequestStatus.submissionGetLoading &&
+        if (state.requestsStatus == BlocRequestStatus.submissionGetFailure &&
+            state.page == 0) {
+          return Center(
+            child: RetryWidget(
+              onRetry: () {
+                context.read<RequestsBloc>().add(GetRequestsEvent());
+              },
+            ),
+          );
+        } else if (state.requestsStatus ==
+                BlocRequestStatus.submissionGetLoading &&
             !state.paginationLoading) {
           return const RequestsListShimmer();
-        } else if (state.requestsStatus ==
-                BlocRequestStatus.submissionGetSuccess ||
-            state.paginationLoading) {
+        } else {
           if (state.requests.isEmpty && state.noMoreData) {
             return Center(
               child: Text("no_data".tr()),
@@ -81,8 +89,6 @@ class _RequestsListState extends State<RequestsList> {
             },
           );
         }
-
-        return const SizedBox.shrink();
       },
     );
   }

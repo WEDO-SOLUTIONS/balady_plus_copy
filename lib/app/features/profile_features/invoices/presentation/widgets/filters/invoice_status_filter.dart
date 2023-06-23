@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
-import '../../../../../../core/utils/utils_exports.dart' show BlocRequestStatus;
 import '../../../../../_shared_feature_/shared_feature_exports.dart'
-    show
-        BottomSheetDialog,
-        BottomSheetList,
-        DropDownWithTitle;
+    show BottomSheetDialog, BottomSheetList, DropDownWithTitle;
 import '../../../invoices_exports.dart'
-    show InvoiceStatusSelectedEvent, InvoicesBloc, InvoicesState;
+    show
+        GetInvoiceStatusesEvent,
+        InvoiceStatusSelectedEvent,
+        InvoicesBloc,
+        InvoicesState;
 
 class InvoicesStatusFilter extends StatelessWidget {
   const InvoicesStatusFilter({super.key});
@@ -24,8 +24,10 @@ class InvoicesStatusFilter extends StatelessWidget {
         return DropDownWithTitle(
           title: "invoice_status".tr(),
           selectedValue: state.selectedInvoiceStatus?.name,
-          loading: state.invoiceStatusesStatus ==
-              BlocRequestStatus.submissionGetLoading,
+          status: state.invoiceStatusesStatus,
+          onRetry: () => context.read<InvoicesBloc>().add(
+                GetInvoiceStatusesEvent(),
+              ),
           onTap: () {
             final List<String> items =
                 state.invoiceStatuses.map((e) => e.name).toList();

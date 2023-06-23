@@ -44,6 +44,7 @@ export 'presentation/widgets/filters/invoice_issue_date_filter.dart';
 export 'presentation/widgets/filters/invoice_product_filter.dart';
 export 'presentation/widgets/filters/invoice_status_filter.dart';
 export 'presentation/widgets/filters/invoice_type_filter.dart';
+export 'presentation/widgets/filters/invoice_sort_filter.dart';
 export 'presentation/widgets/invoice_parameter.dart';
 export 'presentation/widgets/invoices_filters_actions.dart';
 export 'presentation/widgets/invoices_filters_bottom_sheet.dart';

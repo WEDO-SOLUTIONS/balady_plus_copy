@@ -7,6 +7,7 @@ import '../../profile_exports.dart';
 class ProfileSections {
   static List<ProfileSection> get profileSections =>
       [personalProfile, support, general];
+  static List<ProfileSection> get profileSectionsForGuest => [support, general];
 
   static ProfileSection get personalProfile => ProfileSection(
         title: 'personal_profile'.tr(),

@@ -97,6 +97,12 @@
   "transaction_inquery": "استعلام عن معاملة",
   "your_opnion_matter": "رأيك يهمنا",
   "zamzam_points": "نقاط توزيع ماء زمزم",
+  
+  "_servicesCardsComment": "أى شئ يخص كروت الخدمات",
+  "rating": "التقييم",
+  "duration": "المدة",
+  "warnings": "ملاحظات / تنبيهات",
+  "start_service": "بدء الخدمة",
 
   "_profileComment": "أى شئ يخص الحساب",
   "individual_account": "حساب فرد",
@@ -116,7 +122,9 @@
   "about_balady": "عن بلدي",
   "choose_profile": "اختر الحساب",
   "hi": "اهلا بك",
-  "in_balady": "في تطبيق بلدي",
+  "in_balady": "في تطبيق بلدي+",
+  "please_sign_in": "قم بتسجيل الدخول حتى تستطيع استخدام التطبيق بشكل كامل",
+  "sign_in": "تسجيل الدخول",
 
   "_nearbyComment": "أى شئ يخص قريب مني",
   "coffee": "مقهى",
@@ -170,7 +178,6 @@
   "sex": "الجنس",
   "contact_information": "معلومات الاتصال",
   "phone_number": "رقم الجوال",
-  
 
   "_globalComment": "أى شئ يخص الكلمات العامة",
   "selectFromHere": "إختر من هنا",
@@ -213,6 +220,10 @@
   "clear_all": "مسح الكل",
   "retry": "إعادة المحاولة",
   "no_data": "لا يوجد بيانات",
+  "sort": "ترتيب",
+  "desc": "تنازلي",
+  "asc": "تصاعدي",
+  "days": "أيام",
 
   "_errorsComment": "أى شئ يخص رسائل الاخطاء",
   "errorNoDataToDisplay": "لا يوجد بيانات لعرضها فى الوقت الحالى.",

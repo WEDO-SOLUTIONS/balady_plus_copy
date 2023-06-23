@@ -23,9 +23,9 @@ class BottomSheetWithActions extends StatelessWidget {
       padding: padding,
       height: context.screenHeight * 0.90,
       color: AppColor.white,
-      child: Stack(
+      child: Column(
         children: [
-          SingleChildScrollView(
+          Expanded(
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -58,17 +58,11 @@ class BottomSheetWithActions extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 16),
-                body,
+                Expanded(child: SingleChildScrollView(child: body)),
               ],
             ),
           ),
-          if (action != null)
-            Positioned(
-              bottom: 0,
-              left: 0,
-              right: 0,
-              child: action!,
-            ),
+          if (action != null) action!
         ],
       ),
     );

@@ -41,6 +41,7 @@ export 'presentation/pages/licenses_page.dart';
 /// presentation -> widgets
 export 'presentation/widgets/filters/license_date_filter.dart';
 export 'presentation/widgets/filters/license_municipality_filter.dart';
+export 'presentation/widgets/filters/license_sort_filter.dart';
 export 'presentation/widgets/filters/license_status_filter.dart';
 export 'presentation/widgets/filters/license_sub_municipality_filter.dart';
 export 'presentation/widgets/filters/license_type_filter.dart';

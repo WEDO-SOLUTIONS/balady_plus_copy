@@ -124,13 +124,43 @@
       "ar": {
         "title": "صور وارسل",
         "description": "حسن المشهد الحضاري لمدينتك وبلغ عن مظاهر التشوه البصري",
-        "tag": null
+        "tag": null,
+        "warning": ". يرجى الالتزام بتجديد الرخصة قبل انتهائها أو إلغائها في حالة عدم الرغبة في تجديدها وذلك لتجنب رسوم غرامة المشترطة على التأخير في التجديد.\n. يمكن تجديد الرخصة قبل 90 يوم من تاريخ انتهائها."
       },
       "en": {
         "title": "Send Image",
         "description": "Improve the civil scene of your city and report visual pollution",
-        "tag": null
-      }
+        "tag": null,
+        "warning": ". Please renew the license before it expires or cancel it if you do not want to renew it in order to avoid the required delay penalty fees.\n. The license can be renewed 90 days before its expiry date."
+      },
+      "cards": [
+        {
+          "iconName": "service_description",
+          "rate": 5.4,
+          "duration": 5,
+          "ar": {
+            "title": "وصف الخدمه",
+            "description": "من خلال هذه الخدمة يمكنك البدء بممارسة العمل التجاري من خلال إصدار رخصة نشاط تجاري  بالإضافة إلى تصريح السلامة الصادر من المديرية العامة للدفاع المدني لجميع الأنشطة التجارية المعتمدة لدى وزارة الشؤون البلدية والقروية والإسكان."
+          },
+          "en": {
+            "title": "Service Description",
+            "description": "Through this service, you can start practicing business by issuing a commercial activity license in addition to the safety permit issued by the General Directorate of Civil Defense for all commercial activities approved by the Ministry of Municipal and Rural Affairs and Housing."
+          }
+        },
+        {
+          "iconName": "requirements",
+          "rate": 5.4,
+          "duration": 5,
+          "ar": {
+            "title": "المتطلبات",
+            "description": "من خلال هذه الخدمة يمكنك البدء بممارسة العمل التجاري من خلال إصدار رخصة نشاط تجاري  بالإضافة إلى تصريح السلامة الصادر من المديرية العامة للدفاع المدني لجميع الأنشطة التجارية المعتمدة لدى وزارة الشؤون البلدية والقروية والإسكان."
+          },
+          "en": {
+            "title": "Requirements",
+            "description": "Through this service, you can start practicing business by issuing a commercial activity license in addition to the safety permit issued by the General Directorate of Civil Defense for all commercial activities approved by the Ministry of Municipal and Rural Affairs and Housing."
+          }
+        }
+      ]
     },
     {
       "id": 2,

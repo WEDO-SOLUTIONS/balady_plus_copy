@@ -2,11 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
-import '../../../../../../core/utils/utils_exports.dart' show BlocRequestStatus;
 import '../../../../../_shared_feature_/shared_feature_exports.dart'
     show BottomSheetDialog, BottomSheetList, DropDownWithTitle, MessageDialog;
 import '../../../requests_exports.dart'
-    show RequestSubTypeSelectedEvent, RequestsBloc, RequestsState;
+    show
+        GetRequestSubtypesEvent,
+        RequestSubTypeSelectedEvent,
+        RequestsBloc,
+        RequestsState;
 
 class RequestsTypeFilter extends StatelessWidget {
   const RequestsTypeFilter({super.key});
@@ -22,8 +25,15 @@ class RequestsTypeFilter extends StatelessWidget {
         return DropDownWithTitle(
           title: "request_type".tr(),
           selectedValue: state.selectedRequestSubType?.name,
-          loading: state.requestSubTypesStatus ==
-              BlocRequestStatus.submissionGetLoading,
+          status: state.requestSubTypesStatus,
+          onRetry: () {
+            final selectedRequestType = state.selectedRequestType;
+            if (selectedRequestType != null) {
+              context.read<RequestsBloc>().add(
+                    GetRequestSubtypesEvent(requestType: selectedRequestType),
+                  );
+            }
+          },
           onTap: () {
             if (state.selectedRequestType == null) {
               MessageDialog.showErrorNotification(

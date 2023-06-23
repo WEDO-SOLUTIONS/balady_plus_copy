@@ -39,6 +39,9 @@ class ProfileCard extends StatelessWidget {
 
     return InkWell(
       onTap: () async {
+        if (userInfo == null && delegator == null) {
+          return;
+        }
         if (isListItem) {
           context.read<DelegatorsCubit>().selectDelegator(delegator);
           context.read<EntryPointCubit>().selectDelegator(delegator);

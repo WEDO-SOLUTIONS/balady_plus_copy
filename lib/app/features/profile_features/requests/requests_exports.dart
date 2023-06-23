@@ -51,6 +51,7 @@ export 'presentation/widgets/app_bar_search_bar.dart';
 export 'presentation/widgets/filters/request_date_filter.dart';
 export 'presentation/widgets/filters/request_municipality_filter.dart';
 export 'presentation/widgets/filters/request_product_filter.dart';
+export 'presentation/widgets/filters/request_sort_filter.dart';
 export 'presentation/widgets/filters/request_status_filter.dart';
 export 'presentation/widgets/filters/request_sub_municipality_filter.dart';
 export 'presentation/widgets/filters/request_type_filter.dart';

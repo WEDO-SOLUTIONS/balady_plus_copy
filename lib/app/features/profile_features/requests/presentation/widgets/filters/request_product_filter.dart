@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
-import '../../../../../../core/utils/utils_exports.dart' show BlocRequestStatus;
 import '../../../../../_shared_feature_/shared_feature_exports.dart'
-    show
-        BottomSheetDialog,
-        BottomSheetList,
-        DropDownWithTitle;
+    show BottomSheetDialog, BottomSheetList, DropDownWithTitle;
 import '../../../requests_exports.dart'
-    show RequestTypeSelectedEvent, RequestsBloc, RequestsState;
+    show
+        GetRequestTypesEvent,
+        RequestTypeSelectedEvent,
+        RequestsBloc,
+        RequestsState;
 
 class RequestsProductFilter extends StatelessWidget {
   const RequestsProductFilter({super.key});
@@ -24,8 +24,10 @@ class RequestsProductFilter extends StatelessWidget {
         return DropDownWithTitle(
           title: "product".tr(),
           selectedValue: state.selectedRequestType?.name,
-          loading: state.requestTypesStatus ==
-              BlocRequestStatus.submissionGetLoading,
+          status: state.requestTypesStatus,
+          onRetry: () => context.read<RequestsBloc>().add(
+                GetRequestTypesEvent(),
+              ),
           onTap: () {
             final List<String> items =
                 state.requestTypes.map((e) => e.name).toList();

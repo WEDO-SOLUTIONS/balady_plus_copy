@@ -41,7 +41,7 @@ class InvoicesPage extends StatelessWidget {
                         context
                             .read<InvoicesBloc>()
                             .add(InvoicesLoadLookupsEvent());
-
+                        final sortType = state.sortType;
                         final selectedInvoiceType = state.selectedInvoiceType;
                         final selectedInvoiceSubType =
                             state.selectedInvoiceSubType;
@@ -71,6 +71,7 @@ class InvoicesPage extends StatelessWidget {
                         if (actionTaked != true && context.mounted) {
                           context.read<InvoicesBloc>().add(
                                 ResetInvoicesFiltersEvent(
+                                  selectedSortType: sortType,
                                   selectedInvoiceType: selectedInvoiceType,
                                   selectedInvoiceSubType:
                                       selectedInvoiceSubType,

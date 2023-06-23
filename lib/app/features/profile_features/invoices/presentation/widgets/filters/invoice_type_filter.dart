@@ -1,12 +1,10 @@
+import 'package:balady_plus/app/features/profile_features/invoices/presentation/invoices_bloc/invoices_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
-import '../../../../../../core/utils/utils_exports.dart' show BlocRequestStatus;
 import '../../../../../_shared_feature_/shared_feature_exports.dart'
     show BottomSheetDialog, BottomSheetList, DropDownWithTitle, MessageDialog;
-import '../../../invoices_exports.dart'
-    show InvoiceSubTypeSelectedEvent, InvoicesBloc, InvoicesState;
 
 class InvoicesTypeFilter extends StatelessWidget {
   const InvoicesTypeFilter({super.key});
@@ -22,8 +20,17 @@ class InvoicesTypeFilter extends StatelessWidget {
         return DropDownWithTitle(
           title: "invoice_type".tr(),
           selectedValue: state.selectedInvoiceSubType?.name,
-          loading: state.invoiceSubTypesStatus ==
-              BlocRequestStatus.submissionGetLoading,
+          status: state.invoiceSubTypesStatus,
+          onRetry: () {
+            final selectedInvoiceType = state.selectedInvoiceType;
+            if (selectedInvoiceType != null) {
+              context.read<InvoicesBloc>().add(
+                    GetInvoiceSubtypesEvent(
+                      invoiceType: selectedInvoiceType,
+                    ),
+                  );
+            }
+          },
           onTap: () {
             if (state.selectedInvoiceType == null) {
               MessageDialog.showErrorNotification(

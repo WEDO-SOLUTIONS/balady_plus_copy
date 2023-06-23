@@ -7,6 +7,7 @@ import '../../requests_exports.dart'
         RequestsDateFilter,
         RequestsMunicipalityFilter,
         RequestsProductFilter,
+        RequestsSortFilter,
         RequestsStatusFilter,
         RequestsSubMunicipalityFilter,
         RequestsTypeFilter;
@@ -34,7 +35,8 @@ class RequestsFilterBottomSheet extends StatelessWidget {
               RequestsStatusFilter(),
               RequestsMunicipalityFilter(),
               RequestsSubMunicipalityFilter(),
-              SizedBox(height: 150),
+              RequestsSortFilter(),
+              SizedBox(height: 16),
             ],
           );
         }),

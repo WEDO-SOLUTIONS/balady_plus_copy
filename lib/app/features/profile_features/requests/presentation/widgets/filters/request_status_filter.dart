@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
-import '../../../../../../core/utils/utils_exports.dart' show BlocRequestStatus;
 import '../../../../../_shared_feature_/shared_feature_exports.dart'
-    show
-        BottomSheetDialog,
-        BottomSheetList,
-        DropDownWithTitle;
+    show BottomSheetDialog, BottomSheetList, DropDownWithTitle;
 import '../../../requests_exports.dart'
-    show RequestStatusSelectedEvent, RequestsBloc, RequestsState;
+    show
+        GetRequestStatusesEvent,
+        RequestStatusSelectedEvent,
+        RequestsBloc,
+        RequestsState;
 
 class RequestsStatusFilter extends StatelessWidget {
   const RequestsStatusFilter({super.key});
@@ -24,15 +24,17 @@ class RequestsStatusFilter extends StatelessWidget {
         return DropDownWithTitle(
           title: "request_status".tr(),
           selectedValue: state.selectedRequestStatus?.name,
-          loading: state.requestStatusesStatus ==
-              BlocRequestStatus.submissionGetLoading,
+          status: state.requestStatusesStatus,
+          onRetry: () => context.read<RequestsBloc>().add(
+                GetRequestStatusesEvent(),
+              ),
           onTap: () {
             final List<String> items =
                 state.requestStatuses.map((e) => e.name).toList();
             BottomSheetDialog.showDraggableSheet(
               context,
               child: BottomSheetList(
-                title: "product".tr(),
+                title: "request_status".tr(),
                 items: items,
                 selectedValue: state.selectedRequestStatus?.name,
                 onTap: (item) {

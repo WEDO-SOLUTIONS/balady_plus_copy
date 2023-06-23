@@ -9,13 +9,17 @@ import '../../../_shared_feature_/shared_feature_exports.dart'
 import '../../../profile_features/delegators/delegators_exports.dart'
     show DelegatorsCubit, DelegatorsState;
 import '../../profile_exports.dart'
-    show ProfileCard, ProfileListCard, ProfileSections;
+    show ProfileCard, ProfileListCard, ProfileSections, SignInCard;
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    const bool isLoggedin = true; //CommonProperties.isLoggedIn;
+    final list = isLoggedin
+        ? ProfileSections.profileSections
+        : ProfileSections.profileSectionsForGuest;
     return Scaffold(
       appBar: DefaultAppBarWidget(
         title: "profile".tr(),
@@ -28,15 +32,16 @@ class ProfilePage extends StatelessWidget {
                 builder: (context, state) {
                   return ProfileCard(
                     isListItem: false,
-                    delegator: state.selectedDelegate,
-                    userInfo: CommonProperties.userInfo,
+                    delegator: isLoggedin ? state.selectedDelegate : null,
+                    userInfo: isLoggedin ? CommonProperties.userInfo : null,
                   );
                 },
               ),
+              if (!isLoggedin) const SignInCard(),
               ...List.generate(
-                ProfileSections.profileSections.length,
+                list.length,
                 (index) => ProfileListCard(
-                  section: ProfileSections.profileSections[index],
+                  section: list[index],
                 ),
               ),
             ],
