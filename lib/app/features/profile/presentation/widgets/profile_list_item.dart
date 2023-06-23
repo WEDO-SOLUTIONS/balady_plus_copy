@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
-import '../../../../core/utils/utils_exports.dart' show AppColor, AppStyle;
+import '../../../../core/utils/utils_exports.dart'
+    show AppColor, AppStyle, ContextConversion;
 import '../../../home_page/home_exports.dart' show CircleIcon;
 import '../../profile_exports.dart' show ProfileItem;
 
@@ -19,7 +20,7 @@ class ProfileListItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        //Add route here
+        context.pushNamedRoute(item.route);
       },
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 8),

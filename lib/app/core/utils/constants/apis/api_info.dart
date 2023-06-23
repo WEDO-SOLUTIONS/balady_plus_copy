@@ -7,7 +7,14 @@ class ApiUrl {
   static const apigeeToken = '/oauth/v1/token';
   static const forceUpdate = '/v1/force-update-apps/version';
 
-  static const mainCards = '/v1/balady-dashboard/balady-life-style/main-cards';
+  //! Profile
+  //! Dashboard
+  static const dashboardCards =
+      '/v1/balady-dashboard/balady-life-style/main-cards';
+  static dashboardCardProducts(int cardId) =>
+      '/v1/balady-dashboard/balady-life-style/main-cards/$cardId/products';
+  static const dashboardCardStatistics =
+      '/v1/balady-dashboard/balady-life-style/statistics';
 
   //! POST
 
@@ -17,11 +24,11 @@ class ApiUrl {
 }
 
 /// It has any header which used inside any API
-class ApiHeader {
-  static const requiresToken = "requiresToken";
-  static const language = "Accept-Language";
-  static const verifyingKEY = "verifyingKEY";
-}
+// class ApiHeader {
+//   static const requiresToken = "requiresToken";
+//   static const language = "Accept-Language";
+//   static const verifyingKEY = "verifyingKEY";
+// }
 
 /// It has any params which used inside any API
 /*class ApiParam {

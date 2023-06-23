@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart' show BlocProvider;
 import 'package:localize_and_translate/localize_and_translate.dart'
     show Translation, translator;
 
+import './core/dependency_injection/dependency_injection_exports.dart' show sl;
 import './core/services/services_exports.dart' show NavigationService;
 import './core/utils/utils_exports.dart'
     show AppColor, AppConfig, AppRouter, RouteName;
@@ -28,7 +29,6 @@ class App extends StatelessWidget {
           scaffoldBackgroundColor: AppColor.scaffoldBackground,
           fontFamily: AppConfig.appFontType,
           appBarTheme: const AppBarTheme(backgroundColor: AppColor.blue),
-          
         ),
         builder: BotToastInit(),
         navigatorObservers: [BotToastNavigatorObserver()],

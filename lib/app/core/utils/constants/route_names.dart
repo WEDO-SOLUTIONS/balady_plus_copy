@@ -6,4 +6,9 @@ class RouteName {
   static const bottomNavigation = '/bottomNavigation';
   static const menu = '/menu';
   static const error = '/error';
+
+  //! Setting
+  static const requests = '/requests';
+  static const dashboard = '/dashboard';
+
 }

@@ -103,7 +103,7 @@
   "personal_profile": "الملف الشخصي",
   "personal_information": "المعلومات الشخصية",
   "dashboard": "لوحة البيانات",
-  "orders": "الطلبات",
+  "requests": "الطلبات",
   "licenses": "الرخص",
   "invoices": "الفواتير",
   "reports": "البلاغات",
@@ -121,6 +121,18 @@
   "restaurant": "مطعم",
   "hotel": "فندق",
   "mosque": "مسجد",
+
+  "_requestsComment": "أى شئ يخص الطلبات",
+  "request_no": "رقم الطلب",
+  "request_status": "حالة الطلب",
+  "request_type": "نوع الطلب",
+  "license_type": "نوع الرخصة",
+  "munipality": "البلدية",
+  "last_update": "آخر تحديث",
+  "details": "التفاصيل",
+
+  "_dashboardComment": "أى شئ يخص لوحة البيانات",
+  "the_following_data": "البيانات التالية تشمل خدمات محدودة فقط في هذه  النسخة. سيتم تحديثها بكامل البيانات قريباً",
 
 
   "_globalComment": "أى شئ يخص الكلمات العامة",
@@ -156,6 +168,7 @@
   "gallery": "الاستوديو",
   "all": "الكل",
   "beta": "نسخة تجريبية",
+  "search": "ابحث",
 
   "_errorsComment": "أى شئ يخص رسائل الاخطاء",
   "errorNoDataToDisplay": "لا يوجد بيانات لعرضها فى الوقت الحالى.",

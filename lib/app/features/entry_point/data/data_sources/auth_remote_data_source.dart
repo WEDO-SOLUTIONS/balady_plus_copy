@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:balady_plus/app/core/errors/errors_exports.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
-import 'package:balady_plus/app/features/_shared_feature_/data/models/apigee_response_model.dart';
 import 'package:balady_plus/app/features/entry_point/data/models/test_model.dart';
 import 'package:balady_plus/app/features/entry_point/presentation/cubit/auth_cubit.dart';
 import 'package:dio/dio.dart';
@@ -11,9 +10,9 @@ import 'package:flutter_appauth/flutter_appauth.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:localize_and_translate/localize_and_translate.dart'
     show Translation;
+
 import '../../../../core/dependency_injection/injection_container.dart';
 import '../../../../core/services/services_exports.dart';
-import '../../../../core/utils/constants/apis/api_info.dart';
 import '../../../../core/utils/constants/remote_config.dart';
 import '../../../_shared_feature_/data/models/response_body_model.dart';
 import '../../entry_point_exports.dart';
@@ -294,7 +293,7 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
   Future getDataTest() async {
     try {
       final response = await webService.dio.get(
-        ApiUrl.mainCards,
+        ApiUrl.dashboardCards,
       );
 
       var data = response.data;

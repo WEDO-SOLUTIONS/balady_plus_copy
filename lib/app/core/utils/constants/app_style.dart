@@ -188,10 +188,42 @@ class AppStyle {
     fontFamily: fontFamily,
     height: 1.0,
   );
+
   static final profileListBetaTextStyle = TextStyle(
     fontSize: 12.0,
     fontWeight: AppFontWeight.bold.fontWeight,
     color: AppColor.blue600Light,
+    fontFamily: fontFamily,
+    height: 1.0,
+  );
+
+  static final dashboardCardTitleTextStle = TextStyle(
+    fontSize: 18.0,
+    fontWeight: AppFontWeight.bold.fontWeight,
+    color: AppColor.blackModern600Light,
+    fontFamily: fontFamily,
+    height: 1.0,
+  );
+
+  static final dashboardStatisticsCountTextStle = TextStyle(
+    fontSize: 18.0,
+    fontWeight: AppFontWeight.black.fontWeight,
+    fontFamily: fontFamily,
+    height: 1.0,
+  );
+
+  static final dashboardStatisticsTitleTextStle = TextStyle(
+    fontSize: 14.0,
+    fontWeight: AppFontWeight.semiBold.fontWeight,
+    color: AppColor.blackModern600Light,
+    fontFamily: fontFamily,
+    height: 1.0,
+  );
+
+  static final dashboardNoteTextStle = TextStyle(
+    fontSize: 12.0,
+    fontWeight: AppFontWeight.semiBold.fontWeight,
+    color: AppColor.secondary900Light,
     fontFamily: fontFamily,
     height: 1.0,
   );
