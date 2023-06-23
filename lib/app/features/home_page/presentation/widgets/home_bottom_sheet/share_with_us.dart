@@ -11,6 +11,7 @@ import '../../../../_shared_feature_/shared_feature_exports.dart'
         BottomSheetWithActions,
         CustomTextWidget,
         ElevatedButtonWidget,
+        BottomSheetWithActions,
         CustomTextWidget,
         ElevatedButtonWidget;
 import '../../../../vd/presentation/dialogs/vd_types_dialog.dart';
@@ -73,13 +74,11 @@ class ShareWithUs extends StatelessWidget {
                   const SizedBox(height: 8),
                   ElevatedButtonWidget.sendImage(
                     onPressed: () async {
-                      await BottomSheetDialog.showDraggableSheet(
-                        context,
-                        child: BottomSheetTitle(
-                          title: "اختر نوع البلاغ".tr(), //MM
-                          body: VDTypesDialog(),
-                        ),
-                      );
+                      await BottomSheetDialog.showDraggableSheet(context,
+                          child: BottomSheetWithActions(
+                            title: "اختر نوع البلاغ".tr(),
+                            body: VDTypesDialog(),
+                          ));
                     },
                   )
                 ],
