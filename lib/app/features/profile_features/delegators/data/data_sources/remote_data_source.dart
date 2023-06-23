@@ -12,7 +12,8 @@ abstract class DelegatorsRemoteDataSource {
   Future<List<DelegatorModel>> getDelegators();
 }
 
-class DelegatorsRemoteDataSourceImplementation implements DelegatorsRemoteDataSource {
+class DelegatorsRemoteDataSourceImplementation
+    implements DelegatorsRemoteDataSource {
   final WebService webService;
 
   DelegatorsRemoteDataSourceImplementation({required this.webService});
@@ -25,7 +26,7 @@ class DelegatorsRemoteDataSourceImplementation implements DelegatorsRemoteDataSo
       final data = response.data;
       data.toString().successLog();
 
-      final result = ResponseBodyModel.fromMap(data).data.result;
+      final result = ResponseBodyModel.fromMap(data).data?.result;
 
       return result
           .map<DelegatorModel>(
