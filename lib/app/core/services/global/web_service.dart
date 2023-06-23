@@ -1,8 +1,7 @@
 import 'package:dio/dio.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart' show DateFormat;
 import 'package:localize_and_translate/localize_and_translate.dart'
     show translator;
+import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
 import '../../../core/dependency_injection/dependency_injection_exports.dart'
     show sl;
@@ -16,6 +15,7 @@ import '../../errors/errors_exports.dart'
         FailedToGenerateTokenException,
         InternalServerErrorException,
         MethodNotAllowedException,
+        NoDataFoundException,
         NoInternetConnectionException,
         RequestNotFoundException,
         TokenHasExpiredException,
@@ -39,15 +39,19 @@ class WebService {
 
   WebService({required this.dio}) {
     dio.options.baseUrl = sl<EnvType>().domain;
-    dio.options.connectTimeout = 5000;
-    dio.options.receiveTimeout = 5000;
-    dio.options.sendTimeout = 5000;
+    dio.options.connectTimeout = 60000;
+    dio.options.receiveTimeout = 60000;
+    dio.options.sendTimeout = 60000;
     dio.options.headers = {};
     dio.interceptors.add(AppInterceptors());
+    dio.interceptors.add(PrettyDioLogger(
+      requestHeader: true,
+      requestBody: true,
+    ));
   }
   WebService.newDio({
     required this.dio,
-  }) {}
+  });
 }
 
 class AppInterceptors extends Interceptor {
@@ -145,6 +149,9 @@ class AppInterceptors extends Interceptor {
       case DioErrorType.response:
         switch (err.response?.statusCode) {
           case 400:
+            if (err.response?.data['data']['responseCode'] == '2') {
+              throw NoDataFoundException(err.requestOptions);
+            }
             throw BadRequestException(err.requestOptions, err.response);
           case 401:
             throw UnAuthorizedException(err.requestOptions, err.response);

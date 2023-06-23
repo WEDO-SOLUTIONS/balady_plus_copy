@@ -46,6 +46,12 @@ class BadRequestException extends DioError {
   String toString() => ApiResponse.badRequest.getErrorMessage(response);
 }
 
+class NoDataFoundException extends DioError {
+  NoDataFoundException(
+    RequestOptions requestOptions,
+  ) : super(requestOptions: requestOptions);
+}
+
 class UnAuthorizedException extends DioError {
   UnAuthorizedException(
     RequestOptions requestOptions,

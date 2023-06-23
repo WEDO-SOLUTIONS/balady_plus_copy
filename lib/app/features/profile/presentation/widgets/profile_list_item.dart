@@ -34,7 +34,7 @@ class ProfileListItem extends StatelessWidget {
             const SizedBox(width: 16),
             CustomTextWidget(
               item.title,
-              textStyle: AppStyle.profileListTitleTextStyle,
+              textStyle: AppStyle.listTitleTextStyle,
             ),
             const Spacer(),
             if (item.beta)

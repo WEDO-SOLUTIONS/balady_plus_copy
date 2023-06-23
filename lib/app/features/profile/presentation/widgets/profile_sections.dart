@@ -29,12 +29,12 @@ class ProfileSections {
           ProfileItem(
             title: "licenses".tr(),
             icon: IconPath.licenses,
-            route: "",
+            route: RouteName.licenses,
           ),
           ProfileItem(
             title: "invoices".tr(),
             icon: IconPath.invoices,
-            route: "",
+            route: RouteName.invoices,
           ),
           ProfileItem(
             title: "reports".tr(),

@@ -60,6 +60,7 @@ class CustomTextFieldWidget extends StatelessWidget {
   final String? errorText;
 
   final void Function(String)? onChanged;
+  final void Function(String)? onSubmitted;
   final void Function()? onTap;
   final String? Function(String?)? onValidate;
 
@@ -116,6 +117,7 @@ class CustomTextFieldWidget extends StatelessWidget {
     this.borderRadius = 8.0,
     this.errorText,
     this.onChanged,
+    this.onSubmitted,
     this.onTap,
     this.onValidate,
   });
@@ -288,6 +290,7 @@ class CustomTextFieldWidget extends StatelessWidget {
           ),
           onTap: onTap,
           onChanged: onChanged,
+          onFieldSubmitted: onSubmitted,
           validator: onValidate,
         ),
       ],

@@ -6,7 +6,7 @@ import '../../../../core/utils/utils_exports.dart' show LookupItem;
 import '../../lookup_exports.dart' show LookupParams, LookupRepository;
 
 //! SU: Sign-Up
-class GetLookup with UseCase<List<LookupItem>, LookupParams> {
+class GetLookup implements UseCase<List<LookupItem>, LookupParams> {
   final LookupRepository repository;
 
   GetLookup({required this.repository});

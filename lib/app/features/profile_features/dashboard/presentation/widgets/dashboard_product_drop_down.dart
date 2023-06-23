@@ -107,7 +107,7 @@ class DashboardProductDropDown extends StatelessWidget {
       context,
       child: BlocProvider.value(
         value: context.read<DashboardBloc>(),
-        child: BottomSheetTitle(
+        child: BottomSheetWithActions(
           title: "choose_profile".tr(),
           body: ListView.builder(
             shrinkWrap: true,

@@ -5,7 +5,7 @@ import '../../../../../core/services/services_exports.dart' show UseCase;
 import '../../../../_shared_feature_/shared_feature_exports.dart' show AuthData;
 import '../../sign_in_exports.dart' show SignInParams, SignInRepository;
 
-class SignInByPhoneNumber with UseCase<AuthData, SignInParams> {
+class SignInByPhoneNumber implements UseCase<AuthData, SignInParams> {
   final SignInRepository repository;
 
   SignInByPhoneNumber({required this.repository});

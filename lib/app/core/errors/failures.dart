@@ -26,6 +26,8 @@ class AuthNotFoundedFailure extends Failure {}
 
 class CannotPrintBillFailure extends Failure {}
 
+class NoDataFoundFailure extends Failure {}
+
 class NoInternetConnectionFailure extends Failure {
   @override
   String toString() => ApiResponse.noInternetConnection.getErrorMessage();

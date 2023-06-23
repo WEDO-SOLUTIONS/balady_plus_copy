@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import '../../../../../core/services/services_exports.dart'
     show NavigationService;
 import '../../../../../core/utils/utils_exports.dart'
-    show AppColor, AppStyle, ContextConversion, UIHelper, WidgetConversion;
+    show AppColor, AppStyle, ContextConversion, UIHelper;
+import '../../../../home_page/home_exports.dart' show CircleIcon;
 import '../../../shared_feature_exports.dart'
     show CustomTextWidget, DrawLineWidget, GlowingScrollWidget;
 
@@ -36,26 +37,36 @@ class DraggableSheetComponent extends StatelessWidget {
           padding: padding,
           child: Column(
             children: [
-              // Line widget
               const DrawLineWidget(
                 lineWidth: 70.0,
                 lineHeight: 6.0,
-                lineColor: AppColor.gray,
+                lineColor: AppColor.blackModern200Light,
                 radius: 46.0,
               ),
-              // Title widget
-              Container(
-                width: double.infinity,
-                alignment: titleAlignment,
-                child: CustomTextWidget(
-                  title,
-                  textAlign: TextAlign.center,
-                  textStyle: AppStyle.mainTextSecondaryStyle.copyWith(
-                    fontSize: 24.0,
-                    color: AppColor.black,
+              const SizedBox(height: 8.0),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  CustomTextWidget(
+                    title,
+                    textAlign: TextAlign.center,
+                    textStyle: AppStyle.mainTextSecondaryStyle.copyWith(
+                      fontSize: 24.0,
+                      color: AppColor.black,
+                    ),
                   ),
-                ),
+                  InkWell(
+                    onTap: context.popDialog,
+                    child: CircleIcon(
+                      icon: Icons.close,
+                      iconColor: AppColor.primary600Light,
+                      backgroundColor: AppColor.geyser.withOpacity(0.4),
+                      iconSize: 18,
+                    ),
+                  ),
+                ],
               ),
+              const SizedBox(height: 8.0),
               // Body
               Expanded(
                 child: GlowingScrollWidget(
@@ -69,7 +80,7 @@ class DraggableSheetComponent extends StatelessWidget {
                   ),
                 ),
               ),
-            ].addPadding(bottom: 24.0),
+            ],
           ),
         ),
         bottomNavigationBar: bottomNavigationBar,
