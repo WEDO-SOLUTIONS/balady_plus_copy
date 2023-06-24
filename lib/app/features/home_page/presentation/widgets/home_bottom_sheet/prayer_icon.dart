@@ -11,6 +11,7 @@ class PrayerIcon extends StatelessWidget {
   final Prayers prayer;
   final String time;
   final bool isNextPrayer;
+
   const PrayerIcon({
     super.key,
     required this.prayer,
@@ -53,7 +54,7 @@ class PrayerIcon extends StatelessWidget {
             ),
           ),
           CustomTextWidget(
-            "05:00",
+            time,
             textStyle: AppStyle.prayerTimeStyle,
           ),
         ],

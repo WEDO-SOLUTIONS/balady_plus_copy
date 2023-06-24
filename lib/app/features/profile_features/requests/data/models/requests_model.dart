@@ -12,6 +12,7 @@ class RequestsModel extends RequestEntity {
     required super.subMunicipalityName,
     required super.creationDate,
     required super.lastUpdateDate,
+    super.redirectUrl,
   });
 
   factory RequestsModel.fromMap(Map<String, dynamic> json) {
@@ -26,6 +27,7 @@ class RequestsModel extends RequestEntity {
       subMunicipalityName: json['subMunicipalityName'] as String? ?? '',
       creationDate: DateTime.parse(json['creationDate'] as String),
       lastUpdateDate: DateTime.parse(json['updateTime'] as String),
+      redirectUrl: json['redirectUrl'] as String?,
     );
   }
 }

@@ -31,7 +31,7 @@
       "isImportant": false,
       "action": {
         "type": "page",
-        "value": "/prayer-times"
+        "value": "/prayerTimes"
       },
       "ar": {
         "title": "أوقات الصلاة",
@@ -118,8 +118,8 @@
       "isNew": false,
       "isImportant": false,
       "action": {
-        "type": "page",
-        "value": "/send-image"
+        "type": "cards",
+        "value": ""
       },
       "ar": {
         "title": "صور وارسل",

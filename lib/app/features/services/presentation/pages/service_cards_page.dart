@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../_shared_feature_/shared_feature_exports.dart'
-    show DefaultAppBarWidget;
+    show DefaultAppBarWidget, ElevatedButtonWidget;
 import '../../services_exports.dart'
     show
         ServiceCardDescription,
+        ServiceCardsCubit,
         ServiceCardsList,
         ServiceEntity,
         ServiceWarningWidget;
@@ -19,30 +21,41 @@ class ServiceCardsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: DefaultAppBarWidget(
-        title: service.title,
-        bottom: ServiceCardsList(
-          cards: service.cards,
-        ),
-      ),
-      body: Column(
-        children: [
-          Expanded(
-            child: Column(
-              children: [
-                const SizedBox(height: 16),
-                ServiceCardDescription(
-                  card: service.cards.first,
-                ),
-              ],
-            ),
+    return BlocProvider(
+      create: (context) => ServiceCardsCubit(service),
+      child: Scaffold(
+        appBar: DefaultAppBarWidget(
+          title: service.title,
+          bottom: ServiceCardsList(
+            cards: service.cards,
           ),
-          if (service.warning != null)
-            ServiceWarningWidget(
-              warning: service.warning!,
+        ),
+        body: Column(
+          children: [
+            const Expanded(
+              child: Column(
+                children: [
+                  SizedBox(height: 16),
+                  ServiceCardDescription(),
+                ],
+              ),
             ),
-        ],
+            if (service.warning != null)
+              ServiceWarningWidget(
+                warning: service.warning!,
+              )
+            else
+              SafeArea(
+                top: false,
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: ElevatedButtonWidget.startService(
+                    onPressed: () {},
+                  ),
+                ),
+              )
+          ],
+        ),
       ),
     );
   }

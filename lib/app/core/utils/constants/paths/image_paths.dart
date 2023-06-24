@@ -8,4 +8,5 @@ class ImagePath {
   static const sendImage = '${_imagePath}send_image$_png';
   static const camera = '${_imagePath}camera$_png';
   static const gameChallenge = '${_imagePath}game_challenge$_png';
+  static const prayerTimesAppBar = '${_imagePath}prayer_times_appbar$_png';
 }

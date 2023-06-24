@@ -83,6 +83,7 @@ export 'presentation/menus/material_drop_down_widgets.dart';
 export 'presentation/menus/sheet_drop_down_widgets.dart';
 
 /// presentation -> pages
+export 'presentation/pages/inapp_webview_page.dart';
 export 'presentation/pages/keep_alive_page.dart';
 
 /// presentation -> enhanced widgets

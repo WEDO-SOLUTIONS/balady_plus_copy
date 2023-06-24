@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart'
-    show MaterialPageRoute, Route, RouteSettings;
+    show AppBar, Center, MaterialPageRoute, Route, RouteSettings, Scaffold;
 import 'package:flutter/widgets.dart' show SizedBox;
 
 import '../../core/utils/utils_exports.dart'
     show RouteName, ScaleRotatePage, SliderUpPage;
+import '../../features/_shared_feature_/shared_feature_exports.dart';
 import '../../features/authentication/sign_in/sign_in_exports.dart'
     show SignInPage;
 import '../../features/bottom_navigation/bottom_navigation_exports.dart'
@@ -19,6 +20,8 @@ import '../../features/profile_features/personal_information/personal_informatio
     show PersonalInformationPage;
 import '../../features/profile_features/requests/requests_exports.dart'
     show RequestsPage;
+import '../../features/public_services_features/prayer_times/prayer_times_exports.dart'
+    show PrayerTimesCubit, PrayerTimesPage;
 import '../../features/services/services_exports.dart'
     show ServiceCardsPage, ServiceEntity;
 import '../../features/splash/splash_exports.dart' show SplashPage;
@@ -39,6 +42,13 @@ class AppRouter {
       // otp page
       case RouteName.otp:
         return MaterialPageRoute(builder: (_) => const SizedBox());
+
+      case RouteName.inappWebview:
+        return MaterialPageRoute(
+          builder: (_) => InAppWebViewPage(
+            args: settings.arguments as ({String title, String url}),
+          ),
+        );
       // bottom-navigation-bar page
       case RouteName.bottomNavigation:
         // return MaterialPageRoute(builder: (_) => const BottomNavigationPage());
@@ -49,6 +59,13 @@ class AppRouter {
         return MaterialPageRoute(
           builder: (_) => ServiceCardsPage(
             service: settings.arguments as ServiceEntity,
+          ),
+        );
+      //? General Services
+      case RouteName.prayerTimes:
+        return MaterialPageRoute(
+          builder: (_) => PrayerTimesPage(
+            cubit: settings.arguments as PrayerTimesCubit,
           ),
         );
 
@@ -74,7 +91,16 @@ class AppRouter {
         return MaterialPageRoute(builder: (_) => const LicensesPage());
       // error page
       default:
-        return MaterialPageRoute(builder: (_) => const SizedBox());
+        return MaterialPageRoute(
+          builder: (_) => Scaffold(
+            appBar: AppBar(
+              title: const CustomTextWidget("Error"),
+            ),
+            body: const Center(
+              child: CustomTextWidget("Page not found"),
+            ),
+          ),
+        );
     }
   }
 }

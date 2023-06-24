@@ -26,6 +26,7 @@ export 'domain/use_cases/public_services.dart';
 
 /// presentation -> cubits
 export 'presentation/cubit/services_cubit/services_cubit.dart';
+export 'presentation/cubit/service_cards_cubit/service_cards_cubit.dart';
 /// presentation -> pages
 export 'presentation/pages/services_page.dart';
 export 'presentation/pages/service_cards_page.dart';

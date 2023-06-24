@@ -10,6 +10,7 @@ class InvoicesModel extends InvoiceEntity {
     required super.amount,
     required super.creationDate,
     required super.updatedDate,
+    super.redirectUrl,
   });
 
   factory InvoicesModel.fromMap(Map<String, dynamic> json) {
@@ -22,6 +23,7 @@ class InvoicesModel extends InvoiceEntity {
       amount: json['amount'] as num,
       creationDate: DateTime.parse(json['creationDate'] as String),
       updatedDate: DateTime.parse(json['updateTime'] as String),
+      redirectUrl: json['redirectUrl'] as String?,
     );
   }
 }

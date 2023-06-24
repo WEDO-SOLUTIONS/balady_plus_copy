@@ -7,6 +7,11 @@ class ApiUrl {
   static const apigeeToken = '/oauth/v1/token';
   static const forceUpdate = '/v1/force-update-apps/version';
 
+  //! Services
+  //! Public Services
+  //! Prayer Times
+  static const prayerTimes = '/v1/prayer-timings/prayer-times';
+
   //! Profile
   //! Delegators
   static const delegators =

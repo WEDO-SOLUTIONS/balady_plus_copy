@@ -1,16 +1,22 @@
 import 'package:balady_plus/app/core/services/local/shared_prefs_manager.dart';
+import 'package:flutter/foundation.dart';
+import 'dart:io' show Platform;
+
 import 'package:flutter/material.dart' show WidgetsFlutterBinding;
 import 'package:flutter/services.dart' show SystemChrome, DeviceOrientation;
+import 'package:flutter_inappwebview/flutter_inappwebview.dart'
+    show AndroidInAppWebViewController;
+import 'package:hijri/hijri_calendar.dart' show HijriCalendar;
 import 'package:localize_and_translate/localize_and_translate.dart'
     show LocalizationDefaultType, translator;
+
 import './app/core/dependency_injection/dependency_injection_exports.dart' as di
     show initialize;
-
+import './app/core/dependency_injection/dependency_injection_exports.dart'
+    show sl;
 import './app/core/services/services_exports.dart' show HiveManager;
 import './app/core/utils/utils_exports.dart'
     show AppConfig, CommonFunctions, EnvType;
-import './app/core/dependency_injection/dependency_injection_exports.dart'
-    show sl;
 import 'app/core/services/local/initializer.dart';
 
 abstract class AppEnv {
@@ -46,5 +52,10 @@ abstract class AppEnv {
       languagesList: AppConfig.defaultAppLanguage.languages,
       assetsDirectory: AppConfig.appLanguagesPath,
     );
+
+    if (Platform.isAndroid && kDebugMode) {
+      await AndroidInAppWebViewController.setWebContentsDebuggingEnabled(true);
+    }
+    HijriCalendar.setLocal(translator.activeLanguageCode);
   }
 }

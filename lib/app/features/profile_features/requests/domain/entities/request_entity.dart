@@ -11,6 +11,7 @@ class RequestEntity extends Equatable {
   final String subMunicipalityName;
   final DateTime creationDate;
   final DateTime lastUpdateDate;
+  final String? redirectUrl;
 
   const RequestEntity({
     required this.requestNumber,
@@ -23,6 +24,7 @@ class RequestEntity extends Equatable {
     required this.subMunicipalityName,
     required this.creationDate,
     required this.lastUpdateDate,
+    this.redirectUrl,
   });
 
   @override
@@ -37,5 +39,6 @@ class RequestEntity extends Equatable {
         subMunicipalityName,
         creationDate,
         lastUpdateDate,
+        redirectUrl,
       ];
 }
