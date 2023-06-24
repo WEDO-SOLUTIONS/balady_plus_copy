@@ -214,6 +214,71 @@
   "user_data_applicant_role":"صفته", 
   "user_data_applicant_mobile":"رقم الجوال", 
 
+  "objection_location":"الموقع", 
+  "objection_date":"تاريخ الطلب", 
+  "objection_last_update":"اخر تحديث", 
+  "objection_status":"حالة الطلب", 
+
+  "transaction_details_page":"تفاصيل المعاملة", 
+
+  "transaction_details_data":"بيانات المخالفة", 
+  "transaction_details_id":"رقم المخالفة", 
+  "transaction_details_desc":"وصف المخالفة", 
+  "transaction_details_date":"تاريخ رصد المخالفة", 
+  "transaction_details_last_date":"اخر موعد لتقديم الاعتراض", 
+  "transaction_details_violation_amount":"قيمة الغرامة", 
+  "transaction_details_violation_status":"حالة المخالفة", 
+
+
+
+  "transaction_details_license":"رقم الترخيص البلدي/رقم الهوية", 
+  "transaction_details_license_type":"نوع الترخيص البلدية", 
+  "transaction_details_municiplaity":"الأمانة", 
+  "transaction_details_submunicipality":"البلدية", 
+  "transaction_details_facility":"اسم المنشأة", 
+  "transaction_details_caluse":"بند اللائحة", 
+  "transaction_details_noOfRepetition":"عدد مرات تكرار المخالفة", 
+  "transaction_details_noOfUnits":"عدد وحدات المخالفة", 
+
+
+
+  "transaction_details_bill_data":"بيانات فاتورة المخالفة", 
+  "transaction_details_bill_number":"رقم الفاتورة", 
+  "transaction_details_bill_total":"إجمالي قيمة الفاتورة", 
+  "transaction_details_bill_status":"حالة فاتورة المخالفة" , 
+
+
+  "transaction_details_clause_data":"بيانات البنود", 
+  "transaction_details_objection_data" :"طلبات الإعتراض", 
+
+  "transaction_details_objection_title":"طلبات الإعتراض" , 
+
+  "transaction_details_objection_number":"رقم طلب الإعتراض" , 
+
+  "transaction_details_objection_status":"حالة طلب الإعتراض" , 
+  "transaction_details_objection_descision":"قرار لجنة الاعتراض", 
+  "transaction_details_objection_date":"تاريخ طلب الإعتراض", 
+
+  "objection_details":"طلب إعتراض", 
+  "objection_details_data":"معلومات الطلب", 
+  "objection_details_number":"رقم الطلب", 
+  "objection_details_type":"نوع الاعتراض", 
+  "objection_details_request_transaction":"رقم المعاملة المرتبطة بهذا الطلب", 
+  "objection_details_service":"نوع الخدمة المعترض عليها", 
+  "objection_details_request_data":"تاريخ الطلب", 
+  "objection_details_request_update":"اخر تحديث", 
+  "objection_details_request_status":"حالة الطلب" , 
+  "objection_details_request_type":"نوع الطلب" , 
+  
+  "objection_details_submitter_data":"بيانات مقدم الطلب" , 
+  "objection_details_submitter_id":"هوية مقدم الطلب" , 
+  "objection_details_submitter_name":"اسم مقدم الطلب", 
+
+
+
+
+
+
 
   "_dashboardComment": "أى شئ يخص لوحة البيانات",
   "the_following_data": "البيانات التالية تشمل خدمات محدودة فقط في هذه  النسخة. سيتم تحديثها بكامل البيانات قريباً",

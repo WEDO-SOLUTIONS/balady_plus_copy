@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../core/dependency_injection/injection_container.dart';
 import '../../../../core/errors/failures.dart';
 import '../../../../core/services/local/navigation_services.dart';
 import '../../../../core/utils/enums/bloc_status.dart';
@@ -23,12 +24,9 @@ class ObjectionsDetailsBloc
   final GetObjectionDetails _getObjectionDetails;
   final GetTransactionDetails _getTransactionDetails;
 
-  ObjectionsDetailsBloc(
-      {required GetObjectionDetails getObjectionDetails,
-      required GetTransactionDetails getTransactionDetails,
-      ObjectionDetails? details})
-      : _getObjectionDetails = getObjectionDetails,
-        _getTransactionDetails = getTransactionDetails,
+  ObjectionsDetailsBloc({ObjectionDetails? details})
+      : _getObjectionDetails = GetObjectionDetails(repository: sl()),
+        _getTransactionDetails = GetTransactionDetails(repository: sl()),
         super(ObjectionDetailsState(details: details)) {
     on<ObjectionDetailsEvent>((event, emit) {});
 

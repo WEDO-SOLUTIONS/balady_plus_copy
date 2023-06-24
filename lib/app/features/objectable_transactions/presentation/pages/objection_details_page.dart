@@ -34,8 +34,7 @@ class _ObjectionsDetailsPageState extends State<ObjectionsDetailsPage> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => ObjectionsDetailsBloc(
-          getObjectionDetails: sl(), getTransactionDetails: sl()),
+      create: (context) => ObjectionsDetailsBloc(),
       child: BlocBuilder<ObjectionsDetailsBloc, ObjectionDetailsState>(
         buildWhen: (previous, current) => previous.status != current.status,
         builder: (context, state) {

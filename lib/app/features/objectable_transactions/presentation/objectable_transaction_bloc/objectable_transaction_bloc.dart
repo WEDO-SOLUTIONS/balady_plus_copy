@@ -321,11 +321,9 @@ class ObjectableTransactionBloc
                   details: success,
                 ));
       } else {
-        /*NavigationService.navigatorKey.currentState!.pushNamed(
-            RouteName.TransactionDetailsPage,
-            arguments: CreateObjectionPageParams(
-                delegator: state.selectedDelegator,
-                details: success.data?.result));*/ //MM
+        NavigationService.navigatorKey.currentState!.pushNamed(
+            RouteName.transactionDetailsPage,
+            arguments: CreateObjectionPageParams(details: success));
       }
     });
   }

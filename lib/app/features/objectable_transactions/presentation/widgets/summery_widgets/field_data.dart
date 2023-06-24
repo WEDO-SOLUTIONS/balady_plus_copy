@@ -14,33 +14,37 @@ class FieldData extends StatelessWidget {
       padding: EdgeInsets.all(12),
       decoration: BoxDecoration(
           color: Color(0x80E6EFEF), borderRadius: BorderRadius.circular(8)),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              CustomTextWidget(
-                title,
-                fontColor: AppColor.primary700Light,
-                fontSize: 12,
-                fontWeight: AppFontWeight.semiBold,
-              ),
-            ],
-          ),
-          if (subTitle != null) ...[
-            const CustomVerticalSpace(height: 8),
+      child: Expanded(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
             Row(
               children: [
-                CustomTextWidget(
-                  subTitle ?? "",
-                  fontColor: AppColor.blackModern600Light,
-                  fontSize: 16,
-                  fontWeight: AppFontWeight.semiBold,
+                Flexible(
+                  child: CustomTextWidget(
+                    title,
+                    fontColor: AppColor.primary700Light,
+                    fontSize: 12,
+                    fontWeight: AppFontWeight.semiBold,
+                  ),
                 ),
               ],
             ),
-          ]
-        ],
+            if (subTitle != null) ...[
+              const CustomVerticalSpace(height: 8),
+              Row(
+                children: [
+                  CustomTextWidget(
+                    subTitle ?? "",
+                    fontColor: AppColor.blackModern600Light,
+                    fontSize: 16,
+                    fontWeight: AppFontWeight.semiBold,
+                  ),
+                ],
+              ),
+            ]
+          ],
+        ),
       ),
     );
   }

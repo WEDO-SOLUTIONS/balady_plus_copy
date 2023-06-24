@@ -12,8 +12,12 @@ import '../../objections_exports.dart'
 class RequestsListItem extends StatelessWidget {
   final ObjectableTransactionsEntity request;
   final Function onApply;
+  final Function onDetails;
   const RequestsListItem(
-      {super.key, required this.request, required this.onApply});
+      {super.key,
+      required this.request,
+      required this.onApply,
+      required this.onDetails});
 
   @override
   Widget build(BuildContext context) {
@@ -76,8 +80,9 @@ class RequestsListItem extends StatelessWidget {
             children: [
               Expanded(
                   flex: 10,
-                  child: ElevatedButtonWidget.details(onPressed: () {})),
-              Expanded(flex: 1, child: CustomVerticalSpace(height: 16)),
+                  child: ElevatedButtonWidget.details(
+                      onPressed: () => onDetails())),
+              const Expanded(flex: 1, child: CustomVerticalSpace(height: 16)),
               Expanded(
                   flex: 10,
                   child: ElevatedButtonWidget.applyObjection(

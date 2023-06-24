@@ -26,12 +26,9 @@ class TransactionDetailsBloc
   final GetTransactionDetails _getTransactionDetails;
   final GetGISData _getGisData;
 
-  TransactionDetailsBloc(
-      {required GetObjectionDetails getObjectionDetails,
-      required GetTransactionDetails getTransactionDetails,
-      TransactionDetails? transactionDetails})
-      : _getObjectionDetails = getObjectionDetails,
-        _getTransactionDetails = getTransactionDetails,
+  TransactionDetailsBloc({TransactionDetails? transactionDetails})
+      : _getObjectionDetails = GetObjectionDetails(repository: sl()),
+        _getTransactionDetails = GetTransactionDetails(repository: sl()),
         _getGisData = GetGISData(repository: sl()),
         super(TransactionDetailsState(details: transactionDetails)) {
     on<TransactionDetailsEvent>((event, emit) {});

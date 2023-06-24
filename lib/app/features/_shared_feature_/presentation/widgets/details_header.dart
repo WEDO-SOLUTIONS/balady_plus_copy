@@ -8,7 +8,7 @@ import '../../../../core/utils/constants/paths/icon_paths.dart';
 import '../../../../core/utils/constants/paths/image_paths.dart';
 import 'buttons/custom_buttons_widgets.dart';
 
-class DetailsHeader extends StatelessWidget {
+class DetailsHeader extends StatelessWidget implements PreferredSizeWidget {
   final String title;
   const DetailsHeader({super.key, required this.title});
 
@@ -59,4 +59,8 @@ class DetailsHeader extends StatelessWidget {
       ),
     );
   }
+
+  @override
+  // TODO: implement preferredSize
+  Size get preferredSize => Size.fromHeight(119);
 }

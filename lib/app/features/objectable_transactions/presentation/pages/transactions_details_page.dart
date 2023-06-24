@@ -41,261 +41,225 @@ class _TransactionsDetailsPageState extends State<TransactionsDetailsPage> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => TransactionDetailsBloc(
-          getObjectionDetails: sl(),
-          getTransactionDetails: sl(),
-          transactionDetails: widget.params.details),
+      create: (context) =>
+          TransactionDetailsBloc(transactionDetails: widget.params.details),
       child: BlocBuilder<TransactionDetailsBloc, TransactionDetailsState>(
         builder: (context, state) {
           return Scaffold(
             backgroundColor: AppColor.white2,
-            body: Stack(
-              children: [
-                CustomScrollView(
-                  physics: const BouncingScrollPhysics(),
-                  slivers: [
-                    // header
-                    DetailsHeader(
-                      title: ("transaction_details_page").tr(),
-                    ),
-                    // body
-                    SliverList(
-                      delegate: SliverChildListDelegate.fixed(
-                        [
-                          Constants.verticalSpaceSmall,
-                          if (widget.params.details?.notAllowedToObject == true)
-                            Container(
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: 16, vertical: 16),
-                                margin: EdgeInsets.all(16),
-                                decoration: new BoxDecoration(
-                                    color: AppColor.orange150,
-                                    border: Border.all(
-                                        color: Color(0xffc74b00), width: 1),
-                                    borderRadius: BorderRadius.circular(4)),
-                                child: Row(
-                                  children: [
-                                    CustomSvgIconWidget(
-                                        IconPath.informationCircleIcon),
-                                    CustomHorizontalSpace(width: 12),
-                                    CustomTextWidget(
-                                      "لا يمكن الاعتراض بسبب انتهاء مدة الاعتراض",
-                                      fontColor: AppColor.orange800,
-                                      fontWeight: AppFontWeight.medium,
-                                      fontSize: 13,
-                                      maxLines: 1,
-                                      textOverflow: TextOverflow.ellipsis,
-                                    ),
-                                  ],
-                                )),
-                          CustomExpansionPanelWidget(
-                            title: ("transaction_details_data").tr(),
-                            leading:
-                                SvgPicture.asset(IconPath.vdSummuryUserInfo),
-                            children: [
-                              FieldData(
-                                title: ("transaction_details_id").tr(),
-                                subTitle: state.details?.violationId,
-                              ),
-                              const CustomVerticalSpace(height: 8),
+            appBar: DetailsHeader(
+              title: ("transaction_details_page").tr(),
+            ),
+            body: SingleChildScrollView(
+              child: Column(children: [
+                // header
 
-                              FieldData(
-                                title: ("transaction_details_desc").tr(),
-                                subTitle:
-                                    state.details?.regulationClauseDescription,
-                              ),
-
-                              const CustomVerticalSpace(height: 8),
-                              FieldData(
-                                title: ("transaction_details_date").tr(),
-                                subTitle:
-                                    state.details?.getViolationRegistrationDate,
-                              ),
-
-                              const CustomVerticalSpace(height: 8),
-                              FieldData(
-                                title: ("transaction_details_last_date").tr(),
-                                subTitle: state.details?.getLastDateOfObjection,
-                              ),
-
-                              const CustomVerticalSpace(height: 8),
-                              FieldData(
-                                title: ("transaction_details_violation_amount")
-                                    .tr(),
-                                subTitle:
-                                    state.details?.getViolationPenaltyAmount,
-                              ),
-
-                              const CustomVerticalSpace(height: 8),
-                              FieldData(
-                                title: ("transaction_details_violation_status")
-                                    .tr(),
-                                subTitle: state.details?.violationStatusName
-                                    .toString(),
-                              ),
-
-                              //
-                              const CustomVerticalSpace(height: 8),
-                              FieldData(
-                                title: ("transaction_details_license").tr(),
-                                subTitle: state.details?.licenseNumberOrID,
-                              ),
-
-                              if (state.details?.licenseTypeName != null &&
-                                  state.details!.licenseTypeName!
-                                      .isNotEmpty) ...[
-                                const CustomVerticalSpace(height: 8),
-                                FieldData(
-                                    title: ("transaction_details_license_type")
-                                        .tr(),
-                                    subTitle: state.details?.licenseTypeName)
-                              ],
-
-                              const CustomVerticalSpace(height: 8),
-                              FieldData(
-                                title:
-                                    ("transaction_details_municiplaity").tr(),
-                                subTitle: state.details?.municipalityName,
-                              ),
-
-                              const CustomVerticalSpace(height: 8),
-                              FieldData(
-                                title: ("transaction_details_submunicipality")
-                                    .tr(),
-                                subTitle: state.details?.subMunicipalityName,
-                              ),
-
-                              if (state.details?.facilityName != null &&
-                                  state.details!.facilityName!.isNotEmpty) ...[
-                                const CustomVerticalSpace(height: 8),
-                                FieldData(
-                                  title: ("transaction_details_facility").tr(),
-                                  subTitle: state.details?.facilityName,
-                                )
-                              ],
-
-                              const CustomVerticalSpace(height: 8),
-                              FieldData(
-                                title: ("transaction_details_caluse").tr(),
-                                subTitle: state.details?.regulationClauseId,
-                              ),
-
-                              const CustomVerticalSpace(height: 8),
-                              FieldData(
-                                title:
-                                    ("transaction_details_noOfRepetition").tr(),
-                                subTitle:
-                                    state.details?.noOfRepetition.toString(),
-                              ),
-
-                              const CustomVerticalSpace(height: 8),
-                              FieldData(
-                                title: ("transaction_details_noOfUnits").tr(),
-                                subTitle: state.details?.noOfUnits.toString(),
-                              ),
-                            ],
+                Constants.verticalSpaceSmall,
+                if (state.details?.notAllowedToObject == true)
+                  Container(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                      margin: EdgeInsets.all(16),
+                      decoration: new BoxDecoration(
+                          color: AppColor.orange150,
+                          border:
+                              Border.all(color: Color(0xffc74b00), width: 1),
+                          borderRadius: BorderRadius.circular(4)),
+                      child: Row(
+                        children: [
+                          CustomSvgIconWidget(IconPath.informationCircleIcon),
+                          CustomHorizontalSpace(width: 12),
+                          CustomTextWidget(
+                            "لا يمكن الاعتراض بسبب انتهاء مدة الاعتراض",
+                            fontColor: AppColor.orange800,
+                            fontWeight: AppFontWeight.medium,
+                            fontSize: 13,
+                            maxLines: 1,
+                            textOverflow: TextOverflow.ellipsis,
                           ),
-                          CustomExpansionPanelWidget(
-                            title: ("transaction_details_bill_data").tr(),
-                            leading:
-                                SvgPicture.asset(IconPath.vdSummuryUserInfo),
-                            children: [
-                              FieldData(
-                                title: ("transaction_details_bill_number").tr(),
-                                subTitle: state.details?.sadadNumber,
-                              ),
-                              const CustomVerticalSpace(height: 8),
-                              FieldData(
-                                title: ("transaction_details_bill_total").tr(),
-                                subTitle: state.details?.getSadadAmount,
-                              ),
-                              const CustomVerticalSpace(height: 8),
-                              FieldData(
-                                title: ("transaction_details_bill_status").tr(),
-                                subTitle: state.details?.invoiceStatusName,
-                              ),
-                            ],
-                          ),
-                          if (state.details?.lat != null &&
-                              state.details?.lon != null)
-                            CustomExpansionPanelWidget(
-                              title: ("موقع المخالفة").tr(),
-                              leading:
-                                  SvgPicture.asset(IconPath.vdSummuryUserInfo),
-                              children: [
-                                if (state.gisStatus == BlocStatus.success) ...[
-                                  if (state.gisLocation?.streetName != null &&
-                                      state.gisLocation!.streetName!.isNotEmpty)
-                                    FieldData(
-                                      title: "اسم الشارع",
-                                      subTitle:
-                                          state.gisLocation?.streetName ?? "",
-                                    ),
-                                  if (state.gisLocation?.districtName != null &&
-                                      state.gisLocation!.districtName!
-                                          .isNotEmpty)
-                                    FieldData(
-                                      title: "اسم الحي",
-                                      subTitle:
-                                          state.gisLocation?.districtName ?? "",
-                                    )
-                                ],
-                                if (state.gisStatus == BlocStatus.retry)
-                                  ReloadWidget(onTab: () {
-                                    context
-                                        .read<TransactionDetailsBloc>()
-                                        .add(GetGisLocationInfoEvent());
-                                  }),
-                                if (state.gisStatus == BlocStatus.loading)
-                                  CustomShimmerWidget(),
-                                Container(
-                                  width: double.infinity,
-                                  height: 160,
-                                  alignment: Alignment.center,
-                                  decoration: BoxDecoration(
-                                    color: AppColor.white,
-                                    borderRadius: BorderRadius.circular(4),
-                                  ),
-                                  child: GoogleMap(
-                                      markers: {
-                                        Marker(
-                                            visible:
-                                                MapUtils.locationMarker != null,
-                                            markerId:
-                                                const MarkerId("storeLocation"),
-                                            icon: MapUtils.locationMarker!,
-                                            onTap: () {
-                                              CommonFunctions.launchMap(LatLng(
-                                                  state.details!.lat!,
-                                                  state.details!.lon!));
-                                            },
-                                            position: LatLng(
-                                                state.details!.lat!,
-                                                state.details!.lon!))
-                                      },
-                                      myLocationEnabled: false,
-                                      myLocationButtonEnabled: false,
-                                      zoomControlsEnabled: false,
-                                      initialCameraPosition: CameraPosition(
-                                          target: LatLng(state.details!.lat!,
-                                              state.details!.lon!),
-                                          zoom: 13)),
-                                ),
-                              ],
-                            ),
-                          const ViolationClauses(),
-                          (widget.params.details?.objectionRequestNumber !=
-                                      null &&
-                                  widget.params.details!.objectionRequestNumber!
-                                      .isNotEmpty)
-                              ? const ObjectionsData()
-                              : const NoObjectionsData(),
-                          Constants.verticalSpaceSmall,
                         ],
-                      ),
-                    )
+                      )),
+                CustomExpansionPanelWidget(
+                  title: ("transaction_details_data").tr(),
+                  leading: SvgPicture.asset(IconPath.vdSummuryUserInfo),
+                  children: [
+                    FieldData(
+                      title: ("transaction_details_id").tr(),
+                      subTitle: state.details?.violationId,
+                    ),
+                    const CustomVerticalSpace(height: 8),
+
+                    FieldData(
+                      title: ("transaction_details_desc").tr(),
+                      subTitle: state.details?.regulationClauseDescription,
+                    ),
+
+                    const CustomVerticalSpace(height: 8),
+                    FieldData(
+                      title: ("transaction_details_date").tr(),
+                      subTitle: state.details?.getViolationRegistrationDate,
+                    ),
+
+                    const CustomVerticalSpace(height: 8),
+                    FieldData(
+                      title: ("transaction_details_last_date").tr(),
+                      subTitle: state.details?.getLastDateOfObjection,
+                    ),
+
+                    const CustomVerticalSpace(height: 8),
+                    FieldData(
+                      title: ("transaction_details_violation_amount").tr(),
+                      subTitle: state.details?.getViolationPenaltyAmount,
+                    ),
+
+                    const CustomVerticalSpace(height: 8),
+                    FieldData(
+                      title: ("transaction_details_violation_status").tr(),
+                      subTitle: state.details?.violationStatusName.toString(),
+                    ),
+
+                    //
+                    const CustomVerticalSpace(height: 8),
+                    FieldData(
+                      title: ("transaction_details_license").tr(),
+                      subTitle: state.details?.licenseNumberOrID,
+                    ),
+
+                    if (state.details?.licenseTypeName != null &&
+                        state.details!.licenseTypeName!.isNotEmpty) ...[
+                      const CustomVerticalSpace(height: 8),
+                      FieldData(
+                          title: ("transaction_details_license_type").tr(),
+                          subTitle: state.details?.licenseTypeName)
+                    ],
+
+                    const CustomVerticalSpace(height: 8),
+                    FieldData(
+                      title: ("transaction_details_municiplaity").tr(),
+                      subTitle: state.details?.municipalityName,
+                    ),
+
+                    const CustomVerticalSpace(height: 8),
+                    FieldData(
+                      title: ("transaction_details_submunicipality").tr(),
+                      subTitle: state.details?.subMunicipalityName,
+                    ),
+
+                    if (state.details?.facilityName != null &&
+                        state.details!.facilityName!.isNotEmpty) ...[
+                      const CustomVerticalSpace(height: 8),
+                      FieldData(
+                        title: ("transaction_details_facility").tr(),
+                        subTitle: state.details?.facilityName,
+                      )
+                    ],
+
+                    const CustomVerticalSpace(height: 8),
+                    FieldData(
+                      title: ("transaction_details_caluse").tr(),
+                      subTitle: state.details?.regulationClauseId,
+                    ),
+
+                    const CustomVerticalSpace(height: 8),
+                    FieldData(
+                      title: ("transaction_details_noOfRepetition").tr(),
+                      subTitle: state.details?.noOfRepetition.toString(),
+                    ),
+
+                    const CustomVerticalSpace(height: 8),
+                    FieldData(
+                      title: ("transaction_details_noOfUnits").tr(),
+                      subTitle: state.details?.noOfUnits.toString(),
+                    ),
                   ],
                 ),
+                CustomExpansionPanelWidget(
+                  title: ("transaction_details_bill_data").tr(),
+                  leading: SvgPicture.asset(IconPath.vdSummuryUserInfo),
+                  children: [
+                    FieldData(
+                      title: ("transaction_details_bill_number").tr(),
+                      subTitle: state.details?.sadadNumber,
+                    ),
+                    const CustomVerticalSpace(height: 8),
+                    FieldData(
+                      title: ("transaction_details_bill_total").tr(),
+                      subTitle: state.details?.getSadadAmount,
+                    ),
+                    const CustomVerticalSpace(height: 8),
+                    FieldData(
+                      title: ("transaction_details_bill_status").tr(),
+                      subTitle: state.details?.invoiceStatusName,
+                    ),
+                  ],
+                ),
+                if (state.details?.lat != null && state.details?.lon != null)
+                  CustomExpansionPanelWidget(
+                    title: ("موقع المخالفة").tr(),
+                    leading: SvgPicture.asset(IconPath.vdSummuryUserInfo),
+                    children: [
+                      if (state.gisStatus == BlocStatus.success) ...[
+                        if (state.gisLocation?.streetName != null &&
+                            state.gisLocation!.streetName!.isNotEmpty)
+                          FieldData(
+                            title: "اسم الشارع",
+                            subTitle: state.gisLocation?.streetName ?? "",
+                          ),
+                        const CustomVerticalSpace(height: 8),
+                        if (state.gisLocation?.districtName != null &&
+                            state.gisLocation!.districtName!.isNotEmpty)
+                          FieldData(
+                            title: "اسم الحي",
+                            subTitle: state.gisLocation?.districtName ?? "",
+                          )
+                      ],
+                      ReloadWidget(onTab: () {
+                        context
+                            .read<TransactionDetailsBloc>()
+                            .add(GetGisLocationInfoEvent());
+                      }),
+                      if (state.gisStatus == BlocStatus.loading)
+                        CustomShimmerWidget(),
+                      Container(
+                        width: double.infinity,
+                        height: 160,
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                          color: AppColor.white,
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                        child: GoogleMap(
+                            //MM
+                            /* markers: { 
+                              Marker(
+                                  visible: MapUtils.locationMarker != null,
+                                  markerId: const MarkerId("storeLocation"),
+                                  icon: MapUtils.locationMarker!,
+                                  onTap: () {
+                                    CommonFunctions.launchMap(LatLng(
+                                        state.details!.lat!,
+                                        state.details!.lon!));
+                                  },
+                                  position: LatLng(
+                                      state.details!.lat!, state.details!.lon!))
+                            },*/
+                            myLocationEnabled: false,
+                            myLocationButtonEnabled: false,
+                            zoomControlsEnabled: false,
+                            initialCameraPosition: CameraPosition(
+                                target: LatLng(
+                                    state.details!.lat!, state.details!.lon!),
+                                zoom: 13)),
+                      ),
+                    ],
+                  ),
+                const ViolationClauses(),
+                (state.details?.objectionRequestNumber != null &&
+                        state.details!.objectionRequestNumber!.isNotEmpty)
+                    ? const ObjectionsData()
+                    : const NoObjectionsData(),
+                Constants.verticalSpaceSmall,
+
                 BlocBuilder<TransactionDetailsBloc, TransactionDetailsState>(
                   builder: (context, state) {
                     return state.status == BlocStatus.loading
@@ -303,7 +267,7 @@ class _TransactionsDetailsPageState extends State<TransactionsDetailsPage> {
                         : Container();
                   },
                 ),
-              ],
+              ]),
             ),
           );
         },
@@ -335,22 +299,15 @@ class ViolationClauses extends StatelessWidget {
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        CustomTextWidget(
-                          ("cluase_main_title").tr(),
-                          fontColor: AppColor.black700,
-                          fontSize: 13.0,
-                          textAlign: TextAlign.start,
-                          height: 1.3,
-                        ),
-                        CustomVerticalSpace(height: 8),
                         FieldData(
-                          title: state.details?.nonComplianceClauses?[index]
+                          title: ("cluase_main_title").tr(),
+                          subTitle: state.details?.nonComplianceClauses?[index]
                                   .clauseName ??
                               "",
                         ),
                         Padding(
                           padding: const EdgeInsetsDirectional.only(
-                              start: 32.0, top: 0),
+                              start: 0.0, top: 0),
                           child: MediaQuery.removePadding(
                             context: context,
                             removeTop: true,
@@ -474,13 +431,16 @@ class ObjectionsData extends StatelessWidget {
                   subTitle: state.details?.objectionRequestNumber,
                 ),
               ),
+              const CustomVerticalSpace(height: 8),
               FieldData(
                 title: ("transaction_details_objection_status").tr(),
                 subTitle: state.details?.objectionRequestStatusName,
               ),
+              const CustomVerticalSpace(height: 8),
               FieldData(
                   title: ("transaction_details_objection_descision").tr(),
                   subTitle: state.details?.objectionCommitteeDecision),
+              const CustomVerticalSpace(height: 8),
               FieldData(
                   title: ("transaction_details_objection_date").tr(),
                   subTitle: state.details?.objectionRequestDate)
@@ -490,6 +450,7 @@ class ObjectionsData extends StatelessWidget {
   }
 }
 
+//MM
 class NoObjectionsData extends StatelessWidget {
   const NoObjectionsData({Key? key}) : super(key: key);
 

@@ -89,6 +89,16 @@ class _RequestsListState extends State<RequestsList> {
               }
               return RequestsListItem(
                 request: state.requests[index],
+                onDetails: () {
+                  context.read<ObjectableTransactionBloc>().add(
+                      GetTransactionDetailsEvent(
+                          apply: false,
+                          params: TransactionDetailsParams(
+                              applicationId:
+                                  state.requests[index].applicationId ?? "13",
+                              id: state.requests[index].transactionNumber ??
+                                  "")));
+                },
                 onApply: () {
                   context.read<ObjectableTransactionBloc>().add(
                       GetTransactionDetailsEvent(
