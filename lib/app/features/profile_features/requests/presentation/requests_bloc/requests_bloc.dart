@@ -218,7 +218,7 @@ class RequestsBloc extends Bloc<RequestsEvent, RequestsState> {
 
       final failureOrSuccess = await getSubMunicipalities(
         SubMunicipalityParams(
-          id: state.selectedMunicipality!.id,
+          id: state.selectedMunicipality!.municipalId,
         ),
       );
 

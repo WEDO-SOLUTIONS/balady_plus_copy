@@ -389,6 +389,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.4.2"
+  flutter_compass:
+    dependency: transitive
+    description:
+      name: flutter_compass
+      sha256: "1a0121bff32df95193812b4e0f69e95f45fdec042ebd7a326ba087c0f6ec8304"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.7.0"
   flutter_easyloading:
     dependency: "direct main"
     description:
@@ -451,6 +459,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.9"
+  flutter_qiblah:
+    dependency: "direct main"
+    description:
+      name: flutter_qiblah
+      sha256: e2b96d468f8e39d6799bbd033e6b82890a811ac309a211b73eae2ecc27ff81a0
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.2.0"
   flutter_rating_bar:
     dependency: "direct main"
     description:
