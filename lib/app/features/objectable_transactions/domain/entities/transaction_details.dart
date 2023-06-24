@@ -162,7 +162,7 @@ class NonComplinceAttachments {
   });
 
   String? getUrl() {
-    return RemoteConfig.apigeeUrl +
+    return RemoteConfig.apigeeURL +
         "/v1/dms-mobile/files/${contentLocation?.split("/").last}";
   }
 }

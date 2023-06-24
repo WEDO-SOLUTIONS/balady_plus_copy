@@ -182,6 +182,39 @@
 
 
 
+  "objection_details_commite":"بيانات قرار اللجنة", 
+  "objection_details_commite_desc":"قرار اللجنة", 
+  "objection_details_objections_list":"أسباب الإعتراض", 
+
+  "objection_create_request":"طلب إعتراض", 
+  "objection_create_reason":"سبب الإعتراض", 
+  "transaction_card_license_details":"التفاصيل", 
+  "transaction_card_license_apply":"تقديم طلب إعتراض", 
+  "no_transactions_requests":"لا يوجد معاملات قابلة للإعتراض", 
+  "no_objectnions_requests":"لا يوجد طلبات إعتراض", 
+  "objection_success_message":"تم إنشاء طلب الإعتراض رقم - بنجاح", 
+  "display_transaction_number":"عرض بيانات المعاملة المعترض عليها", 
+  "cluase_main_title":"بند المخالفة الرئيسي", 
+  "objection_title_details":"تفاصيل الإعتراض", 
+  "no_objections":"لا يوجد طلبات إعتراض", 
+  
+  "request_data":"بيانات الطلب", 
+
+  "objection_main_request_data":"بيانات الطلب الرئيسية", 
+  "objection_complain":"نوع التظلم/الشكوى", 
+  "objection_service_group":"مجموعة الخدمات", 
+  "objection_service":"الخدمة", 
+  "objection_municipality":"الأمانة", 
+  "objection_sub_municipality":"البلدية", 
+
+  "user_data_applicant":"بيانات مقدم الطلب", 
+  "user_data_applicant_id":"رقم الهوية", 
+  "user_data_applicant_type":"نوع الهوية", 
+  "user_data_applicant_name":"الاسم", 
+  "user_data_applicant_role":"صفته", 
+  "user_data_applicant_mobile":"رقم الجوال", 
+
+
   "_dashboardComment": "أى شئ يخص لوحة البيانات",
   "the_following_data": "البيانات التالية تشمل خدمات محدودة فقط في هذه  النسخة. سيتم تحديثها بكامل البيانات قريباً",
 
@@ -352,6 +385,10 @@
 "lbl_good":"", 
 
 
+
+
+
+
   "_errorsComment": "أى شئ يخص رسائل الاخطاء",
   "errorNoDataToDisplay": "لا يوجد بيانات لعرضها فى الوقت الحالى.",
   "errorNotFoundScreenName": "صفحة",
@@ -409,6 +446,16 @@
   "popUpCloseAppMessageWord": "هل تريد الخروج من التطبيق؟",
   "popUpCloseAppConfirmButtonWord": "نعم",
   "popUpCloseAppDeclineButtonWord": "لا", 
-  "next":"التالي"
+  "next":"التالي", 
 
+
+  "lbl_Camera": "الكاميرا",
+  "lbl_Gallery": "الاستوديو",
+ 
+"optional": "(اختياري)",
+"attach_file": "إرفاق ملف",
+"file_size_error": "حجم المستند اكبر من ٢٥ ميجابايت، الرجاء اختيار مستند بحجم لا يتجاوز ٢٥ ميجابايت",
+"attachment_name": "اسم المرفق",
+"images": "الصور",
+"files": "الملفات"
 }

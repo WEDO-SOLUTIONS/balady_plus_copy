@@ -102,6 +102,22 @@ class SsoUserInfo extends Equatable {
     return "";
   }
 
+  String getIdTypeName() {
+    if (idType != null) {
+      if (idType?.startsWith("1") ?? false) {
+        return "هوية وطنية";
+      } else {
+        return "هوية مقيم";
+      }
+
+// هوية وطنيه ١
+// هوية خليجيه ٤
+// رقم حدود ٩
+// هوية مقيم ٣
+    }
+    return "";
+  }
+
   String getHijriBirthDate() {
     String applicantDob = dob ?? "";
     try {

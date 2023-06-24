@@ -7,10 +7,9 @@ class CreateObjectionState extends Equatable {
   final String? notes;
   final int currentPageValue;
   final TransactionDetails? details;
-  final TransactionItem? item;
+  final ObjectableTransactionsEntity? item;
 
   final List<ReasonModel>? reasons;
-  final DelegatorItem? delegator;
 
   CreateObjectionState(
       {this.status = BlocStatus.initial,
@@ -20,15 +19,14 @@ class CreateObjectionState extends Equatable {
       this.currentPageValue = 0,
       this.details,
       this.item,
-      this.reasons,
-      this.delegator});
+      this.reasons});
 
   IncidentDescValidation get incidentDescValidator => notes == null
       ? IncidentDescValidation.pure()
       : IncidentDescValidation.dirty(value: notes);
   String? get incidentDescErrorText =>
       incidentDescValidator.error?.message != null
-          ? trans(incidentDescValidator.error?.message ?? "")
+          ? (incidentDescValidator.error?.message ?? "").tr()
           : null;
 
   CreateObjectionState copyWith(
@@ -39,8 +37,7 @@ class CreateObjectionState extends Equatable {
       final List<ReasonModel>? reasons,
       final TransactionDetails? details,
       final int? currentPageValue,
-      final TransactionItem? item,
-      final DelegatorItem? delegator}) {
+      final ObjectableTransactionsEntity? item}) {
     return CreateObjectionState(
         status: status ?? this.status,
         errorMessage: errorMessage ?? this.errorMessage,
@@ -49,8 +46,7 @@ class CreateObjectionState extends Equatable {
         reasons: reasons ?? this.reasons,
         currentPageValue: currentPageValue ?? this.currentPageValue,
         details: details ?? this.details,
-        item: item ?? this.item,
-        delegator: delegator ?? this.delegator);
+        item: item ?? this.item);
   }
 
   @override
@@ -62,14 +58,9 @@ class CreateObjectionState extends Equatable {
         currentPageValue,
         details,
         item,
-        delegator
       ];
 
   bool isFormValid() {
     return true;
-    FormzStatus descFormStatus = Formz.validate([incidentDescValidator]);
-
-    if (!incidentDescValidator.pure && descFormStatus.isValid) return true;
-    return false;
   }
 }

@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/features/objectable_transactions/domain/entities/transaction_details_params.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
@@ -8,11 +9,12 @@ import '../../../_shared_feature_/shared_feature_exports.dart'
 import '../../objections_exports.dart'
     show
         GetRequestsEvent,
+        GetTransactionDetailsEvent,
         ObjectableTransactionBloc,
+        ObjectableTransactionState,
         RequestsListItem,
         RequestsListShimmer,
-        RequestsLoadMoreEvent,
-        ObjectableTransactionState;
+        RequestsLoadMoreEvent;
 
 class RequestsList extends StatefulWidget {
   const RequestsList({super.key});
@@ -87,6 +89,16 @@ class _RequestsListState extends State<RequestsList> {
               }
               return RequestsListItem(
                 request: state.requests[index],
+                onApply: () {
+                  context.read<ObjectableTransactionBloc>().add(
+                      GetTransactionDetailsEvent(
+                          apply: true,
+                          params: TransactionDetailsParams(
+                              applicationId:
+                                  state.requests[index].applicationId ?? "13",
+                              id: state.requests[index].transactionNumber ??
+                                  "")));
+                },
               );
             },
           );

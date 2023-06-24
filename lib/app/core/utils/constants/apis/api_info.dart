@@ -61,6 +61,13 @@ class ApiUrl {
 
   static const postObjection =
       '/v1/objection-services/submit-objection-requests';
+
+  static const objectionRequestDetails =
+      '/v1/objection-services/objection-details';
+
+  static String transactionsRequestDetails(String id) =>
+      '/v1/objection-generic-services/applications/$id/objectable-transactions';
+
 // VD
   static const gis = '/v1/crm/bcg/gis-info';
   static const vdCategories = '/v1/crm/bcg/categories';

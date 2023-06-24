@@ -83,7 +83,7 @@ class EntryPointCubit extends Cubit<EntryPointState> {
       });
       //MM sl<EtmamEntryPointCubit>().onLoadingApp();
 
-      if (token.refreshToken != null) await refreshToken(token.refreshToken!);
+      //  if (token.refreshToken != null) await refreshToken(token.refreshToken!);
       refreshSSOProfile();
     });
   }

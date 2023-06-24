@@ -21,11 +21,15 @@ class ElevatedIconButtonWidget extends _ElevatedIconButton {
   ///
   ElevatedIconButtonWidget.upload({required VoidCallback onPressed})
       : super(CustomElevatedIconButtonWidget(
-          text: "uploadButton".tr(),
-          textStyle: AppStyle.elevatedButtonStyle,
-          btnColor: AppColor.blue,
-          btnBorderColor: Colors.transparent,
-          icon: const CustomSvgIconWidget(IconPath.upload, iconSize: 12.0),
+          text: "attachFileButton".tr(),
+          btnColor: Colors.transparent,
+          btnBorderColor: AppColor.primary800Light,
+          textStyle: AppStyle.elevatedButtonStyle.copyWith(
+            color: AppColor.primary800Light,
+            fontWeight: FontWeight.w700,
+            fontSize: 16,
+          ),
+          icon: const CustomSvgIconWidget(IconPath.add, iconSize: 18.0),
           onPressed: onPressed,
         ));
 }

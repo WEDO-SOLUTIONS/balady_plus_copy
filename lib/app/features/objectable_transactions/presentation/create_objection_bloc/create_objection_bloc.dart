@@ -1,18 +1,30 @@
 import 'dart:convert';
 
+import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/objectable_transactions/domain/use_cases/create_objection.dart';
 import 'package:dartz/dartz.dart';
+import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:collection/collection.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:mime/mime.dart';
 
+import '../../../../core/dependency_injection/injection_container.dart';
 import '../../../../core/errors/failures.dart';
+import '../../../../core/services/local/navigation_services.dart';
 import '../../../../core/utils/common_functions.dart';
 import '../../../../core/utils/enums/bloc_status.dart';
+import '../../../_shared_feature_/data/entities/file_data_item.dart';
+import '../../../_shared_feature_/data/entities/validators/incident_desc_validation.dart';
 import '../../../objectable_transactions/domain/entities/reason_model.dart';
+import '../../../objectable_transactions/domain/entities/transaction_details.dart';
 import '../../../objectable_transactions/domain/use_cases/upload_file.dart';
 import '../../../objectable_transactions/objections_exports.dart';
+import '../pages/create_objection_details_page.dart';
+import '../pages/create_objection_request_info_page.dart';
+import '../pages/create_objection_user_info_page.dart';
+import '../widgets/summery_widgets/summury_section.dart';
 
 part 'create_objection_event.dart';
 
@@ -27,17 +39,15 @@ class CreateObjectionBloc
   PageController controller = PageController();
 
   late List pagesList = [
+    CreateObjectionRequestInfoPage(),
     CreateObjectionUserInfoPage(),
-    CreateObjectionDetailsPage()
+    CreateObjectionDetailsPage(),
+    SummurySection()
   ];
 
-  CreateObjectionBloc(
-      {required CreateObjection createObjection,
-      required UploadFile uploadFile,
-      this.item,
-      this.details})
-      : _createObjection = createObjection,
-        _uploadFile = uploadFile,
+  CreateObjectionBloc({this.item, this.details})
+      : _createObjection = CreateObjection(repository: sl()),
+        _uploadFile = UploadFile(repository: sl()),
         super(CreateObjectionState(
           reasons: [ReasonModel()],
           details: details,
@@ -142,8 +152,6 @@ class CreateObjectionBloc
       }
     }).toList();
 
-    print("HEREEEEE $r");
-
     if (!r.contains(false)) {
       add(CreateIncidentRegisteredEvent());
     }
@@ -163,7 +171,9 @@ class CreateObjectionBloc
           serviceId: item?.serviceId,
           objectionTypeId: item?.objectionTypeId,
           objectedTransactionId: item?.transactionNumber,
-          submitterRole: CommonProperties.selectedDelegator?.roleId,
+          submitterRole: CommonProperties.selectedDelegator != null
+              ? CommonProperties.selectedDelegator?.roleId
+              : "001",
           facilityUniqueID:
               CommonProperties.selectedDelegator?.unifiedNationalNumber,
           commercialRecord: CommonProperties.selectedDelegator?.crNumber,
@@ -183,7 +193,9 @@ class CreateObjectionBloc
           serviceId: details?.serviceId,
           objectionTypeId: details?.objectionTypeId,
           objectedTransactionId: details?.violationId,
-          submitterRole: CommonProperties.selectedDelegator?.roleId,
+          submitterRole: CommonProperties.selectedDelegator != null
+              ? CommonProperties.selectedDelegator?.roleId
+              : "001",
           facilityUniqueID:
               CommonProperties.selectedDelegator?.unifiedNationalNumber,
           commercialRecord: CommonProperties.selectedDelegator?.crNumber,
@@ -279,7 +291,7 @@ class CreateObjectionBloc
   void cancelRequest() {
     hideKeyboard();
     NavigationService.navigatorKey.currentState!
-        .popUntil(ModalRoute.withName(RoutesNames.bottomNavigationRoute));
+        .popUntil(ModalRoute.withName(RouteName.bottomNavigation));
   }
 
   bool isLastPage() {

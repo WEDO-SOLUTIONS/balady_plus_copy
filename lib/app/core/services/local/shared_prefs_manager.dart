@@ -60,6 +60,7 @@ class SharedPrefs {
   }
 
   SSOTokenModel? getSSOToken() {
+    print(_sharedPreferences?.getString('sso_token'));
     if (_sharedPreferences?.getString('sso_token') != null) {
       SSOTokenModel token = SSOTokenModel.fromMap(
           json.decode(_sharedPreferences?.getString('sso_token') ?? ""));

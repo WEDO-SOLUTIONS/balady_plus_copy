@@ -6,8 +6,6 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 import '../../../../../core/utils/constants/paths/icon_paths.dart';
 import '../../../../_shared_feature_/presentation/under_testing/custom_expansion_panel_widget.dart';
 import '../../blocs/create_vd_details_bloc/create_vd_bloc.dart';
-import '../details_widgets/location_photo_section.dart';
-import '../details_widgets/spl_widgets/incident_photo_widget.dart';
 import 'field_data.dart';
 
 class SPLSummuryWidget extends StatelessWidget {

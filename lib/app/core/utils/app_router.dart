@@ -1,3 +1,5 @@
+import 'package:balady_plus/app/features/objectable_transactions/domain/entities/create_objection_page_params.dart';
+import 'package:balady_plus/app/features/objections/domain/entities/objection_details.dart';
 import 'package:flutter/material.dart'
     show AppBar, Center, MaterialPageRoute, Route, RouteSettings, Scaffold;
 import 'package:flutter/widgets.dart' show SizedBox;
@@ -15,6 +17,9 @@ import '../../features/entry_point/entry_point_exports.dart' show SsoUserInfo;
 import '../../features/objectable_transactions/objections_exports.dart'
     show ObjectableTransactionsPage;
 import '../../features/facility_qr/facility_qr_exports.dart';
+import '../../features/objectable_transactions/presentation/pages/create_objection_page.dart';
+import '../../features/objectable_transactions/presentation/pages/objection_details_page.dart';
+import '../../features/objectable_transactions/presentation/pages/transactions_details_page.dart';
 import '../../features/profile_features/dashboard/dashboard_exports.dart'
     show DashBoardPage;
 import '../../features/profile_features/invoices/invoices_exports.dart'
@@ -106,6 +111,15 @@ class AppRouter {
         return MaterialPageRoute(
             builder: (_) => const ObjectableTransactionsPage());
 
+      case RouteName.createObjectionDetails:
+        CreateObjectionPageParams params =
+            settings.arguments as CreateObjectionPageParams;
+        return MaterialPageRoute(
+          builder: (_) => CreateObjectionPage(
+            params: params,
+          ),
+        );
+
       // -------  VD ---------
       case RouteName.vdCameraPage:
         CameraParamsPage params = settings.arguments as CameraParamsPage;
@@ -156,6 +170,23 @@ class AppRouter {
       case RouteName.qrScreenRoute:
         return MaterialPageRoute(
           builder: (_) => const QrScreen(),
+        );
+
+      case RouteName.transactionDetailsPage:
+        CreateObjectionPageParams? params =
+            settings.arguments as CreateObjectionPageParams?;
+        return MaterialPageRoute(
+          builder: (_) => TransactionsDetailsPage(
+            params: params!,
+          ),
+        );
+
+      case RouteName.objectionsDetailsPage:
+        ObjectionDetails? params = settings.arguments as ObjectionDetails?;
+        return MaterialPageRoute(
+          builder: (_) => ObjectionsDetailsPage(
+            params: params!,
+          ),
         );
       // error page
       default:

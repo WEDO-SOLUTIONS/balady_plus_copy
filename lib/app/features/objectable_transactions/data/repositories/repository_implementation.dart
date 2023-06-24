@@ -1,7 +1,10 @@
 import 'package:balady_plus/app/features/objectable_transactions/domain/entities/create_objection_params.dart';
 import 'package:balady_plus/app/features/objectable_transactions/domain/entities/create_objection_response.dart';
+import 'package:balady_plus/app/features/objectable_transactions/domain/entities/transaction_details.dart';
+import 'package:balady_plus/app/features/objectable_transactions/domain/entities/transaction_details_params.dart';
 import 'package:balady_plus/app/features/objectable_transactions/domain/entities/upload_file_params.dart';
 import 'package:balady_plus/app/features/objectable_transactions/domain/entities/upload_file_response.dart';
+import 'package:balady_plus/app/features/objections/domain/entities/objection_details.dart';
 import 'package:dartz/dartz.dart';
 
 import '../../../../core/errors/errors_exports.dart'
@@ -101,6 +104,32 @@ class RequestsRepositoryImplementation implements RequestsRepository {
       {required UploadFileParams params}) async {
     try {
       final data = await remoteDataSource.uploadFile(params: params);
+      return Right(data);
+    } on NoDataFoundException {
+      return Left(NoDataFoundFailure());
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage));
+    }
+  }
+
+  @override
+  Future<Either<Failure, ObjectionDetails>> getObjectionDetails(
+      String id) async {
+    try {
+      final data = await remoteDataSource.getObjectionDetails(id);
+      return Right(data);
+    } on NoDataFoundException {
+      return Left(NoDataFoundFailure());
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage));
+    }
+  }
+
+  @override
+  Future<Either<Failure, TransactionDetails>> getTransactionDetails(
+      TransactionDetailsParams params) async {
+    try {
+      final data = await remoteDataSource.getTransactionDetails(params);
       return Right(data);
     } on NoDataFoundException {
       return Left(NoDataFoundFailure());

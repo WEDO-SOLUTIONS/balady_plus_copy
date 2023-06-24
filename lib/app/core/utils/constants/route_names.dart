@@ -20,8 +20,16 @@ class RouteName {
   static const requests = '/requests';
   static const invoices = '/invoices';
   static const licenses = '/licenses';
+
+  // -------  Objections ---------
+
   static const objections = '/objections';
   static const objectableTransactions = '/objectableTransactionsPage';
+  static const createObjectionDetails = '/createObjectionDetails';
+
+  static const transactionDetailsPage = '/TransactionDetailsPage';
+  static const objectionsDetailsPage = '/ObjectionsDetailsPage';
+
   // -------  VD ---------
   static const vdCameraPage = '/vdCameraPage';
   static const vdCreateVDDetailsPage = '/vdCreateVDDetailsPage';

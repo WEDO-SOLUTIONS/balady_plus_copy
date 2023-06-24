@@ -71,13 +71,10 @@ class RequestDateSelectedEvent extends ObjectableTransactionEvent {
   List<Object> get props => [date];
 }
 
-class RequestsSortChangedEvent extends ObjectableTransactionEvent {
-  final SortType sortType;
-
-  const RequestsSortChangedEvent({required this.sortType});
-
-  @override
-  List<Object> get props => [sortType];
+class GetTransactionDetailsEvent extends ObjectableTransactionEvent {
+  final TransactionDetailsParams params;
+  final bool apply;
+  const GetTransactionDetailsEvent({required this.params, this.apply = false});
 }
 
 class ClearRequestsFiltersEvent extends ObjectableTransactionEvent {}

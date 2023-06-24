@@ -26,6 +26,10 @@ class IconPath {
   static const appBarSearch = '${_svgIconPath}appbar_search$_svg';
   static const billIcon = '${_svgIconPath}bill_icon$_svg';
   static const placeholder = '${_svgIconPath}placeholder$_svg';
+  static const add = '${_svgIconPath}add$_svg';
+  static const pdf = '${_svgIconPath}PDF$_svg';
+  static const informationCircleIcon =
+      '${_svgIconPath}informationCircleIcon$_svg';
 
   // Bottom-Nav-Bar
   static const home = '${_svgIconPath}home_icon$_svg';

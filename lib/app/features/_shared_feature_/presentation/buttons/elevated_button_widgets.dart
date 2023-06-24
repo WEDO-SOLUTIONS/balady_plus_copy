@@ -168,4 +168,18 @@ class ElevatedButtonWidget extends _ElevatedButton {
           text: "objection_apply".tr(),
           onPressed: onPressed,
         ));
+
+  ElevatedButtonWidget.attachFile({required VoidCallback onPressed})
+      : super(CustomElevatedButtonWidget(
+          btnColor: Colors.transparent,
+          btnBorderColor: AppColor.primary800Light,
+          textStyle: AppStyle.elevatedButtonStyle.copyWith(
+            color: AppColor.primary800Light,
+            fontWeight: FontWeight.w700,
+            fontSize: 16,
+          ),
+          btnHeight: 56,
+          text: "attachFileButton".tr(),
+          onPressed: onPressed,
+        ));
 }

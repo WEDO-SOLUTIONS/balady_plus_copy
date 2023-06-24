@@ -19,9 +19,12 @@ import 'package:path_provider/path_provider.dart' show getTemporaryDirectory;
 import 'package:flutter_bloc/flutter_bloc.dart' show EventTransformer;
 import 'package:permission_handler/permission_handler.dart';
 import 'package:stream_transform/stream_transform.dart' show RateLimit, Switch;
-import 'package:url_launcher/url_launcher.dart' show canLaunchUrl, launchUrl;
+import 'package:url_launcher/url_launcher.dart'
+    show LaunchMode, canLaunchUrl, launchUrl;
 import 'package:uuid/uuid.dart';
 
+import '../../features/_shared_feature_/data/entities/file_data_item.dart';
+import '../../features/_shared_feature_/presentation/dialogs/upload_file_dialog.dart';
 import './utils_exports.dart'
     show AppConfig, AppLanguage, EnvType, MimeType, UIHelper, WithDelay;
 import '../../features/_shared_feature_/data/entities/device_details.dart';
@@ -29,7 +32,12 @@ import '../../features/_shared_feature_/presentation/dialogs/camera_permission_d
 import '../../features/_shared_feature_/presentation/dialogs/location_permission_dialog.dart';
 import '../../features/_shared_feature_/presentation/dialogs/location_service_dialog.dart';
 import '../../features/_shared_feature_/shared_feature_exports.dart'
-    show AuthData, BridgeParams, FileInfo;
+    show
+        AuthData,
+        BottomSheetDialog,
+        BottomSheetWithActions,
+        BridgeParams,
+        FileInfo;
 import '../../features/entry_point/domain/entities/sso_user_info.dart'
     show SsoUserInfo;
 import '../../features/entry_point/domain/entities/sso_user_info.dart';
@@ -38,7 +46,7 @@ import '../../features/profile_features/delegators/delegators_exports.dart'
     show DelegatorEntity;
 import '../dependency_injection/dependency_injection_exports.dart' show sl;
 import '../services/services_exports.dart'
-    show AppInterceptors, EntryPointBridge;
+    show AppInterceptors, EntryPointBridge, NavigationService;
 
 class CommonFunctions {
   static EventTransformer<Event> debounce<Event>([Duration? duration]) =>
@@ -183,6 +191,24 @@ class CommonFunctions {
     } catch (ex) {
       return DateTime.now().millisecondsSinceEpoch.toString();
     }
+  }
+
+  static Future<FileDataItem?> pickFile(BuildContext context,
+      {bool imagesOnly = false}) async {
+    final file = await BottomSheetDialog.showDraggableSheet(context,
+        isFullHeight: false,
+        height: 300,
+        child: BottomSheetWithActions(
+          title: imagesOnly ? ('uploadImage').tr() : ('uploadFile').tr(),
+          body: UploadFileDialog(
+            onConfirm: (FileDataItem file) {
+              NavigationService.navigatorKey.currentState?.pop(file);
+            },
+            imagesOnly: imagesOnly,
+          ),
+        ));
+
+    return Future.value(file is FileDataItem ? file : null);
   }
 
   static String hashRequest(
@@ -429,6 +455,20 @@ class CommonFunctions {
       }
     }
     return "";
+  }
+
+  static void launchMap(LatLng? location) async {
+    if (location != null) {
+      final url =
+          'https://www.google.com/maps/search/?api=1&query=${location.latitude},${location.longitude}';
+      await CommonFunctions.externalLaunch(url);
+    }
+  }
+
+  static externalLaunch(String url) async {
+    final Uri convertUrl = Uri.parse(url);
+    if (!await launchUrl(convertUrl, mode: LaunchMode.externalApplication))
+      throw 'Could not launch $convertUrl';
   }
 }
 

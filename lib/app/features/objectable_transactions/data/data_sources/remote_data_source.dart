@@ -8,6 +8,8 @@ import '../../../../core/services/services_exports.dart' show WebService;
 import '../../../../core/utils/utils_exports.dart' show ApiUrl, Log, WithDelay;
 import '../../../_shared_feature_/shared_feature_exports.dart'
     show ResponseBodyModel;
+import '../../../objections/data/models/objection_details_model.dart';
+import '../../domain/entities/transaction_details_params.dart';
 import '../../objections_exports.dart'
     show
         ObjectableTransactionsModel,
@@ -20,6 +22,7 @@ import '../../objections_exports.dart'
         CreateObjectionResponseModel,
         UploadFileResponse,
         UploadFileParams;
+import '../models/transaction_details_model.dart';
 
 abstract class RequestsRemoteDataSource {
   Future<List<ObjectableTransactionsModel>> getObjectionRequests(
@@ -35,6 +38,10 @@ abstract class RequestsRemoteDataSource {
 
   Future<CreateObjectionResponseModel> createObjection(
       {required CreateObjectionParams params});
+
+  Future<ObjectionDetailsModel> getObjectionDetails(String id);
+  Future<TransactionDetailsModel> getTransactionDetails(
+      TransactionDetailsParams params);
 }
 
 class RequestsRemoteDataSourceImplementation
@@ -56,7 +63,7 @@ class RequestsRemoteDataSourceImplementation
       final data = response.data;
       data.toString().successLog();
 
-      final result = ResponseBodyModel.fromMap(data).data.result;
+      final result = ResponseBodyModel.fromMap(data).data?.result;
 
       return result
           .map<ObjectableTransactionsModel>((e) =>
@@ -91,7 +98,7 @@ class RequestsRemoteDataSourceImplementation
       final data = response.data;
       data.toString().successLog();
 
-      final result = ResponseBodyModel.fromMap(data).data.result;
+      final result = ResponseBodyModel.fromMap(data).data?.result;
 
       return result
           .map<RequestStatusModel>(
@@ -126,7 +133,7 @@ class RequestsRemoteDataSourceImplementation
       final data = response.data;
       data.toString().successLog();
 
-      final result = ResponseBodyModel.fromMap(data).data.result;
+      final result = ResponseBodyModel.fromMap(data).data?.result;
 
       return result
           .map<RequestTypeModel>(
@@ -163,7 +170,7 @@ class RequestsRemoteDataSourceImplementation
       final data = response.data;
       data.toString().successLog();
 
-      final result = ResponseBodyModel.fromMap(data).data.result;
+      final result = ResponseBodyModel.fromMap(data).data?.result;
 
       return result
           .map<RequestSubTypeModel>(
@@ -192,16 +199,17 @@ class RequestsRemoteDataSourceImplementation
   Future<CreateObjectionResponseModel> createObjection(
       {required CreateObjectionParams params}) async {
     try {
-      final response = await webService.dio.post(
-        ApiUrl.postObjection,
-      );
+      final response =
+          await webService.dio.post(ApiUrl.postObjection, data: params.toMap());
+      var data = response.data["data"]?["result"];
 
-      final data = response.data;
       data.toString().successLog();
 
-      final result = ResponseBodyModel.fromMap(data).data.result;
+      final result = ResponseBodyModel<CreateObjectionResponseModel>.fromMap(
+          response.data,
+          parsedResult: CreateObjectionResponseModel.fromJson(data));
 
-      return CreateObjectionResponseModel.fromJson(result);
+      return result.data!.result!;
     } on DioError catch (error) {
       "DioError $error".errorLog();
       if (error is NoDataFoundException) {
@@ -240,6 +248,73 @@ class RequestsRemoteDataSourceImplementation
       parsedResult?.index = params.index;
 
       return parsedResult!.toFuture();
+    } on DioError catch (error) {
+      "DioError $error".errorLog();
+      if (error is NoDataFoundException) {
+        rethrow;
+      }
+      throw ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+      );
+    } catch (ex) {
+      "Catched $ex".errorLog();
+      if (ex is ServerException) {
+        rethrow;
+      } else {
+        throw ServerException("errors_server_error_2".tr());
+      }
+    }
+  }
+
+  @override
+  Future<ObjectionDetailsModel> getObjectionDetails(String id) async {
+    try {
+      final response = await webService.dio
+          .post(ApiUrl.objectionRequestDetails, queryParameters: {
+        "ObjectionRequestID": id,
+      });
+
+      final data = response.data;
+      data.toString().successLog();
+
+      final result = ResponseBodyModel.fromMap(data).data?.result;
+
+      return ObjectionDetailsModel.fromJson(result);
+    } on DioError catch (error) {
+      "DioError $error".errorLog();
+      if (error is NoDataFoundException) {
+        rethrow;
+      }
+      throw ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+      );
+    } catch (ex) {
+      "Catched $ex".errorLog();
+      if (ex is ServerException) {
+        rethrow;
+      } else {
+        throw ServerException("errors_server_error_2".tr());
+      }
+    }
+  }
+
+  @override
+  Future<TransactionDetailsModel> getTransactionDetails(
+      TransactionDetailsParams params) async {
+    try {
+      final response = await webService.dio.get(
+        ApiUrl.transactionsRequestDetails(params.applicationId),
+        queryParameters: {"transactionNumber": params.id},
+      );
+
+      final data = response.data;
+      data.toString().successLog();
+
+      final result = ResponseBodyModel.fromMap(data).data?.result;
+
+      return TransactionDetailsModel.fromJson(result);
     } on DioError catch (error) {
       "DioError $error".errorLog();
       if (error is NoDataFoundException) {

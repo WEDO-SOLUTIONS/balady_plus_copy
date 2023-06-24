@@ -11,11 +11,9 @@ import '../../objections_exports.dart'
 
 class RequestsListItem extends StatelessWidget {
   final ObjectableTransactionsEntity request;
-
-  const RequestsListItem({
-    super.key,
-    required this.request,
-  });
+  final Function onApply;
+  const RequestsListItem(
+      {super.key, required this.request, required this.onApply});
 
   @override
   Widget build(BuildContext context) {
@@ -37,11 +35,9 @@ class RequestsListItem extends StatelessWidget {
                 textStyle: AppStyle.cardTitleTextStle,
               ),
               const SizedBox(width: 4),
-              Expanded(
-                child: CustomTextWidget(
-                  '#${request.transactionNumber}'.tr(),
-                  textStyle: AppStyle.requestNumberTextStle,
-                ),
+              CustomTextWidget(
+                '#${request.transactionNumber}'.tr(),
+                textStyle: AppStyle.requestNumberTextStle,
               ),
             ],
           ),
@@ -84,7 +80,8 @@ class RequestsListItem extends StatelessWidget {
               Expanded(flex: 1, child: CustomVerticalSpace(height: 16)),
               Expanded(
                   flex: 10,
-                  child: ElevatedButtonWidget.applyObjection(onPressed: () {})),
+                  child: ElevatedButtonWidget.applyObjection(
+                      onPressed: () => onApply())),
             ],
           ),
         ],

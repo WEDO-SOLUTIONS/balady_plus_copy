@@ -1,0 +1,149 @@
+import 'dart:convert';
+import 'dart:io';
+import 'dart:typed_data';
+
+import 'package:balady_plus/app/core/utils/constants/remote_config.dart';
+import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:open_file/open_file.dart';
+import 'package:path_provider/path_provider.dart';
+
+import '../../../../../core/services/global/web_service.dart';
+import '../../../../../core/services/local/navigation_services.dart';
+import '../../../../../core/utils/common_functions.dart';
+import '../../../../../core/utils/constants/apis/api_info.dart';
+import '../../../../../core/utils/constants/app_colors.dart';
+import '../../../../../core/utils/constants/constants.dart';
+import '../../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
+import '../../../../objections/domain/entities/objection_details.dart';
+
+class ObjectionAttachmentItem extends StatefulWidget {
+  ReasonAttachment file;
+
+  ObjectionAttachmentItem({Key? key, required this.file}) : super(key: key);
+
+  @override
+  _ObjectionAttachmentItemState createState() =>
+      _ObjectionAttachmentItemState();
+}
+
+class _ObjectionAttachmentItemState extends State<ObjectionAttachmentItem> {
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        showFile(widget.file);
+      },
+      child: Container(
+          height: 56,
+          margin: const EdgeInsets.only(left: 10, right: 10, bottom: 8),
+          color: AppColor.white4,
+          child: Row(
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(right: 16),
+                child: getAttachmentIcon(),
+              ),
+              Constants.horizontalSpaceSmall,
+              // attachment name
+              Expanded(
+                child: CustomTextWidget(
+                  widget.file.fileName ?? "",
+                  fontColor: AppColor.black,
+                  textAlign: TextAlign.start,
+                  fontSize: 13.0,
+                  maxLines: 1,
+                ),
+              ),
+            ],
+          )),
+    );
+  }
+
+  Image getAttachmentIcon() {
+    if (widget.file.fileName?.contains(".pdf") ?? false) {
+      return Image.asset(
+        "assets/images/pdfIcon@3x.png",
+        height: 32,
+        width: 32,
+      );
+    } else {
+      return Image.asset(
+        "assets/images/attachmentIcon@3x.png",
+        fit: BoxFit.cover,
+        height: 32.0,
+        cacheHeight: 32,
+        cacheWidth: 32,
+        width: 32.0,
+      );
+    }
+  }
+
+  void showFile(ReasonAttachment file) async {
+    try {
+      if (file.fileName!.toLowerCase().contains(".png") ||
+          file.fileName!.toLowerCase().contains(".jpeg") ||
+          file.fileName!.toLowerCase().contains(".jpg")) {
+        //MM
+        // NavigationService.navigatorKey.currentState!.pushNamed(
+        //     RoutesNames.dmsImageFullScreen,
+        //     arguments: file.getUrl());
+      } else {
+        try {
+          EasyLoading.show();
+          File fileDownloaded = await createFileOfPdfUrl(file.getUrl() ?? "");
+          EasyLoading.dismiss();
+
+          /*  final encodedStr = file.attachmentStream;
+          Uint8List bytes = base64.decode(encodedStr);
+          String dir = (await getTemporaryDirectory()).path;
+          File filetemp = File("$dir/" + file.attachName);
+          await filetemp.writeAsBytes(bytes);
+          print(filetemp.path);*/
+
+          if (file.fileName?.toLowerCase().contains(".pdf") ?? false) {
+            Uint8List bytes = fileDownloaded.readAsBytesSync();
+
+//MM
+            /*  Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => PDFViewer(
+                          file: bytes,
+                          title: file.fileName,
+                        )));*/
+          } else {
+            OpenFile.open(fileDownloaded.path);
+          }
+        } catch (ex) {
+          EasyLoading.dismiss();
+
+          print(ex);
+        }
+      }
+    } catch (ex) {
+      EasyLoading.dismiss();
+    }
+  }
+
+  Future<File> createFileOfPdfUrl(String fileUrl) async {
+    final url = fileUrl;
+    final filename = url.substring(url.lastIndexOf("/") + 1);
+    Dio dio = Dio();
+    dio.options.baseUrl = RemoteConfig.apigeeURL;
+    dio.options.connectTimeout = 60000;
+    dio.options.receiveTimeout = 60000;
+    dio.options.sendTimeout = 60000;
+    dio.options.responseType = ResponseType.bytes;
+    dio.interceptors.add(AppInterceptors());
+    ;
+    Response r = await WebService(dio: dio).dio.getUri(Uri.parse(url));
+
+    String dir = (await getTemporaryDirectory()).path;
+    File file = new File('$dir/$filename');
+    await file.writeAsBytes(r.data);
+    return file;
+  }
+}

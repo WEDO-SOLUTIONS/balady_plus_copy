@@ -1,17 +1,22 @@
+import 'package:balady_plus/app/features/objectable_transactions/domain/use_cases/get_transaction_details.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/dependency_injection/injection_container.dart';
 import '../../../../core/errors/errors_exports.dart'
     show NoDataFoundFailure, ServerFailure;
-import '../../../../core/services/services_exports.dart' show NoParams;
+import '../../../../core/services/services_exports.dart'
+    show NavigationService, NoParams;
 import '../../../../core/utils/utils_exports.dart'
     show
         BlocRequestStatus,
         CommonProperties,
         Nullable,
         PaginationConstants,
+        RouteName,
         SortType;
+import '../../domain/entities/create_objection_page_params.dart';
+import '../../domain/entities/transaction_details_params.dart';
 import '../../objections_exports.dart'
     show
         GetObjectionRequests,
@@ -34,12 +39,14 @@ class ObjectableTransactionBloc
   final GetRequestTypes getRequestTypes;
   final GetRequestStatuses getRequestStatuses;
   final GetRequestSubTypes getRequestSubTypes;
+  final GetTransactionDetails getTransactionDetails;
 
   ObjectableTransactionBloc()
       : getRequests = GetObjectionRequests(repository: sl()),
         getRequestTypes = GetRequestTypes(repository: sl()),
         getRequestStatuses = GetRequestStatuses(repository: sl()),
         getRequestSubTypes = GetRequestSubTypes(repository: sl()),
+        getTransactionDetails = GetTransactionDetails(repository: sl()),
         super(const ObjectableTransactionState()) {
     on<GetRequestsEvent>((event, emit) async {
       emit(
@@ -257,14 +264,6 @@ class ObjectableTransactionBloc
       );
     });
 
-    on<RequestsSortChangedEvent>((event, emit) async {
-      emit(
-        state.copyWith(
-          sortType: event.sortType,
-        ),
-      );
-    });
-
     on<ClearRequestsFiltersEvent>((event, emit) async {
       emit(state.copyWith(
         selectedRequestStatus: Nullable(null),
@@ -292,6 +291,42 @@ class ObjectableTransactionBloc
         selectedRequestSubType: Nullable(event.selectedRequestSubType),
         selectedRequestDate: Nullable(event.selectedRequestDate),
       ));
+    });
+
+    on<GetTransactionDetailsEvent>(_getTransactionsDetailsHandler);
+  }
+
+  Future<void> _getTransactionsDetailsHandler(
+      GetTransactionDetailsEvent e, Emitter emitter) async {
+    emitter(state.copyWith(
+        requestStatusesStatus: BlocRequestStatus.submissionGetLoading));
+
+    var failureOrSuccess = await getTransactionDetails(e.params);
+
+    await failureOrSuccess.fold((failure) {
+      emitter(state.copyWith(
+        requestStatusesStatus: BlocRequestStatus.submissionGetFailure,
+        errorMessage: (failure as ServerFailure).errorMessage,
+      ));
+    }, (success) async {
+      emitter(state.copyWith(
+        requestStatusesStatus: BlocRequestStatus.submissionGetSuccess,
+        errorMessage: "",
+      ));
+
+      if (e.apply) {
+        NavigationService.navigatorKey.currentState!
+            .pushNamed(RouteName.createObjectionDetails,
+                arguments: CreateObjectionPageParams(
+                  details: success,
+                ));
+      } else {
+        /*NavigationService.navigatorKey.currentState!.pushNamed(
+            RouteName.TransactionDetailsPage,
+            arguments: CreateObjectionPageParams(
+                delegator: state.selectedDelegator,
+                details: success.data?.result));*/ //MM
+      }
     });
   }
 }
