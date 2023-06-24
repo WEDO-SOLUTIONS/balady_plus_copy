@@ -47,6 +47,10 @@ import '../../features/retrive_car/presentation/pages/dc_vehicles_page.dart';
 import '../../features/services/services_exports.dart'
     show ServiceCardsPage, ServiceEntity;
 import '../../features/splash/splash_exports.dart' show SplashPage;
+import '../../features/transaction_inquiry/data/general_inquiry_data.dart';
+import '../../features/transaction_inquiry/presentation/pages/inquiry/general_inquiry/general_inquiry_page.dart';
+import '../../features/transaction_inquiry/presentation/pages/inquiry/transactions_inquiry/new_transaction_inquiry.dart';
+import '../../features/transaction_inquiry/presentation/pages/inquiry/transactions_inquiry/transaction_inquiry_page.dart';
 import '../../features/vd/vd_exports.dart';
 
 class AppRouter {
@@ -253,8 +257,11 @@ class AppRouter {
         );
 
       case RouteName.NewAppointmentPage:
+        bool? withPreviousTransaction = settings.arguments as bool?;
         return MaterialPageRoute(
-          builder: (_) => NewAppointmentPage(),
+          builder: (_) => NewAppointmentPage(
+            withPreviousTransaction: withPreviousTransaction ?? false,
+          ),
         );
 
       case RouteName.newDaemTicket:
@@ -264,6 +271,18 @@ class AppRouter {
           builder: (_) => NewDaemPage(
             args: args,
           ),
+        );
+
+      case RouteName.newTransactionInquiryScreen:
+        return MaterialPageRoute(
+          builder: (_) => NewTransactionPage(),
+        );
+
+      case RouteName.generalInquiryPage:
+        CustomerVoiceReportTypeModel inqTypeModel =
+            settings.arguments as CustomerVoiceReportTypeModel;
+        return MaterialPageRoute(
+          builder: (_) => GeneralInquiryPage(inqTypeModel: inqTypeModel),
         );
 
       // error page

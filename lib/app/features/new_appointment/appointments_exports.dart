@@ -26,7 +26,6 @@ export 'presentation/widgets/book_new_appointment_date_time_widgets/book_new_app
 
 /// data
 /// data -> models
-export 'data/book_appointment_data_model.dart';
 export 'data/new_appointment_args.dart';
 
 /// presentation -> core -> services -> repository

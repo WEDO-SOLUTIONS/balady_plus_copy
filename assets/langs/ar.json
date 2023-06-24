@@ -1817,6 +1817,8 @@
 "commissioner": "مفوض",
 "commissioner_message": "أي إجراءات مرتبطة بهذه الخدمة تتطلب تفويض رسمي يجب إبرازه عند الحضور",
 "submitterType": "الصفة",
+"new_appointment":"موعد جديد", 
+
 "need_login_desc_appointments": "يمكنك حجز موعد جديد بعد تسجيل الدخول",
 "no_upcoming_appointment": "لا توجد أي مواعيد قادمة",
 "no_upcoming_appointment_desc": "لا توجد أي مواعيد قادمة،  يمكنك عرض مواعيدك السابقة أو حجز موعد جديد",

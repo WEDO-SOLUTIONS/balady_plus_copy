@@ -122,7 +122,7 @@ Map<String, dynamic> servicesConfig = {
       "order": 2,
       "isNew": false,
       "isImportant": true,
-      "action": {"type": "page", "value": "/general-inquiries"},
+      "action": {"type": "dialog", "value": "/general-inquiries"},
       "ar": {
         "title": "الإستفسارات العامة",
         "description": "ارسل استفسارك عن كل خدمه",
@@ -152,7 +152,7 @@ Map<String, dynamic> servicesConfig = {
       "order": 4,
       "isNew": false,
       "isImportant": false,
-      "action": {"type": "page", "value": RouteName.NewAppointmentPage},
+      "action": {"type": "dialog", "value": ""},
       "ar": {"title": "حجز موعد الكتروني", "description": null, "tag": null},
       "en": {"title": "Schedule Date", "description": null, "tag": null}
     },
@@ -196,7 +196,10 @@ Map<String, dynamic> servicesConfig = {
       "order": 8,
       "isNew": true,
       "isImportant": false,
-      "action": {"type": "page", "value": "/transaction-inquery"},
+      "action": {
+        "type": "page",
+        "value": RouteName.newTransactionInquiryScreen
+      },
       "ar": {
         "title": "استعلام عن معاملة",
         "description": "يمكنك الآن حجز موعد عبر التطبيق !",

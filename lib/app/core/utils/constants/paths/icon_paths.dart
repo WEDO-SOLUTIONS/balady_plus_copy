@@ -175,4 +175,7 @@ class IconPath {
   static const qrLockIcon = '${_pngQRIconPath}tours_rating_icons/lock$_png';
 
   static const qrStarIcon = '${_pngQRIconPath}greyStar$_png';
+
+//! Appointment
+  static const calendarIcon = '${_svgIconPath}calendar_icon$_svg';
 }

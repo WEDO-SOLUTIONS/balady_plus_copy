@@ -6,11 +6,13 @@ import '../../core/models/lookup_list_model.dart';
 
 class BookAppointmentSpecialNeedsWidget extends StatefulWidget {
   final Function onSelected;
-
+  final bool? value;
   //LookUpList list;
 
   BookAppointmentSpecialNeedsWidget(
-      {Key? key, required this.onSelected /*, required this.list*/
+      {Key? key, required this.onSelected, this.value
+
+      /*, required this.list*/
       })
       : super(key: key);
 
@@ -23,11 +25,12 @@ class _BookAppointmentSpecialNeedsWidgetState
     extends State<BookAppointmentSpecialNeedsWidget>
     with AutomaticKeepAliveClientMixin {
   List<LookUpItem> lookupItem = [];
-
+  bool value = false;
   @override
   void initState() {
     //lookupItem = widget.list.data?.result ?? [];
     super.initState();
+    value = widget.value ?? false;
   }
 
   @override
@@ -37,9 +40,12 @@ class _BookAppointmentSpecialNeedsWidgetState
   Widget build(BuildContext context) {
     super.build(context);
     return CustomCheckBoxWidget(
-      //MM11
-      onChanged: (bool? data) => widget.onSelected(data),
-      selected: false,
+      onChanged: (bool? data) {
+        value = data ?? false;
+        widget.onSelected(value);
+        setState(() {});
+      },
+      selected: value,
       label: ("bookNewAppointmentCheckBoxSpecialNeedsWord").tr(),
     );
   }

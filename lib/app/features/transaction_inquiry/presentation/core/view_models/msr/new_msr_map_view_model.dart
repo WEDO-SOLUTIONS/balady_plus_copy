@@ -1,13 +1,6 @@
-/*import 'package:balady_new_app/app/core/base/base_view_model.dart';
-
-import 'package:balady_new_app/app/core/core_exports.dart' show locator;
-import 'package:balady_new_app/app/features/customer_voice/customer_voice_exports.dart'
-    show
-        CustomerVoiceRepository,
-        GisLocationResult,
-        NewMSRViewModel,
-        SelectedLocation,
-        CustomerVoiceReportTypeModel;
+import '../../../../data/general_inquiry_data.dart';
+import '../../models/gis_location_result.dart';
+import '../../models/selected_location.dart';
 
 class NewMSRMapViewModel extends BaseViewModel {
   final _repositry = locator<CustomerVoiceRepository>();
@@ -36,4 +29,3 @@ class NewMSRMapViewModel extends BaseViewModel {
     dataModel.resetAll();
   }
 }
-*/

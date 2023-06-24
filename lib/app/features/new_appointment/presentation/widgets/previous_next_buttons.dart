@@ -8,14 +8,15 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 import '../../../_shared_feature_/presentation/widgets/buttons/custom_buttons_widgets.dart';
 
 class PreviousNextButtons extends StatelessWidget {
-  const PreviousNextButtons({Key? key}) : super(key: key);
+  bool isFormValid;
+  PreviousNextButtons({Key? key, required this.isFormValid}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<NewAppointmentBloc, NewAppointmentState>(
       builder: (context, state) {
         print(state);
-        bool isButtonDisabled = false; //!state.isNextButtonEnabled();
+        bool isButtonDisabled = !isFormValid;
         bool isLastPage = context.read<NewAppointmentBloc>().isLastPage();
         return Container(
           color: Colors.transparent,

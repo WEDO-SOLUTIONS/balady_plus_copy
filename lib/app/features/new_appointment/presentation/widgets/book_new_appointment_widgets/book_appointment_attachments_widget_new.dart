@@ -2,6 +2,8 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
+import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
+import 'package:balady_plus/app/features/objectable_transactions/presentation/widgets/create_objection_page/objection_attachment_item.dart';
 import 'package:file_picker/file_picker.dart';
 
 import 'package:flutter/material.dart';
@@ -18,6 +20,7 @@ import '../../../../_shared_feature_/data/entities/file_data_item.dart';
 import '../../../../_shared_feature_/presentation/buttons/elevated_icon_button_widgets.dart';
 import '../../../../_shared_feature_/presentation/widgets/buttons/custom_buttons_widgets.dart';
 import '../../../../_shared_feature_/presentation/widgets/custom_popups_widgets.dart';
+import '../../../../objectable_transactions/presentation/widgets/create_objection_page/objection_reason_attachment.dart';
 import '../../core/models/attachment_item_model.dart';
 import '../../core/services/view_models/new_appointment_first_step_view_model.dart';
 import 'book_new_appointement_attachment_widget.dart';
@@ -40,29 +43,6 @@ class _AppointmentAttachmentSectionState
       mainAxisSize: MainAxisSize.max,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        //MM
-        /*  CustomSectionHeaderWithImg(
-          title: Helpers.translatingWord('optional_attachment'),
-          img: "titleItemsIconAttachmentListIcon@3x.png",
-        ),*/
-        if (model.attachmentsList.isNotEmpty) ...[
-          ListView.builder(
-            shrinkWrap: true,
-            physics: NeverScrollableScrollPhysics(),
-            itemCount: model.attachmentsList.length,
-            itemBuilder: (ctx, index) {
-              return AppintmentAttachmentViewWidget(
-                deleteFile: () {
-                  model.deleteAttachment(index);
-                  setState(() {});
-                },
-                fileName: model.attachmentsList[index].attachmentFileName,
-                path: model.attachmentsList[index].attachmentPath,
-              );
-            },
-          ),
-          Constants.verticalSpaceSmall,
-        ],
         // attachments
         if (model.attachmentsList.isEmpty || model.attachmentsList.length < 3)
           BookAppointmentAttachmentsWidgetNew(
@@ -71,6 +51,25 @@ class _AppointmentAttachmentSectionState
               // setState(() {});
             },
           ),
+        CustomVerticalSpace(height: 16),
+        if (model.attachmentsList.isNotEmpty) ...[
+          ListView.builder(
+            shrinkWrap: true,
+            physics: NeverScrollableScrollPhysics(),
+            itemCount: model.attachmentsList.length,
+            itemBuilder: (ctx, index) {
+              return ObjectionReasonAttachment(
+                onDelete: () {
+                  model.deleteAttachment(index);
+                  setState(() {});
+                },
+                fileName: model.attachmentsList[index].attachmentFileName ?? "",
+                filePath: model.attachmentsList[index].attachmentPath ?? "",
+              );
+            },
+          ),
+          Constants.verticalSpaceSmall,
+        ],
       ],
     );
   }

@@ -11,14 +11,14 @@ import '../../../core/bloc/transaction_inquiry_bloc/transaction_inquiry_bloc.dar
 import '../../../core/view_models/inquiry/transaction_inquiry_view_model.dart';
 import 'details_app_bar.dart';
 
-class GeneralInquiryPage extends StatefulWidget {
-  const GeneralInquiryPage({super.key});
+class NewTransactionPage extends StatefulWidget {
+  const NewTransactionPage({super.key});
 
   @override
-  State<GeneralInquiryPage> createState() => _GeneralInquiryPageState();
+  State<NewTransactionPage> createState() => _NewTransactionPageState();
 }
 
-class _GeneralInquiryPageState extends State<GeneralInquiryPage> {
+class _NewTransactionPageState extends State<NewTransactionPage> {
   @override
   void initState() {
     super.initState();

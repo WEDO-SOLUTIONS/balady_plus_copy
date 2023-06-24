@@ -61,4 +61,12 @@ class RouteName {
   // -------  DAEM ---------
 
   static const newDaemTicket = '/newDaemTicket';
+
+  // -------  Inquiery Transactions ---------
+
+  static const newTransactionInquiryScreen = '/NewTransactionInquiryScreen';
+
+  // ------- General Inquiery  ---------
+
+  static const generalInquiryPage = '/GeneralInquiryPage';
 }

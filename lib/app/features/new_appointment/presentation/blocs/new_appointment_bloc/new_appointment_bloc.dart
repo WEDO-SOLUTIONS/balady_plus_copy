@@ -22,13 +22,13 @@ class NewAppointmentBloc
   final dataModel = locator<NewAppointmentViewModel>();
 
   late List pagesList = [
-    NewAppointmentFirstStepScreen(
-      withPreviousTransaction: false,
-    ),
+    NewAppointmentFirstStepScreen(),
     BookNewAppointmentDateTimeScreen(),
   ];
 
-  NewAppointmentBloc() : super(NewAppointmentState()) {
+  NewAppointmentBloc({bool? withPreviousTransaction})
+      : super(NewAppointmentState(
+            withPreviousTransaction: withPreviousTransaction)) {
     on<NewAppointmentEvent>((event, emit) {
       controller.addListener(() {});
     });

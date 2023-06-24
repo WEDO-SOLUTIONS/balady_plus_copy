@@ -7,6 +7,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../../core/services/local/navigation_services.dart';
+import '../../../pages/inquiry/transactions_inquiry/new_transaction_inquiry.dart';
 
 part 'transaction_inquiry_event.dart';
 
@@ -16,7 +17,7 @@ class TransactionInquiryBloc
     extends Bloc<TransactionInquiryEvent, TransactionInquiryState> {
   PageController controller = PageController();
 
-  late List pagesList = [];
+  late List pagesList = [NewTransactionInquiryScreen()];
 
   TransactionInquiryBloc() : super(TransactionInquiryState()) {
     on<TransactionInquiryEvent>((event, emit) {

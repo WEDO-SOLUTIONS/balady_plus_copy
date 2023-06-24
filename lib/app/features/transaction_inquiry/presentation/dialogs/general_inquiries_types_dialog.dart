@@ -8,6 +8,7 @@ import '../../../../core/base/base_view_model.dart';
 import '../../../../core/services/local/navigation_services.dart';
 import '../../../../core/utils/constants/app_colors.dart';
 import '../../../_shared_feature_/presentation/widgets/buttons/custom_buttons_widgets.dart';
+import '../../../_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
 import '../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import '../../customer_voice_exports.dart' show InquiryViewModel;
 import '../../data/general_inquiry_data.dart';
@@ -25,63 +26,53 @@ class _GeneralInquiryTypeDialog extends State<GeneralInquiryTypeDialog> {
   @override
   void initState() {
     super.initState();
-    _list = [];
+    _list = [
+      CustomerVoiceReportTypeModel(
+          code: "INQC-006",
+          icon: IconPath.calendarIcon,
+          key: "",
+          title: "Inq_6",
+          id: 6),
+      CustomerVoiceReportTypeModel(
+          code: "INQC-003",
+          icon: IconPath.calendarIcon,
+          key: "",
+          title: "Inq_3",
+          id: 3),
+      CustomerVoiceReportTypeModel(
+          code: "INQC-014",
+          icon: IconPath.calendarIcon,
+          key: "",
+          title: "Inq_14",
+          id: 14),
+      CustomerVoiceReportTypeModel(
+          code: "INQC-011",
+          icon: IconPath.calendarIcon,
+          key: "",
+          title: "Inq_11",
+          id: 11),
+    ];
   }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // button, title,
-        Padding(
-          padding: const EdgeInsets.only(
-            top: Constants.semiMediumPadding,
+    return Container(
+      height: 300,
+      child: GridView.builder(
+        physics: const BouncingScrollPhysics(),
+        padding: const EdgeInsets.only(
+            bottom: Constants.mediumPadding,
             left: Constants.semiMediumPadding,
             right: Constants.semiMediumPadding,
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // close button
-              CustomTextButtonWidget(
-                onPressed: () => Navigator.of(context).pop(),
-                text: ("customerVoiceBackButtonWord").tr(),
-                btnTextColor: AppColor.grey1000,
-                btnTextSize: 17.0,
-                btnTextWeight: AppFontWeight.medium,
-              ),
-              Constants.verticalSpaceMedium,
-              // title
-              CustomTextWidget(
-                ("lbl_choose_inq_type").tr(),
-                fontColor: AppColor.black,
-                fontSize: 24.0,
-              ),
-              Constants.verticalSpaceSmall,
-            ],
-          ),
+            top: Constants.smallPadding),
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          crossAxisSpacing: 19.0,
+          mainAxisSpacing: 18.0,
         ),
-        // types
-        Expanded(
-          child: GridView.builder(
-            physics: const BouncingScrollPhysics(),
-            padding: const EdgeInsets.only(
-                bottom: Constants.mediumPadding,
-                left: Constants.semiMediumPadding,
-                right: Constants.semiMediumPadding,
-                top: Constants.smallPadding),
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              crossAxisSpacing: 19.0,
-              mainAxisSpacing: 18.0,
-            ),
-            itemCount: _list.length,
-            itemBuilder: (context, index) =>
-                GeneralInquiryTypeWidget(_list[index]),
-          ),
-        )
-      ],
+        itemCount: _list.length,
+        itemBuilder: (context, index) => GeneralInquiryTypeWidget(_list[index]),
+      ),
     );
   }
 }
@@ -94,52 +85,44 @@ class GeneralInquiryTypeWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () async {
-        bool isSuccess = await locator<InquiryViewModel>()
-            .getAllSplClassifications(inqTypesModel);
+        onTap: () async {
+          bool isSuccess = await locator<InquiryViewModel>()
+              .getAllSplClassifications(inqTypesModel);
 
-        //MM
-        /*  if (isSuccess) {
-          NavigationService.navigatorKey.currentState!.pushNamed(
-              RouteName.newGeneralInquiryRoute,
-              arguments: inqTypesModel);
-        }*/
-      },
-      highlightColor: Colors.transparent,
-      splashColor: Colors.transparent,
-      child: Container(
-        decoration: BoxDecoration(
-            borderRadius: const BorderRadius.all(Radius.circular(4)),
-            border:
-                Border.all(color: AppColor.black200, width: 0.5775000000000001),
-            boxShadow: const [
-              BoxShadow(
-                  color: Color(0x1a000000),
-                  offset: Offset(0, 1),
-                  blurRadius: 15,
-                  spreadRadius: 0)
-            ],
-            color: Colors.white),
-        padding: const EdgeInsets.all(Constants.semiMediumPadding),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            // icon
-            SvgPicture.asset(
-              inqTypesModel.icon,
-              height: 50,
-              width: 50,
+          //MM
+          if (isSuccess) {
+            NavigationService.navigatorKey.currentState!.pushNamed(
+                RouteName.generalInquiryPage,
+                arguments: inqTypesModel);
+          }
+        },
+        highlightColor: Colors.transparent,
+        splashColor: Colors.transparent,
+        child: Container(
+            height: 144,
+            padding: EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: AppColor.blackModern100Light,
+              borderRadius: BorderRadius.circular(16),
             ),
-            Constants.verticalSpaceSmall,
-            // service name
-            CustomTextWidget(
-              (inqTypesModel.title).tr(),
-              fontColor: AppColor.black,
-              fontSize: 15.0,
-            ),
-          ],
-        ),
-      ),
-    );
+            alignment: Alignment.center,
+            child: Column(
+              children: [
+                SvgPicture.asset(
+                  inqTypesModel.icon,
+                  width: 46,
+                  height: 46,
+                ),
+                CustomVerticalSpace(height: 16),
+                CustomTextWidget(
+                  inqTypesModel.title.tr(),
+                  fontColor: AppColor.blackModern600Light,
+                  fontSize: 14,
+                  maxLines: 2,
+                  height: 1.3,
+                  fontWeight: AppFontWeight.bold,
+                )
+              ],
+            )));
   }
 }

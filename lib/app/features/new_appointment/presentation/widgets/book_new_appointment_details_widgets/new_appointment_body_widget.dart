@@ -61,6 +61,7 @@ class _NewAppointmentBody extends State<NewAppointmentBody> {
                 // special needs
                 if (model.showSpecialConditionSection())
                   BookAppointmentSpecialNeedsWidget(
+                    value: model.isSpecialConditionChecked,
                     onSelected: (bool? isChecked) {
                       model.hideKeyboard();
                       model.isSpecialConditionChecked = isChecked;
@@ -112,6 +113,7 @@ class _AppointmentInfoSection extends State<AppointmentInfoSection> {
               'bookNewAppointmentAppointmentInformationWord'),
           img: "titleItemsIconAppointment@3x.png",
         ),*/
+        CustomVerticalSpace(height: 16),
         CustomTapWidgetForLongDialog(
           items: model.categoriesList,
           value: model.catetgoryType,
@@ -191,9 +193,10 @@ class _AppointmentInfoSection extends State<AppointmentInfoSection> {
             controller: model.otherServiceNameController,
             focusNode: _otherServiceNameNoFocusNode,
             label: ("service_name").tr(),
-            hintText: ("service_name_hint"),
+            hintText: ("service_name_hint").tr(),
             keyboardType: TextInputType.text,
             textInputAction: TextInputAction.next,
+            fillColor: Colors.transparent,
             onSubmitted: (_) {
               FocusScope.of(context).requestFocus(model.withPreviousTransaction
                   ? _transactionNoFocusNode
@@ -201,7 +204,7 @@ class _AppointmentInfoSection extends State<AppointmentInfoSection> {
             },
             onValidate: (text) {
               if (text.toString().isEmpty) {
-                return ('text_field_error');
+                return ('text_field_error').tr();
               }
               return null;
             },
@@ -210,6 +213,7 @@ class _AppointmentInfoSection extends State<AppointmentInfoSection> {
               model.validateForm();
             },
           ),
+        CustomVerticalSpace(height: 16),
         if (model.withPreviousTransaction)
           CustomTextFieldWidget(
             controller: _transactionNoController,
@@ -218,6 +222,7 @@ class _AppointmentInfoSection extends State<AppointmentInfoSection> {
             hintText: ("bookNewAppointmentServiceNumberFieldHintWord").tr(),
             keyboardType: TextInputType.text,
             textInputAction: TextInputAction.next,
+            fillColor: Colors.transparent,
             onSubmitted: (_) {
               FocusScope.of(context).requestFocus(_descFocusNode);
             },
@@ -233,13 +238,17 @@ class _AppointmentInfoSection extends State<AppointmentInfoSection> {
               model.validateForm();
             },
           ),
+        CustomVerticalSpace(height: 16),
         if (model.serviceConfigResponse?.getDepartmentName() != null)
           FieldData(
               title: ("bookNewAppointmentAppointmentAreaWord").tr(),
               subTitle: model.serviceConfigResponse?.getDepartmentName()),
+        CustomVerticalSpace(height: 16),
+
         CustomTextFieldWidget(
           controller: _descController,
           focusNode: _descFocusNode,
+          fillColor: Colors.transparent,
           label: ("bookNewAppointmentNotesFieldLabelWord").tr(),
           hintText: ("appointment_purpose_hint").tr(),
           maxLines: 4,

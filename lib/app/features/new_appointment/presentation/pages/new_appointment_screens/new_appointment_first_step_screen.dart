@@ -8,13 +8,9 @@ import '../../widgets/book_new_appointment_details_widgets/new_appointment_body_
 import '../../widgets/previous_next_buttons.dart';
 
 class NewAppointmentFirstStepScreen extends StatefulWidget {
-  bool withPreviousTransaction;
   bool fromHomePage;
 
-  NewAppointmentFirstStepScreen(
-      {Key? key,
-      required this.withPreviousTransaction,
-      this.fromHomePage = false})
+  NewAppointmentFirstStepScreen({Key? key, this.fromHomePage = false})
       : super(key: key);
 
   @override
@@ -43,7 +39,8 @@ class _BaladyIncidentDetailsScreenState
       builder: (context, state) {
         return ChangeNotifierProvider<NewAppointmentFirstStepViewModel>(
             create: (context) => NewAppointmentFirstStepViewModel(
-                withPreviousTransaction: widget.withPreviousTransaction),
+                withPreviousTransaction:
+                    state.withPreviousTransaction ?? false),
             builder: (context, child) {
               NewAppointmentFirstStepViewModel model =
                   Provider.of<NewAppointmentFirstStepViewModel>(context,
@@ -57,7 +54,9 @@ class _BaladyIncidentDetailsScreenState
                       // appointment body
                       Expanded(child: const NewAppointmentBody()),
                       // submit button
-                      PreviousNextButtons()
+                      PreviousNextButtons(
+                        isFormValid: model.isFormValid,
+                      )
                     ],
                   ),
                 ),

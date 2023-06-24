@@ -4,12 +4,12 @@ class NewAppointmentState extends Equatable {
   final BlocStatus status;
   final String? errorMessage;
   final int currentPageValue;
-
-  NewAppointmentState({
-    this.status = BlocStatus.initial,
-    this.errorMessage,
-    this.currentPageValue = 0,
-  });
+  final bool? withPreviousTransaction;
+  NewAppointmentState(
+      {this.status = BlocStatus.initial,
+      this.errorMessage,
+      this.currentPageValue = 0,
+      this.withPreviousTransaction});
 
   bool isNextButtonEnabled() {
     if (currentPageValue == 0) {}
@@ -21,29 +21,16 @@ class NewAppointmentState extends Equatable {
       {final BlocStatus? status,
       final String? errorMessage,
       int? currentPageValue,
-      int? selectedSPLIndex,
-      String? issueDesc,
-      bool? clearSPLDetailsResponse,
-      bool? clearSPLResponse,
-      String? firstName,
-      String? lastName,
-      String? mobileNumber,
-      bool? agreement,
-      bool? isFromHome,
-      bool? isSearchShown,
-      String? splSearchedText,
-      bool? isCrValid,
-      String? crNumber}) {
+      bool? withPreviousTransaction}) {
     return NewAppointmentState(
-      status: status ?? this.status,
-      errorMessage: errorMessage ?? this.errorMessage,
-      currentPageValue: currentPageValue ?? this.currentPageValue,
-    );
+        status: status ?? this.status,
+        errorMessage: errorMessage ?? this.errorMessage,
+        currentPageValue: currentPageValue ?? this.currentPageValue,
+        withPreviousTransaction:
+            withPreviousTransaction ?? this.withPreviousTransaction);
   }
 
   @override
-  List<Object?> get props => [
-        status,
-        currentPageValue,
-      ];
+  List<Object?> get props =>
+      [status, currentPageValue, withPreviousTransaction, errorMessage];
 }

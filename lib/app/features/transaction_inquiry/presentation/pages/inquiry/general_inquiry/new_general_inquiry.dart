@@ -30,17 +30,19 @@ class _NewGeneralInquiryScreen extends State<NewGeneralInquiryScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
+    return Column(
       children: [
-        SingleChildScrollView(
-          child: Container(
-            padding: const EdgeInsets.only(bottom: 85, right: 30, left: 30),
-            child: Column(
-                mainAxisSize: MainAxisSize.max,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  OrderInfoSection(),
-                ]),
+        Expanded(
+          child: SingleChildScrollView(
+            child: Container(
+              padding: const EdgeInsets.only(bottom: 85, right: 30, left: 30),
+              child: Column(
+                  mainAxisSize: MainAxisSize.max,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    OrderInfoSection(),
+                  ]),
+            ),
           ),
         ),
         PreviousNextButtons()
@@ -73,12 +75,6 @@ class _OrderInfoSectionState extends State<OrderInfoSection> {
 
     return Column(
       children: <Widget>[
-        //MM
-        /* CustomSectionHeaderWithImg(
-          title: Helpers.translatingWord('lbl_inq_details'),
-          img: "contractType@3x.png",
-        ),*/
-        //  main category widget
         CustomTapWidgetForLongDialog(
           onChangeType: (DropDownItem? item) {
             if (item != null) {

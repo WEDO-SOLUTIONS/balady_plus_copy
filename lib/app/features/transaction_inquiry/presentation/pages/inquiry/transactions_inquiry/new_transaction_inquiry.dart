@@ -3,6 +3,7 @@ import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/d
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/draw_line_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:provider/provider.dart';
 import '../../../../../../core/utils/constants/app_colors.dart';
@@ -12,6 +13,7 @@ import '../../../../../_shared_feature_/presentation/widgets/custom_cupertino_dr
 import '../../../../../_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
 import '../../../../../_shared_feature_/presentation/widgets/texts/custom_text_field_widget.dart';
 import '../../../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
+import '../../../core/bloc/transaction_inquiry_bloc/transaction_inquiry_bloc.dart';
 import '../../../core/view_models/inquiry/transaction_inquiry_view_model.dart';
 import 'hijri_picker.dart' as hijri_picker;
 import 'previous_next_buttons.dart';
@@ -26,39 +28,46 @@ class NewTransactionInquiryScreen extends StatefulWidget {
 class _NewTransactionInquiryScreen extends State<NewTransactionInquiryScreen> {
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        SingleChildScrollView(
-          child: Container(
-            padding: const EdgeInsets.only(bottom: 85, right: 30, left: 30),
-            child: Column(
-                mainAxisSize: MainAxisSize.max,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  const CustomVerticalSpace(height: 32),
-                  CustomTextWidget(
-                    ("new_inquiry_desc").tr(),
-                    fontColor: AppColor.black,
-                    fontWeight: AppFontWeight.medium,
-                    textAlign: TextAlign.start,
-                    height: 1.2,
-                  ),
-                  const DrawLineWidget(
-                    verticalMargin: 16,
-                  ),
-                  TransactionBodySection(),
-                ]),
-          ),
-        ),
+    return BlocBuilder<TransactionInquiryBloc, TransactionInquiryState>(
+      builder: (context, state) {
+        return Column(
+          children: [
+            Expanded(
+              child: SingleChildScrollView(
+                child: Container(
+                  padding:
+                      const EdgeInsets.only(bottom: 85, right: 30, left: 30),
+                  child: Column(
+                      mainAxisSize: MainAxisSize.max,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        const CustomVerticalSpace(height: 32),
+                        CustomTextWidget(
+                          ("new_inquiry_desc").tr(),
+                          fontColor: AppColor.black,
+                          fontWeight: AppFontWeight.medium,
+                          textAlign: TextAlign.start,
+                          height: 1.2,
+                        ),
+                        const DrawLineWidget(
+                          verticalMargin: 16,
+                        ),
+                        TransactionBodySection(),
+                      ]),
+                ),
+              ),
+            ),
 
-        PreviousNextButtons()
-        //MM
-        /*IncidentSubmitButton(
-                      btnText: Helpers.translatingWord('submit_inquiry'),
-                      isButtonDisabled: !model.isFormValid,
-                      onPress: model.geRequestDetails,
-                    )*/
-      ],
+            PreviousNextButtons()
+            //MM
+            /*IncidentSubmitButton(
+                          btnText: Helpers.translatingWord('submit_inquiry'),
+                          isButtonDisabled: !model.isFormValid,
+                          onPress: model.geRequestDetails,
+                        )*/
+          ],
+        );
+      },
     );
   }
 }
