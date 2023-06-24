@@ -8,7 +8,6 @@ class RouteName {
   static const error = '/error';
   static const inappWebview = '/inappWebview';
 
-
   //! Services
   static const serviceCards = '/serviceCards';
 
@@ -21,4 +20,5 @@ class RouteName {
   static const requests = '/requests';
   static const invoices = '/invoices';
   static const licenses = '/licenses';
+  static const objections = '/objections';
 }

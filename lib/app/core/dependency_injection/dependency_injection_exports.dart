@@ -7,6 +7,8 @@ export 'features/otp_injection.dart';
 export 'features/services_injection.dart';
 export 'features/sign_in_injection.dart';
 export 'features/sign_up_injection.dart';
+export 'features/objections_injection.dart';
+
 //? Services
 //? Public Services
 export 'features/services/public_services/prayer_times_injection.dart';

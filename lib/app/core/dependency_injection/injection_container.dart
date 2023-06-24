@@ -22,7 +22,8 @@ import '../dependency_injection/dependency_injection_exports.dart'
         RequestsInjection,
         ServicesInjection,
         SignInInjection,
-        SignUpInjection;
+        SignUpInjection,
+        ObjectionsInjection;
 import '../services/services_exports.dart'
     show
         EntryPointBridge,
@@ -47,6 +48,8 @@ void initialize() {
   SignUpInjection.init();
   //? Services
   ServicesInjection.init();
+
+  ObjectionsInjection.init();
 
   //! Services
   //* Public Services

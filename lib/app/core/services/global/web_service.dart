@@ -136,6 +136,8 @@ class AppInterceptors extends Interceptor {
 
   @override
   void onError(DioError err, ErrorInterceptorHandler handler) {
+    "Opps, recieved Error: ${err}".errorLog();
+
     "Opps, recieved Error: ${err.response?.statusCode}".errorLog();
     "Opps, recieved Error: ${err.response?.data}".errorLog();
 

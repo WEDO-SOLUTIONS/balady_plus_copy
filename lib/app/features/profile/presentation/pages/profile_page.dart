@@ -1,8 +1,10 @@
+import 'package:balady_plus/app/features/entry_point/presentation/cubit/auth_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart'
     show Translation;
 
+import '../../../../core/dependency_injection/injection_container.dart';
 import '../../../../core/utils/utils_exports.dart' show CommonProperties;
 import '../../../_shared_feature_/shared_feature_exports.dart'
     show DefaultAppBarWidget, ElevatedButtonWidget, TabPageContainer;
@@ -16,7 +18,7 @@ class ProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const bool isLoggedin = true; //CommonProperties.isLoggedIn;
+    bool isLoggedin = CommonProperties.isLoggedIn;
     final list = isLoggedin
         ? ProfileSections.profileSections
         : ProfileSections.profileSectionsForGuest;
@@ -46,7 +48,9 @@ class ProfilePage extends StatelessWidget {
               ),
               Padding(
                 padding: const EdgeInsets.all(16.0),
-                child: ElevatedButtonWidget.logout(onPressed: () {}),
+                child: ElevatedButtonWidget.logout(onPressed: () {
+                  sl<EntryPointCubit>().clearAuth();
+                }),
               )
             ],
           ),

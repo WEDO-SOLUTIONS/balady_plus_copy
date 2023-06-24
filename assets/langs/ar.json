@@ -167,8 +167,15 @@
   "license": "رخصة",
   "license_end_date": "تاريخ إنتهاء الرخصة",
 
+
+  "_ObjectionsComment": "أى شئ يخص الاعتراضات",
+  "objection_transaction":"المعاملة المعترض عليها", 
+
+
+
   "_dashboardComment": "أى شئ يخص لوحة البيانات",
   "the_following_data": "البيانات التالية تشمل خدمات محدودة فقط في هذه  النسخة. سيتم تحديثها بكامل البيانات قريباً",
+
 
   "_personalInformationComment": "أى شئ يخص المعلومات الشخصية",
   "full_name": "الإسم بالكامل",

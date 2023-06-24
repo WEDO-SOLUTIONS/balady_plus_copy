@@ -45,6 +45,16 @@ class ApiUrl {
       '/v1/balady-dashboard/license/sub-main-types/$id';
   static const licenseStatuses = '/v1/balady-dashboard/license/statuses';
 
+//! Objections
+
+  static const objectionsRequests = '/v1/balady-dashboard/objection-requests';
+  static const applicationsLookUp =
+      '/v1/objection-generic-services/applications';
+  static String servicesByApplicationId(int id) =>
+      '/v1/objection-generic-services/applications/$id/services';
+  static const objectionsRequestStatus =
+      '/v1/balady-dashboard/objection-requests/lookup-status';
+
   //! POST
 
   //! Delete
