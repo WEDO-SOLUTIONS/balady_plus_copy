@@ -90,7 +90,7 @@ class FacilityQRRepository {
     LicenseRatingItems? result;
     bool state = body['state'];
     dynamic data = body['data'];
-    String error = "لل"; //body['error'] ?? ("errors_server_error_1").tr; //MM
+    String error = ("errors_server_error_1").tr(); //MM
     try {
       result = LicenseRatingItems.fromJson(json.decode(data));
       if (!state) {
@@ -125,7 +125,7 @@ class FacilityQRRepository {
         }).toList(),
       });
 
-      result = SubmitRatingResponse.fromJson(json.decode(body.data));
+      result = SubmitRatingResponse.fromJson(body.data);
     } on DioError catch (error) {
       errorMsg = error.message ?? ("errors_server_error_1").tr();
       //throw ServerException(error.toString(),

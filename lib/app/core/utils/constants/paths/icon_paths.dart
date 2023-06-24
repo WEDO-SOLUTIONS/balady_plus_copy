@@ -34,6 +34,8 @@ class IconPath {
   static const ksaFlag = '${_svgIconPath}ksaFlag$_svg';
   static const ksaWord = '${_svgIconPath}ksaWord$_svg';
   static const otpLogo = '${_pngIconPath}shield$_png';
+  static const needLogin = '${_pngIconPath}need_login$_png';
+  static const successIcon = '${_pngIconPath}success_icon$_png';
 
   // Bottom-Nav-Bar
   static const home = '${_svgIconPath}home_icon$_svg';

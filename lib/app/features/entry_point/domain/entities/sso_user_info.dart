@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:equatable/equatable.dart';
 import 'package:hijri/hijri_calendar.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
 class SsoUserInfo extends Equatable {
   const SsoUserInfo({
@@ -170,6 +171,10 @@ class SsoUserInfo extends Equatable {
     return phone != null
         ? (!phone!.startsWith("0") ? "0" + phone! : phone!)
         : "";
+  }
+
+  String getGender() {
+    return sex == "1" ? "male".tr() : "female".tr();
   }
 
   @override

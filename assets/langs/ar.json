@@ -47,6 +47,8 @@
   "nearby": "قريب مني",
   "profile": "الحساب",
 
+  "male":"ذكر", 
+  "female":"أنثى", 
   "_tabsComment": "Anything for Tabs",
 
   "_concatenatingComment": "أى شئ يخص إضافة كلمة/جملة بعد هذه الكلمات",
@@ -553,6 +555,14 @@
 "qr_share_opnion":"شاركنا رأيك وقيم المنشأة", 
 "qr_social":"التواصل الإجتماعي", 
 "qr_address_suumery":"ملخص الموقع", 
+"need_login_desc_evaluation": "يمكنك تقييم المنشأة بعد تسجيل الدخول",
+"facility_evaluation": "تقييم المنشأة",
+"send_evaluation": "إرسال التقييم",
+"rating_success_message": "تم إرسال تقييمك",
+"popUpCannotUploadFileWarningMessageTitleWord": "لا يمكنك تحميل الملف.",
+"popUpUploadFileLimitExceedsWord": "تم تخطى الحد المسموح به وهو {} ميغابايت.",
+"incident_classification": "تصنيف البلاغ",
+
   "_popUpButtonsComment": "أى شئ يخص ال popUp Buttons",
   "popUpCloseBottomSheetButton": "إغلاق",
   "popUpCancelBottomSheetButton": "إلغاء",

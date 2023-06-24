@@ -21,7 +21,12 @@ class ElevatedButtonWidget extends _ElevatedButton {
   ElevatedButtonWidget.login({required VoidCallback onPressed})
       : super(CustomElevatedButtonWidget(
           btnMargin: const EdgeInsets.only(top: 12.0),
-          text: "loginButton".tr(),
+          text: ("تسجيل الدخول").tr(),
+          btnColor: AppColor.primary800Light,
+          textStyle: AppStyle.elevatedButtonStyle.copyWith(
+              color: AppColor.blackModern50Light,
+              fontSize: 16,
+              fontWeight: FontWeight.bold),
           onPressed: onPressed,
         ));
 

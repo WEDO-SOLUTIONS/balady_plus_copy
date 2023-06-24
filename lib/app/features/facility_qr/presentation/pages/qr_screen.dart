@@ -14,12 +14,16 @@ import 'package:balady_plus/app/features/facility_qr/facility_qr_exports.dart'
 import 'package:scan/scan.dart';
 
 import '../../../../core/base/base_view_model.dart';
+import '../../../../core/services/local/navigation_services.dart';
 import '../../../../core/utils/common_functions.dart';
 import '../../../../core/utils/constants/app_colors.dart';
 import '../../../../core/utils/constants/constants.dart';
+import '../../../../core/utils/constants/route_names.dart';
 import '../../../../core/utils/enums/app_font_weights.dart';
 import '../../../_shared_feature_/presentation/widgets/buttons/custom_buttons_widgets.dart';
 import '../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
+import '../../../vd/domain/entities/camera/camera_page_params.dart';
+import '../../../vd/domain/entities/categories/category_item.dart';
 
 String scanResult = "";
 late QRViewController controller;
@@ -222,9 +226,18 @@ void checkBarcode(BuildContext context) async {
                         RoutesNames.facilityRatingRoute,
                         arguments: viewModel.facilityRespoonse);*/
                   },
-                  onIncidentScreen: () {
-                    //    viewModel.navigateToCreateIncident(
-                    //       fromScreen: PAGE_TYPE.qrDialog); //MM
+                  onIncidentScreen: () async {
+                    bool isLocationAvailable =
+                        await CommonFunctions.checkLocationSettings(context);
+                    bool isCameraAllowed =
+                        await CommonFunctions.checkCameraSettings(context);
+                    if (isLocationAvailable && isCameraAllowed)
+                      NavigationService.navigatorKey.currentState!.pushNamed(
+                          RouteName.vdCameraPage,
+                          arguments: CameraParamsPage(
+                              selectedCategory:
+                                  CategoryItem(categoryId: "CG-14"),
+                              isFromHome: false));
                   },
                 ),
               )).then((value) => controller.resumeCamera());

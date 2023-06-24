@@ -61,6 +61,7 @@ class RequestsListItem extends StatelessWidget {
                   title: 'objection_transaction'.tr(),
                   value: request.objectionTypeName ?? "",
                 ),
+                Container(),
                 RequestParameter(
                   title: 'municipality'.tr(),
                   value: request.municipalityName ?? "",
@@ -70,7 +71,7 @@ class RequestsListItem extends StatelessWidget {
                   value: request.subMunicipalityName ?? "",
                 ),
                 RequestParameter(
-                  title: 'creation_date'.tr(),
+                  title: 'request_date'.tr(),
                   value: request.createDateStr,
                 ),
                 RequestParameter(

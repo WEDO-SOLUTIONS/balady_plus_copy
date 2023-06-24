@@ -7,7 +7,7 @@ class RouteName {
   static const menu = '/menu';
   static const error = '/error';
   static const inappWebview = '/inappWebview';
-
+  static const dmsImageFullScreen = '/dmsImageFullScreen';
   //! Services
   static const serviceCards = '/serviceCards';
 
@@ -41,6 +41,7 @@ class RouteName {
   static const qrFacilityRatingRoute = '/qrFacilityRatingRoute';
   static const qrFacilityScreenRoute = '/qrFacilityScreenRoute';
   static const qrScreenRoute = '/qrScreenRoute';
+  static const qrPhotosRoute = '/qrPhotosRoute';
 
   // -------  DC ---------
 

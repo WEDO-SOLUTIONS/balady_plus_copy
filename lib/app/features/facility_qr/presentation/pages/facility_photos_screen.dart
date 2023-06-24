@@ -1,6 +1,7 @@
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/default_appbar_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 import '../../../../core/base/base_view_model.dart';
 import '../../../../core/dependency_injection/injection_container.dart';
 import '../../../../core/services/local/navigation_services.dart';
@@ -45,7 +46,7 @@ class _FacilityPhotosScreen extends State<FacilityPhotosScreen> {
 
     return Scaffold(
       appBar: DefaultAppBarWidget(
-        title: ("photos"),
+        title: ("photos").tr(),
       ),
       body: Container(
         margin: const EdgeInsetsDirectional.only(start: 16, top: 14),

@@ -1,5 +1,7 @@
 import 'package:balady_plus/app/core/utils/enums/app_font_weights.dart';
+import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
+import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports.dart';
 import 'package:flutter/material.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
@@ -33,38 +35,36 @@ class _NeedLoginWidgetState extends State<NeedLoginWidget> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Image.asset(
-              widget.img ??
-                  Constants.imgPath + "needLoginIllustration@3x.png", //MM
+              IconPath.needLogin, //MM
               width: 184,
               height: 190,
             ),
             const CustomVerticalSpace(height: 18),
             CustomTextWidget(
-              widget.title ?? ('log_in_first').tr(),
+              widget.title ?? ("انت غير مسجل دخول").tr(),
               fontSize: 17.0,
               fontColor: AppColor.black800,
               fontWeight: AppFontWeight.bold,
             ),
-            if (widget.desc != null) const CustomVerticalSpace(height: 18),
-            if (widget.desc != null)
-              CustomTextWidget(
-                widget.desc ?? "",
-                fontSize: 13.0,
-                height: 1.6,
-                fontColor: AppColor.black400,
-                fontWeight: AppFontWeight.medium,
-              ),
+            // if (widget.desc != null)
+            const CustomVerticalSpace(height: 18),
+            //if (widget.desc != null)
+            CustomTextWidget(
+              widget.desc ??
+                  ("يجب عليك تسجيل الدخول حتى يتم عرض حتى يتم عرض بيانات هذه الصفحة")
+                      .tr(),
+              fontSize: 13.0,
+              height: 1.6,
+              fontColor: AppColor.black400,
+              fontWeight: AppFontWeight.medium,
+            ),
             Constants.verticalSpaceMedium,
-            EnhancedCustomElevatedButtonWidget(
-              btnPressed: () {},
-              btnText: ("moreLoginButtonWord").tr(),
-              btnTextSize: 16,
-              btnTextWeight: AppFontWeight.medium,
-              btnHeight: 48,
-              btnTextColor: AppColor.darkTurquoise,
-              btnBorderColor: AppColor.darkTurquoise,
-              btnColor: Colors.transparent,
-              btnWidth: 150,
+            ElevatedButtonWidget.login(
+              onPressed: () async {
+                bool isSuccess = await CommonFunctions.onLogin();
+                if (widget.onSuccessLogin != null)
+                  widget.onSuccessLogin!(isSuccess);
+              },
             ),
           ],
         ),

@@ -62,5 +62,5 @@ class DetailsHeader extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   // TODO: implement preferredSize
-  Size get preferredSize => Size.fromHeight(119);
+  Size get preferredSize => Size.fromHeight(100);
 }

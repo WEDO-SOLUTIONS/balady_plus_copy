@@ -1,15 +1,21 @@
 import 'package:balady_plus/app/core/base/base_view_model.dart';
 import 'package:balady_plus/app/core/utils/common_functions.dart';
+import 'package:balady_plus/app/core/utils/utils_exports.dart';
+import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/custom_popups_widgets.dart';
 
 import 'package:balady_plus/app/features/facility_qr/data/latest_user_rating_response.dart';
 import 'package:balady_plus/app/features/facility_qr/data/license_ratings_items.dart';
 import 'package:balady_plus/app/features/facility_qr/data/submit_rating_response.dart';
 import 'package:balady_plus/app/features/facility_qr/presentation/core/repository/facility_qr_repository.dart';
 import 'package:balady_plus/app/features/facility_qr/presentation/core/view_models/facility_details_view_model.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
 import 'package:tuple/tuple.dart';
 
 import '../../../../../core/utils/enums/enums.dart';
+import '../../../../_shared_feature_/data/entities/success_screen_args.dart';
+import '../../../../_shared_feature_/presentation/dialogs/bottom_sheet_dialogs.dart';
+import '../../dialogs/success_rating.dart';
 
 class FacilityRatingViewModel extends BaseViewModel {
   FacilityRatingViewModel() {
@@ -80,11 +86,19 @@ class FacilityRatingViewModel extends BaseViewModel {
     hideLoading();
 
     if (response.item3 != null && response.item1 == true) {
-      /*   submitRatingData = response.item3;
-      navigation.currentState!.pushReplacementNamed(RoutesNames.successRoute,
-          arguments: SuccessScreenArgs(type: PAGE_TYPE.ratingScreen));
+      submitRatingData = response.item3;
+      // navigation.currentState!.pushReplacementNamed(RouteName.successRoute,
+      //     arguments: SuccessScreenArgs(type: PAGE_TYPE.ratingScreen));
+      navigation.currentState?.pop();
+      BottomSheetDialog.showDraggableSheet(navigation.currentContext!,
+          isFullHeight: false,
+          height: 400,
+          child: SuccessRatingDialog(
+            title: ("send_evaluation").tr(),
+            desc: ("rating_success_message").tr(),
+          ));
 
-      facilityQRViewModel.getFacilityData(licenseId, showLoader: false);*/ //MM
+      facilityQRViewModel.getFacilityData(licenseId, showLoader: false); //MM
     } else {
       showError(response.item2 ?? "");
     }

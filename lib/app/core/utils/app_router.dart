@@ -6,6 +6,7 @@ import 'package:flutter/widgets.dart' show SizedBox;
 
 import '../../core/utils/utils_exports.dart'
     show RouteName, ScaleRotatePage, SliderUpPage;
+import '../../features/_shared_feature_/presentation/pages/view_dms_image_screen.dart';
 import '../../features/_shared_feature_/shared_feature_exports.dart';
 import '../../features/_shared_feature_/data/entities/success_screen_args.dart';
 import '../../features/_shared_feature_/presentation/pages/success_screen.dart';
@@ -68,6 +69,11 @@ class AppRouter {
         // return MaterialPageRoute(builder: (_) => const BottomNavigationPage());
         return SliderUpPage(page: const BottomNavigationPage());
 
+      case RouteName.dmsImageFullScreen:
+        String url = settings.arguments as String;
+        return MaterialPageRoute(
+          builder: (_) => ViewDMSImageScreen(url: url),
+        );
       //! Services
       case RouteName.serviceCards:
         return MaterialPageRoute(
@@ -172,6 +178,11 @@ class AppRouter {
       case RouteName.qrScreenRoute:
         return MaterialPageRoute(
           builder: (_) => const QrScreen(),
+        );
+
+      case RouteName.qrPhotosRoute:
+        return MaterialPageRoute(
+          builder: (_) => const FacilityPhotosScreen(),
         );
 
       case RouteName.transactionDetailsPage:

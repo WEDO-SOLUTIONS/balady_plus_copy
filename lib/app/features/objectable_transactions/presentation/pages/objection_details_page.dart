@@ -40,41 +40,48 @@ class _ObjectionsDetailsPageState extends State<ObjectionsDetailsPage> {
         builder: (context, state) {
           return Scaffold(
             backgroundColor: AppColor.white2,
-            appBar: const DetailsHeader(
-              title: ("objection_details"),
+            appBar: DetailsHeader(
+              title: ("objection_details").tr(),
             ),
-            body: SingleChildScrollView(
-              child: Column(children: [
-                // body
+            body: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: SingleChildScrollView(
+                child: Column(children: [
+                  // body
 
-                Constants.verticalSpaceSmall,
-                // TransferInfo
-                ObjectionsDetails(
-                  onShowViolation: () {
-                    context
-                        .read<ObjectionsDetailsBloc>()
-                        .add(GetTransactionDetailsEvent(
-                            params: TransactionDetailsParams(
-                          applicationId: state.details?.serviceGroupId ?? "13",
-                          id: state.details?.requestSubmitterData
-                                  ?.objectedTransactionId ??
-                              "",
-                        )));
-                  },
-                  //relation: widget.params.rel,
-                ),
-                const SubmitterDetails(),
+                  Constants.verticalSpaceSmall,
+                  // TransferInfo
+                  ObjectionsDetails(
+                    onShowViolation: () {
+                      context
+                          .read<ObjectionsDetailsBloc>()
+                          .add(GetTransactionDetailsEvent(
+                              params: TransactionDetailsParams(
+                            applicationId:
+                                state.details?.serviceGroupId ?? "13",
+                            id: state.details?.requestSubmitterData
+                                    ?.objectedTransactionId ??
+                                "",
+                          )));
+                    },
+                    //relation: widget.params.rel,
+                  ),
+                  Constants.verticalSpaceSmall,
 
-                const CommiteDetails(),
+                  const SubmitterDetails(),
+                  Constants.verticalSpaceSmall,
 
-                const ObjectionReaason(),
-                //CemetryInfo(name: widget.params.cemeteryName),
+                  const CommiteDetails(),
+                  Constants.verticalSpaceSmall,
 
-                Constants.verticalSpaceSmall,
+                  const ObjectionReaason(),
 
-                if (state.status == BlocStatus.loading)
-                  CustomCircularLoadingWidget(),
-              ]),
+                  Constants.verticalSpaceSmall,
+
+                  if (state.status == BlocStatus.loading)
+                    CustomCircularLoadingWidget(),
+                ]),
+              ),
             ),
           );
         },
@@ -100,54 +107,56 @@ class ObjectionsDetails extends StatelessWidget {
                 title: ("objection_details_number").tr(),
                 subTitle: state.details?.objectionRequestNumber,
               ),
+              const CustomVerticalSpace(height: 8),
               FieldData(
                 title: ("objection_details_type").tr(),
                 subTitle: state.details?.objectionTypeName,
               ),
+              const CustomVerticalSpace(height: 8),
+              FieldData(
+                  title: ("objection_details_request_transaction").tr(),
+                  subTitle: state.details?.requestSubmitterData
+                          ?.objectedTransactionId ??
+                      ""),
+              const CustomVerticalSpace(height: 8),
               GestureDetector(
                 onTap: () {
                   onShowViolation();
                 },
-                child: CustomExpansionPanelWidget(
-                  title: ("objection_details_request_transaction").tr(),
+                child: Stack(
+                  alignment: Alignment.centerLeft,
                   children: [
-                    CustomHorizontalSpace(width: 16),
-                    CustomTextWidget(
-                      state.details?.requestSubmitterData
-                              ?.objectedTransactionId ??
-                          "",
-                      fontColor: AppColor.black400,
-                      fontSize: 13.0,
-                      textAlign: TextAlign.start,
-                      height: 1.3,
+                    FieldData(
+                      title: ("display_transaction_number").tr(),
                     ),
-                    CustomHorizontalSpace(width: 8),
-                    CustomTextWidget(
-                      "(${("display_transaction_number").tr()})",
-                      fontColor: AppColor.orange800,
-                      fontSize: 12.0,
-                      textAlign: TextAlign.start,
-                      height: 1.3,
-                    ),
+                    IconButton(
+                        onPressed: () {},
+                        color: AppColor.primary900Light,
+                        icon: Icon(Icons.arrow_right_outlined))
                   ],
                 ),
               ),
+              const CustomVerticalSpace(height: 8),
               FieldData(
                 title: ("objection_details_service").tr(),
                 subTitle: state.details?.serviceName,
               ),
+              const CustomVerticalSpace(height: 8),
               FieldData(
                 title: ("objection_details_request_type").tr(),
                 subTitle: state.details?.objectionServiceName,
               ),
+              const CustomVerticalSpace(height: 8),
               FieldData(
                 title: ("objection_details_request_data").tr(),
                 subTitle: state.details?.getRequestSubmitDate ?? "",
               ),
+              const CustomVerticalSpace(height: 8),
               FieldData(
                 title: ("objection_details_request_update").tr(),
                 subTitle: state.details?.getLastUpdatedDate,
               ),
+              const CustomVerticalSpace(height: 8),
               FieldData(
                 title: ("objection_details_request_status").tr(),
                 subTitle: state.details?.requestStatusName,
@@ -170,11 +179,12 @@ class SubmitterDetails extends StatelessWidget {
             title: ("objection_details_submitter_data").tr(),
             children: [
               FieldData(
-                title: ("objection_details_submitter_id"),
+                title: ("objection_details_submitter_id").tr(),
                 subTitle: state.details?.requestSubmitterData?.id,
               ),
+              CustomVerticalSpace(height: 8),
               FieldData(
-                title: ("objection_details_submitter_name"),
+                title: ("objection_details_submitter_name").tr(),
                 subTitle: state.details?.requestSubmitterData?.fullName,
               ),
             ]);
@@ -232,11 +242,14 @@ class ObjectionReaason extends StatelessWidget {
                           subTitle: state.details?.objectionReasonsList?[index]
                                   .reason ??
                               "",
+                          radius: BorderRadius.only(
+                              topLeft: Radius.circular(8),
+                              topRight: Radius.circular(8)),
                         ),
-                        //  FieldData(
-                        //  horizontalPadding: Constants.smallPadding,
-                        //  title: "المرفق",
-                        //    subtitleWidget:
+                        FieldData(
+                          title: "المرفق",
+                          radius: BorderRadius.zero,
+                        ),
                         Container(
                           child: ListView.builder(
                             shrinkWrap: true,
@@ -257,7 +270,7 @@ class ObjectionReaason extends StatelessWidget {
                             },
                           ),
                         ),
-                        //  ),
+                        CustomVerticalSpace(height: 8)
                       ],
                     );
                   }),

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:balady_plus/app/core/utils/constants/remote_config.dart';
+import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
@@ -19,6 +20,7 @@ import '../../../../../core/utils/constants/app_colors.dart';
 import '../../../../../core/utils/constants/constants.dart';
 import '../../../../../core/utils/constants/paths/icon_paths.dart';
 import '../../../../../core/utils/enums/app_font_weights.dart';
+import '../../../../_shared_feature_/presentation/pages/pdf_view.dart';
 import '../../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import '../../../../objections/domain/entities/objection_details.dart';
 
@@ -43,7 +45,10 @@ class _ObjectionAttachmentItemState extends State<ObjectionAttachmentItem> {
           height: 56,
           padding: EdgeInsets.all(12),
           decoration: BoxDecoration(
-              color: Color(0x80E6EFEF), borderRadius: BorderRadius.circular(8)),
+            color: Color(0x80E6EFEF),
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(8), topRight: Radius.circular(8)),
+          ),
           child: Expanded(
             child: Row(
               mainAxisSize: MainAxisSize.min,
@@ -101,9 +106,8 @@ class _ObjectionAttachmentItemState extends State<ObjectionAttachmentItem> {
           file.fileName!.toLowerCase().contains(".jpeg") ||
           file.fileName!.toLowerCase().contains(".jpg")) {
         //MM
-        // NavigationService.navigatorKey.currentState!.pushNamed(
-        //     RoutesNames.dmsImageFullScreen,
-        //     arguments: file.getUrl());
+        NavigationService.navigatorKey.currentState!
+            .pushNamed(RouteName.dmsImageFullScreen, arguments: file.getUrl());
       } else {
         try {
           EasyLoading.show();
@@ -120,14 +124,13 @@ class _ObjectionAttachmentItemState extends State<ObjectionAttachmentItem> {
           if (file.fileName?.toLowerCase().contains(".pdf") ?? false) {
             Uint8List bytes = fileDownloaded.readAsBytesSync();
 
-//MM
-            /*  Navigator.push(
+            Navigator.push(
                 context,
                 MaterialPageRoute(
                     builder: (context) => PDFViewer(
                           file: bytes,
                           title: file.fileName,
-                        )));*/
+                        )));
           } else {
             OpenFile.open(fileDownloaded.path);
           }

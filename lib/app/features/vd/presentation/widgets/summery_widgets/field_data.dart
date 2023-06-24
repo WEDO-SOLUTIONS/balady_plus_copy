@@ -5,15 +5,17 @@ import 'package:flutter/material.dart';
 class FieldData extends StatelessWidget {
   final String title;
   final String? subTitle;
+  final BorderRadius? radius;
 
-  const FieldData({super.key, this.subTitle, required this.title});
+  const FieldData({super.key, this.subTitle, required this.title, this.radius});
 
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.all(12),
       decoration: BoxDecoration(
-          color: Color(0x80E6EFEF), borderRadius: BorderRadius.circular(8)),
+          color: Color(0x80E6EFEF),
+          borderRadius: radius ?? BorderRadius.circular(8)),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [

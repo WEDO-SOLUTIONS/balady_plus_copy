@@ -136,4 +136,6 @@ class AppColor {
   static const Color kGreenBoarder = Color(0x32979797);
   static const Color greenLight = Color(0xff82c936);
   static const Color warmGreyText = Color(0xff808080);
+
+  static const Color green60 = Color(0x99E6EFEF);
 }

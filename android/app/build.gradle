@@ -74,17 +74,17 @@ android {
     productFlavors {
         dev {
             dimension "default"
-            resValue "string" "app_name" "Project Structure Dev"
+            resValue "string" "app_name" "بلدي"
             applicationIdSuffix ".dev" // com.example.balady_plus.dev
         }
         stg {
             dimension "default"
-            resValue "string" "app_name" "Project Structure Stg"
+            resValue "string" "app_name" "بلدي"
             applicationIdSuffix ".stg" // com.example.balady_plus.stg
         }
         prod {
             dimension "default"
-            resValue "string" "app_name" "Project Structure Prod"
+            resValue "string" "app_name" "بلدي"
             applicationIdSuffix "" // com.example.balady_plus
         }
     }

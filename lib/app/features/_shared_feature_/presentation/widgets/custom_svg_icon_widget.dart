@@ -2,8 +2,10 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart' show SvgPicture;
 
+import '../../../../core/dependency_injection/injection_container.dart';
 import '../../../../core/utils/common_functions.dart';
 import '../../../../core/utils/constants/app_colors.dart';
+import '../../../entry_point/presentation/cubit/auth_cubit.dart';
 
 class CustomSvgIconWidget extends StatelessWidget {
   final String iconPath;
@@ -101,8 +103,8 @@ class _CustomNetworkImageWidgetState extends State<CustomNetworkImageWidget> {
                       }
                     : !widget.ssoAuth //MM
                         ? {
-                            //  "Authorization":
-                            //      "Bearer ${sl<AuthCubit>().state.apigeeToken?.accessToken}"
+                            'Authorization':
+                                'Bearer ${sl<EntryPointCubit>().state.apigeeToken?.accessToken}'
                           }
                         : null,
                 loadingBuilder: (BuildContext context, Widget child,

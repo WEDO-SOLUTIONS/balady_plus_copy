@@ -20,6 +20,7 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 import '../../../../core/base/base_view.dart';
 import '../../../../core/base/base_view_model.dart';
 import '../../../../core/services/local/navigation_services.dart';
+import '../../../../core/utils/common_functions.dart';
 import '../../../../core/utils/constants/app_colors.dart';
 import '../../../../core/utils/constants/constants.dart';
 import '../../../../core/utils/constants/paths/icon_paths.dart';
@@ -39,6 +40,8 @@ import '../../../_shared_feature_/shared_feature_exports.dart'
         DrawLineWidget,
         LabelIconComponent,
         LabelIconSubtitleComponent;
+import '../../../vd/domain/entities/camera/camera_page_params.dart';
+import '../../../vd/domain/entities/categories/category_item.dart';
 import '../widgets/facility_details_widgets/facility_rating_widget.dart';
 import '../widgets/facility_details_widgets/qr_classification_widget.dart';
 
@@ -615,9 +618,17 @@ class SubmitIncidentSection extends StatelessWidget {
     return Column(children: [
       const CustomVerticalSpace(height: 32),
       EnhancedCustomElevatedButtonWidget(
-        btnPressed: () {
-          /* viewModel.navigateToCreateIncident(
-              fromScreen: PAGE_TYPE.qrDetailsScreen);*/ //MM
+        btnPressed: () async {
+          bool isLocationAvailable =
+              await CommonFunctions.checkLocationSettings(context);
+          bool isCameraAllowed =
+              await CommonFunctions.checkCameraSettings(context);
+          if (isLocationAvailable && isCameraAllowed)
+            NavigationService.navigatorKey.currentState!.pushNamed(
+                RouteName.vdCameraPage,
+                arguments: CameraParamsPage(
+                    selectedCategory: CategoryItem(categoryId: "CG-14"),
+                    isFromHome: false));
         },
         btnText: ("submit_incident_facility").tr(),
         btnTextSize: 16,
