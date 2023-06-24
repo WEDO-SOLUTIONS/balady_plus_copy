@@ -123,6 +123,7 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
       throw ServerException(error.toString(),
           statusCode: error.response?.statusCode);
     } catch (ex) {
+      print(ex);
       if (ex is ServerException) {
         rethrow;
       } else {

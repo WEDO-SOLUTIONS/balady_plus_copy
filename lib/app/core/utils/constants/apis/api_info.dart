@@ -2,14 +2,15 @@ class ApiUrl {
   static const apiV1 = 'v1/';
 
   //! GET
-  static const ssoUserInfo = '/v1/connect/userinfo';
+  static const ssoUserInfo = '/connect/userinfo';
   static const ssoUserCookie = '/account/GetAuthCookies';
   static const apigeeToken = '/oauth/v1/token';
   static const forceUpdate = '/v1/force-update-apps/version';
 
   //! Profile
   //! Delegators
-  static const delegators = '/v1/delegation-services/delegated-commercial-records';
+  static const delegators =
+      '/v1/delegation-services/delegated-commercial-records';
   //! Dashboard
   static const dashboardCards =
       '/v1/balady-dashboard/balady-life-style/main-cards';
@@ -38,7 +39,6 @@ class ApiUrl {
   static licenseSubTypes(int id) =>
       '/v1/balady-dashboard/license/sub-main-types/$id';
   static const licenseStatuses = '/v1/balady-dashboard/license/statuses';
-
 
   //! POST
 

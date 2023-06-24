@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../core/utils/utils_exports.dart'
-    show AppColor, AppStyle, IconPath, WeathherConditions;
+    show AppColor, AppStyle, CommonProperties, IconPath, WeathherConditions;
 
 class HomeAppBar extends StatelessWidget {
   const HomeAppBar({
@@ -30,7 +30,7 @@ class HomeAppBar extends StatelessWidget {
                 ),
                 TextSpan(
                   style: AppStyle.blackTextStyle,
-                  text: "محمد",
+                  text: CommonProperties.userInfo?.getFirstAndLastName(),
                 )
               ],
             ),

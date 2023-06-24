@@ -76,10 +76,8 @@ class _BottomNavigationPageState extends State<BottomNavigationPage> {
         ),
         bottomNavigationBar: BottomNavBarWidget(
           onSelectedBottomNavBar: (index) {
-            _pageViewController.animateToPage(
+            _pageViewController.jumpToPage(
               index,
-              duration: const Duration(milliseconds: 300),
-              curve: Curves.decelerate,
             );
           },
         ),

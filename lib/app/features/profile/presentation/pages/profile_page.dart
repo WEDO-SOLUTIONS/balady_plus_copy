@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/features/entry_point/presentation/cubit/auth_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart'
@@ -16,38 +17,45 @@ class ProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const bool isLoggedin = true; //CommonProperties.isLoggedIn;
-    final list = isLoggedin
-        ? ProfileSections.profileSections
-        : ProfileSections.profileSectionsForGuest;
-    return Scaffold(
-      appBar: DefaultAppBarWidget(
-        title: "profile".tr(),
-      ),
-      body: TabPageContainer(
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              BlocBuilder<DelegatorsCubit, DelegatorsState>(
-                builder: (context, state) {
-                  return ProfileCard(
-                    isListItem: false,
-                    delegator: isLoggedin ? state.selectedDelegate : null,
-                    userInfo: isLoggedin ? CommonProperties.userInfo : null,
-                  );
-                },
-              ),
-              if (!isLoggedin) const SignInCard(),
-              ...List.generate(
-                list.length,
-                (index) => ProfileListCard(
-                  section: list[index],
-                ),
-              ),
-            ],
+    return BlocBuilder<EntryPointCubit, EntryPointState>(
+      builder: (context, state) {
+        final list = CommonProperties.isLoggedIn
+            ? ProfileSections.profileSections
+            : ProfileSections.profileSectionsForGuest;
+        return Scaffold(
+          appBar: DefaultAppBarWidget(
+            title: "profile".tr(),
           ),
-        ),
-      ),
+          body: TabPageContainer(
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  BlocBuilder<DelegatorsCubit, DelegatorsState>(
+                    builder: (context, state) {
+                      return ProfileCard(
+                        isListItem: false,
+                        delegator: CommonProperties.isLoggedIn
+                            ? state.selectedDelegate
+                            : null,
+                        userInfo: CommonProperties.isLoggedIn
+                            ? CommonProperties.userInfo
+                            : null,
+                      );
+                    },
+                  ),
+                  if (!CommonProperties.isLoggedIn) const SignInCard(),
+                  ...List.generate(
+                    list.length,
+                    (index) => ProfileListCard(
+                      section: list[index],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }
