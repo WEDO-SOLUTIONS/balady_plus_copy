@@ -51,10 +51,8 @@ class CustomExpansionPanelWidget extends StatelessWidget {
       //       vertical: 8.0,
       //     ),
       decoration: BoxDecoration(
-        color: isExpanded
-            ? AppColor.gray
-            : Theme.of(context).scaffoldBackgroundColor,
-        border: Border(bottom: border),
+        color: AppColor.white,
+        borderRadius: BorderRadius.circular(16.0),
       ),
       child: LayoutBuilder(
         builder: (_, constraints) => SizedBox(
@@ -198,12 +196,10 @@ class _ExpansionTitleWidget extends StatelessWidget {
   // double get titleWidth => leading == null
   //     ? width - (25.0 + 10.0)
   //     : width - (25.0 + 10.0 + 10.0 + 25.0);
-  TextStyle get textStyle => expanded
-      ? AppStyle.mainTextStyle
-      : AppStyle.mainTextThirdStyle.copyWith(
-          fontSize: 18.0,
-          color: AppColor.gray,
-        );
+  TextStyle get textStyle => AppStyle.mainTextThirdStyle.copyWith(
+      fontSize: 15.0,
+      color: AppColor.blackModern600Light,
+      fontWeight: FontWeight.bold);
 }
 
 class _ExpansionPanelArrowWidget extends StatelessWidget {
@@ -217,7 +213,7 @@ class _ExpansionPanelArrowWidget extends StatelessWidget {
       width: 25.0,
       height: 25.0,
       decoration: const BoxDecoration(
-        // color: expanded ? AppColor.mainDark : AppColor.mainTextThird,
+        color: AppColor.primary300Light,
         shape: BoxShape.circle,
       ),
       child: Transform.rotate(
@@ -231,5 +227,5 @@ class _ExpansionPanelArrowWidget extends StatelessWidget {
   // so, if expanded we need to rotate it by 90', otherwise rotate by 270'
   double get angle =>
       expanded ? DIRECTION.downward.rotate : DIRECTION.upward.rotate;
-  Color get iconColor => expanded ? AppColor.black : AppColor.gray;
+  Color get iconColor => expanded ? AppColor.white : AppColor.white;
 }

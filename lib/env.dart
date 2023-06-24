@@ -7,6 +7,10 @@ import 'package:flutter/services.dart' show SystemChrome, DeviceOrientation;
 import 'package:flutter_inappwebview/flutter_inappwebview.dart'
     show AndroidInAppWebViewController;
 import 'package:hijri/hijri_calendar.dart' show HijriCalendar;
+import 'package:flutter/material.dart'
+    show BoxShadow, Color, Colors, WidgetsFlutterBinding;
+import 'package:flutter/services.dart' show SystemChrome, DeviceOrientation;
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:localize_and_translate/localize_and_translate.dart'
     show LocalizationDefaultType, translator;
 
@@ -57,5 +61,21 @@ abstract class AppEnv {
       await AndroidInAppWebViewController.setWebContentsDebuggingEnabled(true);
     }
     HijriCalendar.setLocal(translator.activeLanguageCode);
+    configLoading();
+  }
+
+  static void configLoading() {
+    EasyLoading.instance
+      ..loadingStyle = EasyLoadingStyle.custom
+      ..backgroundColor = Colors.transparent
+      ..boxShadow = <BoxShadow>[]
+      ..textColor = Colors.white
+      ..indicatorColor = const Color(0xff389492)
+      ..maskType = EasyLoadingMaskType.clear
+      ..indicatorType = EasyLoadingIndicatorType.ring
+      ..indicatorSize = 45.0
+      ..radius = 10.0
+      ..userInteractions = false
+      ..dismissOnTap = false;
   }
 }

@@ -1,15 +1,23 @@
 import 'dart:convert' show base64Decode, base64Encode, utf8;
 import 'dart:io' show File;
 import 'dart:typed_data' show Uint8List;
+import 'dart:ui';
 
 import 'package:balady_plus/app/core/utils/constants/remote_config.dart';
+import 'package:bot_toast/bot_toast.dart';
 import 'package:crypto/crypto.dart';
 import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart' show PlatformFile;
 import 'package:flutter_bloc/flutter_bloc.dart' show EventTransformer;
+import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart' show DateFormat;
+import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:open_file/open_file.dart' show OpenFile;
 import 'package:path_provider/path_provider.dart' show getTemporaryDirectory;
+
+import 'package:flutter_bloc/flutter_bloc.dart' show EventTransformer;
+import 'package:permission_handler/permission_handler.dart';
 import 'package:stream_transform/stream_transform.dart' show RateLimit, Switch;
 import 'package:url_launcher/url_launcher.dart' show canLaunchUrl, launchUrl;
 import 'package:uuid/uuid.dart';
@@ -17,10 +25,14 @@ import 'package:uuid/uuid.dart';
 import './utils_exports.dart'
     show AppConfig, AppLanguage, EnvType, MimeType, UIHelper, WithDelay;
 import '../../features/_shared_feature_/data/entities/device_details.dart';
+import '../../features/_shared_feature_/presentation/dialogs/camera_permission_dialog.dart';
+import '../../features/_shared_feature_/presentation/dialogs/location_permission_dialog.dart';
+import '../../features/_shared_feature_/presentation/dialogs/location_service_dialog.dart';
 import '../../features/_shared_feature_/shared_feature_exports.dart'
     show AuthData, BridgeParams, FileInfo;
 import '../../features/entry_point/domain/entities/sso_user_info.dart'
     show SsoUserInfo;
+import '../../features/entry_point/domain/entities/sso_user_info.dart';
 import '../../features/entry_point/presentation/cubit/auth_cubit.dart';
 import '../../features/profile_features/delegators/delegators_exports.dart'
     show DelegatorEntity;
@@ -186,7 +198,7 @@ class CommonFunctions {
     message = url + method;
 
     if (corelationId != null) message += corelationId;
-    //if (authorization) message += 'Bearer $token';
+    if (authorization) message += 'Bearer ${CommonProperties.token}';
 
     if (body != null) {
       message += body.replaceAll(RegExp(r'^/\\n/g'), "");
@@ -229,6 +241,195 @@ class CommonFunctions {
   static bool get isAppAR => AppConfig.languageCode == AppLanguage.ar.name;
 
   static Future<bool> onLogin() async => await sl<EntryPointCubit>().onLogin();
+  static bool doesContainsLettrs(String str) {
+    RegExp r = RegExp(r"[a-zA-Z\u0621-\u064A]");
+    return r.allMatches(str).length >= 15;
+  }
+
+  static bool hasArabicCharacters(String str) {
+    RegExp r = RegExp(r"[\u0621-\u064A0-9\s*]");
+    return r.allMatches(str).length == str.length;
+  }
+
+  static bool hasArabicOrEnglishCharacters(String str) {
+    RegExp r = RegExp(r"[\u0621-\u064Aa-zA-Z\s]");
+    return r.allMatches(str).length == str.length;
+  }
+
+  static bool checkForVDExpectedForINC(
+      {String? adminMunicipalityId,
+      String? municipalityName,
+      bool? isVDExcepted}) {
+    if (adminMunicipalityId == "003" && municipalityName == "العلا") {
+      try {
+        String error = ("ola_incident_error").tr(); //MMTr;
+        showError(error);
+      } catch (ex) {}
+
+      return true;
+    } else {
+      if (isVDExcepted ?? false) {
+        String error = ("inc_vd_excepted").tr();
+
+        showError(error);
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  static showError(String error) {
+    if (error.isNotEmpty) {
+      try {
+        BotToast.showSimpleNotification(
+            title: error,
+            backgroundColor: const Color.fromARGB(255, 204, 51, 51),
+            titleStyle: const TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.w500,
+                fontStyle: FontStyle.normal,
+                fontSize: 16.0),
+            hideCloseButton: true,
+            duration: const Duration(seconds: 3));
+      } catch (ex) {
+        print(ex);
+      }
+    }
+  }
+
+  static Future<bool> checkLocationSettings(BuildContext context) async {
+    ServiceStatus serviceStatus = await Permission.location.serviceStatus;
+    if (serviceStatus != ServiceStatus.disabled) {
+      var status = await Permission.location.request();
+      print(status);
+      if (status == PermissionStatus.permanentlyDenied) {
+        showDialog(
+            context: context,
+            builder: (ctx) => const LocationPermissionDialog());
+        return false;
+      } else if (status != PermissionStatus.granted) {
+        Permission.location.request();
+        return false;
+      } else {
+        return true;
+      }
+    } else {
+      showDialog(
+          context: context, builder: (ctx) => const LocationServiceDialog());
+
+      return false;
+    }
+  }
+
+  static Future<bool> checkCameraSettings(BuildContext context) async {
+    var status = await Permission.camera.request();
+    if (status == PermissionStatus.permanentlyDenied) {
+      showDialog(
+          context: context, builder: (ctx) => const CameraPermissionDialog());
+      return false;
+    } else if (status != PermissionStatus.granted) {
+      Permission.camera.request();
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  static String convert24TimeTo12WithPeriod(String? time) {
+    if (time != null) {
+      int? hoursFrom = int.tryParse(time.split(":")[0]) != null
+          ? int.parse(time.split(":")[0])
+          : null;
+      int? minuteFrom = int.tryParse(time.split(":")[1]) != null
+          ? int.parse(time.split(":")[1])
+          : null;
+
+      TimeOfDay fromTime =
+          TimeOfDay(hour: hoursFrom!, minute: minuteFrom!); // 3:00 PM
+
+      int hoursFromAS12 = hoursFrom;
+
+      if (hoursFrom == 0) hoursFromAS12 += 12;
+
+      String minuteStr = minuteFrom < 10 ? "0$minuteFrom" : "$minuteFrom";
+
+      if (hoursFrom >= 13 && hoursFrom <= 23) {
+        hoursFromAS12 = hoursFromAS12 - 12;
+      }
+
+      if (fromTime.period == DayPeriod.pm) return "$hoursFromAS12:$minuteStr م";
+
+      if (fromTime.period == DayPeriod.am) {
+        return "$hoursFromAS12:$minuteStr ص";
+      }
+    }
+    return "";
+  }
+
+  static String getFormattedTime(String? timeFrom, String? timeTo) {
+    if (timeFrom != null && timeTo != null) {
+      int? hoursFrom = int.tryParse(timeFrom.split(":")[0]) != null
+          ? int.parse(timeFrom.split(":")[0])
+          : null;
+      int? hoursTo = int.tryParse(timeTo.split(":")[0]) != null
+          ? int.parse(timeTo.split(":")[0])
+          : null;
+
+      int? minuteFrom = int.tryParse(timeFrom.split(":")[1]) != null
+          ? int.parse(timeFrom.split(":")[1])
+          : null;
+      int? minuteTo = int.tryParse(timeTo.split(":")[1]) != null
+          ? int.parse(timeTo.split(":")[1])
+          : null;
+      String minuteFromStr = minuteFrom! < 10 ? "0$minuteFrom" : "$minuteFrom";
+      String minuteToStr = minuteTo! < 10 ? "0$minuteTo" : "$minuteTo";
+      TimeOfDay fromTime =
+          TimeOfDay(hour: hoursFrom!, minute: minuteFrom); // 3:00 PM
+      TimeOfDay toTime = TimeOfDay(hour: hoursTo!, minute: minuteTo); // 5:00 AM
+
+      int hoursFromAS12 = hoursFrom;
+      int hoursToAS12 = hoursTo;
+
+      if (hoursFrom == 0) hoursFromAS12 += 12;
+
+      if (hoursTo == 0) hoursToAS12 += 12;
+
+      if (hoursFrom >= 13 && hoursFrom <= 23) {
+        hoursFromAS12 = hoursFromAS12 - 12;
+      }
+
+      if (hoursTo >= 13 && hoursTo <= 23) hoursToAS12 = hoursToAS12 - 12;
+
+      String time = "";
+
+      if (fromTime.period == DayPeriod.am && toTime.period == DayPeriod.am) {
+        time = "$hoursFromAS12:$minuteFromStr - $hoursToAS12:$minuteToStr ص";
+        return time;
+      } else if (fromTime.period == DayPeriod.pm &&
+          toTime.period == DayPeriod.pm) {
+        time = "$hoursFromAS12:$minuteFromStr - $hoursToAS12:$minuteToStr م";
+        return time;
+      } else {
+        String from = "";
+        String to = "";
+        if (fromTime.period == DayPeriod.pm) {
+          from = "$hoursFromAS12:$minuteFromStr م";
+        }
+
+        if (fromTime.period == DayPeriod.am) {
+          from = "$hoursFromAS12:$minuteFromStr ص";
+        }
+
+        if (toTime.period == DayPeriod.pm) to = "$hoursToAS12:$minuteToStr م";
+
+        if (toTime.period == DayPeriod.am) to = "$hoursToAS12:$minuteToStr ص";
+
+        return "$from - $to";
+      }
+    }
+    return "";
+  }
 }
 
 class CommonProperties {
@@ -251,6 +452,8 @@ class CommonProperties {
 
   //static String token =
   //  "eyJhbGciOiJSUzI1NiIsImtpZCI6IjhFRDBCN0UzRjNDOTFBOEQwMUU3MEMxRUM4MTNGQTJBRjgxOEQ5MUZSUzI1NiIsIng1dCI6Imp0QzM0X1BKR28wQjV3d2V5QlA2S3ZnWTJSOCIsInR5cCI6ImF0K2p3dCJ9.eyJpc3MiOiJodHRwczovL3Nzb2FwcGRldi5tb21yYS5nb3Yuc2EiLCJuYmYiOjE2ODcwNjI0OTMsImlhdCI6MTY4NzA2MjQ5MywiZXhwIjoxNjg4MjcyMDkzLCJhdWQiOlsiRW1wbG95ZWVBZG1pbnN0cmF0aW9uLkFwaSIsImh0dHBzOi8vc3NvYXBwZGV2Lm1vbXJhLmdvdi5zYS9yZXNvdXJjZXMiXSwic2NvcGUiOlsib3BlbmlkIiwicHJvZmlsZSIsIkVtcGxveWVlQWRtaW5zdHJhdGlvbi5BcGkiLCJvZmZsaW5lX2FjY2VzcyJdLCJhbXIiOlsicHdkIl0sImNsaWVudF9pZCI6ImJhbGFkeV9tb2JpbGVfYXBwIiwic3ViIjoiMWVjZDY2NTYtMzlhMC00YmFkLTg2OWQtNjIxZGFmNWY4YmYyIiwiYXV0aF90aW1lIjoxNjg3MDYyNDkyLCJpZHAiOiJsb2NhbCIsInJvbGUiOlsiUm9sZV9MaWNlbnNlQWdlbmN5IiwiSW5zdGl0dXRlcyIsIkJhbGFkeV9BZG1pbl9Nb2JpbGUiLCJCYWxhZHlfT3RoZXIiLCJMaWNlbnNlU3RhbmRhcmRBY3Rpdml0eUFkbWluIiwiQ0FOX1NLSVBfQ09PS0lFX1ZBTElEQVRPUiIsIkxpY2Vuc2VTdGFuZGFyZEFjdGl2aXR5RGF0YUVudHJ5Il0sImVtYWlsIjoic3Vwcml5YS5qb25uYWR1bEBpbm92YXIuY29tIiwicGhvbmVfbnVtYmVyIjoiNTU3NjA5NzIyIiwibmFtZSI6IjEwMDU4MzAwODYiLCJ0aWQiOiIyMTMiLCJ0bm0iOiLYo9mF2KfZhtipINin2YTZhdiv2YrZhtipINin2YTZhdmG2YjYsdipIiwibWFpbCI6InN1cHJpeWEuam9ubmFkdWxAaW5vdmFyLmNvbSIsInNleCI6IjEiLCJkb2IiOiIwNy8wOC8xOTc2IiwicGhvbmUiOiIwNTU3NjA5NzIyIiwiYXJfbmFtZSI6Iti52KjYr9in2YTZhNmHINi02KfZgdmKINi52YLZitmEINin2YTYudmG2LLZiiIsImVuX25hbWUiOiJBQkRVTExBSCBTSEFGSSBBIEFMQU5BWkkiLCJpZF9ubyI6IjEwMDU4MzAwODYiLCJuaWQiOiIxMTMiLCJuYXRpb25hbGl0eSI6Itiz2LnZiNiv2YoiLCJpZF90eXBlIjoiMSIsInNuYW1lIjoi2LnYqNiv2KfZhNmE2Ycs2LTYp9mB2Yos2LnZgtmK2YQs2KfZhNi52YbYstmKIiwidGVuYW50cyI6Ilt7XCJUZW5hbnROYW1lXCI6XCLYp9mE2YbYt9in2YIg2KfZhNij2YjZhFwiLFwiVGVuYW50SWRcIjo2NDksXCJUZW5hbnRUeXBlXCI6XCJ0ZW5hbnRcIixcIkdvdklkXCI6bnVsbCxcIklzRGVmYXVsdFRlbmFudFwiOmZhbHNlfSx7XCJUZW5hbnROYW1lXCI6XCLYqNmE2K_ZitipINin2YTYtNix2KfYpti5INin2YTZgdix2LnZitipXCIsXCJUZW5hbnRJZFwiOjE3OSxcIlRlbmFudFR5cGVcIjpcInRlbmFudFwiLFwiR292SWRcIjpudWxsLFwiSXNEZWZhdWx0VGVuYW50XCI6ZmFsc2V9LHtcIlRlbmFudE5hbWVcIjpcItio2YTYr9mK2Kkg2KfZhNi52YXYsdipINin2YTZgdix2LnZitipXCIsXCJUZW5hbnRJZFwiOjE4MCxcIlRlbmFudFR5cGVcIjpcInRlbmFudFwiLFwiR292SWRcIjpudWxsLFwiSXNEZWZhdWx0VGVuYW50XCI6ZmFsc2V9LHtcIlRlbmFudE5hbWVcIjpcItio2YTYr9mK2Kkg2KfZhNi02YjZgtmK2Kkg2KfZhNmB2LHYudmK2KlcIixcIlRlbmFudElkXCI6MTg3LFwiVGVuYW50VHlwZVwiOlwidGVuYW50XCIsXCJHb3ZJZFwiOm51bGwsXCJJc0RlZmF1bHRUZW5hbnRcIjpmYWxzZX0se1wiVGVuYW50TmFtZVwiOlwi2KXYr9in2LHYqSDYp9mE2YXYtNin2LHZiti5INin2YTZg9io2LHZiSDZiNin2YTYrdmD2YjZhdmK2KlcIixcIlRlbmFudElkXCI6NjQ3LFwiVGVuYW50VHlwZVwiOlwidGVuYW50XCIsXCJHb3ZJZFwiOm51bGwsXCJJc0RlZmF1bHRUZW5hbnRcIjpmYWxzZX0se1wiVGVuYW50TmFtZVwiOlwi2KXYr9in2LHYqSDYp9mE2YXYtNin2LHZiti5INin2YTYqtis2KfYsdmK2Kkg2YjYp9mE2KfYs9iq2KvZhdin2LHZitipXCIsXCJUZW5hbnRJZFwiOjY0OCxcIlRlbmFudFR5cGVcIjpcInRlbmFudFwiLFwiR292SWRcIjpudWxsLFwiSXNEZWZhdWx0VGVuYW50XCI6ZmFsc2V9LHtcIlRlbmFudE5hbWVcIjpcItin2YTZhti32KfZgiDYp9mE2KvYp9mG2YpcIixcIlRlbmFudElkXCI6NjUwLFwiVGVuYW50VHlwZVwiOlwidGVuYW50XCIsXCJHb3ZJZFwiOm51bGwsXCJJc0RlZmF1bHRUZW5hbnRcIjpmYWxzZX0se1wiVGVuYW50TmFtZVwiOlwi2KfZhNmG2LfYp9mCINin2YTYq9in2YTYq1wiLFwiVGVuYW50SWRcIjo2NTEsXCJUZW5hbnRUeXBlXCI6XCJ0ZW5hbnRcIixcIkdvdklkXCI6bnVsbCxcIklzRGVmYXVsdFRlbmFudFwiOmZhbHNlfSx7XCJUZW5hbnROYW1lXCI6XCLZiNiy2KfYsdipINin2YTYtNim2YjZhiDYp9mE2KjZhNiv2YrYqSDZiNin2YTZgtix2YjZitipINmI2KfZhNin2LPZg9in2YZcIixcIlRlbmFudElkXCI6MTIxMixcIlRlbmFudFR5cGVcIjpcInRlbmFudFwiLFwiR292SWRcIjpudWxsLFwiSXNEZWZhdWx0VGVuYW50XCI6ZmFsc2V9LHtcIlRlbmFudE5hbWVcIjpcItij2YXYp9mG2Kkg2KfZhNmF2K_ZitmG2Kkg2KfZhNmF2YbZiNix2KlcIixcIlRlbmFudElkXCI6MjEzLFwiVGVuYW50VHlwZVwiOlwidGVuYW50XCIsXCJHb3ZJZFwiOm51bGwsXCJJc0RlZmF1bHRUZW5hbnRcIjp0cnVlfSx7XCJUZW5hbnROYW1lXCI6XCLYqNmE2K_ZitipINi62LHYqCDYudix2LnYsVwiLFwiVGVuYW50SWRcIjo1NTUsXCJUZW5hbnRUeXBlXCI6bnVsbCxcIkdvdklkXCI6bnVsbCxcIklzRGVmYXVsdFRlbmFudFwiOmZhbHNlfV0iLCJibWFpbCI6IiIsInNpZCI6IjQ2MkFENTM1Njc0NjREMzM0RkE0MkRENzBBMDhFQUJBIiwianRpIjoiRjQ3Mjc2Q0RCMTREREFGRUI5Rjc0RjAxQ0M3NkM2QzAifQ.OaiWru1BmWD_SbYYRNsmH7SWavSRrckOoMpBfVExBvUHWWgIh4vsUYPC2Xupw2z6F0s7Tuo2te27GVloPaVAQBJpMwZNYiu-rbPbEJ7x_EclxBXsXqIzL55ygqr8E0f332BDX6BDaNMDo_yt5oHfHE38FjHYP7E5tan0KA75bW9JI1psus9E2POoDKVea1MR3w_XNagHZsCyOY7QTJDrC9WFv3cRRTWDpHns9sxcliq7jgz28jeJnQ4Yv5wdgvKL5yUiPkVYzaVlCf5WTdt7N2xZckzR5a3PJ7ogmsosT19ZyQKlXhqAeZd1AEXUZCW4FNNGXdacfb1h6uocN92YnQ";
+  static LatLng defaultLocation =
+      const LatLng(24.76836756001484, 46.720988751704304);
 }
 
 /*const _fakeUser = SsoUserInfo(

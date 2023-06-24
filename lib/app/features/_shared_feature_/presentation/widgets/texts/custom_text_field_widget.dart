@@ -1,10 +1,17 @@
+import 'package:balady_plus/app/core/utils/constants/keys/general_keys.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart'
     show FilteringTextInputFormatter, TextInputFormatter;
 
+import '../../../../../core/utils/enums/enums.dart';
 import '../../../../../core/utils/utils_exports.dart'
     show AppColor, AppStyle, BorderConversion, BorderType;
-import '../../../shared_feature_exports.dart' show WidgetLabel;
+import '../../../shared_feature_exports.dart'
+    show
+        CustomHorizontalSpace,
+        CustomVerticalSpace,
+        LabelTextWithOptional,
+        WidgetLabel;
 
 class CustomTextFieldWidget extends StatelessWidget {
   final bool enabled;
@@ -278,7 +285,7 @@ class CustomTextFieldWidget extends StatelessWidget {
               radius: borderRadius,
             ),
             focusedBorder: fieldBorderType.inputBorder(
-              color: fieldBorderColor,
+              color: fieldBorderFocusedColor,
               radius: borderRadius,
             ),
             errorBorder: fieldBorderType.inputBorder(
@@ -298,5 +305,223 @@ class CustomTextFieldWidget extends StatelessWidget {
   }
 
   BorderType get fieldBorderType => borderType ?? BorderType.outline;
-  Color get fieldBorderColor => borderColor ?? AppColor.gray;
+  Color get fieldBorderColor => borderColor ?? AppColor.blackModern300Light;
+  Color get fieldBorderFocusedColor => borderColor ?? AppColor.primary900Light;
+}
+
+class CustomTextFieldWidgetWithOptinal extends StatelessWidget {
+  // if app in different languages, pass the key to search about word
+  final String label;
+  final Color labelColor;
+  final double labelSize;
+  final TextAlign labelTextAlign;
+
+  final bool filled;
+  final Color fillColor;
+  final double borderWidth;
+  final double borderRadius;
+  final Color borderColor;
+  final BORDER_TYPE borderType;
+
+  final TextEditingController controller;
+  final FocusNode? focusNode;
+  final bool autoCorrect;
+  final bool readOnly;
+  final Color cursorColor;
+  final TextAlign textFieldAlign;
+  final TextInputType? keyboardType;
+  final int? maxLength;
+  final int? maxLines;
+  final int? minLines;
+  final TextAlignVertical textAlignVertical;
+  final TextInputAction? textInputAction;
+  final bool obsecureText;
+  final TextStyle? textFieldStyle;
+  final double contentVerticalPadding;
+  final double contentHorizontalPadding;
+  final String hintText;
+  final TextStyle? hintStyle;
+  final Widget? prefixIcon;
+  final Widget? suffixIcon;
+  final double prefixSize;
+  final double? suffixSize;
+  final int errorMaxLines;
+  final double spacerSize;
+  final void Function(String)? onFieldSubmitted;
+  final void Function(String)? onChanged;
+  final String? Function(String?)? validator;
+  final void Function(String?)? onSaved;
+  final VoidCallback? onTap;
+  final List<TextInputFormatter>? inputFormatter;
+  final TextDirection? textDirection;
+  final bool? showOptional;
+
+  const CustomTextFieldWidgetWithOptinal(
+      {Key? key,
+      required this.label,
+      this.labelColor = AppColor.baladyDarkGreen2,
+      this.labelSize = 13.0,
+      this.labelTextAlign = TextAlign.start,
+      this.filled = false,
+      this.textDirection,
+      this.fillColor = Colors.transparent,
+      this.borderWidth = 1.0,
+      this.borderRadius = 2.0,
+      this.borderColor = AppColor.black200,
+      this.borderType = BORDER_TYPE.underline,
+      required this.controller,
+      this.focusNode,
+      this.autoCorrect = true,
+      this.readOnly = false,
+      this.cursorColor = AppColor.baladyDarkGreen2,
+      this.textFieldAlign = TextAlign.start,
+      this.keyboardType,
+      this.maxLength,
+      this.maxLines,
+      this.minLines,
+      this.textAlignVertical = TextAlignVertical.center,
+      this.textInputAction = TextInputAction.done,
+      this.obsecureText = false,
+      this.textFieldStyle,
+      this.contentHorizontalPadding = 10,
+      this.contentVerticalPadding = GeneralKey.semiSmallPadding,
+      this.hintText = '',
+      this.hintStyle,
+      this.prefixIcon,
+      this.suffixIcon,
+      this.prefixSize = 25.0,
+      this.suffixSize,
+      this.errorMaxLines = 2,
+      this.spacerSize = 30.0,
+      this.onFieldSubmitted,
+      this.onChanged,
+      this.onSaved,
+      this.validator,
+      this.onTap,
+      this.inputFormatter,
+      this.showOptional})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // label
+        LabelTextWithOptional(
+          label: label,
+          labelColor: labelColor,
+          labelSize: labelSize,
+          labelTextAlign: labelTextAlign,
+          showOptional: showOptional,
+        ),
+
+        LayoutBuilder(
+          builder: (context, constraints) {
+            return Row(
+              children: [
+                // prefix
+                if (prefixIcon != null)
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const CustomHorizontalSpace(width: 5.0),
+                      SizedBox(
+                        width: prefixSize,
+                        height: prefixSize,
+                        child: FittedBox(child: prefixIcon),
+                      ),
+                      const CustomHorizontalSpace(width: 5.0),
+                    ],
+                  ),
+                Expanded(
+                  child: TextFormField(
+                    controller: controller,
+                    textDirection: textDirection,
+                    focusNode: focusNode ?? FocusNode(),
+                    autocorrect: autoCorrect,
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    readOnly: readOnly,
+                    cursorColor: cursorColor,
+                    keyboardType: keyboardType,
+                    maxLines: obsecureText ? 1 : maxLines,
+                    maxLength: maxLength,
+                    minLines: obsecureText ? 1 : minLines,
+                    obscureText: obsecureText,
+                    textAlignVertical: textAlignVertical,
+                    textInputAction: textInputAction,
+                    inputFormatters: inputFormatter,
+                    style: textFieldStyle ??
+                        const TextStyle(
+                            fontSize: 16.0,
+                            fontFamily: GeneralKey.appFontType,
+                            color: AppColor.black,
+                            fontWeight: FontWeight.w500),
+                    decoration: InputDecoration(
+                      isDense: true,
+                      contentPadding: EdgeInsets.symmetric(
+                        horizontal: contentHorizontalPadding,
+                        vertical: contentVerticalPadding,
+                      ),
+                      // counter: const SizedBox(),
+                      hintText: hintText,
+                      hintStyle: hintStyle ??
+                          const TextStyle(
+                              fontSize: 16.0,
+                              fontFamily: GeneralKey.appFontType,
+                              color: AppColor.black300,
+                              fontWeight: FontWeight.w500),
+                      filled: filled,
+                      fillColor: readOnly ? AppColor.black400 : fillColor,
+                      enabledBorder: _getBorder(borderColor),
+                      focusedBorder: _getBorder(AppColor.darkTurquoise),
+                      errorBorder: _getBorder(AppColor.redBrown),
+                      hintTextDirection: textDirection,
+                      focusedErrorBorder: _getBorder(AppColor.redBrown),
+                      errorMaxLines: errorMaxLines,
+                      errorStyle: const TextStyle(color: AppColor.redBrown),
+                      suffixIcon: suffixIcon,
+                      suffixIconConstraints: suffixSize != null
+                          ? BoxConstraints(
+                              minHeight: suffixSize!, minWidth: suffixSize!)
+                          : null,
+                    ),
+                    onChanged: onChanged,
+                    onFieldSubmitted: onFieldSubmitted,
+                    validator: (value) => validator!(value),
+                    onSaved: onSaved,
+                    onTap: /*readOnly
+                        ? () => CustomPopUpsWidgets.showWarningMessageDialog(
+                              context,
+                              Helpers.translatingWord("fieldReadOnlyWord"),
+                            )
+                        :*/
+                        onTap,
+                  ),
+                ),
+              ],
+            );
+          },
+        ),
+        CustomVerticalSpace(height: spacerSize),
+      ],
+    );
+  }
+
+  InputBorder _getBorder(Color borderColor) {
+    switch (borderType) {
+      case BORDER_TYPE.none:
+        return InputBorder.none;
+      case BORDER_TYPE.outline:
+        return OutlineInputBorder(
+          borderRadius: BorderRadius.circular(borderRadius),
+          borderSide: BorderSide(color: borderColor, width: borderWidth),
+        );
+      case BORDER_TYPE.underline:
+        return UnderlineInputBorder(
+          borderRadius: BorderRadius.circular(borderRadius),
+          borderSide: BorderSide(color: borderColor, width: borderWidth),
+        );
+    }
+  }
 }

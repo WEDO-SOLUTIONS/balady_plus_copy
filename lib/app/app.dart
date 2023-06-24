@@ -3,6 +3,7 @@ import 'package:bot_toast/bot_toast.dart'
 import 'package:country_picker/country_picker.dart' show CountryLocalizations;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart' show BlocProvider;
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:localize_and_translate/localize_and_translate.dart'
     show Translation, translator;
 
@@ -11,6 +12,7 @@ import './core/services/services_exports.dart' show NavigationService;
 import './core/utils/utils_exports.dart'
     show AppColor, AppConfig, AppRouter, RouteName;
 import './core/dependency_injection/dependency_injection_exports.dart' show sl;
+import 'features/bottom_navigation/presentation/pages/bottom_navigation_page.dart';
 import 'features/entry_point/presentation/cubit/auth_cubit.dart';
 
 class App extends StatelessWidget {
@@ -30,7 +32,7 @@ class App extends StatelessWidget {
           fontFamily: AppConfig.appFontType,
           appBarTheme: const AppBarTheme(backgroundColor: AppColor.blue),
         ),
-        builder: BotToastInit(),
+        builder: EasyLoading.init(builder: BotToastInit()),
         navigatorObservers: [BotToastNavigatorObserver()],
         localizationsDelegates: translator.delegates.toList()
           ..add(CountryLocalizations.delegate), // Android + iOS Delegates
@@ -38,6 +40,9 @@ class App extends StatelessWidget {
         supportedLocales: translator.locals(), // Locals list
         initialRoute: RouteName.splash,
         onGenerateRoute: AppRouter.allRoutes,
+        routes: {
+          RouteName.bottomNavigation: (context) => const BottomNavigationPage(),
+        },
       ),
     );
   }

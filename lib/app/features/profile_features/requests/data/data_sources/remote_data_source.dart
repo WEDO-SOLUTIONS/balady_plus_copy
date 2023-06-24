@@ -54,8 +54,7 @@ class RequestsRemoteDataSourceImplementation
       final data = response.data;
       data.toString().successLog();
 
-      final result = ResponseBodyModel.fromMap(data).data.result;
-
+      final result = ResponseBodyModel.fromMap(data).data?.result;
       return result
           .map<RequestsModel>(
               (e) => RequestsModel.fromMap(e as Map<String, dynamic>))
@@ -88,9 +87,10 @@ class RequestsRemoteDataSourceImplementation
 
       final data = response.data;
       data.toString().successLog();
+      print("result");
 
-      final result = ResponseBodyModel.fromMap(data).data.result;
-
+      final result = ResponseBodyModel.fromMap(data).data?.result;
+      print("result ${result.length}");
       return result
           .map<RequestStatusModel>(
               (e) => RequestStatusModel.fromMap(e as Map<String, dynamic>))
@@ -124,7 +124,7 @@ class RequestsRemoteDataSourceImplementation
       final data = response.data;
       data.toString().successLog();
 
-      final result = ResponseBodyModel.fromMap(data).data.result;
+      final result = ResponseBodyModel.fromMap(data).data?.result;
 
       return result
           .map<MunicipalityModel>(
@@ -161,7 +161,7 @@ class RequestsRemoteDataSourceImplementation
       final data = response.data;
       data.toString().successLog();
 
-      final result = ResponseBodyModel.fromMap(data).data.result;
+      final result = ResponseBodyModel.fromMap(data).data?.result;
 
       return result
           .map<SubMunicipalityModel>(
@@ -196,7 +196,7 @@ class RequestsRemoteDataSourceImplementation
       final data = response.data;
       data.toString().successLog();
 
-      final result = ResponseBodyModel.fromMap(data).data.result;
+      final result = ResponseBodyModel.fromMap(data).data?.result;
 
       return result
           .map<RequestTypeModel>(
@@ -233,7 +233,7 @@ class RequestsRemoteDataSourceImplementation
       final data = response.data;
       data.toString().successLog();
 
-      final result = ResponseBodyModel.fromMap(data).data.result;
+      final result = ResponseBodyModel.fromMap(data).data?.result;
 
       return result
           .map<RequestSubTypeModel>(

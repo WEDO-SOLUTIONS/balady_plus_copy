@@ -13,9 +13,11 @@ export 'features/objectable_transactions_injection.dart';
 //? Services
 //? Public Services
 export 'features/services/public_services/prayer_times_injection.dart';
+export 'features/old_injection.dart';
 //? Profile
 export 'features/profile/delegators_injection.dart';
 export 'features/profile/dashboard_injection.dart';
 export 'features/profile/requests_injection.dart';
 export 'features/profile/invoices_injection.dart';
 export 'features/profile/licenses_injection.dart';
+export 'features/vd_injection.dart';

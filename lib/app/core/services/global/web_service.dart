@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:localize_and_translate/localize_and_translate.dart'
     show translator;
@@ -119,18 +121,32 @@ class AppInterceptors extends Interceptor {
         }
         accessToken = newAuthData.accessToken;
       }
-    } else {
+    } else { 
       CommonFunctions.signOut();
       return handler.reject(TokenHasExpiredException(options));
     }*/
 
     final url = options.uri.toString();
     final method = options.method;
-    final verifyingKEY = CommonFunctions.hashRequest(url, method);
+
+    if (options.headers['Authorization'] == null &&
+        CommonProperties.isLoggedIn &&
+        !options.uri.toString().contains("bcg/upload-file")) {
+      options.headers['Authorization'] = 'Bearer ${CommonProperties.token}';
+    }
+    final verifyingKEY = CommonFunctions.hashRequest(url, method,
+        body: (options.data != null &&
+                !options.uri.toString().contains("bcg/upload-file"))
+            ? json.encode(options.data)
+            : null,
+        authorization: !options.uri.toString().contains("bcg/upload-file")
+            ? options.headers.containsKey("Authorization")
+            : false);
     options.headers
         .putIfAbsent(ApiHeader.verifyingKEY.name, () => verifyingKEY);
 
     options.headers['Authorization'] = 'Bearer ${CommonProperties.token}';
+    print(options.headers);
     return handler.next(options);
   }
 

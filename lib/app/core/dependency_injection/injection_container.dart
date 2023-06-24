@@ -24,7 +24,9 @@ import '../dependency_injection/dependency_injection_exports.dart'
         SignInInjection,
         SignUpInjection,
         ObjectionsInjection,
-        ObjectableTransactionsInjection;
+        ObjectableTransactionsInjection,
+        VDInjection,
+        OLDInjection;
 import '../services/services_exports.dart'
     show
         EntryPointBridge,
@@ -36,6 +38,7 @@ import '../services/services_exports.dart'
 final sl = GetIt.instance;
 
 void initialize() {
+  OLDInjection.init();
   //! Features
   //? Entry Point
   EntryPointInjection.init();
@@ -58,6 +61,8 @@ void initialize() {
   //* Public Services
   //? Prayer Times
   PrayerTimesInjection.init();
+  //? VD
+  VDInjection.init();
 
   //! Profile
   //? Delegators
