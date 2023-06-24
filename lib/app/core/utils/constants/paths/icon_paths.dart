@@ -8,6 +8,9 @@ const _svgNearbyIconPath = 'assets/icons/svg/nearby/';
 const _pngVDIconPath = 'assets/icons/png/vd/';
 const _svgVDIconPath = 'assets/icons/svg/vd/';
 
+const _pngQRIconPath = 'assets/icons/png/qr/';
+const _svgQRIconPath = 'assets/icons/svg/qr/';
+
 const _svg = '.svg';
 
 const _pngIconPath = 'assets/icons/png/';
@@ -106,4 +109,32 @@ class IconPath {
   static const vdSummuryPledge = '${_svgVDIconPath}vdSummuryPledge$_svg';
   static const vdSummurySPL = '${_svgVDIconPath}vdSummurySPL$_svg';
   static const vdSummuryUserInfo = '${_svgVDIconPath}vdSummuryUserInfo$_svg';
+
+  //! QR
+  static const qrScanImageIcon = '${_pngQRIconPath}scan_img@3x$_png';
+  static const qrWhiteCloseIcon = '${_pngQRIconPath}white_close@3x$_png';
+  static const qrWhiteExitIcon = '${_pngQRIconPath}white_exit@3x$_png';
+  static const qrbackIconIcon = '${_pngQRIconPath}iconStrokeLeft@3x$_png';
+  static const qrStarsIcon = '${_pngQRIconPath}stars@3x$_png';
+
+  static const qrNotAvailableIcon = '${_pngQRIconPath}notAvailable@3x$_png';
+  static const qrAvailableIcon = '${_pngQRIconPath}available@3x$_png';
+  static const qrGreyCloseIcon = '${_pngQRIconPath}grey_close@3x$_png';
+  static const qrArrowDownIcon = '${_pngQRIconPath}arrowDowng@3x$_png';
+  static const qrArrowUpIcon = '${_pngQRIconPath}arrowUp@3x$_png';
+
+  static const qrCallIcon = '${_svgQRIconPath}qr_call$_svg';
+  static const qrClockIcon = '${_svgQRIconPath}qr_clock$_svg';
+  static const qrLocationIcon = '${_svgQRIconPath}qr_location$_svg';
+  static const qrRatingIcon = '${_svgQRIconPath}qr_rating$_svg';
+  static const qrSocialIcon = '${_svgQRIconPath}qr_social$_svg';
+  static const qrWebIcon = '${_svgQRIconPath}qr_web$_svg';
+
+  static const qrFaceBookIcon = '${_svgQRIconPath}Facebook$_svg';
+  static const qrInstagramIcon = '${_svgQRIconPath}Instagram$_svg';
+  static const qrSnapChatIcon = '${_svgQRIconPath}Snapchat$_svg';
+  static const qrTwitterIcon = '${_svgQRIconPath}Twitter$_svg';
+  static const qrWhatsupIcon = '${_svgQRIconPath}WhatsApp$_svg';
+
+  static const qrOpenLinkIcon = '${_svgQRIconPath}open_link$_svg';
 }

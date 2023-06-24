@@ -1,4 +1,4 @@
-/*import 'dart:async';
+import 'dart:async';
 import 'dart:io';
 
 import 'package:balady_plus/app/core/services/services_exports.dart'
@@ -19,6 +19,8 @@ import 'dart:developer' as devtools show log;
 import 'package:permission_handler/permission_handler.dart';
 import 'package:share_plus/share_plus.dart';
 
+import '../../../features/_shared_feature_/presentation/dialogs/photo_permission_dialog.dart';
+import '../../utils/constants/constants.dart';
 
 // use it insead of print() or debugPrint()
 extension Log<T extends Object> on T {
@@ -39,12 +41,14 @@ class Helpers {
 
   static String getCurrentLanguageCode() => translator.activeLanguageCode;
 
-  static List<String> getListOfAppLanguages() =>
+  /*static List<String> getListOfAppLanguages() =>
       Constants.defaultAppLanguage == APP_SUPPORTED_LANGUAGES.ar
           ? <String>['ar', 'en']
-          : <String>['en', 'ar'];
+          : <String>['en', 'ar'];*/
 
   static bool isBiometricAvailable = true;
+
+/*
   static void backNavigationToSpecificScreen({
     String? navigationKey,
     Object? arguments,
@@ -100,117 +104,22 @@ class Helpers {
 
 
 
-  static String convert24TimeTo12WithPeriod(String? time) {
-    if (time != null) {
-      int? hoursFrom = int.tryParse(time.split(":")[0]) != null
-          ? int.parse(time.split(":")[0])
-          : null;
-      int? minuteFrom = int.tryParse(time.split(":")[1]) != null
-          ? int.parse(time.split(":")[1])
-          : null;
 
-      TimeOfDay fromTime =
-          TimeOfDay(hour: hoursFrom!, minute: minuteFrom!); // 3:00 PM
-
-      int hoursFromAS12 = hoursFrom;
-
-      if (hoursFrom == 0) hoursFromAS12 += 12;
-
-      String minuteStr = minuteFrom < 10 ? "0$minuteFrom" : "$minuteFrom";
-
-      if (hoursFrom >= 13 && hoursFrom <= 23) {
-        hoursFromAS12 = hoursFromAS12 - 12;
-      }
-
-      if (fromTime.period == DayPeriod.pm) return "$hoursFromAS12:$minuteStr م";
-
-      if (fromTime.period == DayPeriod.am) {
-        return "$hoursFromAS12:$minuteStr ص";
-      }
-    }
-    return "";
-  }
-
-  static String getFormattedTime(String? timeFrom, String? timeTo) {
-    if (timeFrom != null && timeTo != null) {
-      int? hoursFrom = int.tryParse(timeFrom.split(":")[0]) != null
-          ? int.parse(timeFrom.split(":")[0])
-          : null;
-      int? hoursTo = int.tryParse(timeTo.split(":")[0]) != null
-          ? int.parse(timeTo.split(":")[0])
-          : null;
-
-      int? minuteFrom = int.tryParse(timeFrom.split(":")[1]) != null
-          ? int.parse(timeFrom.split(":")[1])
-          : null;
-      int? minuteTo = int.tryParse(timeTo.split(":")[1]) != null
-          ? int.parse(timeTo.split(":")[1])
-          : null;
-      String minuteFromStr = minuteFrom! < 10 ? "0$minuteFrom" : "$minuteFrom";
-      String minuteToStr = minuteTo! < 10 ? "0$minuteTo" : "$minuteTo";
-      TimeOfDay fromTime =
-          TimeOfDay(hour: hoursFrom!, minute: minuteFrom); // 3:00 PM
-      TimeOfDay toTime = TimeOfDay(hour: hoursTo!, minute: minuteTo); // 5:00 AM
-
-      int hoursFromAS12 = hoursFrom;
-      int hoursToAS12 = hoursTo;
-
-      if (hoursFrom == 0) hoursFromAS12 += 12;
-
-      if (hoursTo == 0) hoursToAS12 += 12;
-
-      if (hoursFrom >= 13 && hoursFrom <= 23) {
-        hoursFromAS12 = hoursFromAS12 - 12;
-      }
-
-      if (hoursTo >= 13 && hoursTo <= 23) hoursToAS12 = hoursToAS12 - 12;
-
-      String time = "";
-
-      if (fromTime.period == DayPeriod.am && toTime.period == DayPeriod.am) {
-        time = "$hoursFromAS12:$minuteFromStr - $hoursToAS12:$minuteToStr ص";
-        return time;
-      } else if (fromTime.period == DayPeriod.pm &&
-          toTime.period == DayPeriod.pm) {
-        time = "$hoursFromAS12:$minuteFromStr - $hoursToAS12:$minuteToStr م";
-        return time;
-      } else {
-        String from = "";
-        String to = "";
-        if (fromTime.period == DayPeriod.pm) {
-          from = "$hoursFromAS12:$minuteFromStr م";
-        }
-
-        if (fromTime.period == DayPeriod.am) {
-          from = "$hoursFromAS12:$minuteFromStr ص";
-        }
-
-        if (toTime.period == DayPeriod.pm) to = "$hoursToAS12:$minuteToStr م";
-
-        if (toTime.period == DayPeriod.am) to = "$hoursToAS12:$minuteToStr ص";
-
-        return "$from - $to";
-      }
-    }
-    return "";
-  }
-
-
-
+*/
 
   static Future<LatLng?> getCurrentLocation() async {
     try {
-    //  EasyLoading.show();
+      //  EasyLoading.show();
       geoLocator.Position position =
           await geoLocator.Geolocator.getCurrentPosition(
               desiredAccuracy: geoLocator.LocationAccuracy.high,
               timeLimit: const Duration(seconds: 13));
-  //    EasyLoading.dismiss();
+      //    EasyLoading.dismiss();
 
       return LatLng(position.latitude, position.longitude);
     } catch (ex) {
       print(ex);
-  //    EasyLoading.dismiss();
+      //    EasyLoading.dismiss();
       geoLocator.Position? position;
       try {
         position = await geoLocator.Geolocator.getLastKnownPosition();
@@ -236,7 +145,7 @@ class Helpers {
     }
   }
 
- /* static String getCRMType(CRM_REQUEST_TYPE? type) {
+  /* static String getCRMType(CRM_REQUEST_TYPE? type) {
     switch (type) {
       case CRM_REQUEST_TYPE.req:
         return Helpers.translatingWord("customerVoiceRequestServiceCardWord");
@@ -408,7 +317,7 @@ class Helpers {
       int? statusCode,
       String? errorMsg}) async {
     // print("Send Log");
-   /* try {
+    /* try {
       PackageInfo packageInfo = await PackageInfo.fromPlatform();
       SentryUser? user;
       String? userID = CommonProperties.getSSOProfile?.idNo;
@@ -449,11 +358,11 @@ class Helpers {
     return value;
   }
 
-  static void sendEventToAnalytics(String event) {
+  /*static void sendEventToAnalytics(String event) {
     try {
       fbAnalytics.logEvent(name: event);
     } catch (ex) {}
-  }
+  }*/
 
   /*static void sendSuccessEvent(PAGE_TYPE type) {
     try {
@@ -495,9 +404,7 @@ class Helpers {
     } catch (ex) {}
   }*/
 
-
-
- /* static openFile(Uint8List bytes, {String? contentType}) async {
+  /* static openFile(Uint8List bytes, {String? contentType}) async {
     String extension =
         contentType != null ? ("." + contentType.split("/").last) : "";
     try {
@@ -595,4 +502,3 @@ class Helpers {
     return "";
   }*/
 }
-*/

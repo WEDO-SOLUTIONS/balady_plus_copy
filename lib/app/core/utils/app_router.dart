@@ -10,6 +10,7 @@ import '../../features/bottom_navigation/bottom_navigation_exports.dart'
     show BottomNavigationPage;
 import '../../features/entry_point/entry_point_exports.dart' show SsoUserInfo;
 import '../../features/component_test/presentation/pages/components_test_page.dart';
+import '../../features/facility_qr/facility_qr_exports.dart';
 import '../../features/profile_features/dashboard/dashboard_exports.dart'
     show DashBoardPage;
 import '../../features/profile_features/invoices/invoices_exports.dart'
@@ -99,6 +100,22 @@ class AppRouter {
           builder: (_) => VDGuestOtpScreen(),
         );
 
+// QR
+
+      case RouteName.qrFacilityRatingRoute:
+        return MaterialPageRoute(
+          builder: (_) => FacilityRatingScreen(),
+        );
+
+      case RouteName.qrFacilityScreenRoute:
+        return MaterialPageRoute(
+          builder: (_) => const FacilityScreen(),
+        );
+
+      case RouteName.qrScreenRoute:
+        return MaterialPageRoute(
+          builder: (_) => const QrScreen(),
+        );
       // error page
       default:
         return MaterialPageRoute(builder: (_) => const SizedBox());

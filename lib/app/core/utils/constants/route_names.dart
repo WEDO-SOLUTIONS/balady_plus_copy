@@ -21,4 +21,9 @@ class RouteName {
   static const vdCreateVDDetailsPage = '/vdCreateVDDetailsPage';
   static const vdMapRoute = '/vdMapRoute';
   static const vdGuestOtpScreen = '/vdGuestOtpScreen';
+
+  // -------  QR ---------
+  static const qrFacilityRatingRoute = '/qrFacilityRatingRoute';
+  static const qrFacilityScreenRoute = '/qrFacilityScreenRoute';
+  static const qrScreenRoute = '/qrScreenRoute';
 }

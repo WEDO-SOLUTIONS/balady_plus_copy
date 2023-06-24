@@ -117,6 +117,13 @@ dependencies:
   pinput: ^2.2.31
   pin_code_fields: ^7.3.0
   cached_network_image: ^3.2.2
+  photo_view: ^0.13.0
+  flutter_rating_bar: ^4.0.0
+  tuple: ^2.0.0
+  flutter_easyloading: ^3.0.3
+  connectivity_plus: ^2.2.0
+  qr_code_scanner: ^1.0.1
+  scan: ^1.6.0
   sms_user_consent:
     git:
       url: https://github.com/ctnataman/sms_user_consent
@@ -154,8 +161,10 @@ flutter:
     - assets/icons/svg/profile/
     - assets/icons/svg/nearby/
     - assets/icons/svg/vd/
+    - assets/icons/svg/qr/
     - assets/icons/png/
     - assets/icons/png/vd/
+    - assets/icons/png/qr/
     - assets/images/
     - assets/langs/
     - assets/services/

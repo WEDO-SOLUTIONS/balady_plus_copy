@@ -1,7 +1,7 @@
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../../_shared_feature_/presentation/widgets/custom_svg_icon_widget copy.dart';
+import '../../../../../_shared_feature_/presentation/widgets/custom_svg_icon_widget.dart';
 
 class SplImagesListWidget extends StatelessWidget {
   List<String>? images;
