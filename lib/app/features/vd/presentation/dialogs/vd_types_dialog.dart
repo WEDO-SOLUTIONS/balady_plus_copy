@@ -9,7 +9,7 @@ import '../../../../core/utils/constants/constants.dart';
 import '../../../_shared_feature_/presentation/widgets/buttons/custom_buttons_widgets.dart';
 import '../../../_shared_feature_/presentation/widgets/custom_shimmer_list_widget.dart';
 import '../../../_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
-import '../../../_shared_feature_/presentation/widgets/custom_svg_icon_widget copy.dart';
+import '../../../_shared_feature_/presentation/widgets/custom_svg_icon_widget.dart';
 import '../../../_shared_feature_/presentation/widgets/reload_widget.dart';
 import '../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 

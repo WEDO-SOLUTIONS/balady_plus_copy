@@ -129,8 +129,10 @@ class AppInterceptors extends Interceptor {
     final verifyingKEY = CommonFunctions.hashRequest(url, method);
     options.headers
         .putIfAbsent(ApiHeader.verifyingKEY.name, () => verifyingKEY);
-
-    options.headers['Authorization'] = 'Bearer ${CommonProperties.token}';
+    if (options.headers['Authorization'] == null) {
+      options.headers['Authorization'] = 'Bearer ${CommonProperties.token}';
+    }
+    print(options.headers);
     return handler.next(options);
   }
 

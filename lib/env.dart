@@ -1,6 +1,8 @@
 import 'package:balady_plus/app/core/services/local/shared_prefs_manager.dart';
-import 'package:flutter/material.dart' show WidgetsFlutterBinding;
+import 'package:flutter/material.dart'
+    show BoxShadow, Color, Colors, WidgetsFlutterBinding;
 import 'package:flutter/services.dart' show SystemChrome, DeviceOrientation;
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:localize_and_translate/localize_and_translate.dart'
     show LocalizationDefaultType, translator;
 import './app/core/dependency_injection/dependency_injection_exports.dart' as di
@@ -46,5 +48,21 @@ abstract class AppEnv {
       languagesList: AppConfig.defaultAppLanguage.languages,
       assetsDirectory: AppConfig.appLanguagesPath,
     );
+    configLoading();
+  }
+
+  static void configLoading() {
+    EasyLoading.instance
+      ..loadingStyle = EasyLoadingStyle.custom
+      ..backgroundColor = Colors.transparent
+      ..boxShadow = <BoxShadow>[]
+      ..textColor = Colors.white
+      ..indicatorColor = const Color(0xff389492)
+      ..maskType = EasyLoadingMaskType.clear
+      ..indicatorType = EasyLoadingIndicatorType.ring
+      ..indicatorSize = 45.0
+      ..radius = 10.0
+      ..userInteractions = false
+      ..dismissOnTap = false;
   }
 }
