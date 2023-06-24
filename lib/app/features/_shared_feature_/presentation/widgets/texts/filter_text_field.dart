@@ -1,5 +1,6 @@
 import 'package:balady_plus/app/core/utils/debouncer.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../core/utils/utils_exports.dart'
@@ -34,6 +35,10 @@ class FilterTextField extends StatelessWidget {
         ),
         initialValue: initialValue,
         borderRadius: 8,
+        keyboardType: TextInputType.number,
+        inputFormatters: [
+          FilteringTextInputFormatter.digitsOnly,
+        ],
         borderColor: AppColor.blackModern300Light,
         fillColor: AppColor.scaffoldBackground,
         textFieldStyle: AppStyle.dropDownValueTextStyle,

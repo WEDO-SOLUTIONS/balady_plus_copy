@@ -255,9 +255,10 @@ class InvoicesBloc extends Bloc<InvoicesEvent, InvoicesState> {
 
     on<InvoicesLoadMoreEvent>((event, emit) async {
       if (state.invoicesStatus == BlocRequestStatus.submissionGetLoading ||
-          !state.noMoreData) {
+          state.noMoreData) {
         return;
       }
+
       emit(
         state.copyWith(
           page: state.page + 1,

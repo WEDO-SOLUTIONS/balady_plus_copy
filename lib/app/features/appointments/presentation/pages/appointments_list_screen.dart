@@ -55,7 +55,7 @@ class _AppointmentsListScreenState extends State<AppointmentsListScreen> {
               Navigator.of(context)
                   .pushNamed(RouteName.previousAppointmentsRoute);
             },
-            icon: IconPath.calendarIcon,
+            icon: IconPath.calenderTick,
           )
         ],
       ),

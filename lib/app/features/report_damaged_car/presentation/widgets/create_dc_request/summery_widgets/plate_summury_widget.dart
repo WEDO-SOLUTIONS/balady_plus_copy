@@ -6,8 +6,8 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../../core/utils/constants/paths/icon_paths.dart';
 import '../../../../../_shared_feature_/presentation/under_testing/custom_expansion_panel_widget.dart';
-import '../../../../../objectable_transactions/presentation/widgets/summery_widgets/field_data.dart';
 import '../../../../../vd/presentation/blocs/create_vd_details_bloc/create_vd_bloc.dart';
+import '../../../../../vd/presentation/widgets/summery_widgets/field_data.dart';
 import '../../../blocs/create_dc_request/create_dc_details_bloc/create_dc_bloc.dart';
 
 class PlateSummuryWidget extends StatelessWidget {

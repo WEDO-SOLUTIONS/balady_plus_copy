@@ -18,7 +18,7 @@ import '../../../_shared_feature_/presentation/widgets/custom_popups_widgets.dar
 import '../../../_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
 import '../../../_shared_feature_/presentation/widgets/details_header.dart';
 import '../../../new_appointment/presentation/core/models/appointment_details_model.dart';
-import '../../../objectable_transactions/presentation/widgets/summery_widgets/field_data.dart';
+import '../../../vd/presentation/widgets/summery_widgets/field_data.dart';
 import '../core/services/view_models/appontment_details_view_model.dart';
 import '../dialogs/confirm_cancel_appointment_dialog.dart';
 import '../widgets/appointment_details_widgets/appointment_details_card_widget.dart';

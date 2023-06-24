@@ -40,6 +40,7 @@ class IconPath {
   static const needLogin = '${_pngIconPath}need_login$_png';
   static const successIcon = '${_pngIconPath}success_icon$_png';
   static const calender = '${_svgIconPath}calender$_svg';
+  static const calenderTick = '${_svgIconPath}calender_tick$_svg';
 
   // Bottom-Nav-Bar
   static const home = '${_svgIconPath}home_icon$_svg';

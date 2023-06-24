@@ -5,7 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
-import '../../../../objectable_transactions/presentation/widgets/summery_widgets/field_data.dart';
+import '../../../../vd/presentation/widgets/summery_widgets/field_data.dart';
 import '../../../../vd/presentation/widgets/vd_header_desc_widget.dart';
 import '../../blocs/create_retrive_bloc/create_retrive_bloc.dart';
 

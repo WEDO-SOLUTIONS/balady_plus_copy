@@ -49,7 +49,6 @@ import '../../../_shared_feature_/presentation/widgets/custom_cupertino_drop_dow
 import '../../../_shared_feature_/presentation/widgets/custom_popups_widgets.dart';
 import '../../../_shared_feature_/presentation/widgets/custom_tooltip_widget.dart';
 import '../../../home_page/presentation/widgets/home_app_bar/circle_icon.dart';
-import '../../../objectable_transactions/presentation/widgets/summery_widgets/field_data.dart';
 import '../../../transaction_inquiry/presentation/core/models/gis_location_result.dart';
 import 'add_board_screen.dart';
 
