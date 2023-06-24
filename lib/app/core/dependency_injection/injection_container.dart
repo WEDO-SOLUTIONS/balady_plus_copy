@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/core/dependency_injection/features/dc_injection.dart';
 import 'package:dio/dio.dart' show Dio;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart'
     show FlutterSecureStorage;
@@ -16,13 +17,16 @@ import '../dependency_injection/dependency_injection_exports.dart'
         EntryPointInjection,
         InvoicesInjection,
         LicensesInjection,
-        LookupInjection,
         OTPInjection,
         PrayerTimesInjection,
         RequestsInjection,
         ServicesInjection,
-        SignInInjection,
-        SignUpInjection;
+        SignUpInjection,
+        ObjectionsInjection,
+        ObjectableTransactionsInjection,
+        VDInjection,
+        DCRetriveInjection,
+        OLDInjection;
 import '../services/services_exports.dart'
     show
         EntryPointBridge,
@@ -34,24 +38,32 @@ import '../services/services_exports.dart'
 final sl = GetIt.instance;
 
 void initialize() {
+  OLDInjection.init();
   //! Features
   //? Entry Point
   EntryPointInjection.init();
-  //? Lookup
-  LookupInjection.init();
   //? OTP
   OTPInjection.init();
-  //? Sign-In
-  SignInInjection.init();
+  ;
   //? Sign-Up
   SignUpInjection.init();
   //? Services
   ServicesInjection.init();
+//? Objections
+  ObjectionsInjection.init();
+//? Objectable Transactions
+  ObjectableTransactionsInjection.init();
+
+//? DC
+  DCInjection.init();
+  DCRetriveInjection.init();
 
   //! Services
   //* Public Services
   //? Prayer Times
   PrayerTimesInjection.init();
+  //? VD
+  VDInjection.init();
 
   //! Profile
   //? Delegators

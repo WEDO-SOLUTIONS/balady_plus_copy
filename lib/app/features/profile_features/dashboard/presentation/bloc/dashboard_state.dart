@@ -56,14 +56,14 @@ class CardState extends Equatable {
   CardState copyWith({
     BlocRequestStatus? productsStatus,
     List<DashboardProductEntity>? products,
-    DashboardProductEntity? selectedProduct,
+    Nullable<DashboardProductEntity?>? selectedProduct,
     BlocRequestStatus? statisticsStatuses,
     List<DashboardStatisticsEntity>? statistics,
   }) {
     return CardState(
       productsStatus: productsStatus ?? this.productsStatus,
       products: products ?? this.products,
-      selectedProduct: selectedProduct ?? this.selectedProduct,
+      selectedProduct: selectedProduct  == null ? this.selectedProduct : selectedProduct.value,
       statisticsStatuses: statisticsStatuses ?? this.statisticsStatuses,
       statistics: statistics ?? this.statistics,
     );

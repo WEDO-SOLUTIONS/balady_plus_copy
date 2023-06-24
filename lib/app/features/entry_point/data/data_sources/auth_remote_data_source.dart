@@ -238,12 +238,12 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
       if (response.headers['set-cookie']?.toString() != null) {
         cookie = response.headers['set-cookie'].toString();
       }
-
       return cookie;
     } on DioError catch (error) {
       throw ServerException(error.toString(),
           statusCode: error.response?.statusCode);
     } catch (ex) {
+      print(ex);
       if (ex is ServerException) {
         rethrow;
       } else {
@@ -309,7 +309,7 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
 
       print(d?.length);*/
 
-      final result = ResponseBodyModel.fromMap(data).data.result;
+      final result = ResponseBodyModel.fromMap(data).data?.result;
       List<TestModel>? d = result != null
           ? List<TestModel>.from(result.map((x) => TestModel.fromMap(x)))
           : null;

@@ -9,19 +9,20 @@ class LicenseEntity extends Equatable {
   final String municipalityName;
   final String subMunicipalityName;
   final DateTime licenseEndDate;
-  final DateTime updateTime;
+  final DateTime? updateTime;
+  final String? redirectUrl;
 
-  const LicenseEntity({
-    required this.licenseNumber,
-    required this.licenseStatusId,
-    required this.licenseStatusName,
-    required this.licenseTypeName,
-    required this.requestTypeName,
-    required this.municipalityName,
-    required this.subMunicipalityName,
-    required this.licenseEndDate,
-    required this.updateTime,
-  });
+  const LicenseEntity(
+      {required this.licenseNumber,
+      required this.licenseStatusId,
+      required this.licenseStatusName,
+      required this.licenseTypeName,
+      required this.requestTypeName,
+      required this.municipalityName,
+      required this.subMunicipalityName,
+      required this.licenseEndDate,
+      required this.updateTime,
+      this.redirectUrl});
 
   @override
   List<Object?> get props => [
@@ -34,5 +35,6 @@ class LicenseEntity extends Equatable {
         subMunicipalityName,
         licenseEndDate,
         updateTime,
+        redirectUrl
       ];
 }

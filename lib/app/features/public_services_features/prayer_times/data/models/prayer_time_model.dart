@@ -20,4 +20,16 @@ class PrayerTimeModel extends PrayerTimeEntity {
       minute: map['minute'] as int,
     );
   }
+
+  factory PrayerTimeModel.fromTime({
+    required Prayers prayer,
+    required String time,
+  }) {
+    return PrayerTimeModel(
+      prayer: prayer,
+      time: time,
+      hour: int.parse(time.split(":").first),
+      minute: int.parse(time.split(":").last),
+    );
+  }
 }

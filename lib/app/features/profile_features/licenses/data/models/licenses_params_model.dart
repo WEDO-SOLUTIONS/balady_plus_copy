@@ -5,35 +5,33 @@ import '../../../../../core/utils/utils_exports.dart' show SortType;
 class LicensesParamsModel extends Equatable {
   final String? unifiedNationalNumber;
   final String? identityNumber;
-  final String? query;
-  final String? licenceId;
-  final String? licenseNumber;
-  final String? invoiceId;
   final int page;
   final int size;
+  final String? licenseNumber;
+  // final String? licenseNumber;
+  // final String? invoiceId;
   final String? productId;
-  final String? requestTypeId;
+  // final String? requestTypeId;
   final String? dashboardStatusId;
   final String? municipalityId;
   final String? subMunicipalityId;
-  final String? creationDate;
+  final String? expireDate;
   final SortType sort;
 
   const LicensesParamsModel({
     this.unifiedNationalNumber,
     this.identityNumber,
-    this.query,
-    this.licenceId,
-    this.licenseNumber,
-    this.invoiceId,
     required this.page,
     required this.size,
+    this.licenseNumber,
+    // this.licenseNumber,
+    // this.invoiceId,
     this.productId,
-    this.requestTypeId,
+    // this.requestTypeId,
     this.dashboardStatusId,
     this.municipalityId,
     this.subMunicipalityId,
-    this.creationDate,
+    this.expireDate,
     this.sort = SortType.desc,
   });
 
@@ -41,21 +39,20 @@ class LicensesParamsModel extends Equatable {
     return {
       'unifiedNationalNumber': unifiedNationalNumber,
       'identityNumber': identityNumber,
-      'query': query,
-      'licenceId': licenceId,
-      'requestNo': licenseNumber,
-      'invoiceId': invoiceId,
+      'licenseNo': licenseNumber,
+      // 'requestNo': licenseNumber,
+      // 'invoiceId': invoiceId,
       'page': page,
       'size': size,
       'productId': productId,
-      'requestTypeId': requestTypeId,
+      // 'requestTypeId': requestTypeId,
       'dashboardStatusId': dashboardStatusId,
       'municipalityId': municipalityId,
       'subMunicipalityId': subMunicipalityId,
-      'creationDate': creationDate,
+      'expireDate': expireDate,
       'sort': [
         {
-          "filed": "8",
+          "filed": "7",
           "type": sort.value,
         }
       ]
@@ -66,17 +63,16 @@ class LicensesParamsModel extends Equatable {
   List<Object?> get props => [
         unifiedNationalNumber,
         identityNumber,
-        query,
+        // licenseNumber,
         licenseNumber,
-        licenceId,
         page,
         size,
         productId,
-        requestTypeId,
+        // requestTypeId,
         dashboardStatusId,
         municipalityId,
         subMunicipalityId,
-        creationDate,
+        expireDate,
         sort,
       ];
 }

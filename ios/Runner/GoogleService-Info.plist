@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>CLIENT_ID</key>
+    <string>376161649334-f3uljm506fv1s1fl3pb9r0rbdpi5lvso.apps.googleusercontent.com</string>
+    <key>REVERSED_CLIENT_ID</key>
+    <string>com.googleusercontent.apps.376161649334-f3uljm506fv1s1fl3pb9r0rbdpi5lvso</string>
+    <key>API_KEY</key>
+    <string>AIzaSyCGJuVsI2IxjyIve1px3_T-nNwhJz1XLf8</string>
+    <key>GCM_SENDER_ID</key>
+    <string>376161649334</string>
+    <key>PLIST_VERSION</key>
+    <string>1</string>
+    <key>BUNDLE_ID</key>
+    <string>momra.balady.ios</string>
+    <key>PROJECT_ID</key>
+    <string>balady-ece90</string>
+    <key>STORAGE_BUCKET</key>
+    <string>balady-ece90.appspot.com</string>
+    <key>IS_ADS_ENABLED</key>
+    <false></false>
+    <key>IS_ANALYTICS_ENABLED</key>
+    <false></false>
+    <key>IS_APPINVITE_ENABLED</key>
+    <true></true>
+    <key>IS_GCM_ENABLED</key>
+    <true></true>
+    <key>IS_SIGNIN_ENABLED</key>
+    <true></true>
+    <key>GOOGLE_APP_ID</key>
+    <string>1:376161649334:ios:4d6c0153d187b394901c17</string>
+    <key>DATABASE_URL</key>
+    <string>https://balady-ece90.firebaseio.com</string>
+</dict>
+</plist>

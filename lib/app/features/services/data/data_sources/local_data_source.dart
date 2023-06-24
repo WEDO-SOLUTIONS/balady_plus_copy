@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/services.dart';
 
+import '../../../../core/services/services.dart';
 import '../../services_exports.dart' show ServiceEntity;
 import '../models/service_model.dart';
 
@@ -51,9 +52,8 @@ class ServicesLocalDataSourceImplementation implements ServicesLocalDataSource {
   }
 
   Future<void> _loadServices() async {
-    final services =
-        await rootBundle.loadString('assets/services/services.json');
-    final servicesJson = json.decode(services) as Map<String, dynamic>;
+    final servicesJson = servicesConfig;
+    //final servicesJson = json.decode(services) as Map<String, dynamic>;
     final publicServicesJson = servicesJson['public_services'] as List<dynamic>;
     final municipalServicesJson =
         servicesJson['municipal_services'] as List<dynamic>;

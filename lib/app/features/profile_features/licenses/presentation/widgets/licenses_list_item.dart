@@ -4,7 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../core/utils/utils_exports.dart'
-    show AppColor, AppStyle, IconPath;
+    show AppColor, AppStyle, IconPath, RouteName;
 import '../../../../_shared_feature_/shared_feature_exports.dart';
 import '../../licenses_exports.dart' show LicenseEntity, LicenseParameter;
 
@@ -80,14 +80,22 @@ class LicensesListItem extends StatelessWidget {
                   title: 'license_end_date'.tr(),
                   value: DateFormat.yMd().format(license.licenseEndDate),
                 ),
-                LicenseParameter(
-                  title: 'last_update'.tr(),
-                  value: DateFormat.yMd().format(license.updateTime),
-                ),
+                if (license.updateTime != null)
+                  LicenseParameter(
+                    title: 'last_operation'.tr(),
+                    value: DateFormat.yMd().format(license.updateTime!),
+                  ),
               ],
             ),
           ),
-          ElevatedButtonWidget.details(onPressed: () {}),
+          ElevatedButtonWidget.details(onPressed: () {
+            if (license.redirectUrl == null) return;
+
+            Navigator.of(context).pushNamed(
+              RouteName.inappWebview,
+              arguments: (title: ''.tr(), url: license.redirectUrl),
+            );
+          }),
         ],
       ),
     );

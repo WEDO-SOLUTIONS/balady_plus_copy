@@ -1,8 +1,9 @@
-//import 'package:balady_new_app/etmam_app/features/_shared_feature_/shared/shared_feature_exports.dart'
+//import 'package:balady_plus/etmam_app/features/_shared_feature_/shared/shared_feature_exports.dart'
 //   show showUpdateAppPopUpWidget;
 import 'package:balady_plus/app/features/entry_point/domain/use_cases/get_test_data.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:webview_flutter/webview_flutter.dart' as c;
@@ -82,13 +83,13 @@ class EntryPointCubit extends Cubit<EntryPointState> {
       });
       //MM sl<EtmamEntryPointCubit>().onLoadingApp();
 
-      if (token.refreshToken != null) await refreshToken(token.refreshToken!);
+      //  if (token.refreshToken != null) await refreshToken(token.refreshToken!);
       refreshSSOProfile();
     });
   }
 
   Future<bool> onLogin({bool isFromEtmam = false}) async {
-    //MM EasyLoading.show();
+    EasyLoading.show();
     emit(state.copyWith(
       status: AuthStatus.loading,
     ));
@@ -157,7 +158,7 @@ class EntryPointCubit extends Cubit<EntryPointState> {
             emit(state.copyWith(token: token));
           }
         });
-        //MM  EasyLoading.dismiss();
+        EasyLoading.dismiss();
         if (isFromEtmam) {
           //MM    sl<EtmamEntryPointCubit>().onLogin();
         }
@@ -169,7 +170,7 @@ class EntryPointCubit extends Cubit<EntryPointState> {
         }
       }
     });
-    //MM EasyLoading.dismiss();
+    EasyLoading.dismiss();
     //MM   sl<VDCategoryBloc>().add(RefreshCategoriesEvent());
     //MM return isLoggedIn;
     return CommonProperties.isLoggedIn;

@@ -1,12 +1,14 @@
 import 'dart:async';
 
+import 'package:balady_plus/app/core/services/services_exports.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../core/errors/errors_exports.dart' show ServerFailure;
-import '../../../../../core/utils/utils_exports.dart' show BlocRequestStatus;
+import '../../../../../core/utils/utils_exports.dart'
+    show BlocRequestStatus, CommonFunctions;
 import '../../prayer_times_exports.dart'
     show
         GetPrayerTimes,
@@ -27,7 +29,7 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
 
   void getPrayerTime() async {
     // request permission
-    final isEnabled = await Geolocator.isLocationServiceEnabled();
+    /* final isEnabled = await Geolocator.isLocationServiceEnabled();
     if (!isEnabled) {
       emit(state.copyWith(
         status: BlocRequestStatus.submissionGetFailure,
@@ -35,6 +37,11 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
       ));
       return;
     }
+    */
+
+    bool isEnabled = await CommonFunctions.checkLocationSettings(
+        NavigationService.navigatorKey.currentContext!);
+    if (!isEnabled) return;
     late LocationPermission permission;
     permission = await Geolocator.checkPermission();
     permission = await Geolocator.requestPermission();

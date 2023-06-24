@@ -98,7 +98,7 @@ dependencies:
   # Permissions
   permission_handler: ^8.3.0
   # Get current device information
-  device_info_plus: ^8.0.0
+  device_info_plus: ^9.0.0
   # API for querying information about an application package
   package_info_plus: ^3.0.3
   # parses Adobe After Effects animations
@@ -106,6 +106,7 @@ dependencies:
   # Generate Unique ID
   uuid: ^3.0.7
   hijri: ^3.0.0
+  
   flutter_appauth:
     path: flutter_appauth/flutter_appauth
   webview_flutter: ^3.0.0
@@ -116,6 +117,15 @@ dependencies:
   pinput: ^2.2.31
   pin_code_fields: ^7.3.0
   cached_network_image: ^3.2.2
+  mime: ^1.0.4
+
+  photo_view: ^0.14.0
+  flutter_rating_bar: ^4.0.0
+  tuple: ^2.0.0
+  flutter_easyloading: ^3.0.3
+  connectivity_plus: ^2.2.0
+  qr_code_scanner: ^1.0.1
+  scan: ^1.6.0
   sms_user_consent:
     git:
       url: https://github.com/ctnataman/sms_user_consent
@@ -125,6 +135,11 @@ dependencies:
       #ref: v0.3.2
       ref: e104fa94452ec236dfb27cf5ea54fb72f280bc08
   flutter_picker: ^2.1.0
+  percent_indicator: ^4.2.3
+  flutter_staggered_grid_view: ^0.6.0
+  flutter_cached_pdfview: ^0.4.2
+  pdfx: 
+  
   #test_package:
  #   path: packages/test_package
 
@@ -132,6 +147,7 @@ dev_dependencies:
   flutter_lints: ^2.0.1
   flutter_test:
     sdk: flutter
+  
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -152,7 +168,12 @@ flutter:
     - assets/icons/svg/weather/
     - assets/icons/svg/profile/
     - assets/icons/svg/nearby/
+    - assets/icons/svg/vd/
+    - assets/icons/svg/qr/
+    - assets/icons/svg/dc/
     - assets/icons/png/
+    - assets/icons/png/vd/
+    - assets/icons/png/qr/
     - assets/images/
     - assets/langs/
     - assets/services/

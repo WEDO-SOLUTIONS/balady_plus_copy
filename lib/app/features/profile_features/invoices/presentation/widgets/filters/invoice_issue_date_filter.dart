@@ -5,7 +5,7 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 import '../../../../../_shared_feature_/shared_feature_exports.dart'
     show FilterDatePicker;
 import '../../../invoices_exports.dart'
-    show InvoiceDueDateSelectedEvent, InvoicesBloc, InvoicesState;
+    show InvoiceIssueDateSelectedEvent, InvoicesBloc, InvoicesState;
 
 class InvoicesIssueDateFilter extends StatelessWidget {
   const InvoicesIssueDateFilter({super.key});
@@ -14,14 +14,14 @@ class InvoicesIssueDateFilter extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<InvoicesBloc, InvoicesState>(
       buildWhen: (previous, current) =>
-          previous.selectedInvoiceDueDate != current.selectedInvoiceDueDate,
+          previous.selectedInvoiceIssueDate != current.selectedInvoiceIssueDate,
       builder: (context, state) {
         return FilterDatePicker(
-          title: "invoice_due_date".tr(),
-          initialDate: state.selectedInvoiceDueDate,
+          title: "invoice_issue_date".tr(),
+          initialDate: state.selectedInvoiceIssueDate,
           onChange: (selectedDate) {
             BlocProvider.of<InvoicesBloc>(context).add(
-              InvoiceDueDateSelectedEvent(date: selectedDate),
+              InvoiceIssueDateSelectedEvent(date: selectedDate),
             );
           },
         );

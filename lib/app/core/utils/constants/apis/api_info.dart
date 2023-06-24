@@ -6,11 +6,12 @@ class ApiUrl {
   static const ssoUserCookie = '/account/GetAuthCookies';
   static const apigeeToken = '/oauth/v1/token';
   static const forceUpdate = '/v1/force-update-apps/version';
+  static const uploadFile = '/v1/dms-mobile/upload';
 
   //! Services
   //! Public Services
   //! Prayer Times
-  static const prayerTimes = '/v1/prayer-timings/prayer-times';
+  static const prayerTimes = '/v1/kacst/prayer-times';
 
   //! Profile
   //! Delegators
@@ -44,6 +45,63 @@ class ApiUrl {
   static licenseSubTypes(int id) =>
       '/v1/balady-dashboard/license/sub-main-types/$id';
   static const licenseStatuses = '/v1/balady-dashboard/license/statuses';
+
+//! Objections
+
+  static const objectionsRequests = '/v1/balady-dashboard/objection-requests';
+  static const applicationsLookUp =
+      '/v1/objection-generic-services/applications';
+  static String servicesByApplicationId(String id) =>
+      '/v1/objection-generic-services/applications/$id/services';
+  static const objectionsRequestStatus =
+      '/v1/balady-dashboard/objection-requests/lookup-status';
+
+  static const transactionsRequests =
+      '/v1/balady-dashboard/objectable-requests';
+
+  static const postObjection =
+      '/v1/objection-services/submit-objection-requests';
+
+  static const objectionRequestDetails =
+      '/v1/objection-services/objection-details';
+
+  static String transactionsRequestDetails(String id) =>
+      '/v1/objection-generic-services/applications/$id/objectable-transactions';
+
+// VD
+  static const gis = '/v1/crm/bcg/gis-info';
+  static const vdCategories = '/v1/crm/bcg/categories';
+  static const vdSpecialClassifications = '/v1/crm/bcg/special-classifications';
+
+  static const vdSpecialClassificationDetails =
+      '/v1/crm/bcg/special-classification-details';
+
+  static const vdUploadFile = '/v1/crm/upload/bcg/upload-file';
+
+  static const getOTP = '/v1/crm/bcg/otp';
+
+  static const createIncidentRegistered =
+      '/v1/crm/bcg/registered-user/incident';
+  static const createIncidentUnRegistered =
+      '/v1/crm/bcg/unregistered-user/incident';
+
+  static const vdCategoriesRegistered =
+      '/v1/crm/bcg/registered-user/categories';
+
+  static const vdCrExists = '/v1/crm/cr-exists/';
+
+// DC
+
+// Damaged Cars
+  static const dcCarTypes = 'v1/damaged-vehicle-mobile/car-companies';
+
+  static const dcCarModel = 'v1/damaged-vehicle-mobile/car-models';
+
+  static const veichleRecoveryNotes =
+      'v1/damaged-vehicle-mobile/vehicle-recovery-notes';
+
+  static const vehicles = 'v1/damaged-vehicle-mobile/vehicles';
+  static const vehicleRecovery = 'v1/damaged-vehicle-mobile/vehicle-recovery';
 
   //! POST
 

@@ -3,7 +3,9 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 
+import '../../../../core/dependency_injection/injection_container.dart';
 import '../../../../core/utils/utils_exports.dart' show CommonProperties, Log;
+import '../../../entry_point/presentation/cubit/auth_cubit.dart';
 import '../../shared_feature_exports.dart' show DefaultAppBarWidget;
 
 class InAppWebViewPage extends StatefulWidget {
@@ -41,6 +43,13 @@ class _InAppWebViewPageState extends State<InAppWebViewPage> {
           return Stack(
             children: [
               InAppWebView(
+                onWebViewCreated: (controller) {
+                  /* if (controller != null) {
+                    controller.evaluateJavascript(
+                        source:
+                            "document.getElementsByClassName('navbar').style.display='none'");
+                  }*/
+                },
                 initialUrlRequest: URLRequest(
                   url: Uri.parse(widget.args.url),
                   headers: headers,

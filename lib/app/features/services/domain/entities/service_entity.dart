@@ -3,6 +3,7 @@ import 'package:balady_plus/app/features/services/domain/entities/service_card_e
 import 'package:equatable/equatable.dart';
 
 class ServiceEntity extends Equatable {
+  final int id;
   final String title;
   final String iconName;
   final String? icon3DName;
@@ -16,6 +17,7 @@ class ServiceEntity extends Equatable {
   final String? warning;
 
   const ServiceEntity({
+    required this.id,
     required this.title,
     required this.iconName,
     required this.order,

@@ -59,12 +59,13 @@ class InvoicesBloc extends Bloc<InvoicesEvent, InvoicesState> {
           identityNumber: identityNumber,
           page: state.page,
           size: PaginationConstants.limit,
-          invoiceNumber: state.invoiceNumberQuery,
           requestNumber: state.requestNumberQuery,
+          invoiceId: state.invoiceNumberQuery,
+          productId: state.selectedInvoiceType?.id.toString(),
+          requestTypeId: state.selectedInvoiceSubType?.id.toString(),
           invoiceStatusId: state.selectedInvoiceStatus?.id.toString(),
-          invoiceTypeId: state.selectedInvoiceType?.id.toString(),
-          issueDate: state.selectedInvoiceIssueDate?.toIso8601String(),
-          dueDate: state.selectedInvoiceDueDate?.toIso8601String(),
+          sadadDate: state.selectedInvoiceDueDate?.toIso8601String(),
+          creationDate: state.selectedInvoiceIssueDate?.toIso8601String(),
           sort: state.sortType,
         ),
       );
@@ -276,7 +277,7 @@ class InvoicesBloc extends Bloc<InvoicesEvent, InvoicesState> {
     on<InvoiceIssueDateSelectedEvent>((event, emit) async {
       emit(
         state.copyWith(
-          selectedInvoiceDueDate: Nullable(event.date),
+          selectedInvoiceIssueDate: Nullable(event.date),
         ),
       );
     });

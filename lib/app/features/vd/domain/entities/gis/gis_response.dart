@@ -1,0 +1,90 @@
+import 'package:equatable/equatable.dart';
+
+class GISResponse extends Equatable {
+  String? adminMunicipalityId;
+  String? adminMunicipalityName;
+  String? districtId;
+  String? districtName;
+  String? following;
+  String? municipalityuniquecode;
+  String? municipalityId;
+  String? municipalityName;
+  String? region;
+  String? streetName;
+  //dynamic subDistrictId;
+  //dynamic subDistrictName;
+  String? subMunicipalityId;
+  String? subMunicipalityName;
+  String? subMunicipalityCategory;
+  String? subMunicipalityguid;
+  // dynamic parcelNo;
+  // dynamic planNo;
+  bool? vdExcepted;
+  bool? vdPriority;
+
+  GISResponse({
+    this.adminMunicipalityId,
+    this.adminMunicipalityName,
+    // this.cleanInfo,
+    this.districtId,
+    this.districtName,
+    this.following,
+    // this.lightInfo,
+    this.municipalityuniquecode,
+    this.municipalityId,
+    this.municipalityName,
+    this.region,
+    this.streetName,
+    // this.subDistrictId,
+    // this.subDistrictName,
+    this.subMunicipalityId,
+    this.subMunicipalityName,
+    this.subMunicipalityCategory,
+    this.subMunicipalityguid,
+    // this.parcelNo,
+    // this.planNo,
+    this.vdExcepted,
+    this.vdPriority,
+  });
+
+  String getFullAddress() {
+    String address = "";
+    var streetName = this.streetName;
+    var districtName = this.districtName;
+    var subMunicipalityName = this.subMunicipalityName;
+    var adminMunicipalityName = this.adminMunicipalityName;
+
+    if (streetName != null &&
+        streetName.toLowerCase() != "null" &&
+        streetName.isNotEmpty) address += streetName + ", ";
+
+    if (districtName != null &&
+        districtName.toLowerCase() != "null" &&
+        districtName.isNotEmpty) address += districtName + ", ";
+
+    if (subMunicipalityName != null &&
+        subMunicipalityName.toLowerCase() != "null" &&
+        subMunicipalityName.isNotEmpty) address += subMunicipalityName + ", ";
+
+    if (adminMunicipalityName != null && adminMunicipalityName.isNotEmpty) {
+      address += adminMunicipalityName;
+    }
+
+    return address;
+  }
+
+  bool isVDExcepted() {
+    return vdExcepted ?? false;
+  }
+
+  @override
+  List<Object?> get props => [
+        adminMunicipalityId,
+        districtId,
+        municipalityuniquecode,
+        municipalityId,
+        subMunicipalityId,
+        subMunicipalityCategory,
+        subMunicipalityguid
+      ];
+}

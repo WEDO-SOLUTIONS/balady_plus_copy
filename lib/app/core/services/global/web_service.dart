@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:localize_and_translate/localize_and_translate.dart'
     show translator;
@@ -119,23 +121,44 @@ class AppInterceptors extends Interceptor {
         }
         accessToken = newAuthData.accessToken;
       }
-    } else {
+    } else { 
       CommonFunctions.signOut();
       return handler.reject(TokenHasExpiredException(options));
     }*/
 
-    final url = options.uri.toString();
+    String url = options.uri.toString();
     final method = options.method;
-    final verifyingKEY = CommonFunctions.hashRequest(url, method);
+
+    if (options.headers['Authorization'] == null &&
+        CommonProperties.isLoggedIn &&
+        !options.uri.toString().contains("bcg/upload-file")) {
+      options.headers['Authorization'] = 'Bearer ${CommonProperties.token}';
+    }
+
+    if (url.contains("damaged-vehicle-mobile/car-models")) {
+      url = options.baseUrl + options.path;
+      url += "?CompanyID=${options.queryParameters["CompanyID"]}";
+    }
+
+    final verifyingKEY = CommonFunctions.hashRequest(url, method,
+        body: (options.data != null &&
+                !options.uri.toString().contains("bcg/upload-file"))
+            ? json.encode(options.data)
+            : null,
+        authorization: !options.uri.toString().contains("bcg/upload-file")
+            ? options.headers.containsKey("Authorization")
+            : false);
     options.headers
         .putIfAbsent(ApiHeader.verifyingKEY.name, () => verifyingKEY);
-
-    options.headers['Authorization'] = 'Bearer ${CommonProperties.token}';
+    //if (options.headers['Authorization'] == null) {
+    print(options.headers);
     return handler.next(options);
   }
 
   @override
   void onError(DioError err, ErrorInterceptorHandler handler) {
+    "Opps, recieved Error: ${err}".errorLog();
+
     "Opps, recieved Error: ${err.response?.statusCode}".errorLog();
     "Opps, recieved Error: ${err.response?.data}".errorLog();
 
@@ -173,34 +196,6 @@ class AppInterceptors extends Interceptor {
     }
 
     return handler.next(err);
-  }
-
-  Future<AuthDataModel?> _onRefreshToken({
-    required String username,
-    required String refreshToken,
-  }) async {
-    try {
-      // should create new dio instance because the request interceptor is being locked
-      var dio = Dio();
-      dio.options.baseUrl = sl<EnvType>().domain;
-      dio.options.headers = {ApiHeader.language.eName: languageCode};
-      final response = await dio.post(
-        ApiPOST.refreshToken.url,
-        queryParameters: {
-          ApiParam.username.name: username,
-          ApiParam.refreshToken.name: refreshToken,
-        },
-      );
-      "Token has been refreshed successfully".successLog();
-      final decodedResponse = AuthDataModel.fromJson(response.data);
-      return decodedResponse.toFuture();
-    } on DioError catch (e) {
-      "DioError occured ${e.error}".errorLog();
-      return null;
-    } catch (e) {
-      "Catched error occured $e".errorLog();
-      return null;
-    }
   }
 
   String get languageCode => translator.activeLanguageCode;

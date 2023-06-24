@@ -5,11 +5,10 @@ import '../../../../../core/utils/utils_exports.dart' show SortType;
 class RequestsParamsModel extends Equatable {
   final String? unifiedNationalNumber;
   final String? identityNumber;
-  final String? query;
-  final String? licenceId;
-  final String? requestNumber;
   final int page;
   final int size;
+  final String? requestNumber;
+  final String? licenceId;
   final String? productId;
   final String? requestTypeId;
   final String? dashboardStatusId;
@@ -21,11 +20,10 @@ class RequestsParamsModel extends Equatable {
   const RequestsParamsModel({
     this.unifiedNationalNumber,
     this.identityNumber,
-    this.query,
-    this.licenceId,
-    this.requestNumber,
     required this.page,
     required this.size,
+    this.requestNumber,
+    this.licenceId,
     this.productId,
     this.requestTypeId,
     this.dashboardStatusId,
@@ -39,11 +37,10 @@ class RequestsParamsModel extends Equatable {
     return {
       'unifiedNationalNumber': unifiedNationalNumber,
       'identityNumber': identityNumber,
-      'query': query,
-      'licenceId': licenceId,
-      'requestNo': requestNumber,
       'page': page,
       'size': size,
+      'requestNo': requestNumber,
+      'licenceId': licenceId,
       'productId': productId,
       'requestTypeId': requestTypeId,
       'dashboardStatusId': dashboardStatusId,
@@ -63,7 +60,6 @@ class RequestsParamsModel extends Equatable {
   List<Object?> get props => [
         unifiedNationalNumber,
         identityNumber,
-        query,
         requestNumber,
         licenceId,
         page,
