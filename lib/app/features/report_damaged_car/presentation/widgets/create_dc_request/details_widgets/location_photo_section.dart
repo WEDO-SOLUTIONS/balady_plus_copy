@@ -85,17 +85,24 @@ class LocationSection extends StatelessWidget {
             child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Row(
-                    children: [
-                      CustomTextWidget(
-                        state.gisResponse?.getFullAddress() ??
-                            ("lbl_locate_report_from_here").tr(),
-                        fontColor: AppColor.blackModern500Light,
-                        fontSize: 14,
-                        maxLines: 10,
-                      ),
-                      CustomSvgIconWidget(IconPath.qrLocationIcon),
-                    ],
+                  Expanded(
+                    child: Row(
+                      children: [
+                        CustomSvgIconWidget(IconPath.qrLocationIcon),
+                        CustomHorizontalSpace(width: 8),
+                        Flexible(
+                          child: CustomTextWidget(
+                            state.gisResponse?.getFullAddress() ??
+                                ("lbl_locate_report_from_here").tr(),
+                            fontColor: AppColor.blackModern500Light,
+                            fontSize: 14,
+                            textAlign: TextAlign.start,
+                            height: 1.3,
+                            maxLines: 10,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                   if (!showOnly) CustomSvgIconWidget(IconPath.arrowLeft),
                 ]),

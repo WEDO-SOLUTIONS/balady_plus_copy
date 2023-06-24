@@ -257,7 +257,7 @@ class CreateDCBloc extends Bloc<CreateDCEvent, CreateDCState> {
       NavigationService.navigatorKey.currentState!.pushNamedAndRemoveUntil(
           RouteName.successRoute, predicate,
           arguments: SuccessScreenArgs(
-              type: PAGE_TYPE.newVD,
+              type: PAGE_TYPE.dc,
               fromHomePage: state.isFromHome,
               thanksMessage: success.data?.responseMessage));
       //  Helpers.sendEventToAnalytics(AppEvents.VD_Success_Registered_Submit);
@@ -290,7 +290,7 @@ class CreateDCBloc extends Bloc<CreateDCEvent, CreateDCState> {
   }
 
   void cancelIncident() {
-    hideKeyboard(); //MM
+    hideKeyboard();
     bool Function(Route<dynamic>) predicate =
         ModalRoute.withName(RouteName.bottomNavigation);
     NavigationService.navigatorKey.currentState!.popUntil((predicate));

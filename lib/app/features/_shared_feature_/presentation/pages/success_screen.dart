@@ -151,6 +151,7 @@ class SuccessBody extends StatelessWidget {
       case PAGE_TYPE.coObserver:
       case PAGE_TYPE.daem:
       case PAGE_TYPE.newVD:
+      case PAGE_TYPE.dc:
       case PAGE_TYPE.objction:
         return "vd_request_submit".tr();
         return ('lbl_thank_you').tr();
@@ -224,6 +225,7 @@ class SuccessBody extends StatelessWidget {
             .replaceAll("-", successScreenArgs?.idNumber ?? "--");
 
       case PAGE_TYPE.newVD:
+      case PAGE_TYPE.dc:
         return successScreenArgs?.thanksMessage ?? "";
 
       case PAGE_TYPE.other:
@@ -286,6 +288,7 @@ class SuccessButtons extends StatelessWidget {
       case PAGE_TYPE.contactUs:
       case PAGE_TYPE.incidentsScreen:
       case PAGE_TYPE.newVD:
+      case PAGE_TYPE.dc:
       case PAGE_TYPE.msr:
       case PAGE_TYPE.qrDetailsScreen:
       case PAGE_TYPE.qrDialog:
@@ -319,6 +322,7 @@ class SuccessButtons extends StatelessWidget {
       case PAGE_TYPE.contactUs:
       case PAGE_TYPE.incidentsScreen:
       case PAGE_TYPE.newVD:
+      case PAGE_TYPE.dc:
       case PAGE_TYPE.msr:
       case PAGE_TYPE.qrDetailsScreen:
       case PAGE_TYPE.qrDialog:
@@ -372,6 +376,7 @@ class SuccessButtons extends StatelessWidget {
     switch (pageType) {
       case PAGE_TYPE.incidentsScreen:
       case PAGE_TYPE.newVD:
+      case PAGE_TYPE.dc:
       case PAGE_TYPE.msr:
       case PAGE_TYPE.facilityIncidentScreen:
       case PAGE_TYPE.inquiry:
@@ -402,6 +407,7 @@ class SuccessButtons extends StatelessWidget {
     switch (pageType) {
       case PAGE_TYPE.incidentsScreen:
       case PAGE_TYPE.newVD:
+      case PAGE_TYPE.dc:
       case PAGE_TYPE.msr:
       case PAGE_TYPE.facilityIncidentScreen:
       case PAGE_TYPE.inquiry:
