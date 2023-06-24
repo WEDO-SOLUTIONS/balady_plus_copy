@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
 
+import '../../../../core/utils/common_functions.dart';
 import '../../../../core/utils/constants/constants.dart';
 
 class ViewDMSImageScreen extends StatefulWidget {
@@ -16,7 +17,14 @@ class _ViewDMSImageScreenState extends State<ViewDMSImageScreen> {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        PhotoView(imageProvider: NetworkImage(widget.url)),
+        PhotoView(
+          imageProvider: NetworkImage(widget.url, headers: {
+            "verifyingKEY": CommonFunctions.hashRequest(widget.url, "GET")
+
+            //  "Authorization":
+            //      "Bearer ${locator<AuthService>().accessToken}"
+          }),
+        ),
         Align(
           alignment: AlignmentDirectional.topStart,
           child: GestureDetector(

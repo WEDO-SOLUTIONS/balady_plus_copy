@@ -12,20 +12,21 @@ class RequestEntity extends Equatable {
   final DateTime creationDate;
   final DateTime lastUpdateDate;
   final String? redirectUrl;
+  final int? requestTypeId;
 
-  const RequestEntity({
-    required this.requestNumber,
-    required this.requestNumberAsText,
-    required this.requestStatusId,
-    required this.requestStatusName,
-    required this.requestTypeName,
-    required this.licenseTypeName,
-    required this.municipalityName,
-    required this.subMunicipalityName,
-    required this.creationDate,
-    required this.lastUpdateDate,
-    this.redirectUrl,
-  });
+  const RequestEntity(
+      {required this.requestNumber,
+      required this.requestNumberAsText,
+      required this.requestStatusId,
+      required this.requestStatusName,
+      required this.requestTypeName,
+      required this.licenseTypeName,
+      required this.municipalityName,
+      required this.subMunicipalityName,
+      required this.creationDate,
+      required this.lastUpdateDate,
+      this.redirectUrl,
+      this.requestTypeId});
 
   @override
   List<Object?> get props => [
@@ -40,5 +41,6 @@ class RequestEntity extends Equatable {
         creationDate,
         lastUpdateDate,
         redirectUrl,
+        requestTypeId
       ];
 }

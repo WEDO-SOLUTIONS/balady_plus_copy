@@ -33,7 +33,6 @@ class _InAppWebViewPageState extends State<InAppWebViewPage> {
 
   @override
   Widget build(BuildContext context) {
-    print("apppppp coookie ${sl<EntryPointCubit>().state.token?.appCookie}");
     return Scaffold(
       appBar: DefaultAppBarWidget(
         title: widget.args.title,
@@ -44,6 +43,13 @@ class _InAppWebViewPageState extends State<InAppWebViewPage> {
           return Stack(
             children: [
               InAppWebView(
+                onWebViewCreated: (controller) {
+                  /* if (controller != null) {
+                    controller.evaluateJavascript(
+                        source:
+                            "document.getElementsByClassName('navbar').style.display='none'");
+                  }*/
+                },
                 initialUrlRequest: URLRequest(
                   url: Uri.parse(widget.args.url),
                   headers: headers,

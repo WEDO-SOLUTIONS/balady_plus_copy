@@ -2,11 +2,13 @@ import 'package:balady_plus/app/features/vd/presentation/widgets/summery_widgets
 import 'package:flutter/material.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../core/dependency_injection/injection_container.dart';
 import '../../../../core/utils/constants/app_colors.dart';
 import '../../../../core/utils/constants/constants.dart';
+import '../../../../core/utils/constants/paths/icon_paths.dart';
 import '../../../../core/utils/enums/bloc_status.dart';
 import '../../../_shared_feature_/presentation/under_testing/custom_expansion_panel_widget.dart';
 import '../../../_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
@@ -38,51 +40,54 @@ class _ObjectionsDetailsPageState extends State<ObjectionsDetailsPage> {
       child: BlocBuilder<ObjectionsDetailsBloc, ObjectionDetailsState>(
         buildWhen: (previous, current) => previous.status != current.status,
         builder: (context, state) {
-          return Scaffold(
-            backgroundColor: AppColor.white2,
-            appBar: DetailsHeader(
-              title: ("objection_details").tr(),
-            ),
-            body: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: SingleChildScrollView(
-                child: Column(children: [
-                  // body
+          return Stack(
+            children: [
+              Scaffold(
+                backgroundColor: AppColor.white2,
+                appBar: DetailsHeader(
+                  title: ("objection_details").tr(),
+                ),
+                body: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: SingleChildScrollView(
+                    child: Column(children: [
+                      // body
 
-                  Constants.verticalSpaceSmall,
-                  // TransferInfo
-                  ObjectionsDetails(
-                    onShowViolation: () {
-                      context
-                          .read<ObjectionsDetailsBloc>()
-                          .add(GetTransactionDetailsEvent(
-                              params: TransactionDetailsParams(
-                            applicationId:
-                                state.details?.serviceGroupId ?? "13",
-                            id: state.details?.requestSubmitterData
-                                    ?.objectedTransactionId ??
-                                "",
-                          )));
-                    },
-                    //relation: widget.params.rel,
+                      Constants.verticalSpaceSmall,
+                      // TransferInfo
+                      ObjectionsDetails(
+                        onShowViolation: () {
+                          context
+                              .read<ObjectionsDetailsBloc>()
+                              .add(GetTransactionDetailsEvent(
+                                  params: TransactionDetailsParams(
+                                applicationId:
+                                    state.details?.serviceGroupId ?? "13",
+                                id: state.details?.requestSubmitterData
+                                        ?.objectedTransactionId ??
+                                    "",
+                              )));
+                        },
+                        //relation: widget.params.rel,
+                      ),
+                      Constants.verticalSpaceSmall,
+
+                      const SubmitterDetails(),
+                      Constants.verticalSpaceSmall,
+
+                      const CommiteDetails(),
+                      Constants.verticalSpaceSmall,
+
+                      const ObjectionReaason(),
+
+                      Constants.verticalSpaceSmall,
+                    ]),
                   ),
-                  Constants.verticalSpaceSmall,
-
-                  const SubmitterDetails(),
-                  Constants.verticalSpaceSmall,
-
-                  const CommiteDetails(),
-                  Constants.verticalSpaceSmall,
-
-                  const ObjectionReaason(),
-
-                  Constants.verticalSpaceSmall,
-
-                  if (state.status == BlocStatus.loading)
-                    CustomCircularLoadingWidget(),
-                ]),
+                ),
               ),
-            ),
+              if (state.status == BlocStatus.loading)
+                CustomCircularLoadingWidget(),
+            ],
           );
         },
       ),
@@ -102,6 +107,7 @@ class ObjectionsDetails extends StatelessWidget {
       builder: (context, state) {
         return CustomExpansionPanelWidget(
             title: ("objection_details_data").tr(),
+            leading: SvgPicture.asset(IconPath.vdSummuryDesc),
             children: [
               FieldData(
                 title: ("objection_details_number").tr(),
@@ -176,6 +182,7 @@ class SubmitterDetails extends StatelessWidget {
       builder: (context, state) {
         return CustomExpansionPanelWidget(
             underline: false,
+            leading: SvgPicture.asset(IconPath.vdSummuryUserInfo),
             title: ("objection_details_submitter_data").tr(),
             children: [
               FieldData(
@@ -202,6 +209,7 @@ class CommiteDetails extends StatelessWidget {
       builder: (context, state) {
         return CustomExpansionPanelWidget(
             underline: false,
+            leading: SvgPicture.asset(IconPath.vdSummuryDesc),
             title: ("objection_details_commite").tr(),
             children: [
               FieldData(
@@ -224,6 +232,7 @@ class ObjectionReaason extends StatelessWidget {
         return CustomExpansionPanelWidget(
           underline: false,
           title: ("objection_details_objections_list").tr(),
+          leading: SvgPicture.asset(IconPath.vdSummuryDesc),
           children: [
             MediaQuery.removePadding(
               context: context,

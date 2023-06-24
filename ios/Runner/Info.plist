@@ -41,6 +41,8 @@
 		<string>http</string>
 		<string>https</string>
 	</array>
+	<key>LSRequiresIPhoneOS</key>
+	<true/>
 	<key>NSAppleMusicUsageDescription</key>
 	<string>Play Videos</string>
 	<key>NSCameraUsageDescription</key>
@@ -50,18 +52,15 @@
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>By accessing your location, this app can locate your location to allow Reporting incidents</string>
 	<key>NSLocationAlwaysUsageDescription</key>
-	<string>By accessing your location, this app can locate your location to allow Reporting incidents</string>
+	<string>This app needs access to your location to provide accurate prayer times for your area.</string>
 	<key>NSLocationUsageDescription</key>
 	<string>By accessing your location, this app can locate your location to allow Reporting incidents</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>By accessing your location, this app can locate your location to allow Reporting incidents</string>
+	<string>This app needs access to your location to provide accurate prayer times for your area.</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>By Acceing the mic, the app can register the sound for Reports</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Photo Library is used to choose photos for Reports</string>
-	
-	<key>LSRequiresIPhoneOS</key>
-	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>
@@ -76,9 +75,5 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>This app needs access to your location to provide accurate prayer times for your area.</string>
-	<key>NSLocationAlwaysUsageDescription</key>
-	<string>This app needs access to your location to provide accurate prayer times for your area.</string>
 </dict>
 </plist>

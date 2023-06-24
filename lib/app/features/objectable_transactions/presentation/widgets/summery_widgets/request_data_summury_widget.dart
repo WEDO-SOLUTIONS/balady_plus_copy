@@ -19,7 +19,7 @@ class RequestDataSummuryWidget extends StatelessWidget {
       builder: (context, state) {
         return CustomExpansionPanelWidget(
           title: ("objection_main_request_data").tr(),
-          leading: SvgPicture.asset(IconPath.vdSummuryUserInfo),
+          leading: SvgPicture.asset(IconPath.vdSummuryDesc),
           children: [
             FieldData(
               title: ("objection_complain").tr(),

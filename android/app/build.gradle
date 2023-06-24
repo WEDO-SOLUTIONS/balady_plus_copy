@@ -25,12 +25,15 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
+
+def keystoreProperties = new Properties()
+def keystorePropertiesFile = rootProject.file('key.properties')
+if (keystorePropertiesFile.exists()) {
+    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+}
+
 android {
-    //! If you find error with converting to toInteger(),
-    //! back to old one
-    // compileSdkVersion flutter.compileSdkVersion
-    compileSdkVersion localProperties.getProperty('flutter.compileSdkVersion').toInteger()
-    ndkVersion flutter.ndkVersion
+    compileSdkVersion 33
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -47,47 +50,42 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId "com.example.balady_plus"
-        // You can update the following values to match your application needs.
-        // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-build-configuration.
-        
-        //! If you find error with converting to toInteger(),
-        //! remove it and write fixed number, e.g. 18
-        // minSdkVersion flutter.minSdkVersion
-        // targetSdkVersion flutter.targetSdkVersion
-        minSdkVersion localProperties.getProperty('flutter.minSdkVersion').toInteger()
-        targetSdkVersion localProperties.getProperty('flutter.targetSdkVersion').toInteger()
+        applicationId "momra.balady.android"
+        minSdkVersion 21
+        multiDexEnabled true
+        targetSdkVersion 32
+        multiDexEnabled true
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
+        manifestPlaceholders = [
+           //     'appAuthRedirectScheme': 'com.momra.balady',
+               'appAuthRedirectScheme': 'com.balady'
+        ]
+
+    }
+    signingConfigs {
+        release {
+            keyAlias keystoreProperties['keyAlias']
+            keyPassword keystoreProperties['keyPassword']
+            storeFile keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
+            storePassword keystoreProperties['storePassword']
+        }
     }
 
     buildTypes {
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig signingConfigs.debug
+            minifyEnabled true
+            signingConfig signingConfigs.release
+            
         }
     }
 
-    flavorDimensions "default"
-    
-    productFlavors {
-        dev {
-            dimension "default"
-            resValue "string" "app_name" "بلدي"
-            applicationIdSuffix ".dev" // com.example.balady_plus.dev
-        }
-        stg {
-            dimension "default"
-            resValue "string" "app_name" "بلدي"
-            applicationIdSuffix ".stg" // com.example.balady_plus.stg
-        }
-        prod {
-            dimension "default"
-            resValue "string" "app_name" "بلدي"
-            applicationIdSuffix "" // com.example.balady_plus
-        }
+
+     lintOptions {
+       checkReleaseBuilds false
+       abortOnError false
     }
+
 }
 
 flutter {
@@ -96,4 +94,7 @@ flutter {
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation 'com.android.support:multidex:1.0.3'
+
 }
+apply plugin: 'com.google.gms.google-services'

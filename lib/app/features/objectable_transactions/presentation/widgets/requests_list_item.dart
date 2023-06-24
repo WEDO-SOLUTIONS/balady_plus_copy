@@ -82,11 +82,13 @@ class RequestsListItem extends StatelessWidget {
                   flex: 10,
                   child: ElevatedButtonWidget.details(
                       onPressed: () => onDetails())),
-              const Expanded(flex: 1, child: CustomVerticalSpace(height: 16)),
-              Expanded(
-                  flex: 10,
-                  child: ElevatedButtonWidget.applyObjection(
-                      onPressed: () => onApply())),
+              if (request.isAllowedForObjection?.toLowerCase() == "true") ...[
+                const Expanded(flex: 1, child: CustomVerticalSpace(height: 16)),
+                Expanded(
+                    flex: 10,
+                    child: ElevatedButtonWidget.applyObjection(
+                        onPressed: () => onApply())),
+              ]
             ],
           ),
         ],

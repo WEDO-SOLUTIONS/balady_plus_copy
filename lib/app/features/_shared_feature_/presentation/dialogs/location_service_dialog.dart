@@ -50,7 +50,7 @@ class LocationServiceDialog extends StatelessWidget {
                   ),
                   Constants.verticalSpaceMedium,
                   CustomTextWidget(
-                    ("gps_error_3"),
+                    ("gps_error_3").tr(),
                     fontColor: AppColor.black,
                     fontWeight: AppFontWeight.medium,
                     fontSize: 22,

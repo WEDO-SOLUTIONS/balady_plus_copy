@@ -49,34 +49,32 @@ class _ObjectionAttachmentItemState extends State<ObjectionAttachmentItem> {
             borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(8), topRight: Radius.circular(8)),
           ),
-          child: Expanded(
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                ((widget.file.fileName
-                            ?.split(".")
-                            .last
-                            .toLowerCase()
-                            .contains("pdf") ??
-                        false))
-                    ? const CustomSvgIconWidget(IconPath.pdf)
-                    : CustomNetworkImageWidget(
-                        widget.file.getUrl() ?? "",
-                        imageWidth: 24,
-                        imageHeight: 28,
-                      ),
-                CustomHorizontalSpace(width: 8),
-                Flexible(
-                  child: CustomTextWidget(
-                    widget.file.fileName ?? "",
-                    fontColor: AppColor.blackModern700Light,
-                    fontSize: 12,
-                    maxLines: 1,
-                    fontWeight: AppFontWeight.semiBold,
-                  ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ((widget.file.fileName
+                          ?.split(".")
+                          .last
+                          .toLowerCase()
+                          .contains("pdf") ??
+                      false))
+                  ? const CustomSvgIconWidget(IconPath.pdf)
+                  : CustomNetworkImageWidget(
+                      widget.file.getUrl() ?? "",
+                      imageWidth: 24,
+                      imageHeight: 28,
+                    ),
+              CustomHorizontalSpace(width: 8),
+              Flexible(
+                child: CustomTextWidget(
+                  widget.file.fileName ?? "",
+                  fontColor: AppColor.blackModern700Light,
+                  fontSize: 12,
+                  maxLines: 1,
+                  fontWeight: AppFontWeight.semiBold,
                 ),
-              ],
-            ),
+              ),
+            ],
           )),
     );
   }
