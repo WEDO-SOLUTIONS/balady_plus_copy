@@ -306,14 +306,6 @@ class EntryPointCubit extends Cubit<EntryPointState> {
     //MM  locator<VisitMainViewModel>().reset();
     //MM  locator<CustomerSoundViewModel>().reset();
     await CookieManager.instance().deleteAllCookies();
-    await c.CookieManager().clearCookies();
-    try {
-      dynamic controller;
-      const c.WebView().onWebViewCreated!(controller);
-      controller.clearCache();
-    } catch (ex) {
-      //  print("EXXX $ex");
-    }
   }
 
   testData() async {

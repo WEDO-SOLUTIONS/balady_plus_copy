@@ -648,6 +648,9 @@ class CommonProperties {
   static Uuid uuidInstance = Uuid();
 
   static String get token => sl<EntryPointCubit>().state.token?.token ?? "";
+  static String get appCookie =>
+      sl<EntryPointCubit>().state.token?.appCookie ?? "";
+
   static SsoUserInfo? get userInfo => sl<EntryPointCubit>().state.userInfo;
   static DelegatorEntity? get selectedDelegator =>
       sl<EntryPointCubit>().state.selectedDelegator;
