@@ -259,7 +259,7 @@
       "isImportant": false,
       "action": {
         "type": "page",
-        "value": "/objections"
+        "value": "/objectableTransactionsPage"
       },
       "ar": {
         "title": "الاعتراضات والتظلمات",

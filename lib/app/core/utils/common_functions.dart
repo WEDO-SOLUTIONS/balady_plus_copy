@@ -205,6 +205,26 @@ class CommonFunctions {
     return base64;
   }
 
+  static String generateGUID() {
+    try {
+      String v1UUID = CommonProperties.uuidInstance.v1();
+      String v5UUID =
+          CommonProperties.uuidInstance.v5(v1UUID, CommonProperties.deviceId);
+      print("v5UUID");
+      print(v5UUID);
+      if (v5UUID.isNotEmpty)
+        return v5UUID.replaceAll("-", "");
+      else if (v1UUID.isNotEmpty)
+        return v1UUID.replaceAll("-", "");
+      else
+        return DateTime.now().millisecondsSinceEpoch.toString();
+    } catch (ex) {
+      print("EXXXXXX GUId");
+      print(ex);
+      return DateTime.now().millisecondsSinceEpoch.toString();
+    }
+  }
+
   static bool get isAuthed => sl.isRegistered<AuthData>();
   static bool get isAppAR => AppConfig.languageCode == AppLanguage.ar.name;
 
@@ -212,6 +232,17 @@ class CommonFunctions {
 }
 
 class CommonProperties {
+  static String appName = "Balady";
+  static String? clientIP;
+  static String? appVersion;
+  static String? deviceId;
+  static String? deviceName;
+  static String? deviceOs;
+  static String? sessionId;
+  static String? fcmToken;
+
+  static Uuid uuidInstance = Uuid();
+
   static String get token => sl<EntryPointCubit>().state.token?.token ?? "";
   static SsoUserInfo? get userInfo => sl<EntryPointCubit>().state.userInfo;
   static DelegatorEntity? get selectedDelegator =>

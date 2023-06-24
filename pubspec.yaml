@@ -116,6 +116,8 @@ dependencies:
   pinput: ^2.2.31
   pin_code_fields: ^7.3.0
   cached_network_image: ^3.2.2
+  mime: ^1.0.4
+
   sms_user_consent:
     git:
       url: https://github.com/ctnataman/sms_user_consent

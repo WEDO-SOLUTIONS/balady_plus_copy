@@ -10,6 +10,8 @@ import '../../features/authentication/sign_in/sign_in_exports.dart'
 import '../../features/bottom_navigation/bottom_navigation_exports.dart'
     show BottomNavigationPage;
 import '../../features/entry_point/entry_point_exports.dart' show SsoUserInfo;
+import '../../features/objectable_transactions/objections_exports.dart'
+    show ObjectableTransactionsPage;
 import '../../features/profile_features/dashboard/dashboard_exports.dart'
     show DashBoardPage;
 import '../../features/profile_features/invoices/invoices_exports.dart'
@@ -94,6 +96,11 @@ class AppRouter {
       // objections page
       case RouteName.objections:
         return MaterialPageRoute(builder: (_) => const ObjectionsPage());
+
+      // objectable transactions page
+      case RouteName.objectableTransactions:
+        return MaterialPageRoute(
+            builder: (_) => const ObjectableTransactionsPage());
 
       // error page
       default:

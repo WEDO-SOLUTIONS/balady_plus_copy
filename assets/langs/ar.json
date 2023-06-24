@@ -170,6 +170,15 @@
 
   "_ObjectionsComment": "أى شئ يخص الاعتراضات",
   "objection_transaction":"المعاملة المعترض عليها", 
+  "objections_title":"طلبات الإعتراض",
+
+
+  "transactions_title":"معاملات قابلة للإعتراض",
+  "transaction_number":"رقم المعاملة", 
+  "transaction_type":"نوع المعاملة", 
+  "transaction_last_objection_date":"اخر موعد للإعتراض",
+  "objection_number":"رقم الطلب", 
+  "objection_apply":"تقديم طلب إعتراض", 
 
 
 

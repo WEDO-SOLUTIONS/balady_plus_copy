@@ -21,4 +21,5 @@ class RouteName {
   static const invoices = '/invoices';
   static const licenses = '/licenses';
   static const objections = '/objections';
+  static const objectableTransactions = '/objectableTransactionsPage';
 }

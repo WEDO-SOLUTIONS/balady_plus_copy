@@ -8,6 +8,7 @@ export 'features/services_injection.dart';
 export 'features/sign_in_injection.dart';
 export 'features/sign_up_injection.dart';
 export 'features/objections_injection.dart';
+export 'features/objectable_transactions_injection.dart';
 
 //? Services
 //? Public Services

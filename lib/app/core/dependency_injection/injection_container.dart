@@ -23,7 +23,8 @@ import '../dependency_injection/dependency_injection_exports.dart'
         ServicesInjection,
         SignInInjection,
         SignUpInjection,
-        ObjectionsInjection;
+        ObjectionsInjection,
+        ObjectableTransactionsInjection;
 import '../services/services_exports.dart'
     show
         EntryPointBridge,
@@ -48,8 +49,10 @@ void initialize() {
   SignUpInjection.init();
   //? Services
   ServicesInjection.init();
-
+//? Objections
   ObjectionsInjection.init();
+//? Objectable Transactions
+  ObjectableTransactionsInjection.init();
 
   //! Services
   //* Public Services

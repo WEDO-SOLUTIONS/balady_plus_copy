@@ -6,6 +6,7 @@ class ApiUrl {
   static const ssoUserCookie = '/account/GetAuthCookies';
   static const apigeeToken = '/oauth/v1/token';
   static const forceUpdate = '/v1/force-update-apps/version';
+  static const uploadFile = '/v1/dms-mobile/upload';
 
   //! Services
   //! Public Services
@@ -54,6 +55,12 @@ class ApiUrl {
       '/v1/objection-generic-services/applications/$id/services';
   static const objectionsRequestStatus =
       '/v1/balady-dashboard/objection-requests/lookup-status';
+
+  static const transactionsRequests =
+      '/v1/balady-dashboard/objectable-requests';
+
+  static const postObjection =
+      '/v1/objection-services/submit-objection-requests';
 
   //! POST
 

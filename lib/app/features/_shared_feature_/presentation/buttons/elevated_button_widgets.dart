@@ -155,4 +155,17 @@ class ElevatedButtonWidget extends _ElevatedButton {
           text: "logout".tr(),
           onPressed: onPressed,
         ));
+
+  ElevatedButtonWidget.applyObjection({required VoidCallback onPressed})
+      : super(CustomElevatedButtonWidget(
+          btnColor: AppColor.white,
+          textStyle: AppStyle.elevatedButtonStyle.copyWith(
+            color: AppColor.primary900Light,
+            fontSize: 12,
+          ),
+          btnBorderColor: AppColor.primary900Light,
+          btnHeight: 40,
+          text: "objection_apply".tr(),
+          onPressed: onPressed,
+        ));
 }
