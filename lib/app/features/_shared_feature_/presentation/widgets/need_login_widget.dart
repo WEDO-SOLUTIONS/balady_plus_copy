@@ -61,6 +61,7 @@ class _NeedLoginWidgetState extends State<NeedLoginWidget> {
             Constants.verticalSpaceMedium,
             ElevatedButtonWidget.login(
               onPressed: () async {
+                Navigator.pop(context);
                 bool isSuccess = await CommonFunctions.onLogin();
                 if (widget.onSuccessLogin != null)
                   widget.onSuccessLogin!(isSuccess);

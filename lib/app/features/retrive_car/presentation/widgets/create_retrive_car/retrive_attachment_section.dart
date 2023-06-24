@@ -40,7 +40,9 @@ class _RetriveAttachmentSectionState extends State<RetriveAttachmentSection> {
           );
         if (state.file != null)
           return ObjectionReasonAttachment(
-            onDelete: () {},
+            onDelete: () {
+              context.read<CreateRetriveCarBloc>().add(DeleteFileEvent());
+            },
             fileName: state.file?.fileName ?? "",
             filePath: state.file?.filePath ?? "",
           );

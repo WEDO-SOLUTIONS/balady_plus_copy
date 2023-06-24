@@ -22,14 +22,15 @@ class ObjectionsParamsModel extends Equatable {
 
   Map<String, dynamic> toMap() {
     return {
-      'unifiedNationalNumber': unifiedNationalNumber,
-      'identityNumber': identityNumber,
-      'requestNo': requestNo,
+      if (unifiedNationalNumber != null)
+        'unifiedNationalNumber': unifiedNationalNumber,
+      if (identityNumber != null) 'identityNumber': identityNumber,
+      if (requestNo != null) 'requestNo': requestNo,
       'page': page,
       'size': size,
-      'objectedApplicationId': productId,
-      'objectedServiceId': requestTypeId,
-      'dashboardStatusId': dashboardStatusId,
+      if (productId != null) 'objectedApplicationId': productId,
+      if (requestTypeId != null) 'objectedServiceId': requestTypeId,
+      if (dashboardStatusId != null) 'dashboardStatusId': dashboardStatusId,
     };
   }
 

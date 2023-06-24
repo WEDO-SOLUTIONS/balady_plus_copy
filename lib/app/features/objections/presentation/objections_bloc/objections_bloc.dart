@@ -310,18 +310,18 @@ class ObjectionsBloc extends Bloc<RequestsEvent, RequestsState> {
   Future<void> _getObjectionDetailsHandler(
       GetObjectionDetailsEvent e, Emitter emitter) async {
     emitter(
-        state.copyWith(requestsStatus: BlocRequestStatus.submissionGetLoading));
+        state.copyWith(detailsStatus: BlocRequestStatus.submissionGetLoading));
 
     var failureOrSuccess = await getObjectionDetails(e.params);
 
     await failureOrSuccess.fold((failure) {
       emitter(state.copyWith(
-        requestsStatus: BlocRequestStatus.submissionGetFailure,
+        detailsStatus: BlocRequestStatus.submissionGetFailure,
         errorMessage: (failure as ServerFailure).errorMessage,
       ));
     }, (success) async {
       emitter(state.copyWith(
-        requestsStatus: BlocRequestStatus.submissionGetSuccess,
+        detailsStatus: BlocRequestStatus.submissionGetSuccess,
         errorMessage: "",
       ));
 

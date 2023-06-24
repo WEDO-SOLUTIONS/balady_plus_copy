@@ -35,6 +35,8 @@
   "October": "اكتوبر",
   "November": "نوفمبر",
   "December": "ديسبمر",
+
+  "address": "العنوان",
   "_buttonsComment": "أى شئ يخص الأزرار",
   "signInButton": "تسجيل الدخول",
   "signUpButton": "تسجيل جديد",

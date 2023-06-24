@@ -65,6 +65,14 @@ class CreateRetriveCarBloc
     on<UploadFileEvent>(_uploadFileHandler);
     on<SubmitIncidentEvent>(_submitIncidentHandler);
     on<CreateIncidentRegisteredEvent>(_createIncidentRegisteredHandler);
+
+    on<DeleteFileEvent>(_deleteFileEventHandler);
+  }
+
+  Future<void> _deleteFileEventHandler(
+      DeleteFileEvent e, Emitter emitter) async {
+    print("HERREE");
+    emitter(state.copyWith(clearFile: true));
   }
 
   Future<void> _changeIssueDescHandler(

@@ -94,6 +94,19 @@ class ElevatedButtonWidget extends _ElevatedButton {
           onPressed: onPressed,
         ));
 
+  ElevatedButtonWidget.objectionApply({required VoidCallback onPressed})
+      : super(CustomElevatedButtonWidget(
+          btnColor: AppColor.primary800Light,
+          textStyle: AppStyle.elevatedButtonStyle.copyWith(
+            color: AppColor.white,
+            fontWeight: FontWeight.w700,
+            fontSize: 16,
+          ),
+          btnHeight: 56,
+          text: "objection_apply".tr(),
+          onPressed: onPressed,
+        ));
+
   ElevatedButtonWidget.deletaAll({required VoidCallback onPressed})
       : super(CustomElevatedButtonWidget(
           btnColor: Colors.transparent,

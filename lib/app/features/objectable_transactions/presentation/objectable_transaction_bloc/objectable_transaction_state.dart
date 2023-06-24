@@ -1,6 +1,8 @@
 part of 'objectable_transaction_bloc.dart';
 
 class ObjectableTransactionState extends Equatable {
+  final BlocRequestStatus detailsStatus;
+
   final BlocRequestStatus requestsStatus;
   final List<ObjectableTransactionsEntity> requests;
   //request statuses
@@ -30,6 +32,7 @@ class ObjectableTransactionState extends Equatable {
 
   const ObjectableTransactionState({
     this.requestsStatus = BlocRequestStatus.initial,
+    this.detailsStatus = BlocRequestStatus.initial,
     this.requests = const [],
     this.requestStatusesStatus = BlocRequestStatus.initial,
     this.requestStatuses = const [],
@@ -54,6 +57,7 @@ class ObjectableTransactionState extends Equatable {
       requestsStatus == BlocRequestStatus.submissionGetLoading && page > 0;
 
   ObjectableTransactionState copyWith({
+    BlocRequestStatus? detailsStatus,
     BlocRequestStatus? requestsStatus,
     List<ObjectableTransactionsEntity>? requests,
     BlocRequestStatus? requestStatusesStatus,
@@ -75,35 +79,35 @@ class ObjectableTransactionState extends Equatable {
     bool? noMoreData,
   }) {
     return ObjectableTransactionState(
-      requestsStatus: requestsStatus ?? this.requestsStatus,
-      requests: requests ?? this.requests,
-      requestStatusesStatus:
-          requestStatusesStatus ?? this.requestStatusesStatus,
-      requestStatuses: requestStatuses ?? this.requestStatuses,
-      selectedRequestStatus: selectedRequestStatus == null
-          ? this.selectedRequestStatus
-          : selectedRequestStatus.value,
-      requestTypesStatus: requestTypesStatus ?? this.requestTypesStatus,
-      requestTypes: requestTypes ?? this.requestTypes,
-      selectedRequestType: selectedRequestType == null
-          ? this.selectedRequestType
-          : selectedRequestType.value,
-      requestSubTypesStatus:
-          requestSubTypesStatus ?? this.requestSubTypesStatus,
-      requestSubTypes: requestSubTypes ?? this.requestSubTypes,
-      selectedRequestSubType: selectedRequestSubType == null
-          ? this.selectedRequestSubType
-          : selectedRequestSubType.value,
-      selectedRequestDate: selectedRequestDate == null
-          ? this.selectedRequestDate
-          : selectedRequestDate.value,
-      requestNumberQuery: requestNumberQuery ?? this.requestNumberQuery,
-      sortType: sortType ?? this.sortType,
-      errorMessage: errorMessage ?? this.errorMessage,
-      page: page ?? this.page,
-      limit: limit ?? this.limit,
-      noMoreData: noMoreData ?? this.noMoreData,
-    );
+        requestsStatus: requestsStatus ?? this.requestsStatus,
+        requests: requests ?? this.requests,
+        requestStatusesStatus:
+            requestStatusesStatus ?? this.requestStatusesStatus,
+        requestStatuses: requestStatuses ?? this.requestStatuses,
+        selectedRequestStatus: selectedRequestStatus == null
+            ? this.selectedRequestStatus
+            : selectedRequestStatus.value,
+        requestTypesStatus: requestTypesStatus ?? this.requestTypesStatus,
+        requestTypes: requestTypes ?? this.requestTypes,
+        selectedRequestType: selectedRequestType == null
+            ? this.selectedRequestType
+            : selectedRequestType.value,
+        requestSubTypesStatus:
+            requestSubTypesStatus ?? this.requestSubTypesStatus,
+        requestSubTypes: requestSubTypes ?? this.requestSubTypes,
+        selectedRequestSubType: selectedRequestSubType == null
+            ? this.selectedRequestSubType
+            : selectedRequestSubType.value,
+        selectedRequestDate: selectedRequestDate == null
+            ? this.selectedRequestDate
+            : selectedRequestDate.value,
+        requestNumberQuery: requestNumberQuery ?? this.requestNumberQuery,
+        sortType: sortType ?? this.sortType,
+        errorMessage: errorMessage ?? this.errorMessage,
+        page: page ?? this.page,
+        limit: limit ?? this.limit,
+        noMoreData: noMoreData ?? this.noMoreData,
+        detailsStatus: detailsStatus ?? this.detailsStatus);
   }
 
   ObjectableTransactionState clearFilters() => ObjectableTransactionState(
@@ -147,5 +151,6 @@ class ObjectableTransactionState extends Equatable {
         page,
         limit,
         noMoreData,
+        detailsStatus
       ];
 }

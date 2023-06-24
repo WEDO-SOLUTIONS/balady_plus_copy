@@ -1,6 +1,7 @@
 import 'package:balady_plus/app/features/objectable_transactions/domain/use_cases/get_transaction_details.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 
 import '../../../../core/dependency_injection/injection_container.dart';
 import '../../../../core/errors/errors_exports.dart'
@@ -63,6 +64,11 @@ class ObjectableTransactionBloc
           identityNumber: identityNumber,
           page: state.page,
           size: PaginationConstants.limit,
+          violationLastApplyDate: state.selectedRequestDate != null
+              ? DateFormat(("yyyy/mm/dd"))
+                  .format(state.selectedRequestDate!)
+                  .toString()
+              : null,
           requestNo: state.requestNumberQuery,
           productId: state.selectedRequestType?.id.toString(),
           requestTypeId: state.selectedRequestSubType?.id.toString(),
@@ -298,19 +304,19 @@ class ObjectableTransactionBloc
 
   Future<void> _getTransactionsDetailsHandler(
       GetTransactionDetailsEvent e, Emitter emitter) async {
-    emitter(state.copyWith(
-        requestStatusesStatus: BlocRequestStatus.submissionGetLoading));
+    emitter(
+        state.copyWith(detailsStatus: BlocRequestStatus.submissionGetLoading));
 
     var failureOrSuccess = await getTransactionDetails(e.params);
 
     await failureOrSuccess.fold((failure) {
       emitter(state.copyWith(
-        requestStatusesStatus: BlocRequestStatus.submissionGetFailure,
+        detailsStatus: BlocRequestStatus.submissionGetFailure,
         errorMessage: (failure as ServerFailure).errorMessage,
       ));
     }, (success) async {
       emitter(state.copyWith(
-        requestStatusesStatus: BlocRequestStatus.submissionGetSuccess,
+        detailsStatus: BlocRequestStatus.submissionGetSuccess,
         errorMessage: "",
       ));
 

@@ -52,7 +52,7 @@ class ObjectionReasonAttachment extends StatelessWidget {
           ),
         ),
         InkWell(
-          onTap: () => {},
+          onTap: () => onDelete(),
           child: CircleIcon(
             icon: Icons.close,
             iconColor: AppColor.primary600Light,

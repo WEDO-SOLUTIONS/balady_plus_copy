@@ -350,11 +350,12 @@ class VDRemoteDataSourceImpl extends VDRemoteDataSource {
       var data = response.data["data"]["result"];
       print(data);
 
-      return data.toFuture();
+      return data;
     } on DioError catch (error) {
       throw ServerException(error.toString(),
           statusCode: error.response?.statusCode);
     } catch (ex) {
+      print(ex);
       if (ex is ServerException)
         throw ex;
       else {

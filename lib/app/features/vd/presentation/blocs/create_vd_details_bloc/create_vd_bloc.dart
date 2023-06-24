@@ -500,6 +500,7 @@ class CreateVDBloc extends Bloc<CreateVDEvent, CreateVDState> {
     final failureOrSuccess = await _checkCR(state.crNumber ?? "");
 
     failureOrSuccess.fold((failure) {
+      print(failure);
       emitter(state.copyWith(
         status: BlocStatus.failure,
         errorMessage: (failure as ServerFailure).errorMessage,

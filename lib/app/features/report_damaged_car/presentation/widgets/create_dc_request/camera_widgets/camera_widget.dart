@@ -164,7 +164,7 @@ class _CameraWidgetState extends State<CameraWidget>
                     iconSize: 36,
                     btnHeight: 40,
                     btnWidth: 40,
-                    onPressed: () {},
+                    onPressed: () => Navigator.of(context).pop(),
                   ),
                   CustomIconButtonWidget(
                     icon: state.isFlashOn

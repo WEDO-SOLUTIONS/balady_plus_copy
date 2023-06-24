@@ -57,7 +57,7 @@ class _TextWithCheckBtnState extends State<TextWithCheckBtn> {
           onChanged: (value) => {widget.onTextChanged(value)},
         ),
         Padding(
-          padding: const EdgeInsets.only(bottom: 32.0),
+          padding: const EdgeInsets.only(bottom: 0.0, left: 8),
           child: InkWell(
             onTap: widget.isValidate
                 ? null

@@ -23,7 +23,7 @@ class RequestsTypeFilter extends StatelessWidget {
           previous.selectedRequestType != current.selectedRequestType,
       builder: (context, state) {
         return DropDownWithTitle(
-          title: "request_type".tr(),
+          title: "transaction_type".tr(),
           selectedValue: state.selectedRequestSubType?.name,
           status: state.requestSubTypesStatus,
           onRetry: () {
@@ -46,7 +46,7 @@ class RequestsTypeFilter extends StatelessWidget {
             BottomSheetDialog.showDraggableSheet(
               context,
               child: BottomSheetList(
-                title: "request_type".tr(),
+                title: "transaction_type".tr(),
                 items: items,
                 selectedValue: state.selectedRequestSubType?.name,
                 onTap: (item) {

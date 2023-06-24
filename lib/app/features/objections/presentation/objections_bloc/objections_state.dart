@@ -1,6 +1,8 @@
 part of 'objections_bloc.dart';
 
 class RequestsState extends Equatable {
+  final BlocRequestStatus detailsStatus;
+
   final BlocRequestStatus requestsStatus;
   final List<ObjectionEntity> requests;
   //request statuses
@@ -30,6 +32,7 @@ class RequestsState extends Equatable {
 
   const RequestsState({
     this.requestsStatus = BlocRequestStatus.initial,
+    this.detailsStatus = BlocRequestStatus.initial,
     this.requests = const [],
     this.requestStatusesStatus = BlocRequestStatus.initial,
     this.requestStatuses = const [],
@@ -55,6 +58,7 @@ class RequestsState extends Equatable {
 
   RequestsState copyWith({
     BlocRequestStatus? requestsStatus,
+    BlocRequestStatus? detailsStatus,
     List<ObjectionEntity>? requests,
     BlocRequestStatus? requestStatusesStatus,
     List<RequestStatusEntity>? requestStatuses,
@@ -76,6 +80,7 @@ class RequestsState extends Equatable {
   }) {
     return RequestsState(
       requestsStatus: requestsStatus ?? this.requestsStatus,
+      detailsStatus: detailsStatus ?? this.detailsStatus,
       requests: requests ?? this.requests,
       requestStatusesStatus:
           requestStatusesStatus ?? this.requestStatusesStatus,
@@ -146,6 +151,7 @@ class RequestsState extends Equatable {
         errorMessage,
         page,
         limit,
+        detailsStatus,
         noMoreData,
       ];
 }

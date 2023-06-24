@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../core/utils/utils_exports.dart' show BlocRequestStatus;
+import '../../../_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
 import '../../../_shared_feature_/shared_feature_exports.dart'
     show MessageDialog, RetryWidget, ShimmerEffectWidget;
 import '../../objections_exports.dart'
@@ -44,8 +45,8 @@ class _RequestsListState extends State<RequestsList> {
       listenWhen: (previous, current) =>
           previous.requestsStatus != current.requestsStatus,
       listener: (_, state) async {
-        if (state.requestsStatus == BlocRequestStatus.submissionGetFailure &&
-            state.page != 0) {
+        if ((state.requestsStatus == BlocRequestStatus.submissionGetFailure &&
+            state.page != 0)) {
           MessageDialog.showErrorNotification(msg: state.error);
         }
       },
@@ -75,42 +76,50 @@ class _RequestsListState extends State<RequestsList> {
           if (state.paginationLoading) {
             length += 1;
           }
-          return ListView.builder(
-            shrinkWrap: true,
-            controller: _scrollController,
-            itemCount: length,
-            itemBuilder: (context, index) {
-              if (index == length - 1 && state.paginationLoading) {
-                return Container(
-                  height: 200,
-                  margin: const EdgeInsets.only(top: 16),
-                  child: const ShimmerEffectWidget(),
-                );
-              }
-              return RequestsListItem(
-                request: state.requests[index],
-                onDetails: () {
-                  context.read<ObjectableTransactionBloc>().add(
-                      GetTransactionDetailsEvent(
-                          apply: false,
-                          params: TransactionDetailsParams(
-                              applicationId:
-                                  state.requests[index].applicationId ?? "13",
-                              id: state.requests[index].transactionNumber ??
-                                  "")));
+          return Stack(
+            children: [
+              ListView.builder(
+                shrinkWrap: true,
+                controller: _scrollController,
+                itemCount: length,
+                itemBuilder: (context, index) {
+                  if (index == length - 1 && state.paginationLoading) {
+                    return Container(
+                      height: 200,
+                      margin: const EdgeInsets.only(top: 16),
+                      child: const ShimmerEffectWidget(),
+                    );
+                  }
+                  return RequestsListItem(
+                    request: state.requests[index],
+                    onDetails: () {
+                      context.read<ObjectableTransactionBloc>().add(
+                          GetTransactionDetailsEvent(
+                              apply: false,
+                              params: TransactionDetailsParams(
+                                  applicationId:
+                                      state.requests[index].applicationId ??
+                                          "13",
+                                  id: state.requests[index].transactionNumber ??
+                                      "")));
+                    },
+                    onApply: () {
+                      context.read<ObjectableTransactionBloc>().add(
+                          GetTransactionDetailsEvent(
+                              apply: true,
+                              params: TransactionDetailsParams(
+                                  applicationId:
+                                      state.requests[index].applicationId ??
+                                          "13",
+                                  id: state.requests[index].transactionNumber ??
+                                      "")));
+                    },
+                  );
                 },
-                onApply: () {
-                  context.read<ObjectableTransactionBloc>().add(
-                      GetTransactionDetailsEvent(
-                          apply: true,
-                          params: TransactionDetailsParams(
-                              applicationId:
-                                  state.requests[index].applicationId ?? "13",
-                              id: state.requests[index].transactionNumber ??
-                                  "")));
-                },
-              );
-            },
+              ),
+              if (state.detailsStatus == BlocRequestStatus.submissionGetLoading)
+                CustomCircularLoadingWidget(),
+            ],
           );
         }
       },

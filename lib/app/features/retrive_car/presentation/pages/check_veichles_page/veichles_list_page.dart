@@ -88,6 +88,8 @@ class _VeichlesListPageState extends State<VeichlesListPage> {
                                   ? AppColor.black400
                                   : AppColor.white,
                               btnText: "إختيار",
+                              btnRadius: 8,
+                              btnHeight: 56,
                               btnPressed: () {
                                 NavigationService.navigatorKey.currentState
                                     ?.pushNamed(

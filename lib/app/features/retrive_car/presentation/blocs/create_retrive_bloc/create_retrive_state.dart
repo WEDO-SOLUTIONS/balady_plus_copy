@@ -90,6 +90,7 @@ class CreateRetriveCarState extends Equatable {
       List<AttachmentItem>? items,
       String? issueDesc,
       bool? agreement,
+      bool? clearFile,
       final String? date,
       final FileDataItem? file}) {
     return CreateRetriveCarState(
@@ -101,7 +102,7 @@ class CreateRetriveCarState extends Equatable {
         agreement: agreement ?? this.agreement,
         vehicleItem: this.vehicleItem,
         date: date ?? this.date,
-        file: file ?? this.file,
+        file: clearFile == true ? null : file ?? this.file,
         type: type);
   }
 

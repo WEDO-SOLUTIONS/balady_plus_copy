@@ -1,4 +1,5 @@
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
+import 'package:balady_plus/app/features/_shared_feature_/presentation/buttons/elevated_button_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
@@ -6,6 +7,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../core/dependency_injection/injection_container.dart';
+import '../../../../core/services/local/navigation_services.dart';
 import '../../../../core/utils/common_functions.dart';
 import '../../../../core/utils/constants/app_colors.dart';
 import '../../../../core/utils/constants/constants.dart';
@@ -455,39 +457,31 @@ class NoObjectionsData extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container();
-    /* return BlocBuilder<TransactionDetailsBloc, TransactionDetailsState>(
+    return BlocBuilder<TransactionDetailsBloc, TransactionDetailsState>(
       builder: (context, state) {
-        return CustomEnhancedExpansionPanelWidget(
-          expanded: true,
-          underline: false,
-          title: Helpers.translatingWord("objection_title_details"),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+        return CustomExpansionPanelWidget(
+            underline: false,
+            title: ("objection_title_details").tr(),
             children: [
               CustomTextWidget(
-                Helpers.translatingWord("no_objections"),
-                fontColor: AppColors.orange800,
-                fontWeight: FONT_WEIGHT.medium,
+                ("no_objections").tr(),
+                fontColor: AppColor.orange800,
+                fontWeight: AppFontWeight.medium,
                 fontSize: 13,
                 maxLines: 1,
                 textOverflow: TextOverflow.ellipsis,
               ),
               CustomVerticalSpace(height: 16),
-              if (data.isObjectionAllowed == true)
-                IncidentSubmitButton(
-                    btnText: Helpers.translatingWord("objection_apply"),
-                    isButtonDisabled: false,
-                    onPress: () {
-                      NavigationService.navigatorKey.currentState!.pushNamed(
-                          RoutesNames.CreateObjectionDetails,
+              if (state.details?.isObjectionAllowed == true)
+                ElevatedButtonWidget.objectionApply(onPressed: () {
+                  NavigationService.navigatorKey.currentState!
+                      .pushNamed(RouteName.createObjectionDetails,
                           arguments: CreateObjectionPageParams(
-                              details: data, delegator: delegator));
-                    }),
-            ],
-          ),
-        );
+                            details: state.details,
+                          ));
+                })
+            ]);
       },
-    );*/
+    );
   }
 }

@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/features/objectable_transactions/presentation/widgets/filters/request_date_filter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -27,7 +28,7 @@ class RequestsFilterBottomSheet extends StatelessWidget {
             children: [
               RequestsProductFilter(),
               RequestsTypeFilter(),
-              RequestsStatusFilter(),
+              RequestsDateFilter(),
               SizedBox(height: 16),
             ],
           );

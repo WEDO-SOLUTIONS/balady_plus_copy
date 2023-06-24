@@ -46,3 +46,7 @@ class ChangeDateEvent extends CreateRetriveCarEvent {
   final String? date;
   ChangeDateEvent({this.date});
 }
+
+class DeleteFileEvent extends CreateRetriveCarEvent {
+  const DeleteFileEvent();
+}
