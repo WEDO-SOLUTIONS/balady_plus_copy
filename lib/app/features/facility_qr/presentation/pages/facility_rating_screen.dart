@@ -42,75 +42,51 @@ class _FacilityRatingScreenState extends State<FacilityRatingScreen> {
         builder: (context, child) {
           FacilityRatingViewModel model =
               Provider.of<FacilityRatingViewModel>(context);
-          return Scaffold(
-            backgroundColor: AppColor.white,
-            appBar: DefaultAppBarWidget(
-              title: ("review").tr() +
-                  " " +
-                  facilityDetailsViewModel.getFacilityName(),
-            ),
-            body: !CommonProperties.isLoggedIn
-                ? NeedLoginWidget(
-                    title: ('facility_evaluation').tr(),
-                    desc: ('need_login_desc_evaluation').tr(),
-                    onSuccessLogin: (isSuccess) {
-                      if (isSuccess) {
-                        model.getUserLatestRating();
-                      }
-                    },
-                  )
-                : Stack(
-                    children: [
-                      Container(
-                        margin: const EdgeInsets.symmetric(
-                            vertical: 10, horizontal: 20),
-                        child: Column(
-                          children: [
-                            Expanded(
-                                child: ListView.builder(
-                              shrinkWrap: true,
-                              itemCount: model.ratingItems.length,
-                              physics: const ScrollPhysics(),
-                              itemBuilder: (ctx, index) {
-                                return RatingCard(
-                                    item: model.ratingItems[index],
-                                    onChanged: (int rating) {
-                                      model.ratingItems[index].value = rating;
-                                      model.validateForm();
-                                    });
-                              },
-                            )),
-                            Container(
-                              color: AppColor.white,
-                              child: SafeArea(
-                                top: false,
-                                child: EnhancedCustomElevatedButtonWidget(
-                                  btnColor: !model.isFormValid
-                                      ? AppColor.black200
-                                      : AppColor.darkTurquoise,
-                                  btnPressed: !model.isFormValid
-                                      ? null
-                                      : () {
-                                          model.submitRating(
-                                              facilityDetailsViewModel
-                                                  .getLicenseUuid());
-                                        },
-                                  btnText: ("review").tr(),
-                                  btnTextColor: !model.isFormValid
-                                      ? AppColor.black
-                                      : AppColor.white,
-                                  btnTextSize: 16,
-                                  btnTextWeight: AppFontWeight.regular,
-                                  btnHeight: 56,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-          );
+          return !CommonProperties.isLoggedIn
+              ? NeedLoginWidget(
+                  title: ('facility_evaluation').tr(),
+                  desc: ('need_login_desc_evaluation').tr(),
+                  onSuccessLogin: (isSuccess) {
+                    if (isSuccess) {
+                      model.getUserLatestRating();
+                    }
+                  },
+                )
+              : Stack(
+                  alignment: Alignment.bottomCenter,
+                  children: [
+                    ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: model.ratingItems.length,
+                      physics: const ScrollPhysics(),
+                      itemBuilder: (ctx, index) {
+                        return RatingCard(
+                            item: model.ratingItems[index],
+                            onChanged: (int rating) {
+                              model.ratingItems[index].value = rating;
+                              model.validateForm();
+                            });
+                      },
+                    ),
+                    EnhancedCustomElevatedButtonWidget(
+                      btnColor: !model.isFormValid
+                          ? AppColor.black200
+                          : AppColor.darkTurquoise,
+                      btnPressed: !model.isFormValid
+                          ? null
+                          : () {
+                              model.submitRating(
+                                  facilityDetailsViewModel.getLicenseUuid());
+                            },
+                      btnText: ("review").tr(),
+                      btnTextColor:
+                          !model.isFormValid ? AppColor.black : AppColor.white,
+                      btnTextSize: 16,
+                      btnTextWeight: AppFontWeight.regular,
+                      btnHeight: 56,
+                    ),
+                  ],
+                );
         });
   }
 }

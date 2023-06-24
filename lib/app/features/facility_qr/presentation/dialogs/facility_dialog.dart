@@ -2,13 +2,15 @@ import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
 import 'package:balady_plus/app/core/utils/enums/app_font_weights.dart';
 import 'package:flutter/material.dart';
 import 'package:balady_plus/app/features/facility_qr/facility_qr_exports.dart'
-    show RateAndReviewWidget;
+    show FacilityRatingScreen, RateAndReviewWidget;
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../core/services/local/navigation_services.dart';
 import '../../../../core/utils/constants/app_colors.dart';
 import '../../../../core/utils/constants/constants.dart';
 import '../../../../core/utils/constants/route_names.dart';
+import '../../../_shared_feature_/presentation/components/bottom_sheets/bottom_sheet_with_actions.dart';
+import '../../../_shared_feature_/presentation/dialogs/bottom_sheet_dialogs.dart';
 import '../../../_shared_feature_/presentation/widgets/buttons/custom_buttons_widgets.dart';
 import '../../../_shared_feature_/presentation/widgets/custom_svg_icon_widget.dart';
 import '../../../_shared_feature_/presentation/widgets/draw_line_widget.dart';
@@ -41,105 +43,117 @@ class FacilityDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Dialog(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4.0)),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-              padding: const EdgeInsets.only(top: 16, left: 16, right: 16),
-              decoration: BoxDecoration(
-                  color: AppColor.white,
-                  borderRadius: BorderRadius.circular(4)),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.of(context).pop();
-                        },
-                        child: Image.asset(
-                          IconPath.qrWhiteCloseIcon,
-                          height: 16.0,
-                          width: 16.0,
-                          color: Colors.black,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(16),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+                padding: const EdgeInsets.only(top: 16, left: 16, right: 16),
+                decoration: BoxDecoration(
+                    color: AppColor.white,
+                    borderRadius: BorderRadius.circular(4)),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: Image.asset(
+                            IconPath.qrWhiteCloseIcon,
+                            height: 16.0,
+                            width: 16.0,
+                            color: Colors.black,
+                          ),
                         ),
+                      ],
+                    ),
+                    Constants.verticalSpaceMedium,
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(4),
+                      child: CustomNetworkImageWidget(
+                        facilityImg ?? "",
+                        imageHeight: 82,
+                        imageWidth: 82,
+                        ssoAuth: false,
                       ),
-                    ],
-                  ),
-                  Constants.verticalSpaceMedium,
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(4),
-                    child: CustomNetworkImageWidget(
-                      facilityImg ?? "",
-                      imageHeight: 82,
-                      imageWidth: 82,
                     ),
-                  ),
-                  Constants.verticalSpaceMedium,
-                  CustomTextWidget(
-                    facilityName ?? "",
-                    fontColor: AppColor.black,
-                    fontWeight: AppFontWeight.bold,
-                    fontSize: 22,
-                  ),
-                  Constants.verticalSpaceSmall,
-                  RateAndReviewWidget(rate: rate ?? 0, review: reviewers ?? 0),
-                  Constants.verticalSpaceMedium,
-                  CustomTextWidget(
-                    address ?? "",
-                    fontColor: AppColor.black500,
-                    fontWeight: AppFontWeight.medium,
-                    fontSize: 16,
-                  ),
-                  Constants.verticalSpaceMedium,
-                  EnhancedCustomElevatedButtonWidget(
-                    btnPressed: () {
-                      NavigationService.navigatorKey.currentState!
-                          .pushNamed(RouteName.qrFacilityRatingRoute);
-                    },
-                    btnText: ("review").tr(),
-                    btnTextSize: 16,
-                    btnTextWeight: AppFontWeight.regular,
-                    btnHeight: 56,
-                    btnWidth: 240,
-                  ),
-                  Constants.verticalSpaceSmall,
-                  CustomTextButtonWidget(
-                    onPressed: () {
-                      onIncidentScreen();
-                    },
-                    text: ("submit_incident_facility").tr(),
-                    btnTextSize: 16,
-                    btnTextWeight: AppFontWeight.medium,
-                    btnTextColor: AppColor.redBrown,
-                  ),
-                  Constants.verticalSpaceSmall,
-                  DrawLineWidget(
-                      lineColor:
-                          AppColor.black200.withOpacity(0.2000000029802322)),
-                  CustomTextButtonWithIconWidget(
-                    btnPressed: () {
-                      NavigationService.navigatorKey.currentState!
-                          .pushNamed(RouteName.qrFacilityScreenRoute);
-                    },
-                    icon: Image.asset(
-                      IconPath.qrbackIconIcon,
-                      height: 18,
-                      width: 18,
+                    Constants.verticalSpaceMedium,
+                    CustomTextWidget(
+                      facilityName ?? "",
+                      fontColor: AppColor.black,
+                      fontWeight: AppFontWeight.bold,
+                      fontSize: 22,
                     ),
-                    btnTextSize: 16,
-                    padding: const EdgeInsets.symmetric(
-                        vertical: Constants.mediumPadding),
-                    btnText: ("facility_details").tr(),
-                    btnTextWeight: AppFontWeight.medium,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  )
-                ],
-              )),
-        ],
+                    Constants.verticalSpaceSmall,
+                    RateAndReviewWidget(
+                        rate: rate ?? 0, review: reviewers ?? 0),
+                    Constants.verticalSpaceMedium,
+                    CustomTextWidget(
+                      address ?? "",
+                      fontColor: AppColor.black500,
+                      fontWeight: AppFontWeight.medium,
+                      fontSize: 16,
+                    ),
+                    Constants.verticalSpaceMedium,
+                    EnhancedCustomElevatedButtonWidget(
+                      btnPressed: () async {
+                        await BottomSheetDialog.showDraggableSheet(context,
+                            child: BottomSheetWithActions(
+                              title:
+                                  ("review").tr() + " " + (facilityName ?? ""),
+                              body: FacilityRatingScreen(),
+                            ));
+                      },
+                      btnText: ("review").tr(),
+                      btnTextSize: 16,
+                      btnTextWeight: AppFontWeight.bold,
+                      btnHeight: 56,
+                      btnColor: AppColor.primary900Light,
+                    ),
+                    Constants.verticalSpaceSmall,
+                    EnhancedCustomElevatedButtonWidget(
+                      btnPressed: () {
+                        onIncidentScreen();
+                      },
+                      btnText: ("submit_incident_facility").tr(),
+                      btnTextSize: 16,
+                      btnHeight: 56,
+                      btnTextWeight: AppFontWeight.bold,
+                      btnTextColor: Color(0xffDC2828),
+                      btnBorderColor: Color(0xffDC2828),
+                      btnColor: AppColor.white,
+                    ),
+                    Constants.verticalSpaceSmall,
+                    DrawLineWidget(
+                        lineColor:
+                            AppColor.black200.withOpacity(0.2000000029802322)),
+                    CustomTextButtonWithIconWidget(
+                      btnPressed: () {
+                        NavigationService.navigatorKey.currentState!
+                            .pushNamed(RouteName.qrFacilityScreenRoute);
+                      },
+                      icon: Image.asset(
+                        IconPath.qrbackIconIcon,
+                        height: 18,
+                        width: 18,
+                      ),
+                      btnTextSize: 16,
+                      padding: const EdgeInsets.symmetric(
+                          vertical: Constants.mediumPadding),
+                      btnText: ("facility_details").tr(),
+                      btnTextWeight: AppFontWeight.medium,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    )
+                  ],
+                )),
+          ],
+        ),
       ),
     );
   }

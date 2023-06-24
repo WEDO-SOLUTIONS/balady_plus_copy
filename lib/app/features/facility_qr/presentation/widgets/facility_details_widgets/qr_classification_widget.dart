@@ -29,9 +29,8 @@ class QrClassificationWidget extends StatelessWidget {
             padding: const EdgeInsets.all(8),
             margin: EdgeInsetsDirectional.only(start: 16),
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(6),
-              //   color: //MM AppColor.green60
-            ),
+                borderRadius: BorderRadius.circular(6),
+                color: AppColor.green60),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [

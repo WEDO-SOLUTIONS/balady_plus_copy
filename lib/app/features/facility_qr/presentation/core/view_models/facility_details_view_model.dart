@@ -9,11 +9,15 @@ import 'package:tuple/tuple.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../../core/base/base_view_model.dart';
+import '../../../../../core/utils/constants/paths/icon_paths.dart';
 import '../../../../../core/utils/enums/enums.dart';
+import '../../../data/qr_photo.dart';
 
 class FacilityQRDetailsViewModel extends BaseViewModel {
   QrDetailsResponse? facilityRespoonse;
   List<RatingItem> ratingItems = [];
+  List<QRPhoto> entityPhotos = [];
+  String coverPhoto = "";
   FacilityQRDetailsViewModel({this.facilityRespoonse}) {}
 
   LatLng _userLocation = const LatLng(24.694203971954554, 46.81549530431028);
@@ -50,6 +54,7 @@ class FacilityQRDetailsViewModel extends BaseViewModel {
         isOpenNow = checkIsOpenNow();
         notifyListeners();
         getRatingsData();
+        setEntityPhotos();
         return true;
       } else {
         String error =
@@ -481,15 +486,17 @@ class FacilityQRDetailsViewModel extends BaseViewModel {
       switch (facilityRespoonse
           ?.data?.result?.comLicenseInfo?.facilityClassificationId) {
         case 251:
-          return "tours_rating_icons/a.png";
+          return IconPath.qrAIcon;
         case 252:
-          return "tours_rating_icons/b.png";
+          return IconPath.qrBIcon;
         case 253:
-          return "tours_rating_icons/c.png";
+          return IconPath.qrCIcon;
         case 254:
-          return "tours_rating_icons/d.png";
+          return IconPath.qrDIcon;
+
         case 255:
-          return "tours_rating_icons/lock.png";
+          return IconPath.qrLockIcon;
+
         default:
           return "";
       }
@@ -631,6 +638,41 @@ class FacilityQRDetailsViewModel extends BaseViewModel {
             ?.data?.result?.qrCodeAdditionalInfo?.serveDisabledPersons ==
         true;
   }
+
+  void setEntityPhotos() {
+    entityPhotos.clear();
+    if (facilityRespoonse?.data != null &&
+        facilityRespoonse?.data?.result?.attachments != null) {
+      QRPhoto allPhotos =
+          new QRPhoto(typeId: 0, typeName: "جميع الصور", url: []);
+      facilityRespoonse?.data?.result?.attachments?.forEach((element) {
+        // Setting Covevr Photo as Banner(413)
+        if (element.typeId == 413 && element.code != null)
+          coverPhoto = element.code ?? "";
+
+        int typeIndex =
+            entityPhotos.indexWhere((photo) => element.typeId == photo.typeId);
+        if (typeIndex == -1) {
+          List<String> urls = [];
+          urls.add(element.code ?? "");
+          entityPhotos.add(new QRPhoto(
+              typeId: element.typeId, typeName: element.typeName, url: urls));
+        } else {
+          entityPhotos[typeIndex].url.add(element.code ?? "");
+        }
+        allPhotos.url.add(element.code ?? "");
+      });
+
+      // Setting cover photo to take first Photo incase no banner exists:
+      if (coverPhoto.isEmpty &&
+          (facilityRespoonse?.data?.result?.attachments?.isNotEmpty ?? false))
+        coverPhoto =
+            facilityRespoonse?.data?.result?.attachments?[0].code != null
+                ? facilityRespoonse?.data?.result?.attachments![0].code ?? ""
+                : "";
+    }
+  }
+
 /*
   void navigateToCreateIncident({required PAGE_TYPE fromScreen}) async {
     double? lat =
