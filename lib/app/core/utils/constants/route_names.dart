@@ -48,4 +48,9 @@ class RouteName {
   static const DCCameraPage = '/DCCameraPage';
   static const createDCDetailsPage = '/createDCDetailsPage';
   static const dcMapRoute = '/dc_map_screen';
+  static const VeichlesListPage = '/VeichlesListPage';
+  static const CheckVeichlesPage = '/CheckVeichlesPage';
+  static const CreateRetriveDetailsPage = '/CreateRetriveDetailsPage';
+  static const DCVeichlePage = '/DCVeichlePage';
+  static const DCSelectRetreiveTypePage = '/DCSelectRetreiveTypePage';
 }

@@ -39,8 +39,8 @@ class CustomHeaderAndDescOnTapWidget extends StatefulWidget {
   const CustomHeaderAndDescOnTapWidget(
       {Key? key,
       required this.label,
-      this.labelColor = AppColor.baladyDarkGreen2,
-      this.labelSize = 13.0,
+      this.labelColor = AppColor.blackModern700Light,
+      this.labelSize = 16.0,
       this.labelTextAlign = TextAlign.start,
       this.hintText = '',
       this.filled = false,

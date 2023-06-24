@@ -100,6 +100,9 @@ class ApiUrl {
   static const veichleRecoveryNotes =
       'v1/damaged-vehicle-mobile/vehicle-recovery-notes';
 
+  static const vehicles = 'v1/damaged-vehicle-mobile/vehicles';
+  static const vehicleRecovery = 'v1/damaged-vehicle-mobile/vehicle-recovery';
+
   //! POST
 
   //! Delete

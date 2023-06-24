@@ -623,6 +623,16 @@ class CommonFunctions {
 
     return newStr.isEmpty ? value : newStr;
   }
+
+  static String getCarPlateArabicLetters(String value) {
+    var newStr = "";
+
+    for (int i = 0; i < value.length; i++) {
+      newStr += carEnPlateLetters[value[i]] ?? value[i];
+    }
+
+    return newStr.isEmpty ? value : newStr;
+  }
 }
 
 class CommonProperties {

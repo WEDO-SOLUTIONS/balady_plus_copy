@@ -249,6 +249,7 @@ class _CustomCheckBoxTopStartWidget
                             textAlign: TextAlign.start,
                             fontSize: widget.titleSize,
                             height: 1.3,
+                            maxLines: 10,
                           ),
                         ),
                       ),

@@ -16,10 +16,25 @@
   "invalidEndDateValidation": "تاريخ النهاية غير صحيح.",
   "readOnlyFieldValidation": "هذا الحقل للقراءة فقط.",
   "selectFileValidation": "من فضلك قم بإختيار الملف.",
+  "incident_desc_limit_error": "يجب أن يحتوي وصف البلاغ على ١٥ حرف على الأقل",
+  "desc_limit_error": "يجب أن يحتوي الوصف على ١٥ حرف على الأقل",
 
   "data_not_retrieved": "تعذر استرجاع البيانات",
   "reload": "إعادة المحاولة",
-  
+  "choose_date": "اختيار التاريخ",
+  "done": "تم",
+  "January": "يناير",
+  "February": "فبراير",
+  "March": "مارس",
+  "April": "ابريل",
+  "May": "مايو",
+  "June": "يونيو",
+  "July": "يوليو",
+  "August": "اغسطس",
+  "September": "سبتمبر",
+  "October": "اكتوبر",
+  "November": "نوفمبر",
+  "December": "ديسبمر",
   "_buttonsComment": "أى شئ يخص الأزرار",
   "signInButton": "تسجيل الدخول",
   "signUpButton": "تسجيل جديد",
@@ -307,6 +322,7 @@
   "dc_vc_plate_letters": "اللوحة (حروف)",
   "dc_vc_chassie": "رقم الهيكل",
   "dc_notes": "الملاحظات",
+  
   "dc_exepect_data": "التاريخ المتوقع لاستلام المركبة",
   "dc_damaged_type": "رفع بلاغ مركبة مهملة",
   "dc_retreive_car": "استعادة مركبة مسحوبة",
@@ -320,6 +336,20 @@
   "dc_cr_number": "رقم السجل التجاري",
   "dc_agent_number": "رقم الوكالة",
   "dc_agent_id": "رقم هوية الموّكل(مالك المركبة)", 
+
+
+  "apology_reason":"سبب الاعتذار", 
+  "no_veichles":"لا يوجد مركبات",
+  "no_bills":"لا يوجد فواتير", 
+  "go_to_cemetry":"الذهاب الى خدمة اختيار وحجز مقبرة", 
+  "vhr_reply":"تقديم رد", 
+  "vhr_replies":"الردود على الطلب", 
+  "vhr_add_reply":"أكتب الرد", 
+  "vhr_apply":"تقديم", 
+  "enter_veichle_data":"أدخل تفاصيل المركبة", 
+  "register_type":"نوع التسجيل", 
+  "no_veichles_error_message":"رقم الهوية الذي تم ادخاله غير صحيح او غير مطابق للحالة", 
+  "dc_success_msg":"عزيزي العميل: تم استلام بلاغك رقم - وجاري العمل عليه، ويمكنك متابعة حالة البلاغ من قائمة الطلبات", 
 
 
 

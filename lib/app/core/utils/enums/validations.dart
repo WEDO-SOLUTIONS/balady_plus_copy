@@ -9,8 +9,8 @@ enum Validation {
   phoneNumberStartWith05(message: "phoneNumberStartsValidation"),
   phoneNumberLengthIs10(message: "phoneNumberLengthValidation"),
   invalidIncidentDesc(message: "incident_desc_limit_error"),
-  invalidName(message: "error_input_only_chars") //MMTr
-  ;
+  invalidName(message: "error_input_only_chars"),
+  invalidDesc(message: "desc_limit_error");
 
   const Validation({required this.message});
   final String message;

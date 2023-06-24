@@ -36,6 +36,13 @@ import '../../features/public_services_features/prayer_times/prayer_times_export
     show PrayerTimesCubit, PrayerTimesPage;
 import '../../features/report_damaged_car/damaged_cars_exports.dart'
     show DCCameraPage, CreateDCDetailsPage, DCMapScreen;
+import '../../features/retrive_car/data/model/veichles_list_page_params.dart';
+import '../../features/retrive_car/domain/entities/create_retrive_page_params.dart';
+import '../../features/retrive_car/presentation/pages/check_veichles_page/check_veichles_page.dart';
+import '../../features/retrive_car/presentation/pages/check_veichles_page/veichles_list_page.dart';
+import '../../features/retrive_car/presentation/pages/create_retrive_page.dart';
+import '../../features/retrive_car/presentation/pages/dc_select_retrive_request_type.dart';
+import '../../features/retrive_car/presentation/pages/dc_vehicles_page.dart';
 import '../../features/services/services_exports.dart'
     show ServiceCardsPage, ServiceEntity;
 import '../../features/splash/splash_exports.dart' show SplashPage;
@@ -221,6 +228,38 @@ class AppRouter {
             : null;
         return MaterialPageRoute(
           builder: (_) => DCMapScreen(params: params),
+        );
+
+      case RouteName.CheckVeichlesPage:
+        String type = settings.arguments as String;
+        return MaterialPageRoute(
+          builder: (_) => CheckVeichlesPage(
+            type: type,
+          ),
+        );
+
+      case RouteName.VeichlesListPage:
+        VeichlesListPageParams paramas =
+            settings.arguments as VeichlesListPageParams;
+        return MaterialPageRoute(
+          builder: (_) => VeichlesListPage(params: paramas),
+        );
+
+      case RouteName.CreateRetriveDetailsPage:
+        CreateRetrivePageParams params =
+            settings.arguments as CreateRetrivePageParams;
+        return MaterialPageRoute(
+          builder: (_) => CreateRetriveDetailsPage(params: params),
+        );
+
+      case RouteName.DCVeichlePage:
+        return MaterialPageRoute(
+          builder: (_) => DCVehiclesPage(),
+        );
+
+      case RouteName.DCSelectRetreiveTypePage:
+        return MaterialPageRoute(
+          builder: (_) => DCSelectRetreiveTypePage(),
         );
 
       // error page

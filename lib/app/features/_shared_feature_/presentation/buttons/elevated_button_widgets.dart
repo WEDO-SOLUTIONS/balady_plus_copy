@@ -187,4 +187,17 @@ class ElevatedButtonWidget extends _ElevatedButton {
           text: "attachFileButton".tr(),
           onPressed: onPressed,
         ));
+
+  ElevatedButtonWidget.retriveCar({required VoidCallback onPressed})
+      : super(CustomElevatedButtonWidget(
+          text: ("طلب إستعادة").tr(),
+          btnRadius: 6,
+          btnHeight: 40,
+          btnColor: AppColor.primary800Light,
+          textStyle: AppStyle.elevatedButtonStyle.copyWith(
+              color: AppColor.blackModern50Light,
+              fontSize: 14,
+              fontWeight: FontWeight.bold),
+          onPressed: onPressed,
+        ));
 }

@@ -304,7 +304,7 @@ Map<String, dynamic> servicesConfig = {
       "order": 9,
       "isNew": false,
       "isImportant": false,
-      "action": {"type": "page", "value": ""},
+      "action": {"type": "page", "value": "/DCVeichlePage"},
       "ar": {"title": "استعادة مركبة مسحوبة", "description": null, "tag": null},
       "en": {"title": "Damaged Cars", "description": null, "tag": null}
     },

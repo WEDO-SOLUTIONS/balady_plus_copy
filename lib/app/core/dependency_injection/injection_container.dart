@@ -27,6 +27,7 @@ import '../dependency_injection/dependency_injection_exports.dart'
         ObjectionsInjection,
         ObjectableTransactionsInjection,
         VDInjection,
+        DCRetriveInjection,
         OLDInjection;
 import '../services/services_exports.dart'
     show
@@ -60,6 +61,7 @@ void initialize() {
 
 //? DC
   DCInjection.init();
+  DCRetriveInjection.init();
 
   //! Services
   //* Public Services

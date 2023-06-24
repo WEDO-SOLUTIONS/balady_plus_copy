@@ -1297,7 +1297,7 @@ class LabelTextWithOptional extends StatelessWidget {
 
   LabelTextWithOptional(
       {required this.label,
-      this.labelColor = AppColor.baladyDarkGreen2,
+      this.labelColor = AppColor.blackModern700Light,
       this.labelSize = 13.0,
       this.labelTextAlign = TextAlign.start,
       this.showOptional = false});

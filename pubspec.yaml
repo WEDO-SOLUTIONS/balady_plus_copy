@@ -170,6 +170,7 @@ flutter:
     - assets/icons/svg/nearby/
     - assets/icons/svg/vd/
     - assets/icons/svg/qr/
+    - assets/icons/svg/dc/
     - assets/icons/png/
     - assets/icons/png/vd/
     - assets/icons/png/qr/
