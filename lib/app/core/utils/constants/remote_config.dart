@@ -31,14 +31,14 @@ class RemoteConfig {
 //! First solution
 class _RemoteConfig {
   static final gis = _initValues<String>(
-    devVal: "htttps:klfdflkd",
-    stgVal: "htttps:klfdflkd",
-    prodVal: "htttps:klfdflkd",
+    devVal: "",
+    stgVal: "",
+    prodVal: "",
   );
   static final hmCode = _initValues<String>(
     devVal: "oxqUHJH1KXD84vP0KYBnyaHDUk5sJ9HkzqPDTice5TABqvfACZaLscG1TjjyPgIT",
     stgVal: "oxqUHJH1KXD84vP0KYBnyaHDUk5sJ9HkzqPDTice5TABqvfACZaLscG1TjjyPgIT",
-    prodVal: "1",
+    prodVal: "",
   );
 
   static final apigeeURL = _initValues<String>(
@@ -49,28 +49,28 @@ class _RemoteConfig {
   static final pegaURL = _initValues<String>(
     devVal: "https://crmustg.momra.gov.sa",
     stgVal: "https://crmustg.momra.gov.sa",
-    prodVal: "1",
+    prodVal: "",
   );
 
   static final apigeeUsername = _initValues<String>(
     devVal: "7RmIkhYi6v4M7GUibBrpFdZuo8NsL2CC",
     stgVal: "7RmIkhYi6v4M7GUibBrpFdZuo8NsL2CC",
-    prodVal: "1",
+    prodVal: "",
   );
   static final apigeePassword = _initValues<String>(
     devVal: "ak3JXde3KdBB1xbM",
     stgVal: "ak3JXde3KdBB1xbM",
-    prodVal: "1",
+    prodVal: "",
   );
   static final ssoUrl = _initValues<String>(
     devVal: "https://ssoappdev.momra.gov.sa",
     stgVal: "https://ssoappdev.momra.gov.sa",
-    prodVal: "1",
+    prodVal: "",
   );
   static final ssoLoginUrl = _initValues<String>(
     devVal: "com.momra.balady://callback",
     stgVal: "com.momra.balady://callback",
-    prodVal: "1",
+    prodVal: "",
   );
   static final ssoSecret = _initValues<String>(
     devVal: "secret",
@@ -79,22 +79,22 @@ class _RemoteConfig {
   );
   static final ssoLogOutUrl = _initValues<String>(
     devVal: "com.momra.balady://logout",
-    stgVal: "1",
-    prodVal: "1",
+    stgVal: "com.momra.balady://logout",
+    prodVal: "",
   );
   static final momraDomain = _initValues<String>(
     devVal: ".momra.gov.sa",
-    stgVal: "1",
+    stgVal: ".momra.gov.sa",
     prodVal: "1",
   );
   static final ssoMomraDomain = _initValues<String>(
     devVal: ".ssoappdev.momra.gov.sa",
-    stgVal: "1",
+    stgVal: ".ssoappdev.momra.gov.sa",
     prodVal: "1",
   );
   static final cookieURL = _initValues<String>(
     devVal: "https://baladyapps.momra.gov.sa/",
-    stgVal: "1",
+    stgVal: "https://baladyapps.momra.gov.sa/",
     prodVal: "1",
   );
 
@@ -138,20 +138,3 @@ class _RemoteConfig {
         EnvType.prod: prodVal,
       };
 }
-
-//! Second solution
-/*class _RCDev {
-  static const String gis = "";
-  static const List<String> munciplities = [];
-}
-
-class _RCStg {
-  static const String gis = "";
-  static const List<String> munciplities = [];
-}
-
-class _RCProd {
-  static const String gis = "";
-  static const List<String> munciplities = [];
-}
-*/
