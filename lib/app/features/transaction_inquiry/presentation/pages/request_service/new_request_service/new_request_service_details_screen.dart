@@ -1,0 +1,252 @@
+/*import 'package:balady_plus/app/core/utils/utils_exports.dart';
+import 'package:flutter/material.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
+
+import '../../../../../../core/base/base_view.dart';
+import '../../../../../../core/base/base_view_model.dart';
+import '../../../../../../core/services/local/navigation_services.dart';
+import '../../../../../_shared_feature_/data/entities/drop_down_item.dart';
+import '../../../../../_shared_feature_/presentation/widgets/custom_cupertino_drop_down_widget.dart';
+import '../../../../../_shared_feature_/presentation/widgets/custom_popups_widgets.dart';
+import '../../../../../_shared_feature_/presentation/widgets/texts/custom_text_field_widget.dart';
+import '../../../../customer_voice_exports.dart'
+    show AttachmentList, NewMSRDetailsViewModel, IncidentTypeWithSearchDialog;
+
+class NewRequestDetailsScreen extends StatefulWidget {
+  const NewRequestDetailsScreen({Key? key}) : super(key: key);
+
+  @override
+  _NewRequestDetailsScreen createState() => _NewRequestDetailsScreen();
+}
+
+class _NewRequestDetailsScreen extends State<NewRequestDetailsScreen> {
+  final model = locator<NewMSRDetailsViewModel>();
+
+  @override
+  void initState() {
+    super.initState();
+    model.validateForm();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return BaseView<NewMSRDetailsViewModel>(
+        onModelReady: (model) {},
+        builder: (context, model, child) {
+          return Scaffold(
+            //MM
+            /* appBar: BigAppBarWithStepsWidget(
+              title: Helpers.translatingWord(
+                  'customerVoiceLatestRequestsSectionGoToDetailsButtonWord'),
+              nextStep: Helpers.translatingWord('submit_order'),
+              stepNumber: 2,
+              totalSteps: 2,
+              withCloseImg: false,
+            ),*/
+            body: Stack(
+              children: [
+                // MSR body
+                MSRBody(),
+                // submit button
+                IncidentSubmitButton(
+                  isButtonDisabled: !model.isFormValid,
+                  btnText: /*model.uploadingDocumentsfailed
+                    ? Helpers.translatingWord('upload_documents')
+                    :*/
+                      ("submit_order").tr(),
+                  onPress: () {
+                    model.hideKeyboard();
+                    model.submit();
+                  },
+                ),
+              ],
+            ),
+          );
+        });
+  }
+}
+
+class MSRBody extends StatefulWidget {
+  final bool withLocationSection;
+
+  const MSRBody({Key? key, this.withLocationSection = false}) : super(key: key);
+
+  @override
+  _MSRBody createState() => _MSRBody();
+}
+
+class _MSRBody extends State<MSRBody> {
+  final model = locator<NewMSRDetailsViewModel>();
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      child: Container(
+        padding: const EdgeInsets.only(bottom: 85),
+        margin: const EdgeInsets.symmetric(horizontal: 30),
+        child: Column(
+            mainAxisSize: MainAxisSize.max,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              // Request Type Section
+              RequestTypeSection(
+                onChangeType: (DropDownItem? item) {
+                  if (item != null) {
+                    model.getSPLDetails(item);
+                    model.validateForm();
+                  }
+                },
+                items: model.splTypeList,
+                value: model.splType,
+              ),
+              // Request Info Section
+              RequestInfoSection(),
+              // attachment section
+              if (model.attachments.isNotEmpty)
+                AttachmentList(
+                  attachments: model.attachments,
+                  deleteFile: (int index) {
+                    model.attachments[index].fileName = null;
+                    model.attachments[index].filePath = null;
+                    model.attachments[index].base64 = null;
+                    model.validateForm();
+                    setState(() {});
+                  },
+                  saveFile: (int index, String filePath, String fileName,
+                      String base64) {
+                    model.attachments[index].fileName = fileName;
+                    model.attachments[index].filePath = filePath;
+                    model.attachments[index].base64 = base64;
+                    model.validateForm();
+                    setState(() {});
+                    // model.notifyListeners();
+                  },
+                )
+            ]),
+      ),
+    );
+  }
+}
+
+class RequestTypeSection extends StatefulWidget {
+  DropDownItem? value;
+  Function(DropDownItem? item) onChangeType;
+  List<DropDownItem> items;
+
+  RequestTypeSection(
+      {required this.onChangeType, this.value, required this.items});
+
+  @override
+  State<RequestTypeSection> createState() => _RequestTypeSectionState();
+}
+
+class _RequestTypeSectionState extends State<RequestTypeSection> {
+  final model = locator<NewMSRDetailsViewModel>();
+  final FocusNode _specialtyDescFocusNode = FocusNode();
+  final TextEditingController _specialtyDescController =
+      TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: <Widget>[
+        //MM
+        CustomHeaderAndDescOnTapWidget(
+          label: ('order_type').tr(),
+          textValue: ('select_order_type').tr(),
+          onTap: () {},
+        ),
+        CustomHeaderAndDescOnTapWidget(
+          label: ("lbl_specialty_classification_hint1").tr(),
+          hintText: ("lbl_specialty_classification_hint2").tr(),
+          textValue: widget.value?.name,
+          onTap: () async {
+            //MM model.hideKeyboard();
+            await CustomPopUpsWidgets.showBottomSheet(
+              NavigationService.navigatorKey.currentContext!,
+              child: IncidentTypeWithSearchDialog(
+                title: ('lbl_specialty_classification_hint2').tr(),
+                searchHint: ('search_for_specialty_classification').tr(),
+                onSelect: (DropDownItem item) => widget.onChangeType(item),
+                items: widget.items,
+                selectedItem: widget.value,
+              ),
+            );
+          },
+        ),
+        if (model.showSPLDescription())
+          CustomTextFieldWidget(
+            controller: _specialtyDescController,
+            focusNode: _specialtyDescFocusNode,
+            label: ("spl_description").tr(),
+            hintText: ("spl_description_hint").tr(),
+            obsecureText: false,
+            keyboardType: TextInputType.text,
+            textInputAction: TextInputAction.next,
+            onSubmitted: (_) {
+              // FocusScope.of(context).requestFocus(_incidentDescFocusNode);
+            },
+            onChanged: (String text) {
+              model.splDescription = text;
+              model.validateForm();
+            },
+            onValidate: (text) {
+              if (text.toString().isEmpty) {
+                return ('text_field_error').tr();
+              }
+              return null;
+            },
+          ),
+      ],
+    );
+  }
+}
+
+class RequestInfoSection extends StatefulWidget {
+  RequestInfoSection({Key? key}) : super(key: key);
+
+  @override
+  State<RequestInfoSection> createState() => _RequestInfoSectionState();
+}
+
+class _RequestInfoSectionState extends State<RequestInfoSection> {
+  final TextEditingController _incidentDescController = TextEditingController();
+
+  final FocusNode _incidentDescFocusNode = FocusNode();
+  final model = locator<NewMSRDetailsViewModel>();
+
+  @override
+  void initState() {
+    super.initState();
+    _incidentDescController.text = model.desc ?? "";
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: <Widget>[
+        //  incident Desc ,
+        CustomTextFieldWidget(
+          controller: _incidentDescController,
+          focusNode: _incidentDescFocusNode,
+          label: ("description").tr(),
+          hintText: ("order_desc_hint").tr(),
+          obsecureText: false,
+          maxLines: 4,
+          keyboardType: TextInputType.multiline,
+          onChanged: (String text) {
+            model.desc = text;
+            model.validateForm();
+          },
+          onValidate: (text) {
+            if (!CommonFunctions.doesContainsLettrs(text.toString())) {
+              return ("description_limit").tr();
+            }
+            return null;
+          },
+        ),
+      ],
+    );
+  }
+}
+*/

@@ -1,7 +1,9 @@
 import 'dart:async';
 
+import 'package:balady_plus/app/core/utils/constants/remote_config.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 import '../../../../core/dependency_injection/injection_container.dart';
 import '../../../../core/utils/utils_exports.dart' show CommonProperties, Log;
@@ -22,56 +24,52 @@ class InAppWebViewPage extends StatefulWidget {
 
 class _InAppWebViewPageState extends State<InAppWebViewPage> {
   late StreamController<double?> _progessStream;
-
-  Map<String, String> get headers => {'authToken': CommonProperties.token};
-
+  late WebViewController controller;
   @override
   void initState() {
     super.initState();
     _progessStream = StreamController<double?>();
+
+    controller = WebViewController()
+      ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..setBackgroundColor(const Color(0x00000000))
+      ..setNavigationDelegate(
+        NavigationDelegate(
+          onProgress: (int progress) {
+            final percent = progress / 100;
+            if (!_progessStream.isClosed) {
+              _progessStream.sink.add(
+                percent,
+              );
+            }
+          },
+          onPageStarted: (String url) {},
+          onPageFinished: (String url) {
+            controller.runJavaScript(
+                "document.getElementsByClassName('site-header-cont')[0].style.display='none';document.getElementsByClassName('footer')[0].style.display='none';document.getElementsByClassName('breadcrumb')[0].style.display='none'");
+          },
+          onWebResourceError: (WebResourceError error) {},
+          onNavigationRequest: (NavigationRequest request) {
+            return NavigationDecision.navigate;
+          },
+        ),
+      )
+      ..loadRequest(Uri.parse(widget.args.url));
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: DefaultAppBarWidget(
-        title: widget.args.title,
+        title: "back".tr(),
       ),
       body: StreamBuilder<double?>(
         stream: _progessStream.stream,
         builder: (context, snapshot) {
           return Stack(
             children: [
-              InAppWebView(
-                onWebViewCreated: (controller) {
-                  /* if (controller != null) {
-                    controller.evaluateJavascript(
-                        source:
-                            "document.getElementsByClassName('navbar').style.display='none'");
-                  }*/
-                },
-                initialUrlRequest: URLRequest(
-                  url: Uri.parse(widget.args.url),
-                  headers: headers,
-                ),
-                initialOptions: InAppWebViewGroupOptions(
-                  crossPlatform: InAppWebViewOptions(
-                    useShouldOverrideUrlLoading: true,
-                  ),
-                ),
-                onProgressChanged: (controller, int progress) {
-                  final percent = progress / 100;
-                  if (!_progessStream.isClosed) {
-                    _progessStream.sink.add(
-                      percent,
-                    );
-                  }
-                },
-                onConsoleMessage: (controller, ConsoleMessage consoleMessage) {
-                  "$consoleMessage".warningLog();
-                  "Message coming from Dart side: ${consoleMessage.message}"
-                      .warningLog();
-                },
+              WebViewWidget(
+                controller: controller,
               ),
               if (snapshot.data != null && snapshot.data! < 1)
                 Center(

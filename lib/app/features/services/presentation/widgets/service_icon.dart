@@ -15,6 +15,7 @@ import '../../../../core/utils/utils_exports.dart'
 import '../../../_shared_feature_/presentation/dialogs/need_login_dialog.dart';
 import '../../../_shared_feature_/shared_feature_exports.dart'
     show BottomSheetDialog, BottomSheetWithActions, DrawIconBasedTypeWidget;
+import '../../../daem/presentation/dialogs/daem_types_dialog.dart';
 import '../../../public_services_features/prayer_times/presentation/cubit/prayer_times_cubit.dart';
 import '../../../vd/domain/entities/camera/camera_page_params.dart';
 import '../../../vd/domain/entities/categories/category_item.dart';
@@ -38,6 +39,13 @@ class ServiceIcon extends StatelessWidget {
               child: BottomSheetWithActions(
                 title: "اختر نوع البلاغ".tr(),
                 body: VDAllTypesDialog(),
+              ));
+        } else if (service.id == 3 &&
+            service.action.type == ServiceAction.dialog) {
+          await BottomSheetDialog.showDraggableSheet(context,
+              child: BottomSheetWithActions(
+                title: "daem_select_category".tr(),
+                body: DaemTypeDialog(),
               ));
         } else if (service.id == 2 && service.action.value == "/prayerTimes") {
           context.pushNamedRoute(

@@ -68,7 +68,7 @@ class ApiUrl {
   static String transactionsRequestDetails(String id) =>
       '/v1/objection-generic-services/applications/$id/objectable-transactions';
 
-// VD
+//! VD
   static const gis = '/v1/crm/bcg/gis-info';
   static const vdCategories = '/v1/crm/bcg/categories';
   static const vdSpecialClassifications = '/v1/crm/bcg/special-classifications';
@@ -90,9 +90,9 @@ class ApiUrl {
 
   static const vdCrExists = '/v1/crm/cr-exists/';
 
-// DC
+//! DC
 
-// Damaged Cars
+//! Damaged Cars
   static const dcCarTypes = 'v1/damaged-vehicle-mobile/car-companies';
 
   static const dcCarModel = 'v1/damaged-vehicle-mobile/car-models';
@@ -102,6 +102,54 @@ class ApiUrl {
 
   static const vehicles = 'v1/damaged-vehicle-mobile/vehicles';
   static const vehicleRecovery = 'v1/damaged-vehicle-mobile/vehicle-recovery';
+
+// Pega Incdients
+
+  static const String IncidentDownloadFile =
+      '/prweb/PRRestService/FrontUserBalady/V1/DownloadFile';
+
+  static const String IncidentRetrieveData =
+      '/prweb/PRRestService/FrontUserBalady/V1/RetrieveData';
+
+  static const String IncidentCreate =
+      '/prweb/PRRestService/FrontUserBalady/V1/CreateIncidentRequest';
+
+  static const String IncidentUploadFile =
+      '/prweb/PRRestService/FrontUserBalady/V1/UploadFile';
+
+  static const String MSRCreate =
+      '/prweb/PRRestService/FrontUserBalady/V1/CreateMuncipalServiceRequest';
+  static const String MSRRequestDetails =
+      '/prweb/PRRestService/FrontUserBalady/V1/FetchMuncipalServiceRequest';
+
+  static const String MSRRetrieveMSRData =
+      '/prweb/PRRestService/FrontUserBalady/V1/RetrieveMSRData';
+
+  static const String INQMainClassifications =
+      '/prweb/PRRestService/FrontUserBalady/V1/GetMainClassifications';
+  static const String INQSubClassifications =
+      '/prweb/PRRestService/FrontUserBalady/V1/GetSubClassifications';
+
+  static const String INQSPLClassifications =
+      '/prweb/PRRestService/FrontUserBalady/V1/GetSpecialClassifications';
+
+  static const String INQAllSPLClassifications =
+      '/prweb/PRRestService/FrontUserBalady/V1/GetSpecialClassificationsByType';
+
+  static const String INQMainAndSubClassifications =
+      '/prweb/PRRestService/FrontUserBalady/V1/GetMainAndSubClassificationsForSpecialClassification';
+
+  static const String INQCreate =
+      '/prweb/PRRestService/FrontUserBalady/V1/CreateInquiryRequest';
+
+  ///! Daem
+
+  static const String DaemRetrieveData =
+      '/prweb/PRRestService/FrontUserBalady/V1/RetrieveTSRData';
+  static const String DaemCreateTikcet =
+      '/prweb/PRRestService/FrontUserBalady/V1/CreateDaemTicket';
+  static const String DaemUploadFile =
+      '/prweb/PRRestService/FrontUserBalady/V1/UploadFile';
 
   //! POST
 

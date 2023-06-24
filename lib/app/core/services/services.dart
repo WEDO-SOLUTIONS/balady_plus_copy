@@ -141,7 +141,7 @@ Map<String, dynamic> servicesConfig = {
       "order": 3,
       "isNew": false,
       "isImportant": true,
-      "action": {"type": "page", "value": "/supporter"},
+      "action": {"type": "dialog", "value": "/supporter"},
       "ar": {"title": "داعم", "description": null, "tag": null},
       "en": {"title": "Supporter", "description": null, "tag": null}
     },

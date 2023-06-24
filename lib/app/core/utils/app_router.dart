@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/features/daem/daem_exports.dart';
 import 'package:balady_plus/app/features/objectable_transactions/domain/entities/create_objection_page_params.dart';
 import 'package:balady_plus/app/features/objections/domain/entities/objection_details.dart';
 import 'package:flutter/material.dart'
@@ -12,6 +13,7 @@ import '../../features/_shared_feature_/data/entities/success_screen_args.dart';
 import '../../features/_shared_feature_/presentation/pages/success_screen.dart';
 import '../../features/bottom_navigation/bottom_navigation_exports.dart'
     show BottomNavigationPage;
+import '../../features/daem/presentation/pages/daem_ticket_page.dart';
 import '../../features/entry_point/entry_point_exports.dart' show SsoUserInfo;
 import '../../features/new_appointment/presentation/pages/new_appointment/new_appointment_page.dart';
 import '../../features/objectable_transactions/objections_exports.dart'
@@ -253,6 +255,15 @@ class AppRouter {
       case RouteName.NewAppointmentPage:
         return MaterialPageRoute(
           builder: (_) => NewAppointmentPage(),
+        );
+
+      case RouteName.newDaemTicket:
+        final args = settings.arguments as NewTicketPageArgs;
+
+        return MaterialPageRoute(
+          builder: (_) => NewDaemPage(
+            args: args,
+          ),
         );
 
       // error page

@@ -9,6 +9,8 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 import '../../../../core/services/local/navigation_services.dart';
 import '../../../../core/utils/constants/app_colors.dart';
 import '../../../../core/utils/enums/enums.dart';
+import '../../../daem/data/models/daem_item.dart';
+import '../../../daem/presentation/dialogs/str_type_with_search_dialog.dart';
 import '../../data/entities/drop_down_item.dart';
 import '../dialogs/incident_type_with_search_dialog.dart';
 import '../dialogs/multi_selection_with_search_dialog.dart';
@@ -391,8 +393,6 @@ class _CustomTapWidgetForMultiLongDialog
   }
 }
 
-
-/*
 class TapWidgetForLongDialog extends StatefulWidget {
   DaemItem? value;
   Function(DaemItem? item) onChangeType;
@@ -445,10 +445,9 @@ class _TapWidgetForLongDialog extends State<TapWidgetForLongDialog> {
             }
           : () {
               FocusManager.instance.primaryFocus?.unfocus();
-              showError(widget.errorText ??
-                  Helpers.translatingWord('empty_list_error'));
+              CommonFunctions.showError(
+                  widget.errorText ?? ('empty_list_error').tr());
             },
     );
   }
 }
-*/

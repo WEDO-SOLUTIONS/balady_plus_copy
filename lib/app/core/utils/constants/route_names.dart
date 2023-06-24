@@ -57,4 +57,8 @@ class RouteName {
   // -------  Appointments ---------
 
   static const NewAppointmentPage = '/NewAppointmentPage';
+
+  // -------  DAEM ---------
+
+  static const newDaemTicket = '/newDaemTicket';
 }
