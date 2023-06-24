@@ -555,7 +555,6 @@ class Constants {
   static const String updateTermsImg = 'assets/images/update_terms.jpg';
   static const String whiteCloseImg = 'assets/images/white_close@3x.png';
   static const String backImg = 'assets/images/arrowBack@3x.png';
-  static const String greenStarImg = 'assets/images/stars@3x.png';
   static const String userProfileImg = 'assets/images/user_profile@2x.png';
   static const String digitalWalletCardImg =
       'assets/images/digital_wallet_card@3x.png';

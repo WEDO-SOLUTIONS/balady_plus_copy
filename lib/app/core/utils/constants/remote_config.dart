@@ -4,6 +4,9 @@ import '../utils_exports.dart' show EnvType;
 class RemoteConfig {
   //! First
   static String get gis => _RemoteConfig.gis[env]!;
+  static String get apigeeURL => _RemoteConfig.apigeeURL[env]!;
+  static String get pegaURL => _RemoteConfig.pegaURL[env]!;
+
   static String get hmCode => _RemoteConfig.hmCode[env]!;
   static String get apigeeUsername => _RemoteConfig.apigeeUsername[env]!;
   static String get apigeePassword => _RemoteConfig.apigeePassword[env]!;
@@ -34,6 +37,17 @@ class _RemoteConfig {
   static final hmCode = _initValues<String>(
     devVal: "oxqUHJH1KXD84vP0KYBnyaHDUk5sJ9HkzqPDTice5TABqvfACZaLscG1TjjyPgIT",
     stgVal: "1",
+    prodVal: "1",
+  );
+
+  static final apigeeURL = _initValues<String>(
+    devVal: "https://apiservicesstg.balady.gov.sa",
+    stgVal: "https://apiservicesstg.balady.gov.sa",
+    prodVal: "1",
+  );
+  static final pegaURL = _initValues<String>(
+    devVal: "https://crmustg.momra.gov.sa",
+    stgVal: "https://crmustg.momra.gov.sa",
     prodVal: "1",
   );
   static final apigeeUsername = _initValues<String>(

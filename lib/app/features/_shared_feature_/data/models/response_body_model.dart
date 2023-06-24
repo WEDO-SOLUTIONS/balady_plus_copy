@@ -40,7 +40,7 @@ class ResponseData<T> {
           beRequestId: json["beRequestId"],
           correlationId: json["correlationId"],
           responseMessage: json["responseMessage"],
-          result: parsedResult);
+          result: parsedResult ?? json["result"]);
 
   String? getRefResponseMessage() {
     if (beRequestId != null)

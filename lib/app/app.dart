@@ -3,6 +3,7 @@ import 'package:bot_toast/bot_toast.dart'
 import 'package:country_picker/country_picker.dart' show CountryLocalizations;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart' show BlocProvider;
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:localize_and_translate/localize_and_translate.dart'
     show Translation, translator;
 
@@ -30,7 +31,7 @@ class App extends StatelessWidget {
           fontFamily: AppConfig.appFontType,
           appBarTheme: const AppBarTheme(backgroundColor: AppColor.blue),
         ),
-        builder: BotToastInit(),
+        builder: EasyLoading.init(builder: BotToastInit()),
         navigatorObservers: [BotToastNavigatorObserver()],
         localizationsDelegates: translator.delegates.toList()
           ..add(CountryLocalizations.delegate), // Android + iOS Delegates

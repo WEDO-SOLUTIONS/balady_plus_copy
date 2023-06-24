@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../../../core/utils/constants/app_colors.dart';
 import '../../../../../_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
-import '../../../../../_shared_feature_/presentation/widgets/custom_svg_icon_widget copy.dart';
+import '../../../../../_shared_feature_/presentation/widgets/custom_svg_icon_widget.dart';
 import '../../../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 
 class SplTypesCard extends StatelessWidget {

@@ -20,7 +20,7 @@ class ServiceIcon extends StatelessWidget {
       onTap: () {
         Navigator.pushNamed(
           context,
-          RouteName.serviceCards,
+          RouteName.qrScreenRoute,
           arguments: service,
         );
       },

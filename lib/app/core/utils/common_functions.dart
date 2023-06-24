@@ -315,6 +315,101 @@ class CommonFunctions {
       return true;
     }
   }
+
+  static String convert24TimeTo12WithPeriod(String? time) {
+    if (time != null) {
+      int? hoursFrom = int.tryParse(time.split(":")[0]) != null
+          ? int.parse(time.split(":")[0])
+          : null;
+      int? minuteFrom = int.tryParse(time.split(":")[1]) != null
+          ? int.parse(time.split(":")[1])
+          : null;
+
+      TimeOfDay fromTime =
+          TimeOfDay(hour: hoursFrom!, minute: minuteFrom!); // 3:00 PM
+
+      int hoursFromAS12 = hoursFrom;
+
+      if (hoursFrom == 0) hoursFromAS12 += 12;
+
+      String minuteStr = minuteFrom < 10 ? "0$minuteFrom" : "$minuteFrom";
+
+      if (hoursFrom >= 13 && hoursFrom <= 23) {
+        hoursFromAS12 = hoursFromAS12 - 12;
+      }
+
+      if (fromTime.period == DayPeriod.pm) return "$hoursFromAS12:$minuteStr م";
+
+      if (fromTime.period == DayPeriod.am) {
+        return "$hoursFromAS12:$minuteStr ص";
+      }
+    }
+    return "";
+  }
+
+  static String getFormattedTime(String? timeFrom, String? timeTo) {
+    if (timeFrom != null && timeTo != null) {
+      int? hoursFrom = int.tryParse(timeFrom.split(":")[0]) != null
+          ? int.parse(timeFrom.split(":")[0])
+          : null;
+      int? hoursTo = int.tryParse(timeTo.split(":")[0]) != null
+          ? int.parse(timeTo.split(":")[0])
+          : null;
+
+      int? minuteFrom = int.tryParse(timeFrom.split(":")[1]) != null
+          ? int.parse(timeFrom.split(":")[1])
+          : null;
+      int? minuteTo = int.tryParse(timeTo.split(":")[1]) != null
+          ? int.parse(timeTo.split(":")[1])
+          : null;
+      String minuteFromStr = minuteFrom! < 10 ? "0$minuteFrom" : "$minuteFrom";
+      String minuteToStr = minuteTo! < 10 ? "0$minuteTo" : "$minuteTo";
+      TimeOfDay fromTime =
+          TimeOfDay(hour: hoursFrom!, minute: minuteFrom); // 3:00 PM
+      TimeOfDay toTime = TimeOfDay(hour: hoursTo!, minute: minuteTo); // 5:00 AM
+
+      int hoursFromAS12 = hoursFrom;
+      int hoursToAS12 = hoursTo;
+
+      if (hoursFrom == 0) hoursFromAS12 += 12;
+
+      if (hoursTo == 0) hoursToAS12 += 12;
+
+      if (hoursFrom >= 13 && hoursFrom <= 23) {
+        hoursFromAS12 = hoursFromAS12 - 12;
+      }
+
+      if (hoursTo >= 13 && hoursTo <= 23) hoursToAS12 = hoursToAS12 - 12;
+
+      String time = "";
+
+      if (fromTime.period == DayPeriod.am && toTime.period == DayPeriod.am) {
+        time = "$hoursFromAS12:$minuteFromStr - $hoursToAS12:$minuteToStr ص";
+        return time;
+      } else if (fromTime.period == DayPeriod.pm &&
+          toTime.period == DayPeriod.pm) {
+        time = "$hoursFromAS12:$minuteFromStr - $hoursToAS12:$minuteToStr م";
+        return time;
+      } else {
+        String from = "";
+        String to = "";
+        if (fromTime.period == DayPeriod.pm) {
+          from = "$hoursFromAS12:$minuteFromStr م";
+        }
+
+        if (fromTime.period == DayPeriod.am) {
+          from = "$hoursFromAS12:$minuteFromStr ص";
+        }
+
+        if (toTime.period == DayPeriod.pm) to = "$hoursToAS12:$minuteToStr م";
+
+        if (toTime.period == DayPeriod.am) to = "$hoursToAS12:$minuteToStr ص";
+
+        return "$from - $to";
+      }
+    }
+    return "";
+  }
 }
 
 class CommonProperties {
@@ -323,14 +418,14 @@ class CommonProperties {
       _fakeUser; //sl<EntryPointCubit>().state.userInfo;
   static DelegatorEntity? get selectedDelegator =>
       sl<EntryPointCubit>().state.selectedDelegator;
-  static bool isLoggedIn = sl<EntryPointCubit>().state.token != null;
+  static bool isLoggedIn = true; //sl<EntryPointCubit>().state.token != null;
   //static SsoUserInfo? userInfo = sl<EntryPointCubit>().state.userInfo;
 
   static LatLng defaultLocation =
       const LatLng(24.76836756001484, 46.720988751704304);
 
   static String token =
-      "eyJhbGciOiJSUzI1NiIsImtpZCI6IjhFRDBCN0UzRjNDOTFBOEQwMUU3MEMxRUM4MTNGQTJBRjgxOEQ5MUZSUzI1NiIsIng1dCI6Imp0QzM0X1BKR28wQjV3d2V5QlA2S3ZnWTJSOCIsInR5cCI6ImF0K2p3dCJ9.eyJpc3MiOiJodHRwczovL3Nzb2FwcGRldi5tb21yYS5nb3Yuc2EiLCJuYmYiOjE2ODY2NTAzMjksImlhdCI6MTY4NjY1MDMyOSwiZXhwIjoxNjg3NTE0MzI5LCJhdWQiOlsiR2lzQXBpIiwiaHR0cHM6Ly9zc29hcHBkZXYubW9tcmEuZ292LnNhL3Jlc291cmNlcyJdLCJzY29wZSI6WyJvcGVuaWQiLCJwcm9maWxlIiwiR2lzQXBpIiwib2ZmbGluZV9hY2Nlc3MiXSwiYW1yIjpbInB3ZCJdLCJjbGllbnRfaWQiOiJCYWxhZHkuTW9tdGF0aGVsLkFQUCIsInN1YiI6IjdjMzY2Nzc4LWEwMjEtNDcwNy04MjQzLTdjM2RmNTljN2ZmOCIsImF1dGhfdGltZSI6MTY4NjY1MDMyOCwiaWRwIjoibG9jYWwiLCJuYW1lIjoiMjExMTY5MjU5MiIsIm1haWwiOiJtLmFobWVkQGlubm9zb2Z0Lm1leHgiLCJzZXgiOiIxIiwiZG9iIjoiMzEvMDUvMTk5NSIsInBob25lIjoiMDU5Mjg0MjI3NSIsImFyX25hbWUiOiLZhdit2YXZiNivINmF2K3Zhdiv2KjZh9in2KHYp9mE2K_ZitmGICDYp9it2YXYryIsImVuX25hbWUiOiJNQUhNT1VEIE1PSEFNRURCQUhBRUxESSAgQUhNRUQiLCJpZF9ubyI6IjIxMTE2OTI1OTIiLCJuaWQiOiIyMDciLCJuYXRpb25hbGl0eSI6ItmF2LXYsSIsImlkX3R5cGUiOiIyIiwic25hbWUiOiLZhdit2YXZiNivLNmF2K3Zhdiv2KjZh9in2KHYp9mE2K_ZitmGLCzYp9it2YXYryIsInNpZCI6IjhCMDI5NTQzMDI0Mzk5NTRCMEJENjI3MzFGNEU2RDE2IiwianRpIjoiQkJDMzI3QzYyMTQ0QzAwOTRCRDVEMzZCOThFMDc0NTgifQ.Q1fXhvrc_HROU3KC_07BIIIGz44BKCrLA5tjU1IpUT2vw0CXBIczEFBrIP05ustjIirQhGWZ-dY9rYDXxqivZ-TnYTtROs1fPi9Z3pT1_tjqWKinFCFNW3GhY2JV2BsCjrzK51WTJkUHbJJB9NowmMpD5jnjB5fQEo671_8gFuL3uzmYcjdtVF7Y5S1q_lC8oee04LTCQQF2WerTfDCyyo7Y4YCHbF6-b8huFmbK7Pzn7LubmSd1prN9-zwJj93RwoMTIkVrO23Y8wiOkz0rEL0MSn-dXlAYp8A8d9SmoZSxM9QF_ifrFLzENPMpNMR0-GI8xtGBOW0Gy3nJl5B8uw";
+      "eyJhbGciOiJSUzI1NiIsImtpZCI6IjhFRDBCN0UzRjNDOTFBOEQwMUU3MEMxRUM4MTNGQTJBRjgxOEQ5MUZSUzI1NiIsIng1dCI6Imp0QzM0X1BKR28wQjV3d2V5QlA2S3ZnWTJSOCIsInR5cCI6ImF0K2p3dCJ9.eyJpc3MiOiJodHRwczovL3Nzb2FwcGRldi5tb21yYS5nb3Yuc2EiLCJuYmYiOjE2ODcwNjI0OTMsImlhdCI6MTY4NzA2MjQ5MywiZXhwIjoxNjg4MjcyMDkzLCJhdWQiOlsiRW1wbG95ZWVBZG1pbnN0cmF0aW9uLkFwaSIsImh0dHBzOi8vc3NvYXBwZGV2Lm1vbXJhLmdvdi5zYS9yZXNvdXJjZXMiXSwic2NvcGUiOlsib3BlbmlkIiwicHJvZmlsZSIsIkVtcGxveWVlQWRtaW5zdHJhdGlvbi5BcGkiLCJvZmZsaW5lX2FjY2VzcyJdLCJhbXIiOlsicHdkIl0sImNsaWVudF9pZCI6ImJhbGFkeV9tb2JpbGVfYXBwIiwic3ViIjoiMWVjZDY2NTYtMzlhMC00YmFkLTg2OWQtNjIxZGFmNWY4YmYyIiwiYXV0aF90aW1lIjoxNjg3MDYyNDkyLCJpZHAiOiJsb2NhbCIsInJvbGUiOlsiUm9sZV9MaWNlbnNlQWdlbmN5IiwiSW5zdGl0dXRlcyIsIkJhbGFkeV9BZG1pbl9Nb2JpbGUiLCJCYWxhZHlfT3RoZXIiLCJMaWNlbnNlU3RhbmRhcmRBY3Rpdml0eUFkbWluIiwiQ0FOX1NLSVBfQ09PS0lFX1ZBTElEQVRPUiIsIkxpY2Vuc2VTdGFuZGFyZEFjdGl2aXR5RGF0YUVudHJ5Il0sImVtYWlsIjoic3Vwcml5YS5qb25uYWR1bEBpbm92YXIuY29tIiwicGhvbmVfbnVtYmVyIjoiNTU3NjA5NzIyIiwibmFtZSI6IjEwMDU4MzAwODYiLCJ0aWQiOiIyMTMiLCJ0bm0iOiLYo9mF2KfZhtipINin2YTZhdiv2YrZhtipINin2YTZhdmG2YjYsdipIiwibWFpbCI6InN1cHJpeWEuam9ubmFkdWxAaW5vdmFyLmNvbSIsInNleCI6IjEiLCJkb2IiOiIwNy8wOC8xOTc2IiwicGhvbmUiOiIwNTU3NjA5NzIyIiwiYXJfbmFtZSI6Iti52KjYr9in2YTZhNmHINi02KfZgdmKINi52YLZitmEINin2YTYudmG2LLZiiIsImVuX25hbWUiOiJBQkRVTExBSCBTSEFGSSBBIEFMQU5BWkkiLCJpZF9ubyI6IjEwMDU4MzAwODYiLCJuaWQiOiIxMTMiLCJuYXRpb25hbGl0eSI6Itiz2LnZiNiv2YoiLCJpZF90eXBlIjoiMSIsInNuYW1lIjoi2LnYqNiv2KfZhNmE2Ycs2LTYp9mB2Yos2LnZgtmK2YQs2KfZhNi52YbYstmKIiwidGVuYW50cyI6Ilt7XCJUZW5hbnROYW1lXCI6XCLYp9mE2YbYt9in2YIg2KfZhNij2YjZhFwiLFwiVGVuYW50SWRcIjo2NDksXCJUZW5hbnRUeXBlXCI6XCJ0ZW5hbnRcIixcIkdvdklkXCI6bnVsbCxcIklzRGVmYXVsdFRlbmFudFwiOmZhbHNlfSx7XCJUZW5hbnROYW1lXCI6XCLYqNmE2K_ZitipINin2YTYtNix2KfYpti5INin2YTZgdix2LnZitipXCIsXCJUZW5hbnRJZFwiOjE3OSxcIlRlbmFudFR5cGVcIjpcInRlbmFudFwiLFwiR292SWRcIjpudWxsLFwiSXNEZWZhdWx0VGVuYW50XCI6ZmFsc2V9LHtcIlRlbmFudE5hbWVcIjpcItio2YTYr9mK2Kkg2KfZhNi52YXYsdipINin2YTZgdix2LnZitipXCIsXCJUZW5hbnRJZFwiOjE4MCxcIlRlbmFudFR5cGVcIjpcInRlbmFudFwiLFwiR292SWRcIjpudWxsLFwiSXNEZWZhdWx0VGVuYW50XCI6ZmFsc2V9LHtcIlRlbmFudE5hbWVcIjpcItio2YTYr9mK2Kkg2KfZhNi02YjZgtmK2Kkg2KfZhNmB2LHYudmK2KlcIixcIlRlbmFudElkXCI6MTg3LFwiVGVuYW50VHlwZVwiOlwidGVuYW50XCIsXCJHb3ZJZFwiOm51bGwsXCJJc0RlZmF1bHRUZW5hbnRcIjpmYWxzZX0se1wiVGVuYW50TmFtZVwiOlwi2KXYr9in2LHYqSDYp9mE2YXYtNin2LHZiti5INin2YTZg9io2LHZiSDZiNin2YTYrdmD2YjZhdmK2KlcIixcIlRlbmFudElkXCI6NjQ3LFwiVGVuYW50VHlwZVwiOlwidGVuYW50XCIsXCJHb3ZJZFwiOm51bGwsXCJJc0RlZmF1bHRUZW5hbnRcIjpmYWxzZX0se1wiVGVuYW50TmFtZVwiOlwi2KXYr9in2LHYqSDYp9mE2YXYtNin2LHZiti5INin2YTYqtis2KfYsdmK2Kkg2YjYp9mE2KfYs9iq2KvZhdin2LHZitipXCIsXCJUZW5hbnRJZFwiOjY0OCxcIlRlbmFudFR5cGVcIjpcInRlbmFudFwiLFwiR292SWRcIjpudWxsLFwiSXNEZWZhdWx0VGVuYW50XCI6ZmFsc2V9LHtcIlRlbmFudE5hbWVcIjpcItin2YTZhti32KfZgiDYp9mE2KvYp9mG2YpcIixcIlRlbmFudElkXCI6NjUwLFwiVGVuYW50VHlwZVwiOlwidGVuYW50XCIsXCJHb3ZJZFwiOm51bGwsXCJJc0RlZmF1bHRUZW5hbnRcIjpmYWxzZX0se1wiVGVuYW50TmFtZVwiOlwi2KfZhNmG2LfYp9mCINin2YTYq9in2YTYq1wiLFwiVGVuYW50SWRcIjo2NTEsXCJUZW5hbnRUeXBlXCI6XCJ0ZW5hbnRcIixcIkdvdklkXCI6bnVsbCxcIklzRGVmYXVsdFRlbmFudFwiOmZhbHNlfSx7XCJUZW5hbnROYW1lXCI6XCLZiNiy2KfYsdipINin2YTYtNim2YjZhiDYp9mE2KjZhNiv2YrYqSDZiNin2YTZgtix2YjZitipINmI2KfZhNin2LPZg9in2YZcIixcIlRlbmFudElkXCI6MTIxMixcIlRlbmFudFR5cGVcIjpcInRlbmFudFwiLFwiR292SWRcIjpudWxsLFwiSXNEZWZhdWx0VGVuYW50XCI6ZmFsc2V9LHtcIlRlbmFudE5hbWVcIjpcItij2YXYp9mG2Kkg2KfZhNmF2K_ZitmG2Kkg2KfZhNmF2YbZiNix2KlcIixcIlRlbmFudElkXCI6MjEzLFwiVGVuYW50VHlwZVwiOlwidGVuYW50XCIsXCJHb3ZJZFwiOm51bGwsXCJJc0RlZmF1bHRUZW5hbnRcIjp0cnVlfSx7XCJUZW5hbnROYW1lXCI6XCLYqNmE2K_ZitipINi62LHYqCDYudix2LnYsVwiLFwiVGVuYW50SWRcIjo1NTUsXCJUZW5hbnRUeXBlXCI6bnVsbCxcIkdvdklkXCI6bnVsbCxcIklzRGVmYXVsdFRlbmFudFwiOmZhbHNlfV0iLCJibWFpbCI6IiIsInNpZCI6IjQ2MkFENTM1Njc0NjREMzM0RkE0MkRENzBBMDhFQUJBIiwianRpIjoiRjQ3Mjc2Q0RCMTREREFGRUI5Rjc0RjAxQ0M3NkM2QzAifQ.OaiWru1BmWD_SbYYRNsmH7SWavSRrckOoMpBfVExBvUHWWgIh4vsUYPC2Xupw2z6F0s7Tuo2te27GVloPaVAQBJpMwZNYiu-rbPbEJ7x_EclxBXsXqIzL55ygqr8E0f332BDX6BDaNMDo_yt5oHfHE38FjHYP7E5tan0KA75bW9JI1psus9E2POoDKVea1MR3w_XNagHZsCyOY7QTJDrC9WFv3cRRTWDpHns9sxcliq7jgz28jeJnQ4Yv5wdgvKL5yUiPkVYzaVlCf5WTdt7N2xZckzR5a3PJ7ogmsosT19ZyQKlXhqAeZd1AEXUZCW4FNNGXdacfb1h6uocN92YnQ";
 }
 
 const _fakeUser = SsoUserInfo(
