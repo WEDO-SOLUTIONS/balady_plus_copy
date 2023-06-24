@@ -65,69 +65,69 @@ class CustomTextFieldWidget extends StatelessWidget {
   final double borderRadius;
   final Color? borderColor;
   final String? errorText;
-
+  final double? spacerSize;
   final void Function(String)? onChanged;
   final void Function(String)? onSubmitted;
   final void Function()? onTap;
   final String? Function(String?)? onValidate;
 
-  const CustomTextFieldWidget({
-    super.key,
-    this.enabled = true,
-    this.label,
-    this.labelStyle,
-    this.isRequired = false,
-    this.controller,
-    this.focusNode,
-    this.autocorrect = false,
-    this.autofillHints,
-    this.autovalidateMode,
-    this.cursorColor,
-    this.cursorHeight,
-    this.cursorWidth = 2.0,
-    this.showCursor,
-    this.initialValue,
-    this.isDigitsOnly = false,
-    this.inputFormatters,
-    this.allowedInputPattern,
-    this.deniedInputPattern,
-    this.keyboardType,
-    this.maxLength,
-    this.maxLines = 1,
-    this.obsecureText = false,
-    this.readOnly = false,
-    this.disabledColor,
-    this.textAlign,
-    this.textInputAction,
-    this.textFieldStyle,
-    this.textFieldWidth,
-    this.textFieldHeight,
-    // this.textFieldHeight = 90.0,
-    this.hintText,
-    this.hintStyle,
-    this.filled = true,
-    this.fillColor,
-    // this.textFieldVerticalPadding = 24.0,
-    this.textFieldVerticalPadding = 20.0,
-    this.startPadding = 16.0,
-    this.endPadding = 6.0,
-    this.prefixIcon,
-    this.prefixSize = 18.0,
-    this.spaceBeforePrefix = 20.0,
-    this.spaceAfterPrefix = 8.0,
-    this.suffixIcon,
-    this.suffixSize = 18.0,
-    this.spaceBeforeSuffix = 6.0,
-    this.spaceAfterSuffix = 16.0,
-    this.borderType,
-    this.borderColor,
-    this.borderRadius = 8.0,
-    this.errorText,
-    this.onChanged,
-    this.onSubmitted,
-    this.onTap,
-    this.onValidate,
-  });
+  const CustomTextFieldWidget(
+      {super.key,
+      this.enabled = true,
+      this.label,
+      this.labelStyle,
+      this.isRequired = false,
+      this.controller,
+      this.focusNode,
+      this.autocorrect = false,
+      this.autofillHints,
+      this.autovalidateMode,
+      this.cursorColor,
+      this.cursorHeight,
+      this.cursorWidth = 2.0,
+      this.showCursor,
+      this.initialValue,
+      this.isDigitsOnly = false,
+      this.inputFormatters,
+      this.allowedInputPattern,
+      this.deniedInputPattern,
+      this.keyboardType,
+      this.maxLength,
+      this.maxLines = 1,
+      this.obsecureText = false,
+      this.readOnly = false,
+      this.disabledColor,
+      this.textAlign,
+      this.textInputAction,
+      this.textFieldStyle,
+      this.textFieldWidth,
+      this.textFieldHeight,
+      // this.textFieldHeight = 90.0,
+      this.hintText,
+      this.hintStyle,
+      this.filled = true,
+      this.fillColor,
+      // this.textFieldVerticalPadding = 24.0,
+      this.textFieldVerticalPadding = 20.0,
+      this.startPadding = 16.0,
+      this.endPadding = 6.0,
+      this.prefixIcon,
+      this.prefixSize = 18.0,
+      this.spaceBeforePrefix = 20.0,
+      this.spaceAfterPrefix = 8.0,
+      this.suffixIcon,
+      this.suffixSize = 18.0,
+      this.spaceBeforeSuffix = 6.0,
+      this.spaceAfterSuffix = 16.0,
+      this.borderType,
+      this.borderColor,
+      this.borderRadius = 8.0,
+      this.errorText,
+      this.onChanged,
+      this.onSubmitted,
+      this.onTap,
+      this.onValidate,
+      this.spacerSize});
 
   @override
   Widget build(BuildContext context) {
@@ -346,7 +346,7 @@ class CustomTextFieldWidgetWithOptinal extends StatelessWidget {
   final double prefixSize;
   final double? suffixSize;
   final int errorMaxLines;
-  final double spacerSize;
+  final double? spacerSize;
   final void Function(String)? onFieldSubmitted;
   final void Function(String)? onChanged;
   final String? Function(String?)? validator;
@@ -503,7 +503,7 @@ class CustomTextFieldWidgetWithOptinal extends StatelessWidget {
             );
           },
         ),
-        CustomVerticalSpace(height: spacerSize),
+        if (spacerSize != null) CustomVerticalSpace(height: spacerSize!),
       ],
     );
   }

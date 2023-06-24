@@ -54,7 +54,6 @@ export 'presentation/core/models/error_result.dart';
 /// presentation -> core -> view models
 export 'presentation/core/view_models/inquiry/inquiry_view_model.dart';
 export 'presentation/core/view_models/inquiry/transaction_inquiry_view_model.dart';
-export 'presentation/core/view_models/inquiry/item.dart';
 
 /// presentation -> core -> models
 export 'presentation/core/models/selected_location.dart';

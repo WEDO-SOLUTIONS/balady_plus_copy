@@ -32,9 +32,9 @@ class AppintmentAttachmentViewWidget extends StatelessWidget {
         children: <Widget>[
           Expanded(
             child: Row(children: <Widget>[
-              Image.asset("assets/images/attachmentIcon@3x.png",
+              /*   Image.asset("assets/images/attachmentIcon@3x.png",
                   height: 32, width: 32),
-              const SizedBox(width: 10),
+              const SizedBox(width: 10),*/
               Expanded(
                 child: CustomTextWidget(
                   fileName ?? "",

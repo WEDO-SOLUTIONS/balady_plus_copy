@@ -35,6 +35,8 @@ extension Log<T extends Object> on T {
 class Helpers {
   //static String translatingWord(String key) => key.tr();
 
+  static String translatingWord(String key) => key.tr();
+
   static bool isArabic(BuildContext context) =>
       translator.isDirectionRTL(context);
 

@@ -37,6 +37,7 @@ class DaemRepository {
     String url = ApiUrl.DaemRetrieveData;
 
     final body = await webServices.getPegaRequest(url, queryParams: queryParms);
+    print(body);
     bool state = body['state'];
     dynamic data = body['data'];
     String error = body['error'] ?? ("errors_server_error_1").tr();

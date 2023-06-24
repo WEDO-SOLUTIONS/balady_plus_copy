@@ -621,7 +621,7 @@ class CommonFunctions {
     return "";
   }
 
-  static String getFormattedTime(String? timeFrom, String? timeTo) {
+  static String getFormattedTimeforQR(String? timeFrom, String? timeTo) {
     if (timeFrom != null && timeTo != null) {
       int? hoursFrom = int.tryParse(timeFrom.split(":")[0]) != null
           ? int.parse(timeFrom.split(":")[0])
@@ -683,6 +683,39 @@ class CommonFunctions {
       }
     }
     return "";
+  }
+
+  static String getFormattedTime(String? timeStr,
+      {Duration? subtractedDuration}) {
+    String formattedTime = "";
+    try {
+      String biddingEndingTime = timeStr ?? "";
+      DateTime tempTime = DateFormat("hh:mm").parse(biddingEndingTime);
+      String time = DateFormat("h:mm a", isAppAR ? 'ar_SA' : 'en_US')
+          .format(tempTime)
+          .toString();
+      if (isAppAR) {
+        time = time.replaceAll("ص", ("am").tr()).replaceAll("م", ("pm").tr());
+      }
+      formattedTime = time;
+    } catch (ex) {
+      print(ex);
+    }
+    return replaceArabicNumberWithEnglish(formattedTime);
+  }
+
+  static String getFormattedDate(String? dateStr) {
+    String formattedDate = "";
+    try {
+      String bidEndDate = dateStr ?? "";
+      DateTime tempDate = DateFormat("yyyy/MM/dd").parse(bidEndDate);
+      formattedDate = DateFormat.yMMMMd(isAppAR ? 'ar_SA' : 'en_US')
+          .format(tempDate)
+          .toString();
+    } catch (e) {
+      print(e);
+    }
+    return replaceArabicNumberWithEnglish(formattedDate);
   }
 
   static void launchMap(LatLng? location) async {

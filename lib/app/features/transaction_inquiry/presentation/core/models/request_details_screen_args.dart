@@ -1,6 +1,6 @@
-/*import 'package:balady_new_app/app/core/core_exports.dart'
+/*import 'package:balady_plus/app/core/core_exports.dart'
     show CRM_REQUEST_TYPE;
-import 'package:balady_new_app/app/features/customer_voice/customer_voice_exports.dart'
+import 'package:balady_plus/app/features/customer_voice/customer_voice_exports.dart'
     show RequestDetailsResponse, IncidentResultItem;
 
 class RequestDetailsScreenArgs {

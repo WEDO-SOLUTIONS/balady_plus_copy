@@ -25,6 +25,9 @@ class BookNewAppointmentDateTimeScreen extends StatelessWidget {
                   PreviousNextButtons(
                     isFormValid: model.selectedDate != null &&
                         model.selectedTime != null,
+                    onConfirm: () {
+                      model.saveAppointment();
+                    },
                   )
                 ],
               );

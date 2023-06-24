@@ -11,8 +11,14 @@ import '../../features/_shared_feature_/presentation/pages/view_dms_image_screen
 import '../../features/_shared_feature_/shared_feature_exports.dart';
 import '../../features/_shared_feature_/data/entities/success_screen_args.dart';
 import '../../features/_shared_feature_/presentation/pages/success_screen.dart';
+import '../../features/appointments/presentation/core/models/appointment_details_screen_args.dart';
+import '../../features/appointments/presentation/pages/appointment_details_screen.dart';
+import '../../features/appointments/presentation/pages/appointments_screen.dart';
+import '../../features/appointments/presentation/pages/previous_appointments_screen.dart';
 import '../../features/bottom_navigation/bottom_navigation_exports.dart'
     show BottomNavigationPage;
+import '../../features/calculator/presentation/pages/service_calculator_location_screen.dart';
+import '../../features/calculator/presentation/pages/service_calculator_screen.dart';
 import '../../features/daem/presentation/pages/daem_ticket_page.dart';
 import '../../features/entry_point/entry_point_exports.dart' show SsoUserInfo;
 import '../../features/new_appointment/presentation/pages/new_appointment/new_appointment_page.dart';
@@ -48,9 +54,12 @@ import '../../features/services/services_exports.dart'
     show ServiceCardsPage, ServiceEntity;
 import '../../features/splash/splash_exports.dart' show SplashPage;
 import '../../features/transaction_inquiry/data/general_inquiry_data.dart';
+import '../../features/transaction_inquiry/presentation/core/models/gis_location_result.dart';
 import '../../features/transaction_inquiry/presentation/pages/inquiry/general_inquiry/general_inquiry_page.dart';
 import '../../features/transaction_inquiry/presentation/pages/inquiry/transactions_inquiry/new_transaction_inquiry.dart';
 import '../../features/transaction_inquiry/presentation/pages/inquiry/transactions_inquiry/transaction_inquiry_page.dart';
+import '../../features/transaction_inquiry/presentation/pages/request_service/new_request_service/new_request_service_location_screen.dart';
+import '../../features/transaction_inquiry/presentation/pages/request_service/new_request_service/new_request_service_page.dart';
 import '../../features/vd/vd_exports.dart';
 
 class AppRouter {
@@ -285,6 +294,52 @@ class AppRouter {
           builder: (_) => GeneralInquiryPage(inqTypeModel: inqTypeModel),
         );
 
+      case RouteName.appointmentsRoute:
+        return MaterialPageRoute(
+          builder: (_) => const AppointmentsScreen(),
+        );
+
+      case RouteName.previousAppointmentsRoute:
+        return MaterialPageRoute(
+          builder: (_) => const PreviousAppointmentsScreen(),
+        );
+
+      case RouteName.appointmentDetailsRoute:
+        final args = settings.arguments as AppointmentDetailsScreenArgs;
+        //final args = settings.arguments as int;
+        return MaterialPageRoute(
+          builder: (_) => AppointmentDetailsScreen(
+            // appointmentId: args,
+            appointmentItemInfo: args.appointmentItemInfo,
+            isCancelable: args.isCancelable,
+            isPrintable: args.isPrintable,
+            fromHomePage: args.fromHomePage,
+          ),
+        );
+
+      case RouteName.newMSRPage:
+        //final args = settings.arguments as int;
+        return MaterialPageRoute(
+          builder: (_) => NewMSRPage(),
+        );
+      case RouteName.newMSRMapPage:
+        final args = settings.arguments as CustomerVoiceReportTypeModel;
+        return MaterialPageRoute(
+          builder: (_) => NewRequestLocationScreen(reportType: args),
+        );
+
+      case RouteName.calculatorMapRoute:
+        return MaterialPageRoute(
+          builder: (_) => ServiceCalculatorLocationScreen(),
+        );
+
+      case RouteName.calculatorRoute:
+        final args = settings.arguments as GisLocationResult;
+        return MaterialPageRoute(
+          builder: (_) => ServiceCalculatorScreen(
+            gisLocationResult: args,
+          ),
+        );
       // error page
       default:
         return MaterialPageRoute(

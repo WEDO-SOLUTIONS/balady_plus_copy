@@ -57,6 +57,9 @@ class RouteName {
   // -------  Appointments ---------
 
   static const NewAppointmentPage = '/NewAppointmentPage';
+  static const appointmentsRoute = 'appointments';
+  static const previousAppointmentsRoute = 'previous-appointments';
+  static const appointmentDetailsRoute = 'appointment-details';
 
   // -------  DAEM ---------
 
@@ -69,4 +72,11 @@ class RouteName {
   // ------- General Inquiery  ---------
 
   static const generalInquiryPage = '/GeneralInquiryPage';
+  static const newMSRMapPage = '/NewMSRMapPage';
+
+  static const newMSRPage = '/NewMSRPage';
+
+  static const calculatorRoute = 'calculatorRoute';
+
+  static const calculatorMapRoute = 'calculatorMapRoute';
 }

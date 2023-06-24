@@ -1,6 +1,6 @@
-/*import 'package:balady_new_app/app/core/shared_local_services/app_colors.dart';
-import 'package:balady_new_app/app/core/shared_local_services/enums.dart';
-import 'package:balady_new_app/app/core/shared_local_services/helpers.dart';
+/*import 'package:balady_plus/app/core/shared_local_services/app_colors.dart';
+import 'package:balady_plus/app/core/shared_local_services/enums.dart';
+import 'package:balady_plus/app/core/shared_local_services/helpers.dart';
 import 'package:flutter/material.dart';
 
 class MapScreenDetails extends StatefulWidget {

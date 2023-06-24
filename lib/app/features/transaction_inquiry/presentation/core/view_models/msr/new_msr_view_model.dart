@@ -1,4 +1,5 @@
-/*import 'package:flutter/material.dart';
+import 'package:balady_plus/app/core/utils/utils_exports.dart';
+import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
@@ -6,8 +7,12 @@ import 'package:tuple/tuple.dart';
 
 import '../../../../../../core/base/base_view_model.dart';
 import '../../../../../../core/services/local/navigation_services.dart';
+import '../../../../../../core/utils/constants/remote_config.dart';
+import '../../../../../../core/utils/enums/enums.dart';
 import '../../../../../_shared_feature_/data/entities/drop_down_item.dart';
+import '../../../../../_shared_feature_/data/entities/success_screen_args.dart';
 import '../../../../../vd/presentation/dialogs/duplicate_request_dialog.dart';
+import '../../../../data/general_inquiry_data.dart';
 import '../../models/attachment_model.dart';
 import '../../models/classification.dart';
 import '../../models/create_incident_result.dart';
@@ -22,14 +27,7 @@ class NewMSRViewModel extends BaseViewModel {
   bool isFormValid = false;
 
   CustomerVoiceReportTypeModel type = CustomerVoiceReportTypeModel(
-      code: "",
-      id: 0,
-      reportType: CustomerVoiceType.REQ,
-      reportTypeIcon: "",
-      reportTypeKey: "",
-      reportTypeSubTitle: "",
-      reportTypeTitle: "",
-      cardIcon: "");
+      code: "", id: 0, title: "", key: "", icon: "");
   GisLocationResult? gisLocation;
 
   // SPL Classification parms
@@ -132,8 +130,8 @@ class NewMSRViewModel extends BaseViewModel {
     String error = ("server_error_1").tr();
     try {
       showLoading();
-      String? userId = userInfo?.idNo;
-      String? userMobile = userInfo?.phone;
+      String? userId = CommonProperties.userInfo?.idNo;
+      String? userMobile = CommonProperties.userInfo?.phone;
       String firstName = "";
       String middleName = "";
       String lastName = "";
@@ -141,16 +139,18 @@ class NewMSRViewModel extends BaseViewModel {
       String mobileNumber = "";
       String email = "";
 
-      if (isLoggedIn) {
-        firstName = userInfo?.getFirstName() ?? "";
-        middleName = userInfo?.getMiddleName() ?? "";
-        lastName = userInfo?.getLastName() ?? "";
-        birthDate = userInfo?.getFormattedBirthDate(withDash: true) ?? "";
-        mobileNumber = !userInfo!.phone!.startsWith("0")
-            ? "0" + userInfo!.phone!
-            : userInfo!.phone!;
-        email = userInfo!.mail != null
-            ? userInfo!.mail!
+      if (CommonProperties.isLoggedIn) {
+        firstName = CommonProperties.userInfo?.getFirstName() ?? "";
+        middleName = CommonProperties.userInfo?.getMiddleName() ?? "";
+        lastName = CommonProperties.userInfo?.getLastName() ?? "";
+        birthDate =
+            CommonProperties.userInfo?.getFormattedBirthDate(withDash: true) ??
+                "";
+        mobileNumber = !CommonProperties.userInfo!.phone!.startsWith("0")
+            ? "0" + CommonProperties.userInfo!.phone!
+            : CommonProperties.userInfo!.phone!;
+        email = CommonProperties.userInfo!.mail != null
+            ? CommonProperties.userInfo!.mail!
                 .replaceAll("\u200e", '')
                 .replaceAll("\u200f", '')
                 .trim()
@@ -159,10 +159,14 @@ class NewMSRViewModel extends BaseViewModel {
 
       var body = {
         "CustomerInformation": {
-          if (isLoggedIn && userId != null && userId.startsWith("1"))
-            "NationalID": userInfo!.idNo!,
-          if (isLoggedIn && userId != null && !userId.startsWith("1"))
-            "IqamaID": "" + userInfo!.idNo!,
+          if (CommonProperties.isLoggedIn &&
+              userId != null &&
+              userId.startsWith("1"))
+            "NationalID": CommonProperties.userInfo!.idNo!,
+          if (CommonProperties.isLoggedIn &&
+              userId != null &&
+              !userId.startsWith("1"))
+            "IqamaID": "" + CommonProperties.userInfo!.idNo!,
           "FirstName": firstName,
           "MiddleName": middleName,
           "LastName": lastName,
@@ -325,9 +329,8 @@ class NewMSRViewModel extends BaseViewModel {
         uploadingDocumentsfailed = false;
         hideLoading();
         int count = 0;
-        navigation.currentState!.pushNamedAndRemoveUntil(
-            RoutesNames.successRoute,
-            ModalRoute.withName(RoutesNames.customerVoiceRoute),
+        navigation.currentState!.pushNamedAndRemoveUntil(RouteName.successRoute,
+            ModalRoute.withName(RouteName.bottomNavigation),
             arguments: SuccessScreenArgs(
                 type: PAGE_TYPE.msr, idNumber: createRequestresponse?.pyId));
       }
@@ -339,7 +342,7 @@ class NewMSRViewModel extends BaseViewModel {
   void setSplClassifications(SpecializedClassification? data) {
     splClassifications = data;
     splTypeList = splClassifications!.splClassificationList!
-        .map<DropDownItem>((e) => DropDownItem(id: e.id, name: e.name))
+        .map<DropDownItem>((e) => DropDownItem(id: e.id, name: e.name ?? ""))
         .toList();
   }
 
@@ -359,14 +362,7 @@ class NewMSRViewModel extends BaseViewModel {
     splDescription = null;
     selectedLocation = new SelectedLocation();
     type = CustomerVoiceReportTypeModel(
-        code: "",
-        id: 0,
-        reportType: CustomerVoiceType.Balady940,
-        reportTypeIcon: "",
-        reportTypeKey: "",
-        reportTypeSubTitle: "",
-        reportTypeTitle: "",
-        cardIcon: "");
+        code: "", id: 0, key: "", title: "", icon: "");
   }
 
   static showCustomDialog(Widget dialog, {bool isDismiss = true}) {
@@ -383,13 +379,14 @@ class NewMSRViewModel extends BaseViewModel {
       {bool snap = true,
       bool? select = false,
       bool clearClassificationSelection = false}) {
+    print("navigateToDetails");
     if (clearClassificationSelection) clearClassification();
 
     if (select ?? false) {
       navigation.currentState?.pop();
       locator<NewMSRDetailsViewModel>().notifyListeners();
     } else {
-      navigation.currentState!.pushNamed(RoutesNames.newRequestDetailsRoute);
+      navigation.currentState!.pushNamed(RouteName.newMSRPage);
     }
   }
 
@@ -406,7 +403,9 @@ class NewMSRViewModel extends BaseViewModel {
       showError(("outside_saudiArabia").tr());
       return false;
     }
-
+    //MM
+    return true;
+/*
     if (gisResult?.adminMunicipalityId != null) {
       isAllowed = RemoteConfig.MSRAllowedMuncipalites.contains(
           gisResult!.adminMunicipalityId!);
@@ -416,7 +415,7 @@ class NewMSRViewModel extends BaseViewModel {
       showCustomDialog(MunicipalityMSRDialog());
     } else {
       isExcepted = Helpers.checkForExpectedVD(gisResult, CRM_TYPE.req);
-    }
+    }*/
     return isAllowed && !isExcepted;
   }
 
@@ -432,4 +431,3 @@ class NewMSRViewModel extends BaseViewModel {
     splDescription = null;
   }
 }
-*/

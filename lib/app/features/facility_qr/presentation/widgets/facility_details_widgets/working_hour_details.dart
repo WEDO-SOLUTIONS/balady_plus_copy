@@ -146,15 +146,16 @@ class _WorkingHourDetailsState extends State<WorkingHourDetails> {
                                     child: CustomTextWidget(
                                       closedOr24Hours.isNotEmpty
                                           ? closedOr24Hours
-                                          : CommonFunctions.getFormattedTime(
-                                              widget
-                                                  .workingHours
-                                                  .workingTimes?[index]
-                                                  .firstFromTime,
-                                              widget
-                                                  .workingHours
-                                                  .workingTimes?[index]
-                                                  .firstToTime),
+                                          : CommonFunctions
+                                              .getFormattedTimeforQR(
+                                                  widget
+                                                      .workingHours
+                                                      .workingTimes?[index]
+                                                      .firstFromTime,
+                                                  widget
+                                                      .workingHours
+                                                      .workingTimes?[index]
+                                                      .firstToTime),
                                       fontColor: AppColor.black500,
                                       fontSize: 16,
                                       fontWeight: widget
@@ -177,7 +178,7 @@ class _WorkingHourDetailsState extends State<WorkingHourDetails> {
                                           closedOr24Hours.isNotEmpty
                                               ? closedOr24Hours
                                               : CommonFunctions
-                                                  .getFormattedTime(
+                                                  .getFormattedTimeforQR(
                                                       widget
                                                           .workingHours
                                                           .workingTimes?[index]
@@ -204,7 +205,7 @@ class _WorkingHourDetailsState extends State<WorkingHourDetails> {
                                           closedOr24Hours.isNotEmpty
                                               ? closedOr24Hours
                                               : CommonFunctions
-                                                  .getFormattedTime(
+                                                  .getFormattedTimeforQR(
                                                       widget
                                                           .workingHours
                                                           .workingTimes?[index]

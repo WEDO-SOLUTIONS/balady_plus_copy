@@ -1,18 +1,12 @@
-/*import 'package:balady_new_app/app/core/core_exports.dart'
-    show
-        BigAppBarWithStepsWidget,
-        Helpers,
-        MapView,
-        CustomerVoiceType,
-        locator,
-        BaseView;
-import 'package:balady_new_app/app/features/customer_voice/customer_voice_exports.dart'
-    show
-        NewMSRMapViewModel,
-        CustomerVoiceReportTypeModel,
-        SelectedLocation,
-        NewMSRViewModel;
 import 'package:flutter/material.dart';
+
+import '../../../../../../core/base/base_view.dart';
+import '../../../../../../core/base/base_view_model.dart';
+import '../../../../../_shared_feature_/presentation/pages/map_view.dart';
+import '../../../../data/general_inquiry_data.dart';
+import '../../../core/models/selected_location.dart';
+import '../../../core/view_models/msr/new_msr_map_view_model.dart';
+import '../../../core/view_models/msr/new_msr_view_model.dart';
 
 class NewRequestLocationScreen extends StatefulWidget {
   CustomerVoiceReportTypeModel reportType;
@@ -45,14 +39,6 @@ class _NewRequestLocationScreen extends State<NewRequestLocationScreen> {
         onModelReady: (model) {},
         builder: (context, model, child) {
           return Scaffold(
-            appBar: BigAppBarWithStepsWidget(
-              title: Helpers.translatingWord('order_location'),
-              nextStep: Helpers.translatingWord(
-                  'customerVoiceLatestRequestsSectionGoToDetailsButtonWord'),
-              stepNumber: 1,
-              totalSteps: 2,
-              withCloseImg: true,
-            ),
             body: Stack(
               children: [
                 //map view
@@ -61,7 +47,6 @@ class _NewRequestLocationScreen extends State<NewRequestLocationScreen> {
                   selectedLocation: model.selectedLocation,
                   onLocationChanged: onLocationConfirmed,
                   showRadius: true,
-                  incidentType: CustomerVoiceType.REQ,
                   showSearch: true,
                   showSearchPaddingScreen: false,
                 ),
@@ -81,4 +66,4 @@ class _NewRequestLocationScreen extends State<NewRequestLocationScreen> {
           .getMapGISInfo(mapLocaton: location.selectedLocation!, select: false);
     }
   }
-}*/
+}

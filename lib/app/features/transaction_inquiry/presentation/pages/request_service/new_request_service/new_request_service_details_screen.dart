@@ -6,11 +6,13 @@ import '../../../../../../core/base/base_view.dart';
 import '../../../../../../core/base/base_view_model.dart';
 import '../../../../../../core/services/local/navigation_services.dart';
 import '../../../../../_shared_feature_/data/entities/drop_down_item.dart';
+import '../../../../../_shared_feature_/presentation/dialogs/incident_type_with_search_dialog.dart';
 import '../../../../../_shared_feature_/presentation/widgets/custom_cupertino_drop_down_widget.dart';
 import '../../../../../_shared_feature_/presentation/widgets/custom_popups_widgets.dart';
 import '../../../../../_shared_feature_/presentation/widgets/texts/custom_text_field_widget.dart';
 import '../../../../customer_voice_exports.dart'
-    show AttachmentList, NewMSRDetailsViewModel, IncidentTypeWithSearchDialog;
+    show AttachmentList, NewMSRDetailsViewModel;
+import '../widgets/previous_next_buttons.dart';
 
 class NewRequestDetailsScreen extends StatefulWidget {
   const NewRequestDetailsScreen({Key? key}) : super(key: key);
@@ -33,34 +35,14 @@ class _NewRequestDetailsScreen extends State<NewRequestDetailsScreen> {
     return BaseView<NewMSRDetailsViewModel>(
         onModelReady: (model) {},
         builder: (context, model, child) {
-          return Scaffold(
-            //MM
-            /* appBar: BigAppBarWithStepsWidget(
-              title: Helpers.translatingWord(
-                  'customerVoiceLatestRequestsSectionGoToDetailsButtonWord'),
-              nextStep: Helpers.translatingWord('submit_order'),
-              stepNumber: 2,
-              totalSteps: 2,
-              withCloseImg: false,
-            ),*/
-            body: Stack(
-              children: [
-                // MSR body
-                MSRBody(),
-                // submit button
-                IncidentSubmitButton(
-                  isButtonDisabled: !model.isFormValid,
-                  btnText: /*model.uploadingDocumentsfailed
-                    ? Helpers.translatingWord('upload_documents')
-                    :*/
-                      ("submit_order").tr(),
-                  onPress: () {
-                    model.hideKeyboard();
-                    model.submit();
-                  },
-                ),
-              ],
-            ),
+          return Column(
+            children: [
+              // MSR body
+              Expanded(child: MSRBody()),
+              // submit button
+
+              PreviousNextButtons()
+            ],
           );
         });
   }
@@ -150,12 +132,6 @@ class _RequestTypeSectionState extends State<RequestTypeSection> {
   Widget build(BuildContext context) {
     return Column(
       children: <Widget>[
-        //MM
-        CustomHeaderAndDescOnTapWidget(
-          label: ('order_type').tr(),
-          textValue: ('select_order_type').tr(),
-          onTap: () {},
-        ),
         CustomHeaderAndDescOnTapWidget(
           label: ("lbl_specialty_classification_hint1").tr(),
           hintText: ("lbl_specialty_classification_hint2").tr(),
@@ -231,6 +207,7 @@ class _RequestInfoSectionState extends State<RequestInfoSection> {
           focusNode: _incidentDescFocusNode,
           label: ("description").tr(),
           hintText: ("order_desc_hint").tr(),
+          fillColor: Colors.transparent,
           obsecureText: false,
           maxLines: 4,
           keyboardType: TextInputType.multiline,

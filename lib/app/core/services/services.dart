@@ -163,7 +163,7 @@ Map<String, dynamic> servicesConfig = {
       "order": 5,
       "isNew": false,
       "isImportant": false,
-      "action": {"type": "page", "value": "/request-service"},
+      "action": {"type": "dialog", "value": RouteName.newMSRMapPage},
       "ar": {"title": "طلب خدمة بلدية", "description": null, "tag": null},
       "en": {"title": "Request Service", "description": null, "tag": null}
     },
@@ -259,7 +259,7 @@ Map<String, dynamic> servicesConfig = {
       "order": 12,
       "isNew": false,
       "isImportant": false,
-      "action": {"type": "page", "value": "/fee-calculator"},
+      "action": {"type": "page", "value": RouteName.calculatorMapRoute},
       "ar": {"title": "حاسبة الرسوم", "description": null, "tag": null},
       "en": {"title": "Fee Calculator", "description": null, "tag": null}
     },

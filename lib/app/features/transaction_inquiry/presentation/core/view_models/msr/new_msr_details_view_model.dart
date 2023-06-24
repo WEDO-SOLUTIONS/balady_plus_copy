@@ -6,6 +6,7 @@ import '../../../../../../core/base/base_view_model.dart';
 import '../../../../../_shared_feature_/data/entities/drop_down_item.dart';
 import '../../models/attachment_model.dart';
 import '../../models/classification.dart';
+import '../../models/gis_location_result.dart';
 import '../../models/selected_location.dart';
 import '../../services/customer_voice_repository.dart';
 import 'new_msr_view_model.dart';

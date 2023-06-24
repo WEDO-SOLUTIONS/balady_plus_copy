@@ -56,6 +56,7 @@ class _BaladyIncidentDetailsScreenState
                       // submit button
                       PreviousNextButtons(
                         isFormValid: model.isFormValid,
+                        onConfirm: () {},
                       )
                     ],
                   ),

@@ -1,4 +1,4 @@
-/*import 'package:balady_new_app/app/core/core_exports.dart'
+/*import 'package:balady_plus/app/core/core_exports.dart'
     show
         AppColors,
         Constants,

@@ -72,8 +72,8 @@ class TransactionInquiryViewModel extends BaseViewModel {
         "branchId": municipality?.id
       });
       hideLoading();
-      //print("Ressssponse");
-      // print(body["data"]);
+      print("Ressssponse");
+      print(body["data"]);
       var status = body["state"];
       InquiryTransactionResponse response =
           InquiryTransactionResponse.fromJson(json.decode(body["data"]));

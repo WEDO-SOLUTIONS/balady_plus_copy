@@ -35,7 +35,6 @@ class NewAppointmentBloc
 
     on<GoToNextPageEvent>(_goToNextPageHandler);
     on<GoToPreviousPageEvent>(_goToPreviousPageHandler);
-    locator<NewAppointmentViewModel>().loadInitialData();
   }
 
   void cancelIncident() {

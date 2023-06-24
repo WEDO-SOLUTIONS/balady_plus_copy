@@ -1,7 +1,13 @@
+import 'package:balady_plus/app/features/calculator/core/calculator_location_view_model.dart';
+import 'package:balady_plus/app/features/transaction_inquiry/presentation/core/services/customer_voice_repository.dart';
+
 import '../../../features/facility_qr/presentation/core/view_models/facility_details_view_model.dart';
 import '../../../features/new_appointment/presentation/core/services/repository/appointment_repository.dart';
 import '../../../features/new_appointment/presentation/core/services/view_models/new_appointment_view_model.dart';
 import '../../../features/transaction_inquiry/presentation/core/view_models/inquiry/inquiry_view_model.dart';
+import '../../../features/transaction_inquiry/presentation/core/view_models/msr/new_msr_details_view_model.dart';
+import '../../../features/transaction_inquiry/presentation/core/view_models/msr/new_msr_map_view_model.dart';
+import '../../../features/transaction_inquiry/presentation/core/view_models/msr/new_msr_view_model.dart';
 import '../../remote_services/api_service.dart';
 import '../../remote_services/web_service.dart';
 import '../dependency_injection_exports.dart' show sl;
@@ -16,5 +22,12 @@ class OLDInjection {
     sl.registerLazySingleton(() => AppointmentRepository());
     sl.registerLazySingleton(() => NewAppointmentViewModel());
     sl.registerLazySingleton(() => InquiryViewModel());
+
+    sl.registerLazySingleton(() => NewMSRViewModel());
+    sl.registerLazySingleton(() => NewMSRMapViewModel());
+    sl.registerLazySingleton(() => CustomerVoiceRepository());
+
+    sl.registerLazySingleton(() => NewMSRDetailsViewModel());
+    sl.registerLazySingleton(() => CalculatorLocationViewModel());
   }
 }

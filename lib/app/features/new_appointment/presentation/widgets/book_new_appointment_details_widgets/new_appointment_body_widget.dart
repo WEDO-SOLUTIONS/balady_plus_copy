@@ -114,17 +114,18 @@ class _AppointmentInfoSection extends State<AppointmentInfoSection> {
           img: "titleItemsIconAppointment@3x.png",
         ),*/
         CustomVerticalSpace(height: 16),
-        CustomTapWidgetForLongDialog(
-          items: model.categoriesList,
-          value: model.catetgoryType,
-          onChangeType: (DropDownItem? item) {
-            if (item != null) model.catetgoryType = item;
-            model.validateForm();
-          },
-          label: ("bookNewAppointmentVisitCategoryWord").tr(),
-          hint: ("bookNewAppointmentVisitCategoryWord").tr(),
-          searchHint: ("searchFor").tr(),
-        ),
+        if (model.categoriesList != null && model.categoriesList.isNotEmpty)
+          CustomTapWidgetForLongDialog(
+            items: model.categoriesList,
+            value: model.catetgoryType,
+            onChangeType: (DropDownItem? item) {
+              if (item != null) model.catetgoryType = item;
+              model.validateForm();
+            },
+            label: ("bookNewAppointmentVisitCategoryWord").tr(),
+            hint: ("bookNewAppointmentVisitCategoryWord").tr(),
+            searchHint: ("searchFor").tr(),
+          ),
 
         CustomTapWidgetForLongDialog(
           items: model.municipalitiesList,

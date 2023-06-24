@@ -85,6 +85,7 @@ class EntryPointCubit extends Cubit<EntryPointState> {
 
       //  if (token.refreshToken != null) await refreshToken(token.refreshToken!);
       refreshSSOProfile();
+      refreshAPIGeeToken();
     });
   }
 

@@ -42,16 +42,6 @@ class _NewTransactionInquiryScreen extends State<NewTransactionInquiryScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         const CustomVerticalSpace(height: 32),
-                        CustomTextWidget(
-                          ("new_inquiry_desc").tr(),
-                          fontColor: AppColor.black,
-                          fontWeight: AppFontWeight.medium,
-                          textAlign: TextAlign.start,
-                          height: 1.2,
-                        ),
-                        const DrawLineWidget(
-                          verticalMargin: 16,
-                        ),
                         TransactionBodySection(),
                       ]),
                 ),
@@ -116,6 +106,7 @@ class _TransactionBodySectionState extends State<TransactionBodySection> {
           obsecureText: false,
           keyboardType: TextInputType.number,
           textInputAction: TextInputAction.done,
+          fillColor: Colors.transparent,
           inputFormatters: [
             FilteringTextInputFormatter.digitsOnly,
           ],

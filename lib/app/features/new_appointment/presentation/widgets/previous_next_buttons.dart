@@ -9,7 +9,10 @@ import '../../../_shared_feature_/presentation/widgets/buttons/custom_buttons_wi
 
 class PreviousNextButtons extends StatelessWidget {
   bool isFormValid;
-  PreviousNextButtons({Key? key, required this.isFormValid}) : super(key: key);
+  Function onConfirm;
+  PreviousNextButtons(
+      {Key? key, required this.isFormValid, required this.onConfirm})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -33,13 +36,11 @@ class PreviousNextButtons extends StatelessWidget {
                           .read<NewAppointmentBloc>()
                           .add(GoToNextPageEvent());
                     } else {
-                      context
-                          .read<NewAppointmentBloc>()
-                          .add(GoToNextPageEvent());
+                      onConfirm();
                     }
                   },
             btnRadius: 8,
-            btnText: isLastPage ? ("vd_submit_incident").tr() : ("next").tr(),
+            btnText: isLastPage ? ("confirm").tr() : ("next").tr(),
             btnTextSize: 16,
             btnTextWeight: AppFontWeight.bold,
             btnHeight: 56,

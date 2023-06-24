@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/dialogs/upload_file_dialog.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/buttons/custom_buttons_widgets.dart';
+import 'package:balady_plus/app/features/objectable_transactions/presentation/widgets/create_objection_page/objection_reason_attachment.dart';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -60,7 +61,10 @@ class _DaemAttachmentInfoSectionState extends State<DaemAttachmentInfoSection> {
                 return AttachmentWidget(
                     fileIndex: position,
                     path: widget.uploadedFiles[position].filePath,
-                    deleteFile: widget.deleteFile,
+                    deleteFile: (int index) {
+                      widget.deleteFile(index);
+                      setState(() {});
+                    },
                     enableButton: (status) {},
                     onPress: () {},
                     fileName: widget.uploadedFiles[position].fileName);
@@ -73,11 +77,6 @@ class _DaemAttachmentInfoSectionState extends State<DaemAttachmentInfoSection> {
                 uploadingImage();
               },
               btnText: ("daem_attach_files").tr(),
-              icon: Image.asset(
-                Constants.imgPath + "addButton@3x.png",
-                height: 12,
-                width: 12,
-              ),
               btnTextSize: 16,
               btnTextWeight: AppFontWeight.medium,
               btnHeight: 56,
@@ -95,6 +94,8 @@ class _DaemAttachmentInfoSectionState extends State<DaemAttachmentInfoSection> {
     await CustomPopUpsWidgets.showBottomSheet(
         NavigationService.navigatorKey.currentContext!,
         child: UploadFileDialog(onConfirm: (FileDataItem item) async {
+      NavigationService.navigatorKey.currentContext!.popDialog();
+      setState(() {});
       widget.saveFile(widget.uploadedFiles.length, item.filePath, item.fileName,
           item.fileBase64);
     }), isFullHeight: false);
@@ -150,6 +151,12 @@ class AttachmentWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return ObjectionReasonAttachment(
+        fileName: fileName ?? "",
+        filePath: path ?? "",
+        onDelete: () {
+          deleteFile(fileIndex);
+        });
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

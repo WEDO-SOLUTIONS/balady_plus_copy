@@ -2,6 +2,8 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/_shared_feature_/data/entities/file_data_item.dart';
+import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports.dart';
+import 'package:balady_plus/app/features/objectable_transactions/presentation/widgets/create_objection_page/objection_reason_attachment.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -76,52 +78,15 @@ class AttachmentWidget extends StatelessWidget {
         ),
         const CustomVerticalSpace(height: 20),
         if (path == null || (path != null && path.toString().isEmpty))
-          GestureDetector(
-            onTap: () async {
+          ElevatedButtonWidget.attachFile(
+            onPressed: () async {
               FocusManager.instance.primaryFocus?.unfocus();
-              await CustomPopUpsWidgets.showBottomSheet(
-                  NavigationService.navigatorKey.currentContext!,
-                  child: UploadFileDialog(
-                onConfirm: (FileDataItem item) {
-                  saveFile(
-                      fileIndex, item.filePath, item.fileName, item.fileBase64);
-                },
-              ), isFullHeight: false);
+
+              FileDataItem? item = await CommonFunctions.pickFile(context);
+              if (item != null)
+                saveFile(
+                    fileIndex, item.filePath, item.fileName, item.fileBase64);
             },
-            child: Container(
-              width: double.infinity,
-              height: 56,
-              decoration: const BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.circular(4)),
-                boxShadow: Constants.boxShadow,
-                color: AppColor.white4,
-              ),
-              alignment: Alignment.center,
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const CustomHorizontalSpace(width: 18),
-                  Image.asset(
-                    Constants.imgPath + 'attachmentIcon@3x.png',
-                    height: 32,
-                    width: 32,
-                  ),
-                  const CustomHorizontalSpace(width: 8),
-                  Expanded(
-                    child: CustomTextWidget(('attach_file').tr(),
-                        fontColor: const Color(0xff006665),
-                        fontWeight: AppFontWeight.medium),
-                  ),
-                  Image.asset(
-                    Constants.imgPath + 'addAttachment@3x.png',
-                    height: 18,
-                    width: 18,
-                  ),
-                  const CustomHorizontalSpace(width: 18),
-                ],
-              ),
-            ),
           )
         else
           photoInfo(context),
@@ -174,66 +139,9 @@ class AttachmentWidget extends StatelessWidget {
   }
 
   Widget photoInfo(BuildContext context) {
-    return Container(
-      alignment: Alignment.center,
-      width: double.infinity,
-      padding: const EdgeInsets.only(right: 10, left: 10),
-      height: 56,
-      decoration: const BoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(2)),
-          color: Color(0xfff2f2f2)),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          Expanded(
-            child: Row(children: <Widget>[
-              Image.asset("assets/images/attachmentIcon@3x.png",
-                  height: 32, width: 32),
-              const SizedBox(width: 10),
-              /*!_isProgressFinished
-                  ? SizedBox(
-                      height: 3,
-                      width: MediaQuery.of(context).size.width / 1.55,
-                      child: ClipRRect(
-                        borderRadius: const BorderRadius.all(Radius.circular(3)),
-                        child: LinearProgressIndicator(
-                          backgroundColor: const Color(0xffe6e6e6),
-                          valueColor: const AlwaysStoppedAnimation<Color>(
-                            Color(0xff389492),
-                          ),
-                          value: progressNumber,
-                        ),
-                      ),
-                    )
-                  :*/
-
-              Expanded(
-                child: CustomTextWidget(
-                  fileName ?? "",
-                  fontColor: AppColor.black,
-                  fontWeight: AppFontWeight.medium,
-                  fontSize: 13,
-                  maxLines: 1,
-                  textAlign: TextAlign.start,
-                  textOverflow: TextOverflow.ellipsis,
-                ),
-              ),
-            ]),
-          ),
-          InkWell(
-              onTap: () {
-                deleteFile(fileIndex);
-              },
-              child: Image.asset(
-                Constants.whiteCloseImg,
-                height: 16,
-                width: 16,
-                color: AppColor.black,
-              )),
-        ],
-      ),
-    );
+    return ObjectionReasonAttachment(
+        fileName: fileName ?? "",
+        filePath: path ?? "",
+        onDelete: () => deleteFile(fileIndex));
   }
 }

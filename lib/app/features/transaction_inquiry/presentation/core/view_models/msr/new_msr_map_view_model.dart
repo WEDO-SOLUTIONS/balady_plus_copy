@@ -1,6 +1,9 @@
+import '../../../../../../core/base/base_view_model.dart';
 import '../../../../data/general_inquiry_data.dart';
 import '../../models/gis_location_result.dart';
 import '../../models/selected_location.dart';
+import '../../services/customer_voice_repository.dart';
+import 'new_msr_view_model.dart';
 
 class NewMSRMapViewModel extends BaseViewModel {
   final _repositry = locator<CustomerVoiceRepository>();

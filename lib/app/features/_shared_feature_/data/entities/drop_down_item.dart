@@ -8,12 +8,14 @@ class DropDownItem extends Equatable {
   final String? code;
   final int order;
   final dynamic id;
+  final dynamic calculatorValue;
 
   const DropDownItem({
     required this.name,
     this.value,
     this.code,
     this.order = 0,
+    this.calculatorValue,
     required this.id,
   });
 

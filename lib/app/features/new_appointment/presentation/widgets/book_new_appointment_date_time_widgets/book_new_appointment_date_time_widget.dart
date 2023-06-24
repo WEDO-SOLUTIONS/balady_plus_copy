@@ -141,46 +141,37 @@ class DateBoxWidget extends StatefulWidget {
 class _DateBoxWidgetState extends State<DateBoxWidget> {
   @override
   Widget build(BuildContext context) {
-    //print("_DateBoxWidgetState");
-    //  print(widget.date);
-    // print(widget.currentDate);
     return GestureDetector(
       onTap: () {
         widget.onSelect();
       },
       child: Container(
-          width: 120,
-          margin: const EdgeInsets.symmetric(horizontal: 5),
+          width: 90,
+          margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 16),
+          padding: const EdgeInsets.symmetric(vertical: 8),
           decoration: BoxDecoration(
-              borderRadius: const BorderRadius.all(Radius.circular(4)),
-              border: Border.all(
-                  color: widget.currentDate == widget.date
-                      ? AppColor.darkTurquoise
-                      : AppColor.black300,
-                  width: 1)),
+            borderRadius: const BorderRadius.all(Radius.circular(8)),
+            color: widget.currentDate == widget.date
+                ? Color(0xFFCDE0E0)
+                : AppColor.white,
+          ),
           alignment: Alignment.center,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Container(
-                width: 120,
-                height: 40,
-                decoration: BoxDecoration(
-                    color: widget.currentDate == widget.date
-                        ? AppColor.darkTurquoise
-                        : AppColor.black300),
-                alignment: Alignment.center,
-                child: CustomTextWidget(
-                  CommonFunctions.getDayName(widget.date),
-                  fontWeight: AppFontWeight.medium,
-                ),
+              CustomTextWidget(
+                CommonFunctions.getDayName(widget.date),
+                fontWeight: AppFontWeight.medium,
+                fontColor: widget.currentDate == widget.date
+                    ? AppColor.primary900Light
+                    : AppColor.blackModern500Light,
               ),
               const CustomVerticalSpace(height: 18),
               CustomTextWidget(
                 CommonFunctions.getDate(widget.date),
                 fontColor: widget.currentDate == widget.date
-                    ? AppColor.darkTurquoise
-                    : AppColor.black,
+                    ? AppColor.primary900Light
+                    : AppColor.blackModern500Light,
                 fontSize: 13,
                 fontFamily: Constants.lucidaGrandFontType,
               ),
@@ -188,8 +179,8 @@ class _DateBoxWidgetState extends State<DateBoxWidget> {
               CustomTextWidget(
                 CommonFunctions.getMonthName(widget.date),
                 fontColor: widget.currentDate == widget.date
-                    ? AppColor.darkTurquoise
-                    : AppColor.black,
+                    ? AppColor.primary900Light
+                    : AppColor.blackModern500Light,
                 fontSize: 13,
                 fontWeight: AppFontWeight.medium,
               ),
@@ -227,15 +218,10 @@ class _TimeBoxWidget extends State<TimeBoxWidget> {
           margin: const EdgeInsets.symmetric(horizontal: 5),
           padding: const EdgeInsets.all(5),
           decoration: BoxDecoration(
-            borderRadius: const BorderRadius.all(Radius.circular(4)),
-            border: Border.all(
-                color: widget.time.timeKey == widget.currentTimeKey
-                    ? AppColor.darkTurquoise
-                    : AppColor.black200,
-                width: 1),
+            borderRadius: const BorderRadius.all(Radius.circular(8)),
             color: widget.time.timeKey == widget.currentTimeKey
-                ? AppColor.duckEggBlue
-                : Colors.transparent,
+                ? Color(0xFFCDE0E0)
+                : Colors.white,
           ),
           alignment: Alignment.center,
           child: CustomTextWidget(

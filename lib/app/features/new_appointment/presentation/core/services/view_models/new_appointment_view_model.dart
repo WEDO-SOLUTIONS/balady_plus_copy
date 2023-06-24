@@ -10,8 +10,11 @@ import 'package:flutter/material.dart';
 import 'package:collection/collection.dart';
 
 import '../../../../../../core/base/base_view_model.dart';
+import '../../../../../../core/services/local/navigation_services.dart';
 import '../../../../../../core/utils/constants/remote_config.dart';
+import '../../../../../../core/utils/enums/enums.dart';
 import '../../../../../_shared_feature_/data/entities/drop_down_item.dart';
+import '../../../../../_shared_feature_/data/entities/success_screen_args.dart';
 import '../../models/attachment_item_model.dart';
 import '../../models/available_dates_response.dart';
 import '../../models/available_times_response.dart';
@@ -400,10 +403,14 @@ class NewAppointmentViewModel extends BaseViewModel {
     if (response.item1 != null &&
         response.item1! &&
         response.item3?.data?.result != null) {
+      NavigationService.navigatorKey.currentState!.pushNamedAndRemoveUntil(
+          RouteName.successRoute,
+          ModalRoute.withName(RouteName.bottomNavigation),
+          arguments: SuccessScreenArgs(
+              type: PAGE_TYPE.appointmentScreen,
+              idNumber: response.item3?.data?.result?.id.toString() ?? "",
+              fromHomePage: true));
       return response.item3;
-      //  serviceConfigResponse = response.item3;
-//appointmentTypeList = serviceConfigResponse?.data?.result?[0].visitType;
-      // return true;
     } else {
       print("gg");
       showError(response.item2 ?? "");

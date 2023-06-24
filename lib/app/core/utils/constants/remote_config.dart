@@ -29,6 +29,9 @@ class RemoteConfig {
       _RemoteConfig.specialConditionId[env]!;
 
   List<String> get munciplities => _RemoteConfig.munciplities[env]!;
+  static String get baladyToken => _RemoteConfig.baladyToken[env]!;
+  static String get xBaladyToken => _RemoteConfig.xBaladyToken[env]!;
+  static String get baladyBaseUrl => _RemoteConfig.baladyBaseUrl[env]!;
 
   static EnvType get env => sl<EnvType>();
 }
@@ -36,8 +39,8 @@ class RemoteConfig {
 //! First solution
 class _RemoteConfig {
   static final gis = _initValues<String>(
-    devVal: "",
-    stgVal: "",
+    devVal: "https://gisappstg.momra.gov.sa",
+    stgVal: "https://gisappstg.momra.gov.sa",
     prodVal: "",
   );
   static final hmCode = _initValues<String>(
@@ -136,6 +139,30 @@ class _RemoteConfig {
     devVal: "22",
     stgVal: "22",
     prodVal: "22",
+  );
+
+  static final webSiteUrl = _initValues<String>(
+    devVal: "https://balady.momra.gov.sa/",
+    stgVal: "https://balady.momra.gov.sa/",
+    prodVal: "",
+  );
+
+  static final baladyBaseUrl = _initValues<String>(
+    devVal: "https://baladyapps.momra.gov.sa",
+    stgVal: "https://baladyapps.momra.gov.sa",
+    prodVal: "",
+  );
+
+  static final baladyToken = _initValues<String>(
+    devVal: "E48C0CF6386948D5A22D8F4AD46B9CBB",
+    stgVal: "E48C0CF6386948D5A22D8F4AD46B9CBB",
+    prodVal: "",
+  );
+
+  static final xBaladyToken = _initValues<String>(
+    devVal: "5EBC1331132E4C55B9726AFFA5D6B6F4",
+    stgVal: "5EBC1331132E4C55B9726AFFA5D6B6F4",
+    prodVal: "",
   );
 
   static final munciplities = {
