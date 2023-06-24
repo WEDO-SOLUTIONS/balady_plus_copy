@@ -1,9 +1,11 @@
 import '../../../../features/profile_features/invoices/invoices_exports.dart'
     show
+        GetInvoiceDetails,
         GetInvoiceStatuses,
         GetInvoiceSubTypes,
         GetInvoiceTypes,
         GetInvoices,
+        InvoiceDetailsCubit,
         InvoicesBloc,
         InvoicesRemoteDataSource,
         InvoicesRemoteDataSourceImplementation,
@@ -18,6 +20,7 @@ class InvoicesInjection {
     sl.registerLazySingleton(() => GetInvoiceStatuses(repository: sl()));
     sl.registerLazySingleton(() => GetInvoiceTypes(repository: sl()));
     sl.registerLazySingleton(() => GetInvoiceSubTypes(repository: sl()));
+    sl.registerLazySingleton(() => GetInvoiceDetails(repository: sl()));
 
     //! Repository
     sl.registerLazySingleton<InvoicesRepository>(
@@ -43,6 +46,9 @@ class InvoicesInjection {
         getInvoiceTypes: sl(),
         getInvoiceSubTypes: sl(),
       ),
+    );
+    sl.registerFactory(
+      () => InvoiceDetailsCubit(sl()),
     );
   }
 }

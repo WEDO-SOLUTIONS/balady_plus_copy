@@ -1,5 +1,6 @@
 const _imagePath = 'assets/images/';
 const _png = '.png';
+const _svg = '.svg';
 const _jpg = '.jpg';
 
 class ImagePath {
@@ -12,4 +13,6 @@ class ImagePath {
   static const appBarBackground = '${_imagePath}app_bar_background$_png';
   static const successPageBackground = '${_imagePath}success_background$_png';
   static const successPageIcon = '${_imagePath}success_image$_png';
+  static const needle = '${_imagePath}needle$_svg';
+  static const compass = '${_imagePath}compass$_svg';
 }

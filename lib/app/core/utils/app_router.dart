@@ -31,7 +31,7 @@ import '../../features/objectable_transactions/presentation/pages/transactions_d
 import '../../features/profile_features/dashboard/dashboard_exports.dart'
     show DashBoardPage;
 import '../../features/profile_features/invoices/invoices_exports.dart'
-    show InvoicesPage;
+    show InvoiceDetailsPage, InvoiceEntity, InvoicesPage;
 import '../../features/profile_features/licenses/licenses_exports.dart'
     show LicensesPage;
 import '../../features/profile_features/personal_information/personal_information_exports.dart'
@@ -50,6 +50,8 @@ import '../../features/retrive_car/presentation/pages/check_veichles_page/veichl
 import '../../features/retrive_car/presentation/pages/create_retrive_page.dart';
 import '../../features/retrive_car/presentation/pages/dc_select_retrive_request_type.dart';
 import '../../features/retrive_car/presentation/pages/dc_vehicles_page.dart';
+import '../../features/public_services_features/qiblah_compass/qiblah_compass_exports.dart'
+    show QiblahCompassPage;
 import '../../features/services/services_exports.dart'
     show ServiceCardsPage, ServiceEntity;
 import '../../features/splash/splash_exports.dart' show SplashPage;
@@ -98,6 +100,10 @@ class AppRouter {
             cubit: settings.arguments as PrayerTimesCubit,
           ),
         );
+      case RouteName.qiblahCompass:
+        return MaterialPageRoute(
+          builder: (_) => const QiblahCompassPage(),
+        );
 
       //! Setting
       // personalInformation page
@@ -107,16 +113,22 @@ class AppRouter {
             userInfo: settings.arguments as SsoUserInfo,
           ),
         );
-      // dashboard page
+      //? dashboard page
       case RouteName.dashboard:
         return MaterialPageRoute(builder: (_) => const DashBoardPage());
-      // requests page
+      //? requests page
       case RouteName.requests:
         return MaterialPageRoute(builder: (_) => const RequestsPage());
-      // invoices page
+      //? invoices page
       case RouteName.invoices:
         return MaterialPageRoute(builder: (_) => const InvoicesPage());
-      // licenses page
+      case RouteName.invoiceDetails:
+        return MaterialPageRoute(
+          builder: (_) => InvoiceDetailsPage(
+            invoiceEntity: settings.arguments as InvoiceEntity,
+          ),
+        );
+      //? licenses page
       case RouteName.licenses:
         return MaterialPageRoute(builder: (_) => const LicensesPage());
 
@@ -342,6 +354,7 @@ class AppRouter {
         );
 
       // error page
+      //? error page
       default:
         return MaterialPageRoute(
           builder: (_) => Scaffold(

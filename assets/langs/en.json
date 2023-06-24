@@ -159,6 +159,8 @@
   "invoice": "Invoice",
   "invoice_due_date": "Invoice Due Date",
   "invoice_issue_date": "Invoice Issue Date",
+  "invoice_info": "Invoice Info",
+  "invoice_pay_date": "Invoice Pay Date",
 
   "_licensesComment": "Anything for Licenses",
   "license_no": "License No.",

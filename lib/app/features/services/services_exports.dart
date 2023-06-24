@@ -32,6 +32,7 @@ export 'presentation/pages/services_page.dart';
 export 'presentation/pages/service_cards_page.dart';
 
 /// presentation -> widgets
+export 'presentation/widgets/search_services_text_field.dart';
 export 'presentation/widgets/services_list.dart';
 export 'presentation/widgets/service_icon.dart';
 export 'presentation/widgets/service_card_parameter.dart';
