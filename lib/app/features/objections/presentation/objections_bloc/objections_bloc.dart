@@ -4,14 +4,18 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/dependency_injection/injection_container.dart';
 import '../../../../core/errors/errors_exports.dart'
     show NoDataFoundFailure, ServerFailure;
-import '../../../../core/services/services_exports.dart' show NoParams;
+import '../../../../core/services/services_exports.dart'
+    show NavigationService, NoParams;
 import '../../../../core/utils/utils_exports.dart'
     show
         BlocRequestStatus,
+        BlocStatus,
         CommonProperties,
         Nullable,
         PaginationConstants,
+        RouteName,
         SortType;
+import '../../domain/use_cases/get_objection_details.dart';
 import '../../objections_exports.dart'
     show
         GetObjectionRequests,
@@ -33,13 +37,16 @@ class ObjectionsBloc extends Bloc<RequestsEvent, RequestsState> {
   final GetRequestTypes getRequestTypes;
   final GetRequestStatuses getRequestStatuses;
   final GetRequestSubTypes getRequestSubTypes;
-
+  final GetObjectionDetails getObjectionDetails;
   ObjectionsBloc()
       : getRequests = GetObjectionRequests(repository: sl()),
         getRequestTypes = GetRequestTypes(repository: sl()),
         getRequestStatuses = GetRequestStatuses(repository: sl()),
         getRequestSubTypes = GetRequestSubTypes(repository: sl()),
+        getObjectionDetails = GetObjectionDetails(repository: sl()),
         super(const RequestsState()) {
+    on<GetObjectionDetailsEvent>(_getObjectionDetailsHandler);
+
     on<GetRequestsEvent>((event, emit) async {
       emit(
         state.copyWith(requestsStatus: BlocRequestStatus.submissionGetLoading),
@@ -114,6 +121,7 @@ class ObjectionsBloc extends Bloc<RequestsEvent, RequestsState> {
     });
 
     on<GetRequestStatusesEvent>((event, emit) async {
+      print("GetRequestTypesEvent");
       emit(
         state.copyWith(
           requestStatusesStatus: BlocRequestStatus.submissionGetLoading,
@@ -151,6 +159,7 @@ class ObjectionsBloc extends Bloc<RequestsEvent, RequestsState> {
     });
 
     on<GetRequestTypesEvent>((event, emit) async {
+      print("GetRequestTypesEvent GetRequestTypesEvent");
       emit(
         state.copyWith(
           requestTypesStatus: BlocRequestStatus.submissionGetLoading,
@@ -161,6 +170,7 @@ class ObjectionsBloc extends Bloc<RequestsEvent, RequestsState> {
 
       failureOrSuccess.fold(
         (failure) {
+          print("GetRequestTypesEvent $failure");
           emit(
             state.copyWith(
               requestTypesStatus: BlocRequestStatus.submissionGetFailure,
@@ -169,6 +179,8 @@ class ObjectionsBloc extends Bloc<RequestsEvent, RequestsState> {
           );
         },
         (requestTypes) {
+          print("GetRequestTypesEvent $requestTypes");
+
           emit(
             state.copyWith(
               requestTypesStatus: BlocRequestStatus.submissionGetSuccess,
@@ -203,7 +215,7 @@ class ObjectionsBloc extends Bloc<RequestsEvent, RequestsState> {
 
       final failureOrSuccess = await getRequestSubTypes(
         RequestSubTypeParams(
-          id: state.selectedRequestType!.id,
+          id: state.selectedRequestType!.id!,
         ),
       );
 
@@ -292,6 +304,29 @@ class ObjectionsBloc extends Bloc<RequestsEvent, RequestsState> {
         selectedRequestSubType: Nullable(event.selectedRequestSubType),
         selectedRequestDate: Nullable(event.selectedRequestDate),
       ));
+    });
+  }
+
+  Future<void> _getObjectionDetailsHandler(
+      GetObjectionDetailsEvent e, Emitter emitter) async {
+    emitter(
+        state.copyWith(requestsStatus: BlocRequestStatus.submissionGetLoading));
+
+    var failureOrSuccess = await getObjectionDetails(e.params);
+
+    await failureOrSuccess.fold((failure) {
+      emitter(state.copyWith(
+        requestsStatus: BlocRequestStatus.submissionGetFailure,
+        errorMessage: (failure as ServerFailure).errorMessage,
+      ));
+    }, (success) async {
+      emitter(state.copyWith(
+        requestsStatus: BlocRequestStatus.submissionGetSuccess,
+        errorMessage: "",
+      ));
+
+      NavigationService.navigatorKey.currentState!
+          .pushNamed(RouteName.objectionsDetailsPage, arguments: success);
     });
   }
 }

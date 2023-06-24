@@ -34,58 +34,47 @@ class _ObjectionsDetailsPageState extends State<ObjectionsDetailsPage> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => ObjectionsDetailsBloc(),
+      create: (context) => ObjectionsDetailsBloc(details: widget.params),
       child: BlocBuilder<ObjectionsDetailsBloc, ObjectionDetailsState>(
         buildWhen: (previous, current) => previous.status != current.status,
         builder: (context, state) {
           return Scaffold(
             backgroundColor: AppColor.white2,
-            body: Stack(
-              children: [
-                CustomScrollView(
-                  physics: const BouncingScrollPhysics(),
-                  slivers: [
-                    // header
-                    const DetailsHeader(
-                      title: ("objection_details"),
-                    ),
-                    // body
-                    SliverList(
-                      delegate: SliverChildListDelegate.fixed(
-                        [
-                          Constants.verticalSpaceSmall,
-                          // TransferInfo
-                          ObjectionsDetails(
-                            onShowViolation: () {
-                              context
-                                  .read<ObjectionsDetailsBloc>()
-                                  .add(GetTransactionDetailsEvent(
-                                      params: TransactionDetailsParams(
-                                    applicationId:
-                                        state.details?.serviceGroupId ?? "13",
-                                    id: state.details?.requestSubmitterData
-                                            ?.objectedTransactionId ??
-                                        "",
-                                  )));
-                            },
-                            //relation: widget.params.rel,
-                          ),
-                          const SubmitterDetails(),
+            appBar: const DetailsHeader(
+              title: ("objection_details"),
+            ),
+            body: SingleChildScrollView(
+              child: Column(children: [
+                // body
 
-                          const CommiteDetails(),
-
-                          const ObjectionReaason(),
-                          //CemetryInfo(name: widget.params.cemeteryName),
-
-                          Constants.verticalSpaceSmall,
-                        ],
-                      ),
-                    )
-                  ],
+                Constants.verticalSpaceSmall,
+                // TransferInfo
+                ObjectionsDetails(
+                  onShowViolation: () {
+                    context
+                        .read<ObjectionsDetailsBloc>()
+                        .add(GetTransactionDetailsEvent(
+                            params: TransactionDetailsParams(
+                          applicationId: state.details?.serviceGroupId ?? "13",
+                          id: state.details?.requestSubmitterData
+                                  ?.objectedTransactionId ??
+                              "",
+                        )));
+                  },
+                  //relation: widget.params.rel,
                 ),
+                const SubmitterDetails(),
+
+                const CommiteDetails(),
+
+                const ObjectionReaason(),
+                //CemetryInfo(name: widget.params.cemeteryName),
+
+                Constants.verticalSpaceSmall,
+
                 if (state.status == BlocStatus.loading)
                   CustomCircularLoadingWidget(),
-              ],
+              ]),
             ),
           );
         },

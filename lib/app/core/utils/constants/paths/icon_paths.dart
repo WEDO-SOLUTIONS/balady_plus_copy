@@ -31,6 +31,9 @@ class IconPath {
   static const informationCircleIcon =
       '${_svgIconPath}informationCircleIcon$_svg';
 
+  static const ksaFlag = '${_svgIconPath}ksaFlag$_svg';
+  static const ksaWord = '${_svgIconPath}ksaWord$_svg';
+
   // Bottom-Nav-Bar
   static const home = '${_svgIconPath}home_icon$_svg';
   static const services = '${_svgIconPath}services_icon$_svg';

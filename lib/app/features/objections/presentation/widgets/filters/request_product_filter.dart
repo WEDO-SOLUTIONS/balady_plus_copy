@@ -30,7 +30,7 @@ class RequestsProductFilter extends StatelessWidget {
               ),
           onTap: () {
             final List<String> items =
-                state.requestTypes.map((e) => e.name).toList();
+                state.requestTypes.map((e) => e.name ?? "").toList();
             BottomSheetDialog.showDraggableSheet(
               context,
               child: BottomSheetList(

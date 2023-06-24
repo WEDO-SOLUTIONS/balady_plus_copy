@@ -126,7 +126,7 @@ class AppInterceptors extends Interceptor {
       return handler.reject(TokenHasExpiredException(options));
     }*/
 
-    final url = options.uri.toString();
+    String url = options.uri.toString();
     final method = options.method;
 
     if (options.headers['Authorization'] == null &&
@@ -134,6 +134,12 @@ class AppInterceptors extends Interceptor {
         !options.uri.toString().contains("bcg/upload-file")) {
       options.headers['Authorization'] = 'Bearer ${CommonProperties.token}';
     }
+
+    if (url.contains("damaged-vehicle-mobile/car-models")) {
+      url = options.baseUrl + options.path;
+      url += "?CompanyID=${options.queryParameters["CompanyID"]}";
+    }
+
     final verifyingKEY = CommonFunctions.hashRequest(url, method,
         body: (options.data != null &&
                 !options.uri.toString().contains("bcg/upload-file"))

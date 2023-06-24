@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/services/local/navigation_services.dart';
 import '../../../../core/utils/utils_exports.dart'
-    show AppStyle, IconPath, RouteName, ServiceAction;
+    show AppStyle, CommonFunctions, IconPath, RouteName, ServiceAction;
 import '../../../_shared_feature_/shared_feature_exports.dart'
     show DrawIconBasedTypeWidget;
+import '../../../vd/domain/entities/camera/camera_page_params.dart';
+import '../../../vd/domain/entities/categories/category_item.dart';
 import '../../services_exports.dart';
 
 class ServiceIcon extends StatelessWidget {
@@ -17,7 +20,7 @@ class ServiceIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () {
+      onTap: () async {
         if (service.action.type == ServiceAction.cardsPage) {
           Navigator.pushNamed(
             context,
@@ -25,6 +28,18 @@ class ServiceIcon extends StatelessWidget {
             arguments: service,
           );
         } else if (service.action.type == ServiceAction.pageRoute) {
+          if (service.action.value == RouteName.DCCameraPage) {
+            bool isLocationAvailable =
+                await CommonFunctions.checkLocationSettings(context);
+            bool isCameraAllowed =
+                await CommonFunctions.checkCameraSettings(context);
+            if (isLocationAvailable && isCameraAllowed)
+              NavigationService.navigatorKey.currentState!.pushNamed(
+                  RouteName.DCCameraPage,
+                  arguments: CameraParamsPage(
+                      selectedCategory: CategoryItem(categoryId: "CG-14"),
+                      isFromHome: false));
+          }
           Navigator.pushNamed(
             context,
             service.action.value,

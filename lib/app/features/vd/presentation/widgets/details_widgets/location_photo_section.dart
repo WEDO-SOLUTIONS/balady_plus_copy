@@ -72,21 +72,27 @@ class LocationSection extends StatelessWidget {
       builder: (context, state) {
         return LabelIconSubtitleComponent(
           text: ("vd_location").tr(),
-          subWidget:
-              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-            Row(
-              children: [
-                CustomSvgIconWidget(IconPath.qrLocationIcon),
-                CustomTextWidget(
-                  state.gisResponse?.getFullAddress() ??
-                      ("lbl_locate_report_from_here").tr(),
-                  fontColor: AppColor.blackModern500Light,
-                  fontSize: 14,
-                ),
-              ],
-            ),
-            CustomSvgIconWidget(IconPath.arrowLeft),
-          ]),
+          subWidget: GestureDetector(
+            onTap: () {
+              context.read<CreateVDBloc>().add(ChangeAddressEvent());
+            },
+            child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      CustomSvgIconWidget(IconPath.qrLocationIcon),
+                      CustomTextWidget(
+                        state.gisResponse?.getFullAddress() ??
+                            ("lbl_locate_report_from_here").tr(),
+                        fontColor: AppColor.blackModern500Light,
+                        fontSize: 14,
+                      ),
+                    ],
+                  ),
+                  CustomSvgIconWidget(IconPath.arrowLeft),
+                ]),
+          ),
         );
 
         return CustomHeaderAndDescOnTapWidget(

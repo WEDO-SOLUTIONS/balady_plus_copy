@@ -88,6 +88,7 @@ class _IncidentTypeWithSearchDialog
                   return CustomRadioButtonEnd<DropDownItem>(
                     // title: items[index].name,
                     // value: items[index].id,
+
                     title: items[index].name ?? "",
                     value: items[index],
                     currentSelected: currentSelected,
@@ -116,6 +117,7 @@ class _IncidentTypeWithSearchDialog
             btnTextSize: 16,
             btnTextWeight: AppFontWeight.regular,
             btnHeight: 56,
+            btnRadius: 8,
           )
         ],
       ),

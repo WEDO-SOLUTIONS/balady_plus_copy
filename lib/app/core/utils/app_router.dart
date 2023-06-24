@@ -33,6 +33,8 @@ import '../../features/profile_features/requests/requests_exports.dart'
 import '../../features/objections/objections_exports.dart' show ObjectionsPage;
 import '../../features/public_services_features/prayer_times/prayer_times_exports.dart'
     show PrayerTimesCubit, PrayerTimesPage;
+import '../../features/report_damaged_car/damaged_cars_exports.dart'
+    show DCCameraPage, CreateDCDetailsPage, DCMapScreen;
 import '../../features/services/services_exports.dart'
     show ServiceCardsPage, ServiceEntity;
 import '../../features/splash/splash_exports.dart' show SplashPage;
@@ -188,6 +190,28 @@ class AppRouter {
             params: params!,
           ),
         );
+
+      case RouteName.DCCameraPage:
+        CameraParamsPage params = settings.arguments as CameraParamsPage;
+
+        return MaterialPageRoute(
+          builder: (_) => DCCameraPage(params: params),
+        );
+
+      case RouteName.createDCDetailsPage:
+        // CreateVDParamsPage params = settings.arguments as CreateVDParamsPage;
+        return MaterialPageRoute(
+          builder: (_) => CreateDCDetailsPage(),
+        );
+
+      case RouteName.dcMapRoute:
+        MapScreenParams? params = settings.arguments != null
+            ? settings.arguments as MapScreenParams
+            : null;
+        return MaterialPageRoute(
+          builder: (_) => DCMapScreen(params: params),
+        );
+
       // error page
       default:
         return MaterialPageRoute(

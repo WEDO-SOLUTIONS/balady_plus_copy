@@ -271,7 +271,7 @@ class RequestsRemoteDataSourceImplementation
   Future<ObjectionDetailsModel> getObjectionDetails(String id) async {
     try {
       final response = await webService.dio
-          .post(ApiUrl.objectionRequestDetails, queryParameters: {
+          .get(ApiUrl.objectionRequestDetails, queryParameters: {
         "ObjectionRequestID": id,
       });
 

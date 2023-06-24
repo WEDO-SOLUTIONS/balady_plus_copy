@@ -1,12 +1,12 @@
 import 'package:equatable/equatable.dart';
 
 class RequestSubTypeEntity extends Equatable {
-  final int id;
-  final String name;
+  final String? id;
+  final String? name;
 
   const RequestSubTypeEntity({
-    required this.id,
-    required this.name,
+    this.id,
+    this.name,
   });
 
   @override

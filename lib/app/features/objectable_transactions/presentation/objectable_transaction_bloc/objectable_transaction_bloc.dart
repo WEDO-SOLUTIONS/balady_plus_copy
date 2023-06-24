@@ -210,7 +210,7 @@ class ObjectableTransactionBloc
 
       final failureOrSuccess = await getRequestSubTypes(
         RequestSubTypeParams(
-          id: state.selectedRequestType!.id,
+          id: state.selectedRequestType!.id!,
         ),
       );
 

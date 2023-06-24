@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/features/objections/domain/entities/objection_details.dart';
 import 'package:dartz/dartz.dart';
 
 import '../../../../core/errors/errors_exports.dart'
@@ -75,6 +76,18 @@ class RequestsRepositoryImplementation implements RequestsRepository {
       return Left(NoDataFoundFailure());
     } on ServerException catch (error) {
       return Left(ServerFailure(error.errorMessage));
+    }
+  }
+
+  @override
+  Future<Either<Failure, ObjectionDetails>> getObjectionDetails(
+      String id) async {
+    try {
+      final data = await remoteDataSource.getObjectionDetails(id);
+      return Right(data);
+    } on ServerException catch (error) {
+      return Left(
+          ServerFailure(error.errorMessage, statusCode: error.statusCode));
     }
   }
 }

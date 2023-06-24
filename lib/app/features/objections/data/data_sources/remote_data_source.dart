@@ -10,15 +10,13 @@ import '../../../_shared_feature_/shared_feature_exports.dart'
     show ResponseBodyModel;
 import '../../objections_exports.dart'
     show
-        MunicipalityModel,
         ObjectionModel,
         RequestStatusModel,
         RequestSubTypeModel,
         RequestSubTypeParamsModel,
         RequestTypeModel,
-        ObjectionsParamsModel,
-        SubMunicipalityModel,
-        SubMunicipalityParamsModel;
+        ObjectionsParamsModel;
+import '../models/objection_details_model.dart';
 
 abstract class RequestsRemoteDataSource {
   Future<List<ObjectionModel>> getObjectionRequests(
@@ -29,6 +27,8 @@ abstract class RequestsRemoteDataSource {
   Future<List<RequestSubTypeModel>> getRequestSubTypes(
     RequestSubTypeParamsModel params,
   );
+
+  Future<ObjectionDetailsModel> getObjectionDetails(String id);
 }
 
 class RequestsRemoteDataSourceImplementation
@@ -116,16 +116,16 @@ class RequestsRemoteDataSourceImplementation
       final response = await webService.dio.get(
         ApiUrl.applicationsLookUp,
       );
-
       final data = response.data;
-      data.toString().successLog();
-
+      // data.toString().successLog();
       final result = ResponseBodyModel.fromMap(data).data?.result;
 
-      return result
+      var res = result
           .map<RequestTypeModel>(
               (e) => RequestTypeModel.fromMap(e as Map<String, dynamic>))
           .toList();
+
+      return res;
     } on DioError catch (error) {
       "DioError $error".errorLog();
       if (error is NoDataFoundException) {
@@ -163,6 +163,39 @@ class RequestsRemoteDataSourceImplementation
           .map<RequestSubTypeModel>(
               (e) => RequestSubTypeModel.fromMap(e as Map<String, dynamic>))
           .toList();
+    } on DioError catch (error) {
+      "DioError $error".errorLog();
+      if (error is NoDataFoundException) {
+        rethrow;
+      }
+      throw ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+      );
+    } catch (ex) {
+      "Catched $ex".errorLog();
+      if (ex is ServerException) {
+        rethrow;
+      } else {
+        throw ServerException("errors_server_error_2".tr());
+      }
+    }
+  }
+
+  @override
+  Future<ObjectionDetailsModel> getObjectionDetails(String id) async {
+    try {
+      final response = await webService.dio
+          .get(ApiUrl.objectionRequestDetails, queryParameters: {
+        "ObjectionRequestID": id,
+      });
+
+      final data = response.data;
+      data.toString().successLog();
+
+      final result = ResponseBodyModel.fromMap(data).data?.result;
+
+      return ObjectionDetailsModel.fromJson(result);
     } on DioError catch (error) {
       "DioError $error".errorLog();
       if (error is NoDataFoundException) {

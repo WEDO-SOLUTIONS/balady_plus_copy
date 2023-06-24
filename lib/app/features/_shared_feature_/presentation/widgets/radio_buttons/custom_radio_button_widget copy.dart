@@ -210,16 +210,19 @@ class CustomRadioButtonEnd<T> extends StatelessWidget {
           start: 10,
         ),
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(4),
-            color: currentSelected == value
+          borderRadius: BorderRadius.circular(8),
+          /* color: currentSelected == value
                 ? AppColor.duckEggBlue
-                : unSelectedBackgroundColor,
-            border: Border.all(
+                : unSelectedBackgroundColor,*/
+
+          color: AppColor.primary50Light40,
+          /* border: Border.all(
               width: 1,
               color: currentSelected == value
                   ? AppColor.darkTurquoise
                   : AppColor.black200,
-            )),
+            )*/
+        ),
         child: Center(
           child: Row(
             children: [

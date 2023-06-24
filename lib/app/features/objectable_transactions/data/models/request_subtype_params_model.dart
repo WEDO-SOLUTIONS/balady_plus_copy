@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 
 class RequestSubTypeParamsModel extends Equatable {
-  final int id;
+  final String id;
 
   const RequestSubTypeParamsModel({
     required this.id,

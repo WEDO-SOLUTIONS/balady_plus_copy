@@ -9,6 +9,7 @@ import '../../objections_exports.dart'
         RequestSubTypeParamsModel,
         RequestTypeEntity,
         ObjectionsRequestsPrams;
+import '../entities/objection_details.dart';
 
 abstract class RequestsRepository {
   Future<Either<Failure, List<ObjectionEntity>>> getObjectionRequests(
@@ -19,4 +20,6 @@ abstract class RequestsRepository {
   Future<Either<Failure, List<RequestSubTypeEntity>>> getRequestSubTypes(
     RequestSubTypeParamsModel params,
   );
+
+  Future<Either<Failure, ObjectionDetails>> getObjectionDetails(String id);
 }

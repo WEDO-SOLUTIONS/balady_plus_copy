@@ -40,6 +40,11 @@ class GetRequestSubtypesEvent extends RequestsEvent {
   List<Object> get props => [requestType];
 }
 
+class GetObjectionDetailsEvent extends RequestsEvent {
+  final String params;
+  GetObjectionDetailsEvent({required this.params});
+}
+
 class RequestSubTypeSelectedEvent extends RequestsEvent {
   final RequestSubTypeEntity requestSubtype;
 

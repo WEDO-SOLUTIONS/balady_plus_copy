@@ -42,7 +42,7 @@ class RequestsTypeFilter extends StatelessWidget {
               return;
             }
             final List<String> items =
-                state.requestSubTypes.map((e) => e.name).toList();
+                state.requestSubTypes.map((e) => e.name ?? "").toList();
             BottomSheetDialog.showDraggableSheet(
               context,
               child: BottomSheetList(

@@ -51,7 +51,7 @@ class ApiUrl {
   static const objectionsRequests = '/v1/balady-dashboard/objection-requests';
   static const applicationsLookUp =
       '/v1/objection-generic-services/applications';
-  static String servicesByApplicationId(int id) =>
+  static String servicesByApplicationId(String id) =>
       '/v1/objection-generic-services/applications/$id/services';
   static const objectionsRequestStatus =
       '/v1/balady-dashboard/objection-requests/lookup-status';
@@ -89,6 +89,16 @@ class ApiUrl {
       '/v1/crm/bcg/registered-user/categories';
 
   static const vdCrExists = '/v1/crm/cr-exists/';
+
+// DC
+
+// Damaged Cars
+  static const dcCarTypes = 'v1/damaged-vehicle-mobile/car-companies';
+
+  static const dcCarModel = 'v1/damaged-vehicle-mobile/car-models';
+
+  static const veichleRecoveryNotes =
+      'v1/damaged-vehicle-mobile/vehicle-recovery-notes';
 
   //! POST
 

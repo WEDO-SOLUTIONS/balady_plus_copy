@@ -10,11 +10,10 @@ import '../../objections_exports.dart' show ObjectionEntity, RequestParameter;
 
 class RequestsListItem extends StatelessWidget {
   final ObjectionEntity request;
+  final Function onPress;
 
-  const RequestsListItem({
-    super.key,
-    required this.request,
-  });
+  const RequestsListItem(
+      {super.key, required this.request, required this.onPress});
 
   @override
   Widget build(BuildContext context) {
@@ -30,11 +29,14 @@ class RequestsListItem extends StatelessWidget {
           Row(
             children: [
               const DrawIconBasedTypeWidget(icon: IconPath.requests),
-              const SizedBox(width: 4),
+              CustomHorizontalSpace(
+                width: 4,
+              ),
               Expanded(
                 child: CustomTextWidget(
                   '#${request.objectionRequestNumber}'.tr(),
                   textStyle: AppStyle.requestNumberTextStle,
+                  textAlign: TextAlign.start,
                 ),
               ),
               HomeTag(
@@ -78,7 +80,7 @@ class RequestsListItem extends StatelessWidget {
               ],
             ),
           ),
-          ElevatedButtonWidget.details(onPressed: () {}),
+          ElevatedButtonWidget.details(onPressed: () => onPress()),
         ],
       ),
     );

@@ -7,6 +7,7 @@ import '../../../_shared_feature_/shared_feature_exports.dart'
     show MessageDialog, RetryWidget, ShimmerEffectWidget;
 import '../../objections_exports.dart'
     show
+        GetObjectionDetailsEvent,
         GetRequestsEvent,
         ObjectionsBloc,
         RequestsListItem,
@@ -85,6 +86,11 @@ class _RequestsListState extends State<RequestsList> {
               }
               return RequestsListItem(
                 request: state.requests[index],
+                onPress: () {
+                  context.read<ObjectionsBloc>().add(GetObjectionDetailsEvent(
+                      params:
+                          state.requests[index].objectionRequestNumber ?? ""));
+                },
               );
             },
           );

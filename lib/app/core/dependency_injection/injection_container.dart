@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/core/dependency_injection/features/dc_injection.dart';
 import 'package:dio/dio.dart' show Dio;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart'
     show FlutterSecureStorage;
@@ -56,6 +57,9 @@ void initialize() {
   ObjectionsInjection.init();
 //? Objectable Transactions
   ObjectableTransactionsInjection.init();
+
+//? DC
+  DCInjection.init();
 
   //! Services
   //* Public Services

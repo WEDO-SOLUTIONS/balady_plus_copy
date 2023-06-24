@@ -6,10 +6,7 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 import '../../../../../_shared_feature_/shared_feature_exports.dart'
     show BottomSheetDialog, BottomSheetList, DropDownWithTitle;
 import '../../../licenses_exports.dart'
-    show
-        LicensesBloc,
-        LicensesSortChangedEvent,
-        LicensesState;
+    show LicensesBloc, LicensesSortChangedEvent, LicensesState;
 
 class LicensesSortFilter extends StatelessWidget {
   const LicensesSortFilter({super.key});

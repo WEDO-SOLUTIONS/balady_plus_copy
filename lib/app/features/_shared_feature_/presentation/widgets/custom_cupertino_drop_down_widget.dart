@@ -45,10 +45,10 @@ class CustomHeaderAndDescOnTapWidget extends StatefulWidget {
       this.hintText = '',
       this.filled = false,
       this.fillColor = Colors.transparent,
-      this.borderWidth = 1.0,
-      this.borderRadius = 2.0,
-      this.borderColor = AppColor.black200,
-      this.borderType = BORDER_TYPE.underline,
+      this.borderRadius = 8.0,
+      this.borderColor = AppColor.blackModern300Light,
+      this.borderWidth = 1.5,
+      this.borderType = BORDER_TYPE.outline,
       this.readOnly = false,
       required this.onTap,
       this.errorMsg,
@@ -77,27 +77,26 @@ class _CustomHeaderAndDescOnTapWidget
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // label
-            LabelTextWithOptional(
-              label: widget.label,
-              labelColor: widget.labelColor,
-              labelSize: widget.labelSize,
-              labelTextAlign: widget.labelTextAlign,
-              showOptional: widget.showOptional,
-            ),
-            InkWell(
-              splashColor: Colors.transparent,
-              highlightColor: Colors.transparent,
-              onTap: widget.onTap,
-              child: Container(
+    return GestureDetector(
+      onTap: widget.onTap,
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // label
+              LabelTextWithOptional(
+                label: widget.label,
+                labelColor: widget.labelColor,
+                labelSize: widget.labelSize,
+                labelTextAlign: widget.labelTextAlign,
+                showOptional: widget.showOptional,
+              ),
+              const CustomVerticalSpace(height: 10),
+              Container(
                 padding: const EdgeInsets.symmetric(
-                  vertical: GeneralKey.smallPadding,
-                ),
+                    vertical: GeneralKey.smallPadding,
+                    horizontal: GeneralKey.smallPadding),
                 decoration: BoxDecoration(
                   color: widget.readOnly ? AppColor.black400 : widget.fillColor,
                   border: _getBorder(),
@@ -124,31 +123,33 @@ class _CustomHeaderAndDescOnTapWidget
                     ),
                     CustomIconButtonWidget(
                       onPressed: widget.onTap,
-                      icon: Icons.arrow_back_ios_new,
+                      icon: IconPath.arrowDown,
+                      iconColor: AppColor.blackModern600Light,
                       // materialIconDirection: widget.materialIconDirection,
                       iconSize: 16.0,
                     ),
                   ],
                 ),
               ),
-            ),
-            if (widget.errorMsg != null && widget.errorMsg!.isNotEmpty)
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const CustomVerticalSpace(height: 8.0),
-                  CustomTextWidget(
-                    widget.errorMsg!,
-                    fontSize: 13.0,
-                    fontColor: AppColor.error,
-                    fontWeight: AppFontWeight.medium,
-                  ),
-                ],
-              ),
-            const CustomVerticalSpace(height: 30.0),
-          ],
-        );
-      },
+
+              if (widget.errorMsg != null && widget.errorMsg!.isNotEmpty)
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const CustomVerticalSpace(height: 8.0),
+                    CustomTextWidget(
+                      widget.errorMsg!,
+                      fontSize: 13.0,
+                      fontColor: AppColor.error,
+                      fontWeight: AppFontWeight.medium,
+                    ),
+                  ],
+                ),
+              const CustomVerticalSpace(height: 30.0),
+            ],
+          );
+        },
+      ),
     );
   }
 
@@ -205,7 +206,7 @@ class CustomTapWidgetForLongDialog extends StatefulWidget {
       this.searchHint,
       this.errorText,
       this.showOptional = false,
-      this.showHintAsTitle = true})
+      this.showHintAsTitle = false})
       : super(key: key);
 
   @override
@@ -222,6 +223,8 @@ class _CustomTapWidgetForLongDialog
       hintText: widget.hint!,
       textValue: widget.value?.name,
       showOptional: widget.showOptional,
+      labelColor: AppColor.blackModern700Light,
+      labelSize: 16,
       onTap: widget.items.isNotEmpty
           ? () async {
               FocusManager.instance.primaryFocus?.unfocus();

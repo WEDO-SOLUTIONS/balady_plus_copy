@@ -21,6 +21,7 @@ class RemoteConfig {
 
   static double get mapRadius => _RemoteConfig.mapRadius[env]!;
   static String get regaClass => _RemoteConfig.regaClass[env]!;
+  static String get damagedCarsClass => _RemoteConfig.damagedCarsClass[env]!;
 
   List<String> get munciplities => _RemoteConfig.munciplities[env]!;
 
@@ -112,6 +113,11 @@ class _RemoteConfig {
     devVal: "CG-26",
     stgVal: "CG-26",
     prodVal: "CG-11",
+  );
+  static final damagedCarsClass = _initValues<String>(
+    devVal: "NSPCL-192",
+    stgVal: "NSPCL-192",
+    prodVal: "NSPCL-36",
   );
 
   static final munciplities = {

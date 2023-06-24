@@ -48,6 +48,65 @@ import '../dependency_injection/dependency_injection_exports.dart' show sl;
 import '../services/services_exports.dart'
     show AppInterceptors, EntryPointBridge, NavigationService;
 
+var carPlateLettersList = [
+  "أ",
+  "ب",
+  "ح",
+  "د",
+  "ر",
+  "س",
+  "ص",
+  "ط",
+  "ع",
+  "ق",
+  "ك",
+  "ل",
+  "م",
+  "ن",
+  "هـ",
+  "و",
+  "ي",
+];
+
+Map<String, String> carPlateLetters = {
+  "أ": "A",
+  "ب": "B",
+  "ح": "J",
+  "د": "D",
+  "ر": "R",
+  "س": "S",
+  "ص": "X",
+  "ط": "T",
+  "ع": "E",
+  "ق": "G",
+  "ك": "K",
+  "ل": "L",
+  "م": "Z",
+  "ن": "N",
+  "هـ": "H",
+  "و": "U",
+  "ي": "V",
+};
+Map<String, String> carEnPlateLetters = {
+  "A": "أ",
+  "B": "ب",
+  "J": "ح",
+  "D": "د",
+  "R": "ر",
+  "S": "س",
+  "X": "ص",
+  "T": "ط",
+  "E": "ع",
+  "G": "ق",
+  "K": "ك",
+  "L": "ل",
+  "Z": "م",
+  "N": "ن",
+  "H": "هـ",
+  "U": "و",
+  "V": "ي",
+};
+
 class CommonFunctions {
   static EventTransformer<Event> debounce<Event>([Duration? duration]) =>
       (events, mapper) =>
@@ -282,6 +341,90 @@ class CommonFunctions {
     return r.allMatches(str).length == str.length;
   }
 
+  static String replaceArabicNumberWithEnglish(String value) {
+    var newStr = "";
+
+    for (int i = 0; i < value.length; i++) {
+      switch (value[i]) {
+        case "٠":
+          newStr += "0";
+          break;
+        case "١":
+          newStr += "1";
+          break;
+        case "٢":
+          newStr += "2";
+          break;
+        case "٣":
+          newStr += "3";
+          break;
+        case "٤":
+          newStr += "4";
+          break;
+        case "٥":
+          newStr += "5";
+          break;
+        case "٦":
+          newStr += "6";
+          break;
+        case "٧":
+          newStr += "7";
+          break;
+        case "٨":
+          newStr += "8";
+          break;
+        case "٩":
+          newStr += "9";
+          break;
+        default:
+          newStr += value[i];
+      }
+    }
+    return newStr.isEmpty ? value : newStr;
+  }
+
+  static String replaceEnglishNumberWithArabic(String value) {
+    var newStr = "";
+
+    for (int i = 0; i < value.length; i++) {
+      switch (value[i]) {
+        case "0":
+          newStr += "٠";
+          break;
+        case "1":
+          newStr += "١";
+          break;
+        case "2":
+          newStr += "٢";
+          break;
+        case "3":
+          newStr += "٣";
+          break;
+        case "4":
+          newStr += "٤";
+          break;
+        case "5":
+          newStr += "٥";
+          break;
+        case "6":
+          newStr += "٦";
+          break;
+        case "7":
+          newStr += "٧";
+          break;
+        case "8":
+          newStr += "٨";
+          break;
+        case "9":
+          newStr += "٩";
+          break;
+        default:
+          newStr += value[i];
+      }
+    }
+    return newStr.isEmpty ? value : newStr;
+  }
+
   static bool checkForVDExpectedForINC(
       {String? adminMunicipalityId,
       String? municipalityName,
@@ -469,6 +612,16 @@ class CommonFunctions {
     final Uri convertUrl = Uri.parse(url);
     if (!await launchUrl(convertUrl, mode: LaunchMode.externalApplication))
       throw 'Could not launch $convertUrl';
+  }
+
+  static String getCarPlateEnlgishLetters(String value) {
+    var newStr = "";
+
+    for (int i = 0; i < value.length; i++) {
+      newStr += carPlateLetters[value[i]] ?? value[i];
+    }
+
+    return newStr.isEmpty ? value : newStr;
   }
 }
 

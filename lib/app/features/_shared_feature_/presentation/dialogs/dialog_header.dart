@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../core/utils/constants/app_colors.dart';
+import '../../../../core/utils/constants/app_style.dart';
+import '../../../home_page/presentation/widgets/home_app_bar/circle_icon.dart';
 import '../widgets/buttons/custom_buttons_widgets.dart';
 import '../widgets/draw_line_widget.dart';
 import '../widgets/texts/custom_text_widget.dart';
@@ -12,7 +14,7 @@ class DialogHeader extends StatelessWidget {
   final String title;
   final withDivider;
 
-  const DialogHeader({Key? key, required this.title, this.withDivider = true})
+  const DialogHeader({Key? key, required this.title, this.withDivider = false})
       : super(key: key);
 
   @override
@@ -20,33 +22,29 @@ class DialogHeader extends StatelessWidget {
     return Column(
       children: [
         SizedBox(
-          height: 20,
           child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              CustomTextButtonWidget(
-                text: ('customerVoiceCloseButtonWord').tr(),
-                onPressed: Navigator.of(context).pop,
-                btnTextColor: AppColor.grey1000,
-                btnTextSize: 17,
-                btnTextWeight: AppFontWeight.medium,
-                btnSize: Size(20, 20),
+              CustomTextWidget(
+                title,
+                textAlign: TextAlign.center,
+                textStyle: AppStyle.mainTextSecondaryStyle.copyWith(
+                    fontSize: 20.0,
+                    color: AppColor.black,
+                    fontWeight: FontWeight.bold),
               ),
-              Expanded(
-                child: CustomTextWidget(
-                  title,
-                  fontColor: AppColor.black,
-                  fontWeight: AppFontWeight.bold,
-                  fontSize: 17,
-                  maxLines: 2,
+              InkWell(
+                onTap: () => Navigator.pop(context),
+                child: CircleIcon(
+                  icon: Icons.close,
+                  iconColor: AppColor.primary600Light,
+                  backgroundColor: AppColor.geyser.withOpacity(0.4),
+                  iconSize: 18,
                 ),
               ),
-              SizedBox(
-                width: 20,
-              )
             ],
           ),
         ),
-        const CustomVerticalSpace(height: 24),
         withDivider
             ? const DrawLineWidget()
             : const CustomVerticalSpace(height: 12)

@@ -41,4 +41,10 @@ class RouteName {
   static const qrFacilityRatingRoute = '/qrFacilityRatingRoute';
   static const qrFacilityScreenRoute = '/qrFacilityScreenRoute';
   static const qrScreenRoute = '/qrScreenRoute';
+
+  // -------  DC ---------
+
+  static const DCCameraPage = '/DCCameraPage';
+  static const createDCDetailsPage = '/createDCDetailsPage';
+  static const dcMapRoute = '/dc_map_screen';
 }
