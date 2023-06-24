@@ -5,27 +5,29 @@ import '../../../../../core/utils/utils_exports.dart' show SortType;
 class InvoicesParamsModel extends Equatable {
   final String? unifiedNationalNumber;
   final String? identityNumber;
-  final String? invoiceNumber;
+  final String? invoiceId;
   final String? requestNumber;
   final int page;
   final int size;
-  final String? invoiceTypeId;
+  final String? productId;
+  final String? requestTypeId;
   final String? invoiceStatusId;
-  final String? dueDate;
-  final String? issueDate;
+  final String? sadadDate;
+  final String? creationDate;
   final SortType sort;
 
   const InvoicesParamsModel({
     this.unifiedNationalNumber,
     this.identityNumber,
-    this.invoiceNumber,
+    this.invoiceId,
     this.requestNumber,
     required this.page,
     required this.size,
-    this.invoiceTypeId,
+    this.productId,
+    this.requestTypeId,
     this.invoiceStatusId,
-    this.dueDate,
-    this.issueDate,
+    this.sadadDate,
+    this.creationDate,
     this.sort = SortType.desc,
   });
 
@@ -33,17 +35,18 @@ class InvoicesParamsModel extends Equatable {
     return {
       'unifiedNationalNumber': unifiedNationalNumber,
       'identityNumber': identityNumber,
-      'invoiceNumber': invoiceNumber,
-      'requestNumber': requestNumber,
       'page': page,
       'size': size,
-      'invoiceTypeId': invoiceTypeId,
+      'requestNumber': requestNumber,
+      'invoiceId': invoiceId,
+      'productId': productId,
+      'requestTypeId': requestTypeId,
       'invoiceStatusId': invoiceStatusId,
-      'dueDate': dueDate,
-      'issueDate': issueDate,
+      'sadadDate': sadadDate,
+      'creationDate': creationDate,
       'sort': [
         {
-          'filed': "8",
+          'filed': "9",
           "type": sort.value,
         },
       ],
@@ -54,14 +57,15 @@ class InvoicesParamsModel extends Equatable {
   List<Object?> get props => [
         unifiedNationalNumber,
         identityNumber,
-        invoiceNumber,
+        invoiceId,
         requestNumber,
         page,
         size,
-        invoiceTypeId,
+        productId,
+        requestTypeId,
         invoiceStatusId,
-        dueDate,
-        issueDate,
+        sadadDate,
+        creationDate,
         sort,
       ];
 }

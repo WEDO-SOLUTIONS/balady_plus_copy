@@ -9,7 +9,7 @@ class LicenseEntity extends Equatable {
   final String municipalityName;
   final String subMunicipalityName;
   final DateTime licenseEndDate;
-  final DateTime updateTime;
+  final DateTime? updateTime;
 
   const LicenseEntity({
     required this.licenseNumber,

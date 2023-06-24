@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/errors/errors_exports.dart' show ServerFailure;
 import '../../../../../core/services/services_exports.dart' show NoParams;
 import '../../../../../core/utils/utils_exports.dart'
-    show BlocRequestStatus, CommonProperties;
+    show BlocRequestStatus, CommonProperties, Nullable;
 import '../../dashboard_exports.dart'
     show
         DashboardCardEntity,
@@ -180,7 +180,7 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
               ...state.cardsStates,
               card: state.cardsStates[card]!.copyWith(
                 statisticsStatuses: BlocRequestStatus.submissionGetLoading,
-                selectedProduct: event.product,
+                selectedProduct: Nullable(event.product),
               ),
             },
           ),

@@ -11,7 +11,7 @@ class ApiUrl {
   //! Services
   //! Public Services
   //! Prayer Times
-  static const prayerTimes = '/v1/prayer-timings/prayer-times';
+  static const prayerTimes = '/v1/kacst/prayer-times';
 
   //! Profile
   //! Delegators

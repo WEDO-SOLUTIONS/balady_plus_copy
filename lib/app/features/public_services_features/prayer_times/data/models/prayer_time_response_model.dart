@@ -14,25 +14,28 @@ class PrayerTimesResponseModel extends PrayerTimesResponse {
   factory PrayerTimesResponseModel.fromMap(Map<String, dynamic> map) {
     return PrayerTimesResponseModel(
       date: DateTime(
-          map['date']['year'], map['date']['month'], map['date']['day']),
-      fajr: PrayerTimeModel.fromMap(
-        map['prayTimes']['fajr'] as Map<String, dynamic>,
+        int.parse(map['Year']),
+        int.parse(map['Month']),
+        int.parse(map['Day']),
+      ),
+      fajr: PrayerTimeModel.fromTime(
+        time: map["Fajr"],
         prayer: Prayers.fajr,
       ),
-      dhuhr: PrayerTimeModel.fromMap(
-        map['prayTimes']['dhuhr'] as Map<String, dynamic>,
+      dhuhr: PrayerTimeModel.fromTime(
+        time: map["Zuhr"],
         prayer: Prayers.dhuhr,
       ),
-      asr: PrayerTimeModel.fromMap(
-        map['prayTimes']['asr'] as Map<String, dynamic>,
+      asr: PrayerTimeModel.fromTime(
+        time: map["Asr"],
         prayer: Prayers.asr,
       ),
-      maghrib: PrayerTimeModel.fromMap(
-        map['prayTimes']['maghrib'] as Map<String, dynamic>,
+      maghrib: PrayerTimeModel.fromTime(
+        time: map["Magrib"],
         prayer: Prayers.maghrib,
       ),
-      isha: PrayerTimeModel.fromMap(
-        map['prayTimes']['isha'] as Map<String, dynamic>,
+      isha: PrayerTimeModel.fromTime(
+        time: map["Isha"],
         prayer: Prayers.isha,
       ),
     );

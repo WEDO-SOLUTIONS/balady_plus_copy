@@ -75,7 +75,7 @@ class LicensesState extends Equatable {
     BlocRequestStatus? licenseTypesStatus,
     List<LicenseTypeEntity>? licenseTypes,
     Nullable<LicenseTypeEntity?>? selectedLicenseType,
-    Nullable<DateTime?>? selectedLicenseDate,
+    Nullable<DateTime?>? selectedLicenseEndDate,
     String? licenseNumberQuery,
     SortType? sortType,
     String? errorMessage,
@@ -108,6 +108,9 @@ class LicensesState extends Equatable {
       selectedLicenseType: selectedLicenseType == null
           ? this.selectedLicenseType
           : selectedLicenseType.value,
+      selectedLicenseEndDate: selectedLicenseEndDate == null
+          ? this.selectedLicenseEndDate
+          : selectedLicenseEndDate.value,
       licenseNumberQuery: licenseNumberQuery ?? this.licenseNumberQuery,
       sortType: sortType ?? this.sortType,
       errorMessage: errorMessage ?? this.errorMessage,

@@ -80,14 +80,15 @@ class LicensesListItem extends StatelessWidget {
                   title: 'license_end_date'.tr(),
                   value: DateFormat.yMd().format(license.licenseEndDate),
                 ),
-                LicenseParameter(
-                  title: 'last_update'.tr(),
-                  value: DateFormat.yMd().format(license.updateTime),
-                ),
+                if (license.updateTime != null)
+                  LicenseParameter(
+                    title: 'last_operation'.tr(),
+                    value: DateFormat.yMd().format(license.updateTime!),
+                  ),
               ],
             ),
           ),
-          ElevatedButtonWidget.details(onPressed: () {}),
+          // ElevatedButtonWidget.details(onPressed: () {}),
         ],
       ),
     );

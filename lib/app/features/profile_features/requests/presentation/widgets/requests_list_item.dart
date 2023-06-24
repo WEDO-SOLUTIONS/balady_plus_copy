@@ -38,7 +38,7 @@ class RequestsListItem extends StatelessWidget {
               const SizedBox(width: 4),
               Expanded(
                 child: CustomTextWidget(
-                  '#${request.requestNumber}'.tr(),
+                  '#${request.requestNumberAsText}',
                   textStyle: AppStyle.requestNumberTextStle,
                 ),
               ),
@@ -77,7 +77,7 @@ class RequestsListItem extends StatelessWidget {
                   value: request.subMunicipalityName,
                 ),
                 RequestParameter(
-                  title: 'creation_date'.tr(),
+                  title: 'request_date'.tr(),
                   value: DateFormat.yMd().format(request.creationDate),
                 ),
                 RequestParameter(
@@ -87,14 +87,16 @@ class RequestsListItem extends StatelessWidget {
               ],
             ),
           ),
-          ElevatedButtonWidget.details(onPressed: () {
-            if (request.redirectUrl == null) return;
+          ElevatedButtonWidget.details(
+            onPressed: () {
+              if (request.redirectUrl == null) return;
 
-            Navigator.of(context).pushNamed(
-              RouteName.inappWebview,
-              arguments: (title: 'request'.tr(), url: request.redirectUrl),
-            );
-          }),
+              Navigator.of(context).pushNamed(
+                RouteName.inappWebview,
+                arguments: (title: 'request'.tr(), url: request.redirectUrl),
+              );
+            },
+          ),
         ],
       ),
     );

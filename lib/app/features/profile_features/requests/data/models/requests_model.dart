@@ -18,7 +18,7 @@ class RequestsModel extends RequestEntity {
   factory RequestsModel.fromMap(Map<String, dynamic> json) {
     return RequestsModel(
       requestNumber: json['requestNumber'] as int,
-      requestNumberAsText: json['requestNumberAsText'] as String? ?? '',
+      requestNumberAsText: json['requestNumberAsText']?.toString() ?? '',
       requestStatusId: json['requestStatusId'] as int,
       requestStatusName: json['dashboardStatusName'] as String,
       requestTypeName: json['requestTypeName'] as String,
