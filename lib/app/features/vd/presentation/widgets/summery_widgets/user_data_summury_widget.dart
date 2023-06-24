@@ -1,4 +1,5 @@
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
+import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
 import 'package:balady_plus/app/features/vd/presentation/widgets/summery_widgets/field_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -24,6 +25,7 @@ class UserDataSummuryWidget extends StatelessWidget {
               title: ("vd_full_name").tr(),
               subTitle: fullName ?? "${state.firstName} ${state.lastName}",
             ),
+            CustomVerticalSpace(height: 8),
             FieldData(
               title: ("vd_mobile_number").tr(),
               subTitle: mobileNumber ?? state.mobileNumber ?? "",

@@ -28,7 +28,7 @@ class _VDTypesDialog extends State<VDTypesDialog> {
       create: (context) => VDCategoryBloc(getCategories: sl()),
       child: BlocConsumer<VDCategoryBloc, VDCategoryState>(
         listener: (context, state) {
-          if (state.allCategorystatus == BlocStatus.failure) {
+          if (state.vdCategorystatus == BlocStatus.failure) {
             CommonFunctions.showError(state.errorMessage ?? "");
           }
         },
@@ -52,7 +52,7 @@ class _VDTypesDialog extends State<VDTypesDialog> {
                     Constants.verticalSpaceSmall,
                   ],
                 ),
-                if (state.allCategorystatus == BlocStatus.loading)
+                if (state.vdCategorystatus == BlocStatus.loading)
                   Expanded(
                       child: Padding(
                     padding: const EdgeInsets.only(
@@ -67,13 +67,13 @@ class _VDTypesDialog extends State<VDTypesDialog> {
                     ),
                   )),
 
-                if (state.allCategorystatus == BlocStatus.failure)
+                if (state.vdCategorystatus == BlocStatus.failure)
                   Expanded(
                     child: ReloadWidget(onTab: () {
                       context.read<VDCategoryBloc>().add(GetAllCategories());
                     }),
                   ),
-                if (state.allCategorystatus == BlocStatus.success)
+                if (state.vdCategorystatus == BlocStatus.success)
                   // types
                   Expanded(
                     child: GridView.builder(
@@ -90,10 +90,10 @@ class _VDTypesDialog extends State<VDTypesDialog> {
                               crossAxisSpacing: 19.0,
                               mainAxisSpacing: 18.0,
                               mainAxisExtent: 150),
-                      itemCount: state.allCategories?.length ?? 0,
+                      itemCount: state.vdCategories?.length ?? 0,
                       itemBuilder: (context, index) => VDCardWidgetInDialog(
-                          title: state.allCategories?[index].categoryName ?? "",
-                          icon: state.allCategories?[index].getMainImageUrl() ??
+                          title: state.vdCategories?[index].categoryName ?? "",
+                          icon: state.vdCategories?[index].getMainImageUrl() ??
                               "",
                           btnPressed: () async {
                             bool isLocationAvailable =

@@ -229,8 +229,7 @@ class _TransactionsDetailsPageState extends State<TransactionsDetailsPage> {
                           borderRadius: BorderRadius.circular(4),
                         ),
                         child: GoogleMap(
-                            //MM
-                            /* markers: { 
+                            markers: {
                               Marker(
                                   visible: MapUtils.locationMarker != null,
                                   markerId: const MarkerId("storeLocation"),
@@ -242,7 +241,7 @@ class _TransactionsDetailsPageState extends State<TransactionsDetailsPage> {
                                   },
                                   position: LatLng(
                                       state.details!.lat!, state.details!.lon!))
-                            },*/
+                            },
                             myLocationEnabled: false,
                             myLocationButtonEnabled: false,
                             zoomControlsEnabled: false,

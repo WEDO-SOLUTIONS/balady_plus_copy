@@ -69,13 +69,34 @@ class _photoPreviewWidgetState extends State<photoPreviewWidgetNew> {
               child: Container(
                 margin: const EdgeInsetsDirectional.only(
                     bottom: 30, end: 16, start: 16),
-                child: CustomIconButtonWidget(
-                  icon: IconPath.vdCameraFlashRetry,
-                  iconSize: 48,
+                child: EnhancedCustomElevatedButtonWidget(
+                  btnText: ("إعادة التصوير").tr(),
                   btnHeight: 48,
-                  btnWidth: 48,
-                  onPressed: () {
+                  btnWidth: 114,
+                  btnRadius: 8,
+                  btnColor: AppColor.white,
+                  btnTextColor: AppColor.primary900Light,
+                  btnPressed: () {
                     context.read<DCCameraBloc>().add(ReTakePhotoEvent());
+                  },
+                ),
+              ),
+            ),
+
+            Align(
+              alignment: AlignmentDirectional.topStart,
+              child: Padding(
+                padding: EdgeInsets.only(
+                    top: MediaQuery.of(context).padding.top + 16,
+                    left: 16,
+                    right: 16),
+                child: CustomIconButtonWidget(
+                  icon: IconPath.vdCameraExit,
+                  iconSize: 36,
+                  btnHeight: 40,
+                  btnWidth: 40,
+                  onPressed: () {
+                    Navigator.of(context).pop();
                   },
                 ),
               ),

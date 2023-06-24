@@ -25,7 +25,7 @@ class LocationSummuryWidget extends StatelessWidget {
                 image: state.getImagePath() ?? "",
               ),
             ),
-            LocationSection(),
+            LocationSection(showOnly: true),
           ],
         );
       },

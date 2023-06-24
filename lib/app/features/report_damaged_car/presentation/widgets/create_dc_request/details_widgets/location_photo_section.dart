@@ -68,8 +68,8 @@ class LocationPhotoSection extends StatelessWidget {
 
 class LocationSection extends StatelessWidget {
   bool? hideAutomaticLocationdetected;
-
-  LocationSection({this.hideAutomaticLocationdetected});
+  bool showOnly;
+  LocationSection({this.hideAutomaticLocationdetected, this.showOnly = false});
 
   @override
   Widget build(BuildContext context) {
@@ -79,23 +79,25 @@ class LocationSection extends StatelessWidget {
           text: ("vd_location").tr(),
           subWidget: GestureDetector(
             onTap: () {
-              context.read<CreateDCBloc>().add(ChangeAddressEvent());
+              if (!showOnly)
+                context.read<CreateDCBloc>().add(ChangeAddressEvent());
             },
             child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Row(
                     children: [
-                      CustomSvgIconWidget(IconPath.qrLocationIcon),
                       CustomTextWidget(
                         state.gisResponse?.getFullAddress() ??
                             ("lbl_locate_report_from_here").tr(),
                         fontColor: AppColor.blackModern500Light,
                         fontSize: 14,
+                        maxLines: 10,
                       ),
+                      CustomSvgIconWidget(IconPath.qrLocationIcon),
                     ],
                   ),
-                  CustomSvgIconWidget(IconPath.arrowLeft),
+                  if (!showOnly) CustomSvgIconWidget(IconPath.arrowLeft),
                 ]),
           ),
         );

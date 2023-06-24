@@ -21,12 +21,14 @@ class PledgesSummuryWidget extends StatelessWidget {
         return CustomExpansionPanelWidget(
           title: ("vd_pledges").tr(),
           isExpanded: true,
+          underline: false,
           leading: SvgPicture.asset(IconPath.vdSummuryPledge),
           children: [
             CustomTextWidget(
               ("consent_body").tr(),
               fontColor: AppColor.blackModern700Light,
               maxLines: 90,
+              height: 1.3,
               textAlign: TextAlign.start,
             ),
             CustomVerticalSpace(height: 8),

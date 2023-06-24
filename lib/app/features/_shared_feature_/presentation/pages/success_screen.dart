@@ -4,6 +4,7 @@ import 'package:balady_plus/app/core/utils/enums/app_font_weights.dart';
 import 'package:flutter/material.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
+import '../../../../core/services/local/helpers.dart';
 import '../../../../core/services/local/navigation_services.dart';
 import '../../../../core/utils/constants/app_colors.dart';
 import '../../../../core/utils/enums/enums.dart';
@@ -328,7 +329,7 @@ class SuccessButtons extends StatelessWidget {
       case PAGE_TYPE.daem:
       case PAGE_TYPE.objction:
         {
-          //MM  Helpers.backNavigationToHomeScreen();
+          Helpers.backNavigationToHomeScreen();
         }
         break;
 

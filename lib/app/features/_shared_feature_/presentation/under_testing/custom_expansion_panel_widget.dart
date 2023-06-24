@@ -153,7 +153,7 @@ class _ExpansionLeadingWidget extends StatelessWidget {
             height: 25.0,
             alignment: Alignment.center,
             decoration: BoxDecoration(
-              color: leadingBGColor,
+              color: AppColor.white,
               borderRadius: BorderRadius.circular(8.0),
             ),
             child: leading is Widget

@@ -68,7 +68,7 @@ Map<String, dynamic> servicesConfig = {
       "isImportant": false,
       "action": {"type": "cards", "value": ""},
       "ar": {
-        "title": "صور وارسل",
+        "title": "البلاغات",
         "description": "حسن المشهد الحضاري لمدينتك وبلغ عن مظاهر التشوه البصري",
         "tag": null,
         "warning":
@@ -226,7 +226,7 @@ Map<String, dynamic> servicesConfig = {
       "order": 10,
       "isNew": true,
       "isImportant": false,
-      "action": {"type": "page", "value": "/your-opnion-matter"},
+      "action": {"type": "page", "value": RouteName.qrScreenRoute},
       "ar": {
         "title": "رأيك يفرق",
         "description": "يمكنك الآن حجز موعد عبر التطبيق !",
@@ -296,6 +296,17 @@ Map<String, dynamic> servicesConfig = {
         "description": null,
         "tag": null
       }
-    }
+    },
+    {
+      "id": 16,
+      "icon": "damaged_cars",
+      "3d_icon": null,
+      "order": 9,
+      "isNew": false,
+      "isImportant": false,
+      "action": {"type": "page", "value": ""},
+      "ar": {"title": "استعادة مركبة مسحوبة", "description": null, "tag": null},
+      "en": {"title": "Damaged Cars", "description": null, "tag": null}
+    },
   ]
 };

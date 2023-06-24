@@ -57,6 +57,7 @@ class LabelIconSubtitleComponent extends StatelessWidget {
                       fontColor: AppColor.blackModern600Light,
                       textAlign: TextAlign.start,
                     ),
+                    CustomVerticalSpace(height: 8),
                     if (subtitle != null)
                       GestureDetector(
                         onTap: () {

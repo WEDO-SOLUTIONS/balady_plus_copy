@@ -52,16 +52,6 @@ class _RemoteConfig {
     prodVal: "1",
   );
 
-  static final apigeeURL = _initValues<String>(
-    devVal: "https://apiservicesstg.balady.gov.sa",
-    stgVal: "https://apiservicesstg.balady.gov.sa",
-    prodVal: "1",
-  );
-  static final pegaURL = _initValues<String>(
-    devVal: "https://crmustg.momra.gov.sa",
-    stgVal: "https://crmustg.momra.gov.sa",
-    prodVal: "1",
-  );
   static final apigeeUsername = _initValues<String>(
     devVal: "7RmIkhYi6v4M7GUibBrpFdZuo8NsL2CC",
     stgVal: "7RmIkhYi6v4M7GUibBrpFdZuo8NsL2CC",
@@ -115,9 +105,9 @@ class _RemoteConfig {
   );
 
   static final mapRadius = _initValues<double>(
-    devVal: 2000,
-    stgVal: 2000,
-    prodVal: 2000,
+    devVal: 2000.0,
+    stgVal: 2000.0,
+    prodVal: 2000.0,
   );
 
   static final regaClass = _initValues<String>(

@@ -15,8 +15,21 @@ import '../../../../_shared_feature_/presentation/widgets/custom_spaces_widgets.
 import 'description_summury_widget.dart';
 import 'location_summury_widget.dart';
 
-class SummurySection extends StatelessWidget {
+class SummurySection extends StatefulWidget {
   const SummurySection({Key? key}) : super(key: key);
+
+  @override
+  State<SummurySection> createState() => _SummurySectionState();
+}
+
+class _SummurySectionState extends State<SummurySection> {
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToEnd());
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,13 +41,14 @@ class SummurySection extends StatelessWidget {
           children: [
             Expanded(
               child: SingleChildScrollView(
+                controller: _scrollController,
                 child: Container(
                   margin: EdgeInsets.only(top: 24, left: 16, right: 16),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       VdHeaderDesc(
-                        header: ("vd_confirm_location_photo").tr(),
+                        header: ("مراجعة البلاغ").tr(),
                       ),
                       LocationSummuryWidget(),
                       CustomVerticalSpace(height: 16),
@@ -55,6 +69,11 @@ class SummurySection extends StatelessWidget {
         );
       },
     );
+  }
+
+  _scrollToEnd() async {
+    _scrollController.animateTo(_scrollController!.position.maxScrollExtent,
+        duration: const Duration(milliseconds: 400), curve: Curves.ease);
   }
 }
 

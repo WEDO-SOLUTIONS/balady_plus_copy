@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:balady_plus/app/core/services/services_exports.dart'
     show NavigationService;
+import 'package:balady_plus/app/core/utils/constants/route_names.dart';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -48,6 +49,11 @@ class Helpers {
 
   static bool isBiometricAvailable = true;
 
+  static void backNavigationToHomeScreen() {
+    NavigationService.navigatorKey.currentState!
+        .popUntil(ModalRoute.withName(RouteName.bottomNavigation));
+  }
+
 /*
   static void backNavigationToSpecificScreen({
     String? navigationKey,
@@ -76,11 +82,7 @@ class Helpers {
     );
   }
 
-  static void backNavigationToHomeScreen() {
-    NavigationService.navigatorKey.currentState!
-        .popUntil(ModalRoute.withName(RoutesNames.bottomNavigationRoute));
-
-  }
+ 
 
   static void backToHome() {
     try {

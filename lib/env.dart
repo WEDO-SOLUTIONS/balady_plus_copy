@@ -1,4 +1,5 @@
 import 'package:balady_plus/app/core/services/local/shared_prefs_manager.dart';
+import 'package:balady_plus/app/core/utils/map_utils.dart';
 import 'package:flutter/foundation.dart';
 import 'dart:io' show Platform;
 
@@ -33,6 +34,7 @@ abstract class AppEnv {
       DeviceOrientation.portraitDown,
     ]);
 
+    MapUtils.loadMarkers();
     sharedPrefs.init();
     // di: dependency injection
     di.initialize();

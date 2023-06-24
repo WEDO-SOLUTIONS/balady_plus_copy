@@ -47,7 +47,7 @@ class LocationPhotoSection extends StatelessWidget {
                       const CustomVerticalSpace(height: 20),
                       LocationSection(),
                       const CustomVerticalSpace(height: 8),
-                      LocationWarningWidget()
+                      LocationWarningWidget(),
                     ],
                   ),
                 ),
@@ -63,34 +63,45 @@ class LocationPhotoSection extends StatelessWidget {
 
 class LocationSection extends StatelessWidget {
   bool? hideAutomaticLocationdetected;
-
-  LocationSection({this.hideAutomaticLocationdetected});
+  bool showOnly;
+  LocationSection({this.hideAutomaticLocationdetected, this.showOnly = false});
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<CreateVDBloc, CreateVDState>(
       builder: (context, state) {
         return LabelIconSubtitleComponent(
-          text: ("vd_location").tr(),
+          text: ("عنوان البلاغ").tr(),
           subWidget: GestureDetector(
             onTap: () {
-              context.read<CreateVDBloc>().add(ChangeAddressEvent());
+              if (!showOnly)
+                context.read<CreateVDBloc>().add(ChangeAddressEvent());
             },
             child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Row(
-                    children: [
-                      CustomSvgIconWidget(IconPath.qrLocationIcon),
-                      CustomTextWidget(
-                        state.gisResponse?.getFullAddress() ??
-                            ("lbl_locate_report_from_here").tr(),
-                        fontColor: AppColor.blackModern500Light,
-                        fontSize: 14,
-                      ),
-                    ],
+                  Expanded(
+                    child: Row(
+                      children: [
+                        CustomSvgIconWidget(
+                          IconPath.qrLocationIcon,
+                        ),
+                        CustomHorizontalSpace(width: 8),
+                        Flexible(
+                          child: CustomTextWidget(
+                            state.gisResponse?.getFullAddress() ??
+                                ("lbl_locate_report_from_here").tr(),
+                            fontColor: AppColor.blackModern500Light,
+                            fontSize: 14,
+                            textAlign: TextAlign.start,
+                            height: 1.3,
+                            maxLines: 10,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                  CustomSvgIconWidget(IconPath.arrowLeft),
+                  if (!showOnly) CustomSvgIconWidget(IconPath.arrowLeft),
                 ]),
           ),
         );

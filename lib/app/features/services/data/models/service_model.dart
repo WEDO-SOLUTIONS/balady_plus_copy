@@ -5,6 +5,7 @@ import '../../services_exports.dart'
 
 class ServiceModel extends ServiceEntity {
   const ServiceModel({
+    required super.id,
     required super.title,
     required super.iconName,
     required super.order,
@@ -25,6 +26,7 @@ class ServiceModel extends ServiceEntity {
       cardList.add(ServiceCardModel.fromJson(card));
     }
     return ServiceModel(
+      id: json["id"] as int,
       title: json['title'] as String,
       iconName: json['icon'] as String,
       order: json['order'] as int,

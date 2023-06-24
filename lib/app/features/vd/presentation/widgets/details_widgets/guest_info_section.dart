@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports.dart';
 import 'package:balady_plus/app/features/vd/vd_exports.dart'
     show
         PreviousNextButtons,
@@ -191,6 +192,7 @@ class _GuestSectionWidgetState extends State<VDGuestSectionWidget> {
                   return null;
                 }*/
                 ),
+            CustomVerticalSpace(height: 16),
             CustomTextFieldWidget(
                 label: ("lbl_last_name_hint1").tr(),
                 hintText: ("lbl_last_name_hint2").tr(),
@@ -216,6 +218,7 @@ class _GuestSectionWidgetState extends State<VDGuestSectionWidget> {
                   return null;
                 }*/
                 ),
+            CustomVerticalSpace(height: 16),
             CustomTextFieldWidget(
                 label: ("lbl_mobile_hint1").tr(),
                 hintText: ("lbl_mobile_hint2").tr(),

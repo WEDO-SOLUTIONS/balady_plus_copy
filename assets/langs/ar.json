@@ -17,6 +17,9 @@
   "readOnlyFieldValidation": "هذا الحقل للقراءة فقط.",
   "selectFileValidation": "من فضلك قم بإختيار الملف.",
 
+  "data_not_retrieved": "تعذر استرجاع البيانات",
+  "reload": "إعادة المحاولة",
+  
   "_buttonsComment": "أى شئ يخص الأزرار",
   "signInButton": "تسجيل الدخول",
   "signUpButton": "تسجيل جديد",
@@ -37,7 +40,7 @@
   "skipButton": "تخطي",
   "startNowButton": "ابدأ الآن",
   "tryAgainButton": "إعادة المحاولة",
-
+"logout":"تسجيل الخروج", 
   "_bottomNavigationBarComment": "أى شئ يخص ال bottom-nav-bar",
   "home": "الرئيسية",
   "services": "الخدمات",
@@ -53,6 +56,7 @@
 
   "_homeComment": "أى شئ يخص الرئيسية",
   "welcome": "مرحباً",
+  "Welcome_Guest": "أهلاً بك",
   "importantServices": "أهم الخدمات",
   "shareWithUs": "شارك معنا",
   "newServices": "خدمات جديدة",
@@ -381,6 +385,8 @@
 
 
 "_VDService":"أى شئ يخص صور وارسل", 
+"location_not_allowed_map": "يمكن رفع بلاغ خارج نطاقك من خلال الاتصال على 940",
+
 "bookNewAppointmentSelectWord":"اختيار", 
 "ola_incident_error": "عزيزي المستفيد ، نعتذر من استلام بلاغ في المنطقه المحدده حيث انها  من اختصاص الهيئة الملكية في العلا",
 "ola_request_error": "عزيزي المستفيد ، نعتذر من استلام طلب في المنطقه المحدده حيث انها  من اختصاص الهيئة الملكية في العلا",

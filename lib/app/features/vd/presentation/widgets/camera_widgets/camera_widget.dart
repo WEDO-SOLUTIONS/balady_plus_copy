@@ -165,15 +165,17 @@ class _CameraWidgetState extends State<CameraWidget>
                     iconSize: 36,
                     btnHeight: 40,
                     btnWidth: 40,
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
                   ),
                   CustomIconButtonWidget(
                     icon: state.isFlashOn
                         ? IconPath.vdCameraFlashOff
                         : IconPath.vdCameraFlashOn,
-                    iconSize: 36,
-                    btnHeight: 40,
-                    btnWidth: 40,
+                    iconSize: 32,
+                    btnHeight: 32,
+                    btnWidth: 32,
                     onPressed: () {
                       context.read<CameraBloc>().add(ToggleCameraFlashEvent());
                     },

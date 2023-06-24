@@ -57,7 +57,7 @@ class FacilityItemRatingComponent extends StatelessWidget {
           Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const CustomSvgIconWidget(IconPath.qrRatingStarIcon),
+              //MM  const CustomSvgIconWidget(IconPath.qrRatingStarIcon),
               const CustomHorizontalSpace(width: 5),
               CustomTextWidget(
                 "$rating/5",

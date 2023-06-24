@@ -16,17 +16,21 @@ class HomeAppBar extends StatelessWidget {
       bottom: false,
       child: Row(
         children: [
-          const CircleIcon(
-            icon: IconPath.profile,
-            iconColor: AppColor.black,
-          ),
-          const SizedBox(width: 8),
+          if (CommonProperties.isLoggedIn) ...[
+            const CircleIcon(
+              icon: IconPath.profile,
+              iconColor: AppColor.black,
+            ),
+            const SizedBox(width: 8)
+          ],
           RichText(
             text: TextSpan(
               children: [
                 TextSpan(
                   style: AppStyle.semiBoldTextStyle,
-                  text: "${"welcome".tr()}, ",
+                  text: CommonProperties.isLoggedIn
+                      ? "${"welcome".tr()}, "
+                      : "Welcome_Guest".tr(),
                 ),
                 TextSpan(
                   style: AppStyle.blackTextStyle,

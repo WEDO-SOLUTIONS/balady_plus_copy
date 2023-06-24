@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
+import 'package:balady_plus/app/features/_shared_feature_/presentation/dialogs/dialog_header.dart';
 import 'package:balady_plus/app/features/vd/presentation/blocs/otp_bloc/otp_bloc.dart';
 import 'package:balady_plus/app/features/vd/vd_exports.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -48,60 +49,59 @@ class _VDGuestOtpScreen extends State<VDGuestOtpScreen> {
           return Directionality(
             textDirection: (TextDirection.rtl),
             child: Scaffold(
-              appBar: AppBar(
-                  leading: IconButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    icon: const Icon(Icons.close, color: Colors.black),
-                  ),
-                  backgroundColor: Colors.transparent,
-                  elevation: 0.0),
-              body: Stack(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(20),
-                    child: SingleChildScrollView(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.max,
-                        children: [
-                          Image.asset(
-                            Constants.imgPath + 'resetPass@3x.png', //MM
-                            height: 60,
-                            width: 60,
-                          ),
-                          const CustomVerticalSpace(height: 25),
-                          CustomTextWidget(("lbl_verify_code").tr(),
-                              fontColor: AppColor.black, fontSize: 22),
-                          const CustomVerticalSpace(height: 15),
-                          CustomTextWidget(
-                            ("lbl_mobile_otp_hint").tr() +
-                                " " +
-                                (context
-                                        .read<OTPBloc>()
-                                        .createBloc
-                                        .state
-                                        .mobileNumber ??
-                                    ""),
-                            fontColor: AppColor.black500,
-                            fontWeight: AppFontWeight.medium,
-                            height: 2,
-                            maxLines: 3,
-                          ),
-                          const CustomVerticalSpace(height: 20),
-                          CustomTextWidget(
-                            ("lbl_enter_verify_code").tr(),
-                            fontColor: AppColor.baladyDarkGreen2,
-                            fontSize: 13,
-                          ),
-                          OTPCode(),
-                          const CustomVerticalSpace(height: 20),
-                          CounterWidget()
-                        ],
+              body: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    CustomVerticalSpace(
+                        height: MediaQuery.of(context).padding.top),
+                    Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: DialogHeader(title: "رمز التحقق".tr()),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.all(20),
+                      child: SingleChildScrollView(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.max,
+                          children: [
+                            Image.asset(
+                              IconPath.otpLogo,
+                              height: 100,
+                              width: 91,
+                            ),
+                            const CustomVerticalSpace(height: 25),
+                            CustomTextWidget(("lbl_verify_code").tr(),
+                                fontColor: AppColor.black, fontSize: 22),
+                            const CustomVerticalSpace(height: 15),
+                            CustomTextWidget(
+                              ("lbl_mobile_otp_hint").tr() +
+                                  " " +
+                                  (context
+                                          .read<OTPBloc>()
+                                          .createBloc
+                                          .state
+                                          .mobileNumber ??
+                                      ""),
+                              fontColor: AppColor.black500,
+                              fontWeight: AppFontWeight.medium,
+                              height: 2,
+                              maxLines: 3,
+                            ),
+                            const CustomVerticalSpace(height: 20),
+                            CustomTextWidget(
+                              ("lbl_enter_verify_code").tr(),
+                              fontColor: AppColor.baladyDarkGreen2,
+                              fontSize: 13,
+                            ),
+                            OTPCode(),
+                            const CustomVerticalSpace(height: 20),
+                            CounterWidget()
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           );
