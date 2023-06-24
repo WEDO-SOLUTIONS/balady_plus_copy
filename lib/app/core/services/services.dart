@@ -152,7 +152,7 @@ Map<String, dynamic> servicesConfig = {
       "order": 4,
       "isNew": false,
       "isImportant": false,
-      "action": {"type": "page", "value": "/schedule-date"},
+      "action": {"type": "page", "value": RouteName.NewAppointmentPage},
       "ar": {"title": "حجز موعد الكتروني", "description": null, "tag": null},
       "en": {"title": "Schedule Date", "description": null, "tag": null}
     },

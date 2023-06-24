@@ -2,6 +2,7 @@ import 'dart:convert' show base64Decode, base64Encode, utf8;
 import 'dart:io' show File;
 import 'dart:typed_data' show Uint8List;
 import 'dart:ui';
+import 'dart:math' show asin, cos, sqrt;
 
 import 'package:balady_plus/app/core/utils/constants/remote_config.dart';
 import 'package:bot_toast/bot_toast.dart';
@@ -195,6 +196,90 @@ class CommonFunctions {
     final url = file.path;
 
     await OpenFile.open(url);
+  }
+
+  static String getDayName(String? dateStr) {
+    String dayName = "";
+    try {
+      String bidEndDate = dateStr ?? "";
+      DateTime tempDate = DateFormat("dd-MM-yyyy").parse(bidEndDate);
+      dayName = DateFormat('EEEE', CommonFunctions.isAppAR ? 'ar_SA' : 'en_US')
+          .format(tempDate)
+          .toString();
+    } catch (e) {
+      print(e);
+    }
+    return dayName;
+  }
+
+  static String getDate(String? dateStr) {
+    String formattedDate = "";
+    try {
+      String bidEndDate = dateStr ?? "";
+      DateTime tempDate = DateFormat("dd-MM-yyyy").parse(bidEndDate);
+      formattedDate =
+          DateFormat('dd', CommonFunctions.isAppAR ? 'ar_SA' : 'en_US')
+              .format(tempDate)
+              .toString();
+    } catch (e) {
+      print(e);
+    }
+    return replaceArabicNumberWithEnglish(formattedDate);
+  }
+
+  static String getMonthName(String? dateStr) {
+    String monthName = "";
+    try {
+      String bidEndDate = dateStr ?? "";
+      DateTime tempDate = DateFormat("dd-MM-yyyy").parse(bidEndDate);
+      monthName =
+          DateFormat('MMMM', CommonFunctions.isAppAR ? 'ar_SA' : 'en_US')
+              .format(tempDate)
+              .toString();
+    } catch (e) {
+      print(e);
+    }
+    return monthName;
+  }
+
+  static int getDifferenceBetweenDays(String? dateStr) {
+    int difference = 0;
+    try {
+      String bidEndDate = dateStr ?? "";
+      DateTime tempDate = DateFormat("yyyy/MM/dd").parse(bidEndDate);
+      final date = DateTime.now();
+      difference = tempDate.difference(date).inDays;
+    } catch (e) {
+      print(e);
+    }
+    return difference;
+  }
+
+  static String getDistance(LatLng? location, LatLng? currentLocation) {
+    String distance = "-";
+    if (currentLocation != null && location != null) {
+      double dis = calculateDistance(location.latitude, location.longitude,
+          currentLocation.latitude, currentLocation.longitude);
+
+      if (dis >= 1000) {
+        distance = ("distance_km")
+            .tr()
+            .replaceAll("-", (dis / 1000).toStringAsFixed(0));
+      } else {
+        distance = ("distance_meter").tr().replaceAll("-", (dis).toString());
+      }
+    }
+
+    return distance;
+  }
+
+  static double calculateDistance(lat1, lon1, lat2, lon2) {
+    var p = 0.017453292519943295;
+    var c = cos;
+    var a = 0.5 -
+        c((lat2 - lat1) * p) / 2 +
+        c(lat1 * p) * c(lat2 * p) * (1 - c((lon2 - lon1) * p)) / 2;
+    return 12742 * asin(sqrt(a)) * 1000;
   }
 
   static Future<void> openMap(double latitude, double longitude) async {

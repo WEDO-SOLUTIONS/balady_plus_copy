@@ -53,4 +53,8 @@ class RouteName {
   static const CreateRetriveDetailsPage = '/CreateRetriveDetailsPage';
   static const DCVeichlePage = '/DCVeichlePage';
   static const DCSelectRetreiveTypePage = '/DCSelectRetreiveTypePage';
+
+  // -------  Appointments ---------
+
+  static const NewAppointmentPage = '/NewAppointmentPage';
 }

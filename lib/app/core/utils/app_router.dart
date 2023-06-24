@@ -13,6 +13,7 @@ import '../../features/_shared_feature_/presentation/pages/success_screen.dart';
 import '../../features/bottom_navigation/bottom_navigation_exports.dart'
     show BottomNavigationPage;
 import '../../features/entry_point/entry_point_exports.dart' show SsoUserInfo;
+import '../../features/new_appointment/presentation/pages/new_appointment/new_appointment_page.dart';
 import '../../features/objectable_transactions/objections_exports.dart'
     show ObjectableTransactionsPage;
 import '../../features/facility_qr/facility_qr_exports.dart';
@@ -247,6 +248,11 @@ class AppRouter {
       case RouteName.DCSelectRetreiveTypePage:
         return MaterialPageRoute(
           builder: (_) => DCSelectRetreiveTypePage(),
+        );
+
+      case RouteName.NewAppointmentPage:
+        return MaterialPageRoute(
+          builder: (_) => NewAppointmentPage(),
         );
 
       // error page

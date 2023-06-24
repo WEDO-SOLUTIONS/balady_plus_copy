@@ -23,6 +23,11 @@ class RemoteConfig {
   static String get regaClass => _RemoteConfig.regaClass[env]!;
   static String get damagedCarsClass => _RemoteConfig.damagedCarsClass[env]!;
 
+  static String get specialConditionOldId =>
+      _RemoteConfig.specialConditionOldId[env]!;
+  static String get specialConditionId =>
+      _RemoteConfig.specialConditionId[env]!;
+
   List<String> get munciplities => _RemoteConfig.munciplities[env]!;
 
   static EnvType get env => sl<EnvType>();
@@ -119,6 +124,18 @@ class _RemoteConfig {
     devVal: "NSPCL-192",
     stgVal: "NSPCL-192",
     prodVal: "NSPCL-36",
+  );
+
+  static final specialConditionOldId = _initValues<String>(
+    devVal: "21",
+    stgVal: "21",
+    prodVal: "21",
+  );
+
+  static final specialConditionId = _initValues<String>(
+    devVal: "22",
+    stgVal: "22",
+    prodVal: "22",
   );
 
   static final munciplities = {
