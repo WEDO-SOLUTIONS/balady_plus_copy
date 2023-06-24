@@ -18,44 +18,49 @@ class ProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    bool isLoggedin = CommonProperties.isLoggedIn;
-    final list = isLoggedin
-        ? ProfileSections.profileSections
-        : ProfileSections.profileSectionsForGuest;
-    return Scaffold(
-      appBar: DefaultAppBarWidget(
-        title: "profile".tr(),
-      ),
-      body: TabPageContainer(
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              BlocBuilder<DelegatorsCubit, DelegatorsState>(
-                builder: (context, state) {
-                  return ProfileCard(
-                    isListItem: false,
-                    delegator: isLoggedin ? state.selectedDelegate : null,
-                    userInfo: isLoggedin ? CommonProperties.userInfo : null,
-                  );
-                },
-              ),
-              if (!isLoggedin) const SignInCard(),
-              ...List.generate(
-                list.length,
-                (index) => ProfileListCard(
-                  section: list[index],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: ElevatedButtonWidget.logout(onPressed: () {
-                  sl<EntryPointCubit>().clearAuth();
-                }),
-              )
-            ],
+    return BlocBuilder<EntryPointCubit, EntryPointState>(
+      builder: (context, state) {
+        bool isLoggedin = CommonProperties.isLoggedIn;
+        final list = isLoggedin
+            ? ProfileSections.profileSections
+            : ProfileSections.profileSectionsForGuest;
+        return Scaffold(
+          appBar: DefaultAppBarWidget(
+            title: "profile".tr(),
           ),
-        ),
-      ),
+          body: TabPageContainer(
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  BlocBuilder<DelegatorsCubit, DelegatorsState>(
+                    builder: (context, state) {
+                      return ProfileCard(
+                        isListItem: false,
+                        delegator: isLoggedin ? state.selectedDelegate : null,
+                        userInfo: isLoggedin ? CommonProperties.userInfo : null,
+                      );
+                    },
+                  ),
+                  if (!isLoggedin) const SignInCard(),
+                  ...List.generate(
+                    list.length,
+                    (index) => ProfileListCard(
+                      section: list[index],
+                    ),
+                  ),
+                  if (isLoggedin)
+                    Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: ElevatedButtonWidget.logout(onPressed: () {
+                        sl<EntryPointCubit>().clearAuth();
+                      }),
+                    )
+                ],
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }
