@@ -357,7 +357,6 @@ class CreateVDBloc extends Bloc<CreateVDEvent, CreateVDState> {
               type: PAGE_TYPE.newVD,
               fromHomePage: state.isFromHome,
               thanksMessage: success.data?.responseMessage));
-
       //MM    Helpers.sendEventToAnalytics(AppEvents.VD_Success_Registered_Submit);
     });
   }
@@ -442,7 +441,6 @@ class CreateVDBloc extends Bloc<CreateVDEvent, CreateVDState> {
               type: PAGE_TYPE.newVD,
               fromHomePage: state.isFromHome,
               thanksMessage: success.data?.responseMessage));
-
       if (!CommonProperties.isLoggedIn) {
         sharedPrefs.storeGuestInfo(
             state.firstName, state.lastName, state.mobileNumber);

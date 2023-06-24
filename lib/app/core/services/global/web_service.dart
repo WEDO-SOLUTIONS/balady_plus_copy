@@ -150,7 +150,7 @@ class AppInterceptors extends Interceptor {
             : false);
     options.headers
         .putIfAbsent(ApiHeader.verifyingKEY.name, () => verifyingKEY);
-
+    //if (options.headers['Authorization'] == null) {
     options.headers['Authorization'] = 'Bearer ${CommonProperties.token}';
     print(options.headers);
     return handler.next(options);

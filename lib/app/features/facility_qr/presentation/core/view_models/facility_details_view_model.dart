@@ -14,7 +14,6 @@ import '../../../../../core/utils/enums/enums.dart';
 class FacilityQRDetailsViewModel extends BaseViewModel {
   QrDetailsResponse? facilityRespoonse;
   List<RatingItem> ratingItems = [];
-
   FacilityQRDetailsViewModel({this.facilityRespoonse}) {}
 
   LatLng _userLocation = const LatLng(24.694203971954554, 46.81549530431028);
