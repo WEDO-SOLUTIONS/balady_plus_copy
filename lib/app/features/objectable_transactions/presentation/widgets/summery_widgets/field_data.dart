@@ -5,13 +5,16 @@ import 'package:flutter/material.dart';
 class FieldData extends StatelessWidget {
   final String title;
   final String? subTitle;
+  final double? height;
 
-  const FieldData({super.key, this.subTitle, required this.title});
+  const FieldData({super.key, this.subTitle, required this.title, this.height});
 
   @override
   Widget build(BuildContext context) {
     return Container(
+      height: height,
       padding: EdgeInsets.all(12),
+      alignment: Alignment.center,
       decoration: BoxDecoration(
           color: Color(0x80E6EFEF), borderRadius: BorderRadius.circular(8)),
       child: Expanded(

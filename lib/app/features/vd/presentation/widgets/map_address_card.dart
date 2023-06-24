@@ -33,78 +33,75 @@ class _MapAddressCard extends State<MapAddressCard> {
     isButtonDisabled = (widget.address != null && widget.isValidLocation);
     return Align(
       alignment: Alignment.bottomCenter,
-      child: Padding(
-          padding:
-              const EdgeInsets.only(top: 5, right: 15, left: 15, bottom: 20),
-          child: Card(
-            child: Padding(
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Padding(
-                      padding: const EdgeInsets.only(bottom: 10),
-                      child: CustomTextWidget(
-                        ('address').tr(),
-                        fontColor: AppColor.black,
-                        fontWeight: AppFontWeight.bold,
-                        fontSize: 17,
-                        textAlign: TextAlign.start,
-                      )),
-                  const DrawLineWidget(
-                    verticalMargin: 5,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 15),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: <Widget>[
-                        Image.asset(
-                          IconPath.vdMapMarkerIcon,
-                          height: 18.0,
-                          width: 18.0,
-                        ),
-                        const CustomHorizontalSpace(
-                          width: 5,
-                        ),
-                        Expanded(
-                            child: CustomTextWidget(
-                          widget.address != null
-                              ? widget.address!
-                              : ('choose_location').tr(),
-                          fontColor: AppColor.black500,
-                          fontWeight: AppFontWeight.bold,
-                          fontSize: 14,
-                          textOverflow: TextOverflow.ellipsis,
-                          maxLines: 3,
-                          textAlign: TextAlign.start,
-                        ))
-                      ],
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(16),
+          color: AppColor.white,
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Padding(
+                  padding: const EdgeInsets.only(bottom: 10),
+                  child: CustomTextWidget(
+                    ('address').tr(),
+                    fontColor: AppColor.primary900Light,
+                    fontWeight: AppFontWeight.bold,
+                    fontSize: 15,
+                    textAlign: TextAlign.start,
+                  )),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 15),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
+                    Image.asset(
+                      IconPath.vdMapMarkerIcon,
+                      height: 18.0,
+                      width: 18.0,
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                    child: EnhancedCustomElevatedButtonWidget(
-                      btnTextColor: !isButtonDisabled
-                          ? AppColor.black400
-                          : AppColor.white,
-                      btnColor: !isButtonDisabled
-                          ? AppColor.black200
-                          : AppColor.darkTurquoise,
-                      btnPressed: !isButtonDisabled
-                          ? null
-                          : () => widget.submitLocation(),
-                      btnText: ("lbl_confirm_incident_address").tr(),
-                      btnTextSize: 15,
-                      btnTextWeight: AppFontWeight.regular,
-                      btnHeight: 50,
+                    const CustomHorizontalSpace(
+                      width: 5,
                     ),
-                  ),
-                ],
+                    Expanded(
+                        child: CustomTextWidget(
+                      widget.address != null
+                          ? widget.address!
+                          : ('choose_location').tr(),
+                      fontColor: AppColor.black500,
+                      fontWeight: AppFontWeight.bold,
+                      fontSize: 14,
+                      textOverflow: TextOverflow.ellipsis,
+                      maxLines: 3,
+                      textAlign: TextAlign.start,
+                    ))
+                  ],
+                ),
               ),
-            ),
-          )),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                child: EnhancedCustomElevatedButtonWidget(
+                  btnTextColor:
+                      !isButtonDisabled ? AppColor.black400 : AppColor.white,
+                  btnColor: !isButtonDisabled
+                      ? AppColor.black200
+                      : AppColor.darkTurquoise,
+                  btnPressed:
+                      !isButtonDisabled ? null : () => widget.submitLocation(),
+                  btnText: ("lbl_confirm_incident_address").tr(),
+                  btnTextSize: 15,
+                  btnTextWeight: AppFontWeight.regular,
+                  btnHeight: 50,
+                  btnRadius: 8,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

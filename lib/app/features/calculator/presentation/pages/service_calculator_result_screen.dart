@@ -74,11 +74,6 @@ class _ServiceCalculatorResultScreenState
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
                       const CustomVerticalSpace(height: 20),
-                      Image.asset(
-                        Constants.imgPath + 'price@3x.png',
-                        width: 151,
-                        height: 85,
-                      ),
                       const CustomVerticalSpace(height: 15),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -86,8 +81,8 @@ class _ServiceCalculatorResultScreenState
                           CustomTextWidget(
                             totalCost.toString(),
                             maxLines: 1,
-                            fontSize: 30,
-                            fontColor: AppColor.darkTurquoise,
+                            fontSize: 40,
+                            fontColor: AppColor.primary900Light,
                             fontWeight: AppFontWeight.bold,
                             fontFamily: Constants.lucidaGrandFontType,
                           ),
@@ -95,18 +90,18 @@ class _ServiceCalculatorResultScreenState
                           CustomTextWidget(
                             Helpers.translatingWord("lbl_SAR"),
                             maxLines: 1,
-                            fontSize: 14,
-                            fontColor: AppColor.black500,
-                            fontWeight: AppFontWeight.medium,
+                            fontSize: 21,
+                            fontColor: AppColor.primary900Light,
+                            fontWeight: AppFontWeight.bold,
                           ),
                         ],
                       ),
-                      const CustomVerticalSpace(height: 5),
+                      const CustomVerticalSpace(height: 16),
                       CustomTextWidget(
                         Helpers.translatingWord("lbl_total_price"),
                         maxLines: 1,
-                        fontSize: 19,
-                        fontColor: AppColor.black600,
+                        fontSize: 18,
+                        fontColor: AppColor.blackModern600Light,
                         fontWeight: AppFontWeight.medium,
                       ),
                       const CustomVerticalSpace(height: 30),
@@ -115,13 +110,13 @@ class _ServiceCalculatorResultScreenState
                         child: CustomTextWidget(
                           Helpers.translatingWord("lbl_devided_as"),
                           maxLines: 1,
-                          fontSize: 13,
-                          fontColor: AppColor.black600,
-                          fontWeight: AppFontWeight.medium,
+                          fontSize: 14,
+                          fontColor: AppColor.blackModern900Light,
+                          fontWeight: AppFontWeight.bold,
                           textAlign: TextAlign.start,
                         ),
                       ),
-                      const DrawLineWidget(verticalMargin: 10),
+                      CustomVerticalSpace(height: 16),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Column(
@@ -199,33 +194,39 @@ class FeeWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Row(
-          children: <Widget>[
-            Expanded(
-              child: CustomTextWidget(
-                info.costItemDescription!,
+        Container(
+          height: 50,
+          padding: EdgeInsets.all(16),
+          decoration: BoxDecoration(
+              color: Color(0xFFE6EFEF), borderRadius: BorderRadius.circular(8)),
+          child: Row(
+            children: <Widget>[
+              Expanded(
+                child: CustomTextWidget(
+                  info.costItemDescription!,
+                  fontColor: AppColor.black,
+                  textAlign: TextAlign.start,
+                  fontWeight: AppFontWeight.medium,
+                ),
+              ),
+              CustomTextWidget(
+                info.costItemValue.toString(),
+                maxLines: 1,
+                fontSize: 15,
+                fontFamily: Constants.lucidaGrandFontType,
                 fontColor: AppColor.black,
-                textAlign: TextAlign.start,
+                fontWeight: AppFontWeight.bold,
+              ),
+              const CustomHorizontalSpace(width: 5),
+              CustomTextWidget(
+                Helpers.translatingWord("lbl_SAR"),
+                maxLines: 1,
+                fontSize: 13,
+                fontColor: AppColor.black500,
                 fontWeight: AppFontWeight.medium,
               ),
-            ),
-            CustomTextWidget(
-              info.costItemValue.toString(),
-              maxLines: 1,
-              fontSize: 15,
-              fontFamily: Constants.lucidaGrandFontType,
-              fontColor: AppColor.black,
-              fontWeight: AppFontWeight.bold,
-            ),
-            const CustomHorizontalSpace(width: 5),
-            CustomTextWidget(
-              Helpers.translatingWord("lbl_SAR"),
-              maxLines: 1,
-              fontSize: 13,
-              fontColor: AppColor.black500,
-              fontWeight: AppFontWeight.medium,
-            ),
-          ],
+            ],
+          ),
         ),
         const CustomVerticalSpace(height: 20)
       ],

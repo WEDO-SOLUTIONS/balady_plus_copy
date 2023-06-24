@@ -279,6 +279,7 @@ class _AddBoardScreenState extends State<AddBoardScreen> {
                 ? Helpers.translatingWord("lbl_add")
                 : Helpers.translatingWord("lbl_save_changes"),
             btnTextSize: 16.0,
+            btnRadius: 8,
             btnTextWeight: AppFontWeight.medium,
             btnHeight: 56.0,
           )),

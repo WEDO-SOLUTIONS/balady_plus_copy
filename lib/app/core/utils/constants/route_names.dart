@@ -60,7 +60,7 @@ class RouteName {
   static const appointmentsRoute = 'appointments';
   static const previousAppointmentsRoute = 'previous-appointments';
   static const appointmentDetailsRoute = 'appointment-details';
-
+  static const AppointmentsListScreen = 'AppointmentsListScreen';
   // -------  DAEM ---------
 
   static const newDaemTicket = '/newDaemTicket';

@@ -13,7 +13,7 @@ import '../../features/_shared_feature_/data/entities/success_screen_args.dart';
 import '../../features/_shared_feature_/presentation/pages/success_screen.dart';
 import '../../features/appointments/presentation/core/models/appointment_details_screen_args.dart';
 import '../../features/appointments/presentation/pages/appointment_details_screen.dart';
-import '../../features/appointments/presentation/pages/appointments_screen.dart';
+import '../../features/appointments/presentation/pages/appointments_list_screen.dart';
 import '../../features/appointments/presentation/pages/previous_appointments_screen.dart';
 import '../../features/bottom_navigation/bottom_navigation_exports.dart'
     show BottomNavigationPage;
@@ -294,11 +294,6 @@ class AppRouter {
           builder: (_) => GeneralInquiryPage(inqTypeModel: inqTypeModel),
         );
 
-      case RouteName.appointmentsRoute:
-        return MaterialPageRoute(
-          builder: (_) => const AppointmentsScreen(),
-        );
-
       case RouteName.previousAppointmentsRoute:
         return MaterialPageRoute(
           builder: (_) => const PreviousAppointmentsScreen(),
@@ -340,6 +335,12 @@ class AppRouter {
             gisLocationResult: args,
           ),
         );
+
+      case RouteName.AppointmentsListScreen:
+        return MaterialPageRoute(
+          builder: (_) => AppointmentsListScreen(),
+        );
+
       // error page
       default:
         return MaterialPageRoute(

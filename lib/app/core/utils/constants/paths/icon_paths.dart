@@ -28,6 +28,9 @@ class IconPath {
   static const placeholder = '${_svgIconPath}placeholder$_svg';
   static const add = '${_svgIconPath}add$_svg';
   static const pdf = '${_svgIconPath}PDF$_svg';
+  static const settingsIcon = '${_svgIconPath}settings$_svg';
+  static const printer = '${_svgIconPath}printer$_svg';
+
   static const informationCircleIcon =
       '${_svgIconPath}informationCircleIcon$_svg';
 

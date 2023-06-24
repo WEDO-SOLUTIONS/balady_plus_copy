@@ -588,8 +588,11 @@ class _ServiceCalculatorScreenState extends BaseState<ServiceCalculatorScreen,
                         fontWeight: AppFontWeight.medium,
                         fontSize: 16,
                       ),
-                      Image.asset("assets/images/arrowLeftSLightCopy@3x.png",
+                      SvgPicture.asset(IconPath.arrowLeft,
                           height: 16, width: 16)
+
+                      /*Image.asset("assets/images/arrowLeftSLightCopy@3x.png",
+                          height: 16, width: 16)*/
                     ],
                   ),
                   SizedBox(height: 10),
@@ -676,8 +679,10 @@ class _ServiceCalculatorScreenState extends BaseState<ServiceCalculatorScreen,
                       fontWeight: AppFontWeight.medium,
                       fontSize: 16,
                     ),
-                    Image.asset("assets/images/arrowLeftSLightCopy@3x.png",
-                        height: 16, width: 16)
+                    SvgPicture.asset(IconPath.arrowLeft, height: 16, width: 16)
+
+                    /* Image.asset("assets/images/arrowLeftSLightCopy@3x.png",
+                        height: 16, width: 16)*/
                   ],
                 ),
                 SizedBox(height: 10),
@@ -780,18 +785,15 @@ class _ServiceCalculatorScreenState extends BaseState<ServiceCalculatorScreen,
           Container(
             width: double.infinity,
             height: 35,
-            decoration: const BoxDecoration(color: Color(0xfff2f2f2)),
             padding: const EdgeInsets.symmetric(horizontal: 10),
             child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  Text(
+                  CustomTextWidget(
                     Helpers.translatingWord('lbl_boards_new_title'),
-                    style: const TextStyle(
-                        color: const Color(0xff595959),
-                        fontWeight: FontWeight.w700,
-                        fontStyle: FontStyle.normal,
-                        fontSize: 13.0),
+                    fontColor: AppColor.primary900Light,
+                    fontSize: 18,
+                    fontWeight: AppFontWeight.bold,
                     textScaleFactor: 1,
                   ),
                   /*CustomTooltipWidget(
@@ -814,52 +816,23 @@ class _ServiceCalculatorScreenState extends BaseState<ServiceCalculatorScreen,
                   return _newBoardItem(index);
                 }),
           ),
-          InkWell(
-            onTap: () async {
-              hideKeybaord();
+          ElevatedButtonWidget.custom(
+              onPressed: () async {
+                hideKeybaord();
 
-              await BottomSheetDialog.showDraggableSheet(context,
-                  child: BottomSheetWithActions(
-                    title: "lbl_add_new_board".tr(),
-                    body: AddBoardScreen(
-                        board: null,
-                        editBoardList: _addNewBoards,
-                        deleteBoard: null,
-                        boardList: _boardList,
-                        lastBoardId: _newBoards!.length,
-                        title: "lbl_add_new_board"),
-                  ));
-            },
-            child: Container(
-                alignment: Alignment.center,
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    //    Image.asset("assets/images/addboard@3x.png",
-                    //       height: 12, width: 12),
-                    SizedBox(
-                      width: 8,
-                    ),
-                    Text(
-                      Helpers.translatingWord("lbl_add_new_board"),
-                      style: const TextStyle(
-                          color: AppColor.darkTurquoise,
-                          fontWeight: FontWeight.w500,
-                          fontStyle: FontStyle.normal,
-                          fontSize: 16.0),
-                      textAlign: TextAlign.center,
-                      textScaleFactor: 1,
-                    )
-                  ],
-                ),
-                width: MediaQuery.of(context).size.width * 0.7,
-                height: 56,
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(2)),
-                    border:
-                        Border.all(color: AppColor.darkTurquoise, width: 2))),
-          )
+                await BottomSheetDialog.showDraggableSheet(context,
+                    child: BottomSheetWithActions(
+                      title: "lbl_add_new_board".tr(),
+                      body: AddBoardScreen(
+                          board: null,
+                          editBoardList: _addNewBoards,
+                          deleteBoard: null,
+                          boardList: _boardList,
+                          lastBoardId: _newBoards!.length,
+                          title: "lbl_add_new_board"),
+                    ));
+              },
+              text: Helpers.translatingWord("lbl_add_board")),
         ],
       ),
     );
@@ -884,7 +857,7 @@ class _ServiceCalculatorScreenState extends BaseState<ServiceCalculatorScreen,
           Container(
             width: double.infinity,
             height: 35,
-            decoration: const BoxDecoration(color: Color(0xfff2f2f2)),
+            // decoration: const BoxDecoration(color: Color(0xfff2f2f2)),
             padding: const EdgeInsets.symmetric(horizontal: 10),
             child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -915,12 +888,13 @@ class _ServiceCalculatorScreenState extends BaseState<ServiceCalculatorScreen,
                 }),
           ),
           ElevatedButtonWidget.custom(
-              onPressed: () {
+              onPressed: () async {
                 hideKeybaord();
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => AddBoardScreen(
+
+                await BottomSheetDialog.showDraggableSheet(context,
+                    child: BottomSheetWithActions(
+                      title: "lbl_edit_board".tr(),
+                      body: AddBoardScreen(
                           board: null,
                           editBoardList: _addCurrentBoards,
                           deleteBoard: null,
@@ -1998,6 +1972,7 @@ class _ServiceCalculatorScreenState extends BaseState<ServiceCalculatorScreen,
                         },
                   btnText: Helpers.translatingWord("lbl_calculate"),
                   btnTextSize: 16.0,
+                  btnRadius: 8,
                   btnTextWeight: AppFontWeight.medium,
                   btnHeight: 56.0,
                 )),
@@ -2791,6 +2766,7 @@ class _ServiceCalculatorScreenState extends BaseState<ServiceCalculatorScreen,
       label: Helpers.translatingWord("lbl_cost_of_previous_license"),
       controller: _costOfPreviousLicenseController,
       focusNode: _costOfPreviousLicenseFocusNode,
+      fillColor: Colors.transparent,
       keyboardType: TextInputType.number,
       onChanged: (txt) {
         changeBtnColor(_selectedServiceId, _selectedActionId);
@@ -2815,6 +2791,7 @@ class _ServiceCalculatorScreenState extends BaseState<ServiceCalculatorScreen,
       label: Helpers.translatingWord("lbl_previous_license_term"),
       controller: _previousLicenseTermController,
       focusNode: _previousLicenseTermFocusNode,
+      fillColor: Colors.transparent,
       keyboardType: TextInputType.number,
       onChanged: (txt) {
         changeBtnColor(_selectedServiceId, _selectedActionId);
@@ -2838,6 +2815,7 @@ class _ServiceCalculatorScreenState extends BaseState<ServiceCalculatorScreen,
       label: Helpers.translatingWord("lbl_length_of_hole"),
       controller: _lengthOfHoleController,
       focusNode: _lengthOfHoleFocusNode,
+      fillColor: Colors.transparent,
       keyboardType: TextInputType.number,
       onChanged: (txt) {
         changeBtnColor(_selectedServiceId, _selectedActionId);
@@ -2861,6 +2839,7 @@ class _ServiceCalculatorScreenState extends BaseState<ServiceCalculatorScreen,
       label: Helpers.translatingWord("lbl_length_previuos_of_hole"),
       controller: _lengthOfPreviuosHoleController,
       focusNode: _lengthOfPreviuosFocusNode,
+      fillColor: Colors.transparent,
       keyboardType: TextInputType.number,
       onChanged: (txt) {
         changeBtnColor(_selectedServiceId, _selectedActionId);
@@ -2884,6 +2863,7 @@ class _ServiceCalculatorScreenState extends BaseState<ServiceCalculatorScreen,
       label: Helpers.translatingWord("lbl_term_of_new_license"),
       controller: _termOfNewLicenseController,
       focusNode: _termOfNewLicenseFocusNode,
+      fillColor: Colors.transparent,
       keyboardType: TextInputType.number,
       onChanged: (txt) {
         changeBtnColor(_selectedServiceId, _selectedActionId);
@@ -3170,6 +3150,7 @@ class _ServiceCalculatorScreenState extends BaseState<ServiceCalculatorScreen,
       label: title,
       controller: _currentSpaceController,
       focusNode: _currentSpaceFocusNode,
+      fillColor: Colors.transparent,
       keyboardType: TextInputType.number,
       onChanged: (txt) {
         changeBtnColor(_selectedServiceId, _selectedActionId);
@@ -3240,6 +3221,7 @@ class _ServiceCalculatorScreenState extends BaseState<ServiceCalculatorScreen,
       controller: _newSpaceController,
       focusNode: _newSpaceFocusNode,
       keyboardType: TextInputType.number,
+      fillColor: Colors.transparent,
       onChanged: (txt) {
         changeBtnColor(_selectedServiceId, _selectedActionId);
       },
@@ -3258,6 +3240,7 @@ class _ServiceCalculatorScreenState extends BaseState<ServiceCalculatorScreen,
       label: Helpers.translatingWord("lbl_number_of_certificates"),
       controller: _numberOfCertificatesController,
       focusNode: _numberOfCertificatesFocusNode,
+      fillColor: Colors.transparent,
       keyboardType: TextInputType.number,
       onChanged: (txt) {
         changeBtnColor(_selectedServiceId, _selectedActionId);
@@ -3280,6 +3263,7 @@ class _ServiceCalculatorScreenState extends BaseState<ServiceCalculatorScreen,
       label: Helpers.translatingWord("lbl_number_of_working_days"),
       controller: _numberOfWorkingDaysController,
       focusNode: _numberOfWorkingDaysFocusNode,
+      fillColor: Colors.transparent,
       keyboardType: TextInputType.number,
       onChanged: (txt) {
         changeBtnColor(_selectedServiceId, _selectedActionId);
@@ -3299,6 +3283,7 @@ class _ServiceCalculatorScreenState extends BaseState<ServiceCalculatorScreen,
       label: Helpers.translatingWord("lbl_number_of_drilling_days"),
       controller: _numberOfDrillingDaysController,
       focusNode: _numberOfDrillingDaysFocusNode,
+      fillColor: Colors.transparent,
       keyboardType: TextInputType.number,
       onChanged: (txt) {
         changeBtnColor(_selectedServiceId, _selectedActionId);
@@ -3322,6 +3307,7 @@ class _ServiceCalculatorScreenState extends BaseState<ServiceCalculatorScreen,
       controller: _distanceController,
       focusNode: _distanceFocusNode,
       keyboardType: TextInputType.number,
+      fillColor: Colors.transparent,
       onChanged: (txt) {
         changeBtnColor(_selectedServiceId, _selectedActionId);
       },
@@ -3340,6 +3326,7 @@ class _ServiceCalculatorScreenState extends BaseState<ServiceCalculatorScreen,
       label: Helpers.translatingWord("lbl_number_of_documents"),
       controller: _numberOfDocumentsController,
       focusNode: _numberOfDocumentsFocusNode,
+      fillColor: Colors.transparent,
       keyboardType: TextInputType.number,
       onChanged: (txt) {
         changeBtnColor(_selectedServiceId, _selectedActionId);
@@ -3394,6 +3381,7 @@ class _ServiceCalculatorScreenState extends BaseState<ServiceCalculatorScreen,
       label: title,
       controller: _areaController,
       focusNode: _areaFocusNode,
+      fillColor: Colors.transparent,
       keyboardType: TextInputType.number,
       onChanged: (txt) {
         changeBtnColor(_selectedServiceId, _selectedActionId);

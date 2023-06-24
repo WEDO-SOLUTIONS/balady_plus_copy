@@ -1,7 +1,6 @@
 /// presentation
 /// presentation -> pages
 export 'presentation/pages/appointment_details_screen.dart';
-export 'presentation/pages/appointments_screen.dart';
 export 'presentation/pages/previous_appointments_screen.dart';
 
 /// presentation -> widgets

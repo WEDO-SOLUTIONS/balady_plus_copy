@@ -34,11 +34,9 @@ export 'presentation/core/services/repository/appointment_repository.dart';
 /// presentation -> core -> services -> view models
 export 'presentation/core/services/view_models/new_appointment_view_model.dart';
 export 'presentation/core/services/view_models/new_appointment_first_step_view_model.dart';
-export 'presentation/core/services/view_models/appontment_details_view_model.dart';
 export 'presentation/core/services/view_models/new_appointment_second_step_view_model.dart';
 
 /// presentation -> core -> services -> models
 export 'presentation/core/models/municipality_model.dart';
 export 'presentation/core/models/sub_municipalitiy_model.dart';
 export 'presentation/core/models/department_model.dart';
-export 'presentation/core/models/appointment_details_screen_args.dart';

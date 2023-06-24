@@ -1,8 +1,12 @@
 import 'dart:convert';
 
-MyAppointmentsResponse myAppointmentsResponseFromJson(String str) => MyAppointmentsResponse.fromJson(json.decode(str));
+import '../../../../appointments/presentation/core/models/appointment_card_item.dart';
 
-String myAppointmentsResponseToJson(MyAppointmentsResponse data) => json.encode(data.toJson());
+MyAppointmentsResponse myAppointmentsResponseFromJson(String str) =>
+    MyAppointmentsResponse.fromJson(json.decode(str));
+
+String myAppointmentsResponseToJson(MyAppointmentsResponse data) =>
+    json.encode(data.toJson());
 
 class MyAppointmentsResponse {
   MyAppointmentsResponse({
@@ -13,15 +17,21 @@ class MyAppointmentsResponse {
   List<StatusDetail>? statusDetails;
   Data? data;
 
-  factory MyAppointmentsResponse.fromJson(Map<String, dynamic> json) => MyAppointmentsResponse(
-    statusDetails: json["statusDetails"] == null ? null : List<StatusDetail>.from(json["statusDetails"].map((x) => StatusDetail.fromJson(x))),
-    data: json["data"] == null ? null : Data.fromJson(json["data"]),
-  );
+  factory MyAppointmentsResponse.fromJson(Map<String, dynamic> json) =>
+      MyAppointmentsResponse(
+        statusDetails: json["statusDetails"] == null
+            ? null
+            : List<StatusDetail>.from(
+                json["statusDetails"].map((x) => StatusDetail.fromJson(x))),
+        data: json["data"] == null ? null : Data.fromJson(json["data"]),
+      );
 
   Map<String, dynamic> toJson() => {
-    "statusDetails": statusDetails == null ? null : List<dynamic>.from(statusDetails!.map((x) => x.toJson())),
-    "data": data == null ? null : data!.toJson(),
-  };
+        "statusDetails": statusDetails == null
+            ? null
+            : List<dynamic>.from(statusDetails!.map((x) => x.toJson())),
+        "data": data == null ? null : data!.toJson(),
+      };
 }
 
 class Data {
@@ -36,16 +46,21 @@ class Data {
   List<AppointmentItem>? result;
 
   factory Data.fromJson(Map<String, dynamic> json) => Data(
-    responseCode: json["responseCode"] ,
-    responseMessage: json["responseMessage"] ,
-    result: json["result"] == null ? null : List<AppointmentItem>.from(json["result"].map((x) => AppointmentItem.fromJson(x))),
-  );
+        responseCode: json["responseCode"],
+        responseMessage: json["responseMessage"],
+        result: json["result"] == null
+            ? null
+            : List<AppointmentItem>.from(
+                json["result"].map((x) => AppointmentItem.fromJson(x))),
+      );
 
   Map<String, dynamic> toJson() => {
-    "responseCode": responseCode ,
-    "responseMessage": responseMessage ,
-    "result": result == null ? null : List<dynamic>.from(result!.map((x) => x.toJson())),
-  };
+        "responseCode": responseCode,
+        "responseMessage": responseMessage,
+        "result": result == null
+            ? null
+            : List<dynamic>.from(result!.map((x) => x.toJson())),
+      };
 }
 
 class AppointmentItem {
@@ -89,47 +104,57 @@ class AppointmentItem {
   String? appointmentDetails;
   dynamic otherValueName;
 
-  factory AppointmentItem.fromJson(Map<String, dynamic> json) => AppointmentItem(
-    id: json["id"],
-    municipalityId: json["municipalityId"] ,
-    municipalityName: json["municipalityName"] ,
-    subMunicipalityId: json["subMunicipalityId"] ,
-    subMunicipalityName: json["subMunicipalityName"] ,
-    visitDate: json["visitDate"] ,
-    visitTime: json["visitTime"] ,
-    serviceConfigId: json["serviceConfigId"] ,
-    serviceName: json["serviceName"],
-    statusId: json["statusId"] ,
-    statusName: json["statusName"] ,
-    cancelable: json["cancelable"] ,
-    printable: json["printable"] ,
-    printUrl: json["printUrl"],
-    mainClassName: json["mainClassName"] ,
-    subClassName: json["subClassName"] ,
-    appointmentDetails: json["appointmentDetails"] ,
-    otherValueName: json["otherValueName"],
-  );
+  factory AppointmentItem.fromJson(Map<String, dynamic> json) =>
+      AppointmentItem(
+        id: json["id"],
+        municipalityId: json["municipalityId"],
+        municipalityName: json["municipalityName"],
+        subMunicipalityId: json["subMunicipalityId"],
+        subMunicipalityName: json["subMunicipalityName"],
+        visitDate: json["visitDate"],
+        visitTime: json["visitTime"],
+        serviceConfigId: json["serviceConfigId"],
+        serviceName: json["serviceName"],
+        statusId: json["statusId"],
+        statusName: json["statusName"],
+        cancelable: json["cancelable"],
+        printable: json["printable"],
+        printUrl: json["printUrl"],
+        mainClassName: json["mainClassName"],
+        subClassName: json["subClassName"],
+        appointmentDetails: json["appointmentDetails"],
+        otherValueName: json["otherValueName"],
+      );
 
   Map<String, dynamic> toJson() => {
-    "id": id,
-    "municipalityId": municipalityId,
-    "municipalityName": municipalityName,
-    "subMunicipalityId": subMunicipalityId,
-    "subMunicipalityName": subMunicipalityName,
-    "visitDate": visitDate,
-    "visitTime": visitTime,
-    "serviceConfigId": serviceConfigId,
-    "serviceName": serviceName,
-    "statusId": statusId,
-    "statusName": statusName,
-    "cancelable": cancelable,
-    "printable": printable,
-    "printUrl": printUrl,
-    "mainClassName": mainClassName,
-    "subClassName": subClassName,
-    "appointmentDetails": appointmentDetails,
-    "otherValueName": otherValueName,
-  };
+        "id": id,
+        "municipalityId": municipalityId,
+        "municipalityName": municipalityName,
+        "subMunicipalityId": subMunicipalityId,
+        "subMunicipalityName": subMunicipalityName,
+        "visitDate": visitDate,
+        "visitTime": visitTime,
+        "serviceConfigId": serviceConfigId,
+        "serviceName": serviceName,
+        "statusId": statusId,
+        "statusName": statusName,
+        "cancelable": cancelable,
+        "printable": printable,
+        "printUrl": printUrl,
+        "mainClassName": mainClassName,
+        "subClassName": subClassName,
+        "appointmentDetails": appointmentDetails,
+        "otherValueName": otherValueName,
+      };
+
+  get model => AppointmentCardItem(
+      id: id,
+      municipalityName: municipalityName,
+      subMunicipalityName: subMunicipalityName,
+      visitDate: visitDate,
+      visitTime: visitTime,
+      mainClassName: mainClassName,
+      statusName: statusName);
 }
 
 class StatusDetail {
@@ -142,12 +167,12 @@ class StatusDetail {
   String? message;
 
   factory StatusDetail.fromJson(Map<String, dynamic> json) => StatusDetail(
-    code: json["code"],
-    message: json["message"],
-  );
+        code: json["code"],
+        message: json["message"],
+      );
 
   Map<String, dynamic> toJson() => {
-    "code": code,
-    "message": message,
-  };
+        "code": code,
+        "message": message,
+      };
 }

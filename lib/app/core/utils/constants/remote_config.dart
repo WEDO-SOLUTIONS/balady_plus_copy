@@ -33,6 +33,9 @@ class RemoteConfig {
   static String get xBaladyToken => _RemoteConfig.xBaladyToken[env]!;
   static String get baladyBaseUrl => _RemoteConfig.baladyBaseUrl[env]!;
 
+  static String get publicAppointmentShareURL =>
+      _RemoteConfig.publicAppointmentShareURL[env]!;
+
   static EnvType get env => sl<EnvType>();
 }
 
@@ -162,6 +165,12 @@ class _RemoteConfig {
   static final xBaladyToken = _initValues<String>(
     devVal: "5EBC1331132E4C55B9726AFFA5D6B6F4",
     stgVal: "5EBC1331132E4C55B9726AFFA5D6B6F4",
+    prodVal: "",
+  );
+
+  static final publicAppointmentShareURL = _initValues<String>(
+    devVal: "https://bldtrain.momra.gov.sa/commonapi/apt/",
+    stgVal: "https://bldtrain.momra.gov.sa/commonapi/apt/",
     prodVal: "",
   );
 

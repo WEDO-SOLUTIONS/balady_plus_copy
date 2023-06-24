@@ -1,6 +1,8 @@
+import 'package:balady_plus/app/features/appointments/presentation/core/services/view_models/my_appointments_view_model.dart';
 import 'package:balady_plus/app/features/calculator/core/calculator_location_view_model.dart';
 import 'package:balady_plus/app/features/transaction_inquiry/presentation/core/services/customer_voice_repository.dart';
 
+import '../../../features/appointments/presentation/core/services/view_models/appontment_details_view_model.dart';
 import '../../../features/facility_qr/presentation/core/view_models/facility_details_view_model.dart';
 import '../../../features/new_appointment/presentation/core/services/repository/appointment_repository.dart';
 import '../../../features/new_appointment/presentation/core/services/view_models/new_appointment_view_model.dart';
@@ -29,5 +31,9 @@ class OLDInjection {
 
     sl.registerLazySingleton(() => NewMSRDetailsViewModel());
     sl.registerLazySingleton(() => CalculatorLocationViewModel());
+
+    sl.registerLazySingleton(() => AppointmentDetailsViewModel());
+
+    sl.registerLazySingleton(() => MyAppointmentsViewModel());
   }
 }

@@ -1,4 +1,5 @@
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
+import 'package:balady_plus/app/features/_shared_feature_/presentation/dialogs/dialog_header.dart';
 import 'package:flutter/material.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
@@ -22,20 +23,10 @@ class ConfirmCancelAppointmentDialog extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          // title
-          CustomTextWidget(
-            ("confirmCancelAppointmentTitleWord").tr(),
-            fontColor: AppColor.black,
-            fontSize: 18.0,
+          DialogHeader(title: "confirmCancelAppointmentTitleWord".tr()),
+          CustomVerticalSpace(
+            height: 24,
           ),
-          const CustomVerticalSpace(height: 40),
-          // subtitle
-          CustomTextWidget(
-            ("confirmCancelAppointmentSubtitleWord").tr(),
-            fontColor: AppColor.warmGrey2,
-            fontWeight: AppFontWeight.medium,
-          ),
-          const CustomVerticalSpace(height: 40),
           // buttons
           const _ConfirmCancelAppointmentDialogButtons(),
         ],
@@ -54,18 +45,22 @@ class _ConfirmCancelAppointmentDialogButtons extends StatelessWidget {
         EnhancedCustomElevatedButtonWidget(
           btnPressed: () =>
               locator<AppointmentDetailsViewModel>().cancelAppointment(),
-          btnColor: AppColor.darkTurquoise,
+          btnColor: AppColor.primary900Light,
           btnBorderWidth: 2.0,
-          btnText: ('confirmCancelAppointmentConfirmButtonWord'),
+          btnText: ('confirmCancelAppointmentConfirmButtonWord').tr(),
           btnTextColor: AppColor.white,
+          btnRadius: 8,
           btnTextWeight: AppFontWeight.medium,
         ),
         Constants.verticalSpaceSmall,
         EnhancedCustomElevatedButtonWidget(
           btnPressed: () => Navigator.of(context).pop(),
           btnText: ("confirmCancelLicenseCancelButtonWord").tr(),
-          btnTextColor: AppColor.darkTurquoise,
+          btnColor: AppColor.white,
+          btnTextColor: AppColor.primary900Light,
+          btnBorderColor: AppColor.primary900Light,
           btnTextSize: 16.0,
+          btnRadius: 8,
           btnTextWeight: AppFontWeight.medium,
         ),
       ],

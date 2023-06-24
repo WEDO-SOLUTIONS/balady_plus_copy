@@ -145,7 +145,7 @@ class AppointmentDetailsViewModel extends BaseViewModel {
 
       NavigationService.navigatorKey.currentState!.pushNamedAndRemoveUntil(
           RouteName.successRoute,
-          ModalRoute.withName(RouteName.appointmentsRoute),
+          ModalRoute.withName(RouteName.AppointmentsListScreen),
           arguments: SuccessScreenArgs(
               type: PAGE_TYPE.cancelAppointment, fromHomePage: false));
     }
@@ -162,7 +162,7 @@ class AppointmentDetailsViewModel extends BaseViewModel {
 
       NavigationService.navigatorKey.currentState!.pushNamedAndRemoveUntil(
           RouteName.successRoute,
-          ModalRoute.withName(RouteName.appointmentsRoute),
+          ModalRoute.withName(RouteName.AppointmentsListScreen),
           arguments: SuccessScreenArgs(
               type: PAGE_TYPE.confirmAppointment, fromHomePage: false));
     }

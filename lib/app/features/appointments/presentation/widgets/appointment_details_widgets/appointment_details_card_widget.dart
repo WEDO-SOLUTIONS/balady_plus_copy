@@ -13,8 +13,8 @@ import '../../../../_shared_feature_/presentation/widgets/custom_svg_icon_widget
 import '../../../../_shared_feature_/presentation/widgets/draw_line_widget.dart';
 import '../../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import '../../../../new_appointment/presentation/core/models/appointment_details_model.dart';
-import '../../../../new_appointment/presentation/core/services/view_models/appontment_details_view_model.dart';
 import '../../../../new_appointment/presentation/widgets/appointment_status_widget.dart';
+import '../../core/services/view_models/appontment_details_view_model.dart';
 import 'appointment_details_part_of_card_widget.dart';
 
 class AppointmentDetailsCardWidget extends StatelessWidget {
@@ -35,13 +35,6 @@ class AppointmentDetailsCardWidget extends StatelessWidget {
             margin: EdgeInsets.zero,
             child: Stack(
               children: [
-                Container(
-                    margin: const EdgeInsets.only(top: 15),
-                    alignment: AlignmentDirectional.centerEnd,
-                    child: Image.asset(
-                      Constants.imgPath + "appointment_tree@3x.png",
-                      width: MediaQuery.of(context).size.width / 2.2,
-                    )),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -157,17 +150,11 @@ class _QRCodeWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      margin: const EdgeInsets.symmetric(
-        horizontal: Constants.semiMediumPadding,
-      ),
-      color: AppColor.white2,
-      /* child: QrImage(
-        data: RemoteConfig.publicAppointmentShareURL + qrCode,
-        version: QrVersions.auto,
-        size: 180.0,
-        padding: const EdgeInsets.all(Constants.smallPadding),
-      )*/
-    );
+        margin: const EdgeInsets.symmetric(
+          horizontal: Constants.semiMediumPadding,
+        ),
+        color: AppColor.white2,
+        child: Container());
   }
 }
 

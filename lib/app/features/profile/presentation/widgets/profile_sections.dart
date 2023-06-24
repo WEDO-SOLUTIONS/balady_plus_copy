@@ -57,7 +57,7 @@ class ProfileSections {
           ProfileItem(
             title: "appointments".tr(),
             icon: IconPath.appiontments,
-            route: "",
+            route: RouteName.AppointmentsListScreen,
           ),
         ],
       );

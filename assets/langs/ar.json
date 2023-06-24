@@ -770,6 +770,14 @@
 
 
 
+"_AppointmentText":"اي شيي يخص المواعيد", 
+"appointmentsAppointmentDateWord": "تاريخ الموعد", 
+"appointmentsAppointmentTimeWord": "وقت الموعد",
+"appointmentsAppointmentAddressWord": "العنوان",
+"appointmentsAppointmentServiceWord": "الخدمة",
+
+
+
 
 "appointmentsHeaderTitleWord": "المواعيد",
 "appointmentsBookNewAppointmentWord": "حجز موعد جديد",
@@ -779,8 +787,6 @@
 "appointmentsAppointmentStatusUnConfirmedWord": "غير مؤكد",
 "appointmentsAppointmentStatusExpiredWord": "مُنتهي",
 "appointmentsAppointmentStatusRevokedWord": "مُلغى",
-"appointmentsAppointmentTimeWord": "وقت الموعد",
-"appointmentsAppointmentAddressWord": "العنوان",
 "appointmentsGoToAppointmentDetailsWord": "تفاصيل الموعد",
 "appointmentsViewPreviousAppointmentsWord": "عرض المواعيد السابقة",
 "bookNewAppointmentCloseWindowWord": "إغلاق",
@@ -1818,7 +1824,7 @@
 "commissioner_message": "أي إجراءات مرتبطة بهذه الخدمة تتطلب تفويض رسمي يجب إبرازه عند الحضور",
 "submitterType": "الصفة",
 "new_appointment":"موعد جديد", 
-
+"appointment":"الموعد", 
 "need_login_desc_appointments": "يمكنك حجز موعد جديد بعد تسجيل الدخول",
 "no_upcoming_appointment": "لا توجد أي مواعيد قادمة",
 "no_upcoming_appointment_desc": "لا توجد أي مواعيد قادمة،  يمكنك عرض مواعيدك السابقة أو حجز موعد جديد",

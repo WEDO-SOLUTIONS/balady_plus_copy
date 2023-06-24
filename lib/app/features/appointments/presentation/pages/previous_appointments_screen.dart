@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:flutter/material.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
@@ -5,9 +6,14 @@ import '../../../../core/base/base_view.dart';
 import '../../../../core/base/base_view_model.dart';
 import '../../../../core/utils/constants/app_colors.dart';
 import '../../../../core/utils/constants/constants.dart';
+import '../../../_shared_feature_/presentation/widgets/default_appbar_widget.dart';
 import '../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
+import '../../../new_appointment/presentation/core/models/appointment_details_model.dart';
 import '../../../new_appointment/presentation/core/models/my_appointments_response.dart';
+import '../core/models/appointment_details_screen_args.dart';
+import '../core/services/view_models/appontment_details_view_model.dart';
 import '../core/services/view_models/my_appointments_view_model.dart';
+import '../widgets/appointments_widgets/appointment_card.dart';
 
 class PreviousAppointmentsScreen extends StatefulWidget {
   const PreviousAppointmentsScreen({Key? key}) : super(key: key);
@@ -38,15 +44,8 @@ class _PreviousAppointmentsScreenState
           List<AppointmentItem> list = model.getMyPreviousAppointmentsList();
           return Scaffold(
             backgroundColor: AppColor.white2,
-            appBar: AppBar(
-              elevation: 4.0,
-              backgroundColor: AppColor.white,
-              centerTitle: true,
-              title: CustomTextWidget(
-                ("previousAppointmentHeaderTitleWord").tr(),
-                fontColor: AppColor.black,
-                fontSize: 17.0,
-              ),
+            appBar: DefaultAppBarWidget(
+              title: "previousAppointmentHeaderTitleWord".tr(),
             ),
             body: RefreshIndicator(
               color: const Color(0xff389492),
@@ -76,8 +75,32 @@ class _PreviousAppointmentsScreenState
                       return Container(height: 50);
                     }
                   }
-//MM return Container();
-                  // return Container(appointmentData: list[index]);
+                  return AppointmentCard(
+                    item: list[index].model,
+                    onPress: () async {
+                      if (list[index].id != null) {
+                        bool isSuccess = false;
+                        AppointmentItemInfo? appointmentItemInfo;
+                        isSuccess = await locator<AppointmentDetailsViewModel>()
+                            .getAppointmentDetails(list[index].id ?? -1);
+                        if (isSuccess) {
+                          appointmentItemInfo =
+                              locator<AppointmentDetailsViewModel>()
+                                  .getAppointmentsInfo();
+                        }
+                        if (isSuccess && appointmentItemInfo != null) {
+                          Navigator.of(context).pushNamed(
+                              RouteName.appointmentDetailsRoute,
+                              // arguments: appointmentData.id ?? 0
+                              arguments: AppointmentDetailsScreenArgs(
+                                  appointmentItemInfo: appointmentItemInfo,
+                                  isCancelable: list[index].cancelable,
+                                  isPrintable: list[index].printable,
+                                  fromHomePage: true));
+                        }
+                      }
+                    },
+                  );
                 },
               ),
             ),
