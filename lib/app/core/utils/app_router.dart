@@ -10,8 +10,6 @@ import '../../features/_shared_feature_/presentation/pages/view_dms_image_screen
 import '../../features/_shared_feature_/shared_feature_exports.dart';
 import '../../features/_shared_feature_/data/entities/success_screen_args.dart';
 import '../../features/_shared_feature_/presentation/pages/success_screen.dart';
-import '../../features/authentication/sign_in/sign_in_exports.dart'
-    show SignInPage;
 import '../../features/bottom_navigation/bottom_navigation_exports.dart'
     show BottomNavigationPage;
 import '../../features/entry_point/entry_point_exports.dart' show SsoUserInfo;
@@ -54,17 +52,6 @@ class AppRouter {
       // splash page
       case RouteName.splash:
         return MaterialPageRoute(builder: (_) => const SplashPage());
-      // sign-in page
-      case RouteName.signIn:
-        // return MaterialPageRoute(builder: (_) => const SignInPage());
-        return ScaleRotatePage(page: const SignInPage());
-      // sign-up page
-      case RouteName.signUp:
-        return MaterialPageRoute(builder: (_) => const SizedBox());
-      // otp page
-      case RouteName.otp:
-        return MaterialPageRoute(builder: (_) => const SizedBox());
-
       case RouteName.inappWebview:
         return MaterialPageRoute(
           builder: (_) => InAppWebViewPage(

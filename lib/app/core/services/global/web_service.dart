@@ -198,34 +198,6 @@ class AppInterceptors extends Interceptor {
     return handler.next(err);
   }
 
-  Future<AuthDataModel?> _onRefreshToken({
-    required String username,
-    required String refreshToken,
-  }) async {
-    try {
-      // should create new dio instance because the request interceptor is being locked
-      var dio = Dio();
-      dio.options.baseUrl = sl<EnvType>().domain;
-      dio.options.headers = {ApiHeader.language.eName: languageCode};
-      final response = await dio.post(
-        ApiPOST.refreshToken.url,
-        queryParameters: {
-          ApiParam.username.name: username,
-          ApiParam.refreshToken.name: refreshToken,
-        },
-      );
-      "Token has been refreshed successfully".successLog();
-      final decodedResponse = AuthDataModel.fromJson(response.data);
-      return decodedResponse.toFuture();
-    } on DioError catch (e) {
-      "DioError occured ${e.error}".errorLog();
-      return null;
-    } catch (e) {
-      "Catched error occured $e".errorLog();
-      return null;
-    }
-  }
-
   String get languageCode => translator.activeLanguageCode;
   bool get mounted => true;
 }

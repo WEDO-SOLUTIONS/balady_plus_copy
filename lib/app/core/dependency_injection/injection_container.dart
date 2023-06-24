@@ -17,12 +17,10 @@ import '../dependency_injection/dependency_injection_exports.dart'
         EntryPointInjection,
         InvoicesInjection,
         LicensesInjection,
-        LookupInjection,
         OTPInjection,
         PrayerTimesInjection,
         RequestsInjection,
         ServicesInjection,
-        SignInInjection,
         SignUpInjection,
         ObjectionsInjection,
         ObjectableTransactionsInjection,
@@ -44,12 +42,9 @@ void initialize() {
   //! Features
   //? Entry Point
   EntryPointInjection.init();
-  //? Lookup
-  LookupInjection.init();
   //? OTP
   OTPInjection.init();
-  //? Sign-In
-  SignInInjection.init();
+  ;
   //? Sign-Up
   SignUpInjection.init();
   //? Services
