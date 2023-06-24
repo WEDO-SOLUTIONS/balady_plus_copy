@@ -9,7 +9,6 @@ import '../../../../../core/services/local/navigation_services.dart';
 import '../../../../../core/utils/utils_exports.dart'
     show AppColor, AppStyle, IconPath, RouteName;
 import '../../../../_shared_feature_/shared_feature_exports.dart';
-import '../../../../objectable_transactions/domain/use_cases/get_objection_details.dart';
 import '../../requests_exports.dart' show RequestEntity, RequestParameter;
 
 class RequestsListItem extends StatelessWidget {
@@ -91,34 +90,7 @@ class RequestsListItem extends StatelessWidget {
               ],
             ),
           ),
-          ElevatedButtonWidget.details(
-            onPressed: () async {
-              if (request.redirectUrl == null) {
-                if (request.requestTypeId == 50001) {
-                  EasyLoading.show();
-                  GetObjectionDetails getObjectionDetails =
-                      GetObjectionDetails(repository: sl());
-                  var failureOrSuccess =
-                      await getObjectionDetails(request.requestNumberAsText);
-
-                  await failureOrSuccess.fold((failure) {
-                    EasyLoading.dismiss();
-                  }, (success) async {
-                    EasyLoading.dismiss();
-                    NavigationService.navigatorKey.currentState!.pushNamed(
-                        RouteName.objectionsDetailsPage,
-                        arguments: success);
-                  });
-                  return;
-                }
-              }
-
-              Navigator.of(context).pushNamed(
-                RouteName.inappWebview,
-                arguments: (title: 'request'.tr(), url: request.redirectUrl),
-              );
-            },
-          ),
+          ElevatedButtonWidget.details(onPressed: () async {}),
         ],
       ),
     );

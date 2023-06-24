@@ -1,4 +1,3 @@
-import 'package:balady_plus/app/core/dependency_injection/features/dc_injection.dart';
 import 'package:dio/dio.dart' show Dio;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart'
     show FlutterSecureStorage;
@@ -22,11 +21,7 @@ import '../dependency_injection/dependency_injection_exports.dart'
         RequestsInjection,
         ServicesInjection,
         SignUpInjection,
-        ObjectionsInjection,
-        ObjectableTransactionsInjection,
-        VDInjection,
-        DCRetriveInjection,
-        OLDInjection;
+        VDInjection;
 import '../services/services_exports.dart'
     show
         EntryPointBridge,
@@ -38,7 +33,6 @@ import '../services/services_exports.dart'
 final sl = GetIt.instance;
 
 void initialize() {
-  OLDInjection.init();
   //! Features
   //? Entry Point
   EntryPointInjection.init();
@@ -49,14 +43,6 @@ void initialize() {
   SignUpInjection.init();
   //? Services
   ServicesInjection.init();
-//? Objections
-  ObjectionsInjection.init();
-//? Objectable Transactions
-  ObjectableTransactionsInjection.init();
-
-//? DC
-  DCInjection.init();
-  DCRetriveInjection.init();
 
   //! Services
   //* Public Services
