@@ -9,4 +9,6 @@ class ImagePath {
   static const camera = '${_imagePath}camera$_png';
   static const gameChallenge = '${_imagePath}game_challenge$_png';
   static const appBarBackground = '${_imagePath}app_bar_background$_png';
+  static const successPageBackground = '${_imagePath}success_background$_png';
+  static const successPageIcon = '${_imagePath}success_image$_png';
 }

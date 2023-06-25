@@ -5,6 +5,7 @@ import 'package:permission_handler/permission_handler.dart';
 
 import '../../../../core/utils/constants/app_colors.dart';
 import '../../../../core/utils/constants/constants.dart';
+import '../../../../core/utils/constants/paths/icon_paths.dart';
 import '../widgets/buttons/custom_buttons_widgets.dart';
 import '../widgets/texts/custom_text_widget.dart';
 
@@ -34,7 +35,7 @@ class PhotoPermissionDialog extends StatelessWidget {
                           Navigator.of(context).pop();
                         },
                         child: Image.asset(
-                          Constants.whiteCloseImg,
+                          IconPath.qrWhiteCloseIcon,
                           height: 16.0,
                           width: 16.0,
                           color: Colors.black,

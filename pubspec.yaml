@@ -133,6 +133,7 @@ dependencies:
       #ref: v0.3.2
       ref: e104fa94452ec236dfb27cf5ea54fb72f280bc08
   flutter_picker: ^2.1.0
+  percent_indicator: ^4.2.3
   #test_package:
  #   path: packages/test_package
 

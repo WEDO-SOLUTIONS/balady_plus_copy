@@ -81,9 +81,6 @@ class CreateVDState extends Equatable {
           : null;
 
   bool isNextButtonEnabled() {
-    //MM
-    return true;
-    //  print("agreeement $currentPageValue");
     if (currentPageValue == 0)
       return gisResponse != null && location != null;
     else if (currentPageValue == 1)
@@ -93,10 +90,7 @@ class CreateVDState extends Equatable {
         validateAddetionalFields()) {
       bool status = Formz.validate([incidentDescValidator]);
       bool isRegaValid = isRegaClass() == true ? (isCrValid ?? false) : true;
-      if (agreement == true &&
-          !incidentDescValidator.isPure &&
-          status &&
-          isRegaValid) return true;
+      if (!incidentDescValidator.isPure && status && isRegaValid) return true;
     } else if ((!CommonProperties.isLoggedIn && currentPageValue == 2)) {
       bool guestFormStatus = Formz.validate(
           [firstNameValidator, lastNameValidator, phoneValidator]);
@@ -104,6 +98,9 @@ class CreateVDState extends Equatable {
           !lastNameValidator.isPure &&
           !phoneValidator.isPure &&
           guestFormStatus) return true;
+    } else if (((CommonProperties.isLoggedIn && currentPageValue == 3) ||
+        (!CommonProperties.isLoggedIn && currentPageValue == 4))) {
+      return agreement ?? false;
     }
 
     return false;
@@ -238,6 +235,7 @@ class CreateVDState extends Equatable {
         splItems,
         splResponse,
         crNumber,
-        isCrValid
+        isCrValid,
+        otpResponse
       ];
 }

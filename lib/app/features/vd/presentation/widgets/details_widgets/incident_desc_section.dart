@@ -27,14 +27,14 @@ class IncidentDescSection extends StatelessWidget {
                       ),
                       if (state.isRegaClass()) CRTextField(),
                       VdFieldsSection(initialDesc: state.issueDesc),
-                      VdAgreementSection(
+                      /* VdAgreementSection(
                           initalChecked: state.agreement,
                           onChecked: (bool? isAgreed) {
                             print(isAgreed);
                             context
                                 .read<CreateVDBloc>()
                                 .add(ChangeAgreementEvent(isagree: isAgreed));
-                          }),
+                          }),*/
                     ],
                   ),
                 ),

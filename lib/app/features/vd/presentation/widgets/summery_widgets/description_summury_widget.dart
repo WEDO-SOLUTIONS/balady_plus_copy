@@ -19,7 +19,7 @@ class DescriptionSummuryWidget extends StatelessWidget {
     return BlocBuilder<CreateVDBloc, CreateVDState>(
       builder: (context, state) {
         return CustomExpansionPanelWidget(
-          title: ("وصف البلاغ").tr(),
+          title: ("vd_summury_desc").tr(),
           leading: SvgPicture.asset(IconPath.vdSummuryDesc),
           children: [
             CustomTextWidget(

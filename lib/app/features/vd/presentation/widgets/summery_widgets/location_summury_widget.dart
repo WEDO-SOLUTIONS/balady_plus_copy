@@ -17,7 +17,7 @@ class LocationSummuryWidget extends StatelessWidget {
     return BlocBuilder<CreateVDBloc, CreateVDState>(
       builder: (context, state) {
         return CustomExpansionPanelWidget(
-          title: ("تاكيد الموقع والصوره").tr(),
+          title: ("bd_confirm_location").tr(),
           leading: SvgPicture.asset(IconPath.vdSummuryPhoto),
           children: [
             Center(

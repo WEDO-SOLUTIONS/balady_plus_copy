@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'package:balady_plus/app/core/utils/enums/app_font_weights.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
+import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/buttons/custom_buttons_widgets.dart';
+import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/custom_svg_icon_widget.dart';
 import 'package:balady_plus/app/features/vd/presentation/blocs/camera_bloc/camera_bloc.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
@@ -149,7 +151,36 @@ class _CameraWidgetState extends State<CameraWidget>
             if (state.status == BlocStatus.loading)
               Align(
                   alignment: Alignment.center,
-                  child: CustomCircularLoadingWidget())
+                  child: CustomCircularLoadingWidget()),
+            Padding(
+              padding: EdgeInsets.only(
+                  top: MediaQuery.of(context).padding.top + 16,
+                  left: 16,
+                  right: 16),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  CustomIconButtonWidget(
+                    icon: IconPath.vdCameraExit,
+                    iconSize: 36,
+                    btnHeight: 40,
+                    btnWidth: 40,
+                    onPressed: () {},
+                  ),
+                  CustomIconButtonWidget(
+                    icon: state.isFlashOn
+                        ? IconPath.vdCameraFlashOff
+                        : IconPath.vdCameraFlashOn,
+                    iconSize: 36,
+                    btnHeight: 40,
+                    btnWidth: 40,
+                    onPressed: () {
+                      context.read<CameraBloc>().add(ToggleCameraFlashEvent());
+                    },
+                  ),
+                ],
+              ),
+            ),
           ],
         );
       },

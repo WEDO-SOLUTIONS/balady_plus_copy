@@ -172,7 +172,7 @@ class VDRemoteDataSourceImpl extends VDRemoteDataSource {
       print(data);
       var parsedResult =
           data != null ? SPLDetailsResponseModel.fromJson(data) : null;
-      final decodedResponse = SPLDetailsResponseModel.fromJson(response.data);
+      final decodedResponse = SPLDetailsResponseModel.fromJson(data);
 
       return decodedResponse.toFuture();
     } on DioError catch (error) {
@@ -200,11 +200,10 @@ class VDRemoteDataSourceImpl extends VDRemoteDataSource {
         ApiUrl.vdUploadFile,
         data: params.toVDMap(),
       );
-      print(response.data);
 
       var data = response.data["data"]["result"];
 
-      final decodedResponse = UploadFileResponseModel.fromMap(response.data);
+      final decodedResponse = UploadFileResponseModel.fromMap(data);
 
       return decodedResponse.toFuture();
     } on DioError catch (error) {
@@ -234,7 +233,7 @@ class VDRemoteDataSourceImpl extends VDRemoteDataSource {
 
       var data = response.data["data"]["result"];
 
-      final decodedResponse = OTPResponseModel.fromMap(response.data);
+      final decodedResponse = OTPResponseModel.fromMap(data);
 
       return decodedResponse.toFuture();
     } on DioError catch (error) {
@@ -303,8 +302,8 @@ class VDRemoteDataSourceImpl extends VDRemoteDataSource {
     var response;
 
     try {
-      response = await webService.dio
-          .post(ApiUrl.createIncidentUnRegistered, data: params.toMap());
+      response = await webService.dio.post(ApiUrl.createIncidentUnRegistered,
+          data: params.toMap(isGuest: !CommonProperties.isLoggedIn));
 
       var data = response.data["data"]["result"];
 

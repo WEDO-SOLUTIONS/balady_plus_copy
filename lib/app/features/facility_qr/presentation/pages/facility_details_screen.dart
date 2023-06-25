@@ -245,7 +245,7 @@ class FacilityInfoSection extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        QRLabelTextWidget(text: ("تفاصيل العمل والتواصل").tr()),
+        QRLabelTextWidget(text: ("qr_working_details").tr()),
         const CustomVerticalSpace(height: 16),
         if (viewModel.facilityRespoonse != null &&
             viewModel.facilityRespoonse!.data!.result!.workTimes != null)
@@ -291,8 +291,8 @@ class FacilityInfoSection extends StatelessWidget {
             },
           )
         ],
-        //  QRLabelTextWidget(text: ("تفاصيل الموقع").tr()),
-        //  QRLabelTextWidget(text: ("تفاصيل التقييم").tr()),
+        //  QRLabelTextWidget(text: ("qr_locatoin_details").tr()),
+        //  QRLabelTextWidget(text: ("qr_rating_details").tr()),
 
         /*
       
@@ -321,7 +321,7 @@ class FeaturesSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        QRLabelTextWidget(text: ("الخدمات المقدمة").tr()),
+        QRLabelTextWidget(text: ("qr_service_details").tr()),
         const CustomVerticalSpace(height: 16),
         Wrap(
           direction: Axis.horizontal,
@@ -369,7 +369,7 @@ class EvaluationSection extends StatelessWidget {
                 "[]", viewModel.getFacilityTotalRatingCount().toString()),
         img: "rate@3x.png",
       ),*/
-      QRLabelTextWidget(text: ("تفاصيل التقييم").tr()),
+      QRLabelTextWidget(text: ("qr_rating_details").tr()),
 
       /*  RateAndReviewWidgetWithoutDivider(
           rate: viewModel.getFacilityAvrageRating(),
@@ -420,16 +420,16 @@ class MapSection extends StatelessWidget {
 
     return viewModel.getMapLocation() != null
         ? Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            QRLabelTextWidget(text: ("تفاصيل الموقع").tr()),
+            QRLabelTextWidget(text: ("qr_locatoin_details").tr()),
             CustomVerticalSpace(height: 16),
             LabelIconSubtitleComponent(
-              text: ("العنوان").tr(),
+              text: ("qr_address").tr(),
               icon: IconPath.qrLocationIcon,
               subtitle: viewModel.getCityAndStreet(),
             ),
             CustomVerticalSpace(height: 16),
             LabelIconSubtitleComponent(
-              text: ("ملخص الموقع").tr(),
+              text: ("qr_address_summery").tr(),
               icon: IconPath.qrLocationIcon,
               subWidget: Container(
                 padding: EdgeInsets.only(top: 16),

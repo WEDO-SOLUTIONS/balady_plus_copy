@@ -198,7 +198,7 @@ class CommonFunctions {
     message = url + method;
 
     if (corelationId != null) message += corelationId;
-    //if (authorization) message += 'Bearer $token';
+    if (authorization) message += 'Bearer ${CommonProperties.token}';
 
     if (body != null) {
       message += body.replaceAll(RegExp(r'^/\\n/g'), "");

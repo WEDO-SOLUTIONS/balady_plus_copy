@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:balady_plus/app/features/vd/vd_exports.dart'
     show CreateVDBloc, CreateVDState, ShowSPLSearchEvent, SearchForSPLEvent;
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../core/utils/constants/app_colors.dart';
@@ -49,21 +50,21 @@ class VDHeaderDescSearch extends StatelessWidget {
                     onPressed: () {
                       context.read<CreateVDBloc>().add(ShowSPLSearchEvent());
                     },
-                    icon: Image.asset(
+                    icon: SvgPicture.asset(
                       !isSearchShown
-                          ? IconPath.vdSearchIcon
-                          : IconPath.vdCancelIcon,
-                      height: 24,
-                      width: 24,
+                          ? IconPath.vdSplSearch
+                          : IconPath.vdSplSearchExit,
+                      height: !isSearchShown ? 42 : 24,
+                      width: !isSearchShown ? 42 : 24,
                     )),
               ],
             ),
             if (desc != null) ...[
-              CustomVerticalSpace(height: 16),
+              CustomVerticalSpace(height: 8),
               CustomTextWidget(
                 desc ?? "",
-                fontColor: AppColor.black400,
-                fontSize: 18.0,
+                fontColor: AppColor.blackModern500Light,
+                fontSize: 14.0,
                 fontWeight: AppFontWeight.medium,
                 textAlign: TextAlign.start,
               ),

@@ -119,7 +119,7 @@ class CreateIncidentParams {
           "OTPValue": otpValue,
         },
       "LocationInfo": {
-        "municipalityID": municipalityID,
+        "MunicipalityID": municipalityID,
         "SubMunicipalityID": subMunicipalityID,
         "Sub_SubMunicipalityID": sub_SubMunicipalityID,
         "Longitude": longitude,

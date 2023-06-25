@@ -45,18 +45,14 @@ class _photoPreviewWidgetState extends State<photoPreviewWidgetNew> {
                   btnPressed: () {
                     // CreateVDParamsPage
                     context.read<CameraBloc>().add(GetUserLocationEvent());
-
-                    /* context.read<CameraBloc>().add(GetSplListEvent(
-                        createVDBloc: context.read<CreateVDBloc>(),
-                        params: SplParams(
-                            categoryID:
-                                state.selectedCattegory.categoryId ?? "")));*/
                   },
-                  btnText: ("bookNewAppointmentNextToButtonWord").tr(),
+                  btnText: ("next").tr(),
+                  btnColor: AppColor.primary800Light,
+                  btnHeight: 56,
                   btnTextSize: 16,
                   btnTextWeight: AppFontWeight.bold,
-                  btnHeight: 56,
                   btnWidth: 105,
+                  btnRadius: 8,
                   icon: Image.asset(
                     IconPath.vdarrowLeftIcon,
                     height: 16,
@@ -67,23 +63,19 @@ class _photoPreviewWidgetState extends State<photoPreviewWidgetNew> {
                 ),
               ),
             ),
+            //
+
             Align(
-              alignment: AlignmentDirectional.topEnd,
+              alignment: AlignmentDirectional.bottomStart,
               child: Container(
-                width: 131,
-                margin: const EdgeInsetsDirectional.only(top: 24, end: 16),
-                child: CustomTextButtonWithIconWidget(
-                  icon: Image.asset(
-                    IconPath.vdAgianIcon,
-                    height: 24,
-                    width: 24,
-                    color: AppColor.white2,
-                  ),
-                  btnText: ('take_photo_again').tr(),
-                  btnTextSize: 17,
-                  btnTextColor: AppColor.white2,
-                  spaceBetweenTextAndIcon: 8,
-                  btnPressed: () {
+                margin: const EdgeInsetsDirectional.only(
+                    bottom: 30, end: 16, start: 16),
+                child: CustomIconButtonWidget(
+                  icon: IconPath.vdCameraFlashRetry,
+                  iconSize: 48,
+                  btnHeight: 48,
+                  btnWidth: 48,
+                  onPressed: () {
                     context.read<CameraBloc>().add(ReTakePhotoEvent());
                   },
                 ),

@@ -183,6 +183,8 @@ class _CustomCachedNetworkImage extends State<CustomCachedNetworkImage> {
                   );
             },
             errorWidget: (context, url, error) {
+              print(error);
+              print(CommonFunctions.hashRequest(widget.imagePath, "GET"));
               return widget.placeHolderWidget ??
                   Container(
                     color: AppColor.darkTurquoise,

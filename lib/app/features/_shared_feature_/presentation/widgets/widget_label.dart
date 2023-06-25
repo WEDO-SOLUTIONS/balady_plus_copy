@@ -31,8 +31,10 @@ class WidgetLabel extends StatelessWidget {
                   TextSpan(
                     text: label!.isEmpty ? "notFound".tr() : label,
                     style: labelStyle ??
-                        AppStyle.mainTextSecondaryStyle
-                            .copyWith(fontSize: 14.0),
+                        AppStyle.mainTextSecondaryStyle.copyWith(
+                            fontSize: 16.0,
+                            fontWeight: FontWeight.bold,
+                            color: AppColor.blackModern700Light),
                   ),
                 ],
               ),

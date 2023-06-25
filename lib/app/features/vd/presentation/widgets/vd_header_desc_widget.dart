@@ -22,17 +22,18 @@ class VdHeaderDesc extends StatelessWidget {
         CustomTextWidget(
           header,
           fontColor: AppColor.black,
-          fontSize: 22.0,
+          fontSize: 20.0,
+          fontWeight: AppFontWeight.bold,
           textAlign: TextAlign.start,
           maxLines: 2,
           textOverflow: TextOverflow.ellipsis,
         ),
         if (desc != null) ...[
-          CustomVerticalSpace(height: 16),
+          CustomVerticalSpace(height: 8),
           CustomTextWidget(
             desc ?? "",
-            fontColor: AppColor.black400,
-            fontSize: 18.0,
+            fontColor: AppColor.blackModern500Light,
+            fontSize: 14.0,
             fontWeight: AppFontWeight.medium,
             textAlign: TextAlign.start,
           ),

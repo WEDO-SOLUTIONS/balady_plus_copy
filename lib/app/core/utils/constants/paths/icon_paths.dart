@@ -88,6 +88,8 @@ class IconPath {
 
 //! Splash Screen
 
+  static const arrowLeft = '${_svgIconPath}arrow-left$_svg';
+
 //! VD
   static const vdSearchIcon = '${_pngVDIconPath}vd_search$_png';
   static const vdCancelIcon = '${_pngVDIconPath}vd_cancel_icon$_png';
@@ -99,10 +101,20 @@ class IconPath {
   static const vdFlashOn1Icon = '${_pngVDIconPath}flash_on@3x$_png';
   static const vdFlashOff1Icon = '${_pngVDIconPath}flash_off@3x$_png';
   static const vdButtonCameraIcon = '${_pngVDIconPath}buttonCamera@3x$_png';
-  static const vdarrowLeftIcon = '${_pngVDIconPath}arrowLeft$_png';
+  static const vdarrowLeftIcon = '${_pngVDIconPath}arrowLeftSLightCopy@3x$_png';
   static const vdAgianIcon = '${_pngVDIconPath}again@3x$_png';
   static const vdMapMarkerIcon = '${_pngVDIconPath}marker2@3x$_png';
   static const vdFlashOffIcon2 = '${_svgVDIconPath}Flash-off$_svg';
+  static const vdSplSearch = '${_svgVDIconPath}vd_spl_search$_svg';
+
+  static const vdSplSearchExit = '${_svgVDIconPath}vd_spl_search_exit$_svg';
+
+  static const vdCameraFlashOn = '${_svgVDIconPath}FlashOn$_svg';
+  static const vdCameraFlashOff = '${_svgVDIconPath}FlashOf$_svg';
+  static const vdCameraFlashRetry = '${_svgVDIconPath}retry$_svg';
+  static const vdCameraExit = '${_svgVDIconPath}vdCameraExit$_svg';
+
+  static const vdAppBarBack = '${_svgVDIconPath}vdAppBarArrow$_svg';
 
   static const vdSummuryDesc = '${_svgVDIconPath}vdSummuryDesc$_svg';
   static const vdSummuryPhoto = '${_svgVDIconPath}vdSummuryPhoto$_svg';

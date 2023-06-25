@@ -1,4 +1,6 @@
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
+import 'package:balady_plus/app/features/_shared_feature_/presentation/components/texts/label_icon_subtitle_component.dart';
+import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports.dart';
 import 'package:balady_plus/app/features/vd/vd_exports.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -30,8 +32,16 @@ class LocationPhotoSection extends StatelessWidget {
                         header: ("vd_confirm_location_photo").tr(),
                       ),
                       Center(
-                        child: IncidentPhotoWidget(
-                          image: state.getImagePath() ?? "",
+                        child: Container(
+                          padding: EdgeInsets.all(16),
+                          decoration: BoxDecoration(
+                            color: AppColor.white,
+                            borderRadius: BorderRadius.circular(16.0),
+                          ),
+                          child: IncidentPhotoWidget(
+                            image: state.getImagePath() ?? "",
+                            width: 300,
+                          ),
                         ),
                       ),
                       const CustomVerticalSpace(height: 20),
@@ -60,6 +70,25 @@ class LocationSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<CreateVDBloc, CreateVDState>(
       builder: (context, state) {
+        return LabelIconSubtitleComponent(
+          text: ("vd_location").tr(),
+          subWidget:
+              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+            Row(
+              children: [
+                CustomSvgIconWidget(IconPath.qrLocationIcon),
+                CustomTextWidget(
+                  state.gisResponse?.getFullAddress() ??
+                      ("lbl_locate_report_from_here").tr(),
+                  fontColor: AppColor.blackModern500Light,
+                  fontSize: 14,
+                ),
+              ],
+            ),
+            CustomSvgIconWidget(IconPath.arrowLeft),
+          ]),
+        );
+
         return CustomHeaderAndDescOnTapWidget(
           label: ("vd_location").tr(),
           hintText: ("lbl_locate_report_from_here").tr(),
@@ -78,3 +107,31 @@ class LocationSection extends StatelessWidget {
     );
   }
 }
+/*
+class LocationSection extends StatelessWidget {
+  bool? hideAutomaticLocationdetected;
+
+  LocationSection({this.hideAutomaticLocationdetected});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<CreateVDBloc, CreateVDState>(
+      builder: (context, state) {
+        return CustomHeaderAndDescOnTapWidget(
+          label: ("vd_location").tr(),
+          hintText: ("lbl_locate_report_from_here").tr(),
+          textValue: state.gisResponse?.getFullAddress(),
+          borderRadius: 16,
+          borderType: BORDER_TYPE.none,
+          materialIconDirection: CommonFunctions.isAppAR
+              ? MATERIAL_ICON_DIRECTION.left
+              : MATERIAL_ICON_DIRECTION.right,
+          onTap: () {
+            context.read<CreateVDBloc>().add(ChangeAddressEvent());
+          },
+          icon: const Icon(Icons.location_on, color: AppColor.primary700Light),
+        );
+      },
+    );
+  }
+}*/

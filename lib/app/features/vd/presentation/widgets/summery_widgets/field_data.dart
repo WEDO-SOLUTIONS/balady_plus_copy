@@ -4,8 +4,9 @@ import 'package:flutter/material.dart';
 
 class FieldData extends StatelessWidget {
   final String title;
-  final String subTitle;
-  const FieldData({super.key, required this.subTitle, required this.title});
+  final String? subTitle;
+
+  const FieldData({super.key, this.subTitle, required this.title});
 
   @override
   Widget build(BuildContext context) {
@@ -26,17 +27,19 @@ class FieldData extends StatelessWidget {
               ),
             ],
           ),
-          const CustomVerticalSpace(height: 8),
-          Row(
-            children: [
-              CustomTextWidget(
-                subTitle,
-                fontColor: AppColor.blackModern600Light,
-                fontSize: 16,
-                fontWeight: AppFontWeight.semiBold,
-              ),
-            ],
-          ),
+          if (subTitle != null) ...[
+            const CustomVerticalSpace(height: 8),
+            Row(
+              children: [
+                CustomTextWidget(
+                  subTitle ?? "",
+                  fontColor: AppColor.blackModern600Light,
+                  fontSize: 16,
+                  fontWeight: AppFontWeight.semiBold,
+                ),
+              ],
+            ),
+          ]
         ],
       ),
     );

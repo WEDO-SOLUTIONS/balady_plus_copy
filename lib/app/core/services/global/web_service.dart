@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:localize_and_translate/localize_and_translate.dart'
     show translator;
@@ -127,12 +129,22 @@ class AppInterceptors extends Interceptor {
 
     final url = options.uri.toString();
     final method = options.method;
-    final verifyingKEY = CommonFunctions.hashRequest(url, method);
-    options.headers
-        .putIfAbsent(ApiHeader.verifyingKEY.name, () => verifyingKEY);
-    if (options.headers['Authorization'] == null) {
+
+    if (options.headers['Authorization'] == null &&
+        CommonProperties.isLoggedIn &&
+        !options.uri.toString().contains("bcg/upload-file")) {
       options.headers['Authorization'] = 'Bearer ${CommonProperties.token}';
     }
+    final verifyingKEY = CommonFunctions.hashRequest(url, method,
+        body: (options.data != null &&
+                !options.uri.toString().contains("bcg/upload-file"))
+            ? json.encode(options.data)
+            : null,
+        authorization: !options.uri.toString().contains("bcg/upload-file")
+            ? options.headers.containsKey("Authorization")
+            : false);
+    options.headers
+        .putIfAbsent(ApiHeader.verifyingKEY.name, () => verifyingKEY);
     print(options.headers);
     return handler.next(options);
   }

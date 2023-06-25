@@ -44,7 +44,7 @@ class _VDTypesDialog extends State<VDTypesDialog> {
                   children: [
                     // title
                     CustomTextWidget(
-                      ("يرجي تحديد نوع البلاغ الذي تود تقديمه").tr(), //MM
+                      ("vd_report_type").tr(),
                       fontColor: AppColor.blackModern500Light,
                       fontSize: 14.0,
                     ),
@@ -96,16 +96,16 @@ class _VDTypesDialog extends State<VDTypesDialog> {
                           icon: state.allCategories?[index].getMainImageUrl() ??
                               "",
                           btnPressed: () async {
-                            /*  bool isLocationAvailable =
+                            bool isLocationAvailable =
                                 await CommonFunctions.checkLocationSettings(
                                     context);
                             bool isCameraAllowed =
                                 await CommonFunctions.checkCameraSettings(
                                     context);
-                            if (isLocationAvailable && isCameraAllowed)*/ //MM
-                            context.read<VDCategoryBloc>().navigateToCamera(
-                                index,
-                                isFromHome: widget.isFromHome ?? false);
+                            if (isLocationAvailable && isCameraAllowed)
+                              context.read<VDCategoryBloc>().navigateToCamera(
+                                  index,
+                                  isFromHome: widget.isFromHome ?? false);
                           }),
                     ),
                   )
@@ -152,18 +152,18 @@ class VDCardWidgetInDialog extends StatelessWidget {
                     ],
                     borderRadius: BorderRadius.circular(16),
                     color: Color(0xFFF5F8FA)),
-                height: 141,
+                height: 150,
               ),
             ),
             Align(
               alignment: Alignment.topCenter,
               child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 5),
+                padding: EdgeInsets.only(left: 5, right: 5, top: 8),
                 child: Column(
                   children: [
                     CustomCachedNetworkImage(
                       icon,
-                      imageHeight: 96,
+                      imageHeight: 88,
                       imageFit: BoxFit.fitWidth,
                       placeHolderWidget: Container(
                         color: Colors.transparent,

@@ -50,8 +50,6 @@ class CameraBloc extends Bloc<CameraEvent, CameraState> {
             selectedCattegory: params.selectedCategory!,
             isFromHome: params.isFromHome)) {
     on<InitCameraEvent>((event, emit) async {
-      //MM
-      // navigateToCreateVDPage();
       emit(state.copyWith(status: BlocStatus.loading));
       try {
         cameras = await availableCameras();
@@ -115,10 +113,6 @@ class CameraBloc extends Bloc<CameraEvent, CameraState> {
 
   Future<void> _getCurrenttUserLocationHandler(
       GetUserLocationEvent e, Emitter emitter) async {
-    navigateToCreateVDPage();
-    return;
-//MM;
-
     if (state.location == null && createVdBloc.state.location == null) {
       Position? position;
       try {

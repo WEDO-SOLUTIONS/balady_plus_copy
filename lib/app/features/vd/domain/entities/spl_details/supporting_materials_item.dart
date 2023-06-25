@@ -8,6 +8,6 @@ class SupportingMaterialsItem {
   SupportingMaterialsItem({this.auxillaryMaterialType, this.dmsUri});
 
   String? getImageUrl() {
-    return "${sl<EnvType>().domain}/v1/dms-mobile/files/$dmsUri";
+    return "${sl<EnvType>().domain}v1/dms-mobile/files/$dmsUri";
   }
 }

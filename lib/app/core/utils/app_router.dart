@@ -4,6 +4,8 @@ import 'package:flutter/widgets.dart' show SizedBox;
 
 import '../../core/utils/utils_exports.dart'
     show RouteName, ScaleRotatePage, SliderUpPage;
+import '../../features/_shared_feature_/data/entities/success_screen_args.dart';
+import '../../features/_shared_feature_/presentation/pages/success_screen.dart';
 import '../../features/authentication/sign_in/sign_in_exports.dart'
     show SignInPage;
 import '../../features/bottom_navigation/bottom_navigation_exports.dart'
@@ -80,7 +82,9 @@ class AppRouter {
         CameraParamsPage params = settings.arguments as CameraParamsPage;
 
         return MaterialPageRoute(
-          builder: (_) => ComponentTest(),
+          builder: (_) => VDCameraPage(
+            params: params,
+          ),
         );
       case RouteName.vdCreateVDDetailsPage:
         // CreateVDParamsPage params = settings.arguments as CreateVDParamsPage;
@@ -98,6 +102,14 @@ class AppRouter {
       case RouteName.vdGuestOtpScreen:
         return MaterialPageRoute(
           builder: (_) => VDGuestOtpScreen(),
+        );
+
+      case RouteName.successRoute:
+        final args = settings.arguments as SuccessScreenArgs;
+        return MaterialPageRoute(
+          builder: (_) => SuccessScreen(
+            successScreenArgs: args,
+          ),
         );
 
 // QR

@@ -10,6 +10,6 @@ class SplItem {
   SplItem({this.categoryId, this.id, this.image, this.name});
 
   String? getImageUrl() {
-    return "${sl<EnvType>().domain}/v1/dms-mobile/files/$image";
+    return "${sl<EnvType>().domain}v1/dms-mobile/files/$image";
   }
 }

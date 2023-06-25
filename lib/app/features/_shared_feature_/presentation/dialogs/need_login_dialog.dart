@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/utils/constants/app_colors.dart';
 import '../../../../core/utils/constants/constants.dart';
+import '../../../../core/utils/constants/paths/icon_paths.dart';
 import '../widgets/need_login_widget.dart';
 
 class NeedLoginDialog extends StatelessWidget {
@@ -37,7 +38,7 @@ class NeedLoginDialog extends StatelessWidget {
                           Navigator.of(context).pop();
                         },
                         child: Image.asset(
-                          Constants.whiteCloseImg,
+                          IconPath.qrWhiteCloseIcon,
                           height: 16.0,
                           width: 16.0,
                           color: Colors.black,

@@ -1,0 +1,466 @@
+import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
+import 'package:balady_plus/app/core/utils/constants/paths/image_paths.dart';
+import 'package:balady_plus/app/core/utils/enums/app_font_weights.dart';
+import 'package:flutter/material.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
+
+import '../../../../core/services/local/navigation_services.dart';
+import '../../../../core/utils/constants/app_colors.dart';
+import '../../../../core/utils/enums/enums.dart';
+import '../../data/entities/success_screen_args.dart';
+import '../widgets/buttons/custom_buttons_widgets.dart';
+import '../widgets/custom_spaces_widgets.dart';
+import '../widgets/texts/custom_text_widget.dart';
+
+class SuccessScreen extends StatefulWidget {
+  final SuccessScreenArgs successScreenArgs;
+
+  const SuccessScreen({Key? key, required this.successScreenArgs})
+      : super(key: key);
+
+  @override
+  State<SuccessScreen> createState() => _SuccessScreenState();
+}
+
+class _SuccessScreenState extends State<SuccessScreen> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    //MM Helpers.sendSuccessEvent(widget.successScreenArgs.type);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: null,
+        body: Container(
+          decoration: const BoxDecoration(
+              image: DecorationImage(
+                  image: AssetImage(ImagePath.successPageBackground),
+                  fit: BoxFit.cover)),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Container(
+                margin: EdgeInsetsDirectional.only(
+                    top: MediaQuery.of(context).padding.top + 10, start: 16),
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Image.asset(
+                    IconPath.qrWhiteCloseIcon,
+                    height: 20.0,
+                    width: 20.0,
+                    color: Colors.black,
+                  ),
+                ),
+              ),
+              SuccessBody(
+                successScreenArgs: widget.successScreenArgs,
+              ),
+              SuccessButtons(
+                fromHomePage: widget.successScreenArgs.fromHomePage ?? false,
+                pageType: widget.successScreenArgs.type,
+              )
+            ],
+          ),
+        ));
+  }
+}
+
+class SuccessBody extends StatelessWidget {
+  final SuccessScreenArgs? successScreenArgs;
+
+  const SuccessBody({Key? key, this.successScreenArgs}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: Center(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 35),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Image.asset(
+                ImagePath.successPageIcon,
+                height: 137,
+                width: 239,
+              ),
+              const CustomVerticalSpace(
+                height: 26,
+              ),
+              CustomTextWidget(
+                getTitle(),
+                fontSize: 22,
+                fontWeight: AppFontWeight.bold,
+                fontColor: AppColor.black,
+                maxLines: 10,
+              ),
+              const CustomVerticalSpace(
+                height: 20,
+              ),
+              CustomTextWidget(
+                getDesc(),
+                fontSize: 16,
+                fontWeight: AppFontWeight.medium,
+                fontColor: AppColor.black500,
+                height: 1.6,
+                maxLines: 10,
+              ),
+              const CustomVerticalSpace(
+                height: 20,
+              ),
+              //MM
+              /*  if (successScreenArgs?.msg != null &&
+                  successScreenArgs!.msg!.isNotEmpty)
+                CustomHtmlTextWidget(successScreenArgs!.msg!),
+*/
+
+              // const CustomVerticalSpace(
+              //   height: 48,
+              // ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  String getTitle() {
+    switch (successScreenArgs?.type) {
+      case PAGE_TYPE.facilityIncidentScreen:
+      case PAGE_TYPE.inquiry:
+      case PAGE_TYPE.incidentsScreen:
+      case PAGE_TYPE.msr:
+      case PAGE_TYPE.qrDetailsScreen:
+      case PAGE_TYPE.qrDialog:
+      case PAGE_TYPE.visitScreen:
+        return ('lbl_thank_you2').tr();
+      case PAGE_TYPE.ratingScreen:
+      case PAGE_TYPE.licenseScreen:
+      case PAGE_TYPE.contactUs:
+      case PAGE_TYPE.deleteRequestScreen:
+      case PAGE_TYPE.appointmentScreen:
+      case PAGE_TYPE.cancelAppointment:
+      case PAGE_TYPE.confirmAppointment:
+      case PAGE_TYPE.coObserver:
+      case PAGE_TYPE.daem:
+      case PAGE_TYPE.newVD:
+      case PAGE_TYPE.objction:
+        return "vd_request_submit".tr();
+        return ('lbl_thank_you').tr();
+      default:
+        return ('lbl_thank_you').tr();
+    }
+  }
+
+  String getDesc() {
+    switch (successScreenArgs?.type) {
+      case PAGE_TYPE.licenseScreen:
+        return ('order_thanks_desc')
+            .tr()
+            .replaceAll("-", successScreenArgs?.idNumber ?? "");
+
+      case PAGE_TYPE.ratingScreen:
+        return ('lbl_evaluation_thanks_desc').tr();
+      case PAGE_TYPE.facilityIncidentScreen:
+      case PAGE_TYPE.incidentsScreen:
+      case PAGE_TYPE.qrDetailsScreen:
+      //MM
+      /*case PAGE_TYPE.qrDialog:
+        {
+          if ((successScreenArgs?.reportType != CustomerVoiceType.Snap_Rega) &&
+              (successScreenArgs?.municipilaty == "006" ||
+                  successScreenArgs?.municipilaty == "004"))
+            return Helpers.translatingWord(
+                    'incident_success_msg_eastern_riyadh')
+                .replaceAll("-", successScreenArgs?.idNumber ?? "");
+          else
+            return Helpers.translatingWord('inc_order_thanks_desc')
+                .replaceAll("-", successScreenArgs?.idNumber ?? "");
+        }*/
+
+      case PAGE_TYPE.msr:
+        return ('req_order_thanks_desc')
+            .tr()
+            .replaceAll("-", successScreenArgs?.idNumber ?? "");
+
+      case PAGE_TYPE.visitScreen:
+        return successScreenArgs?.thanksMessage ?? "";
+
+      case PAGE_TYPE.appointmentScreen:
+        return ("bookNewAppointmentSuccessfullyApplicationRecievedWord")
+            .tr()
+            .replaceAll("{}", successScreenArgs?.idNumber ?? "");
+      case PAGE_TYPE.cancelAppointment:
+        return ("cancel_appointment_success").tr();
+      case PAGE_TYPE.confirmAppointment:
+        return ("confirm_appointment_success").tr();
+      case PAGE_TYPE.deleteRequestScreen:
+        return ("health_request_deleted").tr();
+      case PAGE_TYPE.inquiry:
+        return ('inq_order_thanks_desc')
+            .tr()
+            .replaceAll("-", successScreenArgs?.idNumber ?? "");
+      case PAGE_TYPE.contactUs:
+        return ('lbl_we_recived_your_msg').tr();
+      case PAGE_TYPE.coObserver:
+        return ('success_register_co_desc')
+            .tr()
+            .replaceAll("-", successScreenArgs?.idNumber ?? "--");
+      case PAGE_TYPE.daem:
+        return ('daem_success_desc')
+            .tr()
+            .replaceAll("-", successScreenArgs?.idNumber ?? "--");
+
+      case PAGE_TYPE.objction:
+        return ('objection_success_message')
+            .tr()
+            .replaceAll("-", successScreenArgs?.idNumber ?? "--");
+
+      case PAGE_TYPE.newVD:
+        return successScreenArgs?.thanksMessage ?? "";
+
+      case PAGE_TYPE.other:
+        return successScreenArgs?.thanksMessage ?? "";
+
+      default:
+        return "";
+    }
+  }
+}
+
+class SuccessButtons extends StatelessWidget {
+  final PAGE_TYPE pageType;
+  bool fromHomePage;
+
+  SuccessButtons({Key? key, required this.pageType, this.fromHomePage = false})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 35),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            CustomElevatedButtonWidget(
+              onPressed: () {
+                onPressGreenButton(context);
+              },
+              btnColor: AppColor.primary900Light,
+              text: getGreenBtnText(),
+              btnHeight: 56,
+            ),
+            /*    CustomVerticalSpace(height: 16),
+            if (pageType != PAGE_TYPE.ratingScreen &&
+                pageType != PAGE_TYPE.contactUs &&
+                pageType != PAGE_TYPE.licenseScreen &&
+                pageType != PAGE_TYPE.other)
+              CustomTextButtonWidget(
+                onPressed: () {
+                  onPressWhiteButton(context);
+                },
+                text: getWhiteBtnText(),
+                btnTextSize: 16,
+              )
+         
+         */
+          ],
+        ),
+      ),
+    );
+  }
+
+  String getGreenBtnText() {
+    switch (pageType) {
+      case PAGE_TYPE.ratingScreen:
+      case PAGE_TYPE.facilityIncidentScreen:
+      case PAGE_TYPE.inquiry:
+      case PAGE_TYPE.contactUs:
+      case PAGE_TYPE.incidentsScreen:
+      case PAGE_TYPE.newVD:
+      case PAGE_TYPE.msr:
+      case PAGE_TYPE.qrDetailsScreen:
+      case PAGE_TYPE.qrDialog:
+      case PAGE_TYPE.appointmentScreen:
+      case PAGE_TYPE.cancelAppointment:
+      case PAGE_TYPE.confirmAppointment:
+      case PAGE_TYPE.visitScreen:
+      case PAGE_TYPE.daem:
+      case PAGE_TYPE.objction:
+        return ('go_to_home').tr();
+      //   return Helpers.translatingWord('go_back_to_customer_voice_page');
+      case PAGE_TYPE.licenseScreen:
+      case PAGE_TYPE.deleteRequestScreen:
+        //return Helpers.translatingWord('lbl_evaluate_service');
+        return ('go_to_license_management_screen').tr();
+      case PAGE_TYPE.coObserver:
+        return ('go_to_balady_academy').tr();
+
+      case PAGE_TYPE.other:
+        return ('close').tr();
+      default:
+        return "";
+    }
+  }
+
+  void onPressGreenButton(BuildContext context) {
+    switch (pageType) {
+      case PAGE_TYPE.ratingScreen:
+      case PAGE_TYPE.facilityIncidentScreen:
+      case PAGE_TYPE.inquiry:
+      case PAGE_TYPE.contactUs:
+      case PAGE_TYPE.incidentsScreen:
+      case PAGE_TYPE.newVD:
+      case PAGE_TYPE.msr:
+      case PAGE_TYPE.qrDetailsScreen:
+      case PAGE_TYPE.qrDialog:
+      case PAGE_TYPE.appointmentScreen:
+      case PAGE_TYPE.cancelAppointment:
+      case PAGE_TYPE.confirmAppointment:
+      case PAGE_TYPE.visitScreen:
+      case PAGE_TYPE.daem:
+      case PAGE_TYPE.objction:
+        {
+          //MM  Helpers.backNavigationToHomeScreen();
+        }
+        break;
+
+      /* {
+          Helpers.backNavigationToSpecificScreen2(
+              navigationKey: RoutesNames.customerVoiceRoute);
+        }*/
+      // break;
+      case PAGE_TYPE.licenseScreen:
+      case PAGE_TYPE.deleteRequestScreen:
+        {
+          // "license_screen_evaluation".log();
+          Navigator.of(context).pop();
+        }
+        break;
+//MM
+        /*case PAGE_TYPE.coObserver:
+        {
+          Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) =>
+                COWebViewScreen(RemoteConfig.baladyAcademyURL),
+          ));
+        }*/
+        break;
+
+      case PAGE_TYPE.other:
+        {
+          Navigator.of(context).pop();
+        }
+        break;
+      default:
+        {
+          //MM   Helpers.backNavigationToHomeScreen();
+        }
+        break;
+    }
+  }
+
+  String getWhiteBtnText() {
+    switch (pageType) {
+      case PAGE_TYPE.incidentsScreen:
+      case PAGE_TYPE.newVD:
+      case PAGE_TYPE.msr:
+      case PAGE_TYPE.facilityIncidentScreen:
+      case PAGE_TYPE.inquiry:
+      case PAGE_TYPE.qrDetailsScreen:
+      case PAGE_TYPE.qrDialog:
+      case PAGE_TYPE.daem:
+        return ('go_to_orders_page').tr();
+      case PAGE_TYPE.licenseScreen:
+        return ('go_to_license_management_screen').tr();
+      case PAGE_TYPE.appointmentScreen:
+      case PAGE_TYPE.cancelAppointment:
+      case PAGE_TYPE.confirmAppointment:
+        return ('go_to_license_appointment_screen').tr();
+      case PAGE_TYPE.coObserver:
+        return ('go_to_home').tr();
+      case PAGE_TYPE.visitScreen:
+        return ('go_to_visit_list').tr();
+
+      case PAGE_TYPE.objction:
+        return ('go_to_orders_page').tr();
+
+      default:
+        return "";
+    }
+  }
+
+  void onPressWhiteButton(BuildContext context) {
+    switch (pageType) {
+      case PAGE_TYPE.incidentsScreen:
+      case PAGE_TYPE.newVD:
+      case PAGE_TYPE.msr:
+      case PAGE_TYPE.facilityIncidentScreen:
+      case PAGE_TYPE.inquiry:
+      case PAGE_TYPE.visitScreen:
+      case PAGE_TYPE.daem:
+        //MM
+        /*  if (fromHomePage) {
+          NavigationService.navigatorKey.currentState!.pushNamedAndRemoveUntil(
+              RoutesNames.customerVoiceRoute,
+              ModalRoute.withName(RoutesNames.bottomNavigationRoute));
+        } else {
+          NavigationService.goBack();
+        }*/
+        break;
+      case PAGE_TYPE.qrDetailsScreen:
+      case PAGE_TYPE.qrDialog: //MM
+        /*{
+          bool Function(Route<dynamic>) predicate =
+              ModalRoute.withName(RoutesNames.bottomNavigationRoute);
+
+          NavigationService.navigatorKey.currentState!.pushNamedAndRemoveUntil(
+              RoutesNames.customerVoiceRoute, predicate);
+        }*/
+        break;
+      case PAGE_TYPE.appointmentScreen:
+      case PAGE_TYPE.cancelAppointment:
+      case PAGE_TYPE.confirmAppointment:
+        //MM
+        /*if (fromHomePage) {
+          NavigationService.navigatorKey.currentState!.pushNamedAndRemoveUntil(
+              RoutesNames.appointmentsRoute,
+              ModalRoute.withName(RoutesNames.bottomNavigationRoute));
+        } else {
+          NavigationService.goBack();
+        }*/
+        break;
+      case PAGE_TYPE.licenseScreen:
+        {
+          // Helpers.backNavigationToSpecificScreen2(
+          //     navigationKey: RoutesNames.ordersRoute);
+        }
+        break;
+      case PAGE_TYPE.coObserver:
+        {
+          //  Helpers.backNavigationToHomeScreen();
+        }
+        break;
+
+      case PAGE_TYPE.objction:
+        /*{
+          NavigationService.goBack();
+        }*/
+        break;
+
+      default:
+        /*{
+          Helpers.backNavigationToSpecificScreen2(
+              navigationKey: RoutesNames.ordersRoute);
+        }*/
+        break;
+    }
+  }
+}

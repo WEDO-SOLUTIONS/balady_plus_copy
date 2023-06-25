@@ -1,9 +1,11 @@
 import 'package:balady_plus/app/core/utils/enums/app_font_weights.dart';
 import 'package:flutter/material.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import '../../../../core/utils/constants/app_colors.dart';
 import '../../../../core/utils/constants/constants.dart';
+import '../../../../core/utils/constants/paths/icon_paths.dart';
 import '../widgets/buttons/custom_buttons_widgets.dart';
 import '../widgets/texts/custom_text_widget.dart';
 
@@ -33,7 +35,7 @@ class LocationServiceDialog extends StatelessWidget {
                           Navigator.of(context).pop();
                         },
                         child: Image.asset(
-                          Constants.whiteCloseImg,
+                          IconPath.qrWhiteCloseIcon,
                           height: 16.0,
                           width: 16.0,
                           color: Colors.black,
@@ -64,7 +66,7 @@ class LocationServiceDialog extends StatelessWidget {
                   EnhancedCustomElevatedButtonWidget(
                     btnPressed: () {
                       Navigator.of(context).pop();
-                      //MM  AppSettings.openLocationSettings();
+                      openAppSettings();
                     },
                     btnText: ("settings").tr(),
                     btnTextSize: 16,

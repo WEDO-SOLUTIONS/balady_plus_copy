@@ -7,7 +7,7 @@ class SPLDetailsParams {
   Map<String, dynamic> toMap() {
     return {
       "SPLID": splID,
-      "municipalityID": "008", //municipalityID, //MM
+      "municipalityID": municipalityID,
     };
   }
 }

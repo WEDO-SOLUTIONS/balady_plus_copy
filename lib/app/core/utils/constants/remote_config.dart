@@ -36,7 +36,7 @@ class _RemoteConfig {
   );
   static final hmCode = _initValues<String>(
     devVal: "oxqUHJH1KXD84vP0KYBnyaHDUk5sJ9HkzqPDTice5TABqvfACZaLscG1TjjyPgIT",
-    stgVal: "1",
+    stgVal: "oxqUHJH1KXD84vP0KYBnyaHDUk5sJ9HkzqPDTice5TABqvfACZaLscG1TjjyPgIT",
     prodVal: "1",
   );
 

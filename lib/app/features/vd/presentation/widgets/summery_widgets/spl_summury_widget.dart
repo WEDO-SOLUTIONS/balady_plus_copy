@@ -8,6 +8,7 @@ import '../../../../_shared_feature_/presentation/under_testing/custom_expansion
 import '../../blocs/create_vd_details_bloc/create_vd_bloc.dart';
 import '../details_widgets/location_photo_section.dart';
 import '../details_widgets/spl_widgets/incident_photo_widget.dart';
+import 'field_data.dart';
 
 class SPLSummuryWidget extends StatelessWidget {
   const SPLSummuryWidget({super.key});
@@ -17,15 +18,12 @@ class SPLSummuryWidget extends StatelessWidget {
     return BlocBuilder<CreateVDBloc, CreateVDState>(
       builder: (context, state) {
         return CustomExpansionPanelWidget(
-          title: ("التصنيف التخصصي").tr(),
+          title: ("vd_summery_spl").tr(),
           leading: SvgPicture.asset(IconPath.vdSummurySPL),
           children: [
-            Center(
-              child: IncidentPhotoWidget(
-                image: state.getImagePath() ?? "",
-              ),
+            FieldData(
+              title: state.splItems?[state.selectedSPLIndex ?? 0].name ?? "",
             ),
-            LocationSection(),
           ],
         );
       },

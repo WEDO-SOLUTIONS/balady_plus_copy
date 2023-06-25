@@ -21,10 +21,10 @@ class CategoryItem {
       this.type});
 
   String? getMainImageUrl() {
-    return "${sl<EnvType>().domain}/v1/dms-mobile/files/$mainImage";
+    return "${sl<EnvType>().domain}v1/dms-mobile/files/$mainImage";
   }
 
   String? getIconeUrl() {
-    return "${sl<EnvType>().domain}/v1/dms-mobile/files/$icon";
+    return "${sl<EnvType>().domain}v1/dms-mobile/files/$icon";
   }
 }

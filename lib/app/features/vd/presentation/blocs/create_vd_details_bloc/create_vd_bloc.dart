@@ -43,6 +43,7 @@ import '../../../../../core/utils/constants/keys/general_keys.dart';
 import '../../../../../core/utils/constants/remote_config.dart';
 import '../../../../../core/utils/enums/bloc_status.dart';
 import '../../../../../core/utils/enums/enums.dart';
+import '../../../../_shared_feature_/data/entities/success_screen_args.dart';
 import '../../../../_shared_feature_/data/entities/validators/incident_desc_validation.dart';
 import '../../../../_shared_feature_/data/entities/validators/name_validation.dart';
 import '../../../../_shared_feature_/data/entities/validators/phone_number_validation.dart';
@@ -348,7 +349,7 @@ class CreateVDBloc extends Bloc<CreateVDEvent, CreateVDState> {
         ));
       }
     }, (success) {
-      /* bool Function(Route<dynamic>) predicate =
+      bool Function(Route<dynamic>) predicate =
           ModalRoute.withName(RouteName.bottomNavigation);
       NavigationService.navigatorKey.currentState!.pushNamedAndRemoveUntil(
           RouteName.successRoute, predicate,
@@ -356,7 +357,7 @@ class CreateVDBloc extends Bloc<CreateVDEvent, CreateVDState> {
               type: PAGE_TYPE.newVD,
               fromHomePage: state.isFromHome,
               thanksMessage: success.data?.responseMessage));
-*/
+
       //MM    Helpers.sendEventToAnalytics(AppEvents.VD_Success_Registered_Submit);
     });
   }
@@ -365,26 +366,28 @@ class CreateVDBloc extends Bloc<CreateVDEvent, CreateVDState> {
       CreateIncidentUnRegisteredEvent e, Emitter emitter) async {
     hideKeyboard();
     emitter(state.copyWith(status: BlocStatus.loading));
+    print("refrences11111 ${state.otpResponse?.referenceId}");
     CreateIncidentParams params = e.params ??
         CreateIncidentParams(
-            firstName: state.firstName,
-            lastName: state.lastName,
-            referenceID: state.otpResponse?.referenceId,
-            mobileNumber: state.mobileNumber,
-            otpValue: e.otpValue,
-            crNumber: state.isCrValid == true ? state.crNumber : null,
-            municipalityID: state.gisResponse?.adminMunicipalityId,
-            subMunicipalityID: state.gisResponse?.municipalityId,
-            sub_SubMunicipalityID: state.gisResponse?.subMunicipalityId,
-            latitude: state.location?.y.toString(),
-            longitude: state.location?.x.toString(),
-            address: state.gisResponse?.getFullAddress(),
-            streetName: state.gisResponse?.streetName,
-            districtName: state.gisResponse?.districtName,
-            splClassificationID: state.splDetailsResponse?.selectedSPLID,
-            issueDescription: state.issueDesc,
-            attachments: state.items.map((e) => e.fileId ?? "").toList(),
-            questionList: state.splDetailsResponse?.questionList);
+          firstName: state.firstName,
+          lastName: state.lastName,
+          referenceID: state.otpResponse?.referenceId,
+          mobileNumber: state.mobileNumber,
+          otpValue: e.otpValue,
+          crNumber: state.isCrValid == true ? state.crNumber : null,
+          municipalityID: state.gisResponse?.adminMunicipalityId,
+          subMunicipalityID: state.gisResponse?.municipalityId,
+          sub_SubMunicipalityID: state.gisResponse?.subMunicipalityId,
+          latitude: state.location?.y.toString(),
+          longitude: state.location?.x.toString(),
+          address: state.gisResponse?.getFullAddress(),
+          streetName: state.gisResponse?.streetName,
+          districtName: state.gisResponse?.districtName,
+          splClassificationID: state.splDetailsResponse?.selectedSPLID,
+          issueDescription: state.issueDesc,
+          attachments: state.items.map((e) => e.fileId ?? "").toList(),
+          questionList: state.splDetailsResponse?.questionList,
+        );
     final failureOrSuccess = await _createIncidentUnRegistered(params);
 
     failureOrSuccess.fold((failure) {
@@ -431,15 +434,15 @@ class CreateVDBloc extends Bloc<CreateVDEvent, CreateVDState> {
       }
     }, (success) {
       print(success);
-      /*  bool Function(Route<dynamic>) predicate =
+      bool Function(Route<dynamic>) predicate =
           ModalRoute.withName(RouteName.bottomNavigation);
       NavigationService.navigatorKey.currentState!.pushNamedAndRemoveUntil(
-          RoutesNames.successRoute, predicate,
+          RouteName.successRoute, predicate,
           arguments: SuccessScreenArgs(
               type: PAGE_TYPE.newVD,
               fromHomePage: state.isFromHome,
               thanksMessage: success.data?.responseMessage));
-*/
+
       if (!CommonProperties.isLoggedIn) {
         sharedPrefs.storeGuestInfo(
             state.firstName, state.lastName, state.mobileNumber);
@@ -551,6 +554,7 @@ class CreateVDBloc extends Bloc<CreateVDEvent, CreateVDState> {
         errorMessage: (failure as ServerFailure).errorMessage,
       ));
     }, (success) {
+      print("refrences11111 ${success.referenceId}");
       emitter(state.copyWith(
         status: BlocStatus.success,
         otpResponse: success,
@@ -568,15 +572,9 @@ class CreateVDBloc extends Bloc<CreateVDEvent, CreateVDState> {
 
   void cancelIncident() {
     hideKeyboard(); //MM
-    /* bool Function(Route<dynamic>) predicate =
-        ModalRoute.withName(RoutesNames.customerVoiceRoute);
-
-    if (state.isFromHome == true) {
-      predicate = ModalRoute.withName(RouteName.bottomNavigation);
-      NavigationService.navigatorKey.currentState!.popUntil((predicate));
-    } else {
-      NavigationService.navigatorKey.currentState!.popUntil((predicate));
-    }*/
+    bool Function(Route<dynamic>) predicate =
+        ModalRoute.withName(RouteName.bottomNavigation);
+    NavigationService.navigatorKey.currentState!.popUntil((predicate));
   }
 
   Future<void> _searchForSPLEventHandler(

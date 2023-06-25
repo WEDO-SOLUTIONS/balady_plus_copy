@@ -17,15 +17,15 @@ class UserDataSummuryWidget extends StatelessWidget {
     return BlocBuilder<CreateVDBloc, CreateVDState>(
       builder: (context, state) {
         return CustomExpansionPanelWidget(
-          title: ("البيانات الشخصيه").tr(),
+          title: ("vd_user_info").tr(),
           leading: SvgPicture.asset(IconPath.vdSummuryUserInfo),
           children: [
             FieldData(
-              title: ("الاسم بالكامل").tr(),
+              title: ("vd_full_name").tr(),
               subTitle: fullName ?? "${state.firstName} ${state.lastName}",
             ),
             FieldData(
-              title: ("رقم الجوال").tr(),
+              title: ("vd_mobile_number").tr(),
               subTitle: mobileNumber ?? state.mobileNumber ?? "",
             ),
           ],
