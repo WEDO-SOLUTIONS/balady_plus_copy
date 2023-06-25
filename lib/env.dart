@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/core/services/local/shared_prefs_manager.dart';
 import 'package:flutter/material.dart' show WidgetsFlutterBinding;
 import 'package:flutter/services.dart' show SystemChrome, DeviceOrientation;
 import 'package:localize_and_translate/localize_and_translate.dart'
@@ -22,6 +23,7 @@ abstract class AppEnv {
       DeviceOrientation.portraitDown,
     ]);
 
+    sharedPrefs.init();
     // di: dependency injection
     di.initialize();
 
