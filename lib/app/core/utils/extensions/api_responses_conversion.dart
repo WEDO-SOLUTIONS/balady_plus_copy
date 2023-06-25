@@ -38,12 +38,11 @@ extension APIResponsesConversion on ApiResponse {
 
   String? _handleServerErrorMessage(Response? response) {
     String? message;
-    print("handle error msg ${response?.data}");
     if (response != null && response.data != null) {
       ApigeeResponseModel? m;
       try {
         m = ApigeeResponseModel.fromMap(response.data);
-      } catch (ex) {}
+      } catch (_) {}
       message =
           m?.data?.getRefResponseMessage() ?? ("errors_server_error_1").tr();
     }

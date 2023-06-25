@@ -67,7 +67,6 @@ class AppInterceptors extends Interceptor {
     RequestInterceptorHandler handler,
   ) async {
     "On-Sending-Request ${options.uri}".actionLog();
-    print(options.uri);
     // Update language
     options.headers[ApiHeader.language.eName] = languageCode;
 
@@ -132,7 +131,6 @@ class AppInterceptors extends Interceptor {
         .putIfAbsent(ApiHeader.verifyingKEY.name, () => verifyingKEY);
 
     options.headers['Authorization'] = 'Bearer ${CommonProperties.token}';
-    print(options.headers);
     return handler.next(options);
   }
 

@@ -67,17 +67,12 @@ class EntryPointCubit extends Cubit<EntryPointState> {
     emit(state.copyWith(status: AuthStatus.loading));
     final failureOrSuccess = await _checkAuth(NoParams());
     await failureOrSuccess.fold((failure) {
-      print("failiiii $failure");
       emit(state.copyWith(
         status: AuthStatus.failure,
       ));
     }, (token) async {
       final failureOrSuccess = await _checkSSOProfile(NoParams());
-      failureOrSuccess.fold((failure) {
-        print("Failureee $failure");
-      }, (profile) {
-        print("profile $profile");
-
+      failureOrSuccess.fold((failure) {}, (profile) {
         emit(state.copyWith(
           status: AuthStatus.notAuthenticated,
           token: token,
@@ -100,13 +95,11 @@ class EntryPointCubit extends Cubit<EntryPointState> {
     final failureOrSuccessForToken = await _getToken(NoParams());
 
     await failureOrSuccessForToken.fold((failure) {
-      print(failure);
       emit(state.copyWith(
         status: AuthStatus.failure,
         errorMessage: (failure as ServerFailure).errorMessage,
       ));
     }, (success) async {
-      print("success $success");
       SSOToken token = SSOToken(
           token: success.accessToken,
           refreshToken: success.refreshToken,
@@ -123,14 +116,11 @@ class EntryPointCubit extends Cubit<EntryPointState> {
         final failureOrSuccessForSSOProfile = await _getProfile(NoParams());
 
         await failureOrSuccessForSSOProfile.fold((failure) async {
-          print("FAilure Profile $failure");
           clearAuth();
           emit(EntryPointState(
               status: AuthStatus.failure,
               errorMessage: ("errors_server_error_1").tr()));
         }, (success) async {
-          print("success Profile $success");
-
           final failureOrSuccess = await _saveSSOProfile(success);
           if (failureOrSuccess.isRight()) {
             emit(state.copyWith(
@@ -147,14 +137,11 @@ class EntryPointCubit extends Cubit<EntryPointState> {
         await failureOrSuccessForCookie.fold((l) async {
           final failureOrSuccessForCookie = await _getCookie(NoParams());
           await failureOrSuccessForCookie.fold((failure) {
-            print("failurrre $failure");
             emit(state.copyWith(
               status: AuthStatus.failure,
               errorMessage: (failure as ServerFailure).errorMessage,
             ));
           }, (r) async {
-            print("ssss $r");
-
             SSOToken? token = state.token;
             token?.appCookie = r;
             if (token != null) {
@@ -163,8 +150,6 @@ class EntryPointCubit extends Cubit<EntryPointState> {
             }
           });
         }, (r) async {
-          print("sssgggs $r");
-
           SSOToken? token = state.token;
           token?.appCookie = r;
           if (token != null) {
@@ -222,7 +207,6 @@ class EntryPointCubit extends Cubit<EntryPointState> {
     // print(state.apigeeToken);
     DateTime? expireTime =
         DateTime.tryParse(state.apigeeToken?.expirationTime ?? "");
-    print(expireTime?.difference(DateTime.now()).inHours);
 
     if (expireTime == null ||
         (expireTime.difference(DateTime.now()).inHours <= 2)) {
@@ -327,16 +311,16 @@ class EntryPointCubit extends Cubit<EntryPointState> {
       const c.WebView().onWebViewCreated!(controller);
       controller.clearCache();
     } catch (ex) {
-      print("EXXX $ex");
+      //  print("EXXX $ex");
     }
   }
 
   testData() async {
     final failureOrSuccess = await _getTestData(NoParams());
     failureOrSuccess.fold((l) {
-      print(l);
+      //  print(l);
     }, (r) {
-      print(r);
+      // print(r);
     });
   }
 
