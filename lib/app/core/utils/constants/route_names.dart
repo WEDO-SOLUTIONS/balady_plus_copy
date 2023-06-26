@@ -6,9 +6,14 @@ class RouteName {
   static const bottomNavigation = '/bottomNavigation';
   static const menu = '/menu';
   static const error = '/error';
+  static const inappWebview = '/inappWebview';
+
 
   //! Services
   static const serviceCards = '/serviceCards';
+
+  //? General Services
+  static const prayerTimes = '/prayerTimes';
 
   //! Setting
   static const personalInformation = '/personalInformation';

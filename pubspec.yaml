@@ -109,7 +109,7 @@ dependencies:
   flutter_appauth:
     path: flutter_appauth/flutter_appauth
   webview_flutter: ^3.0.0
-  flutter_inappwebview: ^5.3.2
+  flutter_inappwebview: ^5.7.2+3
   version: ^2.0.0
   google_maps_flutter: ^2.3.1
   share_plus: ^4.5.3

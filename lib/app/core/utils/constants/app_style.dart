@@ -312,6 +312,20 @@ class AppStyle {
     fontFamily: fontFamily,
   );
 
+  static final prayerTimeCityTextStyle = TextStyle(
+    fontSize: 14.0,
+    fontWeight: AppFontWeight.bold.fontWeight,
+    color: AppColor.secondary200Light,
+    fontFamily: fontFamily,
+  );
+
+  static final prayerTimeDateTextStyle = TextStyle(
+    fontSize: 14.0,
+    fontWeight: AppFontWeight.semiBold.fontWeight,
+    color: AppColor.blackModern50Light,
+    fontFamily: fontFamily,
+  );
+
   /// Padding
   static const defaultPadding = EdgeInsets.symmetric(
     horizontal: UIHelper.mediumPadding,

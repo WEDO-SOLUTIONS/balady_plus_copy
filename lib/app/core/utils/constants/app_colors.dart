@@ -81,4 +81,6 @@ class AppColor {
   static const primary50Light50 = Color(0x80e6efef);
   static const doveGray = Color(0xff6b6b6b);
   static const dark5 = Color(0x0d2f3c48);
+  static const primary100Light12 = Color(0x1fcde0e0);
+  static const blackModern50Light20 = Color(0x33fdfdfd);
 }
