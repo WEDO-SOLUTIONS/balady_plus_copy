@@ -6,7 +6,7 @@ import '../../../home_exports.dart'
         GameChallenge,
         ImportantServices,
         NewServices,
-        PrayerTimes,
+        PrayerTimesCard,
         ShareWithUs;
 
 class HomeBottomSheet extends StatelessWidget {
@@ -23,7 +23,7 @@ class HomeBottomSheet extends StatelessWidget {
         ShareWithUs(),
         NewServices(),
         GameChallenge(),
-        PrayerTimes(),
+        PrayerTimesCard(),
       ],
     );
   }

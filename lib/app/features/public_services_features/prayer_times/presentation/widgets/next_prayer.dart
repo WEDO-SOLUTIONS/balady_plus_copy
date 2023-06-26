@@ -3,9 +3,9 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
-import '../../../../core/utils/utils_exports.dart'
+import '../../../../../core/utils/utils_exports.dart'
     show AppColor, AppStyle, Prayers;
-import '../../../../features/_shared_feature_/shared_feature_exports.dart'
+import '../../../../_shared_feature_/shared_feature_exports.dart'
     show CustomTextWidget, DrawIconBasedTypeWidget;
 
 class NextPrayer extends StatefulWidget {

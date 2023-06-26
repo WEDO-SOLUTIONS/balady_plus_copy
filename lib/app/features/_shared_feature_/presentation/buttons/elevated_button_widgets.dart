@@ -91,7 +91,7 @@ class ElevatedButtonWidget extends _ElevatedButton {
 
   ElevatedButtonWidget.deletaAll({required VoidCallback onPressed})
       : super(CustomElevatedButtonWidget(
-          btnColor: AppColor.white,
+          btnColor: Colors.transparent,
           btnBorderColor: AppColor.primary800Light,
           textStyle: AppStyle.elevatedButtonStyle.copyWith(
             color: AppColor.primary800Light,
@@ -139,6 +139,20 @@ class ElevatedButtonWidget extends _ElevatedButton {
           ),
           btnHeight: 56,
           text: "start_service".tr(),
+          onPressed: onPressed,
+        ));
+
+  ElevatedButtonWidget.logout({required VoidCallback onPressed})
+      : super(CustomElevatedButtonWidget(
+          btnColor: Colors.transparent,
+          btnBorderColor: AppColor.vermillion,
+          textStyle: AppStyle.elevatedButtonStyle.copyWith(
+            color: AppColor.vermillion,
+            fontWeight: FontWeight.w700,
+            fontSize: 16,
+          ),
+          btnHeight: 56,
+          text: "logout".tr(),
           onPressed: onPressed,
         ));
 }

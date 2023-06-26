@@ -12,6 +12,8 @@ import '../../../nearby/nearby_exports.dart' show NearbyPage;
 import '../../../profile/profile_exports.dart' show ProfilePage;
 import '../../../profile_features/delegators/delegators_exports.dart'
     show DelegatorsCubit;
+import '../../../public_services_features/prayer_times/prayer_times_exports.dart'
+    show PrayerTimesCubit;
 import '../../../services/services_exports.dart'
     show ServicesCubit, ServicesPage;
 import '../../bottom_navigation_exports.dart'
@@ -56,6 +58,9 @@ class _BottomNavigationPageState extends State<BottomNavigationPage> {
         ),
         BlocProvider<DelegatorsCubit>(
           create: (_) => sl<DelegatorsCubit>(),
+        ),
+        BlocProvider<PrayerTimesCubit>(
+          create: (_) => sl<PrayerTimesCubit>(),
         ),
       ],
       child: Scaffold(

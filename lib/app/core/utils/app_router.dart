@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart'
-    show MaterialPageRoute, Route, RouteSettings;
+    show AppBar, Center, MaterialPageRoute, Route, RouteSettings, Scaffold;
 import 'package:flutter/widgets.dart' show SizedBox;
 
 import '../../core/utils/utils_exports.dart'
@@ -20,11 +20,11 @@ import '../../features/profile_features/personal_information/personal_informatio
     show PersonalInformationPage;
 import '../../features/profile_features/requests/requests_exports.dart'
     show RequestsPage;
+import '../../features/public_services_features/prayer_times/prayer_times_exports.dart'
+    show PrayerTimesCubit, PrayerTimesPage;
 import '../../features/services/services_exports.dart'
     show ServiceCardsPage, ServiceEntity;
 import '../../features/splash/splash_exports.dart' show SplashPage;
-import '../../public_services_features/prayer_times/prayer_times_exports.dart'
-    show PrayerTimesPage;
 
 class AppRouter {
   static Route<dynamic> allRoutes(RouteSettings settings) {
@@ -64,7 +64,9 @@ class AppRouter {
       //? General Services
       case RouteName.prayerTimes:
         return MaterialPageRoute(
-          builder: (_) => const PrayerTimesPage(),
+          builder: (_) => PrayerTimesPage(
+            cubit: settings.arguments as PrayerTimesCubit,
+          ),
         );
 
       //! Setting
@@ -89,7 +91,16 @@ class AppRouter {
         return MaterialPageRoute(builder: (_) => const LicensesPage());
       // error page
       default:
-        return MaterialPageRoute(builder: (_) => const SizedBox());
+        return MaterialPageRoute(
+          builder: (_) => Scaffold(
+            appBar: AppBar(
+              title: const CustomTextWidget("Error"),
+            ),
+            body: const Center(
+              child: CustomTextWidget("Page not found"),
+            ),
+          ),
+        );
     }
   }
 }

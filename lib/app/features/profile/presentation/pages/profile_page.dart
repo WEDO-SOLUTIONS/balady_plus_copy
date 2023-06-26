@@ -5,7 +5,7 @@ import 'package:localize_and_translate/localize_and_translate.dart'
 
 import '../../../../core/utils/utils_exports.dart' show CommonProperties;
 import '../../../_shared_feature_/shared_feature_exports.dart'
-    show TabPageContainer, DefaultAppBarWidget;
+    show DefaultAppBarWidget, ElevatedButtonWidget, TabPageContainer;
 import '../../../profile_features/delegators/delegators_exports.dart'
     show DelegatorsCubit, DelegatorsState;
 import '../../profile_exports.dart'
@@ -44,6 +44,10 @@ class ProfilePage extends StatelessWidget {
                   section: list[index],
                 ),
               ),
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: ElevatedButtonWidget.logout(onPressed: () {}),
+              )
             ],
           ),
         ),
