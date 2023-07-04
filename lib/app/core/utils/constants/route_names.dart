@@ -8,12 +8,12 @@ class RouteName {
   static const error = '/error';
   static const inappWebview = '/inappWebview';
 
-
   //! Services
   static const serviceCards = '/serviceCards';
 
   //? General Services
   static const prayerTimes = '/prayerTimes';
+  static const qiblahCompass = '/qiblahCompass';
 
   //! Setting
   static const personalInformation = '/personalInformation';

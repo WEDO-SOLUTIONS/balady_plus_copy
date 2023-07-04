@@ -1,5 +1,6 @@
 const _imagePath = 'assets/images/';
 const _png = '.png';
+const _svg = '.svg';
 const _jpg = '.jpg';
 
 class ImagePath {
@@ -9,4 +10,6 @@ class ImagePath {
   static const camera = '${_imagePath}camera$_png';
   static const gameChallenge = '${_imagePath}game_challenge$_png';
   static const prayerTimesAppBar = '${_imagePath}prayer_times_appbar$_png';
+  static const needle = '${_imagePath}needle$_svg';
+  static const compass = '${_imagePath}compass$_svg';
 }

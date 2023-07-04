@@ -22,6 +22,8 @@ import '../../features/profile_features/requests/requests_exports.dart'
     show RequestsPage;
 import '../../features/public_services_features/prayer_times/prayer_times_exports.dart'
     show PrayerTimesCubit, PrayerTimesPage;
+import '../../features/public_services_features/qiblah_compass/qiblah_compass_exports.dart'
+    show QiblahCompassPage;
 import '../../features/services/services_exports.dart'
     show ServiceCardsPage, ServiceEntity;
 import '../../features/splash/splash_exports.dart' show SplashPage;
@@ -67,6 +69,10 @@ class AppRouter {
           builder: (_) => PrayerTimesPage(
             cubit: settings.arguments as PrayerTimesCubit,
           ),
+        );
+      case RouteName.qiblahCompass:
+        return MaterialPageRoute(
+          builder: (_) => const QiblahCompassPage(),
         );
 
       //! Setting

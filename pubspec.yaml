@@ -94,7 +94,7 @@ dependencies:
   # A universal barcode and QR code scanner
   mobile_scanner: ^2.1.0
   # Location
-  geolocator: ^8.2.0
+  geolocator: ^9.0.2
   # Permissions
   permission_handler: ^8.3.0
   # Get current device information
@@ -127,6 +127,7 @@ dependencies:
   flutter_picker: ^2.1.0
   #test_package:
  #   path: packages/test_package
+  flutter_qiblah: ^2.2.0
 
 dev_dependencies:
   flutter_lints: ^2.0.1
