@@ -36,5 +36,6 @@ class IconButtonWidget extends _IconButton {
           onPressed: onPressed,
           icon: Icons.close,
           iconSize: 24.0,
+          iconColor: AppColor.white,
         ));
 }

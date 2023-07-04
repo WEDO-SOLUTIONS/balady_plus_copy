@@ -23,7 +23,7 @@ class LicensesModel extends LicenseEntity {
       municipalityName: json['municipalityName'] as String,
       subMunicipalityName: json['subMunicipalityName'] as String? ?? '',
       licenseEndDate: DateTime.parse(json['licenseEndDate'] as String),
-      updateTime: DateTime.parse(json['updateTime'] as String),
+      updateTime: DateTime.tryParse(json['updateTime'] as String? ?? ''),
     );
   }
 }

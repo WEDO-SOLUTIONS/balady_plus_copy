@@ -36,12 +36,12 @@ class InvoicesListItem extends StatelessWidget {
                 textStyle: AppStyle.cardTitleTextStle,
               ),
               const SizedBox(width: 4),
-              // Expanded(
-              //   child: CustomTextWidget(
-              //     '#${request.requestNumber}'.tr(),
-              //     textStyle: AppStyle.requestNumberTextStle,
-              //   ),
-              // ),
+              Expanded(
+                child: CustomTextWidget(
+                  '#${invoice.accountNumber}',
+                  textStyle: AppStyle.requestNumberTextStle,
+                ),
+              ),
               const Spacer(),
               HomeTag(
                 title: invoice.invoiceStatusName,
@@ -66,7 +66,7 @@ class InvoicesListItem extends StatelessWidget {
                   value: invoice.invoiceTypeName,
                 ),
                 InvoiceParameter(
-                  title: 'request_type'.tr(),
+                  title: 'invoice_type'.tr(),
                   value: invoice.requestTypeName,
                 ),
                 InvoiceParameter(
@@ -78,24 +78,26 @@ class InvoicesListItem extends StatelessWidget {
                   value: '${invoice.requestNumber}',
                 ),
                 InvoiceParameter(
-                  title: 'creation_date'.tr(),
+                  title: 'invoice_issue_date'.tr(),
                   value: DateFormat.yMd().format(invoice.creationDate),
                 ),
                 InvoiceParameter(
-                  title: 'last_update'.tr(),
-                  value: DateFormat.yMd().format(invoice.updatedDate),
+                  title: 'invoice_due_date'.tr(),
+                  value: DateFormat.yMd().format(invoice.dueDate),
                 ),
               ],
             ),
           ),
-          ElevatedButtonWidget.details(onPressed: () {
-            if (invoice.redirectUrl == null) return;
+          ElevatedButtonWidget.details(
+            onPressed: () {
+              if (invoice.redirectUrl == null) return;
 
-            Navigator.of(context).pushNamed(
-              RouteName.inappWebview,
-              arguments: (title: 'invoice'.tr(), url: invoice.redirectUrl),
-            );
-          }),
+              Navigator.of(context).pushNamed(
+                RouteName.inappWebview,
+                arguments: (title: 'invoice'.tr(), url: invoice.redirectUrl),
+              );
+            },
+          ),
         ],
       ),
     );

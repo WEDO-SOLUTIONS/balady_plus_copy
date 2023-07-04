@@ -32,7 +32,12 @@ class PrayerTimesPage extends StatelessWidget {
       child: Scaffold(
         body: Stack(
           children: [
-            Image.asset(ImagePath.prayerTimesAppBar),
+            Image.asset(
+              ImagePath.prayerTimesAppBar,
+              height: 370,
+              width: double.infinity,
+              fit: BoxFit.cover,
+            ),
             SafeArea(
               child: Column(
                 children: [

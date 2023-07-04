@@ -33,7 +33,7 @@ class DashboardProductDropDown extends StatelessWidget {
         if (status == BlocRequestStatus.submissionGetSuccess) {
           final products = state.cardsStates[card]?.products;
           if (products?.isNotEmpty ?? false) {
-            showProducts(context: context, products: products!);
+            showProducts(context: context, state: state);
           }
         }
       },
@@ -54,7 +54,7 @@ class DashboardProductDropDown extends StatelessWidget {
                   .read<DashboardBloc>()
                   .add(DashboardOnProductsPressed(card: card));
             } else {
-              showProducts(context: context, products: products!);
+              showProducts(context: context, state: state);
             }
           },
           child: Container(
@@ -101,48 +101,30 @@ class DashboardProductDropDown extends StatelessWidget {
 
   Future<void> showProducts({
     required BuildContext context,
-    required List<DashboardProductEntity> products,
+    required DashboardState state,
   }) async {
-    await BottomSheetDialog.showDraggableSheet(
+    final items =
+        state.cardsStates[card]?.products.map((e) => e.name).toList() ?? [];
+    items.insert(0, "all".tr());
+
+    BottomSheetDialog.showDraggableSheet(
       context,
-      child: BlocProvider.value(
-        value: context.read<DashboardBloc>(),
-        child: BottomSheetWithActions(
-          title: "choose_profile".tr(),
-          body: ListView.builder(
-            shrinkWrap: true,
-            itemCount: products.length + 1,
-            itemBuilder: (context, index) {
-              if (index == 0) {
-                return ListTile(
-                  onTap: () {
-                    Navigator.of(context).pop();
-                    context.read<DashboardBloc>().add(
-                          DashboardOnProductSelected(
-                            card: card,
-                            product: null,
-                          ),
-                        );
-                  },
-                  title: Text("all".tr()),
-                );
-              }
-              final product = products[index - 1];
-              return ListTile(
-                onTap: () {
-                  Navigator.of(context).pop();
-                  context.read<DashboardBloc>().add(
-                        DashboardOnProductSelected(
-                          card: card,
-                          product: product,
-                        ),
-                      );
-                },
-                title: Text(product.name),
+      child: BottomSheetList(
+        title: "product".tr(),
+        items: items,
+        selectedValue: state.cardsStates[card]?.selectedProduct?.name,
+        onTap: (item) {
+          Navigator.of(context).pop();
+          context.read<DashboardBloc>().add(
+                DashboardOnProductSelected(
+                  card: card,
+                  product: item == "all".tr()
+                      ? null
+                      : state.cardsStates[card]?.products
+                          .firstWhere((element) => element.name == item),
+                ),
               );
-            },
-          ),
-        ),
+        },
       ),
     );
   }

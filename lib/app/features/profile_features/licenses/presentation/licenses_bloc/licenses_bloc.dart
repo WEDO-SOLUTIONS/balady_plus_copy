@@ -61,9 +61,9 @@ class LicensesBloc extends Bloc<LicensesEvent, LicensesState> {
           page: state.page,
           size: PaginationConstants.limit,
           licenseNumber: state.licenseNumberQuery,
-          licenceId: state.selectedLicenseType?.id.toString(),
+          productId: state.selectedLicenseType?.id.toString(),
           dashboardStatusId: state.selectedLicenseStatus?.id.toString(),
-          creationDate: state.selectedLicenseEndDate?.toIso8601String(),
+          expireDate: state.selectedLicenseEndDate?.toIso8601String(),
           municipalityId: state.selectedMunicipality?.id.toString(),
           subMunicipalityId: state.selectedSubMunicipality?.id.toString(),
           sort: state.sortType,
@@ -300,11 +300,10 @@ class LicensesBloc extends Bloc<LicensesEvent, LicensesState> {
       add(GetLicensesEvent());
     });
 
-    //LicenseDateSelectedEvent
     on<LicenseDateSelectedEvent>((event, emit) async {
       emit(
         state.copyWith(
-          selectedLicenseDate: Nullable(event.date),
+          selectedLicenseEndDate: Nullable(event.date),
         ),
       );
     });
@@ -330,7 +329,7 @@ class LicensesBloc extends Bloc<LicensesEvent, LicensesState> {
         selectedMunicipality: Nullable(null),
         selectedSubMunicipality: Nullable(null),
         selectedLicenseType: Nullable(null),
-        selectedLicenseDate: Nullable(null),
+        selectedLicenseEndDate: Nullable(null),
         sortType: SortType.desc,
         page: 0,
       ));
@@ -344,7 +343,7 @@ class LicensesBloc extends Bloc<LicensesEvent, LicensesState> {
         selectedMunicipality: Nullable(event.selectedMunicipality),
         selectedSubMunicipality: Nullable(event.selectedSubMunicipality),
         selectedLicenseType: Nullable(event.selectedLicenseType),
-        selectedLicenseDate: Nullable(event.selectedLicenseDate),
+        selectedLicenseEndDate: Nullable(event.selectedLicenseDate),
       ));
     });
   }

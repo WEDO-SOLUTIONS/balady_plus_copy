@@ -24,6 +24,8 @@ class PrayerTimesParamsModel extends Equatable {
     return {
       'latitude': latitude,
       'longitude': longitude,
+      'timezone': 3,
+      'isFormat24Hours': true,
       'year': date.year,
       'month': date.month,
       'day': date.day,

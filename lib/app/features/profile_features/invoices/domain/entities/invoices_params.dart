@@ -4,14 +4,15 @@ class InvoicesPrams extends InvoicesParamsModel {
   const InvoicesPrams({
     super.unifiedNationalNumber,
     super.identityNumber,
-    super.invoiceNumber,
+    super.invoiceId,
     super.requestNumber,
     required super.page,
     required super.size,
-    super.invoiceTypeId,
+    super.productId,
+    super.requestTypeId,
     super.invoiceStatusId,
-    super.dueDate,
-    super.issueDate,
+    super.sadadDate,
+    super.creationDate,
     super.sort,
   });
 }
