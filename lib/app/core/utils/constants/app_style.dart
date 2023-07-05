@@ -326,6 +326,20 @@ class AppStyle {
     fontFamily: fontFamily,
   );
 
+  static final dateTextStyle = TextStyle(
+    fontSize: 12.0,
+    fontWeight: AppFontWeight.bold.fontWeight,
+    color: AppColor.blackModern500Light,
+    fontFamily: fontFamily,
+  );
+
+  static final tagTextStyle = TextStyle(
+    fontSize: 11.0,
+    fontWeight: AppFontWeight.bold.fontWeight,
+    color: AppColor.primary900Light,
+    fontFamily: fontFamily,
+  );
+
   /// Padding
   static const defaultPadding = EdgeInsets.symmetric(
     horizontal: UIHelper.mediumPadding,

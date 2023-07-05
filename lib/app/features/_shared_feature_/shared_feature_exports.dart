@@ -43,6 +43,8 @@ export 'presentation/cards/toast/toast_notification_card.dart';
 export 'presentation/cards/toast/toasts.dart';
 
 export 'presentation/cards/card_structure.dart';
+export 'presentation/cards/card_parameter.dart';
+export 'presentation/cards/expandable_card.dart';
 
 /// presentation -> components
 export 'presentation/components/bottom_sheets/action_buttons_component.dart';

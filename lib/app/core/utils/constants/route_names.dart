@@ -20,5 +20,6 @@ class RouteName {
   static const dashboard = '/dashboard';
   static const requests = '/requests';
   static const invoices = '/invoices';
+  static const invoiceDetails = '/invoiceDetails';
   static const licenses = '/licenses';
 }

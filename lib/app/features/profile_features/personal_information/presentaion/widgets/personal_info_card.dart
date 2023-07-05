@@ -29,7 +29,10 @@ class PersonalInfoCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              DrawIconBasedTypeWidget(icon: icon),
+              DrawIconBasedTypeWidget(
+                icon: icon,
+                iconSize: 20,
+              ),
               const SizedBox(width: 4),
               CustomTextWidget(
                 title,

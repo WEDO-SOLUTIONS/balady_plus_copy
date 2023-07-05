@@ -16,7 +16,7 @@ class ProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const bool isLoggedin = true; //CommonProperties.isLoggedIn;
+    final bool isLoggedin = CommonProperties.isLoggedIn;
     final list = isLoggedin
         ? ProfileSections.profileSections
         : ProfileSections.profileSectionsForGuest;

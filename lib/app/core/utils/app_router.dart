@@ -83,19 +83,25 @@ class AppRouter {
             userInfo: settings.arguments as SsoUserInfo,
           ),
         );
-      // dashboard page
+      //? dashboard page
       case RouteName.dashboard:
         return MaterialPageRoute(builder: (_) => const DashBoardPage());
-      // requests page
+      //? requests page
       case RouteName.requests:
         return MaterialPageRoute(builder: (_) => const RequestsPage());
-      // invoices page
+      //? invoices page
       case RouteName.invoices:
         return MaterialPageRoute(builder: (_) => const InvoicesPage());
-      // licenses page
+      case RouteName.invoiceDetails:
+        return MaterialPageRoute(
+          builder: (_) => InvoiceDetailsPage(
+            invoiceEntity: settings.arguments as InvoiceEntity,
+          ),
+        );
+      //? licenses page
       case RouteName.licenses:
         return MaterialPageRoute(builder: (_) => const LicensesPage());
-      // error page
+      //? error page
       default:
         return MaterialPageRoute(
           builder: (_) => Scaffold(

@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/features/profile_features/invoices/data/models/invoice_details_params_model.dart';
 import 'package:dartz/dartz.dart';
 
 import '../../../../../core/errors/errors_exports.dart'
@@ -9,14 +10,14 @@ import '../../../../../core/errors/errors_exports.dart'
         ServerFailure;
 import '../../invoices_exports.dart'
     show
-        InvoicesRepository,
-        InvoicesRemoteDataSource,
         InvoiceEntity,
         InvoiceStatusEntity,
         InvoiceSubTypeEntity,
         InvoiceSubTypeParamsModel,
         InvoiceTypeEntity,
-        InvoicesPrams;
+        InvoicesPrams,
+        InvoicesRemoteDataSource,
+        InvoicesRepository;
 
 class InvoicesRepositoryImplementation implements InvoicesRepository {
   final InvoicesRemoteDataSource remoteDataSource;
@@ -70,6 +71,20 @@ class InvoicesRepositoryImplementation implements InvoicesRepository {
   ) async {
     try {
       final data = await remoteDataSource.getInvoiceSubTypes(params);
+      return Right(data);
+    } on NoDataFoundException {
+      return Left(NoDataFoundFailure());
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage));
+    }
+  }
+
+  @override
+  Future<Either<Failure, InvoiceEntity>> getInvoiceDetails(
+    InvoiceDetailsParamsModel params,
+  ) async {
+    try {
+      final data = await remoteDataSource.getInvoiceDetails(params);
       return Right(data);
     } on NoDataFoundException {
       return Left(NoDataFoundFailure());

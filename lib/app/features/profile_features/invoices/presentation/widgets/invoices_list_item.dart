@@ -4,7 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../core/utils/utils_exports.dart'
-    show AppColor, AppStyle, IconPath, RouteName;
+    show AppColor, AppStyle, ContextConversion, IconPath, RouteName;
 import '../../../../_shared_feature_/shared_feature_exports.dart';
 import '../../invoices_exports.dart' show InvoiceEntity, InvoiceParameter;
 
@@ -75,7 +75,7 @@ class InvoicesListItem extends StatelessWidget {
                 ),
                 InvoiceParameter(
                   title: 'request_no'.tr(),
-                  value: '${invoice.requestNumber}',
+                  value: invoice.requestNumber,
                 ),
                 InvoiceParameter(
                   title: 'invoice_issue_date'.tr(),
@@ -90,12 +90,21 @@ class InvoicesListItem extends StatelessWidget {
           ),
           ElevatedButtonWidget.details(
             onPressed: () {
-              if (invoice.redirectUrl == null) return;
-
-              Navigator.of(context).pushNamed(
-                RouteName.inappWebview,
-                arguments: (title: 'invoice'.tr(), url: invoice.redirectUrl),
-              );
+              if (invoice.redirectUrl == null && invoice.id == null) {
+                return;
+              } else if (invoice.id != null) {
+                context.pushNamedRoute(
+                  RouteName.invoiceDetails,
+                  arguments: invoice,
+                );
+                return;
+              } else if (invoice.redirectUrl != null) {
+                context.pushNamedRoute(
+                  RouteName.inappWebview,
+                  arguments: (title: 'invoice'.tr(), url: invoice.redirectUrl),
+                );
+                return;
+              }
             },
           ),
         ],

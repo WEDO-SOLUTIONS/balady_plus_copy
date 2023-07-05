@@ -159,6 +159,8 @@
   "invoice": "فاتورة",
   "invoice_due_date": "اخر تاريخ للسداد",
   "invoice_issue_date": "تاريخ  اصدار الفاتورة",
+  "invoice_info": "معلومات الفاتورة",
+  "invoice_pay_date": "تاريخ سداد الفاتورة",
 
   "_licensesComment": "أى شئ يخص الرخص",
   "license_no": "رقم الرخصة",

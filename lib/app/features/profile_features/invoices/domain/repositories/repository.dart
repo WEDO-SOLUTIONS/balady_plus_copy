@@ -8,6 +8,7 @@ import '../../invoices_exports.dart'
         InvoiceSubTypeEntity,
         InvoiceSubTypeParamsModel,
         InvoiceTypeEntity,
+        InvoiceDetailsParamsModel,
         InvoicesPrams;
 
 abstract class InvoicesRepository {
@@ -18,5 +19,8 @@ abstract class InvoicesRepository {
   Future<Either<Failure, List<InvoiceTypeEntity>>> getInvoiceTypes();
   Future<Either<Failure, List<InvoiceSubTypeEntity>>> getInvoiceSubTypes(
     InvoiceSubTypeParamsModel params,
+  );
+  Future<Either<Failure, InvoiceEntity>> getInvoiceDetails(
+    InvoiceDetailsParamsModel params,
   );
 }

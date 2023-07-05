@@ -4,9 +4,9 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../core/utils/utils_exports.dart' show IconPath;
 import '../../../../_shared_feature_/shared_feature_exports.dart'
-    show DefaultAppBarWidget;
+    show CardParameter, DefaultAppBarWidget;
 import '../../personal_information_exports.dart'
-    show PersonalInfoCard, PersonalInfoParameter;
+    show PersonalInfoCard;
 
 class PersonalInformationPage extends StatelessWidget {
   final SsoUserInfo userInfo;
@@ -32,23 +32,23 @@ class PersonalInformationPage extends StatelessWidget {
                 icon: IconPath.requests,
                 children: [
                   const SizedBox(height: 8),
-                  PersonalInfoParameter(
+                  CardParameter(
                     title: "full_name".tr(),
                     value: userInfo.arName ?? '',
                   ),
-                  PersonalInfoParameter(
+                  CardParameter(
                     title: "identity".tr(),
                     value: userInfo.idNo ?? '',
                   ),
-                  PersonalInfoParameter(
+                  CardParameter(
                     title: "date_of_birth".tr(),
                     value: userInfo.getFormattedBirthDate(),
                   ),
-                  PersonalInfoParameter(
+                  CardParameter(
                     title: "nationality".tr(),
                     value: userInfo.nationality ?? '',
                   ),
-                  PersonalInfoParameter(
+                  CardParameter(
                     title: "sex".tr(),
                     value: userInfo.sex ?? '',
                   ),
@@ -59,11 +59,11 @@ class PersonalInformationPage extends StatelessWidget {
                 icon: IconPath.contactInfo,
                 children: [
                   const SizedBox(height: 8),
-                  PersonalInfoParameter(
+                  CardParameter(
                     title: "phone_number".tr(),
                     value: userInfo.getPhone(),
                   ),
-                  PersonalInfoParameter(
+                  CardParameter(
                     title: "email".tr(),
                     value: userInfo.getEmail(),
                   ),

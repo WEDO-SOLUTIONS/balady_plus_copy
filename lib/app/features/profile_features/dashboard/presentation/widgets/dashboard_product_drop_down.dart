@@ -11,7 +11,6 @@ import '../../dashboard_exports.dart'
         DashboardCardEntity,
         DashboardOnProductSelected,
         DashboardOnProductsPressed,
-        DashboardProductEntity,
         DashboardState;
 
 class DashboardProductDropDown extends StatelessWidget {
