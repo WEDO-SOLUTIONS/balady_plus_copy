@@ -4,7 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../core/utils/utils_exports.dart'
-    show AppColor, AppStyle, IconPath;
+    show AppColor, AppStyle, IconPath, RouteName;
 import '../../../../_shared_feature_/shared_feature_exports.dart';
 import '../../licenses_exports.dart' show LicenseEntity, LicenseParameter;
 
@@ -88,7 +88,14 @@ class LicensesListItem extends StatelessWidget {
               ],
             ),
           ),
-          // ElevatedButtonWidget.details(onPressed: () {}),
+          ElevatedButtonWidget.details(onPressed: () {
+            if (license.redirectUrl == null) return;
+
+            Navigator.of(context).pushNamed(
+              RouteName.inappWebview,
+              arguments: (title: 'license'.tr(), url: license.redirectUrl),
+            );
+          }),
         ],
       ),
     );

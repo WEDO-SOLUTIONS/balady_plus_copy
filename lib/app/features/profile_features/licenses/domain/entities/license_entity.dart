@@ -10,6 +10,7 @@ class LicenseEntity extends Equatable {
   final String subMunicipalityName;
   final DateTime licenseEndDate;
   final DateTime? updateTime;
+  final String? redirectUrl;
 
   const LicenseEntity({
     required this.licenseNumber,
@@ -21,6 +22,7 @@ class LicenseEntity extends Equatable {
     required this.subMunicipalityName,
     required this.licenseEndDate,
     required this.updateTime,
+    this.redirectUrl,
   });
 
   @override
@@ -34,5 +36,6 @@ class LicenseEntity extends Equatable {
         subMunicipalityName,
         licenseEndDate,
         updateTime,
+        redirectUrl,
       ];
 }

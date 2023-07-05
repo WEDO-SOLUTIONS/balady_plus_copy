@@ -11,6 +11,7 @@ class LicensesModel extends LicenseEntity {
     required super.subMunicipalityName,
     required super.licenseEndDate,
     required super.updateTime,
+    super.redirectUrl,
   });
 
   factory LicensesModel.fromMap(Map<String, dynamic> json) {
@@ -24,6 +25,7 @@ class LicensesModel extends LicenseEntity {
       subMunicipalityName: json['subMunicipalityName'] as String? ?? '',
       licenseEndDate: DateTime.parse(json['licenseEndDate'] as String),
       updateTime: DateTime.tryParse(json['updateTime'] as String? ?? ''),
+      redirectUrl: json['redirectUrl'] as String?,
     );
   }
 }
