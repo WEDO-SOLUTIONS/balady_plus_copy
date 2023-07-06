@@ -8,12 +8,14 @@ class DefaultAppBarWidget extends StatelessWidget
   final String? title;
   final PreferredSizeWidget? bottom;
   final List<Widget>? actions;
+  final bool x;
 
   const DefaultAppBarWidget({
     super.key,
     this.title,
     this.bottom,
     this.actions,
+    this.x = false,
   });
 
   @override
@@ -23,9 +25,10 @@ class DefaultAppBarWidget extends StatelessWidget
       elevation: 0,
       leading: Navigator.canPop(context)
           ? IconButton(
-              icon: const Icon(
-                Icons.arrow_back_ios,
+              icon: Icon(
+                x ? Icons.close : Icons.arrow_back_ios,
                 color: AppColor.blackModern900Light,
+                size: x ? 28 : null,
               ),
               onPressed: () => Navigator.of(context).pop(),
             )

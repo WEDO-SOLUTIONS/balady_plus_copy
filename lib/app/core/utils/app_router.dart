@@ -10,10 +10,12 @@ import '../../features/authentication/sign_in/sign_in_exports.dart'
 import '../../features/bottom_navigation/bottom_navigation_exports.dart'
     show BottomNavigationPage;
 import '../../features/entry_point/entry_point_exports.dart' show SsoUserInfo;
+import '../../features/municipal_services/municipal_advisor/municipal_advisor_exports.dart'
+    show MunicipalAdvisorPage;
 import '../../features/profile_features/dashboard/dashboard_exports.dart'
     show DashBoardPage;
 import '../../features/profile_features/invoices/invoices_exports.dart'
-    show InvoicesPage;
+    show InvoiceDetailsPage, InvoiceEntity, InvoicesPage;
 import '../../features/profile_features/licenses/licenses_exports.dart'
     show LicensesPage;
 import '../../features/profile_features/personal_information/personal_information_exports.dart'
@@ -74,9 +76,14 @@ class AppRouter {
         return MaterialPageRoute(
           builder: (_) => const QiblahCompassPage(),
         );
+      //? Municipal Services
+      case RouteName.municipalAdvisor:
+        return MaterialPageRoute(
+          builder: (_) => const MunicipalAdvisorPage(),
+        );
 
       //! Setting
-      // personalInformation page
+      //? personalInformation page
       case RouteName.personalInformation:
         return MaterialPageRoute(
           builder: (_) => PersonalInformationPage(

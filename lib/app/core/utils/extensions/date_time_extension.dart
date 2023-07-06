@@ -32,4 +32,10 @@ extension DateTimeExtension on DateTime {
     final formattedDate = formatter.format(this);
     return formattedDate;
   }
+
+  String toTime() {
+    final formatter = DateFormat('h:mm a', translator.activeLanguageCode);
+    final formattedDate = formatter.format(this);
+    return formattedDate;
+  }
 }

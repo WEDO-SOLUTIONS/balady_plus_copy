@@ -103,9 +103,10 @@ class ElevatedButtonWidget extends _ElevatedButton {
           onPressed: onPressed,
         ));
 
-  ElevatedButtonWidget.choose({required VoidCallback onPressed})
+  ElevatedButtonWidget.choose({required VoidCallback? onPressed})
       : super(CustomElevatedButtonWidget(
           btnColor: AppColor.primary800Light,
+          btnBorderColor: Colors.transparent,
           textStyle: AppStyle.elevatedButtonStyle.copyWith(
             color: AppColor.white,
             fontWeight: FontWeight.w700,
@@ -153,6 +154,20 @@ class ElevatedButtonWidget extends _ElevatedButton {
           ),
           btnHeight: 56,
           text: "logout".tr(),
+          onPressed: onPressed,
+        ));
+
+  ElevatedButtonWidget.chooseLocation({required VoidCallback? onPressed})
+      : super(CustomElevatedButtonWidget(
+          btnColor: AppColor.primary800Light,
+          btnBorderColor: Colors.transparent,
+          textStyle: AppStyle.elevatedButtonStyle.copyWith(
+            color: AppColor.white,
+            fontWeight: FontWeight.w700,
+            fontSize: 16,
+          ),
+          btnHeight: 56,
+          text: "municipalAdvisorLocationButton".tr(),
           onPressed: onPressed,
         ));
 }

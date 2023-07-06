@@ -97,12 +97,26 @@
   "transaction_inquery": "استعلام عن معاملة",
   "your_opnion_matter": "رأيك يهمنا",
   "zamzam_points": "نقاط توزيع ماء زمزم",
-  
+
   "_servicesCardsComment": "أى شئ يخص كروت الخدمات",
   "rating": "التقييم",
   "duration": "المدة",
   "warnings": "ملاحظات / تنبيهات",
   "start_service": "بدء الخدمة",
+
+  "_municipalAdvisorComments": "أي شيء يخص المستشار البلدي",
+  "startChatting": "ابدأ المحادثة بكتابة رسالة",
+  "chatHint": "اكتب اجابتك هنا... ",
+  "municipalAdvisorWelcome": "اهلا بك في المستشار البلدي!",
+  "municipalAdvisorHint": "يقدم لك المستشار دراسة شاملة تتطلب الاجابة على 10 اسئلة، مدة المحادثة 15 دقيقة. تتكون النتيجة النهائية للدراسة من: متطلبات الترخيص دراسة مالية المرفقات المطلوبة للتقديم. يمكنك ايضا الحصول على كل قسم من الدراسة بشكل منفصل. ملاحظة: في حال انهاء المحادثة قبل النتيجة الاخيره سيتم اعادة المحادثة.",
+  "municipalAdvisorTopic": "مالذي تريد معرفته اليوم ؟",
+  "municipalAdvisorTopicHint": "اختر من القائمة التالية",
+  "municipalAdvisorTopicAnswer1": "دراسة استشارية شاملة",
+  "municipalAdvisorTopicAnswer2": "متطلبات اصدار رخصة تجارية لنشاطك",
+  "municipalAdvisorTopicAnswer3": "التصاريح المتاحة لنشاطك",
+  "municipalAdvisorLocation": "ما هو موقع نشاطك ؟",
+  "municipalAdvisorLocationHint": "حدد الموقع في الخريطة",
+  "municipalAdvisorLocationButton": "تحديد الموقع",
 
   "_profileComment": "أى شئ يخص الحساب",
   "individual_account": "حساب فرد",
@@ -228,6 +242,7 @@
   "asc": "الأقدم",
   "days": "أيام",
   "after": "بعد",
+  "location": "الموقع",
 
   "_errorsComment": "أى شئ يخص رسائل الاخطاء",
   "errorNoDataToDisplay": "لا يوجد بيانات لعرضها فى الوقت الحالى.",

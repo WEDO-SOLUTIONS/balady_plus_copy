@@ -244,7 +244,7 @@ class AppStyle {
     height: 1.0,
   );
 
-  static final requestParamterValueTextStle = TextStyle(
+  static final subMessageTextStle = TextStyle(
     fontSize: 12.0,
     fontWeight: AppFontWeight.semiBold.fontWeight,
     color: AppColor.blackModern500Light,
@@ -337,6 +337,13 @@ class AppStyle {
     fontSize: 11.0,
     fontWeight: AppFontWeight.bold.fontWeight,
     color: AppColor.primary900Light,
+    fontFamily: fontFamily,
+  );
+
+  static final chatMessageTextStyle = TextStyle(
+    fontSize: 12.0,
+    fontWeight: AppFontWeight.semiBold.fontWeight,
+    color: AppColor.blackModern50Light,
     fontFamily: fontFamily,
   );
 

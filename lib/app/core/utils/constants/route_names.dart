@@ -15,6 +15,9 @@ class RouteName {
   static const prayerTimes = '/prayerTimes';
   static const qiblahCompass = '/qiblahCompass';
 
+  //? Municipal Services
+  static const municipalAdvisor = '/municipal-advisor';
+
   //! Setting
   static const personalInformation = '/personalInformation';
   static const dashboard = '/dashboard';
