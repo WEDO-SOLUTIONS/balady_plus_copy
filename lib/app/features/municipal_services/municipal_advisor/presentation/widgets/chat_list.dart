@@ -5,18 +5,35 @@ import '../../../../../core/utils/utils_exports.dart' show BlocRequestStatus;
 import '../../municipal_advisor_exports.dart'
     show ChatBubble, LoadingBubble, MunicipalAdvisorBloc, MunicipalAdvisorState;
 
-class ChatList extends StatelessWidget {
+class ChatList extends StatefulWidget {
   const ChatList({
     super.key,
   });
 
   @override
+  State<ChatList> createState() => _ChatListState();
+}
+
+class _ChatListState extends State<ChatList> {
+  final ScrollController _scrollController = ScrollController();
+  @override
   Widget build(BuildContext context) {
-    return BlocBuilder<MunicipalAdvisorBloc, MunicipalAdvisorState>(
+    return BlocConsumer<MunicipalAdvisorBloc, MunicipalAdvisorState>(
+      listener: (context, state) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          _scrollController.animateTo(
+            _scrollController.position.maxScrollExtent,
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeOut,
+          );
+        });
+      },
       builder: (context, state) {
         if (state.messages.isEmpty) return const SizedBox.shrink();
+
         return Expanded(
           child: SingleChildScrollView(
+            controller: _scrollController,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
@@ -33,5 +50,11 @@ class ChatList extends StatelessWidget {
         );
       },
     );
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
   }
 }

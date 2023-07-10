@@ -17,6 +17,7 @@ class RouteName {
 
   //? Municipal Services
   static const municipalAdvisor = '/municipal-advisor';
+  static const locationPage = '/location-page';
 
   //! Setting
   static const personalInformation = '/personalInformation';

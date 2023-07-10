@@ -170,4 +170,18 @@ class ElevatedButtonWidget extends _ElevatedButton {
           text: "municipalAdvisorLocationButton".tr(),
           onPressed: onPressed,
         ));
+
+  ElevatedButtonWidget.confirmLocation({required VoidCallback? onPressed})
+      : super(CustomElevatedButtonWidget(
+          btnColor: AppColor.primary800Light,
+          btnBorderColor: Colors.transparent,
+          textStyle: AppStyle.elevatedButtonStyle.copyWith(
+            color: AppColor.white,
+            fontWeight: FontWeight.w700,
+            fontSize: 16,
+          ),
+          btnHeight: 56,
+          text: "confirmLocation".tr(),
+          onPressed: onPressed,
+        ));
 }

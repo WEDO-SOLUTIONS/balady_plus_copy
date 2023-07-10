@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 
-import '../../municipal_advisor_exports.dart'
-    show LocationSelector, MunicipalAdvisorSteps, TopicSelector;
+import '../../../municipal_advisor_exports.dart'
+    show
+        ActivitySelector,
+        ConfirmLocation,
+        LocationSelector,
+        MunicipalAdvisorSteps,
+        TopicSelector;
 
 class ChatBubbleCurrentStep extends StatelessWidget {
   final MunicipalAdvisorSteps step;
@@ -20,6 +25,10 @@ class ChatBubbleCurrentStep extends StatelessWidget {
         return const TopicSelector();
       case MunicipalAdvisorSteps.location:
         return const LocationSelector();
+      case MunicipalAdvisorSteps.confirmLocation:
+        return const ConfirmLocation();
+      case MunicipalAdvisorSteps.activity:
+        return const ActivitySelector();
     }
   }
 }

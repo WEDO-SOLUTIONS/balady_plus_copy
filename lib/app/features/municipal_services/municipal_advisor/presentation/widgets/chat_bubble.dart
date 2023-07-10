@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../../../../../core/utils/utils_exports.dart'
-    show AppColor, AppStyle, DateTimeExtension;
+    show AppColor, AppStyle, DateTimeExtension, IconPath;
 import '../../../../_shared_feature_/shared_feature_exports.dart'
-    show CustomTextWidget;
+    show CustomTextWidget, DrawIconBasedTypeWidget;
 import '../../municipal_advisor_exports.dart'
-    show ChatBubbleCurrentStep, ChatMessage;
+    show
+        ChatBubbleCurrentStep,
+        LocationChatBubble,
+        ChatMessage,
+        MunicipalAdvisorSteps;
 
 class ChatBubble extends StatelessWidget {
   final ChatMessage chatMessage;
@@ -19,6 +24,9 @@ class ChatBubble extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final showMap = chatMessage.step == MunicipalAdvisorSteps.location &&
+        !chatMessage.isResponse &&
+        chatMessage.data is LatLng;
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Column(
@@ -59,17 +67,39 @@ class ChatBubble extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  CustomTextWidget(
-                    chatMessage.message,
-                    textStyle: AppStyle.chatMessageTextStyle.copyWith(
-                      color: chatMessage.isResponse
-                          ? AppColor.blackModern700Light
-                          : null,
+                  if (showMap) ...[
+                    LocationChatBubble(latLng: chatMessage.data),
+                    const SizedBox(height: 8),
+                  ],
+                  if (showMap)
+                    Row(
+                      children: [
+                        const DrawIconBasedTypeWidget(
+                          icon: IconPath.marker,
+                        ),
+                        const SizedBox(width: 4),
+                        CustomTextWidget(
+                          chatMessage.message,
+                          textStyle: AppStyle.chatMessageTextStyle.copyWith(
+                            color: chatMessage.isResponse
+                                ? AppColor.blackModern700Light
+                                : null,
+                          ),
+                        ),
+                      ],
+                    )
+                  else
+                    CustomTextWidget(
+                      chatMessage.message,
+                      textStyle: AppStyle.chatMessageTextStyle.copyWith(
+                        color: chatMessage.isResponse
+                            ? AppColor.blackModern700Light
+                            : null,
+                      ),
+                      maxLines: 100,
                     ),
-                    maxLines: 100,
-                  ),
-                  if (currentStep)
-                    ChatBubbleCurrentStep(step: chatMessage.step),
+                  if (currentStep && chatMessage.isResponse)
+                    ChatBubbleCurrentStep(step: chatMessage.step)
                 ],
               ),
             ),

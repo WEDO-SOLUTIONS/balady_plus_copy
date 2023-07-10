@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../../core/utils/utils_exports.dart'
-    show AppColor, AppStyle;
+    show AppStyle, RouteName;
 import '../../../../../_shared_feature_/shared_feature_exports.dart'
     show CustomTextWidget, ElevatedButtonWidget;
+import '../../../municipal_advisor_exports.dart' show MunicipalAdvisorBloc;
 
 class LocationSelector extends StatelessWidget {
   const LocationSelector({super.key});
@@ -23,7 +25,12 @@ class LocationSelector extends StatelessWidget {
         Column(
           children: [
             ElevatedButtonWidget.chooseLocation(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.of(context).pushNamed(
+                  RouteName.locationPage,
+                  arguments: context.read<MunicipalAdvisorBloc>(),
+                );
+              },
             ),
           ],
         ),

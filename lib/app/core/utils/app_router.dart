@@ -11,7 +11,7 @@ import '../../features/bottom_navigation/bottom_navigation_exports.dart'
     show BottomNavigationPage;
 import '../../features/entry_point/entry_point_exports.dart' show SsoUserInfo;
 import '../../features/municipal_services/municipal_advisor/municipal_advisor_exports.dart'
-    show MunicipalAdvisorPage;
+    show LocationPage, MunicipalAdvisorBloc, MunicipalAdvisorPage;
 import '../../features/profile_features/dashboard/dashboard_exports.dart'
     show DashBoardPage;
 import '../../features/profile_features/invoices/invoices_exports.dart'
@@ -80,6 +80,12 @@ class AppRouter {
       case RouteName.municipalAdvisor:
         return MaterialPageRoute(
           builder: (_) => const MunicipalAdvisorPage(),
+        );
+      case RouteName.locationPage:
+        return MaterialPageRoute(
+          builder: (_) => LocationPage(
+            bloc: settings.arguments as MunicipalAdvisorBloc,
+          ),
         );
 
       //! Setting

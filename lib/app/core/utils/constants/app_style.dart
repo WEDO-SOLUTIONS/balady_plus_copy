@@ -347,6 +347,20 @@ class AppStyle {
     fontFamily: fontFamily,
   );
 
+  static final locationCardTitleTextStyle = TextStyle(
+    fontSize: 15.0,
+    fontWeight: AppFontWeight.bold.fontWeight,
+    color: AppColor.darkTurquoise,
+    fontFamily: fontFamily,
+  );
+
+  static final locationCardAddressTextStyle = TextStyle(
+    fontSize: 12.0,
+    fontWeight: AppFontWeight.bold.fontWeight,
+    color: AppColor.blackModern500Light,
+    fontFamily: fontFamily,
+  );
+
   /// Padding
   static const defaultPadding = EdgeInsets.symmetric(
     horizontal: UIHelper.mediumPadding,

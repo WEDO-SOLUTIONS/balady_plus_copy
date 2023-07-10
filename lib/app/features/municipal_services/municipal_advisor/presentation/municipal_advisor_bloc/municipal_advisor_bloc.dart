@@ -13,33 +13,47 @@ class MunicipalAdvisorBloc
   MunicipalAdvisorBloc() : super(const MunicipalAdvisorState()) {
     on<MunicipalAdvisorStartChatEvent>(
       (event, emit) async {
-        emit(userResponse(event.message));
-        await delay();
+        emit(
+          state.copyWith(
+            status: BlocRequestStatus.submissionGetLoading,
+            messages: [
+              ...state.messages,
+              ChatMessage(
+                message: event.message,
+                step: event.step,
+                data: event.data,
+                isResponse: false,
+              )
+            ],
+          ),
+        );
         final nextSteps = nextStep(event.step);
+        await delay();
         for (int i = 0; i < nextSteps.length; i++) {
           emit(botResponse(nextSteps[i], i < nextSteps.length - 1));
           if (i != nextSteps.length - 1) await delay();
         }
       },
     );
+
+    on<MunicipalAdvisorRemoveLastChatEvent>(
+      (event, emit) {
+        // remove last two messages
+        final messages = state.messages;
+        messages.removeLast();
+        messages.removeLast();
+        emit(
+          state.copyWith(
+            status: BlocRequestStatus.submissionGetLoading,
+            messages: [...messages],
+          ),
+        );
+      },
+    );
   }
 
   Future<void> delay() async {
     await Future.delayed(const Duration(seconds: 1));
-  }
-
-  MunicipalAdvisorState userResponse(String message) {
-    return state.copyWith(
-      status: BlocRequestStatus.submissionGetLoading,
-      messages: [
-        ...state.messages,
-        ChatMessage(
-          message: message,
-          step: MunicipalAdvisorSteps.start,
-          isResponse: false,
-        )
-      ],
-    );
   }
 
   MunicipalAdvisorState botResponse(
@@ -88,11 +102,15 @@ class MunicipalAdvisorBloc
       case MunicipalAdvisorSteps.location:
         return [
           ChatMessage(
-            message: 'municipalAdvisorLocation'.tr(),
-            step: MunicipalAdvisorSteps.location,
+            message: 'municipalAdvisorLocationCorrect'.tr(),
+            step: MunicipalAdvisorSteps.confirmLocation,
             isResponse: true,
           ),
         ];
+      case MunicipalAdvisorSteps.confirmLocation:
+        return [];
+      case MunicipalAdvisorSteps.activity:
+        return [];
     }
   }
 }

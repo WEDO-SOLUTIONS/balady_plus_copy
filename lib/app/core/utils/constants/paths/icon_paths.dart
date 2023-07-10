@@ -23,6 +23,7 @@ class IconPath {
   static const calender = '${_svgIconPath}calender$_svg';
   static const send = '${_svgIconPath}send$_svg';
   static const chat = '${_svgIconPath}chat$_svg';
+  static const marker = '${_svgIconPath}marker$_svg';
 
   // Bottom-Nav-Bar
   static const home = '${_svgIconPath}home_icon$_svg';
