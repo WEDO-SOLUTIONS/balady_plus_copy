@@ -12,7 +12,7 @@ import '../../../../_shared_feature_/shared_feature_exports.dart'
 import '../../municipal_advisor_exports.dart'
     show
         MunicipalAdvisorBloc,
-        MunicipalAdvisorStartChatEvent,
+        MunicipalAdvisorAddMessageEvent,
         MunicipalAdvisorSteps;
 
 class LocationPage extends StatefulWidget {
@@ -118,8 +118,9 @@ class LocationPageState extends State<LocationPage> {
                               if (coordinates == null || address == null) {
                                 return;
                               }
+                              //postframe
                               context.read<MunicipalAdvisorBloc>().add(
-                                    MunicipalAdvisorStartChatEvent(
+                                    MunicipalAdvisorAddMessageEvent(
                                       message: address!,
                                       step: MunicipalAdvisorSteps.location,
                                       data: coordinates,

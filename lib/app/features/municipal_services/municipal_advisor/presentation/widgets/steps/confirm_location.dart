@@ -8,7 +8,7 @@ import '../../../municipal_advisor_exports.dart'
         ChatBubbleRadioSelector,
         MunicipalAdvisorBloc,
         MunicipalAdvisorRemoveLastChatEvent,
-        MunicipalAdvisorStartChatEvent,
+        MunicipalAdvisorAddMessageEvent,
         MunicipalAdvisorSteps;
 
 class ConfirmLocation extends StatelessWidget {
@@ -24,7 +24,7 @@ class ConfirmLocation extends StatelessWidget {
       onSelected: (value) {
         if (value == 'municipalAdvisorLocationCorrectAnswer1'.tr()) {
           context.read<MunicipalAdvisorBloc>().add(
-                MunicipalAdvisorStartChatEvent(
+                MunicipalAdvisorAddMessageEvent(
                   message: value,
                   step: MunicipalAdvisorSteps.confirmLocation,
                 ),

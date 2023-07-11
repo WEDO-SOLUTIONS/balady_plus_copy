@@ -361,6 +361,12 @@ class AppStyle {
     fontFamily: fontFamily,
   );
 
+  static final textFieldSuffixTextStyle = TextStyle(
+    fontSize: 12.0,
+    fontWeight: AppFontWeight.semiBold.fontWeight,
+    color: AppColor.base500Light50,
+  );
+
   /// Padding
   static const defaultPadding = EdgeInsets.symmetric(
     horizontal: UIHelper.mediumPadding,

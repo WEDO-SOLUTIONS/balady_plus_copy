@@ -7,12 +7,12 @@ abstract class MunicipalAdvisorEvent extends Equatable {
   List<Object?> get props => [];
 }
 
-class MunicipalAdvisorStartChatEvent extends MunicipalAdvisorEvent {
+class MunicipalAdvisorAddMessageEvent extends MunicipalAdvisorEvent {
   final String message;
   final MunicipalAdvisorSteps step;
   final dynamic data;
 
-  const MunicipalAdvisorStartChatEvent({
+  const MunicipalAdvisorAddMessageEvent({
     required this.message,
     required this.step,
     this.data,
@@ -23,3 +23,42 @@ class MunicipalAdvisorStartChatEvent extends MunicipalAdvisorEvent {
 }
 
 class MunicipalAdvisorRemoveLastChatEvent extends MunicipalAdvisorEvent {}
+
+class MunicipalAdvisorGetIsicActivitiesEvent extends MunicipalAdvisorEvent {}
+
+class MunicipalAdvisorSelectIsicActivityEvent extends MunicipalAdvisorEvent {
+  final IsicActivityEntity isicActivity;
+
+  const MunicipalAdvisorSelectIsicActivityEvent({
+    required this.isicActivity,
+  });
+
+  @override
+  List<Object?> get props => [isicActivity];
+}
+
+class MunicipalAdvisorGetIsicSubActivitiesEvent extends MunicipalAdvisorEvent {
+  final IsicSubActivityParams params;
+
+  const MunicipalAdvisorGetIsicSubActivitiesEvent({
+    required this.params,
+  });
+
+  @override
+  List<Object?> get props => [params];
+}
+
+class MunicipalAdvisorSelectIsicSubActivityEvent extends MunicipalAdvisorEvent {
+  final IsicActivityEntity isicSubActivity;
+
+  const MunicipalAdvisorSelectIsicSubActivityEvent({
+    required this.isicSubActivity,
+  });
+
+  @override
+  List<Object?> get props => [isicSubActivity];
+}
+
+class MunicipalAdvisorGetActivityDetailsEvent extends MunicipalAdvisorEvent {}
+
+class MunicipalAdvisorRetryEvent extends MunicipalAdvisorEvent {}

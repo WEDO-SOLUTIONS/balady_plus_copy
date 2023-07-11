@@ -4,26 +4,53 @@ class MunicipalAdvisorState extends Equatable {
   final BlocRequestStatus status;
   final List<ChatMessage> messages;
   final ActivityLocation? activityLocation;
-  final bool conrimedLocation;
+  final List<IsicActivityEntity> isicActivities;
+  final IsicActivityEntity? selectedIsicActivity;
+  final List<IsicActivityEntity> isicSubActivities;
+  final IsicActivityEntity? selectedIsicSubActivity;
+  final ActivityDetailsEntity? activityDetails;
+  final MunicipalAdvisorEvent? lastEvent;
+  final String? errorMessage;
 
   const MunicipalAdvisorState({
     this.status = BlocRequestStatus.initial,
     this.messages = const <ChatMessage>[],
     this.activityLocation,
-    this.conrimedLocation = false,
+    this.isicActivities = const <IsicActivityEntity>[],
+    this.selectedIsicActivity,
+    this.isicSubActivities = const <IsicActivityEntity>[],
+    this.selectedIsicSubActivity,
+    this.activityDetails,
+    this.lastEvent,
+    this.errorMessage,
   });
+
+  String get error => errorMessage ?? '';
 
   MunicipalAdvisorState copyWith({
     BlocRequestStatus? status,
     List<ChatMessage>? messages,
     ActivityLocation? activityLocation,
-    bool? conrimedLocation,
+    List<IsicActivityEntity>? isicActivities,
+    IsicActivityEntity? selectedIsicActivity,
+    List<IsicActivityEntity>? isicSubActivities,
+    IsicActivityEntity? selectedIsicSubActivity,
+    ActivityDetailsEntity? activityDetails,
+    MunicipalAdvisorEvent? lastEvent,
+    String? errorMessage,
   }) {
     return MunicipalAdvisorState(
       status: status ?? this.status,
       messages: messages ?? this.messages,
       activityLocation: activityLocation ?? this.activityLocation,
-      conrimedLocation: conrimedLocation ?? this.conrimedLocation,
+      isicActivities: isicActivities ?? this.isicActivities,
+      selectedIsicActivity: selectedIsicActivity ?? this.selectedIsicActivity,
+      isicSubActivities: isicSubActivities ?? this.isicSubActivities,
+      selectedIsicSubActivity:
+          selectedIsicSubActivity ?? this.selectedIsicSubActivity,
+      activityDetails: activityDetails ?? this.activityDetails,
+      lastEvent: lastEvent ?? this.lastEvent,
+      errorMessage: errorMessage ?? this.errorMessage,
     );
   }
 
@@ -32,6 +59,12 @@ class MunicipalAdvisorState extends Equatable {
         status,
         messages,
         activityLocation,
-        conrimedLocation,
+        isicActivities,
+        selectedIsicActivity,
+        isicSubActivities,
+        selectedIsicSubActivity,
+        activityDetails,
+        lastEvent,
+        errorMessage,
       ];
 }

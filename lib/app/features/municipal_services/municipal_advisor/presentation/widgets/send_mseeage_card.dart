@@ -9,7 +9,7 @@ import '../../../../home_page/home_exports.dart' show CircleIcon;
 import '../../municipal_advisor_exports.dart'
     show
         MunicipalAdvisorBloc,
-        MunicipalAdvisorStartChatEvent,
+        MunicipalAdvisorAddMessageEvent,
         MunicipalAdvisorSteps;
 
 class SendMessageCard extends StatefulWidget {
@@ -66,7 +66,7 @@ class _SendMessageCardState extends State<SendMessageCard> {
   void sendMessage([String? message]) {
     final text = message ?? _controller.text;
     context.read<MunicipalAdvisorBloc>().add(
-          MunicipalAdvisorStartChatEvent(
+          MunicipalAdvisorAddMessageEvent(
             message: text,
             step: MunicipalAdvisorSteps.start,
           ),

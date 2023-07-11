@@ -22,17 +22,13 @@ class LocationSelector extends StatelessWidget {
           textStyle: AppStyle.subMessageTextStle,
         ),
         const SizedBox(height: 16),
-        Column(
-          children: [
-            ElevatedButtonWidget.chooseLocation(
-              onPressed: () {
-                Navigator.of(context).pushNamed(
-                  RouteName.locationPage,
-                  arguments: context.read<MunicipalAdvisorBloc>(),
-                );
-              },
-            ),
-          ],
+        ElevatedButtonWidget.chooseLocation(
+          onPressed: () {
+            Navigator.of(context).pushNamed(
+              RouteName.locationPage,
+              arguments: context.read<MunicipalAdvisorBloc>(),
+            );
+          },
         ),
       ],
     );

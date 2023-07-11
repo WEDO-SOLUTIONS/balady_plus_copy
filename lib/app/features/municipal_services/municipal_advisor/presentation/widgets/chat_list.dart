@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../core/utils/utils_exports.dart' show BlocRequestStatus;
 import '../../municipal_advisor_exports.dart'
-    show ChatBubble, LoadingBubble, MunicipalAdvisorBloc, MunicipalAdvisorState;
+    show ChatBubble, LoadingBubble, MunicipalAdvisorBloc, MunicipalAdvisorState, RetryBubble;
 
 class ChatList extends StatefulWidget {
   const ChatList({
@@ -44,6 +44,9 @@ class _ChatListState extends State<ChatList> {
                   ),
                 if (state.status == BlocRequestStatus.submissionGetLoading)
                   const LoadingBubble(),
+                if(state.status == BlocRequestStatus.submissionGetFailure)
+                  const RetryBubble(),
+
               ],
             ),
           ),

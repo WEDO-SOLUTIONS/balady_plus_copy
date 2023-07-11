@@ -12,6 +12,15 @@ class ApiUrl {
   //! Prayer Times
   static const prayerTimes = '/v1/kacst/prayer-times';
 
+  //! Municipal Services
+  //! Municipal Advisor
+  static const isicActivities =
+      '/v1/balady-consultation-services/approved-isic-activities';
+  static const isicSubActivities =
+      '/v1/balady-consultation-services/activities-by-isicNumber';
+  static const activityDetails =
+      '/v1/balady-consultation-services/activity-detail-info';
+
   //! Profile
   //! Delegators
   static const delegators =
@@ -38,7 +47,8 @@ class ApiUrl {
   static invoiceSubTypes(int id) =>
       '/v1/balady-dashboard/invoices/sub-main-types/$id';
   static const invoiceStatuses = '/v1/balady-dashboard/invoices/statuses';
-  static const invoiceDetails = '/v1/balady-dashboard/invoices/my-invoices-by-id';
+  static const invoiceDetails =
+      '/v1/balady-dashboard/invoices/my-invoices-by-id';
 
   //! Licenses
   static const licenses = '/v1/balady-dashboard/license/my-licenses';

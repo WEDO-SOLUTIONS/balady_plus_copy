@@ -17,6 +17,7 @@ import '../dependency_injection/dependency_injection_exports.dart'
         InvoicesInjection,
         LicensesInjection,
         LookupInjection,
+        MunicipalAdvisorInjection,
         OTPInjection,
         PrayerTimesInjection,
         RequestsInjection,
@@ -52,6 +53,9 @@ void initialize() {
   //* Public Services
   //? Prayer Times
   PrayerTimesInjection.init();
+  //* Municipal Services
+  //? Municipal Advisor
+  MunicipalAdvisorInjection.init();
 
   //! Profile
   //? Delegators

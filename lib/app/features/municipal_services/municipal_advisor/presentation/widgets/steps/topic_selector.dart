@@ -6,7 +6,7 @@ import '../../../municipal_advisor_exports.dart'
     show
         ChatBubbleRadioSelector,
         MunicipalAdvisorBloc,
-        MunicipalAdvisorStartChatEvent,
+        MunicipalAdvisorAddMessageEvent,
         MunicipalAdvisorSteps;
 
 class TopicSelector extends StatelessWidget {
@@ -17,12 +17,10 @@ class TopicSelector extends StatelessWidget {
     return ChatBubbleRadioSelector(
       items: [
         'municipalAdvisorTopicAnswer1'.tr(),
-        'municipalAdvisorTopicAnswer2'.tr(),
-        'municipalAdvisorTopicAnswer3'.tr(),
       ],
       onSelected: (value) {
         context.read<MunicipalAdvisorBloc>().add(
-              MunicipalAdvisorStartChatEvent(
+              MunicipalAdvisorAddMessageEvent(
                 message: value,
                 step: MunicipalAdvisorSteps.topic,
               ),

@@ -2,6 +2,8 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
+import '../../../../../core/errors/errors_exports.dart';
+import '../../../../../core/services/services_exports.dart';
 import '../../../../../core/utils/utils_exports.dart';
 import '../../municipal_advisor_exports.dart';
 
@@ -10,8 +12,16 @@ part 'municipal_advisor_state.dart';
 
 class MunicipalAdvisorBloc
     extends Bloc<MunicipalAdvisorEvent, MunicipalAdvisorState> {
-  MunicipalAdvisorBloc() : super(const MunicipalAdvisorState()) {
-    on<MunicipalAdvisorStartChatEvent>(
+  final GetIsicActivities getIsicActivities;
+  final GetIsicSubActivities getIsicSubActivities;
+  final GetActivityDetails getActivityDetails;
+
+  MunicipalAdvisorBloc({
+    required this.getIsicActivities,
+    required this.getIsicSubActivities,
+    required this.getActivityDetails,
+  }) : super(const MunicipalAdvisorState()) {
+    on<MunicipalAdvisorAddMessageEvent>(
       (event, emit) async {
         emit(
           state.copyWith(
@@ -27,18 +37,22 @@ class MunicipalAdvisorBloc
             ],
           ),
         );
-        final nextSteps = nextStep(event.step);
-        await delay();
-        for (int i = 0; i < nextSteps.length; i++) {
-          emit(botResponse(nextSteps[i], i < nextSteps.length - 1));
-          if (i != nextSteps.length - 1) await delay();
+        if (event.step.index < MunicipalAdvisorSteps.confirmLocation.index) {
+          final nextSteps = nextStep(event.step);
+          await delay();
+          for (int i = 0; i < nextSteps.length; i++) {
+            emit(botResponse(nextSteps[i], i < nextSteps.length - 1));
+            if (i != nextSteps.length - 1) await delay();
+          }
+        } else if (event.step.index ==
+            MunicipalAdvisorSteps.confirmLocation.index) {
+          add(MunicipalAdvisorGetIsicActivitiesEvent());
         }
       },
     );
 
     on<MunicipalAdvisorRemoveLastChatEvent>(
       (event, emit) {
-        // remove last two messages
         final messages = state.messages;
         messages.removeLast();
         messages.removeLast();
@@ -48,6 +62,171 @@ class MunicipalAdvisorBloc
             messages: [...messages],
           ),
         );
+      },
+    );
+
+    on<MunicipalAdvisorGetIsicActivitiesEvent>(
+      (event, emit) async {
+        if (state.isicActivities.isNotEmpty) {
+          emit(
+            state.copyWith(
+              status: BlocRequestStatus.submissionGetSuccess,
+              messages: [
+                ...state.messages,
+                ...nextStep(MunicipalAdvisorSteps.confirmLocation),
+              ],
+            ),
+          );
+          return;
+        }
+        emit(
+          state.copyWith(
+            status: BlocRequestStatus.submissionGetLoading,
+            lastEvent: event,
+          ),
+        );
+        final failureOrSuccess = await getIsicActivities(NoParams());
+        failureOrSuccess.fold(
+          (failure) {
+            emit(
+              state.copyWith(
+                status: BlocRequestStatus.submissionGetFailure,
+                errorMessage: (failure as ServerFailure).errorMessage,
+              ),
+            );
+          },
+          (isicActivities) {
+            emit(
+              state.copyWith(
+                status: BlocRequestStatus.submissionGetSuccess,
+                isicActivities: isicActivities,
+                messages: [
+                  ...state.messages,
+                  ...nextStep(MunicipalAdvisorSteps.confirmLocation),
+                ],
+              ),
+            );
+          },
+        );
+      },
+    );
+
+    on<MunicipalAdvisorSelectIsicActivityEvent>(
+      (event, emit) async {
+        emit(
+          state.copyWith(
+            status: BlocRequestStatus.submissionGetLoading,
+            lastEvent: event,
+          ),
+        );
+        add(MunicipalAdvisorAddMessageEvent(
+          message: event.isicActivity.name,
+          step: MunicipalAdvisorSteps.activity,
+          data: event.isicActivity.id,
+        ));
+        add(MunicipalAdvisorGetIsicSubActivitiesEvent(
+          params: IsicSubActivityParams(
+            id: event.isicActivity.id,
+          ),
+        ));
+      },
+    );
+
+    on<MunicipalAdvisorGetIsicSubActivitiesEvent>(
+      (event, emit) async {
+        emit(
+          state.copyWith(
+            status: BlocRequestStatus.submissionGetLoading,
+            lastEvent: event,
+          ),
+        );
+        final failureOrSuccess = await getIsicSubActivities(event.params);
+        failureOrSuccess.fold(
+          (failure) {
+            emit(
+              state.copyWith(
+                status: BlocRequestStatus.submissionGetFailure,
+                errorMessage: (failure as ServerFailure).errorMessage,
+              ),
+            );
+          },
+          (isicSubActivities) {
+            emit(
+              state.copyWith(
+                status: BlocRequestStatus.submissionGetSuccess,
+                isicSubActivities: isicSubActivities,
+                messages: [
+                  ...state.messages,
+                  ...nextStep(MunicipalAdvisorSteps.activity),
+                ],
+              ),
+            );
+          },
+        );
+      },
+    );
+
+    on<MunicipalAdvisorSelectIsicSubActivityEvent>(
+      (event, emit) async {
+        emit(
+          state.copyWith(
+            status: BlocRequestStatus.submissionGetLoading,
+            selectedIsicSubActivity: event.isicSubActivity,
+            lastEvent: event,
+          ),
+        );
+        add(MunicipalAdvisorAddMessageEvent(
+          message: event.isicSubActivity.name,
+          step: MunicipalAdvisorSteps.subActivity,
+        ));
+        add(MunicipalAdvisorGetActivityDetailsEvent());
+      },
+    );
+
+    on<MunicipalAdvisorGetActivityDetailsEvent>(
+      (event, emit) async {
+        emit(
+          state.copyWith(
+            status: BlocRequestStatus.submissionGetLoading,
+            lastEvent: event,
+          ),
+        );
+        final params = ActivityDetailsParams(
+          id: state.selectedIsicSubActivity!.id,
+        );
+        final failureOrSuccess = await getActivityDetails(params);
+        failureOrSuccess.fold(
+          (failure) {
+            emit(
+              state.copyWith(
+                status: BlocRequestStatus.submissionGetFailure,
+                errorMessage: (failure as ServerFailure).errorMessage,
+              ),
+            );
+          },
+          (activityDetails) {
+            emit(
+              state.copyWith(
+                activityDetails: activityDetails,
+              ),
+            );
+            emit(
+              state.copyWith(
+                status: BlocRequestStatus.submissionGetSuccess,
+                messages: [
+                  ...state.messages,
+                  ...nextStep(MunicipalAdvisorSteps.subActivity),
+                ],
+              ),
+            );
+          },
+        );
+      },
+    );
+
+    on<MunicipalAdvisorRetryEvent>(
+      (event, emit) {
+        if (state.lastEvent != null) add(state.lastEvent!);
       },
     );
   }
@@ -108,8 +287,44 @@ class MunicipalAdvisorBloc
           ),
         ];
       case MunicipalAdvisorSteps.confirmLocation:
-        return [];
+        return [
+          ChatMessage(
+            message: 'municipalAdvisorActivity'.tr(),
+            step: MunicipalAdvisorSteps.activity,
+            isResponse: true,
+          ),
+        ];
       case MunicipalAdvisorSteps.activity:
+        return [
+          ChatMessage(
+            message: 'municipalAdvisorSubActivity'.tr(),
+            step: MunicipalAdvisorSteps.subActivity,
+            isResponse: true,
+          ),
+        ];
+      case MunicipalAdvisorSteps.subActivity:
+        return [
+          ChatMessage(
+            message:
+                '${'facilityType'.tr()}: ${state.activityDetails!.facilityName}',
+            step: MunicipalAdvisorSteps.area,
+            isResponse: true,
+          ),
+          ChatMessage(
+            message: 'municipalAdvisorArea'.tr(),
+            step: MunicipalAdvisorSteps.area,
+            isResponse: true,
+          ),
+        ];
+      case MunicipalAdvisorSteps.area:
+        return [
+          ChatMessage(
+            message: 'municipalAdvisorArea'.tr(),
+            step: MunicipalAdvisorSteps.inputSummary,
+            isResponse: true,
+          ),
+        ];
+      case MunicipalAdvisorSteps.inputSummary:
         return [];
     }
   }
