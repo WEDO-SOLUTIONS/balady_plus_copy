@@ -21,7 +21,12 @@ class ElevatedButtonWidget extends _ElevatedButton {
   ElevatedButtonWidget.login({required VoidCallback onPressed})
       : super(CustomElevatedButtonWidget(
           btnMargin: const EdgeInsets.only(top: 12.0),
-          text: "loginButton".tr(),
+          text: ("تسجيل الدخول").tr(),
+          btnColor: AppColor.primary800Light,
+          textStyle: AppStyle.elevatedButtonStyle.copyWith(
+              color: AppColor.blackModern50Light,
+              fontSize: 16,
+              fontWeight: FontWeight.bold),
           onPressed: onPressed,
         ));
 
@@ -86,6 +91,19 @@ class ElevatedButtonWidget extends _ElevatedButton {
           ),
           btnHeight: 56,
           text: "apply".tr(),
+          onPressed: onPressed,
+        ));
+
+  ElevatedButtonWidget.objectionApply({required VoidCallback onPressed})
+      : super(CustomElevatedButtonWidget(
+          btnColor: AppColor.primary800Light,
+          textStyle: AppStyle.elevatedButtonStyle.copyWith(
+            color: AppColor.white,
+            fontWeight: FontWeight.w700,
+            fontSize: 16,
+          ),
+          btnHeight: 56,
+          text: "objection_apply".tr(),
           onPressed: onPressed,
         ));
 
@@ -182,6 +200,46 @@ class ElevatedButtonWidget extends _ElevatedButton {
           ),
           btnHeight: 56,
           text: "confirmLocation".tr(),
+          onPressed: onPressed,
+        ));
+
+  ElevatedButtonWidget.applyObjection({required VoidCallback onPressed})
+      : super(CustomElevatedButtonWidget(
+          btnColor: AppColor.white,
+          textStyle: AppStyle.elevatedButtonStyle.copyWith(
+            color: AppColor.primary900Light,
+            fontSize: 12,
+          ),
+          btnBorderColor: AppColor.primary900Light,
+          btnHeight: 40,
+          text: "objection_apply".tr(),
+          onPressed: onPressed,
+        ));
+
+  ElevatedButtonWidget.attachFile({required VoidCallback onPressed})
+      : super(CustomElevatedButtonWidget(
+          btnColor: Colors.transparent,
+          btnBorderColor: AppColor.primary800Light,
+          textStyle: AppStyle.elevatedButtonStyle.copyWith(
+            color: AppColor.primary800Light,
+            fontWeight: FontWeight.w700,
+            fontSize: 16,
+          ),
+          btnHeight: 56,
+          text: "attachFileButton".tr(),
+          onPressed: onPressed,
+        ));
+
+  ElevatedButtonWidget.retriveCar({required VoidCallback onPressed})
+      : super(CustomElevatedButtonWidget(
+          text: ("طلب إستعادة").tr(),
+          btnRadius: 6,
+          btnHeight: 40,
+          btnColor: AppColor.primary800Light,
+          textStyle: AppStyle.elevatedButtonStyle.copyWith(
+              color: AppColor.blackModern50Light,
+              fontSize: 14,
+              fontWeight: FontWeight.bold),
           onPressed: onPressed,
         ));
 }

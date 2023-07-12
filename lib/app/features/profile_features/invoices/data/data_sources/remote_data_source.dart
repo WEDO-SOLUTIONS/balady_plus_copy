@@ -51,7 +51,7 @@ class InvoicesRemoteDataSourceImplementation
       final data = response.data;
       data.toString().successLog();
 
-      final result = ResponseBodyModel.fromMap(data).data.result;
+      final result = ResponseBodyModel.fromMap(data).data?.result;
 
       return result
           .map<InvoicesModel>(
@@ -86,7 +86,7 @@ class InvoicesRemoteDataSourceImplementation
       final data = response.data;
       data.toString().successLog();
 
-      final result = ResponseBodyModel.fromMap(data).data.result;
+      final result = ResponseBodyModel.fromMap(data).data?.result;
 
       return result
           .map<InvoiceStatusModel>(
@@ -121,7 +121,7 @@ class InvoicesRemoteDataSourceImplementation
       final data = response.data;
       data.toString().successLog();
 
-      final result = ResponseBodyModel.fromMap(data).data.result;
+      final result = ResponseBodyModel.fromMap(data).data?.result;
 
       return result
           .map<InvoiceTypeModel>(
@@ -158,7 +158,7 @@ class InvoicesRemoteDataSourceImplementation
       final data = response.data;
       data.toString().successLog();
 
-      final result = ResponseBodyModel.fromMap(data).data.result;
+      final result = ResponseBodyModel.fromMap(data).data?.result;
 
       return result
           .map<InvoiceSubTypeModel>(

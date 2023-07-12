@@ -11,9 +11,13 @@ class BottomSheetDialog {
     Color? barrierColor,
     double borderRadius = 28.0,
     bool isDismissible = true,
+    bool isFullHeight = true,
+    double? height,
     bool isScrollControlled = true,
     bool enableDrag = false,
   }) async {
+    final screenHeight = context.screenHeight;
+    final screenStatusBarHeight = context.topPadding + 10.0;
     return (await showModalBottomSheet(
           context: context,
           isDismissible: isDismissible,
@@ -28,7 +32,12 @@ class BottomSheetDialog {
           builder: (context) => ClipRRect(
             borderRadius:
                 BorderRadius.vertical(top: Radius.circular(borderRadius)),
-            child: child,
+            child: SizedBox(
+              // height: height ?? screenHeight * 0.90, // 90% from screenHeight
+              height:
+                  isFullHeight ? screenHeight - screenStatusBarHeight : height,
+              child: child,
+            ),
           ),
         )) ??
         false;

@@ -66,6 +66,8 @@ export 'presentation/components/texts/title_subtitle_component.dart';
 export 'presentation/components/texts/title_subtitle_icon_component.dart';
 export 'presentation/components/texts/title_subtitle_shimmer_component.dart';
 export 'presentation/components/texts/title_with_actions_component.dart';
+export 'presentation/components/texts/label_icon_component.dart';
+export 'presentation/components/texts/label_icon_subtitle_component.dart';
 
 export 'presentation/components/error_loading_component.dart';
 export 'presentation/components/stepper_footer_buttons_component.dart';
@@ -116,7 +118,6 @@ export 'presentation/widgets/drop_downs/custom_platform_drop_down_widget.dart';
 export 'presentation/widgets/drop_downs/custom_sheet_drop_down_widget.dart';
 export 'presentation/widgets/drop_downs/drop_down_box_with_title.dart';
 
-
 export 'presentation/widgets/pickers/custom_country_picker_widget.dart';
 export 'presentation/widgets/pickers/custom_cupertino_date_picker_widget.dart';
 export 'presentation/widgets/pickers/custom_cupertino_picker_widget.dart';
@@ -130,7 +131,6 @@ export 'presentation/widgets/radio_buttons/custom_radio_button_widget.dart';
 export 'presentation/widgets/texts/custom_text_field_widget.dart';
 export 'presentation/widgets/texts/custom_text_widget.dart';
 export 'presentation/widgets/texts/filter_text_field.dart';
-
 
 export 'presentation/widgets/abstraction_widget.dart';
 export 'presentation/widgets/clickable_widget.dart';
@@ -152,7 +152,6 @@ export 'presentation/widgets/tab_page_container.dart';
 export 'presentation/widgets/retry_widget.dart';
 
 export 'presentation/icons/filter_icon.dart';
-
 
 //
 

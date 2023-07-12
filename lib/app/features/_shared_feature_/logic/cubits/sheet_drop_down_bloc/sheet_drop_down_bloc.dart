@@ -32,8 +32,8 @@ class SheetDropDownBloc extends Bloc<SheetDropDownEvent, SheetDropDownState> {
         List<DropDownItem> filteredList = [];
         for (var item in state.cachedItems) {
           if (item.name.toLowerCase().contains(searchTerm) ||
-              item.value.toLowerCase().contains(searchTerm) ||
-              item.code.toLowerCase().contains(searchTerm)) {
+              (item.value?.toLowerCase().contains(searchTerm) ?? false) ||
+              (item.code?.toLowerCase().contains(searchTerm) ?? false)) {
             filteredList.add(item);
           }
         }

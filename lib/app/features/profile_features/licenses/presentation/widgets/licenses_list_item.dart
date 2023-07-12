@@ -5,6 +5,7 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../core/utils/utils_exports.dart'
     show AppColor, AppStyle, IconPath, RouteName;
+    show AppColor, AppStyle, IconPath, RouteName;
 import '../../../../_shared_feature_/shared_feature_exports.dart';
 import '../../licenses_exports.dart' show LicenseEntity, LicenseParameter;
 
@@ -93,7 +94,7 @@ class LicensesListItem extends StatelessWidget {
 
             Navigator.of(context).pushNamed(
               RouteName.inappWebview,
-              arguments: (title: 'license'.tr(), url: license.redirectUrl),
+              arguments: (title: ''.tr(), url: license.redirectUrl),
             );
           }),
         ],

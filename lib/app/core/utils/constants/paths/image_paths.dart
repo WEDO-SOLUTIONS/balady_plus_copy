@@ -12,4 +12,7 @@ class ImagePath {
   static const prayerTimesAppBar = '${_imagePath}prayer_times_appbar$_png';
   static const needle = '${_imagePath}needle$_svg';
   static const compass = '${_imagePath}compass$_svg';
+  static const appBarBackground = '${_imagePath}app_bar_background$_png';
+  static const successPageBackground = '${_imagePath}success_background$_png';
+  static const successPageIcon = '${_imagePath}success_image$_png';
 }

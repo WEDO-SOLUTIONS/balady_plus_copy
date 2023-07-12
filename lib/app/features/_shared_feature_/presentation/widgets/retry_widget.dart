@@ -32,6 +32,7 @@ class RetryWidget extends StatelessWidget {
               const SizedBox(height: 10),
               CustomTextWidget(
                 "retry".tr(),
+                fontColor: AppColor.primary900Light,
               ),
             ],
           ),

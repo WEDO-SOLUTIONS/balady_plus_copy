@@ -11,6 +11,7 @@ class LicenseEntity extends Equatable {
   final DateTime licenseEndDate;
   final DateTime? updateTime;
   final String? redirectUrl;
+  final String? redirectUrl;
 
   const LicenseEntity({
     required this.licenseNumber,

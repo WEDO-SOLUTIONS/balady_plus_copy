@@ -52,7 +52,7 @@ class ProfileSections {
           ProfileItem(
             title: "objections".tr(),
             icon: IconPath.objections,
-            route: "",
+            route: RouteName.objections,
           ),
           ProfileItem(
             title: "appointments".tr(),

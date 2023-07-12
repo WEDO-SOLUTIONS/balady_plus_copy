@@ -1,9 +1,11 @@
-//import 'package:balady_new_app/etmam_app/features/_shared_feature_/shared/shared_feature_exports.dart'
+//import 'package:balady_plus/etmam_app/features/_shared_feature_/shared/shared_feature_exports.dart'
 //   show showUpdateAppPopUpWidget;
 import 'package:balady_plus/app/features/entry_point/domain/use_cases/get_test_data.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:webview_flutter/webview_flutter.dart' as c;
 
@@ -82,13 +84,13 @@ class EntryPointCubit extends Cubit<EntryPointState> {
       });
       //MM sl<EtmamEntryPointCubit>().onLoadingApp();
 
-      if (token.refreshToken != null) await refreshToken(token.refreshToken!);
+      //  if (token.refreshToken != null) await refreshToken(token.refreshToken!);
       refreshSSOProfile();
     });
   }
 
   Future<bool> onLogin({bool isFromEtmam = false}) async {
-    //MM EasyLoading.show();
+    EasyLoading.show();
     emit(state.copyWith(
       status: AuthStatus.loading,
     ));
@@ -113,24 +115,19 @@ class EntryPointCubit extends Cubit<EntryPointState> {
           errorMessage: "",
         ));
 
-        final failureOrSuccessForSSOProfile = await _getProfile(NoParams());
-
-        await failureOrSuccessForSSOProfile.fold((failure) async {
-          clearAuth();
-          emit(EntryPointState(
-              status: AuthStatus.failure,
-              errorMessage: ("errors_server_error_1").tr()));
-        }, (success) async {
-          final failureOrSuccess = await _saveSSOProfile(success);
-          if (failureOrSuccess.isRight()) {
-            emit(state.copyWith(
-              status: AuthStatus.notAuthenticated,
-              token: token,
-              userInfo: success,
-              errorMessage: "",
-            ));
-          }
-        });
+        Map<String, dynamic> decodedToken =
+            JwtDecoder.decode(token.token ?? "");
+        SsoUserInfo user = SsoUserInfoModel.fromJson(decodedToken);
+        final failureOrSuccess =
+            await _saveSSOProfile(SsoUserInfoModel.fromJson(decodedToken));
+        if (failureOrSuccess.isRight()) {
+          emit(state.copyWith(
+            status: AuthStatus.authenticated,
+            token: token,
+            userInfo: user,
+            errorMessage: "",
+          ));
+        }
 
         final failureOrSuccessForCookie = await _getCookie(NoParams());
 
@@ -157,7 +154,7 @@ class EntryPointCubit extends Cubit<EntryPointState> {
             emit(state.copyWith(token: token));
           }
         });
-        //MM  EasyLoading.dismiss();
+        EasyLoading.dismiss();
         if (isFromEtmam) {
           //MM    sl<EtmamEntryPointCubit>().onLogin();
         }
@@ -169,7 +166,7 @@ class EntryPointCubit extends Cubit<EntryPointState> {
         }
       }
     });
-    //MM EasyLoading.dismiss();
+    EasyLoading.dismiss();
     //MM   sl<VDCategoryBloc>().add(RefreshCategoriesEvent());
     //MM return isLoggedIn;
     return CommonProperties.isLoggedIn;
@@ -243,6 +240,7 @@ class EntryPointCubit extends Cubit<EntryPointState> {
   }
 
   Future<void> clearAuth() async {
+    await _logout(NoParams());
     _clearAuth(NoParams());
 
     sharedPrefs.setSSOToken(null);
@@ -305,14 +303,6 @@ class EntryPointCubit extends Cubit<EntryPointState> {
     //MM  locator<VisitMainViewModel>().reset();
     //MM  locator<CustomerSoundViewModel>().reset();
     await CookieManager.instance().deleteAllCookies();
-    await c.CookieManager().clearCookies();
-    try {
-      dynamic controller;
-      const c.WebView().onWebViewCreated!(controller);
-      controller.clearCache();
-    } catch (ex) {
-      //  print("EXXX $ex");
-    }
   }
 
   testData() async {

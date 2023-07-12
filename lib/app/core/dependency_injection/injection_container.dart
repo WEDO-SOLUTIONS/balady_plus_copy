@@ -16,14 +16,13 @@ import '../dependency_injection/dependency_injection_exports.dart'
         EntryPointInjection,
         InvoicesInjection,
         LicensesInjection,
-        LookupInjection,
         MunicipalAdvisorInjection,
         OTPInjection,
         PrayerTimesInjection,
         RequestsInjection,
         ServicesInjection,
-        SignInInjection,
-        SignUpInjection;
+        SignUpInjection,
+        VDInjection;
 import '../services/services_exports.dart'
     show
         EntryPointBridge,
@@ -38,12 +37,9 @@ void initialize() {
   //! Features
   //? Entry Point
   EntryPointInjection.init();
-  //? Lookup
-  LookupInjection.init();
   //? OTP
   OTPInjection.init();
-  //? Sign-In
-  SignInInjection.init();
+  ;
   //? Sign-Up
   SignUpInjection.init();
   //? Services
@@ -56,6 +52,8 @@ void initialize() {
   //* Municipal Services
   //? Municipal Advisor
   MunicipalAdvisorInjection.init();
+  //? VD
+  VDInjection.init();
 
   //! Profile
   //? Delegators

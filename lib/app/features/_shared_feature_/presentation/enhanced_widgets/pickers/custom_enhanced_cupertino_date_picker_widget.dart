@@ -122,10 +122,11 @@ class CustomEnhancedCupertinoDatePickerWidget extends StatelessWidget {
         barrierDismissible: true,
         builder: (_) => SizedBox(
           height: context.screenHeight * 0.40,
+          width: double.infinity,
           child: Stack(
             children: [
               CupertinoDatePicker(
-                backgroundColor: AppColor.white,
+                backgroundColor: AppColor.black,
                 mode: CupertinoDatePickerMode.date,
                 initialDateTime: selectedDate,
                 minimumDate: firstDate,

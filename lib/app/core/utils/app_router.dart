@@ -4,14 +4,16 @@ import 'package:flutter/widgets.dart' show SizedBox;
 
 import '../../core/utils/utils_exports.dart'
     show RouteName, ScaleRotatePage, SliderUpPage;
+import '../../features/_shared_feature_/presentation/pages/view_dms_image_screen.dart';
 import '../../features/_shared_feature_/shared_feature_exports.dart';
-import '../../features/authentication/sign_in/sign_in_exports.dart'
-    show SignInPage;
+import '../../features/_shared_feature_/data/entities/success_screen_args.dart';
+import '../../features/_shared_feature_/presentation/pages/success_screen.dart';
 import '../../features/bottom_navigation/bottom_navigation_exports.dart'
     show BottomNavigationPage;
 import '../../features/entry_point/entry_point_exports.dart' show SsoUserInfo;
 import '../../features/municipal_services/municipal_advisor/municipal_advisor_exports.dart'
     show LocationPage, MunicipalAdvisorBloc, MunicipalAdvisorPage;
+
 import '../../features/profile_features/dashboard/dashboard_exports.dart'
     show DashBoardPage;
 import '../../features/profile_features/invoices/invoices_exports.dart'
@@ -26,9 +28,11 @@ import '../../features/public_services_features/prayer_times/prayer_times_export
     show PrayerTimesCubit, PrayerTimesPage;
 import '../../features/public_services_features/qiblah_compass/qiblah_compass_exports.dart'
     show QiblahCompassPage;
+import '../../features/public_services_features/prayer_times/presentation/pages/prayer_times_page.dart';
 import '../../features/services/services_exports.dart'
     show ServiceCardsPage, ServiceEntity;
 import '../../features/splash/splash_exports.dart' show SplashPage;
+import '../../features/vd/vd_exports.dart';
 
 class AppRouter {
   static Route<dynamic> allRoutes(RouteSettings settings) {
@@ -36,17 +40,6 @@ class AppRouter {
       // splash page
       case RouteName.splash:
         return MaterialPageRoute(builder: (_) => const SplashPage());
-      // sign-in page
-      case RouteName.signIn:
-        // return MaterialPageRoute(builder: (_) => const SignInPage());
-        return ScaleRotatePage(page: const SignInPage());
-      // sign-up page
-      case RouteName.signUp:
-        return MaterialPageRoute(builder: (_) => const SizedBox());
-      // otp page
-      case RouteName.otp:
-        return MaterialPageRoute(builder: (_) => const SizedBox());
-
       case RouteName.inappWebview:
         return MaterialPageRoute(
           builder: (_) => InAppWebViewPage(
@@ -58,6 +51,11 @@ class AppRouter {
         // return MaterialPageRoute(builder: (_) => const BottomNavigationPage());
         return SliderUpPage(page: const BottomNavigationPage());
 
+      case RouteName.dmsImageFullScreen:
+        String url = settings.arguments as String;
+        return MaterialPageRoute(
+          builder: (_) => ViewDMSImageScreen(url: url),
+        );
       //! Services
       case RouteName.serviceCards:
         return MaterialPageRoute(
@@ -114,6 +112,42 @@ class AppRouter {
       //? licenses page
       case RouteName.licenses:
         return MaterialPageRoute(builder: (_) => const LicensesPage());
+
+      // -------  VD ---------
+      case RouteName.vdCameraPage:
+        CameraParamsPage params = settings.arguments as CameraParamsPage;
+
+        return MaterialPageRoute(
+          builder: (_) => VDCameraPage(
+            params: params,
+          ),
+        );
+      case RouteName.vdCreateVDDetailsPage:
+        // CreateVDParamsPage params = settings.arguments as CreateVDParamsPage;
+        return MaterialPageRoute(
+          builder: (_) => CreateVDDetailsPage(),
+        );
+
+      case RouteName.vdMapRoute:
+        MapScreenParams? params = settings.arguments != null
+            ? settings.arguments as MapScreenParams
+            : null;
+        return MaterialPageRoute(
+          builder: (_) => VDMapScreen(params: params),
+        );
+      case RouteName.vdGuestOtpScreen:
+        return MaterialPageRoute(
+          builder: (_) => VDGuestOtpScreen(),
+        );
+
+      case RouteName.successRoute:
+        final args = settings.arguments as SuccessScreenArgs;
+        return MaterialPageRoute(
+          builder: (_) => SuccessScreen(
+            successScreenArgs: args,
+          ),
+        );
+
       //? error page
       default:
         return MaterialPageRoute(

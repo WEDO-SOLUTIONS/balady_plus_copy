@@ -1,8 +1,11 @@
 import 'package:balady_plus/app/features/home_page/home_exports.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:intl/intl.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
+import '../../../../../core/dependency_injection/injection_container.dart';
+import '../../../../../core/services/local/navigation_services.dart';
 import '../../../../../core/utils/utils_exports.dart'
     show AppColor, AppStyle, IconPath, RouteName;
 import '../../../../_shared_feature_/shared_feature_exports.dart';
@@ -87,16 +90,7 @@ class RequestsListItem extends StatelessWidget {
               ],
             ),
           ),
-          ElevatedButtonWidget.details(
-            onPressed: () {
-              if (request.redirectUrl == null) return;
-
-              Navigator.of(context).pushNamed(
-                RouteName.inappWebview,
-                arguments: (title: 'request'.tr(), url: request.redirectUrl),
-              );
-            },
-          ),
+          ElevatedButtonWidget.details(onPressed: () async {}),
         ],
       ),
     );

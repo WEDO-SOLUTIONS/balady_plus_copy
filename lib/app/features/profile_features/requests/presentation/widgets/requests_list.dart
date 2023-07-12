@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/reload_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
@@ -51,8 +52,8 @@ class _RequestsListState extends State<RequestsList> {
         if (state.requestsStatus == BlocRequestStatus.submissionGetFailure &&
             state.page == 0) {
           return Center(
-            child: RetryWidget(
-              onRetry: () {
+            child: ReloadWidget(
+              onTab: () {
                 context.read<RequestsBloc>().add(GetRequestsEvent());
               },
             ),

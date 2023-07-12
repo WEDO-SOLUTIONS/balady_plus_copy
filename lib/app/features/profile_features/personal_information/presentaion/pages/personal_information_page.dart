@@ -50,7 +50,7 @@ class PersonalInformationPage extends StatelessWidget {
                   ),
                   CardParameter(
                     title: "sex".tr(),
-                    value: userInfo.sex ?? '',
+                    value: userInfo.getGender(),
                   ),
                 ],
               ),

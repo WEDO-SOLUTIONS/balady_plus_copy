@@ -36,7 +36,7 @@ class PrayerTimesRemoteDataSourceImplementation
       final data = response.data;
       data.toString().successLog();
 
-      final result = ResponseBodyModel.fromMap(data).data.result;
+      final result = ResponseBodyModel.fromMap(data).data?.result;
 
       return PrayerTimesResponseModel.fromMap(result as Map<String, dynamic>);
     } on DioError catch (error) {
