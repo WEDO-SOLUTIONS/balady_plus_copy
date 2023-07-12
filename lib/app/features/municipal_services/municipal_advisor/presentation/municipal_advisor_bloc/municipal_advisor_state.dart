@@ -3,6 +3,7 @@ part of 'municipal_advisor_bloc.dart';
 class MunicipalAdvisorState extends Equatable {
   final BlocRequestStatus status;
   final List<ChatMessage> messages;
+  final String? consultationKey;
   final GISResponse? gisResponse;
   final ActivityLocation? activityLocation;
   final List<IsicActivityEntity> isicActivities;
@@ -18,6 +19,7 @@ class MunicipalAdvisorState extends Equatable {
   const MunicipalAdvisorState({
     this.status = BlocRequestStatus.initial,
     this.messages = const <ChatMessage>[],
+    this.consultationKey,
     this.gisResponse,
     this.activityLocation,
     this.isicActivities = const <IsicActivityEntity>[],
@@ -36,6 +38,7 @@ class MunicipalAdvisorState extends Equatable {
   MunicipalAdvisorState copyWith({
     BlocRequestStatus? status,
     List<ChatMessage>? messages,
+    String? consultationKey,
     GISResponse? gisResponse,
     ActivityLocation? activityLocation,
     List<IsicActivityEntity>? isicActivities,
@@ -51,6 +54,7 @@ class MunicipalAdvisorState extends Equatable {
     return MunicipalAdvisorState(
       status: status ?? this.status,
       messages: messages ?? this.messages,
+      consultationKey: consultationKey ?? this.consultationKey,
       gisResponse: gisResponse ?? this.gisResponse,
       activityLocation: activityLocation ?? this.activityLocation,
       isicActivities: isicActivities ?? this.isicActivities,
@@ -70,6 +74,7 @@ class MunicipalAdvisorState extends Equatable {
   List<Object?> get props => [
         status,
         messages,
+        consultationKey,
         gisResponse,
         activityLocation,
         isicActivities,

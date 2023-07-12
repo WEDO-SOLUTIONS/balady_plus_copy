@@ -21,6 +21,8 @@ class ApiUrl {
       '/v1/balady-consultation-services/activities-by-isicNumber';
   static const activityDetails =
       '/v1/balady-consultation-services/activity-detail-info';
+  static const consultationKey =
+      '/v1/balady-consultation-services/apply';
 
   //! Profile
   //! Delegators

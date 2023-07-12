@@ -11,6 +11,7 @@ import '../../municipal_advisor_exports.dart'
     show
         ActivityDetailsModel,
         ActivityDetailsParamsModel,
+        ConsultationKeyParamsModel,
         IsicActivityModel,
         IsicSubActivityParamsModel;
 
@@ -20,6 +21,7 @@ abstract class MunicipalAdvisorRemoteDataSource {
       IsicSubActivityParamsModel params);
   Future<ActivityDetailsModel> getActivityDetails(
       ActivityDetailsParamsModel params);
+  Future<String> getConsultationKey(ConsultationKeyParamsModel params);
 }
 
 class MunicipalAdvisorRemoteDataSourceImplementation
@@ -108,6 +110,36 @@ class MunicipalAdvisorRemoteDataSourceImplementation
       final result = ResponseBodyModel.fromMap(data).data?.result;
 
       return ActivityDetailsModel.fromMap(result as Map<String, dynamic>);
+    } on DioError catch (error) {
+      "DioError $error".errorLog();
+      throw ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+      );
+    } catch (ex) {
+      "Catched $ex".errorLog();
+      if (ex is ServerException) {
+        rethrow;
+      } else {
+        throw ServerException("errors_server_error_2".tr());
+      }
+    }
+  }
+
+  @override
+  Future<String> getConsultationKey(ConsultationKeyParamsModel params) async {
+    try {
+      final response = await webService.dio.post(
+        ApiUrl.consultationKey,
+        data: params.toMap(),
+      );
+
+      final data = response.data;
+      data.toString().successLog();
+
+      final result = ResponseBodyModel.fromMap(data).data?.result;
+
+      return result['uniqueKey'] as String;
     } on DioError catch (error) {
       "DioError $error".errorLog();
       throw ServerException(

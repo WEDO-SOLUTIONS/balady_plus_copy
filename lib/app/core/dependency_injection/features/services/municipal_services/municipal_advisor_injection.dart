@@ -1,6 +1,7 @@
 import '../../../../../features/municipal_services/municipal_advisor/municipal_advisor_exports.dart'
     show
         GetActivityDetails,
+        GetConsultationKey,
         GetIsicActivities,
         GetIsicSubActivities,
         MunicipalAdvisorBloc,
@@ -16,6 +17,7 @@ class MunicipalAdvisorInjection {
     sl.registerLazySingleton(() => GetIsicActivities(sl()));
     sl.registerLazySingleton(() => GetIsicSubActivities(sl()));
     sl.registerLazySingleton(() => GetActivityDetails(sl()));
+    sl.registerLazySingleton(() => GetConsultationKey(sl()));
 
     //! Repository
     sl.registerLazySingleton<MunicipalAdvisorRepository>(
@@ -34,6 +36,7 @@ class MunicipalAdvisorInjection {
     //! Bloc
     sl.registerFactory(
       () => MunicipalAdvisorBloc(
+        getConsultationKey: sl(),
         getIsicActivities: sl(),
         getIsicSubActivities: sl(),
         getActivityDetails: sl(),

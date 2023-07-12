@@ -4,12 +4,14 @@ export 'domain/entities/isic_activity_entity.dart';
 export 'domain/entities/isic_sub_activities_params.dart';
 export 'domain/entities/activity_details_entity.dart';
 export 'domain/entities/activity_details_params.dart';
+export 'domain/entities/consultation_key_params.dart';
 //? Repositories
 export 'domain/repositories/repository.dart';
 //? Use cases
 export 'domain/use_cases/get_isic_activities.dart';
 export 'domain/use_cases/get_isic_sub_activities.dart';
 export 'domain/use_cases/get_activity_details.dart';
+export 'domain/use_cases/get_consultation_key.dart';
 
 //!Data
 //? Datasources
@@ -19,6 +21,7 @@ export 'data/models/isic_activity_model.dart';
 export 'data/models/isic_sub_activities_params_model.dart';
 export 'data/models/activity_details_model.dart';
 export 'data/models/activity_details_params_model.dart';
+export 'data/models/consultation_key_params_model.dart';
 //? Repositories
 export 'data/repositories/repository_implementation.dart';
 

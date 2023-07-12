@@ -22,6 +22,9 @@ class MunicipalAdvisorAddMessageEvent extends MunicipalAdvisorEvent {
   List<Object?> get props => [message, step, data];
 }
 
+class MunicipalAdvisorGetConsultationKeyEvent extends MunicipalAdvisorEvent {}
+
+
 class MunicipalAdvisorGetGisLocationEvent extends MunicipalAdvisorEvent {
   final LatLng latLng;
 

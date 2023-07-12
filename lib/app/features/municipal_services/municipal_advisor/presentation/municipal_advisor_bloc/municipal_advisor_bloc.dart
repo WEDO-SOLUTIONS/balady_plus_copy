@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -14,22 +16,30 @@ part 'municipal_advisor_state.dart';
 
 class MunicipalAdvisorBloc
     extends Bloc<MunicipalAdvisorEvent, MunicipalAdvisorState> {
-  final GetIsicActivities getIsicActivities;
-  final GetIsicSubActivities getIsicSubActivities;
-  final GetActivityDetails getActivityDetails;
-  final GetGISData getGISData;
+  final GetConsultationKey _getConsultationKey;
+  final GetIsicActivities _getIsicActivities;
+  final GetIsicSubActivities _getIsicSubActivities;
+  final GetActivityDetails _getActivityDetails;
+  final GetGISData _getGISData;
 
   MunicipalAdvisorBloc({
-    required this.getIsicActivities,
-    required this.getIsicSubActivities,
-    required this.getActivityDetails,
-    required this.getGISData,
-  }) : super(const MunicipalAdvisorState()) {
+    required GetConsultationKey getConsultationKey,
+    required GetIsicActivities getIsicActivities,
+    required GetIsicSubActivities getIsicSubActivities,
+    required GetActivityDetails getActivityDetails,
+    required GetGISData getGISData,
+  })  : _getConsultationKey = getConsultationKey,
+        _getIsicActivities = getIsicActivities,
+        _getIsicSubActivities = getIsicSubActivities,
+        _getActivityDetails = getActivityDetails,
+        _getGISData = getGISData,
+        super(const MunicipalAdvisorState()) {
     on<MunicipalAdvisorAddMessageEvent>(
       (event, emit) async {
         emit(
           state.copyWith(
             status: BlocRequestStatus.submissionGetLoading,
+            lastEvent: event,
             messages: [
               ...state.messages,
               ChatMessage(
@@ -41,6 +51,12 @@ class MunicipalAdvisorBloc
             ],
           ),
         );
+        if (event.step == MunicipalAdvisorSteps.start) {
+          final didGetKey = await getConsultationKeyEventHandler(event, emit);
+          if (!didGetKey) {
+            return;
+          }
+        }
         if (showNextSteps(event.step)) {
           final nextSteps = nextStep(
             state.changingInfo
@@ -48,7 +64,7 @@ class MunicipalAdvisorBloc
                 : event.step,
             event.data,
           );
-          await delay();
+          if (event.step != MunicipalAdvisorSteps.start) await delay();
           for (int i = 0; i < nextSteps.length; i++) {
             emit(botResponse(event, nextSteps[i], i < nextSteps.length - 1));
             if (i != nextSteps.length - 1) await delay();
@@ -59,10 +75,16 @@ class MunicipalAdvisorBloc
       },
     );
 
+    on<MunicipalAdvisorGetConsultationKeyEvent>(
+      (event, emit) async {
+        await getConsultationKeyEventHandler(event, emit);
+      },
+    );
+
     on<MunicipalAdvisorGetGisLocationEvent>(
       (event, emit) async {
         emit(state.copyWith(status: BlocRequestStatus.submissionGetLoading));
-        final failureOrSuccess = await getGISData(
+        final failureOrSuccess = await _getGISData(
           GISParams(x: event.latLng.longitude, y: event.latLng.latitude),
         );
         failureOrSuccess.fold(
@@ -139,7 +161,7 @@ class MunicipalAdvisorBloc
             lastEvent: event,
           ),
         );
-        final failureOrSuccess = await getIsicActivities(NoParams());
+        final failureOrSuccess = await _getIsicActivities(NoParams());
         failureOrSuccess.fold(
           (failure) {
             emit(
@@ -195,7 +217,7 @@ class MunicipalAdvisorBloc
             lastEvent: event,
           ),
         );
-        final failureOrSuccess = await getIsicSubActivities(event.params);
+        final failureOrSuccess = await _getIsicSubActivities(event.params);
         failureOrSuccess.fold(
           (failure) {
             emit(
@@ -249,7 +271,7 @@ class MunicipalAdvisorBloc
         final params = ActivityDetailsParams(
           id: state.selectedIsicSubActivity!.id,
         );
-        final failureOrSuccess = await getActivityDetails(params);
+        final failureOrSuccess = await _getActivityDetails(params);
         failureOrSuccess.fold(
           (failure) {
             emit(
@@ -344,6 +366,49 @@ class MunicipalAdvisorBloc
     on<MunicipalAdvisorRetryEvent>(
       (event, emit) {
         if (state.lastEvent != null) add(state.lastEvent!);
+      },
+    );
+  }
+
+  Future<bool> getConsultationKeyEventHandler(event, emit) async {
+    final userInfo = CommonProperties.userInfo;
+    if (userInfo == null) {
+      emit(
+        state.copyWith(
+          status: BlocRequestStatus.submissionGetFailure,
+          errorMessage: 'user not found',
+        ),
+      );
+    }
+    emit(state.copyWith(
+      lastEvent: MunicipalAdvisorGetConsultationKeyEvent(),
+      status: BlocRequestStatus.submissionGetLoading,
+    ));
+    final failureOrSuccess = await _getConsultationKey(
+      ConsultationKeyParams(
+        mobile: userInfo!.getPhone(),
+        submitterBirthDate: "1378/07/01",
+        gender: userInfo.sex ?? "1",
+      ),
+    );
+    return failureOrSuccess.fold(
+      (failure) {
+        emit(
+          state.copyWith(
+            status: BlocRequestStatus.submissionGetFailure,
+            errorMessage: (failure as ServerFailure).errorMessage,
+          ),
+        );
+        return false;
+      },
+      (consultationKey) {
+        emit(
+          state.copyWith(
+            status: BlocRequestStatus.submissionGetSuccess,
+            consultationKey: consultationKey,
+          ),
+        );
+        return true;
       },
     );
   }

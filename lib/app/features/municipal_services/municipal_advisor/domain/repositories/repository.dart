@@ -5,6 +5,7 @@ import '../../municipal_advisor_exports.dart'
     show
         ActivityDetailsEntity,
         ActivityDetailsParamsModel,
+        ConsultationKeyParamsModel,
         IsicActivityEntity,
         IsicSubActivityParamsModel;
 
@@ -14,4 +15,7 @@ abstract class MunicipalAdvisorRepository {
       IsicSubActivityParamsModel params);
   Future<Either<Failure, ActivityDetailsEntity>> getActivityDetails(
       ActivityDetailsParamsModel params);
+
+  Future<Either<Failure, String>> getConsultationKey(
+      ConsultationKeyParamsModel params);
 }
