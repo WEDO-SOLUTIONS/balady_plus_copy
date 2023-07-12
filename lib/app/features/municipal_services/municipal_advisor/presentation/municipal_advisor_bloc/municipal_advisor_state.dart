@@ -9,6 +9,8 @@ class MunicipalAdvisorState extends Equatable {
   final List<IsicActivityEntity> isicSubActivities;
   final IsicActivityEntity? selectedIsicSubActivity;
   final ActivityDetailsEntity? activityDetails;
+  final num? selectedArea;
+  final bool changingInfo;
   final MunicipalAdvisorEvent? lastEvent;
   final String? errorMessage;
 
@@ -21,6 +23,8 @@ class MunicipalAdvisorState extends Equatable {
     this.isicSubActivities = const <IsicActivityEntity>[],
     this.selectedIsicSubActivity,
     this.activityDetails,
+    this.selectedArea,
+    this.changingInfo = false,
     this.lastEvent,
     this.errorMessage,
   });
@@ -36,6 +40,8 @@ class MunicipalAdvisorState extends Equatable {
     List<IsicActivityEntity>? isicSubActivities,
     IsicActivityEntity? selectedIsicSubActivity,
     ActivityDetailsEntity? activityDetails,
+    num? selectedArea,
+    bool? changingInfo,
     MunicipalAdvisorEvent? lastEvent,
     String? errorMessage,
   }) {
@@ -49,6 +55,8 @@ class MunicipalAdvisorState extends Equatable {
       selectedIsicSubActivity:
           selectedIsicSubActivity ?? this.selectedIsicSubActivity,
       activityDetails: activityDetails ?? this.activityDetails,
+      selectedArea: selectedArea ?? this.selectedArea,
+      changingInfo: changingInfo ?? this.changingInfo,
       lastEvent: lastEvent ?? this.lastEvent,
       errorMessage: errorMessage ?? this.errorMessage,
     );
@@ -64,6 +72,8 @@ class MunicipalAdvisorState extends Equatable {
         isicSubActivities,
         selectedIsicSubActivity,
         activityDetails,
+        selectedArea,
+        changingInfo,
         lastEvent,
         errorMessage,
       ];

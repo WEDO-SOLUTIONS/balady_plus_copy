@@ -22,7 +22,27 @@ class MunicipalAdvisorAddMessageEvent extends MunicipalAdvisorEvent {
   List<Object?> get props => [message, step, data];
 }
 
-class MunicipalAdvisorRemoveLastChatEvent extends MunicipalAdvisorEvent {}
+class MunicipalAdvisorSelectLocationEvent extends MunicipalAdvisorEvent {
+  final ActivityLocation location;
+
+  const MunicipalAdvisorSelectLocationEvent({
+    required this.location,
+  });
+
+  @override
+  List<Object?> get props => [location];
+}
+
+class MunicipalAdvisorRemoveLastChatEvent extends MunicipalAdvisorEvent {
+  final int count;
+
+  const MunicipalAdvisorRemoveLastChatEvent({
+    required this.count,
+  });
+
+  @override
+  List<Object?> get props => [count];
+}
 
 class MunicipalAdvisorGetIsicActivitiesEvent extends MunicipalAdvisorEvent {}
 
@@ -60,5 +80,40 @@ class MunicipalAdvisorSelectIsicSubActivityEvent extends MunicipalAdvisorEvent {
 }
 
 class MunicipalAdvisorGetActivityDetailsEvent extends MunicipalAdvisorEvent {}
+
+class MunicipalAdvisorSelectAreaEvent extends MunicipalAdvisorEvent {
+  final num area;
+
+  const MunicipalAdvisorSelectAreaEvent({
+    required this.area,
+  });
+
+  @override
+  List<Object?> get props => [area];
+}
+
+class MunicipalAdvisorChangeInfo extends MunicipalAdvisorEvent {
+  final bool changeInfo;
+
+  const MunicipalAdvisorChangeInfo({
+    required this.changeInfo,
+  });
+
+  @override
+  List<Object?> get props => [changeInfo];
+}
+
+class MunicipalAdvisorChangeStepEvent extends MunicipalAdvisorEvent {
+  final String message;
+  final MunicipalAdvisorSteps step;
+
+  const MunicipalAdvisorChangeStepEvent({
+    required this.message,
+    required this.step,
+  });
+
+  @override
+  List<Object?> get props => [message, step];
+}
 
 class MunicipalAdvisorRetryEvent extends MunicipalAdvisorEvent {}

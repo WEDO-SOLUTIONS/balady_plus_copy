@@ -37,17 +37,40 @@ class MunicipalAdvisorBloc
             ],
           ),
         );
-        if (event.step.index < MunicipalAdvisorSteps.confirmLocation.index) {
-          final nextSteps = nextStep(event.step);
+        if (showNextSteps(event.step)) {
+          final nextSteps = nextStep(
+            state.changingInfo
+                ? MunicipalAdvisorSteps.inputSummary
+                : event.step,
+            event.data,
+          );
           await delay();
           for (int i = 0; i < nextSteps.length; i++) {
-            emit(botResponse(nextSteps[i], i < nextSteps.length - 1));
+            emit(botResponse(event, nextSteps[i], i < nextSteps.length - 1));
             if (i != nextSteps.length - 1) await delay();
           }
-        } else if (event.step.index ==
-            MunicipalAdvisorSteps.confirmLocation.index) {
+        } else if (event.step == MunicipalAdvisorSteps.confirmLocation) {
           add(MunicipalAdvisorGetIsicActivitiesEvent());
         }
+      },
+    );
+
+    on<MunicipalAdvisorSelectLocationEvent>(
+      (event, emit) async {
+        emit(
+          state.copyWith(
+            status: BlocRequestStatus.submissionGetLoading,
+            activityLocation: event.location,
+            messages: [
+              ...state.messages,
+            ],
+          ),
+        );
+        add(MunicipalAdvisorAddMessageEvent(
+          message: event.location.address,
+          step: MunicipalAdvisorSteps.location,
+          data: event.location.latLng,
+        ));
       },
     );
 
@@ -116,6 +139,7 @@ class MunicipalAdvisorBloc
         emit(
           state.copyWith(
             status: BlocRequestStatus.submissionGetLoading,
+            selectedIsicActivity: event.isicActivity,
             lastEvent: event,
           ),
         );
@@ -224,6 +248,68 @@ class MunicipalAdvisorBloc
       },
     );
 
+    on<MunicipalAdvisorSelectAreaEvent>(
+      (event, emit) async {
+        emit(
+          state.copyWith(
+            status: BlocRequestStatus.submissionGetLoading,
+            selectedArea: event.area,
+            lastEvent: event,
+          ),
+        );
+        add(MunicipalAdvisorAddMessageEvent(
+          message: '${event.area.toStringAsFixed(0)} ${"m2".tr()}',
+          step: MunicipalAdvisorSteps.area,
+        ));
+      },
+    );
+
+    on<MunicipalAdvisorChangeInfo>(
+      (event, emit) async {
+        emit(
+          state.copyWith(
+            status: BlocRequestStatus.submissionGetLoading,
+            lastEvent: event,
+          ),
+        );
+        add(MunicipalAdvisorAddMessageEvent(
+          message: event.changeInfo ? 'yes'.tr() : 'no'.tr(),
+          step: MunicipalAdvisorSteps.confirmInformation,
+          data: event.changeInfo ? 'changeInfo' : null,
+        ));
+      },
+    );
+
+    on<MunicipalAdvisorChangeStepEvent>(
+      (event, emit) async {
+        emit(
+          state.copyWith(
+            status: BlocRequestStatus.submissionGetLoading,
+            changingInfo: true,
+            lastEvent: event,
+            messages: [
+              ...state.messages,
+              ChatMessage(
+                message: event.message,
+                step: MunicipalAdvisorSteps.changeInformation,
+                isResponse: false,
+              )
+            ],
+          ),
+        );
+        await delay();
+        emit(
+          state.copyWith(
+            status: BlocRequestStatus.submissionGetSuccess,
+            messages: [
+              ...state.messages,
+              ...nextStep(event.step),
+            ],
+          ),
+        );
+      },
+    );
+
     on<MunicipalAdvisorRetryEvent>(
       (event, emit) {
         if (state.lastEvent != null) add(state.lastEvent!);
@@ -236,6 +322,7 @@ class MunicipalAdvisorBloc
   }
 
   MunicipalAdvisorState botResponse(
+    MunicipalAdvisorEvent event,
     ChatMessage message,
     bool loading,
   ) {
@@ -243,6 +330,8 @@ class MunicipalAdvisorBloc
       status: loading
           ? BlocRequestStatus.submissionGetLoading
           : BlocRequestStatus.submissionGetSuccess,
+      changingInfo: false,
+      lastEvent: event,
       messages: [
         ...state.messages,
         message,
@@ -250,7 +339,14 @@ class MunicipalAdvisorBloc
     );
   }
 
-  List<ChatMessage> nextStep(MunicipalAdvisorSteps step) {
+  bool showNextSteps(MunicipalAdvisorSteps step) {
+    return step.index < MunicipalAdvisorSteps.confirmLocation.index ||
+        step == MunicipalAdvisorSteps.area ||
+        step == MunicipalAdvisorSteps.inputSummary ||
+        step == MunicipalAdvisorSteps.confirmInformation;
+  }
+
+  List<ChatMessage> nextStep(MunicipalAdvisorSteps step, [dynamic data]) {
     switch (step) {
       case MunicipalAdvisorSteps.start:
         return [
@@ -319,12 +415,57 @@ class MunicipalAdvisorBloc
       case MunicipalAdvisorSteps.area:
         return [
           ChatMessage(
-            message: 'municipalAdvisorArea'.tr(),
+            message: 'municipalAdvisorInputSummery'.tr(),
             step: MunicipalAdvisorSteps.inputSummary,
+            isResponse: true,
+            customWidget: true,
+          ),
+          ChatMessage(
+            message: 'municipalAdvisorConfirmSummery'.tr(),
+            step: MunicipalAdvisorSteps.confirmInformation,
             isResponse: true,
           ),
         ];
       case MunicipalAdvisorSteps.inputSummary:
+        return [
+          ChatMessage(
+            message: 'municipalAdvisorConfirmSummery'.tr(),
+            step: MunicipalAdvisorSteps.confirmInformation,
+            isResponse: true,
+          ),
+        ];
+      case MunicipalAdvisorSteps.confirmInformation:
+        if (data == 'changeInfo') {
+          return [
+            ChatMessage(
+              message: 'municipalAdvisorChangeInfo'.tr(),
+              step: MunicipalAdvisorSteps.changeInformation,
+              isResponse: true,
+            ),
+          ];
+        } else {
+          return [
+            ChatMessage(
+              message: 'municipalAdvisorRequirements'.tr(),
+              step: MunicipalAdvisorSteps.requirements,
+              isResponse: true,
+            ),
+          ];
+        }
+      case MunicipalAdvisorSteps.changeInformation:
+        return [
+          ChatMessage(
+            message: 'municipalAdvisorInputSummery'.tr(),
+            step: MunicipalAdvisorSteps.confirmInformation,
+            isResponse: true,
+          ),
+          ChatMessage(
+            message: 'municipalAdvisorConfirmSummery'.tr(),
+            step: MunicipalAdvisorSteps.confirmInformation,
+            isResponse: true,
+          ),
+        ];
+      case MunicipalAdvisorSteps.requirements:
         return [];
     }
   }

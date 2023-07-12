@@ -35,7 +35,7 @@ class ConfirmLocation extends StatelessWidget {
             arguments: context.read<MunicipalAdvisorBloc>(),
           );
           context.read<MunicipalAdvisorBloc>().add(
-                MunicipalAdvisorRemoveLastChatEvent(),
+                const MunicipalAdvisorRemoveLastChatEvent(count: 2),
               );
         }
       },

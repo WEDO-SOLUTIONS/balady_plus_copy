@@ -8,8 +8,9 @@ import '../../../../_shared_feature_/shared_feature_exports.dart'
 import '../../municipal_advisor_exports.dart'
     show
         ChatBubbleCurrentStep,
-        LocationChatBubble,
+        ChatBubbleStepData,
         ChatMessage,
+        LocationChatBubble,
         MunicipalAdvisorSteps;
 
 class ChatBubble extends StatelessWidget {
@@ -98,8 +99,10 @@ class ChatBubble extends StatelessWidget {
                       ),
                       maxLines: 100,
                     ),
-                  if (currentStep && chatMessage.isResponse)
-                    ChatBubbleCurrentStep(step: chatMessage.step)
+                  if (chatMessage.customWidget)
+                    ChatBubbleStepData(step: chatMessage.step)
+                  else if (currentStep && chatMessage.isResponse)
+                    ChatBubbleCurrentStep(step: chatMessage.step),
                 ],
               ),
             ),

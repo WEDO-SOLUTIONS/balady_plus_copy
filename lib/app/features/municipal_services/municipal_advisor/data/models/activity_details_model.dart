@@ -24,8 +24,8 @@ class ActivityDetailsModel extends ActivityDetailsEntity {
       masterActivityName: map['masterActivityName'] as String,
       facilityId: map['facilityId'] as int,
       facilityName: map['facilityName'] as String,
-      minimumArea: map['minimumArea'] as double,
-      maximumArea: map['maximumArea'] as double,
+      minimumArea: map['minimumArea'] as double? ?? 0,
+      maximumArea: map['maximumArea'] as double? ?? double.infinity,
     );
   }
 }

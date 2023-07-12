@@ -1,4 +1,5 @@
-import 'package:flutter/material.dart' show EdgeInsets, TextStyle;
+import 'package:flutter/material.dart'
+    show Color, EdgeInsets, FontWeight, TextStyle;
 
 import '../utils_exports.dart'
     show AppColor, AppConfig, AppFontWeight, UIHelper;
@@ -361,10 +362,11 @@ class AppStyle {
     fontFamily: fontFamily,
   );
 
-  static final textFieldSuffixTextStyle = TextStyle(
-    fontSize: 12.0,
-    fontWeight: AppFontWeight.semiBold.fontWeight,
-    color: AppColor.base500Light50,
+  static const textFieldSuffixTextStyle = TextStyle(
+    color: Color(0x7F1A1A1A),
+    fontSize: 12,
+    fontFamily: 'Arabic UI Display',
+    fontWeight: FontWeight.w600,
   );
 
   /// Padding

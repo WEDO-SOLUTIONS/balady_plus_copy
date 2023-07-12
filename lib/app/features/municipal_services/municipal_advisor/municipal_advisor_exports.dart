@@ -30,7 +30,6 @@ export 'presentation/pages/municipal_advisor_page.dart';
 export 'presentation/pages/location_page.dart';
 //? Widgets
 export 'presentation/widgets/chat_bubble.dart';
-export 'presentation/widgets/steps/chat_bubble_current_step.dart';
 export 'presentation/widgets/chat_buuble_type.dart';
 export 'presentation/widgets/chat_list.dart';
 export 'presentation/widgets/chat_message.dart';
@@ -41,12 +40,17 @@ export 'presentation/widgets/steps/municipal_advisor_steps.dart';
 export 'presentation/widgets/send_mseeage_card.dart';
 export 'presentation/widgets/chat_bubble_radio_selector.dart';
 //? Widgets/Steps
+export 'presentation/widgets/steps/chat_bubble_current_step.dart';
+export 'presentation/widgets/steps/chat_bubble_step_data.dart';
+export 'presentation/widgets/steps/change_information.dart';
 export 'presentation/widgets/steps/activity_selector.dart';
 export 'presentation/widgets/steps/area_seelctor.dart';
-export 'presentation/widgets/steps/sub_activity_selector.dart';
 export 'presentation/widgets/steps/topic_selector.dart';
-export 'presentation/widgets/steps/location_selector.dart';
 export 'presentation/widgets/steps/confirm_location.dart';
+export 'presentation/widgets/steps/input_summary.dart';
+export 'presentation/widgets/steps/confirm_input_summary.dart';
+export 'presentation/widgets/steps/location_selector.dart';
+export 'presentation/widgets/steps/sub_activity_selector.dart';
 //? Widgets/Location
 export 'presentation/widgets/location/activity_location.dart';
 export 'presentation/widgets/location/location_chat_bubble.dart';

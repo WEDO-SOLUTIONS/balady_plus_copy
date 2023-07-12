@@ -4,6 +4,8 @@ import '../../../municipal_advisor_exports.dart'
     show
         ActivitySelector,
         AreaSelector,
+        ChangeInformation,
+        ConfirmInputSummary,
         ConfirmLocation,
         LocationSelector,
         MunicipalAdvisorSteps,
@@ -36,6 +38,12 @@ class ChatBubbleCurrentStep extends StatelessWidget {
       case MunicipalAdvisorSteps.area:
         return const AreaSelector();
       case MunicipalAdvisorSteps.inputSummary:
+        return const SizedBox.shrink();
+      case MunicipalAdvisorSteps.confirmInformation:
+        return const ConfirmInputSummary();
+      case MunicipalAdvisorSteps.changeInformation:
+        return const ChangeInformation();
+      case MunicipalAdvisorSteps.requirements:
         return const SizedBox.shrink();
     }
   }

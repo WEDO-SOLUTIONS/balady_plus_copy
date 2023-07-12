@@ -8,10 +8,20 @@ import '../../../../../../core/utils/utils_exports.dart'
 import '../../../../../_shared_feature_/shared_feature_exports.dart'
     show CustomTextFieldWidget, CustomTextWidget, ElevatedButtonWidget;
 import '../../../municipal_advisor_exports.dart'
-    show MunicipalAdvisorBloc, MunicipalAdvisorState;
+    show
+        MunicipalAdvisorBloc,
+        MunicipalAdvisorSelectAreaEvent,
+        MunicipalAdvisorState;
 
-class AreaSelector extends StatelessWidget {
+class AreaSelector extends StatefulWidget {
   const AreaSelector({super.key});
+
+  @override
+  State<AreaSelector> createState() => _AreaSelectorState();
+}
+
+class _AreaSelectorState extends State<AreaSelector> {
+  final _controller = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -28,6 +38,7 @@ class AreaSelector extends StatelessWidget {
             const SizedBox(height: 16),
             CustomTextFieldWidget(
               borderColor: AppColor.primary900Light16,
+              controller: _controller,
               keyboardType: TextInputType.number,
               textInputAction: TextInputAction.done,
               inputFormatters: [
@@ -37,7 +48,14 @@ class AreaSelector extends StatelessWidget {
                 if (value!.isEmpty ||
                     double.parse(value) < state.activityDetails!.minimumArea ||
                     double.parse(value) > state.activityDetails!.maximumArea) {
-                  return '${'municipalAdvisorAreaError'.tr()} ${state.activityDetails!.minimumArea.toStringAsFixed(0)} ${'to'.tr()} ${state.activityDetails!.maximumArea.toStringAsFixed(0)} ${'m2'.tr()}';
+                  final min =
+                      state.activityDetails!.minimumArea.toStringAsFixed(0);
+                  String max = '';
+                  if (state.activityDetails!.maximumArea != double.infinity) {
+                    max =
+                        '${'to'.tr()} ${state.activityDetails!.maximumArea.toStringAsFixed(0)}';
+                  }
+                  return '${'municipalAdvisorAreaError'.tr()} $min $max ${'m2'.tr()}';
                 }
 
                 return null;
@@ -51,8 +69,16 @@ class AreaSelector extends StatelessWidget {
             const SizedBox(height: 16),
             ElevatedButtonWidget.choose(
               onPressed: () {
-                //unfocus keyboard
                 FocusScope.of(context).unfocus();
+                //postframe
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  final area = num.tryParse(_controller.text);
+                  if (area != null) {
+                    context.read<MunicipalAdvisorBloc>().add(
+                          MunicipalAdvisorSelectAreaEvent(area: area),
+                        );
+                  }
+                });
               },
             ),
           ],

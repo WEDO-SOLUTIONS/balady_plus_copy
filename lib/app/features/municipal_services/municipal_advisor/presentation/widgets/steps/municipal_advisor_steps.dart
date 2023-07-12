@@ -7,4 +7,7 @@ enum MunicipalAdvisorSteps {
   subActivity,
   area,
   inputSummary,
+  confirmInformation,
+  changeInformation,
+  requirements,
 }

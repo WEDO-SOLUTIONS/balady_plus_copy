@@ -7,12 +7,14 @@ class ChatMessage extends Equatable {
   final DateTime timeStamp;
   final MunicipalAdvisorSteps step;
   final dynamic data;
+  final bool customWidget;
 
   ChatMessage({
     required this.message,
     required this.isResponse,
     required this.step,
     this.data,
+    this.customWidget = false,
   }) : timeStamp = DateTime.now();
 
   @override
@@ -22,5 +24,6 @@ class ChatMessage extends Equatable {
         step,
         timeStamp,
         data,
+        customWidget,
       ];
 }

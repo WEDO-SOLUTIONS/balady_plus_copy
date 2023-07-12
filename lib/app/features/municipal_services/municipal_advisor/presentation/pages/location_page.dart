@@ -11,9 +11,9 @@ import '../../../../_shared_feature_/shared_feature_exports.dart'
     show CustomTextWidget, DrawIconBasedTypeWidget, ElevatedButtonWidget;
 import '../../municipal_advisor_exports.dart'
     show
+        ActivityLocation,
         MunicipalAdvisorBloc,
-        MunicipalAdvisorAddMessageEvent,
-        MunicipalAdvisorSteps;
+        MunicipalAdvisorSelectLocationEvent;
 
 class LocationPage extends StatefulWidget {
   final MunicipalAdvisorBloc bloc;
@@ -118,12 +118,12 @@ class LocationPageState extends State<LocationPage> {
                               if (coordinates == null || address == null) {
                                 return;
                               }
-                              //postframe
                               context.read<MunicipalAdvisorBloc>().add(
-                                    MunicipalAdvisorAddMessageEvent(
-                                      message: address!,
-                                      step: MunicipalAdvisorSteps.location,
-                                      data: coordinates,
+                                    MunicipalAdvisorSelectLocationEvent(
+                                      location: ActivityLocation(
+                                        address: address!,
+                                        latLng: coordinates!,
+                                      ),
                                     ),
                                   );
                               Navigator.of(context).pop();
