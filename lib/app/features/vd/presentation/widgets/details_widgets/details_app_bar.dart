@@ -5,14 +5,13 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
-import '../../../../_shared_feature_/shared_feature_exports.dart';
-import '../../../../../core/utils/utils_exports.dart'
-    show ContextConversion, IconPath;
 import 'package:percent_indicator/percent_indicator.dart';
 
 import '../../../../../core/utils/constants/app_colors.dart';
 import '../../../../../core/utils/constants/constants.dart';
+import '../../../../../core/utils/utils_exports.dart' show IconPath;
 import '../../../../_shared_feature_/presentation/widgets/buttons/custom_buttons_widgets.dart';
+import '../../../../_shared_feature_/shared_feature_exports.dart';
 import '../../../../home_page/home_exports.dart' show CircleIcon;
 
 class DetailsAppBar extends StatelessWidget implements PreferredSizeWidget {
@@ -43,7 +42,7 @@ class DetailsAppBar extends StatelessWidget implements PreferredSizeWidget {
                   text: ('السابق').tr(),
                   icon: SvgPicture.asset(IconPath.vdAppBarBack),
                   iconTextTweenSpace: 5,
-                  textStyle: TextStyle(
+                  textStyle: const TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
                       color: AppColor.blackModern700Light,
@@ -76,7 +75,7 @@ class DetailsAppBar extends StatelessWidget implements PreferredSizeWidget {
         flexibleSpace: Stack(
           children: [
             Container(
-              padding: EdgeInsets.only(bottom: 40, left: 16, right: 16),
+              padding: const EdgeInsets.only(bottom: 40, left: 16, right: 16),
               decoration: const BoxDecoration(
                 color: Colors.white,
                 image: DecorationImage(
@@ -94,9 +93,9 @@ class DetailsAppBar extends StatelessWidget implements PreferredSizeWidget {
                 animationDuration: 0,
                 restartAnimation: false,
                 percent: currentStep / (getPageList().length + 1),
-                barRadius: Radius.circular(33),
+                barRadius: const Radius.circular(33),
                 backgroundColor: AppColor.primary100Light,
-                linearGradient: LinearGradient(colors: [
+                linearGradient: const LinearGradient(colors: [
                   Color(0xff036362),
                   Color(0xff21C45D),
                 ]),

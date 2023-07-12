@@ -38,7 +38,7 @@ class MunicipalAdvisorRemoteDataSourceImplementation
       final data = response.data;
       data.toString().successLog();
 
-      final result = ResponseBodyModel.fromMap(data).data.result;
+      final result = ResponseBodyModel.fromMap(data).data?.result;
 
       return result
           .map<IsicActivityModel>(
@@ -72,7 +72,7 @@ class MunicipalAdvisorRemoteDataSourceImplementation
       final data = response.data;
       data.toString().successLog();
 
-      final result = ResponseBodyModel.fromMap(data).data.result;
+      final result = ResponseBodyModel.fromMap(data).data?.result;
 
       return result
           .map<IsicActivityModel>(
@@ -105,7 +105,7 @@ class MunicipalAdvisorRemoteDataSourceImplementation
       final data = response.data;
       data.toString().successLog();
 
-      final result = ResponseBodyModel.fromMap(data).data.result;
+      final result = ResponseBodyModel.fromMap(data).data?.result;
 
       return ActivityDetailsModel.fromMap(result as Map<String, dynamic>);
     } on DioError catch (error) {

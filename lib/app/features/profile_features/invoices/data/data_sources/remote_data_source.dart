@@ -196,7 +196,7 @@ class InvoicesRemoteDataSourceImplementation
       final data = response.data;
       data.toString().successLog();
 
-      final result = ResponseBodyModel.fromMap(data).data.result;
+      final result = ResponseBodyModel.fromMap(data).data?.result;
 
       return InvoicesModel.fromMap(result);
     } on DioError catch (error) {
