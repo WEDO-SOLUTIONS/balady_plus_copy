@@ -25,7 +25,7 @@ class InputSummary extends StatelessWidget {
                 ),
               ),
               TextSpan(
-                text: ' ${state.activityLocation?.address} \n\n',
+                text: ' ${state.activityLocation?.gisResponse} \n\n',
                 style: const TextStyle(
                   color: Color(0xFF3F3F46),
                   fontSize: 12,

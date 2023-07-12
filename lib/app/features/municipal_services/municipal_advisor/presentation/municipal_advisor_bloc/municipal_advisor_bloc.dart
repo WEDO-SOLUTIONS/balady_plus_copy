@@ -1,10 +1,12 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../core/errors/errors_exports.dart';
 import '../../../../../core/services/services_exports.dart';
 import '../../../../../core/utils/utils_exports.dart';
+import '../../../../vd/vd_exports.dart' show GISParams, GISResponse, GetGISData;
 import '../../municipal_advisor_exports.dart';
 
 part 'municipal_advisor_event.dart';
@@ -15,11 +17,13 @@ class MunicipalAdvisorBloc
   final GetIsicActivities getIsicActivities;
   final GetIsicSubActivities getIsicSubActivities;
   final GetActivityDetails getActivityDetails;
+  final GetGISData getGISData;
 
   MunicipalAdvisorBloc({
     required this.getIsicActivities,
     required this.getIsicSubActivities,
     required this.getActivityDetails,
+    required this.getGISData,
   }) : super(const MunicipalAdvisorState()) {
     on<MunicipalAdvisorAddMessageEvent>(
       (event, emit) async {
@@ -55,6 +59,33 @@ class MunicipalAdvisorBloc
       },
     );
 
+    on<MunicipalAdvisorGetGisLocationEvent>(
+      (event, emit) async {
+        emit(state.copyWith(status: BlocRequestStatus.submissionGetLoading));
+        final failureOrSuccess = await getGISData(
+          GISParams(x: event.latLng.longitude, y: event.latLng.latitude),
+        );
+        failureOrSuccess.fold(
+          (failure) {
+            emit(
+              state.copyWith(
+                status: BlocRequestStatus.submissionGetFailure,
+                errorMessage: (failure as ServerFailure).errorMessage,
+              ),
+            );
+          },
+          (gisResponse) {
+            emit(
+              state.copyWith(
+                status: BlocRequestStatus.submissionGetSuccess,
+                gisResponse: gisResponse,
+              ),
+            );
+          },
+        );
+      },
+    );
+
     on<MunicipalAdvisorSelectLocationEvent>(
       (event, emit) async {
         emit(
@@ -67,7 +98,7 @@ class MunicipalAdvisorBloc
           ),
         );
         add(MunicipalAdvisorAddMessageEvent(
-          message: event.location.address,
+          message: event.location.gisResponse.getFullAddress(),
           step: MunicipalAdvisorSteps.location,
           data: event.location.latLng,
         ));

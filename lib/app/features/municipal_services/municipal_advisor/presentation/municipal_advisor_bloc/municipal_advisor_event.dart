@@ -22,6 +22,17 @@ class MunicipalAdvisorAddMessageEvent extends MunicipalAdvisorEvent {
   List<Object?> get props => [message, step, data];
 }
 
+class MunicipalAdvisorGetGisLocationEvent extends MunicipalAdvisorEvent {
+  final LatLng latLng;
+
+  const MunicipalAdvisorGetGisLocationEvent({
+    required this.latLng,
+  });
+
+  @override
+  List<Object?> get props => [latLng];
+}
+
 class MunicipalAdvisorSelectLocationEvent extends MunicipalAdvisorEvent {
   final ActivityLocation location;
 

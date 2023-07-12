@@ -189,8 +189,10 @@ class ElevatedButtonWidget extends _ElevatedButton {
           onPressed: onPressed,
         ));
 
-  ElevatedButtonWidget.confirmLocation({required VoidCallback? onPressed})
-      : super(CustomElevatedButtonWidget(
+  ElevatedButtonWidget.confirmLocation({
+    required VoidCallback? onPressed,
+    bool loading = false,
+  }) : super(CustomElevatedButtonWidget(
           btnColor: AppColor.primary800Light,
           btnBorderColor: Colors.transparent,
           textStyle: AppStyle.elevatedButtonStyle.copyWith(
@@ -201,6 +203,7 @@ class ElevatedButtonWidget extends _ElevatedButton {
           btnHeight: 56,
           text: "confirmLocation".tr(),
           onPressed: onPressed,
+          loading: loading,
         ));
 
   ElevatedButtonWidget.applyObjection({required VoidCallback onPressed})

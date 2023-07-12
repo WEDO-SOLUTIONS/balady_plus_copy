@@ -37,7 +37,7 @@ class CustomTextWidget extends StatelessWidget {
     this.fontFamily = GeneralKey.appFontType,
     this.fontColor = AppColor.white,
     this.height = 1.0,
-    this.textAlign = TextAlign.center,
+    this.textAlign,
     this.textOverflow = TextOverflow.visible,
     this.textDecoration = TextDecoration.none,
     this.textDecorationThickness = 1.5,

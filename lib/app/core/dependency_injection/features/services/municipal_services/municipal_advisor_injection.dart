@@ -1,5 +1,13 @@
 import '../../../../../features/municipal_services/municipal_advisor/municipal_advisor_exports.dart'
-    show GetActivityDetails, GetIsicActivities, GetIsicSubActivities, MunicipalAdvisorBloc, MunicipalAdvisorRemoteDataSource, MunicipalAdvisorRemoteDataSourceImplementation, MunicipalAdvisorRepository, MunicipalAdvisorRepositoryImplementation;
+    show
+        GetActivityDetails,
+        GetIsicActivities,
+        GetIsicSubActivities,
+        MunicipalAdvisorBloc,
+        MunicipalAdvisorRemoteDataSource,
+        MunicipalAdvisorRemoteDataSourceImplementation,
+        MunicipalAdvisorRepository,
+        MunicipalAdvisorRepositoryImplementation;
 import '../../../dependency_injection_exports.dart' show sl;
 
 class MunicipalAdvisorInjection {
@@ -29,6 +37,7 @@ class MunicipalAdvisorInjection {
         getIsicActivities: sl(),
         getIsicSubActivities: sl(),
         getActivityDetails: sl(),
+        getGISData: sl(),
       ),
     );
   }
