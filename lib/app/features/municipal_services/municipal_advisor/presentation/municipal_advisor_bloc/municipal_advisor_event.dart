@@ -24,7 +24,6 @@ class MunicipalAdvisorAddMessageEvent extends MunicipalAdvisorEvent {
 
 class MunicipalAdvisorGetConsultationKeyEvent extends MunicipalAdvisorEvent {}
 
-
 class MunicipalAdvisorGetGisLocationEvent extends MunicipalAdvisorEvent {
   final LatLng latLng;
 
@@ -129,5 +128,21 @@ class MunicipalAdvisorChangeStepEvent extends MunicipalAdvisorEvent {
   @override
   List<Object?> get props => [message, step];
 }
+
+class MunicipalAdvisorGetCivilDefensePredefinedConditionsEvent
+    extends MunicipalAdvisorEvent {}
+
+class MunicipalAdvisorGetCleaningMechanismsEvent
+    extends MunicipalAdvisorEvent {}
+
+class MunicipalAdvisorGetCommercialOfficesEvent extends MunicipalAdvisorEvent {}
+
+class MunicipalAdvisorGetIssuingPredefinedConditionsEvent
+    extends MunicipalAdvisorEvent {}
+
+class MunicipalAdvisorGetLicensePermitsEvent extends MunicipalAdvisorEvent {}
+
+class MunicipalAdvisorGetSupervisingAuthoritiesEvent
+    extends MunicipalAdvisorEvent {}
 
 class MunicipalAdvisorRetryEvent extends MunicipalAdvisorEvent {}

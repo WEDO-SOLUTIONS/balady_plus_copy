@@ -10,4 +10,12 @@ enum MunicipalAdvisorSteps {
   confirmInformation,
   changeInformation,
   requirements,
+  issuingPredefinedConditions,
+  licensePermits,
+  civilDefensePredefinedConditions,
+  supervisingAuthorities,
+  cleaningMechanisms,
+  commercialOffices,
+  continueToFinancial,
+  
 }

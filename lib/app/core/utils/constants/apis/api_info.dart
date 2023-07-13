@@ -21,8 +21,14 @@ class ApiUrl {
       '/v1/balady-consultation-services/activities-by-isicNumber';
   static const activityDetails =
       '/v1/balady-consultation-services/activity-detail-info';
-  static const consultationKey =
-      '/v1/balady-consultation-services/apply';
+  static const consultationKey = '/v1/balady-consultation-services/apply';
+  static const issuingPredefinedConditions = '/v1/balady-consultation-services/predefined-conditions?typeId=ISSUING';
+  static const licensePermits = '/v1/balady-consultation-services/license-permits';
+  static const supervisingAuthorities = '/v1/balady-consultation-services/supervising-authorities';
+  static const civilDefensePredefinedConditions = '/v1/balady-consultation-services/predefined-conditions?typeId=CIVIL_DEFENSE';
+  static const civilDefense = '/v1/balady-consultation-services/predefined-conditions?typeId=CIVIL_DEFENSE';
+  static const cleaningMechanisms = '/v1/balady-consultation-services/commercial-offices';
+  static const commercialOffices = '/v1/balady-consultation-services/cleaning';
 
   //! Profile
   //! Delegators

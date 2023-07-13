@@ -13,6 +13,12 @@ class MunicipalAdvisorState extends Equatable {
   final ActivityDetailsEntity? activityDetails;
   final num? selectedArea;
   final bool changingInfo;
+  final List<String>? issuingPredefinedConditions;
+  final List<LicensePermitEntity>? licensePermits;
+  final List<SupervisingAuthorityEntity>? supervisingAuthorities;
+  final List<String>? civilDefensePredefinedConditions;
+  final List<String>? cleaningMechanisms;
+  final List<CommercialOfficeEntity>? commercialOffices;
   final MunicipalAdvisorEvent? lastEvent;
   final String? errorMessage;
 
@@ -29,6 +35,12 @@ class MunicipalAdvisorState extends Equatable {
     this.activityDetails,
     this.selectedArea,
     this.changingInfo = false,
+    this.issuingPredefinedConditions,
+    this.licensePermits,
+    this.supervisingAuthorities,
+    this.civilDefensePredefinedConditions,
+    this.cleaningMechanisms,
+    this.commercialOffices,
     this.lastEvent,
     this.errorMessage,
   });
@@ -48,6 +60,12 @@ class MunicipalAdvisorState extends Equatable {
     ActivityDetailsEntity? activityDetails,
     num? selectedArea,
     bool? changingInfo,
+    List<String>? issuingPredefinedConditions,
+    List<LicensePermitEntity>? licensePermits,
+    List<SupervisingAuthorityEntity>? supervisingAuthorities,
+    List<String>? civilDefensePredefinedConditions,
+    List<String>? cleaningMechanisms,
+    List<CommercialOfficeEntity>? commercialOffices,
     MunicipalAdvisorEvent? lastEvent,
     String? errorMessage,
   }) {
@@ -65,6 +83,15 @@ class MunicipalAdvisorState extends Equatable {
       activityDetails: activityDetails ?? this.activityDetails,
       selectedArea: selectedArea ?? this.selectedArea,
       changingInfo: changingInfo ?? this.changingInfo,
+      issuingPredefinedConditions:
+          issuingPredefinedConditions ?? this.issuingPredefinedConditions,
+      licensePermits: licensePermits ?? this.licensePermits,
+      supervisingAuthorities:
+          supervisingAuthorities ?? this.supervisingAuthorities,
+      civilDefensePredefinedConditions: civilDefensePredefinedConditions ??
+          this.civilDefensePredefinedConditions,
+      cleaningMechanisms: cleaningMechanisms ?? this.cleaningMechanisms,
+      commercialOffices: commercialOffices ?? this.commercialOffices,
       lastEvent: lastEvent ?? this.lastEvent,
       errorMessage: errorMessage ?? this.errorMessage,
     );
@@ -84,6 +111,12 @@ class MunicipalAdvisorState extends Equatable {
         activityDetails,
         selectedArea,
         changingInfo,
+        issuingPredefinedConditions,
+        licensePermits,
+        supervisingAuthorities,
+        civilDefensePredefinedConditions,
+        cleaningMechanisms,
+        commercialOffices,
         lastEvent,
         errorMessage,
       ];

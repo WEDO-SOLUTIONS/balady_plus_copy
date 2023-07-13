@@ -11,9 +11,16 @@ import '../../municipal_advisor_exports.dart'
     show
         ActivityDetailsModel,
         ActivityDetailsParamsModel,
+        CommercialOfficeEntity,
+        CommercialOfficeModel,
         ConsultationKeyParamsModel,
         IsicActivityModel,
-        IsicSubActivityParamsModel;
+        IsicSubActivityParamsModel,
+        KeyParamsModel,
+        LicensePermitEntity,
+        LicensePermitModel,
+        SupervisingAuthorityEntity,
+        SupervisingAuthorityModel;
 
 abstract class MunicipalAdvisorRemoteDataSource {
   Future<List<IsicActivityModel>> getIsicActivities();
@@ -22,6 +29,20 @@ abstract class MunicipalAdvisorRemoteDataSource {
   Future<ActivityDetailsModel> getActivityDetails(
       ActivityDetailsParamsModel params);
   Future<String> getConsultationKey(ConsultationKeyParamsModel params);
+  Future<List<String>> getIssuingPredefinedConditions();
+  Future<List<LicensePermitEntity>> getLicensePermits(KeyParamsModel params);
+  Future<List<SupervisingAuthorityEntity>> getSupervisingAuthorities(
+    KeyParamsModel params,
+  );
+  Future<List<String>> getCivilDefensePredefinedConditions(
+    KeyParamsModel params,
+  );
+  Future<List<String>> getCleaningMechanisms(
+    KeyParamsModel params,
+  );
+  Future<List<CommercialOfficeEntity>> getCommercialOffices(
+    KeyParamsModel params,
+  );
 }
 
 class MunicipalAdvisorRemoteDataSourceImplementation
@@ -140,6 +161,204 @@ class MunicipalAdvisorRemoteDataSourceImplementation
       final result = ResponseBodyModel.fromMap(data).data?.result;
 
       return result['uniqueKey'] as String;
+    } on DioError catch (error) {
+      "DioError $error".errorLog();
+      throw ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+      );
+    } catch (ex) {
+      "Catched $ex".errorLog();
+      if (ex is ServerException) {
+        rethrow;
+      } else {
+        throw ServerException("errors_server_error_2".tr());
+      }
+    }
+  }
+
+  @override
+  Future<List<String>> getIssuingPredefinedConditions() async {
+    try {
+      final response = await webService.dio.get(
+        ApiUrl.issuingPredefinedConditions,
+      );
+
+      final data = response.data;
+      data.toString().successLog();
+
+      final result = ResponseBodyModel.fromMap(data).data?.result;
+
+      return result.map<String>((e) => e as String).toList();
+    } on DioError catch (error) {
+      "DioError $error".errorLog();
+      throw ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+      );
+    } catch (ex) {
+      "Catched $ex".errorLog();
+      if (ex is ServerException) {
+        rethrow;
+      } else {
+        throw ServerException("errors_server_error_2".tr());
+      }
+    }
+  }
+
+  @override
+  Future<List<LicensePermitEntity>> getLicensePermits(
+      KeyParamsModel params) async {
+    try {
+      final response =
+          await webService.dio.get('${ApiUrl.licensePermits}/${params.key}');
+
+      final data = response.data;
+      data.toString().successLog();
+
+      final result = ResponseBodyModel.fromMap(data).data?.result;
+
+      return result
+          .map<LicensePermitEntity>(
+              (e) => LicensePermitModel.fromMap(e as Map<String, dynamic>))
+          .toList();
+    } on DioError catch (error) {
+      "DioError $error".errorLog();
+      throw ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+      );
+    } catch (ex) {
+      "Catched $ex".errorLog();
+      if (ex is ServerException) {
+        rethrow;
+      } else {
+        throw ServerException("errors_server_error_2".tr());
+      }
+    }
+  }
+
+  @override
+  Future<List<SupervisingAuthorityEntity>> getSupervisingAuthorities(
+      KeyParamsModel params) async {
+    try {
+      final response = await webService.dio
+          .get('${ApiUrl.supervisingAuthorities}/${params.key}');
+
+      final data = response.data;
+      data.toString().successLog();
+
+      final result = ResponseBodyModel.fromMap(data).data?.result;
+
+      return result
+          .map<SupervisingAuthorityEntity>((e) =>
+              SupervisingAuthorityModel.fromMap(e as Map<String, dynamic>))
+          .toList();
+    } on DioError catch (error) {
+      "DioError $error".errorLog();
+      throw ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+      );
+    } catch (ex) {
+      "Catched $ex".errorLog();
+      if (ex is ServerException) {
+        rethrow;
+      } else {
+        throw ServerException("errors_server_error_2".tr());
+      }
+    }
+  }
+
+  @override
+  Future<List<String>> getCivilDefensePredefinedConditions(
+    KeyParamsModel params,
+  ) async {
+    try {
+      final predefinedConditionsResponse = await webService.dio.get(
+        ApiUrl.civilDefensePredefinedConditions,
+      );
+
+      final predefinedConditionsData = predefinedConditionsResponse.data;
+      predefinedConditionsData.toString().successLog();
+
+      final predefinedConditionsResult =
+          ResponseBodyModel.fromMap(predefinedConditionsData).data?.result;
+
+      predefinedConditionsResult.map<String>((e) => e as String).toList();
+
+      final response = await webService.dio.get(
+        '${ApiUrl.civilDefense}/${params.key}',
+      );
+
+      final data = response.data;
+      data.toString().successLog();
+
+      final result = ResponseBodyModel.fromMap(data).data?.result;
+
+      result.map((e) => e['name'] as String).toList();
+
+      return [...predefinedConditionsResult, ...result];
+    } on DioError catch (error) {
+      "DioError $error".errorLog();
+      throw ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+      );
+    } catch (ex) {
+      "Catched $ex".errorLog();
+      if (ex is ServerException) {
+        rethrow;
+      } else {
+        throw ServerException("errors_server_error_2".tr());
+      }
+    }
+  }
+
+  @override
+  Future<List<String>> getCleaningMechanisms(KeyParamsModel params) async {
+    try {
+      final response = await webService.dio
+          .get('${ApiUrl.cleaningMechanisms}/${params.key}');
+
+      final data = response.data;
+      data.toString().successLog();
+
+      final result = ResponseBodyModel.fromMap(data).data?.result;
+
+      return result.map((e) => e['name'] as String).toList();
+    } on DioError catch (error) {
+      "DioError $error".errorLog();
+      throw ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+      );
+    } catch (ex) {
+      "Catched $ex".errorLog();
+      if (ex is ServerException) {
+        rethrow;
+      } else {
+        throw ServerException("errors_server_error_2".tr());
+      }
+    }
+  }
+
+  @override
+  Future<List<CommercialOfficeEntity>> getCommercialOffices(
+      KeyParamsModel params) async {
+    try {
+      final response =
+          await webService.dio.get('${ApiUrl.commercialOffices}/${params.key}');
+
+      final data = response.data;
+      data.toString().successLog();
+
+      final result = ResponseBodyModel.fromMap(data).data?.result;
+
+      return result
+          .map<CommercialOfficeEntity>(
+              (e) => CommercialOfficeModel.fromMap(e as Map<String, dynamic>))
+          .toList();
     } on DioError catch (error) {
       "DioError $error".errorLog();
       throw ServerException(

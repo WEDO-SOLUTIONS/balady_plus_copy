@@ -52,4 +52,70 @@ class MunicipalAdvisorRepositoryImplementation
       return Left(ServerFailure(error.errorMessage));
     }
   }
+
+  @override
+  Future<Either<Failure, List<String>>> getCivilDefensePredefinedConditions(
+      KeyParamsModel params) async {
+    try {
+      final data =
+          await remoteDataSource.getCivilDefensePredefinedConditions(params);
+      return Right(data);
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage));
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<String>>> getCleaningMechanisms(
+      KeyParamsModel params) async {
+    try {
+      final data = await remoteDataSource.getCleaningMechanisms(params);
+      return Right(data);
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage));
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<CommercialOfficeEntity>>> getCommercialOffices(
+      KeyParamsModel params) async {
+    try {
+      final data = await remoteDataSource.getCommercialOffices(params);
+      return Right(data);
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage));
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<String>>> getIssuingPredefinedConditions() async {
+    try {
+      final data = await remoteDataSource.getIssuingPredefinedConditions();
+      return Right(data);
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage));
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<LicensePermitEntity>>> getLicensePermits(
+      KeyParamsModel params) async {
+    try {
+      final data = await remoteDataSource.getLicensePermits(params);
+      return Right(data);
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage));
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<SupervisingAuthorityEntity>>>
+      getSupervisingAuthorities(KeyParamsModel params) async {
+    try {
+      final data = await remoteDataSource.getSupervisingAuthorities(params);
+      return Right(data);
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage));
+    }
+  }
 }

@@ -1,9 +1,15 @@
 import '../../../../../features/municipal_services/municipal_advisor/municipal_advisor_exports.dart'
     show
         GetActivityDetails,
+        GetCivilDefensePredefinedConditions,
+        GetCleaningMechanisms,
+        GetCommercialOffices,
         GetConsultationKey,
         GetIsicActivities,
         GetIsicSubActivities,
+        GetIssuingPredefinedConditions,
+        GetLicensePermits,
+        GetSupervisingAuthorities,
         MunicipalAdvisorBloc,
         MunicipalAdvisorRemoteDataSource,
         MunicipalAdvisorRemoteDataSourceImplementation,
@@ -18,6 +24,12 @@ class MunicipalAdvisorInjection {
     sl.registerLazySingleton(() => GetIsicSubActivities(sl()));
     sl.registerLazySingleton(() => GetActivityDetails(sl()));
     sl.registerLazySingleton(() => GetConsultationKey(sl()));
+    sl.registerLazySingleton(() => GetCivilDefensePredefinedConditions(sl()));
+    sl.registerLazySingleton(() => GetCleaningMechanisms(sl()));
+    sl.registerLazySingleton(() => GetCommercialOffices(sl()));
+    sl.registerLazySingleton(() => GetIssuingPredefinedConditions(sl()));
+    sl.registerLazySingleton(() => GetLicensePermits(sl()));
+    sl.registerLazySingleton(() => GetSupervisingAuthorities(sl()));
 
     //! Repository
     sl.registerLazySingleton<MunicipalAdvisorRepository>(
@@ -41,6 +53,12 @@ class MunicipalAdvisorInjection {
         getIsicSubActivities: sl(),
         getActivityDetails: sl(),
         getGISData: sl(),
+        getCleaningMechanisms: sl(),
+        getCommercialOffices: sl(),
+        getIssuingPredefinedConditions: sl(),
+        getLicensePermits: sl(),
+        getSupervisingAuthorities: sl(),
+        getCivilDefensePredefinedConditions: sl(),
       ),
     );
   }

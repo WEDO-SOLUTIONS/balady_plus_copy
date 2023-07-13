@@ -1,16 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../municipal_advisor_exports.dart'
-    show
-        ActivitySelector,
-        AreaSelector,
-        ChangeInformation,
-        ConfirmInputSummary,
-        ConfirmLocation,
-        LocationSelector,
-        MunicipalAdvisorSteps,
-        SubActivitySelector,
-        TopicSelector;
+    show ActivitySelector, AreaSelector, ChangeInformation, ConfirmInputSummary, ConfirmLocation, ContinueToFinancial, LocationSelector, MunicipalAdvisorSteps, SubActivitySelector, TopicSelector;
 
 class ChatBubbleCurrentStep extends StatelessWidget {
   final MunicipalAdvisorSteps step;
@@ -44,7 +35,15 @@ class ChatBubbleCurrentStep extends StatelessWidget {
       case MunicipalAdvisorSteps.changeInformation:
         return const ChangeInformation();
       case MunicipalAdvisorSteps.requirements:
+      case MunicipalAdvisorSteps.issuingPredefinedConditions:
+      case MunicipalAdvisorSteps.licensePermits:
+      case MunicipalAdvisorSteps.supervisingAuthorities:
+      case MunicipalAdvisorSteps.civilDefensePredefinedConditions:
+      case MunicipalAdvisorSteps.cleaningMechanisms:
+      case MunicipalAdvisorSteps.commercialOffices:
         return const SizedBox.shrink();
+      case MunicipalAdvisorSteps.continueToFinancial:
+        return const ContinueToFinancial();
     }
   }
 }

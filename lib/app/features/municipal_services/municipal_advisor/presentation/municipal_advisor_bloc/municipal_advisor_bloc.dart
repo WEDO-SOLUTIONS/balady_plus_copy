@@ -21,6 +21,13 @@ class MunicipalAdvisorBloc
   final GetIsicSubActivities _getIsicSubActivities;
   final GetActivityDetails _getActivityDetails;
   final GetGISData _getGISData;
+  final GetCivilDefensePredefinedConditions
+      _getCivilDefensePredefinedConditions;
+  final GetCleaningMechanisms _getCleaningMechanisms;
+  final GetCommercialOffices _getCommercialOffices;
+  final GetIssuingPredefinedConditions _getIssuingPredefinedConditions;
+  final GetLicensePermits _getLicensePermits;
+  final GetSupervisingAuthorities _getSupervisingAuthorities;
 
   MunicipalAdvisorBloc({
     required GetConsultationKey getConsultationKey,
@@ -28,11 +35,25 @@ class MunicipalAdvisorBloc
     required GetIsicSubActivities getIsicSubActivities,
     required GetActivityDetails getActivityDetails,
     required GetGISData getGISData,
+    required GetCivilDefensePredefinedConditions
+        getCivilDefensePredefinedConditions,
+    required GetCleaningMechanisms getCleaningMechanisms,
+    required GetCommercialOffices getCommercialOffices,
+    required GetIssuingPredefinedConditions getIssuingPredefinedConditions,
+    required GetLicensePermits getLicensePermits,
+    required GetSupervisingAuthorities getSupervisingAuthorities,
   })  : _getConsultationKey = getConsultationKey,
         _getIsicActivities = getIsicActivities,
         _getIsicSubActivities = getIsicSubActivities,
         _getActivityDetails = getActivityDetails,
         _getGISData = getGISData,
+        _getCivilDefensePredefinedConditions =
+            getCivilDefensePredefinedConditions,
+        _getCleaningMechanisms = getCleaningMechanisms,
+        _getCommercialOffices = getCommercialOffices,
+        _getIssuingPredefinedConditions = getIssuingPredefinedConditions,
+        _getLicensePermits = getLicensePermits,
+        _getSupervisingAuthorities = getSupervisingAuthorities,
         super(const MunicipalAdvisorState()) {
     on<MunicipalAdvisorAddMessageEvent>(
       (event, emit) async {
@@ -363,6 +384,236 @@ class MunicipalAdvisorBloc
       },
     );
 
+    on<MunicipalAdvisorGetIssuingPredefinedConditionsEvent>(
+      (event, emit) async {
+        emit(
+          state.copyWith(
+            status: BlocRequestStatus.submissionGetLoading,
+            lastEvent: event,
+          ),
+        );
+        final failureOrSuccess =
+            await _getIssuingPredefinedConditions(NoParams());
+        failureOrSuccess.fold(
+          (failure) {
+            emit(
+              state.copyWith(
+                status: BlocRequestStatus.submissionGetFailure,
+                errorMessage: (failure as ServerFailure).errorMessage,
+              ),
+            );
+          },
+          (issuingPredefinedConditions) {
+            emit(
+              state.copyWith(
+                status: BlocRequestStatus.submissionGetSuccess,
+                issuingPredefinedConditions: issuingPredefinedConditions,
+                messages: [
+                  ...state.messages,
+                  ...nextStep(
+                    MunicipalAdvisorSteps.issuingPredefinedConditions,
+                  ),
+                ],
+              ),
+            );
+            add(MunicipalAdvisorGetLicensePermitsEvent());
+          },
+        );
+      },
+    );
+
+    on<MunicipalAdvisorGetLicensePermitsEvent>(
+      (event, emit) async {
+        emit(
+          state.copyWith(
+            status: BlocRequestStatus.submissionGetLoading,
+            lastEvent: event,
+          ),
+        );
+        final failureOrSuccess = await _getLicensePermits(
+          KeyParams(key: state.consultationKey!),
+        );
+        failureOrSuccess.fold(
+          (failure) {
+            emit(
+              state.copyWith(
+                status: BlocRequestStatus.submissionGetFailure,
+                errorMessage: (failure as ServerFailure).errorMessage,
+              ),
+            );
+          },
+          (licensePermits) {
+            emit(
+              state.copyWith(
+                status: BlocRequestStatus.submissionGetSuccess,
+                licensePermits: licensePermits,
+                messages: [
+                  ...state.messages,
+                  ...nextStep(MunicipalAdvisorSteps.licensePermits),
+                ],
+              ),
+            );
+            add(MunicipalAdvisorGetCivilDefensePredefinedConditionsEvent());
+          },
+        );
+      },
+    );
+
+    on<MunicipalAdvisorGetCivilDefensePredefinedConditionsEvent>(
+      (event, emit) async {
+        emit(
+          state.copyWith(
+            status: BlocRequestStatus.submissionGetLoading,
+            lastEvent: event,
+          ),
+        );
+        final failureOrSuccess = await _getCivilDefensePredefinedConditions(
+          KeyParams(key: state.consultationKey!),
+        );
+        failureOrSuccess.fold(
+          (failure) {
+            emit(
+              state.copyWith(
+                status: BlocRequestStatus.submissionGetFailure,
+                errorMessage: (failure as ServerFailure).errorMessage,
+              ),
+            );
+          },
+          (civilDefensePredefinedConditions) {
+            emit(
+              state.copyWith(
+                status: BlocRequestStatus.submissionGetSuccess,
+                civilDefensePredefinedConditions:
+                    civilDefensePredefinedConditions,
+                messages: [
+                  ...state.messages,
+                  ...nextStep(
+                    MunicipalAdvisorSteps.civilDefensePredefinedConditions,
+                  ),
+                ],
+              ),
+            );
+            add(MunicipalAdvisorGetSupervisingAuthoritiesEvent());
+          },
+        );
+      },
+    );
+
+    on<MunicipalAdvisorGetSupervisingAuthoritiesEvent>(
+      (event, emit) async {
+        emit(
+          state.copyWith(
+            status: BlocRequestStatus.submissionGetLoading,
+            lastEvent: event,
+          ),
+        );
+        final failureOrSuccess = await _getSupervisingAuthorities(
+          KeyParams(key: state.consultationKey!),
+        );
+        failureOrSuccess.fold(
+          (failure) {
+            emit(
+              state.copyWith(
+                status: BlocRequestStatus.submissionGetFailure,
+                errorMessage: (failure as ServerFailure).errorMessage,
+              ),
+            );
+          },
+          (supervisingAuthorities) {
+            emit(
+              state.copyWith(
+                status: BlocRequestStatus.submissionGetSuccess,
+                supervisingAuthorities: supervisingAuthorities,
+                messages: [
+                  ...state.messages,
+                  ...nextStep(
+                    MunicipalAdvisorSteps.supervisingAuthorities,
+                  ),
+                ],
+              ),
+            );
+            add(MunicipalAdvisorGetCleaningMechanismsEvent());
+          },
+        );
+      },
+    );
+
+    on<MunicipalAdvisorGetCleaningMechanismsEvent>(
+      (event, emit) async {
+        emit(
+          state.copyWith(
+            status: BlocRequestStatus.submissionGetLoading,
+            lastEvent: event,
+          ),
+        );
+        final failureOrSuccess = await _getCleaningMechanisms(
+          KeyParams(key: state.consultationKey!),
+        );
+        failureOrSuccess.fold(
+          (failure) {
+            emit(
+              state.copyWith(
+                status: BlocRequestStatus.submissionGetFailure,
+                errorMessage: (failure as ServerFailure).errorMessage,
+              ),
+            );
+          },
+          (cleaningMechanisms) {
+            emit(
+              state.copyWith(
+                status: BlocRequestStatus.submissionGetSuccess,
+                cleaningMechanisms: cleaningMechanisms,
+                messages: [
+                  ...state.messages,
+                  ...nextStep(
+                    MunicipalAdvisorSteps.cleaningMechanisms,
+                  ),
+                ],
+              ),
+            );
+            add(MunicipalAdvisorGetCommercialOfficesEvent());
+          },
+        );
+      },
+    );
+    on<MunicipalAdvisorGetCommercialOfficesEvent>(
+      (event, emit) async {
+        emit(
+          state.copyWith(
+            status: BlocRequestStatus.submissionGetLoading,
+            lastEvent: event,
+          ),
+        );
+        final failureOrSuccess = await _getCommercialOffices(
+          KeyParams(key: state.consultationKey!),
+        );
+        failureOrSuccess.fold(
+          (failure) {
+            emit(
+              state.copyWith(
+                status: BlocRequestStatus.submissionGetFailure,
+                errorMessage: (failure as ServerFailure).errorMessage,
+              ),
+            );
+          },
+          (commercialOffices) {
+            emit(
+              state.copyWith(
+                status: BlocRequestStatus.submissionGetSuccess,
+                commercialOffices: commercialOffices,
+                messages: [
+                  ...state.messages,
+                  ...nextStep(
+                    MunicipalAdvisorSteps.commercialOffices,
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      },
+    );
+
     on<MunicipalAdvisorRetryEvent>(
       (event, emit) {
         if (state.lastEvent != null) add(state.lastEvent!);
@@ -540,6 +791,10 @@ class MunicipalAdvisorBloc
             ),
           ];
         } else {
+          Future.delayed(const Duration(seconds: 1)).then((value) {
+            add(MunicipalAdvisorGetIssuingPredefinedConditionsEvent());
+          });
+
           return [
             ChatMessage(
               message: 'municipalAdvisorRequirements'.tr(),
@@ -562,6 +817,68 @@ class MunicipalAdvisorBloc
           ),
         ];
       case MunicipalAdvisorSteps.requirements:
+        return [
+          ChatMessage(
+            message: '',
+            step: MunicipalAdvisorSteps.issuingPredefinedConditions,
+            isResponse: true,
+            customWidget: true,
+          ),
+        ];
+      case MunicipalAdvisorSteps.issuingPredefinedConditions:
+        return [
+          ChatMessage(
+            message: '',
+            step: MunicipalAdvisorSteps.licensePermits,
+            isResponse: true,
+            customWidget: true,
+          ),
+        ];
+      case MunicipalAdvisorSteps.licensePermits:
+        return [
+          ChatMessage(
+            message: '',
+            step: MunicipalAdvisorSteps.civilDefensePredefinedConditions,
+            isResponse: true,
+            customWidget: true,
+          ),
+        ];
+      case MunicipalAdvisorSteps.civilDefensePredefinedConditions:
+        return [
+          ChatMessage(
+            message: '',
+            step: MunicipalAdvisorSteps.supervisingAuthorities,
+            isResponse: true,
+            customWidget: true,
+          ),
+        ];
+      case MunicipalAdvisorSteps.supervisingAuthorities:
+        return [
+          ChatMessage(
+            message: '',
+            step: MunicipalAdvisorSteps.cleaningMechanisms,
+            isResponse: true,
+            customWidget: true,
+          ),
+        ];
+      case MunicipalAdvisorSteps.cleaningMechanisms:
+        return [
+          ChatMessage(
+            message: '',
+            step: MunicipalAdvisorSteps.commercialOffices,
+            isResponse: true,
+            customWidget: true,
+          ),
+        ];
+      case MunicipalAdvisorSteps.commercialOffices:
+        return [
+          ChatMessage(
+            message: 'municipalAdvisorFinancial'.tr(),
+            step: MunicipalAdvisorSteps.continueToFinancial,
+            isResponse: true,
+          ),
+        ];
+      case MunicipalAdvisorSteps.continueToFinancial:
         return [];
     }
   }
