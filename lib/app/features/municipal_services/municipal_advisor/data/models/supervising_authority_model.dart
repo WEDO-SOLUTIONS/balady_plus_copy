@@ -12,7 +12,7 @@ class SupervisingAuthorityModel extends SupervisingAuthorityEntity {
     return SupervisingAuthorityModel(
       agencyId: map['agencyId'] as int,
       agencyName: map['agencyName'] as String,
-      approvalTypeId: map['approvalTypeId'] as String,
+      approvalTypeId: map['approvalTypeId'].toString(),
       approvalTypeName: map['approvalTypeName'] as String,
     );
   }

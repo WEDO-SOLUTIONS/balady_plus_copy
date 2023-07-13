@@ -6,8 +6,7 @@ import '../../../municipal_advisor_exports.dart'
     show
         ChatBubbleRadioSelector,
         MunicipalAdvisorBloc,
-        MunicipalAdvisorAddMessageEvent,
-        MunicipalAdvisorSteps;
+        MunicipalAdvisorContinueToFinancial;
 
 class ContinueToFinancial extends StatelessWidget {
   const ContinueToFinancial({super.key});
@@ -21,9 +20,9 @@ class ContinueToFinancial extends StatelessWidget {
       ],
       onSelected: (value) {
         context.read<MunicipalAdvisorBloc>().add(
-              MunicipalAdvisorAddMessageEvent(
-                message: value,
-                step: MunicipalAdvisorSteps.continueToFinancial,
+              MunicipalAdvisorContinueToFinancial(
+                continueToFinancial:
+                    value == 'municipalAdvisorFinancialAnswer1'.tr(),
               ),
             );
       },

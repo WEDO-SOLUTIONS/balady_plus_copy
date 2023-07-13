@@ -8,8 +8,9 @@ import '../../../../_shared_feature_/shared_feature_exports.dart'
 import '../../../../home_page/home_exports.dart' show CircleIcon;
 import '../../municipal_advisor_exports.dart'
     show
-        MunicipalAdvisorBloc,
         MunicipalAdvisorAddMessageEvent,
+        MunicipalAdvisorBloc,
+        MunicipalAdvisorState,
         MunicipalAdvisorSteps;
 
 class SendMessageCard extends StatefulWidget {
@@ -35,29 +36,38 @@ class _SendMessageCardState extends State<SendMessageCard> {
       ),
       child: SafeArea(
         top: false,
-        child: Row(
-          children: [
-            Expanded(
-              child: CustomTextFieldWidget(
-                hintText: 'chatHint'.tr(),
-                controller: _controller,
-                borderRadius: 8,
-                fillColor: AppColor.blackModern100Light,
-                borderColor: AppColor.blackModern100Light,
-                onSubmitted: sendMessage,
+        child: BlocBuilder<MunicipalAdvisorBloc, MunicipalAdvisorState>(
+          buildWhen: (previous, current) =>
+              previous.messages.isEmpty && current.messages.isNotEmpty,
+          builder: (context, state) {
+            return IgnorePointer(
+              ignoring: state.messages.isNotEmpty,
+              child: Row(
+                children: [
+                  Expanded(
+                    child: CustomTextFieldWidget(
+                      hintText: 'chatHint'.tr(),
+                      controller: _controller,
+                      borderRadius: 8,
+                      fillColor: AppColor.blackModern100Light,
+                      borderColor: AppColor.blackModern100Light,
+                      onSubmitted: sendMessage,
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  InkWell(
+                    onTap: sendMessage,
+                    child: const CircleIcon(
+                      icon: IconPath.send,
+                      iconSize: 24,
+                      circleSize: 40,
+                      backgroundColor: AppColor.primary900Light,
+                    ),
+                  ),
+                ],
               ),
-            ),
-            const SizedBox(width: 16),
-            InkWell(
-              onTap: sendMessage,
-              child: const CircleIcon(
-                icon: IconPath.send,
-                iconSize: 24,
-                circleSize: 40,
-                backgroundColor: AppColor.primary900Light,
-              ),
-            ),
-          ],
+            );
+          },
         ),
       ),
     );
@@ -65,6 +75,7 @@ class _SendMessageCardState extends State<SendMessageCard> {
 
   void sendMessage([String? message]) {
     final text = message ?? _controller.text;
+    if (text.isEmpty) return;
     context.read<MunicipalAdvisorBloc>().add(
           MunicipalAdvisorAddMessageEvent(
             message: text,

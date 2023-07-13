@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/features/municipal_services/municipal_advisor/data/models/save_consultation_progress_params_model.dart';
 import 'package:dartz/dartz.dart';
 
 import '../../../../../core/errors/errors_exports.dart' show Failure;
@@ -40,5 +41,8 @@ abstract class MunicipalAdvisorRepository {
   );
   Future<Either<Failure, List<CommercialOfficeEntity>>> getCommercialOffices(
     KeyParamsModel params,
+  );
+  Future<Either<Failure, bool>> saveConsultationProgress(
+    SaveConsultationProgressParamsModel params,
   );
 }

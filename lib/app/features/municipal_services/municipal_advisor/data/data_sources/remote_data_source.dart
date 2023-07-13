@@ -19,6 +19,7 @@ import '../../municipal_advisor_exports.dart'
         KeyParamsModel,
         LicensePermitEntity,
         LicensePermitModel,
+        SaveConsultationProgressParamsModel,
         SupervisingAuthorityEntity,
         SupervisingAuthorityModel;
 
@@ -42,6 +43,9 @@ abstract class MunicipalAdvisorRemoteDataSource {
   );
   Future<List<CommercialOfficeEntity>> getCommercialOffices(
     KeyParamsModel params,
+  );
+  Future<bool> saveConsultationProgress(
+    SaveConsultationProgressParamsModel params,
   );
 }
 
@@ -296,9 +300,9 @@ class MunicipalAdvisorRemoteDataSourceImplementation
 
       final result = ResponseBodyModel.fromMap(data).data?.result;
 
-      result.map((e) => e['name'] as String).toList();
+      final namesList = result.map((e) => e['name'] as String).toList();
 
-      return [...predefinedConditionsResult, ...result];
+      return [...predefinedConditionsResult, ...namesList];
     } on DioError catch (error) {
       "DioError $error".errorLog();
       throw ServerException(
@@ -325,8 +329,9 @@ class MunicipalAdvisorRemoteDataSourceImplementation
       data.toString().successLog();
 
       final result = ResponseBodyModel.fromMap(data).data?.result;
-
-      return result.map((e) => e['name'] as String).toList();
+      final List<String> namesList = [];
+      result.map((e) => namesList.add(e['name'] as String)).toList();
+      return namesList;
     } on DioError catch (error) {
       "DioError $error".errorLog();
       throw ServerException(
@@ -359,6 +364,38 @@ class MunicipalAdvisorRemoteDataSourceImplementation
           .map<CommercialOfficeEntity>(
               (e) => CommercialOfficeModel.fromMap(e as Map<String, dynamic>))
           .toList();
+    } on DioError catch (error) {
+      "DioError $error".errorLog();
+      throw ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+      );
+    } catch (ex) {
+      "Catched $ex".errorLog();
+      if (ex is ServerException) {
+        rethrow;
+      } else {
+        throw ServerException("errors_server_error_2".tr());
+      }
+    }
+  }
+
+  @override
+  Future<bool> saveConsultationProgress(
+    SaveConsultationProgressParamsModel params,
+  ) async {
+    try {
+      final response = await webService.dio.post(
+        '${ApiUrl.saveConsultationProgress}/${params.consultationKey}',
+        data: params.toMap(),
+      );
+
+      final data = response.data;
+      data.toString().successLog();
+
+      ResponseBodyModel.fromMap(data).data?.result;
+
+      return true;
     } on DioError catch (error) {
       "DioError $error".errorLog();
       throw ServerException(

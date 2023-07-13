@@ -9,6 +9,7 @@ export 'domain/entities/commercial_office_entity.dart';
 export 'domain/entities/license_permit_entity.dart';
 export 'domain/entities/supervising_authority_entity.dart';
 export 'domain/entities/key_params.dart';
+export 'domain/entities/save_consultation_progress_params.dart';
 
 //? Repositories
 export 'domain/repositories/repository.dart';
@@ -23,6 +24,7 @@ export 'domain/use_cases/get_commercial_offices.dart';
 export 'domain/use_cases/get_issuing_predefined_conditions.dart';
 export 'domain/use_cases/get_license_permits.dart';
 export 'domain/use_cases/get_supervising_authorities.dart';
+export 'domain/use_cases/save_consultation_progress.dart';
 
 //!Data
 //? Datasources
@@ -37,6 +39,7 @@ export 'data/models/commercial_office_model.dart';
 export 'data/models/license_permit_model.dart';
 export 'data/models/supervising_authority_model.dart';
 export 'data/models/key_params_model.dart';
+export 'data/models/save_consultation_progress_params_model.dart';
 //? Repositories
 export 'data/repositories/repository_implementation.dart';
 
@@ -73,3 +76,6 @@ export 'presentation/widgets/steps/sub_activity_selector.dart';
 //? Widgets/Location
 export 'presentation/widgets/location/activity_location.dart';
 export 'presentation/widgets/location/location_chat_bubble.dart';
+//? Widgets/LicenseRequirements
+export 'presentation/widgets/license_requirements/requirements_list.dart';
+export 'presentation/widgets/license_requirements/supervising_authorities.dart';

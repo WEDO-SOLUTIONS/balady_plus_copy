@@ -17,5 +17,5 @@ enum MunicipalAdvisorSteps {
   cleaningMechanisms,
   commercialOffices,
   continueToFinancial,
-  
+  endChat,
 }

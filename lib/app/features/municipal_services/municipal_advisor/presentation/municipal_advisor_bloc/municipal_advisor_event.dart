@@ -116,6 +116,17 @@ class MunicipalAdvisorChangeInfo extends MunicipalAdvisorEvent {
   List<Object?> get props => [changeInfo];
 }
 
+class MunicipalAdvisorContinueToFinancial extends MunicipalAdvisorEvent {
+  final bool continueToFinancial;
+
+  const MunicipalAdvisorContinueToFinancial({
+    required this.continueToFinancial,
+  });
+
+  @override
+  List<Object?> get props => [continueToFinancial];
+}
+
 class MunicipalAdvisorChangeStepEvent extends MunicipalAdvisorEvent {
   final String message;
   final MunicipalAdvisorSteps step;
@@ -143,6 +154,9 @@ class MunicipalAdvisorGetIssuingPredefinedConditionsEvent
 class MunicipalAdvisorGetLicensePermitsEvent extends MunicipalAdvisorEvent {}
 
 class MunicipalAdvisorGetSupervisingAuthoritiesEvent
+    extends MunicipalAdvisorEvent {}
+
+class MunicipalAdvisorSaveConsultationProgressEvent
     extends MunicipalAdvisorEvent {}
 
 class MunicipalAdvisorRetryEvent extends MunicipalAdvisorEvent {}

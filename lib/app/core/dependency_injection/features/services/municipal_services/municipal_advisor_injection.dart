@@ -14,7 +14,8 @@ import '../../../../../features/municipal_services/municipal_advisor/municipal_a
         MunicipalAdvisorRemoteDataSource,
         MunicipalAdvisorRemoteDataSourceImplementation,
         MunicipalAdvisorRepository,
-        MunicipalAdvisorRepositoryImplementation;
+        MunicipalAdvisorRepositoryImplementation,
+        SaveConsultationProgress;
 import '../../../dependency_injection_exports.dart' show sl;
 
 class MunicipalAdvisorInjection {
@@ -30,6 +31,7 @@ class MunicipalAdvisorInjection {
     sl.registerLazySingleton(() => GetIssuingPredefinedConditions(sl()));
     sl.registerLazySingleton(() => GetLicensePermits(sl()));
     sl.registerLazySingleton(() => GetSupervisingAuthorities(sl()));
+    sl.registerLazySingleton(() => SaveConsultationProgress(sl()));
 
     //! Repository
     sl.registerLazySingleton<MunicipalAdvisorRepository>(
@@ -59,6 +61,7 @@ class MunicipalAdvisorInjection {
         getLicensePermits: sl(),
         getSupervisingAuthorities: sl(),
         getCivilDefensePredefinedConditions: sl(),
+        saveConsultationProgress: sl(),
       ),
     );
   }

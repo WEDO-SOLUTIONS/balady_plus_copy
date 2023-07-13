@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class RequirementsList extends StatelessWidget {
@@ -20,22 +21,20 @@ class RequirementsList extends StatelessWidget {
           TextSpan(
             text: '$number. $title\n',
             style: const TextStyle(
-              color: Color(0xFF036362),
+              color: AppColor.darkTurquoise,
               fontSize: 12,
               fontFamily: 'Arabic UI Display',
               fontWeight: FontWeight.w600,
-              height: 24,
             ),
           ),
           for (final requirement in requirements)
             TextSpan(
-              text: requirement,
+              text: '- $requirement \n',
               style: const TextStyle(
-                color: Color(0xFF71717A),
+                color: AppColor.jumbo,
                 fontSize: 10,
                 fontFamily: 'Arabic UI Display',
                 fontWeight: FontWeight.w600,
-                height: 24,
               ),
             ),
         ],

@@ -28,6 +28,7 @@ class MunicipalAdvisorBloc
   final GetIssuingPredefinedConditions _getIssuingPredefinedConditions;
   final GetLicensePermits _getLicensePermits;
   final GetSupervisingAuthorities _getSupervisingAuthorities;
+  final SaveConsultationProgress _saveConsultationProgress;
 
   MunicipalAdvisorBloc({
     required GetConsultationKey getConsultationKey,
@@ -42,6 +43,7 @@ class MunicipalAdvisorBloc
     required GetIssuingPredefinedConditions getIssuingPredefinedConditions,
     required GetLicensePermits getLicensePermits,
     required GetSupervisingAuthorities getSupervisingAuthorities,
+    required SaveConsultationProgress saveConsultationProgress,
   })  : _getConsultationKey = getConsultationKey,
         _getIsicActivities = getIsicActivities,
         _getIsicSubActivities = getIsicSubActivities,
@@ -54,6 +56,7 @@ class MunicipalAdvisorBloc
         _getIssuingPredefinedConditions = getIssuingPredefinedConditions,
         _getLicensePermits = getLicensePermits,
         _getSupervisingAuthorities = getSupervisingAuthorities,
+        _saveConsultationProgress = saveConsultationProgress,
         super(const MunicipalAdvisorState()) {
     on<MunicipalAdvisorAddMessageEvent>(
       (event, emit) async {
@@ -354,6 +357,24 @@ class MunicipalAdvisorBloc
       },
     );
 
+    on<MunicipalAdvisorContinueToFinancial>(
+      (event, emit) async {
+        emit(
+          state.copyWith(
+            status: BlocRequestStatus.submissionGetLoading,
+            lastEvent: event,
+          ),
+        );
+        add(MunicipalAdvisorAddMessageEvent(
+          message: event.continueToFinancial
+              ? 'municipalAdvisorFinancialAnswer1'.tr()
+              : 'municipalAdvisorFinancialAnswer2'.tr(),
+          step: MunicipalAdvisorSteps.continueToFinancial,
+          data: event.continueToFinancial ? 'continueToFinancial' : null,
+        ));
+      },
+    );
+
     on<MunicipalAdvisorChangeStepEvent>(
       (event, emit) async {
         emit(
@@ -380,6 +401,50 @@ class MunicipalAdvisorBloc
               ...nextStep(event.step),
             ],
           ),
+        );
+      },
+    );
+
+    on<MunicipalAdvisorSaveConsultationProgressEvent>(
+      (event, emit) async {
+        emit(
+          state.copyWith(
+            status: BlocRequestStatus.submissionGetLoading,
+            lastEvent: event,
+          ),
+        );
+        final failureOrSuccess = await _saveConsultationProgress(
+          SaveConsultationProgressParams(
+            consultationKey: state.consultationKey!,
+            subMunicipalityGisCode: "013001002",
+            districtCode: int.parse(
+                state.activityLocation?.gisResponse.districtId ?? "1010106"),
+            streetCode: int.parse("1010106005"),
+            longitude:
+                state.activityLocation?.latLng.longitude.toString() ?? "",
+            latitude: state.activityLocation?.latLng.latitude.toString() ?? "",
+            mapNo: "",
+            landNo: "",
+            shopArea: state.selectedArea ?? 0,
+            activityId: state.selectedIsicSubActivity?.id ?? 0,
+            atmFeesOption: null,
+            unitCount: null,
+            accommodationTypeId: null,
+            krokiUrl: "http://gisimages.momra.gov.sa/",
+          ),
+        );
+        failureOrSuccess.fold(
+          (failure) {
+            emit(
+              state.copyWith(
+                status: BlocRequestStatus.submissionGetFailure,
+                errorMessage: (failure as ServerFailure).errorMessage,
+              ),
+            );
+          },
+          (_) {
+            add(MunicipalAdvisorGetIssuingPredefinedConditionsEvent());
+          },
         );
       },
     );
@@ -411,7 +476,7 @@ class MunicipalAdvisorBloc
                 messages: [
                   ...state.messages,
                   ...nextStep(
-                    MunicipalAdvisorSteps.issuingPredefinedConditions,
+                    MunicipalAdvisorSteps.requirements,
                   ),
                 ],
               ),
@@ -449,7 +514,8 @@ class MunicipalAdvisorBloc
                 licensePermits: licensePermits,
                 messages: [
                   ...state.messages,
-                  ...nextStep(MunicipalAdvisorSteps.licensePermits),
+                  ...nextStep(
+                      MunicipalAdvisorSteps.issuingPredefinedConditions),
                 ],
               ),
             );
@@ -488,7 +554,7 @@ class MunicipalAdvisorBloc
                 messages: [
                   ...state.messages,
                   ...nextStep(
-                    MunicipalAdvisorSteps.civilDefensePredefinedConditions,
+                    MunicipalAdvisorSteps.licensePermits,
                   ),
                 ],
               ),
@@ -527,7 +593,7 @@ class MunicipalAdvisorBloc
                 messages: [
                   ...state.messages,
                   ...nextStep(
-                    MunicipalAdvisorSteps.supervisingAuthorities,
+                    MunicipalAdvisorSteps.civilDefensePredefinedConditions,
                   ),
                 ],
               ),
@@ -566,7 +632,7 @@ class MunicipalAdvisorBloc
                 messages: [
                   ...state.messages,
                   ...nextStep(
-                    MunicipalAdvisorSteps.cleaningMechanisms,
+                    MunicipalAdvisorSteps.supervisingAuthorities,
                   ),
                 ],
               ),
@@ -604,7 +670,7 @@ class MunicipalAdvisorBloc
                 messages: [
                   ...state.messages,
                   ...nextStep(
-                    MunicipalAdvisorSteps.commercialOffices,
+                    MunicipalAdvisorSteps.cleaningMechanisms,
                   ),
                 ],
               ),
@@ -690,7 +756,8 @@ class MunicipalAdvisorBloc
     return step.index < MunicipalAdvisorSteps.confirmLocation.index ||
         step == MunicipalAdvisorSteps.area ||
         step == MunicipalAdvisorSteps.inputSummary ||
-        step == MunicipalAdvisorSteps.confirmInformation;
+        step == MunicipalAdvisorSteps.confirmInformation ||
+        step == MunicipalAdvisorSteps.continueToFinancial;
   }
 
   List<ChatMessage> nextStep(MunicipalAdvisorSteps step, [dynamic data]) {
@@ -792,7 +859,7 @@ class MunicipalAdvisorBloc
           ];
         } else {
           Future.delayed(const Duration(seconds: 1)).then((value) {
-            add(MunicipalAdvisorGetIssuingPredefinedConditionsEvent());
+            add(MunicipalAdvisorSaveConsultationProgressEvent());
           });
 
           return [
@@ -869,16 +936,32 @@ class MunicipalAdvisorBloc
             isResponse: true,
             customWidget: true,
           ),
-        ];
-      case MunicipalAdvisorSteps.commercialOffices:
-        return [
           ChatMessage(
             message: 'municipalAdvisorFinancial'.tr(),
             step: MunicipalAdvisorSteps.continueToFinancial,
             isResponse: true,
           ),
         ];
+      case MunicipalAdvisorSteps.commercialOffices:
+        return [];
       case MunicipalAdvisorSteps.continueToFinancial:
+        if (data == 'continueToFinancial') {
+          return [];
+        } else {
+          return [
+            ChatMessage(
+              message: 'municipalAdvisorEndChat'.tr(),
+              step: MunicipalAdvisorSteps.endChat,
+              isResponse: true,
+            ),
+            ChatMessage(
+              message: 'thanks'.tr(),
+              step: MunicipalAdvisorSteps.endChat,
+              isResponse: true,
+            ),
+          ];
+        }
+      case MunicipalAdvisorSteps.endChat:
         return [];
     }
   }

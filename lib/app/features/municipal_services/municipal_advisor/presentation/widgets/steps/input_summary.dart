@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
+import '../../../../../../core/utils/utils_exports.dart';
 import '../../../municipal_advisor_exports.dart'
     show MunicipalAdvisorBloc, MunicipalAdvisorState;
 
@@ -18,14 +19,15 @@ class InputSummary extends StatelessWidget {
               TextSpan(
                 text: "${"location".tr()}: ",
                 style: const TextStyle(
-                  color: Color(0xFF036362),
+                  color: AppColor.darkTurquoise,
                   fontSize: 12,
                   fontFamily: 'Arabic UI Display',
                   fontWeight: FontWeight.w600,
                 ),
               ),
               TextSpan(
-                text: ' ${state.activityLocation?.gisResponse} \n\n',
+                text:
+                    ' ${state.activityLocation?.gisResponse.getFullAddress()} \n\n',
                 style: const TextStyle(
                   color: Color(0xFF3F3F46),
                   fontSize: 12,
@@ -36,7 +38,7 @@ class InputSummary extends StatelessWidget {
               TextSpan(
                 text: "${'isicActivity'.tr()}: ",
                 style: const TextStyle(
-                  color: Color(0xFF036362),
+                  color: AppColor.darkTurquoise,
                   fontSize: 12,
                   fontFamily: 'Arabic UI Display',
                   fontWeight: FontWeight.w600,
@@ -54,7 +56,7 @@ class InputSummary extends StatelessWidget {
               TextSpan(
                 text: "${'subActivity'.tr()}: ",
                 style: const TextStyle(
-                  color: Color(0xFF036362),
+                  color: AppColor.darkTurquoise,
                   fontSize: 12,
                   fontFamily: 'Arabic UI Display',
                   fontWeight: FontWeight.w600,
@@ -72,7 +74,7 @@ class InputSummary extends StatelessWidget {
               TextSpan(
                 text: "${'facilityType'.tr()}: ",
                 style: const TextStyle(
-                  color: Color(0xFF036362),
+                  color: AppColor.darkTurquoise,
                   fontSize: 12,
                   fontFamily: 'Arabic UI Display',
                   fontWeight: FontWeight.w600,
@@ -90,7 +92,7 @@ class InputSummary extends StatelessWidget {
               TextSpan(
                 text: "${'facilityArea'.tr()}: ",
                 style: const TextStyle(
-                  color: Color(0xFF036362),
+                  color: AppColor.darkTurquoise,
                   fontSize: 12,
                   fontFamily: 'Arabic UI Display',
                   fontWeight: FontWeight.w600,
