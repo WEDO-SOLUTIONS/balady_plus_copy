@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../../../../../core/utils/utils_exports.dart'
     show AppColor, CommonProperties, IconPath;
 import '../../../home_exports.dart' show HomeAppBar, CircleIcon;
+
+import '../../../../map_page/screen/map_screen_urbi.dart';
 
 class HomeMap extends StatelessWidget {
   const HomeMap({super.key});
@@ -15,10 +16,7 @@ class HomeMap extends StatelessWidget {
       child: Stack(
         children: [
           SizedBox(
-            child: GoogleMap(
-              initialCameraPosition: CameraPosition(
-                  target: CommonProperties.defaultLocation, zoom: 6),
-            ),
+            child: MapScreenUrbi(),
           ),
           const Padding(
             padding: EdgeInsets.all(16.0),

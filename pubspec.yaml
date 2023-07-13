@@ -144,6 +144,11 @@ dependencies:
   #test_package:
  #   path: packages/test_package
 
+
+# Map urbi SKD
+  dgis_map:
+    path: urbi_map/dgis_map
+
 dev_dependencies:
   flutter_lints: ^2.0.1
   flutter_test:
@@ -178,6 +183,8 @@ flutter:
     - assets/images/
     - assets/langs/
     - assets/services/
+    - assets/maps/styles/
+    - assets/maps/icons/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
