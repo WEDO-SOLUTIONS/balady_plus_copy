@@ -369,6 +369,19 @@ class AppStyle {
     fontWeight: FontWeight.w600,
   );
 
+  static final compassOffsetTextStyle = TextStyle(
+    fontSize: 52.0,
+    fontWeight: AppFontWeight.medium.fontWeight,
+    color: AppColor.riverBed,
+    fontFamily: fontFamily,
+  );
+  static final compassDirectionTextStyle = TextStyle(
+    fontSize: 15,
+    fontWeight: AppFontWeight.medium.fontWeight,
+    color: AppColor.riverBed,
+    fontFamily: fontFamily,
+  );
+
   /// Padding
   static const defaultPadding = EdgeInsets.symmetric(
     horizontal: UIHelper.mediumPadding,
