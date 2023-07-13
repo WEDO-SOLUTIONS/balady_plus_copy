@@ -31,6 +31,7 @@ class PrayerTimesInjection {
     sl.registerFactory(
       () => PrayerTimesCubit(
         getPrayerTimes: sl(),
+        getGISData: sl(),
       ),
     );
   }

@@ -80,9 +80,13 @@ class PrayerTimesPage extends StatelessWidget {
                       )
                     ],
                   ),
-                  CustomTextWidget(
-                    'مواقيت الصلاة في الرياض',
-                    textStyle: AppStyle.prayerTimeCityTextStyle,
+                  BlocBuilder<PrayerTimesCubit, PrayerTimesState>(
+                    builder: (context, state) {
+                      return CustomTextWidget(
+                        "${"prayerTimesIn".tr()} ${state.gisResponse?.municipalityName}",
+                        textStyle: AppStyle.prayerTimeCityTextStyle,
+                      );
+                    },
                   ),
                   const SizedBox(height: 8),
                   CustomTextWidget(
