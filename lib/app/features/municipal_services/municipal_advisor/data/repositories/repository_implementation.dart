@@ -43,6 +43,17 @@ class MunicipalAdvisorRepositoryImplementation
   }
 
   @override
+  Future<Either<Failure, List<AccommodationTypeEntity>>>
+      getAccommodationTypes() async {
+    try {
+      final data = await remoteDataSource.getAccommodationTypes();
+      return Right(data);
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage));
+    }
+  }
+
+  @override
   Future<Either<Failure, String>> getConsultationKey(
       ConsultationKeyParamsModel params) async {
     try {

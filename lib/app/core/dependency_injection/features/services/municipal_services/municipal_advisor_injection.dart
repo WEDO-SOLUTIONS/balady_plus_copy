@@ -1,21 +1,5 @@
 import '../../../../../features/municipal_services/municipal_advisor/municipal_advisor_exports.dart'
-    show
-        GetActivityDetails,
-        GetCivilDefensePredefinedConditions,
-        GetCleaningMechanisms,
-        GetCommercialOffices,
-        GetConsultationKey,
-        GetIsicActivities,
-        GetIsicSubActivities,
-        GetIssuingPredefinedConditions,
-        GetLicensePermits,
-        GetSupervisingAuthorities,
-        MunicipalAdvisorBloc,
-        MunicipalAdvisorRemoteDataSource,
-        MunicipalAdvisorRemoteDataSourceImplementation,
-        MunicipalAdvisorRepository,
-        MunicipalAdvisorRepositoryImplementation,
-        SaveConsultationProgress;
+    show GetAccommodationTypes, GetActivityDetails, GetCivilDefensePredefinedConditions, GetCleaningMechanisms, GetCommercialOffices, GetConsultationKey, GetIsicActivities, GetIsicSubActivities, GetIssuingPredefinedConditions, GetLicensePermits, GetSupervisingAuthorities, MunicipalAdvisorBloc, MunicipalAdvisorRemoteDataSource, MunicipalAdvisorRemoteDataSourceImplementation, MunicipalAdvisorRepository, MunicipalAdvisorRepositoryImplementation, SaveConsultationProgress;
 import '../../../dependency_injection_exports.dart' show sl;
 
 class MunicipalAdvisorInjection {
@@ -32,6 +16,7 @@ class MunicipalAdvisorInjection {
     sl.registerLazySingleton(() => GetLicensePermits(sl()));
     sl.registerLazySingleton(() => GetSupervisingAuthorities(sl()));
     sl.registerLazySingleton(() => SaveConsultationProgress(sl()));
+    sl.registerLazySingleton(() => GetAccommodationTypes(sl()));
 
     //! Repository
     sl.registerLazySingleton<MunicipalAdvisorRepository>(
@@ -62,6 +47,7 @@ class MunicipalAdvisorInjection {
         getSupervisingAuthorities: sl(),
         getCivilDefensePredefinedConditions: sl(),
         saveConsultationProgress: sl(),
+        getAccommodationTypes: sl(),
       ),
     );
   }

@@ -94,6 +94,42 @@ class MunicipalAdvisorSelectIsicSubActivityEvent extends MunicipalAdvisorEvent {
 
 class MunicipalAdvisorGetActivityDetailsEvent extends MunicipalAdvisorEvent {}
 
+class MunicipalAdvisorGetAccommodationTypesEvent
+    extends MunicipalAdvisorEvent {}
+
+class MunicipalAdvisorSelectAccommodationTypeEvent extends MunicipalAdvisorEvent {
+  final AccommodationTypeEntity accommodationType;
+
+  const MunicipalAdvisorSelectAccommodationTypeEvent({
+    required this.accommodationType,
+  });
+
+  @override
+  List<Object?> get props => [accommodationType];
+}
+
+class MunicipalAdvisorSelectUnitCountEvent extends MunicipalAdvisorEvent {
+  final int unitCount;
+
+  const MunicipalAdvisorSelectUnitCountEvent({
+    required this.unitCount,
+  });
+
+  @override
+  List<Object?> get props => [unitCount];
+}
+
+class MunicipalAdvisorSelectATMEvent extends MunicipalAdvisorEvent {
+  final bool atm;
+
+  const MunicipalAdvisorSelectATMEvent({
+    required this.atm,
+  });
+
+  @override
+  List<Object?> get props => [atm];
+}
+
 class MunicipalAdvisorSelectAreaEvent extends MunicipalAdvisorEvent {
   final num area;
 

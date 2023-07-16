@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../../../municipal_advisor_exports.dart'
     show
+        ATMSelectorSummary,
+        AccommodationTypeSelector,
         ActivitySelector,
         AreaSelector,
         ChangeInformation,
@@ -11,7 +13,8 @@ import '../../../municipal_advisor_exports.dart'
         LocationSelector,
         MunicipalAdvisorSteps,
         SubActivitySelector,
-        TopicSelector;
+        TopicSelector,
+        UnitCountSelector;
 
 class ChatBubbleCurrentStep extends StatelessWidget {
   final MunicipalAdvisorSteps step;
@@ -36,8 +39,14 @@ class ChatBubbleCurrentStep extends StatelessWidget {
         return const ActivitySelector();
       case MunicipalAdvisorSteps.subActivity:
         return const SubActivitySelector();
+      case MunicipalAdvisorSteps.accommodationType:
+        return const AccommodationTypeSelector();
+      case MunicipalAdvisorSteps.unitCount:
+        return const UnitCountSelector();
       case MunicipalAdvisorSteps.area:
         return const AreaSelector();
+      case MunicipalAdvisorSteps.atm:
+        return const ATMSelectorSummary();
       case MunicipalAdvisorSteps.inputSummary:
         return const SizedBox.shrink();
       case MunicipalAdvisorSteps.confirmInformation:

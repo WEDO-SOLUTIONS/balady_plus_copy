@@ -3,16 +3,7 @@ import 'package:dartz/dartz.dart';
 
 import '../../../../../core/errors/errors_exports.dart' show Failure;
 import '../../municipal_advisor_exports.dart'
-    show
-        ActivityDetailsEntity,
-        ActivityDetailsParamsModel,
-        CommercialOfficeEntity,
-        ConsultationKeyParamsModel,
-        IsicActivityEntity,
-        IsicSubActivityParamsModel,
-        KeyParamsModel,
-        LicensePermitEntity,
-        SupervisingAuthorityEntity;
+    show AccommodationTypeEntity, ActivityDetailsEntity, ActivityDetailsParamsModel, CommercialOfficeEntity, ConsultationKeyParamsModel, IsicActivityEntity, IsicSubActivityParamsModel, KeyParamsModel, LicensePermitEntity, SupervisingAuthorityEntity;
 
 abstract class MunicipalAdvisorRepository {
   Future<Either<Failure, List<IsicActivityEntity>>> getIsicActivities();
@@ -22,6 +13,7 @@ abstract class MunicipalAdvisorRepository {
   Future<Either<Failure, ActivityDetailsEntity>> getActivityDetails(
     ActivityDetailsParamsModel params,
   );
+  Future<Either<Failure, List<AccommodationTypeEntity>>> getAccommodationTypes();
   Future<Either<Failure, String>> getConsultationKey(
     ConsultationKeyParamsModel params,
   );

@@ -11,6 +11,10 @@ class MunicipalAdvisorState extends Equatable {
   final List<IsicActivityEntity> isicSubActivities;
   final IsicActivityEntity? selectedIsicSubActivity;
   final ActivityDetailsEntity? activityDetails;
+  final List<AccommodationTypeEntity> accommodationTypes;
+  final AccommodationTypeEntity? selectedAccommodationType;
+  final int? unitCount;
+  final bool? atmPaid;
   final num? selectedArea;
   final bool changingInfo;
   final List<String>? issuingPredefinedConditions;
@@ -33,6 +37,10 @@ class MunicipalAdvisorState extends Equatable {
     this.isicSubActivities = const <IsicActivityEntity>[],
     this.selectedIsicSubActivity,
     this.activityDetails,
+    this.accommodationTypes = const <AccommodationTypeEntity>[],
+    this.selectedAccommodationType,
+    this.unitCount,
+    this.atmPaid,
     this.selectedArea,
     this.changingInfo = false,
     this.issuingPredefinedConditions,
@@ -58,6 +66,10 @@ class MunicipalAdvisorState extends Equatable {
     List<IsicActivityEntity>? isicSubActivities,
     IsicActivityEntity? selectedIsicSubActivity,
     ActivityDetailsEntity? activityDetails,
+    List<AccommodationTypeEntity>? accommodationTypes,
+    AccommodationTypeEntity? selectedAccommodationType,
+    int? unitCount,
+    bool? atmPaid,
     num? selectedArea,
     bool? changingInfo,
     List<String>? issuingPredefinedConditions,
@@ -81,6 +93,11 @@ class MunicipalAdvisorState extends Equatable {
       selectedIsicSubActivity:
           selectedIsicSubActivity ?? this.selectedIsicSubActivity,
       activityDetails: activityDetails ?? this.activityDetails,
+      accommodationTypes: accommodationTypes ?? this.accommodationTypes,
+      selectedAccommodationType:
+          selectedAccommodationType ?? this.selectedAccommodationType,
+      unitCount: unitCount ?? this.unitCount,
+      atmPaid: atmPaid ?? this.atmPaid,
       selectedArea: selectedArea ?? this.selectedArea,
       changingInfo: changingInfo ?? this.changingInfo,
       issuingPredefinedConditions:
@@ -109,6 +126,10 @@ class MunicipalAdvisorState extends Equatable {
         isicSubActivities,
         selectedIsicSubActivity,
         activityDetails,
+        accommodationTypes,
+        selectedAccommodationType,
+        unitCount,
+        atmPaid,
         selectedArea,
         changingInfo,
         issuingPredefinedConditions,

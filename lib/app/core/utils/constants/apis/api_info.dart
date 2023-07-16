@@ -21,6 +21,8 @@ class ApiUrl {
       '/v1/balady-consultation-services/activities-by-isicNumber';
   static const activityDetails =
       '/v1/balady-consultation-services/activity-detail-info';
+  static const accommodationTypes =
+      '/v1/balady-consultation-services/accommodation-types';
   static const consultationKey = '/v1/balady-consultation-services/apply';
   static const issuingPredefinedConditions =
       '/v1/balady-consultation-services/predefined-conditions?typeId=ISSUING';

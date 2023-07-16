@@ -12,6 +12,8 @@ class ActivityDetailsModel extends ActivityDetailsEntity {
     required super.facilityName,
     required super.minimumArea,
     required super.maximumArea,
+    required super.isAtm,
+    required super.isHotel,
   });
 
   factory ActivityDetailsModel.fromMap(Map<String, dynamic> map) {
@@ -26,6 +28,8 @@ class ActivityDetailsModel extends ActivityDetailsEntity {
       facilityName: map['facilityName'] as String,
       minimumArea: map['minimumArea'] as double? ?? 0,
       maximumArea: map['maximumArea'] as double? ?? double.infinity,
+      isAtm: map['isAtm'] as bool? ?? false,
+      isHotel: map['isHotel'] as bool? ?? false,
     );
   }
 }

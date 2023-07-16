@@ -11,6 +11,8 @@ class ActivityDetailsEntity extends Equatable {
   final String facilityName;
   final num minimumArea;
   final num maximumArea;
+  final bool isAtm;
+  final bool isHotel;
 
   const ActivityDetailsEntity({
     required this.activityId,
@@ -23,6 +25,8 @@ class ActivityDetailsEntity extends Equatable {
     required this.facilityName,
     required this.minimumArea,
     required this.maximumArea,
+    required this.isAtm,
+    required this.isHotel,
   });
 
   @override
@@ -37,5 +41,7 @@ class ActivityDetailsEntity extends Equatable {
         facilityName,
         minimumArea,
         maximumArea,
+        isAtm,
+        isHotel,
       ];
 }

@@ -29,6 +29,7 @@ class MunicipalAdvisorBloc
   final GetLicensePermits _getLicensePermits;
   final GetSupervisingAuthorities _getSupervisingAuthorities;
   final SaveConsultationProgress _saveConsultationProgress;
+  final GetAccommodationTypes _getAccommodationTypes;
 
   MunicipalAdvisorBloc({
     required GetConsultationKey getConsultationKey,
@@ -44,6 +45,7 @@ class MunicipalAdvisorBloc
     required GetLicensePermits getLicensePermits,
     required GetSupervisingAuthorities getSupervisingAuthorities,
     required SaveConsultationProgress saveConsultationProgress,
+    required GetAccommodationTypes getAccommodationTypes,
   })  : _getConsultationKey = getConsultationKey,
         _getIsicActivities = getIsicActivities,
         _getIsicSubActivities = getIsicSubActivities,
@@ -57,6 +59,7 @@ class MunicipalAdvisorBloc
         _getLicensePermits = getLicensePermits,
         _getSupervisingAuthorities = getSupervisingAuthorities,
         _saveConsultationProgress = saveConsultationProgress,
+        _getAccommodationTypes = getAccommodationTypes,
         super(const MunicipalAdvisorState()) {
     on<MunicipalAdvisorAddMessageEvent>(
       (event, emit) async {
@@ -311,9 +314,59 @@ class MunicipalAdvisorBloc
                 activityDetails: activityDetails,
               ),
             );
+            if (activityDetails.isHotel) {
+              add(MunicipalAdvisorGetAccommodationTypesEvent());
+            } else {
+              emit(
+                state.copyWith(
+                  status: BlocRequestStatus.submissionGetSuccess,
+                  messages: [
+                    ...state.messages,
+                    ...nextStep(MunicipalAdvisorSteps.subActivity),
+                  ],
+                ),
+              );
+            }
+          },
+        );
+      },
+    );
+
+    on<MunicipalAdvisorGetAccommodationTypesEvent>(
+      (event, emit) async {
+        if (state.accommodationTypes.isNotEmpty) {
+          emit(
+            state.copyWith(
+              status: BlocRequestStatus.submissionGetSuccess,
+              messages: [
+                ...state.messages,
+                ...nextStep(MunicipalAdvisorSteps.subActivity),
+              ],
+            ),
+          );
+          return;
+        }
+        emit(
+          state.copyWith(
+            status: BlocRequestStatus.submissionGetLoading,
+            lastEvent: event,
+          ),
+        );
+        final failureOrSuccess = await _getAccommodationTypes(NoParams());
+        failureOrSuccess.fold(
+          (failure) {
+            emit(
+              state.copyWith(
+                status: BlocRequestStatus.submissionGetFailure,
+                errorMessage: (failure as ServerFailure).errorMessage,
+              ),
+            );
+          },
+          (accommodationTypes) {
             emit(
               state.copyWith(
                 status: BlocRequestStatus.submissionGetSuccess,
+                accommodationTypes: accommodationTypes,
                 messages: [
                   ...state.messages,
                   ...nextStep(MunicipalAdvisorSteps.subActivity),
@@ -322,6 +375,54 @@ class MunicipalAdvisorBloc
             );
           },
         );
+      },
+    );
+
+    on<MunicipalAdvisorSelectAccommodationTypeEvent>(
+      (event, emit) async {
+        emit(
+          state.copyWith(
+            status: BlocRequestStatus.submissionGetLoading,
+            selectedAccommodationType: event.accommodationType,
+            lastEvent: event,
+          ),
+        );
+        add(MunicipalAdvisorAddMessageEvent(
+          message: event.accommodationType.name,
+          step: MunicipalAdvisorSteps.accommodationType,
+        ));
+      },
+    );
+
+    on<MunicipalAdvisorSelectUnitCountEvent>(
+      (event, emit) async {
+        emit(
+          state.copyWith(
+            status: BlocRequestStatus.submissionGetLoading,
+            unitCount: event.unitCount,
+            lastEvent: event,
+          ),
+        );
+        add(MunicipalAdvisorAddMessageEvent(
+          message: event.unitCount.toString(),
+          step: MunicipalAdvisorSteps.unitCount,
+        ));
+      },
+    );
+
+    on<MunicipalAdvisorSelectATMEvent>(
+      (event, emit) async {
+        emit(
+          state.copyWith(
+            status: BlocRequestStatus.submissionGetLoading,
+            atmPaid: event.atm,
+            lastEvent: event,
+          ),
+        );
+        add(MunicipalAdvisorAddMessageEvent(
+          message: event.atm ? 'yes'.tr() : 'no'.tr(),
+          step: MunicipalAdvisorSteps.atm,
+        ));
       },
     );
 
@@ -416,7 +517,9 @@ class MunicipalAdvisorBloc
         final failureOrSuccess = await _saveConsultationProgress(
           SaveConsultationProgressParams(
             consultationKey: state.consultationKey!,
-            subMunicipalityGisCode: "013001002",
+            subMunicipalityGisCode:
+                // state.activityLocation?.gisResponse.subMunicipalityId ??
+                "013001002",
             districtCode: int.parse(
                 state.activityLocation?.gisResponse.districtId ?? "1010106"),
             streetCode: int.parse("1010106005"),
@@ -754,6 +857,9 @@ class MunicipalAdvisorBloc
 
   bool showNextSteps(MunicipalAdvisorSteps step) {
     return step.index < MunicipalAdvisorSteps.confirmLocation.index ||
+        step == MunicipalAdvisorSteps.accommodationType ||
+        step == MunicipalAdvisorSteps.unitCount ||
+        step == MunicipalAdvisorSteps.atm ||
         step == MunicipalAdvisorSteps.area ||
         step == MunicipalAdvisorSteps.inputSummary ||
         step == MunicipalAdvisorSteps.confirmInformation ||
@@ -813,13 +919,58 @@ class MunicipalAdvisorBloc
           ),
         ];
       case MunicipalAdvisorSteps.subActivity:
-        return [
+        final messages = [
           ChatMessage(
             message:
                 '${'facilityType'.tr()}: ${state.activityDetails!.facilityName}',
             step: MunicipalAdvisorSteps.area,
             isResponse: true,
           ),
+        ];
+        if (state.activityDetails!.isHotel) {
+          messages.add(
+            ChatMessage(
+              message: 'municipalAdvisorHotelType'.tr(),
+              step: MunicipalAdvisorSteps.accommodationType,
+              isResponse: true,
+            ),
+          );
+        } else if (state.activityDetails!.isAtm) {
+          messages.add(
+            ChatMessage(
+              message: 'municipalAdvisorATM'.tr(),
+              step: MunicipalAdvisorSteps.atm,
+              isResponse: true,
+            ),
+          );
+        } else {
+          messages.add(
+            ChatMessage(
+              message: 'municipalAdvisorArea'.tr(),
+              step: MunicipalAdvisorSteps.area,
+              isResponse: true,
+            ),
+          );
+        }
+        return messages;
+      case MunicipalAdvisorSteps.accommodationType:
+        return [
+          ChatMessage(
+            message: 'municipalAdvisorUnitCount'.tr(),
+            step: MunicipalAdvisorSteps.unitCount,
+            isResponse: true,
+          ),
+        ];
+      case MunicipalAdvisorSteps.unitCount:
+        return [
+          ChatMessage(
+            message: 'municipalAdvisorArea'.tr(),
+            step: MunicipalAdvisorSteps.area,
+            isResponse: true,
+          ),
+        ];
+      case MunicipalAdvisorSteps.atm:
+        return [
           ChatMessage(
             message: 'municipalAdvisorArea'.tr(),
             step: MunicipalAdvisorSteps.area,

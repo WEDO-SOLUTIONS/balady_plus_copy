@@ -9,6 +9,8 @@ import '../../../../_shared_feature_/shared_feature_exports.dart'
     show ResponseBodyModel;
 import '../../municipal_advisor_exports.dart'
     show
+        AccommodationTypeEntity,
+        AccommodationTypeModel,
         ActivityDetailsModel,
         ActivityDetailsParamsModel,
         CommercialOfficeEntity,
@@ -26,9 +28,12 @@ import '../../municipal_advisor_exports.dart'
 abstract class MunicipalAdvisorRemoteDataSource {
   Future<List<IsicActivityModel>> getIsicActivities();
   Future<List<IsicActivityModel>> getIsicSubActivities(
-      IsicSubActivityParamsModel params);
+    IsicSubActivityParamsModel params,
+  );
   Future<ActivityDetailsModel> getActivityDetails(
-      ActivityDetailsParamsModel params);
+    ActivityDetailsParamsModel params,
+  );
+  Future<List<AccommodationTypeEntity>> getAccommodationTypes();
   Future<String> getConsultationKey(ConsultationKeyParamsModel params);
   Future<List<String>> getIssuingPredefinedConditions();
   Future<List<LicensePermitEntity>> getLicensePermits(KeyParamsModel params);
@@ -135,6 +140,39 @@ class MunicipalAdvisorRemoteDataSourceImplementation
       final result = ResponseBodyModel.fromMap(data).data?.result;
 
       return ActivityDetailsModel.fromMap(result as Map<String, dynamic>);
+    } on DioError catch (error) {
+      "DioError $error".errorLog();
+      throw ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+      );
+    } catch (ex) {
+      "Catched $ex".errorLog();
+      if (ex is ServerException) {
+        rethrow;
+      } else {
+        throw ServerException("errors_server_error_2".tr());
+      }
+    }
+  }
+
+  @override
+  Future<List<AccommodationTypeEntity>> getAccommodationTypes() async {
+    try {
+      final response = await webService.dio.get(
+        ApiUrl.accommodationTypes,
+      );
+
+      final data = response.data;
+      data.toString().successLog();
+
+      final result = ResponseBodyModel.fromMap(data).data?.result;
+
+      return result
+          .map<AccommodationTypeEntity>(
+            (e) => AccommodationTypeModel.fromMap(e as Map<String, dynamic>),
+          )
+          .toList();
     } on DioError catch (error) {
       "DioError $error".errorLog();
       throw ServerException(
