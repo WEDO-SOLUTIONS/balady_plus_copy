@@ -11,7 +11,9 @@ class LicensesModel extends LicenseEntity {
       required super.subMunicipalityName,
       required super.licenseEndDate,
       required super.updateTime,
-      super.redirectUrl});
+      super.redirectUrl,
+      super.requestMainTypeId,
+      super.requestNumber});
 
   factory LicensesModel.fromMap(Map<String, dynamic> json) {
     return LicensesModel(
@@ -24,6 +26,8 @@ class LicensesModel extends LicenseEntity {
         subMunicipalityName: json['subMunicipalityName'] as String? ?? '',
         licenseEndDate: DateTime.parse(json['licenseEndDate'] as String),
         updateTime: DateTime.tryParse(json['updateTime'] as String? ?? ''),
-        redirectUrl: json["redirectUrl"]);
+        redirectUrl: json["redirectUrl"],
+        requestMainTypeId: json["requestMainTypeId"],
+        requestNumber: json["requestNumber"]);
   }
 }

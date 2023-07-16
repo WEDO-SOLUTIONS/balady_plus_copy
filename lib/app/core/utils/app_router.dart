@@ -21,6 +21,10 @@ import '../../features/calculator/presentation/pages/service_calculator_location
 import '../../features/calculator/presentation/pages/service_calculator_screen.dart';
 import '../../features/daem/presentation/pages/daem_ticket_page.dart';
 import '../../features/entry_point/entry_point_exports.dart' show SsoUserInfo;
+import '../../features/health_certificate/presentation/core/models/health_request_details_screen_args.dart';
+import '../../features/health_certificate/presentation/pages/health_license_details_screen.dart';
+import '../../features/health_certificate/presentation/pages/health_request_details_screen.dart';
+import '../../features/health_certificate/presentation/pages/new_health_certificate/new_health_certificate_page.dart';
 import '../../features/new_appointment/presentation/pages/new_appointment/new_appointment_page.dart';
 import '../../features/objectable_transactions/objections_exports.dart'
     show ObjectableTransactionsPage;
@@ -351,6 +355,29 @@ class AppRouter {
       case RouteName.AppointmentsListScreen:
         return MaterialPageRoute(
           builder: (_) => AppointmentsListScreen(),
+        );
+
+      case RouteName.newHealthCertificatePage:
+        return MaterialPageRoute(
+          builder: (_) => NewHealthCertificatePage(
+            renew: false,
+          ),
+        );
+
+      case RouteName.healthLicenseDetailsScreen:
+        final args = settings.arguments as HealthRequestDetailsScreenArgs;
+        return MaterialPageRoute(
+          builder: (_) => HealthLicenseDetailsScreen(
+            args: args,
+          ),
+        );
+
+      case RouteName.healthRequestDetailsScreen:
+        final args = settings.arguments as HealthRequestDetailsScreenArgs;
+        return MaterialPageRoute(
+          builder: (_) => HealthRequestDetailsScreen(
+            args: args,
+          ),
         );
 
       // error page

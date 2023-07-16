@@ -82,4 +82,10 @@ class RouteName {
   static const calculatorRoute = 'calculatorRoute';
 
   static const calculatorMapRoute = 'calculatorMapRoute';
+
+  // ------- Health Certificates  ---------
+
+  static const newHealthCertificatePage = '/NewHealthCertificatePage';
+  static const healthLicenseDetailsScreen = '/healthLicenseDetailsScreenRoute';
+  static const healthRequestDetailsScreen = '/HealthRequestDetailsScreen';
 }

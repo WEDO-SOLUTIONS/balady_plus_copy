@@ -4,11 +4,15 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:intl/intl.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
+import '../../../../../core/base/base_view_model.dart';
 import '../../../../../core/dependency_injection/injection_container.dart';
 import '../../../../../core/services/local/navigation_services.dart';
 import '../../../../../core/utils/utils_exports.dart'
     show AppColor, AppStyle, IconPath, RouteName;
 import '../../../../_shared_feature_/shared_feature_exports.dart';
+import '../../../../health_certificate/presentation/core/models/health_request_details.dart';
+import '../../../../health_certificate/presentation/core/models/health_request_details_screen_args.dart';
+import '../../../../health_certificate/presentation/core/services/view_models/main_health_license_view_model.dart';
 import '../../../../objectable_transactions/domain/use_cases/get_objection_details.dart';
 import '../../requests_exports.dart' show RequestEntity, RequestParameter;
 
@@ -93,30 +97,45 @@ class RequestsListItem extends StatelessWidget {
           ),
           ElevatedButtonWidget.details(
             onPressed: () async {
-              if (request.redirectUrl == null) {
-                if (request.requestTypeId == 50001) {
-                  EasyLoading.show();
-                  GetObjectionDetails getObjectionDetails =
-                      GetObjectionDetails(repository: sl());
-                  var failureOrSuccess =
-                      await getObjectionDetails(request.requestNumberAsText);
+              if (request.requestMainTypeId == "1300") {
+                final model = locator<MainHealthLicenseViewModel>();
 
-                  await failureOrSuccess.fold((failure) {
-                    EasyLoading.dismiss();
-                  }, (success) async {
-                    EasyLoading.dismiss();
-                    NavigationService.navigatorKey.currentState!.pushNamed(
-                        RouteName.objectionsDetailsPage,
-                        arguments: success);
-                  });
-                  return;
+                HealthRequestDetails? details =
+                    await model.getHealthRequestDetails(request.requestNumber);
+                if (details != null) {
+                  NavigationService.navigatorKey.currentState!.pushNamed(
+                      RouteName.healthRequestDetailsScreen,
+                      arguments: HealthRequestDetailsScreenArgs(
+                          healthRequestDetails: details,
+                          isDeletable: false,
+                          isPrintable: false));
                 }
-              }
+              } else {
+                if (request.redirectUrl == null) {
+                  if (request.requestTypeId == 50001) {
+                    EasyLoading.show();
+                    GetObjectionDetails getObjectionDetails =
+                        GetObjectionDetails(repository: sl());
+                    var failureOrSuccess =
+                        await getObjectionDetails(request.requestNumberAsText);
 
-              Navigator.of(context).pushNamed(
-                RouteName.inappWebview,
-                arguments: (title: 'request'.tr(), url: request.redirectUrl),
-              );
+                    await failureOrSuccess.fold((failure) {
+                      EasyLoading.dismiss();
+                    }, (success) async {
+                      EasyLoading.dismiss();
+                      NavigationService.navigatorKey.currentState!.pushNamed(
+                          RouteName.objectionsDetailsPage,
+                          arguments: success);
+                    });
+                    return;
+                  }
+                }
+
+                Navigator.of(context).pushNamed(
+                  RouteName.inappWebview,
+                  arguments: (title: 'request'.tr(), url: request.redirectUrl),
+                );
+              }
             },
           ),
         ],
