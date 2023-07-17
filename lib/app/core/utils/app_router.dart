@@ -1,6 +1,7 @@
 import 'package:balady_plus/app/features/daem/daem_exports.dart';
 import 'package:balady_plus/app/features/objectable_transactions/domain/entities/create_objection_page_params.dart';
 import 'package:balady_plus/app/features/objections/domain/entities/objection_details.dart';
+import 'package:balady_plus/app/features/quran/quran_exports.dart';
 import 'package:flutter/material.dart'
     show AppBar, Center, MaterialPageRoute, Route, RouteSettings, Scaffold;
 import 'package:flutter/widgets.dart' show SizedBox;
@@ -379,6 +380,15 @@ class AppRouter {
             args: args,
           ),
         );
+
+ case RouteName.quranScreen:
+        return MaterialPageRoute(
+          builder: (_) => QuranPage(
+          ),
+        );
+
+
+
 
       // error page
       //? error page

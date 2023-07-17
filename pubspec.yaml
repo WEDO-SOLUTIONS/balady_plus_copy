@@ -179,6 +179,7 @@ flutter:
     - assets/icons/png/qr/
     - assets/images/
     - assets/langs/
+    - assets/quran/
     - assets/services/
 
   # An image asset can refer to one or more resolution-specific "variants", see
@@ -204,6 +205,10 @@ flutter:
           weight: 700
         - asset: assets/fonts/Arabic-UI-Text-Medium.otf
           weight: 500
+    - family: HafsSmart
+      fonts:
+        - asset: assets/fonts/HafsSmart_08.ttf
+
   #   - family: Trajan Pro
   #     fonts:
   #       - asset: fonts/TrajanPro.ttf

@@ -18,7 +18,7 @@ class PreviousNextButtons extends StatelessWidget {
       builder: (context, state) {
         TransactionInquiryViewModel model =
             Provider.of<TransactionInquiryViewModel>(context, listen: true);
-        bool isButtonDisabled = state.isNextButtonEnabled();
+        bool isButtonDisabled = !model.isFormValid;
         bool isLastPage = context.read<TransactionInquiryBloc>().isLastPage();
         return Container(
           color: Colors.transparent,

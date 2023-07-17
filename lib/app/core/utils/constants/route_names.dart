@@ -88,4 +88,7 @@ class RouteName {
   static const newHealthCertificatePage = '/NewHealthCertificatePage';
   static const healthLicenseDetailsScreen = '/healthLicenseDetailsScreenRoute';
   static const healthRequestDetailsScreen = '/HealthRequestDetailsScreen';
+
+  // ------- Quran Page  ---------
+  static const quranScreen = '/quranScreen';
 }

@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 
 class DelegatorEntity extends Equatable {
-  final String crNumber;
+  final String? crNumber;
   final String? unifiedNationalNumber;
   final String delegationSource;
   final String relationTypeId;
@@ -11,8 +11,8 @@ class DelegatorEntity extends Equatable {
   final String entityName;
 
   const DelegatorEntity({
-    required this.crNumber,
-    required this.unifiedNationalNumber,
+    this.crNumber,
+    this.unifiedNationalNumber,
     required this.delegationSource,
     required this.relationTypeId,
     required this.relationTypeName,
@@ -21,7 +21,7 @@ class DelegatorEntity extends Equatable {
     required this.entityName,
   });
 
-  String get id => unifiedNationalNumber ?? crNumber;
+  String get id => (crNumber ?? unifiedNationalNumber) ?? "";
 
   @override
   List<Object?> get props => [

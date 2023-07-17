@@ -1,0 +1,164 @@
+import 'dart:convert';
+
+import 'package:balady_plus/app/core/services/services_exports.dart';
+import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
+import 'package:balady_plus/app/core/utils/enums/app_font_weights.dart';
+import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
+import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports.dart';
+import 'package:balady_plus/app/features/quran/presentation/bloc/quran_bloc.dart';
+import 'package:balady_plus/app/features/vd/presentation/widgets/summery_widgets/field_data.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/svg.dart';
+
+import '../../../../core/utils/constants/constants.dart';
+import '../../../../core/utils/constants/paths/icon_paths.dart';
+import '../../../../core/utils/constants/paths/image_paths.dart';
+import '../../../_shared_feature_/presentation/widgets/buttons/custom_buttons_widgets.dart';
+import '../../data/models/quran_aya_model.dart';
+
+class QuranPage extends StatefulWidget {
+  const QuranPage({super.key});
+
+  @override
+  State<QuranPage> createState() => _QuranPageState();
+}
+
+class _QuranPageState extends State<QuranPage> {
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (context) => QuranBloc(),
+      child: BlocBuilder<QuranBloc, QuranState>(
+        builder: (context, state) {
+          return Scaffold(
+              appBar: AppBar(
+                elevation: 0,
+                title: CustomTextWidget(
+                  state.currentTitle ?? "",
+                  fontColor: AppColor.black,
+                  fontSize: 20,
+                  fontFamily: "HafsSmart",
+                  textAlign: TextAlign.center,
+                ),
+                leading: GestureDetector(
+                  behavior: HitTestBehavior.translucent,
+                  onTap: () {
+                    NavigationService.navigatorKey.currentState?.pop();
+                  },
+                  child: Container(
+                    margin: const EdgeInsetsDirectional.only(start: 10),
+                    child: Row(
+                      children: [
+                        CustomTextIconButtonWidget(
+                          text: "",
+                          icon: SvgPicture.asset(IconPath.vdAppBarBack),
+                          textStyle: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: AppColor.blackModern700Light,
+                              fontFamily: Constants.appFontType),
+                          onPressed: () {
+                            NavigationService.navigatorKey.currentState?.pop();
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                flexibleSpace: Stack(
+                  children: [
+                    Container(
+                      padding: EdgeInsets.only(bottom: 40, left: 16, right: 16),
+                      decoration: const BoxDecoration(
+                        color: Colors.white,
+                        image: DecorationImage(
+                          image: AssetImage(ImagePath.appBarBackground),
+                          fit: BoxFit.fill,
+                        ),
+                        boxShadow: Constants.appBarBoxShadow,
+                      ),
+                      alignment: AlignmentDirectional.bottomCenter,
+                    ),
+                  ],
+                ),
+                actions: [
+                  FilterIcon(onTap: () async {
+                    final bool? actionTaked =
+                        await BottomSheetDialog.showDraggableSheet(context,
+                            child: BottomSheetWithActions(
+                              body: ListView.builder(
+                                  itemCount: state.suraIndex?.length ?? 0,
+                                  shrinkWrap: true,
+                                  physics: NeverScrollableScrollPhysics(),
+                                  itemBuilder: (ctx, index) {
+                                    print(index);
+                                    return GestureDetector(
+                                      onTap: () {
+                                        context
+                                            .read<QuranBloc>()
+                                            .controller
+                                            .jumpToPage(context
+                                                .read<QuranBloc>()
+                                                .getSuraPageNumber(index + 1));
+                                        Navigator.pop(context);
+                                      },
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: FieldData(
+                                            title:
+                                                state.suraIndex?[index + 1] ??
+                                                    ""),
+                                      ),
+                                    );
+                                  }),
+                              title: 'اختر السورة',
+                            ));
+                  }),
+                ],
+                systemOverlayStyle: SystemUiOverlayStyle.light.copyWith(
+                  statusBarBrightness: Brightness.light,
+                ),
+              ),
+              body: PageView.builder(
+                controller: context.read<QuranBloc>().controller,
+                onPageChanged: (int page) {
+                  context.read<QuranBloc>().add(ChangePageEvent(page: page));
+                },
+                itemCount: state.pages?.length ?? 0,
+                itemBuilder: ((context, i) {
+                  return Container(
+                    decoration: BoxDecoration(
+                        color: AppColor.white,
+                        borderRadius: BorderRadius.all(Radius.circular(16))),
+                    margin: EdgeInsets.all(16),
+                    padding: EdgeInsets.all(8),
+                    child: SingleChildScrollView(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          CustomTextWidget(
+                            state.pagesStr?[i + 1] ?? "",
+                            fontColor: AppColor.black,
+                            height: 1.6,
+                            fontSize: 24,
+                            fontFamily: "HafsSmart",
+                            maxLines: 1000,
+                          )
+                        ],
+                      ),
+                    ),
+                  );
+                }),
+              ));
+        },
+      ),
+    );
+  }
+}
