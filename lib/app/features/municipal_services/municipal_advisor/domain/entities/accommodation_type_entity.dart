@@ -1,10 +1,10 @@
 import 'package:equatable/equatable.dart';
 
-class RequestStatusEntity extends Equatable {
+class AccommodationTypeEntity extends Equatable {
   final int id;
   final String name;
 
-  const RequestStatusEntity({
+  const AccommodationTypeEntity({
     required this.id,
     required this.name,
   });

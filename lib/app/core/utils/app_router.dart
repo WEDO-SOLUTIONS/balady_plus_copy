@@ -33,6 +33,10 @@ import '../../features/facility_qr/facility_qr_exports.dart';
 import '../../features/objectable_transactions/presentation/pages/create_objection_page.dart';
 import '../../features/objectable_transactions/presentation/pages/objection_details_page.dart';
 import '../../features/objectable_transactions/presentation/pages/transactions_details_page.dart';
+import '../../features/municipal_services/municipal_advisor/municipal_advisor_exports.dart'
+    show LocationPage, MunicipalAdvisorBloc, MunicipalAdvisorPage;
+
+import '../../features/objections/presentation/pages/objections_page.dart';
 import '../../features/profile_features/dashboard/dashboard_exports.dart'
     show DashBoardPage;
 import '../../features/profile_features/invoices/invoices_exports.dart'
@@ -43,7 +47,6 @@ import '../../features/profile_features/personal_information/personal_informatio
     show PersonalInformationPage;
 import '../../features/profile_features/requests/requests_exports.dart'
     show RequestsPage;
-import '../../features/objections/objections_exports.dart' show ObjectionsPage;
 import '../../features/public_services_features/prayer_times/prayer_times_exports.dart'
     show PrayerTimesCubit, PrayerTimesPage;
 import '../../features/report_damaged_car/damaged_cars_exports.dart'
@@ -57,6 +60,9 @@ import '../../features/retrive_car/presentation/pages/dc_select_retrive_request_
 import '../../features/retrive_car/presentation/pages/dc_vehicles_page.dart';
 import '../../features/public_services_features/qiblah_compass/qiblah_compass_exports.dart'
     show QiblahCompassPage;
+import '../../features/public_services_features/qiblah_compass/qiblah_compass_exports.dart'
+    show QiblahCompassPage;
+import '../../features/public_services_features/prayer_times/presentation/pages/prayer_times_page.dart';
 import '../../features/services/services_exports.dart'
     show ServiceCardsPage, ServiceEntity;
 import '../../features/splash/splash_exports.dart' show SplashPage;
@@ -109,9 +115,20 @@ class AppRouter {
         return MaterialPageRoute(
           builder: (_) => const QiblahCompassPage(),
         );
+      //? Municipal Services
+      case RouteName.municipalAdvisor:
+        return MaterialPageRoute(
+          builder: (_) => const MunicipalAdvisorPage(),
+        );
+      case RouteName.locationPage:
+        return MaterialPageRoute(
+          builder: (_) => LocationPage(
+            bloc: settings.arguments as MunicipalAdvisorBloc,
+          ),
+        );
 
       //! Setting
-      // personalInformation page
+      //? personalInformation page
       case RouteName.personalInformation:
         return MaterialPageRoute(
           builder: (_) => PersonalInformationPage(
@@ -381,14 +398,10 @@ class AppRouter {
           ),
         );
 
- case RouteName.quranScreen:
+      case RouteName.quranScreen:
         return MaterialPageRoute(
-          builder: (_) => QuranPage(
-          ),
+          builder: (_) => QuranPage(),
         );
-
-
-
 
       // error page
       //? error page

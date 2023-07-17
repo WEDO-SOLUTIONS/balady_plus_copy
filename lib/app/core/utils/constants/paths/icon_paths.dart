@@ -26,6 +26,10 @@ class IconPath {
   static const appBarSearch = '${_svgIconPath}appbar_search$_svg';
   static const billIcon = '${_svgIconPath}bill_icon$_svg';
   static const placeholder = '${_svgIconPath}placeholder$_svg';
+  static const calender = '${_svgIconPath}calender$_svg';
+  static const send = '${_svgIconPath}send$_svg';
+  static const chat = '${_svgIconPath}chat$_svg';
+  static const marker = '${_svgIconPath}marker$_svg';
   static const add = '${_svgIconPath}add$_svg';
   static const pdf = '${_svgIconPath}PDF$_svg';
   static const settingsIcon = '${_svgIconPath}settings$_svg';
@@ -39,7 +43,6 @@ class IconPath {
   static const otpLogo = '${_pngIconPath}shield$_png';
   static const needLogin = '${_pngIconPath}need_login$_png';
   static const successIcon = '${_pngIconPath}success_icon$_png';
-  static const calender = '${_svgIconPath}calender$_svg';
   static const calenderTick = '${_svgIconPath}calender_tick$_svg';
 
   // Bottom-Nav-Bar

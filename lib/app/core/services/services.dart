@@ -56,6 +56,17 @@ Map<String, dynamic> servicesConfig = {
       "action": {"type": "page", "value": "/scanner"},
       "ar": {"title": "ماسح الرمز السريع", "description": null, "tag": null},
       "en": {"title": "QR Scanner", "description": null, "tag": null}
+    },
+    {
+      "id": 6,
+      "icon": "qiblah",
+      "3d_icon": null,
+      "order": 6,
+      "isNew": false,
+      "isImportant": false,
+      "action": {"type": "page", "value": "/qiblahCompass"},
+      "ar": {"title": "بوصلة القبلة", "description": null, "tag": null},
+      "en": {"title": "Qiblah Compass", "description": null, "tag": null}
     }
   ],
   "municipal_services": [

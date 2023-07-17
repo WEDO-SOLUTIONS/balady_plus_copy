@@ -121,6 +121,9 @@ class AppColor {
   static const dark5 = Color(0x0d2f3c48);
   static const primary100Light12 = Color(0x1fcde0e0);
   static const blackModern50Light20 = Color(0x33fdfdfd);
+  static const base500Light50 = Color(0x33fdfdfd);
+  static const riverBed = Color(0xFF47515C);
+  static const jumbo = Color(0xFF71717A);
 
   // static const Color lightRedBrown = Color(0xFFfdcbcb);
 

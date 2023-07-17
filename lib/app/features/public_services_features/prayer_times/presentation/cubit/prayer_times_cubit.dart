@@ -9,6 +9,7 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 import '../../../../../core/errors/errors_exports.dart' show ServerFailure;
 import '../../../../../core/utils/utils_exports.dart'
     show BlocRequestStatus, CommonFunctions;
+import '../../../../vd/vd_exports.dart' show GISParams, GISResponse, GetGISData;
 import '../../prayer_times_exports.dart'
     show
         GetPrayerTimes,
@@ -19,11 +20,15 @@ import '../../prayer_times_exports.dart'
 part 'prayer_times_state.dart';
 
 class PrayerTimesCubit extends Cubit<PrayerTimesState> {
-  final GetPrayerTimes getPrayerTimes;
+  final GetPrayerTimes _getPrayerTimes;
+  final GetGISData _getGISData;
 
   PrayerTimesCubit({
-    required this.getPrayerTimes,
-  }) : super(const PrayerTimesState()) {
+    required GetPrayerTimes getPrayerTimes,
+    required GetGISData getGISData,
+  })  : _getPrayerTimes = getPrayerTimes,
+        _getGISData = getGISData,
+        super(const PrayerTimesState()) {
     getPrayerTime();
   }
 
@@ -58,12 +63,32 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
     double longitude = position.longitude;
 
     emit(state.copyWith(status: BlocRequestStatus.submissionGetLoading));
+    final gisFailureOrSuccess = await _getGISData(
+      GISParams(x: longitude, y: latitude),
+    );
+
+    gisFailureOrSuccess.fold(
+      (failure) {
+        emit(state.copyWith(
+          status: BlocRequestStatus.submissionGetFailure,
+          errorMessage: (failure as ServerFailure).errorMessage,
+        ));
+      },
+      (response) {
+        emit(state.copyWith(
+          gisResponse: response,
+        ));
+      },
+    );
+
+    if (gisFailureOrSuccess.isLeft()) return;
+
     final params = PrayerTimesParams(
       latitude: latitude,
       longitude: longitude,
       date: DateTime(2023, 05, 25),
     );
-    final failureOrSuccess = await getPrayerTimes(params);
+    final failureOrSuccess = await _getPrayerTimes(params);
 
     failureOrSuccess.fold(
       (failure) {

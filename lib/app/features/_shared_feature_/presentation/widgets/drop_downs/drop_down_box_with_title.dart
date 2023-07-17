@@ -66,11 +66,13 @@ class DropDownWithTitle extends StatelessWidget {
                 ),
                 child: Row(
                   children: [
-                    CustomTextWidget(
-                      selectedValue ?? "choose".tr(),
-                      textStyle: AppStyle.dropDownValueTextStyle,
+                    Expanded(
+                      child: CustomTextWidget(
+                        selectedValue ?? "choose".tr(),
+                        textStyle: AppStyle.dropDownValueTextStyle,
+                        maxLines: 2,
+                      ),
                     ),
-                    const Spacer(),
                     if (showArrow)
                       SvgPicture.asset(
                         IconPath.arrowDown,

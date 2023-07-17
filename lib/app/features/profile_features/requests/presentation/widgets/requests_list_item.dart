@@ -1,6 +1,5 @@
 import 'package:balady_plus/app/features/home_page/home_exports.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:intl/intl.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
@@ -8,7 +7,7 @@ import '../../../../../core/base/base_view_model.dart';
 import '../../../../../core/dependency_injection/injection_container.dart';
 import '../../../../../core/services/local/navigation_services.dart';
 import '../../../../../core/utils/utils_exports.dart'
-    show AppColor, AppStyle, IconPath, RouteName;
+    show AppColor, AppStyle, IconPath;
 import '../../../../_shared_feature_/shared_feature_exports.dart';
 import '../../../../health_certificate/presentation/core/models/health_request_details.dart';
 import '../../../../health_certificate/presentation/core/models/health_request_details_screen_args.dart';

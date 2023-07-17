@@ -13,6 +13,32 @@ class ApiUrl {
   //! Prayer Times
   static const prayerTimes = '/v1/kacst/prayer-times';
 
+  //! Municipal Services
+  //! Municipal Advisor
+  static const isicActivities =
+      '/v1/balady-consultation-services/approved-isic-activities';
+  static const isicSubActivities =
+      '/v1/balady-consultation-services/activities-by-isicNumber';
+  static const activityDetails =
+      '/v1/balady-consultation-services/activity-detail-info';
+  static const accommodationTypes =
+      '/v1/balady-consultation-services/accommodation-types';
+  static const consultationKey = '/v1/balady-consultation-services/apply';
+  static const issuingPredefinedConditions =
+      '/v1/balady-consultation-services/predefined-conditions?typeId=ISSUING';
+  static const licensePermits =
+      '/v1/balady-consultation-services/license-permits';
+  static const supervisingAuthorities =
+      '/v1/balady-consultation-services/supervising-authorities';
+  static const civilDefensePredefinedConditions =
+      '/v1/balady-consultation-services/predefined-conditions?typeId=CIVIL_DEFENSE';
+  static String civilDefense = '/v1/balady-consultation-services/civil-defense';
+  static const commercialOffices =
+      '/v1/balady-consultation-services/commercial-offices';
+  static const cleaningMechanisms = '/v1/balady-consultation-services/cleaning';
+  static const saveConsultationProgress =
+      '/v1/balady-consultation-services/site';
+
   //! Profile
   //! Delegators
   static const delegators =
@@ -39,7 +65,8 @@ class ApiUrl {
   static invoiceSubTypes(int id) =>
       '/v1/balady-dashboard/invoices/sub-main-types/$id';
   static const invoiceStatuses = '/v1/balady-dashboard/invoices/statuses';
-  static const invoiceDetails = '/v1/balady-dashboard/invoices/my-invoices-by-id';
+  static const invoiceDetails =
+      '/v1/balady-dashboard/invoices/my-invoices-by-id';
 
   //! Licenses
   static const licenses = '/v1/balady-dashboard/license/my-licenses';

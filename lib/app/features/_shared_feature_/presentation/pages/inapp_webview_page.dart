@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:balady_plus/app/core/utils/constants/remote_config.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -28,6 +29,13 @@ class _InAppWebViewPageState extends State<InAppWebViewPage> {
   @override
   void initState() {
     super.initState();
+    try {
+      CookieManager.instance().setCookie(
+          url: Uri.parse(RemoteConfig.cookieURL),
+          name: ".ASPXFORMSAUTH",
+          value: CommonProperties.appCookie.split("=").last,
+          domain: RemoteConfig.momraDomain);
+    } catch (_) {}
     _progessStream = StreamController<double?>();
 
     controller = WebViewController()
