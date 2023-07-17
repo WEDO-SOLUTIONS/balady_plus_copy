@@ -4,24 +4,29 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../municipal_advisor_exports.dart'
     show
+        ChatMessage,
         InputSummary,
+        LicenseCostResponse,
         MunicipalAdvisorBloc,
         MunicipalAdvisorState,
         MunicipalAdvisorSteps,
+        PermitsCost,
         RequirementsList,
-        SupervisingAuthorities;
+        SupervisingAuthorities,
+        TotalCost,
+        TradeLicenseCost;
 
 class ChatBubbleStepData extends StatelessWidget {
-  final MunicipalAdvisorSteps step;
+  final ChatMessage chatMessage;
 
   const ChatBubbleStepData({
     super.key,
-    required this.step,
+    required this.chatMessage,
   });
 
   @override
   Widget build(BuildContext context) {
-    switch (step) {
+    switch (chatMessage.step) {
       case MunicipalAdvisorSteps.inputSummary:
         return const InputSummary();
       case MunicipalAdvisorSteps.issuingPredefinedConditions:
@@ -73,7 +78,8 @@ class ChatBubbleStepData extends StatelessWidget {
             return RequirementsList(
               number: 6,
               title: "municipalAdvisorCleaningMechanismsTitle".tr(),
-              requirements: state.cleaningMechanisms ?? [],
+              requirements:
+                  state.cleaningMechanisms.map((e) => e.name).toList(),
             );
           },
         );
@@ -91,6 +97,15 @@ class ChatBubbleStepData extends StatelessWidget {
             );
           },
         );
+      case MunicipalAdvisorSteps.licenseCost:
+        if (chatMessage.data == 'tradeLicense') {
+          return const TradeLicenseCost();
+        } else if (chatMessage.data == 'permits') {
+          return const PermitsCost();
+        } else if (chatMessage.data == 'total') {
+          return const TotalCost();
+        }
+        return const SizedBox.shrink();
       default:
         return const SizedBox.shrink();
     }

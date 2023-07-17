@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
@@ -30,6 +31,10 @@ class MunicipalAdvisorBloc
   final GetSupervisingAuthorities _getSupervisingAuthorities;
   final SaveConsultationProgress _saveConsultationProgress;
   final GetAccommodationTypes _getAccommodationTypes;
+  final SaveActivities _saveActivities;
+  final GetLicenseYears _getLicenseYears;
+  // final GetBoardTypes _boardTypes;
+  final CalculateLicenseFees _calculateLicenseFees;
 
   MunicipalAdvisorBloc({
     required GetConsultationKey getConsultationKey,
@@ -46,6 +51,10 @@ class MunicipalAdvisorBloc
     required GetSupervisingAuthorities getSupervisingAuthorities,
     required SaveConsultationProgress saveConsultationProgress,
     required GetAccommodationTypes getAccommodationTypes,
+    required SaveActivities saveActivities,
+    required GetLicenseYears getLicenseYears,
+    required GetBoardTypes boardTypes,
+    required CalculateLicenseFees calculateLicenseFeed,
   })  : _getConsultationKey = getConsultationKey,
         _getIsicActivities = getIsicActivities,
         _getIsicSubActivities = getIsicSubActivities,
@@ -60,6 +69,10 @@ class MunicipalAdvisorBloc
         _getSupervisingAuthorities = getSupervisingAuthorities,
         _saveConsultationProgress = saveConsultationProgress,
         _getAccommodationTypes = getAccommodationTypes,
+        _saveActivities = saveActivities,
+        _getLicenseYears = getLicenseYears,
+        // _boardTypes = boardTypes,
+        _calculateLicenseFees = calculateLicenseFeed,
         super(const MunicipalAdvisorState()) {
     on<MunicipalAdvisorAddMessageEvent>(
       (event, emit) async {
@@ -467,9 +480,7 @@ class MunicipalAdvisorBloc
           ),
         );
         add(MunicipalAdvisorAddMessageEvent(
-          message: event.continueToFinancial
-              ? 'municipalAdvisorFinancialAnswer1'.tr()
-              : 'municipalAdvisorFinancialAnswer2'.tr(),
+          message: event.continueToFinancial ? 'yes'.tr() : 'noEndChat'.tr(),
           step: MunicipalAdvisorSteps.continueToFinancial,
           data: event.continueToFinancial ? 'continueToFinancial' : null,
         ));
@@ -520,9 +531,10 @@ class MunicipalAdvisorBloc
             subMunicipalityGisCode:
                 // state.activityLocation?.gisResponse.subMunicipalityId ??
                 "013001002",
-            districtCode: int.parse(
-                state.activityLocation?.gisResponse.districtId ?? "1010106"),
-            streetCode: int.parse("1010106005"),
+            districtCode: int.tryParse(
+                    state.activityLocation?.gisResponse.districtId ?? "") ??
+                1010106,
+            streetCode: 1010106005,
             longitude:
                 state.activityLocation?.latLng.longitude.toString() ?? "",
             latitude: state.activityLocation?.latLng.latitude.toString() ?? "",
@@ -783,11 +795,418 @@ class MunicipalAdvisorBloc
       },
     );
 
+    on<MunicipalAdvisorLoadCalculationLookupsEvent>(
+      (event, emit) async {
+        emit(
+          state.copyWith(
+            status: BlocRequestStatus.submissionGetLoading,
+            lastEvent: event,
+          ),
+        );
+
+        //call SaveActivities  and GetLicenseYears and GetBoardTypes
+        final saveActivities = await _saveActivities(
+          SaveActivitiesParams(
+            consultationKey: state.consultationKey!,
+            activitiesIds: const [],
+          ),
+        );
+        saveActivities.fold(
+          (failure) {
+            emit(
+              state.copyWith(
+                status: BlocRequestStatus.submissionGetFailure,
+                errorMessage: (failure as ServerFailure).errorMessage,
+              ),
+            );
+          },
+          (saveActivities) {},
+        );
+
+        final licenseYears = await _getLicenseYears(
+          GetLicenseYearsParams(
+            activityId: '${state.selectedIsicSubActivity!.id}',
+          ),
+        );
+
+        licenseYears.fold(
+          (failure) => emit(
+            state.copyWith(
+              status: BlocRequestStatus.submissionGetFailure,
+              errorMessage: (failure as ServerFailure).errorMessage,
+            ),
+          ),
+          (licenseYears) {
+            add(
+              const MunicipalAdvisorCalculateLicenseEvent(
+                firstCalculation: true,
+              ),
+            );
+            emit(
+              state.copyWith(
+                licenseYears: licenseYears,
+                selectedLicenseYear: licenseYears.first,
+                selectedPermits: [],
+              ),
+            );
+          },
+        );
+
+        // final boardTypes = await _boardTypes(NoParams());
+
+        // boardTypes.fold(
+        //   (failure) => emit(
+        //     state.copyWith(
+        //       status: BlocRequestStatus.submissionGetFailure,
+        //       errorMessage: (failure as ServerFailure).errorMessage,
+        //     ),
+        //   ),
+        //   (boardTypes) => emit(
+        //     state.copyWith(
+        //       status: BlocRequestStatus.submissionGetSuccess,
+        //       boardTypes: boardTypes,
+        //     ),
+        //   ),
+        // );
+      },
+    );
+
+    on<MunicipalAdvisorSelectLiceseYearEvent>(
+      (event, emit) async {
+        emit(
+          state.copyWith(
+            status: BlocRequestStatus.submissionGetLoading,
+            lastEvent: event,
+          ),
+        );
+        add(const MunicipalAdvisorCalculateLicenseEvent());
+      },
+    );
+
+    on<MunicipalAdvisorSelectCleaningMechanismEvent>(
+      (event, emit) async {
+        emit(
+          state.copyWith(
+            status: BlocRequestStatus.submissionGetLoading,
+            selectedCleanMechanism: event.cleaningMechanism,
+            lastEvent: event,
+          ),
+        );
+        add(const MunicipalAdvisorCalculateLicenseEvent());
+      },
+    );
+
+    on<MunicipalAdvisorAddCommercialBoardEvent>(
+      (event, emit) async {
+        emit(
+          state.copyWith(
+              status: BlocRequestStatus.submissionGetLoading,
+              lastEvent: event,
+              boards: [
+                ...state.boards,
+                BoardsParams(
+                  typeId: state.boardTypes.first.id,
+                  area: 1,
+                )
+              ]),
+        );
+        add(const MunicipalAdvisorCalculateLicenseEvent());
+      },
+    );
+
+    on<MunicipalAdvisorRemoveCommercialBoardEvent>(
+      (event, emit) async {
+        final index = event.index;
+        state.boards.removeAt(index);
+        emit(
+          state.copyWith(
+            status: BlocRequestStatus.submissionGetLoading,
+            lastEvent: event,
+          ),
+        );
+        add(const MunicipalAdvisorCalculateLicenseEvent());
+      },
+    );
+
+    on<MunicipalAdvisorUpdateCommercialBoardEvent>(
+      (event, emit) async {
+        state.boards[event.index] = event.board;
+        emit(
+          state.copyWith(
+            status: BlocRequestStatus.submissionGetLoading,
+            lastEvent: event,
+          ),
+        );
+        add(const MunicipalAdvisorCalculateLicenseEvent());
+      },
+    );
+
+    on<MunicipalAdvisorCalculateLicenseEvent>(
+      (event, emit) async {
+        if (event.firstCalculation || event.finalCalculation) {
+          emit(
+            state.copyWith(
+              status: BlocRequestStatus.submissionGetLoading,
+              lastEvent: event,
+            ),
+          );
+        } else {
+          EasyLoading.show(
+            dismissOnTap: false,
+            maskType: EasyLoadingMaskType.black,
+          );
+        }
+        final failureOrSuccess = await _calculateLicenseFees(
+          CalculateFeesParams(
+            consultationKey: state.consultationKey!,
+            accommodationTypeId: null,
+            municipalityGisCode: "013001002",
+            longitude:
+                state.activityLocation?.latLng.longitude.toString() ?? "",
+            latitude: state.activityLocation?.latLng.latitude.toString() ?? "",
+            activityId: state.selectedIsicSubActivity!.id,
+            licensePeriod: state.selectedLicenseYear,
+            shopArea: state.selectedArea!,
+            cleanOption: state.selectedCleanMechanism?.id,
+            unitCount: state.unitCount,
+            atmFeesPaid: state.atmPaid,
+            boards: state.boards,
+            permits: state.selectedPermits,
+          ),
+        );
+        if (!event.finalCalculation) EasyLoading.dismiss();
+        failureOrSuccess.fold(
+          (failure) {
+            emit(
+              state.copyWith(
+                status: BlocRequestStatus.submissionGetFailure,
+                errorMessage: (failure as ServerFailure).errorMessage,
+              ),
+            );
+          },
+          (licenseFees) {
+            emit(
+              state.copyWith(
+                status: BlocRequestStatus.submissionGetSuccess,
+                licenseFees: licenseFees,
+                messages: event.finalCalculation
+                    ? [
+                        ...state.messages,
+                        ...nextStep(
+                          MunicipalAdvisorSteps.licenseCost,
+                        ),
+                      ]
+                    : event.firstCalculation
+                        ? [
+                            ...state.messages,
+                            ...state.messages,
+                            ChatMessage(
+                              message: 'municipalAdvisorLicenseCost'.tr(),
+                              step: MunicipalAdvisorSteps.licenseCost,
+                              isResponse: true,
+                              data: true,
+                            ),
+                            ChatMessage(
+                              message: 'municipalAdvisorPermitsCost'.tr(),
+                              step: MunicipalAdvisorSteps.licenseCost,
+                              isResponse: true,
+                              data: false,
+                            ),
+                          ]
+                        : null,
+              ),
+            );
+          },
+        );
+      },
+    );
+
+    on<MunicipalAdvisorSelectPermitEvent>(
+      (event, emit) async {
+        final id = event.permit.permitTypeId;
+        final index = state.selectedPermits.indexWhere(
+          (element) => element.permitTypeId == id,
+        );
+        if (index == -1) {
+          state.selectedPermits.add(
+            PermitsParams(
+              permitTypeId: id,
+              permitName: event.permit.name,
+              sideWalk: id == 1013 ? state.sideWalkParams : null,
+              nonFoodVehicleCount:
+                  id == 1037 ? state.nonFoodVehicleCount : null,
+            ),
+          );
+        } else {
+          state.selectedPermits.removeAt(index);
+        }
+        emit(
+          state.copyWith(
+            status: BlocRequestStatus.submissionGetLoading,
+            lastEvent: event,
+          ),
+        );
+        add(const MunicipalAdvisorCalculateLicenseEvent());
+      },
+    );
+
+    on<MunicipalAdvisorUpdateSideWalkEvent>(
+      (event, emit) async {
+        emit(
+          state.copyWith(
+            status: BlocRequestStatus.submissionGetLoading,
+            sideWalkParams: state.sideWalkParams.copyWith(
+              width: event.width,
+              length: event.length,
+              days: event.days,
+            ),
+            lastEvent: event,
+          ),
+        );
+        final index = state.selectedPermits.indexWhere(
+          (element) => element.permitTypeId == 1013,
+        );
+        if (index != -1) {
+          state.selectedPermits[index] = state.selectedPermits[index].copyWith(
+            sideWalk: state.sideWalkParams,
+          );
+        }
+        add(const MunicipalAdvisorCalculateLicenseEvent());
+      },
+    );
+
+    on<MunicipalAdvisorUpdateNonFoodVehicleCountEvent>(
+      (event, emit) async {
+        emit(
+          state.copyWith(
+            status: BlocRequestStatus.submissionGetLoading,
+            lastEvent: event,
+            nonFoodVehicleCount: event.count,
+          ),
+        );
+        final index = state.selectedPermits.indexWhere(
+          (element) => element.permitTypeId == 1037,
+        );
+        if (index != -1) {
+          state.selectedPermits[index] = state.selectedPermits[index].copyWith(
+            nonFoodVehicleCount: state.nonFoodVehicleCount,
+          );
+        }
+        add(const MunicipalAdvisorCalculateLicenseEvent());
+      },
+    );
+
+    on<MunicipalAdvisorEndCalculateLicenseEvent>(
+      (event, emit) async {
+        state.messages.removeLast();
+        state.messages.removeLast();
+        emit(
+          state.copyWith(
+            status: BlocRequestStatus.submissionGetLoading,
+            lastEvent: event,
+            messages: [
+              ...state.messages,
+              ChatMessage(
+                message:
+                    '1.${'issue_trade_license'.tr()}\n$issueTradeLicenseUser',
+                step: MunicipalAdvisorSteps.licenseCost,
+                isResponse: false,
+                customWidget: true,
+              ),
+              ChatMessage(
+                message: '2.${'permits'.tr()}\n$permitsUser',
+                step: MunicipalAdvisorSteps.licenseCost,
+                isResponse: false,
+                customWidget: true,
+              ),
+            ],
+          ),
+        );
+
+        final nextSteps = [
+          ChatMessage(
+            message: 'municipalAdvisorFinancialDetails'.tr(),
+            step: MunicipalAdvisorSteps.licenseCost,
+            isResponse: true,
+            customWidget: true,
+          ),
+          ChatMessage(
+            message: '',
+            step: MunicipalAdvisorSteps.licenseCost,
+            isResponse: true,
+            customWidget: true,
+            data: 'tradeLicense',
+          ),
+          ChatMessage(
+            message: '',
+            step: MunicipalAdvisorSteps.licenseCost,
+            isResponse: true,
+            customWidget: true,
+            data: 'permits',
+          ),
+          ChatMessage(
+            message: '',
+            step: MunicipalAdvisorSteps.licenseCost,
+            isResponse: true,
+            customWidget: true,
+            data: 'total',
+          ),
+          ChatMessage(
+            message: 'remainingQuestions'.tr(),
+            step: MunicipalAdvisorSteps.licenseCost,
+            isResponse: true,
+            customWidget: true,
+          ),
+          ChatMessage(
+            message: 'municipalAdvisorFinancial'.tr(),
+            step: MunicipalAdvisorSteps.addAttachments,
+            isResponse: true,
+          ),
+        ];
+        await delay();
+        for (int i = 0; i < nextSteps.length; i++) {
+          emit(botResponse(event, nextSteps[i], i < nextSteps.length - 1));
+          if (i != nextSteps.length - 1) await delay();
+        }
+      },
+    );
+
     on<MunicipalAdvisorRetryEvent>(
       (event, emit) {
         if (state.lastEvent != null) add(state.lastEvent!);
       },
     );
+  }
+
+  String get issueTradeLicenseUser {
+    String issueTradeLicense = '''
+  ${'LicenseYears'.tr()}: ${state.selectedLicenseYear}
+  ${'area'.tr()}: ${state.selectedArea}
+  ''';
+
+    if (state.selectedCleanMechanism != null) {
+      issueTradeLicense +=
+          '${'CleaningMechanisms'.tr()}: ${state.selectedCleanMechanism?.name}\n';
+    }
+
+    return issueTradeLicense;
+  }
+
+  String get permitsUser {
+    String permits = '';
+    for (final permit in state.licenseFees?.permits ?? <PermitsFeesEntity>[]) {
+      permits += '${permit.actionTypeName}\n';
+      if (permit.actionTypeId == 1013) {
+        permits +=
+            ':\n ${'Width'.tr()}: ${state.sideWalkParams.width} ${'Length'.tr()}: ${state.sideWalkParams.length} ${'days'.tr()}: ${state.sideWalkParams.days}\n';
+      } else if (permit.actionTypeId == 1037) {
+        permits += ':\n ${'count'.tr()}: ${state.nonFoodVehicleCount}\n';
+      } else {
+        permits += '\n';
+      }
+    }
+
+    return permits;
   }
 
   Future<bool> getConsultationKeyEventHandler(event, emit) async {
@@ -874,11 +1293,13 @@ class MunicipalAdvisorBloc
             message: 'municipalAdvisorWelcome'.tr(),
             step: MunicipalAdvisorSteps.start,
             isResponse: true,
+            customWidget: true,
           ),
           ChatMessage(
             message: 'municipalAdvisorHint'.tr(),
             step: MunicipalAdvisorSteps.start,
             isResponse: true,
+            customWidget: true,
           ),
           ChatMessage(
             message: 'municipalAdvisorTopic'.tr(),
@@ -925,6 +1346,7 @@ class MunicipalAdvisorBloc
                 '${'facilityType'.tr()}: ${state.activityDetails!.facilityName}',
             step: MunicipalAdvisorSteps.area,
             isResponse: true,
+            customWidget: true,
           ),
         ];
         if (state.activityDetails!.isHotel) {
@@ -1018,6 +1440,7 @@ class MunicipalAdvisorBloc
               message: 'municipalAdvisorRequirements'.tr(),
               step: MunicipalAdvisorSteps.requirements,
               isResponse: true,
+              customWidget: true,
             ),
           ];
         }
@@ -1097,7 +1520,21 @@ class MunicipalAdvisorBloc
         return [];
       case MunicipalAdvisorSteps.continueToFinancial:
         if (data == 'continueToFinancial') {
-          return [];
+          add(MunicipalAdvisorLoadCalculationLookupsEvent());
+          return [
+            // ChatMessage(
+            //   message: 'municipalAdvisorLicenseCost'.tr(),
+            //   step: MunicipalAdvisorSteps.licenseCost,
+            //   isResponse: true,
+            //   data: true,
+            // ),
+            // ChatMessage(
+            //   message: 'municipalAdvisorPermitsCost'.tr(),
+            //   step: MunicipalAdvisorSteps.licenseCost,
+            //   isResponse: true,
+            //   data: false,
+            // ),
+          ];
         } else {
           return [
             ChatMessage(
@@ -1113,6 +1550,10 @@ class MunicipalAdvisorBloc
           ];
         }
       case MunicipalAdvisorSteps.endChat:
+        return [];
+      case MunicipalAdvisorSteps.licenseCost:
+        return [];
+      case MunicipalAdvisorSteps.addAttachments:
         return [];
     }
   }

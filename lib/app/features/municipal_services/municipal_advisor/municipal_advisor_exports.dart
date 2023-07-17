@@ -11,6 +11,17 @@ export 'domain/entities/supervising_authority_entity.dart';
 export 'domain/entities/key_params.dart';
 export 'domain/entities/save_consultation_progress_params.dart';
 export 'domain/entities/accommodation_type_entity.dart';
+export 'domain/entities/save_activities_params.dart';
+export 'domain/entities/get_license_years_params.dart';
+export 'domain/entities/board_type_entity.dart';
+export 'domain/entities/boards_params.dart';
+export 'domain/entities/permit_params.dart';
+export 'domain/entities/calculate_fees_params.dart';
+export 'domain/entities/calculated_fees_entity.dart';
+export 'domain/entities/license_fees_entity.dart';
+export 'domain/entities/permits_fees_entity.dart';
+export 'domain/entities/cost_info_entity.dart';
+export 'domain/entities/cleaning_entity.dart';
 
 //? Repositories
 export 'domain/repositories/repository.dart';
@@ -27,6 +38,10 @@ export 'domain/use_cases/get_license_permits.dart';
 export 'domain/use_cases/get_supervising_authorities.dart';
 export 'domain/use_cases/save_consultation_progress.dart';
 export 'domain/use_cases/get_accommodation_types.dart';
+export 'domain/use_cases/save_activities.dart';
+export 'domain/use_cases/get_license_years.dart';
+export 'domain/use_cases/get_board_types.dart';
+export 'domain/use_cases/calculate_license_fees.dart';
 
 //!Data
 //? Datasources
@@ -43,6 +58,19 @@ export 'data/models/supervising_authority_model.dart';
 export 'data/models/key_params_model.dart';
 export 'data/models/save_consultation_progress_params_model.dart';
 export 'data/models/accommodation_type_model.dart';
+export 'data/models/save_activities_params_model.dart';
+export 'data/models/get_license_years_params_model.dart';
+export 'data/models/board_type_model.dart';
+export 'data/models/boards_params_model.dart';
+export 'data/models/permits_params_model.dart';
+export 'data/models/sidewalk_params_model.dart';
+export 'data/models/calculate_fees_params_model.dart';
+export 'data/models/calculated_fees_model.dart';
+export 'data/models/licence_fees_model.dart';
+export 'data/models/permits_fees_model.dart';
+export 'data/models/cost_info_model.dart';
+export 'data/models/cleaning_model.dart';
+
 //? Repositories
 export 'data/repositories/repository_implementation.dart';
 
@@ -54,9 +82,8 @@ export 'presentation/pages/municipal_advisor_page.dart';
 export 'presentation/pages/location_page.dart';
 //? Widgets
 export 'presentation/widgets/chat_bubble.dart';
-export 'presentation/widgets/chat_buuble_type.dart';
 export 'presentation/widgets/chat_list.dart';
-export 'presentation/widgets/chat_message.dart';
+export 'presentation/widgets/models/chat_message.dart';
 export 'presentation/widgets/empty_chat.dart';
 export 'presentation/widgets/retry_bubble.dart';
 export 'presentation/widgets/loading_bubble.dart';
@@ -79,9 +106,22 @@ export 'presentation/widgets/steps/confirm_input_summary.dart';
 export 'presentation/widgets/steps/location_selector.dart';
 export 'presentation/widgets/steps/sub_activity_selector.dart';
 export 'presentation/widgets/steps/unit_count_selector.dart';
+export 'presentation/widgets/steps/license_cost.dart';
+export 'presentation/widgets/license_cost/permit_cost_body.dart';
 //? Widgets/Location
 export 'presentation/widgets/location/activity_location.dart';
 export 'presentation/widgets/location/location_chat_bubble.dart';
 //? Widgets/LicenseRequirements
 export 'presentation/widgets/license_requirements/requirements_list.dart';
 export 'presentation/widgets/license_requirements/supervising_authorities.dart';
+//? Widgets/LicenseCost
+export 'presentation/widgets/license_cost/license_cost_body.dart';
+export 'presentation/widgets/license_cost/license_years_selector.dart';
+export 'presentation/widgets/license_cost/cleaning_selector.dart';
+export 'presentation/widgets/license_cost/boards_selector.dart';
+export 'presentation/widgets/license_cost/board_widget.dart';
+export 'presentation/widgets/license_cost/permit_checkbox.dart';
+export 'presentation/widgets/license_cost/title_cost_widget.dart';
+export 'presentation/widgets/license_cost/total_cost.dart';
+export 'presentation/widgets/license_cost/permit_cost.dart';
+export 'presentation/widgets/license_cost/trade_license_cost.dart';

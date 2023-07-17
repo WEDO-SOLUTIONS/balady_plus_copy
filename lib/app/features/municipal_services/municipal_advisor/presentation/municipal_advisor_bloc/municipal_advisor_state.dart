@@ -3,6 +3,7 @@ part of 'municipal_advisor_bloc.dart';
 class MunicipalAdvisorState extends Equatable {
   final BlocRequestStatus status;
   final List<ChatMessage> messages;
+  final MunicipalAdvisorSteps currentStep;
   final String? consultationKey;
   final GISResponse? gisResponse;
   final ActivityLocation? activityLocation;
@@ -21,14 +22,24 @@ class MunicipalAdvisorState extends Equatable {
   final List<LicensePermitEntity>? licensePermits;
   final List<SupervisingAuthorityEntity>? supervisingAuthorities;
   final List<String>? civilDefensePredefinedConditions;
-  final List<String>? cleaningMechanisms;
+  final List<CleaningEntity> cleaningMechanisms;
   final List<CommercialOfficeEntity>? commercialOffices;
+  final List<int> licenseYears;
+  final List<BoardTypeEntity> boardTypes;
+  final int selectedLicenseYear;
+  final List<BoardsParams> boards;
+  final CleaningEntity? selectedCleanMechanism;
+  final List<PermitsParams> selectedPermits;
+  final LicenseFeesEntity? licenseFees;
+  final SideWalkParamsModel sideWalkParams;
+  final int nonFoodVehicleCount;
   final MunicipalAdvisorEvent? lastEvent;
   final String? errorMessage;
 
   const MunicipalAdvisorState({
     this.status = BlocRequestStatus.initial,
     this.messages = const <ChatMessage>[],
+    this.currentStep = MunicipalAdvisorSteps.start,
     this.consultationKey,
     this.gisResponse,
     this.activityLocation,
@@ -47,8 +58,30 @@ class MunicipalAdvisorState extends Equatable {
     this.licensePermits,
     this.supervisingAuthorities,
     this.civilDefensePredefinedConditions,
-    this.cleaningMechanisms,
+    this.cleaningMechanisms = const <CleaningEntity>[],
     this.commercialOffices,
+    this.licenseYears = const <int>[],
+    this.boardTypes = const <BoardTypeEntity>[
+      BoardTypeEntity(
+        id: 1,
+        name: "إرشادية",
+      ),
+      BoardTypeEntity(
+        id: 2,
+        name: "إعلانية",
+      ),
+    ],
+    this.selectedLicenseYear = 1,
+    this.boards = const <BoardsParams>[],
+    this.selectedCleanMechanism,
+    this.licenseFees,
+    this.selectedPermits = const <PermitsParams>[],
+    this.sideWalkParams = const SideWalkParamsModel(
+      width: 1,
+      length: 1,
+      days: 1,
+    ),
+    this.nonFoodVehicleCount = 1,
     this.lastEvent,
     this.errorMessage,
   });
@@ -76,14 +109,26 @@ class MunicipalAdvisorState extends Equatable {
     List<LicensePermitEntity>? licensePermits,
     List<SupervisingAuthorityEntity>? supervisingAuthorities,
     List<String>? civilDefensePredefinedConditions,
-    List<String>? cleaningMechanisms,
+    List<CleaningEntity>? cleaningMechanisms,
     List<CommercialOfficeEntity>? commercialOffices,
+    List<int>? licenseYears,
+    List<BoardTypeEntity>? boardTypes,
+    int? selectedLicenseYear,
+    List<BoardsParams>? boards,
+    CleaningEntity? selectedCleanMechanism,
+    LicenseFeesEntity? licenseFees,
+    List<PermitsParams>? selectedPermits,
+    SideWalkParamsModel? sideWalkParams,
+    int? nonFoodVehicleCount,
     MunicipalAdvisorEvent? lastEvent,
     String? errorMessage,
   }) {
     return MunicipalAdvisorState(
       status: status ?? this.status,
       messages: messages ?? this.messages,
+      currentStep: messages?.isEmpty ?? this.messages.isEmpty
+          ? MunicipalAdvisorSteps.start
+          : messages?.last.step ?? this.messages.last.step,
       consultationKey: consultationKey ?? this.consultationKey,
       gisResponse: gisResponse ?? this.gisResponse,
       activityLocation: activityLocation ?? this.activityLocation,
@@ -109,6 +154,16 @@ class MunicipalAdvisorState extends Equatable {
           this.civilDefensePredefinedConditions,
       cleaningMechanisms: cleaningMechanisms ?? this.cleaningMechanisms,
       commercialOffices: commercialOffices ?? this.commercialOffices,
+      licenseYears: licenseYears ?? this.licenseYears,
+      boardTypes: boardTypes ?? this.boardTypes,
+      selectedLicenseYear: selectedLicenseYear ?? this.selectedLicenseYear,
+      boards: boards ?? this.boards,
+      selectedCleanMechanism:
+          selectedCleanMechanism ?? this.selectedCleanMechanism,
+      licenseFees: licenseFees ?? this.licenseFees,
+      selectedPermits: selectedPermits ?? this.selectedPermits,
+      sideWalkParams: sideWalkParams ?? this.sideWalkParams,
+      nonFoodVehicleCount: nonFoodVehicleCount ?? this.nonFoodVehicleCount,
       lastEvent: lastEvent ?? this.lastEvent,
       errorMessage: errorMessage ?? this.errorMessage,
     );
@@ -118,6 +173,7 @@ class MunicipalAdvisorState extends Equatable {
   List<Object?> get props => [
         status,
         messages,
+        currentStep,
         consultationKey,
         gisResponse,
         activityLocation,
@@ -138,6 +194,15 @@ class MunicipalAdvisorState extends Equatable {
         civilDefensePredefinedConditions,
         cleaningMechanisms,
         commercialOffices,
+        licenseYears,
+        boardTypes,
+        selectedLicenseYear,
+        boards,
+        selectedCleanMechanism,
+        licenseFees,
+        selectedPermits,
+        sideWalkParams,
+        nonFoodVehicleCount,
         lastEvent,
         errorMessage,
       ];

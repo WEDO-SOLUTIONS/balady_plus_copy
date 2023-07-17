@@ -38,6 +38,11 @@ class ApiUrl {
   static const cleaningMechanisms = '/v1/balady-consultation-services/cleaning';
   static const saveConsultationProgress =
       '/v1/balady-consultation-services/site';
+  static const saveActivities =
+      '/v1/balady-consultation-services/additional-activity';
+  static const licenseYears = '/v1/balady-consultation-services/license-years';
+  static const boardTypes = '/v1/balady-consultation-services/board-types';
+  static const calculateFees = '/v1/balady-consultation-services/calculate-fees';
 
   //! Profile
   //! Delegators

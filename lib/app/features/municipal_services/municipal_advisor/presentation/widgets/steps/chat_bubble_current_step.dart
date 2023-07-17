@@ -10,6 +10,7 @@ import '../../../municipal_advisor_exports.dart'
         ConfirmInputSummary,
         ConfirmLocation,
         ContinueToFinancial,
+        LicenseCost,
         LocationSelector,
         MunicipalAdvisorSteps,
         SubActivitySelector,
@@ -18,10 +19,12 @@ import '../../../municipal_advisor_exports.dart'
 
 class ChatBubbleCurrentStep extends StatelessWidget {
   final MunicipalAdvisorSteps step;
+  final dynamic data;
 
   const ChatBubbleCurrentStep({
     super.key,
     required this.step,
+    this.data,
   });
 
   @override
@@ -63,6 +66,13 @@ class ChatBubbleCurrentStep extends StatelessWidget {
       case MunicipalAdvisorSteps.endChat:
         return const SizedBox.shrink();
       case MunicipalAdvisorSteps.continueToFinancial:
+        return const ContinueToFinancial();
+      case MunicipalAdvisorSteps.licenseCost:
+        return LicenseCost(
+          license: data,
+        );
+
+      case MunicipalAdvisorSteps.addAttachments:
         return const ContinueToFinancial();
     }
   }

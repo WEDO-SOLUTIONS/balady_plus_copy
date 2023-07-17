@@ -97,7 +97,8 @@ class MunicipalAdvisorGetActivityDetailsEvent extends MunicipalAdvisorEvent {}
 class MunicipalAdvisorGetAccommodationTypesEvent
     extends MunicipalAdvisorEvent {}
 
-class MunicipalAdvisorSelectAccommodationTypeEvent extends MunicipalAdvisorEvent {
+class MunicipalAdvisorSelectAccommodationTypeEvent
+    extends MunicipalAdvisorEvent {
   final AccommodationTypeEntity accommodationType;
 
   const MunicipalAdvisorSelectAccommodationTypeEvent({
@@ -194,5 +195,110 @@ class MunicipalAdvisorGetSupervisingAuthoritiesEvent
 
 class MunicipalAdvisorSaveConsultationProgressEvent
     extends MunicipalAdvisorEvent {}
+
+class MunicipalAdvisorLoadCalculationLookupsEvent
+    extends MunicipalAdvisorEvent {}
+
+class MunicipalAdvisorSelectLiceseYearEvent extends MunicipalAdvisorEvent {
+  final int year;
+
+  const MunicipalAdvisorSelectLiceseYearEvent({
+    required this.year,
+  });
+
+  @override
+  List<Object?> get props => [year];
+}
+
+class MunicipalAdvisorSelectCleaningMechanismEvent
+    extends MunicipalAdvisorEvent {
+  final CleaningEntity cleaningMechanism;
+
+  const MunicipalAdvisorSelectCleaningMechanismEvent({
+    required this.cleaningMechanism,
+  });
+
+  @override
+  List<Object?> get props => [cleaningMechanism];
+}
+
+class MunicipalAdvisorAddCommercialBoardEvent extends MunicipalAdvisorEvent {}
+
+class MunicipalAdvisorRemoveCommercialBoardEvent extends MunicipalAdvisorEvent {
+  final int index;
+
+  const MunicipalAdvisorRemoveCommercialBoardEvent({
+    required this.index,
+  });
+
+  @override
+  List<Object?> get props => [index];
+}
+
+class MunicipalAdvisorUpdateCommercialBoardEvent extends MunicipalAdvisorEvent {
+  final int index;
+  final BoardsParams board;
+
+  const MunicipalAdvisorUpdateCommercialBoardEvent({
+    required this.index,
+    required this.board,
+  });
+
+  @override
+  List<Object?> get props => [index, board];
+}
+
+class MunicipalAdvisorCalculateLicenseEvent extends MunicipalAdvisorEvent {
+  final bool firstCalculation;
+  final bool finalCalculation;
+
+  const MunicipalAdvisorCalculateLicenseEvent({
+    this.firstCalculation = false,
+    this.finalCalculation = false,
+  });
+
+  @override
+  List<Object?> get props => [firstCalculation, finalCalculation];
+}
+
+class MunicipalAdvisorSelectPermitEvent extends MunicipalAdvisorEvent {
+  final LicensePermitEntity permit;
+
+  const MunicipalAdvisorSelectPermitEvent({
+    required this.permit,
+  });
+
+  @override
+  List<Object?> get props => [permit];
+}
+
+class MunicipalAdvisorUpdateSideWalkEvent extends MunicipalAdvisorEvent {
+  final num? length;
+  final num? width;
+  final int? days;
+
+  const MunicipalAdvisorUpdateSideWalkEvent({
+    this.length,
+    this.width,
+    this.days,
+  });
+
+  @override
+  List<Object?> get props => [length, width, days];
+}
+
+class MunicipalAdvisorUpdateNonFoodVehicleCountEvent
+    extends MunicipalAdvisorEvent {
+  final int count;
+
+  const MunicipalAdvisorUpdateNonFoodVehicleCountEvent({
+    required this.count,
+  });
+
+  @override
+  List<Object?> get props => [count];
+}
+
+class MunicipalAdvisorEndCalculateLicenseEvent extends MunicipalAdvisorEvent {}
 
 class MunicipalAdvisorRetryEvent extends MunicipalAdvisorEvent {}

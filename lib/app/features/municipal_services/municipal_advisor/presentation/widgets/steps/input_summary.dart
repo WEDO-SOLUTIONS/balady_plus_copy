@@ -18,95 +18,55 @@ class InputSummary extends StatelessWidget {
             children: [
               TextSpan(
                 text: "${"location".tr()}: ",
-                style: const TextStyle(
+                style: AppStyle.textFieldTitleTextStyle.copyWith(
                   color: AppColor.darkTurquoise,
-                  fontSize: 12,
-                  fontFamily: 'Arabic UI Display',
-                  fontWeight: FontWeight.w600,
                 ),
               ),
               TextSpan(
                 text:
                     ' ${state.activityLocation?.gisResponse.getFullAddress()} \n\n',
-                style: const TextStyle(
-                  color: Color(0xFF3F3F46),
-                  fontSize: 12,
-                  fontFamily: 'Arabic UI Display',
-                  fontWeight: FontWeight.w600,
-                ),
+                style: AppStyle.textFieldTitleTextStyle,
               ),
               TextSpan(
                 text: "${'isicActivity'.tr()}: ",
-                style: const TextStyle(
+                style: AppStyle.textFieldTitleTextStyle.copyWith(
                   color: AppColor.darkTurquoise,
-                  fontSize: 12,
-                  fontFamily: 'Arabic UI Display',
-                  fontWeight: FontWeight.w600,
                 ),
               ),
               TextSpan(
                 text: '${state.selectedIsicActivity?.name} \n\n',
-                style: const TextStyle(
-                  color: Color(0xFF3F3F46),
-                  fontSize: 12,
-                  fontFamily: 'Arabic UI Display',
-                  fontWeight: FontWeight.w600,
-                ),
+                style: AppStyle.textFieldTitleTextStyle,
               ),
               TextSpan(
                 text: "${'subActivity'.tr()}: ",
-                style: const TextStyle(
+                style: AppStyle.textFieldTitleTextStyle.copyWith(
                   color: AppColor.darkTurquoise,
-                  fontSize: 12,
-                  fontFamily: 'Arabic UI Display',
-                  fontWeight: FontWeight.w600,
                 ),
               ),
               TextSpan(
                 text: ' ${state.selectedIsicSubActivity?.name}\n\n',
-                style: const TextStyle(
-                  color: Color(0xFF3F3F46),
-                  fontSize: 12,
-                  fontFamily: 'Arabic UI Display',
-                  fontWeight: FontWeight.w600,
-                ),
+                style: AppStyle.textFieldTitleTextStyle,
               ),
               TextSpan(
                 text: "${'facilityType'.tr()}: ",
-                style: const TextStyle(
+                style: AppStyle.textFieldTitleTextStyle.copyWith(
                   color: AppColor.darkTurquoise,
-                  fontSize: 12,
-                  fontFamily: 'Arabic UI Display',
-                  fontWeight: FontWeight.w600,
                 ),
               ),
               TextSpan(
                 text: ' ${state.activityDetails!.facilityName}\n\n',
-                style: const TextStyle(
-                  color: Color(0xFF3F3F46),
-                  fontSize: 12,
-                  fontFamily: 'Arabic UI Display',
-                  fontWeight: FontWeight.w600,
-                ),
+                style: AppStyle.textFieldTitleTextStyle,
               ),
               TextSpan(
                 text: "${'facilityArea'.tr()}: ",
-                style: const TextStyle(
+                style: AppStyle.textFieldTitleTextStyle.copyWith(
                   color: AppColor.darkTurquoise,
-                  fontSize: 12,
-                  fontFamily: 'Arabic UI Display',
-                  fontWeight: FontWeight.w600,
                 ),
               ),
               TextSpan(
                 text:
                     ' ${state.selectedArea?.toStringAsFixed(0)} ${'m2'.tr()}\n',
-                style: const TextStyle(
-                  color: Color(0xFF3F3F46),
-                  fontSize: 12,
-                  fontFamily: 'Arabic UI Display',
-                  fontWeight: FontWeight.w600,
-                ),
+                style: AppStyle.textFieldTitleTextStyle,
               ),
             ],
           ),

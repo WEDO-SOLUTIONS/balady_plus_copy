@@ -13,14 +13,23 @@ import '../../municipal_advisor_exports.dart'
         AccommodationTypeModel,
         ActivityDetailsModel,
         ActivityDetailsParamsModel,
+        BoardTypeEntity,
+        BoardTypeModel,
+        CalculateFeesParamsModel,
+        CleaningEntity,
+        CleaningModel,
         CommercialOfficeEntity,
         CommercialOfficeModel,
         ConsultationKeyParamsModel,
+        GetLicenseYearsParamsModel,
         IsicActivityModel,
         IsicSubActivityParamsModel,
         KeyParamsModel,
+        LicenseFeesEntity,
+        LicenseFeesModel,
         LicensePermitEntity,
         LicensePermitModel,
+        SaveActivitiesParamsModel,
         SaveConsultationProgressParamsModel,
         SupervisingAuthorityEntity,
         SupervisingAuthorityModel;
@@ -43,7 +52,7 @@ abstract class MunicipalAdvisorRemoteDataSource {
   Future<List<String>> getCivilDefensePredefinedConditions(
     KeyParamsModel params,
   );
-  Future<List<String>> getCleaningMechanisms(
+  Future<List<CleaningEntity>> getCleaningMechanisms(
     KeyParamsModel params,
   );
   Future<List<CommercialOfficeEntity>> getCommercialOffices(
@@ -51,6 +60,16 @@ abstract class MunicipalAdvisorRemoteDataSource {
   );
   Future<bool> saveConsultationProgress(
     SaveConsultationProgressParamsModel params,
+  );
+  Future<bool> saveActivities(
+    SaveActivitiesParamsModel params,
+  );
+  Future<List<int>> getLicenseYears(
+    GetLicenseYearsParamsModel params,
+  );
+  Future<List<BoardTypeEntity>> getBoardTypes();
+  Future<LicenseFeesEntity> calculateLicenseFees(
+    CalculateFeesParamsModel params,
   );
 }
 
@@ -358,7 +377,8 @@ class MunicipalAdvisorRemoteDataSourceImplementation
   }
 
   @override
-  Future<List<String>> getCleaningMechanisms(KeyParamsModel params) async {
+  Future<List<CleaningEntity>> getCleaningMechanisms(
+      KeyParamsModel params) async {
     try {
       final response = await webService.dio
           .get('${ApiUrl.cleaningMechanisms}/${params.key}');
@@ -367,9 +387,11 @@ class MunicipalAdvisorRemoteDataSourceImplementation
       data.toString().successLog();
 
       final result = ResponseBodyModel.fromMap(data).data?.result;
-      final List<String> namesList = [];
-      result.map((e) => namesList.add(e['name'] as String)).toList();
-      return namesList;
+      return result
+          .map<CleaningEntity>(
+            (e) => CleaningModel.fromMap(e as Map<String, dynamic>),
+          )
+          .toList();
     } on DioError catch (error) {
       "DioError $error".errorLog();
       throw ServerException(
@@ -447,6 +469,119 @@ class MunicipalAdvisorRemoteDataSourceImplementation
       } else {
         throw ServerException("errors_server_error_2".tr());
       }
+    }
+  }
+
+  @override
+  Future<bool> saveActivities(SaveActivitiesParamsModel params) async {
+    try {
+      final response = await webService.dio.post(
+        '${ApiUrl.saveActivities}/${params.consultationKey}',
+        data: params.activitiesIds,
+      );
+
+      final data = response.data;
+      data.toString().successLog();
+
+      final result = ResponseBodyModel.fromMap(data).data?.result;
+
+      return result;
+    } on DioError catch (error) {
+      "DioError $error".errorLog();
+      throw ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+      );
+    } catch (ex) {
+      "Catched $ex".errorLog();
+      if (ex is ServerException) {
+        rethrow;
+      } else {
+        throw ServerException("errors_server_error_2".tr());
+      }
+    }
+  }
+
+  @override
+  Future<List<int>> getLicenseYears(GetLicenseYearsParamsModel params) async {
+    try {
+      final response = await webService.dio.get(
+        ApiUrl.licenseYears,
+        queryParameters: params.toMap(),
+      );
+
+      final data = response.data;
+      data.toString().successLog();
+
+      final result = ResponseBodyModel.fromMap(data).data?.result;
+
+      return result.map<int>((e) => e as int).toList();
+    } on DioError catch (error) {
+      "DioError $error".errorLog();
+      throw ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+      );
+    } catch (ex) {
+      "Catched $ex".errorLog();
+      if (ex is ServerException) {
+        rethrow;
+      } else {
+        throw ServerException("errors_server_error_2".tr());
+      }
+    }
+  }
+
+  @override
+  Future<List<BoardTypeEntity>> getBoardTypes() async {
+    try {
+      final response = await webService.dio.get(ApiUrl.boardTypes);
+
+      final data = response.data;
+      data.toString().successLog();
+
+      final result = ResponseBodyModel.fromMap(data).data?.result;
+
+      return result
+          .map<BoardTypeEntity>(
+              (e) => BoardTypeModel.fromMap(e as Map<String, dynamic>))
+          .toList();
+    } on DioError catch (error) {
+      "DioError $error".errorLog();
+      throw ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+      );
+    } catch (ex) {
+      "Catched $ex".errorLog();
+      throw ServerException("errors_server_error_2".tr());
+    }
+  }
+
+  @override
+  Future<LicenseFeesEntity> calculateLicenseFees(
+      CalculateFeesParamsModel params) async {
+    try {
+      final response = await webService.dio.post(
+        "${ApiUrl.calculateFees}/${params.consultationKey}",
+        data: params.toMap(),
+      );
+
+      final data = response.data;
+      data.toString().successLog();
+
+      final result = ResponseBodyModel.fromMap(data).data?.result;
+
+      return LicenseFeesModel.fromMap(result as Map<String, dynamic>);
+    } on DioError catch (error) {
+      "DioError $error".errorLog();
+      throw ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+      );
+    } catch (ex) {
+      "Catched $ex".errorLog();
+      throw ServerException("errors_server_error_2".tr());
     }
   }
 }

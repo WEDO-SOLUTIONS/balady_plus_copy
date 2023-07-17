@@ -1,5 +1,6 @@
-import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:flutter/material.dart';
+
+import '../../../../../../core/utils/utils_exports.dart';
 
 class RequirementsList extends StatelessWidget {
   final int number;
@@ -20,22 +21,14 @@ class RequirementsList extends StatelessWidget {
         children: [
           TextSpan(
             text: '$number. $title\n',
-            style: const TextStyle(
+            style: AppStyle.textFieldTitleTextStyle.copyWith(
               color: AppColor.darkTurquoise,
-              fontSize: 12,
-              fontFamily: 'Arabic UI Display',
-              fontWeight: FontWeight.w600,
             ),
           ),
           for (final requirement in requirements)
             TextSpan(
               text: '- $requirement \n',
-              style: const TextStyle(
-                color: AppColor.jumbo,
-                fontSize: 10,
-                fontFamily: 'Arabic UI Display',
-                fontWeight: FontWeight.w600,
-              ),
+              style: AppStyle.lightTextStyle,
             ),
         ],
       ),

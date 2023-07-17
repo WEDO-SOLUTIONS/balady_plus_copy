@@ -20,5 +20,7 @@ enum MunicipalAdvisorSteps {
   cleaningMechanisms,
   commercialOffices,
   continueToFinancial,
+  licenseCost,
   endChat,
+  addAttachments,
 }

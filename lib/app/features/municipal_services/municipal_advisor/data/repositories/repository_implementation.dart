@@ -77,7 +77,7 @@ class MunicipalAdvisorRepositoryImplementation
   }
 
   @override
-  Future<Either<Failure, List<String>>> getCleaningMechanisms(
+  Future<Either<Failure, List<CleaningEntity>>> getCleaningMechanisms(
       KeyParamsModel params) async {
     try {
       final data = await remoteDataSource.getCleaningMechanisms(params);
@@ -135,6 +135,49 @@ class MunicipalAdvisorRepositoryImplementation
       SaveConsultationProgressParamsModel params) async {
     try {
       final data = await remoteDataSource.saveConsultationProgress(params);
+      return Right(data);
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage));
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<int>>> getLicenseYears(
+      GetLicenseYearsParamsModel params) async {
+    try {
+      final data = await remoteDataSource.getLicenseYears(params);
+      return Right(data);
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage));
+    }
+  }
+
+  @override
+  Future<Either<Failure, bool>> saveActivities(
+      SaveActivitiesParamsModel params) async {
+    try {
+      final data = await remoteDataSource.saveActivities(params);
+      return Right(data);
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage));
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<BoardTypeEntity>>> getBoardTypes() async {
+    try {
+      final data = await remoteDataSource.getBoardTypes();
+      return Right(data);
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage));
+    }
+  }
+
+  @override
+  Future<Either<Failure, LicenseFeesEntity>> calculateLicenseFees(
+      CalculateFeesParamsModel params) async {
+    try {
+      final data = await remoteDataSource.calculateLicenseFees(params);
       return Right(data);
     } on ServerException catch (error) {
       return Left(ServerFailure(error.errorMessage));

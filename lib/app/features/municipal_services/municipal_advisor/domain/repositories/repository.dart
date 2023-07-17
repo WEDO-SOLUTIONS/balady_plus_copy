@@ -3,7 +3,7 @@ import 'package:dartz/dartz.dart';
 
 import '../../../../../core/errors/errors_exports.dart' show Failure;
 import '../../municipal_advisor_exports.dart'
-    show AccommodationTypeEntity, ActivityDetailsEntity, ActivityDetailsParamsModel, CommercialOfficeEntity, ConsultationKeyParamsModel, IsicActivityEntity, IsicSubActivityParamsModel, KeyParamsModel, LicensePermitEntity, SupervisingAuthorityEntity;
+    show AccommodationTypeEntity, ActivityDetailsEntity, ActivityDetailsParamsModel, BoardTypeEntity, CalculateFeesParamsModel, CleaningEntity, CommercialOfficeEntity, ConsultationKeyParamsModel, GetLicenseYearsParamsModel, IsicActivityEntity, IsicSubActivityParamsModel, KeyParamsModel, LicenseFeesEntity, LicensePermitEntity, SaveActivitiesParamsModel, SupervisingAuthorityEntity;
 
 abstract class MunicipalAdvisorRepository {
   Future<Either<Failure, List<IsicActivityEntity>>> getIsicActivities();
@@ -13,7 +13,8 @@ abstract class MunicipalAdvisorRepository {
   Future<Either<Failure, ActivityDetailsEntity>> getActivityDetails(
     ActivityDetailsParamsModel params,
   );
-  Future<Either<Failure, List<AccommodationTypeEntity>>> getAccommodationTypes();
+  Future<Either<Failure, List<AccommodationTypeEntity>>>
+      getAccommodationTypes();
   Future<Either<Failure, String>> getConsultationKey(
     ConsultationKeyParamsModel params,
   );
@@ -28,7 +29,7 @@ abstract class MunicipalAdvisorRepository {
   Future<Either<Failure, List<String>>> getCivilDefensePredefinedConditions(
     KeyParamsModel params,
   );
-  Future<Either<Failure, List<String>>> getCleaningMechanisms(
+  Future<Either<Failure, List<CleaningEntity>>> getCleaningMechanisms(
     KeyParamsModel params,
   );
   Future<Either<Failure, List<CommercialOfficeEntity>>> getCommercialOffices(
@@ -36,5 +37,15 @@ abstract class MunicipalAdvisorRepository {
   );
   Future<Either<Failure, bool>> saveConsultationProgress(
     SaveConsultationProgressParamsModel params,
+  );
+  Future<Either<Failure, bool>> saveActivities(
+    SaveActivitiesParamsModel params,
+  );
+  Future<Either<Failure, List<int>>> getLicenseYears(
+    GetLicenseYearsParamsModel params,
+  );
+  Future<Either<Failure, List<BoardTypeEntity>>> getBoardTypes();
+  Future<Either<Failure, LicenseFeesEntity>> calculateLicenseFees(
+    CalculateFeesParamsModel params,
   );
 }

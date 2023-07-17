@@ -16,11 +16,13 @@ import '../../municipal_advisor_exports.dart'
 class ChatBubble extends StatelessWidget {
   final ChatMessage chatMessage;
   final bool currentStep;
+  final bool isLastResponse;
 
   const ChatBubble({
     super.key,
     required this.chatMessage,
     required this.currentStep,
+    required this.isLastResponse,
   });
 
   @override
@@ -96,13 +98,24 @@ class ChatBubble extends StatelessWidget {
                         color: chatMessage.isResponse
                             ? AppColor.blackModern700Light
                             : null,
+                        fontSize: currentStep &&
+                                chatMessage.isResponse &&
+                                !chatMessage.customWidget &&
+                                isLastResponse
+                            ? 16
+                            : null,
                       ),
                       maxLines: 100,
                     ),
                   if (chatMessage.customWidget)
-                    ChatBubbleStepData(step: chatMessage.step)
-                  else if (currentStep && chatMessage.isResponse)
-                    ChatBubbleCurrentStep(step: chatMessage.step),
+                    ChatBubbleStepData(chatMessage: chatMessage)
+                  else if (currentStep &&
+                      chatMessage.isResponse &&
+                      isLastResponse)
+                    ChatBubbleCurrentStep(
+                      step: chatMessage.step,
+                      data: chatMessage.data,
+                    ),
                 ],
               ),
             ),
