@@ -244,6 +244,13 @@ class AppStyle {
     fontFamily: fontFamily,
     height: 1.0,
   );
+  static final requestParamterValueTextStle = TextStyle(
+    fontSize: 12.0,
+    fontWeight: AppFontWeight.semiBold.fontWeight,
+    color: AppColor.blackModern500Light,
+    fontFamily: fontFamily,
+    height: 1.0,
+  );
 
   static final subMessageTextStle = TextStyle(
     fontSize: 12.0,
