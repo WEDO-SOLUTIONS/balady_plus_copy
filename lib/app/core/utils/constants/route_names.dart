@@ -95,4 +95,8 @@ class RouteName {
 
   // ------- Quran Page  ---------
   static const quranScreen = '/quranScreen';
+  static const menuQuranPage = '/MenuQuranPage';
+
+  // ------- Zmzmz Page  ---------
+  static const ZmZmPointsPage = '/ZmZmPointsPage';
 }

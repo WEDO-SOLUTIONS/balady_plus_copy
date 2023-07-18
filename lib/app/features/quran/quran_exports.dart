@@ -4,6 +4,7 @@
 
 /// data -> models
 export 'data/models/quran_aya_model.dart';
+export 'data/models/quran_sura_info_model.dart';
 
 /// data -> repositories
 //export 'data/repositories/vd_repository_impl.dart';

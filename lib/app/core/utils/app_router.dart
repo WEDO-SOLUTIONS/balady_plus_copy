@@ -49,6 +49,7 @@ import '../../features/profile_features/requests/requests_exports.dart'
     show RequestsPage;
 import '../../features/public_services_features/prayer_times/prayer_times_exports.dart'
     show PrayerTimesCubit, PrayerTimesPage;
+import '../../features/quran/presentation/pages/menu_quran_page.dart';
 import '../../features/report_damaged_car/damaged_cars_exports.dart'
     show DCCameraPage, CreateDCDetailsPage, DCMapScreen;
 import '../../features/retrive_car/data/model/veichles_list_page_params.dart';
@@ -74,6 +75,7 @@ import '../../features/transaction_inquiry/presentation/pages/inquiry/transactio
 import '../../features/transaction_inquiry/presentation/pages/request_service/new_request_service/new_request_service_location_screen.dart';
 import '../../features/transaction_inquiry/presentation/pages/request_service/new_request_service/new_request_service_page.dart';
 import '../../features/vd/vd_exports.dart';
+import '../../features/zmzm_points/presentation/pages/zmzm_points_page.dart';
 
 class AppRouter {
   static Route<dynamic> allRoutes(RouteSettings settings) {
@@ -399,8 +401,20 @@ class AppRouter {
         );
 
       case RouteName.quranScreen:
+        final int initialSuraNo = settings.arguments as int;
         return MaterialPageRoute(
-          builder: (_) => QuranPage(),
+          builder: (_) => QuranPage(
+            initialSuraNo: initialSuraNo,
+          ),
+        );
+      case RouteName.menuQuranPage:
+        return MaterialPageRoute(
+          builder: (_) => MenuQuranPage(),
+        );
+
+      case RouteName.ZmZmPointsPage:
+        return MaterialPageRoute(
+          builder: (_) => ZmZmPointsPage(),
         );
 
       // error page

@@ -23,3 +23,12 @@ class ChangePageEvent extends QuranEvent {
   final int? page;
   ChangePageEvent({this.page});
 }
+
+class ToggleDetailsEvent extends QuranEvent {
+  ToggleDetailsEvent();
+}
+
+class MoveToPageEvent extends QuranEvent {
+  final int page;
+  MoveToPageEvent({required this.page});
+}

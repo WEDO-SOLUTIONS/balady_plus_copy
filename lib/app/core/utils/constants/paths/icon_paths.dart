@@ -34,6 +34,8 @@ class IconPath {
   static const pdf = '${_svgIconPath}PDF$_svg';
   static const settingsIcon = '${_svgIconPath}settings$_svg';
   static const printer = '${_svgIconPath}printer$_svg';
+  static const routeSquare = '${_svgIconPath}route-square$_svg';
+  static const suraIcon = '${_svgIconPath}sura_icon$_svg';
 
   static const informationCircleIcon =
       '${_svgIconPath}informationCircleIcon$_svg';
@@ -186,4 +188,13 @@ class IconPath {
 
 //! Appointment
   static const calendarIcon = '${_svgIconPath}calendar_icon$_svg';
+
+  //! Quran
+  static const quranBookMarkIcon = '${_svgIconPath}quran_bookmark_go$_svg';
+  static const quranChangePageIcon = '${_svgIconPath}quran_change_page$_svg';
+  static const quranJozzIcon = '${_svgIconPath}quran_jozz$_svg';
+  static const quranMenuIcon = '${_svgIconPath}quran_menu$_svg';
+  static const quranPrayIcon = '${_svgIconPath}quran_pray$_svg';
+  static const quranSaveIcon = '${_svgIconPath}quran_save$_svg';
+  static const quranSearchIcon = '${_svgIconPath}quran_search$_svg';
 }

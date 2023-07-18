@@ -751,10 +751,8 @@
   "popUpCloseAppConfirmButtonWord": "نعم",
   "popUpCloseAppDeclineButtonWord": "لا",
   "next": "التالي",
-
-  "lbl_Camera": "الكاميرا",
-  "lbl_Gallery": "الاستوديو",
- 
+"lbl_Camera": "الكاميرا",
+"lbl_Gallery": "الاستوديو",
 "optional": "(اختياري)",
 "attach_file": "إرفاق ملف",
 "file_size_error": "حجم المستند اكبر من ٢٥ ميجابايت، الرجاء اختيار مستند بحجم لا يتجاوز ٢٥ ميجابايت",
@@ -2392,46 +2390,12 @@
 "ekram_transfer_status": "حالة النقل",
 "ekram_city_status": "نوع النقل",
 "carBard": "طراز المركبة",
-"carYear": "سنة الصنع"
+"carYear": "سنة الصنع", 
 
 
 
 
 
-
-  "optional": "(اختياري)",
-  "attach_file": "إرفاق ملف",
-  "file_size_error": "حجم المستند اكبر من ٢٥ ميجابايت، الرجاء اختيار مستند بحجم لا يتجاوز ٢٥ ميجابايت",
-  "attachment_name": "اسم المرفق",
-  "images": "الصور",
-  "files": "الملفات",
-
-  "home_bottom_navigation": "الرئيسية",
-  "orders_bottom_navigation": "الطلبات",
-  "favorite_bottom_navigation": "المفضلة",
-  "profile_bottom_navigation": "حسابي",
-  "emptyFieldWord": "لا يمكن ترك الحقل فارغاً.",
-  "invalidEmailFieldWord": "البريد الإلكترونى الذى أدخلته غير صحيح.",
-  "invalidPasswordFieldWord": "كلمة المرور التى أدخلتها غير صحيحة.",
-  "passwordMismatchFieldWord": "كلمة المرور غير متطابقة.",
-  "checkboxRequiredWord": "خانة الإختيار مطلوبة.",
-  "phoneNumberStartWith05": "رقم الهاتف يجب أن يبدأ بـ 05.",
-  "phoneNumberLengthIs10": "رقم الهاتف يجب ألا يقل عن 10 أرقام.",
-  "fullNameFieldLabel": "الإسم بالكامل",
-  "usernameFieldLabel": "إسم المستخدم",
-  "phoneNumberFieldLabel": "رقم الهاتف",
-  "emailFieldLabel": "البريد الإلكتروني",
-  "passwordFieldLabel": "كلمة السر",
-  "confirmPasswordFieldLabel": "تأكيد كلمة السر",
-  "noticeFieldLabel": "ملاحظة: {}",
-  "fullNameFieldHint": "أدخل الإسم بالكامل",
-  "usernameFieldHint": "أدخل إسم المستخدم",
-  "phoneNumberFieldHint": "أدخل رقم الهاتف",
-  "emailFieldHint": "أدخل البريد الإلكتروني",
-  "passwordFieldHint": "أدخل كلمة السر",
-  "yourMessageFieldHint": "أكتب رسالتك",
-  "attachFileFieldHint": "إرفاق ملف",
-  "_fieldsValidationsComment": "اى شئ يخص التحقق من صحة الحقول",
 
   "selectFileFieldValidation": "من فضلك قم بإختيار الملف.",
   "_searchComment": "أي شيئ يخص صفحة البحث",

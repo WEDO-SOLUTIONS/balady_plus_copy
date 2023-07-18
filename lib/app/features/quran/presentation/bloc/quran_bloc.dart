@@ -1,7 +1,9 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
+import 'package:balady_plus/app/features/quran/data/models/quran_sura_model.dart';
 import 'package:balady_plus/app/features/vd/domain/entities/upload/upload_file_params.dart';
 import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
@@ -20,7 +22,8 @@ part 'quran_state.dart';
 class QuranBloc extends Bloc<QuranEvent, QuranState> {
   PageController controller = PageController();
 
-  QuranBloc() : super(QuranState()) {
+  QuranBloc({required int initialSuraNo})
+      : super(QuranState(currentPageValue: initialSuraNo)) {
     on<QuranEvent>((event, emit) {});
 
     on<GoToNextPageEvent>(_goToNextPageHandler);
@@ -28,12 +31,25 @@ class QuranBloc extends Bloc<QuranEvent, QuranState> {
 
     on<initQuranEvent>(_initQuran);
     on<ChangePageEvent>(_getTitle);
+    on<ToggleDetailsEvent>(_toggleDetailsEvent);
+    on<MoveToPageEvent>(_moveToPageEvent);
     add(initQuranEvent());
+  }
+
+  Future<void> _moveToPageEvent(MoveToPageEvent e, Emitter emitter) async {
+    controller.jumpToPage(e.page - 1);
+    ChangePageEvent(page: e.page - 1);
+    add(ToggleDetailsEvent());
+  }
+
+  Future<void> _toggleDetailsEvent(
+      ToggleDetailsEvent e, Emitter emitter) async {
+    emitter(state.copyWith(showDetails: !(state.showDetails ?? false)));
   }
 
   Future<void> _initQuran(initQuranEvent e, Emitter emitter) async {
     String quran =
-        await rootBundle.loadString("assets/quran/hafs_smart_v8.json");
+        await rootBundle.loadString("assets/quran/hafsData_v2-0.json");
 
     var r = json.decode(quran);
     //print(r);
@@ -45,6 +61,8 @@ class QuranBloc extends Bloc<QuranEvent, QuranState> {
     Map<int, String> sura = {};
 
     Map<int, String>? pagesStr = {};
+
+    Map<int, List<QuranSuraModel>>? suras = {};
 
     pages = {};
     quranAyat.forEach((element) {
@@ -61,23 +79,48 @@ class QuranBloc extends Bloc<QuranEvent, QuranState> {
       }
     });
 
-    pagesStr = pages.map((key, value) {
-      return MapEntry(
-          key,
-          value.map((e) {
-            if (e.ayaNo == 1)
-              return "\n\n ${e.suraNameAr} \n\n" + e.ayaText;
-            else
-              return e.ayaText;
-          }).join());
+    Map<int, Map<int, QuranSuraModel>>? pagesSuras = {};
+
+    pages.forEach((key, value) {
+      Map<int, QuranSuraModel> surasInPage = {};
+      pagesSuras[key] = surasInPage;
+      int i = 0;
+      int oldI = i;
+      value.forEachIndexed(
+        (index, element) {
+          if (element.suraNo == 2 && key == 3) {
+            print(element.ayaText);
+          }
+          if (element.ayaNo == 1 || element.lineStart == 1) i++;
+
+          if (!surasInPage.containsKey(i)) {
+            surasInPage[i] = QuranSuraModel(
+                jozz: element.jozz,
+                suraName: element.suraNameAr,
+                suraAyat: [
+                  {element.ayaNo: element.ayaText}
+                ]);
+          } else {
+            surasInPage[i]!.suraAyat.add({element.ayaNo: element.ayaText});
+          }
+        },
+      );
+
+      pagesSuras[key] = surasInPage;
     });
 
     emitter(state.copyWith(
         pages: pages,
         pagesStr: pagesStr,
         quranAyat: quranAyat,
-        suraIndex: sura));
-    add(ChangePageEvent(page: 0));
+        suraIndex: sura,
+        suras: pagesSuras));
+    print("ffgffgd ${state.currentPageValue.toDouble()}");
+
+    print("Run ${state.currentPageValue}");
+    controller.jumpToPage(getSuraPageNumber(state.currentPageValue + 1));
+
+    add(ChangePageEvent(page: getSuraPageNumber(state.currentPageValue + 1)));
   }
 
   Future<void> _goToNextPageHandler(
@@ -121,26 +164,30 @@ class QuranBloc extends Bloc<QuranEvent, QuranState> {
   Future<void> _getTitle(ChangePageEvent e, Emitter emitter) async {
     try {
       int currentPage = e.page ?? 0;
-      print(currentPage);
-      String suraName = "";
-      state.pages?[currentPage + 1]?.forEachIndexed((index, element) {
-        QuranAyaModel? m = state.pages?[currentPage + 1]?[0];
-        suraName = m?.suraNameAr ?? "";
+      print("element ${currentPage}");
 
-        if (element.suraNameAr != suraName) suraName = element.suraNameAr;
-        emitter(state.copyWith(currentTitle: suraName));
+      String suraName = "";
+      state.suras?[currentPage + 1]?.values.forEachIndexed((index, element) {
+        suraName =
+            state.suras?[currentPage + 1]?.values.toList()[index].suraName ??
+                "";
+        print("element ${element.suraName}");
+
+        if (element.suraName != suraName) suraName = element.suraName;
+        emitter(state.copyWith(
+            currentTitle: suraName,
+            currentJozz: element.jozz,
+            currentPageValue: currentPage));
       });
     } catch (ex) {}
   }
 
   int getSuraPageNumber(int suraNumber) {
-    print(suraNumber);
     int pageNo = -1;
     state.pages?.forEach((key, value) {
       QuranAyaModel? model =
           value.firstWhereOrNull((element) => element.suraNo == suraNumber);
       if (model != null && pageNo == -1) {
-        print(model.page);
         pageNo = model.page;
       }
     });

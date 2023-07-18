@@ -209,6 +209,9 @@ flutter:
     - family: HafsSmart
       fonts:
         - asset: assets/fonts/HafsSmart_08.ttf
+    - family: uthmanic
+      fonts:
+        - asset: assets/fonts/uthmanic_hafs_v20.ttf
 
   #   - family: Trajan Pro
   #     fonts:

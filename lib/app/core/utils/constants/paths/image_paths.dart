@@ -15,4 +15,9 @@ class ImagePath {
   static const successPageIcon = '${_imagePath}success_image$_png';
   static const needle = '${_imagePath}needle$_svg';
   static const compass = '${_imagePath}compass$_svg';
+  static const zmzmBackground = '${_imagePath}zmzm_background$_png';
+  static const quranBackground = '${_imagePath}quran_background$_png';
+  static const quranBackgroundPage = '${_imagePath}quran_background_page$_png';
+
+  static const ayah = '${_imagePath}ayah$_svg';
 }
