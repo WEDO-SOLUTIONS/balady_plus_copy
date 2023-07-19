@@ -1,8 +1,11 @@
 import 'dart:async';
 
 import 'package:balady_plus/app/core/base/base_view_model.dart';
+import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/foundation.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:geolocator/geolocator.dart' as geoLocator;
 
 import '../../constants/constants.dart';
 import 'package:flutter/widgets.dart';
@@ -86,6 +89,26 @@ class MapViewModel extends BaseViewModel {
         ),
       ),
     );
+
+
+    final permission = await Permission.location.request();
+    if (permission.isGranted) {
+      await controller.onLocationPremissionGranted();
+      geoLocator.Position position = await geoLocator.Geolocator.getCurrentPosition(
+        desiredAccuracy: geoLocator.LocationAccuracy.high,
+        timeLimit: const Duration(seconds: 13),
+      );
+      await controller.setCameraPosition(
+        CameraPositionMessage(
+          zoomValue: 13,
+          geoPoint: GeoPointMessage(
+            latitude: position.latitude,
+            longitude: position.longitude,
+          ),
+        ),
+      );
+    }
+
     if (kDebugMode) {
       // setLocale(const Locale("ar", "US"), TextDirection.ltr);
       await controller.loadStyles(Constants.mapStyle);
