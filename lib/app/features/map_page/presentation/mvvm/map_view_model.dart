@@ -5,6 +5,7 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/foundation.dart';
 
 import '../../constants/constants.dart';
+import 'package:flutter/widgets.dart';
 
 const int mil = 300;
 
@@ -12,6 +13,41 @@ class MapViewModel extends BaseViewModel {
   MapViewModel(// required this.authService,
       // required this.setLocale,
       );
+
+  TextEditingController searchController = TextEditingController();
+
+  Future<void> performSearch({required String queryText}) async {
+    try {
+      searchController.text = queryText;
+      List<ObjectInfoMessage> data = await controller.search(
+        queryText,
+        sortingType: SortingTypeMessage.byDistance,
+        isOpenNow: true,
+      );
+      if (data.isNotEmpty) {
+        final responseDistance = await controller.getDistanceTo(
+          _mapToDistanceRequest(data),
+        );
+        print(responseDistance);
+      }
+      print(data);
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  List<DistanceRequestMessage> _mapToDistanceRequest(
+          List<ObjectInfoMessage> values) =>
+      values
+          .where((element) => element.dgisObjectId != null)
+          .where((element) => element.markerPosition != null)
+          .map((e) => DistanceRequestMessage(
+                geoPoint: e.markerPosition!.point,
+                dgisObjectId: e.dgisObjectId!,
+              ))
+          .toList();
+
+  ////////////////////////////////////////////////////////////////
 
   final selectedPointId = ValueNotifier<DgisObjectIdMessage?>(null);
 
@@ -96,8 +132,6 @@ class MapViewModel extends BaseViewModel {
 
     locationEnabledState.dispose();
 
-    // controller.activeLayerState.removeListener(_activeLayerListener);
-
     unawaited(controller.dispose());
   }
 
@@ -121,14 +155,15 @@ class MapViewModel extends BaseViewModel {
     );
   }
 
-  // When move carme map any change zoom in, zoom out ...
+  // When move camera map any change zoom in, zoom out ...
   void _visibleRectChangeListener(VisibleRectEvent event) {
     _lastHandledEvent = event;
-    if (controller.activeLayerState.value.layer == BusinessLayers.panoramas) {}
 
-    if (controller.activeLayerState.value.layer == BusinessLayers.io) {}
+    // start Timer when stop move camera  call search funcation
+    _startRequestTimer();
   }
 
+  // When click on ayn object
   Future<void> _objectTapListener(TapEvent event) async {
     // when Click on Map hide ViewHomeBottomSheet if he is not hide
     if (viewHomeBottomSheet.value != false) {
@@ -144,13 +179,6 @@ class MapViewModel extends BaseViewModel {
             objectId: event.dgisObjectId.objectId,
             entranceId: event.dgisObjectId.entranceId,
           );
-
-         await controller.addMarker(
-            GeoPointMessage(
-              latitude: event.latLng.latitude,
-              longitude: event.latLng.longitude,
-            ),
-          );
         }
         return;
       case BusinessLayers.idle:
@@ -163,6 +191,27 @@ class MapViewModel extends BaseViewModel {
         // handles by [_onPanoramaTap]
         return;
     }
+  }
+
+  void _startRequestTimer() {
+    if (_debounce != null) {
+      unawaited(_debounce!.cancel());
+      _clearDebounce();
+    }
+    _debounce = Stream.fromFuture(
+      Future.delayed(
+        const Duration(milliseconds: 500),
+      ),
+    ).listen((_) async {
+      await performSearch(queryText: searchController.text);
+      _clearDebounce();
+    });
+    _subscriptions.add(_debounce!);
+  }
+
+  void _clearDebounce() {
+    _subscriptions.remove(_debounce);
+    _debounce = null;
   }
 
   void _onPanoramaTap(MarkerWithPhotoTapEvent event) {

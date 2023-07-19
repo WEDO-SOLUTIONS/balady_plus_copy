@@ -8,7 +8,6 @@ import '../../../../core/utils/constants/constants.dart';
 import '../../../../core/utils/utils_exports.dart' show AppColor, IconPath;
 import '../mvvm/map_view_model.dart';
 import '../mvvm/point_view_model.dart';
-import '../mvvm/search_map_view_model.dart';
 import '../widgets/marker_card_widget.dart';
 import '../widgets/search_map_widget.dart';
 import '../../../home_page/home_exports.dart' show HomeAppBar, CircleIcon;
@@ -43,11 +42,7 @@ class HomeMap extends StatelessWidget {
                       iconColor: AppColor.black,
                     ),
                   )
-                      : SearchMapWidget(
-                    searchMapViewModel: SearchMapViewModel(
-                      mapViewModel.controller,
-                    ),
-                  );
+                      : const SearchMapWidget();
                 },
               ),
             ],

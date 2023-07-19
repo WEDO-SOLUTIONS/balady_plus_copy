@@ -34,3 +34,34 @@ class Layers {
     "geometryType": geometryType,
   };
 }
+
+
+List<SubLayers> subLayersFromJson(List list) => List<SubLayers>.from(list.map((x) => SubLayers.fromJson(x)));
+
+class SubLayers {
+  String name;
+  String type;
+  String url;
+  String imageData;
+
+  SubLayers({
+    required this.name,
+    required this.type,
+    required this.url,
+    required this.imageData,
+  });
+
+  factory SubLayers.fromJson(Map<String, dynamic> json) => SubLayers(
+    name: json["label"] ?? 'name',
+    type: json['symbol']["type"] ?? 'type',
+    url: json['symbol']["url"] ?? 'url',
+    imageData: json['symbol']["imageData"] ?? 'imageData',
+  );
+
+  Map<String, dynamic> toJson() => {
+    "name": name,
+    "type": type,
+    "url": url,
+    "imageData": imageData,
+  };
+}

@@ -5,17 +5,23 @@ import 'package:dio/dio.dart';
 
 import '../../../../core/services/global/web_service.dart';
 import '../../data/model/layers.dart';
+import 'package:flutter/foundation.dart';
+
 
 class LayersGisViewModel extends BaseViewModel {
   final WebService webService;
 
+  final selectedLayers = ValueNotifier<Layers?>(null);
+
   List<Layers>? layers;
 
+  List<SubLayers>? subLayers;
+
   LayersGisViewModel({required this.webService}) {
-    performSearch();
+    getMinLayers();
   }
 
-  Future<void> performSearch() async {
+  Future<void> getMinLayers() async {
     try {
       final layersType = await webService.dio.get(
         'https://apiservicesstg.balady.gov.sa/gis-urbi-services/layers',
@@ -25,8 +31,31 @@ class LayersGisViewModel extends BaseViewModel {
           },
         ),
       );
+      notifyListeners();
       if (layersType.data != null) {
         layers = layersFromJson(layersType.data['data']['result']['layers']);
+        selectedLayers.value = layers!.first;
+        await getSubLayers(selectedLayers.value!.id);
+      }
+      notifyListeners();
+    } catch (e) {
+      print(e);
+    }
+  }
+
+
+  Future<void> getSubLayers(int layersId) async {
+    try {
+      final layersType = await webService.dio.get(
+        'https://apiservicesstg.balady.gov.sa/gis-urbi-services/layers/$layersId',
+        options: Options(
+          headers: {
+            'verifyingKEY': 'P/uN+9S3wHuzQDlY7JM+nb58vesqLzrJ8VTBMvzsIaI=',
+          },
+        ),
+      );
+      if (layersType.data != null) {
+        subLayers = subLayersFromJson(layersType.data['data']['result']['drawingInfo']['renderer']['uniqueValueInfos']);
       }
       notifyListeners();
     } catch (e) {
