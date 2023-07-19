@@ -270,5 +270,7 @@
   "popUpCloseAppMessage": "Do you want to exit an App?",
   "popUpNoMessage": "There is no message to display.",
   "popUpCloseRequest": "Would you like to close the request?",
-  "popUpUploadFileLimitExceedsMessage": "The limit of {} megabytes has been exceeded."
+  "popUpUploadFileLimitExceedsMessage": "The limit of {} megabytes has been exceeded.",
+  "AthkarMainPageTitle" : "Athkar"
+  
 }

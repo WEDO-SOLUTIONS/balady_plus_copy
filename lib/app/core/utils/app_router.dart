@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/features/athkar/presentation/pages/athkar_entity_content.dart';
 import 'package:balady_plus/app/features/objectable_transactions/domain/entities/create_objection_page_params.dart';
 import 'package:balady_plus/app/features/objections/domain/entities/objection_details.dart';
 import 'package:flutter/material.dart'
@@ -10,6 +11,12 @@ import '../../features/_shared_feature_/presentation/pages/view_dms_image_screen
 import '../../features/_shared_feature_/shared_feature_exports.dart';
 import '../../features/_shared_feature_/data/entities/success_screen_args.dart';
 import '../../features/_shared_feature_/presentation/pages/success_screen.dart';
+import '../../features/athkar/athkar_exports.dart'
+    show
+        Athkar,
+        AthkarEntities,
+        AthkarEntitiesParams,
+        AthkarEntityContentParams;
 import '../../features/bottom_navigation/bottom_navigation_exports.dart'
     show BottomNavigationPage;
 import '../../features/entry_point/entry_point_exports.dart' show SsoUserInfo;
@@ -226,10 +233,10 @@ class AppRouter {
         );
 
       case RouteName.VeichlesListPage:
-        VeichlesListPageParams paramas =
+        VeichlesListPageParams params =
             settings.arguments as VeichlesListPageParams;
         return MaterialPageRoute(
-          builder: (_) => VeichlesListPage(params: paramas),
+          builder: (_) => VeichlesListPage(params: params),
         );
 
       case RouteName.CreateRetriveDetailsPage:
@@ -247,6 +254,25 @@ class AppRouter {
       case RouteName.DCSelectRetreiveTypePage:
         return MaterialPageRoute(
           builder: (_) => DCSelectRetreiveTypePage(),
+        );
+
+      case RouteName.mainAthkarPage:
+        return MaterialPageRoute(
+          builder: (_) => Athkar(),
+        );
+      case RouteName.athkarEntitesPage:
+        final params = settings.arguments as AthkarEntitiesParams;
+        return MaterialPageRoute(
+          builder: (_) => AthkarEntities(
+            params: params,
+          ),
+        );
+      case RouteName.athkarEntityContentPage:
+        final params = settings.arguments as AthkarEntityContentParams;
+        return MaterialPageRoute(
+          builder: (_) => AthkarEntityContent(
+            params: params,
+          ),
         );
 
       // error page

@@ -53,4 +53,9 @@ class RouteName {
   static const CreateRetriveDetailsPage = '/CreateRetriveDetailsPage';
   static const DCVeichlePage = '/DCVeichlePage';
   static const DCSelectRetreiveTypePage = '/DCSelectRetreiveTypePage';
+
+  // -------  Athkar ---------
+  static const mainAthkarPage = '/mainAthkarPage';
+  static const athkarEntitesPage = '/athkarEntitesPage';
+  static const athkarEntityContentPage = '/athkarEntityContentPage';
 }

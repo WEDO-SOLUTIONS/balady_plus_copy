@@ -7,6 +7,7 @@ const _svgProfileIconPath = 'assets/icons/svg/profile/';
 const _svgNearbyIconPath = 'assets/icons/svg/nearby/';
 const _pngVDIconPath = 'assets/icons/png/vd/';
 const _svgVDIconPath = 'assets/icons/svg/vd/';
+const _svgAthkarIconPath = 'assets/icons/svg/athkar/';
 
 const _pngQRIconPath = 'assets/icons/png/qr/';
 const _svgQRIconPath = 'assets/icons/svg/qr/';
@@ -175,4 +176,10 @@ class IconPath {
   static const qrLockIcon = '${_pngQRIconPath}tours_rating_icons/lock$_png';
 
   static const qrStarIcon = '${_pngQRIconPath}greyStar$_png';
+
+  //Athkar
+
+  static const morningAthkarIcon = '${_svgAthkarIconPath}morning_athkar$_svg';
+  static const muslimNumberFrame =
+      '${_svgAthkarIconPath}muslim_number_frame$_svg';
 }

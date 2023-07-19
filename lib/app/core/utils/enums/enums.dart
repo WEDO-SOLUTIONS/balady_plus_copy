@@ -46,3 +46,5 @@ enum PAGE_TYPE {
   dc,
   other
 }
+
+enum ATHKAR_CATAGORIES { morning, sleep, evening }
