@@ -1,22 +1,22 @@
+import 'package:balady_plus/app/features/map_page/presentation/mvvm/map_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:dgis_map/library.dart';
+import 'package:provider/provider.dart';
 
-import '../constants/constants.dart';
 
 class MapScreenUrbi extends StatelessWidget {
   const MapScreenUrbi({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    MapViewModel mapViewModel = context.watch<MapViewModel?>()!;
+
     return DgisMap(
       androidUseExpensive: true,
       onMapCreated: (DgisMapController controller) async {
-        final result = await controller.initialize();
-        if (result.wasInitialized) {
-          await controller.loadStyles(Constants.mapStyle);
-          await controller.overrideLocales(["ar-SA"]);
-        }
+        await mapViewModel.initialize(controller);
       },
     );
+
   }
 }

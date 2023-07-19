@@ -59,7 +59,6 @@ class EsriApi {
     return compute((data) => _parseLayerInfo(data), response.data);
   }
 
-  // not Useing
   Future<LayerData> getLayerData(LayerInfo info) async {
     if (_cancelToken != null) {
       _cancelToken?.cancel();
