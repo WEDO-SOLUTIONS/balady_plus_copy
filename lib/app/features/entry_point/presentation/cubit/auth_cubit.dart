@@ -201,18 +201,23 @@ class EntryPointCubit extends Cubit<EntryPointState> {
   }
 
   Future<bool> refreshAPIGeeToken() async {
-    // print("refreshAPIGeeToken");
-    // print(state.apigeeToken);
+    print("refreshAPIGeeToken");
+    print(state.apigeeToken);
     DateTime? expireTime =
         DateTime.tryParse(state.apigeeToken?.expirationTime ?? "");
 
     if (expireTime == null ||
         (expireTime.difference(DateTime.now()).inHours <= 2)) {
       final failureOrSuccess = await _getAPIgeeToken(NoParams());
-
+      print("refreshAPIGeeToken 2");
       return await failureOrSuccess.fold((failure) {
+        print(failure);
+        print("refreshAPIGeeToken $failure");
         return false;
       }, (success) async {
+        print("success apigee");
+        print("refreshAPIGeeToken $success");
+
         success.expirationTime = success.getExpireTime().toString();
         emit(state.copyWith(apigeeToken: success));
         return true;

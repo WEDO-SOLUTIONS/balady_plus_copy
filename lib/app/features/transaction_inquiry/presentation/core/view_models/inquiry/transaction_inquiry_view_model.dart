@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:balady_plus/app/core/utils/constants/route_names.dart';
+import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../../core/base/base_view_model.dart';
@@ -67,10 +68,11 @@ class TransactionInquiryViewModel extends BaseViewModel {
       body = await webServices
           .postApigeeRequest("/v1/cts/document-details", body: {
         "type": type?.id,
-        "year": year,
+        "year": CommonFunctions.replaceArabicNumberWithEnglish(year ?? ""),
         "referenceNumber": refrenceNumber,
         "branchId": municipality?.id
       });
+
       hideLoading();
       print("Ressssponse");
       print(body["data"]);
@@ -82,10 +84,11 @@ class TransactionInquiryViewModel extends BaseViewModel {
           status &&
           response.data?.responseCode == 1) {
         this.response = response;
-        //MM
-        /* NavigationService.navigatorKey.currentState!
-            .pushNamed(RouteName.inquiryDetailsRoute, arguments: this.response);
-*/
+
+        NavigationService.navigatorKey.currentState!.pushNamed(
+            RouteName.inquiryDetailsScreen,
+            arguments: this.response);
+
         notifyListeners();
         return Future.value(true);
       } else {

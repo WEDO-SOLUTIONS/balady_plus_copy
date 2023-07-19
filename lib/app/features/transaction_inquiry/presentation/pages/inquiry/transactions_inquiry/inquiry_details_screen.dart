@@ -1,4 +1,6 @@
 import 'package:balady_plus/app/core/utils/enums/app_font_weights.dart';
+import 'package:balady_plus/app/core/utils/utils_exports.dart';
+import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports.dart';
 import 'package:flutter/material.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
@@ -20,37 +22,37 @@ class _InquiryDetailsScreenState extends State<InquiryDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: null,
         body: Container(
-          color: AppColor.white,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              // header
-              Container(
-                margin: EdgeInsetsDirectional.only(
-                    top: MediaQuery.of(context).padding.top + 10, start: 16),
-                child: GestureDetector(
-                  onTap: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: Image.asset(
-                    Constants.whiteCloseImg,
-                    height: 20.0,
-                    width: 20.0,
-                    color: Colors.black,
-                  ),
-                ),
+      color: AppColor.white,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          // header
+
+          Container(
+            margin: EdgeInsetsDirectional.only(
+                top: MediaQuery.of(context).padding.top + 10, start: 16),
+            child: GestureDetector(
+              onTap: () {
+                Navigator.of(context).pop();
+              },
+              child: Image.asset(
+                IconPath.qrWhiteCloseIcon,
+                height: 20.0,
+                width: 20.0,
+                color: Colors.black,
               ),
-              // body
-              InquiryBody(
-                result: widget.result,
-              ),
-              // button
-              const InquiryButton(),
-            ],
+            ),
           ),
-        ));
+          // body
+          InquiryBody(
+            result: widget.result,
+          ),
+          // button
+          const InquiryButton(),
+        ],
+      ),
+    ));
   }
 }
 
@@ -68,11 +70,11 @@ class InquiryButton extends StatelessWidget {
           children: [
             EnhancedCustomElevatedButtonWidget(
               btnPressed: () {
-                /* Navigator.pop(context);
+                Navigator.pop(context);
                 Navigator.pushReplacementNamed(
                   context,
-                  RoutesNames.newTransactionInquiryRoute,
-                );*/
+                  RouteName.newTransactionInquiryScreen,
+                );
               },
               btnText: ('inquiry_new').tr(),
               btnTextSize: 16,

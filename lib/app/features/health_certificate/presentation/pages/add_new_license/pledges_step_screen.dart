@@ -1,16 +1,20 @@
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../core/base/base_view.dart';
 import '../../../../../core/base/base_view_model.dart';
 import '../../../../../core/services/local/helpers.dart';
 import '../../../../../core/utils/constants/app_colors.dart';
 import '../../../../../core/utils/constants/constants.dart';
+import '../../../../_shared_feature_/presentation/under_testing/custom_expansion_panel_widget.dart';
 import '../../../../_shared_feature_/presentation/widgets/buttons/custom_buttons_widgets.dart';
 import '../../../../_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
 import '../../../../_shared_feature_/presentation/widgets/radio_buttons/custom_check_box_widget.dart';
 import '../../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import '../../core/services/view_models/new_terms_health_license_view_model.dart';
+import '../../widgets/new_health_certificate_widgets/previous_next_buttons.dart';
 
 class PledgesStepScreen extends StatefulWidget {
   const PledgesStepScreen({Key? key}) : super(key: key);
@@ -20,6 +24,7 @@ class PledgesStepScreen extends StatefulWidget {
 }
 
 class _PledgesStepScreenState extends State<PledgesStepScreen> {
+  bool isAgree = false;
   @override
   void initState() {
     // TODO: implement initState
@@ -32,45 +37,101 @@ class _PledgesStepScreenState extends State<PledgesStepScreen> {
     return BaseView<NewTermsHealthLicenseViewModel>(
         onModelReady: (model) {},
         builder: (context, model, child) {
-          return Stack(
-            children: [
-              //  body
-              Container(
-                padding: const EdgeInsets.only(bottom: 140),
-                margin:
-                    const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
-                child: SingleChildScrollView(
-                  child: Column(
-                      mainAxisSize: MainAxisSize.max,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        const CustomVerticalSpace(height: 22),
-                        CustomTextWidget(
-                          Helpers.translatingWord('pledges'),
-                          fontSize: 17,
-                          fontColor: AppColor.black,
-                          textAlign: TextAlign.start,
-                        ),
-                        Constants.verticalSpaceSmall,
-                        CustomTextWidget(
-                            Helpers.translatingWord('check_location_info'),
-                            fontColor: AppColor.black400,
-                            fontWeight: AppFontWeight.medium,
-                            fontSize: 13,
-                            textAlign: TextAlign.start),
-                        const CustomVerticalSpace(height: 34),
-                        ListView.builder(
-                            shrinkWrap: true,
-                            itemCount: model.getTerms().length,
-                            physics: const NeverScrollableScrollPhysics(),
-                            itemBuilder: (ctx, index) {
-                              return agreeText(model.getTerms()[index]);
-                            })
-                      ]),
+          return Container(
+            margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
+            child: Column(
+              children: [
+                /* Expanded(
+                  child: SingleChildScrollView(
+                    child: Column(
+                        mainAxisSize: MainAxisSize.max,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          const CustomVerticalSpace(height: 22),
+                          CustomTextWidget(
+                            Helpers.translatingWord('pledges'),
+                            fontSize: 17,
+                            fontColor: AppColor.black,
+                            textAlign: TextAlign.start,
+                          ),
+                          Constants.verticalSpaceSmall,
+                          CustomTextWidget(
+                              Helpers.translatingWord('check_location_info'),
+                              fontColor: AppColor.black400,
+                              fontWeight: AppFontWeight.medium,
+                              fontSize: 13,
+                              textAlign: TextAlign.start),
+                          const CustomVerticalSpace(height: 34),
+                          ListView.builder(
+                              shrinkWrap: true,
+                              itemCount: model.getTerms().length,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemBuilder: (ctx, index) {
+                                return agreeText(model.getTerms()[index]);
+                              })
+                        ]),
+                  ),
+                ),*/
+
+                Expanded(
+                  child: CustomExpansionPanelWidget(
+                    title: ("vd_pledges").tr(),
+                    isExpanded: true,
+                    underline: false,
+                    leading: SvgPicture.asset(IconPath.vdSummuryPledge),
+                    children: [
+                      /*CustomTextWidget(
+                              ("consent_body").tr(),
+                              fontColor: AppColor.blackModern700Light,
+                              maxLines: 90,
+                              height: 1.3,
+                              textAlign: TextAlign.start,
+                            ),*/
+
+                      ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: model.getTerms().length,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemBuilder: (ctx, index) {
+                            return agreeText(model.getTerms()[index]);
+                          }),
+                      CustomVerticalSpace(height: 8),
+                      Container(
+                          padding: EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                              color: Color(0x80E6EFEF),
+                              borderRadius: BorderRadius.circular(8)),
+                          child: Row(
+                            children: [
+                              Checkbox(
+                                value: isAgree,
+                                activeColor: AppColor.primary900Light,
+                                onChanged: (newVal) {
+                                  setState(() {
+                                    isAgree = newVal ?? false;
+                                  });
+                                },
+                              ),
+                              CustomTextWidget(
+                                ("vd_consent_check").tr(),
+                                fontColor: AppColor.primary700Light,
+                                fontSize: 12,
+                                fontWeight: AppFontWeight.semiBold,
+                              ),
+                            ],
+                          ))
+                    ],
+                  ),
                 ),
-              ),
-              agreeAndButton(),
-            ],
+                PreviousNextButtons(
+                  isFormValid: isAgree,
+                  onConfirm: () {
+                    model.hideKeyboard();
+                    model.submit().then((value) {});
+                  },
+                )
+              ],
+            ),
           );
         });
   }
@@ -103,6 +164,7 @@ class agreeText extends StatelessWidget {
                   fontWeight: AppFontWeight.medium,
                   fontSize: 13,
                   height: 1.5,
+                  maxLines: 100,
                   textAlign: TextAlign.start),
             ),
           ],

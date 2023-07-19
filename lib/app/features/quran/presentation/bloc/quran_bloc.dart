@@ -49,7 +49,7 @@ class QuranBloc extends Bloc<QuranEvent, QuranState> {
 
   Future<void> _initQuran(initQuranEvent e, Emitter emitter) async {
     String quran =
-        await rootBundle.loadString("assets/quran/hafsData_v2-0.json");
+        await rootBundle.loadString("assets/quran/hafs_smart_v8.json");
 
     var r = json.decode(quran);
     //print(r);

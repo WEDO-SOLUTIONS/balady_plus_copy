@@ -69,7 +69,9 @@ import '../../features/services/services_exports.dart'
 import '../../features/splash/splash_exports.dart' show SplashPage;
 import '../../features/transaction_inquiry/data/general_inquiry_data.dart';
 import '../../features/transaction_inquiry/presentation/core/models/gis_location_result.dart';
+import '../../features/transaction_inquiry/presentation/core/models/inquiry_transaction_response.dart';
 import '../../features/transaction_inquiry/presentation/pages/inquiry/general_inquiry/general_inquiry_page.dart';
+import '../../features/transaction_inquiry/presentation/pages/inquiry/transactions_inquiry/inquiry_details_screen.dart';
 import '../../features/transaction_inquiry/presentation/pages/inquiry/transactions_inquiry/new_transaction_inquiry.dart';
 import '../../features/transaction_inquiry/presentation/pages/inquiry/transactions_inquiry/transaction_inquiry_page.dart';
 import '../../features/transaction_inquiry/presentation/pages/request_service/new_request_service/new_request_service_location_screen.dart';
@@ -321,6 +323,15 @@ class AppRouter {
       case RouteName.newTransactionInquiryScreen:
         return MaterialPageRoute(
           builder: (_) => NewTransactionPage(),
+        );
+
+      case RouteName.inquiryDetailsScreen:
+        InquiryTransactionResponse args =
+            settings.arguments as InquiryTransactionResponse;
+        return MaterialPageRoute(
+          builder: (_) => InquiryDetailsScreen(
+            result: args,
+          ),
         );
 
       case RouteName.generalInquiryPage:

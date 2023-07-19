@@ -133,6 +133,7 @@ class _OrderInfoSectionState extends State<OrderInfoSection> {
           label: ("description").tr(),
           hintText: ("lbl_inq_desc_hint").tr(),
           obsecureText: false,
+          fillColor: Colors.transparent,
           maxLines: 4,
           keyboardType: TextInputType.multiline,
           onValidate: (text) {

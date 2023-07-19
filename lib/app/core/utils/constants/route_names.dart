@@ -75,6 +75,7 @@ class RouteName {
   // -------  Inquiery Transactions ---------
 
   static const newTransactionInquiryScreen = '/NewTransactionInquiryScreen';
+  static const inquiryDetailsScreen = '/InquiryDetailsScreen';
 
   // ------- General Inquiery  ---------
 

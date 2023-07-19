@@ -77,7 +77,7 @@ class _CertificateInfoStepScreenState extends State<CertificateInfoStepScreen> {
                 initialData: false,
                 builder: (context, snapshot) {
                   return PreviousNextButtons(
-                    isFormValid: true,
+                    isFormValid: snapshot.data ?? false,
                     onConfirm: () {
                       model.hideKeyboard();
                       // NavigationService.navigatorKey.currentState!

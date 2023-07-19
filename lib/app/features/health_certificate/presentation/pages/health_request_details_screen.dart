@@ -11,13 +11,18 @@ import '../../../../core/utils/constants/route_names.dart';
 import '../../../../core/utils/enums/app_font_weights.dart';
 import '../../../_shared_feature_/presentation/components/bottom_sheets/bottom_sheet_with_actions.dart';
 import '../../../_shared_feature_/presentation/dialogs/bottom_sheet_dialogs.dart';
+import '../../../_shared_feature_/presentation/widgets/custom_popups_widgets.dart';
 import '../../../_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
 import '../../../_shared_feature_/presentation/widgets/details_header.dart';
 import '../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import '../../../home_page/presentation/widgets/home_tag.dart';
 import '../../../vd/presentation/widgets/summery_widgets/field_data.dart';
 import '../../license_management_exports.dart'
-    show HealthRequestDetailsViewModel, HealthRequestDetailsScreenArgs;
+    show
+        ConfirmCancelLicenseDialog,
+        DeleteOrderConfirmationDialog,
+        HealthRequestDetailsScreenArgs,
+        HealthRequestDetailsViewModel;
 import '../widgets/order_body_section_widget.dart';
 
 class HealthRequestDetailsScreen extends StatefulWidget {
@@ -63,22 +68,33 @@ class _HealthRequestDetailsScreenState
                         title: "الاجراءات".tr(),
                         body: Column(children: [
                           GestureDetector(
-                            onTap: () {
-                              Navigator.of(context).pushNamed(
-                                  RouteName.newHealthCertificatePage,
-                                  arguments: true);
+                            onTap: () async {
+                              await CustomPopUpsWidgets.showBottomSheet(
+                                context,
+                                child: DeleteOrderConfirmationDialog(
+                                  onDelete: () {
+                                    HealthRequestDetailsViewModel model =
+                                        Provider.of<
+                                                HealthRequestDetailsViewModel>(
+                                            context,
+                                            listen: false);
+                                    int? certicateId = model
+                                        .requestDetails
+                                        ?.data
+                                        ?.result
+                                        ?.healthCertificateInfo
+                                        ?.certificateId;
+                                    if (certicateId != null) {
+                                      model
+                                          .cancelHealthCertificate(certicateId);
+                                    }
+                                  },
+                                ),
+                                isFullHeight: false,
+                              );
                             },
                             child: FieldData(
-                              title:
-                                  Helpers.translatingWord('renewLicenseWord'),
-                            ),
-                          ),
-                          CustomVerticalSpace(height: 16),
-                          GestureDetector(
-                            onTap: () {},
-                            child: FieldData(
-                              title:
-                                  Helpers.translatingWord('cancelLicenseWord'),
+                              title: Helpers.translatingWord('deleteOrder'),
                             ),
                           ),
                         ]),

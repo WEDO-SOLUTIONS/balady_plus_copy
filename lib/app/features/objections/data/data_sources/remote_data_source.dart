@@ -164,10 +164,12 @@ class RequestsRemoteDataSourceImplementation
               (e) => RequestSubTypeModel.fromMap(e as Map<String, dynamic>))
           .toList();
     } on DioError catch (error) {
-      "DioError $error".errorLog();
       if (error is NoDataFoundException) {
         rethrow;
       }
+      if (error.response?.statusCode == 400)
+        throw NoDataFoundException(error.requestOptions);
+
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,

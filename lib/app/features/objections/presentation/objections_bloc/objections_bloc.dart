@@ -221,14 +221,25 @@ class ObjectionsBloc extends Bloc<RequestsEvent, RequestsState> {
 
       failureOrSuccess.fold(
         (failure) {
-          emit(
-            state.copyWith(
-              requestSubTypesStatus: BlocRequestStatus.submissionGetFailure,
-              errorMessage: (failure as ServerFailure).errorMessage,
-            ),
-          );
+          if (failure is NoDataFoundFailure) {
+            emit(
+              state.copyWith(
+                requestSubTypesStatus: BlocRequestStatus.submissionGetSuccess,
+                requestSubTypes: [],
+              ),
+            );
+            return;
+          } else {
+            emit(
+              state.copyWith(
+                requestSubTypesStatus: BlocRequestStatus.submissionGetFailure,
+                errorMessage: (failure as ServerFailure).errorMessage,
+              ),
+            );
+          }
         },
         (requestSubTypes) {
+          print("FFFFFF $requestSubTypes");
           emit(
             state.copyWith(
               requestSubTypesStatus: BlocRequestStatus.submissionGetSuccess,

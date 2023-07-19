@@ -23,18 +23,13 @@ class ConfirmCancelLicenseDialog extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          // title
-          CustomTextWidget(
-            Helpers.translatingWord("confirmCancelLicenseTitleWord"),
-            fontColor: AppColor.black,
-            fontSize: 18.0,
-          ),
           const CustomVerticalSpace(height: 40),
           // subtitle
           CustomTextWidget(
             Helpers.translatingWord("confirmCancelLicenseSubtitleWord"),
             fontColor: AppColor.warmGrey2,
             fontWeight: AppFontWeight.medium,
+            maxLines: 10,
           ),
           const CustomVerticalSpace(height: 40),
           // buttons
@@ -63,8 +58,9 @@ class _ConfirmCancelLicenseDialogButtons extends StatelessWidget {
               onCancel!();
             }
           },
-          btnColor: AppColor.darkTurquoise, // as Scaffold background
+          btnColor: AppColor.primary900Light, // as Scaffold background
           btnBorderWidth: 2.0,
+          btnRadius: 8,
           btnText:
               Helpers.translatingWord('confirmCancelLicenseConfirmButtonWord'),
           btnTextColor: AppColor.white,
@@ -74,7 +70,7 @@ class _ConfirmCancelLicenseDialogButtons extends StatelessWidget {
         CustomTextButtonWidget(
           onPressed: () => Navigator.of(context).pop(),
           text: Helpers.translatingWord("confirmCancelLicenseCancelButtonWord"),
-          btnTextColor: AppColor.darkTurquoise,
+          btnTextColor: AppColor.primary900Light,
           btnTextSize: 16.0,
           btnTextWeight: AppFontWeight.medium,
         ),

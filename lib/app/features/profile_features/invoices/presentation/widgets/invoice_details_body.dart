@@ -93,10 +93,10 @@ class _InvoiceDetailBodyState extends State<InvoiceDetailBody> {
                                   invoice.invoiceStatusName,
                                   textStyle: AppStyle.tagTextStyle,
                                 ),
-                                const Icon(
+                                /*const Icon(
                                   Icons.arrow_drop_down,
                                   color: AppColor.primary900Light,
-                                ),
+                                ),*/
                               ],
                             ),
                           ),
@@ -109,12 +109,8 @@ class _InvoiceDetailBodyState extends State<InvoiceDetailBody> {
                       isExpandedByDefault: true,
                       children: [
                         CardParameter(
-                          title: 'invoice_type'.tr(),
-                          value: invoice.invoiceTypeName,
-                        ),
-                        CardParameter(
-                          title: 'invoice_type'.tr(),
-                          value: invoice.requestTypeName,
+                          title: 'invoice_no'.tr(),
+                          value: invoice.accountNumber,
                         ),
                         CardParameter(
                           title: 'invoice_amount'.tr(),
@@ -137,6 +133,10 @@ class _InvoiceDetailBodyState extends State<InvoiceDetailBody> {
                         CardParameter(
                           title: 'invoice_due_date'.tr(),
                           value: invoice.dueDate.toyMD(),
+                        ),
+                        CardParameter(
+                          title: ("نوع الرخصة").tr(),
+                          value: invoice.invoiceTypeName,
                         ),
                       ],
                     ),

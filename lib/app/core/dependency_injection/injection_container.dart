@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/core/dependency_injection/features/old_injection.dart';
 import 'package:dio/dio.dart' show Dio;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart'
     show FlutterSecureStorage;
@@ -29,6 +30,10 @@ import '../services/services_exports.dart'
         NetworkConnection,
         NetworkConnectionImplementation,
         WebService;
+import 'features/dc_injection.dart';
+import 'features/objectable_transactions_injection.dart';
+import 'features/objections_injection.dart';
+import 'features/retrive_dc_injection.dart';
 
 /// sl -> Service Locator
 final sl = GetIt.instance;
@@ -67,6 +72,17 @@ void initialize() {
   //? Licenses
   LicensesInjection.init();
 
+  OLDInjection.init();
+
+//? Objections
+  ObjectionsInjection.init();
+//? Objectable Transactions
+  ObjectableTransactionsInjection.init();
+
+//? DC
+  DCInjection.init();
+  DCRetriveInjection.init();
+
   //! Core
   sl.registerLazySingleton(() => WebService(dio: sl()));
   sl.registerLazySingleton<NetworkConnection>(
@@ -78,6 +94,7 @@ void initialize() {
   sl.registerLazySingleton(() => DropDownItem.emptyState());
   sl.registerLazySingleton(() => const DeviceDetails());
   sl.registerLazySingleton(() => const PackageDetails());
+
   //! External
   sl.registerLazySingleton(() => const FlutterSecureStorage());
   sl.registerLazySingleton(() => InternetConnectionChecker());

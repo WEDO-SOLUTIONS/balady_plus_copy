@@ -9,7 +9,7 @@ Map<String, dynamic> servicesConfig = {
       "order": 1,
       "isNew": false,
       "isImportant": false,
-      "action": {"type": "page", "value": "/holy-quran"},
+      "action": {"type": "page", "value": RouteName.menuQuranPage},
       "ar": {"title": "المصحف الشريف", "description": null, "tag": null},
       "en": {"title": "Holy Quran", "description": null, "tag": null}
     },
@@ -42,7 +42,7 @@ Map<String, dynamic> servicesConfig = {
       "order": 4,
       "isNew": false,
       "isImportant": false,
-      "action": {"type": "page", "value": "/zamazem"},
+      "action": {"type": "page", "value": RouteName.ZmZmPointsPage},
       "ar": {"title": "نقاط توزيع ماء زمزم", "description": null, "tag": null},
       "en": {"title": "Zamzam Points", "description": null, "tag": null}
     },

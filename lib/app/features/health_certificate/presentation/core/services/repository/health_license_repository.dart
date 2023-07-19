@@ -40,7 +40,9 @@ class HealthLicenseRepository {
       GisLocationResult response =
           GisLocationResult.fromJson(json.decode(data));
       result = response;
+      print("success gis");
     } catch (ex) {
+      print("HEREEEE");
       print(ex);
       try {
         //MM
@@ -73,6 +75,7 @@ class HealthLicenseRepository {
     });
     bool state = body['state'];
     dynamic data = body['data'];
+    print(data);
     String error =
         body['error'] ?? Helpers.translatingWord("errors_server_error_2");
     ValidateHealthCertificateResponse? result;

@@ -116,7 +116,8 @@ class NewDetailsHealthLicenseViewModel extends BaseViewModel {
         onLocationChanged: (SelectedLocation selectedLocation) async {
           Tuple3<bool?, String?, GisLocationResult?> response =
               await dataModel.getGisInfo(selectedLocation.selectedLocation!);
-
+          print("HEREEE tt");
+          print(response.item3);
           bool isGISSuccess = false;
           if (response.item3 != null &&
               response.item3?.isSuccessfull != null &&
@@ -124,14 +125,16 @@ class NewDetailsHealthLicenseViewModel extends BaseViewModel {
             isGISSuccess = true;
           }
           if (isGISSuccess) {
+            print("HEREEE 11");
             bool isValidMunicipality =
                 await dataModel.validateHealthCertificate(response.item3);
+            print("HEREEE 22 ${isValidMunicipality}");
 
             bool isCitiesRetrived = isCenterRequired()
                 ? await getCities(
                     gisLocationResult?.MUNICIPALITYUNIQUECODE ?? "")
                 : true;
-            print("isCitiesRetrived $isCitiesRetrived");
+            print("isCitiesRetrived 11 $isCitiesRetrived");
             // bool isCitiesRetrived1 =
             //   isCenterRequired() ? await getCenters("154") : true;
 

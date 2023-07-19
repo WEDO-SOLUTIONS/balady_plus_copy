@@ -47,6 +47,8 @@ class IconPath {
   static const successIcon = '${_pngIconPath}success_icon$_png';
   static const calenderTick = '${_svgIconPath}calender_tick$_svg';
 
+  static const documentCopy = '${_svgIconPath}document_copy$_svg';
+
   // Bottom-Nav-Bar
   static const home = '${_svgIconPath}home_icon$_svg';
   static const services = '${_svgIconPath}services_icon$_svg';
@@ -197,4 +199,5 @@ class IconPath {
   static const quranPrayIcon = '${_svgIconPath}quran_pray$_svg';
   static const quranSaveIcon = '${_svgIconPath}quran_save$_svg';
   static const quranSearchIcon = '${_svgIconPath}quran_search$_svg';
+  static const quranMarkIcon = '${_svgIconPath}quran_mark$_svg';
 }

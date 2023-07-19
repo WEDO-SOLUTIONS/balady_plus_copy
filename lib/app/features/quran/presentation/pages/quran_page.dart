@@ -16,7 +16,6 @@ import 'package:flutter_svg/svg.dart';
 import '../../../../core/utils/constants/constants.dart';
 import '../../../../core/utils/constants/paths/icon_paths.dart';
 import '../../../../core/utils/constants/paths/image_paths.dart';
-import '../../../_shared_feature_/presentation/widgets/buttons/custom_buttons_widgets.dart';
 import '../../data/models/quran_aya_model.dart';
 import '../widgets/main/quran_footer.dart';
 import '../widgets/main/quran_header.dart';
@@ -195,7 +194,7 @@ class _QuranPageState extends State<QuranPage> {
                                           textAlign: TextAlign.center,
                                           height: 1.6,
                                           fontSize: 24,
-                                          fontFamily: "uthmanic",
+                                          fontFamily: "HafsSmart",
                                           maxLines: 1000,
                                         ),
                                       ],
@@ -213,7 +212,7 @@ class _QuranPageState extends State<QuranPage> {
                                   textAlign: TextAlign.justify,
                                   height: 1.6,
                                   fontSize: 24,
-                                  fontFamily: "uthmanic",
+                                  fontFamily: "HafsSmart",
                                   maxLines: 1000,
                                 )
                               ],

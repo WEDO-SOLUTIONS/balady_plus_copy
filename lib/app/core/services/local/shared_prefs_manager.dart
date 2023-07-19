@@ -1,6 +1,8 @@
 import 'dart:convert';
 
 // ignore: depend_on_referenced_packages
+import 'package:balady_plus/app/features/quran/data/models/quran_book_mark_item_model.dart';
+import 'package:balady_plus/app/features/quran/data/models/quran_book_mark_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../features/_shared_feature_/shared_feature_exports.dart'
@@ -182,6 +184,22 @@ class SharedPrefs {
 
   String? getGuestMobile() {
     return _sharedPreferences?.getString('guestMobile');
+  }
+
+  Future<bool> saveQuranBookMark(QuranBookMarkItemModel item) async {
+    QuranBookMarkModel model = QuranBookMarkModel.fromJson(
+        _sharedPreferences?.getString('quran_book_marks') ?? "");
+    model.items?.add(item);
+
+    return Future.value(await _sharedPreferences?.setString(
+        "quran_book_marks", model.toJson()));
+  }
+
+  Future<QuranBookMarkModel> getQuranBookMark() async {
+    QuranBookMarkModel model = QuranBookMarkModel.fromJson(
+        _sharedPreferences?.getString('quran_book_marks') ?? "");
+
+    return Future.value(model);
   }
 }
 

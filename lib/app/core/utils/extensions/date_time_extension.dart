@@ -2,7 +2,7 @@ import 'package:hijri/hijri_calendar.dart';
 import 'package:intl/intl.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
-import '../utils_exports.dart' show DateForm;
+import '../utils_exports.dart' show CommonFunctions, DateForm;
 
 extension DateTimeExtension on DateTime {
   String toFormattedDate() {
@@ -24,18 +24,18 @@ extension DateTimeExtension on DateTime {
   String toWrittenDate() {
     final formatter = DateFormat('d MMMM y', translator.activeLanguageCode);
     final formattedDate = formatter.format(this);
-    return formattedDate;
+    return CommonFunctions.mapARNumbersToENNumbers(formattedDate);
   }
 
   String toyMD() {
     final formatter = DateFormat('yMd', translator.activeLanguageCode);
     final formattedDate = formatter.format(this);
-    return formattedDate;
+    return CommonFunctions.mapARNumbersToENNumbers(formattedDate);
   }
 
   String toTime() {
     final formatter = DateFormat('h:mm a', translator.activeLanguageCode);
     final formattedDate = formatter.format(this);
-    return formattedDate;
+    return CommonFunctions.mapARNumbersToENNumbers(formattedDate);
   }
 }

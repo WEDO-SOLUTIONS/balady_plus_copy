@@ -1,10 +1,12 @@
 import 'package:balady_plus/app/core/utils/enums/app_font_weights.dart';
 import 'package:balady_plus/app/features/vd/presentation/widgets/summery_widgets/field_data.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../core/utils/constants/app_colors.dart';
 import '../../../../../core/utils/constants/constants.dart';
+import '../../../../../core/utils/constants/paths/icon_paths.dart';
 import '../../../../_shared_feature_/presentation/widgets/check_boxes/custom_box_widget.dart';
 import '../../../../_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
 import '../../../../_shared_feature_/presentation/widgets/draw_line_widget.dart';
@@ -55,8 +57,8 @@ class _InquiryBodyState extends State<InquiryBody> {
               mainAxisSize: MainAxisSize.max,
               children: <Widget>[
                 const CustomVerticalSpace(height: 20),
-                Image.asset(
-                  Constants.imgPath + "inquiryIllustration@3x.png",
+                SvgPicture.asset(
+                  IconPath.documentCopy,
                   height: 80,
                   width: 140,
                 ),
@@ -65,52 +67,37 @@ class _InquiryBodyState extends State<InquiryBody> {
                 ),
                 CustomTextWidget(
                   ('final_inquiry_result').tr(),
-                  fontSize: 19,
-                  fontWeight: AppFontWeight.medium,
+                  fontSize: 20,
+                  fontWeight: AppFontWeight.bold,
                   fontColor: AppColor.black500,
                 ),
                 const CustomVerticalSpace(
                   height: 20,
                 ),
-                InquiryCard(
-                  id: widget.result.data?.result?[0].referenceNumber ?? "",
-                  letterNumber:
+                FieldData(
+                  title: ('transaction_number').tr(),
+                  subTitle:
+                      widget.result.data?.result?[0].referenceNumber ?? "",
+                ),
+                CustomVerticalSpace(height: 8),
+                FieldData(
+                  title: ('letter_number').tr(),
+                  subTitle:
                       widget.result.data?.result?[0].eXternalReference ?? "",
                 ),
-                Container(
-                  margin: const EdgeInsetsDirectional.only(start: 8),
-                  child: FieldData(
-                    title: ('transaction_date').tr(),
-                  ),
+                CustomVerticalSpace(height: 8),
+                FieldData(
+                  title: ('transaction_date_AH').tr(),
+                  subTitle:
+                      widget.result.data?.result?[0].creationDateHijri ?? "",
                 ),
+                CustomVerticalSpace(height: 8),
+                FieldData(
+                    title: ('transaction_date_AD').tr(),
+                    subTitle:
+                        widget.result.data?.result?[0].creationDate ?? ""),
                 Container(
-                  margin: const EdgeInsetsDirectional.only(start: 16),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        child: InquiryDateWidget(
-                          title: ('transaction_date_AH').tr(),
-                          desc: widget
-                                  .result.data?.result?[0].creationDateHijri ??
-                              "",
-                        ),
-                      ),
-                      const CustomHorizontalSpace(width: 2),
-                      Expanded(
-                        child: InquiryDateWidget(
-                          title: ('transaction_date_AD').tr(),
-                          desc:
-                              widget.result.data?.result?[0].creationDate ?? "",
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-                // const CustomVerticalSpace(height: 38),
-                const DrawLineWidget(verticalMargin: 24),
-                Container(
-                  margin: const EdgeInsetsDirectional.only(start: 16),
+                  color: Color(0xFFF5F8FA),
                   child: InquiryListWidget(
                     itemsFrom: transfersItemsFrom,
                     itemsTo: transfersItemsTo,
@@ -158,11 +145,6 @@ class InquiryCard extends StatelessWidget {
                 ('inquiry_info').tr(),
                 fontColor: AppColor.black,
                 fontSize: 17,
-              ),
-              Image.asset(
-                Constants.imgPath + 'inquiryIcon@3x.png',
-                height: 42,
-                width: 42,
               ),
             ],
           ),
@@ -256,7 +238,18 @@ class InquiryListWidget extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
+        CustomVerticalSpace(height: 32),
+        Padding(
+          padding: const EdgeInsets.only(right: 16.0),
+          child: CustomTextWidget(
+            "مسار المعاملة",
+            fontColor: Color(0xFF52525B),
+            fontSize: 20,
+            fontWeight: AppFontWeight.bold,
+          ),
+        ),
+        CustomVerticalSpace(height: 32),
+        /* Row(
           children: [
             Expanded(
               child: CustomTextWidget(
@@ -275,53 +268,74 @@ class InquiryListWidget extends StatelessWidget {
               ),
             )
           ],
-        ),
+        ),*/
         ListView.builder(
           shrinkWrap: true,
           itemCount: itemsFrom.length,
-          padding: const EdgeInsets.only(top: 23),
           physics: const NeverScrollableScrollPhysics(),
           itemBuilder: (ctx, index) {
-            return Column(
-              children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const CustomBoxWidget(
-                      size: 6.0,
-                      margin: EdgeInsetsDirectional.only(end: 8, top: 3),
-                      radius: 4,
-                      color: AppColor.baladyDarkGreen2,
-                    ),
-                    Expanded(
-                      child: CustomTextWidget(
-                        itemsFrom[index],
-                        fontColor: AppColor.black500,
-                        textAlign: TextAlign.start,
-                        fontWeight: AppFontWeight.medium,
-                        fontSize: 13,
+            return Container(
+              margin: EdgeInsets.all(16),
+              padding: EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                  color: AppColor.white,
+                  borderRadius: BorderRadius.circular(8)),
+              child: Column(
+                children: [
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            CustomTextWidget(
+                              ("source").tr(),
+                              fontWeight: AppFontWeight.bold,
+                              textAlign: TextAlign.start,
+                              fontColor: Color(0xFF036362),
+                              fontSize: 15,
+                            ),
+                            CustomVerticalSpace(height: 16),
+                            CustomTextWidget(
+                              itemsFrom[index],
+                              fontColor: AppColor.black500,
+                              textAlign: TextAlign.start,
+                              fontWeight: AppFontWeight.medium,
+                              fontSize: 13,
+                              maxLines: 100,
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                    CustomHorizontalSpace(width: 4),
-                    const CustomBoxWidget(
-                      size: 6.0,
-                      margin: EdgeInsetsDirectional.only(end: 8, top: 3),
-                      radius: 4,
-                      color: AppColor.baladyDarkGreen2,
-                    ),
-                    Expanded(
-                      child: CustomTextWidget(
-                        itemsTo[index],
-                        fontColor: AppColor.black500,
-                        textAlign: TextAlign.start,
-                        fontWeight: AppFontWeight.medium,
-                        fontSize: 13,
+                      CustomHorizontalSpace(width: 4),
+                      Expanded(
+                        child: Column(
+                          children: [
+                            CustomTextWidget(
+                              ("current_management").tr(),
+                              fontWeight: AppFontWeight.bold,
+                              textAlign: TextAlign.start,
+                              fontColor: Color(0xFF036362),
+                              fontSize: 15,
+                            ),
+                            CustomVerticalSpace(height: 16),
+                            CustomTextWidget(
+                              itemsTo[index],
+                              fontColor: AppColor.black500,
+                              textAlign: TextAlign.start,
+                              fontWeight: AppFontWeight.medium,
+                              fontSize: 13,
+                              maxLines: 100,
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-                CustomVerticalSpace(height: 20)
-              ],
+                    ],
+                  ),
+                  CustomVerticalSpace(height: 20)
+                ],
+              ),
             );
           },
         )
