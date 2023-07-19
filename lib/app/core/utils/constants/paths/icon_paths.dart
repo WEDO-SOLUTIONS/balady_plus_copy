@@ -175,4 +175,8 @@ class IconPath {
   static const qrLockIcon = '${_pngQRIconPath}tours_rating_icons/lock$_png';
 
   static const qrStarIcon = '${_pngQRIconPath}greyStar$_png';
+
+  //! Map
+
+  static const buildingIcon = '${_svgIconPath}building$_svg';
 }

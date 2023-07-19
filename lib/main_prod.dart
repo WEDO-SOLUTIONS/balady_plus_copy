@@ -11,3 +11,4 @@ void main() async {
 
   runApp(LocalizedApp(child: const App()));
 }
+
