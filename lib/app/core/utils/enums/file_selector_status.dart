@@ -1,0 +1,1 @@
+enum FileSelectorStatus { selected, unselected }

@@ -1,0 +1,75 @@
+package com.dgis.map.control_handlers.navigation_controls;
+
+import io.flutter.plugin.common.EventChannel
+import ru.dgis.sdk.Duration
+import ru.dgis.sdk.navigation.Model
+import ru.dgis.sdk.navigation.NavigationManager
+import ru.dgis.sdk.navigation.SoundCategory
+import ru.dgis.sdk.navigation.duration
+import ru.dgis.sdk.routing.RouteDistance
+import ru.dgis.sdk.routing.meters
+import ru.dgis.sdk.routing.minus
+import java.text.SimpleDateFormat
+import java.util.*
+
+class DashboardControlModel(
+    private val model: Model,
+    private val eventSink: EventChannel.EventSink,
+    private val navigationManager: NavigationManager
+) : AutoCloseable {
+    private val closeables = mutableListOf<AutoCloseable>()
+    private var routeLength: RouteDistance = RouteDistance(0)
+
+    companion object {
+        private val preferredInstructions = SoundCategory.INSTRUCTIONS
+        private val dateFormat = SimpleDateFormat("HH:mm")
+    }
+    
+    init {
+        closeables.add(model.routeChannel.connect {
+            routeLength = it.route.geometry.length
+        })
+        closeables.add(
+            this.model.routePositionChannel.connect {
+                this.update()
+            }
+        )
+    }
+    
+    private fun update() {
+        if (this.model.duration == null || model.routePosition == null ) {
+            return
+        }
+
+        val duration = this.model.duration as Duration;
+        val distance = (routeLength - model.routePosition!!.distance).meters;
+
+        val arrival = Calendar.getInstance()
+        arrival.add(Calendar.SECOND, duration.inSeconds.toInt())
+        
+        eventSink.success(
+            mapOf(
+                "event" to Events.dashboardEvent.name,
+                "duration" to duration.inSeconds.toInt(),
+                "distance" to distance,
+                "arrivalTime" to dateFormat.format(arrival.time)
+            )
+        )
+    }
+    
+    fun toggleSounds() {
+        if (this.navigationManager.soundNotificationSettings.enabledSoundCategories.remove(
+                preferredInstructions)) {
+            this.navigationManager.soundNotificationSettings.enabledSoundCategories.add(preferredInstructions)
+        }
+    }
+
+    override fun close() {
+        closeables.forEach(AutoCloseable::close)
+        closeables.clear()
+    }
+}
+
+enum class Events {
+    dashboardEvent
+}

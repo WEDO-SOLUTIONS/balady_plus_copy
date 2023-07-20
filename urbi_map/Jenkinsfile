@@ -1,0 +1,154 @@
+@Library('core') _
+
+import groovy.transform.Field
+
+import ru.dgis.repositoryApi.Stash
+import ru.dgis.git.LinuxRepository
+
+@Field LinuxRepository repository = new LinuxRepository(this, 'ssh://git@stash.2gis.ru/maf/mapness_demo.git')
+
+@Field Stash stash = new Stash(this)
+stash.setup()
+
+@Field String iosAppName = 'MapnessDemo'
+@Field String iosIpaName = iosAppName + '.ipa'
+@Field String iosManifestName = iosAppName + '-manifest.plist'
+
+
+properties([
+    buildDiscarder(logRotator(numToKeepStr: '50')),
+    disableConcurrentBuilds(),
+])
+
+node('msdk_flutter') {
+    try {
+        stash.setBuildStatus(env.BRANCH_NAME, Stash.BuildStatus.INPROGRESS)
+        main()
+    }
+
+    catch(org.jenkinsci.plugins.workflow.steps.FlowInterruptedException e) {
+        echo('Catched FlowInterruptedException')
+        currentBuild.result = 'ABORTED'
+        stash.setBuildStatus(env.BRANCH_NAME, Stash.BuildStatus.ABORTED)
+        return
+    }
+
+    catch(Exception e) {
+        echo("Catched ${e.toString()}")
+        currentBuild.result = 'FAILED'
+        stash.setBuildStatus(env.BRANCH_NAME, Stash.BuildStatus.FAILURE)
+        return
+    }
+    stash.setBuildStatus(env.BRANCH_NAME, Stash.BuildStatus.SUCCESS)
+}
+
+def main() {
+    stage('Prepare') {
+        wipeCurrentDir()
+        checkout()
+        flutterDeps()
+    }
+    stage('Build') {
+        build()
+    }
+    stage('Archive') {
+        archive('prod')
+    }
+}
+
+def checkout() {
+    repository.restoreShallowBranchFromRemote(env.BRANCH_NAME)
+}
+
+def flutterDeps() {
+    dir(repository.path + '/dgis_map_platform_interface') {
+        sh 'flutter pub get --verbose'
+        sh """
+            mkdir lib/src/pigeons/
+            mkdir ../dgis_map/android/src/main/kotlin/com/dgis/map/map_api
+            flutter pub run pigeon --input pigeons/messages.dart
+        """
+    }
+    dir(repository.path + '/dgis_map') {
+        sh 'dart pub upgrade --verbose'
+        sh 'flutter pub get --verbose'
+        sh 'flutter packages get --verbose'
+        sh 'flutter pub run build_runner clean'
+        sh 'flutter pub run build_runner build --delete-conflicting-outputs'
+    }
+    dir(repository.path + '/dgis_map/example') {
+        sh 'flutter pub run build_runner clean'
+        sh 'flutter pub run build_runner build --delete-conflicting-outputs'
+    }
+    dir(repository.path + '/dgis_map/example/ios') {
+        sh 'pod install --repo-update'
+    }
+}
+
+def build() {
+    parallel([
+        'Android': {
+            dir(repository.path + '/dgis_map/example') {
+                sh 'flutter build apk -t lib/main.dart --split-per-abi'
+            }
+        },
+        'iOS': {
+            withCredentials([string(credentialsId: 'MSDK_KEYCHAIN_PASSWORD', variable: 'MSDK_KEYCHAIN_PASSWORD')]) {
+                sh "security unlock-keychain -p ${env.MSDK_KEYCHAIN_PASSWORD} \${HOME}/Library/Keychains/msdk.keychain-db"
+            }
+            dir(repository.path + '/dgis_map/example') {    
+                def frameworkFiles = findFiles(glob: "ios/Pods/DGisMobileSDK/**/DGis")
+                println(frameworkFiles.toString())
+                for (framework in frameworkFiles) {
+                    sh "xcrun bitcode_strip ${framework.path} -r -o ${framework.path}"
+                }
+
+                sh 'flutter build ios -t lib/main.dart --release --codesign'
+
+                sh """
+                    cd build/ios/iphoneos
+                    mkdir Payload
+                    mv Runner.app Payload/Runner.app
+                    zip -r ${iosIpaName} Payload
+                """
+                sh otaManifestScriptGenerator.generateShellScript(
+                    iosManifestName,
+                    env.BUILD_URL + "artifact/dgis_map/example/build/ios/iphoneos/$iosIpaName",
+                    'com.mobile.dgis.mapness',
+                    'MapnessDemo'
+                )
+            }
+        }
+    ])
+}
+
+def archive(String flavor) {
+    dir(repository.path) {
+        archiveArtifacts(
+            artifacts: "dgis_map/example/build/app/outputs/apk/release/*.apk,dgis_map/example/build/ios/iphoneos/*.ipa,dgis_map/example/*-manifest.plist"
+        )
+
+        def artifactsForQr = [:]
+
+        def manifests = currentBuild.rawBuild.getArtifacts().findAll {
+            it.getFileName().contains('manifest.plist')
+        }
+        // Генерируем ссылки на манифесты iOS сборок для OTA дистрибуции.
+        manifests.each {
+            String fileURL = env.BUILD_URL + 'artifact/' + it.getHref()
+            String otaURL = "itms-services://?action=download-manifest;url=${fileURL};export=download" 
+            artifactsForQr[it.getFileName()] = qrHelper.createQr(otaURL)
+        }
+
+        def apks = currentBuild.rawBuild.getArtifacts().findAll {
+            it.getFileName().contains('.apk')
+        }
+        apks.each {
+            artifactsForQr[it.getFileName()] = qrHelper.createQr(env.BUILD_URL + 'artifact/' + it.getHref())
+        }
+        artifactsForQr.each {name, link ->
+            currentBuild.description += "<br>$name<br><img src=$link alt=$name style=\"max-width:150px;\"/>"
+        }
+
+    }
+}

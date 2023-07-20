@@ -1,0 +1,154 @@
+import 'package:flutter/material.dart';
+import 'package:localize_and_translate/localize_and_translate.dart'
+    show Translation;
+
+import '../../../../core/utils/utils_exports.dart'
+    show AppColor, AppFontWeight, AppStyle, MessageType, UIHelper;
+import '../../shared_feature_exports.dart'
+    show CustomTextButtonWidget, CustomTextWidget;
+
+class CustomAlertDialogWidget extends StatelessWidget {
+  final Color? backgroundColor;
+  final BorderRadiusGeometry? borderRadius;
+  final double radius;
+  final BorderSide? borderSide;
+  final Color borderSideColor;
+  final EdgeInsets insetPadding;
+  final EdgeInsetsGeometry buttonPadding;
+  final EdgeInsetsGeometry actionsPadding;
+  final EdgeInsetsGeometry contentPadding;
+  final Widget? title;
+  final EdgeInsetsGeometry titlePadding;
+  final BoxBorder? titleBorder;
+  final Color titleBorderColor;
+  final double titleBorderWidth;
+  final MessageType titleMessageType;
+  final String? titleText;
+  final Color titleTextColor;
+  final double titleTextSize;
+  final AppFontWeight titleTextWeight;
+  final Widget? content;
+  final String? contentText;
+  final Color contentTextColor;
+  final List<Widget>? actions;
+  final VoidCallback? primaryBtnPressed;
+  final String? primaryBtnText;
+  final VoidCallback? secondaryBtnPressed;
+  final String? secondaryBtnText;
+  const CustomAlertDialogWidget({
+    super.key,
+    this.backgroundColor,
+    this.borderRadius,
+    this.radius = 10.0,
+    this.borderSide,
+    this.borderSideColor = Colors.transparent,
+    this.insetPadding = const EdgeInsets.symmetric(
+      horizontal: UIHelper.mediumPadding,
+    ),
+    this.buttonPadding = EdgeInsets.zero,
+    this.actionsPadding = EdgeInsets.zero,
+    this.contentPadding = const EdgeInsets.symmetric(
+      vertical: UIHelper.middlePadding,
+      horizontal: UIHelper.mediumPadding,
+    ),
+    this.title,
+    this.titlePadding = const EdgeInsets.symmetric(
+      vertical: UIHelper.smallPadding,
+    ),
+    this.titleBorder,
+    this.titleBorderColor = AppColor.gray,
+    this.titleBorderWidth = 1.0,
+    this.titleMessageType = MessageType.none,
+    this.titleText,
+    this.titleTextColor = AppColor.black,
+    this.titleTextSize = 18.0,
+    this.titleTextWeight = AppFontWeight.bold,
+    this.content,
+    this.contentText,
+    this.contentTextColor = AppColor.black,
+    this.actions,
+    this.primaryBtnPressed,
+    this.primaryBtnText,
+    this.secondaryBtnPressed,
+    this.secondaryBtnText,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      backgroundColor: backgroundColor,
+      shape: RoundedRectangleBorder(
+        borderRadius: borderRadius ?? BorderRadius.all(Radius.circular(radius)),
+        side: borderSide ?? BorderSide(color: borderSideColor),
+      ),
+      insetPadding: insetPadding,
+      titlePadding: EdgeInsets.zero,
+      buttonPadding: buttonPadding,
+      actionsPadding: actionsPadding,
+      contentPadding: contentPadding,
+      title: title ??
+          Container(
+            padding: titlePadding,
+            decoration: BoxDecoration(
+              border: titleBorder ??
+                  Border(
+                    bottom: BorderSide(
+                      color: titleBorderColor,
+                      width: titleBorderWidth,
+                    ),
+                  ),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Icon(
+                  titleMessageType.icon,
+                  color: titleMessageType.color,
+                  size: 25.0,
+                ),
+                if (titleMessageType != MessageType.none)
+                  UIHelper.horizontalSmallSpace,
+                CustomTextWidget(
+                  titleMessageType.message,
+                  textStyle: AppStyle.mainTextStyle.copyWith(
+                    color: titleTextColor,
+                    fontSize: titleTextSize,
+                    fontWeight: titleTextWeight.fontWeight,
+                  ),
+                ),
+                if (titleMessageType != MessageType.none)
+                  UIHelper.horizontalSmallSpace,
+                Icon(
+                  titleMessageType.icon,
+                  color: titleMessageType.color,
+                  size: 25.0,
+                ),
+              ],
+            ),
+          ),
+      content: content ??
+          CustomTextWidget(
+            contentText ?? "popUpNoMessage".tr(),
+            textAlign: TextAlign.center,
+            textStyle: AppStyle.mainTextSecondaryStyle.copyWith(
+              color: contentTextColor,
+              height: 1.5,
+            ),
+          ),
+      actions: actions ??
+          [
+            CustomTextButtonWidget(
+              onPressed:
+                  primaryBtnPressed ?? () => Navigator.of(context).pop(true),
+              text: primaryBtnText ?? "popUpConfirmButton".tr(),
+            ),
+            if (secondaryBtnPressed != null && secondaryBtnText != null)
+              CustomTextButtonWidget(
+                onPressed: secondaryBtnPressed!,
+                text: secondaryBtnText!,
+              ),
+          ],
+    );
+  }
+}
