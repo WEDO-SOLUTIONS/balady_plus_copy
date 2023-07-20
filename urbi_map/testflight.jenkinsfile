@@ -1,0 +1,105 @@
+@Library('core') _
+
+import groovy.transform.Field
+
+import ru.dgis.git.LinuxRepository
+
+@Field LinuxRepository repository = new LinuxRepository(this, 'ssh://git@stash.2gis.ru/maf/mapness_demo.git')
+
+
+properties([
+    disableConcurrentBuilds(),
+    parameters([
+        string(
+            name: 'BRANCH',
+            defaultValue: '',
+            description: 'С какой ветки собрать билд в TestFlight'
+        )
+    ])
+])
+
+node('msdk_flutter') {
+    try {
+        main()
+    }
+
+    catch(org.jenkinsci.plugins.workflow.steps.FlowInterruptedException e) {
+        echo('Catched FlowInterruptedException')
+        currentBuild.result = 'ABORTED'
+        return
+    }
+
+    catch(Exception e) {
+        echo("Catched ${e.toString()}")
+        currentBuild.result = 'FAILED'
+        return
+    }
+}
+
+def main() {
+    stage('Prepare'){
+        failIfParamsChanged()
+        checkParams()
+        wipeCurrentDir()
+        checkout()
+        flutterDeps()
+    }
+    stage('Build') {
+        build()
+    }
+    stage('Publish') {
+        publish()
+    }
+}
+
+def checkParams() {
+    if (!params.BRANCH) {
+        error('Parameter BRANCH is empty')
+    }
+}
+
+def checkout() {
+    repository.restoreShallowBranchFromRemote(params.BRANCH)
+}
+
+def flutterDeps() {
+    dir(repository.path + '/dgis_map_platform_interface') {
+        sh 'flutter pub get --verbose'
+        sh """
+            mkdir lib/src/pigeons/
+            mkdir ../dgis_map/android/src/main/kotlin/com/dgis/map/map_api
+            flutter pub run pigeon --input pigeons/messages.dart
+        """
+    }
+    dir(repository.path + '/dgis_map') {
+        sh 'dart pub upgrade --verbose'
+        sh 'flutter pub get --verbose'
+        sh 'flutter packages get --verbose'
+        sh 'flutter pub run build_runner clean'
+        sh 'flutter pub run build_runner build --delete-conflicting-outputs'
+    }
+    dir(repository.path + '/dgis_map/example') {
+        sh 'flutter pub run build_runner clean'
+        sh 'flutter pub run build_runner build --delete-conflicting-outputs'
+    }
+    dir(repository.path + '/dgis_map/example/ios') {
+        sh 'pod install --repo-update'
+    }
+}
+
+def build() {
+    dir(repository.path + '/dgis_map/example') {
+        sh "flutter build ipa -t lib/main.dart --release --no-pub --obfuscate --split-debug-info=debug-symbols  --export-options-plist=${env.WORKSPACE}/${repository.path}/dgis_map/example/ios/exportOptions.plist --build-number ${env.BUILD_NUMBER}"
+    }
+}
+
+def publish() {
+    dir(repository.path + '/dgis_map/example/build/ios/ipa') {
+        withCredentials([
+            string(credentialsId: 'MAPNESS_DEMO_APPSTORE_KEY_ID', variable: 'key_id'),
+            string(credentialsId: 'MAPNESS_DEMO_APPSTORE_KEY_ISSUER', variable: 'issuer_id')
+        ]) {
+            sh "xcrun altool --upload-app --type ios -f mapness_demo.ipa --apiKey $key_id --apiIssuer $issuer_id"
+        }
+    }
+}

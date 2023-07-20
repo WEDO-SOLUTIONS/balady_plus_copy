@@ -1,0 +1,222 @@
+name: balady_plus
+description: A new Flutter project.
+
+# The following line prevents the package from being accidentally published to
+# pub.dev using `flutter pub publish`. This is preferred for private packages.
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
+# The following defines the version and build number for your application.
+# A version number is three numbers separated by dots, like 1.2.43
+# followed by an optional build number separated by a +.
+# Both the version and the builder number may be overridden in flutter
+# build by specifying --build-name and --build-number, respectively.
+# In Android, build-name is used as versionName while build-number used as versionCode.
+# Read more about Android versioning at https://developer.android.com/studio/publish/versioning
+# In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
+# Read more about iOS versioning at
+# https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
+version: 1.0.0+1
+
+environment:
+  sdk: ">=3.0.1 <4.0.0"
+
+# Dependencies specify other packages that your package needs in order to work.
+# To automatically upgrade your package dependencies to the latest versions
+# consider running `flutter pub upgrade --major-versions`. Alternatively,
+# dependencies can be manually updated by changing the version numbers below to
+# the latest version available on pub.dev. To see which dependencies have newer
+# versions available, run `flutter pub outdated`.
+dependencies:
+  cupertino_icons: ^1.0.2
+  flutter:
+    sdk: flutter
+  
+  
+  # Localization app to support multiple languages
+  localize_and_translate:
+  ##! Logic
+  # To manage state and separate business logic from UI
+  flutter_bloc: ^8.1.2
+  # Extension methods on Stream adding common transform operators
+  stream_transform: ^2.0.0
+  # Functional programming in Dart e.g. Either<Left,Right>
+  dartz: ^0.10.1
+  # Form representation and validation in a generic way
+  formz: ^0.6.0
+  # Equality Comparisons among objects
+  equatable: ^2.0.5
+  # Dependency Injection Service Locator
+  get_it: ^7.2.0
+  ##! Internet
+  # Checks for an Active Internet connection
+  internet_connection_checker: ^1.0.0+1
+  # Http client for Dart, which supports Interceptors, Global configuration and others
+  dio: ^5.0.0
+  pretty_dio_logger: ^1.3.1
+  ##! Local Storage
+  # Store sensitive data in secure storage
+  flutter_secure_storage: ^6.0.0
+  # Lightweight fast key-value database
+  hive_flutter: ^1.1.0
+  ##! Actions
+  # A package that allows you to use a native file explorer
+  file_picker: any
+  # picking images and taking new pictures with the camera.
+  image_picker: ^0.8.6
+  # Native APP to open files with string result
+  open_file: ^3.2.1
+  # for getting commonly used locations on host platform file
+  path_provider: ^2.0.11
+  # Launching a URL, Open contacts and others.
+  url_launcher: ^6.1.5
+  ##! UI
+  # Automatically resizes text to fit perfectly within its bounds
+  auto_size_text: ^3.0.0
+  # To deal with svg icons
+  flutter_svg: any
+  # A Flutter widget that can be expanded or collapsed by the user.
+  expandable: ^5.0.1
+  # Shimmer effect, useful for loading
+  shimmer: ^3.0.0
+  # flutter toast
+  bot_toast: ^4.0.3
+  # loading animation
+  loading_animation_widget: ^1.2.0+3
+  # Date and number formatting
+  intl: ^0.18.0
+  # A flutter package to select a country from a list of countries.
+  country_picker: ^2.0.16
+  camera:
+  # lutter plugin to find available maps installed on a device and launch them with a marker or show directions.
+  map_launcher: ^2.4.0
+  # Hashing
+  crypto: ^3.0.1
+  # A universal barcode and QR code scanner
+  mobile_scanner: ^2.1.0
+  # Location
+  geolocator: ^8.2.0
+  # Permissions
+  permission_handler: ^8.3.0
+  # Get current device information
+  device_info_plus: ^9.0.0
+  # API for querying information about an application package
+  package_info_plus: ^3.0.3
+  # parses Adobe After Effects animations
+  lottie: ^2.2.0
+  # Generate Unique ID
+  uuid: ^3.0.7
+  hijri: ^3.0.0
+  
+  flutter_appauth:
+    path: flutter_appauth/flutter_appauth
+  webview_flutter: ^4.2.2
+  flutter_inappwebview: ^5.7.2+3
+  version: ^2.0.0
+  google_maps_flutter: ^2.3.1
+  share_plus: ^4.5.3
+  pinput: ^2.2.31
+  pin_code_fields: ^7.3.0
+  cached_network_image: ^3.2.2
+  mime: ^1.0.4
+  jwt_decoder:
+
+  photo_view: ^0.14.0
+  flutter_rating_bar: ^4.0.0
+  tuple: ^2.0.0
+  flutter_easyloading: ^3.0.3
+  connectivity_plus: ^2.2.0
+  qr_code_scanner: ^1.0.1
+  scan: ^1.6.0
+  sms_user_consent:
+    git:
+      url: https://github.com/ctnataman/sms_user_consent
+  flutter_google_places:
+    git:
+      url: https://github.com/fluttercommunity/flutter_google_places
+      #ref: v0.3.2
+      ref: e104fa94452ec236dfb27cf5ea54fb72f280bc08
+  flutter_picker: ^2.1.0
+  percent_indicator: ^4.2.3
+  flutter_staggered_grid_view: ^0.6.0
+  flutter_cached_pdfview: ^0.4.2
+  pdfx: 
+  
+  #test_package:
+ #   path: packages/test_package
+
+
+# Map urbi SKD
+  dgis_map:
+    path: urbi_map/dgis_map
+#  provider: ^6.0.5
+
+
+
+dev_dependencies:
+  flutter_lints: ^2.0.1
+  flutter_test:
+    sdk: flutter
+  
+
+# For information on the generic Dart part of this file, see the
+# following page: https://dart.dev/tools/pub/pubspec
+# The following section is specific to Flutter packages.
+flutter:
+
+  # The following line ensures that the Material Icons font is
+  # included with your application, so that you can use the icons in
+  # the material Icons class.
+  uses-material-design: true
+
+  # To add assets to your application, add an assets section, like this:
+  assets:
+    - assets/icons/svg/
+    - assets/icons/svg/map/
+    - assets/icons/svg/prayers/
+    - assets/icons/svg/services/
+    - assets/icons/svg/weather/
+    - assets/icons/svg/profile/
+    - assets/icons/svg/nearby/
+    - assets/icons/svg/vd/
+    - assets/icons/svg/qr/
+    - assets/icons/svg/dc/
+    - assets/icons/png/
+    - assets/icons/png/vd/
+    - assets/icons/png/qr/
+    - assets/images/
+    - assets/langs/
+    - assets/services/
+    - assets/maps/styles/
+    - assets/maps/icons/
+
+  # An image asset can refer to one or more resolution-specific "variants", see
+  # https://flutter.dev/assets-and-images/#resolution-aware
+  # For details regarding adding assets from package dependencies, see
+  # https://flutter.dev/assets-and-images/#from-packages
+  # To add custom fonts to your application, add a fonts section here,
+  # in this "flutter" section. Each entry in this list should have a
+  # "family" key with the font family name, and a "fonts" key with a
+  # list giving the asset and other descriptors for the font. For
+  # example:
+  fonts:
+    - family: Cairo
+      fonts:
+        - asset: assets/fonts/Cairo-Regular.woff
+          weight: 400
+        - asset: assets/fonts/Cairo-Bold.woff
+          weight: 700
+    - family: ArabicUIText
+      fonts:
+        - asset: assets/fonts/Arabic-UI-Text.ttf
+        - asset: assets/fonts/Arabic-UI-Text-Bold.otf
+          weight: 700
+        - asset: assets/fonts/Arabic-UI-Text-Medium.otf
+          weight: 500
+  #   - family: Trajan Pro
+  #     fonts:
+  #       - asset: fonts/TrajanPro.ttf
+  #       - asset: fonts/TrajanPro_Bold.ttf
+  #         weight: 700
+  #
+  # For details regarding fonts from package dependencies,
+  # see https://flutter.dev/custom-fonts/#from-packages

@@ -1,0 +1,223 @@
+import 'package:dgis_map_platform_interface/library.dart';
+import 'package:dgis_map_platform_interface/src/events/marker_tap_event.dart';
+import 'package:dgis_map_platform_interface/src/events/route_changed_events.dart';
+import 'package:dgis_map_platform_interface/src/events/route_options_event.dart';
+import 'package:dgis_map_platform_interface/src/events/visible_rect_events.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
+import 'package:plugin_platform_interface/plugin_platform_interface.dart';
+
+import 'events/navi_message_events.dart';
+import 'events/navi_speed_event.dart';
+import 'events/navi_dashboard_event.dart';
+import 'events/indoor_events.dart';
+import 'events/location_control_events.dart';
+import 'events/navigation_event.dart';
+import 'events/object_tap_events.dart';
+import 'events/zoom_control_events.dart';
+import 'method_channel_my_plugin.dart';
+
+/// The interface that implementations of my_plugin must implement.
+///
+/// Platform implementations should extend this class
+/// rather than implement it as `DgisMapPlugin`.
+/// Extending this class (using `extends`) ensures that the subclass will get
+/// the default implementation, while platform implementations that `implements`
+///  this interface will be broken by newly added [DgisMapPlugin] methods.
+abstract class DgisMapPlugin extends PlatformInterface {
+  /// Constructs a DgisMapPlugin.
+  DgisMapPlugin() : super(token: _token);
+
+  static final Object _token = Object();
+
+  static DgisMapPlugin _instance = MethodChannelDgisMapPlugin();
+
+  /// The default instance of [DgisMapPlugin] to use.
+  ///
+  /// Defaults to [MethodChannelDgisMapPlugin].
+  static DgisMapPlugin get instance => _instance;
+
+  /// Platform-specific plugins should set this with their own platform-specific
+  /// class that extends [DgisMapPlugin] when they register themselves.
+  static set instance(DgisMapPlugin instance) {
+    PlatformInterface.verify(instance, _token);
+    _instance = instance;
+  }
+
+  Stream<ZoomControlEnabledEvent> get zoomControlEnabledEvents;
+
+  Stream<LocationEnabledEvent> get locationEnabledEvents;
+
+  Stream<LocationFollowEvent> get locationFollowEvents;
+
+  Stream<IndoorLevelsEvent> get indoorLevelNames;
+
+  Stream<IndoorActiveLevelEvent> get indoorActiveIndex;
+
+  Stream<TapEvent> get objectTapEvents;
+
+  Stream<VisibleRectEvent> get visibleRectEvents;
+
+  Stream<MarkerWithPhotoTapEvent> get markerWithPhotoTapEvents;
+
+  Stream<RouteChangedEvent> get routeChangedEvents;
+
+  Stream<NavigationEvent> get navigationEvents;
+
+  Stream<NaviSpeedEvent> get naviSpeedEvents;
+
+  Stream<NaviDashboardEvent> get naviDashboardEvents;
+
+  Stream<NaviMessageEvent> get naviMessageEvents;
+
+  Stream<CompassBearingEvent> get compassBearingEvents;
+
+  Stream<NaviManeuverEvent> get naviManeuverEvents;
+
+  Stream<ParkingStateEvent> get parkingStateEvents;
+
+  Stream<TrafficStateEvent> get trafficStateEvents;
+
+  Stream<PublicTransportRoutesChangedEvent>
+      get publicTransportRoutesChangedEvents;
+
+  Stream<PublicTransportActiveRouteChanged>
+      get publicTransportActiveRouteChangedEvents;
+
+  Stream<RouteOptionsEvent> get routeOptionsEvent;
+
+  Future<InitializeMessage> initialize(int viewId);
+
+  bool get isInitialized;
+
+  Future<void> dispose();
+
+  Future<void> onZoomAction(ZoomControlType btn, {required bool isPressed});
+
+  Future<void> changeFollowState();
+
+  Future<void> selectIndoorLevel(int index);
+
+  Future<void> loadStyles(String asset);
+
+  Future<void> overrideLocales(List<String> locales);
+
+  Future<void> setCameraPosition(CameraPositionMessage cameraPosition);
+
+  Future<void> unselectPanorama();
+
+  Future<ObjectInfoMessage> searchByObjectId(DgisObjectIdMessage objectId);
+
+  Widget buildView({
+    required PlatformViewCreatedCallback onPlatformViewCreated,
+    bool androidUseExpensive = true,
+  });
+
+  Future<List<DistanceResponseMessage?>> getDistanceTo(
+      List<DistanceRequestMessage> points);
+
+  Future<List<ObjectInfoMessage?>> search(
+    String queryText, {
+    required SortingTypeMessage sortingType,
+    required int pageSize,
+    WeekTimeSearchMessage? weekTime,
+  });
+
+  Future<List<ObjectInfoMessage?>?> getNextPage();
+
+  Future<void> setMarkerOptions(MarkerOptionsMessage markerOptions);
+
+  Future<void> addMarker(GeoPointMessage geoPoint);
+
+  Future<void> removeAllMarkers();
+
+  Future<void> removeSearchMarkers();
+
+  Future<void> setHighlighted(List<DgisObjectIdMessage> objectIds);
+
+  Future<List<EverGisLayerMessage?>> getLayers();
+
+  Future<void> setLayerVisible(String alias, bool visible);
+
+  Future<List<SuggestMessage?>> fetchSuggests(String queryText);
+
+  Future<ObjectInfoMessage> getSuggestObject(int index);
+
+  Future<List<ObjectInfoMessage?>> searchBySuggest(
+    int index, {
+    required SortingTypeMessage sortingType,
+    required int pageSize,
+    WeekTimeSearchMessage? weekTime,
+  });
+
+  Future<void> onLocationPremissionGranted(
+      DesiredAccuracyMessage desiredAccuracy);
+
+  Future<void> addPanoramasMarkers(AddMarkersWithPhotoMessage markers);
+
+  Future<void> hidePanoramasMarkers();
+
+  Future<void> showPanoramasMarkers();
+
+  Future<void> removePanoramasMarkers();
+
+  Future<void> setRouteParams(RouteEditorRouteParamsMessage params);
+
+  Future<void> hideRoutes();
+
+  Future<void> startNavigation();
+
+  Future<void> startNavigationSimulation();
+
+  Future<void> stopNavigation();
+
+  Future<int> overlappedBy(
+      VisibleRectMessage outerRect, VisibleRectMessage innerRect);
+
+  Future<List<FlagFilterMessage?>> getDirectoryDynamicFilters();
+
+  Future<List<ObjectInfoMessage?>> applyDirectoryFilters({
+    required List<FlagFilterMessage> filters,
+    required WorkingFilterMessage isOpenFilter,
+    required SortingTypeMessage sortingType,
+  });
+
+  Future<void> applyEverGisFilters(
+    String layerAlias,
+    List<EGStringFilterMessage> stringFilters,
+    List<EGDoubleFilterMessage> doubleFilters,
+    List<EGIntFilterMessage> intFilters,
+    List<EGDateRangeFilterMessage> dateRangeFilters,
+    List<EGComplexDateFilterMessage> complexDateFilters,
+  );
+
+  Future<void> setPanoramasPaddings(CameraSetPaddingMessage message);
+
+  Future<void> moveCameraToSelectedPanorama();
+
+  Future<void> setPanoramaMarkerAzimuth(MarkerAzimuthMessage message);
+
+  Future<void> showLastSearchMarker();
+
+  Future<void> showEsriIOLayer(AddLayerPointObjectsMessage message);
+
+  Future<void> removeEsriIOLayer();
+
+  Future<void> onCompassClicked();
+
+  Future<void> startFreeRoam();
+
+  Future<void> stopFreeRoam();
+
+  Future<void> toggleSound();
+
+  Future<void> onTrafficAndParkingAttached();
+
+  Future<void> onTrafficAndParkingDetached();
+
+  Future<void> onParkingClicked();
+
+  Future<void> onTrafficClicked();
+
+  Future<void> setPublicTransportActiveRoute(int routeIndex);
+}

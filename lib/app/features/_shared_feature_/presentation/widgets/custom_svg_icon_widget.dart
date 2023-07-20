@@ -1,0 +1,252 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart' show SvgPicture;
+
+import '../../../../core/dependency_injection/injection_container.dart';
+import '../../../../core/utils/common_functions.dart';
+import '../../../../core/utils/constants/app_colors.dart';
+import '../../../entry_point/presentation/cubit/auth_cubit.dart';
+
+class CustomSvgIconWidget extends StatelessWidget {
+  final String iconPath;
+  final double? iconSize;
+  final double? iconWidth;
+  final double? iconHeight;
+  final Color? iconColor;
+  final AlignmentGeometry? iconAlignment;
+  final BoxFit? iconFit;
+
+  const CustomSvgIconWidget(
+    this.iconPath, {
+    super.key,
+    this.iconSize,
+    this.iconWidth,
+    this.iconHeight,
+    this.iconColor,
+    this.iconAlignment,
+    this.iconFit,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return SvgPicture.asset(
+      iconPath,
+      color: iconColor,
+      width: iconWidth ?? iconSize,
+      height: iconHeight ?? iconSize,
+      alignment: iconAlignment ?? Alignment.center,
+      fit: iconFit ?? BoxFit.contain,
+    );
+  }
+}
+
+class CustomNetworkImageWidget extends StatefulWidget {
+  final String imagePath;
+  final double? imageWidth;
+  final double? imageHeight;
+  final Color? imageColor;
+  final Alignment imageAlignment;
+  final BoxFit imageFit;
+  final Widget? placeHolderWidget;
+  final bool ssoAuth;
+
+  const CustomNetworkImageWidget(this.imagePath,
+      {Key? key,
+      this.imageWidth,
+      this.imageHeight,
+      this.imageColor,
+      this.imageAlignment = Alignment.center,
+      this.imageFit = BoxFit.cover,
+      this.placeHolderWidget,
+      this.ssoAuth = false})
+      : super(key: key);
+
+  @override
+  State<CustomNetworkImageWidget> createState() =>
+      _CustomNetworkImageWidgetState();
+}
+
+class _CustomNetworkImageWidgetState extends State<CustomNetworkImageWidget> {
+  @override
+  Widget build(BuildContext context) {
+    bool isSvgIcon = widget.imagePath.contains(".svg");
+    bool isUrl = widget.imagePath.startsWith("http");
+    return isUrl
+        ? isSvgIcon
+            ? SvgPicture.network(
+                widget.imagePath,
+                width: widget.imageWidth,
+                height: widget.imageHeight,
+                fit: widget.imageFit,
+                placeholderBuilder: (BuildContext context) {
+                  return widget.placeHolderWidget ??
+                      Container(
+                        color: AppColor.darkTurquoise,
+                        width: widget.imageWidth,
+                        height: widget.imageHeight,
+                      );
+                },
+              )
+            : Image.network(
+                widget.imagePath,
+                width: widget.imageWidth,
+                height: widget.imageHeight,
+                fit: widget.imageFit,
+                headers: widget.ssoAuth
+                    ? //null
+                    {
+                        "verifyingKEY":
+                            CommonFunctions.hashRequest(widget.imagePath, "GET")
+
+                        //  "Authorization":
+                        //      "Bearer ${locator<AuthService>().accessToken}"
+                      }
+                    : !widget.ssoAuth //MM
+                        ? {
+                            'Authorization':
+                                'Bearer ${sl<EntryPointCubit>().state.apigeeToken?.accessToken}'
+                          }
+                        : null,
+                loadingBuilder: (BuildContext context, Widget child,
+                    ImageChunkEvent? loadingProgress) {
+                  if (loadingProgress == null) return child;
+                  return widget.placeHolderWidget ??
+                      Container(
+                        color: AppColor.darkTurquoise,
+                        width: widget.imageWidth,
+                        height: widget.imageHeight,
+                      );
+                },
+                errorBuilder: (BuildContext context, Object exception,
+                    StackTrace? stackTrace) {
+                  print(exception.toString());
+                  return widget.placeHolderWidget ??
+                      Container(
+                        color: AppColor.darkTurquoise,
+                        width: widget.imageWidth,
+                        height: widget.imageHeight,
+                      );
+                },
+              )
+        : widget.placeHolderWidget ??
+            Container(
+              color: AppColor.darkTurquoise,
+              width: widget.imageWidth,
+              height: widget.imageHeight,
+            );
+  }
+}
+
+class CustomCachedNetworkImage extends StatefulWidget {
+  final String imagePath;
+  final double? imageWidth;
+  final double? imageHeight;
+  final Color? imageColor;
+  final Alignment imageAlignment;
+  final BoxFit imageFit;
+  final Widget? placeHolderWidget;
+  final bool ssoAuth;
+
+  const CustomCachedNetworkImage(this.imagePath,
+      {Key? key,
+      this.imageWidth,
+      this.imageHeight,
+      this.imageColor,
+      this.imageAlignment = Alignment.center,
+      this.imageFit = BoxFit.cover,
+      this.placeHolderWidget,
+      this.ssoAuth = false})
+      : super(key: key);
+
+  @override
+  State<CustomCachedNetworkImage> createState() => _CustomCachedNetworkImage();
+}
+
+class _CustomCachedNetworkImage extends State<CustomCachedNetworkImage> {
+  @override
+  Widget build(BuildContext context) {
+    bool isUrl = widget.imagePath.startsWith("http");
+    return isUrl
+        ? CachedNetworkImage(
+            imageUrl: widget.imagePath,
+            httpHeaders: {
+              "verifyingKEY":
+                  CommonFunctions.hashRequest(widget.imagePath, "GET")
+            },
+            width: widget.imageWidth,
+            height: widget.imageHeight,
+            fit: widget.imageFit,
+            placeholder: (context, url) {
+              return widget.placeHolderWidget ??
+                  Container(
+                    color: AppColor.darkTurquoise,
+                    width: widget.imageWidth,
+                    height: widget.imageHeight,
+                  );
+            },
+            errorWidget: (context, url, error) {
+              print(error);
+              print(CommonFunctions.hashRequest(widget.imagePath, "GET"));
+              return widget.placeHolderWidget ??
+                  Container(
+                    color: AppColor.darkTurquoise,
+                    width: widget.imageWidth,
+                    height: widget.imageHeight,
+                  );
+            })
+        : widget.placeHolderWidget ??
+            Container(
+              color: AppColor.darkTurquoise,
+              width: widget.imageWidth,
+              height: widget.imageHeight,
+            );
+  }
+}
+
+class CustomSvgIconWithBackgroundWidget extends StatelessWidget {
+  final String iconPath;
+  final double iconWidth;
+  final double iconHeight;
+  final Color? iconColor;
+  final Alignment iconAlignment;
+  final BoxFit iconFit;
+  final double width;
+  final double height;
+  final Color? backgroundColor;
+  final BoxShape backgroundShape;
+
+  const CustomSvgIconWithBackgroundWidget(
+    this.iconPath, {
+    Key? key,
+    this.iconWidth = 16,
+    this.iconHeight = 16,
+    this.iconColor,
+    this.iconAlignment = Alignment.center,
+    this.iconFit = BoxFit.none,
+    this.backgroundColor,
+    this.width = 60.0,
+    this.height = 60.0,
+    this.backgroundShape = BoxShape.circle,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: width,
+      height: height,
+      decoration: BoxDecoration(
+        shape: backgroundShape,
+        // color: backgroundColor ?? AppColors.black200.withOpacity(0.3),
+        color: backgroundColor ?? AppColor.white6,
+      ),
+      child: SvgPicture.asset(
+        iconPath,
+        color: iconColor,
+        width: iconWidth,
+        height: iconHeight,
+        alignment: iconAlignment,
+        fit: iconFit,
+      ),
+    );
+  }
+}
