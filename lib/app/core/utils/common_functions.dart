@@ -168,9 +168,9 @@ class CommonFunctions {
   static Dio getDio({required String baseUrl}) {
     Dio dio = Dio();
     dio.options.baseUrl = baseUrl;
-    dio.options.connectTimeout = 60000;
-    dio.options.receiveTimeout = 60000;
-    dio.options.sendTimeout = 60000;
+    dio.options.connectTimeout = const Duration(milliseconds: 60000);
+    dio.options.receiveTimeout = const Duration(milliseconds: 60000);
+    dio.options.sendTimeout = const Duration(milliseconds: 60000);
     dio.options.headers = {};
     dio.interceptors.add(AppInterceptors());
     return dio;

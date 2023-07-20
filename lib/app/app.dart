@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/features/map_page/presentation/mvvm/map_view_model.dart';
 import 'package:bot_toast/bot_toast.dart'
     show BotToastInit, BotToastNavigatorObserver;
 import 'package:country_picker/country_picker.dart' show CountryLocalizations;
@@ -15,34 +16,43 @@ import './core/dependency_injection/dependency_injection_exports.dart' show sl;
 import 'features/bottom_navigation/presentation/pages/bottom_navigation_page.dart';
 import 'features/entry_point/presentation/cubit/auth_cubit.dart';
 
+import 'package:provider/provider.dart';
+
 class App extends StatelessWidget {
   const App({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<EntryPointCubit>.value(
-      value: sl<EntryPointCubit>()..onLoadingApp(),
-      child: MaterialApp(
-        title: 'appNameWord'.tr(),
-        debugShowCheckedModeBanner: false,
-        navigatorKey: NavigationService.navigatorKey,
-        theme: ThemeData(
-          primaryColor: AppColor.blue,
-          scaffoldBackgroundColor: AppColor.scaffoldBackground,
-          fontFamily: AppConfig.appFontType,
-          appBarTheme: const AppBarTheme(backgroundColor: AppColor.blue),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (BuildContext context) => MapViewModel(),
         ),
-        builder: EasyLoading.init(builder: BotToastInit()),
-        navigatorObservers: [BotToastNavigatorObserver()],
-        localizationsDelegates: translator.delegates.toList()
-          ..add(CountryLocalizations.delegate), // Android + iOS Delegates
-        locale: translator.activeLocale, // Active locale
-        supportedLocales: translator.locals(), // Locals list
-        initialRoute: RouteName.splash,
-        onGenerateRoute: AppRouter.allRoutes,
-        routes: {
-          RouteName.bottomNavigation: (context) => const BottomNavigationPage(),
-        },
+      ],
+      child: BlocProvider<EntryPointCubit>.value(
+        value: sl<EntryPointCubit>()..onLoadingApp(),
+        child: MaterialApp(
+          title: 'appNameWord'.tr(),
+          debugShowCheckedModeBanner: false,
+          navigatorKey: NavigationService.navigatorKey,
+          theme: ThemeData(
+            primaryColor: AppColor.blue,
+            scaffoldBackgroundColor: AppColor.scaffoldBackground,
+            fontFamily: AppConfig.appFontType,
+            appBarTheme: const AppBarTheme(backgroundColor: AppColor.blue),
+          ),
+          builder: EasyLoading.init(builder: BotToastInit()),
+          navigatorObservers: [BotToastNavigatorObserver()],
+          localizationsDelegates: translator.delegates.toList()
+            ..add(CountryLocalizations.delegate), // Android + iOS Delegates
+          locale: translator.activeLocale, // Active locale
+          supportedLocales: translator.locals(), // Locals list
+          initialRoute: RouteName.splash,
+          onGenerateRoute: AppRouter.allRoutes,
+          routes: {
+            RouteName.bottomNavigation: (context) => const BottomNavigationPage(),
+          },
+        ),
       ),
     );
   }

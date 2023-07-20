@@ -45,6 +45,16 @@ class ObjectTapHandler(
     private val ioLayerMarkers = mutableListOf<Marker>();
 
     fun objectTapListener(roi: RenderedObjectInfo) {
+//        when (val tappedObject = roi.item.item) {
+//            is Marker -> {
+//                onMarkerTap(tappedObject)
+//                return
+//            }
+//            is DgisMapObject -> {
+//                return
+//            }
+//            else -> eventSink.error("ClassCastException", "tapped object class is not supported", null)
+//        }
         when (val tappedObject = roi.item.item) {
             is Marker -> {
                 onMarkerTap(tappedObject)

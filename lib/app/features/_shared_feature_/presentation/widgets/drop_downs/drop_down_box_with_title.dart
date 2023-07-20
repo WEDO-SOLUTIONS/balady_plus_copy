@@ -74,10 +74,8 @@ class DropDownWithTitle extends StatelessWidget {
                     if (showArrow)
                       SvgPicture.asset(
                         IconPath.arrowDown,
-                        colorFilter: const ColorFilter.mode(
-                          AppColor.blackModern600Light,
-                          BlendMode.srcIn,
-                        ),
+                         color: AppColor.blackModern600Light,
+                        colorBlendMode: BlendMode.srcIn,
                       ),
                   ],
                 ),

@@ -42,7 +42,7 @@ class DgisMapPlugin : FlutterPlugin, ActivityAware {
         return DGis.initialize(
             appContext,
             logOptions = LogOptions(
-                customLevel = LogLevel.WARNING,
+                customLevel = LogLevel.VERBOSE,
                 customSink = null
             )
         )

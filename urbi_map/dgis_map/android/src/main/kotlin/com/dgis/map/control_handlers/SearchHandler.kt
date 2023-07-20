@@ -43,7 +43,7 @@ class SearchHandler(
     }
 
     private val searchMarkerIcon by unsafeLazy {
-        imageFromResource(sdkContext, R.drawable.ic_marker_search)
+        imageFromResource(sdkContext, R.drawable.ic_marker)
     }
 
     override fun close() {
@@ -257,7 +257,13 @@ class SearchHandler(
                 lastQuery = query
                 result?.success(handleSearchResponse(response.firstPage))
             }
-            onError { result?.error(it) }
+            onError { error ->
+                val tympError = error
+                println("this this this"+error)
+                println(error)
+                println(error)
+//                result?.error(error)
+            }
         }
     }
 
