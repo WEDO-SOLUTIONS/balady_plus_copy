@@ -78,20 +78,25 @@ class SearchMapWidget extends StatelessWidget {
                       padding: EdgeInsets.zero,
                       itemBuilder: (context, index) {
                         final SubLayers layer = subLayers[index];
-                          return Container(
+                          return  Container(
                                 margin: const EdgeInsetsDirectional.only(
                                   start: 8,
                                   bottom: 8,
                                 ),
                                 child: InkWell(
                                   onTap: () {
-                                    mapViewModel.performSearch(
-                                        queryText: layer.name);
+                                    mapViewModel.performSearch(queryText: layer.name);
+                                    mapViewModel.subLayerSelected.value = layer;
                                   },
-                                  child: HomeTag(
-                                    title: layer.name,
-                                    color: Colors.deepPurple.shade700,
-                                    selected: layer.name == mapViewModel.searchController.text,
+                                  child: ValueListenableBuilder<SubLayers?>(
+                                    valueListenable: mapViewModel.subLayerSelected,
+                                    builder: (_, subLayerSelected, __) {
+                                      return HomeTag(
+                                        title: layer.name,
+                                        color: Colors.deepPurple.shade700,
+                                        selected: layer == subLayerSelected,
+                                      );
+                                    },
                                   ),
                                 ),
                               );

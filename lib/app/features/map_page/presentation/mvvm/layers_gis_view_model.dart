@@ -17,6 +17,8 @@ class LayersGisViewModel extends BaseViewModel {
 
   List<SubLayers>? subLayers;
 
+
+
   LayersGisViewModel({required this.webService}) {
     getMinLayers();
   }
@@ -34,7 +36,7 @@ class LayersGisViewModel extends BaseViewModel {
       notifyListeners();
       if (layersType.data != null) {
         layers = layersFromJson(layersType.data['data']['result']['layers']);
-        selectedLayers.value = layers!.first;
+        selectedLayers.value = layers![1];
         await getSubLayers(selectedLayers.value!.id);
       }
       notifyListeners();
