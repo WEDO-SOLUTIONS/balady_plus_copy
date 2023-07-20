@@ -24,8 +24,7 @@ class HomeMap extends StatelessWidget {
       children: [
         const MapScreenUrbi(),
         Padding(
-          padding:
-          const EdgeInsets.all(Constants.semiMediumPadding),
+          padding: const EdgeInsets.all(Constants.semiMediumPadding),
           child: Column(
             children: [
               const HomeAppBar(),
@@ -35,13 +34,12 @@ class HomeMap extends StatelessWidget {
                 builder: (_, visible, __) {
                   return visible
                       ? const Align(
-                    alignment:
-                    AlignmentDirectional.centerStart,
-                    child: CircleIcon(
-                      icon: IconPath.search,
-                      iconColor: AppColor.black,
-                    ),
-                  )
+                          alignment: AlignmentDirectional.centerStart,
+                          child: CircleIcon(
+                            icon: IconPath.search,
+                            iconColor: AppColor.black,
+                          ),
+                        )
                       : const SearchMapWidget();
                 },
               ),
@@ -51,8 +49,7 @@ class HomeMap extends StatelessWidget {
         Align(
           alignment: Alignment.bottomLeft,
           child: Padding(
-            padding:
-            const EdgeInsets.all(Constants.semiMediumPadding),
+            padding: const EdgeInsets.all(Constants.semiMediumPadding),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.end,
@@ -75,12 +72,11 @@ class HomeMap extends StatelessWidget {
                     return selectedPoint == null
                         ? const SizedBox()
                         : MarkerMapWidget(
-                      pointViewModel: PointViewModel(
-                        controller: mapViewModel.controller,
-                        point: selectedPoint,
-                        webService: sl()
-                      ),
-                    );
+                            pointViewModel: PointViewModel(
+                                controller: mapViewModel.controller,
+                                point: selectedPoint,
+                                webService: sl()),
+                          );
                   },
                 ),
               ],
