@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:balady_plus/app/core/base/base_view_model.dart';
 import 'package:balady_plus/app/core/utils/common_functions.dart';
+import 'package:balady_plus/app/features/map_page/data/model/layers.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/foundation.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -13,11 +14,16 @@ import 'package:flutter/widgets.dart';
 const int mil = 300;
 
 class MapViewModel extends BaseViewModel {
+
+
   MapViewModel(// required this.authService,
       // required this.setLocale,
       );
 
   TextEditingController searchController = TextEditingController();
+  final subLayerSelected = ValueNotifier<SubLayers?>(null);
+
+
 
   Future<void> performSearch({required String queryText}) async {
     try {
