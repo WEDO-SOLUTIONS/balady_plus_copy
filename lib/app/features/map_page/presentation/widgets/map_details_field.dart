@@ -12,21 +12,23 @@ class MapDetailsField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(12),
+      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+      padding: EdgeInsets.all(16),
+      width: double.infinity,
       decoration: ShapeDecoration(
         color: Colors.white,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
         ),
       ),
-      child: Column(children: [
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         CustomTextWidget(
           title,
           fontSize: 15,
           fontWeight: AppFontWeight.bold,
           fontColor: AppColor.blackModern600Light,
         ),
-        const CustomVerticalSpace(height: 4),
+        const CustomVerticalSpace(height: 8),
         CustomTextWidget(
           subTitle,
           fontSize: 14,

@@ -1,11 +1,19 @@
+import 'package:balady_plus/app/features/map_page/presentation/dialogs/map_layer_dialog.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
+import '../../../_shared_feature_/presentation/buttons/elevated_button_widgets.dart';
+import '../../../_shared_feature_/presentation/components/bottom_sheets/bottom_sheet_with_actions.dart';
+import '../../data/model/layers.dart';
 
 import 'package:provider/provider.dart';
 
 import '../../../../core/dependency_injection/injection_container.dart';
 import '../../../../core/utils/constants/constants.dart';
 import '../../../../core/utils/utils_exports.dart' show AppColor, IconPath;
+import '../../../_shared_feature_/presentation/components/bottom_sheets/bottom_sheet_list.dart';
+import '../../../_shared_feature_/presentation/dialogs/bottom_sheet_dialogs.dart';
+import '../mvvm/layers_gis_view_model.dart';
 import '../mvvm/map_view_model.dart';
 import '../mvvm/point_view_model.dart';
 import '../widgets/marker_card_widget.dart';
@@ -60,10 +68,15 @@ class HomeMap extends StatelessWidget {
                   backgroundColor: AppColor.primary900Light,
                 ),
                 Constants.verticalSpaceSmall,
-                const CircleIcon(
-                  icon: IconPath.layers,
-                  iconColor: AppColor.white,
-                  backgroundColor: AppColor.primary900Light,
+                GestureDetector(
+                  onTap: () {
+                    showMainLayersDialog(context);
+                  },
+                  child: const CircleIcon(
+                    icon: IconPath.layers,
+                    iconColor: AppColor.white,
+                    backgroundColor: AppColor.primary900Light,
+                  ),
                 ),
                 Constants.verticalSpaceSmall,
                 ValueListenableBuilder<DgisObjectIdMessage?>(
@@ -84,6 +97,27 @@ class HomeMap extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+
+  void showMainLayersDialog(BuildContext context) async {
+    LayersGisViewModel? model =
+        Provider.of<LayersGisViewModel?>(context, listen: false);
+    print("Modeeel ${model?.layers}");
+    if (model?.layers == null) {
+      await model?.getMinLayers();
+    }
+    BottomSheetDialog.showDraggableSheet(
+      context,
+      child: BottomSheetWithActions(
+        title: "اختر نوع الخريطة".tr(),
+        body: MapLayersDialog(
+            onSelect: (Layers layer) {
+              model?.getSubLayers(layer.id);
+              Navigator.pop(context);
+            },
+            mainLayers: model?.layers ?? []),
+      ),
     );
   }
 }

@@ -176,5 +176,5 @@ class IconPath {
 
   static const qrStarIcon = '${_pngQRIconPath}greyStar$_png';
 
-  static const buildingIcon = '${_pngQRIconPath}building$_png';
+  static const buildingIcon = '${_svgIconPath}building$_svg';
 }

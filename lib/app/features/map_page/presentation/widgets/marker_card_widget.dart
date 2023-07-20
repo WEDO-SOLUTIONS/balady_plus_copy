@@ -1,3 +1,7 @@
+import 'package:balady_plus/app/core/services/services_exports.dart';
+import 'package:balady_plus/app/core/utils/constants/route_names.dart';
+import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
+import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import 'package:balady_plus/app/features/map_page/presentation/mvvm/search_map_view_model.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
@@ -16,63 +20,84 @@ class MarkerMapWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            flex: 3,
-            child: Padding(
-              padding: const EdgeInsets.all(6.0),
-              child: Image.network(
-                'https://1000logos.net/wp-content/uploads/2020/10/Costa-Coffee-Logo.png',
+    return GestureDetector(
+      onTap: () {
+        Navigator.of(context)
+            .pushNamed(RouteName.MapDetailsPage, arguments: pointViewModel);
+      },
+      child: Card(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Row(
+          children: [
+            Expanded(
+              flex: 3,
+              child: Padding(
+                padding: const EdgeInsets.all(6.0),
+                child: Image.network(
+                  'https://1000logos.net/wp-content/uploads/2020/10/Costa-Coffee-Logo.png',
+                ),
               ),
             ),
-          ),
-          const SizedBox(width: 6),
-          Expanded(
-            flex: 6,
-            child: ValueListenableBuilder<ObjectInfoMessage?>(
-              valueListenable: pointViewModel.dataPoint,
-              builder: (_, dataPoint, __) {
-                return dataPoint == null
-                    ? const SizedBox()
-                    : Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            dataPoint.title,
-                            style: AppStyle.mainTextStyle,
-                          ),
-                          const SizedBox(height: 6),
-                          Text(
-                            dataPoint.address?.drilldownString ?? 'Address',
-                            style: AppStyle.serviceDescriptionStyle,
-                          ),
-                          const SizedBox(height: 6),
-                          Row(
-                            children: [
-                              const Icon(Icons.phone, size: 15),
-                              const SizedBox(width: 6),
-                              Text(
-                                '+9550029202',
-                                style: AppStyle
-                                    .personalInfoParameterTitleTextStyle
-                                    .copyWith(
-                                  fontWeight: FontWeight.bold,
+            const SizedBox(width: 6),
+            Expanded(
+              flex: 6,
+              child: ValueListenableBuilder<ObjectInfoMessage?>(
+                valueListenable: pointViewModel.dataPoint,
+                builder: (_, dataPoint, __) {
+                  return dataPoint == null
+                      ? const SizedBox()
+                      : Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              dataPoint.title,
+                              style: AppStyle.mainTextStyle,
+                            ),
+                            const SizedBox(height: 6),
+                            Text(
+                              dataPoint.address?.drilldownString ?? 'Address',
+                              style: AppStyle.serviceDescriptionStyle,
+                            ),
+                            CustomVerticalSpace(height: 8),
+                            Row(
+                              children: [
+                                CustomTextWidget(
+                                  dataPoint.startString ?? "",
+                                  textStyle: AppStyle.serviceDescriptionStyle,
                                 ),
-                              ),
-                            ],
-                          )
-                        ],
-                      );
-              },
+                                CustomTextWidget(
+                                  dataPoint.workStatus?.isOpen == true
+                                      ? "open".tr()
+                                      : "",
+                                  textStyle: AppStyle.serviceDescriptionStyle,
+                                ),
+                              ],
+                            )
+                            /* const SizedBox(height: 6),
+                            Row(
+                              children: [
+                                const Icon(Icons.phone, size: 15),
+                                const SizedBox(width: 6),
+                                Text(
+                                  '+9550029202',
+                                  style: AppStyle
+                                      .personalInfoParameterTitleTextStyle
+                                      .copyWith(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            )*/
+                          ],
+                        );
+                },
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

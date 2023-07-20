@@ -7,6 +7,7 @@ import 'dart:typed_data' show Float64List, Int32List, Int64List, Uint8List;
 
 import 'package:flutter/foundation.dart' show ReadBuffer, WriteBuffer;
 import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
 
 enum ZoomControlMessage {
   zoomIn,
@@ -331,9 +332,8 @@ class WeekTimeMessage {
   static WeekTimeMessage decode(Object result) {
     result as List<Object?>;
     return WeekTimeMessage(
-      weekDay: result[0] != null
-          ? WeekDayMessage.values[result[0]! as int]
-          : null,
+      weekDay:
+          result[0] != null ? WeekDayMessage.values[result[0]! as int] : null,
       time: result[1] != null
           ? DayTimeMessage.decode(result[1]! as List<Object?>)
           : null,
@@ -408,7 +408,8 @@ class OpeningHoursMessage {
   static OpeningHoursMessage decode(Object result) {
     result as List<Object?>;
     return OpeningHoursMessage(
-      values: (result[0] as List<Object?>?)!.cast<WeekTimeIntervalListMessage?>(),
+      values:
+          (result[0] as List<Object?>?)!.cast<WeekTimeIntervalListMessage?>(),
       isOpen24x7: result[1]! as bool,
     );
   }
@@ -516,6 +517,31 @@ class ObjectInfoMessage {
       type: ObjectTypeMessage.values[result[9]! as int],
     );
   }
+
+  final today = DateTime.now().weekday - 1;
+  get todayInfo => openingHours?.values[today];
+  get startTime => todayInfo?.values.firstOrNull?.startTime.time;
+  get finishTime => todayInfo?.values.firstOrNull?.finishTime.time;
+
+  String? startString;
+  String? finishString;
+  final now = DateTime.now();
+
+  get start {
+    startTime != null
+        ? DateTime(
+            now.year, now.month, now.day, startTime.hours, startTime.minutes)
+        : null;
+    startString = DateFormat.Hm().format(start);
+  }
+
+  get finish {
+    finishTime != null
+        ? DateTime(
+            now.year, now.month, now.day, finishTime.hours, finishTime.minutes)
+        : null;
+    finishString = DateFormat.Hm().format(finish);
+  }
 }
 
 class WeekTimeSearchMessage {
@@ -542,9 +568,8 @@ class WeekTimeSearchMessage {
   static WeekTimeSearchMessage decode(Object result) {
     result as List<Object?>;
     return WeekTimeSearchMessage(
-      weekDay: result[0] != null
-          ? WeekDayMessage.values[result[0]! as int]
-          : null,
+      weekDay:
+          result[0] != null ? WeekDayMessage.values[result[0]! as int] : null,
       time: result[1] != null
           ? DayTimeMessage.decode(result[1]! as List<Object?>)
           : null,
@@ -820,7 +845,8 @@ class LayerPointObjectMessage {
     result as List<Object?>;
     return LayerPointObjectMessage(
       position: GeoPointMessage.decode(result[0]! as List<Object?>),
-      attributes: (result[1] as Map<Object?, Object?>?)!.cast<String?, String?>(),
+      attributes:
+          (result[1] as Map<Object?, Object?>?)!.cast<String?, String?>(),
     );
   }
 }
@@ -1237,79 +1263,79 @@ class _MapApiCodec extends StandardMessageCodec {
   @override
   Object? readValueOfType(int type, ReadBuffer buffer) {
     switch (type) {
-      case 128: 
+      case 128:
         return AddLayerPointObjectsMessage.decode(readValue(buffer)!);
-      case 129: 
+      case 129:
         return AddMarkersWithPhotoMessage.decode(readValue(buffer)!);
-      case 130: 
+      case 130:
         return AddressMessage.decode(readValue(buffer)!);
-      case 131: 
+      case 131:
         return AdmDivMessage.decode(readValue(buffer)!);
-      case 132: 
+      case 132:
         return CameraPositionMessage.decode(readValue(buffer)!);
-      case 133: 
+      case 133:
         return CameraSetPaddingMessage.decode(readValue(buffer)!);
-      case 134: 
+      case 134:
         return DayTimeMessage.decode(readValue(buffer)!);
-      case 135: 
+      case 135:
         return DgisObjectIdMessage.decode(readValue(buffer)!);
-      case 136: 
+      case 136:
         return DistanceRequestMessage.decode(readValue(buffer)!);
-      case 137: 
+      case 137:
         return DistanceResponseMessage.decode(readValue(buffer)!);
-      case 138: 
+      case 138:
         return EGComplexDateFilterMessage.decode(readValue(buffer)!);
-      case 139: 
+      case 139:
         return EGDateRangeFilterMessage.decode(readValue(buffer)!);
-      case 140: 
+      case 140:
         return EGDoubleFilterMessage.decode(readValue(buffer)!);
-      case 141: 
+      case 141:
         return EGIntFilterMessage.decode(readValue(buffer)!);
-      case 142: 
+      case 142:
         return EGStringFilterMessage.decode(readValue(buffer)!);
-      case 143: 
+      case 143:
         return EverGisLayerMessage.decode(readValue(buffer)!);
-      case 144: 
+      case 144:
         return FlagFilterMessage.decode(readValue(buffer)!);
-      case 145: 
+      case 145:
         return GeoPointMessage.decode(readValue(buffer)!);
-      case 146: 
+      case 146:
         return InitializeMessage.decode(readValue(buffer)!);
-      case 147: 
+      case 147:
         return LayerPointObjectMessage.decode(readValue(buffer)!);
-      case 148: 
+      case 148:
         return MarkerAzimuthMessage.decode(readValue(buffer)!);
-      case 149: 
+      case 149:
         return MarkerOptionsMessage.decode(readValue(buffer)!);
-      case 150: 
+      case 150:
         return MarkerPositionMessage.decode(readValue(buffer)!);
-      case 151: 
+      case 151:
         return MarkerPositionMessage.decode(readValue(buffer)!);
-      case 152: 
+      case 152:
         return MarkerWithPhotoMessage.decode(readValue(buffer)!);
-      case 153: 
+      case 153:
         return ObjectInfoMessage.decode(readValue(buffer)!);
-      case 154: 
+      case 154:
         return ObjectInfoMessage.decode(readValue(buffer)!);
-      case 155: 
+      case 155:
         return OpeningHoursMessage.decode(readValue(buffer)!);
-      case 156: 
+      case 156:
         return ReviewsMessage.decode(readValue(buffer)!);
-      case 157: 
+      case 157:
         return RouteEditorRouteParamsMessage.decode(readValue(buffer)!);
-      case 158: 
+      case 158:
         return SuggestMessage.decode(readValue(buffer)!);
-      case 159: 
+      case 159:
         return VisibleRectMessage.decode(readValue(buffer)!);
-      case 160: 
+      case 160:
         return WeekTimeIntervalListMessage.decode(readValue(buffer)!);
-      case 161: 
+      case 161:
         return WeekTimeIntervalMessage.decode(readValue(buffer)!);
-      case 162: 
+      case 162:
         return WeekTimeMessage.decode(readValue(buffer)!);
-      case 163: 
+      case 163:
         return WeekTimeSearchMessage.decode(readValue(buffer)!);
-      case 164: 
+      case 164:
         return WorkStatusMessage.decode(readValue(buffer)!);
       default:
         return super.readValueOfType(type, buffer);
@@ -1331,8 +1357,7 @@ class MapApi {
     final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
         'dev.flutter.pigeon.MapApi.initialize', codec,
         binaryMessenger: _binaryMessenger);
-    final List<Object?>? replyList =
-        await channel.send(null) as List<Object?>?;
+    final List<Object?>? replyList = await channel.send(null) as List<Object?>?;
     if (replyList == null) {
       throw PlatformException(
         code: 'channel-error',
@@ -1402,8 +1427,7 @@ class MapApi {
     final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
         'dev.flutter.pigeon.MapApi.changeFollowState', codec,
         binaryMessenger: _binaryMessenger);
-    final List<Object?>? replyList =
-        await channel.send(null) as List<Object?>?;
+    final List<Object?>? replyList = await channel.send(null) as List<Object?>?;
     if (replyList == null) {
       throw PlatformException(
         code: 'channel-error',
@@ -1486,7 +1510,8 @@ class MapApi {
     }
   }
 
-  Future<void> setCameraPosition(CameraPositionMessage arg_cameraPosition) async {
+  Future<void> setCameraPosition(
+      CameraPositionMessage arg_cameraPosition) async {
     final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
         'dev.flutter.pigeon.MapApi.setCameraPosition', codec,
         binaryMessenger: _binaryMessenger);
@@ -1508,7 +1533,8 @@ class MapApi {
     }
   }
 
-  Future<ObjectInfoMessage> searchByObjectId(DgisObjectIdMessage arg_objectId) async {
+  Future<ObjectInfoMessage> searchByObjectId(
+      DgisObjectIdMessage arg_objectId) async {
     final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
         'dev.flutter.pigeon.MapApi.searchByObjectId', codec,
         binaryMessenger: _binaryMessenger);
@@ -1535,7 +1561,8 @@ class MapApi {
     }
   }
 
-  Future<List<DistanceResponseMessage?>> getDistanceTo(List<DistanceRequestMessage?> arg_points) async {
+  Future<List<DistanceResponseMessage?>> getDistanceTo(
+      List<DistanceRequestMessage?> arg_points) async {
     final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
         'dev.flutter.pigeon.MapApi.getDistanceTo', codec,
         binaryMessenger: _binaryMessenger);
@@ -1562,12 +1589,20 @@ class MapApi {
     }
   }
 
-  Future<List<ObjectInfoMessage?>> search(String arg_queryText, WeekTimeSearchMessage? arg_weekTime, SortingTypeMessage arg_sortingType, int arg_pageSize) async {
+  Future<List<ObjectInfoMessage?>> search(
+      String arg_queryText,
+      WeekTimeSearchMessage? arg_weekTime,
+      SortingTypeMessage arg_sortingType,
+      int arg_pageSize) async {
     final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
         'dev.flutter.pigeon.MapApi.search', codec,
         binaryMessenger: _binaryMessenger);
-    final List<Object?>? replyList =
-        await channel.send(<Object?>[arg_queryText, arg_weekTime, arg_sortingType.index, arg_pageSize]) as List<Object?>?;
+    final List<Object?>? replyList = await channel.send(<Object?>[
+      arg_queryText,
+      arg_weekTime,
+      arg_sortingType.index,
+      arg_pageSize
+    ]) as List<Object?>?;
     if (replyList == null) {
       throw PlatformException(
         code: 'channel-error',
@@ -1593,8 +1628,7 @@ class MapApi {
     final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
         'dev.flutter.pigeon.MapApi.getNextPage', codec,
         binaryMessenger: _binaryMessenger);
-    final List<Object?>? replyList =
-        await channel.send(null) as List<Object?>?;
+    final List<Object?>? replyList = await channel.send(null) as List<Object?>?;
     if (replyList == null) {
       throw PlatformException(
         code: 'channel-error',
@@ -1659,8 +1693,7 @@ class MapApi {
     final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
         'dev.flutter.pigeon.MapApi.removeAllMarkers', codec,
         binaryMessenger: _binaryMessenger);
-    final List<Object?>? replyList =
-        await channel.send(null) as List<Object?>?;
+    final List<Object?>? replyList = await channel.send(null) as List<Object?>?;
     if (replyList == null) {
       throw PlatformException(
         code: 'channel-error',
@@ -1681,8 +1714,7 @@ class MapApi {
     final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
         'dev.flutter.pigeon.MapApi.removeSearchMarkers', codec,
         binaryMessenger: _binaryMessenger);
-    final List<Object?>? replyList =
-        await channel.send(null) as List<Object?>?;
+    final List<Object?>? replyList = await channel.send(null) as List<Object?>?;
     if (replyList == null) {
       throw PlatformException(
         code: 'channel-error',
@@ -1725,8 +1757,7 @@ class MapApi {
     final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
         'dev.flutter.pigeon.MapApi.getLayers', codec,
         binaryMessenger: _binaryMessenger);
-    final List<Object?>? replyList =
-        await channel.send(null) as List<Object?>?;
+    final List<Object?>? replyList = await channel.send(null) as List<Object?>?;
     if (replyList == null) {
       throw PlatformException(
         code: 'channel-error',
@@ -1824,12 +1855,20 @@ class MapApi {
     }
   }
 
-  Future<List<ObjectInfoMessage?>> searchBySuggest(int arg_index, WeekTimeSearchMessage? arg_weekTime, SortingTypeMessage arg_sortingType, int arg_pageSize) async {
+  Future<List<ObjectInfoMessage?>> searchBySuggest(
+      int arg_index,
+      WeekTimeSearchMessage? arg_weekTime,
+      SortingTypeMessage arg_sortingType,
+      int arg_pageSize) async {
     final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
         'dev.flutter.pigeon.MapApi.searchBySuggest', codec,
         binaryMessenger: _binaryMessenger);
-    final List<Object?>? replyList =
-        await channel.send(<Object?>[arg_index, arg_weekTime, arg_sortingType.index, arg_pageSize]) as List<Object?>?;
+    final List<Object?>? replyList = await channel.send(<Object?>[
+      arg_index,
+      arg_weekTime,
+      arg_sortingType.index,
+      arg_pageSize
+    ]) as List<Object?>?;
     if (replyList == null) {
       throw PlatformException(
         code: 'channel-error',
@@ -1855,8 +1894,7 @@ class MapApi {
     final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
         'dev.flutter.pigeon.MapApi.showLastSearchMarker', codec,
         binaryMessenger: _binaryMessenger);
-    final List<Object?>? replyList =
-        await channel.send(null) as List<Object?>?;
+    final List<Object?>? replyList = await channel.send(null) as List<Object?>?;
     if (replyList == null) {
       throw PlatformException(
         code: 'channel-error',
@@ -1873,12 +1911,13 @@ class MapApi {
     }
   }
 
-  Future<void> onLocationPremissionGranted(DesiredAccuracyMessage arg_desiredAccuracy) async {
+  Future<void> onLocationPremissionGranted(
+      DesiredAccuracyMessage arg_desiredAccuracy) async {
     final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
         'dev.flutter.pigeon.MapApi.onLocationPremissionGranted', codec,
         binaryMessenger: _binaryMessenger);
-    final List<Object?>? replyList =
-        await channel.send(<Object?>[arg_desiredAccuracy.index]) as List<Object?>?;
+    final List<Object?>? replyList = await channel
+        .send(<Object?>[arg_desiredAccuracy.index]) as List<Object?>?;
     if (replyList == null) {
       throw PlatformException(
         code: 'channel-error',
@@ -1895,7 +1934,8 @@ class MapApi {
     }
   }
 
-  Future<void> addPanoramasMarkers(AddMarkersWithPhotoMessage arg_message) async {
+  Future<void> addPanoramasMarkers(
+      AddMarkersWithPhotoMessage arg_message) async {
     final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
         'dev.flutter.pigeon.MapApi.addPanoramasMarkers', codec,
         binaryMessenger: _binaryMessenger);
@@ -1921,8 +1961,7 @@ class MapApi {
     final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
         'dev.flutter.pigeon.MapApi.hidePanoramasMarkers', codec,
         binaryMessenger: _binaryMessenger);
-    final List<Object?>? replyList =
-        await channel.send(null) as List<Object?>?;
+    final List<Object?>? replyList = await channel.send(null) as List<Object?>?;
     if (replyList == null) {
       throw PlatformException(
         code: 'channel-error',
@@ -1943,8 +1982,7 @@ class MapApi {
     final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
         'dev.flutter.pigeon.MapApi.showPanoramasMarkers', codec,
         binaryMessenger: _binaryMessenger);
-    final List<Object?>? replyList =
-        await channel.send(null) as List<Object?>?;
+    final List<Object?>? replyList = await channel.send(null) as List<Object?>?;
     if (replyList == null) {
       throw PlatformException(
         code: 'channel-error',
@@ -1965,8 +2003,7 @@ class MapApi {
     final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
         'dev.flutter.pigeon.MapApi.removePanoramasMarkers', codec,
         binaryMessenger: _binaryMessenger);
-    final List<Object?>? replyList =
-        await channel.send(null) as List<Object?>?;
+    final List<Object?>? replyList = await channel.send(null) as List<Object?>?;
     if (replyList == null) {
       throw PlatformException(
         code: 'channel-error',
@@ -2009,8 +2046,7 @@ class MapApi {
     final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
         'dev.flutter.pigeon.MapApi.removeEsriIOLayer', codec,
         binaryMessenger: _binaryMessenger);
-    final List<Object?>? replyList =
-        await channel.send(null) as List<Object?>?;
+    final List<Object?>? replyList = await channel.send(null) as List<Object?>?;
     if (replyList == null) {
       throw PlatformException(
         code: 'channel-error',
@@ -2053,8 +2089,7 @@ class MapApi {
     final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
         'dev.flutter.pigeon.MapApi.moveCameraToSelectedPanorama', codec,
         binaryMessenger: _binaryMessenger);
-    final List<Object?>? replyList =
-        await channel.send(null) as List<Object?>?;
+    final List<Object?>? replyList = await channel.send(null) as List<Object?>?;
     if (replyList == null) {
       throw PlatformException(
         code: 'channel-error',
@@ -2075,8 +2110,7 @@ class MapApi {
     final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
         'dev.flutter.pigeon.MapApi.unselectPanorama', codec,
         binaryMessenger: _binaryMessenger);
-    final List<Object?>? replyList =
-        await channel.send(null) as List<Object?>?;
+    final List<Object?>? replyList = await channel.send(null) as List<Object?>?;
     if (replyList == null) {
       throw PlatformException(
         code: 'channel-error',
@@ -2093,12 +2127,13 @@ class MapApi {
     }
   }
 
-  Future<int> overlappedBy(VisibleRectMessage arg_outerRect, VisibleRectMessage arg_innerRect) async {
+  Future<int> overlappedBy(VisibleRectMessage arg_outerRect,
+      VisibleRectMessage arg_innerRect) async {
     final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
         'dev.flutter.pigeon.MapApi.overlappedBy', codec,
         binaryMessenger: _binaryMessenger);
-    final List<Object?>? replyList =
-        await channel.send(<Object?>[arg_outerRect, arg_innerRect]) as List<Object?>?;
+    final List<Object?>? replyList = await channel
+        .send(<Object?>[arg_outerRect, arg_innerRect]) as List<Object?>?;
     if (replyList == null) {
       throw PlatformException(
         code: 'channel-error',
@@ -2146,8 +2181,7 @@ class MapApi {
     final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
         'dev.flutter.pigeon.MapApi.hideRoutes', codec,
         binaryMessenger: _binaryMessenger);
-    final List<Object?>? replyList =
-        await channel.send(null) as List<Object?>?;
+    final List<Object?>? replyList = await channel.send(null) as List<Object?>?;
     if (replyList == null) {
       throw PlatformException(
         code: 'channel-error',
@@ -2168,8 +2202,7 @@ class MapApi {
     final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
         'dev.flutter.pigeon.MapApi.startNavigation', codec,
         binaryMessenger: _binaryMessenger);
-    final List<Object?>? replyList =
-        await channel.send(null) as List<Object?>?;
+    final List<Object?>? replyList = await channel.send(null) as List<Object?>?;
     if (replyList == null) {
       throw PlatformException(
         code: 'channel-error',
@@ -2190,8 +2223,7 @@ class MapApi {
     final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
         'dev.flutter.pigeon.MapApi.startNavigationSimulation', codec,
         binaryMessenger: _binaryMessenger);
-    final List<Object?>? replyList =
-        await channel.send(null) as List<Object?>?;
+    final List<Object?>? replyList = await channel.send(null) as List<Object?>?;
     if (replyList == null) {
       throw PlatformException(
         code: 'channel-error',
@@ -2212,8 +2244,7 @@ class MapApi {
     final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
         'dev.flutter.pigeon.MapApi.stopNavigation', codec,
         binaryMessenger: _binaryMessenger);
-    final List<Object?>? replyList =
-        await channel.send(null) as List<Object?>?;
+    final List<Object?>? replyList = await channel.send(null) as List<Object?>?;
     if (replyList == null) {
       throw PlatformException(
         code: 'channel-error',
@@ -2230,12 +2261,24 @@ class MapApi {
     }
   }
 
-  Future<void> applyEverGisFilters(String arg_layerAlias, List<EGStringFilterMessage?> arg_stringFilters, List<EGDoubleFilterMessage?> arg_doubleFilters, List<EGIntFilterMessage?> arg_intFilters, List<EGDateRangeFilterMessage?> arg_dateRangeFilters, List<EGComplexDateFilterMessage?> arg_complexDateFilters) async {
+  Future<void> applyEverGisFilters(
+      String arg_layerAlias,
+      List<EGStringFilterMessage?> arg_stringFilters,
+      List<EGDoubleFilterMessage?> arg_doubleFilters,
+      List<EGIntFilterMessage?> arg_intFilters,
+      List<EGDateRangeFilterMessage?> arg_dateRangeFilters,
+      List<EGComplexDateFilterMessage?> arg_complexDateFilters) async {
     final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
         'dev.flutter.pigeon.MapApi.applyEverGisFilters', codec,
         binaryMessenger: _binaryMessenger);
-    final List<Object?>? replyList =
-        await channel.send(<Object?>[arg_layerAlias, arg_stringFilters, arg_doubleFilters, arg_intFilters, arg_dateRangeFilters, arg_complexDateFilters]) as List<Object?>?;
+    final List<Object?>? replyList = await channel.send(<Object?>[
+      arg_layerAlias,
+      arg_stringFilters,
+      arg_doubleFilters,
+      arg_intFilters,
+      arg_dateRangeFilters,
+      arg_complexDateFilters
+    ]) as List<Object?>?;
     if (replyList == null) {
       throw PlatformException(
         code: 'channel-error',
@@ -2256,8 +2299,7 @@ class MapApi {
     final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
         'dev.flutter.pigeon.MapApi.getDirectoryDynamicFilters', codec,
         binaryMessenger: _binaryMessenger);
-    final List<Object?>? replyList =
-        await channel.send(null) as List<Object?>?;
+    final List<Object?>? replyList = await channel.send(null) as List<Object?>?;
     if (replyList == null) {
       throw PlatformException(
         code: 'channel-error',
@@ -2279,12 +2321,18 @@ class MapApi {
     }
   }
 
-  Future<List<ObjectInfoMessage?>> applyDirectoryFilters(List<FlagFilterMessage?> arg_filters, WorkingFilterMessage arg_isOpenFilter, SortingTypeMessage arg_sortingType) async {
+  Future<List<ObjectInfoMessage?>> applyDirectoryFilters(
+      List<FlagFilterMessage?> arg_filters,
+      WorkingFilterMessage arg_isOpenFilter,
+      SortingTypeMessage arg_sortingType) async {
     final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
         'dev.flutter.pigeon.MapApi.applyDirectoryFilters', codec,
         binaryMessenger: _binaryMessenger);
-    final List<Object?>? replyList =
-        await channel.send(<Object?>[arg_filters, arg_isOpenFilter.index, arg_sortingType.index]) as List<Object?>?;
+    final List<Object?>? replyList = await channel.send(<Object?>[
+      arg_filters,
+      arg_isOpenFilter.index,
+      arg_sortingType.index
+    ]) as List<Object?>?;
     if (replyList == null) {
       throw PlatformException(
         code: 'channel-error',
@@ -2306,7 +2354,8 @@ class MapApi {
     }
   }
 
-  Future<void> setPanoramaMarkerAzimuth(MarkerAzimuthMessage arg_message) async {
+  Future<void> setPanoramaMarkerAzimuth(
+      MarkerAzimuthMessage arg_message) async {
     final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
         'dev.flutter.pigeon.MapApi.setPanoramaMarkerAzimuth', codec,
         binaryMessenger: _binaryMessenger);
@@ -2332,8 +2381,7 @@ class MapApi {
     final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
         'dev.flutter.pigeon.MapApi.onCompassClicked', codec,
         binaryMessenger: _binaryMessenger);
-    final List<Object?>? replyList =
-        await channel.send(null) as List<Object?>?;
+    final List<Object?>? replyList = await channel.send(null) as List<Object?>?;
     if (replyList == null) {
       throw PlatformException(
         code: 'channel-error',
@@ -2376,8 +2424,7 @@ class MapApi {
     final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
         'dev.flutter.pigeon.MapApi.toggleSound', codec,
         binaryMessenger: _binaryMessenger);
-    final List<Object?>? replyList =
-        await channel.send(null) as List<Object?>?;
+    final List<Object?>? replyList = await channel.send(null) as List<Object?>?;
     if (replyList == null) {
       throw PlatformException(
         code: 'channel-error',
@@ -2398,8 +2445,7 @@ class MapApi {
     final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
         'dev.flutter.pigeon.MapApi.onTrafficAndParkingAttached', codec,
         binaryMessenger: _binaryMessenger);
-    final List<Object?>? replyList =
-        await channel.send(null) as List<Object?>?;
+    final List<Object?>? replyList = await channel.send(null) as List<Object?>?;
     if (replyList == null) {
       throw PlatformException(
         code: 'channel-error',
@@ -2420,8 +2466,7 @@ class MapApi {
     final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
         'dev.flutter.pigeon.MapApi.onTrafficAndParkingDetached', codec,
         binaryMessenger: _binaryMessenger);
-    final List<Object?>? replyList =
-        await channel.send(null) as List<Object?>?;
+    final List<Object?>? replyList = await channel.send(null) as List<Object?>?;
     if (replyList == null) {
       throw PlatformException(
         code: 'channel-error',
@@ -2442,8 +2487,7 @@ class MapApi {
     final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
         'dev.flutter.pigeon.MapApi.onParkingClicked', codec,
         binaryMessenger: _binaryMessenger);
-    final List<Object?>? replyList =
-        await channel.send(null) as List<Object?>?;
+    final List<Object?>? replyList = await channel.send(null) as List<Object?>?;
     if (replyList == null) {
       throw PlatformException(
         code: 'channel-error',
@@ -2464,8 +2508,7 @@ class MapApi {
     final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
         'dev.flutter.pigeon.MapApi.onTrafficClicked', codec,
         binaryMessenger: _binaryMessenger);
-    final List<Object?>? replyList =
-        await channel.send(null) as List<Object?>?;
+    final List<Object?>? replyList = await channel.send(null) as List<Object?>?;
     if (replyList == null) {
       throw PlatformException(
         code: 'channel-error',
@@ -2486,8 +2529,7 @@ class MapApi {
     final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
         'dev.flutter.pigeon.MapApi.startFreeRoam', codec,
         binaryMessenger: _binaryMessenger);
-    final List<Object?>? replyList =
-        await channel.send(null) as List<Object?>?;
+    final List<Object?>? replyList = await channel.send(null) as List<Object?>?;
     if (replyList == null) {
       throw PlatformException(
         code: 'channel-error',
@@ -2508,8 +2550,7 @@ class MapApi {
     final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
         'dev.flutter.pigeon.MapApi.stopFreeRoam', codec,
         binaryMessenger: _binaryMessenger);
-    final List<Object?>? replyList =
-        await channel.send(null) as List<Object?>?;
+    final List<Object?>? replyList = await channel.send(null) as List<Object?>?;
     if (replyList == null) {
       throw PlatformException(
         code: 'channel-error',

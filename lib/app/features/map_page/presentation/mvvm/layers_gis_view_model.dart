@@ -2,11 +2,11 @@ import 'dart:async';
 
 import 'package:balady_plus/app/core/base/base_view_model.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import '../../../../core/services/global/web_service.dart';
 import '../../data/model/layers.dart';
 import 'package:flutter/foundation.dart';
-
 
 class LayersGisViewModel extends BaseViewModel {
   final WebService webService;
@@ -43,9 +43,9 @@ class LayersGisViewModel extends BaseViewModel {
     }
   }
 
-
   Future<void> getSubLayers(int layersId) async {
     try {
+      EasyLoading.show();
       final layersType = await webService.dio.get(
         'https://apiservicesstg.balady.gov.sa/gis-urbi-services/layers/$layersId',
         options: Options(
@@ -55,10 +55,14 @@ class LayersGisViewModel extends BaseViewModel {
         ),
       );
       if (layersType.data != null) {
-        subLayers = subLayersFromJson(layersType.data['data']['result']['drawingInfo']['renderer']['uniqueValueInfos']);
+        subLayers = subLayersFromJson(layersType.data['data']['result']
+            ['drawingInfo']['renderer']['uniqueValueInfos']);
       }
       notifyListeners();
+      EasyLoading.dismiss();
     } catch (e) {
+      EasyLoading.dismiss();
+
       print(e);
     }
   }

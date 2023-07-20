@@ -13,6 +13,8 @@ import '../../features/_shared_feature_/presentation/pages/success_screen.dart';
 import '../../features/bottom_navigation/bottom_navigation_exports.dart'
     show BottomNavigationPage;
 import '../../features/entry_point/entry_point_exports.dart' show SsoUserInfo;
+import '../../features/map_page/presentation/mvvm/point_view_model.dart';
+import '../../features/map_page/presentation/pages/map_details_page.dart';
 import '../../features/objectable_transactions/objections_exports.dart'
     show ObjectableTransactionsPage;
 import '../../features/facility_qr/facility_qr_exports.dart';
@@ -247,6 +249,14 @@ class AppRouter {
       case RouteName.DCSelectRetreiveTypePage:
         return MaterialPageRoute(
           builder: (_) => DCSelectRetreiveTypePage(),
+        );
+
+      case RouteName.MapDetailsPage:
+        final PointViewModel viewModel = settings.arguments as PointViewModel;
+        return MaterialPageRoute(
+          builder: (_) => MapDetailsPage(
+            pointViewModel: viewModel,
+          ),
         );
 
       // error page
