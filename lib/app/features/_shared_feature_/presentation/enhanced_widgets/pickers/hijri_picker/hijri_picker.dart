@@ -171,7 +171,7 @@ class Picker {
 
           if (cancel == null) {
             String cancelText =
-                cancelText ?? PickerLocalizations.of(context).cancelText;
+                this.cancelText ?? PickerLocalizations.of(context).cancelText;
             if (cancelText != "") {
               actions.add(
                 TextButton(
@@ -198,7 +198,7 @@ class Picker {
 
           if (confirm == null) {
             String confirmText =
-                confirmText ?? PickerLocalizations.of(context).confirmText;
+                this.confirmText ?? PickerLocalizations.of(context).confirmText;
             if (confirmText != "") {
               actions.add(
                 TextButton(
@@ -515,9 +515,9 @@ class PickerWidgetState<T> extends State<_PickerWidget> {
                         magnification: picker!.magnification!,
                         diameterRatio: picker!.diameterRatio!,
                         squeeze: picker!.squeeze!,
-                        onSelectedItemChanged: (int index) {
+                        onSelectedItemChanged: (int jj) {
                           if (__printDebug) debugPrint("onSelectedItemChanged");
-                          var index = index % length;
+                          var index = jj % length;
                           picker!.selecteds![i] = index;
                           updateScrollController(i);
                           adapter.doSelect(i, index);
@@ -1162,7 +1162,7 @@ class DateTimePickerAdapter extends PickerAdapter<DateTime> {
     if (customColumnType != null) {
       columnType = customColumnType!;
     } else {
-      columnType = columnType[type!];
+      columnType = DateTimePickerAdapter.columnType[type!];
     }
     var month = columnType.indexWhere((element) => element == 1);
     var day = columnType.indexWhere((element) => element == 2);
@@ -1239,7 +1239,7 @@ class DateTimePickerAdapter extends PickerAdapter<DateTime> {
   @override
   int getLength() {
     int? v = customColumnType == null
-        ? lengths[type][_col]
+        ? lengths[this.type!][_col]
         : columnTypeLength[customColumnType![_col]];
     if (v == 0) {
       int ye = yearEnd!;
