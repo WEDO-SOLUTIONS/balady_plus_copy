@@ -11,7 +11,7 @@ class Excavations extends PointLayersData {
   final String endDate;
   final LatLng startPoint;
   final LatLng endPoint;
-  final List<List<double>> paths;
+  // final List<List<double>> paths;
 
   Excavations({
     required this.contractorName,
@@ -19,7 +19,7 @@ class Excavations extends PointLayersData {
     required this.endDate,
     required this.startPoint,
     required this.endPoint,
-    required this.paths,
+    // required this.paths,
     required id,
     required name,
     required type,
@@ -34,13 +34,13 @@ class Excavations extends PointLayersData {
         );
 
   factory Excavations.fromJson(Map<String, dynamic> json) => Excavations(
-        id: json['attributes']["id"],
+        id: json['attributes']["id"].toString(),
         name: json['attributes']["PROJECT_NAME"] ?? 'name',
         description: json['attributes']["PROJECT_DESC"] ?? 'description',
         type: json['attributes']["SERVTYPE"] ?? 'type',
         latLng: LatLng(
-          latitude: json['attributes']["START_POINT_X"],
-          longitude: json['attributes']["START_POINT_Y"],
+          latitude: double.parse(json['attributes']["START_POINT_X"].toString()),
+          longitude: double.parse(json['attributes']["START_POINT_Y"].toString()),
         ),
         /////////////////////////
         contractorName:
@@ -48,13 +48,13 @@ class Excavations extends PointLayersData {
         startDate: json['attributes']["startDate"] ?? 'startDate',
         endDate: json['attributes']["endDate"] ?? 'endDate',
         startPoint: LatLng(
-          latitude: json['attributes']["START_POINT_X"],
-          longitude: json['attributes']["START_POINT_Y"],
+          latitude: double.parse(json['attributes']["START_POINT_X"].toString()),
+          longitude: double.parse(json['attributes']["START_POINT_Y"].toString()),
         ),
         endPoint: LatLng(
-          latitude: json['attributes']["END_POINT_X"],
-          longitude: json['attributes']["END_POINT_Y"],
+          latitude: double.parse(json['attributes']["END_POINT_X"].toString()),
+          longitude: double.parse(json['attributes']["END_POINT_Y"].toString()),
         ),
-        paths: json['geometry']["paths"],
+        // paths: json['geometry']["paths"],  // not tested yat
       );
 }
