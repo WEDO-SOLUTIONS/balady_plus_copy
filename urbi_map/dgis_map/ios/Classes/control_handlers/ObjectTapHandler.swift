@@ -8,6 +8,7 @@ class ObjectTapHandler {
         static let onMarkerWithPhotoTap = "onMarkerWithPhotoTap"
         static let onIoTap = "onIoTap"
         static let onIdleTap = "onIdleTap"
+        static let onMarkerTap = "onMarkerTap"
     }
     
     private struct PhotoData {
@@ -23,6 +24,7 @@ class ObjectTapHandler {
     private let imageFactory: IImageFactory
     private let eventChannel: DgisStreamHandler
     private let ioObjectManager: MapObjectManager
+    private let registrar: FlutterPluginRegistrar
     private let markersQueue: DispatchQueue
     
     private var lastTappedSearchMarker: Marker?
@@ -32,19 +34,21 @@ class ObjectTapHandler {
     private var iconWidth: LogicalPixel?
     
     private var source: DgisSource?
-    
+
+    private var markers: Dictionary<Int, Marker> = [:]
     private var panoramasMarkers: Array<Marker> = []
     private var ioLayerMarkers: Array<Marker> = []
-    
+
     private var selectedPanorama: Marker?
     
     init(
         objectManager: MapObjectManager,
         panoramasMapObjectManager: MapObjectManager,
+        ioObjectManager: MapObjectManager,
         imageFactory: IImageFactory,
         routeHandler: RouteHandler?,
         eventChannel: DgisStreamHandler,
-        ioObjectManager: MapObjectManager
+        registrar: FlutterPluginRegistrar
     ) {
         self.mapObjectManager = objectManager
         self.panoramasObjectManager = panoramasMapObjectManager
@@ -56,6 +60,7 @@ class ObjectTapHandler {
             label: "com.mapness.panoramas.markers-queue",
             qos: .utility
         )
+        self.registrar = registrar
     }
     
     func objectTapListener(_ objectInfo: DGis.RenderedObjectInfo) {
@@ -122,35 +127,130 @@ class ObjectTapHandler {
         
         completion(nil)
     }
-    
-    func addMarker(_ geoPoint: GeoPointMessage, completion: @escaping (FlutterError?) -> Void) {
-        guard let markerImage = self.markerImage, let iconWidth = self.iconWidth else {
-            completion(FlutterError(
-                code: "Error adding marker",
-                message: "Call setMarkerOptions method first",
-                details: nil)
-            )
-            return
+
+    private func mapTextPlacement(_ placement: TextPlacementMessage) -> TextPlacement {
+        switch placement {
+        case .noLabel:
+            return .noLabel
+        case .bottomCenter:
+            return .bottomCenter
+        case .bottomRight:
+            return .bottomRight
+        case .bottomLeft:
+            return .bottomLeft
+        case .circleBottomRight:
+            return .circleBottomRight
+        case .rightBottom:
+            return .rightBottom
+        case .rightCenter:
+            return .rightCenter
+        case .rightTop:
+            return .rightTop
+        case .circleTopRight:
+            return .circleTopRight
+        case .topCenter:
+            return .topCenter
+        case .topRight:
+            return .topRight
+        case .topLeft:
+            return .topLeft
+        case .circleTopLeft:
+            return .circleTopLeft
+        case .leftTop:
+            return .leftTop
+        case .leftCenter:
+            return .leftCenter
+        case .leftBottom:
+            return .leftBottom
+        case .circleBottomLeft:
+            return .circleBottomLeft
+        case .centerCenter:
+            return .centerCenter
+        @unknown default:
+            return .noLabel
         }
-        
+    }
+    
+    private func mapTextStyle(_ style: MarkerTextStyleMessage) -> TextStyle {
+        TextStyle(
+            fontSize: style.fontSize.map {
+                LogicalPixel(value: $0.floatValue)
+            } ?? LogicalPixel(value: 8),
+            color: style.color.map {
+                return Color(argb: UInt32($0.intValue))
+            } ?? Color(),
+            strokeWidth: style.strokeWidth.map {
+                LogicalPixel(value: $0.floatValue)
+            } ?? LogicalPixel(value: 0.3499999940395355),
+            strokeColor: style.strokeColor.map {
+                Color(argb: UInt32($0.intValue))
+            } ?? Color(argb: 4294967295),
+            textPlacement: style.textPlacement.map {
+                mapTextPlacement($0.placement)
+            } ?? .bottomCenter,
+            textOffset: style.textOffset.map {
+                LogicalPixel(value: $0.floatValue)
+            } ?? LogicalPixel(value: 0),
+            fontName: style.fontName
+        )
+    }
+    
+    func addMarker(_ marker: MarkerMessage, completion: @escaping (FlutterError?) -> Void) {
+        var markerImage: Image? = nil
+        if let icon = marker.options.icon?.path {
+            let assetKey = registrar.lookupKey(forAsset: icon)
+            
+            guard let assetPath = Bundle.main.path(forResource: assetKey, ofType: nil),
+                  let url = URL(string: "file://\(assetPath)"),
+                  let data = try? Data(contentsOf: url) else {
+                completion(
+                    FlutterError(
+                        code: "Error loading asset for marker",
+                        message: nil,
+                        details: nil
+                    ))
+                return
+            }
+            
+            markerImage = imageFactory.make(svgData: data, size: .zero)
+        }
+
         let options = MarkerOptions(
             position: GeoPointWithElevation(
-                latitude: Latitude(value: geoPoint.latitude.doubleValue),
-                longitude: Longitude(value: geoPoint.longitude.doubleValue)
+                latitude: Latitude(value: marker.options.position.latitude.doubleValue),
+                longitude: Longitude(value: marker.options.position.longitude.doubleValue)
             ),
             icon: markerImage,
-            anchor: Anchor(x: 0.5, y: 1),
-            iconWidth: iconWidth
+            iconMapDirection: marker.options.icon?.iconMapDirection.map {
+                MapDirection(value: $0.degree.doubleValue)
+            },
+            anchor: marker.options.anchor.map {
+                Anchor(x: $0.x.floatValue, y: $0.y.floatValue)
+            } ?? Anchor(x: 0.5, y: 0.5),
+            text: marker.options.text,
+            textStyle: marker.options.textStyle.map(mapTextStyle),
+            iconWidth: (marker.options.icon?.width).map {
+                LogicalPixel(value: $0.floatValue)
+            } ?? LogicalPixel(value: 0),
+            userData: marker.id.intValue
         )
         
-        let marker = Marker(options: options)
+        let markerObject = Marker(options: options)
         
         self.markersQueue.sync {
-            self.mapObjectManager.removeAll()
-            self.mapObjectManager.addObject(item: marker)
+            self.markers[marker.id.intValue] = markerObject
+            self.mapObjectManager.addObject(item: markerObject)
         }
         
         completion(nil)
+    }
+    
+    func removeMarker(_ id: NSNumber, completion: @escaping (FlutterError?) -> Void) {
+        self.markersQueue.sync {
+            if let markerObject = self.markers.removeValue(forKey: id.intValue) {
+                self.mapObjectManager.removeObject(item: markerObject)
+            }
+        }
     }
     
     func addIoMarkers(_ message: AddLayerPointObjectsMessage, _ completion: @escaping (FlutterError?) -> Void) {
@@ -186,7 +286,8 @@ class ObjectTapHandler {
     
     func removeAllMarkers() {
         self.markersQueue.sync {
-            self.mapObjectManager.removeAll()
+            self.mapObjectManager.removeObjects(objects: Array(self.markers.values))
+            self.markers.removeAll()
         }
     }
     
@@ -312,6 +413,11 @@ class ObjectTapHandler {
         case let id as DgisObjectId:
             onSearchMarkerTap(marker, id)
             break
+        case let id as Int:
+            eventChannel.success([
+                "event": Events.onMarkerTap,
+                "id": id,
+            ] as [String : Any])
         default:
             return
         }

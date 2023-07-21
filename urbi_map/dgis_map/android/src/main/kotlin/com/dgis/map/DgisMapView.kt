@@ -242,7 +242,7 @@ class DgisMapView(
         searchHandler?.getNextPage(result)
     }
 
-    override fun setMarkerOptions(options: MarkerOptionsMessage, result: Messages.Result<Void>?) {
+    override fun setMarkerOptions(options: MarkerOptionsMessageOld, result: Messages.Result<Void>?) {
         objectTapHandler?.setMarkerOptions(
             svgAsset = options.svgAsset,
             size = Size(options.width.roundToInt(), options.height.roundToInt()),
@@ -252,8 +252,12 @@ class DgisMapView(
         )
     }
 
-    override fun addMarker(geoPoint: GeoPointMessage, result: Messages.Result<Void>?) {
-        objectTapHandler?.addMarker(geoPoint, result)
+    override fun addMarker(marker: MarkerMessage, result: Messages.Result<Void>?) {
+        objectTapHandler?.addMarker(marker, result)
+    }
+
+    override fun removeMarker(id: Long, result: Messages.Result<Void>?) {
+        objectTapHandler?.removeMarker(id, result)
     }
 
     override fun removeAllMarkers(result: Messages.Result<Void>?) {

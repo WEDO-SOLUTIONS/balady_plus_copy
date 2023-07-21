@@ -10,6 +10,8 @@ import io.flutter.plugin.common.EventChannel.EventSink
 import ru.dgis.sdk.Context
 import ru.dgis.sdk.DgisObjectId
 import ru.dgis.sdk.coordinates.GeoPoint
+import ru.dgis.sdk.coordinates.Latitude
+import ru.dgis.sdk.coordinates.Longitude
 import ru.dgis.sdk.geometry.Elevation
 import ru.dgis.sdk.geometry.GeoPointWithElevation
 import ru.dgis.sdk.map.*
@@ -42,6 +44,7 @@ class ObjectTapHandler(
         Executors.newSingleThreadExecutor()
     }
 
+    private val markers = mutableMapOf<Int, Marker>();
     private val ioLayerMarkers = mutableListOf<Marker>();
 
     fun objectTapListener(roi: RenderedObjectInfo) {
@@ -125,30 +128,106 @@ class ObjectTapHandler(
         }
     }
 
-    fun addMarker(geoPoint: GeoPointMessage, result: Result<Void>?) {
-        val markerImage = markerImage
-        val iconWidth = iconWidth
+    private fun mapTextPlacement(placementMessage: TextPlacementMessage): TextPlacement {
+        return when (placementMessage) {
+            TextPlacementMessage.NO_LABEL -> TextPlacement.NO_LABEL
+            TextPlacementMessage.BOTTOM_CENTER -> TextPlacement.BOTTOM_CENTER
+            TextPlacementMessage.BOTTOM_RIGHT -> TextPlacement.BOTTOM_RIGHT
+            TextPlacementMessage.BOTTOM_LEFT -> TextPlacement.BOTTOM_LEFT
+            TextPlacementMessage.CIRCLE_BOTTOM_RIGHT -> TextPlacement.CIRCLE_BOTTOM_LEFT
+            TextPlacementMessage.RIGHT_BOTTOM -> TextPlacement.RIGHT_BOTTOM
+            TextPlacementMessage.RIGHT_CENTER -> TextPlacement.RIGHT_CENTER
+            TextPlacementMessage.RIGHT_TOP -> TextPlacement.RIGHT_TOP
+            TextPlacementMessage.CIRCLE_TOP_RIGHT -> TextPlacement.CIRCLE_TOP_RIGHT
+            TextPlacementMessage.TOP_CENTER -> TextPlacement.TOP_CENTER
+            TextPlacementMessage.TOP_RIGHT -> TextPlacement.TOP_RIGHT
+            TextPlacementMessage.TOP_LEFT -> TextPlacement.TOP_LEFT
+            TextPlacementMessage.CIRCLE_TOP_LEFT -> TextPlacement.CIRCLE_TOP_LEFT
+            TextPlacementMessage.LEFT_TOP -> TextPlacement.LEFT_TOP
+            TextPlacementMessage.LEFT_CENTER -> TextPlacement.LEFT_CENTER
+            TextPlacementMessage.LEFT_BOTTOM -> TextPlacement.LEFT_BOTTOM
+            TextPlacementMessage.CIRCLE_BOTTOM_LEFT -> TextPlacement.CIRCLE_BOTTOM_LEFT
+            TextPlacementMessage.CENTER_CENTER -> TextPlacement.CENTER_CENTER
+        }
+    }
 
-        if (markerImage == null || iconWidth == null) {
-            result?.error(Exception("Error adding marker. Call setMarkerOptions method first"))
-            return
+    private fun mapTextStyle(style: MarkerTextStyleMessage): TextStyle {
+        return TextStyle(
+            fontSize = style.fontSize?.let {
+                LogicalPixel(value = it.toFloat())
+            } ?: LogicalPixel(8f),
+            color = style.color?.let {
+                Color(argb = it.toInt())
+            } ?: Color(),
+            strokeWidth = style.strokeWidth?.let {
+                LogicalPixel(it.toFloat())
+            } ?: LogicalPixel(0.35f),
+            strokeColor = style.strokeColor?.let {
+                Color(argb = it.toInt())
+            } ?: Color(),
+            textPlacement = style.textPlacement?.let {
+                mapTextPlacement(it.placement)
+            } ?: TextPlacement.BOTTOM_CENTER,
+            textOffset = style.textOffset?.let {
+                LogicalPixel(it.toFloat())
+            } ?: LogicalPixel(0f),
+            fontName = style.fontName
+        )
+    }
+
+    fun addMarker(marker: MarkerMessage, result: Result<Void>?) {
+        var markerImage: Image? = null
+        if (marker.options.icon != null) {
+            try {
+                val asset =
+                    FlutterInjector
+                        .instance()
+                        .flutterLoader()
+                        .getLookupKeyForAsset(marker.options.icon!!.path)
+
+                markerImage = imageFromAsset(sdkContext, asset, Size(0, 0))
+            } catch (e: FileNotFoundException) {
+                result?.error(e)
+                return
+            }
         }
 
         val options = MarkerOptions(
             position = GeoPointWithElevation(
-                latitude = geoPoint.latitude,
-                longitude = geoPoint.longitude,
+                latitude = Latitude(marker.options.position.latitude),
+                longitude = Longitude(marker.options.position.longitude),
             ),
             icon = markerImage,
-            iconWidth = iconWidth,
-            anchor = Anchor(0.5f, 1f)
+            iconMapDirection = marker.options.icon?.iconMapDirection?.let {
+                MapDirection(it.degree)
+            },
+            anchor = marker.options.anchor?.let {
+                Anchor(it.x.toFloat(), it.y.toFloat())
+            } ?: Anchor(0.5f, 0.5f),
+            text = marker.options.text,
+            textStyle = marker.options.textStyle?.let {
+                mapTextStyle(it)
+            },
+            iconWidth = marker.options.icon?.let {
+                LogicalPixel(it.width.toFloat())
+            } ?: LogicalPixel(0f),
+            userData = marker.id.toInt(),
         )
 
-        val marker = Marker(options)
+        val markerObject = Marker(options)
 
         markerExecutorService.submit {
-            mapObjectManager.removeAll()
-            mapObjectManager.addObject(marker)
+            markers[marker.id.toInt()] = markerObject
+            mapObjectManager.addObject(markerObject)
+            result?.success(null)
+        }
+    }
+
+    fun removeMarker(id: Long, result: Result<Void>?) {
+        markerExecutorService.submit {
+            markers.remove(id.toInt())?.also {
+                mapObjectManager.removeObject(it)
+            }
             result?.success(null)
         }
     }
@@ -186,9 +265,8 @@ class ObjectTapHandler(
 
     fun removeAllMarkers() {
         markerExecutorService.submit {
-            mapObjectManager.removeAll()
-            ioObjectManager.removeAll()
-            ioLayerMarkers.clear()
+            mapObjectManager.removeObjects(markers.values.toList())
+            markers.clear()
         }
     }
 
@@ -304,7 +382,17 @@ class ObjectTapHandler(
         when (val userData = marker.userData) {
             is PhotoData -> onMarkerWithPhotoTap(marker, userData)
             is DgisObjectId -> onSearchMarkerTap(marker, userData)
+            is Int -> onMarkerTap(userData)
         }
+    }
+
+    private fun onMarkerTap(id: Int) {
+        eventSink.success(
+            mapOf(
+                "event" to Events.onMarkerTap.name,
+                "id" to id
+            )
+        )
     }
 
     private fun onSearchMarkerTap(marker: Marker, id: DgisObjectId) {
@@ -395,6 +483,7 @@ private enum class Events {
     onMarkerWithPhotoTap,
     onIoTap,
     onIdleTap,
+    onMarkerTap,
 }
 
 private fun Attributes.mapIo(point: GeoPointWithElevation): Map<String, Any> = mapOf(

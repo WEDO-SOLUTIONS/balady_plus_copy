@@ -251,12 +251,19 @@ class DgisMapController {
   }
 
   /// Options for marker that appears on map on object tap. Used by [addMarker].
-  Future<void> setMarkerOptions(MarkerOptionsMessage markerOptions) =>
+  Future<void> setMarkerOptions(MarkerOptionsMessageOld markerOptions) =>
       _instance.setMarkerOptions(markerOptions);
 
-  /// Add marker to map. Typically on object tap. Set options with [setMarkerOptions].
-  Future<void> addMarker(GeoPointMessage geoPoint) =>
-      _instance.addMarker(geoPoint);
+  /// Add marker to map.
+  Future<void> addMarker({
+    required int id,
+    required MarkerOptionsMessage options,
+    void Function()? onTap,
+  }) =>
+      _instance.addMarker(id, options, onTap);
+
+  /// Remove marker by id.
+  Future<void> removeMarker(int id) => _instance.removeMarker(id);
 
   /// Remove all markers added with [addMarker].
   Future<void> removeAllMarkers() => _instance.removeAllMarkers();

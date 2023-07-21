@@ -113,9 +113,15 @@ abstract class DgisMapPlugin extends PlatformInterface {
 
   Future<List<ObjectInfoMessage?>?> getNextPage();
 
-  Future<void> setMarkerOptions(MarkerOptionsMessage markerOptions);
+  Future<void> setMarkerOptions(MarkerOptionsMessageOld markerOptions);
 
-  Future<void> addMarker(GeoPointMessage geoPoint);
+  Future<void> addMarker(
+    int id,
+    MarkerOptionsMessage options,
+    void Function()? onTap,
+  );
+
+  Future<void> removeMarker(int id);
 
   Future<void> removeAllMarkers();
 
