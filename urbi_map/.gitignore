@@ -2,7 +2,7 @@
 .atom/
 .idea/**
 .vscode/
-.fvm/
+.fvm/**
 
 !.idea/modules.xml
 !.idea/vcs.xml
