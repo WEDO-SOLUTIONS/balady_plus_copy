@@ -26,7 +26,7 @@ class App extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(
-          create: (BuildContext context) => MapViewModel(),
+          create: (BuildContext context) => MapViewModel(layersRepositories: sl()),
         ),
       ],
       child: BlocProvider<EntryPointCubit>.value(

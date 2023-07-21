@@ -63,49 +63,49 @@ class SearchMapWidget extends StatelessWidget {
           },
           // onChanged: (text) => searchItem(text: text),
         ),
-        const SizedBox(
-          height: 6,
-        ),
-        Selector<LayersGisViewModel, List<SubLayers>?>(
-          selector: (_, provider) => provider.subLayers,
-          builder: (_, subLayers, __) {
-            return subLayers?.isNotEmpty ?? false
-                ? SizedBox(
-                    height: 40,
-                    child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: subLayers!.length,
-                      padding: EdgeInsets.zero,
-                      itemBuilder: (context, index) {
-                        final SubLayers layer = subLayers[index];
-                          return  Container(
-                                margin: const EdgeInsetsDirectional.only(
-                                  start: 8,
-                                  bottom: 8,
-                                ),
-                                child: InkWell(
-                                  onTap: () {
-                                    mapViewModel.performSearch(queryText: layer.name);
-                                    mapViewModel.subLayerSelected.value = layer;
-                                  },
-                                  child: ValueListenableBuilder<SubLayers?>(
-                                    valueListenable: mapViewModel.subLayerSelected,
-                                    builder: (_, subLayerSelected, __) {
-                                      return HomeTag(
-                                        title: layer.name,
-                                        color: Colors.deepPurple.shade700,
-                                        selected: layer == subLayerSelected,
-                                      );
-                                    },
-                                  ),
-                                ),
-                              );
-                      },
-                    ),
-                  )
-                : const SizedBox();
-          },
-        ),
+        // const SizedBox(
+        //   height: 6,
+        // ),
+        // Selector<LayersGisViewModel, List<SubLayers>?>(
+        //   selector: (_, provider) => provider.subLayers,
+        //   builder: (_, subLayers, __) {
+        //     return subLayers?.isNotEmpty ?? false
+        //         ? SizedBox(
+        //             height: 40,
+        //             child: ListView.builder(
+        //               scrollDirection: Axis.horizontal,
+        //               itemCount: subLayers!.length,
+        //               padding: EdgeInsets.zero,
+        //               itemBuilder: (context, index) {
+        //                 final SubLayers layer = subLayers[index];
+        //                   return  Container(
+        //                         margin: const EdgeInsetsDirectional.only(
+        //                           start: 8,
+        //                           bottom: 8,
+        //                         ),
+        //                         child: InkWell(
+        //                           onTap: () {
+        //                             mapViewModel.performSearch(queryText: layer.name);
+        //                             mapViewModel.subLayerSelected.value = layer;
+        //                           },
+        //                           child: ValueListenableBuilder<SubLayers?>(
+        //                             valueListenable: mapViewModel.subLayerSelected,
+        //                             builder: (_, subLayerSelected, __) {
+        //                               return HomeTag(
+        //                                 title: layer.name,
+        //                                 color: Colors.deepPurple.shade700,
+        //                                 selected: layer == subLayerSelected,
+        //                               );
+        //                             },
+        //                           ),
+        //                         ),
+        //                       );
+        //               },
+        //             ),
+        //           )
+        //         : const SizedBox();
+        //   },
+        // ),
       ],
     );
   }

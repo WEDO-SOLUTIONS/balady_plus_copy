@@ -1,4 +1,5 @@
 import 'package:balady_plus/app/core/dependency_injection/features/dc_injection.dart';
+import 'package:balady_plus/app/features/map_page/data/repositories/layers_repositories.dart';
 import 'package:dio/dio.dart' show Dio;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart'
     show FlutterSecureStorage;
@@ -77,6 +78,7 @@ void initialize() {
   //? Licenses
   LicensesInjection.init();
 
+
   //! Core
   sl.registerLazySingleton(() => WebService(dio: sl()));
   sl.registerLazySingleton<NetworkConnection>(
@@ -92,4 +94,9 @@ void initialize() {
   sl.registerLazySingleton(() => const FlutterSecureStorage());
   sl.registerLazySingleton(() => InternetConnectionChecker());
   sl.registerLazySingleton(() => Dio());
+
+
+
+  sl.registerLazySingleton(() => LayersRepositories(webService: sl()));
+
 }

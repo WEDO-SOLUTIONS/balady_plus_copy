@@ -9,7 +9,6 @@ import '../../../_shared_feature_/shared_feature_exports.dart'
 import '../../home_exports.dart' show HomeBottomSheet, HomeMap;
 
 class HomePage extends StatelessWidget {
-
   const HomePage({super.key});
 
   @override
@@ -18,7 +17,9 @@ class HomePage extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(
-          create: (BuildContext context) => LayersGisViewModel(webService: sl()),
+          create: (BuildContext context) => LayersGisViewModel(
+            layersRepositories: sl(),
+          ),
         )
       ],
       child: Scaffold(

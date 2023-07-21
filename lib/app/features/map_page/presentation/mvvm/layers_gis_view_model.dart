@@ -1,71 +1,58 @@
 import 'dart:async';
 
 import 'package:balady_plus/app/core/base/base_view_model.dart';
-import 'package:dio/dio.dart';
+import 'package:balady_plus/app/features/map_page/data/repositories/layers_repositories.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
-import '../../../../core/services/global/web_service.dart';
 import '../../data/model/layers.dart';
 import 'package:flutter/foundation.dart';
 
 class LayersGisViewModel extends BaseViewModel {
-  final WebService webService;
+  final LayersRepositories layersRepositories;
 
-  final selectedLayers = ValueNotifier<Layers?>(null);
+  // final selectedLayers = ValueNotifier<Layers?>(null);
 
-  List<Layers>? layers;
+  final layers = ValueNotifier<List<Layers>?>(null);
+  final layerSelected = ValueNotifier<Layers?>(null);
 
-  List<SubLayers>? subLayers;
+  // List<SubLayers>? subLayers;
 
-
-
-  LayersGisViewModel({required this.webService}) {
+  LayersGisViewModel({required this.layersRepositories}) {
     getMinLayers();
   }
 
   Future<void> getMinLayers() async {
     try {
-      final layersType = await webService.dio.get(
-        'https://apiservicesstg.balady.gov.sa/gis-urbi-services/layers',
-        options: Options(
-          headers: {
-            'verifyingKEY': 'P/uN+9S3wHuzQDlY7JM+nb58vesqLzrJ8VTBMvzsIaI=',
-          },
-        ),
-      );
-      notifyListeners();
-      if (layersType.data != null) {
-        layers = layersFromJson(layersType.data['data']['result']['layers']);
-        selectedLayers.value = layers![1];
-        await getSubLayers(selectedLayers.value!.id);
+      layers.value = await layersRepositories.getMinLayers();
+      if(layers.value != null){
+        layerSelected.value = layers.value!.first;
       }
-      notifyListeners();
+      // if (layers != null) {
+      //   selectedLayers.value = layers![1];
+      //   await getSubLayers(selectedLayers.value!.id);
+      // }
+      layers.notifyListeners();
     } catch (e) {
       print(e);
     }
   }
 
-  Future<void> getSubLayers(int layersId) async {
-    try {
-      EasyLoading.show();
-      final layersType = await webService.dio.get(
-        'https://apiservicesstg.balady.gov.sa/gis-urbi-services/layers/$layersId',
-        options: Options(
-          headers: {
-            'verifyingKEY': 'P/uN+9S3wHuzQDlY7JM+nb58vesqLzrJ8VTBMvzsIaI=',
-          },
-        ),
-      );
-      if (layersType.data != null) {
-        subLayers = subLayersFromJson(layersType.data['data']['result']
-            ['drawingInfo']['renderer']['uniqueValueInfos']);
-      }
-      notifyListeners();
-      EasyLoading.dismiss();
-    } catch (e) {
-      EasyLoading.dismiss();
 
-      print(e);
-    }
+  void selectLayers (Layers layers) {
+    layerSelected.value = layers;
+    layerSelected.notifyListeners();
   }
+
+  // Future<void> getSubLayers(int layersId) async {
+  //   try {
+  //     EasyLoading.show();
+  //     subLayers = await layersRepositories.getSubLayers(layersId);
+  //     notifyListeners();
+  //     EasyLoading.dismiss();
+  //   } catch (e) {
+  //     EasyLoading.dismiss();
+  //     print(e);
+  //   }
+  // }
+
 }
