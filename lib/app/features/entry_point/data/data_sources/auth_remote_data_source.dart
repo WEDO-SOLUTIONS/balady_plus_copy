@@ -111,7 +111,7 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
     try {
       response = await webServiceSSo.dio.get(ApiUrl.ssoUserInfo,
           options: Options(headers: {
-            "Authorization": "Bearer " + (CommonProperties.token ?? "")
+            "Authorization": "Bearer ${CommonProperties.token ?? ""}"
           }));
 
       var data = response.data;
@@ -232,7 +232,7 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
     try {
       response = await webServiceSSo.dio.get(ApiUrl.ssoUserCookie,
           options: Options(headers: {
-            "Authorization": "Bearer " + (CommonProperties.token ?? "")
+            "Authorization": "Bearer ${CommonProperties.token ?? ""}"
           }));
       String? cookie;
       if (response.headers['set-cookie']?.toString() != null) {
@@ -262,7 +262,7 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
       String username = RemoteConfig.apigeeUsername;
       String password = RemoteConfig.apigeePassword;
       String basicAuth =
-          'Basic ' + base64Encode(utf8.encode('$username:$password'));
+          'Basic ${base64Encode(utf8.encode('$username:$password'))}';
 
       response = await webService.dio.post(ApiUrl.apigeeToken,
           options: Options(

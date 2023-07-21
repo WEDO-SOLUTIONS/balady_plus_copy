@@ -33,7 +33,7 @@ class BottomLogoWidget extends StatelessWidget {
               ),
             ),*/
             const CustomVerticalSpace(height: 24),
-            Container(
+            SizedBox(
               width: getWidth(size.width),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -47,7 +47,7 @@ class BottomLogoWidget extends StatelessWidget {
                     ),
                   ),
                   const CustomVerticalSpace(height: 24),
-                  Container(
+                  SizedBox(
                     width: getWidth(size.width),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,

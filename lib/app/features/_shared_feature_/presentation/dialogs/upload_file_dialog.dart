@@ -9,7 +9,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import '../../data/entities/file_data_item.dart';
 import '../widgets/buttons/custom_buttons_widgets.dart';
-import '../widgets/draw_line_widget.dart';
 
 class UploadFileDialog extends StatelessWidget {
   final Function(FileDataItem file) onConfirm;

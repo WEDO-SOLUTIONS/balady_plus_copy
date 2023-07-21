@@ -1,14 +1,9 @@
-import 'package:balady_plus/app/core/utils/enums/app_font_weights.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
-import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports.dart';
 import 'package:flutter/material.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
-import '../../../../core/utils/constants/app_colors.dart';
 import '../../../../core/utils/constants/constants.dart';
-import 'buttons/custom_buttons_widgets.dart';
-import 'custom_spaces_widgets.dart';
 
 class NeedLoginWidget extends StatefulWidget {
   final String? img;
@@ -63,8 +58,9 @@ class _NeedLoginWidgetState extends State<NeedLoginWidget> {
               onPressed: () async {
                 Navigator.pop(context);
                 bool isSuccess = await CommonFunctions.onLogin();
-                if (widget.onSuccessLogin != null)
+                if (widget.onSuccessLogin != null) {
                   widget.onSuccessLogin!(isSuccess);
+                }
               },
             ),
           ],

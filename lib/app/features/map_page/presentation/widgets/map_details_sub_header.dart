@@ -30,7 +30,7 @@ class MapDetailsSubHeader extends StatelessWidget {
               fontWeight: AppFontWeight.bold,
               fontSize: 13,
             ),
-            CustomVerticalSpace(height: 8),
+            const CustomVerticalSpace(height: 8),
             Row(
               children: [
                 CustomNetworkImageWidget(
@@ -39,7 +39,7 @@ class MapDetailsSubHeader extends StatelessWidget {
                   imageHeight: 16,
                   placeHolderWidget: SvgPicture.asset(IconPath.buildingIcon),
                 ),
-                CustomHorizontalSpace(width: 8),
+                const CustomHorizontalSpace(width: 8),
                 CustomTextWidget(
                   entityType,
                   fontColor: AppColor.blackModern600Light,

@@ -5,7 +5,6 @@ import '../../../../core/services/services_exports.dart' show UseCase, NoParams;
 import '../../entry_point_exports.dart';
 
 import 'package:version/version.dart';
-import '../../../../core/errors/errors_exports.dart' show Failure;
 
 class GetForceVersion extends UseCase<bool, NoParams> {
   final EntryPointRepository repository;
@@ -22,7 +21,7 @@ class GetForceVersion extends UseCase<bool, NoParams> {
           CommonProperties.appVersion, r.versionNumber, r.forceUpdate);
       return Right(showForce);
     });*/
-    return Right(false);
+    return const Right(false);
   }
 
   bool compareVersion(

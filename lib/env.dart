@@ -3,14 +3,12 @@ import 'package:balady_plus/app/core/utils/map_utils.dart';
 import 'package:flutter/foundation.dart';
 import 'dart:io' show Platform;
 
-import 'package:flutter/material.dart' show WidgetsFlutterBinding;
 import 'package:flutter/services.dart' show SystemChrome, DeviceOrientation;
 import 'package:flutter_inappwebview/flutter_inappwebview.dart'
     show AndroidInAppWebViewController;
 import 'package:hijri/hijri_calendar.dart' show HijriCalendar;
 import 'package:flutter/material.dart'
     show BoxShadow, Color, Colors, WidgetsFlutterBinding;
-import 'package:flutter/services.dart' show SystemChrome, DeviceOrientation;
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:localize_and_translate/localize_and_translate.dart'
     show LocalizationDefaultType, translator;

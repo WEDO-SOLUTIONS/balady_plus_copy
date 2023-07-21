@@ -1,4 +1,3 @@
-import 'dart:convert';
 
 List<Layers> layersFromJson(List list) => List<Layers>.from(list.map((x) => Layers.fromJson(x)));
 

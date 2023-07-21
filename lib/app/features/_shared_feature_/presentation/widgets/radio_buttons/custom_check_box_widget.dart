@@ -241,7 +241,7 @@ class _CustomCheckBoxTopStartWidget
                       ),
                       Expanded(
                         child: Container(
-                          margin: EdgeInsets.only(top: 15),
+                          margin: const EdgeInsets.only(top: 15),
                           child: CustomTextWidget(
                             widget.title,
                             fontWeight: widget.titleFontWeight,
@@ -255,7 +255,7 @@ class _CustomCheckBoxTopStartWidget
                       ),
                     ],
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 10,
                   )
                 ],

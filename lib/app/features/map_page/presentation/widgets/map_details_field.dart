@@ -13,7 +13,7 @@ class MapDetailsField extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-      padding: EdgeInsets.all(16),
+      padding: const EdgeInsets.all(16),
       width: double.infinity,
       decoration: ShapeDecoration(
         color: Colors.white,

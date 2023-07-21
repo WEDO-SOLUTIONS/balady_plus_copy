@@ -1,10 +1,7 @@
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports.dart';
 import 'package:flutter/material.dart';
-import 'package:localize_and_translate/localize_and_translate.dart';
 
-import 'map_details_field.dart';
-import 'map_details_sub_header.dart';
 
 class MapDetailsHeader extends StatelessWidget {
   final String name;
@@ -34,7 +31,7 @@ class MapDetailsHeader extends StatelessWidget {
                     onPressed: () {
                       Navigator.pop(context);
                     },
-                    icon: Icon(
+                    icon: const Icon(
                       Icons.close,
                       color: AppColor.white,
                     )),

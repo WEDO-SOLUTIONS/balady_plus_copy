@@ -7,8 +7,6 @@ import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
 import '../../../core/dependency_injection/dependency_injection_exports.dart'
     show sl;
-import '../../../features/_shared_feature_/shared_feature_exports.dart'
-    show AuthData, AuthDataModel;
 import '../../errors/errors_exports.dart'
     show
         BadRequestException,
@@ -157,7 +155,7 @@ class AppInterceptors extends Interceptor {
 
   @override
   void onError(DioError err, ErrorInterceptorHandler handler) {
-    "Opps, recieved Error: ${err}".errorLog();
+    "Opps, recieved Error: $err".errorLog();
 
     "Opps, recieved Error: ${err.response?.statusCode}".errorLog();
     "Opps, recieved Error: ${err.response?.data}".errorLog();

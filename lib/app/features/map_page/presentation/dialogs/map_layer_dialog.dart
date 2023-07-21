@@ -65,7 +65,7 @@ class _MapLayersDialogState extends State<MapLayersDialog> {
                 ),
               );
             }),
-        CustomVerticalSpace(height: 32),
+        const CustomVerticalSpace(height: 32),
         ElevatedButtonWidget.apply(
           onPressed: () {
             widget.onSelect(selectedLayer);

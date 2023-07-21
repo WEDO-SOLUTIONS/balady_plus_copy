@@ -1,11 +1,9 @@
-import 'dart:convert';
 
-import 'package:hijri/hijri_calendar.dart';
 
 import '../../entry_point_exports.dart';
 
 class SsoUserInfoModel extends SsoUserInfo {
-  SsoUserInfoModel(
+  const SsoUserInfoModel(
       {super.name,
       super.phone,
       super.mail,

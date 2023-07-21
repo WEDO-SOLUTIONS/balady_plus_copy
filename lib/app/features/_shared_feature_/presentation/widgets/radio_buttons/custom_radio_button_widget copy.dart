@@ -186,7 +186,7 @@ class CustomRadioButtonEnd<T> extends StatelessWidget {
   final Color unSelectedBackgroundColor;
   final String? subTitle;
 
-  CustomRadioButtonEnd(
+  const CustomRadioButtonEnd(
       {Key? key,
       required this.title,
       required this.value,
@@ -249,7 +249,7 @@ class CustomRadioButtonEnd<T> extends StatelessWidget {
                       textAlign: TextAlign.start,
                     ),
                     if (subTitle != null) ...[
-                      CustomVerticalSpace(height: 8),
+                      const CustomVerticalSpace(height: 8),
                       CustomTextWidget(
                         subTitle ?? "",
                         fontSize: textSize,

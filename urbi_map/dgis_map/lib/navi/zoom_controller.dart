@@ -23,7 +23,9 @@ class NaviZoomController {
   }
 
   void dispose() {
-    _subscriptions.forEach((s) => s.cancel());
+    for (var s in _subscriptions) {
+      s.cancel();
+    }
     _subscriptions.clear();
     zoomInState.dispose();
     zoomOutState.dispose();

@@ -1,9 +1,7 @@
 import 'package:balady_plus/app/core/utils/common_functions.dart';
-import 'package:flutter/widgets.dart';
 
 import 'package:flutter/material.dart';
 import 'package:hijri/hijri_calendar.dart';
-import 'package:intl/intl.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../../core/utils/constants/app_colors.dart';
@@ -20,7 +18,7 @@ class HijriCalendarDateWidget extends StatelessWidget {
   final HijriCalendar? minValue;
   final HijriCalendar? maxValue;
 
-  HijriCalendarDateWidget(
+  const HijriCalendarDateWidget(
       {Key? key,
       this.fieldLength,
       required this.fieldName,

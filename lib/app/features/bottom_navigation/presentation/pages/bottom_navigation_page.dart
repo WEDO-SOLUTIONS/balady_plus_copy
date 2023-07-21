@@ -8,7 +8,6 @@ import '../../../../core/services/services_exports.dart' show NavigationService;
 import '../../../../core/utils/utils_exports.dart'
     show BottomNavBar, CommonFunctions;
 import '../../../home_page/presentation/pages/home_page.dart';
-import '../../../map_page/presentation/mvvm/map_view_model.dart';
 import '../../../services/services_exports.dart'
     show ServicesCubit, ServicesPage;
 import '../../bottom_navigation_exports.dart'
@@ -59,11 +58,11 @@ class _BottomNavigationPageState extends State<BottomNavigationPage> {
           physics: const NeverScrollableScrollPhysics(),
           children: [
             // Home-Page
-            HomePage(),
+            const HomePage(),
             // Services-Page
             Container(),
             // Activities-Page
-            ServicesPage(),
+            const ServicesPage(),
             // Profile-Page
             Container(),
           ],

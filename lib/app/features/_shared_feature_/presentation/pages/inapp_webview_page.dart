@@ -6,9 +6,7 @@ import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
-import '../../../../core/dependency_injection/injection_container.dart';
 import '../../../../core/utils/utils_exports.dart' show CommonProperties, Log;
-import '../../../entry_point/presentation/cubit/auth_cubit.dart';
 import '../../shared_feature_exports.dart' show DefaultAppBarWidget;
 
 class InAppWebViewPage extends StatefulWidget {

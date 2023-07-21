@@ -170,9 +170,9 @@ class Picker {
           List<Widget> actions = [];
 
           if (cancel == null) {
-            String _cancelText =
+            String cancelText =
                 cancelText ?? PickerLocalizations.of(context).cancelText;
-            if (_cancelText != "") {
+            if (cancelText != "") {
               actions.add(
                 TextButton(
                     onPressed: () {
@@ -180,9 +180,10 @@ class Picker {
                       if (onCancel != null) onCancel!();
                     },
                     child: cancelTextStyle == null
-                        ? Text(_cancelText, textScaleFactor: 1,)
+                        ? Text(cancelText, textScaleFactor: 1,)
                         : DefaultTextStyle(
-                            child: Text(_cancelText, textScaleFactor: 1,), style: cancelTextStyle!)),
+                            style: cancelTextStyle!,
+                            child: Text(cancelText, textScaleFactor: 1,))),
               );
             }
           } else {
@@ -190,9 +191,9 @@ class Picker {
           }
 
           if (confirm == null) {
-            String _confirmText =
+            String confirmText =
                 confirmText ?? PickerLocalizations.of(context).confirmText;
-            if (_confirmText != null && _confirmText != "") {
+            if (confirmText != "") {
               actions.add(
                 TextButton(
                     onPressed: () {
@@ -200,10 +201,10 @@ class Picker {
                       if (onConfirm != null) onConfirm!(this, selecteds!);
                     },
                     child: confirmTextStyle == null
-                        ? Text(_confirmText, textScaleFactor: 1,)
+                        ? Text(confirmText, textScaleFactor: 1,)
                         : DefaultTextStyle(
-                            child: Text(_confirmText, textScaleFactor: 1,),
-                            style: confirmTextStyle!)),
+                            style: confirmTextStyle!,
+                            child: Text(confirmText, textScaleFactor: 1,))),
               );
             }
           } else {
@@ -330,23 +331,16 @@ class PickerWidgetState<T> extends State<_PickerWidget> {
       _wait = false;
     }
 
-    var _body = <Widget>[];
+    var body = <Widget>[];
     if (!picker!.hideHeader!) {
       if (picker!.builderHeader != null) {
-        _body.add(picker!.headerDecoration == null
+        body.add(picker!.headerDecoration == null
             ? picker!.builderHeader!(context)
             : DecoratedBox(
-                child: picker!.builderHeader!(context),
-                decoration: picker!.headerDecoration!));
+                decoration: picker!.headerDecoration!,
+                child: picker!.builderHeader!(context)));
       } else {
-        _body.add(DecoratedBox(
-          child: Directionality(
-            textDirection:
-                (picker!.isAr! ? TextDirection.rtl : TextDirection.ltr),
-            child: Row(
-              children: _buildHeaderViews()!,
-            ),
-          ),
+        body.add(DecoratedBox(
           decoration: picker!.headerDecoration ??
               BoxDecoration(
                 border: Border(
@@ -355,10 +349,17 @@ class PickerWidgetState<T> extends State<_PickerWidget> {
                 ),
                 color: picker!.headercolor ?? theme!.bottomAppBarColor,
               ),
+          child: Directionality(
+            textDirection:
+                (picker!.isAr! ? TextDirection.rtl : TextDirection.ltr),
+            child: Row(
+              children: _buildHeaderViews()!,
+            ),
+          ),
         ));
       }
     }
-    _body.add(_wait
+    body.add(_wait
         ? Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: _buildViews(),
@@ -371,10 +372,10 @@ class PickerWidgetState<T> extends State<_PickerWidget> {
             ),
           ));
 
-    if (picker!.footer != null) _body.add(picker!.footer!);
+    if (picker!.footer != null) body.add(picker!.footer!);
     Widget v = Column(
       mainAxisSize: MainAxisSize.min,
-      children: _body,
+      children: body,
     );
     if (widget.isModal != null && widget.isModal!) {
       return GestureDetector(
@@ -401,14 +402,14 @@ class PickerWidgetState<T> extends State<_PickerWidget> {
               ),
           child: picker!.cancel!));
     } else {
-      String _cancelText =
+      String cancelText =
           picker!.cancelText ?? PickerLocalizations.of(context).cancelText;
-      if (_cancelText != "") {
+      if (cancelText != "") {
         items.add(TextButton(
             onPressed: () {
               picker!.doCancel(context);
             },
-            child: Text(_cancelText,
+            child: Text(cancelText,
                 overflow: TextOverflow.ellipsis,
                 textScaleFactor: 1,
                 style: picker!.cancelTextStyle ??
@@ -429,7 +430,7 @@ class PickerWidgetState<T> extends State<_PickerWidget> {
           : DefaultTextStyle(
               style: TextStyle(
                   fontSize: Picker.defaultTextSize,
-                  color: theme!.textTheme.headline1!.color),
+                  color: theme!.textTheme.displayLarge!.color),
               child: picker!.title!),
     )));
 
@@ -441,14 +442,14 @@ class PickerWidgetState<T> extends State<_PickerWidget> {
                   fontSize: Picker.defaultTextSize),
           child: picker!.confirm!));
     } else {
-      String _confirmText =
+      String confirmText =
           picker!.confirmText ?? PickerLocalizations.of(context).confirmText;
-      if (_confirmText != "") {
+      if (confirmText != "") {
         items.add(TextButton(
             onPressed: () {
               picker!.doConfirm(context);
             },
-            child: Text(_confirmText,
+            child: Text(confirmText,
                 textScaleFactor: 1,
                 overflow: TextOverflow.ellipsis,
                 style: picker!.confirmTextStyle ??
@@ -476,7 +477,7 @@ class PickerWidgetState<T> extends State<_PickerWidget> {
     adapter.setColumn(-1);
 
     if (adapter.length > 0) {
-      var _decoration = BoxDecoration(
+      var decoration = BoxDecoration(
         color: picker!.containerColor ?? theme!.dialogBackgroundColor,
       );
 
@@ -486,15 +487,15 @@ class PickerWidgetState<T> extends State<_PickerWidget> {
           child: Container(
             padding: picker!.columnPadding,
             height: picker!.height,
-            decoration: _decoration,
+            decoration: decoration,
             child: _wait
                 ? null
                 : _StateView(
                     key: _keys[i],
                     builder: (context) {
                       adapter.setColumn(i - 1);
-                      var _length = adapter.length;
-                      var _view = CupertinoPicker.builder(
+                      var length = adapter.length;
+                      var view0 = CupertinoPicker.builder(
                         backgroundColor: picker!.backgroundColor,
                         scrollController: scrollController[i],
                         itemExtent: picker!.itemExtent!,
@@ -502,9 +503,9 @@ class PickerWidgetState<T> extends State<_PickerWidget> {
                         magnification: picker!.magnification!,
                         diameterRatio: picker!.diameterRatio!,
                         squeeze: picker!.squeeze!,
-                        onSelectedItemChanged: (int _index) {
+                        onSelectedItemChanged: (int index) {
                           if (__printDebug) debugPrint("onSelectedItemChanged");
-                          var index = _index % _length;
+                          var index = index % length;
                           picker!.selecteds![i] = index;
                           updateScrollController(i);
                           adapter.doSelect(i, index);
@@ -537,23 +538,23 @@ class PickerWidgetState<T> extends State<_PickerWidget> {
                         },
                         itemBuilder: (context, index) {
                           adapter.setColumn(i - 1);
-                          return adapter.buildItem(context, index % _length);
+                          return adapter.buildItem(context, index % length);
                         },
-                        childCount: picker!.looping! ? null : _length,
+                        childCount: picker!.looping! ? null : length,
                       );
 
                       if (!picker!.changeToFirst! &&
-                          picker!.selecteds![i] >= _length) {
+                          picker!.selecteds![i] >= length) {
                         Timer(const Duration(milliseconds: 100), () {
                           if (__printDebug) debugPrint("timer last");
                           adapter.setColumn(i - 1);
-                          var _len = adapter.length;
-                          var _index = (_len < _length ? _len : _length) - 1;
-                          scrollController[i].jumpToItem(_index);
+                          var len = adapter.length;
+                          var index = (len < length ? len : length) - 1;
+                          scrollController[i].jumpToItem(index);
                         });
                       }
 
-                      return _view;
+                      return view0;
                     },
                   ),
           ),
@@ -566,7 +567,7 @@ class PickerWidgetState<T> extends State<_PickerWidget> {
       for (int i = 0; i < picker!.delimiter!.length; i++) {
         var o = picker!.delimiter![i];
         if (o.child == null) continue;
-        var item = SizedBox(child: o.child, height: picker!.height);
+        var item = SizedBox(height: picker!.height, child: o.child);
         if (o.column! < 0) {
           items.insert(0, item);
         } else if (o.column! >= items.length) {
@@ -635,14 +636,14 @@ abstract class PickerAdapter<T> {
         Text(text!, style: (isSel! ? picker!.selectedTextStyle : null),textScaleFactor: 1,));
     if (suffix != null) items.add(suffix);
 
-    var _txtColor = Colors.black87;
-    var _txtSize = Picker.defaultTextSize;
+    var txtColor = Colors.black87;
+    var txtSize = Picker.defaultTextSize;
     if (isSel! && picker!.selectedTextStyle != null) {
       if (picker!.selectedTextStyle!.color != null) {
-        _txtColor = picker!.selectedTextStyle!.color!;
+        txtColor = picker!.selectedTextStyle!.color!;
       }
       if (picker!.selectedTextStyle!.fontSize != null) {
-        _txtSize = picker!.selectedTextStyle!.fontSize!;
+        txtSize = picker!.selectedTextStyle!.fontSize!;
       }
     }
 
@@ -653,7 +654,7 @@ abstract class PickerAdapter<T> {
             maxLines: 1,
             textAlign: picker!.textAlign,
             style: picker!.textStyle ??
-                TextStyle(color: _txtColor, fontSize: _txtSize),
+                TextStyle(color: txtColor, fontSize: txtSize),
             child: Wrap(
               children: items,
             )));
@@ -699,7 +700,7 @@ abstract class PickerAdapter<T> {
 
   /// 通知适配器数据改变
   void notifyDataChanged() {
-    if (picker != null && picker!.state != null) {
+    if (picker != null) {
       picker!.adapter!.doShow();
       picker!.adapter!.initSelects();
       for (int j = 0; j < picker!.selecteds!.length; j++) {
@@ -756,8 +757,8 @@ class PickerDataAdapter<T> extends PickerAdapter<T> {
         if (o is T) {
           item.children!.add(PickerItem<T>(value: o));
         } else if (T == String) {
-          String _v = o.toString();
-          item.children!.add(PickerItem<T>(value: _v as T));
+          String v0 = o.toString();
+          item.children!.add(PickerItem<T>(value: v0 as T));
         }
       }
     }
@@ -775,20 +776,20 @@ class PickerDataAdapter<T> extends PickerAdapter<T> {
         final Map map = item;
         if (map.isEmpty) continue;
 
-        List<T> _mapList = map.keys.toList() as List<T>;
-        for (int j = 0; j < _mapList.length; j++) {
-          var _o = map[_mapList[j]];
-          if (_o is List && _o.isNotEmpty) {
-            List<PickerItem<T>> _children = [];
+        List<T> mapList = map.keys.toList() as List<T>;
+        for (int j = 0; j < mapList.length; j++) {
+          var o = map[mapList[j]];
+          if (o is List && o.isNotEmpty) {
+            List<PickerItem<T>> children = [];
             //print('add: ${data.runtimeType.toString()}');
-            data!.add(PickerItem<T>(value: _mapList[j], children: _children));
-            _parsePickerDataItem(_o, _children);
+            data!.add(PickerItem<T>(value: mapList[j], children: children));
+            _parsePickerDataItem(o, children);
           }
         }
       } else if (T == String && !(item is! List)) {
-        String _v = item.toString();
+        String v = item.toString();
         //print('add: $_v');
-        data!.add(PickerItem<T>(value: _v as T));
+        data!.add(PickerItem<T>(value: v as T));
       }
     }
   }
@@ -858,31 +859,31 @@ class PickerDataAdapter<T> extends PickerAdapter<T> {
 
   @override
   List<T> getSelectedValues() {
-    List<T> _items = [];
+    List<T> items = [];
     if (picker!.selecteds != null) {
-      var _sLen = picker!.selecteds!.length;
+      var sLen = picker!.selecteds!.length;
       if (isArray) {
-        for (int i = 0; i < _sLen; i++) {
+        for (int i = 0; i < sLen; i++) {
           int j = picker!.selecteds![i];
           if (j < 0 ||
               data![i].children == null ||
               j >= data![i].children!.length) {
             break;
           }
-          _items.add(data![i].children![j].value!);
+          items.add(data![i].children![j].value as T);
         }
       } else {
         List<PickerItem<dynamic>> datas = data!;
-        for (int i = 0; i < _sLen; i++) {
+        for (int i = 0; i < sLen; i++) {
           int j = picker!.selecteds![i];
           if (j < 0 || j >= datas.length) break;
-          _items.add(datas[j].value);
+          items.add(datas[j].value);
           datas = datas[j].children!;
           if (datas.isEmpty) break;
         }
       }
     }
-    return _items;
+    return items;
   }
 
   _checkPickerDataLevel(List<PickerItem>? data, int? level) {
@@ -986,10 +987,10 @@ class NumberPickerAdapter extends PickerAdapter<int> {
 
   @override
   void initSelects() {
-    int _maxLevel = getMaxLevel();
+    int maxLevel = getMaxLevel();
     if (picker!.selecteds == null || picker!.selecteds!.isEmpty) {
       if (picker!.selecteds == null) picker!.selecteds = [];
-      for (int i = 0; i < _maxLevel; i++) {
+      for (int i = 0; i < maxLevel; i++) {
         int v = data![i].indexOf(data![i].initValue);
         if (v < 0) v = 0;
         picker!.selecteds!.add(v);
@@ -1015,15 +1016,15 @@ class NumberPickerAdapter extends PickerAdapter<int> {
 
   @override
   List<int> getSelectedValues() {
-    List<int> _items = [];
+    List<int> items = [];
     if (picker!.selecteds != null) {
       for (int i = 0; i < picker!.selecteds!.length; i++) {
         int j = picker!.selecteds![i];
         int v = data![i].valueOf(j);
-        _items.add(v);
+        items.add(v);
       }
     }
-    return _items;
+    return items;
   }
 }
 
@@ -1081,7 +1082,7 @@ class DateTimePickerAdapter extends PickerAdapter<DateTime> {
   /// year 0, month 1, day 2, hour 3, minute 4, sec 5, am/pm 6, hour-ap: 7
   final List<int>? customColumnType;
 
-  static const List<String>? monthsListEN = [
+  static const List<String> monthsListEN = [
     "Jan",
     "Feb",
     "Mar",
@@ -1141,14 +1142,14 @@ class DateTimePickerAdapter extends PickerAdapter<DateTime> {
     }
     // Judge whether the day is in front of the month
     // If in the front, set "needUpdatePrev" = true
-    List<int> _columnType;
+    List<int> columnType;
     if (customColumnType != null) {
-      _columnType = customColumnType!;
+      columnType = customColumnType!;
     } else {
-      _columnType = columnType[type!];
+      columnType = columnType[type!];
     }
-    var month = _columnType.indexWhere((element) => element == 1);
-    var day = _columnType.indexWhere((element) => element == 2);
+    var month = columnType.indexWhere((element) => element == 1);
+    var day = columnType.indexWhere((element) => element == 2);
     _needUpdatePrev = day < month;
   }
 
@@ -1222,7 +1223,7 @@ class DateTimePickerAdapter extends PickerAdapter<DateTime> {
   @override
   int getLength() {
     int? v = customColumnType == null
-        ? lengths[type!][_col]
+        ? lengths[type][_col]
         : columnTypeLength[customColumnType![_col]];
     if (v == 0) {
       int ye = yearEnd!;
@@ -1230,8 +1231,8 @@ class DateTimePickerAdapter extends PickerAdapter<DateTime> {
       return ye - _yearBegin + 1;
     }
     if (v == 31) return _calcDateCount(value!.hYear, value!.hMonth);
-    int _type = getColumnType(_col);
-    switch (_type) {
+    int type = getColumnType(_col);
+    switch (type) {
       case 3: // hour
         if ((minHour != null && minHour! >= 0) ||
             (maxHour != null && maxHour! <= 23)) {
@@ -1251,34 +1252,34 @@ class DateTimePickerAdapter extends PickerAdapter<DateTime> {
             return 12;
           }
         } else {
-          var _min = 0;
-          var _max = 0;
+          var min = 0;
+          var max = 0;
           if (picker!.selecteds![_colAP] == 0) {
             // am
-            _min = minHour == null
+            min = minHour == null
                 ? 1
                 : minHour! >= 12
                     ? 12
                     : minHour! + 1;
-            _max = maxHour == null
+            max = maxHour == null
                 ? 12
                 : maxHour! >= 12
                     ? 12
                     : maxHour! + 1;
           } else {
             // pm
-            _min = minHour == null
+            min = minHour == null
                 ? 1
                 : minHour! >= 12
                     ? 24 - minHour! - 12
                     : 1;
-            _max = maxHour == null
+            max = maxHour == null
                 ? 12
                 : maxHour! >= 12
                     ? maxHour! - 12
                     : 1;
           }
-          return _max > _min ? _max - _min + 1 : _min - _max + 1;
+          return max > min ? max - min + 1 : min - max + 1;
         }
         break;
     }
@@ -1295,8 +1296,8 @@ class DateTimePickerAdapter extends PickerAdapter<DateTime> {
   @override
   bool needUpdatePrev(int curIndex) {
     if (_needUpdatePrev) {
-      var _curType = getColumnType(curIndex);
-      return _curType == 1 || _curType == 0;
+      var curType = getColumnType(curIndex);
+      return curType == 1 || curType == 0;
     }
     return false;
   }
@@ -1312,10 +1313,10 @@ class DateTimePickerAdapter extends PickerAdapter<DateTime> {
   void initSelects() {
     value ??= HijriCalendar.now();
     _colAP = _getAPColIndex();
-    int _maxLevel = getMaxLevel();
+    int maxLevel = getMaxLevel();
     if (picker!.selecteds == null || picker!.selecteds!.isEmpty) {
       if (picker!.selecteds == null) picker!.selecteds = [];
-      for (int i = 0; i < _maxLevel; i++) {
+      for (int i = 0; i < maxLevel; i++) {
         picker!.selecteds!.add(0);
       }
     }
@@ -1323,53 +1324,53 @@ class DateTimePickerAdapter extends PickerAdapter<DateTime> {
 
   @override
   Widget buildItem(BuildContext context, int index) {
-    String _text = "";
+    String text = "";
     int colType = getColumnType(_col);
     switch (colType) {
       case 0:
         if (twoDigitYear != null && twoDigitYear!) {
-          _text = "${_yearBegin + index}";
-          var _l = _text.length;
-          _text =
-              "${_text.substring(_l - (_l - 2), _l)}${_checkStr(yearSuffix)}";
+          text = "${_yearBegin + index}";
+          var l = text.length;
+          text =
+              "${text.substring(l - (l - 2), l)}${_checkStr(yearSuffix)}";
         } else {
-          _text = "${_yearBegin + index}${_checkStr(yearSuffix)}";
+          text = "${_yearBegin + index}${_checkStr(yearSuffix)}";
         }
         break;
       case 1:
         if (isNumberMonth!) {
-          _text = "${index + 1}${_checkStr(monthSuffix!)}";
+          text = "${index + 1}${_checkStr(monthSuffix!)}";
         } else {
           if (months != null) {
-            _text = months![index];
+            text = months![index];
           } else {
-            List _months = PickerLocalizations.of(context).months;
-            _text = "${_months[index]}";
+            List months = PickerLocalizations.of(context).months;
+            text = "${months[index]}";
           }
         }
         break;
       case 2:
-        _text = "${index + 1}${_checkStr(daySuffix)}";
+        text = "${index + 1}${_checkStr(daySuffix)}";
         break;
       case 3:
-        _text = intToStr(index + (minHour ?? 0));
+        text = intToStr(index + (minHour ?? 0));
         break;
       case 5:
-        _text = intToStr(index);
+        text = intToStr(index);
         break;
       case 4:
         if (minuteInterval == null || minuteInterval! < 2) {
-          _text = intToStr(index);
+          text = intToStr(index);
         } else {
-          _text = intToStr(index * minuteInterval!);
+          text = intToStr(index * minuteInterval!);
         }
         break;
       case 6:
-        List _ampm = strAMPM ?? PickerLocalizations.of(context).ampm;
-        _text = "${_ampm[index]}";
+        List ampm = strAMPM ?? PickerLocalizations.of(context).ampm;
+        text = "${ampm[index]}";
         break;
       case 7:
-        _text = intToStr(index +
+        text = intToStr(index +
             (minHour == null
                 ? 0
                 : (picker!.selecteds![_colAP] == 0 ? minHour : 0)!) +
@@ -1377,7 +1378,7 @@ class DateTimePickerAdapter extends PickerAdapter<DateTime> {
         break;
     }
 
-    return makeText(null, _text, picker!.selecteds![_col] == index);
+    return makeText(null, text, picker!.selecteds![_col] == index);
   }
 
   @override
@@ -1397,8 +1398,8 @@ class DateTimePickerAdapter extends PickerAdapter<DateTime> {
   @override
   void doShow() {
     if (_yearBegin == 0) getLength();
-    var _maxLevel = getMaxLevel();
-    for (int i = 0; i < _maxLevel; i++) {
+    var maxLevel = getMaxLevel();
+    for (int i = 0; i < maxLevel; i++) {
       int colType = getColumnType(i);
       switch (colType) {
         case 0:
@@ -1478,12 +1479,12 @@ class DateTimePickerAdapter extends PickerAdapter<DateTime> {
         if (h > 23) h = 0;
         break;
     }
-    int __day = _calcDateCount(year, month);
+    int day0 = _calcDateCount(year, month);
 
-    bool _isChangeDay = false;
-    if (day > __day) {
-      day = __day;
-      _isChangeDay = true;
+    bool isChangeDay = false;
+    if (day > day0) {
+      day = day0;
+      isChangeDay = true;
     }
     value = HijriCalendar()
       ..hYear = year
@@ -1498,7 +1499,7 @@ class DateTimePickerAdapter extends PickerAdapter<DateTime> {
         value!.isAfter(maxValue!.hYear, maxValue!.hMonth, maxValue!.hDay)) {
       value = maxValue;
       notifyDataChanged();
-    } else if (_isChangeDay && _colDay >= 0) {
+    } else if (isChangeDay && _colDay >= 0) {
       doShow();
       picker!.updateColumn(_colDay);
     }

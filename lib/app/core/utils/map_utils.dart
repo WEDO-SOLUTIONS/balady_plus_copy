@@ -1,4 +1,3 @@
-import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -29,16 +28,16 @@ class MapUtils {
         userLocationMarker = onValue;
       });
 
-      final Uint8List? pinMarkerDarkGreenIcon =
+      final Uint8List pinMarkerDarkGreenIcon =
           await getBytesFromAsset(Constants.pinDarkGreenMarkerLocation, 70);
 
-      pinMarkerDarkGreen = BitmapDescriptor.fromBytes(pinMarkerDarkGreenIcon!);
+      pinMarkerDarkGreen = BitmapDescriptor.fromBytes(pinMarkerDarkGreenIcon);
 
-      final Uint8List? pinMarkerLightGreenIcon =
+      final Uint8List pinMarkerLightGreenIcon =
           await getBytesFromAsset(Constants.pinLightGreenMarkerLocation, 70);
 
       pinMarkerLightGreen =
-          BitmapDescriptor.fromBytes(pinMarkerLightGreenIcon!);
+          BitmapDescriptor.fromBytes(pinMarkerLightGreenIcon);
     } catch (ex) {}
   }
 

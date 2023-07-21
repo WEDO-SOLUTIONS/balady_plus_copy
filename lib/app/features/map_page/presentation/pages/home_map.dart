@@ -2,7 +2,6 @@ import 'package:balady_plus/app/features/map_page/presentation/dialogs/map_layer
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
-import '../../../_shared_feature_/presentation/buttons/elevated_button_widgets.dart';
 import '../../../_shared_feature_/presentation/components/bottom_sheets/bottom_sheet_with_actions.dart';
 import '../../data/model/layers.dart';
 
@@ -11,7 +10,6 @@ import 'package:provider/provider.dart';
 import '../../../../core/dependency_injection/injection_container.dart';
 import '../../../../core/utils/constants/constants.dart';
 import '../../../../core/utils/utils_exports.dart' show AppColor, IconPath;
-import '../../../_shared_feature_/presentation/components/bottom_sheets/bottom_sheet_list.dart';
 import '../../../_shared_feature_/presentation/dialogs/bottom_sheet_dialogs.dart';
 import '../mvvm/layers_gis_view_model.dart';
 import '../mvvm/map_view_model.dart';

@@ -17,7 +17,7 @@ class MultiSelectionWithSearchDialog extends StatefulWidget {
   final String? title;
   final String? searchHint;
 
-  MultiSelectionWithSearchDialog(
+  const MultiSelectionWithSearchDialog(
       {Key? key,
       required this.onSelect,
       this.selectedItem,

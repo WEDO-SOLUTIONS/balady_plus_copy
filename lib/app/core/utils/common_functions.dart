@@ -1,7 +1,6 @@
 import 'dart:convert' show base64Decode, base64Encode, utf8;
 import 'dart:io' show File;
 import 'dart:typed_data' show Uint8List;
-import 'dart:ui';
 
 import 'package:balady_plus/app/core/utils/constants/remote_config.dart';
 import 'package:bot_toast/bot_toast.dart';
@@ -16,7 +15,6 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:open_file/open_file.dart' show OpenFile;
 import 'package:path_provider/path_provider.dart' show getTemporaryDirectory;
 
-import 'package:flutter_bloc/flutter_bloc.dart' show EventTransformer;
 import 'package:permission_handler/permission_handler.dart';
 import 'package:stream_transform/stream_transform.dart' show RateLimit, Switch;
 import 'package:url_launcher/url_launcher.dart'
@@ -308,12 +306,13 @@ class CommonFunctions {
           CommonProperties.uuidInstance.v5(v1UUID, CommonProperties.deviceId);
       print("v5UUID");
       print(v5UUID);
-      if (v5UUID.isNotEmpty)
+      if (v5UUID.isNotEmpty) {
         return v5UUID.replaceAll("-", "");
-      else if (v1UUID.isNotEmpty)
+      } else if (v1UUID.isNotEmpty) {
         return v1UUID.replaceAll("-", "");
-      else
+      } else {
         return DateTime.now().millisecondsSinceEpoch.toString();
+      }
     } catch (ex) {
       print("EXXXXXX GUId");
       print(ex);
@@ -609,8 +608,9 @@ class CommonFunctions {
 
   static externalLaunch(String url) async {
     final Uri convertUrl = Uri.parse(url);
-    if (!await launchUrl(convertUrl, mode: LaunchMode.externalApplication))
+    if (!await launchUrl(convertUrl, mode: LaunchMode.externalApplication)) {
       throw 'Could not launch $convertUrl';
+    }
   }
 
   static String getCarPlateEnlgishLetters(String value) {
@@ -644,7 +644,7 @@ class CommonProperties {
   static String? sessionId;
   static String? fcmToken;
 
-  static Uuid uuidInstance = Uuid();
+  static Uuid uuidInstance = const Uuid();
 
   static String get token => sl<EntryPointCubit>().state.token?.token ?? "";
   static String get appCookie =>

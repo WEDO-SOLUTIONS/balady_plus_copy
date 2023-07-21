@@ -681,12 +681,11 @@ class CustomTextButtonWithIconWidget extends StatelessWidget {
     return TextButton(
       onPressed: btnPressed,
       style: TextButton.styleFrom(
-        padding: padding,
+        foregroundColor: btnEffectColor ?? btnBackgroundColor ?? btnTextColor, padding: padding,
         backgroundColor: btnBackgroundColor,
         alignment: btnAlignment,
         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
         visualDensity: VisualDensity.compact,
-        primary: btnEffectColor ?? btnBackgroundColor ?? btnTextColor,
       ),
       child: Row(
         mainAxisAlignment: mainAxisAlignment,
@@ -754,8 +753,7 @@ class CustomTextButtonWithIconWidgetWithFlexible extends StatelessWidget {
     return TextButton(
       onPressed: btnPressed,
       style: TextButton.styleFrom(
-        primary: btnEffectColor ?? btnBackgroundColor ?? btnTextColor,
-        backgroundColor: btnBackgroundColor,
+        foregroundColor: btnEffectColor ?? btnBackgroundColor ?? btnTextColor, backgroundColor: btnBackgroundColor,
         padding: padding,
       ),
       child: Row(
@@ -833,8 +831,7 @@ class CustomElevatedButtonWidget1 extends StatelessWidget {
   Widget build(BuildContext context) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
-        padding: EdgeInsets.zero,
-        primary: btnColor,
+        padding: EdgeInsets.zero, backgroundColor: btnColor,
         // background
         // onPrimary: Colors.yellow, // foreground
         alignment: btnAlignment,
@@ -1021,7 +1018,7 @@ class CustomElevatedButtonWithIconWidget1 extends StatelessWidget {
   Widget build(BuildContext context) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
-        primary: btnColor,
+        backgroundColor: btnColor,
         // background
         // onPrimary: Colors.yellow, // foreground
         alignment: btnAlignment,
@@ -1295,8 +1292,8 @@ class LabelTextWithOptional extends StatelessWidget {
   final TextAlign labelTextAlign;
   final bool? showOptional;
 
-  LabelTextWithOptional(
-      {required this.label,
+  const LabelTextWithOptional(
+      {super.key, required this.label,
       this.labelColor = AppColor.blackModern700Light,
       this.labelSize = 13.0,
       this.labelTextAlign = TextAlign.start,
@@ -1318,12 +1315,12 @@ class LabelTextWithOptional extends StatelessWidget {
                   fontFamily: GeneralKey.appFontType,
                   fontWeight: FontWeight.bold),
             ),
-          if (showOptional == true) TextSpan(text: " "),
+          if (showOptional == true) const TextSpan(text: " "),
           if (showOptional == true)
             TextSpan(
               text: ('optional').tr(),
-              style: TextStyle(
-                  color: const Color(0xffbabbbb),
+              style: const TextStyle(
+                  color: Color(0xffbabbbb),
                   fontSize: 13.0,
                   fontFamily: GeneralKey.appFontType,
                   fontWeight: FontWeight.bold),

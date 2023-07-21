@@ -13,17 +13,6 @@ import 'package:dgis_map_platform_interface/src/control_handlers/traffic_and_par
 import 'package:dgis_map_platform_interface/src/control_handlers/visible_rect_event_handler.dart';
 import 'package:dgis_map_platform_interface/src/control_handlers/zoom_event_handler.dart';
 import 'package:dgis_map_platform_interface/src/control_handlers/navigation/dashboard_event_handler.dart';
-import 'package:dgis_map_platform_interface/src/dgis_map_platform_interface.dart';
-import 'package:dgis_map_platform_interface/src/events/compass_bearing_events.dart';
-import 'package:dgis_map_platform_interface/src/events/marker_tap_event.dart';
-import 'package:dgis_map_platform_interface/src/events/navigation_event.dart';
-import 'package:dgis_map_platform_interface/src/events/object_tap_events.dart';
-import 'package:dgis_map_platform_interface/src/events/route_changed_events.dart';
-import 'package:dgis_map_platform_interface/src/events/route_options_event.dart';
-import 'package:dgis_map_platform_interface/src/events/parking_state_event.dart';
-import 'package:dgis_map_platform_interface/src/events/traffic_state_event.dart';
-import 'package:dgis_map_platform_interface/src/events/visible_rect_events.dart';
-import 'package:dgis_map_platform_interface/src/pigeons/messages.g.dart';
 import 'package:flutter/foundation.dart' show Factory, defaultTargetPlatform;
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -31,15 +20,8 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 
 import 'control_handlers/navigation/message_event_handler.dart';
-import 'events/navi_message_events.dart';
-import 'events/navi_speed_event.dart';
 import 'control_handlers/navigation/compass_event_handler.dart';
-import 'events/navi_maneuver_event.dart';
 import 'control_handlers/route_event_handler.dart';
-import 'events/indoor_events.dart';
-import 'events/navi_dashboard_event.dart';
-import 'events/location_control_events.dart';
-import 'events/zoom_control_events.dart';
 
 // This is used in the platform side to register the view.
 const String _viewType = 'com.dgis.map_view';

@@ -1,4 +1,3 @@
-import 'dart:convert';
 
 import 'package:equatable/equatable.dart';
 import 'package:hijri/hijri_calendar.dart';
@@ -84,7 +83,7 @@ class SsoUserInfo extends Equatable {
   }
 
   String getFirstAndLastName() {
-    return getFirstName() + " " + getLastName();
+    return "${getFirstName()} ${getLastName()}";
   }
 
   String getIdType() {
@@ -138,23 +137,23 @@ class SsoUserInfo extends Equatable {
 
       String year = hijriCalendar.hYear.toString();
       String month = hijriCalendar.hMonth.toString().length == 1
-          ? "0" + hijriCalendar.hMonth.toString()
+          ? "0${hijriCalendar.hMonth}"
           : hijriCalendar.hMonth.toString();
       String day = hijriCalendar.hDay.toString().length == 1
-          ? "0" + hijriCalendar.hDay.toString()
+          ? "0${hijriCalendar.hDay}"
           : hijriCalendar.hDay.toString();
 
       if (dateDivided[2] > 1800) {
-        return year + "/" + month + "/" + day;
+        return "$year/$month/$day";
       } else {
         String year = dateDivided[2].toString();
         String month = dateDivided[1].toString().length == 1
-            ? "0" + dateDivided[1].toString()
+            ? "0${dateDivided[1]}"
             : dateDivided[1].toString();
         String day = dateDivided[0].toString().length == 1
-            ? "0" + dateDivided[0].toString()
+            ? "0${dateDivided[0]}"
             : dateDivided[0].toString();
-        return year + "/" + month + "/" + day;
+        return "$year/$month/$day";
       }
     } catch (ex) {
       return applicantDob;
@@ -169,7 +168,7 @@ class SsoUserInfo extends Equatable {
 
   String getPhone() {
     return phone != null
-        ? (!phone!.startsWith("0") ? "0" + phone! : phone!)
+        ? (!phone!.startsWith("0") ? "0${phone!}" : phone!)
         : "";
   }
 

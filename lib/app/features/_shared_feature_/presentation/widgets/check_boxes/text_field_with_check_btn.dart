@@ -16,8 +16,8 @@ class TextWithCheckBtn extends StatefulWidget {
   final Function validate;
   final TextEditingController controller;
 
-  TextWithCheckBtn(
-      {required this.title,
+  const TextWithCheckBtn(
+      {super.key, required this.title,
       this.hint,
       required this.controller,
       this.textHint,
@@ -65,7 +65,7 @@ class _TextWithCheckBtnState extends State<TextWithCheckBtn> {
                     widget.verify();
                     FocusScope.of(context).unfocus();
                   },
-            child: Container(
+            child: SizedBox(
               width: 100,
               height: 50,
               child: Align(
@@ -85,7 +85,7 @@ class _TextWithCheckBtnState extends State<TextWithCheckBtn> {
                     CustomTextWidget(
                       widget.isValidate ? ("done_check").tr() : ("check").tr(),
                       fontColor:
-                          widget.isValidate ? Colors.black : Color(0xff389492),
+                          widget.isValidate ? Colors.black : const Color(0xff389492),
                       fontSize: 14,
                     ),
                   ],
