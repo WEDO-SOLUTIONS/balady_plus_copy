@@ -163,8 +163,6 @@ class ObjectTapHandler {
             return
         }
         
-        
-        
         let markers = message.objects.map{
             let position = GeoPointWithElevation(
                 latitude:  Latitude(value: $0.position.latitude.doubleValue),
