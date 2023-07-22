@@ -37,7 +37,7 @@ class ServiceCardParameter extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               DrawIconBasedTypeWidget(
-                icon: iconName,
+                icon: Image.asset(iconName),
                 iconSize: 16,
               ),
               const SizedBox(width: 4),

@@ -129,13 +129,32 @@ Map<String, dynamic> servicesConfig = {
     {
       "id": 2,
       "icon": "general_inquiries",
-      "3d_icon": null,
+      "3d_icon": "assets/images/home_icon_1.png",
       "order": 2,
       "isNew": false,
       "isImportant": true,
       "action": {"type": "dialog", "value": "/general-inquiries"},
       "ar": {
-        "title": "الإستفسارات العامة",
+        "title": "إصدار رخصة تجارية",
+        "description": "ارسل استفسارك عن كل خدمه",
+        "tag": "الخدمات"
+      },
+      "en": {
+        "title": "General Inquiries",
+        "description": "Send your inquiry about any service",
+        "tag": "Services"
+      }
+    },
+    {
+      "id": 2,
+      "icon": "general_inquiries",
+      "3d_icon": "assets/images/home_icon_2.png",
+      "order": 2,
+      "isNew": true,
+      "isImportant": false,
+      "action": {"type": "dialog", "value": "/general-inquiries"},
+      "ar": {
+        "title": "إصدار شهادة صحية",
         "description": "ارسل استفسارك عن كل خدمه",
         "tag": "الخدمات"
       },

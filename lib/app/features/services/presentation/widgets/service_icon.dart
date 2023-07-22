@@ -56,14 +56,14 @@ class ServiceIcon extends StatelessWidget {
             service.action.type == ServiceAction.dialog) {
           await BottomSheetDialog.showDraggableSheet(context,
               child: BottomSheetWithActions(
-                title: "daem_select_category".tr(),
+                title: "اختر التصنيف".tr(),
                 body: GeneralInquiryTypeDialog(),
               ));
         } else if (service.id == 5 &&
             service.action.type == ServiceAction.dialog) {
           await BottomSheetDialog.showDraggableSheet(context,
               child: BottomSheetWithActions(
-                title: "daem_select_category".tr(),
+                title: "اختر التصنيف".tr(),
                 body: MSRTypeDialog(),
               ));
         } else if (service.id == 2 && service.action.value == "/prayerTimes") {
