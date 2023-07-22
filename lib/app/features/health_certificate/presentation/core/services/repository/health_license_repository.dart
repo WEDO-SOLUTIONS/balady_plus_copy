@@ -136,6 +136,7 @@ class HealthLicenseRepository {
       "x": x.toString(),
       "y": y.toString(),
     });
+
     bool state = body['state'];
     dynamic data = body['data'];
     String error =

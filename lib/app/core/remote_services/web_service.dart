@@ -306,8 +306,8 @@ class WebService {
 
     String queryString = "";
     var data = body != null ? json.encode(body) : null;
-    //print(data);
-
+    print(data);
+    print(url);
     if (relativePath != null) {
       queryString = relativePath;
     }

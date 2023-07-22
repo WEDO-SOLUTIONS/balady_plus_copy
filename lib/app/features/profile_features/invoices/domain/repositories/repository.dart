@@ -3,12 +3,13 @@ import 'package:dartz/dartz.dart';
 import '../../../../../core/errors/errors_exports.dart' show Failure;
 import '../../invoices_exports.dart'
     show
+        InvoiceDetailsEntity,
+        InvoiceDetailsParamsModel,
         InvoiceEntity,
         InvoiceStatusEntity,
         InvoiceSubTypeEntity,
         InvoiceSubTypeParamsModel,
         InvoiceTypeEntity,
-        InvoiceDetailsParamsModel,
         InvoicesPrams;
 
 abstract class InvoicesRepository {
@@ -20,7 +21,7 @@ abstract class InvoicesRepository {
   Future<Either<Failure, List<InvoiceSubTypeEntity>>> getInvoiceSubTypes(
     InvoiceSubTypeParamsModel params,
   );
-  Future<Either<Failure, InvoiceEntity>> getInvoiceDetails(
+  Future<Either<Failure, InvoiceDetailsEntity>> getInvoiceDetails(
     InvoiceDetailsParamsModel params,
   );
 }

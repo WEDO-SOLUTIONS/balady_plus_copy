@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
+import '../../../../../../core/utils/enums/date_form.dart';
 import '../../../../../_shared_feature_/shared_feature_exports.dart'
     show FilterDatePicker;
 import '../../../invoices_exports.dart'
@@ -19,9 +20,12 @@ class InvoicesIssueDateFilter extends StatelessWidget {
         return FilterDatePicker(
           title: "invoice_issue_date".tr(),
           initialDate: state.selectedInvoiceIssueDate,
-          onChange: (selectedDate) {
+          initialDateForm: state.dateFormForIssue ?? DateForm.gregorian,
+          onChange: (selectedDate, dateForm) {
+            print("FFDVVD  $dateForm");
             BlocProvider.of<InvoicesBloc>(context).add(
-              InvoiceIssueDateSelectedEvent(date: selectedDate),
+              InvoiceIssueDateSelectedEvent(
+                  date: selectedDate, formDate: dateForm),
             );
           },
         );

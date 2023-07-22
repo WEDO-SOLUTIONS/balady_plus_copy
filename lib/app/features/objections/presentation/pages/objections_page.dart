@@ -73,12 +73,13 @@ class ObjectionsPage extends StatelessWidget {
                       if (actionTaked != true && context.mounted) {
                         context.read<ObjectionsBloc>().add(
                               ResetRequestsFiltersEvent(
-                                selectedSortType: sortType,
-                                selectedRequestStatus: selectedRequestStatus,
-                                selectedRequestType: selectedRequestType,
-                                selectedRequestSubType: selectedRequestSubType,
-                                selectedRequestDate: selectedRequestDate,
-                              ),
+                                  selectedSortType: sortType,
+                                  selectedRequestStatus: selectedRequestStatus,
+                                  selectedRequestType: selectedRequestType,
+                                  selectedRequestSubType:
+                                      selectedRequestSubType,
+                                  selectedRequestDate: selectedRequestDate,
+                                  dateForm: state.dateForm),
                             );
                       }
                     },

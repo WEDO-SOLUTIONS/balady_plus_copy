@@ -180,9 +180,16 @@ class Picker {
                       if (onCancel != null) onCancel!();
                     },
                     child: cancelTextStyle == null
-                        ? Text(_cancelText, textScaleFactor: 1,)
+                        ? Text(
+                            _cancelText,
+                            textScaleFactor: 1,
+                          )
                         : DefaultTextStyle(
-                            child: Text(_cancelText, textScaleFactor: 1,), style: cancelTextStyle!)),
+                            child: Text(
+                              _cancelText,
+                              textScaleFactor: 1,
+                            ),
+                            style: cancelTextStyle!)),
               );
             }
           } else {
@@ -200,9 +207,15 @@ class Picker {
                       if (onConfirm != null) onConfirm!(this, selecteds!);
                     },
                     child: confirmTextStyle == null
-                        ? Text(_confirmText, textScaleFactor: 1,)
+                        ? Text(
+                            _confirmText,
+                            textScaleFactor: 1,
+                          )
                         : DefaultTextStyle(
-                            child: Text(_confirmText, textScaleFactor: 1,),
+                            child: Text(
+                              _confirmText,
+                              textScaleFactor: 1,
+                            ),
                             style: confirmTextStyle!)),
               );
             }
@@ -632,7 +645,11 @@ abstract class PickerAdapter<T> {
     List<Widget> items = [];
     if (postfix != null) items.add(postfix);
     items.add(child ??
-        Text(text!, style: (isSel! ? picker!.selectedTextStyle : null),textScaleFactor: 1,));
+        Text(
+          text!,
+          style: (isSel! ? picker!.selectedTextStyle : null),
+          textScaleFactor: 1,
+        ));
     if (suffix != null) items.add(suffix);
 
     var _txtColor = Colors.black87;

@@ -23,6 +23,13 @@ class InvoicesState extends Equatable {
   final String? requestNumberQuery;
   //sort type
   final SortType sortType;
+
+  // Date Form
+  final DateForm? dateFormForIssue;
+
+  // Date Form
+  final DateForm? dateFormForDueDate;
+
   //error message
   final String? errorMessage;
   // pagination
@@ -49,6 +56,8 @@ class InvoicesState extends Equatable {
     this.sortType = SortType.desc,
     this.errorMessage,
     this.page = 0,
+    this.dateFormForIssue,
+    this.dateFormForDueDate,
     this.limit = PaginationConstants.limit,
     this.noMoreData = false,
   });
@@ -74,6 +83,8 @@ class InvoicesState extends Equatable {
     Nullable<String?>? invoiceNumberQuery,
     Nullable<String?>? requestNumberQuery,
     SortType? sortType,
+    Nullable<DateForm?>? dateFormForIssue,
+    Nullable<DateForm?>? dateFormForDueDate,
     String? errorMessage,
     int? page,
     int? limit,
@@ -85,27 +96,39 @@ class InvoicesState extends Equatable {
         invoiceStatusesStatus:
             invoiceStatusesStatus ?? this.invoiceStatusesStatus,
         invoiceStatuses: invoiceStatuses ?? this.invoiceStatuses,
-        selectedInvoiceStatus:
-            selectedInvoiceStatus == null ? this.selectedInvoiceStatus : selectedInvoiceStatus.value,
+        selectedInvoiceStatus: selectedInvoiceStatus == null
+            ? this.selectedInvoiceStatus
+            : selectedInvoiceStatus.value,
         invoiceTypesStatus: invoiceTypesStatus ?? this.invoiceTypesStatus,
         invoiceTypes: invoiceTypes ?? this.invoiceTypes,
-        selectedInvoiceType:
-            selectedInvoiceType == null ? this.selectedInvoiceType : selectedInvoiceType.value,
+        selectedInvoiceType: selectedInvoiceType == null
+            ? this.selectedInvoiceType
+            : selectedInvoiceType.value,
         invoiceSubTypesStatus:
             invoiceSubTypesStatus ?? this.invoiceSubTypesStatus,
         invoiceSubTypes: invoiceSubTypes ?? this.invoiceSubTypes,
         selectedInvoiceSubType: selectedInvoiceSubType == null
             ? this.selectedInvoiceSubType
             : selectedInvoiceSubType.value,
-        selectedInvoiceDueDate:
-            selectedInvoiceDueDate == null ? this.selectedInvoiceDueDate : selectedInvoiceDueDate.value,
-        selectedInvoiceIssueDate:
-            selectedInvoiceIssueDate == null ? this.selectedInvoiceIssueDate : selectedInvoiceIssueDate.value,
-        invoiceNumberQuery:
-            invoiceNumberQuery == null ? this.invoiceNumberQuery : invoiceNumberQuery.value,  
-        requestNumberQuery:
-            requestNumberQuery == null ? this.requestNumberQuery : requestNumberQuery.value,
+        selectedInvoiceDueDate: selectedInvoiceDueDate == null
+            ? this.selectedInvoiceDueDate
+            : selectedInvoiceDueDate.value,
+        selectedInvoiceIssueDate: selectedInvoiceIssueDate == null
+            ? this.selectedInvoiceIssueDate
+            : selectedInvoiceIssueDate.value,
+        invoiceNumberQuery: invoiceNumberQuery == null
+            ? this.invoiceNumberQuery
+            : invoiceNumberQuery.value,
+        requestNumberQuery: requestNumberQuery == null
+            ? this.requestNumberQuery
+            : requestNumberQuery.value,
         sortType: sortType ?? this.sortType,
+        dateFormForIssue: dateFormForIssue == null
+            ? this.dateFormForIssue
+            : dateFormForIssue.value,
+        dateFormForDueDate: dateFormForDueDate == null
+            ? this.dateFormForDueDate
+            : dateFormForDueDate.value,
         errorMessage: errorMessage,
         page: page ?? this.page,
         limit: limit ?? this.limit,
@@ -131,6 +154,8 @@ class InvoicesState extends Equatable {
         requestNumberQuery,
         sortType,
         errorMessage,
+        dateFormForDueDate,
+        dateFormForIssue,
         page,
         limit,
         noMoreData,

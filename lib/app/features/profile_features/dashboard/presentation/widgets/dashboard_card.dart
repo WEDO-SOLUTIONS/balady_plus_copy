@@ -27,6 +27,11 @@ class DashboardCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<DashboardBloc, DashboardState>(
       builder: (context, state) {
+        String name = state.cardsStates[card]?.statisticsStatuses ==
+                BlocRequestStatus.submissionGetSuccess
+            ? "${card.name} (${state.cardsStates[card]?.totalCount})"
+            : card.name;
+
         return Container(
           margin: const EdgeInsets.only(top: 16),
           padding: const EdgeInsets.all(16),
@@ -38,26 +43,25 @@ class DashboardCard extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  DrawIconBasedTypeWidget(icon: cardIcon),
-                  const SizedBox(width: 4),
-                  Flexible(
-                    child: CustomTextWidget(
-                      card.name,
-                      maxLines: 4,
-                      textAlign: TextAlign.start,
-                      textStyle: AppStyle.cardTitleTextStle,
+                  Expanded(
+                    flex: 3,
+                    child: Row(
+                      children: [
+                        DrawIconBasedTypeWidget(icon: cardIcon),
+                        const SizedBox(width: 4),
+                        Flexible(
+                          child: CustomTextWidget(
+                            name,
+                            maxLines: 4,
+                            textAlign: TextAlign.start,
+                            textStyle: AppStyle.cardTitleTextStle,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                  CustomHorizontalSpace(width: 8),
-                  if (state.cardsStates[card]?.statisticsStatuses ==
-                      BlocRequestStatus.submissionGetSuccess)
-                    CustomTextWidget(
-                      state.cardsStates[card]?.totalCount.toString() ?? "",
-                      textAlign: TextAlign.start,
-                      textStyle: AppStyle.cardTitleTextStle,
-                    ),
-                  Spacer(),
-                  DashboardProductDropDown(card: card),
+                  Expanded(
+                      flex: 1, child: DashboardProductDropDown(card: card)),
                 ],
               ),
               DashboardCardStatistics(card: card),

@@ -29,6 +29,10 @@ class RequestsState extends Equatable {
   final String? requestNumberQuery;
   //sort type
   final SortType sortType;
+
+  // Date Form
+  final DateForm? dateForm;
+
   //error message
   final String? errorMessage;
   // pagination
@@ -58,6 +62,7 @@ class RequestsState extends Equatable {
     this.requestNumberQuery,
     this.sortType = SortType.desc,
     this.errorMessage,
+    this.dateForm,
     this.page = 0,
     this.limit = PaginationConstants.limit,
     this.noMoreData = false,
@@ -88,6 +93,7 @@ class RequestsState extends Equatable {
     Nullable<DateTime?>? selectedRequestDate,
     String? requestNumberQuery,
     SortType? sortType,
+    Nullable<DateForm?>? dateForm,
     String? errorMessage,
     int? page,
     int? limit,
@@ -129,6 +135,7 @@ class RequestsState extends Equatable {
           : selectedRequestDate.value,
       requestNumberQuery: requestNumberQuery ?? this.requestNumberQuery,
       sortType: sortType ?? this.sortType,
+      dateForm: dateForm == null ? this.dateForm : dateForm.value,
       errorMessage: errorMessage ?? this.errorMessage,
       page: page ?? this.page,
       limit: limit ?? this.limit,
@@ -155,6 +162,7 @@ class RequestsState extends Equatable {
         requestSubTypes: requestSubTypes,
         selectedRequestSubType: null,
         selectedRequestDate: null,
+        dateForm: null,
         requestNumberQuery: requestNumberQuery,
         sortType: sortType,
         errorMessage: errorMessage,
@@ -184,6 +192,7 @@ class RequestsState extends Equatable {
         selectedRequestSubType,
         selectedRequestDate,
         requestNumberQuery,
+        dateForm,
         sortType,
         errorMessage,
         page,

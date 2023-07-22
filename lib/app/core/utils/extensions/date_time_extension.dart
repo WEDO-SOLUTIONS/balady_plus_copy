@@ -10,7 +10,8 @@ extension DateTimeExtension on DateTime {
   }
 
   String toHijriFormattedDate() {
-    final date = HijriCalendar.fromDate(this).toFormat("yyyy/mm/dd");
+    final date = CommonFunctions.mapARNumbersToENNumbers(
+        HijriCalendar.fromDate(this).toFormat("yyyy/mm/dd"));
     return date;
   }
 

@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
-import '../../../../../core/utils/utils_exports.dart' show AppColor, IconPath;
+import '../../../../../core/utils/extensions/number_text_input_formatter.dart';
+import '../../../../../core/utils/utils_exports.dart'
+    show AppColor, CommonFunctions, IconPath;
 import '../../../../_shared_feature_/shared_feature_exports.dart';
 
 class AppBarSeachBar extends StatelessWidget implements PreferredSizeWidget {
@@ -31,7 +33,11 @@ class AppBarSeachBar extends StatelessWidget implements PreferredSizeWidget {
         ),
         keyboardType: TextInputType.number,
         inputFormatters: [
-          FilteringTextInputFormatter.digitsOnly,
+          NumberTextInputFormatter(onError: (bool isValid) {
+            //  if (!isValid)
+            //    CommonFunctions.showError("only_english_numbers".tr());
+          }),
+          //FilteringTextInputFormatter.digitsOnly,
         ],
         borderColor: AppColor.primary900Light16,
         onChanged: (value) {

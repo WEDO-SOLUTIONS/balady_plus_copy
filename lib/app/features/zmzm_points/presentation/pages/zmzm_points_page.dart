@@ -46,7 +46,7 @@ class _ZmZmPointsPageState extends State<ZmZmPointsPage> {
                 padding: EdgeInsets.all(16),
                 child: state.selectedCity == null
                     ? EmptyListWidget(
-                        title: "no_data".tr(),
+                        title: "no_data_shown".tr(),
                       )
                     : ListView.builder(
                         itemCount: items.length,

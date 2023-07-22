@@ -74,8 +74,10 @@ class InvoicesLoadMoreEvent extends InvoicesEvent {}
 
 class InvoiceDueDateSelectedEvent extends InvoicesEvent {
   final DateTime date;
+  final DateForm formDate;
 
-  const InvoiceDueDateSelectedEvent({required this.date});
+  const InvoiceDueDateSelectedEvent(
+      {required this.date, required this.formDate});
 
   @override
   List<Object> get props => [date];
@@ -83,8 +85,10 @@ class InvoiceDueDateSelectedEvent extends InvoicesEvent {
 
 class InvoiceIssueDateSelectedEvent extends InvoicesEvent {
   final DateTime date;
+  final DateForm formDate;
 
-  const InvoiceIssueDateSelectedEvent({required this.date});
+  const InvoiceIssueDateSelectedEvent(
+      {required this.date, required this.formDate});
 
   @override
   List<Object> get props => [date];
@@ -112,17 +116,20 @@ class ResetInvoicesFiltersEvent extends InvoicesEvent {
   final InvoiceSubTypeEntity? selectedInvoiceSubType;
   final DateTime? selectedInvoiceDueDate;
   final DateTime? selectedInvoiceIssueDate;
+  final DateForm? dateFormForDueDate;
+  final DateForm? dateFormForIssue;
 
-  const ResetInvoicesFiltersEvent({
-    required this.selectedSortType,
-    this.invoiceNumberQuery,
-    this.requestNumberQuery,
-    this.selectedInvoiceStatus,
-    this.selectedInvoiceType,
-    this.selectedInvoiceSubType,
-    this.selectedInvoiceDueDate,
-    this.selectedInvoiceIssueDate,
-  });
+  const ResetInvoicesFiltersEvent(
+      {required this.selectedSortType,
+      this.invoiceNumberQuery,
+      this.requestNumberQuery,
+      this.selectedInvoiceStatus,
+      this.selectedInvoiceType,
+      this.selectedInvoiceSubType,
+      this.selectedInvoiceDueDate,
+      this.selectedInvoiceIssueDate,
+      this.dateFormForDueDate,
+      this.dateFormForIssue});
 
   @override
   List<Object?> get props => [
@@ -134,5 +141,7 @@ class ResetInvoicesFiltersEvent extends InvoicesEvent {
         selectedInvoiceSubType,
         selectedInvoiceDueDate,
         selectedInvoiceIssueDate,
+        dateFormForIssue,
+        dateFormForDueDate
       ];
 }

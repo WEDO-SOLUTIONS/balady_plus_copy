@@ -222,6 +222,7 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
 
       return response!;
     } catch (error) {
+      print(error);
       throw ServerException("", errorCode: error.toString());
     }
   }

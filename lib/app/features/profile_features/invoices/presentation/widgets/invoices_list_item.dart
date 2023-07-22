@@ -42,7 +42,6 @@ class InvoicesListItem extends StatelessWidget {
                   textStyle: AppStyle.requestNumberTextStle,
                 ),
               ),
-              const Spacer(),
               HomeTag(
                 title: invoice.invoiceStatusName,
                 backgroundColor: AppColor.secondary100Light,

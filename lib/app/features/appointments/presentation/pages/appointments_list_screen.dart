@@ -11,6 +11,7 @@ import '../../../../core/base/base_view_model.dart';
 import '../../../../core/utils/constants/constants.dart';
 import '../../../_shared_feature_/presentation/icons/general_icon.dart';
 import '../../../_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
+import '../../../_shared_feature_/presentation/widgets/custom_shimmer_list_widget.dart';
 import '../../../_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
 import '../../../_shared_feature_/presentation/widgets/default_appbar_widget.dart';
 import '../../../_shared_feature_/presentation/widgets/need_login_widget.dart';
@@ -74,14 +75,17 @@ class _AppointmentsListScreenState extends State<AppointmentsListScreen> {
               return model.getMyAppointments(showErrorMsg: true);
             },
             child: model.isLoading
-                ? const CustomCircularLoadingWidget()
-                : (previousList.isEmpty && upcomingList.isEmpty)
+                ? const CustomShimmerListWidget(
+                    height: 300,
+                  )
+                : (upcomingList.isEmpty)
                     ? EmptyListWidget(
                         btnText: ('submit_new_appointment').tr(),
                         title: ('no_appointment').tr(),
-                        desc: ('no_appointment_desc').tr(),
+                        //  desc: ('no_appointment_desc').tr(),
                         img: "noAppointmentsIllustration@3x.png",
-                        btnPressed: () {})
+                        // btnPressed: () {}
+                      )
                     : ListView(
                         physics: const BouncingScrollPhysics(),
                         padding: const EdgeInsets.symmetric(

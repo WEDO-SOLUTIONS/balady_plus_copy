@@ -389,9 +389,10 @@ class AppRouter {
         );
 
       case RouteName.newHealthCertificatePage:
+        bool? isRenew = settings.arguments as bool?;
         return MaterialPageRoute(
           builder: (_) => NewHealthCertificatePage(
-            renew: false,
+            renew: isRenew ?? false,
           ),
         );
 

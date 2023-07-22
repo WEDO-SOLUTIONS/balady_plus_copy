@@ -2,7 +2,7 @@ part of 'invoice_details_cubit.dart';
 
 class InvoiceDetailsState extends Equatable {
   final BlocRequestStatus status;
-  final InvoiceEntity? invoice;
+  final InvoiceDetailsEntity? invoice;
   //error message
   final String? errorMessage;
 
@@ -16,7 +16,7 @@ class InvoiceDetailsState extends Equatable {
 
   InvoiceDetailsState copyWith({
     BlocRequestStatus? status,
-    InvoiceEntity? invoice,
+    InvoiceDetailsEntity? invoice,
     String? errorMessage,
   }) {
     return InvoiceDetailsState(

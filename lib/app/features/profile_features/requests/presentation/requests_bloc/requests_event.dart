@@ -93,8 +93,9 @@ class RequestsLoadMoreEvent extends RequestsEvent {}
 
 class RequestDateSelectedEvent extends RequestsEvent {
   final DateTime date;
+  final DateForm formDate;
 
-  const RequestDateSelectedEvent({required this.date});
+  const RequestDateSelectedEvent({required this.date, required this.formDate});
 
   @override
   List<Object> get props => [date];
@@ -121,16 +122,17 @@ class ResetRequestsFiltersEvent extends RequestsEvent {
   final RequestTypeEntity? selectedRequestType;
   final RequestSubTypeEntity? selectedRequestSubType;
   final DateTime? selectedRequestDate;
+  final DateForm? dateForm;
 
-  const ResetRequestsFiltersEvent({
-    required this.selectedSortType,
-    this.selectedRequestStatus,
-    this.selectedMunicipality,
-    this.selectedSubMunicipality,
-    this.selectedRequestType,
-    this.selectedRequestSubType,
-    this.selectedRequestDate,
-  });
+  const ResetRequestsFiltersEvent(
+      {required this.selectedSortType,
+      this.selectedRequestStatus,
+      this.selectedMunicipality,
+      this.selectedSubMunicipality,
+      this.selectedRequestType,
+      this.selectedRequestSubType,
+      this.selectedRequestDate,
+      this.dateForm});
 
   @override
   List<Object?> get props => [
@@ -141,5 +143,6 @@ class ResetRequestsFiltersEvent extends RequestsEvent {
         selectedRequestType,
         selectedRequestSubType,
         selectedRequestDate,
+        dateForm,
       ];
 }

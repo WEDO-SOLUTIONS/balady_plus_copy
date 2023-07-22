@@ -20,6 +20,7 @@ class SSOTokenModel extends SSOToken {
       "expirationTime": expirationTime,
       "refreshToken": refreshToken,
       "token": token,
+      "idToken": idToken,
       "appCookie": appCookie
     };
   }
@@ -30,5 +31,6 @@ extension SSOTokenModelFromEntity on SSOToken {
       expirationTime: expirationTime,
       refreshToken: refreshToken,
       token: token,
+      idToken: idToken,
       appCookie: appCookie);
 }

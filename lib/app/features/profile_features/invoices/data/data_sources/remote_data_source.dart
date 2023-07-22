@@ -10,6 +10,7 @@ import '../../../../_shared_feature_/shared_feature_exports.dart'
     show ResponseBodyModel;
 import '../../invoices_exports.dart'
     show
+        InvoiceDetailsModel,
         InvoiceDetailsParamsModel,
         InvoiceStatusModel,
         InvoiceSubTypeModel,
@@ -27,7 +28,7 @@ abstract class InvoicesRemoteDataSource {
   Future<List<InvoiceSubTypeModel>> getInvoiceSubTypes(
     InvoiceSubTypeParamsModel params,
   );
-  Future<InvoicesModel> getInvoiceDetails(
+  Future<InvoiceDetailsModel> getInvoiceDetails(
     InvoiceDetailsParamsModel params,
   );
 }
@@ -184,7 +185,7 @@ class InvoicesRemoteDataSourceImplementation
   }
 
   @override
-  Future<InvoicesModel> getInvoiceDetails(
+  Future<InvoiceDetailsModel> getInvoiceDetails(
     InvoiceDetailsParamsModel params,
   ) async {
     try {
@@ -198,7 +199,7 @@ class InvoicesRemoteDataSourceImplementation
 
       final result = ResponseBodyModel.fromMap(data).data?.result;
 
-      return InvoicesModel.fromMap(result);
+      return InvoiceDetailsModel.fromJson(result);
     } on DioError catch (error) {
       "DioError $error".errorLog();
       if (error is NoDataFoundException) {
@@ -209,6 +210,7 @@ class InvoicesRemoteDataSourceImplementation
         statusCode: error.response?.statusCode,
       );
     } catch (ex) {
+      print(ex);
       "Catched $ex".errorLog();
       if (ex is ServerException) {
         rethrow;

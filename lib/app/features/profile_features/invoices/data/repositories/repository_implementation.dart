@@ -10,6 +10,7 @@ import '../../../../../core/errors/errors_exports.dart'
         ServerFailure;
 import '../../invoices_exports.dart'
     show
+        InvoiceDetailsEntity,
         InvoiceEntity,
         InvoiceStatusEntity,
         InvoiceSubTypeEntity,
@@ -80,7 +81,7 @@ class InvoicesRepositoryImplementation implements InvoicesRepository {
   }
 
   @override
-  Future<Either<Failure, InvoiceEntity>> getInvoiceDetails(
+  Future<Either<Failure, InvoiceDetailsEntity>> getInvoiceDetails(
     InvoiceDetailsParamsModel params,
   ) async {
     try {

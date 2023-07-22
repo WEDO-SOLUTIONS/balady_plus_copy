@@ -14,7 +14,8 @@ class ZMZMCardWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
         padding: EdgeInsets.all(16),
-        height: 90,
+        margin: EdgeInsets.only(top: 16, bottom: 16),
+        height: 100,
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(16), color: AppColor.white),
         child: Row(
@@ -37,14 +38,12 @@ class ZMZMCardWidget extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Flexible(
-                          child: CustomTextWidget(
-                            item.name,
-                            maxLines: 2,
-                            fontWeight: AppFontWeight.bold,
-                            fontSize: 16,
-                            fontColor: AppColor.black,
-                          ),
+                        CustomTextWidget(
+                          item.name,
+                          maxLines: 6,
+                          fontWeight: AppFontWeight.bold,
+                          fontSize: 16,
+                          fontColor: AppColor.black,
                         ),
                         CustomVerticalSpace(height: 8),
                         CustomTextWidget(

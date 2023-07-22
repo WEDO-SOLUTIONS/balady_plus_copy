@@ -24,7 +24,7 @@
   "selectFileValidation": "من فضلك قم بإختيار الملف.",
   "incident_desc_limit_error": "يجب أن يحتوي وصف البلاغ على ١٥ حرف على الأقل",
   "desc_limit_error": "يجب أن يحتوي الوصف على ١٥ حرف على الأقل",
-  "server_error_1": "حدث خطأ، الرجاء إعادة المحاولة",
+  "server_error_1": "عفواً حدث خطأ في استرجاع البيانات، نأمل إعادة المحاولة",
 
   "data_not_retrieved": "تعذر استرجاع البيانات",
   "reload": "إعادة المحاولة",
@@ -209,6 +209,8 @@
   "please_sign_in": "قم بتسجيل الدخول حتى تستطيع استخدام التطبيق بشكل كامل",
   "sign_in": "تسجيل الدخول",
 
+"no_data_shown":"ليس لديك بيانات للعرض",
+"only_english_numbers":"عزيزي المستخدم الحقل يقبل أرقام إنجليزية فقط", 
   "_nearbyComment": "أى شئ يخص قريب مني",
   "coffee": "مقهى",
   "restaurant": "مطعم",
@@ -232,6 +234,8 @@
   "hijri": "هجري",
   "gregorian": "ميلادي",
   "request_date": "تاريخ الطلب",
+  "no_requests_found":"ليس لديك طلبات مسجلة", 
+  "no_requests_with_entered_number":"لا يوجد طلب مسجل لديك بالرقم المدخل", 
 
   "_invoicesComment": "أى شئ يخص الفواتير",
   "invoice_no": "رقم الفاتورة",
@@ -241,9 +245,29 @@
   "invoice_amount": "قيمة الفاتورة",
   "invoice": "فاتورة",
   "invoice_due_date": "اخر تاريخ للسداد",
+  "invoice_end_date":"تاريخ إنتهاء الفاتورة", 
   "invoice_issue_date": "تاريخ  اصدار الفاتورة",
   "invoice_info": "معلومات الفاتورة",
   "invoice_pay_date": "تاريخ سداد الفاتورة",
+
+
+
+  "invoice_violation_no":"رقم المخالفة", 
+  "invoice_violation_date":"تاريخ رصد المخالفة", 
+  "invoice_last_objection_date":"آخر موعد لتقديم الاعتراض", 
+  "invoice_violation_amount":"قيمة الغرامة", 
+  "invoice_show_details":"عرض التفاصيل", 
+
+
+
+
+  "invoice_order_no":"رقم الطلب", 
+  "invoice_objection_date":"تاريخ طلب الاعتراض", 
+  "invoice_violation_status":"حالة طلب الاعتراض", 
+  "invoice_bill_total":"الإجمالي", 
+
+
+
 
   "_licensesComment": "أى شئ يخص الرخص",
   "license_no": "رقم الرخصة",
@@ -2838,7 +2862,7 @@
   "bookNewAppointmentSelectSuitableTimeRequiredWord": "يرجى اختيار الوقت المناسب لك.",
   "bookNewAppointmentBookAppointmentButtonWord": "حجز الموعد",
   "bookNewAppointmentThankYouWord": "شكراً لك",
-  "bookNewAppointmentSuccessfullyApplicationRecievedWord": "تم استلام طلب الموعد رقم {} بنجاح، \n ويمكنك متابعة حالة الموعد من قائمة الطلبات.",
+  "bookNewAppointmentSuccessfullyApplicationRecievedWord": "تم استلام طلب الموعد رقم {} بنجاح، \n ويمكنك متابعة حالة الموعد من قائمة المواعيد.",
   "bookNewAppointmentGoToHomePageButtonWord": "الإنتقال للصفحة الرئيسية",
   "bookNewAppointmentNoTimesButtonWord": "لا توجد مواعيد متاحة",
   "previousAppointmentHeaderTitleWord": "المواعيد السابقة",
@@ -3241,7 +3265,7 @@
   "msgType2": "استفسار عام",
   "msgType3": "مشكلة فنية في الموقع أو التطبيق",
   "lbl_we_recived_your_msg": "تم استلام الرسالة بنجاح، سنعاود التواصل\nمعك في أقرب فرصة.",
-  "server_error_1": "حدث خطأ، الرجاء إعادة المحاولة",
+  "server_error_1": "عفواً حدث خطأ في استرجاع البيانات، نأمل إعادة المحاولة",
   "lbl_section_contact_info": "بيانات التواصل",
   "lbl_nationality": "الجنسية",
   "lbl_sex": "الجنس",

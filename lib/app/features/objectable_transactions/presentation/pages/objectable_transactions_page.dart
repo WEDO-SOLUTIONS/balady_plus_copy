@@ -76,12 +76,13 @@ class ObjectableTransactionsPage extends StatelessWidget {
                       if (actionTaked != true && context.mounted) {
                         context.read<ObjectableTransactionBloc>().add(
                               ResetRequestsFiltersEvent(
-                                selectedSortType: sortType,
-                                selectedRequestStatus: selectedRequestStatus,
-                                selectedRequestType: selectedRequestType,
-                                selectedRequestSubType: selectedRequestSubType,
-                                selectedRequestDate: selectedRequestDate,
-                              ),
+                                  selectedSortType: sortType,
+                                  selectedRequestStatus: selectedRequestStatus,
+                                  selectedRequestType: selectedRequestType,
+                                  selectedRequestSubType:
+                                      selectedRequestSubType,
+                                  selectedRequestDate: selectedRequestDate,
+                                  dateForm: state.dateForm),
                             );
                       }
                     },

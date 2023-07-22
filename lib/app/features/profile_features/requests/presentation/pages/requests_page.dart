@@ -75,15 +75,16 @@ class RequestsPage extends StatelessWidget {
                       if (actionTaked != true && context.mounted) {
                         context.read<RequestsBloc>().add(
                               ResetRequestsFiltersEvent(
-                                selectedSortType: sortType,
-                                selectedRequestStatus: selectedRequestStatus,
-                                selectedMunicipality: selectedMunicipality,
-                                selectedSubMunicipality:
-                                    selectedSubMunicipality,
-                                selectedRequestType: selectedRequestType,
-                                selectedRequestSubType: selectedRequestSubType,
-                                selectedRequestDate: selectedRequestDate,
-                              ),
+                                  selectedSortType: sortType,
+                                  selectedRequestStatus: selectedRequestStatus,
+                                  selectedMunicipality: selectedMunicipality,
+                                  selectedSubMunicipality:
+                                      selectedSubMunicipality,
+                                  selectedRequestType: selectedRequestType,
+                                  selectedRequestSubType:
+                                      selectedRequestSubType,
+                                  selectedRequestDate: selectedRequestDate,
+                                  dateForm: state.dateForm),
                             );
                       }
                     },

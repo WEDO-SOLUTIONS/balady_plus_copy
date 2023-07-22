@@ -58,14 +58,13 @@ class NewDetailsHealthLicenseViewModel extends BaseViewModel {
     if (data == "2" && showAreaNoLicencePermit()) areaNoLicencePermit = true;
   }
 
-  StreamController<bool> isFormValid = StreamController<bool>();
+  bool isFormValid = false;
 
-  StreamController<String?> address = StreamController<String?>();
+  StreamController<String?> address = StreamController<String?>.broadcast();
 
   void init({bool isRenew = false}) {
     dataModel.init(isRenew: isRenew);
-    isFormValid = StreamController<bool>();
-    address = StreamController<String?>();
+    address = StreamController<String?>.broadcast();
   }
 
   validateForm() {
@@ -103,7 +102,8 @@ class NewDetailsHealthLicenseViewModel extends BaseViewModel {
       }
     }
 
-    isFormValid.sink.add(isValid);
+    isFormValid = isValid;
+    notifyListeners();
   }
 
   Future navigateToMapScreen(BuildContext context, {bool isRenew = false}) {
@@ -235,7 +235,6 @@ class NewDetailsHealthLicenseViewModel extends BaseViewModel {
   @override
   void dispose() {
     super.dispose();
-    isFormValid.close();
     address.close();
   }
 }

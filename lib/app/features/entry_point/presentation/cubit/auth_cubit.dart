@@ -103,6 +103,7 @@ class EntryPointCubit extends Cubit<EntryPointState> {
         errorMessage: (failure as ServerFailure).errorMessage,
       ));
     }, (success) async {
+      print("success.idToken ${success.idToken}");
       SSOToken token = SSOToken(
           token: success.accessToken,
           refreshToken: success.refreshToken,
@@ -246,7 +247,7 @@ class EntryPointCubit extends Cubit<EntryPointState> {
   }
 
   Future<void> clearAuth() async {
-    await _logout(NoParams());
+    //await _logout(NoParams());
     _clearAuth(NoParams());
 
     sharedPrefs.setSSOToken(null);

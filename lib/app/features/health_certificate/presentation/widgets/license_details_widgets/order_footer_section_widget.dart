@@ -72,7 +72,7 @@ class _OrderFooterSectionWidgetState extends State<OrderFooterSectionWidget> {
               },
               btnBorderColor: AppColors.redBrown,
               btnColor: AppColors.white2,
-              // as Scaffold background
+              // as Scaffold background 
               btnBorderWidth: 2.0,
               btnText: _getButtonTextBasedStatus(),
               btnTextColor: AppColors.redBrown,

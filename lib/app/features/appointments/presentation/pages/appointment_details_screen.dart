@@ -181,8 +181,7 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
                             const CustomVerticalSpace(height: 8),
                             FieldData(
                               title: ("appointmentsAppointmentTimeWord").tr(),
-                              subTitle: CommonFunctions.getFormattedDate(
-                                  widget.appointmentItemInfo?.visitTime),
+                              subTitle: widget.appointmentItemInfo?.visitTime,
                             ),
                           ]),
                       CustomVerticalSpace(height: 16),

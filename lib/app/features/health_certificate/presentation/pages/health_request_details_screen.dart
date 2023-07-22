@@ -9,6 +9,7 @@ import '../../../../core/utils/constants/app_colors.dart';
 import '../../../../core/utils/constants/paths/icon_paths.dart';
 import '../../../../core/utils/constants/route_names.dart';
 import '../../../../core/utils/enums/app_font_weights.dart';
+import '../../../../core/utils/enums/health_certificate.dart';
 import '../../../_shared_feature_/presentation/components/bottom_sheets/bottom_sheet_with_actions.dart';
 import '../../../_shared_feature_/presentation/dialogs/bottom_sheet_dialogs.dart';
 import '../../../_shared_feature_/presentation/widgets/custom_popups_widgets.dart';
@@ -67,36 +68,34 @@ class _HealthRequestDetailsScreenState
                       child: BottomSheetWithActions(
                         title: "الاجراءات".tr(),
                         body: Column(children: [
-                          GestureDetector(
-                            onTap: () async {
-                              await CustomPopUpsWidgets.showBottomSheet(
-                                context,
-                                child: DeleteOrderConfirmationDialog(
-                                  onDelete: () {
-                                    HealthRequestDetailsViewModel model =
-                                        Provider.of<
-                                                HealthRequestDetailsViewModel>(
-                                            context,
-                                            listen: false);
-                                    int? certicateId = model
-                                        .requestDetails
-                                        ?.data
-                                        ?.result
-                                        ?.healthCertificateInfo
-                                        ?.certificateId;
-                                    if (certicateId != null) {
-                                      model
-                                          .cancelHealthCertificate(certicateId);
-                                    }
-                                  },
-                                ),
-                                isFullHeight: false,
-                              );
-                            },
-                            child: FieldData(
-                              title: Helpers.translatingWord('deleteOrder'),
+                          if (model.requestDetails?.getRequestStatus() ==
+                              LICENSE_MANAGEMENT_STATUS.DRAFT)
+                            GestureDetector(
+                              onTap: () async {
+                                await CustomPopUpsWidgets.showBottomSheet(
+                                  context,
+                                  child: DeleteOrderConfirmationDialog(
+                                    onDelete: () {
+                                      model.deleteHealthRequest();
+                                    },
+                                  ),
+                                  isFullHeight: false,
+                                );
+                              },
+                              child: FieldData(
+                                title: Helpers.translatingWord('deleteOrder'),
+                              ),
                             ),
-                          ),
+                          CustomVerticalSpace(height: 16),
+                          if (model.isValidToSubmit() ?? false)
+                            GestureDetector(
+                              onTap: () async {
+                                model.submitRequest();
+                              },
+                              child: FieldData(
+                                title: Helpers.translatingWord('send_request'),
+                              ),
+                            ),
                         ]),
                       ));
                 },

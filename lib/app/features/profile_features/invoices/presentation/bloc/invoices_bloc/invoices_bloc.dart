@@ -8,6 +8,7 @@ import '../../../../../../core/utils/utils_exports.dart'
     show
         BlocRequestStatus,
         CommonProperties,
+        DateForm,
         Nullable,
         PaginationConstants,
         SortType;
@@ -270,16 +271,16 @@ class InvoicesBloc extends Bloc<InvoicesEvent, InvoicesState> {
     on<InvoiceDueDateSelectedEvent>((event, emit) async {
       emit(
         state.copyWith(
-          selectedInvoiceDueDate: Nullable(event.date),
-        ),
+            selectedInvoiceDueDate: Nullable(event.date),
+            dateFormForDueDate: Nullable(event.formDate)),
       );
     });
 
     on<InvoiceIssueDateSelectedEvent>((event, emit) async {
       emit(
         state.copyWith(
-          selectedInvoiceIssueDate: Nullable(event.date),
-        ),
+            selectedInvoiceIssueDate: Nullable(event.date),
+            dateFormForIssue: Nullable(event.formDate)),
       );
     });
 
@@ -299,6 +300,8 @@ class InvoicesBloc extends Bloc<InvoicesEvent, InvoicesState> {
           selectedInvoiceStatus: Nullable(null),
           selectedInvoiceDueDate: Nullable(null),
           selectedInvoiceIssueDate: Nullable(null),
+          dateFormForDueDate: Nullable(null),
+          dateFormForIssue: Nullable(null),
           invoiceNumberQuery: Nullable(null),
           requestNumberQuery: Nullable(null),
           sortType: SortType.desc,
@@ -325,6 +328,8 @@ class InvoicesBloc extends Bloc<InvoicesEvent, InvoicesState> {
         selectedInvoiceStatus: Nullable(event.selectedInvoiceStatus),
         invoiceNumberQuery: Nullable(event.invoiceNumberQuery),
         requestNumberQuery: Nullable(event.requestNumberQuery),
+        dateFormForDueDate: Nullable(event.dateFormForDueDate),
+        dateFormForIssue: Nullable(event.dateFormForIssue),
       ));
     });
   }

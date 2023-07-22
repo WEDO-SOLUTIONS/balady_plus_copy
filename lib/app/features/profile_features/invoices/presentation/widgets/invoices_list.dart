@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/need_login_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
@@ -65,12 +66,12 @@ class _InvoicesListState extends State<InvoicesList> {
                 BlocRequestStatus.submissionGetLoading &&
             !state.paginationLoading) {
           return const InvoicesListShimmer();
-        } else if (state.invoicesStatus ==
-                BlocRequestStatus.submissionGetSuccess ||
-            state.paginationLoading) {
+        } else {
           if (state.invoices.isEmpty && state.noMoreData) {
             return Center(
-              child: Text("no_data".tr()),
+              child: EmptyListWidget(
+                title: "no_data_shown".tr(),
+              ),
             );
           }
           int length = state.invoices.length;

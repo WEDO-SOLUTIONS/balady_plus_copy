@@ -3,7 +3,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../../core/utils/utils_exports.dart' show BlocRequestStatus;
 import '../../../invoices_exports.dart'
-    show GetInvoiceDetails, InvoiceDetailsParams, InvoiceEntity;
+    show
+        GetInvoiceDetails,
+        InvoiceDetailsEntity,
+        InvoiceDetailsParams,
+        InvoiceEntity;
 
 part 'invoice_details_state.dart';
 

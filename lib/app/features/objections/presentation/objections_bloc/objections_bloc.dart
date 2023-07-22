@@ -11,6 +11,7 @@ import '../../../../core/utils/utils_exports.dart'
         BlocRequestStatus,
         BlocStatus,
         CommonProperties,
+        DateForm,
         Nullable,
         PaginationConstants,
         RouteName,
@@ -276,6 +277,7 @@ class ObjectionsBloc extends Bloc<RequestsEvent, RequestsState> {
       emit(
         state.copyWith(
           selectedRequestDate: Nullable(event.date),
+          dateForm: Nullable(event.formDate),
         ),
       );
     });
@@ -314,6 +316,7 @@ class ObjectionsBloc extends Bloc<RequestsEvent, RequestsState> {
         selectedRequestType: Nullable(event.selectedRequestType),
         selectedRequestSubType: Nullable(event.selectedRequestSubType),
         selectedRequestDate: Nullable(event.selectedRequestDate),
+        dateForm: Nullable(event.dateForm),
       ));
     });
   }

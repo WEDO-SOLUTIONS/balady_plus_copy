@@ -25,8 +25,13 @@ class LicensesState extends Equatable {
   final String? licenseNumberQuery;
   //sort type
   final SortType sortType;
+
+  // Date Form
+  final DateForm? dateForm;
+
   //error message
   final String? errorMessage;
+
   // pagination
   final int page;
   final int limit;
@@ -52,6 +57,7 @@ class LicensesState extends Equatable {
     this.sortType = SortType.desc,
     this.errorMessage,
     this.page = 0,
+    this.dateForm,
     this.limit = PaginationConstants.limit,
     this.noMoreData = false,
   });
@@ -78,6 +84,7 @@ class LicensesState extends Equatable {
     Nullable<DateTime?>? selectedLicenseEndDate,
     String? licenseNumberQuery,
     SortType? sortType,
+    Nullable<DateForm?>? dateForm,
     String? errorMessage,
     int? page,
     int? limit,
@@ -113,6 +120,7 @@ class LicensesState extends Equatable {
           : selectedLicenseEndDate.value,
       licenseNumberQuery: licenseNumberQuery ?? this.licenseNumberQuery,
       sortType: sortType ?? this.sortType,
+      dateForm: dateForm == null ? this.dateForm : dateForm.value,
       errorMessage: errorMessage ?? this.errorMessage,
       page: page ?? this.page,
       limit: limit ?? this.limit,

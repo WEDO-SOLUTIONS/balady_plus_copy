@@ -10,6 +10,7 @@ export 'data/models/invoice_subtype_params_model.dart';
 export 'data/models/invoice_type_model.dart';
 export 'data/models/invoices_model.dart';
 export 'data/models/invoices_params_model.dart';
+export 'data/models/invoice_details_model.dart';
 
 /// data -> repositories
 export 'data/repositories/repository_implementation.dart';
@@ -23,6 +24,7 @@ export 'domain/entities/invoice_sub_type_entity.dart';
 export 'domain/entities/invoice_sub_type_params.dart';
 export 'domain/entities/invoice_type_entity.dart';
 export 'domain/entities/invoices_params.dart';
+export 'domain/entities/invoice_details_entity.dart';
 
 /// domain -> repositories
 export 'domain/repositories/repository.dart';

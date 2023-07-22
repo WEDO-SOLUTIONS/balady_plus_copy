@@ -86,7 +86,7 @@ class TransactionDetailsModel extends TransactionDetails {
           violationStatus: json["ViolationStatus"],
           lastDateOfObjection: json["LastDateOfObjection"] == null
               ? null
-              : DateTime.parse(json["LastDateOfObjection"]),
+              : DateTime.tryParse(json["LastDateOfObjection"]),
           invoiceStatusName: json["InvoiceStatusName"],
           violationId: json["ViolationID"],
           municipalityName: json["MunicipalityName"],
@@ -97,7 +97,7 @@ class TransactionDetailsModel extends TransactionDetails {
           subMunicipalityName: json["SubMunicipalityName"],
           violationRegistrationDate: json["ViolationRegistrationDate"] == null
               ? null
-              : DateTime.parse(json["ViolationRegistrationDate"]),
+              : DateTime.tryParse(json["ViolationRegistrationDate"]),
           violatorId: json["ViolatorID"],
           invoiceStatus: json["InvoiceStatus"],
           objectionRequestStatusName: json["ObjectionRequestStatusName"],

@@ -9,6 +9,7 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../../core/utils/enums/border_types.dart';
 import '../../../../../../core/utils/enums/enums.dart';
+import '../../../../../../core/utils/extensions/number_text_input_formatter.dart';
 import '../../../../../_shared_feature_/presentation/widgets/texts/custom_text_field_widget.dart';
 import '../../../../../vd/presentation/widgets/vd_header_desc_widget.dart';
 import '../../../blocs/create_dc_request/create_dc_details_bloc/create_dc_bloc.dart';
@@ -56,7 +57,11 @@ class IncidentCarPlateSection extends StatelessWidget {
                                 onValidate: (String? t) {},
                                 value: state.plateDigit ?? "",
                                 inputFormatters: [
-                                  FilteringTextInputFormatter.digitsOnly,
+                                  NumberTextInputFormatter(
+                                      onError: (bool isValid) {
+                                    //  if (!isValid)
+                                    //    CommonFunctions.showError("only_english_numbers".tr());
+                                  }),
                                   new LengthLimitingTextInputFormatter(4),
                                 ],
                                 keyboardType: TextInputType.number,

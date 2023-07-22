@@ -3,10 +3,12 @@ import 'package:balady_plus/app/core/dependency_injection/dependency_injection_e
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../../core/base/base_view_model.dart';
 import '../../../../../core/utils/common_functions.dart';
 import '../../../../../core/utils/enums/bloc_status.dart';
 import '../../../../_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
 import '../../blocs/new_health_certificate_bloc/new_health_certificate_bloc.dart';
+import '../../core/services/view_models/new_details_health_license_view_model.dart';
 import '../../widgets/new_health_certificate_widgets/details_app_bar.dart';
 
 class NewHealthCertificatePage extends StatefulWidget {
@@ -20,9 +22,13 @@ class NewHealthCertificatePage extends StatefulWidget {
 }
 
 class _NewHealthCertificatePageState extends State<NewHealthCertificatePage> {
+  final model = locator<NewDetailsHealthLicenseViewModel>();
+
   @override
   void initState() {
     super.initState();
+    model.init(isRenew: widget.renew ?? false);
+
     //MM  Helpers.sendEventToAnalytics(AppEvents.VD_Open_Details);
   }
 

@@ -938,7 +938,7 @@ class _ServiceCalculatorScreenState extends BaseState<ServiceCalculatorScreen,
           : null,
       onTap: () {
         // to point to the same chosen index at picker view
-        int currentIndex = 0;
+        int? currentIndex;
         if (_serviceTypeController != null) {
           int index = _serviceTypes.indexWhere(
               (element) => element.id == _serviceTypeController!.id);
@@ -1014,7 +1014,7 @@ class _ServiceCalculatorScreenState extends BaseState<ServiceCalculatorScreen,
           : null,
       onTap: () {
         // to point to the same chosen index at picker view
-        int currentIndex = 0;
+        int? currentIndex;
         if (_serviceIsicActivityController != null) {
           int index = _isicActivites!.indexWhere((element) =>
               element.isicCode == _serviceIsicActivityController!.isicCode);
@@ -1081,7 +1081,7 @@ class _ServiceCalculatorScreenState extends BaseState<ServiceCalculatorScreen,
           ? _serviceDetailedIsicActivityController!.name
           : null,
       onTap: () {
-        int currentIndex = 0;
+        int? currentIndex;
         if (_serviceDetailedIsicActivityController != null) {
           int index = _detailedIsicActivites.indexWhere((element) =>
               element.id == _serviceDetailedIsicActivityController!.id);
@@ -1152,7 +1152,7 @@ class _ServiceCalculatorScreenState extends BaseState<ServiceCalculatorScreen,
           ? _serviceIsicActivityCurrentController!.isicName
           : null,
       onTap: () {
-        int currentIndex = 0;
+        int? currentIndex;
         if (_serviceIsicActivityCurrentController != null) {
           int index = _isicActivites!.indexWhere((element) =>
               element.isicCode ==
@@ -1224,7 +1224,7 @@ class _ServiceCalculatorScreenState extends BaseState<ServiceCalculatorScreen,
           ? _serviceIsicActivityNewController!.isicName
           : null,
       onTap: () {
-        int currentIndex = 0;
+        int? currentIndex;
         if (_serviceIsicActivityNewController != null) {
           int index = _isicActivites!.indexWhere((element) =>
               element.isicCode == _serviceIsicActivityNewController!.isicCode);
@@ -1297,7 +1297,7 @@ class _ServiceCalculatorScreenState extends BaseState<ServiceCalculatorScreen,
           ? _serviceDetailedIsicActivityCurrentController!.name
           : null,
       onTap: () {
-        int currentIndex = 0;
+        int? currentIndex;
         if (_serviceDetailedIsicActivityCurrentController != null) {
           int index = _detailedIsicActivitesCurrent.indexWhere((element) =>
               element.id == _serviceDetailedIsicActivityCurrentController!.id);
@@ -1370,7 +1370,7 @@ class _ServiceCalculatorScreenState extends BaseState<ServiceCalculatorScreen,
           ? _serviceDetailedIsicActivityNewController!.name
           : null,
       onTap: () {
-        int currentIndex = 0;
+        int? currentIndex;
         if (_serviceDetailedIsicActivityNewController != null) {
           int index = _detailedIsicActivitesNew.indexWhere((element) =>
               element.id == _serviceDetailedIsicActivityNewController!.id);
@@ -1471,7 +1471,7 @@ class _ServiceCalculatorScreenState extends BaseState<ServiceCalculatorScreen,
           ? _serviceProcedureController!.name
           : null,
       onTap: () {
-        int currentIndex = 0;
+        int? currentIndex;
         if (_serviceProcedureController != null) {
           int index = _procedures.indexWhere(
               (element) => element.id == _serviceProcedureController!.id);
@@ -1532,7 +1532,7 @@ class _ServiceCalculatorScreenState extends BaseState<ServiceCalculatorScreen,
           ? _serviceSubActivityController!.name_ar!.replaceAll("\n", "").trim()
           : null,
       onTap: () {
-        int currentIndex = 0;
+        int? currentIndex;
         if (_serviceSubActivityController != null) {
           int index = _subActivities.indexWhere(
               (element) => element.id == _serviceSubActivityController!.id);
@@ -1686,7 +1686,7 @@ class _ServiceCalculatorScreenState extends BaseState<ServiceCalculatorScreen,
           ? _serviceZoneController!.name
           : null,
       onTap: () {
-        int currentIndex = 0;
+        int? currentIndex;
         if (_serviceZoneController != null) {
           int index = _shownZones.indexWhere(
               (element) => element.id == _serviceZoneController!.id);
@@ -1774,7 +1774,7 @@ class _ServiceCalculatorScreenState extends BaseState<ServiceCalculatorScreen,
           ? _serviceZoneCurrentController!.name
           : null,
       onTap: () {
-        int currentIndex = 0;
+        int? currentIndex;
         if (_serviceZoneCurrentController != null) {
           int index = _shownZones.indexWhere(
               (element) => element.id == _serviceZoneCurrentController!.id);
@@ -1817,7 +1817,7 @@ class _ServiceCalculatorScreenState extends BaseState<ServiceCalculatorScreen,
           ? _serviceAccomodationController!.name
           : null,
       onTap: () {
-        int currentIndex = 0;
+        int? currentIndex;
         if (_serviceAccomodationController != null) {
           int index = _accomodations.indexWhere(
               (element) => element.id == _serviceAccomodationController!.id);
@@ -1856,7 +1856,7 @@ class _ServiceCalculatorScreenState extends BaseState<ServiceCalculatorScreen,
           ? _serviceAccomodationCurrentController!.name
           : null,
       onTap: () {
-        int currentIndex = 0;
+        int? currentIndex;
         if (_serviceAccomodationCurrentController != null) {
           int index = _accomodations.indexWhere((element) =>
               element.id == _serviceAccomodationCurrentController!.id);
@@ -1896,7 +1896,7 @@ class _ServiceCalculatorScreenState extends BaseState<ServiceCalculatorScreen,
           ? _serviceAccomodationNewController!.name
           : null,
       onTap: () {
-        int currentIndex = 0;
+        int? currentIndex;
         if (_serviceAccomodationNewController != null) {
           int index = _accomodations.indexWhere(
               (element) => element.id == _serviceAccomodationNewController!.id);
@@ -2086,7 +2086,7 @@ class _ServiceCalculatorScreenState extends BaseState<ServiceCalculatorScreen,
       if (validateAreaValue()) return true;
     } else if (activityId == 4) {
       if (actionId == 9) {
-        if (validateNumberOfDrillingDaysValue() && validateDistanceValue()) {
+        if (validateNumberOfDrillingDaysValue() /*&& validateDistanceValue()*/) {
           return true;
         }
       } else if (actionId == 20) {
@@ -2364,10 +2364,10 @@ class _ServiceCalculatorScreenState extends BaseState<ServiceCalculatorScreen,
     } else if (activityId == 4) {
       if (actionId == 9) {
         bool a1 = validateIsEmptyNumberOfDrillingDaysValue();
-        bool a2 = validateIsEmptyDistanceValue();
+        //  bool a2 = validateIsEmptyDistanceValue();
         bool a3 = validateSubActivities();
         bool a4 = _gisLocation != null;
-        if (a1 && a2 && a3 && a4) {
+        if (a1 && /*a2 &&*/ a3 && a4) {
           setState(() {
             _isButtonDisabled = false;
           });
@@ -2694,7 +2694,7 @@ class _ServiceCalculatorScreenState extends BaseState<ServiceCalculatorScreen,
       children: <Widget>[
         _serviceActivitiesWidget(),
         NumberOfDrillingDaysWidget(),
-        DistanceWidget()
+        // DistanceWidget()
       ],
     );
   }
@@ -2738,14 +2738,16 @@ class _ServiceCalculatorScreenState extends BaseState<ServiceCalculatorScreen,
     return Column(
       children: <Widget>[
         //  NumberOfCertificatesWidget()
-        CertificateEndDateWidget()
+        //  CertificateEndDateWidget()
       ],
     );
   }
 
   Widget S8_2() {
     return Column(
-      children: <Widget>[CertificateEndDateWidget()],
+      children: <Widget>[
+        //   CertificateEndDateWidget()
+      ],
     );
   }
 
@@ -4301,9 +4303,9 @@ class _ServiceCalculatorScreenState extends BaseState<ServiceCalculatorScreen,
     request.diggingPeriod = int.parse(
         CommonFunctions.replaceArabicNumberWithEnglish(
             _numberOfDrillingDaysController.text.trim()));
-    request.diggingDistance = double.parse(
+    /*request.diggingDistance = double.parse(
         CommonFunctions.replaceArabicNumberWithEnglish(
-            _distanceController.text.trim()));
+            _distanceController.text.trim()));*/
     return request;
   }
 

@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/need_login_widget.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/reload_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -63,9 +64,15 @@ class _RequestsListState extends State<RequestsList> {
             !state.paginationLoading) {
           return const RequestsListShimmer();
         } else {
-          if (state.requests.isEmpty && state.noMoreData) {
-            return Center(
-              child: Text("no_data".tr()),
+          if (state.requests.isEmpty &&
+              state.noMoreData &&
+              (state.requestNumberQuery?.isEmpty ?? true)) {
+            return EmptyListWidget(
+              title: "no_requests_found".tr(),
+            );
+          } else if (state.requests.isEmpty && state.noMoreData) {
+            return EmptyListWidget(
+              title: "no_requests_with_entered_number".tr(),
             );
           }
           int length = state.requests.length;

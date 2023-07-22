@@ -510,6 +510,48 @@ class CommonFunctions {
     return newStr.isEmpty ? value : newStr;
   }
 
+  static String replaceArabicNumberWithEnglish2(String value) {
+    var newStr = "";
+
+    for (int i = 0; i < value.length; i++) {
+      switch (value[i]) {
+        case "٠":
+          newStr += "0";
+          break;
+        case "١":
+          newStr += "1";
+          break;
+        case "٢":
+          newStr += "2";
+          break;
+        case "٣":
+          newStr += "3";
+          break;
+        case "٤":
+          newStr += "4";
+          break;
+        case "٥":
+          newStr += "5";
+          break;
+        case "٦":
+          newStr += "6";
+          break;
+        case "٧":
+          newStr += "7";
+          break;
+        case "٨":
+          newStr += "8";
+          break;
+        case "٩":
+          newStr += "9";
+          break;
+        default:
+          newStr = value[i] + newStr;
+      }
+    }
+    return newStr.isEmpty ? value : newStr;
+  }
+
   static bool checkForVDExpectedForINC(
       {String? adminMunicipalityId,
       String? municipalityName,

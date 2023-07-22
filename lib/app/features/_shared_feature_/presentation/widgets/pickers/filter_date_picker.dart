@@ -17,7 +17,7 @@ class FilterDatePicker extends StatefulWidget {
   final DateForm initialDateForm;
   final DateTime? startDate;
   final DateTime? endDate;
-  final void Function(DateTime) onChange;
+  final void Function(DateTime, DateForm) onChange;
 
   const FilterDatePicker({
     super.key,
@@ -58,6 +58,8 @@ class _FilterDatePickerState extends State<FilterDatePicker> {
           initialDateForm: _dateForm,
           onChange: (dateForm) {
             setState(() => _dateForm = dateForm);
+            if (_selectedDate != null)
+              widget.onChange(_selectedDate!, _dateForm);
           },
         ),
         DropDownWithTitle(
@@ -118,7 +120,7 @@ class _FilterDatePickerState extends State<FilterDatePicker> {
           );
         });
         if (_selectedDate == null) return;
-        widget.onChange(_selectedDate!);
+        widget.onChange(_selectedDate!, _dateForm);
       },
     ).showModal(context);
   }
@@ -149,7 +151,7 @@ class _FilterDatePickerState extends State<FilterDatePicker> {
           _selectedDate = (picker.adapter as DateTimePickerAdapter).value;
         });
         if (_selectedDate == null) return;
-        widget.onChange(_selectedDate!);
+        widget.onChange(_selectedDate!, _dateForm);
       },
     ).showModal(context);
   }

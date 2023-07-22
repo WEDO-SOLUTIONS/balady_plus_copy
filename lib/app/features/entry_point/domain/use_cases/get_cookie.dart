@@ -58,6 +58,41 @@ class GetCookie extends UseCase<String, NoParams> {
               domain: RemoteConfig.momraDomain,
               expiresDate: cookieExpiration);
         } catch (_) {}
+      } else if (element.contains("idsrv.session")) {
+        int valueStartIndex =
+            element.indexOf(".idsrv.session=") + ".idsrv.session=".length;
+        int valueEndIndex = element.indexOf(";");
+        String value = element.substring(valueStartIndex + 1, valueEndIndex);
+        try {
+          await CookieManager.instance().setCookie(
+              url: Uri.parse(RemoteConfig.cookieURL),
+              name: ".idsrv.session",
+              value: value,
+              domain: Platform.isIOS
+                  ? RemoteConfig.ssoMomraDomain
+                  : RemoteConfig.momraDomain,
+              expiresDate: cookieExpiration);
+        } catch (_) {}
+      } else if (element.contains(
+          "BIGipServerssoappdev.momra.gov.sa.app~ssoappdev.momra.gov.sa_pool")) {
+        int valueStartIndex = element.indexOf(
+                ".BIGipServerssoappdev.momra.gov.sa.app~ssoappdev.momra.gov.sa_pool=") +
+            ".BIGipServerssoappdev.momra.gov.sa.app~ssoappdev.momra.gov.sa_pool="
+                .length;
+        int valueEndIndex = element.indexOf(";");
+        String value = element.substring(valueStartIndex + 1, valueEndIndex);
+
+        try {
+          await CookieManager.instance().setCookie(
+              url: Uri.parse(RemoteConfig.cookieURL),
+              name:
+                  ".BIGipServerssoappdev.momra.gov.sa.app~ssoappdev.momra.gov.sa_pool",
+              value: value,
+              domain: Platform.isIOS
+                  ? RemoteConfig.ssoMomraDomain
+                  : RemoteConfig.momraDomain,
+              expiresDate: cookieExpiration);
+        } catch (_) {}
       }
     });
     return appCookie;

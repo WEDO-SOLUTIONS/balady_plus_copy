@@ -42,54 +42,47 @@ class _CertificateInfoStepScreenState extends State<CertificateInfoStepScreen> {
   @override
   void initState() {
     super.initState();
-    model.init(isRenew: widget.isRenew ?? false);
     //MM Helpers.sendEventToAnalytics(AppEvents.HealthCertificate_Apply_Details);
   }
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        //  body
-        Column(
-          children: [
-            Expanded(
-              child: SingleChildScrollView(
-                controller: scrollController,
-                child: Container(
-                  padding: const EdgeInsets.only(bottom: 85),
-                  margin: const EdgeInsets.symmetric(horizontal: 24),
-                  child: Column(
-                      mainAxisSize: MainAxisSize.max,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: const [
-                        //personal info Section
-                        PersonalInfoSection(),
-                        //location section
-                        JobLocationSection(),
-                      ]),
+    return BaseView<NewDetailsHealthLicenseViewModel>(
+        onModelReady: (model) {},
+        builder: (context, model, child) {
+          return Column(
+            children: [
+              Expanded(
+                child: SingleChildScrollView(
+                  controller: scrollController,
+                  child: Container(
+                    padding: const EdgeInsets.only(bottom: 85),
+                    margin: const EdgeInsets.symmetric(horizontal: 24),
+                    child: Column(
+                        mainAxisSize: MainAxisSize.max,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: const [
+                          //personal info Section
+                          PersonalInfoSection(),
+                          //location section
+                          JobLocationSection(),
+                        ]),
+                  ),
                 ),
               ),
-            ),
-            //MM
-            StreamBuilder<bool>(
-                stream: model.isFormValid.stream,
-                initialData: false,
-                builder: (context, snapshot) {
-                  return PreviousNextButtons(
-                    isFormValid: snapshot.data ?? false,
-                    onConfirm: () {
-                      model.hideKeyboard();
-                      // NavigationService.navigatorKey.currentState!
-                      //     .pushNamed(RoutesNames.pledgesStepRoute);
-                    },
-                  );
-                })
-          ],
-        ),
-        // submit button
-      ],
-    );
+              //MM
+
+              PreviousNextButtons(
+                isFormValid: model.isFormValid,
+                onConfirm: () {
+                  model.hideKeyboard();
+                  // NavigationService.navigatorKey.currentState!
+                  //     .pushNamed(RoutesNames.pledgesStepRoute);
+                },
+              )
+            ],
+          );
+        });
   }
 }
 
@@ -153,28 +146,26 @@ class _JobLocationSectionState extends State<JobLocationSection> {
 
   @override
   Widget build(BuildContext context) {
-    return BaseView<NewDetailsHealthLicenseViewModel>(
-        onModelReady: (model) {},
-        builder: (context, model, child) {
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              CustomVerticalSpace(height: 16),
-              VdHeaderDesc(
-                header: ("job_location").tr(),
-                desc: Helpers.translatingWord('job_location_desc'),
-              ),
+    final model = locator<NewDetailsHealthLicenseViewModel>();
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        CustomVerticalSpace(height: 16),
+        VdHeaderDesc(
+          header: ("job_location").tr(),
+          desc: Helpers.translatingWord('job_location_desc'),
+        ),
 
-              CustomHeaderAndDescOnTapWidget(
-                label: Helpers.translatingWord("job_address"),
-                hintText: Helpers.translatingWord("select_address_from_map"),
-                textValue: model.getAddress(),
-                materialIconDirection: Helpers.isArabic(context)
-                    ? MATERIAL_ICON_DIRECTION.left
-                    : MATERIAL_ICON_DIRECTION.right,
-                onTap: () {
-                  model.hideKeyboard();
-                  /* setState(() {
+        CustomHeaderAndDescOnTapWidget(
+          label: Helpers.translatingWord("job_address"),
+          hintText: Helpers.translatingWord("select_address_from_map"),
+          textValue: model.getAddress(),
+          materialIconDirection: Helpers.isArabic(context)
+              ? MATERIAL_ICON_DIRECTION.left
+              : MATERIAL_ICON_DIRECTION.right,
+          onTap: () {
+            model.hideKeyboard();
+            /* setState(() {
                       showLocationInfo = true;
                       // showCommercialSection = true;
                       showLicenseSection = true;
@@ -183,38 +174,35 @@ class _JobLocationSectionState extends State<JobLocationSection> {
                     WidgetsBinding.instance
                         ?.addPostFrameCallback((_) => _scrollToEnd());*/
 
-                  model.navigateToMapScreen(context).then((value) {
-                    WidgetsBinding.instance
-                        ?.addPostFrameCallback((_) => _scrollToEnd());
-                    model.validateForm();
-                  });
-                },
-                icon: const Icon(Icons.location_on,
-                    color: AppColor.primary900Light),
-              ),
+            model.navigateToMapScreen(context).then((value) {
+              WidgetsBinding.instance
+                  ?.addPostFrameCallback((_) => _scrollToEnd());
+              model.validateForm();
+              setState(() {});
+            });
+          },
+          icon: const Icon(Icons.location_on, color: AppColor.primary900Light),
+        ),
 
-              // location info section
-              Visibility(
-                visible: model.getAddress() != null,
-                child: LocationInfoSection(
-                  district: model.gisLocationResult?.districtName ?? "",
-                  municipality:
-                      model.gisLocationResult?.adminMunicipalityName ?? "",
-                  subMunicipality:
-                      model.gisLocationResult?.subMunicipalityName ?? "",
-                  region: model.gisLocationResult?.region ?? "",
-                ),
-              ),
-              HealthCentersSection(),
-              // Commercial Register Section
-              Visibility(
-                visible: model.showCommercialNo(),
-                child: CommercialRegisterSection(),
-              ),
-              Visibility(visible: model.showLicense(), child: LicenseSection()),
-            ],
-          );
-        });
+        // location info section
+        Visibility(
+          visible: model.getAddress() != null,
+          child: LocationInfoSection(
+            district: model.gisLocationResult?.districtName ?? "",
+            municipality: model.gisLocationResult?.adminMunicipalityName ?? "",
+            subMunicipality: model.gisLocationResult?.subMunicipalityName ?? "",
+            region: model.gisLocationResult?.region ?? "",
+          ),
+        ),
+        HealthCentersSection(),
+        // Commercial Register Section
+        Visibility(
+          visible: model.showCommercialNo(),
+          child: CommercialRegisterSection(),
+        ),
+        Visibility(visible: model.showLicense(), child: LicenseSection()),
+      ],
+    );
   }
 }
 
@@ -234,6 +222,7 @@ class LocationInfoSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print("MOOOODEL ${municipality}");
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[

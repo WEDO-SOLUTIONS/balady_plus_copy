@@ -30,14 +30,13 @@ class ReadOnlyField extends StatelessWidget {
                 border:
                     Border.all(color: AppColor.blackModern300Light, width: 2),
                 borderRadius: BorderRadius.circular(6)),
-            child: Flexible(
-              child: CustomTextWidget(
-                subTitle ?? "",
-                fontColor: AppColor.blackModern700Light,
-                fontSize: 14,
-                textAlign: TextAlign.start,
-                fontWeight: AppFontWeight.semiBold,
-              ),
+            child: CustomTextWidget(
+              subTitle ?? "",
+              fontColor: AppColor.blackModern700Light,
+              fontSize: 14,
+              maxLines: 20,
+              textAlign: TextAlign.start,
+              fontWeight: AppFontWeight.semiBold,
             )),
         if (showSpace) const CustomVerticalSpace(height: 16),
       ],

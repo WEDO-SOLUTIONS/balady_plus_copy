@@ -15,75 +15,53 @@ class DeleteOrderConfirmationDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Dialog(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4.0)),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                  color: AppColor.white,
-                  borderRadius: BorderRadius.circular(4)),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.of(context).pop();
-                        },
-                        child: Image.asset(
-                          Constants.whiteCloseImg,
-                          height: 16.0,
-                          width: 16.0,
-                          color: Colors.black,
-                        ),
-                      ),
-                    ],
-                  ),
-                  Constants.verticalSpaceMedium,
-                  CustomTextWidget(
-                    Helpers.translatingWord("deleteOrder"),
-                    fontColor: AppColor.black,
-                    fontWeight: AppFontWeight.bold,
-                    fontSize: 22,
-                  ),
-                  Constants.verticalSpaceMedium,
-                  CustomTextWidget(
-                    Helpers.translatingWord("delete_order_desc"),
-                    fontColor: AppColor.black500,
-                    fontWeight: AppFontWeight.medium,
-                    fontSize: 16,
-                    height: 1.3,
-                  ),
-                  Constants.verticalSpaceMedium,
-                  EnhancedCustomElevatedButtonWidget(
-                    btnPressed: () => onDelete(),
-                    btnText: Helpers.translatingWord("yes_delete"),
-                    btnTextSize: 16,
-                    btnHeight: 56,
-                    btnWidth: 240,
-                    btnBorderColor: AppColor.redBrown,
-                    btnColor: AppColor.white2,
-                    btnTextColor: AppColor.redBrown,
-                    btnTextWeight: AppFontWeight.medium,
-                  ),
-                  Constants.verticalSpaceSmall,
-                  CustomTextButtonWidget(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    text: Helpers.translatingWord("no_delete"),
-                    btnTextSize: 16,
-                    btnTextWeight: AppFontWeight.medium,
-                  ),
-                ],
-              )),
-        ],
-      ),
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+            padding: const EdgeInsets.only(top: 16, bottom: 16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                Constants.verticalSpaceMedium,
+                CustomTextWidget(
+                  Helpers.translatingWord("deleteOrder"),
+                  fontColor: AppColor.black,
+                  fontWeight: AppFontWeight.bold,
+                  fontSize: 22,
+                ),
+                Constants.verticalSpaceMedium,
+                CustomTextWidget(
+                  Helpers.translatingWord("delete_order_desc"),
+                  fontColor: AppColor.black500,
+                  fontWeight: AppFontWeight.medium,
+                  fontSize: 16,
+                  height: 1.3,
+                ),
+                Constants.verticalSpaceMedium,
+                EnhancedCustomElevatedButtonWidget(
+                  btnPressed: () => onDelete(),
+                  btnText: Helpers.translatingWord("yes_delete"),
+                  btnTextSize: 16,
+                  btnHeight: 56,
+                  btnWidth: 240,
+                  btnBorderColor: AppColor.redBrown,
+                  btnColor: AppColor.white2,
+                  btnTextColor: AppColor.redBrown,
+                  btnTextWeight: AppFontWeight.medium,
+                ),
+                Constants.verticalSpaceSmall,
+                CustomTextButtonWidget(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  text: Helpers.translatingWord("no_delete"),
+                  btnTextSize: 16,
+                  btnTextWeight: AppFontWeight.medium,
+                ),
+              ],
+            )),
+      ],
     );
   }
 }

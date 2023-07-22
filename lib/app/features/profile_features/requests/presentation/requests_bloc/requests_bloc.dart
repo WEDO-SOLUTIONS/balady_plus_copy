@@ -8,6 +8,7 @@ import '../../../../../core/utils/utils_exports.dart'
     show
         BlocRequestStatus,
         CommonProperties,
+        DateForm,
         Nullable,
         PaginationConstants,
         SortType;
@@ -352,8 +353,8 @@ class RequestsBloc extends Bloc<RequestsEvent, RequestsState> {
     on<RequestDateSelectedEvent>((event, emit) async {
       emit(
         state.copyWith(
-          selectedRequestDate: Nullable(event.date),
-        ),
+            selectedRequestDate: Nullable(event.date),
+            dateForm: Nullable(event.formDate)),
       );
     });
 
@@ -395,6 +396,7 @@ class RequestsBloc extends Bloc<RequestsEvent, RequestsState> {
         selectedRequestType: Nullable(event.selectedRequestType),
         selectedRequestSubType: Nullable(event.selectedRequestSubType),
         selectedRequestDate: Nullable(event.selectedRequestDate),
+        dateForm: Nullable(event.dateForm),
       ));
     });
   }
