@@ -39,7 +39,6 @@ void initialize() {
   EntryPointInjection.init();
   //? OTP
   OTPInjection.init();
-  ;
   //? Sign-Up
   SignUpInjection.init();
   //? Services

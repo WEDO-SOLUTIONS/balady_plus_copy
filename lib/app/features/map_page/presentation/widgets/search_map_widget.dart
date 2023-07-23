@@ -1,11 +1,9 @@
 import 'package:balady_plus/app/features/map_page/data/model/layers.dart';
 import 'package:balady_plus/app/features/map_page/presentation/mvvm/layers_gis_view_model.dart';
 import 'package:balady_plus/app/features/map_page/presentation/mvvm/map_view_model.dart';
-import 'package:balady_plus/app/features/map_page/presentation/mvvm/search_map_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:provider/provider.dart';
-import '../../../../core/utils/enums/near_by_types.dart';
 import '../../../home_page/presentation/widgets/home_tag.dart';
 
 class SearchMapWidget extends StatelessWidget {

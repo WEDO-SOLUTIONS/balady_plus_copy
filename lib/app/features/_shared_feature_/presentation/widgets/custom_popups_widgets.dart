@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../core/utils/constants/app_colors.dart';
-import '../../../../core/utils/enums/enums.dart';
 import 'custom_alert_dialog_widget.dart';
 
 class CustomPopUpsWidgets {

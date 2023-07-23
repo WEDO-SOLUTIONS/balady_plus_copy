@@ -70,7 +70,7 @@ class _IncidentTypeWithSearchDialog
               setState(() {
                 items = widget.items
                     .where((element) =>
-                        element.name?.contains(value) ?? element.name == value)
+                        element.name.contains(value) ?? element.name == value)
                     .toList();
               });
             },

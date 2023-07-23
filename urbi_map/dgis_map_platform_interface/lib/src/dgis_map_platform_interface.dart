@@ -1,20 +1,8 @@
 import 'package:dgis_map_platform_interface/library.dart';
-import 'package:dgis_map_platform_interface/src/events/marker_tap_event.dart';
-import 'package:dgis_map_platform_interface/src/events/route_changed_events.dart';
-import 'package:dgis_map_platform_interface/src/events/route_options_event.dart';
-import 'package:dgis_map_platform_interface/src/events/visible_rect_events.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
-import 'events/navi_message_events.dart';
-import 'events/navi_speed_event.dart';
-import 'events/navi_dashboard_event.dart';
-import 'events/indoor_events.dart';
-import 'events/location_control_events.dart';
-import 'events/navigation_event.dart';
-import 'events/object_tap_events.dart';
-import 'events/zoom_control_events.dart';
 import 'method_channel_my_plugin.dart';
 
 /// The interface that implementations of my_plugin must implement.

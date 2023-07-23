@@ -1,27 +1,19 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:balady_plus/app/core/services/services_exports.dart'
     show NavigationService;
 import 'package:balady_plus/app/core/utils/constants/route_names.dart';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart' as geoLocator;
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:intl/intl.dart';
 import 'package:localize_and_translate/localize_and_translate.dart'
     show translator, Translation;
-import 'package:open_file/open_file.dart';
-import 'package:package_info_plus/package_info_plus.dart';
-import 'package:path_provider/path_provider.dart';
 
 import 'dart:developer' as devtools show log;
 import 'package:permission_handler/permission_handler.dart';
-import 'package:share_plus/share_plus.dart';
 
 import '../../../features/_shared_feature_/presentation/dialogs/photo_permission_dialog.dart';
-import '../../utils/constants/constants.dart';
 
 // use it insead of print() or debugPrint()
 extension Log<T extends Object> on T {
@@ -125,8 +117,9 @@ class Helpers {
       geoLocator.Position? position;
       try {
         position = await geoLocator.Geolocator.getLastKnownPosition();
-        if (position?.latitude != null && position?.longitude != null)
+        if (position?.latitude != null && position?.longitude != null) {
           return LatLng(position!.latitude, position.longitude);
+        }
       } catch (ex) {}
     }
     return null;

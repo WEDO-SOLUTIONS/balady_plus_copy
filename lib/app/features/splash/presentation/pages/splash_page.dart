@@ -2,7 +2,6 @@ import 'package:balady_plus/app/features/splash/presentation/pages/splash_screen
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart'
     show SystemChrome, SystemUiMode, SystemUiOverlay;
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/dependency_injection/dependency_injection_exports.dart'
     show sl;
@@ -10,7 +9,6 @@ import '../../../../core/services/services_exports.dart' show EntryPointBridge;
 import '../../../_shared_feature_/shared_feature_exports.dart'
     show BridgeParams;
 
-import '../../splash_exports.dart' show SplashAnimator;
 
 class SplashPage extends StatefulWidget {
   const SplashPage({Key? key}) : super(key: key);

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart'
     show AppBar, Center, MaterialPageRoute, Route, RouteSettings, Scaffold;
-import 'package:flutter/widgets.dart' show SizedBox;
 
 import '../../core/utils/utils_exports.dart'
     show RouteName, ScaleRotatePage, SliderUpPage;
@@ -10,7 +9,6 @@ import '../../features/_shared_feature_/data/entities/success_screen_args.dart';
 import '../../features/_shared_feature_/presentation/pages/success_screen.dart';
 import '../../features/bottom_navigation/bottom_navigation_exports.dart'
     show BottomNavigationPage;
-import '../../features/entry_point/entry_point_exports.dart' show SsoUserInfo;
 import '../../features/map_page/presentation/mvvm/point_view_model.dart';
 import '../../features/map_page/presentation/pages/map_details_page.dart';
 

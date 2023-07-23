@@ -10,6 +10,7 @@ class CustomCheckbox extends StatefulWidget {
   String title;
   bool isSelected;
   Function onSelect;
+  @override
   Key? key;
 
   CustomCheckbox(
@@ -68,20 +69,20 @@ class _CustomCheckboxState extends State<CustomCheckbox> {
                         borderRadius:
                             const BorderRadius.all(Radius.circular(2)),
                         image: selected
-                            ? DecorationImage(
+                            ? const DecorationImage(
                                 image: AssetImage(
-                                    Constants.imgPath + "checkbox@3x.png"),
+                                    "${Constants.imgPath}checkbox@3x.png"),
                                 fit: BoxFit.fill, //MM
                               )
                             : null,
                         border: selected
                             ? null
-                            : Border.all(color: Color(0xffd1d1d1), width: 1))),
+                            : Border.all(color: const Color(0xffd1d1d1), width: 1))),
               ],
             ),
           ),
         ),
-        VerticalDivider(color: AppColor.gray)
+        const VerticalDivider(color: AppColor.gray)
       ],
     );
   }

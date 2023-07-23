@@ -42,7 +42,7 @@ class ApigeeTokenResponse extends Equatable {
       return expiresInDate;
     } catch (ex) {
       print(ex);
-      DateTime expiresInDate = DateTime.now().add(Duration(hours: 1));
+      DateTime expiresInDate = DateTime.now().add(const Duration(hours: 1));
       return expiresInDate;
     }
   }

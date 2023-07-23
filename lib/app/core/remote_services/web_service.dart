@@ -26,7 +26,7 @@ class WebService {
       queryString = relativePath;
     }
     if (queryParams != null) {
-      queryString = "?" + Uri(queryParameters: queryParams).query;
+      queryString = "?${Uri(queryParameters: queryParams).query}";
     }
 
     var requestUrl = baseURL + url + queryString;
@@ -52,10 +52,11 @@ class WebService {
         result.putIfAbsent("state", () => false);
         result.putIfAbsent(
             "data", () => utf8.decode(response.bodyBytes).toString());
-        if (autoLogout)
+        if (autoLogout) {
           result.putIfAbsent("error", () => ('session_ended_error').tr());
-        else
+        } else {
           result.putIfAbsent("error", () => ('errors_server_error_1').tr());
+        }
 
         try {
           Helpers.sendLog(
@@ -110,7 +111,7 @@ class WebService {
       queryString = relativePath;
     }
     if (queryParams != null) {
-      queryString = "?" + Uri(queryParameters: queryParams).query;
+      queryString = "?${Uri(queryParameters: queryParams).query}";
     }
 
     var requestUrl = baseURL + url + queryString;
@@ -136,10 +137,11 @@ class WebService {
         result.putIfAbsent("state", () => false);
         result.putIfAbsent(
             "data", () => utf8.decode(response.bodyBytes).toString());
-        if (autoLogout)
+        if (autoLogout) {
           result.putIfAbsent("error", () => ('session_ended_error').tr());
-        else
+        } else {
           result.putIfAbsent("error", () => ('errors_server_error_1').tr());
+        }
 
         try {
           Helpers.sendLog(
@@ -196,7 +198,7 @@ class WebService {
       queryString = relativePath;
     }
     if (queryParams != null) {
-      queryString = "?" + Uri(queryParameters: queryParams).query;
+      queryString = "?${Uri(queryParameters: queryParams).query}";
     }
 
     var requestUrl = baseURL + url + queryString;
@@ -238,10 +240,11 @@ class WebService {
           result.putIfAbsent("state", () => false);
           result.putIfAbsent(
               "data", () => utf8.decode(response.bodyBytes).toString());
-          if (autoLogout)
+          if (autoLogout) {
             result.putIfAbsent("error", () => ('session_ended_error').tr());
-          else
+          } else {
             result.putIfAbsent("error", () => ('errors_server_error_1').tr());
+          }
 
           try {
             Helpers.sendLog(
@@ -312,8 +315,7 @@ class WebService {
       queryString = relativePath;
     }
     if (queryParams != null) {
-      queryString = "?" +
-          Uri.decodeQueryComponent(Uri(queryParameters: queryParams).query);
+      queryString = "?${Uri.decodeQueryComponent(Uri(queryParameters: queryParams).query)}";
     }
     var requestUrl = baseURL + url + queryString;
     //print(requestUrl);
@@ -400,9 +402,7 @@ class WebService {
       {String? body, String? loginIdentityId, String? loginIdentityType}) {
     //var encodedURL = Uri.encodeComponent(url);
     String message = "";
-    message = url +
-        method +
-        'Bearer ${sl<EntryPointCubit>().state.apigeeToken?.accessToken}';
+    message = '$url${method}Bearer ${sl<EntryPointCubit>().state.apigeeToken?.accessToken}';
     if (body != null) {
       message += body.replaceAll(RegExp(r'^/\\n/g'), "");
     }
@@ -438,8 +438,7 @@ class WebService {
       queryString = relativePath;
     }
     if (queryParams != null) {
-      queryString = "?" +
-          Uri.decodeQueryComponent(Uri(queryParameters: queryParams).query);
+      queryString = "?${Uri.decodeQueryComponent(Uri(queryParameters: queryParams).query)}";
     }
     var requestUrl = baseURL + url + queryString;
     //print(requestUrl);
@@ -521,7 +520,7 @@ class WebService {
       queryString = relativePath;
     }
     if (queryParams != null) {
-      queryString = "?" + Uri(queryParameters: queryParams).query;
+      queryString = "?${Uri(queryParameters: queryParams).query}";
     }
 
     var requestUrl = pegaBaseURL + url + queryString;
@@ -534,7 +533,7 @@ class WebService {
         String username = "CRMBasicAuthUser";
         String password = "rules";
         basicAuthForGuest =
-            'Basic ' + base64Encode(utf8.encode('$username:$password'));
+            'Basic ${base64Encode(utf8.encode('$username:$password'))}';
       }
       var headers = {
         'Content-type': 'application/json',
@@ -543,7 +542,7 @@ class WebService {
         else
           "Authorization": basicAuthForGuest
       };
-      var response;
+      http.Response response;
       if (duration == null) {
         response = await http.get(
           Uri.parse(requestUrl),
@@ -622,8 +621,7 @@ class WebService {
       queryString = relativePath;
     }
     if (queryParams != null) {
-      queryString = "?" +
-          Uri.decodeQueryComponent(Uri(queryParameters: queryParams).query);
+      queryString = "?${Uri.decodeQueryComponent(Uri(queryParameters: queryParams).query)}";
     }
     var requestUrl = pegaBaseURL + url + queryString;
     // print(requestUrl);
@@ -634,7 +632,7 @@ class WebService {
       String username = "CRMBasicAuthUser";
       String password = "rules";
       basicAuthForGuest =
-          'Basic ' + base64Encode(utf8.encode('$username:$password'));
+          'Basic ${base64Encode(utf8.encode('$username:$password'))}';
     }
     try {
       var response =
@@ -708,7 +706,7 @@ class WebService {
       queryString = relativePath;
     }
     if (queryParams != null) {
-      queryString = "?" + Uri(queryParameters: queryParams).query;
+      queryString = "?${Uri(queryParameters: queryParams).query}";
     }
 
     var requestUrl = url + queryString;
@@ -771,7 +769,7 @@ class WebService {
       queryString = relativePath;
     }
     if (queryParams != null) {
-      queryString = "?" + Uri(queryParameters: queryParams).query;
+      queryString = "?${Uri(queryParameters: queryParams).query}";
     }
     var data = body != null ? json.encode(body) : null;
 
@@ -779,7 +777,7 @@ class WebService {
     // print(requestUrl);
     Map<String, dynamic> result = {};
     try {
-      var response;
+      http.Response response;
       if (duration == null) {
         response = await http.post(
           Uri.parse(requestUrl),
@@ -844,7 +842,7 @@ class WebService {
       queryString = relativePath;
     }
     if (queryParams != null) {
-      queryString = "?" + Uri(queryParameters: queryParams).query;
+      queryString = "?${Uri(queryParameters: queryParams).query}";
     }
 
     var requestUrl = baseURL + url + queryString;
@@ -891,7 +889,7 @@ class WebService {
         } catch (ex) {}
       }
     } catch (ex) {
-      print("exception: " + ex.toString());
+      print("exception: $ex");
       result.putIfAbsent("state", () => false);
       result.putIfAbsent("error", () => ('errors_server_error_2').tr());
       var connectivityResult = await (Connectivity().checkConnectivity());
@@ -921,7 +919,7 @@ class WebService {
       queryString = relativePath;
     }
     if (queryParams != null) {
-      queryString = "?" + Uri(queryParameters: queryParams).query;
+      queryString = "?${Uri(queryParameters: queryParams).query}";
     }
 
     var requestUrl = baseURL + url + queryString;
@@ -958,7 +956,7 @@ class WebService {
         } catch (ex) {}
       }
     } catch (ex) {
-      print("exception: " + ex.toString());
+      print("exception: $ex");
       result.putIfAbsent("state", () => false);
       result.putIfAbsent("error", () => ('errors_server_error_2').tr());
       var connectivityResult = await (Connectivity().checkConnectivity());

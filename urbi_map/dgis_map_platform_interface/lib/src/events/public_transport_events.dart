@@ -97,9 +97,6 @@ class BriefPublicTransportModel {
 enum TransferDescriptionType { onFoot, metro, ofType, finish }
 
 class TransferDescription {
-  final TransferDescriptionType type;
-  final dynamic value;
-  final TextColor color;
 
   TransferDescription({
     required this.type,
@@ -133,19 +130,20 @@ class TransferDescription {
       value: map['value'],
       color: map['color'] != null
           ? TextColor.fromMap(map['color'])
-          : TextColor(
+          : const TextColor(
               type: TextColorType.normal,
               value: null,
             ),
     );
   }
+  final TransferDescriptionType type;
+  final dynamic value;
+  final TextColor color;
 }
 
 enum TextColorType { normal, highlighted, withValue }
 
 class TextColor {
-  final TextColorType type;
-  final int? value;
 
   const TextColor({
     required this.type,
@@ -175,6 +173,8 @@ class TextColor {
       value: map['value'],
     );
   }
+  final TextColorType type;
+  final int? value;
 }
 
 enum RouteColorType {
@@ -184,8 +184,6 @@ enum RouteColorType {
 }
 
 class RouteColor {
-  final RouteColorType type;
-  final int? value;
 
   RouteColor({
     required this.type,
@@ -215,6 +213,8 @@ class RouteColor {
       value: map['value'],
     );
   }
+  final RouteColorType type;
+  final int? value;
 }
 
 enum TransferIconType {
@@ -225,8 +225,6 @@ enum TransferIconType {
 }
 
 class TransferIcon {
-  final TransferIconType type;
-  final dynamic value;
 
   TransferIcon({
     required this.type,
@@ -259,10 +257,11 @@ class TransferIcon {
       value: map['value'],
     );
   }
+  final TransferIconType type;
+  final dynamic value;
 }
 
 class Car {
-  final bool highlighted;
 
   Car({
     required this.highlighted,
@@ -273,21 +272,10 @@ class Car {
       highlighted: map['highlighted'],
     );
   }
+  final bool highlighted;
 }
 
 class Transfer {
-  final String? title;
-  final int? duration;
-  final TransferIcon icon;
-  final RouteColor? lineColor;
-  final TransferDescription? description;
-  final List<Transport>? transports;
-  final int? stopCount;
-  final bool useStationsInsteadOfStops;
-  final String? getOffAfter;
-  final List<String>? stops;
-  final String? boardingDescription;
-  final List<Car>? cars;
 
   Transfer({
     this.title,
@@ -331,6 +319,18 @@ class Transfer {
           : null,
     );
   }
+  final String? title;
+  final int? duration;
+  final TransferIcon icon;
+  final RouteColor? lineColor;
+  final TransferDescription? description;
+  final List<Transport>? transports;
+  final int? stopCount;
+  final bool useStationsInsteadOfStops;
+  final String? getOffAfter;
+  final List<String>? stops;
+  final String? boardingDescription;
+  final List<Car>? cars;
 }
 
 class PublicTransportModel {

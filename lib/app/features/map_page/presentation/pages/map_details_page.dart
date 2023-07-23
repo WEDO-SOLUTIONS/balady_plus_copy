@@ -40,11 +40,11 @@ class MapDetailsPage extends StatelessWidget {
                       MapDetailsSubHeader(
                         entityType: dataPoint.type.name,
                       ),
-                      MapDetailsField(
+                      const MapDetailsField(
                         title: "111",
                         subTitle: "111",
                       ),
-                      MapDetailsField(
+                      const MapDetailsField(
                         title: "111",
                         subTitle: "111",
                       ),

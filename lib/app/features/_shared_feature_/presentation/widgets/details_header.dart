@@ -20,7 +20,7 @@ class DetailsHeader extends StatelessWidget implements PreferredSizeWidget {
       actions: [
         if (onPress != null)
           CustomTextIconButtonWidget(
-            icon: Icon(
+            icon: const Icon(
               Icons.add,
               size: 30,
               color: AppColor.primary900Light,
@@ -37,7 +37,7 @@ class DetailsHeader extends StatelessWidget implements PreferredSizeWidget {
               text: title,
               icon: SvgPicture.asset(IconPath.vdAppBarBack),
               iconTextTweenSpace: 5,
-              textStyle: TextStyle(
+              textStyle: const TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
                   color: AppColor.blackModern700Light,
@@ -53,7 +53,7 @@ class DetailsHeader extends StatelessWidget implements PreferredSizeWidget {
       flexibleSpace: Stack(
         children: [
           Container(
-            padding: EdgeInsets.only(bottom: 40, left: 16, right: 16),
+            padding: const EdgeInsets.only(bottom: 40, left: 16, right: 16),
             decoration: const BoxDecoration(
               color: Colors.white,
               image: DecorationImage(
@@ -70,5 +70,5 @@ class DetailsHeader extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   // TODO: implement preferredSize
-  Size get preferredSize => Size.fromHeight(100);
+  Size get preferredSize => const Size.fromHeight(100);
 }
