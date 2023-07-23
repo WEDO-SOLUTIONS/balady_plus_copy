@@ -9,7 +9,7 @@ class ObjectTapHandler {
         static let onIoTap = "onIoTap"
         static let onIdleTap = "onIdleTap"
     }
-
+    
     private struct PhotoData {
         let photoUrl: String
         let isPanoramic: Bool
@@ -22,18 +22,20 @@ class ObjectTapHandler {
     private let panoramasObjectManager: MapObjectManager
     private let imageFactory: IImageFactory
     private let eventChannel: DgisStreamHandler
+    private let ioObjectManager: MapObjectManager
     private let markersQueue: DispatchQueue
-
+    
     private var lastTappedSearchMarker: Marker?
     private var markerImage: Image?
     private lazy var panoramaMarkerImage: Image = self.imageFactory.make(image: UIImage(named: "ic_marker_point")!)
     private lazy var panoramaMarkerSelected: Image = self.imageFactory.make(image: UIImage(named: "ic_street_view_marker")!)
     private var iconWidth: LogicalPixel?
-
+    
     private var source: DgisSource?
-
+    
     private var panoramasMarkers: Array<Marker> = []
-
+    private var ioLayerMarkers: Array<Marker> = []
+    
     private var selectedPanorama: Marker?
     
     init(
@@ -41,22 +43,24 @@ class ObjectTapHandler {
         panoramasMapObjectManager: MapObjectManager,
         imageFactory: IImageFactory,
         routeHandler: RouteHandler?,
-        eventChannel: DgisStreamHandler
+        eventChannel: DgisStreamHandler,
+        ioObjectManager: MapObjectManager
     ) {
         self.mapObjectManager = objectManager
         self.panoramasObjectManager = panoramasMapObjectManager
         self.imageFactory = imageFactory
         self.routeHandler = routeHandler
         self.eventChannel = eventChannel
+        self.ioObjectManager = ioObjectManager
         self.markersQueue = DispatchQueue(
             label: "com.mapness.panoramas.markers-queue",
             qos: .utility
         )
     }
-
+    
     func objectTapListener(_ objectInfo: DGis.RenderedObjectInfo) {
         let tappedObject = objectInfo.item.item
-
+        
         switch tappedObject {
         case is Marker:
             self.onMarkerTap(tappedObject as! Marker)
@@ -67,7 +71,7 @@ class ObjectTapHandler {
                 eventChannel.success(mapObject.objectAttributes.mapIdle(objectInfo.closestMapPoint))
                 return
             }
-
+            
             if mapObject.objectAttributes.attributeNames.contains(where: { $0 == "OPPORTUNITYDESCRIPTION"}) {
                 eventChannel.success(mapObject.objectAttributes.mapIo(objectInfo.closestMapPoint))
                 return
@@ -93,7 +97,7 @@ class ObjectTapHandler {
             self.eventChannel.error(code: Events.objectTapError)
         }
     }
-
+    
     func setMarkerOptions(
         assetKey: String,
         svgSize: CGSize,
@@ -112,10 +116,10 @@ class ObjectTapHandler {
                 ))
             return
         }
-
+        
         self.markerImage = imageFactory.make(svgData: data, size: svgSize)
         self.iconWidth = LogicalPixel(floatLiteral: iconWidth)
-
+        
         completion(nil)
     }
     
@@ -128,7 +132,7 @@ class ObjectTapHandler {
             )
             return
         }
-
+        
         let options = MarkerOptions(
             position: GeoPointWithElevation(
                 latitude: Latitude(value: geoPoint.latitude.doubleValue),
@@ -140,43 +144,74 @@ class ObjectTapHandler {
         )
         
         let marker = Marker(options: options)
-
+        
         self.markersQueue.sync {
             self.mapObjectManager.removeAll()
             self.mapObjectManager.addObject(item: marker)
         }
-
+        
         completion(nil)
     }
-
+    
+    func addIoMarkers(_ message: AddLayerPointObjectsMessage, _ completion: @escaping (FlutterError?) -> Void) {
+        guard let markerImage = self.markerImage, let iconWidth = self.iconWidth else {
+            completion(FlutterError(
+                code: "Error adding marker",
+                message: "Call setMarkerOptions method first",
+                details: nil)
+            )
+            return
+        }
+        
+        let markers = message.objects.map{
+            let position = GeoPointWithElevation(
+                latitude:  Latitude(value: $0.position.latitude.doubleValue),
+                longitude:  Longitude(value: $0.position.longitude.doubleValue)
+            )
+            return Marker(options: MarkerOptions(
+                position: position,
+                icon: markerImage,
+                anchor: Anchor(x: 0.5, y: 1),
+                iconWidth: iconWidth,
+                userData: $0.attributes
+            ))
+        }
+        self.markersQueue.sync {
+            self.ioObjectManager.removeAndAddObjects(objectsToRemove: ioLayerMarkers, objectsToAdd: markers)
+            self.ioLayerMarkers.removeAll()
+            self.ioLayerMarkers.append(contentsOf: markers)
+            completion(nil)
+        }
+    }
+    
     func removeAllMarkers() {
         self.markersQueue.sync {
             self.mapObjectManager.removeAll()
         }
     }
-
+    
     func setHighlighted(_ objects: [DgisObjectId], _ completion: @escaping (FlutterError?) -> Void) {
         guard let source = self.source else {
             completion(FlutterError(code: "Map source is null", message: nil, details: nil))
             return
         }
-
+        
         source.setHighlighted(directoryObjectIds: source.highlightedObjects, highlighted: false)
         source.setHighlighted(directoryObjectIds: objects, highlighted: true)
-
+        
         completion(nil)
     }
-
+    
     func addPanoramasMarkers(_ message: AddMarkersWithPhotoMessage) {
         self.markersQueue.sync { [weak self] in
             var newObjects: Array<Marker> = []
             message.markers.forEach { it in
                 guard let self = self else { return }
-
+                
                 let geoPoint = it.position.point
                 let elevation = it.position.elevation
                 let photoData = PhotoData(photoUrl: it.photoUrl, isPanoramic: it.isPanoramic.boolValue, azimuth: it.azimuth.doubleValue);
-
+                
                 let opts = MarkerOptions(
                     position: GeoPointWithElevation(
                         latitude: Latitude(value: geoPoint.latitude.doubleValue),
@@ -192,45 +227,45 @@ class ObjectTapHandler {
             self?.panoramasMarkers.append(contentsOf: newObjects)
         }
     }
-
+    
     func showPanoramasMarkers() {
         self.markersQueue.sync {
             self.panoramasObjectManager.isVisible = true
         }
     }
-
+    
     func hidePanoramasMarkers() {
         self.markersQueue.sync {
             self.panoramasObjectManager.isVisible = false
         }
     }
-
+    
     func removePanoramasMarkers() {
         self.markersQueue.sync {
             self.panoramasMarkers.removeAll()
             self.panoramasObjectManager.removeAll()
         }
     }
-
+    
     func setPanoramasPadding(map: Map, message: CameraSetPaddingMessage) {
         map.camera.setPadding(padding: Padding(left: UInt32(truncating: message.leftPadding),
                                                top: UInt32(truncating: message.topPadding),
                                                right: UInt32(truncating: message.rightPadding),
                                                bottom: UInt32(truncating: message.bottomPadding)))
     }
-
+    
     func moveCameraToSelectedPanorama(map: Map) {
         guard let panorama = self.selectedPanorama else { return }
-
+        
         var desiredPosition = map.camera.position
         desiredPosition.point = GeoPoint(
             latitude: Latitude(value: panorama.position.latitude.value),
             longitude: Longitude(value: panorama.position.longitude.value)
         )
-
-        map.camera.move(position: desiredPosition)
+        
+        let _ = map.camera.move(position: desiredPosition)
     }
-
+    
     func selectPanorama(marker: Marker) {
         if (self.selectedPanorama != nil) {
             unselectPanorama()
@@ -242,46 +277,46 @@ class ObjectTapHandler {
         guard let photoData = marker.userData as? PhotoData else { return }
         self.selectedPanorama?.iconMapDirection = MapDirection(value: photoData.azimuth)
     }
-
+    
     func unselectPanorama() {
         self.selectedPanorama?.icon = panoramaMarkerImage
         self.selectedPanorama?.anchor = Anchor(x: 0.5, y: 0.5)
         self.selectedPanorama?.iconMapDirection = nil
         self.selectedPanorama = nil
     }
-
+    
     func setPanoramasAzimuth(degrees : Double) {
         selectedPanorama?.iconMapDirection = MapDirection(value: degrees)
     }
-
+    
     func showLastSearchMarker() {
         self.lastTappedSearchMarker?.iconOpacity = Opacity(value: 1.0)
     }
-
+    
     private func onDgisObjectTap(_ mapObject: DgisMapObject, _ objectInfo: DGis.RenderedObjectInfo) {
         guard let source = objectInfo.item.source as? DgisSource else {
             self.eventChannel.error(code: Events.objectTapError)
             return
         }
-
+        
         self.source = source
-
+        
         self.sendDgisObjectEvent(mapObject.id, objectInfo.closestMapPoint)
     }
-
+    
     private func onMarkerTap(_ marker: Marker) {
         switch marker.userData {
-            case let d as PhotoData:
-                onMarkerWithPhotoTap(marker, d)
-                break
-            case let id as DgisObjectId:
-                onSearchMarkerTap(marker, id)
-                break
-            default:
-                return
+        case let d as PhotoData:
+            onMarkerWithPhotoTap(marker, d)
+            break
+        case let id as DgisObjectId:
+            onSearchMarkerTap(marker, id)
+            break
+        default:
+            return
         }
     }
-
+    
     private func onSearchMarkerTap(_ marker: Marker, _ id: DgisObjectId) {
         self.lastTappedSearchMarker?.iconOpacity = Opacity(value: 1.0)
         marker.iconOpacity = Opacity(value: 0.0)
@@ -302,8 +337,8 @@ class ObjectTapHandler {
                 "photoUrl": photoData.photoUrl,
                 "isPanoramic": photoData.isPanoramic,
                 "azimuth": photoData.azimuth,
-            ],
-        ])
+            ] as [String : Any],
+        ] as [String : Any])
     }
     
     private func sendDgisObjectEvent(_ id: DgisObjectId, _ position: GeoPointWithElevation) {
@@ -317,6 +352,6 @@ class ObjectTapHandler {
                 "latitude": position.latitude.value,
                 "longitude": position.longitude.value,
             ],
-        ])
+        ] as [String : Any])
     }
 }
