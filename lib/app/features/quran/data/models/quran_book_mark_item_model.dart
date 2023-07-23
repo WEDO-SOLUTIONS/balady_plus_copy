@@ -6,7 +6,7 @@ import 'package:equatable/equatable.dart';
 class QuranBookMarkItemModel extends Equatable {
   final int pageNumber;
   final String suraName;
-  final String suraNo;
+  final int suraNo;
   QuranBookMarkItemModel({
     required this.pageNumber,
     required this.suraName,
@@ -14,12 +14,12 @@ class QuranBookMarkItemModel extends Equatable {
   });
 
   @override
-  List<Object?> get props => [];
+  List<Object?> get props => [pageNumber, suraName, suraNo];
 
   QuranBookMarkItemModel copyWith({
     int? pageNumber,
     String? suraName,
-    String? suraNo,
+    int? suraNo,
   }) {
     return QuranBookMarkItemModel(
       pageNumber: pageNumber ?? this.pageNumber,
@@ -40,7 +40,7 @@ class QuranBookMarkItemModel extends Equatable {
     return QuranBookMarkItemModel(
       pageNumber: map['pageNumber'] as int,
       suraName: map['suraName'] as String,
-      suraNo: map['suraNo'] as String,
+      suraNo: map['suraNo'] as int,
     );
   }
 

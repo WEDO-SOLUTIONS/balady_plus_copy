@@ -36,6 +36,7 @@ class IconPath {
   static const printer = '${_svgIconPath}printer$_svg';
   static const routeSquare = '${_svgIconPath}route-square$_svg';
   static const suraIcon = '${_svgIconPath}sura_icon$_svg';
+  static const warningIcon = '${_svgIconPath}danger$_svg';
 
   static const informationCircleIcon =
       '${_svgIconPath}informationCircleIcon$_svg';
@@ -200,4 +201,5 @@ class IconPath {
   static const quranSaveIcon = '${_svgIconPath}quran_save$_svg';
   static const quranSearchIcon = '${_svgIconPath}quran_search$_svg';
   static const quranMarkIcon = '${_svgIconPath}quran_mark$_svg';
+  static const quranMainMarkIcon = '${_svgIconPath}quran_main_bookmark$_svg';
 }

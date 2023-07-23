@@ -8,6 +8,8 @@ import 'package:balady_plus/app/features/calculator/service_calculator_exports.d
         CostsInfo,
         ServiceCalculatorScreen;
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../core/services/local/helpers.dart';
 import '../../../../core/utils/constants/constants.dart';
@@ -131,6 +133,42 @@ class _ServiceCalculatorResultScreenState
                               ...diggingFees()
                           ],
                         ),
+                      ),
+                      CustomVerticalSpace(height: 16),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SvgPicture.asset(IconPath.warningIcon),
+                          CustomHorizontalSpace(width: 8),
+                          Flexible(
+                            child: CustomTextWidget(
+                              "calculator_note1".tr(),
+                              fontWeight: AppFontWeight.bold,
+                              fontSize: 12,
+                              maxLines: 20,
+                              height: 1.6,
+                              fontColor: AppColor.blackModern500Light,
+                            ),
+                          )
+                        ],
+                      ),
+                      CustomVerticalSpace(height: 12),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SvgPicture.asset(IconPath.warningIcon),
+                          CustomHorizontalSpace(width: 8),
+                          Flexible(
+                            child: CustomTextWidget(
+                              "calculator_note2".tr(),
+                              fontWeight: AppFontWeight.bold,
+                              fontSize: 12,
+                              maxLines: 20,
+                              height: 1.6,
+                              fontColor: AppColor.blackModern500Light,
+                            ),
+                          )
+                        ],
                       ),
                     ]),
               ),

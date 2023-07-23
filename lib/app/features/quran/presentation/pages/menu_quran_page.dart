@@ -14,23 +14,35 @@ class MenuQuranPage extends StatefulWidget {
 }
 
 class _MenuQuranPageState extends State<MenuQuranPage> {
+  List<QuranSuraInfoModel> searchedQuranData = [];
+
+  @override
+  void initState() {
+    super.initState();
+    searchedQuranData.addAll(quranData);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: MenuAppBar(
-        onSearch: () {},
+        onSearch: (String? text) {
+          searchedQuranData =
+              quranData.where((e) => e.name.contains(text ?? "")).toList();
+          setState(() {});
+        },
       ),
       body: Container(
         padding: EdgeInsets.all(16),
         child: ListView.builder(
-            itemCount: quranData.length,
+            itemCount: searchedQuranData.length,
             itemBuilder: (ctx, index) {
               return QuranMenuCardWidget(
-                item: quranData[index],
-                index: index,
+                item: searchedQuranData[index],
+                index: searchedQuranData[index].id,
                 onTap: () {
-                  Navigator.of(context)
-                      .pushNamed(RouteName.quranScreen, arguments: index);
+                  Navigator.of(context).pushNamed(RouteName.quranScreen,
+                      arguments: searchedQuranData[index].id);
                 },
               );
             }),

@@ -6,14 +6,15 @@ class PrayerTimesState extends Equatable {
   final GISResponse? gisResponse;
   final PrayerTimeEntity? nextPrayer;
   final String? errorMessage;
+  final bool? userLocationUnkown;
 
-  const PrayerTimesState({
-    this.status = BlocRequestStatus.initial,
-    this.prayerTimesResponse,
-    this.gisResponse,
-    this.nextPrayer,
-    this.errorMessage,
-  });
+  const PrayerTimesState(
+      {this.status = BlocRequestStatus.initial,
+      this.prayerTimesResponse,
+      this.gisResponse,
+      this.nextPrayer,
+      this.errorMessage,
+      this.userLocationUnkown});
 
   String get error => errorMessage ?? '';
 
@@ -23,14 +24,15 @@ class PrayerTimesState extends Equatable {
     GISResponse? gisResponse,
     PrayerTimeEntity? nextPrayer,
     String? errorMessage,
+    bool? userLocationUnkown,
   }) {
     return PrayerTimesState(
-      status: status ?? this.status,
-      prayerTimesResponse: prayerTimes ?? prayerTimesResponse,
-      gisResponse: gisResponse ?? this.gisResponse,
-      nextPrayer: nextPrayer ?? this.nextPrayer,
-      errorMessage: errorMessage ?? this.errorMessage,
-    );
+        status: status ?? this.status,
+        prayerTimesResponse: prayerTimes ?? prayerTimesResponse,
+        gisResponse: gisResponse ?? this.gisResponse,
+        nextPrayer: nextPrayer ?? this.nextPrayer,
+        errorMessage: errorMessage ?? this.errorMessage,
+        userLocationUnkown: userLocationUnkown ?? this.userLocationUnkown);
   }
 
   @override
@@ -40,5 +42,6 @@ class PrayerTimesState extends Equatable {
         gisResponse,
         nextPrayer,
         errorMessage,
+        userLocationUnkown
       ];
 }

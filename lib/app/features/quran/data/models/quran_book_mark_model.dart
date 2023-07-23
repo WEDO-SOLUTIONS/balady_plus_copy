@@ -21,7 +21,7 @@ class QuranBookMarkModel {
     return QuranBookMarkModel(
       items: map['items'] != null
           ? List<QuranBookMarkItemModel>.from(
-              (map['items'] as List<int>).map<QuranBookMarkItemModel?>(
+              (map['items'] as List<dynamic>).map<QuranBookMarkItemModel?>(
                 (x) =>
                     QuranBookMarkItemModel.fromMap(x as Map<String, dynamic>),
               ),

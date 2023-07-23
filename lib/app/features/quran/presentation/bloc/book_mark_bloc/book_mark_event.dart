@@ -19,8 +19,3 @@ class ChangePageEvent extends BookMarkEvent {
 class ToggleDetailsEvent extends BookMarkEvent {
   ToggleDetailsEvent();
 }
-
-class MoveToPageEvent extends BookMarkEvent {
-  final int page;
-  MoveToPageEvent({required this.page});
-}

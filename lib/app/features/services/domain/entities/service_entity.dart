@@ -15,21 +15,22 @@ class ServiceEntity extends Equatable {
   final ServiceActionEntity action;
   final List<ServiceCardEntity> cards;
   final String? warning;
+  final bool? requireLogin;
 
-  const ServiceEntity({
-    required this.id,
-    required this.title,
-    required this.iconName,
-    required this.order,
-    required this.isNew,
-    required this.isImportant,
-    this.icon3DName,
-    this.description,
-    this.tag,
-    required this.action,
-    this.cards = const [],
-    this.warning,
-  });
+  const ServiceEntity(
+      {required this.id,
+      required this.title,
+      required this.iconName,
+      required this.order,
+      required this.isNew,
+      required this.isImportant,
+      this.icon3DName,
+      this.description,
+      this.tag,
+      required this.action,
+      this.cards = const [],
+      this.warning,
+      this.requireLogin = false});
 
   @override
   List<Object?> get props => [
@@ -44,5 +45,6 @@ class ServiceEntity extends Equatable {
         action,
         cards,
         warning,
+        requireLogin
       ];
 }

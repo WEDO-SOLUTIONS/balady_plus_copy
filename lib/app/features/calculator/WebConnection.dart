@@ -18,9 +18,11 @@ class WebServiceConnections {
   Future<Map<String, dynamic>> sendGetRequest(
       {String? url, Map<String, String>? headers, String? apiName}) async {
     try {
+      print(url);
       final response = await http.get(Uri.parse(url ?? ""), headers: headers);
       // print(response.body);
-      if (response.statusCode == HttpStatus.ok) {
+      if (response.statusCode == HttpStatus.ok ||
+          (response.statusCode == HttpStatus.accepted)) {
         //print("OKKK");
         Map<String, dynamic> m = new Map();
         m.putIfAbsent("state", () => true);

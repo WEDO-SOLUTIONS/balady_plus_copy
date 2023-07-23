@@ -14,9 +14,10 @@ class BookMarkAppBar extends StatelessWidget implements PreferredSizeWidget {
       height: 136,
       decoration: BoxDecoration(
           image: DecorationImage(
+              fit: BoxFit.cover,
               image: AssetImage(
-        ImagePath.zmzmBackground,
-      ))),
+                ImagePath.zmzmBackground,
+              ))),
       child: Column(children: [
         CustomVerticalSpace(height: MediaQuery.of(context).padding.top),
         Row(

@@ -23,13 +23,7 @@ class BookMarkBloc extends Bloc<BookMarkEvent, BookMarkState> {
     on<BookMarkEvent>((event, emit) {});
     on<initBookMarkEvent>(_initBookMark);
     on<ToggleDetailsEvent>(_toggleDetailsEvent);
-    on<MoveToPageEvent>(_moveToPageEvent);
     add(initBookMarkEvent());
-  }
-
-  Future<void> _moveToPageEvent(MoveToPageEvent e, Emitter emitter) async {
-    ChangePageEvent(page: e.page - 1);
-    add(ToggleDetailsEvent());
   }
 
   Future<void> _toggleDetailsEvent(
@@ -37,6 +31,8 @@ class BookMarkBloc extends Bloc<BookMarkEvent, BookMarkState> {
 
   Future<void> _initBookMark(initBookMarkEvent e, Emitter emitter) async {
     QuranBookMarkModel items = await sharedPrefs.getQuranBookMark();
+    print("FFFFFFFF");
+    print(items);
     emitter(state.copyWith(items: items));
   }
 

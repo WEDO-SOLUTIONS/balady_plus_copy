@@ -10,9 +10,11 @@ class QuranState extends Equatable {
   final Map<int, String>? pagesStr;
   final String? currentTitle;
   final int? currentJozz;
+  final int? currentSuraNo;
   final Map<int, String>? suraIndex;
   final Map<int, Map<int, QuranSuraModel>>? suras;
   final bool? showDetails;
+  final bool? showBookMark;
   QuranState(
       {this.status = BlocStatus.initial,
       this.errorMessage,
@@ -23,8 +25,10 @@ class QuranState extends Equatable {
       this.suraIndex,
       this.currentTitle,
       this.currentJozz,
+      this.currentSuraNo,
       this.suras,
-      this.showDetails});
+      this.showDetails,
+      this.showBookMark});
 
   @override
   List<Object?> get props => [
@@ -37,7 +41,9 @@ class QuranState extends Equatable {
         suraIndex,
         suras,
         currentJozz,
-        showDetails
+        currentSuraNo,
+        showDetails,
+        showBookMark
       ];
 
   QuranState copyWith(
@@ -49,9 +55,11 @@ class QuranState extends Equatable {
       Map<int, String>? pagesStr,
       String? currentTitle,
       int? currentJozz,
+      int? currentSuraNo,
       Map<int, String>? suraIndex,
       Map<int, Map<int, QuranSuraModel>>? suras,
-      bool? showDetails}) {
+      bool? showDetails,
+      bool? showBookMark}) {
     return QuranState(
         status: status ?? this.status,
         errorMessage: errorMessage ?? this.errorMessage,
@@ -62,7 +70,9 @@ class QuranState extends Equatable {
         suraIndex: suraIndex ?? this.suraIndex,
         currentTitle: currentTitle ?? this.currentTitle,
         suras: suras ?? this.suras,
+        currentSuraNo: currentSuraNo ?? this.currentSuraNo,
         currentJozz: currentJozz ?? this.currentJozz,
-        showDetails: showDetails ?? this.showDetails);
+        showDetails: showDetails ?? this.showDetails,
+        showBookMark: showBookMark ?? this.showBookMark);
   }
 }

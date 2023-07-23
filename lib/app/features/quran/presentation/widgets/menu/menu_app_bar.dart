@@ -6,7 +6,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 class MenuAppBar extends StatelessWidget implements PreferredSizeWidget {
-  final Function onSearch;
+  final Function(String?) onSearch;
 
   const MenuAppBar({super.key, required this.onSearch});
 
@@ -52,6 +52,8 @@ class MenuAppBar extends StatelessWidget implements PreferredSizeWidget {
               CustomTextFieldWidget(
                 textFieldHeight: 48,
                 fillColor: Colors.transparent,
+                onChanged: onSearch,
+                onSubmitted: onSearch,
                 hintText: ("بحث  باسم السورة ...").tr(),
                 textFieldStyle: TextStyle(color: AppColor.primary100Light),
                 hintStyle: TextStyle(color: AppColor.primary100Light),

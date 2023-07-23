@@ -47,25 +47,70 @@ class ServiceIcon extends StatelessWidget {
               ));
         } else if (service.id == 3 &&
             service.action.type == ServiceAction.dialog) {
-          await BottomSheetDialog.showDraggableSheet(context,
-              child: BottomSheetWithActions(
-                title: "daem_select_category".tr(),
-                body: DaemTypeDialog(),
-              ));
+          if (CommonProperties.isLoggedIn) {
+            await BottomSheetDialog.showDraggableSheet(context,
+                child: BottomSheetWithActions(
+                  title: "daem_select_category".tr(),
+                  body: DaemTypeDialog(),
+                ));
+          } else {
+            showDialog(
+                context: context,
+                builder: (ctx) =>
+                    NeedLoginDialog(onSuccessLogin: (bool? isSuccess) async {
+                      if (isSuccess ?? false) {
+                        await BottomSheetDialog.showDraggableSheet(context,
+                            child: BottomSheetWithActions(
+                              title: "daem_select_category".tr(),
+                              body: DaemTypeDialog(),
+                            ));
+                      }
+                    }));
+          }
         } else if (service.id == 2 &&
             service.action.type == ServiceAction.dialog) {
-          await BottomSheetDialog.showDraggableSheet(context,
-              child: BottomSheetWithActions(
-                title: "اختر التصنيف".tr(),
-                body: GeneralInquiryTypeDialog(),
-              ));
+          if (CommonProperties.isLoggedIn) {
+            await BottomSheetDialog.showDraggableSheet(context,
+                child: BottomSheetWithActions(
+                  title: "اختر التصنيف".tr(),
+                  body: GeneralInquiryTypeDialog(),
+                ));
+          } else {
+            showDialog(
+                context: context,
+                builder: (ctx) =>
+                    NeedLoginDialog(onSuccessLogin: (bool? isSuccess) async {
+                      if (isSuccess ?? false) {
+                        await BottomSheetDialog.showDraggableSheet(context,
+                            child: BottomSheetWithActions(
+                              title: "اختر التصنيف".tr(),
+                              body: GeneralInquiryTypeDialog(),
+                            ));
+                      }
+                    }));
+          }
         } else if (service.id == 5 &&
             service.action.type == ServiceAction.dialog) {
-          await BottomSheetDialog.showDraggableSheet(context,
-              child: BottomSheetWithActions(
-                title: "اختر التصنيف".tr(),
-                body: MSRTypeDialog(),
-              ));
+          if (CommonProperties.isLoggedIn) {
+            await BottomSheetDialog.showDraggableSheet(context,
+                child: BottomSheetWithActions(
+                  title: "اختر التصنيف".tr(),
+                  body: MSRTypeDialog(),
+                ));
+          } else {
+            showDialog(
+                context: context,
+                builder: (ctx) =>
+                    NeedLoginDialog(onSuccessLogin: (bool? isSuccess) async {
+                      if (isSuccess ?? false) {
+                        await BottomSheetDialog.showDraggableSheet(context,
+                            child: BottomSheetWithActions(
+                              title: "اختر التصنيف".tr(),
+                              body: MSRTypeDialog(),
+                            ));
+                      }
+                    }));
+          }
         } else if (service.id == 2 && service.action.value == "/prayerTimes") {
           context.pushNamedRoute(
             RouteName.prayerTimes,
@@ -73,33 +118,59 @@ class ServiceIcon extends StatelessWidget {
           );
         } else if (service.id == 4 &&
             service.action.type == ServiceAction.dialog) {
-          await locator<NewAppointmentViewModel>().loadInitialData();
-          await BottomSheetDialog.showDraggableSheet(context,
-              isFullHeight: false,
-              child: BottomSheetWithActions(
-                title: "اختر نوع الموعد".tr(),
-                body: NewAppointmentDialog(),
-              ));
-        } else if (service.action.type == ServiceAction.cardsPage) {
           if (CommonProperties.isLoggedIn) {
-            Navigator.pushNamed(
-              context,
-              RouteName.serviceCards,
-              arguments: service,
-            );
+            await locator<NewAppointmentViewModel>().loadInitialData();
+            await BottomSheetDialog.showDraggableSheet(context,
+                isFullHeight: false,
+                child: BottomSheetWithActions(
+                  title: "اختر نوع الموعد".tr(),
+                  body: NewAppointmentDialog(),
+                ));
           } else {
             showDialog(
                 context: context,
                 builder: (ctx) =>
                     NeedLoginDialog(onSuccessLogin: (bool? isSuccess) async {
                       if (isSuccess ?? false) {
-                        Navigator.pushNamed(
-                          context,
-                          RouteName.serviceCards,
-                          arguments: service,
-                        );
+                        await locator<NewAppointmentViewModel>()
+                            .loadInitialData();
+                        await BottomSheetDialog.showDraggableSheet(context,
+                            isFullHeight: false,
+                            child: BottomSheetWithActions(
+                              title: "اختر نوع الموعد".tr(),
+                              body: NewAppointmentDialog(),
+                            ));
                       }
                     }));
+          }
+        } else if (service.action.type == ServiceAction.cardsPage) {
+          if (service.requireLogin != true) {
+            Navigator.pushNamed(
+              context,
+              RouteName.serviceCards,
+              arguments: service,
+            );
+          } else {
+            if (CommonProperties.isLoggedIn) {
+              Navigator.pushNamed(
+                context,
+                RouteName.serviceCards,
+                arguments: service,
+              );
+            } else {
+              showDialog(
+                  context: context,
+                  builder: (ctx) =>
+                      NeedLoginDialog(onSuccessLogin: (bool? isSuccess) async {
+                        if (isSuccess ?? false) {
+                          Navigator.pushNamed(
+                            context,
+                            RouteName.serviceCards,
+                            arguments: service,
+                          );
+                        }
+                      }));
+            }
           }
         } else if (service.action.type == ServiceAction.pageRoute) {
           if (service.action.value == RouteName.DCCameraPage) {
@@ -131,23 +202,30 @@ class ServiceIcon extends StatelessWidget {
               }
             }
           } else {
-            if (CommonProperties.isLoggedIn) {
+            if (service.requireLogin != true) {
               Navigator.pushNamed(
                 context,
                 service.action.value,
               );
             } else {
-              showDialog(
-                  context: context,
-                  builder: (ctx) =>
-                      NeedLoginDialog(onSuccessLogin: (bool? isSuccess) async {
-                        if (isSuccess ?? false) {
-                          Navigator.pushNamed(
-                            context,
-                            service.action.value,
-                          );
-                        }
-                      }));
+              if (CommonProperties.isLoggedIn) {
+                Navigator.pushNamed(
+                  context,
+                  service.action.value,
+                );
+              } else {
+                showDialog(
+                    context: context,
+                    builder: (ctx) => NeedLoginDialog(
+                            onSuccessLogin: (bool? isSuccess) async {
+                          if (isSuccess ?? false) {
+                            Navigator.pushNamed(
+                              context,
+                              service.action.value,
+                            );
+                          }
+                        }));
+              }
             }
           }
         }

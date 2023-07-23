@@ -17,6 +17,7 @@ import '../../../../core/utils/constants/constants.dart';
 import '../../../../core/utils/constants/paths/icon_paths.dart';
 import '../../../../core/utils/constants/paths/image_paths.dart';
 import '../../data/models/quran_aya_model.dart';
+import '../widgets/main/book_mark_sign.dart';
 import '../widgets/main/quran_footer.dart';
 import '../widgets/main/quran_header.dart';
 
@@ -168,8 +169,8 @@ class _QuranPageState extends State<QuranPage> {
                       itemCount: state.suras?.length ?? 0,
                       itemBuilder: ((context, i) {
                         return Container(
-                            margin: EdgeInsets.all(16),
-                            padding: EdgeInsets.all(8),
+                            margin: EdgeInsets.symmetric(horizontal: 10),
+                            // padding: EdgeInsets.all(8),
                             child: ListView(children: [
                               for (int index = 0;
                                   (index <
@@ -201,17 +202,12 @@ class _QuranPageState extends State<QuranPage> {
                                     ),
                                   ),
                                 CustomTextWidget(
-                                  state.suras?[i + 1]?[index + 1]?.suraAyat
-                                          .map((e) => e.values)
-                                          .toList()
-                                          .join()
-                                          .replaceAll("(", "")
-                                          .replaceAll(")", "") ??
+                                  "${state.suras?[i + 1]?[index + 1]?.suraAyat.map((e) => e.values).toList().join(" ").replaceAll("(", "").replaceAll(")", "")}" ??
                                       "",
                                   fontColor: AppColor.black,
                                   textAlign: TextAlign.justify,
                                   height: 1.6,
-                                  fontSize: 24,
+                                  fontSize: 25,
                                   fontFamily: "HafsSmart",
                                   maxLines: 1000,
                                 )
@@ -233,7 +229,8 @@ class _QuranPageState extends State<QuranPage> {
                       suraName: state.currentTitle ?? "",
                     ),
                     QuranFooter()
-                  ]
+                  ],
+                  BookMarkSign(),
                 ],
               ),
             )),

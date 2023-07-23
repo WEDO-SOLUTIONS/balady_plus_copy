@@ -187,15 +187,40 @@ class SharedPrefs {
   }
 
   Future<bool> saveQuranBookMark(QuranBookMarkItemModel item) async {
-    QuranBookMarkModel model = QuranBookMarkModel.fromJson(
-        _sharedPreferences?.getString('quran_book_marks') ?? "");
-    model.items?.add(item);
+    String? bookMarks = _sharedPreferences?.getString('quran_book_marks');
+    QuranBookMarkModel model = bookMarks != null
+        ? QuranBookMarkModel.fromJson(
+            _sharedPreferences?.getString('quran_book_marks') ?? "")
+        : QuranBookMarkModel(items: []);
 
-    return Future.value(await _sharedPreferences?.setString(
-        "quran_book_marks", model.toJson()));
+    bool isAdded = false;
+    if (model.items?.contains(item) ?? false) {
+      model.items?.remove(item);
+      isAdded = false;
+    } else {
+      model.items?.add(item);
+      isAdded = true;
+    }
+    await _sharedPreferences?.setString("quran_book_marks", model.toJson());
+    return Future.value(isAdded);
+  }
+
+  Future<bool> checkBookMark(QuranBookMarkItemModel item) async {
+    String? bookMarks = _sharedPreferences?.getString('quran_book_marks');
+    QuranBookMarkModel model = bookMarks != null
+        ? QuranBookMarkModel.fromJson(
+            _sharedPreferences?.getString('quran_book_marks') ?? "")
+        : QuranBookMarkModel(items: []);
+
+    if (model.items?.contains(item) ?? false) {
+      return Future.value(true);
+    } else {
+      return Future.value(false);
+    }
   }
 
   Future<QuranBookMarkModel> getQuranBookMark() async {
+    print(_sharedPreferences?.getString('quran_book_marks'));
     QuranBookMarkModel model = QuranBookMarkModel.fromJson(
         _sharedPreferences?.getString('quran_book_marks') ?? "");
 

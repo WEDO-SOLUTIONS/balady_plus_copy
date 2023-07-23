@@ -294,8 +294,10 @@ class ServiceCalculatorRepository {
       if (data['state']) {
         try {
           final jsonResult = json.decode(data['data']);
-          regions = List<SubActivity>.from(
-              jsonResult["resultItem"].map((x) => SubActivity.fromJson(x)));
+          regions = jsonResult["resultItem"] != null
+              ? List<SubActivity>.from(
+                  jsonResult["resultItem"]?.map((x) => SubActivity.fromJson(x)))
+              : [];
           return new Future.value(regions);
         } catch (error) {
           throw error;

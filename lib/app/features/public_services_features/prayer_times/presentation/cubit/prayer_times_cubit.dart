@@ -1,9 +1,11 @@
 import 'dart:async';
 
+import 'package:balady_plus/app/core/services/local/helpers.dart';
 import 'package:balady_plus/app/core/services/services_exports.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../core/errors/errors_exports.dart' show ServerFailure;
@@ -58,10 +60,18 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
       ));
       return;
     }
-    Position position = await Geolocator.getCurrentPosition();
-    double latitude = position.latitude;
-    double longitude = position.longitude;
 
+    LatLng? position = await Helpers.getCurrentLocation();
+    double latitude = 21.424236910931974;
+    double longitude = 39.82589070176908;
+    if (position != null) {
+      emit(state.copyWith(userLocationUnkown: false));
+
+      latitude = position.latitude;
+      longitude = position.longitude;
+    } else {
+      emit(state.copyWith(userLocationUnkown: true));
+    }
     emit(state.copyWith(status: BlocRequestStatus.submissionGetLoading));
     final gisFailureOrSuccess = await _getGISData(
       GISParams(x: longitude, y: latitude),
@@ -83,14 +93,16 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
 
     if (gisFailureOrSuccess.isLeft()) return;
 
+    emit(state.copyWith(status: BlocRequestStatus.submissionGetLoading));
+
     final params = PrayerTimesParams(
       latitude: latitude,
       longitude: longitude,
-      date: DateTime(2023, 05, 25),
+      date: DateTime.now(),
     );
     final failureOrSuccess = await _getPrayerTimes(params);
 
-    failureOrSuccess.fold(
+    await failureOrSuccess.fold(
       (failure) {
         emit(state.copyWith(
           status: BlocRequestStatus.submissionGetFailure,
@@ -110,7 +122,9 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
   void updateNextPrayer() {
     if (state.prayerTimesResponse == null) return;
     final now = DateTime.now();
-    if (now.isAfter(state.prayerTimesResponse!.maghrib.dateTime)) {
+    if (now.isAfter(state.prayerTimesResponse!.isha.dateTime)) {
+      emit(state.copyWith(nextPrayer: state.prayerTimesResponse!.fajr));
+    } else if (now.isAfter(state.prayerTimesResponse!.maghrib.dateTime)) {
       emit(state.copyWith(nextPrayer: state.prayerTimesResponse!.isha));
     } else if (now.isAfter(state.prayerTimesResponse!.asr.dateTime)) {
       emit(state.copyWith(nextPrayer: state.prayerTimesResponse!.maghrib));

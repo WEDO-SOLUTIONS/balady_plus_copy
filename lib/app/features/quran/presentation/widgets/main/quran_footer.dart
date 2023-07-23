@@ -1,9 +1,13 @@
+import 'package:balady_plus/app/core/services/services_exports.dart';
 import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
+import 'package:balady_plus/app/core/utils/constants/route_names.dart';
 import 'package:balady_plus/app/core/utils/enums/app_font_weights.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/texts/custom_text_field_widget.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports.dart';
+import 'package:balady_plus/app/features/quran/data/models/quran_book_mark_item_model.dart';
+import 'package:balady_plus/app/features/quran/presentation/bloc/book_mark_bloc/book_mark_bloc.dart';
 import 'package:balady_plus/app/features/quran/presentation/bloc/quran_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -11,12 +15,19 @@ import 'package:flutter_svg/svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../data/models/quran_sura_info_model.dart';
+import '../jozz/menu_card_widget.dart';
 import '../menu/menu_card_widget.dart';
 
-class QuranFooter extends StatelessWidget {
+class QuranFooter extends StatefulWidget {
   QuranFooter({super.key});
 
+  @override
+  State<QuranFooter> createState() => _QuranFooterState();
+}
+
+class _QuranFooterState extends State<QuranFooter> {
   final PageNumberController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<QuranBloc, QuranState>(
@@ -34,51 +45,68 @@ class QuranFooter extends StatelessWidget {
                 margin: EdgeInsets.all(16),
                 child: Row(
                   children: [
-                    Expanded(
-                        flex: 2,
-                        child: Container(
-                          height: 32,
-                          child: Stack(
-                            children: [
-                              Container(
-                                child: CustomTextFieldWidget(
-                                  textFieldHeight: 32,
-                                  fillColor: Color(0x45FFFFFF),
-                                  hintText: ("إبحث عن آية").tr(),
-                                  hintStyle: TextStyle(color: AppColor.white),
-                                  textFieldVerticalPadding: 4,
-                                ),
-                              ),
-                              Align(
-                                alignment: Alignment.centerLeft,
-                                child: IconButton(
-                                    onPressed: () {},
-                                    icon: SvgPicture.asset(
-                                        IconPath.quranSearchIcon)),
-                              )
-                            ],
-                          ),
-                        )),
-                    CustomHorizontalSpace(width: 10),
-                    Expanded(
-                        flex: 1,
-                        child: Container(
-                          height: 32,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(8),
-                              color: Color(0x45FFFFFF)),
-                          child: Row(children: [
+                    Container(
+                      height: 32,
+                      width: (MediaQuery.of(context).size.width - 16) / 2,
+                      child: GestureDetector(
+                        onTap: () {
+                          Navigator.of(context)
+                              .pushNamed(RouteName.quranSearchPage,
+                                  arguments: state.suras)
+                              .then((value) {
+                            if (int.tryParse(value.toString()) != null)
+                              context.read<QuranBloc>().add(MoveToPageEvent(
+                                  page: int.parse(value.toString())));
+                          });
+                        },
+                        child: Stack(
+                          children: [
                             Container(
-                                padding: EdgeInsets.symmetric(horizontal: 8),
-                                child:
-                                    SvgPicture.asset(IconPath.quranSaveIcon)),
-                            CustomTextWidget(
-                              ("حفظ علامة").tr(),
-                              fontSize: 12,
-                              fontWeight: AppFontWeight.semiBold,
+                              child: CustomTextFieldWidget(
+                                textFieldHeight: 32,
+                                enabled: false,
+                                fillColor: Color(0x45FFFFFF),
+                                hintText: ("إبحث عن آية").tr(),
+                                hintStyle: TextStyle(color: AppColor.white),
+                                textFieldVerticalPadding: 4,
+                              ),
+                            ),
+                            Align(
+                              alignment: Alignment.centerLeft,
+                              child: IconButton(
+                                  onPressed: () {},
+                                  icon: SvgPicture.asset(
+                                      IconPath.quranSearchIcon)),
                             )
-                          ]),
-                        ))
+                          ],
+                        ),
+                      ),
+                    ),
+                    CustomHorizontalSpace(width: 10),
+                    GestureDetector(
+                      onTap: () async {
+                        context.read<QuranBloc>().add(SaveBookMarkEvent());
+                      },
+                      child: Container(
+                        height: 32,
+                        width: (MediaQuery.of(context).size.width - 16) / 3,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8),
+                            color: Color(0x45FFFFFF)),
+                        child: Row(children: [
+                          Container(
+                              padding: EdgeInsets.symmetric(horizontal: 8),
+                              child: SvgPicture.asset(IconPath.quranSaveIcon)),
+                          CustomTextWidget(
+                            state.showBookMark == true
+                                ? ("quran_book_mark_ramoved").tr()
+                                : ("quran_book_mark_save").tr(),
+                            fontSize: 12,
+                            fontWeight: AppFontWeight.semiBold,
+                          )
+                        ]),
+                      ),
+                    )
                   ],
                 ),
               ),
@@ -89,16 +117,27 @@ class QuranFooter extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  Row(
-                    children: [
-                      SvgPicture.asset(IconPath.quranBookMarkIcon),
-                      CustomHorizontalSpace(width: 8),
-                      CustomTextWidget(
-                        ("الإنتقال إلى العلامة").tr(),
-                        fontSize: 12,
-                        fontWeight: AppFontWeight.semiBold,
-                      )
-                    ],
+                  GestureDetector(
+                    onTap: () async {
+                      await Navigator.of(context)
+                          .pushNamed(RouteName.quranBookMarkPage)
+                          .then((value) {
+                        if (int.tryParse(value.toString()) != null)
+                          context.read<QuranBloc>().add(MoveToPageEvent(
+                              page: int.parse(value.toString())));
+                      });
+                    },
+                    child: Row(
+                      children: [
+                        SvgPicture.asset(IconPath.quranBookMarkIcon),
+                        CustomHorizontalSpace(width: 8),
+                        CustomTextWidget(
+                          ("الإنتقال إلى العلامة").tr(),
+                          fontSize: 12,
+                          fontWeight: AppFontWeight.semiBold,
+                        )
+                      ],
+                    ),
                   ),
                   DrawLineWidget(
                     lineColor: Color(0x1AF3F3F3),
@@ -257,32 +296,75 @@ class QuranFooter extends StatelessWidget {
                     lineWidth: 1,
                     lineHeight: 43,
                   ),
-                  Row(
-                    children: [
-                      SvgPicture.asset(IconPath.quranJozzIcon),
-                      CustomHorizontalSpace(width: 8),
-                      CustomTextWidget(
-                        ("الأجزاء").tr(),
-                        fontSize: 12,
-                        fontWeight: AppFontWeight.semiBold,
-                      )
-                    ],
+                  GestureDetector(
+                    onTap: () async {
+                      final bool? actionTaked =
+                          await BottomSheetDialog.showDraggableSheet(context,
+                              child: BottomSheetWithActions(
+                                body: Container(
+                                  padding: EdgeInsets.all(16),
+                                  child: SingleChildScrollView(
+                                    child: Column(
+                                      children: [
+                                        ListView.builder(
+                                            itemCount: 30,
+                                            shrinkWrap: true,
+                                            physics:
+                                                NeverScrollableScrollPhysics(),
+                                            itemBuilder: (ctx, index) {
+                                              return QuranJozzCardWidget(
+                                                index: index + 1,
+                                                onTap: () {
+                                                  context
+                                                      .read<QuranBloc>()
+                                                      .controller
+                                                      .jumpToPage(context
+                                                          .read<QuranBloc>()
+                                                          .getJozzPageNumber(
+                                                              index + 1));
+                                                  Navigator.pop(context);
+                                                },
+                                              );
+                                            }),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                title: 'اختر الجزء',
+                              ));
+                    },
+                    child: Row(
+                      children: [
+                        SvgPicture.asset(IconPath.quranJozzIcon),
+                        CustomHorizontalSpace(width: 8),
+                        CustomTextWidget(
+                          ("الأجزاء").tr(),
+                          fontSize: 12,
+                          fontWeight: AppFontWeight.semiBold,
+                        )
+                      ],
+                    ),
                   ),
                   DrawLineWidget(
                     lineColor: Color(0x1AF3F3F3),
                     lineWidth: 1,
                     lineHeight: 43,
                   ),
-                  Row(
-                    children: [
-                      SvgPicture.asset(IconPath.quranPrayIcon),
-                      CustomHorizontalSpace(width: 8),
-                      CustomTextWidget(
-                        ("دعاء الختم").tr(),
-                        fontSize: 12,
-                        fontWeight: AppFontWeight.semiBold,
-                      )
-                    ],
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).pushNamed(RouteName.quranDoaaPage);
+                    },
+                    child: Row(
+                      children: [
+                        SvgPicture.asset(IconPath.quranPrayIcon),
+                        CustomHorizontalSpace(width: 8),
+                        CustomTextWidget(
+                          ("دعاء الختم").tr(),
+                          fontSize: 12,
+                          fontWeight: AppFontWeight.semiBold,
+                        )
+                      ],
+                    ),
                   )
                 ],
               )

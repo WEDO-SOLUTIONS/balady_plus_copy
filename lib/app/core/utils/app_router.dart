@@ -1,6 +1,7 @@
 import 'package:balady_plus/app/features/daem/daem_exports.dart';
 import 'package:balady_plus/app/features/objectable_transactions/domain/entities/create_objection_page_params.dart';
 import 'package:balady_plus/app/features/objections/domain/entities/objection_details.dart';
+import 'package:balady_plus/app/features/quran/presentation/pages/quran_bookmarks.dart';
 import 'package:balady_plus/app/features/quran/quran_exports.dart';
 import 'package:flutter/material.dart'
     show AppBar, Center, MaterialPageRoute, Route, RouteSettings, Scaffold;
@@ -49,7 +50,10 @@ import '../../features/profile_features/requests/requests_exports.dart'
     show RequestsPage;
 import '../../features/public_services_features/prayer_times/prayer_times_exports.dart'
     show PrayerTimesCubit, PrayerTimesPage;
+import '../../features/quran/data/models/quran_sura_model.dart';
 import '../../features/quran/presentation/pages/menu_quran_page.dart';
+import '../../features/quran/presentation/pages/quran_doaa.dart';
+import '../../features/quran/presentation/pages/quran_search_page.dart';
 import '../../features/report_damaged_car/damaged_cars_exports.dart'
     show DCCameraPage, CreateDCDetailsPage, DCMapScreen;
 import '../../features/retrive_car/data/model/veichles_list_page_params.dart';
@@ -423,6 +427,22 @@ class AppRouter {
         return MaterialPageRoute(
           builder: (_) => MenuQuranPage(),
         );
+
+      case RouteName.quranBookMarkPage:
+        return MaterialPageRoute(
+          builder: (_) => QuranBookMarkPage(),
+        );
+
+      case RouteName.quranDoaaPage:
+        return MaterialPageRoute(
+          builder: (_) => QuranDoaaPage(),
+        );
+
+      case RouteName.quranSearchPage:
+        Map<int, Map<int, QuranSuraModel>>? suras =
+            settings.arguments as Map<int, Map<int, QuranSuraModel>>;
+
+        return MaterialPageRoute(builder: (_) => QuranSearchPage(suras: suras));
 
       case RouteName.ZmZmPointsPage:
         return MaterialPageRoute(

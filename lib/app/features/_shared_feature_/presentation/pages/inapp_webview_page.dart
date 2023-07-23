@@ -32,6 +32,7 @@ class _InAppWebViewPageState extends State<InAppWebViewPage> {
   void initState() {
     super.initState();
     //CookieManager.instance().deleteAllCookies();
+
     _progessStream = StreamController<double?>();
 
     controller = WebViewController()
@@ -58,7 +59,9 @@ class _InAppWebViewPageState extends State<InAppWebViewPage> {
           },
         ),
       )
-      ..loadRequest(Uri.parse(widget.args.url));
+      ..loadRequest(Uri.parse(widget.args.url), headers: {
+        "Authorization": "Bearer " + (CommonProperties.token ?? "")
+      });
   }
 
   @override

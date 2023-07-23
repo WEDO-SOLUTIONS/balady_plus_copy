@@ -4811,6 +4811,8 @@ class _ServiceCalculatorScreenState extends BaseState<ServiceCalculatorScreen,
     List<SubActivity>? lookup = result;
     _subActivities.clear();
     _subActivities.addAll(lookup ?? []);
+    // print(currentActivityId);
+    // print(currentactionId);
 
     changeBtnColor(currentActivityId, currentactionId);
   }

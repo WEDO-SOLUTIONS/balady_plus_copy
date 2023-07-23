@@ -133,28 +133,10 @@ Map<String, dynamic> servicesConfig = {
       "order": 2,
       "isNew": false,
       "isImportant": true,
+      "requireLogin": true,
       "action": {"type": "dialog", "value": "/general-inquiries"},
       "ar": {
         "title": "إصدار رخصة تجارية",
-        "description": "ارسل استفسارك عن كل خدمه",
-        "tag": "الخدمات"
-      },
-      "en": {
-        "title": "General Inquiries",
-        "description": "Send your inquiry about any service",
-        "tag": "Services"
-      }
-    },
-    {
-      "id": 2,
-      "icon": "general_inquiries",
-      "3d_icon": "assets/images/home_icon_2.png",
-      "order": 2,
-      "isNew": true,
-      "isImportant": false,
-      "action": {"type": "dialog", "value": "/general-inquiries"},
-      "ar": {
-        "title": "إصدار شهادة صحية",
         "description": "ارسل استفسارك عن كل خدمه",
         "tag": "الخدمات"
       },
@@ -171,6 +153,7 @@ Map<String, dynamic> servicesConfig = {
       "order": 3,
       "isNew": false,
       "isImportant": true,
+      "requireLogin": true,
       "action": {"type": "dialog", "value": "/supporter"},
       "ar": {"title": "داعم", "description": null, "tag": null},
       "en": {"title": "Supporter", "description": null, "tag": null}
@@ -182,6 +165,7 @@ Map<String, dynamic> servicesConfig = {
       "order": 4,
       "isNew": false,
       "isImportant": false,
+      "requireLogin": true,
       "action": {"type": "dialog", "value": ""},
       "ar": {"title": "حجز موعد الكتروني", "description": null, "tag": null},
       "en": {"title": "Schedule Date", "description": null, "tag": null}
@@ -193,6 +177,7 @@ Map<String, dynamic> servicesConfig = {
       "order": 5,
       "isNew": false,
       "isImportant": false,
+      "requireLogin": true,
       "action": {"type": "dialog", "value": RouteName.newMSRMapPage},
       "ar": {"title": "طلب خدمة بلدية", "description": null, "tag": null},
       "en": {"title": "Request Service", "description": null, "tag": null}
@@ -204,6 +189,7 @@ Map<String, dynamic> servicesConfig = {
       "order": 6,
       "isNew": false,
       "isImportant": false,
+      "requireLogin": true,
       "action": {"type": "page", "value": "/objectableTransactionsPage"},
       "ar": {"title": "الاعتراضات والتظلمات", "description": null, "tag": null},
       "en": {"title": "Objections", "description": null, "tag": null}
@@ -226,6 +212,7 @@ Map<String, dynamic> servicesConfig = {
       "order": 8,
       "isNew": true,
       "isImportant": false,
+      "requireLogin": true,
       "action": {
         "type": "page",
         "value": RouteName.newTransactionInquiryScreen
@@ -248,6 +235,7 @@ Map<String, dynamic> servicesConfig = {
       "order": 9,
       "isNew": false,
       "isImportant": false,
+      "requireLogin": true,
       "action": {"type": "page", "value": RouteName.DCCameraPage},
       "ar": {"title": "السيارات التالفة", "description": null, "tag": null},
       "en": {"title": "Damaged Cars", "description": null, "tag": null}
@@ -322,6 +310,7 @@ Map<String, dynamic> servicesConfig = {
       "order": 15,
       "isNew": false,
       "isImportant": false,
+      "requireLogin": true,
       "action": {"type": "page", "value": RouteName.newHealthCertificatePage},
       "ar": {"title": "إصدار شهادة صحية", "description": null, "tag": null},
       "en": {
@@ -337,6 +326,7 @@ Map<String, dynamic> servicesConfig = {
       "order": 9,
       "isNew": false,
       "isImportant": false,
+      "requireLogin": true,
       "action": {"type": "page", "value": "/DCVeichlePage"},
       "ar": {"title": "استعادة مركبة مسحوبة", "description": null, "tag": null},
       "en": {"title": "Damaged Cars", "description": null, "tag": null}

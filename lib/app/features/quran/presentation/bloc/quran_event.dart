@@ -32,3 +32,7 @@ class MoveToPageEvent extends QuranEvent {
   final int page;
   MoveToPageEvent({required this.page});
 }
+
+class SaveBookMarkEvent extends QuranEvent {
+  SaveBookMarkEvent();
+}

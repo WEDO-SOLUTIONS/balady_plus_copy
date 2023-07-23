@@ -13,7 +13,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
+import '../../../../core/services/local/shared_prefs_manager.dart';
 import '../../data/models/quran_aya_model.dart';
+import '../../data/models/quran_book_mark_item_model.dart';
 
 part 'quran_event.dart';
 
@@ -33,6 +35,8 @@ class QuranBloc extends Bloc<QuranEvent, QuranState> {
     on<ChangePageEvent>(_getTitle);
     on<ToggleDetailsEvent>(_toggleDetailsEvent);
     on<MoveToPageEvent>(_moveToPageEvent);
+    on<SaveBookMarkEvent>(_saveBookMarkEvent);
+
     add(initQuranEvent());
   }
 
@@ -40,6 +44,16 @@ class QuranBloc extends Bloc<QuranEvent, QuranState> {
     controller.jumpToPage(e.page - 1);
     ChangePageEvent(page: e.page - 1);
     add(ToggleDetailsEvent());
+  }
+
+  Future<void> _saveBookMarkEvent(SaveBookMarkEvent e, Emitter emitter) async {
+    emitter(state.copyWith(status: BlocStatus.loading));
+    bool isAdded = await sharedPrefs.saveQuranBookMark(QuranBookMarkItemModel(
+        pageNumber: state.currentPageValue + 1,
+        suraName: state.currentTitle ?? "",
+        suraNo: state.currentSuraNo ?? 0));
+
+    emitter(state.copyWith(showBookMark: isAdded, status: BlocStatus.success));
   }
 
   Future<void> _toggleDetailsEvent(
@@ -88,17 +102,18 @@ class QuranBloc extends Bloc<QuranEvent, QuranState> {
       int oldI = i;
       value.forEachIndexed(
         (index, element) {
-          if (element.suraNo == 2 && key == 3) {
-            print(element.ayaText);
-          }
           if (element.ayaNo == 1 || element.lineStart == 1) i++;
 
           if (!surasInPage.containsKey(i)) {
             surasInPage[i] = QuranSuraModel(
                 jozz: element.jozz,
                 suraName: element.suraNameAr,
+                suraNo: element.suraNo,
                 suraAyat: [
                   {element.ayaNo: element.ayaText}
+                ],
+                suraAyatNormal: [
+                  {element.ayaNo: element.ayaTextEmlaey}
                 ]);
           } else {
             surasInPage[i]!.suraAyat.add({element.ayaNo: element.ayaText});
@@ -177,8 +192,16 @@ class QuranBloc extends Bloc<QuranEvent, QuranState> {
         emitter(state.copyWith(
             currentTitle: suraName,
             currentJozz: element.jozz,
+            currentSuraNo: element.suraNo,
             currentPageValue: currentPage));
       });
+
+      bool isMarked = await sharedPrefs.checkBookMark(QuranBookMarkItemModel(
+          pageNumber: state.currentPageValue + 1,
+          suraName: state.currentTitle ?? "",
+          suraNo: state.currentSuraNo ?? 0));
+
+      emitter(state.copyWith(showBookMark: isMarked));
     } catch (ex) {}
   }
 
@@ -187,6 +210,18 @@ class QuranBloc extends Bloc<QuranEvent, QuranState> {
     state.pages?.forEach((key, value) {
       QuranAyaModel? model =
           value.firstWhereOrNull((element) => element.suraNo == suraNumber);
+      if (model != null && pageNo == -1) {
+        pageNo = model.page;
+      }
+    });
+    return pageNo - 1;
+  }
+
+  int getJozzPageNumber(int jozz) {
+    int pageNo = -1;
+    state.pages?.forEach((key, value) {
+      QuranAyaModel? model =
+          value.firstWhereOrNull((element) => element.jozz == jozz);
       if (model != null && pageNo == -1) {
         pageNo = model.page;
       }

@@ -16,6 +16,7 @@ class BookMarkItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       height: 84,
+      margin: EdgeInsets.all(16),
       decoration: ShapeDecoration(
         color: AppColor.white,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
