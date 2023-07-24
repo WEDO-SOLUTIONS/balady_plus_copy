@@ -12,4 +12,8 @@ class ImagePath {
   static const appBarBackground = '${_imagePath}app_bar_background$_png';
   static const successPageBackground = '${_imagePath}success_background$_png';
   static const successPageIcon = '${_imagePath}success_image$_png';
+
+  static const visaBg = '${_imagePath}visa_bg';
+  static const walletBg = '${_imagePath}wallet_bg$_png';
+  static const qrBg = '${_imagePath}qr_bg$_png';
 }

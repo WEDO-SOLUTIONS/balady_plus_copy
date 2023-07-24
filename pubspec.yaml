@@ -106,6 +106,12 @@ dependencies:
   # Generate Unique ID
   uuid: ^3.0.7
   hijri: ^3.0.0
+  # swiper/carousel for flutter, with multiple layouts,
+  flutter_card_swiper: ^6.0.0
+  # QR.Flutter is a Flutter library for simple and fast QR code rendering.
+  qr_flutter: ^4.1.0
+
+
   
   flutter_appauth:
     path: flutter_appauth/flutter_appauth
@@ -173,6 +179,7 @@ flutter:
     - assets/icons/svg/qr/
     - assets/icons/svg/dc/
     - assets/icons/svg/cr/
+    - assets/icons/svg/wallet/
     - assets/icons/png/
     - assets/icons/png/vd/
     - assets/icons/png/qr/

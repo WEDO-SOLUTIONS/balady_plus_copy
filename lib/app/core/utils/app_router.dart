@@ -46,6 +46,7 @@ import '../../features/services/services_exports.dart'
     show ServiceCardsPage, ServiceEntity;
 import '../../features/splash/splash_exports.dart' show SplashPage;
 import '../../features/vd/vd_exports.dart';
+import '../../features/wallet/wallet_exports.dart';
 
 class AppRouter {
   static Route<dynamic> allRoutes(RouteSettings settings) {
@@ -160,9 +161,18 @@ class AppRouter {
 
         // ------ Commercial License -----
       case RouteName.commercialLicensePage:
-      // CreateVDParamsPage params = settings.arguments as CreateVDParamsPage;
         return MaterialPageRoute(
           builder: (_) => const CommercialLicenseScreen(),
+        );
+
+      // ------ Wallet -----
+      case RouteName.walletPage:
+        return MaterialPageRoute(
+          builder: (_) => const WalletScreen(),
+        );
+      case RouteName.businessLicensePage:
+        return MaterialPageRoute(
+          builder: (_) => const BusinessLicenseScreen(),
         );
 
 // QR

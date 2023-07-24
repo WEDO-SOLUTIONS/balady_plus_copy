@@ -57,4 +57,9 @@ class RouteName {
   // ------- CR ---------
   static const commercialLicensePage = '/commercialLicensePage';
 
+  // ------- Wallet ------
+  static const walletPage = '/walletPage';
+  static const businessLicensePage = '/businessLicensePage';
+
+
 }

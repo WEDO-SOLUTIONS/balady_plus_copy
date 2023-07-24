@@ -159,6 +159,21 @@ class ElevatedButtonWidget extends _ElevatedButton {
           text: "add".tr(),
           onPressed: onPressed,
         ));
+
+  ElevatedButtonWidget.licenseDetails({required VoidCallback onPressed})
+      : super(CustomElevatedButtonWidget(
+          btnColor: Colors.transparent,
+    btnBorderColor: AppColor.white,
+    textStyle: AppStyle.elevatedButtonStyle.copyWith(
+            color: AppColor.white,
+            fontWeight: FontWeight.w700,
+            fontSize: 16,
+          ),
+          btnHeight: 56,
+          text: "viewLicenseDetails".tr(),
+          onPressed: onPressed,
+        ));
+
   ElevatedButtonWidget.verify({required VoidCallback onPressed})
       : super(CustomElevatedButtonWidget(
           btnColor: Colors.transparent,

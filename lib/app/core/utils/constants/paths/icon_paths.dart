@@ -12,6 +12,7 @@ const _pngQRIconPath = 'assets/icons/png/qr/';
 const _svgQRIconPath = 'assets/icons/svg/qr/';
 
 const _svgCRIconPath = 'assets/icons/svg/cr/';
+const _svgWalletIconPath = 'assets/icons/svg/wallet/';
 
 const _svg = '.svg';
 
@@ -184,5 +185,12 @@ class IconPath {
   static const clipboard = '${_svgCRIconPath}clipboard$_svg';
   static const building = '${_svgCRIconPath}building$_svg';
   static const shopData = '${_svgCRIconPath}shop_data$_svg';
+
+  // Wallet
+  static const personalCard = '${_svgWalletIconPath}personal_card$_svg';
+  static const card = '${_svgWalletIconPath}card$_svg';
+  static const sliderVertical = '${_svgWalletIconPath}slider_vertical$_svg';
+  static const shoppingBag = '${_svgWalletIconPath}shopping_bag$_svg';
+
 
 }

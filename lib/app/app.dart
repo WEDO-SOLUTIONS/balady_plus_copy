@@ -38,7 +38,7 @@ class App extends StatelessWidget {
           ..add(CountryLocalizations.delegate), // Android + iOS Delegates
         locale: translator.activeLocale, // Active locale
         supportedLocales: translator.locals(), // Locals list
-        initialRoute: RouteName.commercialLicensePage,
+        initialRoute: RouteName.walletPage,
         onGenerateRoute: AppRouter.allRoutes,
         routes: {
           RouteName.bottomNavigation: (context) => const BottomNavigationPage(),
