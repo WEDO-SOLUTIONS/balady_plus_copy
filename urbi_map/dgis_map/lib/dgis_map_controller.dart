@@ -268,6 +268,20 @@ class DgisMapController {
   /// Remove all markers added with [addMarker].
   Future<void> removeAllMarkers() => _instance.removeAllMarkers();
 
+  /// Add polygon to map.
+  Future<void> addPolygon({
+    required int id,
+    required PolygonOptionsMessage options,
+    void Function()? onTap,
+  }) =>
+      _instance.addPolygon(id, options, onTap);
+
+  /// Remove polygon by id.
+  Future<void> removePolygon(int id) => _instance.removePolygon(id);
+
+  /// Remove all polygons added with [addPolygon].
+  Future<void> removeAllPolygons() => _instance.removeAllPolygons();
+
   /// Remove markers added by calling [search].
   Future<void> removeSearchMarkers() => _instance.removeSearchMarkers();
 

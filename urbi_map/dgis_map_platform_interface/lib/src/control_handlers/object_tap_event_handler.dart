@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:dgis_map_platform_interface/src/events/models/lat_lng.dart';
 import 'package:dgis_map_platform_interface/src/events/object_tap_events.dart';
 
-typedef void OnMarkerTap();
+typedef void OnObjectTap();
 
 class ObjectTapEventHandler {
   ObjectTapEventHandler();
@@ -12,9 +12,10 @@ class ObjectTapEventHandler {
 
   final _objectTapController = StreamController<TapEvent>();
 
-  final Map<int, OnMarkerTap> markerHandlers = {};
+  final Map<int, OnObjectTap> markerHandlers = {};
+  final Map<int, OnObjectTap> polygonHandlers = {};
 
-  void addMarkerHandler(int id, OnMarkerTap onTap) {
+  void addMarkerHandler(int id, OnObjectTap onTap) {
     markerHandlers[id] = onTap;
   }
 
@@ -28,6 +29,22 @@ class ObjectTapEventHandler {
 
   void markerTapEvent(Map<dynamic, dynamic> map) {
     markerHandlers[map["id"]]?.call();
+  }
+
+  void addPolygonHandler(int id, OnObjectTap onTap) {
+    polygonHandlers[id] = onTap;
+  }
+
+  void removePolygonHandler(int id) {
+    polygonHandlers.remove(id);
+  }
+
+  void removeAllPolygonHandlers() {
+    polygonHandlers.clear();
+  }
+
+  void polygonTapEvent(Map<dynamic, dynamic> map) {
+    polygonHandlers[map["id"]]?.call();
   }
 
   void objectTapEvent(Map<dynamic, dynamic> map) {

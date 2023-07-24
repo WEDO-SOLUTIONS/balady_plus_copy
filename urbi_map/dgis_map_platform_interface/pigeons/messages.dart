@@ -455,6 +455,27 @@ class MarkerMessage {
   final MarkerOptionsMessage options;
 }
 
+class PolygonOptionsMessage {
+  PolygonOptionsMessage({
+    required List<List<GeoPointMessage>> this.contours,
+    this.color,
+    this.strokeWidth,
+    this.strokeColor,
+  });
+
+  final List<List<GeoPointMessage?>?> contours;
+  final int? color;
+  final double? strokeWidth;
+  final int? strokeColor;
+}
+
+class PolygonMessage {
+  PolygonMessage(this.id, this.options);
+
+  final int id;
+  final PolygonOptionsMessage options;
+}
+
 @ConfigurePigeon(
   PigeonOptions(
     dartOut: 'lib/src/pigeons/messages.g.dart',
@@ -522,6 +543,15 @@ abstract class MapApi {
 
   @async
   void removeAllMarkers();
+
+  @async
+  void addPolygon(PolygonMessage polygon);
+
+  @async
+  void removePolygon(int id);
+
+  @async
+  void removeAllPolygons();
 
   @async
   void removeSearchMarkers();

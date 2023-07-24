@@ -13,6 +13,7 @@ import 'package:dgis_map_platform_interface/src/control_handlers/traffic_and_par
 import 'package:dgis_map_platform_interface/src/control_handlers/visible_rect_event_handler.dart';
 import 'package:dgis_map_platform_interface/src/control_handlers/zoom_event_handler.dart';
 import 'package:dgis_map_platform_interface/src/control_handlers/navigation/dashboard_event_handler.dart';
+import 'package:dgis_map_platform_interface/src/events/object_tap_events.dart';
 import 'package:flutter/foundation.dart' show Factory, defaultTargetPlatform;
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -203,6 +204,8 @@ class MethodChannelDgisMapPlugin extends DgisMapPlugin {
             return _objectTapEventHandler.objectTapEvent(map);
           case MarkerTapEvent.name:
             return _objectTapEventHandler.markerTapEvent(map);
+          case PolygonTapEvent.name:
+            return _objectTapEventHandler.polygonTapEvent(map);
           case VisibleRectEvent.name:
             return _visibleRectEventHandler.visibleRectEvent(map);
           case MarkerWithPhotoTapEvent.name:
@@ -320,6 +323,32 @@ class MethodChannelDgisMapPlugin extends DgisMapPlugin {
   }
 
   @override
+  Future<void> addPolygon(
+    int id,
+    PolygonOptionsMessage options,
+    void Function()? onTap,
+  ) {
+    if (onTap != null) {
+      _objectTapEventHandler.addPolygonHandler(id, onTap);
+    }
+    return _api.addPolygon(PolygonMessage(id: id, options: options));
+  }
+
+  @override
+  Future<void> removePolygon(
+    int id,
+  ) {
+    _objectTapEventHandler.removePolygonHandler(id);
+    return _api.removePolygon(id);
+  }
+
+  @override
+  Future<void> removeAllPolygons() {
+    _objectTapEventHandler.removeAllPolygonHandlers();
+    return _api.removeAllPolygons();
+  }
+
+  @override
   Future<void> removeSearchMarkers() {
     return _api.removeSearchMarkers();
   }
@@ -389,8 +418,8 @@ class MethodChannelDgisMapPlugin extends DgisMapPlugin {
             surfaceFactory: (context, controller) {
               return AndroidViewSurface(
                 controller: controller as AndroidViewController,
-                gestureRecognizers: const <
-                    Factory<OneSequenceGestureRecognizer>>{},
+                gestureRecognizers: const <Factory<
+                    OneSequenceGestureRecognizer>>{},
                 hitTestBehavior: PlatformViewHitTestBehavior.opaque,
               );
             },

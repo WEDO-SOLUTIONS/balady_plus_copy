@@ -40,11 +40,15 @@ class ObjectTapHandler(
     private var lastTappedSearchMarker: Marker? = null
     private val panoramasMarkers = mutableListOf<Marker>()
     private var selectedPanorama: Marker? = null
-    private val markerExecutorService by unsafeLazy {
+    private val mapObjectsExecutorService by unsafeLazy {
         Executors.newSingleThreadExecutor()
     }
 
+    private data class MarkerId(val id: Int);
+    private data class PolygonId(val id: Int);
+
     private val markers = mutableMapOf<Int, Marker>();
+    private val polygons = mutableMapOf<Int, Polygon>();
     private val ioLayerMarkers = mutableListOf<Marker>();
 
     fun objectTapListener(roi: RenderedObjectInfo) {
@@ -62,6 +66,14 @@ class ObjectTapHandler(
             is Marker -> {
                 onMarkerTap(tappedObject)
                 return
+            }
+            is Polygon -> {
+                val userData = tappedObject.userData
+
+                if (userData is PolygonId) {
+                    onPolygonTap(userData.id)
+                    return
+                }
             }
             is GeometryMapObject -> {
                 val attrs = tappedObject.objectAttributes
@@ -211,12 +223,12 @@ class ObjectTapHandler(
             iconWidth = marker.options.icon?.let {
                 LogicalPixel(it.width.toFloat())
             } ?: LogicalPixel(0f),
-            userData = marker.id.toInt(),
+            userData = MarkerId(marker.id.toInt()),
         )
 
         val markerObject = Marker(options)
 
-        markerExecutorService.submit {
+        mapObjectsExecutorService.submit {
             markers[marker.id.toInt()] = markerObject
             mapObjectManager.addObject(markerObject)
             result?.success(null)
@@ -224,8 +236,48 @@ class ObjectTapHandler(
     }
 
     fun removeMarker(id: Long, result: Result<Void>?) {
-        markerExecutorService.submit {
+        mapObjectsExecutorService.submit {
             markers.remove(id.toInt())?.also {
+                mapObjectManager.removeObject(it)
+            }
+            result?.success(null)
+        }
+    }
+
+    fun addPolygon(polygon: PolygonMessage, result: Result<Void>?) {
+        val options = PolygonOptions(
+            contours = polygon.options.contours.map { contour ->
+                contour.map {
+                    GeoPoint(
+                        latitude = Latitude(it.latitude),
+                        longitude = Longitude(it.longitude),
+                    )
+                }
+            },
+            color = polygon.options.color?.let {
+                Color(argb = it.toInt())
+            } ?: Color(),
+            strokeWidth = polygon.options.strokeWidth?.let {
+                LogicalPixel(it.toFloat())
+            } ?: LogicalPixel(0f),
+            strokeColor = polygon.options.strokeColor?.let {
+                Color(argb =  it.toInt())
+            } ?: Color(),
+            userData = PolygonId(polygon.id.toInt())
+        )
+
+        val polygonObject = Polygon(options)
+
+        mapObjectsExecutorService.submit {
+            polygons[polygon.id.toInt()] = polygonObject
+            mapObjectManager.addObject(polygonObject)
+            result?.success(null)
+        }
+    }
+
+    fun removePolygon(id: Long, result: Result<Void>?) {
+        mapObjectsExecutorService.submit {
+            polygons.remove(id.toInt())?.also {
                 mapObjectManager.removeObject(it)
             }
             result?.success(null)
@@ -255,7 +307,7 @@ class ObjectTapHandler(
             )
             Marker(options.copy(position = position, userData = it.attributes))
         }
-        markerExecutorService.submit {
+        mapObjectsExecutorService.submit {
             ioObjectManager.removeAndAddObjects(ioLayerMarkers, markers)
             ioLayerMarkers.clear()
             ioLayerMarkers.addAll(markers)
@@ -264,9 +316,16 @@ class ObjectTapHandler(
     }
 
     fun removeAllMarkers() {
-        markerExecutorService.submit {
+        mapObjectsExecutorService.submit {
             mapObjectManager.removeObjects(markers.values.toList())
             markers.clear()
+        }
+    }
+
+    fun removeAllPolygons() {
+        mapObjectsExecutorService.submit {
+            mapObjectManager.removeObjects(polygons.values.toList())
+            polygons.clear()
         }
     }
 
@@ -293,7 +352,7 @@ class ObjectTapHandler(
     fun addPanoramasMarkers(
         message: AddMarkersWithPhotoMessage
     ) {
-        markerExecutorService.submit(
+        mapObjectsExecutorService.submit(
             AddMarkersTask(
                 mapObjectManager = panoramasObjectManager,
                 message = message,
@@ -304,19 +363,19 @@ class ObjectTapHandler(
     }
 
     fun showPanoramasMarkers() {
-        markerExecutorService.submit {
+        mapObjectsExecutorService.submit {
             panoramasObjectManager.isVisible = true
         }
     }
 
     fun hidePanoramasMarkers() {
-        markerExecutorService.submit {
+        mapObjectsExecutorService.submit {
             panoramasObjectManager.isVisible = false
         }
     }
 
     fun removePanoramasMarkers() {
-        markerExecutorService.submit {
+        mapObjectsExecutorService.submit {
             panoramasMarkers.clear()
             panoramasObjectManager.removeAll()
         }
@@ -382,7 +441,7 @@ class ObjectTapHandler(
         when (val userData = marker.userData) {
             is PhotoData -> onMarkerWithPhotoTap(marker, userData)
             is DgisObjectId -> onSearchMarkerTap(marker, userData)
-            is Int -> onMarkerTap(userData)
+            is MarkerId -> onMarkerTap(userData.id)
         }
     }
 
@@ -390,6 +449,15 @@ class ObjectTapHandler(
         eventSink.success(
             mapOf(
                 "event" to Events.onMarkerTap.name,
+                "id" to id
+            )
+        )
+    }
+
+    private fun onPolygonTap(id: Int) {
+        eventSink.success(
+            mapOf(
+                "event" to Events.onPolygonTap.name,
                 "id" to id
             )
         )
@@ -424,7 +492,7 @@ class ObjectTapHandler(
 
     override fun close() {
         panoramasMarkers.clear()
-        markerExecutorService.shutdown()
+        mapObjectsExecutorService.shutdown()
     }
 
     private fun sendDgisObjectEvent(id: DgisObjectId, position: GeoPointWithElevation) {
@@ -484,6 +552,7 @@ private enum class Events {
     onIoTap,
     onIdleTap,
     onMarkerTap,
+    onPolygonTap,
 }
 
 private fun Attributes.mapIo(point: GeoPointWithElevation): Map<String, Any> = mapOf(
