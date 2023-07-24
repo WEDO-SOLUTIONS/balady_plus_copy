@@ -157,6 +157,10 @@ class _ServiceCalculatorScreenState extends BaseState<ServiceCalculatorScreen,
   var _distanceController = TextEditingController();
   var _numberOfDocumentsController = TextEditingController();
 
+  var _portLicenseDays = TextEditingController();
+
+  var _portRental = TextEditingController();
+
   var _costOfPreviousLicenseFocusNode = FocusNode();
   var _previousLicenseTermFocusNode = FocusNode();
   var _lengthOfHoleFocusNode = FocusNode();
@@ -172,6 +176,10 @@ class _ServiceCalculatorScreenState extends BaseState<ServiceCalculatorScreen,
 
   var _distanceFocusNode = FocusNode();
   var _numberOfDocumentsFocusNode = FocusNode();
+
+  var _portLicenseDaysFocusNode = FocusNode();
+
+  var _portRentalFocusNode = FocusNode();
 
   GlobalKey _costOfPreviousLicenseControllerKey = GlobalKey();
   GlobalKey _previousLicenseTermControllerKey = GlobalKey();
@@ -197,6 +205,9 @@ class _ServiceCalculatorScreenState extends BaseState<ServiceCalculatorScreen,
   bool isValidNumberOfDocuments = true;
   bool isValidCertificatesEndDate = true;
   bool isValidServiceActivity = true;
+
+  bool isValidLicenseDays = true;
+  bool isValidRental = true;
 
   String? _CostOfPreviousLicenseErrMsg = "";
   String? _PreviousLicenseTermErrMsg = "";
@@ -319,7 +330,7 @@ class _ServiceCalculatorScreenState extends BaseState<ServiceCalculatorScreen,
                   isRTL: true,
                   animationDuration: 0,
                   restartAnimation: false,
-                  percent: 1 / (2),
+                  percent: 1 / (1),
                   barRadius: Radius.circular(33),
                   backgroundColor: AppColor.primary100Light,
                   linearGradient: LinearGradient(colors: [
@@ -1994,6 +2005,7 @@ class _ServiceCalculatorScreenState extends BaseState<ServiceCalculatorScreen,
   Widget? DisplayCorrectScenario(int activityId, int actionId) {
     currentActivityId = activityId;
     currentactionId = actionId;
+    print(currentActivityId);
     if (activityId == 1) {
       if (actionId == 1) {
         return S1_1();
@@ -2044,6 +2056,14 @@ class _ServiceCalculatorScreenState extends BaseState<ServiceCalculatorScreen,
       }
     } else if (activityId == 9) {
       return S9();
+    } else if (activityId == 10 && (actionId == 1401 || actionId == 1402)) {
+      return Column(
+        children: [
+          DistanceWidget(),
+          PortLicenseDaysWidget(),
+          PortRentalWidget()
+        ],
+      );
     }
   }
 
@@ -2112,11 +2132,17 @@ class _ServiceCalculatorScreenState extends BaseState<ServiceCalculatorScreen,
       }
     } else if (activityId == 9) {
       return true;
+    } else if (activityId == 10 && (actionId == 1401 || actionId == 1402)) {
+      if (validateDistanceValue() && validatePortLicenseDaysValue())
+        return true;
+    } else if (activityId == 10 && (actionId == 1403)) {
+      return true;
     }
     return false;
   }
 
   bool changeBtnColor(int? activityId, int? actionId) {
+    print("changeBtnColor $activityId $actionId");
     if (activityId == null && actionId == null) return false;
     if (activityId == 1) {
       if (actionId == 1) {
@@ -2450,6 +2476,32 @@ class _ServiceCalculatorScreenState extends BaseState<ServiceCalculatorScreen,
       bool a1 = _gisLocation != null;
       bool a2 = validateSubActivities();
       if (a2 && a1) {
+        setState(() {
+          _isButtonDisabled = false;
+        });
+      } else {
+        setState(() {
+          _isButtonDisabled = true;
+        });
+      }
+    } else if (activityId == 10 && (actionId == 1401 || actionId == 1402)) {
+      bool a1 = _gisLocation != null;
+      bool a2 = validateDistanceValue();
+      bool a3 = validatePortLicenseDaysValue();
+
+      if (a1 && a2 && a3) {
+        setState(() {
+          _isButtonDisabled = false;
+        });
+      } else {
+        setState(() {
+          _isButtonDisabled = true;
+        });
+      }
+    } else if (activityId == 10 && (actionId == 1403)) {
+      bool a1 = _gisLocation != null;
+
+      if (a1) {
         setState(() {
           _isButtonDisabled = false;
         });
@@ -3304,7 +3356,7 @@ class _ServiceCalculatorScreenState extends BaseState<ServiceCalculatorScreen,
   // Create Distance Widget
   Widget DistanceWidget() {
     return CustomTextFieldWidget(
-      label: Helpers.translatingWord("lbl_distance"),
+      label: Helpers.translatingWord("مساحة المنفذ بالمتر المربع"),
       controller: _distanceController,
       focusNode: _distanceFocusNode,
       keyboardType: TextInputType.number,
@@ -3316,7 +3368,42 @@ class _ServiceCalculatorScreenState extends BaseState<ServiceCalculatorScreen,
         // return _DistanceErrMsg;
       },
       spacerSize: 20,
-      suffixIcon: labelUnit("lbl_meter"),
+      textInputAction: TextInputAction.done,
+    );
+  }
+
+  Widget PortLicenseDaysWidget() {
+    return CustomTextFieldWidget(
+      label: Helpers.translatingWord("عدد أيام الترخيص"),
+      controller: _portLicenseDays,
+      focusNode: _portLicenseDaysFocusNode,
+      keyboardType: TextInputType.number,
+      fillColor: Colors.transparent,
+      onChanged: (txt) {
+        changeBtnColor(_selectedServiceId, _selectedActionId);
+      },
+      onValidate: (text) {
+        // return _DistanceErrMsg;
+      },
+      spacerSize: 20,
+      textInputAction: TextInputAction.done,
+    );
+  }
+
+  Widget PortRentalWidget() {
+    return CustomTextFieldWidget(
+      label: Helpers.translatingWord("القيمة الإيجارية اليومية"),
+      controller: _portRental,
+      focusNode: _portRentalFocusNode,
+      keyboardType: TextInputType.number,
+      fillColor: Colors.transparent,
+      onChanged: (txt) {
+        changeBtnColor(_selectedServiceId, _selectedActionId);
+      },
+      onValidate: (text) {
+        // return _DistanceErrMsg;
+      },
+      spacerSize: 20,
       textInputAction: TextInputAction.done,
     );
   }
@@ -3718,13 +3805,52 @@ class _ServiceCalculatorScreenState extends BaseState<ServiceCalculatorScreen,
         double.parse(value) > 0) {
       setState(() {
         isValidDistance = true;
-        _DistanceErrMsg = null;
       });
       return true;
     } else {
       setState(() {
         isValidDistance = false;
         _DistanceErrMsg = Helpers.translatingWord("lbl_test_error");
+      });
+
+      return false;
+    }
+  }
+
+  bool validatePortLicenseDaysValue() {
+    String value = CommonFunctions.replaceArabicNumberWithEnglish(
+        _portLicenseDays.text.trim());
+
+    if (_portLicenseDays.text.isNotEmpty &&
+        double.tryParse(value) != null &&
+        double.parse(value) > 0) {
+      setState(() {
+        isValidLicenseDays = true;
+      });
+      return true;
+    } else {
+      setState(() {
+        isValidLicenseDays = false;
+      });
+
+      return false;
+    }
+  }
+
+  bool validateRentalDaysValue() {
+    String value =
+        CommonFunctions.replaceArabicNumberWithEnglish(_portRental.text.trim());
+
+    if (_portRental.text.isNotEmpty &&
+        double.tryParse(value) != null &&
+        double.parse(value) > 0) {
+      setState(() {
+        isValidRental = true;
+      });
+      return true;
+    } else {
+      setState(() {
+        isValidRental = false;
       });
 
       return false;
@@ -4303,6 +4429,7 @@ class _ServiceCalculatorScreenState extends BaseState<ServiceCalculatorScreen,
     request.diggingPeriod = int.parse(
         CommonFunctions.replaceArabicNumberWithEnglish(
             _numberOfDrillingDaysController.text.trim()));
+    request.diggingDistance = 1;
     /*request.diggingDistance = double.parse(
         CommonFunctions.replaceArabicNumberWithEnglish(
             _distanceController.text.trim()));*/
@@ -4406,6 +4533,18 @@ class _ServiceCalculatorScreenState extends BaseState<ServiceCalculatorScreen,
       }
     } else if (currentActivityId == 9) {
       presenter?.calculateCost(createCalculateCostRequest());
+    } else if (currentActivityId == 10 &&
+        (currentactionId == 1401 || currentactionId == 1402)) {
+      CalculateCostV03 request = CalculateCostV03();
+      request.isVisit = true;
+      request.serviceTypeId = _serviceProcedureController!.id;
+      request.subMunicipalityId = _gisLocation!.sub_Municipalityguid;
+      request.paymentYearsCount = int.tryParse(_portLicenseDays.text.trim());
+      request.area = double.tryParse(_distanceController.text.trim());
+      request.DailyRentCost = int.tryParse(_portRental.text.trim());
+      presenter?.calculateV03(request);
+    } else if (currentActivityId == 10 && (currentactionId == 1403)) {
+      showError("لا يوجد رسوم");
     }
   }
 
@@ -4438,6 +4577,8 @@ class _ServiceCalculatorScreenState extends BaseState<ServiceCalculatorScreen,
     _certificatesEndDateController.clear();
     _numberOfDrillingDaysController.clear();
     _distanceController.clear();
+    _portLicenseDays.clear();
+    _portRental.clear();
     _numberOfDocumentsController.clear();
 
     // _boards =  List();
@@ -4594,6 +4735,8 @@ class _ServiceCalculatorScreenState extends BaseState<ServiceCalculatorScreen,
     _numberOfDrillingDaysFocusNode.dispose();
     _numberOfWorkingDaysFocusNode.dispose();
     _distanceFocusNode.dispose();
+    _portLicenseDaysFocusNode.dispose();
+    _portRentalFocusNode.dispose();
     _numberOfDocumentsFocusNode.dispose();
   }
 

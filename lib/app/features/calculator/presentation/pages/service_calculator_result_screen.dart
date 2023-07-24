@@ -170,9 +170,10 @@ class _ServiceCalculatorResultScreenState
                           )
                         ],
                       ),
+                      CustomVerticalSpace(height: 32),
+                      _CalcualateOtherFeesButton()
                     ]),
               ),
-              _CalcualateOtherFeesButton()
             ],
           ));
     }

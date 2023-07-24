@@ -131,24 +131,18 @@ class _TransactionBodySectionState extends State<TransactionBodySection> {
           },
         ),
         const CustomVerticalSpace(height: 5),
-        CustomHeaderAndDescOnTapWidget(
-          label: ("inquiry_type").tr(),
-          hintText: ("inquiry_type_hint").tr(),
-          textValue: model.type?.name,
-          onTap: () async {
-            /* await CustomPopUpsWidgets.showBottomSheet(
-              NavigationService.navigatorKey.currentContext!,
-              child: IncidentTypeWithSearchDialog(
-                onSelect: (DropDownItem item) {
-                  model.type = item;
-                  model.validateForm();
-                  setState(() {});
-                },
-                items: model.types,
-                selectedItem: model.type,
-              ),
-            );*/
+
+        CustomTapWidgetForLongDialog(
+          items: model.types,
+          value: model.type,
+          onChangeType: (DropDownItem? item) {
+            // model.type = item;
+            // model.validateForm();
+            //  setState(() {});
           },
+          label: ("inquiry_type").tr(),
+          hint: ("inquiry_type_hint").tr(),
+          searchHint: ("search").tr(),
         ),
       ],
     );

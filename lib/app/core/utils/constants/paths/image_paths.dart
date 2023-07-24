@@ -20,4 +20,7 @@ class ImagePath {
   static const quranBackgroundPage = '${_imagePath}quran_background_page$_png';
 
   static const ayah = '${_imagePath}ayah$_svg';
+
+  static const sadadLogoAr = '${_imagePath}sadad_logo_ar$_png';
+  static const madaVisaMaster = '${_imagePath}mada-visa-mastercard$_svg';
 }

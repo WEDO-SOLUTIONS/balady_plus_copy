@@ -250,6 +250,12 @@
   "invoice_info": "معلومات الفاتورة",
   "invoice_pay_date": "تاريخ سداد الفاتورة",
 
+  "no_violations_on_invoice":"لا توجد مخالفات علي الفاتورة",  
+  "no_objections_on_invoice":"لا توجد إعتراضات مقدمة", 
+  "invoice_criedt_note":"البطاقات الإئتمانية (فيزا - ماستر كارد) / بطاقات مدى", 
+  "invoice_sadad_note":"رقم مفوتر وزارة الشؤون البلدية والقروية والإسكان 177", 
+"saddad_before":"يرجى تسديد الفاتورة قبل {}", 
+"invoice_notes":"ملاحظة", 
 
 
   "invoice_violation_no":"رقم المخالفة", 

@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:balady_plus/app/core/utils/constants/app_style.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
 import 'package:flutter/material.dart';
@@ -42,26 +43,25 @@ class DashboardCard extends StatelessWidget {
           child: Column(
             children: [
               Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Expanded(
-                    flex: 3,
                     child: Row(
                       children: [
                         DrawIconBasedTypeWidget(icon: cardIcon),
                         const SizedBox(width: 4),
                         Flexible(
-                          child: CustomTextWidget(
+                          child: AutoSizeText(
                             name,
-                            maxLines: 4,
+                            maxLines: 2,
                             textAlign: TextAlign.start,
-                            textStyle: AppStyle.cardTitleTextStle,
+                            style: AppStyle.cardTitleTextStle,
                           ),
                         ),
                       ],
                     ),
                   ),
-                  Expanded(
-                      flex: 1, child: DashboardProductDropDown(card: card)),
+                  Flexible(child: DashboardProductDropDown(card: card)),
                 ],
               ),
               DashboardCardStatistics(card: card),

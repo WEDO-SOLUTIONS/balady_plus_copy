@@ -24,6 +24,7 @@ class CalculateCostV03 {
   String? zone;
   int? activity24Type;
   int? paymentYearsCount;
+  int? DailyRentCost;
 
   CalculateCostV03(
       {this.subMunicipalityId,
@@ -47,7 +48,8 @@ class CalculateCostV03 {
       this.oldIsCitizenPledgedToClean,
       this.zone,
       this.activity24Type,
-      this.paymentYearsCount});
+      this.paymentYearsCount,
+      this.DailyRentCost});
 
   factory CalculateCostV03.fromJson(Map<String, dynamic> json) =>
       _$CalculateCostV03FromJson(json);
@@ -57,29 +59,29 @@ class CalculateCostV03 {
 
 CalculateCostV03 _$CalculateCostV03FromJson(Map<String, dynamic> json) {
   return CalculateCostV03(
-    subMunicipalityId: json["SubMunicipalityId"],
-    serviceTypeId: json["ServiceTypeId"],
-    isicDetailedActivityId: json["IsicDetailedActivityId"],
-    subActivityId: json["SubActivityId"],
-    area: json["Area"],
-    accommodationTypeId: json["AccommodationTypeId"],
-    isVisit: json["IsVisit"],
-    isCitizenPledgedToClean: json["IsCitizenPledgedToClean"],
-    expiryDate: json["ExpiryDate"],
-    boardList: json["BoardList"],
-    oldIsicDetailedActivityId: json["OldIsicDetailedActivityId"],
-    oldArea: json["OldArea"],
-    oldAccommodationTypeId: json["OldAccommodationTypeId"],
-    oldBoardList: json["OldBoardList"],
-    sideWalkList: json["SideWalkList"],
-    calculateCityId: json["CalculateCityId"],
-    isTobacco: json["IsTobacco"],
-    oldIsTobacco: json["OldIsTobacco"],
-    oldIsCitizenPledgedToClean: json["OldIsCitizenPledgedToClean"],
-    zone: json["Zone"],
-    activity24Type: json["Activity24Type"],
-    paymentYearsCount: json["PaymentYearsCount"],
-  );
+      subMunicipalityId: json["SubMunicipalityId"],
+      serviceTypeId: json["ServiceTypeId"],
+      isicDetailedActivityId: json["IsicDetailedActivityId"],
+      subActivityId: json["SubActivityId"],
+      area: json["Area"],
+      accommodationTypeId: json["AccommodationTypeId"],
+      isVisit: json["IsVisit"],
+      isCitizenPledgedToClean: json["IsCitizenPledgedToClean"],
+      expiryDate: json["ExpiryDate"],
+      boardList: json["BoardList"],
+      oldIsicDetailedActivityId: json["OldIsicDetailedActivityId"],
+      oldArea: json["OldArea"],
+      oldAccommodationTypeId: json["OldAccommodationTypeId"],
+      oldBoardList: json["OldBoardList"],
+      sideWalkList: json["SideWalkList"],
+      calculateCityId: json["CalculateCityId"],
+      isTobacco: json["IsTobacco"],
+      oldIsTobacco: json["OldIsTobacco"],
+      oldIsCitizenPledgedToClean: json["OldIsCitizenPledgedToClean"],
+      zone: json["Zone"],
+      activity24Type: json["Activity24Type"],
+      paymentYearsCount: json["PaymentYearsCount"],
+      DailyRentCost: json["DailyRentCost"]);
 }
 
 Map<String, dynamic> _$CalculateCostV03ToJson(CalculateCostV03 instance) =>
@@ -125,4 +127,6 @@ Map<String, dynamic> _$CalculateCostV03ToJson(CalculateCostV03 instance) =>
         "Activity24Type": instance.activity24Type,
       if (instance.paymentYearsCount != null)
         "PaymentYearsCount": instance.paymentYearsCount,
+      if (instance.DailyRentCost != null)
+        "DailyRentCost": instance.DailyRentCost
     };

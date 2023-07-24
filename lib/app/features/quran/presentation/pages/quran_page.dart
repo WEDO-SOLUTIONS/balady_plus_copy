@@ -205,9 +205,10 @@ class _QuranPageState extends State<QuranPage> {
                                   "${state.suras?[i + 1]?[index + 1]?.suraAyat.map((e) => e.values).toList().join(" ").replaceAll("(", "").replaceAll(")", "")}" ??
                                       "",
                                   fontColor: AppColor.black,
-                                  textAlign: TextAlign.justify,
+                                  textAlign: TextAlign.center,
                                   height: 1.6,
                                   fontSize: 25,
+                                  letterSpacing: 0.0001,
                                   fontFamily: "HafsSmart",
                                   maxLines: 1000,
                                 )

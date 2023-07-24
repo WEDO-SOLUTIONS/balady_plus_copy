@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../core/utils/debouncer.dart';
 import '../../data/models/quran_sura_model.dart';
 import '../bloc/search_bloc/search_bloc.dart';
 import '../widgets/search/search_app_bar.dart';
@@ -15,6 +16,8 @@ class QuranSearchPage extends StatefulWidget {
 }
 
 class _QuranSearchPageState extends State<QuranSearchPage> {
+  final Debouncer _debouncer = Debouncer(milliseconds: 500);
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
@@ -27,7 +30,9 @@ class _QuranSearchPageState extends State<QuranSearchPage> {
           return Scaffold(
             appBar: SearchAppBar(
               onSearch: (String? text) {
-                context.read<SearchBloc>().add(SearchAyaEvent(text: text));
+                _debouncer.run(() {
+                  context.read<SearchBloc>().add(SearchAyaEvent(text: text));
+                });
               },
             ),
             body: Container(

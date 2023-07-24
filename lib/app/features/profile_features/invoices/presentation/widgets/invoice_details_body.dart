@@ -1,7 +1,12 @@
+import 'package:balady_plus/app/core/utils/constants/paths/image_paths.dart';
+import 'package:balady_plus/app/core/utils/enums/app_font_weights.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/buttons/elevated_button_widgets.dart';
+import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
+import 'package:balady_plus/app/features/home_page/home_exports.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../core/dependency_injection/injection_container.dart';
@@ -120,7 +125,7 @@ class _InvoiceDetailBodyState extends State<InvoiceDetailBody> {
                     ),
                     ExpandableCard(
                       title: 'invoice_info'.tr(),
-                      icon: IconPath.aboutBalady,
+                      icon: IconPath.vdSummuryDesc,
                       isExpandedByDefault: true,
                       children: [
                         CardParameter(
@@ -150,7 +155,7 @@ class _InvoiceDetailBodyState extends State<InvoiceDetailBody> {
                           value: invoice.dueDate?.toyMD() ?? "",
                         ),
                         CardParameter(
-                          title: ("نوع الرخصة").tr(),
+                          title: ("license_type").tr(),
                           value: invoice.invoiceTypeName ?? "",
                         ),
                       ],
@@ -185,13 +190,18 @@ class _InvoiceDetailBodyState extends State<InvoiceDetailBody> {
                     ),
                     ExpandableCard(
                       title: 'violations'.tr(),
-                      icon: IconPath.aboutBalady,
+                      icon: IconPath.vdSummuryDesc,
                       children: const [InvoiceViolationsList()],
                     ),
                     ExpandableCard(
                       title: 'objections'.tr(),
-                      icon: IconPath.aboutBalady,
+                      icon: IconPath.vdSummuryDesc,
                       children: const [InvoiceObjectionsList()],
+                    ),
+                    ExpandableCard(
+                      title: 'invoice_notes'.tr(),
+                      icon: IconPath.vdSummuryDesc,
+                      children: const [InvoiceNotesList()],
                     ),
                   ],
                 ),
@@ -212,86 +222,102 @@ class InvoiceViolationsList extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<InvoiceDetailsCubit, InvoiceDetailsState>(
       builder: (context, state) {
-        return ListView.builder(
-            shrinkWrap: true,
-            itemCount: state.invoice?.violations?.length ?? 0,
-            physics: NeverScrollableScrollPhysics(),
-            itemBuilder: (context, index) {
-              return Container(
-                margin: EdgeInsets.symmetric(vertical: 16),
-                child: Column(
-                  children: [
-                    FieldData(
-                      title: "invoice_violation_no".tr(),
-                      subTitle:
-                          state.invoice?.violations?[index].violationNumber,
-                      radius: BorderRadius.only(
-                          topLeft: Radius.circular(8),
-                          topRight: Radius.circular(8)),
-                    ),
-                    FieldData(
-                      title: "invoice_violation_date".tr(),
-                      subTitle: state
-                              .invoice?.violations?[index].violationIssueDate
-                              ?.toyMD() ??
-                          "",
-                      radius: BorderRadius.zero,
-                    ),
-                    FieldData(
-                      title: "invoice_last_objection_date".tr(),
-                      subTitle: state.invoice?.violations?[index]
-                              .objectionLastApplyDate
-                              ?.toyMD() ??
-                          "",
-                      radius: BorderRadius.zero,
-                    ),
-                    FieldData(
-                        title: "invoice_violation_amount".tr(),
-                        subTitle: state
-                                .invoice?.violations?[index].violationAmount
-                                .toString() ??
-                            "",
-                        radius: BorderRadius.zero),
-                    Container(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-                      decoration: BoxDecoration(
-                          color: Color(0x80E6EFEF),
-                          borderRadius: BorderRadius.only(
-                              bottomLeft: Radius.circular(8),
-                              bottomRight: Radius.circular(8))),
-                      child: ElevatedButtonWidget.custom(
-                        onPressed: () async {
-                          EasyLoading.show();
-                          GetTransactionDetails getObjectionDetails =
-                              GetTransactionDetails(repository: sl());
-                          var failureOrSuccess = await getObjectionDetails(
-                              TransactionDetailsParams(
-                                  applicationId: state.invoice
-                                          ?.violations?[index].applicationId ??
-                                      "",
-                                  id: state.invoice?.violations?[index]
-                                          .violationNumber ??
-                                      ""));
+        return (state.invoice?.violations?.length ?? 0) > 0
+            ? ListView.builder(
+                shrinkWrap: true,
+                itemCount: state.invoice?.violations?.length ?? 0,
+                physics: NeverScrollableScrollPhysics(),
+                itemBuilder: (context, index) {
+                  return Container(
+                    margin: EdgeInsets.symmetric(vertical: 16),
+                    child: Column(
+                      children: [
+                        FieldData(
+                          title: "invoice_violation_no".tr(),
+                          subTitle:
+                              state.invoice?.violations?[index].violationNumber,
+                          radius: BorderRadius.only(
+                              topLeft: Radius.circular(8),
+                              topRight: Radius.circular(8)),
+                        ),
+                        FieldData(
+                          title: "invoice_violation_date".tr(),
+                          subTitle: state.invoice?.violations?[index]
+                                  .violationIssueDate
+                                  ?.toyMD() ??
+                              "",
+                          radius: BorderRadius.zero,
+                        ),
+                        FieldData(
+                          title: "invoice_last_objection_date".tr(),
+                          subTitle: state.invoice?.violations?[index]
+                                  .objectionLastApplyDate
+                                  ?.toyMD() ??
+                              "",
+                          radius: BorderRadius.zero,
+                        ),
+                        FieldData(
+                            title: "invoice_violation_amount".tr(),
+                            subTitle: state
+                                    .invoice?.violations?[index].violationAmount
+                                    .toString() ??
+                                "",
+                            radius: BorderRadius.zero),
+                        Container(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 16),
+                          decoration: BoxDecoration(
+                              color: Color(0x80E6EFEF),
+                              borderRadius: BorderRadius.only(
+                                  bottomLeft: Radius.circular(8),
+                                  bottomRight: Radius.circular(8))),
+                          child: ElevatedButtonWidget.custom(
+                            onPressed: () async {
+                              EasyLoading.show();
+                              GetTransactionDetails getObjectionDetails =
+                                  GetTransactionDetails(repository: sl());
+                              var failureOrSuccess = await getObjectionDetails(
+                                  TransactionDetailsParams(
+                                      applicationId: state
+                                              .invoice
+                                              ?.violations?[index]
+                                              .applicationId ??
+                                          "",
+                                      id: state.invoice?.violations?[index]
+                                              .violationNumber ??
+                                          ""));
 
-                          await failureOrSuccess.fold((failure) {
-                            EasyLoading.dismiss();
-                          }, (success) async {
-                            EasyLoading.dismiss();
-                            NavigationService.navigatorKey.currentState!
-                                .pushNamed(RouteName.transactionDetailsPage,
-                                    arguments: CreateObjectionPageParams(
-                                        details: success));
-                          });
-                          return;
-                        },
-                        text: "invoice_show_details".tr(),
-                      ),
+                              await failureOrSuccess.fold((failure) {
+                                EasyLoading.dismiss();
+                              }, (success) async {
+                                EasyLoading.dismiss();
+                                NavigationService.navigatorKey.currentState!
+                                    .pushNamed(RouteName.transactionDetailsPage,
+                                        arguments: CreateObjectionPageParams(
+                                            details: success));
+                              });
+                              return;
+                            },
+                            text: "invoice_show_details".tr(),
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
+                  );
+                })
+            : Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: CustomTextWidget(
+                      "no_violations_on_invoice".tr(),
+                      fontColor: AppColor.blackModern500Light,
+                      textAlign: TextAlign.start,
+                    ),
+                  ),
+                ],
               );
-            });
       },
     );
   }
@@ -304,81 +330,191 @@ class InvoiceObjectionsList extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<InvoiceDetailsCubit, InvoiceDetailsState>(
       builder: (context, state) {
-        return ListView.builder(
-            shrinkWrap: true,
-            itemCount: state.invoice?.objections?.length ?? 0,
-            physics: NeverScrollableScrollPhysics(),
-            itemBuilder: (context, index) {
-              return Container(
-                margin: EdgeInsets.symmetric(vertical: 16),
-                child: Column(
-                  children: [
-                    FieldData(
-                      title: "invoice_order_no".tr(),
-                      subTitle:
-                          state.invoice?.objections?[index].requestNumberAsText,
-                      radius: BorderRadius.only(
-                          topLeft: Radius.circular(8),
-                          topRight: Radius.circular(8)),
-                    ),
-                    FieldData(
-                      title: "invoice_violation_no".tr(),
-                      subTitle: state.invoice?.objections?[index]
-                              .objectedTransactionNumber ??
-                          "",
-                      radius: BorderRadius.zero,
-                    ),
-                    FieldData(
-                      title: "invoice_objection_date".tr(),
-                      subTitle: state.invoice?.objections?[index].creationDate
-                              ?.toyMD() ??
-                          "",
-                      radius: BorderRadius.zero,
-                    ),
-                    FieldData(
-                        title: "invoice_violation_status".tr(),
-                        subTitle: state
-                                .invoice?.objections?[index].requestStatusName
-                                .toString() ??
-                            "",
-                        radius: BorderRadius.zero),
-                    Container(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-                      decoration: BoxDecoration(
-                          color: Color(0x80E6EFEF),
-                          borderRadius: BorderRadius.only(
-                              bottomLeft: Radius.circular(8),
-                              bottomRight: Radius.circular(8))),
-                      child: ElevatedButtonWidget.custom(
-                        onPressed: () async {
-                          EasyLoading.show();
-                          GetObjectionDetails getObjectionDetails =
-                              GetObjectionDetails(repository: sl());
-                          var failureOrSuccess = await getObjectionDetails(state
-                                  .invoice
-                                  ?.objections?[index]
-                                  .requestNumberAsText ??
-                              "");
+        return (state.invoice?.objections?.length ?? 0) > 0
+            ? ListView.builder(
+                shrinkWrap: true,
+                itemCount: state.invoice?.objections?.length ?? 0,
+                physics: NeverScrollableScrollPhysics(),
+                itemBuilder: (context, index) {
+                  return Container(
+                    margin: EdgeInsets.symmetric(vertical: 16),
+                    child: Column(
+                      children: [
+                        FieldData(
+                          title: "invoice_order_no".tr(),
+                          subTitle: state
+                              .invoice?.objections?[index].requestNumberAsText,
+                          radius: BorderRadius.only(
+                              topLeft: Radius.circular(8),
+                              topRight: Radius.circular(8)),
+                        ),
+                        FieldData(
+                          title: "invoice_violation_no".tr(),
+                          subTitle: state.invoice?.objections?[index]
+                                  .objectedTransactionNumber ??
+                              "",
+                          radius: BorderRadius.zero,
+                        ),
+                        FieldData(
+                          title: "invoice_objection_date".tr(),
+                          subTitle: state
+                                  .invoice?.objections?[index].creationDate
+                                  ?.toyMD() ??
+                              "",
+                          radius: BorderRadius.zero,
+                        ),
+                        FieldData(
+                            title: "invoice_violation_status".tr(),
+                            subTitle: state.invoice?.objections?[index]
+                                    .requestStatusName
+                                    .toString() ??
+                                "",
+                            radius: BorderRadius.zero),
+                        Container(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 16),
+                          decoration: BoxDecoration(
+                              color: Color(0x80E6EFEF),
+                              borderRadius: BorderRadius.only(
+                                  bottomLeft: Radius.circular(8),
+                                  bottomRight: Radius.circular(8))),
+                          child: ElevatedButtonWidget.custom(
+                            onPressed: () async {
+                              EasyLoading.show();
+                              GetObjectionDetails getObjectionDetails =
+                                  GetObjectionDetails(repository: sl());
+                              var failureOrSuccess = await getObjectionDetails(
+                                  state.invoice?.objections?[index]
+                                          .requestNumberAsText ??
+                                      "");
 
-                          await failureOrSuccess.fold((failure) {
-                            EasyLoading.dismiss();
-                          }, (success) async {
-                            EasyLoading.dismiss();
-                            NavigationService.navigatorKey.currentState!
-                                .pushNamed(RouteName.objectionsDetailsPage,
-                                    arguments: success);
-                          });
-                          return;
-                        },
-                        text: "invoice_show_details".tr(),
-                      ),
+                              await failureOrSuccess.fold((failure) {
+                                EasyLoading.dismiss();
+                              }, (success) async {
+                                EasyLoading.dismiss();
+                                NavigationService.navigatorKey.currentState!
+                                    .pushNamed(RouteName.objectionsDetailsPage,
+                                        arguments: success);
+                              });
+                              return;
+                            },
+                            text: "invoice_show_details".tr(),
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
+                  );
+                })
+            : Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: CustomTextWidget(
+                      "no_objections_on_invoice".tr(),
+                      fontColor: AppColor.blackModern500Light,
+                      textAlign: TextAlign.start,
+                    ),
+                  ),
+                ],
               );
-            });
       },
+    );
+  }
+}
+
+class InvoiceNotesList extends StatelessWidget {
+  const InvoiceNotesList({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<InvoiceDetailsCubit, InvoiceDetailsState>(
+      builder: (context, state) {
+        return Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            CustomVerticalSpace(height: 8),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  CustomTextWidget(
+                    "saddad_before".tr().replaceAll(
+                        "{}", state.invoice?.dueDate?.toyMD() ?? ""),
+                    fontColor: AppColor.blackModern500Light,
+                    textAlign: TextAlign.start,
+                  ),
+                ],
+              ),
+            ),
+            CustomVerticalSpace(height: 16),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                CustomTextWidget(
+                  "وسائل الدفع",
+                  fontWeight: AppFontWeight.bold,
+                  fontColor: AppColor.blackModern500Light,
+                  textAlign: TextAlign.start,
+                ),
+              ],
+            ),
+            PaymentOptionWidget(
+              icon: ImagePath.madaVisaMaster,
+              title: "invoice_criedt_note".tr(),
+            ),
+            CustomVerticalSpace(height: 16),
+            PaymentOptionWidget(
+              icon: ImagePath.sadadLogoAr,
+              title: "invoice_sadad_note".tr(),
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
+
+class PaymentOptionWidget extends StatelessWidget {
+  final String title;
+  final String icon;
+  const PaymentOptionWidget(
+      {super.key, required this.icon, required this.title});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          width: 10,
+          height: 10,
+          margin: EdgeInsets.only(top: 16),
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              color: AppColor.primary900Light),
+        ),
+        CustomHorizontalSpace(width: 8),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              CustomVerticalSpace(height: 16),
+              icon.endsWith("svg") ? SvgPicture.asset(icon) : Image.asset(icon),
+              CustomVerticalSpace(height: 16),
+              CustomTextWidget(
+                title,
+                fontColor: AppColor.blackModern500Light,
+                textAlign: TextAlign.start,
+                maxLines: 4,
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }

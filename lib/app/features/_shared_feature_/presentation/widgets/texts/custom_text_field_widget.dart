@@ -300,6 +300,7 @@ class CustomTextFieldWidget extends StatelessWidget {
           onFieldSubmitted: onSubmitted,
           validator: onValidate,
         ),
+        if (spacerSize != null) CustomVerticalSpace(height: spacerSize!),
       ],
     );
   }

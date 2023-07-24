@@ -60,6 +60,7 @@ class CustomTextWidget extends StatelessWidget {
             color: fontColor,
             fontFamily: fontFamily,
             decoration: textDecoration,
+            wordSpacing: 1,
             decorationThickness: textDecorationThickness,
             decorationColor: textDecorationColor ?? fontColor,
             letterSpacing: letterSpacing,

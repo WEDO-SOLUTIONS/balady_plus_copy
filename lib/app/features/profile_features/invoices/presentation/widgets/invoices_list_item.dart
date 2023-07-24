@@ -61,7 +61,7 @@ class InvoicesListItem extends StatelessWidget {
               ),
               children: [
                 InvoiceParameter(
-                  title: 'invoice_type'.tr(),
+                  title: "license_type".tr(),
                   value: invoice.invoiceTypeName,
                 ),
                 InvoiceParameter(

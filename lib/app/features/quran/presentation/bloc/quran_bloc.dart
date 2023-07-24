@@ -117,6 +117,9 @@ class QuranBloc extends Bloc<QuranEvent, QuranState> {
                 ]);
           } else {
             surasInPage[i]!.suraAyat.add({element.ayaNo: element.ayaText});
+            surasInPage[i]!
+                .suraAyatNormal
+                .add({element.ayaNo: element.ayaTextEmlaey});
           }
         },
       );

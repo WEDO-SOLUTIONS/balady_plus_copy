@@ -42,7 +42,7 @@ class _MenuQuranPageState extends State<MenuQuranPage> {
                 index: searchedQuranData[index].id,
                 onTap: () {
                   Navigator.of(context).pushNamed(RouteName.quranScreen,
-                      arguments: searchedQuranData[index].id);
+                      arguments: searchedQuranData[index].id - 1);
                 },
               );
             }),
