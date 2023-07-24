@@ -2318,7 +2318,27 @@
 "ekram_transfer_status": "حالة النقل",
 "ekram_city_status": "نوع النقل",
 "carBard": "طراز المركبة",
-"carYear": "سنة الصنع"
+"carYear": "سنة الصنع",
+
+
+
+
+"men": "رجال",
+"women": "نساء",
+"menWomen": "رجال و نساء",
+"add": "إضافة",
+"verify": "تحقق",
+"sunday": "الاحد",
+"monday": "الاثنين",
+"tuesday": "الثلاثاء",
+"wednesday": "الاربعاء",
+"thursday": "الخميس",
+"friday": "الجمعه",
+"saturday": "السبت"
+
+
+
+
 
 
 

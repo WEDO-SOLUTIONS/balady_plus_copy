@@ -17,10 +17,11 @@ import '../../../../home_page/home_exports.dart' show CircleIcon;
 
 class DetailsAppBar extends StatelessWidget implements PreferredSizeWidget {
   final double currentStep;
+  final int pageLength;
   final VoidCallback backOnPress;
 
   const DetailsAppBar(
-      {Key? key, required this.currentStep, required this.backOnPress})
+      {Key? key, required this.currentStep, required this.backOnPress, required this.pageLength})
       : super(key: key);
 
   @override
@@ -28,8 +29,7 @@ class DetailsAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<CreateVDBloc, CreateVDState>(builder: (context, state) {
-      return AppBar(
+    return  AppBar(
         elevation: 0,
         leadingWidth: 200,
         leading: GestureDetector(
@@ -93,7 +93,7 @@ class DetailsAppBar extends StatelessWidget implements PreferredSizeWidget {
                 isRTL: true,
                 animationDuration: 0,
                 restartAnimation: false,
-                percent: currentStep / (getPageList().length + 1),
+                percent: currentStep / (pageLength + 1),
                 barRadius: Radius.circular(33),
                 backgroundColor: AppColor.primary100Light,
                 linearGradient: LinearGradient(colors: [
@@ -105,6 +105,5 @@ class DetailsAppBar extends StatelessWidget implements PreferredSizeWidget {
           ],
         ),
       );
-    });
   }
 }

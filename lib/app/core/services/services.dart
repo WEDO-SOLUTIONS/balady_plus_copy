@@ -245,7 +245,7 @@ Map<String, dynamic> servicesConfig = {
       "order": 11,
       "isNew": false,
       "isImportant": false,
-      "action": {"type": "page", "value": "/issue-trade-license"},
+      "action": {"type": "page", "value": RouteName.commercialLicensePage},
       "ar": {"title": "إصدار رخصة تجارية", "description": null, "tag": null},
       "en": {"title": "Issue Trade License", "description": null, "tag": null}
     },

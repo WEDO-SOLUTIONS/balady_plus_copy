@@ -35,6 +35,7 @@ class CustomHeaderAndDescOnTapWidget extends StatefulWidget {
   final MATERIAL_ICON_DIRECTION materialIconDirection;
   final Widget? icon;
   final bool? showOptional;
+  final double? marginBottom;
 
   const CustomHeaderAndDescOnTapWidget(
       {Key? key,
@@ -43,6 +44,7 @@ class CustomHeaderAndDescOnTapWidget extends StatefulWidget {
       this.labelSize = 16.0,
       this.labelTextAlign = TextAlign.start,
       this.hintText = '',
+      this.marginBottom,
       this.filled = false,
       this.fillColor = Colors.transparent,
       this.borderRadius = 8.0,
@@ -145,7 +147,7 @@ class _CustomHeaderAndDescOnTapWidget
                     ),
                   ],
                 ),
-              const CustomVerticalSpace(height: 30.0),
+              CustomVerticalSpace(height: widget.marginBottom ?? 30.0),
             ],
           );
         },
@@ -195,11 +197,13 @@ class CustomTapWidgetForLongDialog extends StatefulWidget {
   String? errorText;
   final bool? showOptional;
   final bool showHintAsTitle;
+  final double? marginBottom;
 
   CustomTapWidgetForLongDialog(
       {Key? key,
       required this.onChangeType,
       this.value,
+      this.marginBottom,
       required this.items,
       this.hint,
       required this.label,
@@ -220,11 +224,12 @@ class _CustomTapWidgetForLongDialog
   Widget build(BuildContext context) {
     return CustomHeaderAndDescOnTapWidget(
       label: widget.label,
-      hintText: widget.hint!,
+      hintText: widget.hint ?? ("choose_hint").tr(),
       textValue: widget.value?.name,
       showOptional: widget.showOptional,
       labelColor: AppColor.blackModern700Light,
       labelSize: 16,
+      marginBottom: widget.marginBottom,
       onTap: widget.items.isNotEmpty
           ? () async {
               FocusManager.instance.primaryFocus?.unfocus();
@@ -235,7 +240,7 @@ class _CustomTapWidgetForLongDialog
                   items: widget.items,
                   selectedItem: widget.value,
                   title: widget.showHintAsTitle ? widget.hint : widget.label,
-                  searchHint: widget.searchHint,
+                  searchHint: widget.searchHint ?? ("searchFor").tr(),
                 ),
               );
             }

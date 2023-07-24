@@ -147,6 +147,32 @@ class ElevatedButtonWidget extends _ElevatedButton {
           onPressed: onPressed,
         ));
 
+  ElevatedButtonWidget.add({required VoidCallback onPressed})
+      : super(CustomElevatedButtonWidget(
+          btnColor: AppColor.primary900Light,
+          textStyle: AppStyle.elevatedButtonStyle.copyWith(
+            color: AppColor.white,
+            fontWeight: FontWeight.w700,
+            fontSize: 16,
+          ),
+          btnHeight: 56,
+          text: "add".tr(),
+          onPressed: onPressed,
+        ));
+  ElevatedButtonWidget.verify({required VoidCallback onPressed})
+      : super(CustomElevatedButtonWidget(
+          btnColor: Colors.transparent,
+          btnBorderColor: AppColor.primary900Light,
+          textStyle: AppStyle.elevatedButtonStyle.copyWith(
+            color: AppColor.primary900Light,
+            fontWeight: FontWeight.w700,
+            fontSize: 16,
+          ),
+          btnHeight: 48,
+          text: "verify".tr(),
+          onPressed: onPressed,
+        ));
+
   ElevatedButtonWidget.startService({required VoidCallback onPressed})
       : super(CustomElevatedButtonWidget(
           btnColor: AppColor.primary800Light,

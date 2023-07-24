@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/features/commercial_license/commercial_license_exports.dart';
 import 'package:balady_plus/app/features/objectable_transactions/domain/entities/create_objection_page_params.dart';
 import 'package:balady_plus/app/features/objections/domain/entities/objection_details.dart';
 import 'package:flutter/material.dart'
@@ -155,6 +156,13 @@ class AppRouter {
           builder: (_) => SuccessScreen(
             successScreenArgs: args,
           ),
+        );
+
+        // ------ Commercial License -----
+      case RouteName.commercialLicensePage:
+      // CreateVDParamsPage params = settings.arguments as CreateVDParamsPage;
+        return MaterialPageRoute(
+          builder: (_) => const CommercialLicenseScreen(),
         );
 
 // QR

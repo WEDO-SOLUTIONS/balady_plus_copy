@@ -65,7 +65,7 @@ class CustomTextFieldWidget extends StatelessWidget {
   final double borderRadius;
   final Color? borderColor;
   final String? errorText;
-
+  final double? bottomMargin;
   final void Function(String)? onChanged;
   final void Function(String)? onSubmitted;
   final void Function()? onTap;
@@ -76,6 +76,7 @@ class CustomTextFieldWidget extends StatelessWidget {
     this.enabled = true,
     this.label,
     this.labelStyle,
+    this.bottomMargin,
     this.isRequired = false,
     this.controller,
     this.focusNode,
@@ -300,6 +301,7 @@ class CustomTextFieldWidget extends StatelessWidget {
           onFieldSubmitted: onSubmitted,
           validator: onValidate,
         ),
+        SizedBox(height: bottomMargin),
       ],
     );
   }
