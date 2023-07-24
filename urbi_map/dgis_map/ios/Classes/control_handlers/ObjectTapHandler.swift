@@ -10,6 +10,7 @@ class ObjectTapHandler {
         static let onIdleTap = "onIdleTap"
         static let onMarkerTap = "onMarkerTap"
         static let onPolygonTap = "onPolygonTap"
+        static let onPolylineTap = "onPolylineTap"
     }
     
     private struct PhotoData {
@@ -27,6 +28,14 @@ class ObjectTapHandler {
     }
     
     private struct PolygonId {
+        init(_ id: Int) {
+            self.id = id
+        }
+
+        let id: Int
+    }
+    
+    private struct PolylineId {
         init(_ id: Int) {
             self.id = id
         }
@@ -53,6 +62,7 @@ class ObjectTapHandler {
 
     private var markers: Dictionary<Int, Marker> = [:]
     private var polygons: Dictionary<Int, Polygon> = [:]
+    private var polylines: Dictionary<Int, Polyline> = [:]
     private var panoramasMarkers: Array<Marker> = []
     private var ioLayerMarkers: Array<Marker> = []
 
@@ -91,6 +101,14 @@ class ObjectTapHandler {
             if let id = polygon.userData as? PolygonId {
                 eventChannel.success([
                     "event": Events.onPolygonTap,
+                    "id": id.id,
+                ] as [String : Any])
+                return
+            }
+        case let polyline as Polyline:
+            if let id = polyline.userData as? PolylineId {
+                eventChannel.success([
+                    "event": Events.onPolylineTap,
                     "id": id.id,
                 ] as [String : Any])
                 return
@@ -319,6 +337,41 @@ class ObjectTapHandler {
         }
     }
     
+    func addPolyline(_ polyline: PolylineMessage, completion: @escaping (FlutterError?) -> Void) {
+        let options = PolylineOptions(
+            points: polyline.options.points.map {
+                GeoPoint(
+                    latitude: Latitude(value: $0.latitude.doubleValue),
+                    longitude: Longitude(value: $0.longitude.doubleValue)
+                )
+            },
+            width: polyline.options.width.map {
+                LogicalPixel(value: $0.floatValue)
+            } ?? LogicalPixel(value: 1),
+            color: polyline.options.color.map {
+                Color(argb: UInt32($0.intValue))
+            } ?? Color(),
+            userData: PolylineId(polyline.id.intValue)
+        )
+        
+        let polylineObject = Polyline(options: options)
+        
+        self.objectsQueue.sync {
+            self.polylines[polyline.id.intValue] = polylineObject
+            self.mapObjectManager.addObject(item: polylineObject)
+            completion(nil)
+        }
+    }
+    
+    func removePolyline(_ id: NSNumber, completion: @escaping (FlutterError?) -> Void) {
+        self.objectsQueue.sync {
+            if let polylineObject = self.polylines.removeValue(forKey: id.intValue) {
+                self.mapObjectManager.removeObject(item: polylineObject)
+                completion(nil)
+            }
+        }
+    }
+    
     func addIoMarkers(_ message: AddLayerPointObjectsMessage, _ completion: @escaping (FlutterError?) -> Void) {
         guard let markerImage = self.markerImage, let iconWidth = self.iconWidth else {
             completion(FlutterError(
@@ -361,6 +414,13 @@ class ObjectTapHandler {
         self.objectsQueue.sync {
             self.mapObjectManager.removeObjects(objects: Array(self.polygons.values))
             self.polygons.removeAll()
+        }
+    }
+    
+    func removeAllPolylines() {
+        self.objectsQueue.sync {
+            self.mapObjectManager.removeObjects(objects: Array(self.polylines.values))
+            self.polylines.removeAll()
         }
     }
     

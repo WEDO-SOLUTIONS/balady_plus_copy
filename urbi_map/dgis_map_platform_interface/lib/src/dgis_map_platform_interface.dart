@@ -135,6 +135,16 @@ abstract class DgisMapPlugin extends PlatformInterface {
 
   Future<void> removeAllPolygons();
 
+  Future<void> addPolyline(
+    int id,
+    PolylineOptionsMessage options,
+    void Function()? onTap,
+  );
+
+  Future<void> removePolyline(int id);
+
+  Future<void> removeAllPolylines();
+
   Future<void> removeSearchMarkers();
 
   Future<void> setHighlighted(List<DgisObjectIdMessage> objectIds);

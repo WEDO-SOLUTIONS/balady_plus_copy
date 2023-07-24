@@ -14,6 +14,7 @@ class ObjectTapEventHandler {
 
   final Map<int, OnObjectTap> markerHandlers = {};
   final Map<int, OnObjectTap> polygonHandlers = {};
+  final Map<int, OnObjectTap> polylineHandlers = {};
 
   void addMarkerHandler(int id, OnObjectTap onTap) {
     markerHandlers[id] = onTap;
@@ -45,6 +46,22 @@ class ObjectTapEventHandler {
 
   void polygonTapEvent(Map<dynamic, dynamic> map) {
     polygonHandlers[map["id"]]?.call();
+  }
+
+  void addPolylineHandler(int id, OnObjectTap onTap) {
+    polylineHandlers[id] = onTap;
+  }
+
+  void removePolylineHandler(int id) {
+    polylineHandlers.remove(id);
+  }
+
+  void removeAllPolylineHandlers() {
+    polylineHandlers.clear();
+  }
+
+  void polylineTapEvent(Map<dynamic, dynamic> map) {
+    polylineHandlers[map["id"]]?.call();
   }
 
   void objectTapEvent(Map<dynamic, dynamic> map) {

@@ -206,6 +206,8 @@ class MethodChannelDgisMapPlugin extends DgisMapPlugin {
             return _objectTapEventHandler.markerTapEvent(map);
           case PolygonTapEvent.name:
             return _objectTapEventHandler.polygonTapEvent(map);
+          case PolylineTapEvent.name:
+            return _objectTapEventHandler.polylineTapEvent(map);
           case VisibleRectEvent.name:
             return _visibleRectEventHandler.visibleRectEvent(map);
           case MarkerWithPhotoTapEvent.name:
@@ -346,6 +348,32 @@ class MethodChannelDgisMapPlugin extends DgisMapPlugin {
   Future<void> removeAllPolygons() {
     _objectTapEventHandler.removeAllPolygonHandlers();
     return _api.removeAllPolygons();
+  }
+
+  @override
+  Future<void> addPolyline(
+    int id,
+    PolylineOptionsMessage options,
+    void Function()? onTap,
+  ) {
+    if (onTap != null) {
+      _objectTapEventHandler.addPolylineHandler(id, onTap);
+    }
+    return _api.addPolyline(PolylineMessage(id: id, options: options));
+  }
+
+  @override
+  Future<void> removePolyline(
+    int id,
+  ) {
+    _objectTapEventHandler.removePolylineHandler(id);
+    return _api.removePolyline(id);
+  }
+
+  @override
+  Future<void> removeAllPolylines() {
+    _objectTapEventHandler.removeAllPolylineHandlers();
+    return _api.removeAllPolylines();
   }
 
   @override

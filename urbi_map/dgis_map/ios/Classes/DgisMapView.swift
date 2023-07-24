@@ -338,6 +338,14 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         self.objectTapHandler?.removePolygon(id, completion: completion)
     }
     
+    func addPolylinePolyline(_ polyline: PolylineMessage, completion: @escaping (FlutterError?) -> Void) {
+        self.objectTapHandler?.addPolyline(polyline, completion: completion)
+    }
+    
+    func removePolylineId(_ id: NSNumber, completion: @escaping (FlutterError?) -> Void) {
+        self.objectTapHandler?.removePolyline(id, completion: completion)
+    }
+    
     func setHighlightedObjectIds(_ objectIds: [DgisObjectIdMessage], completion: @escaping (FlutterError?) -> Void) {
         self.objectTapHandler?.setHighlighted(
             objectIds.map({
@@ -379,6 +387,11 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
     
     func removeAllPolygons(completion: @escaping (FlutterError?) -> Void) {
         self.objectTapHandler?.removeAllPolygons()
+        completion(nil)
+    }
+    
+    func removeAllPolylines(completion: @escaping (FlutterError?) -> Void) {
+        self.objectTapHandler?.removeAllPolylines()
         completion(nil)
     }
     

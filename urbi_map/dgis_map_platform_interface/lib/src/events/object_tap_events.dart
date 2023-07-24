@@ -20,6 +20,14 @@ class PolygonTapEvent extends TapEvent {
   final int id;
 }
 
+class PolylineTapEvent extends TapEvent {
+  const PolylineTapEvent(this.id);
+
+  static const name = "onPolylineTap";
+
+  final int id;
+}
+
 class ObjectTapEvent extends TapEvent {
   const ObjectTapEvent(this.dgisObjectId, this.latLng);
 

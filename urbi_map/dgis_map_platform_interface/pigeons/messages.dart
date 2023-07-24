@@ -476,6 +476,25 @@ class PolygonMessage {
   final PolygonOptionsMessage options;
 }
 
+class PolylineOptionsMessage {
+  PolylineOptionsMessage({
+    required List<GeoPointMessage> this.points,
+    this.color,
+    this.width,
+  });
+
+  final List<GeoPointMessage?> points;
+  final int? color;
+  final double? width;
+}
+
+class PolylineMessage {
+  PolylineMessage(this.id, this.options);
+
+  final int id;
+  final PolylineOptionsMessage options;
+}
+
 @ConfigurePigeon(
   PigeonOptions(
     dartOut: 'lib/src/pigeons/messages.g.dart',
@@ -552,6 +571,15 @@ abstract class MapApi {
 
   @async
   void removeAllPolygons();
+
+  @async
+  void addPolyline(PolylineMessage polyline);
+
+  @async
+  void removePolyline(int id);
+
+  @async
+  void removeAllPolylines();
 
   @async
   void removeSearchMarkers();

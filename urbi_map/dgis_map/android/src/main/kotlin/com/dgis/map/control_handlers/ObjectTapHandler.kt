@@ -47,8 +47,11 @@ class ObjectTapHandler(
     private data class MarkerId(val id: Int);
     private data class PolygonId(val id: Int);
 
+    private data class PolylineId(val id: Int);
+
     private val markers = mutableMapOf<Int, Marker>();
     private val polygons = mutableMapOf<Int, Polygon>();
+    private val polylines = mutableMapOf<Int, Polyline>();
     private val ioLayerMarkers = mutableListOf<Marker>();
 
     fun objectTapListener(roi: RenderedObjectInfo) {
@@ -72,6 +75,14 @@ class ObjectTapHandler(
 
                 if (userData is PolygonId) {
                     onPolygonTap(userData.id)
+                    return
+                }
+            }
+            is Polyline -> {
+                val userData = tappedObject.userData
+
+                if (userData is PolylineId) {
+                    onPolylineTap(userData.id)
                     return
                 }
             }
@@ -284,6 +295,41 @@ class ObjectTapHandler(
         }
     }
 
+    fun addPolyline(polyline: PolylineMessage, result: Result<Void>?) {
+        val options = PolylineOptions(
+            points = polyline.options.points.map {
+                GeoPoint(
+                    latitude = Latitude(it.latitude),
+                    longitude = Longitude(it.longitude),
+                )
+            },
+            color = polyline.options.color?.let {
+                Color(argb = it.toInt())
+            } ?: Color(),
+            width = polyline.options.width?.let {
+                LogicalPixel(it.toFloat())
+            } ?: LogicalPixel(1f),
+            userData = PolylineId(polyline.id.toInt()),
+        )
+
+        val polylineObject = Polyline(options)
+
+        mapObjectsExecutorService.submit {
+            polylines[polyline.id.toInt()] = polylineObject
+            mapObjectManager.addObject(polylineObject)
+            result?.success(null)
+        }
+    }
+
+    fun removePolyline(id: Long, result: Result<Void>?) {
+        mapObjectsExecutorService.submit {
+            polylines.remove(id.toInt())?.also {
+                mapObjectManager.removeObject(it)
+            }
+            result?.success(null)
+        }
+    }
+
     fun addIoMarkers(message: AddLayerPointObjectsMessage, result: Result<Void>?) {
         val markerImage = markerImage
         val iconWidth = iconWidth
@@ -326,6 +372,12 @@ class ObjectTapHandler(
         mapObjectsExecutorService.submit {
             mapObjectManager.removeObjects(polygons.values.toList())
             polygons.clear()
+        }
+    }
+    fun removeAllPolylines() {
+        mapObjectsExecutorService.submit {
+            mapObjectManager.removeObjects(polylines.values.toList())
+            polylines.clear()
         }
     }
 
@@ -463,6 +515,15 @@ class ObjectTapHandler(
         )
     }
 
+    private fun onPolylineTap(id: Int) {
+        eventSink.success(
+            mapOf(
+                "event" to Events.onPolylineTap.name,
+                "id" to id
+            )
+        )
+    }
+
     private fun onSearchMarkerTap(marker: Marker, id: DgisObjectId) {
         this.lastTappedSearchMarker?.iconOpacity = Opacity(1f)
 
@@ -553,6 +614,7 @@ private enum class Events {
     onIdleTap,
     onMarkerTap,
     onPolygonTap,
+    onPolylineTap,
 }
 
 private fun Attributes.mapIo(point: GeoPointWithElevation): Map<String, Any> = mapOf(
