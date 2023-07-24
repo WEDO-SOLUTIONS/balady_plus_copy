@@ -49,6 +49,7 @@ class _CreateVDDetailsPageState extends State<CreateVDDetailsPage> {
               child: Scaffold(
                 appBar: DetailsAppBar(
                   currentStep: state.currentPageValue + 2,
+                  pageLength: getPageList().length,
                   backOnPress: () =>
                       context.read<CreateVDBloc>().add(GoToPreviousPageEvent()),
                 ),

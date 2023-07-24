@@ -2433,6 +2433,41 @@
 "ekram_city_status": "نوع النقل",
 "carBard": "طراز المركبة",
 "carYear": "سنة الصنع", 
+"carYear": "سنة الصنع",
+
+
+
+
+"men": "رجال",
+"women": "نساء",
+"menWomen": "رجال و نساء",
+"add": "إضافة",
+"verify": "تحقق",
+"sunday": "الاحد",
+"monday": "الاثنين",
+"tuesday": "الثلاثاء",
+"wednesday": "الاربعاء",
+"thursday": "الخميس",
+"friday": "الجمعه",
+"saturday": "السبت",
+
+
+"viewLicenseDetails": "عرض تفاصيل الرخصة",
+"wallet": "المحفظة",
+"theBusinessLicense": "الرخص التجارية",
+"healthCertificates": "الشهادات الصحية",
+"businessLicense": "رخصة تجارية",
+"createdAt": "اصدرت",
+"name": "الاسم",
+"expire": "تنتهي",
+"toViewAllLicense": "لمشاهده كل الرخص الحاليه اضغط علي الكروت للمزيد",
+"scanQr": "أمسح الرمز السريع لإظهار بيانات الرخصة كاملة", 
+
+
+
+
+
+
 
 
 

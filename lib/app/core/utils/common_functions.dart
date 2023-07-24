@@ -27,7 +27,7 @@ import 'package:uuid/uuid.dart';
 import '../../features/_shared_feature_/data/entities/file_data_item.dart';
 import '../../features/_shared_feature_/presentation/dialogs/upload_file_dialog.dart';
 import './utils_exports.dart'
-    show AppConfig, AppLanguage, EnvType, MimeType, UIHelper, WithDelay;
+    show AppColor, AppConfig, AppLanguage, EnvType, MimeType, UIHelper, WithDelay;
 import '../../features/_shared_feature_/data/entities/device_details.dart';
 import '../../features/_shared_feature_/presentation/dialogs/camera_permission_dialog.dart';
 import '../../features/_shared_feature_/presentation/dialogs/location_permission_dialog.dart';
@@ -353,6 +353,20 @@ class CommonFunctions {
         ));
 
     return Future.value(file is FileDataItem ? file : null);
+  }
+
+  static Future<TimeOfDay?> pickTime(BuildContext context) async {
+    return await showTimePicker(
+        context: context,
+        initialTime: TimeOfDay.now(),
+        builder: (_, child) => Theme(
+            data: ThemeData.light().copyWith(
+              colorScheme: const ColorScheme.light(
+                primary: AppColor.primary900Light,
+                onSurface: AppColor.blackModern500Light,
+              ),
+            ),
+            child: child ?? const SizedBox()));
   }
 
   static String hashRequest(

@@ -53,6 +53,7 @@ export 'enums/sort_type.dart';
 export 'enums/steps_status.dart';
 export 'enums/validations.dart';
 export 'enums/weather_condtions.dart';
+export 'enums/workers_types.dart';
 
 //! Extensions
 export 'extensions/api_responses_conversion.dart';

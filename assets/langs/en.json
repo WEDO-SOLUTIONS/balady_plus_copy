@@ -272,5 +272,31 @@
   "popUpCloseAppMessage": "Do you want to exit an App?",
   "popUpNoMessage": "There is no message to display.",
   "popUpCloseRequest": "Would you like to close the request?",
-  "popUpUploadFileLimitExceedsMessage": "The limit of {} megabytes has been exceeded."
+  "popUpUploadFileLimitExceedsMessage": "The limit of {} megabytes has been exceeded.",
+
+
+  "men": "men",
+  "women": "women",
+  "menWomen": "men and women",
+  "add": "add",
+  "verify": "verify",
+  "sunday": "sunday",
+  "monday": "monday",
+  "tuesday": "tuesday",
+  "wednesday": "wednesday",
+  "thursday": "thursday",
+  "friday": "friday",
+  "saturday": "Saturday",
+
+
+  "viewLicenseDetails": "View License Details",
+  "wallet": "wallet",
+  "theBusinessLicense": "Business License",
+  "healthCertificates": "Health Certificates",
+  "businessLicense": "commercial license",
+  "createdAt": "issued",
+  "name": "Name",
+  "expire": "expire",
+  "toViewAllLicense": "To view all current licenses, click on the cards for more information",
+  "scanQr": "Scan the quick code to show full license information"
 }

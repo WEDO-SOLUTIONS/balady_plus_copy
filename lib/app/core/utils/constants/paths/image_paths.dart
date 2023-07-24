@@ -23,4 +23,8 @@ class ImagePath {
 
   static const sadadLogoAr = '${_imagePath}sadad_logo_ar$_png';
   static const madaVisaMaster = '${_imagePath}mada-visa-mastercard$_svg';
+
+  static const visaBg = '${_imagePath}visa_bg';
+  static const walletBg = '${_imagePath}wallet_bg$_png';
+  static const qrBg = '${_imagePath}qr_bg$_png';
 }

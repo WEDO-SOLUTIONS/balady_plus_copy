@@ -1,4 +1,5 @@
 import 'package:balady_plus/app/features/daem/daem_exports.dart';
+import 'package:balady_plus/app/features/commercial_license/commercial_license_exports.dart';
 import 'package:balady_plus/app/features/objectable_transactions/domain/entities/create_objection_page_params.dart';
 import 'package:balady_plus/app/features/objections/domain/entities/objection_details.dart';
 import 'package:balady_plus/app/features/quran/presentation/pages/quran_bookmarks.dart';
@@ -82,6 +83,7 @@ import '../../features/transaction_inquiry/presentation/pages/request_service/ne
 import '../../features/transaction_inquiry/presentation/pages/request_service/new_request_service/new_request_service_page.dart';
 import '../../features/vd/vd_exports.dart';
 import '../../features/zmzm_points/presentation/pages/zmzm_points_page.dart';
+import '../../features/wallet/wallet_exports.dart';
 
 class AppRouter {
   static Route<dynamic> allRoutes(RouteSettings settings) {
@@ -213,6 +215,22 @@ class AppRouter {
           builder: (_) => SuccessScreen(
             successScreenArgs: args,
           ),
+        );
+
+      // ------ Commercial License -----
+      case RouteName.commercialLicensePage:
+        return MaterialPageRoute(
+          builder: (_) => const CommercialLicenseScreen(),
+        );
+
+      // ------ Wallet -----
+      case RouteName.walletPage:
+        return MaterialPageRoute(
+          builder: (_) => const WalletScreen(),
+        );
+      case RouteName.businessLicensePage:
+        return MaterialPageRoute(
+          builder: (_) => const BusinessLicenseScreen(),
         );
 
 // QR

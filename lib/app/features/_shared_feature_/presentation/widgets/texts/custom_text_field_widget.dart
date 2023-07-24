@@ -66,6 +66,7 @@ class CustomTextFieldWidget extends StatelessWidget {
   final Color? borderColor;
   final String? errorText;
   final double? spacerSize;
+  final double? bottomMargin;
   final void Function(String)? onChanged;
   final void Function(String)? onSubmitted;
   final void Function()? onTap;

@@ -11,6 +11,9 @@ const _svgVDIconPath = 'assets/icons/svg/vd/';
 const _pngQRIconPath = 'assets/icons/png/qr/';
 const _svgQRIconPath = 'assets/icons/svg/qr/';
 
+const _svgCRIconPath = 'assets/icons/svg/cr/';
+const _svgWalletIconPath = 'assets/icons/svg/wallet/';
+
 const _svg = '.svg';
 
 const _pngIconPath = 'assets/icons/png/';
@@ -202,4 +205,17 @@ class IconPath {
   static const quranSearchIcon = '${_svgIconPath}quran_search$_svg';
   static const quranMarkIcon = '${_svgIconPath}quran_mark$_svg';
   static const quranMainMarkIcon = '${_svgIconPath}quran_main_bookmark$_svg';
+
+  // CR
+  static const additionalActivity = '${_svgCRIconPath}additional_activity$_svg';
+  static const undertaking = '${_svgCRIconPath}undertaking$_svg';
+  static const clipboard = '${_svgCRIconPath}clipboard$_svg';
+  static const building = '${_svgCRIconPath}building$_svg';
+  static const shopData = '${_svgCRIconPath}shop_data$_svg';
+
+  // Wallet
+  static const personalCard = '${_svgWalletIconPath}personal_card$_svg';
+  static const card = '${_svgWalletIconPath}card$_svg';
+  static const sliderVertical = '${_svgWalletIconPath}slider_vertical$_svg';
+  static const shoppingBag = '${_svgWalletIconPath}shopping_bag$_svg';
 }

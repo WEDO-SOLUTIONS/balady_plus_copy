@@ -10,7 +10,7 @@ class CustomTextWidget extends StatelessWidget {
   final TextAlign? textAlign;
   final TextOverflow? textOverflow;
   final TextDirection? textDirection;
-  final int maxLines;
+  final int? maxLines;
   final TextStyle? textStyle;
   final double? fontSize;
   final AppFontWeight? fontWeight;

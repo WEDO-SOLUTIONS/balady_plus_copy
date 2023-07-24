@@ -102,4 +102,10 @@ class RouteName {
   static const quranSearchPage = '/QuranSearchPage';
   // ------- Zmzmz Page  ---------
   static const ZmZmPointsPage = '/ZmZmPointsPage';
+  // ------- CR ---------
+  static const commercialLicensePage = '/commercialLicensePage';
+
+  // ------- Wallet ------
+  static const walletPage = '/walletPage';
+  static const businessLicensePage = '/businessLicensePage';
 }
