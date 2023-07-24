@@ -201,6 +201,8 @@ class MethodChannelDgisMapPlugin extends DgisMapPlugin {
             return _indoorEventHandler.activeLevelEvent(map);
           case ObjectTapEvent.name:
             return _objectTapEventHandler.objectTapEvent(map);
+          case MarkerTapEvent.name:
+            return _objectTapEventHandler.markerTapEvent(map);
           case VisibleRectEvent.name:
             return _visibleRectEventHandler.visibleRectEvent(map);
           case MarkerWithPhotoTapEvent.name:
@@ -287,17 +289,33 @@ class MethodChannelDgisMapPlugin extends DgisMapPlugin {
   }
 
   @override
-  Future<void> setMarkerOptions(MarkerOptionsMessage markerOptions) {
+  Future<void> setMarkerOptions(MarkerOptionsMessageOld markerOptions) {
     return _api.setMarkerOptions(markerOptions);
   }
 
   @override
-  Future<void> addMarker(GeoPointMessage geoPoint) {
-    return _api.addMarker(geoPoint);
+  Future<void> addMarker(
+    int id,
+    MarkerOptionsMessage options,
+    void Function()? onTap,
+  ) {
+    if (onTap != null) {
+      _objectTapEventHandler.addMarkerHandler(id, onTap);
+    }
+    return _api.addMarker(MarkerMessage(id: id, options: options));
+  }
+
+  @override
+  Future<void> removeMarker(
+    int id,
+  ) {
+    _objectTapEventHandler.removeMarkerHandler(id);
+    return _api.removeMarker(id);
   }
 
   @override
   Future<void> removeAllMarkers() {
+    _objectTapEventHandler.removeAllMarkerHandlers();
     return _api.removeAllMarkers();
   }
 

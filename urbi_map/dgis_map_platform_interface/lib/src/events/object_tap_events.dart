@@ -4,6 +4,14 @@ abstract class TapEvent {
   const TapEvent();
 }
 
+class MarkerTapEvent extends TapEvent {
+  const MarkerTapEvent(this.id);
+
+  static const name = "onMarkerTap";
+
+  final int id;
+}
+
 class ObjectTapEvent extends TapEvent {
   const ObjectTapEvent(this.dgisObjectId, this.latLng);
 

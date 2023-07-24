@@ -116,7 +116,7 @@ class MapViewModel extends BaseViewModel {
     }
 
     await controller.setMarkerOptions(
-      MarkerOptionsMessage(
+      MarkerOptionsMessageOld(
         svgAsset: "assets/svg/ic_marker.svg",
         width: 30.0,
         height: 46.0,

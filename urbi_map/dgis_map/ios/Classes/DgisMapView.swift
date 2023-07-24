@@ -305,7 +305,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
     }
     
     func setMarkerOptionsOptions(
-        _ markerOptions: MarkerOptionsMessage,
+        _ markerOptions: MarkerOptionsMessageOld,
         completion: @escaping (FlutterError?) -> Void
     ) {
         let assetKey = registrar.lookupKey(forAsset: markerOptions.svgAsset)
@@ -322,8 +322,12 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         )
     }
     
-    func addMarkerGeoPoint(_ geoPoint: GeoPointMessage, completion: @escaping (FlutterError?) -> Void) {
-        self.objectTapHandler?.addMarker(geoPoint, completion: completion)
+    func addMarkerMarker(_ marker: MarkerMessage, completion: @escaping (FlutterError?) -> Void) {
+         self.objectTapHandler?.addMarker(marker, completion: completion)
+    }
+    
+    func removeMarkerId(_ id: NSNumber, completion: @escaping (FlutterError?) -> Void) {
+        self.objectTapHandler?.removeMarker(id, completion: completion)
     }
     
     func setHighlightedObjectIds(_ objectIds: [DgisObjectIdMessage], completion: @escaping (FlutterError?) -> Void) {
@@ -611,14 +615,18 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
                 MapObjectManager.withGeneralization(
                     map: map,
                     logicalPixel: LogicalPixel(value: 20),
-                    maxZoom: Zoom(value: 18)),
+                    maxZoom: Zoom(value: 18)
+                ),
+            ioObjectManager:
+                MapObjectManager.withGeneralization(
+                    map: map,
+                    logicalPixel: LogicalPixel(value: 50),
+                    maxZoom: Zoom(value: 18)
+                ),
             imageFactory: self.sdk.imageFactory,
             routeHandler: self.routeHandler,
             eventChannel: eventChannel,
-            ioObjectManager:  MapObjectManager.withGeneralization(
-                map: map,
-                logicalPixel: LogicalPixel(value: 50),
-                maxZoom: Zoom(value: 18))
+            registrar: self.registrar
         )
         
         mapView.addObjectTappedCallback(callback: MapObjectTappedCallback(
