@@ -292,7 +292,7 @@ class DgisMapController {
       _instance.addMarker(marker.id, marker.options, marker.onTap);
 
   /// Add several markers to map.
-  Future<void> addAllMarkers(List<Marker> markers) async {
+  Future<void> addMarkers(List<Marker> markers) async {
     await Future.forEach(markers, (marker) async {
       await addMarker(marker);
     });
@@ -317,7 +317,7 @@ class DgisMapController {
       _instance.addPolygon(polygon.id, polygon.options, polygon.onTap);
 
   /// Add several polygons to map.
-  Future<void> addAllPolygons(List<Polygon> polygons) async {
+  Future<void> addPolygons(List<Polygon> polygons) async {
     await Future.forEach(polygons, (polygon) async {
       await addPolygon(polygon);
     });
@@ -334,7 +334,7 @@ class DgisMapController {
       _instance.addPolyline(polyline.id, polyline.options, polyline.onTap);
 
   /// Add several polylines to map.
-  Future<void> addAllPolyline(List<Polyline> polyline) async {
+  Future<void> addPolyline(List<Polyline> polyline) async {
     await Future.forEach(polyline, (polyline) async {
       await addPolyline(polyline);
     });
