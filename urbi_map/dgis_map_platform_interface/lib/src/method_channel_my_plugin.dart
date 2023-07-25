@@ -300,14 +300,32 @@ class MethodChannelDgisMapPlugin extends DgisMapPlugin {
 
   @override
   Future<void> addMarker(
-    int id,
-    MarkerOptionsMessage options,
-    void Function()? onTap,
+    Marker marker,
   ) {
-    if (onTap != null) {
-      _objectTapEventHandler.addMarkerHandler(id, onTap);
+    if (marker.onTap != null) {
+      _objectTapEventHandler.addMarkerHandler(marker.id, marker.onTap!);
     }
-    return _api.addMarker(MarkerMessage(id: id, options: options));
+    return _api.addMarker(
+      MarkerMessage(id: marker.id, options: marker.options),
+    );
+  }
+
+  @override
+  Future<void> addMarkers(
+    List<Marker> markers,
+  ) {
+    for (var marker in markers) {
+      if (marker.onTap != null) {
+        _objectTapEventHandler.addMarkerHandler(marker.id, marker.onTap!);
+      }
+    }
+    return _api.addMarkers(
+      markers
+          .map(
+            (marker) => MarkerMessage(id: marker.id, options: marker.options),
+          )
+          .toList(),
+    );
   }
 
   @override
@@ -326,14 +344,33 @@ class MethodChannelDgisMapPlugin extends DgisMapPlugin {
 
   @override
   Future<void> addPolygon(
-    int id,
-    PolygonOptionsMessage options,
-    void Function()? onTap,
+    Polygon polygon,
   ) {
-    if (onTap != null) {
-      _objectTapEventHandler.addPolygonHandler(id, onTap);
+    if (polygon.onTap != null) {
+      _objectTapEventHandler.addPolygonHandler(polygon.id, polygon.onTap!);
     }
-    return _api.addPolygon(PolygonMessage(id: id, options: options));
+    return _api.addPolygon(
+      PolygonMessage(id: polygon.id, options: polygon.options),
+    );
+  }
+
+  @override
+  Future<void> addPolygons(
+    List<Polygon> polygons,
+  ) {
+    for (var polygon in polygons) {
+      if (polygon.onTap != null) {
+        _objectTapEventHandler.addPolygonHandler(polygon.id, polygon.onTap!);
+      }
+    }
+    return _api.addPolygons(
+      polygons
+          .map(
+            (polygon) =>
+                PolygonMessage(id: polygon.id, options: polygon.options),
+          )
+          .toList(),
+    );
   }
 
   @override
@@ -352,14 +389,33 @@ class MethodChannelDgisMapPlugin extends DgisMapPlugin {
 
   @override
   Future<void> addPolyline(
-    int id,
-    PolylineOptionsMessage options,
-    void Function()? onTap,
+    Polyline polyline,
   ) {
-    if (onTap != null) {
-      _objectTapEventHandler.addPolylineHandler(id, onTap);
+    if (polyline.onTap != null) {
+      _objectTapEventHandler.addPolylineHandler(polyline.id, polyline.onTap!);
     }
-    return _api.addPolyline(PolylineMessage(id: id, options: options));
+    return _api.addPolyline(
+      PolylineMessage(id: polyline.id, options: polyline.options),
+    );
+  }
+
+  @override
+  Future<void> addPolylines(
+    List<Polyline> polylines,
+  ) {
+    for (var polyline in polylines) {
+      if (polyline.onTap != null) {
+        _objectTapEventHandler.addPolylineHandler(polyline.id, polyline.onTap!);
+      }
+    }
+    return _api.addPolylines(
+      polylines
+          .map(
+            (polyline) =>
+                PolylineMessage(id: polyline.id, options: polyline.options),
+          )
+          .toList(),
+    );
   }
 
   @override

@@ -198,7 +198,7 @@ class ObjectTapHandler(
         )
     }
 
-    fun addMarker(marker: MarkerMessage, result: Result<Void>?) {
+    private fun mapMarker(marker: MarkerMessage, result: Result<Void>?): Marker? {
         var markerImage: Image? = null
         if (marker.options.icon != null) {
             try {
@@ -211,7 +211,7 @@ class ObjectTapHandler(
                 markerImage = imageFromAsset(sdkContext, asset, Size(0, 0))
             } catch (e: FileNotFoundException) {
                 result?.error(e)
-                return
+                return null
             }
         }
 
@@ -237,11 +237,29 @@ class ObjectTapHandler(
             userData = MarkerId(marker.id.toInt()),
         )
 
-        val markerObject = Marker(options)
+        return Marker(options)
+    }
+
+    fun addMarker(marker: MarkerMessage, result: Result<Void>?) {
+        val markerObject = mapMarker(marker, result) ?: return
 
         mapObjectsExecutorService.submit {
             markers[marker.id.toInt()] = markerObject
             mapObjectManager.addObject(markerObject)
+            result?.success(null)
+        }
+    }
+
+    fun addMarkers(markers: List<MarkerMessage>, result: Result<Void>?) {
+        val markerObjects = mutableMapOf<Int, Marker>()
+        for (marker in markers) {
+            val markerObject = mapMarker(marker, result) ?: return
+            markerObjects[marker.id.toInt()] = markerObject
+        }
+
+        mapObjectsExecutorService.submit {
+            this.markers.putAll(markerObjects)
+            mapObjectManager.addObjects(markerObjects.values.toList())
             result?.success(null)
         }
     }
@@ -255,7 +273,7 @@ class ObjectTapHandler(
         }
     }
 
-    fun addPolygon(polygon: PolygonMessage, result: Result<Void>?) {
+    private fun mapPolygon(polygon: PolygonMessage): Polygon {
         val options = PolygonOptions(
             contours = polygon.options.contours.map { contour ->
                 contour.map {
@@ -277,11 +295,29 @@ class ObjectTapHandler(
             userData = PolygonId(polygon.id.toInt())
         )
 
-        val polygonObject = Polygon(options)
+        return Polygon(options)
+    }
+
+    fun addPolygon(polygon: PolygonMessage, result: Result<Void>?) {
+        val polygonObject = mapPolygon(polygon)
 
         mapObjectsExecutorService.submit {
             polygons[polygon.id.toInt()] = polygonObject
             mapObjectManager.addObject(polygonObject)
+            result?.success(null)
+        }
+    }
+
+    fun addPolygons(polygons: List<PolygonMessage>, result: Result<Void>?) {
+        val polygonObjects = polygons.associateBy({
+             it.id.toInt()
+        }, {
+            mapPolygon(it)
+        })
+
+        mapObjectsExecutorService.submit {
+            this.polygons.putAll(polygonObjects)
+            mapObjectManager.addObjects(polygonObjects.values.toList())
             result?.success(null)
         }
     }
@@ -294,8 +330,7 @@ class ObjectTapHandler(
             result?.success(null)
         }
     }
-
-    fun addPolyline(polyline: PolylineMessage, result: Result<Void>?) {
+    private fun mapPolyline(polyline: PolylineMessage): Polyline {
         val options = PolylineOptions(
             points = polyline.options.points.map {
                 GeoPoint(
@@ -312,11 +347,29 @@ class ObjectTapHandler(
             userData = PolylineId(polyline.id.toInt()),
         )
 
-        val polylineObject = Polyline(options)
+        return Polyline(options)
+    }
+
+    fun addPolyline(polyline: PolylineMessage, result: Result<Void>?) {
+        val polylineObject = mapPolyline(polyline)
 
         mapObjectsExecutorService.submit {
             polylines[polyline.id.toInt()] = polylineObject
             mapObjectManager.addObject(polylineObject)
+            result?.success(null)
+        }
+    }
+
+    fun addPolylines(polylines: List<PolylineMessage>, result: Result<Void>?) {
+        val polylineObjects = polylines.associateBy({
+            it.id.toInt()
+        }, {
+            mapPolyline(it)
+        })
+
+        mapObjectsExecutorService.submit {
+            this.polylines.putAll(polylineObjects)
+            mapObjectManager.addObjects(polylineObjects.values.toList())
             result?.success(null)
         }
     }

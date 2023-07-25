@@ -116,9 +116,11 @@ abstract class DgisMapPlugin extends PlatformInterface {
   Future<void> setMarkerOptions(MarkerOptionsMessageOld markerOptions);
 
   Future<void> addMarker(
-    int id,
-    MarkerOptionsMessage options,
-    void Function()? onTap,
+    Marker marker,
+  );
+
+  Future<void> addMarkers(
+    List<Marker> markers,
   );
 
   Future<void> removeMarker(int id);
@@ -126,9 +128,11 @@ abstract class DgisMapPlugin extends PlatformInterface {
   Future<void> removeAllMarkers();
 
   Future<void> addPolygon(
-    int id,
-    PolygonOptionsMessage options,
-    void Function()? onTap,
+    Polygon polygon,
+  );
+
+  Future<void> addPolygons(
+    List<Polygon> polygons,
   );
 
   Future<void> removePolygon(int id);
@@ -136,9 +140,11 @@ abstract class DgisMapPlugin extends PlatformInterface {
   Future<void> removeAllPolygons();
 
   Future<void> addPolyline(
-    int id,
-    PolylineOptionsMessage options,
-    void Function()? onTap,
+    Polyline polyline,
+  );
+
+  Future<void> addPolylines(
+    List<Polyline> polylines,
   );
 
   Future<void> removePolyline(int id);

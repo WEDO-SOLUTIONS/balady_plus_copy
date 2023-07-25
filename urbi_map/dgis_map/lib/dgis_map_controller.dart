@@ -255,12 +255,12 @@ class DgisMapController {
       _instance.setMarkerOptions(markerOptions);
 
   /// Add marker to map.
-  Future<void> addMarker({
-    required int id,
-    required MarkerOptionsMessage options,
-    void Function()? onTap,
-  }) =>
-      _instance.addMarker(id, options, onTap);
+  Future<void> addMarker(Marker marker) =>
+      _instance.addMarker(marker);
+
+  /// Add several markers to map.
+  Future<void> addMarkers(List<Marker> markers) =>
+      _instance.addMarkers(markers);
 
   /// Remove marker by id.
   Future<void> removeMarker(int id) => _instance.removeMarker(id);
@@ -268,13 +268,21 @@ class DgisMapController {
   /// Remove all markers added with [addMarker].
   Future<void> removeAllMarkers() => _instance.removeAllMarkers();
 
+  /// Remove all markers, polygons, polylines
+  /// that were added with [addMarker], [addPolygons], [addPolyline].
+  Future<void> removeAll() async {
+    await _instance.removeAllMarkers();
+    await _instance.removeAllPolygons();
+    await _instance.removeAllPolylines();
+  }
+
   /// Add polygon to map.
-  Future<void> addPolygon({
-    required int id,
-    required PolygonOptionsMessage options,
-    void Function()? onTap,
-  }) =>
-      _instance.addPolygon(id, options, onTap);
+  Future<void> addPolygon(Polygon polygon) =>
+      _instance.addPolygon(polygon);
+
+  /// Add several polygons to map.
+  Future<void> addPolygons(List<Polygon> polygons) =>
+      _instance.addPolygons(polygons);
 
   /// Remove polygon by id.
   Future<void> removePolygon(int id) => _instance.removePolygon(id);
@@ -283,12 +291,12 @@ class DgisMapController {
   Future<void> removeAllPolygons() => _instance.removeAllPolygons();
 
   /// Add polyline to map.
-  Future<void> addPolyline({
-    required int id,
-    required PolylineOptionsMessage options,
-    void Function()? onTap,
-  }) =>
-      _instance.addPolyline(id, options, onTap);
+  Future<void> addPolyline(Polyline polyline) =>
+      _instance.addPolyline(polyline);
+
+  /// Add several polylines to map.
+  Future<void> addPolylines(List<Polyline> polyline) =>
+      _instance.addPolylines(polyline);
 
   /// Remove polyline by id.
   Future<void> removePolyline(int id) => _instance.removePolyline(id);

@@ -40,6 +40,9 @@ export 'src/events/public_transport_events.dart';
 
 export 'src/events/parking_state_event.dart' show ParkingStateEvent;
 
-export 'src/events/traffic_state_event.dart' show TrafficStateEvent, TrafficControlStatus;
+export 'src/events/traffic_state_event.dart'
+    show TrafficStateEvent, TrafficControlStatus;
 
 export 'src/events/navi_message_events.dart';
+
+export 'src/models.dart';

@@ -558,6 +558,9 @@ abstract class MapApi {
   void addMarker(MarkerMessage marker);
 
   @async
+  void addMarkers(List<MarkerMessage> markers);
+
+  @async
   void removeMarker(int id);
 
   @async
@@ -567,6 +570,9 @@ abstract class MapApi {
   void addPolygon(PolygonMessage polygon);
 
   @async
+  void addPolygons(List<PolygonMessage> polygons);
+
+  @async
   void removePolygon(int id);
 
   @async
@@ -574,6 +580,9 @@ abstract class MapApi {
 
   @async
   void addPolyline(PolylineMessage polyline);
+
+  @async
+  void addPolylines(List<PolylineMessage> polylines);
 
   @async
   void removePolyline(int id);
