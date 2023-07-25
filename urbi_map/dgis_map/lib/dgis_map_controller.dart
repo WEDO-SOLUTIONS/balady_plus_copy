@@ -6,51 +6,6 @@ import 'package:flutter/services.dart';
 
 import 'states.dart';
 
-/// Model corresponds render object on map
-class Marker {
-  /// Base class constructor
-  const Marker({required this.id, required this.options, required this.onTap});
-
-  /// Map render object's id
-  final int id;
-
-  /// Map render object's options (such as position, color, anchor and etc)
-  final MarkerOptionsMessage options;
-
-  /// Map render object's onTap handler
-  final Function()? onTap;
-}
-
-/// Model corresponds render object on map
-class Polygon {
-  /// Base class constructor
-  const Polygon({required this.id, required this.options, required this.onTap});
-
-  /// Map render object's id
-  final int id;
-
-  /// Map render object's options (such as position, color, anchor and etc)
-  final PolygonOptionsMessage options;
-
-  /// Map render object's onTap handler
-  final Function()? onTap;
-}
-
-/// Model corresponds render object on map
-class Polyline {
-  /// Base class constructor
-  const Polyline({required this.id, required this.options, required this.onTap});
-
-  /// Map render object's id
-  final int id;
-
-  /// Map render object's options (such as position, color, anchor and etc)
-  final PolylineOptionsMessage options;
-
-  /// Map render object's onTap handler
-  final Function()? onTap;
-}
-
 final _instance = DgisMapPlugin.instance;
 
 /// Class to comunicate with plugin. Every method can throw [PlatformException] whenever something
@@ -77,7 +32,8 @@ class DgisMapController {
       _instance.zoomControlEnabledEvents;
 
   /// Location control availability
-  Stream<LocationEnabledEvent> get locationEnabledEvents => _instance.locationEnabledEvents;
+  Stream<LocationEnabledEvent> get locationEnabledEvents =>
+      _instance.locationEnabledEvents;
 
   /// Location follow state
   Stream<LocationFollowType> get locationFollowEvents =>
@@ -87,14 +43,16 @@ class DgisMapController {
   Stream<IndoorLevelsEvent> get indoorLevelNames => _instance.indoorLevelNames;
 
   /// Selected indoor level index in [IndoorLevelsEvent::levelNames] list
-  Stream<IndoorActiveLevelEvent> get indoorActiveIndex => _instance.indoorActiveIndex;
+  Stream<IndoorActiveLevelEvent> get indoorActiveIndex =>
+      _instance.indoorActiveIndex;
 
   /// Map tap events for all types of objects, that do not have specific stream
   /// (e.g. [markerWithPhotoTapEvents])
   Stream<TapEvent> get objectTapEvents => _instance.objectTapEvents;
 
   /// User taps route when there are several of them available.
-  Stream<RouteChangedEvent> get routeChangedEvents => _instance.routeChangedEvents;
+  Stream<RouteChangedEvent> get routeChangedEvents =>
+      _instance.routeChangedEvents;
 
   /// Events during navigation.
   Stream<NavigationEvent> get navigationEvents => _instance.navigationEvents;
@@ -106,11 +64,13 @@ class DgisMapController {
   Stream<MarkerWithPhotoTapEvent> get markerWithPhotoTapEvents =>
       _instance.markerWithPhotoTapEvents;
 
-  Stream<PublicTransportRoutesChangedEvent> get publicTransportRoutesChangedEvents =>
-      _instance.publicTransportRoutesChangedEvents;
+  Stream<PublicTransportRoutesChangedEvent>
+      get publicTransportRoutesChangedEvents =>
+          _instance.publicTransportRoutesChangedEvents;
 
-  Stream<PublicTransportActiveRouteChanged> get publicTransportActiveRouteChangedEvents =>
-      _instance.publicTransportActiveRouteChangedEvents;
+  Stream<PublicTransportActiveRouteChanged>
+      get publicTransportActiveRouteChangedEvents =>
+          _instance.publicTransportActiveRouteChangedEvents;
 
   late NaviSpeedController naviSpeedController = NaviSpeedController(
     _instance.naviSpeedEvents.asBroadcastStream(),
@@ -134,7 +94,8 @@ class DgisMapController {
     _instance.onZoomAction,
   )..init();
 
-  late NaviTrafficParkingController naviTrafficParkingController = NaviTrafficParkingController(
+  late NaviTrafficParkingController naviTrafficParkingController =
+      NaviTrafficParkingController(
     parkingStateEvents: _instance.parkingStateEvents.asBroadcastStream(),
     trafficStateEvents: _instance.trafficStateEvents.asBroadcastStream(),
     onAttached: _instance.onTrafficAndParkingAttached,
@@ -149,13 +110,16 @@ class DgisMapController {
     stop: _instance.stopFreeRoam,
   );
 
-  late NaviPedestrianController naviPedestrianController = NaviPedestrianController(
+  late NaviPedestrianController naviPedestrianController =
+      NaviPedestrianController(
     routeChangedEvents,
   )..init();
 
-  Stream<NaviDashboardEvent> get naviDashboardEvents => _instance.naviDashboardEvents;
+  Stream<NaviDashboardEvent> get naviDashboardEvents =>
+      _instance.naviDashboardEvents;
 
-  Stream<RouteOptionsEvent> get routeOptionEvents => _instance.routeOptionsEvent;
+  Stream<RouteOptionsEvent> get routeOptionEvents =>
+      _instance.routeOptionsEvent;
 
   /// Must be called **once** when controller becomes avalilable to initialize plugin.
   Future<InitializeMessage> initialize() async => _instance.initialize(_viewId);
@@ -171,7 +135,8 @@ class DgisMapController {
   Future<void> loadStyles(String asset) async => _instance.loadStyles(asset);
 
   /// Override locale for map. Uses string format "en-US", "ar-SA".
-  Future<void> overrideLocales(List<String> locales) => _instance.overrideLocales(locales);
+  Future<void> overrideLocales(List<String> locales) =>
+      _instance.overrideLocales(locales);
 
   /// Changes state of location follow. Observe state listening to [locationFollowEvents].
   Future<void> changeFollowState() => _instance.changeFollowState();
@@ -200,7 +165,8 @@ class DgisMapController {
       );
 
   /// Center camera on selected panorama marker.
-  Future<void> moveCameraToSelectedPanorama() => _instance.moveCameraToSelectedPanorama();
+  Future<void> moveCameraToSelectedPanorama() =>
+      _instance.moveCameraToSelectedPanorama();
 
   /// Resets selected panorama.
   Future<void> unselectPanorama() => _instance.unselectPanorama();
@@ -249,7 +215,8 @@ class DgisMapController {
   /// Works offline. Doesn't require network access.
   ///
   /// Returns null when last location is unavailable, e.g. location is disabled on device.
-  Future<List<DistanceResponseMessage>?> getDistanceTo(List<DistanceRequestMessage> points) async {
+  Future<List<DistanceResponseMessage>?> getDistanceTo(
+      List<DistanceRequestMessage> points) async {
     try {
       final response = await _instance.getDistanceTo(points);
 
@@ -289,14 +256,11 @@ class DgisMapController {
 
   /// Add marker to map.
   Future<void> addMarker(Marker marker) =>
-      _instance.addMarker(marker.id, marker.options, marker.onTap);
+      _instance.addMarker(marker);
 
   /// Add several markers to map.
-  Future<void> addMarkers(List<Marker> markers) async {
-    await Future.forEach(markers, (marker) async {
-      await addMarker(marker);
-    });
-  }
+  Future<void> addMarkers(List<Marker> markers) =>
+      _instance.addMarkers(markers);
 
   /// Remove marker by id.
   Future<void> removeMarker(int id) => _instance.removeMarker(id);
@@ -314,14 +278,11 @@ class DgisMapController {
 
   /// Add polygon to map.
   Future<void> addPolygon(Polygon polygon) =>
-      _instance.addPolygon(polygon.id, polygon.options, polygon.onTap);
+      _instance.addPolygon(polygon);
 
   /// Add several polygons to map.
-  Future<void> addPolygons(List<Polygon> polygons) async {
-    await Future.forEach(polygons, (polygon) async {
-      await addPolygon(polygon);
-    });
-  }
+  Future<void> addPolygons(List<Polygon> polygons) =>
+      _instance.addPolygons(polygons);
 
   /// Remove polygon by id.
   Future<void> removePolygon(int id) => _instance.removePolygon(id);
@@ -331,14 +292,11 @@ class DgisMapController {
 
   /// Add polyline to map.
   Future<void> addPolyline(Polyline polyline) =>
-      _instance.addPolyline(polyline.id, polyline.options, polyline.onTap);
+      _instance.addPolyline(polyline);
 
   /// Add several polylines to map.
-  Future<void> addPolylines(List<Polyline> polyline) async {
-    await Future.forEach(polyline, (polyline) async {
-      await addPolyline(polyline);
-    });
-  }
+  Future<void> addPolylines(List<Polyline> polyline) =>
+      _instance.addPolylines(polyline);
 
   /// Remove polyline by id.
   Future<void> removePolyline(int id) => _instance.removePolyline(id);
@@ -431,7 +389,8 @@ class DgisMapController {
     await _instance.removePanoramasMarkers();
   }
 
-  Future<int> overlappedBy(VisibleRectMessage outer, VisibleRectMessage inner) async {
+  Future<int> overlappedBy(
+      VisibleRectMessage outer, VisibleRectMessage inner) async {
     return _instance.overlappedBy(outer, inner);
   }
 
@@ -446,7 +405,8 @@ class DgisMapController {
   Future<void> startNavigation() => _instance.startNavigation();
 
   /// Starts navigation sinulation.
-  Future<void> startNavigationSimulation() => _instance.startNavigationSimulation();
+  Future<void> startNavigationSimulation() =>
+      _instance.startNavigationSimulation();
 
   /// Stops navigation. To hide navigation overlay call [hideNativeNavigationOverlay].
   Future<void> stopNavigation() => _instance.stopNavigation();
@@ -484,11 +444,13 @@ class DgisMapController {
 
   /// Add panorama markers to map.
   Future<void> addPanoramasMarkers(List<MarkerWithPhotoMessage> markers) {
-    return _instance.addPanoramasMarkers(AddMarkersWithPhotoMessage(markers: markers));
+    return _instance
+        .addPanoramasMarkers(AddMarkersWithPhotoMessage(markers: markers));
   }
 
   Future<void> addIOLayerObjects(List<LayerPointObjectMessage> objects) {
-    return _instance.showEsriIOLayer(AddLayerPointObjectsMessage(objects: objects));
+    return _instance
+        .showEsriIOLayer(AddLayerPointObjectsMessage(objects: objects));
   }
 
   Future<void> removeEsriIOLayer() {
@@ -632,7 +594,8 @@ class _LayerState {
 }
 
 extension WeekTimeFactory on WeekTimeSearchMessage {
-  static WeekTimeSearchMessage openNow() => WeekTimeSearchMessage(isOpenNow: true);
+  static WeekTimeSearchMessage openNow() =>
+      WeekTimeSearchMessage(isOpenNow: true);
 }
 
 enum WorkingHoursFilter {

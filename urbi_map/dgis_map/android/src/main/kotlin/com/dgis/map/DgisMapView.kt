@@ -256,6 +256,10 @@ class DgisMapView(
         objectTapHandler?.addMarker(marker, result)
     }
 
+    override fun addMarkers(markers: List<MarkerMessage>, result: Messages.Result<Void>?) {
+        objectTapHandler?.addMarkers(markers, result)
+    }
+
     override fun removeMarker(id: Long, result: Messages.Result<Void>?) {
         objectTapHandler?.removeMarker(id, result)
     }
@@ -269,6 +273,10 @@ class DgisMapView(
         objectTapHandler?.addPolygon(polygon, result)
     }
 
+    override fun addPolygons(polygons: List<PolygonMessage>, result: Messages.Result<Void>?) {
+        objectTapHandler?.addPolygons(polygons, result)
+    }
+
     override fun removePolygon(id: Long, result: Messages.Result<Void>?) {
         objectTapHandler?.removePolygon(id, result)
     }
@@ -280,6 +288,10 @@ class DgisMapView(
 
     override fun addPolyline(polyline: PolylineMessage, result: Messages.Result<Void>?) {
         objectTapHandler?.addPolyline(polyline, result)
+    }
+
+    override fun addPolylines(polylines: List<PolylineMessage>, result: Messages.Result<Void>?) {
+        objectTapHandler?.addPolylines(polylines, result)
     }
 
     override fun removePolyline(id: Long, result: Messages.Result<Void>?) {

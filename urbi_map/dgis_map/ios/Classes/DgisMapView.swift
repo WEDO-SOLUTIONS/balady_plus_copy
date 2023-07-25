@@ -326,6 +326,10 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
          self.objectTapHandler?.addMarker(marker, completion: completion)
     }
     
+    func addMarkersMarkers(_ markers: [MarkerMessage], completion: @escaping (FlutterError?) -> Void) {
+         self.objectTapHandler?.addMarkers(markers, completion: completion)
+    }
+    
     func removeMarkerId(_ id: NSNumber, completion: @escaping (FlutterError?) -> Void) {
         self.objectTapHandler?.removeMarker(id, completion: completion)
     }
@@ -334,12 +338,20 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         self.objectTapHandler?.addPolygon(polygon, completion: completion)
     }
     
+    func addPolygonsPolygons(_ polygons: [PolygonMessage], completion: @escaping (FlutterError?) -> Void) {
+        self.objectTapHandler?.addPolygons(polygons, completion: completion)
+    }
+    
     func removePolygonId(_ id: NSNumber, completion: @escaping (FlutterError?) -> Void) {
         self.objectTapHandler?.removePolygon(id, completion: completion)
     }
     
     func addPolylinePolyline(_ polyline: PolylineMessage, completion: @escaping (FlutterError?) -> Void) {
         self.objectTapHandler?.addPolyline(polyline, completion: completion)
+    }
+    
+    func addPolylinesPolylines(_ polylines: [PolylineMessage], completion: @escaping (FlutterError?) -> Void) {
+        self.objectTapHandler?.addPolylines(polylines, completion: completion)
     }
     
     func removePolylineId(_ id: NSNumber, completion: @escaping (FlutterError?) -> Void) {

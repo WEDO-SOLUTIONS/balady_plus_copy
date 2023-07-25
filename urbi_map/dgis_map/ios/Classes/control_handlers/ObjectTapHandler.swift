@@ -239,7 +239,7 @@ class ObjectTapHandler {
         )
     }
     
-    func addMarker(_ marker: MarkerMessage, completion: @escaping (FlutterError?) -> Void) {
+    func mapMarker(_ marker: MarkerMessage, completion: @escaping (FlutterError?) -> Void) -> Marker? {
         var markerImage: Image? = nil
         if let icon = marker.options.icon?.path {
             let assetKey = registrar.lookupKey(forAsset: icon)
@@ -253,7 +253,7 @@ class ObjectTapHandler {
                         message: nil,
                         details: nil
                     ))
-                return
+                return nil
             }
             
             markerImage = imageFactory.make(svgData: data, size: .zero)
@@ -279,11 +279,35 @@ class ObjectTapHandler {
             userData: MarkerId(marker.id.intValue)
         )
         
-        let markerObject = Marker(options: options)
+        return Marker(options: options)
+    }
+    
+    func addMarker(_ marker: MarkerMessage, completion: @escaping (FlutterError?) -> Void) {
+        guard let markerObject = mapMarker(marker, completion: completion) else {
+            return
+        }
         
         self.objectsQueue.sync {
             self.markers[marker.id.intValue] = markerObject
             self.mapObjectManager.addObject(item: markerObject)
+            completion(nil)
+        }
+    }
+    
+    func addMarkers(_ markers: [MarkerMessage], completion: @escaping (FlutterError?) -> Void) {
+        var markerObjects = [Int:Marker]()
+        for marker in markers {
+            guard let markerObject = mapMarker(marker, completion: completion) else {
+                return
+            }
+            markerObjects[marker.id.intValue] = markerObject
+        }
+        
+        self.objectsQueue.sync {
+            markerObjects.forEach { id, object in
+                self.markers[id] = object
+            }
+            self.mapObjectManager.addObjects(objects: Array(markerObjects.values))
             completion(nil)
         }
     }
@@ -297,7 +321,7 @@ class ObjectTapHandler {
         }
     }
     
-    func addPolygon(_ polygon: PolygonMessage, completion: @escaping (FlutterError?) -> Void) {
+    private func mapPolygon(_ polygon: PolygonMessage) -> Polygon {
         let options = PolygonOptions(
             contours: polygon.options.contours.map { contour in
                 contour.map {
@@ -319,11 +343,31 @@ class ObjectTapHandler {
             userData: PolygonId(polygon.id.intValue)
         )
         
-        let polygonObject = Polygon(options: options)
+        return Polygon(options: options)
+    }
+    
+    func addPolygon(_ polygon: PolygonMessage, completion: @escaping (FlutterError?) -> Void) {
+        let polygonObject = mapPolygon(polygon)
         
         self.objectsQueue.sync {
             self.polygons[polygon.id.intValue] = polygonObject
             self.mapObjectManager.addObject(item: polygonObject)
+            completion(nil)
+        }
+    }
+    
+    func addPolygons(_ polygons: [PolygonMessage], completion: @escaping (FlutterError?) -> Void) {
+        let polygonObjects = polygons.map {
+            ($0.id.intValue, mapPolygon($0))
+        }.reduce(into: [:]) { dict, pair in
+            dict[pair.0] = pair.1
+        }
+        
+        self.objectsQueue.sync {
+            polygonObjects.forEach { id, object in
+                self.polygons[id] = object
+            }
+            self.mapObjectManager.addObjects(objects: Array(polygonObjects.values))
             completion(nil)
         }
     }
@@ -337,7 +381,7 @@ class ObjectTapHandler {
         }
     }
     
-    func addPolyline(_ polyline: PolylineMessage, completion: @escaping (FlutterError?) -> Void) {
+    private func mapPolyline(_ polyline: PolylineMessage) -> Polyline {
         let options = PolylineOptions(
             points: polyline.options.points.map {
                 GeoPoint(
@@ -354,11 +398,31 @@ class ObjectTapHandler {
             userData: PolylineId(polyline.id.intValue)
         )
         
-        let polylineObject = Polyline(options: options)
+        return Polyline(options: options)
+    }
+    
+    func addPolyline(_ polyline: PolylineMessage, completion: @escaping (FlutterError?) -> Void) {
+        let polylineObject = mapPolyline(polyline)
         
         self.objectsQueue.sync {
             self.polylines[polyline.id.intValue] = polylineObject
             self.mapObjectManager.addObject(item: polylineObject)
+            completion(nil)
+        }
+    }
+    
+    func addPolylines(_ polylines: [PolylineMessage], completion: @escaping (FlutterError?) -> Void) {
+        let polylineObjects = polylines.map {
+            ($0.id.intValue, mapPolyline($0))
+        }.reduce(into: [:]) { dict, pair in
+            dict[pair.0] = pair.1
+        }
+        
+        self.objectsQueue.sync {
+            polylineObjects.forEach { id, object in
+                self.polylines[id] = object
+            }
+            self.mapObjectManager.addObjects(objects: Array(polylineObjects.values))
             completion(nil)
         }
     }
