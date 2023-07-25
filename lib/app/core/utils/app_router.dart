@@ -1,5 +1,6 @@
 import 'package:balady_plus/app/features/objectable_transactions/domain/entities/create_objection_page_params.dart';
 import 'package:balady_plus/app/features/objections/domain/entities/objection_details.dart';
+import 'package:balady_plus/app/features/weather/presentation/pages/weather_main_page.dart';
 import 'package:flutter/material.dart'
     show AppBar, Center, MaterialPageRoute, Route, RouteSettings, Scaffold;
 import 'package:flutter/widgets.dart' show SizedBox;
@@ -134,7 +135,7 @@ class AppRouter {
       case RouteName.vdCreateVDDetailsPage:
         // CreateVDParamsPage params = settings.arguments as CreateVDParamsPage;
         return MaterialPageRoute(
-          builder: (_) => CreateVDDetailsPage(),
+          builder: (_) => const CreateVDDetailsPage(),
         );
 
       case RouteName.vdMapRoute:
@@ -206,7 +207,7 @@ class AppRouter {
       case RouteName.createDCDetailsPage:
         // CreateVDParamsPage params = settings.arguments as CreateVDParamsPage;
         return MaterialPageRoute(
-          builder: (_) => CreateDCDetailsPage(),
+          builder: (_) => const CreateDCDetailsPage(),
         );
 
       case RouteName.dcMapRoute:
@@ -241,14 +242,17 @@ class AppRouter {
 
       case RouteName.DCVeichlePage:
         return MaterialPageRoute(
-          builder: (_) => DCVehiclesPage(),
+          builder: (_) => const DCVehiclesPage(),
         );
 
       case RouteName.DCSelectRetreiveTypePage:
         return MaterialPageRoute(
-          builder: (_) => DCSelectRetreiveTypePage(),
+          builder: (_) => const DCSelectRetrieveTypePage(),
         );
-
+      case RouteName.weatherMainPage:
+        return MaterialPageRoute(
+          builder: (_) => const WeatherMainPage(),
+        );
       // error page
       default:
         return MaterialPageRoute(

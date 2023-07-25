@@ -12,4 +12,5 @@ class ImagePath {
   static const appBarBackground = '${_imagePath}app_bar_background$_png';
   static const successPageBackground = '${_imagePath}success_background$_png';
   static const successPageIcon = '${_imagePath}success_image$_png';
+  static const weatherBackground3x = '${_imagePath}weather_background3x$_png';
 }

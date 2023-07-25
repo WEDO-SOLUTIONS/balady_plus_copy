@@ -53,4 +53,7 @@ class RouteName {
   static const CreateRetriveDetailsPage = '/CreateRetriveDetailsPage';
   static const DCVeichlePage = '/DCVeichlePage';
   static const DCSelectRetreiveTypePage = '/DCSelectRetreiveTypePage';
+
+  // -------  Weather ---------
+  static const weatherMainPage = '/weather_main_page';
 }

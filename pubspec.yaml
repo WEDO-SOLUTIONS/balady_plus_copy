@@ -145,9 +145,11 @@ dependencies:
  #   path: packages/test_package
 
 dev_dependencies:
+
   flutter_lints: ^2.0.1
   flutter_test:
     sdk: flutter
+  json_serializable: ^6.7.1
   
 
 # For information on the generic Dart part of this file, see the
@@ -177,7 +179,7 @@ flutter:
     - assets/icons/png/qr/
     - assets/images/
     - assets/langs/
-    - assets/services/
+    # - assets/services/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

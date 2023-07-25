@@ -81,6 +81,15 @@ class IconPath {
   // Weather
   static const partlyClouded = '${_svgWeatherIconPath}partly_clouded$_svg';
 
+  static const sunset = '${_svgWeatherIconPath}sunset$_svg';
+  static const sunrise = '${_svgWeatherIconPath}sunrise$_svg';
+  static const sun = '${_svgWeatherIconPath}sun$_svg';
+
+  static const rainy = '${_svgWeatherIconPath}rainyWeather$_svg';
+  static const wind_speed = '${_svgWeatherIconPath}wind_speed$_svg';
+  static const eye = '${_svgWeatherIconPath}eye$_svg';
+  static const danger = '${_svgWeatherIconPath}danger$_svg';
+
   // Map
   static const layers = '${_svgMapIconPath}layers$_svg';
   static const currentLocation = '${_svgMapIconPath}current_location$_svg';

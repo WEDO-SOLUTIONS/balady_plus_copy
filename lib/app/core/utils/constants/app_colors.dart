@@ -138,4 +138,5 @@ class AppColor {
   static const Color warmGreyText = Color(0xff808080);
 
   static const Color green60 = Color(0x99E6EFEF);
+  static const Color divider = Color(0x0FE6EFEF);
 }

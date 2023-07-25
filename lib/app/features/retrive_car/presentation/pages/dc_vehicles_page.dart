@@ -33,7 +33,7 @@ class DCVehiclesPage extends StatelessWidget {
                   BottomSheetDialog.showDraggableSheet(context,
                       isFullHeight: false,
                       height: 550,
-                      child: DCSelectRetreiveTypePage());
+                      child: DCSelectRetrieveTypePage());
                 },
               ),
               body: Column(
