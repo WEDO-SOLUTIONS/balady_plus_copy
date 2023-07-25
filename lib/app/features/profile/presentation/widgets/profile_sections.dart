@@ -55,9 +55,9 @@ class ProfileSections {
             route: RouteName.objections,
           ),
           ProfileItem(
-            title: "appointments".tr(),
-            icon: IconPath.appiontments,
-            route: RouteName.AppointmentsListScreen,
+            title: "wallet".tr(),
+            icon: IconPath.wallet,
+            route: RouteName.walletPage,
           ),
         ],
       );

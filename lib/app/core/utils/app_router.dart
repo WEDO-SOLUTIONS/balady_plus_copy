@@ -4,6 +4,7 @@ import 'package:balady_plus/app/features/objectable_transactions/domain/entities
 import 'package:balady_plus/app/features/objections/domain/entities/objection_details.dart';
 import 'package:balady_plus/app/features/quran/presentation/pages/quran_bookmarks.dart';
 import 'package:balady_plus/app/features/quran/quran_exports.dart';
+import 'package:balady_plus/app/features/wallet/core/models/wallet_item.dart';
 import 'package:flutter/material.dart'
     show AppBar, Center, MaterialPageRoute, Route, RouteSettings, Scaffold;
 import 'package:flutter/widgets.dart' show SizedBox;
@@ -229,8 +230,11 @@ class AppRouter {
           builder: (_) => const WalletScreen(),
         );
       case RouteName.businessLicensePage:
+        final WalletItem? item = settings.arguments as WalletItem?;
         return MaterialPageRoute(
-          builder: (_) => const BusinessLicenseScreen(),
+          builder: (_) => BusinessLicenseScreen(
+            item: item,
+          ),
         );
 
 // QR

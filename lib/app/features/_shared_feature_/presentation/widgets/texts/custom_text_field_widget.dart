@@ -82,6 +82,7 @@ class CustomTextFieldWidget extends StatelessWidget {
       this.focusNode,
       this.autocorrect = false,
       this.autofillHints,
+      this.bottomMargin,
       this.autovalidateMode,
       this.cursorColor,
       this.cursorHeight,
@@ -302,6 +303,7 @@ class CustomTextFieldWidget extends StatelessWidget {
           validator: onValidate,
         ),
         if (spacerSize != null) CustomVerticalSpace(height: spacerSize!),
+        SizedBox(height: bottomMargin),
       ],
     );
   }

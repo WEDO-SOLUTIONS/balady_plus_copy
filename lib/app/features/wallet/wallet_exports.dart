@@ -1,5 +1,4 @@
 // blocs
-export 'presentation/blocs/wallet/wallet_cubit.dart';
 
 // Screens
 export 'presentation/screens/wallet_screen.dart';

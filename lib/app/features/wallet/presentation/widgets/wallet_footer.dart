@@ -1,9 +1,9 @@
-import 'package:balady_plus/app/features/wallet/presentation/blocs/wallet/wallet_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import '../../../../core/utils/utils_exports.dart';
 import '../../../_shared_feature_/shared_feature_exports.dart';
+import '../../core/blocs/wallet/wallet_bloc.dart';
 
 class WalletFooter extends StatelessWidget {
   const WalletFooter({
@@ -12,10 +12,10 @@ class WalletFooter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<WalletCubit, WalletState>(
-      buildWhen: (previous, current) => previous.viewAll != current.viewAll,
+    return BlocBuilder<WalletBloc, WalletState>(
+      buildWhen: (previous, current) => previous.showAll != current.showAll,
       builder: (context, state) {
-        return state.viewAll
+        return state.showAll ?? false
             ? const SizedBox()
             : Positioned(
                 bottom: 0,
@@ -29,7 +29,7 @@ class WalletFooter extends StatelessWidget {
                       fit: BoxFit.fill,
                     ),
                   ),
-                  child:  Align(
+                  child: Align(
                     alignment: Alignment.bottomCenter,
                     child: CustomTextWidget(
                       "toViewAllLicense".tr(),

@@ -90,6 +90,7 @@ class IconPath {
   static const arrowDown = '${_svgProfileIconPath}arrow_down$_svg';
   static const contactInfo = '${_svgProfileIconPath}contact_info$_svg';
   static const leftArrow = '${_svgProfileIconPath}left_arrow$_svg';
+  static const wallet = '${_svgProfileIconPath}wallet$_svg';
 
   // Nearby
   static nearbyIcon(String name) => '$_svgNearbyIconPath$name$_svg';

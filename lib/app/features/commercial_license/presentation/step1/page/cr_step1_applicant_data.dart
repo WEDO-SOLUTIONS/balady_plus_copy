@@ -20,9 +20,9 @@ class CRStep1ApplicantData extends StatelessWidget {
                   CRHeaderDesc(header: "بيانات مقدم الطلب"),
                   SizedBox(height: 12),
                   ReadOnlyField(
-                    label: "رقم الجوال",
-                    value: '05049389393',
-                    withBottomMargin: false,
+                    title: "رقم الجوال",
+                    subTitle: '05049389393',
+                    showSpace: false,
                   ),
                   SizedBox(height: 8),
                   NotesWidget(
@@ -31,24 +31,24 @@ class CRStep1ApplicantData extends StatelessWidget {
                     ],
                   ),
                   ReadOnlyField(
-                    label: "صفه مقدم الطلب",
-                    value: 'مالك المنشاه',
+                    title: "صفه مقدم الطلب",
+                    subTitle: 'مالك المنشاه',
                   ),
                   ReadOnlyField(
-                    label: "السجل التجاري",
-                    value: '89107831',
+                    title: "السجل التجاري",
+                    subTitle: '89107831',
                   ),
                   ReadOnlyField(
-                    label: "اسم المنشاه",
-                    value: 'الخزائن المبتكره',
+                    title: "اسم المنشاه",
+                    subTitle: 'الخزائن المبتكره',
                   ),
                   ReadOnlyField(
-                    label: "رقم المنشآه",
-                    value: '8098787',
+                    title: "رقم المنشآه",
+                    subTitle: '8098787',
                   ),
                   ReadOnlyField(
-                    label: "مصدر السجل التجاري",
-                    value: 'الدمام',
+                    title: "مصدر السجل التجاري",
+                    subTitle: 'الدمام',
                   ),
                 ],
               ),
