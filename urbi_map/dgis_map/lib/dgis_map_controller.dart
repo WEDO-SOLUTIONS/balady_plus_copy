@@ -334,7 +334,7 @@ class DgisMapController {
       _instance.addPolyline(polyline.id, polyline.options, polyline.onTap);
 
   /// Add several polylines to map.
-  Future<void> addPolyline(List<Polyline> polyline) async {
+  Future<void> addPolylines(List<Polyline> polyline) async {
     await Future.forEach(polyline, (polyline) async {
       await addPolyline(polyline);
     });
