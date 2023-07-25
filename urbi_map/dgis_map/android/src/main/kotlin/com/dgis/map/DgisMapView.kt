@@ -265,6 +265,32 @@ class DgisMapView(
         result?.success(null)
     }
 
+    override fun addPolygon(polygon: PolygonMessage, result: Messages.Result<Void>?) {
+        objectTapHandler?.addPolygon(polygon, result)
+    }
+
+    override fun removePolygon(id: Long, result: Messages.Result<Void>?) {
+        objectTapHandler?.removePolygon(id, result)
+    }
+
+    override fun removeAllPolygons(result: Messages.Result<Void>?) {
+        objectTapHandler?.removeAllPolygons()
+        result?.success(null)
+    }
+
+    override fun addPolyline(polyline: PolylineMessage, result: Messages.Result<Void>?) {
+        objectTapHandler?.addPolyline(polyline, result)
+    }
+
+    override fun removePolyline(id: Long, result: Messages.Result<Void>?) {
+        objectTapHandler?.removePolyline(id, result)
+    }
+
+    override fun removeAllPolylines(result: Messages.Result<Void>?) {
+        objectTapHandler?.removeAllPolylines()
+        result?.success(null)
+    }
+
     override fun setRouteParams(
         params: RouteEditorRouteParamsMessage,
         result: Messages.Result<Void>?
