@@ -166,7 +166,7 @@ class QiblahCompassPageWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return StreamBuilder(
       stream: FlutterQiblah.qiblahStream,
-      builder: (_, AsyncSnapshot<QiblahDirection> snapshot) {
+      builder: (_, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(
             child: CircularProgressIndicator(
@@ -182,15 +182,25 @@ class QiblahCompassPageWidget extends StatelessWidget {
             Expanded(
               child: Stack(
                 alignment: Alignment.center,
-                children: <Widget>[
-                  Transform.rotate(
-                    angle: (qiblahDirection.direction * (pi / 180) * -1),
+                children: [
+                  AnimatedRotation(
+                    turns: (qiblahDirection.direction * (pi / 180) * -1),
+                    duration: const Duration(seconds: 1),
                     child: _compassSvg,
                   ),
-                  Transform.rotate(
-                    angle: (qiblahDirection.qiblah * (pi / 180) * -1),
+                  AnimatedRotation(
+                    turns: (qiblahDirection.qiblah * (pi / 180) * -1),
+                    duration: const Duration(seconds: 1),
                     child: _needleSvg,
                   ),
+                  // Transform.rotate(
+                  //   angle: (qiblahDirection.direction * (pi / 180) * -1),
+                  //   child: _compassSvg,
+                  // ),
+                  // Transform.rotate(
+                  //   angle: (qiblahDirection.qiblah * (pi / 180) * -1),
+                  //   child: _needleSvg,
+                  // ),
                 ],
               ),
             ),
