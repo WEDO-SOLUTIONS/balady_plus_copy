@@ -127,11 +127,12 @@ class _PrayerTimesPageState extends State<PrayerTimesPage> {
                               onTap: () => widget.cubit.getPrayerTime(),
                             );
                           }
-
-                          return NextPrayer(
-                            prayer: state.nextPrayer!.prayer,
-                            time: state.nextPrayer!.dateTime,
-                          );
+                          if (state.nextPrayer != null)
+                            return NextPrayer(
+                              prayer: state.nextPrayer!.prayer,
+                              time: state.nextPrayer!.dateTime,
+                            );
+                          return Container();
                         },
                       ),
                       const SizedBox(height: 8),

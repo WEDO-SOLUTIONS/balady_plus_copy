@@ -25,7 +25,7 @@ class UnKownPrayerLocation extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            height: 36,
+            height: 37,
             child: Row(
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.end,
@@ -45,6 +45,8 @@ class UnKownPrayerLocation extends StatelessWidget {
                           fontColor: Color(0xFFE6EFEF),
                           fontWeight: AppFontWeight.semiBold,
                           fontSize: 14,
+                          height: 1.3,
+                          maxLines: 10,
                         ),
                       ),
                     ],
