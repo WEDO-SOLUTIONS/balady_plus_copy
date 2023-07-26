@@ -114,6 +114,20 @@ class ClearRequestsFiltersEvent extends RequestsEvent {}
 
 class ApplyRequestsFiltersEvent extends RequestsEvent {}
 
+class GetCRMRequestEvent extends RequestsEvent {
+  final RequestsType crmRequestType;
+  const GetCRMRequestEvent({required this.crmRequestType});
+}
+
+class SearchCRMRequestsEvent extends RequestsEvent {
+  final String query;
+
+  const SearchCRMRequestsEvent({required this.query});
+
+  @override
+  List<Object> get props => [query];
+}
+
 class ResetRequestsFiltersEvent extends RequestsEvent {
   final SortType selectedSortType;
   final RequestStatusEntity? selectedRequestStatus;

@@ -10,6 +10,7 @@ class RequestsListShimmer extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListView.builder(
       itemCount: 5,
+      shrinkWrap: true,
       itemBuilder: (context, index) {
         return Container(
           height: 200,
