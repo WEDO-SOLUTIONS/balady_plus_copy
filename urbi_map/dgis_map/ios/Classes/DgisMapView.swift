@@ -121,7 +121,8 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
             searchManager: SearchManager.createOnlineManager(context: sdk.context),
             map: map,
             sdkContext: self.sdk,
-            imageFactory: self.sdk.imageFactory
+            imageFactory: self.sdk.imageFactory,
+            registrar: self.registrar
         )
         
         self.compassControlHandler = CompassControlHandler(
@@ -266,12 +267,14 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
     
     func searchQueryText(
         _ queryText: String,
+        searchMarker: MarkerIconMessage,
         weekTime: WeekTimeSearchMessage?,
+        searchRect: GeoRectMessage?,
         sortingType: SortingTypeMessage,
         pageSize: NSNumber,
         completion: @escaping ([ObjectInfoMessage]?, FlutterError?) -> Void
     ) {
-        guard let map = self.map, let searchHandler = self.searchHandler else {
+        guard let searchHandler = self.searchHandler else {
             completion(
                 nil,
                 FlutterError(
@@ -284,7 +287,8 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         
         searchHandler.search(
             queryText,
-            searchGeoRect: map.camera.visibleRect,
+            searchMarker: searchMarker,
+            searchGeoRect: searchRect?.geoRect,
             weekTimeMessage: weekTime,
             sortingType: sortingType,
             pageSize: pageSize.int32Value,
@@ -414,9 +418,10 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
     
     func fetchSuggestsQueryText(
         _ queryText: String,
+        searchRect: GeoRectMessage?,
         completion: @escaping ([SuggestMessage]?, FlutterError?) -> Void
     ) {
-        guard let map = self.map, let searchHandler = self.searchHandler else {
+        guard let searchHandler = self.searchHandler else {
             completion(
                 nil,
                 FlutterError(
@@ -429,7 +434,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         
         searchHandler.fetchSuggests(
             queryText: queryText,
-            searchGeoRect: map.camera.visibleRect,
+            searchGeoRect: searchRect?.geoRect,
             completion: completion
         )
     }
@@ -486,26 +491,10 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         completion(nil)
     }
     
-    func overlapped(byOuterRect outerRect: VisibleRectMessage, innerRect: VisibleRectMessage, completion: @escaping (NSNumber?, FlutterError?) -> Void) {
-        let outer = GeoRect(
-            southWestPoint:
-                GeoPoint(
-                    latitude: Latitude(value: outerRect.southWest.latitude.doubleValue),
-                    longitude: Longitude(value: outerRect.southWest.longitude.doubleValue)),
-            northEastPoint:
-                GeoPoint(
-                    latitude: Latitude(value: outerRect.northEast.latitude.doubleValue),
-                    longitude: Longitude(value: outerRect.northEast.longitude.doubleValue)))
+    func overlapped(byOuterRect outerRect: GeoRectMessage, innerRect: GeoRectMessage, completion: @escaping (NSNumber?, FlutterError?) -> Void) {
+        let outer = outerRect.geoRect
         
-        let inner = GeoRect(
-            southWestPoint:
-                GeoPoint(
-                    latitude: Latitude(value: innerRect.southWest.latitude.doubleValue),
-                    longitude: Longitude(value: innerRect.southWest.longitude.doubleValue)),
-            northEastPoint:
-                GeoPoint(
-                    latitude: Latitude(value: innerRect.northEast.latitude.doubleValue),
-                    longitude: Longitude(value: innerRect.northEast.longitude.doubleValue)))
+        let inner = innerRect.geoRect
         
         completion(outer.contains(rect2: inner) ? 1 : 0, nil)
     }
@@ -527,12 +516,14 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
     
     func search(
         bySuggestIndex index: NSNumber,
+        searchMarker: MarkerIconMessage,
         weekTime: WeekTimeSearchMessage?,
+        searchRect: GeoRectMessage?,
         sortingType: SortingTypeMessage,
         pageSize: NSNumber,
         completion: @escaping ([ObjectInfoMessage]?, FlutterError?) -> Void
     ) {
-        guard let map = self.map, let searchHandler = self.searchHandler else {
+        guard let searchHandler = self.searchHandler else {
             completion(
                 nil,
                 FlutterError(
@@ -545,10 +536,11 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         
         searchHandler.search(
             bySuggestIndex: index.intValue,
+            searchMarker: searchMarker,
             weekTime: weekTime,
             sortingType: sortingType,
             pageSize: pageSize.int32Value,
-            searchGeoRect: map.camera.visibleRect,
+            searchGeoRect: searchRect?.geoRect,
             completion: completion
         )
     }

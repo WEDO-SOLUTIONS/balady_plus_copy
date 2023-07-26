@@ -20,12 +20,15 @@ class VisibleRectEventHandler {
 
     final double zoom = map['zoom'];
 
-    final event = VisibleRectEvent(VisibleRect(
+    final event = VisibleRectEvent(
+      VisibleRect(
         northEastLat: northEastLat,
         northEastLon: northEastLon,
         southWestLat: southWestLat,
         southWestLon: southWestLon,
-        zoom: zoom));
+        zoom: zoom,
+      ),
+    );
 
     _visibleRectController.sink.add(event);
   }

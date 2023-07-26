@@ -231,14 +231,18 @@ class DgisMapController {
   Future<List<ObjectInfoMessage>> search(
     String queryText, {
     required SortingTypeMessage sortingType,
+    required MarkerIconMessage searchMarker,
+    GeoRectMessage? searchRect,
     bool isOpenNow = false,
     int pageSize = 20,
   }) async {
     final response = await _instance.search(
       queryText,
+      searchMarker: searchMarker,
       sortingType: sortingType,
       weekTime: isOpenNow ? WeekTimeFactory.openNow() : null,
       pageSize: pageSize,
+      searchRect: searchRect,
     );
     return response.whereType<ObjectInfoMessage>().toList(growable: false);
   }
@@ -255,8 +259,7 @@ class DgisMapController {
       _instance.setMarkerOptions(markerOptions);
 
   /// Add marker to map.
-  Future<void> addMarker(Marker marker) =>
-      _instance.addMarker(marker);
+  Future<void> addMarker(Marker marker) => _instance.addMarker(marker);
 
   /// Add several markers to map.
   Future<void> addMarkers(List<Marker> markers) =>
@@ -277,8 +280,7 @@ class DgisMapController {
   }
 
   /// Add polygon to map.
-  Future<void> addPolygon(Polygon polygon) =>
-      _instance.addPolygon(polygon);
+  Future<void> addPolygon(Polygon polygon) => _instance.addPolygon(polygon);
 
   /// Add several polygons to map.
   Future<void> addPolygons(List<Polygon> polygons) =>
@@ -368,8 +370,14 @@ class DgisMapController {
   }
 
   /// Returns suggest from directory. To run search excplicitly call [search].
-  Future<List<SuggestMessage>> fetchSuggest(String queryText) async {
-    final response = await _instance.fetchSuggests(queryText);
+  Future<List<SuggestMessage>> fetchSuggest(
+    String queryText, {
+    GeoRectMessage? searchRect,
+  }) async {
+    final response = await _instance.fetchSuggests(
+      queryText,
+      searchRect: searchRect,
+    );
 
     return response.whereType<SuggestMessage>().toList();
   }
@@ -390,7 +398,9 @@ class DgisMapController {
   }
 
   Future<int> overlappedBy(
-      VisibleRectMessage outer, VisibleRectMessage inner) async {
+    GeoRectMessage outer,
+    GeoRectMessage inner,
+  ) async {
     return _instance.overlappedBy(outer, inner);
   }
 
@@ -421,15 +431,19 @@ class DgisMapController {
   /// Runs search by index from list returned by [fetchSuggest].
   Future<List<ObjectInfoMessage>> searchBySuggest(
     int index, {
+    required MarkerIconMessage searchMarker,
     required SortingTypeMessage sortingType,
+    GeoRectMessage? searchRect,
     bool isOpenNow = false,
     int pageSize = 20,
   }) async {
     final response = await _instance.searchBySuggest(
       index,
+      searchMarker: searchMarker,
       sortingType: sortingType,
       weekTime: isOpenNow ? WeekTimeFactory.openNow() : null,
       pageSize: pageSize,
+      searchRect: searchRect,
     );
     return response.whereType<ObjectInfoMessage>().toList(growable: false);
   }

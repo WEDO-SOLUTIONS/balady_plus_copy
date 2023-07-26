@@ -18,13 +18,21 @@ class MapViewModel extends BaseViewModel {
 
   TextEditingController searchController = TextEditingController();
 
-  Future<void> performSearch({required String queryText}) async {
+  Future<void> performSearch({
+    required String queryText,
+    GeoRectMessage? searchRect,
+  }) async {
     try {
       searchController.text = queryText;
       List<ObjectInfoMessage> data = await controller.search(
         queryText,
+        searchMarker: MarkerIconMessage(
+          path: "assets/maps/icons/ic_marker.svg",
+          width: 24,
+        ),
         sortingType: SortingTypeMessage.byDistance,
         isOpenNow: true,
+        searchRect: searchRect,
       );
       if (data.isNotEmpty) {
         final responseDistance = await controller.getDistanceTo(
@@ -226,7 +234,10 @@ class MapViewModel extends BaseViewModel {
       ),
     ).listen((_) async {
       if (searchController.text.isNotEmpty) {
-        await performSearch(queryText: searchController.text);
+        await performSearch(
+          queryText: searchController.text,
+          searchRect: _lastHandledEvent?.visibleRect.geoRectMessage(),
+        );
       }
       _clearDebounce();
     });

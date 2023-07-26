@@ -275,11 +275,20 @@ class MethodChannelDgisMapPlugin extends DgisMapPlugin {
   @override
   Future<List<ObjectInfoMessage?>> search(
     String queryText, {
+    required MarkerIconMessage searchMarker,
     required SortingTypeMessage sortingType,
     required int pageSize,
     WeekTimeSearchMessage? weekTime,
+    GeoRectMessage? searchRect,
   }) {
-    return _api.search(queryText, weekTime, sortingType, pageSize);
+    return _api.search(
+      queryText,
+      searchMarker,
+      weekTime,
+      searchRect,
+      sortingType,
+      pageSize,
+    );
   }
 
   @override
@@ -463,8 +472,11 @@ class MethodChannelDgisMapPlugin extends DgisMapPlugin {
   }
 
   @override
-  Future<List<SuggestMessage?>> fetchSuggests(String queryText) {
-    return _api.fetchSuggests(queryText);
+  Future<List<SuggestMessage?>> fetchSuggests(
+    String queryText, {
+    GeoRectMessage? searchRect,
+  }) {
+    return _api.fetchSuggests(queryText, searchRect);
   }
 
   @override
@@ -475,11 +487,20 @@ class MethodChannelDgisMapPlugin extends DgisMapPlugin {
   @override
   Future<List<ObjectInfoMessage?>> searchBySuggest(
     int index, {
+    required MarkerIconMessage searchMarker,
     required SortingTypeMessage sortingType,
     required int pageSize,
     WeekTimeSearchMessage? weekTime,
+    GeoRectMessage? searchRect,
   }) {
-    return _api.searchBySuggest(index, weekTime, sortingType, pageSize);
+    return _api.searchBySuggest(
+      index,
+      searchMarker,
+      weekTime,
+      searchRect,
+      sortingType,
+      pageSize,
+    );
   }
 
   @override
@@ -561,7 +582,9 @@ class MethodChannelDgisMapPlugin extends DgisMapPlugin {
 
   @override
   Future<int> overlappedBy(
-      VisibleRectMessage outerRect, VisibleRectMessage innerRect) {
+    GeoRectMessage outerRect,
+    GeoRectMessage innerRect,
+  ) {
     return _api.overlappedBy(outerRect, innerRect);
   }
 
