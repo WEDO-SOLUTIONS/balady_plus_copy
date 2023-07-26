@@ -99,10 +99,10 @@ class ObjectTapHandler(
                     return
                 }
             }
-            is DgisMapObject -> {
-                onDgisMapObjectTap(tappedObject, roi)
-                return
-            }
+//            is DgisMapObject -> {
+//                onDgisMapObjectTap(tappedObject, roi)
+//                return
+//            }
             is RouteMapObject -> {
                 routeHandler?.onRouteTap(tappedObject)
             }

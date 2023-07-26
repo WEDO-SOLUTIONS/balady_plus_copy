@@ -126,10 +126,10 @@ class ObjectTapHandler {
                 return
             }
             return
-        case is DgisMapObject:
-            guard let mapObject = tappedObject as? DgisMapObject else { return }
-            self.onDgisObjectTap(mapObject, objectInfo)
-            return
+//        case is DgisMapObject:
+//            guard let mapObject = tappedObject as? DgisMapObject else { return }
+//            self.onDgisObjectTap(mapObject, objectInfo)
+//            return
         case is SimpleClusterObject:
             let clusterObject = (tappedObject as! SimpleClusterObject)
             let mainObject = clusterObject.objectCount > 0 ? clusterObject.objects[0] : nil
