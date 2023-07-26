@@ -232,6 +232,10 @@
   "municipalAdvisorAttachmentsBrand": "يوجد علامة تجارية",
   "municipalAdvisorPermitFees": "رسوم التصريح (سنة/يوم)",
   "municipalAdvisorTotalPermitFees": "رسوم التصريح  الاجمالي",
+  "municipalAdvisorEndChatConfirmation": "هل انت متأكد من انهاء المحادثة؟",  
+  "municipalAdvisorEndChatConfirmationHint": "سيؤدي هذا إلى مسح محفوظات المحادثة الخاصة بك",
+  "endChat": "إنهاء المحادثة",
+  "undo": "تراجع",
 
   "_profileComment": "أى شئ يخص الحساب",
   "individual_account": "حساب فرد",

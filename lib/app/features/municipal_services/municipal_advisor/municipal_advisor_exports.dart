@@ -119,6 +119,7 @@ export 'presentation/widgets/loading_bubble.dart';
 export 'presentation/widgets/steps/municipal_advisor_steps.dart';
 export 'presentation/widgets/send_mseeage_card.dart';
 export 'presentation/widgets/chat_bubble_radio_selector.dart';
+export 'presentation/widgets/close_chat_popup.dart';
 //? Widgets/Steps
 export 'presentation/widgets/steps/accommodation_type_selector.dart';
 export 'presentation/widgets/steps/chat_bubble_current_step.dart';
