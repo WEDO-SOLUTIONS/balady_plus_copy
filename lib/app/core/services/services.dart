@@ -288,7 +288,8 @@ Map<String, dynamic> servicesConfig = {
       "order": 13,
       "isNew": false,
       "isImportant": false,
-      "action": {"type": "page", "value": "/municipal-advisor1"},
+      "requireLogin": true,
+      "action": {"type": "page", "value": RouteName.municipalAdvisor},
       "ar": {"title": "المستشار البلدي", "description": null, "tag": null},
       "en": {"title": "Municipal Advisor", "description": null, "tag": null}
     },
