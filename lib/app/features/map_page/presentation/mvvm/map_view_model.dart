@@ -108,6 +108,8 @@ class MapViewModel extends BaseViewModel {
       );
     }
 
+    await controller.changeFollowState();
+
     if (kDebugMode) {
       // setLocale(const Locale("ar", "US"), TextDirection.ltr);
       await controller.loadStyles(Constants.mapStyle);
