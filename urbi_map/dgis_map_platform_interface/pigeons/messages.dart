@@ -224,13 +224,6 @@ class RouteEditorRouteParamsMessage {
   final RouteSearchOptionsMessage options;
 }
 
-class EverGisLayerMessage {
-  EverGisLayerMessage(this.name, this.alias);
-
-  final String name;
-  final String alias;
-}
-
 class SuggestMessage {
   SuggestMessage(this.title, this.subTitle, this.index, this.handler);
 
@@ -300,58 +293,6 @@ class FlagFilterMessage {
 }
 
 enum WorkingFilterMessage { none, isOpen, isOpen24x7 }
-
-class EGStringFilterMessage {
-  const EGStringFilterMessage(this.attrName, this.value);
-
-  final String attrName;
-  final String value;
-}
-
-class EGIntFilterMessage {
-  const EGIntFilterMessage(this.attrName, this.value);
-
-  final String attrName;
-  final int value;
-}
-
-class EGDoubleFilterMessage {
-  const EGDoubleFilterMessage(this.attrName, this.from, this.to);
-
-  final String attrName;
-  final double from;
-  final double to;
-}
-
-/// [from] and [to] are Strings in UTC format with TZ
-class EGDateRangeFilterMessage {
-  const EGDateRangeFilterMessage({
-    required this.attrName,
-    this.from,
-    this.to,
-  });
-
-  final String attrName;
-  final String? from;
-  final String? to;
-}
-
-/// [from] and [to] are Strings in UTC format with TZ.
-///
-/// Applies filter: MORE-OR-EQUALS to [attrFromName] and LESS-OR-EQUALS to [attrToName]
-class EGComplexDateFilterMessage {
-  EGComplexDateFilterMessage({
-    required this.attrFromName,
-    required this.attrToName,
-    this.from,
-    this.to,
-  });
-
-  final String attrFromName;
-  final String attrToName;
-  final String? from;
-  final String? to;
-}
 
 class CameraSetPaddingMessage {
   CameraSetPaddingMessage({
@@ -602,12 +543,6 @@ abstract class MapApi {
   void setHighlighted(List<DgisObjectIdMessage> objectIds);
 
   @async
-  List<EverGisLayerMessage> getLayers();
-
-  @async
-  void setLayerVisible(String alias, bool visible);
-
-  @async
   List<SuggestMessage> fetchSuggests(
     String queryText,
     GeoRectMessage? searchRect,
@@ -676,16 +611,6 @@ abstract class MapApi {
 
   @async
   void stopNavigation();
-
-  @async
-  void applyEverGisFilters(
-    String layerAlias,
-    List<EGStringFilterMessage> stringFilters,
-    List<EGDoubleFilterMessage> doubleFilters,
-    List<EGIntFilterMessage> intFilters,
-    List<EGDateRangeFilterMessage> dateRangeFilters,
-    List<EGComplexDateFilterMessage> complexDateFilters,
-  );
 
   @async
   List<FlagFilterMessage> getDirectoryDynamicFilters();

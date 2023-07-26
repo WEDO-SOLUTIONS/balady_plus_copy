@@ -36,7 +36,6 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
     private var objectTapHandler: ObjectTapHandler?
     private var visibleRectHandler: VisibleRectHandler?
     
-    private let everGisLayerHandler: EverGisLayerHandler
     private var compassControlHandler: CompassControlHandler?
     private var trafficAndParkingControlHandler: TrafficAndParkingControlHandler?
     
@@ -53,8 +52,8 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
     ) {
         self._view = UIView(frame: frame)
         self.sdk = sdk
+        let context = try! sdk.context
         self.registrar = registrar
-        self.everGisLayerHandler = EverGisLayerHandler(sdkContext: sdk.context)
         super.init()
         
         self.eventChannel = DgisStreamHandler(
@@ -118,10 +117,10 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         )
         
         self.searchHandler = SearchHandler(
-            searchManager: SearchManager.createOnlineManager(context: sdk.context),
+            searchManager: try! SearchManager.createOnlineManager(context: try! sdk.context),
             map: map,
             sdkContext: self.sdk,
-            imageFactory: self.sdk.imageFactory,
+            imageFactory: try! self.sdk.makeImageFactory(),
             registrar: self.registrar
         )
         
@@ -178,7 +177,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         
         guard let assetPath = Bundle.main.path(forResource: assetKey, ofType: nil) else { return }
         
-        let styleFuture = self.sdk.makeStyleFactory().loadFile(path: assetPath)
+        let styleFuture = try! self.sdk.makeStyleFactory().loadFile(path: assetPath)
         cancelable.append(
             styleFuture.sink (
                 receiveValue: { [map = self.map] style in
@@ -196,7 +195,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
     }
     
     func overrideLocalesLocales(_ locales: [String], completion: @escaping (FlutterError?) -> Void) {
-        let manager = getLocaleManager(context: sdk.context)
+        let manager = getLocaleManager(context: try! sdk.context)
         manager.overrideLocales(locales: locales)
         
         completion(nil)
@@ -220,7 +219,16 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
             longitude: Longitude(value: cameraPosition.geoPoint.longitude.doubleValue)
         )
         desiredPosition.zoom = Zoom(value: cameraPosition.zoomValue.floatValue)
-        map.camera.position = desiredPosition
+        do {
+            try map.camera.setPosition(position: desiredPosition)
+        } catch {
+            completion(FlutterError(
+                code: "IllegalArgumentException",
+                message: "Map was not initialized properly",
+                details: nil
+            ))
+            return
+        }
         completion(nil)
         
     }
@@ -321,7 +329,6 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
                 height: markerOptions.height.doubleValue
             ),
             iconWidth: markerOptions.iconWidth.floatValue,
-            imageFactory: self.sdk.imageFactory,
             completion: completion
         )
     }
@@ -371,28 +378,6 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
                 )
             }),
             completion
-        )
-    }
-    
-    func getLayersWithCompletion(_ completion: @escaping ([EverGisLayerMessage]?, FlutterError?) -> Void) {
-        guard let map = self.map else {
-            completion(
-                nil,
-                FlutterError(
-                    code: "IllegalArgumentException",
-                    message: "Map was not initialized properly",
-                    details: nil
-                ))
-            return
-        }
-        self.everGisLayerHandler.getLayers(map, completion)
-    }
-    
-    func setLayerVisibleAlias(_ alias: String, visible: NSNumber, completion: @escaping (FlutterError?) -> Void) {
-        self.everGisLayerHandler.setLayerVisible(
-            alias: alias,
-            isVisible: visible.boolValue,
-            completion: completion
         )
     }
     
@@ -580,30 +565,9 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         )
     }
     
-    // MARK: - EverGis layer filters
-    func applyEverGisFiltersLayerAlias(
-        _ layerAlias: String,
-        stringFilters: [EGStringFilterMessage],
-        doubleFilters: [EGDoubleFilterMessage],
-        intFilters: [EGIntFilterMessage],
-        dateRangeFilters: [EGDateRangeFilterMessage],
-        complexDateFilters: [EGComplexDateFilterMessage],
-        completion: @escaping (FlutterError?) -> Void
-    ) {
-        self.everGisLayerHandler.applyEverGisFiltersLayerAlias(
-            layerAlias: layerAlias,
-            stringFilters: stringFilters,
-            doubleFilters: doubleFilters,
-            intFilters: intFilters,
-            dateRangeFilters: dateRangeFilters,
-            complexDateFilters: complexDateFilters,
-            completion: completion
-        )
-    }
-    
     // MARK: - Private methods
     private func createMapView(_ sdk:  DGis.Container) {
-        guard let mapFactory = try? sdk.makeMapFactory(options: MapOptions.default) else {
+        guard let mapFactory = try? sdk.makeMapFactory(options: MapOptions.default), let context = try? sdk.context else {
             self.wasInitialized = false
             self.errorDescription = "Error creating MapFactory"
             return
@@ -611,7 +575,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         
         let map = mapFactory.map
         map.addSource(source: MyLocationMapObjectSource(
-            context: sdk.context,
+            context: context,
             directionBehaviour: .followMagneticHeading
         ))
         self.map = map
@@ -653,7 +617,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
                     logicalPixel: LogicalPixel(value: 50),
                     maxZoom: Zoom(value: 18)
                 ),
-            imageFactory: self.sdk.imageFactory,
+            imageFactory: try! self.sdk.makeImageFactory(),
             routeHandler: self.routeHandler,
             eventChannel: eventChannel,
             registrar: self.registrar
@@ -723,8 +687,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
     }
     
     func startFreeRoam(completion: @escaping (FlutterError?) -> Void) {
-        self.navigationHandler?.startFreeRoam()
-        completion(nil)
+        self.navigationHandler?.startFreeRoam(completion: completion)
     }
     
     func stopFreeRoam(completion: @escaping (FlutterError?) -> Void) {

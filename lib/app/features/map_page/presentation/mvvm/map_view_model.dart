@@ -135,7 +135,7 @@ class MapViewModel extends BaseViewModel {
     );
 
     // await _checkLocationPermissions();
-    unawaited(controller.fetchLayers());
+    // unawaited(controller.fetchLayers());
 
     initialized.value = true;
     generalControlsState.value = true;
@@ -203,26 +203,26 @@ class MapViewModel extends BaseViewModel {
       viewHomeBottomSheet.notifyListeners();
     }
 
-    //
-    switch (controller.activeLayerState.value.layer) {
-      case BusinessLayers.tourism:
-        if (event is ObjectTapEvent) {
-          selectedPointId.value = DgisObjectIdMessage(
-            objectId: event.dgisObjectId.objectId,
-            entranceId: event.dgisObjectId.entranceId,
-          );
-        }
-        return;
-      case BusinessLayers.idle:
-        // if (event is IdleTapEvent) unawaited(_handleIdleEvent(event));
-        return;
-      case BusinessLayers.io:
-        // if (event is IoTapEvent) unawaited(_handleIoEvent(event));
-        return;
-      case BusinessLayers.panoramas:
-        // handles by [_onPanoramaTap]
-        return;
-    }
+    // //
+    // switch (controller.activeLayerState.value.layer) {
+    //   case BusinessLayers.tourism:
+    //     if (event is ObjectTapEvent) {
+    //       selectedPointId.value = DgisObjectIdMessage(
+    //         objectId: event.dgisObjectId.objectId,
+    //         entranceId: event.dgisObjectId.entranceId,
+    //       );
+    //     }
+    //     return;
+    //   case BusinessLayers.idle:
+    //     // if (event is IdleTapEvent) unawaited(_handleIdleEvent(event));
+    //     return;
+    //   case BusinessLayers.io:
+    //     // if (event is IoTapEvent) unawaited(_handleIoEvent(event));
+    //     return;
+    //   case BusinessLayers.panoramas:
+    //     // handles by [_onPanoramaTap]
+    //     return;
+    // }
   }
 
   void _startRequestTimer() {

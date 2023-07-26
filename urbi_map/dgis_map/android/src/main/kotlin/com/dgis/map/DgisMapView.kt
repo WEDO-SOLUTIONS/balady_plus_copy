@@ -50,7 +50,6 @@ class DgisMapView(
     private var objectTapHandler: ObjectTapHandler? = null
     private var visibleRectHandler: VisibleRectHandler? = null
     private var searchHandler: SearchHandler? = null
-    private val everGisLayerHandler by unsafeLazy { EvergisLayerHandler(sdkContext) }
     private var routeHandler: RouteHandler? = null
     private val navigationHandler by unsafeLazy {
         NavigationHandler(
@@ -84,7 +83,6 @@ class DgisMapView(
         locationControlHandler?.close()
         indoorControlHandler?.close()
         searchHandler?.close()
-        everGisLayerHandler.close()
         locationSource.deactivate()
         visibleRectHandler?.close()
         compassControlHandler?.close()
@@ -391,15 +389,6 @@ class DgisMapView(
         )
     }
 
-    override fun getLayers(result: Messages.Result<List<EverGisLayerMessage>>?) {
-        val map = map ?: kotlin.run {
-            result?.error(Exception("Map has not been initialized"))
-            return
-        }
-
-        everGisLayerHandler.getLayers(map, result)
-    }
-
     override fun fetchSuggests(
         queryText: String,
         searchRect: GeoRectMessage?,
@@ -459,14 +448,6 @@ class DgisMapView(
         searchHandler?.getSuggestObject(index.toInt(), result)
     }
 
-    override fun setLayerVisible(alias: String, visible: Boolean, result: Messages.Result<Void>?) {
-        everGisLayerHandler.setLayerVisible(
-            alias = alias,
-            isVisible = visible,
-            result = result,
-        )
-    }
-
     override fun overlappedBy(
         outerRect: GeoRectMessage,
         innerRect: GeoRectMessage,
@@ -479,24 +460,6 @@ class DgisMapView(
         val isOverlapped = if (outer.contains(inner)) 1L else 0
         result?.success(isOverlapped)
     }
-
-    override fun applyEverGisFilters(
-        layerAlias: String,
-        stringFilters: List<EGStringFilterMessage>,
-        doubleFilters: List<EGDoubleFilterMessage>,
-        intFilters: List<EGIntFilterMessage>,
-        dateRangeFilters: List<EGDateRangeFilterMessage>,
-        complexDateFilters: List<EGComplexDateFilterMessage>,
-        result: Messages.Result<Void>?
-    ) = everGisLayerHandler.applyEverGisFilters(
-        layerAlias,
-        stringFilters,
-        doubleFilters,
-        intFilters,
-        dateRangeFilters,
-        complexDateFilters,
-        result,
-    )
 
     override fun getDirectoryDynamicFilters(
         result: Messages.Result<List<FlagFilterMessage>>?

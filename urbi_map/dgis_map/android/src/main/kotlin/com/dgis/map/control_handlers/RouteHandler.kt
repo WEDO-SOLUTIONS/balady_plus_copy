@@ -188,7 +188,7 @@ class RouteHandler(
             Padding(dpQuantity, dpQuantity, dpQuantity, dpQuantity)
         }
         ComplexGeometry(geometries).apply {
-            this@RouteHandler.map.camera.setPadding(padding)
+            this@RouteHandler.map.camera.padding = padding
             this@RouteHandler.map.camera.move(calcPosition(map.camera, this))
         }
     }
@@ -207,7 +207,7 @@ class RouteHandler(
                 Padding(dpQuantity, dpQuantity, dpQuantity, dpQuantity)
             }
             ComplexGeometry(geometries).apply {
-                this@RouteHandler.map.camera.setPadding(padding)
+                this@RouteHandler.map.camera.padding = padding
                 this@RouteHandler.map.camera.move(calcPosition(map.camera, this))
             }
         }

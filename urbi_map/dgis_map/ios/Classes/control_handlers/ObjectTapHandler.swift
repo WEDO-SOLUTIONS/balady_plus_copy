@@ -151,7 +151,6 @@ class ObjectTapHandler {
         assetKey: String,
         svgSize: CGSize,
         iconWidth: Float,
-        imageFactory: IImageFactory,
         completion: @escaping (FlutterError?) -> Void
     ) {
         guard let assetPath = Bundle.main.path(forResource: assetKey, ofType: nil),
@@ -546,10 +545,12 @@ class ObjectTapHandler {
     }
     
     func setPanoramasPadding(map: Map, message: CameraSetPaddingMessage) {
-        map.camera.setPadding(padding: Padding(left: UInt32(truncating: message.leftPadding),
-                                               top: UInt32(truncating: message.topPadding),
-                                               right: UInt32(truncating: message.rightPadding),
-                                               bottom: UInt32(truncating: message.bottomPadding)))
+        map.camera.padding = Padding(
+            left: UInt32(truncating: message.leftPadding),
+            top: UInt32(truncating: message.topPadding),
+            right: UInt32(truncating: message.rightPadding),
+            bottom: UInt32(truncating: message.bottomPadding)
+        )
     }
     
     func moveCameraToSelectedPanorama(map: Map) {

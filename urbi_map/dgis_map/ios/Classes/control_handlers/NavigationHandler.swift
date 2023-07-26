@@ -28,18 +28,18 @@ class NavigationHandler {
     private let maneuverControlModel: ManeuverControlModel
 
     init(map: Map, mapView: UIView & IMapView, sdk: Container, eventChannel: DgisStreamHandler, view: UIView) {
+        let context = try! sdk.context
+        
         self.map = map
         self.eventChannel = eventChannel
         
-        self.navigationManager = NavigationManager(platformContext: sdk.context)
+        self.navigationManager = try! NavigationManager(platformContext: context)
         navigationManager.alternativeRoutesProviderSettings.alternativeRoutesEnabled = false
         navigationManager.alternativeRoutesProviderSettings.betterRouteEnabled = false
         self.navigationManager.mapManager.addMap(map: self.map)
         
-        let navigationViewFactory = sdk.makeNavigationViewFactory()
-        
         let locationSource = MyLocationMapObjectSource(
-            context: sdk.context,
+            context: context,
             directionBehaviour: .followSatelliteHeading,
             controller: createSmoothMyLocationController()
         )
@@ -125,13 +125,22 @@ class NavigationHandler {
         }
         
         self.prevCameraBehaviour = self.map.camera.position
-        self.navigationManager.start(
-            routeBuildOptions: RouteBuildOptions(
-                finishPoint: finishPoint,
-                routeSearchOptions: options
-            ),
-            trafficRoute: route
-        )
+        do {
+            try self.navigationManager.start(
+                routeBuildOptions: RouteBuildOptions(
+                    finishPoint: finishPoint,
+                    routeSearchOptions: options
+                ),
+                trafficRoute: route
+            )
+        } catch {
+            completion(FlutterError(
+                code: "NavigationError",
+                message: error.localizedDescription,
+                details: nil
+            ))
+            return
+        }
         
         completion(nil)
     }
@@ -152,13 +161,22 @@ class NavigationHandler {
         }
         
         self.prevCameraBehaviour = self.map.camera.position
-        self.navigationManager.startSimulation(
-            routeBuildOptions: RouteBuildOptions(
-                finishPoint: finishPoint,
-                routeSearchOptions: options
-            ),
-            trafficRoute: route
-        )
+        do {
+            try self.navigationManager.startSimulation(
+                routeBuildOptions: RouteBuildOptions(
+                    finishPoint: finishPoint,
+                    routeSearchOptions: options
+                ),
+                trafficRoute: route
+            )
+        } catch {
+            completion(FlutterError(
+                code: "NavigationError",
+                message: error.localizedDescription,
+                details: nil
+            ))
+            return
+        }
         
         completion(nil)
     }
@@ -186,8 +204,19 @@ class NavigationHandler {
         }
     }
 
-    func startFreeRoam() {
-        self.navigationManager.start()
+    func startFreeRoam(completion: @escaping (FlutterError?) -> Void) {
+        do {
+            try self.navigationManager.start()
+        } catch {
+            completion(FlutterError(
+                code: "NavigationError",
+                message: error.localizedDescription,
+                details: nil
+            ))
+            return
+        }
+
+        completion(nil)
     }
 
     func stopFreeRoam() {

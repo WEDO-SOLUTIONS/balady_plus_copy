@@ -157,10 +157,6 @@ abstract class DgisMapPlugin extends PlatformInterface {
 
   Future<void> setHighlighted(List<DgisObjectIdMessage> objectIds);
 
-  Future<List<EverGisLayerMessage?>> getLayers();
-
-  Future<void> setLayerVisible(String alias, bool visible);
-
   Future<List<SuggestMessage?>> fetchSuggests(
     String queryText, {
     GeoRectMessage? searchRect,
@@ -210,15 +206,6 @@ abstract class DgisMapPlugin extends PlatformInterface {
     required WorkingFilterMessage isOpenFilter,
     required SortingTypeMessage sortingType,
   });
-
-  Future<void> applyEverGisFilters(
-    String layerAlias,
-    List<EGStringFilterMessage> stringFilters,
-    List<EGDoubleFilterMessage> doubleFilters,
-    List<EGIntFilterMessage> intFilters,
-    List<EGDateRangeFilterMessage> dateRangeFilters,
-    List<EGComplexDateFilterMessage> complexDateFilters,
-  );
 
   Future<void> setPanoramasPaddings(CameraSetPaddingMessage message);
 

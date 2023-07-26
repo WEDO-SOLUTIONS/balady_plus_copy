@@ -36,11 +36,13 @@ class RouteHandler {
         eventChannel: DgisStreamHandler,
         positioningService: PlatformPositioningServicesFactory
     ) {
+        let context = try! sdk.context
+        
         self.map = map
         self.eventChannel = eventChannel
-        self.routeEditor = RouteEditor(context: sdk.context)
+        self.routeEditor = RouteEditor(context: context)
         self.routeEditorSource = RouteEditorSource(
-            context: sdk.context, routeEditor: self.routeEditor
+            context: context, routeEditor: self.routeEditor
         )
         self.positioningService = positioningService
         
@@ -204,7 +206,7 @@ class RouteHandler {
         let padding = Padding(left: dpQuantity, top: dpQuantity, right: dpQuantity, bottom: dpQuantity)
         
         let geometry = ComplexGeometry(geometries: geometries)
-        self.map.camera.setPadding(padding: padding)
+        self.map.camera.padding = padding
         let position = calcPosition(camera: map.camera, geometry: geometry)
         
         self.moveCameraCancellable?.cancel()
