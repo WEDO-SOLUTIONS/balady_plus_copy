@@ -22,7 +22,7 @@ class ChangeInformation extends StatelessWidget {
     ];
     return ChatBubbleRadioSelector(
       items: items,
-      onSelected: (value) {
+      onChoose: (value) {
         final index = items.indexOf(value);
         switch (index) {
           case 0:

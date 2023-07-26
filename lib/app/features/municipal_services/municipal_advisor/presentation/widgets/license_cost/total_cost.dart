@@ -22,7 +22,7 @@ class TotalCost extends StatelessWidget {
         BlocBuilder<MunicipalAdvisorBloc, MunicipalAdvisorState>(
           builder: (context, state) {
             return CustomTextWidget(
-              '${state.licenseFees?.totalFees} ${'sar'.tr()}',
+              '${state.licenseFees?.totalFees.toStringAsFixed(2)} ${'sar'.tr()}',
               textStyle: AppStyle.lightTextStyle,
             );
           },

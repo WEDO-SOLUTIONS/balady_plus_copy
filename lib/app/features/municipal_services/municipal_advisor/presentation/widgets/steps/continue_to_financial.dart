@@ -18,7 +18,7 @@ class ContinueToFinancial extends StatelessWidget {
         'yes'.tr(),
         'noEndChat'.tr(),
       ],
-      onSelected: (value) {
+      onChoose: (value) {
         context.read<MunicipalAdvisorBloc>().add(
               MunicipalAdvisorContinueToFinancial(
                 continueToFinancial: value == 'yes'.tr(),

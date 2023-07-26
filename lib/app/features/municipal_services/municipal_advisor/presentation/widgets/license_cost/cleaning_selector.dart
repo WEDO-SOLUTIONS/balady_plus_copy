@@ -6,7 +6,12 @@ import '../../../../../_shared_feature_/shared_feature_exports.dart';
 import '../../../municipal_advisor_exports.dart';
 
 class CleaningSelector extends StatelessWidget {
-  const CleaningSelector({super.key});
+  final bool calculateFees;
+
+  const CleaningSelector({
+    super.key,
+    this.calculateFees = true,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -36,6 +41,7 @@ class CleaningSelector extends StatelessWidget {
                       BlocProvider.of<MunicipalAdvisorBloc>(context).add(
                         MunicipalAdvisorSelectCleaningMechanismEvent(
                           cleaningMechanism: cleaningEntity,
+                          calculateFees: calculateFees,
                         ),
                       );
                       Navigator.pop(context);

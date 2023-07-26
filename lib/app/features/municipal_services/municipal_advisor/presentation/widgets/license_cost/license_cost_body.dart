@@ -28,9 +28,12 @@ class LicenseCostBody extends StatelessWidget {
         ),
         BlocBuilder<MunicipalAdvisorBloc, MunicipalAdvisorState>(
           builder: (context, state) {
+            final licenseFees = state.licenseFees?.permits.firstWhere(
+              (element) => element.actionTypeId == 1004,
+            );
             return TitleCostWidet(
               title: "LicenseCost".tr(),
-              cost: state.licenseFees?.totalFees ?? 0,
+              cost: licenseFees?.calculatedFees.totalCost ?? 0,
             );
           },
         ),

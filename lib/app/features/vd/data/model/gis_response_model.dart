@@ -13,6 +13,7 @@ class GISResponseModel extends GISResponse {
     super.municipalityId,
     super.municipalityName,
     super.region,
+    super.streetCode,
     super.streetName,
     // super.subDistrictId,
     // super.subDistrictName,
@@ -20,10 +21,11 @@ class GISResponseModel extends GISResponse {
     super.subMunicipalityName,
     super.subMunicipalityCategory,
     super.subMunicipalityguid,
-    // super.parcelNo,
-    // super.planNo,
+    super.parcelNo,
+    super.planNo,
     super.vdExcepted,
     super.vdPriority,
+    super.locationURL,
   });
 
   factory GISResponseModel.fromMap(Map<String, dynamic> json) =>
@@ -39,6 +41,7 @@ class GISResponseModel extends GISResponse {
         municipalityId: json["MunicipalityID"],
         municipalityName: json["MunicipalityName"],
         region: json["Region"],
+        streetCode: json["StreetCode"],
         streetName: json["StreetName"],
         // subDistrictId: json["SubDistrictID"],
         // subDistrictName: json["SubDistrictName"],
@@ -46,9 +49,10 @@ class GISResponseModel extends GISResponse {
         subMunicipalityName: json["Sub_MunicipalityName"],
         subMunicipalityCategory: json["Sub_Municipality_CATEGORY"],
         subMunicipalityguid: json["Sub_Municipalityguid"],
-        // parcelNo: json["parcel_No"],
-        // planNo: json["plan_No"],
+        parcelNo: json["parcel_No"],
+        planNo: json["plan_No"],
         vdExcepted: json["vdExcepted"],
         vdPriority: json["vdPriority"],
+        locationURL: json["LocationURL"],
       );
 }

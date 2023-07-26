@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../core/utils/utils_exports.dart' show BlocRequestStatus;
 import '../../municipal_advisor_exports.dart'
@@ -25,6 +26,11 @@ class _ChatListState extends State<ChatList> {
   Widget build(BuildContext context) {
     return BlocConsumer<MunicipalAdvisorBloc, MunicipalAdvisorState>(
       listener: (context, state) {
+        if (state.messages.isNotEmpty &&
+            state.messages.last.isResponse &&
+            state.messages.last.message == "municipalAdvisorPermitsCost".tr()) {
+          return;
+        }
         WidgetsBinding.instance.addPostFrameCallback((_) {
           _scrollController.animateTo(
             _scrollController.position.maxScrollExtent,

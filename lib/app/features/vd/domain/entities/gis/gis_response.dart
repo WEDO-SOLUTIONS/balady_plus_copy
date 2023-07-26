@@ -10,6 +10,7 @@ class GISResponse extends Equatable {
   String? municipalityId;
   String? municipalityName;
   String? region;
+  String? streetCode;
   String? streetName;
   //dynamic subDistrictId;
   //dynamic subDistrictName;
@@ -17,10 +18,11 @@ class GISResponse extends Equatable {
   String? subMunicipalityName;
   String? subMunicipalityCategory;
   String? subMunicipalityguid;
-  // dynamic parcelNo;
-  // dynamic planNo;
+  String? parcelNo;
+  String? planNo;
   bool? vdExcepted;
   bool? vdPriority;
+  String? locationURL;
 
   GISResponse({
     this.adminMunicipalityId,
@@ -34,6 +36,7 @@ class GISResponse extends Equatable {
     this.municipalityId,
     this.municipalityName,
     this.region,
+    this.streetCode,
     this.streetName,
     // this.subDistrictId,
     // this.subDistrictName,
@@ -41,10 +44,11 @@ class GISResponse extends Equatable {
     this.subMunicipalityName,
     this.subMunicipalityCategory,
     this.subMunicipalityguid,
-    // this.parcelNo,
-    // this.planNo,
+    this.parcelNo,
+    this.planNo,
     this.vdExcepted,
     this.vdPriority,
+    this.locationURL,
   });
 
   String getFullAddress({
@@ -95,6 +99,8 @@ class GISResponse extends Equatable {
         municipalityId,
         subMunicipalityId,
         subMunicipalityCategory,
-        subMunicipalityguid
+        subMunicipalityguid,
+        streetCode,
+        locationURL,
       ];
 }

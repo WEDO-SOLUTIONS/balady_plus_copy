@@ -7,8 +7,6 @@ import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
 import '../../../core/dependency_injection/dependency_injection_exports.dart'
     show sl;
-import '../../../features/_shared_feature_/shared_feature_exports.dart'
-    show AuthData, AuthDataModel;
 import '../../errors/errors_exports.dart'
     show
         BadRequestException,
@@ -45,11 +43,11 @@ class WebService {
     dio.options.receiveTimeout = 60000;
     dio.options.sendTimeout = 60000;
     dio.options.headers = {};
-    dio.interceptors.add(AppInterceptors());
     dio.interceptors.add(PrettyDioLogger(
       requestHeader: true,
       requestBody: true,
     ));
+    dio.interceptors.add(AppInterceptors());
   }
   WebService.newDio({
     required this.dio,

@@ -185,6 +185,9 @@ class MunicipalAdvisorGetCleaningMechanismsEvent
 
 class MunicipalAdvisorGetCommercialOfficesEvent extends MunicipalAdvisorEvent {}
 
+class MunicipalAdvisorGetAdditionalLicenseInfoEvent
+    extends MunicipalAdvisorEvent {}
+
 class MunicipalAdvisorGetIssuingPredefinedConditionsEvent
     extends MunicipalAdvisorEvent {}
 
@@ -213,13 +216,18 @@ class MunicipalAdvisorSelectLiceseYearEvent extends MunicipalAdvisorEvent {
 class MunicipalAdvisorSelectCleaningMechanismEvent
     extends MunicipalAdvisorEvent {
   final CleaningEntity cleaningMechanism;
+  final bool calculateFees;
 
   const MunicipalAdvisorSelectCleaningMechanismEvent({
     required this.cleaningMechanism,
+    required this.calculateFees,
   });
 
   @override
-  List<Object?> get props => [cleaningMechanism];
+  List<Object?> get props => [
+        cleaningMechanism,
+        calculateFees,
+      ];
 }
 
 class MunicipalAdvisorAddCommercialBoardEvent extends MunicipalAdvisorEvent {}
@@ -299,6 +307,69 @@ class MunicipalAdvisorUpdateNonFoodVehicleCountEvent
   List<Object?> get props => [count];
 }
 
-class MunicipalAdvisorEndCalculateLicenseEvent extends MunicipalAdvisorEvent {}
+class MunicipalAdvisorSaveFinancialStudyEvent extends MunicipalAdvisorEvent {}
+
+class MunicipalAdvisorContinueToAttachments extends MunicipalAdvisorEvent {
+  final bool continueToAttachments;
+
+  const MunicipalAdvisorContinueToAttachments({
+    required this.continueToAttachments,
+  });
+
+  @override
+  List<Object?> get props => [continueToAttachments];
+}
+
+class MunicipalAdvisorGetShopOwnershipEvent extends MunicipalAdvisorEvent {}
+
+class MunicipalAdvisorSelectHasBrandEvent extends MunicipalAdvisorEvent {
+  final bool hasBrand;
+
+  const MunicipalAdvisorSelectHasBrandEvent({
+    required this.hasBrand,
+  });
+
+  @override
+  List<Object?> get props => [hasBrand];
+}
+
+class MunicipalAdvisorSelectShopOwnershipEvent extends MunicipalAdvisorEvent {
+  final ContractEntity shopOwnership;
+
+  const MunicipalAdvisorSelectShopOwnershipEvent({
+    required this.shopOwnership,
+  });
+
+  @override
+  List<Object?> get props => [shopOwnership];
+}
+
+class MunicipalAdvisorSelectShopContractOptionEvent
+    extends MunicipalAdvisorEvent {
+  final ContractOptionEntity shopContractOption;
+
+  const MunicipalAdvisorSelectShopContractOptionEvent({
+    required this.shopContractOption,
+  });
+
+  @override
+  List<Object?> get props => [shopContractOption];
+}
+
+class MunicipalAdvisorGetConsultationAttachmentsEvent
+    extends MunicipalAdvisorEvent {}
+
+class MunicipalAdvisorContinueToRequestPath extends MunicipalAdvisorEvent {
+  final bool continueToRequestPath;
+
+  const MunicipalAdvisorContinueToRequestPath({
+    required this.continueToRequestPath,
+  });
+
+  @override
+  List<Object?> get props => [continueToRequestPath];
+}
+
+class MunicipalAdvisorGetRequestFlowEvent extends MunicipalAdvisorEvent {}
 
 class MunicipalAdvisorRetryEvent extends MunicipalAdvisorEvent {}

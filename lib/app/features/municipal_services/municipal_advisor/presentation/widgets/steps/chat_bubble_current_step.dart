@@ -6,10 +6,13 @@ import '../../../municipal_advisor_exports.dart'
         AccommodationTypeSelector,
         ActivitySelector,
         AreaSelector,
+        AttachmentsSelector,
         ChangeInformation,
         ConfirmInputSummary,
         ConfirmLocation,
+        ContinueToAttachments,
         ContinueToFinancial,
+        ContinueToRequestPath,
         LicenseCost,
         LocationSelector,
         MunicipalAdvisorSteps,
@@ -63,17 +66,21 @@ class ChatBubbleCurrentStep extends StatelessWidget {
       case MunicipalAdvisorSteps.civilDefensePredefinedConditions:
       case MunicipalAdvisorSteps.cleaningMechanisms:
       case MunicipalAdvisorSteps.commercialOffices:
+      case MunicipalAdvisorSteps.additionalInformation:
+      case MunicipalAdvisorSteps.attachmentsRequired:
+      case MunicipalAdvisorSteps.requestPath:
       case MunicipalAdvisorSteps.endChat:
         return const SizedBox.shrink();
       case MunicipalAdvisorSteps.continueToFinancial:
         return const ContinueToFinancial();
       case MunicipalAdvisorSteps.licenseCost:
-        return LicenseCost(
-          license: data,
-        );
-
-      case MunicipalAdvisorSteps.addAttachments:
-        return const ContinueToFinancial();
+        return LicenseCost(license: data);
+      case MunicipalAdvisorSteps.continueToAttachments:
+        return const ContinueToAttachments();
+      case MunicipalAdvisorSteps.attachments:
+        return const AttachmentsSelector();
+      case MunicipalAdvisorSteps.continueToRequestPath:
+        return const ContinueToRequestPath();
     }
   }
 }

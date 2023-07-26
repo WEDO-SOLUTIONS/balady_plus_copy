@@ -18,7 +18,7 @@ class ConfirmInputSummary extends StatelessWidget {
         'yes'.tr(),
         'no'.tr(),
       ],
-      onSelected: (value) {
+      onChoose: (value) {
         context.read<MunicipalAdvisorBloc>().add(
               MunicipalAdvisorChangeInfo(
                 changeInfo: value == 'yes'.tr(),

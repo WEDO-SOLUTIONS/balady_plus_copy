@@ -24,6 +24,9 @@ class MunicipalAdvisorState extends Equatable {
   final List<String>? civilDefensePredefinedConditions;
   final List<CleaningEntity> cleaningMechanisms;
   final List<CommercialOfficeEntity>? commercialOffices;
+  final int maxYears;
+  final ConditionsUrlsEntity? conditionsUrls;
+  final List<FastflowConditionEntity> fastflowConditions;
   final List<int> licenseYears;
   final List<BoardTypeEntity> boardTypes;
   final int selectedLicenseYear;
@@ -33,6 +36,13 @@ class MunicipalAdvisorState extends Equatable {
   final LicenseFeesEntity? licenseFees;
   final SideWalkParamsModel sideWalkParams;
   final int nonFoodVehicleCount;
+  final bool? hasBrand;
+  final List<ContractEntity> shopOwnerships;
+  final ContractEntity? selectedShopOwnership;
+  final ContractOptionEntity? selectedShopContractOption;
+  final List<AttachmentEntity> attachments;
+  final List<RequestStepModel> requestFlow;
+  final List<String> requestFlowRecommendations;
   final MunicipalAdvisorEvent? lastEvent;
   final String? errorMessage;
 
@@ -60,17 +70,11 @@ class MunicipalAdvisorState extends Equatable {
     this.civilDefensePredefinedConditions,
     this.cleaningMechanisms = const <CleaningEntity>[],
     this.commercialOffices,
+    this.maxYears = 0,
+    this.conditionsUrls,
+    this.fastflowConditions = const <FastflowConditionEntity>[],
     this.licenseYears = const <int>[],
-    this.boardTypes = const <BoardTypeEntity>[
-      BoardTypeEntity(
-        id: 1,
-        name: "إرشادية",
-      ),
-      BoardTypeEntity(
-        id: 2,
-        name: "إعلانية",
-      ),
-    ],
+    this.boardTypes = const <BoardTypeEntity>[],
     this.selectedLicenseYear = 1,
     this.boards = const <BoardsParams>[],
     this.selectedCleanMechanism,
@@ -82,11 +86,33 @@ class MunicipalAdvisorState extends Equatable {
       days: 1,
     ),
     this.nonFoodVehicleCount = 1,
+    this.hasBrand,
+    this.shopOwnerships = const <ContractEntity>[],
+    this.selectedShopOwnership,
+    this.selectedShopContractOption,
+    this.attachments = const <AttachmentEntity>[],
+    this.requestFlow = const <RequestStepModel>[],
+    this.requestFlowRecommendations = const <String>[],
     this.lastEvent,
     this.errorMessage,
   });
 
   String get error => errorMessage ?? '';
+
+  bool get licenseCostFinishEnabled =>
+      selectedCleanMechanism != null && boards.isNotEmpty;
+
+  bool get attachmentsFinishEnabled =>
+      hasBrand != null &&
+      selectedShopOwnership != null &&
+      selectedShopContractOption != null;
+
+  num permitHours(PermitsFeesEntity permit) {
+    final licensePermit = licensePermits?.firstWhere(
+      (element) => element.permitTypeId == permit.actionTypeId,
+    );
+    return licensePermit?.cost ?? 0;
+  }
 
   MunicipalAdvisorState copyWith({
     BlocRequestStatus? status,
@@ -111,6 +137,9 @@ class MunicipalAdvisorState extends Equatable {
     List<String>? civilDefensePredefinedConditions,
     List<CleaningEntity>? cleaningMechanisms,
     List<CommercialOfficeEntity>? commercialOffices,
+    int? maxYears,
+    ConditionsUrlsEntity? conditionsUrls,
+    List<FastflowConditionEntity>? fastflowConditions,
     List<int>? licenseYears,
     List<BoardTypeEntity>? boardTypes,
     int? selectedLicenseYear,
@@ -120,6 +149,13 @@ class MunicipalAdvisorState extends Equatable {
     List<PermitsParams>? selectedPermits,
     SideWalkParamsModel? sideWalkParams,
     int? nonFoodVehicleCount,
+    bool? hasBrand,
+    List<ContractEntity>? shopOwnerships,
+    ContractEntity? selectedShopOwnership,
+    ContractOptionEntity? selectedShopContractOption,
+    List<AttachmentEntity>? attachments,
+    List<RequestStepModel>? requestFlow,
+    List<String>? requestFlowRecommendations,
     MunicipalAdvisorEvent? lastEvent,
     String? errorMessage,
   }) {
@@ -154,6 +190,9 @@ class MunicipalAdvisorState extends Equatable {
           this.civilDefensePredefinedConditions,
       cleaningMechanisms: cleaningMechanisms ?? this.cleaningMechanisms,
       commercialOffices: commercialOffices ?? this.commercialOffices,
+      maxYears: maxYears ?? this.maxYears,
+      conditionsUrls: conditionsUrls ?? this.conditionsUrls,
+      fastflowConditions: fastflowConditions ?? this.fastflowConditions,
       licenseYears: licenseYears ?? this.licenseYears,
       boardTypes: boardTypes ?? this.boardTypes,
       selectedLicenseYear: selectedLicenseYear ?? this.selectedLicenseYear,
@@ -164,6 +203,16 @@ class MunicipalAdvisorState extends Equatable {
       selectedPermits: selectedPermits ?? this.selectedPermits,
       sideWalkParams: sideWalkParams ?? this.sideWalkParams,
       nonFoodVehicleCount: nonFoodVehicleCount ?? this.nonFoodVehicleCount,
+      hasBrand: hasBrand ?? this.hasBrand,
+      shopOwnerships: shopOwnerships ?? this.shopOwnerships,
+      selectedShopOwnership:
+          selectedShopOwnership ?? this.selectedShopOwnership,
+      selectedShopContractOption:
+          selectedShopContractOption ?? this.selectedShopContractOption,
+      attachments: attachments ?? this.attachments,
+      requestFlow: requestFlow ?? this.requestFlow,
+      requestFlowRecommendations:
+          requestFlowRecommendations ?? this.requestFlowRecommendations,
       lastEvent: lastEvent ?? this.lastEvent,
       errorMessage: errorMessage ?? this.errorMessage,
     );
@@ -194,6 +243,9 @@ class MunicipalAdvisorState extends Equatable {
         civilDefensePredefinedConditions,
         cleaningMechanisms,
         commercialOffices,
+        maxYears,
+        conditionsUrls,
+        fastflowConditions,
         licenseYears,
         boardTypes,
         selectedLicenseYear,
@@ -203,6 +255,13 @@ class MunicipalAdvisorState extends Equatable {
         selectedPermits,
         sideWalkParams,
         nonFoodVehicleCount,
+        hasBrand,
+        shopOwnerships,
+        selectedShopOwnership,
+        selectedShopContractOption,
+        attachments,
+        requestFlow,
+        requestFlowRecommendations,
         lastEvent,
         errorMessage,
       ];

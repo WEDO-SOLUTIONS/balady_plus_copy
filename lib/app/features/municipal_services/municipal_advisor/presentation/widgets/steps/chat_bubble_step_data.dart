@@ -4,17 +4,21 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../municipal_advisor_exports.dart'
     show
+        AdditionalInformation,
+        AttachmentEntity,
+        AttachmentRequired,
         ChatMessage,
         InputSummary,
-        LicenseCostResponse,
         MunicipalAdvisorBloc,
         MunicipalAdvisorState,
         MunicipalAdvisorSteps,
         PermitsCost,
+        RequestFlow,
         RequirementsList,
         SupervisingAuthorities,
         TotalCost,
-        TradeLicenseCost;
+        TradeLicenseCost,
+        UserAttachmentsRequest;
 
 class ChatBubbleStepData extends StatelessWidget {
   final ChatMessage chatMessage;
@@ -97,6 +101,8 @@ class ChatBubbleStepData extends StatelessWidget {
             );
           },
         );
+      case MunicipalAdvisorSteps.additionalInformation:
+        return const AdditionalInformation();
       case MunicipalAdvisorSteps.licenseCost:
         if (chatMessage.data == 'tradeLicense') {
           return const TradeLicenseCost();
@@ -106,6 +112,30 @@ class ChatBubbleStepData extends StatelessWidget {
           return const TotalCost();
         }
         return const SizedBox.shrink();
+      case MunicipalAdvisorSteps.attachmentsRequired:
+        if (chatMessage.data is AttachmentEntity) {
+          return AttachmentRequired(
+            attachment: chatMessage.data as AttachmentEntity,
+          );
+        } else if (!chatMessage.isResponse) {
+          return const UserAttachmentsRequest();
+        }
+        return const SizedBox.shrink();
+      case MunicipalAdvisorSteps.requestPath:
+        return BlocBuilder<MunicipalAdvisorBloc, MunicipalAdvisorState>(
+          builder: (context, state) {
+            if (chatMessage.data == 'requestPath') {
+              return RequestFlow(steps: state.requestFlow);
+            } else if (chatMessage.data ==
+                'municipalAdvisorRequestPathSuggestions') {
+              return RequirementsList(
+                title: '',
+                requirements: state.requestFlowRecommendations,
+              );
+            }
+            return const SizedBox.shrink();
+          },
+        );
       default:
         return const SizedBox.shrink();
     }

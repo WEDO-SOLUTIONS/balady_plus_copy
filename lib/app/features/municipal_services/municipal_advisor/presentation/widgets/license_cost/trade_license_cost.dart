@@ -50,7 +50,6 @@ class TradeLicenseCost extends StatelessWidget {
               ),
             ],
           ),
-          textAlign: TextAlign.right,
         );
       },
     );

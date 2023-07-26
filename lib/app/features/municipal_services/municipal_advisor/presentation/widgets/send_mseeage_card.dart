@@ -4,7 +4,7 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../core/utils/utils_exports.dart' show AppColor, IconPath;
 import '../../../../_shared_feature_/shared_feature_exports.dart'
-    show CustomTextFieldWidget;
+    show CustomTextFieldWidget, MessageDialog;
 import '../../../../home_page/home_exports.dart' show CircleIcon;
 import '../../municipal_advisor_exports.dart'
     show
@@ -36,7 +36,13 @@ class _SendMessageCardState extends State<SendMessageCard> {
       ),
       child: SafeArea(
         top: false,
-        child: BlocBuilder<MunicipalAdvisorBloc, MunicipalAdvisorState>(
+        child: BlocConsumer<MunicipalAdvisorBloc, MunicipalAdvisorState>(
+          listenWhen: (previous, current) => previous.error != current.error,
+          listener: (_, state) async {
+            if (state.error.isNotEmpty) {
+              MessageDialog.showErrorNotification(msg: state.error);
+            }
+          },
           buildWhen: (previous, current) =>
               previous.messages.isEmpty && current.messages.isNotEmpty,
           builder: (context, state) {

@@ -42,10 +42,11 @@ class DropDownWithTitle extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            CustomTextWidget(
-              title,
-              textStyle: AppStyle.dropDownTitleTextStyle,
-            ),
+            if (title.isNotEmpty)
+              CustomTextWidget(
+                title,
+                textStyle: AppStyle.dropDownTitleTextStyle,
+              ),
             const SizedBox(height: 8),
             if (retry)
               RetryWidget(onRetry: onRetry)

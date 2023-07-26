@@ -13,6 +13,12 @@ class PermitCostBody extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<MunicipalAdvisorBloc, MunicipalAdvisorState>(
       builder: (context, state) {
+        final permits = state.licenseFees?.permits
+                .where(
+                  (element) => element.actionTypeId != 1004,
+                )
+                .toList() ??
+            [];
         return Column(
           children: [
             ListView.builder(
@@ -40,12 +46,12 @@ class PermitCostBody extends StatelessWidget {
                   const SizedBox(width: 6),
                 ],
               ),
-            if (state.licenseFees?.permits.isNotEmpty ?? false) ...[
+            if (permits.isNotEmpty) ...[
               const Divider(
                 thickness: 1,
               ),
               ListView.builder(
-                itemCount: state.licenseFees?.permits.length ?? 0,
+                itemCount: permits.length,
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
                 padding: const EdgeInsets.only(bottom: 8),
@@ -53,11 +59,8 @@ class PermitCostBody extends StatelessWidget {
                   return Padding(
                     padding: const EdgeInsets.symmetric(vertical: 4),
                     child: TitleCostWidet(
-                      title: state.licenseFees?.permits[index].actionTypeName ??
-                          "",
-                      cost: state.licenseFees?.permits[index].calculatedFees
-                              .totalCost ??
-                          0,
+                      title: permits[index].actionTypeName,
+                      cost: permits[index].calculatedFees.totalCost,
                     ),
                   );
                 },
@@ -65,11 +68,13 @@ class PermitCostBody extends StatelessWidget {
             ],
             const SizedBox(height: 8),
             ElevatedButtonWidget.finishButton(
-              onPressed: () {
-                BlocProvider.of<MunicipalAdvisorBloc>(context).add(
-                  MunicipalAdvisorEndCalculateLicenseEvent(),
-                );
-              },
+              onPressed: state.licenseCostFinishEnabled
+                  ? () {
+                      BlocProvider.of<MunicipalAdvisorBloc>(context).add(
+                        MunicipalAdvisorSaveFinancialStudyEvent(),
+                      );
+                    }
+                  : null,
             )
           ],
         );

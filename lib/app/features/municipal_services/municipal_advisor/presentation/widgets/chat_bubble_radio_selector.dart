@@ -7,11 +7,16 @@ import '../../../../_shared_feature_/shared_feature_exports.dart'
 
 class ChatBubbleRadioSelector extends StatefulWidget {
   final List<String> items;
-  final void Function(String) onSelected;
+  final String? initialSelectedValue;
+  final void Function(String)? onChoose;
+  final void Function(String)? onSelect;
+
   const ChatBubbleRadioSelector({
     super.key,
     required this.items,
-    required this.onSelected,
+    this.initialSelectedValue,
+    this.onChoose,
+    this.onSelect,
   });
 
   @override
@@ -21,6 +26,12 @@ class ChatBubbleRadioSelector extends StatefulWidget {
 
 class _ChatBubbleRadioSelectorState extends State<ChatBubbleRadioSelector> {
   String? selectedValue;
+
+  @override
+  void initState() {
+    super.initState();
+    selectedValue = widget.initialSelectedValue;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +47,7 @@ class _ChatBubbleRadioSelectorState extends State<ChatBubbleRadioSelector> {
           children: [
             for (var item in widget.items)
               InkWell(
-                onTap: () => setState(() => selectedValue = item),
+                onTap: () => _onSelect(item),
                 child: Container(
                   height: 56,
                   padding: const EdgeInsetsDirectional.only(start: 12),
@@ -57,21 +68,27 @@ class _ChatBubbleRadioSelectorState extends State<ChatBubbleRadioSelector> {
                         value: item,
                         groupValue: selectedValue,
                         activeColor: AppColor.primary700Light,
-                        onChanged: (_) => setState(() => selectedValue = item),
+                        onChanged: (_) => _onSelect(item),
                       )
                     ],
                   ),
                 ),
               ),
             const SizedBox(height: 16),
-            ElevatedButtonWidget.choose(
-              onPressed: selectedValue == null
-                  ? null
-                  : () => widget.onSelected(selectedValue!),
-            ),
+            if (widget.onChoose != null)
+              ElevatedButtonWidget.choose(
+                onPressed: selectedValue == null
+                    ? null
+                    : () => widget.onChoose!(selectedValue!),
+              ),
           ],
         ),
       ],
     );
+  }
+
+  void _onSelect(String item) {
+    setState(() => selectedValue = item);
+    widget.onSelect?.call(item);
   }
 }

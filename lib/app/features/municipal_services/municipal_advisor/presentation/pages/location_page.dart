@@ -133,7 +133,9 @@ class LocationPageState extends State<LocationPage> {
                             ElevatedButtonWidget.confirmLocation(
                               loading: state.status ==
                                   BlocRequestStatus.submissionGetLoading,
-                              onPressed: state.gisResponse == null
+                              onPressed: state.gisResponse == null ||
+                                      state.status ==
+                                          BlocRequestStatus.submissionGetLoading
                                   ? null
                                   : () {
                                       if (coordinates == null) {

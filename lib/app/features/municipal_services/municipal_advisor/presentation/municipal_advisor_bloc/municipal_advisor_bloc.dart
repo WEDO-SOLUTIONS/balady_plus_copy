@@ -33,8 +33,17 @@ class MunicipalAdvisorBloc
   final GetAccommodationTypes _getAccommodationTypes;
   final SaveActivities _saveActivities;
   final GetLicenseYears _getLicenseYears;
-  // final GetBoardTypes _boardTypes;
+  final GetBoardTypes _boardTypes;
   final CalculateLicenseFees _calculateLicenseFees;
+  final SaveFinancialStudy _saveFinancialStudy;
+  final GetShopOwnership _getShopOwnership;
+  final GetConsultationAttachments _getConsultationAttachments;
+  final GetMaxLicenseYears _getMaxLicenseYears;
+  final GetConditionsUrls _getConditionsUrls;
+  final GetFastflowConditions _getFastflowConditions;
+  final GetRequestFlow _getRequestFlow;
+  final GetRequestFlowRecommendations _getRequestFlowRecommendations;
+  final UpdatePermit _updatePermit;
 
   MunicipalAdvisorBloc({
     required GetConsultationKey getConsultationKey,
@@ -55,6 +64,15 @@ class MunicipalAdvisorBloc
     required GetLicenseYears getLicenseYears,
     required GetBoardTypes boardTypes,
     required CalculateLicenseFees calculateLicenseFeed,
+    required SaveFinancialStudy saveFinancialStudy,
+    required GetShopOwnership getShopOwnership,
+    required GetConsultationAttachments getConsultationAttachments,
+    required GetMaxLicenseYears getMaxLicenseYears,
+    required GetConditionsUrls getConditionsUrls,
+    required GetFastflowConditions getFastflowConditions,
+    required GetRequestFlow getRequestFlow,
+    required GetRequestFlowRecommendations getRequestFlowRecommendations,
+    required UpdatePermit updatePermit,
   })  : _getConsultationKey = getConsultationKey,
         _getIsicActivities = getIsicActivities,
         _getIsicSubActivities = getIsicSubActivities,
@@ -71,8 +89,17 @@ class MunicipalAdvisorBloc
         _getAccommodationTypes = getAccommodationTypes,
         _saveActivities = saveActivities,
         _getLicenseYears = getLicenseYears,
-        // _boardTypes = boardTypes,
+        _boardTypes = boardTypes,
         _calculateLicenseFees = calculateLicenseFeed,
+        _saveFinancialStudy = saveFinancialStudy,
+        _getShopOwnership = getShopOwnership,
+        _getConsultationAttachments = getConsultationAttachments,
+        _getMaxLicenseYears = getMaxLicenseYears,
+        _getConditionsUrls = getConditionsUrls,
+        _getFastflowConditions = getFastflowConditions,
+        _getRequestFlow = getRequestFlow,
+        _getRequestFlowRecommendations = getRequestFlowRecommendations,
+        _updatePermit = updatePermit,
         super(const MunicipalAdvisorState()) {
     on<MunicipalAdvisorAddMessageEvent>(
       (event, emit) async {
@@ -92,16 +119,12 @@ class MunicipalAdvisorBloc
           ),
         );
         if (event.step == MunicipalAdvisorSteps.start) {
-          final didGetKey = await getConsultationKeyEventHandler(event, emit);
-          if (!didGetKey) {
-            return;
-          }
-        }
-        if (showNextSteps(event.step)) {
+          add(MunicipalAdvisorGetConsultationKeyEvent());
+        } else if (event.step == MunicipalAdvisorSteps.confirmLocation) {
+          add(MunicipalAdvisorGetIsicActivitiesEvent());
+        } else if (showNextSteps(event.step)) {
           final nextSteps = nextStep(
-            state.changingInfo
-                ? MunicipalAdvisorSteps.inputSummary
-                : event.step,
+            event.step,
             event.data,
           );
           if (event.step != MunicipalAdvisorSteps.start) await delay();
@@ -109,15 +132,33 @@ class MunicipalAdvisorBloc
             emit(botResponse(event, nextSteps[i], i < nextSteps.length - 1));
             if (i != nextSteps.length - 1) await delay();
           }
-        } else if (event.step == MunicipalAdvisorSteps.confirmLocation) {
-          add(MunicipalAdvisorGetIsicActivitiesEvent());
         }
       },
     );
 
     on<MunicipalAdvisorGetConsultationKeyEvent>(
       (event, emit) async {
-        await getConsultationKeyEventHandler(event, emit);
+        emit(state.copyWith(
+          lastEvent: event,
+          status: BlocRequestStatus.submissionGetLoading,
+        ));
+
+        final failureOrSuccess = await _getConsultationKey(NoParams());
+        failureOrSuccess.fold(
+          (failure) => emitFailure(emit, failure),
+          (consultationKey) => emit(
+            state.copyWith(
+              status: BlocRequestStatus.submissionGetSuccess,
+              consultationKey: consultationKey,
+            ),
+          ),
+        );
+        if (failureOrSuccess.isLeft()) return;
+        final nextSteps = nextStep(MunicipalAdvisorSteps.start);
+        for (int i = 0; i < nextSteps.length; i++) {
+          emit(botResponse(event, nextSteps[i], i < nextSteps.length - 1));
+          if (i != nextSteps.length - 1) await delay();
+        }
       },
     );
 
@@ -128,14 +169,7 @@ class MunicipalAdvisorBloc
           GISParams(x: event.latLng.longitude, y: event.latLng.latitude),
         );
         failureOrSuccess.fold(
-          (failure) {
-            emit(
-              state.copyWith(
-                status: BlocRequestStatus.submissionGetFailure,
-                errorMessage: (failure as ServerFailure).errorMessage,
-              ),
-            );
-          },
+          (failure) => emitFailure(emit, failure),
           (gisResponse) {
             emit(
               state.copyWith(
@@ -203,14 +237,7 @@ class MunicipalAdvisorBloc
         );
         final failureOrSuccess = await _getIsicActivities(NoParams());
         failureOrSuccess.fold(
-          (failure) {
-            emit(
-              state.copyWith(
-                status: BlocRequestStatus.submissionGetFailure,
-                errorMessage: (failure as ServerFailure).errorMessage,
-              ),
-            );
-          },
+          (failure) => emitFailure(emit, failure),
           (isicActivities) {
             emit(
               state.copyWith(
@@ -259,14 +286,7 @@ class MunicipalAdvisorBloc
         );
         final failureOrSuccess = await _getIsicSubActivities(event.params);
         failureOrSuccess.fold(
-          (failure) {
-            emit(
-              state.copyWith(
-                status: BlocRequestStatus.submissionGetFailure,
-                errorMessage: (failure as ServerFailure).errorMessage,
-              ),
-            );
-          },
+          (failure) => emitFailure(emit, failure),
           (isicSubActivities) {
             emit(
               state.copyWith(
@@ -313,14 +333,7 @@ class MunicipalAdvisorBloc
         );
         final failureOrSuccess = await _getActivityDetails(params);
         failureOrSuccess.fold(
-          (failure) {
-            emit(
-              state.copyWith(
-                status: BlocRequestStatus.submissionGetFailure,
-                errorMessage: (failure as ServerFailure).errorMessage,
-              ),
-            );
-          },
+          (failure) => emitFailure(emit, failure),
           (activityDetails) {
             emit(
               state.copyWith(
@@ -367,14 +380,7 @@ class MunicipalAdvisorBloc
         );
         final failureOrSuccess = await _getAccommodationTypes(NoParams());
         failureOrSuccess.fold(
-          (failure) {
-            emit(
-              state.copyWith(
-                status: BlocRequestStatus.submissionGetFailure,
-                errorMessage: (failure as ServerFailure).errorMessage,
-              ),
-            );
-          },
+          (failure) => emitFailure(emit, failure),
           (accommodationTypes) {
             emit(
               state.copyWith(
@@ -508,6 +514,7 @@ class MunicipalAdvisorBloc
         emit(
           state.copyWith(
             status: BlocRequestStatus.submissionGetSuccess,
+            changingInfo: false,
             messages: [
               ...state.messages,
               ...nextStep(event.step),
@@ -531,10 +538,12 @@ class MunicipalAdvisorBloc
             subMunicipalityGisCode:
                 // state.activityLocation?.gisResponse.subMunicipalityId ??
                 "013001002",
-            districtCode: int.tryParse(
-                    state.activityLocation?.gisResponse.districtId ?? "") ??
+            districtCode:
+                // int.tryParse(state.activityLocation?.gisResponse.districtId ?? "") ??
                 1010106,
-            streetCode: 1010106005,
+            streetCode:
+                // int.tryParse(state.activityLocation?.gisResponse.streetCode ?? "") ??
+                1010106005,
             longitude:
                 state.activityLocation?.latLng.longitude.toString() ?? "",
             latitude: state.activityLocation?.latLng.latitude.toString() ?? "",
@@ -542,21 +551,15 @@ class MunicipalAdvisorBloc
             landNo: "",
             shopArea: state.selectedArea ?? 0,
             activityId: state.selectedIsicSubActivity?.id ?? 0,
-            atmFeesOption: null,
-            unitCount: null,
-            accommodationTypeId: null,
-            krokiUrl: "http://gisimages.momra.gov.sa/",
+            atmFeesOption: state.atmPaid,
+            unitCount: state.unitCount,
+            accommodationTypeId: state.selectedAccommodationType?.id,
+            krokiUrl: state.activityLocation?.gisResponse.locationURL ??
+                "http://gisimages.momra.gov.sa/",
           ),
         );
         failureOrSuccess.fold(
-          (failure) {
-            emit(
-              state.copyWith(
-                status: BlocRequestStatus.submissionGetFailure,
-                errorMessage: (failure as ServerFailure).errorMessage,
-              ),
-            );
-          },
+          (failure) => emitFailure(emit, failure),
           (_) {
             add(MunicipalAdvisorGetIssuingPredefinedConditionsEvent());
           },
@@ -575,14 +578,7 @@ class MunicipalAdvisorBloc
         final failureOrSuccess =
             await _getIssuingPredefinedConditions(NoParams());
         failureOrSuccess.fold(
-          (failure) {
-            emit(
-              state.copyWith(
-                status: BlocRequestStatus.submissionGetFailure,
-                errorMessage: (failure as ServerFailure).errorMessage,
-              ),
-            );
-          },
+          (failure) => emitFailure(emit, failure),
           (issuingPredefinedConditions) {
             emit(
               state.copyWith(
@@ -614,14 +610,7 @@ class MunicipalAdvisorBloc
           KeyParams(key: state.consultationKey!),
         );
         failureOrSuccess.fold(
-          (failure) {
-            emit(
-              state.copyWith(
-                status: BlocRequestStatus.submissionGetFailure,
-                errorMessage: (failure as ServerFailure).errorMessage,
-              ),
-            );
-          },
+          (failure) => emitFailure(emit, failure),
           (licensePermits) {
             emit(
               state.copyWith(
@@ -652,14 +641,7 @@ class MunicipalAdvisorBloc
           KeyParams(key: state.consultationKey!),
         );
         failureOrSuccess.fold(
-          (failure) {
-            emit(
-              state.copyWith(
-                status: BlocRequestStatus.submissionGetFailure,
-                errorMessage: (failure as ServerFailure).errorMessage,
-              ),
-            );
-          },
+          (failure) => emitFailure(emit, failure),
           (civilDefensePredefinedConditions) {
             emit(
               state.copyWith(
@@ -692,14 +674,7 @@ class MunicipalAdvisorBloc
           KeyParams(key: state.consultationKey!),
         );
         failureOrSuccess.fold(
-          (failure) {
-            emit(
-              state.copyWith(
-                status: BlocRequestStatus.submissionGetFailure,
-                errorMessage: (failure as ServerFailure).errorMessage,
-              ),
-            );
-          },
+          (failure) => emitFailure(emit, failure),
           (supervisingAuthorities) {
             emit(
               state.copyWith(
@@ -731,14 +706,7 @@ class MunicipalAdvisorBloc
           KeyParams(key: state.consultationKey!),
         );
         failureOrSuccess.fold(
-          (failure) {
-            emit(
-              state.copyWith(
-                status: BlocRequestStatus.submissionGetFailure,
-                errorMessage: (failure as ServerFailure).errorMessage,
-              ),
-            );
-          },
+          (failure) => emitFailure(emit, failure),
           (cleaningMechanisms) {
             emit(
               state.copyWith(
@@ -769,14 +737,7 @@ class MunicipalAdvisorBloc
           KeyParams(key: state.consultationKey!),
         );
         failureOrSuccess.fold(
-          (failure) {
-            emit(
-              state.copyWith(
-                status: BlocRequestStatus.submissionGetFailure,
-                errorMessage: (failure as ServerFailure).errorMessage,
-              ),
-            );
-          },
+          (failure) => emitFailure(emit, failure),
           (commercialOffices) {
             emit(
               state.copyWith(
@@ -790,7 +751,77 @@ class MunicipalAdvisorBloc
                 ],
               ),
             );
+            add(MunicipalAdvisorGetAdditionalLicenseInfoEvent());
           },
+        );
+      },
+    );
+
+    on<MunicipalAdvisorGetAdditionalLicenseInfoEvent>(
+      (event, emit) async {
+        emit(
+          state.copyWith(
+            status: BlocRequestStatus.submissionGetLoading,
+            lastEvent: event,
+          ),
+        );
+
+        final maxYears = await _getMaxLicenseYears(
+          KeyParamsModel(key: state.consultationKey!),
+        );
+
+        maxYears.fold(
+          (failure) => emitFailure(emit, failure),
+          (maxYears) => emit(state.copyWith(maxYears: maxYears)),
+        );
+
+        if (maxYears.isLeft()) return;
+
+        final conditionsUrls = await _getConditionsUrls(NoParams());
+
+        conditionsUrls.fold(
+          (failure) => emitFailure(emit, failure),
+          (conditionsUrls) =>
+              emit(state.copyWith(conditionsUrls: conditionsUrls)),
+        );
+
+        if (conditionsUrls.isLeft()) return;
+
+        final fastflowConditions = await _getFastflowConditions(
+          KeyParamsModel(key: state.consultationKey!),
+        );
+
+        fastflowConditions.fold(
+          (failure) {
+            if (failure is ServerFailure) {
+              emitFailure(emit, failure);
+            } else if (failure is NoDataFoundFailure) {
+              emit(
+                state.copyWith(
+                  status: BlocRequestStatus.submissionGetSuccess,
+                  fastflowConditions: [],
+                  messages: [
+                    ...state.messages,
+                    ...nextStep(
+                      MunicipalAdvisorSteps.commercialOffices,
+                    ),
+                  ],
+                ),
+              );
+            }
+          },
+          (fastflowConditions) => emit(
+            state.copyWith(
+              status: BlocRequestStatus.submissionGetSuccess,
+              fastflowConditions: fastflowConditions,
+              messages: [
+                ...state.messages,
+                ...nextStep(
+                  MunicipalAdvisorSteps.commercialOffices,
+                ),
+              ],
+            ),
+          ),
         );
       },
     );
@@ -804,7 +835,6 @@ class MunicipalAdvisorBloc
           ),
         );
 
-        //call SaveActivities  and GetLicenseYears and GetBoardTypes
         final saveActivities = await _saveActivities(
           SaveActivitiesParams(
             consultationKey: state.consultationKey!,
@@ -812,14 +842,7 @@ class MunicipalAdvisorBloc
           ),
         );
         saveActivities.fold(
-          (failure) {
-            emit(
-              state.copyWith(
-                status: BlocRequestStatus.submissionGetFailure,
-                errorMessage: (failure as ServerFailure).errorMessage,
-              ),
-            );
-          },
+          (failure) => emitFailure(emit, failure),
           (saveActivities) {},
         );
 
@@ -830,13 +853,22 @@ class MunicipalAdvisorBloc
         );
 
         licenseYears.fold(
-          (failure) => emit(
-            state.copyWith(
-              status: BlocRequestStatus.submissionGetFailure,
-              errorMessage: (failure as ServerFailure).errorMessage,
-            ),
-          ),
+          (failure) => emitFailure(emit, failure),
           (licenseYears) {
+            emit(
+              state.copyWith(
+                licenseYears: licenseYears,
+                selectedLicenseYear: licenseYears.first,
+              ),
+            );
+          },
+        );
+
+        final boardTypes = await _boardTypes(NoParams());
+
+        boardTypes.fold(
+          (failure) => emitFailure(emit, failure),
+          (boardTypes) {
             add(
               const MunicipalAdvisorCalculateLicenseEvent(
                 firstCalculation: true,
@@ -844,30 +876,13 @@ class MunicipalAdvisorBloc
             );
             emit(
               state.copyWith(
-                licenseYears: licenseYears,
-                selectedLicenseYear: licenseYears.first,
+                status: BlocRequestStatus.submissionGetSuccess,
+                boardTypes: boardTypes,
                 selectedPermits: [],
               ),
             );
           },
         );
-
-        // final boardTypes = await _boardTypes(NoParams());
-
-        // boardTypes.fold(
-        //   (failure) => emit(
-        //     state.copyWith(
-        //       status: BlocRequestStatus.submissionGetFailure,
-        //       errorMessage: (failure as ServerFailure).errorMessage,
-        //     ),
-        //   ),
-        //   (boardTypes) => emit(
-        //     state.copyWith(
-        //       status: BlocRequestStatus.submissionGetSuccess,
-        //       boardTypes: boardTypes,
-        //     ),
-        //   ),
-        // );
       },
     );
 
@@ -887,12 +902,16 @@ class MunicipalAdvisorBloc
       (event, emit) async {
         emit(
           state.copyWith(
-            status: BlocRequestStatus.submissionGetLoading,
+            status: event.calculateFees
+                ? BlocRequestStatus.submissionGetLoading
+                : null,
             selectedCleanMechanism: event.cleaningMechanism,
             lastEvent: event,
           ),
         );
-        add(const MunicipalAdvisorCalculateLicenseEvent());
+        if (event.calculateFees) {
+          add(const MunicipalAdvisorCalculateLicenseEvent());
+        }
       },
     );
 
@@ -976,14 +995,7 @@ class MunicipalAdvisorBloc
         );
         if (!event.finalCalculation) EasyLoading.dismiss();
         failureOrSuccess.fold(
-          (failure) {
-            emit(
-              state.copyWith(
-                status: BlocRequestStatus.submissionGetFailure,
-                errorMessage: (failure as ServerFailure).errorMessage,
-              ),
-            );
-          },
+          (failure) => emitFailure(emit, failure),
           (licenseFees) {
             emit(
               state.copyWith(
@@ -998,7 +1010,6 @@ class MunicipalAdvisorBloc
                       ]
                     : event.firstCalculation
                         ? [
-                            ...state.messages,
                             ...state.messages,
                             ChatMessage(
                               message: 'municipalAdvisorLicenseCost'.tr(),
@@ -1023,6 +1034,12 @@ class MunicipalAdvisorBloc
 
     on<MunicipalAdvisorSelectPermitEvent>(
       (event, emit) async {
+        emit(
+          state.copyWith(
+            status: BlocRequestStatus.submissionGetLoading,
+            lastEvent: event,
+          ),
+        );
         final id = event.permit.permitTypeId;
         final index = state.selectedPermits.indexWhere(
           (element) => element.permitTypeId == id,
@@ -1040,12 +1057,6 @@ class MunicipalAdvisorBloc
         } else {
           state.selectedPermits.removeAt(index);
         }
-        emit(
-          state.copyWith(
-            status: BlocRequestStatus.submissionGetLoading,
-            lastEvent: event,
-          ),
-        );
         add(const MunicipalAdvisorCalculateLicenseEvent());
       },
     );
@@ -1070,6 +1081,28 @@ class MunicipalAdvisorBloc
           state.selectedPermits[index] = state.selectedPermits[index].copyWith(
             sideWalk: state.sideWalkParams,
           );
+          final failureOrSuccess = await _updatePermit(
+            UpdatePermitParams(
+              consultationKey: state.consultationKey!,
+              permitTypeId: 1013,
+              sideWalkLength: event.length,
+              sideWalkWidth: event.width,
+              sideWalkDays: event.days,
+            ),
+          );
+          failureOrSuccess.fold(
+            (failure) => emitFailure(emit, failure),
+            (updatedPermit) {
+              final index = state.licensePermits?.indexWhere(
+                (element) => element.permitTypeId == 1013,
+              );
+              if (index != null && index != -1) {
+                state.licensePermits![index] = updatedPermit;
+              }
+            },
+          );
+
+          if (failureOrSuccess.isLeft()) return;
         }
         add(const MunicipalAdvisorCalculateLicenseEvent());
       },
@@ -1091,12 +1124,34 @@ class MunicipalAdvisorBloc
           state.selectedPermits[index] = state.selectedPermits[index].copyWith(
             nonFoodVehicleCount: state.nonFoodVehicleCount,
           );
+
+          final failureOrSuccess = await _updatePermit(
+            UpdatePermitParams(
+              consultationKey: state.consultationKey!,
+              permitTypeId: 1037,
+              nonFoodVehicleCount: event.count,
+            ),
+          );
+
+          failureOrSuccess.fold(
+            (failure) => emitFailure(emit, failure),
+            (updatedPermit) {
+              final index = state.licensePermits?.indexWhere(
+                (element) => element.permitTypeId == 1037,
+              );
+              if (index != null && index != -1) {
+                state.licensePermits![index] = updatedPermit;
+              }
+            },
+          );
+
+          if (failureOrSuccess.isLeft()) return;
         }
         add(const MunicipalAdvisorCalculateLicenseEvent());
       },
     );
 
-    on<MunicipalAdvisorEndCalculateLicenseEvent>(
+    on<MunicipalAdvisorSaveFinancialStudyEvent>(
       (event, emit) async {
         state.messages.removeLast();
         state.messages.removeLast();
@@ -1104,23 +1159,48 @@ class MunicipalAdvisorBloc
           state.copyWith(
             status: BlocRequestStatus.submissionGetLoading,
             lastEvent: event,
-            messages: [
-              ...state.messages,
-              ChatMessage(
-                message:
-                    '1.${'issue_trade_license'.tr()}\n$issueTradeLicenseUser',
-                step: MunicipalAdvisorSteps.licenseCost,
-                isResponse: false,
-                customWidget: true,
-              ),
-              ChatMessage(
-                message: '2.${'permits'.tr()}\n$permitsUser',
-                step: MunicipalAdvisorSteps.licenseCost,
-                isResponse: false,
-                customWidget: true,
-              ),
-            ],
           ),
+        );
+
+        final failureOrSuccess = await _saveFinancialStudy(
+          FinancialStudyParams(
+            consultationKey: state.consultationKey!,
+            licensePeriod: state.selectedLicenseYear,
+            shopArea: state.selectedArea!,
+            cleanOption: state.selectedCleanMechanism?.id,
+            unitCount: state.unitCount,
+            atmFeesPaid: state.atmPaid,
+            boards: state.boards,
+            permits: state.selectedPermits,
+            accommodationTypeId: state.selectedAccommodationType?.id,
+          ),
+        );
+
+        failureOrSuccess.fold(
+          (failure) => emitFailure(emit, failure),
+          (success) {
+            emit(
+              state.copyWith(
+                status: BlocRequestStatus.submissionGetSuccess,
+                messages: [
+                  ...state.messages,
+                  ChatMessage(
+                    message:
+                        '1.${'issue_trade_license'.tr()}\n$issueTradeLicenseUser',
+                    step: MunicipalAdvisorSteps.licenseCost,
+                    isResponse: false,
+                    customWidget: true,
+                  ),
+                  ChatMessage(
+                    message: '2.${'permits'.tr()}\n$permitsUser',
+                    step: MunicipalAdvisorSteps.licenseCost,
+                    isResponse: false,
+                    customWidget: true,
+                  ),
+                ],
+              ),
+            );
+          },
         );
 
         final nextSteps = [
@@ -1158,8 +1238,8 @@ class MunicipalAdvisorBloc
             customWidget: true,
           ),
           ChatMessage(
-            message: 'municipalAdvisorFinancial'.tr(),
-            step: MunicipalAdvisorSteps.addAttachments,
+            message: 'municipalAdvisorAttachments'.tr(),
+            step: MunicipalAdvisorSteps.continueToAttachments,
             isResponse: true,
           ),
         ];
@@ -1168,6 +1248,271 @@ class MunicipalAdvisorBloc
           emit(botResponse(event, nextSteps[i], i < nextSteps.length - 1));
           if (i != nextSteps.length - 1) await delay();
         }
+      },
+    );
+
+    on<MunicipalAdvisorContinueToAttachments>(
+      (event, emit) async {
+        emit(
+          state.copyWith(
+            status: BlocRequestStatus.submissionGetLoading,
+            lastEvent: event,
+          ),
+        );
+        add(MunicipalAdvisorAddMessageEvent(
+          message: event.continueToAttachments ? 'yes'.tr() : 'noEndChat'.tr(),
+          step: MunicipalAdvisorSteps.continueToAttachments,
+          data: event.continueToAttachments ? 'continueToAttachments' : null,
+        ));
+      },
+    );
+
+    on<MunicipalAdvisorGetShopOwnershipEvent>(
+      (event, emit) async {
+        emit(
+          state.copyWith(
+            status: BlocRequestStatus.submissionGetLoading,
+            lastEvent: event,
+          ),
+        );
+
+        final failureOrSuccess = await _getShopOwnership(
+          KeyParamsModel(
+            key: state.consultationKey!,
+          ),
+        );
+
+        failureOrSuccess.fold(
+          (failure) => emitFailure(emit, failure),
+          (success) {
+            emit(
+              state.copyWith(
+                status: BlocRequestStatus.submissionGetSuccess,
+                shopOwnerships: success,
+                messages: [
+                  ...state.messages,
+                  ChatMessage(
+                    message: 'municipalAdvisorFillFields'.tr(),
+                    step: MunicipalAdvisorSteps.attachments,
+                    isResponse: true,
+                    customWidget: true,
+                  ),
+                  ChatMessage(
+                    message: 'municipalAdvisorAttachementsTitle'.tr(),
+                    step: MunicipalAdvisorSteps.attachments,
+                    isResponse: true,
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      },
+    );
+
+    on<MunicipalAdvisorSelectHasBrandEvent>(
+      (event, emit) async {
+        emit(
+          state.copyWith(
+            hasBrand: event.hasBrand,
+          ),
+        );
+      },
+    );
+
+    on<MunicipalAdvisorSelectShopOwnershipEvent>(
+      (event, emit) async {
+        emit(
+          state.copyWith(
+            selectedShopOwnership: event.shopOwnership,
+          ),
+        );
+      },
+    );
+
+    on<MunicipalAdvisorSelectShopContractOptionEvent>(
+      (event, emit) async {
+        emit(
+          state.copyWith(
+            selectedShopContractOption: event.shopContractOption,
+          ),
+        );
+      },
+    );
+
+    on<MunicipalAdvisorGetConsultationAttachmentsEvent>(
+      (event, emit) async {
+        emit(
+          state.copyWith(
+            status: BlocRequestStatus.submissionGetLoading,
+            lastEvent: event,
+          ),
+        );
+
+        final failureOrSuccess = await _getConsultationAttachments(
+          AttachmentParamsModel(
+            consultationKey: state.consultationKey!,
+            cleanOption: state.selectedCleanMechanism!.id,
+            hasBrand: state.hasBrand!,
+            contractType: state.selectedShopOwnership!.contractTypeId,
+            contractOption: state.selectedShopContractOption!.id,
+            hasShopImage: true,
+          ),
+        );
+
+        failureOrSuccess.fold(
+          (failure) => emitFailure(emit, failure),
+          (attachments) {
+            emit(
+              state.copyWith(
+                status: BlocRequestStatus.submissionGetSuccess,
+                attachments: attachments,
+                messages: [
+                  ...state.messages,
+                  ChatMessage(
+                    message: '',
+                    step: MunicipalAdvisorSteps.attachmentsRequired,
+                    isResponse: false,
+                    customWidget: true,
+                    data: "userAttachments",
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+
+        final nextSteps = [
+          ChatMessage(
+            message: 'municipalAdvisorAttachmentsDetails'.tr(),
+            step: MunicipalAdvisorSteps.attachmentsRequired,
+            isResponse: true,
+            customWidget: true,
+          ),
+          for (final attachment in state.attachments)
+            ChatMessage(
+              message: '',
+              step: MunicipalAdvisorSteps.attachmentsRequired,
+              isResponse: true,
+              customWidget: true,
+              data: attachment,
+            ),
+          ChatMessage(
+            message: 'municipalAdvisorAttachmentsRemainingQuestions'.tr(),
+            step: MunicipalAdvisorSteps.attachmentsRequired,
+            isResponse: true,
+            customWidget: true,
+          ),
+          ChatMessage(
+            message: 'municipalAdvisorRequestPath'.tr(),
+            step: MunicipalAdvisorSteps.continueToRequestPath,
+            isResponse: true,
+          ),
+        ];
+        await delay();
+        for (int i = 0; i < nextSteps.length; i++) {
+          emit(botResponse(event, nextSteps[i], i < nextSteps.length - 1));
+          if (i != nextSteps.length - 1) await delay();
+        }
+      },
+    );
+
+    on<MunicipalAdvisorContinueToRequestPath>(
+      (event, emit) async {
+        emit(
+          state.copyWith(
+            status: BlocRequestStatus.submissionGetLoading,
+            lastEvent: event,
+          ),
+        );
+        add(MunicipalAdvisorAddMessageEvent(
+          message: event.continueToRequestPath ? 'yes'.tr() : 'noEndChat'.tr(),
+          step: MunicipalAdvisorSteps.continueToRequestPath,
+          data: event.continueToRequestPath ? 'continueToRequestPath' : null,
+        ));
+      },
+    );
+
+    on<MunicipalAdvisorGetRequestFlowEvent>(
+      (event, emit) async {
+        emit(
+          state.copyWith(
+            status: BlocRequestStatus.submissionGetLoading,
+            lastEvent: event,
+          ),
+        );
+
+        final requestFlow = await _getRequestFlow(
+          KeyParamsModel(
+            key: state.consultationKey!,
+          ),
+        );
+
+        requestFlow.fold(
+          (failure) => emitFailure(emit, failure),
+          (requestFlow) {
+            requestFlow.sort((a, b) => a.index.compareTo(b.index));
+            emit(
+              state.copyWith(
+                requestFlow: requestFlow,
+              ),
+            );
+          },
+        );
+
+        if (requestFlow.isLeft()) return;
+
+        final requestFlowRecommendations = await _getRequestFlowRecommendations(
+          KeyParamsModel(
+            key: state.consultationKey!,
+          ),
+        );
+        requestFlowRecommendations.fold(
+          (failure) => emitFailure(emit, failure),
+          (requestFlowRecommendations) {
+            emit(
+              state.copyWith(
+                status: BlocRequestStatus.submissionGetSuccess,
+                requestFlowRecommendations: requestFlowRecommendations,
+                messages: [
+                  ...state.messages,
+                  ChatMessage(
+                    message: 'municipalAdvisorRequestPathDetails'.tr(),
+                    step: MunicipalAdvisorSteps.requestPath,
+                    isResponse: true,
+                    customWidget: true,
+                  ),
+                  ChatMessage(
+                    message: 'requestPath'.tr(),
+                    step: MunicipalAdvisorSteps.requestPath,
+                    isResponse: true,
+                    customWidget: true,
+                    data: 'requestPath',
+                  ),
+                  ChatMessage(
+                    message: 'municipalAdvisorRequestPathSuggestions'.tr(),
+                    step: MunicipalAdvisorSteps.requestPath,
+                    isResponse: true,
+                    customWidget: true,
+                    data: 'municipalAdvisorRequestPathSuggestions',
+                  ),
+                  ChatMessage(
+                    message: 'municipalAdvisorEndChat'.tr(),
+                    step: MunicipalAdvisorSteps.endChat,
+                    isResponse: true,
+                    customWidget: true,
+                  ),
+                  ChatMessage(
+                    message: 'thanks'.tr(),
+                    step: MunicipalAdvisorSteps.endChat,
+                    isResponse: true,
+                    customWidget: true,
+                  ),
+                ],
+              ),
+            );
+          },
+        );
       },
     );
 
@@ -1180,8 +1525,8 @@ class MunicipalAdvisorBloc
 
   String get issueTradeLicenseUser {
     String issueTradeLicense = '''
-  ${'LicenseYears'.tr()}: ${state.selectedLicenseYear}
-  ${'area'.tr()}: ${state.selectedArea}
+  \n${'LicenseYears'.tr()}: ${state.selectedLicenseYear}
+  \n${'area'.tr()}: ${state.selectedArea}\n
   ''';
 
     if (state.selectedCleanMechanism != null) {
@@ -1195,12 +1540,12 @@ class MunicipalAdvisorBloc
   String get permitsUser {
     String permits = '';
     for (final permit in state.licenseFees?.permits ?? <PermitsFeesEntity>[]) {
-      permits += '${permit.actionTypeName}\n';
+      permits += '${permit.actionTypeName}:\n';
       if (permit.actionTypeId == 1013) {
         permits +=
-            ':\n ${'Width'.tr()}: ${state.sideWalkParams.width} ${'Length'.tr()}: ${state.sideWalkParams.length} ${'days'.tr()}: ${state.sideWalkParams.days}\n';
+            '\n ${'Width'.tr()}: ${state.sideWalkParams.width} ${'Length'.tr()}: ${state.sideWalkParams.length} ${'days'.tr()}: ${state.sideWalkParams.days}\n';
       } else if (permit.actionTypeId == 1037) {
-        permits += ':\n ${'count'.tr()}: ${state.nonFoodVehicleCount}\n';
+        permits += '\n ${'count'.tr()}: ${state.nonFoodVehicleCount}\n';
       } else {
         permits += '\n';
       }
@@ -1209,46 +1554,15 @@ class MunicipalAdvisorBloc
     return permits;
   }
 
-  Future<bool> getConsultationKeyEventHandler(event, emit) async {
-    final userInfo = CommonProperties.userInfo;
-    if (userInfo == null) {
-      emit(
-        state.copyWith(
-          status: BlocRequestStatus.submissionGetFailure,
-          errorMessage: 'user not found',
-        ),
-      );
-    }
-    emit(state.copyWith(
-      lastEvent: MunicipalAdvisorGetConsultationKeyEvent(),
-      status: BlocRequestStatus.submissionGetLoading,
-    ));
-    final failureOrSuccess = await _getConsultationKey(
-      ConsultationKeyParams(
-        mobile: userInfo!.getPhone(),
-        submitterBirthDate: "1378/07/01",
-        gender: userInfo.sex ?? "1",
+  void emitFailure(
+    Emitter<MunicipalAdvisorState> emit,
+    Failure failure,
+  ) {
+    emit(
+      state.copyWith(
+        status: BlocRequestStatus.submissionGetFailure,
+        errorMessage: (failure as ServerFailure).errorMessage,
       ),
-    );
-    return failureOrSuccess.fold(
-      (failure) {
-        emit(
-          state.copyWith(
-            status: BlocRequestStatus.submissionGetFailure,
-            errorMessage: (failure as ServerFailure).errorMessage,
-          ),
-        );
-        return false;
-      },
-      (consultationKey) {
-        emit(
-          state.copyWith(
-            status: BlocRequestStatus.submissionGetSuccess,
-            consultationKey: consultationKey,
-          ),
-        );
-        return true;
-      },
     );
   }
 
@@ -1282,10 +1596,15 @@ class MunicipalAdvisorBloc
         step == MunicipalAdvisorSteps.area ||
         step == MunicipalAdvisorSteps.inputSummary ||
         step == MunicipalAdvisorSteps.confirmInformation ||
-        step == MunicipalAdvisorSteps.continueToFinancial;
+        step == MunicipalAdvisorSteps.continueToFinancial ||
+        step == MunicipalAdvisorSteps.continueToRequestPath ||
+        step == MunicipalAdvisorSteps.continueToAttachments;
   }
 
-  List<ChatMessage> nextStep(MunicipalAdvisorSteps step, [dynamic data]) {
+  List<ChatMessage> nextStep(
+    MunicipalAdvisorSteps step, [
+    dynamic data,
+  ]) {
     switch (step) {
       case MunicipalAdvisorSteps.start:
         return [
@@ -1316,6 +1635,15 @@ class MunicipalAdvisorBloc
           ),
         ];
       case MunicipalAdvisorSteps.location:
+        if (state.changingInfo) {
+          return [
+            ChatMessage(
+              message: 'municipalAdvisorConfirmSummery'.tr(),
+              step: MunicipalAdvisorSteps.confirmInformation,
+              isResponse: true,
+            ),
+          ];
+        }
         return [
           ChatMessage(
             message: 'municipalAdvisorLocationCorrect'.tr(),
@@ -1340,6 +1668,15 @@ class MunicipalAdvisorBloc
           ),
         ];
       case MunicipalAdvisorSteps.subActivity:
+        if (state.changingInfo) {
+          return [
+            ChatMessage(
+              message: 'municipalAdvisorArea'.tr(),
+              step: MunicipalAdvisorSteps.area,
+              isResponse: true,
+            )
+          ];
+        }
         final messages = [
           ChatMessage(
             message:
@@ -1510,50 +1847,92 @@ class MunicipalAdvisorBloc
             isResponse: true,
             customWidget: true,
           ),
+        ];
+      case MunicipalAdvisorSteps.commercialOffices:
+        return [
+          ChatMessage(
+            message: '',
+            step: MunicipalAdvisorSteps.additionalInformation,
+            isResponse: true,
+            customWidget: true,
+          ),
           ChatMessage(
             message: 'municipalAdvisorFinancial'.tr(),
             step: MunicipalAdvisorSteps.continueToFinancial,
             isResponse: true,
           ),
         ];
-      case MunicipalAdvisorSteps.commercialOffices:
+      case MunicipalAdvisorSteps.additionalInformation:
         return [];
       case MunicipalAdvisorSteps.continueToFinancial:
         if (data == 'continueToFinancial') {
           add(MunicipalAdvisorLoadCalculationLookupsEvent());
-          return [
-            // ChatMessage(
-            //   message: 'municipalAdvisorLicenseCost'.tr(),
-            //   step: MunicipalAdvisorSteps.licenseCost,
-            //   isResponse: true,
-            //   data: true,
-            // ),
-            // ChatMessage(
-            //   message: 'municipalAdvisorPermitsCost'.tr(),
-            //   step: MunicipalAdvisorSteps.licenseCost,
-            //   isResponse: true,
-            //   data: false,
-            // ),
-          ];
+          return [];
         } else {
           return [
             ChatMessage(
               message: 'municipalAdvisorEndChat'.tr(),
               step: MunicipalAdvisorSteps.endChat,
               isResponse: true,
+              customWidget: true,
             ),
             ChatMessage(
               message: 'thanks'.tr(),
               step: MunicipalAdvisorSteps.endChat,
               isResponse: true,
+              customWidget: true,
             ),
           ];
         }
-      case MunicipalAdvisorSteps.endChat:
-        return [];
       case MunicipalAdvisorSteps.licenseCost:
         return [];
-      case MunicipalAdvisorSteps.addAttachments:
+      case MunicipalAdvisorSteps.continueToAttachments:
+        if (data == 'continueToAttachments') {
+          add(MunicipalAdvisorGetShopOwnershipEvent());
+          return [];
+        } else {
+          return [
+            ChatMessage(
+              message: 'municipalAdvisorEndChat'.tr(),
+              step: MunicipalAdvisorSteps.endChat,
+              isResponse: true,
+              customWidget: true,
+            ),
+            ChatMessage(
+              message: 'thanks'.tr(),
+              step: MunicipalAdvisorSteps.endChat,
+              isResponse: true,
+              customWidget: true,
+            ),
+          ];
+        }
+      case MunicipalAdvisorSteps.attachments:
+        return [];
+      case MunicipalAdvisorSteps.attachmentsRequired:
+        return [];
+      case MunicipalAdvisorSteps.continueToRequestPath:
+        if (data == 'continueToRequestPath') {
+          add(MunicipalAdvisorGetRequestFlowEvent());
+          return [];
+        } else {
+          return [
+            ChatMessage(
+              message: 'municipalAdvisorEndChat'.tr(),
+              step: MunicipalAdvisorSteps.endChat,
+              isResponse: true,
+              customWidget: true,
+            ),
+            ChatMessage(
+              message: 'thanks'.tr(),
+              step: MunicipalAdvisorSteps.endChat,
+              isResponse: true,
+              customWidget: true,
+            ),
+          ];
+        }
+      case MunicipalAdvisorSteps.requestPath:
+        return [];
+      case MunicipalAdvisorSteps.endChat:
         return [];
     }
   }

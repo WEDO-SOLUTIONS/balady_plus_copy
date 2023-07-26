@@ -30,8 +30,12 @@ class ChatBubble extends StatelessWidget {
     final showMap = chatMessage.step == MunicipalAdvisorSteps.location &&
         !chatMessage.isResponse &&
         chatMessage.data is LatLng;
+    final bool currentActiveStep = currentStep &&
+        chatMessage.isResponse &&
+        isLastResponse &&
+        !chatMessage.customWidget;
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: EdgeInsets.all(currentActiveStep ? 16 : 8.0),
       child: Column(
         crossAxisAlignment: chatMessage.isResponse
             ? CrossAxisAlignment.end
@@ -65,7 +69,8 @@ class ChatBubble extends StatelessWidget {
             ),
             child: ConstrainedBox(
               constraints: BoxConstraints(
-                maxWidth: MediaQuery.of(context).size.width * 0.7,
+                maxWidth: MediaQuery.of(context).size.width *
+                    (currentActiveStep ? 0.9 : 0.7),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -81,12 +86,16 @@ class ChatBubble extends StatelessWidget {
                           icon: IconPath.marker,
                         ),
                         const SizedBox(width: 4),
-                        CustomTextWidget(
-                          chatMessage.message,
-                          textStyle: AppStyle.chatMessageTextStyle.copyWith(
-                            color: chatMessage.isResponse
-                                ? AppColor.blackModern700Light
-                                : null,
+                        SizedBox(
+                          width: (MediaQuery.of(context).size.width * 0.7) - 40,
+                          child: CustomTextWidget(
+                            chatMessage.message,
+                            textStyle: AppStyle.chatMessageTextStyle.copyWith(
+                              color: chatMessage.isResponse
+                                  ? AppColor.blackModern700Light
+                                  : null,
+                            ),
+                            maxLines: 2,
                           ),
                         ),
                       ],
@@ -109,9 +118,7 @@ class ChatBubble extends StatelessWidget {
                     ),
                   if (chatMessage.customWidget)
                     ChatBubbleStepData(chatMessage: chatMessage)
-                  else if (currentStep &&
-                      chatMessage.isResponse &&
-                      isLastResponse)
+                  else if (currentActiveStep)
                     ChatBubbleCurrentStep(
                       step: chatMessage.step,
                       data: chatMessage.data,

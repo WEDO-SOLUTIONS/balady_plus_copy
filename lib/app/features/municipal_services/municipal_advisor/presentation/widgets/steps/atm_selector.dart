@@ -18,7 +18,7 @@ class ATMSelectorSummary extends StatelessWidget {
         'yes'.tr(),
         'no'.tr(),
       ],
-      onSelected: (value) {
+      onChoose: (value) {
         context.read<MunicipalAdvisorBloc>().add(
               MunicipalAdvisorSelectATMEvent(
                 atm: value == 'yes'.tr(),

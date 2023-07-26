@@ -3,7 +3,7 @@ import 'package:dartz/dartz.dart';
 
 import '../../../../../core/errors/errors_exports.dart' show Failure;
 import '../../municipal_advisor_exports.dart'
-    show AccommodationTypeEntity, ActivityDetailsEntity, ActivityDetailsParamsModel, BoardTypeEntity, CalculateFeesParamsModel, CleaningEntity, CommercialOfficeEntity, ConsultationKeyParamsModel, GetLicenseYearsParamsModel, IsicActivityEntity, IsicSubActivityParamsModel, KeyParamsModel, LicenseFeesEntity, LicensePermitEntity, SaveActivitiesParamsModel, SupervisingAuthorityEntity;
+    show AccommodationTypeEntity, ActivityDetailsEntity, ActivityDetailsParamsModel, AttachmentEntity, AttachmentParamsModel, BoardTypeEntity, CalculateFeesParamsModel, CleaningEntity, CommercialOfficeEntity, ConditionsUrlsEntity, ContractEntity, FastflowConditionEntity, FinancialStudyParamsModel, GetLicenseYearsParamsModel, IsicActivityEntity, IsicSubActivityParamsModel, KeyParamsModel, LicenseFeesEntity, LicensePermitEntity, RequestStepModel, SaveActivitiesParamsModel, SupervisingAuthorityEntity, UpdatePermitParamsModel;
 
 abstract class MunicipalAdvisorRepository {
   Future<Either<Failure, List<IsicActivityEntity>>> getIsicActivities();
@@ -15,9 +15,7 @@ abstract class MunicipalAdvisorRepository {
   );
   Future<Either<Failure, List<AccommodationTypeEntity>>>
       getAccommodationTypes();
-  Future<Either<Failure, String>> getConsultationKey(
-    ConsultationKeyParamsModel params,
-  );
+  Future<Either<Failure, String>> getConsultationKey();
   Future<Either<Failure, List<String>>> getIssuingPredefinedConditions();
   Future<Either<Failure, List<LicensePermitEntity>>> getLicensePermits(
     KeyParamsModel params,
@@ -47,5 +45,30 @@ abstract class MunicipalAdvisorRepository {
   Future<Either<Failure, List<BoardTypeEntity>>> getBoardTypes();
   Future<Either<Failure, LicenseFeesEntity>> calculateLicenseFees(
     CalculateFeesParamsModel params,
+  );
+  Future<Either<Failure, bool>> saveFinancialStudy(
+    FinancialStudyParamsModel params,
+  );
+  Future<Either<Failure, List<ContractEntity>>> getShopOwnership(
+    KeyParamsModel params,
+  );
+  Future<Either<Failure, List<AttachmentEntity>>> getConsultationAttachments(
+    AttachmentParamsModel params,
+  );
+  Future<Either<Failure, int>> getMaxLicenseYears(
+    KeyParamsModel params,
+  );
+  Future<Either<Failure, ConditionsUrlsEntity>> getConditionsUrls();
+  Future<Either<Failure, List<FastflowConditionEntity>>> getFastflowConditions(
+    KeyParamsModel params,
+  );
+  Future<Either<Failure, List<RequestStepModel>>> getRequestFlow(
+    KeyParamsModel params,
+  );
+  Future<Either<Failure, List<String>>> getRequestFlowRecommendations(
+    KeyParamsModel params,
+  );
+  Future<Either<Failure, LicensePermitEntity>> updatePermit(
+    UpdatePermitParamsModel params,
   );
 }
