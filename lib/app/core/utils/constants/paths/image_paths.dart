@@ -27,4 +27,5 @@ class ImagePath {
   static const visaBg = '${_imagePath}visa_bg';
   static const walletBg = '${_imagePath}wallet_bg$_png';
   static const qrBg = '${_imagePath}qr_bg$_png';
+  static const weatherBackground3x = '${_imagePath}weather_background3x$_png';
 }

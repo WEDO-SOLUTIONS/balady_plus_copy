@@ -66,3 +66,6 @@ export 'extensions/log.dart';
 export 'extensions/str_conversion.dart';
 export 'extensions/widget_conversion.dart';
 export 'extensions/date_time_extension.dart';
+
+//date
+export 'weather_date.dart';

@@ -11,15 +11,15 @@ import '../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.
 import '../../data/model/dc_types.dart';
 import '../widgets/retrive_type_card_widget.dart';
 
-class DCSelectRetreiveTypePage extends StatefulWidget {
-  const DCSelectRetreiveTypePage({Key? key}) : super(key: key);
+class DCSelectRetrieveTypePage extends StatefulWidget {
+  const DCSelectRetrieveTypePage({Key? key}) : super(key: key);
 
   @override
-  State<DCSelectRetreiveTypePage> createState() =>
-      _DCSelectRetreiveTypePageState();
+  State<DCSelectRetrieveTypePage> createState() =>
+      _DCSelectRetrieveTypePageState();
 }
 
-class _DCSelectRetreiveTypePageState extends State<DCSelectRetreiveTypePage> {
+class _DCSelectRetrieveTypePageState extends State<DCSelectRetrieveTypePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

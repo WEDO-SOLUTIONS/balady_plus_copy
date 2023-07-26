@@ -108,4 +108,6 @@ class RouteName {
   // ------- Wallet ------
   static const walletPage = '/walletPage';
   static const businessLicensePage = '/businessLicensePage';
+  // -------  Weather ---------
+  static const weatherMainPage = '/weather_main_page';
 }
