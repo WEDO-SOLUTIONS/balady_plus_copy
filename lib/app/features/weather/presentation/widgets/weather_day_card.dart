@@ -1,6 +1,7 @@
 import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart'
     show IconPath, WeatherDateFormatter;
+import 'package:balady_plus/app/features/weather/presentation/widgets/expansion_tile.dart';
 import 'package:balady_plus/app/features/weather/weather_exports.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -29,7 +30,7 @@ class WeatherDayCard extends StatelessWidget {
       ),
       child: Theme(
         data: ThemeData().copyWith(dividerColor: Colors.transparent),
-        child: ExpansionTile(
+        child: CustomExpansionTile(
           key: UniqueKey(),
           hasIcon: false,
           onExpansionChanged: onExpansionChanged,
