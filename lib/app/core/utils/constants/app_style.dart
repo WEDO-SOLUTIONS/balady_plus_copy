@@ -382,10 +382,46 @@ class AppStyle {
     color: AppColor.riverBed,
     fontFamily: fontFamily,
   );
+
   static final compassDirectionTextStyle = TextStyle(
     fontSize: 15,
     fontWeight: AppFontWeight.medium.fontWeight,
     color: AppColor.riverBed,
+    fontFamily: fontFamily,
+  );
+
+  static final costTitleTextStyle = TextStyle(
+    fontSize: 14,
+    fontWeight: AppFontWeight.bold.fontWeight,
+    color: AppColor.blackModern600Light,
+    fontFamily: fontFamily,
+  );
+
+  static final costTextStyle = TextStyle(
+    fontSize: 16,
+    fontWeight: AppFontWeight.bold.fontWeight,
+    color: AppColor.darkTurquoise,
+    fontFamily: fontFamily,
+  );
+
+  static final textFieldTitleTextStyle = TextStyle(
+    fontSize: 12,
+    fontWeight: AppFontWeight.bold.fontWeight,
+    color: AppColor.blackModern700Light,
+    fontFamily: fontFamily,
+  );
+
+  static final lightTitleTextStyle = TextStyle(
+    fontSize: 10,
+    fontWeight: AppFontWeight.semiBold.fontWeight,
+    color: AppColor.primary900Light,
+    fontFamily: fontFamily,
+  );
+
+  static final lightTextStyle = TextStyle(
+    fontSize: 10,
+    fontWeight: AppFontWeight.semiBold.fontWeight,
+    color: AppColor.blackModern500Light,
     fontFamily: fontFamily,
   );
 

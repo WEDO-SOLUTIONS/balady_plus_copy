@@ -18,7 +18,7 @@ class TopicSelector extends StatelessWidget {
       items: [
         'municipalAdvisorTopicAnswer1'.tr(),
       ],
-      onSelected: (value) {
+      onChoose: (value) {
         context.read<MunicipalAdvisorBloc>().add(
               MunicipalAdvisorAddMessageEvent(
                 message: value,

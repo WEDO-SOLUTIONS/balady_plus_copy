@@ -15,14 +15,13 @@ class ContinueToFinancial extends StatelessWidget {
   Widget build(BuildContext context) {
     return ChatBubbleRadioSelector(
       items: [
-        'municipalAdvisorFinancialAnswer1'.tr(),
-        'municipalAdvisorFinancialAnswer2'.tr(),
+        'yes'.tr(),
+        'noEndChat'.tr(),
       ],
-      onSelected: (value) {
+      onChoose: (value) {
         context.read<MunicipalAdvisorBloc>().add(
               MunicipalAdvisorContinueToFinancial(
-                continueToFinancial:
-                    value == 'municipalAdvisorFinancialAnswer1'.tr(),
+                continueToFinancial: value == 'yes'.tr(),
               ),
             );
       },

@@ -123,9 +123,7 @@ class AppColor {
   static const blackModern50Light20 = Color(0x33fdfdfd);
   static const base500Light50 = Color(0x33fdfdfd);
   static const riverBed = Color(0xFF47515C);
-  static const jumbo = Color(0xFF71717A);
-
-  // static const Color lightRedBrown = Color(0xFFfdcbcb);
+  static const mystic = Color(0x7FE6EFEF);
 
   static const Color kGray115 = Color.fromARGB(255, 115, 115, 115);
   static const Color kGray191 = Color.fromARGB(255, 191, 191, 191);

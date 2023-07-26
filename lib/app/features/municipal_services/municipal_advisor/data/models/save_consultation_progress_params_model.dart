@@ -11,7 +11,7 @@ class SaveConsultationProgressParamsModel extends Equatable {
   final String landNo;
   final num shopArea;
   final int activityId;
-  final int? atmFeesOption;
+  final bool? atmFeesOption;
   final int? unitCount;
   final int? accommodationTypeId;
   final String? krokiUrl;

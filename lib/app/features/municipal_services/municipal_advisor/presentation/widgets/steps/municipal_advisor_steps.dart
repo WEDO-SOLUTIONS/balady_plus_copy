@@ -19,6 +19,13 @@ enum MunicipalAdvisorSteps {
   supervisingAuthorities,
   cleaningMechanisms,
   commercialOffices,
+  additionalInformation,
   continueToFinancial,
+  licenseCost,
   endChat,
+  continueToAttachments,
+  attachments,
+  attachmentsRequired,
+  continueToRequestPath,
+  requestPath,
 }

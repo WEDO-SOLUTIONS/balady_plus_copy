@@ -4,24 +4,33 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../municipal_advisor_exports.dart'
     show
+        AdditionalInformation,
+        AttachmentEntity,
+        AttachmentRequired,
+        ChatMessage,
         InputSummary,
         MunicipalAdvisorBloc,
         MunicipalAdvisorState,
         MunicipalAdvisorSteps,
+        PermitsCost,
+        RequestFlow,
         RequirementsList,
-        SupervisingAuthorities;
+        SupervisingAuthorities,
+        TotalCost,
+        TradeLicenseCost,
+        UserAttachmentsRequest;
 
 class ChatBubbleStepData extends StatelessWidget {
-  final MunicipalAdvisorSteps step;
+  final ChatMessage chatMessage;
 
   const ChatBubbleStepData({
     super.key,
-    required this.step,
+    required this.chatMessage,
   });
 
   @override
   Widget build(BuildContext context) {
-    switch (step) {
+    switch (chatMessage.step) {
       case MunicipalAdvisorSteps.inputSummary:
         return const InputSummary();
       case MunicipalAdvisorSteps.issuingPredefinedConditions:
@@ -73,7 +82,8 @@ class ChatBubbleStepData extends StatelessWidget {
             return RequirementsList(
               number: 6,
               title: "municipalAdvisorCleaningMechanismsTitle".tr(),
-              requirements: state.cleaningMechanisms ?? [],
+              requirements:
+                  state.cleaningMechanisms.map((e) => e.name).toList(),
             );
           },
         );
@@ -89,6 +99,41 @@ class ChatBubbleStepData extends StatelessWidget {
                   state.commercialOffices?.map((e) => e.officeName).toList() ??
                       [],
             );
+          },
+        );
+      case MunicipalAdvisorSteps.additionalInformation:
+        return const AdditionalInformation();
+      case MunicipalAdvisorSteps.licenseCost:
+        if (chatMessage.data == 'tradeLicense') {
+          return const TradeLicenseCost();
+        } else if (chatMessage.data == 'permits') {
+          return const PermitsCost();
+        } else if (chatMessage.data == 'total') {
+          return const TotalCost();
+        }
+        return const SizedBox.shrink();
+      case MunicipalAdvisorSteps.attachmentsRequired:
+        if (chatMessage.data is AttachmentEntity) {
+          return AttachmentRequired(
+            attachment: chatMessage.data as AttachmentEntity,
+          );
+        } else if (!chatMessage.isResponse) {
+          return const UserAttachmentsRequest();
+        }
+        return const SizedBox.shrink();
+      case MunicipalAdvisorSteps.requestPath:
+        return BlocBuilder<MunicipalAdvisorBloc, MunicipalAdvisorState>(
+          builder: (context, state) {
+            if (chatMessage.data == 'requestPath') {
+              return RequestFlow(steps: state.requestFlow);
+            } else if (chatMessage.data ==
+                'municipalAdvisorRequestPathSuggestions') {
+              return RequirementsList(
+                title: '',
+                requirements: state.requestFlowRecommendations,
+              );
+            }
+            return const SizedBox.shrink();
           },
         );
       default:

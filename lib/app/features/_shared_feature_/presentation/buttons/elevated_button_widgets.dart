@@ -316,4 +316,35 @@ class ElevatedButtonWidget extends _ElevatedButton {
               fontWeight: FontWeight.bold),
           onPressed: onPressed,
         ));
+
+  ElevatedButtonWidget.addBoard({required VoidCallback onPressed})
+      : super(CustomElevatedButtonWidget(
+          btnColor: Colors.transparent,
+          btnBorderColor: AppColor.primary800Light,
+          textStyle: AppStyle.elevatedButtonStyle.copyWith(
+            color: AppColor.primary800Light,
+            fontWeight: FontWeight.w700,
+            fontSize: 16,
+          ),
+          btnHeight: 56,
+          text: "AddBoard".tr(),
+          onPressed: onPressed,
+        ));
+
+  ElevatedButtonWidget.finishButton({
+    required VoidCallback? onPressed,
+    bool loading = false,
+  }) : super(CustomElevatedButtonWidget(
+          btnColor: AppColor.primary800Light,
+          btnBorderColor: Colors.transparent,
+          textStyle: AppStyle.elevatedButtonStyle.copyWith(
+            color: AppColor.white,
+            fontWeight: FontWeight.w700,
+            fontSize: 16,
+          ),
+          btnHeight: 56,
+          text: "finishButton".tr(),
+          onPressed: onPressed,
+          loading: loading,
+        ));
 }

@@ -14,7 +14,11 @@ import '../../../municipal_advisor_exports.dart'
         MunicipalAdvisorState;
 
 class AreaSelector extends StatefulWidget {
-  const AreaSelector({super.key});
+  final bool partOfLicenseCost;
+  const AreaSelector({
+    super.key,
+    this.partOfLicenseCost = false,
+  });
 
   @override
   State<AreaSelector> createState() => _AreaSelectorState();
@@ -24,21 +28,39 @@ class _AreaSelectorState extends State<AreaSelector> {
   final _controller = TextEditingController();
 
   @override
+  initState() {
+    super.initState();
+    _controller.text = context
+            .read<MunicipalAdvisorBloc>()
+            .state
+            .selectedArea
+            ?.toStringAsFixed(2) ??
+        '';
+  }
+
+  @override
   Widget build(BuildContext context) {
     return BlocBuilder<MunicipalAdvisorBloc, MunicipalAdvisorState>(
       builder: (context, state) {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(height: 4),
-            CustomTextWidget(
-              'municipalAdvisorAreaHint'.tr(),
-              textStyle: AppStyle.subMessageTextStle,
-            ),
+            SizedBox(height: widget.partOfLicenseCost ? 16 : 4),
+            if (widget.partOfLicenseCost)
+              CustomTextWidget(
+                'area'.tr(),
+                textStyle: AppStyle.dropDownTitleTextStyle,
+              )
+            else
+              CustomTextWidget(
+                'municipalAdvisorAreaHint'.tr(),
+                textStyle: AppStyle.subMessageTextStle,
+              ),
             const SizedBox(height: 16),
             CustomTextFieldWidget(
               borderColor: AppColor.primary900Light16,
               controller: _controller,
+              // initialValue: state.selectedArea?.toStringAsFixed(2),
               keyboardType: TextInputType.number,
               textInputAction: TextInputAction.done,
               inputFormatters: [
@@ -67,20 +89,21 @@ class _AreaSelectorState extends State<AreaSelector> {
               ),
             ),
             const SizedBox(height: 16),
-            ElevatedButtonWidget.choose(
-              onPressed: () {
-                FocusScope.of(context).unfocus();
-                //postframe
-                WidgetsBinding.instance.addPostFrameCallback((_) {
-                  final area = num.tryParse(_controller.text);
-                  if (area != null) {
-                    context.read<MunicipalAdvisorBloc>().add(
-                          MunicipalAdvisorSelectAreaEvent(area: area),
-                        );
-                  }
-                });
-              },
-            ),
+            if (!widget.partOfLicenseCost)
+              ElevatedButtonWidget.choose(
+                onPressed: () {
+                  FocusScope.of(context).unfocus();
+                  //postframe
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    final area = num.tryParse(_controller.text);
+                    if (area != null) {
+                      context.read<MunicipalAdvisorBloc>().add(
+                            MunicipalAdvisorSelectAreaEvent(area: area),
+                          );
+                    }
+                  });
+                },
+              ),
           ],
         );
       },

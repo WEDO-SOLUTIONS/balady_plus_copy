@@ -1,14 +1,15 @@
-import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:flutter/material.dart';
 
+import '../../../../../../core/utils/utils_exports.dart';
+
 class RequirementsList extends StatelessWidget {
-  final int number;
+  final int? number;
   final String title;
   final List<String> requirements;
 
   const RequirementsList({
     super.key,
-    required this.number,
+    this.number,
     required this.title,
     required this.requirements,
   });
@@ -18,24 +19,17 @@ class RequirementsList extends StatelessWidget {
     return Text.rich(
       TextSpan(
         children: [
-          TextSpan(
-            text: '$number. $title\n',
-            style: const TextStyle(
-              color: AppColor.darkTurquoise,
-              fontSize: 12,
-              fontFamily: 'Arabic UI Display',
-              fontWeight: FontWeight.w600,
+          if (number != null)
+            TextSpan(
+              text: '$number. $title\n',
+              style: AppStyle.textFieldTitleTextStyle.copyWith(
+                color: AppColor.darkTurquoise,
+              ),
             ),
-          ),
           for (final requirement in requirements)
             TextSpan(
               text: '- $requirement \n',
-              style: const TextStyle(
-                color: AppColor.jumbo,
-                fontSize: 10,
-                fontFamily: 'Arabic UI Display',
-                fontWeight: FontWeight.w600,
-              ),
+              style: AppStyle.lightTextStyle,
             ),
         ],
       ),

@@ -6,7 +6,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../core/utils/utils_exports.dart'
-    show AppColor, AppStyle, BlocRequestStatus, IconPath;
+    show AppColor, AppStyle, BlocRequestStatus, CommonProperties, IconPath;
 import '../../../../_shared_feature_/shared_feature_exports.dart'
     show
         CustomTextWidget,
@@ -37,8 +37,8 @@ class LocationPageState extends State<LocationPage> {
   final Completer<GoogleMapController> _controller =
       Completer<GoogleMapController>();
 
-  static const CameraPosition defaultLocation = CameraPosition(
-    target: LatLng(26.289472114068804, 43.912184371764624),
+  static final CameraPosition defaultLocation = CameraPosition(
+    target: CommonProperties.defaultLocation,
     zoom: 10,
   );
   //Varaibles
@@ -133,7 +133,9 @@ class LocationPageState extends State<LocationPage> {
                             ElevatedButtonWidget.confirmLocation(
                               loading: state.status ==
                                   BlocRequestStatus.submissionGetLoading,
-                              onPressed: state.gisResponse == null
+                              onPressed: state.gisResponse == null ||
+                                      state.status ==
+                                          BlocRequestStatus.submissionGetLoading
                                   ? null
                                   : () {
                                       if (coordinates == null) {

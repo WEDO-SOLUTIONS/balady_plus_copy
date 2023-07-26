@@ -21,7 +21,7 @@ class ConfirmLocation extends StatelessWidget {
         'municipalAdvisorLocationCorrectAnswer1'.tr(),
         'municipalAdvisorLocationCorrectAnswer2'.tr(),
       ],
-      onSelected: (value) {
+      onChoose: (value) {
         if (value == 'municipalAdvisorLocationCorrectAnswer1'.tr()) {
           context.read<MunicipalAdvisorBloc>().add(
                 MunicipalAdvisorAddMessageEvent(
