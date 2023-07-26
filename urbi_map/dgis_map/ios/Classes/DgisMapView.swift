@@ -267,6 +267,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
     
     func searchQueryText(
         _ queryText: String,
+        searchMarker: MarkerIconMessage,
         weekTime: WeekTimeSearchMessage?,
         searchRect: GeoRectMessage?,
         sortingType: SortingTypeMessage,
@@ -286,6 +287,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         
         searchHandler.search(
             queryText,
+            searchMarker: searchMarker,
             searchGeoRect: searchRect?.geoRect ?? map.camera.visibleRect,
             weekTimeMessage: weekTime,
             sortingType: sortingType,
@@ -514,6 +516,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
     
     func search(
         bySuggestIndex index: NSNumber,
+        searchMarker: MarkerIconMessage,
         weekTime: WeekTimeSearchMessage?,
         searchRect: GeoRectMessage?,
         sortingType: SortingTypeMessage,
@@ -533,6 +536,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         
         searchHandler.search(
             bySuggestIndex: index.intValue,
+            searchMarker: searchMarker,
             weekTime: weekTime,
             sortingType: sortingType,
             pageSize: pageSize.int32Value,

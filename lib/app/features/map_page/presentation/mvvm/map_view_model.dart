@@ -26,6 +26,10 @@ class MapViewModel extends BaseViewModel {
       searchController.text = queryText;
       List<ObjectInfoMessage> data = await controller.search(
         queryText,
+        searchMarker: MarkerIconMessage(
+          path: "assets/maps/icons/ic_marker.svg",
+          width: 24,
+        ),
         sortingType: SortingTypeMessage.byDistance,
         isOpenNow: true,
         searchRect: searchRect,

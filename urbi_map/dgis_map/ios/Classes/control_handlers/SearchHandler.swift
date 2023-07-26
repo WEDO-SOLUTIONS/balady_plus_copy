@@ -10,18 +10,9 @@ class SearchHandler: NSObject {
     private let searchManager: SearchManager
 
     private let imageFactory: IImageFactory
-    private lazy var searchMarkerImage: Image? = {
-        let assetKey = registrar.lookupKey(forAsset: "assets/maps/icons/ic_marker.svg")
-                    
-        guard let assetPath = Bundle.main.path(forResource: assetKey, ofType: nil),
-              let url = URL(string: "file://\(assetPath)"),
-              let data = try? Data(contentsOf: url) else {
-            print("No Icon Found")
-            return nil
-        }
-        
-        return imageFactory.make(svgData: data, size: .zero)
-    }()
+    
+    private var searchMarkerIcon: Image?
+    private var searchMarkerIconWidth: LogicalPixel?
 
     private lazy var objectManager: MapObjectManager = MapObjectManager.withGeneralization(
         map: map,
@@ -77,6 +68,7 @@ class SearchHandler: NSObject {
 
     func search(
         _ queryText: String,
+        searchMarker: MarkerIconMessage,
         searchGeoRect: DGis.GeoRect,
         weekTimeMessage: WeekTimeSearchMessage?,
         sortingType: SortingTypeMessage,
@@ -87,6 +79,7 @@ class SearchHandler: NSObject {
 
         self.performSearch(
             builder,
+            searchMarker: searchMarker,
             weekTime: weekTimeMessage,
             sortingType: sortingType,
             pageSize: pageSize,
@@ -237,6 +230,7 @@ class SearchHandler: NSObject {
 
     func search(
         bySuggestIndex index: Int,
+        searchMarker: MarkerIconMessage,
         weekTime: WeekTimeSearchMessage?,
         sortingType: SortingTypeMessage,
         pageSize: Int32,
@@ -255,6 +249,7 @@ class SearchHandler: NSObject {
 
         self.performSearch(
             builder,
+            searchMarker: searchMarker,
             weekTime: weekTime,
             sortingType: sortingType,
             pageSize: pageSize,
@@ -276,12 +271,32 @@ class SearchHandler: NSObject {
 
     private func performSearch(
         _ builder: SearchQueryBuilder,
+        searchMarker: MarkerIconMessage,
         weekTime: WeekTimeSearchMessage?,
         sortingType: SortingTypeMessage,
         pageSize: Int32,
         searchGeoRect: DGis.GeoRect,
         completion: @escaping ([ObjectInfoMessage]?, FlutterError?) -> Void
     ) {
+        let assetKey = registrar.lookupKey(forAsset: searchMarker.path)
+                            
+        guard let assetPath = Bundle.main.path(forResource: assetKey, ofType: nil),
+              let url = URL(string: "file://\(assetPath)"),
+              let data = try? Data(contentsOf: url) else {
+            completion(
+                nil,
+                FlutterError(
+                    code: "Error loading asset for marker",
+                    message: nil,
+                    details: nil
+                )
+            )
+            return
+        }
+        
+        self.searchMarkerIcon = imageFactory.make(svgData: data, size: .zero)
+        self.searchMarkerIconWidth = LogicalPixel(value: searchMarker.width.floatValue)
+
         let query = builder.setPageSize(pageSize: pageSize)
             .setSortingType(sortingType: sortingType.toSortingType())
             .setDirectoryFilter(filter: DirectoryFilter(
@@ -329,8 +344,8 @@ class SearchHandler: NSObject {
                 Marker(
                     options: MarkerOptions(
                         position: markerInfo.geoPoint,
-                        icon: self.searchMarkerImage,
-                        iconWidth: LogicalPixel(floatLiteral: 24.0),
+                        icon: self.searchMarkerIcon,
+                        iconWidth: self.searchMarkerIconWidth ?? LogicalPixel(value: 16),
                         userData: markerInfo.objectId
                     )
                 )

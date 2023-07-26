@@ -275,6 +275,7 @@ class MethodChannelDgisMapPlugin extends DgisMapPlugin {
   @override
   Future<List<ObjectInfoMessage?>> search(
     String queryText, {
+    required MarkerIconMessage searchMarker,
     required SortingTypeMessage sortingType,
     required int pageSize,
     WeekTimeSearchMessage? weekTime,
@@ -282,6 +283,7 @@ class MethodChannelDgisMapPlugin extends DgisMapPlugin {
   }) {
     return _api.search(
       queryText,
+      searchMarker,
       weekTime,
       searchRect,
       sortingType,
@@ -485,6 +487,7 @@ class MethodChannelDgisMapPlugin extends DgisMapPlugin {
   @override
   Future<List<ObjectInfoMessage?>> searchBySuggest(
     int index, {
+    required MarkerIconMessage searchMarker,
     required SortingTypeMessage sortingType,
     required int pageSize,
     WeekTimeSearchMessage? weekTime,
@@ -492,6 +495,7 @@ class MethodChannelDgisMapPlugin extends DgisMapPlugin {
   }) {
     return _api.searchBySuggest(
       index,
+      searchMarker,
       weekTime,
       searchRect,
       sortingType,

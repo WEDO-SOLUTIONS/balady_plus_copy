@@ -231,12 +231,14 @@ class DgisMapController {
   Future<List<ObjectInfoMessage>> search(
     String queryText, {
     required SortingTypeMessage sortingType,
+    required MarkerIconMessage searchMarker,
     GeoRectMessage? searchRect,
     bool isOpenNow = false,
     int pageSize = 20,
   }) async {
     final response = await _instance.search(
       queryText,
+      searchMarker: searchMarker,
       sortingType: sortingType,
       weekTime: isOpenNow ? WeekTimeFactory.openNow() : null,
       pageSize: pageSize,
@@ -372,8 +374,10 @@ class DgisMapController {
     String queryText, {
     GeoRectMessage? searchRect,
   }) async {
-    final response =
-        await _instance.fetchSuggests(queryText, searchRect: searchRect);
+    final response = await _instance.fetchSuggests(
+      queryText,
+      searchRect: searchRect,
+    );
 
     return response.whereType<SuggestMessage>().toList();
   }
@@ -427,6 +431,7 @@ class DgisMapController {
   /// Runs search by index from list returned by [fetchSuggest].
   Future<List<ObjectInfoMessage>> searchBySuggest(
     int index, {
+    required MarkerIconMessage searchMarker,
     required SortingTypeMessage sortingType,
     GeoRectMessage? searchRect,
     bool isOpenNow = false,
@@ -434,6 +439,7 @@ class DgisMapController {
   }) async {
     final response = await _instance.searchBySuggest(
       index,
+      searchMarker: searchMarker,
       sortingType: sortingType,
       weekTime: isOpenNow ? WeekTimeFactory.openNow() : null,
       pageSize: pageSize,

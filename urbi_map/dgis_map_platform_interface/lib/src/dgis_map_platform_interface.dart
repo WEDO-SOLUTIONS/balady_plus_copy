@@ -106,6 +106,7 @@ abstract class DgisMapPlugin extends PlatformInterface {
 
   Future<List<ObjectInfoMessage?>> search(
     String queryText, {
+    required MarkerIconMessage searchMarker,
     required SortingTypeMessage sortingType,
     GeoRectMessage? searchRect,
     required int pageSize,
@@ -169,6 +170,7 @@ abstract class DgisMapPlugin extends PlatformInterface {
 
   Future<List<ObjectInfoMessage?>> searchBySuggest(
     int index, {
+    required MarkerIconMessage searchMarker,
     required SortingTypeMessage sortingType,
     GeoRectMessage? searchRect,
     required int pageSize,

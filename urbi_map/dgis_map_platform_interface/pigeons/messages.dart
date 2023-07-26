@@ -546,6 +546,7 @@ abstract class MapApi {
   @async
   List<ObjectInfoMessage> search(
     String queryText,
+    MarkerIconMessage searchMarker,
     WeekTimeSearchMessage? weekTime,
     GeoRectMessage? searchRect,
     SortingTypeMessage sortingType,
@@ -618,6 +619,7 @@ abstract class MapApi {
   @async
   List<ObjectInfoMessage> searchBySuggest(
     int index,
+    MarkerIconMessage searchMarker,
     WeekTimeSearchMessage? weekTime,
     GeoRectMessage? searchRect,
     SortingTypeMessage sortingType,

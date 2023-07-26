@@ -5,6 +5,7 @@ import android.location.Location
 import android.util.Size
 import android.view.LayoutInflater
 import com.dgis.map.control_handlers.*
+import com.dgis.map.extensions.toGeoRect
 import com.dgis.map.extensions.toSdkAccuracy
 import com.dgis.map.extensions.unsafeLazy
 import com.dgis.map.map_api.Messages
@@ -218,7 +219,9 @@ class DgisMapView(
 
     override fun search(
         queryText: String,
+        searchMarker: MarkerIconMessage,
         weekTime: WeekTimeSearchMessage?,
+        searchRect: GeoRectMessage?,
         sortingType: SortingTypeMessage,
         pageSize: Long,
         result: Messages.Result<List<ObjectInfoMessage>>?
@@ -230,7 +233,8 @@ class DgisMapView(
 
         searchHandler?.search(
             queryText = queryText,
-            searchGeoRect = map.camera.visibleRect,
+            searchMarker = searchMarker,
+            searchGeoRect = searchRect?.toGeoRect() ?: map.camera.visibleRect,
             weekTimeMessage = weekTime,
             sortingType = sortingType,
             pageSize = pageSize.toInt(),
@@ -403,6 +407,7 @@ class DgisMapView(
 
     override fun fetchSuggests(
         queryText: String,
+        searchRect: GeoRectMessage?,
         result: Messages.Result<List<SuggestMessage>>?
     ) {
         val map = map ?: kotlin.run {
@@ -412,7 +417,7 @@ class DgisMapView(
 
         searchHandler?.fetchSuggests(
             queryText = queryText,
-            searchGeoRect = map.camera.visibleRect,
+            searchGeoRect = searchRect?.toGeoRect() ?: map.camera.visibleRect,
             result = result
         )
     }
@@ -442,7 +447,9 @@ class DgisMapView(
 
     override fun searchBySuggest(
         index: Long,
+        searchMarker: MarkerIconMessage,
         weekTime: WeekTimeSearchMessage?,
+        searchRect: GeoRectMessage?,
         sortingType: SortingTypeMessage,
         pageSize: Long,
         result: Messages.Result<List<ObjectInfoMessage>>?
@@ -454,7 +461,8 @@ class DgisMapView(
 
         searchHandler?.searchBySuggest(
             index = index.toInt(),
-            searchGeoRect = map.camera.visibleRect,
+            searchMarker = searchMarker,
+            searchGeoRect = searchRect?.toGeoRect() ?: map.camera.visibleRect,
             weekTimeMessage = weekTime,
             sortingType = sortingType,
             pageSize = pageSize.toInt(),
@@ -475,31 +483,14 @@ class DgisMapView(
     }
 
     override fun overlappedBy(
-        outerRect: VisibleRectMessage,
-        innerRect: VisibleRectMessage,
+        outerRect: GeoRectMessage,
+        innerRect: GeoRectMessage,
         result: Messages.Result<Long>?
     ) {
-        val outer = GeoRect(
-            southWestPoint = GeoPoint(
-                latitude = outerRect.southWest.latitude,
-                longitude = outerRect.southWest.longitude
-            ),
-            northEastPoint = GeoPoint(
-                latitude = outerRect.northEast.latitude,
-                longitude = outerRect.northEast.longitude
-            )
-        )
+        val outer = outerRect.toGeoRect()
 
-        val inner = GeoRect(
-            southWestPoint = GeoPoint(
-                latitude = innerRect.southWest.latitude,
-                longitude = innerRect.southWest.longitude
-            ),
-            northEastPoint = GeoPoint(
-                latitude = innerRect.northEast.latitude,
-                longitude = innerRect.northEast.longitude
-            )
-        )
+        val inner = innerRect.toGeoRect()
+
         val isOverlapped = if (outer.contains(inner)) 1L else 0
         result?.success(isOverlapped)
     }
