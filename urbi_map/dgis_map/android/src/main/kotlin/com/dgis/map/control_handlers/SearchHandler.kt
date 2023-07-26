@@ -83,7 +83,7 @@ class SearchHandler(
 
     fun fetchSuggests(
         queryText: String,
-        searchGeoRect: GeoRect,
+        searchGeoRect: GeoRect?,
         result: Result<List<SuggestMessage>>?
     ) {
         val suggestQuery = SuggestQueryBuilder.fromQueryText(queryText)
@@ -105,7 +105,7 @@ class SearchHandler(
     fun searchBySuggest(
         index: Int,
         searchMarker: MarkerIconMessage,
-        searchGeoRect: GeoRect,
+        searchGeoRect: GeoRect?,
         weekTimeMessage: WeekTimeSearchMessage? = null,
         sortingType: SortingTypeMessage,
         pageSize: Int,
@@ -132,7 +132,7 @@ class SearchHandler(
     fun search(
         queryText: String,
         searchMarker: MarkerIconMessage,
-        searchGeoRect: GeoRect,
+        searchGeoRect: GeoRect?,
         weekTimeMessage: WeekTimeSearchMessage? = null,
         sortingType: SortingTypeMessage,
         pageSize: Int,
@@ -245,7 +245,7 @@ class SearchHandler(
     private fun performSearch(
         builder: SearchQueryBuilder,
         searchMarker: MarkerIconMessage,
-        searchGeoRect: GeoRect,
+        searchGeoRect: GeoRect?,
         weekTimeMessage: WeekTimeSearchMessage? = null,
         sortingType: SortingTypeMessage,
         pageSize: Int,

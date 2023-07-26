@@ -69,7 +69,7 @@ class SearchHandler: NSObject {
     func search(
         _ queryText: String,
         searchMarker: MarkerIconMessage,
-        searchGeoRect: DGis.GeoRect,
+        searchGeoRect: DGis.GeoRect?,
         weekTimeMessage: WeekTimeSearchMessage?,
         sortingType: SortingTypeMessage,
         pageSize: Int32,
@@ -130,7 +130,7 @@ class SearchHandler: NSObject {
 
     func fetchSuggests(
         queryText: String,
-        searchGeoRect: DGis.GeoRect,
+        searchGeoRect: DGis.GeoRect?,
         completion: @escaping ([SuggestMessage]?, FlutterError?) -> Void
     ) {
         let suggestQuery = SuggestQueryBuilder.fromQueryText(queryText: queryText)
@@ -234,7 +234,7 @@ class SearchHandler: NSObject {
         weekTime: WeekTimeSearchMessage?,
         sortingType: SortingTypeMessage,
         pageSize: Int32,
-        searchGeoRect: DGis.GeoRect,
+        searchGeoRect: DGis.GeoRect?,
         completion: @escaping ([ObjectInfoMessage]?, FlutterError?) -> Void
     ) {
         guard case .performSearchHandler(let handler) = suggests[index].handler,
@@ -275,7 +275,7 @@ class SearchHandler: NSObject {
         weekTime: WeekTimeSearchMessage?,
         sortingType: SortingTypeMessage,
         pageSize: Int32,
-        searchGeoRect: DGis.GeoRect,
+        searchGeoRect: DGis.GeoRect?,
         completion: @escaping ([ObjectInfoMessage]?, FlutterError?) -> Void
     ) {
         let assetKey = registrar.lookupKey(forAsset: searchMarker.path)

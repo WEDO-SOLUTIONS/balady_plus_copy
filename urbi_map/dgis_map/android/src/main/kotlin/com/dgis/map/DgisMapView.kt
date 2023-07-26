@@ -226,15 +226,10 @@ class DgisMapView(
         pageSize: Long,
         result: Messages.Result<List<ObjectInfoMessage>>?
     ) {
-        val map = map ?: kotlin.run {
-            result?.error(IllegalArgumentException("Map has not been initialized"))
-            return
-        }
-
         searchHandler?.search(
             queryText = queryText,
             searchMarker = searchMarker,
-            searchGeoRect = searchRect?.toGeoRect() ?: map.camera.visibleRect,
+            searchGeoRect = searchRect?.toGeoRect(),
             weekTimeMessage = weekTime,
             sortingType = sortingType,
             pageSize = pageSize.toInt(),
@@ -410,14 +405,9 @@ class DgisMapView(
         searchRect: GeoRectMessage?,
         result: Messages.Result<List<SuggestMessage>>?
     ) {
-        val map = map ?: kotlin.run {
-            result?.error(IllegalArgumentException("Map has not been initialized"))
-            return
-        }
-
         searchHandler?.fetchSuggests(
             queryText = queryText,
-            searchGeoRect = searchRect?.toGeoRect() ?: map.camera.visibleRect,
+            searchGeoRect = searchRect?.toGeoRect(),
             result = result
         )
     }
@@ -454,15 +444,10 @@ class DgisMapView(
         pageSize: Long,
         result: Messages.Result<List<ObjectInfoMessage>>?
     ) {
-        val map = map ?: kotlin.run {
-            result?.error(IllegalArgumentException("Map has not been initialized"))
-            return
-        }
-
         searchHandler?.searchBySuggest(
             index = index.toInt(),
             searchMarker = searchMarker,
-            searchGeoRect = searchRect?.toGeoRect() ?: map.camera.visibleRect,
+            searchGeoRect = searchRect?.toGeoRect(),
             weekTimeMessage = weekTime,
             sortingType = sortingType,
             pageSize = pageSize.toInt(),

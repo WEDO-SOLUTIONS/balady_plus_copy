@@ -274,7 +274,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         pageSize: NSNumber,
         completion: @escaping ([ObjectInfoMessage]?, FlutterError?) -> Void
     ) {
-        guard let map = self.map, let searchHandler = self.searchHandler else {
+        guard let searchHandler = self.searchHandler else {
             completion(
                 nil,
                 FlutterError(
@@ -288,7 +288,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         searchHandler.search(
             queryText,
             searchMarker: searchMarker,
-            searchGeoRect: searchRect?.geoRect ?? map.camera.visibleRect,
+            searchGeoRect: searchRect?.geoRect,
             weekTimeMessage: weekTime,
             sortingType: sortingType,
             pageSize: pageSize.int32Value,
@@ -421,7 +421,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         searchRect: GeoRectMessage?,
         completion: @escaping ([SuggestMessage]?, FlutterError?) -> Void
     ) {
-        guard let map = self.map, let searchHandler = self.searchHandler else {
+        guard let searchHandler = self.searchHandler else {
             completion(
                 nil,
                 FlutterError(
@@ -434,7 +434,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         
         searchHandler.fetchSuggests(
             queryText: queryText,
-            searchGeoRect: searchRect?.geoRect ?? map.camera.visibleRect,
+            searchGeoRect: searchRect?.geoRect,
             completion: completion
         )
     }
@@ -523,7 +523,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         pageSize: NSNumber,
         completion: @escaping ([ObjectInfoMessage]?, FlutterError?) -> Void
     ) {
-        guard let map = self.map, let searchHandler = self.searchHandler else {
+        guard let searchHandler = self.searchHandler else {
             completion(
                 nil,
                 FlutterError(
@@ -540,7 +540,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
             weekTime: weekTime,
             sortingType: sortingType,
             pageSize: pageSize.int32Value,
-            searchGeoRect: searchRect?.geoRect ?? map.camera.visibleRect,
+            searchGeoRect: searchRect?.geoRect,
             completion: completion
         )
     }
