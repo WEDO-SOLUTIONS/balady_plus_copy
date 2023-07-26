@@ -5,11 +5,23 @@ import CoreLocation
 class SearchHandler: NSObject {
     private let map: Map
     private let sdkContext: Container
+    private let registrar: FlutterPluginRegistrar
 
     private let searchManager: SearchManager
 
     private let imageFactory: IImageFactory
-    private lazy var searchMarkerImage: Image = self.imageFactory.make(image: UIImage(named: "ic_search_marker")!)
+    private lazy var searchMarkerImage: Image? = {
+        let assetKey = registrar.lookupKey(forAsset: "assets/maps/icons/ic_marker.svg")
+                    
+        guard let assetPath = Bundle.main.path(forResource: assetKey, ofType: nil),
+              let url = URL(string: "file://\(assetPath)"),
+              let data = try? Data(contentsOf: url) else {
+            print("No Icon Found")
+            return nil
+        }
+        
+        return imageFactory.make(svgData: data, size: .zero)
+    }()
 
     private lazy var objectManager: MapObjectManager = MapObjectManager.withGeneralization(
         map: map,
@@ -26,11 +38,18 @@ class SearchHandler: NSObject {
     private var availableFlagFilters: Set<FlagFilter> = []
     private var lastQuery: SearchQuery?
 
-    init(searchManager: SearchManager, map: Map, sdkContext: Container, imageFactory: IImageFactory) {
+    init(
+        searchManager: SearchManager,
+        map: Map,
+        sdkContext: Container,
+        imageFactory: IImageFactory,
+        registrar: FlutterPluginRegistrar
+    ) {
         self.searchManager = searchManager
         self.map = map
         self.sdkContext = sdkContext
         self.imageFactory = imageFactory
+        self.registrar = registrar
     }
 
     func cancel() {
@@ -311,6 +330,7 @@ class SearchHandler: NSObject {
                     options: MarkerOptions(
                         position: markerInfo.geoPoint,
                         icon: self.searchMarkerImage,
+                        iconWidth: LogicalPixel(floatLiteral: 24.0),
                         userData: markerInfo.objectId
                     )
                 )

@@ -1,3 +1,5 @@
+import 'package:dgis_map_platform_interface/library.dart';
+
 enum VisibleRectEvents { visibleRectChanged }
 
 class VisibleRectEvent {
@@ -26,5 +28,18 @@ class VisibleRect {
   @override
   String toString() {
     return "North-East - $northEastLat : $northEastLon, South-West - $southWestLat : $southWestLon, Zoom - $zoom";
+  }
+
+  GeoRectMessage geoRectMessage() {
+    return GeoRectMessage(
+      northEast: GeoPointMessage(
+        latitude: northEastLat,
+        longitude: northEastLon,
+      ),
+      southWest: GeoPointMessage(
+        latitude: southWestLat,
+        longitude: southWestLon,
+      ),
+    );
   }
 }

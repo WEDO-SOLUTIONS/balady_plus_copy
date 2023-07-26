@@ -2,7 +2,7 @@
 import 'package:dgis_map/library.dart';
 import 'package:dgis_map/wfs/data/feature_item.dart';
 import 'package:dgis_map/wfs/api/wfs_api.dart';
-import 'package:dgis_map/extensions/visible_rect_mesasge_ext.dart';
+import 'package:dgis_map/extensions/geo_rect_mesasge_ext.dart';
 
 class FeaturesProvider {
   //TODO: refactor afterwards
@@ -12,12 +12,15 @@ class FeaturesProvider {
 
   static final FeaturesProvider _instance = FeaturesProvider._();
 
-  static const String _testJsonName = "packages/dgis_map/assets/json/panoramas_test.json";
+  static const String _testJsonName =
+      "packages/dgis_map/assets/json/panoramas_test.json";
 
-  VisibleRectMessage? _lastProceedRect;
+  GeoRectMessage? _lastProceedRect;
 
   Future<List<FeatureItem>> panoramas(
-      DgisMapController controller, VisibleRectMessage visibleRect) async {
+    DgisMapController controller,
+    GeoRectMessage visibleRect,
+  ) async {
     final isOverlapped = _lastProceedRect != null
         ? await controller.overlappedBy(_lastProceedRect!, visibleRect) == 1
             ? true
@@ -34,7 +37,8 @@ class FeaturesProvider {
         southWestLat: _lastProceedRect!.southWest.latitude,
         southWestLon: _lastProceedRect!.southWest.longitude);
 
-    final panoramas = allItems.where((element) => element.properties.panoramic).toList();
+    final panoramas =
+        allItems.where((element) => element.properties.panoramic).toList();
 
     return panoramas;
   }

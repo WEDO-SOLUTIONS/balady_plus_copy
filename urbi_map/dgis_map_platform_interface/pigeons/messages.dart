@@ -281,8 +281,11 @@ class AddLayerPointObjectsMessage {
   final List<LayerPointObjectMessage?> objects;
 }
 
-class VisibleRectMessage {
-  VisibleRectMessage(this.northEast, this.southWest);
+class GeoRectMessage {
+  GeoRectMessage({
+    required this.northEast,
+    required this.southWest,
+  });
 
   final GeoPointMessage northEast;
   final GeoPointMessage southWest;
@@ -544,6 +547,7 @@ abstract class MapApi {
   List<ObjectInfoMessage> search(
     String queryText,
     WeekTimeSearchMessage? weekTime,
+    GeoRectMessage? searchRect,
     SortingTypeMessage sortingType,
     int pageSize,
   );
@@ -603,7 +607,10 @@ abstract class MapApi {
   void setLayerVisible(String alias, bool visible);
 
   @async
-  List<SuggestMessage> fetchSuggests(String queryText);
+  List<SuggestMessage> fetchSuggests(
+    String queryText,
+    GeoRectMessage? searchRect,
+  );
 
   @async
   ObjectInfoMessage getSuggestObject(int index);
@@ -612,6 +619,7 @@ abstract class MapApi {
   List<ObjectInfoMessage> searchBySuggest(
     int index,
     WeekTimeSearchMessage? weekTime,
+    GeoRectMessage? searchRect,
     SortingTypeMessage sortingType,
     int pageSize,
   );
@@ -650,7 +658,7 @@ abstract class MapApi {
   void unselectPanorama();
 
   @async
-  int overlappedBy(VisibleRectMessage outerRect, VisibleRectMessage innerRect);
+  int overlappedBy(GeoRectMessage outerRect, GeoRectMessage innerRect);
 
   @async
   void setRouteParams(RouteEditorRouteParamsMessage params);
