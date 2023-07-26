@@ -13,12 +13,15 @@ class WeatherDayCard extends StatelessWidget {
   const WeatherDayCard({
     super.key,
     required this.forecastDay,
+    required this.isExpanded,
+    required this.onExpansionChanged,
   });
   final ForecastDay? forecastDay;
+  final bool isExpanded;
+  final Function(bool expanded) onExpansionChanged;
 
   @override
   Widget build(BuildContext context) {
-    print(forecastDay?.date);
     return Card(
       elevation: 0,
       shape: RoundedRectangleBorder(
@@ -27,15 +30,20 @@ class WeatherDayCard extends StatelessWidget {
       child: Theme(
         data: ThemeData().copyWith(dividerColor: Colors.transparent),
         child: ExpansionTile(
+          key: UniqueKey(),
           hasIcon: false,
+          onExpansionChanged: onExpansionChanged,
+          initiallyExpanded: isExpanded,
           title: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Expanded(
                 child: CustomTextWidget(
-                  WeatherDateFormatter.isToday(forecastDay?.date ?? '')
+                  WeatherDateFormatter.isToday(
+                          forecastDay?.date ?? '2022-01-01')
                       ? 'today'.tr()
-                      : WeatherDateFormatter.getDay(forecastDay?.date ?? ''),
+                      : WeatherDateFormatter.getDay(
+                          forecastDay?.date ?? '2022-01-01'),
                   fontColor: AppColor.blackModern700Light,
                   textAlign: TextAlign.start,
                 ),
