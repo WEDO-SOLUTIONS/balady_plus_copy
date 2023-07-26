@@ -27,7 +27,7 @@ class WeatherDayCard extends StatelessWidget {
       child: Theme(
         data: ThemeData().copyWith(dividerColor: Colors.transparent),
         child: ExpansionTile(
-          hasIcon: false,
+          //hasIcon: false,
           title: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [

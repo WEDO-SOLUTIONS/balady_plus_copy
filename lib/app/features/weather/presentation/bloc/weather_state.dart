@@ -5,24 +5,25 @@ class WeatherState extends Equatable {
   final BlocStatus allWeatherInfoStatus;
   final String? errorMessage;
   final AllWeatherInfoEntity? allWeatherInfo;
-  const WeatherState({
-    this.allWeatherInfoStatus = BlocStatus.initial,
-    this.errorMessage,
-    this.allWeatherInfo,
-  });
+  final GISResponse? gisResponse;
+  const WeatherState(
+      {this.allWeatherInfoStatus = BlocStatus.initial,
+      this.errorMessage,
+      this.allWeatherInfo,
+      this.gisResponse});
 
   @override
-  List<Object> get props => [allWeatherInfoStatus];
+  List<Object?> get props => [allWeatherInfoStatus, gisResponse];
 
-  WeatherState copyWith({
-    BlocStatus? allWeatherInfoStatus,
-    String? errorMessage,
-    AllWeatherInfoEntity? allWeatherInfo,
-  }) {
+  WeatherState copyWith(
+      {BlocStatus? allWeatherInfoStatus,
+      String? errorMessage,
+      AllWeatherInfoEntity? allWeatherInfo,
+      GISResponse? gisResponse}) {
     return WeatherState(
-      allWeatherInfoStatus: allWeatherInfoStatus ?? this.allWeatherInfoStatus,
-      errorMessage: errorMessage ?? this.errorMessage,
-      allWeatherInfo: allWeatherInfo ?? this.allWeatherInfo,
-    );
+        allWeatherInfoStatus: allWeatherInfoStatus ?? this.allWeatherInfoStatus,
+        errorMessage: errorMessage ?? this.errorMessage,
+        allWeatherInfo: allWeatherInfo ?? this.allWeatherInfo,
+        gisResponse: gisResponse ?? this.gisResponse);
   }
 }
