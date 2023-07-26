@@ -462,16 +462,6 @@ class MethodChannelDgisMapPlugin extends DgisMapPlugin {
   }
 
   @override
-  Future<List<EverGisLayerMessage?>> getLayers() {
-    return _api.getLayers();
-  }
-
-  @override
-  Future<void> setLayerVisible(String alias, bool visible) {
-    return _api.setLayerVisible(alias, visible);
-  }
-
-  @override
   Future<List<SuggestMessage?>> fetchSuggests(
     String queryText, {
     GeoRectMessage? searchRect,
@@ -625,25 +615,6 @@ class MethodChannelDgisMapPlugin extends DgisMapPlugin {
     required SortingTypeMessage sortingType,
   }) {
     return _api.applyDirectoryFilters(filters, isOpenFilter, sortingType);
-  }
-
-  @override
-  Future<void> applyEverGisFilters(
-    String layerAlias,
-    List<EGStringFilterMessage> stringFilters,
-    List<EGDoubleFilterMessage> doubleFilters,
-    List<EGIntFilterMessage> intFilters,
-    List<EGDateRangeFilterMessage> dateRangeFilters,
-    List<EGComplexDateFilterMessage> complexDateFilters,
-  ) {
-    return _api.applyEverGisFilters(
-      layerAlias,
-      stringFilters,
-      doubleFilters,
-      intFilters,
-      dateRangeFilters,
-      complexDateFilters,
-    );
   }
 
   @override

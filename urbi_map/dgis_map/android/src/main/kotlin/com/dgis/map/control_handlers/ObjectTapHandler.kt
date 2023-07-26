@@ -487,13 +487,11 @@ class ObjectTapHandler(
     }
 
     fun setPanoramasPadding(map: ru.dgis.sdk.map.Map, message: CameraSetPaddingMessage) {
-        map.camera.setPadding(
-            Padding(
-                left = message.leftPadding.toInt(),
-                top = message.topPadding.toInt(),
-                right = message.rightPadding.toInt(),
-                bottom = message.topPadding.toInt()
-            )
+        map.camera.padding = Padding(
+            left = message.leftPadding.toInt(),
+            top = message.topPadding.toInt(),
+            right = message.rightPadding.toInt(),
+            bottom = message.topPadding.toInt()
         )
     }
 

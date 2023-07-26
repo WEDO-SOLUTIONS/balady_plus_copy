@@ -120,7 +120,7 @@ private fun Messages.ObjectInfoMessage.Builder.buildMarkerPosition(response: Dir
 
 private fun Messages.ObjectInfoMessage.Builder.buildEntraceIds(response: DirectoryObject) {
     this.setEntranceIds(
-        response.buildingEntrances.map {
+        response.entrances.map {
             Messages.DgisObjectIdMessage.Builder()
                 .setObjectId(it.id.objectId)
                 .setEntranceId(it.id.entranceId)
