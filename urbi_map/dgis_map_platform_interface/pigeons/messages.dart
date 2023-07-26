@@ -183,8 +183,8 @@ class DistanceResponseMessage {
   final DgisObjectIdMessage? dgisObjectId;
 }
 
-class MarkerOptionsMessage {
-  const MarkerOptionsMessage({
+class MarkerOptionsMessageOld {
+  const MarkerOptionsMessageOld({
     required this.svgAsset,
     required this.width,
     required this.height,
@@ -370,6 +370,131 @@ class MarkerAzimuthMessage {
   final double degree;
 }
 
+class MarkerAnchorMessage {
+  MarkerAnchorMessage(this.x, this.y);
+
+  final double x;
+  final double y;
+}
+
+enum TextPlacementMessage {
+  noLabel,
+  bottomCenter,
+  bottomRight,
+  bottomLeft,
+  circleBottomRight,
+  rightBottom,
+  rightCenter,
+  rightTop,
+  circleTopRight,
+  topCenter,
+  topRight,
+  topLeft,
+  circleTopLeft,
+  leftTop,
+  leftCenter,
+  leftBottom,
+  circleBottomLeft,
+  centerCenter
+}
+
+class MarkerTextPlacementMessage {
+  MarkerTextPlacementMessage(this.placement);
+
+  final TextPlacementMessage placement;
+}
+
+class MarkerTextStyleMessage {
+  MarkerTextStyleMessage({
+    this.fontSize,
+    this.color,
+    this.strokeWidth,
+    this.strokeColor,
+    this.textPlacement,
+    this.textOffset,
+    this.fontName,
+  });
+
+  final double? fontSize;
+  final int? color;
+  final double? strokeWidth;
+  final int? strokeColor;
+  final MarkerTextPlacementMessage? textPlacement;
+  final double? textOffset;
+  final String? fontName;
+}
+
+class MarkerIconMessage {
+  MarkerIconMessage(this.path, this.width, this.iconMapDirection);
+
+  final String path;
+  final double width;
+  final MarkerAzimuthMessage? iconMapDirection;
+}
+
+class MarkerOptionsMessage {
+  MarkerOptionsMessage({
+    required this.position,
+    required this.icon,
+    this.anchor,
+    required this.text,
+    this.textStyle,
+  });
+
+  final GeoPointMessage position;
+  final MarkerIconMessage? icon;
+  final MarkerAnchorMessage? anchor;
+  final String? text;
+  final MarkerTextStyleMessage? textStyle;
+}
+
+class MarkerMessage {
+  MarkerMessage(this.id, this.options);
+
+  final int id;
+  final MarkerOptionsMessage options;
+}
+
+class PolygonOptionsMessage {
+  PolygonOptionsMessage({
+    required List<List<GeoPointMessage>> this.contours,
+    this.color,
+    this.strokeWidth,
+    this.strokeColor,
+  });
+
+  final List<List<GeoPointMessage?>?> contours;
+  final int? color;
+  final double? strokeWidth;
+  final int? strokeColor;
+}
+
+class PolygonMessage {
+  PolygonMessage(this.id, this.options);
+
+  final int id;
+  final PolygonOptionsMessage options;
+}
+
+class PolylineOptionsMessage {
+  PolylineOptionsMessage({
+    required List<GeoPointMessage> this.points,
+    this.color,
+    this.width,
+  });
+
+  final List<GeoPointMessage?> points;
+  final int? color;
+  final double? width;
+}
+
+class PolylineMessage {
+  PolylineMessage(this.id, this.options);
+
+  final int id;
+  final PolylineOptionsMessage options;
+}
+
 @ConfigurePigeon(
   PigeonOptions(
     dartOut: 'lib/src/pigeons/messages.g.dart',
@@ -427,13 +552,43 @@ abstract class MapApi {
   List<ObjectInfoMessage>? getNextPage();
 
   @async
-  void setMarkerOptions(MarkerOptionsMessage options);
+  void setMarkerOptions(MarkerOptionsMessageOld options);
 
   @async
-  void addMarker(GeoPointMessage geoPoint);
+  void addMarker(MarkerMessage marker);
+
+  @async
+  void addMarkers(List<MarkerMessage> markers);
+
+  @async
+  void removeMarker(int id);
 
   @async
   void removeAllMarkers();
+
+  @async
+  void addPolygon(PolygonMessage polygon);
+
+  @async
+  void addPolygons(List<PolygonMessage> polygons);
+
+  @async
+  void removePolygon(int id);
+
+  @async
+  void removeAllPolygons();
+
+  @async
+  void addPolyline(PolylineMessage polyline);
+
+  @async
+  void addPolylines(List<PolylineMessage> polylines);
+
+  @async
+  void removePolyline(int id);
+
+  @async
+  void removeAllPolylines();
 
   @async
   void removeSearchMarkers();

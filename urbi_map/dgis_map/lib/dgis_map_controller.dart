@@ -251,15 +251,58 @@ class DgisMapController {
   }
 
   /// Options for marker that appears on map on object tap. Used by [addMarker].
-  Future<void> setMarkerOptions(MarkerOptionsMessage markerOptions) =>
+  Future<void> setMarkerOptions(MarkerOptionsMessageOld markerOptions) =>
       _instance.setMarkerOptions(markerOptions);
 
-  /// Add marker to map. Typically on object tap. Set options with [setMarkerOptions].
-  Future<void> addMarker(GeoPointMessage geoPoint) =>
-      _instance.addMarker(geoPoint);
+  /// Add marker to map.
+  Future<void> addMarker(Marker marker) =>
+      _instance.addMarker(marker);
+
+  /// Add several markers to map.
+  Future<void> addMarkers(List<Marker> markers) =>
+      _instance.addMarkers(markers);
+
+  /// Remove marker by id.
+  Future<void> removeMarker(int id) => _instance.removeMarker(id);
 
   /// Remove all markers added with [addMarker].
   Future<void> removeAllMarkers() => _instance.removeAllMarkers();
+
+  /// Remove all markers, polygons, polylines
+  /// that were added with [addMarker], [addPolygons], [addPolyline].
+  Future<void> removeAll() async {
+    await _instance.removeAllMarkers();
+    await _instance.removeAllPolygons();
+    await _instance.removeAllPolylines();
+  }
+
+  /// Add polygon to map.
+  Future<void> addPolygon(Polygon polygon) =>
+      _instance.addPolygon(polygon);
+
+  /// Add several polygons to map.
+  Future<void> addPolygons(List<Polygon> polygons) =>
+      _instance.addPolygons(polygons);
+
+  /// Remove polygon by id.
+  Future<void> removePolygon(int id) => _instance.removePolygon(id);
+
+  /// Remove all polygons added with [addPolygon].
+  Future<void> removeAllPolygons() => _instance.removeAllPolygons();
+
+  /// Add polyline to map.
+  Future<void> addPolyline(Polyline polyline) =>
+      _instance.addPolyline(polyline);
+
+  /// Add several polylines to map.
+  Future<void> addPolylines(List<Polyline> polyline) =>
+      _instance.addPolylines(polyline);
+
+  /// Remove polyline by id.
+  Future<void> removePolyline(int id) => _instance.removePolyline(id);
+
+  /// Remove all polyline added with [addPolyline].
+  Future<void> removeAllPolylines() => _instance.removeAllPolylines();
 
   /// Remove markers added by calling [search].
   Future<void> removeSearchMarkers() => _instance.removeSearchMarkers();

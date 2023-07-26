@@ -4,6 +4,30 @@ abstract class TapEvent {
   const TapEvent();
 }
 
+class MarkerTapEvent extends TapEvent {
+  const MarkerTapEvent(this.id);
+
+  static const name = "onMarkerTap";
+
+  final int id;
+}
+
+class PolygonTapEvent extends TapEvent {
+  const PolygonTapEvent(this.id);
+
+  static const name = "onPolygonTap";
+
+  final int id;
+}
+
+class PolylineTapEvent extends TapEvent {
+  const PolylineTapEvent(this.id);
+
+  static const name = "onPolylineTap";
+
+  final int id;
+}
+
 class ObjectTapEvent extends TapEvent {
   const ObjectTapEvent(this.dgisObjectId, this.latLng);
 

@@ -27,6 +27,7 @@ class MapLayersDialog extends StatelessWidget {
               return layers?.isNotEmpty ?? false
                   ? ListView.builder(
                       itemCount: layers!.length,
+                      physics: const NeverScrollableScrollPhysics(),
                       shrinkWrap: true,
                       itemBuilder: (ctx, index) {
                         return ValueListenableBuilder<Layers?>(
@@ -65,7 +66,8 @@ class MapLayersDialog extends StatelessWidget {
                               );
                             },
                           );
-                      })
+                      },
+              )
                   : const SizedBox();
             },
           ),

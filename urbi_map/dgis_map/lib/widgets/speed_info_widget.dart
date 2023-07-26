@@ -38,9 +38,7 @@ class SpeedInfoWidget extends StatelessWidget {
 
 class _Camera extends StatelessWidget {
   const _Camera(
-    this.controller, {
-    super.key,
-  });
+    this.controller);
 
   final NaviSpeedController controller;
 
@@ -76,9 +74,7 @@ extension _Icon on NaviCameraDirection {
 
 class _Speed extends StatelessWidget {
   const _Speed(
-    this.controller, {
-    super.key,
-  });
+    this.controller);
 
   final NaviSpeedController controller;
 
@@ -112,9 +108,7 @@ class _Speed extends StatelessWidget {
 
 class _SpeedLimit extends StatelessWidget {
   const _SpeedLimit(
-    this.controller, {
-    super.key,
-  });
+    this.controller);
 
   final NaviSpeedController controller;
 

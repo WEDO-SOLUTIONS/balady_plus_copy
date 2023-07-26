@@ -242,7 +242,7 @@ class DgisMapView(
         searchHandler?.getNextPage(result)
     }
 
-    override fun setMarkerOptions(options: MarkerOptionsMessage, result: Messages.Result<Void>?) {
+    override fun setMarkerOptions(options: MarkerOptionsMessageOld, result: Messages.Result<Void>?) {
         objectTapHandler?.setMarkerOptions(
             svgAsset = options.svgAsset,
             size = Size(options.width.roundToInt(), options.height.roundToInt()),
@@ -252,12 +252,54 @@ class DgisMapView(
         )
     }
 
-    override fun addMarker(geoPoint: GeoPointMessage, result: Messages.Result<Void>?) {
-        objectTapHandler?.addMarker(geoPoint, result)
+    override fun addMarker(marker: MarkerMessage, result: Messages.Result<Void>?) {
+        objectTapHandler?.addMarker(marker, result)
+    }
+
+    override fun addMarkers(markers: List<MarkerMessage>, result: Messages.Result<Void>?) {
+        objectTapHandler?.addMarkers(markers, result)
+    }
+
+    override fun removeMarker(id: Long, result: Messages.Result<Void>?) {
+        objectTapHandler?.removeMarker(id, result)
     }
 
     override fun removeAllMarkers(result: Messages.Result<Void>?) {
         objectTapHandler?.removeAllMarkers()
+        result?.success(null)
+    }
+
+    override fun addPolygon(polygon: PolygonMessage, result: Messages.Result<Void>?) {
+        objectTapHandler?.addPolygon(polygon, result)
+    }
+
+    override fun addPolygons(polygons: List<PolygonMessage>, result: Messages.Result<Void>?) {
+        objectTapHandler?.addPolygons(polygons, result)
+    }
+
+    override fun removePolygon(id: Long, result: Messages.Result<Void>?) {
+        objectTapHandler?.removePolygon(id, result)
+    }
+
+    override fun removeAllPolygons(result: Messages.Result<Void>?) {
+        objectTapHandler?.removeAllPolygons()
+        result?.success(null)
+    }
+
+    override fun addPolyline(polyline: PolylineMessage, result: Messages.Result<Void>?) {
+        objectTapHandler?.addPolyline(polyline, result)
+    }
+
+    override fun addPolylines(polylines: List<PolylineMessage>, result: Messages.Result<Void>?) {
+        objectTapHandler?.addPolylines(polylines, result)
+    }
+
+    override fun removePolyline(id: Long, result: Messages.Result<Void>?) {
+        objectTapHandler?.removePolyline(id, result)
+    }
+
+    override fun removeAllPolylines(result: Messages.Result<Void>?) {
+        objectTapHandler?.removeAllPolylines()
         result?.success(null)
     }
 

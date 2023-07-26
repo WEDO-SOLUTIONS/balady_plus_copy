@@ -41,7 +41,6 @@ class ManeuverWidget extends StatelessWidget {
 class _Maneuver extends StatelessWidget {
   const _Maneuver({
     required this.controller,
-    super.key,
   });
 
   final NaviManeuverController controller;
@@ -115,7 +114,6 @@ class _Maneuver extends StatelessWidget {
 class _AdditionalManeuver extends StatelessWidget {
   const _AdditionalManeuver({
     required this.controller,
-    super.key,
   });
 
   final NaviManeuverController controller;
@@ -128,8 +126,9 @@ class _AdditionalManeuver extends StatelessWidget {
           final data = snapshot.data;
 
           if (data == null) return const SizedBox.shrink();
-          if (data is ManeuverAdditionalEventHidden)
+          if (data is ManeuverAdditionalEventHidden) {
             return const SizedBox.shrink();
+          }
 
           String? instruction;
           String? iconPath;

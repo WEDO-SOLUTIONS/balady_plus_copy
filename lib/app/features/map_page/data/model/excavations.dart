@@ -9,9 +9,9 @@ class Excavations extends PointLayersData {
   final String contractorName;
   final String startDate;
   final String endDate;
-  final LatLng startPoint;
-  final LatLng endPoint;
-  // final List<List<double>> paths;
+  final GeoPointMessage startPoint;
+  final GeoPointMessage endPoint;
+  final List<GeoPointMessage> paths;
 
   Excavations({
     required this.contractorName,
@@ -19,7 +19,7 @@ class Excavations extends PointLayersData {
     required this.endDate,
     required this.startPoint,
     required this.endPoint,
-    // required this.paths,
+    required this.paths,
     required id,
     required name,
     required type,
@@ -34,27 +34,46 @@ class Excavations extends PointLayersData {
         );
 
   factory Excavations.fromJson(Map<String, dynamic> json) => Excavations(
-        id: json['attributes']["id"].toString(),
+        id: json['attributes']["OBJECTID"].toString(),
         name: json['attributes']["PROJECT_NAME"] ?? 'name',
         description: json['attributes']["PROJECT_DESC"] ?? 'description',
         type: json['attributes']["SERVTYPE"] ?? 'type',
-        latLng: LatLng(
-          latitude: double.parse(json['attributes']["START_POINT_X"].toString()),
-          longitude: double.parse(json['attributes']["START_POINT_Y"].toString()),
+        latLng: GeoPointMessage(
+          latitude:
+              double.parse(json['attributes']["START_POINT_X"].toString()),
+          longitude:
+              double.parse(json['attributes']["START_POINT_Y"].toString()),
         ),
         /////////////////////////
         contractorName:
             json['attributes']["CONTRACTOR_NAME"] ?? 'contractorName',
         startDate: json['attributes']["startDate"] ?? 'startDate',
         endDate: json['attributes']["endDate"] ?? 'endDate',
-        startPoint: LatLng(
-          latitude: double.parse(json['attributes']["START_POINT_X"].toString()),
-          longitude: double.parse(json['attributes']["START_POINT_Y"].toString()),
+        startPoint: GeoPointMessage(
+          latitude:
+              double.parse(json['attributes']["START_POINT_X"].toString()),
+          longitude:
+              double.parse(json['attributes']["START_POINT_Y"].toString()),
         ),
-        endPoint: LatLng(
+        endPoint: GeoPointMessage(
           latitude: double.parse(json['attributes']["END_POINT_X"].toString()),
           longitude: double.parse(json['attributes']["END_POINT_Y"].toString()),
         ),
-        // paths: json['geometry']["paths"],  // not tested yat
+        paths: getList(json['geometry']["paths"]), // not tested yat
       );
+}
+
+List<GeoPointMessage> getList(List list) {
+  final List<GeoPointMessage> paths = [];
+  for (var pointList in list) {
+    for (var point in pointList) {
+      paths.add(
+        GeoPointMessage(
+          latitude: double.parse(point[1].toString()),
+          longitude: double.parse(point[0].toString()),
+        ),
+      );
+    }
+  }
+  return paths;
 }

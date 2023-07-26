@@ -32,14 +32,14 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
     private var routeHandler: RouteHandler?
     private var navigationHandler: NavigationHandler?
     private var searchHandler: SearchHandler?
-
+    
     private var objectTapHandler: ObjectTapHandler?
     private var visibleRectHandler: VisibleRectHandler?
-
+    
     private let everGisLayerHandler: EverGisLayerHandler
     private var compassControlHandler: CompassControlHandler?
     private var trafficAndParkingControlHandler: TrafficAndParkingControlHandler?
-
+    
     private lazy var positioningService = PlatformPositioningServicesFactory()
     
     private var moveCameraCancellable: DGis.Cancellable?
@@ -128,12 +128,12 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
             map: map,
             eventChannel: eventChannel
         )
-
+        
         self.trafficAndParkingControlHandler = TrafficAndParkingControlHandler(
             map: map,
             eventChannel: eventChannel
         )
-
+        
         setupTapHandler()
     }
     
@@ -305,7 +305,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
     }
     
     func setMarkerOptionsOptions(
-        _ markerOptions: MarkerOptionsMessage,
+        _ markerOptions: MarkerOptionsMessageOld,
         completion: @escaping (FlutterError?) -> Void
     ) {
         let assetKey = registrar.lookupKey(forAsset: markerOptions.svgAsset)
@@ -322,8 +322,40 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         )
     }
     
-    func addMarkerGeoPoint(_ geoPoint: GeoPointMessage, completion: @escaping (FlutterError?) -> Void) {
-        self.objectTapHandler?.addMarker(geoPoint, completion: completion)
+    func addMarkerMarker(_ marker: MarkerMessage, completion: @escaping (FlutterError?) -> Void) {
+         self.objectTapHandler?.addMarker(marker, completion: completion)
+    }
+    
+    func addMarkersMarkers(_ markers: [MarkerMessage], completion: @escaping (FlutterError?) -> Void) {
+         self.objectTapHandler?.addMarkers(markers, completion: completion)
+    }
+    
+    func removeMarkerId(_ id: NSNumber, completion: @escaping (FlutterError?) -> Void) {
+        self.objectTapHandler?.removeMarker(id, completion: completion)
+    }
+    
+    func addPolygonPolygon(_ polygon: PolygonMessage, completion: @escaping (FlutterError?) -> Void) {
+        self.objectTapHandler?.addPolygon(polygon, completion: completion)
+    }
+    
+    func addPolygonsPolygons(_ polygons: [PolygonMessage], completion: @escaping (FlutterError?) -> Void) {
+        self.objectTapHandler?.addPolygons(polygons, completion: completion)
+    }
+    
+    func removePolygonId(_ id: NSNumber, completion: @escaping (FlutterError?) -> Void) {
+        self.objectTapHandler?.removePolygon(id, completion: completion)
+    }
+    
+    func addPolylinePolyline(_ polyline: PolylineMessage, completion: @escaping (FlutterError?) -> Void) {
+        self.objectTapHandler?.addPolyline(polyline, completion: completion)
+    }
+    
+    func addPolylinesPolylines(_ polylines: [PolylineMessage], completion: @escaping (FlutterError?) -> Void) {
+        self.objectTapHandler?.addPolylines(polylines, completion: completion)
+    }
+    
+    func removePolylineId(_ id: NSNumber, completion: @escaping (FlutterError?) -> Void) {
+        self.objectTapHandler?.removePolyline(id, completion: completion)
     }
     
     func setHighlightedObjectIds(_ objectIds: [DgisObjectIdMessage], completion: @escaping (FlutterError?) -> Void) {
@@ -365,6 +397,16 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         completion(nil)
     }
     
+    func removeAllPolygons(completion: @escaping (FlutterError?) -> Void) {
+        self.objectTapHandler?.removeAllPolygons()
+        completion(nil)
+    }
+    
+    func removeAllPolylines(completion: @escaping (FlutterError?) -> Void) {
+        self.objectTapHandler?.removeAllPolylines()
+        completion(nil)
+    }
+    
     func removeSearchMarkers(completion: @escaping (FlutterError?) -> Void) {
         self.searchHandler?.removeSearchMarkers()
         completion(nil)
@@ -384,7 +426,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
                 ))
             return
         }
-    
+        
         searchHandler.fetchSuggests(
             queryText: queryText,
             searchGeoRect: map.camera.visibleRect,
@@ -427,6 +469,15 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
     
     func unselectPanorama(completion: @escaping (FlutterError?) -> Void) {
         self.objectTapHandler?.unselectPanorama()
+        completion(nil)
+    }
+    
+    func showEsriIOLayerMessage(_ message: AddLayerPointObjectsMessage, completion: @escaping (FlutterError?) -> Void) {
+        self.objectTapHandler?.addIoMarkers(message, completion)
+    }
+    
+    func removeEsriIOLayer(completion: @escaping (FlutterError?) -> Void) {
+        self.objectTapHandler?.removeAllMarkers()
         completion(nil)
     }
     
@@ -527,7 +578,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
     func getDirectoryDynamicFilters(completion: @escaping ([FlagFilterMessage]?, FlutterError?) -> Void) {
         self.searchHandler?.getDirectoryDynamicFilters(completion)
     }
-
+    
     func applyDirectoryFiltersFilters(_ filters: [FlagFilterMessage], isOpenFilter: WorkingFilterMessage, sortingType: SortingTypeMessage, completion: @escaping ([ObjectInfoMessage]?, FlutterError?) -> Void) {
         self.searchHandler?.applyDirectoryFiltersFilters(
             filters: filters,
@@ -536,7 +587,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
             completion: completion
         )
     }
-
+    
     // MARK: - EverGis layer filters
     func applyEverGisFiltersLayerAlias(
         _ layerAlias: String,
@@ -557,7 +608,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
             completion: completion
         )
     }
-
+    
     // MARK: - Private methods
     private func createMapView(_ sdk:  DGis.Container) {
         guard let mapFactory = try? sdk.makeMapFactory(options: MapOptions.default) else {
@@ -602,10 +653,18 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
                 MapObjectManager.withGeneralization(
                     map: map,
                     logicalPixel: LogicalPixel(value: 20),
-                    maxZoom: Zoom(value: 18)),
+                    maxZoom: Zoom(value: 18)
+                ),
+            ioObjectManager:
+                MapObjectManager.withGeneralization(
+                    map: map,
+                    logicalPixel: LogicalPixel(value: 50),
+                    maxZoom: Zoom(value: 18)
+                ),
             imageFactory: self.sdk.imageFactory,
             routeHandler: self.routeHandler,
-            eventChannel: eventChannel
+            eventChannel: eventChannel,
+            registrar: self.registrar
         )
         
         mapView.addObjectTappedCallback(callback: MapObjectTappedCallback(
@@ -670,42 +729,42 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         self.compassControlHandler?.onClicked()
         completion(nil)
     }
-
+    
     func startFreeRoam(completion: @escaping (FlutterError?) -> Void) {
         self.navigationHandler?.startFreeRoam()
         completion(nil)
     }
-
+    
     func stopFreeRoam(completion: @escaping (FlutterError?) -> Void) {
         self.navigationHandler?.stopFreeRoam()
         completion(nil)
     }
-
+    
     func toggleSound(completion: @escaping (FlutterError?) -> Void) {
         self.navigationHandler?.toggleSounds()
         completion(nil)
     }
-
+    
     func setPublicTransportActiveRouteRouteIndex(_ routeIndex: NSNumber, completion: @escaping (FlutterError?) -> Void) {
         routeHandler?.setActiveRouteIndex(routeIndex.uint64Value)
         completion(nil)
     }
-
+    
     func onTrafficAndParkingAttached(completion: @escaping (FlutterError?) -> Void) {
         self.trafficAndParkingControlHandler?.onAttachToMap()
         completion(nil)
     }
-
+    
     func onTrafficAndParkingDetached(completion: @escaping (FlutterError?) -> Void) {
         self.trafficAndParkingControlHandler?.onDetachFromMap()
         completion(nil)
     }
-
+    
     func onParkingClicked(completion: @escaping (FlutterError?) -> Void) {
         self.trafficAndParkingControlHandler?.onParkingClicked()
         completion(nil)
     }
-
+    
     func onTrafficClicked(completion: @escaping (FlutterError?) -> Void) {
         self.trafficAndParkingControlHandler?.onTrafficClicked()
         completion(nil)

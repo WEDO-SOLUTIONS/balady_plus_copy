@@ -6,6 +6,9 @@ List<InvestmentSites> investmentSitesFromJson(List list) =>
     List<InvestmentSites>.from(list.map((x) => InvestmentSites.fromJson(x)));
 
 class InvestmentSites extends PointLayersData {
+
+
+
   InvestmentSites({
     required id,
     required name,
@@ -26,9 +29,9 @@ class InvestmentSites extends PointLayersData {
         name: json['attributes']["CONTRACTNAME"] ?? 'name',
         description: json['attributes']["PROJECT_DESC"] ?? 'description',
         type: json['attributes']["INVESTTYPE"]?.toString() ?? 'type',
-        latLng: LatLng(
-          latitude: double.parse(json['geometry']["x"].toString()),
-          longitude: double.parse(json['geometry']["y"].toString()),
+        latLng: GeoPointMessage(
+          latitude: double.parse(json['geometry']["y"].toString()),
+          longitude: double.parse(json['geometry']["x"].toString()),
         ),
       );
 }

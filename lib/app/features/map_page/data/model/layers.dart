@@ -33,8 +33,9 @@ class Layers {
     "geometryType": geometryType,
   };
 }
-
-
+///////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////
 List<SubLayers> subLayersFromJson(List list) => List<SubLayers>.from(list.map((x) => SubLayers.fromJson(x)));
 
 class SubLayers {
@@ -64,3 +65,10 @@ class SubLayers {
     "imageData": imageData,
   };
 }
+
+
+
+enum GeometryType {esriGeometryPoint,esriGeometryPolyline,esriGeometryPolygon}
+
+
+

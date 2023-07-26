@@ -7,7 +7,7 @@ class PointLayersData {
   final String type;
 
 
-  final LatLng latLng;
+  final GeoPointMessage latLng;
 
 
   PointLayersData({

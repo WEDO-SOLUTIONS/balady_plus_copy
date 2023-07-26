@@ -10,6 +10,8 @@ import io.flutter.plugin.common.EventChannel.EventSink
 import ru.dgis.sdk.Context
 import ru.dgis.sdk.DgisObjectId
 import ru.dgis.sdk.coordinates.GeoPoint
+import ru.dgis.sdk.coordinates.Latitude
+import ru.dgis.sdk.coordinates.Longitude
 import ru.dgis.sdk.geometry.Elevation
 import ru.dgis.sdk.geometry.GeoPointWithElevation
 import ru.dgis.sdk.map.*
@@ -38,10 +40,18 @@ class ObjectTapHandler(
     private var lastTappedSearchMarker: Marker? = null
     private val panoramasMarkers = mutableListOf<Marker>()
     private var selectedPanorama: Marker? = null
-    private val markerExecutorService by unsafeLazy {
+    private val mapObjectsExecutorService by unsafeLazy {
         Executors.newSingleThreadExecutor()
     }
 
+    private data class MarkerId(val id: Int);
+    private data class PolygonId(val id: Int);
+
+    private data class PolylineId(val id: Int);
+
+    private val markers = mutableMapOf<Int, Marker>();
+    private val polygons = mutableMapOf<Int, Polygon>();
+    private val polylines = mutableMapOf<Int, Polyline>();
     private val ioLayerMarkers = mutableListOf<Marker>();
 
     fun objectTapListener(roi: RenderedObjectInfo) {
@@ -59,6 +69,22 @@ class ObjectTapHandler(
             is Marker -> {
                 onMarkerTap(tappedObject)
                 return
+            }
+            is Polygon -> {
+                val userData = tappedObject.userData
+
+                if (userData is PolygonId) {
+                    onPolygonTap(userData.id)
+                    return
+                }
+            }
+            is Polyline -> {
+                val userData = tappedObject.userData
+
+                if (userData is PolylineId) {
+                    onPolylineTap(userData.id)
+                    return
+                }
             }
             is GeometryMapObject -> {
                 val attrs = tappedObject.objectAttributes
@@ -125,30 +151,234 @@ class ObjectTapHandler(
         }
     }
 
-    fun addMarker(geoPoint: GeoPointMessage, result: Result<Void>?) {
-        val markerImage = markerImage
-        val iconWidth = iconWidth
+    private fun mapTextPlacement(placementMessage: TextPlacementMessage): TextPlacement {
+        return when (placementMessage) {
+            TextPlacementMessage.NO_LABEL -> TextPlacement.NO_LABEL
+            TextPlacementMessage.BOTTOM_CENTER -> TextPlacement.BOTTOM_CENTER
+            TextPlacementMessage.BOTTOM_RIGHT -> TextPlacement.BOTTOM_RIGHT
+            TextPlacementMessage.BOTTOM_LEFT -> TextPlacement.BOTTOM_LEFT
+            TextPlacementMessage.CIRCLE_BOTTOM_RIGHT -> TextPlacement.CIRCLE_BOTTOM_LEFT
+            TextPlacementMessage.RIGHT_BOTTOM -> TextPlacement.RIGHT_BOTTOM
+            TextPlacementMessage.RIGHT_CENTER -> TextPlacement.RIGHT_CENTER
+            TextPlacementMessage.RIGHT_TOP -> TextPlacement.RIGHT_TOP
+            TextPlacementMessage.CIRCLE_TOP_RIGHT -> TextPlacement.CIRCLE_TOP_RIGHT
+            TextPlacementMessage.TOP_CENTER -> TextPlacement.TOP_CENTER
+            TextPlacementMessage.TOP_RIGHT -> TextPlacement.TOP_RIGHT
+            TextPlacementMessage.TOP_LEFT -> TextPlacement.TOP_LEFT
+            TextPlacementMessage.CIRCLE_TOP_LEFT -> TextPlacement.CIRCLE_TOP_LEFT
+            TextPlacementMessage.LEFT_TOP -> TextPlacement.LEFT_TOP
+            TextPlacementMessage.LEFT_CENTER -> TextPlacement.LEFT_CENTER
+            TextPlacementMessage.LEFT_BOTTOM -> TextPlacement.LEFT_BOTTOM
+            TextPlacementMessage.CIRCLE_BOTTOM_LEFT -> TextPlacement.CIRCLE_BOTTOM_LEFT
+            TextPlacementMessage.CENTER_CENTER -> TextPlacement.CENTER_CENTER
+        }
+    }
 
-        if (markerImage == null || iconWidth == null) {
-            result?.error(Exception("Error adding marker. Call setMarkerOptions method first"))
-            return
+    private fun mapTextStyle(style: MarkerTextStyleMessage): TextStyle {
+        return TextStyle(
+            fontSize = style.fontSize?.let {
+                LogicalPixel(value = it.toFloat())
+            } ?: LogicalPixel(8f),
+            color = style.color?.let {
+                Color(argb = it.toInt())
+            } ?: Color(),
+            strokeWidth = style.strokeWidth?.let {
+                LogicalPixel(it.toFloat())
+            } ?: LogicalPixel(0.35f),
+            strokeColor = style.strokeColor?.let {
+                Color(argb = it.toInt())
+            } ?: Color(),
+            textPlacement = style.textPlacement?.let {
+                mapTextPlacement(it.placement)
+            } ?: TextPlacement.BOTTOM_CENTER,
+            textOffset = style.textOffset?.let {
+                LogicalPixel(it.toFloat())
+            } ?: LogicalPixel(0f),
+            fontName = style.fontName
+        )
+    }
+
+    private fun mapMarker(marker: MarkerMessage, result: Result<Void>?): Marker? {
+        var markerImage: Image? = null
+        if (marker.options.icon != null) {
+            try {
+                val asset =
+                    FlutterInjector
+                        .instance()
+                        .flutterLoader()
+                        .getLookupKeyForAsset(marker.options.icon!!.path)
+
+                markerImage = imageFromAsset(sdkContext, asset, Size(0, 0))
+            } catch (e: FileNotFoundException) {
+                result?.error(e)
+                return null
+            }
         }
 
         val options = MarkerOptions(
             position = GeoPointWithElevation(
-                latitude = geoPoint.latitude,
-                longitude = geoPoint.longitude,
+                latitude = Latitude(marker.options.position.latitude),
+                longitude = Longitude(marker.options.position.longitude),
             ),
             icon = markerImage,
-            iconWidth = iconWidth,
-            anchor = Anchor(0.5f, 1f)
+            iconMapDirection = marker.options.icon?.iconMapDirection?.let {
+                MapDirection(it.degree)
+            },
+            anchor = marker.options.anchor?.let {
+                Anchor(it.x.toFloat(), it.y.toFloat())
+            } ?: Anchor(0.5f, 0.5f),
+            text = marker.options.text,
+            textStyle = marker.options.textStyle?.let {
+                mapTextStyle(it)
+            },
+            iconWidth = marker.options.icon?.let {
+                LogicalPixel(it.width.toFloat())
+            } ?: LogicalPixel(0f),
+            userData = MarkerId(marker.id.toInt()),
         )
 
-        val marker = Marker(options)
+        return Marker(options)
+    }
 
-        markerExecutorService.submit {
-            mapObjectManager.removeAll()
-            mapObjectManager.addObject(marker)
+    fun addMarker(marker: MarkerMessage, result: Result<Void>?) {
+        val markerObject = mapMarker(marker, result) ?: return
+
+        mapObjectsExecutorService.submit {
+            markers[marker.id.toInt()] = markerObject
+            mapObjectManager.addObject(markerObject)
+            result?.success(null)
+        }
+    }
+
+    fun addMarkers(markers: List<MarkerMessage>, result: Result<Void>?) {
+        val markerObjects = mutableMapOf<Int, Marker>()
+        for (marker in markers) {
+            val markerObject = mapMarker(marker, result) ?: return
+            markerObjects[marker.id.toInt()] = markerObject
+        }
+
+        mapObjectsExecutorService.submit {
+            this.markers.putAll(markerObjects)
+            mapObjectManager.addObjects(markerObjects.values.toList())
+            result?.success(null)
+        }
+    }
+
+    fun removeMarker(id: Long, result: Result<Void>?) {
+        mapObjectsExecutorService.submit {
+            markers.remove(id.toInt())?.also {
+                mapObjectManager.removeObject(it)
+            }
+            result?.success(null)
+        }
+    }
+
+    private fun mapPolygon(polygon: PolygonMessage): Polygon {
+        val options = PolygonOptions(
+            contours = polygon.options.contours.map { contour ->
+                contour.map {
+                    GeoPoint(
+                        latitude = Latitude(it.latitude),
+                        longitude = Longitude(it.longitude),
+                    )
+                }
+            },
+            color = polygon.options.color?.let {
+                Color(argb = it.toInt())
+            } ?: Color(),
+            strokeWidth = polygon.options.strokeWidth?.let {
+                LogicalPixel(it.toFloat())
+            } ?: LogicalPixel(0f),
+            strokeColor = polygon.options.strokeColor?.let {
+                Color(argb =  it.toInt())
+            } ?: Color(),
+            userData = PolygonId(polygon.id.toInt())
+        )
+
+        return Polygon(options)
+    }
+
+    fun addPolygon(polygon: PolygonMessage, result: Result<Void>?) {
+        val polygonObject = mapPolygon(polygon)
+
+        mapObjectsExecutorService.submit {
+            polygons[polygon.id.toInt()] = polygonObject
+            mapObjectManager.addObject(polygonObject)
+            result?.success(null)
+        }
+    }
+
+    fun addPolygons(polygons: List<PolygonMessage>, result: Result<Void>?) {
+        val polygonObjects = polygons.associateBy({
+             it.id.toInt()
+        }, {
+            mapPolygon(it)
+        })
+
+        mapObjectsExecutorService.submit {
+            this.polygons.putAll(polygonObjects)
+            mapObjectManager.addObjects(polygonObjects.values.toList())
+            result?.success(null)
+        }
+    }
+
+    fun removePolygon(id: Long, result: Result<Void>?) {
+        mapObjectsExecutorService.submit {
+            polygons.remove(id.toInt())?.also {
+                mapObjectManager.removeObject(it)
+            }
+            result?.success(null)
+        }
+    }
+    private fun mapPolyline(polyline: PolylineMessage): Polyline {
+        val options = PolylineOptions(
+            points = polyline.options.points.map {
+                GeoPoint(
+                    latitude = Latitude(it.latitude),
+                    longitude = Longitude(it.longitude),
+                )
+            },
+            color = polyline.options.color?.let {
+                Color(argb = it.toInt())
+            } ?: Color(),
+            width = polyline.options.width?.let {
+                LogicalPixel(it.toFloat())
+            } ?: LogicalPixel(1f),
+            userData = PolylineId(polyline.id.toInt()),
+        )
+
+        return Polyline(options)
+    }
+
+    fun addPolyline(polyline: PolylineMessage, result: Result<Void>?) {
+        val polylineObject = mapPolyline(polyline)
+
+        mapObjectsExecutorService.submit {
+            polylines[polyline.id.toInt()] = polylineObject
+            mapObjectManager.addObject(polylineObject)
+            result?.success(null)
+        }
+    }
+
+    fun addPolylines(polylines: List<PolylineMessage>, result: Result<Void>?) {
+        val polylineObjects = polylines.associateBy({
+            it.id.toInt()
+        }, {
+            mapPolyline(it)
+        })
+
+        mapObjectsExecutorService.submit {
+            this.polylines.putAll(polylineObjects)
+            mapObjectManager.addObjects(polylineObjects.values.toList())
+            result?.success(null)
+        }
+    }
+
+    fun removePolyline(id: Long, result: Result<Void>?) {
+        mapObjectsExecutorService.submit {
+            polylines.remove(id.toInt())?.also {
+                mapObjectManager.removeObject(it)
+            }
             result?.success(null)
         }
     }
@@ -176,7 +406,7 @@ class ObjectTapHandler(
             )
             Marker(options.copy(position = position, userData = it.attributes))
         }
-        markerExecutorService.submit {
+        mapObjectsExecutorService.submit {
             ioObjectManager.removeAndAddObjects(ioLayerMarkers, markers)
             ioLayerMarkers.clear()
             ioLayerMarkers.addAll(markers)
@@ -185,10 +415,22 @@ class ObjectTapHandler(
     }
 
     fun removeAllMarkers() {
-        markerExecutorService.submit {
-            mapObjectManager.removeAll()
-            ioObjectManager.removeAll()
-            ioLayerMarkers.clear()
+        mapObjectsExecutorService.submit {
+            mapObjectManager.removeObjects(markers.values.toList())
+            markers.clear()
+        }
+    }
+
+    fun removeAllPolygons() {
+        mapObjectsExecutorService.submit {
+            mapObjectManager.removeObjects(polygons.values.toList())
+            polygons.clear()
+        }
+    }
+    fun removeAllPolylines() {
+        mapObjectsExecutorService.submit {
+            mapObjectManager.removeObjects(polylines.values.toList())
+            polylines.clear()
         }
     }
 
@@ -215,7 +457,7 @@ class ObjectTapHandler(
     fun addPanoramasMarkers(
         message: AddMarkersWithPhotoMessage
     ) {
-        markerExecutorService.submit(
+        mapObjectsExecutorService.submit(
             AddMarkersTask(
                 mapObjectManager = panoramasObjectManager,
                 message = message,
@@ -226,19 +468,19 @@ class ObjectTapHandler(
     }
 
     fun showPanoramasMarkers() {
-        markerExecutorService.submit {
+        mapObjectsExecutorService.submit {
             panoramasObjectManager.isVisible = true
         }
     }
 
     fun hidePanoramasMarkers() {
-        markerExecutorService.submit {
+        mapObjectsExecutorService.submit {
             panoramasObjectManager.isVisible = false
         }
     }
 
     fun removePanoramasMarkers() {
-        markerExecutorService.submit {
+        mapObjectsExecutorService.submit {
             panoramasMarkers.clear()
             panoramasObjectManager.removeAll()
         }
@@ -304,7 +546,35 @@ class ObjectTapHandler(
         when (val userData = marker.userData) {
             is PhotoData -> onMarkerWithPhotoTap(marker, userData)
             is DgisObjectId -> onSearchMarkerTap(marker, userData)
+            is MarkerId -> onMarkerTap(userData.id)
         }
+    }
+
+    private fun onMarkerTap(id: Int) {
+        eventSink.success(
+            mapOf(
+                "event" to Events.onMarkerTap.name,
+                "id" to id
+            )
+        )
+    }
+
+    private fun onPolygonTap(id: Int) {
+        eventSink.success(
+            mapOf(
+                "event" to Events.onPolygonTap.name,
+                "id" to id
+            )
+        )
+    }
+
+    private fun onPolylineTap(id: Int) {
+        eventSink.success(
+            mapOf(
+                "event" to Events.onPolylineTap.name,
+                "id" to id
+            )
+        )
     }
 
     private fun onSearchMarkerTap(marker: Marker, id: DgisObjectId) {
@@ -336,7 +606,7 @@ class ObjectTapHandler(
 
     override fun close() {
         panoramasMarkers.clear()
-        markerExecutorService.shutdown()
+        mapObjectsExecutorService.shutdown()
     }
 
     private fun sendDgisObjectEvent(id: DgisObjectId, position: GeoPointWithElevation) {
@@ -395,6 +665,9 @@ private enum class Events {
     onMarkerWithPhotoTap,
     onIoTap,
     onIdleTap,
+    onMarkerTap,
+    onPolygonTap,
+    onPolylineTap,
 }
 
 private fun Attributes.mapIo(point: GeoPointWithElevation): Map<String, Any> = mapOf(

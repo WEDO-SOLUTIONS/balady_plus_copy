@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/features/map_page/data/data_sources/point_layers_data.dart';
 import 'package:balady_plus/app/features/map_page/presentation/dialogs/map_layer_dialog.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
@@ -79,8 +80,8 @@ class HomeMap extends StatelessWidget {
                   ),
                 ),
                 Constants.verticalSpaceSmall,
-                ValueListenableBuilder<DgisObjectIdMessage?>(
-                  valueListenable: mapViewModel.selectedPointId,
+                ValueListenableBuilder<PointLayersData?>(
+                  valueListenable: mapViewModel.selectedPoint,
                   builder: (_, selectedPoint, __) {
                     return selectedPoint == null
                         ? const SizedBox()

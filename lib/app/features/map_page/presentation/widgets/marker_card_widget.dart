@@ -20,6 +20,7 @@ class MarkerMapWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final dataPoint = pointViewModel.point;
     return GestureDetector(
       onTap: () {
         Navigator.of(context)
@@ -43,58 +44,32 @@ class MarkerMapWidget extends StatelessWidget {
             const SizedBox(width: 6),
             Expanded(
               flex: 6,
-              child: ValueListenableBuilder<ObjectInfoMessage?>(
-                valueListenable: pointViewModel.dataPoint,
-                builder: (_, dataPoint, __) {
-                  return dataPoint == null
-                      ? const SizedBox()
-                      : Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              dataPoint.title,
-                              style: AppStyle.mainTextStyle,
-                            ),
-                            const SizedBox(height: 6),
-                            Text(
-                              dataPoint.address?.drilldownString ?? 'Address',
-                              style: AppStyle.serviceDescriptionStyle,
-                            ),
-                            CustomVerticalSpace(height: 8),
-                            Row(
-                              children: [
-                                CustomTextWidget(
-                                  dataPoint.startString ?? "",
-                                  textStyle: AppStyle.serviceDescriptionStyle,
-                                ),
-                                CustomTextWidget(
-                                  dataPoint.workStatus?.isOpen == true
-                                      ? "open".tr()
-                                      : "",
-                                  textStyle: AppStyle.serviceDescriptionStyle,
-                                ),
-                              ],
-                            )
-                            /* const SizedBox(height: 6),
-                            Row(
-                              children: [
-                                const Icon(Icons.phone, size: 15),
-                                const SizedBox(width: 6),
-                                Text(
-                                  '+9550029202',
-                                  style: AppStyle
-                                      .personalInfoParameterTitleTextStyle
-                                      .copyWith(
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ],
-                            )*/
-                          ],
-                        );
-                },
-              ),
+              child:
+
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      dataPoint.name,
+                      style: AppStyle.mainTextStyle,
+                    ),
+                    const SizedBox(height: 6),
+                    Text(
+                      dataPoint.description ,
+                      style: AppStyle.serviceDescriptionStyle,
+                    ),
+                    const CustomVerticalSpace(height: 8),
+                    Row(
+                      children: [
+                        CustomTextWidget(
+                          dataPoint.type ?? "",
+                          textStyle: AppStyle.serviceDescriptionStyle,
+                        ),
+                      ],
+                    )
+                  ],
+                ),
             ),
           ],
         ),

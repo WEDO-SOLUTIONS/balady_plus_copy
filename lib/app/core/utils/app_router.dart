@@ -255,7 +255,7 @@ class AppRouter {
         final PointViewModel viewModel = settings.arguments as PointViewModel;
         return MaterialPageRoute(
           builder: (_) => MapDetailsPage(
-            pointViewModel: viewModel,
+            dataPoint: viewModel.point,
           ),
         );
 

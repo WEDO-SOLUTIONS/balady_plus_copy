@@ -55,7 +55,6 @@ class _ZoomButton extends StatelessWidget {
     required this.icon,
     required this.onTapUp,
     required this.onTapDown,
-    super.key,
   });
 
   final ValueNotifier<bool> state;

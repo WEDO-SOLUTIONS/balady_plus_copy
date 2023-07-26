@@ -25,9 +25,7 @@ class LayersRepositories {
         options: Options(headers: {'verifyingKEY': Constants.verifyingKEY}),
       );
       if (layersType.data != null) {
-        return layersFromJson(layersType.data['data']['result']['layers'])
-            .where((element) => element.id == 4 || element.id == 2)
-            .toList();
+        return layersFromJson(layersType.data['data']['result']['layers']);
       }
     } catch (e) {
       print(e);
@@ -53,21 +51,24 @@ class LayersRepositories {
 
   Future<List<PointLayersData>?> getPointsInLayers({
     required int layerId,
-    required double latitude,
-    required double longitude,
+    required double northEastLongitude,
+    required double northEastLatitude,
+    required double southWestLongitude,
+    required double southWestLlatitude,
   }) async {
     try {
       final points = await webService.dio.get(
         '${Constants.mainUrl}/$layerId/query',
         queryParameters: {
+          // "where":"1=1",
           // "text": "",
           // "objectIds": "",
           "outFields": "*",
           /////////////////// to can send lat and long
-          // "geometryType": "esriGeometryPoint",
-          "geometry": "$latitude,$longitude",
+          "geometryType": "esriGeometryEnvelope" , //"esriGeometryPoint",
+          "geometry": "$southWestLongitude,$southWestLlatitude,$northEastLongitude,$northEastLatitude",
           ////////////////////////// To get data in a specific area
-          // "distance": 4,
+          // "distance": 100,
           // "supportsQueryWithDistance": true,
           // // The unit for calculating the buffer distance. If unit is not specified, the default will be esriSRUnit_Foot
           // "units": "esriSRUnit_Kilometer"
@@ -79,7 +80,7 @@ class LayersRepositories {
           return investmentSitesFromJson(
             points.data['data']['result']['features'],
           );
-        case 4: //الحفريات
+        case 5: //الحفريات
           return excavationsFromJson(
             points.data['data']['result']['features'],
           );

@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:balady_plus/app/core/base/base_view_model.dart';
 import 'package:balady_plus/app/features/map_page/data/data_sources/point_layers_data.dart';
+import 'package:balady_plus/app/features/map_page/data/model/excavations.dart';
+import 'package:balady_plus/app/features/map_page/data/model/investment_sites.dart';
 import 'package:balady_plus/app/features/map_page/data/model/layers.dart';
 import 'package:balady_plus/app/features/map_page/data/repositories/layers_repositories.dart';
 import 'package:dgis_map/library.dart';
@@ -19,7 +21,7 @@ class MapViewModel extends BaseViewModel {
 
   MapViewModel({required this.layersRepositories});
 
-  final selectedPointId = ValueNotifier<DgisObjectIdMessage?>(null);
+  final selectedPoint = ValueNotifier<PointLayersData?>(null);
 
   late DgisMapController controller;
 
@@ -29,11 +31,16 @@ class MapViewModel extends BaseViewModel {
   final generalControlsState = ValueNotifier(false);
   final initialized = ValueNotifier(false);
 
+  final isSearchLoading = ValueNotifier(false);
+
   NaviZoomController get zoomController => controller.naviZoomController;
 
   final _subscriptions = <StreamSubscription>[];
 
   StreamSubscription? _debounce;
+
+
+  double zoomValue = 13;
 
   Future<bool> initialize(DgisMapController controllerMap) async {
     controller = controllerMap;
@@ -47,7 +54,7 @@ class MapViewModel extends BaseViewModel {
 
     await controller.setCameraPosition(
       CameraPositionMessage(
-        zoomValue: 13,
+        zoomValue: zoomValue,
         geoPoint: GeoPointMessage(
           latitude: 24.713520,
           longitude: 46.675230,
@@ -63,25 +70,16 @@ class MapViewModel extends BaseViewModel {
       await controller.overrideLocales(["ar-SA"]);
       // await controller.overrideLocales([localeState.value.locale]);
     }
-
     await controller.setMarkerOptions(
-      MarkerOptionsMessage(
+      MarkerOptionsMessageOld(
         svgAsset: "assets/svg/ic_marker.svg",
         width: 30.0,
         height: 46.0,
         iconWidth: 24,
       ),
     );
-
-    // await _checkLocationPermissions();
-    unawaited(controller.fetchLayers());
-
     initialized.value = true;
     generalControlsState.value = true;
-
-    // final layers = finalawait LayersProvider.get().layers();
-    // final ioLayer = layers.where((element) => element.id == 2).first;
-    // esriIOLayerInfo = await LayersProvider.get().layerInfo(ioLayer);
     return true;
   }
 
@@ -95,6 +93,7 @@ class MapViewModel extends BaseViewModel {
     locationEnabledState.dispose();
 
     unawaited(controller.dispose());
+    super.dispose();
   }
 
   void _setupListeners() {
@@ -108,11 +107,6 @@ class MapViewModel extends BaseViewModel {
     _subscriptions.add(
       controller.objectTapEvents.listen(
         _objectTapListener,
-      ),
-    );
-    _subscriptions.add(
-      controller.markerWithPhotoTapEvents.listen(
-        _onPanoramaTap,
       ),
     );
   }
@@ -129,10 +123,11 @@ class MapViewModel extends BaseViewModel {
     switch (controller.activeLayerState.value.layer) {
       case BusinessLayers.tourism:
         if (event is ObjectTapEvent) {
-          selectedPointId.value = DgisObjectIdMessage(
-            objectId: event.dgisObjectId.objectId,
-            entranceId: event.dgisObjectId.entranceId,
-          );
+          // selectedPointId.value = DgisObjectIdMessage(
+          //   objectId: event.dgisObjectId.objectId,
+          //   entranceId: event.dgisObjectId.entranceId,
+          // );
+
         }
         return;
       case BusinessLayers.idle:
@@ -144,27 +139,6 @@ class MapViewModel extends BaseViewModel {
       case BusinessLayers.panoramas:
         // handles by [_onPanoramaTap]
         return;
-    }
-  }
-
-  void _onPanoramaTap(MarkerWithPhotoTapEvent event) {
-    try {
-      final data = event.photoData;
-      print(data);
-      // panoramaState.value = PanoramaState(
-      //   photoUrl: data.photoUrl,
-      //   azimuth: data.azimuth,
-      // );
-
-      // if (!mapCardCollapsedState.value) {
-      //   _setCameraPaddings();
-      // }
-
-      // mapCardCollapsedState.value = true;
-      // topSheetVisibleState.value = false;
-      unawaited(controller.moveCameraToSelectedPanorama());
-    } catch (e) {
-      print(e);
     }
   }
 
@@ -194,9 +168,11 @@ class MapViewModel extends BaseViewModel {
 
   ////////////////////////////////////////////////////////////////
   late VisibleRectEvent _lastHandledEvent;
+
   // When move camera map any change zoom in, zoom out ...
   void _visibleRectChangeListener(VisibleRectEvent event) {
     _lastHandledEvent = event;
+    zoomValue = event.visibleRect.zoom;
     // start Timer when stop move camera  call search funcation
     if (layerSelected.value != null) {
       _startRequestTimer();
@@ -213,17 +189,7 @@ class MapViewModel extends BaseViewModel {
         const Duration(milliseconds: 1000),
       ),
     ).listen((_) async {
-      // await performSearch(queryText: searchController.text);
-      List<PointLayersData>? pointList =
-          await layersRepositories.getPointsInLayers(
-            layerId: layerSelected.value!.id,
-            latitude: _lastHandledEvent.visibleRect.northEastLat,
-            longitude: _lastHandledEvent.visibleRect.northEastLon,
-      );
-      if (pointList != null) {
-        addMarkersWithPoint(pointList);
-      }
-      _clearDebounce();
+      callSearch();
     });
     _subscriptions.add(_debounce!);
   }
@@ -235,49 +201,140 @@ class MapViewModel extends BaseViewModel {
 
   //////////////////////////////////////////
 
-  void addMarkersWithPoint(List<PointLayersData> pointList) {
-    final markers = pointList.map((element) {
-      return MarkerWithPhotoMessage(
-        position: MarkerPositionMessage(
-          point: GeoPointMessage(
-            latitude: element.latLng.latitude,
-            longitude: element.latLng.longitude,
+  callSearch() async {
+    // await performSearch(queryText: searchController.text);
+    isSearchLoading.value = true;
+    isSearchLoading.notifyListeners();
+    Layers layer = layerSelected.value!;
+    List? pointList = await layersRepositories.getPointsInLayers(
+      layerId: layer.id,
+      northEastLatitude: _lastHandledEvent.visibleRect.northEastLat,
+      northEastLongitude: _lastHandledEvent.visibleRect.northEastLon,
+      southWestLongitude: _lastHandledEvent.visibleRect.southWestLon,
+      southWestLlatitude: _lastHandledEvent.visibleRect.southWestLat,
+    );
+    switch (layer.geometryType) {
+      case 'esriGeometryPoint':
+        addMarkersWithPoint(pointList, layer.id);
+        break;
+      case 'esriGeometryPolyline':
+        addPolylineWithPoint(pointList, layer.id);
+        break;
+      case 'esriGeometryPolygon':
+
+        break;
+    }
+    _clearDebounce();
+    isSearchLoading.value = false;
+    isSearchLoading.notifyListeners();
+  }
+
+  void addMarkersWithPoint(List? pointList, int layerId) async {
+    if (pointList != null && pointList.isNotEmpty) {
+      String iconPath = Constants.icMarkerRestaurant;
+      switch (layerId) {
+        case 0:
+          iconPath = Constants.icMarkerMosques;
+          break;
+        case 1:
+          iconPath = Constants.icMarkerRestaurant;
+          break;
+        case 2:
+          iconPath = Constants.icMarkerInvestmentSites;
+          break;
+        case 3:
+          iconPath = Constants.icMarkerCemeteries;
+          break;
+        case 4:
+          iconPath = Constants.icMarkerGardensParks;
+          break;
+        case 6:
+          iconPath = Constants.icMarkerGasStations;
+          break;
+
+      }
+      final markers = pointList.map(
+        (element) {
+          return Marker(
+            id: int.parse(element.id),
+            options: MarkerOptionsMessage(
+              position: element.latLng,
+              icon: MarkerIconMessage(
+                path: iconPath,
+                width: 30,
+              ),
+            ),
+            onTap: () {
+              selectedPoint.value = element;
+              controller.setCameraPosition(
+                CameraPositionMessage(
+                  zoomValue: 17,
+                  geoPoint: GeoPointMessage(
+                    latitude: element.latLng.latitude,
+                    longitude: element.latLng.longitude,
+                  ),
+                ),
+              );
+            },
+          );
+        },
+      ).toList();
+      await  controller.removeAll();
+      controller.addMarkers(markers);
+    }
+  }
+
+  void addPolylineWithPoint(List? pointList, int layerId) async {
+    pointList as List<Excavations>?;
+    if (pointList != null && pointList.isNotEmpty) {
+      final List<Polyline> polylines = [];
+      for (var element in pointList) {
+        int id = int.parse(element.id);
+        polylines.add(
+          Polyline(
+            id: id,
+            options: PolylineOptionsMessage(
+              points: element.paths,
+              width: 4,
+              color: -16711936,
+            ),
+            onTap: () {
+              selectedPoint.value = element;
+              controller.setCameraPosition(
+                CameraPositionMessage(
+                  zoomValue: 17,
+                  geoPoint: GeoPointMessage(
+                    latitude: element.latLng.latitude,
+                    longitude: element.latLng.longitude,
+                  ),
+                ),
+              );
+            } ,
           ),
-          elevation: Constants.markerElevation,
-        ),
-        photoUrl: element.name,
-        isPanoramic: false,
-        azimuth: 0,
-      );
-    }).toList();
-    // controller.removePanoramasMarkers();
-    unawaited(controller.addPanoramasMarkers(markers));
+        );
+      }
+      await controller.removeAll();
+      unawaited(controller.addPolylines(polylines));
+    }
   }
 
   void selectLayers(Layers value) async {
     layerSelected.value = value;
-    List<PointLayersData>? pointList =
-    await layersRepositories.getPointsInLayers(
-      layerId: layerSelected.value!.id,
-      latitude: _lastHandledEvent.visibleRect.northEastLat,
-      longitude: _lastHandledEvent.visibleRect.northEastLon,
-    );
-    if (pointList != null) {
-      addMarkersWithPoint(pointList);
-    }
+    callSearch();
   }
 
   void getLocationAndMoveCamera() async {
     final permission = await Permission.location.request();
     if (permission.isGranted) {
-      await controller.onLocationPremissionGranted();
-      geoLocator.Position position = await geoLocator.Geolocator.getCurrentPosition(
+      // await controller.onLocationPremissionGranted();
+      geoLocator.Position position =
+          await geoLocator.Geolocator.getCurrentPosition(
         desiredAccuracy: geoLocator.LocationAccuracy.high,
-        timeLimit: const Duration(seconds: 13),
+        timeLimit: const Duration(seconds: 5),
       );
       await controller.setCameraPosition(
         CameraPositionMessage(
-          zoomValue: 13,
+          zoomValue: zoomValue,
           geoPoint: GeoPointMessage(
             latitude: position.latitude,
             longitude: position.longitude,
