@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/reload_widget.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import 'package:balady_plus/app/features/weather/presentation/bloc/weather_bloc.dart';
 import 'package:balady_plus/app/features/weather/weather_exports.dart'
@@ -41,8 +42,12 @@ class _WeatherMainPageState extends State<WeatherMainPage> {
           //   );
           // }
           if (state.allWeatherInfoStatus == BlocStatus.failure) {
-            return const Center(
-              child: CustomTextWidget('Something went wrong'),
+            return Center(
+              child: ReloadWidget(
+                onTab: () {
+                  context.read<WeatherBloc>().add(GetWeatherForLocation());
+                },
+              ),
             );
           } else {
             return Scaffold(
