@@ -7,12 +7,17 @@ import '../../../../../core/utils/utils_exports.dart' show ApiUrl, Log;
 import '../../../../_shared_feature_/shared_feature_exports.dart'
     show ResponseBodyModel;
 import '../../prayer_times_exports.dart'
-    show PrayerTimesParams, PrayerTimesResponse, PrayerTimesResponseModel;
+    show
+        PrayerTimeRangeParams,
+        PrayerTimeRangeResponseModel,
+        PrayerTimesParams,
+        PrayerTimesResponse,
+        PrayerTimesResponseModel;
 
 abstract class PrayerTimesRemoteDataSource {
-  Future<PrayerTimesResponse> getPrayerTimes(
-    PrayerTimesParams params,
-  );
+  Future<PrayerTimesResponse> getPrayerTimes(PrayerTimesParams params);
+  Future<List<PrayerTimeRangeResponseModel>> getPrayerTimesRange(
+      PrayerTimeRangeParams params);
 }
 
 class PrayerTimesRemoteDataSourceImplementation
@@ -39,6 +44,43 @@ class PrayerTimesRemoteDataSourceImplementation
       final result = ResponseBodyModel.fromMap(data).data?.result;
 
       return PrayerTimesResponseModel.fromMap(result as Map<String, dynamic>);
+    } on DioError catch (error) {
+      "DioError $error".errorLog();
+
+      throw ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+      );
+    } catch (ex) {
+      "Catched $ex".errorLog();
+      if (ex is ServerException) {
+        rethrow;
+      } else {
+        throw ServerException("errors_server_error_2".tr());
+      }
+    }
+  }
+
+  @override
+  Future<List<PrayerTimeRangeResponseModel>> getPrayerTimesRange(
+    PrayerTimeRangeParams params,
+  ) async {
+    try {
+      final response = await webService.dio.get(
+        ApiUrl.prayerTimesRange,
+        queryParameters: params.toMap(),
+      );
+
+      final data = response.data;
+      data.toString().successLog();
+
+      final result = ResponseBodyModel.fromMap(data).data?.result;
+
+      return result != null
+          ? ((result) as List)
+              .map((i) => PrayerTimeRangeResponseModel.fromJson(i))
+              .toList()
+          : [];
     } on DioError catch (error) {
       "DioError $error".errorLog();
 

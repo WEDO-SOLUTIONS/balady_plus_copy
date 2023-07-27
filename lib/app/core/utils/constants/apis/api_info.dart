@@ -12,6 +12,7 @@ class ApiUrl {
   //! Public Services
   //! Prayer Times
   static const prayerTimes = '/v1/kacst/prayer-times';
+  static const prayerTimesRange = '/v1/kacst/prayer-times-range';
 
   //! Municipal Services
   //! Municipal Advisor

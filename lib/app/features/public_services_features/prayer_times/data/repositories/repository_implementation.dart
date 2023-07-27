@@ -4,6 +4,8 @@ import '../../../../../core/errors/errors_exports.dart'
     show Failure, ServerException, ServerFailure;
 import '../../prayer_times_exports.dart'
     show
+        PrayerTimeRangeEntity,
+        PrayerTimeRangeParams,
         PrayerTimesParams,
         PrayerTimesRemoteDataSource,
         PrayerTimesRepository,
@@ -21,6 +23,17 @@ class PrayerTimesRepositoryImplementation implements PrayerTimesRepository {
       PrayerTimesParams params) async {
     try {
       final data = await remoteDataSource.getPrayerTimes(params);
+      return Right(data);
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage));
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<PrayerTimeRangeEntity>>> getPrayerTimesRange(
+      PrayerTimeRangeParams params) async {
+    try {
+      final data = await remoteDataSource.getPrayerTimesRange(params);
       return Right(data);
     } on ServerException catch (error) {
       return Left(ServerFailure(error.errorMessage));

@@ -1,10 +1,11 @@
+import 'package:balady_plus/app/core/services/local/notification_service.dart';
 import 'package:balady_plus/app/core/utils/enums/prayers.dart';
+import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/custom_svg_icon_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hijri/hijri_calendar.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
-import '../../../../../core/dependency_injection/injection_container.dart';
 import '../../../../../core/utils/utils_exports.dart'
     show
         AppColor,
@@ -14,7 +15,6 @@ import '../../../../../core/utils/utils_exports.dart'
         ContextConversion,
         IconPath,
         ImagePath;
-import '../../../../_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
 import '../../../../_shared_feature_/shared_feature_exports.dart'
     show CustomTextWidget, DrawIconBasedTypeWidget, ShimmerEffectWidget;
 import '../../../../home_page/home_exports.dart' show CircleIcon;
@@ -39,6 +39,7 @@ class _PrayerTimesPageState extends State<PrayerTimesPage> {
     super.initState();
 
     widget.cubit.getPrayerTime();
+    widget.cubit.getPrayerTimeRange();
   }
 
   @override
@@ -80,21 +81,40 @@ class _PrayerTimesPageState extends State<PrayerTimesPage> {
                               color: AppColor.blackModern50Light,
                             ),
                           ),
-                          const Visibility(
-                            visible: false,
-                            maintainSize: true,
-                            maintainAnimation: true,
-                            maintainState: true,
-                            child: Padding(
-                              padding: EdgeInsets.all(16),
-                              child: CircleIcon(
-                                icon: IconPath.billIcon,
-                                iconColor: AppColor.blackModern50Light,
-                                iconSize: 30,
-                                backgroundColor: AppColor.primary100Light12,
-                                circleSize: 48,
-                              ),
-                            ),
+                          BlocBuilder<PrayerTimesCubit, PrayerTimesState>(
+                            builder: (context, state) {
+                              return Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 16),
+                                child: Visibility(
+                                  visible: state.status.isSubmissionGetSuccess,
+                                  child: GestureDetector(
+                                    onTap: () => context
+                                        .read<PrayerTimesCubit>()
+                                        .prayerSettingsOnOff(),
+                                    // onTap: () => NotificationService
+                                    //     .showScheduledNotification(
+                                    //     id: 1,
+                                    //     title: "حان الان موعد اذان العصر",
+                                    //     // body: "Bahaaasaaa",
+                                    //     // payload: "Payload",
+                                    //     scheduledDate: DateTime.now()
+                                    //         .add(const Duration(
+                                    //         seconds: 10))),
+                                    child: CircleIcon(
+                                      icon: IconPath.billIcon,
+                                      iconColor: state.isNotificationDisable
+                                          ? AppColor.blackModern50Light
+                                          : AppColor.secondary500Light,
+                                      iconSize: 30,
+                                      backgroundColor:
+                                          AppColor.primary100Light12,
+                                      circleSize: 48,
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
                           )
                         ],
                       ),
@@ -120,18 +140,21 @@ class _PrayerTimesPageState extends State<PrayerTimesPage> {
                       BlocBuilder<PrayerTimesCubit, PrayerTimesState>(
                         builder: (context, state) {
                           if (state.status ==
-                              BlocRequestStatus.submissionGetLoading)
+                              BlocRequestStatus.submissionGetLoading) {
                             return Container();
+                          }
                           if (state.userLocationUnkown == true) {
                             return UnKownPrayerLocation(
                               onTap: () => widget.cubit.getPrayerTime(),
                             );
                           }
 
-                          return NextPrayer(
-                            prayer: state.nextPrayer!.prayer,
-                            time: state.nextPrayer!.dateTime,
-                          );
+                          return state.nextPrayer != null
+                              ? NextPrayer(
+                                  prayer: state.nextPrayer!.prayer,
+                                  time: state.nextPrayer!.dateTime,
+                                )
+                              : const SizedBox();
                         },
                       ),
                       const SizedBox(height: 8),
@@ -190,15 +213,35 @@ class _PrayerTimesPageState extends State<PrayerTimesPage> {
                                   ),
                                 ),
                                 const Spacer(),
-                                CustomTextWidget(
-                                  state.prayerTimesResponse?.fotmattedTimeFor(
-                                        Prayers.values[index],
-                                      ) ??
-                                      "00:00",
-                                  textStyle:
-                                      AppStyle.prayerTimeCityTextStyle.copyWith(
-                                    color: AppColor.blackModern700Light,
-                                  ),
+                                Row(
+                                  children: [
+                                    CustomTextWidget(
+                                      state.prayerTimesResponse
+                                              ?.fotmattedTimeFor(
+                                            Prayers.values[index],
+                                          ) ??
+                                          "00:00",
+                                      textStyle: AppStyle
+                                          .prayerTimeCityTextStyle
+                                          .copyWith(
+                                        color: AppColor.blackModern700Light,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 20),
+                                    GestureDetector(
+                                      onTap: () => context
+                                          .read<PrayerTimesCubit>()
+                                          .onChangePrayerSettings(index),
+                                      child: CustomSvgIconWidget(
+                                        IconPath.notificationIc,
+                                        iconColor:
+                                            state.prayerTimeSettings[index] ==
+                                                    "0"
+                                                ? AppColor.blackModern500Light
+                                                : AppColor.primary700Light,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                                 // const SizedBox(width: 8),
                                 // const DrawIconBasedTypeWidget(

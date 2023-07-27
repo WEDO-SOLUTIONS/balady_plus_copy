@@ -7,16 +7,22 @@ class PrayerTimesState extends Equatable {
   final PrayerTimeEntity? nextPrayer;
   final String? errorMessage;
   final bool? userLocationUnkown;
+  final List<PrayerTimeRangeEntity> prayersRange;
+  final List<String> prayerTimeSettings;
 
-  const PrayerTimesState(
-      {this.status = BlocRequestStatus.initial,
-      this.prayerTimesResponse,
-      this.gisResponse,
-      this.nextPrayer,
-      this.errorMessage,
-      this.userLocationUnkown});
+  const PrayerTimesState({
+    this.status = BlocRequestStatus.initial,
+    this.prayerTimesResponse,
+    this.gisResponse,
+    this.nextPrayer,
+    this.errorMessage,
+    this.userLocationUnkown,
+    this.prayersRange = const [],
+    this.prayerTimeSettings = const [],
+  });
 
   String get error => errorMessage ?? '';
+  bool get isNotificationDisable => prayerTimeSettings.contains("0");
 
   PrayerTimesState copyWith({
     BlocRequestStatus? status,
@@ -25,14 +31,20 @@ class PrayerTimesState extends Equatable {
     PrayerTimeEntity? nextPrayer,
     String? errorMessage,
     bool? userLocationUnkown,
+    List<PrayerTimeRangeEntity>? prayersRange,
+    bool? isNotificationOn,
+    List<String>? prayerTimeSettings,
   }) {
     return PrayerTimesState(
-        status: status ?? this.status,
-        prayerTimesResponse: prayerTimes ?? prayerTimesResponse,
-        gisResponse: gisResponse ?? this.gisResponse,
-        nextPrayer: nextPrayer ?? this.nextPrayer,
-        errorMessage: errorMessage ?? this.errorMessage,
-        userLocationUnkown: userLocationUnkown ?? this.userLocationUnkown);
+      status: status ?? this.status,
+      prayerTimesResponse: prayerTimes ?? prayerTimesResponse,
+      gisResponse: gisResponse ?? this.gisResponse,
+      nextPrayer: nextPrayer ?? this.nextPrayer,
+      errorMessage: errorMessage ?? this.errorMessage,
+      userLocationUnkown: userLocationUnkown ?? this.userLocationUnkown,
+      prayersRange: prayersRange ?? this.prayersRange,
+      prayerTimeSettings: prayerTimeSettings ?? this.prayerTimeSettings,
+    );
   }
 
   @override
@@ -42,6 +54,8 @@ class PrayerTimesState extends Equatable {
         gisResponse,
         nextPrayer,
         errorMessage,
-        userLocationUnkown
+        userLocationUnkown,
+        prayersRange,
+        prayerTimeSettings,
       ];
 }

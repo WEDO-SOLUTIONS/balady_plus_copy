@@ -6,6 +6,7 @@ export 'data/data_sources/remote_data_source.dart';
 export 'data/models/params_model.dart';
 export 'data/models/prayer_time_model.dart';
 export 'data/models/prayer_time_response_model.dart';
+export 'data/models/prayer_time_range_response_model.dart';
 
 /// data -> repositories
 export 'data/repositories/repository_implementation.dart';
@@ -15,12 +16,15 @@ export 'data/repositories/repository_implementation.dart';
 export 'domain/entities/params.dart';
 export 'domain/entities/prayer_time_entity.dart';
 export 'domain/entities/prayer_time_response.dart';
+export 'domain/entities/prayer_time_range_entity.dart';
+export 'domain/entities/prayer_time_range_params.dart';
 
 /// domain -> repositories
 export 'domain/repositories/repository.dart';
 
 /// domain -> use cases
 export 'domain/use_cases/get_prayer_times.dart';
+export 'domain/use_cases/get_prayer_time_range.dart';
 
 /// presentation
 /// presentation -> cubits
