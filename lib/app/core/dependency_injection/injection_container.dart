@@ -72,14 +72,6 @@ void initialize() {
   SignUpInjection.init();
   //? Services
   ServicesInjection.init();
-//? Objections
-  ObjectionsInjection.init();
-//? Objectable Transactions
-  ObjectableTransactionsInjection.init();
-
-//? DC
-  DCInjection.init();
-  DCRetriveInjection.init();
 
   //! Services
   //* Public Services

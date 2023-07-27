@@ -121,19 +121,6 @@ Map<String, dynamic> servicesConfig = {
       }
     },
   ],
-  "honoring_the_dead_services": [
-    {
-      "id": 14,
-      "icon": "move_diseased",
-      "3d_icon": null,
-      "order": 14,
-      "isNew": false,
-      "isImportant": false,
-      "action": {"type": "page", "value": "/move-diseased"},
-      "ar": {"title": "نقل وتجهيز الموتي", "description": null, "tag": null},
-      "en": {"title": "Move Diseased", "description": null, "tag": null}
-    },
-  ],
   "business_license_services": [
     {
       "id": 10,

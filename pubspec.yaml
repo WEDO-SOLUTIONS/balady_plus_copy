@@ -73,7 +73,7 @@ dependencies:
   # Automatically resizes text to fit perfectly within its bounds
   auto_size_text: ^3.0.0
   # To deal with svg icons
-  flutter_svg: any
+  flutter_svg: ^2.0.5
   # A Flutter widget that can be expanded or collapsed by the user.
   expandable: ^5.0.1
   # Shimmer effect, useful for loading

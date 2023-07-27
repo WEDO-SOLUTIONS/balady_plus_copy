@@ -73,16 +73,17 @@ class ServicesCubit extends Cubit<ServicesState> {
 
   Future<void> searchServices(String? searchQuery) async {
     emit(state.copyWith(status: BlocStatus.loading));
-    final municipalServicesList = await municipalServices(NoParams());
-    final publicServicesList = await publicServices(NoParams());
+    final municipalServicesList = await businessLicenseServices(NoParams());
+    final publicServicesList = await businessLicenseServices(NoParams());
     emit(state.copyWith(status: BlocStatus.closeLoading));
     emit(state.copyWith(
       status: BlocStatus.success,
-      municipalServices:
+      businessLicenseServices:
           municipalServicesList.getOrElse(() => []).where((service) {
         return service.title.toLowerCase().contains(searchQuery!.toLowerCase());
       }).toList(),
-      publicServices: publicServicesList.getOrElse(() => []).where((service) {
+      healthCertificatesServices:
+          publicServicesList.getOrElse(() => []).where((service) {
         return service.title.toLowerCase().contains(searchQuery!.toLowerCase());
       }).toList(),
       searchQuery: Nullable(searchQuery),
