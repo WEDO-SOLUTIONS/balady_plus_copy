@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:balady_plus/app/core/base/base_view_model.dart';
+import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/map_page/constants/constants.dart';
 import 'package:balady_plus/app/features/map_page/data/data_sources/point_layers_data.dart';
 import 'package:balady_plus/app/features/map_page/data/model/excavations.dart';
@@ -22,7 +23,9 @@ class LayersRepositories {
     try {
       final layersType = await webService.dio.get(
         Constants.mainUrl,
-        options: Options(headers: {'verifyingKEY': Constants.verifyingKEY}),
+        options: Options(headers: {
+          'verifyingKEY': CommonFunctions.hashRequest(Constants.mainUrl, "GET")
+        }),
       );
       if (layersType.data != null) {
         return layersFromJson(layersType.data['data']['result']['layers']);
@@ -65,8 +68,9 @@ class LayersRepositories {
           // "objectIds": "",
           "outFields": "*",
           /////////////////// to can send lat and long
-          "geometryType": "esriGeometryEnvelope" , //"esriGeometryPoint",
-          "geometry": "$southWestLongitude,$southWestLlatitude,$northEastLongitude,$northEastLatitude",
+          "geometryType": "esriGeometryEnvelope", //"esriGeometryPoint",
+          "geometry":
+              "$southWestLongitude,$southWestLlatitude,$northEastLongitude,$northEastLatitude",
           ////////////////////////// To get data in a specific area
           // "distance": 100,
           // "supportsQueryWithDistance": true,
