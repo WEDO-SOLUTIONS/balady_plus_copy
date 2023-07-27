@@ -49,7 +49,7 @@ class WebService {
     dio.interceptors.add(PrettyDioLogger(
       requestHeader: false,
       requestBody: false,
-      responseBody:false,
+      responseBody: false,
     ));
   }
   WebService.newDio({
@@ -78,55 +78,6 @@ class AppInterceptors extends Interceptor {
       return handler.reject(NoInternetConnectionException(options));
     }
 
-    // if the request doesn't need token, then just continue to the next interceptor
-    /*if (options.headers[ApiHeader.requiresToken] == false) {
-      // and remove the auxiliary header
-      options.headers.remove(ApiHeader.requiresToken);
-      "Perform request without token".warningLog();
-      return handler.next(options);
-    }*/
-
-    /* if (!sl.isRegistered<AuthData>()) {
-      "AuthData not registered/found in service locator".errorLog();
-      return handler.next(options);
-    }
-
-    final authData = sl<AuthData>();
-    String? accessToken = authData.accessToken;
-    final refreshToken = authData.refreshToken;
-    if (accessToken.isEmpty || refreshToken.isEmpty) {
-      CommonFunctions.signOut();
-      return handler.reject(TokenNotFoundException(options));
-    }
-
-    final formatter = DateFormat('EEE, d MMM yyyy HH:mm:ss');
-    final dateNow = DateTime.now();
-    final issuedDate = formatter.parse(authData.issued, true).toLocal();
-    if (dateNow.difference(issuedDate).inDays < 15) {
-      final expiredDate = formatter.parse(authData.expires, true).toLocal();
-      if (dateNow.difference(expiredDate).inMinutes >= 0) {
-        final context = NavigationService.navigatorKey.currentContext!;
-        final username = authData.username;
-        final newAuthData = await _onRefreshToken(
-          username: username,
-          refreshToken: refreshToken,
-        );
-        if (newAuthData == null) {
-          return handler.reject(FailedToGenerateTokenException(options));
-        }
-
-        if (mounted) {
-          await context
-              .read<EntryPointCubit>()
-              .onUpdateAuth(newAuthData.copyWith());
-        }
-        accessToken = newAuthData.accessToken;
-      }
-    } else { 
-      CommonFunctions.signOut();
-      return handler.reject(TokenHasExpiredException(options));
-    }*/
-
     String url = options.uri.toString();
     final method = options.method;
 
@@ -140,6 +91,8 @@ class AppInterceptors extends Interceptor {
       url = options.baseUrl + options.path;
       url += "?CompanyID=${options.queryParameters["CompanyID"]}";
     }
+    if (options.headers[ApiHeader.requiresToken.eName] == false)
+      options.headers.remove("Authorization");
 
     final verifyingKEY = CommonFunctions.hashRequest(url, method,
         body: (options.data != null &&

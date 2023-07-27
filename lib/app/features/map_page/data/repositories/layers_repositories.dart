@@ -23,9 +23,7 @@ class LayersRepositories {
     try {
       final layersType = await webService.dio.get(
         Constants.mainUrl,
-        options: Options(headers: {
-          'verifyingKEY': CommonFunctions.hashRequest(Constants.mainUrl, "GET")
-        }),
+        options: Options(headers: {ApiHeader.requiresToken.eName: false}),
       );
       if (layersType.data != null) {
         return layersFromJson(layersType.data['data']['result']['layers']);
@@ -60,6 +58,8 @@ class LayersRepositories {
     required double southWestLlatitude,
   }) async {
     try {
+      print(
+          '${Constants.mainUrl}/$layerId/query?outFields=*&geometryType=esriGeometryEnvelope&geometry=$southWestLongitude,$southWestLlatitude,$northEastLongitude,$northEastLatitude');
       final points = await webService.dio.get(
         '${Constants.mainUrl}/$layerId/query',
         queryParameters: {
@@ -77,8 +77,14 @@ class LayersRepositories {
           // // The unit for calculating the buffer distance. If unit is not specified, the default will be esriSRUnit_Foot
           // "units": "esriSRUnit_Kilometer"
         },
-        options: Options(headers: {'verifyingKEY': Constants.verifyingKEY}),
+        options: Options(headers: {
+          ApiHeader.requiresToken.eName: false,
+          'verifyingKEY': CommonFunctions.hashRequest(
+              '${Constants.mainUrl}/$layerId/query?outFields=*&geometryType=esriGeometryEnvelope&geometry=$southWestLongitude,$southWestLlatitude,$northEastLongitude,$northEastLatitude',
+              "GET")
+        }),
       );
+
       switch (layerId) {
         case 2: //     المواقع الاستثمارية
           return investmentSitesFromJson(

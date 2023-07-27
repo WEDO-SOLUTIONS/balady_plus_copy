@@ -24,9 +24,10 @@ class LayersGisViewModel extends BaseViewModel {
   Future<void> getMinLayers() async {
     try {
       layers.value = await layersRepositories.getMinLayers();
-      if(layers.value != null){
+      if (layers.value != null) {
         layerSelected.value = layers.value!.first;
       }
+
       // if (layers != null) {
       //   selectedLayers.value = layers![1];
       //   await getSubLayers(selectedLayers.value!.id);
@@ -37,8 +38,7 @@ class LayersGisViewModel extends BaseViewModel {
     }
   }
 
-
-  void selectLayers (Layers layers) {
+  void selectLayers(Layers layers) {
     layerSelected.value = layers;
     layerSelected.notifyListeners();
   }
@@ -54,5 +54,4 @@ class LayersGisViewModel extends BaseViewModel {
   //     print(e);
   //   }
   // }
-
 }
