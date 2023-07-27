@@ -25,9 +25,9 @@ class WhiteLands extends PointLayersData {
 
   factory WhiteLands.fromJson(Map<String, dynamic> json) => WhiteLands(
     id: json['attributes']["OBJECTID"].toString(),
-    name: json['attributes']["AREANAME"] ?? 'name',
+    name: json['attributes']["PARCELNAME"] ?? 'name',
     description: json['attributes']["DESCRIPTION"] ?? 'description',
-    type: json['attributes']["AREANAME_SPLIT"] ?? 'type',
+    type: json['attributes']["PLANNO"] ?? 'type',
 
     // not Have Center Point
     latLng: GeoPointMessage(

@@ -124,7 +124,7 @@ class LayersRepositories {
             points.data['data']['result']['features'],
           );
         case 9: //   اراضي بيضاء
-          return whiteLandsFromJson(
+          return  whiteLandsFromJson(
             points.data['data']['result']['features'],
           );
         case 10: //       حدود قطع الأراضي

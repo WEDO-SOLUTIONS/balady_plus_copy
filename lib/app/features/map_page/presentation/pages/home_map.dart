@@ -98,6 +98,28 @@ class HomeMap extends StatelessWidget {
             ),
           ),
         ),
+        ValueListenableBuilder<bool>(
+          valueListenable: mapViewModel.isSearchLoading,
+          builder: (_, visible, __) {
+            return visible
+                ? Center(
+                    child: Card(
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const CircularProgressIndicator(),
+                            const SizedBox(height: 8),
+                            Text('loading'.tr()),
+                          ],
+                        ),
+                      ),
+                    ),
+                  )
+                : const SizedBox();
+          },
+        ),
       ],
     );
   }
