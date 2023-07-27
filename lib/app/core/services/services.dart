@@ -1,7 +1,7 @@
 import 'package:balady_plus/app/core/utils/constants/route_names.dart';
 
 Map<String, dynamic> servicesConfig = {
-  "public_services": [
+  "islamic_services": [
     {
       "id": 1,
       "icon": "holy_quran",
@@ -46,6 +46,8 @@ Map<String, dynamic> servicesConfig = {
       "ar": {"title": "نقاط توزيع ماء زمزم", "description": null, "tag": null},
       "en": {"title": "Zamzam Points", "description": null, "tag": null}
     },
+  ],
+  "help_services": [
     {
       "id": 5,
       "icon": "scanner",
@@ -56,9 +58,115 @@ Map<String, dynamic> servicesConfig = {
       "action": {"type": "page", "value": "/scanner"},
       "ar": {"title": "ماسح الرمز السريع", "description": null, "tag": null},
       "en": {"title": "QR Scanner", "description": null, "tag": null}
-    }
+    },
+    {
+      "id": 12,
+      "icon": "fee_calculator",
+      "3d_icon": null,
+      "order": 12,
+      "isNew": false,
+      "isImportant": false,
+      "action": {"type": "page", "value": "/fee-calculator"},
+      "ar": {"title": "حاسبة الرسوم", "description": null, "tag": null},
+      "en": {"title": "Fee Calculator", "description": null, "tag": null}
+    },
+    {
+      "id": 7,
+      "icon": "search_status",
+      "3d_icon": null,
+      "order": 7,
+      "isNew": false,
+      "isImportant": false,
+      "action": {"type": "page", "value": "/search-status"},
+      "ar": {"title": "الاستعلامات", "description": null, "tag": null},
+      "en": {"title": "Search Status", "description": null, "tag": null}
+    },
+    {
+      "id": 6,
+      "icon": "objections",
+      "3d_icon": null,
+      "order": 6,
+      "isNew": false,
+      "isImportant": false,
+      "action": {"type": "page", "value": "/objectableTransactionsPage"},
+      "ar": {"title": "الاعتراضات والتظلمات", "description": null, "tag": null},
+      "en": {"title": "Objections", "description": null, "tag": null}
+    },
+    {
+      "id": 13,
+      "icon": "municipal_advisor",
+      "3d_icon": null,
+      "order": 13,
+      "isNew": false,
+      "isImportant": false,
+      "action": {"type": "page", "value": "/municipal-advisor"},
+      "ar": {"title": "المستشار البلدي", "description": null, "tag": null},
+      "en": {"title": "Municipal Advisor", "description": null, "tag": null}
+    },
   ],
-  "municipal_services": [
+  "health_certificates_services": [
+    {
+      "id": 15,
+      "icon": "issue_health_certificate",
+      "3d_icon": null,
+      "order": 15,
+      "isNew": false,
+      "isImportant": false,
+      "action": {"type": "page", "value": "/issue-health-certificate"},
+      "ar": {"title": "إصدار شهادة صحية", "description": null, "tag": null},
+      "en": {
+        "title": "Issue Health Certificate",
+        "description": null,
+        "tag": null
+      }
+    },
+  ],
+  "honoring_the_dead_services": [
+    {
+      "id": 14,
+      "icon": "move_diseased",
+      "3d_icon": null,
+      "order": 14,
+      "isNew": false,
+      "isImportant": false,
+      "action": {"type": "page", "value": "/move-diseased"},
+      "ar": {"title": "نقل وتجهيز الموتي", "description": null, "tag": null},
+      "en": {"title": "Move Diseased", "description": null, "tag": null}
+    },
+  ],
+  "business_license_services": [
+    {
+      "id": 10,
+      "icon": "your_opnion_matter",
+      "3d_icon": null,
+      "order": 10,
+      "isNew": true,
+      "isImportant": false,
+      "action": {"type": "page", "value": RouteName.qrScreenRoute},
+      "ar": {
+        "title": "رأيك يفرق",
+        "description": "يمكنك الآن حجز موعد عبر التطبيق !",
+        "tag": null
+      },
+      "en": {
+        "title": "Your Opnion Matter",
+        "description": "You can now book an appointment through the app!",
+        "tag": null
+      }
+    },
+    {
+      "id": 11,
+      "icon": "issue_trade_license",
+      "3d_icon": null,
+      "order": 11,
+      "isNew": false,
+      "isImportant": false,
+      "action": {"type": "page", "value": "/issue-trade-license"},
+      "ar": {"title": "إصدار رخصة تجارية", "description": null, "tag": null},
+      "en": {"title": "Issue Trade License", "description": null, "tag": null}
+    },
+  ],
+  "customer_voice_services": [
     {
       "id": 1,
       "icon": "send_image",
@@ -168,28 +276,6 @@ Map<String, dynamic> servicesConfig = {
       "en": {"title": "Request Service", "description": null, "tag": null}
     },
     {
-      "id": 6,
-      "icon": "objections",
-      "3d_icon": null,
-      "order": 6,
-      "isNew": false,
-      "isImportant": false,
-      "action": {"type": "page", "value": "/objectableTransactionsPage"},
-      "ar": {"title": "الاعتراضات والتظلمات", "description": null, "tag": null},
-      "en": {"title": "Objections", "description": null, "tag": null}
-    },
-    {
-      "id": 7,
-      "icon": "search_status",
-      "3d_icon": null,
-      "order": 7,
-      "isNew": false,
-      "isImportant": false,
-      "action": {"type": "page", "value": "/search-status"},
-      "ar": {"title": "الاستعلامات", "description": null, "tag": null},
-      "en": {"title": "Search Status", "description": null, "tag": null}
-    },
-    {
       "id": 8,
       "icon": "transaction_inquery",
       "3d_icon": null,
@@ -218,84 +304,6 @@ Map<String, dynamic> servicesConfig = {
       "action": {"type": "page", "value": RouteName.DCCameraPage},
       "ar": {"title": "السيارات التالفة", "description": null, "tag": null},
       "en": {"title": "Damaged Cars", "description": null, "tag": null}
-    },
-    {
-      "id": 10,
-      "icon": "your_opnion_matter",
-      "3d_icon": null,
-      "order": 10,
-      "isNew": true,
-      "isImportant": false,
-      "action": {"type": "page", "value": RouteName.qrScreenRoute},
-      "ar": {
-        "title": "رأيك يفرق",
-        "description": "يمكنك الآن حجز موعد عبر التطبيق !",
-        "tag": null
-      },
-      "en": {
-        "title": "Your Opnion Matter",
-        "description": "You can now book an appointment through the app!",
-        "tag": null
-      }
-    },
-    {
-      "id": 11,
-      "icon": "issue_trade_license",
-      "3d_icon": null,
-      "order": 11,
-      "isNew": false,
-      "isImportant": false,
-      "action": {"type": "page", "value": "/issue-trade-license"},
-      "ar": {"title": "إصدار رخصة تجارية", "description": null, "tag": null},
-      "en": {"title": "Issue Trade License", "description": null, "tag": null}
-    },
-    {
-      "id": 12,
-      "icon": "fee_calculator",
-      "3d_icon": null,
-      "order": 12,
-      "isNew": false,
-      "isImportant": false,
-      "action": {"type": "page", "value": "/fee-calculator"},
-      "ar": {"title": "حاسبة الرسوم", "description": null, "tag": null},
-      "en": {"title": "Fee Calculator", "description": null, "tag": null}
-    },
-    {
-      "id": 13,
-      "icon": "municipal_advisor",
-      "3d_icon": null,
-      "order": 13,
-      "isNew": false,
-      "isImportant": false,
-      "action": {"type": "page", "value": "/municipal-advisor"},
-      "ar": {"title": "المستشار البلدي", "description": null, "tag": null},
-      "en": {"title": "Municipal Advisor", "description": null, "tag": null}
-    },
-    {
-      "id": 14,
-      "icon": "move_diseased",
-      "3d_icon": null,
-      "order": 14,
-      "isNew": false,
-      "isImportant": false,
-      "action": {"type": "page", "value": "/move-diseased"},
-      "ar": {"title": "نقل وتجهيز الموتي", "description": null, "tag": null},
-      "en": {"title": "Move Diseased", "description": null, "tag": null}
-    },
-    {
-      "id": 15,
-      "icon": "issue_health_certificate",
-      "3d_icon": null,
-      "order": 15,
-      "isNew": false,
-      "isImportant": false,
-      "action": {"type": "page", "value": "/issue-health-certificate"},
-      "ar": {"title": "إصدار شهادة صحية", "description": null, "tag": null},
-      "en": {
-        "title": "Issue Health Certificate",
-        "description": null,
-        "tag": null
-      }
     },
     {
       "id": 16,

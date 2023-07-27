@@ -7,37 +7,79 @@ import '../../services_exports.dart' show ServiceEntity;
 import '../models/service_model.dart';
 
 abstract class ServicesLocalDataSource {
-  Future<List<ServiceEntity>> getPublicServices();
-  Future<List<ServiceEntity>> getMunicipalServices();
+  Future<List<ServiceEntity>> getCustomerVoiceServices();
+  Future<List<ServiceEntity>> getIslamicServices();
+  Future<List<ServiceEntity>> getBusinessLicenseServices();
+  Future<List<ServiceEntity>> getHonoringTheDeadServices();
+  Future<List<ServiceEntity>> getHealthCertificatesServices();
+  Future<List<ServiceEntity>> getHelpServices();
+
   Future<List<ServiceEntity>> getNewServices();
   Future<List<ServiceEntity>> getImportantServices();
 }
 
 class ServicesLocalDataSourceImplementation implements ServicesLocalDataSource {
-  final List<ServiceEntity> _publicServices = [];
-  final List<ServiceEntity> _municipalServices = [];
+  final List<ServiceEntity> _customerVoiceServices = [];
+  final List<ServiceEntity> _islamicServices = [];
+  final List<ServiceEntity> _businessLicenseServices = [];
+  final List<ServiceEntity> _honoringTheDeadServices = [];
+  final List<ServiceEntity> _healthCertificatesServices = [];
+  final List<ServiceEntity> _helpServices = [];
 
-  List<ServiceEntity> get _allServices => _publicServices + _municipalServices;
+  List<ServiceEntity> get _allServices =>
+      _customerVoiceServices + _islamicServices;
 
   @override
-  Future<List<ServiceEntity>> getPublicServices() async {
-    if (_publicServices.isEmpty) {
+  Future<List<ServiceEntity>> getCustomerVoiceServices() async {
+    if (_customerVoiceServices.isEmpty) {
       await _loadServices();
     }
-    return _publicServices;
+    return _customerVoiceServices;
   }
 
   @override
-  Future<List<ServiceEntity>> getMunicipalServices() async {
-    if (_municipalServices.isEmpty) {
+  Future<List<ServiceEntity>> getIslamicServices() async {
+    if (_islamicServices.isEmpty) {
       await _loadServices();
     }
-    return _municipalServices;
+    return _islamicServices;
+  }
+
+  @override
+  Future<List<ServiceEntity>> getBusinessLicenseServices() async {
+    if (_businessLicenseServices.isEmpty) {
+      await _loadServices();
+    }
+    return _businessLicenseServices;
+  }
+
+  @override
+  Future<List<ServiceEntity>> getHealthCertificatesServices() async {
+    if (_healthCertificatesServices.isEmpty) {
+      await _loadServices();
+    }
+    return _healthCertificatesServices;
+  }
+
+  @override
+  Future<List<ServiceEntity>> getHelpServices() async {
+    if (_helpServices.isEmpty) {
+      await _loadServices();
+    }
+    return _helpServices;
+  }
+
+  @override
+  Future<List<ServiceEntity>> getHonoringTheDeadServices() async {
+    if (_honoringTheDeadServices.isEmpty) {
+      await _loadServices();
+    }
+    return _honoringTheDeadServices;
   }
 
   @override
   Future<List<ServiceEntity>> getNewServices() async {
-    if (_publicServices.isEmpty || _municipalServices.isEmpty) {
+    if (_customerVoiceServices.isEmpty || _islamicServices.isEmpty) {
       await _loadServices();
     }
     return _allServices.where((service) => service.isNew).toList();
@@ -45,7 +87,7 @@ class ServicesLocalDataSourceImplementation implements ServicesLocalDataSource {
 
   @override
   Future<List<ServiceEntity>> getImportantServices() async {
-    if (_publicServices.isEmpty || _municipalServices.isEmpty) {
+    if (_customerVoiceServices.isEmpty || _islamicServices.isEmpty) {
       await _loadServices();
     }
     return _allServices.where((service) => service.isImportant).toList();
@@ -54,16 +96,47 @@ class ServicesLocalDataSourceImplementation implements ServicesLocalDataSource {
   Future<void> _loadServices() async {
     final servicesJson = servicesConfig;
     //final servicesJson = json.decode(services) as Map<String, dynamic>;
-    final publicServicesJson = servicesJson['public_services'] as List<dynamic>;
-    final municipalServicesJson =
-        servicesJson['municipal_services'] as List<dynamic>;
-    _publicServices.addAll(publicServicesJson
+    final islamicServicesJson =
+        servicesJson['islamic_services'] as List<dynamic>;
+    final customerVoiceServicesJson =
+        servicesJson['customer_voice_services'] as List<dynamic>;
+    final businessLicenseServicesJson =
+        servicesJson['business_license_services'] as List<dynamic>;
+    final honoringTheDeadServicesJson =
+        servicesJson['honoring_the_dead_services'] as List<dynamic>;
+    final healthCertificatesServicesJson =
+        servicesJson['health_certificates_services'] as List<dynamic>;
+    final helpServicesJson = servicesJson['help_services'] as List<dynamic>;
+    _customerVoiceServices.addAll(customerVoiceServicesJson
         .map(
             (service) => ServiceModel.fromJson(service as Map<String, dynamic>))
         .toList());
-    _municipalServices.addAll(municipalServicesJson
+    _islamicServices.addAll(islamicServicesJson
         .map(
             (service) => ServiceModel.fromJson(service as Map<String, dynamic>))
         .toList());
+
+    _businessLicenseServices.addAll(
+      businessLicenseServicesJson.map(
+        (service) => ServiceModel.fromJson(service as Map<String, dynamic>),
+      ),
+    );
+    _honoringTheDeadServices.addAll(
+      honoringTheDeadServicesJson.map(
+        (service) => ServiceModel.fromJson(service as Map<String, dynamic>),
+      ),
+    );
+
+    _healthCertificatesServices.addAll(
+      healthCertificatesServicesJson.map(
+        (service) => ServiceModel.fromJson(service as Map<String, dynamic>),
+      ),
+    );
+
+    _helpServices.addAll(
+      helpServicesJson.map(
+        (service) => ServiceModel.fromJson(service as Map<String, dynamic>),
+      ),
+    );
   }
 }

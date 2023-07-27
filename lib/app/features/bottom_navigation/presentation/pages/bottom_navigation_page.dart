@@ -52,8 +52,12 @@ class _BottomNavigationPageState extends State<BottomNavigationPage> {
           create: (_) => ServicesCubit(
             importantServices: sl(),
             newServices: sl(),
-            municipalServices: sl(),
-            publicServices: sl(),
+            islamicServices: sl(),
+            customerVoiceServices: sl(),
+            businessLicenseServices: sl(),
+            honoringTheDeadServices: sl(),
+            healthCertificatesServices: sl(),
+            helpServices: sl(),
           ),
         ),
         BlocProvider<DelegatorsCubit>(

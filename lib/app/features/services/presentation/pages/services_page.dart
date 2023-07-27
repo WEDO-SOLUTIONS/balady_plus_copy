@@ -35,14 +35,32 @@ class ServicesPage extends StatelessWidget {
               child: Column(
                 children: [
                   ServicesList(
-                    title: "public_services".tr(),
-                    services: state.publicServices,
-                    crossAxisCount: 5,
+                    title: "islamic_services".tr(),
+                    services: state.islamicServices,
                   ),
                   const SizedBox(height: 16),
                   ServicesList(
-                    title: "municipal_services".tr(),
-                    services: state.municipalServices,
+                    title: "customer_voice_services".tr(),
+                    services: state.customerVoiceServices,
+                  ),
+                  ServicesList(
+                    title: "business_license_services".tr(),
+                    services: state.businessLicenseServices,
+                  ),
+                  const SizedBox(height: 16),
+                  ServicesList(
+                    title: "honoring_the_dead_services".tr(),
+                    services: state.honoringTheDeadServices,
+                  ),
+                  const SizedBox(height: 16),
+                  ServicesList(
+                    title: "health_certificates_services".tr(),
+                    services: state.healthCertificatesServices,
+                  ),
+                  const SizedBox(height: 16),
+                  ServicesList(
+                    title: "help_services".tr(),
+                    services: state.helpServices,
                   ),
                 ],
               ),
