@@ -1,8 +1,10 @@
+import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/custom_shimmer_list_widget.dart';
 import 'package:balady_plus/app/features/wallet/core/blocs/wallet/wallet_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_card_swiper/flutter_card_swiper.dart';
 import 'package:flutter/material.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 import '../../../../core/utils/utils_exports.dart';
 import '../../../_shared_feature_/shared_feature_exports.dart';
 import '../../core/models/wallet_type.dart';
@@ -55,97 +57,117 @@ class WalletScreen extends StatelessWidget {
                       ),
                       BlocBuilder<WalletBloc, WalletState>(
                         builder: (context, state) {
-                          if (state.status == BlocStatus.success &&
-                              state.getItems().length > 0)
-                            return state.showAll ?? false
-                                ? Flexible(
-                                    child: ListView.separated(
-                                      padding: const EdgeInsets.only(top: 24),
-                                      separatorBuilder: (_, __) =>
-                                          const SizedBox(height: 12),
-                                      itemCount:
-                                          (state.getItems().length ?? 0) > 5
-                                              ? 5
-                                              : (state.getItems().length ?? 0),
-                                      shrinkWrap: true,
-                                      itemBuilder: (_, index) =>
-                                          BusinessLicenseCard(
-                                        bgImagePath:
-                                            "${ImagePath.visaBg}${index + 1}.png",
-                                        title: state
-                                                .getItems()?[index]
-                                                .getLicenseHeaderText() ??
-                                            "",
-                                        cardNumber: state
-                                                .getItems()?[index]
-                                                .licenseId ??
-                                            "",
-                                        expireDate: state
-                                                .getItems()?[index]
-                                                .endDateHijri ??
-                                            "",
-                                        creationDate: state
-                                                .items?[index].startDateHijri ??
-                                            "",
-                                        holderName: state
-                                                .getItems()?[index]
-                                                .getName() ??
-                                            "",
-                                        onPressed: () => context.pushNamedRoute(
-                                            RouteName.businessLicensePage,
-                                            arguments: state.getItems()[index]),
-                                      ),
-                                    ),
+                          if ((state.status == BlocStatus.success &&
+                                  state.getItems().length > 0) ||
+                              state.status == BlocStatus.loading)
+                            return state.status == BlocStatus.loading
+                                ? CustomShimmerWidget(
+                                    childHeight: 206,
+                                    padding: const EdgeInsets.only(top: 30),
                                   )
-                                : Flexible(
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(top: 186),
-                                      child: CardSwiper(
-                                        cardsCount:
-                                            (state.getItems().length ?? 0) > 5
-                                                ? 5
-                                                : (state.getItems().length ??
-                                                    0),
-                                        numberOfCardsDisplayed:
-                                            (state.getItems().length ?? 0) > 5
-                                                ? 5
-                                                : (state.getItems().length ??
-                                                    0),
-                                        duration:
-                                            const Duration(milliseconds: 400),
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 8),
-                                        backCardOffset: const Offset(0, -50),
-                                        cardBuilder: (_, index, __, ___) =>
-                                            BusinessLicenseCard(
-                                          bgImagePath:
-                                              "${ImagePath.visaBg}${index + 1}.png",
-                                          title: state
-                                                  .getItems()?[index]
-                                                  .getLicenseHeaderText() ??
-                                              "",
-                                          cardNumber: state
-                                                  .getItems()?[index]
-                                                  .licenseId ??
-                                              "",
-                                          expireDate: state
-                                                  .items?[index].endDateHijri ??
-                                              "",
-                                          creationDate: state
-                                                  .getItems()?[index]
-                                                  .startDateHijri ??
-                                              "",
-                                          holderName: state
-                                                  .getItems()?[index]
-                                                  .getName() ??
-                                              "",
-                                          onPressed: () => context
-                                              .read<WalletBloc>()
-                                              .add(const ChangeViewAllEvent()),
+                                : state.showAll ?? false
+                                    ? Flexible(
+                                        child: ListView.separated(
+                                          padding:
+                                              const EdgeInsets.only(top: 24),
+                                          separatorBuilder: (_, __) =>
+                                              const SizedBox(height: 12),
+                                          itemCount:
+                                              (state.getItems().length ?? 0) > 5
+                                                  ? 5
+                                                  : (state.getItems().length ??
+                                                      0),
+                                          shrinkWrap: true,
+                                          itemBuilder: (_, index) =>
+                                              BusinessLicenseCard(
+                                            bgImagePath:
+                                                "${ImagePath.visaBg}${index + 1}.png",
+                                            title: state
+                                                    .getItems()?[index]
+                                                    .getLicenseHeaderText() ??
+                                                "",
+                                            cardNumber: state
+                                                    .getItems()?[index]
+                                                    .licenseId ??
+                                                "",
+                                            expireDate: state
+                                                    .getItems()?[index]
+                                                    .endDateHijri ??
+                                                "",
+                                            creationDate: state.items?[index]
+                                                    .startDateHijri ??
+                                                "",
+                                            holderName: state
+                                                    .getItems()?[index]
+                                                    .getName() ??
+                                                "",
+                                            onPressed: () =>
+                                                context.pushNamedRoute(
+                                                    RouteName
+                                                        .businessLicensePage,
+                                                    arguments: state
+                                                        .getItems()[index]),
+                                          ),
                                         ),
-                                      ),
-                                    ),
-                                  );
+                                      )
+                                    : Flexible(
+                                        child: Padding(
+                                          padding:
+                                              const EdgeInsets.only(top: 186),
+                                          child: CardSwiper(
+                                            cardsCount:
+                                                (state.getItems().length ?? 0) >
+                                                        5
+                                                    ? 5
+                                                    : (state
+                                                            .getItems()
+                                                            .length ??
+                                                        0),
+                                            numberOfCardsDisplayed:
+                                                (state.getItems().length ?? 0) >
+                                                        5
+                                                    ? 5
+                                                    : (state
+                                                            .getItems()
+                                                            .length ??
+                                                        0),
+                                            duration: const Duration(
+                                                milliseconds: 400),
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 8),
+                                            backCardOffset:
+                                                const Offset(0, -50),
+                                            cardBuilder: (_, index, __, ___) =>
+                                                BusinessLicenseCard(
+                                              bgImagePath:
+                                                  "${ImagePath.visaBg}${index + 1}.png",
+                                              title: state
+                                                      .getItems()?[index]
+                                                      .getLicenseHeaderText() ??
+                                                  "",
+                                              cardNumber: state
+                                                      .getItems()?[index]
+                                                      .licenseId ??
+                                                  "",
+                                              expireDate: state.items?[index]
+                                                      .endDateHijri ??
+                                                  "",
+                                              creationDate: state
+                                                      .getItems()?[index]
+                                                      .startDateHijri ??
+                                                  "",
+                                              holderName: state
+                                                      .getItems()?[index]
+                                                      .getName() ??
+                                                  "",
+                                              onPressed: () => context
+                                                  .read<WalletBloc>()
+                                                  .add(
+                                                      const ChangeViewAllEvent()),
+                                            ),
+                                          ),
+                                        ),
+                                      );
 
                           if (state.status == BlocStatus.loading)
                             return Container();

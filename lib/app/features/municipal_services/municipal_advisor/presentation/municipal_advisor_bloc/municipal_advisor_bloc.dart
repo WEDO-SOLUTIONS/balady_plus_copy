@@ -536,14 +536,16 @@ class MunicipalAdvisorBloc
           SaveConsultationProgressParams(
             consultationKey: state.consultationKey!,
             subMunicipalityGisCode:
-                // state.activityLocation?.gisResponse.subMunicipalityId ??
-                "013001002",
-            districtCode:
-                // int.tryParse(state.activityLocation?.gisResponse.districtId ?? "") ??
-                1010106,
-            streetCode:
-                // int.tryParse(state.activityLocation?.gisResponse.streetCode ?? "") ??
-                1010106005,
+                state.activityLocation?.gisResponse.subMunicipalityId ?? "",
+            // "013001002",
+            districtCode: int.tryParse(
+                    state.activityLocation?.gisResponse.districtId ?? "") ??
+                0,
+            // 1010106,
+            streetCode: int.tryParse(
+                    state.activityLocation?.gisResponse.streetCode ?? "") ??
+                0,
+            //1010106005,
             longitude:
                 state.activityLocation?.latLng.longitude.toString() ?? "",
             latitude: state.activityLocation?.latLng.latitude.toString() ?? "",
@@ -554,8 +556,7 @@ class MunicipalAdvisorBloc
             atmFeesOption: state.atmPaid,
             unitCount: state.unitCount,
             accommodationTypeId: state.selectedAccommodationType?.id,
-            krokiUrl: state.activityLocation?.gisResponse.locationURL ??
-                "http://gisimages.momra.gov.sa/",
+            krokiUrl: state.activityLocation?.gisResponse.locationURL,
           ),
         );
         failureOrSuccess.fold(

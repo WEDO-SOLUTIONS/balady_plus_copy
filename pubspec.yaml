@@ -147,6 +147,7 @@ dependencies:
   flutter_cached_pdfview: ^0.4.2
   pdfx:
   provider: ^6.0.2 
+  skeletonizer: ^0.3.0
   
   #test_package:
  #   path: packages/test_package

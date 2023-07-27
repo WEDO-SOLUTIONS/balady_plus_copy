@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/custom_shimmer_list_widget.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/reload_widget.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import 'package:balady_plus/app/features/weather/presentation/bloc/weather_bloc.dart';
@@ -11,6 +12,7 @@ import 'package:balady_plus/app/features/weather/weather_exports.dart'
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../../core/dependency_injection/injection_container.dart';
 import '../../../../core/utils/utils_exports.dart';
@@ -32,8 +34,9 @@ class _WeatherMainPageState extends State<WeatherMainPage> {
     final Size _size = _mediaQuery.size;
     final screenWidth = _size.width;
     final screenHeight = _size.height;
-    return BlocProvider(
-      create: (context) => sl<WeatherBloc>(),
+
+    return BlocProvider.value(
+      value: sl<WeatherBloc>(),
       child: BlocBuilder<WeatherBloc, WeatherState>(
         builder: (context, state) {
           // if (state.allWeatherInfoStatus == BlocStatus.loading) {
@@ -81,30 +84,30 @@ class _WeatherMainPageState extends State<WeatherMainPage> {
                     width: screenWidth,
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: ListView.builder(
-                        padding: EdgeInsets.zero,
-                        itemCount: state.allWeatherInfo?.forecast?.forecastday
-                                ?.length ??
-                            0,
-                        itemBuilder: (context, index) {
-                          if (state.allWeatherInfoStatus ==
-                              BlocStatus.loading) {
-                            return const DayCardShimmer();
-                          } else {
-                            var forecastDay = state
-                                .allWeatherInfo?.forecast?.forecastday?[index];
-                            return WeatherDayCard(
-                              forecastDay: forecastDay,
-                              isExpanded: selectedTile == index,
-                              onExpansionChanged: (bool expanded) {
-                                setState(() {
-                                  selectedTile = expanded ? index : -1;
-                                });
+                      child: state.allWeatherInfoStatus == BlocStatus.success
+                          ? ListView.builder(
+                              padding: EdgeInsets.zero,
+                              itemCount: state.allWeatherInfo?.forecast
+                                      ?.forecastday?.length ??
+                                  0,
+                              itemBuilder: (context, index) {
+                                var forecastDay = state.allWeatherInfo?.forecast
+                                    ?.forecastday?[index];
+                                return WeatherDayCard(
+                                  forecastDay: forecastDay,
+                                  isExpanded: selectedTile == index,
+                                  onExpansionChanged: (bool expanded) {
+                                    setState(() {
+                                      selectedTile = expanded ? index : -1;
+                                    });
+                                  },
+                                );
                               },
-                            );
-                          }
-                        },
-                      ),
+                            )
+                          : CustomShimmerListWidget(
+                              height: 50,
+                              itemCount: 7,
+                            ),
                     ),
                   ),
                 ),

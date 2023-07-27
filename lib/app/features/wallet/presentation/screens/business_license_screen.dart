@@ -7,6 +7,8 @@ import '../../../_shared_feature_/shared_feature_exports.dart';
 import '../../core/blocs/wallet_details/wallet_details_bloc.dart';
 import '../../core/models/wallet_item.dart';
 import '../../wallet_exports.dart';
+import '../widgets/wallet_label_info.dart';
+import '../widgets/wallet_user_image_widget.dart';
 
 class BusinessLicenseScreen extends StatelessWidget {
   final WalletItem? item;
@@ -63,29 +65,89 @@ class _QrCodeCard extends StatelessWidget {
     return BlocBuilder<WalletDetailsBloc, WalletDetailsState>(
       builder: (context, state) {
         return Container(
-          height: 206,
           width: MediaQuery.sizeOf(context).width,
-          padding: const EdgeInsets.symmetric(vertical: 26),
+          padding: const EdgeInsets.symmetric(vertical: 26, horizontal: 26),
           decoration: const BoxDecoration(
-            borderRadius: BorderRadius.all(Radius.circular(14)),
-            image: DecorationImage(
+              borderRadius: BorderRadius.all(Radius.circular(14)),
+              color: AppColor.primary300Light
+              /*  image: DecorationImage(
               fit: BoxFit.fitWidth,
               image: AssetImage(ImagePath.qrBg),
-            ),
-          ),
+            ),*/
+              ),
           child: Column(
             children: [
-              QrImageView(
-                data: state.selectedItem?.qrUrl ?? "",
-                size: 92,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const WalletUserImage(),
+                  QrImageView(
+                    data: state.selectedItem?.qrUrl ?? "",
+                    size: 92,
+                  ),
+                ],
               ),
-              const SizedBox(height: 24),
-              CustomTextWidget(
-                "scanQr".tr(),
-                fontColor: AppColor.primary600Light,
-                fontWeight: AppFontWeight.bold,
-                fontSize: 12,
+              CustomVerticalSpace(height: 12),
+              Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      WalletLabelInfo(
+                        title: "id_number".tr(),
+                        subTitle: state.selectedItem?.getOwnerId(),
+                      ),
+                    ],
+                  ),
+                  CustomVerticalSpace(height: 12),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      WalletLabelInfo(
+                        title: "digitalWalletCardMunicipalityWord".tr(),
+                        subTitle: state.selectedItem?.municipilityName,
+                      ),
+                      WalletLabelInfo(
+                        title: "digitalWalletCardSubMunicipalityWord".tr(),
+                        subTitle: state.selectedItem?.subMunicipilityName,
+                      )
+                    ],
+                  ),
+                ],
               ),
+              CustomVerticalSpace(height: 12),
+              if (state.selectedItem?.getLicenseType() == LicenseTypes.peddler)
+                Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        WalletLabelInfo(
+                          title: "activity_name".tr(),
+                          subTitle: state.selectedItem?.activityName,
+                        ),
+                        WalletLabelInfo(
+                          title: "market_name".tr(),
+                          subTitle: state.selectedItem?.marketName,
+                        )
+                      ],
+                    ),
+                    CustomVerticalSpace(height: 12),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        WalletLabelInfo(
+                          title: "port_number".tr(),
+                          subTitle: state.selectedItem?.locationNumber,
+                        ),
+                        WalletLabelInfo(
+                          title: "market_name".tr(),
+                          subTitle: state.selectedItem?.marketName,
+                        )
+                      ],
+                    ),
+                  ],
+                )
             ],
           ),
         );

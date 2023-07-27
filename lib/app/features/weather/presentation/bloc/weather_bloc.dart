@@ -28,8 +28,9 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
 
   Future<void> _getAllWeatherInfo(
       GetWeatherForLocation e, Emitter emitter) async {
-    emitter(state.copyWith(allWeatherInfoStatus: BlocStatus.loading));
+    if (state.allWeatherInfoStatus == BlocStatus.success) return;
 
+    emitter(state.copyWith(allWeatherInfoStatus: BlocStatus.loading));
     LatLng? location = await Helpers.getCurrentLocation();
 
     e.params
@@ -45,7 +46,6 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
       ));
     }, (success) async {
       emitter(state.copyWith(
-        allWeatherInfoStatus: BlocStatus.success,
         gisResponse: success,
         errorMessage: "",
       ));
@@ -53,6 +53,7 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
       final failureOrSuccess = await _getWeatherInfo(e.params);
 
       failureOrSuccess.fold((failure) {
+        print("failure: $failure");
         emitter(state.copyWith(
           allWeatherInfoStatus: BlocStatus.failure,
           errorMessage: (failure as ServerFailure).errorMessage,

@@ -27,6 +27,7 @@ class RouteName {
   static const invoices = '/invoices';
   static const invoiceDetails = '/invoiceDetails';
   static const licenses = '/licenses';
+  static const incRequestsPage = '/incRequestsPage';
 
   // -------  Objections ---------
 

@@ -12,6 +12,7 @@ class GISResponse extends Equatable {
   String? region;
   String? streetCode;
   String? streetName;
+  String? cityName;
   //dynamic subDistrictId;
   //dynamic subDistrictName;
   String? subMunicipalityId;
@@ -27,6 +28,7 @@ class GISResponse extends Equatable {
   GISResponse({
     this.adminMunicipalityId,
     this.adminMunicipalityName,
+    this.cityName,
     // this.cleanInfo,
     this.districtId,
     this.districtName,
@@ -102,5 +104,6 @@ class GISResponse extends Equatable {
         subMunicipalityguid,
         streetCode,
         locationURL,
+        cityName
       ];
 }

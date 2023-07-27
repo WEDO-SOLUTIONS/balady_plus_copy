@@ -119,13 +119,15 @@ class ServiceIcon extends StatelessWidget {
         } else if (service.id == 4 &&
             service.action.type == ServiceAction.dialog) {
           if (CommonProperties.isLoggedIn) {
-            await locator<NewAppointmentViewModel>().loadInitialData();
-            await BottomSheetDialog.showDraggableSheet(context,
-                isFullHeight: false,
-                child: BottomSheetWithActions(
-                  title: "اختر نوع الموعد".tr(),
-                  body: NewAppointmentDialog(),
-                ));
+            bool isSuccess =
+                await locator<NewAppointmentViewModel>().loadInitialData();
+            if (isSuccess)
+              await BottomSheetDialog.showDraggableSheet(context,
+                  isFullHeight: false,
+                  child: BottomSheetWithActions(
+                    title: "اختر نوع الموعد".tr(),
+                    body: NewAppointmentDialog(),
+                  ));
           } else {
             showDialog(
                 context: context,

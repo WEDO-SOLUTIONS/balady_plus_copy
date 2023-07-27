@@ -48,7 +48,7 @@ class AlertsModel extends Alerts {
 
     return AlertsModel(
       alert: jsonData.isEmpty
-          ? [AlertModel.fromJson(dummyData)]
+          ? []
           : List<AlertModel>.from(
               jsonData.map(
                 (x) {

@@ -43,6 +43,7 @@ import '../../features/municipal_services/municipal_advisor/municipal_advisor_ex
 import '../../features/objections/presentation/pages/objections_page.dart';
 import '../../features/profile_features/dashboard/dashboard_exports.dart'
     show DashBoardPage;
+import '../../features/profile_features/incidents/presentation/pages/requests_page.dart';
 import '../../features/profile_features/invoices/invoices_exports.dart'
     show InvoiceDetailsPage, InvoiceEntity, InvoicesPage;
 import '../../features/profile_features/licenses/licenses_exports.dart'
@@ -169,6 +170,9 @@ class AppRouter {
       // objections page
       case RouteName.objections:
         return MaterialPageRoute(builder: (_) => const ObjectionsPage());
+
+      case RouteName.incRequestsPage:
+        return MaterialPageRoute(builder: (_) => const INCRequestsPage());
 
       // objectable transactions page
       case RouteName.objectableTransactions:

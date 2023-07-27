@@ -111,7 +111,7 @@ void initialize() {
 
 // Weather
   //Blocs
-  sl.registerFactory(() => WeatherBloc(getWeatherInfo: sl()));
+  sl.registerLazySingleton(() => WeatherBloc(getWeatherInfo: sl()));
   //Domain
   //UseCases
   sl.registerLazySingleton(() => GetWeatherInfo(repository: sl()));

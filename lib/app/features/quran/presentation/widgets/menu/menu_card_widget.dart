@@ -68,7 +68,7 @@ class QuranMenuCardWidget extends StatelessWidget {
                 children: [
                   SvgPicture.asset(IconPath.suraIcon),
                   CustomTextWidget(
-                    (index + 1).toString(),
+                    (index).toString(),
                     fontColor: AppColor.primary800Light,
                     fontSize: 14,
                     fontWeight: AppFontWeight.semiBold,

@@ -56,7 +56,7 @@ class WeatherAppbar extends StatelessWidget {
           backgroundColor: Colors.transparent,
           elevation: 0,
           title: CustomTextWidget(
-            state.allWeatherInfo?.location?.name ?? 'الرياض',
+            state.gisResponse?.cityName ?? "",
             fontSize: 20,
             fontWeight: AppFontWeight.bold,
           ),

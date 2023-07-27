@@ -42,7 +42,7 @@ class ProfileSections {
           ProfileItem(
             title: "reports".tr(),
             icon: IconPath.reports,
-            route: "",
+            route: RouteName.incRequestsPage,
           ),
           ProfileItem(
             title: "violations".tr(),
@@ -58,6 +58,11 @@ class ProfileSections {
             title: "wallet".tr(),
             icon: IconPath.wallet,
             route: RouteName.walletPage,
+          ),
+          ProfileItem(
+            title: "appointments".tr(),
+            icon: IconPath.appiontments,
+            route: RouteName.AppointmentsListScreen,
           ),
         ],
       );

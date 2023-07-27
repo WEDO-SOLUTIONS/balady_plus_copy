@@ -41,6 +41,7 @@ class RoundedCard extends StatelessWidget {
               const SizedBox(height: 8),
               CustomTextWidget(
                 title,
+                textAlign: TextAlign.center,
                 fontColor: isSelected
                     ? AppColor.blackModern50Light
                     : AppColor.blackModern900Light,

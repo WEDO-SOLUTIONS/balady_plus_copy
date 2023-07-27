@@ -13,7 +13,8 @@ class WeatherState extends Equatable {
       this.gisResponse});
 
   @override
-  List<Object?> get props => [allWeatherInfoStatus, gisResponse];
+  List<Object?> get props =>
+      [allWeatherInfoStatus, gisResponse, allWeatherInfo];
 
   WeatherState copyWith(
       {BlocStatus? allWeatherInfoStatus,
