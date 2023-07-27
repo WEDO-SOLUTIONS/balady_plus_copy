@@ -47,6 +47,8 @@ class MunicipalAdvisorBloc
   final GetRequestFlow _getRequestFlow;
   final GetRequestFlowRecommendations _getRequestFlowRecommendations;
   final UpdatePermit _updatePermit;
+  final SaveInteractiveInfo _saveInteractiveInfo;
+  final SubmitConsultation _submitConsultation;
 
   MunicipalAdvisorBloc({
     required GetConsultationKey getConsultationKey,
@@ -79,6 +81,8 @@ class MunicipalAdvisorBloc
     required GetRequestFlow getRequestFlow,
     required GetRequestFlowRecommendations getRequestFlowRecommendations,
     required UpdatePermit updatePermit,
+    required SaveInteractiveInfo saveInteractiveInfo,
+    required SubmitConsultation submitConsultation,
   })  : _getConsultationKey = getConsultationKey,
         _getIsicActivities = getIsicActivities,
         _getIsicSubActivities = getIsicSubActivities,
@@ -109,6 +113,8 @@ class MunicipalAdvisorBloc
         _getRequestFlow = getRequestFlow,
         _getRequestFlowRecommendations = getRequestFlowRecommendations,
         _updatePermit = updatePermit,
+        _saveInteractiveInfo = saveInteractiveInfo,
+        _submitConsultation = submitConsultation,
         super(const MunicipalAdvisorState()) {
     on<MunicipalAdvisorAddMessageEvent>(
       (event, emit) async {
@@ -600,7 +606,7 @@ class MunicipalAdvisorBloc
           SaveConsultationProgressParams(
             consultationKey: state.consultationKey!,
             subMunicipalityGisCode:
-                state.activityLocation?.gisResponse.subMunicipalityId,
+                state.activityLocation?.gisResponse.municipalityuniquecode,
             districtCode: int.tryParse(
                 state.activityLocation?.gisResponse.districtId ?? ""),
             streetCode: int.tryParse(
@@ -1456,6 +1462,23 @@ class MunicipalAdvisorBloc
           ),
         );
 
+        final saveInteractiveInfo = await _saveInteractiveInfo(
+          InteractiveInfoParams(
+            consultationKey: state.consultationKey!,
+            hasBrand: state.hasBrand!,
+            contractType: state.selectedShopOwnership!.contractTypeId,
+            contractOption: state.selectedShopContractOption!.id,
+            cleanOption: state.selectedCleanMechanism!.id,
+          ),
+        );
+
+        saveInteractiveInfo.fold(
+          (failure) => emitFailure(emit, failure),
+          (_) {},
+        );
+
+        if (failureOrSuccess.isLeft()) return;
+
         failureOrSuccess.fold(
           (failure) => emitFailure(emit, failure),
           (attachments) {
@@ -1592,6 +1615,37 @@ class MunicipalAdvisorBloc
                     customWidget: true,
                     data: 'municipalAdvisorRequestPathSuggestions',
                   ),
+                ],
+              ),
+            );
+
+            add(MunicipalAdvisorSubmitConsultationEvent());
+          },
+        );
+      },
+    );
+
+    on<MunicipalAdvisorSubmitConsultationEvent>(
+      (event, emit) async {
+        emit(
+          state.copyWith(
+            status: BlocRequestStatus.submissionGetLoading,
+            lastEvent: event,
+          ),
+        );
+
+        final failureOrSuccess = await _submitConsultation(
+          KeyParamsModel(key: state.consultationKey!),
+        );
+
+        failureOrSuccess.fold(
+          (failure) => emitFailure(emit, failure),
+          (success) {
+            emit(
+              state.copyWith(
+                status: BlocRequestStatus.submissionGetSuccess,
+                messages: [
+                  ...state.messages,
                   ChatMessage(
                     message: 'municipalAdvisorEndChat'.tr(),
                     step: MunicipalAdvisorSteps.endChat,

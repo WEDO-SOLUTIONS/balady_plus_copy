@@ -35,6 +35,7 @@ import '../../municipal_advisor_exports.dart'
         FastflowConditionModel,
         FinancialStudyParamsModel,
         GetLicenseYearsParamsModel,
+        InteractiveInfoParamsModel,
         IsicActivityModel,
         IsicSubActivityParamsModel,
         KeyParamsModel,
@@ -104,6 +105,9 @@ abstract class MunicipalAdvisorRemoteDataSource {
   Future<List<AttachmentEntity>> getConsultationAttachments(
     AttachmentParamsModel params,
   );
+  Future<bool> saveInteractiveInfo(
+    InteractiveInfoParamsModel params,
+  );
   Future<int> getMaxLicenseYears(
     KeyParamsModel params,
   );
@@ -119,6 +123,9 @@ abstract class MunicipalAdvisorRemoteDataSource {
   );
   Future<LicensePermitEntity> updatePermit(
     UpdatePermitParamsModel params,
+  );
+  Future<bool> submitConsultation(
+    KeyParamsModel params,
   );
 }
 
@@ -739,6 +746,33 @@ class MunicipalAdvisorRemoteDataSourceImplementation
   }
 
   @override
+  Future<bool> saveInteractiveInfo(InteractiveInfoParamsModel params) async {
+    try {
+      final response = await webService.dio.post(
+        "${ApiUrl.interactiveInfo}/${params.consultationKey}",
+        data: params.toMap(),
+      );
+
+      final data = response.data;
+      data.toString().successLog();
+
+      ResponseBodyModel.fromMap(data).data?.result;
+
+      return true;
+    } on DioError catch (error) {
+      "DioError $error".errorLog();
+
+      throw ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+      );
+    } catch (ex) {
+      "Catched $ex".errorLog();
+      throw ServerException("errors_server_error_2".tr());
+    }
+  }
+
+  @override
   Future<List<ContractEntity>> getShopOwnership(KeyParamsModel params) async {
     try {
       final response = await webService.dio.get(
@@ -1028,6 +1062,32 @@ class MunicipalAdvisorRemoteDataSourceImplementation
       if (error is NoDataFoundException) {
         return true;
       }
+
+      throw ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+      );
+    } catch (ex) {
+      "Catched $ex".successLog();
+      throw ServerException("errors_server_error_2".tr());
+    }
+  }
+
+  @override
+  Future<bool> submitConsultation(KeyParamsModel params) async {
+    try {
+      final response = await webService.dio.post(
+        '${ApiUrl.submitConsultation}/${params.key}',
+      );
+
+      final data = response.data;
+      data.toString().successLog();
+
+      ResponseBodyModel.fromMap(data).data;
+
+      return true;
+    } on DioError catch (error) {
+      "DioError $error".errorLog();
 
       throw ServerException(
         error.toString(),

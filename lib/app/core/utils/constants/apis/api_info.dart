@@ -56,6 +56,8 @@ class ApiUrl {
       '/v1/balady-consultation-services/shop-ownership';
   static const consultationAttachments =
       '/v1/balady-consultation-services/consultation-attachments';
+  static const interactiveInfo =
+      '/v1/balady-consultation-services/interactive-info';
   static const conditionsUrls = '/v1/balady-consultation-services/conditions';
   static const fastflowConditions =
       '/v1/balady-consultation-services/fastflow-conditions';
@@ -65,6 +67,8 @@ class ApiUrl {
       '/v1/balady-consultation-services/flow-recommendations';
   static const updatePermit =
       '/v1/balady-consultation-services/updated-permit-cost';
+  static const submitConsultation =
+      '/v1/balady-consultation-services/submit';
 
   //! Profile
   //! Delegators

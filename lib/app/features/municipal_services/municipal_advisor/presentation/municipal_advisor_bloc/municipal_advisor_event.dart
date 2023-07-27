@@ -390,4 +390,5 @@ class MunicipalAdvisorContinueToRequestPath extends MunicipalAdvisorEvent {
 
 class MunicipalAdvisorGetRequestFlowEvent extends MunicipalAdvisorEvent {}
 
+class MunicipalAdvisorSubmitConsultationEvent extends MunicipalAdvisorEvent {}
 class MunicipalAdvisorRetryEvent extends MunicipalAdvisorEvent {}

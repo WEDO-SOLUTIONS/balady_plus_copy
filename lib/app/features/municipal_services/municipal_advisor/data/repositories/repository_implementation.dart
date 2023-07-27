@@ -211,6 +211,17 @@ class MunicipalAdvisorRepositoryImplementation
   }
 
   @override
+  Future<Either<Failure, bool>> saveInteractiveInfo(
+      InteractiveInfoParamsModel params) async {
+    try {
+      final data = await remoteDataSource.saveInteractiveInfo(params);
+      return Right(data);
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage));
+    }
+  }
+
+  @override
   Future<Either<Failure, List<ContractEntity>>> getShopOwnership(
       KeyParamsModel params) async {
     try {
@@ -316,6 +327,16 @@ class MunicipalAdvisorRepositoryImplementation
       AdditionalActivitiesParamsModel params) async {
     try {
       final data = await remoteDataSource.saveAdditionalActivities(params);
+      return Right(data);
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage));
+    }
+  }
+  
+  @override
+  Future<Either<Failure, bool>> submitConsultation(KeyParamsModel params) async {
+    try {
+      final data = await remoteDataSource.submitConsultation(params);
       return Right(data);
     } on ServerException catch (error) {
       return Left(ServerFailure(error.errorMessage));

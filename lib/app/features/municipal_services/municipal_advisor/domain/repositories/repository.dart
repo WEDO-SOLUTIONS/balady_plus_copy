@@ -3,7 +3,33 @@ import 'package:dartz/dartz.dart';
 
 import '../../../../../core/errors/errors_exports.dart' show Failure;
 import '../../municipal_advisor_exports.dart'
-    show AccommodationTypeEntity, ActivityDetailsEntity, ActivityDetailsParamsModel, AdditionalActivitiesParamsModel, AttachmentEntity, AttachmentParamsModel, BoardTypeEntity, CalculateFeesParamsModel, CleaningEntity, CommercialOfficeEntity, ConditionsUrlsEntity, ContractEntity, EngineeringOfficeEntity, FastflowConditionEntity, FinancialStudyParamsModel, GetLicenseYearsParamsModel, IsicActivityEntity, IsicSubActivityParamsModel, KeyParamsModel, LicenseFeesEntity, LicensePermitEntity, RequestStepModel, SaveActivitiesParamsModel, SupervisingAuthorityEntity, UpdatePermitParamsModel;
+    show
+        AccommodationTypeEntity,
+        ActivityDetailsEntity,
+        ActivityDetailsParamsModel,
+        AdditionalActivitiesParamsModel,
+        AttachmentEntity,
+        AttachmentParamsModel,
+        BoardTypeEntity,
+        CalculateFeesParamsModel,
+        CleaningEntity,
+        CommercialOfficeEntity,
+        ConditionsUrlsEntity,
+        ContractEntity,
+        EngineeringOfficeEntity,
+        FastflowConditionEntity,
+        FinancialStudyParamsModel,
+        GetLicenseYearsParamsModel,
+        InteractiveInfoParamsModel,
+        IsicActivityEntity,
+        IsicSubActivityParamsModel,
+        KeyParamsModel,
+        LicenseFeesEntity,
+        LicensePermitEntity,
+        RequestStepModel,
+        SaveActivitiesParamsModel,
+        SupervisingAuthorityEntity,
+        UpdatePermitParamsModel;
 
 abstract class MunicipalAdvisorRepository {
   Future<Either<Failure, List<IsicActivityEntity>>> getIsicActivities();
@@ -64,6 +90,9 @@ abstract class MunicipalAdvisorRepository {
   Future<Either<Failure, List<AttachmentEntity>>> getConsultationAttachments(
     AttachmentParamsModel params,
   );
+  Future<Either<Failure, bool>> saveInteractiveInfo(
+    InteractiveInfoParamsModel params,
+  );
   Future<Either<Failure, int>> getMaxLicenseYears(
     KeyParamsModel params,
   );
@@ -79,5 +108,8 @@ abstract class MunicipalAdvisorRepository {
   );
   Future<Either<Failure, LicensePermitEntity>> updatePermit(
     UpdatePermitParamsModel params,
+  );
+  Future<Either<Failure, bool>> submitConsultation(
+    KeyParamsModel params,
   );
 }

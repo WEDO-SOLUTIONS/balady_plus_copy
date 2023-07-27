@@ -27,6 +27,7 @@ export 'domain/entities/contract_entity.dart';
 export 'domain/entities/contract_option_entity.dart';
 export 'domain/entities/attachment_entity.dart';
 export 'domain/entities/attachment_params.dart';
+export 'domain/entities/interactive_info_params.dart';
 export 'domain/entities/conditions_urls_entity.dart';
 export 'domain/entities/fastflow_condition_entity.dart';
 export 'domain/entities/update_permits_params.dart';
@@ -64,6 +65,8 @@ export 'domain/use_cases/get_request_flow_recommendations.dart';
 export 'domain/use_cases/update_permits.dart';
 export 'domain/use_cases/get_additional_activities.dart';
 export 'domain/use_cases/save_additional_activities.dart';
+export 'domain/use_cases/save_interactive_info.dart';
+export 'domain/use_cases/submit_consultation.dart';
 
 //!Data
 //? Datasources
@@ -97,6 +100,7 @@ export 'data/models/contract_model.dart';
 export 'data/models/contract_option_model.dart';
 export 'data/models/attachment_model.dart';
 export 'data/models/attachment_params_model.dart';
+export 'data/models/interactive_info_params_model.dart';
 export 'data/models/conditions_urls_model.dart';
 export 'data/models/fastflow_condition_model.dart';
 export 'data/models/update_permits_params_model.dart';
