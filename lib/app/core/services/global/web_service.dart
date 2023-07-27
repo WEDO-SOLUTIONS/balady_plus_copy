@@ -47,7 +47,7 @@ class WebService {
     dio.options.headers = {};
     dio.interceptors.add(AppInterceptors());
     dio.interceptors.add(PrettyDioLogger(
-      requestHeader: false,
+      requestHeader: true,
       requestBody: false,
       responseBody: false,
     ));

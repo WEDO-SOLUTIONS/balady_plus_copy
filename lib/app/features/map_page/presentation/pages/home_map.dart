@@ -104,7 +104,6 @@ class HomeMap extends StatelessWidget {
 
   void showMainLayersDialog(
       BuildContext context, LayersGisViewModel layersModel) async {
-    await layersModel.getMinLayers();
     BottomSheetDialog.showDraggableSheet(
       context,
       child: BottomSheetWithActions(

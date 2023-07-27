@@ -221,7 +221,7 @@ class MapViewModel extends BaseViewModel {
         addPolylineWithPoint(pointList, layer.id);
         break;
       case 'esriGeometryPolygon':
-
+        addPolygonWithPoint(pointList, layer.id);
         break;
     }
     _clearDebounce();
@@ -283,9 +283,7 @@ class MapViewModel extends BaseViewModel {
       controller.addMarkers(markers);
     }
   }
-
   void addPolylineWithPoint(List? pointList, int layerId) async {
-    pointList as List<Excavations>?;
     if (pointList != null && pointList.isNotEmpty) {
       final List<Polyline> polylines = [];
       for (var element in pointList) {
@@ -304,8 +302,8 @@ class MapViewModel extends BaseViewModel {
                 CameraPositionMessage(
                   zoomValue: 17,
                   geoPoint: GeoPointMessage(
-                    latitude: element.latLng.latitude,
-                    longitude: element.latLng.longitude,
+                    latitude: element.paths.first.latitude,
+                    longitude: element.paths.first.longitude,
                   ),
                 ),
               );
@@ -315,6 +313,41 @@ class MapViewModel extends BaseViewModel {
       }
       await controller.removeAll();
       unawaited(controller.addPolylines(polylines));
+    }
+  }
+  void addPolygonWithPoint(List? pointList, int layerId) async {
+    if (pointList != null && pointList.isNotEmpty) {
+      final List<Polygon> polygons = [];
+      for (var element in pointList) {
+        int id = int.parse(element.id);
+        polygons.add(
+          Polygon(
+            id: id,
+            options: PolygonOptionsMessage(
+              strokeWidth: 2,
+              strokeColor: -16711936,
+              color: const Color.fromRGBO(23, 123, 244, 95).value,
+              contours: [
+                element.paths
+              ],
+            ),
+            onTap: () {
+              selectedPoint.value = element;
+              controller.setCameraPosition(
+                CameraPositionMessage(
+                  zoomValue: 17,
+                  geoPoint: GeoPointMessage(
+                    latitude: element.paths.first.latitude,
+                    longitude: element.paths.first.longitude,
+                  ),
+                ),
+              );
+            } ,
+          ),
+        );
+      }
+      await controller.removeAll();
+      unawaited(controller.addPolygons(polygons));
     }
   }
 

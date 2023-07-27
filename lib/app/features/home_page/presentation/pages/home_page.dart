@@ -19,6 +19,7 @@ class HomePage extends StatelessWidget {
         ChangeNotifierProvider(
           create: (BuildContext context) => LayersGisViewModel(
             layersRepositories: sl(),
+            mapViewModel: mapViewModel,
           ),
         )
       ],
