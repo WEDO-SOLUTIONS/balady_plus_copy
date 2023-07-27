@@ -20,7 +20,9 @@ class BusinessLicenseScreen extends StatelessWidget {
       create: (context) => WalletDetailsBloc(item),
       child: BlocConsumer<WalletDetailsBloc, WalletDetailsState>(
         listener: (context, state) {
-          // TODO: implement listener
+          if (state.status == BlocStatus.failure) {
+            CommonFunctions.showError(state.errorMessage ?? "");
+          }
         },
         builder: (context, state) {
           return Scaffold(
