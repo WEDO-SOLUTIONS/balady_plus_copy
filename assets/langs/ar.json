@@ -86,11 +86,12 @@
   "welcome": "مرحباً",
   "Welcome_Guest": "أهلاً بك",
   "importantServices": "أهم الخدمات",
-  "shareWithUs": "صور وارسل",
+  "shareWithUs": "شارك معنا",
   "newServices": "خدمات جديدة",
   "beTheBestInspectorIn": "كن أفضل مراقب في",
   "new": "جديد",
   "sendImage": "صور وارسل",
+  "uploadReport": "ارفع بلاغ",
   "sendImageHint": "حسن المشهد الحضاري لمدينتك وبلغ عن مظاهر التشوه البصري",
   "sendReport": "إرسال بلاغ",
   "gameChallenge": "تحدي اللعب",
@@ -4197,5 +4198,12 @@
   "ekram_transfer_status": "حالة النقل",
   "ekram_city_status": "نوع النقل",
   "carBard": "طراز المركبة",
-  "carYear": "سنة الصنع"
+  "carYear": "سنة الصنع",
+
+
+  "fajrAzan": "حان الان موعد اذان الفجر",
+  "zuhrAzan": "حان الان موعد اذان الظهر",
+  "asrAzan": "حان الان موعد اذان العصر",
+  "magribAzan": "حان الان موعد اذان المغرب",
+  "ishaAzan": "حان الان موعد اذان العشاء"
 }

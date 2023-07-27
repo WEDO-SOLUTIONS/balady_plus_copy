@@ -1,17 +1,12 @@
 import '../../../../../features/public_services_features/prayer_times/prayer_times_exports.dart'
-    show
-        GetPrayerTimes,
-        PrayerTimesCubit,
-        PrayerTimesRemoteDataSource,
-        PrayerTimesRemoteDataSourceImplementation,
-        PrayerTimesRepository,
-        PrayerTimesRepositoryImplementation;
+    show GetPrayerTimes, GetPrayerTimesRange, PrayerTimesCubit, PrayerTimesRemoteDataSource, PrayerTimesRemoteDataSourceImplementation, PrayerTimesRepository, PrayerTimesRepositoryImplementation;
 import '../../../dependency_injection_exports.dart' show sl;
 
 class PrayerTimesInjection {
   static void init() {
     //! Use Case
     sl.registerLazySingleton(() => GetPrayerTimes(sl()));
+    sl.registerLazySingleton(() => GetPrayerTimesRange(sl()));
 
     //! Repository
     sl.registerLazySingleton<PrayerTimesRepository>(
@@ -32,6 +27,7 @@ class PrayerTimesInjection {
       () => PrayerTimesCubit(
         getPrayerTimes: sl(),
         getGISData: sl(),
+        getPrayerTimesRange: sl()
       ),
     );
   }

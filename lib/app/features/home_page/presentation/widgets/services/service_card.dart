@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/core/utils/enums/app_font_weights.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../../core/utils/utils_exports.dart'
@@ -64,20 +65,22 @@ class ServiceCard extends StatelessWidget {
                     service.title,
                     textStyle: AppStyle.serviceTitleStyle,
                   ),
-                  const SizedBox(height: 4),
+                  const SizedBox(height: 8),
                   SizedBox(
                     width: width - 110,
                     child: Row(
                       children: [
                         CustomTextWidget(
                           service.description ?? "",
-                          textStyle: AppStyle.semiBoldTextStyle,
+                          fontColor: AppColor.blackModern400Light,
+                          fontSize: 12,
+                          fontWeight: AppFontWeight.bold,
                         ),
                         const Spacer(),
                         const DrawIconBasedTypeWidget(
                           icon: Icons.arrow_forward,
                           iconSize: 16,
-                          iconColor: AppColor.primary900Light,
+                          iconColor: AppColor.blackModern700Light,
                         ),
                       ],
                     ),

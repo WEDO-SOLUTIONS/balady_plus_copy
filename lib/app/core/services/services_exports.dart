@@ -11,3 +11,4 @@ export 'local/shared_prefs_manager.dart';
 export 'local/simple_bloc_observer.dart';
 export 'local/translator.dart';
 export 'local/use_case.dart';
+export 'local/notification_service.dart';

@@ -32,6 +32,14 @@ class _DraggableSheetCardState extends State<DraggableSheetCard> {
       child: Container(
         decoration: BoxDecoration(
           color: AppColor.paleGrey,
+          gradient: const LinearGradient(
+            begin: Alignment.topRight,
+            end: Alignment.topLeft,
+            colors: [
+              AppColor.secondary50Light,
+              Color(0xffF5F8FA),
+            ],
+          ),
           borderRadius: BorderRadius.only(
             topLeft: Radius.circular(widget.cornerRadius ?? 36),
             topRight: Radius.circular(widget.cornerRadius ?? 36),
@@ -75,9 +83,9 @@ class _DraggableSheetCardState extends State<DraggableSheetCard> {
                     }
                   },
                   child: const DrawLineWidget(
-                    lineWidth: 70.0,
-                    lineHeight: 6.0,
-                    lineColor: AppColor.gray,
+                    lineWidth: 32,
+                    lineHeight: 4,
+                    lineColor: AppColor.white,
                     radius: 46.0,
                     verticalMargin: 8,
                   ),

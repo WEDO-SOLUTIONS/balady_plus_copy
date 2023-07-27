@@ -1,5 +1,6 @@
 import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:balady_plus/app/core/utils/constants/app_style.dart';
+import 'package:balady_plus/app/core/utils/enums/app_font_weights.dart';
 import 'package:flutter/material.dart';
 import 'package:localize_and_translate/localize_and_translate.dart'
     show Translation;
@@ -32,14 +33,14 @@ class ElevatedButtonWidget extends _ElevatedButton {
 
   ElevatedButtonWidget.sendImage({required VoidCallback onPressed})
       : super(CustomElevatedButtonWidget(
-          btnMargin: const EdgeInsets.symmetric(horizontal: 34),
+          btnMargin: const EdgeInsets.symmetric(horizontal: 40),
           btnColor: AppColor.primary800Light,
           textStyle: AppStyle.elevatedButtonStyle.copyWith(
-            color: AppColor.blackModern50Light,
-            fontSize: 12,
+            color: AppColor.white,
+            fontSize: 16,
           ),
-          btnHeight: 40,
-          text: "sendImage".tr(),
+          btnHeight: 48,
+          text:  "uploadReport".tr(),
           onPressed: onPressed,
         ));
 
@@ -61,9 +62,10 @@ class ElevatedButtonWidget extends _ElevatedButton {
           btnColor: AppColor.primary800Light,
           textStyle: AppStyle.elevatedButtonStyle.copyWith(
             color: AppColor.blackModern50Light,
-            fontSize: 12,
+            fontWeight: FontWeight.bold,
+            fontSize: 16,
           ),
-          btnHeight: 40,
+          btnHeight: 48,
           btnWidth: 150,
           text: "allTimes".tr(),
           onPressed: onPressed,

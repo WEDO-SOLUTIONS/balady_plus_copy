@@ -40,6 +40,7 @@ class IconPath {
   static const routeSquare = '${_svgIconPath}route-square$_svg';
   static const suraIcon = '${_svgIconPath}sura_icon$_svg';
   static const warningIcon = '${_svgIconPath}danger$_svg';
+  static const notificationIc = '${_svgIconPath}notification$_svg';
 
   static const informationCircleIcon =
       '${_svgIconPath}informationCircleIcon$_svg';
