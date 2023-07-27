@@ -111,4 +111,6 @@ class RouteName {
   static const businessLicensePage = '/businessLicensePage';
   // -------  Weather ---------
   static const weatherMainPage = '/weather_main_page';
+  // -------  Map ---------
+  static const MapDetailsPage = '/mapDetailsPage';
 }

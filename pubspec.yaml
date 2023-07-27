@@ -51,8 +51,8 @@ dependencies:
   # Checks for an Active Internet connection
   internet_connection_checker: ^1.0.0+1
   # Http client for Dart, which supports Interceptors, Global configuration and others
-  dio: ^4.0.6
-  pretty_dio_logger: 1.2.0-beta-1
+  dio: ^5.0.0
+  pretty_dio_logger: ^1.3.1
   ##! Local Storage
   # Store sensitive data in secure storage
   flutter_secure_storage: ^6.0.0
@@ -60,7 +60,7 @@ dependencies:
   hive_flutter: ^1.1.0
   ##! Actions
   # A package that allows you to use a native file explorer
-  file_picker: ^5.3.0
+  file_picker: any
   # picking images and taking new pictures with the camera.
   image_picker: ^0.8.6
   # Native APP to open files with string result
@@ -73,7 +73,7 @@ dependencies:
   # Automatically resizes text to fit perfectly within its bounds
   auto_size_text: ^3.0.0
   # To deal with svg icons
-  flutter_svg: ^2.0.5
+  flutter_svg: any
   # A Flutter widget that can be expanded or collapsed by the user.
   expandable: ^5.0.1
   # Shimmer effect, useful for loading
@@ -153,6 +153,14 @@ dependencies:
  #   path: packages/test_package
   flutter_qiblah: ^2.2.0
 
+
+# Map urbi SKD
+  dgis_map:
+    path: urbi_map/dgis_map
+#  provider: ^6.0.5
+
+
+
 dev_dependencies:
 
   flutter_lints: ^2.0.1
@@ -193,6 +201,8 @@ flutter:
     - assets/quran/
     - assets/services/
     # - assets/services/
+    - assets/maps/styles/
+    - assets/maps/icons/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

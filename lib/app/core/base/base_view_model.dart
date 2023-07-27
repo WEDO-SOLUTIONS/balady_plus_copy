@@ -12,8 +12,8 @@ GetIt locator = GetIt.instance;
 class BaseViewModel extends ChangeNotifier {
   bool isLoading = false;
   final navigation = NavigationService.navigatorKey;
-  final webService = locator<WebService>();
-  final apiServie = locator<APIService>();
+  // final webService = locator<WebService>();
+  // final apiServie = locator<APIService>();
 
   showLoading() {
     EasyLoading.show();

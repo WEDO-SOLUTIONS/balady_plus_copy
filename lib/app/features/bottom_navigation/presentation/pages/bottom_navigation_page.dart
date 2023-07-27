@@ -8,6 +8,7 @@ import '../../../../core/services/services_exports.dart' show NavigationService;
 import '../../../../core/utils/utils_exports.dart'
     show BottomNavBar, CommonFunctions;
 import '../../../home_page/presentation/pages/home_page.dart';
+import '../../../map_page/presentation/mvvm/map_view_model.dart';
 import '../../../nearby/nearby_exports.dart' show NearbyPage;
 import '../../../profile/profile_exports.dart' show ProfilePage;
 import '../../../profile_features/delegators/delegators_exports.dart'

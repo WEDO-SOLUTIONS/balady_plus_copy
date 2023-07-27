@@ -52,6 +52,7 @@ import '../../features/profile_features/personal_information/personal_informatio
     show PersonalInformationPage;
 import '../../features/profile_features/requests/requests_exports.dart'
     show RequestsPage;
+import '../../features/objections/objections_exports.dart' show ObjectionsPage;
 import '../../features/public_services_features/prayer_times/prayer_times_exports.dart'
     show PrayerTimesCubit, PrayerTimesPage;
 import '../../features/quran/data/models/quran_sura_model.dart';

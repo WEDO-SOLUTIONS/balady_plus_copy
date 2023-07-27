@@ -228,4 +228,5 @@ class IconPath {
   static const card = '${_svgWalletIconPath}card$_svg';
   static const sliderVertical = '${_svgWalletIconPath}slider_vertical$_svg';
   static const shoppingBag = '${_svgWalletIconPath}shopping_bag$_svg';
+  static const buildingIcon = '${_svgIconPath}building$_svg';
 }

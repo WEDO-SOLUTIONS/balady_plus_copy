@@ -60,6 +60,7 @@ import 'features/retrive_dc_injection.dart';
 final sl = GetIt.instance;
 
 void initialize() {
+  OLDInjection.init();
   //! Features
   //? Entry Point
   EntryPointInjection.init();
@@ -70,6 +71,14 @@ void initialize() {
   SignUpInjection.init();
   //? Services
   ServicesInjection.init();
+//? Objections
+  ObjectionsInjection.init();
+//? Objectable Transactions
+  ObjectableTransactionsInjection.init();
+
+//? DC
+  DCInjection.init();
+  DCRetriveInjection.init();
 
   //! Services
   //* Public Services
@@ -147,4 +156,6 @@ void initialize() {
   sl.registerLazySingleton(() => const FlutterSecureStorage());
   sl.registerLazySingleton(() => InternetConnectionChecker());
   sl.registerLazySingleton(() => Dio());
+
+  sl.registerLazySingleton(() => LayersRepositories(webService: sl()));
 }
