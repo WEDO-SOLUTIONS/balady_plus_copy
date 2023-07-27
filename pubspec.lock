@@ -69,7 +69,7 @@ packages:
     dependency: "direct main"
     description:
       name: bot_toast
-      sha256: db6950851aab00ef04b386eb3c76c83739eaffcb6b80d0dc42a675ef7584623b
+      sha256: "19306147033316a7873c5d261b874fca3f341c05e4e1c12be56153ad11187edd"
       url: "https://pub.dev"
     source: hosted
     version: "4.0.3"
@@ -573,7 +573,7 @@ packages:
     dependency: transitive
     description:
       name: flutter_plugin_android_lifecycle
-      sha256: "950e77c2bbe1692bc0874fc7fb491b96a4dc340457f4ea1641443d0a6c1ea360"
+      sha256: c224ac897bed083dabf11f238dd11a239809b446740be0c2044608c50029ffdf
       url: "https://pub.dev"
     source: hosted
     version: "2.0.9"
@@ -1095,7 +1095,7 @@ packages:
     dependency: "direct main"
     description:
       name: open_file
-      sha256: a5a32d44acb7c899987d0999e1e3cbb0a0f1adebbf41ac813ec6d2d8faa0af20
+      sha256: c85fbdc6ea2f44adcd999a74821a1436e620f9dfc167cda1ad0c9fb243616257
       url: "https://pub.dev"
     source: hosted
     version: "3.3.1"
