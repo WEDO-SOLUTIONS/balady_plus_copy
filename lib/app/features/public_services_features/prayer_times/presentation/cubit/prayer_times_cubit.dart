@@ -46,20 +46,8 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
     }
     */
 
-    bool isEnabled = await CommonFunctions.checkLocationSettings(
+    bool checkLoccationSettings = await CommonFunctions.checkLocationSettings(
         NavigationService.navigatorKey.currentContext!);
-    if (!isEnabled) return;
-    late LocationPermission permission;
-    permission = await Geolocator.checkPermission();
-    permission = await Geolocator.requestPermission();
-    if (permission == LocationPermission.denied ||
-        permission == LocationPermission.deniedForever) {
-      emit(state.copyWith(
-        status: BlocRequestStatus.submissionGetFailure,
-        errorMessage: "permissionDenied".tr(),
-      ));
-      return;
-    }
 
     LatLng? position = await Helpers.getCurrentLocation();
     double latitude = 21.424236910931974;

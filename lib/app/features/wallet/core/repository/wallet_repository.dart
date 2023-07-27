@@ -49,6 +49,7 @@ class WalletRepository {
     final body = await webServices.getNewApigeeRequestWithoutUTF(
         ApiConstants.printWalletLicense,
         relativePath: query);
+    print(query);
     bool state = body['state'];
     dynamic data = body['data'];
     Uint8List? result;
@@ -58,6 +59,7 @@ class WalletRepository {
     print("COOOOO");
     print(contentType);
     print(state);
+    print(body);
     //  print(data);
     try {
       if (state) result = data;

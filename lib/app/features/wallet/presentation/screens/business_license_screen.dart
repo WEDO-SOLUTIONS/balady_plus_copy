@@ -161,28 +161,34 @@ class _BusinessLicenseFooter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Positioned(
-      bottom: 0,
-      child: Container(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 12,
-          vertical: 24,
-        ),
-        height: MediaQuery.sizeOf(context).height / 1.6,
-        width: MediaQuery.sizeOf(context).width,
-        decoration: const BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage(ImagePath.walletBg),
-            fit: BoxFit.fill,
+    return BlocBuilder<WalletDetailsBloc, WalletDetailsState>(
+      builder: (context, state) {
+        return Positioned(
+          bottom: 0,
+          child: Container(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 12,
+              vertical: 24,
+            ),
+            height: MediaQuery.sizeOf(context).height / 1.6,
+            width: MediaQuery.sizeOf(context).width,
+            decoration: const BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage(ImagePath.walletBg),
+                fit: BoxFit.fill,
+              ),
+            ),
+            child: Align(
+              alignment: Alignment.bottomCenter,
+              child: ElevatedButtonWidget.licenseDetails(
+                onPressed: () {
+                  context.read<WalletDetailsBloc>().add(ShareWalletItem());
+                },
+              ),
+            ),
           ),
-        ),
-        child: Align(
-          alignment: Alignment.bottomCenter,
-          child: ElevatedButtonWidget.licenseDetails(
-            onPressed: () {},
-          ),
-        ),
-      ),
+        );
+      },
     );
   }
 }

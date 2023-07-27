@@ -136,7 +136,7 @@ Map<String, dynamic> servicesConfig = {
       "requireLogin": true,
       "action": {"type": "dialog", "value": "/general-inquiries"},
       "ar": {
-        "title": "إصدار رخصة تجارية",
+        "title": "الإستفسارات العامة",
         "description": "ارسل استفسارك عن كل خدمه",
         "tag": "الخدمات"
       },

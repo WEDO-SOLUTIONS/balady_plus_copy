@@ -36,6 +36,9 @@ class RemoteConfig {
   static String get publicAppointmentShareURL =>
       _RemoteConfig.publicAppointmentShareURL[env]!;
 
+  static String get publicLicenseShareURL =>
+      _RemoteConfig.publicLicenseShareURL[env]!;
+
   static EnvType get env => sl<EnvType>();
 }
 
@@ -171,6 +174,12 @@ class _RemoteConfig {
   static final publicAppointmentShareURL = _initValues<String>(
     devVal: "https://bldtrain.momra.gov.sa/commonapi/apt/",
     stgVal: "https://bldtrain.momra.gov.sa/commonapi/apt/",
+    prodVal: "",
+  );
+
+  static final publicLicenseShareURL = _initValues<String>(
+    devVal: "https://bldtrain.momra.gov.sa/commonapi/clp",
+    stgVal: "https://bldtrain.momra.gov.sa/commonapi/clp",
     prodVal: "",
   );
 

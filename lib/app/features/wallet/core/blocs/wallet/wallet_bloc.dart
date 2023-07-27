@@ -77,9 +77,10 @@ class WalletBloc extends Bloc<WalletEvent, WalletState> {
 
   Future<void> _printWalletItem(ShareWalletItemEvent e, Emitter emitter) async {
     emitter(state.copyWith(status: BlocStatus.download));
-
+    print("GGGGG");
     Tuple4<bool?, String?, Uint8List?, String?> response =
         await _repository.downLoadLicense(e.selectedIetm?.uuid ?? "");
+    print("HHHHH ${response.item4}");
     emitter(state.copyWith(status: BlocStatus.loaded));
     if (response.item3 != null && response.item1 != null && response.item1!) {
       emitter(state.copyWith(
