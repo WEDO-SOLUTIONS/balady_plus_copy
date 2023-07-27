@@ -12,4 +12,6 @@ class ImagePath {
   static const appBarBackground = '${_imagePath}app_bar_background$_png';
   static const successPageBackground = '${_imagePath}success_background$_png';
   static const successPageIcon = '${_imagePath}success_image$_png';
+  static const appBarGradientBackground =
+      '${_imagePath}light_gradient_appbar$_png';
 }

@@ -307,7 +307,7 @@ Map<String, dynamic> servicesConfig = {
     },
     {
       "id": 16,
-      "icon": "damaged_cars",
+      "icon": "retrieve_car",
       "3d_icon": null,
       "order": 9,
       "isNew": false,

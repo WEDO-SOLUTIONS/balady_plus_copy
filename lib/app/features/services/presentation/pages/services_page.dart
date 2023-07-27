@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
-import '../../../../core/utils/utils_exports.dart' show AppColor, IconPath;
+import '../../../../core/utils/utils_exports.dart'
+    show AppColor, IconPath, ImagePath;
 import '../../../_shared_feature_/shared_feature_exports.dart'
     show TabPageContainer, DefaultAppBarWidget;
 import '../../../home_page/home_exports.dart' show CircleIcon;
@@ -16,6 +17,10 @@ class ServicesPage extends StatelessWidget {
     return Scaffold(
       appBar: DefaultAppBarWidget(
         title: "services".tr(),
+        flexibleSpace: const Image(
+          image: AssetImage(ImagePath.appBarGradientBackground),
+          fit: BoxFit.cover,
+        ),
         actions: const [
           Padding(
             padding: EdgeInsets.all(8),
