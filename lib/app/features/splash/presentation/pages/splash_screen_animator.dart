@@ -13,7 +13,7 @@ class SplashScreenAnimator extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColor.darkTurquoise,
+      backgroundColor: AppColor.primary900Light,
       body: AnimatedBuilder(
         animation: animation.controller,
         builder: (context, _) {

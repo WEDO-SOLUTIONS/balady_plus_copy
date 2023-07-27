@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../../core/utils/utils_exports.dart';
+import '../../../../../_shared_feature_/shared_feature_exports.dart';
 import '../../../municipal_advisor_exports.dart';
 
 class AdditionalInformation extends StatelessWidget {
@@ -19,13 +20,13 @@ class AdditionalInformation extends StatelessWidget {
               TextSpan(
                 text: '9. ${'municipalAdvisorOtherData'.tr()}\n',
                 style: AppStyle.textFieldTitleTextStyle.copyWith(
-                  color: AppColor.darkTurquoise,
+                  color: AppColor.primary900Light,
                 ),
               ),
               TextSpan(
                 text: '${'municipalAdvisorLicenseYears'.tr()}:\n',
                 style: AppStyle.textFieldTitleTextStyle.copyWith(
-                  color: AppColor.darkTurquoise,
+                  color: AppColor.primary900Light,
                 ),
               ),
               TextSpan(
@@ -35,7 +36,7 @@ class AdditionalInformation extends StatelessWidget {
               TextSpan(
                 text: '${'municipalAdvisorMunicipalRequirements'.tr()}:\n',
                 style: AppStyle.textFieldTitleTextStyle.copyWith(
-                  color: AppColor.darkTurquoise,
+                  color: AppColor.primary900Light,
                 ),
               ),
               TextSpan(
@@ -54,7 +55,7 @@ class AdditionalInformation extends StatelessWidget {
                 TextSpan(
                   text: '${'municipalAdvisorMunicipalInspection'.tr()}:\n',
                   style: AppStyle.textFieldTitleTextStyle.copyWith(
-                    color: AppColor.darkTurquoise,
+                    color: AppColor.primary900Light,
                   ),
                 ),
                 TextSpan(
@@ -64,14 +65,26 @@ class AdditionalInformation extends StatelessWidget {
                   ),
                   recognizer: TapGestureRecognizer()
                     ..onTap = () {
-                      'municipalAdvisorMunicipalInspectionListTitle';
+                      final List<String> items = state.fastflowConditions
+                          .map((e) => e.conditionName)
+                          .toList();
+                      BottomSheetDialog.showDraggableSheet(
+                        context,
+                        child: BottomSheetList(
+                          title: "municipalAdvisorMunicipalInspectionListTitle"
+                              .tr(),
+                          items: items,
+                          onTap: null,
+                          searchable: false,
+                        ),
+                      );
                     },
                 ),
               ],
               TextSpan(
                 text: '${'municipalAdvisorBoards'.tr()}:\n',
                 style: AppStyle.textFieldTitleTextStyle.copyWith(
-                  color: AppColor.darkTurquoise,
+                  color: AppColor.primary900Light,
                 ),
               ),
               TextSpan(

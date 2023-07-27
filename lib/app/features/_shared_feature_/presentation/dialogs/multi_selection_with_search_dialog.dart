@@ -110,7 +110,7 @@ class _MultiSelectionWithSearchDialog
           // button
           EnhancedCustomElevatedButtonWidget(
             btnColor:
-                isButtonDisabled ? AppColor.black200 : AppColor.darkTurquoise,
+                isButtonDisabled ? AppColor.black200 : AppColor.primary900Light,
             btnTextColor: isButtonDisabled ? AppColor.black400 : AppColor.white,
             btnPressed: isButtonDisabled
                 ? null

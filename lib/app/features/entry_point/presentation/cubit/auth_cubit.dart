@@ -7,7 +7,6 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
-import 'package:webview_flutter/webview_flutter.dart' as c;
 
 import '../../../../core/dependency_injection/injection_container.dart';
 import '../../../../core/errors/failures.dart';
@@ -60,12 +59,12 @@ class EntryPointCubit extends Cubit<EntryPointState> {
         _logout = logout,
         _getForceVersion = forceVersion,
         _getTestData = GetTestData(repository: sl()),
-        super(const EntryPointState()) {}
+        super(const EntryPointState());
 
   Future<void> onLoadingApp() async {
     //setTheme();
     print("onLoadingApp");
-    // print(state.token?.refreshToken);
+    // state.token?.token.log();
     emit(state.copyWith(status: AuthStatus.loading));
     final failureOrSuccess = await _checkAuth(NoParams());
     await failureOrSuccess.fold((failure) {

@@ -2,13 +2,13 @@ import 'package:equatable/equatable.dart';
 
 class SaveConsultationProgressParamsModel extends Equatable {
   final String consultationKey;
-  final String subMunicipalityGisCode;
-  final int districtCode;
-  final int streetCode;
+  final String? subMunicipalityGisCode;
+  final int? districtCode;
+  final int? streetCode;
   final String longitude;
   final String latitude;
-  final String mapNo;
-  final String landNo;
+  final String? mapNo;
+  final String? landNo;
   final num shopArea;
   final int activityId;
   final bool? atmFeesOption;

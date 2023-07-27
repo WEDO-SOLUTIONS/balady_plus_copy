@@ -19,6 +19,10 @@ class ApiUrl {
       '/v1/balady-consultation-services/approved-isic-activities';
   static const isicSubActivities =
       '/v1/balady-consultation-services/activities-by-isicNumber';
+  static const additionalActivities =
+      '/v1/balady-consultation-services/additional-activities';
+  static const additionalActivity =
+      '/v1/balady-consultation-services/additional-activity';
   static const activityDetails =
       '/v1/balady-consultation-services/activity-detail-info';
   static const accommodationTypes =
@@ -35,6 +39,8 @@ class ApiUrl {
   static String civilDefense = '/v1/balady-consultation-services/civil-defense';
   static const commercialOffices =
       '/v1/balady-consultation-services/commercial-offices';
+  static const engineeringOffices =
+      '/v1/balady-consultation-services/eng-offices';
   static const cleaningMechanisms = '/v1/balady-consultation-services/cleaning';
   static const saveConsultationProgress =
       '/v1/balady-consultation-services/site';

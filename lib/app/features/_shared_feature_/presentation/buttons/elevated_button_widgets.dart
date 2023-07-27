@@ -305,4 +305,17 @@ class ElevatedButtonWidget extends _ElevatedButton {
           text: "undo".tr(),
           onPressed: onPressed,
         ));
+  ElevatedButtonWidget.noAdditionalActivities({required VoidCallback onPressed})
+      : super(CustomElevatedButtonWidget(
+          btnColor: Colors.transparent,
+          btnBorderColor: AppColor.primary800Light,
+          textStyle: AppStyle.elevatedButtonStyle.copyWith(
+            color: AppColor.primary800Light,
+            fontWeight: FontWeight.w700,
+            fontSize: 16,
+          ),
+          btnHeight: 52,
+          text: "municipalAdvisorNoAdditionalActivities".tr(),
+          onPressed: onPressed,
+        ));
 }

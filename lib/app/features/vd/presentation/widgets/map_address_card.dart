@@ -91,7 +91,7 @@ class _MapAddressCard extends State<MapAddressCard> {
                           : AppColor.white,
                       btnColor: !isButtonDisabled
                           ? AppColor.black200
-                          : AppColor.darkTurquoise,
+                          : AppColor.primary900Light,
                       btnPressed: !isButtonDisabled
                           ? null
                           : () => widget.submitLocation(),

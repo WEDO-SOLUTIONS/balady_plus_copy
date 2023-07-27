@@ -19,7 +19,7 @@ class InputSummary extends StatelessWidget {
               TextSpan(
                 text: "${"location".tr()}: ",
                 style: AppStyle.textFieldTitleTextStyle.copyWith(
-                  color: AppColor.darkTurquoise,
+                  color: AppColor.primary900Light,
                 ),
               ),
               TextSpan(
@@ -30,7 +30,7 @@ class InputSummary extends StatelessWidget {
               TextSpan(
                 text: "${'isicActivity'.tr()}: ",
                 style: AppStyle.textFieldTitleTextStyle.copyWith(
-                  color: AppColor.darkTurquoise,
+                  color: AppColor.primary900Light,
                 ),
               ),
               TextSpan(
@@ -40,7 +40,7 @@ class InputSummary extends StatelessWidget {
               TextSpan(
                 text: "${'subActivity'.tr()}: ",
                 style: AppStyle.textFieldTitleTextStyle.copyWith(
-                  color: AppColor.darkTurquoise,
+                  color: AppColor.primary900Light,
                 ),
               ),
               TextSpan(
@@ -50,7 +50,7 @@ class InputSummary extends StatelessWidget {
               TextSpan(
                 text: "${'facilityType'.tr()}: ",
                 style: AppStyle.textFieldTitleTextStyle.copyWith(
-                  color: AppColor.darkTurquoise,
+                  color: AppColor.primary900Light,
                 ),
               ),
               TextSpan(
@@ -60,7 +60,7 @@ class InputSummary extends StatelessWidget {
               TextSpan(
                 text: "${'facilityArea'.tr()}: ",
                 style: AppStyle.textFieldTitleTextStyle.copyWith(
-                  color: AppColor.darkTurquoise,
+                  color: AppColor.primary900Light,
                 ),
               ),
               TextSpan(

@@ -29,6 +29,11 @@ class RequestFlow extends StatelessWidget {
               style: AppStyle.lightTextStyle,
             ),
           ],
+          if (steps.isEmpty)
+            TextSpan(
+              text: '${"noData".tr()}\n',
+              style: AppStyle.lightTextStyle,
+            ),
         ],
       ),
     );

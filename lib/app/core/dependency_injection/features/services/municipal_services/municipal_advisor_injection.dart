@@ -1,5 +1,5 @@
 import '../../../../../features/municipal_services/municipal_advisor/municipal_advisor_exports.dart'
-    show CalculateLicenseFees, GetAccommodationTypes, GetActivityDetails, GetBoardTypes, GetCivilDefensePredefinedConditions, GetCleaningMechanisms, GetCommercialOffices, GetConditionsUrls, GetConsultationAttachments, GetConsultationKey, GetFastflowConditions, GetIsicActivities, GetIsicSubActivities, GetIssuingPredefinedConditions, GetLicensePermits, GetLicenseYears, GetMaxLicenseYears, GetRequestFlow, GetRequestFlowRecommendations, GetShopOwnership, GetSupervisingAuthorities, MunicipalAdvisorBloc, MunicipalAdvisorRemoteDataSource, MunicipalAdvisorRemoteDataSourceImplementation, MunicipalAdvisorRepository, MunicipalAdvisorRepositoryImplementation, SaveActivities, SaveConsultationProgress, SaveFinancialStudy, UpdatePermit;
+    show CalculateLicenseFees, GetAccommodationTypes, GetActivityDetails, GetAdditionalActivities, GetBoardTypes, GetCivilDefensePredefinedConditions, GetCleaningMechanisms, GetCommercialOffices, GetConditionsUrls, GetConsultationAttachments, GetConsultationKey, GetEngineeringOffices, GetFastflowConditions, GetIsicActivities, GetIsicSubActivities, GetIssuingPredefinedConditions, GetLicensePermits, GetLicenseYears, GetMaxLicenseYears, GetRequestFlow, GetRequestFlowRecommendations, GetShopOwnership, GetSupervisingAuthorities, MunicipalAdvisorBloc, MunicipalAdvisorRemoteDataSource, MunicipalAdvisorRemoteDataSourceImplementation, MunicipalAdvisorRepository, MunicipalAdvisorRepositoryImplementation, SaveActivities, SaveAdditionalActivities, SaveConsultationProgress, SaveFinancialStudy, UpdatePermit;
 import '../../../dependency_injection_exports.dart' show sl;
 
 class MunicipalAdvisorInjection {
@@ -12,6 +12,7 @@ class MunicipalAdvisorInjection {
     sl.registerLazySingleton(() => GetCivilDefensePredefinedConditions(sl()));
     sl.registerLazySingleton(() => GetCleaningMechanisms(sl()));
     sl.registerLazySingleton(() => GetCommercialOffices(sl()));
+    sl.registerLazySingleton(() => GetEngineeringOffices(sl()));
     sl.registerLazySingleton(() => GetIssuingPredefinedConditions(sl()));
     sl.registerLazySingleton(() => GetLicensePermits(sl()));
     sl.registerLazySingleton(() => GetSupervisingAuthorities(sl()));
@@ -30,6 +31,8 @@ class MunicipalAdvisorInjection {
     sl.registerLazySingleton(() => GetRequestFlow(sl()));
     sl.registerLazySingleton(() => GetRequestFlowRecommendations(sl()));
     sl.registerLazySingleton(() => UpdatePermit(sl()));
+    sl.registerLazySingleton(() => GetAdditionalActivities(sl()));
+    sl.registerLazySingleton(() => SaveAdditionalActivities(sl()));
 
     //! Repository
     sl.registerLazySingleton<MunicipalAdvisorRepository>(
@@ -55,6 +58,7 @@ class MunicipalAdvisorInjection {
         getGISData: sl(),
         getCleaningMechanisms: sl(),
         getCommercialOffices: sl(),
+        getEngineeringOffices: sl(),
         getIssuingPredefinedConditions: sl(),
         getLicensePermits: sl(),
         getSupervisingAuthorities: sl(),
@@ -74,6 +78,8 @@ class MunicipalAdvisorInjection {
         getRequestFlow: sl(),
         getRequestFlowRecommendations: sl(),
         updatePermit: sl(),
+        getAdditionalActivities: sl(),
+        saveAdditionalActivities: sl(),
       ),
     );
   }

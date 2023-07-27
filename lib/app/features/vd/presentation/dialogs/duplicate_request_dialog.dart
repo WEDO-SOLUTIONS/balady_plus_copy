@@ -89,7 +89,7 @@ class DuplicateRequestDialog extends StatelessWidget {
                       width: 274,
                       height: 56,
                       decoration: BoxDecoration(
-                          color: AppColor.darkTurquoise,
+                          color: AppColor.primary900Light,
                           borderRadius: new BorderRadius.circular(2.0)),
                       child: TextButton(
                         onPressed: () {
@@ -129,7 +129,7 @@ class DuplicateRequestDialog extends StatelessWidget {
                               fontSize: 16,
                               fontFamily: GeneralKey.appFontType,
                               fontWeight: FontWeight.w500,
-                              color: AppColor.darkTurquoise),
+                              color: AppColor.primary900Light),
                         ),
                       ),
                     )),
