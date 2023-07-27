@@ -62,18 +62,3 @@ class Excavations extends PointLayersData {
         paths: getList(json['geometry']["paths"]), // not tested yat
       );
 }
-
-List<GeoPointMessage> getList(List list) {
-  final List<GeoPointMessage> paths = [];
-  for (var pointList in list) {
-    for (var point in pointList) {
-      paths.add(
-        GeoPointMessage(
-          latitude: double.parse(point[1].toString()),
-          longitude: double.parse(point[0].toString()),
-        ),
-      );
-    }
-  }
-  return paths;
-}
