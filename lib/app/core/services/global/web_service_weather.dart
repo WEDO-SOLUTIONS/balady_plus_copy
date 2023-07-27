@@ -41,9 +41,9 @@ class WebServiceWeather {
 
   WebServiceWeather({required this.dio}) {
     dio.options.baseUrl = "https://api.weatherapi.com";
-    dio.options.connectTimeout = 60000;
-    dio.options.receiveTimeout = 60000;
-    dio.options.sendTimeout = 60000;
+    dio.options.connectTimeout = const Duration(milliseconds: 60000);
+    dio.options.receiveTimeout = const Duration(milliseconds: 60000);
+    dio.options.sendTimeout = const Duration(milliseconds: 60000);
     dio.options.headers = {};
     dio.interceptors.add(AppInterceptors());
     dio.interceptors.add(PrettyDioLogger(
@@ -92,11 +92,11 @@ class AppInterceptors extends Interceptor {
     "Opps, recieved Error: ${err.response?.data}".errorLog();
 
     switch (err.type) {
-      case DioErrorType.connectTimeout:
+      case DioErrorType.connectionTimeout:
       case DioErrorType.sendTimeout:
       case DioErrorType.receiveTimeout:
         throw DeadlineExceededException(err.requestOptions);
-      case DioErrorType.response:
+      case DioErrorType.badResponse:
         switch (err.response?.statusCode) {
           case 400:
             if (err.response?.data['data']['responseCode'] == '2') {
@@ -119,8 +119,12 @@ class AppInterceptors extends Interceptor {
         }
         break;
       case DioErrorType.cancel:
+      case DioErrorType.badCertificate:
         break;
-      case DioErrorType.other:
+      case DioErrorType.connectionError:
+        throw NoInternetConnectionException(err.requestOptions);
+        break;
+      case DioErrorType.unknown:
         throw NoInternetConnectionException(err.requestOptions);
     }
 

@@ -32,44 +32,33 @@ class App extends StatelessWidget {
         ),
       ],
       child: BlocProvider<EntryPointCubit>.value(
-        value: sl<EntryPointCubit>()..onLoadingApp(),
-        child: MaterialApp(
-          title: 'appNameWord'.tr(),
-          debugShowCheckedModeBanner: false,
-          navigatorKey: NavigationService.navigatorKey,
-          theme: ThemeData(
-            primaryColor: AppColor.blue,
-            scaffoldBackgroundColor: AppColor.scaffoldBackground,
-            fontFamily: AppConfig.appFontType,
-            appBarTheme: const AppBarTheme(backgroundColor: AppColor.blue),
-          ),
-          builder: EasyLoading.init(builder: BotToastInit()),
-          navigatorObservers: [BotToastNavigatorObserver()],
-          localizationsDelegates: translator.delegates.toList()
-            ..add(CountryLocalizations.delegate), // Android + iOS Delegates
-          locale: translator.activeLocale, // Active locale
-          supportedLocales: translator.locals(), // Locals list
-          initialRoute: RouteName.splash,
-          onGenerateRoute: AppRouter.allRoutes,
-          routes: {
-            RouteName.bottomNavigation: (context) =>
-                const BottomNavigationPage(),
-          },
-        ),
-        builder: EasyLoading.init(builder: BotToastInit()),
-        navigatorObservers: [BotToastNavigatorObserver()],
-        localizationsDelegates: translator.delegates.toList()
-          ..add(CountryLocalizations.delegate), // Android + iOS Delegates
-        locale: translator.activeLocale, // Active locale
-        supportedLocales: translator.locals(), // Locals list
-        initialRoute: RouteName.splash,
-        onGenerateRoute: AppRouter.allRoutes,
-        routes: {
-          RouteName.bottomNavigation: (context) => const BottomNavigationPage(),
-          RouteName.AppointmentsListScreen: (context) =>
-              const AppointmentsListScreen(),
-        },
-      ),
+          value: sl<EntryPointCubit>()..onLoadingApp(),
+          child: MaterialApp(
+            title: 'appNameWord'.tr(),
+            debugShowCheckedModeBanner: false,
+            navigatorKey: NavigationService.navigatorKey,
+            theme: ThemeData(
+              primaryColor: AppColor.blue,
+              scaffoldBackgroundColor: AppColor.scaffoldBackground,
+              fontFamily: AppConfig.appFontType,
+              appBarTheme: const AppBarTheme(backgroundColor: AppColor.blue),
+            ),
+
+            builder: EasyLoading.init(builder: BotToastInit()),
+            navigatorObservers: [BotToastNavigatorObserver()],
+            localizationsDelegates: translator.delegates.toList()
+              ..add(CountryLocalizations.delegate), // Android + iOS Delegates
+            locale: translator.activeLocale, // Active locale
+            supportedLocales: translator.locals(), // Locals list
+            initialRoute: RouteName.splash,
+            onGenerateRoute: AppRouter.allRoutes,
+            routes: {
+              RouteName.bottomNavigation: (context) =>
+                  const BottomNavigationPage(),
+              RouteName.AppointmentsListScreen: (context) =>
+                  const AppointmentsListScreen(),
+            },
+          )),
     );
   }
 }

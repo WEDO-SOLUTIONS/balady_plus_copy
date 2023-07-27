@@ -29,6 +29,7 @@ import '../../features/_shared_feature_/data/entities/device_details.dart';
 import '../../features/_shared_feature_/data/entities/package_details.dart';
 import '../../features/_shared_feature_/shared_feature_exports.dart'
     show BridgeParams, DropDownItem, FileInfo;
+import '../../features/map_page/data/repositories/layers_repositories.dart';
 import '../../features/weather/presentation/bloc/weather_bloc.dart';
 import '../dependency_injection/dependency_injection_exports.dart'
     show
@@ -101,8 +102,6 @@ void initialize() {
   InvoicesInjection.init();
   //? Licenses
   LicensesInjection.init();
-
-  OLDInjection.init();
 
 //? Objections
   ObjectionsInjection.init();
