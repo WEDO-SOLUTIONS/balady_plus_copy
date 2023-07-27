@@ -181,6 +181,11 @@ class ApiUrl {
   static const String DaemUploadFile =
       '/prweb/PRRestService/FrontUserBalady/V1/UploadFile';
 
+//! CRM
+
+  static const String crmRequestsList =
+      '/prweb/PRRestService/FrontUserBalady/V1/GetIncidentRequests';
+
   //! POST
 
   //! Delete

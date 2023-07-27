@@ -24,6 +24,7 @@ import '../dependency_injection/dependency_injection_exports.dart'
         ServicesInjection,
         SignUpInjection,
         VDInjection;
+import '../services/global/crm_web_service.dart';
 import '../services/services_exports.dart'
     show
         EntryPointBridge,
@@ -85,6 +86,8 @@ void initialize() {
 
   //! Core
   sl.registerLazySingleton(() => WebService(dio: sl()));
+  sl.registerLazySingleton(() => CRMWebService(dio: Dio()));
+
   sl.registerLazySingleton<NetworkConnection>(
     () => NetworkConnectionImplementation(sl()),
   );

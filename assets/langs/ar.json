@@ -755,7 +755,6 @@
 
 "service_not_available": "هذه الخدمة غير متاحة حالياً في هذه المنطقة ",
 
-
   "_popUpButtonsComment": "أى شئ يخص ال popUp Buttons",
   "popUpCloseBottomSheetButton": "إغلاق",
   "popUpCancelBottomSheetButton": "إلغاء",
@@ -948,9 +947,15 @@
 
 
 
-
-
-
+"CRMRequestsTypes":"CRMRequests", 
+"inc_title":"البلاغات", 
+"dc_title":"السيارات التالفة", 
+"vhr_title":"طلب سحب سيارة", 
+"req_title":"طلب خدمة بلدية",
+"tsr_title":"داعم", 
+"mun_title":"الخدمات البلدية", 
+"inq_title":"الاستفسارات", 
+"crm_request_classification":"التصنيف", 
 
 
 

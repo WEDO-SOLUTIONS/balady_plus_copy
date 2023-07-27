@@ -46,3 +46,22 @@ enum PAGE_TYPE {
   dc,
   other
 }
+
+enum RequestsType {
+  INC(title: "inc_title", type: "inc"),
+  VHR(title: "vhr_title", type: "vhr"),
+  REQ(title: "req_title", type: "req"),
+  INQ(title: "inq_title", type: "inq"),
+  DC(title: "dc_title", type: "dc"),
+  TSR(title: "tsr_title", type: "tsr"),
+  MUN(title: "mun_title", type: "mun"),
+  ;
+
+  const RequestsType({
+    required this.type,
+    required this.title,
+  });
+
+  final String type;
+  final String title;
+}
