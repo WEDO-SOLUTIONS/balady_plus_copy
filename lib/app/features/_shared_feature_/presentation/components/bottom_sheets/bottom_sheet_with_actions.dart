@@ -19,51 +19,56 @@ class BottomSheetWithActions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: padding,
-      height: context.screenHeight * 0.90,
-      color: AppColor.white,
-      child: Column(
-        children: [
-          Expanded(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const DrawLineWidget(
-                  lineWidth: 70.0,
-                  lineHeight: 6.0,
-                  lineColor: AppColor.gray,
-                  radius: 46.0,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return GestureDetector(
+      onTap: () => FocusScope.of(context).unfocus(),
+      child: Container(
+        padding: padding,
+        height: context.screenHeight * 0.90,
+        color: AppColor.white,
+        child: Column(
+          children: [
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
                   children: [
-                    CustomTextWidget(
-                      title,
-                      textAlign: TextAlign.center,
-                      textStyle: AppStyle.mainTextSecondaryStyle.copyWith(
-                        fontSize: 24.0,
-                        color: AppColor.black,
-                      ),
+                    const DrawLineWidget(
+                      lineWidth: 70.0,
+                      lineHeight: 6.0,
+                      lineColor: AppColor.gray,
+                      radius: 46.0,
                     ),
-                    InkWell(
-                      onTap: () => Navigator.pop(context),
-                      child: CircleIcon(
-                        icon: Icons.close,
-                        iconColor: AppColor.primary600Light,
-                        backgroundColor: AppColor.geyser.withOpacity(0.4),
-                        iconSize: 18,
-                      ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        CustomTextWidget(
+                          title,
+                          textAlign: TextAlign.center,
+                          textStyle: AppStyle.mainTextSecondaryStyle.copyWith(
+                            fontSize: 24.0,
+                            color: AppColor.black,
+                          ),
+                        ),
+                        InkWell(
+                          onTap: () => Navigator.pop(context),
+                          child: CircleIcon(
+                            icon: Icons.close,
+                            iconColor: AppColor.primary600Light,
+                            backgroundColor: AppColor.geyser.withOpacity(0.4),
+                            iconSize: 18,
+                          ),
+                        ),
+                      ],
                     ),
+                    const SizedBox(height: 16),
+                    body,
                   ],
                 ),
-                const SizedBox(height: 16),
-                Expanded(child: SingleChildScrollView(child: body)),
-              ],
+              ),
             ),
-          ),
-          if (action != null) action!
-        ],
+            if (action != null) action!
+          ],
+        ),
       ),
     );
   }

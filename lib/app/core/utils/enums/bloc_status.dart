@@ -6,7 +6,9 @@ enum BlocStatus {
   success,
   requestChanged,
   performing,
-  retry;
+  retry,
+  loaded,
+  download;
 
   bool get isSubmissionInitial => this == BlocStatus.initial;
   bool get isSubmissionLoading => this == BlocStatus.loading;

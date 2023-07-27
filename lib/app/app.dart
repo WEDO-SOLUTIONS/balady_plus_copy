@@ -13,6 +13,7 @@ import './core/services/services_exports.dart' show NavigationService;
 import './core/utils/utils_exports.dart'
     show AppColor, AppConfig, AppRouter, RouteName;
 import './core/dependency_injection/dependency_injection_exports.dart' show sl;
+import 'features/appointments/presentation/pages/appointments_list_screen.dart';
 import 'features/bottom_navigation/presentation/pages/bottom_navigation_page.dart';
 import 'features/entry_point/presentation/cubit/auth_cubit.dart';
 
@@ -26,7 +27,8 @@ class App extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(
-          create: (BuildContext context) => MapViewModel(layersRepositories: sl()),
+          create: (BuildContext context) =>
+              MapViewModel(layersRepositories: sl()),
         ),
       ],
       child: BlocProvider<EntryPointCubit>.value(
@@ -50,9 +52,23 @@ class App extends StatelessWidget {
           initialRoute: RouteName.splash,
           onGenerateRoute: AppRouter.allRoutes,
           routes: {
-            RouteName.bottomNavigation: (context) => const BottomNavigationPage(),
+            RouteName.bottomNavigation: (context) =>
+                const BottomNavigationPage(),
           },
         ),
+        builder: EasyLoading.init(builder: BotToastInit()),
+        navigatorObservers: [BotToastNavigatorObserver()],
+        localizationsDelegates: translator.delegates.toList()
+          ..add(CountryLocalizations.delegate), // Android + iOS Delegates
+        locale: translator.activeLocale, // Active locale
+        supportedLocales: translator.locals(), // Locals list
+        initialRoute: RouteName.splash,
+        onGenerateRoute: AppRouter.allRoutes,
+        routes: {
+          RouteName.bottomNavigation: (context) => const BottomNavigationPage(),
+          RouteName.AppointmentsListScreen: (context) =>
+              const AppointmentsListScreen(),
+        },
       ),
     );
   }

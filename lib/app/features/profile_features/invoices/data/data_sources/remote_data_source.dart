@@ -10,11 +10,13 @@ import '../../../../_shared_feature_/shared_feature_exports.dart'
     show ResponseBodyModel;
 import '../../invoices_exports.dart'
     show
-        InvoicesModel,
+        InvoiceDetailsModel,
+        InvoiceDetailsParamsModel,
         InvoiceStatusModel,
         InvoiceSubTypeModel,
         InvoiceSubTypeParamsModel,
         InvoiceTypeModel,
+        InvoicesModel,
         InvoicesParamsModel;
 
 abstract class InvoicesRemoteDataSource {
@@ -25,6 +27,9 @@ abstract class InvoicesRemoteDataSource {
   Future<List<InvoiceTypeModel>> getInvoiceTypes();
   Future<List<InvoiceSubTypeModel>> getInvoiceSubTypes(
     InvoiceSubTypeParamsModel params,
+  );
+  Future<InvoiceDetailsModel> getInvoiceDetails(
+    InvoiceDetailsParamsModel params,
   );
 }
 
@@ -170,6 +175,42 @@ class InvoicesRemoteDataSourceImplementation
         statusCode: error.response?.statusCode,
       );
     } catch (ex) {
+      "Catched $ex".errorLog();
+      if (ex is ServerException) {
+        rethrow;
+      } else {
+        throw ServerException("errors_server_error_2".tr());
+      }
+    }
+  }
+
+  @override
+  Future<InvoiceDetailsModel> getInvoiceDetails(
+    InvoiceDetailsParamsModel params,
+  ) async {
+    try {
+      final response = await webService.dio.post(
+        ApiUrl.invoiceDetails,
+        data: params.toMap(),
+      );
+
+      final data = response.data;
+      data.toString().successLog();
+
+      final result = ResponseBodyModel.fromMap(data).data?.result;
+
+      return InvoiceDetailsModel.fromJson(result);
+    } on DioError catch (error) {
+      "DioError $error".errorLog();
+      if (error is NoDataFoundException) {
+        rethrow;
+      }
+      throw ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+      );
+    } catch (ex) {
+      print(ex);
       "Catched $ex".errorLog();
       if (ex is ServerException) {
         rethrow;

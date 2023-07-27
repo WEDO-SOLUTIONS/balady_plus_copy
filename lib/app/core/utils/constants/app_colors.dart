@@ -121,8 +121,9 @@ class AppColor {
   static const dark5 = Color(0x0d2f3c48);
   static const primary100Light12 = Color(0x1fcde0e0);
   static const blackModern50Light20 = Color(0x33fdfdfd);
-
-  // static const Color lightRedBrown = Color(0xFFfdcbcb);
+  static const base500Light50 = Color(0x33fdfdfd);
+  static const riverBed = Color(0xFF47515C);
+  static const mystic = Color(0x7FE6EFEF);
 
   static const Color kGray115 = Color.fromARGB(255, 115, 115, 115);
   static const Color kGray191 = Color.fromARGB(255, 191, 191, 191);
@@ -138,4 +139,5 @@ class AppColor {
   static const Color warmGreyText = Color(0xff808080);
 
   static const Color green60 = Color(0x99E6EFEF);
+  static const Color divider = Color(0x0FE6EFEF);
 }

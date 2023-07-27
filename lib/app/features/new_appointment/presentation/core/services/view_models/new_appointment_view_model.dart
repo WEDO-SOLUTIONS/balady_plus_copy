@@ -1,0 +1,596 @@
+import 'dart:typed_data';
+import 'package:mime/mime.dart';
+import 'package:tuple/tuple.dart';
+
+import 'dart:async';
+import 'dart:typed_data';
+
+import 'package:balady_plus/app/core/utils/utils_exports.dart';
+import 'package:flutter/material.dart';
+import 'package:collection/collection.dart';
+
+import '../../../../../../core/base/base_view_model.dart';
+import '../../../../../../core/services/local/navigation_services.dart';
+import '../../../../../../core/utils/constants/remote_config.dart';
+import '../../../../../../core/utils/enums/enums.dart';
+import '../../../../../_shared_feature_/data/entities/drop_down_item.dart';
+import '../../../../../_shared_feature_/data/entities/success_screen_args.dart';
+import '../../models/attachment_item_model.dart';
+import '../../models/available_dates_response.dart';
+import '../../models/available_times_response.dart';
+import '../../models/department_model.dart';
+import '../../models/lookup_list_model.dart';
+import '../../models/main_class_response.dart';
+import '../../models/municipality_model.dart';
+import '../../models/save_appointment_reseponse.dart';
+import '../../models/service_config_reseponse.dart';
+import '../../models/sub_class_response.dart';
+import '../../models/sub_municipalitiy_model.dart';
+import '../../models/upload_file_resepnse.dart';
+import '../repository/appointment_repository.dart';
+import 'new_appointment_view_model.dart';
+
+class NewAppointmentViewModel extends BaseViewModel {
+  final _repository = locator<AppointmentRepository>();
+
+  bool withPreviousTransaction = false;
+  bool fromHomePage = false;
+
+// service Category
+  LookUpList? categoryTypeResponse;
+  List<DropDownItem> categoryList = [];
+  DropDownItem? catetgoryType;
+  LookUpItem? selectedCategoryType;
+
+  // municipality
+  Municipality? municipalitiesResponse;
+  List<DropDownItem> municipalitiesList = [];
+  DropDownItem? municipalityType;
+  MunicipalityItem? selectedMunicipalityItem;
+
+  // sub municipality
+  SubMunicipality? subMunicipalitiesResponse;
+  List<DropDownItem> subMunicipalitiesList = [];
+  DropDownItem? subMunicipalityType;
+  SubMunicipalityItem? selectedSubMunicipalityItem;
+
+  // departments
+  DepartmentList? departmentsResponse;
+  List<DropDownItem> departmentsList = [];
+  DropDownItem? departmentType;
+  DepartmentItem? selectedDepartmentItem;
+
+  // main classifications
+  MainClassResponse? mainClassResponse;
+  List<DropDownItem> mainClassList = [];
+  DropDownItem? mainClassType;
+  MainClassItem? selectedMainClassItem;
+
+// sub classifications
+  SubClassResponse? subClassResponse;
+  List<DropDownItem> subClassList = [];
+  DropDownItem? subClassType;
+  SubClassItem? selectedSubClassItem;
+
+// Service Config
+  ServiceConfigResponse? serviceConfigResponse;
+
+//Dates
+  AvailableDatesResponse? availableDatesResponse;
+  DateItem? selectedDate;
+
+  // times
+  //AvailableTimesResponse? availableTimesResponse;
+  TimeItem? selectedTime;
+
+  // first step variables
+  //String? notes;
+  String? appointmentDetails;
+  String? transactionNo;
+  String? serviceName;
+  LookUpItem? submitterTypeItem;
+  VisitType? appointmentTypeItem;
+  LookUpItem? specialConditionItem;
+  LookUpItem? specialConditionItemOld;
+
+  bool? isSpecialConditionChecked = false;
+  bool isUserOld = false;
+
+// attachments
+
+  /* String? attachmentUuid;
+  String? attachmentFileName;
+  String? attachmentPath;
+  Uint8List? attachmentBase64;*/
+  List<AttachmentItemModel> atttachmentItems = [];
+
+  // lookup list
+  LookUpList? submitterTypeList;
+
+  LookUpList? specialConditionTypeList;
+  List<VisitType>? appointmentTypeList;
+
+  init() {
+    // municipalitiesResponse = null;
+    municipalityType = null;
+    selectedMunicipalityItem = null;
+    // municipalitiesList = [];
+
+    selectedSubMunicipalityItem = null;
+    subMunicipalityType = null;
+    subMunicipalitiesResponse = null;
+    subMunicipalitiesList = [];
+
+    selectedDepartmentItem = null;
+    departmentType = null;
+    departmentsResponse = null;
+    departmentsList = [];
+
+    // availableTimesResponse = null;
+    selectedTime = null;
+
+    //notes = null;
+    appointmentDetails = null;
+    transactionNo = null;
+    serviceName = null;
+    appointmentTypeItem = null;
+    submitterTypeItem = null;
+    appointmentTypeList = null;
+    //submitterTypeList = null;
+    // specialConditionTypeList = null;
+    specialConditionItem = null;
+    specialConditionItemOld = null;
+    serviceConfigResponse = null;
+
+    mainClassResponse = null;
+    mainClassList = [];
+    mainClassType = null;
+    selectedMainClassItem = null;
+
+    subClassResponse = null;
+    subClassList = [];
+    subClassType = null;
+    selectedSubClassItem = null;
+
+    availableDatesResponse = null;
+    selectedDate = null;
+
+    //  availableTimesResponse = null;
+    selectedTime = null;
+    /*  attachmentUuid = null;
+    attachmentFileName = null;
+    attachmentPath = null;
+    attachmentBase64 = null;*/
+
+    selectedCategoryType = null;
+    catetgoryType = null;
+    atttachmentItems = [];
+    isSpecialConditionChecked = false;
+    isUserOld = false;
+  }
+
+  Future<bool> getLookUpList(String type, {bool showLoad = false}) async {
+    if (showLoad) showLoading();
+    Tuple3<bool?, String?, LookUpList?> response =
+        await _repository.getLookupList(type);
+    if (showLoad) hideLoading();
+    if (response.item1 != null &&
+        response.item1! &&
+        response.item3?.data?.result != null) {
+      if (type == "SUBMITTER_TYPE") {
+        submitterTypeList = response.item3;
+      }
+      if (type == "SPECIAL_CONDITION") {
+        specialConditionTypeList = response.item3!;
+      }
+
+      if (type == "service-category") {
+        categoryTypeResponse = response.item3!;
+      }
+
+      return true;
+    } else {
+      showError(response.item2 ?? "");
+    }
+    return false;
+  }
+
+  void setMunicipalities(Municipality? data) {
+    municipalitiesResponse = data;
+    municipalitiesList = municipalitiesResponse!.data!.result!
+        .map<DropDownItem>((e) => DropDownItem(id: e.id, name: e.name ?? ""))
+        .toList();
+  }
+
+  Future<bool> getMunicipalities({bool showLoad = false}) async {
+    if (municipalitiesList.isNotEmpty) return true;
+    if (showLoad) showLoading();
+    Tuple3<bool?, String?, Municipality?> response =
+        await _repository.getMunicipalities();
+    if (showLoad) hideLoading();
+    if (response.item1 != null &&
+        response.item1! &&
+        response.item3?.data?.result != null) {
+      setMunicipalities(response.item3);
+      return true;
+    } else {
+      showError(response.item2 ?? "");
+    }
+    return false;
+  }
+
+  void setCatetgories(LookUpList? data) {
+    categoryTypeResponse = data;
+    categoryList = categoryTypeResponse!.data!.result!
+        .map<DropDownItem>(
+            (e) => DropDownItem(id: e.id.toString(), name: e.name ?? ""))
+        .toList();
+  }
+
+  void setSubMunicipalities(SubMunicipality? data) {
+    subMunicipalitiesResponse = data;
+    subMunicipalitiesList = subMunicipalitiesResponse!.data!.result!
+        .map<DropDownItem>((e) => DropDownItem(id: e.id, name: e.name ?? ""))
+        .toList();
+  }
+
+  Future<bool> getSubMunicipalities(String municipalityId) async {
+    showLoading();
+    Tuple3<bool?, String?, SubMunicipality?> response =
+        await _repository.getSubMunicipalities(municipalityId);
+    hideLoading();
+    if (response.item1 != null &&
+        response.item1! &&
+        response.item3?.data?.result != null) {
+      setSubMunicipalities(response.item3);
+      return true;
+    } else {
+      showError(response.item2 ?? "");
+    }
+    return false;
+  }
+
+  void setDepartments(DepartmentList? data) {
+    departmentsResponse = data;
+    departmentsList = departmentsResponse!.data!.result!
+        .map<DropDownItem>(
+            (e) => DropDownItem(id: e.id.toString(), name: e.name ?? ""))
+        .toList();
+  }
+
+  void setMainClassifications(MainClassResponse? data) {
+    mainClassResponse = data;
+    mainClassList = mainClassResponse!.data!.result!
+        .map<DropDownItem>(
+            (e) => DropDownItem(id: e.id.toString(), name: e.name ?? ""))
+        .toList();
+  }
+
+  void setSubClassifications(SubClassResponse? data) {
+    subClassResponse = data;
+    subClassList = subClassResponse!.data!.result!
+        .map<DropDownItem>(
+            (e) => DropDownItem(id: e.id.toString(), name: e.name ?? ""))
+        .toList();
+  }
+
+  Future<bool> getDepartments(String subMunicipalityId) async {
+    showLoading();
+    Tuple3<bool?, String?, DepartmentList?> response =
+        await _repository.getDepartments(subMunicipalityId);
+    hideLoading();
+    if (response.item1 != null &&
+        response.item1! &&
+        response.item3?.data?.result != null) {
+      setDepartments(response.item3);
+      return true;
+    } else {
+      showError(response.item2 ?? "");
+    }
+    return false;
+  }
+
+  Future<bool> getAvailableDates(int serviceId) async {
+    showLoading();
+    Tuple3<bool?, String?, AvailableDatesResponse?> response =
+        await _repository.getAppointmentDates(serviceId);
+    hideLoading();
+    if (response.item1 != null &&
+        response.item1! &&
+        response.item3?.data?.result != null) {
+      selectedDate = null;
+      selectedTime = null;
+      availableDatesResponse = response.item3;
+      return true;
+    } else {
+      showError(response.item2 ?? "");
+    }
+    return false;
+  }
+
+  /*Future<bool> getAvailableTimes(int serviceId, String date) async {
+    showLoading();
+    Tuple3<bool?, String?, AvailableTimesResponse?> response =
+        await _repository.getAppointmentTimes(serviceId, date);
+    hideLoading();
+    if (response.item1 != null &&
+        response.item1! &&
+        response.item3?.data?.result != null) {
+      availableTimesResponse = response.item3;
+      return true;
+    } else {
+      showError(response.item2 ?? "");
+    }
+    return false;
+  }*/
+
+  Future<bool> getMainClassifications(String subMunicipalityId) async {
+    showLoading();
+    Tuple3<bool?, String?, MainClassResponse?> response =
+        await _repository.getMainClassifications(subMunicipalityId);
+    hideLoading();
+    if (response.item1 != null &&
+        response.item1! &&
+        response.item3?.data?.result != null) {
+      setMainClassifications(response.item3);
+      return true;
+    } else {
+      showError(response.item2 ?? "");
+    }
+    return false;
+  }
+
+  Future<bool> getSublassifications(
+      String subMunicipalityId, String mainClassId) async {
+    showLoading();
+    Tuple3<bool?, String?, SubClassResponse?> response =
+        await _repository.getSubClassifications(subMunicipalityId, mainClassId);
+    hideLoading();
+    if (response.item1 != null &&
+        response.item1! &&
+        response.item3?.data?.result != null) {
+      setSubClassifications(response.item3);
+      return true;
+    } else {
+      showError(response.item2 ?? "");
+    }
+    return false;
+  }
+
+  Future<SaveAppointmentResponse?> saveAppointment() async {
+    String userId = CommonProperties.userInfo?.idNo ?? "";
+    String email = CommonProperties.userInfo?.getEmail() ?? "";
+    String name = CommonProperties.userInfo?.arName ?? "";
+
+    String idType = CommonProperties.userInfo?.getIdType() ?? "";
+
+    String birthDate = CommonProperties.userInfo?.getHijriBirthDate() ?? "";
+    String mobile = CommonProperties.userInfo?.phone ?? "";
+    showLoading();
+    Tuple3<bool?, String?, SaveAppointmentResponse?> response =
+        await _repository.saveAppointment({
+      "serviceCategoryId": selectedCategoryType?.id,
+      "appointmentDetails": appointmentDetails,
+      "birthDate": birthDate,
+      "departmentId": serviceConfigResponse!.data!.result![0].departmentId,
+      "email": email,
+      "identityNumber": userId,
+      "identityTypeId": idType,
+      "mobileNumber": mobile,
+      "notes": "",
+      "otherValueName": serviceName,
+      "prevTrnNo": transactionNo,
+      "serviceConfigId": serviceConfigResponse!.getServiceId(),
+      if (specialConditionItem?.id != null &&
+          (isSpecialConditionChecked ?? false))
+        "specialCondition": specialConditionItem?.id,
+      if ((specialConditionItemOld?.id != null &&
+          isSpecialConditionChecked == false &&
+          isUserOld))
+        "specialCondition": specialConditionItemOld?.id,
+      "subMunicipalityId": selectedSubMunicipalityItem!.id,
+      "submitterName": name,
+      //"submitterType": submitterTypeItem!.id,
+      if (atttachmentItems != null && atttachmentItems.isNotEmpty)
+        "uuid": atttachmentItems.map((e) => e.attachmentUuid).toList(),
+      "visitDate": selectedDate!.date,
+      "visitLinked": withPreviousTransaction,
+      "visitTime": selectedTime!.timeKey,
+      "visitTopic": "",
+      "visitType": appointmentTypeItem!.id
+    });
+    hideLoading();
+    if (response.item1 != null &&
+        response.item1! &&
+        response.item3?.data?.result != null) {
+      NavigationService.navigatorKey.currentState!.pushNamedAndRemoveUntil(
+          RouteName.successRoute,
+          ModalRoute.withName(RouteName.bottomNavigation),
+          arguments: SuccessScreenArgs(
+              type: PAGE_TYPE.appointmentScreen,
+              idNumber: response.item3?.data?.result?.id.toString() ?? "",
+              fromHomePage: true));
+      return response.item3;
+    } else {
+      print("gg");
+      showError(response.item2 ?? "");
+    }
+    return null;
+  }
+
+  Future<bool> getServiceConfig(
+      String subMunicipalityId, String subClassId) async {
+    showLoading();
+    Tuple3<bool?, String?, ServiceConfigResponse?> response =
+        await _repository.getServiceConfig(subMunicipalityId, subClassId);
+    hideLoading();
+    if (response.item1 != null &&
+        response.item1! &&
+        response.item3?.data?.result != null) {
+      serviceConfigResponse = response.item3;
+      appointmentTypeList = serviceConfigResponse?.data?.result?[0].visitType;
+      if (appointmentTypeList?.length == 1) {
+        appointmentTypeItem = appointmentTypeList?[0];
+      }
+
+      return true;
+    } else {
+      showError(response.item2 ?? "");
+    }
+    return false;
+  }
+
+  Future<bool> uploadFile(Uint8List? attachmentBase64,
+      String? attachmentFileName, String? attachmentPath) async {
+    print("uploadFile");
+    final mimeType = lookupMimeType(attachmentPath ?? ""); // 'image/jpeg'
+
+    showLoading();
+    Tuple3<bool?, String?, UploadFileResponse?> response =
+        await _repository.uploadFile(
+            attachmentBase64, attachmentFileName, attachmentPath, mimeType);
+    hideLoading();
+    if (response.item1 != null &&
+        response.item1! &&
+        response.item3?.data?.result?.uuid != null) {
+      var attachmentUuid = response.item3?.data?.result?.uuid;
+      atttachmentItems.add(AttachmentItemModel(
+          attachmentUuid: attachmentUuid,
+          attachmentFileName: attachmentFileName,
+          attachmentPath: attachmentPath));
+      //print(attachmentUuid);
+      return true;
+    } else {
+      showError(response.item2 ?? "");
+    }
+    return false;
+  }
+
+  Future<bool> getLookUpListSubmitter() async {
+    bool isSuccess = false;
+    if (submitterTypeList?.data?.result != null &&
+        submitterTypeList!.data!.result!.isNotEmpty) {
+      isSuccess = true;
+    } else {
+      isSuccess = await getLookUpList("SUBMITTER_TYPE");
+    }
+    if (isSuccess) {
+      if (submitterTypeList != null) {
+        //MM11 force unwrapping
+      }
+    }
+    notifyListeners();
+    return isSuccess;
+  }
+
+  Future<bool> getLookUpListCategory() async {
+    bool isSuccess = false;
+    if (categoryTypeResponse?.data?.result != null &&
+        categoryTypeResponse!.data!.result!.isNotEmpty) {
+      isSuccess = true;
+    } else {
+      isSuccess = await getLookUpList("service-category");
+    }
+    if (isSuccess) {
+      setCatetgories(categoryTypeResponse);
+      if (categoryTypeResponse != null) {
+        //MM11 force unwrapping
+      }
+    }
+    notifyListeners();
+    return isSuccess;
+  }
+
+  Future<bool> getLookUpListSpecialCondition() async {
+    bool isSuccess = false;
+
+    if (specialConditionTypeList?.data?.result != null &&
+        specialConditionTypeList!.data!.result!.isNotEmpty) {
+      isSuccess = true;
+    } else {
+      isSuccess = await getLookUpList("SPECIAL_CONDITION");
+      if (isSuccess) {
+        setShowSpecialConditionSection();
+        setShowSpecialConditionOld();
+      }
+    }
+
+    notifyListeners();
+    return isSuccess;
+  }
+
+  bool setShowSpecialConditionSection() {
+    //MM11, here used future and got called before the list is loaded.
+    bool isSuccess = false;
+    if (specialConditionTypeList != null) {
+      specialConditionItem = specialConditionTypeList?.data?.result
+          ?.firstWhereOrNull((element) =>
+              element.id == RemoteConfig.specialConditionId ||
+              element.name!.contains("ذوي"));
+      if (specialConditionItem != null) {
+        isSuccess = true;
+      } else {
+        isSuccess = false;
+      }
+    }
+
+    return isSuccess;
+  }
+
+  bool setShowSpecialConditionOld() {
+    bool isSuccess = false;
+    if (specialConditionTypeList != null) {
+      specialConditionItemOld = specialConditionTypeList?.data?.result
+          ?.firstWhereOrNull((element) =>
+              element.id == RemoteConfig.specialConditionOldId ||
+              element.name!.contains("كبير"));
+      if (specialConditionItemOld != null) {
+        isSuccess = true;
+      } else {
+        isSuccess = false;
+      }
+    }
+
+    return isSuccess;
+  }
+
+  bool checkIfUserIsOld() {
+    bool isOld = false;
+
+    try {
+      String? userDOB =
+          CommonProperties.userInfo?.getFormattedBirthDate(withDash: true);
+      if (userDOB != null) {
+        DateTime date = DateTime.parse(userDOB);
+        DateTime today = DateTime.now();
+        DateTime now = today;
+
+        if ((date.year > 1800 && date.year < 2100) &&
+            (now.year > 1800 && now.year < 2100)) {
+          int age = now.year - date.year;
+          //print("daaaata $age");
+          if (age > 65) {
+            isOld = true;
+          }
+        }
+      }
+    } catch (ex) {
+      //print("daaate $ex");
+    }
+    isUserOld = isOld;
+    return isOld;
+  }
+
+  Future<bool> loadInitialData() async {
+    showLoading();
+    List<bool> response = await Future.wait<bool>([
+      getLookUpListSubmitter(),
+      getLookUpListSpecialCondition(),
+      getMunicipalities(),
+      getLookUpListCategory()
+    ]);
+    hideLoading();
+
+    return !response.contains(false) ? true : false;
+  }
+}

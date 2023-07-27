@@ -13,6 +13,53 @@ class ApiUrl {
   //! Prayer Times
   static const prayerTimes = '/v1/kacst/prayer-times';
 
+  //! Municipal Services
+  //! Municipal Advisor
+  static const isicActivities =
+      '/v1/balady-consultation-services/approved-isic-activities';
+  static const isicSubActivities =
+      '/v1/balady-consultation-services/activities-by-isicNumber';
+  static const activityDetails =
+      '/v1/balady-consultation-services/activity-detail-info';
+  static const accommodationTypes =
+      '/v1/balady-consultation-services/accommodation-types';
+  static const consultationKey = '/v1/balady-consultation-services/apply';
+  static const issuingPredefinedConditions =
+      '/v1/balady-consultation-services/predefined-conditions?typeId=ISSUING';
+  static const licensePermits =
+      '/v1/balady-consultation-services/license-permits';
+  static const supervisingAuthorities =
+      '/v1/balady-consultation-services/supervising-authorities';
+  static const civilDefensePredefinedConditions =
+      '/v1/balady-consultation-services/predefined-conditions?typeId=CIVIL_DEFENSE';
+  static String civilDefense = '/v1/balady-consultation-services/civil-defense';
+  static const commercialOffices =
+      '/v1/balady-consultation-services/commercial-offices';
+  static const cleaningMechanisms = '/v1/balady-consultation-services/cleaning';
+  static const saveConsultationProgress =
+      '/v1/balady-consultation-services/site';
+  static const saveActivities =
+      '/v1/balady-consultation-services/additional-activity';
+  static const licenseYears = '/v1/balady-consultation-services/license-years';
+  static const boardTypes = '/v1/balady-consultation-services/board-types';
+  static const calculateFees =
+      '/v1/balady-consultation-services/calculate-fees';
+  static const saveFinancialStudy =
+      '/v1/balady-consultation-services/financial-study-info';
+  static const shopOwnership =
+      '/v1/balady-consultation-services/shop-ownership';
+  static const consultationAttachments =
+      '/v1/balady-consultation-services/consultation-attachments';
+  static const conditionsUrls = '/v1/balady-consultation-services/conditions';
+  static const fastflowConditions =
+      '/v1/balady-consultation-services/fastflow-conditions';
+  static const maxLicenseYears = '/v1/balady-consultation-services/max-years';
+  static const requestFlow = '/v1/balady-consultation-services/request-flow';
+  static const requestFlowRecommendations =
+      '/v1/balady-consultation-services/flow-recommendations';
+  static const updatePermit =
+      '/v1/balady-consultation-services/updated-permit-cost';
+
   //! Profile
   //! Delegators
   static const delegators =
@@ -39,6 +86,9 @@ class ApiUrl {
   static invoiceSubTypes(int id) =>
       '/v1/balady-dashboard/invoices/sub-main-types/$id';
   static const invoiceStatuses = '/v1/balady-dashboard/invoices/statuses';
+  static const invoiceDetails =
+      '/v1/balady-dashboard/invoices/my-invoices-by-id';
+
   //! Licenses
   static const licenses = '/v1/balady-dashboard/license/my-licenses';
   static const licenseTypes = '/v1/balady-dashboard/license/main-types';
@@ -68,7 +118,7 @@ class ApiUrl {
   static String transactionsRequestDetails(String id) =>
       '/v1/objection-generic-services/applications/$id/objectable-transactions';
 
-// VD
+//! VD
   static const gis = '/v1/crm/bcg/gis-info';
   static const vdCategories = '/v1/crm/bcg/categories';
   static const vdSpecialClassifications = '/v1/crm/bcg/special-classifications';
@@ -90,9 +140,9 @@ class ApiUrl {
 
   static const vdCrExists = '/v1/crm/cr-exists/';
 
-// DC
+//! DC
 
-// Damaged Cars
+//! Damaged Cars
   static const dcCarTypes = 'v1/damaged-vehicle-mobile/car-companies';
 
   static const dcCarModel = 'v1/damaged-vehicle-mobile/car-models';
@@ -102,6 +152,61 @@ class ApiUrl {
 
   static const vehicles = 'v1/damaged-vehicle-mobile/vehicles';
   static const vehicleRecovery = 'v1/damaged-vehicle-mobile/vehicle-recovery';
+//Weather
+  static const weatherForcastAPI = '/v1/forecast.json';
+
+// Pega Incdients
+
+  static const String IncidentDownloadFile =
+      '/prweb/PRRestService/FrontUserBalady/V1/DownloadFile';
+
+  static const String IncidentRetrieveData =
+      '/prweb/PRRestService/FrontUserBalady/V1/RetrieveData';
+
+  static const String IncidentCreate =
+      '/prweb/PRRestService/FrontUserBalady/V1/CreateIncidentRequest';
+
+  static const String IncidentUploadFile =
+      '/prweb/PRRestService/FrontUserBalady/V1/UploadFile';
+
+  static const String MSRCreate =
+      '/prweb/PRRestService/FrontUserBalady/V1/CreateMuncipalServiceRequest';
+  static const String MSRRequestDetails =
+      '/prweb/PRRestService/FrontUserBalady/V1/FetchMuncipalServiceRequest';
+
+  static const String MSRRetrieveMSRData =
+      '/prweb/PRRestService/FrontUserBalady/V1/RetrieveMSRData';
+
+  static const String INQMainClassifications =
+      '/prweb/PRRestService/FrontUserBalady/V1/GetMainClassifications';
+  static const String INQSubClassifications =
+      '/prweb/PRRestService/FrontUserBalady/V1/GetSubClassifications';
+
+  static const String INQSPLClassifications =
+      '/prweb/PRRestService/FrontUserBalady/V1/GetSpecialClassifications';
+
+  static const String INQAllSPLClassifications =
+      '/prweb/PRRestService/FrontUserBalady/V1/GetSpecialClassificationsByType';
+
+  static const String INQMainAndSubClassifications =
+      '/prweb/PRRestService/FrontUserBalady/V1/GetMainAndSubClassificationsForSpecialClassification';
+
+  static const String INQCreate =
+      '/prweb/PRRestService/FrontUserBalady/V1/CreateInquiryRequest';
+
+  ///! Daem
+
+  static const String DaemRetrieveData =
+      '/prweb/PRRestService/FrontUserBalady/V1/RetrieveTSRData';
+  static const String DaemCreateTikcet =
+      '/prweb/PRRestService/FrontUserBalady/V1/CreateDaemTicket';
+  static const String DaemUploadFile =
+      '/prweb/PRRestService/FrontUserBalady/V1/UploadFile';
+
+//! CRM
+
+  static const String crmRequestsList =
+      '/prweb/PRRestService/FrontUserBalady/V1/GetIncidentRequests';
 
   //! POST
 

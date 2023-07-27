@@ -8,18 +8,26 @@ class RouteName {
   static const error = '/error';
   static const inappWebview = '/inappWebview';
   static const dmsImageFullScreen = '/dmsImageFullScreen';
+
   //! Services
   static const serviceCards = '/serviceCards';
 
   //? General Services
   static const prayerTimes = '/prayerTimes';
+  static const qiblahCompass = '/qiblahCompass';
+
+  //? Municipal Services
+  static const municipalAdvisor = '/municipal-advisor';
+  static const locationPage = '/location-page';
 
   //! Setting
   static const personalInformation = '/personalInformation';
   static const dashboard = '/dashboard';
   static const requests = '/requests';
   static const invoices = '/invoices';
+  static const invoiceDetails = '/invoiceDetails';
   static const licenses = '/licenses';
+  static const incRequestsPage = '/incRequestsPage';
 
   // -------  Objections ---------
 
@@ -54,6 +62,55 @@ class RouteName {
   static const DCVeichlePage = '/DCVeichlePage';
   static const DCSelectRetreiveTypePage = '/DCSelectRetreiveTypePage';
 
+  // -------  Appointments ---------
+
+  static const NewAppointmentPage = '/NewAppointmentPage';
+  static const appointmentsRoute = 'appointments';
+  static const previousAppointmentsRoute = 'previous-appointments';
+  static const appointmentDetailsRoute = 'appointment-details';
+  static const AppointmentsListScreen = 'AppointmentsListScreen';
+  // -------  DAEM ---------
+
+  static const newDaemTicket = '/newDaemTicket';
+
+  // -------  Inquiery Transactions ---------
+
+  static const newTransactionInquiryScreen = '/NewTransactionInquiryScreen';
+  static const inquiryDetailsScreen = '/InquiryDetailsScreen';
+
+  // ------- General Inquiery  ---------
+
+  static const generalInquiryPage = '/GeneralInquiryPage';
+  static const newMSRMapPage = '/NewMSRMapPage';
+
+  static const newMSRPage = '/NewMSRPage';
+
+  static const calculatorRoute = 'calculatorRoute';
+
+  static const calculatorMapRoute = 'calculatorMapRoute';
+
+  // ------- Health Certificates  ---------
+
+  static const newHealthCertificatePage = '/NewHealthCertificatePage';
+  static const healthLicenseDetailsScreen = '/healthLicenseDetailsScreenRoute';
+  static const healthRequestDetailsScreen = '/HealthRequestDetailsScreen';
+
+  // ------- Quran Page  ---------
+  static const quranScreen = '/quranScreen';
+  static const menuQuranPage = '/MenuQuranPage';
+  static const quranBookMarkPage = '/QuranBookMarkPage';
+  static const quranDoaaPage = '/QuranDoaaPage';
+  static const quranSearchPage = '/QuranSearchPage';
+  // ------- Zmzmz Page  ---------
+  static const ZmZmPointsPage = '/ZmZmPointsPage';
+  // ------- CR ---------
+  static const commercialLicensePage = '/commercialLicensePage';
+
+  // ------- Wallet ------
+  static const walletPage = '/walletPage';
+  static const businessLicensePage = '/businessLicensePage';
+  // -------  Weather ---------
+  static const weatherMainPage = '/weather_main_page';
   // -------  Map ---------
   static const MapDetailsPage = '/mapDetailsPage';
 }

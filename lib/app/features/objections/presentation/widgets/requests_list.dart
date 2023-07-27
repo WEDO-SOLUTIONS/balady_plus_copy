@@ -5,6 +5,7 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../core/utils/utils_exports.dart' show BlocRequestStatus;
 import '../../../_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
+import '../../../_shared_feature_/presentation/widgets/need_login_widget.dart';
 import '../../../_shared_feature_/presentation/widgets/reload_widget.dart';
 import '../../../_shared_feature_/shared_feature_exports.dart'
     show MessageDialog, RetryWidget, ShimmerEffectWidget;
@@ -68,7 +69,9 @@ class _RequestsListState extends State<RequestsList> {
         } else {
           if (state.requests.isEmpty && state.noMoreData) {
             return Center(
-              child: Text("no_data".tr()),
+              child: EmptyListWidget(
+                title: "no_data_shown".tr(),
+              ),
             );
           }
           int length = state.requests.length;

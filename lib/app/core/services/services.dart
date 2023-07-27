@@ -9,7 +9,7 @@ Map<String, dynamic> servicesConfig = {
       "order": 1,
       "isNew": false,
       "isImportant": false,
-      "action": {"type": "page", "value": "/holy-quran"},
+      "action": {"type": "page", "value": RouteName.menuQuranPage},
       "ar": {"title": "المصحف الشريف", "description": null, "tag": null},
       "en": {"title": "Holy Quran", "description": null, "tag": null}
     },
@@ -42,7 +42,7 @@ Map<String, dynamic> servicesConfig = {
       "order": 4,
       "isNew": false,
       "isImportant": false,
-      "action": {"type": "page", "value": "/zamazem"},
+      "action": {"type": "page", "value": RouteName.ZmZmPointsPage},
       "ar": {"title": "نقاط توزيع ماء زمزم", "description": null, "tag": null},
       "en": {"title": "Zamzam Points", "description": null, "tag": null}
     },
@@ -56,6 +56,17 @@ Map<String, dynamic> servicesConfig = {
       "action": {"type": "page", "value": "/scanner"},
       "ar": {"title": "ماسح الرمز السريع", "description": null, "tag": null},
       "en": {"title": "QR Scanner", "description": null, "tag": null}
+    },
+    {
+      "id": 6,
+      "icon": "qiblah",
+      "3d_icon": null,
+      "order": 6,
+      "isNew": false,
+      "isImportant": false,
+      "action": {"type": "page", "value": "/qiblahCompass"},
+      "ar": {"title": "بوصلة القبلة", "description": null, "tag": null},
+      "en": {"title": "Qiblah Compass", "description": null, "tag": null}
     }
   ],
   "municipal_services": [
@@ -118,11 +129,12 @@ Map<String, dynamic> servicesConfig = {
     {
       "id": 2,
       "icon": "general_inquiries",
-      "3d_icon": null,
+      "3d_icon": "assets/images/home_icon_1.png",
       "order": 2,
       "isNew": false,
       "isImportant": true,
-      "action": {"type": "page", "value": "/general-inquiries"},
+      "requireLogin": true,
+      "action": {"type": "dialog", "value": "/general-inquiries"},
       "ar": {
         "title": "الإستفسارات العامة",
         "description": "ارسل استفسارك عن كل خدمه",
@@ -141,7 +153,8 @@ Map<String, dynamic> servicesConfig = {
       "order": 3,
       "isNew": false,
       "isImportant": true,
-      "action": {"type": "page", "value": "/supporter"},
+      "requireLogin": true,
+      "action": {"type": "dialog", "value": "/supporter"},
       "ar": {"title": "داعم", "description": null, "tag": null},
       "en": {"title": "Supporter", "description": null, "tag": null}
     },
@@ -152,7 +165,8 @@ Map<String, dynamic> servicesConfig = {
       "order": 4,
       "isNew": false,
       "isImportant": false,
-      "action": {"type": "page", "value": "/schedule-date"},
+      "requireLogin": true,
+      "action": {"type": "dialog", "value": ""},
       "ar": {"title": "حجز موعد الكتروني", "description": null, "tag": null},
       "en": {"title": "Schedule Date", "description": null, "tag": null}
     },
@@ -163,7 +177,8 @@ Map<String, dynamic> servicesConfig = {
       "order": 5,
       "isNew": false,
       "isImportant": false,
-      "action": {"type": "page", "value": "/request-service"},
+      "requireLogin": true,
+      "action": {"type": "dialog", "value": RouteName.newMSRMapPage},
       "ar": {"title": "طلب خدمة بلدية", "description": null, "tag": null},
       "en": {"title": "Request Service", "description": null, "tag": null}
     },
@@ -174,6 +189,7 @@ Map<String, dynamic> servicesConfig = {
       "order": 6,
       "isNew": false,
       "isImportant": false,
+      "requireLogin": true,
       "action": {"type": "page", "value": "/objectableTransactionsPage"},
       "ar": {"title": "الاعتراضات والتظلمات", "description": null, "tag": null},
       "en": {"title": "Objections", "description": null, "tag": null}
@@ -196,7 +212,11 @@ Map<String, dynamic> servicesConfig = {
       "order": 8,
       "isNew": true,
       "isImportant": false,
-      "action": {"type": "page", "value": "/transaction-inquery"},
+      "requireLogin": true,
+      "action": {
+        "type": "page",
+        "value": RouteName.newTransactionInquiryScreen
+      },
       "ar": {
         "title": "استعلام عن معاملة",
         "description": "يمكنك الآن حجز موعد عبر التطبيق !",
@@ -215,6 +235,7 @@ Map<String, dynamic> servicesConfig = {
       "order": 9,
       "isNew": false,
       "isImportant": false,
+      "requireLogin": true,
       "action": {"type": "page", "value": RouteName.DCCameraPage},
       "ar": {"title": "السيارات التالفة", "description": null, "tag": null},
       "en": {"title": "Damaged Cars", "description": null, "tag": null}
@@ -245,7 +266,7 @@ Map<String, dynamic> servicesConfig = {
       "order": 11,
       "isNew": false,
       "isImportant": false,
-      "action": {"type": "page", "value": "/issue-trade-license"},
+      "action": {"type": "page", "value": ""},
       "ar": {"title": "إصدار رخصة تجارية", "description": null, "tag": null},
       "en": {"title": "Issue Trade License", "description": null, "tag": null}
     },
@@ -256,7 +277,7 @@ Map<String, dynamic> servicesConfig = {
       "order": 12,
       "isNew": false,
       "isImportant": false,
-      "action": {"type": "page", "value": "/fee-calculator"},
+      "action": {"type": "page", "value": RouteName.calculatorMapRoute},
       "ar": {"title": "حاسبة الرسوم", "description": null, "tag": null},
       "en": {"title": "Fee Calculator", "description": null, "tag": null}
     },
@@ -267,7 +288,8 @@ Map<String, dynamic> servicesConfig = {
       "order": 13,
       "isNew": false,
       "isImportant": false,
-      "action": {"type": "page", "value": "/municipal-advisor"},
+      "requireLogin": true,
+      "action": {"type": "page", "value": RouteName.municipalAdvisor},
       "ar": {"title": "المستشار البلدي", "description": null, "tag": null},
       "en": {"title": "Municipal Advisor", "description": null, "tag": null}
     },
@@ -289,7 +311,8 @@ Map<String, dynamic> servicesConfig = {
       "order": 15,
       "isNew": false,
       "isImportant": false,
-      "action": {"type": "page", "value": "/issue-health-certificate"},
+      "requireLogin": true,
+      "action": {"type": "page", "value": RouteName.newHealthCertificatePage},
       "ar": {"title": "إصدار شهادة صحية", "description": null, "tag": null},
       "en": {
         "title": "Issue Health Certificate",
@@ -304,6 +327,7 @@ Map<String, dynamic> servicesConfig = {
       "order": 9,
       "isNew": false,
       "isImportant": false,
+      "requireLogin": true,
       "action": {"type": "page", "value": "/DCVeichlePage"},
       "ar": {"title": "استعادة مركبة مسحوبة", "description": null, "tag": null},
       "en": {"title": "Damaged Cars", "description": null, "tag": null}

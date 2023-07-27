@@ -104,7 +104,7 @@ class EmptyListWidget extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Image.asset(
-              Constants.imgPath + img!,
+              IconPath.needLogin,
               width: imgWidth,
               height: imgHeight,
             ),

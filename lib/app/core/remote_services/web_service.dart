@@ -200,7 +200,7 @@ class WebService {
     }
 
     var requestUrl = baseURL + url + queryString;
-    //print("url: " + requestUrl);
+    print("url: " + requestUrl);
     Map<String, dynamic> result = {};
     if (isSuccess) {
       try {
@@ -229,7 +229,7 @@ class WebService {
           Uri.parse(requestUrl),
           headers: headers,
         );
-        // print("url response: " + utf8.decode(response.bodyBytes).toString());
+        print("url response: " + utf8.decode(response.bodyBytes).toString());
         if (response.statusCode == HttpStatus.ok) {
           result.putIfAbsent("state", () => true);
           result.putIfAbsent(
@@ -306,8 +306,8 @@ class WebService {
 
     String queryString = "";
     var data = body != null ? json.encode(body) : null;
-    //print(data);
-
+    print(data);
+    print(url);
     if (relativePath != null) {
       queryString = relativePath;
     }
@@ -848,7 +848,7 @@ class WebService {
     }
 
     var requestUrl = baseURL + url + queryString;
-    // print("url: " + requestUrl);
+    print("url: " + requestUrl);
     Map<String, dynamic> result = {};
     try {
       String loginIdentityId = CommonProperties.userInfo?.idNo ?? "";
@@ -871,7 +871,8 @@ class WebService {
           "SSOToken": CommonProperties.token ?? ""
         },
       );
-      // print("response: " + response.headers.toString());
+      print("response: " + response.headers.toString());
+      print(response.statusCode);
       if (response.statusCode == HttpStatus.ok) {
         result.putIfAbsent("state", () => true);
         result.putIfAbsent("data", () => response.bodyBytes);
@@ -925,7 +926,7 @@ class WebService {
     }
 
     var requestUrl = baseURL + url + queryString;
-    // print("url: " + requestUrl);
+    print("url: " + requestUrl);
     Map<String, dynamic> result = {};
     try {
       var headers = {
@@ -938,7 +939,8 @@ class WebService {
         Uri.parse(requestUrl),
         headers: headers,
       );
-      //  print("response: " + response.body);
+      print("response: " + response.body);
+      print(response.statusCode);
       if (response.statusCode == HttpStatus.ok) {
         result.putIfAbsent("state", () => true);
         result.putIfAbsent("data", () => response.bodyBytes);

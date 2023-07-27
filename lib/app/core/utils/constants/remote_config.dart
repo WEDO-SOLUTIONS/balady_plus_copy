@@ -23,7 +23,21 @@ class RemoteConfig {
   static String get regaClass => _RemoteConfig.regaClass[env]!;
   static String get damagedCarsClass => _RemoteConfig.damagedCarsClass[env]!;
 
+  static String get specialConditionOldId =>
+      _RemoteConfig.specialConditionOldId[env]!;
+  static String get specialConditionId =>
+      _RemoteConfig.specialConditionId[env]!;
+
   List<String> get munciplities => _RemoteConfig.munciplities[env]!;
+  static String get baladyToken => _RemoteConfig.baladyToken[env]!;
+  static String get xBaladyToken => _RemoteConfig.xBaladyToken[env]!;
+  static String get baladyBaseUrl => _RemoteConfig.baladyBaseUrl[env]!;
+
+  static String get publicAppointmentShareURL =>
+      _RemoteConfig.publicAppointmentShareURL[env]!;
+
+  static String get publicLicenseShareURL =>
+      _RemoteConfig.publicLicenseShareURL[env]!;
 
   static EnvType get env => sl<EnvType>();
 }
@@ -31,14 +45,14 @@ class RemoteConfig {
 //! First solution
 class _RemoteConfig {
   static final gis = _initValues<String>(
-    devVal: "htttps:klfdflkd",
-    stgVal: "htttps:klfdflkd",
-    prodVal: "htttps:klfdflkd",
+    devVal: "https://gisappstg.momra.gov.sa",
+    stgVal: "https://gisappstg.momra.gov.sa",
+    prodVal: "",
   );
   static final hmCode = _initValues<String>(
     devVal: "oxqUHJH1KXD84vP0KYBnyaHDUk5sJ9HkzqPDTice5TABqvfACZaLscG1TjjyPgIT",
     stgVal: "oxqUHJH1KXD84vP0KYBnyaHDUk5sJ9HkzqPDTice5TABqvfACZaLscG1TjjyPgIT",
-    prodVal: "1",
+    prodVal: "",
   );
 
   static final apigeeURL = _initValues<String>(
@@ -49,28 +63,28 @@ class _RemoteConfig {
   static final pegaURL = _initValues<String>(
     devVal: "https://crmustg.momra.gov.sa",
     stgVal: "https://crmustg.momra.gov.sa",
-    prodVal: "1",
+    prodVal: "",
   );
 
   static final apigeeUsername = _initValues<String>(
     devVal: "7RmIkhYi6v4M7GUibBrpFdZuo8NsL2CC",
     stgVal: "7RmIkhYi6v4M7GUibBrpFdZuo8NsL2CC",
-    prodVal: "1",
+    prodVal: "",
   );
   static final apigeePassword = _initValues<String>(
     devVal: "ak3JXde3KdBB1xbM",
     stgVal: "ak3JXde3KdBB1xbM",
-    prodVal: "1",
+    prodVal: "",
   );
   static final ssoUrl = _initValues<String>(
     devVal: "https://ssoappdev.momra.gov.sa",
     stgVal: "https://ssoappdev.momra.gov.sa",
-    prodVal: "1",
+    prodVal: "",
   );
   static final ssoLoginUrl = _initValues<String>(
     devVal: "com.momra.balady://callback",
     stgVal: "com.momra.balady://callback",
-    prodVal: "1",
+    prodVal: "",
   );
   static final ssoSecret = _initValues<String>(
     devVal: "secret",
@@ -79,22 +93,22 @@ class _RemoteConfig {
   );
   static final ssoLogOutUrl = _initValues<String>(
     devVal: "com.momra.balady://logout",
-    stgVal: "1",
-    prodVal: "1",
+    stgVal: "com.momra.balady://logout",
+    prodVal: "",
   );
   static final momraDomain = _initValues<String>(
     devVal: ".momra.gov.sa",
-    stgVal: "1",
+    stgVal: ".momra.gov.sa",
     prodVal: "1",
   );
   static final ssoMomraDomain = _initValues<String>(
     devVal: ".ssoappdev.momra.gov.sa",
-    stgVal: "1",
+    stgVal: ".ssoappdev.momra.gov.sa",
     prodVal: "1",
   );
   static final cookieURL = _initValues<String>(
     devVal: "https://baladyapps.momra.gov.sa/",
-    stgVal: "1",
+    stgVal: "https://baladyapps.momra.gov.sa/",
     prodVal: "1",
   );
 
@@ -121,6 +135,54 @@ class _RemoteConfig {
     prodVal: "NSPCL-36",
   );
 
+  static final specialConditionOldId = _initValues<String>(
+    devVal: "21",
+    stgVal: "21",
+    prodVal: "21",
+  );
+
+  static final specialConditionId = _initValues<String>(
+    devVal: "22",
+    stgVal: "22",
+    prodVal: "22",
+  );
+
+  static final webSiteUrl = _initValues<String>(
+    devVal: "https://balady.momra.gov.sa/",
+    stgVal: "https://balady.momra.gov.sa/",
+    prodVal: "",
+  );
+
+  static final baladyBaseUrl = _initValues<String>(
+    devVal: "https://baladyapps.momra.gov.sa",
+    stgVal: "https://baladyapps.momra.gov.sa",
+    prodVal: "",
+  );
+
+  static final baladyToken = _initValues<String>(
+    devVal: "E48C0CF6386948D5A22D8F4AD46B9CBB",
+    stgVal: "E48C0CF6386948D5A22D8F4AD46B9CBB",
+    prodVal: "",
+  );
+
+  static final xBaladyToken = _initValues<String>(
+    devVal: "5EBC1331132E4C55B9726AFFA5D6B6F4",
+    stgVal: "5EBC1331132E4C55B9726AFFA5D6B6F4",
+    prodVal: "",
+  );
+
+  static final publicAppointmentShareURL = _initValues<String>(
+    devVal: "https://bldtrain.momra.gov.sa/commonapi/apt/",
+    stgVal: "https://bldtrain.momra.gov.sa/commonapi/apt/",
+    prodVal: "",
+  );
+
+  static final publicLicenseShareURL = _initValues<String>(
+    devVal: "https://bldtrain.momra.gov.sa/commonapi/clp",
+    stgVal: "https://bldtrain.momra.gov.sa/commonapi/clp",
+    prodVal: "",
+  );
+
   static final munciplities = {
     EnvType.dev: [""],
     EnvType.stg: [""],
@@ -138,20 +200,3 @@ class _RemoteConfig {
         EnvType.prod: prodVal,
       };
 }
-
-//! Second solution
-/*class _RCDev {
-  static const String gis = "";
-  static const List<String> munciplities = [];
-}
-
-class _RCStg {
-  static const String gis = "";
-  static const List<String> munciplities = [];
-}
-
-class _RCProd {
-  static const String gis = "";
-  static const List<String> munciplities = [];
-}
-*/

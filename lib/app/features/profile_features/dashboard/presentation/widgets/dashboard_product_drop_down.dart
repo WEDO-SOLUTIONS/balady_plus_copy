@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
@@ -11,7 +12,6 @@ import '../../dashboard_exports.dart'
         DashboardCardEntity,
         DashboardOnProductSelected,
         DashboardOnProductsPressed,
-        DashboardProductEntity,
         DashboardState;
 
 class DashboardProductDropDown extends StatelessWidget {
@@ -58,14 +58,17 @@ class DashboardProductDropDown extends StatelessWidget {
             }
           },
           child: Container(
-            height: 24,
+            height: 30,
             decoration: BoxDecoration(
               color: AppColor.primary50Light,
               borderRadius: BorderRadius.circular(16),
             ),
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 8.0,
+              ),
               child: Row(
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   status == BlocRequestStatus.submissionGetLoading
                       ? const SizedBox(
@@ -78,13 +81,17 @@ class DashboardProductDropDown extends StatelessWidget {
                             ),
                           ),
                         )
-                      : Text(
-                          selectedProduct?.name ?? "all".tr(),
-                          style: const TextStyle(
-                              color: AppColor.primary900Light,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 11.0),
-                          textAlign: TextAlign.right,
+                      : Flexible(
+                          child: AutoSizeText(
+                            selectedProduct?.name ?? "all".tr(),
+                            style: const TextStyle(
+                                color: AppColor.primary900Light,
+                                fontWeight: FontWeight.w700,
+                                fontSize: 11.0),
+                            textAlign: TextAlign.right,
+                            minFontSize: 9,
+                            maxLines: 2,
+                          ),
                         ),
                   const Icon(
                     Icons.arrow_drop_down,

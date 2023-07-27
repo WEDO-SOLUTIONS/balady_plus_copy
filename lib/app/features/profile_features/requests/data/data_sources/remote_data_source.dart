@@ -4,6 +4,7 @@ import 'package:localize_and_translate/localize_and_translate.dart'
 
 import '../../../../../core/errors/errors_exports.dart'
     show NoDataFoundException, ServerException;
+import '../../../../../core/services/global/crm_web_service.dart';
 import '../../../../../core/services/services_exports.dart' show WebService;
 import '../../../../../core/utils/utils_exports.dart' show ApiUrl, Log;
 import '../../../../_shared_feature_/shared_feature_exports.dart'
@@ -19,6 +20,8 @@ import '../../requests_exports.dart'
         RequestsParamsModel,
         SubMunicipalityModel,
         SubMunicipalityParamsModel;
+import '../models/crm_request_model.dart';
+import '../models/crm_requests_params_model.dart';
 
 abstract class RequestsRemoteDataSource {
   Future<List<RequestsModel>> getRequests(
@@ -33,13 +36,19 @@ abstract class RequestsRemoteDataSource {
   Future<List<RequestSubTypeModel>> getRequestSubTypes(
     RequestSubTypeParamsModel params,
   );
+
+  Future<CRMRequestModel> getCRMRequests(
+    CRMRequestsParamsModel params,
+  );
 }
 
 class RequestsRemoteDataSourceImplementation
     implements RequestsRemoteDataSource {
   final WebService webService;
+  final CRMWebService crmWebService;
 
-  RequestsRemoteDataSourceImplementation({required this.webService});
+  RequestsRemoteDataSourceImplementation(
+      {required this.webService, required this.crmWebService});
 
   @override
   Future<List<RequestsModel>> getRequests(
@@ -239,6 +248,37 @@ class RequestsRemoteDataSourceImplementation
           .map<RequestSubTypeModel>(
               (e) => RequestSubTypeModel.fromMap(e as Map<String, dynamic>))
           .toList();
+    } on DioError catch (error) {
+      "DioError $error".errorLog();
+      if (error is NoDataFoundException) {
+        rethrow;
+      }
+      throw ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+      );
+    } catch (ex) {
+      "Catched $ex".errorLog();
+      if (ex is ServerException) {
+        rethrow;
+      } else {
+        throw ServerException("errors_server_error_2".tr());
+      }
+    }
+  }
+
+  @override
+  Future<CRMRequestModel> getCRMRequests(CRMRequestsParamsModel params) async {
+    try {
+      final response = await crmWebService.dio
+          .get(ApiUrl.crmRequestsList, queryParameters: params.toMap());
+
+      final data = response.data;
+      data.toString().successLog();
+
+      final result = CRMRequestModel.fromJson(response.data);
+
+      return result;
     } on DioError catch (error) {
       "DioError $error".errorLog();
       if (error is NoDataFoundException) {

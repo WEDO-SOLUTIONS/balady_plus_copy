@@ -11,6 +11,7 @@ import '../../../../_shared_feature_/shared_feature_exports.dart'
 class DropDownWithTitle extends StatelessWidget {
   final String title;
   final String? selectedValue;
+  final double? height;
   final VoidCallback onTap;
   final bool showArrow;
   final BlocRequestStatus? status;
@@ -20,6 +21,7 @@ class DropDownWithTitle extends StatelessWidget {
     super.key,
     required this.title,
     this.selectedValue,
+    this.height,
     required this.onTap,
     this.showArrow = true,
     this.status,
@@ -40,10 +42,11 @@ class DropDownWithTitle extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            CustomTextWidget(
-              title,
-              textStyle: AppStyle.dropDownTitleTextStyle,
-            ),
+            if (title.isNotEmpty)
+              CustomTextWidget(
+                title,
+                textStyle: AppStyle.dropDownTitleTextStyle,
+              ),
             const SizedBox(height: 8),
             if (retry)
               RetryWidget(onRetry: onRetry)
@@ -56,7 +59,7 @@ class DropDownWithTitle extends StatelessWidget {
               Container(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                height: 48,
+                height: height ?? 48,
                 decoration: BoxDecoration(
                   border: Border.all(
                     color: AppColor.blackModern300Light,
@@ -66,11 +69,13 @@ class DropDownWithTitle extends StatelessWidget {
                 ),
                 child: Row(
                   children: [
-                    CustomTextWidget(
-                      selectedValue ?? "choose".tr(),
-                      textStyle: AppStyle.dropDownValueTextStyle,
+                    Expanded(
+                      child: CustomTextWidget(
+                        selectedValue ?? "choose".tr(),
+                        textStyle: AppStyle.dropDownValueTextStyle,
+                        maxLines: 2,
+                      ),
                     ),
-                    const Spacer(),
                     if (showArrow)
                       SvgPicture.asset(
                         IconPath.arrowDown,

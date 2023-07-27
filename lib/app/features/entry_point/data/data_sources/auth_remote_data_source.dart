@@ -222,6 +222,7 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
 
       return response!;
     } catch (error) {
+      print(error);
       throw ServerException("", errorCode: error.toString());
     }
   }
@@ -272,6 +273,7 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
             },
           ),
           data: {"grant_type": "client_credentials"});
+      print("APIGEEEE Response");
       ApigeeTokenResponseModel apigeeResponse =
           ApigeeTokenResponseModel.fromMap(response.data);
       return apigeeResponse.toFuture();

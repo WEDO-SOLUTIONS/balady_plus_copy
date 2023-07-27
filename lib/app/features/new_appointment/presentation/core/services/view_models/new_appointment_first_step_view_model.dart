@@ -1,0 +1,417 @@
+import 'dart:async';
+import 'dart:typed_data';
+
+import 'package:balady_plus/app/core/utils/utils_exports.dart';
+import 'package:flutter/material.dart';
+import 'package:collection/collection.dart';
+
+import '../../../../../../core/base/base_view_model.dart';
+import '../../../../../_shared_feature_/data/entities/drop_down_item.dart';
+import '../../models/attachment_item_model.dart';
+import '../../models/department_model.dart';
+import '../../models/lookup_list_model.dart';
+import '../../models/main_class_response.dart';
+import '../../models/municipality_model.dart';
+import '../../models/service_config_reseponse.dart';
+import '../../models/sub_class_response.dart';
+import '../../models/sub_municipalitiy_model.dart';
+import 'new_appointment_view_model.dart';
+
+class NewAppointmentFirstStepViewModel extends BaseViewModel {
+  bool withPreviousTransaction = false;
+  final dataModel = locator<NewAppointmentViewModel>();
+
+  NewAppointmentFirstStepViewModel({required this.withPreviousTransaction}) {
+    locator<NewAppointmentViewModel>().withPreviousTransaction =
+        withPreviousTransaction;
+    locator<NewAppointmentViewModel>().init();
+
+    dataModel.setShowSpecialConditionSection();
+    dataModel.setShowSpecialConditionOld();
+    dataModel.checkIfUserIsOld();
+  }
+
+  final TextEditingController otherServiceNameController =
+      TextEditingController();
+
+  //String get getNotes => dataModel.notes ?? "";
+
+  String get appointmentDetails => dataModel.appointmentDetails ?? "";
+
+  String get getTransactionNo => dataModel.transactionNo ?? "";
+
+  String get getServiceName => dataModel.serviceName ?? "";
+
+  VisitType? get appointmentTypeItem => dataModel.appointmentTypeItem;
+
+  LookUpItem? get specialConditionItem => dataModel.specialConditionItem;
+
+  bool? get isSpecialConditionChecked => dataModel.isSpecialConditionChecked;
+
+  set fromHomePage(bool? fromPage) =>
+      dataModel.fromHomePage = fromPage ?? false;
+
+  bool? get getFromHomePage => dataModel.fromHomePage;
+
+  ServiceConfigResponse? get serviceConfigResponse =>
+      dataModel.serviceConfigResponse;
+
+  set setAppointmentDetails(String data) => dataModel.appointmentDetails = data;
+
+  set setTransactionNo(String data) => dataModel.transactionNo = data;
+
+  set setServiceName(String data) => dataModel.serviceName = data;
+
+  set setAppointmentTypeItem(VisitType? data) =>
+      dataModel.appointmentTypeItem = data;
+
+  set specialConditionItem(LookUpItem? item) =>
+      dataModel.specialConditionItem = item;
+
+  set isSpecialConditionChecked(bool? item) =>
+      dataModel.isSpecialConditionChecked = item;
+
+  bool isFormValid = false;
+
+  LookUpList? get getSpecialConditionList => dataModel.specialConditionTypeList;
+
+  set setSpecialConditionList(LookUpList? data) =>
+      dataModel.specialConditionTypeList = data;
+
+  List<VisitType>? get appointmentTypeList => dataModel.appointmentTypeList;
+
+  List<AttachmentItemModel> get attachmentsList => dataModel.atttachmentItems;
+
+  bool showSpecialConditionSection() {
+    //MM11
+    return dataModel.specialConditionItem != null;
+  }
+
+  Municipality? get getMunicipalitiesResponse =>
+      dataModel.municipalitiesResponse;
+
+  List<DropDownItem> get municipalitiesList => dataModel.municipalitiesList;
+
+  DropDownItem? get municipalityType => dataModel.municipalityType;
+
+  set municipalityType(DropDownItem? data) {
+    MunicipalityItem? e = getMunicipalitiesResponse?.data?.result
+        ?.firstWhereOrNull((element) => element.id == data?.id);
+    if (e != null) {
+      dataModel.municipalityType = data;
+      dataModel.selectedMunicipalityItem = e;
+    }
+    notifyListeners();
+  }
+
+  LookUpList? get getCategoryTypeResponse => dataModel.categoryTypeResponse;
+
+  List<DropDownItem> get categoriesList => dataModel.categoryList;
+
+  DropDownItem? get catetgoryType => dataModel.catetgoryType;
+
+  set catetgoryType(DropDownItem? data) {
+    LookUpItem? e = getCategoryTypeResponse?.data?.result?.firstWhereOrNull(
+        (element) => element.id == int.tryParse(data?.id ?? ""));
+    if (e != null) {
+      dataModel.catetgoryType = data;
+      dataModel.selectedCategoryType = e;
+    }
+    notifyListeners();
+  }
+
+  SubMunicipality? get getSubMunicipalitiesResponse =>
+      dataModel.subMunicipalitiesResponse;
+
+  List<DropDownItem> get subMunicipalitiesList =>
+      dataModel.subMunicipalitiesList;
+
+  Future<bool> getSubMunicipalities(DropDownItem item) async {
+    subMunicipalityType = null;
+    departmentType = null;
+    bool isSuccess = false;
+    isSuccess = await dataModel.getSubMunicipalities(item.id!);
+    if (isSuccess) {
+      resetForm(resetMainClass: true);
+      municipalityType = item;
+    }
+
+    print("notify listners");
+    notifyListeners();
+    validateForm();
+    return true;
+  }
+
+  DropDownItem? get subMunicipalityType => dataModel.subMunicipalityType;
+
+  set subMunicipalityType(DropDownItem? data) {
+    SubMunicipalityItem? e = getSubMunicipalitiesResponse?.data?.result
+        ?.firstWhereOrNull((element) => element.id == data?.id);
+    if (e != null) {
+      dataModel.subMunicipalityType = data;
+      dataModel.selectedSubMunicipalityItem = e;
+    } else {
+      dataModel.subMunicipalityType = null;
+      dataModel.selectedSubMunicipalityItem = null;
+    }
+    notifyListeners();
+  }
+
+  DepartmentList? get getDepartmentsResponse => dataModel.departmentsResponse;
+
+  List<DropDownItem> get departmentsList => dataModel.departmentsList;
+
+  Future<bool> getDepartments(DropDownItem item) async {
+    bool isSuccess = false;
+    isSuccess = await dataModel.getDepartments(item.id!);
+    if (isSuccess) subMunicipalityType = item;
+    notifyListeners();
+    return true;
+  }
+
+  DropDownItem? get departmentType => dataModel.departmentType;
+
+  set departmentType(DropDownItem? data) {
+    DepartmentItem? e = getDepartmentsResponse?.data?.result
+        ?.firstWhereOrNull((element) => element.id.toString() == data?.id);
+    if (e != null) {
+      dataModel.departmentType = data;
+      dataModel.selectedDepartmentItem = e;
+    }
+    notifyListeners();
+  }
+
+  Future<bool> getDepartment1(DropDownItem item) async {
+    departmentType = item;
+    notifyListeners();
+    return true;
+  }
+
+  MainClassResponse? get getMainClassResponse => dataModel.mainClassResponse;
+
+  MainClassItem? get selectedMainClassItem => dataModel.selectedMainClassItem;
+
+  List<DropDownItem> get mainClassList => dataModel.mainClassList;
+
+  DropDownItem? get mainClassType => dataModel.mainClassType;
+
+  set mainClassType(DropDownItem? data) {
+    MainClassItem? e = getMainClassResponse?.data?.result
+        ?.firstWhereOrNull((element) => element.id.toString() == data?.id);
+    if (e != null) {
+      dataModel.mainClassType = data;
+      dataModel.selectedMainClassItem = e;
+    }
+    notifyListeners();
+  }
+
+  Future<bool> getMainClassifications(DropDownItem item) async {
+    bool isSuccess = false;
+    isSuccess = await dataModel.getMainClassifications(item.id!);
+    if (isSuccess) {
+      resetForm(resetSubClass: true);
+      subMunicipalityType = item;
+    }
+    notifyListeners();
+    validateForm();
+    return true;
+  }
+
+  SubClassResponse? get getSubClassResponse => dataModel.subClassResponse;
+
+  List<DropDownItem> get subClassList => dataModel.subClassList;
+
+  DropDownItem? get subClassType => dataModel.subClassType;
+
+  SubClassItem? get selectedSubClassItem => dataModel.selectedSubClassItem;
+
+  set subClassType(DropDownItem? data) {
+    SubClassItem? e = getSubClassResponse?.data?.result
+        ?.firstWhereOrNull((element) => element.id.toString() == data?.id);
+    if (e != null) {
+      dataModel.subClassType = data;
+      dataModel.selectedSubClassItem = e;
+    }
+    notifyListeners();
+  }
+
+  Future<bool> getSubClassifications(DropDownItem item) async {
+    bool isSuccess = false;
+    isSuccess = await dataModel.getSublassifications(
+        subMunicipalityType!.id!, item.id!);
+
+    if (isSuccess) {
+      resetForm();
+
+      mainClassType = item;
+    }
+    notifyListeners();
+    validateForm();
+    return isSuccess;
+  }
+
+  Future<bool> getServiceConfig(DropDownItem item) async {
+    bool isSuccess = false;
+    isSuccess =
+        await dataModel.getServiceConfig(subMunicipalityType!.id!, item.id!);
+    if (isSuccess) {
+      subClassType = item;
+      resetIfSelectSubClass();
+    }
+
+    notifyListeners();
+    validateForm();
+    return isSuccess;
+  }
+
+  Future<bool> getAvailableDates() async {
+    bool isSuccess = false;
+    int? serviceId = serviceConfigResponse?.getServiceId();
+    if (serviceId != null) {
+      isSuccess = await dataModel.getAvailableDates(serviceId);
+    }
+    notifyListeners();
+    return isSuccess;
+  }
+
+  validateForm() {
+    try {
+      bool isValid = false;
+      if (municipalityType != null &&
+          subMunicipalityType != null &&
+          appointmentTypeItem != null &&
+          appointmentDetails.isNotEmpty &&
+          selectedMainClassItem != null &&
+          selectedSubClassItem != null &&
+          catetgoryType != null &&
+          serviceConfigResponse != null &&
+          serviceConfigResponse?.getServiceId() != null) {
+        if (withPreviousTransaction) {
+          if (getTransactionNo.isNotEmpty) {
+            isValid = true;
+          } else {
+            isValid = false;
+          }
+        } else {
+          isValid = true;
+        }
+      } else {
+        isValid = false;
+      }
+
+      if (selectedSubClassItem?.isOther == true && getServiceName.isEmpty) {
+        isValid = false;
+      }
+
+      if (!CommonFunctions.hasArabicCharacters(appointmentDetails)) {
+        isValid = false;
+      }
+
+      /*if (isOtherService && 
+          departmentType != null &&
+          departmentType?.name == "أخرى" &&
+          getServiceName.isEmpty) {
+        isValid = false;
+      }*/
+      print("validateForm");
+      print(isValid);
+      if (isFormValid != isValid) {
+        isFormValid = isValid;
+        notifyListeners();
+      }
+    } catch (ex) {
+      print(ex);
+    }
+    notifyListeners();
+  }
+
+  void init() {
+    dataModel.init();
+    //  isFormValid = StreamController<bool>();
+    isFormValid = false;
+  }
+
+  void resetVariables() {
+    dataModel.init();
+    // isFormValid = StreamController<bool>();
+    isFormValid = false;
+    municipalityType = null;
+    subMunicipalityType = null;
+    departmentType = null;
+  }
+
+  void resetForm({
+    bool resetMainClass = false,
+    bool resetSubClass = false,
+  }) {
+    /* if (resetSubMunicipality) {
+      dataModel.selectedSubMunicipalityItem = null;
+      dataModel.subMunicipalitiesResponse = null;
+      dataModel.subMunicipalitiesList = [];
+      dataModel.subMunicipalityType = null;
+    }*/
+    if (resetMainClass) {
+      dataModel.mainClassResponse = null;
+      dataModel.mainClassList = [];
+    }
+    if (resetMainClass || resetSubClass) {
+      dataModel.subClassResponse = null;
+      dataModel.subClassList = [];
+      dataModel.mainClassType = null;
+      dataModel.selectedMainClassItem = null;
+    }
+
+    dataModel.subClassType = null;
+    dataModel.selectedSubClassItem = null;
+    dataModel.serviceConfigResponse = null;
+
+    dataModel.availableDatesResponse = null;
+    //dataModel.availableTimesResponse = null;
+
+    dataModel.selectedDate = null;
+    dataModel.selectedTime = null;
+
+    setAppointmentTypeItem = null;
+    dataModel.appointmentTypeList = null;
+
+    print("REEEEEEEESET");
+  }
+
+  void resetIfSelectSubClass() {
+    setServiceName = "";
+    otherServiceNameController.text = "";
+    dataModel.availableDatesResponse = null;
+    //dataModel.availableTimesResponse = null;
+
+    dataModel.selectedDate = null;
+    dataModel.selectedTime = null;
+  }
+
+  void deleteAttachment(int index) {
+    dataModel.atttachmentItems.removeAt(index);
+    /*attachmentFileName = null;
+    attachmentPath = null;
+    attachmentBase64 = null;
+    attachmentUuid = null;*/
+  }
+
+  void saveAttachment(
+      String filePath, String fileName, Uint8List base64) async {
+    /* attachmentFileName = null;
+    attachmentPath = null;
+    attachmentBase64 = null;
+    attachmentUuid = null;
+*/
+    bool isSuccess = false;
+
+    isSuccess = await dataModel.uploadFile(base64, fileName, filePath);
+
+    /* if (isSuccess) {
+      attachmentFileName = fileName;
+      attachmentPath = filePath;
+      attachmentBase64 = base64;
+    }*/
+    notifyListeners();
+    // return isSuccess;
+  }
+}

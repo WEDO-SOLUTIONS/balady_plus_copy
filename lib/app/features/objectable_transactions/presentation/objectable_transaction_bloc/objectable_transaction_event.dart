@@ -64,8 +64,9 @@ class RequestsLoadMoreEvent extends ObjectableTransactionEvent {}
 
 class RequestDateSelectedEvent extends ObjectableTransactionEvent {
   final DateTime date;
+  final DateForm formDate;
 
-  const RequestDateSelectedEvent({required this.date});
+  const RequestDateSelectedEvent({required this.date, required this.formDate});
 
   @override
   List<Object> get props => [date];
@@ -87,14 +88,15 @@ class ResetRequestsFiltersEvent extends ObjectableTransactionEvent {
   final RequestTypeEntity? selectedRequestType;
   final RequestSubTypeEntity? selectedRequestSubType;
   final DateTime? selectedRequestDate;
+  final DateForm? dateForm;
 
-  const ResetRequestsFiltersEvent({
-    required this.selectedSortType,
-    this.selectedRequestStatus,
-    this.selectedRequestType,
-    this.selectedRequestSubType,
-    this.selectedRequestDate,
-  });
+  const ResetRequestsFiltersEvent(
+      {required this.selectedSortType,
+      this.selectedRequestStatus,
+      this.selectedRequestType,
+      this.selectedRequestSubType,
+      this.selectedRequestDate,
+      this.dateForm});
 
   @override
   List<Object?> get props => [
@@ -103,5 +105,6 @@ class ResetRequestsFiltersEvent extends ObjectableTransactionEvent {
         selectedRequestType,
         selectedRequestSubType,
         selectedRequestDate,
+        dateForm
       ];
 }

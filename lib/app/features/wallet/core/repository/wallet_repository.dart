@@ -1,0 +1,77 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
+import 'package:tuple/tuple.dart';
+
+import '../../../../core/base/base_view_model.dart';
+import '../../../../core/remote_services/api_constants.dart';
+import '../../../../core/remote_services/web_service.dart';
+import '../../../../core/services/local/helpers.dart';
+import '../models/wallet_response.dart';
+
+class WalletRepository {
+  final webServices = locator<WebService>();
+
+  Future<Tuple3<bool?, String?, WalletResponse?>> getWalletItems() async {
+    Map<String, dynamic> queryParms = {};
+
+    //  queryParms = {"": ""};
+
+    String url = ApiConstants.wallet;
+
+    final body =
+        await webServices.getNewApigeeRequest(url, queryParams: queryParms);
+    bool state = body['state'];
+    dynamic data = body['data'];
+    //print(data);
+    String error =
+        body['error'] ?? Helpers.translatingWord("errors_server_error_1");
+    WalletResponse? result;
+    try {
+      WalletResponse response = WalletResponse.fromJson(json.decode(data));
+      result = response;
+      if (state != true) {
+        error = result.data?.responseMessage ?? error;
+      }
+    } catch (ex) {
+      print(ex);
+      try {
+        Helpers.sendLog(url: url, data: data, errorMsg: ex.toString());
+      } catch (ex) {}
+    }
+    return Tuple3<bool?, String?, WalletResponse?>(state, error, result);
+  }
+
+  Future<Tuple4<bool?, String?, Uint8List?, String?>> downLoadLicense(
+      String uuid) async {
+    String query = "$uuid";
+
+    final body = await webServices.getNewApigeeRequestWithoutUTF(
+        ApiConstants.printWalletLicense,
+        relativePath: query);
+    print(query);
+    bool state = body['state'];
+    dynamic data = body['data'];
+    Uint8List? result;
+    String error =
+        body['error'] ?? Helpers.translatingWord("errors_server_error_1");
+    String? contentType = body['Content-Type'];
+    print("COOOOO");
+    print(contentType);
+    print(state);
+    print(body);
+    //  print(data);
+    try {
+      if (state) result = data;
+
+      // print(result);
+      if (!state) {
+        //   error = result.data?.responseMessage ?? error;
+      }
+    } catch (ex) {
+      print(ex);
+    }
+    return Tuple4<bool?, String?, Uint8List?, String?>(
+        state, error, result, contentType);
+  }
+}

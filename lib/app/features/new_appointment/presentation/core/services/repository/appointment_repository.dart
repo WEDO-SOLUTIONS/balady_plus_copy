@@ -1,0 +1,555 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
+import 'package:localize_and_translate/localize_and_translate.dart';
+import 'package:tuple/tuple.dart';
+
+import '../../../../../../core/base/base_view_model.dart';
+import '../../../../../../core/remote_services/api_constants.dart';
+import '../../../../../../core/remote_services/web_service.dart';
+import '../../../../../../core/utils/common_functions.dart';
+import '../../models/appointment_details_model.dart';
+import '../../models/available_dates_response.dart';
+import '../../models/available_times_response.dart';
+import '../../models/cancel_appointment_response.dart';
+import '../../models/confirm_appointment_response.dart';
+import '../../models/department_model.dart';
+import '../../models/lookup_list_model.dart';
+import '../../models/main_class_response.dart';
+import '../../models/municipality_model.dart';
+import '../../models/my_appointments_response.dart';
+import '../../models/save_appointment_reseponse.dart';
+import '../../models/service_config_reseponse.dart';
+import '../../models/sub_class_response.dart';
+import '../../models/sub_municipalitiy_model.dart';
+import '../../models/upload_file_resepnse.dart';
+
+class AppointmentRepository {
+  final webServices = locator<WebService>();
+
+  Future<Tuple3<bool?, String?, LookUpList?>> getLookupList(String type) async {
+    String query = type;
+    final body = await webServices.getApigeeRequest(
+        ApiConstants.AppointmentLookUpList,
+        relativePath: query);
+    bool state = body['state'];
+    dynamic data = body['data'];
+    LookUpList? result;
+    String error = body['error'] ?? ("errors_server_error_1").tr();
+    try {
+      LookUpList response = LookUpList.fromJson(json.decode(data));
+      result = response;
+      if (!state) {
+        error = result.data?.responseMessage ?? error;
+      }
+    } catch (ex) {
+      print(ex);
+      try {
+        /*Helpers.sendLog(
+            url: ApiConstants.AppointmentLookUpList,
+            qeuryParms: query,
+            data: data,
+            errorMsg: ex.toString());*/
+      } catch (ex) {}
+    }
+    return Tuple3<bool?, String?, LookUpList?>(state, error, result);
+  }
+
+  Future<Tuple3<bool?, String?, Municipality?>> getMunicipalities() async {
+    final body = await webServices
+        .getApigeeRequest(ApiConstants.AppointmentMunicipalities);
+    bool state = body['state'];
+    dynamic data = body['data'];
+    Municipality? result;
+    String error = body['error'] ?? ("errors_server_error_1").tr();
+    try {
+      Municipality response = Municipality.fromJson(json.decode(data));
+      result = response;
+      if (!state) {
+        error = result.data?.responseMessage ?? error;
+      }
+    } catch (ex) {
+      print(ex);
+      //MM
+      /*try {
+        Helpers.sendLog(
+            url: ApiConstants.AppointmentMunicipalities,
+            data: data,
+            errorMsg: ex.toString());
+      } catch (ex) {}*/
+    }
+    return Tuple3<bool?, String?, Municipality?>(state, error, result);
+  }
+
+  Future<Tuple3<bool?, String?, SubMunicipality?>> getSubMunicipalities(
+      String municipalityId) async {
+    String query = municipalityId;
+    final body = await webServices.getApigeeRequest(
+        ApiConstants.AppointmentSubMunicipalities,
+        relativePath: query);
+    bool state = body['state'];
+    dynamic data = body['data'];
+    SubMunicipality? result;
+    String error = body['error'] ?? ("errors_server_error_1").tr();
+    try {
+      SubMunicipality response = SubMunicipality.fromJson(json.decode(data));
+      result = response;
+      if (!state || result.data?.responseCode == "2") {
+        error = result.data?.responseMessage ?? error;
+      }
+    } catch (ex) {
+      print(ex);
+      try {
+        /*   Helpers.sendLog(
+            url: ApiConstants.AppointmentSubMunicipalities,
+            qeuryParms: query,
+            data: data,
+            errorMsg: ex.toString());*/
+      } catch (ex) {}
+    }
+    return Tuple3<bool?, String?, SubMunicipality?>(state, error, result);
+  }
+
+  Future<Tuple3<bool?, String?, DepartmentList?>> getDepartments(
+      String subMunicipalityId) async {
+    String query = subMunicipalityId;
+    final body = await webServices.getApigeeRequest(
+        ApiConstants.AppointmentDepartments,
+        relativePath: query);
+    bool state = body['state'];
+    dynamic data = body['data'];
+    DepartmentList? result;
+    String error = body['error'] ?? ("errors_server_error_1").tr();
+    try {
+      DepartmentList response = DepartmentList.fromJson(json.decode(data));
+      result = response;
+      if (!state || result.data?.responseCode == "2") {
+        error = result.data?.responseMessage ?? error;
+      }
+    } catch (ex) {
+      print(ex);
+      /* try {
+        Helpers.sendLog(
+            url: ApiConstants.AppointmentDepartments,
+            qeuryParms: query,
+            data: data,
+            errorMsg: ex.toString());
+      } catch (ex) {}*/
+    }
+    return Tuple3<bool?, String?, DepartmentList?>(state, error, result);
+  }
+
+  Future<Tuple3<bool?, String?, MainClassResponse?>> getMainClassifications(
+      String subMunicipalityId) async {
+    String query = subMunicipalityId;
+    final body = await webServices.getApigeeRequest(
+        ApiConstants.AppointmentMainClasssifications,
+        relativePath: query);
+    bool state = body['state'];
+    dynamic data = body['data'];
+    MainClassResponse? result;
+    String error = body['error'] ?? ("errors_server_error_1").tr();
+    try {
+      MainClassResponse response =
+          MainClassResponse.fromJson(json.decode(data));
+      result = response;
+      if (!state || result.data?.responseCode == "2") {
+        error = result.data?.responseMessage ?? error;
+      }
+    } catch (ex) {
+      print(ex);
+      try {
+        /* Helpers.sendLog(
+            url: ApiConstants.AppointmentMainClasssifications,
+            qeuryParms: query,
+            data: data,
+            errorMsg: ex.toString());*/
+      } catch (ex) {}
+    }
+    return Tuple3<bool?, String?, MainClassResponse?>(state, error, result);
+  }
+
+  Future<Tuple3<bool?, String?, SubClassResponse?>> getSubClassifications(
+      String subMunicipalityId, String mainClassId) async {
+    String query = subMunicipalityId + "/" + mainClassId;
+    final body = await webServices.getApigeeRequest(
+        ApiConstants.AppointmentSubClasssifications,
+        relativePath: query);
+    bool state = body['state'];
+    dynamic data = body['data'];
+    SubClassResponse? result;
+    String error = body['error'] ?? ("errors_server_error_1").tr();
+    try {
+      SubClassResponse response = SubClassResponse.fromJson(json.decode(data));
+      result = response;
+      if (!state || result.data?.responseCode == "2") {
+        error = result.data?.responseMessage ?? error;
+      }
+    } catch (ex) {
+      print(ex);
+      try {
+        /*Helpers.sendLog(
+            url: ApiConstants.AppointmentSubClasssifications,
+            qeuryParms: query,
+            data: data,
+            errorMsg: ex.toString());*/
+      } catch (ex) {}
+    }
+    return Tuple3<bool?, String?, SubClassResponse?>(state, error, result);
+  }
+
+  Future<Tuple3<bool?, String?, ServiceConfigResponse?>> getServiceConfig(
+      String subMunicipalityId, String subClassId) async {
+    String query = subMunicipalityId + "/" + subClassId;
+    final body = await webServices.getApigeeRequest(
+        ApiConstants.AppointmentServiceConfig,
+        relativePath: query);
+    bool state = body['state'];
+    dynamic data = body['data'];
+    ServiceConfigResponse? result;
+    String error = body['error'] ?? ("errors_server_error_1").tr();
+    try {
+      ServiceConfigResponse response =
+          ServiceConfigResponse.fromJson(json.decode(data));
+      result = response;
+      if (!state || result.data?.responseCode == "2") {
+        error = result.data?.responseMessage ?? error;
+      }
+    } catch (ex) {
+      print(ex);
+      try {
+        /*   Helpers.sendLog(
+            url: ApiConstants.AppointmentServiceConfig,
+            qeuryParms: query,
+            data: data,
+            errorMsg: ex.toString());*/
+      } catch (ex) {}
+    }
+    return Tuple3<bool?, String?, ServiceConfigResponse?>(state, error, result);
+  }
+
+  Future<Tuple3<bool?, String?, AvailableDatesResponse?>> getAppointmentDates(
+      int serviceId) async {
+    String query = "${(serviceId)}";
+    final body = await webServices.getApigeeRequest(
+        ApiConstants.AppointmentAvailableDates,
+        relativePath: query);
+    bool state = body['state'];
+    dynamic data = body['data'];
+    AvailableDatesResponse? result;
+    String error = body['error'] ?? ("errors_server_error_1").tr();
+    try {
+      AvailableDatesResponse response =
+          AvailableDatesResponse.fromJson(json.decode(data));
+      result = response;
+      if (!state) {
+        error = result.data?.responseMessage ?? error;
+      }
+    } catch (ex) {
+      print(ex);
+      try {
+        /*Helpers.sendLog(
+            url: ApiConstants.AppointmentAvailableDates,
+            qeuryParms: query,
+            data: data,
+            errorMsg: ex.toString());*/
+      } catch (ex) {}
+    }
+    return Tuple3<bool?, String?, AvailableDatesResponse?>(
+        state, error, result);
+  }
+
+  Future<Tuple3<bool?, String?, AvailableTimesResponse?>> getAppointmentTimes(
+      int serviceId, String date) async {
+    String query = "${(serviceId)}/${(date)}";
+    final body = await webServices.getApigeeRequest(
+        ApiConstants.AppointmentAvailableTimes,
+        relativePath: query);
+    bool state = body['state'];
+    dynamic data = body['data'];
+    AvailableTimesResponse? result;
+    String error = body['error'] ?? ("errors_server_error_1").tr();
+    try {
+      AvailableTimesResponse response =
+          AvailableTimesResponse.fromJson(json.decode(data));
+      result = response;
+      if (!state) {
+        error = result.data?.responseMessage ?? error;
+      }
+    } catch (ex) {
+      print(ex);
+      try {
+        /*   Helpers.sendLog(
+            url: ApiConstants.AppointmentAvailableTimes,
+            qeuryParms: query,
+            data: data,
+            errorMsg: ex.toString());*/
+      } catch (ex) {}
+    }
+    return Tuple3<bool?, String?, AvailableTimesResponse?>(
+        state, error, result);
+  }
+
+  Future<Tuple3<bool?, String?, MyAppointmentsResponse?>> getMyAppointments(
+      {int pageSize = 20,
+      int pageIndex = 0,
+      bool upcomingAppointments = true,
+      bool autoLogout = true}) async {
+    String searchText = upcomingAppointments
+        ? "&search=aptStatus.id==1,aptStatus.id==2,aptStatus.id==5"
+        : "" /*"&search=aptStatus.id==3,aptStatus.id==4"*/;
+    String query =
+        "${(CommonProperties.userInfo?.idNo ?? "")}/${(CommonProperties.userInfo?.getIdType() ?? "")}?size=$pageSize&page=$pageIndex$searchText";
+    // print(query);
+    final body = await webServices.getApigeeRequest(ApiConstants.MyAppointments,
+        relativePath: query, autoLogout: autoLogout);
+    bool state = body['state'];
+    dynamic data = body['data'];
+    MyAppointmentsResponse? result;
+    String error = body['error'] ?? ("errors_server_error_1").tr();
+
+    try {
+      MyAppointmentsResponse response =
+          MyAppointmentsResponse.fromJson(json.decode(data));
+      result = response;
+      if (!state) {
+        error = result.data?.responseMessage ?? error;
+      }
+    } catch (ex) {
+      print(ex);
+      try {
+        /*Helpers.sendLog(
+            url: ApiConstants.MyAppointments,
+            qeuryParms: query,
+            data: data,
+            errorMsg: ex.toString());*/
+      } catch (ex) {}
+    }
+    return Tuple3<bool?, String?, MyAppointmentsResponse?>(
+        state, error, result);
+  }
+
+  Future<Tuple3<bool?, String?, AppointmentDetails?>> getAppointmentDetails(
+      int appointmentId) async {
+    String query = appointmentId.toString();
+    final body = await webServices
+        .getApigeeRequest(ApiConstants.AppointmentDetails, relativePath: query);
+    bool state = body['state'];
+    dynamic data = body['data'];
+    print(data);
+    AppointmentDetails? result;
+    String error = body['error'] ?? ("errors_server_error_1").tr();
+    try {
+      AppointmentDetails response =
+          AppointmentDetails.fromJson(json.decode(data));
+      result = response;
+      if (!state) {
+        error = result.data?.responseMessage ?? error;
+      }
+    } catch (ex) {
+      print(ex);
+      try {
+        /*Helpers.sendLog(
+            url: ApiConstants.AppointmentDetails,
+            qeuryParms: query,
+            data: data,
+            errorMsg: ex.toString());*/
+      } catch (ex) {}
+    }
+    return Tuple3<bool?, String?, AppointmentDetails?>(state, error, result);
+  }
+
+  Future<Tuple4<bool?, String?, Uint8List?, String?>> printAppointment(
+      int id) async {
+    String query = "$id";
+
+    final body = await webServices.getApigeeRequestWithoutUTF(
+        ApiConstants.PrintAppointmentDetails,
+        relativePath: query);
+    bool state = body['state'];
+    dynamic data = body['data'];
+    Uint8List? result;
+    String error = body['error'] ?? ("errors_server_error_1").tr();
+    String? contentType = body['Content-Type'];
+    print(contentType);
+    print(state);
+    try {
+      result = data;
+      print(result);
+    } catch (ex) {
+      print(ex);
+      try {
+        /* Helpers.sendLog(
+            url: ApiConstants.PrintAppointmentDetails,
+            qeuryParms: query,
+            data: data,
+            errorMsg: ex.toString());*/
+      } catch (ex) {}
+    }
+    return Tuple4<bool?, String?, Uint8List?, String?>(
+        state, error, result, contentType);
+  }
+
+  Future<Tuple3<bool?, String?, CancelAppointmentResponse?>> cancelAppointment(
+      int requestId) async {
+    String query = "$requestId";
+
+    final body = await webServices
+        .postApigeeRequest(ApiConstants.CancelAppointment, relativePath: query);
+    bool state = body['state'];
+    dynamic data = body['data'];
+    CancelAppointmentResponse? result;
+    String error = body['error'] ?? ("errors_server_error_1").tr();
+
+    try {
+      CancelAppointmentResponse response =
+          CancelAppointmentResponse.fromJson(json.decode(data));
+      result = response;
+      if (!state) {
+        error = result.data?.responseMessage ?? error;
+      }
+    } catch (ex) {
+      print(ex);
+      try {
+        /* Helpers.sendLog(
+            url: ApiConstants.CancelAppointment,
+            qeuryParms: query,
+            data: data,
+            errorMsg: ex.toString());*/
+      } catch (ex) {}
+    }
+    return Tuple3<bool?, String?, CancelAppointmentResponse?>(
+        state, error, result);
+  }
+
+  Future<Tuple3<bool?, String?, ConfirmAppointmentResponse?>>
+      confirmAppointment(String requestId) async {
+    String query = "$requestId";
+
+    final body = await webServices.postApigeeRequest(
+        ApiConstants.ConfirmAppointment,
+        relativePath: query);
+    bool state = body['state'];
+    dynamic data = body['data'];
+    print(data);
+    ConfirmAppointmentResponse? result;
+    String error = body['error'] ?? ("errors_server_error_1").tr();
+
+    try {
+      ConfirmAppointmentResponse response =
+          ConfirmAppointmentResponse.fromJson(json.decode(data));
+      result = response;
+      if (!state) {
+        error = result.data?.responseMessage ?? error;
+      }
+    } catch (ex) {
+      print(ex);
+      try {
+        /* Helpers.sendLog(
+            url: ApiConstants.ConfirmAppointment,
+            qeuryParms: query,
+            data: data,
+            errorMsg: ex.toString());*/
+      } catch (ex) {}
+    }
+    return Tuple3<bool?, String?, ConfirmAppointmentResponse?>(
+        state, error, result);
+  }
+
+  Future<Tuple3<bool?, String?, SaveAppointmentResponse?>> saveAppointment(
+      var reqBody) async {
+    final body = await webServices
+        .postApigeeRequest(ApiConstants.AppointmentSave, body: reqBody);
+    bool state = body['state'];
+    dynamic data = body['data'];
+    SaveAppointmentResponse? result;
+    String error = body['error'] ?? ("errors_server_error_1").tr();
+
+    try {
+      SaveAppointmentResponse response =
+          SaveAppointmentResponse.fromJson(json.decode(data));
+      result = response;
+      if (!state) {
+        error = result.data?.responseMessage ?? error;
+      }
+    } catch (ex) {
+      print(ex);
+      try {
+        /*Helpers.sendLog(
+            url: ApiConstants.AppointmentSave,
+            body: reqBody,
+            data: data,
+            errorMsg: ex.toString());*/
+      } catch (ex) {}
+    }
+    return Tuple3<bool?, String?, SaveAppointmentResponse?>(
+        state, error, result);
+  }
+
+  Future<Tuple3<bool?, String?, UploadFileResponse?>> uploadFile(
+      Uint8List? base64,
+      String? fileName,
+      String? filePath,
+      String? mimeType) async {
+    final body = await webServices.uploadApigeeFile(
+        ApiConstants.AppointmentUploadFile,
+        base64: base64,
+        fileName: fileName,
+        mimeType: mimeType);
+    bool state = body['state'];
+    dynamic data = body['data'];
+    UploadFileResponse? result;
+    String error = body['error'] ?? ("errors_server_error_1").tr();
+
+    try {
+      UploadFileResponse response =
+          UploadFileResponse.fromJson(json.decode(data));
+      result = response;
+      if (!state) {
+        error = result.data?.responseMessage ?? error;
+      }
+    } catch (ex) {
+      print(ex);
+      try {
+        /* Helpers.sendLog(
+            url: ApiConstants.AppointmentUploadFile,
+            qeuryParms: filePath,
+            data: data,
+            errorMsg: ex.toString());*/
+      } catch (ex) {}
+    }
+    return Tuple3<bool?, String?, UploadFileResponse?>(state, error, result);
+  }
+
+  /*Future<Tuple3<bool?, String?, RatingInfoResponse?>> getRatingInfo(
+      String serviceId) async {
+    String query = "$serviceId";
+
+    final body = await webServices.getApigeeRequest(ApiConstants.RatingInfo,
+        relativePath: query, autoLogout: false);
+    bool state = body['state'];
+    dynamic data = body['data'];
+    RatingInfoResponse? result;
+    String error =
+        body['error'] ?? ("errors_server_error_1").tr();
+
+    try {
+      RatingInfoResponse response =
+          RatingInfoResponse.fromJson(json.decode(data));
+      result = response;
+      if (!state) {
+        error = result.data?.responseMessage ?? error;
+      }
+    } catch (ex) {
+      print(ex);
+      try {
+        Helpers.sendLog(
+            url: ApiConstants.RatingInfo,
+            qeuryParms: query,
+            data: data,
+            errorMsg: ex.toString());
+      } catch (ex) {}
+    }
+    return Tuple3<bool?, String?, RatingInfoResponse?>(state, error, result);
+  }*/
+}

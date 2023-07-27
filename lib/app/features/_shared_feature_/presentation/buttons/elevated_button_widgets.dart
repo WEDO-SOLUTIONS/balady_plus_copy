@@ -121,9 +121,10 @@ class ElevatedButtonWidget extends _ElevatedButton {
           onPressed: onPressed,
         ));
 
-  ElevatedButtonWidget.choose({required VoidCallback onPressed})
+  ElevatedButtonWidget.choose({required VoidCallback? onPressed})
       : super(CustomElevatedButtonWidget(
           btnColor: AppColor.primary800Light,
+          btnBorderColor: Colors.transparent,
           textStyle: AppStyle.elevatedButtonStyle.copyWith(
             color: AppColor.white,
             fontWeight: FontWeight.w700,
@@ -144,6 +145,47 @@ class ElevatedButtonWidget extends _ElevatedButton {
           ),
           btnHeight: 48,
           text: "sign_in".tr(),
+          onPressed: onPressed,
+        ));
+
+  ElevatedButtonWidget.add({required VoidCallback onPressed})
+      : super(CustomElevatedButtonWidget(
+          btnColor: AppColor.primary900Light,
+          textStyle: AppStyle.elevatedButtonStyle.copyWith(
+            color: AppColor.white,
+            fontWeight: FontWeight.w700,
+            fontSize: 16,
+          ),
+          btnHeight: 56,
+          text: "add".tr(),
+          onPressed: onPressed,
+        ));
+
+  ElevatedButtonWidget.licenseDetails({required VoidCallback onPressed})
+      : super(CustomElevatedButtonWidget(
+          btnColor: Colors.transparent,
+    btnBorderColor: AppColor.white,
+    textStyle: AppStyle.elevatedButtonStyle.copyWith(
+            color: AppColor.white,
+            fontWeight: FontWeight.w700,
+            fontSize: 16,
+          ),
+          btnHeight: 56,
+          text: "viewLicenseDetails".tr(),
+          onPressed: onPressed,
+        ));
+
+  ElevatedButtonWidget.verify({required VoidCallback onPressed})
+      : super(CustomElevatedButtonWidget(
+          btnColor: Colors.transparent,
+          btnBorderColor: AppColor.primary900Light,
+          textStyle: AppStyle.elevatedButtonStyle.copyWith(
+            color: AppColor.primary900Light,
+            fontWeight: FontWeight.w700,
+            fontSize: 16,
+          ),
+          btnHeight: 48,
+          text: "verify".tr(),
           onPressed: onPressed,
         ));
 
@@ -174,6 +216,37 @@ class ElevatedButtonWidget extends _ElevatedButton {
           onPressed: onPressed,
         ));
 
+  ElevatedButtonWidget.chooseLocation({required VoidCallback? onPressed})
+      : super(CustomElevatedButtonWidget(
+          btnColor: AppColor.primary800Light,
+          btnBorderColor: Colors.transparent,
+          textStyle: AppStyle.elevatedButtonStyle.copyWith(
+            color: AppColor.white,
+            fontWeight: FontWeight.w700,
+            fontSize: 16,
+          ),
+          btnHeight: 56,
+          text: "municipalAdvisorLocationButton".tr(),
+          onPressed: onPressed,
+        ));
+
+  ElevatedButtonWidget.confirmLocation({
+    required VoidCallback? onPressed,
+    bool loading = false,
+  }) : super(CustomElevatedButtonWidget(
+          btnColor: AppColor.primary800Light,
+          btnBorderColor: Colors.transparent,
+          textStyle: AppStyle.elevatedButtonStyle.copyWith(
+            color: AppColor.white,
+            fontWeight: FontWeight.w700,
+            fontSize: 16,
+          ),
+          btnHeight: 56,
+          text: "confirmLocation".tr(),
+          onPressed: onPressed,
+          loading: loading,
+        ));
+
   ElevatedButtonWidget.applyObjection({required VoidCallback onPressed})
       : super(CustomElevatedButtonWidget(
           btnColor: AppColor.white,
@@ -187,6 +260,36 @@ class ElevatedButtonWidget extends _ElevatedButton {
           onPressed: onPressed,
         ));
 
+  ElevatedButtonWidget.custom({
+    required VoidCallback onPressed,
+    required String text,
+  }) : super(CustomElevatedButtonWidget(
+          btnColor: Colors.transparent,
+          btnBorderColor: AppColor.primary800Light,
+          textStyle: AppStyle.elevatedButtonStyle.copyWith(
+            color: AppColor.primary800Light,
+            fontWeight: FontWeight.w700,
+            fontSize: 16,
+          ),
+          btnHeight: 56,
+          text: text,
+          onPressed: onPressed,
+        ));
+
+  ElevatedButtonWidget.primaryCustom({
+    required VoidCallback onPressed,
+    required String text,
+  }) : super(CustomElevatedButtonWidget(
+          btnColor: AppColor.primary800Light,
+          textStyle: AppStyle.elevatedButtonStyle.copyWith(
+            color: AppColor.blackModern50Light,
+            fontWeight: FontWeight.w700,
+            fontSize: 16,
+          ),
+          btnHeight: 56,
+          text: text,
+          onPressed: onPressed,
+        ));
   ElevatedButtonWidget.attachFile({required VoidCallback onPressed})
       : super(CustomElevatedButtonWidget(
           btnColor: Colors.transparent,
@@ -212,5 +315,36 @@ class ElevatedButtonWidget extends _ElevatedButton {
               fontSize: 14,
               fontWeight: FontWeight.bold),
           onPressed: onPressed,
+        ));
+
+  ElevatedButtonWidget.addBoard({required VoidCallback onPressed})
+      : super(CustomElevatedButtonWidget(
+          btnColor: Colors.transparent,
+          btnBorderColor: AppColor.primary800Light,
+          textStyle: AppStyle.elevatedButtonStyle.copyWith(
+            color: AppColor.primary800Light,
+            fontWeight: FontWeight.w700,
+            fontSize: 16,
+          ),
+          btnHeight: 56,
+          text: "AddBoard".tr(),
+          onPressed: onPressed,
+        ));
+
+  ElevatedButtonWidget.finishButton({
+    required VoidCallback? onPressed,
+    bool loading = false,
+  }) : super(CustomElevatedButtonWidget(
+          btnColor: AppColor.primary800Light,
+          btnBorderColor: Colors.transparent,
+          textStyle: AppStyle.elevatedButtonStyle.copyWith(
+            color: AppColor.white,
+            fontWeight: FontWeight.w700,
+            fontSize: 16,
+          ),
+          btnHeight: 56,
+          text: "finishButton".tr(),
+          onPressed: onPressed,
+          loading: loading,
         ));
 }

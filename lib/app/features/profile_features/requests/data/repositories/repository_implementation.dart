@@ -7,6 +7,7 @@ import '../../../../../core/errors/errors_exports.dart'
         NoDataFoundFailure,
         ServerException,
         ServerFailure;
+import '../../domain/entities/crm_request_entity.dart';
 import '../../requests_exports.dart'
     show
         RequestsRepository,
@@ -20,6 +21,7 @@ import '../../requests_exports.dart'
         RequestsPrams,
         SubMunicipalityEntity,
         SubMunicipalityParamsModel;
+import '../models/crm_requests_params_model.dart';
 
 class RequestsRepositoryImplementation implements RequestsRepository {
   final RequestsRemoteDataSource remoteDataSource;
@@ -99,6 +101,20 @@ class RequestsRepositoryImplementation implements RequestsRepository {
   ) async {
     try {
       final data = await remoteDataSource.getRequestSubTypes(params);
+      return Right(data);
+    } on NoDataFoundException {
+      return Left(NoDataFoundFailure());
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage));
+    }
+  }
+
+  @override
+  Future<Either<Failure, CRMRequestEntity>> getCRMRequests(
+    CRMRequestsParamsModel params,
+  ) async {
+    try {
+      final data = await remoteDataSource.getCRMRequests(params);
       return Right(data);
     } on NoDataFoundException {
       return Left(NoDataFoundFailure());

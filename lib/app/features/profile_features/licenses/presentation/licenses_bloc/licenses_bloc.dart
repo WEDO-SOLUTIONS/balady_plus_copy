@@ -8,6 +8,7 @@ import '../../../../../core/utils/utils_exports.dart'
     show
         BlocRequestStatus,
         CommonProperties,
+        DateForm,
         Nullable,
         PaginationConstants,
         SortType;
@@ -303,8 +304,8 @@ class LicensesBloc extends Bloc<LicensesEvent, LicensesState> {
     on<LicenseDateSelectedEvent>((event, emit) async {
       emit(
         state.copyWith(
-          selectedLicenseEndDate: Nullable(event.date),
-        ),
+            selectedLicenseEndDate: Nullable(event.date),
+            dateForm: Nullable(event.formDate)),
       );
     });
 
@@ -338,13 +339,13 @@ class LicensesBloc extends Bloc<LicensesEvent, LicensesState> {
 
     on<ResetLicensesFiltersEvent>((event, emit) async {
       emit(state.copyWith(
-        sortType: event.selectedSortType,
-        selectedLicenseStatus: Nullable(event.selectedLicenseStatus),
-        selectedMunicipality: Nullable(event.selectedMunicipality),
-        selectedSubMunicipality: Nullable(event.selectedSubMunicipality),
-        selectedLicenseType: Nullable(event.selectedLicenseType),
-        selectedLicenseEndDate: Nullable(event.selectedLicenseDate),
-      ));
+          sortType: event.selectedSortType,
+          selectedLicenseStatus: Nullable(event.selectedLicenseStatus),
+          selectedMunicipality: Nullable(event.selectedMunicipality),
+          selectedSubMunicipality: Nullable(event.selectedSubMunicipality),
+          selectedLicenseType: Nullable(event.selectedLicenseType),
+          selectedLicenseEndDate: Nullable(event.selectedLicenseDate),
+          dateForm: Nullable(event.dateForm)));
     });
   }
 }

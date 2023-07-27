@@ -298,12 +298,14 @@ class SuccessButtons extends StatelessWidget {
       case PAGE_TYPE.visitScreen:
       case PAGE_TYPE.daem:
       case PAGE_TYPE.objction:
-        return ('go_to_home').tr();
-      //   return Helpers.translatingWord('go_back_to_customer_voice_page');
       case PAGE_TYPE.licenseScreen:
       case PAGE_TYPE.deleteRequestScreen:
-        //return Helpers.translatingWord('lbl_evaluate_service');
-        return ('go_to_license_management_screen').tr();
+        return ('go_to_home').tr();
+      //   return Helpers.translatingWord('go_back_to_customer_voice_page');
+      // case PAGE_TYPE.licenseScreen:
+      // case PAGE_TYPE.deleteRequestScreen:
+      //return Helpers.translatingWord('lbl_evaluate_service');
+      // return ('go_to_license_management_screen').tr();
       case PAGE_TYPE.coObserver:
         return ('go_to_balady_academy').tr();
 
@@ -332,22 +334,24 @@ class SuccessButtons extends StatelessWidget {
       case PAGE_TYPE.visitScreen:
       case PAGE_TYPE.daem:
       case PAGE_TYPE.objction:
+      case PAGE_TYPE.licenseScreen:
+      case PAGE_TYPE.deleteRequestScreen:
         {
           Helpers.backNavigationToHomeScreen();
         }
         break;
 
-      /* {
+        /* {
           Helpers.backNavigationToSpecificScreen2(
               navigationKey: RoutesNames.customerVoiceRoute);
         }*/
-      // break;
-      case PAGE_TYPE.licenseScreen:
+        // break;
+        /* case PAGE_TYPE.licenseScreen:
       case PAGE_TYPE.deleteRequestScreen:
         {
           // "license_screen_evaluation".log();
           Navigator.of(context).pop();
-        }
+        }*/
         break;
 //MM
         /*case PAGE_TYPE.coObserver:

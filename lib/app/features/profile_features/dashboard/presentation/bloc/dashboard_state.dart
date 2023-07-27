@@ -63,7 +63,9 @@ class CardState extends Equatable {
     return CardState(
       productsStatus: productsStatus ?? this.productsStatus,
       products: products ?? this.products,
-      selectedProduct: selectedProduct  == null ? this.selectedProduct : selectedProduct.value,
+      selectedProduct: selectedProduct == null
+          ? this.selectedProduct
+          : selectedProduct.value,
       statisticsStatuses: statisticsStatuses ?? this.statisticsStatuses,
       statistics: statistics ?? this.statistics,
     );
@@ -77,4 +79,7 @@ class CardState extends Equatable {
         statisticsStatuses,
         statistics,
       ];
+
+  int get totalCount => (statistics ?? []).map((e) => e.count).fold(0,
+      (previousValue, currentValue) => (previousValue + currentValue).toInt());
 }

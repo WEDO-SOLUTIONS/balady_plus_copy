@@ -105,7 +105,8 @@ class _VDTypesDialog extends State<VDTypesDialog> {
                             if (isLocationAvailable && isCameraAllowed)
                               context.read<VDCategoryBloc>().navigateToCamera(
                                   index,
-                                  isFromHome: widget.isFromHome ?? false);
+                                  isFromHome: widget.isFromHome ?? false,
+                                  isVD: true);
                           }),
                     ),
                   )

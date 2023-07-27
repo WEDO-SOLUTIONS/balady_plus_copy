@@ -35,6 +35,8 @@ extension Log<T extends Object> on T {
 class Helpers {
   //static String translatingWord(String key) => key.tr();
 
+  static String translatingWord(String key) => key.tr();
+
   static bool isArabic(BuildContext context) =>
       translator.isDirectionRTL(context);
 
@@ -503,4 +505,24 @@ class Helpers {
     }
     return "";
   }*/
+
+  static openFile(Uint8List bytes, {String? contentType}) async {
+    print("content toye");
+    print(contentType);
+    String extension =
+        contentType != null ? ("." + contentType.split("/").last) : "";
+    try {
+      if (extension.isNotEmpty) {
+        String dir = (await getTemporaryDirectory()).path;
+        File filetemp = File("$dir/" +
+            "${DateTime.now().millisecondsSinceEpoch.toString()}$extension");
+        await filetemp.writeAsBytes(bytes);
+        //print(filetemp.path);
+        // OpenFile.open(filetemp.path);
+        Share.shareFiles([filetemp.path]);
+      }
+    } catch (ex) {
+      print(ex);
+    }
+  }
 }

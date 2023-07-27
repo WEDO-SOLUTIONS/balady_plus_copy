@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/features/_shared_feature_/presentation/icons/general_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
@@ -11,7 +12,14 @@ import 'buttons/custom_buttons_widgets.dart';
 class DetailsHeader extends StatelessWidget implements PreferredSizeWidget {
   final String title;
   final Function? onPress;
-  const DetailsHeader({super.key, required this.title, this.onPress});
+  final Function? onPrint;
+  final Function? procedures;
+  const DetailsHeader(
+      {super.key,
+      required this.title,
+      this.onPrint,
+      this.procedures,
+      this.onPress});
 
   @override
   Widget build(BuildContext context) {
@@ -63,6 +71,19 @@ class DetailsHeader extends StatelessWidget implements PreferredSizeWidget {
               boxShadow: Constants.appBarBoxShadow,
             ),
           ),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (onPrint != null)
+                  GeneralIcon(onTap: () => onPrint!(), icon: IconPath.printer),
+                if (procedures != null)
+                  GeneralIcon(
+                      onTap: () => procedures!(), icon: IconPath.settings),
+              ],
+            ),
+          )
         ],
       ),
     );

@@ -347,7 +347,8 @@ class FacilityQRDetailsViewModel extends BaseViewModel {
       }
 
       return " . " +
-          CommonFunctions.getFormattedTime(workTimes.getToday()?.firstFromTime,
+          CommonFunctions.getFormattedTimeforQR(
+              workTimes.getToday()?.firstFromTime,
               workTimes.getToday()?.firstToTime);
     }
     return "";

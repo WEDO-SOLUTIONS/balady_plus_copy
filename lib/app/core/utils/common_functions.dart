@@ -2,6 +2,7 @@ import 'dart:convert' show base64Decode, base64Encode, utf8;
 import 'dart:io' show File;
 import 'dart:typed_data' show Uint8List;
 import 'dart:ui';
+import 'dart:math' show asin, cos, sqrt;
 
 import 'package:balady_plus/app/core/utils/constants/remote_config.dart';
 import 'package:bot_toast/bot_toast.dart';
@@ -26,7 +27,7 @@ import 'package:uuid/uuid.dart';
 import '../../features/_shared_feature_/data/entities/file_data_item.dart';
 import '../../features/_shared_feature_/presentation/dialogs/upload_file_dialog.dart';
 import './utils_exports.dart'
-    show AppConfig, AppLanguage, EnvType, MimeType, UIHelper, WithDelay;
+    show AppColor, AppConfig, AppLanguage, EnvType, MimeType, UIHelper, WithDelay;
 import '../../features/_shared_feature_/data/entities/device_details.dart';
 import '../../features/_shared_feature_/presentation/dialogs/camera_permission_dialog.dart';
 import '../../features/_shared_feature_/presentation/dialogs/location_permission_dialog.dart';
@@ -197,6 +198,90 @@ class CommonFunctions {
     await OpenFile.open(url);
   }
 
+  static String getDayName(String? dateStr) {
+    String dayName = "";
+    try {
+      String bidEndDate = dateStr ?? "";
+      DateTime tempDate = DateFormat("dd-MM-yyyy").parse(bidEndDate);
+      dayName = DateFormat('EEEE', CommonFunctions.isAppAR ? 'ar_SA' : 'en_US')
+          .format(tempDate)
+          .toString();
+    } catch (e) {
+      print(e);
+    }
+    return dayName;
+  }
+
+  static String getDate(String? dateStr) {
+    String formattedDate = "";
+    try {
+      String bidEndDate = dateStr ?? "";
+      DateTime tempDate = DateFormat("dd-MM-yyyy").parse(bidEndDate);
+      formattedDate =
+          DateFormat('dd', CommonFunctions.isAppAR ? 'ar_SA' : 'en_US')
+              .format(tempDate)
+              .toString();
+    } catch (e) {
+      print(e);
+    }
+    return replaceArabicNumberWithEnglish(formattedDate);
+  }
+
+  static String getMonthName(String? dateStr) {
+    String monthName = "";
+    try {
+      String bidEndDate = dateStr ?? "";
+      DateTime tempDate = DateFormat("dd-MM-yyyy").parse(bidEndDate);
+      monthName =
+          DateFormat('MMMM', CommonFunctions.isAppAR ? 'ar_SA' : 'en_US')
+              .format(tempDate)
+              .toString();
+    } catch (e) {
+      print(e);
+    }
+    return monthName;
+  }
+
+  static int getDifferenceBetweenDays(String? dateStr) {
+    int difference = 0;
+    try {
+      String bidEndDate = dateStr ?? "";
+      DateTime tempDate = DateFormat("yyyy/MM/dd").parse(bidEndDate);
+      final date = DateTime.now();
+      difference = tempDate.difference(date).inDays;
+    } catch (e) {
+      print(e);
+    }
+    return difference;
+  }
+
+  static String getDistance(LatLng? location, LatLng? currentLocation) {
+    String distance = "-";
+    if (currentLocation != null && location != null) {
+      double dis = calculateDistance(location.latitude, location.longitude,
+          currentLocation.latitude, currentLocation.longitude);
+
+      if (dis >= 1000) {
+        distance = ("distance_km")
+            .tr()
+            .replaceAll("-", (dis / 1000).toStringAsFixed(0));
+      } else {
+        distance = ("distance_meter").tr().replaceAll("-", (dis).toString());
+      }
+    }
+
+    return distance;
+  }
+
+  static double calculateDistance(lat1, lon1, lat2, lon2) {
+    var p = 0.017453292519943295;
+    var c = cos;
+    var a = 0.5 -
+        c((lat2 - lat1) * p) / 2 +
+        c(lat1 * p) * c(lat2 * p) * (1 - c((lon2 - lon1) * p)) / 2;
+    return 12742 * asin(sqrt(a)) * 1000;
+  }
+
   static Future<void> openMap(double latitude, double longitude) async {
     final Uri googleUrl = Uri.parse(
       'https://www.google.com/maps/search/?api=1&query=$latitude,$longitude',
@@ -268,6 +353,20 @@ class CommonFunctions {
         ));
 
     return Future.value(file is FileDataItem ? file : null);
+  }
+
+  static Future<TimeOfDay?> pickTime(BuildContext context) async {
+    return await showTimePicker(
+        context: context,
+        initialTime: TimeOfDay.now(),
+        builder: (_, child) => Theme(
+            data: ThemeData.light().copyWith(
+              colorScheme: const ColorScheme.light(
+                primary: AppColor.primary900Light,
+                onSurface: AppColor.blackModern500Light,
+              ),
+            ),
+            child: child ?? const SizedBox()));
   }
 
   static String hashRequest(
@@ -425,6 +524,48 @@ class CommonFunctions {
     return newStr.isEmpty ? value : newStr;
   }
 
+  static String replaceArabicNumberWithEnglish2(String value) {
+    var newStr = "";
+
+    for (int i = 0; i < value.length; i++) {
+      switch (value[i]) {
+        case "٠":
+          newStr += "0";
+          break;
+        case "١":
+          newStr += "1";
+          break;
+        case "٢":
+          newStr += "2";
+          break;
+        case "٣":
+          newStr += "3";
+          break;
+        case "٤":
+          newStr += "4";
+          break;
+        case "٥":
+          newStr += "5";
+          break;
+        case "٦":
+          newStr += "6";
+          break;
+        case "٧":
+          newStr += "7";
+          break;
+        case "٨":
+          newStr += "8";
+          break;
+        case "٩":
+          newStr += "9";
+          break;
+        default:
+          newStr = value[i] + newStr;
+      }
+    }
+    return newStr.isEmpty ? value : newStr;
+  }
+
   static bool checkForVDExpectedForINC(
       {String? adminMunicipalityId,
       String? municipalityName,
@@ -536,7 +677,7 @@ class CommonFunctions {
     return "";
   }
 
-  static String getFormattedTime(String? timeFrom, String? timeTo) {
+  static String getFormattedTimeforQR(String? timeFrom, String? timeTo) {
     if (timeFrom != null && timeTo != null) {
       int? hoursFrom = int.tryParse(timeFrom.split(":")[0]) != null
           ? int.parse(timeFrom.split(":")[0])
@@ -598,6 +739,39 @@ class CommonFunctions {
       }
     }
     return "";
+  }
+
+  static String getFormattedTime(String? timeStr,
+      {Duration? subtractedDuration}) {
+    String formattedTime = "";
+    try {
+      String biddingEndingTime = timeStr ?? "";
+      DateTime tempTime = DateFormat("hh:mm").parse(biddingEndingTime);
+      String time = DateFormat("h:mm a", isAppAR ? 'ar_SA' : 'en_US')
+          .format(tempTime)
+          .toString();
+      if (isAppAR) {
+        time = time.replaceAll("ص", ("am").tr()).replaceAll("م", ("pm").tr());
+      }
+      formattedTime = time;
+    } catch (ex) {
+      print(ex);
+    }
+    return replaceArabicNumberWithEnglish(formattedTime);
+  }
+
+  static String getFormattedDate(String? dateStr) {
+    String formattedDate = "";
+    try {
+      String bidEndDate = dateStr ?? "";
+      DateTime tempDate = DateFormat("yyyy/MM/dd").parse(bidEndDate);
+      formattedDate = DateFormat.yMMMMd(isAppAR ? 'ar_SA' : 'en_US')
+          .format(tempDate)
+          .toString();
+    } catch (e) {
+      print(e);
+    }
+    return replaceArabicNumberWithEnglish(formattedDate);
   }
 
   static void launchMap(LatLng? location) async {

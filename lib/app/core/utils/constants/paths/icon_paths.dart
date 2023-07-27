@@ -11,6 +11,9 @@ const _svgVDIconPath = 'assets/icons/svg/vd/';
 const _pngQRIconPath = 'assets/icons/png/qr/';
 const _svgQRIconPath = 'assets/icons/svg/qr/';
 
+const _svgCRIconPath = 'assets/icons/svg/cr/';
+const _svgWalletIconPath = 'assets/icons/svg/wallet/';
+
 const _svg = '.svg';
 
 const _pngIconPath = 'assets/icons/png/';
@@ -26,8 +29,18 @@ class IconPath {
   static const appBarSearch = '${_svgIconPath}appbar_search$_svg';
   static const billIcon = '${_svgIconPath}bill_icon$_svg';
   static const placeholder = '${_svgIconPath}placeholder$_svg';
+  static const calender = '${_svgIconPath}calender$_svg';
+  static const send = '${_svgIconPath}send$_svg';
+  static const chat = '${_svgIconPath}chat$_svg';
+  static const marker = '${_svgIconPath}marker$_svg';
   static const add = '${_svgIconPath}add$_svg';
   static const pdf = '${_svgIconPath}PDF$_svg';
+  static const settingsIcon = '${_svgIconPath}settings$_svg';
+  static const printer = '${_svgIconPath}printer$_svg';
+  static const routeSquare = '${_svgIconPath}route-square$_svg';
+  static const suraIcon = '${_svgIconPath}sura_icon$_svg';
+  static const warningIcon = '${_svgIconPath}danger$_svg';
+
   static const informationCircleIcon =
       '${_svgIconPath}informationCircleIcon$_svg';
 
@@ -36,6 +49,9 @@ class IconPath {
   static const otpLogo = '${_pngIconPath}shield$_png';
   static const needLogin = '${_pngIconPath}need_login$_png';
   static const successIcon = '${_pngIconPath}success_icon$_png';
+  static const calenderTick = '${_svgIconPath}calender_tick$_svg';
+
+  static const documentCopy = '${_svgIconPath}document_copy$_svg';
 
   // Bottom-Nav-Bar
   static const home = '${_svgIconPath}home_icon$_svg';
@@ -74,12 +90,22 @@ class IconPath {
   static const arrowDown = '${_svgProfileIconPath}arrow_down$_svg';
   static const contactInfo = '${_svgProfileIconPath}contact_info$_svg';
   static const leftArrow = '${_svgProfileIconPath}left_arrow$_svg';
+  static const wallet = '${_svgProfileIconPath}wallet$_svg';
 
   // Nearby
   static nearbyIcon(String name) => '$_svgNearbyIconPath$name$_svg';
 
   // Weather
   static const partlyClouded = '${_svgWeatherIconPath}partly_clouded$_svg';
+
+  static const sunset = '${_svgWeatherIconPath}sunset$_svg';
+  static const sunrise = '${_svgWeatherIconPath}sunrise$_svg';
+  static const sun = '${_svgWeatherIconPath}sun$_svg';
+
+  static const rainy = '${_svgWeatherIconPath}rainyWeather$_svg';
+  static const wind_speed = '${_svgWeatherIconPath}wind_speed$_svg';
+  static const eye = '${_svgWeatherIconPath}eye$_svg';
+  static const danger = '${_svgWeatherIconPath}danger$_svg';
 
   // Map
   static const layers = '${_svgMapIconPath}layers$_svg';
@@ -176,5 +202,31 @@ class IconPath {
 
   static const qrStarIcon = '${_pngQRIconPath}greyStar$_png';
 
+//! Appointment
+  static const calendarIcon = '${_svgIconPath}calendar_icon$_svg';
+
+  //! Quran
+  static const quranBookMarkIcon = '${_svgIconPath}quran_bookmark_go$_svg';
+  static const quranChangePageIcon = '${_svgIconPath}quran_change_page$_svg';
+  static const quranJozzIcon = '${_svgIconPath}quran_jozz$_svg';
+  static const quranMenuIcon = '${_svgIconPath}quran_menu$_svg';
+  static const quranPrayIcon = '${_svgIconPath}quran_pray$_svg';
+  static const quranSaveIcon = '${_svgIconPath}quran_save$_svg';
+  static const quranSearchIcon = '${_svgIconPath}quran_search$_svg';
+  static const quranMarkIcon = '${_svgIconPath}quran_mark$_svg';
+  static const quranMainMarkIcon = '${_svgIconPath}quran_main_bookmark$_svg';
+
+  // CR
+  static const additionalActivity = '${_svgCRIconPath}additional_activity$_svg';
+  static const undertaking = '${_svgCRIconPath}undertaking$_svg';
+  static const clipboard = '${_svgCRIconPath}clipboard$_svg';
+  static const building = '${_svgCRIconPath}building$_svg';
+  static const shopData = '${_svgCRIconPath}shop_data$_svg';
+
+  // Wallet
+  static const personalCard = '${_svgWalletIconPath}personal_card$_svg';
+  static const card = '${_svgWalletIconPath}card$_svg';
+  static const sliderVertical = '${_svgWalletIconPath}slider_vertical$_svg';
+  static const shoppingBag = '${_svgWalletIconPath}shopping_bag$_svg';
   static const buildingIcon = '${_svgIconPath}building$_svg';
 }

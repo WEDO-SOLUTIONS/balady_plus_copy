@@ -1,0 +1,17 @@
+part of 'commercial_license_bloc.dart';
+
+@immutable
+abstract class CommercialLicenseEvent extends Equatable {
+  const CommercialLicenseEvent();
+
+  @override
+  List<Object> get props => [];
+}
+
+class GoToNextPageEvent extends CommercialLicenseEvent {
+  const GoToNextPageEvent();
+}
+
+class GoToPreviousPageEvent extends CommercialLicenseEvent {
+  const GoToPreviousPageEvent();
+}

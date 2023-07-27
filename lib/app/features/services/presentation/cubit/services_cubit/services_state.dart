@@ -6,6 +6,8 @@ class ServicesState extends Equatable {
   final List<ServiceEntity> municipalServices;
   final List<ServiceEntity> newServices;
   final List<ServiceEntity> importantServices;
+  final String? searchQuery;
+  final bool showSearchField;
   final String? errorMessage;
 
   const ServicesState({
@@ -14,6 +16,8 @@ class ServicesState extends Equatable {
     this.municipalServices = const [],
     this.newServices = const [],
     this.importantServices = const [],
+    this.searchQuery,
+    this.showSearchField = false,
     this.errorMessage,
   });
 
@@ -25,6 +29,8 @@ class ServicesState extends Equatable {
     List<ServiceEntity>? municipalServices,
     List<ServiceEntity>? newServices,
     List<ServiceEntity>? importantServices,
+    Nullable<String?>? searchQuery,
+    bool? showSearchField,
     String? errorMessage,
   }) {
     return ServicesState(
@@ -33,6 +39,8 @@ class ServicesState extends Equatable {
       municipalServices: municipalServices ?? this.municipalServices,
       newServices: newServices ?? this.newServices,
       importantServices: importantServices ?? this.importantServices,
+      searchQuery: searchQuery == null ? this.searchQuery : searchQuery.value,
+      showSearchField: showSearchField ?? this.showSearchField,
       errorMessage: errorMessage ?? this.errorMessage,
     );
   }
@@ -45,6 +53,8 @@ class ServicesState extends Equatable {
       municipalServices,
       newServices,
       importantServices,
+      searchQuery,
+      showSearchField,
       errorMessage,
     ];
   }

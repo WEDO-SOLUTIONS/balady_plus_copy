@@ -68,6 +68,7 @@ class CustomCheckBoxWidget extends StatelessWidget {
               Expanded(
                 child: CustomTextWidget(
                   label,
+                  textAlign: TextAlign.start,
                   textStyle: labelStyle ?? AppStyle.checkBoxStyle,
                 ),
               ),
@@ -81,7 +82,7 @@ class CustomCheckBoxWidget extends StatelessWidget {
   }
 
   Color get _fillColor =>
-      selected ? fillColor ?? AppColor.blue : Colors.transparent;
+      selected ? fillColor ?? AppColor.primary900Light : Colors.transparent;
   Color get _borderColor =>
       selected ? borderColor ?? Colors.transparent : AppColor.gray;
 }

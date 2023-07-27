@@ -93,8 +93,9 @@ class LicensesLoadMoreEvent extends LicensesEvent {}
 
 class LicenseDateSelectedEvent extends LicensesEvent {
   final DateTime date;
+  final DateForm formDate;
 
-  const LicenseDateSelectedEvent({required this.date});
+  const LicenseDateSelectedEvent({required this.date, required this.formDate});
 
   @override
   List<Object> get props => [date];
@@ -120,15 +121,16 @@ class ResetLicensesFiltersEvent extends LicensesEvent {
   final SubMunicipalityEntity? selectedSubMunicipality;
   final LicenseTypeEntity? selectedLicenseType;
   final DateTime? selectedLicenseDate;
+  final DateForm? dateForm;
 
-  const ResetLicensesFiltersEvent({
-    required this.selectedSortType,
-    this.selectedLicenseStatus,
-    this.selectedMunicipality,
-    this.selectedSubMunicipality,
-    this.selectedLicenseType,
-    this.selectedLicenseDate,
-  });
+  const ResetLicensesFiltersEvent(
+      {required this.selectedSortType,
+      this.selectedLicenseStatus,
+      this.selectedMunicipality,
+      this.selectedSubMunicipality,
+      this.selectedLicenseType,
+      this.selectedLicenseDate,
+      this.dateForm});
 
   @override
   List<Object?> get props => [
@@ -138,5 +140,6 @@ class ResetLicensesFiltersEvent extends LicensesEvent {
         selectedSubMunicipality,
         selectedLicenseType,
         selectedLicenseDate,
+        dateForm
       ];
 }

@@ -1,12 +1,15 @@
+import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/need_login_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../core/utils/utils_exports.dart' show BlocRequestStatus;
+import '../../../../_shared_feature_/presentation/widgets/reload_widget.dart';
 import '../../../../_shared_feature_/shared_feature_exports.dart'
     show MessageDialog, ShimmerEffectWidget;
 import '../../invoices_exports.dart'
     show
+        GetInvoicesEvent,
         InvoicesBloc,
         InvoicesListItem,
         InvoicesListShimmer,
@@ -50,15 +53,25 @@ class _InvoicesListState extends State<InvoicesList> {
         }
       },
       builder: (context, state) {
-        if (state.invoicesStatus == BlocRequestStatus.submissionGetLoading &&
+        if (state.invoicesStatus == BlocRequestStatus.submissionGetFailure &&
+            state.page == 0) {
+          return Center(
+            child: ReloadWidget(
+              onTab: () {
+                context.read<InvoicesBloc>().add(GetInvoicesEvent());
+              },
+            ),
+          );
+        } else if (state.invoicesStatus ==
+                BlocRequestStatus.submissionGetLoading &&
             !state.paginationLoading) {
           return const InvoicesListShimmer();
-        } else if (state.invoicesStatus ==
-                BlocRequestStatus.submissionGetSuccess ||
-            state.paginationLoading) {
+        } else {
           if (state.invoices.isEmpty && state.noMoreData) {
             return Center(
-              child: Text("no_data".tr()),
+              child: EmptyListWidget(
+                title: "no_data_shown".tr(),
+              ),
             );
           }
           int length = state.invoices.length;

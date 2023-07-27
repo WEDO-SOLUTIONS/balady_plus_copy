@@ -33,13 +33,13 @@ class _DateFromSelectorState extends State<DateFromSelector> {
       child: Row(
         children: [
           DateFormCell(
-            value: DateForm.hijri,
+            value: DateForm.gregorian,
             groupValue: _dateForm,
             onChanged: onChanged,
           ),
           const SizedBox(width: 16),
           DateFormCell(
-            value: DateForm.gregorian,
+            value: DateForm.hijri,
             groupValue: _dateForm,
             onChanged: onChanged,
           ),

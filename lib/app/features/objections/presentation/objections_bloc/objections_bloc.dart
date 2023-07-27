@@ -11,6 +11,7 @@ import '../../../../core/utils/utils_exports.dart'
         BlocRequestStatus,
         BlocStatus,
         CommonProperties,
+        DateForm,
         Nullable,
         PaginationConstants,
         RouteName,
@@ -221,14 +222,25 @@ class ObjectionsBloc extends Bloc<RequestsEvent, RequestsState> {
 
       failureOrSuccess.fold(
         (failure) {
-          emit(
-            state.copyWith(
-              requestSubTypesStatus: BlocRequestStatus.submissionGetFailure,
-              errorMessage: (failure as ServerFailure).errorMessage,
-            ),
-          );
+          if (failure is NoDataFoundFailure) {
+            emit(
+              state.copyWith(
+                requestSubTypesStatus: BlocRequestStatus.submissionGetSuccess,
+                requestSubTypes: [],
+              ),
+            );
+            return;
+          } else {
+            emit(
+              state.copyWith(
+                requestSubTypesStatus: BlocRequestStatus.submissionGetFailure,
+                errorMessage: (failure as ServerFailure).errorMessage,
+              ),
+            );
+          }
         },
         (requestSubTypes) {
+          print("FFFFFF $requestSubTypes");
           emit(
             state.copyWith(
               requestSubTypesStatus: BlocRequestStatus.submissionGetSuccess,
@@ -265,6 +277,7 @@ class ObjectionsBloc extends Bloc<RequestsEvent, RequestsState> {
       emit(
         state.copyWith(
           selectedRequestDate: Nullable(event.date),
+          dateForm: Nullable(event.formDate),
         ),
       );
     });
@@ -303,6 +316,7 @@ class ObjectionsBloc extends Bloc<RequestsEvent, RequestsState> {
         selectedRequestType: Nullable(event.selectedRequestType),
         selectedRequestSubType: Nullable(event.selectedRequestSubType),
         selectedRequestDate: Nullable(event.selectedRequestDate),
+        dateForm: Nullable(event.dateForm),
       ));
     });
   }

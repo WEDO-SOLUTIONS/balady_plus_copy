@@ -1,5 +1,6 @@
 import 'package:balady_plus/app/core/utils/debouncer.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../core/utils/utils_exports.dart' show AppColor, IconPath;
@@ -29,6 +30,10 @@ class AppBarSeachBar extends StatelessWidget implements PreferredSizeWidget {
           iconColor: AppColor.primary700Light,
         ),
         borderRadius: 16,
+        keyboardType: TextInputType.number,
+        inputFormatters: [
+          FilteringTextInputFormatter.digitsOnly,
+        ],
         borderColor: AppColor.primary900Light16,
         onChanged: (value) {
           _debouncer.run(() {

@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../core/utils/utils_exports.dart' show BlocRequestStatus;
+import '../../../../_shared_feature_/presentation/widgets/need_login_widget.dart';
 import '../../../../_shared_feature_/shared_feature_exports.dart'
     show MessageDialog, ShimmerEffectWidget;
 import '../../licenses_exports.dart'
@@ -56,7 +57,9 @@ class _LicensesListState extends State<LicensesList> {
             state.paginationLoading) {
           if (state.licenses.isEmpty && state.noMoreData) {
             return Center(
-              child: Text("no_data".tr()),
+              child: EmptyListWidget(
+                title: "no_data_shown".tr(),
+              ),
             );
           }
           int length = state.licenses.length;

@@ -24,7 +24,7 @@ class LicenseParameter extends StatelessWidget {
         const SizedBox(height: 4),
         CustomTextWidget(
           value,
-          textStyle: AppStyle.requestParamterValueTextStle,
+          textStyle: AppStyle.subMessageTextStle,
         ),
       ],
     );

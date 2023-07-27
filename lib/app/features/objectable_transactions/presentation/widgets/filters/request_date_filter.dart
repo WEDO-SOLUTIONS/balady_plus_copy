@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
+import '../../../../../core/utils/enums/date_form.dart';
 import '../../../..//../_shared_feature_/shared_feature_exports.dart'
     show FilterDatePicker;
 
@@ -18,9 +19,10 @@ class RequestsDateFilter extends StatelessWidget {
         return FilterDatePicker(
           title: "اخر موعد للاعتراض".tr(),
           initialDate: state.selectedRequestDate,
-          onChange: (selectedDate) {
+          initialDateForm: state.dateForm ?? DateForm.gregorian,
+          onChange: (selectedDate, dateForm) {
             BlocProvider.of<ObjectableTransactionBloc>(context).add(
-              RequestDateSelectedEvent(date: selectedDate),
+              RequestDateSelectedEvent(date: selectedDate, formDate: dateForm),
             );
           },
         );

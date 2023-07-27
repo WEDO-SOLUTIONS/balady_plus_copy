@@ -10,7 +10,7 @@ class CustomTextWidget extends StatelessWidget {
   final TextAlign? textAlign;
   final TextOverflow? textOverflow;
   final TextDirection? textDirection;
-  final int maxLines;
+  final int? maxLines;
   final TextStyle? textStyle;
   final double? fontSize;
   final AppFontWeight? fontWeight;
@@ -37,7 +37,7 @@ class CustomTextWidget extends StatelessWidget {
     this.fontFamily = GeneralKey.appFontType,
     this.fontColor = AppColor.white,
     this.height = 1.0,
-    this.textAlign = TextAlign.center,
+    this.textAlign,
     this.textOverflow = TextOverflow.visible,
     this.textDecoration = TextDecoration.none,
     this.textDecorationThickness = 1.5,
@@ -60,6 +60,7 @@ class CustomTextWidget extends StatelessWidget {
             color: fontColor,
             fontFamily: fontFamily,
             decoration: textDecoration,
+            wordSpacing: 1,
             decorationThickness: textDecorationThickness,
             decorationColor: textDecorationColor ?? fontColor,
             letterSpacing: letterSpacing,

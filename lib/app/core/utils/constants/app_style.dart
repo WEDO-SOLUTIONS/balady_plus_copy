@@ -1,4 +1,5 @@
-import 'package:flutter/material.dart' show EdgeInsets, TextStyle;
+import 'package:flutter/material.dart'
+    show Color, EdgeInsets, FontWeight, TextStyle;
 
 import '../utils_exports.dart'
     show AppColor, AppConfig, AppFontWeight, UIHelper;
@@ -243,8 +244,15 @@ class AppStyle {
     fontFamily: fontFamily,
     height: 1.0,
   );
-
   static final requestParamterValueTextStle = TextStyle(
+    fontSize: 12.0,
+    fontWeight: AppFontWeight.semiBold.fontWeight,
+    color: AppColor.blackModern500Light,
+    fontFamily: fontFamily,
+    height: 1.0,
+  );
+
+  static final subMessageTextStle = TextStyle(
     fontSize: 12.0,
     fontWeight: AppFontWeight.semiBold.fontWeight,
     color: AppColor.blackModern500Light,
@@ -323,6 +331,97 @@ class AppStyle {
     fontSize: 14.0,
     fontWeight: AppFontWeight.semiBold.fontWeight,
     color: AppColor.blackModern50Light,
+    fontFamily: fontFamily,
+  );
+
+  static final dateTextStyle = TextStyle(
+    fontSize: 12.0,
+    fontWeight: AppFontWeight.bold.fontWeight,
+    color: AppColor.blackModern500Light,
+    fontFamily: fontFamily,
+  );
+
+  static final tagTextStyle = TextStyle(
+    fontSize: 11.0,
+    fontWeight: AppFontWeight.bold.fontWeight,
+    color: AppColor.primary900Light,
+    fontFamily: fontFamily,
+  );
+
+  static final chatMessageTextStyle = TextStyle(
+    fontSize: 12.0,
+    fontWeight: AppFontWeight.semiBold.fontWeight,
+    color: AppColor.blackModern50Light,
+    fontFamily: fontFamily,
+  );
+
+  static final locationCardTitleTextStyle = TextStyle(
+    fontSize: 15.0,
+    fontWeight: AppFontWeight.bold.fontWeight,
+    color: AppColor.darkTurquoise,
+    fontFamily: fontFamily,
+  );
+
+  static final locationCardAddressTextStyle = TextStyle(
+    fontSize: 12.0,
+    fontWeight: AppFontWeight.bold.fontWeight,
+    color: AppColor.blackModern500Light,
+    fontFamily: fontFamily,
+  );
+
+  static const textFieldSuffixTextStyle = TextStyle(
+    color: Color(0x7F1A1A1A),
+    fontSize: 12,
+    fontFamily: 'Arabic UI Display',
+    fontWeight: FontWeight.w600,
+  );
+
+  static final compassOffsetTextStyle = TextStyle(
+    fontSize: 52.0,
+    fontWeight: AppFontWeight.medium.fontWeight,
+    color: AppColor.riverBed,
+    fontFamily: fontFamily,
+  );
+
+  static final compassDirectionTextStyle = TextStyle(
+    fontSize: 15,
+    fontWeight: AppFontWeight.medium.fontWeight,
+    color: AppColor.riverBed,
+    fontFamily: fontFamily,
+  );
+
+  static final costTitleTextStyle = TextStyle(
+    fontSize: 14,
+    fontWeight: AppFontWeight.bold.fontWeight,
+    color: AppColor.blackModern600Light,
+    fontFamily: fontFamily,
+  );
+
+  static final costTextStyle = TextStyle(
+    fontSize: 16,
+    fontWeight: AppFontWeight.bold.fontWeight,
+    color: AppColor.darkTurquoise,
+    fontFamily: fontFamily,
+  );
+
+  static final textFieldTitleTextStyle = TextStyle(
+    fontSize: 12,
+    fontWeight: AppFontWeight.bold.fontWeight,
+    color: AppColor.blackModern700Light,
+    fontFamily: fontFamily,
+  );
+
+  static final lightTitleTextStyle = TextStyle(
+    fontSize: 10,
+    fontWeight: AppFontWeight.semiBold.fontWeight,
+    color: AppColor.primary900Light,
+    fontFamily: fontFamily,
+  );
+
+  static final lightTextStyle = TextStyle(
+    fontSize: 10,
+    fontWeight: AppFontWeight.semiBold.fontWeight,
+    color: AppColor.blackModern500Light,
     fontFamily: fontFamily,
   );
 

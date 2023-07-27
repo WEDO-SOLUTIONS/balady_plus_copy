@@ -1,13 +1,19 @@
+import 'package:balady_plus/app/features/profile_features/requests/domain/entities/crm_request_entity.dart';
+import 'package:balady_plus/app/features/profile_features/requests/domain/entities/crm_request_params.dart';
+import 'package:balady_plus/app/features/profile_features/requests/domain/use_cases/get_crm_requests.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../../core/dependency_injection/injection_container.dart';
 import '../../../../../core/errors/errors_exports.dart'
     show NoDataFoundFailure, ServerFailure;
 import '../../../../../core/services/services_exports.dart' show NoParams;
+import '../../../../../core/utils/enums/enums.dart';
 import '../../../../../core/utils/utils_exports.dart'
     show
         BlocRequestStatus,
         CommonProperties,
+        DateForm,
         Nullable,
         PaginationConstants,
         SortType;
@@ -39,6 +45,7 @@ class RequestsBloc extends Bloc<RequestsEvent, RequestsState> {
   final GetMunicipalities getMunicipalities;
   final GetSubMunicipalities getSubMunicipalities;
   final GetRequestSubTypes getRequestSubTypes;
+  final GetCRMRequests getCRMRequests;
 
   RequestsBloc({
     required this.getRequests,
@@ -47,7 +54,8 @@ class RequestsBloc extends Bloc<RequestsEvent, RequestsState> {
     required this.getMunicipalities,
     required this.getSubMunicipalities,
     required this.getRequestSubTypes,
-  }) : super(const RequestsState()) {
+  })  : getCRMRequests = GetCRMRequests(repository: sl()),
+        super(const RequestsState()) {
     on<GetRequestsEvent>((event, emit) async {
       emit(
         state.copyWith(requestsStatus: BlocRequestStatus.submissionGetLoading),
@@ -218,7 +226,7 @@ class RequestsBloc extends Bloc<RequestsEvent, RequestsState> {
 
       final failureOrSuccess = await getSubMunicipalities(
         SubMunicipalityParams(
-          id: state.selectedMunicipality!.id,
+          id: state.selectedMunicipality!.municipalId,
         ),
       );
 
@@ -352,8 +360,8 @@ class RequestsBloc extends Bloc<RequestsEvent, RequestsState> {
     on<RequestDateSelectedEvent>((event, emit) async {
       emit(
         state.copyWith(
-          selectedRequestDate: Nullable(event.date),
-        ),
+            selectedRequestDate: Nullable(event.date),
+            dateForm: Nullable(event.formDate)),
       );
     });
 
@@ -395,7 +403,95 @@ class RequestsBloc extends Bloc<RequestsEvent, RequestsState> {
         selectedRequestType: Nullable(event.selectedRequestType),
         selectedRequestSubType: Nullable(event.selectedRequestSubType),
         selectedRequestDate: Nullable(event.selectedRequestDate),
+        dateForm: Nullable(event.dateForm),
       ));
+    });
+
+    on<GetCRMRequestEvent>((event, emit) async {
+      emit(
+        state.copyWith(
+          crmRequestsStatus: BlocRequestStatus.submissionGetLoading,
+          crmRequestType: event.crmRequestType,
+        ),
+      );
+
+      final failureOrSuccess = await getCRMRequests(
+        CRMRequestsParams(
+          id: CommonProperties.userInfo?.idNo ?? "",
+          mobileNumber: CommonProperties.userInfo?.getPhone() ?? "",
+        ),
+      );
+
+      failureOrSuccess.fold(
+        (failure) {
+          print("failure $failure");
+
+          if (failure is NoDataFoundFailure) {
+            emit(
+              state.copyWith(
+                crmRequestsStatus: BlocRequestStatus.submissionGetSuccess,
+                crmRequests: CRMRequestEntity(incidentRequestList: []),
+              ),
+            );
+            return;
+          }
+          emit(
+            state.copyWith(
+              crmRequestsStatus: BlocRequestStatus.submissionGetFailure,
+              errorMessage: (failure as ServerFailure).errorMessage,
+            ),
+          );
+        },
+        (requests) {
+          var filtredRequest = requests.incidentRequestList?.where((element) {
+            if (element.getRequestType() == event.crmRequestType) return true;
+            return false;
+          }).toList();
+
+          print("Succccesss ${requests.incidentRequestList?.length}");
+          emit(
+            state.copyWith(
+              crmRequestsStatus: BlocRequestStatus.submissionGetSuccess,
+              crmRequestsList: CRMRequestEntity(
+                  totalRecordCount: filtredRequest?.length.toString(),
+                  incidentRequestList: filtredRequest ?? []),
+              crmRequests: CRMRequestEntity(
+                  totalRecordCount: filtredRequest?.length.toString(),
+                  incidentRequestList: filtredRequest ?? []),
+            ),
+          );
+        },
+      );
+    });
+
+    on<SearchCRMRequestsEvent>((event, emit) async {
+      emit(
+        state.copyWith(
+          crmRequestsStatus: BlocRequestStatus.submissionGetLoading,
+        ),
+      );
+
+      var filtredRequest =
+          state.crmRequests?.incidentRequestList?.where((element) {
+        if (element.getRequestType() == state.crmRequestType &&
+            element.getId().contains(event.query)) return true;
+        return false;
+      }).toList();
+      print(filtredRequest?.length);
+      emit(
+        state.copyWith(
+          crmRequestsStatus: BlocRequestStatus.submissionGetSuccess,
+          crmRequestsList: CRMRequestEntity(
+              totalRecordCount: filtredRequest?.length.toString(),
+              incidentRequestList: filtredRequest ?? []),
+        ),
+      );
+
+      emit(
+        state.copyWith(
+          crmRequestsStatus: BlocRequestStatus.submissionGetSuccess,
+        ),
+      );
     });
   }
 }

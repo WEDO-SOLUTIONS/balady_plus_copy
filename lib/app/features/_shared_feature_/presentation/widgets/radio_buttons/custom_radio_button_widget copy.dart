@@ -185,6 +185,7 @@ class CustomRadioButtonEnd<T> extends StatelessWidget {
   final double textSize;
   final Color unSelectedBackgroundColor;
   final String? subTitle;
+  final double? height;
 
   CustomRadioButtonEnd(
       {Key? key,
@@ -192,6 +193,7 @@ class CustomRadioButtonEnd<T> extends StatelessWidget {
       required this.value,
       required this.currentSelected,
       required this.onChange,
+      this.height,
       this.endRadio = true,
       this.textSize = 14,
       this.unSelectedBackgroundColor = AppColor.white,
@@ -203,7 +205,7 @@ class CustomRadioButtonEnd<T> extends StatelessWidget {
     return GestureDetector(
       onTap: () => onChange(value),
       child: Container(
-        height: 72,
+        height: height ?? 72,
         width: double.infinity,
         margin: const EdgeInsets.symmetric(vertical: 5),
         padding: const EdgeInsetsDirectional.only(

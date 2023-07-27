@@ -7,10 +7,7 @@ import '../../../../core/utils/utils_exports.dart'
 import '../../../_shared_feature_/shared_feature_exports.dart'
     show CustomTextWidget, DrawIconBasedTypeWidget;
 import '../../services_exports.dart'
-    show
-        ServiceCardParameter,
-        ServiceCardsCubit,
-        ServiceCardsState;
+    show ServiceCardParameter, ServiceCardsCubit, ServiceCardsState;
 
 class ServiceCardDescription extends StatelessWidget {
   const ServiceCardDescription({

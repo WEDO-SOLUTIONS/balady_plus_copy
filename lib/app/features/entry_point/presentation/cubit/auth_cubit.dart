@@ -86,6 +86,7 @@ class EntryPointCubit extends Cubit<EntryPointState> {
 
       //  if (token.refreshToken != null) await refreshToken(token.refreshToken!);
       refreshSSOProfile();
+      refreshAPIGeeToken();
     });
   }
 
@@ -102,6 +103,7 @@ class EntryPointCubit extends Cubit<EntryPointState> {
         errorMessage: (failure as ServerFailure).errorMessage,
       ));
     }, (success) async {
+      print("success.idToken ${success.idToken}");
       SSOToken token = SSOToken(
           token: success.accessToken,
           refreshToken: success.refreshToken,
@@ -200,18 +202,23 @@ class EntryPointCubit extends Cubit<EntryPointState> {
   }
 
   Future<bool> refreshAPIGeeToken() async {
-    // print("refreshAPIGeeToken");
-    // print(state.apigeeToken);
+    print("refreshAPIGeeToken");
+    print(state.apigeeToken);
     DateTime? expireTime =
         DateTime.tryParse(state.apigeeToken?.expirationTime ?? "");
 
     if (expireTime == null ||
         (expireTime.difference(DateTime.now()).inHours <= 2)) {
       final failureOrSuccess = await _getAPIgeeToken(NoParams());
-
+      print("refreshAPIGeeToken 2");
       return await failureOrSuccess.fold((failure) {
+        print(failure);
+        print("refreshAPIGeeToken $failure");
         return false;
       }, (success) async {
+        print("success apigee");
+        print("refreshAPIGeeToken $success");
+
         success.expirationTime = success.getExpireTime().toString();
         emit(state.copyWith(apigeeToken: success));
         return true;
@@ -240,7 +247,7 @@ class EntryPointCubit extends Cubit<EntryPointState> {
   }
 
   Future<void> clearAuth() async {
-    await _logout(NoParams());
+    //await _logout(NoParams());
     _clearAuth(NoParams());
 
     sharedPrefs.setSSOToken(null);

@@ -23,8 +23,11 @@ class ObjectableTransactionState extends Equatable {
   final String? requestNumberQuery;
   //sort type
   final SortType sortType;
+  // Date Form
+  final DateForm? dateForm;
   //error message
   final String? errorMessage;
+
   // pagination
   final int page;
   final int limit;
@@ -44,6 +47,7 @@ class ObjectableTransactionState extends Equatable {
     this.requestSubTypes = const [],
     this.selectedRequestSubType,
     this.selectedRequestDate,
+    this.dateForm,
     this.requestNumberQuery,
     this.sortType = SortType.desc,
     this.errorMessage,
@@ -71,6 +75,7 @@ class ObjectableTransactionState extends Equatable {
     List<RequestSubTypeEntity>? requestSubTypes,
     Nullable<RequestSubTypeEntity?>? selectedRequestSubType,
     Nullable<DateTime?>? selectedRequestDate,
+    Nullable<DateForm?>? dateForm,
     String? requestNumberQuery,
     SortType? sortType,
     String? errorMessage,
@@ -101,6 +106,7 @@ class ObjectableTransactionState extends Equatable {
         selectedRequestDate: selectedRequestDate == null
             ? this.selectedRequestDate
             : selectedRequestDate.value,
+        dateForm: dateForm == null ? this.dateForm : dateForm.value,
         requestNumberQuery: requestNumberQuery ?? this.requestNumberQuery,
         sortType: sortType ?? this.sortType,
         errorMessage: errorMessage ?? this.errorMessage,
@@ -123,6 +129,7 @@ class ObjectableTransactionState extends Equatable {
         requestSubTypes: requestSubTypes,
         selectedRequestSubType: null,
         selectedRequestDate: null,
+        dateForm: null,
         requestNumberQuery: requestNumberQuery,
         sortType: sortType,
         errorMessage: errorMessage,
@@ -145,6 +152,7 @@ class ObjectableTransactionState extends Equatable {
         requestSubTypes,
         selectedRequestSubType,
         selectedRequestDate,
+        dateForm,
         requestNumberQuery,
         sortType,
         errorMessage,

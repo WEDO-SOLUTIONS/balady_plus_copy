@@ -148,9 +148,9 @@ class _ObjectionAttachmentItemState extends State<ObjectionAttachmentItem> {
     final filename = url.substring(url.lastIndexOf("/") + 1);
     Dio dio = Dio();
     dio.options.baseUrl = RemoteConfig.apigeeURL;
-    dio.options.connectTimeout = const Duration(milliseconds: 60000);
-    dio.options.receiveTimeout = const Duration(milliseconds: 60000);
-    dio.options.sendTimeout = const Duration(milliseconds: 60000);
+    dio.options.connectTimeout = 60000;
+    dio.options.receiveTimeout = 60000;
+    dio.options.sendTimeout = 60000;
     dio.options.responseType = ResponseType.bytes;
     dio.interceptors.add(AppInterceptors());
     ;

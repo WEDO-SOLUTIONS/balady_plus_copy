@@ -1,11 +1,21 @@
 import 'package:balady_plus/app/features/home_page/home_exports.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:intl/intl.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
+import '../../../../../core/base/base_view_model.dart';
+import '../../../../../core/dependency_injection/injection_container.dart';
+import '../../../../../core/services/local/navigation_services.dart';
+import '../../../../../core/services/local/use_case.dart';
 import '../../../../../core/utils/utils_exports.dart'
-    show AppColor, AppStyle, IconPath, RouteName;
+    show AppColor, AppStyle, CommonFunctions, IconPath, RouteName;
 import '../../../../_shared_feature_/shared_feature_exports.dart';
+import '../../../../entry_point/domain/use_cases/get_cookie.dart';
+import '../../../../health_certificate/presentation/core/models/health_request_details.dart';
+import '../../../../health_certificate/presentation/core/models/health_request_details_screen_args.dart';
+import '../../../../health_certificate/presentation/core/services/view_models/main_health_license_view_model.dart';
 import '../../licenses_exports.dart' show LicenseEntity, LicenseParameter;
 
 class LicensesListItem extends StatelessWidget {
@@ -88,13 +98,37 @@ class LicensesListItem extends StatelessWidget {
               ],
             ),
           ),
-          ElevatedButtonWidget.details(onPressed: () {
-            if (license.redirectUrl == null) return;
+          ElevatedButtonWidget.details(onPressed: () async {
+            if (license.requestMainTypeId == "1300") {
+              final model = locator<MainHealthLicenseViewModel>();
 
-            Navigator.of(context).pushNamed(
-              RouteName.inappWebview,
-              arguments: (title: ''.tr(), url: license.redirectUrl),
-            );
+              HealthRequestDetails? details = await model
+                  .getHealthRequestDetails(license.requestNumber ?? 0);
+              if (details != null) {
+                NavigationService.navigatorKey.currentState!.pushNamed(
+                    RouteName.healthLicenseDetailsScreen,
+                    arguments: HealthRequestDetailsScreenArgs(
+                        healthRequestDetails: details,
+                        isDeletable: false,
+                        isPrintable: false));
+              }
+            } else {
+              if (license.redirectUrl == null) return;
+              print(license.redirectUrl);
+
+              EasyLoading.show();
+              GetCookie getCookie = GetCookie(repository: sl());
+              final failureOrSuccessForCookie = await getCookie(NoParams());
+              EasyLoading.dismiss();
+              failureOrSuccessForCookie.fold((l) {
+                CommonFunctions.showError("server_error_1".tr());
+              }, (r) async {
+                Navigator.of(context).pushNamed(
+                  RouteName.inappWebview,
+                  arguments: (title: ''.tr(), url: license.redirectUrl),
+                );
+              });
+            }
           }),
         ],
       ),

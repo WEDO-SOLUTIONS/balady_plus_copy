@@ -9,6 +9,8 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 import '../../../../core/services/local/navigation_services.dart';
 import '../../../../core/utils/constants/app_colors.dart';
 import '../../../../core/utils/enums/enums.dart';
+import '../../../daem/data/models/daem_item.dart';
+import '../../../daem/presentation/dialogs/str_type_with_search_dialog.dart';
 import '../../data/entities/drop_down_item.dart';
 import '../dialogs/incident_type_with_search_dialog.dart';
 import '../dialogs/multi_selection_with_search_dialog.dart';
@@ -35,6 +37,7 @@ class CustomHeaderAndDescOnTapWidget extends StatefulWidget {
   final MATERIAL_ICON_DIRECTION materialIconDirection;
   final Widget? icon;
   final bool? showOptional;
+  final double? marginBottom;
 
   const CustomHeaderAndDescOnTapWidget(
       {Key? key,
@@ -43,6 +46,7 @@ class CustomHeaderAndDescOnTapWidget extends StatefulWidget {
       this.labelSize = 16.0,
       this.labelTextAlign = TextAlign.start,
       this.hintText = '',
+      this.marginBottom,
       this.filled = false,
       this.fillColor = Colors.transparent,
       this.borderRadius = 8.0,
@@ -145,7 +149,7 @@ class _CustomHeaderAndDescOnTapWidget
                     ),
                   ],
                 ),
-              const CustomVerticalSpace(height: 30.0),
+              CustomVerticalSpace(height: widget.marginBottom ?? 30.0),
             ],
           );
         },
@@ -195,11 +199,13 @@ class CustomTapWidgetForLongDialog extends StatefulWidget {
   String? errorText;
   final bool? showOptional;
   final bool showHintAsTitle;
+  final double? marginBottom;
 
   CustomTapWidgetForLongDialog(
       {Key? key,
       required this.onChangeType,
       this.value,
+      this.marginBottom,
       required this.items,
       this.hint,
       required this.label,
@@ -220,11 +226,12 @@ class _CustomTapWidgetForLongDialog
   Widget build(BuildContext context) {
     return CustomHeaderAndDescOnTapWidget(
       label: widget.label,
-      hintText: widget.hint!,
+      hintText: widget.hint ?? ("choose_hint").tr(),
       textValue: widget.value?.name,
       showOptional: widget.showOptional,
       labelColor: AppColor.blackModern700Light,
       labelSize: 16,
+      marginBottom: widget.marginBottom,
       onTap: widget.items.isNotEmpty
           ? () async {
               FocusManager.instance.primaryFocus?.unfocus();
@@ -235,7 +242,7 @@ class _CustomTapWidgetForLongDialog
                   items: widget.items,
                   selectedItem: widget.value,
                   title: widget.showHintAsTitle ? widget.hint : widget.label,
-                  searchHint: widget.searchHint,
+                  searchHint: widget.searchHint ?? ("searchFor").tr(),
                 ),
               );
             }
@@ -391,8 +398,6 @@ class _CustomTapWidgetForMultiLongDialog
   }
 }
 
-
-/*
 class TapWidgetForLongDialog extends StatefulWidget {
   DaemItem? value;
   Function(DaemItem? item) onChangeType;
@@ -445,10 +450,9 @@ class _TapWidgetForLongDialog extends State<TapWidgetForLongDialog> {
             }
           : () {
               FocusManager.instance.primaryFocus?.unfocus();
-              showError(widget.errorText ??
-                  Helpers.translatingWord('empty_list_error'));
+              CommonFunctions.showError(
+                  widget.errorText ?? ('empty_list_error').tr());
             },
     );
   }
 }
-*/

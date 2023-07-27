@@ -172,6 +172,7 @@ class CustomElevatedButtonWidget extends StatelessWidget {
   final AlignmentGeometry? btnAlignment;
   final EdgeInsetsGeometry? btnPadding;
   final EdgeInsetsGeometry? btnMargin;
+  final bool loading;
 
   /// It can be Widget or String
   final Object? text;
@@ -194,6 +195,7 @@ class CustomElevatedButtonWidget extends StatelessWidget {
     required this.text,
     this.textStyle,
     this.onPressed,
+    this.loading = false,
   });
 
   @override
@@ -219,15 +221,21 @@ class CustomElevatedButtonWidget extends StatelessWidget {
             color: btnBorderColor ?? btnColor ?? AppColor.blue,
           ),
         ),
-        child: isTextWidget
-            ? text as Widget
-            : isTextString
-                ? CustomTextWidget(
-                    text as String,
-                    textAlign: TextAlign.center,
-                    textStyle: textStyle ?? AppStyle.elevatedButtonStyle,
-                  )
-                : const SizedBox(),
+        child: loading
+            ? Center(
+                child: CircularProgressIndicator(
+                  color: textStyle?.color,
+                ),
+              )
+            : isTextWidget
+                ? text as Widget
+                : isTextString
+                    ? CustomTextWidget(
+                        text as String,
+                        textAlign: TextAlign.center,
+                        textStyle: textStyle ?? AppStyle.elevatedButtonStyle,
+                      )
+                    : const SizedBox(),
       ),
     );
   }
@@ -681,12 +689,12 @@ class CustomTextButtonWithIconWidget extends StatelessWidget {
     return TextButton(
       onPressed: btnPressed,
       style: TextButton.styleFrom(
+        foregroundColor: btnEffectColor ?? btnBackgroundColor ?? btnTextColor,
         padding: padding,
         backgroundColor: btnBackgroundColor,
         alignment: btnAlignment,
         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
         visualDensity: VisualDensity.compact,
-        primary: btnEffectColor ?? btnBackgroundColor ?? btnTextColor,
       ),
       child: Row(
         mainAxisAlignment: mainAxisAlignment,
@@ -754,7 +762,7 @@ class CustomTextButtonWithIconWidgetWithFlexible extends StatelessWidget {
     return TextButton(
       onPressed: btnPressed,
       style: TextButton.styleFrom(
-        primary: btnEffectColor ?? btnBackgroundColor ?? btnTextColor,
+        foregroundColor: btnEffectColor ?? btnBackgroundColor ?? btnTextColor,
         backgroundColor: btnBackgroundColor,
         padding: padding,
       ),
@@ -833,8 +841,7 @@ class CustomElevatedButtonWidget1 extends StatelessWidget {
   Widget build(BuildContext context) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
-        padding: EdgeInsets.zero,
-        primary: btnColor,
+        padding: EdgeInsets.zero, backgroundColor: btnColor,
         // background
         // onPrimary: Colors.yellow, // foreground
         alignment: btnAlignment,
@@ -1021,7 +1028,7 @@ class CustomElevatedButtonWithIconWidget1 extends StatelessWidget {
   Widget build(BuildContext context) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
-        primary: btnColor,
+        backgroundColor: btnColor,
         // background
         // onPrimary: Colors.yellow, // foreground
         alignment: btnAlignment,
@@ -1295,8 +1302,9 @@ class LabelTextWithOptional extends StatelessWidget {
   final TextAlign labelTextAlign;
   final bool? showOptional;
 
-  LabelTextWithOptional(
-      {required this.label,
+  const LabelTextWithOptional(
+      {super.key,
+      required this.label,
       this.labelColor = AppColor.blackModern700Light,
       this.labelSize = 13.0,
       this.labelTextAlign = TextAlign.start,
@@ -1318,12 +1326,12 @@ class LabelTextWithOptional extends StatelessWidget {
                   fontFamily: GeneralKey.appFontType,
                   fontWeight: FontWeight.bold),
             ),
-          if (showOptional == true) TextSpan(text: " "),
+          if (showOptional == true) const TextSpan(text: " "),
           if (showOptional == true)
             TextSpan(
               text: ('optional').tr(),
-              style: TextStyle(
-                  color: const Color(0xffbabbbb),
+              style: const TextStyle(
+                  color: Color(0xffbabbbb),
                   fontSize: 13.0,
                   fontFamily: GeneralKey.appFontType,
                   fontWeight: FontWeight.bold),

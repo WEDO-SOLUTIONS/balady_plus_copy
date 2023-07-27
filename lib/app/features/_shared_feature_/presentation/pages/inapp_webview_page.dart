@@ -5,9 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:webview_flutter/webview_flutter.dart';
-
+import 'package:webview_flutter/src/webview_cookie_manager.dart';
 import '../../../../core/dependency_injection/injection_container.dart';
+import '../../../../core/services/local/use_case.dart';
 import '../../../../core/utils/utils_exports.dart' show CommonProperties, Log;
+import '../../../entry_point/domain/use_cases/get_cookie.dart';
 import '../../../entry_point/presentation/cubit/auth_cubit.dart';
 import '../../shared_feature_exports.dart' show DefaultAppBarWidget;
 
@@ -29,13 +31,8 @@ class _InAppWebViewPageState extends State<InAppWebViewPage> {
   @override
   void initState() {
     super.initState();
-    try {
-      CookieManager.instance().setCookie(
-          url: Uri.parse(RemoteConfig.cookieURL),
-          name: ".ASPXFORMSAUTH",
-          value: CommonProperties.appCookie.split("=").last,
-          domain: RemoteConfig.momraDomain);
-    } catch (_) {}
+    //CookieManager.instance().deleteAllCookies();
+
     _progessStream = StreamController<double?>();
 
     controller = WebViewController()
@@ -62,7 +59,9 @@ class _InAppWebViewPageState extends State<InAppWebViewPage> {
           },
         ),
       )
-      ..loadRequest(Uri.parse(widget.args.url));
+      ..loadRequest(Uri.parse(widget.args.url), headers: {
+        "Authorization": "Bearer " + (CommonProperties.token ?? "")
+      });
   }
 
   @override
@@ -76,8 +75,35 @@ class _InAppWebViewPageState extends State<InAppWebViewPage> {
         builder: (context, snapshot) {
           return Stack(
             children: [
-              WebViewWidget(
-                controller: controller,
+              InAppWebView(
+                initialUrlRequest: URLRequest(
+                  // url: Uri.parse('https://flutter.dev/'),
+                  url: Uri.parse(widget.args.url),
+                ),
+                initialOptions: InAppWebViewGroupOptions(
+                  crossPlatform: InAppWebViewOptions(
+                    useShouldOverrideUrlLoading: true,
+                  ),
+                ),
+                onLoadStart: (controller, Uri? url) {
+                  // setState(() {
+                  //   this.url = url!.path;
+                  // });
+                },
+                onLoadStop: (controller, Uri? url) {
+                  // setState(() {
+                  //   this.url = url!.path;
+                  // });
+                },
+                onLoadError: (controller, url, code, message) => print(message),
+                onProgressChanged: (controller, int progress) {
+                  final percent = progress / 100;
+                },
+                onConsoleMessage: (controller, ConsoleMessage consoleMessage) {
+                  "$consoleMessage".warningLog();
+                  "Message coming from Dart side: ${consoleMessage.message}"
+                      .warningLog();
+                },
               ),
               if (snapshot.data != null && snapshot.data! < 1)
                 Center(

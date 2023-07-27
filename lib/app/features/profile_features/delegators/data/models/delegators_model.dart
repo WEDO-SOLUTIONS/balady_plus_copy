@@ -2,8 +2,8 @@ import '../../delegators_exports.dart' show DelegatorEntity;
 
 class DelegatorModel extends DelegatorEntity {
   const DelegatorModel({
-    required super.crNumber,
-    required super.unifiedNationalNumber,
+    super.crNumber,
+    super.unifiedNationalNumber,
     required super.delegationSource,
     required super.relationTypeId,
     required super.relationTypeName,
@@ -14,8 +14,8 @@ class DelegatorModel extends DelegatorEntity {
 
   factory DelegatorModel.fromMap(Map<String, dynamic> map) {
     return DelegatorModel(
-      crNumber: map['crNumber'] as String,
-      unifiedNationalNumber: map['unifiedNationalNumber'] as String?,
+      crNumber: map['crNumber'],
+      unifiedNationalNumber: map['unifiedNationalNumber'],
       delegationSource: map['delegationSource'] as String? ?? '',
       relationTypeId: map['relationTypeId'] as String? ?? '',
       relationTypeName: map['relationTypeName'] as String? ?? '',
