@@ -29,4 +29,6 @@ class ImagePath {
   static const walletBg = '${_imagePath}wallet_bg$_png';
   static const qrBg = '${_imagePath}qr_bg$_png';
   static const weatherBackground3x = '${_imagePath}weather_background3x$_png';
+  static const appBarGradientBackground =
+      '${_imagePath}light_gradient_appbar$_png';
 }

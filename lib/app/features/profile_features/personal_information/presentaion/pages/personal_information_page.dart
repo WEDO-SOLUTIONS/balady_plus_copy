@@ -2,7 +2,7 @@ import 'package:balady_plus/app/features/entry_point/entry_point_exports.dart';
 import 'package:flutter/material.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
-import '../../../../../core/utils/utils_exports.dart' show IconPath;
+import '../../../../../core/utils/utils_exports.dart' show IconPath, ImagePath;
 import '../../../../_shared_feature_/shared_feature_exports.dart'
     show CardParameter, DefaultAppBarWidget;
 import '../../personal_information_exports.dart'

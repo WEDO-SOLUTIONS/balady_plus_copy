@@ -5,7 +5,8 @@ import 'package:localize_and_translate/localize_and_translate.dart'
     show Translation;
 
 import '../../../../core/dependency_injection/injection_container.dart';
-import '../../../../core/utils/utils_exports.dart' show CommonProperties;
+import '../../../../core/utils/utils_exports.dart'
+    show CommonProperties, ImagePath;
 import '../../../_shared_feature_/shared_feature_exports.dart'
     show DefaultAppBarWidget, ElevatedButtonWidget, TabPageContainer;
 import '../../../profile_features/delegators/delegators_exports.dart'
@@ -27,6 +28,10 @@ class ProfilePage extends StatelessWidget {
         return Scaffold(
           appBar: DefaultAppBarWidget(
             title: "profile".tr(),
+            flexibleSpace: const Image(
+              image: AssetImage(ImagePath.appBarGradientBackground),
+              fit: BoxFit.cover,
+            ),
           ),
           body: TabPageContainer(
             child: SingleChildScrollView(

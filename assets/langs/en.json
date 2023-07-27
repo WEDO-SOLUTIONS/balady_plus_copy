@@ -428,9 +428,18 @@
   "21" : "9 PM",
   "22" : "10 PM",
   "23" : "11 PM",
-  "warning": "Warning"
+  "warning": "Warning", 
 
 
   
+
+  "islamic_services": "Islamic Services",
+  "customer_voice_services": "Customer Voice Services",
+  "business_license_services": "Business Licenses Services",
+  "honoring_the_dead_services": "Honoring The Dead Services",
+  "health_certificates_services": "Health Certificates Services",
+  "help_services": "Help Services"
+  
+
 
 }

@@ -8,15 +8,10 @@ class DefaultAppBarWidget extends StatelessWidget
   final String? title;
   final PreferredSizeWidget? bottom;
   final List<Widget>? actions;
-  final bool x;
+  final Widget? flexibleSpace;
 
-  const DefaultAppBarWidget({
-    super.key,
-    this.title,
-    this.bottom,
-    this.actions,
-    this.x = false,
-  });
+  const DefaultAppBarWidget(
+      {super.key, this.title, this.bottom, this.actions, this.flexibleSpace});
 
   @override
   Widget build(BuildContext context) {
@@ -41,6 +36,7 @@ class DefaultAppBarWidget extends StatelessWidget
       ),
       bottom: bottom,
       actions: actions,
+      flexibleSpace: flexibleSpace,
     );
   }
 

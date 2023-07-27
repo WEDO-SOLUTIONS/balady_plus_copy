@@ -6,9 +6,13 @@ import '../../../../../core/utils/utils_exports.dart';
 import '../../../services_exports.dart'
     show
         ImportantServices,
-        MunicipalServices,
+        IslamicServices,
         NewServices,
-        PublicServices,
+        CustomerVoiceServices,
+        HonoringTheDeadServices,
+        HelpServices,
+        HealthCertificatesServices,
+        BusinessLicenseServices,
         ServiceEntity;
 
 part 'services_state.dart';
@@ -16,14 +20,22 @@ part 'services_state.dart';
 class ServicesCubit extends Cubit<ServicesState> {
   final ImportantServices importantServices;
   final NewServices newServices;
-  final MunicipalServices municipalServices;
-  final PublicServices publicServices;
+  final IslamicServices islamicServices;
+  final CustomerVoiceServices customerVoiceServices;
+  final HonoringTheDeadServices honoringTheDeadServices;
+  final HelpServices helpServices;
+  final HealthCertificatesServices healthCertificatesServices;
+  final BusinessLicenseServices businessLicenseServices;
 
   ServicesCubit({
+    required this.businessLicenseServices,
+    required this.customerVoiceServices,
+    required this.healthCertificatesServices,
+    required this.helpServices,
+    required this.honoringTheDeadServices,
     required this.importantServices,
     required this.newServices,
-    required this.municipalServices,
-    required this.publicServices,
+    required this.islamicServices,
   }) : super(const ServicesState()) {
     loadServices();
   }
@@ -32,15 +44,30 @@ class ServicesCubit extends Cubit<ServicesState> {
     emit(state.copyWith(status: BlocStatus.loading));
     final importantServicesList = await importantServices(NoParams());
     final newServicesList = await newServices(NoParams());
-    final municipalServicesList = await municipalServices(NoParams());
-    final publicServicesList = await publicServices(NoParams());
+    final islamicServicesList = await islamicServices(NoParams());
+    final customerVoiceServicesList = await customerVoiceServices(NoParams());
+
+    final businessLicenseServicesList =
+        await businessLicenseServices(NoParams());
+
+    final healthCertificatesServicesList =
+        await healthCertificatesServices(NoParams());
+    final helpServicesList = await helpServices(NoParams());
+    final honoringTheDeadServicesList =
+        await honoringTheDeadServices(NoParams());
+
     emit(state.copyWith(status: BlocStatus.closeLoading));
     emit(state.copyWith(
       status: BlocStatus.success,
       importantServices: importantServicesList.getOrElse(() => []),
       newServices: newServicesList.getOrElse(() => []),
-      municipalServices: municipalServicesList.getOrElse(() => []),
-      publicServices: publicServicesList.getOrElse(() => []),
+      islamicServices: islamicServicesList.getOrElse(() => []),
+      customerVoiceServices: customerVoiceServicesList.getOrElse(() => []),
+      businessLicenseServices: businessLicenseServicesList.getOrElse(() => []),
+      healthCertificatesServices:
+          healthCertificatesServicesList.getOrElse(() => []),
+      helpServices: helpServicesList.getOrElse(() => []),
+      honoringTheDeadServices: honoringTheDeadServicesList.getOrElse(() => []),
     ));
   }
 
