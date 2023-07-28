@@ -31,7 +31,7 @@ class DefaultAppBarWidget extends StatelessWidget
                 color: AppColor.blackModern900Light,
                 size: x ? 28 : null,
               ),
-              onPressed: () => Navigator.of(context).pop(),
+              onPressed: onBack ?? () => Navigator.of(context).pop(),
             )
           : null,
       centerTitle: false,

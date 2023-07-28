@@ -103,6 +103,17 @@ class MunicipalAdvisorRepositoryImplementation
   }
 
   @override
+  Future<Either<Failure, List<EngineeringOfficeEntity>>> getEngineeringOffices(
+      KeyParamsModel params) async {
+    try {
+      final data = await remoteDataSource.getEngineeringOffices(params);
+      return Right(data);
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage));
+    }
+  }
+
+  @override
   Future<Either<Failure, List<String>>> getIssuingPredefinedConditions() async {
     try {
       final data = await remoteDataSource.getIssuingPredefinedConditions();
@@ -200,6 +211,17 @@ class MunicipalAdvisorRepositoryImplementation
   }
 
   @override
+  Future<Either<Failure, bool>> saveInteractiveInfo(
+      InteractiveInfoParamsModel params) async {
+    try {
+      final data = await remoteDataSource.saveInteractiveInfo(params);
+      return Right(data);
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage));
+    }
+  }
+
+  @override
   Future<Either<Failure, List<ContractEntity>>> getShopOwnership(
       KeyParamsModel params) async {
     try {
@@ -281,6 +303,40 @@ class MunicipalAdvisorRepositoryImplementation
       UpdatePermitParamsModel params) async {
     try {
       final data = await remoteDataSource.updatePermit(params);
+      return Right(data);
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage));
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<ActivityDetailsEntity>>> getAdditionalActivities(
+      ActivityDetailsParamsModel params) async {
+    try {
+      final data = await remoteDataSource.getAdditionalActivities(params);
+      return Right(data);
+    } on NoDataFoundException {
+      return Left(NoDataFoundFailure());
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage));
+    }
+  }
+
+  @override
+  Future<Either<Failure, bool>> saveAdditionalActivities(
+      AdditionalActivitiesParamsModel params) async {
+    try {
+      final data = await remoteDataSource.saveAdditionalActivities(params);
+      return Right(data);
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage));
+    }
+  }
+  
+  @override
+  Future<Either<Failure, bool>> submitConsultation(KeyParamsModel params) async {
+    try {
+      final data = await remoteDataSource.submitConsultation(params);
       return Right(data);
     } on ServerException catch (error) {
       return Left(ServerFailure(error.errorMessage));

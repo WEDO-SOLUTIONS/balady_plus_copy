@@ -1,9 +1,6 @@
 import 'package:balady_plus/app/core/utils/common_functions.dart';
-import 'package:flutter/widgets.dart';
-
 import 'package:flutter/material.dart';
 import 'package:hijri/hijri_calendar.dart';
-import 'package:intl/intl.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../../core/utils/constants/app_colors.dart';
@@ -63,7 +60,7 @@ class HijriCalendarDateWidget extends StatelessWidget {
           fontSize: 15,
           fontWeight: FontWeight.w700,
           fontStyle: FontStyle.normal,
-          color: AppColor.darkTurquoise,
+          color: AppColor.primary900Light,
         ),
         headercolor: const Color(0xfffafaf8),
         cancel: Container(),
@@ -85,7 +82,7 @@ class HijriCalendarDateWidget extends StatelessWidget {
             maxValue: maxValue,
             customColumnType: CommonFunctions.isAppAR ? [2, 1, 0] : [0, 1, 2],
             value: selectedDate(currentDate)),
-        selectedTextStyle: const TextStyle(color: AppColor.darkTurquoise),
+        selectedTextStyle: const TextStyle(color: AppColor.primary900Light),
         onConfirm: (hijri_picker.Picker picker, List value) {
           //print((picker.adapter as HijriPicker.DateTimePickerAdapter).value);
           var date =

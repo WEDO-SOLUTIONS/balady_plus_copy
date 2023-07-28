@@ -13,6 +13,7 @@ class ActivityDetailsEntity extends Equatable {
   final num maximumArea;
   final bool isAtm;
   final bool isHotel;
+  final bool? homogeneous;
 
   const ActivityDetailsEntity({
     required this.activityId,
@@ -27,6 +28,7 @@ class ActivityDetailsEntity extends Equatable {
     required this.maximumArea,
     required this.isAtm,
     required this.isHotel,
+    required this.homogeneous,
   });
 
   @override
@@ -43,5 +45,6 @@ class ActivityDetailsEntity extends Equatable {
         maximumArea,
         isAtm,
         isHotel,
+        homogeneous,
       ];
 }

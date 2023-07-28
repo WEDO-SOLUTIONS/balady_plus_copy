@@ -70,6 +70,7 @@ class CustomTextFieldWidget extends StatelessWidget {
   final void Function(String)? onChanged;
   final void Function(String)? onSubmitted;
   final void Function()? onTap;
+  final void Function(PointerDownEvent)? onTapOutside;
   final String? Function(String?)? onValidate;
 
   const CustomTextFieldWidget(
@@ -301,6 +302,7 @@ class CustomTextFieldWidget extends StatelessWidget {
           onChanged: onChanged,
           onFieldSubmitted: onSubmitted,
           validator: onValidate,
+          onTapOutside: onTapOutside,
         ),
         if (spacerSize != null) CustomVerticalSpace(height: spacerSize!),
         SizedBox(height: bottomMargin),
@@ -478,7 +480,7 @@ class CustomTextFieldWidgetWithOptinal extends StatelessWidget {
                       filled: filled,
                       fillColor: readOnly ? AppColor.black400 : fillColor,
                       enabledBorder: _getBorder(borderColor),
-                      focusedBorder: _getBorder(AppColor.darkTurquoise),
+                      focusedBorder: _getBorder(AppColor.primary900Light),
                       errorBorder: _getBorder(AppColor.redBrown),
                       hintTextDirection: textDirection,
                       focusedErrorBorder: _getBorder(AppColor.redBrown),

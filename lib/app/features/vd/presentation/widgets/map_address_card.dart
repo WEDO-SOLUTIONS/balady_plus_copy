@@ -88,7 +88,7 @@ class _MapAddressCard extends State<MapAddressCard> {
                       !isButtonDisabled ? AppColor.black400 : AppColor.white,
                   btnColor: !isButtonDisabled
                       ? AppColor.black200
-                      : AppColor.darkTurquoise,
+                      : AppColor.primary900Light,
                   btnPressed:
                       !isButtonDisabled ? null : () => widget.submitLocation(),
                   btnText: ("lbl_confirm_incident_address").tr(),

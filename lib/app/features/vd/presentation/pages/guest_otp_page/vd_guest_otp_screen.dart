@@ -313,7 +313,7 @@ class ResendCodeWidget extends StatelessWidget {
       },
       child: CustomTextWidget(
         ("lbl_resend_verify_code").tr(),
-        fontColor: AppColor.darkTurquoise,
+        fontColor: AppColor.primary900Light,
         fontWeight: AppFontWeight.medium,
       ),
     );

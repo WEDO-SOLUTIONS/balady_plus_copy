@@ -66,7 +66,11 @@ class BottomSheetWithActions extends StatelessWidget {
                 ),
               ),
             ),
-            if (action != null) action!
+            if (action != null)
+              SafeArea(
+                top: false,
+                child: action!,
+              ),
           ],
         ),
       ),

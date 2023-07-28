@@ -39,7 +39,10 @@ class _UnitCountSelectorState extends State<UnitCountSelector> {
             CustomTextFieldWidget(
               borderColor: AppColor.primary900Light16,
               controller: _controller,
-              keyboardType: TextInputType.number,
+              keyboardType: const TextInputType.numberWithOptions(
+                signed: true,
+                decimal: true,
+              ),
               textInputAction: TextInputAction.done,
               inputFormatters: [
                 FilteringTextInputFormatter.digitsOnly,

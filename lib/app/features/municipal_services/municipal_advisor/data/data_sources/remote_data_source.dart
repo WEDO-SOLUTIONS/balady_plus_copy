@@ -14,6 +14,7 @@ import '../../municipal_advisor_exports.dart'
         AccommodationTypeModel,
         ActivityDetailsModel,
         ActivityDetailsParamsModel,
+        AdditionalActivitiesParamsModel,
         AttachmentEntity,
         AttachmentModel,
         AttachmentParamsModel,
@@ -28,10 +29,13 @@ import '../../municipal_advisor_exports.dart'
         ConditionsUrlsModel,
         ContractEntity,
         ContractModel,
+        EngineeringOfficeEntity,
+        EngineeringOfficeModel,
         FastflowConditionEntity,
         FastflowConditionModel,
         FinancialStudyParamsModel,
         GetLicenseYearsParamsModel,
+        InteractiveInfoParamsModel,
         IsicActivityModel,
         IsicSubActivityParamsModel,
         KeyParamsModel,
@@ -51,11 +55,17 @@ abstract class MunicipalAdvisorRemoteDataSource {
   Future<List<IsicActivityModel>> getIsicSubActivities(
     IsicSubActivityParamsModel params,
   );
+  Future<List<ActivityDetailsModel>> getAdditionalActivities(
+    ActivityDetailsParamsModel params,
+  );
   Future<ActivityDetailsModel> getActivityDetails(
     ActivityDetailsParamsModel params,
   );
   Future<List<AccommodationTypeEntity>> getAccommodationTypes();
   Future<String> getConsultationKey();
+  Future<bool> saveAdditionalActivities(
+    AdditionalActivitiesParamsModel params,
+  );
   Future<List<String>> getIssuingPredefinedConditions();
   Future<List<LicensePermitEntity>> getLicensePermits(KeyParamsModel params);
   Future<List<SupervisingAuthorityEntity>> getSupervisingAuthorities(
@@ -68,6 +78,9 @@ abstract class MunicipalAdvisorRemoteDataSource {
     KeyParamsModel params,
   );
   Future<List<CommercialOfficeEntity>> getCommercialOffices(
+    KeyParamsModel params,
+  );
+  Future<List<EngineeringOfficeEntity>> getEngineeringOffices(
     KeyParamsModel params,
   );
   Future<bool> saveConsultationProgress(
@@ -92,6 +105,9 @@ abstract class MunicipalAdvisorRemoteDataSource {
   Future<List<AttachmentEntity>> getConsultationAttachments(
     AttachmentParamsModel params,
   );
+  Future<bool> saveInteractiveInfo(
+    InteractiveInfoParamsModel params,
+  );
   Future<int> getMaxLicenseYears(
     KeyParamsModel params,
   );
@@ -107,6 +123,9 @@ abstract class MunicipalAdvisorRemoteDataSource {
   );
   Future<LicensePermitEntity> updatePermit(
     UpdatePermitParamsModel params,
+  );
+  Future<bool> submitConsultation(
+    KeyParamsModel params,
   );
 }
 
@@ -134,6 +153,9 @@ class MunicipalAdvisorRemoteDataSourceImplementation
           .toList();
     } on DioError catch (error) {
       "DioError $error".errorLog();
+      if (error is NoDataFoundException) {
+        return [];
+      }
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
@@ -168,6 +190,9 @@ class MunicipalAdvisorRemoteDataSourceImplementation
           .toList();
     } on DioError catch (error) {
       "DioError $error".errorLog();
+      if (error is NoDataFoundException) {
+        return [];
+      }
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
@@ -231,6 +256,9 @@ class MunicipalAdvisorRemoteDataSourceImplementation
           .toList();
     } on DioError catch (error) {
       "DioError $error".errorLog();
+      if (error is NoDataFoundException) {
+        return [];
+      }
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
@@ -287,6 +315,9 @@ class MunicipalAdvisorRemoteDataSourceImplementation
       return result.map<String>((e) => e as String).toList();
     } on DioError catch (error) {
       "DioError $error".errorLog();
+      if (error is NoDataFoundException) {
+        return [];
+      }
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
@@ -319,6 +350,9 @@ class MunicipalAdvisorRemoteDataSourceImplementation
           .toList();
     } on DioError catch (error) {
       "DioError $error".errorLog();
+      if (error is NoDataFoundException) {
+        return [];
+      }
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
@@ -351,6 +385,9 @@ class MunicipalAdvisorRemoteDataSourceImplementation
           .toList();
     } on DioError catch (error) {
       "DioError $error".errorLog();
+      if (error is NoDataFoundException) {
+        return [];
+      }
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
@@ -396,6 +433,9 @@ class MunicipalAdvisorRemoteDataSourceImplementation
       return [...predefinedConditionsResult, ...namesList];
     } on DioError catch (error) {
       "DioError $error".errorLog();
+      if (error is NoDataFoundException) {
+        return [];
+      }
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
@@ -428,6 +468,9 @@ class MunicipalAdvisorRemoteDataSourceImplementation
           .toList();
     } on DioError catch (error) {
       "DioError $error".errorLog();
+      if (error is NoDataFoundException) {
+        return [];
+      }
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
@@ -460,6 +503,44 @@ class MunicipalAdvisorRemoteDataSourceImplementation
           .toList();
     } on DioError catch (error) {
       "DioError $error".errorLog();
+      if (error is NoDataFoundException) {
+        return [];
+      }
+      throw ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+      );
+    } catch (ex) {
+      "Catched $ex".errorLog();
+      if (ex is ServerException) {
+        rethrow;
+      } else {
+        throw ServerException("errors_server_error_2".tr());
+      }
+    }
+  }
+
+  @override
+  Future<List<EngineeringOfficeEntity>> getEngineeringOffices(
+      KeyParamsModel params) async {
+    try {
+      final response = await webService.dio
+          .get('${ApiUrl.engineeringOffices}/${params.key}');
+
+      final data = response.data;
+      data.toString().successLog();
+
+      final result = ResponseBodyModel.fromMap(data).data?.result;
+
+      return result
+          .map<EngineeringOfficeEntity>(
+              (e) => EngineeringOfficeModel.fromMap(e as Map<String, dynamic>))
+          .toList();
+    } on DioError catch (error) {
+      "DioError $error".errorLog();
+      if (error is NoDataFoundException) {
+        return [];
+      }
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
@@ -492,6 +573,9 @@ class MunicipalAdvisorRemoteDataSourceImplementation
       return true;
     } on DioError catch (error) {
       "DioError $error".errorLog();
+      if (error is NoDataFoundException) {
+        return true;
+      }
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
@@ -522,6 +606,9 @@ class MunicipalAdvisorRemoteDataSourceImplementation
       return result;
     } on DioError catch (error) {
       "DioError $error".errorLog();
+      if (error is NoDataFoundException) {
+        return true;
+      }
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
@@ -552,6 +639,9 @@ class MunicipalAdvisorRemoteDataSourceImplementation
       return result.map<int>((e) => e as int).toList();
     } on DioError catch (error) {
       "DioError $error".errorLog();
+      if (error is NoDataFoundException) {
+        return [];
+      }
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
@@ -582,6 +672,9 @@ class MunicipalAdvisorRemoteDataSourceImplementation
           .toList();
     } on DioError catch (error) {
       "DioError $error".errorLog();
+      if (error is NoDataFoundException) {
+        return [];
+      }
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
@@ -639,6 +732,36 @@ class MunicipalAdvisorRemoteDataSourceImplementation
           .toList();
     } on DioError catch (error) {
       "DioError $error".errorLog();
+      if (error is NoDataFoundException) {
+        return [];
+      }
+      throw ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+      );
+    } catch (ex) {
+      "Catched $ex".errorLog();
+      throw ServerException("errors_server_error_2".tr());
+    }
+  }
+
+  @override
+  Future<bool> saveInteractiveInfo(InteractiveInfoParamsModel params) async {
+    try {
+      final response = await webService.dio.post(
+        "${ApiUrl.interactiveInfo}/${params.consultationKey}",
+        data: params.toMap(),
+      );
+
+      final data = response.data;
+      data.toString().successLog();
+
+      ResponseBodyModel.fromMap(data).data?.result;
+
+      return true;
+    } on DioError catch (error) {
+      "DioError $error".errorLog();
+
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
@@ -670,6 +793,9 @@ class MunicipalAdvisorRemoteDataSourceImplementation
           .toList();
     } on DioError catch (error) {
       "DioError $error".errorLog();
+      if (error is NoDataFoundException) {
+        return [];
+      }
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
@@ -696,6 +822,9 @@ class MunicipalAdvisorRemoteDataSourceImplementation
       return true;
     } on DioError catch (error) {
       "DioError $error".errorLog();
+      if (error is NoDataFoundException) {
+        return true;
+      }
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
@@ -724,6 +853,7 @@ class MunicipalAdvisorRemoteDataSourceImplementation
       return ConditionsUrlsModel.fromMap(result as Map<String, dynamic>);
     } on DioError catch (error) {
       "DioError $error".errorLog();
+
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
@@ -754,9 +884,8 @@ class MunicipalAdvisorRemoteDataSourceImplementation
     } on DioError catch (error) {
       "DioError $error".errorLog();
       if (error is NoDataFoundException) {
-        rethrow;
+        return [];
       }
-
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
@@ -811,6 +940,9 @@ class MunicipalAdvisorRemoteDataSourceImplementation
           .toList();
     } on DioError catch (error) {
       "DioError $error".errorLog();
+      if (error is NoDataFoundException) {
+        return [];
+      }
 
       throw ServerException(
         error.toString(),
@@ -837,6 +969,9 @@ class MunicipalAdvisorRemoteDataSourceImplementation
       return result.map<String>((e) => e as String).toList();
     } on DioError catch (error) {
       "DioError $error".errorLog();
+      if (error is NoDataFoundException) {
+        return [];
+      }
 
       throw ServerException(
         error.toString(),
@@ -862,6 +997,95 @@ class MunicipalAdvisorRemoteDataSourceImplementation
 
       final result = ResponseBodyModel.fromMap(data).data?.result;
       return LicensePermitModel.fromMap(result as Map<String, dynamic>);
+    } on DioError catch (error) {
+      "DioError $error".errorLog();
+
+      throw ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+      );
+    } catch (ex) {
+      "Catched $ex".successLog();
+      throw ServerException("errors_server_error_2".tr());
+    }
+  }
+
+  @override
+  Future<List<ActivityDetailsModel>> getAdditionalActivities(
+      ActivityDetailsParamsModel params) async {
+    try {
+      final response = await webService.dio.get(
+        '${ApiUrl.additionalActivities}/${params.id}',
+      );
+
+      final data = response.data;
+      data.toString().successLog();
+
+      final result = ResponseBodyModel.fromMap(data).data?.result;
+      return result
+          .map<ActivityDetailsModel>(
+              (e) => ActivityDetailsModel.fromMap(e as Map<String, dynamic>))
+          .toList();
+    } on DioError catch (error) {
+      "DioError $error".errorLog();
+      if (error is NoDataFoundException) {
+        return [];
+      }
+
+      throw ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+      );
+    } catch (ex) {
+      "Catched $ex".successLog();
+      throw ServerException("errors_server_error_2".tr());
+    }
+  }
+
+  @override
+  Future<bool> saveAdditionalActivities(
+      AdditionalActivitiesParamsModel params) async {
+    try {
+      final response = await webService.dio.post(
+        '${ApiUrl.additionalActivity}/${params.consultationKey}',
+        data: params.ids,
+      );
+
+      final data = response.data;
+      data.toString().successLog();
+
+      ResponseBodyModel.fromMap(data).data;
+
+      return true;
+    } on DioError catch (error) {
+      "DioError $error".errorLog();
+      if (error is NoDataFoundException) {
+        return true;
+      }
+
+      throw ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+      );
+    } catch (ex) {
+      "Catched $ex".successLog();
+      throw ServerException("errors_server_error_2".tr());
+    }
+  }
+
+  @override
+  Future<bool> submitConsultation(KeyParamsModel params) async {
+    try {
+      final response = await webService.dio.post(
+        '${ApiUrl.submitConsultation}/${params.key}',
+      );
+
+      final data = response.data;
+      data.toString().successLog();
+
+      ResponseBodyModel.fromMap(data).data;
+
+      return true;
     } on DioError catch (error) {
       "DioError $error".errorLog();
 

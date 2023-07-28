@@ -82,7 +82,11 @@ class PermitCheckBox extends StatelessWidget {
                               borderColor: AppColor.primary900Light16,
                               initialValue:
                                   state.sideWalkParams.length.toString(),
-                              keyboardType: TextInputType.number,
+                              keyboardType:
+                                  const TextInputType.numberWithOptions(
+                                signed: true,
+                                decimal: true,
+                              ),
                               textInputAction: TextInputAction.done,
                               inputFormatters: [
                                 FilteringTextInputFormatter.digitsOnly,
@@ -120,7 +124,11 @@ class PermitCheckBox extends StatelessWidget {
                               borderColor: AppColor.primary900Light16,
                               initialValue:
                                   state.sideWalkParams.width.toString(),
-                              keyboardType: TextInputType.number,
+                              keyboardType:
+                                  const TextInputType.numberWithOptions(
+                                signed: true,
+                                decimal: true,
+                              ),
                               textInputAction: TextInputAction.done,
                               inputFormatters: [
                                 FilteringTextInputFormatter.digitsOnly,
@@ -158,7 +166,11 @@ class PermitCheckBox extends StatelessWidget {
                               borderColor: AppColor.primary900Light16,
                               initialValue:
                                   state.sideWalkParams.days.toString(),
-                              keyboardType: TextInputType.number,
+                              keyboardType:
+                                  const TextInputType.numberWithOptions(
+                                signed: true,
+                                decimal: true,
+                              ),
                               textInputAction: TextInputAction.done,
                               inputFormatters: [
                                 FilteringTextInputFormatter.digitsOnly,
@@ -195,7 +207,11 @@ class PermitCheckBox extends StatelessWidget {
                               borderColor: AppColor.primary900Light16,
                               initialValue:
                                   state.nonFoodVehicleCount.toString(),
-                              keyboardType: TextInputType.number,
+                              keyboardType:
+                                  const TextInputType.numberWithOptions(
+                                signed: true,
+                                decimal: true,
+                              ),
                               textInputAction: TextInputAction.done,
                               inputFormatters: [
                                 FilteringTextInputFormatter.digitsOnly,
@@ -218,7 +234,6 @@ class PermitCheckBox extends StatelessWidget {
                     )
                   ],
                 ),
-              
             ],
           ),
         );

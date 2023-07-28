@@ -358,7 +358,7 @@ class AppStyle {
   static final locationCardTitleTextStyle = TextStyle(
     fontSize: 15.0,
     fontWeight: AppFontWeight.bold.fontWeight,
-    color: AppColor.darkTurquoise,
+    color: AppColor.primary900Light,
     fontFamily: fontFamily,
   );
 
@@ -400,7 +400,7 @@ class AppStyle {
   static final costTextStyle = TextStyle(
     fontSize: 16,
     fontWeight: AppFontWeight.bold.fontWeight,
-    color: AppColor.darkTurquoise,
+    color: AppColor.primary900Light,
     fontFamily: fontFamily,
   );
 
@@ -423,6 +423,7 @@ class AppStyle {
     fontWeight: AppFontWeight.semiBold.fontWeight,
     color: AppColor.blackModern500Light,
     fontFamily: fontFamily,
+    height: 1.5,
   );
 
   /// Padding

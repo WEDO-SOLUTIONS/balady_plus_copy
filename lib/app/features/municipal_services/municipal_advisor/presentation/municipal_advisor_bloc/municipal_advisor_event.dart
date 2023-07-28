@@ -92,6 +92,21 @@ class MunicipalAdvisorSelectIsicSubActivityEvent extends MunicipalAdvisorEvent {
   List<Object?> get props => [isicSubActivity];
 }
 
+class MunicipalAdvisorGetAdditionalActivitiesEvent
+    extends MunicipalAdvisorEvent {}
+
+class MunicipalAdvisorSelectAdditionalActivitiesEvent
+    extends MunicipalAdvisorEvent {
+  final List<ActivityDetailsEntity> additionalActivities;
+
+  const MunicipalAdvisorSelectAdditionalActivitiesEvent({
+    required this.additionalActivities,
+  });
+
+  @override
+  List<Object?> get props => [additionalActivities];
+}
+
 class MunicipalAdvisorGetActivityDetailsEvent extends MunicipalAdvisorEvent {}
 
 class MunicipalAdvisorGetAccommodationTypesEvent
@@ -184,6 +199,9 @@ class MunicipalAdvisorGetCleaningMechanismsEvent
     extends MunicipalAdvisorEvent {}
 
 class MunicipalAdvisorGetCommercialOfficesEvent extends MunicipalAdvisorEvent {}
+
+class MunicipalAdvisorGetEngineeringOfficesEvent
+    extends MunicipalAdvisorEvent {}
 
 class MunicipalAdvisorGetAdditionalLicenseInfoEvent
     extends MunicipalAdvisorEvent {}
@@ -372,4 +390,5 @@ class MunicipalAdvisorContinueToRequestPath extends MunicipalAdvisorEvent {
 
 class MunicipalAdvisorGetRequestFlowEvent extends MunicipalAdvisorEvent {}
 
+class MunicipalAdvisorSubmitConsultationEvent extends MunicipalAdvisorEvent {}
 class MunicipalAdvisorRetryEvent extends MunicipalAdvisorEvent {}

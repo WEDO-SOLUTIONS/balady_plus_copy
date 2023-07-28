@@ -81,7 +81,7 @@ class _CustomNetworkImageWidgetState extends State<CustomNetworkImageWidget> {
                 placeholderBuilder: (BuildContext context) {
                   return widget.placeHolderWidget ??
                       Container(
-                        color: AppColor.darkTurquoise,
+                        color: AppColor.primary900Light,
                         width: widget.imageWidth,
                         height: widget.imageHeight,
                       );
@@ -112,7 +112,7 @@ class _CustomNetworkImageWidgetState extends State<CustomNetworkImageWidget> {
                   if (loadingProgress == null) return child;
                   return widget.placeHolderWidget ??
                       Container(
-                        color: AppColor.darkTurquoise,
+                        color: AppColor.primary900Light,
                         width: widget.imageWidth,
                         height: widget.imageHeight,
                       );
@@ -122,7 +122,7 @@ class _CustomNetworkImageWidgetState extends State<CustomNetworkImageWidget> {
                   print(exception.toString());
                   return widget.placeHolderWidget ??
                       Container(
-                        color: AppColor.darkTurquoise,
+                        color: AppColor.primary900Light,
                         width: widget.imageWidth,
                         height: widget.imageHeight,
                       );
@@ -130,7 +130,7 @@ class _CustomNetworkImageWidgetState extends State<CustomNetworkImageWidget> {
               )
         : widget.placeHolderWidget ??
             Container(
-              color: AppColor.darkTurquoise,
+              color: AppColor.primary900Light,
               width: widget.imageWidth,
               height: widget.imageHeight,
             );
@@ -179,7 +179,7 @@ class _CustomCachedNetworkImage extends State<CustomCachedNetworkImage> {
             placeholder: (context, url) {
               return widget.placeHolderWidget ??
                   Container(
-                    color: AppColor.darkTurquoise,
+                    color: AppColor.primary900Light,
                     width: widget.imageWidth,
                     height: widget.imageHeight,
                   );
@@ -189,14 +189,14 @@ class _CustomCachedNetworkImage extends State<CustomCachedNetworkImage> {
               print(CommonFunctions.hashRequest(widget.imagePath, "GET"));
               return widget.placeHolderWidget ??
                   Container(
-                    color: AppColor.darkTurquoise,
+                    color: AppColor.primary900Light,
                     width: widget.imageWidth,
                     height: widget.imageHeight,
                   );
             })
         : widget.placeHolderWidget ??
             Container(
-              color: AppColor.darkTurquoise,
+              color: AppColor.primary900Light,
               width: widget.imageWidth,
               height: widget.imageHeight,
             );
