@@ -4,8 +4,6 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
-import 'states.dart';
-
 final _instance = DgisMapPlugin.instance;
 
 /// Class to comunicate with plugin. Every method can throw [PlatformException] whenever something
@@ -18,14 +16,7 @@ class DgisMapController {
 
   final int _viewId;
 
-  final _availableLayers = <_LayerState>[];
-
-  final _activeLayerState = ValueNotifier(LayerState.initial());
-
   final _evergisFilters = <dynamic>[];
-
-  /// Active [BusinessLayers] wrapped with [LayerState] for convinience
-  ValueListenable<LayerState> get activeLayerState => _activeLayerState;
 
   /// Zoom controls availability
   Stream<ZoomControlEnabledEvent> get zoomControlEnabledEvents =>
@@ -125,7 +116,6 @@ class DgisMapController {
   Future<InitializeMessage> initialize() async => _instance.initialize(_viewId);
 
   Future<void> dispose() async {
-    _activeLayerState.dispose();
     naviPedestrianController.dispose();
     naviZoomController.dispose();
     await _instance.dispose();
@@ -231,14 +221,18 @@ class DgisMapController {
   Future<List<ObjectInfoMessage>> search(
     String queryText, {
     required SortingTypeMessage sortingType,
+    required MarkerIconMessage searchMarker,
+    GeoRectMessage? searchRect,
     bool isOpenNow = false,
     int pageSize = 20,
   }) async {
     final response = await _instance.search(
       queryText,
+      searchMarker: searchMarker,
       sortingType: sortingType,
       weekTime: isOpenNow ? WeekTimeFactory.openNow() : null,
       pageSize: pageSize,
+      searchRect: searchRect,
     );
     return response.whereType<ObjectInfoMessage>().toList(growable: false);
   }
@@ -255,8 +249,7 @@ class DgisMapController {
       _instance.setMarkerOptions(markerOptions);
 
   /// Add marker to map.
-  Future<void> addMarker(Marker marker) =>
-      _instance.addMarker(marker);
+  Future<void> addMarker(Marker marker) => _instance.addMarker(marker);
 
   /// Add several markers to map.
   Future<void> addMarkers(List<Marker> markers) =>
@@ -277,8 +270,7 @@ class DgisMapController {
   }
 
   /// Add polygon to map.
-  Future<void> addPolygon(Polygon polygon) =>
-      _instance.addPolygon(polygon);
+  Future<void> addPolygon(Polygon polygon) => _instance.addPolygon(polygon);
 
   /// Add several polygons to map.
   Future<void> addPolygons(List<Polygon> polygons) =>
@@ -314,62 +306,15 @@ class DgisMapController {
   /// Remove all objects highlighted with [setHighlighted].
   Future<void> removeAllHighlights() => setHighlighted([]);
 
-  /// Fetch available EverGis layers.
-  Future<void> fetchLayers() async {
-    final response = await _instance.getLayers();
-
-    _availableLayers.clear();
-    _availableLayers.addAll(
-      response.whereType<EverGisLayerMessage>().map((layer) => _LayerState(
-            alias: layer.alias,
-            name: layer.name,
-          )),
-    );
-  }
-
-  /// Set visible layer.
-  void toggleLayerVisibility(BusinessLayers layer) {
-    switch (layer) {
-      case BusinessLayers.tourism:
-        for (var layer in _availableLayers) {
-          unawaited(_instance.setLayerVisible(layer.alias, false));
-        }
-        _activeLayerState.value = LayerState(
-          layer: BusinessLayers.tourism,
-          isSearchActive: true,
-        );
-        break;
-      case BusinessLayers.idle:
-        unawaited(_instance.setLayerVisible("bsWhiteParcelS", true));
-        // unawaited(_instance.setLayerVisible("bsopportunitiesP", false));
-        _activeLayerState.value = LayerState(
-          layer: BusinessLayers.idle,
-          isSearchActive: false,
-        );
-        break;
-      case BusinessLayers.io:
-        unawaited(_instance.setLayerVisible("bsWhiteParcelS", false));
-        // unawaited(_instance.setLayerVisible("bsopportunitiesP", true));
-        _activeLayerState.value = LayerState(
-          layer: BusinessLayers.io,
-          isSearchActive: false,
-        );
-        break;
-      case BusinessLayers.panoramas:
-        for (var layer in _availableLayers) {
-          unawaited(_instance.setLayerVisible(layer.alias, false));
-        }
-        _activeLayerState.value = LayerState(
-          layer: BusinessLayers.panoramas,
-          isSearchActive: false,
-        );
-        break;
-    }
-  }
-
   /// Returns suggest from directory. To run search excplicitly call [search].
-  Future<List<SuggestMessage>> fetchSuggest(String queryText) async {
-    final response = await _instance.fetchSuggests(queryText);
+  Future<List<SuggestMessage>> fetchSuggest(
+    String queryText, {
+    GeoRectMessage? searchRect,
+  }) async {
+    final response = await _instance.fetchSuggests(
+      queryText,
+      searchRect: searchRect,
+    );
 
     return response.whereType<SuggestMessage>().toList();
   }
@@ -390,7 +335,9 @@ class DgisMapController {
   }
 
   Future<int> overlappedBy(
-      VisibleRectMessage outer, VisibleRectMessage inner) async {
+    GeoRectMessage outer,
+    GeoRectMessage inner,
+  ) async {
     return _instance.overlappedBy(outer, inner);
   }
 
@@ -421,15 +368,19 @@ class DgisMapController {
   /// Runs search by index from list returned by [fetchSuggest].
   Future<List<ObjectInfoMessage>> searchBySuggest(
     int index, {
+    required MarkerIconMessage searchMarker,
     required SortingTypeMessage sortingType,
+    GeoRectMessage? searchRect,
     bool isOpenNow = false,
     int pageSize = 20,
   }) async {
     final response = await _instance.searchBySuggest(
       index,
+      searchMarker: searchMarker,
       sortingType: sortingType,
       weekTime: isOpenNow ? WeekTimeFactory.openNow() : null,
       pageSize: pageSize,
+      searchRect: searchRect,
     );
     return response.whereType<ObjectInfoMessage>().toList(growable: false);
   }
@@ -460,137 +411,14 @@ class DgisMapController {
   /// Does not apply filters immediately. Resets inner state.
   void resetCurrentEvergisFiltersState() => _evergisFilters.clear();
 
-  /// Explicitly clears active layer filters.
-  Future<void> clearEverGisFilters() {
-    return _instance.applyEverGisFilters(_activeLayerAlias, [], [], [], [], []);
-  }
-
-  /// Applies filters to selected EverGis layer. Select layer with [toggleLayerVisibility].
-  Future<void> applyEverGisFilters() async {
-    return _instance.applyEverGisFilters(
-      _activeLayerAlias,
-      _evergisFilters.whereType<EGStringFilterMessage>().toList(),
-      _evergisFilters.whereType<EGDoubleFilterMessage>().toList(),
-      _evergisFilters.whereType<EGIntFilterMessage>().toList(),
-      _evergisFilters.whereType<EGDateRangeFilterMessage>().toList(),
-      _evergisFilters.whereType<EGComplexDateFilterMessage>().toList(),
-    );
-  }
-
-  /// Adds filter to inner state. Call [applyEverGisFilters] explicitly after adding filter.
-  void addEvergisStringFilter(String attrName, String value) {
-    _evergisFilters.add(EGStringFilterMessage(
-      attrName: attrName,
-      value: value,
-    ));
-  }
-
-  /// Adds filter to inner state. Call [applyEverGisFilters] explicitly after adding filter.
-  void addEvergisIntFilter(String attrName, int value) {
-    _evergisFilters.add(EGIntFilterMessage(
-      attrName: attrName,
-      value: value,
-    ));
-  }
-
-  /// Adds filter to inner state. Call [applyEverGisFilters] explicitly after adding filter.
-  ///
-  /// Requires: [to] > [from]
-  void addEvergisDoubleRangeFilter({
-    required String attrName,
-    required double from,
-    required double to,
-  }) {
-    if (to <= from) return;
-
-    _evergisFilters.add(EGDoubleFilterMessage(
-      attrName: attrName,
-      from: from,
-      to: to,
-    ));
-  }
-
-  /// Adds filter to inner state. Call [applyEverGisFilters] explicitly after adding filter.
-  ///
-  /// Search bounds are: >= [from] AND <= [to]. One of bounds may be null.
-  /// If both [from] and [to] are null filter will not be applied.
-  void addEvergisDateRangeFilter({
-    required String attrName,
-    String? from,
-    String? to,
-  }) {
-    if (from == null && to == null) return;
-
-    _evergisFilters.add(EGDateRangeFilterMessage(
-      attrName: attrName,
-      from: from,
-      to: to,
-    ));
-  }
-
-  /// Adds filter to inner state. Call [applyEverGisFilters] explicitly after adding filter.
-  ///
-  /// Differs from [addEvergisDateRangeFilter] in that it uses
-  /// separate attributes for [from] and [to] bounds.
-  ///
-  /// Search bounds are: >= [from] AND <= [to]. One of bounds may be null.
-  /// If both [from] and [to] are null filter will not be applied.
-  void addEvergisComplexDateFilter({
-    required String attrFromName,
-    required String attrToName,
-    String? from,
-    String? to,
-  }) {
-    if (from == null && to == null) return;
-
-    _evergisFilters.add(EGComplexDateFilterMessage(
-      attrFromName: attrFromName,
-      attrToName: attrToName,
-      from: from,
-      to: to,
-    ));
-  }
-
   /// Shows search marker of object that was tapped last if any.
   Future<void> showLastSearchMarker() {
     return _instance.showLastSearchMarker();
   }
 
-  String get _activeLayerAlias {
-    switch (activeLayerState.value.layer) {
-      case BusinessLayers.idle:
-        return "bsWhiteParcelS";
-      case BusinessLayers.io:
-        return "bsopportunitiesP";
-      case BusinessLayers.tourism:
-      case BusinessLayers.panoramas:
-        throw Exception("Layer alias not defined for active layer");
-    }
-  }
-
   Future<void> setPublicTransportActiveRoute(int routeIndex) {
     return _instance.setPublicTransportActiveRoute(routeIndex);
   }
-}
-
-enum BusinessLayers { tourism, idle, io, panoramas }
-
-class _LayerState {
-  _LayerState({
-    required this.alias,
-    required this.name,
-    this.visible = false,
-  });
-
-  final String alias;
-  final String name;
-  final bool visible;
-
-  _LayerState copyWith({required bool visible}) => _LayerState(
-        alias: this.alias,
-        name: this.name,
-        visible: visible,
-      );
 }
 
 extension WeekTimeFactory on WeekTimeSearchMessage {

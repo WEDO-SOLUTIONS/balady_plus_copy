@@ -1,9 +1,11 @@
 package com.dgis.map.control_handlers
 
 import android.content.res.Resources.NotFoundException
+import android.util.Size
 import com.dgis.map.R
 import com.dgis.map.extensions.*
 import com.dgis.map.map_api.Messages.*
+import io.flutter.FlutterInjector
 import ru.dgis.sdk.Context
 import ru.dgis.sdk.DgisObjectId
 import ru.dgis.sdk.coordinates.GeoPoint
@@ -11,6 +13,7 @@ import ru.dgis.sdk.coordinates.GeoRect
 import ru.dgis.sdk.directory.*
 import ru.dgis.sdk.map.*
 import ru.dgis.sdk.positioning.DefaultLocationSource
+import java.io.FileNotFoundException
 import ru.dgis.sdk.map.Map as DgisMap
 
 class SearchHandler(
@@ -42,9 +45,8 @@ class SearchHandler(
         )
     }
 
-    private val searchMarkerIcon by unsafeLazy {
-        imageFromResource(sdkContext, R.drawable.ic_marker)
-    }
+    private var searchMarkerIcon: Image? = null
+    private var searchMarkerWidth: LogicalPixel? = null
 
     override fun close() {
         objectSearchFuture?.close()
@@ -81,7 +83,7 @@ class SearchHandler(
 
     fun fetchSuggests(
         queryText: String,
-        searchGeoRect: GeoRect,
+        searchGeoRect: GeoRect?,
         result: Result<List<SuggestMessage>>?
     ) {
         val suggestQuery = SuggestQueryBuilder.fromQueryText(queryText)
@@ -102,7 +104,8 @@ class SearchHandler(
 
     fun searchBySuggest(
         index: Int,
-        searchGeoRect: GeoRect,
+        searchMarker: MarkerIconMessage,
+        searchGeoRect: GeoRect?,
         weekTimeMessage: WeekTimeSearchMessage? = null,
         sortingType: SortingTypeMessage,
         pageSize: Int,
@@ -117,6 +120,7 @@ class SearchHandler(
 
         performSearch(
             builder = query,
+            searchMarker = searchMarker,
             searchGeoRect = searchGeoRect,
             weekTimeMessage = weekTimeMessage,
             sortingType = sortingType,
@@ -127,7 +131,8 @@ class SearchHandler(
 
     fun search(
         queryText: String,
-        searchGeoRect: GeoRect,
+        searchMarker: MarkerIconMessage,
+        searchGeoRect: GeoRect?,
         weekTimeMessage: WeekTimeSearchMessage? = null,
         sortingType: SortingTypeMessage,
         pageSize: Int,
@@ -137,6 +142,7 @@ class SearchHandler(
 
         performSearch(
             builder = query,
+            searchMarker = searchMarker,
             searchGeoRect = searchGeoRect,
             weekTimeMessage = weekTimeMessage,
             sortingType = sortingType,
@@ -238,12 +244,27 @@ class SearchHandler(
 
     private fun performSearch(
         builder: SearchQueryBuilder,
-        searchGeoRect: GeoRect,
+        searchMarker: MarkerIconMessage,
+        searchGeoRect: GeoRect?,
         weekTimeMessage: WeekTimeSearchMessage? = null,
         sortingType: SortingTypeMessage,
         pageSize: Int,
         result: Result<List<ObjectInfoMessage>>?
     ) {
+        try {
+            val asset =
+                FlutterInjector
+                    .instance()
+                    .flutterLoader()
+                    .getLookupKeyForAsset(searchMarker.path)
+
+            this.searchMarkerIcon = imageFromAsset(sdkContext, asset, Size(0, 0))
+        } catch (e: FileNotFoundException) {
+            result?.error(e)
+            return
+        }
+        this.searchMarkerWidth = LogicalPixel(value = searchMarker.width.toFloat())
+
         val query = builder.setSortingType(sortingType.toSortingType())
             .setPageSize(pageSize)
             .setDirectoryFilter(DirectoryFilter(weekTimeMessage.toFilter(), emptyList()))
@@ -286,6 +307,7 @@ class SearchHandler(
                         MarkerOptions(
                             position = markerInfo.geoPoint,
                             icon = searchMarkerIcon,
+                            iconWidth = searchMarkerWidth ?: LogicalPixel(value = 16f),
                             userData = markerInfo.objectId
                         )
                     )

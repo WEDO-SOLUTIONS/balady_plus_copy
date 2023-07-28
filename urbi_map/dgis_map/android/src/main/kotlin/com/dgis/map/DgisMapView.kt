@@ -5,6 +5,7 @@ import android.location.Location
 import android.util.Size
 import android.view.LayoutInflater
 import com.dgis.map.control_handlers.*
+import com.dgis.map.extensions.toGeoRect
 import com.dgis.map.extensions.toSdkAccuracy
 import com.dgis.map.extensions.unsafeLazy
 import com.dgis.map.map_api.Messages
@@ -49,7 +50,6 @@ class DgisMapView(
     private var objectTapHandler: ObjectTapHandler? = null
     private var visibleRectHandler: VisibleRectHandler? = null
     private var searchHandler: SearchHandler? = null
-    private val everGisLayerHandler by unsafeLazy { EvergisLayerHandler(sdkContext) }
     private var routeHandler: RouteHandler? = null
     private val navigationHandler by unsafeLazy {
         NavigationHandler(
@@ -83,7 +83,6 @@ class DgisMapView(
         locationControlHandler?.close()
         indoorControlHandler?.close()
         searchHandler?.close()
-        everGisLayerHandler.close()
         locationSource.deactivate()
         visibleRectHandler?.close()
         compassControlHandler?.close()
@@ -218,19 +217,17 @@ class DgisMapView(
 
     override fun search(
         queryText: String,
+        searchMarker: MarkerIconMessage,
         weekTime: WeekTimeSearchMessage?,
+        searchRect: GeoRectMessage?,
         sortingType: SortingTypeMessage,
         pageSize: Long,
         result: Messages.Result<List<ObjectInfoMessage>>?
     ) {
-        val map = map ?: kotlin.run {
-            result?.error(IllegalArgumentException("Map has not been initialized"))
-            return
-        }
-
         searchHandler?.search(
             queryText = queryText,
-            searchGeoRect = map.camera.visibleRect,
+            searchMarker = searchMarker,
+            searchGeoRect = searchRect?.toGeoRect(),
             weekTimeMessage = weekTime,
             sortingType = sortingType,
             pageSize = pageSize.toInt(),
@@ -392,27 +389,14 @@ class DgisMapView(
         )
     }
 
-    override fun getLayers(result: Messages.Result<List<EverGisLayerMessage>>?) {
-        val map = map ?: kotlin.run {
-            result?.error(Exception("Map has not been initialized"))
-            return
-        }
-
-        everGisLayerHandler.getLayers(map, result)
-    }
-
     override fun fetchSuggests(
         queryText: String,
+        searchRect: GeoRectMessage?,
         result: Messages.Result<List<SuggestMessage>>?
     ) {
-        val map = map ?: kotlin.run {
-            result?.error(IllegalArgumentException("Map has not been initialized"))
-            return
-        }
-
         searchHandler?.fetchSuggests(
             queryText = queryText,
-            searchGeoRect = map.camera.visibleRect,
+            searchGeoRect = searchRect?.toGeoRect(),
             result = result
         )
     }
@@ -442,19 +426,17 @@ class DgisMapView(
 
     override fun searchBySuggest(
         index: Long,
+        searchMarker: MarkerIconMessage,
         weekTime: WeekTimeSearchMessage?,
+        searchRect: GeoRectMessage?,
         sortingType: SortingTypeMessage,
         pageSize: Long,
         result: Messages.Result<List<ObjectInfoMessage>>?
     ) {
-        val map = map ?: kotlin.run {
-            result?.error(IllegalArgumentException("Map has not been initialized"))
-            return
-        }
-
         searchHandler?.searchBySuggest(
             index = index.toInt(),
-            searchGeoRect = map.camera.visibleRect,
+            searchMarker = searchMarker,
+            searchGeoRect = searchRect?.toGeoRect(),
             weekTimeMessage = weekTime,
             sortingType = sortingType,
             pageSize = pageSize.toInt(),
@@ -466,61 +448,18 @@ class DgisMapView(
         searchHandler?.getSuggestObject(index.toInt(), result)
     }
 
-    override fun setLayerVisible(alias: String, visible: Boolean, result: Messages.Result<Void>?) {
-        everGisLayerHandler.setLayerVisible(
-            alias = alias,
-            isVisible = visible,
-            result = result,
-        )
-    }
-
     override fun overlappedBy(
-        outerRect: VisibleRectMessage,
-        innerRect: VisibleRectMessage,
+        outerRect: GeoRectMessage,
+        innerRect: GeoRectMessage,
         result: Messages.Result<Long>?
     ) {
-        val outer = GeoRect(
-            southWestPoint = GeoPoint(
-                latitude = outerRect.southWest.latitude,
-                longitude = outerRect.southWest.longitude
-            ),
-            northEastPoint = GeoPoint(
-                latitude = outerRect.northEast.latitude,
-                longitude = outerRect.northEast.longitude
-            )
-        )
+        val outer = outerRect.toGeoRect()
 
-        val inner = GeoRect(
-            southWestPoint = GeoPoint(
-                latitude = innerRect.southWest.latitude,
-                longitude = innerRect.southWest.longitude
-            ),
-            northEastPoint = GeoPoint(
-                latitude = innerRect.northEast.latitude,
-                longitude = innerRect.northEast.longitude
-            )
-        )
+        val inner = innerRect.toGeoRect()
+
         val isOverlapped = if (outer.contains(inner)) 1L else 0
         result?.success(isOverlapped)
     }
-
-    override fun applyEverGisFilters(
-        layerAlias: String,
-        stringFilters: List<EGStringFilterMessage>,
-        doubleFilters: List<EGDoubleFilterMessage>,
-        intFilters: List<EGIntFilterMessage>,
-        dateRangeFilters: List<EGDateRangeFilterMessage>,
-        complexDateFilters: List<EGComplexDateFilterMessage>,
-        result: Messages.Result<Void>?
-    ) = everGisLayerHandler.applyEverGisFilters(
-        layerAlias,
-        stringFilters,
-        doubleFilters,
-        intFilters,
-        dateRangeFilters,
-        complexDateFilters,
-        result,
-    )
 
     override fun getDirectoryDynamicFilters(
         result: Messages.Result<List<FlagFilterMessage>>?

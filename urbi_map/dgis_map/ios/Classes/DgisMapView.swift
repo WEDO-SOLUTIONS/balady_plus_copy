@@ -36,7 +36,6 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
     private var objectTapHandler: ObjectTapHandler?
     private var visibleRectHandler: VisibleRectHandler?
     
-    private let everGisLayerHandler: EverGisLayerHandler
     private var compassControlHandler: CompassControlHandler?
     private var trafficAndParkingControlHandler: TrafficAndParkingControlHandler?
     
@@ -53,8 +52,8 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
     ) {
         self._view = UIView(frame: frame)
         self.sdk = sdk
+        let context = try! sdk.context
         self.registrar = registrar
-        self.everGisLayerHandler = EverGisLayerHandler(sdkContext: sdk.context)
         super.init()
         
         self.eventChannel = DgisStreamHandler(
@@ -118,10 +117,11 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         )
         
         self.searchHandler = SearchHandler(
-            searchManager: SearchManager.createOnlineManager(context: sdk.context),
+            searchManager: try! SearchManager.createOnlineManager(context: try! sdk.context),
             map: map,
             sdkContext: self.sdk,
-            imageFactory: self.sdk.imageFactory
+            imageFactory: try! self.sdk.makeImageFactory(),
+            registrar: self.registrar
         )
         
         self.compassControlHandler = CompassControlHandler(
@@ -177,7 +177,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         
         guard let assetPath = Bundle.main.path(forResource: assetKey, ofType: nil) else { return }
         
-        let styleFuture = self.sdk.makeStyleFactory().loadFile(path: assetPath)
+        let styleFuture = try! self.sdk.makeStyleFactory().loadFile(path: assetPath)
         cancelable.append(
             styleFuture.sink (
                 receiveValue: { [map = self.map] style in
@@ -195,7 +195,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
     }
     
     func overrideLocalesLocales(_ locales: [String], completion: @escaping (FlutterError?) -> Void) {
-        let manager = getLocaleManager(context: sdk.context)
+        let manager = getLocaleManager(context: try! sdk.context)
         manager.overrideLocales(locales: locales)
         
         completion(nil)
@@ -219,7 +219,16 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
             longitude: Longitude(value: cameraPosition.geoPoint.longitude.doubleValue)
         )
         desiredPosition.zoom = Zoom(value: cameraPosition.zoomValue.floatValue)
-        map.camera.position = desiredPosition
+        do {
+            try map.camera.setPosition(position: desiredPosition)
+        } catch {
+            completion(FlutterError(
+                code: "IllegalArgumentException",
+                message: "Map was not initialized properly",
+                details: nil
+            ))
+            return
+        }
         completion(nil)
         
     }
@@ -266,12 +275,14 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
     
     func searchQueryText(
         _ queryText: String,
+        searchMarker: MarkerIconMessage,
         weekTime: WeekTimeSearchMessage?,
+        searchRect: GeoRectMessage?,
         sortingType: SortingTypeMessage,
         pageSize: NSNumber,
         completion: @escaping ([ObjectInfoMessage]?, FlutterError?) -> Void
     ) {
-        guard let map = self.map, let searchHandler = self.searchHandler else {
+        guard let searchHandler = self.searchHandler else {
             completion(
                 nil,
                 FlutterError(
@@ -284,7 +295,8 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         
         searchHandler.search(
             queryText,
-            searchGeoRect: map.camera.visibleRect,
+            searchMarker: searchMarker,
+            searchGeoRect: searchRect?.geoRect,
             weekTimeMessage: weekTime,
             sortingType: sortingType,
             pageSize: pageSize.int32Value,
@@ -317,7 +329,6 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
                 height: markerOptions.height.doubleValue
             ),
             iconWidth: markerOptions.iconWidth.floatValue,
-            imageFactory: self.sdk.imageFactory,
             completion: completion
         )
     }
@@ -370,28 +381,6 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         )
     }
     
-    func getLayersWithCompletion(_ completion: @escaping ([EverGisLayerMessage]?, FlutterError?) -> Void) {
-        guard let map = self.map else {
-            completion(
-                nil,
-                FlutterError(
-                    code: "IllegalArgumentException",
-                    message: "Map was not initialized properly",
-                    details: nil
-                ))
-            return
-        }
-        self.everGisLayerHandler.getLayers(map, completion)
-    }
-    
-    func setLayerVisibleAlias(_ alias: String, visible: NSNumber, completion: @escaping (FlutterError?) -> Void) {
-        self.everGisLayerHandler.setLayerVisible(
-            alias: alias,
-            isVisible: visible.boolValue,
-            completion: completion
-        )
-    }
-    
     func removeAllMarkers(completion: @escaping (FlutterError?) -> Void) {
         self.objectTapHandler?.removeAllMarkers()
         completion(nil)
@@ -414,9 +403,10 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
     
     func fetchSuggestsQueryText(
         _ queryText: String,
+        searchRect: GeoRectMessage?,
         completion: @escaping ([SuggestMessage]?, FlutterError?) -> Void
     ) {
-        guard let map = self.map, let searchHandler = self.searchHandler else {
+        guard let searchHandler = self.searchHandler else {
             completion(
                 nil,
                 FlutterError(
@@ -429,7 +419,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         
         searchHandler.fetchSuggests(
             queryText: queryText,
-            searchGeoRect: map.camera.visibleRect,
+            searchGeoRect: searchRect?.geoRect,
             completion: completion
         )
     }
@@ -486,26 +476,10 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         completion(nil)
     }
     
-    func overlapped(byOuterRect outerRect: VisibleRectMessage, innerRect: VisibleRectMessage, completion: @escaping (NSNumber?, FlutterError?) -> Void) {
-        let outer = GeoRect(
-            southWestPoint:
-                GeoPoint(
-                    latitude: Latitude(value: outerRect.southWest.latitude.doubleValue),
-                    longitude: Longitude(value: outerRect.southWest.longitude.doubleValue)),
-            northEastPoint:
-                GeoPoint(
-                    latitude: Latitude(value: outerRect.northEast.latitude.doubleValue),
-                    longitude: Longitude(value: outerRect.northEast.longitude.doubleValue)))
+    func overlapped(byOuterRect outerRect: GeoRectMessage, innerRect: GeoRectMessage, completion: @escaping (NSNumber?, FlutterError?) -> Void) {
+        let outer = outerRect.geoRect
         
-        let inner = GeoRect(
-            southWestPoint:
-                GeoPoint(
-                    latitude: Latitude(value: innerRect.southWest.latitude.doubleValue),
-                    longitude: Longitude(value: innerRect.southWest.longitude.doubleValue)),
-            northEastPoint:
-                GeoPoint(
-                    latitude: Latitude(value: innerRect.northEast.latitude.doubleValue),
-                    longitude: Longitude(value: innerRect.northEast.longitude.doubleValue)))
+        let inner = innerRect.geoRect
         
         completion(outer.contains(rect2: inner) ? 1 : 0, nil)
     }
@@ -527,12 +501,14 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
     
     func search(
         bySuggestIndex index: NSNumber,
+        searchMarker: MarkerIconMessage,
         weekTime: WeekTimeSearchMessage?,
+        searchRect: GeoRectMessage?,
         sortingType: SortingTypeMessage,
         pageSize: NSNumber,
         completion: @escaping ([ObjectInfoMessage]?, FlutterError?) -> Void
     ) {
-        guard let map = self.map, let searchHandler = self.searchHandler else {
+        guard let searchHandler = self.searchHandler else {
             completion(
                 nil,
                 FlutterError(
@@ -545,10 +521,11 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         
         searchHandler.search(
             bySuggestIndex: index.intValue,
+            searchMarker: searchMarker,
             weekTime: weekTime,
             sortingType: sortingType,
             pageSize: pageSize.int32Value,
-            searchGeoRect: map.camera.visibleRect,
+            searchGeoRect: searchRect?.geoRect,
             completion: completion
         )
     }
@@ -588,30 +565,9 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         )
     }
     
-    // MARK: - EverGis layer filters
-    func applyEverGisFiltersLayerAlias(
-        _ layerAlias: String,
-        stringFilters: [EGStringFilterMessage],
-        doubleFilters: [EGDoubleFilterMessage],
-        intFilters: [EGIntFilterMessage],
-        dateRangeFilters: [EGDateRangeFilterMessage],
-        complexDateFilters: [EGComplexDateFilterMessage],
-        completion: @escaping (FlutterError?) -> Void
-    ) {
-        self.everGisLayerHandler.applyEverGisFiltersLayerAlias(
-            layerAlias: layerAlias,
-            stringFilters: stringFilters,
-            doubleFilters: doubleFilters,
-            intFilters: intFilters,
-            dateRangeFilters: dateRangeFilters,
-            complexDateFilters: complexDateFilters,
-            completion: completion
-        )
-    }
-    
     // MARK: - Private methods
     private func createMapView(_ sdk:  DGis.Container) {
-        guard let mapFactory = try? sdk.makeMapFactory(options: MapOptions.default) else {
+        guard let mapFactory = try? sdk.makeMapFactory(options: MapOptions.default), let context = try? sdk.context else {
             self.wasInitialized = false
             self.errorDescription = "Error creating MapFactory"
             return
@@ -619,7 +575,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         
         let map = mapFactory.map
         map.addSource(source: MyLocationMapObjectSource(
-            context: sdk.context,
+            context: context,
             directionBehaviour: .followMagneticHeading
         ))
         self.map = map
@@ -661,7 +617,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
                     logicalPixel: LogicalPixel(value: 50),
                     maxZoom: Zoom(value: 18)
                 ),
-            imageFactory: self.sdk.imageFactory,
+            imageFactory: try! self.sdk.makeImageFactory(),
             routeHandler: self.routeHandler,
             eventChannel: eventChannel,
             registrar: self.registrar
@@ -731,8 +687,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
     }
     
     func startFreeRoam(completion: @escaping (FlutterError?) -> Void) {
-        self.navigationHandler?.startFreeRoam()
-        completion(nil)
+        self.navigationHandler?.startFreeRoam(completion: completion)
     }
     
     func stopFreeRoam(completion: @escaping (FlutterError?) -> Void) {

@@ -128,7 +128,7 @@ extension ObjectInfoMessage {
     }
     
     fileprivate func buildEntranceIds(_ response: DirectoryObject) {
-        self.entranceIds = response.buildingEntrances.map {
+        self.entranceIds = response.entrances.map {
             entrance in
             return DgisObjectIdMessage.make(
                 withObjectId: NSNumber(value: entrance.id.objectId),

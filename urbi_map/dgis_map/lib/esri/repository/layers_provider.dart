@@ -3,7 +3,7 @@ import 'package:dgis_map/esri/api/esri_api.dart';
 import 'package:dgis_map/esri/data/layer_data.dart';
 import 'package:dgis_map/esri/data/layer_info.dart';
 import 'package:dgis_map/esri/data/layer_item.dart';
-import 'package:dgis_map/extensions/visible_rect_mesasge_ext.dart';
+import 'package:dgis_map/extensions/geo_rect_mesasge_ext.dart';
 
 class LayersProvider {
   factory LayersProvider.get() => _instance;
@@ -12,7 +12,7 @@ class LayersProvider {
 
   static final LayersProvider _instance = LayersProvider._();
 
-  VisibleRectMessage? _lastProceedRect;
+  GeoRectMessage? _lastProceedRect;
 
   Future<List<LayerItem>> layers() async {
     final layers = await EsriApi.get().getLayers();
@@ -29,8 +29,11 @@ class LayersProvider {
     return data;
   }
 
-  Future<LayerData?> getLayerDataForViewport(LayerInfo info,
-      DgisMapController controller, VisibleRectMessage visibleRect) async {
+  Future<LayerData?> getLayerDataForViewport(
+    LayerInfo info,
+    DgisMapController controller,
+    GeoRectMessage visibleRect,
+  ) async {
     final isOverlapped = _lastProceedRect != null
         ? await controller.overlappedBy(_lastProceedRect!, visibleRect) == 1
             ? true

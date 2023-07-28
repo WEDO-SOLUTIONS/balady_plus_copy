@@ -106,7 +106,9 @@ abstract class DgisMapPlugin extends PlatformInterface {
 
   Future<List<ObjectInfoMessage?>> search(
     String queryText, {
+    required MarkerIconMessage searchMarker,
     required SortingTypeMessage sortingType,
+    GeoRectMessage? searchRect,
     required int pageSize,
     WeekTimeSearchMessage? weekTime,
   });
@@ -155,17 +157,18 @@ abstract class DgisMapPlugin extends PlatformInterface {
 
   Future<void> setHighlighted(List<DgisObjectIdMessage> objectIds);
 
-  Future<List<EverGisLayerMessage?>> getLayers();
-
-  Future<void> setLayerVisible(String alias, bool visible);
-
-  Future<List<SuggestMessage?>> fetchSuggests(String queryText);
+  Future<List<SuggestMessage?>> fetchSuggests(
+    String queryText, {
+    GeoRectMessage? searchRect,
+  });
 
   Future<ObjectInfoMessage> getSuggestObject(int index);
 
   Future<List<ObjectInfoMessage?>> searchBySuggest(
     int index, {
+    required MarkerIconMessage searchMarker,
     required SortingTypeMessage sortingType,
+    GeoRectMessage? searchRect,
     required int pageSize,
     WeekTimeSearchMessage? weekTime,
   });
@@ -192,7 +195,9 @@ abstract class DgisMapPlugin extends PlatformInterface {
   Future<void> stopNavigation();
 
   Future<int> overlappedBy(
-      VisibleRectMessage outerRect, VisibleRectMessage innerRect);
+    GeoRectMessage outerRect,
+    GeoRectMessage innerRect,
+  );
 
   Future<List<FlagFilterMessage?>> getDirectoryDynamicFilters();
 
@@ -201,15 +206,6 @@ abstract class DgisMapPlugin extends PlatformInterface {
     required WorkingFilterMessage isOpenFilter,
     required SortingTypeMessage sortingType,
   });
-
-  Future<void> applyEverGisFilters(
-    String layerAlias,
-    List<EGStringFilterMessage> stringFilters,
-    List<EGDoubleFilterMessage> doubleFilters,
-    List<EGIntFilterMessage> intFilters,
-    List<EGDateRangeFilterMessage> dateRangeFilters,
-    List<EGComplexDateFilterMessage> complexDateFilters,
-  );
 
   Future<void> setPanoramasPaddings(CameraSetPaddingMessage message);
 
