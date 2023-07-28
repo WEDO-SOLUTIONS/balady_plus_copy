@@ -25,7 +25,7 @@ class MapViewModel extends BaseViewModel {
 
   late DgisMapController controller;
 
-  final viewHomeBottomSheet = ValueNotifier(true);
+  final viewHomeBottomSheet = ValueNotifier(false);
 
   final locationEnabledState = ValueNotifier(false);
   final generalControlsState = ValueNotifier(false);
@@ -38,7 +38,6 @@ class MapViewModel extends BaseViewModel {
   final _subscriptions = <StreamSubscription>[];
 
   StreamSubscription? _debounce;
-
 
   double zoomValue = 13;
 
@@ -120,26 +119,6 @@ class MapViewModel extends BaseViewModel {
     }
 
     //
-    switch (controller.activeLayerState.value.layer) {
-      case BusinessLayers.tourism:
-        if (event is ObjectTapEvent) {
-          // selectedPointId.value = DgisObjectIdMessage(
-          //   objectId: event.dgisObjectId.objectId,
-          //   entranceId: event.dgisObjectId.entranceId,
-          // );
-
-        }
-        return;
-      case BusinessLayers.idle:
-        // if (event is IdleTapEvent) unawaited(_handleIdleEvent(event));
-        return;
-      case BusinessLayers.io:
-        // if (event is IoTapEvent) unawaited(_handleIoEvent(event));
-        return;
-      case BusinessLayers.panoramas:
-        // handles by [_onPanoramaTap]
-        return;
-    }
   }
 
   //////////////////////////////////////////////  search
@@ -152,6 +131,8 @@ class MapViewModel extends BaseViewModel {
       List<ObjectInfoMessage> data = await controller.search(
         queryText,
         sortingType: SortingTypeMessage.byDistance,
+        searchMarker:
+            MarkerIconMessage(path: Constants.icMarkerRestaurant, width: 30),
         isOpenNow: true,
       );
       // if (data.isNotEmpty) {
@@ -251,7 +232,6 @@ class MapViewModel extends BaseViewModel {
         case 6:
           iconPath = Constants.icMarkerGasStations;
           break;
-
       }
       final markers = pointList.map(
         (element) {
@@ -279,10 +259,11 @@ class MapViewModel extends BaseViewModel {
           );
         },
       ).toList();
-      await  controller.removeAll();
+      await controller.removeAll();
       controller.addMarkers(markers);
     }
   }
+
   void addPolylineWithPoint(List? pointList, int layerId) async {
     if (pointList != null && pointList.isNotEmpty) {
       final List<Polyline> polylines = [];
@@ -307,7 +288,7 @@ class MapViewModel extends BaseViewModel {
                   ),
                 ),
               );
-            } ,
+            },
           ),
         );
       }
@@ -315,6 +296,7 @@ class MapViewModel extends BaseViewModel {
       unawaited(controller.addPolylines(polylines));
     }
   }
+
   void addPolygonWithPoint(List? pointList, int layerId) async {
     if (pointList != null && pointList.isNotEmpty) {
       final List<Polygon> polygons = [];
@@ -327,9 +309,7 @@ class MapViewModel extends BaseViewModel {
               strokeWidth: 2,
               strokeColor: -16711936,
               color: const Color.fromRGBO(23, 123, 244, 95).value,
-              contours: [
-                element.paths
-              ],
+              contours: [element.paths],
             ),
             onTap: () {
               selectedPoint.value = element;
@@ -342,7 +322,7 @@ class MapViewModel extends BaseViewModel {
                   ),
                 ),
               );
-            } ,
+            },
           ),
         );
       }

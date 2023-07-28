@@ -1,4 +1,5 @@
 import 'package:balady_plus/app/core/utils/constants/route_names.dart';
+import 'package:flutter/material.dart';
 
 Map<String, dynamic> servicesConfig = {
   "islamic_services": [
@@ -112,7 +113,7 @@ Map<String, dynamic> servicesConfig = {
       "order": 15,
       "isNew": false,
       "isImportant": false,
-      "action": {"type": "page", "value": "/issue-health-certificate"},
+      "action": {"type": "page", "value": RouteName.newHealthCertificatePage},
       "ar": {"title": "إصدار شهادة صحية", "description": null, "tag": null},
       "en": {
         "title": "Issue Health Certificate",

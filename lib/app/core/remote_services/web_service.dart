@@ -338,6 +338,7 @@ class WebService {
         "verifyingKEY": verifyingKEY,
         "SSOToken": CommonProperties.token ?? ""
       };
+      print(headers);
       if (extraHeadersParams != null) headers.addAll(extraHeadersParams);
       var response =
           await http.post(Uri.parse(requestUrl), body: data, headers: headers);

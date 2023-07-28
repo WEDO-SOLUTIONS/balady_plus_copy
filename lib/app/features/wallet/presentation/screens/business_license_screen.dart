@@ -184,7 +184,9 @@ class _BusinessLicenseFooter extends StatelessWidget {
               alignment: Alignment.bottomCenter,
               child: ElevatedButtonWidget.licenseDetails(
                 onPressed: () {
-                  context.read<WalletDetailsBloc>().add(ShareWalletItem());
+                  context
+                      .read<WalletDetailsBloc>()
+                      .add(ShareWalletItem(selectedIetm: state.selectedItem));
                 },
               ),
             ),
