@@ -89,6 +89,7 @@ class LayersRepositories {
           // "text": "",
           // "objectIds": "",
           "outFields": "*",
+          "resultOffset" : '50',
           /////////////////// to can send lat and long
           "geometryType": "esriGeometryEnvelope" , //"esriGeometryPoint",
           "geometry": "$southWestLongitude,$southWestLlatitude,$northEastLongitude,$northEastLatitude",
