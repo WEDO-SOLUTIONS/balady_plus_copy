@@ -1,12 +1,10 @@
 package com.dgis.map.control_handlers
 
 import android.content.res.Resources.NotFoundException
-import android.util.Size
-import com.dgis.map.R
 import com.dgis.map.extensions.*
-import com.dgis.map.map_api.Messages
 import com.dgis.map.map_api.Messages.*
-import io.flutter.FlutterInjector
+import org.json.JSONObject
+import org.json.JSONTokener
 import ru.dgis.sdk.Context
 import ru.dgis.sdk.DgisObjectId
 import ru.dgis.sdk.coordinates.GeoPoint
@@ -14,8 +12,9 @@ import ru.dgis.sdk.coordinates.GeoRect
 import ru.dgis.sdk.directory.*
 import ru.dgis.sdk.map.*
 import ru.dgis.sdk.positioning.DefaultLocationSource
-import java.io.FileNotFoundException
+import java.net.URL
 import java.util.UUID
+import kotlin.concurrent.thread
 import ru.dgis.sdk.map.Map as DgisMap
 
 class SearchHandler(
@@ -24,6 +23,7 @@ class SearchHandler(
     private val searchManager: SearchManager,
     private val locationSource: DefaultLocationSource,
 ) : AutoCloseable {
+    val twinsApiUrl = "https://apiservices.balady.gov.sa/v1/urbi-services/twins-api/v1/twins/search/dgis"
 
     private var objectSearchFuture: AutoCloseable? = null
     private var searchFuture: AutoCloseable? = null
@@ -51,7 +51,33 @@ class SearchHandler(
                     return@onResult
                 }
 
-                result?.success(response.toMessage())
+                thread {
+                    val url = URL(
+                        "${this@SearchHandler.twinsApiUrl}?dgis_id=${objectId.objectId}&partner_code=momrah&key=28ed92f1-de4b-4060-b159-2dc19e9b8bf5"
+                    )
+                    val twinsResponse =  JSONTokener(url.readText()).nextValue() as JSONObject
+                    val code = twinsResponse.getJSONObject("meta").getInt("code")
+
+                    if (code != 200) {
+                        result?.error(
+                            IllegalArgumentException(
+                                "TwinsAPI Error: ${twinsResponse.getJSONObject("meta").getString("message")}"
+                            )
+                        )
+                        return@thread
+                    }
+
+                    val items = twinsResponse.getJSONObject("result").getJSONArray("items")
+                    if (items.length() == 1) {
+                        val twinsArray = items.getJSONObject(0).getJSONArray("twins")
+                        val twins = Array<String>(twinsArray.length()) { i ->
+                            twinsArray.getJSONObject(i).getString("partner_id")
+                        }.toList()
+                        result?.success(response.toMessage(twins))
+                    } else {
+                        result?.success(response.toMessage(null))
+                    }
+                }
             }
             onError { result?.error(it) }
         }
