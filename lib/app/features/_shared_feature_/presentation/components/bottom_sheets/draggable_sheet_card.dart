@@ -1,12 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
+import 'package:provider/provider.dart';
 
-import '../../../../../core/utils/utils_exports.dart' show AppColor;
+import '../../../../../core/utils/constants/constants.dart';
+import '../../../../../core/utils/utils_exports.dart' show AppColor, IconPath;
+import '../../../../home_page/presentation/pages/home_page.dart';
+import '../../../../home_page/presentation/widgets/home_app_bar/circle_icon.dart';
+import '../../../../map_page/presentation/dialogs/map_layer_dialog.dart';
+import '../../../../map_page/presentation/mvvm/layers_gis_view_model.dart';
+import '../../../../map_page/presentation/mvvm/map_view_model.dart';
 import '../../../shared_feature_exports.dart'
-    show DrawLineWidget, GlowingScrollWidget;
+    show
+        BottomSheetDialog,
+        BottomSheetWithActions,
+        DrawLineWidget,
+        GlowingScrollWidget;
 
 class DraggableSheetCard extends StatefulWidget {
   final double minSize;
   final double maxSize;
+  final double initialChildSize;
   final double? cornerRadius;
   final List<Widget> children;
 
@@ -14,6 +28,7 @@ class DraggableSheetCard extends StatefulWidget {
     super.key,
     required this.minSize,
     required this.maxSize,
+    required this.initialChildSize,
     this.cornerRadius,
     required this.children,
   });
@@ -24,9 +39,35 @@ class DraggableSheetCard extends StatefulWidget {
 
 class _DraggableSheetCardState extends State<DraggableSheetCard> {
   final draggableScrollableController = DraggableScrollableController();
+  @override
+  void initState() {
+    super.initState();
+
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      MapViewModel mapViewModel =
+          Provider.of<MapViewModel>(context, listen: false);
+
+      mapViewModel.bottomSheetSize.value = draggableScrollableController.pixels;
+      mapViewModel.bottomSheetSize.notifyListeners();
+
+      draggableScrollableController.addListener(() {
+        mapViewModel.bottomSheetSize.value =
+            draggableScrollableController.pixels;
+        mapViewModel.bottomSheetSize.notifyListeners();
+        print(mapViewModel.bottomSheetSize.value);
+      });
+    });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+  }
 
   @override
   Widget build(BuildContext context) {
+    LayersGisViewModel layersModel = context.watch<LayersGisViewModel>();
+
     return Align(
       alignment: Alignment.bottomCenter,
       child: Container(
@@ -59,7 +100,7 @@ class _DraggableSheetCardState extends State<DraggableSheetCard> {
           ),
           child: DraggableScrollableSheet(
             controller: draggableScrollableController,
-            initialChildSize: widget.minSize,
+            initialChildSize: widget.initialChildSize,
             minChildSize: widget.minSize,
             maxChildSize: widget.maxSize,
             expand: false,
@@ -113,5 +154,16 @@ class _DraggableSheetCardState extends State<DraggableSheetCard> {
   void dispose() {
     draggableScrollableController.dispose();
     super.dispose();
+  }
+
+  void showMainLayersDialog(
+      BuildContext context, LayersGisViewModel layersModel) async {
+    BottomSheetDialog.showDraggableSheet(
+      context,
+      child: BottomSheetWithActions(
+        title: "اختر نوع الخريطة".tr(),
+        body: MapLayersDialog(layersModel: layersModel),
+      ),
+    );
   }
 }

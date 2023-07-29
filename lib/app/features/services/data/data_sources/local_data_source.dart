@@ -71,10 +71,11 @@ class ServicesLocalDataSourceImplementation implements ServicesLocalDataSource {
 
   @override
   Future<List<ServiceEntity>> getHonoringTheDeadServices() async {
-    if (_honoringTheDeadServices.isEmpty) {
-      await _loadServices();
-    }
-    return _honoringTheDeadServices;
+    // if (_honoringTheDeadServices.isEmpty) {
+    //   await _loadServices();
+    //  }
+    //  return _honoringTheDeadServices;
+    return [];
   }
 
   @override

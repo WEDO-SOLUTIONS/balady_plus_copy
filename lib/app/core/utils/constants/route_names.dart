@@ -113,4 +113,6 @@ class RouteName {
   static const weatherMainPage = '/weather_main_page';
   // -------  Map ---------
   static const MapDetailsPage = '/mapDetailsPage';
+  static const DiggingMapDetailsPage = '/DiggingMapDetailsPage';
+  static const InvestmentMapDetailsPage = '/InvestmentMapDetailsPage';
 }

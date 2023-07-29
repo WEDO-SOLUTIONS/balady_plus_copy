@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
 import 'package:balady_plus/app/features/map_page/data/data_sources/point_layers_data.dart';
 import 'package:balady_plus/app/features/map_page/presentation/dialogs/map_layer_dialog.dart';
 import 'package:dgis_map/library.dart';
@@ -63,33 +64,60 @@ class HomeMap extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                GestureDetector(
-                  onTap: () => mapViewModel.getLocationAndMoveCamera(),
-                  child: const CircleIcon(
-                    icon: IconPath.currentLocation,
-                    iconColor: AppColor.white,
-                    backgroundColor: AppColor.primary900Light,
-                  ),
-                ),
+                ValueListenableBuilder<double>(
+                    valueListenable: mapViewModel.bottomSheetSize,
+                    builder: (_, visible, __) {
+                      double bottomSize =
+                          (mapViewModel.bottomSheetSize.value <= 170 &&
+                                  mapViewModel.selectedPoint.value != null)
+                              ? 160
+                              : mapViewModel.bottomSheetSize.value;
+                      return Container(
+                        margin: EdgeInsets.only(bottom: bottomSize),
+                        child: Column(
+                          children: [
+                            GestureDetector(
+                              onTap: () =>
+                                  mapViewModel.getLocationAndMoveCamera(),
+                              child: const CircleIcon(
+                                icon: IconPath.currentLocation,
+                                iconColor: AppColor.white,
+                                backgroundColor: AppColor.primary900Light,
+                              ),
+                            ),
+                            Constants.verticalSpaceSmall,
+                            GestureDetector(
+                              onTap: () =>
+                                  showMainLayersDialog(context, layersModel),
+                              child: const CircleIcon(
+                                icon: IconPath.layers,
+                                iconColor: AppColor.white,
+                                backgroundColor: AppColor.primary900Light,
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    }),
                 Constants.verticalSpaceSmall,
-                GestureDetector(
-                  onTap: () => showMainLayersDialog(context, layersModel),
-                  child: const CircleIcon(
-                    icon: IconPath.layers,
-                    iconColor: AppColor.white,
-                    backgroundColor: AppColor.primary900Light,
-                  ),
-                ),
-                Constants.verticalSpaceSmall,
-                ValueListenableBuilder<PointLayersData?>(
-                  valueListenable: mapViewModel.selectedPoint,
-                  builder: (_, selectedPoint, __) {
-                    return selectedPoint == null
-                        ? const SizedBox()
-                        : MapLayerCard();
-                  },
-                ),
               ],
+            ),
+          ),
+        ),
+        Align(
+          alignment: Alignment.bottomLeft,
+          child: Padding(
+            padding: const EdgeInsets.only(
+                left: Constants.semiMediumPadding,
+                right: Constants.semiMediumPadding,
+                bottom: Constants.largePadding),
+            child: ValueListenableBuilder<PointLayersData?>(
+              valueListenable: mapViewModel.selectedPoint,
+              builder: (_, selectedPoint, __) {
+                return selectedPoint == null
+                    ? const SizedBox()
+                    : MapLayerCard();
+              },
             ),
           ),
         ),
@@ -97,21 +125,7 @@ class HomeMap extends StatelessWidget {
           valueListenable: mapViewModel.isSearchLoading,
           builder: (_, visible, __) {
             return visible
-                ? Center(
-                    child: Card(
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            const CircularProgressIndicator(),
-                            const SizedBox(height: 8),
-                            Text('loading'.tr()),
-                          ],
-                        ),
-                      ),
-                    ),
-                  )
+                ? Center(child: CustomCircularLoadingWidget())
                 : const SizedBox();
           },
         ),

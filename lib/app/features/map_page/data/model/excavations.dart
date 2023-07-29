@@ -84,9 +84,13 @@ class Excavations extends PointLayersData {
 
         licStatus: json['attributes']["LIC_STATUS"],
 
-        // worksStartDate: json['attributes']["WORKSTARTDATE"],
+        worksStartDate: json['attributes']["WORKSTARTDATE"] != null
+            ? DateTime.tryParse(json['attributes']["WORKSTARTDATE"])
+            : null,
 
-        //  worksEndDate: json['attributes']["WORKENDDATE"],
+        worksEndDate: json['attributes']["WORKENDDATE"] != null
+            ? DateTime.tryParse(json['attributes']["WORKENDDATE"])
+            : null,
         streetCloseType: json['attributes']["STREET_CLOSE_TYPE"],
         streetName: json['attributes']["STREET_NAME"],
         pathLength: json['attributes']["PATHLENGTH"],

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:math';
 
 import 'package:balady_plus/app/core/base/base_view_model.dart';
@@ -16,11 +17,14 @@ import 'package:balady_plus/app/features/map_page/data/model/white_lands.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
+import '../../../../core/dependency_injection/injection_container.dart';
 import '../../../../core/services/global/web_service.dart';
+import '../../../entry_point/presentation/cubit/auth_cubit.dart';
 import '../../data/model/layers.dart';
 import 'package:flutter/foundation.dart';
 
 import '../enums/map_enums.dart';
+import '../model/investment_details_response.dart';
 import '../model/requests/map_requests_params.dart';
 
 class LayersRepositories {
@@ -140,5 +144,75 @@ class LayersRepositories {
       print(e);
     }
     return null;
+  }
+
+  Future<List<PointLayersData>?> getPointDetailsInLayers(
+      {required MapRequestParams params}) async {
+    try {
+      final points = await webService.dio.get(
+        '${Constants.mainUrl}/${params.layer.layerId}/query',
+        queryParameters: params.toMap(pointsDetails: true),
+        options: Options(headers: {ApiHeader.requiresToken.eName: false}),
+      );
+
+      switch (params.layer.layerId) {
+        case 2: //     المواقع الاستثمارية
+          return investmentSitesFromJson(
+            points.data['data']['result']['features'],
+          );
+        case 5: //   الحفريات
+          return excavationsFromJson(
+            points.data['data']['result']['features'],
+          );
+        case 7: //   شهادة امتثال المباني
+          return buildingComplianceCertificateFromJson(
+            points.data['data']['result']['features'],
+          );
+        case 8: //   اراضي مطلوب تسويرها
+          return landsFencedFromJson(
+            points.data['data']['result']['features'],
+          );
+        case 9: //   اراضي بيضاء
+          return whiteLandsFromJson(
+            points.data['data']['result']['features'],
+          );
+        case 10: //       حدود قطع الأراضي
+          return boundariesPlotsFromJson(
+            points.data['data']['result']['features'],
+          );
+        case 11: //       حدود المخططات التقسيمية
+          return divisionalChartBoundariesFromJson(
+            points.data['data']['result']['features'],
+          );
+      }
+    } catch (e) {
+      print(e);
+    }
+    return null;
+  }
+
+  Future<InvestmentDetailsResponse?> getInvetmentDetails(
+      String investmentId, String type) async {
+    try {
+      final response = await webService.dio.get(
+        'https://apiservices.balady.gov.sa/v1/ims/investment-details',
+        queryParameters: {
+          'Type': type,
+          'RFPID': investmentId,
+        },
+        options: Options(headers: {
+          'Authorization': 'Bearer YsSLDBiNvtvvkC33IRTmHGb7eCgG',
+        }),
+      );
+      print(response.data);
+
+      InvestmentDetailsResponse investmentDetailsResponse =
+          InvestmentDetailsResponse.fromJson(response.data);
+
+      print(investmentDetailsResponse);
+      return investmentDetailsResponse;
+    } catch (ex) {
+      print(ex);
+    }
   }
 }

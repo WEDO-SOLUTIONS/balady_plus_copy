@@ -28,10 +28,10 @@ class LayersGisViewModel extends BaseViewModel {
   Future<void> getMinLayers() async {
     try {
       layers.value = await layersRepositories.getMinLayers();
-      if (layers.value != null) {
+      /* if (layers.value != null) {
         layerSelected.value = layers.value!.first;
         mapViewModel.layerSelected.value = layers.value!.first;
-      }
+      }*/
       // if (layers != null) {
       //   selectedLayers.value = layers![1];
       //   await getSubLayers(selectedLayers.value!.id);

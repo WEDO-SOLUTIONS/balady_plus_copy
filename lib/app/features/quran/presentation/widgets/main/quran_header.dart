@@ -34,6 +34,7 @@ class QuranHeader extends StatelessWidget {
             ),
             CustomTextWidget(
               suraName,
+              fontFamily: "sura_juza_names",
               fontColor: AppColor.primary200Light,
               fontSize: 14,
               fontWeight: AppFontWeight.semiBold,

@@ -28,13 +28,13 @@ class ServiceCard extends StatelessWidget {
       padding: const EdgeInsets.all(12),
       decoration: const BoxDecoration(
         borderRadius: BorderRadius.all(Radius.circular(16)),
-        boxShadow: [
+        /*boxShadow: [
           BoxShadow(
             color: AppColor.darkSlateBlue6,
             offset: Offset(0, -4),
             blurRadius: 32,
           )
-        ],
+        ],*/
         color: AppColor.blackModern50Light,
       ),
       child: Stack(
@@ -52,8 +52,9 @@ class ServiceCard extends StatelessWidget {
             ),
           Row(
             children: [
-              const DrawIconBasedTypeWidget(
-                icon: IconPath.nearby, //service.image,
+              DrawIconBasedTypeWidget(
+                icon:
+                    "assets/icons/png/new_services/recover_veichle.png", //service.image,
                 iconSize: 68,
               ),
               const SizedBox(width: 16),

@@ -10,8 +10,8 @@ import '../../data/model/layers.dart';
 import 'package:provider/provider.dart';
 
 class MapLayersDialog extends StatelessWidget {
-  final LayersGisViewModel layersModel ;
-  const MapLayersDialog({super.key,required this.layersModel});
+  final LayersGisViewModel layersModel;
+  const MapLayersDialog({super.key, required this.layersModel});
 
   @override
   Widget build(BuildContext context) {
@@ -31,50 +31,55 @@ class MapLayersDialog extends StatelessWidget {
                       shrinkWrap: true,
                       itemBuilder: (ctx, index) {
                         return ValueListenableBuilder<Layers?>(
-                            valueListenable: layersModel.layerSelected,
-                            builder: (_, layerSelected, __) {
-                              return InkWell(
-                                onTap: () => layersModel.selectLayers(layers[index]),
-                                child: Container(
-                                  height: 56,
-                                  padding: const EdgeInsetsDirectional.only(start: 12),
-                                  margin: const EdgeInsets.only(top: 8),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(8),
-                                    color: AppColor.primary50Light50,
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      SizedBox(
-                                        width: MediaQuery.of(context).size.width - 125,
-                                        child: CustomTextWidget(
-                                          layers[index].name,
-                                          textStyle: AppStyle.listTitleTextStyle,
-                                          maxLines: 2,
-                                        ),
-                                      ),
-                                      const Spacer(),
-                                      Radio(
-                                        value: layers[index],
-                                        groupValue: layerSelected,
-                                        activeColor: AppColor.primary700Light,
-                                        onChanged: (_) => layersModel.selectLayers(layers[index]),
-                                      )
-                                    ],
-                                  ),
+                          valueListenable: layersModel.layerSelected,
+                          builder: (_, layerSelected, __) {
+                            return InkWell(
+                              onTap: () =>
+                                  layersModel.selectLayers(layers[index]),
+                              child: Container(
+                                height: 56,
+                                padding:
+                                    const EdgeInsetsDirectional.only(start: 12),
+                                margin: const EdgeInsets.only(top: 8),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(8),
+                                  color: AppColor.primary50Light50,
                                 ),
-                              );
-                            },
-                          );
+                                child: Row(
+                                  children: [
+                                    SizedBox(
+                                      width: MediaQuery.of(context).size.width -
+                                          125,
+                                      child: CustomTextWidget(
+                                        layers[index].name,
+                                        textStyle: AppStyle.listTitleTextStyle,
+                                        maxLines: 2,
+                                      ),
+                                    ),
+                                    const Spacer(),
+                                    Radio(
+                                      value: layers[index],
+                                      groupValue: layerSelected,
+                                      activeColor: AppColor.primary700Light,
+                                      onChanged: (_) => layersModel
+                                          .selectLayers(layers[index]),
+                                    )
+                                  ],
+                                ),
+                              ),
+                            );
+                          },
+                        );
                       },
-              )
+                    )
                   : const SizedBox();
             },
           ),
           const CustomVerticalSpace(height: 32),
           ElevatedButtonWidget.apply(
             onPressed: () {
-              if(mapViewModel.layerSelected.value != layersModel.layerSelected.value) {
+              if (mapViewModel.layerSelected.value !=
+                  layersModel.layerSelected.value) {
                 mapViewModel.selectLayers(layersModel.layerSelected.value!);
               }
               Navigator.of(context).pop();

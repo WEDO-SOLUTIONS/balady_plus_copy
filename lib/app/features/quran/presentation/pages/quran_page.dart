@@ -195,7 +195,7 @@ class _QuranPageState extends State<QuranPage> {
                                           textAlign: TextAlign.center,
                                           height: 1.6,
                                           fontSize: 24,
-                                          fontFamily: "HafsSmart",
+                                          fontFamily: "sura_juza_names",
                                           maxLines: 1000,
                                         ),
                                       ],

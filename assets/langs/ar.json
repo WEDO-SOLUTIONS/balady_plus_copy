@@ -1032,17 +1032,23 @@
 "location_details":"تفاصيل الموقع" ,
 "location_address":"العنوان" ,
 
+"digging_start_date":"تاريخ البداية", 
+"digging_end_date":"تاريخ الانتهاء", 
+"map_overview":"نظرة عامة", 
+"map_address":"العنوان", 
 
+"map_digging_status":"حالة الحفر", 
+"map_digging_path_length":"طول المسار", 
 
+"map_digging_works_nature":"طبيعة العمل", 
 
+"map_digging_project_name":"اسم المشروع", 
 
+"map_digging_contractor_name":"اسم المقاول/ الاستشاري", 
 
+"map_digging_permit_number":"رقم التصريح", 
 
-
-
-
-
-
+"map_permit_start_end_date":"تاريخ بداية و انتهاء  التصريح", 
 
 
 

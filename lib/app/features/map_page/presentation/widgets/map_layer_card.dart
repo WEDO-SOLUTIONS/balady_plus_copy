@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../mvvm/map_view_model.dart';
+import 'map_cards/investment_map_card.dart';
+import 'map_cards/rental_map_card.dart';
 
 class MapLayerCard extends StatelessWidget {
   const MapLayerCard({super.key});
@@ -16,7 +18,20 @@ class MapLayerCard extends StatelessWidget {
       switch (mapViewModel.gisSelectedLayer) {
         case GISMapLayers.Digging:
           return mapViewModel.selectedDiggingPoint.value != null
-              ? DiggingMapCard(data: mapViewModel.selectedDiggingPoint.value!)
+              ? DiggingMapCard(
+                  data: mapViewModel.selectedDiggingPoint.value!,
+                )
+              : Container();
+        case GISMapLayers.Opportunities:
+          return mapViewModel.selectedInvetmentPoint.value != null
+              ? mapViewModel.selectedInvetmentPoint.value!.opportunityType ==
+                      "Investment"
+                  ? InvestmentMapCard(
+                      data: mapViewModel.selectedInvetmentPoint.value!,
+                    )
+                  : RentalMapCard(
+                      data: mapViewModel.selectedInvetmentPoint.value!,
+                    )
               : Container();
         default:
           return Container();

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:balady_plus/app/core/services/services_exports.dart';
 import 'package:collection/collection.dart';
 
 import 'package:balady_plus/app/core/base/base_view_model.dart';
@@ -12,10 +13,12 @@ import 'package:flutter/foundation.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:geolocator/geolocator.dart' as geoLocator;
 
+import '../../../../core/utils/constants/route_names.dart';
 import '../../constants/constants.dart';
 import 'package:flutter/widgets.dart';
 
 import '../../data/enums/map_enums.dart';
+import '../../data/model/investment_details_response.dart';
 import '../../data/model/requests/map_requests_params.dart';
 
 const int mil = 300;
@@ -28,10 +31,12 @@ class MapViewModel extends BaseViewModel {
   final selectedPoint = ValueNotifier<PointLayersData?>(null);
 
   final selectedDiggingPoint = ValueNotifier<Excavations?>(null);
+  final selectedInvetmentPoint = ValueNotifier<InvestmentSites?>(null);
 
   late DgisMapController controller;
 
-  final viewHomeBottomSheet = ValueNotifier(false);
+  final viewHomeBottomSheet = ValueNotifier(true);
+  final bottomSheetSize = ValueNotifier(0.5);
 
   final locationEnabledState = ValueNotifier(false);
   final generalControlsState = ValueNotifier(false);
@@ -127,6 +132,15 @@ class MapViewModel extends BaseViewModel {
     //
   }
 
+  // When click on ayn object
+  Future<void> _zoomEvents(ZoomControlEnabledEvent event) async {
+    // when Click on Map hide ViewHomeBottomSheet if he is not hide
+
+    print(event);
+
+    //
+  }
+
   //////////////////////////////////////////////  search
   TextEditingController searchController = TextEditingController();
   final layerSelected = ValueNotifier<Layers?>(null);
@@ -191,14 +205,19 @@ class MapViewModel extends BaseViewModel {
 
   callSearch() async {
     // await performSearch(queryText: searchController.text);
-    isSearchLoading.value = true;
-    isSearchLoading.notifyListeners();
+
     Layers layer = layerSelected.value!;
+    print(layer);
     GISMapLayers? gisLayer = GISMapLayers.values
         .firstWhereOrNull((element) => element.layerId == layer.id);
+    if (gisLayer == null) return;
+
+    isSearchLoading.value = true;
+    bottomSheetSize.notifyListeners();
+    isSearchLoading.notifyListeners();
     List? pointList = await layersRepositories.getPointsInLayers(
         params: MapRequestParams(
-      layer: gisLayer!,
+      layer: gisLayer,
       northEastLatitude: _lastHandledEvent.visibleRect.northEastLat,
       northEastLongitude: _lastHandledEvent.visibleRect.northEastLon,
       southWestLongitude: _lastHandledEvent.visibleRect.southWestLon,
@@ -215,10 +234,52 @@ class MapViewModel extends BaseViewModel {
         addPolygonWithPoint(pointList, layer.id);
         break;
     }
+    controller.removeAll();
     print("Doneeee");
     _clearDebounce();
     isSearchLoading.value = false;
     isSearchLoading.notifyListeners();
+  }
+
+  getPointDetails(int objectId) async {
+    isSearchLoading.value = true;
+    isSearchLoading.notifyListeners();
+
+    List? pointList = await layersRepositories.getPointDetailsInLayers(
+        params: MapRequestParams(
+      layer: gisSelectedLayer!,
+      objectId: objectId,
+      northEastLatitude: _lastHandledEvent.visibleRect.northEastLat,
+      northEastLongitude: _lastHandledEvent.visibleRect.northEastLon,
+      southWestLongitude: _lastHandledEvent.visibleRect.southWestLon,
+      southWestLlatitude: _lastHandledEvent.visibleRect.southWestLat,
+    ));
+
+    print("Doneeee");
+    isSearchLoading.value = false;
+    isSearchLoading.notifyListeners();
+
+    Navigator.pushNamed(NavigationService.navigatorKey.currentContext!,
+        RouteName.DiggingMapDetailsPage,
+        arguments: pointList?.first);
+  }
+
+  Future<InvestmentDetailsResponse?> getInvestmentDetails(
+      String id, String type) async {
+    isSearchLoading.value = true;
+    isSearchLoading.notifyListeners();
+
+    InvestmentDetailsResponse? data =
+        await layersRepositories.getInvetmentDetails(id, type);
+
+    print("Doneeee");
+    print(data);
+    isSearchLoading.value = false;
+    isSearchLoading.notifyListeners();
+    Navigator.pushNamed(NavigationService.navigatorKey.currentContext!,
+        RouteName.InvestmentMapDetailsPage,
+        arguments: data);
+    return data;
   }
 
   void addMarkersWithPoint(List? pointList, int layerId) async {
@@ -257,14 +318,22 @@ class MapViewModel extends BaseViewModel {
             ),
             onTap: () {
               selectedPoint.value = element;
+              bottomSheetSize.notifyListeners();
               switch (gisSelectedLayer) {
                 case GISMapLayers.Digging:
                   selectedDiggingPoint.value = element;
+                  selectedInvetmentPoint.value = null;
                   break;
+
+                case GISMapLayers.Opportunities:
+                  selectedInvetmentPoint.value = element;
+                  selectedDiggingPoint.value = null;
                 default:
                   break;
               }
-              controller.setCameraPosition(
+              bottomSheetSize.notifyListeners();
+
+              /* controller.setCameraPosition(
                 CameraPositionMessage(
                   zoomValue: 17,
                   geoPoint: GeoPointMessage(
@@ -272,7 +341,7 @@ class MapViewModel extends BaseViewModel {
                     longitude: element.latLng.longitude,
                   ),
                 ),
-              );
+              );*/
             },
           );
         },
@@ -298,11 +367,15 @@ class MapViewModel extends BaseViewModel {
               switch (gisSelectedLayer) {
                 case GISMapLayers.Digging:
                   selectedDiggingPoint.value = element;
+                  selectedInvetmentPoint.value = null;
                   break;
+
                 default:
                   break;
               }
-              controller.setCameraPosition(
+              bottomSheetSize.notifyListeners();
+
+              /*  controller.setCameraPosition(
                 CameraPositionMessage(
                   zoomValue: 17,
                   geoPoint: GeoPointMessage(
@@ -310,7 +383,7 @@ class MapViewModel extends BaseViewModel {
                     longitude: element.paths.first.longitude,
                   ),
                 ),
-              );
+              );*/
             },
           ),
         );
@@ -330,8 +403,8 @@ class MapViewModel extends BaseViewModel {
             id: id,
             options: PolygonOptionsMessage(
               strokeWidth: 2,
-              strokeColor: -16711936,
-              color: const Color.fromRGBO(23, 123, 244, 95).value,
+              strokeColor: element.color,
+              color: element.color,
               contours: [element.paths],
             ),
             onTap: () {
@@ -340,12 +413,15 @@ class MapViewModel extends BaseViewModel {
               switch (gisSelectedLayer) {
                 case GISMapLayers.Digging:
                   selectedDiggingPoint.value = element;
+                  selectedInvetmentPoint.value = null;
                   break;
                 default:
                   break;
               }
               print("Done select");
-              controller.setCameraPosition(
+              bottomSheetSize.notifyListeners();
+
+              /*  controller.setCameraPosition(
                 CameraPositionMessage(
                   zoomValue: 17,
                   geoPoint: GeoPointMessage(
@@ -353,7 +429,7 @@ class MapViewModel extends BaseViewModel {
                     longitude: element.paths.first.longitude,
                   ),
                 ),
-              );
+              );*/
             },
           ),
         );

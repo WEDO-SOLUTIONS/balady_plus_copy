@@ -9,57 +9,50 @@ import 'map_details_sub_header.dart';
 class MapDetailsHeader extends StatelessWidget {
   final String name;
   final String address;
+  final String type;
+  final String image;
   const MapDetailsHeader(
-      {super.key, required this.name, required this.address});
+      {super.key,
+      required this.name,
+      required this.address,
+      required this.type,
+      required this.image});
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Container(
-            padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
-            width: double.infinity,
-            decoration: ShapeDecoration(
-              color: AppColor.primary900Light,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
-              ),
+    String img = "assets/images/station_background.png";
+    if (type == "المقابر") img = "assets/images/grave_image.png";
+    if (type == "المساجد") img = "assets/images/mosque_background.png";
+    if (type == "محطات الوقود") img = "assets/images/station_background.png";
 
-              // image: DecorationImage(image: AssetImage())
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                IconButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    icon: Icon(
-                      Icons.close,
-                      color: AppColor.white,
-                    )),
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    children: [
-                      CustomTextWidget(
-                        name,
-                        fontColor: AppColor.blackModern800Light,
-                        fontWeight: AppFontWeight.bold,
-                        fontSize: 18,
-                      ),
-                      CustomTextWidget(
-                        address,
-                        fontColor: AppColor.blackModern500Light,
-                        fontWeight: AppFontWeight.semiBold,
-                        fontSize: 14,
-                      )
-                    ],
-                  ),
-                ),
-              ],
-            )),
-      ],
-    );
+    return Container(
+        padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
+        height: 200,
+        width: double.infinity,
+        decoration: ShapeDecoration(
+          image: DecorationImage(
+              fit: BoxFit.cover,
+              image: AssetImage(
+                image,
+              )),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(0),
+          ),
+
+          // image: DecorationImage(image: AssetImage())
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            IconButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                icon: Icon(
+                  Icons.close,
+                  color: AppColor.white,
+                )),
+          ],
+        ));
   }
 }

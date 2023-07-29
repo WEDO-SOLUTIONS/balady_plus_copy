@@ -27,7 +27,7 @@ class BookMarkItem extends StatelessWidget {
           maxLines: 2,
           fontWeight: AppFontWeight.medium,
           fontSize: 26,
-          fontFamily: "HafsSmart",
+          fontFamily: "sura_juza_names",
           fontColor: AppColor.black,
         ),
         Column(

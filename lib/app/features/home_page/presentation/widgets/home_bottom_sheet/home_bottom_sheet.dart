@@ -24,8 +24,9 @@ class HomeBottomSheet extends StatelessWidget {
         return visible ? child! : const SizedBox();
       },
       child: const DraggableSheetCard(
-        minSize: 0.5,
+        minSize: 0.07,
         maxSize: 0.9,
+        initialChildSize: 0.5,
         cornerRadius: 36,
         children: [
           ImportantServices(),

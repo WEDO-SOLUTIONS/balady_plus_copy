@@ -8,6 +8,8 @@ import '../../../_shared_feature_/shared_feature_exports.dart'
     show TabPageContainer;
 import '../../home_exports.dart' show HomeBottomSheet, HomeMap;
 
+final GlobalKey<NavigatorState> mapKey = new GlobalKey<NavigatorState>();
+
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
@@ -24,6 +26,7 @@ class HomePage extends StatelessWidget {
         )
       ],
       child: Scaffold(
+        key: mapKey,
         body: TabPageContainer(
           child: Stack(
             children: [

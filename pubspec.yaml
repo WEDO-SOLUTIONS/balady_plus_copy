@@ -200,6 +200,7 @@ flutter:
     - assets/icons/png/
     - assets/icons/png/vd/
     - assets/icons/png/qr/
+    - assets/icons/png/new_services/
     - assets/images/
     - assets/langs/
     - assets/quran/
@@ -237,6 +238,11 @@ flutter:
     - family: uthmanic
       fonts:
         - asset: assets/fonts/uthmanic_hafs_v20.ttf
+
+    - family: sura_juza_names
+      fonts:
+        - asset: assets/fonts/sura_juza_names.ttf
+        
 
   #   - family: Trajan Pro
   #     fonts:

@@ -30,6 +30,10 @@ import '../../features/health_certificate/presentation/core/models/health_reques
 import '../../features/health_certificate/presentation/pages/health_license_details_screen.dart';
 import '../../features/health_certificate/presentation/pages/health_request_details_screen.dart';
 import '../../features/health_certificate/presentation/pages/new_health_certificate/new_health_certificate_page.dart';
+import '../../features/map_page/data/model/excavations.dart';
+import '../../features/map_page/data/model/investment_details_response.dart';
+import '../../features/map_page/presentation/pages/digging_map_details_page.dart';
+import '../../features/map_page/presentation/pages/investment_map_details_page.dart';
 import '../../features/new_appointment/presentation/pages/new_appointment/new_appointment_page.dart';
 import '../../features/objectable_transactions/objections_exports.dart'
     show ObjectableTransactionsPage;
@@ -479,6 +483,23 @@ class AppRouter {
       case RouteName.ZmZmPointsPage:
         return MaterialPageRoute(
           builder: (_) => ZmZmPointsPage(),
+        );
+
+      case RouteName.DiggingMapDetailsPage:
+        Excavations? item = settings.arguments as Excavations?;
+        return MaterialPageRoute(
+          builder: (_) => DiggingMapDetailsPage(
+            item: item!,
+          ),
+        );
+
+      case RouteName.InvestmentMapDetailsPage:
+        InvestmentDetailsResponse? item =
+            settings.arguments as InvestmentDetailsResponse?;
+        return MaterialPageRoute(
+          builder: (_) => InvestmentMapDetailsPage(
+            item: item!,
+          ),
         );
 
       // error page

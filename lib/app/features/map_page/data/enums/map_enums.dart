@@ -1,4 +1,24 @@
 enum GISMapLayers {
+  Opportunities(layerId: 2, outFieldsShort: [
+    "OBJECTID",
+    "DESCRIPTION",
+    "OPPORTUNITY_ID",
+    "OPPORTUNITYTYPE",
+    "SOURCECASEKEY",
+    "SUBMUNICIPALITY",
+    "STREET",
+    "MUNICIPALITY",
+  ], outFieldsLong: [
+    "OBJECTID",
+    "DESCRIPTION",
+    "OPPORTUNITY_ID",
+    "OPPORTUNITYTYPE",
+    "SOURCECASEKEY",
+    "SUBMUNICIPALITY",
+    "STREET",
+    "MUNICIPALITY",
+  ]),
+
   Digging(layerId: 5, outFieldsShort: [
     "STREET_CLOSE_TYPE",
     "PROJECT_NAME",
@@ -8,7 +28,9 @@ enum GISMapLayers {
     "AMMANA",
     "BALADIA",
     "DISTRICT_NAME",
-    "MUNICIPALITYARNAME"
+    "MUNICIPALITYARNAME",
+    "WORKSTARTDATE",
+    "WORKENDDATE",
   ], outFieldsLong: [
     "STATUS",
     "LIC_STATUS",
@@ -30,6 +52,52 @@ enum GISMapLayers {
     "MUNICIPALITYARNAME"
   ]),
 
+  BSAimtithalBuildingsCertificateL(
+      layerId: 7,
+      outFieldsShort: [
+        "OBJECTID",
+        "PRIORITYAREA",
+        "STARTDATE",
+        "TARGETBUILDINGTYPE",
+        "STAGENO",
+        "AMANANAME",
+        "MUNICIPALITYNAME",
+        "DISTRICTNAME",
+        "STREETTYPE",
+        "STREETWIDTH"
+      ],
+      outFieldsLong: [
+        "OBJECTID",
+        "PRIORITYAREA",
+        "STARTDATE",
+        "TARGETBUILDINGTYPE",
+        "STAGENO",
+        "AMANANAME",
+        "MUNICIPALITYNAME",
+        "DISTRICTNAME",
+        "STREETTYPE",
+        "STREETWIDTH"
+      ],
+      resultRecordCount: 10),
+
+  VDPriorityAreaRouteS(layerId: 8, outFieldsShort: [
+    "OBJECTID",
+    "COLOR",
+    "AREANAME_SPLIT",
+    "DESCRIPTION",
+    "AREANAME",
+    "RISKDESCREPTION",
+    "COLOR"
+  ], outFieldsLong: [
+    "OBJECTID",
+    "COLOR",
+    "AREANAME_SPLIT",
+    "DESCRIPTION",
+    "AREANAME",
+    "RISKDESCREPTION",
+    "COLOR"
+  ]),
+
   BSWhiteParcelS(layerId: 9, outFieldsShort: [
     "PARCELAREA",
     "PARCELNO",
@@ -37,12 +105,12 @@ enum GISMapLayers {
     "MUNNAME",
     "STREETNAME",
     "PLANNAME",
-    "PARCELCODE",
-    "DESCRIPTION",
     "SHAPE.AREA",
     "OBJECTID",
   ], outFieldsLong: [
     "PARCELAREA",
+    "PARCELNAME",
+    "PLANNO",
     "PARCELNO",
     "AMANANAME",
     "MUNNAME",
@@ -54,10 +122,14 @@ enum GISMapLayers {
     "OBJECTID",
   ]),
 
-  CadastralParcels(layerId: 10, outFieldsShort: [
-    "SUBTYPEDESCRIPTION",
-    "OBJECTID",
-  ], outFieldsLong: []),
+  CadastralParcels(
+      layerId: 10,
+      outFieldsShort: [
+        "SUBTYPEDESCRIPTION",
+        "OBJECTID",
+      ],
+      outFieldsLong: [],
+      resultRecordCount: 10),
 
   CadastralParcelsLand(layerId: 11, outFieldsShort: [
     "OBJECTID",
@@ -87,8 +159,11 @@ enum GISMapLayers {
   const GISMapLayers(
       {required this.layerId,
       required this.outFieldsShort,
-      required this.outFieldsLong});
+      required this.outFieldsLong,
+      this.resultRecordCount = 100});
   final int layerId;
+
+  final int resultRecordCount;
   final List<String> outFieldsShort;
   final List<String> outFieldsLong;
 }
