@@ -259,10 +259,7 @@ class ObjectTapHandler {
         }
 
         let options = MarkerOptions(
-            position: GeoPointWithElevation(
-                latitude: Latitude(value: marker.options.position.latitude.doubleValue),
-                longitude: Longitude(value: marker.options.position.longitude.doubleValue)
-            ),
+            position: marker.options.position.geoPointWithElevation,
             icon: markerImage,
             iconMapDirection: marker.options.icon?.iconMapDirection.map {
                 MapDirection(value: $0.degree.doubleValue)
@@ -446,10 +443,8 @@ class ObjectTapHandler {
         }
         
         let markers = message.objects.map{
-            let position = GeoPointWithElevation(
-                latitude:  Latitude(value: $0.position.latitude.doubleValue),
-                longitude:  Longitude(value: $0.position.longitude.doubleValue)
-            )
+            let position = $0.position.geoPointWithElevation
+
             return Marker(options: MarkerOptions(
                 position: position,
                 icon: markerImage,
@@ -505,16 +500,10 @@ class ObjectTapHandler {
             message.markers.forEach { it in
                 guard let self = self else { return }
                 
-                let geoPoint = it.position.point
-                let elevation = it.position.elevation
                 let photoData = PhotoData(photoUrl: it.photoUrl, isPanoramic: it.isPanoramic.boolValue, azimuth: it.azimuth.doubleValue);
                 
                 let opts = MarkerOptions(
-                    position: GeoPointWithElevation(
-                        latitude: Latitude(value: geoPoint.latitude.doubleValue),
-                        longitude: Longitude(value: geoPoint.longitude.doubleValue),
-                        elevation: Elevation(value: elevation.floatValue)
-                    ),
+                    position: it.position.geoPointWithElevation,
                     icon: self.panoramaMarkerImage,
                     userData: photoData)
                 let marker = Marker(options: opts)

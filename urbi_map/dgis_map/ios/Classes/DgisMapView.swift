@@ -119,9 +119,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         self.searchHandler = SearchHandler(
             searchManager: try! SearchManager.createOnlineManager(context: try! sdk.context),
             map: map,
-            sdkContext: self.sdk,
-            imageFactory: try! self.sdk.makeImageFactory(),
-            registrar: self.registrar
+            sdkContext: self.sdk
         )
         
         self.compassControlHandler = CompassControlHandler(
@@ -235,7 +233,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
     
     func search(
         byObjectIdObjectId objectId: DgisObjectIdMessage,
-        completion: @escaping (ObjectInfoMessage?, FlutterError?) -> Void
+        completion: @escaping (DirectoryObjectMessage?, FlutterError?) -> Void
     ) {
         guard let searchHandler = self.searchHandler else {
             completion(nil, FlutterError(
@@ -275,12 +273,11 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
     
     func searchQueryText(
         _ queryText: String,
-        searchMarker: MarkerIconMessage,
         weekTime: WeekTimeSearchMessage?,
         searchRect: GeoRectMessage?,
         sortingType: SortingTypeMessage,
         pageSize: NSNumber,
-        completion: @escaping ([ObjectInfoMessage]?, FlutterError?) -> Void
+        completion: @escaping (SearchResultMessage?, FlutterError?) -> Void
     ) {
         guard let searchHandler = self.searchHandler else {
             completion(
@@ -295,7 +292,6 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         
         searchHandler.search(
             queryText,
-            searchMarker: searchMarker,
             searchGeoRect: searchRect?.geoRect,
             weekTimeMessage: weekTime,
             sortingType: sortingType,
@@ -304,16 +300,101 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         )
     }
     
-    func getNextPage(completion: @escaping ([ObjectInfoMessage]?, FlutterError?) -> Void) {
+    func search(
+        byQueryQuery query: SearchQueryMessage,
+        weekTime: WeekTimeSearchMessage?,
+        searchRect: GeoRectMessage?,
+        sortingType: SortingTypeMessage,
+        pageSize: NSNumber,
+        completion: @escaping (SearchResultMessage?, FlutterError?) -> Void
+    ) {
         guard let searchHandler = self.searchHandler else {
-            completion(nil, FlutterError(
-                code: "IllegalArgumentException",
-                message: "Map was not initialized properly",
-                details: nil
-            ))
+            completion(
+                nil,
+                FlutterError(
+                    code: "IllegalArgumentException",
+                    message: "Map was not initialized properly",
+                    details: nil
+                ))
             return
         }
-        searchHandler.getNextPage(completion: completion)
+        
+        searchHandler.searchByQuery(
+            query,
+            searchGeoRect: searchRect?.geoRect,
+            weekTimeMessage: weekTime,
+            sortingType: sortingType,
+            pageSize: pageSize.int32Value,
+            completion: completion
+        )
+    }
+    
+    func fetchNextPagePageId(_ pageId: PageIdMessage, completion: @escaping (PageMessage?, FlutterError?) -> Void) {
+        guard let searchHandler = self.searchHandler else {
+            completion(
+                nil,
+                FlutterError(
+                    code: "IllegalArgumentException",
+                    message: "Map was not initialized properly",
+                    details: nil
+                ))
+            return
+        }
+        
+        searchHandler.fetchNextPage(pageId, completion: completion)
+    }
+    
+    func fetchPrevPagePageId(_ pageId: PageIdMessage, completion: @escaping (PageMessage?, FlutterError?) -> Void) {
+        guard let searchHandler = self.searchHandler else {
+            completion(
+                nil,
+                FlutterError(
+                    code: "IllegalArgumentException",
+                    message: "Map was not initialized properly",
+                    details: nil
+                ))
+            return
+        }
+        
+        searchHandler.fetchPrevPage(pageId, completion: completion)
+    }
+    
+    func releasePagePageId(_ pageId: PageIdMessage, completion: @escaping (FlutterError?) -> Void) {
+        guard let searchHandler = self.searchHandler else {
+            completion(
+                FlutterError(
+                    code: "IllegalArgumentException",
+                    message: "Map was not initialized properly",
+                    details: nil
+                ))
+            return
+        }
+        
+        searchHandler.releasePage(pageId, completion: completion)
+    }
+    
+    func fetchSuggestsQueryText(
+        _ queryText: String,
+        searchRect: GeoRectMessage?,
+        completion: @escaping (SuggestResultMessage?, FlutterError?) -> Void
+    ) {
+        guard let searchHandler = self.searchHandler else {
+            completion(
+                nil,
+                FlutterError(
+                    code: "IllegalArgumentException",
+                    message: "Map was not initialized properly",
+                    details: nil
+                )
+            )
+            return
+        }
+
+        searchHandler.fetchSuggests(
+            queryText: queryText,
+            searchGeoRect: searchRect?.geoRect,
+            completion: completion
+        )
     }
     
     func setMarkerOptionsOptions(
@@ -396,34 +477,6 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         completion(nil)
     }
     
-    func removeSearchMarkers(completion: @escaping (FlutterError?) -> Void) {
-        self.searchHandler?.removeSearchMarkers()
-        completion(nil)
-    }
-    
-    func fetchSuggestsQueryText(
-        _ queryText: String,
-        searchRect: GeoRectMessage?,
-        completion: @escaping ([SuggestMessage]?, FlutterError?) -> Void
-    ) {
-        guard let searchHandler = self.searchHandler else {
-            completion(
-                nil,
-                FlutterError(
-                    code: "IllegalArgumentException",
-                    message: "Map was not initialized properly",
-                    details: nil
-                ))
-            return
-        }
-        
-        searchHandler.fetchSuggests(
-            queryText: queryText,
-            searchGeoRect: searchRect?.geoRect,
-            completion: completion
-        )
-    }
-    
     func addPanoramasMarkersMessage(_ message: AddMarkersWithPhotoMessage, completion: @escaping (FlutterError?) -> Void) {
         self.objectTapHandler?.addPanoramasMarkers(message)
         completion(nil)
@@ -456,7 +509,6 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         completion(nil)
     }
     
-    
     func unselectPanorama(completion: @escaping (FlutterError?) -> Void) {
         self.objectTapHandler?.unselectPanorama()
         completion(nil)
@@ -484,52 +536,6 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         completion(outer.contains(rect2: inner) ? 1 : 0, nil)
     }
     
-    func getSuggestObjectIndex(
-        _ index: NSNumber,
-        completion: @escaping (ObjectInfoMessage?, FlutterError?) -> Void
-    ) {
-        guard let searchHandler = self.searchHandler else {
-            completion(nil, FlutterError(
-                code: "IllegalArgumentException",
-                message: "Map was not initialized properly",
-                details: nil
-            ))
-            return
-        }
-        searchHandler.getSuggestObject(index.intValue, completion: completion)
-    }
-    
-    func search(
-        bySuggestIndex index: NSNumber,
-        searchMarker: MarkerIconMessage,
-        weekTime: WeekTimeSearchMessage?,
-        searchRect: GeoRectMessage?,
-        sortingType: SortingTypeMessage,
-        pageSize: NSNumber,
-        completion: @escaping ([ObjectInfoMessage]?, FlutterError?) -> Void
-    ) {
-        guard let searchHandler = self.searchHandler else {
-            completion(
-                nil,
-                FlutterError(
-                    code: "IllegalArgumentException",
-                    message: "Map was not initialized properly",
-                    details: nil
-                ))
-            return
-        }
-        
-        searchHandler.search(
-            bySuggestIndex: index.intValue,
-            searchMarker: searchMarker,
-            weekTime: weekTime,
-            sortingType: sortingType,
-            pageSize: pageSize.int32Value,
-            searchGeoRect: searchRect?.geoRect,
-            completion: completion
-        )
-    }
-    
     func onLocationPremissionGrantedDesiredAccuracy(
         _ desiredAccuracy: DesiredAccuracyMessage,
         completion: @escaping (FlutterError?) -> Void
@@ -544,25 +550,6 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         }
         locationProvider.setDesiredAccuracy(desiredAccuracy.toSdkAccuracy())
         completion(nil)
-    }
-    
-    func showLastSearchMarker(completion: @escaping (FlutterError?) -> Void) {
-        self.objectTapHandler?.showLastSearchMarker()
-        completion(nil)
-    }
-    
-    // MARK: - Directory filters
-    func getDirectoryDynamicFilters(completion: @escaping ([FlagFilterMessage]?, FlutterError?) -> Void) {
-        self.searchHandler?.getDirectoryDynamicFilters(completion)
-    }
-    
-    func applyDirectoryFiltersFilters(_ filters: [FlagFilterMessage], isOpenFilter: WorkingFilterMessage, sortingType: SortingTypeMessage, completion: @escaping ([ObjectInfoMessage]?, FlutterError?) -> Void) {
-        self.searchHandler?.applyDirectoryFiltersFilters(
-            filters: filters,
-            isOpenFilter: isOpenFilter,
-            sortingType: sortingType,
-            completion: completion
-        )
     }
     
     // MARK: - Private methods

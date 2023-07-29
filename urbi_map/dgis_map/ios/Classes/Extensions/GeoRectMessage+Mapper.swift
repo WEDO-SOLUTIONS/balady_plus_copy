@@ -1,17 +1,20 @@
 import Foundation
 import DGis
 
+extension GeoRect {
+    func toMessage() -> GeoRectMessage {
+        GeoRectMessage.make(
+            withNorthEast: self.northEastPoint.toMessage(),
+            southWest: self.southWestPoint.toMessage()
+        )
+    }
+}
+
 extension GeoRectMessage {
     var geoRect: GeoRect {
         return GeoRect(
-            southWestPoint: GeoPoint(
-                latitude: Latitude(value: southWest.latitude.doubleValue),
-                longitude: Longitude(value: southWest.longitude.doubleValue)
-            ),
-            northEastPoint: GeoPoint(
-                latitude: Latitude(value: northEast.latitude.doubleValue),
-                longitude: Longitude(value: northEast.longitude.doubleValue)
-            )
+            southWestPoint: self.southWest.geoPoint,
+            northEastPoint: self.northEast.geoPoint
         )
     }
 }

@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:balady_plus/app/core/utils/constants/route_names.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
@@ -37,7 +39,7 @@ class MarkerMapWidget extends StatelessWidget {
             const SizedBox(width: 6),
             Expanded(
               flex: 6,
-              child: ValueListenableBuilder<ObjectInfoMessage?>(
+              child: ValueListenableBuilder<DirectoryObjectMessage?>(
                 valueListenable: pointViewModel.dataPoint,
                 builder: (_, dataPoint, __) {
                   return dataPoint == null
@@ -52,7 +54,14 @@ class MarkerMapWidget extends StatelessWidget {
                             ),
                             const SizedBox(height: 6),
                             Text(
-                              dataPoint.address?.drilldownString ?? 'Address',
+                              dataPoint.address?.components
+                                      .firstWhere(
+                                        (element) =>
+                                            element?.streetAddress != null,
+                                      )
+                                      ?.streetAddress
+                                      ?.street ??
+                                  'Address',
                               style: AppStyle.serviceDescriptionStyle,
                             ),
                             const CustomVerticalSpace(height: 8),

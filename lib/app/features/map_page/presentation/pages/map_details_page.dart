@@ -14,7 +14,7 @@ class MapDetailsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: ValueListenableBuilder<ObjectInfoMessage?>(
+        body: ValueListenableBuilder<DirectoryObjectMessage?>(
       valueListenable: pointViewModel.dataPoint,
       builder: (_, dataPoint, __) {
         return dataPoint == null
@@ -38,7 +38,7 @@ class MapDetailsPage extends StatelessWidget {
                     ),
                     child: Column(children: [
                       MapDetailsSubHeader(
-                        entityType: dataPoint.type.name,
+                        entityType: dataPoint.types[0]!.type.name,
                       ),
                       const MapDetailsField(
                         title: "111",

@@ -268,14 +268,14 @@ class MethodChannelDgisMapPlugin extends DgisMapPlugin {
   }
 
   @override
-  Future<ObjectInfoMessage> searchByObjectId(DgisObjectIdMessage objectId) {
+  Future<DirectoryObjectMessage> searchByObjectId(
+      DgisObjectIdMessage objectId) {
     return _api.searchByObjectId(objectId);
   }
 
   @override
-  Future<List<ObjectInfoMessage?>> search(
+  Future<SearchResultMessage> search(
     String queryText, {
-    required MarkerIconMessage searchMarker,
     required SortingTypeMessage sortingType,
     required int pageSize,
     WeekTimeSearchMessage? weekTime,
@@ -283,7 +283,6 @@ class MethodChannelDgisMapPlugin extends DgisMapPlugin {
   }) {
     return _api.search(
       queryText,
-      searchMarker,
       weekTime,
       searchRect,
       sortingType,
@@ -292,9 +291,39 @@ class MethodChannelDgisMapPlugin extends DgisMapPlugin {
   }
 
   @override
-  Future<List<ObjectInfoMessage?>?> getNextPage() {
-    return _api.getNextPage();
+  Future<SearchResultMessage> searchByQuery(
+    SearchQueryMessage query, {
+    required SortingTypeMessage sortingType,
+    required int pageSize,
+    WeekTimeSearchMessage? weekTime,
+    GeoRectMessage? searchRect,
+  }) {
+    return _api.searchByQuery(
+      query,
+      weekTime,
+      searchRect,
+      sortingType,
+      pageSize,
+    );
   }
+
+  @override
+  Future<PageMessage> fetchPrevPage(PageIdMessage pageId) =>
+      _api.fetchPrevPage(pageId);
+
+  @override
+  Future<PageMessage> fetchNextPage(PageIdMessage pageId) =>
+      _api.fetchNextPage(pageId);
+
+  @override
+  Future<void> releasePage(PageIdMessage pageId) => _api.releasePage(pageId);
+
+  @override
+  Future<SuggestResultMessage> fetchSuggests(
+    String queryText, {
+    GeoRectMessage? searchRect,
+  }) =>
+      _api.fetchSuggests(queryText, searchRect);
 
   @override
   Future<List<DistanceResponseMessage?>> getDistanceTo(
@@ -442,11 +471,6 @@ class MethodChannelDgisMapPlugin extends DgisMapPlugin {
   }
 
   @override
-  Future<void> removeSearchMarkers() {
-    return _api.removeSearchMarkers();
-  }
-
-  @override
   Future<void> showEsriIOLayer(AddLayerPointObjectsMessage message) {
     return _api.showEsriIOLayer(message);
   }
@@ -459,38 +483,6 @@ class MethodChannelDgisMapPlugin extends DgisMapPlugin {
   @override
   Future<void> setHighlighted(List<DgisObjectIdMessage> objectIds) {
     return _api.setHighlighted(objectIds);
-  }
-
-  @override
-  Future<List<SuggestMessage?>> fetchSuggests(
-    String queryText, {
-    GeoRectMessage? searchRect,
-  }) {
-    return _api.fetchSuggests(queryText, searchRect);
-  }
-
-  @override
-  Future<ObjectInfoMessage> getSuggestObject(int index) {
-    return _api.getSuggestObject(index);
-  }
-
-  @override
-  Future<List<ObjectInfoMessage?>> searchBySuggest(
-    int index, {
-    required MarkerIconMessage searchMarker,
-    required SortingTypeMessage sortingType,
-    required int pageSize,
-    WeekTimeSearchMessage? weekTime,
-    GeoRectMessage? searchRect,
-  }) {
-    return _api.searchBySuggest(
-      index,
-      searchMarker,
-      weekTime,
-      searchRect,
-      sortingType,
-      pageSize,
-    );
   }
 
   @override
@@ -513,8 +505,8 @@ class MethodChannelDgisMapPlugin extends DgisMapPlugin {
             surfaceFactory: (context, controller) {
               return AndroidViewSurface(
                 controller: controller as AndroidViewController,
-                gestureRecognizers: const <Factory<
-                    OneSequenceGestureRecognizer>>{},
+                gestureRecognizers: const <
+                    Factory<OneSequenceGestureRecognizer>>{},
                 hitTestBehavior: PlatformViewHitTestBehavior.opaque,
               );
             },
@@ -604,20 +596,6 @@ class MethodChannelDgisMapPlugin extends DgisMapPlugin {
   }
 
   @override
-  Future<List<FlagFilterMessage?>> getDirectoryDynamicFilters() {
-    return _api.getDirectoryDynamicFilters();
-  }
-
-  @override
-  Future<List<ObjectInfoMessage?>> applyDirectoryFilters({
-    required List<FlagFilterMessage> filters,
-    required WorkingFilterMessage isOpenFilter,
-    required SortingTypeMessage sortingType,
-  }) {
-    return _api.applyDirectoryFilters(filters, isOpenFilter, sortingType);
-  }
-
-  @override
   Future<void> moveCameraToSelectedPanorama() {
     return _api.moveCameraToSelectedPanorama();
   }
@@ -635,11 +613,6 @@ class MethodChannelDgisMapPlugin extends DgisMapPlugin {
   @override
   Future<void> setPanoramaMarkerAzimuth(MarkerAzimuthMessage message) {
     return _api.setPanoramaMarkerAzimuth(message);
-  }
-
-  @override
-  Future<void> showLastSearchMarker() {
-    return _api.showLastSearchMarker();
   }
 
   @override

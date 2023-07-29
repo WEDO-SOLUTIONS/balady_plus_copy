@@ -2,6 +2,8 @@ package com.dgis.map.control_handlers
 
 import android.util.Size
 import com.dgis.map.R
+import com.dgis.map.extensions.toGeoPoint
+import com.dgis.map.extensions.toGeoPointWithElevation
 import com.dgis.map.extensions.unsafeLazy
 import com.dgis.map.map_api.Messages.*
 import com.dgis.map.user_data.PhotoData
@@ -216,10 +218,7 @@ class ObjectTapHandler(
         }
 
         val options = MarkerOptions(
-            position = GeoPointWithElevation(
-                latitude = Latitude(marker.options.position.latitude),
-                longitude = Longitude(marker.options.position.longitude),
-            ),
+            position = marker.options.position.toGeoPointWithElevation(),
             icon = markerImage,
             iconMapDirection = marker.options.icon?.iconMapDirection?.let {
                 MapDirection(it.degree)
@@ -277,10 +276,7 @@ class ObjectTapHandler(
         val options = PolygonOptions(
             contours = polygon.options.contours.map { contour ->
                 contour.map {
-                    GeoPoint(
-                        latitude = Latitude(it.latitude),
-                        longitude = Longitude(it.longitude),
-                    )
+                    it.toGeoPoint()
                 }
             },
             color = polygon.options.color?.let {
@@ -333,10 +329,7 @@ class ObjectTapHandler(
     private fun mapPolyline(polyline: PolylineMessage): Polyline {
         val options = PolylineOptions(
             points = polyline.options.points.map {
-                GeoPoint(
-                    latitude = Latitude(it.latitude),
-                    longitude = Longitude(it.longitude),
-                )
+                it.toGeoPoint()
             },
             color = polyline.options.color?.let {
                 Color(argb = it.toInt())
@@ -633,14 +626,8 @@ class ObjectTapHandler(
         override fun run() {
             val newObjects = mutableListOf<Marker>()
             message.markers.forEach {
-                val geoPoint = it.position.point
-                val elevation = it.position.elevation
                 val opts = MarkerOptions(
-                    GeoPointWithElevation(
-                        latitude = geoPoint.latitude,
-                        longitude = geoPoint.longitude,
-                        elevation = Elevation(elevation.toFloat())
-                    ),
+                    it.position.toGeoPointWithElevation(),
                     icon = icon
                 )
                 val marker = Marker(opts)

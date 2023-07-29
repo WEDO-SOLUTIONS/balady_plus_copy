@@ -24,21 +24,55 @@ class MapViewModel extends BaseViewModel {
   }) async {
     try {
       searchController.text = queryText;
-      List<ObjectInfoMessage> data = await controller.search(
+      await controller.removeAllMarkers();
+      SearchResultMessage data = await controller.search(
         queryText,
-        searchMarker: MarkerIconMessage(
-          path: "assets/maps/icons/ic_marker.svg",
-          width: 24,
-        ),
         sortingType: SortingTypeMessage.byDistance,
         isOpenNow: true,
         searchRect: searchRect,
       );
-      if (data.isNotEmpty) {
+      if (data.itemMarkerInfos != null) {
+        int id = 0;
+        List<Marker> markers = [];
+
+        final icons = [
+          "assets/icons/svg/nearby/coffee.svg",
+          "assets/icons/svg/nearby/hotel.svg",
+          "assets/icons/svg/nearby/mosque.svg",
+          "assets/icons/svg/nearby/restaurant.svg",
+        ];
+
+        for (final markerInfo in data.itemMarkerInfos!) {
+          final objectId = markerInfo!.objectId?.objectId ?? 3;
+
+          markers.add(Marker(
+            id: id,
+            options: MarkerOptionsMessage(
+              position: markerInfo.geoPoint,
+              icon: MarkerIconMessage(
+                path: icons[objectId % 4],
+                width: 24,
+              ),
+            ),
+          ));
+          id += 1;
+        }
+
+        await controller.addMarkers(markers);
+      }
+      if (data.firstPage?.items != null) {
         final responseDistance = await controller.getDistanceTo(
-          _mapToDistanceRequest(data),
+          _mapToDistanceRequest(
+            data.firstPage!.items
+                .map((e) => e as DirectoryObjectMessage)
+                .toList(),
+          ),
         );
         print(responseDistance);
+      }
+      if (data.firstPage != null) {
+        print("Releasing page");
+        await controller.releasePage(data.firstPage!);
       }
       print(data);
     } catch (e) {
@@ -47,13 +81,16 @@ class MapViewModel extends BaseViewModel {
   }
 
   List<DistanceRequestMessage> _mapToDistanceRequest(
-          List<ObjectInfoMessage> values) =>
+          List<DirectoryObjectMessage> values) =>
       values
-          .where((element) => element.dgisObjectId != null)
+          .where((element) => element.id != null)
           .where((element) => element.markerPosition != null)
           .map((e) => DistanceRequestMessage(
-                geoPoint: e.markerPosition!.point,
-                dgisObjectId: e.dgisObjectId!,
+                geoPoint: GeoPointMessage(
+                  latitude: e.markerPosition!.latitude,
+                  longitude: e.markerPosition!.longitude,
+                ),
+                dgisObjectId: e.id!,
               ))
           .toList();
 

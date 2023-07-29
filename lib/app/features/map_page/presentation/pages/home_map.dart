@@ -39,11 +39,16 @@ class HomeMap extends StatelessWidget {
                 valueListenable: mapViewModel.viewHomeBottomSheet,
                 builder: (_, visible, __) {
                   return visible
-                      ? const Align(
+                      ? Align(
                           alignment: AlignmentDirectional.centerStart,
-                          child: CircleIcon(
-                            icon: IconPath.search,
-                            iconColor: AppColor.black,
+                          child: GestureDetector(
+                            child: const CircleIcon(
+                              icon: IconPath.search,
+                              iconColor: AppColor.black,
+                            ),
+                            onTap: () {
+                              mapViewModel.viewHomeBottomSheet.value = false;
+                            },
                           ),
                         )
                       : const SearchMapWidget();

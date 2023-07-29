@@ -9,7 +9,7 @@ class PointViewModel extends BaseViewModel {
   final WebService webService;
   final DgisMapController controller;
   final DgisObjectIdMessage point;
-  final dataPoint = ValueNotifier<ObjectInfoMessage?>(null);
+  final dataPoint = ValueNotifier<DirectoryObjectMessage?>(null);
 
   PointViewModel(
       {required this.controller,
@@ -31,14 +31,14 @@ class PointViewModel extends BaseViewModel {
     }
   }
 
-  Future<void> getPhotos(ObjectInfoMessage dataPoint) async {
+  Future<void> getPhotos(DirectoryObjectMessage dataPoint) async {
     try {
       final data = await webService.dio.get(
         'https://sandbox-api.photo.2gis.com/2.0/photo/get',
         queryParameters: {
           "key": "mobile_ios",
-          "object_id": dataPoint.dgisObjectId?.objectId.toString(),
-          "object_type": dataPoint.type.name,
+          "object_id": dataPoint.id?.objectId.toString(),
+          "object_type": dataPoint.types[0]?.type.name,
           "album_code": "common",
           "preview_size": "100x100",
         },

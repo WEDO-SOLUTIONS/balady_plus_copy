@@ -166,40 +166,9 @@ class DgisMapController {
       _instance.setPanoramaMarkerAzimuth(MarkerAzimuthMessage(degree: degree));
 
   /// Returns directory object info by it's id.
-  Future<ObjectInfoMessage> searchByObjectId(DgisObjectIdMessage objectId) =>
+  Future<DirectoryObjectMessage> searchByObjectId(
+          DgisObjectIdMessage objectId) =>
       _instance.searchByObjectId(objectId);
-
-  /// Returns list of available filters if any. Filters may be available only after at least
-  /// one [search] was completed. And should be update on every [search] call.
-  ///
-  /// Returns null if there are no filters.
-  Future<List<FlagFilterMessage>?> getDirectoryDynamicFilters() async {
-    final response = await _instance.getDirectoryDynamicFilters();
-
-    final filtered = response.whereType<FlagFilterMessage>().where(
-          (filter) =>
-              filter.tagName == "general_payment_type_cash" ||
-              filter.tagName == "general_payment_type_card",
-        );
-
-    return filtered.isNotEmpty ? filtered.toList() : null;
-  }
-
-  /// Applies selected filters to [search] result.
-  /// Check available filters with [getDirectoryDynamicFilters].
-  Future<List<ObjectInfoMessage>> applyDirectoryFilters({
-    required List<FlagFilterMessage> filters,
-    required WorkingHoursFilter isOpenFilter,
-    required SortingTypeMessage sortingType,
-  }) async {
-    final response = await _instance.applyDirectoryFilters(
-      filters: filters,
-      isOpenFilter: isOpenFilter.toMessage(),
-      sortingType: sortingType,
-    );
-
-    return response.whereType<ObjectInfoMessage>().toList();
-  }
 
   /// Returns distance in meters from current location to every point in [points] list.
   /// Works offline. Doesn't require network access.
@@ -218,31 +187,49 @@ class DgisMapController {
   }
 
   /// Runs directory search by [queryText] query.
-  Future<List<ObjectInfoMessage>> search(
+  Future<SearchResultMessage> search(
     String queryText, {
     required SortingTypeMessage sortingType,
-    required MarkerIconMessage searchMarker,
     GeoRectMessage? searchRect,
     bool isOpenNow = false,
     int pageSize = 20,
-  }) async {
-    final response = await _instance.search(
+  }) {
+    return _instance.search(
       queryText,
-      searchMarker: searchMarker,
       sortingType: sortingType,
       weekTime: isOpenNow ? WeekTimeFactory.openNow() : null,
       pageSize: pageSize,
       searchRect: searchRect,
     );
-    return response.whereType<ObjectInfoMessage>().toList(growable: false);
   }
 
-  /// Next page of [search] result. Available only after [search] call.
-  Future<List<ObjectInfoMessage>?> getNextPage() async {
-    final response = await _instance.getNextPage();
-
-    return response?.whereType<ObjectInfoMessage>().toList();
+  /// Runs directory search by [SearchQueryMessage] query.
+  Future<SearchResultMessage> searchByQuery(
+    SearchQueryMessage query, {
+    required SortingTypeMessage sortingType,
+    GeoRectMessage? searchRect,
+    bool isOpenNow = false,
+    int pageSize = 20,
+  }) {
+    return _instance.searchByQuery(
+      query,
+      sortingType: sortingType,
+      weekTime: isOpenNow ? WeekTimeFactory.openNow() : null,
+      pageSize: pageSize,
+      searchRect: searchRect,
+    );
   }
+
+  /// Fetches next page for given page
+  Future<PageMessage> fetchPrevPage(PageMessage page) =>
+      _instance.fetchPrevPage(page.id);
+
+  /// Fetches prev page for given page
+  Future<PageMessage> fetchNextPage(PageMessage page) =>
+      _instance.fetchNextPage(page.id);
+
+  /// Releases page from memory
+  Future<void> releasePage(PageMessage page) => _instance.releasePage(page.id);
 
   /// Options for marker that appears on map on object tap. Used by [addMarker].
   Future<void> setMarkerOptions(MarkerOptionsMessageOld markerOptions) =>
@@ -296,9 +283,6 @@ class DgisMapController {
   /// Remove all polyline added with [addPolyline].
   Future<void> removeAllPolylines() => _instance.removeAllPolylines();
 
-  /// Remove markers added by calling [search].
-  Future<void> removeSearchMarkers() => _instance.removeSearchMarkers();
-
   /// Hightlighs objects by it's id.
   Future<void> setHighlighted(List<DgisObjectIdMessage> objectIds) =>
       _instance.setHighlighted(objectIds);
@@ -307,17 +291,14 @@ class DgisMapController {
   Future<void> removeAllHighlights() => setHighlighted([]);
 
   /// Returns suggest from directory. To run search excplicitly call [search].
-  Future<List<SuggestMessage>> fetchSuggest(
+  Future<SuggestResultMessage> fetchSuggest(
     String queryText, {
     GeoRectMessage? searchRect,
-  }) async {
-    final response = await _instance.fetchSuggests(
-      queryText,
-      searchRect: searchRect,
-    );
-
-    return response.whereType<SuggestMessage>().toList();
-  }
+  }) =>
+      _instance.fetchSuggests(
+        queryText,
+        searchRect: searchRect,
+      );
 
   /// Hide panorama markers. Used for optimization. In most cases should not be used directly.
   Future<void> hidePanoramasMarkers() async {
@@ -360,31 +341,6 @@ class DgisMapController {
 
   Future<void> toggleSound() => _instance.toggleSound();
 
-  /// Acquire object info by index from list returned by [fetchSuggest].
-  Future<ObjectInfoMessage> getSuggestObject(int index) {
-    return _instance.getSuggestObject(index);
-  }
-
-  /// Runs search by index from list returned by [fetchSuggest].
-  Future<List<ObjectInfoMessage>> searchBySuggest(
-    int index, {
-    required MarkerIconMessage searchMarker,
-    required SortingTypeMessage sortingType,
-    GeoRectMessage? searchRect,
-    bool isOpenNow = false,
-    int pageSize = 20,
-  }) async {
-    final response = await _instance.searchBySuggest(
-      index,
-      searchMarker: searchMarker,
-      sortingType: sortingType,
-      weekTime: isOpenNow ? WeekTimeFactory.openNow() : null,
-      pageSize: pageSize,
-      searchRect: searchRect,
-    );
-    return response.whereType<ObjectInfoMessage>().toList(growable: false);
-  }
-
   /// Used to setup platform. Should be called when permision was granted.
   /// Does not request permission by itself.
   Future<void> onLocationPremissionGranted({
@@ -410,11 +366,6 @@ class DgisMapController {
 
   /// Does not apply filters immediately. Resets inner state.
   void resetCurrentEvergisFiltersState() => _evergisFilters.clear();
-
-  /// Shows search marker of object that was tapped last if any.
-  Future<void> showLastSearchMarker() {
-    return _instance.showLastSearchMarker();
-  }
 
   Future<void> setPublicTransportActiveRoute(int routeIndex) {
     return _instance.setPublicTransportActiveRoute(routeIndex);
