@@ -35,7 +35,7 @@ class CarPlateWidget extends StatelessWidget {
             borderRadius: BorderRadius.circular(4),
             /* border: Border.all(
                 color: currentId == id
-                    ? AppColor.darkTurquoise
+                    ? AppColor.primary900Light
                     : AppColor.kGray230),*/
           ),
           child: Row(
@@ -73,7 +73,7 @@ class CarPlateWidget extends StatelessWidget {
                 child: Radio<String>(
                   value: id ?? "",
                   groupValue: currentId,
-                  activeColor: AppColor.darkTurquoise,
+                  activeColor: AppColor.primary900Light,
                   onChanged: (v) {},
                 ),
               ),

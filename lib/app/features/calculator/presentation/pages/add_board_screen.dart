@@ -264,8 +264,9 @@ class _AddBoardScreenState extends State<AddBoardScreen> {
       child: Padding(
           padding: const EdgeInsets.only(top: 5, right: 0, left: 0),
           child: EnhancedCustomElevatedButtonWidget(
-            btnColor:
-                _isButtonDisabled ? AppColor.black200 : AppColor.darkTurquoise,
+            btnColor: _isButtonDisabled
+                ? AppColor.black200
+                : AppColor.primary900Light,
             btnTextColor:
                 _isButtonDisabled ? AppColor.black400 : AppColor.white,
             btnPressed: _isButtonDisabled
@@ -302,8 +303,8 @@ class _AddBoardScreenState extends State<AddBoardScreen> {
         btnTextSize: 16,
         btnTextWeight: AppFontWeight.medium,
         btnHeight: 56,
-        btnTextColor: AppColor.darkTurquoise,
-        btnBorderColor: AppColor.darkTurquoise,
+        btnTextColor: AppColor.primary900Light,
+        btnBorderColor: AppColor.primary900Light,
         btnColor: AppColor.white,
       ),
     );

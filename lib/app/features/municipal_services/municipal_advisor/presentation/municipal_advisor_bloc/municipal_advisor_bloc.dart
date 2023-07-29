@@ -1081,7 +1081,8 @@ class MunicipalAdvisorBloc
           CalculateFeesParams(
             consultationKey: state.consultationKey!,
             accommodationTypeId: null,
-            municipalityGisCode: "013001002",
+            municipalityGisCode:
+                state.gisResponse?.municipalityuniquecode ?? "",
             longitude:
                 state.activityLocation?.latLng.longitude.toString() ?? "",
             latitude: state.activityLocation?.latLng.latitude.toString() ?? "",

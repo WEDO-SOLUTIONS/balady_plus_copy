@@ -30,7 +30,6 @@ class CurrentWeather extends StatelessWidget {
             return state.allWeatherInfoStatus == BlocStatus.success
                 ? Container(
                     padding: const EdgeInsets.all(8),
-                    width: 80,
                     height: 40,
                     decoration: BoxDecoration(
                       color: AppColor.white,

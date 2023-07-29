@@ -61,83 +61,79 @@ class _BottomSheetListState extends State<BottomSheetList> {
   Widget build(BuildContext context) {
     return BottomSheetWithActions(
       title: widget.title,
-      body: Expanded(
-        child: Column(
-          children: [
-            if (widget.searchable)
-              CustomTextFieldWidget(
-                controller: _textEditingController,
-                hintText: 'search'.tr(),
-                prefixIcon: const DrawIconBasedTypeWidget(
-                  icon: IconPath.search,
-                  iconColor: AppColor.primary700Light,
-                ),
-                borderRadius: 16,
-                borderColor: AppColor.primary900Light16,
-                suffixIcon: _textEditingController.text.isNotEmpty
-                    ? InkWell(
-                        onTap: () {
-                          _textEditingController.text = '';
-                          FocusScope.of(context).unfocus();
-                        },
-                        child: const DrawIconBasedTypeWidget(
-                          icon: Icons.close,
-                          iconColor: AppColor.primary700Light,
-                        ),
-                      )
-                    : null,
+      body: Column(
+        children: [
+          if (widget.searchable)
+            CustomTextFieldWidget(
+              controller: _textEditingController,
+              hintText: 'search'.tr(),
+              prefixIcon: const DrawIconBasedTypeWidget(
+                icon: IconPath.search,
+                iconColor: AppColor.primary700Light,
               ),
-            const SizedBox(height: 16),
-            Expanded(
-              child: ListView.builder(
-                shrinkWrap: true,
-                itemExtent: 80,
-                itemCount: items.length,
-                itemBuilder: (context, index) {
-                  final item = items[index];
-                  return InkWell(
-                    onTap: () => selectItem(item),
-                    child: Container(
-                      height: 56,
-                      padding: const EdgeInsetsDirectional.only(start: 12),
-                      margin: const EdgeInsets.only(top: 8),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8),
-                        color: AppColor.primary50Light50,
+              borderRadius: 16,
+              borderColor: AppColor.primary900Light16,
+              suffixIcon: _textEditingController.text.isNotEmpty
+                  ? InkWell(
+                      onTap: () {
+                        _textEditingController.text = '';
+                        FocusScope.of(context).unfocus();
+                      },
+                      child: const DrawIconBasedTypeWidget(
+                        icon: Icons.close,
+                        iconColor: AppColor.primary700Light,
                       ),
-                      child: Row(
-                        children: [
-                          SizedBox(
-                            width: MediaQuery.of(context).size.width - 125,
-                            child: CustomTextWidget(
-                              item,
-                              textStyle: AppStyle.listTitleTextStyle,
-                              maxLines: 2,
-                            ),
-                          ),
-                          const Spacer(),
-                          if (widget.onTap != null && !multipleSelection)
-                            Radio(
-                              value: item,
-                              groupValue: selectedValue,
-                              activeColor: AppColor.primary700Light,
-                              onChanged: (_) => selectItem(item),
-                            )
-                          else if (widget.onTap != null)
-                            Checkbox(
-                              value: selectedValues!.contains(item),
-                              activeColor: AppColor.primary700Light,
-                              onChanged: (_) => selectItem(item),
-                            ),
-                        ],
-                      ),
-                    ),
-                  );
-                },
-              ),
+                    )
+                  : null,
             ),
-          ],
-        ),
+          const SizedBox(height: 16),
+          ListView.builder(
+            shrinkWrap: true,
+            itemExtent: 80,
+            itemCount: items.length,
+            itemBuilder: (context, index) {
+              final item = items[index];
+              return InkWell(
+                onTap: () => selectItem(item),
+                child: Container(
+                  height: 56,
+                  padding: const EdgeInsetsDirectional.only(start: 12),
+                  margin: const EdgeInsets.only(top: 8),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    color: AppColor.primary50Light50,
+                  ),
+                  child: Row(
+                    children: [
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width - 125,
+                        child: CustomTextWidget(
+                          item,
+                          textStyle: AppStyle.listTitleTextStyle,
+                          maxLines: 2,
+                        ),
+                      ),
+                      const Spacer(),
+                      if (widget.onTap != null && !multipleSelection)
+                        Radio(
+                          value: item,
+                          groupValue: selectedValue,
+                          activeColor: AppColor.primary700Light,
+                          onChanged: (_) => selectItem(item),
+                        )
+                      else if (widget.onTap != null)
+                        Checkbox(
+                          value: selectedValues!.contains(item),
+                          activeColor: AppColor.primary700Light,
+                          onChanged: (_) => selectItem(item),
+                        ),
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
+        ],
       ),
       action: widget.onTap == null
           ? null

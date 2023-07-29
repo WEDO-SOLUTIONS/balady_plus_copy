@@ -144,13 +144,13 @@ class BookAppointmentAttachmentsWidgetNew extends StatelessWidget {
                 isFullHeight: false);
           },
           btnText: ("bookNewAppointmentAttachmentFileButtonWord").tr(),
-          btnTextColor: AppColor.darkTurquoise,
+          btnTextColor: AppColor.primary900Light,
           btnTextSize: 16,
-          btnBorderColor: AppColor.darkTurquoise,
+          btnBorderColor: AppColor.primary900Light,
           btnColor: AppColor.white2,
           btnBorderWidth: 2,
           btnRadius: 4,
-          icon: const Icon(Icons.add, color: AppColor.darkTurquoise),
+          icon: const Icon(Icons.add, color: AppColor.primary900Light),
           buttonIconPosition: BUTTON_ICON_POSITION.right,
         )*/
       ],

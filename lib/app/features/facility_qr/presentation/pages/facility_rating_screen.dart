@@ -71,7 +71,7 @@ class _FacilityRatingScreenState extends State<FacilityRatingScreen> {
                     EnhancedCustomElevatedButtonWidget(
                       btnColor: !model.isFormValid
                           ? AppColor.black200
-                          : AppColor.darkTurquoise,
+                          : AppColor.primary900Light,
                       btnPressed: !model.isFormValid
                           ? null
                           : () {

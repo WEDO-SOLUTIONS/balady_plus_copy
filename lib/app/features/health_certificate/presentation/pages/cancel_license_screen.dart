@@ -139,7 +139,7 @@ class _CancelicenseButtonsWidget extends StatelessWidget {
             ),
             isFullHeight: false,
           ),
-          btnColor: AppColor.darkTurquoise, // as Scaffold background
+          btnColor: AppColor.primary900Light, // as Scaffold background
           btnBorderWidth: 2.0,
           btnText: Helpers.translatingWord('cancelLicenseButtonWord'),
           btnTextColor: AppColor.white,
@@ -149,7 +149,7 @@ class _CancelicenseButtonsWidget extends StatelessWidget {
         CustomTextButtonWidget(
           onPressed: () => Navigator.of(context).pop(),
           text: Helpers.translatingWord("notNowLicenseButtonWord"),
-          btnTextColor: AppColor.darkTurquoise,
+          btnTextColor: AppColor.primary900Light,
           btnTextSize: 16.0,
           btnTextWeight: AppFontWeight.medium,
         ),

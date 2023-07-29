@@ -33,7 +33,7 @@ class RenewCertificateFooterWidget extends StatelessWidget {
                       arguments: true);
                 }
               },
-              btnColor: AppColor.darkTurquoise, // as Scaffold background
+              btnColor: AppColor.primary900Light, // as Scaffold background
               btnBorderWidth: 2.0,
               btnText: Helpers.translatingWord(
                 'issueCertificateStartServiceButtonWord',

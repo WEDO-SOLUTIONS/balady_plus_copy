@@ -10,6 +10,7 @@ class DefaultAppBarWidget extends StatelessWidget
   final List<Widget>? actions;
   final bool x;
   final Widget? flexibleSpace;
+  final VoidCallback? onBack;
 
   const DefaultAppBarWidget(
       {super.key,
@@ -17,6 +18,7 @@ class DefaultAppBarWidget extends StatelessWidget
       this.bottom,
       this.actions,
       this.x = false,
+      this.onBack,
       this.flexibleSpace});
 
   @override

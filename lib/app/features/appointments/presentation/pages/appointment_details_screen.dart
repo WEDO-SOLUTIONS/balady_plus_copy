@@ -320,11 +320,11 @@ class _ConfirmAppointmentWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return EnhancedCustomElevatedButtonWidget(
       btnPressed: () async => onConfirm(),
-      btnBorderColor: AppColor.darkTurquoise,
+      btnBorderColor: AppColor.primary900Light,
       btnColor: AppColor.white2,
       btnBorderWidth: 2.0,
       btnText: ("appointmentDetailsConfirmAppointmentWord").tr(),
-      btnTextColor: AppColor.darkTurquoise,
+      btnTextColor: AppColor.primary900Light,
       btnTextWeight: AppFontWeight.medium,
     );
   }

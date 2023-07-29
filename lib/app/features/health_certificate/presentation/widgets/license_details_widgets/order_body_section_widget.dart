@@ -119,7 +119,7 @@ class _CertificateDataHintWidget extends StatelessWidget {
                     btnText: Helpers.tran("health_cert_show_centeres"),
                     btnTextSize: 16.0,
                     btnTextWeight: FONT_WEIGHT.medium,
-                    btnTextColor: AppColor.darkTurquoise,
+                    btnTextColor: AppColor.primary900Light,
                     haveUnderline: true,
                   ),*/
                 ],

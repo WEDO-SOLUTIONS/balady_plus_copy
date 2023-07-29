@@ -1,4 +1,4 @@
-import 'package:dio/dio.dart' show DioError;
+import 'package:dio/dio.dart' show DioError, Options;
 import 'package:localize_and_translate/localize_and_translate.dart'
     show Translation;
 
@@ -593,9 +593,10 @@ class MunicipalAdvisorRemoteDataSourceImplementation
   @override
   Future<bool> saveActivities(SaveActivitiesParamsModel params) async {
     try {
+      print("HEREEEEEEE");
       final response = await webService.dio.post(
         '${ApiUrl.saveActivities}/${params.consultationKey}',
-        data: params.activitiesIds,
+        data: params.activitiesIds.toList(),
       );
 
       final data = response.data;
@@ -1047,9 +1048,9 @@ class MunicipalAdvisorRemoteDataSourceImplementation
       AdditionalActivitiesParamsModel params) async {
     try {
       final response = await webService.dio.post(
-        '${ApiUrl.additionalActivity}/${params.consultationKey}',
-        data: params.ids,
-      );
+          '${ApiUrl.additionalActivity}/${params.consultationKey}',
+          data: params.ids,
+          options: Options(headers: {"Content-Type": "application/json"}));
 
       final data = response.data;
       data.toString().successLog();

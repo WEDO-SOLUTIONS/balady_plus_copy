@@ -15,6 +15,7 @@ import '../../../_shared_feature_/presentation/dialogs/bottom_sheet_dialogs.dart
 import '../mvvm/layers_gis_view_model.dart';
 import '../mvvm/map_view_model.dart';
 import '../mvvm/point_view_model.dart';
+import '../widgets/map_layer_card.dart';
 import '../widgets/marker_card_widget.dart';
 import '../widgets/search_map_widget.dart';
 import '../../../home_page/home_exports.dart' show HomeAppBar, CircleIcon;
@@ -85,13 +86,7 @@ class HomeMap extends StatelessWidget {
                   builder: (_, selectedPoint, __) {
                     return selectedPoint == null
                         ? const SizedBox()
-                        : MarkerMapWidget(
-                            pointViewModel: PointViewModel(
-                              controller: mapViewModel.controller,
-                              point: selectedPoint,
-                              webService: sl(),
-                            ),
-                          );
+                        : MapLayerCard();
                   },
                 ),
               ],

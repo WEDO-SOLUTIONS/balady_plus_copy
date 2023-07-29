@@ -20,6 +20,9 @@ import '../../../../core/services/global/web_service.dart';
 import '../../data/model/layers.dart';
 import 'package:flutter/foundation.dart';
 
+import '../enums/map_enums.dart';
+import '../model/requests/map_requests_params.dart';
+
 class LayersRepositories {
   final WebService webService;
 
@@ -72,42 +75,38 @@ class LayersRepositories {
     return null;
   }
 
-  Future<List<PointLayersData>?> getPointsInLayers({
-    required int layerId,
-    required double northEastLongitude,
-    required double northEastLatitude,
-    required double southWestLongitude,
-    required double southWestLlatitude,
-  }) async {
+  Future<List<PointLayersData>?> getPointsInLayers(
+      {required MapRequestParams params}) async {
     try {
-      print(
-          '${Constants.mainUrl}/$layerId/query?outFields=*&geometryType=esriGeometryEnvelope&geometry=$southWestLongitude,$southWestLlatitude,$northEastLongitude,$northEastLatitude');
       final points = await webService.dio.get(
-        '${Constants.mainUrl}/$layerId/query',
-        queryParameters: {
+        '${Constants.mainUrl}/${params.layer.layerId}/query',
+        queryParameters: params.toMap(),
+        options: Options(headers: {ApiHeader.requiresToken.eName: false}),
+        /* queryParameters: {
           // "where":"1=1",
           // "text": "",
           // "objectIds": "",
           "outFields": "*",
-          "resultOffset" : '50',
+          "resultRecordCount": '50',
           /////////////////// to can send lat and long
-          "geometryType": "esriGeometryEnvelope" , //"esriGeometryPoint",
-          "geometry": "$southWestLongitude,$southWestLlatitude,$northEastLongitude,$northEastLatitude",
+          "geometryType": "esriGeometryEnvelope", //"esriGeometryPoint",
+          "geometry":
+              "$southWestLongitude,$southWestLlatitude,$northEastLongitude,$northEastLatitude",
           ////////////////////////// To get data in a specific area
           // "distance": 100,
           // "supportsQueryWithDistance": true,
           // // The unit for calculating the buffer distance. If unit is not specified, the default will be esriSRUnit_Foot
           // "units": "esriSRUnit_Kilometer"
-        },
-        options: Options(headers: {
+        }*/
+        /*options: Options(headers: {
           ApiHeader.requiresToken.eName: false,
           'verifyingKEY': CommonFunctions.hashRequest(
-              '${Constants.mainUrl}/$layerId/query?outFields=*&geometryType=esriGeometryEnvelope&geometry=$southWestLongitude,$southWestLlatitude,$northEastLongitude,$northEastLatitude',
+              '${Constants.mainUrl}/$layerId/query?outFields=CONTRACTOR_NAME,PROJECTSTARTDATE,PROJECTENDDATE,START_POINT_X,START_POINT_Y,END_POINT_X,END_POINT_Y,SERVTYPE,PROJECT_DESC,PROJECT_NAME,OBJECTID&resultOffset=50&geometryType=esriGeometryEnvelope&geometry=$southWestLongitude,$southWestLlatitude,$northEastLongitude,$northEastLatitude',
               "GET")
-        }),
+        }),*/
       );
 
-      switch (layerId) {
+      switch (params.layer.layerId) {
         case 2: //     المواقع الاستثمارية
           return investmentSitesFromJson(
             points.data['data']['result']['features'],
@@ -125,7 +124,7 @@ class LayersRepositories {
             points.data['data']['result']['features'],
           );
         case 9: //   اراضي بيضاء
-          return  whiteLandsFromJson(
+          return whiteLandsFromJson(
             points.data['data']['result']['features'],
           );
         case 10: //       حدود قطع الأراضي

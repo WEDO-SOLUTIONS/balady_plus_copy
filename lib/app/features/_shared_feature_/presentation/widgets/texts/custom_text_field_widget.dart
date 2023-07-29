@@ -130,7 +130,8 @@ class CustomTextFieldWidget extends StatelessWidget {
       this.onSubmitted,
       this.onTap,
       this.onValidate,
-      this.spacerSize});
+      this.spacerSize,
+      this.onTapOutside});
 
   @override
   Widget build(BuildContext context) {

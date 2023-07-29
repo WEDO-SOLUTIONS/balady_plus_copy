@@ -6,16 +6,14 @@ class PointLayersData {
   final String description;
   final String type;
 
-
-  final GeoPointMessage latLng;
-
+  final GeoPointMessage? latLng;
 
   PointLayersData({
     required this.id,
     required this.name,
     required this.description,
     required this.type,
-    required this.latLng,
+    this.latLng,
   });
 }
 
@@ -23,7 +21,7 @@ enum LayersType {
   layersOne,
   layersTow,
   layersThree,
-  layersFourth,//الحفريات
+  layersFourth, //الحفريات
   layersFifth,
   layersSixth,
   layersSeventh,

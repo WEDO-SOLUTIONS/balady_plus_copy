@@ -212,7 +212,7 @@ class _agreeAndButtonState extends State<agreeAndButton> {
                 EnhancedCustomElevatedButtonWidget(
                   btnColor: isButtonDisabled
                       ? AppColor.black200
-                      : AppColor.darkTurquoise,
+                      : AppColor.primary900Light,
                   btnTextColor:
                       isButtonDisabled ? AppColor.black400 : AppColor.white,
                   btnPressed: isButtonDisabled

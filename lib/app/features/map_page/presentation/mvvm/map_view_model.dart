@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:collection/collection.dart';
 
 import 'package:balady_plus/app/core/base/base_view_model.dart';
 import 'package:balady_plus/app/features/map_page/data/data_sources/point_layers_data.dart';
@@ -14,6 +15,9 @@ import 'package:geolocator/geolocator.dart' as geoLocator;
 import '../../constants/constants.dart';
 import 'package:flutter/widgets.dart';
 
+import '../../data/enums/map_enums.dart';
+import '../../data/model/requests/map_requests_params.dart';
+
 const int mil = 300;
 
 class MapViewModel extends BaseViewModel {
@@ -22,6 +26,8 @@ class MapViewModel extends BaseViewModel {
   MapViewModel({required this.layersRepositories});
 
   final selectedPoint = ValueNotifier<PointLayersData?>(null);
+
+  final selectedDiggingPoint = ValueNotifier<Excavations?>(null);
 
   late DgisMapController controller;
 
@@ -124,6 +130,7 @@ class MapViewModel extends BaseViewModel {
   //////////////////////////////////////////////  search
   TextEditingController searchController = TextEditingController();
   final layerSelected = ValueNotifier<Layers?>(null);
+  GISMapLayers? gisSelectedLayer;
 
   Future<void> performSearch({required String queryText}) async {
     try {
@@ -187,13 +194,16 @@ class MapViewModel extends BaseViewModel {
     isSearchLoading.value = true;
     isSearchLoading.notifyListeners();
     Layers layer = layerSelected.value!;
+    GISMapLayers? gisLayer = GISMapLayers.values
+        .firstWhereOrNull((element) => element.layerId == layer.id);
     List? pointList = await layersRepositories.getPointsInLayers(
-      layerId: layer.id,
+        params: MapRequestParams(
+      layer: gisLayer!,
       northEastLatitude: _lastHandledEvent.visibleRect.northEastLat,
       northEastLongitude: _lastHandledEvent.visibleRect.northEastLon,
       southWestLongitude: _lastHandledEvent.visibleRect.southWestLon,
       southWestLlatitude: _lastHandledEvent.visibleRect.southWestLat,
-    );
+    ));
     switch (layer.geometryType) {
       case 'esriGeometryPoint':
         addMarkersWithPoint(pointList, layer.id);
@@ -205,6 +215,7 @@ class MapViewModel extends BaseViewModel {
         addPolygonWithPoint(pointList, layer.id);
         break;
     }
+    print("Doneeee");
     _clearDebounce();
     isSearchLoading.value = false;
     isSearchLoading.notifyListeners();
@@ -246,6 +257,13 @@ class MapViewModel extends BaseViewModel {
             ),
             onTap: () {
               selectedPoint.value = element;
+              switch (gisSelectedLayer) {
+                case GISMapLayers.Digging:
+                  selectedDiggingPoint.value = element;
+                  break;
+                default:
+                  break;
+              }
               controller.setCameraPosition(
                 CameraPositionMessage(
                   zoomValue: 17,
@@ -265,6 +283,7 @@ class MapViewModel extends BaseViewModel {
   }
 
   void addPolylineWithPoint(List? pointList, int layerId) async {
+    print(pointList);
     if (pointList != null && pointList.isNotEmpty) {
       final List<Polyline> polylines = [];
       for (var element in pointList) {
@@ -273,12 +292,16 @@ class MapViewModel extends BaseViewModel {
           Polyline(
             id: id,
             options: PolylineOptionsMessage(
-              points: element.paths,
-              width: 4,
-              color: -16711936,
-            ),
+                points: element.paths, width: 4, color: 0xff358281),
             onTap: () {
               selectedPoint.value = element;
+              switch (gisSelectedLayer) {
+                case GISMapLayers.Digging:
+                  selectedDiggingPoint.value = element;
+                  break;
+                default:
+                  break;
+              }
               controller.setCameraPosition(
                 CameraPositionMessage(
                   zoomValue: 17,
@@ -313,6 +336,15 @@ class MapViewModel extends BaseViewModel {
             ),
             onTap: () {
               selectedPoint.value = element;
+
+              switch (gisSelectedLayer) {
+                case GISMapLayers.Digging:
+                  selectedDiggingPoint.value = element;
+                  break;
+                default:
+                  break;
+              }
+              print("Done select");
               controller.setCameraPosition(
                 CameraPositionMessage(
                   zoomValue: 17,
@@ -333,6 +365,8 @@ class MapViewModel extends BaseViewModel {
 
   void selectLayers(Layers value) async {
     layerSelected.value = value;
+    gisSelectedLayer = gisSelectedLayer = GISMapLayers.values
+        .firstWhereOrNull((element) => element.layerId == value.id);
     callSearch();
   }
 
@@ -356,4 +390,6 @@ class MapViewModel extends BaseViewModel {
       );
     }
   }
+
+  dynamic getMapCardData() {}
 }

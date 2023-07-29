@@ -1969,7 +1969,7 @@ class _ServiceCalculatorScreenState extends BaseState<ServiceCalculatorScreen,
                 child: EnhancedCustomElevatedButtonWidget(
                   btnColor: _isButtonDisabled
                       ? AppColor.black200
-                      : AppColor.darkTurquoise,
+                      : AppColor.primary900Light,
                   btnTextColor:
                       _isButtonDisabled ? AppColor.black400 : AppColor.white,
                   btnPressed: _isButtonDisabled
@@ -2951,7 +2951,7 @@ class _ServiceCalculatorScreenState extends BaseState<ServiceCalculatorScreen,
               children: [
                 Radio(
                   materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  activeColor: AppColor.darkTurquoise,
+                  activeColor: AppColor.primary900Light,
                   value: 1,
                   groupValue: _IsThereCleaningContractValue,
                   onChanged: _handleRadioValueChange1,
@@ -2970,7 +2970,7 @@ class _ServiceCalculatorScreenState extends BaseState<ServiceCalculatorScreen,
               children: [
                 Radio(
                   materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  activeColor: AppColor.darkTurquoise,
+                  activeColor: AppColor.primary900Light,
                   value: 0,
                   groupValue: _IsThereCleaningContractValue,
                   onChanged: _handleRadioValueChange1,
@@ -3015,7 +3015,7 @@ class _ServiceCalculatorScreenState extends BaseState<ServiceCalculatorScreen,
               children: [
                 Radio(
                     materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    activeColor: AppColor.darkTurquoise,
+                    activeColor: AppColor.primary900Light,
                     value: 1,
                     groupValue: _isThereCleaningContractCurrentValue,
                     onChanged: (value) {
@@ -3035,7 +3035,7 @@ class _ServiceCalculatorScreenState extends BaseState<ServiceCalculatorScreen,
               children: [
                 Radio(
                     materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    activeColor: AppColor.darkTurquoise,
+                    activeColor: AppColor.primary900Light,
                     value: 0,
                     groupValue: _isThereCleaningContractCurrentValue,
                     onChanged: (value) {
@@ -3083,7 +3083,7 @@ class _ServiceCalculatorScreenState extends BaseState<ServiceCalculatorScreen,
               children: [
                 Radio(
                     materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    activeColor: AppColor.darkTurquoise,
+                    activeColor: AppColor.primary900Light,
                     value: 1,
                     groupValue: _isThereCleaningContractNewValue,
                     onChanged: (value) {
@@ -3103,7 +3103,7 @@ class _ServiceCalculatorScreenState extends BaseState<ServiceCalculatorScreen,
               children: [
                 Radio(
                     materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    activeColor: AppColor.darkTurquoise,
+                    activeColor: AppColor.primary900Light,
                     value: 0,
                     groupValue: _isThereCleaningContractNewValue,
                     onChanged: (value) {
