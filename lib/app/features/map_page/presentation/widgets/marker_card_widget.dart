@@ -78,6 +78,103 @@ class MarkerMapWidget extends StatelessWidget {
                                   textStyle: AppStyle.serviceDescriptionStyle,
                                 ),
                               ],
+                            ),
+                            const CustomVerticalSpace(height: 16),
+                            Column(
+                              children: [
+                                Row(
+                                  children: [
+                                    CustomTextWidget(
+                                      "License type",
+                                      textStyle: AppStyle
+                                          .serviceDescriptionStyle
+                                          .copyWith(
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 4),
+                                    CustomTextWidget(
+                                      dataPoint.tradeLicense?.type ?? "No",
+                                      textStyle:
+                                          AppStyle.serviceDescriptionStyle,
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 4),
+                                Row(
+                                  children: [
+                                    CustomTextWidget(
+                                      "License",
+                                      textStyle: AppStyle
+                                          .serviceDescriptionStyle
+                                          .copyWith(
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 4),
+                                    CustomTextWidget(
+                                      dataPoint.tradeLicense?.license ?? "No",
+                                      textStyle:
+                                          AppStyle.serviceDescriptionStyle,
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 4),
+                                Row(
+                                  children: [
+                                    CustomTextWidget(
+                                      "Legal form",
+                                      textStyle: AppStyle
+                                          .serviceDescriptionStyle
+                                          .copyWith(
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 4),
+                                    CustomTextWidget(
+                                      dataPoint.tradeLicense?.legalForm ?? "No",
+                                      textStyle:
+                                          AppStyle.serviceDescriptionStyle,
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 4),
+                                Row(
+                                  children: [
+                                    CustomTextWidget(
+                                      "End date",
+                                      textStyle: AppStyle
+                                          .serviceDescriptionStyle
+                                          .copyWith(
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 4),
+                                    CustomTextWidget(
+                                      dataPoint.tradeLicense?.endDate ?? "No",
+                                      textStyle:
+                                          AppStyle.serviceDescriptionStyle,
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                            const CustomVerticalSpace(height: 16),
+                            Row(
+                              children: [
+                                CustomTextWidget(
+                                  "externalIds",
+                                  textStyle:
+                                      AppStyle.serviceDescriptionStyle.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                const SizedBox(width: 4),
+                                CustomTextWidget(
+                                  dataPoint.externalIds?.join(" ") ?? "[]",
+                                  textStyle: AppStyle.serviceDescriptionStyle,
+                                ),
+                              ],
                             )
                             /* const SizedBox(height: 6),
                             Row(

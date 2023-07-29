@@ -310,6 +310,15 @@ class ObjectTypeItemMessage {
   final ObjectTypeMessage type;
 }
 
+class TradeLicenseMessage {
+  TradeLicenseMessage(this.type, this.license, this.legalForm, this.endDate);
+
+  final String type;
+  final String license;
+  final String legalForm;
+  final String endDate;
+}
+
 class DirectoryObjectMessage {
   DirectoryObjectMessage(
     this.types,
@@ -330,6 +339,8 @@ class DirectoryObjectMessage {
     this.levelId,
     this.buildingLevels,
     this.entrances,
+    this.tradeLicense,
+    this.externalIds,
   );
 
   final List<ObjectTypeItemMessage?> types;
@@ -350,6 +361,8 @@ class DirectoryObjectMessage {
   final int? levelId;
   final BuildingLevelsMessage? buildingLevels;
   final List<EntranceInfoMessage?> entrances;
+  final TradeLicenseMessage? tradeLicense;
+  final List<String?>? externalIds;
 }
 
 enum SortingTypeMessage { byRelevance, byDistance, byRating }

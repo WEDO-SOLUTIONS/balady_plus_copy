@@ -4,7 +4,7 @@ import com.dgis.map.map_api.Messages.*
 import ru.dgis.sdk.*
 import ru.dgis.sdk.directory.*
 
-fun DirectoryObject.toMessage(): DirectoryObjectMessage {
+fun DirectoryObject.toMessage(externalIds: List<String>?): DirectoryObjectMessage {
     return DirectoryObjectMessage.Builder()
         .setTypes(this.types.map {
             ObjectTypeItemMessage.Builder()
@@ -36,6 +36,8 @@ fun DirectoryObject.toMessage(): DirectoryObjectMessage {
         .setEntrances(this.entrances.map {
             it.toMessage()
         })
+        .setTradeLicense(this.tradeLicense?.toMessage())
+        .setExternalIds(externalIds)
         .build()
 }
 
@@ -301,5 +303,14 @@ fun EntranceGeometry.toMessage(): EntranceGeometryMessage {
                 it.toMessage()
             }
         })
+        .build()
+}
+
+fun TradeLicense.toMessage(): TradeLicenseMessage {
+    return TradeLicenseMessage.Builder()
+        .setType(this.type)
+        .setLegalForm(this.legalForm)
+        .setLicense(this.license)
+        .setEndDate(this.endDate)
         .build()
 }

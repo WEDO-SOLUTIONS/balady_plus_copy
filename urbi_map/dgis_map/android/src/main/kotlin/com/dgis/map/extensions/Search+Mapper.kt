@@ -26,7 +26,7 @@ fun Page.toMessage(id: String): PageMessage {
                 .build()
         )
         .setItems(this.items.map {
-            it.toMessage()
+            it.toMessage(null)
         })
         .build()
 }

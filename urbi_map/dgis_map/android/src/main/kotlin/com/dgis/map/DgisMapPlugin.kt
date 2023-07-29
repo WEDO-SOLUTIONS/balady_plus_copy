@@ -44,6 +44,9 @@ class DgisMapPlugin : FlutterPlugin, ActivityAware {
             logOptions = LogOptions(
                 customLevel = LogLevel.VERBOSE,
                 customSink = null
+            ),
+            vendorConfig = VendorConfig(
+                fromAsset = VendorConfigFromAsset("vendor-config.jsonx")
             )
         )
     }

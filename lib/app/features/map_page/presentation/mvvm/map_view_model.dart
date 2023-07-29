@@ -54,6 +54,13 @@ class MapViewModel extends BaseViewModel {
                 width: 24,
               ),
             ),
+            onTap: () {
+              selectedPointId.value = markerInfo.objectId;
+              if (viewHomeBottomSheet.value != false) {
+                viewHomeBottomSheet.value = false;
+                viewHomeBottomSheet.notifyListeners();
+              }
+            },
           ));
           id += 1;
         }

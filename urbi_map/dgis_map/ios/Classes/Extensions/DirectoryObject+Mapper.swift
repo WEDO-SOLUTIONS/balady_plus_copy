@@ -2,7 +2,7 @@ import Foundation
 import DGis
 
 extension DirectoryObject {
-    func toMessage() -> DirectoryObjectMessage {
+    func toMessage(externalIds: [String]?) -> DirectoryObjectMessage {
         return DirectoryObjectMessage.make(
             withTypes: self.types.toMessage(),
             title: self.title,
@@ -29,7 +29,9 @@ extension DirectoryObject {
             buildingLevels: self.buildingLevels?.toMessage(),
             entrances: self.entrances.map {
                 $0.toMessage()
-            }
+            },
+            tradeLicense: self.tradeLicense?.toMessage(),
+            externalIds: externalIds
         )
     }
 }
@@ -444,6 +446,17 @@ extension EntranceGeometry {
                     $0.toMessage()
                 }
             }
+        )
+    }
+}
+
+extension TradeLicense {
+    fileprivate func toMessage() -> TradeLicenseMessage {
+        TradeLicenseMessage.make(
+            withType: self.type,
+            license: self.license,
+            legalForm: self.legalForm,
+            endDate: self.endDate
         )
     }
 }
