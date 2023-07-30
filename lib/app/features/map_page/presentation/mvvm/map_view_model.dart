@@ -162,12 +162,10 @@ class MapViewModel extends BaseViewModel {
 
     await controller.changeFollowState();
 
-    if (kDebugMode) {
-      // setLocale(const Locale("ar", "US"), TextDirection.ltr);
-      await controller.loadStyles(Constants.mapStyle);
-      await controller.overrideLocales(["ar-SA"]);
-      // await controller.overrideLocales([localeState.value.locale]);
-    }
+    // setLocale(const Locale("ar", "US"), TextDirection.ltr);
+    await controller.loadStyles(Constants.mapStyle);
+    await controller.overrideLocales(["ar-SA", "en-SA"]);
+    // await controller.overrideLocales([localeState.value.locale]);
 
     await controller.setMarkerOptions(
       MarkerOptionsMessageOld(

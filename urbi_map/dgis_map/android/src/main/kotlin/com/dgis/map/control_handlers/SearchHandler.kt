@@ -1,6 +1,7 @@
 package com.dgis.map.control_handlers
 
 import android.content.res.Resources.NotFoundException
+import android.util.Log
 import com.dgis.map.extensions.*
 import com.dgis.map.map_api.Messages.*
 import org.json.JSONObject
@@ -12,6 +13,7 @@ import ru.dgis.sdk.coordinates.GeoRect
 import ru.dgis.sdk.directory.*
 import ru.dgis.sdk.map.*
 import ru.dgis.sdk.positioning.DefaultLocationSource
+import java.lang.Exception
 import java.net.URL
 import java.util.UUID
 import kotlin.concurrent.thread
@@ -23,7 +25,7 @@ class SearchHandler(
     private val searchManager: SearchManager,
     private val locationSource: DefaultLocationSource,
 ) : AutoCloseable {
-    val twinsApiUrl = "https://apiservices.balady.gov.sa/v1/urbi-services/twins-api/v1/twins/search/dgis"
+    val twinsApiUrl = "https://apiservices.balady.gov.sa/v1/urbi-services/twins-api/v1/search/dgis"
 
     private var objectSearchFuture: AutoCloseable? = null
     private var searchFuture: AutoCloseable? = null
@@ -52,29 +54,36 @@ class SearchHandler(
                 }
 
                 thread {
-                    val url = URL(
-                        "${this@SearchHandler.twinsApiUrl}?dgis_id=${objectId.objectId}&partner_code=momrah&key=28ed92f1-de4b-4060-b159-2dc19e9b8bf5"
-                    )
-                    val twinsResponse =  JSONTokener(url.readText()).nextValue() as JSONObject
-                    val code = twinsResponse.getJSONObject("meta").getInt("code")
-
-                    if (code != 200) {
-                        result?.error(
-                            IllegalArgumentException(
-                                "TwinsAPI Error: ${twinsResponse.getJSONObject("meta").getString("message")}"
-                            )
+                    try {
+                        val url = URL(
+                            "${this@SearchHandler.twinsApiUrl}?dgis_id=${objectId.objectId}&partner_code=momrah&key=28ed92f1-de4b-4060-b159-2dc19e9b8bf5"
                         )
-                        return@thread
-                    }
+                        val twinsResponse = JSONTokener(url.readText()).nextValue() as JSONObject
+                        val code = twinsResponse.getJSONObject("meta").getInt("code")
 
-                    val items = twinsResponse.getJSONObject("result").getJSONArray("items")
-                    if (items.length() == 1) {
-                        val twinsArray = items.getJSONObject(0).getJSONArray("twins")
-                        val twins = Array<String>(twinsArray.length()) { i ->
-                            twinsArray.getJSONObject(i).getString("partner_id")
-                        }.toList()
-                        result?.success(response.toMessage(twins))
-                    } else {
+                        if (code != 200) {
+                            Log.d(
+                                "2Gis",
+                                "TwinsAPI Error: ${
+                                    twinsResponse.getJSONObject("meta").getString("message")
+                                }"
+                            )
+                            result?.success(response.toMessage(null))
+                            return@thread
+                        }
+
+                        val items = twinsResponse.getJSONObject("result").getJSONArray("items")
+                        if (items.length() == 1) {
+                            val twinsArray = items.getJSONObject(0).getJSONArray("twins")
+                            val twins = Array<String>(twinsArray.length()) { i ->
+                                twinsArray.getJSONObject(i).getString("partner_id")
+                            }.toList()
+                            result?.success(response.toMessage(twins))
+                        } else {
+                            result?.success(response.toMessage(null))
+                        }
+                    } catch (e: Exception) {
+                        Log.d("2Gis", "TwinsAPI Error: ${e.localizedMessage}")
                         result?.success(response.toMessage(null))
                     }
                 }
