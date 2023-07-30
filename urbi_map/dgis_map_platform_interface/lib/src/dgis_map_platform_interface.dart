@@ -120,6 +120,14 @@ abstract class DgisMapPlugin extends PlatformInterface {
     GeoRectMessage? searchRect,
   });
 
+  Future<SearchResultMessage> searchByCategory(
+    SearchCategoryMessage query, {
+    required SortingTypeMessage sortingType,
+    required int pageSize,
+    WeekTimeSearchMessage? weekTime,
+    GeoRectMessage? searchRect,
+  });
+
   Future<PageMessage> fetchPrevPage(PageIdMessage pageId);
 
   Future<PageMessage> fetchNextPage(PageIdMessage pageId);

@@ -252,6 +252,33 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         )
     }
     
+    func search(
+        byCategoryCategory category:
+        SearchCategoryMessage,
+        weekTime: WeekTimeSearchMessage?,
+        searchRect: GeoRectMessage?,
+        sortingType: SortingTypeMessage,
+        pageSize: NSNumber,
+        completion: @escaping (SearchResultMessage?, FlutterError?) -> Void
+    ) {
+        guard let searchHandler = self.searchHandler else {
+            completion(nil, FlutterError(
+                code: "IllegalArgumentException",
+                message: "Map was not initialized properly",
+                details: nil
+            ))
+            return
+        }
+        searchHandler.searchByCategories(
+            category.toRubrics(),
+            searchGeoRect: searchRect?.geoRect,
+            weekTimeMessage: weekTime,
+            sortingType: sortingType,
+            pageSize: pageSize.int32Value,
+            completion: completion
+        )
+    }
+    
     func getDistanceToPoints(
         _ points: [DistanceRequestMessage],
         completion: @escaping ([DistanceResponseMessage]?, FlutterError?) -> Void

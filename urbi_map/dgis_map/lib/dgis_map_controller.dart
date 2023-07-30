@@ -220,6 +220,23 @@ class DgisMapController {
     );
   }
 
+  /// Runs directory search by [SearchCategoryMessage] category.
+  Future<SearchResultMessage> searchByCategory(
+    SearchCategoryMessage category, {
+    required SortingTypeMessage sortingType,
+    GeoRectMessage? searchRect,
+    bool isOpenNow = false,
+    int pageSize = 20,
+  }) {
+    return _instance.searchByCategory(
+      category,
+      sortingType: sortingType,
+      weekTime: isOpenNow ? WeekTimeFactory.openNow() : null,
+      pageSize: pageSize,
+      searchRect: searchRect,
+    );
+  }
+
   /// Fetches next page for given page
   Future<PageMessage> fetchPrevPage(PageMessage page) =>
       _instance.fetchPrevPage(page.id);

@@ -800,6 +800,14 @@ class SuggestResultMessage {
   final List<SuggestMessage?> suggests;
 }
 
+enum SearchCategoryMessage {
+  mousques,
+  gasStations,
+  cafe,
+  restaurants,
+  parks,
+}
+
 @ConfigurePigeon(
   PigeonOptions(
     dartOut: 'lib/src/pigeons/messages.g.dart',
@@ -857,6 +865,15 @@ abstract class MapApi {
   @async
   SearchResultMessage searchByQuery(
     SearchQueryMessage query,
+    WeekTimeSearchMessage? weekTime,
+    GeoRectMessage? searchRect,
+    SortingTypeMessage sortingType,
+    int pageSize,
+  );
+
+  @async
+  SearchResultMessage searchByCategory(
+    SearchCategoryMessage category,
     WeekTimeSearchMessage? weekTime,
     GeoRectMessage? searchRect,
     SortingTypeMessage sortingType,

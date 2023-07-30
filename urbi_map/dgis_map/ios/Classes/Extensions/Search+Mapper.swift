@@ -98,3 +98,26 @@ extension SearchResultType {
         }
     }
 }
+
+extension SearchCategoryMessage {
+    private func toCategories() -> [UInt64] {
+        switch self {
+        case .mousques:
+            return [13374]
+        case .gasStations:
+            return [18547]
+        case .cafe:
+            return [159, 162]
+        case .restaurants:
+            return [161, 1203, 112658, 51459, 110376, 166, 15791, 111593]
+        case .parks:
+            return [168]
+        }
+    }
+    
+    func toRubrics() -> [RubricId] {
+        return self.toCategories().map {
+            RubricId(value: $0)
+        }
+    }
+}

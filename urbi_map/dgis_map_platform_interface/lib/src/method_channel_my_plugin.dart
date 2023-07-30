@@ -308,6 +308,23 @@ class MethodChannelDgisMapPlugin extends DgisMapPlugin {
   }
 
   @override
+  Future<SearchResultMessage> searchByCategory(
+    SearchCategoryMessage category, {
+    required SortingTypeMessage sortingType,
+    required int pageSize,
+    WeekTimeSearchMessage? weekTime,
+    GeoRectMessage? searchRect,
+  }) {
+    return _api.searchByCategory(
+      category,
+      weekTime,
+      searchRect,
+      sortingType,
+      pageSize,
+    );
+  }
+
+  @override
   Future<PageMessage> fetchPrevPage(PageIdMessage pageId) =>
       _api.fetchPrevPage(pageId);
 
@@ -505,8 +522,8 @@ class MethodChannelDgisMapPlugin extends DgisMapPlugin {
             surfaceFactory: (context, controller) {
               return AndroidViewSurface(
                 controller: controller as AndroidViewController,
-                gestureRecognizers: const <
-                    Factory<OneSequenceGestureRecognizer>>{},
+                gestureRecognizers: const <Factory<
+                    OneSequenceGestureRecognizer>>{},
                 hitTestBehavior: PlatformViewHitTestBehavior.opaque,
               );
             },
