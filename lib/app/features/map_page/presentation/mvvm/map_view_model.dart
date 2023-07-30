@@ -34,13 +34,13 @@ class MapViewModel extends BaseViewModel {
           ? await controller.searchByCategory(
               selectedCategory.value!,
               sortingType: SortingTypeMessage.byDistance,
-              isOpenNow: true,
+              isOpenNow: false,
               searchRect: _lastHandledEvent?.visibleRect.geoRectMessage(),
             )
           : await controller.search(
               queryText,
               sortingType: SortingTypeMessage.byDistance,
-              isOpenNow: true,
+              isOpenNow: false,
               searchRect: _lastHandledEvent?.visibleRect.geoRectMessage(),
             );
       await controller.removeAllMarkers();
