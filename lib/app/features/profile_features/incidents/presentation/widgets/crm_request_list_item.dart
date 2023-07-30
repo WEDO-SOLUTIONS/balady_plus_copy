@@ -4,10 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:dartz/dartz.dart' show Either, Right, Left;
+import '../../../../../core/utils/enums/enums.dart';
 import '../../../../../core/utils/utils_exports.dart'
     show AppColor, AppStyle, CommonFunctions, IconPath, RouteName;
 import '../../../../_shared_feature_/shared_feature_exports.dart';
 import '../../../requests/presentation/widgets/request_parameter.dart';
+import '../../domain/entities/request_details_page_params.dart';
 
 class CRMRequestsListItem extends StatelessWidget {
   final CRMRequestItem request;
@@ -81,7 +83,40 @@ class CRMRequestsListItem extends StatelessWidget {
             ),
           ),
           ElevatedButtonWidget.details(
-            onPressed: () async {},
+            onPressed: () async {
+              final RequestDetailsPageParams params = RequestDetailsPageParams(
+                  details: request, type: request.getRequestType());
+              switch (request.getRequestType()) {
+                case RequestsType.INC:
+                  Navigator.pushNamed(context, RouteName.IncidentDetails,
+                      arguments: params);
+                  break;
+                case RequestsType.DC:
+                  Navigator.pushNamed(context, RouteName.DCDetails,
+                      arguments: params);
+                  break;
+                case RequestsType.VHR:
+                  Navigator.pushNamed(context, RouteName.VHRDetails,
+                      arguments: params);
+                  break;
+                case RequestsType.INQ:
+                  Navigator.pushNamed(context, RouteName.InqDetails,
+                      arguments: params);
+                  break;
+                case RequestsType.REQ:
+                  Navigator.pushNamed(context, RouteName.ReqDetails,
+                      arguments: params);
+                  break;
+                case RequestsType.TSR:
+                  Navigator.pushNamed(context, RouteName.DCDetails,
+                      arguments: params);
+                  break;
+                case RequestsType.MUN:
+                  Navigator.pushNamed(context, RouteName.DCDetails,
+                      arguments: params);
+                  break;
+              }
+            },
           ),
         ],
       ),

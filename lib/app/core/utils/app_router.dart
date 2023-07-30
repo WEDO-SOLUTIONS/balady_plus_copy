@@ -2,6 +2,8 @@ import 'package:balady_plus/app/features/daem/daem_exports.dart';
 import 'package:balady_plus/app/features/commercial_license/commercial_license_exports.dart';
 import 'package:balady_plus/app/features/objectable_transactions/domain/entities/create_objection_page_params.dart';
 import 'package:balady_plus/app/features/objections/domain/entities/objection_details.dart';
+import 'package:balady_plus/app/features/profile_features/incidents/presentation/pages/dc_details.dart';
+import 'package:balady_plus/app/features/profile_features/incidents/presentation/pages/incident_details.dart';
 import 'package:balady_plus/app/features/quran/presentation/pages/quran_bookmarks.dart';
 import 'package:balady_plus/app/features/quran/quran_exports.dart';
 import 'package:balady_plus/app/features/wallet/core/models/wallet_item.dart';
@@ -47,7 +49,11 @@ import '../../features/municipal_services/municipal_advisor/municipal_advisor_ex
 import '../../features/objections/presentation/pages/objections_page.dart';
 import '../../features/profile_features/dashboard/dashboard_exports.dart'
     show DashBoardPage;
+import '../../features/profile_features/incidents/domain/entities/request_details_page_params.dart';
+import '../../features/profile_features/incidents/presentation/pages/inq_details.dart';
+import '../../features/profile_features/incidents/presentation/pages/req_details.dart';
 import '../../features/profile_features/incidents/presentation/pages/requests_page.dart';
+import '../../features/profile_features/incidents/presentation/pages/vhr_details.dart';
 import '../../features/profile_features/invoices/invoices_exports.dart'
     show InvoiceDetailsPage, InvoiceEntity, InvoicesPage;
 import '../../features/profile_features/licenses/licenses_exports.dart'
@@ -499,6 +505,68 @@ class AppRouter {
         return MaterialPageRoute(
           builder: (_) => InvestmentMapDetailsPage(
             item: item!,
+          ),
+        );
+
+      case RouteName.InvestmentMapDetailsPage:
+        InvestmentDetailsResponse? item =
+            settings.arguments as InvestmentDetailsResponse?;
+        return MaterialPageRoute(
+          builder: (_) => InvestmentMapDetailsPage(
+            item: item!,
+          ),
+        );
+
+      case RouteName.InvestmentMapDetailsPage:
+        InvestmentDetailsResponse? item =
+            settings.arguments as InvestmentDetailsResponse?;
+        return MaterialPageRoute(
+          builder: (_) => InvestmentMapDetailsPage(
+            item: item!,
+          ),
+        );
+
+      case RouteName.DCDetails:
+        RequestDetailsPageParams? item =
+            settings.arguments as RequestDetailsPageParams?;
+        return MaterialPageRoute(
+          builder: (_) => DCDetailsPage(
+            params: item!,
+          ),
+        );
+
+      case RouteName.IncidentDetails:
+        RequestDetailsPageParams? item =
+            settings.arguments as RequestDetailsPageParams?;
+        return MaterialPageRoute(
+          builder: (_) => IncidentDetailsPage(
+            params: item!,
+          ),
+        );
+      case RouteName.InqDetails:
+        RequestDetailsPageParams? item =
+            settings.arguments as RequestDetailsPageParams?;
+        return MaterialPageRoute(
+          builder: (_) => InqDetailsPage(
+            params: item!,
+          ),
+        );
+
+      case RouteName.ReqDetails:
+        RequestDetailsPageParams? item =
+            settings.arguments as RequestDetailsPageParams?;
+        return MaterialPageRoute(
+          builder: (_) => ReqDetailsPage(
+            params: item!,
+          ),
+        );
+
+      case RouteName.VHRDetails:
+        RequestDetailsPageParams? item =
+            settings.arguments as RequestDetailsPageParams?;
+        return MaterialPageRoute(
+          builder: (_) => VHRDetailsPage(
+            params: item!,
           ),
         );
 

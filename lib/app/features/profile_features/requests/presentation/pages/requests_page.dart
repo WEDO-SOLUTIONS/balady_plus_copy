@@ -118,21 +118,7 @@ class RequestsPage extends StatelessWidget {
           ),
           body: Padding(
             padding: const EdgeInsets.all(16),
-            child: Column(
-              children: [
-                RequestTypeHorizontalList(
-                  selected: state.crmRequestType,
-                  onSelect: (RequestsType type) {
-                    if (type != RequestsType.MUN) {
-                      context
-                          .read<RequestsBloc>()
-                          .add(GetCRMRequestEvent(crmRequestType: type));
-                    }
-                  },
-                ),
-                Expanded(child: const RequestsList()),
-              ],
-            ),
+            child: const RequestsList(),
           ),
         );
       }),

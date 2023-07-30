@@ -115,4 +115,11 @@ class RouteName {
   static const MapDetailsPage = '/mapDetailsPage';
   static const DiggingMapDetailsPage = '/DiggingMapDetailsPage';
   static const InvestmentMapDetailsPage = '/InvestmentMapDetailsPage';
+
+  // -------  CRM Details ---------
+  static const DCDetails = '/DCDetails';
+  static const IncidentDetails = '/IncidentDetails';
+  static const InqDetails = '/InqDetails';
+  static const ReqDetails = '/ReqDetails';
+  static const VHRDetails = '/VHRDetails';
 }

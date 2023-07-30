@@ -68,8 +68,7 @@ class ApiUrl {
       '/v1/balady-consultation-services/flow-recommendations';
   static const updatePermit =
       '/v1/balady-consultation-services/updated-permit-cost';
-  static const submitConsultation =
-      '/v1/balady-consultation-services/submit';
+  static const submitConsultation = '/v1/balady-consultation-services/submit';
 
   //! Profile
   //! Delegators
@@ -182,8 +181,6 @@ class ApiUrl {
 
   static const String MSRCreate =
       '/prweb/PRRestService/FrontUserBalady/V1/CreateMuncipalServiceRequest';
-  static const String MSRRequestDetails =
-      '/prweb/PRRestService/FrontUserBalady/V1/FetchMuncipalServiceRequest';
 
   static const String MSRRetrieveMSRData =
       '/prweb/PRRestService/FrontUserBalady/V1/RetrieveMSRData';
@@ -218,7 +215,20 @@ class ApiUrl {
 
   static const String crmRequestsList =
       '/prweb/PRRestService/FrontUserBalady/V1/GetIncidentRequests';
+  static const String IncidentRequestDetails =
+      '/prweb/PRRestService/FrontUserBalady/V1/FetchIncidentRequest';
 
+  static const String MSRRequestDetails =
+      '/prweb/PRRestService/FrontUserBalady/V1/FetchMuncipalServiceRequest';
+
+  static const String IncidentEvaluate =
+      "/prweb/PRRestService/FrontUserBalady/V1/SubmitPetitionerEvaluation";
+
+  static const String FetchInquiryRequest =
+      '/prweb/PRRestService/FrontUserBalady/V1/FetchInquiryRequest';
+
+  static const requestDetails =
+      'v1/damaged-vehicle-mobile/incident-request-details';
   //! POST
 
   //! Delete

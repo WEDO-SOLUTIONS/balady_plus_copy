@@ -19,6 +19,7 @@ import '../../requests_exports.dart'
         IncidentsState,
         RequestsList,
         SearchCRMIncidentsEvent;
+import '../widgets/request_type_horizontal_list.dart';
 
 class INCRequestsPage extends StatelessWidget {
   const INCRequestsPage({super.key});
@@ -32,9 +33,9 @@ class INCRequestsPage extends StatelessWidget {
           BlocBuilder<IncidentsBloc, IncidentsState>(builder: (context, state) {
         return Scaffold(
           appBar: DefaultAppBarWidget(
-            title: 'reports'.tr(),
+            title: 'صوت العميل'.tr(),
             bottom: AppBarSeachBar(
-              crmRequestType: RequestsType.INC,
+              crmRequestType: state.crmRequestType,
               onChanged: (value) {
                 context.read<IncidentsBloc>().add(
                       SearchCRMIncidentsEvent(query: value),
@@ -47,6 +48,16 @@ class INCRequestsPage extends StatelessWidget {
             padding: const EdgeInsets.all(16),
             child: Column(
               children: [
+                RequestTypeHorizontalList(
+                  selected: state.crmRequestType,
+                  onSelect: (RequestsType type) {
+                    if (type != RequestsType.MUN) {
+                      context
+                          .read<IncidentsBloc>()
+                          .add(GetCRMRequestEvent(crmRequestType: type));
+                    }
+                  },
+                ),
                 Expanded(child: const RequestsList()),
               ],
             ),
