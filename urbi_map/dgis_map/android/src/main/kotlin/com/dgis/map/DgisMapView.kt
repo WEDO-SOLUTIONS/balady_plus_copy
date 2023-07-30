@@ -6,6 +6,7 @@ import android.util.Size
 import android.view.LayoutInflater
 import com.dgis.map.control_handlers.*
 import com.dgis.map.extensions.toGeoRect
+import com.dgis.map.extensions.toRubrics
 import com.dgis.map.extensions.toSdkAccuracy
 import com.dgis.map.extensions.unsafeLazy
 import com.dgis.map.map_api.Messages
@@ -187,13 +188,18 @@ class DgisMapView(
         val map = map ?: return
 
         val objectTapHandler = ObjectTapHandler(
-            mapObjectManager = MapObjectManager(map),
+            mapObjectManager =
+                MapObjectManager.withGeneralization(
+                    map = map,
+                    logicalPixel = LogicalPixel(value = 40f),
+                    maxZoom = Zoom(value = 18f)
+                ),
             panoramasObjectManager =
-            MapObjectManager.withGeneralization(
-                map = map,
-                logicalPixel = LogicalPixel(value = 20f),
-                maxZoom = Zoom(value = 18f)
-            ),
+                MapObjectManager.withGeneralization(
+                    map = map,
+                    logicalPixel = LogicalPixel(value = 20f),
+                    maxZoom = Zoom(value = 18f)
+                ),
             ioObjectManager =
                 MapObjectManager.withGeneralization(
                     map=map,
@@ -251,6 +257,24 @@ class DgisMapView(
         )
     }
 
+    override fun searchByCategory(
+        category: SearchCategoryMessage,
+        weekTime: WeekTimeSearchMessage?,
+        searchRect: GeoRectMessage?,
+        sortingType: SortingTypeMessage,
+        pageSize: Long,
+        result: Messages.Result<SearchResultMessage>?
+    ) {
+        searchHandler?.searchByCategories(
+            categories = category.toRubrics(),
+            searchGeoRect = searchRect?.toGeoRect(),
+            weekTimeMessage = weekTime,
+            sortingType = sortingType,
+            pageSize = pageSize.toInt(),
+            result = result
+        )
+    }
+
     override fun fetchNextPage(pageId: PageIdMessage, result: Messages.Result<PageMessage>?) {
         searchHandler?.fetchNextPage(pageId, result)
     }
@@ -293,7 +317,7 @@ class DgisMapView(
         objectTapHandler?.addMarkers(markers, result)
     }
 
-    override fun removeMarker(id: Long, result: Messages.Result<Void>?) {
+    override fun removeMarker(id: String, result: Messages.Result<Void>?) {
         objectTapHandler?.removeMarker(id, result)
     }
 
@@ -310,7 +334,7 @@ class DgisMapView(
         objectTapHandler?.addPolygons(polygons, result)
     }
 
-    override fun removePolygon(id: Long, result: Messages.Result<Void>?) {
+    override fun removePolygon(id: String, result: Messages.Result<Void>?) {
         objectTapHandler?.removePolygon(id, result)
     }
 
@@ -327,7 +351,7 @@ class DgisMapView(
         objectTapHandler?.addPolylines(polylines, result)
     }
 
-    override fun removePolyline(id: Long, result: Messages.Result<Void>?) {
+    override fun removePolyline(id: String, result: Messages.Result<Void>?) {
         objectTapHandler?.removePolyline(id, result)
     }
 

@@ -180,6 +180,29 @@ class SearchHandler: NSObject {
         
         performSearch(query, completion: completion)
     }
+    
+    func searchByCategories(
+        _ categories: [RubricId],
+        searchGeoRect: DGis.GeoRect?,
+        weekTimeMessage: WeekTimeSearchMessage?,
+        sortingType: SortingTypeMessage,
+        pageSize: Int32,
+        completion: @escaping (SearchResultMessage?, FlutterError?) -> Void
+    ) {
+        var query = SearchQueryBuilder.fromRubriсIds(rubricIds: categories)
+            .setPageSize(pageSize: pageSize)
+            .setSortingType(sortingType: sortingType.toSortingType())
+            .setDirectoryFilter(filter:
+                DirectoryFilter(
+                    workTime: buildWeekTimeFilter(weekTimeMessage),
+                    dynamic: []
+                )
+            )
+            .setAreaOfInterest(rect: searchGeoRect)
+            .build()
+        
+        performSearch(query, completion: completion)
+    }
 
     func performSearch(
         _ query: SearchQuery,

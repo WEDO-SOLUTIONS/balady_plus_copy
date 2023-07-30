@@ -12,15 +12,15 @@ class ObjectTapEventHandler {
 
   final _objectTapController = StreamController<TapEvent>();
 
-  final Map<int, OnObjectTap> markerHandlers = {};
-  final Map<int, OnObjectTap> polygonHandlers = {};
-  final Map<int, OnObjectTap> polylineHandlers = {};
+  final Map<String, OnObjectTap> markerHandlers = {};
+  final Map<String, OnObjectTap> polygonHandlers = {};
+  final Map<String, OnObjectTap> polylineHandlers = {};
 
-  void addMarkerHandler(int id, OnObjectTap onTap) {
+  void addMarkerHandler(String id, OnObjectTap onTap) {
     markerHandlers[id] = onTap;
   }
 
-  void removeMarkerHandler(int id) {
+  void removeMarkerHandler(String id) {
     markerHandlers.remove(id);
   }
 
@@ -32,11 +32,11 @@ class ObjectTapEventHandler {
     markerHandlers[map["id"]]?.call();
   }
 
-  void addPolygonHandler(int id, OnObjectTap onTap) {
+  void addPolygonHandler(String id, OnObjectTap onTap) {
     polygonHandlers[id] = onTap;
   }
 
-  void removePolygonHandler(int id) {
+  void removePolygonHandler(String id) {
     polygonHandlers.remove(id);
   }
 
@@ -48,11 +48,11 @@ class ObjectTapEventHandler {
     polygonHandlers[map["id"]]?.call();
   }
 
-  void addPolylineHandler(int id, OnObjectTap onTap) {
+  void addPolylineHandler(String id, OnObjectTap onTap) {
     polylineHandlers[id] = onTap;
   }
 
-  void removePolylineHandler(int id) {
+  void removePolylineHandler(String id) {
     polylineHandlers.remove(id);
   }
 

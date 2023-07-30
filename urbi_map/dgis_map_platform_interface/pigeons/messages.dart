@@ -580,7 +580,7 @@ class MarkerOptionsMessage {
 class MarkerMessage {
   MarkerMessage(this.id, this.options);
 
-  final int id;
+  final String id;
   final MarkerOptionsMessage options;
 }
 
@@ -601,7 +601,7 @@ class PolygonOptionsMessage {
 class PolygonMessage {
   PolygonMessage(this.id, this.options);
 
-  final int id;
+  final String id;
   final PolygonOptionsMessage options;
 }
 
@@ -620,7 +620,7 @@ class PolylineOptionsMessage {
 class PolylineMessage {
   PolylineMessage(this.id, this.options);
 
-  final int id;
+  final String id;
   final PolylineOptionsMessage options;
 }
 
@@ -800,6 +800,14 @@ class SuggestResultMessage {
   final List<SuggestMessage?> suggests;
 }
 
+enum SearchCategoryMessage {
+  mousques,
+  gasStations,
+  cafe,
+  restaurants,
+  parks,
+}
+
 @ConfigurePigeon(
   PigeonOptions(
     dartOut: 'lib/src/pigeons/messages.g.dart',
@@ -864,6 +872,15 @@ abstract class MapApi {
   );
 
   @async
+  SearchResultMessage searchByCategory(
+    SearchCategoryMessage category,
+    WeekTimeSearchMessage? weekTime,
+    GeoRectMessage? searchRect,
+    SortingTypeMessage sortingType,
+    int pageSize,
+  );
+
+  @async
   PageMessage fetchPrevPage(PageIdMessage pageId);
 
   @async
@@ -888,7 +905,7 @@ abstract class MapApi {
   void addMarkers(List<MarkerMessage> markers);
 
   @async
-  void removeMarker(int id);
+  void removeMarker(String id);
 
   @async
   void removeAllMarkers();
@@ -900,7 +917,7 @@ abstract class MapApi {
   void addPolygons(List<PolygonMessage> polygons);
 
   @async
-  void removePolygon(int id);
+  void removePolygon(String id);
 
   @async
   void removeAllPolygons();
@@ -912,7 +929,7 @@ abstract class MapApi {
   void addPolylines(List<PolylineMessage> polylines);
 
   @async
-  void removePolyline(int id);
+  void removePolyline(String id);
 
   @async
   void removeAllPolylines();

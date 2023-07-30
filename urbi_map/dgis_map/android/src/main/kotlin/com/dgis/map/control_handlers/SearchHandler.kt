@@ -143,6 +143,28 @@ class SearchHandler(
         )
     }
 
+    fun searchByCategories(
+        categories: List<RubricId>,
+        searchGeoRect: GeoRect?,
+        weekTimeMessage: WeekTimeSearchMessage? = null,
+        sortingType: SortingTypeMessage,
+        pageSize: Int,
+        result: Result<SearchResultMessage>?
+    ) {
+        val query = SearchQueryBuilder
+            .fromRubriсIds(categories)
+            .setSortingType(sortingType.toSortingType())
+            .setPageSize(pageSize)
+            .setDirectoryFilter(DirectoryFilter(weekTimeMessage.toFilter(), emptyList()))
+            .setAreaOfInterest(searchGeoRect)
+            .build()
+
+        performSearch(
+            query = query,
+            result = result
+        )
+    }
+
     private fun performSearch(
         query: SearchQuery,
         result: Result<SearchResultMessage>?

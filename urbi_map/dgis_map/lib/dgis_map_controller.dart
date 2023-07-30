@@ -220,6 +220,23 @@ class DgisMapController {
     );
   }
 
+  /// Runs directory search by [SearchCategoryMessage] category.
+  Future<SearchResultMessage> searchByCategory(
+    SearchCategoryMessage category, {
+    required SortingTypeMessage sortingType,
+    GeoRectMessage? searchRect,
+    bool isOpenNow = false,
+    int pageSize = 20,
+  }) {
+    return _instance.searchByCategory(
+      category,
+      sortingType: sortingType,
+      weekTime: isOpenNow ? WeekTimeFactory.openNow() : null,
+      pageSize: pageSize,
+      searchRect: searchRect,
+    );
+  }
+
   /// Fetches next page for given page
   Future<PageMessage> fetchPrevPage(PageMessage page) =>
       _instance.fetchPrevPage(page.id);
@@ -243,7 +260,7 @@ class DgisMapController {
       _instance.addMarkers(markers);
 
   /// Remove marker by id.
-  Future<void> removeMarker(int id) => _instance.removeMarker(id);
+  Future<void> removeMarker(String id) => _instance.removeMarker(id);
 
   /// Remove all markers added with [addMarker].
   Future<void> removeAllMarkers() => _instance.removeAllMarkers();
@@ -264,7 +281,7 @@ class DgisMapController {
       _instance.addPolygons(polygons);
 
   /// Remove polygon by id.
-  Future<void> removePolygon(int id) => _instance.removePolygon(id);
+  Future<void> removePolygon(String id) => _instance.removePolygon(id);
 
   /// Remove all polygons added with [addPolygon].
   Future<void> removeAllPolygons() => _instance.removeAllPolygons();
@@ -278,7 +295,7 @@ class DgisMapController {
       _instance.addPolylines(polyline);
 
   /// Remove polyline by id.
-  Future<void> removePolyline(int id) => _instance.removePolyline(id);
+  Future<void> removePolyline(String id) => _instance.removePolyline(id);
 
   /// Remove all polyline added with [addPolyline].
   Future<void> removeAllPolylines() => _instance.removeAllPolylines();

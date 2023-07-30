@@ -120,6 +120,14 @@ abstract class DgisMapPlugin extends PlatformInterface {
     GeoRectMessage? searchRect,
   });
 
+  Future<SearchResultMessage> searchByCategory(
+    SearchCategoryMessage query, {
+    required SortingTypeMessage sortingType,
+    required int pageSize,
+    WeekTimeSearchMessage? weekTime,
+    GeoRectMessage? searchRect,
+  });
+
   Future<PageMessage> fetchPrevPage(PageIdMessage pageId);
 
   Future<PageMessage> fetchNextPage(PageIdMessage pageId);
@@ -141,7 +149,7 @@ abstract class DgisMapPlugin extends PlatformInterface {
     List<Marker> markers,
   );
 
-  Future<void> removeMarker(int id);
+  Future<void> removeMarker(String id);
 
   Future<void> removeAllMarkers();
 
@@ -153,7 +161,7 @@ abstract class DgisMapPlugin extends PlatformInterface {
     List<Polygon> polygons,
   );
 
-  Future<void> removePolygon(int id);
+  Future<void> removePolygon(String id);
 
   Future<void> removeAllPolygons();
 
@@ -165,7 +173,7 @@ abstract class DgisMapPlugin extends PlatformInterface {
     List<Polyline> polylines,
   );
 
-  Future<void> removePolyline(int id);
+  Future<void> removePolyline(String id);
 
   Future<void> removeAllPolylines();
 

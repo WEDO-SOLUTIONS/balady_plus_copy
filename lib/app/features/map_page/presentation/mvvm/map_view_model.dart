@@ -1,10 +1,12 @@
 import 'dart:async';
 
 import 'package:balady_plus/app/core/base/base_view_model.dart';
+import 'package:balady_plus/app/features/map_page/extensions/search_category_ext.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/foundation.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:geolocator/geolocator.dart' as geoLocator;
+import 'package:uuid/uuid.dart';
 
 import '../../constants/constants.dart';
 import 'package:flutter/widgets.dart';
@@ -18,39 +20,45 @@ class MapViewModel extends BaseViewModel {
 
   TextEditingController searchController = TextEditingController();
 
+  ValueNotifier<SearchCategoryMessage?> selectedCategory = ValueNotifier(null);
+
   Future<void> performSearch({
     required String queryText,
-    GeoRectMessage? searchRect,
   }) async {
     try {
-      searchController.text = queryText;
+      searchController.text = selectedCategory.value != null
+          ? selectedCategory.value!.displayName()
+          : queryText;
+
+      SearchResultMessage data = selectedCategory.value != null
+          ? await controller.searchByCategory(
+              selectedCategory.value!,
+              sortingType: SortingTypeMessage.byDistance,
+              isOpenNow: false,
+              searchRect: _lastHandledEvent?.visibleRect.geoRectMessage(),
+            )
+          : await controller.search(
+              queryText,
+              sortingType: SortingTypeMessage.byDistance,
+              isOpenNow: false,
+              searchRect: _lastHandledEvent?.visibleRect.geoRectMessage(),
+            );
       await controller.removeAllMarkers();
-      SearchResultMessage data = await controller.search(
-        queryText,
-        sortingType: SortingTypeMessage.byDistance,
-        isOpenNow: true,
-        searchRect: searchRect,
-      );
+
       if (data.itemMarkerInfos != null) {
-        int id = 0;
         List<Marker> markers = [];
 
-        final icons = [
-          "assets/icons/svg/nearby/coffee.svg",
-          "assets/icons/svg/nearby/hotel.svg",
-          "assets/icons/svg/nearby/mosque.svg",
-          "assets/icons/svg/nearby/restaurant.svg",
-        ];
+        final iconPath = selectedCategory.value != null
+            ? selectedCategory.value!.iconName()
+            : "assets/maps/icons/ic_marker.svg";
 
         for (final markerInfo in data.itemMarkerInfos!) {
-          final objectId = markerInfo!.objectId?.objectId ?? 3;
-
           markers.add(Marker(
-            id: id,
+            id: markerInfo?.objectId?.objectId.toString() ?? const Uuid().v4(),
             options: MarkerOptionsMessage(
-              position: markerInfo.geoPoint,
+              position: markerInfo!.geoPoint,
               icon: MarkerIconMessage(
-                path: icons[objectId % 4],
+                path: iconPath,
                 width: 24,
               ),
             ),
@@ -62,7 +70,6 @@ class MapViewModel extends BaseViewModel {
               }
             },
           ));
-          id += 1;
         }
 
         await controller.addMarkers(markers);
@@ -280,7 +287,6 @@ class MapViewModel extends BaseViewModel {
       if (searchController.text.isNotEmpty) {
         await performSearch(
           queryText: searchController.text,
-          searchRect: _lastHandledEvent?.visibleRect.geoRectMessage(),
         );
       }
       _clearDebounce();

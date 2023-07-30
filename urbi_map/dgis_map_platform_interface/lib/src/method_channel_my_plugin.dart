@@ -308,6 +308,23 @@ class MethodChannelDgisMapPlugin extends DgisMapPlugin {
   }
 
   @override
+  Future<SearchResultMessage> searchByCategory(
+    SearchCategoryMessage category, {
+    required SortingTypeMessage sortingType,
+    required int pageSize,
+    WeekTimeSearchMessage? weekTime,
+    GeoRectMessage? searchRect,
+  }) {
+    return _api.searchByCategory(
+      category,
+      weekTime,
+      searchRect,
+      sortingType,
+      pageSize,
+    );
+  }
+
+  @override
   Future<PageMessage> fetchPrevPage(PageIdMessage pageId) =>
       _api.fetchPrevPage(pageId);
 
@@ -368,7 +385,7 @@ class MethodChannelDgisMapPlugin extends DgisMapPlugin {
 
   @override
   Future<void> removeMarker(
-    int id,
+    String id,
   ) {
     _objectTapEventHandler.removeMarkerHandler(id);
     return _api.removeMarker(id);
@@ -413,7 +430,7 @@ class MethodChannelDgisMapPlugin extends DgisMapPlugin {
 
   @override
   Future<void> removePolygon(
-    int id,
+    String id,
   ) {
     _objectTapEventHandler.removePolygonHandler(id);
     return _api.removePolygon(id);
@@ -458,7 +475,7 @@ class MethodChannelDgisMapPlugin extends DgisMapPlugin {
 
   @override
   Future<void> removePolyline(
-    int id,
+    String id,
   ) {
     _objectTapEventHandler.removePolylineHandler(id);
     return _api.removePolyline(id);
@@ -505,8 +522,8 @@ class MethodChannelDgisMapPlugin extends DgisMapPlugin {
             surfaceFactory: (context, controller) {
               return AndroidViewSurface(
                 controller: controller as AndroidViewController,
-                gestureRecognizers: const <
-                    Factory<OneSequenceGestureRecognizer>>{},
+                gestureRecognizers: const <Factory<
+                    OneSequenceGestureRecognizer>>{},
                 hitTestBehavior: PlatformViewHitTestBehavior.opaque,
               );
             },
