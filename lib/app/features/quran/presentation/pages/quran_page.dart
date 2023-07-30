@@ -171,7 +171,10 @@ class _QuranPageState extends State<QuranPage> {
                         return Container(
                             margin: EdgeInsets.symmetric(horizontal: 10),
                             // padding: EdgeInsets.all(8),
-                            child: ListView(children: [
+                            child: SvgPicture.asset("assets/quran/604.svg")
+
+                            /*  
+                            ListView(children: [
                               for (int index = 0;
                                   (index <
                                       (state.suras?[i + 1]?.values.length ??
@@ -221,6 +224,10 @@ class _QuranPageState extends State<QuranPage> {
                                 fontWeight: AppFontWeight.bold,
                               )
                             ]));
+                   
+                   
+                   */
+                            );
                       }),
                     ),
                   ),
