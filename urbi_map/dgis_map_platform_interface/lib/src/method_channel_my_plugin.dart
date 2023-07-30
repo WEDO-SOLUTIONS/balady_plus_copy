@@ -385,7 +385,7 @@ class MethodChannelDgisMapPlugin extends DgisMapPlugin {
 
   @override
   Future<void> removeMarker(
-    int id,
+    String id,
   ) {
     _objectTapEventHandler.removeMarkerHandler(id);
     return _api.removeMarker(id);
@@ -430,7 +430,7 @@ class MethodChannelDgisMapPlugin extends DgisMapPlugin {
 
   @override
   Future<void> removePolygon(
-    int id,
+    String id,
   ) {
     _objectTapEventHandler.removePolygonHandler(id);
     return _api.removePolygon(id);
@@ -475,7 +475,7 @@ class MethodChannelDgisMapPlugin extends DgisMapPlugin {
 
   @override
   Future<void> removePolyline(
-    int id,
+    String id,
   ) {
     _objectTapEventHandler.removePolylineHandler(id);
     return _api.removePolyline(id);

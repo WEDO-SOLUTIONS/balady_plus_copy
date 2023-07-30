@@ -449,7 +449,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
          self.objectTapHandler?.addMarkers(markers, completion: completion)
     }
     
-    func removeMarkerId(_ id: NSNumber, completion: @escaping (FlutterError?) -> Void) {
+    func removeMarkerId(_ id: String, completion: @escaping (FlutterError?) -> Void) {
         self.objectTapHandler?.removeMarker(id, completion: completion)
     }
     
@@ -461,7 +461,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         self.objectTapHandler?.addPolygons(polygons, completion: completion)
     }
     
-    func removePolygonId(_ id: NSNumber, completion: @escaping (FlutterError?) -> Void) {
+    func removePolygonId(_ id: String, completion: @escaping (FlutterError?) -> Void) {
         self.objectTapHandler?.removePolygon(id, completion: completion)
     }
     
@@ -473,7 +473,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         self.objectTapHandler?.addPolylines(polylines, completion: completion)
     }
     
-    func removePolylineId(_ id: NSNumber, completion: @escaping (FlutterError?) -> Void) {
+    func removePolylineId(_ id: String, completion: @escaping (FlutterError?) -> Void) {
         self.objectTapHandler?.removePolyline(id, completion: completion)
     }
     
@@ -618,7 +618,12 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         }
         
         let objectTapHandler = ObjectTapHandler(
-            objectManager: MapObjectManager(map: map),
+            objectManager:
+                MapObjectManager.withGeneralization(
+                    map: map,
+                    logicalPixel: LogicalPixel(value: 40),
+                    maxZoom: Zoom(value: 18)
+                ),
             panoramasMapObjectManager:
                 MapObjectManager.withGeneralization(
                     map: map,

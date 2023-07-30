@@ -20,27 +20,27 @@ class ObjectTapHandler {
     }
     
     private struct MarkerId {
-        init(_ id: Int) {
+        init(_ id: String) {
             self.id = id
         }
 
-        let id: Int
+        let id: String
     }
     
     private struct PolygonId {
-        init(_ id: Int) {
+        init(_ id: String) {
             self.id = id
         }
 
-        let id: Int
+        let id: String
     }
     
     private struct PolylineId {
-        init(_ id: Int) {
+        init(_ id: String) {
             self.id = id
         }
 
-        let id: Int
+        let id: String
     }
     
     private let routeHandler: RouteHandler?
@@ -60,11 +60,13 @@ class ObjectTapHandler {
     
     private var source: DgisSource?
 
-    private var markers: Dictionary<Int, Marker> = [:]
-    private var polygons: Dictionary<Int, Polygon> = [:]
-    private var polylines: Dictionary<Int, Polyline> = [:]
+    private var markers: Dictionary<String, Marker> = [:]
+    private var polygons: Dictionary<String, Polygon> = [:]
+    private var polylines: Dictionary<String, Polyline> = [:]
     private var panoramasMarkers: Array<Marker> = []
     private var ioLayerMarkers: Array<Marker> = []
+    
+    private var iconCache: Dictionary<String, Image> = [:]
 
     private var selectedPanorama: Marker?
     
@@ -241,21 +243,27 @@ class ObjectTapHandler {
     func mapMarker(_ marker: MarkerMessage, completion: @escaping (FlutterError?) -> Void) -> Marker? {
         var markerImage: Image? = nil
         if let icon = marker.options.icon?.path {
-            let assetKey = registrar.lookupKey(forAsset: icon)
-            
-            guard let assetPath = Bundle.main.path(forResource: assetKey, ofType: nil),
-                  let url = URL(string: "file://\(assetPath)"),
-                  let data = try? Data(contentsOf: url) else {
-                completion(
-                    FlutterError(
-                        code: "Error loading asset for marker",
-                        message: nil,
-                        details: nil
-                    ))
-                return nil
+            if let cachedIcon = iconCache[icon] {
+                markerImage = cachedIcon
+            } else {
+                let assetKey = registrar.lookupKey(forAsset: icon)
+                
+                guard let assetPath = Bundle.main.path(forResource: assetKey, ofType: nil),
+                      let url = URL(string: "file://\(assetPath)"),
+                      let data = try? Data(contentsOf: url) else {
+                    completion(
+                        FlutterError(
+                            code: "Error loading asset for marker",
+                            message: nil,
+                            details: nil
+                        ))
+                    return nil
+                }
+                
+                let image = imageFactory.make(svgData: data, size: .zero)
+                markerImage = image
+                iconCache[icon] = image
             }
-            
-            markerImage = imageFactory.make(svgData: data, size: .zero)
         }
 
         let options = MarkerOptions(
@@ -272,7 +280,7 @@ class ObjectTapHandler {
             iconWidth: (marker.options.icon?.width).map {
                 LogicalPixel(value: $0.floatValue)
             } ?? LogicalPixel(value: 0),
-            userData: MarkerId(marker.id.intValue)
+            userData: MarkerId(marker.id)
         )
         
         return Marker(options: options)
@@ -284,19 +292,19 @@ class ObjectTapHandler {
         }
         
         self.objectsQueue.sync {
-            self.markers[marker.id.intValue] = markerObject
+            self.markers[marker.id] = markerObject
             self.mapObjectManager.addObject(item: markerObject)
             completion(nil)
         }
     }
     
     func addMarkers(_ markers: [MarkerMessage], completion: @escaping (FlutterError?) -> Void) {
-        var markerObjects = [Int:Marker]()
+        var markerObjects = [String:Marker]()
         for marker in markers {
             guard let markerObject = mapMarker(marker, completion: completion) else {
                 return
             }
-            markerObjects[marker.id.intValue] = markerObject
+            markerObjects[marker.id] = markerObject
         }
         
         self.objectsQueue.sync {
@@ -308,9 +316,9 @@ class ObjectTapHandler {
         }
     }
     
-    func removeMarker(_ id: NSNumber, completion: @escaping (FlutterError?) -> Void) {
+    func removeMarker(_ id: String, completion: @escaping (FlutterError?) -> Void) {
         self.objectsQueue.sync {
-            if let markerObject = self.markers.removeValue(forKey: id.intValue) {
+            if let markerObject = self.markers.removeValue(forKey: id) {
                 self.mapObjectManager.removeObject(item: markerObject)
                 completion(nil)
             }
@@ -336,7 +344,7 @@ class ObjectTapHandler {
             strokeColor: polygon.options.strokeColor.map {
                 Color(argb: UInt32($0.intValue))
             } ?? Color(),
-            userData: PolygonId(polygon.id.intValue)
+            userData: PolygonId(polygon.id)
         )
         
         return Polygon(options: options)
@@ -346,7 +354,7 @@ class ObjectTapHandler {
         let polygonObject = mapPolygon(polygon)
         
         self.objectsQueue.sync {
-            self.polygons[polygon.id.intValue] = polygonObject
+            self.polygons[polygon.id] = polygonObject
             self.mapObjectManager.addObject(item: polygonObject)
             completion(nil)
         }
@@ -354,7 +362,7 @@ class ObjectTapHandler {
     
     func addPolygons(_ polygons: [PolygonMessage], completion: @escaping (FlutterError?) -> Void) {
         let polygonObjects = polygons.map {
-            ($0.id.intValue, mapPolygon($0))
+            ($0.id, mapPolygon($0))
         }.reduce(into: [:]) { dict, pair in
             dict[pair.0] = pair.1
         }
@@ -368,9 +376,9 @@ class ObjectTapHandler {
         }
     }
     
-    func removePolygon(_ id: NSNumber, completion: @escaping (FlutterError?) -> Void) {
+    func removePolygon(_ id: String, completion: @escaping (FlutterError?) -> Void) {
         self.objectsQueue.sync {
-            if let polygonObject = self.polygons.removeValue(forKey: id.intValue) {
+            if let polygonObject = self.polygons.removeValue(forKey: id) {
                 self.mapObjectManager.removeObject(item: polygonObject)
                 completion(nil)
             }
@@ -391,7 +399,7 @@ class ObjectTapHandler {
             color: polyline.options.color.map {
                 Color(argb: UInt32($0.intValue))
             } ?? Color(),
-            userData: PolylineId(polyline.id.intValue)
+            userData: PolylineId(polyline.id)
         )
         
         return Polyline(options: options)
@@ -401,7 +409,7 @@ class ObjectTapHandler {
         let polylineObject = mapPolyline(polyline)
         
         self.objectsQueue.sync {
-            self.polylines[polyline.id.intValue] = polylineObject
+            self.polylines[polyline.id] = polylineObject
             self.mapObjectManager.addObject(item: polylineObject)
             completion(nil)
         }
@@ -409,7 +417,7 @@ class ObjectTapHandler {
     
     func addPolylines(_ polylines: [PolylineMessage], completion: @escaping (FlutterError?) -> Void) {
         let polylineObjects = polylines.map {
-            ($0.id.intValue, mapPolyline($0))
+            ($0.id, mapPolyline($0))
         }.reduce(into: [:]) { dict, pair in
             dict[pair.0] = pair.1
         }
@@ -423,9 +431,9 @@ class ObjectTapHandler {
         }
     }
     
-    func removePolyline(_ id: NSNumber, completion: @escaping (FlutterError?) -> Void) {
+    func removePolyline(_ id: String, completion: @escaping (FlutterError?) -> Void) {
         self.objectsQueue.sync {
-            if let polylineObject = self.polylines.removeValue(forKey: id.intValue) {
+            if let polylineObject = self.polylines.removeValue(forKey: id) {
                 self.mapObjectManager.removeObject(item: polylineObject)
                 completion(nil)
             }

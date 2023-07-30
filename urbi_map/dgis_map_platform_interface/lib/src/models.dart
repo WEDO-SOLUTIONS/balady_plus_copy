@@ -10,7 +10,7 @@ class Marker {
   });
 
   /// Map render object's id
-  final int id;
+  final String id;
 
   /// Map render object's options (such as position, color, anchor and etc)
   final MarkerOptionsMessage options;
@@ -29,7 +29,7 @@ class Polygon {
   });
 
   /// Map render object's id
-  final int id;
+  final String id;
 
   /// Map render object's options (such as position, color, anchor and etc)
   final PolygonOptionsMessage options;
@@ -48,7 +48,7 @@ class Polyline {
   });
 
   /// Map render object's id
-  final int id;
+  final String id;
 
   /// Map render object's options (such as position, color, anchor and etc)
   final PolylineOptionsMessage options;

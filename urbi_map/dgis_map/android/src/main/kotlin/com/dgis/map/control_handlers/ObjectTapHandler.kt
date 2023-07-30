@@ -9,6 +9,7 @@ import com.dgis.map.map_api.Messages.*
 import com.dgis.map.user_data.PhotoData
 import io.flutter.FlutterInjector
 import io.flutter.plugin.common.EventChannel.EventSink
+import kotlinx.coroutines.awaitAll
 import ru.dgis.sdk.Context
 import ru.dgis.sdk.DgisObjectId
 import ru.dgis.sdk.coordinates.GeoPoint
@@ -46,15 +47,16 @@ class ObjectTapHandler(
         Executors.newSingleThreadExecutor()
     }
 
-    private data class MarkerId(val id: Int);
-    private data class PolygonId(val id: Int);
+    private data class MarkerId(val id: String);
+    private data class PolygonId(val id: String);
+    private data class PolylineId(val id: String);
 
-    private data class PolylineId(val id: Int);
-
-    private val markers = mutableMapOf<Int, Marker>();
-    private val polygons = mutableMapOf<Int, Polygon>();
-    private val polylines = mutableMapOf<Int, Polyline>();
+    private val markers = mutableMapOf<String, Marker>();
+    private val polygons = mutableMapOf<String, Polygon>();
+    private val polylines = mutableMapOf<String, Polyline>();
     private val ioLayerMarkers = mutableListOf<Marker>();
+
+    private val iconCache = mutableMapOf<String, Image>()
 
     fun objectTapListener(roi: RenderedObjectInfo) {
 //        when (val tappedObject = roi.item.item) {
@@ -203,17 +205,22 @@ class ObjectTapHandler(
     private fun mapMarker(marker: MarkerMessage, result: Result<Void>?): Marker? {
         var markerImage: Image? = null
         if (marker.options.icon != null) {
-            try {
-                val asset =
-                    FlutterInjector
-                        .instance()
-                        .flutterLoader()
-                        .getLookupKeyForAsset(marker.options.icon!!.path)
+            if (marker.options.icon!!.path in iconCache) {
+                markerImage = iconCache[marker.options.icon!!.path]
+            } else {
+                try {
+                    val asset =
+                        FlutterInjector
+                            .instance()
+                            .flutterLoader()
+                            .getLookupKeyForAsset(marker.options.icon!!.path)
 
-                markerImage = imageFromAsset(sdkContext, asset, Size(0, 0))
-            } catch (e: FileNotFoundException) {
-                result?.error(e)
-                return null
+                    markerImage = imageFromAsset(sdkContext, asset, Size(0, 0))
+                    iconCache[marker.options.icon!!.path] = markerImage
+                } catch (e: FileNotFoundException) {
+                    result?.error(e)
+                    return null
+                }
             }
         }
 
@@ -233,7 +240,7 @@ class ObjectTapHandler(
             iconWidth = marker.options.icon?.let {
                 LogicalPixel(it.width.toFloat())
             } ?: LogicalPixel(0f),
-            userData = MarkerId(marker.id.toInt()),
+            userData = MarkerId(marker.id),
         )
 
         return Marker(options)
@@ -243,17 +250,17 @@ class ObjectTapHandler(
         val markerObject = mapMarker(marker, result) ?: return
 
         mapObjectsExecutorService.submit {
-            markers[marker.id.toInt()] = markerObject
+            markers[marker.id] = markerObject
             mapObjectManager.addObject(markerObject)
             result?.success(null)
         }
     }
 
     fun addMarkers(markers: List<MarkerMessage>, result: Result<Void>?) {
-        val markerObjects = mutableMapOf<Int, Marker>()
+        val markerObjects = mutableMapOf<String, Marker>()
         for (marker in markers) {
             val markerObject = mapMarker(marker, result) ?: return
-            markerObjects[marker.id.toInt()] = markerObject
+            markerObjects[marker.id] = markerObject
         }
 
         mapObjectsExecutorService.submit {
@@ -263,9 +270,9 @@ class ObjectTapHandler(
         }
     }
 
-    fun removeMarker(id: Long, result: Result<Void>?) {
+    fun removeMarker(id: String, result: Result<Void>?) {
         mapObjectsExecutorService.submit {
-            markers.remove(id.toInt())?.also {
+            markers.remove(id)?.also {
                 mapObjectManager.removeObject(it)
             }
             result?.success(null)
@@ -288,7 +295,7 @@ class ObjectTapHandler(
             strokeColor = polygon.options.strokeColor?.let {
                 Color(argb =  it.toInt())
             } ?: Color(),
-            userData = PolygonId(polygon.id.toInt())
+            userData = PolygonId(polygon.id)
         )
 
         return Polygon(options)
@@ -298,7 +305,7 @@ class ObjectTapHandler(
         val polygonObject = mapPolygon(polygon)
 
         mapObjectsExecutorService.submit {
-            polygons[polygon.id.toInt()] = polygonObject
+            polygons[polygon.id] = polygonObject
             mapObjectManager.addObject(polygonObject)
             result?.success(null)
         }
@@ -306,7 +313,7 @@ class ObjectTapHandler(
 
     fun addPolygons(polygons: List<PolygonMessage>, result: Result<Void>?) {
         val polygonObjects = polygons.associateBy({
-             it.id.toInt()
+             it.id
         }, {
             mapPolygon(it)
         })
@@ -318,9 +325,9 @@ class ObjectTapHandler(
         }
     }
 
-    fun removePolygon(id: Long, result: Result<Void>?) {
+    fun removePolygon(id: String, result: Result<Void>?) {
         mapObjectsExecutorService.submit {
-            polygons.remove(id.toInt())?.also {
+            polygons.remove(id)?.also {
                 mapObjectManager.removeObject(it)
             }
             result?.success(null)
@@ -337,7 +344,7 @@ class ObjectTapHandler(
             width = polyline.options.width?.let {
                 LogicalPixel(it.toFloat())
             } ?: LogicalPixel(1f),
-            userData = PolylineId(polyline.id.toInt()),
+            userData = PolylineId(polyline.id),
         )
 
         return Polyline(options)
@@ -347,7 +354,7 @@ class ObjectTapHandler(
         val polylineObject = mapPolyline(polyline)
 
         mapObjectsExecutorService.submit {
-            polylines[polyline.id.toInt()] = polylineObject
+            polylines[polyline.id] = polylineObject
             mapObjectManager.addObject(polylineObject)
             result?.success(null)
         }
@@ -355,7 +362,7 @@ class ObjectTapHandler(
 
     fun addPolylines(polylines: List<PolylineMessage>, result: Result<Void>?) {
         val polylineObjects = polylines.associateBy({
-            it.id.toInt()
+            it.id
         }, {
             mapPolyline(it)
         })
@@ -367,9 +374,9 @@ class ObjectTapHandler(
         }
     }
 
-    fun removePolyline(id: Long, result: Result<Void>?) {
+    fun removePolyline(id: String, result: Result<Void>?) {
         mapObjectsExecutorService.submit {
-            polylines.remove(id.toInt())?.also {
+            polylines.remove(id)?.also {
                 mapObjectManager.removeObject(it)
             }
             result?.success(null)
@@ -541,7 +548,7 @@ class ObjectTapHandler(
         }
     }
 
-    private fun onMarkerTap(id: Int) {
+    private fun onMarkerTap(id: String) {
         eventSink.success(
             mapOf(
                 "event" to Events.onMarkerTap.name,
@@ -550,7 +557,7 @@ class ObjectTapHandler(
         )
     }
 
-    private fun onPolygonTap(id: Int) {
+    private fun onPolygonTap(id: String) {
         eventSink.success(
             mapOf(
                 "event" to Events.onPolygonTap.name,
@@ -559,7 +566,7 @@ class ObjectTapHandler(
         )
     }
 
-    private fun onPolylineTap(id: Int) {
+    private fun onPolylineTap(id: String) {
         eventSink.success(
             mapOf(
                 "event" to Events.onPolylineTap.name,
