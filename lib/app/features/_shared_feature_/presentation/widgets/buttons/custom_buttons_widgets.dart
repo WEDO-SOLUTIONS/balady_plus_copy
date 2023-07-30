@@ -909,7 +909,7 @@ class CustomElevatedButtonWidget extends StatelessWidget {
   const CustomElevatedButtonWidget(
       {Key? key,
       required this.btnPressed,
-      this.btnColor = AppColors.primary900Light,
+      this.btnColor = AppColor.primary900Light,
       this.btnHeight = 65.0,
       this.btnWidth = double.infinity,
       this.btnRadius = 2,
@@ -918,7 +918,7 @@ class CustomElevatedButtonWidget extends StatelessWidget {
       this.btnAlignment = Alignment.center,
       required this.btnText,
       this.buttonIconPosition = BUTTON_ICON_POSITION.right,
-      this.btnTextColor = AppColors.white,
+      this.btnTextColor = AppColor.white,
       this.btnTextWeight = FONT_WEIGHT.medium,
       this.btnTextSize = 18.0,
       this.btnTextUnderline = false,
@@ -1193,7 +1193,7 @@ class CustomIconButtonWidget extends StatelessWidget {
       this.svgIconColor,
       this.materialIcon,
       this.materialIconDirection = MATERIAL_ICON_DIRECTION.left,
-      this.materialIconColor = AppColors.black,
+      this.materialIconColor = AppColor.black,
       this.materialIconSize = 18.0,
       this.imageColor,
       this.isVisible = true})

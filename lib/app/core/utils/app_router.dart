@@ -11,9 +11,11 @@ import 'package:balady_plus/app/features/weather/presentation/pages/weather_main
 import 'package:flutter/material.dart'
     show AppBar, Center, MaterialPageRoute, Route, RouteSettings, Scaffold;
 import 'package:flutter/widgets.dart' show SizedBox;
-
+import 'package:balady_plus/etmam_app/features/home/presentation/pages/etmam_home_page.dart';
+import 'package:balady_plus/etmam_app/features/on_boarding_cities/presentation/pages/etmam_select_city_page.dart';
+import '../../../etmam_app/features/home/presentation/pages/etmam_main_page.dart';
 import '../../core/utils/utils_exports.dart'
-    show RouteName, ScaleRotatePage, SliderUpPage;
+    show EtmamRoutesNames, RouteName, ScaleRotatePage, SliderUpPage;
 import '../../features/_shared_feature_/presentation/pages/view_dms_image_screen.dart';
 import '../../features/_shared_feature_/shared_feature_exports.dart';
 import '../../features/_shared_feature_/data/entities/success_screen_args.dart';
@@ -22,8 +24,7 @@ import '../../features/appointments/presentation/core/models/appointment_details
 import '../../features/appointments/presentation/pages/appointment_details_screen.dart';
 import '../../features/appointments/presentation/pages/appointments_list_screen.dart';
 import '../../features/appointments/presentation/pages/previous_appointments_screen.dart';
-import '../../features/bottom_navigation/bottom_navigation_exports.dart'
-    show BottomNavigationPage;
+import '../../features/bottom_navigation/bottom_navigation_exports.dart' as b;
 import '../../features/calculator/presentation/pages/service_calculator_location_screen.dart';
 import '../../features/calculator/presentation/pages/service_calculator_screen.dart';
 import '../../features/daem/presentation/pages/daem_ticket_page.dart';
@@ -98,13 +99,24 @@ import '../../features/transaction_inquiry/presentation/pages/request_service/ne
 import '../../features/vd/vd_exports.dart';
 import '../../features/zmzm_points/presentation/pages/zmzm_points_page.dart';
 import '../../features/wallet/wallet_exports.dart';
+import 'package:balady_plus/etmam_app/app.dart';
+import 'package:balady_plus/etmam_app/features/_shared_feature_/shared/shared_feature_exports.dart'
+    as sharedEtmamFeature;
+
+import 'etmam_route_exports.dart' hide SplashPage;
 
 class AppRouter {
   static Route<dynamic> allRoutes(RouteSettings settings) {
+    Route<dynamic>? route = etmamRoutes(settings);
+    if (route != null) return route;
     switch (settings.name) {
       // splash page
       case RouteName.splash:
         return MaterialPageRoute(builder: (_) => const SplashPage());
+
+      case RouteName.etmamMainPage:
+        return MaterialPageRoute(builder: (_) => const EtmamMainPage());
+
       case RouteName.inappWebview:
         return MaterialPageRoute(
           builder: (_) => InAppWebViewPage(
@@ -114,7 +126,7 @@ class AppRouter {
       // bottom-navigation-bar page
       case RouteName.bottomNavigation:
         // return MaterialPageRoute(builder: (_) => const BottomNavigationPage());
-        return SliderUpPage(page: const BottomNavigationPage());
+        return SliderUpPage(page: const b.BottomNavigationPage());
 
       case RouteName.dmsImageFullScreen:
         String url = settings.arguments as String;
@@ -584,5 +596,184 @@ class AppRouter {
           ),
         );
     }
+  }
+
+  static Route<dynamic>? etmamRoutes(RouteSettings settings) {
+    switch (settings.name) {
+      // bottom-navigation-bar page
+      case EtmamRoutesNames.bottomNavigation:
+        return MaterialPageRoute(builder: (_) => const BottomNavigationPage());
+
+      // home page
+      case EtmamRoutesNames.home:
+        return MaterialPageRoute(builder: (_) => const EtmamHomePage());
+
+      // search page
+      case EtmamRoutesNames.searchPage:
+        return MaterialPageRoute(builder: (_) => const SearchPage());
+
+      // Main Services Page
+      case EtmamRoutesNames.mainServicesPage:
+        final MainServiceResponse resopnse =
+            settings.arguments as MainServiceResponse;
+        return MaterialPageRoute(
+            builder: (_) => EtmamMainServicesPage(
+                  mainServiceResponse: resopnse,
+                ));
+
+      // Sub Services Page
+      case EtmamRoutesNames.subServicesPage:
+        final SubServicePageArgs resopnse =
+            settings.arguments as SubServicePageArgs;
+        return MaterialPageRoute(
+            builder: (_) => EtmamSubServicesPage(
+                  subServicePageArgs: resopnse,
+                ));
+
+      // Providers By Service
+      case EtmamRoutesNames.providersByService:
+        final ServicePageParams args = settings.arguments as ServicePageParams;
+        // final ServiceResponse resopnse = settings.arguments as ServiceResponse;
+        return MaterialPageRoute(
+            builder: (_) => ServicesPage(
+                  args: args,
+                ));
+      case EtmamRoutesNames.serviceProvidersDetails:
+        final ServiceDetailsResponse response =
+            settings.arguments as ServiceDetailsResponse;
+        return MaterialPageRoute(
+            builder: (_) =>
+                ServiceDetailsPage(serviceDetailsResponse: response));
+      case EtmamRoutesNames.faqPage:
+        List<Faq> faqList = settings.arguments as List<Faq>;
+        return MaterialPageRoute(
+            builder: (_) => FaqPage(
+                  faqList: faqList,
+                ));
+      case EtmamRoutesNames.officeInfoPage:
+        Provider args = settings.arguments as Provider;
+        return MaterialPageRoute(
+            builder: (_) => OfficeInfoPage(
+                  provider: args,
+                ));
+      case EtmamRoutesNames.branchesMapPage:
+        final List<Branch> args = settings.arguments as List<Branch>;
+        return MaterialPageRoute(
+            builder: (_) => BranchesMapPage(
+                  branches: args,
+                ));
+
+      case EtmamRoutesNames.providersDetails:
+        ProviderDetailsResponse args =
+            settings.arguments as ProviderDetailsResponse;
+        return MaterialPageRoute(
+            builder: (_) => ProviderDetailsPage(
+                  args: args,
+                ));
+
+      // on boarding
+      case EtmamRoutesNames.onBoardingRoute:
+        return MaterialPageRoute(builder: (_) => const OnBoardingCitiesPage());
+
+      // Submit Request
+      case EtmamRoutesNames.relationsList:
+        RelationPageParam args = settings.arguments as RelationPageParam;
+
+        return MaterialPageRoute(
+            builder: (_) => RelationRequestPage(
+                  args: args,
+                ));
+
+      case EtmamRoutesNames.providersListPage:
+        //ProviderResponse response = settings.arguments as ProviderResponse;
+        return MaterialPageRoute(
+            builder: (_) => ProvidersPage(
+                //  providerResponse: response,
+                ));
+
+      case EtmamRoutesNames.previousWorksPage:
+        List<Project>? projects = settings.arguments as List<Project>?;
+        return MaterialPageRoute(
+            builder: (_) => PreviousWorksPage(
+                  projects: projects,
+                ));
+      case EtmamRoutesNames.previousWorksDetailsPage:
+        Project project = settings.arguments as Project;
+        return MaterialPageRoute(
+            builder: (_) => PreviousWorksDetailsPage(
+                  project: project,
+                ));
+
+      case EtmamRoutesNames.serviceTypesList:
+        final ProviderRelationPageParams args =
+            settings.arguments as ProviderRelationPageParams;
+
+        return MaterialPageRoute(
+            builder: (_) => ServiceProvidersRelations(args: args));
+
+      case EtmamRoutesNames.orderInfo:
+        SubmitPageParams args = settings.arguments as SubmitPageParams;
+        return MaterialPageRoute(
+            builder: (_) => SubmitRequestPage(
+                  args: args,
+                ));
+
+      case EtmamRoutesNames.myOrdersPage:
+        return MaterialPageRoute(builder: (_) => OrdersPage());
+      // Success Page
+      case EtmamRoutesNames.successRoute:
+        final args = settings.arguments as sharedEtmamFeature.SuccessScreenArgs;
+        return MaterialPageRoute(
+          builder: (_) => sharedEtmamFeature.SuccessScreen(
+            successScreenArgs: args,
+          ),
+        );
+      // Success Page
+      case EtmamRoutesNames.successRoute:
+        final args = settings.arguments as sharedEtmamFeature.SuccessScreenArgs;
+        return MaterialPageRoute(
+          builder: (_) => sharedEtmamFeature.SuccessScreen(
+            successScreenArgs: args,
+          ),
+        );
+
+      // otp page
+      case EtmamRoutesNames.otpRoute:
+        final OTPPageParams? args = settings.arguments as OTPPageParams;
+        return MaterialPageRoute(
+            builder: (_) => EtmamOtpScreen(
+                  args: args,
+                ));
+
+      // orders details page
+      case EtmamRoutesNames.orderDetailsRoute:
+        OrderDetailsPageParams args =
+            settings.arguments as OrderDetailsPageParams;
+        return MaterialPageRoute(
+            builder: (_) => OrderDetailsPage(
+                  args: args,
+                ));
+
+      // evaluate order
+      case EtmamRoutesNames.evaluateOrderRoute:
+        RatingPageParams args = settings.arguments as RatingPageParams;
+        return MaterialPageRoute(
+            builder: (_) => EvaluateOrderPage(
+                  args: args,
+                ));
+
+      // personal info
+      case EtmamRoutesNames.personalInfoRoute:
+        return MaterialPageRoute(builder: (_) => const PersonalInfoPage());
+
+      // help
+      case EtmamRoutesNames.helpRoute:
+        return MaterialPageRoute(builder: (_) => const HelpPage());
+
+      // Select City Page
+      case EtmamRoutesNames.selectCityPage:
+        return MaterialPageRoute(builder: (_) => const EtmamSelectCityPage());
+    }
+    return null;
   }
 }

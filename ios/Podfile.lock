@@ -118,6 +118,8 @@ PODS:
   - GTMSessionFetcher/Core (1.7.2)
   - image_picker_ios (0.0.1):
     - Flutter
+  - launch_review (0.0.1):
+    - Flutter
   - map_launcher (0.0.1):
     - Flutter
   - MLImage (1.0.0-beta3)
@@ -149,6 +151,8 @@ PODS:
     - nanopb/encode (= 2.30909.0)
   - nanopb/decode (2.30909.0)
   - nanopb/encode (2.30909.0)
+  - network_info_plus (0.0.1):
+    - Flutter
   - open_file (0.0.1):
     - Flutter
   - OrderedSet (5.0.0)
@@ -207,8 +211,10 @@ DEPENDENCIES:
   - geolocator_apple (from `.symlinks/plugins/geolocator_apple/ios`)
   - google_maps_flutter_ios (from `.symlinks/plugins/google_maps_flutter_ios/ios`)
   - image_picker_ios (from `.symlinks/plugins/image_picker_ios/ios`)
+  - launch_review (from `.symlinks/plugins/launch_review/ios`)
   - map_launcher (from `.symlinks/plugins/map_launcher/ios`)
   - mobile_scanner (from `.symlinks/plugins/mobile_scanner/ios`)
+  - network_info_plus (from `.symlinks/plugins/network_info_plus/ios`)
   - open_file (from `.symlinks/plugins/open_file/ios`)
   - package_info_plus (from `.symlinks/plugins/package_info_plus/ios`)
   - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
@@ -286,10 +292,14 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/google_maps_flutter_ios/ios"
   image_picker_ios:
     :path: ".symlinks/plugins/image_picker_ios/ios"
+  launch_review:
+    :path: ".symlinks/plugins/launch_review/ios"
   map_launcher:
     :path: ".symlinks/plugins/map_launcher/ios"
   mobile_scanner:
     :path: ".symlinks/plugins/mobile_scanner/ios"
+  network_info_plus:
+    :path: ".symlinks/plugins/network_info_plus/ios"
   open_file:
     :path: ".symlinks/plugins/open_file/ios"
   package_info_plus:
@@ -352,6 +362,7 @@ SPEC CHECKSUMS:
   GoogleUtilitiesComponents: 679b2c881db3b615a2777504623df6122dd20afe
   GTMSessionFetcher: 5595ec75acf5be50814f81e9189490412bad82ba
   image_picker_ios: 4a8aadfbb6dc30ad5141a2ce3832af9214a705b5
+  launch_review: 75d5a956ba8eaa493e9c9d4bf4c05e505e8d5ed0
   map_launcher: e325db1261d029ff33e08e03baccffe09593ffea
   MLImage: 489dfec109f21da8621b28d476401aaf7a0d4ff4
   MLKitBarcodeScanning: d92fe1911001ec36870162c5a0eb206f612b7169
@@ -360,6 +371,7 @@ SPEC CHECKSUMS:
   mobile_scanner: 0cf06f3d5224576aa24ade02a6f73d8b2551c7bf
   MTBBarcodeScanner: f453b33c4b7dfe545d8c6484ed744d55671788cb
   nanopb: b552cce312b6c8484180ef47159bc0f65a1f0431
+  network_info_plus: b78876159360f5580608c2cea620d6ceffabd0ad
   open_file: 02eb5cb6b21264bd3a696876f5afbfb7ca4f4b7d
   OrderedSet: aaeb196f7fef5a9edf55d89760da9176ad40b93c
   package_info_plus: 6c92f08e1f853dc01228d6f553146438dafcd14e

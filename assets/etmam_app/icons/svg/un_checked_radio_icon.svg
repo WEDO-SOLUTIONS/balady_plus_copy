@@ -1,0 +1,19 @@
+<svg width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <defs>
+        <filter x="-15%" y="-15%" width="130%" height="130%" filterUnits="objectBoundingBox" id="3h0p1bh3vb">
+            <feGaussianBlur stdDeviation="2" in="SourceAlpha" result="shadowBlurInner1"/>
+            <feOffset dy="2" in="shadowBlurInner1" result="shadowOffsetInner1"/>
+            <feComposite in="shadowOffsetInner1" in2="SourceAlpha" operator="arithmetic" k2="-1" k3="1" result="shadowInnerInner1"/>
+            <feColorMatrix values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.1 0" in="shadowInnerInner1"/>
+        </filter>
+        <path id="fca4viptla" d="M0 0h20v20H0z"/>
+    </defs>
+    <g fill="none" fill-rule="evenodd">
+        <path d="M0 0h20v20H0z"/>
+        <g>
+            <use fill="#FFF" xlink:href="#fca4viptla"/>
+            <use fill="#000" filter="url(#3h0p1bh3vb)" xlink:href="#fca4viptla"/>
+            <path stroke="#E8E8E8" stroke-width=".9" stroke-linejoin="square" d="M.45.45h19.1v19.1H.45z"/>
+        </g>
+    </g>
+</svg>

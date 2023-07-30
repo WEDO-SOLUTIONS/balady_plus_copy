@@ -8,6 +8,7 @@ class RouteName {
   static const error = '/error';
   static const inappWebview = '/inappWebview';
   static const dmsImageFullScreen = '/dmsImageFullScreen';
+  static const etmamMainPage = '/etmamMainPage';
 
   //! Services
   static const serviceCards = '/serviceCards';
@@ -122,4 +123,70 @@ class RouteName {
   static const InqDetails = '/InqDetails';
   static const ReqDetails = '/ReqDetails';
   static const VHRDetails = '/VHRDetails';
+}
+
+class EtmamRoutesNames {
+  static const splash = '/splash';
+  static const home = '/home';
+  static const bottomNavigation = '/bottomNavigation';
+
+  static const searchPage = '/searchPage';
+  static const mainServicesPage = '/mainServices';
+  static const subServicesPage = '/subServices';
+  static const providersByService = '/providersByService';
+  static const serviceProvidersDetails = '/serviceProvidersDetails';
+  static const faqPage = '/FaqPage';
+  static const officeInfoPage = '/OfficeInfoPage';
+  static const providersListPage = '/providersListPage';
+
+  static const providersDetails = '/providersDetails';
+  static const branchesMapPage = '/branchesMapPage';
+
+  static const previousWorksPage = '/previousWorksPage';
+  static const previousWorksDetailsPage = '/previousWorksDetailsPage';
+
+  static const relationsList = '/relationsList';
+  static const serviceTypesList = '/serviceTypesList';
+  static const orderInfo = '/orderInfo';
+
+  static const myOrdersPage = '/OrdersPage';
+  static const myRequestsPage = '/RequestsPage';
+
+  static const requestOffersPage = '/RequestOffersPage';
+
+  // success page
+  static const successRoute = '/successRoute';
+
+  // otp page
+  static const otpRoute = '/otpRoute';
+
+  // on boarding route
+  static const onBoardingRoute = '/onBoardingRoute';
+
+  // orders details page
+  static const orderDetailsRoute = '/orderDetailsRoute';
+
+// requests details page
+  static const requestDetailsRoute = '/requestDetailsRoute';
+
+  // evaluate order
+  static const evaluateOrderRoute = '/evaluateOrderRoute';
+
+  // personal info
+  static const personalInfoRoute = '/personalInfoRoute';
+
+  // help
+  static const helpRoute = '/helpRoute';
+
+  // Select City Page
+  static const selectCityPage = '/EtmamSelectCityPage';
+
+  // Bidding Form Page
+  static const biddingForm = '/biddingFormPage';
+
+  static const biddingType = '/biddingTypePage';
+
+  static const deleteOrdersPage = '/DeleteOrdersPage';
+
+  static const editBiddingForm = '/EditBiddingForm';
 }

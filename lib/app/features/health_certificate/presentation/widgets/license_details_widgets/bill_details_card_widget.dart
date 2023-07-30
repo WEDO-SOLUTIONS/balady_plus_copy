@@ -1,4 +1,4 @@
-/*import 'package:balady_new_app/app/core/core_exports.dart'
+/*import 'package:balady_plus/etmam_app/features/_shared_feature_/shared/shared_feature_exports.dart'
     show
         AppColors,
         Constants,
@@ -72,7 +72,7 @@ class BillDetailsCardWidget extends StatelessWidget {
             height: 4.0,
             decoration: BoxDecoration(
               color: totalPrice == null
-                  ? AppColors.baladyDarkGreen2
+                  ? AppColor.baladyDarkGreen2
                   : Colors.transparent,
               shape: BoxShape.circle,
             ),
@@ -89,7 +89,7 @@ class BillDetailsCardWidget extends StatelessWidget {
                       width: width * 0.70,
                       child: CustomTextWidget(
                         label,
-                        fontColor: AppColors.black700,
+                        fontColor: AppColor.black700,
                         fontSize: 13.0,
                         textAlign: TextAlign.start,
                       ),
@@ -105,7 +105,7 @@ class BillDetailsCardWidget extends StatelessWidget {
                         text: TextSpan(
                           text: _getPrice(),
                           style: const TextStyle(
-                            color: AppColors.black,
+                            color: AppColor.black,
                             fontSize: 16.0,
                             fontFamily: Constants.appFontType,
                             fontWeight: FontWeight.bold,
@@ -115,7 +115,7 @@ class BillDetailsCardWidget extends StatelessWidget {
                             TextSpan(
                               text: 'ريال',
                               style: TextStyle(
-                                color: AppColors.black500,
+                                color: AppColor.black500,
                                 fontSize: 13.0,
                                 fontWeight: FontWeight.normal,
                               ),

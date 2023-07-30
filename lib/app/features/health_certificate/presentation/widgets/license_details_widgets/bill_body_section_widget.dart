@@ -120,7 +120,7 @@ class _BillDetailsCardWidget extends StatelessWidget {
             height: 4.0,
             decoration: BoxDecoration(
               color: totalPrice == null
-                  ? AppColors.baladyDarkGreen2
+                  ? AppColor.baladyDarkGreen2
                   : Colors.transparent,
               shape: BoxShape.circle,
             ),
@@ -137,7 +137,7 @@ class _BillDetailsCardWidget extends StatelessWidget {
                       width: width * 0.70,
                       child: CustomTextWidget(
                         label,
-                        fontColor: AppColors.black700,
+                        fontColor: AppColor.black700,
                         fontSize: 13.0,
                         textAlign: TextAlign.start,
                       ),
@@ -153,7 +153,7 @@ class _BillDetailsCardWidget extends StatelessWidget {
                         text: TextSpan(
                           text: _getPrice(),
                           style: const TextStyle(
-                            color: AppColors.black,
+                            color: AppColor.black,
                             fontSize: 16.0,
                             fontFamily: Constants.appFontType,
                             fontWeight: FontWeight.bold,
@@ -164,7 +164,7 @@ class _BillDetailsCardWidget extends StatelessWidget {
                               text:
                                   Helpers.translatingWord("health_bill_riyal"),
                               style: TextStyle(
-                                color: AppColors.black500,
+                                color: AppColor.black500,
                                 fontSize: 13.0,
                                 fontWeight: FontWeight.normal,
                               ),

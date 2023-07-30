@@ -8,6 +8,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:localize_and_translate/localize_and_translate.dart'
     show Translation, translator;
 
+import '../etmam_app/features/etmam_entry_point/presentation/cubit/etmam_entry_point_cubit.dart';
 import './core/dependency_injection/dependency_injection_exports.dart' show sl;
 import './core/services/services_exports.dart' show NavigationService;
 import './core/utils/utils_exports.dart'
@@ -30,6 +31,7 @@ class App extends StatelessWidget {
           create: (BuildContext context) =>
               MapViewModel(layersRepositories: sl()),
         ),
+        BlocProvider.value(value: sl<EtmamEntryPointCubit>()),
       ],
       child: BlocProvider<EntryPointCubit>.value(
           value: sl<EntryPointCubit>()..onLoadingApp(),

@@ -236,7 +236,7 @@ class CustomSvgIconWithBackgroundWidget extends StatelessWidget {
       height: height,
       decoration: BoxDecoration(
         shape: backgroundShape,
-        // color: backgroundColor ?? AppColors.black200.withOpacity(0.3),
+        // color: backgroundColor ?? AppColor.black200.withOpacity(0.3),
         color: backgroundColor ?? AppColor.white6,
       ),
       child: SvgPicture.asset(

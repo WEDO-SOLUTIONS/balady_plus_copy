@@ -1,4 +1,4 @@
-/*import 'package:balady_new_app/app/core/core_exports.dart'
+/*import 'package:balady_plus/etmam_app/features/_shared_feature_/shared/shared_feature_exports.dart'
     show AppColors, Helpers, ServiceCardHeaderWidget, locator, AppEvents;
 import 'package:balady_new_app/app/features/license_management/license_management_exports.dart'
     show
@@ -27,7 +27,7 @@ class _IssueCertificateScreenState extends State<IssueCertificateScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.white2,
+      backgroundColor: AppColor.white2,
       body: CustomScrollView(
         physics: const BouncingScrollPhysics(),
         slivers: [

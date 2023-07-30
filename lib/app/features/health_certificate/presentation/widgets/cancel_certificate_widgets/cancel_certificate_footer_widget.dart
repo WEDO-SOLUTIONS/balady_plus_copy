@@ -1,4 +1,4 @@
-/*import 'package:balady_new_app/app/core/core_exports.dart'
+/*import 'package:balady_plus/etmam_app/features/_shared_feature_/shared/shared_feature_exports.dart'
     show AppColors, Constants, CustomElevatedButtonWidget, CustomPopUpsWidgets,FONT_WEIGHT, Helpers;
 import 'package:flutter/material.dart';
 
@@ -29,13 +29,13 @@ class CancelCertificateFooterWidget extends StatelessWidget {
                 ),
                 isFullHeight: false,
               ),
-              btnColor: AppColors.darkTurquoise,
+              btnColor: AppColor.darkTurquoise,
               // as Scaffold background
               btnBorderWidth: 2.0,
               btnText: Helpers.translatingWord(
                 'issueCertificateStartServiceButtonWord',
               ),
-              btnTextColor: AppColors.white,
+              btnTextColor: AppColor.white,
               btnTextWeight: FONT_WEIGHT.medium,
             ),
             // CustomVerticalSpace(height: MediaQuery.of(context).padding.bottom),

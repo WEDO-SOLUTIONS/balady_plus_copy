@@ -60,7 +60,7 @@ class PlateNumberWidget extends StatelessWidget {
                       child: Container(
                         height: 50,
                         decoration: BoxDecoration(
-                          // color: AppColors.algae,
+                          // color: AppColor.algae,
                           borderRadius: BorderRadius.circular(6),
                           border: Border.all(
                               color: AppColor.blackModern300Light, width: 1),
@@ -96,7 +96,7 @@ class PlateNumberWidget extends StatelessWidget {
                         child: Container(
                           height: 50,
                           decoration: BoxDecoration(
-                            // color: AppColors.algae,
+                            // color: AppColor.algae,
                             borderRadius: BorderRadius.circular(6),
                             border: Border.all(
                                 color: AppColor.blackModern300Light, width: 1),
@@ -131,7 +131,7 @@ class PlateNumberWidget extends StatelessWidget {
                         child: Container(
                           height: 50,
                           decoration: BoxDecoration(
-                            // color: AppColors.algae,
+                            // color: AppColor.algae,
                             borderRadius: BorderRadius.circular(6),
                             border: Border.all(
                                 color: AppColor.blackModern300Light, width: 1),

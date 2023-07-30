@@ -12,6 +12,8 @@ class MapUtils {
   static BitmapDescriptor? userLocationMarker;
   static BitmapDescriptor? pinMarkerDarkGreen;
   static BitmapDescriptor? pinMarkerLightGreen;
+  static BitmapDescriptor? mapIconMarker;
+
   static double SlaughterRadius = 40000;
 
   static void loadMarkers() async {
@@ -39,6 +41,8 @@ class MapUtils {
 
       pinMarkerLightGreen =
           BitmapDescriptor.fromBytes(pinMarkerLightGreenIcon!);
+
+      mapIconMarker = BitmapDescriptor.fromBytes(pinMarkerDarkGreenIcon!);
     } catch (ex) {}
   }
 

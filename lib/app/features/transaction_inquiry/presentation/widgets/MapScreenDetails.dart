@@ -91,7 +91,7 @@ class _MapScreenDetailsState extends State<MapScreenDetails> {
                             maxLines: 3,
                             textScaleFactor: 1,
                             style: const TextStyle(
-                                color: AppColors.kGray115,
+                                color: AppColor.kGray115,
                                 fontSize: 14,
                                 fontWeight: FontWeight.bold),
                             overflow: TextOverflow.ellipsis,
@@ -108,8 +108,8 @@ class _MapScreenDetailsState extends State<MapScreenDetails> {
                       decoration: BoxDecoration(
                           color:
                               (widget.address != null || widget.isValidLocation)
-                                  ? AppColors.baladyDarkGreen2
-                                  : AppColors.kGray230,
+                                  ? AppColor.baladyDarkGreen2
+                                  : AppColor.kGray230,
                           borderRadius: new BorderRadius.circular(2.0)),
                       child: TextButton(
                         onPressed: () {
@@ -123,7 +123,7 @@ class _MapScreenDetailsState extends State<MapScreenDetails> {
                             color: (widget.address != null ||
                                     widget.isValidLocation)
                                 ? Colors.white
-                                : AppColors.kGray153,
+                                : AppColor.kGray153,
                           ),
                         ),
                       ),

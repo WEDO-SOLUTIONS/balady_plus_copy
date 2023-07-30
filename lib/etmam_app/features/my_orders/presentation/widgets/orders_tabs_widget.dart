@@ -1,0 +1,176 @@
+import 'package:balady_plus/app/core/utils/utils_exports.dart' show BlocStatus;
+import 'package:balady_plus/etmam_app/core/utils/utils_exports.dart'
+    show AppColor, AppFontWeight, trans;
+import 'package:balady_plus/etmam_app/features/my_orders/my_orders_exports.dart';
+import 'package:balady_plus/etmam_app/features/my_orders/presentation/blocs/my_orders/my_orders_bloc.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../../_shared_feature_/shared/shared_feature_exports.dart'
+    show CustomInkWellButtonWidget, CustomTextWidget;
+
+class OrdersTabsWidget extends StatefulWidget {
+  const OrdersTabsWidget({Key? key}) : super(key: key);
+
+  @override
+  State<OrdersTabsWidget> createState() => _OrdersTabsWidgetState();
+}
+
+class _OrdersTabsWidgetState extends State<OrdersTabsWidget> {
+  int selectedIndex = 0;
+  List<String> tabsList = ["order_all", "ongoing_orders", "previous_orders"];
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<MyOrdersBloc, MyOrdersState>(builder: (context, state) {
+      return Container(
+          // decoration: const BoxDecoration(
+          //     borderRadius: BorderRadius.all(Radius.circular(16)),
+          //     color: AppColor.white),
+          // margin: const EdgeInsets.symmetric(vertical: 16),
+          //padding: const EdgeInsets.symmetric(vertical: 13),
+          child: Row(
+        children: tabsList
+            .asMap()
+            .map((i, tabs) => MapEntry(
+                i,
+                TabWidget(
+                  btnPressed: () {
+                    if (state.status == BlocStatus.loadingShimmer) return;
+                    if (tabs == "order_all") {
+                      context.read<MyOrdersBloc>().add(GetMyOrdersEvent(
+                          params: GetOrdersParams(pageIndex: "1")));
+                    } else if (tabs == "ongoing_orders") {
+                      context.read<MyOrdersBloc>().add(GetMyOrdersEvent(
+                          params:
+                              GetOrdersParams(pageIndex: "1", closed: false)));
+                    } else if (tabs == "previous_orders") {
+                      context.read<MyOrdersBloc>().add(GetMyOrdersEvent(
+                          params:
+                              GetOrdersParams(pageIndex: "1", closed: true)));
+                    }
+                    setState(() {
+                      selectedIndex = i;
+                    });
+                  },
+                  tabText: tabs,
+                  isSelected: i == selectedIndex,
+                  // isSelected: i == state.gettCurrenttTabIndex(),
+                  haveSeperator: tabs != tabsList[tabsList.length - 1],
+                )))
+            .values
+            .toList(),
+      ));
+    });
+  }
+}
+/*
+class TabWidget extends StatelessWidget {
+  final String tabText;
+  bool isSelected;
+  final VoidCallback? btnPressed;
+  final bool haveSeperator;
+
+  TabWidget(
+      {Key? key,
+      required this.tabText,
+      this.isSelected = false,
+      required this.btnPressed,
+      this.haveSeperator = true})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Expanded(
+          child: CustomInkWellButtonWidget(
+            btnPressed: () {
+              btnPressed!();
+            },
+            widget: Column(
+              children: [
+                CustomTextWidget(
+                  trans(tabText),
+                  fontSize: 14.0,
+                  fontWeight:
+                      isSelected ? AppFontWeight.medium : AppFontWeight.regular,
+                  fontColor:
+                      isSelected ? AppColorsTheme.primary700 : AppColor.black,
+                  maxLines: 1,
+                  textOverflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.center,
+                ),
+                Container(
+                    width: 24,
+                    height: 2,
+                    decoration: BoxDecoration(
+                        borderRadius:
+                            BorderRadius.all(const Radius.circular(2)),
+                        color: isSelected
+                            ? AppColorsTheme.primary700
+                            : Colors.transparent))
+              ],
+            ),
+          ),
+        ),
+        Container(
+            width: 0.5,
+            height: 20,
+            decoration: BoxDecoration(
+                borderRadius: const BorderRadius.all(Radius.circular(2)),
+                color: haveSeperator
+                    ? AppColorsTheme.primary700
+                    : Colors.transparent))
+      ],
+    );
+  }
+}*/
+
+class TabWidget extends StatelessWidget {
+  final String tabText;
+  bool isSelected;
+  final VoidCallback? btnPressed;
+  final bool haveSeperator;
+
+  TabWidget(
+      {Key? key,
+      required this.tabText,
+      this.isSelected = false,
+      required this.btnPressed,
+      this.haveSeperator = true})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        CustomInkWellButtonWidget(
+          btnPressed: () {
+            btnPressed!();
+          },
+          widget: Container(
+            padding: const EdgeInsets.all(8),
+            // margin: const EdgeInsets.all(8),
+            margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
+            decoration: BoxDecoration(
+                color: isSelected ? AppColor.darkTurquoise : Colors.transparent,
+                border: Border.all(width: 1, color: AppColor.darkTurquoise),
+                borderRadius: BorderRadius.circular(4)),
+            child: CustomTextWidget(
+              trans(tabText),
+              fontSize: 13.0,
+              fontWeight: AppFontWeight.medium,
+              // fontWeight:
+              //     isSelected ? AppFontWeight.medium : AppFontWeight.regular,
+              fontColor: isSelected ? AppColor.white : AppColor.darkTurquoise,
+              maxLines: 1,
+              textOverflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.center,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}

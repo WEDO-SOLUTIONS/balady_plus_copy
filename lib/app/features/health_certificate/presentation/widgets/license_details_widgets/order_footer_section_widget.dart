@@ -1,4 +1,4 @@
-/*import 'package:balady_new_app/app/core/core_exports.dart'
+/*import 'package:balady_plus/etmam_app/features/_shared_feature_/shared/shared_feature_exports.dart'
     show
         AppColors,
         Constants,
@@ -46,9 +46,9 @@ class _OrderFooterSectionWidgetState extends State<OrderFooterSectionWidget> {
                 btnBorderWidth: 2.0,
                 btnText: Helpers.translatingWord("send_request"),
                 btnTextWeight: FONT_WEIGHT.medium,
-                btnTextColor: AppColors.darkTurquoise,
-                btnBorderColor: AppColors.darkTurquoise,
-                btnColor: AppColors.white2,
+                btnTextColor: AppColor.darkTurquoise,
+                btnBorderColor: AppColor.darkTurquoise,
+                btnColor: AppColor.white2,
               ),
             ),
           if (widget.licenseManagementStatus == LICENSE_MANAGEMENT_STATUS.DRAFT)
@@ -70,12 +70,12 @@ class _OrderFooterSectionWidgetState extends State<OrderFooterSectionWidget> {
                   'Cancel order'.log();
                 }
               },
-              btnBorderColor: AppColors.redBrown,
-              btnColor: AppColors.white2,
+              btnBorderColor: AppColor.redBrown,
+              btnColor: AppColor.white2,
               // as Scaffold background 
               btnBorderWidth: 2.0,
               btnText: _getButtonTextBasedStatus(),
-              btnTextColor: AppColors.redBrown,
+              btnTextColor: AppColor.redBrown,
               btnTextWeight: FONT_WEIGHT.medium,
             ),
         ],

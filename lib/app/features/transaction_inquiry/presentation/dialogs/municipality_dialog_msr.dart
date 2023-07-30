@@ -12,7 +12,7 @@ class MunicipalityMSRDialog extends StatelessWidget {
         Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-                color: AppColors.white,
+                color: AppColor.white,
                 borderRadius: BorderRadius.circular(12)),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -41,14 +41,14 @@ class MunicipalityMSRDialog extends StatelessWidget {
                 Constants.verticalSpaceLarge,
                 CustomTextWidget(
                   Helpers.translatingWord("region_coverage_error"),
-                  fontColor: AppColors.black,
+                  fontColor: AppColor.black,
                   fontWeight: FONT_WEIGHT.medium,
                   fontSize: 22,
                 ),
                 Constants.verticalSpaceMedium,
                 CustomTextWidget(
                   msg,
-                  fontColor: AppColors.grey1000,
+                  fontColor: AppColor.grey1000,
                   fontWeight: FONT_WEIGHT.medium,
                   fontSize: 16,
                 ),

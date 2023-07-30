@@ -48,7 +48,7 @@ class _RequestServiceDetailsScreen extends State<RequestServiceDetailsScreen> {
           IncidentDetailsViewModel model =
               Provider.of<IncidentDetailsViewModel>(context);
           return Scaffold(
-              backgroundColor: AppColors.white,
+              backgroundColor: AppColor.white,
               appBar: null,
               body: Stack(
                 children: <Widget>[
@@ -123,7 +123,7 @@ class OrderLocation extends StatelessWidget {
         CustomHeaderAndDesc(
           header: Helpers.translatingWord('order_address'),
           desc: model.args.response.locationInfo?.address,
-          icon: const Icon(Icons.location_on, color: AppColors.greenLight),
+          icon: const Icon(Icons.location_on, color: AppColor.greenLight),
           bottomMargin: 0,
           onPress: () => _launchMapsUrl(model.getLocationLatLng()),
         ),

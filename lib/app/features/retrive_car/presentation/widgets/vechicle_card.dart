@@ -141,7 +141,7 @@ class VechicleCardWidget extends StatelessWidget {
           /*Column(
             children: [
               DrawLineWidget(
-                lineColor: AppColors.black200.withOpacity(0.2000000029802322),
+                lineColor: AppColor.black200.withOpacity(0.2000000029802322),
               ),
               // go to details button
               CustomGoToDetailsButtonWidget(

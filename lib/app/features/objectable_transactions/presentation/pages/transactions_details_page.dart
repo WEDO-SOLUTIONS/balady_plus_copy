@@ -348,9 +348,9 @@ class ViolationClauses extends StatelessWidget {
                                                   .notes ??
                                               "",
                                           /*    subTitleColor:
-                                              AppColors.baladyDarkGreen2,
-                                          leadingColor: AppColors.black,
-                                          textColor: AppColors.black,
+                                              AppColor.baladyDarkGreen2,
+                                          leadingColor: AppColor.black,
+                                          textColor: AppColor.black,
                                           titleSubtitleLeadingType:
                                               TITLE_SUBTITLE_LEADING_TYPE.box,*/
                                         ),

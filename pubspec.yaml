@@ -152,6 +152,9 @@ dependencies:
   pdfx:
   provider: ^6.0.2 
   skeletonizer: ^0.3.0
+  launch_review: ^3.0.1
+  network_info_plus: ^2.1.4+1
+  dart_ipify: ^1.1.1
   
   #test_package:
  #   path: packages/test_package
@@ -208,6 +211,11 @@ flutter:
     # - assets/services/
     - assets/maps/styles/
     - assets/maps/icons/
+    - assets/etmam_app/icons/png/
+    - assets/etmam_app/icons/svg/
+    - assets/etmam_app/icons/svg/bottom_navigation_icons/
+    - assets/etmam_app/icons/svg/social_media/
+    - assets/etmam_app/images/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

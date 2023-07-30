@@ -1,0 +1,249 @@
+import 'package:balady_plus/app/core/utils/constants/route_names.dart';
+import 'package:balady_plus/etmam_app/core/errors/failures.dart';
+import 'package:balady_plus/etmam_app/core/services/local/use_case.dart';
+
+import 'package:balady_plus/etmam_app/core/utils/common_properties.dart';
+import 'package:balady_plus/etmam_app/features/_shared_feature_/shared/shared_feature_exports.dart';
+import 'package:balady_plus/etmam_app/features/home/domain/entities/ads/ads_response.dart';
+import 'package:balady_plus/etmam_app/features/home/domain/use_cases/get_ads.dart';
+import 'package:balady_plus/etmam_app/features/home/home_exports.dart'
+    show
+        GetMainServices,
+        GetSubService,
+        GetTopOrderedSubService,
+        GetTopRatedProviders,
+        MainServiceParams,
+        MainServiceResponse,
+        SubServicePageArgs,
+        SubServiceParams,
+        SubServiceResponse,
+        TopOrderedSubServiceParams,
+        TopRatedProviderParams;
+import 'package:balady_plus/app/core/services/local/navigation_services.dart';
+import 'package:bloc/bloc.dart';
+import 'package:equatable/equatable.dart';
+import 'package:balady_plus/etmam_app/features/providers/providers_exports.dart';
+import 'package:balady_plus/etmam_app/features/services/services_exports.dart'
+    show ServiceParams, GetServicesProvidersByService;
+import 'package:balady_plus/app/core/utils/utils_exports.dart' show BlocStatus;
+
+part 'home_event.dart';
+
+part 'home_state.dart';
+
+class HomeBloc extends Bloc<HomeEvent, HomeState> {
+  final GetMainServices _getMainServices;
+  final GetTopOrderedSubService _getTopOrderedSubService;
+  final GetTopRatedProviders _getTopRatedProviders;
+  final GetSubService _getSubService;
+  final GetServicesProvidersByService _getServicesProvidersByService;
+  final GetProviderDetails _getProviderDetails;
+  final GetAds _getAds;
+  HomeBloc({
+    required GetMainServices getMainServices,
+    required GetTopOrderedSubService getTopOrderedSubService,
+    required GetTopRatedProviders getTopRatedProviders,
+    required GetSubService getSubService,
+    required GetServicesProvidersByService getServicesProvidersByService,
+    required GetProviderDetails getProviderDetails,
+    required GetAds getAds,
+  })  : _getMainServices = getMainServices,
+        _getTopOrderedSubService = getTopOrderedSubService,
+        _getTopRatedProviders = getTopRatedProviders,
+        _getSubService = getSubService,
+        _getServicesProvidersByService = getServicesProvidersByService,
+        _getProviderDetails = getProviderDetails,
+        _getAds = getAds,
+        super(const HomeState()) {
+    on<HomeEvent>((event, emit) {});
+
+    on<GetMainServicesEvent>(_getMainServicesHandler);
+    on<GetTopOrderedSubServicesEvent>(_getGetTopOrderedSubServicesHandler);
+    on<GetTopRatedProvidersEvent>(_getGetTopRatedProvidersHandler);
+    on<GetSubServicesEvent>(_getSubServicesHandler);
+    on<GetProviders>(_getProvidersHandler);
+    on<ChangeCityEvent>(_chaneCityHandler);
+
+    on<GetProviderDetailsEvent>(_getProviderDetailsHandler);
+    on<GetAdsEvent>(_getAdsDetailsHandler);
+
+    add(GetMainServicesEvent(
+        params: MainServiceParams(
+            cityId: CommonProperties.cityId, pageIndex: "1", pageSize: "3")));
+    add(GetTopOrderedSubServicesEvent(
+        params: TopOrderedSubServiceParams(
+            cityId: CommonProperties.cityId, pageSize: "4", pageIndex: "1")));
+
+    add(GetTopRatedProvidersEvent(
+        params: TopRatedProviderParams(
+            cityId: CommonProperties.cityId, pageSize: "4", pageIndex: "1")));
+
+    add(GetAdsEvent());
+  }
+
+  Future<void> _getMainServicesHandler(
+      GetMainServicesEvent e, Emitter emitter) async {
+    emitter(state.copyWith(mainServiceStatus: BlocStatus.loading));
+
+    final failureOrSuccess = await _getMainServices(e.params);
+
+    failureOrSuccess.fold((failure) {
+      emitter(state.copyWith(
+        mainServiceStatus: BlocStatus.failure,
+        errorMessage: (failure as ServerFailure).errorMessage,
+      ));
+    }, (success) {
+      emitter(state.copyWith(
+        mainServiceStatus: BlocStatus.success,
+        mainServiceResponse: success.data?.result,
+        errorMessage: "",
+      ));
+    });
+  }
+
+  Future<void> _getGetTopOrderedSubServicesHandler(
+      GetTopOrderedSubServicesEvent e, Emitter emitter) async {
+    emitter(state.copyWith(topOrderedSubServiceStatus: BlocStatus.loading));
+
+    final failureOrSuccess = await _getTopOrderedSubService(e.params);
+
+    failureOrSuccess.fold((failure) {
+      emitter(state.copyWith(
+        topOrderedSubServiceStatus: BlocStatus.failure,
+        errorMessage: (failure as ServerFailure).errorMessage,
+      ));
+    }, (success) {
+      emitter(state.copyWith(
+        topOrderedSubServiceStatus: BlocStatus.success,
+        topOrderedsubServiceResponse: success.data?.result,
+        errorMessage: "",
+      ));
+    });
+  }
+
+  Future<void> _getGetTopRatedProvidersHandler(
+      GetTopRatedProvidersEvent e, Emitter emitter) async {
+    emitter(state.copyWith(topRatedProvidersStatus: BlocStatus.loading));
+
+    final failureOrSuccess = await _getTopRatedProviders(e.params);
+
+    failureOrSuccess.fold((failure) {
+      emitter(state.copyWith(
+        topRatedProvidersStatus: BlocStatus.failure,
+        errorMessage: (failure as ServerFailure).errorMessage,
+      ));
+    }, (success) {
+      emitter(state.copyWith(
+        topRatedProvidersStatus: BlocStatus.success,
+        topRatedProviderResponse: success.data?.result,
+        errorMessage: "",
+      ));
+    });
+  }
+
+  Future<void> _getSubServicesHandler(
+      GetSubServicesEvent e, Emitter emitter) async {
+    emitter(state.copyWith(status: BlocStatus.loading));
+
+    final failureOrSuccess = await _getSubService(e.params);
+
+    failureOrSuccess.fold((failure) {
+      emitter(state.copyWith(
+        status: BlocStatus.failure,
+        errorMessage: (failure as ServerFailure).errorMessage,
+      ));
+    }, (success) {
+      emitter(state.copyWith(
+        status: BlocStatus.success,
+        errorMessage: "",
+      ));
+
+      // Navigate to subservice screen
+      NavigationService.pushNamed(
+          routeName: EtmamRoutesNames.subServicesPage,
+          args: SubServicePageArgs(
+              mainServiceName: e.params.mainServiceName,
+              subServiceResponse: success.data!.result!));
+    });
+  }
+
+  Future<void> _getProvidersHandler(GetProviders e, Emitter emitter) async {
+    emitter(state.copyWith(status: BlocStatus.loading));
+
+    final failureOrSuccess = await _getServicesProvidersByService(e.params);
+
+    failureOrSuccess.fold((failure) {
+      emitter(state.copyWith(
+        status: BlocStatus.failure,
+        errorMessage: (failure as ServerFailure).errorMessage,
+      ));
+    }, (success) {
+      emitter(state.copyWith(
+        status: BlocStatus.success,
+        errorMessage: "",
+      ));
+
+      // Navigate to Providers screen
+
+      NavigationService.pushNamed(
+          routeName: EtmamRoutesNames.providersByService,
+          args: ServicePageParams(response: success.data!.result!));
+    });
+  }
+
+  Future<void> _getProviderDetailsHandler(
+      GetProviderDetailsEvent e, Emitter emitter) async {
+    emitter(state.copyWith(status: BlocStatus.loading));
+
+    final failureOrSuccess = await _getProviderDetails(e.params);
+
+    failureOrSuccess.fold((failure) {
+      emitter(state.copyWith(
+        status: BlocStatus.failure,
+        errorMessage: (failure as ServerFailure).errorMessage,
+      ));
+    }, (success) {
+      emitter(state.copyWith(
+        status: BlocStatus.success,
+        errorMessage: "",
+      ));
+
+      // Navigate to Providers screen
+      NavigationService.pushNamed(
+          routeName: EtmamRoutesNames.providersDetails,
+          args: success.data!.result!);
+    });
+  }
+
+  Future<void> _chaneCityHandler(ChangeCityEvent e, Emitter emitter) async {
+    add(GetMainServicesEvent(
+        params: MainServiceParams(
+            cityId: CommonProperties.cityId, pageIndex: "1", pageSize: "3")));
+    add(GetTopOrderedSubServicesEvent(
+        params: TopOrderedSubServiceParams(
+            cityId: CommonProperties.cityId, pageSize: "4", pageIndex: "1")));
+
+    add(GetTopRatedProvidersEvent(
+        params: TopRatedProviderParams(
+            cityId: CommonProperties.cityId, pageSize: "4", pageIndex: "1")));
+  }
+
+  Future<void> _getAdsDetailsHandler(GetAdsEvent e, Emitter emitter) async {
+    emitter(state.copyWith(adsResponseStatus: BlocStatus.loading));
+
+    final failureOrSuccess = await _getAds(NoParams());
+
+    failureOrSuccess.fold((failure) {
+      emitter(state.copyWith(
+        adsResponseStatus: BlocStatus.failure,
+        errorMessage: (failure as ServerFailure).errorMessage,
+      ));
+    }, (success) {
+      emitter(state.copyWith(
+        adsResponseStatus: BlocStatus.success,
+        adsResponse: success.data?.result,
+        errorMessage: "",
+      ));
+    });
+  }
+}

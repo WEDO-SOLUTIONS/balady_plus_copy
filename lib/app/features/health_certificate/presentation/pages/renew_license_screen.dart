@@ -29,7 +29,7 @@ class RenewLicenseScreen extends StatelessWidget {
           CustomIconButtonWidget(
             onPressed: () => Navigator.of(context).pop(),
             icon: Icons.close,
-            // materialIconColor: AppColors.white,
+            // materialIconColor: AppColor.white,
             iconSize: 30.0,
           ),
           // body
@@ -115,17 +115,17 @@ class _RenewLicenseButtonsWidget extends StatelessWidget {
         EnhancedCustomElevatedButtonWidget(
           btnPressed: () => Navigator.of(context)
               .pushNamed(RoutesNames.certificateInfoStepRoute, arguments: true),
-          btnColor: AppColors.darkTurquoise, // as Scaffold background
+          btnColor: AppColor.darkTurquoise, // as Scaffold background
           btnBorderWidth: 2.0,
           btnText: Helpers.translatingWord('startRenewLicenseStepsButtonWord'),
-          btnTextColor: AppColors.white,
+          btnTextColor: AppColor.white,
           btnTextWeight: FONT_WEIGHT.medium,
         ),
         Constants.verticalSpaceSmall,
         CustomTextButtonWidget(
           btnPressed: () => Navigator.of(context).pop(),
           btnText: Helpers.translatingWord("notNowLicenseButtonWord"),
-          btnTextColor: AppColors.darkTurquoise,
+          btnTextColor: AppColor.darkTurquoise,
           btnTextSize: 16.0,
           btnTextWeight: AppFontWeight.medium,
         ),

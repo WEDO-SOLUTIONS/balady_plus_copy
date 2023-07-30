@@ -8,6 +8,7 @@ import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
+import '../../../../../etmam_app/features/etmam_entry_point/presentation/cubit/etmam_entry_point_cubit.dart';
 import '../../../../core/dependency_injection/injection_container.dart';
 import '../../../../core/errors/failures.dart';
 import '../../../../core/services/services_exports.dart';
@@ -157,7 +158,7 @@ class EntryPointCubit extends Cubit<EntryPointState> {
         });
         EasyLoading.dismiss();
         if (isFromEtmam) {
-          //MM    sl<EtmamEntryPointCubit>().onLogin();
+          sl<EtmamEntryPointCubit>().onLogin();
         }
         if (state.status == AuthStatus.notAuthenticated) {
           //MM  locator<CustomerSoundViewModel>().getUserRequests(showLoad: false);

@@ -5,6 +5,9 @@ import 'package:balady_plus/app/features/quran/data/models/quran_book_mark_item_
 import 'package:balady_plus/app/features/quran/data/models/quran_book_mark_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../../etmam_app/features/_shared_feature_/shared/data/entities/city/city_item.dart';
+import '../../../../etmam_app/features/_shared_feature_/shared/data/models/city/city_item_model.dart';
+import '../../../../etmam_app/features/etmam_entry_point/data/models/profile_model.dart';
 import '../../../features/_shared_feature_/shared_feature_exports.dart'
     show AuthDataModel;
 import '../../../features/entry_point/data/models/sso_token_model.dart';
@@ -239,6 +242,65 @@ class SharedPrefs {
         "0",
         "0",
       ];
+
+  /** Etmam   */
+  setUserProfile(ProfileModel? profile) async {
+    if (profile != null) {
+      await _sharedPreferences?.setString(
+          'user_profile', json.encode(profile.toJson()));
+    } else {
+      _sharedPreferences?.remove("user_profile");
+    }
+  }
+
+  ProfileModel? getUserProfile() {
+    if (_sharedPreferences?.getString('user_profile') != null) {
+      ProfileModel token = ProfileModel.fromMap(
+          json.decode(_sharedPreferences?.getString('user_profile') ?? ""));
+      return token;
+    }
+    return null;
+  }
+
+  setCitiesList(List<CityItemModel>? items) async {
+    if (items != null) {
+      await _sharedPreferences?.setString('cities_list',
+          json.encode(List<dynamic>.from(items.map((x) => x.toJson()))));
+    } else {
+      _sharedPreferences?.remove("cities_list");
+    }
+  }
+
+  List<CityItem>? getCitiesList() {
+    var text = _sharedPreferences?.getString('cities_list');
+    var data;
+    if (text != null) data = json.decode(text);
+
+    if (data != null) {
+      List<CityItem>? cities =
+          data.map<CityItemModel>((x) => CityItemModel.fromMap(x)).toList();
+      return cities;
+    }
+    return null;
+  }
+
+  setCurrentCity(CityItemModel? item) async {
+    if (item != null) {
+      await _sharedPreferences?.setString(
+          'current_city', json.encode(item.toJson()));
+    } else {
+      _sharedPreferences?.remove("current_city");
+    }
+  }
+
+  CityItemModel? getCity() {
+    if (_sharedPreferences?.getString('current_city') != null) {
+      CityItemModel token = CityItemModel.fromMap(
+          json.decode(_sharedPreferences?.getString('current_city') ?? ""));
+      return token;
+    }
+    return null;
+  }
 }
 
 final sharedPrefs = SharedPrefs();

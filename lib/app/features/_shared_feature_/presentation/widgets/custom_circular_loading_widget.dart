@@ -10,7 +10,7 @@ class CustomCircularLoadingWidget extends StatelessWidget {
   final double circularHeight;
   const CustomCircularLoadingWidget({
     Key? key,
-    this.backgroundCircularColor = /*AppColors.primary900Light*/
+    this.backgroundCircularColor = /*AppColor.primary900Light*/
         const Color(0xff389492),
     this.loadingColor = AppColor.white,
     this.circularWidth = 60.0,

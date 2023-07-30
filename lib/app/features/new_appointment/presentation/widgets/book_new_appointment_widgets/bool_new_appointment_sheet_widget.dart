@@ -69,7 +69,7 @@ class _BookNewAppointmentSheetHeaderWidget extends StatelessWidget {
             btnText: Helpers.translatingWord(
               "bookNewAppointmentCloseWindowWord",
             ),
-            btnTextColor: AppColors.grey1000,
+            btnTextColor: AppColor.grey1000,
             btnTextSize: 17.0,
             btnTextWeight: FONT_WEIGHT.medium,
           ),
@@ -79,7 +79,7 @@ class _BookNewAppointmentSheetHeaderWidget extends StatelessWidget {
             Helpers.translatingWord(
               "bookNewAppointmentChooseAppointmentTypeWord",
             ),
-            fontColor: AppColors.black,
+            fontColor: AppColor.black,
             fontSize: 24.0,
             height: 1.3,
           ),
@@ -87,7 +87,7 @@ class _BookNewAppointmentSheetHeaderWidget extends StatelessWidget {
           // subtitle
           // CustomTextWidget(
           //   Helpers.translatingWord("bookNewAppointmentUnreadableContentWord"),
-          //   fontColor: AppColors.black400,
+          //   fontColor: AppColor.black400,
           //   fontWeight: FONT_WEIGHT.medium,
           //   textAlign: TextAlign.start,
           //   height: 1.3,

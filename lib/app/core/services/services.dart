@@ -104,6 +104,17 @@ Map<String, dynamic> servicesConfig = {
       "ar": {"title": "المستشار البلدي", "description": null, "tag": null},
       "en": {"title": "Municipal Advisor", "description": null, "tag": null}
     },
+    {
+      "id": 13,
+      "icon": "municipal_advisor",
+      "3d_icon": null,
+      "order": 13,
+      "isNew": false,
+      "isImportant": false,
+      "action": {"type": "page", "value": RouteName.etmamMainPage},
+      "ar": {"title": "بلدي أعمال", "description": null, "tag": null},
+      "en": {"title": "Municipal Advisor", "description": null, "tag": null}
+    },
   ],
   "health_certificates_services": [
     {
