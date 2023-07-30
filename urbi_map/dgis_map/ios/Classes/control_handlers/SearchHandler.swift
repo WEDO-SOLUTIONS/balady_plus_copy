@@ -27,7 +27,7 @@ struct Twin: Decodable {
     }
 }
 
-let twinsApiUrl = "https://apiservices.balady.gov.sa/v1/urbi-services/twins-api/v1/twins/search/dgis"
+let twinsApiUrl = "https://apiservices.balady.gov.sa/v1/urbi-services/twins-api/v1/search/dgis"
 
 class SearchHandler: NSObject {
     private let map: Map
