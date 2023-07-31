@@ -13,9 +13,9 @@ PODS:
   - device_info_plus (0.0.1):
     - Flutter
   - dgis_map (0.0.1):
-    - DGisMobileSDK (= 7.2.0-full)
+    - DGisMobileSDK (= 7.2.1-full)
     - Flutter
-  - DGisMobileSDK (7.2.0-full)
+  - DGisMobileSDK (7.2.1-full)
   - DKImagePickerController/Core (4.3.4):
     - DKImagePickerController/ImageDataManager
     - DKImagePickerController/Resource
@@ -307,8 +307,8 @@ SPEC CHECKSUMS:
   camera_avfoundation: 3125e8cd1a4387f6f31c6c63abb8a55892a9eeeb
   connectivity_plus: 413a8857dd5d9f1c399a39130850d02fe0feaf7e
   device_info_plus: 7545d84d8d1b896cb16a4ff98c19f07ec4b298ea
-  dgis_map: 5ff75794c82a6a5008ff49fce9580851f6889fa5
-  DGisMobileSDK: 72e559c0e07e2a0441cec9d20fa52b7168c4e2c5
+  dgis_map: 43c1060a67dde252a9b9bc0523c73e6efa0a2a51
+  DGisMobileSDK: 862abe9b82ebcaf6f103bea6200cdf946fd0bbe9
   DKImagePickerController: b512c28220a2b8ac7419f21c491fc8534b7601ac
   DKPhotoGallery: fdfad5125a9fdda9cc57df834d49df790dbb4179
   file_picker: ce3938a0df3cc1ef404671531facef740d03f920

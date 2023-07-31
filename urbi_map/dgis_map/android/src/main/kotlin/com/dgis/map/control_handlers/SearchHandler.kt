@@ -152,7 +152,7 @@ class SearchHandler(
         result: Result<SearchResultMessage>?
     ) {
         val query = SearchQueryBuilder
-            .fromRubriсIds(categories)
+            .fromRubricIds(categories)
             .setSortingType(sortingType.toSortingType())
             .setPageSize(pageSize)
             .setDirectoryFilter(DirectoryFilter(weekTimeMessage.toFilter(), emptyList()))
