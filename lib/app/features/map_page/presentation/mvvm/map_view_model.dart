@@ -457,8 +457,8 @@ class MapViewModel extends BaseViewModel {
         CameraPositionMessage(
           zoomValue: zoomValue,
           geoPoint: GeoPointMessage(
-            latitude: latlng.latitude,
-            longitude: latlng.longitude,
+            latitude: 24.729761968361412,
+            longitude: 46.665576686472015,
           ),
         ),
       );
