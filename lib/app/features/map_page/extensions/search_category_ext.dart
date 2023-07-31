@@ -13,11 +13,14 @@ extension SearchCategoryData on SearchCategoryMessage {
 
   String iconName() {
     return switch (this) {
-      SearchCategoryMessage.mousques => "assets/maps/icons/mosque.svg",
-      SearchCategoryMessage.gasStations => "assets/maps/icons/gas-station.svg",
-      SearchCategoryMessage.cafe => "assets/maps/icons/cafe.svg",
-      SearchCategoryMessage.restaurants => "assets/maps/icons/eat.svg",
-      SearchCategoryMessage.parks => "assets/maps/icons/parks.svg"
+      SearchCategoryMessage.mousques =>
+        "assets/maps/icons/poi_mousques_light.svg",
+      SearchCategoryMessage.gasStations =>
+        "assets/maps/icons/poi_gas_station_light.svg",
+      SearchCategoryMessage.cafe => "assets/maps/icons/poi_cafe_light.svg",
+      SearchCategoryMessage.restaurants =>
+        "assets/maps/icons/poi_eat_light.svg",
+      SearchCategoryMessage.parks => "assets/maps/icons/poi_park_light.svg"
     };
   }
 }
