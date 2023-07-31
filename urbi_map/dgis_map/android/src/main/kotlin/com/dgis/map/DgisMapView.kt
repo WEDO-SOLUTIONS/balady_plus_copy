@@ -5,7 +5,9 @@ import android.location.Location
 import android.util.Size
 import android.view.LayoutInflater
 import com.dgis.map.control_handlers.*
+import com.dgis.map.extensions.toGeoPoint
 import com.dgis.map.extensions.toGeoRect
+import com.dgis.map.extensions.toMessage
 import com.dgis.map.extensions.toRubrics
 import com.dgis.map.extensions.toSdkAccuracy
 import com.dgis.map.extensions.unsafeLazy
@@ -17,6 +19,7 @@ import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.platform.PlatformView
 import ru.dgis.sdk.DgisObjectId
 import ru.dgis.sdk.File
+import ru.dgis.sdk.coordinates.Bearing
 import ru.dgis.sdk.coordinates.GeoPoint
 import ru.dgis.sdk.coordinates.GeoRect
 import ru.dgis.sdk.directory.SearchManager
@@ -162,13 +165,29 @@ class DgisMapView(
         }
 
         map.camera.position = map.camera.position.copy(
-            point = GeoPoint(
-                latitude = cameraPosition.geoPoint.latitude,
-                longitude = cameraPosition.geoPoint.longitude
-            ),
-            zoom = Zoom(cameraPosition.zoomValue.toFloat())
+            point = cameraPosition.point.toGeoPoint(),
+            zoom = Zoom(cameraPosition.zoom.toFloat()),
+            tilt = Tilt(cameraPosition.tilt.toFloat()),
+            bearing = Bearing(cameraPosition.bearing)
         )
         result.success(null)
+    }
+
+    override fun getCameraPosition(result: Messages.Result<CameraPositionMessage>?) {
+        val map = map ?: kotlin.run {
+            result?.error(IllegalArgumentException("Map has not been initialized"))
+            return
+        }
+
+        result?.success(
+            CameraPositionMessage
+                .Builder()
+                .setPoint(map.camera.position.point.toMessage())
+                .setZoom(map.camera.position.zoom.value.toDouble())
+                .setTilt(map.camera.position.tilt.value.toDouble())
+                .setBearing(map.camera.position.bearing.value)
+                .build()
+        )
     }
 
     override fun searchByObjectId(

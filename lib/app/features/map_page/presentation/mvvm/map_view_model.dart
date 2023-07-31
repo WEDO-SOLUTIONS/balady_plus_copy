@@ -140,11 +140,13 @@ class MapViewModel extends BaseViewModel {
 
     await controller.setCameraPosition(
       CameraPositionMessage(
-        zoomValue: 13,
-        geoPoint: GeoPointMessage(
+        point: GeoPointMessage(
           latitude: 24.713520,
           longitude: 46.675230,
         ),
+        zoom: 13,
+        tilt: 0,
+        bearing: 0,
       ),
     );
 
@@ -158,11 +160,13 @@ class MapViewModel extends BaseViewModel {
       );
       await controller.setCameraPosition(
         CameraPositionMessage(
-          zoomValue: 13,
-          geoPoint: GeoPointMessage(
+          point: GeoPointMessage(
             latitude: position.latitude,
             longitude: position.longitude,
           ),
+          zoom: 13,
+          tilt: 0,
+          bearing: 0,
         ),
       );
     }

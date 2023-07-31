@@ -212,11 +212,10 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
             return
         }
         var desiredPosition = map.camera.position
-        desiredPosition.point = GeoPoint(
-            latitude: Latitude(value: cameraPosition.geoPoint.latitude.doubleValue),
-            longitude: Longitude(value: cameraPosition.geoPoint.longitude.doubleValue)
-        )
-        desiredPosition.zoom = Zoom(value: cameraPosition.zoomValue.floatValue)
+        desiredPosition.point = cameraPosition.point.geoPoint
+        desiredPosition.zoom = Zoom(value: cameraPosition.zoom.floatValue)
+        desiredPosition.tilt = Tilt(value: cameraPosition.tilt.floatValue)
+        desiredPosition.bearing = Bearing(value: cameraPosition.bearing.doubleValue)
         do {
             try map.camera.setPosition(position: desiredPosition)
         } catch {
@@ -229,6 +228,27 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         }
         completion(nil)
         
+    }
+    
+    func getCameraPosition(completion: @escaping (CameraPositionMessage?, FlutterError?) -> Void) {
+        guard let map = self.map else {
+            completion(nil, FlutterError(
+                code: "IllegalArgumentException",
+                message: "Map was not initialized properly",
+                details: nil
+            ))
+            return
+        }
+        
+        completion(
+            CameraPositionMessage.make(
+                withPoint: map.camera.position.point.toMessage(),
+                zoom: NSNumber(value: map.camera.position.zoom.value),
+                tilt: NSNumber(value: map.camera.position.tilt.value),
+                bearing: NSNumber(value: map.camera.position.bearing.value)
+            ),
+            nil
+        )
     }
     
     func search(
