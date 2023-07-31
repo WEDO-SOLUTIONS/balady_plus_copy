@@ -94,7 +94,7 @@ abstract class DgisMapPlugin extends PlatformInterface {
 
   Future<void> unselectPanorama();
 
-  Future<ObjectInfoMessage> searchByObjectId(DgisObjectIdMessage objectId);
+  Future<DirectoryObjectMessage> searchByObjectId(DgisObjectIdMessage objectId);
 
   Widget buildView({
     required PlatformViewCreatedCallback onPlatformViewCreated,
@@ -104,16 +104,40 @@ abstract class DgisMapPlugin extends PlatformInterface {
   Future<List<DistanceResponseMessage?>> getDistanceTo(
       List<DistanceRequestMessage> points);
 
-  Future<List<ObjectInfoMessage?>> search(
+  Future<SearchResultMessage> search(
     String queryText, {
-    required MarkerIconMessage searchMarker,
     required SortingTypeMessage sortingType,
     GeoRectMessage? searchRect,
     required int pageSize,
     WeekTimeSearchMessage? weekTime,
   });
 
-  Future<List<ObjectInfoMessage?>?> getNextPage();
+  Future<SearchResultMessage> searchByQuery(
+    SearchQueryMessage query, {
+    required SortingTypeMessage sortingType,
+    required int pageSize,
+    WeekTimeSearchMessage? weekTime,
+    GeoRectMessage? searchRect,
+  });
+
+  Future<SearchResultMessage> searchByCategory(
+    SearchCategoryMessage query, {
+    required SortingTypeMessage sortingType,
+    required int pageSize,
+    WeekTimeSearchMessage? weekTime,
+    GeoRectMessage? searchRect,
+  });
+
+  Future<PageMessage> fetchPrevPage(PageIdMessage pageId);
+
+  Future<PageMessage> fetchNextPage(PageIdMessage pageId);
+
+  Future<void> releasePage(PageIdMessage pageId);
+
+  Future<SuggestResultMessage> fetchSuggests(
+    String queryText, {
+    GeoRectMessage? searchRect,
+  });
 
   Future<void> setMarkerOptions(MarkerOptionsMessageOld markerOptions);
 
@@ -125,7 +149,7 @@ abstract class DgisMapPlugin extends PlatformInterface {
     List<Marker> markers,
   );
 
-  Future<void> removeMarker(int id);
+  Future<void> removeMarker(String id);
 
   Future<void> removeAllMarkers();
 
@@ -137,7 +161,7 @@ abstract class DgisMapPlugin extends PlatformInterface {
     List<Polygon> polygons,
   );
 
-  Future<void> removePolygon(int id);
+  Future<void> removePolygon(String id);
 
   Future<void> removeAllPolygons();
 
@@ -149,29 +173,11 @@ abstract class DgisMapPlugin extends PlatformInterface {
     List<Polyline> polylines,
   );
 
-  Future<void> removePolyline(int id);
+  Future<void> removePolyline(String id);
 
   Future<void> removeAllPolylines();
 
-  Future<void> removeSearchMarkers();
-
   Future<void> setHighlighted(List<DgisObjectIdMessage> objectIds);
-
-  Future<List<SuggestMessage?>> fetchSuggests(
-    String queryText, {
-    GeoRectMessage? searchRect,
-  });
-
-  Future<ObjectInfoMessage> getSuggestObject(int index);
-
-  Future<List<ObjectInfoMessage?>> searchBySuggest(
-    int index, {
-    required MarkerIconMessage searchMarker,
-    required SortingTypeMessage sortingType,
-    GeoRectMessage? searchRect,
-    required int pageSize,
-    WeekTimeSearchMessage? weekTime,
-  });
 
   Future<void> onLocationPremissionGranted(
       DesiredAccuracyMessage desiredAccuracy);
@@ -199,21 +205,11 @@ abstract class DgisMapPlugin extends PlatformInterface {
     GeoRectMessage innerRect,
   );
 
-  Future<List<FlagFilterMessage?>> getDirectoryDynamicFilters();
-
-  Future<List<ObjectInfoMessage?>> applyDirectoryFilters({
-    required List<FlagFilterMessage> filters,
-    required WorkingFilterMessage isOpenFilter,
-    required SortingTypeMessage sortingType,
-  });
-
   Future<void> setPanoramasPaddings(CameraSetPaddingMessage message);
 
   Future<void> moveCameraToSelectedPanorama();
 
   Future<void> setPanoramaMarkerAzimuth(MarkerAzimuthMessage message);
-
-  Future<void> showLastSearchMarker();
 
   Future<void> showEsriIOLayer(AddLayerPointObjectsMessage message);
 

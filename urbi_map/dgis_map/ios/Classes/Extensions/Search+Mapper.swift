@@ -1,0 +1,123 @@
+import Foundation
+import DGis
+
+extension SearchResult {
+    func toMessage(withId pageId: String, items: [ItemMarkerInfo]?) -> SearchResultMessage {
+        SearchResultMessage.make(
+            withFirstPage: self.firstPage?.toMessage(withId: pageId),
+            representativeArea: self.representativeArea?.toMessage(),
+            itemMarkerInfos: items?.toMessage(),
+            searchResultType: self.searchResultType.toMessage(),
+            dynamicFilters: self.dynamicFilters.map {
+                $0.toMessage()
+            },
+            autoUseFirstResult: NSNumber(value: self.autoUseFirstResult)
+        )
+    }
+}
+
+extension Page {
+    func toMessage(withId id: String) -> PageMessage {
+        PageMessage.make(
+            withId: PageIdMessage.make(withId: id),
+            items: self.items.map {
+                $0.toMessage(externalIds: nil)
+            }
+        )
+    }
+}
+
+extension Array where Element==ItemMarkerInfo {
+    fileprivate func toMessage() -> [ItemMarkerInfoMessage] {
+        self.map {
+            ItemMarkerInfoMessage.make(
+                withObjectId: $0.objectId?.toMessage(),
+                geoPoint: $0.geoPoint.toMessage(),
+                floorInfo: $0.floorInfo?.toMessage()
+            )
+        }
+    }
+}
+
+extension FloorInfo {
+    fileprivate func toMessage() -> FloorInfoMessage {
+        FloorInfoMessage.make(
+            withLevelId: NSNumber(value: self.levelId.value),
+            buildingId: NSNumber(value: self.buildingId.value)
+        )
+    }
+}
+
+extension DynamicFilter {
+    fileprivate func toMessage() -> DynamicFilterMessage {
+        switch self {
+        case .flagFilter(let flag):
+            return DynamicFilterMessage.make(
+                withFlagFilter: flag.toMessage(),
+                rangeFilter: nil
+            )
+        case .rangeFilter(let range):
+            return DynamicFilterMessage.make(
+                withFlagFilter: nil,
+                rangeFilter: range.toMessage()
+            )
+        }
+    }
+}
+
+extension FlagFilter {
+    fileprivate func toMessage() -> FlagFilterMessage {
+        FlagFilterMessage.make(
+            withTagName: self.tagName,
+            displayName: self.displayName,
+            flagValue: self.flagValue.map {
+                NSNumber(value: $0)
+            }
+        )
+    }
+}
+
+extension RangeFilter {
+    fileprivate func toMessage() -> RangeFilterMessage {
+        RangeFilterMessage.make(
+            withTagName: self.tagName,
+            displayName: self.displayName,
+            minValue: NSNumber(value: self.minValue),
+            maxValue: NSNumber(value: self.maxValue)
+        )
+    }
+}
+
+extension SearchResultType {
+    fileprivate func toMessage() -> SearchResultTypeMessage {
+        switch self {
+        case .recovery:
+            return .recovery
+        case .discovery:
+            return .discovery
+        }
+    }
+}
+
+extension SearchCategoryMessage {
+    private func toCategories() -> [UInt64] {
+        switch self {
+        case .mousques:
+            return [13374]
+        case .gasStations:
+            return [18547]
+        case .cafe:
+            return [159, 162]
+        case .restaurants:
+            return [161, 1203, 112658, 51459, 110376, 166, 15791, 111593]
+        case .parks:
+            return [168]
+        }
+    }
+    
+    func toRubrics() -> [RubricId] {
+        return self.toCategories().map {
+            RubricId(value: $0)
+        }
+    }
+}

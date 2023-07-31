@@ -6,6 +6,7 @@ import android.util.Size
 import android.view.LayoutInflater
 import com.dgis.map.control_handlers.*
 import com.dgis.map.extensions.toGeoRect
+import com.dgis.map.extensions.toRubrics
 import com.dgis.map.extensions.toSdkAccuracy
 import com.dgis.map.extensions.unsafeLazy
 import com.dgis.map.map_api.Messages
@@ -172,7 +173,7 @@ class DgisMapView(
 
     override fun searchByObjectId(
         objectId: DgisObjectIdMessage,
-        result: Messages.Result<ObjectInfoMessage>?
+        result: Messages.Result<DirectoryObjectMessage>?
     ) {
         searchHandler?.searchByDirectoryObjectId(
             DgisObjectId(
@@ -187,13 +188,18 @@ class DgisMapView(
         val map = map ?: return
 
         val objectTapHandler = ObjectTapHandler(
-            mapObjectManager = MapObjectManager(map),
+            mapObjectManager =
+                MapObjectManager.withGeneralization(
+                    map = map,
+                    logicalPixel = LogicalPixel(value = 40f),
+                    maxZoom = Zoom(value = 18f)
+                ),
             panoramasObjectManager =
-            MapObjectManager.withGeneralization(
-                map = map,
-                logicalPixel = LogicalPixel(value = 20f),
-                maxZoom = Zoom(value = 18f)
-            ),
+                MapObjectManager.withGeneralization(
+                    map = map,
+                    logicalPixel = LogicalPixel(value = 20f),
+                    maxZoom = Zoom(value = 18f)
+                ),
             ioObjectManager =
                 MapObjectManager.withGeneralization(
                     map=map,
@@ -217,16 +223,14 @@ class DgisMapView(
 
     override fun search(
         queryText: String,
-        searchMarker: MarkerIconMessage,
         weekTime: WeekTimeSearchMessage?,
         searchRect: GeoRectMessage?,
         sortingType: SortingTypeMessage,
         pageSize: Long,
-        result: Messages.Result<List<ObjectInfoMessage>>?
+        result: Messages.Result<SearchResultMessage>?
     ) {
         searchHandler?.search(
             queryText = queryText,
-            searchMarker = searchMarker,
             searchGeoRect = searchRect?.toGeoRect(),
             weekTimeMessage = weekTime,
             sortingType = sortingType,
@@ -235,8 +239,64 @@ class DgisMapView(
         )
     }
 
-    override fun getNextPage(result: Messages.Result<List<ObjectInfoMessage>>?) {
-        searchHandler?.getNextPage(result)
+    override fun searchByQuery(
+        query: SearchQueryMessage,
+        weekTime: WeekTimeSearchMessage?,
+        searchRect: GeoRectMessage?,
+        sortingType: SortingTypeMessage,
+        pageSize: Long,
+        result: Messages.Result<SearchResultMessage>?
+    ) {
+        searchHandler?.searchByQuery(
+            queryId = query,
+            searchGeoRect = searchRect?.toGeoRect(),
+            weekTimeMessage = weekTime,
+            sortingType = sortingType,
+            pageSize = pageSize.toInt(),
+            result = result
+        )
+    }
+
+    override fun searchByCategory(
+        category: SearchCategoryMessage,
+        weekTime: WeekTimeSearchMessage?,
+        searchRect: GeoRectMessage?,
+        sortingType: SortingTypeMessage,
+        pageSize: Long,
+        result: Messages.Result<SearchResultMessage>?
+    ) {
+        searchHandler?.searchByCategories(
+            categories = category.toRubrics(),
+            searchGeoRect = searchRect?.toGeoRect(),
+            weekTimeMessage = weekTime,
+            sortingType = sortingType,
+            pageSize = pageSize.toInt(),
+            result = result
+        )
+    }
+
+    override fun fetchNextPage(pageId: PageIdMessage, result: Messages.Result<PageMessage>?) {
+        searchHandler?.fetchNextPage(pageId, result)
+    }
+
+    override fun fetchPrevPage(pageId: PageIdMessage, result: Messages.Result<PageMessage>?) {
+        searchHandler?.fetchPrevPage(pageId, result)
+    }
+
+    override fun releasePage(pageId: PageIdMessage, result: Messages.Result<Void>?) {
+        searchHandler?.releasePage(pageId, result)
+    }
+
+    override fun fetchSuggests(
+        queryText: String,
+        searchRect: GeoRectMessage?,
+        result: Messages.Result<SuggestResultMessage>?
+    ) {
+        searchHandler?.fetchSuggests(
+            queryText = queryText,
+            searchGeoRect = searchRect?.toGeoRect(),
+            result = result
+        )
     }
 
     override fun setMarkerOptions(options: MarkerOptionsMessageOld, result: Messages.Result<Void>?) {
@@ -257,7 +317,7 @@ class DgisMapView(
         objectTapHandler?.addMarkers(markers, result)
     }
 
-    override fun removeMarker(id: Long, result: Messages.Result<Void>?) {
+    override fun removeMarker(id: String, result: Messages.Result<Void>?) {
         objectTapHandler?.removeMarker(id, result)
     }
 
@@ -274,7 +334,7 @@ class DgisMapView(
         objectTapHandler?.addPolygons(polygons, result)
     }
 
-    override fun removePolygon(id: Long, result: Messages.Result<Void>?) {
+    override fun removePolygon(id: String, result: Messages.Result<Void>?) {
         objectTapHandler?.removePolygon(id, result)
     }
 
@@ -291,7 +351,7 @@ class DgisMapView(
         objectTapHandler?.addPolylines(polylines, result)
     }
 
-    override fun removePolyline(id: Long, result: Messages.Result<Void>?) {
+    override fun removePolyline(id: String, result: Messages.Result<Void>?) {
         objectTapHandler?.removePolyline(id, result)
     }
 
@@ -346,11 +406,6 @@ class DgisMapView(
         result?.success(null)
     }
 
-    override fun removeSearchMarkers(result: Messages.Result<Void>?) {
-        searchHandler?.removeSearchMarkers()
-        result?.success(null)
-    }
-
     override fun addPanoramasMarkers(
         message: AddMarkersWithPhotoMessage,
         result: Messages.Result<Void>?
@@ -389,23 +444,6 @@ class DgisMapView(
         )
     }
 
-    override fun fetchSuggests(
-        queryText: String,
-        searchRect: GeoRectMessage?,
-        result: Messages.Result<List<SuggestMessage>>?
-    ) {
-        searchHandler?.fetchSuggests(
-            queryText = queryText,
-            searchGeoRect = searchRect?.toGeoRect(),
-            result = result
-        )
-    }
-
-    override fun showLastSearchMarker(result: Messages.Result<Void>?) {
-        objectTapHandler?.showLastSearchMarker()
-        result?.success(null)
-    }
-
     override fun onLocationPremissionGranted(
         desiredAccuracy: DesiredAccuracyMessage,
         result: Messages.Result<Void>?
@@ -424,30 +462,6 @@ class DgisMapView(
         result?.success(null)
     }
 
-    override fun searchBySuggest(
-        index: Long,
-        searchMarker: MarkerIconMessage,
-        weekTime: WeekTimeSearchMessage?,
-        searchRect: GeoRectMessage?,
-        sortingType: SortingTypeMessage,
-        pageSize: Long,
-        result: Messages.Result<List<ObjectInfoMessage>>?
-    ) {
-        searchHandler?.searchBySuggest(
-            index = index.toInt(),
-            searchMarker = searchMarker,
-            searchGeoRect = searchRect?.toGeoRect(),
-            weekTimeMessage = weekTime,
-            sortingType = sortingType,
-            pageSize = pageSize.toInt(),
-            result = result
-        )
-    }
-
-    override fun getSuggestObject(index: Long, result: Messages.Result<ObjectInfoMessage>?) {
-        searchHandler?.getSuggestObject(index.toInt(), result)
-    }
-
     override fun overlappedBy(
         outerRect: GeoRectMessage,
         innerRect: GeoRectMessage,
@@ -459,26 +473,6 @@ class DgisMapView(
 
         val isOverlapped = if (outer.contains(inner)) 1L else 0
         result?.success(isOverlapped)
-    }
-
-    override fun getDirectoryDynamicFilters(
-        result: Messages.Result<List<FlagFilterMessage>>?
-    ) {
-        searchHandler?.getDirectoryDynamicFilters(result)
-    }
-
-    override fun applyDirectoryFilters(
-        filters: List<FlagFilterMessage>,
-        isOpenFilter: WorkingFilterMessage,
-        sortingType: SortingTypeMessage,
-        result: Messages.Result<List<ObjectInfoMessage>>?
-    ) {
-        searchHandler?.applyDirectoryFilters(
-            filters = filters,
-            isOpenFilter = isOpenFilter,
-            sortingType = sortingType,
-            result = result
-        )
     }
 
     override fun setPanoramaMarkerAzimuth(

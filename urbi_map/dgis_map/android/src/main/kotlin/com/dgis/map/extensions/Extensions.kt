@@ -15,11 +15,6 @@ fun Messages.SortingTypeMessage.toSortingType() = when (this) {
     Messages.SortingTypeMessage.BY_RATING -> SortingType.BY_RATING
 }
 
-fun Messages.GeoPointMessage.toGeoPoint(): GeoPoint = GeoPoint(
-    latitude = this.latitude,
-    longitude = this.longitude,
-)
-
 fun Messages.WeekTimeSearchMessage?.toFilter(): WorkTimeFilter? {
     if (this?.isOpenNow == true) return WorkTimeFilter(IsOpenNow())
 

@@ -16,6 +16,14 @@ class GeoPointMessage {
   final double longitude;
 }
 
+class GeoPointWithElevationMessage {
+  GeoPointWithElevationMessage(this.latitude, this.longitude, this.elevation);
+
+  final double latitude;
+  final double longitude;
+  final double elevation;
+}
+
 class CameraPositionMessage {
   CameraPositionMessage({
     required this.zoomValue,
@@ -34,36 +42,6 @@ class DgisObjectIdMessage {
 
   final int objectId;
   final int entranceId;
-}
-
-class ReviewsMessage {
-  ReviewsMessage(this.count, this.rating);
-
-  final int count;
-  final double rating;
-}
-
-class AdmDivMessage {
-  AdmDivMessage(this.type, this.name);
-
-  final String type;
-  final String name;
-}
-
-class AddressMessage {
-  AddressMessage({
-    this.addressComment,
-    this.drilldownString,
-    this.postCode,
-    this.streetAddress,
-    this.drilldown,
-  });
-
-  final String? addressComment;
-  final String? drilldownString;
-  final String? postCode;
-  final String? streetAddress;
-  final List<AdmDivMessage?>? drilldown;
 }
 
 class WorkStatusMessage {
@@ -108,7 +86,7 @@ class WeekTimeIntervalMessage {
 }
 
 class WeekTimeIntervalListMessage {
-  const WeekTimeIntervalListMessage(this.values);
+  WeekTimeIntervalListMessage(this.values);
 
   final List<WeekTimeIntervalMessage?> values;
 }
@@ -120,39 +98,271 @@ class OpeningHoursMessage {
   final bool isOpen24x7;
 }
 
-class MarkerPositionMessage {
-  MarkerPositionMessage(this.point, this.elevation);
+class AddressAdmDivMessage {
+  AddressAdmDivMessage(this.type, this.name);
 
-  final GeoPointMessage point;
-  final double elevation;
+  final String type;
+  final String name;
 }
 
-enum ObjectTypeMessage { branch, other }
+class AddressStreetMessage {
+  AddressStreetMessage(this.street, this.number);
 
-class ObjectInfoMessage {
-  ObjectInfoMessage(
-    this.title,
-    this.subtitle,
-    this.reviews,
-    this.address,
-    this.workStatus,
-    this.openingHours,
-    this.markerPosition,
-    this.entranceIds,
-    this.dgisObjectId,
-    this.type,
+  final String street;
+  final String number;
+}
+
+class AddressNumberMessage {
+  AddressNumberMessage(this.number);
+
+  final String number;
+}
+
+class AddressLocationMessage {
+  AddressLocationMessage(this.comment);
+
+  final String comment;
+}
+
+class AddressComponentMessage {
+  AddressComponentMessage(this.streetAddress, this.number, this.location);
+
+  final AddressStreetMessage? streetAddress;
+  final AddressNumberMessage? number;
+  final AddressLocationMessage? location;
+}
+
+class AddressMessage {
+  AddressMessage(
+    this.drilldown,
+    this.components,
+    this.buildingName,
+    this.postCode,
+    this.buildingCode,
+    this.addressComment,
   );
 
-  final String title;
-  final String subtitle;
-  final ReviewsMessage? reviews;
-  final AddressMessage? address;
-  final WorkStatusMessage? workStatus;
-  final OpeningHoursMessage? openingHours;
-  final MarkerPositionMessage? markerPosition;
-  final List<DgisObjectIdMessage?> entranceIds;
-  final DgisObjectIdMessage? dgisObjectId;
+  final List<AddressAdmDivMessage?> drilldown;
+  final List<AddressComponentMessage?> components;
+  final String? buildingName;
+  final String? postCode;
+  final String? buildingCode;
+  final String? addressComment;
+}
+
+class AttributeMessage {
+  AttributeMessage(this.tag, this.value);
+
+  final String tag;
+  final String value;
+}
+
+class ContactInfoMessage {
+  ContactInfoMessage(this.type, this.displayText, this.value, this.comment);
+
+  final String type;
+  final String displayText;
+  final String value;
+  final String? comment;
+}
+
+class ReviewsMessage {
+  ReviewsMessage(this.rating, this.count);
+
+  final double rating;
+  final int count;
+}
+
+enum ParkingTypeMessage { ground, underground, multilevel, none }
+
+enum ParkingPurposeMessage {
+  car,
+  bike,
+  motorbike,
+  babyCarriage,
+  scooter,
+}
+
+enum ParkingAccessMessage {
+  public,
+  handicappedOnly,
+  customersOnly,
+  residentsOnly,
+  taxiOnly
+}
+
+enum ParkingPavingTypeMessage { asphalt, concrete, gravel, unpaved, none }
+
+enum SpecialSpaceTypeMessage {
+  bicycle,
+  motorbike,
+  family,
+  handicapped,
+  babyCarriage,
+  truck,
+  scooter
+}
+
+class SpecialSpaceMessage {
+  SpecialSpaceMessage(this.type, this.name, this.count);
+
+  final SpecialSpaceTypeMessage type;
+  final String name;
+  final String? count;
+}
+
+class ParkingCapacityMessage {
+  ParkingCapacityMessage(this.total, this.specialSpaces);
+
+  final String? total;
+  final List<SpecialSpaceMessage?> specialSpaces;
+}
+
+class ParkingInfoMessage {
+  ParkingInfoMessage(
+    this.type,
+    this.purpose,
+    this.access,
+    this.pavingType,
+    this.isPaid,
+    this.isIncentive,
+    this.forTrucks,
+    this.levelCount,
+    this.capacity,
+  );
+
+  final ParkingTypeMessage type;
+  final ParkingPurposeMessage purpose;
+  final ParkingAccessMessage access;
+  final ParkingPavingTypeMessage pavingType;
+  final bool isPaid;
+  final bool isIncentive;
+  final bool forTrucks;
+  final int? levelCount;
+  final ParkingCapacityMessage? capacity;
+}
+
+class LevelInfoMessage {
+  LevelInfoMessage(this.id, this.name);
+
+  final int id;
+  final String name;
+}
+
+class BuildingLevelsMessage {
+  BuildingLevelsMessage(this.defaultLevelId, this.levels);
+
+  final int defaultLevelId;
+  final List<LevelInfoMessage?> levels;
+}
+
+class ApartmentRangeMessage {
+  ApartmentRangeMessage(this.start, this.end);
+
+  final String start;
+  final String? end;
+}
+
+class EntranceGeometryMessage {
+  EntranceGeometryMessage(this.entrancePoints, this.entrancePolylines);
+
+  final List<GeoPointMessage?> entrancePoints;
+  final List<List<GeoPointMessage?>?> entrancePolylines;
+}
+
+class EntranceInfoMessage {
+  EntranceInfoMessage(
+    this.id,
+    this.buildingNumber,
+    this.porchName,
+    this.porchNumber,
+    this.apartmentRanges,
+    this.geometry,
+  );
+
+  final DgisObjectIdMessage id;
+  final String? buildingNumber;
+  final String? porchName;
+  final String? porchNumber;
+  final List<ApartmentRangeMessage?> apartmentRanges;
+  final EntranceGeometryMessage? geometry;
+}
+
+enum ObjectTypeMessage {
+  admDiv,
+  attraction,
+  branch,
+  building,
+  coordinates,
+  crossroad,
+  parking,
+  road,
+  route,
+  station,
+  stationEntrance,
+  street,
+  unknown
+}
+
+class ObjectTypeItemMessage {
+  ObjectTypeItemMessage(this.type);
+
   final ObjectTypeMessage type;
+}
+
+class TradeLicenseMessage {
+  TradeLicenseMessage(this.type, this.license, this.legalForm, this.endDate);
+
+  final String type;
+  final String license;
+  final String legalForm;
+  final String endDate;
+}
+
+class DirectoryObjectMessage {
+  DirectoryObjectMessage(
+    this.types,
+    this.title,
+    this.titleAddition,
+    this.subtitle,
+    this.id,
+    this.markerPosition,
+    this.address,
+    this.attributes,
+    this.contextAttributes,
+    this.timeZoneOffset,
+    this.openingHours,
+    this.contactInfos,
+    this.reviews,
+    this.parkingInfo,
+    this.workStatus,
+    this.levelId,
+    this.buildingLevels,
+    this.entrances,
+    this.tradeLicense,
+    this.externalIds,
+  );
+
+  final List<ObjectTypeItemMessage?> types;
+  final String title;
+  final String titleAddition;
+  final String subtitle;
+  final DgisObjectIdMessage? id;
+  final GeoPointWithElevationMessage? markerPosition;
+  final AddressMessage? address;
+  final List<AttributeMessage?> attributes;
+  final List<AttributeMessage?> contextAttributes;
+  final double? timeZoneOffset;
+  final OpeningHoursMessage? openingHours;
+  final List<ContactInfoMessage?> contactInfos;
+  final ReviewsMessage? reviews;
+  final ParkingInfoMessage? parkingInfo;
+  final WorkStatusMessage? workStatus;
+  final int? levelId;
+  final BuildingLevelsMessage? buildingLevels;
+  final List<EntranceInfoMessage?> entrances;
+  final TradeLicenseMessage? tradeLicense;
+  final List<String?>? externalIds;
 }
 
 enum SortingTypeMessage { byRelevance, byDistance, byRating }
@@ -224,23 +434,6 @@ class RouteEditorRouteParamsMessage {
   final RouteSearchOptionsMessage options;
 }
 
-class SuggestMessage {
-  SuggestMessage(this.title, this.subTitle, this.index, this.handler);
-
-  final String title;
-  final String subTitle;
-  final int index;
-  final SuggestHandlerMessage handler;
-}
-
-enum SuggestHandlerMessage { object, incomplete, search }
-
-class SuggestSelectedMessage {
-  SuggestSelectedMessage(this.value);
-
-  final SuggestHandlerMessage value;
-}
-
 enum DesiredAccuracyMessage { low, medium, high }
 
 class MarkerWithPhotoMessage {
@@ -251,7 +444,7 @@ class MarkerWithPhotoMessage {
     required this.azimuth,
   });
 
-  MarkerPositionMessage position;
+  GeoPointWithElevationMessage position;
   String photoUrl;
   bool isPanoramic;
   double azimuth;
@@ -265,7 +458,7 @@ class AddMarkersWithPhotoMessage {
 
 class LayerPointObjectMessage {
   LayerPointObjectMessage({required this.position, required this.attributes});
-  GeoPointMessage position;
+  GeoPointWithElevationMessage position;
   final Map<String?, String?> attributes;
 }
 
@@ -282,14 +475,6 @@ class GeoRectMessage {
 
   final GeoPointMessage northEast;
   final GeoPointMessage southWest;
-}
-
-class FlagFilterMessage {
-  FlagFilterMessage(this.tagName, this.displayName, this.flagValue);
-
-  final String tagName;
-  final String displayName;
-  final bool flagValue;
 }
 
 enum WorkingFilterMessage { none, isOpen, isOpen24x7 }
@@ -385,7 +570,7 @@ class MarkerOptionsMessage {
     this.textStyle,
   });
 
-  final GeoPointMessage position;
+  final GeoPointWithElevationMessage position;
   final MarkerIconMessage? icon;
   final MarkerAnchorMessage? anchor;
   final String? text;
@@ -395,7 +580,7 @@ class MarkerOptionsMessage {
 class MarkerMessage {
   MarkerMessage(this.id, this.options);
 
-  final int id;
+  final String id;
   final MarkerOptionsMessage options;
 }
 
@@ -416,7 +601,7 @@ class PolygonOptionsMessage {
 class PolygonMessage {
   PolygonMessage(this.id, this.options);
 
-  final int id;
+  final String id;
   final PolygonOptionsMessage options;
 }
 
@@ -435,8 +620,192 @@ class PolylineOptionsMessage {
 class PolylineMessage {
   PolylineMessage(this.id, this.options);
 
-  final int id;
+  final String id;
   final PolylineOptionsMessage options;
+}
+
+class FloorInfoMessage {
+  FloorInfoMessage(this.levelId, this.buildingId);
+
+  final int levelId;
+  final int buildingId;
+}
+
+class PageIdMessage {
+  PageIdMessage(this.id);
+
+  final String id;
+}
+
+class PageMessage {
+  PageMessage._(this.id, this.items);
+
+  final PageIdMessage id;
+  final List<DirectoryObjectMessage?> items;
+}
+
+enum GeometryKindMessage {
+  point,
+  polyline,
+  polygon,
+  complex,
+}
+
+class GeometryMessage {
+  GeometryMessage(this.kind, this.bounds, this.minPoint, this.maxPoint);
+
+  final GeometryKindMessage kind;
+  final GeoRectMessage bounds;
+  final GeoPointMessage minPoint;
+  final GeoPointMessage maxPoint;
+}
+
+enum SearchResultTypeMessage { recovery, discovery }
+
+class FlagFilterMessage {
+  FlagFilterMessage(this.tagName, this.displayName, this.flagValue);
+
+  final String tagName;
+  final String displayName;
+  final bool? flagValue;
+}
+
+class RangeFilterMessage {
+  RangeFilterMessage(
+      this.tagName, this.displayName, this.minValue, this.maxValue);
+
+  final String tagName;
+  final String displayName;
+  final double minValue;
+  final double maxValue;
+}
+
+class DynamicFilterMessage {
+  DynamicFilterMessage(this.flagFilter, this.rangeFilter);
+
+  final FlagFilterMessage? flagFilter;
+  final RangeFilterMessage? rangeFilter;
+}
+
+class ItemMarkerInfoMessage {
+  ItemMarkerInfoMessage(this.objectId, this.geoPoint, this.floorInfo);
+
+  final DgisObjectIdMessage? objectId;
+  final GeoPointWithElevationMessage geoPoint;
+  final FloorInfoMessage? floorInfo;
+}
+
+class SearchResultMessage {
+  SearchResultMessage(
+    this.firstPage,
+    this.representativeArea,
+    this.itemMarkerInfos,
+    this.searchResultType,
+    this.dynamicFilters,
+    this.autoUseFirstResult,
+  );
+
+  final PageMessage? firstPage;
+  final GeometryMessage? representativeArea;
+  final List<ItemMarkerInfoMessage?>? itemMarkerInfos;
+  final SearchResultTypeMessage searchResultType;
+  final List<DynamicFilterMessage?> dynamicFilters;
+  final bool autoUseFirstResult;
+}
+
+class SuggestObjectHandlerMessage {
+  SuggestObjectHandlerMessage(this.item);
+
+  final DirectoryObjectMessage item;
+}
+
+class IncompleteTextHandlerMessage {
+  IncompleteTextHandlerMessage(this.queryText);
+
+  final String queryText;
+}
+
+class SearchQueryMessage {
+  SearchQueryMessage._(this.id);
+
+  final String id;
+}
+
+class PerformSearchHandlerMessage {
+  PerformSearchHandlerMessage(this.searchQuery);
+
+  final SearchQueryMessage searchQuery;
+}
+
+class SuggestHandlerMessage {
+  SuggestHandlerMessage(
+    this.objectHandler,
+    this.performSearchHandler,
+    this.incompleteTextHandler,
+  );
+
+  final SuggestObjectHandlerMessage? objectHandler;
+  final PerformSearchHandlerMessage? performSearchHandler;
+  final IncompleteTextHandlerMessage? incompleteTextHandler;
+}
+
+enum SuggestedTypeMessage {
+  admDiv,
+  attraction,
+  attribute,
+  branch,
+  building,
+  coordinates,
+  crossroad,
+  districtArea,
+  org,
+  orgCategory,
+  parking,
+  region,
+  road,
+  route,
+  station,
+  stationEntrance,
+  street,
+  text,
+  unknown
+}
+
+class MarkedUpTextSpanMessage {
+  MarkedUpTextSpanMessage(this.offset, this.length);
+
+  final int offset;
+  final int length;
+}
+
+class MarkedUpTextMessage {
+  MarkedUpTextMessage(this.text, this.matchedParts);
+
+  final String text;
+  final List<MarkedUpTextSpanMessage?> matchedParts;
+}
+
+class SuggestMessage {
+  SuggestMessage(this.handler, this.suggestedType, this.title, this.subtitle);
+
+  final SuggestHandlerMessage handler;
+  final SuggestedTypeMessage suggestedType;
+  final MarkedUpTextMessage title;
+  final MarkedUpTextMessage subtitle;
+}
+
+class SuggestResultMessage {
+  SuggestResultMessage(this.suggests);
+
+  final List<SuggestMessage?> suggests;
+}
+
+enum SearchCategoryMessage {
+  mousques,
+  gasStations,
+  cafe,
+  restaurants,
+  parks,
 }
 
 @ConfigurePigeon(
@@ -478,16 +847,15 @@ abstract class MapApi {
   void setCameraPosition(CameraPositionMessage cameraPosition);
 
   @async
-  ObjectInfoMessage searchByObjectId(DgisObjectIdMessage objectId);
+  DirectoryObjectMessage searchByObjectId(DgisObjectIdMessage objectId);
 
   @async
   List<DistanceResponseMessage> getDistanceTo(
       List<DistanceRequestMessage> points);
 
   @async
-  List<ObjectInfoMessage> search(
+  SearchResultMessage search(
     String queryText,
-    MarkerIconMessage searchMarker,
     WeekTimeSearchMessage? weekTime,
     GeoRectMessage? searchRect,
     SortingTypeMessage sortingType,
@@ -495,7 +863,37 @@ abstract class MapApi {
   );
 
   @async
-  List<ObjectInfoMessage>? getNextPage();
+  SearchResultMessage searchByQuery(
+    SearchQueryMessage query,
+    WeekTimeSearchMessage? weekTime,
+    GeoRectMessage? searchRect,
+    SortingTypeMessage sortingType,
+    int pageSize,
+  );
+
+  @async
+  SearchResultMessage searchByCategory(
+    SearchCategoryMessage category,
+    WeekTimeSearchMessage? weekTime,
+    GeoRectMessage? searchRect,
+    SortingTypeMessage sortingType,
+    int pageSize,
+  );
+
+  @async
+  PageMessage fetchPrevPage(PageIdMessage pageId);
+
+  @async
+  PageMessage fetchNextPage(PageIdMessage pageId);
+
+  @async
+  void releasePage(PageIdMessage pageId);
+
+  @async
+  SuggestResultMessage fetchSuggests(
+    String queryText,
+    GeoRectMessage? searchRect,
+  );
 
   @async
   void setMarkerOptions(MarkerOptionsMessageOld options);
@@ -507,7 +905,7 @@ abstract class MapApi {
   void addMarkers(List<MarkerMessage> markers);
 
   @async
-  void removeMarker(int id);
+  void removeMarker(String id);
 
   @async
   void removeAllMarkers();
@@ -519,7 +917,7 @@ abstract class MapApi {
   void addPolygons(List<PolygonMessage> polygons);
 
   @async
-  void removePolygon(int id);
+  void removePolygon(String id);
 
   @async
   void removeAllPolygons();
@@ -531,38 +929,13 @@ abstract class MapApi {
   void addPolylines(List<PolylineMessage> polylines);
 
   @async
-  void removePolyline(int id);
+  void removePolyline(String id);
 
   @async
   void removeAllPolylines();
 
   @async
-  void removeSearchMarkers();
-
-  @async
   void setHighlighted(List<DgisObjectIdMessage> objectIds);
-
-  @async
-  List<SuggestMessage> fetchSuggests(
-    String queryText,
-    GeoRectMessage? searchRect,
-  );
-
-  @async
-  ObjectInfoMessage getSuggestObject(int index);
-
-  @async
-  List<ObjectInfoMessage> searchBySuggest(
-    int index,
-    MarkerIconMessage searchMarker,
-    WeekTimeSearchMessage? weekTime,
-    GeoRectMessage? searchRect,
-    SortingTypeMessage sortingType,
-    int pageSize,
-  );
-
-  @async
-  void showLastSearchMarker();
 
   @async
   void onLocationPremissionGranted(DesiredAccuracyMessage desiredAccuracy);
@@ -611,16 +984,6 @@ abstract class MapApi {
 
   @async
   void stopNavigation();
-
-  @async
-  List<FlagFilterMessage> getDirectoryDynamicFilters();
-
-  @async
-  List<ObjectInfoMessage?> applyDirectoryFilters(
-    List<FlagFilterMessage> filters,
-    WorkingFilterMessage isOpenFilter,
-    SortingTypeMessage sortingType,
-  );
 
   @async
   void setPanoramaMarkerAzimuth(MarkerAzimuthMessage message);

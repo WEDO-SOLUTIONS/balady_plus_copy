@@ -13,6 +13,10 @@ public class SwiftDgisMapPlugin: NSObject, FlutterPlugin {
     }
 
     private static func initializeDGis() -> DGis.Container {
-        return Container()
+        let vendorConfigFile = Bundle.main.path(forResource: "vendor-config", ofType: "jsonx").map { File(path: $0) }
+        
+        return Container(
+            vendorConfigFile: vendorConfigFile
+        )
     }
 }

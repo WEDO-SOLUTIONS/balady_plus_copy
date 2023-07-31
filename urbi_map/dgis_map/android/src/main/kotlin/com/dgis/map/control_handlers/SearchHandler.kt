@@ -1,11 +1,11 @@
 package com.dgis.map.control_handlers
 
 import android.content.res.Resources.NotFoundException
-import android.util.Size
-import com.dgis.map.R
+import android.util.Log
 import com.dgis.map.extensions.*
 import com.dgis.map.map_api.Messages.*
-import io.flutter.FlutterInjector
+import org.json.JSONObject
+import org.json.JSONTokener
 import ru.dgis.sdk.Context
 import ru.dgis.sdk.DgisObjectId
 import ru.dgis.sdk.coordinates.GeoPoint
@@ -13,7 +13,10 @@ import ru.dgis.sdk.coordinates.GeoRect
 import ru.dgis.sdk.directory.*
 import ru.dgis.sdk.map.*
 import ru.dgis.sdk.positioning.DefaultLocationSource
-import java.io.FileNotFoundException
+import java.lang.Exception
+import java.net.URL
+import java.util.UUID
+import kotlin.concurrent.thread
 import ru.dgis.sdk.map.Map as DgisMap
 
 class SearchHandler(
@@ -22,42 +25,26 @@ class SearchHandler(
     private val searchManager: SearchManager,
     private val locationSource: DefaultLocationSource,
 ) : AutoCloseable {
+    val twinsApiUrl = "https://apiservices.balady.gov.sa/v1/urbi-services/twins-api/v1/search/dgis"
 
     private var objectSearchFuture: AutoCloseable? = null
     private var searchFuture: AutoCloseable? = null
+    private var itemMarkerInfosFuture: AutoCloseable? = null
     private var suggestFuture: AutoCloseable? = null
-    private var searchMarkerFuture: AutoCloseable? = null
 
-    private var page: Page? = null
-
-    private val avalilableFlagFilters = hashSetOf<FlagFilter>()
-
-    private var lastQuery: SearchQuery? = null
-
-    private var suggests = emptyList<Suggest>()
-
-    private val objectManager by unsafeLazy {
-        val logicalPixelValue = 30f
-        MapObjectManager.withGeneralization(
-            map = map,
-            logicalPixel = LogicalPixel(logicalPixelValue),
-            maxZoom = Zoom(18.0f),
-        )
-    }
-
-    private var searchMarkerIcon: Image? = null
-    private var searchMarkerWidth: LogicalPixel? = null
+    private var pages = mutableMapOf<String, Page>()
+    private var queries = mutableMapOf<String, SearchQuery>()
 
     override fun close() {
         objectSearchFuture?.close()
         searchFuture?.close()
         suggestFuture?.close()
-        searchMarkerFuture?.close()
+        itemMarkerInfosFuture?.close()
     }
 
     fun searchByDirectoryObjectId(
         objectId: DgisObjectId,
-        result: Result<ObjectInfoMessage>?
+        result: Result<DirectoryObjectMessage>?
     ) {
         objectSearchFuture = searchManager.searchByDirectoryObjectId(objectId).apply {
             onResult { response ->
@@ -66,25 +53,210 @@ class SearchHandler(
                     return@onResult
                 }
 
-                result?.success(response.toMessage())
+                thread {
+                    try {
+                        val url = URL(
+                            "${this@SearchHandler.twinsApiUrl}?dgis_id=${objectId.objectId}&partner_code=momrah&key=28ed92f1-de4b-4060-b159-2dc19e9b8bf5"
+                        )
+                        val twinsResponse = JSONTokener(url.readText()).nextValue() as JSONObject
+                        val code = twinsResponse.getJSONObject("meta").getInt("code")
+
+                        if (code != 200) {
+                            Log.d(
+                                "2Gis",
+                                "TwinsAPI Error: ${
+                                    twinsResponse.getJSONObject("meta").getString("message")
+                                }"
+                            )
+                            result?.success(response.toMessage(null))
+                            return@thread
+                        }
+
+                        val items = twinsResponse.getJSONObject("result").getJSONArray("items")
+                        if (items.length() == 1) {
+                            val twinsArray = items.getJSONObject(0).getJSONArray("twins")
+                            val twins = Array<String>(twinsArray.length()) { i ->
+                                twinsArray.getJSONObject(i).getString("partner_id")
+                            }.toList()
+                            result?.success(response.toMessage(twins))
+                        } else {
+                            result?.success(response.toMessage(null))
+                        }
+                    } catch (e: Exception) {
+                        Log.d("2Gis", "TwinsAPI Error: ${e.localizedMessage}")
+                        result?.success(response.toMessage(null))
+                    }
+                }
             }
             onError { result?.error(it) }
         }
     }
 
-    fun getSuggestObject(index: Int, result: Result<ObjectInfoMessage>?) {
-        val item = suggests[index].handler.asObjectHandler?.item ?: run {
-            result?.error(IllegalArgumentException("Suggest with index $index no found"))
+    fun search(
+        queryText: String,
+        searchGeoRect: GeoRect?,
+        weekTimeMessage: WeekTimeSearchMessage? = null,
+        sortingType: SortingTypeMessage,
+        pageSize: Int,
+        result: Result<SearchResultMessage>?
+    ) {
+        val query = SearchQueryBuilder
+            .fromQueryText(queryText)
+            .setSortingType(sortingType.toSortingType())
+            .setPageSize(pageSize)
+            .setDirectoryFilter(DirectoryFilter(weekTimeMessage.toFilter(), emptyList()))
+            .setAreaOfInterest(searchGeoRect)
+            .build()
+
+        performSearch(
+            query = query,
+            result = result
+        )
+    }
+
+    fun searchByQuery(
+        queryId: SearchQueryMessage,
+        searchGeoRect: GeoRect?,
+        weekTimeMessage: WeekTimeSearchMessage? = null,
+        sortingType: SortingTypeMessage,
+        pageSize: Int,
+        result: Result<SearchResultMessage>?
+    ) {
+        if (this.queries[queryId.id] == null) {
+            result?.error(IllegalArgumentException("SearchQuery with given id not exists"))
             return
         }
 
-        result?.success(item.toMessage())
+        val searchQuery = this.queries[queryId.id]!!
+
+        val query = SearchQueryBuilder
+            .fromQuery(searchQuery)
+            .setSortingType(sortingType.toSortingType())
+            .setPageSize(pageSize)
+            .setDirectoryFilter(DirectoryFilter(weekTimeMessage.toFilter(), emptyList()))
+            .setAreaOfInterest(searchGeoRect)
+            .build()
+
+        performSearch(
+            query = query,
+            result = result
+        )
+    }
+
+    fun searchByCategories(
+        categories: List<RubricId>,
+        searchGeoRect: GeoRect?,
+        weekTimeMessage: WeekTimeSearchMessage? = null,
+        sortingType: SortingTypeMessage,
+        pageSize: Int,
+        result: Result<SearchResultMessage>?
+    ) {
+        val query = SearchQueryBuilder
+            .fromRubriсIds(categories)
+            .setSortingType(sortingType.toSortingType())
+            .setPageSize(pageSize)
+            .setDirectoryFilter(DirectoryFilter(weekTimeMessage.toFilter(), emptyList()))
+            .setAreaOfInterest(searchGeoRect)
+            .build()
+
+        performSearch(
+            query = query,
+            result = result
+        )
+    }
+
+    private fun performSearch(
+        query: SearchQuery,
+        result: Result<SearchResultMessage>?
+    ) {
+        searchFuture = searchManager.search(query).apply {
+            onResult { response ->
+                this@SearchHandler.itemMarkerInfosFuture = response.itemMarkerInfos.apply {
+                    onResult { items ->
+                        val pageId = UUID.randomUUID().toString()
+                        if (response.firstPage != null) {
+                            this@SearchHandler.pages[pageId] = response.firstPage!!
+                        }
+
+                        result?.success(
+                            response.toMessage(pageId, items)
+                        )
+                    }
+                    onError { error ->
+                        result?.error(error)
+                    }
+                }
+            }
+            onError { error ->
+                result?.error(error)
+            }
+        }
+    }
+
+    fun fetchNextPage(pageId: PageIdMessage, result: Result<PageMessage>?) {
+        if (this.pages[pageId.id] == null) {
+            result?.error(IllegalArgumentException("Page with given id not exists"))
+            return
+        }
+
+        searchFuture = this.pages[pageId.id]!!.fetchNextPage().apply {
+            onResult {response ->
+                if (response != null) {
+                    val pageId = UUID.randomUUID().toString()
+                    this@SearchHandler.pages[pageId] = response
+
+                    result?.success(
+                        response.toMessage(pageId)
+                    )
+                } else {
+                    result?.error(IllegalArgumentException("Failed to fetch page"))
+                }
+            }
+            onError { error ->
+                result?.error(error)
+            }
+        }
+    }
+
+    fun fetchPrevPage(pageId: PageIdMessage, result: Result<PageMessage>?) {
+        if (this.pages[pageId.id] == null) {
+            result?.error(IllegalArgumentException("Page with given id not exists"))
+            return
+        }
+
+        searchFuture = this.pages[pageId.id]!!.fetchPrevPage().apply {
+            onResult {response ->
+                if (response != null) {
+                    val pageId = UUID.randomUUID().toString()
+                    this@SearchHandler.pages[pageId] = response
+
+                    result?.success(
+                        response.toMessage(pageId)
+                    )
+                } else {
+                    result?.error(IllegalArgumentException("Failed to fetch page"))
+                }
+            }
+            onError { error ->
+                result?.error(error)
+            }
+        }
+    }
+
+    fun releasePage(pageId: PageIdMessage, result: Result<Void>?) {
+        if (this.pages[pageId.id] == null) {
+            result?.error(IllegalArgumentException("Page with given id not exists"))
+            return
+        }
+
+        this.pages.remove(pageId.id)
+        result?.success(null)
     }
 
     fun fetchSuggests(
         queryText: String,
         searchGeoRect: GeoRect?,
-        result: Result<List<SuggestMessage>>?
+        result: Result<SuggestResultMessage>?
     ) {
         val suggestQuery = SuggestQueryBuilder.fromQueryText(queryText)
             .setAreaOfInterest(searchGeoRect)
@@ -92,121 +264,25 @@ class SearchHandler(
 
         suggestFuture = searchManager.suggest(suggestQuery).apply {
             onResult { response ->
-                suggests = response.suggests
+                this@SearchHandler.queries.clear()
+                val suggests = response.suggests.map {
+                    var queryId: String? = null
+                    if (it.handler.isPerformSearchHandler) {
+                        queryId = UUID.randomUUID().toString()
+                        this@SearchHandler.queries[queryId] = it.handler.asPerformSearchHandler!!.searchQuery
+                    }
+
+                    it.toMessage(queryId)
+                }
 
                 result?.success(
-                    response.suggests.mapIndexed(::mapSuggestToMessage)
+                    SuggestResultMessage.Builder()
+                        .setSuggests(suggests)
+                        .build()
                 )
             }
             onError { result?.error(it) }
         }
-    }
-
-    fun searchBySuggest(
-        index: Int,
-        searchMarker: MarkerIconMessage,
-        searchGeoRect: GeoRect?,
-        weekTimeMessage: WeekTimeSearchMessage? = null,
-        sortingType: SortingTypeMessage,
-        pageSize: Int,
-        result: Result<List<ObjectInfoMessage>>?
-    ) {
-        val suggestQuery = suggests[index].handler.asPerformSearchHandler?.searchQuery ?: run {
-            result?.error(IllegalArgumentException("Suggest with index $index no found"))
-            return
-        }
-
-        val query = SearchQueryBuilder.fromQuery(suggestQuery)
-
-        performSearch(
-            builder = query,
-            searchMarker = searchMarker,
-            searchGeoRect = searchGeoRect,
-            weekTimeMessage = weekTimeMessage,
-            sortingType = sortingType,
-            pageSize = pageSize,
-            result = result
-        )
-    }
-
-    fun search(
-        queryText: String,
-        searchMarker: MarkerIconMessage,
-        searchGeoRect: GeoRect?,
-        weekTimeMessage: WeekTimeSearchMessage? = null,
-        sortingType: SortingTypeMessage,
-        pageSize: Int,
-        result: Result<List<ObjectInfoMessage>>?
-    ) {
-        val query = SearchQueryBuilder.fromQueryText(queryText)
-
-        performSearch(
-            builder = query,
-            searchMarker = searchMarker,
-            searchGeoRect = searchGeoRect,
-            weekTimeMessage = weekTimeMessage,
-            sortingType = sortingType,
-            pageSize = pageSize,
-            result = result
-        )
-    }
-
-    fun applyDirectoryFilters(
-        filters: List<FlagFilterMessage>,
-        isOpenFilter: WorkingFilterMessage,
-        sortingType: SortingTypeMessage,
-        result: Result<List<ObjectInfoMessage>>?
-    ) {
-        val lastQuery = lastQuery ?: kotlin.run {
-            result?.error(IllegalArgumentException("No query to apply filters"))
-            return
-        }
-
-        val timeFilter = when (isOpenFilter) {
-            WorkingFilterMessage.IS_OPEN -> WorkTimeFilter(IsOpenNow())
-            WorkingFilterMessage.NONE -> null
-            WorkingFilterMessage.IS_OPEN24X7 -> null
-        }
-
-        val query = SearchQueryBuilder.fromQuery(lastQuery)
-            .setDirectoryFilter(DirectoryFilter(
-                timeFilter,
-                filters
-                    .filter { it.flagValue }
-                    .map {
-                        DynamicFilter(
-                            FlagFilter(
-                                tagName = it.tagName,
-                                displayName = it.displayName,
-                                flagValue = it.flagValue,
-                            )
-                        )
-                    }
-            ))
-            .setSortingType(sortingType.toSortingType())
-            .build()
-
-        searchFuture = searchManager.search(query).apply {
-            onResult { response ->
-                parseDynamicFilters(response.dynamicFilters)
-                drawSearchMarkers(response)
-                this@SearchHandler.lastQuery = query
-                result?.success(handleSearchResponse(response.firstPage))
-            }
-            onError { result?.error(it) }
-        }
-    }
-
-    fun getDirectoryDynamicFilters(result: Result<List<FlagFilterMessage>>?) {
-        result?.success(
-            avalilableFlagFilters.map {
-                FlagFilterMessage.Builder()
-                    .setDisplayName(getFlagFilterDisplayName(it))
-                    .setTagName(it.tagName)
-                    .setFlagValue(it.flagValue ?: false)
-                    .build()
-            }
-        )
     }
 
     fun getDistanceTo(
@@ -222,108 +298,5 @@ class SearchHandler(
         val distance = points.map { it.toResponse(current) }
 
         result?.success(distance)
-    }
-
-    fun getNextPage(result: Result<List<ObjectInfoMessage>>?) {
-        searchFuture = page?.fetchNextPage()?.apply {
-            onResult { page -> result?.success(handleSearchResponse(page)) }
-            onError { result?.error(it) }
-        }
-    }
-
-    fun removeSearchMarkers() {
-        objectManager.removeAll()
-    }
-
-    private fun getFlagFilterDisplayName(filter: FlagFilter): String {
-        if (filter.tagName == "general_payment_type_card") {
-            return "Payment by card through the terminal"
-        }
-        return filter.displayName
-    }
-
-    private fun performSearch(
-        builder: SearchQueryBuilder,
-        searchMarker: MarkerIconMessage,
-        searchGeoRect: GeoRect?,
-        weekTimeMessage: WeekTimeSearchMessage? = null,
-        sortingType: SortingTypeMessage,
-        pageSize: Int,
-        result: Result<List<ObjectInfoMessage>>?
-    ) {
-        try {
-            val asset =
-                FlutterInjector
-                    .instance()
-                    .flutterLoader()
-                    .getLookupKeyForAsset(searchMarker.path)
-
-            this.searchMarkerIcon = imageFromAsset(sdkContext, asset, Size(0, 0))
-        } catch (e: FileNotFoundException) {
-            result?.error(e)
-            return
-        }
-        this.searchMarkerWidth = LogicalPixel(value = searchMarker.width.toFloat())
-
-        val query = builder.setSortingType(sortingType.toSortingType())
-            .setPageSize(pageSize)
-            .setDirectoryFilter(DirectoryFilter(weekTimeMessage.toFilter(), emptyList()))
-            .setAreaOfInterest(searchGeoRect)
-            .build()
-
-        searchFuture = searchManager.search(query).apply {
-            onResult { response ->
-                parseDynamicFilters(response.dynamicFilters)
-                drawSearchMarkers(response)
-                lastQuery = query
-                result?.success(handleSearchResponse(response.firstPage))
-            }
-            onError { error ->
-                val tympError = error
-                println("this this this"+error)
-                println(error)
-                println(error)
-//                result?.error(error)
-            }
-        }
-    }
-
-    private fun parseDynamicFilters(filters: List<DynamicFilter>) {
-        avalilableFlagFilters.clear()
-        avalilableFlagFilters.addAll(
-            filters.filter(DynamicFilter::isFlagFilter)
-                .mapNotNull(DynamicFilter::asFlagFilter)
-        )
-    }
-
-    private fun drawSearchMarkers(searchResult: SearchResult) {
-        removeSearchMarkers()
-        searchMarkerFuture = searchResult.itemMarkerInfos.apply {
-            onResult {
-                val itemMarkerInfos = it ?: return@onResult
-
-                val markers = itemMarkerInfos.map { markerInfo ->
-                    Marker(
-                        MarkerOptions(
-                            position = markerInfo.geoPoint,
-                            icon = searchMarkerIcon,
-                            iconWidth = searchMarkerWidth ?: LogicalPixel(value = 16f),
-                            userData = markerInfo.objectId
-                        )
-                    )
-                }
-
-                objectManager.addObjects(markers)
-            }
-        }
-    }
-
-    private fun handleSearchResponse(
-        page: Page?,
-    ): List<ObjectInfoMessage> {
-        this.page = page
-        val items = page?.items ?: return emptyList()
-
-        return items.map(DirectoryObject::toMessage)
     }
 }
