@@ -4,6 +4,7 @@ import DGis
 class VisibleRectHandler {
     private class Events {
         static let visibleRectChanged = "visibleRectChanged"
+        static let cameraPositionChanged = "cameraPositionChanged"
     }
     
     private var cancelable: Array<Cancellable> = []
@@ -12,6 +13,22 @@ class VisibleRectHandler {
         cancelable.append(map.camera.visibleRectChannel.sink { [weak self] value in
             self?.visibleRectChanged(map: map, eventChannel: eventChannel)
         })
+        cancelable.append(map.camera.positionChannel.sink { [weak self] value in
+            self?.cameraPositionChanged(position: value, eventChannel: eventChannel)
+        })
+    }
+    
+    func cameraPositionChanged(position: CameraPosition, eventChannel: DgisStreamHandler) {
+        eventChannel.success([
+            "event": Events.cameraPositionChanged,
+            "point": [
+                "latitude": position.point.latitude.value,
+                "longitude": position.point.longitude.value
+            ],
+            "zoom": position.zoom.value,
+            "tilt": position.tilt.value,
+            "bearing": position.bearing.value
+        ])
     }
     
     func visibleRectChanged(map: Map, eventChannel: DgisStreamHandler) {

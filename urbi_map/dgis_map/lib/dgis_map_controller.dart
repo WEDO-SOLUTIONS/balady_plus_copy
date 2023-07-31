@@ -51,6 +51,10 @@ class DgisMapController {
   /// Events of visible rect changes.
   Stream<VisibleRectEvent> get visibleRectEvents => _instance.visibleRectEvents;
 
+  /// Events of camera position changes.
+  Stream<CameraPositionMessage> get cameraPositionEvents =>
+      _instance.cameraPositionEvents;
+
   /// Tap events for panorama markers.
   Stream<MarkerWithPhotoTapEvent> get markerWithPhotoTapEvents =>
       _instance.markerWithPhotoTapEvents;
@@ -138,6 +142,10 @@ class DgisMapController {
   /// Changes map camera position immediately without animation.
   Future<void> setCameraPosition(CameraPositionMessage cameraPosition) =>
       _instance.setCameraPosition(cameraPosition);
+
+  /// Returns map camera position.
+  Future<CameraPositionMessage> getCameraPosition() =>
+      _instance.getCameraPosition();
 
   Future<void> setPanoramasPaddings({
     int left = 0,
