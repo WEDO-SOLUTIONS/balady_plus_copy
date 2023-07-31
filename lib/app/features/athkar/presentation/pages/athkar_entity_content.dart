@@ -1,6 +1,7 @@
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import 'package:balady_plus/app/features/athkar/athkar_exports.dart'
     show AthkarAppBar, AthkarEntityContentParams;
+import 'package:balady_plus/app/features/athkar/presentation/widgets/counter/athkar_counter.dart';
 import 'package:flutter/material.dart';
 
 class AthkarEntityContent extends StatelessWidget {
@@ -10,7 +11,7 @@ class AthkarEntityContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AthkarAppBar(title: params.title),
+      appBar: const AthkarAppBar(title: ''),
       body: Center(
         child: Column(
           children: [
@@ -27,7 +28,10 @@ class AthkarEntityContent extends StatelessWidget {
                   ),
                 ),
               ),
-            )
+            ),
+            CounterAthkarWidget(
+              count: params.athkarEntity.quantity,
+            ),
           ],
         ),
       ),

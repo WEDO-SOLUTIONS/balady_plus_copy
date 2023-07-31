@@ -141,4 +141,5 @@ class AppColor {
 
   static const Color athkarAppbarGreen = Color(0xff1C7372);
   static const Color athkarAppbarGreen2 = Color(0xff127F4C);
+  
 }

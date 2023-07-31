@@ -180,6 +180,10 @@ class IconPath {
   //Athkar
 
   static const morningAthkarIcon = '${_svgAthkarIconPath}morning_athkar$_svg';
+  static const sleepingAthkarIcon = '${_svgAthkarIconPath}evening_athkar$_svg';
+  static const eveningAthkarIcon = '${_svgAthkarIconPath}sleeping_athkar$_svg';
+  static const reset = '${_svgAthkarIconPath}reset$_svg';
+
   static const muslimNumberFrame =
       '${_svgAthkarIconPath}muslim_number_frame$_svg';
 }

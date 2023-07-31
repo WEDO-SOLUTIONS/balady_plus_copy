@@ -325,6 +325,20 @@ class AppStyle {
     color: AppColor.blackModern50Light,
     fontFamily: fontFamily,
   );
+  static final resetAthkarTextStyle = TextStyle(
+      fontSize: 16,
+      fontWeight: AppFontWeight.semiBold.fontWeight,
+      fontFamily: fontFamily,
+      color: AppColor.grey1000);
+
+  static final countAthkarStyle = TextStyle(
+    fontSize: 22.05,
+    fontWeight: AppFontWeight.bold.fontWeight,
+    fontFamily: fontFamily,
+    color: AppColor.blackModern50Light,
+
+
+  );
 
   /// Padding
   static const defaultPadding = EdgeInsets.symmetric(

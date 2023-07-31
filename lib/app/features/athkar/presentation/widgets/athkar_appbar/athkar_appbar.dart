@@ -34,6 +34,7 @@ class AthkarAppBar extends StatelessWidget implements PreferredSize {
                 ]),
           ),
         ),
+        centerTitle: true,
         title: CustomTextWidget(
           title,
           fontSize: 20,

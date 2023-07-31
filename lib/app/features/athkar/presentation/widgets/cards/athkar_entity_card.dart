@@ -37,14 +37,23 @@ class AthkarEntityCard extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              CustomTextWidget(
-                athkarEntity.name,
-                fontColor: Colors.black,
+              SizedBox(
+                width: 252,
+                child: CustomTextWidget(
+                  athkarEntity.name,
+                  fontColor: Colors.black,
+                  textOverflow: TextOverflow.ellipsis,
+                  maxLines: 1,
+                ),
               ),
               Stack(
                 alignment: Alignment.center,
                 children: [
-                  SvgPicture.asset(IconPath.muslimNumberFrame),
+                  SvgPicture.asset(
+                    IconPath.muslimNumberFrame,
+                    width: 36,
+                    height: 36,
+                  ),
                   CustomTextWidget(
                     '${athkarEntity.quantity}',
                     fontColor: AppColor.primary800Light,
