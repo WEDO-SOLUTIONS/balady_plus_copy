@@ -1,5 +1,7 @@
 import 'dart:async';
+import 'package:balady_plus/app/core/services/local/helpers.dart';
 import 'package:balady_plus/app/core/services/services_exports.dart';
+import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:collection/collection.dart';
 
 import 'package:balady_plus/app/core/base/base_view_model.dart';
@@ -175,6 +177,7 @@ class MapViewModel extends BaseViewModel {
   void _visibleRectChangeListener(VisibleRectEvent event) {
     _lastHandledEvent = event;
     zoomValue = event.visibleRect.zoom;
+    // print(zoomValue);
     // start Timer when stop move camera  call search funcation
     if (layerSelected.value != null) {
       _startRequestTimer();
@@ -317,15 +320,15 @@ class MapViewModel extends BaseViewModel {
               ),
             ),
             onTap: () {
-              selectedPoint.value = element;
-              bottomSheetSize.notifyListeners();
               switch (gisSelectedLayer) {
                 case GISMapLayers.Digging:
+                  selectedPoint.value = element;
                   selectedDiggingPoint.value = element;
                   selectedInvetmentPoint.value = null;
                   break;
 
                 case GISMapLayers.Opportunities:
+                  selectedPoint.value = element;
                   selectedInvetmentPoint.value = element;
                   selectedDiggingPoint.value = null;
                 default:
@@ -447,24 +450,18 @@ class MapViewModel extends BaseViewModel {
   }
 
   void getLocationAndMoveCamera() async {
-    final permission = await Permission.location.request();
-    if (permission.isGranted) {
-      // await controller.onLocationPremissionGranted();
-      geoLocator.Position position =
-          await geoLocator.Geolocator.getCurrentPosition(
-        desiredAccuracy: geoLocator.LocationAccuracy.high,
-        timeLimit: const Duration(seconds: 5),
-      );
+    var latlng = await Helpers.getCurrentLocation();
+
+    if (latlng != null)
       await controller.setCameraPosition(
         CameraPositionMessage(
           zoomValue: zoomValue,
           geoPoint: GeoPointMessage(
-            latitude: position.latitude,
-            longitude: position.longitude,
+            latitude: latlng.latitude,
+            longitude: latlng.longitude,
           ),
         ),
       );
-    }
   }
 
   dynamic getMapCardData() {}

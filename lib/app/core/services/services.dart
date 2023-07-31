@@ -47,6 +47,17 @@ Map<String, dynamic> servicesConfig = {
       "ar": {"title": "نقاط توزيع ماء زمزم", "description": null, "tag": null},
       "en": {"title": "Zamzam Points", "description": null, "tag": null}
     },
+    {
+      "id": 5,
+      "icon": "qiblah",
+      "3d_icon": null,
+      "order": 4,
+      "isNew": false,
+      "isImportant": false,
+      "action": {"type": "page", "value": RouteName.qiblahCompass},
+      "ar": {"title": "بوصلة القبلة", "description": null, "tag": null},
+      "en": {"title": "Zamzam Points", "description": null, "tag": null}
+    },
   ],
   "help_services": [
     {

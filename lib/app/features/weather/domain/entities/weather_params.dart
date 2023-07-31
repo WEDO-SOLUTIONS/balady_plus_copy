@@ -5,7 +5,7 @@ class WeatherParams {
   int? numberOfDays = 7;
   String? languageCode = "ar";
   String? alert = "yes";
-  String? key = '93974ccfab054bcabd763207232307';
+  String? key = '7fb258f132b04a298ae154452233007';
 
   WeatherParams(
       {this.longitude,

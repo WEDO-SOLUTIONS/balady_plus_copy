@@ -37,12 +37,23 @@ class WindAndWeatherCard extends StatelessWidget {
                         CustomTextWidget(
                           '${state.allWeatherInfo?.current?.windKph.toString() ?? ''} k/h',
                         ),
-                        const SizedBox(
+                        /*const SizedBox(
                           width: 10,
                         ),
                         CustomTextWidget(
                           state.allWeatherInfo?.current?.windDir ?? '',
+                        ),*/
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        SvgPicture.asset(IconPath.humedity),
+                        const SizedBox(
+                          width: 10,
                         ),
+                        CustomTextWidget(state.allWeatherInfo?.current?.humidity
+                                .toString() ??
+                            ""),
                       ],
                     ),
                     Row(

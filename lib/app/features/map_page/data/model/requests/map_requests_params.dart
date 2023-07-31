@@ -22,6 +22,7 @@ class MapRequestParams {
       "outFields": pointsDetails
           ? layer.outFieldsLong.join(",")
           : layer.outFieldsShort.join(","),
+      //  "where": "1=1",
       "geometryType": "esriGeometryEnvelope",
       if (pointsDetails && objectId != null) "objectIds": objectId,
       "geometry":

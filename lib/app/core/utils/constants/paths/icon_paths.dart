@@ -52,6 +52,7 @@ class IconPath {
   static const calenderTick = '${_svgIconPath}calender_tick$_svg';
 
   static const documentCopy = '${_svgIconPath}document_copy$_svg';
+  static const arrowRight = '${_svgIconPath}arrow-right$_svg';
 
   // Bottom-Nav-Bar
   static const home = '${_svgIconPath}home_icon$_svg';
@@ -97,6 +98,7 @@ class IconPath {
 
   // Weather
   static const partlyClouded = '${_svgWeatherIconPath}partly_clouded$_svg';
+  static const humedity = '${_svgWeatherIconPath}humedity$_svg';
 
   static const sunset = '${_svgWeatherIconPath}sunset$_svg';
   static const sunrise = '${_svgWeatherIconPath}sunrise$_svg';
