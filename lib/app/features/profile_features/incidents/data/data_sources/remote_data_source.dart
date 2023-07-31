@@ -10,6 +10,7 @@ import '../../../../../core/utils/utils_exports.dart'
     show ApiUrl, CommonProperties, Log;
 import '../../../../_shared_feature_/shared_feature_exports.dart'
     show ResponseBodyModel;
+import '../../../../transaction_inquiry/presentation/core/models/download_file_result.dart';
 import '../models/request_details_response.dart';
 import '../models/request_details_response_model.dart';
 
@@ -27,6 +28,8 @@ abstract class RequestsRemoteDataSource {
   );
 
   Future<CrmRequestDetailsModel> getRequestDetails({required String params});
+
+  Future<DownloadFileResult?> downloadFile({required String fileKey});
 }
 
 class RequestsRemoteDataSourceImplementation
@@ -174,8 +177,51 @@ class RequestsRemoteDataSourceImplementation
           }));
 
       final data = response.data;
-
+      print(data);
       final result = ResponseBodyModel.fromMap(data).data?.result;
+      return CrmRequestDetailsModel.fromJson(result);
+      return result;
+    } on DioError catch (error) {
+      var errorCode;
+
+      throw ServerException(error.toString(),
+          statusCode: error.response?.statusCode, errorCode: errorCode);
+    } catch (ex) {
+      print("failurefailure $ex");
+      if (ex is ServerException)
+        throw ex;
+      else {
+        try {
+          //  CommonFunctions.sendExceptionLog(exception: ex, response: response);
+        } catch (ex) {}
+        throw ServerException(("errors_server_error_2").tr());
+      }
+    }
+  }
+
+  @override
+  Future<DownloadFileResult?> downloadFile({required String fileKey}) async {
+    var response;
+
+    try {
+      Map<String, dynamic> queryParms = {};
+      if (CommonProperties.userInfo?.idNo != null) {
+        queryParms = {
+          if (CommonProperties.userInfo!.idNo!.startsWith("1"))
+            "NationalID": "${CommonProperties.userInfo!.idNo}"
+          else
+            "IqamaID": "${CommonProperties.userInfo!.idNo}",
+          "FileKey": fileKey
+        };
+      }
+
+      response = await crmWebService.dio.get(ApiUrl.IncidentDownloadFile,
+          queryParameters: queryParms,
+          options: Options(headers: {
+            "Authorization": "Bearer " + (CommonProperties.token ?? "")
+          }));
+
+      final result = DownloadFileResult.fromJson(response.data);
 
       return result;
     } on DioError catch (error) {

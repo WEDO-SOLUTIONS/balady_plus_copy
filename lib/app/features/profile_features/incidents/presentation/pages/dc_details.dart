@@ -26,7 +26,7 @@ class DCDetailsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) =>
-          CrmDetailsBloc(crmRequestType: RequestsType.INC, pageParams: params),
+          CrmDetailsBloc(crmRequestType: RequestsType.DC, pageParams: params),
       child: BlocConsumer<CrmDetailsBloc, CrmDetailsState>(
         listener: (context, state) {
           // TODO: implement listener
@@ -35,7 +35,7 @@ class DCDetailsPage extends StatelessWidget {
           return Scaffold(
               backgroundColor: AppColor.white2,
               appBar: DetailsHeader(
-                title: ("appointment").tr(),
+                title: ("order_details").tr(),
                 onPrint: null,
                 procedures: () async {
                   /*   await BottomSheetDialog.showDraggableSheet(context,
@@ -87,7 +87,7 @@ class DCDetailsPage extends StatelessWidget {
                               ),
                               CustomHorizontalSpace(width: 8),
                               CustomTextWidget(
-                                CommonFunctions.getFormattedDate(""),
+                                state.pageParams?.details.getCreateDate() ?? "",
                                 fontColor: AppColor.blackModern500Light,
                                 fontSize: 12,
                                 fontWeight: AppFontWeight.bold,
@@ -95,30 +95,43 @@ class DCDetailsPage extends StatelessWidget {
                             ],
                           ),
                           HomeTag(
-                            title: "",
+                            title:
+                                state.pageParams?.details.getStatusSTR() ?? "",
                             backgroundColor: AppColor.secondary100Light,
                           ),
                         ],
                       ),
                       const CustomVerticalSpace(height: 16),
                       CustomExpansionPanelWidget(
-                          title: ("ملخص البلاغ").tr(),
-                          leading: SvgPicture.asset(IconPath.vdSummuryDesc),
-                          children: [
-                            FieldData(
-                              title: ("العنوان").tr(),
-                              subTitle: state.details?.locationInfo?.address,
-                            ),
-                            FieldData(
-                              title: ("التصنيف التخصصي").tr(),
-                              subTitle: "",
-                            ),
-                            FieldData(
-                              title: ("الوصف").tr(),
-                              subTitle: state.details?.incidentInformation
-                                  ?.issueDescription,
-                            ),
-                          ]),
+                        title: ("dc_vc_details").tr(),
+                        leading: SvgPicture.asset(IconPath.vdSummuryDesc),
+                        children: [
+                          FieldData(
+                            title: ("dc_vc_type").tr(),
+                            subTitle: state.requestDetails?.vehicleInformation
+                                    ?.vehicleType ??
+                                "",
+                          ),
+                          FieldData(
+                            title: ("dc_vc_model").tr(),
+                            subTitle: state.requestDetails?.vehicleInformation
+                                    ?.vehicleModel ??
+                                "",
+                          ),
+                          FieldData(
+                            title: ("dc_vc_plateNumber").tr(),
+                            subTitle: state.requestDetails?.vehicleInformation
+                                    ?.vehiclePlateNumber ??
+                                "",
+                          ),
+                          FieldData(
+                            title: ("dc_vc_chassie").tr(),
+                            subTitle: state.requestDetails?.vehicleInformation
+                                    ?.chassisNumber ??
+                                "",
+                          ),
+                        ],
+                      ),
                       CustomVerticalSpace(height: 16),
                       CustomExpansionPanelWidget(
                           title: ("المرفقات").tr(),

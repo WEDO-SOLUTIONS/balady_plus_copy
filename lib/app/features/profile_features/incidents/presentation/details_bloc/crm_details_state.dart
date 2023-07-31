@@ -13,6 +13,8 @@ class CrmDetailsState extends Equatable {
   final RequestDetailsResponse? details;
   final CrmRequestDetails? requestDetails;
   final RequestDetailsPageParams? pageParams;
+  final List<DownloadFileResult>? files;
+
   const CrmDetailsState(
       {this.requestNumberQuery,
       this.errorMessage,
@@ -20,7 +22,8 @@ class CrmDetailsState extends Equatable {
       this.crmRequestType = RequestsType.INC,
       this.requestDetails,
       this.details,
-      this.pageParams});
+      this.pageParams,
+      this.files});
 
   String get error => errorMessage ?? '';
 
@@ -31,14 +34,16 @@ class CrmDetailsState extends Equatable {
       RequestsType? crmRequestType,
       RequestDetailsResponse? details,
       CrmRequestDetails? requestDetails,
-      RequestDetailsPageParams? pageParams}) {
+      RequestDetailsPageParams? pageParams,
+      List<DownloadFileResult>? files}) {
     return CrmDetailsState(
         requestNumberQuery: requestNumberQuery ?? this.requestNumberQuery,
         errorMessage: errorMessage ?? this.errorMessage,
         crmRequestType: crmRequestType ?? this.crmRequestType,
         details: details ?? this.details,
         requestDetails: requestDetails ?? this.requestDetails,
-        pageParams: pageParams ?? this.pageParams);
+        pageParams: pageParams ?? this.pageParams,
+        files: files ?? this.files);
   }
 
   @override
@@ -49,6 +54,7 @@ class CrmDetailsState extends Equatable {
         crmRequestsStatus,
         crmRequestType,
         requestDetails,
-        pageParams
+        pageParams,
+        files
       ];
 }

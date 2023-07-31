@@ -17,6 +17,7 @@ import '../../../../home_page/presentation/widgets/home_tag.dart';
 import '../../../../objectable_transactions/presentation/widgets/summery_widgets/field_data.dart';
 import '../../domain/entities/request_details_page_params.dart';
 import '../details_bloc/crm_details_bloc.dart';
+import '../widgets/attachment_list_widget.dart';
 
 class ReqDetailsPage extends StatelessWidget {
   final RequestDetailsPageParams params;
@@ -26,7 +27,7 @@ class ReqDetailsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) =>
-          CrmDetailsBloc(crmRequestType: RequestsType.INC, pageParams: params),
+          CrmDetailsBloc(crmRequestType: RequestsType.REQ, pageParams: params),
       child: BlocConsumer<CrmDetailsBloc, CrmDetailsState>(
         listener: (context, state) {
           // TODO: implement listener
@@ -35,7 +36,8 @@ class ReqDetailsPage extends StatelessWidget {
           return Scaffold(
               backgroundColor: AppColor.white2,
               appBar: DetailsHeader(
-                title: ("appointment").tr(),
+                title:
+                    state.pageParams?.details.getSplClassificationName() ?? "",
                 onPrint: null,
                 procedures: () async {
                   /*   await BottomSheetDialog.showDraggableSheet(context,
@@ -87,7 +89,7 @@ class ReqDetailsPage extends StatelessWidget {
                               ),
                               CustomHorizontalSpace(width: 8),
                               CustomTextWidget(
-                                CommonFunctions.getFormattedDate(""),
+                                state.pageParams?.details.getCreateDate() ?? "",
                                 fontColor: AppColor.blackModern500Light,
                                 fontSize: 12,
                                 fontWeight: AppFontWeight.bold,
@@ -95,14 +97,15 @@ class ReqDetailsPage extends StatelessWidget {
                             ],
                           ),
                           HomeTag(
-                            title: "",
+                            title:
+                                state.pageParams?.details.getStatusSTR() ?? "",
                             backgroundColor: AppColor.secondary100Light,
                           ),
                         ],
                       ),
                       const CustomVerticalSpace(height: 16),
                       CustomExpansionPanelWidget(
-                          title: ("ملخص البلاغ").tr(),
+                          title: ("ملخص الطلب").tr(),
                           leading: SvgPicture.asset(IconPath.vdSummuryDesc),
                           children: [
                             FieldData(
@@ -111,7 +114,8 @@ class ReqDetailsPage extends StatelessWidget {
                             ),
                             FieldData(
                               title: ("التصنيف التخصصي").tr(),
-                              subTitle: "",
+                              subTitle: state.pageParams?.details
+                                  .getSplClassificationName(),
                             ),
                             FieldData(
                               title: ("الوصف").tr(),
@@ -120,10 +124,38 @@ class ReqDetailsPage extends StatelessWidget {
                             ),
                           ]),
                       CustomVerticalSpace(height: 16),
+                      if (state.details?.incidentInformation?.questionList !=
+                          null)
+                        CustomExpansionPanelWidget(
+                            title: ("inc_addetional_fields").tr(),
+                            leading: SvgPicture.asset(IconPath.vdSummuryDesc),
+                            children: [
+                              ListView.builder(
+                                  shrinkWrap: true,
+                                  physics: NeverScrollableScrollPhysics(),
+                                  itemCount: state.details?.incidentInformation
+                                          ?.questionList?.length ??
+                                      0,
+                                  itemBuilder: (ctx, index) => FieldData(
+                                        title: state
+                                                .details
+                                                ?.incidentInformation
+                                                ?.questionList?[index]
+                                                .fieldName ??
+                                            "",
+                                        subTitle: state
+                                                .details
+                                                ?.incidentInformation
+                                                ?.questionList?[index]
+                                                .getSelectedFieldValue() ??
+                                            "",
+                                      ))
+                            ]),
+                      CustomVerticalSpace(height: 16),
                       CustomExpansionPanelWidget(
                           title: ("المرفقات").tr(),
                           leading: SvgPicture.asset(IconPath.vdSummuryDesc),
-                          children: []),
+                          children: [AttachmentViewSection()]),
                     ],
                   ))));
         },

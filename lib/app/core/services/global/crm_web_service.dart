@@ -47,6 +47,12 @@ class CRMWebService {
     dio.options.sendTimeout = const Duration(milliseconds: 60000);
     dio.options.headers = {};
     dio.interceptors.add(AppInterceptors());
+
+    dio.interceptors.add(PrettyDioLogger(
+      requestHeader: true,
+      requestBody: true,
+      responseBody: true,
+    ));
   }
   CRMWebService.newDio({
     required this.dio,

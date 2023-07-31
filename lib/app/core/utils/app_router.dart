@@ -51,6 +51,7 @@ import '../../features/objections/presentation/pages/objections_page.dart';
 import '../../features/profile_features/dashboard/dashboard_exports.dart'
     show DashBoardPage;
 import '../../features/profile_features/incidents/domain/entities/request_details_page_params.dart';
+import '../../features/profile_features/incidents/presentation/pages/daem_details.dart';
 import '../../features/profile_features/incidents/presentation/pages/inq_details.dart';
 import '../../features/profile_features/incidents/presentation/pages/req_details.dart';
 import '../../features/profile_features/incidents/presentation/pages/requests_page.dart';
@@ -578,6 +579,15 @@ class AppRouter {
             settings.arguments as RequestDetailsPageParams?;
         return MaterialPageRoute(
           builder: (_) => VHRDetailsPage(
+            params: item!,
+          ),
+        );
+
+      case RouteName.DaemDetails:
+        RequestDetailsPageParams? item =
+            settings.arguments as RequestDetailsPageParams?;
+        return MaterialPageRoute(
+          builder: (_) => DaemDetailsPage(
             params: item!,
           ),
         );

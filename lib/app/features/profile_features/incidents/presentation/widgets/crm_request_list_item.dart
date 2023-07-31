@@ -108,7 +108,7 @@ class CRMRequestsListItem extends StatelessWidget {
                       arguments: params);
                   break;
                 case RequestsType.TSR:
-                  Navigator.pushNamed(context, RouteName.DCDetails,
+                  Navigator.pushNamed(context, RouteName.DaemDetails,
                       arguments: params);
                   break;
                 case RequestsType.MUN:

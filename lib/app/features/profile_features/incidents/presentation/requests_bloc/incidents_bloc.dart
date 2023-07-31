@@ -17,23 +17,6 @@ import '../../../../../core/utils/utils_exports.dart'
         Nullable,
         PaginationConstants,
         SortType;
-import '../../requests_exports.dart'
-    show
-        GetMunicipalities,
-        GetRequestStatuses,
-        GetRequestSubTypes,
-        GetRequestTypes,
-        GetRequests,
-        GetSubMunicipalities,
-        MunicipalityEntity,
-        RequestEntity,
-        RequestStatusEntity,
-        RequestSubTypeEntity,
-        RequestSubTypeParams,
-        RequestTypeEntity,
-        RequestsPrams,
-        SubMunicipalityEntity,
-        SubMunicipalityParams;
 
 part 'incidents_event.dart';
 part 'incidents_state.dart';
@@ -47,8 +30,8 @@ class IncidentsBloc extends Bloc<IncidentsEvent, IncidentsState> {
     on<GetCRMRequestEvent>((event, emit) async {
       emit(
         state.copyWith(
-          crmRequestsStatus: BlocRequestStatus.submissionGetLoading,
-        ),
+            crmRequestsStatus: BlocRequestStatus.submissionGetLoading,
+            crmRequestType: event.crmRequestType),
       );
 
       final failureOrSuccess = await getCRMRequests(

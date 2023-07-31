@@ -34,11 +34,14 @@ class FieldData extends StatelessWidget {
               const CustomVerticalSpace(height: 8),
               Row(
                 children: [
-                  CustomTextWidget(
-                    subTitle ?? "",
-                    fontColor: AppColor.blackModern600Light,
-                    fontSize: 16,
-                    fontWeight: AppFontWeight.semiBold,
+                  Flexible(
+                    child: CustomTextWidget(
+                      subTitle ?? "",
+                      fontColor: AppColor.blackModern600Light,
+                      fontSize: 16,
+                      maxLines: 10,
+                      fontWeight: AppFontWeight.semiBold,
+                    ),
                   ),
                 ],
               ),

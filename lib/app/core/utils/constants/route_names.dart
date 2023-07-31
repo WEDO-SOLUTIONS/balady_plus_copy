@@ -123,6 +123,7 @@ class RouteName {
   static const InqDetails = '/InqDetails';
   static const ReqDetails = '/ReqDetails';
   static const VHRDetails = '/VHRDetails';
+  static const DaemDetails = '/DaemDetails';
 }
 
 class EtmamRoutesNames {

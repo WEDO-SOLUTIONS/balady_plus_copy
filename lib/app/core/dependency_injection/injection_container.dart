@@ -1,5 +1,6 @@
 import 'package:balady_plus/app/core/dependency_injection/features/old_injection.dart';
 import 'package:balady_plus/app/core/dependency_injection/features/dc_injection.dart';
+import 'package:balady_plus/app/core/dependency_injection/features/profile/crm_requests_injection.dart';
 import 'package:balady_plus/app/core/services/global/web_service_weather.dart';
 import 'package:balady_plus/app/features/weather/weather_exports.dart'
     show
@@ -103,6 +104,8 @@ void initialize() {
 //? DC
   DCInjection.init();
   DCRetriveInjection.init();
+
+  CRMRequestsInjection.init();
 
   //! Core
   sl.registerLazySingleton(() => WebService(dio: sl()));

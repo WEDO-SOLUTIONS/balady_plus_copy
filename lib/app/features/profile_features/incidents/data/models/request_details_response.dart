@@ -1,14 +1,17 @@
 import 'package:balady_plus/app/core/utils/enums/enums.dart';
+import 'package:balady_plus/app/features/profile_features/incidents/data/models/request_details_response_model.dart';
 import 'package:intl/intl.dart';
 import 'package:collection/collection.dart';
 
 import '../../../../../core/services/local/helpers.dart';
 import '../../../../../core/utils/constants/constants.dart';
+import '../../domain/entities/request_details_response.dart';
 
 class RequestDetailsResponse {
   String? pyId;
   IncidentInformation? incidentInformation;
   CustomerInformation? customerInformation;
+  DaemInformation? daemInformation;
   String? statusWork;
   String? pzInsKey;
   String? caseGoal;
@@ -18,23 +21,23 @@ class RequestDetailsResponse {
 
   List<ErrorResult>? errors;
   LocationInfo? locationInfo;
-  List<Attachment>? attachmentList;
+  List<AttachmentList>? attachmentList;
   AuditInformation? auditInformation;
-  RequestDetailsResponse({
-    this.pyId,
-    this.incidentInformation,
-    this.customerInformation,
-    this.statusWork,
-    this.pzInsKey,
-    this.caseGoal,
-    this.caseDeadline,
-    this.pyLabel,
-    this.errors,
-    this.locationInfo,
-    this.attachmentList,
-    this.amanaIncidentID,
-    this.auditInformation,
-  });
+  RequestDetailsResponse(
+      {this.pyId,
+      this.incidentInformation,
+      this.customerInformation,
+      this.statusWork,
+      this.pzInsKey,
+      this.caseGoal,
+      this.caseDeadline,
+      this.pyLabel,
+      this.errors,
+      this.locationInfo,
+      this.attachmentList,
+      this.amanaIncidentID,
+      this.auditInformation,
+      this.daemInformation});
 
   factory RequestDetailsResponse.fromJson(Map<String, dynamic> json,
       {RequestsType type = RequestsType.INC}) {
@@ -54,6 +57,9 @@ class RequestDetailsResponse {
       customerInformation: json["CustomerInformation"] != null
           ? CustomerInformation.fromJson(json["CustomerInformation"])
           : null,
+      daemInformation: json["DaemInformation"] != null
+          ? DaemInformation.fromJson(json["DaemInformation"])
+          : null,
       statusWork: json["StatusWork"],
       pzInsKey: json["pzInsKey"],
       caseGoal:
@@ -68,8 +74,8 @@ class RequestDetailsResponse {
           ? LocationInfo.fromJson(json["LocationInfo"])
           : null,
       attachmentList: json["AttachmentList"] != null
-          ? List<Attachment>.from(
-              json["AttachmentList"].map((x) => Attachment.fromMapObject(x)))
+          ? List<AttachmentList>.from(json["AttachmentList"]
+              .map((x) => AttachmentListModel.fromJson(x)))
           : null,
       auditInformation: json["AuditInformation"] != null
           ? AuditInformation.fromJson(json["AuditInformation"], type: type)
@@ -647,4 +653,63 @@ class ErrorResult {
 
   Map<String, dynamic> toJson() =>
       {"ID": id, "message": message, "FieldName": fieldName, "pyID": pyID};
+}
+
+class DaemInformation {
+  DaemInformation(
+      {this.incidentDescription,
+      this.area,
+      this.category,
+      this.issueType,
+      this.subCategory,
+      this.baladiah,
+      this.location,
+      this.baladiahAR,
+      this.categoryAR,
+      this.locationAR,
+      this.lastUserComment});
+
+  String? incidentDescription;
+  String? area;
+  String? category;
+  String? issueType;
+  String? subCategory;
+  String? baladiah;
+  String? location;
+  String? categoryAR;
+  String? baladiahAR;
+  String? locationAR;
+  String? lastUserComment;
+
+  factory DaemInformation.fromJson(Map<String, dynamic> json) =>
+      DaemInformation(
+          incidentDescription: json["IncidentDescription"],
+          area: json["Area"],
+          category: json["Category"],
+          issueType: json["IssueType"],
+          subCategory: json["SubCategory"],
+          baladiah: json["Baladiah"],
+          location: json["Location"],
+          baladiahAR: json["BaladiahAR"],
+          categoryAR: json["CategoryAR"],
+          locationAR: json["LocationAR"],
+          lastUserComment: json["LastUserComment"]);
+
+  Map<String, dynamic> toJson() => {
+        "IncidentDescription": incidentDescription,
+        "Area": area,
+        "Category": category,
+        "IssueType": issueType,
+        "SubCategory": subCategory,
+        "Baladiah": baladiah,
+        "Location": location,
+        "BaladiahAR": baladiahAR,
+        "CategoryAR": categoryAR,
+        "LocationAR": locationAR,
+        "LastUserComment": lastUserComment
+      };
+
+  String getLastUserComment() {
+    return lastUserComment ?? "";
+  }
 }

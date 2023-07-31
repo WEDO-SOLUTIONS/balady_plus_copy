@@ -11,3 +11,8 @@ class GetCRMRequestEvent extends CrmDetailsEvent {
   final String id;
   const GetCRMRequestEvent({required this.id});
 }
+
+class DownloadFileEvent extends CrmDetailsEvent {
+  AttachmentList item;
+  DownloadFileEvent({required this.item});
+}
