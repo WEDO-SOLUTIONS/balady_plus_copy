@@ -150,6 +150,25 @@ class MapViewModel extends BaseViewModel {
       ),
     );
 
+    await controller.changeFollowState();
+
+    // setLocale(const Locale("ar", "US"), TextDirection.ltr);
+    await controller.loadStyles(Constants.mapStyle);
+    await controller.overrideLocales(["ar-SA", "en-SA"]);
+    // await controller.overrideLocales([localeState.value.locale]);
+
+    await controller.setMarkerOptions(
+      MarkerOptionsMessageOld(
+        svgAsset: "assets/svg/ic_marker.svg",
+        width: 30.0,
+        height: 46.0,
+        iconWidth: 24,
+      ),
+    );
+
+    // await _checkLocationPermissions();
+    // unawaited(controller.fetchLayers());
+
     final permission = await Permission.location.request();
     if (permission.isGranted) {
       await controller.onLocationPremissionGranted();
@@ -170,25 +189,6 @@ class MapViewModel extends BaseViewModel {
         ),
       );
     }
-
-    await controller.changeFollowState();
-
-    // setLocale(const Locale("ar", "US"), TextDirection.ltr);
-    await controller.loadStyles(Constants.mapStyle);
-    await controller.overrideLocales(["ar-SA", "en-SA"]);
-    // await controller.overrideLocales([localeState.value.locale]);
-
-    await controller.setMarkerOptions(
-      MarkerOptionsMessageOld(
-        svgAsset: "assets/svg/ic_marker.svg",
-        width: 30.0,
-        height: 46.0,
-        iconWidth: 24,
-      ),
-    );
-
-    // await _checkLocationPermissions();
-    // unawaited(controller.fetchLayers());
 
     initialized.value = true;
     generalControlsState.value = true;
