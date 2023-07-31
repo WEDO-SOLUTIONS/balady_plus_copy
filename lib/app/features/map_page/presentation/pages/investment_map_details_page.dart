@@ -32,7 +32,7 @@ class InvestmentMapDetailsPage extends StatelessWidget {
           name: "",
           address: "",
           type: "",
-          image: ImagePath.diggingMapCard,
+          image: "assets/images/invetment_map_card.png",
         ),
         Container(
           margin: const EdgeInsets.only(top: 190),
@@ -85,8 +85,9 @@ class InvestmentMapDetailsPage extends StatelessWidget {
                 firstTitle: "سعر الكراسة".tr(),
                 firstSubTitle:
                     item.data?.result?.documentValue.toString() ?? "",
-                secondTitle: "",
-                secondSubTitle: "",
+                secondTitle: "مساحة الموقع",
+                secondSubTitle:
+                    "${item.data?.result?.getTotalSiteArea()} م٢" ?? "",
               ),
               CustomVerticalSpace(height: 16),
               Container(

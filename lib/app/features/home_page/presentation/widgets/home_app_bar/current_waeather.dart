@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
 import 'package:balady_plus/app/core/utils/constants/route_names.dart';
 import 'package:balady_plus/app/core/utils/enums/bloc_status.dart';
 import 'package:balady_plus/app/core/utils/extensions/context_conversion.dart';
@@ -9,7 +10,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/utils/utils_exports.dart'
     show AppColor, AppStyle, WeathherConditions;
 import '../../../../_shared_feature_/shared_feature_exports.dart'
-    show DrawIconBasedTypeWidget;
+    show CustomSvgIconWidget, DrawIconBasedTypeWidget;
 import '../../../../../core/dependency_injection/injection_container.dart';
 
 class CurrentWeather extends StatelessWidget {

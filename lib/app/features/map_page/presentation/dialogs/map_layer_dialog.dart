@@ -34,8 +34,12 @@ class MapLayersDialog extends StatelessWidget {
                           valueListenable: layersModel.layerSelected,
                           builder: (_, layerSelected, __) {
                             return InkWell(
-                              onTap: () =>
-                                  layersModel.selectLayers(layers[index]),
+                              onTap: () {
+                                mapViewModel.selectedPoint.value = null;
+                                mapViewModel.selectedPoint.notifyListeners();
+                                mapViewModel.bottomSheetSize.notifyListeners();
+                                layersModel.selectLayers(layers[index]);
+                              },
                               child: Container(
                                 height: 56,
                                 padding:

@@ -4,12 +4,20 @@ import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/t
 import 'package:balady_plus/app/features/quran/presentation/bloc/quran_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
+
+import '../../../../../core/utils/constants/paths/icon_paths.dart';
 
 class QuranHeader extends StatelessWidget {
   final int jozz;
   final String suraName;
-  const QuranHeader({super.key, required this.jozz, required this.suraName});
+  final int pageNumber;
+  const QuranHeader(
+      {super.key,
+      required this.jozz,
+      required this.suraName,
+      required this.pageNumber});
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +26,7 @@ class QuranHeader extends StatelessWidget {
         return AnimatedContainer(
           duration: Duration(milliseconds: 500),
           height: state.showDetails == true ? 30.0 : 0.0,
-          margin: EdgeInsets.only(top: MediaQuery.of(context).padding.top + 16),
+          margin: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
           padding: EdgeInsets.symmetric(horizontal: 16),
           width: double.infinity,
           decoration: BoxDecoration(
@@ -38,7 +46,24 @@ class QuranHeader extends StatelessWidget {
               fontColor: AppColor.primary200Light,
               fontSize: 14,
               fontWeight: AppFontWeight.semiBold,
-            )
+            ),
+            Stack(
+              alignment: Alignment.center,
+              children: [
+                SvgPicture.asset(
+                  IconPath.suraIcon,
+                  color: AppColor.white,
+                  width: 24,
+                  height: 24,
+                ),
+                CustomTextWidget(
+                  (pageNumber).toString(),
+                  fontColor: AppColor.white,
+                  fontSize: 14,
+                  fontWeight: AppFontWeight.semiBold,
+                )
+              ],
+            ),
           ]),
         );
       },

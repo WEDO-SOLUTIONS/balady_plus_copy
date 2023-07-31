@@ -14,7 +14,7 @@ class GetWeatherForLocation extends WeatherEvent {
       languageCode: 'ar',
       alert: 'yes',
       numberOfDays: 7,
-      key: '93974ccfab054bcabd763207232307');
+      key: '7fb258f132b04a298ae154452233007');
 
   final bool? showLoading;
 

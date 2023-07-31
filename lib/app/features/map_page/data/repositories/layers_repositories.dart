@@ -85,7 +85,9 @@ class LayersRepositories {
       final points = await webService.dio.get(
         '${Constants.mainUrl}/${params.layer.layerId}/query',
         queryParameters: params.toMap(),
-        options: Options(headers: {ApiHeader.requiresToken.eName: false}),
+        options: Options(headers: {
+          ApiHeader.requiresToken.eName: false,
+        }),
         /* queryParameters: {
           // "where":"1=1",
           // "text": "",
@@ -201,7 +203,7 @@ class LayersRepositories {
           'RFPID': investmentId,
         },
         options: Options(headers: {
-          'Authorization': 'Bearer YsSLDBiNvtvvkC33IRTmHGb7eCgG',
+          'Authorization': 'Bearer lvefKEOKASHGpQTjOrpzjQfEncqr',
         }),
       );
       print(response.data);
