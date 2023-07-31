@@ -189,7 +189,7 @@ class SearchHandler: NSObject {
         pageSize: Int32,
         completion: @escaping (SearchResultMessage?, FlutterError?) -> Void
     ) {
-        var query = SearchQueryBuilder.fromRubriсIds(rubricIds: categories)
+        var query = SearchQueryBuilder.fromRubricIds(rubricIds: categories)
             .setPageSize(pageSize: pageSize)
             .setSortingType(sortingType: sortingType.toSortingType())
             .setDirectoryFilter(filter:

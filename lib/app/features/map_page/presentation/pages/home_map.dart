@@ -65,10 +65,13 @@ class HomeMap extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                const CircleIcon(
-                  icon: IconPath.currentLocation,
-                  iconColor: AppColor.white,
-                  backgroundColor: AppColor.primary900Light,
+                GestureDetector(
+                  onTap: mapViewModel.onLocationTap,
+                  child: const CircleIcon(
+                    icon: IconPath.currentLocation,
+                    iconColor: AppColor.white,
+                    backgroundColor: AppColor.primary900Light,
+                  ),
                 ),
                 Constants.verticalSpaceSmall,
                 GestureDetector(
