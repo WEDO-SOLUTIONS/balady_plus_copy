@@ -316,8 +316,9 @@ class MapViewModel extends BaseViewModel {
         await performSearch(
           queryText: searchController.text,
         );
-        callSearch();
       }
+      if (layerSelected.value != null) callSearch();
+
       _clearDebounce();
     });
     _subscriptions.add(_debounce!);
