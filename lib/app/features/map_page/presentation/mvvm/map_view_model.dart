@@ -159,7 +159,7 @@ class MapViewModel extends BaseViewModel {
 
     _setupListeners();
 
-    /* await controller.setCameraPosition(
+    await controller.setCameraPosition(
       CameraPositionMessage(
         point: GeoPointMessage(
           latitude: 24.713520,
@@ -169,7 +169,7 @@ class MapViewModel extends BaseViewModel {
         tilt: 0,
         bearing: 0,
       ),
-    );*/
+    );
 
     final permission = await Permission.location.request();
     if (permission.isGranted) {
@@ -179,7 +179,7 @@ class MapViewModel extends BaseViewModel {
         desiredAccuracy: geoLocator.LocationAccuracy.high,
         timeLimit: const Duration(seconds: 13),
       );
-      /* await controller.setCameraPosition(
+      await controller.setCameraPosition(
         CameraPositionMessage(
           point: GeoPointMessage(
             latitude: position.latitude,
@@ -189,7 +189,7 @@ class MapViewModel extends BaseViewModel {
           tilt: 0,
           bearing: 0,
         ),
-      );*/
+      );
     }
 
     await controller.changeFollowState();
@@ -356,8 +356,10 @@ class MapViewModel extends BaseViewModel {
     if (latlng != null)
       await controller.setCameraPosition(
         CameraPositionMessage(
-          zoomValue: 14,
-          geoPoint: GeoPointMessage(
+          zoom: 13,
+          tilt: 0,
+          bearing: 0,
+          point: GeoPointMessage(
             latitude: 24.729761968361412,
             longitude: 46.665576686472015,
           ),
