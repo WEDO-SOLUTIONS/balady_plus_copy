@@ -108,4 +108,9 @@ class RouteName {
   // ------- Wallet ------
   static const walletPage = '/walletPage';
   static const businessLicensePage = '/businessLicensePage';
+
+  // Violations
+  static const violationsPage = '/violationsPage';
+
+
 }

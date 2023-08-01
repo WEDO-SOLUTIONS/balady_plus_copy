@@ -47,7 +47,7 @@ class ProfileSections {
           ProfileItem(
             title: "violations".tr(),
             icon: IconPath.violations,
-            route: "",
+            route: RouteName.violationsPage,
           ),
           ProfileItem(
             title: "objections".tr(),

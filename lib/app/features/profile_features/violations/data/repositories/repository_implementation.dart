@@ -14,29 +14,30 @@ import '../../../../../core/errors/errors_exports.dart'
         NoDataFoundFailure,
         ServerException,
         ServerFailure;
-import '../../objections_exports.dart'
+import '../../violations_exports.dart'
     show
-        RequestsRepository,
-        RequestsRemoteDataSource,
+        InvoiceStatusesEntity,
         ObjectableTransactionsEntity,
-        RequestStatusEntity,
         RequestSubTypeEntity,
         RequestSubTypeParamsModel,
-        RequestTypeEntity,
-        TransactionsRequestsPrams;
+        ViolationsRemoteDataSource,
+        ViolationsRepository,
+        ViolationsPrams,
+        ViolationsEntity,
+        ViolationsStatusEntity;
 
-class RequestsRepositoryImplementation implements RequestsRepository {
-  final RequestsRemoteDataSource remoteDataSource;
+class ViolationsRepositoryImplementation implements ViolationsRepository {
+  final ViolationsRemoteDataSource remoteDataSource;
 
-  RequestsRepositoryImplementation({
+  ViolationsRepositoryImplementation({
     required this.remoteDataSource,
   });
 
   @override
-  Future<Either<Failure, List<RequestStatusEntity>>>
-      getRequestStatuses() async {
+  Future<Either<Failure, List<ViolationsStatusEntity>>>
+      getViolationsStatus() async {
     try {
-      final data = await remoteDataSource.getRequestStatuses();
+      final data = await remoteDataSource.getViolationsStatuses();
       return Right(data);
     } on NoDataFoundException {
       return Left(NoDataFoundFailure());
@@ -46,9 +47,10 @@ class RequestsRepositoryImplementation implements RequestsRepository {
   }
 
   @override
-  Future<Either<Failure, List<RequestTypeEntity>>> getRequestTypes() async {
+  Future<Either<Failure, List<InvoiceStatusesEntity>>>
+      getInvoiceStatuses() async {
     try {
-      final data = await remoteDataSource.getRequestTypes();
+      final data = await remoteDataSource.getInvoiceStatuses();
       return Right(data);
     } on NoDataFoundException {
       return Left(NoDataFoundFailure());
@@ -58,23 +60,15 @@ class RequestsRepositoryImplementation implements RequestsRepository {
   }
 
   @override
-  Future<Either<Failure, List<RequestSubTypeEntity>>> getRequestSubTypes(
-    RequestSubTypeParamsModel params,
-  ) async {
+  Future<Either<Failure, List<ViolationsEntity>>> getViolations(
+      ViolationsPrams params) async {
     try {
-      final data = await remoteDataSource.getRequestSubTypes(params);
+      final data = await remoteDataSource.getViolations(params);
       return Right(data);
     } on NoDataFoundException {
       return Left(NoDataFoundFailure());
     } on ServerException catch (error) {
       return Left(ServerFailure(error.errorMessage));
     }
-  }
-
-  @override
-  Future<Either<Failure, List<ObjectableTransactionsEntity>>>
-      getObjectionRequests(TransactionsRequestsPrams params) {
-    // TODO: implement getObjectionRequests
-    throw UnimplementedError();
   }
 }
