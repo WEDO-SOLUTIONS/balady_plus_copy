@@ -1,4 +1,6 @@
 const _imagePath = 'assets/images/';
+const _etmamImagePath = 'assets/etmam_app/images/';
+
 const _png = '.png';
 const _svg = '.svg';
 const _jpg = '.jpg';
@@ -33,4 +35,8 @@ class ImagePath {
       '${_imagePath}light_gradient_appbar$_png';
 
   static const diggingMapCard = '${_imagePath}digging_map_card$_png';
+
+  //etmam app
+  static const providerDetailsImgExample =
+      '${_etmamImagePath}ProviderDetailsExample$_png';
 }

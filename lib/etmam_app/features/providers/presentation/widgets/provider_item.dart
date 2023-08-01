@@ -3,6 +3,8 @@ import 'package:balady_plus/etmam_app/features/_shared_feature_/shared/shared_fe
 
 import 'package:flutter/material.dart';
 
+import '../../../home/presentation/widgets/etmam_home_page/etmam_top_rated_providers_widgets.dart';
+
 class ProviderItemWidget extends StatelessWidget {
   final String? providerName;
   final String? providerIcon;
@@ -25,25 +27,28 @@ class ProviderItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return EtmamProviderCard(
-      providerName: providerName ?? "",
-      providerIcon: providerIcon ?? "",
-      providerTotalEvaluation: providerTotalEvaluation ?? 0,
-      providerRating: providerRating ?? 0,
-      onCardPressed: () {
-        if (onPressView != null) {
-          onPressView!();
-        }
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: EtmamServiceProviderItem(
+        providerName: providerName ?? "",
+        providerIcon: providerIcon ?? "",
+        totalEvaluation: providerTotalEvaluation ?? 0,
+        providerRating: providerRating ?? 0,
+        onPress: () {
+          if (onPressView != null) {
+            onPressView!();
+          }
 
-        /* context.read<ProvidersBloc>().add(GetServiceDetailsEvent(
-                  params: ServiceDetailsParams(
-                      serviceProviderId: item.id!,
-                      cityId: "1",
-                      subServiceId: state.subServiceId!)));*/
-      },
-      onCallPressed: () {
-        CommonFunctions.call(contact);
-      },
+          /* context.read<ProvidersBloc>().add(GetServiceDetailsEvent(
+                    params: ServiceDetailsParams(
+                        serviceProviderId: item.id!,
+                        cityId: "1",
+                        subServiceId: state.subServiceId!)));*/
+        },
+        // onCallPressed: () {
+        //   CommonFunctions.call(contact);
+        // },
+      ),
     );
   }
 }

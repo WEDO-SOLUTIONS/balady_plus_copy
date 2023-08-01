@@ -200,4 +200,6 @@ class IconPath {
       '${_svgIconPath}bottom_navigation_icons/favorite_active$_svg';
   static const String activeBottomNavigationProfileIcon =
       '${_svgIconPath}bottom_navigation_icons/profile_active$_svg';
+
+  static const boldRatingStar = '${_svgIconPath}bold_star$_svg';
 }

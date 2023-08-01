@@ -72,19 +72,18 @@ class EtmamRatingEvaluationWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        if (withDot && withIcon) ...[
+        if (!withDot && withIcon) ...[
           SvgPicture.asset(
-            IconPath.ratingStar,
-            height: 10,
-            width: 10,
-            color: AppColor.baladyDarkGreen2,
+            IconPath.boldRatingStar,
+            height: 16,
+            width: 16,
           ),
           const CustomHorizontalSpace(width: 3.0),
         ],
         Container(
           margin: EdgeInsets.only(top: 3),
           child: CustomTextWidget(
-            "$rating",
+            "$rating/5",
             fontColor: AppColor.black400,
             fontSize: 13.0,
             textAlign: TextAlign.start,
@@ -93,29 +92,30 @@ class EtmamRatingEvaluationWidget extends StatelessWidget {
             textOverflow: TextOverflow.ellipsis,
           ),
         ),
-        if (!withDot && withIcon) ...[
+        if (withDot && withIcon) ...[
           const CustomHorizontalSpace(width: 6.0),
           SvgPicture.asset(
-            IconPath.ratingStar,
-            height: 10,
-            width: 10,
+            IconPath.boldRatingStar,
+            height: 16,
+            width: 16,
             color: AppColor.baladyDarkGreen2,
           ),
         ],
 
         const CustomHorizontalSpace(width: 6.0),
         // line or dot
-        withDot
-            ? Container(
-                width: 4,
-                height: 4,
-                decoration: const BoxDecoration(
-                    shape: BoxShape.circle, color: AppColor.black400))
-            : Container(
-                width: 1,
-                height: 8,
-                color: AppColor.black400,
-              ),
+        // withDot
+        //     ? Container(
+        //         width: 4,
+        //         height: 4,
+        //         decoration: const BoxDecoration(
+        //             shape: BoxShape.circle, color: AppColor.black400),
+        //       )
+        //     : Container(
+        //         width: 1,
+        //         height: 8,
+        //         color: AppColor.black400,
+        //       ),
         const CustomHorizontalSpace(width: 5.0),
         // reviews
         Container(
@@ -136,6 +136,6 @@ class EtmamRatingEvaluationWidget extends StatelessWidget {
 
   String _getNumberOfReviews() {
     var reviews = totalEvaluation;
-    return trans("issueCertificateRatingWord").replaceAll("{}", "$reviews");
+    return "(${"$reviews"})";
   }
 }

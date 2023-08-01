@@ -26,17 +26,18 @@ class EtmamMainServiceCardWidget extends StatelessWidget {
         btnPressed: btnPressed,
         widget: Container(
           decoration: BoxDecoration(
-              borderRadius: const BorderRadius.all(Radius.circular(4)),
-              border: Border.all(
-                  color: AppColor.black200, width: 0.5775000000000001),
-              boxShadow: const [
-                BoxShadow(
-                    color: Color(0x1a000000),
-                    offset: Offset(0, 1),
-                    blurRadius: 15,
-                    spreadRadius: 0)
-              ],
-              color: Colors.white),
+            borderRadius: const BorderRadius.all(Radius.circular(4)),
+            border:
+                Border.all(color: AppColor.black200, width: 0.5775000000000001),
+            boxShadow: const [
+              BoxShadow(
+                  color: Color(0x1a000000),
+                  offset: Offset(0, 1),
+                  blurRadius: 15,
+                  spreadRadius: 0)
+            ],
+            color: Colors.white,
+          ),
           padding: const EdgeInsets.all(18),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,

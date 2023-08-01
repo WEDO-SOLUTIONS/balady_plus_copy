@@ -31,13 +31,18 @@ class EtmamSubServicePageCardWidget extends StatelessWidget {
     return CustomInkWellButtonWidget(
         btnPressed: btnPressed,
         widget: Container(
-          decoration: Constants.boxDecorationWithShadowAndRoundedCorner,
+          decoration: const BoxDecoration(
+            color: Color(0xFFF4F4F5),
+            borderRadius: BorderRadius.all(
+              Radius.circular(16),
+            ),
+          ),
           margin: const EdgeInsets.only(bottom: Constants.smallPadding),
           padding: const EdgeInsets.symmetric(
             horizontal: Constants.semiMediumPadding,
             vertical: Constants.mediumPadding,
           ),
-          child: Row(
+          child: Column(
             children: [
               // icon
               CustomNetworkImageWidget(
@@ -46,7 +51,7 @@ class EtmamSubServicePageCardWidget extends StatelessWidget {
                 imageWidth: 38,
                 imageFit: BoxFit.fill,
               ),
-              Constants.horizontalSpaceSmall,
+              Constants.verticalSpaceMedium,
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,

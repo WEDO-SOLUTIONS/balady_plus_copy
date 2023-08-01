@@ -1,6 +1,7 @@
 const _svgIconPath = 'assets/icons/svg/';
 const _svgPrayerIconPath = 'assets/icons/svg/prayers/';
 const _svgWeatherIconPath = 'assets/icons/svg/weather/';
+const _svgEtmamAppIconPath = 'assets//etmam_app/icons/svg/';
 const _svgMapIconPath = 'assets/icons/svg/map/';
 const _svgServicesIconPath = 'assets/icons/svg/services/';
 const _svgProfileIconPath = 'assets/icons/svg/profile/';
@@ -233,4 +234,6 @@ class IconPath {
   //Map
   static const investmentIcon = '${_svgIconPath}invetment_icon$_svg';
   static const mapLocationIcon = '${_svgIconPath}map_location_icon$_svg';
+
+  //etmam app
 }

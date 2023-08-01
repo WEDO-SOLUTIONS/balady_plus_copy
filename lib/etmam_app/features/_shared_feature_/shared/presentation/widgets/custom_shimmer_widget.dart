@@ -53,7 +53,7 @@ class CustomShimmerHorizontalListWidget extends StatelessWidget {
             return Padding(
               padding: padding ?? const EdgeInsets.all(8.0),
               child: CustomShimmerWidget(
-                childWidth: width?? MediaQuery.of(context).size.width/2,
+                childWidth: width ?? MediaQuery.of(context).size.width / 2,
                 childHeight: height,
               ),
             );
@@ -71,35 +71,36 @@ class CustomShimmerGridViewWidget extends StatelessWidget {
   final double mainAxisSpacing;
   final double mainAxisExtent;
 
-  const CustomShimmerGridViewWidget({
-    Key? key,
-    required this.height,
-    this.width = double.infinity,
-    this.itemCount,
-    this.padding,
-    this.crossAxisCount = 2,
-    this.mainAxisSpacing = 12,
-    this.mainAxisExtent = 100
-  }) : super(key: key);
+  const CustomShimmerGridViewWidget(
+      {Key? key,
+      required this.height,
+      this.width = double.infinity,
+      this.itemCount,
+      this.padding,
+      this.crossAxisCount = 2,
+      this.mainAxisSpacing = 12,
+      this.mainAxisExtent = 100})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return GridView.builder(
-        itemCount: itemCount ?? 10,
-        physics: NeverScrollableScrollPhysics(),
-        itemBuilder: (ctx, index) {
-          return Padding(
-            padding: padding ?? const EdgeInsets.all(8.0),
-            child: CustomShimmerWidget(
-              childWidth: width,
-              childHeight: height,
-            ),
-          );
-        }, gridDelegate:  SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: crossAxisCount,
-        mainAxisSpacing: mainAxisSpacing,
-        mainAxisExtent: height
-    ),);
+      itemCount: itemCount ?? 10,
+      physics: NeverScrollableScrollPhysics(),
+      itemBuilder: (ctx, index) {
+        return Padding(
+          padding: padding ?? const EdgeInsets.all(8.0),
+          child: CustomShimmerWidget(
+            childWidth: width,
+            childHeight: height,
+          ),
+        );
+      },
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: crossAxisCount,
+          mainAxisSpacing: mainAxisSpacing,
+          mainAxisExtent: height),
+    );
   }
 }
 
@@ -109,11 +110,12 @@ class CustomShimmerWidget extends StatelessWidget {
   final double? childWidth;
   final EdgeInsets? padding;
 
-  const CustomShimmerWidget({Key? key,
-    this.childWidget,
-    this.childHeight,
-    this.childWidth,
-    this.padding})
+  const CustomShimmerWidget(
+      {Key? key,
+      this.childWidget,
+      this.childHeight,
+      this.childWidth,
+      this.padding})
       : super(key: key);
 
   @override
@@ -126,7 +128,7 @@ class CustomShimmerWidget extends StatelessWidget {
         child: childWidget ??
             Container(
               decoration: const BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.circular(4.0)),
+                borderRadius: BorderRadius.all(Radius.circular(16.0)),
                 color: Colors.white,
               ),
               height: childHeight ?? 100,

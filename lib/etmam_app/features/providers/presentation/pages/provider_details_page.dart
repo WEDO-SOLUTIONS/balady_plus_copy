@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/core/utils/constants/paths/image_paths.dart';
 import 'package:balady_plus/etmam_app/core/dependency_injection/dependency_injection_exports.dart'
     show sl;
 import 'package:balady_plus/etmam_app/core/services/services_exports.dart'
@@ -53,27 +54,41 @@ class _ProviderDetailsPageState extends State<ProviderDetailsPage> {
           builder: (context, state) {
             return Stack(
               children: [
-                Column(children: [
-                  ProviderDetailsHeader(
-                    imageUrl: state.args.logoUrl ?? "",
-                    providerName: state.args.name ?? "",
-                  ),
-                  Expanded(
-                    child: SingleChildScrollView(
-                      child: Column(
-                        children: const [
-                          EtmamProviderMainInfo(),
-                          CustomVerticalSpace(height: 12),
-                          AboutProviderOfficeWidget(),
-                          ProviderBranchesWidget(),
-                          ProviderServicesSection(),
-                          ProviderPreviousWorksWidgets(),
-                          CustomVerticalSpace(height: 12),
-                        ],
+                // Image.asset(
+                //   ImagePath.providerDetailsImgExample,
+                //   fit: BoxFit.fill,
+                //   width: double.infinity,
+                //   height: MediaQuery.of(context).size.height * 0.275,
+                // ),
+                // Positioned(
+                //   top: MediaQuery.of(context).size.height * 0.25,
+                //   child: Container(
+                //     color: Colors.white,
+                //   ),
+                // ),
+                Column(
+                  children: [
+                    ProviderDetailsHeader(
+                      imageUrl: state.args.logoUrl ?? "",
+                      providerName: state.args.name ?? "",
+                    ),
+                    const Expanded(
+                      child: SingleChildScrollView(
+                        child: Column(
+                          children: [
+                            EtmamProviderMainInfo(),
+                            CustomVerticalSpace(height: 12),
+                            AboutProviderOfficeWidget(),
+                            ProviderBranchesWidget(),
+                            ProviderServicesSection(),
+                            ProviderPreviousWorksWidgets(),
+                            CustomVerticalSpace(height: 12),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                ]),
+                  ],
+                ),
                 if (state.status == BlocStatus.loading)
                   const CustomLoadingWidget()
               ],
