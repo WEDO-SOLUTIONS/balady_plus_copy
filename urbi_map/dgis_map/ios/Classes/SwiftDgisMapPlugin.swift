@@ -16,7 +16,7 @@ public class SwiftDgisMapPlugin: NSObject, FlutterPlugin {
         let vendorConfigFile = Bundle.main.path(forResource: "vendor-config", ofType: "jsonx").map { File(path: $0) }
         
         return Container(
-            vendorConfigFile: vendorConfigFile
+            // vendorConfigFile: vendorConfigFile
         )
     }
 }

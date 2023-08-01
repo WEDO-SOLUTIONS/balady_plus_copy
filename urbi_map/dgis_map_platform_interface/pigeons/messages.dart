@@ -25,13 +25,12 @@ class GeoPointWithElevationMessage {
 }
 
 class CameraPositionMessage {
-  CameraPositionMessage({
-    required this.zoomValue,
-    required this.geoPoint,
-  });
+  CameraPositionMessage(this.point, this.zoom, this.tilt, this.bearing);
 
-  final double zoomValue;
-  final GeoPointMessage geoPoint;
+  final GeoPointMessage point;
+  final double zoom;
+  final double tilt;
+  final double bearing;
 }
 
 class DgisObjectIdMessage {
@@ -845,6 +844,9 @@ abstract class MapApi {
 
   @async
   void setCameraPosition(CameraPositionMessage cameraPosition);
+
+  @async
+  CameraPositionMessage getCameraPosition();
 
   @async
   DirectoryObjectMessage searchByObjectId(DgisObjectIdMessage objectId);

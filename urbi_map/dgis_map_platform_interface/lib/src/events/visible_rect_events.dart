@@ -1,6 +1,6 @@
 import 'package:dgis_map_platform_interface/library.dart';
 
-enum VisibleRectEvents { visibleRectChanged }
+enum VisibleRectEvents { visibleRectChanged, cameraPositionChanged }
 
 class VisibleRectEvent {
   const VisibleRectEvent(this.visibleRect);

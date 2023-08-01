@@ -46,6 +46,8 @@ abstract class DgisMapPlugin extends PlatformInterface {
 
   Stream<VisibleRectEvent> get visibleRectEvents;
 
+  Stream<CameraPositionMessage> get cameraPositionEvents;
+
   Stream<MarkerWithPhotoTapEvent> get markerWithPhotoTapEvents;
 
   Stream<RouteChangedEvent> get routeChangedEvents;
@@ -91,6 +93,8 @@ abstract class DgisMapPlugin extends PlatformInterface {
   Future<void> overrideLocales(List<String> locales);
 
   Future<void> setCameraPosition(CameraPositionMessage cameraPosition);
+
+  Future<CameraPositionMessage> getCameraPosition();
 
   Future<void> unselectPanorama();
 

@@ -83,6 +83,10 @@ class MethodChannelDgisMapPlugin extends DgisMapPlugin {
       _visibleRectEventHandler.visibleRectEvents;
 
   @override
+  Stream<CameraPositionMessage> get cameraPositionEvents =>
+      _visibleRectEventHandler.cameraPositionEvents;
+
+  @override
   Stream<MarkerWithPhotoTapEvent> get markerWithPhotoTapEvents =>
       _markerTapEventHandler.markerWithPhotoTapEvents;
 
@@ -210,6 +214,8 @@ class MethodChannelDgisMapPlugin extends DgisMapPlugin {
             return _objectTapEventHandler.polylineTapEvent(map);
           case VisibleRectEvent.name:
             return _visibleRectEventHandler.visibleRectEvent(map);
+          case "cameraPositionChanged":
+            return _visibleRectEventHandler.cameraPositionEvent(map);
           case MarkerWithPhotoTapEvent.name:
             return _markerTapEventHandler.markerWithPhotoTapEvent(map);
           case RouteChangedEvent.name:
@@ -265,6 +271,11 @@ class MethodChannelDgisMapPlugin extends DgisMapPlugin {
   @override
   Future<void> setCameraPosition(CameraPositionMessage cameraPosition) {
     return _api.setCameraPosition(cameraPosition);
+  }
+
+  @override
+  Future<CameraPositionMessage> getCameraPosition() {
+    return _api.getCameraPosition();
   }
 
   @override

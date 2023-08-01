@@ -1,6 +1,7 @@
 package com.dgis.map.control_handlers
 
 import io.flutter.plugin.common.EventChannel
+import ru.dgis.sdk.map.CameraPosition
 import ru.dgis.sdk.map.CameraState
 import ru.dgis.sdk.map.Map
 import java.util.*
@@ -16,6 +17,24 @@ class VisibleRectHandler(
         closeables.add(map.camera.visibleRectChannel.connect {
             visibleRectChanged()
         })
+        closeables.add(map.camera.positionChannel.connect {
+            positionChanged(it)
+        })
+    }
+
+    private fun positionChanged(position: CameraPosition) {
+        eventSink.success(
+            mapOf(
+                "event" to Events.cameraPositionChanged.name,
+                "point" to mapOf(
+                    "latitude" to position.point.latitude.value,
+                    "longitude" to position.point.longitude.value
+                ),
+                "zoom" to position.zoom.value,
+                "tilt" to position.tilt.value,
+                "bearing" to position.bearing.value
+            )
+        )
     }
 
     private fun visibleRectChanged() {
@@ -44,6 +63,7 @@ class VisibleRectHandler(
     companion object {
         private enum class Events {
             visibleRectChanged,
+            cameraPositionChanged
         }
     }
 }
