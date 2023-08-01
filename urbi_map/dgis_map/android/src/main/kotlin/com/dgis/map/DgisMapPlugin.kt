@@ -41,10 +41,6 @@ class DgisMapPlugin : FlutterPlugin, ActivityAware {
     private fun initializeDGis(appContext: Context): SdkContext {
         return DGis.initialize(
             appContext,
-            logOptions = LogOptions(
-                customLevel = LogLevel.VERBOSE,
-                customSink = null
-            ),
             vendorConfig = VendorConfig(
                 fromAsset = VendorConfigFromAsset("vendor-config.jsonx")
             )
