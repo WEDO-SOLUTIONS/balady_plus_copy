@@ -44,7 +44,8 @@ class InvestmentSites extends PointLayersData {
         submunicapility: json['attributes']["SUBMUNICIPALITY"],
         opportunityId: json['attributes']["OPPORTUNITY_ID"],
         opportunityType: json['attributes']["OPPORTUNITYTYPE"],
-        latLng: GeoPointMessage(
+        latLng: GeoPointWithElevationMessage(
+          elevation: 1,
           latitude: double.parse(json['geometry']["y"].toString()),
           longitude: double.parse(json['geometry']["x"].toString()),
         ),
