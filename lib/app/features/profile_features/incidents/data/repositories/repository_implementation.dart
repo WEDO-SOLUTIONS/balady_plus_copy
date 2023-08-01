@@ -10,6 +10,9 @@ import '../../../../../core/errors/errors_exports.dart'
         NoDataFoundFailure,
         ServerException,
         ServerFailure;
+import '../../domain/entities/download_file_params.dart';
+import '../../domain/entities/reply_retrive_car_params.dart';
+import '../../domain/entities/reply_retrive_car_response.dart';
 import '../../requests_exports.dart'
     show RequestsRepository, RequestsRemoteDataSource;
 
@@ -74,14 +77,27 @@ class RequestsRepositoryImplementation implements RequestsRepository {
 
   @override
   Future<Either<Failure, DownloadFileResult?>> downloadFile(
-      String params) async {
+      DownLoadFileParams params) async {
     try {
-      final data = await remoteDataSource.downloadFile(fileKey: params);
+      final data = await remoteDataSource.downloadFile(params: params);
       return Right(data);
     } on NoDataFoundException {
       return Left(NoDataFoundFailure());
     } on ServerException catch (error) {
       return Left(ServerFailure(error.errorMessage));
+    }
+  }
+
+  @override
+  Future<Either<Failure, ReplyRetriveCarResponse>> replyRetriveCar(
+      {required ReplyRetriveCarParams params}) async {
+    try {
+      final data = await remoteDataSource.replyRetriveCar(params: params);
+
+      return Right(data);
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage,
+          statusCode: error.statusCode, errorCode: error.errorCode));
     }
   }
 }

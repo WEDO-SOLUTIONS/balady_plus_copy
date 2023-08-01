@@ -6,7 +6,7 @@ import 'package:provider/provider.dart';
 import '../../../../core/dependency_injection/injection_container.dart';
 import '../../../_shared_feature_/shared_feature_exports.dart'
     show TabPageContainer;
-import '../../home_exports.dart' show HomeBottomSheet, HomeMap;
+import '../../home_exports.dart' show HomeAppBar, HomeBottomSheet, HomeMap;
 
 final GlobalKey<NavigatorState> mapKey = new GlobalKey<NavigatorState>();
 

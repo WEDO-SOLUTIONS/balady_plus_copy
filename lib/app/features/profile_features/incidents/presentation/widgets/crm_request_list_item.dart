@@ -67,10 +67,13 @@ class CRMRequestsListItem extends StatelessWidget {
                   title: 'crm_request_classification'.tr(),
                   value: request.getSplClassificationName(),
                 ),
-                RequestParameter(
-                  title: 'municipality'.tr(),
-                  value: request.municipalityName ?? "",
-                ),
+                (request.getRequestType() != RequestsType.TSR &&
+                        request.getRequestType() != RequestsType.REQ)
+                    ? RequestParameter(
+                        title: 'municipality'.tr(),
+                        value: request.municipalityName ?? "",
+                      )
+                    : Container(),
                 /*RequestParameter(
                   title: 'sub_municipality'.tr(),
                   value: request.municipalityName ?? "",

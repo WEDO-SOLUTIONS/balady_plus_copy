@@ -9,7 +9,11 @@ import '../../../../../core/utils/common_functions.dart';
 import '../../../../../core/utils/constants/app_colors.dart';
 import '../../../../../core/utils/constants/paths/icon_paths.dart';
 import '../../../../../core/utils/enums/app_font_weights.dart';
+import '../../../../../core/utils/enums/bloc_status.dart';
+import '../../../../_shared_feature_/presentation/components/bottom_sheets/bottom_sheet_with_actions.dart';
+import '../../../../_shared_feature_/presentation/dialogs/bottom_sheet_dialogs.dart';
 import '../../../../_shared_feature_/presentation/under_testing/custom_expansion_panel_widget.dart';
+import '../../../../_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
 import '../../../../_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
 import '../../../../_shared_feature_/presentation/widgets/details_header.dart';
 import '../../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
@@ -18,6 +22,8 @@ import '../../../../objectable_transactions/presentation/widgets/summery_widgets
 import '../../domain/entities/request_details_page_params.dart';
 import '../details_bloc/crm_details_bloc.dart';
 import '../widgets/attachment_list_widget.dart';
+import '../widgets/request_status_card.dart';
+import '../widgets/status_tag.dart';
 
 class IncidentDetailsPage extends StatelessWidget {
   final RequestDetailsPageParams params;
@@ -30,7 +36,10 @@ class IncidentDetailsPage extends StatelessWidget {
           CrmDetailsBloc(crmRequestType: RequestsType.INC, pageParams: params),
       child: BlocConsumer<CrmDetailsBloc, CrmDetailsState>(
         listener: (context, state) {
-          // TODO: implement listener
+          if (state.crmRequestsStatus ==
+              BlocRequestStatus.submissionGetFailure) {
+            CommonFunctions.showError(state.error ?? "");
+          }
         },
         builder: (context, state) {
           return Scaffold(
@@ -39,125 +48,125 @@ class IncidentDetailsPage extends StatelessWidget {
                 title:
                     state.pageParams?.details.getSplClassificationName() ?? "",
                 onPrint: null,
-                procedures: () async {
-                  /*   await BottomSheetDialog.showDraggableSheet(context,
-                          isFullHeight: false,
-                          height: 250,
-                          child: BottomSheetWithActions(
-                            title: "الاجراءات".tr(),
-                            body: Column(children: [
-                              if (appointmentItemInfoLocal?.confirmable ?? false)
-                                GestureDetector(
-                                  onTap: () {
-                                    model.confirmAppointment();
-                                  },
-                                  child: FieldData(
-                                    title: "تأكيد الموعد",
-                                  ),
-                                ),
-                              CustomVerticalSpace(height: 16),
-                              if (widget.isCancelable ??
-                                  appointmentItemInfoLocal!.cancelable ??
-                                  false)
-                                GestureDetector(
-                                    onTap: () async {
-                                      await BottomSheetDialog.showDraggableSheet(
-                                        context,
-                                        child: const ConfirmCancelAppointmentDialog(),
-                                        isFullHeight: false,
-                                      );
-                                    },
-                                    child: FieldData(title: "الغاء الموعد"))
-                            ]),
-                          ));*/
-                },
               ),
-              body: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: SingleChildScrollView(
-                      child: Column(
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              body: Stack(
+                children: [
+                  Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: SingleChildScrollView(
+                          child: Column(
                         children: [
                           Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              SvgPicture.asset(
-                                IconPath.calendarIcon,
-                                width: 24,
-                                height: 24,
+                              Row(
+                                children: [
+                                  SvgPicture.asset(
+                                    IconPath.calendarIcon,
+                                    width: 24,
+                                    height: 24,
+                                  ),
+                                  CustomHorizontalSpace(width: 8),
+                                  CustomTextWidget(
+                                    state.pageParams?.details.getCreateDate() ??
+                                        "",
+                                    fontColor: AppColor.blackModern500Light,
+                                    fontSize: 12,
+                                    fontWeight: AppFontWeight.bold,
+                                  )
+                                ],
                               ),
-                              CustomHorizontalSpace(width: 8),
-                              CustomTextWidget(
-                                state.pageParams?.details.getCreateDate() ?? "",
-                                fontColor: AppColor.blackModern500Light,
-                                fontSize: 12,
-                                fontWeight: AppFontWeight.bold,
-                              )
+                              StatusTag(
+                                name:
+                                    state.pageParams?.details.getStatusSTR() ??
+                                        "",
+                                onTap: () async {
+                                  await BottomSheetDialog.showDraggableSheet(
+                                      context,
+                                      isFullHeight: false,
+                                      height: 300,
+                                      child: RequestStatusCard(
+                                        auditInformation:
+                                            state.details!.auditInformation!,
+                                        municipalityName: "",
+                                        status: state.pageParams?.details
+                                                .getStatusSTR() ??
+                                            "",
+                                        type: RequestsType.INC,
+                                      ));
+                                },
+                              ),
                             ],
                           ),
-                          HomeTag(
-                            title:
-                                state.pageParams?.details.getStatusSTR() ?? "",
-                            backgroundColor: AppColor.secondary100Light,
-                          ),
+                          const CustomVerticalSpace(height: 16),
+                          CustomExpansionPanelWidget(
+                              title: ("ملخص البلاغ").tr(),
+                              leading: SvgPicture.asset(IconPath.vdSummuryDesc),
+                              children: [
+                                FieldData(
+                                  title: ("العنوان").tr(),
+                                  subTitle:
+                                      state.details?.locationInfo?.address,
+                                ),
+                                CustomVerticalSpace(height: 8),
+                                FieldData(
+                                  title: ("التصنيف التخصصي").tr(),
+                                  subTitle: state.pageParams?.details
+                                      .getSplClassificationName(),
+                                ),
+                                CustomVerticalSpace(height: 8),
+                                FieldData(
+                                  title: ("الوصف").tr(),
+                                  subTitle: state.details?.incidentInformation
+                                      ?.issueDescription,
+                                ),
+                                CustomVerticalSpace(height: 8),
+                              ]),
+                          CustomVerticalSpace(height: 16),
+                          if (state
+                                  .details?.incidentInformation?.questionList !=
+                              null)
+                            CustomExpansionPanelWidget(
+                                title: ("inc_addetional_fields").tr(),
+                                leading:
+                                    SvgPicture.asset(IconPath.vdSummuryDesc),
+                                children: [
+                                  ListView.builder(
+                                      shrinkWrap: true,
+                                      physics: NeverScrollableScrollPhysics(),
+                                      itemCount: state
+                                              .details
+                                              ?.incidentInformation
+                                              ?.questionList
+                                              ?.length ??
+                                          0,
+                                      itemBuilder: (ctx, index) => FieldData(
+                                            title: state
+                                                    .details
+                                                    ?.incidentInformation
+                                                    ?.questionList?[index]
+                                                    .fieldName ??
+                                                "",
+                                            subTitle: state
+                                                    .details
+                                                    ?.incidentInformation
+                                                    ?.questionList?[index]
+                                                    .getSelectedFieldValue() ??
+                                                "",
+                                          ))
+                                ]),
+                          CustomVerticalSpace(height: 16),
+                          CustomExpansionPanelWidget(
+                              title: ("المرفقات").tr(),
+                              leading: SvgPicture.asset(IconPath.vdSummuryDesc),
+                              children: [AttachmentViewSection()]),
                         ],
-                      ),
-                      const CustomVerticalSpace(height: 16),
-                      CustomExpansionPanelWidget(
-                          title: ("ملخص البلاغ").tr(),
-                          leading: SvgPicture.asset(IconPath.vdSummuryDesc),
-                          children: [
-                            FieldData(
-                              title: ("العنوان").tr(),
-                              subTitle: state.details?.locationInfo?.address,
-                            ),
-                            FieldData(
-                              title: ("التصنيف التخصصي").tr(),
-                              subTitle: state.pageParams?.details
-                                  .getSplClassificationName(),
-                            ),
-                            FieldData(
-                              title: ("الوصف").tr(),
-                              subTitle: state.details?.incidentInformation
-                                  ?.issueDescription,
-                            ),
-                          ]),
-                      CustomVerticalSpace(height: 16),
-                      if (state.details?.incidentInformation?.questionList !=
-                          null)
-                        CustomExpansionPanelWidget(
-                            title: ("inc_addetional_fields").tr(),
-                            leading: SvgPicture.asset(IconPath.vdSummuryDesc),
-                            children: [
-                              ListView.builder(
-                                  shrinkWrap: true,
-                                  physics: NeverScrollableScrollPhysics(),
-                                  itemCount: state.details?.incidentInformation
-                                          ?.questionList?.length ??
-                                      0,
-                                  itemBuilder: (ctx, index) => FieldData(
-                                        title: state
-                                                .details
-                                                ?.incidentInformation
-                                                ?.questionList?[index]
-                                                .fieldName ??
-                                            "",
-                                        subTitle: state
-                                                .details
-                                                ?.incidentInformation
-                                                ?.questionList?[index]
-                                                .getSelectedFieldValue() ??
-                                            "",
-                                      ))
-                            ]),
-                      CustomVerticalSpace(height: 16),
-                      CustomExpansionPanelWidget(
-                          title: ("المرفقات").tr(),
-                          leading: SvgPicture.asset(IconPath.vdSummuryDesc),
-                          children: [AttachmentViewSection()]),
-                    ],
-                  ))));
+                      ))),
+                  if (state.crmRequestsStatus ==
+                      BlocRequestStatus.submissionGetLoading)
+                    CustomCircularLoadingWidget()
+                ],
+              ));
         },
       ),
     );

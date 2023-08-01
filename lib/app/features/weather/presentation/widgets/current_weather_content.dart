@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/features/weather/presentation/widgets/weather_unkown_location.dart';
 import 'package:balady_plus/app/features/weather/presentation/widgets/wind_and_vision_card.dart';
 import 'package:balady_plus/app/features/weather/weather_exports.dart';
 import 'package:flutter/material.dart';
@@ -22,25 +23,28 @@ class CurrentWeatherContent extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               SizedBox(
-                height: MediaQuery.of(context).padding.top + 16,
+                height: MediaQuery.of(context).padding.top,
               ),
               SvgPicture.asset(
                 IconPath.partlyClouded,
                 width: 56,
                 height: 56,
               ),
-              SizedBox(
-                height: screenHeight * 0.02,
-              ),
+              SizedBox(height: 8),
               CustomTextWidget(
                 state.allWeatherInfo?.current?.tempC.toString() ?? '',
                 fontSize: 20,
+              ),
+              UnKownWeatherLocation(
+                onTap: () {
+                  context.read<WeatherBloc>().add(GetWeatherForLocation());
+                },
               ),
               Divider(
                 color: AppColor.divider.withOpacity(0.2),
               ),
               SizedBox(
-                height: screenHeight * 0.025,
+                height: 8,
               ),
               IntrinsicHeight(
                 child: Padding(
@@ -67,7 +71,7 @@ class CurrentWeatherContent extends StatelessWidget {
                 ),
               ),
               SizedBox(
-                height: screenHeight * 0.03,
+                height: 8,
               ),
               BlocProvider.value(
                 value: context.read<WeatherBloc>(),

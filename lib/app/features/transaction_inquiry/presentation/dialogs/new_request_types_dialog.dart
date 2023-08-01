@@ -63,7 +63,7 @@ class _MSRTypeDialog extends State<MSRTypeDialog> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 300,
+      height: MediaQuery.sizeOf(context).height - 50,
       child: GridView.builder(
         physics: const BouncingScrollPhysics(),
         padding: const EdgeInsets.only(

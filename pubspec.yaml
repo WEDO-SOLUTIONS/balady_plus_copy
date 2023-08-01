@@ -155,6 +155,7 @@ dependencies:
   launch_review: ^3.0.1
   network_info_plus: ^2.1.4+1
   dart_ipify: ^1.1.1
+  timelines: ^0.1.0
   
   #test_package:
  #   path: packages/test_package

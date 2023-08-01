@@ -14,5 +14,6 @@ class GetCRMRequestEvent extends CrmDetailsEvent {
 
 class DownloadFileEvent extends CrmDetailsEvent {
   AttachmentList item;
-  DownloadFileEvent({required this.item});
+  String? daemKey;
+  DownloadFileEvent({required this.item, this.daemKey});
 }

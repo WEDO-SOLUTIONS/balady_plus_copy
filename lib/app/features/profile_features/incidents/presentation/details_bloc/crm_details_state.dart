@@ -43,6 +43,7 @@ class CrmDetailsState extends Equatable {
         details: details ?? this.details,
         requestDetails: requestDetails ?? this.requestDetails,
         pageParams: pageParams ?? this.pageParams,
+        crmRequestsStatus: crmRequestsStatus ?? this.crmRequestsStatus,
         files: files ?? this.files);
   }
 

@@ -25,6 +25,7 @@ class RequestParameter extends StatelessWidget {
         CustomTextWidget(
           value,
           textStyle: AppStyle.subMessageTextStle,
+          maxLines: 4,
         ),
       ],
     );

@@ -28,6 +28,9 @@ class IncidentsBloc extends Bloc<IncidentsEvent, IncidentsState> {
       : getCRMRequests = GetCRMRequests(repository: sl()),
         super(const IncidentsState()) {
     on<GetCRMRequestEvent>((event, emit) async {
+      if (state.crmRequestsStatus == BlocRequestStatus.submissionGetLoading)
+        return;
+
       emit(
         state.copyWith(
             crmRequestsStatus: BlocRequestStatus.submissionGetLoading,
@@ -93,7 +96,8 @@ class IncidentsBloc extends Bloc<IncidentsEvent, IncidentsState> {
       var filtredRequest =
           state.crmRequests?.incidentRequestList?.where((element) {
         if (element.getRequestType() == RequestsType.INC &&
-            element.getId().contains(event.query)) return true;
+            element.getId().toLowerCase().contains(event.query.toLowerCase()))
+          return true;
         return false;
       }).toList();
       print(filtredRequest?.length);

@@ -3,10 +3,6 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:balady_plus/app/features/profile_features/incidents/domain/use_cases/get_request_details.dart';
-import 'package:balady_plus/app/features/profile_features/incidents/presentation/pages/incident_details.dart';
-import 'package:balady_plus/app/features/profile_features/requests/domain/entities/crm_request_entity.dart';
-import 'package:balady_plus/app/features/profile_features/requests/domain/entities/crm_request_params.dart';
-import 'package:balady_plus/app/features/profile_features/requests/domain/use_cases/get_crm_requests.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -18,12 +14,13 @@ import '../../../../../core/dependency_injection/injection_container.dart';
 import '../../../../../core/errors/errors_exports.dart'
     show NoDataFoundFailure, ServerFailure;
 import '../../../../../core/services/services_exports.dart'
-    show NavigationService, NoParams;
+    show NavigationService;
 import '../../../../../core/utils/enums/bloc_status.dart';
 import '../../../../../core/utils/enums/enums.dart';
 import '../../../../_shared_feature_/presentation/pages/pdf_view.dart';
 import '../../../../transaction_inquiry/presentation/core/models/download_file_result.dart';
 import '../../data/models/request_details_response.dart';
+import '../../domain/entities/download_file_params.dart';
 import '../../domain/entities/request_details_page_params.dart';
 import '../../domain/entities/request_details_response.dart';
 import '../../domain/use_cases/download_file.dart';
@@ -96,11 +93,8 @@ class CrmDetailsBloc extends Bloc<CrmDetailsEvent, CrmDetailsState> {
         );
       } else {
         failureOrSuccess = await getRequestDetails(event.id);
-        print("HEREEEEEEEE4444");
         failureOrSuccess.fold(
           (failure) {
-            print("SUCCCCCCCC $failure");
-
             if (failure is NoDataFoundFailure) {
               emit(
                 state.copyWith(
@@ -117,7 +111,6 @@ class CrmDetailsBloc extends Bloc<CrmDetailsEvent, CrmDetailsState> {
             );
           },
           (requests) {
-            print("SUCCCCCCCC $requests");
             emit(
               state.copyWith(
                   crmRequestsStatus: BlocRequestStatus.submissionGetSuccess,
@@ -132,8 +125,11 @@ class CrmDetailsBloc extends Bloc<CrmDetailsEvent, CrmDetailsState> {
         state.crmRequestType != RequestsType.TSR) {
       add(GetCRMRequestEvent(id: state.pageParams?.details.pzInsKey ?? ""));
     } else {
-      add(GetCRMRequestEvent(
-          id: state.pageParams?.details.incidentNumber ?? ""));
+      if (state.crmRequestType == RequestsType.TSR)
+        add(GetCRMRequestEvent(
+            id: state.pageParams?.details.incidentNumber ?? ""));
+      else
+        add(GetCRMRequestEvent(id: state.pageParams?.details.pyId ?? ""));
     }
   }
 
@@ -185,7 +181,8 @@ class CrmDetailsBloc extends Bloc<CrmDetailsEvent, CrmDetailsState> {
         crmRequestsStatus: BlocRequestStatus.submissionGetLoading));
 
     try {
-      var failureOrSuccess = await downloadFile(e.item.pzInsKey ?? "");
+      var failureOrSuccess = await downloadFile(DownLoadFileParams(
+          fileKey: e.item.pzInsKey ?? "", daemId: e.daemKey));
 
       failureOrSuccess.fold((l) {
         emitter(state.copyWith(

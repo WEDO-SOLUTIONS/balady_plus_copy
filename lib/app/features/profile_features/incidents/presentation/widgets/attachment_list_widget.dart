@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/core/utils/enums/enums.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -8,7 +9,9 @@ import '../../domain/entities/request_details_response.dart';
 import '../details_bloc/crm_details_bloc.dart';
 
 class AttachmentViewSection extends StatefulWidget {
-  const AttachmentViewSection({Key? key}) : super(key: key);
+  final String? incidentNumber;
+  const AttachmentViewSection({Key? key, this.incidentNumber})
+      : super(key: key);
 
   @override
   State<AttachmentViewSection> createState() => _AttachmentViewSectionState();
@@ -19,14 +22,22 @@ class _AttachmentViewSectionState extends State<AttachmentViewSection> {
   Widget build(BuildContext context) {
     return BlocBuilder<CrmDetailsBloc, CrmDetailsState>(
       builder: (context, state) {
+        List<AttachmentList> attachmentList = [];
+        if (state.crmRequestType != RequestsType.DC &&
+            state.crmRequestType != RequestsType.VHR) {
+          attachmentList = state.details?.attachmentList ?? [];
+        } else {
+          attachmentList = state.requestDetails?.attachmentList ?? [];
+        }
+        print("ffffffgg ${attachmentList.length}");
+
         return Visibility(
-            visible: state.details?.attachmentList?.isNotEmpty ?? true,
+            visible: attachmentList.isNotEmpty,
             child: DaemAttachmenntList(
-              files: state.details?.attachmentList ?? [],
+              files: attachmentList,
               onPress: (AttachmentList item) {
-                context
-                    .read<CrmDetailsBloc>()
-                    .add(DownloadFileEvent(item: item));
+                context.read<CrmDetailsBloc>().add(DownloadFileEvent(
+                    item: item, daemKey: widget.incidentNumber));
               },
             ));
       },

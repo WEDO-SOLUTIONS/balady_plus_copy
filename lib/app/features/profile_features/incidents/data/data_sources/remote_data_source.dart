@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/core/utils/enums/enums.dart';
 import 'package:dio/dio.dart' show DioError, Options;
 import 'package:localize_and_translate/localize_and_translate.dart'
     show Translation;
@@ -11,6 +12,9 @@ import '../../../../../core/utils/utils_exports.dart'
 import '../../../../_shared_feature_/shared_feature_exports.dart'
     show ResponseBodyModel;
 import '../../../../transaction_inquiry/presentation/core/models/download_file_result.dart';
+import '../../domain/entities/download_file_params.dart';
+import '../../domain/entities/reply_retrive_car_params.dart';
+import '../../domain/entities/reply_retrive_car_response.dart';
 import '../models/request_details_response.dart';
 import '../models/request_details_response_model.dart';
 
@@ -29,7 +33,11 @@ abstract class RequestsRemoteDataSource {
 
   Future<CrmRequestDetailsModel> getRequestDetails({required String params});
 
-  Future<DownloadFileResult?> downloadFile({required String fileKey});
+  Future<DownloadFileResult?> downloadFile(
+      {required DownLoadFileParams params});
+
+  Future<ReplyRetriveCarResponse> replyRetriveCar(
+      {required ReplyRetriveCarParams params});
 }
 
 class RequestsRemoteDataSourceImplementation
@@ -142,7 +150,8 @@ class RequestsRemoteDataSourceImplementation
       final data = response.data;
       data.toString().successLog();
 
-      final result = RequestDetailsResponse.fromJson(response.data);
+      final result = RequestDetailsResponse.fromJson(response.data,
+          type: RequestsType.REQ);
 
       return result;
     } on DioError catch (error) {
@@ -200,7 +209,8 @@ class RequestsRemoteDataSourceImplementation
   }
 
   @override
-  Future<DownloadFileResult?> downloadFile({required String fileKey}) async {
+  Future<DownloadFileResult?> downloadFile(
+      {required DownLoadFileParams params}) async {
     var response;
 
     try {
@@ -211,7 +221,8 @@ class RequestsRemoteDataSourceImplementation
             "NationalID": "${CommonProperties.userInfo!.idNo}"
           else
             "IqamaID": "${CommonProperties.userInfo!.idNo}",
-          "FileKey": fileKey
+          "FileKey": params.fileKey,
+          "DaemID": params.daemId
         };
       }
 
@@ -235,6 +246,41 @@ class RequestsRemoteDataSourceImplementation
       else {
         try {
           //  CommonFunctions.sendExceptionLog(exception: ex, response: response);
+        } catch (ex) {}
+        throw ServerException(("errors_server_error_2").tr());
+      }
+    }
+  }
+
+  @override
+  Future<ReplyRetriveCarResponse> replyRetriveCar(
+      {required ReplyRetriveCarParams params}) async {
+    var response;
+
+    try {
+      response = await webService.dio.post(ApiUrl.veichleRecoveryNotes,
+          data: params.toMap(),
+          options: Options(headers: {
+            "Authorization": "Bearer " + (CommonProperties.token ?? "")
+          }));
+
+      final data = response.data;
+      data.toString().successLog();
+
+      //   final result = ResponseBodyModel.fromMap(data).data?.result;
+
+      return ReplyRetriveCarResponse();
+    } on DioError catch (error) {
+      var errorCode;
+
+      throw ServerException(error.toString(),
+          statusCode: error.response?.statusCode, errorCode: errorCode);
+    } catch (ex) {
+      if (ex is ServerException)
+        throw ex;
+      else {
+        try {
+          //CommonFunctions.sendExceptionLog(exception: ex, response: response);
         } catch (ex) {}
         throw ServerException(("errors_server_error_2").tr());
       }

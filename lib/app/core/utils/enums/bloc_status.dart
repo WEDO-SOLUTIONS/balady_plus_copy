@@ -8,7 +8,7 @@ enum BlocStatus {
   performing,
   retry,
   loaded,
-  download,
+  download,success1, 
   loadMore, loadingShimmer;
 
   bool get isSubmissionInitial => this == BlocStatus.initial;
