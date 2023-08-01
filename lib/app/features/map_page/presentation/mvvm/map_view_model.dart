@@ -10,13 +10,17 @@ import 'package:geolocator/geolocator.dart' as geoLocator;
 import 'package:uuid/uuid.dart';
 
 import '../../../../core/services/local/helpers.dart';
+import '../../../../core/services/local/navigation_services.dart';
+import '../../../../core/utils/constants/route_names.dart';
 import '../../constants/constants.dart';
 import 'package:flutter/widgets.dart';
 
 import '../../data/enums/map_enums.dart';
 import '../../data/model/excavations.dart';
+import '../../data/model/investment_details_response.dart';
 import '../../data/model/investment_sites.dart';
 import '../../data/model/layers.dart';
+import '../../data/model/requests/map_requests_params.dart';
 import '../../data/repositories/layers_repositories.dart';
 
 const int mil = 300;
@@ -261,8 +265,11 @@ class MapViewModel extends BaseViewModel {
   void _visibleRectChangeListener(VisibleRectEvent event) {
     _lastHandledEvent = event;
 
+    zoomValue = event.visibleRect.zoom;
     // start Timer when stop move camera  call search funcation
-    _startRequestTimer();
+    if (layerSelected.value != null) {
+      _startRequestTimer();
+    }
   }
 
   // When click on ayn object
@@ -309,6 +316,7 @@ class MapViewModel extends BaseViewModel {
         await performSearch(
           queryText: searchController.text,
         );
+        callSearch();
       }
       _clearDebounce();
     });
@@ -356,7 +364,6 @@ class MapViewModel extends BaseViewModel {
       );
   }
 
-/*
   callSearch() async {
     // await performSearch(queryText: searchController.text);
 
@@ -372,10 +379,10 @@ class MapViewModel extends BaseViewModel {
     List? pointList = await layersRepositories.getPointsInLayers(
         params: MapRequestParams(
       layer: gisLayer,
-      northEastLatitude: _lastHandledEvent.visibleRect.northEastLat,
-      northEastLongitude: _lastHandledEvent.visibleRect.northEastLon,
-      southWestLongitude: _lastHandledEvent.visibleRect.southWestLon,
-      southWestLlatitude: _lastHandledEvent.visibleRect.southWestLat,
+      northEastLatitude: _lastHandledEvent!.visibleRect.northEastLat,
+      northEastLongitude: _lastHandledEvent!.visibleRect.northEastLon,
+      southWestLongitude: _lastHandledEvent!.visibleRect.southWestLon,
+      southWestLlatitude: _lastHandledEvent!.visibleRect.southWestLat,
     ));
     switch (layer.geometryType) {
       case 'esriGeometryPoint':
@@ -403,10 +410,10 @@ class MapViewModel extends BaseViewModel {
         params: MapRequestParams(
       layer: gisSelectedLayer!,
       objectId: objectId,
-      northEastLatitude: _lastHandledEvent.visibleRect.northEastLat,
-      northEastLongitude: _lastHandledEvent.visibleRect.northEastLon,
-      southWestLongitude: _lastHandledEvent.visibleRect.southWestLon,
-      southWestLlatitude: _lastHandledEvent.visibleRect.southWestLat,
+      northEastLatitude: _lastHandledEvent!.visibleRect.northEastLat,
+      northEastLongitude: _lastHandledEvent!.visibleRect.northEastLon,
+      southWestLongitude: _lastHandledEvent!.visibleRect.southWestLon,
+      southWestLlatitude: _lastHandledEvent!.visibleRect.southWestLat,
     ));
 
     print("Doneeee");
@@ -462,7 +469,7 @@ class MapViewModel extends BaseViewModel {
       final markers = pointList.map(
         (element) {
           return Marker(
-            id: int.parse(element.id),
+            id: element.id.toString(),
             options: MarkerOptionsMessage(
               position: element.latLng,
               icon: MarkerIconMessage(
@@ -513,7 +520,7 @@ class MapViewModel extends BaseViewModel {
         int id = int.parse(element.id);
         polylines.add(
           Polyline(
-            id: id,
+            id: id.toString(),
             options: PolylineOptionsMessage(
                 points: element.paths, width: 4, color: 0xff358281),
             onTap: () {
@@ -554,7 +561,7 @@ class MapViewModel extends BaseViewModel {
         int id = int.parse(element.id);
         polygons.add(
           Polygon(
-            id: id,
+            id: id.toString(),
             options: PolygonOptionsMessage(
               strokeWidth: 2,
               strokeColor: element.color,
@@ -598,29 +605,6 @@ class MapViewModel extends BaseViewModel {
     gisSelectedLayer = gisSelectedLayer = GISMapLayers.values
         .firstWhereOrNull((element) => element.layerId == value.id);
     callSearch();
-  }
-
-  void getLocationAndMoveCamera() async {
-    var latlng = await Helpers.getCurrentLocation();
-
-    if (latlng != null)
-      await controller.setCameraPosition(
-        CameraPositionMessage(
-          zoomValue: zoomValue,
-          geoPoint: GeoPointMessage(
-            latitude: 24.729761968361412,
-            longitude: 46.665576686472015,
-          ),
-        ),
-      );
-  }
-*/
-
-  void selectLayers(Layers value) async {
-    layerSelected.value = value;
-    gisSelectedLayer = gisSelectedLayer = GISMapLayers.values
-        .firstWhereOrNull((element) => element.layerId == value.id);
-    //callSearch();
   }
 
   dynamic getMapCardData() {}

@@ -3,10 +3,13 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import '../../../_shared_feature_/presentation/components/bottom_sheets/bottom_sheet_with_actions.dart';
+import '../../../_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
+import '../../data/data_sources/point_layers_data.dart';
 import '../../data/model/layers.dart';
 
 import 'package:provider/provider.dart';
 import '../widgets/SearchMapWidget.dart';
+import '../widgets/map_layer_card.dart';
 import '../widgets/search_map_widget.dart';
 
 import '../../../../core/dependency_injection/injection_container.dart';
@@ -69,46 +72,83 @@ class HomeMap extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                const CircleIcon(
-                  icon: IconPath.currentLocation,
-                  iconColor: AppColor.white,
-                  backgroundColor: AppColor.primary900Light,
-                ),
+                ValueListenableBuilder<double>(
+                    valueListenable: mapViewModel.bottomSheetSize,
+                    builder: (_, visible, __) {
+                      double bottomSize =
+                          (mapViewModel.bottomSheetSize.value <= 170 &&
+                                  mapViewModel.selectedPoint.value != null)
+                              ? 160
+                              : mapViewModel.bottomSheetSize.value;
+                      return Container(
+                        margin: EdgeInsets.only(bottom: bottomSize),
+                        child: Column(
+                          children: [
+                            GestureDetector(
+                              onTap: () =>
+                                  mapViewModel.getLocationAndMoveCamera(),
+                              child: const CircleIcon(
+                                icon: IconPath.currentLocation,
+                                iconColor: AppColor.white,
+                                backgroundColor: AppColor.primary900Light,
+                              ),
+                            ),
+                            Constants.verticalSpaceSmall,
+                            GestureDetector(
+                              onTap: () =>
+                                  showMainLayersDialog(context, layersModel),
+                              child: const CircleIcon(
+                                icon: IconPath.layers,
+                                iconColor: AppColor.white,
+                                backgroundColor: AppColor.primary900Light,
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    }),
                 Constants.verticalSpaceSmall,
-                GestureDetector(
-                  onTap: () {
-                    showMainLayersDialog(context);
-                  },
-                  child: const CircleIcon(
-                    icon: IconPath.layers,
-                    iconColor: AppColor.white,
-                    backgroundColor: AppColor.primary900Light,
-                  ),
-                ),
-                Constants.verticalSpaceSmall,
-                ValueListenableBuilder<DgisObjectIdMessage?>(
-                  valueListenable: mapViewModel.selectedPointId,
-                  builder: (_, selectedPoint, __) {
-                    return selectedPoint == null
-                        ? const SizedBox()
-                        : MarkerMapWidget(
-                            pointViewModel: PointViewModel(
-                                controller: mapViewModel.controller,
-                                point: selectedPoint,
-                                webService: sl()),
-                          );
-                  },
-                ),
               ],
             ),
           ),
+        ),
+        Align(
+          alignment: Alignment.bottomLeft,
+          child: Padding(
+            padding: const EdgeInsets.only(
+                left: Constants.semiMediumPadding,
+                right: Constants.semiMediumPadding,
+                bottom: Constants.largePadding),
+            child: ValueListenableBuilder<DgisObjectIdMessage?>(
+              valueListenable: mapViewModel.selectedPoint,
+              builder: (_, selectedPoint, __) {
+                return selectedPoint == null
+                    ? const SizedBox()
+                    : MapLayerCard();
+              },
+            ),
+          ),
+        ),
+        ValueListenableBuilder<bool>(
+          valueListenable: mapViewModel.isSearchLoading,
+          builder: (_, visible, __) {
+            return visible
+                ? Center(child: CustomCircularLoadingWidget())
+                : const SizedBox();
+          },
         ),
       ],
     );
   }
 
-  void showMainLayersDialog(BuildContext context) async {
-    LayersGisViewModel? model =
-        Provider.of<LayersGisViewModel?>(context, listen: false);
+  void showMainLayersDialog(
+      BuildContext context, LayersGisViewModel layersModel) async {
+    BottomSheetDialog.showDraggableSheet(
+      context,
+      child: BottomSheetWithActions(
+        title: "اختر نوع الخريطة".tr(),
+        body: MapLayersDialog(layersModel: layersModel),
+      ),
+    );
   }
 }

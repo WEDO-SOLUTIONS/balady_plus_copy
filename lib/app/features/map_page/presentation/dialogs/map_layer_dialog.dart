@@ -33,8 +33,9 @@ class MapLayersDialog extends StatelessWidget {
                         return ValueListenableBuilder<Layers?>(
                           valueListenable: layersModel.layerSelected,
                           builder: (_, layerSelected, __) {
-                            return InkWell(
+                            return GestureDetector(
                               onTap: () {
+                                print("on tap");
                                 mapViewModel.selectedPoint.value = null;
                                 mapViewModel.selectedPoint.notifyListeners();
                                 mapViewModel.bottomSheetSize.notifyListeners();
