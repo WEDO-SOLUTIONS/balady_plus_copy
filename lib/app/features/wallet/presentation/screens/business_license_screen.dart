@@ -47,6 +47,13 @@ class BusinessLicenseScreen extends StatelessWidget {
                       ),
                       const SizedBox(height: 12),
                       const _QrCodeCard(),
+                      const Spacer(),
+                      Align(
+                        alignment: Alignment.bottomCenter,
+                        child: ElevatedButtonWidget.licenseDetails(
+                          onPressed: () {},
+                        ),
+                      ),
                     ],
                   ),
                 ),
