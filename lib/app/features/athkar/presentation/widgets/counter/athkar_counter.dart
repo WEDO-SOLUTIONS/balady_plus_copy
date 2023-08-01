@@ -6,9 +6,14 @@ import 'package:flutter/material.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 class CounterAthkarWidget extends StatefulWidget {
-  const CounterAthkarWidget({Key? key, required this.count}) : super(key: key);
+  const CounterAthkarWidget({
+    Key? key,
+    required this.count,
+    required this.countText,
+  }) : super(key: key);
 
   final int count;
+  final String countText;
 
   @override
   State<CounterAthkarWidget> createState() => _CounterAthkarWidgetState();
@@ -34,7 +39,7 @@ class _CounterAthkarWidgetState extends State<CounterAthkarWidget> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(18),
+      padding: EdgeInsets.all(15),
       decoration: const BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.only(
@@ -43,44 +48,73 @@ class _CounterAthkarWidgetState extends State<CounterAthkarWidget> {
             topLeft: Radius.circular(30),
             topRight: Radius.circular(30),
           )),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
+      child: Column(
         children: [
-          GestureDetector(
-            onTap: _incrementCounter,
-            child: Container(
-              height: 80,
-              width: 80,
-              decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: (counter == widget.count)
-                      ? AppColor.darkTurquoise
-                      : AppColor.primary600Light),
-              child: Center(
-                child: Text(
-                  '$counter',
-                  style: AppStyle.countAthkarStyle,
-                ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              Container(
+                height: 1,
+                width: 82,
+                decoration: BoxDecoration(color: AppColor.primary800Light),
               ),
-            ),
-          ),
-          const SizedBox(height: 20),
-          GestureDetector(
-            onTap: _resetCounter,
-            child: Row(children: [
-              const CustomSvgIconWidget(
-                IconPath.reset,
-                iconHeight: 30,
-                iconWidth: 30,
-              ),
-              const SizedBox(
-                width: 7,
+              SizedBox(
+                width: 18,
               ),
               CustomTextWidget(
-                'reset'.tr(),
-                textStyle: AppStyle.resetAthkarTextStyle,
+                widget.countText,
+                textStyle: AppStyle.countTextAthkarStyle,
               ),
-            ]),
+              SizedBox(
+                width: 18,
+              ),
+              Container(
+                height: 1,
+                width: 82,
+                decoration: BoxDecoration(color: AppColor.primary800Light),
+              ),
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              GestureDetector(
+                onTap: _incrementCounter,
+                child: Container(
+                  height: 80,
+                  width: 80,
+                  decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: (counter == widget.count)
+                          ? AppColor.darkTurquoise
+                          : AppColor.primary600Light),
+                  child: Center(
+                    child: Text(
+                      '$counter',
+                      style: AppStyle.countAthkarStyle,
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
+              GestureDetector(
+                onTap: _resetCounter,
+                child: Row(children: [
+                  const CustomSvgIconWidget(
+                    IconPath.reset,
+                    iconHeight: 30,
+                    iconWidth: 30,
+                  ),
+                  const SizedBox(
+                    width: 7,
+                  ),
+                  CustomTextWidget(
+                    'reset'.tr(),
+                    textStyle: AppStyle.resetAthkarTextStyle,
+                  ),
+                ]),
+              ),
+            ],
           ),
         ],
       ),

@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/core/utils/constants/app_style.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import 'package:balady_plus/app/features/athkar/athkar_exports.dart'
     show AthkarAppBar, AthkarEntityContentParams;
@@ -12,28 +13,31 @@ class AthkarEntityContent extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const AthkarAppBar(title: ''),
-      body: Center(
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(25.0),
-              child: SizedBox(
-                height: 450,
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.vertical,
-                  child: CustomTextWidget(
-                    params.athkarEntity.content,
-                    fontColor: Colors.black,
-                    maxLines: 10,
-                  ),
-                ),
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(25.0),
+            child: SizedBox(
+              child: CustomTextWidget(
+                params.athkarEntity.content,
+                fontColor: Colors.black,
+                maxLines: 10,
               ),
             ),
-            CounterAthkarWidget(
-              count: params.athkarEntity.quantity,
-            ),
-          ],
-        ),
+          ),
+          CustomTextWidget(
+            params.athkarEntity.description,
+            textStyle: AppStyle.desscriptionAthkarStyle,
+            maxLines: 4,
+          ),
+          Expanded(
+            child: SizedBox(),
+          ),
+          CounterAthkarWidget(
+            countText: params.athkarEntity.quantityText,
+            count: params.athkarEntity.quantity,
+          ),
+        ],
       ),
     );
   }
