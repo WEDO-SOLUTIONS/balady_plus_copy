@@ -13,6 +13,8 @@ import 'package:flutter/widgets.dart';
 
 const int mil = 300;
 
+const String searchClusterId = "search-cluster";
+
 class MapViewModel extends BaseViewModel {
   MapViewModel(// required this.authService,
       // required this.setLocale,
@@ -43,7 +45,7 @@ class MapViewModel extends BaseViewModel {
               isOpenNow: false,
               searchRect: _lastHandledEvent?.visibleRect.geoRectMessage(),
             );
-      await controller.removeAllMarkers();
+      await controller.removeAllMarkers(fromCluster: searchClusterId);
 
       if (data.itemMarkerInfos != null) {
         List<Marker> markers = [];
@@ -72,7 +74,7 @@ class MapViewModel extends BaseViewModel {
           ));
         }
 
-        await controller.addMarkers(markers);
+        await controller.addMarkers(markers, toCluster: searchClusterId);
       }
       if (data.firstPage?.items != null) {
         final responseDistance = await controller.getDistanceTo(
@@ -159,10 +161,24 @@ class MapViewModel extends BaseViewModel {
 
     await controller.setMarkerOptions(
       MarkerOptionsMessageOld(
-        svgAsset: "assets/svg/ic_marker.svg",
+        svgAsset: "assets/maps/icons/ic_marker.svg",
         width: 30.0,
         height: 46.0,
         iconWidth: 24,
+      ),
+    );
+
+    await controller.addCluster(
+      Cluster(
+        id: searchClusterId,
+        options: ClusterOptionsMessage(
+          logicalPixel: 40,
+          maxZoom: 16,
+          icon: MarkerIconMessage(
+            path: "assets/maps/icons/ic_marker.svg",
+            width: 24,
+          ),
+        ),
       ),
     );
 
