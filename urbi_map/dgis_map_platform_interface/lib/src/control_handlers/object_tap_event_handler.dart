@@ -15,6 +15,7 @@ class ObjectTapEventHandler {
   final Map<String, OnObjectTap> markerHandlers = {};
   final Map<String, OnObjectTap> polygonHandlers = {};
   final Map<String, OnObjectTap> polylineHandlers = {};
+  final Map<String, OnObjectTap> clusterHandlers = {};
 
   void addMarkerHandler(String id, OnObjectTap onTap) {
     markerHandlers[id] = onTap;
@@ -22,6 +23,14 @@ class ObjectTapEventHandler {
 
   void removeMarkerHandler(String id) {
     markerHandlers.remove(id);
+  }
+
+  void addClusterHandler(String id, OnObjectTap onTap) {
+    clusterHandlers[id] = onTap;
+  }
+
+  void removeClusterHandler(String id) {
+    clusterHandlers.remove(id);
   }
 
   void removeAllMarkerHandlers() {

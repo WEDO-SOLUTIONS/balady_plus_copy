@@ -799,6 +799,31 @@ class SuggestResultMessage {
   final List<SuggestMessage?> suggests;
 }
 
+class ClusterOptionsMessage {
+  ClusterOptionsMessage({
+    required this.logicalPixel,
+    required this.maxZoom,
+    this.icon,
+    this.anchor,
+    this.text,
+    this.textStyle,
+  });
+
+  final double logicalPixel;
+  final double maxZoom;
+  final MarkerIconMessage? icon;
+  final MarkerAnchorMessage? anchor;
+  final String? text;
+  final MarkerTextStyleMessage? textStyle;
+}
+
+class ClusterMessage {
+  ClusterMessage(this.id, this.options);
+
+  final String id;
+  final ClusterOptionsMessage options;
+}
+
 enum SearchCategoryMessage {
   mousques,
   gasStations,
@@ -901,16 +926,22 @@ abstract class MapApi {
   void setMarkerOptions(MarkerOptionsMessageOld options);
 
   @async
-  void addMarker(MarkerMessage marker);
+  void addMarker(MarkerMessage marker, String? clusterId);
 
   @async
-  void addMarkers(List<MarkerMessage> markers);
+  void addMarkers(List<MarkerMessage> markers, String? clusterId);
 
   @async
-  void removeMarker(String id);
+  void removeMarker(String id, String? clusterId);
 
   @async
-  void removeAllMarkers();
+  void removeAllMarkers(String? clusterId);
+
+  @async
+  void addCluster(ClusterMessage message);
+
+  @async
+  void removeCluster(String id);
 
   @async
   void addPolygon(PolygonMessage polygon);

@@ -261,17 +261,26 @@ class DgisMapController {
       _instance.setMarkerOptions(markerOptions);
 
   /// Add marker to map.
-  Future<void> addMarker(Marker marker) => _instance.addMarker(marker);
+  Future<void> addMarker(Marker marker, {String? toCluster}) =>
+      _instance.addMarker(marker, toCluster);
 
   /// Add several markers to map.
-  Future<void> addMarkers(List<Marker> markers) =>
-      _instance.addMarkers(markers);
+  Future<void> addMarkers(List<Marker> markers, {String? toCluster}) =>
+      _instance.addMarkers(markers, toCluster);
 
   /// Remove marker by id.
-  Future<void> removeMarker(String id) => _instance.removeMarker(id);
+  Future<void> removeMarker(String id, {String? fromCluster}) =>
+      _instance.removeMarker(id, fromCluster);
+
+  /// Add cluster to map.
+  Future<void> addCluster(Cluster cluster) => _instance.addCluster(cluster);
+
+  /// Remove cluster by id.
+  Future<void> removeCluster(String id) => _instance.removeCluster(id);
 
   /// Remove all markers added with [addMarker].
-  Future<void> removeAllMarkers() => _instance.removeAllMarkers();
+  Future<void> removeAllMarkers({String? fromCluster}) =>
+      _instance.removeAllMarkers(fromCluster);
 
   /// Remove all markers, polygons, polylines
   /// that were added with [addMarker], [addPolygons], [addPolyline].

@@ -147,15 +147,21 @@ abstract class DgisMapPlugin extends PlatformInterface {
 
   Future<void> addMarker(
     Marker marker,
+    String? clusterId,
   );
 
   Future<void> addMarkers(
     List<Marker> markers,
+    String? clusterId,
   );
 
-  Future<void> removeMarker(String id);
+  Future<void> removeMarker(String id, String? clusterId);
 
-  Future<void> removeAllMarkers();
+  Future<void> removeAllMarkers(String? clusterId);
+
+  Future<void> addCluster(Cluster message);
+
+  Future<void> removeCluster(String id);
 
   Future<void> addPolygon(
     Polygon polygon,

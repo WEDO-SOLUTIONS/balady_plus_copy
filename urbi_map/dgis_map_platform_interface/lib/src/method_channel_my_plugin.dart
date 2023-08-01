@@ -367,18 +367,21 @@ class MethodChannelDgisMapPlugin extends DgisMapPlugin {
   @override
   Future<void> addMarker(
     Marker marker,
+    String? clusterId,
   ) {
     if (marker.onTap != null) {
       _objectTapEventHandler.addMarkerHandler(marker.id, marker.onTap!);
     }
     return _api.addMarker(
       MarkerMessage(id: marker.id, options: marker.options),
+      clusterId,
     );
   }
 
   @override
   Future<void> addMarkers(
     List<Marker> markers,
+    String? clusterId,
   ) {
     for (var marker in markers) {
       if (marker.onTap != null) {
@@ -391,21 +394,46 @@ class MethodChannelDgisMapPlugin extends DgisMapPlugin {
             (marker) => MarkerMessage(id: marker.id, options: marker.options),
           )
           .toList(),
+      clusterId,
     );
   }
 
   @override
   Future<void> removeMarker(
     String id,
+    String? clusterId,
   ) {
     _objectTapEventHandler.removeMarkerHandler(id);
-    return _api.removeMarker(id);
+    return _api.removeMarker(id, clusterId);
   }
 
   @override
-  Future<void> removeAllMarkers() {
+  Future<void> removeAllMarkers(
+    String? clusterId,
+  ) {
     _objectTapEventHandler.removeAllMarkerHandlers();
-    return _api.removeAllMarkers();
+    return _api.removeAllMarkers(clusterId);
+  }
+
+  @override
+  Future<void> addCluster(Cluster cluster) {
+    if (cluster.onTap != null) {
+      _objectTapEventHandler.addClusterHandler(cluster.id, cluster.onTap!);
+    }
+    return _api.addCluster(
+      ClusterMessage(
+        id: cluster.id,
+        options: cluster.options,
+      ),
+    );
+  }
+
+  @override
+  Future<void> removeCluster(
+    String id,
+  ) {
+    _objectTapEventHandler.removeClusterHandler(id);
+    return _api.removeCluster(id);
   }
 
   @override
