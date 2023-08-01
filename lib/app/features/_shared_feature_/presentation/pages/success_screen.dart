@@ -111,6 +111,7 @@ class SuccessBody extends StatelessWidget {
                 fontColor: AppColor.black500,
                 height: 1.6,
                 maxLines: 10,
+                textAlign: TextAlign.center,
               ),
               const CustomVerticalSpace(
                 height: 20,

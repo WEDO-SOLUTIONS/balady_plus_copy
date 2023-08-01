@@ -146,63 +146,69 @@ class _JobLocationSectionState extends State<JobLocationSection> {
 
   @override
   Widget build(BuildContext context) {
-    final model = locator<NewDetailsHealthLicenseViewModel>();
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        CustomVerticalSpace(height: 16),
-        VdHeaderDesc(
-          header: ("job_location").tr(),
-          desc: Helpers.translatingWord('job_location_desc'),
-        ),
+    return BaseView<NewDetailsHealthLicenseViewModel>(
+        onModelReady: (model) {},
+        builder: (context, model, child) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              CustomVerticalSpace(height: 16),
+              VdHeaderDesc(
+                header: ("job_location").tr(),
+                desc: Helpers.translatingWord('job_location_desc'),
+              ),
 
-        CustomHeaderAndDescOnTapWidget(
-          label: Helpers.translatingWord("job_address"),
-          hintText: Helpers.translatingWord("select_address_from_map"),
-          textValue: model.getAddress(),
-          materialIconDirection: Helpers.isArabic(context)
-              ? MATERIAL_ICON_DIRECTION.left
-              : MATERIAL_ICON_DIRECTION.right,
-          onTap: () {
-            model.hideKeyboard();
-            /* setState(() {
-                      showLocationInfo = true;
-                      // showCommercialSection = true;
-                      showLicenseSection = true;
-                    });
+              CustomHeaderAndDescOnTapWidget(
+                label: Helpers.translatingWord("job_address"),
+                hintText: Helpers.translatingWord("select_address_from_map"),
+                textValue: model.getAddress(),
+                materialIconDirection: Helpers.isArabic(context)
+                    ? MATERIAL_ICON_DIRECTION.left
+                    : MATERIAL_ICON_DIRECTION.right,
+                onTap: () {
+                  model.hideKeyboard();
+                  /* setState(() {
+                          showLocationInfo = true;
+                          // showCommercialSection = true;
+                          showLicenseSection = true;
+                        });
 
+                        WidgetsBinding.instance
+                            ?.addPostFrameCallback((_) => _scrollToEnd());*/
+
+                  model.navigateToMapScreen(context).then((value) {
                     WidgetsBinding.instance
-                        ?.addPostFrameCallback((_) => _scrollToEnd());*/
+                        ?.addPostFrameCallback((_) => _scrollToEnd());
+                    model.validateForm();
+                    setState(() {});
+                  });
+                },
+                icon: const Icon(Icons.location_on,
+                    color: AppColor.primary900Light),
+              ),
 
-            model.navigateToMapScreen(context).then((value) {
-              WidgetsBinding.instance
-                  ?.addPostFrameCallback((_) => _scrollToEnd());
-              model.validateForm();
-              setState(() {});
-            });
-          },
-          icon: const Icon(Icons.location_on, color: AppColor.primary900Light),
-        ),
-
-        // location info section
-        Visibility(
-          visible: model.getAddress() != null,
-          child: LocationInfoSection(
-            district: model.gisLocationResult?.districtName ?? "",
-            municipality: model.gisLocationResult?.adminMunicipalityName ?? "",
-            subMunicipality: model.gisLocationResult?.subMunicipalityName ?? "",
-            region: model.gisLocationResult?.region ?? "",
-          ),
-        ),
-        HealthCentersSection(),
-        // Commercial Register Section
-        Visibility(
-          visible: model.showCommercialNo(),
-          child: CommercialRegisterSection(),
-        ),
-        Visibility(visible: model.showLicense(), child: LicenseSection()),
-      ],
-    );
+              // location info section
+              Visibility(
+                visible: model.getAddress() != null,
+                child: LocationInfoSection(
+                  district: model.gisLocationResult?.districtName ?? "",
+                  municipality:
+                      model.gisLocationResult?.adminMunicipalityName ?? "",
+                  subMunicipality:
+                      model.gisLocationResult?.subMunicipalityName ?? "",
+                  region: model.gisLocationResult?.region ?? "",
+                ),
+              ),
+              HealthCentersSection(),
+              // Commercial Register Section
+              Visibility(
+                visible: model.showCommercialNo(),
+                child: CommercialRegisterSection(),
+              ),
+              Visibility(visible: model.showLicense(), child: LicenseSection()),
+            ],
+          );
+        });
   }
 }
 
@@ -281,6 +287,7 @@ class HealthCentersSection extends StatelessWidget {
                     searchHint: Helpers.translatingWord('city_select'),
                     onSelect: (DropDownItem item) async {
                       bool isSuccess = await model.getCenters(item.id ?? "");
+                      print("is success ${isSuccess}");
                       if (isSuccess) {
                         model.dataModel.selectedHealthCentres = null;
                         model.dataModel.selectedCity = ListItem(

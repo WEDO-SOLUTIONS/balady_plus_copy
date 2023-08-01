@@ -527,6 +527,7 @@ class WebService {
 
     var requestUrl = pegaBaseURL + url + queryString;
     print(requestUrl);
+
     Map<String, dynamic> result = {};
     try {
       String basicAuthForGuest = "";
@@ -558,7 +559,7 @@ class WebService {
             )
             .timeout(duration);
       }
-      //print(utf8.decode(response.bodyBytes).toString());
+      print(utf8.decode(response.bodyBytes).toString());
       if (response.statusCode == HttpStatus.ok) {
         result.putIfAbsent("state", () => true);
         result.putIfAbsent(

@@ -20,8 +20,8 @@ class InvestmentMapCard extends StatelessWidget {
 
     return GestureDetector(
       onTap: () {
-        mapViewModel.getInvestmentDetails(
-            data.opportunityId ?? "", "Investment");
+        //  mapViewModel.getInvestmentDetails(
+        //      data.opportunityId ?? "", "Investment");
       },
       child: Container(
         height: 125,

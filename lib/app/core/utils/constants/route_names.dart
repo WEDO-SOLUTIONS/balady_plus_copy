@@ -156,7 +156,7 @@ class EtmamRoutesNames {
   static const requestOffersPage = '/RequestOffersPage';
 
   // success page
-  static const successRoute = '/successRoute';
+  static const successRoute = '/EtmamsSccessRoute';
 
   // otp page
   static const otpRoute = '/otpRoute';

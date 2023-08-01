@@ -13,7 +13,14 @@ import '../../../../../core/utils/utils_exports.dart'
     show BlocRequestStatus, CommonFunctions;
 import '../../../../vd/vd_exports.dart' show GISParams, GISResponse, GetGISData;
 import '../../prayer_times_exports.dart'
-    show GetPrayerTimes, GetPrayerTimesRange, PrayerTimeEntity, PrayerTimeRangeEntity, PrayerTimeRangeParams, PrayerTimesParams, PrayerTimesResponse;
+    show
+        GetPrayerTimes,
+        GetPrayerTimesRange,
+        PrayerTimeEntity,
+        PrayerTimeRangeEntity,
+        PrayerTimeRangeParams,
+        PrayerTimesParams,
+        PrayerTimesResponse;
 
 part 'prayer_times_state.dart';
 
@@ -123,9 +130,16 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
   }
 
   void getPrayerTime() async {
-    emit(state.copyWith(status: BlocRequestStatus.initial));
-    // request permission
-    /* final isEnabled = await Geolocator.isLocationServiceEnabled();
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    DateTime? aDate;
+    DateTime? dateToCheck = state.lastUpdatedDate;
+
+    if (dateToCheck != null)
+      aDate = DateTime(dateToCheck.year, dateToCheck.month, dateToCheck.day);
+    if (aDate != today || aDate == null || state.prayerTimesResponse == null) {
+      // request permission
+      /* final isEnabled = await Geolocator.isLocationServiceEnabled();
     if (!isEnabled) {
       emit(state.copyWith(
         status: BlocRequestStatus.submissionGetFailure,
@@ -134,69 +148,72 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
       return;
     }
     */
+      bool checkLoccationSettings = await CommonFunctions.checkLocationSettings(
+          NavigationService.navigatorKey.currentContext!);
 
-    bool checkLoccationSettings = await CommonFunctions.checkLocationSettings(
-        NavigationService.navigatorKey.currentContext!);
+      LatLng? position = await Helpers.getCurrentLocation();
+      double latitude = 21.424236910931974;
+      double longitude = 39.82589070176908;
+      if (position != null) {
+        emit(state.copyWith(userLocationUnkown: false));
 
-    LatLng? position = await Helpers.getCurrentLocation();
-    double latitude = 21.424236910931974;
-    double longitude = 39.82589070176908;
-    if (position != null) {
-      emit(state.copyWith(userLocationUnkown: false));
+        latitude = position.latitude;
+        longitude = position.longitude;
+      } else {
+        emit(state.copyWith(userLocationUnkown: true));
+      }
+      emit(state.copyWith(status: BlocRequestStatus.submissionGetLoading));
+      final gisFailureOrSuccess = await _getGISData(
+        GISParams(x: longitude, y: latitude),
+      );
 
-      latitude = position.latitude;
-      longitude = position.longitude;
-    } else {
-      emit(state.copyWith(userLocationUnkown: true));
+      gisFailureOrSuccess.fold(
+        (failure) {
+          emit(state.copyWith(
+            status: BlocRequestStatus.submissionGetFailure,
+            errorMessage: (failure as ServerFailure).errorMessage,
+          ));
+        },
+        (response) {
+          emit(state.copyWith(
+            gisResponse: response,
+          ));
+        },
+      );
+
+      if (gisFailureOrSuccess.isLeft()) return;
+
+      emit(state.copyWith(status: BlocRequestStatus.submissionGetLoading));
+      print("getPrayerTime 55");
+      final params = PrayerTimesParams(
+        latitude: latitude,
+        longitude: longitude,
+        date: DateTime.now(),
+      );
+      final failureOrSuccess = await _getPrayerTimes(params);
+
+      await failureOrSuccess.fold(
+        (failure) {
+          emit(state.copyWith(
+            status: BlocRequestStatus.submissionGetFailure,
+            errorMessage: (failure as ServerFailure).errorMessage,
+          ));
+        },
+        (response) {
+          print("getPrayerTime success $response");
+          emit(state.copyWith(
+              status: BlocRequestStatus.submissionGetSuccess,
+              prayerTimes: response,
+              lastUpdatedDate: DateTime.now()));
+        },
+      );
     }
-    emit(state.copyWith(status: BlocRequestStatus.submissionGetLoading));
-    final gisFailureOrSuccess = await _getGISData(
-      GISParams(x: longitude, y: latitude),
-    );
 
-    gisFailureOrSuccess.fold(
-      (failure) {
-        emit(state.copyWith(
-          status: BlocRequestStatus.submissionGetFailure,
-          errorMessage: (failure as ServerFailure).errorMessage,
-        ));
-      },
-      (response) {
-        emit(state.copyWith(
-          gisResponse: response,
-        ));
-      },
-    );
-
-    if (gisFailureOrSuccess.isLeft()) return;
-
-    emit(state.copyWith(status: BlocRequestStatus.submissionGetLoading));
-
-    final params = PrayerTimesParams(
-      latitude: latitude,
-      longitude: longitude,
-      date: DateTime.now(),
-    );
-    final failureOrSuccess = await _getPrayerTimes(params);
-
-    await failureOrSuccess.fold(
-      (failure) {
-        emit(state.copyWith(
-          status: BlocRequestStatus.submissionGetFailure,
-          errorMessage: (failure as ServerFailure).errorMessage,
-        ));
-      },
-      (response) {
-        emit(state.copyWith(
-          status: BlocRequestStatus.submissionGetSuccess,
-          prayerTimes: response,
-        ));
-      },
-    );
     updateNextPrayer();
   }
 
   void updateNextPrayer() {
+    print("updateNextPrayer");
     if (state.prayerTimesResponse == null) return;
     final now = DateTime.now();
     if (now.isAfter(state.prayerTimesResponse!.isha.dateTime)) {
@@ -213,9 +230,11 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
       emit(state.copyWith(nextPrayer: state.prayerTimesResponse!.fajr));
     }
     final nextPrayerTimeDiff = state.nextPrayer!.dateTime.difference(now);
+    print("nextPrayerTimeDiff $nextPrayerTimeDiff");
     Timer.periodic(nextPrayerTimeDiff, (timer) {
-      updateNextPrayer();
-      timer.cancel();
+      print(timer);
+      // updateNextPrayer();
+      //  timer.cancel();
     });
   }
 }

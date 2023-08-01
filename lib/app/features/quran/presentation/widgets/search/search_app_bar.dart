@@ -16,9 +16,10 @@ class SearchAppBar extends StatelessWidget implements PreferredSizeWidget {
       height: 214,
       decoration: BoxDecoration(
           image: DecorationImage(
+              fit: BoxFit.cover,
               image: AssetImage(
-        ImagePath.zmzmBackground,
-      ))),
+                ImagePath.zmzmBackground,
+              ))),
       child: Column(children: [
         CustomVerticalSpace(height: MediaQuery.of(context).padding.top),
         Row(

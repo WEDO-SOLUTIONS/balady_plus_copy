@@ -9,42 +9,43 @@ class PrayerTimesState extends Equatable {
   final bool? userLocationUnkown;
   final List<PrayerTimeRangeEntity> prayersRange;
   final List<String> prayerTimeSettings;
+  final DateTime? lastUpdatedDate;
 
-  const PrayerTimesState({
-    this.status = BlocRequestStatus.initial,
-    this.prayerTimesResponse,
-    this.gisResponse,
-    this.nextPrayer,
-    this.errorMessage,
-    this.userLocationUnkown,
-    this.prayersRange = const [],
-    this.prayerTimeSettings = const [],
-  });
+  const PrayerTimesState(
+      {this.status = BlocRequestStatus.initial,
+      this.prayerTimesResponse,
+      this.gisResponse,
+      this.nextPrayer,
+      this.errorMessage,
+      this.userLocationUnkown,
+      this.prayersRange = const [],
+      this.prayerTimeSettings = const [],
+      this.lastUpdatedDate});
 
   String get error => errorMessage ?? '';
   bool get isNotificationDisable => prayerTimeSettings.contains("0");
 
-  PrayerTimesState copyWith({
-    BlocRequestStatus? status,
-    PrayerTimesResponse? prayerTimes,
-    GISResponse? gisResponse,
-    PrayerTimeEntity? nextPrayer,
-    String? errorMessage,
-    bool? userLocationUnkown,
-    List<PrayerTimeRangeEntity>? prayersRange,
-    bool? isNotificationOn,
-    List<String>? prayerTimeSettings,
-  }) {
+  PrayerTimesState copyWith(
+      {BlocRequestStatus? status,
+      PrayerTimesResponse? prayerTimes,
+      GISResponse? gisResponse,
+      PrayerTimeEntity? nextPrayer,
+      String? errorMessage,
+      bool? userLocationUnkown,
+      List<PrayerTimeRangeEntity>? prayersRange,
+      bool? isNotificationOn,
+      List<String>? prayerTimeSettings,
+      DateTime? lastUpdatedDate}) {
     return PrayerTimesState(
-      status: status ?? this.status,
-      prayerTimesResponse: prayerTimes ?? prayerTimesResponse,
-      gisResponse: gisResponse ?? this.gisResponse,
-      nextPrayer: nextPrayer ?? this.nextPrayer,
-      errorMessage: errorMessage ?? this.errorMessage,
-      userLocationUnkown: userLocationUnkown ?? this.userLocationUnkown,
-      prayersRange: prayersRange ?? this.prayersRange,
-      prayerTimeSettings: prayerTimeSettings ?? this.prayerTimeSettings,
-    );
+        status: status ?? this.status,
+        prayerTimesResponse: prayerTimes ?? prayerTimesResponse,
+        gisResponse: gisResponse ?? this.gisResponse,
+        nextPrayer: nextPrayer ?? this.nextPrayer,
+        errorMessage: errorMessage ?? this.errorMessage,
+        userLocationUnkown: userLocationUnkown ?? this.userLocationUnkown,
+        prayersRange: prayersRange ?? this.prayersRange,
+        prayerTimeSettings: prayerTimeSettings ?? this.prayerTimeSettings,
+        lastUpdatedDate: lastUpdatedDate ?? this.lastUpdatedDate);
   }
 
   @override
@@ -57,5 +58,6 @@ class PrayerTimesState extends Equatable {
         userLocationUnkown,
         prayersRange,
         prayerTimeSettings,
+        lastUpdatedDate
       ];
 }

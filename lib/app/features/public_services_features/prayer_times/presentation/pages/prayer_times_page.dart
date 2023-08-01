@@ -1,6 +1,7 @@
 import 'package:balady_plus/app/core/services/local/notification_service.dart';
 import 'package:balady_plus/app/core/utils/enums/prayers.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/custom_svg_icon_widget.dart';
+import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/reload_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hijri/hijri_calendar.dart';
@@ -38,8 +39,8 @@ class _PrayerTimesPageState extends State<PrayerTimesPage> {
   void initState() {
     super.initState();
 
-    widget.cubit.getPrayerTime();
-    widget.cubit.getPrayerTimeRange();
+    //widget.cubit.getPrayerTime();
+    // widget.cubit.getPrayerTimeRange();
   }
 
   @override
@@ -120,12 +121,14 @@ class _PrayerTimesPageState extends State<PrayerTimesPage> {
                       ),
                       BlocBuilder<PrayerTimesCubit, PrayerTimesState>(
                         builder: (context, state) {
-                          print("STAAAAATE $state");
-
-                          return CustomTextWidget(
-                            "${"prayerTimesIn".tr()} ${state.gisResponse?.adminMunicipalityName}",
-                            textStyle: AppStyle.prayerTimeCityTextStyle,
-                          );
+                          String? cityName = state.gisResponse?.cityName ??
+                              state.gisResponse?.adminMunicipalityName;
+                          if (cityName != null)
+                            return CustomTextWidget(
+                              "${"prayerTimesIn".tr()} ${cityName}",
+                              textStyle: AppStyle.prayerTimeCityTextStyle,
+                            );
+                          return SizedBox();
                         },
                       ),
                       const SizedBox(height: 8),
@@ -166,6 +169,13 @@ class _PrayerTimesPageState extends State<PrayerTimesPage> {
               child: SingleChildScrollView(
                 child: BlocBuilder<PrayerTimesCubit, PrayerTimesState>(
                   builder: (context, state) {
+                    if (state.status ==
+                        BlocRequestStatus.submissionGetFailure) {
+                      return ReloadWidget(onTab: () {
+                        widget.cubit.getPrayerTime();
+                        widget.cubit.getPrayerTimeRange();
+                      });
+                    }
                     return Column(
                       children: List.generate(
                         Prayers.values.length,
@@ -183,6 +193,7 @@ class _PrayerTimesPageState extends State<PrayerTimesPage> {
                               ),
                             );
                           }
+
                           return Container(
                             height: 64,
                             margin: const EdgeInsets.symmetric(

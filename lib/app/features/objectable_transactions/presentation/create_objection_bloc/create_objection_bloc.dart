@@ -15,7 +15,9 @@ import '../../../../core/errors/failures.dart';
 import '../../../../core/services/local/navigation_services.dart';
 import '../../../../core/utils/common_functions.dart';
 import '../../../../core/utils/enums/bloc_status.dart';
+import '../../../../core/utils/enums/enums.dart';
 import '../../../_shared_feature_/data/entities/file_data_item.dart';
+import '../../../_shared_feature_/data/entities/success_screen_args.dart';
 import '../../../_shared_feature_/data/entities/validators/incident_desc_validation.dart';
 import '../../../objectable_transactions/domain/entities/reason_model.dart';
 import '../../../objectable_transactions/domain/entities/transaction_details.dart';
@@ -225,15 +227,15 @@ class CreateObjectionBloc
       ));
 
       print(success);
-      /*
+
       bool Function(Route<dynamic>) predicate =
-          ModalRoute.withName(RoutesNames.ObjectionsHomePage);
+          ModalRoute.withName(RouteName.bottomNavigation);
 
       NavigationService.navigatorKey.currentState!.pushNamedAndRemoveUntil(
-          RoutesNames.successRoute, predicate,
+          RouteName.successRoute, predicate,
           arguments: SuccessScreenArgs(
               type: PAGE_TYPE.objction,
-              idNumber: success.objectionRequestNumber));*/
+              idNumber: success.objectionRequestNumber));
     });
   }
 

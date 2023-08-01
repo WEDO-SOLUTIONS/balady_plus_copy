@@ -45,10 +45,12 @@ class _RequestsListState extends State<RequestsList> {
   Widget build(BuildContext context) {
     return BlocConsumer<ObjectableTransactionBloc, ObjectableTransactionState>(
       listenWhen: (previous, current) =>
-          previous.requestsStatus != current.requestsStatus,
+          previous.requestsStatus != current.requestsStatus ||
+          previous.detailsStatus != current.detailsStatus,
       listener: (_, state) async {
         if ((state.requestsStatus == BlocRequestStatus.submissionGetFailure &&
-            state.page != 0)) {
+                state.page != 0) ||
+            state.detailsStatus == BlocRequestStatus.submissionGetFailure) {
           MessageDialog.showErrorNotification(msg: state.error);
         }
       },

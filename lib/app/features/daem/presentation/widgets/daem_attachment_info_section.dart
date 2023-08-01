@@ -15,6 +15,7 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 import '../../../../core/services/local/navigation_services.dart';
 import '../../../../core/utils/constants/constants.dart';
 import '../../../_shared_feature_/data/entities/file_data_item.dart';
+import '../../../_shared_feature_/presentation/buttons/elevated_button_widgets.dart';
 import '../../../_shared_feature_/presentation/widgets/custom_popups_widgets.dart';
 import '../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import '../../../transaction_inquiry/presentation/core/models/attachment_model.dart';
@@ -72,18 +73,9 @@ class _DaemAttachmentInfoSectionState extends State<DaemAttachmentInfoSection> {
             ),
           ),
           if (widget.uploadedFiles.length < 3)
-            EnhancedCustomElevatedButtonWidget(
-              btnPressed: () {
-                uploadingImage();
-              },
-              btnText: ("daem_attach_files").tr(),
-              btnTextSize: 16,
-              btnTextWeight: AppFontWeight.medium,
-              btnHeight: 56,
-              btnTextColor: AppColor.primary900Light,
-              btnBorderColor: AppColor.primary900Light,
-              btnColor: AppColor.white,
-            ),
+            ElevatedButtonWidget.attachFile(onPressed: () {
+              uploadingImage();
+            })
         ],
       ),
     );

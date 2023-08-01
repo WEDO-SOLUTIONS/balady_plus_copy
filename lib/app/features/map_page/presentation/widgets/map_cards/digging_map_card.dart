@@ -21,7 +21,7 @@ class DiggingMapCard extends StatelessWidget {
 
     return GestureDetector(
       onTap: () {
-        mapViewModel.getPointDetails(int.tryParse(data.id)!);
+        //   mapViewModel.getPointDetails(int.tryParse(data.id)!);
       },
       child: Container(
         height: 120,

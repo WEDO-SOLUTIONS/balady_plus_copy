@@ -60,6 +60,8 @@ class NewDaemTicketBloc extends Bloc<NewDaemTicketEvent, NewDaemTicketState> {
     on<CreateTicketEvent>(_createTicket);
     on<UploadTicketFilesEvent>(_uploadTicketFiles);
     on<ValidateDaemFormEvent>(_validateForm);
+    on<GoToNextPageEvent>(_goToNextPageHandler);
+    on<GoToPreviousPageEvent>(_goToPreviousPageHandler);
   }
 
   Future<void> _getAreaListHandler(

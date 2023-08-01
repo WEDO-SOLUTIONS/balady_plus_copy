@@ -1,27 +1,23 @@
 import 'dart:async';
-import 'package:balady_plus/app/core/services/local/helpers.dart';
-import 'package:balady_plus/app/core/services/services_exports.dart';
-import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:collection/collection.dart';
 
 import 'package:balady_plus/app/core/base/base_view_model.dart';
-import 'package:balady_plus/app/features/map_page/data/data_sources/point_layers_data.dart';
-import 'package:balady_plus/app/features/map_page/data/model/excavations.dart';
-import 'package:balady_plus/app/features/map_page/data/model/investment_sites.dart';
-import 'package:balady_plus/app/features/map_page/data/model/layers.dart';
-import 'package:balady_plus/app/features/map_page/data/repositories/layers_repositories.dart';
+import 'package:balady_plus/app/features/map_page/extensions/search_category_ext.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/foundation.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:geolocator/geolocator.dart' as geoLocator;
+import 'package:uuid/uuid.dart';
 
-import '../../../../core/utils/constants/route_names.dart';
+import '../../../../core/services/local/helpers.dart';
 import '../../constants/constants.dart';
 import 'package:flutter/widgets.dart';
 
 import '../../data/enums/map_enums.dart';
-import '../../data/model/investment_details_response.dart';
-import '../../data/model/requests/map_requests_params.dart';
+import '../../data/model/excavations.dart';
+import '../../data/model/investment_sites.dart';
+import '../../data/model/layers.dart';
+import '../../data/repositories/layers_repositories.dart';
 
 const int mil = 300;
 
@@ -29,30 +25,125 @@ class MapViewModel extends BaseViewModel {
   final LayersRepositories layersRepositories;
 
   MapViewModel({required this.layersRepositories});
+  TextEditingController searchController = TextEditingController();
+  final selectedPointId = ValueNotifier<DgisObjectIdMessage?>(null);
 
-  final selectedPoint = ValueNotifier<PointLayersData?>(null);
+  ValueNotifier<SearchCategoryMessage?> selectedCategory = ValueNotifier(null);
 
-  final selectedDiggingPoint = ValueNotifier<Excavations?>(null);
-  final selectedInvetmentPoint = ValueNotifier<InvestmentSites?>(null);
+  final layerSelected = ValueNotifier<Layers?>(null);
+  GISMapLayers? gisSelectedLayer;
+//////////////////////////////////////////////////////
 
   late DgisMapController controller;
 
   final viewHomeBottomSheet = ValueNotifier(true);
   final bottomSheetSize = ValueNotifier(0.5);
-
   final locationEnabledState = ValueNotifier(false);
   final generalControlsState = ValueNotifier(false);
   final initialized = ValueNotifier(false);
-
-  final isSearchLoading = ValueNotifier(false);
 
   NaviZoomController get zoomController => controller.naviZoomController;
 
   final _subscriptions = <StreamSubscription>[];
 
   StreamSubscription? _debounce;
+  VisibleRectEvent? _lastHandledEvent;
+  double? _cameraTopPadding;
+
+  final selectedPoint = ValueNotifier<DgisObjectIdMessage?>(null);
+
+  final selectedDiggingPoint = ValueNotifier<Excavations?>(null);
+  final selectedInvetmentPoint = ValueNotifier<InvestmentSites?>(null);
+
+  final isSearchLoading = ValueNotifier(false);
 
   double zoomValue = 13;
+
+  Future<void> performSearch({
+    required String queryText,
+  }) async {
+    try {
+      searchController.text = selectedCategory.value != null
+          ? selectedCategory.value!.displayName()
+          : queryText;
+
+      SearchResultMessage data = selectedCategory.value != null
+          ? await controller.searchByCategory(
+              selectedCategory.value!,
+              sortingType: SortingTypeMessage.byDistance,
+              isOpenNow: false,
+              searchRect: _lastHandledEvent?.visibleRect.geoRectMessage(),
+            )
+          : await controller.search(
+              queryText,
+              sortingType: SortingTypeMessage.byDistance,
+              isOpenNow: false,
+              searchRect: _lastHandledEvent?.visibleRect.geoRectMessage(),
+            );
+      await controller.removeAllMarkers();
+
+      if (data.itemMarkerInfos != null) {
+        List<Marker> markers = [];
+
+        final iconPath = selectedCategory.value != null
+            ? selectedCategory.value!.iconName()
+            : "assets/maps/icons/ic_marker.svg";
+
+        for (final markerInfo in data.itemMarkerInfos!) {
+          markers.add(Marker(
+            id: markerInfo?.objectId?.objectId.toString() ?? const Uuid().v4(),
+            options: MarkerOptionsMessage(
+              position: markerInfo!.geoPoint,
+              icon: MarkerIconMessage(
+                path: iconPath,
+                width: 24,
+              ),
+            ),
+            onTap: () {
+              selectedPointId.value = markerInfo.objectId;
+              if (viewHomeBottomSheet.value != false) {
+                viewHomeBottomSheet.value = false;
+                viewHomeBottomSheet.notifyListeners();
+              }
+            },
+          ));
+        }
+
+        await controller.addMarkers(markers);
+      }
+      if (data.firstPage?.items != null) {
+        final responseDistance = await controller.getDistanceTo(
+          _mapToDistanceRequest(
+            data.firstPage!.items
+                .map((e) => e as DirectoryObjectMessage)
+                .toList(),
+          ),
+        );
+        print(responseDistance);
+      }
+      if (data.firstPage != null) {
+        print("Releasing page");
+        await controller.releasePage(data.firstPage!);
+      }
+      print(data);
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  List<DistanceRequestMessage> _mapToDistanceRequest(
+          List<DirectoryObjectMessage> values) =>
+      values
+          .where((element) => element.id != null)
+          .where((element) => element.markerPosition != null)
+          .map((e) => DistanceRequestMessage(
+                geoPoint: GeoPointMessage(
+                  latitude: e.markerPosition!.latitude,
+                  longitude: e.markerPosition!.longitude,
+                ),
+                dgisObjectId: e.id!,
+              ))
+          .toList();
 
   Future<bool> initialize(DgisMapController controllerMap) async {
     controller = controllerMap;
@@ -64,24 +155,46 @@ class MapViewModel extends BaseViewModel {
 
     _setupListeners();
 
-    await controller.setCameraPosition(
+    /* await controller.setCameraPosition(
       CameraPositionMessage(
-        zoomValue: zoomValue,
-        geoPoint: GeoPointMessage(
+        point: GeoPointMessage(
           latitude: 24.713520,
           longitude: 46.675230,
         ),
+        zoom: 13,
+        tilt: 0,
+        bearing: 0,
       ),
-    );
+    );*/
 
-    getLocationAndMoveCamera();
-
-    if (kDebugMode) {
-      // setLocale(const Locale("ar", "US"), TextDirection.ltr);
-      await controller.loadStyles(Constants.mapStyle);
-      await controller.overrideLocales(["ar-SA"]);
-      // await controller.overrideLocales([localeState.value.locale]);
+    final permission = await Permission.location.request();
+    if (permission.isGranted) {
+      await controller.onLocationPremissionGranted();
+      geoLocator.Position position =
+          await geoLocator.Geolocator.getCurrentPosition(
+        desiredAccuracy: geoLocator.LocationAccuracy.high,
+        timeLimit: const Duration(seconds: 13),
+      );
+      /* await controller.setCameraPosition(
+        CameraPositionMessage(
+          point: GeoPointMessage(
+            latitude: position.latitude,
+            longitude: position.longitude,
+          ),
+          zoom: 13,
+          tilt: 0,
+          bearing: 0,
+        ),
+      );*/
     }
+
+    await controller.changeFollowState();
+
+    // setLocale(const Locale("ar", "US"), TextDirection.ltr);
+    await controller.loadStyles(Constants.mapStyle);
+    await controller.overrideLocales(["ar-SA", "en-SA"]);
+    // await controller.overrideLocales([localeState.value.locale]);
+
     await controller.setMarkerOptions(
       MarkerOptionsMessageOld(
         svgAsset: "assets/svg/ic_marker.svg",
@@ -90,9 +203,26 @@ class MapViewModel extends BaseViewModel {
         iconWidth: 24,
       ),
     );
+
+    // await _checkLocationPermissions();
+    // unawaited(controller.fetchLayers());
+
     initialized.value = true;
     generalControlsState.value = true;
+
+    // final layers = finalawait LayersProvider.get().layers();
+    // final ioLayer = layers.where((element) => element.id == 2).first;
+    // esriIOLayerInfo = await LayersProvider.get().layerInfo(ioLayer);
     return true;
+  }
+
+  void onLocationTap() => unawaited(controller.changeFollowState());
+
+  void onLevelTap(IndoorLevel level) =>
+      unawaited(controller.selectIndoorLevel(level));
+
+  void setCameraTopPadding(double? topPadding) {
+    _cameraTopPadding = topPadding;
   }
 
   @override
@@ -105,7 +235,6 @@ class MapViewModel extends BaseViewModel {
     locationEnabledState.dispose();
 
     unawaited(controller.dispose());
-    super.dispose();
   }
 
   void _setupListeners() {
@@ -121,6 +250,19 @@ class MapViewModel extends BaseViewModel {
         _objectTapListener,
       ),
     );
+    _subscriptions.add(
+      controller.markerWithPhotoTapEvents.listen(
+        _onPanoramaTap,
+      ),
+    );
+  }
+
+  // When move camera map any change zoom in, zoom out ...
+  void _visibleRectChangeListener(VisibleRectEvent event) {
+    _lastHandledEvent = event;
+
+    // start Timer when stop move camera  call search funcation
+    _startRequestTimer();
   }
 
   // When click on ayn object
@@ -131,57 +273,26 @@ class MapViewModel extends BaseViewModel {
       viewHomeBottomSheet.notifyListeners();
     }
 
-    //
-  }
-
-  // When click on ayn object
-  Future<void> _zoomEvents(ZoomControlEnabledEvent event) async {
-    // when Click on Map hide ViewHomeBottomSheet if he is not hide
-
-    print(event);
-
-    //
-  }
-
-  //////////////////////////////////////////////  search
-  TextEditingController searchController = TextEditingController();
-  final layerSelected = ValueNotifier<Layers?>(null);
-  GISMapLayers? gisSelectedLayer;
-
-  Future<void> performSearch({required String queryText}) async {
-    try {
-      searchController.text = queryText;
-      List<ObjectInfoMessage> data = await controller.search(
-        queryText,
-        sortingType: SortingTypeMessage.byDistance,
-        searchMarker:
-            MarkerIconMessage(path: Constants.icMarkerRestaurant, width: 30),
-        isOpenNow: true,
-      );
-      // if (data.isNotEmpty) {
-      //   final responseDistance = await controller.getDistanceTo(
-      //     _mapToDistanceRequest(data),
-      //   );
-      //   print(responseDistance);
-      // }
-      print(data);
-    } catch (e) {
-      print(e);
-    }
-  }
-
-  ////////////////////////////////////////////////////////////////
-  late VisibleRectEvent _lastHandledEvent;
-
-  // When move camera map any change zoom in, zoom out ...
-  void _visibleRectChangeListener(VisibleRectEvent event) {
-    _lastHandledEvent = event;
-    zoomValue = event.visibleRect.zoom;
-    // print(zoomValue);
-    // start Timer when stop move camera  call search funcation
-    if (layerSelected.value != null) {
-      _startRequestTimer();
-    }
+    // //
+    // switch (controller.activeLayerState.value.layer) {
+    //   case BusinessLayers.tourism:
+    //     if (event is ObjectTapEvent) {
+    //       selectedPointId.value = DgisObjectIdMessage(
+    //         objectId: event.dgisObjectId.objectId,
+    //         entranceId: event.dgisObjectId.entranceId,
+    //       );
+    //     }
+    //     return;
+    //   case BusinessLayers.idle:
+    //     // if (event is IdleTapEvent) unawaited(_handleIdleEvent(event));
+    //     return;
+    //   case BusinessLayers.io:
+    //     // if (event is IoTapEvent) unawaited(_handleIoEvent(event));
+    //     return;
+    //   case BusinessLayers.panoramas:
+    //     // handles by [_onPanoramaTap]
+    //     return;
+    // }
   }
 
   void _startRequestTimer() {
@@ -191,10 +302,15 @@ class MapViewModel extends BaseViewModel {
     }
     _debounce = Stream.fromFuture(
       Future.delayed(
-        const Duration(milliseconds: 1000),
+        const Duration(milliseconds: 500),
       ),
     ).listen((_) async {
-      callSearch();
+      if (searchController.text.isNotEmpty) {
+        await performSearch(
+          queryText: searchController.text,
+        );
+      }
+      _clearDebounce();
     });
     _subscriptions.add(_debounce!);
   }
@@ -204,8 +320,43 @@ class MapViewModel extends BaseViewModel {
     _debounce = null;
   }
 
-  //////////////////////////////////////////
+  void _onPanoramaTap(MarkerWithPhotoTapEvent event) {
+    try {
+      final data = event.photoData;
+      print(data);
+      // panoramaState.value = PanoramaState(
+      //   photoUrl: data.photoUrl,
+      //   azimuth: data.azimuth,
+      // );
 
+      // if (!mapCardCollapsedState.value) {
+      //   _setCameraPaddings();
+      // }
+
+      // mapCardCollapsedState.value = true;
+      // topSheetVisibleState.value = false;
+      unawaited(controller.moveCameraToSelectedPanorama());
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  void getLocationAndMoveCamera() async {
+    var latlng = await Helpers.getCurrentLocation();
+
+    if (latlng != null)
+      await controller.setCameraPosition(
+        CameraPositionMessage(
+          zoomValue: 14,
+          geoPoint: GeoPointMessage(
+            latitude: 24.729761968361412,
+            longitude: 46.665576686472015,
+          ),
+        ),
+      );
+  }
+
+/*
   callSearch() async {
     // await performSearch(queryText: searchController.text);
 
@@ -462,6 +613,14 @@ class MapViewModel extends BaseViewModel {
           ),
         ),
       );
+  }
+*/
+
+  void selectLayers(Layers value) async {
+    layerSelected.value = value;
+    gisSelectedLayer = gisSelectedLayer = GISMapLayers.values
+        .firstWhereOrNull((element) => element.layerId == value.id);
+    //callSearch();
   }
 
   dynamic getMapCardData() {}

@@ -33,7 +33,7 @@ class DashBoardPage extends StatelessWidget {
         appBar: DefaultAppBarWidget(
           title: 'dashboard'.tr(),
           actions: const [
-            Padding(
+            /*Padding(
               padding: EdgeInsets.symmetric(horizontal: 8),
               child: CircleIcon(
                 backgroundColor: AppColor.primary50Light,
@@ -41,7 +41,7 @@ class DashBoardPage extends StatelessWidget {
                 circleSize: 48.0,
                 iconSize: 30.0,
               ),
-            ),
+            ),*/
           ],
         ),
         body: Padding(

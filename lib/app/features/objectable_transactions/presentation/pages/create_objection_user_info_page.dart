@@ -69,8 +69,9 @@ class _CreateObjectionUserInfoPageState
                           CustomVerticalSpace(height: 8),
                           FieldData(
                             title: ("user_data_applicant_role").tr(),
-                            subTitle:
-                                CommonProperties.selectedDelegator?.roleName,
+                            subTitle: CommonProperties.selectedDelegator != null
+                                ? CommonProperties.selectedDelegator?.roleName
+                                : "عن نفسه",
                           ),
                           CustomVerticalSpace(height: 8),
                           FieldData(

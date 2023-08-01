@@ -71,7 +71,7 @@ class _QuranPageState extends State<QuranPage> {
                           color: Colors.white,
                           image: DecorationImage(
                             image: AssetImage(ImagePath.zmzmBackground),
-                            fit: BoxFit.fill,
+                            fit: BoxFit.cover,
                           ),
                           boxShadow: Constants.appBarBoxShadow,
                         ),

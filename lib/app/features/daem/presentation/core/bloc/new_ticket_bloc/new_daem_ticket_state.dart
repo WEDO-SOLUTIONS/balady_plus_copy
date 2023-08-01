@@ -34,9 +34,7 @@ class NewDaemTicketState extends Equatable {
   });
 
   bool isNextButtonEnabled() {
-    if (currentPageValue == 0) {}
-
-    return false;
+    return isFormValid ?? false;
   }
 
   NewDaemTicketState copyWith({

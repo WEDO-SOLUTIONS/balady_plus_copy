@@ -1648,6 +1648,7 @@
 "visit_health_center": "يجب زيارة مركز صحي بعد تقديم الطلب.",
 "view_health_centers_list": "استعراض قائمة المراكز الصحية",
 "cancel_order": "إلغاء الطلب",
+"health_center": "المركز الصحي",
 "medical_examination_data": "بيانات الفحص الطبي",
 "check_code": "كود الفحص",
 "check_date": "تاريخ الفحص",

@@ -1,112 +1,51 @@
-import 'package:balady_plus/app/features/map_page/data/model/layers.dart';
-import 'package:balady_plus/app/features/map_page/presentation/mvvm/layers_gis_view_model.dart';
-import 'package:balady_plus/app/features/map_page/presentation/mvvm/map_view_model.dart';
-import 'package:balady_plus/app/features/map_page/presentation/mvvm/search_map_view_model.dart';
-import 'package:flutter/material.dart';
-import 'package:localize_and_translate/localize_and_translate.dart';
-import 'package:provider/provider.dart';
-import '../../../../core/utils/enums/near_by_types.dart';
-import '../../../home_page/presentation/widgets/home_tag.dart';
+import 'dart:async';
 
-class SearchMapWidget extends StatelessWidget {
-  const SearchMapWidget({
-    super.key,
-  });
+import 'package:balady_plus/app/core/base/base_view_model.dart';
+import 'package:dgis_map/library.dart';
+import 'package:flutter/widgets.dart';
 
-  @override
-  Widget build(BuildContext context) {
-    MapViewModel mapViewModel = context.watch<MapViewModel>();
+class SearchMapViewModel extends BaseViewModel {
+  TextEditingController searchController = TextEditingController();
 
-    return Column(
-      children: [
-        TextFormField(
-          controller: mapViewModel.searchController,
-          textInputAction: TextInputAction.search,
-          decoration: InputDecoration(
-            hintText: 'search'.tr(),
-            fillColor: Colors.white,
-            filled: true,
-            contentPadding: const EdgeInsets.symmetric(
-              horizontal: 16,
-              vertical: 6,
-            ),
-            prefixIcon: const Icon(Icons.search),
-            border: const OutlineInputBorder(
-              borderRadius: BorderRadius.all(Radius.circular(8)),
-              borderSide: BorderSide.none,
-            ),
-            disabledBorder: const OutlineInputBorder(
-              borderRadius: BorderRadius.all(Radius.circular(8)),
-              borderSide: BorderSide.none,
-            ),
-            enabledBorder: const OutlineInputBorder(
-              borderRadius: BorderRadius.all(Radius.circular(8)),
-              borderSide: BorderSide.none,
-            ),
-            focusedBorder: const OutlineInputBorder(
-              borderRadius: BorderRadius.all(Radius.circular(8)),
-              borderSide: BorderSide.none,
-            ),
-            errorBorder: const OutlineInputBorder(
-              borderRadius: BorderRadius.all(Radius.circular(8)),
-              borderSide: BorderSide.none,
-            ),
-            focusedErrorBorder: const OutlineInputBorder(
-              borderRadius: BorderRadius.all(Radius.circular(8)),
-              borderSide: BorderSide.none,
-            ),
+  final DgisMapController controller;
+
+  SearchMapViewModel(this.controller);
+
+  Future<void> performSearch({required String queryText}) async {
+    try {
+      searchController.text = queryText;
+      SearchResultMessage data = await controller.search(
+        queryText,
+        sortingType: SortingTypeMessage.byDistance,
+        isOpenNow: true,
+      );
+      if (data.firstPage?.items != null) {
+        final responseDistance = await controller.getDistanceTo(
+          _mapToDistanceRequest(
+            data.firstPage!.items
+                .map((e) => e as DirectoryObjectMessage)
+                .toList(),
           ),
-          onFieldSubmitted: (text) {
-            if (text.isNotEmpty) {
-              mapViewModel.performSearch(queryText: text);
-            }
-          },
-          // onChanged: (text) => searchItem(text: text),
-        ),
-        // const SizedBox(
-        //   height: 6,
-        // ),
-        // Selector<LayersGisViewModel, List<SubLayers>?>(
-        //   selector: (_, provider) => provider.subLayers,
-        //   builder: (_, subLayers, __) {
-        //     return subLayers?.isNotEmpty ?? false
-        //         ? SizedBox(
-        //             height: 40,
-        //             child: ListView.builder(
-        //               scrollDirection: Axis.horizontal,
-        //               itemCount: subLayers!.length,
-        //               padding: EdgeInsets.zero,
-        //               itemBuilder: (context, index) {
-        //                 final SubLayers layer = subLayers[index];
-        //                   return  Container(
-        //                         margin: const EdgeInsetsDirectional.only(
-        //                           start: 8,
-        //                           bottom: 8,
-        //                         ),
-        //                         child: InkWell(
-        //                           onTap: () {
-        //                             mapViewModel.performSearch(queryText: layer.name);
-        //                             mapViewModel.subLayerSelected.value = layer;
-        //                           },
-        //                           child: ValueListenableBuilder<SubLayers?>(
-        //                             valueListenable: mapViewModel.subLayerSelected,
-        //                             builder: (_, subLayerSelected, __) {
-        //                               return HomeTag(
-        //                                 title: layer.name,
-        //                                 color: Colors.deepPurple.shade700,
-        //                                 selected: layer == subLayerSelected,
-        //                               );
-        //                             },
-        //                           ),
-        //                         ),
-        //                       );
-        //               },
-        //             ),
-        //           )
-        //         : const SizedBox();
-        //   },
-        // ),
-      ],
-    );
+        );
+        print(responseDistance);
+      }
+      print(data);
+    } catch (e) {
+      print(e);
+    }
   }
+
+  List<DistanceRequestMessage> _mapToDistanceRequest(
+          List<DirectoryObjectMessage> values) =>
+      values
+          .where((element) => element.id != null)
+          .where((element) => element.markerPosition != null)
+          .map((e) => DistanceRequestMessage(
+                geoPoint: GeoPointMessage(
+                  latitude: e.markerPosition!.latitude,
+                  longitude: e.markerPosition!.longitude,
+                ),
+                dgisObjectId: e.id!,
+              ))
+          .toList();
 }

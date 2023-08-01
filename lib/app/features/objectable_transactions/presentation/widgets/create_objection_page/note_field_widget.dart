@@ -36,6 +36,7 @@ class _NotesFieldsSection extends State<NotesFieldsSection> {
           label: ("objection_create_reason").tr(),
           hintText: ("objection_create_reason").tr(),
           obsecureText: false,
+          fillColor: Colors.transparent,
           maxLines: 6,
           keyboardType: TextInputType.multiline,
           // errorText: state.incidentDescErrorText,
