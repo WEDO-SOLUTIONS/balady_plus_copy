@@ -461,16 +461,24 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         )
     }
     
-    func addMarkerMarker(_ marker: MarkerMessage, completion: @escaping (FlutterError?) -> Void) {
-         self.objectTapHandler?.addMarker(marker, completion: completion)
+    func addMarkerMarker(_ marker: MarkerMessage, clusterId: String?, completion: @escaping (FlutterError?) -> Void) {
+        self.objectTapHandler?.addMarker(marker, to: clusterId, completion: completion)
+    }
+
+    func addMarkersMarkers(_ markers: [MarkerMessage], clusterId: String?, completion: @escaping (FlutterError?) -> Void) {
+        self.objectTapHandler?.addMarkers(markers, to: clusterId, completion: completion)
     }
     
-    func addMarkersMarkers(_ markers: [MarkerMessage], completion: @escaping (FlutterError?) -> Void) {
-         self.objectTapHandler?.addMarkers(markers, completion: completion)
+    func removeMarkerId(_ id: String, clusterId: String?, completion: @escaping (FlutterError?) -> Void) {
+        self.objectTapHandler?.removeMarker(id, from: clusterId, completion: completion)
     }
     
-    func removeMarkerId(_ id: String, completion: @escaping (FlutterError?) -> Void) {
-        self.objectTapHandler?.removeMarker(id, completion: completion)
+    func add(_ cluster: ClusterMessage, completion: @escaping (FlutterError?) -> Void) {
+        self.objectTapHandler?.addCluster(cluster, completion: completion)
+    }
+    
+    func removeClusterId(_ id: String, completion: @escaping (FlutterError?) -> Void) {
+        self.objectTapHandler?.removeCluster(id, completion: completion)
     }
     
     func addPolygonPolygon(_ polygon: PolygonMessage, completion: @escaping (FlutterError?) -> Void) {
@@ -508,9 +516,9 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
             completion
         )
     }
-    
-    func removeAllMarkers(completion: @escaping (FlutterError?) -> Void) {
-        self.objectTapHandler?.removeAllMarkers()
+
+    func removeAllMarkersClusterId(_ clusterId: String?, completion: @escaping (FlutterError?) -> Void) {
+        self.objectTapHandler?.removeAllMarkers(from: clusterId)
         completion(nil)
     }
     
@@ -566,7 +574,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
     }
     
     func removeEsriIOLayer(completion: @escaping (FlutterError?) -> Void) {
-        self.objectTapHandler?.removeAllMarkers()
+        self.objectTapHandler?.removeAllMarkers(from: nil)
         completion(nil)
     }
     
@@ -638,6 +646,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         }
         
         let objectTapHandler = ObjectTapHandler(
+            map: map,
             objectManager:
                 MapObjectManager.withGeneralization(
                     map: map,

@@ -285,7 +285,7 @@ class DgisMapController {
   /// Remove all markers, polygons, polylines
   /// that were added with [addMarker], [addPolygons], [addPolyline].
   Future<void> removeAll() async {
-    await _instance.removeAllMarkers();
+    await _instance.removeAllMarkers(null);
     await _instance.removeAllPolygons();
     await _instance.removeAllPolylines();
   }
