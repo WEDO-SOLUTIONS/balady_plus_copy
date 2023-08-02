@@ -64,7 +64,6 @@ class FlutterClutserRenderer: SimpleClusterRenderer {
             iconWidth: (message!.icon?.width).map {
                 LogicalPixel(value: $0.floatValue)
             } ?? LogicalPixel(value: 0)
-//            userData: ClusterId(cluster.id)
         )
         
         return options!

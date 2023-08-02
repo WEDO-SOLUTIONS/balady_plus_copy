@@ -438,9 +438,10 @@ class MethodChannelDgisMapPlugin implements DgisMapPlugin, FlutterMapApi {
       SimpleClusterObjectMessage clusterObject) {
     final cluster =
         _objectTapEventHandler.clusterRenderers[manager.id]!(clusterObject);
+    // TODO: onTap logic
     // if (cluster.onTap != null) {
     //   _objectTapEventHandler.addClusterHandler(
-    //     cluster.id,
+    //     manager.id,
     //     cluster.onTap!,
     //   );
     // }
@@ -573,8 +574,8 @@ class MethodChannelDgisMapPlugin implements DgisMapPlugin, FlutterMapApi {
             surfaceFactory: (context, controller) {
               return AndroidViewSurface(
                 controller: controller as AndroidViewController,
-                gestureRecognizers: const <
-                    Factory<OneSequenceGestureRecognizer>>{},
+                gestureRecognizers: const <Factory<
+                    OneSequenceGestureRecognizer>>{},
                 hitTestBehavior: PlatformViewHitTestBehavior.opaque,
               );
             },

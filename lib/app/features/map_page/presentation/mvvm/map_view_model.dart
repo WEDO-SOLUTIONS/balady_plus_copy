@@ -22,7 +22,7 @@ class MapViewModel extends BaseViewModel {
 
   ValueNotifier<SearchCategoryMessage?> selectedCategory = ValueNotifier(null);
 
-  late MapObjectManagerMessage searchManager;
+  late MapObjectManagerMessage mapObjectManager;
 
   Future<void> performSearch({
     required String queryText,
@@ -45,7 +45,7 @@ class MapViewModel extends BaseViewModel {
               isOpenNow: false,
               searchRect: _lastHandledEvent?.visibleRect.geoRectMessage(),
             );
-      await controller.removeAllMarkers(fromManager: searchManager);
+      await controller.removeAllMarkers(fromManager: mapObjectManager);
 
       if (data.itemMarkerInfos != null) {
         List<Marker> markers = [];
@@ -74,7 +74,7 @@ class MapViewModel extends BaseViewModel {
           ));
         }
 
-        await controller.addMarkers(markers, toManager: searchManager);
+        await controller.addMarkers(markers, toManager: mapObjectManager);
       }
       if (data.firstPage?.items != null) {
         final responseDistance = await controller.getDistanceTo(
@@ -168,7 +168,7 @@ class MapViewModel extends BaseViewModel {
       ),
     );
 
-    searchManager = await controller.createMapObjectManagerWithClustering(
+    mapObjectManager = await controller.createMapObjectManagerWithClustering(
       ClusteringMapObjectManager(
         options: ClusteringMapObjectManagerOptionsMessage(
           logicalPixel: 40,
@@ -188,8 +188,6 @@ class MapViewModel extends BaseViewModel {
         },
       ),
     );
-
-    print(searchManager.id);
 
     // await _checkLocationPermissions();
     // unawaited(controller.fetchLayers());
