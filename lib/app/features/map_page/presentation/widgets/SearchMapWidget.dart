@@ -89,8 +89,11 @@ class SearchMapWidget extends StatelessWidget {
                               width: 8,
                             ),
                             Container(
+                              padding: EdgeInsets.symmetric(horizontal: 4),
                               decoration: BoxDecoration(
-                                color: value == e ? Colors.black : Colors.white,
+                                color: value == e
+                                    ? Color(0xFF4B5563)
+                                    : Colors.white,
                                 borderRadius: BorderRadius.circular(8.0),
                               ),
                               child: InkWell(
@@ -106,6 +109,9 @@ class SearchMapWidget extends StatelessWidget {
                                         width: 16,
                                         height: 16,
                                         child: SvgPicture.asset(e.iconName()),
+                                      ),
+                                      SizedBox(
+                                        width: 4,
                                       ),
                                       CustomTextWidget(
                                         e.displayName(),

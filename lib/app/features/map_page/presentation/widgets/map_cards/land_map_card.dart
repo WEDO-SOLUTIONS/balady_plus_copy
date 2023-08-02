@@ -5,15 +5,21 @@ import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/c
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import 'package:flutter/material.dart';
 
+import '../../../../home_page/presentation/widgets/home_app_bar/circle_icon.dart';
 import '../../../data/model/excavations.dart';
 
 class DiggingMapCard extends StatelessWidget {
   final String? title;
   final String? subTitle;
   final String? subSubTitle;
+  final Function onClose;
 
   const DiggingMapCard(
-      {super.key, this.subSubTitle, this.subTitle, this.title});
+      {super.key,
+      this.subSubTitle,
+      this.subTitle,
+      this.title,
+      required this.onClose});
 
   @override
   Widget build(BuildContext context) {
@@ -34,49 +40,68 @@ class DiggingMapCard extends StatelessWidget {
           )
         ],
       ),
-      child: Row(mainAxisSize: MainAxisSize.min, children: [
-        ClipRRect(
-            borderRadius: BorderRadius.circular(16),
-            child: Image.asset(
-              ImagePath.diggingMapCard,
-              width: 60,
-              height: 60,
-            )),
-        CustomHorizontalSpace(width: 8),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              CustomTextWidget(
-                title ?? "",
-                fontColor: AppColor.blackModern800Light,
-                fontSize: 16,
-                fontWeight: AppFontWeight.bold,
-                maxLines: 1,
+      child: Stack(
+        children: [
+          Row(mainAxisSize: MainAxisSize.min, children: [
+            ClipRRect(
+                borderRadius: BorderRadius.circular(16),
+                child: Image.asset(
+                  ImagePath.diggingMapCard,
+                  width: 60,
+                  height: 60,
+                )),
+            CustomHorizontalSpace(width: 8),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  CustomTextWidget(
+                    title ?? "",
+                    fontColor: AppColor.blackModern800Light,
+                    fontSize: 16,
+                    fontWeight: AppFontWeight.bold,
+                    maxLines: 1,
+                  ),
+                  CustomVerticalSpace(height: 8),
+                  CustomTextWidget(
+                    subTitle ?? "",
+                    fontColor: AppColor.blackModern500Light,
+                    fontSize: 12,
+                    fontWeight: AppFontWeight.semiBold,
+                    height: 1.3,
+                    maxLines: 3,
+                  ),
+                  CustomVerticalSpace(height: 8),
+                  CustomTextWidget(
+                    subSubTitle ?? "",
+                    fontColor: Color(0xFFF51C1C),
+                    fontSize: 12,
+                    fontWeight: AppFontWeight.semiBold,
+                    height: 1.3,
+                    maxLines: 3,
+                  ),
+                ],
               ),
-              CustomVerticalSpace(height: 8),
-              CustomTextWidget(
-                subTitle ?? "",
-                fontColor: AppColor.blackModern500Light,
-                fontSize: 12,
-                fontWeight: AppFontWeight.semiBold,
-                height: 1.3,
-                maxLines: 3,
+            )
+          ]),
+          Align(
+            alignment: Alignment.topLeft,
+            child: GestureDetector(
+              onTap: () {
+                onClose();
+              },
+              child: CircleIcon(
+                icon: Icons.close,
+                circleSize: 24,
+                iconColor: AppColor.primary600Light,
+                backgroundColor: AppColor.geyser.withOpacity(0.4),
+                iconSize: 12,
               ),
-              CustomVerticalSpace(height: 8),
-              CustomTextWidget(
-                subSubTitle ?? "",
-                fontColor: Color(0xFFF51C1C),
-                fontSize: 12,
-                fontWeight: AppFontWeight.semiBold,
-                height: 1.3,
-                maxLines: 3,
-              ),
-            ],
+            ),
           ),
-        )
-      ]),
+        ],
+      ),
     );
   }
 }

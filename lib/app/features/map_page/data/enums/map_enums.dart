@@ -36,21 +36,19 @@ enum GISMapLayers {
         "OBJECTID",
         "SITE_NAME",
         "WORKSTARTDATE",
+        "PATHLENGTH",
         "WORKENDDATE",
+        "NAME_AR"
       ],
       outFieldsLong: [
-        "STATUS",
-        "LIC_STATUS",
-        "NAME_AR",
-        "CONTRACTOR_NAME",
+        "STREET_CLOSE_TYPE",
         "PROJECT_NAME",
         "OBJECTID",
-        "WORKSTARTDATE",
-        "WORKENDDATE",
-        "STREET_CLOSE_TYPE",
-        "PATHLENGTH",
         "SITE_NAME",
-        "WORKNATURE",
+        "WORKSTARTDATE",
+        "PATHLENGTH"
+            "WORKENDDATE",
+        "NAME_AR"
       ]),
 
   BSAimtithalBuildingsCertificateL(
@@ -114,6 +112,7 @@ enum GISMapLayers {
     "PLANNAME",
     "SHAPE.AREA",*/
         "OBJECTID",
+        "STATUS"
       ],
       outFieldsLong: [
         /* "PARCELAREA",
@@ -128,6 +127,7 @@ enum GISMapLayers {
     "DESCRIPTION",
     "SHAPE.AREA",*/
         "OBJECTID",
+        "STATUS"
       ]),
 
   CadastralParcels(

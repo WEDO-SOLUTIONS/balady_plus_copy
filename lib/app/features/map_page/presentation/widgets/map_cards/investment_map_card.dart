@@ -6,13 +6,16 @@ import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/t
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../../home_page/presentation/widgets/home_app_bar/circle_icon.dart';
 import '../../../data/model/investment_sites.dart';
 import '../../mvvm/map_view_model.dart';
 
 class InvestmentMapCard extends StatelessWidget {
   final InvestmentSites data;
+  final Function onClose;
 
-  const InvestmentMapCard({super.key, required this.data});
+  const InvestmentMapCard(
+      {super.key, required this.data, required this.onClose});
 
   @override
   Widget build(BuildContext context) {
@@ -40,51 +43,70 @@ class InvestmentMapCard extends StatelessWidget {
             )
           ],
         ),
-        child: Row(mainAxisSize: MainAxisSize.min, children: [
-          ClipRRect(
-              borderRadius: BorderRadius.circular(16),
-              child: Image.asset(
-                ImagePath.diggingMapCard,
-                width: 60,
-                height: 60,
-              )),
-          CustomHorizontalSpace(width: 8),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                CustomTextWidget(
-                  data.description ?? "",
-                  fontColor: AppColor.blackModern800Light,
-                  fontSize: 16,
-                  fontWeight: AppFontWeight.bold,
-                  maxLines: 2,
-                  textOverflow: TextOverflow.ellipsis,
-                  height: 1.3,
+        child: Stack(
+          children: [
+            Row(mainAxisSize: MainAxisSize.min, children: [
+              ClipRRect(
+                  borderRadius: BorderRadius.circular(16),
+                  child: Image.asset(
+                    ImagePath.diggingMapCard,
+                    width: 60,
+                    height: 60,
+                  )),
+              CustomHorizontalSpace(width: 8),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    CustomTextWidget(
+                      data.description ?? "",
+                      fontColor: AppColor.blackModern800Light,
+                      fontSize: 16,
+                      fontWeight: AppFontWeight.bold,
+                      maxLines: 2,
+                      textOverflow: TextOverflow.ellipsis,
+                      height: 1.3,
+                    ),
+                    CustomVerticalSpace(height: 8),
+                    CustomTextWidget(
+                      data.municipality ?? "",
+                      fontColor: AppColor.blackModern500Light,
+                      fontSize: 12,
+                      fontWeight: AppFontWeight.semiBold,
+                      height: 1.3,
+                      maxLines: 2,
+                    ),
+                    CustomVerticalSpace(height: 8),
+                    CustomTextWidget(
+                      "فرصة استثمارية",
+                      fontColor: Color(0xFFF51C1C),
+                      fontSize: 12,
+                      fontWeight: AppFontWeight.semiBold,
+                      height: 1.3,
+                      maxLines: 3,
+                    ),
+                  ],
                 ),
-                CustomVerticalSpace(height: 8),
-                CustomTextWidget(
-                  data.municipality ?? "",
-                  fontColor: AppColor.blackModern500Light,
-                  fontSize: 12,
-                  fontWeight: AppFontWeight.semiBold,
-                  height: 1.3,
-                  maxLines: 2,
+              )
+            ]),
+            Align(
+              alignment: Alignment.topLeft,
+              child: GestureDetector(
+                onTap: () {
+                  onClose();
+                },
+                child: CircleIcon(
+                  icon: Icons.close,
+                  circleSize: 24,
+                  iconColor: AppColor.primary600Light,
+                  backgroundColor: AppColor.geyser.withOpacity(0.4),
+                  iconSize: 12,
                 ),
-                CustomVerticalSpace(height: 8),
-                CustomTextWidget(
-                  "فرصة استثمارية",
-                  fontColor: Color(0xFFF51C1C),
-                  fontSize: 12,
-                  fontWeight: AppFontWeight.semiBold,
-                  height: 1.3,
-                  maxLines: 3,
-                ),
-              ],
+              ),
             ),
-          )
-        ]),
+          ],
+        ),
       ),
     );
   }

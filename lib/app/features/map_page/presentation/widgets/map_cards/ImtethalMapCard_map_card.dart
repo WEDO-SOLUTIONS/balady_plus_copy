@@ -8,14 +8,16 @@ import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/t
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../../home_page/presentation/widgets/home_app_bar/circle_icon.dart';
 import '../../../data/model/building_compliance_certificate.dart';
 import '../../../data/model/excavations.dart';
 import '../../mvvm/map_view_model.dart';
 
 class ImtethalMapCard extends StatelessWidget {
   final BuildingComplianceCertificate data;
+  final Function onClose;
 
-  const ImtethalMapCard({super.key, required this.data});
+  const ImtethalMapCard({super.key, required this.data, required this.onClose});
 
   @override
   Widget build(BuildContext context) {
@@ -39,91 +41,110 @@ class ImtethalMapCard extends StatelessWidget {
           )
         ],
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
+      child: Stack(
         children: [
-          CustomTextWidget(
-            "العنوان",
-            fontColor: AppColor.blackModern800Light,
-            fontSize: 16,
-            fontWeight: AppFontWeight.bold,
-            maxLines: 1,
-          ),
-          CustomVerticalSpace(height: 8),
-          CustomTextWidget(
-            data.getMunAndDis(),
-            fontColor: AppColor.blackModern500Light,
-            fontSize: 12,
-            fontWeight: AppFontWeight.bold,
-            height: 1.3,
-            maxLines: 2,
-          ),
-          CustomVerticalSpace(height: 8),
-          CustomTextWidget(
-            data.AMANANAME ?? "",
-            fontColor: AppColor.blackModern500Light,
-            fontSize: 12,
-            fontWeight: AppFontWeight.medium,
-            height: 1.3,
-            maxLines: 3,
-          ),
-          CustomVerticalSpace(height: 10),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
             children: [
               CustomTextWidget(
-                data.STAGENO ?? "",
-                fontColor: AppColor.blackModern600Light,
-                fontSize: 12,
+                "العنوان",
+                fontColor: AppColor.blackModern800Light,
+                fontSize: 16,
                 fontWeight: AppFontWeight.bold,
-                height: 1.3,
-                maxLines: 3,
+                maxLines: 1,
               ),
+              CustomVerticalSpace(height: 8),
               CustomTextWidget(
-                data.TARGETBUILDINGTYPE ?? "",
-                fontColor: AppColor.blackModern600Light,
+                data.getMunAndDis(),
+                fontColor: AppColor.blackModern500Light,
                 fontSize: 12,
                 fontWeight: AppFontWeight.bold,
                 height: 1.3,
+                maxLines: 2,
+              ),
+              CustomVerticalSpace(height: 8),
+              CustomTextWidget(
+                data.AMANANAME ?? "",
+                fontColor: AppColor.blackModern500Light,
+                fontSize: 12,
+                fontWeight: AppFontWeight.medium,
+                height: 1.3,
                 maxLines: 3,
               ),
+              CustomVerticalSpace(height: 10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  CustomTextWidget(
+                    data.STAGENO ?? "",
+                    fontColor: AppColor.blackModern600Light,
+                    fontSize: 12,
+                    fontWeight: AppFontWeight.bold,
+                    height: 1.3,
+                    maxLines: 3,
+                  ),
+                  CustomTextWidget(
+                    data.TARGETBUILDINGTYPE ?? "",
+                    fontColor: AppColor.blackModern600Light,
+                    fontSize: 12,
+                    fontWeight: AppFontWeight.bold,
+                    height: 1.3,
+                    maxLines: 3,
+                  ),
+                ],
+              ),
+              CustomVerticalSpace(height: 10),
+              GestureDetector(
+                onTap: () {
+                  CommonFunctions.externalLaunch(
+                      "https://gisapps.momra.gov.sa/imtithal/assets/req.pdf");
+                },
+                child: Container(
+                    height: 40,
+                    padding: const EdgeInsets.only(left: 7.50, right: 16),
+                    decoration: ShapeDecoration(
+                      color: Color(0xFFE6EFEF),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8)),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        CustomTextWidget(
+                          'عرض المتطلبات والاشتراطات',
+                          fontColor: AppColor.primary700Light,
+                          fontSize: 12,
+                          fontWeight: AppFontWeight.bold,
+                          height: 1.3,
+                          maxLines: 3,
+                        ),
+                        RotatedBox(
+                            quarterTurns: 1,
+                            child: Icon(
+                              Icons.arrow_drop_down,
+                              color: AppColor.primary700Light,
+                            ))
+                      ],
+                    )),
+              )
             ],
           ),
-          CustomVerticalSpace(height: 10),
-          GestureDetector(
-            onTap: () {
-              CommonFunctions.externalLaunch(
-                  "https://gisapps.momra.gov.sa/imtithal/assets/req.pdf");
-            },
-            child: Container(
-                height: 40,
-                padding: const EdgeInsets.only(left: 7.50, right: 16),
-                decoration: ShapeDecoration(
-                  color: Color(0xFFE6EFEF),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8)),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    CustomTextWidget(
-                      'عرض المتطلبات والاشتراطات',
-                      fontColor: AppColor.primary700Light,
-                      fontSize: 12,
-                      fontWeight: AppFontWeight.bold,
-                      height: 1.3,
-                      maxLines: 3,
-                    ),
-                    RotatedBox(
-                        quarterTurns: 1,
-                        child: Icon(
-                          Icons.arrow_drop_down,
-                          color: AppColor.primary700Light,
-                        ))
-                  ],
-                )),
-          )
+          Align(
+            alignment: Alignment.topLeft,
+            child: GestureDetector(
+              onTap: () {
+                onClose();
+              },
+              child: CircleIcon(
+                icon: Icons.close,
+                circleSize: 24,
+                iconColor: AppColor.primary600Light,
+                backgroundColor: AppColor.geyser.withOpacity(0.4),
+                iconSize: 12,
+              ),
+            ),
+          ),
         ],
       ),
     );

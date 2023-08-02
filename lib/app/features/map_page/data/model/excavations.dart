@@ -94,7 +94,7 @@ class Excavations extends PointLayersData {
         workNature: json['attributes']["WORKNATURE"],
 
         /* amana: json['attributes']["AMMANA"],
-
+ 
         baladia: json['attributes']["BALADIA"],
         districtName: json['attributes']["DISTRICT_NAME"],
 

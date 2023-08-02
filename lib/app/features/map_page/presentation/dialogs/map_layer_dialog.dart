@@ -109,7 +109,7 @@ class _MapLayersDialogState extends State<MapLayersDialog> {
               print(layerSelected);
               if (layerSelected != null) {
                 mapViewModel.selectLayers(layerSelected!);
-
+                widget.layersModel.selectLayers(layerSelected!);
                 Navigator.of(context).pop();
               }
             },

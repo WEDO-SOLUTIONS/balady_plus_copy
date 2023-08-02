@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/features/map_page/extensions/search_category_ext.dart';
 import 'package:balady_plus/app/features/map_page/presentation/dialogs/map_layer_dialog.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
@@ -5,12 +6,14 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 import '../../../_shared_feature_/presentation/components/bottom_sheets/bottom_sheet_with_actions.dart';
 import '../../../_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
 import '../../data/data_sources/point_layers_data.dart';
+import '../../data/enums/map_enums.dart';
 import '../../data/model/layers.dart';
 import '../../constants/constants.dart' as mapConstants;
 
 import 'package:provider/provider.dart';
 import '../../data/model/white_lands.dart';
 import '../widgets/SearchMapWidget.dart';
+import '../widgets/general_card_widget.dart';
 import '../widgets/map_cards/lands_legends_map_card.dart';
 import '../widgets/map_layer_card.dart';
 import '../widgets/search_map_widget.dart';
@@ -79,18 +82,15 @@ class HomeMap extends StatelessWidget {
                 ValueListenableBuilder<double>(
                     valueListenable: mapViewModel.bottomSheetSize,
                     builder: (_, visible, __) {
-                      double bottomSize =
-                          (mapViewModel.bottomSheetSize.value <= 170 &&
-                                  mapViewModel.selectedPoint.value != null)
-                              ? 160
-                              : mapViewModel.bottomSheetSize.value;
+                      double bottomSize = mapViewModel.bottomSheetSize.value;
                       return Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          ValueListenableBuilder<WhiteLands?>(
-                            valueListenable: mapViewModel.selectedWhiteLands,
+                          ValueListenableBuilder<Layers?>(
+                            valueListenable: mapViewModel.layerSelected,
                             builder: (_, selectedPoint, __) {
-                              return selectedPoint == null
+                              return mapViewModel.gisSelectedLayer !=
+                                      GISMapLayers.BSWhiteParcelS
                                   ? const SizedBox()
                                   : LandsLegendsMapCard();
                             },
@@ -116,8 +116,7 @@ class HomeMap extends StatelessWidget {
                                     }),
                                 Constants.verticalSpaceSmall,
                                 GestureDetector(
-                                  onTap: () =>
-                                      mapViewModel.getLocationAndMoveCamera(),
+                                  onTap: () => mapViewModel.onLocationTap(),
                                   child: const CircleIcon(
                                     icon: IconPath.currentLocation,
                                     iconColor: AppColor.white,
@@ -143,6 +142,35 @@ class HomeMap extends StatelessWidget {
                 right: Constants.semiMediumPadding,
                 bottom: Constants.semiSmallPadding),
             child: MapLayerCard(),
+          ),
+        ),
+        Align(
+          alignment: Alignment.bottomCenter,
+          child: Padding(
+            padding: const EdgeInsets.only(
+                left: Constants.semiMediumPadding,
+                right: Constants.semiMediumPadding,
+                bottom: Constants.semiSmallPadding),
+            child: ValueListenableBuilder<DgisObjectIdMessage?>(
+              valueListenable: mapViewModel.selectedPointId,
+              builder: (_, selectedPoint, __) {
+                print(selectedPoint);
+                print("heree");
+                return selectedPoint == null
+                    ? const SizedBox()
+                    : GeneralMapCardWidget(
+                        icon:
+                            mapViewModel.selectedCategory.value!.cardIconName(),
+                        onClose: () {
+                          mapViewModel.showDialog();
+                        },
+                        pointViewModel: PointViewModel(
+                            controller: mapViewModel.controller,
+                            point: selectedPoint,
+                            webService: sl()),
+                      );
+              },
+            ),
           ),
         ),
         ValueListenableBuilder<bool>(
