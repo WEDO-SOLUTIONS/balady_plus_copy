@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
+import '../../../../_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
 import '../../../../_shared_feature_/shared_feature_exports.dart';
 import '../../../commercial_license_exports.dart';
 
@@ -7,56 +10,79 @@ class CRStep1ApplicantData extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Expanded(
-          child: SingleChildScrollView(
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16),
-              child: Column(
+    return BlocBuilder<CrStep1ApplicantDataCubit, CrStep1ApplicantDataState>(
+      builder: (context, state) {
+        return Stack(
+          children: [
+            if (state.recordStatus.isSubmissionSuccess)
+              Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  CRHeaderDesc(header: "بيانات مقدم الطلب"),
-                  SizedBox(height: 12),
-                  ReadOnlyField(
-                    title: "رقم الجوال",
-                    subTitle: '05049389393',
-                    showSpace: false,
+                  Expanded(
+                    child: SingleChildScrollView(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            CRHeaderDesc(header: "applicantInfo".tr()),
+                            const SizedBox(height: 12),
+                            if (state.recordInfo?.crInfo?.phoneNo != null &&
+                                state.recordInfo!.crInfo!.phoneNo!
+                                    .isNotEmpty) ...[
+                              ReadOnlyField(
+                                title: "phone_number".tr(),
+                                subTitle: state.recordInfo?.crInfo?.phoneNo,
+                                showSpace: false,
+                              ),
+                              const SizedBox(height: 8),
+                              NotesWidget(
+                                notes: [
+                                  "phoneNote".tr(),
+                                ],
+                              ),
+                            ],
+                            ReadOnlyField(
+                              title: "applicantDesc".tr(),
+                              subTitle:
+                                  state.recordInfo?.crInfo?.getLegalType ?? '',
+                            ),
+                            ReadOnlyField(
+                              title: "crNumber".tr(),
+                              subTitle: state.recordInfo?.crNumber ?? '',
+                            ),
+                            ReadOnlyField(
+                              title: "entityName".tr(),
+                              subTitle: state.recordInfo?.crInfo?.nameAr,
+                            ),
+                            ReadOnlyField(
+                              title: "entityNumber".tr(),
+                              subTitle:
+                                  state.recordInfo?.crInfo?.nationalNumber,
+                            ),
+                            ReadOnlyField(
+                              title: "crSource".tr(),
+                              subTitle: state.recordInfo?.crInfo?.getCity,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
                   ),
-                  SizedBox(height: 8),
-                  NotesWidget(
-                    notes: [
-                      "سوف يتم استلام جميع الاشعارات على رقم الجوال المسجل في النظام",
-                    ],
-                  ),
-                  ReadOnlyField(
-                    title: "صفه مقدم الطلب",
-                    subTitle: 'مالك المنشاه',
-                  ),
-                  ReadOnlyField(
-                    title: "السجل التجاري",
-                    subTitle: '89107831',
-                  ),
-                  ReadOnlyField(
-                    title: "اسم المنشاه",
-                    subTitle: 'الخزائن المبتكره',
-                  ),
-                  ReadOnlyField(
-                    title: "رقم المنشآه",
-                    subTitle: '8098787',
-                  ),
-                  ReadOnlyField(
-                    title: "مصدر السجل التجاري",
-                    subTitle: 'الدمام',
-                  ),
+                  const CRPreviousNextButtons(isBtnDisabled: false),
                 ],
               ),
-            ),
-          ),
-        ),
-        CRPreviousNextButtons(isBtnDisabled: false),
-      ],
+            if (state.recordStatus.isSubmissionFailure)
+              ErrorLoadingComponent(
+                message: state.errorMessage,
+                onTryAgain: () =>
+                    context.read<CrStep1ApplicantDataCubit>().getRecordInfo(),
+              ),
+            if (state.recordStatus.isSubmissionLoading)
+              const CustomCircularLoadingWidget(),
+          ],
+        );
+      },
     );
   }
 }
