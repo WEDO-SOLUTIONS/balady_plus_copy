@@ -95,14 +95,7 @@ class SearchMapWidget extends StatelessWidget {
                               ),
                               child: InkWell(
                                 onTap: () {
-                                  if (value == e) {
-                                    mapViewModel.selectedCategory.value = null;
-                                  } else {
-                                    mapViewModel.selectedCategory.value = e;
-                                  }
-                                  mapViewModel.performSearch(
-                                    queryText: e.displayName(),
-                                  );
+                                  mapViewModel.selectCategory(category: e);
                                   print("Changing ctaegory to: $e");
                                 },
                                 child: Padding(

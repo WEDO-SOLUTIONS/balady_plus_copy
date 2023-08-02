@@ -24,12 +24,25 @@ class WhiteLands extends PointLayersData {
         );
 
   factory WhiteLands.fromJson(Map<String, dynamic> json) => WhiteLands(
-        id: json['attributes']["OBJECTID"].toString(),
-        name: json['attributes']["PARCELNAME"] ?? 'name',
-        description: json['attributes']["DESCRIPTION"] ?? 'description',
-        type: json['attributes']["PLANNO"] ?? 'type',
+          id: json['attributes']["OBJECTID"].toString(),
+          name: json['attributes']["PARCELNAME"] ?? 'name',
+          description: json['attributes']["DESCRIPTION"] ?? 'description',
+          type: json['attributes']["PLANNO"] ?? 'type',
 
-        /////////////////////////
-        paths: getList(json['geometry']["rings"]), // not tested yat
-      );
+          /////////////////////////
+          //  paths: getList(json['geometry']["rings"]
+
+          paths: [
+            GeoPointMessage(
+                latitude: 26.369406393621627, longitude: 50.19933225597286),
+            GeoPointMessage(
+                latitude: 26.373032789329308, longitude: 50.19579384705713),
+            GeoPointMessage(
+                latitude: 26.373032789329308, longitude: 50.19579384705713),
+            GeoPointMessage(
+                latitude: 26.374354635533997, longitude: 50.19360020012975)
+          ]
+
+          // not tested yat
+          );
 }

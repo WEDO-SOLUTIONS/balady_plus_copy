@@ -125,11 +125,11 @@ class LayersRepositories {
           return buildingComplianceCertificateFromJson(
             points.data['data']['result']['features'],
           );
-        case 8: //   اراضي مطلوب تسويرها
+        /*case 8: //   اراضي مطلوب تسويرها
           return landsFencedFromJson(
             points.data['data']['result']['features'],
-          );
-        case 9: //   اراضي بيضاء
+          );*/
+        case 8: //   اراضي بيضاء
           return whiteLandsFromJson(
             points.data['data']['result']['features'],
           );

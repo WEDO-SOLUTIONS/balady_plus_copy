@@ -8,7 +8,9 @@ import '../../data/data_sources/point_layers_data.dart';
 import '../../data/model/layers.dart';
 
 import 'package:provider/provider.dart';
+import '../../data/model/white_lands.dart';
 import '../widgets/SearchMapWidget.dart';
+import '../widgets/map_cards/lands_legends_map_card.dart';
 import '../widgets/map_layer_card.dart';
 import '../widgets/search_map_widget.dart';
 
@@ -42,7 +44,8 @@ class HomeMap extends StatelessWidget {
             children: [
               const HomeAppBar(),
               Constants.verticalSpaceSmall,
-              ValueListenableBuilder<bool>(
+              const SearchMapWidget(),
+              /*ValueListenableBuilder<bool>(
                 valueListenable: mapViewModel.viewHomeBottomSheet,
                 builder: (_, visible, __) {
                   return visible
@@ -60,7 +63,7 @@ class HomeMap extends StatelessWidget {
                         )
                       : const SearchMapWidget();
                 },
-              ),
+              ),*/
             ],
           ),
         ),
@@ -80,31 +83,45 @@ class HomeMap extends StatelessWidget {
                                   mapViewModel.selectedPoint.value != null)
                               ? 160
                               : mapViewModel.bottomSheetSize.value;
-                      return Container(
-                        margin: EdgeInsets.only(bottom: bottomSize),
-                        child: Column(
-                          children: [
-                            GestureDetector(
-                              onTap: () =>
-                                  mapViewModel.getLocationAndMoveCamera(),
-                              child: const CircleIcon(
-                                icon: IconPath.currentLocation,
-                                iconColor: AppColor.white,
-                                backgroundColor: AppColor.primary900Light,
-                              ),
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          ValueListenableBuilder<WhiteLands?>(
+                            valueListenable: mapViewModel.selectedWhiteLands,
+                            builder: (_, selectedPoint, __) {
+                              return selectedPoint == null
+                                  ? const SizedBox()
+                                  : LandsLegendsMapCard();
+                            },
+                          ),
+                          Container(
+                            margin: EdgeInsets.only(bottom: bottomSize),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                GestureDetector(
+                                  onTap: () => showMainLayersDialog(
+                                      context, layersModel),
+                                  child: const CircleIcon(
+                                    icon: IconPath.layers,
+                                    iconColor: AppColor.blackModern600Light,
+                                    backgroundColor: AppColor.white,
+                                  ),
+                                ),
+                                Constants.verticalSpaceSmall,
+                                GestureDetector(
+                                  onTap: () =>
+                                      mapViewModel.getLocationAndMoveCamera(),
+                                  child: const CircleIcon(
+                                    icon: IconPath.currentLocation,
+                                    iconColor: AppColor.white,
+                                    backgroundColor: AppColor.primary900Light,
+                                  ),
+                                ),
+                              ],
                             ),
-                            Constants.verticalSpaceSmall,
-                            GestureDetector(
-                              onTap: () =>
-                                  showMainLayersDialog(context, layersModel),
-                              child: const CircleIcon(
-                                icon: IconPath.layers,
-                                iconColor: AppColor.white,
-                                backgroundColor: AppColor.primary900Light,
-                              ),
-                            ),
-                          ],
-                        ),
+                          ),
+                        ],
                       );
                     }),
                 Constants.verticalSpaceSmall,
@@ -113,20 +130,13 @@ class HomeMap extends StatelessWidget {
           ),
         ),
         Align(
-          alignment: Alignment.bottomLeft,
+          alignment: Alignment.bottomCenter,
           child: Padding(
             padding: const EdgeInsets.only(
                 left: Constants.semiMediumPadding,
                 right: Constants.semiMediumPadding,
-                bottom: Constants.largePadding),
-            child: ValueListenableBuilder<DgisObjectIdMessage?>(
-              valueListenable: mapViewModel.selectedPoint,
-              builder: (_, selectedPoint, __) {
-                return selectedPoint == null
-                    ? const SizedBox()
-                    : MapLayerCard();
-              },
-            ),
+                bottom: Constants.semiSmallPadding),
+            child: MapLayerCard(),
           ),
         ),
         ValueListenableBuilder<bool>(

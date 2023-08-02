@@ -19,41 +19,37 @@ class Excavations extends PointLayersData {
   DateTime? worksStartDate;
   DateTime? worksEndDate;
   String? streetCloseType;
-  String? streetName;
   double? pathLength;
   String? siteName;
   String? workNature;
-  dynamic? licenseId;
-  String? amana;
-  String? baladia;
-  String? districtName;
-  String? municipalityArName;
+  //String? amana;
+  //String? baladia;
+  // String? districtName;
+  //String? municipalityArName;
 
-  Excavations(
-      {required this.paths,
-      required id,
-      required name,
-      required type,
-      required description,
-      required latLng,
-      this.status,
-      this.licStatus,
-      this.nameAr,
-      this.contractorName,
-      this.projectName,
-      this.worksStartDate,
-      this.worksEndDate,
-      this.streetCloseType,
-      this.pathLength,
-      this.siteName,
-      this.workNature,
-      this.licenseId,
-      this.amana,
-      this.baladia,
-      this.districtName,
-      this.streetName,
-      this.municipalityArName})
-      : super(
+  Excavations({
+    required this.paths,
+    required id,
+    required name,
+    required type,
+    required description,
+    required latLng,
+    this.status,
+    this.licStatus,
+    this.nameAr,
+    this.contractorName,
+    this.projectName,
+    this.worksStartDate,
+    this.worksEndDate,
+    this.streetCloseType,
+    this.pathLength,
+    this.siteName,
+    this.workNature,
+    // this.amana,
+    // this.baladia,
+    //this.districtName,
+    // this.municipalityArName
+  }) : super(
           id: id,
           name: name,
           description: description,
@@ -92,20 +88,18 @@ class Excavations extends PointLayersData {
             ? DateTime.tryParse(json['attributes']["WORKENDDATE"])
             : null,
         streetCloseType: json['attributes']["STREET_CLOSE_TYPE"],
-        streetName: json['attributes']["STREET_NAME"],
         pathLength: json['attributes']["PATHLENGTH"],
         siteName: json['attributes']["SITE_NAME"],
 
-        workNature: json['attributes']["WORK_NATURE"],
-        licenseId: json['attributes']["LICENSE_ID"],
+        workNature: json['attributes']["WORKNATURE"],
 
-        amana: json['attributes']["AMMANA"],
+        /* amana: json['attributes']["AMMANA"],
 
         baladia: json['attributes']["BALADIA"],
         districtName: json['attributes']["DISTRICT_NAME"],
 
         municipalityArName: json['attributes']["MUNICIPALITYARNAME"],
-
+*/
         /* startPoint: GeoPointMessage(
           latitude:
               double.parse(json['attributes']["START_POINT_X"].toString()),
@@ -120,12 +114,13 @@ class Excavations extends PointLayersData {
       );
 
   String getAddress() {
-    return (streetName ?? "") +
+    return "";
+    /*return (streetName ?? "") +
         ", " +
         (districtName ?? "") +
         ", " +
         (baladia ?? "") +
         ", " +
-        (amana ?? "");
+        (amana ?? "");*/
   }
 }
