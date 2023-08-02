@@ -35,6 +35,8 @@ class RouteName {
   static const objections = '/objections';
   static const objectableTransactions = '/objectableTransactionsPage';
   static const createObjectionDetails = '/createObjectionDetails';
+  static const createViolationObjectionDetails =
+      '/createViolationObjectionDetails';
 
   static const transactionDetailsPage = '/TransactionDetailsPage';
   static const objectionsDetailsPage = '/ObjectionsDetailsPage';
@@ -190,4 +192,8 @@ class EtmamRoutesNames {
   static const deleteOrdersPage = '/DeleteOrdersPage';
 
   static const editBiddingForm = '/EditBiddingForm';
+
+  // Violations
+  static const violationsPage = '/violationsPage';
+  static const violationDetailsPage = '/violationDetailsPage';
 }

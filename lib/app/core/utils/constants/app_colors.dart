@@ -35,6 +35,7 @@ class AppColor {
   static const Color baladyDarkGreen2 = Color(0xFF389492);
   static const Color duckEggBlue = Color(0xFFf6fdfd);
   static const Color algae = Color(0xFF4dac5f);
+  static const Color algaea = Color(0xFFF9FAFB);
   static const Color greenishYellow500 = Color(0xFF9bd65c);
   static const Color greenishYellow800 = Color(0xFF4f8a0f);
   static const Color lichen = Color(0xFF95b46a);
@@ -47,11 +48,12 @@ class AppColor {
   static const Color red = Color(0xff790606);
   static const Color orange800 = Color(0xFFc74b00);
   static const Color lightGreen = Color(0xfff3fbe9);
+  static const Color gray10 = Color(0xffC7D2D4);
 
   static const offBlue26 = Color(0x425968b2);
   static const blueGreen = Color(0xff117358);
   static const darkSeaGreen = Color(0xff0c6e56);
-  static const primary900Light = Color(0xff036362);
+  static const primary900Light = Color(0xff155F75);
   static const primary200Light = Color(0xffb3d0d0);
   static const primary100Light = Color(0xffcde0e0);
   static const paleGrey = Color(0xfff4f8fa);
@@ -139,4 +141,5 @@ class AppColor {
 
   static const Color green60 = Color(0x99E6EFEF);
   static const Color divider = Color(0x0FE6EFEF);
+  static const Color brown = Color(0xffBDBA97);
 }

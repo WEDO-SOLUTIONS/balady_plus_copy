@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/utils/utils_exports.dart';
 import '../../../../_shared_feature_/presentation/widgets/custom_cupertino_drop_down_widget.dart';
 import '../../../../_shared_feature_/shared_feature_exports.dart';
@@ -21,12 +22,33 @@ class CRStep2ActivityData extends StatelessWidget {
                 children: [
                   const CRHeaderDesc(header: "بيانات النـشاط"),
                   const SizedBox(height: 12),
-                  CustomTapWidgetForLongDialog(
-                    items: const [],
-                    value: null,
-                    label: "شاط أيزيك",
-                    marginBottom: 8,
-                    onChangeType: (item) {},
+                  BlocBuilder<CrStep1ApplicantDataCubit,
+                      CrStep1ApplicantDataState>(
+                    buildWhen: (previous, current) =>
+                        previous.recordInfo != current.recordInfo,
+                    builder: (context, state) {
+                      return BlocBuilder<CrStep2ActivityDataCubit,
+                          CrStep2ActivityDataState>(
+                        buildWhen: (previous, current) =>
+                            previous.selectedIsicActivity !=
+                            current.selectedIsicActivity,
+                        builder: (context, step2State) {
+                          return CustomTapWidgetForLongDialog(
+                            items: state.recordInfo?.crInfo?.activities
+                                    ?.isicActivities ??
+                                [],
+                            value: step2State.selectedIsicActivity,
+                            label: "شاط أيزيك",
+                            marginBottom: 8,
+                            onChangeType: (item) => item != null
+                                ? context
+                                    .read<CrStep2ActivityDataCubit>()
+                                    .onSelectIsicActivity(item)
+                                : null,
+                          );
+                        },
+                      );
+                    },
                   ),
                   const NotesWidget(
                     notes: [
@@ -34,12 +56,24 @@ class CRStep2ActivityData extends StatelessWidget {
                       "تأكد من وجود ترخيص لأي عامل حرفي في منشأتك حيث انه شرط أساسي لإصدار او تجديد الرخص التجارية"
                     ],
                   ),
-                  CustomTapWidgetForLongDialog(
-                    items: const [],
-                    value: null,
-                    label: "النشاط التفصيلي",
-                    marginBottom: 8,
-                    onChangeType: (item) {},
+                  BlocBuilder<CrStep2ActivityDataCubit,
+                      CrStep2ActivityDataState>(
+                    buildWhen: (previous, current) =>
+                        previous.subActivitiesStatus != current.subActivitiesStatus,
+                    builder: (context, state) {
+                      return CustomTapWidgetForLongDialog(
+                        items: state.subActivities,
+                        value: state.selectedSubActivity,
+                        isLoading: state.subActivitiesStatus.isSubmissionLoading,
+                        label: "النشاط التفصيلي",
+                        marginBottom: 8,
+                        onChangeType: (item) => item != null
+                            ? context
+                                .read<CrStep2ActivityDataCubit>()
+                                .onSelectSubActivity(item)
+                            : null,
+                      );
+                    },
                   ),
                   const NotesWidget(
                     notes: [
@@ -72,7 +106,6 @@ class CRStep2ActivityData extends StatelessWidget {
                     onSelectedType: (type) {},
                   ),
                   const ExtraActivityComponent(),
-
                 ],
               ),
             ),
@@ -83,4 +116,3 @@ class CRStep2ActivityData extends StatelessWidget {
     );
   }
 }
-

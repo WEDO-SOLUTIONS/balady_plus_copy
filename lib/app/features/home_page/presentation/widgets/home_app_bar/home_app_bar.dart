@@ -38,9 +38,12 @@ class HomeAppBar extends StatelessWidget {
                 )
               ],
             ),
-          ),*/
-          const Spacer(),
-          const CurrentWeather()
+          ),
+          // const Spacer(),
+          // const CurrentWeather(
+          //   weatherCondition: WeathherConditions.partlyClouded,
+          //   temperature: "16",
+          // )*/
         ],
       ),
     );

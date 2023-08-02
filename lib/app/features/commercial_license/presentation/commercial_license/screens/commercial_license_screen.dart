@@ -15,9 +15,15 @@ class CommercialLicenseScreen extends StatelessWidget {
         BlocProvider(
           create: (context) => WorkTimesCubit(),
         ),
+        BlocProvider(
+          lazy: false,
+          create: (context) => CrStep1ApplicantDataCubit()..getRecordInfo(),
+        ),
+        BlocProvider(
+          create: (context) => CrStep2ActivityDataCubit(),
+        ),
       ],
       child: const CommercialLicenseBody(),
     );
   }
 }
-

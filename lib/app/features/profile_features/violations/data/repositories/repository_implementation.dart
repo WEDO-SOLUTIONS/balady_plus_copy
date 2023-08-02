@@ -1,10 +1,3 @@
-import 'package:balady_plus/app/features/objectable_transactions/domain/entities/create_objection_params.dart';
-import 'package:balady_plus/app/features/objectable_transactions/domain/entities/create_objection_response.dart';
-import 'package:balady_plus/app/features/objectable_transactions/domain/entities/transaction_details.dart';
-import 'package:balady_plus/app/features/objectable_transactions/domain/entities/transaction_details_params.dart';
-import 'package:balady_plus/app/features/objectable_transactions/domain/entities/upload_file_params.dart';
-import 'package:balady_plus/app/features/objectable_transactions/domain/entities/upload_file_response.dart';
-import 'package:balady_plus/app/features/objections/domain/entities/objection_details.dart';
 import 'package:dartz/dartz.dart';
 
 import '../../../../../core/errors/errors_exports.dart'
@@ -14,29 +7,21 @@ import '../../../../../core/errors/errors_exports.dart'
         NoDataFoundFailure,
         ServerException,
         ServerFailure;
-import '../../objections_exports.dart'
-    show
-        RequestsRepository,
-        RequestsRemoteDataSource,
-        ObjectableTransactionsEntity,
-        RequestStatusEntity,
-        RequestSubTypeEntity,
-        RequestSubTypeParamsModel,
-        RequestTypeEntity,
-        TransactionsRequestsPrams;
+import '../../violations_exports.dart'
+    show InvoiceStatusesEntity, ViolationDetailsEntity, ViolationsEntity, ViolationsPrams, ViolationsRemoteDataSource, ViolationsRepository, ViolationsStatusEntity;
 
-class RequestsRepositoryImplementation implements RequestsRepository {
-  final RequestsRemoteDataSource remoteDataSource;
+class ViolationsRepositoryImplementation implements ViolationsRepository {
+  final ViolationsRemoteDataSource remoteDataSource;
 
-  RequestsRepositoryImplementation({
+  ViolationsRepositoryImplementation({
     required this.remoteDataSource,
   });
 
   @override
-  Future<Either<Failure, List<RequestStatusEntity>>>
-      getRequestStatuses() async {
+  Future<Either<Failure, ViolationDetailsEntity>> getViolationDetails(
+      String id) async {
     try {
-      final data = await remoteDataSource.getRequestStatuses();
+      final data = await remoteDataSource.getViolationDetails(id);
       return Right(data);
     } on NoDataFoundException {
       return Left(NoDataFoundFailure());
@@ -46,9 +31,10 @@ class RequestsRepositoryImplementation implements RequestsRepository {
   }
 
   @override
-  Future<Either<Failure, List<RequestTypeEntity>>> getRequestTypes() async {
+  Future<Either<Failure, List<ViolationsStatusEntity>>>
+      getViolationsStatus() async {
     try {
-      final data = await remoteDataSource.getRequestTypes();
+      final data = await remoteDataSource.getViolationsStatuses();
       return Right(data);
     } on NoDataFoundException {
       return Left(NoDataFoundFailure());
@@ -58,11 +44,10 @@ class RequestsRepositoryImplementation implements RequestsRepository {
   }
 
   @override
-  Future<Either<Failure, List<RequestSubTypeEntity>>> getRequestSubTypes(
-    RequestSubTypeParamsModel params,
-  ) async {
+  Future<Either<Failure, List<InvoiceStatusesEntity>>>
+      getInvoiceStatuses() async {
     try {
-      final data = await remoteDataSource.getRequestSubTypes(params);
+      final data = await remoteDataSource.getInvoiceStatuses();
       return Right(data);
     } on NoDataFoundException {
       return Left(NoDataFoundFailure());
@@ -72,9 +57,15 @@ class RequestsRepositoryImplementation implements RequestsRepository {
   }
 
   @override
-  Future<Either<Failure, List<ObjectableTransactionsEntity>>>
-      getObjectionRequests(TransactionsRequestsPrams params) {
-    // TODO: implement getObjectionRequests
-    throw UnimplementedError();
+  Future<Either<Failure, List<ViolationsEntity>>> getViolations(
+      ViolationsPrams params) async {
+    try {
+      final data = await remoteDataSource.getViolations(params);
+      return Right(data);
+    } on NoDataFoundException {
+      return Left(NoDataFoundFailure());
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage));
+    }
   }
 }

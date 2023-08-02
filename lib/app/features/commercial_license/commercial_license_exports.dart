@@ -4,6 +4,8 @@
 export 'presentation/commercial_license/blocs/commercial_license_bloc.dart';
 export 'presentation/step9/bloc/work_times/work_times_cubit.dart';
 export 'presentation/step9/bloc/periods/periods_cubit.dart';
+export 'presentation/step1/bloc/cr_step1_applicant_data_cubit.dart';
+export 'presentation/step2/bloc/cr_step2_activity_data_cubit.dart';
 
 // Pages
 export 'presentation/commercial_license/screens/commercial_license_screen.dart';
@@ -37,6 +39,33 @@ export 'presentation/step9/widgets/work_time_card.dart';
 export 'presentation/step9/widgets/periods_dialog_body.dart';
 export 'presentation/step9/widgets/clock_time_widget.dart';
 
-// Domain
+
+/// Domain
 // Entities
 export 'domain/entities/work_times_entity.dart';
+export 'domain/entities/record_info_entity.dart';
+export 'domain/entities/submit_step1_params.dart';
+export 'domain/entities/sub_activit_entity.dart';
+export 'domain/entities/sub_activity_details_entity.dart';
+
+// repo
+export 'domain/repositories/cr_repository.dart';
+
+// use cases
+export 'domain/use_cases/get_record_info.dart';
+export 'domain/use_cases/submit_step1.dart';
+export 'domain/use_cases/get_sub_activities.dart';
+export 'domain/use_cases/get_sub_activity_details.dart';
+
+
+/// Data
+// data sources
+export 'data/data_sources/cr_remote_data_source.dart';
+
+// Models
+export 'data/models/record_info_model.dart';
+export 'data/models/sub_activity_model.dart';
+export 'data/models/sub_activity_details_model.dart';
+
+// repo
+export 'data/repositories/cr_repository_impl.dart';
