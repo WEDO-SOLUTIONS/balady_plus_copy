@@ -22,6 +22,8 @@ class MapViewModel extends BaseViewModel {
 
   ValueNotifier<SearchCategoryMessage?> selectedCategory = ValueNotifier(null);
 
+  late MapObjectManagerMessage mapObjectManager;
+
   Future<void> performSearch({
     required String queryText,
   }) async {
@@ -43,7 +45,7 @@ class MapViewModel extends BaseViewModel {
               isOpenNow: false,
               searchRect: _lastHandledEvent?.visibleRect.geoRectMessage(),
             );
-      await controller.removeAllMarkers();
+      await controller.removeAllMarkers(fromManager: mapObjectManager);
 
       if (data.itemMarkerInfos != null) {
         List<Marker> markers = [];
@@ -72,7 +74,7 @@ class MapViewModel extends BaseViewModel {
           ));
         }
 
-        await controller.addMarkers(markers);
+        await controller.addMarkers(markers, toManager: mapObjectManager);
       }
       if (data.firstPage?.items != null) {
         final responseDistance = await controller.getDistanceTo(
@@ -159,10 +161,31 @@ class MapViewModel extends BaseViewModel {
 
     await controller.setMarkerOptions(
       MarkerOptionsMessageOld(
-        svgAsset: "assets/svg/ic_marker.svg",
+        svgAsset: "assets/maps/icons/ic_marker.svg",
         width: 30.0,
         height: 46.0,
         iconWidth: 24,
+      ),
+    );
+
+    mapObjectManager = await controller.createMapObjectManagerWithClustering(
+      ClusteringMapObjectManager(
+        options: ClusteringMapObjectManagerOptionsMessage(
+          logicalPixel: 40,
+          maxZoom: 16,
+        ),
+        renderCluster: (object) {
+          return SimpleCluster(
+            options: SimpleClusterOptionsMessage(
+              icon: MarkerIconMessage(
+                path: "assets/maps/icons/ic_marker.svg",
+                width: 24,
+              ),
+              text: "${object.objectCount} objects inside",
+              textStyle: MarkerTextStyleMessage(fontSize: 16),
+            ),
+          );
+        },
       ),
     );
 

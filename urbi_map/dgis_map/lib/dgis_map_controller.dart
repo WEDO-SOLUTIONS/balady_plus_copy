@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:dgis_map/library.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
 final _instance = DgisMapPlugin.instance;
@@ -261,22 +260,36 @@ class DgisMapController {
       _instance.setMarkerOptions(markerOptions);
 
   /// Add marker to map.
-  Future<void> addMarker(Marker marker) => _instance.addMarker(marker);
+  Future<void> addMarker(Marker marker, {MapObjectManagerMessage? toManager}) =>
+      _instance.addMarker(marker, toManager);
 
   /// Add several markers to map.
-  Future<void> addMarkers(List<Marker> markers) =>
-      _instance.addMarkers(markers);
+  Future<void> addMarkers(List<Marker> markers,
+          {MapObjectManagerMessage? toManager}) =>
+      _instance.addMarkers(markers, toManager);
 
   /// Remove marker by id.
-  Future<void> removeMarker(String id) => _instance.removeMarker(id);
+  Future<void> removeMarker(String id,
+          {MapObjectManagerMessage? fromManager}) =>
+      _instance.removeMarker(id, fromManager);
+
+  /// Creates [MapObjectManagerMessage] with clustering.
+  Future<MapObjectManagerMessage> createMapObjectManagerWithClustering(
+          ClusteringMapObjectManager manager) =>
+      _instance.createMapObjectManagerWithClustering(manager);
+
+  /// Removes [MapObjectManagerMessage].
+  Future<void> removeMapObjectManager(MapObjectManagerMessage manager) =>
+      _instance.removeMapObjectManager(manager);
 
   /// Remove all markers added with [addMarker].
-  Future<void> removeAllMarkers() => _instance.removeAllMarkers();
+  Future<void> removeAllMarkers({MapObjectManagerMessage? fromManager}) =>
+      _instance.removeAllMarkers(fromManager);
 
   /// Remove all markers, polygons, polylines
   /// that were added with [addMarker], [addPolygons], [addPolyline].
   Future<void> removeAll() async {
-    await _instance.removeAllMarkers();
+    await _instance.removeAllMarkers(null);
     await _instance.removeAllPolygons();
     await _instance.removeAllPolylines();
   }
