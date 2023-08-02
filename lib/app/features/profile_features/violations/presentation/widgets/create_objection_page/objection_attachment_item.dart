@@ -16,7 +16,6 @@ import '../../../../../../core/services/services_exports.dart';
 import '../../../../../_shared_feature_/presentation/pages/pdf_view.dart';
 import '../../../../../objections/domain/entities/objection_details.dart';
 
-
 class ObjectionAttachmentItem extends StatefulWidget {
   ReasonAttachment file;
 
@@ -141,9 +140,12 @@ class _ObjectionAttachmentItemState extends State<ObjectionAttachmentItem> {
     final filename = url.substring(url.lastIndexOf("/") + 1);
     Dio dio = Dio();
     dio.options.baseUrl = RemoteConfig.apigeeURL;
-    dio.options.connectTimeout = 60000;
-    dio.options.receiveTimeout = 60000;
-    dio.options.sendTimeout = 60000;
+    dio.options.connectTimeout = const Duration(milliseconds: 60000);
+
+    dio.options.receiveTimeout = const Duration(milliseconds: 60000);
+
+    dio.options.sendTimeout = const Duration(milliseconds: 60000);
+
     dio.options.responseType = ResponseType.bytes;
     dio.interceptors.add(AppInterceptors());
     ;

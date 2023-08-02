@@ -126,6 +126,10 @@ class RouteName {
   static const ReqDetails = '/ReqDetails';
   static const VHRDetails = '/VHRDetails';
   static const DaemDetails = '/DaemDetails';
+
+  // Violations
+  static const violationsPage = '/violationsPage';
+  static const violationDetailsPage = '/violationDetailsPage';
 }
 
 class EtmamRoutesNames {
@@ -192,8 +196,4 @@ class EtmamRoutesNames {
   static const deleteOrdersPage = '/DeleteOrdersPage';
 
   static const editBiddingForm = '/EditBiddingForm';
-
-  // Violations
-  static const violationsPage = '/violationsPage';
-  static const violationDetailsPage = '/violationDetailsPage';
 }
