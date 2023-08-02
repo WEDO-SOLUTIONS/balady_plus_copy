@@ -38,7 +38,7 @@ class CRPreviousNextButtons extends StatelessWidget {
                     }
                   },
             btnRadius: 8,
-            btnText: isLastPage ? "تقديم الطلب" : ("next").tr(),
+            btnText: isLastPage ? "submit_order".tr() : ("next").tr(),
             btnTextSize: 16,
             btnTextWeight: AppFontWeight.bold,
             btnHeight: 56,

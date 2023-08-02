@@ -7,6 +7,7 @@ class ImagePath {
   static const logo = '${_imagePath}logo_white_img$_png';
   static const logo2 = '${_imagePath}splash_bg_img$_jpg';
   static const sendImage = '${_imagePath}send_image$_png';
+  static const shareUsBg = '${_imagePath}share_us_bg$_png';
   static const camera = '${_imagePath}camera$_png';
   static const gameChallenge = '${_imagePath}game_challenge$_png';
   static const prayerTimesAppBar = '${_imagePath}prayer_times_appbar$_png';
@@ -27,4 +28,12 @@ class ImagePath {
   static const visaBg = '${_imagePath}visa_bg';
   static const walletBg = '${_imagePath}wallet_bg$_png';
   static const qrBg = '${_imagePath}qr_bg$_png';
+
+  static const prayerBg = '${_imagePath}prayer_bg$_png';
+  static const smartAdvisorBg = '${_imagePath}balady_expert_bg$_png';
+  static const supportImg = '${_imagePath}support_img$_png';
+  static const readBg = '${_imagePath}read_bg$_png';
+  static const quranImg = '${_imagePath}quran_img$_png';
+  static const challengeBaladyBg = '${_imagePath}challenge_balady_bg$_png';
+  static const reportBg = '${_imagePath}report_bg$_png';
 }

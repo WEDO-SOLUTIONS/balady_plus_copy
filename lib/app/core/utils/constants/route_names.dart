@@ -33,6 +33,7 @@ class RouteName {
   static const objections = '/objections';
   static const objectableTransactions = '/objectableTransactionsPage';
   static const createObjectionDetails = '/createObjectionDetails';
+  static const createViolationObjectionDetails = '/createViolationObjectionDetails';
 
   static const transactionDetailsPage = '/TransactionDetailsPage';
   static const objectionsDetailsPage = '/ObjectionsDetailsPage';
@@ -108,4 +109,10 @@ class RouteName {
   // ------- Wallet ------
   static const walletPage = '/walletPage';
   static const businessLicensePage = '/businessLicensePage';
+
+  // Violations
+  static const violationsPage = '/violationsPage';
+  static const violationDetailsPage = '/violationDetailsPage';
+
+
 }

@@ -86,11 +86,12 @@
   "welcome": "مرحباً",
   "Welcome_Guest": "أهلاً بك",
   "importantServices": "أهم الخدمات",
-  "shareWithUs": "صور وارسل",
+  "shareWithUs": "شارك معنا",
   "newServices": "خدمات جديدة",
   "beTheBestInspectorIn": "كن أفضل مراقب في",
   "new": "جديد",
   "sendImage": "صور وارسل",
+  "uploadReport": "ارفع بلاغ",
   "sendImageHint": "حسن المشهد الحضاري لمدينتك وبلغ عن مظاهر التشوه البصري",
   "sendReport": "إرسال بلاغ",
   "gameChallenge": "تحدي اللعب",
@@ -4109,5 +4110,32 @@
   "ekram_transfer_status": "حالة النقل",
   "ekram_city_status": "نوع النقل",
   "carBard": "طراز المركبة",
-  "carYear": "سنة الصنع"
+  "carYear": "سنة الصنع",
+
+
+  "fajrAzan": "حان الان موعد اذان الفجر",
+  "zuhrAzan": "حان الان موعد اذان الظهر",
+  "asrAzan": "حان الان موعد اذان العصر",
+  "magribAzan": "حان الان موعد اذان المغرب",
+  "ishaAzan": "حان الان موعد اذان العشاء",
+  "applicantInfo": "بيانات مقدم الطلب",
+  "phoneNote": "سوف يتم استلام جميع الاشعارات على رقم الجوال المسجل في النظام",
+  "applicantDesc": "صفه مقدم الطلب",
+  "crNumber": "السجل التجاري",
+  "entityName": "اسم المنشاه",
+  "entityNumber": "رقم المنشآه",
+  "crSource": "مصدر السجل التجاري",
+
+  "objectionPeriodExpired": "لا يمكن الاعتراض بسبب انتهاء مدة الاعتراض",
+  "reason": "سبب",
+  "objectionDetails": "تفاصيل الاعتراض",
+  "applicableObjection": "المطبق للاعتراض",
+  "billNumber": "رقم الفاتورة / المخالفة",
+  "violation": "المخالفة",
+  "violationBillNo": "رقم فاتورة المخالفة",
+  "issueViolationDate": "تاريخ اصدار المخالفه",
+  "objectionLastApplyDate": "اخر موعد للاعتراض",
+  "violationAmount": "قيمه الغرامه",
+  "clear": "مشمس"
+
 }

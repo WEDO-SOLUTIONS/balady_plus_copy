@@ -12,6 +12,7 @@ class ApiUrl {
   //! Public Services
   //! Prayer Times
   static const prayerTimes = '/v1/kacst/prayer-times';
+  static const prayerTimesRange = '/v1/kacst/prayer-times-range';
 
   //! Municipal Services
   //! Municipal Advisor
@@ -184,6 +185,25 @@ class ApiUrl {
 
   static const String crmRequestsList =
       '/prweb/PRRestService/FrontUserBalady/V1/GetIncidentRequests';
+
+  // CR
+  static const String recordInfo =
+      'v1/balady-commercial-services/mci/record-Info/crNumber/DELEGATOR/1004';
+  static const String subActivities =
+      "/v1/balady-commercial-services/activities/by-isic/details/isicCode/1004";
+  static const String subActivityDetails =
+      "/v1/balady-commercial-services/activities/";
+
+//! Violations
+  static const String violationsStatus =
+      "/v1/balady-dashboard/violations/statuses";
+  static const String invoiceStatus =
+      "/v1/balady-dashboard/violations/invoice-statuses";
+  static const String violations =
+      "/v1/balady-dashboard/violations/my-violations";
+  static const String violationDetails =
+      "/v1/balady-dashboard/violations/by-id";
+
 
   //! POST
 

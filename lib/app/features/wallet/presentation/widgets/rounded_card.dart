@@ -30,6 +30,8 @@ class RoundedCard extends StatelessWidget {
                 : AppColor.secondary50Light.withOpacity(0.7),
           ),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               CustomSvgIconWidget(
                 iconPath,
@@ -41,6 +43,7 @@ class RoundedCard extends StatelessWidget {
               const SizedBox(height: 8),
               CustomTextWidget(
                 title,
+                textAlign: TextAlign.center,
                 fontColor: isSelected
                     ? AppColor.blackModern50Light
                     : AppColor.blackModern900Light,

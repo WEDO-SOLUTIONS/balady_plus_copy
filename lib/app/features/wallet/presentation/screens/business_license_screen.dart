@@ -43,6 +43,13 @@ class BusinessLicenseScreen extends StatelessWidget {
                       ),
                       const SizedBox(height: 12),
                       const _QrCodeCard(),
+                      const Spacer(),
+                      Align(
+                        alignment: Alignment.bottomCenter,
+                        child: ElevatedButtonWidget.licenseDetails(
+                          onPressed: () {},
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -112,12 +119,6 @@ class _BusinessLicenseFooter extends StatelessWidget {
           image: DecorationImage(
             image: AssetImage(ImagePath.walletBg),
             fit: BoxFit.fill,
-          ),
-        ),
-        child: Align(
-          alignment: Alignment.bottomCenter,
-          child: ElevatedButtonWidget.licenseDetails(
-            onPressed: () {},
           ),
         ),
       ),

@@ -11,19 +11,7 @@ import '../../features/_shared_feature_/data/entities/package_details.dart';
 import '../../features/_shared_feature_/shared_feature_exports.dart'
     show BridgeParams, DropDownItem, FileInfo;
 import '../dependency_injection/dependency_injection_exports.dart'
-    show
-        DashboardInjection,
-        DelegatorsInjection,
-        EntryPointInjection,
-        InvoicesInjection,
-        LicensesInjection,
-        MunicipalAdvisorInjection,
-        OTPInjection,
-        PrayerTimesInjection,
-        RequestsInjection,
-        ServicesInjection,
-        SignUpInjection,
-        VDInjection;
+    show CrInjection, DashboardInjection, DelegatorsInjection, EntryPointInjection, InvoicesInjection, LicensesInjection, MunicipalAdvisorInjection, OTPInjection, PrayerTimesInjection, RequestsInjection, ServicesInjection, SignUpInjection, VDInjection, ViolationsInjection;
 import '../services/global/crm_web_service.dart';
 import '../services/services_exports.dart'
     show
@@ -72,6 +60,8 @@ void initialize() {
   InvoicesInjection.init();
   //? Licenses
   LicensesInjection.init();
+  //? Violations
+  ViolationsInjection.init();
 
   OLDInjection.init();
 
@@ -83,6 +73,10 @@ void initialize() {
 //? DC
   DCInjection.init();
   DCRetriveInjection.init();
+
+//? Cr
+  CrInjection.init();
+
 
   //! Core
   sl.registerLazySingleton(() => WebService(dio: sl()));

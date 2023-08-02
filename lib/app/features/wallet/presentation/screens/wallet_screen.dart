@@ -99,7 +99,7 @@ class WalletScreen extends StatelessWidget {
                                   )
                                 : Flexible(
                                     child: Padding(
-                                      padding: const EdgeInsets.only(top: 186),
+                                      padding: EdgeInsets.only(top: MediaQuery.sizeOf(context).height / 4),
                                       child: CardSwiper(
                                         cardsCount:
                                             (state.getItems().length ?? 0) > 5

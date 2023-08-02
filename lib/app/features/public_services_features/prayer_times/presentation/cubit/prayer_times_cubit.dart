@@ -1,11 +1,11 @@
 import 'dart:async';
-
 import 'package:balady_plus/app/core/services/local/helpers.dart';
 import 'package:balady_plus/app/core/services/services_exports.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:intl/intl.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../core/errors/errors_exports.dart' show ServerFailure;
@@ -13,28 +13,117 @@ import '../../../../../core/utils/utils_exports.dart'
     show BlocRequestStatus, CommonFunctions;
 import '../../../../vd/vd_exports.dart' show GISParams, GISResponse, GetGISData;
 import '../../prayer_times_exports.dart'
-    show
-        GetPrayerTimes,
-        PrayerTimeEntity,
-        PrayerTimesParams,
-        PrayerTimesResponse;
+    show GetPrayerTimes, GetPrayerTimesRange, PrayerTimeEntity, PrayerTimeRangeEntity, PrayerTimeRangeParams, PrayerTimesParams, PrayerTimesResponse;
 
 part 'prayer_times_state.dart';
 
 class PrayerTimesCubit extends Cubit<PrayerTimesState> {
   final GetPrayerTimes _getPrayerTimes;
   final GetGISData _getGISData;
+  final GetPrayerTimesRange _getPrayerTimesRange;
 
   PrayerTimesCubit({
     required GetPrayerTimes getPrayerTimes,
     required GetGISData getGISData,
+    required GetPrayerTimesRange getPrayerTimesRange,
   })  : _getPrayerTimes = getPrayerTimes,
         _getGISData = getGISData,
+        _getPrayerTimesRange = getPrayerTimesRange,
         super(const PrayerTimesState()) {
     getPrayerTime();
+    getPrayerSettings();
+    getPrayerTimeRange();
+  }
+
+  void setNotifications() {
+    final isNotificationTurnOff = !state.prayerTimeSettings.contains("1");
+    if (isNotificationTurnOff) return NotificationService.cancelAll();
+
+    for (var prayer in state.prayersRange) {
+      state.prayerTimeSettings[0] == "1"
+          ? NotificationService.showScheduledNotification(
+              id: prayer.fajrId,
+              title: "fajrAzan".tr(),
+              scheduledDate: prayer.fajrDateTime)
+          : NotificationService.cancel(prayer.fajrId);
+      state.prayerTimeSettings[1] == "1"
+          ? NotificationService.showScheduledNotification(
+              id: prayer.zuhrId,
+              title: "zuhrAzan".tr(),
+              scheduledDate: prayer.zuhrDateTime)
+          : NotificationService.cancel(prayer.zuhrId);
+      state.prayerTimeSettings[2] == "1"
+          ? NotificationService.showScheduledNotification(
+              id: prayer.asrId,
+              title: "asrAzan".tr(),
+              scheduledDate: prayer.asrDateTime)
+          : NotificationService.cancel(prayer.asrId);
+      state.prayerTimeSettings[3] == "1"
+          ? NotificationService.showScheduledNotification(
+              id: prayer.magribId,
+              title: "magribAzan".tr(),
+              scheduledDate: prayer.magribDateTime)
+          : NotificationService.cancel(prayer.magribId);
+      state.prayerTimeSettings[4] == "1"
+          ? NotificationService.showScheduledNotification(
+              id: prayer.ishaId,
+              title: "ishaAzan".tr(),
+              scheduledDate: prayer.ishaDateTime)
+          : NotificationService.cancel(prayer.ishaId);
+    }
+  }
+
+  void getPrayerSettings() =>
+      emit(state.copyWith(prayerTimeSettings: sharedPrefs.getPrayerSettings()));
+
+  void onChangePrayerSettings(int index) {
+    final newPrayerSettings = List.of(state.prayerTimeSettings);
+    newPrayerSettings.replaceRange(
+        index, index + 1, [newPrayerSettings[index] == "0" ? "1" : "0"]);
+
+    emit(state.copyWith(prayerTimeSettings: newPrayerSettings));
+    sharedPrefs.setPrayerSettings(newPrayerSettings);
+    setNotifications();
+  }
+
+  void prayerSettingsOnOff() {
+    final newPrayerSettings = List.of(state.prayerTimeSettings)
+        .map((e) => state.isNotificationDisable ? "1" : "0")
+        .toList();
+
+    emit(state.copyWith(prayerTimeSettings: newPrayerSettings));
+    sharedPrefs.setPrayerSettings(newPrayerSettings);
+    setNotifications();
+  }
+
+  void getPrayerTimeRange() async {
+    LatLng? position = await Helpers.getCurrentLocation();
+    if (position != null) {
+      final params = PrayerTimeRangeParams(
+        startDate: DateFormat("dd/MM/yyyy").format(DateTime.now()),
+        endDate: DateFormat("dd/MM/yyyy")
+            .format(DateTime.now().copyWith(day: DateTime.now().day + 5)),
+        dateType: 'GRG',
+        isFormat24Hours: "true",
+        lat: position.latitude.toString(),
+        lng: position.longitude.toString(),
+      );
+
+      final failureOrSuccess = await _getPrayerTimesRange(params);
+
+      failureOrSuccess.fold(
+        (failure) {},
+        (prayersRange) {
+          emit(state.copyWith(prayersRange: prayersRange));
+          setNotifications();
+          // setNotifications();
+        },
+      );
+    }
   }
 
   void getPrayerTime() async {
+    emit(state.copyWith(status: BlocRequestStatus.initial));
     // request permission
     /* final isEnabled = await Geolocator.isLocationServiceEnabled();
     if (!isEnabled) {

@@ -19,12 +19,13 @@ import './app/core/dependency_injection/dependency_injection_exports.dart' as di
     show initialize;
 import './app/core/dependency_injection/dependency_injection_exports.dart'
     show sl;
-import './app/core/services/services_exports.dart' show HiveManager;
+import './app/core/services/services_exports.dart' show HiveManager, NotificationService;
 import './app/core/utils/utils_exports.dart'
     show AppConfig, CommonFunctions, EnvType;
 import 'app/core/services/local/initializer.dart';
 
 abstract class AppEnv {
+
   static Future<void> setupEnv(EnvType type) async {
     WidgetsFlutterBinding.ensureInitialized();
 
@@ -33,6 +34,8 @@ abstract class AppEnv {
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
     ]);
+
+    NotificationService.init(initScheduled: true);
 
     MapUtils.loadMarkers();
     sharedPrefs.init();
