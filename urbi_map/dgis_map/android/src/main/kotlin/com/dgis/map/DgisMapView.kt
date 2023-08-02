@@ -207,6 +207,7 @@ class DgisMapView(
         val map = map ?: return
 
         val objectTapHandler = ObjectTapHandler(
+            map = map,
             mapObjectManager =
                 MapObjectManager.withGeneralization(
                     map = map,
@@ -228,6 +229,7 @@ class DgisMapView(
             routeHandler = routeHandler,
             eventSink = eventSink,
             sdkContext = sdkContext,
+            api = FlutterMapApi(binaryMessenger)
         )
         mapView.addObjectTappedCallback(objectTapHandler::objectTapListener)
         this.objectTapHandler = objectTapHandler
@@ -328,21 +330,35 @@ class DgisMapView(
         )
     }
 
-    override fun addMarker(marker: MarkerMessage, result: Messages.Result<Void>?) {
-        objectTapHandler?.addMarker(marker, result)
+    override fun addMarker(marker: MarkerMessage, manager: MapObjectManagerMessage?, result: Messages.Result<Void>?) {
+        objectTapHandler?.addMarker(marker, manager, result)
     }
 
-    override fun addMarkers(markers: List<MarkerMessage>, result: Messages.Result<Void>?) {
-        objectTapHandler?.addMarkers(markers, result)
+    override fun addMarkers(markers: List<MarkerMessage>, manager: MapObjectManagerMessage?, result: Messages.Result<Void>?) {
+        objectTapHandler?.addMarkers(markers, manager, result)
     }
 
-    override fun removeMarker(id: String, result: Messages.Result<Void>?) {
-        objectTapHandler?.removeMarker(id, result)
+    override fun removeMarker(id: String, manager: MapObjectManagerMessage?, result: Messages.Result<Void>?) {
+        objectTapHandler?.removeMarker(id, manager, result)
     }
 
-    override fun removeAllMarkers(result: Messages.Result<Void>?) {
-        objectTapHandler?.removeAllMarkers()
+    override fun removeAllMarkers(manager: MapObjectManagerMessage?, result: Messages.Result<Void>?) {
+        objectTapHandler?.removeAllMarkers(manager)
         result?.success(null)
+    }
+
+    override fun createMapObjectManagerWithClustering(
+        message: ClusteringMapObjectManagerOptionsMessage,
+        result: Messages.Result<MapObjectManagerMessage>?
+    ) {
+        objectTapHandler?.createClusteringMapObjectManager(message, result)
+    }
+
+    override fun removeMapObjectManager(
+        id: MapObjectManagerMessage,
+        result: Messages.Result<Void>?
+    ) {
+        objectTapHandler?.removeMapObjectManager(id, result)
     }
 
     override fun addPolygon(polygon: PolygonMessage, result: Messages.Result<Void>?) {
@@ -549,7 +565,7 @@ class DgisMapView(
 
     override fun removeEsriIOLayer(result: Messages.Result<Void>?)
     {
-        objectTapHandler?.removeAllMarkers()
+        objectTapHandler?.removeAllMarkers(null)
         result?.success(null)
     }
 

@@ -1,0 +1,76 @@
+package com.dgis.map
+
+import android.os.Handler
+import android.os.Looper
+import android.util.Size
+import com.dgis.map.extensions.toMessage
+import com.dgis.map.extensions.toTextStyle
+import com.dgis.map.map_api.Messages.FlutterMapApi
+import com.dgis.map.map_api.Messages.MapObjectManagerMessage
+import com.dgis.map.map_api.Messages.SimpleClusterObjectMessage
+import com.dgis.map.map_api.Messages.SimpleClusterOptionsMessage
+import io.flutter.FlutterInjector
+import kotlinx.coroutines.runBlocking
+import ru.dgis.sdk.Context
+import ru.dgis.sdk.map.*
+import java.io.FileNotFoundException
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
+
+class FlutterClusterRenderer(
+    private val sdkContext: Context,
+    private val api: FlutterMapApi,
+    private val manager: MapObjectManagerMessage,
+): SimpleClusterRenderer {
+    private val iconCache = mutableMapOf<String, Image>()
+
+    suspend fun apiRenderCluster(manager: MapObjectManagerMessage, cluster: SimpleClusterObjectMessage) = suspendCoroutine<SimpleClusterOptionsMessage> { cont ->
+        Handler(Looper.getMainLooper()).post {
+            api.renderCluster(
+                manager,
+                cluster
+            ) {
+                cont.resume(it)
+            }
+        }
+    }
+
+    override fun renderCluster(cluster: SimpleClusterObject): SimpleClusterOptions {
+        val options = runBlocking { apiRenderCluster(manager, cluster.toMessage()) }
+
+        var markerImage: Image? = null
+        if (options.icon != null) {
+            if (options.icon!!.path in iconCache) {
+                markerImage = iconCache[options.icon!!.path]
+            } else {
+                try {
+                    val asset =
+                        FlutterInjector
+                            .instance()
+                            .flutterLoader()
+                            .getLookupKeyForAsset(options.icon!!.path)
+
+                    markerImage = imageFromAsset(sdkContext, asset, Size(0, 0))
+                    iconCache[options.icon!!.path] = markerImage
+                } catch (e: FileNotFoundException) {
+                    print(e)
+                }
+            }
+        }
+
+        return SimpleClusterOptions(
+            icon = markerImage,
+            iconMapDirection = options.icon?.iconMapDirection?.let {
+                MapDirection(it.degree)
+            },
+            anchor = options.anchor?.let {
+                Anchor(it.x.toFloat(), it.y.toFloat())
+            } ?: Anchor(0.5f, 0.5f),
+            text = options.text,
+            textStyle = options.textStyle?.toTextStyle(),
+            iconWidth = options.icon?.let {
+                LogicalPixel(it.width.toFloat())
+            } ?: LogicalPixel(0f),
+        )
+    }
+}

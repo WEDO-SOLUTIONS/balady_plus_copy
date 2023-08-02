@@ -28,7 +28,7 @@ import 'control_handlers/route_event_handler.dart';
 const String _viewType = 'com.dgis.map_view';
 
 /// An implementation of [DgisMapPlugin] that uses method channels.
-class MethodChannelDgisMapPlugin extends DgisMapPlugin {
+class MethodChannelDgisMapPlugin implements DgisMapPlugin, FlutterMapApi {
   /// The method channel used to interact with the native platform.
   final _api = MapApi();
 
@@ -153,6 +153,8 @@ class MethodChannelDgisMapPlugin extends DgisMapPlugin {
 
       _isInitialized = true;
     }
+
+    FlutterMapApi.setup(this);
 
     return response;
   }
@@ -367,21 +369,21 @@ class MethodChannelDgisMapPlugin extends DgisMapPlugin {
   @override
   Future<void> addMarker(
     Marker marker,
-    String? clusterId,
+    MapObjectManagerMessage? manager,
   ) {
     if (marker.onTap != null) {
       _objectTapEventHandler.addMarkerHandler(marker.id, marker.onTap!);
     }
     return _api.addMarker(
       MarkerMessage(id: marker.id, options: marker.options),
-      clusterId,
+      manager,
     );
   }
 
   @override
   Future<void> addMarkers(
     List<Marker> markers,
-    String? clusterId,
+    MapObjectManagerMessage? manager,
   ) {
     for (var marker in markers) {
       if (marker.onTap != null) {
@@ -394,46 +396,56 @@ class MethodChannelDgisMapPlugin extends DgisMapPlugin {
             (marker) => MarkerMessage(id: marker.id, options: marker.options),
           )
           .toList(),
-      clusterId,
+      manager,
     );
   }
 
   @override
   Future<void> removeMarker(
     String id,
-    String? clusterId,
+    MapObjectManagerMessage? manager,
   ) {
     _objectTapEventHandler.removeMarkerHandler(id);
-    return _api.removeMarker(id, clusterId);
+    return _api.removeMarker(id, manager);
   }
 
   @override
-  Future<void> removeAllMarkers(
-    String? clusterId,
-  ) {
+  Future<void> removeAllMarkers(MapObjectManagerMessage? manager) {
     _objectTapEventHandler.removeAllMarkerHandlers();
-    return _api.removeAllMarkers(clusterId);
+    return _api.removeAllMarkers(manager);
   }
 
   @override
-  Future<void> addCluster(Cluster cluster) {
-    if (cluster.onTap != null) {
-      _objectTapEventHandler.addClusterHandler(cluster.id, cluster.onTap!);
-    }
-    return _api.addCluster(
-      ClusterMessage(
-        id: cluster.id,
-        options: cluster.options,
-      ),
-    );
+  Future<MapObjectManagerMessage> createMapObjectManagerWithClustering(
+    ClusteringMapObjectManager manager,
+  ) async {
+    final result =
+        await _api.createMapObjectManagerWithClustering(manager.options);
+    _objectTapEventHandler.addClusterRenderer(result.id, manager.renderCluster);
+    return result;
   }
 
   @override
-  Future<void> removeCluster(
-    String id,
+  Future<void> removeMapObjectManager(
+    MapObjectManagerMessage manager,
   ) {
-    _objectTapEventHandler.removeClusterHandler(id);
-    return _api.removeCluster(id);
+    _objectTapEventHandler.removeClusterRenderer(manager.id);
+    return _api.removeMapObjectManager(manager);
+  }
+
+  @override
+  SimpleClusterOptionsMessage renderCluster(MapObjectManagerMessage manager,
+      SimpleClusterObjectMessage clusterObject) {
+    final cluster =
+        _objectTapEventHandler.clusterRenderers[manager.id]!(clusterObject);
+    // if (cluster.onTap != null) {
+    //   _objectTapEventHandler.addClusterHandler(
+    //     cluster.id,
+    //     cluster.onTap!,
+    //   );
+    // }
+
+    return cluster.options;
   }
 
   @override
@@ -561,8 +573,8 @@ class MethodChannelDgisMapPlugin extends DgisMapPlugin {
             surfaceFactory: (context, controller) {
               return AndroidViewSurface(
                 controller: controller as AndroidViewController,
-                gestureRecognizers: const <Factory<
-                    OneSequenceGestureRecognizer>>{},
+                gestureRecognizers: const <
+                    Factory<OneSequenceGestureRecognizer>>{},
                 hitTestBehavior: PlatformViewHitTestBehavior.opaque,
               );
             },

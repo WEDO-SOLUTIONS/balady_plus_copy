@@ -1,9 +1,9 @@
 import 'dart:async';
 
-import 'package:dgis_map_platform_interface/src/events/models/lat_lng.dart';
-import 'package:dgis_map_platform_interface/src/events/object_tap_events.dart';
+import 'package:dgis_map_platform_interface/library.dart';
 
 typedef void OnObjectTap();
+typedef SimpleCluster ClusterRenderer(SimpleClusterObjectMessage message);
 
 class ObjectTapEventHandler {
   ObjectTapEventHandler();
@@ -15,6 +15,7 @@ class ObjectTapEventHandler {
   final Map<String, OnObjectTap> markerHandlers = {};
   final Map<String, OnObjectTap> polygonHandlers = {};
   final Map<String, OnObjectTap> polylineHandlers = {};
+  final Map<String, ClusterRenderer> clusterRenderers = {};
   final Map<String, OnObjectTap> clusterHandlers = {};
 
   void addMarkerHandler(String id, OnObjectTap onTap) {
@@ -31,6 +32,14 @@ class ObjectTapEventHandler {
 
   void removeClusterHandler(String id) {
     clusterHandlers.remove(id);
+  }
+
+  void addClusterRenderer(String id, ClusterRenderer onTap) {
+    clusterRenderers[id] = onTap;
+  }
+
+  void removeClusterRenderer(String id) {
+    clusterRenderers.remove(id);
   }
 
   void removeAllMarkerHandlers() {

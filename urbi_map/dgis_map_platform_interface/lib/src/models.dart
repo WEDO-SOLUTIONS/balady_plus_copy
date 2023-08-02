@@ -20,19 +20,27 @@ class Marker {
 }
 
 /// Model corresponds render object on map
-class Cluster {
+class ClusteringMapObjectManager {
   /// Base class constructor
-  const Cluster({
-    required this.id,
+  const ClusteringMapObjectManager({
     required this.options,
-    this.onTap,
+    required this.renderCluster,
   });
 
-  /// Map render object's id
-  final String id;
+  /// Map render object's options (such as position, color, anchor and etc)
+  final ClusteringMapObjectManagerOptionsMessage options;
+
+  /// Map render object's onTap handler
+  final SimpleCluster Function(SimpleClusterObjectMessage) renderCluster;
+}
+
+/// Model corresponds render object on map
+class SimpleCluster {
+  /// Base class constructor
+  SimpleCluster({required this.options, this.onTap});
 
   /// Map render object's options (such as position, color, anchor and etc)
-  final ClusterOptionsMessage options;
+  final SimpleClusterOptionsMessage options;
 
   /// Map render object's onTap handler
   final void Function()? onTap;

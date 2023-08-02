@@ -553,10 +553,12 @@ class MarkerTextStyleMessage {
 }
 
 class MarkerIconMessage {
-  MarkerIconMessage(this.path, this.width, this.iconMapDirection);
+  MarkerIconMessage(
+      this.path, this.width, this.iconMapDirection, this.iconOpacity);
 
   final String path;
   final double width;
+  final double? iconOpacity;
   final MarkerAzimuthMessage? iconMapDirection;
 }
 
@@ -799,37 +801,66 @@ class SuggestResultMessage {
   final List<SuggestMessage?> suggests;
 }
 
-class ClusterOptionsMessage {
-  ClusterOptionsMessage({
-    required this.logicalPixel,
-    required this.maxZoom,
-    this.icon,
-    this.anchor,
-    this.text,
-    this.textStyle,
-  });
-
-  final double logicalPixel;
-  final double maxZoom;
-  final MarkerIconMessage? icon;
-  final MarkerAnchorMessage? anchor;
-  final String? text;
-  final MarkerTextStyleMessage? textStyle;
-}
-
-class ClusterMessage {
-  ClusterMessage(this.id, this.options);
-
-  final String id;
-  final ClusterOptionsMessage options;
-}
-
 enum SearchCategoryMessage {
   mousques,
   gasStations,
   cafe,
   restaurants,
   parks,
+}
+
+class SimpleClusterOptionsMessage {
+  SimpleClusterOptionsMessage({
+    this.icon,
+    this.anchor,
+    this.text,
+    this.textStyle,
+  });
+
+  final MarkerIconMessage? icon;
+  final MarkerAnchorMessage? anchor;
+  final String? text;
+  final MarkerTextStyleMessage? textStyle;
+}
+
+class SimpleClusterObjectMessage {
+  SimpleClusterObjectMessage(
+    this.position,
+    this.objectCount,
+    this.anchor,
+    this.iconOpacity,
+    this.textStyle,
+    this.iconWidth,
+    this.iconMapDirection,
+    this.text,
+  );
+
+  final GeoPointWithElevationMessage position;
+  final int objectCount;
+  final MarkerAnchorMessage anchor;
+  final double iconOpacity;
+  final String text;
+  final MarkerTextStyleMessage? textStyle;
+  final double iconWidth;
+  final MarkerAzimuthMessage? iconMapDirection;
+}
+
+class ClusteringMapObjectManagerOptionsMessage {
+  ClusteringMapObjectManagerOptionsMessage(
+    this.logicalPixel,
+    this.maxZoom,
+    this.minZoom,
+  );
+
+  final double logicalPixel;
+  final double maxZoom;
+  final double? minZoom;
+}
+
+class MapObjectManagerMessage {
+  MapObjectManagerMessage._(this.id);
+
+  final String id;
 }
 
 @ConfigurePigeon(
@@ -926,22 +957,27 @@ abstract class MapApi {
   void setMarkerOptions(MarkerOptionsMessageOld options);
 
   @async
-  void addMarker(MarkerMessage marker, String? clusterId);
+  void addMarker(MarkerMessage marker, MapObjectManagerMessage? manager);
 
   @async
-  void addMarkers(List<MarkerMessage> markers, String? clusterId);
+  void addMarkers(
+    List<MarkerMessage> markers,
+    MapObjectManagerMessage? manager,
+  );
 
   @async
-  void removeMarker(String id, String? clusterId);
+  void removeMarker(String id, MapObjectManagerMessage? manager);
 
   @async
-  void removeAllMarkers(String? clusterId);
+  void removeAllMarkers(MapObjectManagerMessage? manager);
 
   @async
-  void addCluster(ClusterMessage message);
+  MapObjectManagerMessage createMapObjectManagerWithClustering(
+    ClusteringMapObjectManagerOptionsMessage message,
+  );
 
   @async
-  void removeCluster(String id);
+  void removeMapObjectManager(MapObjectManagerMessage id);
 
   @async
   void addPolygon(PolygonMessage polygon);
@@ -1047,4 +1083,12 @@ abstract class MapApi {
 
   @async
   void stopFreeRoam();
+}
+
+@FlutterApi()
+abstract class FlutterMapApi {
+  SimpleClusterOptionsMessage renderCluster(
+    MapObjectManagerMessage manager,
+    SimpleClusterObjectMessage clusterObject,
+  );
 }

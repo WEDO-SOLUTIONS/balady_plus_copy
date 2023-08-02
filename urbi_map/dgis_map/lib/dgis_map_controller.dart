@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:dgis_map/library.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
 final _instance = DgisMapPlugin.instance;
@@ -261,26 +260,31 @@ class DgisMapController {
       _instance.setMarkerOptions(markerOptions);
 
   /// Add marker to map.
-  Future<void> addMarker(Marker marker, {String? toCluster}) =>
-      _instance.addMarker(marker, toCluster);
+  Future<void> addMarker(Marker marker, {MapObjectManagerMessage? toManager}) =>
+      _instance.addMarker(marker, toManager);
 
   /// Add several markers to map.
-  Future<void> addMarkers(List<Marker> markers, {String? toCluster}) =>
-      _instance.addMarkers(markers, toCluster);
+  Future<void> addMarkers(List<Marker> markers,
+          {MapObjectManagerMessage? toManager}) =>
+      _instance.addMarkers(markers, toManager);
 
   /// Remove marker by id.
-  Future<void> removeMarker(String id, {String? fromCluster}) =>
-      _instance.removeMarker(id, fromCluster);
+  Future<void> removeMarker(String id,
+          {MapObjectManagerMessage? fromManager}) =>
+      _instance.removeMarker(id, fromManager);
 
-  /// Add cluster to map.
-  Future<void> addCluster(Cluster cluster) => _instance.addCluster(cluster);
+  /// Creates [MapObjectManagerMessage] with clustering.
+  Future<MapObjectManagerMessage> createMapObjectManagerWithClustering(
+          ClusteringMapObjectManager manager) =>
+      _instance.createMapObjectManagerWithClustering(manager);
 
-  /// Remove cluster by id.
-  Future<void> removeCluster(String id) => _instance.removeCluster(id);
+  /// Removes [MapObjectManagerMessage].
+  Future<void> removeMapObjectManager(MapObjectManagerMessage manager) =>
+      _instance.removeMapObjectManager(manager);
 
   /// Remove all markers added with [addMarker].
-  Future<void> removeAllMarkers({String? fromCluster}) =>
-      _instance.removeAllMarkers(fromCluster);
+  Future<void> removeAllMarkers({MapObjectManagerMessage? fromManager}) =>
+      _instance.removeAllMarkers(fromManager);
 
   /// Remove all markers, polygons, polylines
   /// that were added with [addMarker], [addPolygons], [addPolyline].

@@ -27,27 +27,6 @@ class ObjectTapHandler {
         let id: String
     }
     
-    private struct ClusterId {
-        init(_ id: String) {
-            self.id = id
-        }
-
-        let id: String
-    }
-    
-    private struct ClusterRenderer: SimpleClusterRenderer {
-        init(_ options: SimpleClusterOptions) {
-            self.options = options
-        }
-        
-        let options: SimpleClusterOptions
-        
-        
-        func renderCluster(cluster: DGis.SimpleClusterObject) -> DGis.SimpleClusterOptions {
-            return options
-        }
-    }
-    
     private struct PolygonId {
         init(_ id: String) {
             self.id = id
@@ -69,6 +48,7 @@ class ObjectTapHandler {
     private let mapObjectManager: MapObjectManager
     private let panoramasObjectManager: MapObjectManager
     private let imageFactory: IImageFactory
+    private let flutterApi: FlutterMapApi
     private let eventChannel: DgisStreamHandler
     private let ioObjectManager: MapObjectManager
     private let registrar: FlutterPluginRegistrar
@@ -83,7 +63,7 @@ class ObjectTapHandler {
     private var source: DgisSource?
 
     private var markers: Dictionary<String, Marker> = [:]
-    private var clusters: Dictionary<String, MapObjectManager> = [:]
+    private var managers: Dictionary<String, MapObjectManager> = [:]
     private var polygons: Dictionary<String, Polygon> = [:]
     private var polylines: Dictionary<String, Polyline> = [:]
     private var panoramasMarkers: Array<Marker> = []
@@ -115,6 +95,7 @@ class ObjectTapHandler {
             qos: .utility
         )
         self.registrar = registrar
+        self.flutterApi = FlutterMapApi(binaryMessenger: registrar.messenger())
     }
     
     func objectTapListener(_ objectInfo: DGis.RenderedObjectInfo) {
@@ -244,15 +225,15 @@ class ObjectTapHandler {
         return Marker(options: options)
     }
     
-    func addMarker(_ marker: MarkerMessage, to cluster: String?, completion: @escaping (FlutterError?) -> Void) {
+    func addMarker(_ marker: MarkerMessage, to manager: MapObjectManagerMessage?, completion: @escaping (FlutterError?) -> Void) {
         guard let markerObject = mapMarker(marker, completion: completion) else {
             return
         }
         
         self.objectsQueue.sync {
             self.markers[marker.id] = markerObject
-            if let clusterId = cluster, let cluster = self.clusters[clusterId] {
-                cluster.addObject(item: markerObject)
+            if let managerId = manager?.id, let manager = self.managers[managerId] {
+                manager.addObject(item: markerObject)
             } else {
                 self.mapObjectManager.addObject(item: markerObject)
             }
@@ -260,7 +241,7 @@ class ObjectTapHandler {
         }
     }
     
-    func addMarkers(_ markers: [MarkerMessage], to cluster: String?, completion: @escaping (FlutterError?) -> Void) {
+    func addMarkers(_ markers: [MarkerMessage], to manager: MapObjectManagerMessage?, completion: @escaping (FlutterError?) -> Void) {
         var markerObjects = [String:Marker]()
         for marker in markers {
             guard let markerObject = mapMarker(marker, completion: completion) else {
@@ -273,8 +254,8 @@ class ObjectTapHandler {
             markerObjects.forEach { id, object in
                 self.markers[id] = object
             }
-            if let clusterId = cluster, let cluster = self.clusters[clusterId] {
-                cluster.addObjects(objects: Array(markerObjects.values))
+            if let managerId = manager?.id, let manager = self.managers[managerId] {
+                manager.addObjects(objects: Array(markerObjects.values))
             } else {
                 self.mapObjectManager.addObjects(objects: Array(markerObjects.values))
             }
@@ -282,78 +263,47 @@ class ObjectTapHandler {
         }
     }
     
-    func addCluster(_ cluster: ClusterMessage, completion: @escaping (FlutterError?) -> Void) {
-        var markerImage: Image? = nil
-        if let icon = cluster.options.icon?.path {
-            if let cachedIcon = iconCache[icon] {
-                markerImage = cachedIcon
-            } else {
-                let assetKey = registrar.lookupKey(forAsset: icon)
-                
-                guard let assetPath = Bundle.main.path(forResource: assetKey, ofType: nil),
-                      let url = URL(string: "file://\(assetPath)"),
-                      let data = try? Data(contentsOf: url) else {
-                    completion(
-                        FlutterError(
-                            code: "Error loading asset for marker",
-                            message: nil,
-                            details: nil
-                        ))
-                    return
+    func removeMarker(_ id: String, from manager: MapObjectManagerMessage?, completion: @escaping (FlutterError?) -> Void) {
+        self.objectsQueue.sync {
+            if let markerObject = self.markers.removeValue(forKey: id) {
+                if let managerId = manager?.id, let manager = self.managers[managerId] {
+                    manager.removeObject(item: markerObject)
+                } else {
+                    self.mapObjectManager.removeObject(item: markerObject)
                 }
-                
-                let image = imageFactory.make(svgData: data, size: .zero)
-                markerImage = image
-                iconCache[icon] = image
-            }
-        }
-        
-        let options = SimpleClusterOptions(
-            icon: markerImage,
-            iconMapDirection: cluster.options.icon?.iconMapDirection.map {
-                MapDirection(value: $0.degree.doubleValue)
-            },
-            anchor: cluster.options.anchor.map {
-                Anchor(x: $0.x.floatValue, y: $0.y.floatValue)
-            } ?? Anchor(x: 0.5, y: 0.5),
-            text: cluster.options.text,
-            textStyle: cluster.options.textStyle?.textStyle,
-            iconWidth: (cluster.options.icon?.width).map {
-                LogicalPixel(value: $0.floatValue)
-            } ?? LogicalPixel(value: 0),
-            userData: ClusterId(cluster.id)
-        )
-        
-        self.objectsQueue.sync {
-            self.clusters[cluster.id] = MapObjectManager.withClustering(
-                map: map,
-                logicalPixel: LogicalPixel(
-                    value: cluster.options.logicalPixel.floatValue
-                ),
-                maxZoom: Zoom(
-                    value: cluster.options.maxZoom.floatValue
-                ),
-                clusterRenderer: ClusterRenderer(options)
-            )
-        }
-    }
-    
-    func removeCluster(_ id: String, completion: @escaping (FlutterError?) -> Void) {
-        self.objectsQueue.sync {
-            if self.clusters.removeValue(forKey: id) != nil{
                 completion(nil)
             }
         }
     }
     
-    func removeMarker(_ id: String, from cluster: String?, completion: @escaping (FlutterError?) -> Void) {
+    func createClusteringMapObjectManager(_ options: ClusteringMapObjectManagerOptionsMessage, completion: @escaping (MapObjectManagerMessage?, FlutterError?) -> Void) {
+        let managerId = UUID().uuidString
+        let managerMessage = MapObjectManagerMessage.make(withId: managerId)
+        
+        let manager = MapObjectManager.withClustering(
+            map: self.map,
+            logicalPixel: LogicalPixel(value: options.logicalPixel.floatValue),
+            maxZoom: Zoom(value: options.maxZoom.floatValue),
+            clusterRenderer: FlutterClutserRenderer(
+                api: self.flutterApi,
+                registrar: self.registrar,
+                imageFactory: self.imageFactory,
+                manager: managerMessage
+            ),
+            minZoom: options.minZoom.map {
+                Zoom(value: $0.floatValue)
+            } ?? Zoom(value: 0)
+        )
+        
         self.objectsQueue.sync {
-            if let markerObject = self.markers.removeValue(forKey: id) {
-                if let clusterId = cluster, let cluster = self.clusters[clusterId] {
-                    cluster.removeObject(item: markerObject)
-                } else {
-                    self.mapObjectManager.removeObject(item: markerObject)
-                }
+            self.managers[managerId] = manager
+            completion(managerMessage, nil)
+        }
+    }
+    
+    func removeMapObjectManager(_ manager: MapObjectManagerMessage, completion: @escaping (FlutterError?) -> Void) {
+        self.objectsQueue.sync {
+            if self.managers.removeValue(forKey: manager.id) != nil {
                 completion(nil)
             }
         }
@@ -503,10 +453,10 @@ class ObjectTapHandler {
         }
     }
     
-    func removeAllMarkers(from cluster: String?) {
+    func removeAllMarkers(from manager: MapObjectManagerMessage?) {
         self.objectsQueue.sync {
-            if let clusterId = cluster, let cluster = self.clusters[clusterId] {
-                cluster.removeObjects(objects: Array(self.markers.values))
+            if let managerId = manager?.id, let manager = self.managers[managerId] {
+                manager.removeObjects(objects: Array(self.markers.values))
             } else {
                 self.mapObjectManager.removeObjects(objects: Array(self.markers.values))
             }

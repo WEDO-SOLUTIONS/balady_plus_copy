@@ -13,8 +13,6 @@ import 'package:flutter/widgets.dart';
 
 const int mil = 300;
 
-const String searchClusterId = "search-cluster";
-
 class MapViewModel extends BaseViewModel {
   MapViewModel(// required this.authService,
       // required this.setLocale,
@@ -23,6 +21,8 @@ class MapViewModel extends BaseViewModel {
   TextEditingController searchController = TextEditingController();
 
   ValueNotifier<SearchCategoryMessage?> selectedCategory = ValueNotifier(null);
+
+  late MapObjectManagerMessage searchManager;
 
   Future<void> performSearch({
     required String queryText,
@@ -45,7 +45,7 @@ class MapViewModel extends BaseViewModel {
               isOpenNow: false,
               searchRect: _lastHandledEvent?.visibleRect.geoRectMessage(),
             );
-      await controller.removeAllMarkers(fromCluster: searchClusterId);
+      await controller.removeAllMarkers(fromManager: searchManager);
 
       if (data.itemMarkerInfos != null) {
         List<Marker> markers = [];
@@ -74,7 +74,7 @@ class MapViewModel extends BaseViewModel {
           ));
         }
 
-        await controller.addMarkers(markers, toCluster: searchClusterId);
+        await controller.addMarkers(markers, toManager: searchManager);
       }
       if (data.firstPage?.items != null) {
         final responseDistance = await controller.getDistanceTo(
@@ -168,19 +168,28 @@ class MapViewModel extends BaseViewModel {
       ),
     );
 
-    await controller.addCluster(
-      Cluster(
-        id: searchClusterId,
-        options: ClusterOptionsMessage(
+    searchManager = await controller.createMapObjectManagerWithClustering(
+      ClusteringMapObjectManager(
+        options: ClusteringMapObjectManagerOptionsMessage(
           logicalPixel: 40,
           maxZoom: 16,
-          icon: MarkerIconMessage(
-            path: "assets/maps/icons/ic_marker.svg",
-            width: 24,
-          ),
         ),
+        renderCluster: (object) {
+          return SimpleCluster(
+            options: SimpleClusterOptionsMessage(
+              icon: MarkerIconMessage(
+                path: "assets/maps/icons/ic_marker.svg",
+                width: 24,
+              ),
+              text: "${object.objectCount} objects inside",
+              textStyle: MarkerTextStyleMessage(fontSize: 16),
+            ),
+          );
+        },
       ),
     );
+
+    print(searchManager.id);
 
     // await _checkLocationPermissions();
     // unawaited(controller.fetchLayers());
