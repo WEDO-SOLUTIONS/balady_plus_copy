@@ -11,5 +11,17 @@ class ImagePath {
   static const prayerTimesAppBar = '${_imagePath}prayer_times_appbar$_png';
   static const appBarBackground = '${_imagePath}app_bar_background$_png';
   static const successPageBackground = '${_imagePath}success_background$_png';
+  static const boardingRiyadhImage = '${_imagePath}background$_png';
   static const successPageIcon = '${_imagePath}success_image$_png';
+  static const boardingSplashImage = '${_imagePath}balady_logo$_png';
+  static const boardingMainImage = '${_imagePath}boarding_main$_png';
+  static const boardingCloseImage = '${_imagePath}boarding_close$_png';
+  static const boardingServiceImage = '${_imagePath}boarding_service$_png';
+  static const boardingAccountImage = '${_imagePath}boarding_account$_png';
+  static const boardingloader1 = '${_imagePath}loader1$_png';
+  static const boardingloader2 = '${_imagePath}loader2$_png';
+
+  static const boardingloader3 = '${_imagePath}loader3$_png';
+
+  static const boardingloader4 = '${_imagePath}loader4$_png';
 }

@@ -8,6 +8,7 @@ const _svgNearbyIconPath = 'assets/icons/svg/nearby/';
 const _pngVDIconPath = 'assets/icons/png/vd/';
 const _svgVDIconPath = 'assets/icons/svg/vd/';
 const _svgAthkarIconPath = 'assets/icons/svg/athkar/';
+const _boardingLogoPath = 'assets/icons/svg/boarding/';
 
 const _pngQRIconPath = 'assets/icons/png/qr/';
 const _svgQRIconPath = 'assets/icons/svg/qr/';
@@ -186,4 +187,6 @@ class IconPath {
 
   static const muslimNumberFrame =
       '${_svgAthkarIconPath}muslim_number_frame$_svg';
+
+  static const boardingSplashLogo = '${_boardingLogoPath}balady_logo$_svg';
 }

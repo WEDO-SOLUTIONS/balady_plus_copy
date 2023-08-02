@@ -58,4 +58,7 @@ class RouteName {
   static const mainAthkarPage = '/mainAthkarPage';
   static const athkarEntitesPage = '/athkarEntitesPage';
   static const athkarEntityContentPage = '/athkarEntityContentPage';
+
+  // Boarding
+  static const boardingPage = '/boardingPage';
 }

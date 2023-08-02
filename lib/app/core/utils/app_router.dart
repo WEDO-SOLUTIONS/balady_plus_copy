@@ -1,4 +1,6 @@
 import 'package:balady_plus/app/features/athkar/presentation/pages/athkar_entity_content.dart';
+import 'package:balady_plus/app/features/boarding/presentation/pages/boarding_main_page.dart';
+import 'package:balady_plus/app/features/boarding/presentation/pages/boarding_pages.dart';
 import 'package:balady_plus/app/features/objectable_transactions/domain/entities/create_objection_page_params.dart';
 import 'package:balady_plus/app/features/objections/domain/entities/objection_details.dart';
 import 'package:flutter/material.dart'
@@ -259,6 +261,10 @@ class AppRouter {
       case RouteName.mainAthkarPage:
         return MaterialPageRoute(
           builder: (_) => Athkar(),
+        );
+      case RouteName.boardingPage:
+        return MaterialPageRoute(
+          builder: (_) => BoardingMainPage(),
         );
       case RouteName.athkarEntitesPage:
         final params = settings.arguments as AthkarEntitiesParams;

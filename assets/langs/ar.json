@@ -2320,7 +2320,14 @@
 "ekram_city_status": "نوع النقل",
 "carBard": "طراز المركبة",
 "carYear": "سنة الصنع",
-"AthkarMainPageTitle" : "الاذكار"
+"AthkarMainPageTitle" : "الاذكار",
+"boarding_main_title": "الرئيسية",
+"boarding_close_title":"قريب مني",
+"boarding_service_title":"الخدمات",
+"boarding_account_title":"الحساب",
+"boarding_subtitle": "تعرف على الأماكن والخدمات القريبة منك وفقًا لتصنيفات متنوعة تجعل الوصول إليها أسهل.",
+"boarding_button_text": "انهاء ",
+"skip":"تخطى"
 
 
 

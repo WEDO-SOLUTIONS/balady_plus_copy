@@ -40,6 +40,7 @@ class AppStyle {
     fontFamily: fontFamily,
     height: 1.0,
   );
+
   static final radioButtonStyle = TextStyle(
     fontSize: 14.0,
     fontWeight: AppFontWeight.medium.fontWeight,
@@ -336,8 +337,30 @@ class AppStyle {
     fontWeight: AppFontWeight.bold.fontWeight,
     fontFamily: fontFamily,
     color: AppColor.blackModern50Light,
-
-
+  );
+  static final boardingTitle = TextStyle(
+    color: AppColor.grey1000,
+    fontSize: 24,
+    fontWeight: AppFontWeight.bold.fontWeight,
+    fontFamily: fontFamily,
+  );
+  static final boardingSubtitle = TextStyle(
+    color: AppColor.blackModern700Light,
+    fontSize: 14,
+    fontWeight: AppFontWeight.bold.fontWeight,
+    fontFamily: fontFamily,
+  );
+  static final boardingButtonStyle = TextStyle(
+    color: AppColor.white,
+    fontSize: 16,
+    fontWeight: AppFontWeight.bold.fontWeight,
+    fontFamily: fontFamily,
+  );
+  static final boardingAppBarTitleStyle = TextStyle(
+    fontFamily: fontFamily,
+    fontSize:16, 
+    fontWeight:AppFontWeight.medium.fontWeight,
+    color: AppColor.white,
   );
 
   /// Padding
