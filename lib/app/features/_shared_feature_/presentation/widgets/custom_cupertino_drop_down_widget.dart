@@ -1,6 +1,7 @@
 import 'package:balady_plus/app/core/utils/constants/keys/general_keys.dart';
 import 'package:balady_plus/app/core/utils/enums/app_font_weights.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
+import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/custom_shimmer_list_widget.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -200,6 +201,7 @@ class CustomTapWidgetForLongDialog extends StatefulWidget {
   final bool? showOptional;
   final bool showHintAsTitle;
   final double? marginBottom;
+  final bool isLoading;
 
   CustomTapWidgetForLongDialog(
       {Key? key,
@@ -211,6 +213,7 @@ class CustomTapWidgetForLongDialog extends StatefulWidget {
       required this.label,
       this.searchHint,
       this.errorText,
+      this.isLoading = false,
       this.showOptional = false,
       this.showHintAsTitle = false})
       : super(key: key);
@@ -224,34 +227,39 @@ class _CustomTapWidgetForLongDialog
     extends State<CustomTapWidgetForLongDialog> {
   @override
   Widget build(BuildContext context) {
-    return CustomHeaderAndDescOnTapWidget(
-      label: widget.label,
-      hintText: widget.hint ?? ("choose_hint").tr(),
-      textValue: widget.value?.name,
-      showOptional: widget.showOptional,
-      labelColor: AppColor.blackModern700Light,
-      labelSize: 16,
-      marginBottom: widget.marginBottom,
-      onTap: widget.items.isNotEmpty
-          ? () async {
-              FocusManager.instance.primaryFocus?.unfocus();
-              await CustomPopUpsWidgets.showBottomSheet(
-                NavigationService.navigatorKey.currentContext!,
-                child: IncidentTypeWithSearchDialog(
-                  onSelect: (DropDownItem item) => widget.onChangeType(item),
-                  items: widget.items,
-                  selectedItem: widget.value,
-                  title: widget.showHintAsTitle ? widget.hint : widget.label,
-                  searchHint: widget.searchHint ?? ("searchFor").tr(),
-                ),
-              );
-            }
-          : () {
-              FocusManager.instance.primaryFocus?.unfocus();
-              CommonFunctions.showError(
-                  widget.errorText ?? ('empty_list_error').tr());
-            },
-    );
+    return !widget.isLoading
+        ? CustomHeaderAndDescOnTapWidget(
+            label: widget.label,
+            hintText: widget.hint ?? ("choose_hint").tr(),
+            textValue: widget.value?.name,
+            showOptional: widget.showOptional,
+            labelColor: AppColor.blackModern700Light,
+            labelSize: 16,
+            marginBottom: widget.marginBottom,
+            onTap: widget.items.isNotEmpty
+                ? () async {
+                    FocusManager.instance.primaryFocus?.unfocus();
+                    await CustomPopUpsWidgets.showBottomSheet(
+                      NavigationService.navigatorKey.currentContext!,
+                      child: IncidentTypeWithSearchDialog(
+                        onSelect: (DropDownItem item) =>
+                            widget.onChangeType(item),
+                        items: widget.items,
+                        selectedItem: widget.value,
+                        title:
+                            widget.showHintAsTitle ? widget.hint : widget.label,
+                        searchHint: widget.searchHint ?? ("searchFor").tr(),
+                      ),
+                    );
+                  }
+                : () {
+                    FocusManager.instance.primaryFocus?.unfocus();
+                    CommonFunctions.showError(
+                        widget.errorText ?? ('empty_list_error').tr());
+                  },
+          )
+        : const CustomShimmerWidget(
+            childHeight: 48, padding: EdgeInsets.only(bottom: 30));
   }
 }
 

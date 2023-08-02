@@ -33,6 +33,7 @@ class RouteName {
   static const objections = '/objections';
   static const objectableTransactions = '/objectableTransactionsPage';
   static const createObjectionDetails = '/createObjectionDetails';
+  static const createViolationObjectionDetails = '/createViolationObjectionDetails';
 
   static const transactionDetailsPage = '/TransactionDetailsPage';
   static const objectionsDetailsPage = '/ObjectionsDetailsPage';

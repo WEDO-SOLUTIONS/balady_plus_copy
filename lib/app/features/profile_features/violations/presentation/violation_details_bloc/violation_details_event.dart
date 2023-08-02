@@ -11,3 +11,15 @@ class GetViolationDetailsEvent extends ViolationDetailsEvent {
   final String params;
   const GetViolationDetailsEvent({required this.params});
 }
+
+
+class GetObjectionDetailsEvent extends ViolationDetailsEvent {
+  final String params;
+  GetObjectionDetailsEvent({required this.params});
+}
+
+class GetGisLocationInfoEvent extends ViolationDetailsEvent {
+  final double? lat;
+  final double? lon;
+  const GetGisLocationInfoEvent({this.lat, this.lon});
+}
