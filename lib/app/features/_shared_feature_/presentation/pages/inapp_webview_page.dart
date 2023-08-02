@@ -28,6 +28,7 @@ class InAppWebViewPage extends StatefulWidget {
 class _InAppWebViewPageState extends State<InAppWebViewPage> {
   late StreamController<double?> _progessStream;
   late WebViewController controller;
+  late InAppWebViewController _controller;
   @override
   void initState() {
     super.initState();
@@ -76,6 +77,9 @@ class _InAppWebViewPageState extends State<InAppWebViewPage> {
           return Stack(
             children: [
               InAppWebView(
+                onWebViewCreated: (InAppWebViewController controller) {
+                  _controller = controller;
+                },
                 initialUrlRequest: URLRequest(
                   // url: Uri.parse('https://flutter.dev/'),
                   url: Uri.parse(widget.args.url),
@@ -86,11 +90,21 @@ class _InAppWebViewPageState extends State<InAppWebViewPage> {
                   ),
                 ),
                 onLoadStart: (controller, Uri? url) {
+                  //  print("URL WebView: $url");
                   // setState(() {
                   //   this.url = url!.path;
                   // });
                 },
                 onLoadStop: (controller, Uri? url) {
+                  print("URL WebView: $url");
+                  if (url?.path.endsWith("dashboardclient") ?? false) {
+                    Timer(const Duration(milliseconds: 1300), () async {
+                      _controller.loadUrl(
+                          urlRequest: URLRequest(
+                        url: Uri.parse(widget.args.url),
+                      ));
+                    });
+                  }
                   // setState(() {
                   //   this.url = url!.path;
                   // });

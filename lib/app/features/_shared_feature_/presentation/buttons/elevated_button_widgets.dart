@@ -40,7 +40,7 @@ class ElevatedButtonWidget extends _ElevatedButton {
             fontSize: 16,
           ),
           btnHeight: 48,
-          text:  "uploadReport".tr(),
+          text: "uploadReport".tr(),
           onPressed: onPressed,
         ));
 
@@ -166,8 +166,8 @@ class ElevatedButtonWidget extends _ElevatedButton {
   ElevatedButtonWidget.licenseDetails({required VoidCallback onPressed})
       : super(CustomElevatedButtonWidget(
           btnColor: Colors.transparent,
-    btnBorderColor: AppColor.white,
-    textStyle: AppStyle.elevatedButtonStyle.copyWith(
+          btnBorderColor: AppColor.white,
+          textStyle: AppStyle.elevatedButtonStyle.copyWith(
             color: AppColor.white,
             fontWeight: FontWeight.w700,
             fontSize: 16,
@@ -262,14 +262,17 @@ class ElevatedButtonWidget extends _ElevatedButton {
           onPressed: onPressed,
         ));
 
-  ElevatedButtonWidget.custom({
-    required VoidCallback onPressed,
-    required String text,
-  }) : super(CustomElevatedButtonWidget(
-          btnColor: Colors.transparent,
-          btnBorderColor: AppColor.primary800Light,
+  ElevatedButtonWidget.custom(
+      {required VoidCallback onPressed, required String text, bool? isDisabled})
+      : super(CustomElevatedButtonWidget(
+          btnColor: (isDisabled ?? false)
+              ? AppColor.black200
+              : AppColor.primary900Light,
+          btnBorderColor: (isDisabled ?? false)
+              ? AppColor.black200
+              : AppColor.primary900Light,
           textStyle: AppStyle.elevatedButtonStyle.copyWith(
-            color: AppColor.primary800Light,
+            color: (isDisabled ?? false) ? AppColor.black400 : AppColor.white,
             fontWeight: FontWeight.w700,
             fontSize: 16,
           ),

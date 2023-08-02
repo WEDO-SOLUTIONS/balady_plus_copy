@@ -6,6 +6,7 @@ import '../../../_shared_feature_/presentation/components/bottom_sheets/bottom_s
 import '../../../_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
 import '../../data/data_sources/point_layers_data.dart';
 import '../../data/model/layers.dart';
+import '../../constants/constants.dart' as mapConstants;
 
 import 'package:provider/provider.dart';
 import '../../data/model/white_lands.dart';
@@ -99,15 +100,20 @@ class HomeMap extends StatelessWidget {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                GestureDetector(
-                                  onTap: () => showMainLayersDialog(
-                                      context, layersModel),
-                                  child: const CircleIcon(
-                                    icon: IconPath.layers,
-                                    iconColor: AppColor.blackModern600Light,
-                                    backgroundColor: AppColor.white,
-                                  ),
-                                ),
+                                ValueListenableBuilder<Layers?>(
+                                    valueListenable: mapViewModel.layerSelected,
+                                    builder: (_, selectedPoint, __) {
+                                      return GestureDetector(
+                                        onTap: () => showMainLayersDialog(
+                                            context, layersModel),
+                                        child: CircleIcon(
+                                          icon: mapViewModel
+                                                  .gisSelectedLayer?.icon ??
+                                              mapConstants.Constants.layerIcon,
+                                          backgroundColor: AppColor.white,
+                                        ),
+                                      );
+                                    }),
                                 Constants.verticalSpaceSmall,
                                 GestureDetector(
                                   onTap: () =>

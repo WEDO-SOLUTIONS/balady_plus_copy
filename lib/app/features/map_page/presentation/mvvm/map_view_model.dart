@@ -226,6 +226,7 @@ class MapViewModel extends BaseViewModel {
     // setLocale(const Locale("ar", "US"), TextDirection.ltr);
     await controller.loadStyles(Constants.mapStyle);
     await controller.overrideLocales(["ar-SA", "en-SA"]);
+    ;
     // await controller.overrideLocales([localeState.value.locale]);
 
     await controller.setMarkerOptions(
@@ -392,12 +393,12 @@ class MapViewModel extends BaseViewModel {
     if (latlng != null)
       await controller.setCameraPosition(
         CameraPositionMessage(
-          zoom: 13,
+          zoom: 20,
           tilt: 0,
           bearing: 0,
           point: GeoPointMessage(
-            latitude: 24.729761968361412,
-            longitude: 46.665576686472015,
+            latitude: 24.708194,
+            longitude: 46.673345,
           ),
         ),
       );
@@ -412,9 +413,9 @@ class MapViewModel extends BaseViewModel {
         queryText: selectedCategory.value!.displayName(),
       );
     }
-
+    print("layerSelected $layerSelected");
     if (layerSelected.value == null) return;
-
+    print("HEREE");
     GISMapLayers? gisLayer = GISMapLayers.values.firstWhereOrNull(
         (element) => element.layerId == layerSelected.value!.id);
 
@@ -728,9 +729,12 @@ class MapViewModel extends BaseViewModel {
   }
 
   void selectLayers(Layers value) async {
+    print("LAyer selected");
     layerSelected.value = value;
+
     gisSelectedLayer = gisSelectedLayer = GISMapLayers.values
         .firstWhereOrNull((element) => element.layerId == value.id);
+    notifyListeners();
     callSearch();
   }
 
