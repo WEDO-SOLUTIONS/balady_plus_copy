@@ -111,6 +111,7 @@ class RouteName {
 
   // Violations
   static const violationsPage = '/violationsPage';
+  static const violationDetailsPage = '/violationDetailsPage';
 
 
 }

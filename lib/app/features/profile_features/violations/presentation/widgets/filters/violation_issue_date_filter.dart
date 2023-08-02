@@ -19,7 +19,7 @@ class ViolationIssueDateDateFilter extends StatelessWidget {
           current.selectedViolationIssueDate,
       builder: (context, state) {
         return FilterDatePicker(
-          title: "تاريخ رصد المخالفة".tr(),
+          title: "invoice_violation_date".tr(),
           initialDate: state.selectedViolationIssueDate,
           initialDateForm: state.issueDateForm ?? DateForm.gregorian,
           onChange: (selectedDate, dateForm) {

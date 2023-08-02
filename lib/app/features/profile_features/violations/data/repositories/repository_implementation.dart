@@ -1,10 +1,3 @@
-import 'package:balady_plus/app/features/objectable_transactions/domain/entities/create_objection_params.dart';
-import 'package:balady_plus/app/features/objectable_transactions/domain/entities/create_objection_response.dart';
-import 'package:balady_plus/app/features/objectable_transactions/domain/entities/transaction_details.dart';
-import 'package:balady_plus/app/features/objectable_transactions/domain/entities/transaction_details_params.dart';
-import 'package:balady_plus/app/features/objectable_transactions/domain/entities/upload_file_params.dart';
-import 'package:balady_plus/app/features/objectable_transactions/domain/entities/upload_file_response.dart';
-import 'package:balady_plus/app/features/objections/domain/entities/objection_details.dart';
 import 'package:dartz/dartz.dart';
 
 import '../../../../../core/errors/errors_exports.dart'
@@ -15,16 +8,7 @@ import '../../../../../core/errors/errors_exports.dart'
         ServerException,
         ServerFailure;
 import '../../violations_exports.dart'
-    show
-        InvoiceStatusesEntity,
-        ObjectableTransactionsEntity,
-        RequestSubTypeEntity,
-        RequestSubTypeParamsModel,
-        ViolationsRemoteDataSource,
-        ViolationsRepository,
-        ViolationsPrams,
-        ViolationsEntity,
-        ViolationsStatusEntity;
+    show InvoiceStatusesEntity, ViolationDetailsEntity, ViolationsEntity, ViolationsPrams, ViolationsRemoteDataSource, ViolationsRepository, ViolationsStatusEntity;
 
 class ViolationsRepositoryImplementation implements ViolationsRepository {
   final ViolationsRemoteDataSource remoteDataSource;
@@ -32,6 +16,19 @@ class ViolationsRepositoryImplementation implements ViolationsRepository {
   ViolationsRepositoryImplementation({
     required this.remoteDataSource,
   });
+
+  @override
+  Future<Either<Failure, ViolationDetailsEntity>> getViolationDetails(
+      String id) async {
+    try {
+      final data = await remoteDataSource.getViolationDetails(id);
+      return Right(data);
+    } on NoDataFoundException {
+      return Left(NoDataFoundFailure());
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage));
+    }
+  }
 
   @override
   Future<Either<Failure, List<ViolationsStatusEntity>>>

@@ -19,7 +19,7 @@ class ObjectionLastApplyDateFilter extends StatelessWidget {
           current.selectedObjectionLastApplyDate,
       builder: (context, state) {
         return FilterDatePicker(
-          title: "اخر موعد لتقديم للاعتراض".tr(),
+          title: "transaction_details_last_date".tr(),
           initialDate: state.selectedObjectionLastApplyDate,
           initialDateForm: state.lastDateForm ?? DateForm.gregorian,
           onChange: (selectedDate, dateForm) {

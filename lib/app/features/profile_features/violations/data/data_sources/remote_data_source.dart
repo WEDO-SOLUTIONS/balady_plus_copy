@@ -11,7 +11,7 @@ import '../../../../_shared_feature_/shared_feature_exports.dart'
     show ResponseBodyModel;
 
 import '../../violations_exports.dart'
-    show InvoiceStatusesModel, ViolationsParamsModel, ViolationsModel, ViolationsStatusModel;
+    show InvoiceStatusesModel, ViolationDetailsModel, ViolationsModel, ViolationsParamsModel, ViolationsStatusModel;
 
 abstract class ViolationsRemoteDataSource {
   Future<List<ViolationsModel>> getViolations(
@@ -19,6 +19,8 @@ abstract class ViolationsRemoteDataSource {
       );
   Future<List<ViolationsStatusModel>> getViolationsStatuses();
   Future<List<InvoiceStatusesModel>> getInvoiceStatuses();
+
+  Future<ViolationDetailsModel> getViolationDetails(String id);
 
 }
 
@@ -28,6 +30,39 @@ class ViolationsRemoteDataSourceImplementation
 
   ViolationsRemoteDataSourceImplementation({required this.webService});
 
+
+
+  @override
+  Future<ViolationDetailsModel> getViolationDetails(String id) async {
+    try {
+      final response = await webService.dio
+          .get(ApiUrl.violationDetails, queryParameters: {
+        "violationNumber": id,
+      });
+
+      final data = response.data;
+      data.toString().successLog();
+
+      final result = ResponseBodyModel.fromMap(data).data?.result;
+      return ViolationDetailsModel.fromJson(result);
+    } on DioError catch (error) {
+      "DioError $error".errorLog();
+      if (error is NoDataFoundException) {
+        rethrow;
+      }
+      throw ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+      );
+    } catch (ex) {
+      "Catched $ex".errorLog();
+      if (ex is ServerException) {
+        rethrow;
+      } else {
+        throw ServerException("errors_server_error_2".tr());
+      }
+    }
+  }
 
   @override
   Future<List<ViolationsModel>> getViolations(

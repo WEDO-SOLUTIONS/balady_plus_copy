@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../_shared_feature_/shared_feature_exports.dart';
 import '../../violations_exports.dart'
@@ -25,7 +26,7 @@ class ViolationsFilterBottomSheet extends StatelessWidget {
               return Column(
                 children: [
                   FilterTextField(
-                    hintText: "رقم الترخيص",
+                    hintText: "transaction_details_license".tr(),
                     initialValue: state.licenseNumberQuery,
                     onChanged: (value) {
                       context.read<ViolationsBloc>().add(
@@ -36,7 +37,7 @@ class ViolationsFilterBottomSheet extends StatelessWidget {
                     },
                   ),
                   FilterTextField(
-                    hintText: "رقم الفاتورة/المخالفة",
+                    hintText: "billNumber".tr(),
                     initialValue: state.invoiceNumberQuery,
                     onChanged: (value) {
                       context.read<ViolationsBloc>().add(

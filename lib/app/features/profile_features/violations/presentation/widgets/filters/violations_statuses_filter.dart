@@ -17,7 +17,7 @@ class ViolationsStatusesFilter extends StatelessWidget {
           previous.selectedViolationStatus != current.selectedViolationStatus,
       builder: (context, state) {
         return DropDownWithTitle(
-          title: "حالة المخالفة".tr(),
+          title: "transaction_details_violation_status".tr(),
           selectedValue: state.selectedViolationStatus?.name,
           status: state.violationsStatus,
           onRetry: () => context.read<ViolationsBloc>().add(
@@ -29,7 +29,7 @@ class ViolationsStatusesFilter extends StatelessWidget {
             BottomSheetDialog.showDraggableSheet(
               context,
               child: BottomSheetList(
-                title: "حالة المخالفة".tr(),
+                title: "transaction_details_violation_status".tr(),
                 items: items,
                 selectedValue: state.selectedViolationStatus?.name,
                 onTap: (item) {

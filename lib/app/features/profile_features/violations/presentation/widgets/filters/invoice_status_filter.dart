@@ -18,7 +18,7 @@ class InvoiceStatusFilter extends StatelessWidget {
           previous.selectedInvoiceStatus != current.selectedInvoiceStatus,
       builder: (context, state) {
         return DropDownWithTitle(
-          title: "حالة فاتورة المخالفة".tr(),
+          title: "transaction_details_bill_status".tr(),
           selectedValue: state.selectedInvoiceStatus?.name,
           status: state.invoiceStatusesStatus,
           onRetry: () => context.read<ViolationsBloc>().add(
@@ -30,7 +30,7 @@ class InvoiceStatusFilter extends StatelessWidget {
             BottomSheetDialog.showDraggableSheet(
               context,
               child: BottomSheetList(
-                title: "حالة فاتورة المخالفة".tr(),
+                title: "transaction_details_bill_status".tr(),
                 items: items,
                 selectedValue: state.selectedInvoiceStatus?.name,
                 onTap: (item) {

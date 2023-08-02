@@ -201,6 +201,8 @@ class ApiUrl {
       "/v1/balady-dashboard/violations/invoice-statuses";
   static const String violations =
       "/v1/balady-dashboard/violations/my-violations";
+  static const String violationDetails =
+      "/v1/balady-dashboard/violations/by-id";
 
 
   //! POST

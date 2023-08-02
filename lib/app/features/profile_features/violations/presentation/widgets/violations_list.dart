@@ -1,16 +1,20 @@
-import 'package:balady_plus/app/features/objectable_transactions/domain/entities/transaction_details_params.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
-
-import '../../../../../core/utils/utils_exports.dart' show BlocRequestStatus;
-import '../../../../_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
+import '../../../../../core/utils/utils_exports.dart'
+    show BlocRequestStatus, ContextConversion, RouteName;
 import '../../../../_shared_feature_/presentation/widgets/need_login_widget.dart';
 import '../../../../_shared_feature_/presentation/widgets/reload_widget.dart';
 import '../../../../_shared_feature_/shared_feature_exports.dart'
-    show MessageDialog, RetryWidget, ShimmerEffectWidget;
+    show MessageDialog, ShimmerEffectWidget;
 import '../../violations_exports.dart'
-    show GetViolationsEvent, ViolationListShimmer, ViolationsBloc, ViolationsListItem, ViolationsLoadMoreEvent, ViolationsState;
+    show
+        GetViolationsEvent,
+        ViolationListShimmer,
+        ViolationsBloc,
+        ViolationsListItem,
+        ViolationsLoadMoreEvent,
+        ViolationsState;
 
 class ViolationList extends StatefulWidget {
   const ViolationList({super.key});
@@ -51,9 +55,7 @@ class _ViolationListState extends State<ViolationList> {
           return Center(
             child: ReloadWidget(
               onTab: () {
-                context
-                    .read<ViolationsBloc>()
-                    .add(GetViolationsEvent());
+                context.read<ViolationsBloc>().add(GetViolationsEvent());
               },
             ),
           );
@@ -90,32 +92,15 @@ class _ViolationListState extends State<ViolationList> {
                   return ViolationsListItem(
                     violations: state.violations[index],
                     onDetails: () {
-                      // context.read<ViolationsBloc>().add(
-                      //     GetTransactionDetailsEvent(
-                      //         apply: false,
-                      //         params: TransactionDetailsParams(
-                      //             applicationId:
-                      //                 state.requests[index].applicationId ??
-                      //                     "13",
-                      //             id: state.requests[index].transactionNumber ??
-                      //                 "")));
+                      context.pushNamedRoute(
+                        RouteName.violationDetailsPage,
+                        arguments: state.violations[index],
+                      );
                     },
-                    onApply: () {
-                      // context.read<ObjectableTransactionBloc>().add(
-                      //     GetTransactionDetailsEvent(
-                      //         apply: true,
-                      //         params: TransactionDetailsParams(
-                      //             applicationId:
-                      //                 state.requests[index].applicationId ??
-                      //                     "13",
-                      //             id: state.requests[index].transactionNumber ??
-                      //                 "")));
-                    },
+                    onApply: () {},
                   );
                 },
               ),
-              if (state.detailsStatus == BlocRequestStatus.submissionGetLoading)
-                CustomCircularLoadingWidget(),
             ],
           );
         }

@@ -34,7 +34,7 @@ class ViolationsListItem extends StatelessWidget {
               const DrawIconBasedTypeWidget(icon: IconPath.requests),
               const SizedBox(width: 4),
               CustomTextWidget(
-                'المخالفه'.tr(),
+                'violation'.tr(),
                 textStyle: AppStyle.cardTitleTextStle,
               ),
               const SizedBox(width: 4),
@@ -63,23 +63,23 @@ class ViolationsListItem extends StatelessWidget {
               ),
               children: [
                 ViolationsParameter(
-                  title: 'رقم فاتورة المخالفة'.tr(),
+                  title: 'violationBillNo'.tr(),
                   value: violations.billNumber??'',
                 ),
                 ViolationsParameter(
-                  title: 'تاريخ اصدار المخالفه'.tr(),
+                  title: 'issueViolationDate'.tr(),
                   value: violations.violationIssueDate != null
                       ? DateFormat.yMd().format(violations.violationIssueDate!)
                       : "",
                 ),
                 ViolationsParameter(
-                  title: 'اخر موعد للاعتراض'.tr(),
+                  title: 'objectionLastApplyDate'.tr(),
                   value: violations.objectionLastApplyDate != null
                       ? DateFormat.yMd().format(violations.objectionLastApplyDate!)
                       : "",
                 ),
                 ViolationsParameter(
-                  title: 'قيمه الغرامه'.tr(),
+                  title: 'violationAmount'.tr(),
                   value: violations.violationAmount.toString(),
                 ),
               ],

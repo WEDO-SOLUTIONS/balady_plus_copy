@@ -29,7 +29,7 @@ class ViolationsPage extends StatelessWidget {
       child: Builder(builder: (context) {
         return Scaffold(
           appBar: DefaultAppBarWidget(
-            title: 'المخالفات'.tr(),
+            title: 'violations'.tr(),
             actions: [
               BlocBuilder<ViolationsBloc,
                   ViolationsState>(
