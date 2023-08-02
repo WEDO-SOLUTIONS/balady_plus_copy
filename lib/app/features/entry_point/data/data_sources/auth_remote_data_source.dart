@@ -239,6 +239,7 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
       if (response.headers['set-cookie']?.toString() != null) {
         cookie = response.headers['set-cookie'].toString();
       }
+      print(cookie);
       return cookie;
     } on DioError catch (error) {
       throw ServerException(error.toString(),

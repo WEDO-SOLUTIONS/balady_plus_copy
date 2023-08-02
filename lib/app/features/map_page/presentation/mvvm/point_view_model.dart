@@ -20,6 +20,7 @@ class PointViewModel extends BaseViewModel {
 
   Future<void> performSearch() async {
     try {
+      print("performSearch");
       dataPoint.value = await controller.searchByObjectId(point);
       if (dataPoint.value != null) {
         print(dataPoint.value?.externalIds);

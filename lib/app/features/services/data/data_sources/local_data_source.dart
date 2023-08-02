@@ -71,11 +71,10 @@ class ServicesLocalDataSourceImplementation implements ServicesLocalDataSource {
 
   @override
   Future<List<ServiceEntity>> getHonoringTheDeadServices() async {
-    // if (_honoringTheDeadServices.isEmpty) {
-    //   await _loadServices();
-    //  }
-    //  return _honoringTheDeadServices;
-    return [];
+    if (_honoringTheDeadServices.isEmpty) {
+      await _loadServices();
+    }
+    return _honoringTheDeadServices;
   }
 
   @override
@@ -103,8 +102,8 @@ class ServicesLocalDataSourceImplementation implements ServicesLocalDataSource {
         servicesJson['customer_voice_services'] as List<dynamic>;
     final businessLicenseServicesJson =
         servicesJson['business_license_services'] as List<dynamic>;
-    /*final honoringTheDeadServicesJson =
-        servicesJson['honoring_the_dead_services'] as List<dynamic>;*/
+    final honoringTheDeadServicesJson =
+        servicesJson['honoring_the_dead_services'] as List<dynamic>;
     final healthCertificatesServicesJson =
         servicesJson['health_certificates_services'] as List<dynamic>;
     final helpServicesJson = servicesJson['help_services'] as List<dynamic>;
@@ -122,11 +121,11 @@ class ServicesLocalDataSourceImplementation implements ServicesLocalDataSource {
         (service) => ServiceModel.fromJson(service as Map<String, dynamic>),
       ),
     );
-    /* _honoringTheDeadServices.addAll(
+    _honoringTheDeadServices.addAll(
       honoringTheDeadServicesJson.map(
         (service) => ServiceModel.fromJson(service as Map<String, dynamic>),
       ),
-    );*/
+    );
 
     _healthCertificatesServices.addAll(
       healthCertificatesServicesJson.map(

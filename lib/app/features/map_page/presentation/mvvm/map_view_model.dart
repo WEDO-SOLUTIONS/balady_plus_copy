@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:collection/collection.dart';
+import 'dart:math' show abs;
 
 import 'package:balady_plus/app/core/base/base_view_model.dart';
 import 'package:balady_plus/app/features/map_page/extensions/search_category_ext.dart';
@@ -57,6 +58,7 @@ class MapViewModel extends BaseViewModel {
   StreamSubscription? _debounce;
   VisibleRectEvent? _lastHandledEvent;
   double? _cameraTopPadding;
+  double oldZoom = 13;
 
   //final selectedPoint = ValueNotifier<DgisObjectIdMessage?>(null);
 
@@ -69,6 +71,7 @@ class MapViewModel extends BaseViewModel {
   final isSearchLoading = ValueNotifier(false);
 
   double zoomValue = 13;
+  bool updateMap = true;
 
   Future<void> selectCategory({required SearchCategoryMessage category}) async {
     if (category == selectedCategory.value) {
@@ -130,6 +133,8 @@ class MapViewModel extends BaseViewModel {
             ),
             onTap: () {
               selectedPointId.value = markerInfo.objectId;
+              print("on Tap");
+              print(markerInfo.objectId);
               selectedDiggingPoint.value = null;
               selectedInvetmentPoint.value = null;
               selectedImtethalPoint.value = null;
@@ -138,6 +143,7 @@ class MapViewModel extends BaseViewModel {
                 viewHomeBottomSheet.value = false;
                 viewHomeBottomSheet.notifyListeners();
               }
+              selectedPointId.notifyListeners();
             },
           ));
         }
@@ -226,6 +232,7 @@ class MapViewModel extends BaseViewModel {
     // setLocale(const Locale("ar", "US"), TextDirection.ltr);
     await controller.loadStyles(Constants.mapStyle);
     await controller.overrideLocales(["ar-SA", "en-SA"]);
+    ;
     // await controller.overrideLocales([localeState.value.locale]);
 
     await controller.setMarkerOptions(
@@ -284,6 +291,12 @@ class MapViewModel extends BaseViewModel {
     selectedInvetmentPoint.value = null;
     selectedPointId.value = null;
     selectedWhiteLands.value = null;
+
+    selectedDiggingPoint.notifyListeners();
+    selectedImtethalPoint.notifyListeners();
+    selectedInvetmentPoint.notifyListeners();
+    selectedPointId.notifyListeners();
+    selectedWhiteLands.notifyListeners();
   }
 
   void _setupListeners() {
@@ -309,10 +322,8 @@ class MapViewModel extends BaseViewModel {
   // When move camera map any change zoom in, zoom out ...
   void _visibleRectChangeListener(VisibleRectEvent event) {
     _lastHandledEvent = event;
-
-    zoomValue = event.visibleRect.zoom;
     // start Timer when stop move camera  call search funcation
-    _startRequestTimer();
+    _startRequestTimer(event.visibleRect.zoom);
   }
 
   // When click on ayn object
@@ -345,7 +356,7 @@ class MapViewModel extends BaseViewModel {
     // }
   }
 
-  void _startRequestTimer() {
+  void _startRequestTimer(double oldZoom) {
     if (_debounce != null) {
       unawaited(_debounce!.cancel());
       _clearDebounce();
@@ -355,7 +366,13 @@ class MapViewModel extends BaseViewModel {
         const Duration(milliseconds: 1000),
       ),
     ).listen((_) async {
-      callSearch();
+      this.oldZoom = oldZoom;
+      print("updateMap ${this.oldZoom.toInt()} ${zoomValue.toInt()}");
+      if (this.oldZoom.toInt() != zoomValue.toInt()) {
+        zoomValue = oldZoom;
+
+        callSearch();
+      }
     });
     _subscriptions.add(_debounce!);
   }
@@ -392,12 +409,12 @@ class MapViewModel extends BaseViewModel {
     if (latlng != null)
       await controller.setCameraPosition(
         CameraPositionMessage(
-          zoom: 13,
+          zoom: 20,
           tilt: 0,
           bearing: 0,
           point: GeoPointMessage(
-            latitude: 24.729761968361412,
-            longitude: 46.665576686472015,
+            latitude: 24.708194,
+            longitude: 46.673345,
           ),
         ),
       );
@@ -405,22 +422,27 @@ class MapViewModel extends BaseViewModel {
 
   callSearch() async {
     print("search");
-    if (selectedCategory.value != null) {
-      controller.removeAll();
 
-      performSearch(
+    if (selectedCategory.value != null) {
+      isSearchLoading.value = true;
+      isSearchLoading.notifyListeners();
+
+      await performSearch(
         queryText: selectedCategory.value!.displayName(),
       );
+      isSearchLoading.value = false;
+      isSearchLoading.notifyListeners();
     }
+    print("layerSelected $layerSelected");
 
     if (layerSelected.value == null) return;
-
+    print("HEREE");
     GISMapLayers? gisLayer = GISMapLayers.values.firstWhereOrNull(
         (element) => element.layerId == layerSelected.value!.id);
-
     isSearchLoading.value = true;
-    bottomSheetSize.notifyListeners();
     isSearchLoading.notifyListeners();
+    bottomSheetSize.notifyListeners();
+
     if (gisLayer != null) {
       List? pointList = await layersRepositories.getPointsInLayers(
           params: MapRequestParams(
@@ -524,14 +546,16 @@ class MapViewModel extends BaseViewModel {
               ),
             ),
             onTap: () {
-              print("on Tap");
+              selectedPointId.notifyListeners();
               switch (gisSelectedLayer) {
                 case GISMapLayers.Digging:
                   selectedPoint.value = element;
+
                   selectedDiggingPoint.value = element;
                   selectedInvetmentPoint.value = null;
                   selectedImtethalPoint.value = null;
                   selectedWhiteLands.value = null;
+
                   break;
 
                 case GISMapLayers.Opportunities:
@@ -540,6 +564,7 @@ class MapViewModel extends BaseViewModel {
                   selectedDiggingPoint.value = null;
                   selectedImtethalPoint.value = null;
                   selectedWhiteLands.value = null;
+
                   break;
                 case GISMapLayers.BSAimtithalBuildingsCertificateL:
                   print("Clickkkkked");
@@ -550,6 +575,8 @@ class MapViewModel extends BaseViewModel {
                   selectedDiggingPoint.value = null;
                   selectedWhiteLands.value = null;
 
+                  break;
+
                 case GISMapLayers.BSWhiteParcelS:
                   print("Clickkkkked");
                   selectedPoint.value = element;
@@ -559,9 +586,23 @@ class MapViewModel extends BaseViewModel {
                   selectedDiggingPoint.value = null;
                   selectedWhiteLands.value = element;
 
+                  break;
+
                 default:
                   break;
               }
+
+              selectedPointId.value = null;
+              selectedImtethalPoint.notifyListeners();
+              selectedDiggingPoint.notifyListeners();
+              selectedWhiteLands.notifyListeners();
+              selectedPointId.notifyListeners();
+              bottomSheetSize.notifyListeners();
+              if (viewHomeBottomSheet.value != false) {
+                viewHomeBottomSheet.value = false;
+                viewHomeBottomSheet.notifyListeners();
+              }
+
               bottomSheetSize.notifyListeners();
 
               /* controller.setCameraPosition(
@@ -577,7 +618,7 @@ class MapViewModel extends BaseViewModel {
           );
         },
       ).toList();
-      await controller.removeAll();
+      //await controller.removeAllMarkers();
       controller.addMarkers(markers);
     }
   }
@@ -594,11 +635,8 @@ class MapViewModel extends BaseViewModel {
             options: PolylineOptionsMessage(
                 points: element.paths, width: 4, color: 0xff358281),
             onTap: () {
-              selectedPoint.value = element;
-
               switch (gisSelectedLayer) {
                 case GISMapLayers.Digging:
-                  selectedPoint.value = element;
                   selectedDiggingPoint.value = element;
                   selectedInvetmentPoint.value = null;
                   selectedImtethalPoint.value = null;
@@ -606,7 +644,6 @@ class MapViewModel extends BaseViewModel {
                   break;
 
                 case GISMapLayers.Opportunities:
-                  selectedPoint.value = element;
                   selectedInvetmentPoint.value = element;
                   selectedDiggingPoint.value = null;
                   selectedImtethalPoint.value = null;
@@ -614,7 +651,6 @@ class MapViewModel extends BaseViewModel {
                   break;
                 case GISMapLayers.BSAimtithalBuildingsCertificateL:
                   print("Clickkkkked");
-                  selectedPoint.value = element;
                   selectedImtethalPoint.value = element;
 
                   selectedInvetmentPoint.value = null;
@@ -623,7 +659,6 @@ class MapViewModel extends BaseViewModel {
 
                 case GISMapLayers.BSWhiteParcelS:
                   print("Clickkkkked");
-                  selectedPoint.value = element;
                   selectedImtethalPoint.value = null;
 
                   selectedInvetmentPoint.value = null;
@@ -633,8 +668,18 @@ class MapViewModel extends BaseViewModel {
                 default:
                   break;
               }
+              selectedPointId.value = null;
+              selectedImtethalPoint.notifyListeners();
+              selectedDiggingPoint.notifyListeners();
+              selectedWhiteLands.notifyListeners();
+              selectedPointId.notifyListeners();
               bottomSheetSize.notifyListeners();
+              if (viewHomeBottomSheet.value != false) {
+                viewHomeBottomSheet.value = false;
+                viewHomeBottomSheet.notifyListeners();
+              }
 
+              bottomSheetSize.notifyListeners();
               /*  controller.setCameraPosition(
                 CameraPositionMessage(
                   zoomValue: 17,
@@ -648,7 +693,7 @@ class MapViewModel extends BaseViewModel {
           ),
         );
       }
-      await controller.removeAll();
+      //  await controller.removeAllMarkers();
       unawaited(controller.addPolylines(polylines));
     }
   }
@@ -706,9 +751,18 @@ class MapViewModel extends BaseViewModel {
                 default:
                   break;
               }
-              print("Done select ${gisSelectedLayer}");
+              selectedPointId.value = null;
+              selectedImtethalPoint.notifyListeners();
+              selectedDiggingPoint.notifyListeners();
+              selectedWhiteLands.notifyListeners();
+              selectedPointId.notifyListeners();
               bottomSheetSize.notifyListeners();
+              if (viewHomeBottomSheet.value != false) {
+                viewHomeBottomSheet.value = false;
+                viewHomeBottomSheet.notifyListeners();
+              }
 
+              bottomSheetSize.notifyListeners();
               /*  controller.setCameraPosition(
                 CameraPositionMessage(
                   zoomValue: 17,
@@ -722,15 +776,18 @@ class MapViewModel extends BaseViewModel {
           ),
         );
       }
-      await controller.removeAll();
+      //await controller.removeAllMarkers();
       unawaited(controller.addPolygons(polygons));
     }
   }
 
   void selectLayers(Layers value) async {
+    print("LAyer selected");
     layerSelected.value = value;
+
     gisSelectedLayer = gisSelectedLayer = GISMapLayers.values
         .firstWhereOrNull((element) => element.layerId == value.id);
+    notifyListeners();
     callSearch();
   }
 

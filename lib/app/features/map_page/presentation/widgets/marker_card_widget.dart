@@ -176,11 +176,11 @@ class MarkerMapWidget extends StatelessWidget {
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
-                                  const SizedBox(width: 4),
+                                  /* const SizedBox(width: 4),
                                   CustomTextWidget(
                                     dataPoint?.externalIds?.join(" ") ?? "[]",
                                     textStyle: AppStyle.serviceDescriptionStyle,
-                                  ),
+                                  ),*/
                                 ],
                               )
                               /* const SizedBox(height: 6),

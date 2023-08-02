@@ -35,6 +35,8 @@ class RouteName {
   static const objections = '/objections';
   static const objectableTransactions = '/objectableTransactionsPage';
   static const createObjectionDetails = '/createObjectionDetails';
+  static const createViolationObjectionDetails =
+      '/createViolationObjectionDetails';
 
   static const transactionDetailsPage = '/TransactionDetailsPage';
   static const objectionsDetailsPage = '/ObjectionsDetailsPage';
@@ -124,6 +126,10 @@ class RouteName {
   static const ReqDetails = '/ReqDetails';
   static const VHRDetails = '/VHRDetails';
   static const DaemDetails = '/DaemDetails';
+
+  // Violations
+  static const violationsPage = '/violationsPage';
+  static const violationDetailsPage = '/violationDetailsPage';
 }
 
 class EtmamRoutesNames {

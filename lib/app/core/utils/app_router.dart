@@ -65,6 +65,9 @@ import '../../features/profile_features/personal_information/personal_informatio
 import '../../features/profile_features/requests/requests_exports.dart'
     show RequestsPage;
 import '../../features/objections/objections_exports.dart' show ObjectionsPage;
+import '../../features/profile_features/violations/domain/entities/create_violation_objection_page_params.dart';
+import '../../features/profile_features/violations/presentation/pages/create_objection_page.dart';
+import '../../features/profile_features/violations/violations_exports.dart';
 import '../../features/public_services_features/prayer_times/prayer_times_exports.dart'
     show PrayerTimesCubit, PrayerTimesPage;
 import '../../features/quran/data/models/quran_sura_model.dart';
@@ -263,6 +266,26 @@ class AppRouter {
         return MaterialPageRoute(
           builder: (_) => BusinessLicenseScreen(
             item: item,
+          ),
+        );
+
+      // ------ Violations -------
+      case RouteName.violationsPage:
+        return MaterialPageRoute(
+          builder: (_) => const ViolationsPage(),
+        );
+      case RouteName.violationDetailsPage:
+        return MaterialPageRoute(
+          builder: (_) => ViolationsDetailsPage(
+            violationsEntity: settings.arguments as ViolationsEntity,
+          ),
+        );
+      case RouteName.createViolationObjectionDetails:
+        CreateViolationObjectionPageParams params =
+            settings.arguments as CreateViolationObjectionPageParams;
+        return MaterialPageRoute(
+          builder: (_) => CreateViolationObjectionPage(
+            params: params,
           ),
         );
 

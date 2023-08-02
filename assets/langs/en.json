@@ -442,8 +442,33 @@
   "business_license_services": "Business Licenses Services",
   "honoring_the_dead_services": "Honoring The Dead Services",
   "health_certificates_services": "Health Certificates Services",
-  "help_services": "Help Services"
+  "help_services": "Help Services", 
   
 
 
+  "scanQr": "Scan the quick code to show full license information",
+
+  "fajrAzan": "Now is the time for the dawn prayer",
+  "zuhrAzan": "It is now time for the noon prayer",
+  "asrAzan": "Now is the time for Asr prayer",
+  "magribAzan": "Now is the time for Maghrib Azan",
+  "ishaAzan": "Now it's time for the evening prayer",
+  "applicantInfo": "Applicant Information",
+  "phoneNote": "All notifications will be received on the mobile number registered in the system",
+  "applicantDesc": "Applicant Description",
+  "crNumber": "Commercial Register",
+  "entityName": "EntityName",
+  "entityNumber": "Entity Number",
+  "crSource": "CR Source",
+
+  "objectionPeriodExpired": "The objection cannot be objected because the objection period has expired",
+  "reason": "reason",
+  "objectionDetails": "Objection Details",
+  "applicableObjection": "applicable to objection",
+  "billNumber": "Bill Number",
+  "violation": "violation",
+  "violationBillNo": "violation bill number",
+  "issueViolationDate": "The date the violation was issued",
+  "objectionLastApplyDate": "Objection LastApplyDate",
+  "violationAmount": "the fine value"
 }

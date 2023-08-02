@@ -574,7 +574,7 @@ class MunicipalAdvisorRemoteDataSourceImplementation
     } on DioError catch (error) {
       "DioError $error".errorLog();
       if (error is NoDataFoundException) {
-        return true;
+        return false;
       }
       throw ServerException(
         error.toString(),
@@ -608,7 +608,7 @@ class MunicipalAdvisorRemoteDataSourceImplementation
     } on DioError catch (error) {
       "DioError $error".errorLog();
       if (error is NoDataFoundException) {
-        return true;
+        return false;
       }
       throw ServerException(
         error.toString(),
@@ -824,7 +824,7 @@ class MunicipalAdvisorRemoteDataSourceImplementation
     } on DioError catch (error) {
       "DioError $error".errorLog();
       if (error is NoDataFoundException) {
-        return true;
+        return false;
       }
       throw ServerException(
         error.toString(),
@@ -1061,7 +1061,7 @@ class MunicipalAdvisorRemoteDataSourceImplementation
     } on DioError catch (error) {
       "DioError $error".errorLog();
       if (error is NoDataFoundException) {
-        return true;
+        return false;
       }
 
       throw ServerException(

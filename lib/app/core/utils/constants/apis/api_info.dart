@@ -229,6 +229,24 @@ class ApiUrl {
 
   static const requestDetails =
       'v1/damaged-vehicle-mobile/incident-request-details';
+  // CR
+  static const String recordInfo =
+      'v1/balady-commercial-services/mci/record-Info/crNumber/DELEGATOR/1004';
+  static const String subActivities =
+      "/v1/balady-commercial-services/activities/by-isic/details/isicCode/1004";
+  static const String subActivityDetails =
+      "/v1/balady-commercial-services/activities/";
+
+//! Violations
+  static const String violationsStatus =
+      "/v1/balady-dashboard/violations/statuses";
+  static const String invoiceStatus =
+      "/v1/balady-dashboard/violations/invoice-statuses";
+  static const String violations =
+      "/v1/balady-dashboard/violations/my-violations";
+  static const String violationDetails =
+      "/v1/balady-dashboard/violations/by-id";
+
   //! POST
 
   //! Delete

@@ -51,7 +51,7 @@ class CRMWebService {
     dio.interceptors.add(PrettyDioLogger(
       requestHeader: true,
       requestBody: true,
-      responseBody: true,
+      responseBody: false,
     ));
   }
   CRMWebService.newDio({

@@ -34,6 +34,7 @@ import '../../features/map_page/data/repositories/layers_repositories.dart';
 import '../../features/weather/presentation/bloc/weather_bloc.dart';
 import '../dependency_injection/dependency_injection_exports.dart'
     show
+        CrInjection,
         DashboardInjection,
         DelegatorsInjection,
         EntryPointInjection,
@@ -45,7 +46,8 @@ import '../dependency_injection/dependency_injection_exports.dart'
         RequestsInjection,
         ServicesInjection,
         SignUpInjection,
-        VDInjection;
+        VDInjection,
+        ViolationsInjection;
 import '../services/global/crm_web_service.dart';
 import '../services/services_exports.dart'
     show
@@ -95,6 +97,8 @@ void initialize() {
   InvoicesInjection.init();
   //? Licenses
   LicensesInjection.init();
+  //? Violations
+  ViolationsInjection.init();
 
 //? Objections
   ObjectionsInjection.init();
@@ -106,6 +110,8 @@ void initialize() {
   DCRetriveInjection.init();
 
   CRMRequestsInjection.init();
+//? Cr
+  CrInjection.init();
 
   //! Core
   sl.registerLazySingleton(() => WebService(dio: sl()));

@@ -26,6 +26,17 @@ Map<String, dynamic> servicesConfig = {
       "en": {"title": "Prayer Times", "description": null}
     },
     {
+      "id": 5,
+      "icon": "bousalah",
+      "3d_icon": null,
+      "order": 4,
+      "isNew": false,
+      "isImportant": false,
+      "action": {"type": "page", "value": RouteName.qiblahCompass},
+      "ar": {"title": "بوصلة القبلة", "description": null, "tag": null},
+      "en": {"title": "Zamzam Points", "description": null, "tag": null}
+    },
+    {
       "id": 3,
       "icon": "azkar",
       "3d_icon": null,
@@ -47,30 +58,43 @@ Map<String, dynamic> servicesConfig = {
       "ar": {"title": "نقاط توزيع ماء زمزم", "description": null, "tag": null},
       "en": {"title": "Zamzam Points", "description": null, "tag": null}
     },
+  ],
+  "honoring_the_dead_services": [
     {
-      "id": 5,
-      "icon": "qiblah",
+      "id": 14,
+      "icon": "move_diseased",
       "3d_icon": null,
-      "order": 4,
+      "order": 14,
       "isNew": false,
       "isImportant": false,
-      "action": {"type": "page", "value": RouteName.qiblahCompass},
-      "ar": {"title": "بوصلة القبلة", "description": null, "tag": null},
-      "en": {"title": "Zamzam Points", "description": null, "tag": null}
+      "action": {"type": "page", "value": "/move-diseased"},
+      "ar": {"title": "نقل وتجهيز الموتي", "description": null, "tag": null},
+      "en": {"title": "Move Diseased", "description": null, "tag": null}
     },
   ],
   "help_services": [
     {
-      "id": 5,
-      "icon": "scanner",
+      "id": 13,
+      "icon": "municipal_advisor",
       "3d_icon": null,
-      "order": 5,
+      "order": 13,
       "isNew": false,
       "isImportant": false,
-      "action": {"type": "page", "value": "/scanner"},
-      "ar": {"title": "ماسح الرمز السريع", "description": null, "tag": null},
-      "en": {"title": "QR Scanner", "description": null, "tag": null}
+      "action": {"type": "page", "value": "/municipal-advisor"},
+      "ar": {"title": "المستشار البلدي", "description": null, "tag": null},
+      "en": {"title": "Municipal Advisor", "description": null, "tag": null}
     },
+    // {
+    //   "id": 5,
+    //   "icon": "scanner",
+    //   "3d_icon": null,
+    //   "order": 5,
+    //   "isNew": false,
+    //   "isImportant": false,
+    //   "action": {"type": "page", "value": "/scanner"},
+    //   "ar": {"title": "ماسح الرمز السريع", "description": null, "tag": null},
+    //   "en": {"title": "QR Scanner", "description": null, "tag": null}
+    // },
     {
       "id": 12,
       "icon": "fee_calculator",
@@ -83,48 +107,70 @@ Map<String, dynamic> servicesConfig = {
       "en": {"title": "Fee Calculator", "description": null, "tag": null}
     },
     {
-      "id": 7,
-      "icon": "search_status",
+      "id": 10,
+      "icon": "your_opnion_matter",
       "3d_icon": null,
-      "order": 7,
-      "isNew": false,
+      "order": 10,
+      "isNew": true,
       "isImportant": false,
-      "action": {"type": "page", "value": "/search-status"},
-      "ar": {"title": "الاستعلامات", "description": null, "tag": null},
-      "en": {"title": "Search Status", "description": null, "tag": null}
+      "action": {"type": "page", "value": RouteName.qrScreenRoute},
+      "ar": {
+        "title": "رأيك يفرق",
+        "description": "يمكنك الآن حجز موعد عبر التطبيق !",
+        "tag": null
+      },
+      "en": {
+        "title": "Your Opnion Matter",
+        "description": "You can now book an appointment through the app!",
+        "tag": null
+      }
     },
+    // {
+    //   "id": 7,
+    //   "icon": "search_status",
+    //   "3d_icon": null,
+    //   "order": 7,
+    //   "isNew": false,
+    //   "isImportant": false,
+    //   "action": {"type": "page", "value": "/search-status"},
+    //   "ar": {"title": "الاستعلامات", "description": null, "tag": null},
+    //   "en": {"title": "Search Status", "description": null, "tag": null}
+    // },
     {
-      "id": 6,
-      "icon": "objections",
+      "id": 8,
+      "icon": "transaction_inquery",
       "3d_icon": null,
-      "order": 6,
-      "isNew": false,
+      "order": 8,
+      "isNew": true,
       "isImportant": false,
-      "action": {"type": "page", "value": "/objectableTransactionsPage"},
-      "ar": {"title": "الاعتراضات والتظلمات", "description": null, "tag": null},
-      "en": {"title": "Objections", "description": null, "tag": null}
+      "requireLogin": true,
+      "action": {
+        "type": "page",
+        "value": RouteName.newTransactionInquiryScreen
+      },
+      "ar": {
+        "title": "استعلام عن معاملة",
+        "description": "يمكنك الآن حجز موعد عبر التطبيق !",
+        "tag": null
+      },
+      "en": {
+        "title": "Transaction Inquery",
+        "description": "You can now book an appointment through the app!",
+        "tag": null
+      }
     },
+
     {
-      "id": 13,
-      "icon": "municipal_advisor",
+      "id": 3,
+      "icon": "supporter",
       "3d_icon": null,
-      "order": 13,
+      "order": 3,
       "isNew": false,
-      "isImportant": false,
-      "action": {"type": "page", "value": "/municipal-advisor"},
-      "ar": {"title": "المستشار البلدي", "description": null, "tag": null},
-      "en": {"title": "Municipal Advisor", "description": null, "tag": null}
-    },
-    {
-      "id": 13,
-      "icon": "municipal_advisor",
-      "3d_icon": null,
-      "order": 13,
-      "isNew": false,
-      "isImportant": false,
-      "action": {"type": "page", "value": RouteName.etmamMainPage},
-      "ar": {"title": "بلدي أعمال", "description": null, "tag": null},
-      "en": {"title": "Municipal Advisor", "description": null, "tag": null}
+      "isImportant": true,
+      "requireLogin": true,
+      "action": {"type": "dialog", "value": "/supporter"},
+      "ar": {"title": "داعم", "description": null, "tag": null},
+      "en": {"title": "Supporter", "description": null, "tag": null}
     },
   ],
   "health_certificates_services": [
@@ -146,25 +192,6 @@ Map<String, dynamic> servicesConfig = {
   ],
   "business_license_services": [
     {
-      "id": 10,
-      "icon": "your_opnion_matter",
-      "3d_icon": null,
-      "order": 10,
-      "isNew": true,
-      "isImportant": false,
-      "action": {"type": "page", "value": RouteName.qrScreenRoute},
-      "ar": {
-        "title": "رأيك يفرق",
-        "description": "يمكنك الآن حجز موعد عبر التطبيق !",
-        "tag": null
-      },
-      "en": {
-        "title": "Your Opnion Matter",
-        "description": "You can now book an appointment through the app!",
-        "tag": null
-      }
-    },
-    {
       "id": 11,
       "icon": "issue_trade_license",
       "3d_icon": null,
@@ -175,8 +202,66 @@ Map<String, dynamic> servicesConfig = {
       "ar": {"title": "إصدار رخصة تجارية", "description": null, "tag": null},
       "en": {"title": "Issue Trade License", "description": null, "tag": null}
     },
+    {
+      "id": 13,
+      "icon": "balady_business",
+      "3d_icon": null,
+      "order": 13,
+      "isNew": false,
+      "isImportant": false,
+      "action": {"type": "page", "value": RouteName.etmamMainPage},
+      "ar": {"title": "بلدي أعمال", "description": null, "tag": null},
+      "en": {"title": "Municipal Advisor", "description": null, "tag": null}
+    },
   ],
   "customer_voice_services": [
+    {
+      "id": 5,
+      "icon": "request_service",
+      "3d_icon": null,
+      "order": 5,
+      "isNew": false,
+      "isImportant": false,
+      "requireLogin": true,
+      "action": {"type": "dialog", "value": RouteName.newMSRMapPage},
+      "ar": {"title": "طلب خدمة بلدية", "description": null, "tag": null},
+      "en": {"title": "Request Service", "description": null, "tag": null}
+    },
+    {
+      "id": 4,
+      "icon": "schedule_date",
+      "3d_icon": null,
+      "order": 4,
+      "isNew": false,
+      "isImportant": false,
+      "requireLogin": true,
+      "action": {"type": "dialog", "value": ""},
+      "ar": {"title": "حجز موعد الكتروني", "description": null, "tag": null},
+      "en": {"title": "Schedule Date", "description": null, "tag": null}
+    },
+    {
+      "id": 16,
+      "icon": "retrieve_car",
+      "3d_icon": null,
+      "order": 9,
+      "isNew": true,
+      "isImportant": false,
+      "requireLogin": true,
+      "action": {"type": "page", "value": "/DCVeichlePage"},
+      "ar": {"title": "استعادة مركبة مسحوبة", "description": null, "tag": null},
+      "en": {"title": "Damaged Cars", "description": null, "tag": null}
+    },
+    {
+      "id": 6,
+      "icon": "objections",
+      "3d_icon": null,
+      "order": 6,
+      "isNew": false,
+      "isImportant": false,
+      "action": {"type": "page", "value": "/objectableTransactionsPage"},
+      "ar": {"title": "تقديم اعتراض", "description": null, "tag": null},
+      "en": {"title": "Objections", "description": null, "tag": null}
+    },
     {
       "id": 1,
       "icon": "send_image",
@@ -186,7 +271,7 @@ Map<String, dynamic> servicesConfig = {
       "isImportant": false,
       "action": {"type": "cards", "value": ""},
       "ar": {
-        "title": "البلاغات",
+        "title": "صور وارسل",
         "description": "حسن المشهد الحضاري لمدينتك وبلغ عن مظاهر التشوه البصري",
         "tag": null,
         "warning":
@@ -234,6 +319,18 @@ Map<String, dynamic> servicesConfig = {
       ]
     },
     {
+      "id": 9,
+      "icon": "damaged_cars",
+      "3d_icon": null,
+      "order": 9,
+      "isNew": false,
+      "isImportant": false,
+      "requireLogin": true,
+      "action": {"type": "page", "value": RouteName.DCCameraPage},
+      "ar": {"title": "السيارات التالفة", "description": null, "tag": null},
+      "en": {"title": "Damaged Cars", "description": null, "tag": null}
+    },
+    {
       "id": 2,
       "icon": "general_inquiries",
       "3d_icon": "assets/images/home_icon_1.png",
@@ -252,89 +349,6 @@ Map<String, dynamic> servicesConfig = {
         "description": "Send your inquiry about any service",
         "tag": "Services"
       }
-    },
-    {
-      "id": 3,
-      "icon": "supporter",
-      "3d_icon": null,
-      "order": 3,
-      "isNew": false,
-      "isImportant": true,
-      "requireLogin": true,
-      "action": {"type": "dialog", "value": "/supporter"},
-      "ar": {"title": "داعم", "description": null, "tag": null},
-      "en": {"title": "Supporter", "description": null, "tag": null}
-    },
-    {
-      "id": 4,
-      "icon": "schedule_date",
-      "3d_icon": null,
-      "order": 4,
-      "isNew": false,
-      "isImportant": false,
-      "requireLogin": true,
-      "action": {"type": "dialog", "value": ""},
-      "ar": {"title": "حجز موعد الكتروني", "description": null, "tag": null},
-      "en": {"title": "Schedule Date", "description": null, "tag": null}
-    },
-    {
-      "id": 5,
-      "icon": "request_service",
-      "3d_icon": null,
-      "order": 5,
-      "isNew": false,
-      "isImportant": false,
-      "requireLogin": true,
-      "action": {"type": "dialog", "value": RouteName.newMSRMapPage},
-      "ar": {"title": "طلب خدمة بلدية", "description": null, "tag": null},
-      "en": {"title": "Request Service", "description": null, "tag": null}
-    },
-    {
-      "id": 8,
-      "icon": "transaction_inquery",
-      "3d_icon": null,
-      "order": 8,
-      "isNew": true,
-      "isImportant": false,
-      "requireLogin": true,
-      "action": {
-        "type": "page",
-        "value": RouteName.newTransactionInquiryScreen
-      },
-      "ar": {
-        "title": "استعلام عن معاملة",
-        "description": "يمكنك الآن حجز موعد عبر التطبيق !",
-        "tag": null
-      },
-      "en": {
-        "title": "Transaction Inquery",
-        "description": "You can now book an appointment through the app!",
-        "tag": null
-      }
-    },
-    {
-      "id": 9,
-      "icon": "damaged_cars",
-      "3d_icon": null,
-      "order": 9,
-      "isNew": false,
-      "isImportant": false,
-      "requireLogin": true,
-      "action": {"type": "page", "value": RouteName.DCCameraPage},
-      "ar": {"title": "السيارات التالفة", "description": null, "tag": null},
-      "en": {"title": "Damaged Cars", "description": null, "tag": null}
-    },
-    {
-      "id": 16,
-      "icon": "retrieve_car",
-      "3d_icon": null,
-      "order": 9,
-      "isNew": true,
-      "isImportant": false,
-      "requireLogin": true,
-      "action": {"type": "page", "value": "/DCVeichlePage"},
-      "ar": {"title": "استعادة مركبة مسحوبة", "description": null, "tag": null},
-      "en": {"title": "Damaged Cars", "description": null, "tag": null}
     },
   ]
 };

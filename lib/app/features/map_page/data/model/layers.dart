@@ -1,8 +1,9 @@
+import 'package:equatable/equatable.dart';
 
-List<Layers> layersFromJson(List list) => List<Layers>.from(list.map((x) => Layers.fromJson(x)));
+List<Layers> layersFromJson(List list) =>
+    List<Layers>.from(list.map((x) => Layers.fromJson(x)));
 
-
-class Layers {
+class Layers extends Equatable {
   int id;
   String name;
   bool defaultVisibility;
@@ -18,25 +19,31 @@ class Layers {
   });
 
   factory Layers.fromJson(Map<String, dynamic> json) => Layers(
-    id: json["id"],
-    name: json["name"],
-    defaultVisibility: json["defaultVisibility"],
-    type: json["type"],
-    geometryType: json["geometryType"],
-  );
+        id: json["id"],
+        name: json["name"],
+        defaultVisibility: json["defaultVisibility"],
+        type: json["type"],
+        geometryType: json["geometryType"],
+      );
 
   Map<String, dynamic> toJson() => {
-    "id": id,
-    "name": name,
-    "defaultVisibility": defaultVisibility,
-    "type": type,
-    "geometryType": geometryType,
-  };
+        "id": id,
+        "name": name,
+        "defaultVisibility": defaultVisibility,
+        "type": type,
+        "geometryType": geometryType,
+      };
+
+  @override
+  // TODO: implement props
+  List<Object?> get props => [id, name];
 }
+
 ///////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////
-List<SubLayers> subLayersFromJson(List list) => List<SubLayers>.from(list.map((x) => SubLayers.fromJson(x)));
+List<SubLayers> subLayersFromJson(List list) =>
+    List<SubLayers>.from(list.map((x) => SubLayers.fromJson(x)));
 
 class SubLayers {
   String name;
@@ -52,23 +59,22 @@ class SubLayers {
   });
 
   factory SubLayers.fromJson(Map<String, dynamic> json) => SubLayers(
-    name: json["label"] ?? 'name',
-    type: json['symbol']["type"] ?? 'type',
-    url: json['symbol']["url"] ?? 'url',
-    imageData: json['symbol']["imageData"] ?? 'imageData',
-  );
+        name: json["label"] ?? 'name',
+        type: json['symbol']["type"] ?? 'type',
+        url: json['symbol']["url"] ?? 'url',
+        imageData: json['symbol']["imageData"] ?? 'imageData',
+      );
 
   Map<String, dynamic> toJson() => {
-    "name": name,
-    "type": type,
-    "url": url,
-    "imageData": imageData,
-  };
+        "name": name,
+        "type": type,
+        "url": url,
+        "imageData": imageData,
+      };
 }
 
-
-
-enum GeometryType {esriGeometryPoint,esriGeometryPolyline,esriGeometryPolygon}
-
-
-
+enum GeometryType {
+  esriGeometryPoint,
+  esriGeometryPolyline,
+  esriGeometryPolygon
+}

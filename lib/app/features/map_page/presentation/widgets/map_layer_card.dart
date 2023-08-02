@@ -34,7 +34,9 @@ class MapLayerCard extends StatelessWidget {
                   ? const SizedBox()
                   : DiggingMapCard(
                       data: mapViewModel.selectedDiggingPoint.value!,
-                    );
+                      onClose: () {
+                        mapViewModel.showDialog();
+                      });
             },
           );
         case GISMapLayers.Opportunities:
@@ -43,7 +45,9 @@ class MapLayerCard extends StatelessWidget {
                       "Investment"
                   ? InvestmentMapCard(
                       data: mapViewModel.selectedInvetmentPoint.value!,
-                    )
+                      onClose: () {
+                        mapViewModel.showDialog();
+                      })
                   : RentalMapCard(
                       data: mapViewModel.selectedInvetmentPoint.value!,
                     )
@@ -57,28 +61,14 @@ class MapLayerCard extends StatelessWidget {
                   ? const SizedBox()
                   : ImtethalMapCard(
                       data: mapViewModel.selectedImtethalPoint.value!,
-                    );
+                      onClose: () {
+                        mapViewModel.showDialog();
+                      });
             },
           );
 
         default:
-          return ValueListenableBuilder<DgisObjectIdMessage?>(
-            valueListenable: mapViewModel.selectedPointId,
-            builder: (_, selectedPoint, __) {
-              return selectedPoint == null
-                  ? const SizedBox()
-                  : GeneralMapCardWidget(
-                      icon: mapViewModel.selectedCategory.value!.cardIconName(),
-                      onClose: () {
-                        mapViewModel.showDialog();
-                      },
-                      pointViewModel: PointViewModel(
-                          controller: mapViewModel.controller,
-                          point: selectedPoint,
-                          webService: sl()),
-                    );
-            },
-          );
+          return Container();
       }
     });
   }

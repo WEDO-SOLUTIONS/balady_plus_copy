@@ -66,9 +66,9 @@ class BuildingComplianceCertificate extends PointLayersData {
             longitude: 46.4444,
           ),
           /////////////////////////
-          //  paths: getList(json['geometry']["paths"]
+          paths: getList(json['geometry']["paths"])
 
-          paths: [
+          /*paths: [
             GeoPointMessage(
                 latitude: 26.369406393621627, longitude: 50.19933225597286),
             GeoPointMessage(
@@ -77,7 +77,7 @@ class BuildingComplianceCertificate extends PointLayersData {
                 latitude: 26.373032789329308, longitude: 50.19579384705713),
             GeoPointMessage(
                 latitude: 26.374354635533997, longitude: 50.19360020012975)
-          ]
+          ]*/
 
           // not tested yat
           );

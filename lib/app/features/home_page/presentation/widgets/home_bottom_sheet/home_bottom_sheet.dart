@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
-
 import '../../../../_shared_feature_/shared_feature_exports.dart';
 import '../../../../map_page/presentation/mvvm/map_view_model.dart';
 import '../../../home_exports.dart'
     show
-        GameChallenge,
-        ImportantServices,
+        BaladySmartAdvisorCard,
+        ChallengeHomeCard,
+        DraggableHeaderComponent,
         NewServices,
-        PrayerTimesCard,
-        ShareWithUs;
+        PrayerHomeCard,
+        ReadHomeCard,
+        ReportHomeCard;
 
 import 'package:provider/provider.dart';
 
@@ -19,23 +20,25 @@ class HomeBottomSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     MapViewModel mapViewModel = context.watch<MapViewModel?>()!;
     return ValueListenableBuilder<bool>(
-      valueListenable: mapViewModel.viewHomeBottomSheet,
-      builder: (_, visible, child) {
-        return visible ? child! : const SizedBox();
-      },
-      child: const DraggableSheetCard(
-        minSize: 0.07,
-        maxSize: 0.9,
-        initialChildSize: 0.5,
-        cornerRadius: 36,
-        children: [
-          ImportantServices(),
-          ShareWithUs(),
-          NewServices(),
-          GameChallenge(),
-          PrayerTimesCard(),
-        ],
-      ),
-    );
+        valueListenable: mapViewModel.viewHomeBottomSheet,
+        builder: (_, visible, child) {
+          return visible ? child! : const SizedBox();
+        },
+        child: DraggableSheetCard(
+          minSize: 0.05,
+          maxSize: 0.9,
+          cornerRadius: 36,
+          initialChildSize: 0.5,
+          children: [
+            DraggableHeaderComponent(),
+            ReportHomeCard(),
+            BaladySmartAdvisorCard(),
+            PrayerHomeCard(),
+            ReadHomeCard(),
+            ChallengeHomeCard(),
+            NewServices(),
+            SizedBox(height: 30),
+          ],
+        ));
   }
 }

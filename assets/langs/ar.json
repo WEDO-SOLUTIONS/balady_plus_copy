@@ -4238,5 +4238,26 @@
   "asrAzan": "حان الان موعد اذان العصر",
   "magribAzan": "حان الان موعد اذان المغرب",
   "ishaAzan": "حان الان موعد اذان العشاء", 
-  "years": "سنوات"
+  "years": "سنوات" ,
+  "ishaAzan": "حان الان موعد اذان العشاء",
+  "applicantInfo": "بيانات مقدم الطلب",
+  "phoneNote": "سوف يتم استلام جميع الاشعارات على رقم الجوال المسجل في النظام",
+  "applicantDesc": "صفه مقدم الطلب",
+  "crNumber": "السجل التجاري",
+  "entityName": "اسم المنشاه",
+  "entityNumber": "رقم المنشآه",
+  "crSource": "مصدر السجل التجاري",
+
+  "objectionPeriodExpired": "لا يمكن الاعتراض بسبب انتهاء مدة الاعتراض",
+  "reason": "سبب",
+  "objectionDetails": "تفاصيل الاعتراض",
+  "applicableObjection": "المطبق للاعتراض",
+  "billNumber": "رقم الفاتورة / المخالفة",
+  "violation": "المخالفة",
+  "violationBillNo": "رقم فاتورة المخالفة",
+  "issueViolationDate": "تاريخ اصدار المخالفه",
+  "objectionLastApplyDate": "اخر موعد للاعتراض",
+  "violationAmount": "قيمه الغرامه",
+  "clear": "مشمس"
+
 }

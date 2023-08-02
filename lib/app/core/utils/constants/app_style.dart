@@ -66,7 +66,7 @@ class AppStyle {
   static final sectionTitleStyle = TextStyle(
     fontSize: 18.0,
     fontWeight: AppFontWeight.bold.fontWeight,
-    color: AppColor.blackModern900Light,
+    color: AppColor.blackModern800Light,
     fontFamily: fontFamily,
     height: 1.0,
   );

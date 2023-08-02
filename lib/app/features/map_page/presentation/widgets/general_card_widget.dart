@@ -8,9 +8,16 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
+import '../../../../core/base/base_view_model.dart';
+import '../../../../core/services/local/navigation_services.dart';
+import '../../../../core/utils/common_functions.dart';
 import '../../../../core/utils/constants/app_style.dart';
 import '../../../../core/utils/enums/app_font_weights.dart';
+import '../../../facility_qr/presentation/core/view_models/facility_details_view_model.dart';
+import '../../../facility_qr/presentation/dialogs/facility_dialog.dart';
 import '../../../home_page/presentation/widgets/home_app_bar/circle_icon.dart';
+import '../../../vd/domain/entities/camera/camera_page_params.dart';
+import '../../../vd/domain/entities/categories/category_item.dart';
 import '../mvvm/point_view_model.dart';
 import 'package:collection/collection.dart';
 
@@ -28,8 +35,52 @@ class GeneralMapCardWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        //   mapViewModel.getPointDetails(int.tryParse(data.id)!);
+      onTap: () async {
+        String? qr = pointViewModel.dataPoint.value?.externalIds?.join(" ");
+        if (qr != null) {
+          final FacilityQRDetailsViewModel viewModel =
+              locator<FacilityQRDetailsViewModel>();
+
+          bool isLicenseFound = false;
+
+          isLicenseFound = await viewModel.getFacilityData(qr);
+          if (isLicenseFound) {
+            showDialog(
+                context: context,
+                barrierDismissible: false,
+                builder: (ctx) => FacilityDialog(
+                      address: viewModel.getCityAndStreet(),
+                      facilityImg: viewModel.getCoverPhotoUrl(),
+                      rate: viewModel.getFacilityAvrageRating(),
+                      facilityName: viewModel.getFacilityName(),
+                      reviewers: viewModel.getFacilityTotalRatingCount(),
+                      onDetailsScreen: () {
+                        /* NavigationService.navigatorKey.currentState!.pushNamed(
+                        RoutesNames.facilityScreenRoute,
+                        arguments: viewModel.facilityRespoonse);*/
+                      },
+                      onRatingScreen: () {
+                        /*NavigationService.navigatorKey.currentState!.pushNamed(
+                        RoutesNames.facilityRatingRoute,
+                        arguments: viewModel.facilityRespoonse);*/
+                      },
+                      onIncidentScreen: () async {
+                        bool isLocationAvailable =
+                            await CommonFunctions.checkLocationSettings(
+                                context);
+                        bool isCameraAllowed =
+                            await CommonFunctions.checkCameraSettings(context);
+                        if (isLocationAvailable && isCameraAllowed)
+                          NavigationService.navigatorKey.currentState!
+                              .pushNamed(RouteName.vdCameraPage,
+                                  arguments: CameraParamsPage(
+                                      selectedCategory:
+                                          CategoryItem(categoryId: "CG-14"),
+                                      isFromHome: false));
+                      },
+                    ));
+          }
+        }
       },
       child: ValueListenableBuilder<DirectoryObjectMessage?>(
           valueListenable: pointViewModel.dataPoint,
@@ -53,56 +104,92 @@ class GeneralMapCardWidget extends StatelessWidget {
               ),
               child: Stack(
                 children: [
-                  Row(mainAxisSize: MainAxisSize.min, children: [
-                    Container(
-                      width: 58,
-                      height: 58,
-                      padding: const EdgeInsets.all(6.0),
-                      decoration: ShapeDecoration(
-                          color: AppColor.secondary900Light,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(16),
-                          )),
-                      child: SvgPicture.asset(
-                        icon,
-                        width: 24,
-                        height: 24,
-                        color: AppColor.white,
-                      ),
-                    ),
-                    CustomHorizontalSpace(width: 8),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          CustomTextWidget(
-                            dataPoint?.title ?? "",
-                            fontColor: AppColor.blackModern800Light,
-                            fontSize: 16,
-                            fontWeight: AppFontWeight.bold,
-                            maxLines: 1,
+                          Container(
+                            width: 58,
+                            height: 58,
+                            padding: const EdgeInsets.all(6.0),
+                            decoration: ShapeDecoration(
+                                color: AppColor.secondary900Light,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(16),
+                                )),
+                            child: SvgPicture.asset(
+                              icon,
+                              width: 24,
+                              height: 24,
+                              color: AppColor.white,
+                            ),
                           ),
-                          CustomVerticalSpace(height: 8),
-                          CustomTextWidget(
-                            dataPoint?.address?.components
-                                    ?.firstWhereOrNull(
-                                      (element) =>
-                                          element?.streetAddress != null,
-                                    )
-                                    ?.streetAddress
-                                    ?.street ??
-                                "",
-                            fontColor: AppColor.blackModern500Light,
-                            fontSize: 12,
-                            fontWeight: AppFontWeight.semiBold,
-                            height: 1.3,
-                            maxLines: 2,
-                          ),
-                        ],
+                          CustomHorizontalSpace(width: 8),
+                          Expanded(
+                            child: Padding(
+                              padding:
+                                  const EdgeInsetsDirectional.only(end: 16.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  CustomVerticalSpace(height: 8),
+                                  CustomTextWidget(
+                                    dataPoint?.title ?? "",
+                                    fontColor: AppColor.blackModern800Light,
+                                    fontSize: 16,
+                                    textOverflow: TextOverflow.ellipsis,
+                                    fontWeight: AppFontWeight.bold,
+                                    maxLines: 2,
+                                  ),
+                                  CustomVerticalSpace(height: 8),
+                                  CustomTextWidget(
+                                    dataPoint?.address?.components
+                                            ?.firstWhereOrNull(
+                                              (element) =>
+                                                  element?.streetAddress !=
+                                                  null,
+                                            )
+                                            ?.streetAddress
+                                            ?.street ??
+                                        "",
+                                    fontColor: AppColor.blackModern500Light,
+                                    fontSize: 12,
+                                    fontWeight: AppFontWeight.semiBold,
+                                    height: 1.3,
+                                    maxLines: 2,
+                                  ),
+                                  /*  CustomVerticalSpace(height: 16),
+                                  CustomTextWidget(
+                                    dataPoint?.externalIds?.join(" ") ?? "[]",
+                                    fontColor: AppColor.blackModern500Light,
+                                    fontSize: 12,
+                                    fontWeight: AppFontWeight.semiBold,
+                                    height: 1.3,
+                                    maxLines: 2,
+                                  ),*/
+                                ],
+                              ),
+                            ),
+                          )
+                        ]),
+                  ),
+                  Align(
+                    alignment: Alignment.bottomLeft,
+                    child: CustomTextWidget(
+                      dataPoint?.workStatus?.isOpen == true
+                          ? "open".tr()
+                          : "open".tr(),
+                      textStyle: TextStyle(
+                        color: Color(0xFFA7C587),
+                        fontSize: 12,
+                        fontWeight: FontWeight.w700,
                       ),
-                    )
-                  ]),
+                    ),
+                  ),
                   Align(
                     alignment: Alignment.topLeft,
                     child: GestureDetector(
