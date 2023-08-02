@@ -4135,6 +4135,7 @@
   "violationBillNo": "رقم فاتورة المخالفة",
   "issueViolationDate": "تاريخ اصدار المخالفه",
   "objectionLastApplyDate": "اخر موعد للاعتراض",
-  "violationAmount": "قيمه الغرامه"
+  "violationAmount": "قيمه الغرامه",
+  "clear": "مشمس"
 
 }

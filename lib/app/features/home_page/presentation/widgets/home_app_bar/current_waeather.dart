@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../core/utils/utils_exports.dart'
     show AppColor, AppStyle, WeathherConditions;
@@ -17,32 +18,36 @@ class CurrentWeather extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(8),
-      width: 80,
-      height: 40,
-      decoration: BoxDecoration(
-        color: AppColor.white,
-        borderRadius: BorderRadius.circular(37),
-        boxShadow: [
-          BoxShadow(
-            color: AppColor.blackModern900Light.withOpacity(0.1),
-            blurRadius: 8,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
+    return Padding(
+      padding: const EdgeInsetsDirectional.only(end: 16),
       child: Row(
         children: [
-          Text(
-            "$temperature°",
-            style: AppStyle.mainTextStyle.copyWith(
-              color: AppColor.blackModern900Light,
-            ),
-          ),
           DrawIconBasedTypeWidget(
             icon: weatherCondition.icon,
-            iconSize: 40,
+            iconSize: 28,
+          ),
+          const SizedBox(width: 6),
+          Column(
+            children: [
+              Text(
+                "$temperature°",
+                style: AppStyle.mainTextStyle.copyWith(
+                  color: AppColor.blackModern600Light,
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  height: 1,
+                ),
+              ),
+              Text(
+                weatherCondition.label.tr(),
+                style: AppStyle.mainTextStyle.copyWith(
+                  color: AppColor.blackModern600Light,
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                  height: 1,
+                ),
+              ),
+            ],
           ),
         ],
       ),
