@@ -608,7 +608,9 @@ class MunicipalAdvisorBloc
             subMunicipalityGisCode:
                 state.activityLocation?.gisResponse.municipalityuniquecode,
             districtCode: int.tryParse(
-                state.activityLocation?.gisResponse.districtId ?? ""),
+                    state.activityLocation?.gisResponse.districtId ?? "") ??
+                //TODO remove this static value when gis fixes it
+                1010106,
             streetCode: int.tryParse(
                 state.activityLocation?.gisResponse.streetCode ?? ""),
             longitude:
@@ -992,6 +994,7 @@ class MunicipalAdvisorBloc
         emit(
           state.copyWith(
             status: BlocRequestStatus.submissionGetLoading,
+            selectedLicenseYear: event.year,
             lastEvent: event,
           ),
         );
@@ -1021,7 +1024,6 @@ class MunicipalAdvisorBloc
         emit(
           state.copyWith(
               status: BlocRequestStatus.submissionGetLoading,
-              lastEvent: event,
               boards: [
                 ...state.boards,
                 BoardsParams(
@@ -1041,7 +1043,6 @@ class MunicipalAdvisorBloc
         emit(
           state.copyWith(
             status: BlocRequestStatus.submissionGetLoading,
-            lastEvent: event,
           ),
         );
         add(const MunicipalAdvisorCalculateLicenseEvent());
@@ -1064,12 +1065,10 @@ class MunicipalAdvisorBloc
 
     on<MunicipalAdvisorCalculateLicenseEvent>(
       (event, emit) async {
+        emit(state.copyWith(lastEvent: event));
         if (event.firstCalculation || event.finalCalculation) {
           emit(
-            state.copyWith(
-              status: BlocRequestStatus.submissionGetLoading,
-              lastEvent: event,
-            ),
+            state.copyWith(status: BlocRequestStatus.submissionGetLoading),
           );
         } else {
           EasyLoading.show(
@@ -1082,7 +1081,8 @@ class MunicipalAdvisorBloc
             consultationKey: state.consultationKey!,
             accommodationTypeId: null,
             municipalityGisCode:
-                state.gisResponse?.municipalityuniquecode ?? "",
+                state.activityLocation!.gisResponse.municipalityuniquecode ??
+                    "",
             longitude:
                 state.activityLocation?.latLng.longitude.toString() ?? "",
             latitude: state.activityLocation?.latLng.latitude.toString() ?? "",
@@ -1561,27 +1561,27 @@ class MunicipalAdvisorBloc
             lastEvent: event,
           ),
         );
+        if (state.requestFlow.isEmpty) {
+          final requestFlow = await _getRequestFlow(
+            KeyParamsModel(
+              key: state.consultationKey!,
+            ),
+          );
 
-        final requestFlow = await _getRequestFlow(
-          KeyParamsModel(
-            key: state.consultationKey!,
-          ),
-        );
+          requestFlow.fold(
+            (failure) => emitFailure(emit, failure),
+            (requestFlow) {
+              requestFlow.sort((a, b) => a.index.compareTo(b.index));
+              emit(
+                state.copyWith(
+                  requestFlow: requestFlow,
+                ),
+              );
+            },
+          );
 
-        requestFlow.fold(
-          (failure) => emitFailure(emit, failure),
-          (requestFlow) {
-            requestFlow.sort((a, b) => a.index.compareTo(b.index));
-            emit(
-              state.copyWith(
-                requestFlow: requestFlow,
-              ),
-            );
-          },
-        );
-
-        if (requestFlow.isLeft()) return;
-
+          if (requestFlow.isLeft()) return;
+        }
         final requestFlowRecommendations = await _getRequestFlowRecommendations(
           KeyParamsModel(
             key: state.consultationKey!,
@@ -1786,15 +1786,6 @@ class MunicipalAdvisorBloc
           ),
         ];
       case MunicipalAdvisorSteps.location:
-        if (state.changingInfo) {
-          return [
-            ChatMessage(
-              message: 'municipalAdvisorConfirmSummery'.tr(),
-              step: MunicipalAdvisorSteps.confirmInformation,
-              isResponse: true,
-            ),
-          ];
-        }
         return [
           ChatMessage(
             message: 'municipalAdvisorLocationCorrect'.tr(),
@@ -1803,6 +1794,15 @@ class MunicipalAdvisorBloc
           ),
         ];
       case MunicipalAdvisorSteps.confirmLocation:
+        if (data == 'changingInfo') {
+          return [
+            ChatMessage(
+              message: 'municipalAdvisorConfirmSummery'.tr(),
+              step: MunicipalAdvisorSteps.confirmInformation,
+              isResponse: true,
+            ),
+          ];
+        }
         return [
           ChatMessage(
             message: 'municipalAdvisorActivity'.tr(),
