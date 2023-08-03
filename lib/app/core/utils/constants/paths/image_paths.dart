@@ -29,7 +29,8 @@ class ImagePath {
   static const walletBg = '${_imagePath}wallet_bg$_png';
   static const qrBg = '${_imagePath}qr_bg$_png';
 
-  static const prayerBg = '${_imagePath}prayer_bg$_png';
+  static const prayerDarkBg = '${_imagePath}prayer_bg$_png';
+  static const prayerLightBg = '${_imagePath}prayer_light_bg$_png';
   static const smartAdvisorBg = '${_imagePath}balady_expert_bg$_png';
   static const supportImg = '${_imagePath}support_img$_png';
   static const readBg = '${_imagePath}read_bg$_png';
