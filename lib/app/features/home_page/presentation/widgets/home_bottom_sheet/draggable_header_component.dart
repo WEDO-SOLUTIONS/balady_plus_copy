@@ -42,8 +42,10 @@ class DraggableHeaderComponent extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  const CustomTextWidget(
-                    "مساء الخير ، ",
+                  CustomTextWidget(
+                    DateTime.now().hour > 12
+                        ? "مساء الخير ، "
+                        : "صباح الخير ، ",
                     fontSize: 14,
                     fontWeight: AppFontWeight.bold,
                     fontColor: AppColor.blackModern600Light,
