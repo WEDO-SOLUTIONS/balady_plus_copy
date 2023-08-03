@@ -1,7 +1,7 @@
 import Foundation
 import DGis
 
-class FlutterClutserRenderer: SimpleClusterRenderer {
+class FlutterClusterRenderer: SimpleClusterRenderer {
     let api: FlutterMapApi
     let registrar: FlutterPluginRegistrar
     let imageFactory: IImageFactory
