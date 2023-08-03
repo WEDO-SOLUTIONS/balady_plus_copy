@@ -53,7 +53,7 @@ class _HealthRequestDetailsScreenState
           return Scaffold(
               backgroundColor: AppColor.white2,
               appBar: DetailsHeader(
-                title: ("").tr(),
+                title: ("details").tr(),
                 onPrint: (widget.args.healthRequestDetails?.data?.result
                             ?.printable ??
                         false)

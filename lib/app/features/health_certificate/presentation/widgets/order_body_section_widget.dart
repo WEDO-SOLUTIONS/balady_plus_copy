@@ -37,10 +37,13 @@ class OrderBodySectionWidget extends StatelessWidget {
           // medical examination data
           if (model.showExamanationData())
             const _MedicalExaminationDataWidget(),
+          if (model.requestDetails?.data?.result?.medicalExamInfo != null)
+            _TathqeefSehyDataWidget(),
           // attachments
           if (model.showAttachments()) const _AttachmentsWidget(),
           // notes
           if (model.showNotes()) const _NotesWidget(),
+
           if (model.showBillsInfo())
             _BillInfoDataWidget(
               isLicense: isLicense,
@@ -157,6 +160,48 @@ class _MedicalExaminationDataWidget extends StatelessWidget {
         FieldData(
           title: Helpers.translatingWord("health_medical_hospital_name"),
           subTitle: model.requestDetails?.getMedicalExamHospitalName() ?? "",
+        ),
+      ],
+    );
+  }
+}
+
+class _TathqeefSehyDataWidget extends StatelessWidget {
+  const _TathqeefSehyDataWidget({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    HealthRequestDetailsViewModel model =
+        Provider.of<HealthRequestDetailsViewModel>(context);
+    return CustomExpansionPanelWidget(
+      title: Helpers.translatingWord("health_medical_info"),
+      underline: false,
+      children: [
+        FieldData(
+            title: Helpers.translatingWord("health_trining_id"),
+            subTitle: model
+                    .requestDetails?.data?.result?.medicalTrainingInfo?.id
+                    .toString() ??
+                ""),
+        CustomVerticalSpace(height: 8),
+        FieldData(
+            title: Helpers.translatingWord("health_trining_startDate"),
+            subTitle: model.requestDetails?.data?.result?.medicalTrainingInfo
+                    ?.startDate ??
+                ""),
+        CustomVerticalSpace(height: 8),
+        FieldData(
+          title: Helpers.translatingWord("health_trining_expiryDate"),
+          subTitle: model.requestDetails?.data?.result?.medicalTrainingInfo
+                  ?.expiryDate ??
+              "",
+        ),
+        CustomVerticalSpace(height: 8),
+        FieldData(
+          title: Helpers.translatingWord("health_trining_trainingCenter"),
+          subTitle: model.requestDetails?.data?.result?.medicalTrainingInfo
+                  ?.trainingCenter ??
+              "",
         ),
       ],
     );

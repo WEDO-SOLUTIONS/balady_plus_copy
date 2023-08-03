@@ -249,14 +249,26 @@ class EntryPointCubit extends Cubit<EntryPointState> {
 
   Future<void> clearAuth() async {
     //await _logout(NoParams());
-    _clearAuth(NoParams());
+    final failureOrSuccess = await _clearAuth(NoParams());
 
-    sharedPrefs.setSSOToken(null);
-    //MM sharedPrefs.setUserProfile(null);
-    clearSSOInfo();
-    emit(const EntryPointState(
-      status: AuthStatus.notAuthenticated,
-    ));
+    await failureOrSuccess.fold((l) {
+      if (l.toString().contains("-3")) {
+        print("logout falil $l");
+      } else {
+        sharedPrefs.setSSOToken(null);
+        clearSSOInfo();
+        emit(const EntryPointState(
+          status: AuthStatus.notAuthenticated,
+        ));
+      }
+    }, (r) {
+      sharedPrefs.setSSOToken(null);
+      //MM sharedPrefs.setUserProfile(null);
+      clearSSOInfo();
+      emit(const EntryPointState(
+        status: AuthStatus.notAuthenticated,
+      ));
+    });
   }
 
   Future<void> autoLogout() async {

@@ -28,11 +28,17 @@ class _NextPrayerState extends State<NextPrayer> {
   @override
   void initState() {
     super.initState();
-    final remainingTime = widget.time.difference(DateTime.now());
+    DateTime prayerTime = widget.time;
+    final DateTime now = DateTime.now();
+    if (widget.prayer == Prayers.fajr) {
+      prayerTime = prayerTime.add(Duration(days: 1));
+    }
+    final remainingTime = prayerTime.difference(now);
+
     _countDownStream.sink.add(remainingTime);
     Timer.periodic(const Duration(seconds: 1), (timer) {
       if (!_countDownStream.isClosed) {
-        final newRemainingTime = widget.time.difference(DateTime.now());
+        final newRemainingTime = prayerTime.difference(DateTime.now());
         if (newRemainingTime.inSeconds >= 0) {
           _countDownStream.sink.add(newRemainingTime);
         } else {
@@ -51,7 +57,12 @@ class _NextPrayerState extends State<NextPrayer> {
 
   @override
   Widget build(BuildContext context) {
-    final remainingTime = widget.time.difference(DateTime.now());
+    DateTime prayerTime = widget.time;
+    final DateTime now = DateTime.now();
+    if (widget.prayer == Prayers.fajr) {
+      prayerTime = prayerTime.add(Duration(days: 1));
+    }
+    final remainingTime = prayerTime.difference(now);
 
     return Column(
       children: [

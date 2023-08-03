@@ -230,11 +230,9 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
       emit(state.copyWith(nextPrayer: state.prayerTimesResponse!.fajr));
     }
     final nextPrayerTimeDiff = state.nextPrayer!.dateTime.difference(now);
+    print("nextPrayerTimeDiff ${state.nextPrayer!.dateTime}");
+    print("nextPrayerTimeDiff ${now}");
+
     print("nextPrayerTimeDiff $nextPrayerTimeDiff");
-    Timer.periodic(nextPrayerTimeDiff, (timer) {
-      print(timer);
-      // updateNextPrayer();
-      //  timer.cancel();
-    });
   }
 }

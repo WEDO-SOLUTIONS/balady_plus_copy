@@ -68,6 +68,8 @@ class MapViewModel extends BaseViewModel {
       ValueNotifier<BuildingComplianceCertificate?>(null);
 
   final selectedWhiteLands = ValueNotifier<WhiteLands?>(null);
+  final showLegend = ValueNotifier<bool?>(null);
+
   final isSearchLoading = ValueNotifier(false);
 
   double zoomValue = 13;
@@ -583,26 +585,33 @@ class MapViewModel extends BaseViewModel {
             onTap: () {
               print(element);
               selectedPointId.notifyListeners();
+              selectedPoint.value = null;
+              selectedInvetmentPoint.value = null;
+              selectedDiggingPoint.value = null;
+              selectedImtethalPoint.value = null;
+              selectedWhiteLands.value = null;
+              selectedPointId.value = null;
+              showLegend.value = false;
+              showLegend.value = false;
               switch (gisSelectedLayer) {
                 case GISMapLayers.Opportunities:
                   selectedPoint.value = element;
                   selectedInvetmentPoint.value = element;
-                  selectedDiggingPoint.value = null;
-                  selectedImtethalPoint.value = null;
-                  selectedWhiteLands.value = null;
 
                   break;
                 default:
                   break;
               }
 
-              selectedPointId.value = null;
               selectedInvetmentPoint.notifyListeners();
               selectedImtethalPoint.notifyListeners();
               selectedDiggingPoint.notifyListeners();
               selectedWhiteLands.notifyListeners();
               selectedPointId.notifyListeners();
+              selectedPoint.notifyListeners();
+
               bottomSheetSize.notifyListeners();
+              showLegend.notifyListeners();
               if (viewHomeBottomSheet.value != false) {
                 viewHomeBottomSheet.value = false;
                 viewHomeBottomSheet.notifyListeners();
@@ -640,28 +649,21 @@ class MapViewModel extends BaseViewModel {
             options: PolylineOptionsMessage(
                 points: element.paths, width: 4, color: 0xff358281),
             onTap: () {
+              selectedDiggingPoint.value = null;
+              selectedInvetmentPoint.value = null;
+              selectedImtethalPoint.value = null;
+              selectedWhiteLands.value = null;
+              showLegend.value = false;
               switch (gisSelectedLayer) {
                 case GISMapLayers.Digging:
                   selectedDiggingPoint.value = element;
-                  selectedInvetmentPoint.value = null;
-                  selectedImtethalPoint.value = null;
-                  selectedWhiteLands.value = null;
+
                   break;
 
                 case GISMapLayers.BSAimtithalBuildingsCertificateL:
-                  print("Clickkkkked");
                   selectedImtethalPoint.value = element;
 
-                  selectedInvetmentPoint.value = null;
-                  selectedDiggingPoint.value = null;
-                  selectedWhiteLands.value = null;
-
                 case GISMapLayers.BSWhiteParcelS:
-                  print("Clickkkkked");
-                  selectedImtethalPoint.value = null;
-
-                  selectedInvetmentPoint.value = null;
-                  selectedDiggingPoint.value = null;
                   selectedWhiteLands.value = element;
 
                 default:
@@ -673,6 +675,8 @@ class MapViewModel extends BaseViewModel {
               selectedWhiteLands.notifyListeners();
               selectedPointId.notifyListeners();
               bottomSheetSize.notifyListeners();
+              showLegend.notifyListeners();
+
               if (viewHomeBottomSheet.value != false) {
                 viewHomeBottomSheet.value = false;
                 viewHomeBottomSheet.notifyListeners();
@@ -713,39 +717,25 @@ class MapViewModel extends BaseViewModel {
             ),
             onTap: () {
               selectedPoint.value = element;
-
+              selectedInvetmentPoint.value = null;
+              selectedImtethalPoint.value = null;
+              selectedWhiteLands.value = null;
+              selectedDiggingPoint.value = null;
+              showLegend.value = false;
               switch (gisSelectedLayer) {
                 case GISMapLayers.Digging:
-                  selectedPoint.value = element;
                   selectedDiggingPoint.value = element;
-                  selectedInvetmentPoint.value = null;
-                  selectedImtethalPoint.value = null;
-                  selectedWhiteLands.value = null;
+
                   break;
 
                 case GISMapLayers.Opportunities:
                   selectedPoint.value = element;
-                  selectedInvetmentPoint.value = element;
-                  selectedDiggingPoint.value = null;
-                  selectedImtethalPoint.value = null;
-                  selectedWhiteLands.value = null;
+
                   break;
                 case GISMapLayers.BSAimtithalBuildingsCertificateL:
-                  print("Clickkkkked");
-                  selectedPoint.value = element;
                   selectedImtethalPoint.value = element;
 
-                  selectedInvetmentPoint.value = null;
-                  selectedDiggingPoint.value = null;
-                  selectedWhiteLands.value = null;
-
                 case GISMapLayers.BSWhiteParcelS:
-                  print("Clickkkkked");
-                  selectedPoint.value = null;
-                  selectedImtethalPoint.value = null;
-
-                  selectedInvetmentPoint.value = null;
-                  selectedDiggingPoint.value = null;
                   selectedWhiteLands.value = element;
                 default:
                   break;
@@ -756,6 +746,8 @@ class MapViewModel extends BaseViewModel {
               selectedWhiteLands.notifyListeners();
               selectedPointId.notifyListeners();
               bottomSheetSize.notifyListeners();
+              showLegend.notifyListeners();
+
               if (viewHomeBottomSheet.value != false) {
                 viewHomeBottomSheet.value = false;
                 viewHomeBottomSheet.notifyListeners();
@@ -782,8 +774,11 @@ class MapViewModel extends BaseViewModel {
 
   void selectLayers(Layers value) async {
     print("LAyer selected");
+    await controller.removeAll();
     layerSelected.value = value;
     searchController.text = "";
+    viewHomeBottomSheet.notifyListeners();
+    bottomSheetSize.notifyListeners();
     gisSelectedLayer = GISMapLayers.values
             .firstWhereOrNull((element) => element.layerId == value.id) ??
         GISMapLayers.cityPlaces;

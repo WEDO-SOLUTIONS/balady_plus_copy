@@ -17,120 +17,128 @@ class LandsLegendsMapCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 140,
-      width: 200,
-      margin: EdgeInsets.only(bottom: 32),
-      padding: const EdgeInsets.all(16),
-      decoration: ShapeDecoration(
-        color: Colors.white,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
+    return GestureDetector(
+      onTap: () {
+        MapViewModel mapViewModel =
+            Provider.of<MapViewModel>(context, listen: false);
+        mapViewModel.showLegend.value = false;
+        mapViewModel.showLegend.notifyListeners();
+      },
+      child: Container(
+        height: 140,
+        width: 200,
+        margin: EdgeInsets.only(bottom: 32),
+        padding: const EdgeInsets.all(16),
+        decoration: ShapeDecoration(
+          color: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          shadows: [
+            BoxShadow(
+              color: Color(0x1C77758D),
+              blurRadius: 22,
+              offset: Offset(0, 4),
+              spreadRadius: 0,
+            )
+          ],
         ),
-        shadows: [
-          BoxShadow(
-            color: Color(0x1C77758D),
-            blurRadius: 22,
-            offset: Offset(0, 4),
-            spreadRadius: 0,
-          )
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          CustomTextWidget(
-            "حالات تسوير الاراضي ",
-            fontColor: AppColor.blackModern800Light,
-            fontSize: 16,
-            fontWeight: AppFontWeight.bold,
-            maxLines: 1,
-          ),
-          CustomVerticalSpace(height: 16),
-          Row(
-            children: [
-              Container(
-                width: 23,
-                height: 23,
-                decoration: ShapeDecoration(
-                  color: Color(0xBCE9DCD5),
-                  shape: RoundedRectangleBorder(
-                    side: BorderSide(width: 0.50, color: Color(0xFFD8814D)),
-                    borderRadius: BorderRadius.circular(6),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            CustomTextWidget(
+              "حالات تسوير الاراضي ",
+              fontColor: AppColor.blackModern800Light,
+              fontSize: 16,
+              fontWeight: AppFontWeight.bold,
+              maxLines: 1,
+            ),
+            CustomVerticalSpace(height: 16),
+            Row(
+              children: [
+                Container(
+                  width: 23,
+                  height: 23,
+                  decoration: ShapeDecoration(
+                    color: Color(0xBCE9DCD5),
+                    shape: RoundedRectangleBorder(
+                      side: BorderSide(width: 0.50, color: Color(0xFFD8814D)),
+                      borderRadius: BorderRadius.circular(6),
+                    ),
                   ),
                 ),
-              ),
-              CustomHorizontalSpace(width: 8),
-              Flexible(
-                child: CustomTextWidget(
-                  'ارض مخالفه وغير مسوره',
-                  fontColor: Color(0xFF292929),
-                  fontSize: 10,
-                  fontWeight: AppFontWeight.medium,
-                  maxLines: 2,
-                  height: 1.3,
-                ),
-              ),
-            ],
-          ),
-          CustomVerticalSpace(height: 12),
-          Row(
-            children: [
-              Container(
-                width: 23,
-                height: 23,
-                decoration: ShapeDecoration(
-                  color: Color(0x89DBE6E8),
-                  shape: RoundedRectangleBorder(
-                    side: BorderSide(width: 0.50, color: Color(0xFF4F9291)),
-                    borderRadius: BorderRadius.circular(6),
+                CustomHorizontalSpace(width: 8),
+                Flexible(
+                  child: CustomTextWidget(
+                    'ارض مخالفه وغير مسوره',
+                    fontColor: Color(0xFF292929),
+                    fontSize: 10,
+                    fontWeight: AppFontWeight.medium,
+                    maxLines: 2,
+                    height: 1.3,
                   ),
                 ),
-              ),
-              CustomHorizontalSpace(width: 8),
-              Flexible(
-                child: CustomTextWidget(
-                  'أراضي مستهدفة للتسوير',
-                  fontColor: Color(0xFF292929),
-                  fontSize: 10,
-                  fontWeight: AppFontWeight.medium,
-                  maxLines: 2,
-                  height: 1.3,
-                ),
-              ),
-            ],
-          ),
-          /*   CustomVerticalSpace(height: 12),
-          Row(
-            children: [
-              Container(
-                width: 23,
-                height: 23,
-                decoration: ShapeDecoration(
-                  color: Color(0xA5ECEDEE),
-                  shape: RoundedRectangleBorder(
-                    side: BorderSide(width: 0.50),
-                    borderRadius: BorderRadius.circular(6),
+              ],
+            ),
+            CustomVerticalSpace(height: 12),
+            Row(
+              children: [
+                Container(
+                  width: 23,
+                  height: 23,
+                  decoration: ShapeDecoration(
+                    color: Color(0x89DBE6E8),
+                    shape: RoundedRectangleBorder(
+                      side: BorderSide(width: 0.50, color: Color(0xFF4F9291)),
+                      borderRadius: BorderRadius.circular(6),
+                    ),
                   ),
                 ),
-              ),
-              CustomHorizontalSpace(width: 8),
-              Flexible(
-                child: CustomTextWidget(
-                  'ارض مستهدف تسويرها في المرحله الحاليه ',
-                  fontColor: Color(0xFF292929),
-                  fontSize: 10,
-                  fontWeight: AppFontWeight.medium,
-                  maxLines: 2,
-                  height: 1.3,
+                CustomHorizontalSpace(width: 8),
+                Flexible(
+                  child: CustomTextWidget(
+                    'أراضي مستهدفة للتسوير',
+                    fontColor: Color(0xFF292929),
+                    fontSize: 10,
+                    fontWeight: AppFontWeight.medium,
+                    maxLines: 2,
+                    height: 1.3,
+                  ),
                 ),
-              ),
-            ],
-          ),
-      */
-          CustomVerticalSpace(height: 8),
-        ],
+              ],
+            ),
+            /*   CustomVerticalSpace(height: 12),
+            Row(
+              children: [
+                Container(
+                  width: 23,
+                  height: 23,
+                  decoration: ShapeDecoration(
+                    color: Color(0xA5ECEDEE),
+                    shape: RoundedRectangleBorder(
+                      side: BorderSide(width: 0.50),
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                  ),
+                ),
+                CustomHorizontalSpace(width: 8),
+                Flexible(
+                  child: CustomTextWidget(
+                    'ارض مستهدف تسويرها في المرحله الحاليه ',
+                    fontColor: Color(0xFF292929),
+                    fontSize: 10,
+                    fontWeight: AppFontWeight.medium,
+                    maxLines: 2,
+                    height: 1.3,
+                  ),
+                ),
+              ],
+            ),
+        */
+            CustomVerticalSpace(height: 8),
+          ],
+        ),
       ),
     );
   }

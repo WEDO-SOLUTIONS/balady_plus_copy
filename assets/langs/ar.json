@@ -3952,6 +3952,16 @@
   "health_bill_total": "الإجمالي",
   "health_bill_riyal": "ريال",
   "health_bill_order": "بيانات الطلب",
+
+
+  "health_trining_id": "رقم التثقيف",
+  "health_trining_startDate": "تاريخ الاصدار",
+  "health_trining_expiryDate": "تاريخ الانتهاء",
+  "health_trining_trainingCenter": "اسم مركز التدريب",
+
+
+
+
   "health_cert_show_centeres": "استعراض قائمة المراكز الصحية",
   "evaluation_inc_q1": "هل تمت خدمتك بالشكل المطلوب ؟",
   "evaluation_inc_q1_a1": "نعم، تمامًا",

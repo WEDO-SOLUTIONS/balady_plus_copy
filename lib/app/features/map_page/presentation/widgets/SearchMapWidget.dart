@@ -10,6 +10,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:provider/provider.dart';
 import '../../../../core/utils/constants/app_style.dart';
+import '../../../../core/utils/constants/route_names.dart';
 import '../../../home_page/presentation/widgets/home_tag.dart';
 
 class SearchMapWidget extends StatelessWidget {
@@ -27,7 +28,12 @@ class SearchMapWidget extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             SvgPicture.asset("assets/icons/svg/profile.svg"),
-            SvgPicture.asset("assets/icons/svg/notifications_icon.svg"),
+            GestureDetector(
+                onTap: () {
+                  Navigator.pushNamed(context, RouteName.notificationPage);
+                },
+                child: SvgPicture.asset(
+                    "assets/icons/svg/notifications_icon.svg")),
           ],
         )
 

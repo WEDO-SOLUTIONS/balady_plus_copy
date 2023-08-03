@@ -81,55 +81,90 @@ class HomeMap extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 ValueListenableBuilder<double>(
-                    valueListenable: mapViewModel.bottomSheetSize,
-                    builder: (_, visible, __) {
-                      double bottomSize = mapViewModel.bottomSheetSize.value;
-                      return Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          ValueListenableBuilder<Layers?>(
-                            valueListenable: mapViewModel.layerSelected,
-                            builder: (_, selectedPoint, __) {
-                              return mapViewModel.gisSelectedLayer !=
-                                      GISMapLayers.BSWhiteParcelS
-                                  ? const SizedBox()
-                                  : LandsLegendsMapCard();
-                            },
-                          ),
-                          Container(
-                            margin: EdgeInsets.only(bottom: bottomSize),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                ValueListenableBuilder<Layers?>(
-                                    valueListenable: mapViewModel.layerSelected,
-                                    builder: (_, selectedPoint, __) {
-                                      return GestureDetector(
-                                        onTap: () => showMainLayersDialog(
-                                            context, layersModel),
-                                        child: CircleIcon(
-                                          icon: mapViewModel
-                                                  .gisSelectedLayer?.icon ??
-                                              mapConstants.Constants.layerIcon,
-                                          backgroundColor: AppColor.white,
+                  valueListenable: mapViewModel.bottomSheetSize,
+                  builder: (_, visible, __) {
+                    double bottomSize = mapViewModel.bottomSheetSize.value;
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        ValueListenableBuilder<bool?>(
+                          valueListenable: mapViewModel.showLegend,
+                          builder: (_, value, __) {
+                            return value == true
+                                ? const LandsLegendsMapCard()
+                                : SizedBox();
+                          },
+                        ),
+                        Container(
+                          margin: EdgeInsets.only(bottom: bottomSize),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              ValueListenableBuilder<bool?>(
+                                  valueListenable: mapViewModel.showLegend,
+                                  builder: (_, value, __) {
+                                    return Visibility(
+                                      visible:
+                                          mapViewModel.showLegend != true &&
+                                              mapViewModel.gisSelectedLayer ==
+                                                  GISMapLayers.BSWhiteParcelS,
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          mapViewModel.showLegend.value = true;
+                                          mapViewModel.showLegend
+                                              .notifyListeners();
+                                        },
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(
+                                              bottom: 16.0),
+                                          child: CircleIcon(
+                                            icon: mapConstants
+                                                .Constants.infoCircleIcon,
+                                            backgroundColor: AppColor.white,
+                                          ),
                                         ),
-                                      );
-                                    }),
-                                Constants.verticalSpaceSmall,
-                                GestureDetector(
-                                  onTap: () => mapViewModel.onLocationTap(),
-                                  child: const CircleIcon(
-                                    icon: IconPath.currentLocation,
-                                    iconColor: AppColor.white,
-                                    backgroundColor: AppColor.primary900Light,
+                                      ),
+                                    );
+                                  }),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  ValueListenableBuilder<Layers?>(
+                                      valueListenable:
+                                          mapViewModel.layerSelected,
+                                      builder: (_, selectedPoint, __) {
+                                        return GestureDetector(
+                                          onTap: () => showMainLayersDialog(
+                                              context, layersModel),
+                                          child: CircleIcon(
+                                            icon: mapViewModel
+                                                    .gisSelectedLayer?.icon ??
+                                                mapConstants
+                                                    .Constants.layerIcon,
+                                            iconColor: Color(0xFF52525B),
+                                            backgroundColor: AppColor.white,
+                                          ),
+                                        );
+                                      }),
+                                  Constants.verticalSpaceSmall,
+                                  GestureDetector(
+                                    onTap: () => mapViewModel.onLocationTap(),
+                                    child: const CircleIcon(
+                                      icon: IconPath.currentLocation,
+                                      iconColor: AppColor.white,
+                                      backgroundColor: AppColor.primary900Light,
+                                    ),
                                   ),
-                                ),
-                              ],
-                            ),
+                                ],
+                              ),
+                            ],
                           ),
-                        ],
-                      );
-                    },
+                        ),
+                      ],
+                    );
+                  },
                 ),
                 Constants.verticalSpaceSmall,
               ],

@@ -50,4 +50,13 @@ class Constants {
 
   static const String mapPinIcon =
       "assets/maps/icons/gis_layers_icons/layer.svg";
+
+  static const String imtethalLayerIcon =
+      "assets/maps/icons/gis_layers_icons/imtethal.svg";
+
+  static const String imtethalSelectedLayerIcon =
+      "assets/maps/icons/gis_layers_icons/imtethal_selected.svg";
+
+  static const String infoCircleIcon =
+      "assets/maps/icons/info_circle.svg";
 }

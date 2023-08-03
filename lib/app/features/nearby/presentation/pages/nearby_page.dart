@@ -12,20 +12,20 @@ import '../../../home_page/home_exports.dart';
 import '../../nearby_exports.dart' show NearbyGrid, NearbyTagList;
 
 class NearbyPage extends StatelessWidget {
-
   const NearbyPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     MapViewModel mapViewModel = context.watch<MapViewModel>();
     return ChangeNotifierProvider(
-    create: (BuildContext context) => NearByViewModel(mapViewModel.controller),
+      create: (BuildContext context) =>
+          NearByViewModel(mapViewModel.controller),
       child: Scaffold(
         appBar: DefaultAppBarWidget(
           title: "nearby".tr(),
           bottom: const NearbyTagList(),
           actions: const [
-            Padding(
+            /*   Padding(
               padding: EdgeInsets.symmetric(horizontal: 8),
               child: CircleIcon(
                 backgroundColor: AppColor.primary50Light,
@@ -33,7 +33,7 @@ class NearbyPage extends StatelessWidget {
                 circleSize: 48.0,
                 iconSize: 30.0,
               ),
-            ),
+            ),*/
           ],
         ),
         body: const TabPageContainer(

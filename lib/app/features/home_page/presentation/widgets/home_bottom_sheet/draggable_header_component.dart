@@ -67,8 +67,8 @@ class DraggableHeaderComponent extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           CustomTextFieldWidget(
-            //  hintText: 'ابحث في الدمام عن...'.tr(),
-            hintText: 'ابحث عن...'.tr(),
+            hintText: 'ابحث في الدمام عن...'.tr(),
+            //   hintText: 'ابحث عن...'.tr(),
             controller: searchController,
             hintStyle: const TextStyle(
               fontSize: 12,

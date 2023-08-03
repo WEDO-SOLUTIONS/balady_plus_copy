@@ -40,18 +40,24 @@ class MapLayerCard extends StatelessWidget {
             },
           );
         case GISMapLayers.Opportunities:
-          return mapViewModel.selectedInvetmentPoint.value != null
-              ? mapViewModel.selectedInvetmentPoint.value!.opportunityType ==
-                      "Investment"
-                  ? InvestmentMapCard(
-                      data: mapViewModel.selectedInvetmentPoint.value!,
-                      onClose: () {
-                        mapViewModel.showDialog();
-                      })
-                  : RentalMapCard(
-                      data: mapViewModel.selectedInvetmentPoint.value!,
-                    )
-              : Container();
+          return ValueListenableBuilder<Excavations?>(
+            valueListenable: mapViewModel.selectedDiggingPoint,
+            builder: (_, selectedPoint, __) {
+              return mapViewModel.selectedInvetmentPoint.value != null
+                  ? mapViewModel
+                              .selectedInvetmentPoint.value!.opportunityType ==
+                          "Investment"
+                      ? InvestmentMapCard(
+                          data: mapViewModel.selectedInvetmentPoint.value!,
+                          onClose: () {
+                            mapViewModel.showDialog();
+                          })
+                      : RentalMapCard(
+                          data: mapViewModel.selectedInvetmentPoint.value!,
+                        )
+                  : Container();
+            },
+          );
 
         case GISMapLayers.BSAimtithalBuildingsCertificateL:
           return ValueListenableBuilder<BuildingComplianceCertificate?>(

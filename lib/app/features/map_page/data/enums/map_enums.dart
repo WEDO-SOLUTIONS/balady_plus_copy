@@ -59,8 +59,8 @@ enum GISMapLayers {
 
   BSAimtithalBuildingsCertificateL(
       layerId: 7,
-      icon: Constants.bulidingLayerIcon,
-      selectedIcon: Constants.bulidingSelectedLayerIcon,
+      icon: Constants.imtethalLayerIcon,
+      selectedIcon: Constants.imtethalSelectedLayerIcon,
       outFieldsShort: [
         "OBJECTID",
         "PRIORITYAREA",
