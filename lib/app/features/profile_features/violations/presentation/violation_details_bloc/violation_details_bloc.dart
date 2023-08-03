@@ -30,8 +30,8 @@ class ViolationDetailsBloc
 
   Future<void> _getGisDataInfoHandler(
       GetGisLocationInfoEvent e, Emitter emitter) async {
-    double? x = double.tryParse(state.details?.coordinatEX ?? "");
-    double? y = double.tryParse(state.details?.coordinatEY ?? "");
+    double? x = double.tryParse(state.details?.coordinateX ?? "");
+    double? y = double.tryParse(state.details?.coordinateY ?? "");
 
     if (x == null || y == null) return;
     emitter(state.copyWith(gisStatus: BlocStatus.loading));
