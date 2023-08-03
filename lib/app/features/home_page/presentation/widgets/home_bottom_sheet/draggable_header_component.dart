@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/features/map_page/presentation/mvvm/map_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
@@ -13,8 +14,8 @@ class DraggableHeaderComponent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     bool isLoggedIn = CommonProperties.isLoggedIn;
-    String pm = isLoggedIn ? "مساء الخير ، " : "مساء الخير";
-    String am = isLoggedIn ? "صباح الخير ، " : "صباح الخير";
+    String pm = isLoggedIn ? "مساء الخير  " : "مساء الخير";
+    String am = isLoggedIn ? "صباح الخير  " : "صباح الخير";
 
     return Container(
       width: MediaQuery.sizeOf(context).width,
@@ -65,7 +66,9 @@ class DraggableHeaderComponent extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           CustomTextFieldWidget(
-            hintText: 'ابحث هنا...'.tr(),
+            //  hintText: 'ابحث في الدمام عن...'.tr(),
+            hintText: 'ابحث عن...'.tr(),
+            controller: searchController,
             hintStyle: const TextStyle(
               fontSize: 12,
               fontWeight: FontWeight.bold,
@@ -80,6 +83,11 @@ class DraggableHeaderComponent extends StatelessWidget {
             ),
             borderRadius: 26,
             borderColor: AppColor.primary900Light.withOpacity(0.1),
+            onSubmitted: (text) {
+              if (text.isNotEmpty) {
+                mapViewModel.performSearch(queryText: text);
+              }
+            },
           ),
           const SizedBox(height: 10),
         ],
