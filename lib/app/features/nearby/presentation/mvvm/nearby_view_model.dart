@@ -13,38 +13,31 @@ class NearByViewModel extends BaseViewModel {
   final ValueNotifier<SearchResultMessage?> searchResultMessage =
       ValueNotifier(null);
 
-  NearByViewModel(this.controller);
+  List<DistanceResponseMessage>? responseDistance;
+
+  NearByViewModel(this.controller) {
+    selectCategory(category: SearchCategoryMessage.mousques);
+  }
 
   Future<void> selectCategory({required SearchCategoryMessage category}) async {
-    if (category == selectedCategory.value) {
-      selectedCategory.value = null;
-    } else {
-      selectedCategory.value = category;
-    }
+    selectedCategory.value = category;
     isSearchLoading.value = true;
-
     isSearchLoading.notifyListeners();
-    performSearch(
-        // queryText: selectedCategory.value!.displayName(),
-        );
+    await performSearch();
     isSearchLoading.value = false;
     isSearchLoading.notifyListeners();
   }
 
   Future<void> performSearch() async {
     try {
-      // searchController.text = selectedCategory.value != null
-      //     ? selectedCategory.value!.displayName()
-      //     : queryText;
-
       searchResultMessage.value = await controller.searchByCategory(
         selectedCategory.value!,
-        sortingType: SortingTypeMessage.byDistance,
-        // searchRect: _lastHandledEvent?.visibleRect.geoRectMessage(),
+        sortingType: SortingTypeMessage.byRelevance,
+        isOpenNow: false,
+        pageSize: 50,
       );
-
       if (searchResultMessage.value!.firstPage?.items != null) {
-        final responseDistance = await controller.getDistanceTo(
+        responseDistance = await controller.getDistanceTo(
           _mapToDistanceRequest(
             searchResultMessage.value!.firstPage!.items
                 .map((e) => e as DirectoryObjectMessage)
@@ -57,7 +50,7 @@ class NearByViewModel extends BaseViewModel {
         print("Releasing Page");
         await controller.releasePage(searchResultMessage.value!.firstPage!);
       }
-      notifyListeners();
+      searchResultMessage.notifyListeners();
       // print(data);
     } catch (e) {
       print(e);
