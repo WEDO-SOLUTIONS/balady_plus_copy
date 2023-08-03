@@ -78,6 +78,7 @@ export 'presentation/components/stepper_footer_buttons_component.dart';
 export 'presentation/dialogs/bottom_sheet_dialogs.dart';
 export 'presentation/dialogs/loading_dialogs.dart';
 export 'presentation/dialogs/message_dialogs.dart';
+export 'presentation/dialogs/building_requirements_dialog.dart';
 
 /// presentation -> fields
 export 'presentation/fields/email_field.dart';

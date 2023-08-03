@@ -44,7 +44,6 @@ class IconPath {
   static const arrowForward2 = '${_svgIconPath}arrow_forward$_svg';
   static const receiveSquare = '${_svgIconPath}receive-square$_svg';
 
-
   static const informationCircleIcon =
       '${_svgIconPath}informationCircleIcon$_svg';
 
@@ -239,4 +238,10 @@ class IconPath {
   //Map
   static const investmentIcon = '${_svgIconPath}invetment_icon$_svg';
   static const mapLocationIcon = '${_svgIconPath}map_location_icon$_svg';
+
+  // Building Requirements
+  static const checked = '${_svgIconPath}checked$_svg';
+  static const taskSquare1 = '${_svgIconPath}task_square$_svg';
+  static const taskSquare2 = '${_svgIconPath}task_square2$_svg';
+  static const taskSquare3 = '${_svgIconPath}task_square3$_svg';
 }
