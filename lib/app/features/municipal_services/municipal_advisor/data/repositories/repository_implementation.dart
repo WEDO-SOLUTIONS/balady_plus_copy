@@ -1,3 +1,5 @@
+import 'package:balady_plus/app/features/municipal_services/municipal_advisor/data/models/building_compliance_model.dart';
+import 'package:balady_plus/app/features/vd/domain/entities/gis/gis_params.dart';
 import 'package:dartz/dartz.dart';
 
 import '../../../../../core/errors/errors_exports.dart'
@@ -7,6 +9,7 @@ import '../../../../../core/errors/errors_exports.dart'
         NoDataFoundFailure,
         ServerException,
         ServerFailure;
+import '../../domain/entities/building_compliance_entity.dart';
 import '../../municipal_advisor_exports.dart';
 
 class MunicipalAdvisorRepositoryImplementation
@@ -332,11 +335,23 @@ class MunicipalAdvisorRepositoryImplementation
       return Left(ServerFailure(error.errorMessage));
     }
   }
-  
+
   @override
-  Future<Either<Failure, bool>> submitConsultation(KeyParamsModel params) async {
+  Future<Either<Failure, bool>> submitConsultation(
+      KeyParamsModel params) async {
     try {
       final data = await remoteDataSource.submitConsultation(params);
+      return Right(data);
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage));
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<BuildingComplianceEntity>>> getBuildingCompliance(
+      GISParams params) async {
+    try {
+      final data = await remoteDataSource.getBuildingCompliance(params);
       return Right(data);
     } on ServerException catch (error) {
       return Left(ServerFailure(error.errorMessage));

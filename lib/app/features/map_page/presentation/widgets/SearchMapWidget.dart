@@ -1,4 +1,5 @@
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
+import 'package:balady_plus/app/features/map_page/data/enums/map_enums.dart';
 import 'package:balady_plus/app/features/map_page/data/model/layers.dart';
 import 'package:balady_plus/app/features/map_page/extensions/search_category_ext.dart';
 import 'package:balady_plus/app/features/map_page/presentation/mvvm/layers_gis_view_model.dart';
@@ -72,70 +73,76 @@ class SearchMapWidget extends StatelessWidget {
         ValueListenableBuilder(
             valueListenable: mapViewModel.selectedCategory,
             builder: (context, value, _) {
-              return SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: [
-                    SearchCategoryMessage.mousques,
-                    SearchCategoryMessage.gasStations,
-                    SearchCategoryMessage.cafe,
-                    SearchCategoryMessage.restaurants,
-                    SearchCategoryMessage.parks,
-                  ]
-                      .map(
-                        (e) => Row(
-                          children: [
-                            const SizedBox(
-                              width: 8,
-                            ),
-                            Container(
-                              padding: EdgeInsets.symmetric(horizontal: 4),
-                              decoration: BoxDecoration(
-                                color: value == e
-                                    ? Color(0xFF4B5563)
-                                    : Colors.white,
-                                borderRadius: BorderRadius.circular(8.0),
-                              ),
-                              child: InkWell(
-                                onTap: () {
-                                  mapViewModel.selectCategory(category: e);
-                                  print("Changing ctaegory to: $e");
-                                },
-                                child: Padding(
-                                  padding: const EdgeInsets.all(4.0),
-                                  child: Row(
-                                    children: [
-                                      SizedBox(
-                                        width: 16,
-                                        height: 16,
-                                        child: SvgPicture.asset(e.iconName()),
-                                      ),
-                                      SizedBox(
-                                        width: 4,
-                                      ),
-                                      CustomTextWidget(
-                                        e.displayName(),
-                                        textStyle: AppStyle
-                                            .serviceDescriptionStyle
-                                            .copyWith(
-                                          color: mapViewModel
-                                                      .selectedCategory.value ==
-                                                  e
-                                              ? Colors.white
-                                              : Colors.black,
+              return mapViewModel.gisSelectedLayer == GISMapLayers.cityPlaces
+                  ? SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        children: [
+                          SearchCategoryMessage.mousques,
+                          SearchCategoryMessage.gasStations,
+                          SearchCategoryMessage.cafe,
+                          SearchCategoryMessage.restaurants,
+                          SearchCategoryMessage.parks,
+                        ]
+                            .map(
+                              (e) => Row(
+                                children: [
+                                  const SizedBox(
+                                    width: 8,
+                                  ),
+                                  Container(
+                                    padding:
+                                        EdgeInsets.symmetric(horizontal: 4),
+                                    decoration: BoxDecoration(
+                                      color: value == e
+                                          ? Color(0xFF4B5563)
+                                          : Colors.white,
+                                      borderRadius: BorderRadius.circular(8.0),
+                                    ),
+                                    child: InkWell(
+                                      onTap: () {
+                                        mapViewModel.selectCategory(
+                                            category: e);
+                                        print("Changing ctaegory to: $e");
+                                      },
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(4.0),
+                                        child: Row(
+                                          children: [
+                                            SizedBox(
+                                              width: 16,
+                                              height: 16,
+                                              child: SvgPicture.asset(
+                                                  e.iconName()),
+                                            ),
+                                            SizedBox(
+                                              width: 4,
+                                            ),
+                                            CustomTextWidget(
+                                              e.displayName(),
+                                              textStyle: AppStyle
+                                                  .serviceDescriptionStyle
+                                                  .copyWith(
+                                                color: mapViewModel
+                                                            .selectedCategory
+                                                            .value ==
+                                                        e
+                                                    ? Colors.white
+                                                    : Colors.black,
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                       ),
-                                    ],
+                                    ),
                                   ),
-                                ),
+                                ],
                               ),
-                            ),
-                          ],
-                        ),
-                      )
-                      .toList(),
-                ),
-              );
+                            )
+                            .toList(),
+                      ),
+                    )
+                  : SizedBox();
             }),
         const SizedBox(
           height: 6,

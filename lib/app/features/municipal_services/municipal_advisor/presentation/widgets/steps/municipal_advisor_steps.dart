@@ -31,4 +31,5 @@ enum MunicipalAdvisorSteps {
   attachmentsRequired,
   continueToRequestPath,
   requestPath,
+  imtethal,
 }

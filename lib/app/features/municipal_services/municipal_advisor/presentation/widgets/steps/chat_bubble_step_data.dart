@@ -1,3 +1,5 @@
+import 'package:balady_plus/app/core/utils/utils_exports.dart';
+import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
@@ -55,8 +57,7 @@ class ChatBubbleStepData extends StatelessWidget {
             return RequirementsList(
               number: 2,
               title: "municipalAdvisorPermitsTitle".tr(),
-              requirements:
-                  state.licensePermits.map((e) => e.name).toList(),
+              requirements: state.licensePermits.map((e) => e.name).toList(),
             );
           },
         );
@@ -149,6 +150,24 @@ class ChatBubbleStepData extends StatelessWidget {
               );
             }
             return const SizedBox.shrink();
+          },
+        );
+
+      case MunicipalAdvisorSteps.imtethal:
+        return BlocBuilder<MunicipalAdvisorBloc, MunicipalAdvisorState>(
+          buildWhen: (previous, current) =>
+              previous.buildingComplince != current.buildingComplince,
+          builder: (context, state) {
+            return Padding(
+              padding: const EdgeInsets.only(top: 24, bottom: 10),
+              child: ElevatedIconButtonWidget.download(
+                onPressed: () {
+                  CommonFunctions.externalLaunch(
+                      "https://gisapps.momra.gov.sa/imtithal/assets/req.pdf");
+                },
+                text: "imtethalDownloadFile".tr(),
+              ),
+            );
           },
         );
       default:

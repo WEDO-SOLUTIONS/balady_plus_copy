@@ -2,11 +2,19 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_google_places/flutter_google_places.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
-
+import 'package:google_maps_webservice/places.dart' as place;
+import '../../../../../core/utils/constants/constants.dart';
 import '../../../../../core/utils/utils_exports.dart'
-    show AppColor, AppStyle, BlocRequestStatus, CommonProperties, IconPath;
+    show
+        AppColor,
+        AppFontWeight,
+        AppStyle,
+        BlocRequestStatus,
+        CommonProperties,
+        IconPath;
 import '../../../../_shared_feature_/shared_feature_exports.dart'
     show
         CustomTextWidget,
@@ -36,6 +44,7 @@ class LocationPage extends StatefulWidget {
 class LocationPageState extends State<LocationPage> {
   final Completer<GoogleMapController> _controller =
       Completer<GoogleMapController>();
+  late GoogleMapController mapController;
 
   static final CameraPosition defaultLocation = CameraPosition(
     target: CommonProperties.defaultLocation,
@@ -59,6 +68,7 @@ class LocationPageState extends State<LocationPage> {
                 padding: const EdgeInsets.only(bottom: 60),
                 onMapCreated: (GoogleMapController controller) {
                   _controller.complete(controller);
+                  mapController = controller;
                 },
                 onCameraIdle: () async {
                   if (coordinates == null || !context.mounted) return;
@@ -158,11 +168,98 @@ class LocationPageState extends State<LocationPage> {
                     ),
                   ),
                 ),
+              ),
+              MapSearchSection(
+                showBigPaddingScreen: true,
+                onSearchResult: (LatLng location) {
+                  mapController.animateCamera(
+                    CameraUpdate.newCameraPosition(
+                      CameraPosition(
+                          target: LatLng(location.latitude, location.longitude),
+                          zoom: 16.0),
+                    ),
+                  );
+                },
               )
             ],
           );
         }),
       ),
     );
+  }
+}
+
+class MapSearchSection extends StatelessWidget {
+  final showBigPaddingScreen;
+  Function(LatLng location) onSearchResult;
+
+  MapSearchSection(
+      {Key? key,
+      this.showBigPaddingScreen = false,
+      required this.onSearchResult})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: showBigPaddingScreen
+          ? EdgeInsets.only(top: MediaQuery.of(context).padding.top + 40)
+          : const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      alignment: Alignment.topCenter,
+      child: GestureDetector(
+        onTap: () {
+          _showPlaceSearch(context);
+        },
+        child: Container(
+          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 15),
+          alignment: Alignment.center,
+          height: 52,
+          decoration: Constants.boxDecorationWithShadowAndRoundedCorner,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Expanded(
+                    child: CustomTextWidget(
+                  ("lbl_search_for_place").tr(),
+                  fontColor: AppColor.black400,
+                  fontWeight: AppFontWeight.medium,
+                  fontSize: 17,
+                  textAlign: TextAlign.start,
+                )),
+                Image.asset(
+                  Constants.imgPath + 'mapSearch@3x.png',
+                  height: 24,
+                  width: 24,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  _showPlaceSearch(BuildContext context) async {
+    place.Prediction? p = await PlacesAutocomplete.show(
+        context: context,
+        apiKey: "AIzaSyA-Hs2J4hgwr1m5ScEnLwpZQpTUdtZfhMI",
+        mode: Mode.overlay,
+        types: [],
+        strictbounds: false,
+        language: "ar",
+        components: [new place.Component(place.Component.country, "sa")]);
+
+    final places = place.GoogleMapsPlaces(
+        apiKey: "AIzaSyA-Hs2J4hgwr1m5ScEnLwpZQpTUdtZfhMI");
+    places.getDetailsByPlaceId(p?.placeId ?? "").then((response) {
+      var lat = response.result.geometry?.location.lat;
+      var long = response.result.geometry?.location.lng;
+
+      if (lat != null && long != null) {
+        onSearchResult(LatLng(lat, long));
+      }
+    });
   }
 }

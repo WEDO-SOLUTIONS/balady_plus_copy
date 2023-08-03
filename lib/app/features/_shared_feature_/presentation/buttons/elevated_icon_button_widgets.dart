@@ -32,4 +32,21 @@ class ElevatedIconButtonWidget extends _ElevatedIconButton {
           icon: const CustomSvgIconWidget(IconPath.add, iconSize: 18.0),
           onPressed: onPressed,
         ));
+
+  ElevatedIconButtonWidget.download(
+      {required VoidCallback onPressed, String? text})
+      : super(CustomElevatedIconButtonWidget(
+          text: text ?? "attachFileButton".tr(),
+          btnColor: Colors.transparent,
+          btnHeight: 36,
+          btnBorderColor: AppColor.primary800Light,
+          textStyle: AppStyle.elevatedButtonStyle.copyWith(
+            color: AppColor.primary800Light,
+            fontWeight: FontWeight.w700,
+            fontSize: 16,
+          ),
+          icon:
+              const CustomSvgIconWidget(IconPath.receiveSquare, iconSize: 14.0),
+          onPressed: onPressed,
+        ));
 }

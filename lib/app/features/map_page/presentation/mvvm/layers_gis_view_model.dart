@@ -15,7 +15,12 @@ class LayersGisViewModel extends BaseViewModel {
 
   final layers = ValueNotifier<List<Layers>?>(null);
   final layerSelected = ValueNotifier<Layers?>(null);
-
+  Layers cityPlaces = Layers(
+      id: 0,
+      type: "",
+      geometryType: "",
+      name: "مرافق المدينة",
+      defaultVisibility: true);
   // List<SubLayers>? subLayers;
 
   LayersGisViewModel({
@@ -23,11 +28,13 @@ class LayersGisViewModel extends BaseViewModel {
     required this.layersRepositories,
   }) {
     getMinLayers();
+    layerSelected.value = cityPlaces;
   }
 
   Future<void> getMinLayers() async {
     try {
       layers.value = await layersRepositories.getMinLayers();
+      layers.value?.insert(0, cityPlaces);
       /* if (layers.value != null) {
         layerSelected.value = layers.value!.first;
         mapViewModel.layerSelected.value = layers.value!.first;

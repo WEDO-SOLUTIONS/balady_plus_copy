@@ -1,6 +1,12 @@
 import '../../constants/constants.dart';
 
 enum GISMapLayers {
+  cityPlaces(
+      layerId: 0,
+      icon: Constants.bulidingLayerIcon,
+      selectedIcon: Constants.bulidingSelectedLayerIcon,
+      outFieldsShort: [],
+      outFieldsLong: []),
   Opportunities(
       layerId: 2,
       icon: Constants.furasLayerIcon,

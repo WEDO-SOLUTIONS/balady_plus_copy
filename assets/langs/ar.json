@@ -148,6 +148,8 @@
   "municipalAdvisorTopicAnswer1": "دراسة استشارية شاملة",
   "municipalAdvisorTopicAnswer2": "متطلبات اصدار رخصة تجارية لنشاطك",
   "municipalAdvisorTopicAnswer3": "التصاريح المتاحة لنشاطك",
+  "municipalAdvisorTopicAnswer4": "حالة شهادة الامتثال",
+
   "municipalAdvisorLocation": "ما هو موقع نشاطك ؟",
   "municipalAdvisorLocationHint": "حدد الموقع في الخريطة",
   "municipalAdvisorLocationButton": "تحديد الموقع",
@@ -234,6 +236,8 @@
   "municipalAdvisorRequestPathSuggestions": "مقترحات لتقليل مراحل رحلة الطلب",
   "municipalAdvisorDownloadPDF": "انتهت الدراسة الشاملة! يمكنك طباعة ملف PDF بجميع النتائج السابقة وحفظها في جهازك من خلال الضغط على الزر التالي",
   "municipalAdvisorEndChat": "في حال رغبتك في إعادة الدراسة او طلب معلومات اخرى، يمكنك انهاء هذه المحادثة وبدء محادثة اخرى.",
+  "imtethalAdvisorEndChat": "في حال رغبتك في طلب معلومات اخرى، يمكنك انهاء هذه المحادثة وبدء محادثة اخرى.",
+  "imtethalAdvisorResponse":"قم بتحميل ملف اشتراطات الامتثال",  
   "count": "عدد",
   "municipalAdvisorAttachmentsRequired": "المرفق المطلوب",
   "municipalAdvisorAttachmentsStatus": "حالة المرفق",
@@ -254,6 +258,7 @@
   "municipalAdvisorHomogeneityStatus": "حالة التجانس",
   "municipalAdvisorHomogeneous": "متجانس",
   "municipalAdvisorNonHomogeneous": "غير متجانس",
+  "imtethalDownloadFile":"تحميل ملف اشتراطات الامتثال", 
   "noData": "لا يوجد بيانات",
 
   "_profileComment": "أى شئ يخص الحساب",

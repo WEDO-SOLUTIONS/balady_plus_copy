@@ -388,7 +388,10 @@ class MunicipalAdvisorContinueToRequestPath extends MunicipalAdvisorEvent {
   List<Object?> get props => [continueToRequestPath];
 }
 
+class GetImtethalStatusEvent extends MunicipalAdvisorEvent {}
+
 class MunicipalAdvisorGetRequestFlowEvent extends MunicipalAdvisorEvent {}
 
 class MunicipalAdvisorSubmitConsultationEvent extends MunicipalAdvisorEvent {}
+
 class MunicipalAdvisorRetryEvent extends MunicipalAdvisorEvent {}

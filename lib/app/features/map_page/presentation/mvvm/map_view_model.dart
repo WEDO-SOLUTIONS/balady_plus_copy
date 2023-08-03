@@ -40,7 +40,7 @@ class MapViewModel extends BaseViewModel {
   ValueNotifier<SearchCategoryMessage?> selectedCategory = ValueNotifier(null);
 
   final layerSelected = ValueNotifier<Layers?>(null);
-  GISMapLayers? gisSelectedLayer;
+  GISMapLayers gisSelectedLayer = GISMapLayers.cityPlaces;
 //////////////////////////////////////////////////////
 
   late DgisMapController controller;
@@ -82,6 +82,8 @@ class MapViewModel extends BaseViewModel {
     isSearchLoading.value = true;
 
     isSearchLoading.notifyListeners();
+    await controller.removeAllMarkers();
+
     performSearch(
       queryText: selectedCategory.value!.displayName(),
     );
@@ -112,7 +114,6 @@ class MapViewModel extends BaseViewModel {
               isOpenNow: false,
               searchRect: _lastHandledEvent?.visibleRect.geoRectMessage(),
             );
-      await controller.removeAllMarkers();
 
       if (data.itemMarkerInfos != null) {
         List<Marker> markers = [];
@@ -422,8 +423,9 @@ class MapViewModel extends BaseViewModel {
 
   callSearch() async {
     print("search");
-
-    if (selectedCategory.value != null) {
+    await controller.removeAll();
+    if (selectedCategory.value != null &&
+        gisSelectedLayer == GISMapLayers.cityPlaces) {
       isSearchLoading.value = true;
       isSearchLoading.notifyListeners();
 
@@ -784,9 +786,16 @@ class MapViewModel extends BaseViewModel {
   void selectLayers(Layers value) async {
     print("LAyer selected");
     layerSelected.value = value;
+    searchController.text = "";
+    gisSelectedLayer = GISMapLayers.values
+            .firstWhereOrNull((element) => element.layerId == value.id) ??
+        GISMapLayers.cityPlaces;
 
-    gisSelectedLayer = gisSelectedLayer = GISMapLayers.values
-        .firstWhereOrNull((element) => element.layerId == value.id);
+    if (gisSelectedLayer != GISMapLayers.cityPlaces) {
+      selectedCategory.value = null;
+    }
+    selectedCategory.notifyListeners();
+
     notifyListeners();
     callSearch();
   }

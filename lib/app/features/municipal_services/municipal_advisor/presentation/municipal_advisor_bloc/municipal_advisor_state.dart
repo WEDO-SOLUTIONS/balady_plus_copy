@@ -6,6 +6,7 @@ class MunicipalAdvisorState extends Equatable {
   final MunicipalAdvisorSteps currentStep;
   final String? consultationKey;
   final GISResponse? gisResponse;
+  final GISParams? location;
   final ActivityLocation? activityLocation;
   final List<IsicActivityEntity> isicActivities;
   final IsicActivityEntity? selectedIsicActivity;
@@ -46,15 +47,19 @@ class MunicipalAdvisorState extends Equatable {
   final List<AttachmentEntity> attachments;
   final List<RequestStepModel> requestFlow;
   final List<String> requestFlowRecommendations;
+  final List<BuildingComplianceEntity>? buildingComplince;
   final MunicipalAdvisorEvent? lastEvent;
+  final int topic;
   final String? errorMessage;
 
   const MunicipalAdvisorState({
     this.status = BlocRequestStatus.initial,
     this.messages = const <ChatMessage>[],
+    this.location,
     this.currentStep = MunicipalAdvisorSteps.start,
     this.consultationKey,
     this.gisResponse,
+    this.topic = 0,
     this.activityLocation,
     this.isicActivities = const <IsicActivityEntity>[],
     this.selectedIsicActivity,
@@ -100,6 +105,7 @@ class MunicipalAdvisorState extends Equatable {
     this.requestFlow = const <RequestStepModel>[],
     this.requestFlowRecommendations = const <String>[],
     this.lastEvent,
+    this.buildingComplince,
     this.errorMessage,
   });
 
@@ -122,6 +128,8 @@ class MunicipalAdvisorState extends Equatable {
 
   MunicipalAdvisorState copyWith({
     BlocRequestStatus? status,
+    GISParams? location,
+    int? topic,
     List<ChatMessage>? messages,
     String? consultationKey,
     GISResponse? gisResponse,
@@ -165,10 +173,12 @@ class MunicipalAdvisorState extends Equatable {
     List<AttachmentEntity>? attachments,
     List<RequestStepModel>? requestFlow,
     List<String>? requestFlowRecommendations,
+    List<BuildingComplianceEntity>? buildingComplince,
     MunicipalAdvisorEvent? lastEvent,
     String? errorMessage,
   }) {
     return MunicipalAdvisorState(
+      topic: topic ?? this.topic,
       status: status ?? this.status,
       messages: messages ?? this.messages,
       currentStep: messages?.isEmpty ?? this.messages.isEmpty
@@ -176,6 +186,7 @@ class MunicipalAdvisorState extends Equatable {
           : messages?.last.step ?? this.messages.last.step,
       consultationKey: consultationKey ?? this.consultationKey,
       gisResponse: gisResponse ?? this.gisResponse,
+      location: location ?? this.location,
       activityLocation: activityLocation ?? this.activityLocation,
       isicActivities: isicActivities ?? this.isicActivities,
       selectedIsicActivity: selectedIsicActivity ?? this.selectedIsicActivity,
@@ -224,6 +235,7 @@ class MunicipalAdvisorState extends Equatable {
           selectedShopContractOption ?? this.selectedShopContractOption,
       attachments: attachments ?? this.attachments,
       requestFlow: requestFlow ?? this.requestFlow,
+      buildingComplince: buildingComplince ?? this.buildingComplince,
       requestFlowRecommendations:
           requestFlowRecommendations ?? this.requestFlowRecommendations,
       lastEvent: lastEvent ?? this.lastEvent,
@@ -234,6 +246,7 @@ class MunicipalAdvisorState extends Equatable {
   @override
   List<Object?> get props => [
         status,
+        topic,
         messages,
         currentStep,
         consultationKey,
@@ -267,6 +280,7 @@ class MunicipalAdvisorState extends Equatable {
         selectedLicenseYear,
         boards,
         selectedCleanMechanism,
+        location,
         selectedPermits,
         licenseFees,
         sideWalkParams,
@@ -279,6 +293,7 @@ class MunicipalAdvisorState extends Equatable {
         requestFlow,
         requestFlowRecommendations,
         lastEvent,
+        buildingComplince,
         errorMessage,
       ];
 }

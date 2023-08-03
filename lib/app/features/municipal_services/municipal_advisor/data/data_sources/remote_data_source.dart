@@ -1,11 +1,16 @@
+import 'package:balady_plus/app/features/entry_point/presentation/cubit/auth_cubit.dart';
+import 'package:balady_plus/app/features/municipal_services/municipal_advisor/data/models/building_compliance_model.dart';
+import 'package:balady_plus/app/features/vd/vd_exports.dart';
 import 'package:dio/dio.dart' show DioError, Options;
 import 'package:localize_and_translate/localize_and_translate.dart'
     show Translation;
 
+import '../../../../../../etmam_app/core/dependency_injection/injection_container.dart';
 import '../../../../../core/errors/errors_exports.dart'
     show NoDataFoundException, ServerException;
 import '../../../../../core/services/services_exports.dart' show WebService;
-import '../../../../../core/utils/utils_exports.dart' show ApiUrl, Log;
+import '../../../../../core/utils/utils_exports.dart'
+    show ApiUrl, CommonProperties, Log;
 import '../../../../_shared_feature_/shared_feature_exports.dart'
     show ResponseBodyModel;
 import '../../municipal_advisor_exports.dart'
@@ -127,6 +132,8 @@ abstract class MunicipalAdvisorRemoteDataSource {
   Future<bool> submitConsultation(
     KeyParamsModel params,
   );
+
+  Future<List<BuildingComplianceModel>> getBuildingCompliance(GISParams params);
 }
 
 class MunicipalAdvisorRemoteDataSourceImplementation
@@ -1096,6 +1103,41 @@ class MunicipalAdvisorRemoteDataSourceImplementation
       );
     } catch (ex) {
       "Catched $ex".successLog();
+      throw ServerException("errors_server_error_2".tr());
+    }
+  }
+
+  @override
+  Future<List<BuildingComplianceModel>> getBuildingCompliance(
+      GISParams params) async {
+    try {
+      final response = await webService.dio.get(ApiUrl.buildingCompliance,
+          queryParameters: params.toMap(),
+          options: Options(headers: {
+            "Authorization": "Bearer " +
+                (sl<EntryPointCubit>().state.apigeeToken!.accessToken)
+          }));
+
+      final data = response.data;
+      data.toString().successLog();
+
+      final result = ResponseBodyModel.fromMap(data).data?.result;
+
+      return result
+          .map<BuildingComplianceModel>((e) =>
+              BuildingComplianceModel.fromJson(e as Map<String, dynamic>))
+          .toList();
+    } on DioError catch (error) {
+      "DioError $error".errorLog();
+      if (error is NoDataFoundException) {
+        return [];
+      }
+      throw ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+      );
+    } catch (ex) {
+      "Catched $ex".errorLog();
       throw ServerException("errors_server_error_2".tr());
     }
   }

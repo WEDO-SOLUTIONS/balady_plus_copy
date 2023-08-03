@@ -1,15 +1,18 @@
 import 'dart:async';
 
+import 'package:balady_plus/app/features/municipal_services/municipal_advisor/domain/use_cases/get_building_complince.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
+import '../../../../../../etmam_app/core/dependency_injection/injection_container.dart';
 import '../../../../../core/errors/errors_exports.dart';
 import '../../../../../core/services/services_exports.dart';
 import '../../../../../core/utils/utils_exports.dart';
 import '../../../../vd/vd_exports.dart' show GISParams, GISResponse, GetGISData;
+import '../../domain/entities/building_compliance_entity.dart';
 import '../../municipal_advisor_exports.dart';
 
 part 'municipal_advisor_event.dart';
@@ -49,6 +52,7 @@ class MunicipalAdvisorBloc
   final UpdatePermit _updatePermit;
   final SaveInteractiveInfo _saveInteractiveInfo;
   final SubmitConsultation _submitConsultation;
+  final GetBuildingCompliance _getBuildingCompliance;
 
   MunicipalAdvisorBloc({
     required GetConsultationKey getConsultationKey,
@@ -115,13 +119,17 @@ class MunicipalAdvisorBloc
         _updatePermit = updatePermit,
         _saveInteractiveInfo = saveInteractiveInfo,
         _submitConsultation = submitConsultation,
+        _getBuildingCompliance = sl<GetBuildingCompliance>(),
         super(const MunicipalAdvisorState()) {
     on<MunicipalAdvisorAddMessageEvent>(
       (event, emit) async {
+        print(event.message);
         emit(
           state.copyWith(
             status: BlocRequestStatus.submissionGetLoading,
             lastEvent: event,
+            topic:
+                event.message == 'municipalAdvisorTopicAnswer4'.tr() ? 1 : null,
             messages: [
               ...state.messages,
               ChatMessage(
@@ -133,8 +141,12 @@ class MunicipalAdvisorBloc
             ],
           ),
         );
+        print("statte topic ${state.topic}");
         if (event.step == MunicipalAdvisorSteps.start) {
           add(MunicipalAdvisorGetConsultationKeyEvent());
+        } else if (event.step == MunicipalAdvisorSteps.location &&
+            state.topic == 1) {
+          add(GetImtethalStatusEvent());
         } else if (event.step == MunicipalAdvisorSteps.confirmLocation) {
           add(MunicipalAdvisorGetIsicActivitiesEvent());
         } else if (showNextSteps(event.step)) {
@@ -188,9 +200,10 @@ class MunicipalAdvisorBloc
           (gisResponse) {
             emit(
               state.copyWith(
-                status: BlocRequestStatus.submissionGetSuccess,
-                gisResponse: gisResponse,
-              ),
+                  status: BlocRequestStatus.submissionGetSuccess,
+                  gisResponse: gisResponse,
+                  location: GISParams(
+                      x: event.latLng.longitude, y: event.latLng.latitude)),
             );
           },
         );
@@ -1667,6 +1680,41 @@ class MunicipalAdvisorBloc
       },
     );
 
+    on<GetImtethalStatusEvent>(
+      (event, emit) async {
+        emit(
+          state.copyWith(
+            status: BlocRequestStatus.submissionGetLoading,
+            lastEvent: event,
+          ),
+        );
+        final failureOrSuccess = await _getBuildingCompliance(state.location!);
+        failureOrSuccess.fold(
+          (failure) => emitFailure(emit, failure),
+          (data) {
+            emit(
+              state.copyWith(
+                status: BlocRequestStatus.submissionGetSuccess,
+                buildingComplince: data,
+                messages: [
+                  ...state.messages,
+                  for (int i = 0; i < data.length; i++)
+                    ChatMessage(
+                      message:
+                          '${'الأمانة'.tr()}: ${data[i].amananame}\n${'البلدية'.tr()}: ${data[i].municipalityname}\n${'الشارع'.tr()}: ${data[i].streetname}\n ${'المرحلة'.tr()}: ${data[i].stageno}\n${'حالة شهادة الامتثال'.tr()}: ${data[i].priorityarea}',
+                      step: MunicipalAdvisorSteps.licenseCost,
+                      isResponse: true,
+                      customWidget: true,
+                    ),
+                  ...nextStep(MunicipalAdvisorSteps.imtethal),
+                ],
+              ),
+            );
+          },
+        );
+      },
+    );
+
     on<MunicipalAdvisorRetryEvent>(
       (event, emit) {
         if (state.lastEvent != null) add(state.lastEvent!);
@@ -1785,6 +1833,7 @@ class MunicipalAdvisorBloc
             isResponse: true,
           ),
         ];
+
       case MunicipalAdvisorSteps.location:
         return [
           ChatMessage(
@@ -1803,6 +1852,7 @@ class MunicipalAdvisorBloc
             ),
           ];
         }
+
         return [
           ChatMessage(
             message: 'municipalAdvisorActivity'.tr(),
@@ -2107,6 +2157,27 @@ class MunicipalAdvisorBloc
             ),
           ];
         }
+      case MunicipalAdvisorSteps.imtethal:
+        return [
+          ChatMessage(
+            message: 'imtethalAdvisorResponse'.tr(),
+            step: MunicipalAdvisorSteps.imtethal,
+            isResponse: true,
+            customWidget: true,
+          ),
+          ChatMessage(
+            message: 'imtethalAdvisorEndChat'.tr(),
+            step: MunicipalAdvisorSteps.endChat,
+            isResponse: true,
+            customWidget: true,
+          ),
+          ChatMessage(
+            message: 'thanks'.tr(),
+            step: MunicipalAdvisorSteps.endChat,
+            isResponse: true,
+            customWidget: true,
+          ),
+        ];
       case MunicipalAdvisorSteps.requestPath:
         return [];
       case MunicipalAdvisorSteps.endChat:

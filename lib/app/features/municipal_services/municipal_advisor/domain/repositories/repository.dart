@@ -1,7 +1,9 @@
 import 'package:balady_plus/app/features/municipal_services/municipal_advisor/data/models/save_consultation_progress_params_model.dart';
+import 'package:balady_plus/app/features/vd/vd_exports.dart';
 import 'package:dartz/dartz.dart';
 
 import '../../../../../core/errors/errors_exports.dart' show Failure;
+import '../../data/models/building_compliance_model.dart';
 import '../../municipal_advisor_exports.dart'
     show
         AccommodationTypeEntity,
@@ -30,6 +32,7 @@ import '../../municipal_advisor_exports.dart'
         SaveActivitiesParamsModel,
         SupervisingAuthorityEntity,
         UpdatePermitParamsModel;
+import '../entities/building_compliance_entity.dart';
 
 abstract class MunicipalAdvisorRepository {
   Future<Either<Failure, List<IsicActivityEntity>>> getIsicActivities();
@@ -111,5 +114,9 @@ abstract class MunicipalAdvisorRepository {
   );
   Future<Either<Failure, bool>> submitConsultation(
     KeyParamsModel params,
+  );
+
+  Future<Either<Failure, List<BuildingComplianceEntity>>> getBuildingCompliance(
+    GISParams params,
   );
 }

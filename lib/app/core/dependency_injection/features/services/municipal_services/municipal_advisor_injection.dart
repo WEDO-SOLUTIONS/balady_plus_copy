@@ -1,5 +1,42 @@
+import 'package:balady_plus/app/features/municipal_services/municipal_advisor/domain/use_cases/get_building_complince.dart';
+
 import '../../../../../features/municipal_services/municipal_advisor/municipal_advisor_exports.dart'
-    show CalculateLicenseFees, GetAccommodationTypes, GetActivityDetails, GetAdditionalActivities, GetBoardTypes, GetCivilDefensePredefinedConditions, GetCleaningMechanisms, GetCommercialOffices, GetConditionsUrls, GetConsultationAttachments, GetConsultationKey, GetEngineeringOffices, GetFastflowConditions, GetIsicActivities, GetIsicSubActivities, GetIssuingPredefinedConditions, GetLicensePermits, GetLicenseYears, GetMaxLicenseYears, GetRequestFlow, GetRequestFlowRecommendations, GetShopOwnership, GetSupervisingAuthorities, MunicipalAdvisorBloc, MunicipalAdvisorRemoteDataSource, MunicipalAdvisorRemoteDataSourceImplementation, MunicipalAdvisorRepository, MunicipalAdvisorRepositoryImplementation, SaveActivities, SaveAdditionalActivities, SaveConsultationProgress, SaveFinancialStudy, SaveInteractiveInfo, SubmitConsultation, UpdatePermit;
+    show
+        CalculateLicenseFees,
+        GetAccommodationTypes,
+        GetActivityDetails,
+        GetAdditionalActivities,
+        GetBoardTypes,
+        GetCivilDefensePredefinedConditions,
+        GetCleaningMechanisms,
+        GetCommercialOffices,
+        GetConditionsUrls,
+        GetConsultationAttachments,
+        GetConsultationKey,
+        GetEngineeringOffices,
+        GetFastflowConditions,
+        GetIsicActivities,
+        GetIsicSubActivities,
+        GetIssuingPredefinedConditions,
+        GetLicensePermits,
+        GetLicenseYears,
+        GetMaxLicenseYears,
+        GetRequestFlow,
+        GetRequestFlowRecommendations,
+        GetShopOwnership,
+        GetSupervisingAuthorities,
+        MunicipalAdvisorBloc,
+        MunicipalAdvisorRemoteDataSource,
+        MunicipalAdvisorRemoteDataSourceImplementation,
+        MunicipalAdvisorRepository,
+        MunicipalAdvisorRepositoryImplementation,
+        SaveActivities,
+        SaveAdditionalActivities,
+        SaveConsultationProgress,
+        SaveFinancialStudy,
+        SaveInteractiveInfo,
+        SubmitConsultation,
+        UpdatePermit;
 import '../../../dependency_injection_exports.dart' show sl;
 
 class MunicipalAdvisorInjection {
@@ -35,6 +72,7 @@ class MunicipalAdvisorInjection {
     sl.registerLazySingleton(() => SaveAdditionalActivities(sl()));
     sl.registerLazySingleton(() => SaveInteractiveInfo(sl()));
     sl.registerLazySingleton(() => SubmitConsultation(sl()));
+    sl.registerLazySingleton(() => GetBuildingCompliance(sl()));
 
     //! Repository
     sl.registerLazySingleton<MunicipalAdvisorRepository>(

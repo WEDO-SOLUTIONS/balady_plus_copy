@@ -75,6 +75,7 @@ class ChatBubbleCurrentStep extends StatelessWidget {
       case MunicipalAdvisorSteps.attachmentsRequired:
       case MunicipalAdvisorSteps.requestPath:
       case MunicipalAdvisorSteps.endChat:
+      case MunicipalAdvisorSteps.imtethal:
         return const SizedBox.shrink();
       case MunicipalAdvisorSteps.continueToFinancial:
         return const ContinueToFinancial();
