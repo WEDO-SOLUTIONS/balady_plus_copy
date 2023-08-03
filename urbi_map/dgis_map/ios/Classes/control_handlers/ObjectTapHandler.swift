@@ -220,9 +220,10 @@ class ObjectTapHandler {
             iconWidth: (marker.options.icon?.width).map {
                 LogicalPixel(value: $0.floatValue)
             } ?? LogicalPixel(value: 0),
-            userData: MarkerId(marker.id)
+            userData: MarkerId(marker.id),
+            animatedAppearance: false
         )
-        
+
         return Marker(options: options)
     }
     

@@ -70,6 +70,7 @@ class FlutterClusterRenderer(
                 LogicalPixel(it.width.toFloat())
             } ?: LogicalPixel(0f),
             userData = manager,
+            animatedAppearance = false,
         )
     }
 }
