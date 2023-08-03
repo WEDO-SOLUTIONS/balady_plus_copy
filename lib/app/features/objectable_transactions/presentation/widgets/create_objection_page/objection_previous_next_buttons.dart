@@ -31,7 +31,8 @@ class ObjectionsNextButtons extends StatelessWidget {
                 : () {
                     if (!isLastPage) {
                       if (state.currentPageValue == 2) {
-                        if (state.reasons?.first.notes?.isNotEmpty ?? false)
+                        if (state.reasons?.firstOrNull?.notes?.isNotEmpty ??
+                            false)
                           context
                               .read<CreateObjectionBloc>()
                               .add(GoToNextPageEvent());

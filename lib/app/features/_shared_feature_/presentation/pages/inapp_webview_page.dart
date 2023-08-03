@@ -97,7 +97,8 @@ class _InAppWebViewPageState extends State<InAppWebViewPage> {
                 },
                 onLoadStop: (controller, Uri? url) {
                   print("URL WebView: $url");
-                  if (url?.path.endsWith("dashboardclient") ?? false) {
+                  if (url?.path.endsWith("/dashboardclient/dashboard") ??
+                      false) {
                     Timer(const Duration(milliseconds: 1300), () async {
                       _controller.loadUrl(
                           urlRequest: URLRequest(

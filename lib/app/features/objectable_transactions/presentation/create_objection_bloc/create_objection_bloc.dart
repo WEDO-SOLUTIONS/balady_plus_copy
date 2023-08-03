@@ -76,6 +76,16 @@ class CreateObjectionBloc
         emit(state.copyWith(status: BlocStatus.success, reasons: reasons));
       },
     );
+
+    on<DeleteNewReasonEvent>(
+      (event, emit) {
+        emit(state.copyWith(status: BlocStatus.loading));
+
+        List<ReasonModel> reasons = state.reasons ?? [];
+        reasons.removeAt(event.index);
+        emit(state.copyWith(status: BlocStatus.success, reasons: reasons));
+      },
+    );
   }
 
   Future<void> _changeIssueDescHandler(

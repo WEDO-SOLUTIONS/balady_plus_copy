@@ -45,6 +45,12 @@ class _ReplyAttachmentSectionState extends State<ReplyAttachmentSection> {
                 children: [
                   NotesFieldsSection(
                     initialDesc: "",
+                    index: index,
+                    onDelete: () {
+                      context
+                          .read<CreateObjectionBloc>()
+                          .add(DeleteNewReasonEvent(index: index));
+                    },
                     onChanged: (String? t) {
                       context
                           .read<CreateObjectionBloc>()

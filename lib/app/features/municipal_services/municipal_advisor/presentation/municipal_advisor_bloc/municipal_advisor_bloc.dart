@@ -621,7 +621,8 @@ class MunicipalAdvisorBloc
             subMunicipalityGisCode:
                 state.activityLocation?.gisResponse.municipalityuniquecode,
             districtCode: int.tryParse(
-                    state.activityLocation?.gisResponse.districtId ?? "") ??
+                    state.activityLocation?.gisResponse.Balady_DistrictID ??
+                        "") ??
                 //TODO remove this static value when gis fixes it
                 1010106,
             streetCode: int.tryParse(

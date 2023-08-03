@@ -299,9 +299,9 @@ class NewAppointmentFirstStepViewModel extends BaseViewModel {
         isValid = false;
       }
 
-      if (selectedSubClassItem?.isOther == true && getServiceName.isEmpty) {
+      /*  if (selectedSubClassItem?.isOther == true && getServiceName.isEmpty) {
         isValid = false;
-      }
+      }*/
 
       if (!CommonFunctions.hasArabicCharacters(appointmentDetails)) {
         isValid = false;

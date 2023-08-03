@@ -4,6 +4,9 @@ class GISResponseModel extends GISResponse {
   GISResponseModel(
       {super.adminMunicipalityId,
       super.adminMunicipalityName,
+      super.Balady_DistrictID,
+      super.Balady_DistrictName,
+
       // super.cleanInfo,
       super.districtId,
       super.districtName,
@@ -32,6 +35,8 @@ class GISResponseModel extends GISResponse {
       GISResponseModel(
           adminMunicipalityId: json["Admin_MunicipalityID"],
           adminMunicipalityName: json["Admin_MunicipalityName"],
+          Balady_DistrictID: json["Balady_DistrictID"],
+          Balady_DistrictName: json["Balady_DistrictName"],
           //cleanInfo: json["CleanInfo"],
           districtId: json["DistrictID"],
           districtName: json["DistrictName"],

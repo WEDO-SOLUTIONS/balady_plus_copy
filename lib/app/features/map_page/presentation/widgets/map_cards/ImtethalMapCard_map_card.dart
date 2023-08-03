@@ -8,6 +8,9 @@ import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/t
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../../_shared_feature_/presentation/components/bottom_sheets/bottom_sheet_with_actions.dart';
+import '../../../../_shared_feature_/presentation/dialogs/bottom_sheet_dialogs.dart';
+import '../../../../_shared_feature_/presentation/dialogs/building_requirements_dialog.dart';
 import '../../../../home_page/presentation/widgets/home_app_bar/circle_icon.dart';
 import '../../../data/model/building_compliance_certificate.dart';
 import '../../../data/model/excavations.dart';
@@ -96,9 +99,11 @@ class ImtethalMapCard extends StatelessWidget {
               ),
               CustomVerticalSpace(height: 10),
               GestureDetector(
-                onTap: () {
-                  CommonFunctions.externalLaunch(
-                      "https://gisapps.momra.gov.sa/imtithal/assets/req.pdf");
+                onTap: () async {
+                  await BottomSheetDialog.showDraggableSheet(
+                    context,
+                    child: BuildingRequirementsDialog(),
+                  );
                 },
                 child: Container(
                     height: 40,

@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
@@ -8,8 +9,14 @@ import '../../../../_shared_feature_/presentation/widgets/texts/custom_text_fiel
 class NotesFieldsSection extends StatefulWidget {
   final String? initialDesc;
   final Function onChanged;
+  final int index;
+  final Function onDelete;
 
-  NotesFieldsSection({this.initialDesc, required this.onChanged});
+  NotesFieldsSection(
+      {this.initialDesc,
+      required this.onChanged,
+      required this.index,
+      required this.onDelete});
 
   @override
   State<NotesFieldsSection> createState() => _NotesFieldsSection();
@@ -28,28 +35,47 @@ class _NotesFieldsSection extends State<NotesFieldsSection> {
   @override
   Widget build(BuildContext context) {
     return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
       children: <Widget>[
         //  incident Desc ,
-        CustomTextFieldWidget(
-          controller: _incidentDescController,
-          focusNode: _incidentDescFocusNode,
-          label: ("objection_create_reason").tr(),
-          hintText: ("objection_create_reason").tr(),
-          obsecureText: false,
-          fillColor: Colors.transparent,
-          maxLines: 6,
-          keyboardType: TextInputType.multiline,
-          // errorText: state.incidentDescErrorText,
-          onValidate: (String? text) {},
-          /*validator: (text) {
-                if (!Helpers.doesContainsLettrs(text.toString())) {
-                  return Helpers.translatingWord("incident_desc_limit_error");
-                }
-                return null;
-              },*/
-          onChanged: (text) {
-            widget.onChanged(text);
-          },
+
+        Stack(
+          children: [
+            CustomTextFieldWidget(
+              controller: _incidentDescController,
+              focusNode: _incidentDescFocusNode,
+              label: ("objection_create_reason").tr(),
+              hintText: ("objection_create_reason").tr(),
+              obsecureText: false,
+              fillColor: Colors.transparent,
+              maxLines: 6,
+              keyboardType: TextInputType.multiline,
+              // errorText: state.incidentDescErrorText,
+              onValidate: (String? text) {},
+              /*validator: (text) {
+                    if (!Helpers.doesContainsLettrs(text.toString())) {
+                      return Helpers.translatingWord("incident_desc_limit_error");
+                    }
+                    return null;
+                  },*/
+              onChanged: (text) {
+                widget.onChanged(text);
+              },
+            ),
+            Align(
+              alignment: Alignment.topLeft,
+              child: IconButton(
+                padding: EdgeInsets.only(bottom: 32),
+                icon: Icon(
+                  Icons.delete,
+                  color: AppColor.redBrown,
+                ),
+                onPressed: () {
+                  widget.onDelete();
+                },
+              ),
+            ),
+          ],
         ),
 
         const CustomVerticalSpace(height: 14),

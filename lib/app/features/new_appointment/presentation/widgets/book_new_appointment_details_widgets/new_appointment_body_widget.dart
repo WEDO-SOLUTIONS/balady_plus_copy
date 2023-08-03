@@ -8,6 +8,7 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../../core/utils/constants/constants.dart';
+import '../../../../../core/utils/extensions/arabic_number_text_input_formatter.dart';
 import '../../../../_shared_feature_/data/entities/drop_down_item.dart';
 import '../../../../_shared_feature_/presentation/widgets/custom_cupertino_drop_down_widget.dart';
 import '../../../../_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
@@ -189,7 +190,7 @@ class _AppointmentInfoSection extends State<AppointmentInfoSection> {
         //       "bookNewAppointmentDesiredServiceDropDownHintWord"),
         //   searchHint: Helpers.translatingWord("search_for_service"),
         // ),
-        if (model.selectedSubClassItem?.isOther == true)
+        /*if (model.selectedSubClassItem?.isOther == true)
           CustomTextFieldWidget(
             controller: model.otherServiceNameController,
             focusNode: _otherServiceNameNoFocusNode,
@@ -213,7 +214,7 @@ class _AppointmentInfoSection extends State<AppointmentInfoSection> {
               model.setServiceName = text;
               model.validateForm();
             },
-          ),
+          ),*/
         CustomVerticalSpace(height: 16),
         if (model.withPreviousTransaction)
           CustomTextFieldWidget(
@@ -254,6 +255,12 @@ class _AppointmentInfoSection extends State<AppointmentInfoSection> {
           hintText: ("appointment_purpose_hint").tr(),
           maxLines: 4,
           keyboardType: TextInputType.multiline,
+          inputFormatters: [
+            ArabicNumberTextInputFormatter(onError: (bool isValid) {
+              //  if (!isValid)
+              //    CommonFunctions.showError("only_english_numbers".tr());
+            }),
+          ],
           onValidate: (text) {
             if (text.toString().isEmpty) {
               return ('text_field_error').tr();

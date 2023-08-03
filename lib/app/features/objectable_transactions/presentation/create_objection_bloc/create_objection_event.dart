@@ -35,6 +35,11 @@ class AddNewReasonEvent extends CreateObjectionEvent {
   AddNewReasonEvent();
 }
 
+class DeleteNewReasonEvent extends CreateObjectionEvent {
+  final int index;
+  DeleteNewReasonEvent({required this.index});
+}
+
 class GoToNextPageEvent extends CreateObjectionEvent {
   GoToNextPageEvent();
 }

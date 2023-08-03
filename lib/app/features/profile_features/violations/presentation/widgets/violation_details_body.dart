@@ -7,12 +7,29 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 import '../../../../../core/services/services_exports.dart';
 import '../../../../../core/utils/constants/constants.dart';
 import '../../../../../core/utils/utils_exports.dart'
-    show AppColor, AppFontWeight, BlocStatus, CommonFunctions, IconPath, RouteName;
+    show
+        AppColor,
+        AppFontWeight,
+        BlocStatus,
+        CommonFunctions,
+        IconPath,
+        RouteName;
 import '../../../../_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
 import '../../../../_shared_feature_/presentation/widgets/custom_shimmer_list_widget.dart';
 import '../../../../_shared_feature_/presentation/widgets/reload_widget.dart';
 import '../../../../_shared_feature_/shared_feature_exports.dart'
-    show CustomExpansionPanelWidget, CustomHorizontalSpace, CustomSvgIconWidget, CustomTextWidget, CustomVerticalSpace, ElevatedButtonWidget, MessageDialog, ShimmerEffectWidget;
+    show
+        CustomExpansionPanelWidget,
+        CustomHorizontalSpace,
+        CustomSvgIconWidget,
+        CustomTextWidget,
+        CustomVerticalSpace,
+        ElevatedButtonWidget,
+        MessageDialog,
+        ShimmerEffectWidget;
+import '../../../../objectable_transactions/domain/entities/create_objection_page_params.dart';
+import '../../../../objectable_transactions/domain/entities/objectable_transaction_entity.dart';
+import '../../../../objectable_transactions/domain/entities/transaction_details.dart';
 import '../../../../objectable_transactions/presentation/widgets/create_objection_page/objection_attachment_item.dart';
 import '../../../../objections/domain/entities/objection_details.dart';
 import '../../../../vd/presentation/widgets/summery_widgets/field_data.dart';
@@ -72,8 +89,7 @@ class _ViolationDetailBodyState extends State<ViolationDetailBody> {
                           borderRadius: BorderRadius.circular(4)),
                       child: const Row(
                         children: [
-                          CustomSvgIconWidget(
-                              IconPath.informationCircleIcon),
+                          CustomSvgIconWidget(IconPath.informationCircleIcon),
                           CustomHorizontalSpace(width: 12),
                           CustomTextWidget(
                             "لا يمكن الاعتراض بسبب انتهاء مدة الاعتراض",
@@ -122,8 +138,7 @@ class _ViolationDetailBodyState extends State<ViolationDetailBody> {
                     const CustomVerticalSpace(height: 8),
                     FieldData(
                       title: ("transaction_details_violation_status").tr(),
-                      subTitle:
-                      state.details?.violationStatusName.toString(),
+                      subTitle: state.details?.violationStatusName.toString(),
                     ),
 
                     //
@@ -203,8 +218,7 @@ class _ViolationDetailBodyState extends State<ViolationDetailBody> {
                   ],
                 ),
                 const SizedBox(height: 16),
-                if (state.details?.lat != null &&
-                    state.details?.lon != null)
+                if (state.details?.lat != null && state.details?.lon != null)
                   CustomExpansionPanelWidget(
                     title: ("موقع المخالفة").tr(),
                     leading: SvgPicture.asset(IconPath.vdSummuryPhoto),
@@ -252,15 +266,15 @@ class _ViolationDetailBodyState extends State<ViolationDetailBody> {
                                         state.details!.lat!,
                                         state.details!.lon!));
                                   },
-                                  position: LatLng(state.details!.lat!,
-                                      state.details!.lon!))
+                                  position: LatLng(
+                                      state.details!.lat!, state.details!.lon!))
                             },
                             myLocationEnabled: false,
                             myLocationButtonEnabled: false,
                             zoomControlsEnabled: false,
                             initialCameraPosition: CameraPosition(
-                                target: LatLng(state.details!.lat!,
-                                    state.details!.lon!),
+                                target: LatLng(
+                                    state.details!.lat!, state.details!.lon!),
                                 zoom: 13)),
                       ),
                     ],
@@ -271,13 +285,14 @@ class _ViolationDetailBodyState extends State<ViolationDetailBody> {
                 const SizedBox(height: 16),
 
                 (state.details?.objectionRequestNumber != null &&
-                    state.details!.objectionRequestNumber!.isNotEmpty)
+                        state.details!.objectionRequestNumber!.isNotEmpty)
                     ? const ObjectionsData()
-                    : NoObjectionsData(violationsEntity: widget.violationsEntity,),
+                    : NoObjectionsData(
+                        violationsEntity: widget.violationsEntity,
+                      ),
                 Constants.verticalSpaceSmall,
 
-                BlocBuilder<ViolationDetailsBloc,
-                    ViolationDetailsState>(
+                BlocBuilder<ViolationDetailsBloc, ViolationDetailsState>(
                   builder: (context, state) {
                     return state.status == BlocStatus.loading
                         ? const CustomCircularLoadingWidget()
@@ -320,7 +335,7 @@ class ViolationClauses extends StatelessWidget {
                         FieldData(
                           title: ("cluase_main_title").tr(),
                           subTitle: state.details?.nonComplianceClauses?[index]
-                              .clauseName ??
+                                  .clauseName ??
                               "",
                         ),
                         Padding(
@@ -332,33 +347,33 @@ class ViolationClauses extends StatelessWidget {
                             removeBottom: true,
                             child: ListView.builder(
                                 itemCount: state
-                                    .details
-                                    ?.nonComplianceClauses?[index]
-                                    .nonComplianceSubClauses
-                                    ?.length ??
+                                        .details
+                                        ?.nonComplianceClauses?[index]
+                                        .nonComplianceSubClauses
+                                        ?.length ??
                                     0,
                                 shrinkWrap: true,
                                 physics: const NeverScrollableScrollPhysics(),
                                 itemBuilder: (ctx, i) {
                                   return Column(
                                       crossAxisAlignment:
-                                      CrossAxisAlignment.start,
+                                          CrossAxisAlignment.start,
                                       children: [
                                         FieldData(
                                           title: "ملاحظات المراقب",
                                           subTitle: state
-                                              .details
-                                              ?.nonComplianceClauses?[index]
-                                              .nonComplianceSubClauses?[i]
-                                              .notes ??
+                                                  .details
+                                                  ?.nonComplianceClauses?[index]
+                                                  .nonComplianceSubClauses?[i]
+                                                  .notes ??
                                               "",
                                         ),
                                         if (state
-                                            .details
-                                            ?.nonComplianceClauses?[index]
-                                            .nonComplianceSubClauses?[i]
-                                            .attachments
-                                            ?.isNotEmpty ??
+                                                .details
+                                                ?.nonComplianceClauses?[index]
+                                                .nonComplianceSubClauses?[i]
+                                                .attachments
+                                                ?.isNotEmpty ??
                                             false)
                                           MediaQuery.removePadding(
                                             removeTop: true,
@@ -367,12 +382,11 @@ class ViolationClauses extends StatelessWidget {
                                             child: ListView.builder(
                                               shrinkWrap: true,
                                               physics:
-                                              const NeverScrollableScrollPhysics(),
+                                                  const NeverScrollableScrollPhysics(),
                                               scrollDirection: Axis.vertical,
                                               itemCount: state
                                                   .details
-                                                  ?.nonComplianceClauses![
-                                              index]
+                                                  ?.nonComplianceClauses![index]
                                                   .nonComplianceSubClauses![i]
                                                   .attachments!
                                                   .length,
@@ -380,24 +394,24 @@ class ViolationClauses extends StatelessWidget {
                                                 return ObjectionAttachmentItem(
                                                     file: ReasonAttachment(
                                                         contentLocation: state
-                                                            .details
-                                                            ?.nonComplianceClauses![
-                                                        index]
-                                                            .nonComplianceSubClauses![
-                                                        i]
-                                                            .attachments![
-                                                        index]
-                                                            .contentLocation ??
+                                                                .details
+                                                                ?.nonComplianceClauses![
+                                                                    index]
+                                                                .nonComplianceSubClauses![
+                                                                    i]
+                                                                .attachments![
+                                                                    index]
+                                                                .contentLocation ??
                                                             "",
                                                         fileName: state
-                                                            .details
-                                                            ?.nonComplianceClauses![
-                                                        index]
-                                                            .nonComplianceSubClauses![
-                                                        i]
-                                                            .attachments![
-                                                        index]
-                                                            .fileName ??
+                                                                .details
+                                                                ?.nonComplianceClauses![
+                                                                    index]
+                                                                .nonComplianceSubClauses![
+                                                                    i]
+                                                                .attachments![
+                                                                    index]
+                                                                .fileName ??
                                                             ""));
                                               },
                                             ),
@@ -463,7 +477,8 @@ class ObjectionsData extends StatelessWidget {
 //MM
 class NoObjectionsData extends StatelessWidget {
   final ViolationsEntity violationsEntity;
-  const NoObjectionsData({Key? key, required this.violationsEntity}) : super(key: key);
+  const NoObjectionsData({Key? key, required this.violationsEntity})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -485,11 +500,11 @@ class NoObjectionsData extends StatelessWidget {
               const CustomVerticalSpace(height: 16),
               if (state.details?.isObjectionAllowed == true)
                 ElevatedButtonWidget.applyObjection(onPressed: () {
-                  NavigationService.navigatorKey.currentState!
-                      .pushNamed(RouteName.createViolationObjectionDetails,
-                      arguments: CreateViolationObjectionPageParams(
-                        details: state.details,
-                        item: violationsEntity,
+                  NavigationService.navigatorKey.currentState!.pushNamed(
+                      RouteName.createObjectionDetails,
+                      arguments: CreateObjectionPageParams(
+                        details: state.details as TransactionDetails,
+                        item: violationsEntity as ObjectableTransactionsEntity,
                       ));
                 })
             ]);

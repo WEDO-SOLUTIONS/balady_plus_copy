@@ -24,11 +24,15 @@ class GISResponse extends Equatable {
   bool? vdExcepted;
   bool? vdPriority;
   String? locationURL;
+  String? Balady_DistrictID;
+  String? Balady_DistrictName;
 
   GISResponse({
     this.adminMunicipalityId,
     this.adminMunicipalityName,
     this.cityName,
+    this.Balady_DistrictID,
+    this.Balady_DistrictName,
     // this.cleanInfo,
     this.districtId,
     this.districtName,
@@ -104,6 +108,6 @@ class GISResponse extends Equatable {
         subMunicipalityguid,
         streetCode,
         locationURL,
-        cityName
+        cityName,
       ];
 }

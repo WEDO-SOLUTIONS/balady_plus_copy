@@ -20,54 +20,59 @@ class ReadHomeCard extends StatelessWidget {
           borderRadius: BorderRadius.all(Radius.circular(16)),
           image: DecorationImage(image: AssetImage(ImagePath.readBg)),
         ),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Image.asset(
-              ImagePath.quranImg,
-              fit: BoxFit.fill,
-              width: 84,
-              height: 84,
-            ),
-            const SizedBox(width: 14),
-            const Expanded(
-              flex: 2,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  CustomTextWidget(
-                    "المصحف الشريف",
-                    fontColor: AppColor.blackModern800Light,
-                    fontWeight: AppFontWeight.bold,
-                    fontSize: 14,
-                  ),
-                  SizedBox(height: 6),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Flexible(
-                        child: Padding(
-                          padding: EdgeInsetsDirectional.only(end: 80),
-                          child: CustomTextWidget(
-                            "احمل القرآن بين يديك، تلاوة في أي وقت ومكان.",
-                            fontColor: AppColor.blackModern400Light,
-                            fontWeight: AppFontWeight.bold,
-                            fontSize: 12,
-                            maxLines: null,
-                            height: 1.5,
+        child: GestureDetector(
+          onTap: () {
+            Navigator.pushNamed(context, RouteName.menuQuranPage);
+          },
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Image.asset(
+                ImagePath.quranImg,
+                fit: BoxFit.fill,
+                width: 84,
+                height: 84,
+              ),
+              const SizedBox(width: 14),
+              const Expanded(
+                flex: 2,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    CustomTextWidget(
+                      "المصحف الشريف",
+                      fontColor: AppColor.blackModern800Light,
+                      fontWeight: AppFontWeight.bold,
+                      fontSize: 14,
+                    ),
+                    SizedBox(height: 6),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Flexible(
+                          child: Padding(
+                            padding: EdgeInsetsDirectional.only(end: 80),
+                            child: CustomTextWidget(
+                              "احمل القرآن بين يديك، تلاوة في أي وقت ومكان.",
+                              fontColor: AppColor.blackModern400Light,
+                              fontWeight: AppFontWeight.bold,
+                              fontSize: 12,
+                              maxLines: null,
+                              height: 1.5,
+                            ),
                           ),
                         ),
-                      ),
-                      CustomSvgIconWidget(
-                        IconPath.arrowForward2,
-                      ),
-                    ],
-                  ),
-                ],
+                        CustomSvgIconWidget(
+                          IconPath.arrowForward2,
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

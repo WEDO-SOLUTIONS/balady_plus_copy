@@ -86,17 +86,7 @@ class Helpers {
 
  
 
-  static void backToHome() {
-    try {
-      NavigationService.navigatorKey.currentState!.popUntil((route) {
-        if (route.settings.name == RoutesNames.bottomNavigationRoute ||
-            route.settings.name == null) {
-          return true;
-        }
-        return false;
-      });
-    } catch (ex) {}
-  }
+
 
   static void goToSpecificTabInBottomNavigation(int index) {
     NavigationService.navigatorKey.currentState!
@@ -524,5 +514,17 @@ class Helpers {
     } catch (ex) {
       print(ex);
     }
+  }
+
+  static void backToHome() {
+    try {
+      NavigationService.navigatorKey.currentState!.popUntil((route) {
+        if (route.settings.name == RouteName.bottomNavigation ||
+            route.settings.name == null) {
+          return true;
+        }
+        return false;
+      });
+    } catch (ex) {}
   }
 }

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../core/utils/utils_exports.dart';
 import '../../../../_shared_feature_/shared_feature_exports.dart';
+import '../../../../vd/presentation/dialogs/vd_types_dialog.dart';
 
 class ReportHomeCard extends StatelessWidget {
   const ReportHomeCard({
@@ -14,7 +16,7 @@ class ReportHomeCard extends StatelessWidget {
       height: 175,
       width: MediaQuery.sizeOf(context).width,
       padding: const EdgeInsets.symmetric(horizontal: 20),
-      margin: const EdgeInsets.only(left: 16,right: 16,top: 24),
+      margin: const EdgeInsets.only(left: 16, right: 16, top: 24),
       decoration: const BoxDecoration(
         borderRadius: BorderRadius.all(Radius.circular(16)),
         image: DecorationImage(
@@ -56,12 +58,18 @@ class ReportHomeCard extends StatelessWidget {
                   btnHeight: 40,
                   btnWidth: 157,
                   text: "ارفع بلاغ",
-                  onPressed: () {},
+                  onPressed: () async {
+                    await BottomSheetDialog.showDraggableSheet(context,
+                        child: BottomSheetWithActions(
+                          title: "اختر نوع البلاغ".tr(),
+                          body: VDTypesDialog(),
+                        ));
+                  },
                 ),
               ],
             ),
           ),
-          const Expanded(flex: 2,child: SizedBox()),
+          const Expanded(flex: 2, child: SizedBox()),
         ],
       ),
     );

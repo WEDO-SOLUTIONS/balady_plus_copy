@@ -61,44 +61,49 @@ class _HealthRequestDetailsScreenState
                         model.printLicense();
                       }
                     : null,
-                procedures: () async {
-                  await BottomSheetDialog.showDraggableSheet(context,
-                      isFullHeight: false,
-                      height: 250,
-                      child: BottomSheetWithActions(
-                        title: "الاجراءات".tr(),
-                        body: Column(children: [
-                          if (model.requestDetails?.getRequestStatus() ==
-                              LICENSE_MANAGEMENT_STATUS.DRAFT)
-                            GestureDetector(
-                              onTap: () async {
-                                await CustomPopUpsWidgets.showBottomSheet(
-                                  context,
-                                  child: DeleteOrderConfirmationDialog(
-                                    onDelete: () {
-                                      model.deleteHealthRequest();
+                procedures: (model.requestDetails?.getRequestStatus() ==
+                        LICENSE_MANAGEMENT_STATUS.DRAFT)
+                    ? () async {
+                        await BottomSheetDialog.showDraggableSheet(context,
+                            isFullHeight: false,
+                            height: 250,
+                            child: BottomSheetWithActions(
+                              title: "الاجراءات".tr(),
+                              body: Column(children: [
+                                if (model.requestDetails?.getRequestStatus() ==
+                                    LICENSE_MANAGEMENT_STATUS.DRAFT)
+                                  GestureDetector(
+                                    onTap: () async {
+                                      await CustomPopUpsWidgets.showBottomSheet(
+                                        context,
+                                        child: DeleteOrderConfirmationDialog(
+                                          onDelete: () {
+                                            model.deleteHealthRequest();
+                                          },
+                                        ),
+                                        isFullHeight: false,
+                                      );
                                     },
+                                    child: FieldData(
+                                      title: Helpers.translatingWord(
+                                          'deleteOrder'),
+                                    ),
                                   ),
-                                  isFullHeight: false,
-                                );
-                              },
-                              child: FieldData(
-                                title: Helpers.translatingWord('deleteOrder'),
-                              ),
-                            ),
-                          CustomVerticalSpace(height: 16),
-                          if (model.isValidToSubmit() ?? false)
-                            GestureDetector(
-                              onTap: () async {
-                                model.submitRequest();
-                              },
-                              child: FieldData(
-                                title: Helpers.translatingWord('send_request'),
-                              ),
-                            ),
-                        ]),
-                      ));
-                },
+                                CustomVerticalSpace(height: 16),
+                                if (model.isValidToSubmit() ?? false)
+                                  GestureDetector(
+                                    onTap: () async {
+                                      model.submitRequest();
+                                    },
+                                    child: FieldData(
+                                      title: Helpers.translatingWord(
+                                          'send_request'),
+                                    ),
+                                  ),
+                              ]),
+                            ));
+                      }
+                    : null,
               ),
               body: Padding(
                   padding: const EdgeInsets.all(16.0),

@@ -191,7 +191,7 @@ Map<String, dynamic> servicesConfig = {
     },
   ],
   "business_license_services": [
-    {
+    /* {
       "id": 11,
       "icon": "issue_trade_license",
       "3d_icon": null,
@@ -201,7 +201,7 @@ Map<String, dynamic> servicesConfig = {
       "action": {"type": "page", "value": "/issue-trade-license"},
       "ar": {"title": "إصدار رخصة تجارية", "description": null, "tag": null},
       "en": {"title": "Issue Trade License", "description": null, "tag": null}
-    },
+    },*/
     {
       "id": 13,
       "icon": "balady_business",
@@ -248,7 +248,12 @@ Map<String, dynamic> servicesConfig = {
       "isImportant": false,
       "requireLogin": true,
       "action": {"type": "page", "value": "/DCVeichlePage"},
-      "ar": {"title": "استعادة مركبة مسحوبة", "description": null, "tag": null},
+      "ar": {
+        "title": "استعادة مركبة مسحوبة",
+        "description":
+            "اطلع على جميع المعاملات القابلة للاعتراض وإرسل اعتراضك مباشرة",
+        "tag": "سجّل اعتراضك"
+      },
       "en": {"title": "Damaged Cars", "description": null, "tag": null}
     },
     {

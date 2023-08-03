@@ -12,6 +12,10 @@ class DraggableHeaderComponent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool isLoggedIn = CommonProperties.isLoggedIn;
+    String pm = isLoggedIn ? "مساء الخير ، " : "مساء الخير";
+    String am = isLoggedIn ? "صباح الخير ، " : "صباح الخير";
+
     return Container(
       width: MediaQuery.sizeOf(context).width,
       padding: const EdgeInsets.all(16),
@@ -43,9 +47,7 @@ class DraggableHeaderComponent extends StatelessWidget {
               Row(
                 children: [
                   CustomTextWidget(
-                    DateTime.now().hour > 12
-                        ? "مساء الخير ، "
-                        : "صباح الخير ، ",
+                    DateTime.now().hour > 12 ? pm : am,
                     fontSize: 14,
                     fontWeight: AppFontWeight.bold,
                     fontColor: AppColor.blackModern600Light,

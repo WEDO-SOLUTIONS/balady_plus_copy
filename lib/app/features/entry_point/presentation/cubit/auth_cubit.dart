@@ -11,6 +11,7 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 import '../../../../../etmam_app/features/etmam_entry_point/presentation/cubit/etmam_entry_point_cubit.dart';
 import '../../../../core/dependency_injection/injection_container.dart';
 import '../../../../core/errors/failures.dart';
+import '../../../../core/services/local/helpers.dart';
 import '../../../../core/services/services_exports.dart';
 import '../../../../core/utils/utils_exports.dart';
 import '../../../profile_features/delegators/delegators_exports.dart';
@@ -269,7 +270,7 @@ class EntryPointCubit extends Cubit<EntryPointState> {
     _logout(NoParams());
     //MM  sl<VDCategoryBloc>().add(RefreshCategoriesEvent());
 
-    //MM  Helpers.backToHome();
+    Helpers.backToHome();
   }
 
   Future<void> refreshSSOProfile() async {

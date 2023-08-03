@@ -57,7 +57,9 @@ class BaladySmartAdvisorCard extends StatelessWidget {
                     btnHeight: 40,
                     btnWidth: 163,
                     text: "اسأل المستشار",
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.pushNamed(context, RouteName.municipalAdvisor);
+                    },
                   ),
                 ],
               ),

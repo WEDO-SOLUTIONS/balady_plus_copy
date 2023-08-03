@@ -35,15 +35,15 @@ class InvestmentSites extends PointLayersData {
   factory InvestmentSites.fromJson(Map<String, dynamic> json) =>
       InvestmentSites(
         id: json['attributes']["OBJECTID"].toString(),
-        name: json['attributes']["CONTRACTNAME"] ?? 'name',
-        description: json['attributes']["DESCRIPTION"] ?? 'description',
-        type: json['attributes']["INVESTTYPE"]?.toString() ?? 'type',
-        municipality: json['attributes']["MUNICIPALITY"],
+        name: json['attributes']["CONTRACTNAME"] ?? '',
+        description: json['attributes']["OPPORTUNITYDESCRIPTION"] ?? '',
+        type: json['attributes']["INVESTTYPE"]?.toString() ?? '',
+        municipality: json['attributes']["MUNICIPALITY_ID"],
         sourceCaseKEY: json['attributes']["SOURCECASEKEY"],
-        street: json['attributes']["STREET"],
+        street: json['attributes']["SITEADDRESS"],
         submunicapility: json['attributes']["SUBMUNICIPALITY"],
-        opportunityId: json['attributes']["OPPORTUNITY_ID"],
-        opportunityType: json['attributes']["OPPORTUNITYTYPE"],
+        opportunityId: json['attributes']["PYID"],
+        opportunityType: json['attributes']["TYPE"],
         latLng: GeoPointWithElevationMessage(
           elevation: 1,
           latitude: double.parse(json['geometry']["y"].toString()),

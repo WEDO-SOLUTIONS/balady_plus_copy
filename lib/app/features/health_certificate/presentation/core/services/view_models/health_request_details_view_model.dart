@@ -32,6 +32,7 @@ class HealthRequestDetailsViewModel extends BaseViewModel {
       {this.requestDetails, this.isDeletable, this.isPrintable});
 
   Future<DeleteRequestResponse?> deleteHealthRequest() async {
+    print(requestDetails?.data?.result?.requestId);
     DeleteRequestResponse? result = await dataModel
         .deleteHealthRequest(requestDetails?.data?.result?.requestId ?? 0);
 

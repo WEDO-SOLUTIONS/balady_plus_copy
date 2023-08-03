@@ -18,7 +18,7 @@ class LandsLegendsMapCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 184,
+      height: 140,
       width: 200,
       margin: EdgeInsets.only(bottom: 32),
       padding: const EdgeInsets.all(16),
@@ -91,7 +91,7 @@ class LandsLegendsMapCard extends StatelessWidget {
               CustomHorizontalSpace(width: 8),
               Flexible(
                 child: CustomTextWidget(
-                  'ارض مسوره وغير مخالفه',
+                  'أراضي مستهدفة للتسوير',
                   fontColor: Color(0xFF292929),
                   fontSize: 10,
                   fontWeight: AppFontWeight.medium,
@@ -101,7 +101,7 @@ class LandsLegendsMapCard extends StatelessWidget {
               ),
             ],
           ),
-          CustomVerticalSpace(height: 12),
+          /*   CustomVerticalSpace(height: 12),
           Row(
             children: [
               Container(
@@ -128,6 +128,7 @@ class LandsLegendsMapCard extends StatelessWidget {
               ),
             ],
           ),
+      */
           CustomVerticalSpace(height: 8),
         ],
       ),

@@ -61,13 +61,13 @@ class LayersRepositories {
       final layersType = await webService.dio.get(
         '${Constants.mainUrl}$layersId',
         options: Options(
-          headers: {
+            /*  headers: {
             'verifyingKEY': CommonFunctions.hashRequest(
               Constants.mainUrl,
               "GET",
             )
-          },
-        ),
+          },*/
+            ),
       );
       if (layersType.data != null) {
         return subLayersFromJson(layersType.data['data']['result']
