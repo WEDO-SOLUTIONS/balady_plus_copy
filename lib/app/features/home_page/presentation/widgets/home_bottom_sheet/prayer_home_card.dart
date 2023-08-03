@@ -26,12 +26,9 @@ class PrayerHomeCard extends StatelessWidget {
                 decoration: BoxDecoration(
                   borderRadius: const BorderRadius.all(Radius.circular(16)),
                   image: DecorationImage(
-                    image: AssetImage(
-                        state.nextPrayer!.prayer == Prayers.fajr ||
-                                state.nextPrayer!.prayer == Prayers.dhuhr ||
-                                state.nextPrayer!.prayer == Prayers.asr
-                            ? ImagePath.prayerLightBg
-                            : ImagePath.prayerDarkBg),
+                    image: AssetImage(state.isAM
+                        ? ImagePath.prayerLightBg
+                        : ImagePath.prayerDarkBg),
                     fit: BoxFit.fitHeight,
                   ),
                 ),
@@ -51,12 +48,7 @@ class PrayerHomeCard extends StatelessWidget {
                                   state.nextPrayer != null
                                       ? CustomTextWidget(
                                           "صلاه ${state.nextPrayer!.prayer.label.tr()}",
-                                          fontColor: state.nextPrayer!.prayer ==
-                                                      Prayers.fajr ||
-                                                  state.nextPrayer!.prayer ==
-                                                      Prayers.dhuhr ||
-                                                  state.nextPrayer!.prayer ==
-                                                      Prayers.asr
+                                          fontColor: state.isAM
                                               ? AppColor.secondary400Light
                                               : AppColor.primary900Light,
                                           fontWeight: AppFontWeight.bold,
@@ -76,17 +68,9 @@ class PrayerHomeCard extends StatelessWidget {
                                                       12
                                                   ? "PM"
                                                   : "AM",
-                                              fontColor:
-                                                  state.nextPrayer!.prayer ==
-                                                              Prayers.fajr ||
-                                                          state.nextPrayer!
-                                                                  .prayer ==
-                                                              Prayers.dhuhr ||
-                                                          state.nextPrayer!
-                                                                  .prayer ==
-                                                              Prayers.asr
-                                                      ? AppColor.primary900Light
-                                                      : AppColor.white,
+                                              fontColor: state.isAM
+                                                  ? AppColor.primary900Light
+                                                  : AppColor.white,
                                               fontWeight:
                                                   AppFontWeight.semiBold,
                                               fontSize: 14,
@@ -95,17 +79,9 @@ class PrayerHomeCard extends StatelessWidget {
                                             CustomTextWidget(
                                               DateFormat("hh:mm").format(
                                                   state.nextPrayer!.dateTime),
-                                              fontColor:
-                                                  state.nextPrayer!.prayer ==
-                                                              Prayers.fajr ||
-                                                          state.nextPrayer!
-                                                                  .prayer ==
-                                                              Prayers.dhuhr ||
-                                                          state.nextPrayer!
-                                                                  .prayer ==
-                                                              Prayers.asr
-                                                      ? AppColor.primary900Light
-                                                      : AppColor.white,
+                                              fontColor: state.isAM
+                                                  ? AppColor.primary900Light
+                                                  : AppColor.white,
                                               fontWeight: AppFontWeight.bold,
                                               fontSize: 28,
                                             ),
@@ -122,23 +98,13 @@ class PrayerHomeCard extends StatelessWidget {
                                 padding: const EdgeInsets.all(12),
                                 decoration: BoxDecoration(
                                   shape: BoxShape.circle,
-                                  color: state.nextPrayer!.prayer ==
-                                              Prayers.fajr ||
-                                          state.nextPrayer!.prayer ==
-                                              Prayers.dhuhr ||
-                                          state.nextPrayer!.prayer ==
-                                              Prayers.asr
+                                  color: state.isAM
                                       ? AppColor.white.withOpacity(0.3)
                                       : AppColor.white.withOpacity(0.1),
                                 ),
                                 child: CustomSvgIconWidget(
                                   IconPath.notificationIc2,
-                                  iconColor: state.nextPrayer!.prayer ==
-                                              Prayers.fajr ||
-                                          state.nextPrayer!.prayer ==
-                                              Prayers.dhuhr ||
-                                          state.nextPrayer!.prayer ==
-                                              Prayers.asr
+                                  iconColor: state.isAM
                                       ? AppColor.primary900Light
                                       : AppColor.white,
                                   iconSize: 24,
@@ -154,9 +120,7 @@ class PrayerHomeCard extends StatelessWidget {
                           decoration: BoxDecoration(
                             borderRadius:
                                 const BorderRadius.all(Radius.circular(12)),
-                            color: state.nextPrayer!.prayer == Prayers.fajr ||
-                                    state.nextPrayer!.prayer == Prayers.dhuhr ||
-                                    state.nextPrayer!.prayer == Prayers.asr
+                            color: state.isAM
                                 ? AppColor.white.withOpacity(0.2)
                                 : AppColor.primary900Light.withOpacity(0.2),
                           ),
@@ -194,12 +158,7 @@ class PrayerHomeCard extends StatelessWidget {
                                   padding: const EdgeInsetsDirectional.only(
                                       start: 20),
                                   child: CustomElevatedButtonWidget(
-                                    btnColor: state.nextPrayer!.prayer ==
-                                                Prayers.fajr ||
-                                            state.nextPrayer!.prayer ==
-                                                Prayers.dhuhr ||
-                                            state.nextPrayer!.prayer ==
-                                                Prayers.asr
+                                    btnColor: state.isAM
                                         ? AppColor.primary900Light
                                         : AppColor.secondary400Light,
                                     textStyle:
