@@ -47,4 +47,7 @@ class Constants {
 
   static const String layerIcon =
       "assets/maps/icons/gis_layers_icons/layer.svg";
+
+  static const String mapPinIcon =
+      "assets/maps/icons/gis_layers_icons/layer.svg";
 }
