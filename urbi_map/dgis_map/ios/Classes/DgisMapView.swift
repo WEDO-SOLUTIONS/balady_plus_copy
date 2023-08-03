@@ -230,6 +230,38 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         
     }
     
+    func moveCameraCameraPosition(_ cameraPosition: CameraPositionMessage, duration: NSNumber, animationType: CameraAnimationTypeMessage, completion: @escaping (FlutterError?) -> Void) {
+        guard let map = self.map else {
+            completion(FlutterError(
+                code: "IllegalArgumentException",
+                message: "Map was not initialized properly",
+                details: nil
+            ))
+            return
+        }
+        var desiredPosition = map.camera.position
+        desiredPosition.point = cameraPosition.point.geoPoint
+        desiredPosition.zoom = Zoom(value: cameraPosition.zoom.floatValue)
+        desiredPosition.tilt = Tilt(value: cameraPosition.tilt.floatValue)
+        desiredPosition.bearing = Bearing(value: cameraPosition.bearing.doubleValue)
+        
+        let duration = TimeInterval(duration.doubleValue)
+        let animationType = animationType.animationType
+        
+        let moveCancelable = map.camera.move(position: desiredPosition, time: duration, animationType: animationType).sink(receiveValue: { _ in
+            completion(nil)
+            return
+        }, failure: { error in
+            completion(FlutterError(
+                code: "FutureError",
+                message: error.localizedDescription,
+                details: nil
+            ))
+            return
+        })
+        cancelable.append(moveCancelable)
+    }
+    
     func getCameraPosition(completion: @escaping (CameraPositionMessage?, FlutterError?) -> Void) {
         guard let map = self.map else {
             completion(nil, FlutterError(

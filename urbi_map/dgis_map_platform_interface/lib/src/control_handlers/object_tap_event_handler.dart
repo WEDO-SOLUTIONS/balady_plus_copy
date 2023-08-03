@@ -3,7 +3,8 @@ import 'dart:async';
 import 'package:dgis_map_platform_interface/library.dart';
 
 typedef void OnObjectTap();
-typedef SimpleCluster ClusterRenderer(SimpleClusterObjectMessage message);
+typedef SimpleClusterOptionsMessage ClusterRenderer(int objectCount);
+typedef void OnClusterTap(SimpleClusterObject clusterObject);
 
 class ObjectTapEventHandler {
   ObjectTapEventHandler();
@@ -16,7 +17,7 @@ class ObjectTapEventHandler {
   final Map<String, OnObjectTap> polygonHandlers = {};
   final Map<String, OnObjectTap> polylineHandlers = {};
   final Map<String, ClusterRenderer> clusterRenderers = {};
-  final Map<String, OnObjectTap> clusterHandlers = {};
+  final Map<String, OnClusterTap> clusterHandlers = {};
 
   void addMarkerHandler(String id, OnObjectTap onTap) {
     markerHandlers[id] = onTap;
@@ -26,7 +27,7 @@ class ObjectTapEventHandler {
     markerHandlers.remove(id);
   }
 
-  void addClusterHandler(String id, OnObjectTap onTap) {
+  void addClusterHandler(String id, OnClusterTap onTap) {
     clusterHandlers[id] = onTap;
   }
 
@@ -40,6 +41,42 @@ class ObjectTapEventHandler {
 
   void removeClusterRenderer(String id) {
     clusterRenderers.remove(id);
+  }
+
+  void clusterTapEvent(Map<dynamic, dynamic> map) {
+    final id = map["id"] as String;
+    final cluster = map["cluster"];
+    final clusterObject = SimpleClusterObject(
+      GeoPointWithElevationMessage(
+        latitude: cluster["position"]["latitude"],
+        longitude: cluster["position"]["longitude"],
+        elevation: cluster["position"]["elevation"],
+      ),
+      cluster["objectCount"],
+      MarkerAnchorMessage(
+        x: cluster["anchor"]["x"],
+        y: cluster["anchor"]["y"],
+      ),
+      cluster["iconOpacity"],
+      MarkerTextStyleMessage(
+        fontSize: cluster["textStyle"]["fontSize"],
+        color: cluster["textStyle"]["color"],
+        strokeWidth: cluster["textStyle"]["strokeWidth"],
+        strokeColor: cluster["textStyle"]["strokeColor"],
+        textPlacement: MarkerTextPlacementMessage(
+          placement: TextPlacementMessage
+              .values[cluster["textStyle"]["textPlacement"]],
+        ),
+        textOffset: cluster["textStyle"]["textOffset"],
+        fontName: cluster["textStyle"]["fontName"],
+      ),
+      cluster["iconWidth"],
+      cluster["iconMapDirection"] != null
+          ? MarkerAzimuthMessage(degree: cluster["iconMapDirection"])
+          : null,
+      cluster["text"],
+    );
+    clusterHandlers[id]?.call(clusterObject);
   }
 
   void removeAllMarkerHandlers() {

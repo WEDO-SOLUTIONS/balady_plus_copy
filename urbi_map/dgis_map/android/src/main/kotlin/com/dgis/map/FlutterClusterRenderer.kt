@@ -3,11 +3,9 @@ package com.dgis.map
 import android.os.Handler
 import android.os.Looper
 import android.util.Size
-import com.dgis.map.extensions.toMessage
 import com.dgis.map.extensions.toTextStyle
 import com.dgis.map.map_api.Messages.FlutterMapApi
 import com.dgis.map.map_api.Messages.MapObjectManagerMessage
-import com.dgis.map.map_api.Messages.SimpleClusterObjectMessage
 import com.dgis.map.map_api.Messages.SimpleClusterOptionsMessage
 import io.flutter.FlutterInjector
 import kotlinx.coroutines.runBlocking
@@ -24,11 +22,11 @@ class FlutterClusterRenderer(
 ): SimpleClusterRenderer {
     private val iconCache = mutableMapOf<String, Image>()
 
-    suspend fun apiRenderCluster(manager: MapObjectManagerMessage, cluster: SimpleClusterObjectMessage) = suspendCoroutine<SimpleClusterOptionsMessage> { cont ->
+    suspend fun apiRenderCluster(manager: MapObjectManagerMessage, objectCount: Int) = suspendCoroutine<SimpleClusterOptionsMessage> { cont ->
         Handler(Looper.getMainLooper()).post {
             api.renderCluster(
                 manager,
-                cluster
+                objectCount.toLong()
             ) {
                 cont.resume(it)
             }
@@ -36,7 +34,7 @@ class FlutterClusterRenderer(
     }
 
     override fun renderCluster(cluster: SimpleClusterObject): SimpleClusterOptions {
-        val options = runBlocking { apiRenderCluster(manager, cluster.toMessage()) }
+        val options = runBlocking { apiRenderCluster(manager, cluster.objectCount) }
 
         var markerImage: Image? = null
         if (options.icon != null) {
@@ -71,6 +69,7 @@ class FlutterClusterRenderer(
             iconWidth = options.icon?.let {
                 LogicalPixel(it.width.toFloat())
             } ?: LogicalPixel(0f),
+            userData = manager,
         )
     }
 }

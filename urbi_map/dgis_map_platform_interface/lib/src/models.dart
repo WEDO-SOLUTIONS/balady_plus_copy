@@ -20,30 +20,46 @@ class Marker {
 }
 
 /// Model corresponds render object on map
+class SimpleClusterObject {
+  /// Base class constructor
+  SimpleClusterObject(
+    this.position,
+    this.objectCount,
+    this.anchor,
+    this.iconOpacity,
+    this.textStyle,
+    this.iconWidth,
+    this.iconMapDirection,
+    this.text,
+  );
+
+  final GeoPointWithElevationMessage position;
+  final int objectCount;
+  final MarkerAnchorMessage anchor;
+  final double iconOpacity;
+  final String text;
+  final MarkerTextStyleMessage? textStyle;
+  final double iconWidth;
+  final MarkerAzimuthMessage? iconMapDirection;
+}
+
+/// Model corresponds render object on map
 class ClusteringMapObjectManager {
   /// Base class constructor
   const ClusteringMapObjectManager({
     required this.options,
     required this.renderCluster,
+    this.onTap,
   });
 
   /// Map render object's options (such as position, color, anchor and etc)
   final ClusteringMapObjectManagerOptionsMessage options;
 
   /// Map render object's onTap handler
-  final SimpleCluster Function(SimpleClusterObjectMessage) renderCluster;
-}
-
-/// Model corresponds render object on map
-class SimpleCluster {
-  /// Base class constructor
-  SimpleCluster({required this.options, this.onTap});
-
-  /// Map render object's options (such as position, color, anchor and etc)
-  final SimpleClusterOptionsMessage options;
+  final SimpleClusterOptionsMessage Function(int objectCount) renderCluster;
 
   /// Map render object's onTap handler
-  final void Function()? onTap;
+  final void Function(SimpleClusterObject)? onTap;
 }
 
 /// Model corresponds render object on map
