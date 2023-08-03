@@ -33,6 +33,8 @@ class CameraPositionMessage {
   final double bearing;
 }
 
+enum CameraAnimationTypeMessage { default_, linear, showBothPositions }
+
 class DgisObjectIdMessage {
   const DgisObjectIdMessage({
     required this.objectId,
@@ -878,6 +880,13 @@ abstract class MapApi {
 
   @async
   void setCameraPosition(CameraPositionMessage cameraPosition);
+
+  @async
+  void moveCamera(
+    CameraPositionMessage cameraPosition,
+    double duration,
+    CameraAnimationTypeMessage animationType,
+  );
 
   @async
   CameraPositionMessage getCameraPosition();
