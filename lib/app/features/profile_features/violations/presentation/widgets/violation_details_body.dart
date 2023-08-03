@@ -28,8 +28,6 @@ import '../../../../_shared_feature_/shared_feature_exports.dart'
         MessageDialog,
         ShimmerEffectWidget;
 import '../../../../objectable_transactions/domain/entities/create_objection_page_params.dart';
-import '../../../../objectable_transactions/domain/entities/objectable_transaction_entity.dart';
-import '../../../../objectable_transactions/domain/entities/transaction_details.dart';
 import '../../../../objectable_transactions/presentation/widgets/create_objection_page/objection_attachment_item.dart';
 import '../../../../objections/domain/entities/objection_details.dart';
 import '../../../../vd/presentation/widgets/summery_widgets/field_data.dart';
@@ -126,7 +124,7 @@ class _ViolationDetailBodyState extends State<ViolationDetailBody> {
                     const CustomVerticalSpace(height: 8),
                     FieldData(
                       title: ("transaction_details_last_date").tr(),
-                      subTitle: state.details?.lastDateOfObjection,
+                      subTitle: state.details?.getLastDateOfObjection,
                     ),
 
                     const CustomVerticalSpace(height: 8),
@@ -500,12 +498,11 @@ class NoObjectionsData extends StatelessWidget {
               const CustomVerticalSpace(height: 16),
               if (state.details?.isObjectionAllowed == true)
                 ElevatedButtonWidget.applyObjection(onPressed: () {
-                  NavigationService.navigatorKey.currentState!.pushNamed(
-                      RouteName.createObjectionDetails,
-                      arguments: CreateObjectionPageParams(
-                        details: state.details as TransactionDetails,
-                        item: violationsEntity as ObjectableTransactionsEntity,
-                      ));
+                  NavigationService.navigatorKey.currentState!
+                      .pushNamed(RouteName.createObjectionDetails,
+                          arguments: CreateObjectionPageParams(
+                            details: state.details,
+                          ));
                 })
             ]);
       },

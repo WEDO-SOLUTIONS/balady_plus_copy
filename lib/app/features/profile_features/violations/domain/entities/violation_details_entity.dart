@@ -1,105 +1,57 @@
 import 'package:intl/intl.dart';
+import '../../../../objectable_transactions/domain/entities/transaction_details.dart';
 
-import '../../../../../core/utils/constants/remote_config.dart';
-import '../../../../objections/domain/entities/objection_details.dart';
-
-class ViolationDetailsEntity {
-  String? subMunicipalityId;
-  String? regulationClauseId;
-  String? regulationClauseDescription;
-  int? sadadAmount;
-  String? licenseNumber;
-  String? violationStatus;
-  String? lastDateOfObjection;
-  String? violationId;
-  String? municipalityName;
-  int? noOfRepetition;
-  String? municipalityId;
-  int? totalViolationPenaltyAmount;
-  int? violationPenaltyAmount;
-  String? licenseType;
-  String? licenseTypeName;
-  String? violatorType;
-  String? violatorTypeName;
-  int? noOfUnits;
-  String? objectionApplicable;
-  List<NonComplianceClause>? nonComplianceClauses;
-  String? sadadNumber;
-  String? subMunicipalityName;
-  DateTime? violationRegistrationDate;
-  String? violatorId;
-  String? invoiceStatus;
-  String? invoiceStatusName;
-  String? violationStatusName;
-  String? objectionType;
-  String? objectionTypeName;
-  String? facilityName;
-  bool? isObjectionAllowed;
-  String? objectionCommitteeDecision;
-  String? objectionRequestStatus;
-  String? objectionRequestNumber;
-  String? objectionRequestDate;
-  String? coordinatEY;
-  String? coordinatEX;
-  String? hashingObjectionRequestNumber;
-  String? hashingSadadNumber;
-  String? objectionRequestStatusName;
-  String? objectionApplicableId;
-  String? objectionApplicableName;
-  String? objectionRequestStatusId;
-  String? serviceGroupId;
-  String? serviceId;
-  String? objectionTypeId;
-  String? hashingViolationNumber;
-
+class ViolationDetailsEntity extends TransactionDetails{
   ViolationDetailsEntity({
-    this.subMunicipalityId,
-    this.regulationClauseId,
-    this.regulationClauseDescription,
-    this.sadadAmount,
-    this.licenseNumber,
-    this.violationStatus,
-    this.lastDateOfObjection,
-    this.violationId,
-    this.municipalityName,
-    this.noOfRepetition,
-    this.municipalityId,
-    this.totalViolationPenaltyAmount,
-    this.violationPenaltyAmount,
-    this.licenseType,
-    this.licenseTypeName,
-    this.violatorType,
-    this.violatorTypeName,
-    this.noOfUnits,
-    this.objectionApplicable,
-    this.nonComplianceClauses,
-    this.sadadNumber,
-    this.subMunicipalityName,
-    this.violationRegistrationDate,
-    this.violatorId,
-    this.invoiceStatus,
-    this.invoiceStatusName,
-    this.violationStatusName,
-    this.objectionType,
-    this.objectionTypeName,
-    this.facilityName,
-    this.isObjectionAllowed,
-    this.objectionCommitteeDecision,
-    this.objectionRequestStatus,
-    this.objectionRequestNumber,
-    this.objectionRequestDate,
-    this.coordinatEY,
-    this.coordinatEX,
-    this.hashingObjectionRequestNumber,
-    this.hashingSadadNumber,
-    this.objectionRequestStatusName,
-    this.objectionApplicableId,
-    this.objectionApplicableName,
-    this.objectionRequestStatusId,
-    this.serviceGroupId,
-    this.serviceId,
-    this.objectionTypeId,
-    this.hashingViolationNumber,
+    super.subMunicipalityId,
+    super.regulationClauseId,
+    super.regulationClauseDescription,
+    super.sadadAmount,
+    super.licenseNumber,
+    super.violationStatus,
+    super.lastDateOfObjection,
+    super.violationId,
+    super.municipalityName,
+    super.noOfRepetition,
+    super.municipalityId,
+    super.totalViolationPenaltyAmount,
+    super.violationPenaltyAmount,
+    super.licenseType,
+    super.licenseTypeName,
+    super.violatorType,
+    super.violatorTypeName,
+    super.noOfUnits,
+    super.objectionApplicable,
+    super.nonComplianceClauses,
+    super.sadadNumber,
+    super.subMunicipalityName,
+    super.violationRegistrationDate,
+    super.violatorId,
+    super.invoiceStatus,
+    super.invoiceStatusName,
+    super.violationStatusName,
+    super.objectionType,
+    super.objectionTypeName,
+    super.facilityName,
+    super.isObjectionAllowed,
+    super.objectionCommitteeDecision,
+    super.objectionRequestStatus,
+    super.objectionRequestNumber,
+    super.objectionRequestDate,
+    super.coordinateX,
+    super.coordinateY,
+    // super.hashingObjectionRequestNumber,
+    // super.hashingSadadNumber,
+    super.objectionRequestStatusName,
+    // super.objectionApplicableId,
+    // super.objectionApplicableName,
+    super.objectionRequestStatusId,
+    super.serviceGroupId,
+    super.serviceId,
+    super.objectionTypeId,
+    super.serviceGroupName,
+    super.serviceName,
+    // super.hashingViolationNumber,
   });
 
 
@@ -113,8 +65,8 @@ class ViolationDetailsEntity {
       ? DateFormat.yMd().format(violationRegistrationDate!)
       : "";
 
-  double? get lat => double.tryParse(coordinatEX ?? "");
-  double? get lon => double.tryParse(coordinatEY ?? "");
+  double? get lat => double.tryParse(coordinateX ?? "");
+  double? get lon => double.tryParse(coordinateY ?? "");
 
 
   /*String? get getViolationPenaltyAmount =>
@@ -137,28 +89,28 @@ class ViolationDetailsEntity {
 
 }
 
-class NonComplianceClause {
-  dynamic clauseNo;
-  String? clauseName;
-  List<NonComplianceSubClause>? nonComplianceSubClauses;
-
-  NonComplianceClause({
-    this.clauseNo,
-    this.clauseName,
-    this.nonComplianceSubClauses,
-  });
-}
-
-class NonComplianceSubClause {
-  int? subClauseNo;
-  String? subClauseName;
-  String? notes;
-  List<ReasonAttachment>? attachments;
-
-  NonComplianceSubClause({
-    this.subClauseNo,
-    this.subClauseName,
-    this.notes,
-    this.attachments,
-  });
-}
+// class NonComplianceClause {
+//   dynamic clauseNo;
+//   String? clauseName;
+//   List<NonComplianceSubClause>? nonComplianceSubClauses;
+//
+//   NonComplianceClause({
+//     this.clauseNo,
+//     this.clauseName,
+//     this.nonComplianceSubClauses,
+//   });
+// }
+//
+// class NonComplianceSubClause {
+//   int? subClauseNo;
+//   String? subClauseName;
+//   String? notes;
+//   List<ReasonAttachment>? attachments;
+//
+//   NonComplianceSubClause({
+//     this.subClauseNo,
+//     this.subClauseName,
+//     this.notes,
+//     this.attachments,
+//   });
+// }
