@@ -1,3 +1,5 @@
+import 'package:intl/intl.dart';
+
 import '../../../../objectable_transactions/domain/entities/transaction_details.dart';
 import '../../violations_exports.dart';
 
@@ -62,7 +64,9 @@ class ViolationDetailsModel extends ViolationDetailsEntity {
         violationStatus: json["violationStatus"],
         lastDateOfObjection: json["lastDateOfObjection"] == null ||
                 (json["lastDateOfObjection"] is String)
-            ? null
+            ? (json["lastDateOfObjection"] as String).isEmpty
+                ? null
+                : DateFormat("yyyy-MM-dd").parse(json["lastDateOfObjection"])
             : json["lastDateOfObjection"],
         violationId: json["violationID"],
         municipalityName: json["municipalityName"],
@@ -84,8 +88,11 @@ class ViolationDetailsModel extends ViolationDetailsEntity {
         sadadNumber: json["sadadNumber"],
         subMunicipalityName: json["subMunicipalityName"],
         violationRegistrationDate: json["violationRegistrationDate"] == null ||
-            (json["violationRegistrationDate"]  is String)
-            ? null
+                (json["violationRegistrationDate"] is String)
+            ? (json["violationRegistrationDate"] as String).isEmpty
+                ? null
+                : DateFormat("yyyy-MM-dd")
+                    .parse(json["violationRegistrationDate"])
             : DateTime.parse(json["violationRegistrationDate"]),
         violatorId: json["violatorID"],
         invoiceStatus: json["invoiceStatus"],
@@ -101,7 +108,9 @@ class ViolationDetailsModel extends ViolationDetailsEntity {
 
         objectionRequestDate: json["objectionRequestDate"] == null ||
                 (json["objectionRequestDate"] is String)
-            ? null
+            ? (json["objectionRequestDate"] as String).isEmpty
+                ? null
+                : DateFormat("yyyy-MM-dd").parse(json["objectionRequestDate"])
             : json["objectionRequestDate"],
         coordinateY: json["coordinatE_Y"],
         coordinateX: json["coordinatE_X"],
