@@ -23,7 +23,7 @@ class FlutterClusterRenderer: SimpleClusterRenderer {
         
         api.renderClusterManager(
             manager,
-            clusterObject: cluster.toMessage()
+            objectCount: NSNumber(value: cluster.objectCount)
         ) { (response, error) in
             message = response!
             semaphore.signal()
@@ -63,7 +63,8 @@ class FlutterClusterRenderer: SimpleClusterRenderer {
             textStyle: message!.textStyle?.textStyle,
             iconWidth: (message!.icon?.width).map {
                 LogicalPixel(value: $0.floatValue)
-            } ?? LogicalPixel(value: 0)
+            } ?? LogicalPixel(value: 0),
+            userData: manager
         )
         
         return options!

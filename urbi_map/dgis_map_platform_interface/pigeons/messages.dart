@@ -823,28 +823,6 @@ class SimpleClusterOptionsMessage {
   final MarkerTextStyleMessage? textStyle;
 }
 
-class SimpleClusterObjectMessage {
-  SimpleClusterObjectMessage(
-    this.position,
-    this.objectCount,
-    this.anchor,
-    this.iconOpacity,
-    this.textStyle,
-    this.iconWidth,
-    this.iconMapDirection,
-    this.text,
-  );
-
-  final GeoPointWithElevationMessage position;
-  final int objectCount;
-  final MarkerAnchorMessage anchor;
-  final double iconOpacity;
-  final String text;
-  final MarkerTextStyleMessage? textStyle;
-  final double iconWidth;
-  final MarkerAzimuthMessage? iconMapDirection;
-}
-
 class ClusteringMapObjectManagerOptionsMessage {
   ClusteringMapObjectManagerOptionsMessage(
     this.logicalPixel,
@@ -1089,6 +1067,6 @@ abstract class MapApi {
 abstract class FlutterMapApi {
   SimpleClusterOptionsMessage renderCluster(
     MapObjectManagerMessage manager,
-    SimpleClusterObjectMessage clusterObject,
+    int objectCount,
   );
 }

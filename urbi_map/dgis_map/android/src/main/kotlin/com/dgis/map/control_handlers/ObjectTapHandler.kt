@@ -5,6 +5,7 @@ import com.dgis.map.FlutterClusterRenderer
 import com.dgis.map.R
 import com.dgis.map.extensions.toGeoPoint
 import com.dgis.map.extensions.toGeoPointWithElevation
+import com.dgis.map.extensions.toMap
 import com.dgis.map.extensions.toTextStyle
 import com.dgis.map.extensions.unsafeLazy
 import com.dgis.map.map_api.Messages.*
@@ -117,16 +118,10 @@ class ObjectTapHandler(
                 routeHandler?.onRouteTap(tappedObject)
             }
             is SimpleClusterObject -> {
-                val mainObject = if (tappedObject.objectCount > 0) tappedObject.objects[0] else null
-                if (mainObject is Marker) {
-                    onMarkerTap(mainObject)
-                    return
-                } else {
-                    eventSink.error(
-                        "ClusteredObjectNoMarkers",
-                        "Clustered object has no markers",
-                        null,
-                    )
+                val userData = tappedObject.userData
+
+                if (userData is MapObjectManagerMessage) {
+                    onClusterTap(userData.id, tappedObject)
                     return
                 }
             }
@@ -562,6 +557,16 @@ class ObjectTapHandler(
         )
     }
 
+    private fun onClusterTap(id: String, cluster: SimpleClusterObject) {
+        eventSink.success(
+            mapOf(
+                "event" to Events.onClusterTap.name,
+                "id" to id,
+                "cluster" to cluster.toMap(),
+            )
+        )
+    }
+
     private fun onPolygonTap(id: String) {
         eventSink.success(
             mapOf(
@@ -663,6 +668,7 @@ private enum class Events {
     onIoTap,
     onIdleTap,
     onMarkerTap,
+    onClusterTap,
     onPolygonTap,
     onPolylineTap,
 }

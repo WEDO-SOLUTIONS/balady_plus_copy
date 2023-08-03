@@ -11,6 +11,7 @@ class ObjectTapHandler {
         static let onMarkerTap = "onMarkerTap"
         static let onPolygonTap = "onPolygonTap"
         static let onPolylineTap = "onPolylineTap"
+        static let onClusterTap = "onClusterTap"
     }
     
     private struct PhotoData {
@@ -138,14 +139,14 @@ class ObjectTapHandler {
 //            guard let mapObject = tappedObject as? DgisMapObject else { return }
 //            self.onDgisObjectTap(mapObject, objectInfo)
 //            return
-        case is SimpleClusterObject:
-            let clusterObject = (tappedObject as! SimpleClusterObject)
-            let mainObject = clusterObject.objectCount > 0 ? clusterObject.objects[0] : nil
-            guard let marker = mainObject as? Marker else {
-                self.eventChannel.error(code: Events.objectTapError)
-                return
+        case let cluster as SimpleClusterObject:
+            if let id = cluster.userData as? MapObjectManagerMessage {
+                eventChannel.success([
+                    "event": Events.onClusterTap,
+                    "id": id.id,
+                    "cluster": cluster.toMap()
+                ] as [String : Any])
             }
-            self.onMarkerTap(marker)
             return
         case is RouteMapObject:
             self.routeHandler?.onRouteTap(tappedObject as! RouteMapObject)

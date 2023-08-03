@@ -46,51 +46,6 @@ extension TextPlacementMessage {
     }
 }
 
-extension TextPlacement {
-    func toMessage() -> TextPlacementMessage {
-        switch self {
-        case .noLabel:
-            return .noLabel
-        case .bottomCenter:
-            return .bottomCenter
-        case .bottomRight:
-            return .bottomRight
-        case .bottomLeft:
-            return .bottomLeft
-        case .circleBottomRight:
-            return .circleBottomRight
-        case .rightBottom:
-            return .rightBottom
-        case .rightCenter:
-            return .rightCenter
-        case .rightTop:
-            return .rightTop
-        case .circleTopRight:
-            return .circleTopRight
-        case .topCenter:
-            return .topCenter
-        case .topRight:
-            return .topRight
-        case .topLeft:
-            return .topLeft
-        case .circleTopLeft:
-            return .circleTopLeft
-        case .leftTop:
-            return .leftTop
-        case .leftCenter:
-            return .leftCenter
-        case .leftBottom:
-            return .leftBottom
-        case .circleBottomLeft:
-            return .circleBottomLeft
-        case .centerCenter:
-            return .centerCenter
-        @unknown default:
-            return .noLabel
-        }
-    }
-}
-
 extension MarkerTextStyleMessage {
     var textStyle: TextStyle {
         return TextStyle(
@@ -116,17 +71,15 @@ extension MarkerTextStyleMessage {
 }
 
 extension TextStyle {
-    func toMessage() -> MarkerTextStyleMessage {
-        return MarkerTextStyleMessage.make(
-            withFontSize: NSNumber(value: self.fontSize.value),
-            color: NSNumber(value: self.color.argb),
-            strokeWidth: NSNumber(value: self.strokeWidth.value),
-            strokeColor: NSNumber(value: self.strokeColor.argb),
-            textPlacement: MarkerTextPlacementMessage.make(
-                withPlacement: self.textPlacement.toMessage()
-            ),
-            textOffset: NSNumber(value: self.textOffset.value),
-            fontName: self.fontName
-        )
+    func toMap() -> [String:Any?] {
+        return [
+            "fontSize": self.fontSize.value,
+            "color": self.color.argb,
+            "strokeWidth": self.strokeWidth.value,
+            "strokeColor": self.strokeColor.argb,
+            "textPlacement": self.textPlacement.rawValue,
+            "textOffset": self.textOffset.value,
+            "fontName": self.fontName
+        ]
     }
 }

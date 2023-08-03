@@ -174,17 +174,18 @@ class MapViewModel extends BaseViewModel {
           logicalPixel: 40,
           maxZoom: 16,
         ),
-        renderCluster: (object) {
-          return SimpleCluster(
-            options: SimpleClusterOptionsMessage(
-              icon: MarkerIconMessage(
-                path: "assets/maps/icons/ic_marker.svg",
-                width: 24,
-              ),
-              text: "${object.objectCount} objects inside",
-              textStyle: MarkerTextStyleMessage(fontSize: 16),
+        renderCluster: (objectCount) {
+          return SimpleClusterOptionsMessage(
+            icon: MarkerIconMessage(
+              path: "assets/maps/icons/ic_marker.svg",
+              width: 24,
             ),
+            text: "$objectCount objects inside",
+            textStyle: MarkerTextStyleMessage(fontSize: 16),
           );
+        },
+        onTap: (clusterObject) {
+          print(clusterObject.text);
         },
       ),
     );

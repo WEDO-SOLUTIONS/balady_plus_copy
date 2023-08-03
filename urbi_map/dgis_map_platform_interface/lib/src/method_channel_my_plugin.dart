@@ -210,6 +210,8 @@ class MethodChannelDgisMapPlugin implements DgisMapPlugin, FlutterMapApi {
             return _objectTapEventHandler.objectTapEvent(map);
           case MarkerTapEvent.name:
             return _objectTapEventHandler.markerTapEvent(map);
+          case ClusterTapEvent.name:
+            return _objectTapEventHandler.clusterTapEvent(map);
           case PolygonTapEvent.name:
             return _objectTapEventHandler.polygonTapEvent(map);
           case PolylineTapEvent.name:
@@ -422,6 +424,9 @@ class MethodChannelDgisMapPlugin implements DgisMapPlugin, FlutterMapApi {
     final result =
         await _api.createMapObjectManagerWithClustering(manager.options);
     _objectTapEventHandler.addClusterRenderer(result.id, manager.renderCluster);
+    if (manager.onTap != null) {
+      _objectTapEventHandler.addClusterHandler(result.id, manager.onTap!);
+    }
     return result;
   }
 
@@ -434,19 +439,11 @@ class MethodChannelDgisMapPlugin implements DgisMapPlugin, FlutterMapApi {
   }
 
   @override
-  SimpleClusterOptionsMessage renderCluster(MapObjectManagerMessage manager,
-      SimpleClusterObjectMessage clusterObject) {
-    final cluster =
-        _objectTapEventHandler.clusterRenderers[manager.id]!(clusterObject);
-    // TODO: onTap logic
-    // if (cluster.onTap != null) {
-    //   _objectTapEventHandler.addClusterHandler(
-    //     manager.id,
-    //     cluster.onTap!,
-    //   );
-    // }
-
-    return cluster.options;
+  SimpleClusterOptionsMessage renderCluster(
+    MapObjectManagerMessage manager,
+    int objectCount,
+  ) {
+    return _objectTapEventHandler.clusterRenderers[manager.id]!(objectCount);
   }
 
   @override
