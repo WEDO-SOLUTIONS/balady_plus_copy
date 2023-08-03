@@ -122,7 +122,14 @@ class PrayerHomeCard extends StatelessWidget {
                                 padding: const EdgeInsets.all(12),
                                 decoration: BoxDecoration(
                                   shape: BoxShape.circle,
-                                  color: AppColor.white.withOpacity(0.1),
+                                  color: state.nextPrayer!.prayer ==
+                                              Prayers.fajr ||
+                                          state.nextPrayer!.prayer ==
+                                              Prayers.dhuhr ||
+                                          state.nextPrayer!.prayer ==
+                                              Prayers.asr
+                                      ? AppColor.white.withOpacity(0.3)
+                                      : AppColor.white.withOpacity(0.1),
                                 ),
                                 child: CustomSvgIconWidget(
                                   IconPath.notificationIc2,
@@ -147,7 +154,11 @@ class PrayerHomeCard extends StatelessWidget {
                           decoration: BoxDecoration(
                             borderRadius:
                                 const BorderRadius.all(Radius.circular(12)),
-                            color: AppColor.primary900Light.withOpacity(0.2),
+                            color: state.nextPrayer!.prayer == Prayers.fajr ||
+                                    state.nextPrayer!.prayer == Prayers.dhuhr ||
+                                    state.nextPrayer!.prayer == Prayers.asr
+                                ? AppColor.white.withOpacity(0.2)
+                                : AppColor.primary900Light.withOpacity(0.2),
                           ),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
