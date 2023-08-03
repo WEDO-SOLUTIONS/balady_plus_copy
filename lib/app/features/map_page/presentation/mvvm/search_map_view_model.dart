@@ -16,8 +16,8 @@ class SearchMapViewModel extends BaseViewModel {
       searchController.text = queryText;
       SearchResultMessage data = await controller.search(
         queryText,
-        sortingType: SortingTypeMessage.byDistance,
-        isOpenNow: true,
+        sortingType: SortingTypeMessage.byRelevance,
+        isOpenNow: false,
       );
       if (data.firstPage?.items != null) {
         final responseDistance = await controller.getDistanceTo(

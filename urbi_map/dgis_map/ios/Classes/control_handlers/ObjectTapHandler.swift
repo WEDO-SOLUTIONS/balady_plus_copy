@@ -284,7 +284,7 @@ class ObjectTapHandler {
             map: self.map,
             logicalPixel: LogicalPixel(value: options.logicalPixel.floatValue),
             maxZoom: Zoom(value: options.maxZoom.floatValue),
-            clusterRenderer: FlutterClutserRenderer(
+            clusterRenderer: FlutterClusterRenderer(
                 api: self.flutterApi,
                 registrar: self.registrar,
                 imageFactory: self.imageFactory,
