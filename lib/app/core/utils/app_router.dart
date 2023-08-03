@@ -49,7 +49,7 @@ import '../../features/municipal_services/municipal_advisor/municipal_advisor_ex
 
 import '../../features/objections/presentation/pages/objections_page.dart';
 import '../../features/profile_features/dashboard/dashboard_exports.dart'
-    show DashBoardPage;
+    show DashBoardPage, NotificationPage;
 import '../../features/profile_features/incidents/domain/entities/request_details_page_params.dart';
 import '../../features/profile_features/incidents/presentation/pages/daem_details.dart';
 import '../../features/profile_features/incidents/presentation/pages/inq_details.dart';
@@ -178,6 +178,8 @@ class AppRouter {
       //? dashboard page
       case RouteName.dashboard:
         return MaterialPageRoute(builder: (_) => const DashBoardPage());
+      case RouteName.notificationPage:
+        return MaterialPageRoute(builder: (_) => const NotificationPage());
       //? requests page
       case RouteName.requests:
         return MaterialPageRoute(builder: (_) => const RequestsPage());

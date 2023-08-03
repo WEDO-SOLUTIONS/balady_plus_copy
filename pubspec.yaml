@@ -219,6 +219,7 @@ flutter:
     - assets/etmam_app/icons/svg/bottom_navigation_icons/
     - assets/etmam_app/icons/svg/social_media/
     - assets/etmam_app/images/
+    - assets/animation/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

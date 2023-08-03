@@ -43,6 +43,7 @@ class IconPath {
   static const notificationIc2 = '${_svgIconPath}notification2$_svg';
   static const arrowForward2 = '${_svgIconPath}arrow_forward$_svg';
   static const receiveSquare = '${_svgIconPath}receive-square$_svg';
+  static const note2 = '${_svgIconPath}note_2$_svg';
 
   static const informationCircleIcon =
       '${_svgIconPath}informationCircleIcon$_svg';
@@ -227,6 +228,8 @@ class IconPath {
   static const clipboard = '${_svgCRIconPath}clipboard$_svg';
   static const building = '${_svgCRIconPath}building$_svg';
   static const shopData = '${_svgCRIconPath}shop_data$_svg';
+  static const warning2 = '${_svgCRIconPath}warning_2$_svg';
+  static const boxTick = '${_svgCRIconPath}box_tick$_svg';
 
   // Wallet
   static const personalCard = '${_svgWalletIconPath}personal_card$_svg';

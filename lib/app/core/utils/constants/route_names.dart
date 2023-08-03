@@ -24,6 +24,7 @@ class RouteName {
   //! Setting
   static const personalInformation = '/personalInformation';
   static const dashboard = '/dashboard';
+  static const notificationPage = '/notificationPage';
   static const requests = '/requests';
   static const invoices = '/invoices';
   static const invoiceDetails = '/invoiceDetails';

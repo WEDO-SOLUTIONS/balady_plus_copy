@@ -10,7 +10,7 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../core/errors/errors_exports.dart' show ServerFailure;
 import '../../../../../core/utils/utils_exports.dart'
-    show BlocRequestStatus, CommonFunctions;
+    show BlocRequestStatus, CommonFunctions, Prayers;
 import '../../../../vd/vd_exports.dart' show GISParams, GISResponse, GetGISData;
 import '../../prayer_times_exports.dart'
     show
