@@ -149,14 +149,14 @@ dependencies:
   percent_indicator: ^4.2.3
   flutter_staggered_grid_view: ^0.6.0
   flutter_cached_pdfview: ^0.4.2
-  pdfx:
   provider: ^6.0.2 
   skeletonizer: ^0.3.0
   launch_review: ^3.0.1
   network_info_plus: ^2.1.4+1
   dart_ipify: ^1.1.1
   timelines: ^0.1.0
-  
+  pdfx: 
+  sentry_flutter: ^7.9.0
   #test_package:
  #   path: packages/test_package
   flutter_qiblah: ^2.2.0
@@ -192,6 +192,7 @@ flutter:
     - assets/icons/svg/
     - assets/icons/svg/map/
     - assets/icons/svg/prayers/
+    - assets/icons/svg/athkar/
     - assets/icons/svg/services/
     - assets/icons/svg/weather/
     - assets/icons/svg/profile/
@@ -220,6 +221,7 @@ flutter:
     - assets/etmam_app/icons/svg/social_media/
     - assets/etmam_app/images/
     - assets/animation/
+    # - assets/services/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

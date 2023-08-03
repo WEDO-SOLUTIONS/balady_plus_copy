@@ -37,9 +37,11 @@ class AppColor {
   static const Color algae = Color(0xFF4dac5f);
   static const Color algaea = Color(0xFFF9FAFB);
   static const Color greenishYellow500 = Color(0xFF9bd65c);
+  static const Color blueSkyLight800 = Color(0xff155f75);
   static const Color greenishYellow800 = Color(0xFF4f8a0f);
   static const Color lichen = Color(0xFF95b46a);
   static const Color grossGreen = Color(0xFF82cf17);
+  static const Color splashGreen = Color(0xff165064);
   static const Color lightKhaki = Color(0xFFe6f7d4);
   static const Color lightGreen1 = Color(0xFF4f8a0f);
   static const Color redBrown = Color(0xFF9a1111);
@@ -142,4 +144,7 @@ class AppColor {
   static const Color green60 = Color(0x99E6EFEF);
   static const Color divider = Color(0x0FE6EFEF);
   static const Color brown = Color(0xffBDBA97);
+
+  static const Color athkarAppbarGreen = Color(0xff1C7372);
+  static const Color athkarAppbarGreen2 = Color(0xff127F4C);
 }

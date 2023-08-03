@@ -470,5 +470,17 @@
   "violationBillNo": "violation bill number",
   "issueViolationDate": "The date the violation was issued",
   "objectionLastApplyDate": "Objection LastApplyDate",
-  "violationAmount": "the fine value"
+  "violationAmount": "the fine value", 
+
+  "AthkarMainPageTitle" : "Athkar",
+  "reset": "Reset",
+  "boarding_main_title": "",
+  "boarding_close_title":"",
+  "boarding_service_title":"",
+  "boarding_account_title":"",
+  "boarding_subtitle": "",
+  "boarding_button_text": "",
+  "skip":"", 
+  "reset": "Reset"
+
 }

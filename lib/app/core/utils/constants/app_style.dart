@@ -41,6 +41,7 @@ class AppStyle {
     fontFamily: fontFamily,
     height: 1.0,
   );
+
   static final radioButtonStyle = TextStyle(
     fontSize: 14.0,
     fontWeight: AppFontWeight.medium.fontWeight,
@@ -332,6 +333,57 @@ class AppStyle {
     fontWeight: AppFontWeight.semiBold.fontWeight,
     color: AppColor.blackModern50Light,
     fontFamily: fontFamily,
+  );
+  // Athkar Styles
+  static final resetAthkarTextStyle = TextStyle(
+      fontSize: 16,
+      fontWeight: AppFontWeight.semiBold.fontWeight,
+      fontFamily: fontFamily,
+      color: AppColor.grey1000);
+
+  static final countAthkarStyle = TextStyle(
+    fontSize: 22.05,
+    fontWeight: AppFontWeight.bold.fontWeight,
+    fontFamily: fontFamily,
+    color: AppColor.blackModern50Light,
+  );
+<<<<<<< HEAD
+  static final boardingTitle = TextStyle(
+    color: AppColor.grey1000,
+    fontSize: 24,
+    fontWeight: AppFontWeight.bold.fontWeight,
+    fontFamily: fontFamily,
+  );
+  static final boardingSubtitle = TextStyle(
+    color: AppColor.blackModern700Light,
+    fontSize: 14,
+    fontWeight: AppFontWeight.bold.fontWeight,
+    fontFamily: fontFamily,
+  );
+  static final boardingButtonStyle = TextStyle(
+    color: AppColor.white,
+    fontSize: 16,
+    fontWeight: AppFontWeight.bold.fontWeight,
+    fontFamily: fontFamily,
+  );
+  static final boardingAppBarTitleStyle = TextStyle(
+    fontFamily: fontFamily,
+    fontSize:16, 
+    fontWeight:AppFontWeight.medium.fontWeight,
+    color: AppColor.white,
+=======
+  static final desscriptionAthkarStyle = TextStyle(
+    fontSize: 14,
+    fontWeight: AppFontWeight.bold.fontWeight,
+    fontFamily: fontFamily,
+    color: AppColor.primary800Light,
+  );
+  static final countTextAthkarStyle = TextStyle(
+    color: AppColor.blackModern900Light,
+    fontSize: 18,
+    fontWeight: AppFontWeight.bold.fontWeight,
+    fontFamily: fontFamily,
+>>>>>>> 9cc285cad016a407e5b7f2177e2c1b583f5b24c5
   );
 
   static final dateTextStyle = TextStyle(

@@ -7,6 +7,8 @@ const _svgProfileIconPath = 'assets/icons/svg/profile/';
 const _svgNearbyIconPath = 'assets/icons/svg/nearby/';
 const _pngVDIconPath = 'assets/icons/png/vd/';
 const _svgVDIconPath = 'assets/icons/svg/vd/';
+const _svgAthkarIconPath = 'assets/icons/svg/athkar/';
+const _boardingLogoPath = 'assets/icons/svg/boarding/';
 
 const _pngQRIconPath = 'assets/icons/png/qr/';
 const _svgQRIconPath = 'assets/icons/svg/qr/';
@@ -247,4 +249,15 @@ class IconPath {
   static const taskSquare1 = '${_svgIconPath}task_square$_svg';
   static const taskSquare2 = '${_svgIconPath}task_square2$_svg';
   static const taskSquare3 = '${_svgIconPath}task_square3$_svg';
+  //Athkar
+
+  static const morningAthkarIcon = '${_svgAthkarIconPath}morning_athkar$_svg';
+  static const sleepingAthkarIcon = '${_svgAthkarIconPath}evening_athkar$_svg';
+  static const eveningAthkarIcon = '${_svgAthkarIconPath}sleeping_athkar$_svg';
+  static const reset = '${_svgAthkarIconPath}reset$_svg';
+
+  static const muslimNumberFrame =
+      '${_svgAthkarIconPath}muslim_number_frame$_svg';
+
+  static const boardingSplashLogo = '${_boardingLogoPath}balady_logo$_svg';
 }

@@ -1,5 +1,8 @@
 import 'package:balady_plus/app/features/daem/daem_exports.dart';
 import 'package:balady_plus/app/features/commercial_license/commercial_license_exports.dart';
+import 'package:balady_plus/app/features/athkar/presentation/pages/athkar_entity_content.dart';
+import 'package:balady_plus/app/features/boarding/presentation/pages/boarding_main_page.dart';
+import 'package:balady_plus/app/features/boarding/presentation/pages/boarding_pages.dart';
 import 'package:balady_plus/app/features/objectable_transactions/domain/entities/create_objection_page_params.dart';
 import 'package:balady_plus/app/features/objections/domain/entities/objection_details.dart';
 import 'package:balady_plus/app/features/profile_features/incidents/presentation/pages/dc_details.dart';
@@ -28,6 +31,14 @@ import '../../features/bottom_navigation/bottom_navigation_exports.dart' as b;
 import '../../features/calculator/presentation/pages/service_calculator_location_screen.dart';
 import '../../features/calculator/presentation/pages/service_calculator_screen.dart';
 import '../../features/daem/presentation/pages/daem_ticket_page.dart';
+import '../../features/athkar/athkar_exports.dart'
+    show
+        Athkar,
+        AthkarEntities,
+        AthkarEntitiesParams,
+        AthkarEntityContentParams;
+import '../../features/bottom_navigation/bottom_navigation_exports.dart'
+    show BottomNavigationPage;
 import '../../features/entry_point/entry_point_exports.dart' show SsoUserInfo;
 import '../../features/health_certificate/presentation/core/models/health_request_details_screen_args.dart';
 import '../../features/health_certificate/presentation/pages/health_license_details_screen.dart';
@@ -360,10 +371,10 @@ class AppRouter {
         );
 
       case RouteName.VeichlesListPage:
-        VeichlesListPageParams paramas =
+        VeichlesListPageParams params =
             settings.arguments as VeichlesListPageParams;
         return MaterialPageRoute(
-          builder: (_) => VeichlesListPage(params: paramas),
+          builder: (_) => VeichlesListPage(params: params),
         );
 
       case RouteName.CreateRetriveDetailsPage:
@@ -614,6 +625,29 @@ class AppRouter {
         return MaterialPageRoute(
           builder: (_) => DaemDetailsPage(
             params: item!,
+          ),
+        );
+
+      case RouteName.mainAthkarPage:
+        return MaterialPageRoute(
+          builder: (_) => Athkar(),
+        );
+      case RouteName.boardingPage:
+        return MaterialPageRoute(
+          builder: (_) => BoardingMainPage(),
+        );
+      case RouteName.athkarEntitesPage:
+        final params = settings.arguments as AthkarEntitiesParams;
+        return MaterialPageRoute(
+          builder: (_) => AthkarEntities(
+            params: params,
+          ),
+        );
+      case RouteName.athkarEntityContentPage:
+        final params = settings.arguments as AthkarEntityContentParams;
+        return MaterialPageRoute(
+          builder: (_) => AthkarEntityContent(
+            params: params,
           ),
         );
 

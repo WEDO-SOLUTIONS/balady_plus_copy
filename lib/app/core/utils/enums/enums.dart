@@ -65,3 +65,5 @@ enum RequestsType {
   final String type;
   final String title;
 }
+
+enum ATHKAR_CATAGORIES { morning, sleep, evening }

@@ -197,4 +197,10 @@ class EtmamRoutesNames {
   static const deleteOrdersPage = '/DeleteOrdersPage';
 
   static const editBiddingForm = '/EditBiddingForm';
+
+  // -------  Athkar ---------
+  static const mainAthkarPage = '/mainAthkarPage';
+  static const athkarEntitesPage = '/athkarEntitesPage';
+  static const athkarEntityContentPage = '/athkarEntityContentPage';
+  static const boardingPage = '/boardingPage';
 }

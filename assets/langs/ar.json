@@ -1917,6 +1917,7 @@
 "license_card_license_details": "تفاصيل الشهادة",
 "activity_cost": "رسوم الخدمة",
 "visit_cost": "رسوم الكشفية",
+"reset": "تصفية العداد",
 "lbl_final_cost": "التكلفة النهائية",
 "lbl_total_price": "تكلفة الرسوم الإجمالية",
 "lbl_devided_as": "مقسمة حسب التالي :",
@@ -2591,6 +2592,16 @@
 "expire": "تنتهي",
 "toViewAllLicense": "لمشاهده كل الرخص الحاليه اضغط علي الكروت للمزيد",
 "scanQr": "أمسح الرمز السريع لإظهار بيانات الرخصة كاملة", 
+"carYear": "سنة الصنع",
+"AthkarMainPageTitle" : "الاذكار",
+"boarding_main_title": "الرئيسية",
+"boarding_close_title":"قريب مني",
+"boarding_service_title":"الخدمات",
+"boarding_account_title":"الحساب",
+"boarding_subtitle": "تعرف على الأماكن والخدمات القريبة منك وفقًا لتصنيفات متنوعة تجعل الوصول إليها أسهل.",
+"boarding_button_text": "انهاء ",
+"skip":"تخطى"
+
 
 
 
