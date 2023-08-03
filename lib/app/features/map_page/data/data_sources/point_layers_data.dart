@@ -6,7 +6,7 @@ class PointLayersData {
   final String description;
   final String type;
 
-  final GeoPointMessage? latLng;
+  final GeoPointWithElevationMessage? latLng;
 
   PointLayersData({
     required this.id,

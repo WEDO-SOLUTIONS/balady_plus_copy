@@ -15,7 +15,7 @@ class DivisionalChartBoundaries extends PointLayersData {
       required name,
       required type,
       required description,
-      required latLng,
+      latLng,
       this.color = 0xFF828282})
       : super(
           id: id,
@@ -32,11 +32,6 @@ class DivisionalChartBoundaries extends PointLayersData {
         description: json['attributes']["DATAOWNER"] ?? 'description',
         type: json['attributes']["AREANAME_SPLIT"] ?? 'type',
 
-        // not Have Center Point
-        latLng: GeoPointMessage(
-          latitude: 26.22,
-          longitude: 46.4444,
-        ),
         /////////////////////////
         paths: getList(json['geometry']["rings"]), // not tested yat
       );

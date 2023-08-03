@@ -33,7 +33,7 @@ class Excavations extends PointLayersData {
     required name,
     required type,
     required description,
-    required latLng,
+    latLng,
     this.status,
     this.licStatus,
     this.nameAr,

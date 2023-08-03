@@ -19,7 +19,7 @@ class LayersGisViewModel extends BaseViewModel {
       id: 0,
       type: "",
       geometryType: "",
-      name: "مرافق المدينة",
+      name: "وصول أسهل",
       defaultVisibility: true);
   // List<SubLayers>? subLayers;
 

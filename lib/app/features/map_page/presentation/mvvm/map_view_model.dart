@@ -28,12 +28,12 @@ import '../../data/model/white_lands.dart';
 import '../../data/repositories/layers_repositories.dart';
 
 const int mil = 300;
+TextEditingController searchController = TextEditingController();
 
 class MapViewModel extends BaseViewModel {
   final LayersRepositories layersRepositories;
 
   MapViewModel({required this.layersRepositories});
-  TextEditingController searchController = TextEditingController();
   final selectedPointId = ValueNotifier<DgisObjectIdMessage?>(null);
   final selectedPoint = ValueNotifier<PointLayersData?>(null);
 
@@ -74,6 +74,7 @@ class MapViewModel extends BaseViewModel {
   bool updateMap = true;
 
   Future<void> selectCategory({required SearchCategoryMessage category}) async {
+    searchController.clear();
     if (category == selectedCategory.value) {
       selectedCategory.value = null;
     } else {
@@ -84,19 +85,38 @@ class MapViewModel extends BaseViewModel {
     isSearchLoading.notifyListeners();
     await controller.removeAllMarkers();
 
-    performSearch(
-      queryText: selectedCategory.value!.displayName(),
-    );
+    if (selectedCategory.value != null)
+      performSearch(
+        queryText: selectedCategory.value!.displayName(),
+      );
     isSearchLoading.value = false;
     isSearchLoading.notifyListeners();
 
     selectedPointId.value = null;
     selectedPointId.notifyListeners();
+
+    if (viewHomeBottomSheet.value == false) {
+      bottomSheetSize.value = 0.1;
+      viewHomeBottomSheet.value = true;
+      viewHomeBottomSheet.notifyListeners();
+      bottomSheetSize.notifyListeners();
+    }
   }
 
   Future<void> performSearch(
-      {required String queryText, SearchCategoryMessage? category}) async {
+      {required String queryText,
+      SearchCategoryMessage? category,
+      bool showLoading = false}) async {
     try {
+      if (showLoading) {
+        await controller.removeAllMarkers();
+        await controller.removeAll();
+
+        isSearchLoading.value = true;
+        selectedCategory.value = null;
+        selectedCategory.notifyListeners();
+        isSearchLoading.notifyListeners();
+      }
       searchController.text = selectedCategory.value != null
           ? selectedCategory.value!.displayName()
           : queryText;
@@ -114,6 +134,11 @@ class MapViewModel extends BaseViewModel {
               isOpenNow: false,
               searchRect: _lastHandledEvent?.visibleRect.geoRectMessage(),
             );
+
+      if (showLoading) {
+        isSearchLoading.value = false;
+        isSearchLoading.notifyListeners();
+      }
 
       if (data.itemMarkerInfos != null) {
         List<Marker> markers = [];
@@ -140,11 +165,14 @@ class MapViewModel extends BaseViewModel {
               selectedInvetmentPoint.value = null;
               selectedImtethalPoint.value = null;
               selectedWhiteLands.value = null;
-              if (viewHomeBottomSheet.value != false) {
-                viewHomeBottomSheet.value = false;
-                viewHomeBottomSheet.notifyListeners();
-              }
+              selectedImtethalPoint.notifyListeners();
+              selectedDiggingPoint.notifyListeners();
+              selectedWhiteLands.notifyListeners();
               selectedPointId.notifyListeners();
+              viewHomeBottomSheet.value = false;
+              viewHomeBottomSheet.notifyListeners();
+              bottomSheetSize.value = 0.1;
+              bottomSheetSize.notifyListeners();
             },
           ));
         }
@@ -190,6 +218,7 @@ class MapViewModel extends BaseViewModel {
     final result = await controller.initialize();
     if (!result.wasInitialized) {
       initialized.value = false;
+
       return false;
     }
 
@@ -198,8 +227,8 @@ class MapViewModel extends BaseViewModel {
     await controller.setCameraPosition(
       CameraPositionMessage(
         point: GeoPointMessage(
-          latitude: 24.713520,
-          longitude: 46.675230,
+          latitude: 26.3336057,
+          longitude: 50.120372,
         ),
         zoom: 13,
         tilt: 0,
@@ -207,7 +236,7 @@ class MapViewModel extends BaseViewModel {
       ),
     );
 
-    final permission = await Permission.location.request();
+    /* final permission = await Permission.location.request();
     if (permission.isGranted) {
       await controller.onLocationPremissionGranted();
       geoLocator.Position position =
@@ -224,9 +253,9 @@ class MapViewModel extends BaseViewModel {
           zoom: 13,
           tilt: 0,
           bearing: 0,
-        ),
-      );
-    }
+        ), );
+     
+    }*/
 
     await controller.changeFollowState();
 
@@ -281,7 +310,7 @@ class MapViewModel extends BaseViewModel {
   void showDialog() {
     clearAllCards();
     viewHomeBottomSheet.value = true;
-    bottomSheetSize.value = 0.5;
+    bottomSheetSize.value = 0.01;
     bottomSheetSize.notifyListeners();
     viewHomeBottomSheet.notifyListeners();
   }
@@ -423,18 +452,22 @@ class MapViewModel extends BaseViewModel {
 
   callSearch() async {
     print("search");
-    await controller.removeAll();
-    if (selectedCategory.value != null &&
-        gisSelectedLayer == GISMapLayers.cityPlaces) {
-      isSearchLoading.value = true;
-      isSearchLoading.notifyListeners();
+    await controller.removeAllMarkers();
 
+    await controller.removeAll();
+
+    isSearchLoading.value = true;
+    isSearchLoading.notifyListeners();
+    String? query = selectedCategory.value != null
+        ? selectedCategory.value!.displayName()
+        : searchController.text;
+    if (query != null && query.isNotEmpty)
       await performSearch(
-        queryText: selectedCategory.value!.displayName(),
+        queryText: query,
       );
-      isSearchLoading.value = false;
-      isSearchLoading.notifyListeners();
-    }
+    isSearchLoading.value = false;
+    isSearchLoading.notifyListeners();
+
     print("layerSelected $layerSelected");
 
     if (layerSelected.value == null) return;
@@ -548,18 +581,9 @@ class MapViewModel extends BaseViewModel {
               ),
             ),
             onTap: () {
+              print(element);
               selectedPointId.notifyListeners();
               switch (gisSelectedLayer) {
-                case GISMapLayers.Digging:
-                  selectedPoint.value = element;
-
-                  selectedDiggingPoint.value = element;
-                  selectedInvetmentPoint.value = null;
-                  selectedImtethalPoint.value = null;
-                  selectedWhiteLands.value = null;
-
-                  break;
-
                 case GISMapLayers.Opportunities:
                   selectedPoint.value = element;
                   selectedInvetmentPoint.value = element;
@@ -568,33 +592,12 @@ class MapViewModel extends BaseViewModel {
                   selectedWhiteLands.value = null;
 
                   break;
-                case GISMapLayers.BSAimtithalBuildingsCertificateL:
-                  print("Clickkkkked");
-                  selectedPoint.value = element;
-                  selectedImtethalPoint.value = element;
-
-                  selectedInvetmentPoint.value = null;
-                  selectedDiggingPoint.value = null;
-                  selectedWhiteLands.value = null;
-
-                  break;
-
-                case GISMapLayers.BSWhiteParcelS:
-                  print("Clickkkkked");
-                  selectedPoint.value = element;
-                  selectedImtethalPoint.value = null;
-
-                  selectedInvetmentPoint.value = null;
-                  selectedDiggingPoint.value = null;
-                  selectedWhiteLands.value = element;
-
-                  break;
-
                 default:
                   break;
               }
 
               selectedPointId.value = null;
+              selectedInvetmentPoint.notifyListeners();
               selectedImtethalPoint.notifyListeners();
               selectedDiggingPoint.notifyListeners();
               selectedWhiteLands.notifyListeners();
@@ -645,12 +648,6 @@ class MapViewModel extends BaseViewModel {
                   selectedWhiteLands.value = null;
                   break;
 
-                case GISMapLayers.Opportunities:
-                  selectedInvetmentPoint.value = element;
-                  selectedDiggingPoint.value = null;
-                  selectedImtethalPoint.value = null;
-                  selectedWhiteLands.value = null;
-                  break;
                 case GISMapLayers.BSAimtithalBuildingsCertificateL:
                   print("Clickkkkked");
                   selectedImtethalPoint.value = element;

@@ -5,18 +5,15 @@ import 'package:balady_plus/app/features/map_page/extensions/search_category_ext
 import 'package:dgis_map/library.dart';
 import 'package:flutter/widgets.dart';
 
-
 class NearByViewModel extends BaseViewModel {
   ValueNotifier<SearchCategoryMessage?> selectedCategory = ValueNotifier(null);
 
   final DgisMapController controller;
   final isSearchLoading = ValueNotifier(false);
-  final ValueNotifier<SearchResultMessage?> searchResultMessage = ValueNotifier(null);
-
-
+  final ValueNotifier<SearchResultMessage?> searchResultMessage =
+      ValueNotifier(null);
 
   NearByViewModel(this.controller);
-
 
   Future<void> selectCategory({required SearchCategoryMessage category}) async {
     if (category == selectedCategory.value) {
@@ -28,8 +25,8 @@ class NearByViewModel extends BaseViewModel {
 
     isSearchLoading.notifyListeners();
     performSearch(
-      // queryText: selectedCategory.value!.displayName(),
-    );
+        // queryText: selectedCategory.value!.displayName(),
+        );
     isSearchLoading.value = false;
     isSearchLoading.notifyListeners();
   }
@@ -40,13 +37,11 @@ class NearByViewModel extends BaseViewModel {
       //     ? selectedCategory.value!.displayName()
       //     : queryText;
 
-     searchResultMessage.value = await controller.searchByCategory(
+      searchResultMessage.value = await controller.searchByCategory(
         selectedCategory.value!,
         sortingType: SortingTypeMessage.byDistance,
-        isOpenNow: false,
         // searchRect: _lastHandledEvent?.visibleRect.geoRectMessage(),
       );
-
 
       if (searchResultMessage.value!.firstPage?.items != null) {
         final responseDistance = await controller.getDistanceTo(
@@ -62,6 +57,7 @@ class NearByViewModel extends BaseViewModel {
         print("Releasing Page");
         await controller.releasePage(searchResultMessage.value!.firstPage!);
       }
+      notifyListeners();
       // print(data);
     } catch (e) {
       print(e);
@@ -69,18 +65,16 @@ class NearByViewModel extends BaseViewModel {
   }
 
   List<DistanceRequestMessage> _mapToDistanceRequest(
-      List<DirectoryObjectMessage> values) =>
+          List<DirectoryObjectMessage> values) =>
       values
           .where((element) => element.id != null)
           .where((element) => element.markerPosition != null)
           .map((e) => DistanceRequestMessage(
-        geoPoint: GeoPointMessage(
-          latitude: e.markerPosition!.latitude,
-          longitude: e.markerPosition!.longitude,
-        ),
-        dgisObjectId: e.id!,
-      ))
+                geoPoint: GeoPointMessage(
+                  latitude: e.markerPosition!.latitude,
+                  longitude: e.markerPosition!.longitude,
+                ),
+                dgisObjectId: e.id!,
+              ))
           .toList();
-
-
 }

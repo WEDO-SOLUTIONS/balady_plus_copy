@@ -23,7 +23,15 @@ class SearchMapWidget extends StatelessWidget {
 
     return Column(
       children: [
-        TextFormField(
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            SvgPicture.asset("assets/icons/svg/profile.svg"),
+            SvgPicture.asset("assets/icons/svg/notifications_icon.svg"),
+          ],
+        )
+
+        /* TextFormField(
           controller: mapViewModel.searchController,
           textInputAction: TextInputAction.search,
           decoration: InputDecoration(
@@ -66,10 +74,9 @@ class SearchMapWidget extends StatelessWidget {
             }
           },
           // onChanged: (text) => searchItem(text: text),
-        ),
-        const SizedBox(
-          height: 6,
-        ),
+        ),*/
+        // Container(color: Colors.black, height: 10, width: 20,),
+        ,
         ValueListenableBuilder(
             valueListenable: mapViewModel.selectedCategory,
             builder: (context, value, _) {
@@ -144,9 +151,6 @@ class SearchMapWidget extends StatelessWidget {
                     )
                   : SizedBox();
             }),
-        const SizedBox(
-          height: 6,
-        ),
       ],
     );
   }

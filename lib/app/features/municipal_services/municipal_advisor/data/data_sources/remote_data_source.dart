@@ -1056,7 +1056,7 @@ class MunicipalAdvisorRemoteDataSourceImplementation
     try {
       final response = await webService.dio.post(
           '${ApiUrl.additionalActivity}/${params.consultationKey}',
-          data: params.ids,
+          data: params.ids.toList(),
           options: Options(headers: {"Content-Type": "application/json"}));
 
       final data = response.data;

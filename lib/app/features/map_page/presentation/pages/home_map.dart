@@ -42,12 +42,13 @@ class HomeMap extends StatelessWidget {
     return Stack(
       children: [
         const MapScreenUrbi(),
-        Padding(
-          padding: const EdgeInsets.all(Constants.semiMediumPadding),
+        Container(
           child: Column(
             children: [
-              const HomeAppBar(),
-              Constants.verticalSpaceSmall,
+              //    const HomeAppBar(),
+              SizedBox(
+                height: 16,
+              ),
               const SearchMapWidget(),
               /*ValueListenableBuilder<bool>(
                 valueListenable: mapViewModel.viewHomeBottomSheet,
@@ -159,8 +160,10 @@ class HomeMap extends StatelessWidget {
                 return selectedPoint == null
                     ? const SizedBox()
                     : GeneralMapCardWidget(
-                        icon:
-                            mapViewModel.selectedCategory.value!.cardIconName(),
+                        icon: mapViewModel.selectedCategory.value != null
+                            ? mapViewModel.selectedCategory.value!
+                                .cardIconName()
+                            : "",
                         onClose: () {
                           mapViewModel.showDialog();
                         },

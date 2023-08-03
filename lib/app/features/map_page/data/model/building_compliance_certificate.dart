@@ -25,7 +25,7 @@ class BuildingComplianceCertificate extends PointLayersData {
       required name,
       required type,
       required description,
-      required latLng,
+      latLng,
       this.AMANANAME,
       this.DISTRICTNAME,
       this.MUNICIPALITYNAME,
@@ -60,12 +60,7 @@ class BuildingComplianceCertificate extends PointLayersData {
           STREETTYPE: json['attributes']["STREETTYPE"] ?? 'type',
           STREETWIDTH: json['attributes']["STREETWIDTH"] ?? 'type',
 
-          // not Have Center Point
-          latLng: GeoPointMessage(
-            latitude: 26.22,
-            longitude: 46.4444,
-          ),
-          /////////////////////////
+          ///////////////
           paths: getList(json['geometry']["paths"])
 
           /*paths: [

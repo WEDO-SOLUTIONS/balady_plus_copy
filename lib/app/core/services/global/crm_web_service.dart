@@ -104,6 +104,7 @@ class AppInterceptors extends Interceptor {
             : false);
     options.headers
         .putIfAbsent(ApiHeader.verifyingKEY.name, () => verifyingKEY);
+    options.headers.putIfAbsent("x-channel-id", () => "MOBILE");
     //if (options.headers['Authorization'] == null) {
     print(options.headers);
     return handler.next(options);

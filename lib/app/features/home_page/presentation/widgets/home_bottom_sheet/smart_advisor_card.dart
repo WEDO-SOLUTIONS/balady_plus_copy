@@ -10,7 +10,7 @@ class BaladySmartAdvisorCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return HomeSection(
-      title: 'المستشار البلدي',
+      title: 'المستشار الذكي',
       child: Container(
         height: 172,
         width: MediaQuery.sizeOf(context).width,

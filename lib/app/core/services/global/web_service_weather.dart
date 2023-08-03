@@ -78,7 +78,7 @@ class AppInterceptors extends Interceptor {
     }
 
     String url = options.uri.toString();
-
+    options.headers.putIfAbsent("x-channel-id", () => "MOBILE");
     //if (options.headers['Authorization'] == null) {
     print(options.headers);
     return handler.next(options);

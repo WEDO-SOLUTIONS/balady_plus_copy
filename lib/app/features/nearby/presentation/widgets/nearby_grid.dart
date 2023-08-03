@@ -20,11 +20,13 @@ class NearbyGrid extends StatelessWidget {
         builder: (_, isLoading, __) {
           return isLoading
               ? const Center(child: CircularProgressIndicator())
-              : nearByViewModel.searchResultMessage.value?.firstPage?.items.isNotEmpty ??
+              : nearByViewModel.searchResultMessage.value?.firstPage?.items
+                          .isNotEmpty ??
                       false
                   ? GridView.builder(
                       padding: const EdgeInsets.all(8),
-                      itemCount: nearByViewModel.searchResultMessage.value!.firstPage!.items.length,
+                      itemCount: nearByViewModel
+                          .searchResultMessage.value!.firstPage!.items.length,
                       gridDelegate:
                           const SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 2,
@@ -33,7 +35,11 @@ class NearbyGrid extends StatelessWidget {
                         mainAxisSpacing: 20,
                       ),
                       itemBuilder: (context, index) {
-                        DirectoryObjectMessage item = nearByViewModel.searchResultMessage.value!.firstPage!.items[index]!;
+                        DirectoryObjectMessage item = nearByViewModel
+                            .searchResultMessage
+                            .value!
+                            .firstPage!
+                            .items[index]!;
                         return NearbyItem(
                           title: item.title,
                           subtitle: item.subtitle,

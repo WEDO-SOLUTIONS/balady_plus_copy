@@ -85,7 +85,7 @@ enum GISMapLayers {
         "STREETTYPE",
         "STREETWIDTH"
       ],
-      resultRecordCount: 10),
+      resultRecordCount: 100),
 
   /*VDPriorityAreaRouteS(layerId: 8, outFieldsShort: [
     "OBJECTID",
@@ -145,7 +145,7 @@ enum GISMapLayers {
         "OBJECTID",
       ],
       outFieldsLong: [],
-      resultRecordCount: 10),
+      resultRecordCount: 50),
 
   CadastralParcelsLand(
       layerId: 11,

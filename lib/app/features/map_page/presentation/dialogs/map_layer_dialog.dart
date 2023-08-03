@@ -58,6 +58,9 @@ class _MapLayersDialogState extends State<MapLayersDialog> {
                                   layerSelected = layers[index];
                                   print(layerSelected);
                                 });
+                                mapViewModel.selectLayers(layers[index]);
+                                widget.layersModel.selectLayers(layers[index]);
+                                Navigator.of(context).pop();
                               },
                               child: Container(
                                 height: 56,
@@ -88,6 +91,12 @@ class _MapLayersDialogState extends State<MapLayersDialog> {
                                         setState(() {
                                           layerSelected = layers[index];
                                         });
+
+                                        mapViewModel
+                                            .selectLayers(layers[index]);
+                                        widget.layersModel
+                                            .selectLayers(layers[index]);
+                                        Navigator.of(context).pop();
                                       },
                                     )
                                   ],
@@ -101,19 +110,6 @@ class _MapLayersDialogState extends State<MapLayersDialog> {
                   : const SizedBox();
             },
           ),
-          const CustomVerticalSpace(height: 32),
-          ElevatedButtonWidget.custom(
-            text: "apply".tr(),
-            isDisabled: layerSelected == null,
-            onPressed: () {
-              print(layerSelected);
-              if (layerSelected != null) {
-                mapViewModel.selectLayers(layerSelected!);
-                widget.layersModel.selectLayers(layerSelected!);
-                Navigator.of(context).pop();
-              }
-            },
-          )
         ],
       ),
     );

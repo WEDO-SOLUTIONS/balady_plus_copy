@@ -1,6 +1,7 @@
 import 'package:balady_plus/app/features/map_page/presentation/mvvm/map_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
+import 'package:provider/provider.dart';
 
 import '../../../../../core/utils/utils_exports.dart';
 import '../../../../_shared_feature_/shared_feature_exports.dart';
@@ -85,7 +86,10 @@ class DraggableHeaderComponent extends StatelessWidget {
             borderColor: AppColor.primary900Light.withOpacity(0.1),
             onSubmitted: (text) {
               if (text.isNotEmpty) {
-                mapViewModel.performSearch(queryText: text);
+                MapViewModel mapViewModel =
+                    Provider.of<MapViewModel>(context, listen: false);
+
+                mapViewModel.performSearch(queryText: text, showLoading: true);
               }
             },
           ),
