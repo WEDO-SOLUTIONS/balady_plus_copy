@@ -13,7 +13,8 @@ import '../../dashboard_exports.dart'
         DashboardBloc,
         DashboardCardEntity,
         DashboardProductDropDown,
-        DashboardState;
+        DashboardState,
+        NoDataWidget;
 import 'dashboard_card_statistics.dart';
 
 class DashboardCard extends StatelessWidget {
@@ -64,7 +65,9 @@ class DashboardCard extends StatelessWidget {
                   Flexible(child: DashboardProductDropDown(card: card)),
                 ],
               ),
-              DashboardCardStatistics(card: card),
+              state.cardsStates[card]?.totalCount == 0
+                  ? const NoDataWidget()
+                  : DashboardCardStatistics(card: card),
             ],
           ),
         );
