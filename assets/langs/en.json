@@ -272,6 +272,7 @@
   "popUpCloseRequest": "Would you like to close the request?",
   "popUpUploadFileLimitExceedsMessage": "The limit of {} megabytes has been exceeded.",
   "AthkarMainPageTitle" : "Athkar",
+<<<<<<< HEAD
   "reset": "Reset",
   "boarding_main_title": "",
   "boarding_close_title":"",
@@ -280,5 +281,10 @@
   "boarding_subtitle": "",
   "boarding_button_text": "",
   "skip":""
+=======
+  "reset": "Reset"
+
+
+>>>>>>> b00a09419daebea7e513d9acb4c9128f8c153b78
   
 }

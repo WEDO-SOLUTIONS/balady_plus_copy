@@ -140,7 +140,9 @@ dependencies:
   flutter_staggered_grid_view: ^0.6.0
   flutter_cached_pdfview: ^0.4.2
   pdfx: 
+<<<<<<< HEAD
 
+  sentry_flutter: ^7.9.0
   
   #test_package:
  #   path: packages/test_package

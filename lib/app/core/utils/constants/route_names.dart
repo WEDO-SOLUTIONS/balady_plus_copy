@@ -59,6 +59,10 @@ class RouteName {
   static const athkarEntitesPage = '/athkarEntitesPage';
   static const athkarEntityContentPage = '/athkarEntityContentPage';
 
+<<<<<<< HEAD
   // Boarding
   static const boardingPage = '/boardingPage';
+=======
+  static const boardingPage = '';
+>>>>>>> b00a09419daebea7e513d9acb4c9128f8c153b78
 }
