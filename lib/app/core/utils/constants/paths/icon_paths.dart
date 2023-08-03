@@ -223,4 +223,11 @@ class IconPath {
   static const card = '${_svgWalletIconPath}card$_svg';
   static const sliderVertical = '${_svgWalletIconPath}slider_vertical$_svg';
   static const shoppingBag = '${_svgWalletIconPath}shopping_bag$_svg';
+
+  // Building Requirements
+  static const checked = '${_svgIconPath}checked$_svg';
+  static const taskSquare1 = '${_svgIconPath}task_square$_svg';
+  static const taskSquare2 = '${_svgIconPath}task_square2$_svg';
+  static const taskSquare3 = '${_svgIconPath}task_square3$_svg';
+
 }
