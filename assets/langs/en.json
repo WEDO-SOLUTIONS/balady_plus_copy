@@ -207,7 +207,11 @@
   "municipalAdvisorAttachmentsBrand": "There is a brand",
   "municipalAdvisorPermitFees": "Permit fees (year/day)",
   "municipalAdvisorTotalPermitFees": "Total permit fees",
-
+  "municipalAdvisorEndChatConfirmation": "Are you sure you want to end the chat?",
+  "municipalAdvisorEndChatConfirmationHint": "This will delete your chat history",
+  "endChat": "End Chat",
+  "undo": "Undo",
+  
   "_profileComment": "Anything for Profile",
   "individual_account": "Individual Account",
   "personal_profile": "Personal Profile",

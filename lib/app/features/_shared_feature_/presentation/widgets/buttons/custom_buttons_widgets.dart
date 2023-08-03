@@ -268,7 +268,7 @@ class EnhancedCustomElevatedButtonWidget extends StatelessWidget {
   const EnhancedCustomElevatedButtonWidget(
       {Key? key,
       required this.btnPressed,
-      this.btnColor = AppColor.darkTurquoise,
+      this.btnColor = AppColor.primary900Light,
       this.btnHeight = 65.0,
       this.btnWidth = double.infinity,
       this.btnRadius = 2,
@@ -818,7 +818,7 @@ class CustomElevatedButtonWidget1 extends StatelessWidget {
   const CustomElevatedButtonWidget1(
       {Key? key,
       required this.btnPressed,
-      this.btnColor = AppColor.darkTurquoise,
+      this.btnColor = AppColor.primary900Light,
       this.btnHeight = 65.0,
       this.btnWidth = double.infinity,
       this.btnRadius = 2.5,
@@ -909,7 +909,7 @@ class CustomElevatedButtonWidget extends StatelessWidget {
   const CustomElevatedButtonWidget(
       {Key? key,
       required this.btnPressed,
-      this.btnColor = AppColors.darkTurquoise,
+      this.btnColor = AppColors.primary900Light,
       this.btnHeight = 65.0,
       this.btnWidth = double.infinity,
       this.btnRadius = 2,
@@ -1004,7 +1004,7 @@ class CustomElevatedButtonWithIconWidget1 extends StatelessWidget {
   const CustomElevatedButtonWithIconWidget1({
     Key? key,
     required this.btnPressed,
-    this.btnColor = AppColor.darkTurquoise,
+    this.btnColor = AppColor.primary900Light,
     this.btnHeight = 65.0,
     this.btnWidth = double.infinity,
     this.btnRadius = 2.5,
@@ -1093,7 +1093,7 @@ class CustomElevatedButtonWithIconWidget extends StatelessWidget {
   const CustomElevatedButtonWithIconWidget({
     Key? key,
     required this.btnPressed,
-    this.btnColor = AppColor.darkTurquoise,
+    this.btnColor = AppColor.primary900Light,
     this.btnHeight = 65.0,
     this.btnWidth = double.infinity,
     this.btnRadius = 2.5,

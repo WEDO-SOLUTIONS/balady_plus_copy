@@ -11,6 +11,8 @@ class MunicipalAdvisorState extends Equatable {
   final IsicActivityEntity? selectedIsicActivity;
   final List<IsicActivityEntity> isicSubActivities;
   final IsicActivityEntity? selectedIsicSubActivity;
+  final List<ActivityDetailsEntity> additionalActivities;
+  final List<ActivityDetailsEntity> selectedAdditionalActivities;
   final ActivityDetailsEntity? activityDetails;
   final List<AccommodationTypeEntity> accommodationTypes;
   final AccommodationTypeEntity? selectedAccommodationType;
@@ -18,12 +20,13 @@ class MunicipalAdvisorState extends Equatable {
   final bool? atmPaid;
   final num? selectedArea;
   final bool changingInfo;
-  final List<String>? issuingPredefinedConditions;
-  final List<LicensePermitEntity>? licensePermits;
-  final List<SupervisingAuthorityEntity>? supervisingAuthorities;
-  final List<String>? civilDefensePredefinedConditions;
+  final List<String> issuingPredefinedConditions;
+  final List<LicensePermitEntity> licensePermits;
+  final List<SupervisingAuthorityEntity> supervisingAuthorities;
+  final List<String> civilDefensePredefinedConditions;
   final List<CleaningEntity> cleaningMechanisms;
-  final List<CommercialOfficeEntity>? commercialOffices;
+  final List<CommercialOfficeEntity> commercialOffices;
+  final List<EngineeringOfficeEntity> engineeringOffices;
   final int maxYears;
   final ConditionsUrlsEntity? conditionsUrls;
   final List<FastflowConditionEntity> fastflowConditions;
@@ -57,6 +60,8 @@ class MunicipalAdvisorState extends Equatable {
     this.selectedIsicActivity,
     this.isicSubActivities = const <IsicActivityEntity>[],
     this.selectedIsicSubActivity,
+    this.additionalActivities = const <ActivityDetailsEntity>[],
+    this.selectedAdditionalActivities = const <ActivityDetailsEntity>[],
     this.activityDetails,
     this.accommodationTypes = const <AccommodationTypeEntity>[],
     this.selectedAccommodationType,
@@ -64,12 +69,13 @@ class MunicipalAdvisorState extends Equatable {
     this.atmPaid,
     this.selectedArea,
     this.changingInfo = false,
-    this.issuingPredefinedConditions,
-    this.licensePermits,
-    this.supervisingAuthorities,
-    this.civilDefensePredefinedConditions,
+    this.issuingPredefinedConditions = const <String>[],
+    this.licensePermits = const <LicensePermitEntity>[],
+    this.supervisingAuthorities = const <SupervisingAuthorityEntity>[],
+    this.civilDefensePredefinedConditions = const <String>[],
     this.cleaningMechanisms = const <CleaningEntity>[],
-    this.commercialOffices,
+    this.commercialOffices = const <CommercialOfficeEntity>[],
+    this.engineeringOffices = const <EngineeringOfficeEntity>[],
     this.maxYears = 0,
     this.conditionsUrls,
     this.fastflowConditions = const <FastflowConditionEntity>[],
@@ -108,10 +114,10 @@ class MunicipalAdvisorState extends Equatable {
       selectedShopContractOption != null;
 
   num permitHours(PermitsFeesEntity permit) {
-    final licensePermit = licensePermits?.firstWhere(
+    final licensePermit = licensePermits.firstWhere(
       (element) => element.permitTypeId == permit.actionTypeId,
     );
-    return licensePermit?.cost ?? 0;
+    return licensePermit.cost;
   }
 
   MunicipalAdvisorState copyWith({
@@ -124,6 +130,8 @@ class MunicipalAdvisorState extends Equatable {
     IsicActivityEntity? selectedIsicActivity,
     List<IsicActivityEntity>? isicSubActivities,
     IsicActivityEntity? selectedIsicSubActivity,
+    List<ActivityDetailsEntity>? additionalActivities,
+    List<ActivityDetailsEntity>? selectedAdditionalActivities,
     ActivityDetailsEntity? activityDetails,
     List<AccommodationTypeEntity>? accommodationTypes,
     AccommodationTypeEntity? selectedAccommodationType,
@@ -137,6 +145,7 @@ class MunicipalAdvisorState extends Equatable {
     List<String>? civilDefensePredefinedConditions,
     List<CleaningEntity>? cleaningMechanisms,
     List<CommercialOfficeEntity>? commercialOffices,
+    List<EngineeringOfficeEntity>? engineeringOffices,
     int? maxYears,
     ConditionsUrlsEntity? conditionsUrls,
     List<FastflowConditionEntity>? fastflowConditions,
@@ -173,6 +182,9 @@ class MunicipalAdvisorState extends Equatable {
       isicSubActivities: isicSubActivities ?? this.isicSubActivities,
       selectedIsicSubActivity:
           selectedIsicSubActivity ?? this.selectedIsicSubActivity,
+      additionalActivities: additionalActivities ?? this.additionalActivities,
+      selectedAdditionalActivities:
+          selectedAdditionalActivities ?? this.selectedAdditionalActivities,
       activityDetails: activityDetails ?? this.activityDetails,
       accommodationTypes: accommodationTypes ?? this.accommodationTypes,
       selectedAccommodationType:
@@ -190,6 +202,7 @@ class MunicipalAdvisorState extends Equatable {
           this.civilDefensePredefinedConditions,
       cleaningMechanisms: cleaningMechanisms ?? this.cleaningMechanisms,
       commercialOffices: commercialOffices ?? this.commercialOffices,
+      engineeringOffices: engineeringOffices ?? this.engineeringOffices,
       maxYears: maxYears ?? this.maxYears,
       conditionsUrls: conditionsUrls ?? this.conditionsUrls,
       fastflowConditions: fastflowConditions ?? this.fastflowConditions,
@@ -230,6 +243,8 @@ class MunicipalAdvisorState extends Equatable {
         selectedIsicActivity,
         isicSubActivities,
         selectedIsicSubActivity,
+        additionalActivities,
+        selectedAdditionalActivities,
         activityDetails,
         accommodationTypes,
         selectedAccommodationType,
@@ -243,6 +258,7 @@ class MunicipalAdvisorState extends Equatable {
         civilDefensePredefinedConditions,
         cleaningMechanisms,
         commercialOffices,
+        engineeringOffices,
         maxYears,
         conditionsUrls,
         fastflowConditions,
@@ -251,8 +267,8 @@ class MunicipalAdvisorState extends Equatable {
         selectedLicenseYear,
         boards,
         selectedCleanMechanism,
-        licenseFees,
         selectedPermits,
+        licenseFees,
         sideWalkParams,
         nonFoodVehicleCount,
         hasBrand,

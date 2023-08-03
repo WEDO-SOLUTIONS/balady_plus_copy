@@ -17,52 +17,32 @@ class SupervisingAuthorities extends StatelessWidget {
             children: [
               TextSpan(
                 text: '5. ${"municipalAdvisorAdvertisingOfficesTitle".tr()}\n',
-                style: const TextStyle(
-                  color: AppColor.darkTurquoise,
-                  fontSize: 12,
-                  fontFamily: 'Arabic UI Display',
-                  fontWeight: FontWeight.w600,
-                ),
+                style: AppStyle.lightTitleTextStyle.copyWith(fontSize: 12),
               ),
-              for (final supervisingAuthority in state.supervisingAuthorities ??
-                  <SupervisingAuthorityEntity>[]) ...[
+              for (final supervisingAuthority
+                  in state.supervisingAuthorities) ...[
                 TextSpan(
                   text: '${"authority".tr()}:\n',
-                  style: const TextStyle(
-                    color: AppColor.darkTurquoise,
-                    fontSize: 10,
-                    fontFamily: 'Arabic UI Display',
-                    fontWeight: FontWeight.w600,
-                  ),
+                  style: AppStyle.lightTitleTextStyle,
                 ),
                 TextSpan(
                   text: '${supervisingAuthority.agencyName}\n',
-                  style: const TextStyle(
-                    color: Color(0xFF71717A),
-                    fontSize: 10,
-                    fontFamily: 'Arabic UI Display',
-                    fontWeight: FontWeight.w600,
-                  ),
+                  style: AppStyle.lightTextStyle,
                 ),
                 TextSpan(
                   text: '${"approvalType".tr()}:\n',
-                  style: const TextStyle(
-                    color: AppColor.darkTurquoise,
-                    fontSize: 10,
-                    fontFamily: 'Arabic UI Display',
-                    fontWeight: FontWeight.w600,
-                  ),
+                  style: AppStyle.lightTitleTextStyle,
                 ),
                 TextSpan(
                   text: '${supervisingAuthority.approvalTypeName}\n',
-                  style: const TextStyle(
-                    color: Color(0xFF71717A),
-                    fontSize: 10,
-                    fontFamily: 'Arabic UI Display',
-                    fontWeight: FontWeight.w600,
-                  ),
+                  style: AppStyle.lightTextStyle,
                 ),
-              ]
+              ],
+              if (state.supervisingAuthorities.isEmpty)
+                TextSpan(
+                  text: '${"noData".tr()}\n',
+                  style: AppStyle.lightTextStyle,
+                ),
             ],
           ),
         );

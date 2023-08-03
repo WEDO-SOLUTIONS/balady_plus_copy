@@ -4,8 +4,8 @@ export 'domain/entities/isic_activity_entity.dart';
 export 'domain/entities/isic_sub_activities_params.dart';
 export 'domain/entities/activity_details_entity.dart';
 export 'domain/entities/activity_details_params.dart';
-export 'domain/entities/consultation_key_params.dart';
 export 'domain/entities/commercial_office_entity.dart';
+export 'domain/entities/engineering_office_entity.dart';
 export 'domain/entities/license_permit_entity.dart';
 export 'domain/entities/supervising_authority_entity.dart';
 export 'domain/entities/key_params.dart';
@@ -27,11 +27,12 @@ export 'domain/entities/contract_entity.dart';
 export 'domain/entities/contract_option_entity.dart';
 export 'domain/entities/attachment_entity.dart';
 export 'domain/entities/attachment_params.dart';
+export 'domain/entities/interactive_info_params.dart';
 export 'domain/entities/conditions_urls_entity.dart';
 export 'domain/entities/fastflow_condition_entity.dart';
 export 'domain/entities/update_permits_params.dart';
 export 'domain/entities/request_step_entity.dart';
-
+export 'domain/entities/additional_activities_params.dart';
 
 //? Repositories
 export 'domain/repositories/repository.dart';
@@ -43,6 +44,7 @@ export 'domain/use_cases/get_consultation_key.dart';
 export 'domain/use_cases/get_civil_defense_predefined_conditions.dart';
 export 'domain/use_cases/get_cleaning_mechanisms.dart';
 export 'domain/use_cases/get_commercial_offices.dart';
+export 'domain/use_cases/get_engineering_offices.dart';
 export 'domain/use_cases/get_issuing_predefined_conditions.dart';
 export 'domain/use_cases/get_license_permits.dart';
 export 'domain/use_cases/get_supervising_authorities.dart';
@@ -61,6 +63,10 @@ export 'domain/use_cases/get_fastflow_condtions.dart';
 export 'domain/use_cases/get_request_flow.dart';
 export 'domain/use_cases/get_request_flow_recommendations.dart';
 export 'domain/use_cases/update_permits.dart';
+export 'domain/use_cases/get_additional_activities.dart';
+export 'domain/use_cases/save_additional_activities.dart';
+export 'domain/use_cases/save_interactive_info.dart';
+export 'domain/use_cases/submit_consultation.dart';
 
 //!Data
 //? Datasources
@@ -70,8 +76,8 @@ export 'data/models/isic_activity_model.dart';
 export 'data/models/isic_sub_activities_params_model.dart';
 export 'data/models/activity_details_model.dart';
 export 'data/models/activity_details_params_model.dart';
-export 'data/models/consultation_key_params_model.dart';
 export 'data/models/commercial_office_model.dart';
+export 'data/models/engineering_office_model.dart';
 export 'data/models/license_permit_model.dart';
 export 'data/models/supervising_authority_model.dart';
 export 'data/models/key_params_model.dart';
@@ -94,11 +100,12 @@ export 'data/models/contract_model.dart';
 export 'data/models/contract_option_model.dart';
 export 'data/models/attachment_model.dart';
 export 'data/models/attachment_params_model.dart';
+export 'data/models/interactive_info_params_model.dart';
 export 'data/models/conditions_urls_model.dart';
 export 'data/models/fastflow_condition_model.dart';
 export 'data/models/update_permits_params_model.dart';
 export 'data/models/request_step_model.dart';
-
+export 'data/models/additional_activities_params_model.dart';
 
 //? Repositories
 export 'data/repositories/repository_implementation.dart';
@@ -119,6 +126,7 @@ export 'presentation/widgets/loading_bubble.dart';
 export 'presentation/widgets/steps/municipal_advisor_steps.dart';
 export 'presentation/widgets/send_mseeage_card.dart';
 export 'presentation/widgets/chat_bubble_radio_selector.dart';
+export 'presentation/widgets/close_chat_popup.dart';
 //? Widgets/Steps
 export 'presentation/widgets/steps/accommodation_type_selector.dart';
 export 'presentation/widgets/steps/chat_bubble_current_step.dart';
@@ -144,6 +152,8 @@ export 'presentation/widgets/steps/attachments_required.dart';
 export 'presentation/widgets/steps/continue_to_request_path.dart';
 export 'presentation/widgets/steps/user_attachments_request.dart';
 export 'presentation/widgets/steps/request_flow.dart';
+export 'presentation/widgets/steps/additional_activities_selector.dart';
+export 'presentation/widgets/license_requirements/selected_additional_activities.dart';
 //? Widgets/Location
 export 'presentation/widgets/location/activity_location.dart';
 export 'presentation/widgets/location/location_chat_bubble.dart';

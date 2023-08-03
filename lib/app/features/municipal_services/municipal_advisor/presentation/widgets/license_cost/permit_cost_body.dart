@@ -22,13 +22,13 @@ class PermitCostBody extends StatelessWidget {
         return Column(
           children: [
             ListView.builder(
-              itemCount: state.licensePermits?.length ?? 0,
+              itemCount: state.licensePermits.length,
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
               padding: const EdgeInsets.only(bottom: 8),
               itemBuilder: (context, index) {
                 return PermitCheckBox(
-                  permit: state.licensePermits![index],
+                  permit: state.licensePermits[index],
                 );
               },
             ),

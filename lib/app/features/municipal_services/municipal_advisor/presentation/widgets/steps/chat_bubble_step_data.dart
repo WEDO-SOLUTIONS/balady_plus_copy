@@ -15,6 +15,7 @@ import '../../../municipal_advisor_exports.dart'
         PermitsCost,
         RequestFlow,
         RequirementsList,
+        SelectedAdditionalActivities,
         SupervisingAuthorities,
         TotalCost,
         TradeLicenseCost,
@@ -42,7 +43,7 @@ class ChatBubbleStepData extends StatelessWidget {
             return RequirementsList(
               number: 1,
               title: "municipalAdvisorRequirementsTitle".tr(),
-              requirements: state.issuingPredefinedConditions ?? [],
+              requirements: state.issuingPredefinedConditions,
             );
           },
         );
@@ -55,10 +56,12 @@ class ChatBubbleStepData extends StatelessWidget {
               number: 2,
               title: "municipalAdvisorPermitsTitle".tr(),
               requirements:
-                  state.licensePermits?.map((e) => e.name).toList() ?? [],
+                  state.licensePermits.map((e) => e.name).toList(),
             );
           },
         );
+      case MunicipalAdvisorSteps.selectedAdditionalActivities:
+        return const SelectedAdditionalActivities();
       case MunicipalAdvisorSteps.civilDefensePredefinedConditions:
         return BlocBuilder<MunicipalAdvisorBloc, MunicipalAdvisorState>(
           buildWhen: (previous, current) =>
@@ -68,7 +71,7 @@ class ChatBubbleStepData extends StatelessWidget {
             return RequirementsList(
               number: 4,
               title: "municipalAdvisorCivilDefenseTitle".tr(),
-              requirements: state.civilDefensePredefinedConditions ?? [],
+              requirements: state.civilDefensePredefinedConditions,
             );
           },
         );
@@ -93,11 +96,23 @@ class ChatBubbleStepData extends StatelessWidget {
               previous.commercialOffices != current.commercialOffices,
           builder: (context, state) {
             return RequirementsList(
-              number: 8,
+              number: 7,
               title: "municipalAdvisorAdvertisingOfficesTitle".tr(),
               requirements:
-                  state.commercialOffices?.map((e) => e.officeName).toList() ??
-                      [],
+                  state.commercialOffices.map((e) => e.officeName).toList(),
+            );
+          },
+        );
+      case MunicipalAdvisorSteps.engineeringOffices:
+        return BlocBuilder<MunicipalAdvisorBloc, MunicipalAdvisorState>(
+          buildWhen: (previous, current) =>
+              previous.engineeringOffices != current.engineeringOffices,
+          builder: (context, state) {
+            return RequirementsList(
+              number: 8,
+              title: "municipalAdvisorEngineeringOfficesTitle".tr(),
+              requirements:
+                  state.engineeringOffices.map((e) => e.officeName).toList(),
             );
           },
         );

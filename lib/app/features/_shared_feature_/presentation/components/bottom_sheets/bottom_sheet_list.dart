@@ -15,14 +15,18 @@ class BottomSheetList extends StatefulWidget {
   final String title;
   final List<String> items;
   final String? selectedValue;
-  final Function(String) onTap;
+  final List<String>? selectedValues;
+  final void Function(dynamic)? onTap;
+  final bool searchable;
 
   const BottomSheetList({
     super.key,
     required this.title,
     required this.items,
     this.selectedValue,
+    this.selectedValues,
     required this.onTap,
+    this.searchable = true,
   });
 
   @override
@@ -31,15 +35,18 @@ class BottomSheetList extends StatefulWidget {
 
 class _BottomSheetListState extends State<BottomSheetList> {
   final TextEditingController _textEditingController = TextEditingController();
-
+  late bool multipleSelection;
   late List<String> items;
   String? selectedValue;
+  List<String>? selectedValues;
 
   @override
   void initState() {
     super.initState();
     items = widget.items;
     selectedValue = widget.selectedValue;
+    selectedValues = widget.selectedValues;
+    multipleSelection = widget.selectedValues != null;
     _textEditingController.addListener(() {
       setState(() {
         items = widget.items
@@ -57,28 +64,29 @@ class _BottomSheetListState extends State<BottomSheetList> {
       body: Expanded(
         child: Column(
           children: [
-            CustomTextFieldWidget(
-              controller: _textEditingController,
-              hintText: 'search'.tr(),
-              prefixIcon: const DrawIconBasedTypeWidget(
-                icon: IconPath.search,
-                iconColor: AppColor.primary700Light,
+            if (widget.searchable)
+              CustomTextFieldWidget(
+                controller: _textEditingController,
+                hintText: 'search'.tr(),
+                prefixIcon: const DrawIconBasedTypeWidget(
+                  icon: IconPath.search,
+                  iconColor: AppColor.primary700Light,
+                ),
+                borderRadius: 16,
+                borderColor: AppColor.primary900Light16,
+                suffixIcon: _textEditingController.text.isNotEmpty
+                    ? InkWell(
+                        onTap: () {
+                          _textEditingController.text = '';
+                          FocusScope.of(context).unfocus();
+                        },
+                        child: const DrawIconBasedTypeWidget(
+                          icon: Icons.close,
+                          iconColor: AppColor.primary700Light,
+                        ),
+                      )
+                    : null,
               ),
-              borderRadius: 16,
-              borderColor: AppColor.primary900Light16,
-              suffixIcon: _textEditingController.text.isNotEmpty
-                  ? InkWell(
-                      onTap: () {
-                        _textEditingController.text = '';
-                        FocusScope.of(context).unfocus();
-                      },
-                      child: const DrawIconBasedTypeWidget(
-                        icon: Icons.close,
-                        iconColor: AppColor.primary700Light,
-                      ),
-                    )
-                  : null,
-            ),
             const SizedBox(height: 16),
             Expanded(
               child: ListView.builder(
@@ -88,7 +96,7 @@ class _BottomSheetListState extends State<BottomSheetList> {
                 itemBuilder: (context, index) {
                   final item = items[index];
                   return InkWell(
-                    onTap: () => setState(() => selectedValue = item),
+                    onTap: () => selectItem(item),
                     child: Container(
                       height: 56,
                       padding: const EdgeInsetsDirectional.only(start: 12),
@@ -108,13 +116,19 @@ class _BottomSheetListState extends State<BottomSheetList> {
                             ),
                           ),
                           const Spacer(),
-                          Radio(
-                            value: item,
-                            groupValue: selectedValue,
-                            activeColor: AppColor.primary700Light,
-                            onChanged: (_) =>
-                                setState(() => selectedValue = item),
-                          )
+                          if (widget.onTap != null && !multipleSelection)
+                            Radio(
+                              value: item,
+                              groupValue: selectedValue,
+                              activeColor: AppColor.primary700Light,
+                              onChanged: (_) => selectItem(item),
+                            )
+                          else if (widget.onTap != null)
+                            Checkbox(
+                              value: selectedValues!.contains(item),
+                              activeColor: AppColor.primary700Light,
+                              onChanged: (_) => selectItem(item),
+                            ),
                         ],
                       ),
                     ),
@@ -125,14 +139,32 @@ class _BottomSheetListState extends State<BottomSheetList> {
           ],
         ),
       ),
-      action: ElevatedButtonWidget.choose(
-        onPressed: () {
-          if (selectedValue != null) {
-            widget.onTap(selectedValue!);
-          }
-        },
-      ),
+      action: widget.onTap == null
+          ? null
+          : ElevatedButtonWidget.choose(
+              onPressed: () {
+                if (selectedValue != null) {
+                  widget.onTap!(selectedValue!);
+                } else if (selectedValues != null) {
+                  widget.onTap!(selectedValues);
+                }
+              },
+            ),
     );
+  }
+
+  void selectItem(String item) {
+    setState(() {
+      if (multipleSelection) {
+        if (selectedValues!.contains(item)) {
+          selectedValues!.remove(item);
+        } else {
+          selectedValues!.add(item);
+        }
+      } else {
+        selectedValue = item;
+      }
+    });
   }
 
   @override

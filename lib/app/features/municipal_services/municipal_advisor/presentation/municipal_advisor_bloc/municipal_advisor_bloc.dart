@@ -20,12 +20,15 @@ class MunicipalAdvisorBloc
   final GetConsultationKey _getConsultationKey;
   final GetIsicActivities _getIsicActivities;
   final GetIsicSubActivities _getIsicSubActivities;
+  final GetAdditionalActivities _getAdditionalActivities;
   final GetActivityDetails _getActivityDetails;
+  final SaveAdditionalActivities _saveAdditionalActivities;
   final GetGISData _getGISData;
   final GetCivilDefensePredefinedConditions
       _getCivilDefensePredefinedConditions;
   final GetCleaningMechanisms _getCleaningMechanisms;
   final GetCommercialOffices _getCommercialOffices;
+  final GetEngineeringOffices _getEngineeringOffices;
   final GetIssuingPredefinedConditions _getIssuingPredefinedConditions;
   final GetLicensePermits _getLicensePermits;
   final GetSupervisingAuthorities _getSupervisingAuthorities;
@@ -44,17 +47,22 @@ class MunicipalAdvisorBloc
   final GetRequestFlow _getRequestFlow;
   final GetRequestFlowRecommendations _getRequestFlowRecommendations;
   final UpdatePermit _updatePermit;
+  final SaveInteractiveInfo _saveInteractiveInfo;
+  final SubmitConsultation _submitConsultation;
 
   MunicipalAdvisorBloc({
     required GetConsultationKey getConsultationKey,
     required GetIsicActivities getIsicActivities,
     required GetIsicSubActivities getIsicSubActivities,
+    required GetAdditionalActivities getAdditionalActivities,
     required GetActivityDetails getActivityDetails,
     required GetGISData getGISData,
+    required SaveAdditionalActivities saveAdditionalActivities,
     required GetCivilDefensePredefinedConditions
         getCivilDefensePredefinedConditions,
     required GetCleaningMechanisms getCleaningMechanisms,
     required GetCommercialOffices getCommercialOffices,
+    required GetEngineeringOffices getEngineeringOffices,
     required GetIssuingPredefinedConditions getIssuingPredefinedConditions,
     required GetLicensePermits getLicensePermits,
     required GetSupervisingAuthorities getSupervisingAuthorities,
@@ -73,15 +81,20 @@ class MunicipalAdvisorBloc
     required GetRequestFlow getRequestFlow,
     required GetRequestFlowRecommendations getRequestFlowRecommendations,
     required UpdatePermit updatePermit,
+    required SaveInteractiveInfo saveInteractiveInfo,
+    required SubmitConsultation submitConsultation,
   })  : _getConsultationKey = getConsultationKey,
         _getIsicActivities = getIsicActivities,
         _getIsicSubActivities = getIsicSubActivities,
+        _getAdditionalActivities = getAdditionalActivities,
         _getActivityDetails = getActivityDetails,
         _getGISData = getGISData,
+        _saveAdditionalActivities = saveAdditionalActivities,
         _getCivilDefensePredefinedConditions =
             getCivilDefensePredefinedConditions,
         _getCleaningMechanisms = getCleaningMechanisms,
         _getCommercialOffices = getCommercialOffices,
+        _getEngineeringOffices = getEngineeringOffices,
         _getIssuingPredefinedConditions = getIssuingPredefinedConditions,
         _getLicensePermits = getLicensePermits,
         _getSupervisingAuthorities = getSupervisingAuthorities,
@@ -100,6 +113,8 @@ class MunicipalAdvisorBloc
         _getRequestFlow = getRequestFlow,
         _getRequestFlowRecommendations = getRequestFlowRecommendations,
         _updatePermit = updatePermit,
+        _saveInteractiveInfo = saveInteractiveInfo,
+        _submitConsultation = submitConsultation,
         super(const MunicipalAdvisorState()) {
     on<MunicipalAdvisorAddMessageEvent>(
       (event, emit) async {
@@ -316,6 +331,61 @@ class MunicipalAdvisorBloc
           message: event.isicSubActivity.name,
           step: MunicipalAdvisorSteps.subActivity,
         ));
+        add(MunicipalAdvisorGetAdditionalActivitiesEvent());
+      },
+    );
+
+    on<MunicipalAdvisorGetAdditionalActivitiesEvent>(
+      (event, emit) async {
+        emit(
+          state.copyWith(
+            status: BlocRequestStatus.submissionGetLoading,
+            lastEvent: event,
+          ),
+        );
+        final failureOrSuccess = await _getAdditionalActivities(
+          ActivityDetailsParams(
+            id: state.selectedIsicSubActivity!.id,
+          ),
+        );
+        failureOrSuccess.fold(
+          (failure) => emitFailure(emit, failure),
+          (additionalActivities) {
+            if (additionalActivities.isEmpty) {
+              add(MunicipalAdvisorGetActivityDetailsEvent());
+            } else {
+              emit(
+                state.copyWith(
+                  status: BlocRequestStatus.submissionGetSuccess,
+                  additionalActivities: additionalActivities,
+                  messages: [
+                    ...state.messages,
+                    ...nextStep(MunicipalAdvisorSteps.subActivity),
+                  ],
+                ),
+              );
+            }
+          },
+        );
+      },
+    );
+
+    on<MunicipalAdvisorSelectAdditionalActivitiesEvent>(
+      (event, emit) async {
+        emit(
+          state.copyWith(
+            status: BlocRequestStatus.submissionGetLoading,
+            selectedAdditionalActivities: event.additionalActivities,
+          ),
+        );
+        if (event.additionalActivities.isNotEmpty) {
+          add(MunicipalAdvisorAddMessageEvent(
+            message: event.additionalActivities
+                .map((e) => e.masterActivityName)
+                .join('\n'),
+            step: MunicipalAdvisorSteps.additionalActivities,
+          ));
+        }
         add(MunicipalAdvisorGetActivityDetailsEvent());
       },
     );
@@ -348,7 +418,7 @@ class MunicipalAdvisorBloc
                   status: BlocRequestStatus.submissionGetSuccess,
                   messages: [
                     ...state.messages,
-                    ...nextStep(MunicipalAdvisorSteps.subActivity),
+                    ...nextStep(MunicipalAdvisorSteps.additionalActivities),
                   ],
                 ),
               );
@@ -366,7 +436,7 @@ class MunicipalAdvisorBloc
               status: BlocRequestStatus.submissionGetSuccess,
               messages: [
                 ...state.messages,
-                ...nextStep(MunicipalAdvisorSteps.subActivity),
+                ...nextStep(MunicipalAdvisorSteps.additionalActivities),
               ],
             ),
           );
@@ -388,7 +458,7 @@ class MunicipalAdvisorBloc
                 accommodationTypes: accommodationTypes,
                 messages: [
                   ...state.messages,
-                  ...nextStep(MunicipalAdvisorSteps.subActivity),
+                  ...nextStep(MunicipalAdvisorSteps.additionalActivities),
                 ],
               ),
             );
@@ -536,29 +606,42 @@ class MunicipalAdvisorBloc
           SaveConsultationProgressParams(
             consultationKey: state.consultationKey!,
             subMunicipalityGisCode:
-                // state.activityLocation?.gisResponse.subMunicipalityId ??
-                "013001002",
-            districtCode:
-                // int.tryParse(state.activityLocation?.gisResponse.districtId ?? "") ??
+                state.activityLocation?.gisResponse.municipalityuniquecode,
+            districtCode: int.tryParse(
+                    state.activityLocation?.gisResponse.districtId ?? "") ??
+                //TODO remove this static value when gis fixes it
                 1010106,
-            streetCode:
-                // int.tryParse(state.activityLocation?.gisResponse.streetCode ?? "") ??
-                1010106005,
+            streetCode: int.tryParse(
+                state.activityLocation?.gisResponse.streetCode ?? ""),
             longitude:
                 state.activityLocation?.latLng.longitude.toString() ?? "",
             latitude: state.activityLocation?.latLng.latitude.toString() ?? "",
-            mapNo: "",
-            landNo: "",
+            mapNo: null,
+            landNo: null,
             shopArea: state.selectedArea ?? 0,
             activityId: state.selectedIsicSubActivity?.id ?? 0,
             atmFeesOption: state.atmPaid,
             unitCount: state.unitCount,
             accommodationTypeId: state.selectedAccommodationType?.id,
-            krokiUrl: state.activityLocation?.gisResponse.locationURL ??
-                "http://gisimages.momra.gov.sa/",
+            krokiUrl: state.activityLocation?.gisResponse.locationURL,
           ),
         );
         failureOrSuccess.fold(
+          (failure) => emitFailure(emit, failure),
+          (_) {},
+        );
+
+        if (failureOrSuccess.isLeft()) return;
+
+        final additionalActivities = state.selectedAdditionalActivities;
+
+        final saveAdditionalActivities = await _saveAdditionalActivities(
+          AdditionalActivitiesParams(
+            consultationKey: state.consultationKey!,
+            ids: additionalActivities.map((e) => e.activityId).toList(),
+          ),
+        );
+        saveAdditionalActivities.fold(
           (failure) => emitFailure(emit, failure),
           (_) {
             add(MunicipalAdvisorGetIssuingPredefinedConditionsEvent());
@@ -619,7 +702,11 @@ class MunicipalAdvisorBloc
                 messages: [
                   ...state.messages,
                   ...nextStep(
-                      MunicipalAdvisorSteps.issuingPredefinedConditions),
+                    MunicipalAdvisorSteps.issuingPredefinedConditions,
+                  ),
+                  ...nextStep(
+                    MunicipalAdvisorSteps.licensePermits,
+                  ),
                 ],
               ),
             );
@@ -651,7 +738,7 @@ class MunicipalAdvisorBloc
                 messages: [
                   ...state.messages,
                   ...nextStep(
-                    MunicipalAdvisorSteps.licensePermits,
+                    MunicipalAdvisorSteps.selectedAdditionalActivities,
                   ),
                 ],
               ),
@@ -725,6 +812,7 @@ class MunicipalAdvisorBloc
         );
       },
     );
+
     on<MunicipalAdvisorGetCommercialOfficesEvent>(
       (event, emit) async {
         emit(
@@ -747,6 +835,38 @@ class MunicipalAdvisorBloc
                   ...state.messages,
                   ...nextStep(
                     MunicipalAdvisorSteps.cleaningMechanisms,
+                  ),
+                ],
+              ),
+            );
+            add(MunicipalAdvisorGetEngineeringOfficesEvent());
+          },
+        );
+      },
+    );
+
+    on<MunicipalAdvisorGetEngineeringOfficesEvent>(
+      (event, emit) async {
+        emit(
+          state.copyWith(
+            status: BlocRequestStatus.submissionGetLoading,
+            lastEvent: event,
+          ),
+        );
+        final failureOrSuccess = await _getEngineeringOffices(
+          KeyParams(key: state.consultationKey!),
+        );
+        failureOrSuccess.fold(
+          (failure) => emitFailure(emit, failure),
+          (engineeringOffices) {
+            emit(
+              state.copyWith(
+                status: BlocRequestStatus.submissionGetSuccess,
+                engineeringOffices: engineeringOffices,
+                messages: [
+                  ...state.messages,
+                  ...nextStep(
+                    MunicipalAdvisorSteps.commercialOffices,
                   ),
                 ],
               ),
@@ -792,24 +912,7 @@ class MunicipalAdvisorBloc
         );
 
         fastflowConditions.fold(
-          (failure) {
-            if (failure is ServerFailure) {
-              emitFailure(emit, failure);
-            } else if (failure is NoDataFoundFailure) {
-              emit(
-                state.copyWith(
-                  status: BlocRequestStatus.submissionGetSuccess,
-                  fastflowConditions: [],
-                  messages: [
-                    ...state.messages,
-                    ...nextStep(
-                      MunicipalAdvisorSteps.commercialOffices,
-                    ),
-                  ],
-                ),
-              );
-            }
-          },
+          (failure) => emitFailure(emit, failure),
           (fastflowConditions) => emit(
             state.copyWith(
               status: BlocRequestStatus.submissionGetSuccess,
@@ -817,7 +920,7 @@ class MunicipalAdvisorBloc
               messages: [
                 ...state.messages,
                 ...nextStep(
-                  MunicipalAdvisorSteps.commercialOffices,
+                  MunicipalAdvisorSteps.engineeringOffices,
                 ),
               ],
             ),
@@ -891,6 +994,7 @@ class MunicipalAdvisorBloc
         emit(
           state.copyWith(
             status: BlocRequestStatus.submissionGetLoading,
+            selectedLicenseYear: event.year,
             lastEvent: event,
           ),
         );
@@ -920,7 +1024,6 @@ class MunicipalAdvisorBloc
         emit(
           state.copyWith(
               status: BlocRequestStatus.submissionGetLoading,
-              lastEvent: event,
               boards: [
                 ...state.boards,
                 BoardsParams(
@@ -940,7 +1043,6 @@ class MunicipalAdvisorBloc
         emit(
           state.copyWith(
             status: BlocRequestStatus.submissionGetLoading,
-            lastEvent: event,
           ),
         );
         add(const MunicipalAdvisorCalculateLicenseEvent());
@@ -949,6 +1051,7 @@ class MunicipalAdvisorBloc
 
     on<MunicipalAdvisorUpdateCommercialBoardEvent>(
       (event, emit) async {
+        if (state.boards[event.index] == event.board) return;
         state.boards[event.index] = event.board;
         emit(
           state.copyWith(
@@ -962,12 +1065,10 @@ class MunicipalAdvisorBloc
 
     on<MunicipalAdvisorCalculateLicenseEvent>(
       (event, emit) async {
+        emit(state.copyWith(lastEvent: event));
         if (event.firstCalculation || event.finalCalculation) {
           emit(
-            state.copyWith(
-              status: BlocRequestStatus.submissionGetLoading,
-              lastEvent: event,
-            ),
+            state.copyWith(status: BlocRequestStatus.submissionGetLoading),
           );
         } else {
           EasyLoading.show(
@@ -979,7 +1080,9 @@ class MunicipalAdvisorBloc
           CalculateFeesParams(
             consultationKey: state.consultationKey!,
             accommodationTypeId: null,
-            municipalityGisCode: "013001002",
+            municipalityGisCode:
+                state.activityLocation!.gisResponse.municipalityuniquecode ??
+                    "",
             longitude:
                 state.activityLocation?.latLng.longitude.toString() ?? "",
             latitude: state.activityLocation?.latLng.latitude.toString() ?? "",
@@ -1093,11 +1196,11 @@ class MunicipalAdvisorBloc
           failureOrSuccess.fold(
             (failure) => emitFailure(emit, failure),
             (updatedPermit) {
-              final index = state.licensePermits?.indexWhere(
+              final index = state.licensePermits.indexWhere(
                 (element) => element.permitTypeId == 1013,
               );
-              if (index != null && index != -1) {
-                state.licensePermits![index] = updatedPermit;
+              if (index != -1) {
+                state.licensePermits[index] = updatedPermit;
               }
             },
           );
@@ -1136,11 +1239,11 @@ class MunicipalAdvisorBloc
           failureOrSuccess.fold(
             (failure) => emitFailure(emit, failure),
             (updatedPermit) {
-              final index = state.licensePermits?.indexWhere(
+              final index = state.licensePermits.indexWhere(
                 (element) => element.permitTypeId == 1037,
               );
-              if (index != null && index != -1) {
-                state.licensePermits![index] = updatedPermit;
+              if (index != -1) {
+                state.licensePermits[index] = updatedPermit;
               }
             },
           );
@@ -1360,6 +1463,23 @@ class MunicipalAdvisorBloc
           ),
         );
 
+        final saveInteractiveInfo = await _saveInteractiveInfo(
+          InteractiveInfoParams(
+            consultationKey: state.consultationKey!,
+            hasBrand: state.hasBrand!,
+            contractType: state.selectedShopOwnership!.contractTypeId,
+            contractOption: state.selectedShopContractOption!.id,
+            cleanOption: state.selectedCleanMechanism!.id,
+          ),
+        );
+
+        saveInteractiveInfo.fold(
+          (failure) => emitFailure(emit, failure),
+          (_) {},
+        );
+
+        if (failureOrSuccess.isLeft()) return;
+
         failureOrSuccess.fold(
           (failure) => emitFailure(emit, failure),
           (attachments) {
@@ -1441,27 +1561,27 @@ class MunicipalAdvisorBloc
             lastEvent: event,
           ),
         );
+        if (state.requestFlow.isEmpty) {
+          final requestFlow = await _getRequestFlow(
+            KeyParamsModel(
+              key: state.consultationKey!,
+            ),
+          );
 
-        final requestFlow = await _getRequestFlow(
-          KeyParamsModel(
-            key: state.consultationKey!,
-          ),
-        );
+          requestFlow.fold(
+            (failure) => emitFailure(emit, failure),
+            (requestFlow) {
+              requestFlow.sort((a, b) => a.index.compareTo(b.index));
+              emit(
+                state.copyWith(
+                  requestFlow: requestFlow,
+                ),
+              );
+            },
+          );
 
-        requestFlow.fold(
-          (failure) => emitFailure(emit, failure),
-          (requestFlow) {
-            requestFlow.sort((a, b) => a.index.compareTo(b.index));
-            emit(
-              state.copyWith(
-                requestFlow: requestFlow,
-              ),
-            );
-          },
-        );
-
-        if (requestFlow.isLeft()) return;
-
+          if (requestFlow.isLeft()) return;
+        }
         final requestFlowRecommendations = await _getRequestFlowRecommendations(
           KeyParamsModel(
             key: state.consultationKey!,
@@ -1496,6 +1616,37 @@ class MunicipalAdvisorBloc
                     customWidget: true,
                     data: 'municipalAdvisorRequestPathSuggestions',
                   ),
+                ],
+              ),
+            );
+
+            add(MunicipalAdvisorSubmitConsultationEvent());
+          },
+        );
+      },
+    );
+
+    on<MunicipalAdvisorSubmitConsultationEvent>(
+      (event, emit) async {
+        emit(
+          state.copyWith(
+            status: BlocRequestStatus.submissionGetLoading,
+            lastEvent: event,
+          ),
+        );
+
+        final failureOrSuccess = await _submitConsultation(
+          KeyParamsModel(key: state.consultationKey!),
+        );
+
+        failureOrSuccess.fold(
+          (failure) => emitFailure(emit, failure),
+          (success) {
+            emit(
+              state.copyWith(
+                status: BlocRequestStatus.submissionGetSuccess,
+                messages: [
+                  ...state.messages,
                   ChatMessage(
                     message: 'municipalAdvisorEndChat'.tr(),
                     step: MunicipalAdvisorSteps.endChat,
@@ -1635,15 +1786,6 @@ class MunicipalAdvisorBloc
           ),
         ];
       case MunicipalAdvisorSteps.location:
-        if (state.changingInfo) {
-          return [
-            ChatMessage(
-              message: 'municipalAdvisorConfirmSummery'.tr(),
-              step: MunicipalAdvisorSteps.confirmInformation,
-              isResponse: true,
-            ),
-          ];
-        }
         return [
           ChatMessage(
             message: 'municipalAdvisorLocationCorrect'.tr(),
@@ -1652,6 +1794,15 @@ class MunicipalAdvisorBloc
           ),
         ];
       case MunicipalAdvisorSteps.confirmLocation:
+        if (data == 'changingInfo') {
+          return [
+            ChatMessage(
+              message: 'municipalAdvisorConfirmSummery'.tr(),
+              step: MunicipalAdvisorSteps.confirmInformation,
+              isResponse: true,
+            ),
+          ];
+        }
         return [
           ChatMessage(
             message: 'municipalAdvisorActivity'.tr(),
@@ -1668,6 +1819,14 @@ class MunicipalAdvisorBloc
           ),
         ];
       case MunicipalAdvisorSteps.subActivity:
+        return [
+          ChatMessage(
+            message: 'municipalAdvisorAdditionalActivities'.tr(),
+            step: MunicipalAdvisorSteps.additionalActivities,
+            isResponse: true,
+          ),
+        ];
+      case MunicipalAdvisorSteps.additionalActivities:
         if (state.changingInfo) {
           return [
             ChatMessage(
@@ -1816,6 +1975,15 @@ class MunicipalAdvisorBloc
         return [
           ChatMessage(
             message: '',
+            step: MunicipalAdvisorSteps.selectedAdditionalActivities,
+            isResponse: true,
+            customWidget: true,
+          ),
+        ];
+      case MunicipalAdvisorSteps.selectedAdditionalActivities:
+        return [
+          ChatMessage(
+            message: '',
             step: MunicipalAdvisorSteps.civilDefensePredefinedConditions,
             isResponse: true,
             customWidget: true,
@@ -1849,6 +2017,15 @@ class MunicipalAdvisorBloc
           ),
         ];
       case MunicipalAdvisorSteps.commercialOffices:
+        return [
+          ChatMessage(
+            message: '',
+            step: MunicipalAdvisorSteps.engineeringOffices,
+            isResponse: true,
+            customWidget: true,
+          ),
+        ];
+      case MunicipalAdvisorSteps.engineeringOffices:
         return [
           ChatMessage(
             message: '',

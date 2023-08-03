@@ -61,7 +61,10 @@ class _AreaSelectorState extends State<AreaSelector> {
               borderColor: AppColor.primary900Light16,
               controller: _controller,
               // initialValue: state.selectedArea?.toStringAsFixed(2),
-              keyboardType: TextInputType.number,
+              keyboardType: const TextInputType.numberWithOptions(
+                signed: true,
+                decimal: true,
+              ),
               textInputAction: TextInputAction.done,
               inputFormatters: [
                 FilteringTextInputFormatter.digitsOnly,

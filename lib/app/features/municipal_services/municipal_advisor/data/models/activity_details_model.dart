@@ -14,6 +14,7 @@ class ActivityDetailsModel extends ActivityDetailsEntity {
     required super.maximumArea,
     required super.isAtm,
     required super.isHotel,
+    required super.homogeneous,
   });
 
   factory ActivityDetailsModel.fromMap(Map<String, dynamic> map) {
@@ -24,12 +25,16 @@ class ActivityDetailsModel extends ActivityDetailsEntity {
       isicName: map['isicName'] as String,
       masterActivityId: map['masterActivityId'] as int,
       masterActivityName: map['masterActivityName'] as String,
-      facilityId: map['facilityId'] as int,
-      facilityName: map['facilityName'] as String,
-      minimumArea: map['minimumArea'] as double? ?? 0,
-      maximumArea: map['maximumArea'] as double? ?? double.infinity,
+      facilityId: map['facilityId'] as int? ?? 0,
+      facilityName: map['facilityName'] as String? ?? '',
+      minimumArea:
+          map['minimumArea'] as double? ?? map['minArea'] as double? ?? 0,
+      maximumArea: map['maximumArea'] as double? ??
+          map['maxArea'] as double? ??
+          double.infinity,
       isAtm: map['isAtm'] as bool? ?? false,
       isHotel: map['isHotel'] as bool? ?? false,
+      homogeneous: map['homogeneous'] as bool?,
     );
   }
 }

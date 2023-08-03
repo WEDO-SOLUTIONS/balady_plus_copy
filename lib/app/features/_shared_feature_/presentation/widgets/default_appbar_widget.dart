@@ -9,6 +9,7 @@ class DefaultAppBarWidget extends StatelessWidget
   final PreferredSizeWidget? bottom;
   final List<Widget>? actions;
   final bool x;
+  final VoidCallback? onBack;
 
   const DefaultAppBarWidget({
     super.key,
@@ -16,6 +17,7 @@ class DefaultAppBarWidget extends StatelessWidget
     this.bottom,
     this.actions,
     this.x = false,
+    this.onBack,
   });
 
   @override
@@ -30,7 +32,7 @@ class DefaultAppBarWidget extends StatelessWidget
                 color: AppColor.blackModern900Light,
                 size: x ? 28 : null,
               ),
-              onPressed: () => Navigator.of(context).pop(),
+              onPressed: onBack ?? () => Navigator.of(context).pop(),
             )
           : null,
       centerTitle: false,

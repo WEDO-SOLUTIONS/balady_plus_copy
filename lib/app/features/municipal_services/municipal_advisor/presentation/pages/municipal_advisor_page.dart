@@ -7,7 +7,12 @@ import '../../../../../core/dependency_injection/dependency_injection_exports.da
 import '../../../../_shared_feature_/shared_feature_exports.dart'
     show DefaultAppBarWidget;
 import '../../municipal_advisor_exports.dart'
-    show ChatList, EmptyChat, MunicipalAdvisorBloc, SendMessageCard;
+    show
+        ChatList,
+        CloseChatPopup,
+        EmptyChat,
+        MunicipalAdvisorBloc,
+        SendMessageCard;
 
 class MunicipalAdvisorPage extends StatelessWidget {
   const MunicipalAdvisorPage({super.key});
@@ -18,6 +23,12 @@ class MunicipalAdvisorPage extends StatelessWidget {
       appBar: DefaultAppBarWidget(
         title: 'municipal_advisor'.tr(),
         x: true,
+        onBack: () {
+          showDialog(
+            context: context,
+            builder: (_) => const CloseChatPopup(),
+          );
+        },
       ),
       body: BlocProvider(
         create: (context) => sl<MunicipalAdvisorBloc>(),

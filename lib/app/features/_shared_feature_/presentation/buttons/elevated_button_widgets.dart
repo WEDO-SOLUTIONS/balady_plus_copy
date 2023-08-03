@@ -276,4 +276,46 @@ class ElevatedButtonWidget extends _ElevatedButton {
           onPressed: onPressed,
           loading: loading,
         ));
+
+  ElevatedButtonWidget.endChat({
+    required VoidCallback? onPressed,
+  }) : super(CustomElevatedButtonWidget(
+          btnColor: AppColor.primary800Light,
+          btnBorderColor: Colors.transparent,
+          textStyle: AppStyle.elevatedButtonStyle.copyWith(
+            color: AppColor.white,
+            fontWeight: FontWeight.w700,
+            fontSize: 16,
+          ),
+          btnHeight: 52,
+          text: "endChat".tr(),
+          onPressed: onPressed,
+        ));
+
+  ElevatedButtonWidget.undo({required VoidCallback onPressed})
+      : super(CustomElevatedButtonWidget(
+          btnColor: Colors.transparent,
+          btnBorderColor: AppColor.primary800Light,
+          textStyle: AppStyle.elevatedButtonStyle.copyWith(
+            color: AppColor.primary800Light,
+            fontWeight: FontWeight.w700,
+            fontSize: 16,
+          ),
+          btnHeight: 52,
+          text: "undo".tr(),
+          onPressed: onPressed,
+        ));
+  ElevatedButtonWidget.noAdditionalActivities({required VoidCallback onPressed})
+      : super(CustomElevatedButtonWidget(
+          btnColor: Colors.transparent,
+          btnBorderColor: AppColor.primary800Light,
+          textStyle: AppStyle.elevatedButtonStyle.copyWith(
+            color: AppColor.primary800Light,
+            fontWeight: FontWeight.w700,
+            fontSize: 16,
+          ),
+          btnHeight: 52,
+          text: "municipalAdvisorNoAdditionalActivities".tr(),
+          onPressed: onPressed,
+        ));
 }

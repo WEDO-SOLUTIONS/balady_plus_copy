@@ -5,6 +5,7 @@ import '../../../municipal_advisor_exports.dart'
         ATMSelectorSummary,
         AccommodationTypeSelector,
         ActivitySelector,
+        AdditionalActivitiesSelector,
         AreaSelector,
         AttachmentsSelector,
         ChangeInformation,
@@ -45,6 +46,8 @@ class ChatBubbleCurrentStep extends StatelessWidget {
         return const ActivitySelector();
       case MunicipalAdvisorSteps.subActivity:
         return const SubActivitySelector();
+      case MunicipalAdvisorSteps.additionalActivities:
+        return const AdditionalActivitiesSelector();
       case MunicipalAdvisorSteps.accommodationType:
         return const AccommodationTypeSelector();
       case MunicipalAdvisorSteps.unitCount:
@@ -62,10 +65,12 @@ class ChatBubbleCurrentStep extends StatelessWidget {
       case MunicipalAdvisorSteps.requirements:
       case MunicipalAdvisorSteps.issuingPredefinedConditions:
       case MunicipalAdvisorSteps.licensePermits:
+      case MunicipalAdvisorSteps.selectedAdditionalActivities:
       case MunicipalAdvisorSteps.supervisingAuthorities:
       case MunicipalAdvisorSteps.civilDefensePredefinedConditions:
       case MunicipalAdvisorSteps.cleaningMechanisms:
       case MunicipalAdvisorSteps.commercialOffices:
+      case MunicipalAdvisorSteps.engineeringOffices:
       case MunicipalAdvisorSteps.additionalInformation:
       case MunicipalAdvisorSteps.attachmentsRequired:
       case MunicipalAdvisorSteps.requestPath:
