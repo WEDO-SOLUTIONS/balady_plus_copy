@@ -128,7 +128,8 @@ class HomeMap extends StatelessWidget {
                           ),
                         ],
                       );
-                    }),
+                    },
+                ),
                 Constants.verticalSpaceSmall,
               ],
             ),

@@ -3,21 +3,25 @@ import 'package:balady_plus/app/core/utils/constants/app_style.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../core/utils/utils_exports.dart' show NearByTypes;
 import '../../../_shared_feature_/shared_feature_exports.dart'
     show DrawIconBasedTypeWidget;
 
 class NearbyItem extends StatelessWidget {
-  final NearByTypes type;
+  // final NearByTypes type;
   final String title;
   final String subtitle;
+  final String icon;
 
   const NearbyItem({
     super.key,
-    required this.type,
+    // required this.type,
     required this.title,
     required this.subtitle,
+    required this.icon,
   });
 
   @override
@@ -30,8 +34,7 @@ class NearbyItem extends StatelessWidget {
       child: LayoutBuilder(builder: (context, constraints) {
         return Column(
           children: [
-            if (type.icon != null)
-              Container(
+            Container(
                 width: double.infinity,
                 decoration: const BoxDecoration(
                   color: AppColor.primary50Light,
@@ -42,11 +45,7 @@ class NearbyItem extends StatelessWidget {
                 ),
                 height: constraints.maxHeight * 0.55,
                 child: Center(
-                  child: DrawIconBasedTypeWidget(
-                    icon: IconPath.nearbyIcon(type.icon!),
-                    iconColor: type.color,
-                    iconSize: 34,
-                  ),
+                  child: SvgPicture.asset(icon,width: 25,height: 25,),
                 ),
               ),
             Expanded(
@@ -62,7 +61,7 @@ class NearbyItem extends StatelessWidget {
                     ),
                     const SizedBox(height: 4),
                     CustomTextWidget(
-                      subtitle,
+                      '$subtitle  ${'متر'.tr()}',
                       textStyle: AppStyle.nearbyItemSubTitleTextStyle,
                     ),
                   ],

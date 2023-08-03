@@ -230,7 +230,7 @@ DEPENDENCIES:
   - webview_flutter_wkwebview (from `.symlinks/plugins/webview_flutter_wkwebview/ios`)
 
 SPEC REPOS:
-  trunk:
+  https://github.com/CocoaPods/Specs.git:
     - DGisMobileSDK
     - DKImagePickerController
     - DKPhotoGallery
@@ -392,6 +392,6 @@ SPEC CHECKSUMS:
   url_launcher_ios: 08a3dfac5fb39e8759aeb0abbd5d9480f30fc8b4
   webview_flutter_wkwebview: 2e2d318f21a5e036e2c3f26171342e95908bd60a
 
-PODFILE CHECKSUM: 67f5d1daad318bce7a885b2f4cc999c80b722750
+PODFILE CHECKSUM: c0db52e3d36134adff274677c480400a9ff013ef
 
 COCOAPODS: 1.12.1
