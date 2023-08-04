@@ -58,10 +58,7 @@ class DraggableHeaderComponent extends StatelessWidget {
                   ),
                 ],
               ),
-              const CurrentWeather(
-                weatherCondition: WeathherConditions.clear,
-                temperature: "16",
-              ),
+              const CurrentWeather(),
             ],
           ),
           const SizedBox(height: 16),

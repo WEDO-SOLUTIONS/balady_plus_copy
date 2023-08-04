@@ -20,6 +20,9 @@ class RouteName {
   static const municipalAdvisor = '/municipal-advisor';
   static const locationPage = '/location-page';
 
+  // -------  Weather ---------
+  static const weatherMainPage = '/weather_main_page';
+
   //! Setting
   static const personalInformation = '/personalInformation';
   static const dashboard = '/dashboard';

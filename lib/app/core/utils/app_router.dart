@@ -90,6 +90,7 @@ import '../../features/transaction_inquiry/presentation/pages/inquiry/transactio
 import '../../features/transaction_inquiry/presentation/pages/request_service/new_request_service/new_request_service_location_screen.dart';
 import '../../features/transaction_inquiry/presentation/pages/request_service/new_request_service/new_request_service_page.dart';
 import '../../features/vd/vd_exports.dart';
+import '../../features/weather/weather_exports.dart';
 import '../../features/zmzm_points/presentation/pages/zmzm_points_page.dart';
 import '../../features/wallet/wallet_exports.dart';
 
@@ -316,6 +317,11 @@ class AppRouter {
           builder: (_) => ObjectionsDetailsPage(
             params: params!,
           ),
+        );
+
+      case RouteName.weatherMainPage:
+        return MaterialPageRoute(
+          builder: (_) => const WeatherMainPage(),
         );
 
       case RouteName.DCCameraPage:
