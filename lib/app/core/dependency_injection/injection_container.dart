@@ -10,9 +10,11 @@ import '../../features/_shared_feature_/data/entities/device_details.dart';
 import '../../features/_shared_feature_/data/entities/package_details.dart';
 import '../../features/_shared_feature_/shared_feature_exports.dart'
     show BridgeParams, DropDownItem, FileInfo;
+import '../../features/weather/weather_exports.dart';
 import '../dependency_injection/dependency_injection_exports.dart'
     show CrInjection, DashboardInjection, DelegatorsInjection, EntryPointInjection, InvoicesInjection, LicensesInjection, MunicipalAdvisorInjection, OTPInjection, PrayerTimesInjection, RequestsInjection, ServicesInjection, SignUpInjection, VDInjection, ViolationsInjection;
 import '../services/global/crm_web_service.dart';
+import '../services/global/web_service_weather.dart';
 import '../services/services_exports.dart'
     show
         EntryPointBridge,
@@ -81,6 +83,32 @@ void initialize() {
   //! Core
   sl.registerLazySingleton(() => WebService(dio: sl()));
   sl.registerLazySingleton(() => CRMWebService(dio: Dio()));
+  sl.registerLazySingleton(() => WebServiceWeather(dio: Dio()));
+
+
+// Weather
+  //Blocs
+  sl.registerLazySingleton(() => WeatherBloc(getWeatherInfo: sl()));
+  //Domain
+  //UseCases
+  sl.registerLazySingleton(() => GetWeatherInfo(repository: sl()));
+  //Repository
+  sl.registerLazySingleton<WeatherRepository>(
+        () => WeatherRepositoryImpl(
+      sl(),
+      sl(),
+    ),
+  );
+  //DataSources
+  sl.registerLazySingleton<WeatherRemoteDataSource>(
+        () => WeatherRemoteDataSourceImpl(
+      webServiceWeather: sl(),
+    ),
+  );
+
+  sl.registerLazySingleton<WeatherLocalDataSource>(
+        () => WeatherLocalDataSourceImpl(),
+  );
 
   sl.registerLazySingleton<NetworkConnection>(
     () => NetworkConnectionImplementation(sl()),

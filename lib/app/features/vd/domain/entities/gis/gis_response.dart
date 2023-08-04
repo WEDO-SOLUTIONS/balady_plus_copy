@@ -21,6 +21,7 @@ class GISResponse extends Equatable {
   // dynamic planNo;
   bool? vdExcepted;
   bool? vdPriority;
+  String? cityName;
 
   GISResponse({
     this.adminMunicipalityId,
@@ -45,6 +46,7 @@ class GISResponse extends Equatable {
     // this.planNo,
     this.vdExcepted,
     this.vdPriority,
+    this.cityName
   });
 
   String getFullAddress({
@@ -95,6 +97,7 @@ class GISResponse extends Equatable {
         municipalityId,
         subMunicipalityId,
         subMunicipalityCategory,
-        subMunicipalityguid
+        subMunicipalityguid,
+        cityName,
       ];
 }
