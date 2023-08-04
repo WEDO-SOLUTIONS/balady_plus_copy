@@ -90,12 +90,16 @@ class EtmamTopRatedProvidersWidget extends StatelessWidget {
                               ?.items?[index].logoImageUrl ??
                           "",
                       onPress: () {
-                        context.read<HomeBloc>().add(GetProviderDetailsEvent(
-                            params: ProviderDetailsParams(
-                                cityId: CommonProperties.cityId,
-                                providerId: state.topRatedProviderResponse
-                                        ?.items?[index].id ??
-                                    "")));
+                        context.read<HomeBloc>().add(
+                              GetProviderDetailsEvent(
+                                params: ProviderDetailsParams(
+                                  cityId: CommonProperties.cityId,
+                                  providerId: state.topRatedProviderResponse
+                                          ?.items?[index].id ??
+                                      "",
+                                ),
+                              ),
+                            );
                       },
                     );
                   },

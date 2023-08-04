@@ -59,11 +59,13 @@ class EtmamRatingEvaluationWidget extends StatelessWidget {
   final dynamic totalEvaluation;
   final bool withDot;
   final bool withIcon;
+  final bool isCenter;
 
   const EtmamRatingEvaluationWidget(
       {Key? key,
       required this.rating,
       required this.totalEvaluation,
+      this.isCenter = false,
       this.withDot = true,
       this.withIcon = true})
       : super(key: key);
@@ -71,6 +73,8 @@ class EtmamRatingEvaluationWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
+      mainAxisAlignment:
+          isCenter ? MainAxisAlignment.center : MainAxisAlignment.start,
       children: [
         if (!withDot && withIcon) ...[
           SvgPicture.asset(

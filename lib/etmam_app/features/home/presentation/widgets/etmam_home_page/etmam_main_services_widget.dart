@@ -97,9 +97,6 @@ class _EtmamMainServicesWidget extends State<EtmamMainServicesWidget> {
                   itemBuilder: (BuildContext context, int itemIndex) {
                     int startIndex = itemIndex * _numWidgetsPerPage;
                     int endIndex = (itemIndex + 1) * _numWidgetsPerPage;
-                    print(endIndex.clamp(0, 3));
-                    print(
-                        "startIndex: $startIndex, endIndex: $endIndex, length: ${state.mainServiceResponse?.items?.length}");
 
                     List<MainServiceItems>? widgetsToShow =
                         state.mainServiceResponse?.items?.sublist(

@@ -23,13 +23,20 @@ class EtmamHomeAppBarWidget extends StatelessWidget {
       // height: 150,
       width: double.infinity,
       decoration: const BoxDecoration(
+        boxShadow: [
+          BoxShadow(
+            color: Color(0x663B69DE),
+            blurRadius: 12,
+            offset: Offset(0, 6.8),
+          ),
+        ],
         gradient: LinearGradient(
           colors: [
-            Color(0xFF1C7372),
-            Color(0xFF127F4C),
+            Color(0xFF155F75),
+            Color(0xFF3A879D),
           ],
-          begin: Alignment.centerLeft,
-          end: Alignment.centerRight,
+          begin: Alignment.centerRight,
+          end: Alignment.centerLeft,
         ),
       ),
       padding: EdgeInsets.only(

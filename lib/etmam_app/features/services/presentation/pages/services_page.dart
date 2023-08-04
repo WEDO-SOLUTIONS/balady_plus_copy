@@ -157,57 +157,60 @@ class _ServicesPageState extends State<ServicesPage> {
                             contact: state.items![index].contact,
                             onPressView: () {
                               if (!CommonProperties.isUserLogged) {
-                                showPopUpWidget(context,
-                                    popUpBody: NeedLoginWidget(
-                                      withMargin: false,
-                                      onSuccessLogin: (bool? isSuccess) {
-                                        if (isSuccess == true) {
-                                          Navigator.of(context).pop();
+                                showPopUpWidget(
+                                  context,
+                                  popUpBody: NeedLoginWidget(
+                                    withMargin: false,
+                                    onSuccessLogin: (bool? isSuccess) {
+                                      if (isSuccess == true) {
+                                        Navigator.of(context).pop();
 
-                                          if (widget.args.changeProvider ==
-                                              true) {
-                                            NavigationService.pushNamed(
-                                                routeName:
-                                                    EtmamRoutesNames.orderInfo,
-                                                args: SubmitPageParams(
-                                                    serviceProviderId:
-                                                        state.items![index].id!,
-                                                    serviceProviderName: state
-                                                            .items![index]
-                                                            .serviceProviderName ??
-                                                        "",
-                                                    subServiceId:
-                                                        state.subServiceId,
-                                                    relationId: "",
-                                                    subServiceName:
-                                                        state.subServiceName,
-                                                    subRelations: [],
-                                                    changeProvider: widget
-                                                        .args.changeProvider,
-                                                    orderId:
-                                                        widget.args.orderId,
-                                                    callBack:
-                                                        widget.args.callBack,
-                                                    pageType:
-                                                        widget.args.pageType));
-                                          } else {
-                                            context.read<ServicesBloc>().add(
+                                        if (widget.args.changeProvider ==
+                                            true) {
+                                          NavigationService.pushNamed(
+                                              routeName:
+                                                  EtmamRoutesNames.orderInfo,
+                                              args: SubmitPageParams(
+                                                  serviceProviderId:
+                                                      state.items![index].id!,
+                                                  serviceProviderName: state
+                                                          .items![index]
+                                                          .serviceProviderName ??
+                                                      "",
+                                                  subServiceId:
+                                                      state.subServiceId,
+                                                  relationId: "",
+                                                  subServiceName:
+                                                      state.subServiceName,
+                                                  subRelations: [],
+                                                  changeProvider: widget
+                                                      .args.changeProvider,
+                                                  orderId: widget.args.orderId,
+                                                  callBack:
+                                                      widget.args.callBack,
+                                                  pageType:
+                                                      widget.args.pageType));
+                                        } else {
+                                          context.read<ServicesBloc>().add(
                                                 GetRelationsEvent(
-                                                    params: RelationParams(
-                                                        serviceProviderId: state
-                                                            .items![index].id!,
-                                                        serviceProviderName: state
-                                                                .items![index]
-                                                                .serviceProviderName ??
-                                                            "",
-                                                        cityId: CommonProperties
-                                                            .cityId,
-                                                        subServiceId: state
-                                                            .subServiceId!)));
-                                          }
+                                                  params: RelationParams(
+                                                      serviceProviderId: state
+                                                          .items![index].id!,
+                                                      serviceProviderName: state
+                                                              .items![index]
+                                                              .serviceProviderName ??
+                                                          "",
+                                                      cityId: CommonProperties
+                                                          .cityId,
+                                                      subServiceId:
+                                                          state.subServiceId!),
+                                                ),
+                                              );
                                         }
-                                      },
-                                    ));
+                                      }
+                                    },
+                                  ),
+                                );
                               } else {
                                 if (widget.args.changeProvider == true) {
                                   NavigationService.pushNamed(
