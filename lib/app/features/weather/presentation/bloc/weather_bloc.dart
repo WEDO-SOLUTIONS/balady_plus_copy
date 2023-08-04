@@ -31,12 +31,33 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
     if (state.allWeatherInfoStatus == BlocStatus.success) return;
 
     emitter(state.copyWith(allWeatherInfoStatus: BlocStatus.loading));
-    LatLng? location = await Helpers.getCurrentLocation();
+    //LatLng? location = await Helpers.getCurrentLocation();
 
-    e.params
-        .copyWith(latitude: location?.latitude, longitude: location?.longitude);
+    e.params.copyWith(
+        latitude: CommonProperties.userLocation?.y,
+        longitude: CommonProperties.userLocation?.x);
 
-    final failureOrSuccess = await _getGISData(
+    final failureOrSuccess = await _getWeatherInfo(e.params);
+
+    failureOrSuccess.fold((failure) {
+      print("failure: $failure");
+      emitter(state.copyWith(
+        allWeatherInfoStatus: BlocStatus.failure,
+        gisResponse: CommonProperties.userLocationGIS,
+        errorMessage: (failure as ServerFailure).errorMessage,
+      ));
+    }, (success) {
+      print("weather entity: $success");
+      emitter(state.copyWith(
+        allWeatherInfoStatus: BlocStatus.success,
+        //  categories: success.data?.result,
+        gisResponse: CommonProperties.userLocationGIS,
+        allWeatherInfo: success,
+        errorMessage: "",
+      ));
+    });
+
+/*  final failureOrSuccess = await _getGISData(
         GISParams(x: e.params.longitude!, y: e.params.latitude!));
 
     await failureOrSuccess.fold((failure) {
@@ -50,24 +71,7 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
         errorMessage: "",
       ));
 
-      final failureOrSuccess = await _getWeatherInfo(e.params);
-
-      failureOrSuccess.fold((failure) {
-        print("failure: $failure");
-        emitter(state.copyWith(
-          allWeatherInfoStatus: BlocStatus.failure,
-          errorMessage: (failure as ServerFailure).errorMessage,
-        ));
-      }, (success) {
-        print("weather entity: $success");
-        emitter(state.copyWith(
-          allWeatherInfoStatus: BlocStatus.success,
-          //  categories: success.data?.result,
-
-          allWeatherInfo: success,
-          errorMessage: "",
-        ));
-      });
-    });
+    
+    });*/
   }
 }

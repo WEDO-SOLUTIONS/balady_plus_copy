@@ -4,7 +4,7 @@ import '../../../../core/errors/errors_exports.dart' show Failure;
 import '../../../../core/services/services_exports.dart' show NoParams, UseCase;
 import '../../services_exports.dart' show ServiceEntity, ServicesRepository;
 
-class HealthCertificatesServices
+/*class HealthCertificatesServices
     extends UseCase<List<ServiceEntity>, NoParams> {
   final ServicesRepository repository;
 
@@ -12,6 +12,7 @@ class HealthCertificatesServices
 
   @override
   Future<Either<Failure, List<ServiceEntity>>> call(NoParams params) async {
-    return await repository.getHealthCertificatesServices();
+  //  return await repository.getHealthCertificatesServices();
   }
 }
+*/

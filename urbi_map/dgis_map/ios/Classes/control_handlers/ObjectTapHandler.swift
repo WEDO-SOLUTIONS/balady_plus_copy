@@ -11,6 +11,7 @@ class ObjectTapHandler {
         static let onMarkerTap = "onMarkerTap"
         static let onPolygonTap = "onPolygonTap"
         static let onPolylineTap = "onPolylineTap"
+        static let onClusterTap = "onClusterTap"
     }
     
     private struct PhotoData {
@@ -43,10 +44,12 @@ class ObjectTapHandler {
         let id: String
     }
     
+    private let map: Map
     private let routeHandler: RouteHandler?
     private let mapObjectManager: MapObjectManager
     private let panoramasObjectManager: MapObjectManager
     private let imageFactory: IImageFactory
+    private let flutterApi: FlutterMapApi
     private let eventChannel: DgisStreamHandler
     private let ioObjectManager: MapObjectManager
     private let registrar: FlutterPluginRegistrar
@@ -61,6 +64,7 @@ class ObjectTapHandler {
     private var source: DgisSource?
 
     private var markers: Dictionary<String, Marker> = [:]
+    private var managers: Dictionary<String, MapObjectManager> = [:]
     private var polygons: Dictionary<String, Polygon> = [:]
     private var polylines: Dictionary<String, Polyline> = [:]
     private var panoramasMarkers: Array<Marker> = []
@@ -71,6 +75,7 @@ class ObjectTapHandler {
     private var selectedPanorama: Marker?
     
     init(
+        map: Map,
         objectManager: MapObjectManager,
         panoramasMapObjectManager: MapObjectManager,
         ioObjectManager: MapObjectManager,
@@ -79,6 +84,7 @@ class ObjectTapHandler {
         eventChannel: DgisStreamHandler,
         registrar: FlutterPluginRegistrar
     ) {
+        self.map = map
         self.mapObjectManager = objectManager
         self.panoramasObjectManager = panoramasMapObjectManager
         self.imageFactory = imageFactory
@@ -90,6 +96,7 @@ class ObjectTapHandler {
             qos: .utility
         )
         self.registrar = registrar
+        self.flutterApi = FlutterMapApi(binaryMessenger: registrar.messenger())
     }
     
     func objectTapListener(_ objectInfo: DGis.RenderedObjectInfo) {
@@ -132,14 +139,14 @@ class ObjectTapHandler {
 //            guard let mapObject = tappedObject as? DgisMapObject else { return }
 //            self.onDgisObjectTap(mapObject, objectInfo)
 //            return
-        case is SimpleClusterObject:
-            let clusterObject = (tappedObject as! SimpleClusterObject)
-            let mainObject = clusterObject.objectCount > 0 ? clusterObject.objects[0] : nil
-            guard let marker = mainObject as? Marker else {
-                self.eventChannel.error(code: Events.objectTapError)
-                return
+        case let cluster as SimpleClusterObject:
+            if let id = cluster.userData as? MapObjectManagerMessage {
+                eventChannel.success([
+                    "event": Events.onClusterTap,
+                    "id": id.id,
+                    "cluster": cluster.toMap()
+                ] as [String : Any])
             }
-            self.onMarkerTap(marker)
             return
         case is RouteMapObject:
             self.routeHandler?.onRouteTap(tappedObject as! RouteMapObject)
@@ -171,73 +178,6 @@ class ObjectTapHandler {
         self.iconWidth = LogicalPixel(floatLiteral: iconWidth)
         
         completion(nil)
-    }
-
-    private func mapTextPlacement(_ placement: TextPlacementMessage) -> TextPlacement {
-        switch placement {
-        case .noLabel:
-            return .noLabel
-        case .bottomCenter:
-            return .bottomCenter
-        case .bottomRight:
-            return .bottomRight
-        case .bottomLeft:
-            return .bottomLeft
-        case .circleBottomRight:
-            return .circleBottomRight
-        case .rightBottom:
-            return .rightBottom
-        case .rightCenter:
-            return .rightCenter
-        case .rightTop:
-            return .rightTop
-        case .circleTopRight:
-            return .circleTopRight
-        case .topCenter:
-            return .topCenter
-        case .topRight:
-            return .topRight
-        case .topLeft:
-            return .topLeft
-        case .circleTopLeft:
-            return .circleTopLeft
-        case .leftTop:
-            return .leftTop
-        case .leftCenter:
-            return .leftCenter
-        case .leftBottom:
-            return .leftBottom
-        case .circleBottomLeft:
-            return .circleBottomLeft
-        case .centerCenter:
-            return .centerCenter
-        @unknown default:
-            return .noLabel
-        }
-    }
-    
-    private func mapTextStyle(_ style: MarkerTextStyleMessage) -> TextStyle {
-        TextStyle(
-            fontSize: style.fontSize.map {
-                LogicalPixel(value: $0.floatValue)
-            } ?? LogicalPixel(value: 8),
-            color: style.color.map {
-                return Color(argb: UInt32($0.intValue))
-            } ?? Color(),
-            strokeWidth: style.strokeWidth.map {
-                LogicalPixel(value: $0.floatValue)
-            } ?? LogicalPixel(value: 0.3499999940395355),
-            strokeColor: style.strokeColor.map {
-                Color(argb: UInt32($0.intValue))
-            } ?? Color(argb: 4294967295),
-            textPlacement: style.textPlacement.map {
-                mapTextPlacement($0.placement)
-            } ?? .bottomCenter,
-            textOffset: style.textOffset.map {
-                LogicalPixel(value: $0.floatValue)
-            } ?? LogicalPixel(value: 0),
-            fontName: style.fontName
-        )
     }
     
     func mapMarker(_ marker: MarkerMessage, completion: @escaping (FlutterError?) -> Void) -> Marker? {
@@ -276,29 +216,34 @@ class ObjectTapHandler {
                 Anchor(x: $0.x.floatValue, y: $0.y.floatValue)
             } ?? Anchor(x: 0.5, y: 0.5),
             text: marker.options.text,
-            textStyle: marker.options.textStyle.map(mapTextStyle),
+            textStyle: marker.options.textStyle?.textStyle,
             iconWidth: (marker.options.icon?.width).map {
                 LogicalPixel(value: $0.floatValue)
             } ?? LogicalPixel(value: 0),
-            userData: MarkerId(marker.id)
+            userData: MarkerId(marker.id),
+            animatedAppearance: false
         )
-        
+
         return Marker(options: options)
     }
     
-    func addMarker(_ marker: MarkerMessage, completion: @escaping (FlutterError?) -> Void) {
+    func addMarker(_ marker: MarkerMessage, to manager: MapObjectManagerMessage?, completion: @escaping (FlutterError?) -> Void) {
         guard let markerObject = mapMarker(marker, completion: completion) else {
             return
         }
         
         self.objectsQueue.sync {
             self.markers[marker.id] = markerObject
-            self.mapObjectManager.addObject(item: markerObject)
+            if let managerId = manager?.id, let manager = self.managers[managerId] {
+                manager.addObject(item: markerObject)
+            } else {
+                self.mapObjectManager.addObject(item: markerObject)
+            }
             completion(nil)
         }
     }
     
-    func addMarkers(_ markers: [MarkerMessage], completion: @escaping (FlutterError?) -> Void) {
+    func addMarkers(_ markers: [MarkerMessage], to manager: MapObjectManagerMessage?, completion: @escaping (FlutterError?) -> Void) {
         var markerObjects = [String:Marker]()
         for marker in markers {
             guard let markerObject = mapMarker(marker, completion: completion) else {
@@ -311,15 +256,56 @@ class ObjectTapHandler {
             markerObjects.forEach { id, object in
                 self.markers[id] = object
             }
-            self.mapObjectManager.addObjects(objects: Array(markerObjects.values))
+            if let managerId = manager?.id, let manager = self.managers[managerId] {
+                manager.addObjects(objects: Array(markerObjects.values))
+            } else {
+                self.mapObjectManager.addObjects(objects: Array(markerObjects.values))
+            }
             completion(nil)
         }
     }
     
-    func removeMarker(_ id: String, completion: @escaping (FlutterError?) -> Void) {
+    func removeMarker(_ id: String, from manager: MapObjectManagerMessage?, completion: @escaping (FlutterError?) -> Void) {
         self.objectsQueue.sync {
             if let markerObject = self.markers.removeValue(forKey: id) {
-                self.mapObjectManager.removeObject(item: markerObject)
+                if let managerId = manager?.id, let manager = self.managers[managerId] {
+                    manager.removeObject(item: markerObject)
+                } else {
+                    self.mapObjectManager.removeObject(item: markerObject)
+                }
+                completion(nil)
+            }
+        }
+    }
+    
+    func createClusteringMapObjectManager(_ options: ClusteringMapObjectManagerOptionsMessage, completion: @escaping (MapObjectManagerMessage?, FlutterError?) -> Void) {
+        let managerId = UUID().uuidString
+        let managerMessage = MapObjectManagerMessage.make(withId: managerId)
+        
+        let manager = MapObjectManager.withClustering(
+            map: self.map,
+            logicalPixel: LogicalPixel(value: options.logicalPixel.floatValue),
+            maxZoom: Zoom(value: options.maxZoom.floatValue),
+            clusterRenderer: FlutterClusterRenderer(
+                api: self.flutterApi,
+                registrar: self.registrar,
+                imageFactory: self.imageFactory,
+                manager: managerMessage
+            ),
+            minZoom: options.minZoom.map {
+                Zoom(value: $0.floatValue)
+            } ?? Zoom(value: 0)
+        )
+        
+        self.objectsQueue.sync {
+            self.managers[managerId] = manager
+            completion(managerMessage, nil)
+        }
+    }
+    
+    func removeMapObjectManager(_ manager: MapObjectManagerMessage, completion: @escaping (FlutterError?) -> Void) {
+        self.objectsQueue.sync {
+            if self.managers.removeValue(forKey: manager.id) != nil {
                 completion(nil)
             }
         }
@@ -469,9 +455,13 @@ class ObjectTapHandler {
         }
     }
     
-    func removeAllMarkers() {
+    func removeAllMarkers(from manager: MapObjectManagerMessage?) {
         self.objectsQueue.sync {
-            self.mapObjectManager.removeObjects(objects: Array(self.markers.values))
+            if let managerId = manager?.id, let manager = self.managers[managerId] {
+                manager.removeObjects(objects: Array(self.markers.values))
+            } else {
+                self.mapObjectManager.removeObjects(objects: Array(self.markers.values))
+            }
             self.markers.removeAll()
         }
     }

@@ -63,16 +63,16 @@ class ServicesRepositoryImplementation implements ServicesRepository {
     }
   }
 
-  @override
+  /* @override
   Future<Either<Failure, List<ServiceEntity>>>
       getHealthCertificatesServices() async {
     try {
-      final services = await localDataSource.getHealthCertificatesServices();
+     // final services = await localDataSource.getHealthCertificatesServices();
       return Right(services);
     } catch (e) {
       return Left(CacheFailure());
     }
-  }
+  }*/
 
   @override
   Future<Either<Failure, List<ServiceEntity>>> getHelpServices() async {

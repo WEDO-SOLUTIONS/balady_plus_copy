@@ -8,100 +8,120 @@ import 'package:flutter/material.dart';
 import '../../../../home_page/presentation/widgets/home_app_bar/circle_icon.dart';
 import '../../../data/model/excavations.dart';
 
-class DiggingMapCard extends StatelessWidget {
-  final String? title;
-  final String? subTitle;
-  final String? subSubTitle;
+class LandMapCard extends StatelessWidget {
+  final String? BLOCK_ID;
+  final String? SUBDIVISIONPARCELNUMBER;
+  final String? SUBDIVISIONPLAN_ID;
+  final String? municipality;
+  final String? subMunicipality;
+
   final Function onClose;
 
-  const DiggingMapCard(
+  const LandMapCard(
       {super.key,
-      this.subSubTitle,
-      this.subTitle,
-      this.title,
+      this.municipality,
+      this.subMunicipality,
+      this.SUBDIVISIONPARCELNUMBER,
+      this.SUBDIVISIONPLAN_ID,
+      this.BLOCK_ID,
       required this.onClose});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 120,
-      padding: const EdgeInsets.all(16),
-      decoration: ShapeDecoration(
-        color: Colors.white,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
-        shadows: [
-          BoxShadow(
-            color: Color(0x1C77758D),
-            blurRadius: 22,
-            offset: Offset(0, 4),
-            spreadRadius: 0,
-          )
-        ],
-      ),
-      child: Stack(
-        children: [
-          Row(mainAxisSize: MainAxisSize.min, children: [
-            ClipRRect(
-                borderRadius: BorderRadius.circular(16),
-                child: Image.asset(
-                  ImagePath.diggingMapCard,
-                  width: 60,
-                  height: 60,
-                )),
-            CustomHorizontalSpace(width: 8),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  CustomTextWidget(
-                    title ?? "",
-                    fontColor: AppColor.blackModern800Light,
-                    fontSize: 16,
-                    fontWeight: AppFontWeight.bold,
-                    maxLines: 1,
-                  ),
-                  CustomVerticalSpace(height: 8),
-                  CustomTextWidget(
-                    subTitle ?? "",
-                    fontColor: AppColor.blackModern500Light,
-                    fontSize: 12,
-                    fontWeight: AppFontWeight.semiBold,
-                    height: 1.3,
-                    maxLines: 3,
-                  ),
-                  CustomVerticalSpace(height: 8),
-                  CustomTextWidget(
-                    subSubTitle ?? "",
-                    fontColor: Color(0xFFF51C1C),
-                    fontSize: 12,
-                    fontWeight: AppFontWeight.semiBold,
-                    height: 1.3,
-                    maxLines: 3,
-                  ),
-                ],
-              ),
-            )
-          ]),
-          Align(
-            alignment: Alignment.topLeft,
-            child: GestureDetector(
-              onTap: () {
-                onClose();
-              },
-              child: CircleIcon(
-                icon: Icons.close,
-                circleSize: 24,
-                iconColor: AppColor.primary600Light,
-                backgroundColor: AppColor.geyser.withOpacity(0.4),
-                iconSize: 12,
-              ),
+    return Stack(
+      children: [
+        Container(
+          height: 160,
+          padding: const EdgeInsets.all(16),
+          decoration: ShapeDecoration(
+            color: Colors.white,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
             ),
+            shadows: [
+              BoxShadow(
+                color: Color(0x1C77758D),
+                blurRadius: 22,
+                offset: Offset(0, 4),
+                spreadRadius: 0,
+              )
+            ],
           ),
-        ],
-      ),
+          child: Stack(
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    CustomTextWidget(
+                      "معلومات المخطط",
+                      fontColor: AppColor.blackModern800Light,
+                      fontSize: 16,
+                      fontWeight: AppFontWeight.bold,
+                      maxLines: 1,
+                    ),
+                    CustomVerticalSpace(height: 8),
+                    CustomTextWidget(
+                      "${municipality}, ${subMunicipality}",
+                      fontColor: AppColor.blackModern500Light,
+                      fontSize: 12,
+                      fontWeight: AppFontWeight.semiBold,
+                      height: 1.3,
+                      maxLines: 3,
+                    ),
+                    CustomVerticalSpace(height: 8),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        CustomTextWidget(
+                          "المخطط: ${SUBDIVISIONPLAN_ID}",
+                          fontColor: AppColor.blackModern500Light,
+                          fontSize: 12,
+                          fontWeight: AppFontWeight.semiBold,
+                          height: 1.3,
+                          maxLines: 3,
+                        ),
+                        CustomTextWidget(
+                          "البلوك: ${BLOCK_ID}",
+                          fontColor: AppColor.blackModern500Light,
+                          fontSize: 12,
+                          fontWeight: AppFontWeight.semiBold,
+                          height: 1.3,
+                          maxLines: 3,
+                        ),
+                      ],
+                    ),
+                    CustomTextWidget(
+                      "القطعة: ${SUBDIVISIONPARCELNUMBER}",
+                      fontColor: AppColor.blackModern500Light,
+                      fontSize: 12,
+                      fontWeight: AppFontWeight.semiBold,
+                      height: 1.3,
+                      maxLines: 3,
+                    ),
+                  ],
+                ),
+              ),
+              Align(
+                alignment: Alignment.topLeft,
+                child: GestureDetector(
+                  onTap: () {
+                    onClose();
+                  },
+                  child: CircleIcon(
+                    icon: Icons.close,
+                    circleSize: 24,
+                    iconColor: AppColor.primary600Light,
+                    backgroundColor: AppColor.geyser.withOpacity(0.4),
+                    iconSize: 12,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }

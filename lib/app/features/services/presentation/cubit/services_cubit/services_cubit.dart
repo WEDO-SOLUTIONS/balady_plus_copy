@@ -24,13 +24,13 @@ class ServicesCubit extends Cubit<ServicesState> {
   final CustomerVoiceServices customerVoiceServices;
   final HonoringTheDeadServices honoringTheDeadServices;
   final HelpServices helpServices;
-  final HealthCertificatesServices healthCertificatesServices;
+  //final HealthCertificatesServices healthCertificatesServices;
   final BusinessLicenseServices businessLicenseServices;
 
   ServicesCubit({
     required this.businessLicenseServices,
     required this.customerVoiceServices,
-    required this.healthCertificatesServices,
+    // required this.healthCertificatesServices,
     required this.helpServices,
     required this.honoringTheDeadServices,
     required this.importantServices,
@@ -50,8 +50,8 @@ class ServicesCubit extends Cubit<ServicesState> {
     final businessLicenseServicesList =
         await businessLicenseServices(NoParams());
 
-    final healthCertificatesServicesList =
-        await healthCertificatesServices(NoParams());
+    //final healthCertificatesServicesList =
+    //    await healthCertificatesServices(NoParams());
     final helpServicesList = await helpServices(NoParams());
     final honoringTheDeadServicesList =
         await honoringTheDeadServices(NoParams());
@@ -64,8 +64,8 @@ class ServicesCubit extends Cubit<ServicesState> {
       islamicServices: islamicServicesList.getOrElse(() => []),
       customerVoiceServices: customerVoiceServicesList.getOrElse(() => []),
       businessLicenseServices: businessLicenseServicesList.getOrElse(() => []),
-      healthCertificatesServices:
-          healthCertificatesServicesList.getOrElse(() => []),
+      // healthCertificatesServices:
+      //    healthCertificatesServicesList.getOrElse(() => []),
       helpServices: helpServicesList.getOrElse(() => []),
       honoringTheDeadServices: honoringTheDeadServicesList.getOrElse(() => []),
     ));

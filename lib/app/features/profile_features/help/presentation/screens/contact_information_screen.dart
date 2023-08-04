@@ -37,7 +37,7 @@ class ContactInformationScreen extends StatelessWidget {
             SizedBox(height: 8),
             ContactInfoCard(
               title: "رقم التواصل",
-              value: "940",
+              value: "199040",
             ),
             SizedBox(height: 8),
             ContactInfoCard(

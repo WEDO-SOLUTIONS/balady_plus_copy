@@ -58,7 +58,7 @@ class EntryPointState extends Equatable {
           userLocationGIS!.cityName != null &&
           userLocationGIS!.cityName!.isNotEmpty
       ? 'ابحث في ${userLocationGIS!.cityName!} عن...'
-      : "'ابحث عن...'";
+      : 'ابحث عن...';
 
   @override
   List<Object?> get props => [

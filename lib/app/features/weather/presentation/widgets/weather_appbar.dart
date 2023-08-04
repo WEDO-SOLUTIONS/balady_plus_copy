@@ -55,9 +55,8 @@ class WeatherAppbar extends StatelessWidget {
           ],
           backgroundColor: Colors.transparent,
           elevation: 0,
-          centerTitle: true,
           title: CustomTextWidget(
-            "طقس ${state.gisResponse?.cityName ?? ""}",
+            state.gisResponse?.cityName ?? "",
             fontSize: 20,
             fontWeight: AppFontWeight.bold,
           ),

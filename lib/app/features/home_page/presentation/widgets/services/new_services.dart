@@ -75,7 +75,7 @@ class NewServices extends StatelessWidget {
                             ),
                             const SizedBox(height: 6),
                             CustomTextWidget(
-                              "اطلع على جميع المعاملات القابلة للاعتراض وإرسل اعتراضك مباشرة",
+                              "اطلع على جميع المخالفات القابلة للاعتراض وإرسل اعتراضك مباشرة",
                               fontColor: AppColor.blackModern400Light,
                               fontWeight: AppFontWeight.medium,
                               maxLines: null,
@@ -91,7 +91,7 @@ class NewServices extends StatelessWidget {
                               ),
                               btnHeight: 40,
                               btnPadding: const EdgeInsets.all(11),
-                              text: "استعرض المعاملات",
+                              text: "استعرض المخالفات",
                               onPressed: () async {
                                 if (CommonProperties.isLoggedIn) {
                                   Navigator.pushNamed(context,

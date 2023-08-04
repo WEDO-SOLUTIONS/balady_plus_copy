@@ -168,9 +168,6 @@ class ApiUrl {
 //Weather
   static const weatherForcastAPI = '/v1/forecast.json';
 
-  //Weather
-  static const weatherForcastAPI = '/v1/forecast.json';
-
 // Pega Incdients
 
   static const String IncidentDownloadFile =

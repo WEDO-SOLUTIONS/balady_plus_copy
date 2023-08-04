@@ -61,9 +61,9 @@ class LandsLegendsMapCard extends StatelessWidget {
                   width: 23,
                   height: 23,
                   decoration: ShapeDecoration(
-                    color: Color(0xBCE9DCD5),
+                    color: Color(0x3342D991),
                     shape: RoundedRectangleBorder(
-                      side: BorderSide(width: 0.50, color: Color(0xFFD8814D)),
+                      side: BorderSide(width: 0.50, color: Color(0xFF0B7E47)),
                       borderRadius: BorderRadius.circular(6),
                     ),
                   ),
@@ -71,7 +71,7 @@ class LandsLegendsMapCard extends StatelessWidget {
                 CustomHorizontalSpace(width: 8),
                 Flexible(
                   child: CustomTextWidget(
-                    'ارض مخالفه وغير مسوره',
+                    'أراضي مسورة',
                     fontColor: Color(0xFF292929),
                     fontSize: 10,
                     fontWeight: AppFontWeight.medium,
@@ -88,9 +88,9 @@ class LandsLegendsMapCard extends StatelessWidget {
                   width: 23,
                   height: 23,
                   decoration: ShapeDecoration(
-                    color: Color(0x89DBE6E8),
+                    color: Color(0x26000000),
                     shape: RoundedRectangleBorder(
-                      side: BorderSide(width: 0.50, color: Color(0xFF4F9291)),
+                      side: BorderSide(width: 0.50, color: Color(0xFF000000)),
                       borderRadius: BorderRadius.circular(6),
                     ),
                   ),

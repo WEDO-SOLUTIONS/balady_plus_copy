@@ -1,0 +1,73 @@
+import Foundation
+import DGis
+
+class FlutterClusterRenderer: SimpleClusterRenderer {
+    let api: FlutterMapApi
+    let registrar: FlutterPluginRegistrar
+    let imageFactory: IImageFactory
+    let manager: MapObjectManagerMessage
+    
+    init(api: FlutterMapApi, registrar: FlutterPluginRegistrar, imageFactory: IImageFactory, manager: MapObjectManagerMessage) {
+        self.api = api
+        self.registrar = registrar
+        self.imageFactory = imageFactory
+        self.manager = manager
+    }
+    
+    private var iconCache: Dictionary<String, Image> = [:]
+    
+    func renderCluster(cluster: DGis.SimpleClusterObject) -> DGis.SimpleClusterOptions {
+        let semaphore = DispatchSemaphore(value: 0)
+        var message: SimpleClusterOptionsMessage? = nil
+        var options: SimpleClusterOptions? = nil
+        
+        api.renderClusterManager(
+            manager,
+            objectCount: NSNumber(value: cluster.objectCount)
+        ) { (response, error) in
+            message = response!
+            semaphore.signal()
+        }
+        
+        semaphore.wait()
+        
+        var markerImage: Image? = nil
+        if let icon = message!.icon?.path {
+            if let cachedIcon = iconCache[icon] {
+                markerImage = cachedIcon
+            } else {
+                let assetKey = registrar.lookupKey(forAsset: icon)
+                
+                guard let assetPath = Bundle.main.path(forResource: assetKey, ofType: nil),
+                      let url = URL(string: "file://\(assetPath)"),
+                      let data = try? Data(contentsOf: url) else {
+                    assert(false, "Oops we fail")
+                    return options!
+                }
+                
+                let image = imageFactory.make(svgData: data, size: .zero)
+                markerImage = image
+                iconCache[icon] = image
+            }
+        }
+        
+        options = SimpleClusterOptions(
+            icon: markerImage,
+            iconMapDirection: message!.icon?.iconMapDirection.map {
+                MapDirection(value: $0.degree.doubleValue)
+            },
+            anchor: message!.anchor.map {
+                Anchor(x: $0.x.floatValue, y: $0.y.floatValue)
+            } ?? Anchor(x: 0.5, y: 0.5),
+            text: message!.text,
+            textStyle: message!.textStyle?.textStyle,
+            iconWidth: (message!.icon?.width).map {
+                LogicalPixel(value: $0.floatValue)
+            } ?? LogicalPixel(value: 0),
+            userData: manager,
+            animatedAppearance: false
+        )
+        
+        return options!
+    }
+}

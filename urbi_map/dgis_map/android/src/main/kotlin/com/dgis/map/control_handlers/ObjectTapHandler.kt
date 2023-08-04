@@ -1,9 +1,12 @@
 package com.dgis.map.control_handlers
 
 import android.util.Size
+import com.dgis.map.FlutterClusterRenderer
 import com.dgis.map.R
 import com.dgis.map.extensions.toGeoPoint
 import com.dgis.map.extensions.toGeoPointWithElevation
+import com.dgis.map.extensions.toMap
+import com.dgis.map.extensions.toTextStyle
 import com.dgis.map.extensions.unsafeLazy
 import com.dgis.map.map_api.Messages.*
 import com.dgis.map.user_data.PhotoData
@@ -19,15 +22,18 @@ import ru.dgis.sdk.geometry.Elevation
 import ru.dgis.sdk.geometry.GeoPointWithElevation
 import ru.dgis.sdk.map.*
 import java.io.FileNotFoundException
+import java.util.*
 import java.util.concurrent.Executors
 
 class ObjectTapHandler(
+    private val map: ru.dgis.sdk.map.Map,
     private val mapObjectManager: MapObjectManager,
     private val panoramasObjectManager: MapObjectManager,
     private val ioObjectManager: MapObjectManager,
     private val routeHandler: RouteHandler?,
     private val sdkContext: Context,
     private val eventSink: EventSink,
+    private val api: FlutterMapApi,
 ) : AutoCloseable {
     private var source: DgisSource? = null
     private var markerImage: Image? = null
@@ -55,6 +61,7 @@ class ObjectTapHandler(
     private val polygons = mutableMapOf<String, Polygon>();
     private val polylines = mutableMapOf<String, Polyline>();
     private val ioLayerMarkers = mutableListOf<Marker>();
+    private val managers = mutableMapOf<String, MapObjectManager>()
 
     private val iconCache = mutableMapOf<String, Image>()
 
@@ -111,16 +118,10 @@ class ObjectTapHandler(
                 routeHandler?.onRouteTap(tappedObject)
             }
             is SimpleClusterObject -> {
-                val mainObject = if (tappedObject.objectCount > 0) tappedObject.objects[0] else null
-                if (mainObject is Marker) {
-                    onMarkerTap(mainObject)
-                    return
-                } else {
-                    eventSink.error(
-                        "ClusteredObjectNoMarkers",
-                        "Clustered object has no markers",
-                        null,
-                    )
+                val userData = tappedObject.userData
+
+                if (userData is MapObjectManagerMessage) {
+                    onClusterTap(userData.id, tappedObject)
                     return
                 }
             }
@@ -155,53 +156,6 @@ class ObjectTapHandler(
         }
     }
 
-    private fun mapTextPlacement(placementMessage: TextPlacementMessage): TextPlacement {
-        return when (placementMessage) {
-            TextPlacementMessage.NO_LABEL -> TextPlacement.NO_LABEL
-            TextPlacementMessage.BOTTOM_CENTER -> TextPlacement.BOTTOM_CENTER
-            TextPlacementMessage.BOTTOM_RIGHT -> TextPlacement.BOTTOM_RIGHT
-            TextPlacementMessage.BOTTOM_LEFT -> TextPlacement.BOTTOM_LEFT
-            TextPlacementMessage.CIRCLE_BOTTOM_RIGHT -> TextPlacement.CIRCLE_BOTTOM_LEFT
-            TextPlacementMessage.RIGHT_BOTTOM -> TextPlacement.RIGHT_BOTTOM
-            TextPlacementMessage.RIGHT_CENTER -> TextPlacement.RIGHT_CENTER
-            TextPlacementMessage.RIGHT_TOP -> TextPlacement.RIGHT_TOP
-            TextPlacementMessage.CIRCLE_TOP_RIGHT -> TextPlacement.CIRCLE_TOP_RIGHT
-            TextPlacementMessage.TOP_CENTER -> TextPlacement.TOP_CENTER
-            TextPlacementMessage.TOP_RIGHT -> TextPlacement.TOP_RIGHT
-            TextPlacementMessage.TOP_LEFT -> TextPlacement.TOP_LEFT
-            TextPlacementMessage.CIRCLE_TOP_LEFT -> TextPlacement.CIRCLE_TOP_LEFT
-            TextPlacementMessage.LEFT_TOP -> TextPlacement.LEFT_TOP
-            TextPlacementMessage.LEFT_CENTER -> TextPlacement.LEFT_CENTER
-            TextPlacementMessage.LEFT_BOTTOM -> TextPlacement.LEFT_BOTTOM
-            TextPlacementMessage.CIRCLE_BOTTOM_LEFT -> TextPlacement.CIRCLE_BOTTOM_LEFT
-            TextPlacementMessage.CENTER_CENTER -> TextPlacement.CENTER_CENTER
-        }
-    }
-
-    private fun mapTextStyle(style: MarkerTextStyleMessage): TextStyle {
-        return TextStyle(
-            fontSize = style.fontSize?.let {
-                LogicalPixel(value = it.toFloat())
-            } ?: LogicalPixel(8f),
-            color = style.color?.let {
-                Color(argb = it.toInt())
-            } ?: Color(),
-            strokeWidth = style.strokeWidth?.let {
-                LogicalPixel(it.toFloat())
-            } ?: LogicalPixel(0.35f),
-            strokeColor = style.strokeColor?.let {
-                Color(argb = it.toInt())
-            } ?: Color(),
-            textPlacement = style.textPlacement?.let {
-                mapTextPlacement(it.placement)
-            } ?: TextPlacement.BOTTOM_CENTER,
-            textOffset = style.textOffset?.let {
-                LogicalPixel(it.toFloat())
-            } ?: LogicalPixel(0f),
-            fontName = style.fontName
-        )
-    }
-
     private fun mapMarker(marker: MarkerMessage, result: Result<Void>?): Marker? {
         var markerImage: Image? = null
         if (marker.options.icon != null) {
@@ -234,29 +188,32 @@ class ObjectTapHandler(
                 Anchor(it.x.toFloat(), it.y.toFloat())
             } ?: Anchor(0.5f, 0.5f),
             text = marker.options.text,
-            textStyle = marker.options.textStyle?.let {
-                mapTextStyle(it)
-            },
+            textStyle = marker.options.textStyle?.toTextStyle(),
             iconWidth = marker.options.icon?.let {
                 LogicalPixel(it.width.toFloat())
             } ?: LogicalPixel(0f),
             userData = MarkerId(marker.id),
+            animatedAppearance = false,
         )
 
         return Marker(options)
     }
 
-    fun addMarker(marker: MarkerMessage, result: Result<Void>?) {
+    fun addMarker(marker: MarkerMessage, manager: MapObjectManagerMessage?, result: Result<Void>?) {
         val markerObject = mapMarker(marker, result) ?: return
 
         mapObjectsExecutorService.submit {
             markers[marker.id] = markerObject
-            mapObjectManager.addObject(markerObject)
+            if (manager != null && managers[manager.id] != null) {
+                managers[manager.id]!!.addObject(markerObject)
+            } else {
+                mapObjectManager.addObject(markerObject)
+            }
             result?.success(null)
         }
     }
 
-    fun addMarkers(markers: List<MarkerMessage>, result: Result<Void>?) {
+    fun addMarkers(markers: List<MarkerMessage>, manager: MapObjectManagerMessage?, result: Result<Void>?) {
         val markerObjects = mutableMapOf<String, Marker>()
         for (marker in markers) {
             val markerObject = mapMarker(marker, result) ?: return
@@ -265,17 +222,57 @@ class ObjectTapHandler(
 
         mapObjectsExecutorService.submit {
             this.markers.putAll(markerObjects)
-            mapObjectManager.addObjects(markerObjects.values.toList())
+            if (manager != null && managers[manager.id] != null) {
+                managers[manager.id]!!.addObjects(markerObjects.values.toList())
+            } else {
+                mapObjectManager.addObjects(markerObjects.values.toList())
+            }
             result?.success(null)
         }
     }
 
-    fun removeMarker(id: String, result: Result<Void>?) {
+    fun removeMarker(id: String, manager: MapObjectManagerMessage?, result: Result<Void>?) {
         mapObjectsExecutorService.submit {
             markers.remove(id)?.also {
-                mapObjectManager.removeObject(it)
+                if (manager != null && managers[manager.id] != null) {
+                    managers[manager.id]!!.removeObject(it)
+                } else {
+                    mapObjectManager.removeObject(it)
+                }
             }
             result?.success(null)
+        }
+    }
+
+    fun createClusteringMapObjectManager(message: ClusteringMapObjectManagerOptionsMessage, result: Result<MapObjectManagerMessage>?) {
+        val managerId = UUID.randomUUID().toString()
+        val managerMessage = MapObjectManagerMessage.Builder()
+            .setId(managerId)
+            .build()
+
+        val manager = MapObjectManager.withClustering(
+            map = this.map,
+            logicalPixel = LogicalPixel(value = message.logicalPixel.toFloat()),
+            maxZoom = Zoom(value = message.maxZoom.toFloat()),
+            minZoom = Zoom(value = message.minZoom?.toFloat() ?: 0f),
+            clusterRenderer = FlutterClusterRenderer(
+                sdkContext = sdkContext,
+                api = this.api,
+                manager = managerMessage
+            ),
+        )
+
+        mapObjectsExecutorService.submit {
+            this.managers[managerId] = manager
+            result?.success(managerMessage)
+        }
+    }
+
+    fun removeMapObjectManager(message: MapObjectManagerMessage, result: Result<Void>?) {
+        mapObjectsExecutorService.submit {
+            this.managers.remove(message.id).also {
+                result?.success(null)
+            }
         }
     }
 
@@ -414,9 +411,13 @@ class ObjectTapHandler(
         }
     }
 
-    fun removeAllMarkers() {
+    fun removeAllMarkers(manager: MapObjectManagerMessage?) {
         mapObjectsExecutorService.submit {
-            mapObjectManager.removeObjects(markers.values.toList())
+            if (manager != null && managers[manager.id] != null) {
+                managers[manager.id]!!.removeObjects(markers.values.toList())
+            } else {
+                mapObjectManager.removeObjects(markers.values.toList())
+            }
             markers.clear()
         }
     }
@@ -557,6 +558,16 @@ class ObjectTapHandler(
         )
     }
 
+    private fun onClusterTap(id: String, cluster: SimpleClusterObject) {
+        eventSink.success(
+            mapOf(
+                "event" to Events.onClusterTap.name,
+                "id" to id,
+                "cluster" to cluster.toMap(),
+            )
+        )
+    }
+
     private fun onPolygonTap(id: String) {
         eventSink.success(
             mapOf(
@@ -658,6 +669,7 @@ private enum class Events {
     onIoTap,
     onIdleTap,
     onMarkerTap,
+    onClusterTap,
     onPolygonTap,
     onPolylineTap,
 }

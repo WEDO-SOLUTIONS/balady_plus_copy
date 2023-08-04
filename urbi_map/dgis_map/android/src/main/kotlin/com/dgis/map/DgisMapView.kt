@@ -18,6 +18,7 @@ import io.flutter.plugin.common.BinaryMessenger
 import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.platform.PlatformView
 import ru.dgis.sdk.DgisObjectId
+import ru.dgis.sdk.Duration
 import ru.dgis.sdk.File
 import ru.dgis.sdk.coordinates.Bearing
 import ru.dgis.sdk.coordinates.GeoPoint
@@ -29,6 +30,7 @@ import ru.dgis.sdk.positioning.DefaultLocationSource
 import ru.dgis.sdk.positioning.LocationChangeListener
 import java.io.FileNotFoundException
 import kotlin.collections.Map
+import kotlin.math.round
 import kotlin.math.roundToInt
 import com.dgis.map.map_api.Messages.Result as ApiResult
 import ru.dgis.sdk.map.Map as DgisMap
@@ -173,6 +175,41 @@ class DgisMapView(
         result.success(null)
     }
 
+    override fun moveCamera(
+        cameraPosition: CameraPositionMessage,
+        duration: Double,
+        animationType: CameraAnimationTypeMessage,
+        result: Messages.Result<Void>
+    ) {
+        val map = map ?: kotlin.run {
+            result.error(IllegalArgumentException("Map has not been initialized"))
+            return
+        }
+
+        val cameraPosition = CameraPosition(
+            point = cameraPosition.point.toGeoPoint(),
+            zoom = Zoom(cameraPosition.zoom.toFloat()),
+            tilt = Tilt(cameraPosition.tilt.toFloat()),
+            bearing = Bearing(cameraPosition.bearing),
+        )
+        val duration = Duration.ofMilliseconds(round(duration * 1000).toLong())
+        val animationType = when (animationType) {
+            CameraAnimationTypeMessage.DEFAULT_ -> CameraAnimationType.DEFAULT
+            CameraAnimationTypeMessage.LINEAR -> CameraAnimationType.LINEAR
+            CameraAnimationTypeMessage.SHOW_BOTH_POSITIONS -> CameraAnimationType.SHOW_BOTH_POSITIONS
+        }
+
+        val moveFuture = map.camera.move(cameraPosition, duration, animationType).apply {
+            onResult {
+                result.success(null)
+            }
+            onError { error ->
+                result.error(error)
+            }
+        }
+        this.closables.add(moveFuture)
+    }
+
     override fun getCameraPosition(result: Messages.Result<CameraPositionMessage>?) {
         val map = map ?: kotlin.run {
             result?.error(IllegalArgumentException("Map has not been initialized"))
@@ -207,6 +244,7 @@ class DgisMapView(
         val map = map ?: return
 
         val objectTapHandler = ObjectTapHandler(
+            map = map,
             mapObjectManager =
                 MapObjectManager.withGeneralization(
                     map = map,
@@ -228,6 +266,7 @@ class DgisMapView(
             routeHandler = routeHandler,
             eventSink = eventSink,
             sdkContext = sdkContext,
+            api = FlutterMapApi(binaryMessenger)
         )
         mapView.addObjectTappedCallback(objectTapHandler::objectTapListener)
         this.objectTapHandler = objectTapHandler
@@ -328,21 +367,35 @@ class DgisMapView(
         )
     }
 
-    override fun addMarker(marker: MarkerMessage, result: Messages.Result<Void>?) {
-        objectTapHandler?.addMarker(marker, result)
+    override fun addMarker(marker: MarkerMessage, manager: MapObjectManagerMessage?, result: Messages.Result<Void>?) {
+        objectTapHandler?.addMarker(marker, manager, result)
     }
 
-    override fun addMarkers(markers: List<MarkerMessage>, result: Messages.Result<Void>?) {
-        objectTapHandler?.addMarkers(markers, result)
+    override fun addMarkers(markers: List<MarkerMessage>, manager: MapObjectManagerMessage?, result: Messages.Result<Void>?) {
+        objectTapHandler?.addMarkers(markers, manager, result)
     }
 
-    override fun removeMarker(id: String, result: Messages.Result<Void>?) {
-        objectTapHandler?.removeMarker(id, result)
+    override fun removeMarker(id: String, manager: MapObjectManagerMessage?, result: Messages.Result<Void>?) {
+        objectTapHandler?.removeMarker(id, manager, result)
     }
 
-    override fun removeAllMarkers(result: Messages.Result<Void>?) {
-        objectTapHandler?.removeAllMarkers()
+    override fun removeAllMarkers(manager: MapObjectManagerMessage?, result: Messages.Result<Void>?) {
+        objectTapHandler?.removeAllMarkers(manager)
         result?.success(null)
+    }
+
+    override fun createMapObjectManagerWithClustering(
+        message: ClusteringMapObjectManagerOptionsMessage,
+        result: Messages.Result<MapObjectManagerMessage>?
+    ) {
+        objectTapHandler?.createClusteringMapObjectManager(message, result)
+    }
+
+    override fun removeMapObjectManager(
+        id: MapObjectManagerMessage,
+        result: Messages.Result<Void>?
+    ) {
+        objectTapHandler?.removeMapObjectManager(id, result)
     }
 
     override fun addPolygon(polygon: PolygonMessage, result: Messages.Result<Void>?) {
@@ -549,7 +602,7 @@ class DgisMapView(
 
     override fun removeEsriIOLayer(result: Messages.Result<Void>?)
     {
-        objectTapHandler?.removeAllMarkers()
+        objectTapHandler?.removeAllMarkers(null)
         result?.success(null)
     }
 

@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:dgis_map_platform_interface/library.dart';
-import 'package:dgis_map_platform_interface/src/events/visible_rect_events.dart';
 
 class VisibleRectEventHandler {
   VisibleRectEventHandler();
@@ -12,8 +11,9 @@ class VisibleRectEventHandler {
   Stream<CameraPositionMessage> get cameraPositionEvents =>
       _cameraPositionController.stream;
 
-  final _visibleRectController = StreamController<VisibleRectEvent>();
-  final _cameraPositionController = StreamController<CameraPositionMessage>();
+  final _visibleRectController = StreamController<VisibleRectEvent>.broadcast();
+  final _cameraPositionController =
+      StreamController<CameraPositionMessage>.broadcast();
 
   void cameraPositionEvent(Map<dynamic, dynamic> map) {
     final event = CameraPositionMessage(
@@ -54,5 +54,6 @@ class VisibleRectEventHandler {
 
   Future<void> dispose() async {
     await _visibleRectController.close();
+    await _cameraPositionController.close();
   }
 }

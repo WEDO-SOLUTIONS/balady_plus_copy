@@ -5,6 +5,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../core/utils/constants/app_style.dart';
+import '../../../../home_page/presentation/widgets/home_app_bar/circle_icon.dart';
 
 class MapCard extends StatelessWidget {
   String activityId;
@@ -18,12 +19,14 @@ class MapCard extends StatelessWidget {
   bool isSeasonal;
   String subMunicipality;
   String entityLogo;
-  String? entityName;
+  String? bidEndDate;
   String? location;
   List<String>? locations;
   bool isEntity;
   bool isFree;
+
   final Function onPress;
+  final Function onClose;
 
   MapCard(
       {required this.activityId,
@@ -36,13 +39,14 @@ class MapCard extends StatelessWidget {
       required this.subMunicipality,
       this.isFavorite = false,
       this.isSeasonal = false,
-      this.entityName,
+      this.bidEndDate,
       required this.entityLogo,
       required this.isEntity,
       this.location,
       this.locations,
       required this.onPress,
-      this.isFree = false});
+      this.isFree = false,
+      required this.onClose});
 
   @override
   Widget build(BuildContext context) {
@@ -52,12 +56,12 @@ class MapCard extends StatelessWidget {
         onPress();
       },
       child: Container(
-        height: 141,
+        height: 145,
         width: 325,
-        padding: const EdgeInsets.all(10),
+        padding: const EdgeInsets.only(left: 10, right: 10, bottom: 10),
         margin: const EdgeInsets.symmetric(horizontal: 2),
         decoration: const BoxDecoration(
-            borderRadius: BorderRadius.all(Radius.circular(4)),
+            borderRadius: BorderRadius.all(Radius.circular(8)),
             boxShadow: [
               BoxShadow(
                   color: Color(0x14000000),
@@ -68,35 +72,36 @@ class MapCard extends StatelessWidget {
             color: AppColor.white),
         child: Row(
           children: [
-            Container(
-              width: 80,
-              height: double.infinity,
-              margin: const EdgeInsets.only(left: 12),
-              child: Stack(
-                children: [
-                  ClipRRect(
-                      borderRadius: BorderRadius.circular(4.0),
-                      child: Image.asset(getActivityImgForMapCard(activityId),
-                          height: double.infinity, fit: BoxFit.cover)),
-                  Align(
-                      alignment: AlignmentDirectional.topStart,
-                      child: EntityImg(
-                        img: entityLogo,
-                        isNetworkImage: isEntity,
-                        withBorder: true,
-                      ))
-                ],
-              ),
-            ),
             Expanded(
               child: Container(
-                margin: const EdgeInsets.only(top: 4),
+                margin: const EdgeInsets.only(top: 0),
                 child: Column(
+                  mainAxisSize: MainAxisSize.min,
                   children: [
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         RentOrInvestWidget(type: type),
+                        GestureDetector(
+                          onTap: () {
+                            onClose();
+                          },
+                          child: CircleIcon(
+                            icon: Icons.close,
+                            circleSize: 24,
+                            iconColor: AppColor.primary600Light,
+                            backgroundColor: AppColor.geyser.withOpacity(0.4),
+                            iconSize: 12,
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 8,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
                         Expanded(
                           child: PriceWidget(
                             price: price,
@@ -111,13 +116,13 @@ class MapCard extends StatelessWidget {
                       ],
                     ),
                     SizedBox(
-                      height: 4,
+                      height: 10,
                     ),
                     Text(
                       desc,
                       style: AppStyle.cardTitleTextStle
                           .copyWith(fontSize: 13, color: AppColor.black),
-                      maxLines: 1,
+                      maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
                     SizedBox(
@@ -126,7 +131,7 @@ class MapCard extends StatelessWidget {
                     Row(
                       //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Expanded(
+                        /*    Expanded(
                           //flex: 2,
                           child: Row(
                             children: [
@@ -144,9 +149,35 @@ class MapCard extends StatelessWidget {
                               )*/
                             ],
                           ),
-                        ),
+                        ),*/
                       ],
                     ),
+                    if (type == "Investment")
+                      SizedBox(
+                        height: 11,
+                      ),
+                    if (type == "Investment")
+                      Expanded(
+                        flex: 2,
+                        child: Row(
+                          children: [
+                            Image.asset(
+                              "assets/images/" + 'distance@3x.png',
+                              height: 12,
+                              width: 12,
+                            ),
+                            SizedBox(
+                              width: 6,
+                            ),
+                            Text(
+                              "${"bid_end_date".tr()} $bidEndDate",
+                              overflow: TextOverflow.ellipsis,
+                              style: AppStyle.cardTitleTextStle.copyWith(
+                                  color: AppColor.kGray115, fontSize: 12),
+                            ),
+                          ],
+                        ),
+                      ),
                     SizedBox(
                       height: 11,
                     ),
@@ -165,32 +196,10 @@ class MapCard extends StatelessWidget {
                                 width: 6,
                               ),
                               Text(
-                                area,
+                                area + " م٢ ",
                                 overflow: TextOverflow.ellipsis,
                                 style: AppStyle.cardTitleTextStle.copyWith(
-                                    color: AppColor.gray10, fontSize: 12),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Expanded(
-                          flex: 2,
-                          child: Row(
-                            children: [
-                              Image.asset(
-                                "assets/images/" + 'distance@3x.png',
-                                height: 12,
-                                width: 12,
-                              ),
-                              SizedBox(
-                                width: 6,
-                              ),
-                              Text(
-                                distance,
-                                overflow: TextOverflow.ellipsis,
-                                style: AppStyle.cardTitleTextStle
-                                  ..copyWith(
-                                      color: AppColor.gray10, fontSize: 12),
+                                    color: AppColor.kGray115, fontSize: 12),
                               ),
                             ],
                           ),
@@ -325,12 +334,12 @@ class RentOrInvestWidget extends StatelessWidget {
           borderRadius: const BorderRadius.all(Radius.circular(4)),
           color: type == "TempRental"
               ? AppColor.primary700Light
-              : AppColor.secondary700Light),
+              : AppColor.primary700Light),
       child: Text(
         type == "Investment" ? ('investment').tr() : ('rent').tr(),
         style: AppStyle.cardTitleTextStle.copyWith(
             fontSize: 12,
-            color: type == "TempRental" ? AppColor.white : AppColor.white),
+            color: type == "Investment" ? AppColor.white : AppColor.white),
       ),
     );
   }
@@ -350,7 +359,7 @@ class PriceWidget extends StatelessWidget {
       {required this.price,
       required this.isInvestment,
       required this.isDirectRental,
-      this.fontSize = 14,
+      this.fontSize = 16,
       this.priceFontSize = 15,
       this.isSeasonal = false,
       this.isOrder = false,
@@ -364,7 +373,7 @@ class PriceWidget extends StatelessWidget {
           TextSpan(
             text: ('يبدأ من').tr() + "  ",
             style: AppStyle.cardTitleTextStle
-                .copyWith(color: AppColor.primary900Light, fontSize: fontSize),
+                .copyWith(color: AppColor.primary900Light, fontSize: 16),
           ),
         TextSpan(
             text: isFree && !isDirectRental ? ("free").tr() : price + "  ",

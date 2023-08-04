@@ -15,6 +15,12 @@ typedef NS_ENUM(NSUInteger, ZoomControlMessage) {
   ZoomControlMessageZoomOut = 1,
 };
 
+typedef NS_ENUM(NSUInteger, CameraAnimationTypeMessage) {
+  CameraAnimationTypeMessageDefault_ = 0,
+  CameraAnimationTypeMessageLinear = 1,
+  CameraAnimationTypeMessageShowBothPositions = 2,
+};
+
 typedef NS_ENUM(NSUInteger, WeekDayMessage) {
   WeekDayMessageMonday = 0,
   WeekDayMessageTuesday = 1,
@@ -244,6 +250,9 @@ typedef NS_ENUM(NSUInteger, SearchCategoryMessage) {
 @class MarkedUpTextMessage;
 @class SuggestMessage;
 @class SuggestResultMessage;
+@class SimpleClusterOptionsMessage;
+@class ClusteringMapObjectManagerOptionsMessage;
+@class MapObjectManagerMessage;
 
 @interface InitializeMessage : NSObject
 /// `init` unavailable to enforce nonnull fields, see the `make` class method.
@@ -752,9 +761,11 @@ typedef NS_ENUM(NSUInteger, SearchCategoryMessage) {
 - (instancetype)init NS_UNAVAILABLE;
 + (instancetype)makeWithPath:(NSString *)path
     width:(NSNumber *)width
+    iconOpacity:(nullable NSNumber *)iconOpacity
     iconMapDirection:(nullable MarkerAzimuthMessage *)iconMapDirection;
 @property(nonatomic, copy) NSString * path;
 @property(nonatomic, strong) NSNumber * width;
+@property(nonatomic, strong, nullable) NSNumber * iconOpacity;
 @property(nonatomic, strong, nullable) MarkerAzimuthMessage * iconMapDirection;
 @end
 
@@ -996,6 +1007,35 @@ typedef NS_ENUM(NSUInteger, SearchCategoryMessage) {
 @property(nonatomic, strong) NSArray<SuggestMessage *> * suggests;
 @end
 
+@interface SimpleClusterOptionsMessage : NSObject
++ (instancetype)makeWithIcon:(nullable MarkerIconMessage *)icon
+    anchor:(nullable MarkerAnchorMessage *)anchor
+    text:(nullable NSString *)text
+    textStyle:(nullable MarkerTextStyleMessage *)textStyle;
+@property(nonatomic, strong, nullable) MarkerIconMessage * icon;
+@property(nonatomic, strong, nullable) MarkerAnchorMessage * anchor;
+@property(nonatomic, copy, nullable) NSString * text;
+@property(nonatomic, strong, nullable) MarkerTextStyleMessage * textStyle;
+@end
+
+@interface ClusteringMapObjectManagerOptionsMessage : NSObject
+/// `init` unavailable to enforce nonnull fields, see the `make` class method.
+- (instancetype)init NS_UNAVAILABLE;
++ (instancetype)makeWithLogicalPixel:(NSNumber *)logicalPixel
+    maxZoom:(NSNumber *)maxZoom
+    minZoom:(nullable NSNumber *)minZoom;
+@property(nonatomic, strong) NSNumber * logicalPixel;
+@property(nonatomic, strong) NSNumber * maxZoom;
+@property(nonatomic, strong, nullable) NSNumber * minZoom;
+@end
+
+@interface MapObjectManagerMessage : NSObject
+/// `init` unavailable to enforce nonnull fields, see the `make` class method.
+- (instancetype)init NS_UNAVAILABLE;
++ (instancetype)makeWithId:(NSString *)id;
+@property(nonatomic, copy) NSString * id;
+@end
+
 /// The codec used by MapApi.
 NSObject<FlutterMessageCodec> *MapApiGetCodec(void);
 
@@ -1008,6 +1048,7 @@ NSObject<FlutterMessageCodec> *MapApiGetCodec(void);
 - (void)loadStylesAsset:(NSString *)asset completion:(void (^)(FlutterError *_Nullable))completion;
 - (void)overrideLocalesLocales:(NSArray<NSString *> *)locales completion:(void (^)(FlutterError *_Nullable))completion;
 - (void)setCameraPositionCameraPosition:(CameraPositionMessage *)cameraPosition completion:(void (^)(FlutterError *_Nullable))completion;
+- (void)moveCameraCameraPosition:(CameraPositionMessage *)cameraPosition duration:(NSNumber *)duration animationType:(CameraAnimationTypeMessage)animationType completion:(void (^)(FlutterError *_Nullable))completion;
 - (void)getCameraPositionWithCompletion:(void (^)(CameraPositionMessage *_Nullable, FlutterError *_Nullable))completion;
 - (void)searchByObjectIdObjectId:(DgisObjectIdMessage *)objectId completion:(void (^)(DirectoryObjectMessage *_Nullable, FlutterError *_Nullable))completion;
 - (void)getDistanceToPoints:(NSArray<DistanceRequestMessage *> *)points completion:(void (^)(NSArray<DistanceResponseMessage *> *_Nullable, FlutterError *_Nullable))completion;
@@ -1019,10 +1060,12 @@ NSObject<FlutterMessageCodec> *MapApiGetCodec(void);
 - (void)releasePagePageId:(PageIdMessage *)pageId completion:(void (^)(FlutterError *_Nullable))completion;
 - (void)fetchSuggestsQueryText:(NSString *)queryText searchRect:(nullable GeoRectMessage *)searchRect completion:(void (^)(SuggestResultMessage *_Nullable, FlutterError *_Nullable))completion;
 - (void)setMarkerOptionsOptions:(MarkerOptionsMessageOld *)options completion:(void (^)(FlutterError *_Nullable))completion;
-- (void)addMarkerMarker:(MarkerMessage *)marker completion:(void (^)(FlutterError *_Nullable))completion;
-- (void)addMarkersMarkers:(NSArray<MarkerMessage *> *)markers completion:(void (^)(FlutterError *_Nullable))completion;
-- (void)removeMarkerId:(NSString *)id completion:(void (^)(FlutterError *_Nullable))completion;
-- (void)removeAllMarkersWithCompletion:(void (^)(FlutterError *_Nullable))completion;
+- (void)addMarkerMarker:(MarkerMessage *)marker manager:(nullable MapObjectManagerMessage *)manager completion:(void (^)(FlutterError *_Nullable))completion;
+- (void)addMarkersMarkers:(NSArray<MarkerMessage *> *)markers manager:(nullable MapObjectManagerMessage *)manager completion:(void (^)(FlutterError *_Nullable))completion;
+- (void)removeMarkerId:(NSString *)id manager:(nullable MapObjectManagerMessage *)manager completion:(void (^)(FlutterError *_Nullable))completion;
+- (void)removeAllMarkersManager:(nullable MapObjectManagerMessage *)manager completion:(void (^)(FlutterError *_Nullable))completion;
+- (void)createMapObjectManagerWithClusteringMessage:(ClusteringMapObjectManagerOptionsMessage *)message completion:(void (^)(MapObjectManagerMessage *_Nullable, FlutterError *_Nullable))completion;
+- (void)removeMapObjectManagerId:(MapObjectManagerMessage *)id completion:(void (^)(FlutterError *_Nullable))completion;
 - (void)addPolygonPolygon:(PolygonMessage *)polygon completion:(void (^)(FlutterError *_Nullable))completion;
 - (void)addPolygonsPolygons:(NSArray<PolygonMessage *> *)polygons completion:(void (^)(FlutterError *_Nullable))completion;
 - (void)removePolygonId:(NSString *)id completion:(void (^)(FlutterError *_Nullable))completion;
@@ -1061,5 +1104,13 @@ NSObject<FlutterMessageCodec> *MapApiGetCodec(void);
 @end
 
 extern void MapApiSetup(id<FlutterBinaryMessenger> binaryMessenger, NSObject<MapApi> *_Nullable api);
+
+/// The codec used by FlutterMapApi.
+NSObject<FlutterMessageCodec> *FlutterMapApiGetCodec(void);
+
+@interface FlutterMapApi : NSObject
+- (instancetype)initWithBinaryMessenger:(id<FlutterBinaryMessenger>)binaryMessenger;
+- (void)renderClusterManager:(MapObjectManagerMessage *)manager objectCount:(NSNumber *)objectCount completion:(void (^)(SimpleClusterOptionsMessage *_Nullable, NSError *_Nullable))completion;
+@end
 
 NS_ASSUME_NONNULL_END

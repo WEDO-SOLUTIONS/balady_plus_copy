@@ -33,6 +33,8 @@ class CameraPositionMessage {
   final double bearing;
 }
 
+enum CameraAnimationTypeMessage { default_, linear, showBothPositions }
+
 class DgisObjectIdMessage {
   const DgisObjectIdMessage({
     required this.objectId,
@@ -553,10 +555,12 @@ class MarkerTextStyleMessage {
 }
 
 class MarkerIconMessage {
-  MarkerIconMessage(this.path, this.width, this.iconMapDirection);
+  MarkerIconMessage(
+      this.path, this.width, this.iconMapDirection, this.iconOpacity);
 
   final String path;
   final double width;
+  final double? iconOpacity;
   final MarkerAzimuthMessage? iconMapDirection;
 }
 
@@ -807,6 +811,38 @@ enum SearchCategoryMessage {
   parks,
 }
 
+class SimpleClusterOptionsMessage {
+  SimpleClusterOptionsMessage({
+    this.icon,
+    this.anchor,
+    this.text,
+    this.textStyle,
+  });
+
+  final MarkerIconMessage? icon;
+  final MarkerAnchorMessage? anchor;
+  final String? text;
+  final MarkerTextStyleMessage? textStyle;
+}
+
+class ClusteringMapObjectManagerOptionsMessage {
+  ClusteringMapObjectManagerOptionsMessage(
+    this.logicalPixel,
+    this.maxZoom,
+    this.minZoom,
+  );
+
+  final double logicalPixel;
+  final double maxZoom;
+  final double? minZoom;
+}
+
+class MapObjectManagerMessage {
+  MapObjectManagerMessage._(this.id);
+
+  final String id;
+}
+
 @ConfigurePigeon(
   PigeonOptions(
     dartOut: 'lib/src/pigeons/messages.g.dart',
@@ -844,6 +880,13 @@ abstract class MapApi {
 
   @async
   void setCameraPosition(CameraPositionMessage cameraPosition);
+
+  @async
+  void moveCamera(
+    CameraPositionMessage cameraPosition,
+    double duration,
+    CameraAnimationTypeMessage animationType,
+  );
 
   @async
   CameraPositionMessage getCameraPosition();
@@ -901,16 +944,27 @@ abstract class MapApi {
   void setMarkerOptions(MarkerOptionsMessageOld options);
 
   @async
-  void addMarker(MarkerMessage marker);
+  void addMarker(MarkerMessage marker, MapObjectManagerMessage? manager);
 
   @async
-  void addMarkers(List<MarkerMessage> markers);
+  void addMarkers(
+    List<MarkerMessage> markers,
+    MapObjectManagerMessage? manager,
+  );
 
   @async
-  void removeMarker(String id);
+  void removeMarker(String id, MapObjectManagerMessage? manager);
 
   @async
-  void removeAllMarkers();
+  void removeAllMarkers(MapObjectManagerMessage? manager);
+
+  @async
+  MapObjectManagerMessage createMapObjectManagerWithClustering(
+    ClusteringMapObjectManagerOptionsMessage message,
+  );
+
+  @async
+  void removeMapObjectManager(MapObjectManagerMessage id);
 
   @async
   void addPolygon(PolygonMessage polygon);
@@ -1016,4 +1070,12 @@ abstract class MapApi {
 
   @async
   void stopFreeRoam();
+}
+
+@FlutterApi()
+abstract class FlutterMapApi {
+  SimpleClusterOptionsMessage renderCluster(
+    MapObjectManagerMessage manager,
+    int objectCount,
+  );
 }

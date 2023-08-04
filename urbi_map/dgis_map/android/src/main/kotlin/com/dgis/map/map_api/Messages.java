@@ -43,6 +43,18 @@ public class Messages {
     }
   }
 
+  public enum CameraAnimationTypeMessage {
+    DEFAULT_(0),
+    LINEAR(1),
+    SHOW_BOTH_POSITIONS(2);
+
+    private final int index;
+
+    private CameraAnimationTypeMessage(final int index) {
+      this.index = index;
+    }
+  }
+
   public enum WeekDayMessage {
     MONDAY(0),
     TUESDAY(1),
@@ -4670,6 +4682,16 @@ public class Messages {
       this.width = setterArg;
     }
 
+    private @Nullable Double iconOpacity;
+
+    public @Nullable Double getIconOpacity() {
+      return iconOpacity;
+    }
+
+    public void setIconOpacity(@Nullable Double setterArg) {
+      this.iconOpacity = setterArg;
+    }
+
     private @Nullable MarkerAzimuthMessage iconMapDirection;
 
     public @Nullable MarkerAzimuthMessage getIconMapDirection() {
@@ -4699,6 +4721,13 @@ public class Messages {
         return this;
       }
 
+      private @Nullable Double iconOpacity;
+
+      public @NonNull Builder setIconOpacity(@Nullable Double setterArg) {
+        this.iconOpacity = setterArg;
+        return this;
+      }
+
       private @Nullable MarkerAzimuthMessage iconMapDirection;
 
       public @NonNull Builder setIconMapDirection(@Nullable MarkerAzimuthMessage setterArg) {
@@ -4710,6 +4739,7 @@ public class Messages {
         MarkerIconMessage pigeonReturn = new MarkerIconMessage();
         pigeonReturn.setPath(path);
         pigeonReturn.setWidth(width);
+        pigeonReturn.setIconOpacity(iconOpacity);
         pigeonReturn.setIconMapDirection(iconMapDirection);
         return pigeonReturn;
       }
@@ -4717,9 +4747,10 @@ public class Messages {
 
     @NonNull
     ArrayList<Object> toList() {
-      ArrayList<Object> toListResult = new ArrayList<Object>(3);
+      ArrayList<Object> toListResult = new ArrayList<Object>(4);
       toListResult.add(path);
       toListResult.add(width);
+      toListResult.add(iconOpacity);
       toListResult.add((iconMapDirection == null) ? null : iconMapDirection.toList());
       return toListResult;
     }
@@ -4730,7 +4761,9 @@ public class Messages {
       pigeonResult.setPath((String) path);
       Object width = list.get(1);
       pigeonResult.setWidth((Double) width);
-      Object iconMapDirection = list.get(2);
+      Object iconOpacity = list.get(2);
+      pigeonResult.setIconOpacity((Double) iconOpacity);
+      Object iconMapDirection = list.get(3);
       pigeonResult.setIconMapDirection((iconMapDirection == null) ? null : MarkerAzimuthMessage.fromList((ArrayList<Object>) iconMapDirection));
       return pigeonResult;
     }
@@ -6734,6 +6767,255 @@ public class Messages {
     }
   }
 
+  /** Generated class from Pigeon that represents data sent in messages. */
+  public static final class SimpleClusterOptionsMessage {
+    private @Nullable MarkerIconMessage icon;
+
+    public @Nullable MarkerIconMessage getIcon() {
+      return icon;
+    }
+
+    public void setIcon(@Nullable MarkerIconMessage setterArg) {
+      this.icon = setterArg;
+    }
+
+    private @Nullable MarkerAnchorMessage anchor;
+
+    public @Nullable MarkerAnchorMessage getAnchor() {
+      return anchor;
+    }
+
+    public void setAnchor(@Nullable MarkerAnchorMessage setterArg) {
+      this.anchor = setterArg;
+    }
+
+    private @Nullable String text;
+
+    public @Nullable String getText() {
+      return text;
+    }
+
+    public void setText(@Nullable String setterArg) {
+      this.text = setterArg;
+    }
+
+    private @Nullable MarkerTextStyleMessage textStyle;
+
+    public @Nullable MarkerTextStyleMessage getTextStyle() {
+      return textStyle;
+    }
+
+    public void setTextStyle(@Nullable MarkerTextStyleMessage setterArg) {
+      this.textStyle = setterArg;
+    }
+
+    public static final class Builder {
+
+      private @Nullable MarkerIconMessage icon;
+
+      public @NonNull Builder setIcon(@Nullable MarkerIconMessage setterArg) {
+        this.icon = setterArg;
+        return this;
+      }
+
+      private @Nullable MarkerAnchorMessage anchor;
+
+      public @NonNull Builder setAnchor(@Nullable MarkerAnchorMessage setterArg) {
+        this.anchor = setterArg;
+        return this;
+      }
+
+      private @Nullable String text;
+
+      public @NonNull Builder setText(@Nullable String setterArg) {
+        this.text = setterArg;
+        return this;
+      }
+
+      private @Nullable MarkerTextStyleMessage textStyle;
+
+      public @NonNull Builder setTextStyle(@Nullable MarkerTextStyleMessage setterArg) {
+        this.textStyle = setterArg;
+        return this;
+      }
+
+      public @NonNull SimpleClusterOptionsMessage build() {
+        SimpleClusterOptionsMessage pigeonReturn = new SimpleClusterOptionsMessage();
+        pigeonReturn.setIcon(icon);
+        pigeonReturn.setAnchor(anchor);
+        pigeonReturn.setText(text);
+        pigeonReturn.setTextStyle(textStyle);
+        return pigeonReturn;
+      }
+    }
+
+    @NonNull
+    ArrayList<Object> toList() {
+      ArrayList<Object> toListResult = new ArrayList<Object>(4);
+      toListResult.add((icon == null) ? null : icon.toList());
+      toListResult.add((anchor == null) ? null : anchor.toList());
+      toListResult.add(text);
+      toListResult.add((textStyle == null) ? null : textStyle.toList());
+      return toListResult;
+    }
+
+    static @NonNull SimpleClusterOptionsMessage fromList(@NonNull ArrayList<Object> list) {
+      SimpleClusterOptionsMessage pigeonResult = new SimpleClusterOptionsMessage();
+      Object icon = list.get(0);
+      pigeonResult.setIcon((icon == null) ? null : MarkerIconMessage.fromList((ArrayList<Object>) icon));
+      Object anchor = list.get(1);
+      pigeonResult.setAnchor((anchor == null) ? null : MarkerAnchorMessage.fromList((ArrayList<Object>) anchor));
+      Object text = list.get(2);
+      pigeonResult.setText((String) text);
+      Object textStyle = list.get(3);
+      pigeonResult.setTextStyle((textStyle == null) ? null : MarkerTextStyleMessage.fromList((ArrayList<Object>) textStyle));
+      return pigeonResult;
+    }
+  }
+
+  /** Generated class from Pigeon that represents data sent in messages. */
+  public static final class ClusteringMapObjectManagerOptionsMessage {
+    private @NonNull Double logicalPixel;
+
+    public @NonNull Double getLogicalPixel() {
+      return logicalPixel;
+    }
+
+    public void setLogicalPixel(@NonNull Double setterArg) {
+      if (setterArg == null) {
+        throw new IllegalStateException("Nonnull field \"logicalPixel\" is null.");
+      }
+      this.logicalPixel = setterArg;
+    }
+
+    private @NonNull Double maxZoom;
+
+    public @NonNull Double getMaxZoom() {
+      return maxZoom;
+    }
+
+    public void setMaxZoom(@NonNull Double setterArg) {
+      if (setterArg == null) {
+        throw new IllegalStateException("Nonnull field \"maxZoom\" is null.");
+      }
+      this.maxZoom = setterArg;
+    }
+
+    private @Nullable Double minZoom;
+
+    public @Nullable Double getMinZoom() {
+      return minZoom;
+    }
+
+    public void setMinZoom(@Nullable Double setterArg) {
+      this.minZoom = setterArg;
+    }
+
+    /** Constructor is private to enforce null safety; use Builder. */
+    private ClusteringMapObjectManagerOptionsMessage() {}
+
+    public static final class Builder {
+
+      private @Nullable Double logicalPixel;
+
+      public @NonNull Builder setLogicalPixel(@NonNull Double setterArg) {
+        this.logicalPixel = setterArg;
+        return this;
+      }
+
+      private @Nullable Double maxZoom;
+
+      public @NonNull Builder setMaxZoom(@NonNull Double setterArg) {
+        this.maxZoom = setterArg;
+        return this;
+      }
+
+      private @Nullable Double minZoom;
+
+      public @NonNull Builder setMinZoom(@Nullable Double setterArg) {
+        this.minZoom = setterArg;
+        return this;
+      }
+
+      public @NonNull ClusteringMapObjectManagerOptionsMessage build() {
+        ClusteringMapObjectManagerOptionsMessage pigeonReturn = new ClusteringMapObjectManagerOptionsMessage();
+        pigeonReturn.setLogicalPixel(logicalPixel);
+        pigeonReturn.setMaxZoom(maxZoom);
+        pigeonReturn.setMinZoom(minZoom);
+        return pigeonReturn;
+      }
+    }
+
+    @NonNull
+    ArrayList<Object> toList() {
+      ArrayList<Object> toListResult = new ArrayList<Object>(3);
+      toListResult.add(logicalPixel);
+      toListResult.add(maxZoom);
+      toListResult.add(minZoom);
+      return toListResult;
+    }
+
+    static @NonNull ClusteringMapObjectManagerOptionsMessage fromList(@NonNull ArrayList<Object> list) {
+      ClusteringMapObjectManagerOptionsMessage pigeonResult = new ClusteringMapObjectManagerOptionsMessage();
+      Object logicalPixel = list.get(0);
+      pigeonResult.setLogicalPixel((Double) logicalPixel);
+      Object maxZoom = list.get(1);
+      pigeonResult.setMaxZoom((Double) maxZoom);
+      Object minZoom = list.get(2);
+      pigeonResult.setMinZoom((Double) minZoom);
+      return pigeonResult;
+    }
+  }
+
+  /** Generated class from Pigeon that represents data sent in messages. */
+  public static final class MapObjectManagerMessage {
+    private @NonNull String id;
+
+    public @NonNull String getId() {
+      return id;
+    }
+
+    public void setId(@NonNull String setterArg) {
+      if (setterArg == null) {
+        throw new IllegalStateException("Nonnull field \"id\" is null.");
+      }
+      this.id = setterArg;
+    }
+
+    /** Constructor is private to enforce null safety; use Builder. */
+    private MapObjectManagerMessage() {}
+
+    public static final class Builder {
+
+      private @Nullable String id;
+
+      public @NonNull Builder setId(@NonNull String setterArg) {
+        this.id = setterArg;
+        return this;
+      }
+
+      public @NonNull MapObjectManagerMessage build() {
+        MapObjectManagerMessage pigeonReturn = new MapObjectManagerMessage();
+        pigeonReturn.setId(id);
+        return pigeonReturn;
+      }
+    }
+
+    @NonNull
+    ArrayList<Object> toList() {
+      ArrayList<Object> toListResult = new ArrayList<Object>(1);
+      toListResult.add(id);
+      return toListResult;
+    }
+
+    static @NonNull MapObjectManagerMessage fromList(@NonNull ArrayList<Object> list) {
+      MapObjectManagerMessage pigeonResult = new MapObjectManagerMessage();
+      Object id = list.get(0);
+      pigeonResult.setId((String) id);
+      return pigeonResult;
+    }
+  }
+
   public interface Result<T> {
     void success(T result);
 
@@ -6775,126 +7057,132 @@ public class Messages {
         case (byte) 140:
           return CameraSetPaddingMessage.fromList((ArrayList<Object>) readValue(buffer));
         case (byte) 141:
-          return ContactInfoMessage.fromList((ArrayList<Object>) readValue(buffer));
+          return ClusteringMapObjectManagerOptionsMessage.fromList((ArrayList<Object>) readValue(buffer));
         case (byte) 142:
-          return DayTimeMessage.fromList((ArrayList<Object>) readValue(buffer));
+          return ContactInfoMessage.fromList((ArrayList<Object>) readValue(buffer));
         case (byte) 143:
-          return DgisObjectIdMessage.fromList((ArrayList<Object>) readValue(buffer));
+          return DayTimeMessage.fromList((ArrayList<Object>) readValue(buffer));
         case (byte) 144:
-          return DirectoryObjectMessage.fromList((ArrayList<Object>) readValue(buffer));
+          return DgisObjectIdMessage.fromList((ArrayList<Object>) readValue(buffer));
         case (byte) 145:
-          return DistanceRequestMessage.fromList((ArrayList<Object>) readValue(buffer));
+          return DirectoryObjectMessage.fromList((ArrayList<Object>) readValue(buffer));
         case (byte) 146:
-          return DistanceResponseMessage.fromList((ArrayList<Object>) readValue(buffer));
+          return DistanceRequestMessage.fromList((ArrayList<Object>) readValue(buffer));
         case (byte) 147:
-          return DynamicFilterMessage.fromList((ArrayList<Object>) readValue(buffer));
+          return DistanceResponseMessage.fromList((ArrayList<Object>) readValue(buffer));
         case (byte) 148:
-          return EntranceGeometryMessage.fromList((ArrayList<Object>) readValue(buffer));
+          return DynamicFilterMessage.fromList((ArrayList<Object>) readValue(buffer));
         case (byte) 149:
-          return EntranceInfoMessage.fromList((ArrayList<Object>) readValue(buffer));
+          return EntranceGeometryMessage.fromList((ArrayList<Object>) readValue(buffer));
         case (byte) 150:
-          return FlagFilterMessage.fromList((ArrayList<Object>) readValue(buffer));
+          return EntranceInfoMessage.fromList((ArrayList<Object>) readValue(buffer));
         case (byte) 151:
-          return FloorInfoMessage.fromList((ArrayList<Object>) readValue(buffer));
+          return FlagFilterMessage.fromList((ArrayList<Object>) readValue(buffer));
         case (byte) 152:
-          return GeoPointMessage.fromList((ArrayList<Object>) readValue(buffer));
+          return FloorInfoMessage.fromList((ArrayList<Object>) readValue(buffer));
         case (byte) 153:
           return GeoPointMessage.fromList((ArrayList<Object>) readValue(buffer));
         case (byte) 154:
-          return GeoPointWithElevationMessage.fromList((ArrayList<Object>) readValue(buffer));
+          return GeoPointMessage.fromList((ArrayList<Object>) readValue(buffer));
         case (byte) 155:
           return GeoPointWithElevationMessage.fromList((ArrayList<Object>) readValue(buffer));
         case (byte) 156:
-          return GeoRectMessage.fromList((ArrayList<Object>) readValue(buffer));
+          return GeoPointWithElevationMessage.fromList((ArrayList<Object>) readValue(buffer));
         case (byte) 157:
           return GeoRectMessage.fromList((ArrayList<Object>) readValue(buffer));
         case (byte) 158:
-          return GeometryMessage.fromList((ArrayList<Object>) readValue(buffer));
+          return GeoRectMessage.fromList((ArrayList<Object>) readValue(buffer));
         case (byte) 159:
-          return IncompleteTextHandlerMessage.fromList((ArrayList<Object>) readValue(buffer));
+          return GeometryMessage.fromList((ArrayList<Object>) readValue(buffer));
         case (byte) 160:
-          return InitializeMessage.fromList((ArrayList<Object>) readValue(buffer));
+          return IncompleteTextHandlerMessage.fromList((ArrayList<Object>) readValue(buffer));
         case (byte) 161:
-          return ItemMarkerInfoMessage.fromList((ArrayList<Object>) readValue(buffer));
+          return InitializeMessage.fromList((ArrayList<Object>) readValue(buffer));
         case (byte) 162:
-          return LayerPointObjectMessage.fromList((ArrayList<Object>) readValue(buffer));
+          return ItemMarkerInfoMessage.fromList((ArrayList<Object>) readValue(buffer));
         case (byte) 163:
-          return LevelInfoMessage.fromList((ArrayList<Object>) readValue(buffer));
+          return LayerPointObjectMessage.fromList((ArrayList<Object>) readValue(buffer));
         case (byte) 164:
-          return MarkedUpTextMessage.fromList((ArrayList<Object>) readValue(buffer));
+          return LevelInfoMessage.fromList((ArrayList<Object>) readValue(buffer));
         case (byte) 165:
-          return MarkedUpTextSpanMessage.fromList((ArrayList<Object>) readValue(buffer));
+          return MapObjectManagerMessage.fromList((ArrayList<Object>) readValue(buffer));
         case (byte) 166:
-          return MarkerAnchorMessage.fromList((ArrayList<Object>) readValue(buffer));
+          return MapObjectManagerMessage.fromList((ArrayList<Object>) readValue(buffer));
         case (byte) 167:
-          return MarkerAzimuthMessage.fromList((ArrayList<Object>) readValue(buffer));
+          return MarkedUpTextMessage.fromList((ArrayList<Object>) readValue(buffer));
         case (byte) 168:
-          return MarkerIconMessage.fromList((ArrayList<Object>) readValue(buffer));
+          return MarkedUpTextSpanMessage.fromList((ArrayList<Object>) readValue(buffer));
         case (byte) 169:
-          return MarkerMessage.fromList((ArrayList<Object>) readValue(buffer));
+          return MarkerAnchorMessage.fromList((ArrayList<Object>) readValue(buffer));
         case (byte) 170:
-          return MarkerOptionsMessage.fromList((ArrayList<Object>) readValue(buffer));
+          return MarkerAzimuthMessage.fromList((ArrayList<Object>) readValue(buffer));
         case (byte) 171:
-          return MarkerOptionsMessageOld.fromList((ArrayList<Object>) readValue(buffer));
+          return MarkerIconMessage.fromList((ArrayList<Object>) readValue(buffer));
         case (byte) 172:
-          return MarkerTextPlacementMessage.fromList((ArrayList<Object>) readValue(buffer));
+          return MarkerMessage.fromList((ArrayList<Object>) readValue(buffer));
         case (byte) 173:
-          return MarkerTextStyleMessage.fromList((ArrayList<Object>) readValue(buffer));
+          return MarkerOptionsMessage.fromList((ArrayList<Object>) readValue(buffer));
         case (byte) 174:
-          return MarkerWithPhotoMessage.fromList((ArrayList<Object>) readValue(buffer));
+          return MarkerOptionsMessageOld.fromList((ArrayList<Object>) readValue(buffer));
         case (byte) 175:
-          return ObjectTypeItemMessage.fromList((ArrayList<Object>) readValue(buffer));
+          return MarkerTextPlacementMessage.fromList((ArrayList<Object>) readValue(buffer));
         case (byte) 176:
-          return OpeningHoursMessage.fromList((ArrayList<Object>) readValue(buffer));
+          return MarkerTextStyleMessage.fromList((ArrayList<Object>) readValue(buffer));
         case (byte) 177:
-          return PageIdMessage.fromList((ArrayList<Object>) readValue(buffer));
+          return MarkerWithPhotoMessage.fromList((ArrayList<Object>) readValue(buffer));
         case (byte) 178:
-          return PageMessage.fromList((ArrayList<Object>) readValue(buffer));
+          return ObjectTypeItemMessage.fromList((ArrayList<Object>) readValue(buffer));
         case (byte) 179:
-          return ParkingCapacityMessage.fromList((ArrayList<Object>) readValue(buffer));
+          return OpeningHoursMessage.fromList((ArrayList<Object>) readValue(buffer));
         case (byte) 180:
-          return ParkingInfoMessage.fromList((ArrayList<Object>) readValue(buffer));
+          return PageIdMessage.fromList((ArrayList<Object>) readValue(buffer));
         case (byte) 181:
-          return PerformSearchHandlerMessage.fromList((ArrayList<Object>) readValue(buffer));
+          return PageMessage.fromList((ArrayList<Object>) readValue(buffer));
         case (byte) 182:
-          return PolygonMessage.fromList((ArrayList<Object>) readValue(buffer));
+          return ParkingCapacityMessage.fromList((ArrayList<Object>) readValue(buffer));
         case (byte) 183:
-          return PolygonOptionsMessage.fromList((ArrayList<Object>) readValue(buffer));
+          return ParkingInfoMessage.fromList((ArrayList<Object>) readValue(buffer));
         case (byte) 184:
-          return PolylineMessage.fromList((ArrayList<Object>) readValue(buffer));
+          return PerformSearchHandlerMessage.fromList((ArrayList<Object>) readValue(buffer));
         case (byte) 185:
-          return PolylineOptionsMessage.fromList((ArrayList<Object>) readValue(buffer));
+          return PolygonMessage.fromList((ArrayList<Object>) readValue(buffer));
         case (byte) 186:
-          return RangeFilterMessage.fromList((ArrayList<Object>) readValue(buffer));
+          return PolygonOptionsMessage.fromList((ArrayList<Object>) readValue(buffer));
         case (byte) 187:
-          return ReviewsMessage.fromList((ArrayList<Object>) readValue(buffer));
+          return PolylineMessage.fromList((ArrayList<Object>) readValue(buffer));
         case (byte) 188:
-          return RouteEditorRouteParamsMessage.fromList((ArrayList<Object>) readValue(buffer));
+          return PolylineOptionsMessage.fromList((ArrayList<Object>) readValue(buffer));
         case (byte) 189:
-          return SearchQueryMessage.fromList((ArrayList<Object>) readValue(buffer));
+          return RangeFilterMessage.fromList((ArrayList<Object>) readValue(buffer));
         case (byte) 190:
-          return SearchResultMessage.fromList((ArrayList<Object>) readValue(buffer));
+          return ReviewsMessage.fromList((ArrayList<Object>) readValue(buffer));
         case (byte) 191:
-          return SpecialSpaceMessage.fromList((ArrayList<Object>) readValue(buffer));
+          return RouteEditorRouteParamsMessage.fromList((ArrayList<Object>) readValue(buffer));
         case (byte) 192:
-          return SuggestHandlerMessage.fromList((ArrayList<Object>) readValue(buffer));
+          return SearchQueryMessage.fromList((ArrayList<Object>) readValue(buffer));
         case (byte) 193:
-          return SuggestMessage.fromList((ArrayList<Object>) readValue(buffer));
+          return SearchResultMessage.fromList((ArrayList<Object>) readValue(buffer));
         case (byte) 194:
-          return SuggestObjectHandlerMessage.fromList((ArrayList<Object>) readValue(buffer));
+          return SpecialSpaceMessage.fromList((ArrayList<Object>) readValue(buffer));
         case (byte) 195:
-          return SuggestResultMessage.fromList((ArrayList<Object>) readValue(buffer));
+          return SuggestHandlerMessage.fromList((ArrayList<Object>) readValue(buffer));
         case (byte) 196:
-          return TradeLicenseMessage.fromList((ArrayList<Object>) readValue(buffer));
+          return SuggestMessage.fromList((ArrayList<Object>) readValue(buffer));
         case (byte) 197:
-          return WeekTimeIntervalListMessage.fromList((ArrayList<Object>) readValue(buffer));
+          return SuggestObjectHandlerMessage.fromList((ArrayList<Object>) readValue(buffer));
         case (byte) 198:
-          return WeekTimeIntervalMessage.fromList((ArrayList<Object>) readValue(buffer));
+          return SuggestResultMessage.fromList((ArrayList<Object>) readValue(buffer));
         case (byte) 199:
-          return WeekTimeMessage.fromList((ArrayList<Object>) readValue(buffer));
+          return TradeLicenseMessage.fromList((ArrayList<Object>) readValue(buffer));
         case (byte) 200:
-          return WeekTimeSearchMessage.fromList((ArrayList<Object>) readValue(buffer));
+          return WeekTimeIntervalListMessage.fromList((ArrayList<Object>) readValue(buffer));
         case (byte) 201:
+          return WeekTimeIntervalMessage.fromList((ArrayList<Object>) readValue(buffer));
+        case (byte) 202:
+          return WeekTimeMessage.fromList((ArrayList<Object>) readValue(buffer));
+        case (byte) 203:
+          return WeekTimeSearchMessage.fromList((ArrayList<Object>) readValue(buffer));
+        case (byte) 204:
           return WorkStatusMessage.fromList((ArrayList<Object>) readValue(buffer));
         default:
           return super.readValueOfType(type, buffer);
@@ -6942,188 +7230,197 @@ public class Messages {
       } else if (value instanceof CameraSetPaddingMessage) {
         stream.write(140);
         writeValue(stream, ((CameraSetPaddingMessage) value).toList());
-      } else if (value instanceof ContactInfoMessage) {
+      } else if (value instanceof ClusteringMapObjectManagerOptionsMessage) {
         stream.write(141);
+        writeValue(stream, ((ClusteringMapObjectManagerOptionsMessage) value).toList());
+      } else if (value instanceof ContactInfoMessage) {
+        stream.write(142);
         writeValue(stream, ((ContactInfoMessage) value).toList());
       } else if (value instanceof DayTimeMessage) {
-        stream.write(142);
+        stream.write(143);
         writeValue(stream, ((DayTimeMessage) value).toList());
       } else if (value instanceof DgisObjectIdMessage) {
-        stream.write(143);
+        stream.write(144);
         writeValue(stream, ((DgisObjectIdMessage) value).toList());
       } else if (value instanceof DirectoryObjectMessage) {
-        stream.write(144);
+        stream.write(145);
         writeValue(stream, ((DirectoryObjectMessage) value).toList());
       } else if (value instanceof DistanceRequestMessage) {
-        stream.write(145);
+        stream.write(146);
         writeValue(stream, ((DistanceRequestMessage) value).toList());
       } else if (value instanceof DistanceResponseMessage) {
-        stream.write(146);
+        stream.write(147);
         writeValue(stream, ((DistanceResponseMessage) value).toList());
       } else if (value instanceof DynamicFilterMessage) {
-        stream.write(147);
+        stream.write(148);
         writeValue(stream, ((DynamicFilterMessage) value).toList());
       } else if (value instanceof EntranceGeometryMessage) {
-        stream.write(148);
+        stream.write(149);
         writeValue(stream, ((EntranceGeometryMessage) value).toList());
       } else if (value instanceof EntranceInfoMessage) {
-        stream.write(149);
+        stream.write(150);
         writeValue(stream, ((EntranceInfoMessage) value).toList());
       } else if (value instanceof FlagFilterMessage) {
-        stream.write(150);
+        stream.write(151);
         writeValue(stream, ((FlagFilterMessage) value).toList());
       } else if (value instanceof FloorInfoMessage) {
-        stream.write(151);
-        writeValue(stream, ((FloorInfoMessage) value).toList());
-      } else if (value instanceof GeoPointMessage) {
         stream.write(152);
-        writeValue(stream, ((GeoPointMessage) value).toList());
+        writeValue(stream, ((FloorInfoMessage) value).toList());
       } else if (value instanceof GeoPointMessage) {
         stream.write(153);
         writeValue(stream, ((GeoPointMessage) value).toList());
-      } else if (value instanceof GeoPointWithElevationMessage) {
+      } else if (value instanceof GeoPointMessage) {
         stream.write(154);
-        writeValue(stream, ((GeoPointWithElevationMessage) value).toList());
+        writeValue(stream, ((GeoPointMessage) value).toList());
       } else if (value instanceof GeoPointWithElevationMessage) {
         stream.write(155);
         writeValue(stream, ((GeoPointWithElevationMessage) value).toList());
-      } else if (value instanceof GeoRectMessage) {
+      } else if (value instanceof GeoPointWithElevationMessage) {
         stream.write(156);
-        writeValue(stream, ((GeoRectMessage) value).toList());
+        writeValue(stream, ((GeoPointWithElevationMessage) value).toList());
       } else if (value instanceof GeoRectMessage) {
         stream.write(157);
         writeValue(stream, ((GeoRectMessage) value).toList());
-      } else if (value instanceof GeometryMessage) {
+      } else if (value instanceof GeoRectMessage) {
         stream.write(158);
+        writeValue(stream, ((GeoRectMessage) value).toList());
+      } else if (value instanceof GeometryMessage) {
+        stream.write(159);
         writeValue(stream, ((GeometryMessage) value).toList());
       } else if (value instanceof IncompleteTextHandlerMessage) {
-        stream.write(159);
+        stream.write(160);
         writeValue(stream, ((IncompleteTextHandlerMessage) value).toList());
       } else if (value instanceof InitializeMessage) {
-        stream.write(160);
+        stream.write(161);
         writeValue(stream, ((InitializeMessage) value).toList());
       } else if (value instanceof ItemMarkerInfoMessage) {
-        stream.write(161);
+        stream.write(162);
         writeValue(stream, ((ItemMarkerInfoMessage) value).toList());
       } else if (value instanceof LayerPointObjectMessage) {
-        stream.write(162);
+        stream.write(163);
         writeValue(stream, ((LayerPointObjectMessage) value).toList());
       } else if (value instanceof LevelInfoMessage) {
-        stream.write(163);
-        writeValue(stream, ((LevelInfoMessage) value).toList());
-      } else if (value instanceof MarkedUpTextMessage) {
         stream.write(164);
+        writeValue(stream, ((LevelInfoMessage) value).toList());
+      } else if (value instanceof MapObjectManagerMessage) {
+        stream.write(165);
+        writeValue(stream, ((MapObjectManagerMessage) value).toList());
+      } else if (value instanceof MapObjectManagerMessage) {
+        stream.write(166);
+        writeValue(stream, ((MapObjectManagerMessage) value).toList());
+      } else if (value instanceof MarkedUpTextMessage) {
+        stream.write(167);
         writeValue(stream, ((MarkedUpTextMessage) value).toList());
       } else if (value instanceof MarkedUpTextSpanMessage) {
-        stream.write(165);
+        stream.write(168);
         writeValue(stream, ((MarkedUpTextSpanMessage) value).toList());
       } else if (value instanceof MarkerAnchorMessage) {
-        stream.write(166);
+        stream.write(169);
         writeValue(stream, ((MarkerAnchorMessage) value).toList());
       } else if (value instanceof MarkerAzimuthMessage) {
-        stream.write(167);
+        stream.write(170);
         writeValue(stream, ((MarkerAzimuthMessage) value).toList());
       } else if (value instanceof MarkerIconMessage) {
-        stream.write(168);
+        stream.write(171);
         writeValue(stream, ((MarkerIconMessage) value).toList());
       } else if (value instanceof MarkerMessage) {
-        stream.write(169);
+        stream.write(172);
         writeValue(stream, ((MarkerMessage) value).toList());
       } else if (value instanceof MarkerOptionsMessage) {
-        stream.write(170);
+        stream.write(173);
         writeValue(stream, ((MarkerOptionsMessage) value).toList());
       } else if (value instanceof MarkerOptionsMessageOld) {
-        stream.write(171);
+        stream.write(174);
         writeValue(stream, ((MarkerOptionsMessageOld) value).toList());
       } else if (value instanceof MarkerTextPlacementMessage) {
-        stream.write(172);
+        stream.write(175);
         writeValue(stream, ((MarkerTextPlacementMessage) value).toList());
       } else if (value instanceof MarkerTextStyleMessage) {
-        stream.write(173);
+        stream.write(176);
         writeValue(stream, ((MarkerTextStyleMessage) value).toList());
       } else if (value instanceof MarkerWithPhotoMessage) {
-        stream.write(174);
+        stream.write(177);
         writeValue(stream, ((MarkerWithPhotoMessage) value).toList());
       } else if (value instanceof ObjectTypeItemMessage) {
-        stream.write(175);
+        stream.write(178);
         writeValue(stream, ((ObjectTypeItemMessage) value).toList());
       } else if (value instanceof OpeningHoursMessage) {
-        stream.write(176);
+        stream.write(179);
         writeValue(stream, ((OpeningHoursMessage) value).toList());
       } else if (value instanceof PageIdMessage) {
-        stream.write(177);
+        stream.write(180);
         writeValue(stream, ((PageIdMessage) value).toList());
       } else if (value instanceof PageMessage) {
-        stream.write(178);
+        stream.write(181);
         writeValue(stream, ((PageMessage) value).toList());
       } else if (value instanceof ParkingCapacityMessage) {
-        stream.write(179);
+        stream.write(182);
         writeValue(stream, ((ParkingCapacityMessage) value).toList());
       } else if (value instanceof ParkingInfoMessage) {
-        stream.write(180);
+        stream.write(183);
         writeValue(stream, ((ParkingInfoMessage) value).toList());
       } else if (value instanceof PerformSearchHandlerMessage) {
-        stream.write(181);
+        stream.write(184);
         writeValue(stream, ((PerformSearchHandlerMessage) value).toList());
       } else if (value instanceof PolygonMessage) {
-        stream.write(182);
+        stream.write(185);
         writeValue(stream, ((PolygonMessage) value).toList());
       } else if (value instanceof PolygonOptionsMessage) {
-        stream.write(183);
+        stream.write(186);
         writeValue(stream, ((PolygonOptionsMessage) value).toList());
       } else if (value instanceof PolylineMessage) {
-        stream.write(184);
+        stream.write(187);
         writeValue(stream, ((PolylineMessage) value).toList());
       } else if (value instanceof PolylineOptionsMessage) {
-        stream.write(185);
+        stream.write(188);
         writeValue(stream, ((PolylineOptionsMessage) value).toList());
       } else if (value instanceof RangeFilterMessage) {
-        stream.write(186);
+        stream.write(189);
         writeValue(stream, ((RangeFilterMessage) value).toList());
       } else if (value instanceof ReviewsMessage) {
-        stream.write(187);
+        stream.write(190);
         writeValue(stream, ((ReviewsMessage) value).toList());
       } else if (value instanceof RouteEditorRouteParamsMessage) {
-        stream.write(188);
+        stream.write(191);
         writeValue(stream, ((RouteEditorRouteParamsMessage) value).toList());
       } else if (value instanceof SearchQueryMessage) {
-        stream.write(189);
+        stream.write(192);
         writeValue(stream, ((SearchQueryMessage) value).toList());
       } else if (value instanceof SearchResultMessage) {
-        stream.write(190);
+        stream.write(193);
         writeValue(stream, ((SearchResultMessage) value).toList());
       } else if (value instanceof SpecialSpaceMessage) {
-        stream.write(191);
+        stream.write(194);
         writeValue(stream, ((SpecialSpaceMessage) value).toList());
       } else if (value instanceof SuggestHandlerMessage) {
-        stream.write(192);
+        stream.write(195);
         writeValue(stream, ((SuggestHandlerMessage) value).toList());
       } else if (value instanceof SuggestMessage) {
-        stream.write(193);
+        stream.write(196);
         writeValue(stream, ((SuggestMessage) value).toList());
       } else if (value instanceof SuggestObjectHandlerMessage) {
-        stream.write(194);
+        stream.write(197);
         writeValue(stream, ((SuggestObjectHandlerMessage) value).toList());
       } else if (value instanceof SuggestResultMessage) {
-        stream.write(195);
+        stream.write(198);
         writeValue(stream, ((SuggestResultMessage) value).toList());
       } else if (value instanceof TradeLicenseMessage) {
-        stream.write(196);
+        stream.write(199);
         writeValue(stream, ((TradeLicenseMessage) value).toList());
       } else if (value instanceof WeekTimeIntervalListMessage) {
-        stream.write(197);
+        stream.write(200);
         writeValue(stream, ((WeekTimeIntervalListMessage) value).toList());
       } else if (value instanceof WeekTimeIntervalMessage) {
-        stream.write(198);
+        stream.write(201);
         writeValue(stream, ((WeekTimeIntervalMessage) value).toList());
       } else if (value instanceof WeekTimeMessage) {
-        stream.write(199);
+        stream.write(202);
         writeValue(stream, ((WeekTimeMessage) value).toList());
       } else if (value instanceof WeekTimeSearchMessage) {
-        stream.write(200);
+        stream.write(203);
         writeValue(stream, ((WeekTimeSearchMessage) value).toList());
       } else if (value instanceof WorkStatusMessage) {
-        stream.write(201);
+        stream.write(204);
         writeValue(stream, ((WorkStatusMessage) value).toList());
       } else {
         super.writeValue(stream, value);
@@ -7150,6 +7447,8 @@ public class Messages {
 
     void setCameraPosition(@NonNull CameraPositionMessage cameraPosition, Result<Void> result);
 
+    void moveCamera(@NonNull CameraPositionMessage cameraPosition, @NonNull Double duration, @NonNull CameraAnimationTypeMessage animationType, Result<Void> result);
+
     void getCameraPosition(Result<CameraPositionMessage> result);
 
     void searchByObjectId(@NonNull DgisObjectIdMessage objectId, Result<DirectoryObjectMessage> result);
@@ -7172,13 +7471,17 @@ public class Messages {
 
     void setMarkerOptions(@NonNull MarkerOptionsMessageOld options, Result<Void> result);
 
-    void addMarker(@NonNull MarkerMessage marker, Result<Void> result);
+    void addMarker(@NonNull MarkerMessage marker, @Nullable MapObjectManagerMessage manager, Result<Void> result);
 
-    void addMarkers(@NonNull List<MarkerMessage> markers, Result<Void> result);
+    void addMarkers(@NonNull List<MarkerMessage> markers, @Nullable MapObjectManagerMessage manager, Result<Void> result);
 
-    void removeMarker(@NonNull String id, Result<Void> result);
+    void removeMarker(@NonNull String id, @Nullable MapObjectManagerMessage manager, Result<Void> result);
 
-    void removeAllMarkers(Result<Void> result);
+    void removeAllMarkers(@Nullable MapObjectManagerMessage manager, Result<Void> result);
+
+    void createMapObjectManagerWithClustering(@NonNull ClusteringMapObjectManagerOptionsMessage message, Result<MapObjectManagerMessage> result);
+
+    void removeMapObjectManager(@NonNull MapObjectManagerMessage id, Result<Void> result);
 
     void addPolygon(@NonNull PolygonMessage polygon, Result<Void> result);
 
@@ -7539,6 +7842,52 @@ public class Messages {
                       };
 
                   api.setCameraPosition(cameraPositionArg, resultCallback);
+                } catch (Error | RuntimeException exception) {
+                  ArrayList<Object> wrappedError = wrapError(exception);
+                  reply.reply(wrappedError);
+                }
+              });
+        } else {
+          channel.setMessageHandler(null);
+        }
+      }
+      {
+        BasicMessageChannel<Object> channel =
+            new BasicMessageChannel<>(
+                binaryMessenger, "dev.flutter.pigeon.MapApi.moveCamera", getCodec());
+        if (api != null) {
+          channel.setMessageHandler(
+              (message, reply) -> {
+                ArrayList<Object> wrapped = new ArrayList<Object>();
+                try {
+                  ArrayList<Object> args = (ArrayList<Object>) message;
+                  assert args != null;
+                  CameraPositionMessage cameraPositionArg = (CameraPositionMessage) args.get(0);
+                  if (cameraPositionArg == null) {
+                    throw new NullPointerException("cameraPositionArg unexpectedly null.");
+                  }
+                  Double durationArg = (Double) args.get(1);
+                  if (durationArg == null) {
+                    throw new NullPointerException("durationArg unexpectedly null.");
+                  }
+                  CameraAnimationTypeMessage animationTypeArg = args.get(2) == null ? null : CameraAnimationTypeMessage.values()[(int) args.get(2)];
+                  if (animationTypeArg == null) {
+                    throw new NullPointerException("animationTypeArg unexpectedly null.");
+                  }
+                  Result<Void> resultCallback = 
+                      new Result<Void>() {
+                        public void success(Void result) {
+                          wrapped.add(0, null);
+                          reply.reply(wrapped);
+                        }
+
+                        public void error(Throwable error) {
+                          ArrayList<Object> wrappedError = wrapError(error);
+                          reply.reply(wrappedError);
+                        }
+                      };
+
+                  api.moveCamera(cameraPositionArg, durationArg, animationTypeArg, resultCallback);
                 } catch (Error | RuntimeException exception) {
                   ArrayList<Object> wrappedError = wrapError(exception);
                   reply.reply(wrappedError);
@@ -8006,6 +8355,7 @@ public class Messages {
                   if (markerArg == null) {
                     throw new NullPointerException("markerArg unexpectedly null.");
                   }
+                  MapObjectManagerMessage managerArg = (MapObjectManagerMessage) args.get(1);
                   Result<Void> resultCallback = 
                       new Result<Void>() {
                         public void success(Void result) {
@@ -8019,7 +8369,7 @@ public class Messages {
                         }
                       };
 
-                  api.addMarker(markerArg, resultCallback);
+                  api.addMarker(markerArg, managerArg, resultCallback);
                 } catch (Error | RuntimeException exception) {
                   ArrayList<Object> wrappedError = wrapError(exception);
                   reply.reply(wrappedError);
@@ -8044,6 +8394,7 @@ public class Messages {
                   if (markersArg == null) {
                     throw new NullPointerException("markersArg unexpectedly null.");
                   }
+                  MapObjectManagerMessage managerArg = (MapObjectManagerMessage) args.get(1);
                   Result<Void> resultCallback = 
                       new Result<Void>() {
                         public void success(Void result) {
@@ -8057,7 +8408,7 @@ public class Messages {
                         }
                       };
 
-                  api.addMarkers(markersArg, resultCallback);
+                  api.addMarkers(markersArg, managerArg, resultCallback);
                 } catch (Error | RuntimeException exception) {
                   ArrayList<Object> wrappedError = wrapError(exception);
                   reply.reply(wrappedError);
@@ -8082,6 +8433,7 @@ public class Messages {
                   if (idArg == null) {
                     throw new NullPointerException("idArg unexpectedly null.");
                   }
+                  MapObjectManagerMessage managerArg = (MapObjectManagerMessage) args.get(1);
                   Result<Void> resultCallback = 
                       new Result<Void>() {
                         public void success(Void result) {
@@ -8095,7 +8447,7 @@ public class Messages {
                         }
                       };
 
-                  api.removeMarker(idArg, resultCallback);
+                  api.removeMarker(idArg, managerArg, resultCallback);
                 } catch (Error | RuntimeException exception) {
                   ArrayList<Object> wrappedError = wrapError(exception);
                   reply.reply(wrappedError);
@@ -8114,6 +8466,9 @@ public class Messages {
               (message, reply) -> {
                 ArrayList<Object> wrapped = new ArrayList<Object>();
                 try {
+                  ArrayList<Object> args = (ArrayList<Object>) message;
+                  assert args != null;
+                  MapObjectManagerMessage managerArg = (MapObjectManagerMessage) args.get(0);
                   Result<Void> resultCallback = 
                       new Result<Void>() {
                         public void success(Void result) {
@@ -8127,7 +8482,83 @@ public class Messages {
                         }
                       };
 
-                  api.removeAllMarkers(resultCallback);
+                  api.removeAllMarkers(managerArg, resultCallback);
+                } catch (Error | RuntimeException exception) {
+                  ArrayList<Object> wrappedError = wrapError(exception);
+                  reply.reply(wrappedError);
+                }
+              });
+        } else {
+          channel.setMessageHandler(null);
+        }
+      }
+      {
+        BasicMessageChannel<Object> channel =
+            new BasicMessageChannel<>(
+                binaryMessenger, "dev.flutter.pigeon.MapApi.createMapObjectManagerWithClustering", getCodec());
+        if (api != null) {
+          channel.setMessageHandler(
+              (message, reply) -> {
+                ArrayList<Object> wrapped = new ArrayList<Object>();
+                try {
+                  ArrayList<Object> args = (ArrayList<Object>) message;
+                  assert args != null;
+                  ClusteringMapObjectManagerOptionsMessage messageArg = (ClusteringMapObjectManagerOptionsMessage) args.get(0);
+                  if (messageArg == null) {
+                    throw new NullPointerException("messageArg unexpectedly null.");
+                  }
+                  Result<MapObjectManagerMessage> resultCallback = 
+                      new Result<MapObjectManagerMessage>() {
+                        public void success(MapObjectManagerMessage result) {
+                          wrapped.add(0, result);
+                          reply.reply(wrapped);
+                        }
+
+                        public void error(Throwable error) {
+                          ArrayList<Object> wrappedError = wrapError(error);
+                          reply.reply(wrappedError);
+                        }
+                      };
+
+                  api.createMapObjectManagerWithClustering(messageArg, resultCallback);
+                } catch (Error | RuntimeException exception) {
+                  ArrayList<Object> wrappedError = wrapError(exception);
+                  reply.reply(wrappedError);
+                }
+              });
+        } else {
+          channel.setMessageHandler(null);
+        }
+      }
+      {
+        BasicMessageChannel<Object> channel =
+            new BasicMessageChannel<>(
+                binaryMessenger, "dev.flutter.pigeon.MapApi.removeMapObjectManager", getCodec());
+        if (api != null) {
+          channel.setMessageHandler(
+              (message, reply) -> {
+                ArrayList<Object> wrapped = new ArrayList<Object>();
+                try {
+                  ArrayList<Object> args = (ArrayList<Object>) message;
+                  assert args != null;
+                  MapObjectManagerMessage idArg = (MapObjectManagerMessage) args.get(0);
+                  if (idArg == null) {
+                    throw new NullPointerException("idArg unexpectedly null.");
+                  }
+                  Result<Void> resultCallback = 
+                      new Result<Void>() {
+                        public void success(Void result) {
+                          wrapped.add(0, null);
+                          reply.reply(wrapped);
+                        }
+
+                        public void error(Throwable error) {
+                          ArrayList<Object> wrappedError = wrapError(error);
+                          reply.reply(wrappedError);
+                        }
+                      };
+
+                  api.removeMapObjectManager(idArg, resultCallback);
                 } catch (Error | RuntimeException exception) {
                   ArrayList<Object> wrappedError = wrapError(exception);
                   reply.reply(wrappedError);
@@ -9351,6 +9782,91 @@ public class Messages {
           channel.setMessageHandler(null);
         }
       }
+    }
+  }
+
+  private static class FlutterMapApiCodec extends StandardMessageCodec {
+    public static final FlutterMapApiCodec INSTANCE = new FlutterMapApiCodec();
+
+    private FlutterMapApiCodec() {}
+
+    @Override
+    protected Object readValueOfType(byte type, @NonNull ByteBuffer buffer) {
+      switch (type) {
+        case (byte) 128:
+          return MapObjectManagerMessage.fromList((ArrayList<Object>) readValue(buffer));
+        case (byte) 129:
+          return MarkerAnchorMessage.fromList((ArrayList<Object>) readValue(buffer));
+        case (byte) 130:
+          return MarkerAzimuthMessage.fromList((ArrayList<Object>) readValue(buffer));
+        case (byte) 131:
+          return MarkerIconMessage.fromList((ArrayList<Object>) readValue(buffer));
+        case (byte) 132:
+          return MarkerTextPlacementMessage.fromList((ArrayList<Object>) readValue(buffer));
+        case (byte) 133:
+          return MarkerTextStyleMessage.fromList((ArrayList<Object>) readValue(buffer));
+        case (byte) 134:
+          return SimpleClusterOptionsMessage.fromList((ArrayList<Object>) readValue(buffer));
+        default:
+          return super.readValueOfType(type, buffer);
+      }
+    }
+
+    @Override
+    protected void writeValue(@NonNull ByteArrayOutputStream stream, Object value) {
+      if (value instanceof MapObjectManagerMessage) {
+        stream.write(128);
+        writeValue(stream, ((MapObjectManagerMessage) value).toList());
+      } else if (value instanceof MarkerAnchorMessage) {
+        stream.write(129);
+        writeValue(stream, ((MarkerAnchorMessage) value).toList());
+      } else if (value instanceof MarkerAzimuthMessage) {
+        stream.write(130);
+        writeValue(stream, ((MarkerAzimuthMessage) value).toList());
+      } else if (value instanceof MarkerIconMessage) {
+        stream.write(131);
+        writeValue(stream, ((MarkerIconMessage) value).toList());
+      } else if (value instanceof MarkerTextPlacementMessage) {
+        stream.write(132);
+        writeValue(stream, ((MarkerTextPlacementMessage) value).toList());
+      } else if (value instanceof MarkerTextStyleMessage) {
+        stream.write(133);
+        writeValue(stream, ((MarkerTextStyleMessage) value).toList());
+      } else if (value instanceof SimpleClusterOptionsMessage) {
+        stream.write(134);
+        writeValue(stream, ((SimpleClusterOptionsMessage) value).toList());
+      } else {
+        super.writeValue(stream, value);
+      }
+    }
+  }
+
+  /** Generated class from Pigeon that represents Flutter messages that can be called from Java. */
+  public static final class FlutterMapApi {
+    private final BinaryMessenger binaryMessenger;
+
+    public FlutterMapApi(BinaryMessenger argBinaryMessenger) {
+      this.binaryMessenger = argBinaryMessenger;
+    }
+
+    /** Public interface for sending reply. */     public interface Reply<T> {
+      void reply(T reply);
+    }
+    /** The codec used by FlutterMapApi. */
+    static MessageCodec<Object> getCodec() {
+      return FlutterMapApiCodec.INSTANCE;
+    }
+    public void renderCluster(@NonNull MapObjectManagerMessage managerArg, @NonNull Long objectCountArg, Reply<SimpleClusterOptionsMessage> callback) {
+      BasicMessageChannel<Object> channel =
+          new BasicMessageChannel<>(
+              binaryMessenger, "dev.flutter.pigeon.FlutterMapApi.renderCluster", getCodec());
+      channel.send(
+          new ArrayList<Object>(Arrays.asList(managerArg, objectCountArg)),
+          channelReply -> {
+            @SuppressWarnings("ConstantConditions")
+            SimpleClusterOptionsMessage output = (SimpleClusterOptionsMessage) channelReply;
+            callback.reply(output);
+          });
     }
   }
 }

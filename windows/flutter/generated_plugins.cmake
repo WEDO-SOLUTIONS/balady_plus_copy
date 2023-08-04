@@ -9,6 +9,7 @@ list(APPEND FLUTTER_PLUGIN_LIST
   geolocator_windows
   network_info_plus_windows
   pdfx
+  sentry_flutter
   smart_auth
   url_launcher_windows
 )

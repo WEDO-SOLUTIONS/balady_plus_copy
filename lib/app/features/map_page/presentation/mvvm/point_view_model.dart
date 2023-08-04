@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:balady_plus/app/core/base/base_view_model.dart';
 import 'package:balady_plus/app/core/services/global/web_service.dart';
+import 'package:balady_plus/app/core/utils/extensions/json_conversion.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/foundation.dart';
 
@@ -26,7 +27,7 @@ class PointViewModel extends BaseViewModel {
       isLoadingData.notifyListeners();
       dataPoint.value = await controller.searchByObjectId(point);
       if (dataPoint.value != null) {
-        print(dataPoint.value?.externalIds);
+        print(dataPoint.value?.toString());
         //getPhotos(dataPoint.value!);
       }
       isLoadingData.value = false;

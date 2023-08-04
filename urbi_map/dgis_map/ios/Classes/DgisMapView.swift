@@ -230,6 +230,38 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         
     }
     
+    func moveCameraCameraPosition(_ cameraPosition: CameraPositionMessage, duration: NSNumber, animationType: CameraAnimationTypeMessage, completion: @escaping (FlutterError?) -> Void) {
+        guard let map = self.map else {
+            completion(FlutterError(
+                code: "IllegalArgumentException",
+                message: "Map was not initialized properly",
+                details: nil
+            ))
+            return
+        }
+        var desiredPosition = map.camera.position
+        desiredPosition.point = cameraPosition.point.geoPoint
+        desiredPosition.zoom = Zoom(value: cameraPosition.zoom.floatValue)
+        desiredPosition.tilt = Tilt(value: cameraPosition.tilt.floatValue)
+        desiredPosition.bearing = Bearing(value: cameraPosition.bearing.doubleValue)
+        
+        let duration = TimeInterval(duration.doubleValue)
+        let animationType = animationType.animationType
+        
+        let moveCancelable = map.camera.move(position: desiredPosition, time: duration, animationType: animationType).sink(receiveValue: { _ in
+            completion(nil)
+            return
+        }, failure: { error in
+            completion(FlutterError(
+                code: "FutureError",
+                message: error.localizedDescription,
+                details: nil
+            ))
+            return
+        })
+        cancelable.append(moveCancelable)
+    }
+    
     func getCameraPosition(completion: @escaping (CameraPositionMessage?, FlutterError?) -> Void) {
         guard let map = self.map else {
             completion(nil, FlutterError(
@@ -461,16 +493,24 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         )
     }
     
-    func addMarkerMarker(_ marker: MarkerMessage, completion: @escaping (FlutterError?) -> Void) {
-         self.objectTapHandler?.addMarker(marker, completion: completion)
+    func addMarkerMarker(_ marker: MarkerMessage, manager: MapObjectManagerMessage?, completion: @escaping (FlutterError?) -> Void) {
+        self.objectTapHandler?.addMarker(marker, to: manager, completion: completion)
+    }
+
+    func addMarkersMarkers(_ markers: [MarkerMessage], manager: MapObjectManagerMessage?, completion: @escaping (FlutterError?) -> Void) {
+        self.objectTapHandler?.addMarkers(markers, to: manager, completion: completion)
     }
     
-    func addMarkersMarkers(_ markers: [MarkerMessage], completion: @escaping (FlutterError?) -> Void) {
-         self.objectTapHandler?.addMarkers(markers, completion: completion)
+    func removeMarkerId(_ id: String, manager: MapObjectManagerMessage?, completion: @escaping (FlutterError?) -> Void) {
+        self.objectTapHandler?.removeMarker(id, from: manager, completion: completion)
     }
     
-    func removeMarkerId(_ id: String, completion: @escaping (FlutterError?) -> Void) {
-        self.objectTapHandler?.removeMarker(id, completion: completion)
+    func createMapObjectManager(withClusteringMessage message: ClusteringMapObjectManagerOptionsMessage, completion: @escaping (MapObjectManagerMessage?, FlutterError?) -> Void) {
+        self.objectTapHandler?.createClusteringMapObjectManager(message, completion: completion)
+    }
+    
+    func removeMapObjectManagerId(_ id: MapObjectManagerMessage, completion: @escaping (FlutterError?) -> Void) {
+        self.objectTapHandler?.removeMapObjectManager(id, completion: completion)
     }
     
     func addPolygonPolygon(_ polygon: PolygonMessage, completion: @escaping (FlutterError?) -> Void) {
@@ -509,8 +549,8 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         )
     }
     
-    func removeAllMarkers(completion: @escaping (FlutterError?) -> Void) {
-        self.objectTapHandler?.removeAllMarkers()
+    func removeAllMarkersManager(_ manager: MapObjectManagerMessage?, completion: @escaping (FlutterError?) -> Void) {
+        self.objectTapHandler?.removeAllMarkers(from: manager)
         completion(nil)
     }
     
@@ -566,7 +606,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
     }
     
     func removeEsriIOLayer(completion: @escaping (FlutterError?) -> Void) {
-        self.objectTapHandler?.removeAllMarkers()
+        self.objectTapHandler?.removeAllMarkers(from: nil)
         completion(nil)
     }
     
@@ -638,6 +678,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         }
         
         let objectTapHandler = ObjectTapHandler(
+            map: map,
             objectManager:
                 MapObjectManager.withGeneralization(
                     map: map,

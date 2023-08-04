@@ -447,6 +447,24 @@ static id GetNullableObjectAtIndex(NSArray *array, NSInteger key) {
 - (NSArray *)toList;
 @end
 
+@interface SimpleClusterOptionsMessage ()
++ (SimpleClusterOptionsMessage *)fromList:(NSArray *)list;
++ (nullable SimpleClusterOptionsMessage *)nullableFromList:(NSArray *)list;
+- (NSArray *)toList;
+@end
+
+@interface ClusteringMapObjectManagerOptionsMessage ()
++ (ClusteringMapObjectManagerOptionsMessage *)fromList:(NSArray *)list;
++ (nullable ClusteringMapObjectManagerOptionsMessage *)nullableFromList:(NSArray *)list;
+- (NSArray *)toList;
+@end
+
+@interface MapObjectManagerMessage ()
++ (MapObjectManagerMessage *)fromList:(NSArray *)list;
++ (nullable MapObjectManagerMessage *)nullableFromList:(NSArray *)list;
+- (NSArray *)toList;
+@end
+
 @implementation InitializeMessage
 + (instancetype)makeWithWasInitialized:(NSNumber *)wasInitialized
     errorDescription:(NSString *)errorDescription {
@@ -1875,10 +1893,12 @@ static id GetNullableObjectAtIndex(NSArray *array, NSInteger key) {
 @implementation MarkerIconMessage
 + (instancetype)makeWithPath:(NSString *)path
     width:(NSNumber *)width
+    iconOpacity:(nullable NSNumber *)iconOpacity
     iconMapDirection:(nullable MarkerAzimuthMessage *)iconMapDirection {
   MarkerIconMessage* pigeonResult = [[MarkerIconMessage alloc] init];
   pigeonResult.path = path;
   pigeonResult.width = width;
+  pigeonResult.iconOpacity = iconOpacity;
   pigeonResult.iconMapDirection = iconMapDirection;
   return pigeonResult;
 }
@@ -1888,7 +1908,8 @@ static id GetNullableObjectAtIndex(NSArray *array, NSInteger key) {
   NSAssert(pigeonResult.path != nil, @"");
   pigeonResult.width = GetNullableObjectAtIndex(list, 1);
   NSAssert(pigeonResult.width != nil, @"");
-  pigeonResult.iconMapDirection = [MarkerAzimuthMessage nullableFromList:(GetNullableObjectAtIndex(list, 2))];
+  pigeonResult.iconOpacity = GetNullableObjectAtIndex(list, 2);
+  pigeonResult.iconMapDirection = [MarkerAzimuthMessage nullableFromList:(GetNullableObjectAtIndex(list, 3))];
   return pigeonResult;
 }
 + (nullable MarkerIconMessage *)nullableFromList:(NSArray *)list {
@@ -1898,6 +1919,7 @@ static id GetNullableObjectAtIndex(NSArray *array, NSInteger key) {
   return @[
     (self.path ?: [NSNull null]),
     (self.width ?: [NSNull null]),
+    (self.iconOpacity ?: [NSNull null]),
     (self.iconMapDirection ? [self.iconMapDirection toList] : [NSNull null]),
   ];
 }
@@ -2593,6 +2615,92 @@ static id GetNullableObjectAtIndex(NSArray *array, NSInteger key) {
 }
 @end
 
+@implementation SimpleClusterOptionsMessage
++ (instancetype)makeWithIcon:(nullable MarkerIconMessage *)icon
+    anchor:(nullable MarkerAnchorMessage *)anchor
+    text:(nullable NSString *)text
+    textStyle:(nullable MarkerTextStyleMessage *)textStyle {
+  SimpleClusterOptionsMessage* pigeonResult = [[SimpleClusterOptionsMessage alloc] init];
+  pigeonResult.icon = icon;
+  pigeonResult.anchor = anchor;
+  pigeonResult.text = text;
+  pigeonResult.textStyle = textStyle;
+  return pigeonResult;
+}
++ (SimpleClusterOptionsMessage *)fromList:(NSArray *)list {
+  SimpleClusterOptionsMessage *pigeonResult = [[SimpleClusterOptionsMessage alloc] init];
+  pigeonResult.icon = [MarkerIconMessage nullableFromList:(GetNullableObjectAtIndex(list, 0))];
+  pigeonResult.anchor = [MarkerAnchorMessage nullableFromList:(GetNullableObjectAtIndex(list, 1))];
+  pigeonResult.text = GetNullableObjectAtIndex(list, 2);
+  pigeonResult.textStyle = [MarkerTextStyleMessage nullableFromList:(GetNullableObjectAtIndex(list, 3))];
+  return pigeonResult;
+}
++ (nullable SimpleClusterOptionsMessage *)nullableFromList:(NSArray *)list {
+  return (list) ? [SimpleClusterOptionsMessage fromList:list] : nil;
+}
+- (NSArray *)toList {
+  return @[
+    (self.icon ? [self.icon toList] : [NSNull null]),
+    (self.anchor ? [self.anchor toList] : [NSNull null]),
+    (self.text ?: [NSNull null]),
+    (self.textStyle ? [self.textStyle toList] : [NSNull null]),
+  ];
+}
+@end
+
+@implementation ClusteringMapObjectManagerOptionsMessage
++ (instancetype)makeWithLogicalPixel:(NSNumber *)logicalPixel
+    maxZoom:(NSNumber *)maxZoom
+    minZoom:(nullable NSNumber *)minZoom {
+  ClusteringMapObjectManagerOptionsMessage* pigeonResult = [[ClusteringMapObjectManagerOptionsMessage alloc] init];
+  pigeonResult.logicalPixel = logicalPixel;
+  pigeonResult.maxZoom = maxZoom;
+  pigeonResult.minZoom = minZoom;
+  return pigeonResult;
+}
++ (ClusteringMapObjectManagerOptionsMessage *)fromList:(NSArray *)list {
+  ClusteringMapObjectManagerOptionsMessage *pigeonResult = [[ClusteringMapObjectManagerOptionsMessage alloc] init];
+  pigeonResult.logicalPixel = GetNullableObjectAtIndex(list, 0);
+  NSAssert(pigeonResult.logicalPixel != nil, @"");
+  pigeonResult.maxZoom = GetNullableObjectAtIndex(list, 1);
+  NSAssert(pigeonResult.maxZoom != nil, @"");
+  pigeonResult.minZoom = GetNullableObjectAtIndex(list, 2);
+  return pigeonResult;
+}
++ (nullable ClusteringMapObjectManagerOptionsMessage *)nullableFromList:(NSArray *)list {
+  return (list) ? [ClusteringMapObjectManagerOptionsMessage fromList:list] : nil;
+}
+- (NSArray *)toList {
+  return @[
+    (self.logicalPixel ?: [NSNull null]),
+    (self.maxZoom ?: [NSNull null]),
+    (self.minZoom ?: [NSNull null]),
+  ];
+}
+@end
+
+@implementation MapObjectManagerMessage
++ (instancetype)makeWithId:(NSString *)id {
+  MapObjectManagerMessage* pigeonResult = [[MapObjectManagerMessage alloc] init];
+  pigeonResult.id = id;
+  return pigeonResult;
+}
++ (MapObjectManagerMessage *)fromList:(NSArray *)list {
+  MapObjectManagerMessage *pigeonResult = [[MapObjectManagerMessage alloc] init];
+  pigeonResult.id = GetNullableObjectAtIndex(list, 0);
+  NSAssert(pigeonResult.id != nil, @"");
+  return pigeonResult;
+}
++ (nullable MapObjectManagerMessage *)nullableFromList:(NSArray *)list {
+  return (list) ? [MapObjectManagerMessage fromList:list] : nil;
+}
+- (NSArray *)toList {
+  return @[
+    (self.id ?: [NSNull null]),
+  ];
+}
+@end
+
 @interface MapApiCodecReader : FlutterStandardReader
 @end
 @implementation MapApiCodecReader
@@ -2625,126 +2733,132 @@ static id GetNullableObjectAtIndex(NSArray *array, NSInteger key) {
     case 140: 
       return [CameraSetPaddingMessage fromList:[self readValue]];
     case 141: 
-      return [ContactInfoMessage fromList:[self readValue]];
+      return [ClusteringMapObjectManagerOptionsMessage fromList:[self readValue]];
     case 142: 
-      return [DayTimeMessage fromList:[self readValue]];
+      return [ContactInfoMessage fromList:[self readValue]];
     case 143: 
-      return [DgisObjectIdMessage fromList:[self readValue]];
+      return [DayTimeMessage fromList:[self readValue]];
     case 144: 
-      return [DirectoryObjectMessage fromList:[self readValue]];
+      return [DgisObjectIdMessage fromList:[self readValue]];
     case 145: 
-      return [DistanceRequestMessage fromList:[self readValue]];
+      return [DirectoryObjectMessage fromList:[self readValue]];
     case 146: 
-      return [DistanceResponseMessage fromList:[self readValue]];
+      return [DistanceRequestMessage fromList:[self readValue]];
     case 147: 
-      return [DynamicFilterMessage fromList:[self readValue]];
+      return [DistanceResponseMessage fromList:[self readValue]];
     case 148: 
-      return [EntranceGeometryMessage fromList:[self readValue]];
+      return [DynamicFilterMessage fromList:[self readValue]];
     case 149: 
-      return [EntranceInfoMessage fromList:[self readValue]];
+      return [EntranceGeometryMessage fromList:[self readValue]];
     case 150: 
-      return [FlagFilterMessage fromList:[self readValue]];
+      return [EntranceInfoMessage fromList:[self readValue]];
     case 151: 
-      return [FloorInfoMessage fromList:[self readValue]];
+      return [FlagFilterMessage fromList:[self readValue]];
     case 152: 
-      return [GeoPointMessage fromList:[self readValue]];
+      return [FloorInfoMessage fromList:[self readValue]];
     case 153: 
       return [GeoPointMessage fromList:[self readValue]];
     case 154: 
-      return [GeoPointWithElevationMessage fromList:[self readValue]];
+      return [GeoPointMessage fromList:[self readValue]];
     case 155: 
       return [GeoPointWithElevationMessage fromList:[self readValue]];
     case 156: 
-      return [GeoRectMessage fromList:[self readValue]];
+      return [GeoPointWithElevationMessage fromList:[self readValue]];
     case 157: 
       return [GeoRectMessage fromList:[self readValue]];
     case 158: 
-      return [GeometryMessage fromList:[self readValue]];
+      return [GeoRectMessage fromList:[self readValue]];
     case 159: 
-      return [IncompleteTextHandlerMessage fromList:[self readValue]];
+      return [GeometryMessage fromList:[self readValue]];
     case 160: 
-      return [InitializeMessage fromList:[self readValue]];
+      return [IncompleteTextHandlerMessage fromList:[self readValue]];
     case 161: 
-      return [ItemMarkerInfoMessage fromList:[self readValue]];
+      return [InitializeMessage fromList:[self readValue]];
     case 162: 
-      return [LayerPointObjectMessage fromList:[self readValue]];
+      return [ItemMarkerInfoMessage fromList:[self readValue]];
     case 163: 
-      return [LevelInfoMessage fromList:[self readValue]];
+      return [LayerPointObjectMessage fromList:[self readValue]];
     case 164: 
-      return [MarkedUpTextMessage fromList:[self readValue]];
+      return [LevelInfoMessage fromList:[self readValue]];
     case 165: 
-      return [MarkedUpTextSpanMessage fromList:[self readValue]];
+      return [MapObjectManagerMessage fromList:[self readValue]];
     case 166: 
-      return [MarkerAnchorMessage fromList:[self readValue]];
+      return [MapObjectManagerMessage fromList:[self readValue]];
     case 167: 
-      return [MarkerAzimuthMessage fromList:[self readValue]];
+      return [MarkedUpTextMessage fromList:[self readValue]];
     case 168: 
-      return [MarkerIconMessage fromList:[self readValue]];
+      return [MarkedUpTextSpanMessage fromList:[self readValue]];
     case 169: 
-      return [MarkerMessage fromList:[self readValue]];
+      return [MarkerAnchorMessage fromList:[self readValue]];
     case 170: 
-      return [MarkerOptionsMessage fromList:[self readValue]];
+      return [MarkerAzimuthMessage fromList:[self readValue]];
     case 171: 
-      return [MarkerOptionsMessageOld fromList:[self readValue]];
+      return [MarkerIconMessage fromList:[self readValue]];
     case 172: 
-      return [MarkerTextPlacementMessage fromList:[self readValue]];
+      return [MarkerMessage fromList:[self readValue]];
     case 173: 
-      return [MarkerTextStyleMessage fromList:[self readValue]];
+      return [MarkerOptionsMessage fromList:[self readValue]];
     case 174: 
-      return [MarkerWithPhotoMessage fromList:[self readValue]];
+      return [MarkerOptionsMessageOld fromList:[self readValue]];
     case 175: 
-      return [ObjectTypeItemMessage fromList:[self readValue]];
+      return [MarkerTextPlacementMessage fromList:[self readValue]];
     case 176: 
-      return [OpeningHoursMessage fromList:[self readValue]];
+      return [MarkerTextStyleMessage fromList:[self readValue]];
     case 177: 
-      return [PageIdMessage fromList:[self readValue]];
+      return [MarkerWithPhotoMessage fromList:[self readValue]];
     case 178: 
-      return [PageMessage fromList:[self readValue]];
+      return [ObjectTypeItemMessage fromList:[self readValue]];
     case 179: 
-      return [ParkingCapacityMessage fromList:[self readValue]];
+      return [OpeningHoursMessage fromList:[self readValue]];
     case 180: 
-      return [ParkingInfoMessage fromList:[self readValue]];
+      return [PageIdMessage fromList:[self readValue]];
     case 181: 
-      return [PerformSearchHandlerMessage fromList:[self readValue]];
+      return [PageMessage fromList:[self readValue]];
     case 182: 
-      return [PolygonMessage fromList:[self readValue]];
+      return [ParkingCapacityMessage fromList:[self readValue]];
     case 183: 
-      return [PolygonOptionsMessage fromList:[self readValue]];
+      return [ParkingInfoMessage fromList:[self readValue]];
     case 184: 
-      return [PolylineMessage fromList:[self readValue]];
+      return [PerformSearchHandlerMessage fromList:[self readValue]];
     case 185: 
-      return [PolylineOptionsMessage fromList:[self readValue]];
+      return [PolygonMessage fromList:[self readValue]];
     case 186: 
-      return [RangeFilterMessage fromList:[self readValue]];
+      return [PolygonOptionsMessage fromList:[self readValue]];
     case 187: 
-      return [ReviewsMessage fromList:[self readValue]];
+      return [PolylineMessage fromList:[self readValue]];
     case 188: 
-      return [RouteEditorRouteParamsMessage fromList:[self readValue]];
+      return [PolylineOptionsMessage fromList:[self readValue]];
     case 189: 
-      return [SearchQueryMessage fromList:[self readValue]];
+      return [RangeFilterMessage fromList:[self readValue]];
     case 190: 
-      return [SearchResultMessage fromList:[self readValue]];
+      return [ReviewsMessage fromList:[self readValue]];
     case 191: 
-      return [SpecialSpaceMessage fromList:[self readValue]];
+      return [RouteEditorRouteParamsMessage fromList:[self readValue]];
     case 192: 
-      return [SuggestHandlerMessage fromList:[self readValue]];
+      return [SearchQueryMessage fromList:[self readValue]];
     case 193: 
-      return [SuggestMessage fromList:[self readValue]];
+      return [SearchResultMessage fromList:[self readValue]];
     case 194: 
-      return [SuggestObjectHandlerMessage fromList:[self readValue]];
+      return [SpecialSpaceMessage fromList:[self readValue]];
     case 195: 
-      return [SuggestResultMessage fromList:[self readValue]];
+      return [SuggestHandlerMessage fromList:[self readValue]];
     case 196: 
-      return [TradeLicenseMessage fromList:[self readValue]];
+      return [SuggestMessage fromList:[self readValue]];
     case 197: 
-      return [WeekTimeIntervalListMessage fromList:[self readValue]];
+      return [SuggestObjectHandlerMessage fromList:[self readValue]];
     case 198: 
-      return [WeekTimeIntervalMessage fromList:[self readValue]];
+      return [SuggestResultMessage fromList:[self readValue]];
     case 199: 
-      return [WeekTimeMessage fromList:[self readValue]];
+      return [TradeLicenseMessage fromList:[self readValue]];
     case 200: 
-      return [WeekTimeSearchMessage fromList:[self readValue]];
+      return [WeekTimeIntervalListMessage fromList:[self readValue]];
     case 201: 
+      return [WeekTimeIntervalMessage fromList:[self readValue]];
+    case 202: 
+      return [WeekTimeMessage fromList:[self readValue]];
+    case 203: 
+      return [WeekTimeSearchMessage fromList:[self readValue]];
+    case 204: 
       return [WorkStatusMessage fromList:[self readValue]];
     default:
       return [super readValueOfType:type];
@@ -2795,188 +2909,197 @@ static id GetNullableObjectAtIndex(NSArray *array, NSInteger key) {
   } else if ([value isKindOfClass:[CameraSetPaddingMessage class]]) {
     [self writeByte:140];
     [self writeValue:[value toList]];
-  } else if ([value isKindOfClass:[ContactInfoMessage class]]) {
+  } else if ([value isKindOfClass:[ClusteringMapObjectManagerOptionsMessage class]]) {
     [self writeByte:141];
     [self writeValue:[value toList]];
-  } else if ([value isKindOfClass:[DayTimeMessage class]]) {
+  } else if ([value isKindOfClass:[ContactInfoMessage class]]) {
     [self writeByte:142];
     [self writeValue:[value toList]];
-  } else if ([value isKindOfClass:[DgisObjectIdMessage class]]) {
+  } else if ([value isKindOfClass:[DayTimeMessage class]]) {
     [self writeByte:143];
     [self writeValue:[value toList]];
-  } else if ([value isKindOfClass:[DirectoryObjectMessage class]]) {
+  } else if ([value isKindOfClass:[DgisObjectIdMessage class]]) {
     [self writeByte:144];
     [self writeValue:[value toList]];
-  } else if ([value isKindOfClass:[DistanceRequestMessage class]]) {
+  } else if ([value isKindOfClass:[DirectoryObjectMessage class]]) {
     [self writeByte:145];
     [self writeValue:[value toList]];
-  } else if ([value isKindOfClass:[DistanceResponseMessage class]]) {
+  } else if ([value isKindOfClass:[DistanceRequestMessage class]]) {
     [self writeByte:146];
     [self writeValue:[value toList]];
-  } else if ([value isKindOfClass:[DynamicFilterMessage class]]) {
+  } else if ([value isKindOfClass:[DistanceResponseMessage class]]) {
     [self writeByte:147];
     [self writeValue:[value toList]];
-  } else if ([value isKindOfClass:[EntranceGeometryMessage class]]) {
+  } else if ([value isKindOfClass:[DynamicFilterMessage class]]) {
     [self writeByte:148];
     [self writeValue:[value toList]];
-  } else if ([value isKindOfClass:[EntranceInfoMessage class]]) {
+  } else if ([value isKindOfClass:[EntranceGeometryMessage class]]) {
     [self writeByte:149];
     [self writeValue:[value toList]];
-  } else if ([value isKindOfClass:[FlagFilterMessage class]]) {
+  } else if ([value isKindOfClass:[EntranceInfoMessage class]]) {
     [self writeByte:150];
     [self writeValue:[value toList]];
-  } else if ([value isKindOfClass:[FloorInfoMessage class]]) {
+  } else if ([value isKindOfClass:[FlagFilterMessage class]]) {
     [self writeByte:151];
     [self writeValue:[value toList]];
-  } else if ([value isKindOfClass:[GeoPointMessage class]]) {
+  } else if ([value isKindOfClass:[FloorInfoMessage class]]) {
     [self writeByte:152];
     [self writeValue:[value toList]];
   } else if ([value isKindOfClass:[GeoPointMessage class]]) {
     [self writeByte:153];
     [self writeValue:[value toList]];
-  } else if ([value isKindOfClass:[GeoPointWithElevationMessage class]]) {
+  } else if ([value isKindOfClass:[GeoPointMessage class]]) {
     [self writeByte:154];
     [self writeValue:[value toList]];
   } else if ([value isKindOfClass:[GeoPointWithElevationMessage class]]) {
     [self writeByte:155];
     [self writeValue:[value toList]];
-  } else if ([value isKindOfClass:[GeoRectMessage class]]) {
+  } else if ([value isKindOfClass:[GeoPointWithElevationMessage class]]) {
     [self writeByte:156];
     [self writeValue:[value toList]];
   } else if ([value isKindOfClass:[GeoRectMessage class]]) {
     [self writeByte:157];
     [self writeValue:[value toList]];
-  } else if ([value isKindOfClass:[GeometryMessage class]]) {
+  } else if ([value isKindOfClass:[GeoRectMessage class]]) {
     [self writeByte:158];
     [self writeValue:[value toList]];
-  } else if ([value isKindOfClass:[IncompleteTextHandlerMessage class]]) {
+  } else if ([value isKindOfClass:[GeometryMessage class]]) {
     [self writeByte:159];
     [self writeValue:[value toList]];
-  } else if ([value isKindOfClass:[InitializeMessage class]]) {
+  } else if ([value isKindOfClass:[IncompleteTextHandlerMessage class]]) {
     [self writeByte:160];
     [self writeValue:[value toList]];
-  } else if ([value isKindOfClass:[ItemMarkerInfoMessage class]]) {
+  } else if ([value isKindOfClass:[InitializeMessage class]]) {
     [self writeByte:161];
     [self writeValue:[value toList]];
-  } else if ([value isKindOfClass:[LayerPointObjectMessage class]]) {
+  } else if ([value isKindOfClass:[ItemMarkerInfoMessage class]]) {
     [self writeByte:162];
     [self writeValue:[value toList]];
-  } else if ([value isKindOfClass:[LevelInfoMessage class]]) {
+  } else if ([value isKindOfClass:[LayerPointObjectMessage class]]) {
     [self writeByte:163];
     [self writeValue:[value toList]];
-  } else if ([value isKindOfClass:[MarkedUpTextMessage class]]) {
+  } else if ([value isKindOfClass:[LevelInfoMessage class]]) {
     [self writeByte:164];
     [self writeValue:[value toList]];
-  } else if ([value isKindOfClass:[MarkedUpTextSpanMessage class]]) {
+  } else if ([value isKindOfClass:[MapObjectManagerMessage class]]) {
     [self writeByte:165];
     [self writeValue:[value toList]];
-  } else if ([value isKindOfClass:[MarkerAnchorMessage class]]) {
+  } else if ([value isKindOfClass:[MapObjectManagerMessage class]]) {
     [self writeByte:166];
     [self writeValue:[value toList]];
-  } else if ([value isKindOfClass:[MarkerAzimuthMessage class]]) {
+  } else if ([value isKindOfClass:[MarkedUpTextMessage class]]) {
     [self writeByte:167];
     [self writeValue:[value toList]];
-  } else if ([value isKindOfClass:[MarkerIconMessage class]]) {
+  } else if ([value isKindOfClass:[MarkedUpTextSpanMessage class]]) {
     [self writeByte:168];
     [self writeValue:[value toList]];
-  } else if ([value isKindOfClass:[MarkerMessage class]]) {
+  } else if ([value isKindOfClass:[MarkerAnchorMessage class]]) {
     [self writeByte:169];
     [self writeValue:[value toList]];
-  } else if ([value isKindOfClass:[MarkerOptionsMessage class]]) {
+  } else if ([value isKindOfClass:[MarkerAzimuthMessage class]]) {
     [self writeByte:170];
     [self writeValue:[value toList]];
-  } else if ([value isKindOfClass:[MarkerOptionsMessageOld class]]) {
+  } else if ([value isKindOfClass:[MarkerIconMessage class]]) {
     [self writeByte:171];
     [self writeValue:[value toList]];
-  } else if ([value isKindOfClass:[MarkerTextPlacementMessage class]]) {
+  } else if ([value isKindOfClass:[MarkerMessage class]]) {
     [self writeByte:172];
     [self writeValue:[value toList]];
-  } else if ([value isKindOfClass:[MarkerTextStyleMessage class]]) {
+  } else if ([value isKindOfClass:[MarkerOptionsMessage class]]) {
     [self writeByte:173];
     [self writeValue:[value toList]];
-  } else if ([value isKindOfClass:[MarkerWithPhotoMessage class]]) {
+  } else if ([value isKindOfClass:[MarkerOptionsMessageOld class]]) {
     [self writeByte:174];
     [self writeValue:[value toList]];
-  } else if ([value isKindOfClass:[ObjectTypeItemMessage class]]) {
+  } else if ([value isKindOfClass:[MarkerTextPlacementMessage class]]) {
     [self writeByte:175];
     [self writeValue:[value toList]];
-  } else if ([value isKindOfClass:[OpeningHoursMessage class]]) {
+  } else if ([value isKindOfClass:[MarkerTextStyleMessage class]]) {
     [self writeByte:176];
     [self writeValue:[value toList]];
-  } else if ([value isKindOfClass:[PageIdMessage class]]) {
+  } else if ([value isKindOfClass:[MarkerWithPhotoMessage class]]) {
     [self writeByte:177];
     [self writeValue:[value toList]];
-  } else if ([value isKindOfClass:[PageMessage class]]) {
+  } else if ([value isKindOfClass:[ObjectTypeItemMessage class]]) {
     [self writeByte:178];
     [self writeValue:[value toList]];
-  } else if ([value isKindOfClass:[ParkingCapacityMessage class]]) {
+  } else if ([value isKindOfClass:[OpeningHoursMessage class]]) {
     [self writeByte:179];
     [self writeValue:[value toList]];
-  } else if ([value isKindOfClass:[ParkingInfoMessage class]]) {
+  } else if ([value isKindOfClass:[PageIdMessage class]]) {
     [self writeByte:180];
     [self writeValue:[value toList]];
-  } else if ([value isKindOfClass:[PerformSearchHandlerMessage class]]) {
+  } else if ([value isKindOfClass:[PageMessage class]]) {
     [self writeByte:181];
     [self writeValue:[value toList]];
-  } else if ([value isKindOfClass:[PolygonMessage class]]) {
+  } else if ([value isKindOfClass:[ParkingCapacityMessage class]]) {
     [self writeByte:182];
     [self writeValue:[value toList]];
-  } else if ([value isKindOfClass:[PolygonOptionsMessage class]]) {
+  } else if ([value isKindOfClass:[ParkingInfoMessage class]]) {
     [self writeByte:183];
     [self writeValue:[value toList]];
-  } else if ([value isKindOfClass:[PolylineMessage class]]) {
+  } else if ([value isKindOfClass:[PerformSearchHandlerMessage class]]) {
     [self writeByte:184];
     [self writeValue:[value toList]];
-  } else if ([value isKindOfClass:[PolylineOptionsMessage class]]) {
+  } else if ([value isKindOfClass:[PolygonMessage class]]) {
     [self writeByte:185];
     [self writeValue:[value toList]];
-  } else if ([value isKindOfClass:[RangeFilterMessage class]]) {
+  } else if ([value isKindOfClass:[PolygonOptionsMessage class]]) {
     [self writeByte:186];
     [self writeValue:[value toList]];
-  } else if ([value isKindOfClass:[ReviewsMessage class]]) {
+  } else if ([value isKindOfClass:[PolylineMessage class]]) {
     [self writeByte:187];
     [self writeValue:[value toList]];
-  } else if ([value isKindOfClass:[RouteEditorRouteParamsMessage class]]) {
+  } else if ([value isKindOfClass:[PolylineOptionsMessage class]]) {
     [self writeByte:188];
     [self writeValue:[value toList]];
-  } else if ([value isKindOfClass:[SearchQueryMessage class]]) {
+  } else if ([value isKindOfClass:[RangeFilterMessage class]]) {
     [self writeByte:189];
     [self writeValue:[value toList]];
-  } else if ([value isKindOfClass:[SearchResultMessage class]]) {
+  } else if ([value isKindOfClass:[ReviewsMessage class]]) {
     [self writeByte:190];
     [self writeValue:[value toList]];
-  } else if ([value isKindOfClass:[SpecialSpaceMessage class]]) {
+  } else if ([value isKindOfClass:[RouteEditorRouteParamsMessage class]]) {
     [self writeByte:191];
     [self writeValue:[value toList]];
-  } else if ([value isKindOfClass:[SuggestHandlerMessage class]]) {
+  } else if ([value isKindOfClass:[SearchQueryMessage class]]) {
     [self writeByte:192];
     [self writeValue:[value toList]];
-  } else if ([value isKindOfClass:[SuggestMessage class]]) {
+  } else if ([value isKindOfClass:[SearchResultMessage class]]) {
     [self writeByte:193];
     [self writeValue:[value toList]];
-  } else if ([value isKindOfClass:[SuggestObjectHandlerMessage class]]) {
+  } else if ([value isKindOfClass:[SpecialSpaceMessage class]]) {
     [self writeByte:194];
     [self writeValue:[value toList]];
-  } else if ([value isKindOfClass:[SuggestResultMessage class]]) {
+  } else if ([value isKindOfClass:[SuggestHandlerMessage class]]) {
     [self writeByte:195];
     [self writeValue:[value toList]];
-  } else if ([value isKindOfClass:[TradeLicenseMessage class]]) {
+  } else if ([value isKindOfClass:[SuggestMessage class]]) {
     [self writeByte:196];
     [self writeValue:[value toList]];
-  } else if ([value isKindOfClass:[WeekTimeIntervalListMessage class]]) {
+  } else if ([value isKindOfClass:[SuggestObjectHandlerMessage class]]) {
     [self writeByte:197];
     [self writeValue:[value toList]];
-  } else if ([value isKindOfClass:[WeekTimeIntervalMessage class]]) {
+  } else if ([value isKindOfClass:[SuggestResultMessage class]]) {
     [self writeByte:198];
     [self writeValue:[value toList]];
-  } else if ([value isKindOfClass:[WeekTimeMessage class]]) {
+  } else if ([value isKindOfClass:[TradeLicenseMessage class]]) {
     [self writeByte:199];
     [self writeValue:[value toList]];
-  } else if ([value isKindOfClass:[WeekTimeSearchMessage class]]) {
+  } else if ([value isKindOfClass:[WeekTimeIntervalListMessage class]]) {
     [self writeByte:200];
     [self writeValue:[value toList]];
-  } else if ([value isKindOfClass:[WorkStatusMessage class]]) {
+  } else if ([value isKindOfClass:[WeekTimeIntervalMessage class]]) {
     [self writeByte:201];
+    [self writeValue:[value toList]];
+  } else if ([value isKindOfClass:[WeekTimeMessage class]]) {
+    [self writeByte:202];
+    [self writeValue:[value toList]];
+  } else if ([value isKindOfClass:[WeekTimeSearchMessage class]]) {
+    [self writeByte:203];
+    [self writeValue:[value toList]];
+  } else if ([value isKindOfClass:[WorkStatusMessage class]]) {
+    [self writeByte:204];
     [self writeValue:[value toList]];
   } else {
     [super writeValue:value];
@@ -3147,6 +3270,27 @@ void MapApiSetup(id<FlutterBinaryMessenger> binaryMessenger, NSObject<MapApi> *a
         NSArray *args = message;
         CameraPositionMessage *arg_cameraPosition = GetNullableObjectAtIndex(args, 0);
         [api setCameraPositionCameraPosition:arg_cameraPosition completion:^(FlutterError *_Nullable error) {
+          callback(wrapResult(nil, error));
+        }];
+      }];
+    } else {
+      [channel setMessageHandler:nil];
+    }
+  }
+  {
+    FlutterBasicMessageChannel *channel =
+      [[FlutterBasicMessageChannel alloc]
+        initWithName:@"dev.flutter.pigeon.MapApi.moveCamera"
+        binaryMessenger:binaryMessenger
+        codec:MapApiGetCodec()];
+    if (api) {
+      NSCAssert([api respondsToSelector:@selector(moveCameraCameraPosition:duration:animationType:completion:)], @"MapApi api (%@) doesn't respond to @selector(moveCameraCameraPosition:duration:animationType:completion:)", api);
+      [channel setMessageHandler:^(id _Nullable message, FlutterReply callback) {
+        NSArray *args = message;
+        CameraPositionMessage *arg_cameraPosition = GetNullableObjectAtIndex(args, 0);
+        NSNumber *arg_duration = GetNullableObjectAtIndex(args, 1);
+        CameraAnimationTypeMessage arg_animationType = [GetNullableObjectAtIndex(args, 2) integerValue];
+        [api moveCameraCameraPosition:arg_cameraPosition duration:arg_duration animationType:arg_animationType completion:^(FlutterError *_Nullable error) {
           callback(wrapResult(nil, error));
         }];
       }];
@@ -3381,11 +3525,12 @@ void MapApiSetup(id<FlutterBinaryMessenger> binaryMessenger, NSObject<MapApi> *a
         binaryMessenger:binaryMessenger
         codec:MapApiGetCodec()];
     if (api) {
-      NSCAssert([api respondsToSelector:@selector(addMarkerMarker:completion:)], @"MapApi api (%@) doesn't respond to @selector(addMarkerMarker:completion:)", api);
+      NSCAssert([api respondsToSelector:@selector(addMarkerMarker:manager:completion:)], @"MapApi api (%@) doesn't respond to @selector(addMarkerMarker:manager:completion:)", api);
       [channel setMessageHandler:^(id _Nullable message, FlutterReply callback) {
         NSArray *args = message;
         MarkerMessage *arg_marker = GetNullableObjectAtIndex(args, 0);
-        [api addMarkerMarker:arg_marker completion:^(FlutterError *_Nullable error) {
+        MapObjectManagerMessage *arg_manager = GetNullableObjectAtIndex(args, 1);
+        [api addMarkerMarker:arg_marker manager:arg_manager completion:^(FlutterError *_Nullable error) {
           callback(wrapResult(nil, error));
         }];
       }];
@@ -3400,11 +3545,12 @@ void MapApiSetup(id<FlutterBinaryMessenger> binaryMessenger, NSObject<MapApi> *a
         binaryMessenger:binaryMessenger
         codec:MapApiGetCodec()];
     if (api) {
-      NSCAssert([api respondsToSelector:@selector(addMarkersMarkers:completion:)], @"MapApi api (%@) doesn't respond to @selector(addMarkersMarkers:completion:)", api);
+      NSCAssert([api respondsToSelector:@selector(addMarkersMarkers:manager:completion:)], @"MapApi api (%@) doesn't respond to @selector(addMarkersMarkers:manager:completion:)", api);
       [channel setMessageHandler:^(id _Nullable message, FlutterReply callback) {
         NSArray *args = message;
         NSArray<MarkerMessage *> *arg_markers = GetNullableObjectAtIndex(args, 0);
-        [api addMarkersMarkers:arg_markers completion:^(FlutterError *_Nullable error) {
+        MapObjectManagerMessage *arg_manager = GetNullableObjectAtIndex(args, 1);
+        [api addMarkersMarkers:arg_markers manager:arg_manager completion:^(FlutterError *_Nullable error) {
           callback(wrapResult(nil, error));
         }];
       }];
@@ -3419,11 +3565,12 @@ void MapApiSetup(id<FlutterBinaryMessenger> binaryMessenger, NSObject<MapApi> *a
         binaryMessenger:binaryMessenger
         codec:MapApiGetCodec()];
     if (api) {
-      NSCAssert([api respondsToSelector:@selector(removeMarkerId:completion:)], @"MapApi api (%@) doesn't respond to @selector(removeMarkerId:completion:)", api);
+      NSCAssert([api respondsToSelector:@selector(removeMarkerId:manager:completion:)], @"MapApi api (%@) doesn't respond to @selector(removeMarkerId:manager:completion:)", api);
       [channel setMessageHandler:^(id _Nullable message, FlutterReply callback) {
         NSArray *args = message;
         NSString *arg_id = GetNullableObjectAtIndex(args, 0);
-        [api removeMarkerId:arg_id completion:^(FlutterError *_Nullable error) {
+        MapObjectManagerMessage *arg_manager = GetNullableObjectAtIndex(args, 1);
+        [api removeMarkerId:arg_id manager:arg_manager completion:^(FlutterError *_Nullable error) {
           callback(wrapResult(nil, error));
         }];
       }];
@@ -3438,9 +3585,49 @@ void MapApiSetup(id<FlutterBinaryMessenger> binaryMessenger, NSObject<MapApi> *a
         binaryMessenger:binaryMessenger
         codec:MapApiGetCodec()];
     if (api) {
-      NSCAssert([api respondsToSelector:@selector(removeAllMarkersWithCompletion:)], @"MapApi api (%@) doesn't respond to @selector(removeAllMarkersWithCompletion:)", api);
+      NSCAssert([api respondsToSelector:@selector(removeAllMarkersManager:completion:)], @"MapApi api (%@) doesn't respond to @selector(removeAllMarkersManager:completion:)", api);
       [channel setMessageHandler:^(id _Nullable message, FlutterReply callback) {
-        [api removeAllMarkersWithCompletion:^(FlutterError *_Nullable error) {
+        NSArray *args = message;
+        MapObjectManagerMessage *arg_manager = GetNullableObjectAtIndex(args, 0);
+        [api removeAllMarkersManager:arg_manager completion:^(FlutterError *_Nullable error) {
+          callback(wrapResult(nil, error));
+        }];
+      }];
+    } else {
+      [channel setMessageHandler:nil];
+    }
+  }
+  {
+    FlutterBasicMessageChannel *channel =
+      [[FlutterBasicMessageChannel alloc]
+        initWithName:@"dev.flutter.pigeon.MapApi.createMapObjectManagerWithClustering"
+        binaryMessenger:binaryMessenger
+        codec:MapApiGetCodec()];
+    if (api) {
+      NSCAssert([api respondsToSelector:@selector(createMapObjectManagerWithClusteringMessage:completion:)], @"MapApi api (%@) doesn't respond to @selector(createMapObjectManagerWithClusteringMessage:completion:)", api);
+      [channel setMessageHandler:^(id _Nullable message, FlutterReply callback) {
+        NSArray *args = message;
+        ClusteringMapObjectManagerOptionsMessage *arg_message = GetNullableObjectAtIndex(args, 0);
+        [api createMapObjectManagerWithClusteringMessage:arg_message completion:^(MapObjectManagerMessage *_Nullable output, FlutterError *_Nullable error) {
+          callback(wrapResult(output, error));
+        }];
+      }];
+    } else {
+      [channel setMessageHandler:nil];
+    }
+  }
+  {
+    FlutterBasicMessageChannel *channel =
+      [[FlutterBasicMessageChannel alloc]
+        initWithName:@"dev.flutter.pigeon.MapApi.removeMapObjectManager"
+        binaryMessenger:binaryMessenger
+        codec:MapApiGetCodec()];
+    if (api) {
+      NSCAssert([api respondsToSelector:@selector(removeMapObjectManagerId:completion:)], @"MapApi api (%@) doesn't respond to @selector(removeMapObjectManagerId:completion:)", api);
+      [channel setMessageHandler:^(id _Nullable message, FlutterReply callback) {
+        NSArray *args = message;
+        MapObjectManagerMessage *arg_id = GetNullableObjectAtIndex(args, 0);
+        [api removeMapObjectManagerId:arg_id completion:^(FlutterError *_Nullable error) {
           callback(wrapResult(nil, error));
         }];
       }];
@@ -4075,3 +4262,106 @@ void MapApiSetup(id<FlutterBinaryMessenger> binaryMessenger, NSObject<MapApi> *a
     }
   }
 }
+@interface FlutterMapApiCodecReader : FlutterStandardReader
+@end
+@implementation FlutterMapApiCodecReader
+- (nullable id)readValueOfType:(UInt8)type {
+  switch (type) {
+    case 128: 
+      return [MapObjectManagerMessage fromList:[self readValue]];
+    case 129: 
+      return [MarkerAnchorMessage fromList:[self readValue]];
+    case 130: 
+      return [MarkerAzimuthMessage fromList:[self readValue]];
+    case 131: 
+      return [MarkerIconMessage fromList:[self readValue]];
+    case 132: 
+      return [MarkerTextPlacementMessage fromList:[self readValue]];
+    case 133: 
+      return [MarkerTextStyleMessage fromList:[self readValue]];
+    case 134: 
+      return [SimpleClusterOptionsMessage fromList:[self readValue]];
+    default:
+      return [super readValueOfType:type];
+  }
+}
+@end
+
+@interface FlutterMapApiCodecWriter : FlutterStandardWriter
+@end
+@implementation FlutterMapApiCodecWriter
+- (void)writeValue:(id)value {
+  if ([value isKindOfClass:[MapObjectManagerMessage class]]) {
+    [self writeByte:128];
+    [self writeValue:[value toList]];
+  } else if ([value isKindOfClass:[MarkerAnchorMessage class]]) {
+    [self writeByte:129];
+    [self writeValue:[value toList]];
+  } else if ([value isKindOfClass:[MarkerAzimuthMessage class]]) {
+    [self writeByte:130];
+    [self writeValue:[value toList]];
+  } else if ([value isKindOfClass:[MarkerIconMessage class]]) {
+    [self writeByte:131];
+    [self writeValue:[value toList]];
+  } else if ([value isKindOfClass:[MarkerTextPlacementMessage class]]) {
+    [self writeByte:132];
+    [self writeValue:[value toList]];
+  } else if ([value isKindOfClass:[MarkerTextStyleMessage class]]) {
+    [self writeByte:133];
+    [self writeValue:[value toList]];
+  } else if ([value isKindOfClass:[SimpleClusterOptionsMessage class]]) {
+    [self writeByte:134];
+    [self writeValue:[value toList]];
+  } else {
+    [super writeValue:value];
+  }
+}
+@end
+
+@interface FlutterMapApiCodecReaderWriter : FlutterStandardReaderWriter
+@end
+@implementation FlutterMapApiCodecReaderWriter
+- (FlutterStandardWriter *)writerWithData:(NSMutableData *)data {
+  return [[FlutterMapApiCodecWriter alloc] initWithData:data];
+}
+- (FlutterStandardReader *)readerWithData:(NSData *)data {
+  return [[FlutterMapApiCodecReader alloc] initWithData:data];
+}
+@end
+
+NSObject<FlutterMessageCodec> *FlutterMapApiGetCodec() {
+  static FlutterStandardMessageCodec *sSharedObject = nil;
+  static dispatch_once_t sPred = 0;
+  dispatch_once(&sPred, ^{
+    FlutterMapApiCodecReaderWriter *readerWriter = [[FlutterMapApiCodecReaderWriter alloc] init];
+    sSharedObject = [FlutterStandardMessageCodec codecWithReaderWriter:readerWriter];
+  });
+  return sSharedObject;
+}
+
+@interface FlutterMapApi ()
+@property(nonatomic, strong) NSObject<FlutterBinaryMessenger> *binaryMessenger;
+@end
+
+@implementation FlutterMapApi
+
+- (instancetype)initWithBinaryMessenger:(NSObject<FlutterBinaryMessenger> *)binaryMessenger {
+  self = [super init];
+  if (self) {
+    _binaryMessenger = binaryMessenger;
+  }
+  return self;
+}
+- (void)renderClusterManager:(MapObjectManagerMessage *)arg_manager objectCount:(NSNumber *)arg_objectCount completion:(void (^)(SimpleClusterOptionsMessage *_Nullable, NSError *_Nullable))completion {
+  FlutterBasicMessageChannel *channel =
+    [FlutterBasicMessageChannel
+      messageChannelWithName:@"dev.flutter.pigeon.FlutterMapApi.renderCluster"
+      binaryMessenger:self.binaryMessenger
+      codec:FlutterMapApiGetCodec()];
+  [channel sendMessage:@[arg_manager ?: [NSNull null], arg_objectCount ?: [NSNull null]] reply:^(id reply) {
+    SimpleClusterOptionsMessage *output = reply;
+    completion(output, nil);
+  }];
+}
+@end
+

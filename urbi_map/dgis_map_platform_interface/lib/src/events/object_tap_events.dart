@@ -12,6 +12,10 @@ class MarkerTapEvent extends TapEvent {
   final int id;
 }
 
+class ClusterTapEvent extends TapEvent {
+  static const name = "onClusterTap";
+}
+
 class PolygonTapEvent extends TapEvent {
   const PolygonTapEvent(this.id);
 

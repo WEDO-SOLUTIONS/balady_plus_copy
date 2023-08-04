@@ -8,16 +8,20 @@ import 'package:provider/provider.dart';
 
 import '../../../../core/dependency_injection/injection_container.dart';
 import '../../data/model/building_compliance_certificate.dart';
+import '../../data/model/divisional_chart_boundaries.dart';
 import '../../data/model/excavations.dart';
 import '../../data/model/investment_sites.dart';
+import '../../data/model/white_lands.dart';
 import '../mvvm/map_view_model.dart';
 import '../mvvm/point_view_model.dart';
 import 'general_card_widget.dart';
 import 'map_cards/ImtethalMapCard_map_card.dart';
 import 'map_cards/investment_map_card.dart';
+import 'map_cards/land_map_card.dart';
 import 'map_cards/lands_legends_map_card.dart';
 import 'map_cards/oppotunity_card.dart';
 import 'map_cards/rental_map_card.dart';
+import 'map_cards/white_land_map_card.dart';
 import 'marker_card_widget.dart';
 
 class MapLayerCard extends StatelessWidget {
@@ -48,21 +52,24 @@ class MapLayerCard extends StatelessWidget {
             builder: (_, selectedPoint, __) {
               return mapViewModel.selectedInvetmentPoint.value != null
                   ? MapCard(
-                      activityId: "",
+                      activityId: selectedPoint?.MAIN_ACTIVITY_NAME ?? "",
                       desc: selectedPoint?.description ?? "",
                       price: (selectedPoint?.DOCUMENTVALUE.toString() ??
                               selectedPoint?.DAILYLEASECOST.toString()) ??
                           "",
                       area: selectedPoint?.SITEAREA.toString() ?? "",
                       duration: selectedPoint?.BIDENDDATE ?? "",
-                      type: selectedPoint?.type ?? "",
+                      type: selectedPoint?.TYPE ?? "",
                       distance: "",
-                      subMunicipality: selectedPoint?.MUNICIPALITY_ID ?? "",
+                      subMunicipality: selectedPoint?.SUBMUNICIPALITY_ID ?? "",
                       location: selectedPoint?.LOCATIONLISTSTRING,
                       entityLogo: "",
+                      bidEndDate: selectedPoint?.BIDENDDATE,
                       isEntity: false,
                       onPress: () {},
-                    )
+                      onClose: () {
+                        mapViewModel.showDialog();
+                      })
                   : Container();
               return mapViewModel.selectedInvetmentPoint.value != null
                   ? mapViewModel.selectedInvetmentPoint.value!.TYPE ==
@@ -87,6 +94,42 @@ class MapLayerCard extends StatelessWidget {
                   ? const SizedBox()
                   : ImtethalMapCard(
                       data: mapViewModel.selectedImtethalPoint.value!,
+                      onClose: () {
+                        mapViewModel.showDialog();
+                      });
+            },
+          );
+
+        case GISMapLayers.BSWhiteParcelS:
+          return ValueListenableBuilder<WhiteLands?>(
+            valueListenable: mapViewModel.selectedWhiteLands,
+            builder: (_, selectedPoint, __) {
+              return selectedPoint == null
+                  ? const SizedBox()
+                  : WhiteLandMapCard(
+                      municipality: selectedPoint.MUNNAME,
+                      subMunicipality: selectedPoint.STREETNAME,
+                      parcelNo: selectedPoint.PARCELCODE,
+                      stageNo: selectedPoint.PHASE,
+                      onClose: () {
+                        mapViewModel.showDialog();
+                      });
+            },
+          );
+
+        case GISMapLayers.CadastralParcels:
+          return ValueListenableBuilder<DivisionalChartBoundaries?>(
+            valueListenable: mapViewModel.selectedLands,
+            builder: (_, selectedPoint, __) {
+              return selectedPoint == null
+                  ? const SizedBox()
+                  : LandMapCard(
+                      municipality: "",
+                      subMunicipality: "",
+                      BLOCK_ID: selectedPoint.BLOCK_ID,
+                      SUBDIVISIONPARCELNUMBER:
+                          selectedPoint.SUBDIVISIONPARCELNUMBER,
+                      SUBDIVISIONPLAN_ID: selectedPoint.SUBDIVISIONPLAN_ID,
                       onClose: () {
                         mapViewModel.showDialog();
                       });

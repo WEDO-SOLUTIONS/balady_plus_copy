@@ -23,7 +23,7 @@ class ServicesInjection {
     sl.registerLazySingleton(() => BusinessLicenseServices(sl()));
     sl.registerLazySingleton(() => HelpServices(sl()));
     sl.registerLazySingleton(() => HonoringTheDeadServices(sl()));
-    sl.registerLazySingleton(() => HealthCertificatesServices(sl()));
+    //sl.registerLazySingleton(() => HealthCertificatesServices(sl()));
 
     sl.registerLazySingleton(() => NewServices(sl()));
     sl.registerLazySingleton(() => ImportantServices(sl()));

@@ -33,7 +33,7 @@ class ObjectableTransactionsPage extends StatelessWidget {
       child: Builder(builder: (context) {
         return Scaffold(
           appBar: DefaultAppBarWidget(
-            title: 'transactions_title'.tr(),
+            title: 'مخالفات قابلة للإعتراض'.tr(),
             bottom: AppBarSeachBar(
               onChanged: (value) {
                 context.read<ObjectableTransactionBloc>().add(

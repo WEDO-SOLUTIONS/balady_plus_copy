@@ -50,7 +50,7 @@ class GeneralMapCardWidget extends StatelessWidget {
 
     return GestureDetector(
       onTap: () async {
-        if (mapViewModel.selectedCategory.value != null) {
+        /*if (mapViewModel.selectedCategory.value != null) {
           DirectoryObjectMessage? message = pointViewModel.dataPoint.value;
           if (message != null &&
               mapViewModel.selectedCategory.value ==
@@ -76,7 +76,12 @@ class GeneralMapCardWidget extends StatelessWidget {
                 item: (message!, icon, color),
               );
             }));
-        } else {
+        } else {*/
+        DirectoryObjectMessage? message = pointViewModel.dataPoint.value;
+
+        if (message != null &&
+            mapViewModel.selectedCategory.value ==
+                SearchCategoryMessage.gasStations) {
           String? qr = pointViewModel.dataPoint.value?.externalIds?.join(" ");
           if (qr != null) {
             final FacilityQRDetailsViewModel viewModel =
@@ -124,6 +129,7 @@ class GeneralMapCardWidget extends StatelessWidget {
             }
           }
         }
+        // }
       },
       child: ValueListenableBuilder<bool?>(
           valueListenable: pointViewModel.isLoadingData,

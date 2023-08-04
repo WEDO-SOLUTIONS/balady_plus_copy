@@ -173,23 +173,7 @@ Map<String, dynamic> servicesConfig = {
       "en": {"title": "Supporter", "description": null, "tag": null}
     },
   ],
-  "health_certificates_services": [
-    {
-      "id": 15,
-      "icon": "issue_health_certificate",
-      "3d_icon": null,
-      "order": 15,
-      "isNew": true,
-      "isImportant": false,
-      "action": {"type": "page", "value": RouteName.newHealthCertificatePage},
-      "ar": {"title": "إصدار شهادة صحية", "description": null, "tag": null},
-      "en": {
-        "title": "Issue Health Certificate",
-        "description": null,
-        "tag": null
-      }
-    },
-  ],
+  "health_certificates_services": [],
   "business_license_services": [
     /* {
       "id": 11,
@@ -226,6 +210,21 @@ Map<String, dynamic> servicesConfig = {
       "action": {"type": "dialog", "value": RouteName.newMSRMapPage},
       "ar": {"title": "طلب خدمة بلدية", "description": null, "tag": null},
       "en": {"title": "Request Service", "description": null, "tag": null}
+    },
+    {
+      "id": 15,
+      "icon": "issue_health_certificate",
+      "3d_icon": null,
+      "order": 15,
+      "isNew": true,
+      "isImportant": false,
+      "action": {"type": "page", "value": RouteName.newHealthCertificatePage},
+      "ar": {"title": "إصدار شهادة صحية", "description": null, "tag": null},
+      "en": {
+        "title": "Issue Health Certificate",
+        "description": null,
+        "tag": null
+      }
     },
     {
       "id": 4,
@@ -332,7 +331,7 @@ Map<String, dynamic> servicesConfig = {
       "isImportant": false,
       "requireLogin": true,
       "action": {"type": "page", "value": RouteName.DCCameraPage},
-      "ar": {"title": "السيارات التالفة", "description": null, "tag": null},
+      "ar": {"title": "بلاغ عن سيارة تالفة", "description": null, "tag": null},
       "en": {"title": "Damaged Cars", "description": null, "tag": null}
     },
     {

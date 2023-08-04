@@ -11,7 +11,7 @@ abstract class ServicesLocalDataSource {
   Future<List<ServiceEntity>> getIslamicServices();
   Future<List<ServiceEntity>> getBusinessLicenseServices();
   Future<List<ServiceEntity>> getHonoringTheDeadServices();
-  Future<List<ServiceEntity>> getHealthCertificatesServices();
+  //Future<List<ServiceEntity>> getHealthCertificatesServices();
   Future<List<ServiceEntity>> getHelpServices();
 
   Future<List<ServiceEntity>> getNewServices();
@@ -104,8 +104,8 @@ class ServicesLocalDataSourceImplementation implements ServicesLocalDataSource {
         servicesJson['business_license_services'] as List<dynamic>;
     final honoringTheDeadServicesJson =
         servicesJson['honoring_the_dead_services'] as List<dynamic>;
-    final healthCertificatesServicesJson =
-        servicesJson['health_certificates_services'] as List<dynamic>;
+    // final healthCertificatesServicesJson =
+    //    servicesJson['health_certificates_services'] as List<dynamic>;
     final helpServicesJson = servicesJson['help_services'] as List<dynamic>;
     _customerVoiceServices.addAll(customerVoiceServicesJson
         .map(
@@ -127,11 +127,11 @@ class ServicesLocalDataSourceImplementation implements ServicesLocalDataSource {
       ),
     );
 
-    _healthCertificatesServices.addAll(
+    /*_healthCertificatesServices.addAll(
       healthCertificatesServicesJson.map(
         (service) => ServiceModel.fromJson(service as Map<String, dynamic>),
       ),
-    );
+    );*/
 
     _helpServices.addAll(
       helpServicesJson.map(

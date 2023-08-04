@@ -13,14 +13,13 @@ import 'package:uuid/uuid.dart';
 import '../../../../core/dependency_injection/injection_container.dart';
 import '../../../../core/services/local/helpers.dart';
 import '../../../../core/services/local/navigation_services.dart';
-import '../../../../core/utils/constants/route_names.dart';
-import '../../../vd/domain/use_cases/get_gis_data.dart';
 import '../../constants/constants.dart';
 import 'package:flutter/widgets.dart';
 
 import '../../data/data_sources/point_layers_data.dart';
 import '../../data/enums/map_enums.dart';
 import '../../data/model/building_compliance_certificate.dart';
+import '../../data/model/divisional_chart_boundaries.dart';
 import '../../data/model/excavations.dart';
 import '../../data/model/investment_details_response.dart';
 import '../../data/model/investment_sites.dart';
@@ -76,6 +75,8 @@ class MapViewModel extends BaseViewModel {
 
   final selectedWhiteLands = ValueNotifier<WhiteLands?>(null);
   final showLegend = ValueNotifier<bool?>(null);
+
+  final selectedLands = ValueNotifier<DivisionalChartBoundaries?>(null);
 
   final isSearchLoading = ValueNotifier(false);
 
@@ -166,9 +167,11 @@ class MapViewModel extends BaseViewModel {
               selectedInvetmentPoint.value = null;
               selectedImtethalPoint.value = null;
               selectedWhiteLands.value = null;
+              selectedLands.value = null;
               selectedImtethalPoint.notifyListeners();
               selectedDiggingPoint.notifyListeners();
               selectedWhiteLands.notifyListeners();
+              selectedLands.notifyListeners();
               selectedPointId.notifyListeners();
               viewHomeBottomSheet.value = false;
               viewHomeBottomSheet.notifyListeners();
@@ -282,7 +285,7 @@ class MapViewModel extends BaseViewModel {
     selectedInvetmentPoint.value = null;
     selectedPointId.value = null;
     selectedWhiteLands.value = null;
-
+    selectedLands.value = null;
     selectedDiggingPoint.notifyListeners();
     selectedImtethalPoint.notifyListeners();
     selectedInvetmentPoint.notifyListeners();
@@ -545,6 +548,8 @@ class MapViewModel extends BaseViewModel {
               selectedDiggingPoint.value = null;
               selectedImtethalPoint.value = null;
               selectedWhiteLands.value = null;
+              selectedLands.value = null;
+
               selectedPointId.value = null;
               showLegend.value = false;
               showLegend.value = false;
@@ -608,6 +613,7 @@ class MapViewModel extends BaseViewModel {
               selectedInvetmentPoint.value = null;
               selectedImtethalPoint.value = null;
               selectedWhiteLands.value = null;
+              selectedLands.value = null;
               showLegend.value = false;
               switch (gisSelectedLayer) {
                 case GISMapLayers.Digging:
@@ -628,6 +634,7 @@ class MapViewModel extends BaseViewModel {
               selectedImtethalPoint.notifyListeners();
               selectedDiggingPoint.notifyListeners();
               selectedWhiteLands.notifyListeners();
+              selectedLands.notifyListeners();
               selectedPointId.notifyListeners();
               bottomSheetSize.notifyListeners();
               showLegend.notifyListeners();
@@ -660,14 +667,15 @@ class MapViewModel extends BaseViewModel {
     if (pointList != null && pointList.isNotEmpty) {
       final List<Polygon> polygons = [];
       for (var element in pointList) {
-        int id = int.parse(element.id);
         polygons.add(
           Polygon(
-            id: id.toString(),
+            id: element.id.toString(),
             options: PolygonOptionsMessage(
               strokeWidth: 2,
-              strokeColor: element.color,
-              color: element.color,
+              strokeColor: element.strokeColor != null
+                  ? element.strokeColor
+                  : 0x26000000,
+              color: element.color != null ? element.color : 0xFF000000,
               contours: [element.paths],
             ),
             onTap: () {
@@ -683,15 +691,14 @@ class MapViewModel extends BaseViewModel {
 
                   break;
 
-                case GISMapLayers.Opportunities:
-                  selectedPoint.value = element;
-
-                  break;
                 case GISMapLayers.BSAimtithalBuildingsCertificateL:
                   selectedImtethalPoint.value = element;
 
                 case GISMapLayers.BSWhiteParcelS:
                   selectedWhiteLands.value = element;
+
+                case GISMapLayers.CadastralParcelsLand:
+                  selectedLands.value = element;
                 default:
                   break;
               }

@@ -8,6 +8,7 @@ List<BoundariesPlots> boundariesPlotsFromJson(List list) =>
 class BoundariesPlots extends PointLayersData {
   final List<GeoPointMessage> paths;
   final int color;
+
   BoundariesPlots(
       {required this.paths,
       required id,

@@ -21,7 +21,7 @@ class ProfileSections {
           ProfileItem(
             title: "dashboard".tr(),
             icon: IconPath.dashboard,
-            beta: true,
+            beta: false,
             route: RouteName.dashboard,
           ),
           ProfileItem(

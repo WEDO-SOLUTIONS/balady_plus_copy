@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
+import 'package:collection/collection.dart';
 
 import 'package:balady_plus/app/core/base/base_view_model.dart';
 import 'package:balady_plus/app/core/utils/common_functions.dart';
@@ -36,7 +37,9 @@ class LayersRepositories {
     try {
       final layersType = await webService.dio.get(
         Constants.mainUrl,
-        options: Options(headers: {ApiHeader.requiresToken.eName: false}),
+        options: Options(headers: {
+          ApiHeader.requiresToken.eName: false,
+        }),
       );
       if (layersType.data != null) {
         return layersFromJson(layersType.data['data']['result']['layers'])
@@ -82,11 +85,21 @@ class LayersRepositories {
   Future<List<PointLayersData>?> getPointsInLayers(
       {required MapRequestParams params}) async {
     try {
+      String q = "${Constants.mainUrl}/${params.layer.layerId}/query?";
+      params.toMap().forEach((key, value) {
+        q += "$key=$value&";
+      });
+      q = q.substring(0, q.length - 1);
+      print("QQQQ $q");
       final points = await webService.dio.get(
         '${Constants.mainUrl}/${params.layer.layerId}/query',
         queryParameters: params.toMap(),
         options: Options(headers: {
           ApiHeader.requiresToken.eName: false,
+          ApiHeader.verifyingKEY.name: CommonFunctions.hashRequest(
+            q,
+            "GET",
+          )
         }),
         /* queryParameters: {
           // "where":"1=1",

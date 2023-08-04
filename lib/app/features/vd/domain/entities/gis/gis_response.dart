@@ -54,8 +54,7 @@ class GISResponse extends Equatable {
       this.planNo,
       this.vdExcepted,
       this.vdPriority,
-      this.locationURL,
-      this.cityName});
+      this.locationURL});
 
   String getFullAddress({
     bool includeStreetName = true,

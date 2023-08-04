@@ -35,7 +35,7 @@ class RequestsListItem extends StatelessWidget {
               const DrawIconBasedTypeWidget(icon: IconPath.requests),
               const SizedBox(width: 4),
               CustomTextWidget(
-                'transaction_number'.tr(),
+                'رقم المخالفة'.tr(),
                 textStyle: AppStyle.cardTitleTextStle,
               ),
               const SizedBox(width: 4),
