@@ -242,6 +242,7 @@ class MapViewModel extends BaseViewModel {
     locationEnabledState.dispose();
 
     unawaited(controller.dispose());
+    super.dispose();
   }
 
   void _setupListeners() {

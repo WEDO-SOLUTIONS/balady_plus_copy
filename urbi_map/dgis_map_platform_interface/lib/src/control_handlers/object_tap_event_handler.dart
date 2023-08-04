@@ -11,7 +11,7 @@ class ObjectTapEventHandler {
 
   Stream<TapEvent> get objectTapEvents => _objectTapController.stream;
 
-  final _objectTapController = StreamController<TapEvent>();
+  final _objectTapController = StreamController<TapEvent>.broadcast();
 
   final Map<String, OnObjectTap> markerHandlers = {};
   final Map<String, OnObjectTap> polygonHandlers = {};
