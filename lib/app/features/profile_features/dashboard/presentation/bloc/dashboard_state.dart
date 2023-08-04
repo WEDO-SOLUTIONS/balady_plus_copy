@@ -14,6 +14,15 @@ class DashboardState extends Equatable {
   });
 
   String get error => errorMessage ?? '';
+  bool get showNoData {
+    List<bool> showNoData = [];
+    for (var item in cardsStates.values) {
+      if (item.totalCount != 0) showNoData.add(false);
+      if (!item.productsStatus.isSubmissionGetSuccess) showNoData.add(false);
+      showNoData.add(true);
+    }
+    return !showNoData.contains(false);
+  }
 
   DashboardState copyWith({
     BlocRequestStatus? status,

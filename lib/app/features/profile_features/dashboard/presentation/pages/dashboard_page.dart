@@ -69,53 +69,59 @@ class DashBoardPage extends StatelessWidget {
                     case BlocRequestStatus.submissionGetLoading:
                       return const DashboardListShimmer();
                     case BlocRequestStatus.submissionGetSuccess:
-                      return SingleChildScrollView(
-                        child: Column(
-                          children: [
-                            Container(
-                              margin: const EdgeInsets.all(16),
-                              padding: const EdgeInsets.all(16),
-                              height: 64,
-                              decoration: const BoxDecoration(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(16)),
-                                color: AppColor.secondary50Light,
-                              ),
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                      return state.showNoData
+                          ? const NoDataComponent()
+                          : SingleChildScrollView(
+                              child: Column(
                                 children: [
-                                  const DrawIconBasedTypeWidget(
-                                    icon: IconPath.aboutBalady,
-                                    iconColor: AppColor.secondary900Light,
-                                  ),
-                                  Expanded(
-                                    child: Padding(
-                                      padding: const EdgeInsetsDirectional.only(
-                                        top: 4,
-                                        start: 4,
-                                      ),
-                                      child: CustomTextWidget(
-                                        "the_following_data".tr(),
-                                        maxLines: 2,
-                                        textStyle:
-                                            AppStyle.dashboardNoteTextStle,
-                                      ),
+                                  Container(
+                                    margin: const EdgeInsets.all(16),
+                                    padding: const EdgeInsets.all(16),
+                                    height: 64,
+                                    decoration: const BoxDecoration(
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(16)),
+                                      color: AppColor.secondary50Light,
                                     ),
-                                  )
+                                    child: Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        const DrawIconBasedTypeWidget(
+                                          icon: IconPath.aboutBalady,
+                                          iconColor: AppColor.secondary900Light,
+                                        ),
+                                        Expanded(
+                                          child: Padding(
+                                            padding: const EdgeInsetsDirectional
+                                                .only(
+                                              top: 4,
+                                              start: 4,
+                                            ),
+                                            child: CustomTextWidget(
+                                              "the_following_data".tr(),
+                                              maxLines: 2,
+                                              textStyle: AppStyle
+                                                  .dashboardNoteTextStle,
+                                            ),
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                  ListView.builder(
+                                    shrinkWrap: true,
+                                    physics:
+                                        const NeverScrollableScrollPhysics(),
+                                    itemCount: state.cards.length,
+                                    itemBuilder: (context, index) {
+                                      return DashboardCard(
+                                          card: state.cards[index]);
+                                    },
+                                  ),
                                 ],
                               ),
-                            ),
-                            ListView.builder(
-                              shrinkWrap: true,
-                              physics: const NeverScrollableScrollPhysics(),
-                              itemCount: state.cards.length,
-                              itemBuilder: (context, index) {
-                                return DashboardCard(card: state.cards[index]);
-                              },
-                            ),
-                          ],
-                        ),
-                      );
+                            );
                     default:
                       return const SizedBox.shrink();
                   }
