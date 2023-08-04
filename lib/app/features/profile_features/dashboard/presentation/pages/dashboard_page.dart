@@ -4,6 +4,7 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../core/dependency_injection/dependency_injection_exports.dart'
     show sl;
+import '../../../../../core/utils/constants/constants.dart';
 import '../../../../../core/utils/enums/bloc_status.dart';
 import '../../../../../core/utils/utils_exports.dart'
     show AppColor, AppStyle, IconPath, RouteName;
@@ -20,7 +21,8 @@ import '../../dashboard_exports.dart'
         DashboardCard,
         DashboardEventInitial,
         DashboardListShimmer,
-        DashboardState;
+        DashboardState,
+        NoDataWidget;
 
 class DashBoardPage extends StatelessWidget {
   const DashBoardPage({super.key});
@@ -36,8 +38,8 @@ class DashBoardPage extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8),
               child: GestureDetector(
-                onTap: ()=> Navigator.of(context)
-                    .pushNamed(RouteName.notificationPage),
+                onTap: () =>
+                    Navigator.of(context).pushNamed(RouteName.notificationPage),
                 child: const CircleIcon(
                   backgroundColor: AppColor.primary50Light,
                   icon: IconPath.billIcon,
@@ -123,6 +125,27 @@ class DashBoardPage extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+class NoDataComponent extends StatelessWidget {
+  const NoDataComponent({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 257,
+      margin: const EdgeInsets.only(top: 24),
+      width: MediaQuery.sizeOf(context).width,
+      decoration: const BoxDecoration(
+        borderRadius: BorderRadius.all(Radius.circular(16)),
+        color: AppColor.white,
+        boxShadow: Constants.boxShadow,
+      ),
+      child: const NoDataWidget(),
     );
   }
 }
