@@ -4,7 +4,7 @@ import 'package:dgis_map_platform_interface/library.dart';
 
 typedef void OnObjectTap();
 typedef SimpleClusterOptionsMessage ClusterRenderer(int objectCount);
-typedef void OnClusterTap(SimpleClusterObject clusterObject);
+typedef Future<void> OnClusterTap(SimpleClusterObject clusterObject);
 
 class ObjectTapEventHandler {
   ObjectTapEventHandler();
@@ -43,16 +43,20 @@ class ObjectTapEventHandler {
     clusterRenderers.remove(id);
   }
 
-  void clusterTapEvent(Map<dynamic, dynamic> map) {
+  Future<void> clusterTapEvent(Map<dynamic, dynamic> map, MapApi api) async {
     final id = map["id"] as String;
     final cluster = map["cluster"];
+
     final clusterObject = SimpleClusterObject(
+      api,
+      cluster["id"],
       GeoPointWithElevationMessage(
         latitude: cluster["position"]["latitude"],
         longitude: cluster["position"]["longitude"],
         elevation: cluster["position"]["elevation"],
       ),
       cluster["objectCount"],
+      (cluster["objects"] as List<Object?>).map((x) => x as String).toList(),
       MarkerAnchorMessage(
         x: cluster["anchor"]["x"],
         y: cluster["anchor"]["y"],
@@ -76,7 +80,7 @@ class ObjectTapEventHandler {
           : null,
       cluster["text"],
     );
-    clusterHandlers[id]?.call(clusterObject);
+    await clusterHandlers[id]?.call(clusterObject);
   }
 
   void removeAllMarkerHandlers() {

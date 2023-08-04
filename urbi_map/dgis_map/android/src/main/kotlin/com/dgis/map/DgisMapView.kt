@@ -227,6 +227,30 @@ class DgisMapView(
         )
     }
 
+    override fun calcPositionForMarkers(
+        markers: List<String>,
+        options: CalcPositionOptionsMessage,
+        result: Messages.Result<CameraPositionMessage>?
+    ) {
+        objectTapHandler?.calcPositionForMarkers(markers, options, result)
+    }
+
+    override fun calcPositionForPolygons(
+        polygons: List<String>,
+        options: CalcPositionOptionsMessage,
+        result: Messages.Result<CameraPositionMessage>?
+    ) {
+        objectTapHandler?.calcPositionForPolygons(polygons, options, result)
+    }
+
+    override fun calcPositionForPolylines(
+        polylines: List<String>,
+        options: CalcPositionOptionsMessage,
+        result: Messages.Result<CameraPositionMessage>?
+    ) {
+        objectTapHandler?.calcPositionForPolylines(polylines, options, result)
+    }
+
     override fun searchByObjectId(
         objectId: DgisObjectIdMessage,
         result: Messages.Result<DirectoryObjectMessage>?
@@ -396,6 +420,24 @@ class DgisMapView(
         result: Messages.Result<Void>?
     ) {
         objectTapHandler?.removeMapObjectManager(id, result)
+    }
+
+    override fun setMapObjectManagerIsVisible(
+        isVisible: Boolean,
+        manager: MapObjectManagerMessage?,
+        result: Messages.Result<Void>?
+    ) {
+        objectTapHandler?.setMapObjectManagerIsVisible(isVisible, manager)
+        result?.success(null)
+    }
+
+    override fun setClusterIcon(id: String, icon: String, result: Messages.Result<Void>?) {
+        objectTapHandler?.setClusterIcon(icon, id, result)
+    }
+
+    override fun releaseCluster(id: String, result: Messages.Result<Void>?) {
+        objectTapHandler?.releaseCluster(id)
+        result?.success(null)
     }
 
     override fun addPolygon(polygon: PolygonMessage, result: Messages.Result<Void>?) {

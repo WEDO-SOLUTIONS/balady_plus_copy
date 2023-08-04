@@ -142,6 +142,26 @@ class DgisMapController {
   Future<void> setCameraPosition(CameraPositionMessage cameraPosition) =>
       _instance.setCameraPosition(cameraPosition);
 
+  /// Smoothly changes camera positions
+  Future<void> moveCamera(CameraPositionMessage cameraPosition, double duration,
+          CameraAnimationTypeMessage animationType) =>
+      _instance.moveCamera(cameraPosition, duration, animationType);
+
+  /// Calcluates camera position for given list of markers to be visible
+  Future<CameraPositionMessage> calcPositionForMarkers(
+          List<String> markers, CalcPositionOptionsMessage options) =>
+      _instance.calcPositionForMarkers(markers, options);
+
+  /// Calcluates camera position for given list of polygons to be visible
+  Future<CameraPositionMessage> calcPositionForPolygons(
+          List<String> polygons, CalcPositionOptionsMessage options) =>
+      _instance.calcPositionForPolygons(polygons, options);
+
+  /// Calcluates camera position for given list of polylines to be visible
+  Future<CameraPositionMessage> calcPositionForPolylines(
+          List<String> polylines, CalcPositionOptionsMessage options) =>
+      _instance.calcPositionForPolylines(polylines, options);
+
   /// Returns map camera position.
   Future<CameraPositionMessage> getCameraPosition() =>
       _instance.getCameraPosition();
@@ -281,6 +301,11 @@ class DgisMapController {
   /// Removes [MapObjectManagerMessage].
   Future<void> removeMapObjectManager(MapObjectManagerMessage manager) =>
       _instance.removeMapObjectManager(manager);
+
+  /// Changes [MapObjectManagerMessage] visibility
+  Future<void> setMapObjectManagerIsVisible(
+          bool isVisible, MapObjectManagerMessage? manager) =>
+      _instance.setMapObjectManagerIsVisible(isVisible, manager);
 
   /// Remove all markers added with [addMarker].
   Future<void> removeAllMarkers({MapObjectManagerMessage? fromManager}) =>
