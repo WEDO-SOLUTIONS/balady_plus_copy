@@ -12,27 +12,25 @@ enum GISMapLayers {
       icon: Constants.furasLayerIcon,
       selectedIcon: Constants.furasSelectedLayerIcon,
       outFieldsShort: [
-        "*"
-        /*"OBJECTID",
-        "OPPORTUNITYDESCRIPTION",
-        "PYID",
+        "OBJECTID",
+        "STATUS",
+        "OPPORTUNITYNUMBER",
+        "ID",
+        "SITEAREA",
+        "DAILYLEASECOST",
+        "DOCUMENTVALUE",
         "TYPE",
-        "SOURCECASEKEY",
-        "SUBMUNICIPALITY_ID",
+        "BIDENDDATE",
+        "OPPORTUNITYDESCRIPTION",
+        "SITENUMBER",
         "SITEADDRESS",
-        "MUNICIPALITY_ID",*/
+        "MAIN_ACTIVITY_NAME",
+        "LOCATIONLISTSTRING",
+        "RFPENDDATE",
+        "REGION_ID"
       ],
       outFieldsLong: [
         "*"
-        /*
-        "OBJECTID",
-        "OPPORTUNITYDESCRIPTION",
-        "PYID",
-        "TYPE",
-        "SOURCECASEKEY",
-        "SUBMUNICIPALITY_ID",
-        "SITEADDRESS",
-        "MUNICIPALITY_ID",*/
       ]),
 
   Digging(
@@ -113,31 +111,32 @@ enum GISMapLayers {
       icon: Constants.landsLayerIcon,
       selectedIcon: Constants.landsSelectedLayerIcon,
       outFieldsShort: [
-        /* "PARCELAREA",
-    "PARCELNO",
-    "AMANANAME",
-    "MUNNAME",
-    "STREETNAME",
-    "PLANNAME",
-    "SHAPE.AREA",*/
         "OBJECTID",
-        "STATUS"
+        "AMANANAME",
+        "MUNNAME",
+        "PARCELCODE",
+        "STATUS",
+        "STREETNAME",
+        "PARCELAREA",
+        "CITYNAME",
+        "PARCELNO",
+        "PARCELLENGTH",
+        "PHASE"
       ],
       outFieldsLong: [
-        /* "PARCELAREA",
-    "PARCELNAME",
-    "PLANNO",
-    "PARCELNO",
-    "AMANANAME",
-    "MUNNAME",
-    "STREETNAME",
-    "PLANNAME",
-    "PARCELCODE",
-    "DESCRIPTION",
-    "SHAPE.AREA",*/
         "OBJECTID",
-        "STATUS"
-      ]),
+        "AMANANAME",
+        "MUNNAME",
+        "PARCELCODE",
+        "STATUS",
+        "STREETNAME",
+        "PARCELAREA",
+        "CITYNAME",
+        "PARCELNO",
+        "PARCELLENGTH",
+        "PHASE"
+      ],
+      resultRecordCount: 100),
 
   CadastralParcels(
       layerId: 10,
@@ -151,32 +150,21 @@ enum GISMapLayers {
       resultRecordCount: 50),
 
   CadastralParcelsLand(
-      layerId: 11,
+      layerId: 9,
+      resultRecordCount: 50,
       icon: Constants.landsLayerIcon,
       selectedIcon: Constants.landsSelectedLayerIcon,
       outFieldsShort: [
         "OBJECTID",
-        "SUBDIVISIONPLANLCODE",
-        "PLANSTATUS",
-        "PLANNOFLOOR",
-        "PLANMAXHEIGHT",
-        "PLANRESDUNITNO",
-        "PLANCOMMUNITNO",
-        "PLANINDSTUNITNO",
-        "PLANMOSQUENO",
-        "PLANSCHOOLNO"
+        "BLOCK_ID",
+        "SUBDIVISIONPARCELNUMBER",
+        "SUBDIVISIONPLAN_ID"
       ],
       outFieldsLong: [
         "OBJECTID",
-        "SUBDIVISIONPLANLCODE",
-        "PLANSTATUS",
-        "PLANNOFLOOR",
-        "PLANMAXHEIGHT",
-        "PLANRESDUNITNO",
-        "PLANCOMMUNITNO",
-        "PLANINDSTUNITNO",
-        "PLANMOSQUENO",
-        "PLANSCHOOLNO"
+        "BLOCK_ID",
+        "SUBDIVISIONPARCELNUMBER",
+        "SUBDIVISIONPLAN_ID"
       ]),
   ;
 
@@ -194,4 +182,5 @@ enum GISMapLayers {
   final List<String> outFieldsLong;
   final String icon;
   final String selectedIcon;
+  final int long;
 }
