@@ -43,4 +43,19 @@ class ImagePath {
   static const quranImg = '${_imagePath}quran_img$_png';
   static const challengeBaladyBg = '${_imagePath}challenge_balady_bg$_png';
   static const reportBg = '${_imagePath}report_bg$_png';
+
+  // building requirements
+  static const buildingReq1 = '${_imagePath}building_req1$_png';
+  static const buildingReq2 = '${_imagePath}building_req2$_png';
+  static const buildingReq3 = '${_imagePath}building_req3$_png';
+  static const buildingReq4 = '${_imagePath}building_req4$_png';
+  static const buildingReq5 = '${_imagePath}building_req5$_png';
+  static const buildingReq6 = '${_imagePath}building_req6$_png';
+  static const buildingReq7 = '${_imagePath}building_req7$_png';
+  static const buildingReq8 = '${_imagePath}building_req8$_png';
+  static const buildingReq9 = '${_imagePath}building_req9$_png';
+  static const buildingReq10 = '${_imagePath}building_req10$_png';
+  static const buildingReq11 = '${_imagePath}building_req11$_png';
+  static const buildingReq12 = '${_imagePath}building_req12$_png';
+
 }
