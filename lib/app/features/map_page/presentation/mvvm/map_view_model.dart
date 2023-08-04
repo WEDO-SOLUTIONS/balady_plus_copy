@@ -35,13 +35,13 @@ class MapViewModel extends BaseViewModel {
       SearchResultMessage data = selectedCategory.value != null
           ? await controller.searchByCategory(
               selectedCategory.value!,
-              sortingType: SortingTypeMessage.byDistance,
+              sortingType: SortingTypeMessage.byRelevance,
               isOpenNow: false,
               searchRect: _lastHandledEvent?.visibleRect.geoRectMessage(),
             )
           : await controller.search(
               queryText,
-              sortingType: SortingTypeMessage.byDistance,
+              sortingType: SortingTypeMessage.byRelevance,
               isOpenNow: false,
               searchRect: _lastHandledEvent?.visibleRect.geoRectMessage(),
             );
