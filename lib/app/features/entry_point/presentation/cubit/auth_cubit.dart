@@ -85,6 +85,9 @@ class EntryPointCubit extends Cubit<EntryPointState> {
       //MM sl<EtmamEntryPointCubit>().onLoadingApp();
 
       //  if (token.refreshToken != null) await refreshToken(token.refreshToken!);
+      if (sharedPrefs.getFirstDateTime() == null) {
+        sharedPrefs.setFirstDateTime();
+      }
       refreshSSOProfile();
       refreshAPIGeeToken();
     });

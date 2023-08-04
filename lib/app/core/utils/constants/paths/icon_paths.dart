@@ -47,6 +47,7 @@ class IconPath {
   static const call = '${_svgIconPath}call$_svg';
   static const global = '${_svgIconPath}global$_svg';
   static const mobile = '${_svgIconPath}mobile$_svg';
+  static const magicStar = '${_svgIconPath}magic_star$_svg';
 
 
   static const informationCircleIcon =
