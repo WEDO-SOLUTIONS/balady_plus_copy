@@ -1,17 +1,26 @@
 import 'package:balady_plus/app/features/map_page/presentation/mvvm/map_view_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:provider/provider.dart';
 
+import '../../../../../core/dependency_injection/injection_container.dart';
 import '../../../../../core/utils/utils_exports.dart';
 import '../../../../_shared_feature_/shared_feature_exports.dart';
+import '../../../../entry_point/presentation/cubit/auth_cubit.dart';
 import '../../../home_exports.dart';
 
-class DraggableHeaderComponent extends StatelessWidget {
+class DraggableHeaderComponent extends StatefulWidget {
   const DraggableHeaderComponent({
     super.key,
   });
 
+  @override
+  State<DraggableHeaderComponent> createState() =>
+      _DraggableHeaderComponentState();
+}
+
+class _DraggableHeaderComponentState extends State<DraggableHeaderComponent> {
   @override
   Widget build(BuildContext context) {
     bool isLoggedIn = CommonProperties.isLoggedIn;
@@ -66,33 +75,38 @@ class DraggableHeaderComponent extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 16),
-          CustomTextFieldWidget(
-            hintText: 'ابحث في الدمام عن...'.tr(),
-            //   hintText: 'ابحث عن...'.tr(),
-            controller: searchController,
-            hintStyle: const TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.bold,
-              color: AppColor.blackModern600Light,
-              height: 1,
-            ),
-            textFieldVerticalPadding: 16,
-            suffixIcon: const DrawIconBasedTypeWidget(
-              icon: IconPath.search,
-              iconSize: 20,
-              iconColor: AppColor.primary900Light,
-            ),
-            borderRadius: 26,
-            borderColor: AppColor.primary900Light.withOpacity(0.1),
-            onSubmitted: (text) {
-              if (text.isNotEmpty) {
-                MapViewModel mapViewModel =
-                    Provider.of<MapViewModel>(context, listen: false);
+          BlocBuilder<EntryPointCubit, EntryPointState>(
+              bloc: sl(),
+              builder: (context, authState) {
+                return CustomTextFieldWidget(
+                  hintText: authState.getSearchText(),
+                  //   hintText: 'ابحث عن...'.tr(),
+                  controller: searchController,
+                  hintStyle: const TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                    color: AppColor.blackModern600Light,
+                    height: 1,
+                  ),
+                  textFieldVerticalPadding: 16,
+                  suffixIcon: const DrawIconBasedTypeWidget(
+                    icon: IconPath.search,
+                    iconSize: 20,
+                    iconColor: AppColor.primary900Light,
+                  ),
+                  borderRadius: 26,
+                  borderColor: AppColor.primary900Light.withOpacity(0.1),
+                  onSubmitted: (text) {
+                    if (text.isNotEmpty) {
+                      MapViewModel mapViewModel =
+                          Provider.of<MapViewModel>(context, listen: false);
 
-                mapViewModel.performSearch(queryText: text, showLoading: true);
-              }
-            },
-          ),
+                      mapViewModel.performSearch(
+                          queryText: text, showLoader: true);
+                    }
+                  },
+                );
+              }),
           const SizedBox(height: 10),
         ],
       ),

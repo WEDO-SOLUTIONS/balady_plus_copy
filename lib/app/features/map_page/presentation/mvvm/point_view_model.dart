@@ -10,6 +10,7 @@ class PointViewModel extends BaseViewModel {
   final DgisMapController controller;
   final DgisObjectIdMessage point;
   final dataPoint = ValueNotifier<DirectoryObjectMessage?>(null);
+  final isLoadingData = ValueNotifier<bool?>(null);
 
   PointViewModel(
       {required this.controller,
@@ -21,11 +22,15 @@ class PointViewModel extends BaseViewModel {
   Future<void> performSearch() async {
     try {
       print("performSearch");
+      isLoadingData.value = true;
+      isLoadingData.notifyListeners();
       dataPoint.value = await controller.searchByObjectId(point);
       if (dataPoint.value != null) {
         print(dataPoint.value?.externalIds);
-        getPhotos(dataPoint.value!);
+        //getPhotos(dataPoint.value!);
       }
+      isLoadingData.value = false;
+      isLoadingData.notifyListeners();
       // dataPoint.value = await controller.(point);
       print(dataPoint);
     } catch (e) {

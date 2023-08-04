@@ -1,3 +1,6 @@
+import 'dart:ui';
+
+import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:dgis_map/library.dart';
 
 extension SearchCategoryData on SearchCategoryMessage {
@@ -41,14 +44,23 @@ extension SearchCategoryData on SearchCategoryMessage {
   String cardIconName() {
     return switch (this) {
       SearchCategoryMessage.mousques =>
-        "assets/maps/icons/card_icon/mosque.svg",
+        "assets/maps/icons/card_icon/mosque.png",
       SearchCategoryMessage.gasStations =>
-        "assets/maps/icons/card_icon/restaurant.svg",
-      SearchCategoryMessage.cafe => "assets/maps/icons/card_icon/coffee.svg",
+        "assets/maps/icons/card_icon/station.png",
+      SearchCategoryMessage.cafe => "assets/maps/icons/card_icon/coffee.png",
       SearchCategoryMessage.restaurants =>
-        "assets/maps/icons/card_icon/restaurant.svg",
-      SearchCategoryMessage.parks =>
-        "assets/maps/icons/card_icon/restaurant.svg"
+        "assets/maps/icons/card_icon/restaurant.png",
+      SearchCategoryMessage.parks => "assets/maps/icons/card_icon/park.png"
+    };
+  }
+
+  Color cardIconColor() {
+    return switch (this) {
+      SearchCategoryMessage.mousques => Color(0xFFC8A83A),
+      SearchCategoryMessage.gasStations => Color(0xFF2E88F6),
+      SearchCategoryMessage.cafe => AppColor.secondary200Light,
+      SearchCategoryMessage.restaurants => Color(0xFFC8A83A),
+      SearchCategoryMessage.parks => AppColor.secondary200Light,
     };
   }
 }

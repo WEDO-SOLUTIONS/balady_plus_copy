@@ -86,7 +86,7 @@ class _CounterAthkarWidgetState extends State<CounterAthkarWidget> {
                   decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       color: (counter == widget.count)
-                          ? AppColor.darkTurquoise
+                          ? AppColor.primary900Light
                           : AppColor.primary600Light),
                   child: Center(
                     child: Text(

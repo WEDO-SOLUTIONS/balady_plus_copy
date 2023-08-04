@@ -19,8 +19,8 @@ class NearbyTagList extends StatelessWidget implements PreferredSizeWidget {
     const tagsList = [
       SearchCategoryMessage.mousques,
       SearchCategoryMessage.gasStations,
-      SearchCategoryMessage.cafe,
-      SearchCategoryMessage.restaurants,
+      //SearchCategoryMessage.cafe,
+      // SearchCategoryMessage.restaurants,
       SearchCategoryMessage.parks,
     ];
     return SizedBox(
@@ -48,12 +48,13 @@ class NearbyTagList extends StatelessWidget implements PreferredSizeWidget {
                       ),
                       child: InkWell(
                         onTap: () {
-                          if(tag != selectedCategory) {
+                          if (tag != selectedCategory) {
                             nearByViewModel.selectCategory(category: tag);
                           }
                         },
                         child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 4,vertical: 8.0),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 4, vertical: 8.0),
                           child: Row(
                             children: [
                               SizedBox(
@@ -65,9 +66,8 @@ class NearbyTagList extends StatelessWidget implements PreferredSizeWidget {
                               CustomTextWidget(
                                 tag.displayName(),
                                 textStyle:
-                                AppStyle.serviceDescriptionStyle.copyWith(
-                                  color: selectedCategory ==
-                                      tag
+                                    AppStyle.serviceDescriptionStyle.copyWith(
+                                  color: selectedCategory == tag
                                       ? Colors.white
                                       : Colors.black,
                                 ),

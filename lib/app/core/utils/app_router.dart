@@ -37,8 +37,7 @@ import '../../features/athkar/athkar_exports.dart'
         AthkarEntities,
         AthkarEntitiesParams,
         AthkarEntityContentParams;
-import '../../features/bottom_navigation/bottom_navigation_exports.dart'
-    show BottomNavigationPage;
+
 import '../../features/entry_point/entry_point_exports.dart' show SsoUserInfo;
 import '../../features/health_certificate/presentation/core/models/health_request_details_screen_args.dart';
 import '../../features/health_certificate/presentation/pages/health_license_details_screen.dart';

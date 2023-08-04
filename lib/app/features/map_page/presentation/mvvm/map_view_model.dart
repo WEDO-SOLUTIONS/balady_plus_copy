@@ -1,4 +1,7 @@
 import 'dart:async';
+import 'package:balady_plus/app/core/utils/utils_exports.dart';
+import 'package:balady_plus/app/features/entry_point/presentation/cubit/auth_cubit.dart';
+import 'package:balady_plus/app/features/vd/vd_exports.dart';
 import 'package:collection/collection.dart';
 import 'dart:math' show abs;
 
@@ -6,13 +9,12 @@ import 'package:balady_plus/app/core/base/base_view_model.dart';
 import 'package:balady_plus/app/features/map_page/extensions/search_category_ext.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/foundation.dart';
-import 'package:permission_handler/permission_handler.dart';
-import 'package:geolocator/geolocator.dart' as geoLocator;
 import 'package:uuid/uuid.dart';
-
+import '../../../../core/dependency_injection/injection_container.dart';
 import '../../../../core/services/local/helpers.dart';
 import '../../../../core/services/local/navigation_services.dart';
 import '../../../../core/utils/constants/route_names.dart';
+import '../../../vd/domain/use_cases/get_gis_data.dart';
 import '../../constants/constants.dart';
 import 'package:flutter/widgets.dart';
 
@@ -31,6 +33,11 @@ const int mil = 300;
 TextEditingController searchController = TextEditingController();
 
 class MapViewModel extends BaseViewModel {
+  final GeoPointMessage kingdomTower =
+      GeoPointMessage(latitude: 24.712301, longitude: 46.674175);
+  final GeoPointMessage ithraa =
+      GeoPointMessage(latitude: 26.336057, longitude: 50.120372);
+
   final LayersRepositories layersRepositories;
 
   MapViewModel({required this.layersRepositories});
@@ -82,17 +89,14 @@ class MapViewModel extends BaseViewModel {
     } else {
       selectedCategory.value = category;
     }
-    isSearchLoading.value = true;
-
-    isSearchLoading.notifyListeners();
+    showLoading1();
     await controller.removeAllMarkers();
 
     if (selectedCategory.value != null)
       performSearch(
         queryText: selectedCategory.value!.displayName(),
       );
-    isSearchLoading.value = false;
-    isSearchLoading.notifyListeners();
+    hideLoading1();
 
     selectedPointId.value = null;
     selectedPointId.notifyListeners();
@@ -108,16 +112,14 @@ class MapViewModel extends BaseViewModel {
   Future<void> performSearch(
       {required String queryText,
       SearchCategoryMessage? category,
-      bool showLoading = false}) async {
+      bool showLoader = false}) async {
     try {
-      if (showLoading) {
+      if (showLoader) {
         await controller.removeAllMarkers();
         await controller.removeAll();
 
-        isSearchLoading.value = true;
-        selectedCategory.value = null;
+        showLoading1();
         selectedCategory.notifyListeners();
-        isSearchLoading.notifyListeners();
       }
       searchController.text = selectedCategory.value != null
           ? selectedCategory.value!.displayName()
@@ -137,10 +139,7 @@ class MapViewModel extends BaseViewModel {
               searchRect: _lastHandledEvent?.visibleRect.geoRectMessage(),
             );
 
-      if (showLoading) {
-        isSearchLoading.value = false;
-        isSearchLoading.notifyListeners();
-      }
+      if (showLoader) hideLoading1();
 
       if (data.itemMarkerInfos != null) {
         List<Marker> markers = [];
@@ -218,6 +217,7 @@ class MapViewModel extends BaseViewModel {
   Future<bool> initialize(DgisMapController controllerMap) async {
     controller = controllerMap;
     final result = await controller.initialize();
+    print("wasInitialized ${result.wasInitialized}");
     if (!result.wasInitialized) {
       initialized.value = false;
 
@@ -226,65 +226,24 @@ class MapViewModel extends BaseViewModel {
 
     _setupListeners();
 
-    await controller.setCameraPosition(
-      CameraPositionMessage(
-        point: GeoPointMessage(
-          latitude: 26.3336057,
-          longitude: 50.120372,
-        ),
-        zoom: 13,
-        tilt: 0,
-        bearing: 0,
-      ),
-    );
-
-    /* final permission = await Permission.location.request();
-    if (permission.isGranted) {
-      await controller.onLocationPremissionGranted();
-      geoLocator.Position position =
-          await geoLocator.Geolocator.getCurrentPosition(
-        desiredAccuracy: geoLocator.LocationAccuracy.high,
-        timeLimit: const Duration(seconds: 13),
-      );
-      await controller.setCameraPosition(
-        CameraPositionMessage(
-          point: GeoPointMessage(
-            latitude: position.latitude,
-            longitude: position.longitude,
-          ),
-          zoom: 13,
-          tilt: 0,
-          bearing: 0,
-        ), );
-     
-    }*/
-
-    await controller.changeFollowState();
+    // await controller.changeFollowState();
 
     // setLocale(const Locale("ar", "US"), TextDirection.ltr);
     await controller.loadStyles(Constants.mapStyle);
     await controller.overrideLocales(["ar-SA", "en-SA"]);
-    ;
     // await controller.overrideLocales([localeState.value.locale]);
-
+    initialized.value = true;
+    generalControlsState.value = true;
+    goToLocation();
     await controller.setMarkerOptions(
       MarkerOptionsMessageOld(
-        svgAsset: "assets/svg/ic_marker.svg",
+        svgAsset: "assets/maps/icons/ic_marker.svg.svg",
         width: 30.0,
         height: 46.0,
         iconWidth: 24,
       ),
     );
 
-    // await _checkLocationPermissions();
-    // unawaited(controller.fetchLayers());
-
-    initialized.value = true;
-    generalControlsState.value = true;
-
-    // final layers = finalawait LayersProvider.get().layers();
-    // final ioLayer = layers.where((element) => element.id == 2).first;
-    // esriIOLayerInfo = await LayersProvider.get().layerInfo(ioLayer);
     return true;
   }
 
@@ -355,6 +314,8 @@ class MapViewModel extends BaseViewModel {
   void _visibleRectChangeListener(VisibleRectEvent event) {
     _lastHandledEvent = event;
     // start Timer when stop move camera  call search funcation
+    print(event.visibleRect.zoom);
+
     _startRequestTimer(event.visibleRect.zoom);
   }
 
@@ -458,17 +419,17 @@ class MapViewModel extends BaseViewModel {
 
     await controller.removeAll();
 
-    isSearchLoading.value = true;
-    isSearchLoading.notifyListeners();
     String? query = selectedCategory.value != null
         ? selectedCategory.value!.displayName()
         : searchController.text;
-    if (query != null && query.isNotEmpty)
+    if (query != null && query.isNotEmpty) {
+      showLoading1();
+
       await performSearch(
         queryText: query,
       );
-    isSearchLoading.value = false;
-    isSearchLoading.notifyListeners();
+      hideLoading1();
+    }
 
     print("layerSelected $layerSelected");
 
@@ -476,8 +437,7 @@ class MapViewModel extends BaseViewModel {
     print("HEREE");
     GISMapLayers? gisLayer = GISMapLayers.values.firstWhereOrNull(
         (element) => element.layerId == layerSelected.value!.id);
-    isSearchLoading.value = true;
-    isSearchLoading.notifyListeners();
+    showLoading1();
     bottomSheetSize.notifyListeners();
 
     if (gisLayer != null) {
@@ -503,13 +463,11 @@ class MapViewModel extends BaseViewModel {
     }
     print("Doneeee");
     _clearDebounce();
-    isSearchLoading.value = false;
-    isSearchLoading.notifyListeners();
+    hideLoading1();
   }
 
   getPointDetails(int objectId) async {
-    isSearchLoading.value = true;
-    isSearchLoading.notifyListeners();
+    showLoading1();
 
     List? pointList = await layersRepositories.getPointDetailsInLayers(
         params: MapRequestParams(
@@ -522,8 +480,7 @@ class MapViewModel extends BaseViewModel {
     ));
 
     print("Doneeee");
-    isSearchLoading.value = false;
-    isSearchLoading.notifyListeners();
+    hideLoading1();
 
     Navigator.pushNamed(NavigationService.navigatorKey.currentContext!,
         RouteName.DiggingMapDetailsPage,
@@ -532,16 +489,14 @@ class MapViewModel extends BaseViewModel {
 
   Future<InvestmentDetailsResponse?> getInvestmentDetails(
       String id, String type) async {
-    isSearchLoading.value = true;
-    isSearchLoading.notifyListeners();
+    showLoading1();
 
     InvestmentDetailsResponse? data =
         await layersRepositories.getInvetmentDetails(id, type);
 
     print("Doneeee");
     print(data);
-    isSearchLoading.value = false;
-    isSearchLoading.notifyListeners();
+    hideLoading1();
     Navigator.pushNamed(NavigationService.navigatorKey.currentContext!,
         RouteName.InvestmentMapDetailsPage,
         arguments: data);
@@ -793,4 +748,58 @@ class MapViewModel extends BaseViewModel {
   }
 
   dynamic getMapCardData() {}
+  void getGISData() {}
+
+  void showLoading1() {
+    isSearchLoading.value = true;
+    isSearchLoading.notifyListeners();
+  }
+
+  void hideLoading1() {
+    isSearchLoading.value = false;
+    isSearchLoading.notifyListeners();
+  }
+
+  void goToLocation() async {
+    Duration duration = CommonProperties.userLocationGIS == null
+        ? Duration(seconds: 3)
+        : Duration.zero;
+    Timer(duration, () async {
+      if (CommonProperties.userLocation == null) {
+        print("FFFFFGGG 1");
+        controller.setCameraPosition(CameraPositionMessage(
+            point: kingdomTower, zoom: 17, tilt: 45, bearing: 0));
+      } else {
+        GISResponse? gis = CommonProperties.userLocationGIS;
+        GISParams? userLocation = CommonProperties.userLocation;
+        if (gis == null) {
+          showLoading1();
+          var location = await sl<EntryPointCubit>().getUserLocationData();
+          hideLoading1();
+          gis = location?.$2;
+          userLocation = location?.$1;
+        }
+
+        if (userLocation == null || gis == null) {
+          controller.setCameraPosition(CameraPositionMessage(
+              point: kingdomTower, zoom: 17, tilt: 45, bearing: 0));
+        } else {
+          if (gis.adminMunicipalityId == "004") {
+            controller.setCameraPosition(CameraPositionMessage(
+                point: kingdomTower, zoom: 17, tilt: 45, bearing: 0));
+          } else if (gis.adminMunicipalityId == "006") {
+            controller.setCameraPosition(CameraPositionMessage(
+                point: ithraa, zoom: 18, tilt: 45, bearing: 0));
+          } else {
+            controller.setCameraPosition(CameraPositionMessage(
+                point: GeoPointMessage(
+                    latitude: userLocation.y, longitude: userLocation.x),
+                zoom: 18,
+                tilt: 45,
+                bearing: 0));
+          }
+        }
+      }
+    });
+  }
 }

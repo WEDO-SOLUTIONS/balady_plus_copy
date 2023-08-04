@@ -3,11 +3,14 @@ import 'dart:math';
 import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:balady_plus/app/core/utils/constants/route_names.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
+import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/shimmer_effect_widget.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
+import 'package:provider/provider.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 import '../../../../core/base/base_view_model.dart';
 import '../../../../core/services/local/navigation_services.dart';
 import '../../../../core/utils/common_functions.dart';
@@ -18,196 +21,234 @@ import '../../../facility_qr/presentation/dialogs/facility_dialog.dart';
 import '../../../home_page/presentation/widgets/home_app_bar/circle_icon.dart';
 import '../../../vd/domain/entities/camera/camera_page_params.dart';
 import '../../../vd/domain/entities/categories/category_item.dart';
+import '../mvvm/map_view_model.dart';
 import '../mvvm/point_view_model.dart';
 import 'package:collection/collection.dart';
+
+import '../pages/mosque_details_page.dart';
 
 class GeneralMapCardWidget extends StatelessWidget {
   final PointViewModel pointViewModel;
   final String icon;
+  final Color color;
+
   final Function onClose;
 
   const GeneralMapCardWidget(
       {super.key,
       required this.pointViewModel,
       required this.icon,
+      required this.color,
       required this.onClose});
 
   @override
   Widget build(BuildContext context) {
+    MapViewModel mapViewModel =
+        Provider.of<MapViewModel>(context, listen: false);
+
     return GestureDetector(
       onTap: () async {
-        String? qr = pointViewModel.dataPoint.value?.externalIds?.join(" ");
-        if (qr != null) {
-          final FacilityQRDetailsViewModel viewModel =
-              locator<FacilityQRDetailsViewModel>();
+        if (mapViewModel.selectedCategory.value != null) {
+          DirectoryObjectMessage? message = pointViewModel.dataPoint.value;
+          if (message != null)
+            Navigator.push(context, MaterialPageRoute(builder: (ctx) {
+              return MosqueDetailsPage(
+                item: (message!, icon, color),
+              );
+            }));
+        } else {
+          String? qr = pointViewModel.dataPoint.value?.externalIds?.join(" ");
+          if (qr != null) {
+            final FacilityQRDetailsViewModel viewModel =
+                locator<FacilityQRDetailsViewModel>();
 
-          bool isLicenseFound = false;
+            bool isLicenseFound = false;
 
-          isLicenseFound = await viewModel.getFacilityData(qr);
-          if (isLicenseFound) {
-            showDialog(
-                context: context,
-                barrierDismissible: false,
-                builder: (ctx) => FacilityDialog(
-                      address: viewModel.getCityAndStreet(),
-                      facilityImg: viewModel.getCoverPhotoUrl(),
-                      rate: viewModel.getFacilityAvrageRating(),
-                      facilityName: viewModel.getFacilityName(),
-                      reviewers: viewModel.getFacilityTotalRatingCount(),
-                      onDetailsScreen: () {
-                        /* NavigationService.navigatorKey.currentState!.pushNamed(
+            isLicenseFound = await viewModel.getFacilityData(qr);
+            if (isLicenseFound) {
+              showDialog(
+                  context: context,
+                  barrierDismissible: false,
+                  builder: (ctx) => FacilityDialog(
+                        address: viewModel.getCityAndStreet(),
+                        facilityImg: viewModel.getCoverPhotoUrl(),
+                        rate: viewModel.getFacilityAvrageRating(),
+                        facilityName: viewModel.getFacilityName(),
+                        reviewers: viewModel.getFacilityTotalRatingCount(),
+                        onDetailsScreen: () {
+                          /* NavigationService.navigatorKey.currentState!.pushNamed(
                         RoutesNames.facilityScreenRoute,
                         arguments: viewModel.facilityRespoonse);*/
-                      },
-                      onRatingScreen: () {
-                        /*NavigationService.navigatorKey.currentState!.pushNamed(
+                        },
+                        onRatingScreen: () {
+                          /*NavigationService.navigatorKey.currentState!.pushNamed(
                         RoutesNames.facilityRatingRoute,
                         arguments: viewModel.facilityRespoonse);*/
-                      },
-                      onIncidentScreen: () async {
-                        bool isLocationAvailable =
-                            await CommonFunctions.checkLocationSettings(
-                                context);
-                        bool isCameraAllowed =
-                            await CommonFunctions.checkCameraSettings(context);
-                        if (isLocationAvailable && isCameraAllowed)
-                          NavigationService.navigatorKey.currentState!
-                              .pushNamed(RouteName.vdCameraPage,
-                                  arguments: CameraParamsPage(
-                                      selectedCategory:
-                                          CategoryItem(categoryId: "CG-14"),
-                                      isFromHome: false));
-                      },
-                    ));
+                        },
+                        onIncidentScreen: () async {
+                          bool isLocationAvailable =
+                              await CommonFunctions.checkLocationSettings(
+                                  context);
+                          bool isCameraAllowed =
+                              await CommonFunctions.checkCameraSettings(
+                                  context);
+                          if (isLocationAvailable && isCameraAllowed)
+                            NavigationService.navigatorKey.currentState!
+                                .pushNamed(RouteName.vdCameraPage,
+                                    arguments: CameraParamsPage(
+                                        selectedCategory:
+                                            CategoryItem(categoryId: "CG-14"),
+                                        isFromHome: false));
+                        },
+                      ));
+            }
           }
         }
       },
-      child: ValueListenableBuilder<DirectoryObjectMessage?>(
-          valueListenable: pointViewModel.dataPoint,
-          builder: (_, dataPoint, __) {
-            return Container(
-              height: 120,
-              padding: const EdgeInsets.all(16),
-              decoration: ShapeDecoration(
-                color: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                shadows: [
-                  BoxShadow(
-                    color: Color(0x1C77758D),
-                    blurRadius: 22,
-                    offset: Offset(0, 4),
-                    spreadRadius: 0,
-                  )
-                ],
-              ),
-              child: Stack(
-                children: [
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Container(
-                            width: 58,
-                            height: 58,
-                            padding: const EdgeInsets.all(6.0),
-                            decoration: ShapeDecoration(
-                                color: AppColor.secondary900Light,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(16),
-                                )),
-                            child: SvgPicture.asset(
-                              icon,
-                              width: 24,
-                              height: 24,
-                              color: AppColor.white,
+      child: ValueListenableBuilder<bool?>(
+          valueListenable: pointViewModel.isLoadingData,
+          builder: (_, isLoading, __) {
+            return ValueListenableBuilder<DirectoryObjectMessage?>(
+                valueListenable: pointViewModel.dataPoint,
+                builder: (_, dataPoint, __) {
+                  return (isLoading ?? false)
+                      ? ShimmerEffectWidget(
+                          height: 120,
+                        )
+                      : Container(
+                          height: 120,
+                          padding: const EdgeInsets.all(16),
+                          decoration: ShapeDecoration(
+                            color: Colors.white,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16),
                             ),
+                            shadows: [
+                              BoxShadow(
+                                color: Color(0x1C77758D),
+                                blurRadius: 22,
+                                offset: Offset(0, 4),
+                                spreadRadius: 0,
+                              )
+                            ],
                           ),
-                          CustomHorizontalSpace(width: 8),
-                          Expanded(
-                            child: Padding(
-                              padding:
-                                  const EdgeInsetsDirectional.only(end: 16.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  CustomVerticalSpace(height: 8),
-                                  CustomTextWidget(
-                                    dataPoint?.title ?? "",
-                                    fontColor: AppColor.blackModern800Light,
-                                    fontSize: 16,
-                                    textOverflow: TextOverflow.ellipsis,
-                                    fontWeight: AppFontWeight.bold,
-                                    maxLines: 2,
-                                  ),
-                                  CustomVerticalSpace(height: 8),
-                                  CustomTextWidget(
-                                    dataPoint?.address?.components
-                                            ?.firstWhereOrNull(
-                                              (element) =>
-                                                  element?.streetAddress !=
-                                                  null,
-                                            )
-                                            ?.streetAddress
-                                            ?.street ??
-                                        "",
-                                    fontColor: AppColor.blackModern500Light,
-                                    fontSize: 12,
-                                    fontWeight: AppFontWeight.semiBold,
-                                    height: 1.3,
-                                    maxLines: 2,
-                                  ),
-                                  /*  CustomVerticalSpace(height: 16),
-                                  CustomTextWidget(
-                                    dataPoint?.externalIds?.join(" ") ?? "[]",
-                                    fontColor: AppColor.blackModern500Light,
-                                    fontSize: 12,
-                                    fontWeight: AppFontWeight.semiBold,
-                                    height: 1.3,
-                                    maxLines: 2,
-                                  ),*/
-                                ],
+                          child: Stack(
+                            children: [
+                              Align(
+                                alignment: Alignment.centerRight,
+                                child: Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Container(
+                                        width: 58,
+                                        height: 58,
+                                        padding: const EdgeInsets.all(16.0),
+                                        decoration: ShapeDecoration(
+                                            color: color,
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(16),
+                                            )),
+                                        child: Image.asset(
+                                          icon,
+                                          width: 24,
+                                          height: 24,
+                                        ),
+                                      ),
+                                      CustomHorizontalSpace(width: 8),
+                                      Expanded(
+                                        child: Padding(
+                                          padding:
+                                              const EdgeInsetsDirectional.only(
+                                                  end: 16.0),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              CustomVerticalSpace(height: 8),
+                                              CustomTextWidget(
+                                                dataPoint?.title ?? "",
+                                                fontColor: AppColor
+                                                    .blackModern800Light,
+                                                fontSize: 16,
+                                                textOverflow:
+                                                    TextOverflow.ellipsis,
+                                                fontWeight: AppFontWeight.bold,
+                                                maxLines: 2,
+                                              ),
+                                              CustomVerticalSpace(height: 8),
+                                              CustomTextWidget(
+                                                dataPoint?.address?.components
+                                                        ?.firstWhereOrNull(
+                                                          (element) =>
+                                                              element
+                                                                  ?.streetAddress !=
+                                                              null,
+                                                        )
+                                                        ?.streetAddress
+                                                        ?.street ??
+                                                    "",
+                                                fontColor: AppColor
+                                                    .blackModern500Light,
+                                                fontSize: 12,
+                                                fontWeight:
+                                                    AppFontWeight.semiBold,
+                                                height: 1.3,
+                                                maxLines: 2,
+                                              ),
+                                              /*  CustomVerticalSpace(height: 16),
+                                      CustomTextWidget(
+                                        dataPoint?.externalIds?.join(" ") ?? "[]",
+                                        fontColor: AppColor.blackModern500Light,
+                                        fontSize: 12,
+                                        fontWeight: AppFontWeight.semiBold,
+                                        height: 1.3,
+                                        maxLines: 2,
+                                      ),*/
+                                            ],
+                                          ),
+                                        ),
+                                      )
+                                    ]),
                               ),
-                            ),
-                          )
-                        ]),
-                  ),
-                  Align(
-                    alignment: Alignment.bottomLeft,
-                    child: CustomTextWidget(
-                      dataPoint?.workStatus?.isOpen == true
-                          ? "open".tr()
-                          : "open".tr(),
-                      textStyle: TextStyle(
-                        color: Color(0xFFA7C587),
-                        fontSize: 12,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ),
-                  Align(
-                    alignment: Alignment.topLeft,
-                    child: GestureDetector(
-                      onTap: () {
-                        onClose();
-                      },
-                      child: CircleIcon(
-                        icon: Icons.close,
-                        circleSize: 24,
-                        iconColor: AppColor.primary600Light,
-                        backgroundColor: AppColor.geyser.withOpacity(0.4),
-                        iconSize: 12,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            );
+                              Align(
+                                alignment: Alignment.bottomLeft,
+                                child: CustomTextWidget(
+                                  dataPoint?.workStatus?.isOpen == true
+                                      ? "open".tr()
+                                      : "".tr(),
+                                  textStyle: TextStyle(
+                                    color: Color(0xFFA7C587),
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                              ),
+                              Align(
+                                alignment: Alignment.topLeft,
+                                child: GestureDetector(
+                                  onTap: () {
+                                    onClose();
+                                  },
+                                  child: CircleIcon(
+                                    icon: Icons.close,
+                                    circleSize: 24,
+                                    iconColor: AppColor.primary600Light,
+                                    backgroundColor:
+                                        AppColor.geyser.withOpacity(0.4),
+                                    iconSize: 12,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                });
           }),
     );
 

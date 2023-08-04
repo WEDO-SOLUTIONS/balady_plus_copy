@@ -26,8 +26,17 @@ import 'package:uuid/uuid.dart';
 
 import '../../features/_shared_feature_/data/entities/file_data_item.dart';
 import '../../features/_shared_feature_/presentation/dialogs/upload_file_dialog.dart';
+import '../../features/vd/domain/entities/gis/gis_params.dart';
+import '../../features/vd/domain/entities/gis/gis_response.dart';
 import './utils_exports.dart'
-    show AppColor, AppConfig, AppLanguage, EnvType, MimeType, UIHelper, WithDelay;
+    show
+        AppColor,
+        AppConfig,
+        AppLanguage,
+        EnvType,
+        MimeType,
+        UIHelper,
+        WithDelay;
 import '../../features/_shared_feature_/data/entities/device_details.dart';
 import '../../features/_shared_feature_/presentation/dialogs/camera_permission_dialog.dart';
 import '../../features/_shared_feature_/presentation/dialogs/location_permission_dialog.dart';
@@ -829,6 +838,11 @@ class CommonProperties {
   static DelegatorEntity? get selectedDelegator =>
       sl<EntryPointCubit>().state.selectedDelegator;
   static bool get isLoggedIn => sl<EntryPointCubit>().state.token != null;
+  static GISParams? get userLocation =>
+      sl<EntryPointCubit>().state.userLocation;
+  static GISResponse? get userLocationGIS =>
+      sl<EntryPointCubit>().state.userLocationGIS;
+
   //static SsoUserInfo? userInfo = sl<EntryPointCubit>().state.userInfo;
 
   //static String token =

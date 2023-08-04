@@ -43,7 +43,7 @@ Map<String, dynamic> servicesConfig = {
       "order": 3,
       "isNew": false,
       "isImportant": false,
-      "action": {"type": "page", "value": "/azkar"},
+      "action": {"type": "page", "value": RouteName.mainAthkarPage},
       "ar": {"title": "الأذكار", "description": null, "tag": null},
       "en": {"title": "Azkar", "description": null, "tag": null}
     },

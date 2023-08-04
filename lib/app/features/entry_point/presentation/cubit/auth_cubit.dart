@@ -1,6 +1,8 @@
 //import 'package:balady_plus/etmam_app/features/_shared_feature_/shared/shared_feature_exports.dart'
 //   show showUpdateAppPopUpWidget;
 import 'package:balady_plus/app/features/entry_point/domain/use_cases/get_test_data.dart';
+import 'package:balady_plus/app/features/transaction_inquiry/customer_voice_exports.dart';
+import 'package:balady_plus/app/features/vd/vd_exports.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -34,21 +36,23 @@ class EntryPointCubit extends Cubit<EntryPointState> {
   final Logout _logout;
   final GetForceVersion _getForceVersion;
   final GetTestData _getTestData;
+  final GetGISData _getGisData;
 
-  EntryPointCubit({
-    required GetToken getToken,
-    required SaveAuth saveAuth,
-    required CheckAuth checkAuth,
-    required RefreshToken refreshToken,
-    required GetProfile getProfile,
-    required SaveSSOProfile saveSSOProfile,
-    required CheckSSOProfile checkSSOProfile,
-    required GetCookie getCookie,
-    required ClearAuth clearAuth,
-    required Logout logout,
-    required GetAPIgeeToken getAPIgeeToken,
-    required GetForceVersion forceVersion,
-  })  : _getToken = getToken,
+  EntryPointCubit(
+      {required GetToken getToken,
+      required SaveAuth saveAuth,
+      required CheckAuth checkAuth,
+      required RefreshToken refreshToken,
+      required GetProfile getProfile,
+      required SaveSSOProfile saveSSOProfile,
+      required CheckSSOProfile checkSSOProfile,
+      required GetCookie getCookie,
+      required ClearAuth clearAuth,
+      required Logout logout,
+      required GetAPIgeeToken getAPIgeeToken,
+      required GetForceVersion forceVersion,
+      required GetGISData getGisData})
+      : _getToken = getToken,
         _saveAuth = saveAuth,
         _checkAuth = checkAuth,
         _refreshToken = refreshToken,
@@ -61,12 +65,15 @@ class EntryPointCubit extends Cubit<EntryPointState> {
         _logout = logout,
         _getForceVersion = forceVersion,
         _getTestData = GetTestData(repository: sl()),
+        _getGisData = getGisData,
         super(const EntryPointState());
 
   Future<void> onLoadingApp() async {
     //setTheme();
     print("onLoadingApp");
+
     // state.token?.token.log();
+
     emit(state.copyWith(status: AuthStatus.loading));
     final failureOrSuccess = await _checkAuth(NoParams());
     await failureOrSuccess.fold((failure) {
@@ -89,6 +96,7 @@ class EntryPointCubit extends Cubit<EntryPointState> {
       refreshSSOProfile();
       refreshAPIGeeToken();
     });
+    getUserLocationData();
   }
 
   Future<bool> onLogin({bool isFromEtmam = false}) async {
@@ -286,6 +294,7 @@ class EntryPointCubit extends Cubit<EntryPointState> {
   }
 
   Future<void> refreshSSOProfile() async {
+    print("refreshSSOProfile");
     try {
       final failureOrSuccessForProfile = await _getProfile(NoParams());
       await failureOrSuccessForProfile.fold((failure) async {},
@@ -336,5 +345,32 @@ class EntryPointCubit extends Cubit<EntryPointState> {
 
   void selectDelegator(DelegatorEntity? delegator) {
     emit(state.copyWith(selectedDelegator: Nullable(delegator)));
+  }
+
+  Future<(GISParams, GISResponse)?> getUserLocationData() async {
+    print("GISSSSSS Succcess 1");
+
+    var latlng = await Helpers.getCurrentLocation();
+    print("GISSSSSS Succcess 2");
+
+    if (latlng == null) {
+      print("GISSSSSS Succcess 3");
+    } else {
+      print("GISSSSSS Succcess 4");
+
+      emit(state.copyWith(
+          userLocation: GISParams(x: latlng.longitude, y: latlng.latitude)));
+
+      GetGISData getgis = GetGISData(repository: sl());
+
+      //
+      var result =
+          await getgis(GISParams(x: latlng.longitude, y: latlng.latitude));
+      result.fold((l) {}, (r) {
+        emit(state.copyWith(userLocationGIS: r));
+
+        return (state.userLocation, state.userLocationGIS);
+      });
+    }
   }
 }

@@ -23,6 +23,7 @@ class SearchMapWidget extends StatelessWidget {
     MapViewModel mapViewModel = context.watch<MapViewModel>();
 
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -93,8 +94,8 @@ class SearchMapWidget extends StatelessWidget {
                         children: [
                           SearchCategoryMessage.mousques,
                           SearchCategoryMessage.gasStations,
-                          SearchCategoryMessage.cafe,
-                          SearchCategoryMessage.restaurants,
+                          // SearchCategoryMessage.cafe,
+                          // SearchCategoryMessage.restaurants,
                           SearchCategoryMessage.parks,
                         ]
                             .map(

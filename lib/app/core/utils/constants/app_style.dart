@@ -347,7 +347,6 @@ class AppStyle {
     fontFamily: fontFamily,
     color: AppColor.blackModern50Light,
   );
-<<<<<<< HEAD
   static final boardingTitle = TextStyle(
     color: AppColor.grey1000,
     fontSize: 24,
@@ -367,11 +366,10 @@ class AppStyle {
     fontFamily: fontFamily,
   );
   static final boardingAppBarTitleStyle = TextStyle(
-    fontFamily: fontFamily,
-    fontSize:16, 
-    fontWeight:AppFontWeight.medium.fontWeight,
-    color: AppColor.white,
-=======
+      fontFamily: fontFamily,
+      fontSize: 16,
+      fontWeight: AppFontWeight.medium.fontWeight,
+      color: AppColor.white);
   static final desscriptionAthkarStyle = TextStyle(
     fontSize: 14,
     fontWeight: AppFontWeight.bold.fontWeight,
@@ -383,7 +381,6 @@ class AppStyle {
     fontSize: 18,
     fontWeight: AppFontWeight.bold.fontWeight,
     fontFamily: fontFamily,
->>>>>>> 9cc285cad016a407e5b7f2177e2c1b583f5b24c5
   );
 
   static final dateTextStyle = TextStyle(

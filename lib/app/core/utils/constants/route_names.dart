@@ -131,6 +131,12 @@ class RouteName {
   // Violations
   static const violationsPage = '/violationsPage';
   static const violationDetailsPage = '/violationDetailsPage';
+
+  // -------  Athkar ---------
+  static const mainAthkarPage = '/mainAthkarPage';
+  static const athkarEntitesPage = '/athkarEntitesPage';
+  static const athkarEntityContentPage = '/athkarEntityContentPage';
+  static const boardingPage = '/boardingPage';
 }
 
 class EtmamRoutesNames {
@@ -197,10 +203,4 @@ class EtmamRoutesNames {
   static const deleteOrdersPage = '/DeleteOrdersPage';
 
   static const editBiddingForm = '/EditBiddingForm';
-
-  // -------  Athkar ---------
-  static const mainAthkarPage = '/mainAthkarPage';
-  static const athkarEntitesPage = '/athkarEntitesPage';
-  static const athkarEntityContentPage = '/athkarEntityContentPage';
-  static const boardingPage = '/boardingPage';
 }
