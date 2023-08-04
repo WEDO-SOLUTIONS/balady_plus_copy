@@ -30,6 +30,10 @@ class RouteName {
   static const invoiceDetails = '/invoiceDetails';
   static const licenses = '/licenses';
   static const incRequestsPage = '/incRequestsPage';
+  static const aboutBalady = '/aboutBalady';
+  static const rateUs = '/rateUs';
+  static const help = '/help';
+  static const contactInfoPage = '/contactInfoPage';
 
   // -------  Objections ---------
 

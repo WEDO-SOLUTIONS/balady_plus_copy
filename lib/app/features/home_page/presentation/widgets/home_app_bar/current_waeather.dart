@@ -29,38 +29,42 @@ class CurrentWeather extends StatelessWidget {
         },
         child: BlocBuilder<WeatherBloc, WeatherState>(
           builder: (context, state) {
-            if (state.allWeatherInfo?.current?.condition?.icon != null)
-              return Container(
-                padding: const EdgeInsetsDirectional.only(
-                    start: 16, end: 8, top: 8, bottom: 8),
-                height: 40,
-                decoration: BoxDecoration(
-                  color: AppColor.white,
-                  borderRadius: BorderRadius.circular(37),
-                  boxShadow: [
-                    BoxShadow(
-                      color: AppColor.blackModern900Light.withOpacity(0.1),
-                      blurRadius: 8,
-                      offset: const Offset(0, 4),
-                    ),
-                  ],
-                ),
+            if (state.allWeatherInfo?.current?.condition?.icon != null) {
+              return Padding(
+                padding: const EdgeInsetsDirectional.only(end: 16),
                 child: Row(
                   children: [
-                    Text(
-                      "${state.allWeatherInfo?.current?.tempC.toString() ?? ''}",
-                      style: AppStyle.mainTextStyle.copyWith(
-                        color: AppColor.blackModern900Light,
-                      ),
-                    ),
                     Image.network(
                       'https:${state.allWeatherInfo?.current?.condition?.icon}',
-                      height: 40,
-                      width: 40,
-                    )
+                      height: 28,
+                      width: 28,
+                    ),
+                    const SizedBox(width: 2),
+                    Column(
+                      children: [
+                        Text(
+                          "${state.allWeatherInfo?.current?.tempC.toString().substring(0, 2) ?? ''}°",
+                          style: AppStyle.mainTextStyle.copyWith(
+                              color: AppColor.blackModern600Light,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              height: 1),
+                        ),
+                        Text(
+                          state.allWeatherInfo?.current?.condition?.text ?? '',
+                          style: AppStyle.mainTextStyle.copyWith(
+                            color: AppColor.blackModern600Light,
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                            height: 1,
+                          ),
+                        ),
+                      ],
+                    ),
                   ],
                 ),
               );
+            }
             return Container();
           },
         ),

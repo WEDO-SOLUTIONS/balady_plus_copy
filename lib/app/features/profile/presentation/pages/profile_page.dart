@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/core/utils/constants/paths/image_paths.dart';
 import 'package:balady_plus/app/features/entry_point/presentation/cubit/auth_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -49,8 +50,19 @@ class ProfilePage extends StatelessWidget {
                   if (!isLoggedin) const SignInCard(),
                   ...List.generate(
                     list.length,
-                    (index) => ProfileListCard(
-                      section: list[index],
+                    (index) => GestureDetector(
+                      child: ProfileListCard(
+                        section: list[index],
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(30),
+                    child: Image.asset(
+                      ImagePath.logo2030,
+                      fit: BoxFit.fill,
+                      width: MediaQuery.sizeOf(context).width,
+                      height: 32,
                     ),
                   ),
                   if (isLoggedin)

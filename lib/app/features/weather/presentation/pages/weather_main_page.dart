@@ -69,7 +69,7 @@ class _WeatherMainPageState extends State<WeatherMainPage> {
                         image: AssetImage(ImagePath.weatherBackground3x),
                         fit: BoxFit.cover),
                   ),
-                  height: MediaQuery.sizeOf(context).height * 0.54,
+                  height: MediaQuery.sizeOf(context).height * 0.44,
                   width: double.infinity,
                 ),
                 BlocProvider.value(
@@ -77,10 +77,10 @@ class _WeatherMainPageState extends State<WeatherMainPage> {
                     child: const CurrentWeatherContent()),
                 Positioned(
                   //make it in the middle of the screen
-                  top: screenHeight * 0.5,
+                  top: screenHeight * 0.4,
 
                   child: SizedBox(
-                    height: MediaQuery.sizeOf(context).height * 0.5,
+                    height: MediaQuery.sizeOf(context).height * 0.6,
                     width: screenWidth,
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16),

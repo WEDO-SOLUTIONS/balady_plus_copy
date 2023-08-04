@@ -90,6 +90,15 @@ class IsicActivity extends DropDownItem {
           id: isicCode ?? '',
           name: isicName ?? '',
         );
+
+  Map<String, dynamic> toJson() => {
+    "atmActivity": atmActivity,
+    "existInBalady": existInBalady,
+    "isicCode": isicCode,
+    "isicName": isicName,
+    "valid": valid,
+  };
+
 }
 
 class Status {

@@ -37,9 +37,9 @@ class DeadlineExceededException extends DioError {
 
 class BadRequestException extends DioError {
   BadRequestException(
-    RequestOptions requestOptions,
-    Response? response,
-  ) : super(requestOptions: requestOptions, response: response);
+      RequestOptions requestOptions,
+      Response? response,
+      ) : super(requestOptions: requestOptions, response: response);
 
   @override
   // String toString() => ApiResponseI.badRequest.getErrorMessage(response);
@@ -48,15 +48,15 @@ class BadRequestException extends DioError {
 
 class NoDataFoundException extends DioError {
   NoDataFoundException(
-    RequestOptions requestOptions,
-  ) : super(requestOptions: requestOptions);
+      RequestOptions requestOptions,
+      ) : super(requestOptions: requestOptions);
 }
 
 class UnAuthorizedException extends DioError {
   UnAuthorizedException(
-    RequestOptions requestOptions,
-    Response? response,
-  ) : super(requestOptions: requestOptions, response: response);
+      RequestOptions requestOptions,
+      Response? response,
+      ) : super(requestOptions: requestOptions, response: response);
 
   @override
   String toString() => ApiResponse.unAuthorized.getErrorMessage(response);
@@ -64,9 +64,9 @@ class UnAuthorizedException extends DioError {
 
 class RequestNotFoundException extends DioError {
   RequestNotFoundException(
-    RequestOptions requestOptions,
-    Response? response,
-  ) : super(requestOptions: requestOptions, response: response);
+      RequestOptions requestOptions,
+      Response? response,
+      ) : super(requestOptions: requestOptions, response: response);
 
   @override
   String toString() => ApiResponse.requestNotFound.getErrorMessage(response);
@@ -74,9 +74,9 @@ class RequestNotFoundException extends DioError {
 
 class MethodNotAllowedException extends DioError {
   MethodNotAllowedException(
-    RequestOptions requestOptions,
-    Response? response,
-  ) : super(requestOptions: requestOptions, response: response);
+      RequestOptions requestOptions,
+      Response? response,
+      ) : super(requestOptions: requestOptions, response: response);
 
   @override
   String toString() => ApiResponse.methodNotAllowed.getErrorMessage(response);
@@ -84,9 +84,9 @@ class MethodNotAllowedException extends DioError {
 
 class ConflictException extends DioError {
   ConflictException(
-    RequestOptions requestOptions,
-    Response? response,
-  ) : super(requestOptions: requestOptions, response: response);
+      RequestOptions requestOptions,
+      Response? response,
+      ) : super(requestOptions: requestOptions, response: response);
 
   @override
   String toString() => ApiResponse.conflict.getErrorMessage(response);
@@ -94,9 +94,9 @@ class ConflictException extends DioError {
 
 class InternalServerErrorException extends DioError {
   InternalServerErrorException(
-    RequestOptions requestOptions,
-    Response? response,
-  ) : super(requestOptions: requestOptions, response: response);
+      RequestOptions requestOptions,
+      Response? response,
+      ) : super(requestOptions: requestOptions, response: response);
 
   @override
   String toString() =>

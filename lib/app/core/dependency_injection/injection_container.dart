@@ -49,6 +49,7 @@ import '../dependency_injection/dependency_injection_exports.dart'
         VDInjection,
         ViolationsInjection;
 import '../services/global/crm_web_service.dart';
+import '../services/global/web_service_weather.dart';
 import '../services/services_exports.dart'
     show
         EntryPointBridge,

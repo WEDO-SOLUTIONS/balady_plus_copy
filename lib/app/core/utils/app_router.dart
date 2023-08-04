@@ -7,6 +7,9 @@ import 'package:balady_plus/app/features/objectable_transactions/domain/entities
 import 'package:balady_plus/app/features/objections/domain/entities/objection_details.dart';
 import 'package:balady_plus/app/features/profile_features/incidents/presentation/pages/dc_details.dart';
 import 'package:balady_plus/app/features/profile_features/incidents/presentation/pages/incident_details.dart';
+import 'package:balady_plus/app/features/profile_features/about_balady/presentation/screens/about_balady_screen.dart';
+import 'package:balady_plus/app/features/profile_features/help/presentation/screens/contact_information_screen.dart';
+import 'package:balady_plus/app/features/profile_features/rate_us/rate_us.dart';
 import 'package:balady_plus/app/features/quran/presentation/pages/quran_bookmarks.dart';
 import 'package:balady_plus/app/features/quran/quran_exports.dart';
 import 'package:balady_plus/app/features/wallet/core/models/wallet_item.dart';
@@ -66,6 +69,7 @@ import '../../features/profile_features/incidents/presentation/pages/inq_details
 import '../../features/profile_features/incidents/presentation/pages/req_details.dart';
 import '../../features/profile_features/incidents/presentation/pages/requests_page.dart';
 import '../../features/profile_features/incidents/presentation/pages/vhr_details.dart';
+import '../../features/profile_features/help/presentation/screens/help_screen.dart';
 import '../../features/profile_features/invoices/invoices_exports.dart'
     show InvoiceDetailsPage, InvoiceEntity, InvoicesPage;
 import '../../features/profile_features/licenses/licenses_exports.dart'
@@ -111,6 +115,7 @@ import '../../features/transaction_inquiry/presentation/pages/inquiry/transactio
 import '../../features/transaction_inquiry/presentation/pages/request_service/new_request_service/new_request_service_location_screen.dart';
 import '../../features/transaction_inquiry/presentation/pages/request_service/new_request_service/new_request_service_page.dart';
 import '../../features/vd/vd_exports.dart';
+import '../../features/weather/weather_exports.dart';
 import '../../features/zmzm_points/presentation/pages/zmzm_points_page.dart';
 import '../../features/wallet/wallet_exports.dart';
 import 'package:balady_plus/etmam_app/app.dart';
@@ -205,6 +210,19 @@ class AppRouter {
       //? licenses page
       case RouteName.licenses:
         return MaterialPageRoute(builder: (_) => const LicensesPage());
+      //? About Balady
+      case RouteName.aboutBalady:
+        return MaterialPageRoute(builder: (_) => const AboutBaladyScreen());
+      //? About Balady
+      case RouteName.rateUs:
+        return MaterialPageRoute(builder: (_) => const RateUs());
+      //? Help
+      case RouteName.help:
+        return MaterialPageRoute(builder: (_) => const HelpScreen());
+      //? Contact Info
+      case RouteName.contactInfoPage:
+        return MaterialPageRoute(
+            builder: (_) => const ContactInformationScreen());
 
       // objections page
       case RouteName.objections:
@@ -338,6 +356,11 @@ class AppRouter {
           builder: (_) => ObjectionsDetailsPage(
             params: params!,
           ),
+        );
+
+      case RouteName.weatherMainPage:
+        return MaterialPageRoute(
+          builder: (_) => const WeatherMainPage(),
         );
 
       case RouteName.DCCameraPage:

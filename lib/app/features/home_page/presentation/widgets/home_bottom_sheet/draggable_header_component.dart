@@ -71,7 +71,7 @@ class _DraggableHeaderComponentState extends State<DraggableHeaderComponent> {
                   ),
                 ],
               ),
-              const CurrentWeather()
+              const CurrentWeather(),
             ],
           ),
           const SizedBox(height: 16),

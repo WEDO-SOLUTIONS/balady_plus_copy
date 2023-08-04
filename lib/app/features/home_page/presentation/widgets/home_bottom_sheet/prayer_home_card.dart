@@ -26,9 +26,15 @@ class PrayerHomeCard extends StatelessWidget {
                 decoration: BoxDecoration(
                   borderRadius: const BorderRadius.all(Radius.circular(16)),
                   image: DecorationImage(
-                    image: AssetImage(state.isAM
-                        ? ImagePath.prayerLightBg
-                        : ImagePath.prayerDarkBg),
+                    image: AssetImage(state.nextPrayer!.prayer == Prayers.fajr
+                        ? ImagePath.fajrBg
+                        : state.nextPrayer!.prayer == Prayers.dhuhr
+                            ? ImagePath.zuhrBg
+                            : state.nextPrayer!.prayer == Prayers.asr
+                                ? ImagePath.asrBg
+                                : state.nextPrayer!.prayer == Prayers.maghrib
+                                    ? ImagePath.maghrbBg
+                                    : ImagePath.ishabBg),
                     fit: BoxFit.fitHeight,
                   ),
                 ),
@@ -48,9 +54,15 @@ class PrayerHomeCard extends StatelessWidget {
                                   state.nextPrayer != null
                                       ? CustomTextWidget(
                                           "صلاه ${state.nextPrayer!.prayer.label.tr()}",
-                                          fontColor: state.isAM
+                                          fontColor: state.nextPrayer!.prayer == Prayers.fajr
+                                              ? AppColor.primary900Light
+                                              : state.nextPrayer!.prayer == Prayers.dhuhr
                                               ? AppColor.secondary400Light
-                                              : AppColor.primary900Light,
+                                              : state.nextPrayer!.prayer == Prayers.asr
+                                              ? AppColor.secondary400Light
+                                              : state.nextPrayer!.prayer == Prayers.maghrib
+                                              ? AppColor.brown2
+                                              : AppColor.white.withOpacity(0.4),
                                           fontWeight: AppFontWeight.bold,
                                           fontSize: 11,
                                         )
@@ -68,8 +80,14 @@ class PrayerHomeCard extends StatelessWidget {
                                                       12
                                                   ? "PM"
                                                   : "AM",
-                                              fontColor: state.isAM
+                                              fontColor: state.nextPrayer!.prayer == Prayers.fajr
+                                                  ? AppColor.white
+                                                  : state.nextPrayer!.prayer == Prayers.dhuhr
                                                   ? AppColor.primary900Light
+                                                  : state.nextPrayer!.prayer == Prayers.asr
+                                                  ? AppColor.primary900Light
+                                                  : state.nextPrayer!.prayer == Prayers.maghrib
+                                                  ? AppColor.brown2
                                                   : AppColor.white,
                                               fontWeight:
                                                   AppFontWeight.semiBold,
@@ -79,8 +97,14 @@ class PrayerHomeCard extends StatelessWidget {
                                             CustomTextWidget(
                                               DateFormat("hh:mm").format(
                                                   state.nextPrayer!.dateTime),
-                                              fontColor: state.isAM
+                                              fontColor:  state.nextPrayer!.prayer == Prayers.fajr
+                                                  ? AppColor.white
+                                                  : state.nextPrayer!.prayer == Prayers.dhuhr
                                                   ? AppColor.primary900Light
+                                                  : state.nextPrayer!.prayer == Prayers.asr
+                                                  ? AppColor.primary900Light
+                                                  : state.nextPrayer!.prayer == Prayers.maghrib
+                                                  ? AppColor.brown2
                                                   : AppColor.white,
                                               fontWeight: AppFontWeight.bold,
                                               fontSize: 28,
@@ -98,13 +122,25 @@ class PrayerHomeCard extends StatelessWidget {
                                 padding: const EdgeInsets.all(12),
                                 decoration: BoxDecoration(
                                   shape: BoxShape.circle,
-                                  color: state.isAM
-                                      ? AppColor.white.withOpacity(0.3)
+                                  color:  state.nextPrayer!.prayer == Prayers.fajr
+                                      ? AppColor.white.withOpacity(0.1)
+                                      : state.nextPrayer!.prayer == Prayers.dhuhr
+                                      ? AppColor.white9.withOpacity(0.65)
+                                      : state.nextPrayer!.prayer == Prayers.asr
+                                      ? AppColor.white9.withOpacity(0.65)
+                                      : state.nextPrayer!.prayer == Prayers.maghrib
+                                      ? AppColor.brownLight
                                       : AppColor.white.withOpacity(0.1),
                                 ),
                                 child: CustomSvgIconWidget(
                                   IconPath.notificationIc2,
-                                  iconColor: state.isAM
+                                  iconColor: state.nextPrayer!.prayer == Prayers.fajr
+                                      ? AppColor.white
+                                      : state.nextPrayer!.prayer == Prayers.dhuhr
+                                      ? AppColor.primary900Light
+                                      : state.nextPrayer!.prayer == Prayers.asr
+                                      ? AppColor.primary900Light
+                                      : state.nextPrayer!.prayer == Prayers.maghrib
                                       ? AppColor.primary900Light
                                       : AppColor.white,
                                   iconSize: 24,

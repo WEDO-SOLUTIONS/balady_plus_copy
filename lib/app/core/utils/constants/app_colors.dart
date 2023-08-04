@@ -147,4 +147,7 @@ class AppColor {
 
   static const Color athkarAppbarGreen = Color(0xff1C7372);
   static const Color athkarAppbarGreen2 = Color(0xff127F4C);
+  static const Color brown2 = Color(0xff928382);
+  static const Color white9 = Color(0xffF8FFFD);
+  static const Color brownLight = Color(0xffFFECDF);
 }

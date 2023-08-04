@@ -79,6 +79,7 @@ export 'presentation/dialogs/bottom_sheet_dialogs.dart';
 export 'presentation/dialogs/loading_dialogs.dart';
 export 'presentation/dialogs/message_dialogs.dart';
 export 'presentation/dialogs/building_requirements_dialog.dart';
+export 'presentation/dialogs/update_app_alert_dialog.dart';
 
 /// presentation -> fields
 export 'presentation/fields/email_field.dart';

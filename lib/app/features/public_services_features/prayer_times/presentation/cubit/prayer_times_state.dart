@@ -23,7 +23,7 @@ class PrayerTimesState extends Equatable {
       this.lastUpdatedDate});
 
   bool get isAM =>
-      nextPrayer?.prayer == Prayers.fajr ||
+      nextPrayer?.prayer == Prayers.maghrib ||
       nextPrayer?.prayer == Prayers.dhuhr ||
       nextPrayer?.prayer == Prayers.asr;
 

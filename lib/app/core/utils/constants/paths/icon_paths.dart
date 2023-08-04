@@ -46,6 +46,10 @@ class IconPath {
   static const arrowForward2 = '${_svgIconPath}arrow_forward$_svg';
   static const receiveSquare = '${_svgIconPath}receive-square$_svg';
   static const note2 = '${_svgIconPath}note_2$_svg';
+  static const call = '${_svgIconPath}call$_svg';
+  static const global = '${_svgIconPath}global$_svg';
+  static const mobile = '${_svgIconPath}mobile$_svg';
+  static const magicStar = '${_svgIconPath}magic_star$_svg';
 
   static const informationCircleIcon =
       '${_svgIconPath}informationCircleIcon$_svg';
