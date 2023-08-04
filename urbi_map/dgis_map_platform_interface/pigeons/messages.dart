@@ -16,6 +16,27 @@ class GeoPointMessage {
   final double longitude;
 }
 
+class ScreenSizeMessage {
+  ScreenSizeMessage(this.width, this.height);
+
+  final int width;
+  final int height;
+}
+
+class CalcPositionOptionsMessage {
+  CalcPositionOptionsMessage(
+    this.screenArea,
+    this.tilt,
+    this.bearing,
+    this.size,
+  );
+
+  final CameraSetPaddingMessage? screenArea;
+  final double? tilt;
+  final double? bearing;
+  final ScreenSizeMessage? size;
+}
+
 class GeoPointWithElevationMessage {
   GeoPointWithElevationMessage(this.latitude, this.longitude, this.elevation);
 
@@ -892,6 +913,24 @@ abstract class MapApi {
   CameraPositionMessage getCameraPosition();
 
   @async
+  CameraPositionMessage calcPositionForMarkers(
+    List<String> markers,
+    CalcPositionOptionsMessage options,
+  );
+
+  @async
+  CameraPositionMessage calcPositionForPolygons(
+    List<String> polygons,
+    CalcPositionOptionsMessage options,
+  );
+
+  @async
+  CameraPositionMessage calcPositionForPolylines(
+    List<String> polylines,
+    CalcPositionOptionsMessage options,
+  );
+
+  @async
   DirectoryObjectMessage searchByObjectId(DgisObjectIdMessage objectId);
 
   @async
@@ -965,6 +1004,18 @@ abstract class MapApi {
 
   @async
   void removeMapObjectManager(MapObjectManagerMessage id);
+
+  @async
+  void setClusterIcon(String id, String icon);
+
+  @async
+  void releaseCluster(String id);
+
+  @async
+  void setMapObjectManagerIsVisible(
+    bool isVisible,
+    MapObjectManagerMessage? manager,
+  );
 
   @async
   void addPolygon(PolygonMessage polygon);

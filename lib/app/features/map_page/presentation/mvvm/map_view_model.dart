@@ -184,8 +184,25 @@ class MapViewModel extends BaseViewModel {
             textStyle: MarkerTextStyleMessage(fontSize: 16),
           );
         },
-        onTap: (clusterObject) {
-          print(clusterObject.text);
+        onTap: (clusterObject) async {
+          clusterObject.setIcon("assets/maps/icons/ic_marker_red.svg");
+
+          final clusterPosition = await controller.calcPositionForMarkers(
+            clusterObject.markers,
+            CalcPositionOptionsMessage(
+              screenArea: CameraSetPaddingMessage(
+                bottomPadding: 40,
+                leftPadding: 40,
+                topPadding: 40,
+                rightPadding: 40,
+              ),
+            ),
+          );
+          await controller.moveCamera(
+            clusterPosition,
+            1.5,
+            CameraAnimationTypeMessage.default_,
+          );
         },
       ),
     );

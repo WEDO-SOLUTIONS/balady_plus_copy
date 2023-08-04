@@ -211,7 +211,12 @@ class MethodChannelDgisMapPlugin implements DgisMapPlugin, FlutterMapApi {
           case MarkerTapEvent.name:
             return _objectTapEventHandler.markerTapEvent(map);
           case ClusterTapEvent.name:
-            return _objectTapEventHandler.clusterTapEvent(map);
+            unawaited(_objectTapEventHandler.clusterTapEvent(map, _api).then(
+              (value) async {
+                await _api.releaseCluster(map["cluster"]["id"]);
+              },
+            ));
+            break;
           case PolygonTapEvent.name:
             return _objectTapEventHandler.polygonTapEvent(map);
           case PolylineTapEvent.name:
@@ -275,6 +280,30 @@ class MethodChannelDgisMapPlugin implements DgisMapPlugin, FlutterMapApi {
   @override
   Future<void> setCameraPosition(CameraPositionMessage cameraPosition) {
     return _api.setCameraPosition(cameraPosition);
+  }
+
+  @override
+  Future<void> moveCamera(CameraPositionMessage cameraPosition, double duration,
+      CameraAnimationTypeMessage animationType) {
+    return _api.moveCamera(cameraPosition, duration, animationType);
+  }
+
+  @override
+  Future<CameraPositionMessage> calcPositionForMarkers(
+      List<String> markers, CalcPositionOptionsMessage options) {
+    return _api.calcPositionForMarkers(markers, options);
+  }
+
+  @override
+  Future<CameraPositionMessage> calcPositionForPolygons(
+      List<String> polygons, CalcPositionOptionsMessage options) {
+    return _api.calcPositionForPolygons(polygons, options);
+  }
+
+  @override
+  Future<CameraPositionMessage> calcPositionForPolylines(
+      List<String> polylines, CalcPositionOptionsMessage options) {
+    return _api.calcPositionForPolylines(polylines, options);
   }
 
   @override
@@ -436,6 +465,12 @@ class MethodChannelDgisMapPlugin implements DgisMapPlugin, FlutterMapApi {
   ) {
     _objectTapEventHandler.removeClusterRenderer(manager.id);
     return _api.removeMapObjectManager(manager);
+  }
+
+  @override
+  Future<void> setMapObjectManagerIsVisible(
+      bool isVisible, MapObjectManagerMessage? manager) {
+    return _api.setMapObjectManagerIsVisible(isVisible, manager);
   }
 
   @override

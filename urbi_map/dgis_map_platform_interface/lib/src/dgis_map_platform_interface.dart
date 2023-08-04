@@ -94,7 +94,28 @@ abstract class DgisMapPlugin extends PlatformInterface {
 
   Future<void> setCameraPosition(CameraPositionMessage cameraPosition);
 
+  Future<void> moveCamera(
+    CameraPositionMessage cameraPosition,
+    double duration,
+    CameraAnimationTypeMessage animationType,
+  );
+
   Future<CameraPositionMessage> getCameraPosition();
+
+  Future<CameraPositionMessage> calcPositionForMarkers(
+    List<String> markers,
+    CalcPositionOptionsMessage options,
+  );
+
+  Future<CameraPositionMessage> calcPositionForPolygons(
+    List<String> polygons,
+    CalcPositionOptionsMessage options,
+  );
+
+  Future<CameraPositionMessage> calcPositionForPolylines(
+    List<String> polylines,
+    CalcPositionOptionsMessage options,
+  );
 
   Future<void> unselectPanorama();
 
@@ -164,6 +185,11 @@ abstract class DgisMapPlugin extends PlatformInterface {
   );
 
   Future<void> removeMapObjectManager(MapObjectManagerMessage manager);
+
+  Future<void> setMapObjectManagerIsVisible(
+    bool isVisible,
+    MapObjectManagerMessage? manager,
+  );
 
   Future<void> addPolygon(
     Polygon polygon,

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:dgis_map_platform_interface/library.dart';
 
 /// Model corresponds render object on map
@@ -23,8 +25,11 @@ class Marker {
 class SimpleClusterObject {
   /// Base class constructor
   SimpleClusterObject(
+    this._api,
+    this._id,
     this.position,
     this.objectCount,
+    this.markers,
     this.anchor,
     this.iconOpacity,
     this.textStyle,
@@ -33,14 +38,22 @@ class SimpleClusterObject {
     this.text,
   );
 
+  final String _id;
+  final MapApi _api;
   final GeoPointWithElevationMessage position;
   final int objectCount;
+  final List<String> markers;
   final MarkerAnchorMessage anchor;
   final double iconOpacity;
   final String text;
   final MarkerTextStyleMessage? textStyle;
   final double iconWidth;
   final MarkerAzimuthMessage? iconMapDirection;
+
+  /// Sets cluster icon. Should be called only inside onTap handler
+  void setIcon(String icon) async {
+    await _api.setClusterIcon(_id, icon);
+  }
 }
 
 /// Model corresponds render object on map
@@ -59,7 +72,7 @@ class ClusteringMapObjectManager {
   final SimpleClusterOptionsMessage Function(int objectCount) renderCluster;
 
   /// Map render object's onTap handler
-  final void Function(SimpleClusterObject)? onTap;
+  final Future<void> Function(SimpleClusterObject)? onTap;
 }
 
 /// Model corresponds render object on map
