@@ -4341,6 +4341,21 @@
 
   "notification": "التنبيهات",
   "notFoundNotification": "لا يوجد تنبيهات",
-  "noData": "لا يوجد بيانات"
+  "noData": "لا يوجد بيانات", 
+  "rent": "الإيجار المؤقت",
+
+  "investment": "المنافسات الإستثمارية",
+  "status": "الحالة:",
+  "sar_day": "ريال / يوم",
+
+  "sar_year": "ريال / سنة",
+
+
+  "sr_booklet": "ريال / الكراسة",
+
+
+  "price_per_period": "ريال / الفترة",
+
+  "sar_per_meter": "ريال / م٢ باليوم"
 
 }

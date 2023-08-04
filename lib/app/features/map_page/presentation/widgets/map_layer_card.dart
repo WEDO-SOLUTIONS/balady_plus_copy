@@ -3,17 +3,20 @@ import 'package:balady_plus/app/features/map_page/extensions/search_category_ext
 import 'package:balady_plus/app/features/map_page/presentation/widgets/map_cards/digging_map_card.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../core/dependency_injection/injection_container.dart';
 import '../../data/model/building_compliance_certificate.dart';
 import '../../data/model/excavations.dart';
+import '../../data/model/investment_sites.dart';
 import '../mvvm/map_view_model.dart';
 import '../mvvm/point_view_model.dart';
 import 'general_card_widget.dart';
 import 'map_cards/ImtethalMapCard_map_card.dart';
 import 'map_cards/investment_map_card.dart';
 import 'map_cards/lands_legends_map_card.dart';
+import 'map_cards/oppotunity_card.dart';
 import 'map_cards/rental_map_card.dart';
 import 'marker_card_widget.dart';
 
@@ -40,12 +43,29 @@ class MapLayerCard extends StatelessWidget {
             },
           );
         case GISMapLayers.Opportunities:
-          return ValueListenableBuilder<Excavations?>(
-            valueListenable: mapViewModel.selectedDiggingPoint,
+          return ValueListenableBuilder<InvestmentSites?>(
+            valueListenable: mapViewModel.selectedInvetmentPoint,
             builder: (_, selectedPoint, __) {
               return mapViewModel.selectedInvetmentPoint.value != null
-                  ? mapViewModel
-                              .selectedInvetmentPoint.value!.opportunityType ==
+                  ? MapCard(
+                      activityId: "",
+                      desc: selectedPoint?.description ?? "",
+                      price: (selectedPoint?.DOCUMENTVALUE.toString() ??
+                              selectedPoint?.DAILYLEASECOST.toString()) ??
+                          "",
+                      area: selectedPoint?.SITEAREA.toString() ?? "",
+                      duration: selectedPoint?.BIDENDDATE ?? "",
+                      type: selectedPoint?.type ?? "",
+                      distance: "",
+                      subMunicipality: selectedPoint?.MUNICIPALITY_ID ?? "",
+                      location: selectedPoint?.LOCATIONLISTSTRING,
+                      entityLogo: "",
+                      isEntity: false,
+                      onPress: () {},
+                    )
+                  : Container();
+              return mapViewModel.selectedInvetmentPoint.value != null
+                  ? mapViewModel.selectedInvetmentPoint.value!.TYPE ==
                           "Investment"
                       ? InvestmentMapCard(
                           data: mapViewModel.selectedInvetmentPoint.value!,
@@ -78,4 +98,14 @@ class MapLayerCard extends StatelessWidget {
       }
     });
   }
+}
+
+String getBidEndDate(int? value) {
+  DateTime date = new DateTime.fromMillisecondsSinceEpoch(value!);
+
+  var format = new DateFormat("yMd");
+
+  var dateString = format.format(date);
+
+  return dateString;
 }

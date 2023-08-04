@@ -26,6 +26,8 @@ import '../mvvm/point_view_model.dart';
 import 'package:collection/collection.dart';
 
 import '../pages/mosque_details_page.dart';
+import '../pages/parks_details_page.dart';
+import '../pages/station_details_page.dart';
 
 class GeneralMapCardWidget extends StatelessWidget {
   final PointViewModel pointViewModel;
@@ -50,9 +52,27 @@ class GeneralMapCardWidget extends StatelessWidget {
       onTap: () async {
         if (mapViewModel.selectedCategory.value != null) {
           DirectoryObjectMessage? message = pointViewModel.dataPoint.value;
-          if (message != null)
+          if (message != null &&
+              mapViewModel.selectedCategory.value ==
+                  SearchCategoryMessage.mousques)
             Navigator.push(context, MaterialPageRoute(builder: (ctx) {
               return MosqueDetailsPage(
+                item: (message!, icon, color),
+              );
+            }));
+          else if (message != null &&
+              mapViewModel.selectedCategory.value ==
+                  SearchCategoryMessage.gasStations)
+            Navigator.push(context, MaterialPageRoute(builder: (ctx) {
+              return StationDetailsPage(
+                item: (message!, icon, color),
+              );
+            }));
+          else if (message != null &&
+              mapViewModel.selectedCategory.value ==
+                  SearchCategoryMessage.parks)
+            Navigator.push(context, MaterialPageRoute(builder: (ctx) {
+              return ParksDetailsPage(
                 item: (message!, icon, color),
               );
             }));

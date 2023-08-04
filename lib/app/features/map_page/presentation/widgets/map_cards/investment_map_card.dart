@@ -70,7 +70,7 @@ class InvestmentMapCard extends StatelessWidget {
                     ),
                     CustomVerticalSpace(height: 8),
                     CustomTextWidget(
-                      data.municipality ?? "",
+                      data.MUNICIPALITY_ID ?? "",
                       fontColor: AppColor.blackModern500Light,
                       fontSize: 12,
                       fontWeight: AppFontWeight.semiBold,

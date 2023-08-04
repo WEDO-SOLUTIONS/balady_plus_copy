@@ -12,16 +12,19 @@ enum GISMapLayers {
       icon: Constants.furasLayerIcon,
       selectedIcon: Constants.furasSelectedLayerIcon,
       outFieldsShort: [
-        "OBJECTID",
+        "*"
+        /*"OBJECTID",
         "OPPORTUNITYDESCRIPTION",
         "PYID",
         "TYPE",
         "SOURCECASEKEY",
         "SUBMUNICIPALITY_ID",
         "SITEADDRESS",
-        "MUNICIPALITY_ID",
+        "MUNICIPALITY_ID",*/
       ],
       outFieldsLong: [
+        "*"
+        /*
         "OBJECTID",
         "OPPORTUNITYDESCRIPTION",
         "PYID",
@@ -29,7 +32,7 @@ enum GISMapLayers {
         "SOURCECASEKEY",
         "SUBMUNICIPALITY_ID",
         "SITEADDRESS",
-        "MUNICIPALITY_ID",
+        "MUNICIPALITY_ID",*/
       ]),
 
   Digging(

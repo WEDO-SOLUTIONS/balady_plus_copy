@@ -8,6 +8,7 @@ import '../../../../core/utils/constants/app_colors.dart';
 import '../../../../core/utils/enums/app_font_weights.dart';
 import '../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import '../widgets/map_details_field.dart';
+import '../widgets/map_details_sub_header.dart';
 
 class MosqueDetailsPage extends StatelessWidget {
   final (DirectoryObjectMessage item, String icon, Color color) item;
@@ -63,6 +64,12 @@ class MosqueDetailsPage extends StatelessWidget {
                     )
                   ],
                 ),
+              ),
+              MapDetailsSubHeader(
+                firstTitle: "نوع المنشأة",
+                firstSubTitle: "مسجد",
+                secondTitle: "          ",
+                secondSubTitle: "    ",
               ),
               CustomVerticalSpace(height: 24),
               CustomTextWidget(

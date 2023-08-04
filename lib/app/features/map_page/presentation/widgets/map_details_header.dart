@@ -8,8 +8,10 @@ class MapDetailsHeader extends StatelessWidget {
   final String address;
   final String type;
   final String image;
+  final Color? color;
   const MapDetailsHeader(
       {super.key,
+      this.color,
       required this.name,
       required this.address,
       required this.type,
@@ -27,7 +29,7 @@ class MapDetailsHeader extends StatelessWidget {
         height: 200,
         width: double.infinity,
         decoration: ShapeDecoration(
-          color: Color(0xFFC8A83A),
+          color: color ?? Color(0xFFC8A83A),
 
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(0),
