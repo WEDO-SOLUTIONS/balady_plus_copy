@@ -27,7 +27,7 @@ class AthkarEntityContent extends StatelessWidget {
           ),
           CustomTextWidget(
             params.athkarEntity.description,
-            textStyle: AppStyle.desscriptionAthkarStyle,
+            textStyle: AppStyle.serviceDescriptionStyle,
             maxLines: 4,
           ),
           Expanded(
