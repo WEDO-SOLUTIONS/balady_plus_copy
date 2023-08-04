@@ -19,6 +19,7 @@ class ImagePath {
   static const zmzmBackground = '${_imagePath}zmzm_background$_png';
   static const quranBackground = '${_imagePath}quran_background$_png';
   static const quranBackgroundPage = '${_imagePath}quran_background_page$_png';
+  static const logo2030 = '${_imagePath}logo2030$_png';
 
   static const ayah = '${_imagePath}ayah$_svg';
 
@@ -29,8 +30,11 @@ class ImagePath {
   static const walletBg = '${_imagePath}wallet_bg$_png';
   static const qrBg = '${_imagePath}qr_bg$_png';
 
-  static const prayerDarkBg = '${_imagePath}prayer_bg$_png';
-  static const prayerLightBg = '${_imagePath}prayer_light_bg$_png';
+  static const zuhrBg = '${_imagePath}zuhr_bg$_png';
+  static const maghrbBg = '${_imagePath}maghrb_bg$_png';
+  static const ishabBg = '${_imagePath}isha_bg$_png';
+  static const fajrBg = '${_imagePath}fajr_bg$_png';
+  static const asrBg = '${_imagePath}asr_bg$_png';
   static const smartAdvisorBg = '${_imagePath}balady_expert_bg$_png';
   static const supportImg = '${_imagePath}support_img$_png';
   static const readBg = '${_imagePath}read_bg$_png';

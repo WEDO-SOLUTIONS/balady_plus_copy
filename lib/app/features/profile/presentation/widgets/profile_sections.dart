@@ -65,14 +65,9 @@ class ProfileSections {
         title: 'support'.tr(),
         items: [
           ProfileItem(
-            title: "settings".tr(),
-            icon: IconPath.settings,
-            route: "",
-          ),
-          ProfileItem(
             title: "help".tr(),
             icon: IconPath.help,
-            route: "",
+            route: RouteName.help,
           ),
         ],
       );
@@ -82,12 +77,12 @@ class ProfileSections {
           ProfileItem(
             title: "rate_app".tr(),
             icon: IconPath.rateApp,
-            route: "",
+            route: RouteName.rateUs,
           ),
           ProfileItem(
             title: "about_balady".tr(),
             icon: IconPath.aboutBalady,
-            route: "",
+            route: RouteName.aboutBalady,
           )
         ],
       );

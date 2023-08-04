@@ -9,9 +9,11 @@ class CRPreviousNextButtons extends StatelessWidget {
   const CRPreviousNextButtons({
     Key? key,
     required this.isBtnDisabled,
+    this.onPressed,
   }) : super(key: key);
 
   final bool isBtnDisabled;
+  final Function()? onPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -28,15 +30,16 @@ class CRPreviousNextButtons extends StatelessWidget {
             btnTextColor: isBtnDisabled ? AppColor.black400 : AppColor.white,
             btnPressed: isBtnDisabled
                 ? () {}
-                : () {
-                    if (!isLastPage) {
-                      context
-                          .read<CommercialLicenseBloc>()
-                          .add(const GoToNextPageEvent());
-                    } else {
-                      // context.read<CommercialLicenseBloc>().add(SubmitIncidentEvent());
-                    }
-                  },
+                : onPressed ??
+                    () {
+                      if (!isLastPage) {
+                        context
+                            .read<CommercialLicenseBloc>()
+                            .add(const GoToNextPageEvent());
+                      } else {
+                        // context.read<CommercialLicenseBloc>().add(SubmitIncidentEvent());
+                      }
+                    },
             btnRadius: 8,
             btnText: isLastPage ? "submit_order".tr() : ("next").tr(),
             btnTextSize: 16,

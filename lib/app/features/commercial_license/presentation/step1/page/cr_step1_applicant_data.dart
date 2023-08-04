@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
+import '../../../../../core/utils/utils_exports.dart';
 import '../../../../_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
 import '../../../../_shared_feature_/shared_feature_exports.dart';
 import '../../../commercial_license_exports.dart';
@@ -69,7 +70,22 @@ class CRStep1ApplicantData extends StatelessWidget {
                       ),
                     ),
                   ),
-                  const CRPreviousNextButtons(isBtnDisabled: false),
+                  CRPreviousNextButtons(
+                      isBtnDisabled: false,
+                      onPressed: () {
+                        if (!state.isicActivitiesNotExistInBalady.isNotEmpty) {
+                          BottomSheetDialog.showDraggableSheet(context,
+                              child: BlocProvider.value(
+                                  value: BlocProvider.of<
+                                      CrStep1ApplicantDataCubit>(context),
+                                  child:
+                                      const IsicActivitiesDialogNotExistInBalady()));
+                        } else {
+                          context
+                              .read<CommercialLicenseBloc>()
+                              .add(const GoToNextPageEvent());
+                        }
+                      }),
                 ],
               ),
             if (state.recordStatus.isSubmissionFailure)

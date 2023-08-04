@@ -2,6 +2,9 @@ import 'package:balady_plus/app/features/daem/daem_exports.dart';
 import 'package:balady_plus/app/features/commercial_license/commercial_license_exports.dart';
 import 'package:balady_plus/app/features/objectable_transactions/domain/entities/create_objection_page_params.dart';
 import 'package:balady_plus/app/features/objections/domain/entities/objection_details.dart';
+import 'package:balady_plus/app/features/profile_features/about_balady/presentation/screens/about_balady_screen.dart';
+import 'package:balady_plus/app/features/profile_features/help/presentation/screens/contact_information_screen.dart';
+import 'package:balady_plus/app/features/profile_features/rate_us/rate_us.dart';
 import 'package:balady_plus/app/features/quran/presentation/pages/quran_bookmarks.dart';
 import 'package:balady_plus/app/features/quran/quran_exports.dart';
 import 'package:balady_plus/app/features/wallet/core/models/wallet_item.dart';
@@ -42,6 +45,7 @@ import '../../features/municipal_services/municipal_advisor/municipal_advisor_ex
 import '../../features/objections/presentation/pages/objections_page.dart';
 import '../../features/profile_features/dashboard/dashboard_exports.dart'
     show DashBoardPage, NotificationPage;
+import '../../features/profile_features/help/presentation/screens/help_screen.dart';
 import '../../features/profile_features/invoices/invoices_exports.dart'
     show InvoiceDetailsPage, InvoiceEntity, InvoicesPage;
 import '../../features/profile_features/licenses/licenses_exports.dart'
@@ -169,6 +173,18 @@ class AppRouter {
       //? licenses page
       case RouteName.licenses:
         return MaterialPageRoute(builder: (_) => const LicensesPage());
+      //? About Balady
+      case RouteName.aboutBalady:
+        return MaterialPageRoute(builder: (_) => const AboutBaladyScreen());
+      //? About Balady
+      case RouteName.rateUs:
+        return MaterialPageRoute(builder: (_) => const RateUs());
+     //? Help
+      case RouteName.help:
+        return MaterialPageRoute(builder: (_) => const HelpScreen());
+      //? Contact Info
+      case RouteName.contactInfoPage:
+        return MaterialPageRoute(builder: (_) => const ContactInformationScreen());
 
       // objections page
       case RouteName.objections:

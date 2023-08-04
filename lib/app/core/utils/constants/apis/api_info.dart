@@ -193,6 +193,8 @@ class ApiUrl {
       "/v1/balady-commercial-services/activities/by-isic/details/isicCode/1004";
   static const String subActivityDetails =
       "/v1/balady-commercial-services/activities/";
+  static const String addIsicActivities =
+      "/v1/balady-commercial-services/isic-activities/add-cr";
 
 //! Violations
   static const String violationsStatus =

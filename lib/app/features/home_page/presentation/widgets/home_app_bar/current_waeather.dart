@@ -35,8 +35,7 @@ class CurrentWeather extends StatelessWidget {
                   color: AppColor.blackModern600Light,
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
-                  height: 1,
-                ),
+                  height: 1),
               ),
               Text(
                 weatherCondition.label.tr(),

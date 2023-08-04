@@ -22,7 +22,7 @@ class PrayerTimesState extends Equatable {
   });
 
   bool get isAM =>
-      nextPrayer?.prayer == Prayers.fajr ||
+      nextPrayer?.prayer == Prayers.maghrib ||
       nextPrayer?.prayer == Prayers.dhuhr ||
       nextPrayer?.prayer == Prayers.asr;
 
