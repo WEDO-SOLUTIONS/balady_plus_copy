@@ -10,7 +10,6 @@
 #include <flutter_secure_storage_windows/flutter_secure_storage_windows_plugin.h>
 #include <geolocator_windows/geolocator_windows.h>
 #include <pdfx/pdfx_plugin.h>
-#include <sentry_flutter/sentry_flutter_plugin.h>
 #include <smart_auth/smart_auth_plugin.h>
 #include <url_launcher_windows/url_launcher_windows.h>
 
@@ -23,8 +22,6 @@ void RegisterPlugins(flutter::PluginRegistry* registry) {
       registry->GetRegistrarForPlugin("GeolocatorWindows"));
   PdfxPluginRegisterWithRegistrar(
       registry->GetRegistrarForPlugin("PdfxPlugin"));
-  SentryFlutterPluginRegisterWithRegistrar(
-      registry->GetRegistrarForPlugin("SentryFlutterPlugin"));
   SmartAuthPluginRegisterWithRegistrar(
       registry->GetRegistrarForPlugin("SmartAuthPlugin"));
   UrlLauncherWindowsRegisterWithRegistrar(
