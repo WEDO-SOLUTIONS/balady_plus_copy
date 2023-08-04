@@ -30,12 +30,20 @@ class WindAndWeatherCard extends StatelessWidget {
                   children: [
                     Row(
                       children: [
-                        SvgPicture.asset(IconPath.wind_speed),
+                        SvgPicture.asset(
+                          IconPath.wind_speed,
+                          width: 21,
+                          height: 21,
+                          color: AppColor.primary200Light,
+                        ),
                         const SizedBox(
                           width: 4,
                         ),
                         CustomTextWidget(
-                          '${state.allWeatherInfo?.current?.windKph.toString() ?? ''} k/h',
+                          '${state.allWeatherInfo?.current?.windKph.toString() ?? ''} k/h   W',
+                          fontWeight: AppFontWeight.bold,
+                          fontSize: 14,
+                          fontColor: AppColor.primary200Light,
                         ),
                         /*const SizedBox(
                           width: 10,
@@ -46,24 +54,46 @@ class WindAndWeatherCard extends StatelessWidget {
                       ],
                     ),
                     Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        SvgPicture.asset(IconPath.humedity),
-                        const SizedBox(
-                          width: 10,
+                        SvgPicture.asset(
+                          IconPath.humedity,
+                          width: 15,
+                          height: 15,
+                          color: AppColor.primary200Light,
                         ),
-                        CustomTextWidget(state.allWeatherInfo?.current?.humidity
-                                .toString() ??
-                            ""),
+                        const SizedBox(
+                          width: 4,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 4),
+                          child: CustomTextWidget(
+                            state.allWeatherInfo?.current?.humidity.toString() ??
+                                "",
+                            fontWeight: AppFontWeight.bold,
+                            fontSize: 14,
+                            fontColor: AppColor.primary200Light,
+                          ),
+                        ),
                       ],
                     ),
                     Row(
                       children: [
-                        SvgPicture.asset(IconPath.eye),
+                        SvgPicture.asset(
+                          IconPath.eye,
+                          width: 21,
+                          height: 21,
+                          color: AppColor.primary200Light,
+                        ),
                         const SizedBox(
                           width: 4,
                         ),
                         CustomTextWidget(
-                            '${state.allWeatherInfo?.current?.visKm.toString() ?? ''} km'),
+                          '${state.allWeatherInfo?.current?.visKm.toString() ?? ''} km',
+                          fontWeight: AppFontWeight.bold,
+                          fontSize: 14,
+                          fontColor: AppColor.primary200Light,
+                        ),
                       ],
                     ),
                   ],

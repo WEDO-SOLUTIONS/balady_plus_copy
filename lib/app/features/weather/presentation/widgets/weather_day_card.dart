@@ -1,4 +1,5 @@
 import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
+import 'package:balady_plus/app/core/utils/enums/app_font_weights.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart'
     show IconPath, WeatherDateFormatter;
 import 'package:balady_plus/app/features/weather/presentation/widgets/expansion_tile.dart';
@@ -36,80 +37,105 @@ class WeatherDayCard extends StatelessWidget {
           hasIcon: false,
           onExpansionChanged: onExpansionChanged,
           initiallyExpanded: isExpanded,
-          title: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                child: CustomTextWidget(
-                  WeatherDateFormatter.isToday(
-                          forecastDay?.date ?? '2022-01-01')
-                      ? 'today'.tr()
-                      : WeatherDateFormatter.getDay(
-                          forecastDay?.date ?? '2022-01-01'),
-                  fontColor: AppColor.blackModern700Light,
-                  textAlign: TextAlign.start,
+          title: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 16),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: CustomTextWidget(
+                    WeatherDateFormatter.isToday(
+                            forecastDay?.date ?? '2022-01-01')
+                        ? 'today'.tr()
+                        : WeatherDateFormatter.getDay(
+                            forecastDay?.date ?? '2022-01-01'),
+                    fontColor: AppColor.blackModern800Light,
+                    fontWeight: AppFontWeight.bold,
+                    fontSize: 16,
+                    textAlign: TextAlign.start,
+                  ),
                 ),
-              ),
-              Expanded(
-                child: Image.network(
-                  'https:${forecastDay?.day?.condition?.icon}',
-                  height: 26,
-                  width: 26,
+                Expanded(
+                  child: Row(
+                    children: [
+                      Image.network(
+                        'https:${forecastDay?.day?.condition?.icon}',
+                        height: 26,
+                        width: 26,
+                      ),
+                      CustomTextWidget(
+                        forecastDay?.day?.condition?.text ?? '',
+                        fontColor: AppColor.blackModern800Light,
+                        fontWeight: AppFontWeight.bold,
+                        fontSize: 13,
+                        textAlign: TextAlign.start,
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              Row(
-                children: [
-                  CustomTextWidget(
-                    '${forecastDay?.day?.maxtempC.toString()} º',
-                    fontColor: Colors.black,
-                    fontSize: 14,
-                    textDirection: TextDirection.ltr,
-                  ),
-                  const SizedBox(
-                    width: 20,
-                  ),
-                  CustomTextWidget(
-                    '${forecastDay?.day?.mintempC.toString()} º',
-                    fontColor: Colors.black,
-                    fontSize: 14,
-                    textDirection: TextDirection.ltr,
-                  ),
-                ],
-              )
-            ],
+                Row(
+                  children: [
+                    CustomTextWidget(
+                      '${forecastDay?.day?.maxtempC.toString()} º',
+                      fontColor: AppColor.blackModern600Light,
+                      fontSize: 14,
+                      fontWeight: AppFontWeight.bold,
+                      textDirection: TextDirection.ltr,
+                    ),
+                    const SizedBox(
+                      width: 20,
+                    ),
+                    CustomTextWidget(
+                      '${forecastDay?.day?.mintempC.toString()} º',
+                      fontColor: AppColor.blackModern600Light,
+                      fontWeight: AppFontWeight.bold,
+                      fontSize: 14,
+                      textDirection: TextDirection.ltr,
+                    ),
+                  ],
+                )
+              ],
+            ),
           ),
           children: [
             SizedBox(
-                height: 155,
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  shrinkWrap: true,
-                  itemCount: 24,
-                  itemBuilder: (context, index) {
-                    var hour = forecastDay?.hour?.elementAt(index);
-                    return Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                height: 100,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  child: ListView.separated(
+                    separatorBuilder: (_,__)=>const SizedBox(width: 24),
+                    scrollDirection: Axis.horizontal,
+                    shrinkWrap: true,
+                    itemCount: 24,
+                    itemBuilder: (context, index) {
+                      var hour = forecastDay?.hour?.elementAt(index);
+                      return Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           CustomTextWidget(
                             ' ${hour?.time?.split(" ")[1].split(":")[0].tr()}',
-                            fontColor: Colors.black,
+                            fontColor: AppColor.blackModern600Light,
+                            fontWeight: AppFontWeight.bold,
                             fontSize: 10,
                           ),
+                          const SizedBox(height: 4),
                           Image.network(
                             'https:${hour?.condition?.icon}',
+                            width: 40,
+                            height: 40,
                           ),
+                          const SizedBox(height: 4),
                           CustomTextWidget(
                             '${hour?.tempC.toString()} º',
-                            fontColor: Colors.black,
+                            fontColor: AppColor.blackModern600Light,
                             fontSize: 14,
+                            fontWeight: AppFontWeight.bold,
                             textDirection: TextDirection.ltr,
                           ),
                         ],
-                      ),
-                    );
-                  },
+                      );
+                    },
+                  ),
                 ))
           ],
         ),

@@ -18,48 +18,83 @@ class CurrentWeatherContent extends StatelessWidget {
     return BlocBuilder<WeatherBloc, WeatherState>(
       builder: (context, state) {
         return Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.only(left: 16, right: 16, bottom: 16),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               SizedBox(
                 height: MediaQuery.of(context).padding.top,
               ),
-              SvgPicture.asset(
-                IconPath.partlyClouded,
-                width: 56,
+              Image.network(
+                'https:${state.allWeatherInfo?.current?.condition?.icon}',
                 height: 56,
+                width: 56,
               ),
-              SizedBox(height: 8),
-              CustomTextWidget(
-                state.allWeatherInfo?.current?.tempC.toString() ?? '',
-                fontSize: 20,
+              const SizedBox(height: 2),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Padding(
+                    padding: EdgeInsets.only(bottom: 6),
+                    child: CustomTextWidget(
+                      "C",
+                      fontSize: 18,
+                      fontWeight: AppFontWeight.regular,
+                    ),
+                  ),
+                  const SizedBox(width: 1),
+                  const Padding(
+                    padding: EdgeInsets.only(bottom: 10),
+                    child: CustomTextWidget(
+                      "°",
+                      fontSize: 20,
+                      fontWeight: AppFontWeight.regular,
+                    ),
+                  ),
+                  CustomTextWidget(
+                    state.allWeatherInfo?.current?.tempC
+                            .toString()
+                            .substring(0, 2) ??
+                        '',
+                    fontSize: 20,
+                    fontWeight: AppFontWeight.regular,
+                  ),
+                  const SizedBox(width: 8),
+                  CustomTextWidget(
+                    state.allWeatherInfo?.current?.condition?.text ?? '',
+                    fontSize: 14,
+                    fontWeight: AppFontWeight.bold,
+                  ),
+                ],
               ),
-              UnKownWeatherLocation(
-                onTap: () {
-                  context.read<WeatherBloc>().add(GetWeatherForLocation());
-                },
-              ),
+              // UnKownWeatherLocation(
+              //   onTap: () {
+              //     context.read<WeatherBloc>().add(GetWeatherForLocation());
+              //   },
+              // ),
               Divider(
                 color: AppColor.divider.withOpacity(0.2),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 8,
               ),
               IntrinsicHeight(
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 12),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       SunriseOrSunsetTime.sunrise(
                           time: state.allWeatherInfo?.forecast?.forecastday?[0]
                                   .astro?.sunrise
                                   ?.replaceAll('AM', '') ??
                               ''),
-                      VerticalDivider(
-                        thickness: 1,
-                        color: AppColor.divider.withOpacity(0.2),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8 , horizontal: 36),
+                        child: VerticalDivider(
+                          thickness: 1,
+                          color: AppColor.divider.withOpacity(0.2),
+                        ),
                       ),
                       SunriseOrSunsetTime.sunset(
                           time: state.allWeatherInfo?.forecast!.forecastday?[0]
@@ -70,8 +105,8 @@ class CurrentWeatherContent extends StatelessWidget {
                   ),
                 ),
               ),
-              SizedBox(
-                height: 8,
+              const SizedBox(
+                height: 18,
               ),
               BlocProvider.value(
                 value: context.read<WeatherBloc>(),

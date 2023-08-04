@@ -4173,6 +4173,7 @@
 
   "notification": "التنبيهات",
   "notFoundNotification": "لا يوجد تنبيهات",
-  "noData": "لا يوجد بيانات"
+  "noData": "لا يوجد بيانات",
+  "today": "اليوم"
 
 }
