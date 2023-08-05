@@ -1,3 +1,5 @@
+import '../../../../core/utils/utils_exports.dart';
+
 class AllWeatherInfoEntity {
   final Location? location;
   final Current? current;
@@ -114,6 +116,17 @@ class Condition {
     this.icon,
     this.code,
   });
+
+  bool get isNight => icon?.contains("night") ?? false;
+
+  String get iconPath {
+    if (code != null) {
+      return isNight
+          ? "${IconPath.weatherNight}${icon!.split("night/").last.replaceAll(".png", ".svg")}"
+          : "${IconPath.weatherDay}${icon!.split("day/").last.replaceAll(".png", ".svg")}";
+    }
+    return '';
+  }
 }
 
 enum Icon {

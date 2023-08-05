@@ -123,6 +123,9 @@ class IconPath {
   static const eye = '${_svgWeatherIconPath}eye$_svg';
   static const danger = '${_svgWeatherIconPath}danger$_svg';
 
+  static const weatherDay = 'assets/icons/svg/weather/day/';
+  static const weatherNight = 'assets/icons/svg/weather/night/';
+
 
   // Map
   static const layers = '${_svgMapIconPath}layers$_svg';

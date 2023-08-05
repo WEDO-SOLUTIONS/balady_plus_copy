@@ -193,6 +193,8 @@ flutter:
     - assets/icons/png/
     - assets/icons/png/vd/
     - assets/icons/png/qr/
+    - assets/icons/svg/weather/day/
+    - assets/icons/svg/weather/night/
     - assets/images/
     - assets/langs/
     - assets/quran/

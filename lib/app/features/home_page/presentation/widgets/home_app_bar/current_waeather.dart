@@ -29,17 +29,16 @@ class CurrentWeather extends StatelessWidget {
         },
         child: BlocBuilder<WeatherBloc, WeatherState>(
           builder: (context, state) {
-            if (state.allWeatherInfo?.current?.condition?.icon != null) {
+            if (state.allWeatherInfo?.current != null) {
               return Padding(
                 padding: const EdgeInsetsDirectional.only(end: 16),
                 child: Row(
                   children: [
-                    Image.network(
-                      'https:${state.allWeatherInfo?.current?.condition?.icon}',
-                      height: 28,
-                      width: 28,
+                    CustomSvgIconWidget(
+                      state.allWeatherInfo?.current?.condition?.iconPath??'',
+                      iconSize: 28,
                     ),
-                    const SizedBox(width: 2),
+                    const SizedBox(width: 6),
                     Column(
                       children: [
                         Text(
