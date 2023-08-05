@@ -14,8 +14,8 @@ import 'package:flutter/widgets.dart' show SizedBox;
 
 import '../../core/utils/utils_exports.dart'
     show RouteName, ScaleRotatePage, SliderUpPage;
-import '../../features/unkown/pages/investment_page.dart';
-import '../../features/unkown/pages/temp_rental_page.dart';
+import '../../features/unknow/pages/investment_page.dart';
+import '../../features/unknow/pages/temp_rental_page.dart';
 import '../../features/_shared_feature_/presentation/pages/view_dms_image_screen.dart';
 import '../../features/_shared_feature_/shared_feature_exports.dart';
 import '../../features/_shared_feature_/data/entities/success_screen_args.dart';
