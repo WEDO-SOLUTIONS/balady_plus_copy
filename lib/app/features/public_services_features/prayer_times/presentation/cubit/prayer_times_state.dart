@@ -21,6 +21,11 @@ class PrayerTimesState extends Equatable {
     this.prayerTimeSettings = const [],
   });
 
+  bool get isAM =>
+      nextPrayer?.prayer == Prayers.maghrib ||
+      nextPrayer?.prayer == Prayers.dhuhr ||
+      nextPrayer?.prayer == Prayers.asr;
+
   String get error => errorMessage ?? '';
   bool get isNotificationDisable => prayerTimeSettings.contains("0");
 

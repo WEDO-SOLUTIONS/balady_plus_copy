@@ -25,6 +25,7 @@ export 'presentation/step11/page/cr_step11_request_review.dart';
 export 'presentation/commercial_license/widgets/commercial_license_body.dart';
 export 'presentation/commercial_license/widgets/previous_next_button.dart';
 export 'presentation/commercial_license/widgets/cr_header_desc.dart';
+export 'presentation/step1/widgets/isic_activities_dialog_not_exist_in_balady.dart';
 export 'presentation/step2/widgets/workers_type_component.dart';
 export 'presentation/step2/widgets/extra_activity_card.dart';
 export 'presentation/step2/widgets/extra_activity_component.dart';
@@ -47,6 +48,7 @@ export 'domain/entities/record_info_entity.dart';
 export 'domain/entities/submit_step1_params.dart';
 export 'domain/entities/sub_activit_entity.dart';
 export 'domain/entities/sub_activity_details_entity.dart';
+export 'domain/entities/add_isic_activities_params.dart';
 
 // repo
 export 'domain/repositories/cr_repository.dart';
@@ -56,6 +58,7 @@ export 'domain/use_cases/get_record_info.dart';
 export 'domain/use_cases/submit_step1.dart';
 export 'domain/use_cases/get_sub_activities.dart';
 export 'domain/use_cases/get_sub_activity_details.dart';
+export 'domain/use_cases/add_isic_activities.dart';
 
 
 /// Data

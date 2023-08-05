@@ -10,9 +10,11 @@ part 'cr_step1_applicant_data_state.dart';
 
 class CrStep1ApplicantDataCubit extends Cubit<CrStep1ApplicantDataState> {
   final GetRecordInfo _getRecordInfo;
+  final AddIsicActivities _addIsicActivities;
 
   CrStep1ApplicantDataCubit()
       : _getRecordInfo = GetRecordInfo(repository: sl()),
+        _addIsicActivities = AddIsicActivities(repository: sl()),
         super(const CrStep1ApplicantDataState());
 
   void getRecordInfo() async {
@@ -30,5 +32,23 @@ class CrStep1ApplicantDataCubit extends Cubit<CrStep1ApplicantDataState> {
         (success) => emit(state.copyWith(
             recordStatus: BlocStatus.success,
             recordInfo: success.data?.result)));
+  }
+
+  void addIsicActivities() async {
+    emit(state.copyWith(addIsicActivitiesStatus: BlocStatus.loading));
+    final response = await _addIsicActivities(AddIsicActivitiesParams(
+      crActivities: state.isicActivitiesNotExistInBalady,
+      crNumber: state.recordInfo?.crNumber,
+      identityNumber: state.recordInfo?.crInfo?.nationalNumber,
+      mobileNumber: state.recordInfo?.crInfo?.phoneNo,
+    ));
+
+    response.fold(
+        (failure) => emit(state.copyWith(
+              addIsicActivitiesStatus: BlocStatus.failure,
+              errorMessage: (failure as ServerFailure).errorMessage,
+            )),
+        (success) =>
+            emit(state.copyWith(addIsicActivitiesStatus: BlocStatus.success)));
   }
 }

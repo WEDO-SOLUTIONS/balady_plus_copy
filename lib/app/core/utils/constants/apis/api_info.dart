@@ -133,6 +133,9 @@ class ApiUrl {
   static const vehicles = 'v1/damaged-vehicle-mobile/vehicles';
   static const vehicleRecovery = 'v1/damaged-vehicle-mobile/vehicle-recovery';
 
+  //Weather
+  static const weatherForcastAPI = '/v1/forecast.json';
+
 // Pega Incdients
 
   static const String IncidentDownloadFile =
@@ -193,6 +196,8 @@ class ApiUrl {
       "/v1/balady-commercial-services/activities/by-isic/details/isicCode/1004";
   static const String subActivityDetails =
       "/v1/balady-commercial-services/activities/";
+  static const String addIsicActivities =
+      "/v1/balady-commercial-services/isic-activities/add-cr";
 
 //! Violations
   static const String violationsStatus =

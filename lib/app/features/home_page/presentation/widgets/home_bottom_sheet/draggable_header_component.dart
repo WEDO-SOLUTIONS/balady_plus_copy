@@ -15,7 +15,7 @@ class DraggableHeaderComponent extends StatelessWidget {
     return Container(
       width: MediaQuery.sizeOf(context).width,
       padding: const EdgeInsets.all(16),
-      decoration:   BoxDecoration(
+      decoration: BoxDecoration(
           boxShadow: [
             BoxShadow(
               color: AppColor.blackModern900Light.withOpacity(0.1),
@@ -42,26 +42,23 @@ class DraggableHeaderComponent extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  const CustomTextWidget(
-                    "مساء الخير ، ",
+                  CustomTextWidget(
+                    DateTime.now().hour > 12
+                        ? "مساء الخير ، "
+                        : "صباح الخير ، ",
                     fontSize: 14,
                     fontWeight: AppFontWeight.bold,
                     fontColor: AppColor.blackModern600Light,
                   ),
                   CustomTextWidget(
-                    CommonProperties.userInfo
-                        ?.getFirstAndLastName() ??
-                        '',
+                    CommonProperties.userInfo?.getFirstAndLastName() ?? '',
                     fontSize: 18,
                     fontWeight: AppFontWeight.bold,
                     fontColor: AppColor.primary900Light,
                   ),
                 ],
               ),
-              const CurrentWeather(
-                weatherCondition: WeathherConditions.clear,
-                temperature: "16",
-              )
+              const CurrentWeather(),
             ],
           ),
           const SizedBox(height: 16),

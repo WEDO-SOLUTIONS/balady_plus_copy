@@ -114,6 +114,9 @@ dependencies:
   flutter_local_notifications: 14.1.2
   # A flutter plugin for getting the local timezone of the device.
   flutter_timezone: ^1.0.7
+  youtube_player_flutter: ^8.0.0
+  launch_review: ^3.0.1
+
 
 
   
@@ -129,6 +132,7 @@ dependencies:
   cached_network_image: ^3.2.2
   mime: ^1.0.4
   jwt_decoder:
+  skeletonizer: ^0.3.0
 
   photo_view: ^0.14.0
   flutter_rating_bar: ^4.0.0
@@ -189,10 +193,13 @@ flutter:
     - assets/icons/png/
     - assets/icons/png/vd/
     - assets/icons/png/qr/
+    - assets/icons/svg/weather/day/
+    - assets/icons/svg/weather/night/
     - assets/images/
     - assets/langs/
     - assets/quran/
     - assets/services/
+    - assets/animation/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

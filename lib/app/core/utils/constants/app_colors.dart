@@ -144,4 +144,11 @@ class AppColor {
 
   static const Color green60 = Color(0x99E6EFEF);
   static const Color brown = Color(0xffBDBA97);
+  static const Color brown2 = Color(0xff928382);
+  static const Color white9 = Color(0xffF8FFFD);
+  static const Color brownLight = Color(0xffFFECDF);
+
+  static const Color divider = Color(0x0FE6EFEF);
+
+
 }

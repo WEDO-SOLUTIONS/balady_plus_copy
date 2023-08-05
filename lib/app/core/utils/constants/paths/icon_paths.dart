@@ -43,6 +43,17 @@ class IconPath {
   static const notificationIc = '${_svgIconPath}notification$_svg';
   static const notificationIc2 = '${_svgIconPath}notification2$_svg';
   static const arrowForward2 = '${_svgIconPath}arrow_forward$_svg';
+  static const note2 = '${_svgIconPath}note_2$_svg';
+  static const call = '${_svgIconPath}call$_svg';
+  static const global = '${_svgIconPath}global$_svg';
+  static const mobile = '${_svgIconPath}mobile$_svg';
+  static const magicStar = '${_svgIconPath}magic_star$_svg';
+  static const dollarCircle = '${_svgIconPath}dollar_circle$_svg';
+  static const stopCircle = '${_svgIconPath}stop_circle$_svg';
+  static const download = '${_svgIconPath}download$_svg';
+  static const download2 = '${_svgIconPath}download2$_svg';
+  static const moneyTime = '${_svgIconPath}money_time$_svg';
+  static const infoCircle = '${_svgIconPath}info_circle$_svg';
 
 
   static const informationCircleIcon =
@@ -101,6 +112,20 @@ class IconPath {
 
   // Weather
   static const partlyClouded = '${_svgWeatherIconPath}partly_clouded$_svg';
+  static const humedity = '${_svgWeatherIconPath}humedity$_svg';
+
+  static const sunset = '${_svgWeatherIconPath}sunset$_svg';
+  static const sunrise = '${_svgWeatherIconPath}sunrise$_svg';
+  static const sun = '${_svgWeatherIconPath}sun$_svg';
+
+  static const rainy = '${_svgWeatherIconPath}rainyWeather$_svg';
+  static const wind_speed = '${_svgWeatherIconPath}wind_speed$_svg';
+  static const eye = '${_svgWeatherIconPath}eye$_svg';
+  static const danger = '${_svgWeatherIconPath}danger$_svg';
+
+  static const weatherDay = 'assets/icons/svg/weather/day/';
+  static const weatherNight = 'assets/icons/svg/weather/night/';
+
 
   // Map
   static const layers = '${_svgMapIconPath}layers$_svg';
@@ -217,10 +242,19 @@ class IconPath {
   static const clipboard = '${_svgCRIconPath}clipboard$_svg';
   static const building = '${_svgCRIconPath}building$_svg';
   static const shopData = '${_svgCRIconPath}shop_data$_svg';
+  static const warning2 = '${_svgCRIconPath}warning_2$_svg';
+  static const boxTick = '${_svgCRIconPath}box_tick$_svg';
 
   // Wallet
   static const personalCard = '${_svgWalletIconPath}personal_card$_svg';
   static const card = '${_svgWalletIconPath}card$_svg';
   static const sliderVertical = '${_svgWalletIconPath}slider_vertical$_svg';
   static const shoppingBag = '${_svgWalletIconPath}shopping_bag$_svg';
+
+  // Building Requirements
+  static const checked = '${_svgIconPath}checked$_svg';
+  static const taskSquare1 = '${_svgIconPath}task_square$_svg';
+  static const taskSquare2 = '${_svgIconPath}task_square2$_svg';
+  static const taskSquare3 = '${_svgIconPath}task_square3$_svg';
+
 }

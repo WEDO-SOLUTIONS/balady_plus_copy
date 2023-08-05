@@ -32,6 +32,15 @@ class SharedPrefs {
     }
   }
 
+  void setFirstDateTime() async {
+    await _sharedPreferences?.setString(
+        "firstDateTime", DateTime.now().toIso8601String());
+  }
+
+  String? getFirstDateTime() {
+    return _sharedPreferences?.getString("firstDateTime");
+  }
+
   void setAuthData(AuthDataModel? authData) async {
     const key = LocalStorageKey.auth;
     if (authData != null) {

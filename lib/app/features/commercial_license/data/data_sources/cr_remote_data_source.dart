@@ -13,14 +13,42 @@ abstract class CrRemoteDataSource {
   Future<List<SubActivityModel>> getSubActivities({required String isicCode});
   // Future<ResponseBodyModel<SubActivityModelDetailsModel>> getSubActivityDetails(
   //     {required String subActivityId});
-
-
+  Future<bool> addIsicActivities({required AddIsicActivitiesParams params});
 }
 
 class CrRemoteDataSourceImpl extends CrRemoteDataSource {
   final WebService webService;
 
   CrRemoteDataSourceImpl({required this.webService});
+
+  @override
+  Future<bool> addIsicActivities(
+      {required AddIsicActivitiesParams params}) async {
+    var response;
+
+    try {
+      print(params.toJson());
+      response = await webService.dio
+          .post(ApiUrl.addIsicActivities, data: params.toJson());
+
+      final decodedResponse =
+      ResponseBodyModel<bool>.fromMap(response.data, parsedResult: true);
+
+      return decodedResponse.data!.result!.toFuture();
+    } on DioError catch (error) {
+      throw ServerException(error.toString(),
+          statusCode: error.response?.statusCode);
+    } catch (ex) {
+      if (ex is ServerException)
+        throw ex;
+      else {
+        try {
+          //MM   CommonFunctions.sendExceptionLog(exception: ex, response: response);
+        } catch (ex) {}
+        throw ServerException(("errors_server_error_2").tr());
+      }
+    }
+  }
 
   @override
   Future<ResponseBodyModel<RecordInfoModel>> getRecordInfo(
@@ -140,6 +168,4 @@ class CrRemoteDataSourceImpl extends CrRemoteDataSource {
   //     }
   //   }
   // }
-
-
 }

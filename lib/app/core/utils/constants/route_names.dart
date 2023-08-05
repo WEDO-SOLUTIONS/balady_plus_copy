@@ -20,13 +20,21 @@ class RouteName {
   static const municipalAdvisor = '/municipal-advisor';
   static const locationPage = '/location-page';
 
+  // -------  Weather ---------
+  static const weatherMainPage = '/weather_main_page';
+
   //! Setting
   static const personalInformation = '/personalInformation';
   static const dashboard = '/dashboard';
+  static const notificationPage = '/notificationPage';
   static const requests = '/requests';
   static const invoices = '/invoices';
   static const invoiceDetails = '/invoiceDetails';
   static const licenses = '/licenses';
+  static const aboutBalady = '/aboutBalady';
+  static const rateUs = '/rateUs';
+  static const help = '/help';
+  static const contactInfoPage = '/contactInfoPage';
 
   // -------  Objections ---------
 
@@ -113,6 +121,9 @@ class RouteName {
   // Violations
   static const violationsPage = '/violationsPage';
   static const violationDetailsPage = '/violationDetailsPage';
+
+  static const investmentPage = '/investmentPage';
+  static const tempRentalPage = '/tempRentalPage';
 
 
 }

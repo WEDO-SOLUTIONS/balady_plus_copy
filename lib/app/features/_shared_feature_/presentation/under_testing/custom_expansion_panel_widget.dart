@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../../core/utils/constants/constants.dart';
 import '../../../../core/utils/utils_exports.dart'
     show
         AppColor,
@@ -26,11 +27,15 @@ class CustomExpansionPanelWidget extends StatelessWidget {
   final EdgeInsetsGeometry? expandedPadding;
   final bool isExpanded;
   final bool underline;
+  final bool withShadow;
+  final Color? arrowBg;
   final void Function(bool)? onExpansionChanged;
   const CustomExpansionPanelWidget({
     super.key,
     this.keepState = true,
     this.leading,
+    this.arrowBg,
+    this.withShadow = false,
     this.title,
     this.children = const <Widget>[],
     this.expansionWidth,
@@ -51,6 +56,7 @@ class CustomExpansionPanelWidget extends StatelessWidget {
       //       vertical: 8.0,
       //     ),
       decoration: BoxDecoration(
+        boxShadow: withShadow ? Constants.boxShadow : null,
         color: AppColor.white,
         borderRadius: BorderRadius.circular(16.0),
       ),
@@ -84,6 +90,7 @@ class CustomExpansionPanelWidget extends StatelessWidget {
                 ),
                 trailing: _ExpansionPanelArrowWidget(
                   expanded: isExpanded,
+                  arrowBg: arrowBg,
                 ),
                 expandedCrossAxisAlignment: CrossAxisAlignment.start,
                 onExpansionChanged: (state) {
@@ -115,7 +122,7 @@ class CustomExpansionPanelWidget extends StatelessWidget {
             ? UIHelper.middlePadding
             : expandedPadding!.horizontal / 2.0,
         expandedPadding?.vertical == null
-            ? UIHelper.smallPadding
+            ? 4
             : expandedPadding!.vertical / 2.0,
         expandedPadding?.horizontal == null
             ? UIHelper.middlePadding
@@ -204,21 +211,22 @@ class _ExpansionTitleWidget extends StatelessWidget {
 
 class _ExpansionPanelArrowWidget extends StatelessWidget {
   final bool expanded;
+  final Color? arrowBg;
 
-  const _ExpansionPanelArrowWidget({required this.expanded});
+  const _ExpansionPanelArrowWidget({required this.expanded , this.arrowBg});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 25.0,
-      height: 25.0,
-      decoration: const BoxDecoration(
-        color: AppColor.primary300Light,
+      width: 20,
+      height: 20,
+      decoration: BoxDecoration(
+        color: arrowBg ?? AppColor.primary300Light,
         shape: BoxShape.circle,
       ),
       child: Transform.rotate(
         angle: angle,
-        child: Icon(Icons.arrow_back_ios_new, size: 14.0, color: iconColor),
+        child: Icon(Icons.arrow_back_ios_new, size: 12, color: iconColor),
       ),
     );
   }

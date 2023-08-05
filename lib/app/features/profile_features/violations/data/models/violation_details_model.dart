@@ -1,7 +1,9 @@
-import '../../../../objections/domain/entities/objection_details.dart';
+import 'package:intl/intl.dart';
+
+import '../../../../objectable_transactions/domain/entities/transaction_details.dart';
 import '../../violations_exports.dart';
 
-class ViolationDetailsModel extends ViolationDetailsEntity{
+class ViolationDetailsModel extends ViolationDetailsEntity {
   ViolationDetailsModel({
     super.subMunicipalityId,
     super.regulationClauseId,
@@ -38,18 +40,18 @@ class ViolationDetailsModel extends ViolationDetailsEntity{
     super.objectionRequestStatus,
     super.objectionRequestNumber,
     super.objectionRequestDate,
-    super.coordinatEY,
-    super.coordinatEX,
-    super.hashingObjectionRequestNumber,
-    super.hashingSadadNumber,
+    super.coordinateX,
+    super.coordinateY,
+    // super.hashingObjectionRequestNumber,
+    // super.hashingSadadNumber,
     super.objectionRequestStatusName,
-    super.objectionApplicableId,
-    super.objectionApplicableName,
+    // super.objectionApplicableId,
+    // super.objectionApplicableName,
     super.objectionRequestStatusId,
     super.serviceGroupId,
     super.serviceId,
     super.objectionTypeId,
-    super.hashingViolationNumber,
+    // super.hashingViolationNumber,
   });
 
   factory ViolationDetailsModel.fromJson(Map<String, dynamic> json) =>
@@ -57,16 +59,22 @@ class ViolationDetailsModel extends ViolationDetailsEntity{
         subMunicipalityId: json["subMunicipalityID"],
         regulationClauseId: json["regulationClauseID"],
         regulationClauseDescription: json["regulationClauseDescription"],
-        sadadAmount: json["sadadAmount"],
+        sadadAmount: json["sadadAmount"]?.toDouble(),
         licenseNumber: json["licenseNumber"],
         violationStatus: json["violationStatus"],
-        lastDateOfObjection: json["lastDateOfObjection"],
+        lastDateOfObjection: json["lastDateOfObjection"] == null ||
+                (json["lastDateOfObjection"] is String)
+            ? (json["lastDateOfObjection"] as String).isEmpty
+                ? null
+                : DateFormat("yyyy-MM-dd").parse(json["lastDateOfObjection"])
+            : json["lastDateOfObjection"],
         violationId: json["violationID"],
         municipalityName: json["municipalityName"],
         noOfRepetition: json["noOfRepetition"],
         municipalityId: json["municipalityID"],
-        totalViolationPenaltyAmount: json["totalViolationPenaltyAmount"],
-        violationPenaltyAmount: json["violationPenaltyAmount"],
+        totalViolationPenaltyAmount:
+            json["totalViolationPenaltyAmount"]?.toDouble(),
+        violationPenaltyAmount: json["violationPenaltyAmount"]?.toDouble(),
         licenseType: json["licenseType"],
         licenseTypeName: json["licenseTypeName"],
         violatorType: json["violatorType"],
@@ -79,8 +87,12 @@ class ViolationDetailsModel extends ViolationDetailsEntity{
                 .map((x) => NonComplianceClauseModel.fromJson(x))),
         sadadNumber: json["sadadNumber"],
         subMunicipalityName: json["subMunicipalityName"],
-        violationRegistrationDate: json["violationRegistrationDate"] == null
-            ? null
+        violationRegistrationDate: json["violationRegistrationDate"] == null ||
+                (json["violationRegistrationDate"] is String)
+            ? (json["violationRegistrationDate"] as String).isEmpty
+                ? null
+                : DateFormat("yyyy-MM-dd")
+                    .parse(json["violationRegistrationDate"])
             : DateTime.parse(json["violationRegistrationDate"]),
         violatorId: json["violatorID"],
         invoiceStatus: json["invoiceStatus"],
@@ -93,23 +105,29 @@ class ViolationDetailsModel extends ViolationDetailsEntity{
         objectionCommitteeDecision: json["objectionCommitteeDecision"],
         objectionRequestStatus: json["objectionRequestStatus"],
         objectionRequestNumber: json["objectionRequestNumber"],
-        objectionRequestDate: json["objectionRequestDate"],
-        coordinatEY: json["coordinatE_Y"],
-        coordinatEX: json["coordinatE_X"],
-        hashingObjectionRequestNumber: json["hashingObjectionRequestNumber"],
-        hashingSadadNumber: json["hashingSadadNumber"],
+
+        objectionRequestDate: json["objectionRequestDate"] == null ||
+                (json["objectionRequestDate"] is String)
+            ? (json["objectionRequestDate"] as String).isEmpty
+                ? null
+                : DateFormat("yyyy-MM-dd").parse(json["objectionRequestDate"])
+            : json["objectionRequestDate"],
+        coordinateY: json["coordinatE_Y"],
+        coordinateX: json["coordinatE_X"],
+        // hashingObjectionRequestNumber: json["hashingObjectionRequestNumber"],
+        // hashingSadadNumber: json["hashingSadadNumber"],
         objectionRequestStatusName: json["objectionRequestStatusName"],
-        objectionApplicableId: json["objectionApplicableId"],
-        objectionApplicableName: json["objectionApplicableName"],
+        // objectionApplicableId: json["objectionApplicableId"],
+        // objectionApplicableName: json["objectionApplicableName"],
         objectionRequestStatusId: json["objectionRequestStatusId"],
         serviceGroupId: json["serviceGroupId"],
         serviceId: json["serviceId"],
         objectionTypeId: json["objectionTypeId"],
-        hashingViolationNumber: json["hashingViolationNumber"],
+        // hashingViolationNumber: json["hashingViolationNumber"],
       );
 }
 
-class NonComplianceClauseModel extends NonComplianceClause{
+class NonComplianceClauseModel extends NonComplianceClause {
   NonComplianceClauseModel({
     super.clauseNo,
     super.clauseName,
@@ -122,12 +140,13 @@ class NonComplianceClauseModel extends NonComplianceClause{
         clauseName: json["clauseName"],
         nonComplianceSubClauses: json["nonComplianceSubClauses"] == null
             ? []
-            : List<NonComplianceSubClause>.from(json["nonComplianceSubClauses"]!
-                .map((x) => NonComplianceSubClauseModel.fromJson(x))),
+            : List<NonComplianceSubClauseModel>.from(
+                json["nonComplianceSubClauses"]!
+                    .map((x) => NonComplianceSubClauseModel.fromJson(x))),
       );
 }
 
-class NonComplianceSubClauseModel extends NonComplianceSubClause{
+class NonComplianceSubClauseModel extends NonComplianceSubClauses {
   NonComplianceSubClauseModel({
     super.subClauseNo,
     super.subClauseName,
@@ -147,7 +166,7 @@ class NonComplianceSubClauseModel extends NonComplianceSubClause{
       );
 }
 
-class NonComplinceAttachmentsModel extends ReasonAttachment {
+class NonComplinceAttachmentsModel extends NonComplinceAttachments {
   NonComplinceAttachmentsModel({
     super.contentLocation,
     super.fileName,

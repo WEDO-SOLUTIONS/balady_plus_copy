@@ -4,9 +4,10 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../core/dependency_injection/dependency_injection_exports.dart'
     show sl;
+import '../../../../../core/utils/constants/constants.dart';
 import '../../../../../core/utils/enums/bloc_status.dart';
 import '../../../../../core/utils/utils_exports.dart'
-    show AppColor, AppStyle, IconPath;
+    show AppColor, AppStyle, IconPath, RouteName;
 import '../../../../_shared_feature_/shared_feature_exports.dart'
     show
         CustomTextWidget,
@@ -20,7 +21,8 @@ import '../../dashboard_exports.dart'
         DashboardCard,
         DashboardEventInitial,
         DashboardListShimmer,
-        DashboardState;
+        DashboardState,
+        NoDataWidget;
 
 class DashBoardPage extends StatelessWidget {
   const DashBoardPage({super.key});
@@ -32,14 +34,18 @@ class DashBoardPage extends StatelessWidget {
       child: Scaffold(
         appBar: DefaultAppBarWidget(
           title: 'dashboard'.tr(),
-          actions: const [
+          actions: [
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 8),
-              child: CircleIcon(
-                backgroundColor: AppColor.primary50Light,
-                icon: IconPath.billIcon,
-                circleSize: 48.0,
-                iconSize: 30.0,
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: GestureDetector(
+                onTap: () =>
+                    Navigator.of(context).pushNamed(RouteName.notificationPage),
+                child: const CircleIcon(
+                  backgroundColor: AppColor.primary50Light,
+                  icon: IconPath.billIcon,
+                  circleSize: 48.0,
+                  iconSize: 30.0,
+                ),
               ),
             ),
           ],
@@ -63,53 +69,59 @@ class DashBoardPage extends StatelessWidget {
                     case BlocRequestStatus.submissionGetLoading:
                       return const DashboardListShimmer();
                     case BlocRequestStatus.submissionGetSuccess:
-                      return SingleChildScrollView(
-                        child: Column(
-                          children: [
-                            Container(
-                              margin: const EdgeInsets.all(16),
-                              padding: const EdgeInsets.all(16),
-                              height: 64,
-                              decoration: const BoxDecoration(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(16)),
-                                color: AppColor.secondary50Light,
-                              ),
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                      return state.showNoData
+                          ? const NoDataComponent()
+                          : SingleChildScrollView(
+                              child: Column(
                                 children: [
-                                  const DrawIconBasedTypeWidget(
-                                    icon: IconPath.aboutBalady,
-                                    iconColor: AppColor.secondary900Light,
-                                  ),
-                                  Expanded(
-                                    child: Padding(
-                                      padding: const EdgeInsetsDirectional.only(
-                                        top: 4,
-                                        start: 4,
-                                      ),
-                                      child: CustomTextWidget(
-                                        "the_following_data".tr(),
-                                        maxLines: 2,
-                                        textStyle:
-                                            AppStyle.dashboardNoteTextStle,
-                                      ),
+                                  Container(
+                                    margin: const EdgeInsets.all(16),
+                                    padding: const EdgeInsets.all(16),
+                                    height: 64,
+                                    decoration: const BoxDecoration(
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(16)),
+                                      color: AppColor.secondary50Light,
                                     ),
-                                  )
+                                    child: Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        const DrawIconBasedTypeWidget(
+                                          icon: IconPath.aboutBalady,
+                                          iconColor: AppColor.secondary900Light,
+                                        ),
+                                        Expanded(
+                                          child: Padding(
+                                            padding: const EdgeInsetsDirectional
+                                                .only(
+                                              top: 4,
+                                              start: 4,
+                                            ),
+                                            child: CustomTextWidget(
+                                              "the_following_data".tr(),
+                                              maxLines: 2,
+                                              textStyle: AppStyle
+                                                  .dashboardNoteTextStle,
+                                            ),
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                  ListView.builder(
+                                    shrinkWrap: true,
+                                    physics:
+                                        const NeverScrollableScrollPhysics(),
+                                    itemCount: state.cards.length,
+                                    itemBuilder: (context, index) {
+                                      return DashboardCard(
+                                          card: state.cards[index]);
+                                    },
+                                  ),
                                 ],
                               ),
-                            ),
-                            ListView.builder(
-                              shrinkWrap: true,
-                              physics: const NeverScrollableScrollPhysics(),
-                              itemCount: state.cards.length,
-                              itemBuilder: (context, index) {
-                                return DashboardCard(card: state.cards[index]);
-                              },
-                            ),
-                          ],
-                        ),
-                      );
+                            );
                     default:
                       return const SizedBox.shrink();
                   }
@@ -119,6 +131,27 @@ class DashBoardPage extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+class NoDataComponent extends StatelessWidget {
+  const NoDataComponent({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 257,
+      margin: const EdgeInsets.only(top: 24),
+      width: MediaQuery.sizeOf(context).width,
+      decoration: const BoxDecoration(
+        borderRadius: BorderRadius.all(Radius.circular(16)),
+        color: AppColor.white,
+        boxShadow: Constants.boxShadow,
+      ),
+      child: const NoDataWidget(),
     );
   }
 }
