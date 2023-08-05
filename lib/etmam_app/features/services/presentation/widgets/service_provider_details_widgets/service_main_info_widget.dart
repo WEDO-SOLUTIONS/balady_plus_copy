@@ -140,10 +140,6 @@ class ServiceProviderMainInfo extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SectionTitleWidget(
-                  title: trans('office_info'),
-                  primaryIcon: PrimaryIcons.providerOfficeIcon),
-              const CustomVerticalSpace(height: 16),
               Row(
                 children: [
                   Expanded(

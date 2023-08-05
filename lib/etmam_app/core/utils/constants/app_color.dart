@@ -67,6 +67,9 @@ class AppColor {
   static const green1 = Color(0xFF036362);
   static const green2 = Color(0xFFf6fdfd);
 
+
+  static const white3 = Color(0xFFE6EFEF);
+
   static const servicesBackgroundColors = [
     blue700,
     Color(0xff2ca28e),

@@ -20,9 +20,6 @@ class ServiceFaqSection extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SectionTitleWidget(
-                        title: trans('service_faq'),
-                        primaryIcon: PrimaryIcons.faqSectionIcon),
                     MediaQuery.removePadding(
                       context: context,
                       removeTop: true,

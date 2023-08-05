@@ -24,9 +24,6 @@ class ServiceInfoWidget extends StatelessWidget {
             padding: const EdgeInsets.all(16),
             child:
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              SectionTitleWidget(
-                  title: trans('service_info'),
-                  primaryIcon: PrimaryIcons.providerOfficeIcon),
               SubTitleAndDescWidget(
                   subTitle: trans('service_desc'),
                   desc: state.response.service?.description),
