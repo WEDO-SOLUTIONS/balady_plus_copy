@@ -24,6 +24,7 @@ import '../../data/model/excavations.dart';
 import '../../data/model/investment_details_response.dart';
 import '../../data/model/investment_sites.dart';
 import '../../data/model/layers.dart';
+import '../../data/model/rental_details_response.dart';
 import '../../data/model/requests/map_requests_params.dart';
 import '../../data/model/white_lands.dart';
 import '../../data/repositories/layers_repositories.dart';
@@ -231,6 +232,8 @@ class MapViewModel extends BaseViewModel {
 
       return false;
     }
+    controller.setCameraPosition(CameraPositionMessage(
+        point: kingdomTower, zoom: 17, tilt: 45, bearing: 9));
 
     _setupListeners();
 
@@ -407,7 +410,7 @@ class MapViewModel extends BaseViewModel {
   }
 
   void getLocationAndMoveCamera() async {
-    var latlng = await Helpers.getCurrentLocation();
+    var latlng = await Helpers.getMapLocation();
 
     if (latlng != null)
       await controller.setCameraPosition(
@@ -504,12 +507,27 @@ class MapViewModel extends BaseViewModel {
     InvestmentDetailsResponse? data =
         await layersRepositories.getInvetmentDetails(id, type);
 
-    print("Doneeee");
-    print(data);
+    hideLoading1();
+
+    Navigator.pushNamed(NavigationService.navigatorKey.currentContext!,
+        RouteName.investmentPage,
+        arguments: data);
+
+    return data;
+  }
+
+  Future<RentalDetailsResponse?> getTempRentalDetails(
+      String id, String type) async {
+    showLoading1();
+
+    RentalDetailsResponse? data =
+        await layersRepositories.getTempRentalDetails(id, type);
+
     hideLoading1();
     Navigator.pushNamed(NavigationService.navigatorKey.currentContext!,
-        RouteName.InvestmentMapDetailsPage,
+        RouteName.tempRentalPage,
         arguments: data);
+
     return data;
   }
 

@@ -158,7 +158,7 @@ enum GISMapLayers {
   CadastralParcelsLand(
       layerId: 9,
       cardHeight: 160,
-      resultRecordCount: 50,
+      resultRecordCount: 30,
       icon: Constants.landsLayerIcon,
       selectedIcon: Constants.landsSelectedLayerIcon,
       outFieldsShort: [

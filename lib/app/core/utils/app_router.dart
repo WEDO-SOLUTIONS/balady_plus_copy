@@ -29,6 +29,7 @@ import '../../core/utils/utils_exports.dart'
         RouteName,
         ScaleRotatePage,
         SliderUpPage;
+import '../../features/map_page/data/model/rental_details_response.dart';
 import '../../features/unknow/pages/investment_page.dart';
 import '../../features/unknow/pages/temp_rental_page.dart';
 import '../../features/_shared_feature_/presentation/pages/view_dms_image_screen.dart';
@@ -373,12 +374,19 @@ class AppRouter {
         );
 
       case RouteName.investmentPage:
+        InvestmentDetailsResponse? data =
+            settings.arguments as InvestmentDetailsResponse?;
         return MaterialPageRoute(
-          builder: (_) => const InvestmentPage(),
+          builder: (_) => InvestmentPage(data: data!),
         );
       case RouteName.tempRentalPage:
+        RentalDetailsResponse? data =
+            settings.arguments as RentalDetailsResponse?;
+
         return MaterialPageRoute(
-          builder: (_) => const TempRentalPage(),
+          builder: (_) => TempRentalPage(
+            data: data!,
+          ),
         );
 
       case RouteName.DCCameraPage:

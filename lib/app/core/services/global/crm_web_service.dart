@@ -142,6 +142,8 @@ class AppInterceptors extends Interceptor {
               err.requestOptions,
               err.response,
             );
+          default:
+            throw BadRequestException(err.requestOptions, err.response);
         }
         break;
       case DioErrorType.cancel:

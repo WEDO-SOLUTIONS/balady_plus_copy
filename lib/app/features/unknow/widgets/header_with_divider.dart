@@ -43,17 +43,19 @@ class HeaderWithDivider extends StatelessWidget {
                   fontColor: AppColor.blackModern600Light,
                 ),
                 const SizedBox(height: 4),
-                Row(
-                  children: [
-                    CustomSvgIconWidget(firstIconPath),
-                    const SizedBox(width: 8),
-                    CustomTextWidget(
-                      firstValue,
-                      fontSize: 14,
-                      fontWeight: AppFontWeight.bold,
-                      fontColor: AppColor.blackModern500Light,
-                    ),
-                  ],
+                Flexible(
+                  child: Row(
+                    children: [
+                      CustomSvgIconWidget(firstIconPath),
+                      const SizedBox(width: 8),
+                      CustomTextWidget(
+                        firstValue,
+                        fontSize: 14,
+                        fontWeight: AppFontWeight.bold,
+                        fontColor: AppColor.blackModern500Light,
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
@@ -64,23 +66,25 @@ class HeaderWithDivider extends StatelessWidget {
                 thickness: 1,
               ),
             ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                CustomTextWidget(
-                  secondTitle,
-                  fontSize: 14,
-                  fontWeight: AppFontWeight.bold,
-                  fontColor: AppColor.blackModern600Light,
-                ),
-                const SizedBox(height: 8),
-                CustomTextWidget(
-                  secondValue,
-                  fontSize: 14,
-                  fontWeight: AppFontWeight.bold,
-                  fontColor: AppColor.blackModern500Light,
-                ),
-              ],
+            Flexible(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  CustomTextWidget(
+                    secondTitle,
+                    fontSize: 14,
+                    fontWeight: AppFontWeight.bold,
+                    fontColor: AppColor.blackModern600Light,
+                  ),
+                  const SizedBox(height: 8),
+                  CustomTextWidget(
+                    secondValue,
+                    fontSize: 14,
+                    fontWeight: AppFontWeight.bold,
+                    fontColor: AppColor.blackModern500Light,
+                  ),
+                ],
+              ),
             ),
           ],
         ),

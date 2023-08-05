@@ -2,14 +2,15 @@ import 'package:flutter/material.dart';
 
 import '../../../core/utils/utils_exports.dart';
 import '../../_shared_feature_/shared_feature_exports.dart';
+import '../../map_page/data/model/investment_details_response.dart';
 
 class PDFComponent extends StatelessWidget {
-  const PDFComponent({
+  PDFComponent({
     super.key,
-    required this.pdfs,
+    this.pdfs,
   });
 
-  final List<String> pdfs;
+  List<ContractTemplate>? pdfs;
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +23,7 @@ class PDFComponent extends StatelessWidget {
         color: AppColor.white,
       ),
       child: ListView.separated(
-        itemCount: pdfs.length,
+        itemCount: pdfs?.length ?? 0,
         padding: EdgeInsets.zero,
         physics: const NeverScrollableScrollPhysics(),
         shrinkWrap: true,
@@ -39,7 +40,7 @@ class PDFComponent extends StatelessWidget {
               const CustomSvgIconWidget(IconPath.pdf, iconSize: 24),
               const SizedBox(width: 8),
               CustomTextWidget(
-                pdfs[index],
+                pdfs?[index].pyCategory ?? "",
                 fontSize: 14,
                 fontWeight: AppFontWeight.bold,
                 fontColor: AppColor.blackModern500Light,

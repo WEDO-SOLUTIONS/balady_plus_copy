@@ -31,13 +31,20 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
     if (state.allWeatherInfoStatus == BlocStatus.success) return;
 
     emitter(state.copyWith(allWeatherInfoStatus: BlocStatus.loading));
-    //LatLng? location = await Helpers.getCurrentLocation();
 
-    e.params.copyWith(
-        latitude: CommonProperties.userLocation?.y,
-        longitude: CommonProperties.userLocation?.x);
+    GISParams? location = CommonProperties.userLocation;
 
-    final failureOrSuccess = await _getWeatherInfo(e.params);
+    if (location == null) {
+      LatLng? latlng = await Helpers.getMapLocation();
+      location = GISParams(
+          x: latlng?.longitude ?? 46.72364215018372,
+          y: latlng?.latitude ?? 24.744615305066496);
+    }
+
+    WeatherParams params =
+        e.params.copyWith(latitude: location.y, longitude: location.x);
+
+    final failureOrSuccess = await _getWeatherInfo(params);
 
     failureOrSuccess.fold((failure) {
       print("failure: $failure");

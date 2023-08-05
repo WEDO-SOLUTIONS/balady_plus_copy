@@ -602,9 +602,9 @@ class MunicipalAdvisorRemoteDataSourceImplementation
     try {
       print("HEREEEEEEE");
       final response = await webService.dio.post(
-        '${ApiUrl.saveActivities}/${params.consultationKey}',
-        data: params.activitiesIds.toList(),
-      );
+          '${ApiUrl.saveActivities}/${params.consultationKey}',
+          data: params.activitiesIds.toList(),
+          options: Options(headers: {"Content-Type": "application/json"}));
 
       final data = response.data;
       data.toString().successLog();

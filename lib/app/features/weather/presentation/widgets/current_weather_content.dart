@@ -26,7 +26,7 @@ class CurrentWeatherContent extends StatelessWidget {
                 height: MediaQuery.of(context).padding.top,
               ),
               CustomSvgIconWidget(
-                state.allWeatherInfo?.current?.condition?.iconPath??'',
+                state.allWeatherInfo?.current?.condition?.iconPath ?? '',
                 iconSize: 56,
                 iconColor: AppColor.white,
               ),
@@ -67,11 +67,11 @@ class CurrentWeatherContent extends StatelessWidget {
                   ),
                 ],
               ),
-              // UnKownWeatherLocation(
-              //   onTap: () {
-              //     context.read<WeatherBloc>().add(GetWeatherForLocation());
-              //   },
-              // ),
+              UnKownWeatherLocation(
+                onTap: () {
+                  context.read<WeatherBloc>().add(GetWeatherForLocation());
+                },
+              ),
               Divider(
                 color: AppColor.divider.withOpacity(0.2),
               ),

@@ -10,6 +10,7 @@ import '../../../../core/dependency_injection/injection_container.dart';
 import '../../data/model/building_compliance_certificate.dart';
 import '../../data/model/divisional_chart_boundaries.dart';
 import '../../data/model/excavations.dart';
+import '../../data/model/investment_details_response.dart';
 import '../../data/model/investment_sites.dart';
 import '../../data/model/white_lands.dart';
 import '../mvvm/map_view_model.dart';
@@ -66,7 +67,15 @@ class MapLayerCard extends StatelessWidget {
                       entityLogo: "",
                       bidEndDate: selectedPoint?.BIDENDDATE,
                       isEntity: false,
-                      onPress: () {},
+                      onPress: () async {
+                        if (selectedPoint?.TYPE == "TemporaryRental") {
+                          await mapViewModel.getTempRentalDetails(
+                              "02-21-003709-106", "TempRental");
+                        } else {
+                          await mapViewModel.getInvestmentDetails(
+                              "01-22-003709-21394", "Investment");
+                        }
+                      },
                       onClose: () {
                         mapViewModel.showDialog();
                       })

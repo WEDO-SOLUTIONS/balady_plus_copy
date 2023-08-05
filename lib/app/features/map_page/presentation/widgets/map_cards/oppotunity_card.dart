@@ -56,7 +56,7 @@ class MapCard extends StatelessWidget {
         onPress();
       },
       child: Container(
-        height: 145,
+        height: 150,
         width: 325,
         padding: const EdgeInsets.only(left: 10, right: 10, bottom: 10),
         margin: const EdgeInsets.symmetric(horizontal: 2),
