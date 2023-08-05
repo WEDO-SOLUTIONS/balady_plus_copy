@@ -32,7 +32,8 @@ class IconPath {
 
   static const arrowDownWhite = '${_svgIconPath}arrow_down_white$_svg';
   static const searchIconWhite = '${_svgIconPath}search_icon_white$_svg';
-  static const ordersIconWhite = '${_svgIconPath}orders_icon$_svg';
+  static const ordersIconWhite = '${_svgIconPath}clipboard_text$_svg';
+  static const clipboardText = '${_svgIconPath}clipboard_text$_svg';
 
   static const ratingStar = '${_svgIconPath}rating$_svg';
   static const calendar = '${_svgIconPath}Calendar$_svg';
@@ -45,10 +46,12 @@ class IconPath {
   static const callIcon = '${_svgIconPath}callIcon$_svg';
   static const favoriteHeartIcon = '${_svgIconPath}favoriteHeartIcon$_svg';
   static const logoutIcon = '${_svgIconPath}logoutIcon$_svg';
+  static const settings = '${_pngIconPath}settings$_png';
 
   static const leftArrow = '${_svgIconPath}left_arrow$_svg';
   static const expansionArrowUp = '${_svgIconPath}arrow_up$_svg';
   static const expansionArrowDown = '${_svgIconPath}arrow_down$_svg';
+  static const arrowForward2 = '${_svgIconPath}arrow_forward$_svg';
 
   // main services logo
   static const constructionIcon = '${_svgIconPath}construction_icon$_svg';

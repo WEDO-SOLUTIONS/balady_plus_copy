@@ -89,8 +89,7 @@ class OrderDetailsBloc extends Bloc<OrderDetailsEvent, OrderDetailsState> {
         e.params.allowedActions!.isNotEmpty) {
       showDialogWidget(NavigationService.navigatorKey.currentContext!,
           headerText: trans('order_more_dialog_header'),
-          haveBottomLine: true,
-          isFullHeight: true,
+          isFullHeight: false,
           dialogBody: MoreDialog(
             actions: e.params.allowedActions!,
             orderId: e.params.orderId!,

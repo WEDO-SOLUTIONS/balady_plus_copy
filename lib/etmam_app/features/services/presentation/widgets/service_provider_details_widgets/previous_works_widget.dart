@@ -31,10 +31,6 @@ class PreviousWorksWidgets extends StatelessWidget {
                 child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      SectionTitleWidget(
-                        title: trans('previous_works'),
-                        primaryIcon: PrimaryIcons.providerWorksIcon,
-                      ),
                       HeaderWithViewAllWidget(
                         headerText: trans('previous_works_desc'),
                         headerTextColor: AppColor.bottomNavigationShadow,

@@ -3,6 +3,7 @@ import 'package:balady_plus/etmam_app/features/_shared_feature_/shared/shared_fe
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
+import '../../../../../../app/features/_shared_feature_/presentation/widgets/custom_svg_icon_widget.dart';
 import '../../../../../core/utils/utils_exports.dart'
     show AppColor, AppFontWeight, IconPath, trans;
 
@@ -85,7 +86,7 @@ class EtmamRatingEvaluationWidget extends StatelessWidget {
           const CustomHorizontalSpace(width: 3.0),
         ],
         Container(
-          margin: EdgeInsets.only(top: 3),
+          margin: const EdgeInsets.only(top: 3),
           child: CustomTextWidget(
             "$rating/5",
             fontColor: AppColor.black400,
@@ -123,7 +124,7 @@ class EtmamRatingEvaluationWidget extends StatelessWidget {
         const CustomHorizontalSpace(width: 5.0),
         // reviews
         Container(
-          margin: EdgeInsets.only(top: 3.5),
+          margin: const EdgeInsets.only(top: 3.5),
           child: CustomTextWidget(
             _getNumberOfReviews(),
             fontColor: AppColor.black400,

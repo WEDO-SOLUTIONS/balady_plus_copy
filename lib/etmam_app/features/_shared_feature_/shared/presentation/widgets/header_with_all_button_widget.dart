@@ -16,7 +16,7 @@ class HeaderWithAllButtonWidget extends StatelessWidget {
       {Key? key,
       required this.header,
       this.showAllButton = false,
-      this.fontSize = 22,
+      this.fontSize = 18,
       this.allOnPressed})
       : super(key: key);
 
@@ -35,24 +35,34 @@ class HeaderWithAllButtonWidget extends StatelessWidget {
               fontColor: AppColor.black,
               textAlign: TextAlign.start,
               height: 1.2,
+              fontWeight: AppFontWeight.bold,
             ),
           ),
           // show all button
           Visibility(
             visible: showAllButton,
-            child: CustomTextButtonWithIconWidget(
-              btnAlignment: AlignmentDirectional.centerEnd,
-              btnPressed: allOnPressed!,
-              icon: const Icon(
-                Icons.arrow_back_ios_new,
-                color: AppColor.black,
-                size: 16.0,
+            child: GestureDetector(
+              onTap: allOnPressed,
+              child: const CustomTextWidget(
+                "عرض الكل",
+                fontWeight: AppFontWeight.bold,
+                fontColor: AppColor.primary900Light,
+                fontSize: 13,
               ),
-              btnText: "customerVoiceShowAllButtonWord".tr(),
-              btnTextColor: AppColor.black500,
-              btnTextSize: 13.0,
-              btnTextWeight: AppFontWeight.medium,
             ),
+            // CustomTextButtonWithIconWidget(
+            //   btnAlignment: AlignmentDirectional.centerEnd,
+            //   btnPressed: allOnPressed!,
+            //   icon: const Icon(
+            //     Icons.arrow_back_ios_new,
+            //     color: AppColor.black,
+            //     size: 16.0,
+            //   ),
+            //   btnText: "customerVoiceShowAllButtonWord".tr(),
+            //   btnTextColor: AppColor.black500,
+            //   btnTextSize: 13.0,
+            //   btnTextWeight: AppFontWeight.medium,
+            // ),
           ),
         ],
       ),

@@ -144,6 +144,7 @@ class EtmamServiceProviderItem extends StatelessWidget {
         width: 303,
         margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
         child: Row(
+          crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             Container(
               margin: const EdgeInsetsDirectional.all(16),
@@ -167,6 +168,14 @@ class EtmamServiceProviderItem extends StatelessWidget {
                     withDot: false,
                   ),
                 ),
+              ),
+            ),
+            const Padding(
+              padding: EdgeInsets.all(16),
+              child: Icon(
+                Icons.arrow_forward,
+                size: 14,
+                color: AppColor.black700,
               ),
             ),
           ],

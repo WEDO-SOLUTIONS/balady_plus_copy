@@ -56,8 +56,7 @@ class EtmamHomeAppBarWidget extends StatelessWidget {
                 },
                 iconWidget: const Icon(Icons.close, color: AppColor.white),
               ),
-              CustomTextWidget(
-                trans('bottomNavigationBarStoreWord'),
+              CustomTextWidget("بلدي أعمال",
                 fontSize: 24,
                 textAlign: TextAlign.start,
                 fontColor: AppColor.white,

@@ -156,8 +156,8 @@ class HeaderWithDescription extends StatelessWidget {
       {Key? key,
       required this.header,
       required this.details,
-      this.detailsColor = AppColor.hunterGreen,
-      this.headerColor = AppColor.bottomNavigationShadow})
+      this.detailsColor = AppColor.black600,
+      this.headerColor = AppColor.primary900})
       : super(key: key);
 
   @override
@@ -167,17 +167,17 @@ class HeaderWithDescription extends StatelessWidget {
       children: [
         CustomTextWidget(
           header,
-          fontSize: 14.0,
-          fontWeight: AppFontWeight.regular,
+          fontSize: 10,
+          fontWeight: AppFontWeight.bold,
           fontColor: headerColor,
           maxLines: 1,
-          textOverflow: TextOverflow.ellipsis,
           textAlign: TextAlign.start,
         ),
+        const SizedBox(height: 4),
         CustomTextWidget(
           details,
-          fontSize: 16.0,
-          fontWeight: AppFontWeight.medium,
+          fontSize: 12,
+          fontWeight: AppFontWeight.bold,
           fontColor: detailsColor,
           maxLines: 1,
           textOverflow: TextOverflow.ellipsis,

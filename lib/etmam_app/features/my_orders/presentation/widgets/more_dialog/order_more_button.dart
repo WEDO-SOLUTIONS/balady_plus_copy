@@ -63,23 +63,39 @@ class OrderMoreButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        CustomTextButtonWithIconWidget(
-          mainAxisAlignment: MainAxisAlignment.start,
-          btnText: text,
-          btnTextSize: 17,
-          btnTextColor: AppColor.black,
-          btnTextWeight: AppFontWeight.medium,
-          textOverflow: TextOverflow.ellipsis,
-          maxLines: 1,
-          withFlexible: true,
-          buttonIconPosition: ButtonIconPosition.right,
-          spaceBetweenTextAndIcon: 16,
-          padding: const EdgeInsets.symmetric(vertical: 25),
-          icon: CustomSvgIconWidget(
-            icon,
-            iconSize: 24,
+        Container(
+          padding: EdgeInsets.symmetric(horizontal: 16),
+          margin: EdgeInsets.symmetric(vertical: 8),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.all(Radius.circular(8)),
+            color: AppColor.white3.withOpacity(0.3)
           ),
-          btnPressed: btnPressed,
+          child: CustomTextButtonWithIconWidget(
+            mainAxisAlignment: MainAxisAlignment.start,
+            btnText: text,
+            btnTextSize: 17,
+            btnTextColor: AppColor.black,
+            btnTextWeight: AppFontWeight.medium,
+            textOverflow: TextOverflow.ellipsis,
+            maxLines: 1,
+            withFlexible: true,
+            buttonIconPosition: ButtonIconPosition.right,
+            spaceBetweenTextAndIcon: 16,
+            padding: const EdgeInsets.symmetric(vertical: 25),
+            icon: Container(
+              padding: EdgeInsets.all(2),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(4)),
+                color: AppColor.primary900,
+              ),
+              child: CustomSvgIconWidget(
+                icon,
+                iconSize: 14,
+                iconColor: AppColor.white,
+              ),
+            ),
+            btnPressed: btnPressed,
+          ),
         ),
         DrawLineWidget(
           lineColor: Color(0xff979797).withOpacity(0.09530785112257859),

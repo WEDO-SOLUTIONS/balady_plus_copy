@@ -1,9 +1,11 @@
+import 'package:balady_plus/app/features/_shared_feature_/presentation/buttons/elevated_button_widgets.dart';
+import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/buttons/custom_buttons_widgets.dart';
 import 'package:balady_plus/etmam_app/features/my_orders/my_orders_exports.dart';
 import 'package:flutter/material.dart' hide Action;
 
 import '../../../../core/utils/enums/order_status.dart';
 import '../../../../core/utils/utils_exports.dart'
-    show AppColor, AppColorsTheme, IconPath, trans;
+    show AppColor, AppColorsTheme, AppStyle, IconPath, trans;
 import '../../../_shared_feature_/shared/shared_feature_exports.dart'
     show
         CustomHorizontalSpace,
@@ -48,7 +50,7 @@ class OrderCardWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        height: 225,
+        height: 280,
         margin: const EdgeInsets.symmetric(vertical: 6),
         decoration: BoxDecoration(
             borderRadius: const BorderRadius.all(Radius.circular(12)),
@@ -68,17 +70,6 @@ class OrderCardWidget extends StatelessWidget {
                 children: [
                   Row(
                     children: [
-                      if (date != null)
-                        DetailsInfoWithImg(
-                          img: IconPath.orderCalendarIcon,
-                          title: date ?? "",
-                        ),
-                      const CustomHorizontalSpace(width: 20),
-                      if (orderNo != null)
-                        DetailsInfoWithImg(
-                          img: IconPath.hashtag,
-                          title: orderNo ?? "",
-                        ),
                       const Spacer(),
                       (actions != null && (actions?.length ?? 0) > 0)
                           ? MoreIconWidget(
@@ -87,11 +78,28 @@ class OrderCardWidget extends StatelessWidget {
                               //   refresh: refresh,
                               onPress: onSelectMore)
                           : SizedBox(
-                              height: 40,
+                              height: 20,
                             )
                     ],
                   ),
-                  const CustomVerticalSpace(height: 8),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: HeaderWithDescription(
+                          details: orderNo ?? "",
+                          header: "رقم الطلب",
+                        ),
+                      ),
+                      CustomHorizontalSpace(width: 2),
+                      Expanded(
+                        child: HeaderWithDescription(
+                          details: statusText ??'',
+                          header: "حاله الطلب",
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 24),
                   Row(
                     children: [
                       Expanded(
@@ -109,27 +117,47 @@ class OrderCardWidget extends StatelessWidget {
                       ),
                     ],
                   ),
-                  const CustomVerticalSpace(height: 20),
-                  StatusWidget(
-                    orderStatus: orderStatus ?? OrderStatus.waitingForApproval,
-                    text: statusText ?? "",
-                    statusTextSize: 12,
+                  SizedBox(height: 24),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: HeaderWithDescription(
+                          details: date ?? "",
+                          header: "اخر تحديث",
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
             ),
             const Spacer(),
-            const DrawLineWidget(
-              horizontalMargin: 16,
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: CustomElevatedButtonWidget(
+                btnColor: AppColor.primary900,
+                textStyle: AppStyle.mainTextStyle.copyWith(
+                  color: AppColor.white,
+                  fontWeight: FontWeight.w700,
+                  fontSize: 16,
+                ),
+                btnHeight: 40,
+                text: "التفاصيل",
+                onPressed: (){
+                      if (onPress != null) onPress!();
+                      /*NavigationService.pushNamed(
+                          routeName: RouteName.etmam_orderDetailsRoute);*/
+                },
+              ),
             ),
-            CustomGoToDetailsButtonWidget(
-              onPressed: () {
-                if (onPress != null) onPress!();
-                /*NavigationService.pushNamed(
-                    routeName: RouteName.etmam_orderDetailsRoute);*/
-              },
-              label: trans('order_details'),
-            )
+            // CustomGoToDetailsButtonWidget(
+            //   onPressed: () {
+            //     if (onPress != null) onPress!();
+            //     /*NavigationService.pushNamed(
+            //         routeName: RouteName.etmam_orderDetailsRoute);*/
+            //   },
+            //   label: trans('order_details'),
+            // )
           ],
         ));
   }
