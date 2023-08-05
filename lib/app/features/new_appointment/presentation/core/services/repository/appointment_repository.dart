@@ -57,7 +57,7 @@ class AppointmentRepository {
 
   Future<Tuple3<bool?, String?, Municipality?>> getMunicipalities() async {
     final body = await webServices
-        .getApigeeRequest(ApiConstants.AppointmentMunicipalities);
+        .getApigeeRequest(ApiConstants.ApplyHelathCertificatesRequest);
     bool state = body['state'];
     dynamic data = body['data'];
     Municipality? result;
