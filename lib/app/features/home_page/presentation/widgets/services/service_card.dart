@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/core/utils/enums/app_font_weights.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../../core/utils/utils_exports.dart'
@@ -27,13 +28,13 @@ class ServiceCard extends StatelessWidget {
       padding: const EdgeInsets.all(12),
       decoration: const BoxDecoration(
         borderRadius: BorderRadius.all(Radius.circular(16)),
-        boxShadow: [
+        /*boxShadow: [
           BoxShadow(
             color: AppColor.darkSlateBlue6,
             offset: Offset(0, -4),
             blurRadius: 32,
           )
-        ],
+        ],*/
         color: AppColor.blackModern50Light,
       ),
       child: Stack(
@@ -51,8 +52,9 @@ class ServiceCard extends StatelessWidget {
             ),
           Row(
             children: [
-              const DrawIconBasedTypeWidget(
-                icon: IconPath.nearby, //service.image,
+              DrawIconBasedTypeWidget(
+                icon:
+                    "assets/icons/png/new_services/recover_veichle.png", //service.image,
                 iconSize: 68,
               ),
               const SizedBox(width: 16),
@@ -64,20 +66,22 @@ class ServiceCard extends StatelessWidget {
                     service.title,
                     textStyle: AppStyle.serviceTitleStyle,
                   ),
-                  const SizedBox(height: 4),
+                  const SizedBox(height: 8),
                   SizedBox(
                     width: width - 110,
                     child: Row(
                       children: [
                         CustomTextWidget(
                           service.description ?? "",
-                          textStyle: AppStyle.semiBoldTextStyle,
+                          fontColor: AppColor.blackModern400Light,
+                          fontSize: 12,
+                          fontWeight: AppFontWeight.bold,
                         ),
                         const Spacer(),
                         const DrawIconBasedTypeWidget(
                           icon: Icons.arrow_forward,
                           iconSize: 16,
-                          iconColor: AppColor.primary900Light,
+                          iconColor: AppColor.blackModern700Light,
                         ),
                       ],
                     ),

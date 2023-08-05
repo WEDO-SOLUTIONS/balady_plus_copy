@@ -56,4 +56,12 @@ class RouteName {
 
   // -------  Map ---------
   static const MapDetailsPage = '/mapDetailsPage';
+
+  // -------  Weather ---------
+  static const weatherMainPage = '/weather_main_page';
+  // -------  Map ---------
+  static const DiggingMapDetailsPage = '/DiggingMapDetailsPage';
+  static const InvestmentMapDetailsPage = '/InvestmentMapDetailsPage';
+  static const investmentPage = '/investmentPage';
+  static const tempRentalPage = '/tempRentalPage';
 }

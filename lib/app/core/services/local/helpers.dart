@@ -100,6 +100,28 @@ class Helpers {
 
 
 */
+  static Future<LatLng?> getMapLocation() async {
+    try {
+      //  EasyLoading.show();
+      geoLocator.Position position =
+          await geoLocator.Geolocator.getCurrentPosition(
+              desiredAccuracy: geoLocator.LocationAccuracy.medium,
+              timeLimit: const Duration(seconds: 5));
+      //    EasyLoading.dismiss();
+
+      return LatLng(position.latitude, position.longitude);
+    } catch (ex) {
+      print(ex);
+      //    EasyLoading.dismiss();
+      geoLocator.Position? position;
+      try {
+        position = await geoLocator.Geolocator.getLastKnownPosition();
+        if (position?.latitude != null && position?.longitude != null)
+          return LatLng(position!.latitude, position.longitude);
+      } catch (ex) {}
+    }
+    return null;
+  }
 
   static Future<LatLng?> getCurrentLocation() async {
     try {

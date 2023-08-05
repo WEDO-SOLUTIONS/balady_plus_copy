@@ -8,6 +8,8 @@ import '../../../../core/services/services_exports.dart' show NavigationService;
 import '../../../../core/utils/utils_exports.dart'
     show BottomNavBar, CommonFunctions;
 import '../../../home_page/presentation/pages/home_page.dart';
+import '../../../nearby/presentation/pages/nearby_page.dart';
+import '../../../public_services_features/prayer_times/presentation/cubit/prayer_times_cubit.dart';
 import '../../../services/services_exports.dart'
     show ServicesCubit, ServicesPage;
 import '../../bottom_navigation_exports.dart'
@@ -42,6 +44,9 @@ class _BottomNavigationPageState extends State<BottomNavigationPage> {
         BlocProvider<BottomNavBarCubit>(
           create: (_) => BottomNavBarCubit(initialNavBar: BottomNavBar.home),
         ),
+        BlocProvider<PrayerTimesCubit>(
+          create: (_) => sl<PrayerTimesCubit>(),
+        ),
         BlocProvider<ServicesCubit>(
           create: (_) => ServicesCubit(
             importantServices: sl(),
@@ -59,6 +64,7 @@ class _BottomNavigationPageState extends State<BottomNavigationPage> {
           children: [
             // Home-Page
             const HomePage(),
+            NearbyPage(),
             // Services-Page
             Container(),
             // Activities-Page

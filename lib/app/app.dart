@@ -25,7 +25,8 @@ class App extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(
-          create: (BuildContext context) => MapViewModel(),
+          create: (BuildContext context) =>
+              MapViewModel(layersRepositories: sl()),
         ),
       ],
       child: BlocProvider<EntryPointCubit>.value(
@@ -49,7 +50,8 @@ class App extends StatelessWidget {
           initialRoute: RouteName.splash,
           onGenerateRoute: AppRouter.allRoutes,
           routes: {
-            RouteName.bottomNavigation: (context) => const BottomNavigationPage(),
+            RouteName.bottomNavigation: (context) =>
+                const BottomNavigationPage(),
           },
         ),
       ),

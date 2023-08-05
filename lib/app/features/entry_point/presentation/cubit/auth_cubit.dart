@@ -10,8 +10,10 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../core/dependency_injection/injection_container.dart';
 import '../../../../core/errors/failures.dart';
+import '../../../../core/services/local/helpers.dart';
 import '../../../../core/services/services_exports.dart';
 import '../../../../core/utils/utils_exports.dart';
+import '../../../vd/vd_exports.dart';
 import '../../entry_point_exports.dart';
 
 part 'auth_state.dart';
@@ -84,6 +86,7 @@ class EntryPointCubit extends Cubit<EntryPointState> {
 
       //  if (token.refreshToken != null) await refreshToken(token.refreshToken!);
       refreshSSOProfile();
+      getUserLocationData();
     });
   }
 
@@ -310,5 +313,28 @@ class EntryPointCubit extends Cubit<EntryPointState> {
     }, (r) {
       // print(r);
     });
+  }
+
+  Future<(GISParams, GISResponse)?> getUserLocationData() async {
+    emit(state.copyWith(gisStatus: BlocStatus.loading));
+    var latlng = await Helpers.getCurrentLocation();
+
+    if (latlng == null) {
+    } else {
+      emit(state.copyWith(
+          userLocation: GISParams(x: latlng.longitude, y: latlng.latitude)));
+
+      GetGISData getgis = GetGISData(repository: sl());
+
+      var result =
+          await getgis(GISParams(x: latlng.longitude, y: latlng.latitude));
+      result.fold((l) {
+        emit(state.copyWith(gisStatus: BlocStatus.failure));
+      }, (r) {
+        emit(state.copyWith(userLocationGIS: r, gisStatus: BlocStatus.success));
+
+        return (state.userLocation, state.userLocationGIS);
+      });
+    }
   }
 }

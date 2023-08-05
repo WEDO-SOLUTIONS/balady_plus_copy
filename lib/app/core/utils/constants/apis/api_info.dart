@@ -103,6 +103,9 @@ class ApiUrl {
   static const vehicles = 'v1/damaged-vehicle-mobile/vehicles';
   static const vehicleRecovery = 'v1/damaged-vehicle-mobile/vehicle-recovery';
 
+//Weather
+  static const weatherForcastAPI = '/v1/forecast.json';
+
   //! POST
 
   //! Delete

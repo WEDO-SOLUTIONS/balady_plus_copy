@@ -4,6 +4,8 @@ import 'package:balady_plus/app/core/base/base_view_model.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/widgets.dart';
 
+import '../../constants/constants.dart';
+
 class SearchMapViewModel extends BaseViewModel {
   TextEditingController searchController = TextEditingController();
 
@@ -12,29 +14,26 @@ class SearchMapViewModel extends BaseViewModel {
   SearchMapViewModel(this.controller);
 
   Future<void> performSearch({required String queryText}) async {
-    try {
+    /*try {
       searchController.text = queryText;
-      SearchResultMessage data = await controller.search(
+      List<DirectoryObjectMessage> data = await controller.search(
         queryText,
-        sortingType: SortingTypeMessage.byRelevance,
-        isOpenNow: false,
+        sortingType: SortingTypeMessage.byDistance,
+        searchMarker:
+            MarkerIconMessage(path: Constants.icMarkerRestaurant, width: 30),
+        isOpenNow: true,
       );
-      if (data.firstPage?.items != null) {
+      if (data.isNotEmpty) {
         final responseDistance = await controller.getDistanceTo(
-          _mapToDistanceRequest(
-            data.firstPage!.items
-                .map((e) => e as DirectoryObjectMessage)
-                .toList(),
-          ),
+          _mapToDistanceRequest(data),
         );
         print(responseDistance);
       }
       print(data);
     } catch (e) {
       print(e);
-    }
+    }*/
   }
-
   List<DistanceRequestMessage> _mapToDistanceRequest(
           List<DirectoryObjectMessage> values) =>
       values

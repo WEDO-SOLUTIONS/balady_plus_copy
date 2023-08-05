@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:dgis_map/library.dart';
 import 'package:provider/provider.dart';
 
-
 class MapScreenUrbi extends StatelessWidget {
   const MapScreenUrbi({Key? key}) : super(key: key);
 
@@ -17,6 +16,5 @@ class MapScreenUrbi extends StatelessWidget {
         await mapViewModel.initialize(controller);
       },
     );
-
   }
 }

@@ -16,7 +16,7 @@ class HomeAppBar extends StatelessWidget {
       bottom: false,
       child: Row(
         children: [
-          if (CommonProperties.isLoggedIn) ...[
+          /* if (CommonProperties.isLoggedIn) ...[
             const CircleIcon(
               icon: IconPath.profile,
               iconColor: AppColor.black,
@@ -39,11 +39,11 @@ class HomeAppBar extends StatelessWidget {
               ],
             ),
           ),
-          const Spacer(),
-          const CurrentWeather(
-            weatherCondition: WeathherConditions.partlyClouded,
-            temperature: "16",
-          )
+          // const Spacer(),
+          // const CurrentWeather(
+          //   weatherCondition: WeathherConditions.partlyClouded,
+          //   temperature: "16",
+          // )*/
         ],
       ),
     );

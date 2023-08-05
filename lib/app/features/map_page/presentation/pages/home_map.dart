@@ -1,15 +1,30 @@
+import 'package:balady_plus/app/core/services/services_exports.dart';
+import 'package:balady_plus/app/features/entry_point/presentation/cubit/auth_cubit.dart';
+import 'package:balady_plus/app/features/map_page/extensions/search_category_ext.dart';
 import 'package:balady_plus/app/features/map_page/presentation/dialogs/map_layer_dialog.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import '../../../_shared_feature_/presentation/components/bottom_sheets/bottom_sheet_with_actions.dart';
+import '../../../_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
+import '../../data/data_sources/point_layers_data.dart';
+import '../../data/enums/map_enums.dart';
 import '../../data/model/layers.dart';
+import '../../constants/constants.dart' as mapConstants;
 
 import 'package:provider/provider.dart';
+import '../../data/model/white_lands.dart';
+import '../widgets/SearchMapWidget.dart';
+import '../widgets/general_card_widget.dart';
+import '../widgets/map_cards/lands_legends_map_card.dart';
+import '../widgets/map_layer_card.dart';
+import '../widgets/search_map_widget.dart';
 
 import '../../../../core/dependency_injection/injection_container.dart';
 import '../../../../core/utils/constants/constants.dart';
-import '../../../../core/utils/utils_exports.dart' show AppColor, IconPath;
+import '../../../../core/utils/utils_exports.dart'
+    show AppColor, BlocStatus, IconPath;
 import '../../../_shared_feature_/presentation/dialogs/bottom_sheet_dialogs.dart';
 import '../mvvm/layers_gis_view_model.dart';
 import '../mvvm/map_view_model.dart';
@@ -26,103 +41,224 @@ class HomeMap extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     MapViewModel mapViewModel = context.watch<MapViewModel?>()!;
-    return Stack(
-      children: [
-        const MapScreenUrbi(),
-        Padding(
-          padding: const EdgeInsets.all(Constants.semiMediumPadding),
-          child: Column(
-            children: [
-              const HomeAppBar(),
-              Constants.verticalSpaceSmall,
-              ValueListenableBuilder<bool>(
-                valueListenable: mapViewModel.viewHomeBottomSheet,
-                builder: (_, visible, __) {
-                  return visible
-                      ? Align(
-                          alignment: AlignmentDirectional.centerStart,
-                          child: GestureDetector(
-                            child: const CircleIcon(
-                              icon: IconPath.search,
-                              iconColor: AppColor.black,
-                            ),
-                            onTap: () {
-                              mapViewModel.viewHomeBottomSheet.value = false;
-                            },
-                          ),
-                        )
-                      : const SearchMapWidget();
-                },
-              ),
-            ],
-          ),
-        ),
-        Align(
-          alignment: Alignment.bottomLeft,
-          child: Padding(
-            padding: const EdgeInsets.all(Constants.semiMediumPadding),
+    LayersGisViewModel layersModel = context.watch<LayersGisViewModel>();
+
+    return BlocListener<EntryPointCubit, EntryPointState>(
+      listenWhen: (current, previous) =>
+          current.gisStatus != previous.gisStatus,
+      listener: (context, state) {
+        if (state.gisStatus == BlocStatus.success) {
+          mapViewModel.goToLocation();
+        }
+      },
+      child: Stack(
+        children: [
+          const MapScreenUrbi(),
+          Container(
             child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                GestureDetector(
-                  onTap: mapViewModel.onLocationTap,
-                  child: const CircleIcon(
-                    icon: IconPath.currentLocation,
-                    iconColor: AppColor.white,
-                    backgroundColor: AppColor.primary900Light,
-                  ),
+                //    const HomeAppBar(),
+                SizedBox(
+                  height: 16,
                 ),
-                Constants.verticalSpaceSmall,
-                GestureDetector(
-                  onTap: () {
-                    showMainLayersDialog(context);
-                  },
-                  child: const CircleIcon(
-                    icon: IconPath.layers,
-                    iconColor: AppColor.white,
-                    backgroundColor: AppColor.primary900Light,
-                  ),
-                ),
-                Constants.verticalSpaceSmall,
-                ValueListenableBuilder<DgisObjectIdMessage?>(
-                  valueListenable: mapViewModel.selectedPointId,
-                  builder: (_, selectedPoint, __) {
-                    return selectedPoint == null
-                        ? const SizedBox()
-                        : MarkerMapWidget(
-                            pointViewModel: PointViewModel(
-                                controller: mapViewModel.controller,
-                                point: selectedPoint,
-                                webService: sl()),
-                          );
-                  },
-                ),
+                const SearchMapWidget(),
+                /*ValueListenableBuilder<bool>(
+                    valueListenable: mapViewModel.viewHomeBottomSheet,
+                    builder: (_, visible, __) {
+                      return visible
+                          ? Align(
+                              alignment: AlignmentDirectional.centerStart,
+                              child: GestureDetector(
+                                child: const CircleIcon(
+                                  icon: IconPath.search,
+                                  iconColor: AppColor.black,
+                                ),
+                                onTap: () {
+                                  mapViewModel.viewHomeBottomSheet.value = false;
+                                },
+                              ),
+                            )
+                          : const SearchMapWidget();
+                    },
+                  ),*/
               ],
             ),
           ),
-        ),
-      ],
+          Align(
+            alignment: Alignment.bottomLeft,
+            child: Padding(
+              padding: const EdgeInsets.all(Constants.semiMediumPadding),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  ValueListenableBuilder<double>(
+                    valueListenable: mapViewModel.bottomSheetSize,
+                    builder: (_, visible, __) {
+                      double bottomSize = mapViewModel.bottomSheetSize.value;
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          ValueListenableBuilder<bool?>(
+                            valueListenable: mapViewModel.showLegend,
+                            builder: (_, value, __) {
+                              return value == true
+                                  ? const LandsLegendsMapCard()
+                                  : SizedBox();
+                            },
+                          ),
+                          Container(
+                            margin: EdgeInsets.only(
+                                bottom: mapViewModel
+                                            .viewHomeBottomSheet.value ==
+                                        true
+                                    ? bottomSize
+                                    : mapViewModel.gisSelectedLayer.cardHeight
+                                        .toDouble()),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                ValueListenableBuilder<bool?>(
+                                    valueListenable: mapViewModel.showLegend,
+                                    builder: (_, value, __) {
+                                      return Visibility(
+                                        visible:
+                                            mapViewModel.showLegend != true &&
+                                                mapViewModel.gisSelectedLayer ==
+                                                    GISMapLayers.BSWhiteParcelS,
+                                        child: GestureDetector(
+                                          onTap: () {
+                                            mapViewModel.showLegend.value =
+                                                true;
+                                            mapViewModel.showLegend
+                                                .notifyListeners();
+                                          },
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(
+                                                bottom: 16.0),
+                                            child: CircleIcon(
+                                              icon: mapConstants
+                                                  .Constants.infoCircleIcon,
+                                              backgroundColor: AppColor.white,
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    }),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    ValueListenableBuilder<Layers?>(
+                                        valueListenable:
+                                            mapViewModel.layerSelected,
+                                        builder: (_, selectedPoint, __) {
+                                          return GestureDetector(
+                                            onTap: () => showMainLayersDialog(
+                                                context, layersModel),
+                                            child: CircleIcon(
+                                              icon: mapViewModel
+                                                      .gisSelectedLayer?.icon ??
+                                                  mapConstants
+                                                      .Constants.layerIcon,
+                                              iconColor: Color(0xFF52525B),
+                                              backgroundColor: AppColor.white,
+                                            ),
+                                          );
+                                        }),
+                                    Constants.verticalSpaceSmall,
+                                    GestureDetector(
+                                      onTap: () => mapViewModel.onLocationTap(),
+                                      child: const CircleIcon(
+                                        icon: IconPath.currentLocation,
+                                        iconColor: AppColor.white,
+                                        backgroundColor:
+                                            AppColor.primary900Light,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      );
+                    },
+                  ),
+                  Constants.verticalSpaceSmall,
+                ],
+              ),
+            ),
+          ),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Padding(
+              padding: const EdgeInsets.only(
+                  left: Constants.semiMediumPadding,
+                  right: Constants.semiMediumPadding,
+                  bottom: Constants.semiSmallPadding),
+              child: MapLayerCard(),
+            ),
+          ),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Padding(
+              padding: const EdgeInsets.only(
+                  left: Constants.semiMediumPadding,
+                  right: Constants.semiMediumPadding,
+                  bottom: Constants.semiSmallPadding),
+              child: ValueListenableBuilder<DgisObjectIdMessage?>(
+                valueListenable: mapViewModel.selectedPointId,
+                builder: (_, selectedPoint, __) {
+                  print(selectedPoint);
+                  print("heree");
+                  return selectedPoint == null
+                      ? const SizedBox()
+                      : GeneralMapCardWidget(
+                          color: mapViewModel.selectedCategory.value != null
+                              ? mapViewModel.selectedCategory.value!
+                                  .cardIconColor()
+                              : Color(0xFFC8A83A),
+                          icon: mapViewModel.selectedCategory.value != null
+                              ? mapViewModel.selectedCategory.value!
+                                  .cardIconName()
+                              : "",
+                          onClose: () {
+                            mapViewModel.showDialog();
+                          },
+                          pointViewModel: PointViewModel(
+                              controller: mapViewModel.controller,
+                              point: selectedPoint,
+                              webService: sl()),
+                        );
+                },
+              ),
+            ),
+          ),
+          ValueListenableBuilder<bool>(
+            valueListenable: mapViewModel.isSearchLoading,
+            builder: (_, visible, __) {
+              return visible
+                  ? Center(child: CustomCircularLoadingWidget())
+                  : const SizedBox();
+            },
+          ),
+        ],
+      ),
     );
   }
 
-  void showMainLayersDialog(BuildContext context) async {
-    LayersGisViewModel? model =
-        Provider.of<LayersGisViewModel?>(context, listen: false);
-    print("Modeeel ${model?.layers}");
-    if (model?.layers == null) {
-      await model?.getMinLayers();
-    }
+  void showMainLayersDialog(
+      BuildContext context, LayersGisViewModel layersModel) async {
+    if (layersModel.layers.value?.isEmpty ?? true)
+      await layersModel.getMinLayers();
+
     BottomSheetDialog.showDraggableSheet(
       context,
       child: BottomSheetWithActions(
         title: "اختر نوع الخريطة".tr(),
-        body: MapLayersDialog(
-            onSelect: (Layers layer) {
-              model?.getSubLayers(layer.id);
-              Navigator.pop(context);
-            },
-            mainLayers: model?.layers ?? []),
+        body: MapLayersDialog(layersModel: layersModel),
       ),
     );
   }

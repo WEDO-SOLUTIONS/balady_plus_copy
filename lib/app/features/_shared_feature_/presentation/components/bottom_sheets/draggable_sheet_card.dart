@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
+import 'package:provider/provider.dart';
 
 import '../../../../../core/utils/utils_exports.dart' show AppColor;
+import '../../../../map_page/presentation/mvvm/map_view_model.dart';
 import '../../../shared_feature_exports.dart'
     show DrawLineWidget, GlowingScrollWidget;
 
@@ -9,12 +12,14 @@ class DraggableSheetCard extends StatefulWidget {
   final double maxSize;
   final double? cornerRadius;
   final List<Widget> children;
+  final double initialChildSize;
 
   const DraggableSheetCard({
     super.key,
     required this.minSize,
     required this.maxSize,
     this.cornerRadius,
+    required this.initialChildSize,
     required this.children,
   });
 
@@ -24,6 +29,32 @@ class DraggableSheetCard extends StatefulWidget {
 
 class _DraggableSheetCardState extends State<DraggableSheetCard> {
   final draggableScrollableController = DraggableScrollableController();
+
+  @override
+  void initState() {
+    super.initState();
+
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      MapViewModel mapViewModel =
+          Provider.of<MapViewModel>(context, listen: false);
+
+      draggableScrollableController
+          .jumpTo(mapViewModel.bottomSheetSizeFraction.value);
+      mapViewModel.bottomSheetSize.notifyListeners();
+
+      draggableScrollableController.addListener(() {
+        mapViewModel.bottomSheetSize.value =
+            draggableScrollableController.pixels;
+        mapViewModel.bottomSheetSize.notifyListeners();
+
+        mapViewModel.bottomSheetSizeFraction.value =
+            draggableScrollableController.size;
+        mapViewModel.bottomSheetSizeFraction.notifyListeners();
+
+        print(mapViewModel.bottomSheetSizeFraction.value);
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {

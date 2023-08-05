@@ -130,7 +130,7 @@ class AppInterceptors extends Interceptor {
     if (options.headers['Authorization'] == null &&
         CommonProperties.isLoggedIn &&
         !options.uri.toString().contains("bcg/upload-file")) {
-      options.headers['Authorization'] = 'Bearer ${CommonProperties.token}';
+      //  options.headers['Authorization'] = 'Bearer ${CommonProperties.token}';
     }
 
     if (url.contains("damaged-vehicle-mobile/car-models")) {

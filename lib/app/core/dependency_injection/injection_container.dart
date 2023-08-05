@@ -9,6 +9,8 @@ import '../../features/_shared_feature_/data/entities/device_details.dart';
 import '../../features/_shared_feature_/data/entities/package_details.dart';
 import '../../features/_shared_feature_/shared_feature_exports.dart'
     show BridgeParams, DropDownItem, FileInfo;
+import '../../features/map_page/data/repositories/layers_repositories.dart';
+import '../../features/weather/weather_exports.dart';
 import '../dependency_injection/dependency_injection_exports.dart'
     show
         DashboardInjection,
@@ -22,12 +24,15 @@ import '../dependency_injection/dependency_injection_exports.dart'
         ServicesInjection,
         SignUpInjection,
         OLDInjection;
+import '../services/global/web_service_weather.dart';
 import '../services/services_exports.dart'
     show
         EntryPointBridge,
         NetworkConnection,
         NetworkConnectionImplementation,
         WebService;
+import 'features/services/public_services/prayer_times_injection.dart';
+import 'features/vd_injection.dart';
 
 /// sl -> Service Locator
 final sl = GetIt.instance;
@@ -43,7 +48,9 @@ void initialize() {
   SignUpInjection.init();
   //? Services
   ServicesInjection.init();
+  PrayerTimesInjection.init();
 
+  VDInjection.init();
   //! Services
   //* Public Services
 
@@ -62,4 +69,31 @@ void initialize() {
   sl.registerLazySingleton(() => const FlutterSecureStorage());
   sl.registerLazySingleton(() => InternetConnectionChecker());
   sl.registerLazySingleton(() => Dio());
+  sl.registerLazySingleton(() => LayersRepositories(webService: sl()));
+
+  sl.registerLazySingleton(() => WebServiceWeather(dio: Dio()));
+
+// Weather
+  //Blocs
+  sl.registerLazySingleton(() => WeatherBloc(getWeatherInfo: sl()));
+  //Domain
+  //UseCases
+  sl.registerLazySingleton(() => GetWeatherInfo(repository: sl()));
+  //Repository
+  sl.registerLazySingleton<WeatherRepository>(
+    () => WeatherRepositoryImpl(
+      sl(),
+      sl(),
+    ),
+  );
+  //DataSources
+  sl.registerLazySingleton<WeatherRemoteDataSource>(
+    () => WeatherRemoteDataSourceImpl(
+      webServiceWeather: sl(),
+    ),
+  );
+
+  sl.registerLazySingleton<WeatherLocalDataSource>(
+    () => WeatherLocalDataSourceImpl(),
+  );
 }

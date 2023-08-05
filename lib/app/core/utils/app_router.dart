@@ -9,12 +9,17 @@ import '../../features/_shared_feature_/data/entities/success_screen_args.dart';
 import '../../features/_shared_feature_/presentation/pages/success_screen.dart';
 import '../../features/bottom_navigation/bottom_navigation_exports.dart'
     show BottomNavigationPage;
+import '../../features/map_page/data/model/investment_details_response.dart';
+import '../../features/map_page/data/model/rental_details_response.dart';
 import '../../features/map_page/presentation/mvvm/point_view_model.dart';
+import '../../features/map_page/presentation/pages/investment_page.dart';
 import '../../features/map_page/presentation/pages/map_details_page.dart';
 
+import '../../features/map_page/presentation/pages/temp_rental_page.dart';
 import '../../features/services/services_exports.dart'
     show ServiceCardsPage, ServiceEntity;
 import '../../features/splash/splash_exports.dart' show SplashPage;
+import '../../features/weather/presentation/pages/weather_main_page.dart';
 
 class AppRouter {
   static Route<dynamic> allRoutes(RouteSettings settings) {
@@ -57,14 +62,26 @@ class AppRouter {
           ),
         );
 
-      case RouteName.MapDetailsPage:
-        final PointViewModel viewModel = settings.arguments as PointViewModel;
+      case RouteName.weatherMainPage:
         return MaterialPageRoute(
-          builder: (_) => MapDetailsPage(
-            pointViewModel: viewModel,
-          ),
+          builder: (_) => const WeatherMainPage(),
         );
 
+      case RouteName.investmentPage:
+        InvestmentDetailsResponse? data =
+            settings.arguments as InvestmentDetailsResponse?;
+        return MaterialPageRoute(
+          builder: (_) => InvestmentPage(data: data!),
+        );
+      case RouteName.tempRentalPage:
+        RentalDetailsResponse? data =
+            settings.arguments as RentalDetailsResponse?;
+
+        return MaterialPageRoute(
+          builder: (_) => TempRentalPage(
+            data: data!,
+          ),
+        );
       // error page
       default:
         return MaterialPageRoute(
