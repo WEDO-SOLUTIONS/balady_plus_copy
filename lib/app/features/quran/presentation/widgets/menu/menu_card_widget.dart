@@ -52,7 +52,7 @@ class QuranMenuCardWidget extends StatelessWidget {
                           ),
                           CustomVerticalSpace(height: 16),
                           CustomTextWidget(
-                            "${item.type} - عدد اياتها (${item.ayatNumber})",
+                            "${item.type} - عدد آياتها (${item.ayatNumber})",
                             fontWeight: AppFontWeight.semiBold,
                             fontSize: 12,
                             fontColor: AppColor.primary800Light,

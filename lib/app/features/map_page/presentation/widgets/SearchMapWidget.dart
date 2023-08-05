@@ -28,7 +28,9 @@ class SearchMapWidget extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            SvgPicture.asset("assets/icons/svg/profile.svg"),
+            GestureDetector(
+                onTap: () {},
+                child: SvgPicture.asset("assets/icons/svg/profile.svg")),
             GestureDetector(
                 onTap: () {
                   Navigator.pushNamed(context, RouteName.notificationPage);

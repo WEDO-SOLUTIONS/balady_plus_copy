@@ -81,7 +81,7 @@ Map<String, dynamic> servicesConfig = {
       "isNew": false,
       "isImportant": false,
       "action": {"type": "page", "value": "/municipal-advisor"},
-      "ar": {"title": "المستشار البلدي", "description": null, "tag": null},
+      "ar": {"title": "المستشار الذكي", "description": null, "tag": null},
       "en": {"title": "Municipal Advisor", "description": null, "tag": null}
     },
     // {

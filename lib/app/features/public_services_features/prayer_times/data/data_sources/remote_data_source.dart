@@ -1,9 +1,11 @@
 import 'package:dio/dio.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
+import '../../../../../core/dependency_injection/injection_container.dart';
 import '../../../../../core/errors/errors_exports.dart' show ServerException;
 import '../../../../../core/services/services_exports.dart' show WebService;
-import '../../../../../core/utils/utils_exports.dart' show ApiUrl, Log;
+import '../../../../../core/utils/utils_exports.dart'
+    show ApiHeader, ApiUrl, CommonFunctions, EnvType, Log;
 import '../../../../_shared_feature_/shared_feature_exports.dart'
     show ResponseBodyModel;
 import '../../prayer_times_exports.dart'
@@ -66,10 +68,21 @@ class PrayerTimesRemoteDataSourceImplementation
     PrayerTimeRangeParams params,
   ) async {
     try {
-      final response = await webService.dio.get(
-        ApiUrl.prayerTimesRange,
-        queryParameters: params.toMap(),
-      );
+      String q = "${sl<EnvType>().domain}v1/kacst/prayer-times-range?";
+      params.toMap().forEach((key, value) {
+        q += "$key=$value&";
+      });
+      q = q.substring(0, q.length - 1);
+      print("rrr $q");
+      final response = await webService.dio.get(ApiUrl.prayerTimesRange,
+          queryParameters: params.toMap(),
+          options: Options(headers: {
+            ApiHeader.requiresToken.eName: false,
+            ApiHeader.verifyingKEY.name: CommonFunctions.hashRequest(
+              q,
+              "GET",
+            )
+          }));
 
       final data = response.data;
       data.toString().successLog();

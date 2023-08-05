@@ -9,8 +9,6 @@ abstract class WeatherEvent extends Equatable {
 
 class GetWeatherForLocation extends WeatherEvent {
   final WeatherParams params = WeatherParams(
-      latitude: 26.336057,
-      longitude: 50.120372,
       languageCode: 'ar',
       alert: 'yes',
       numberOfDays: 7,

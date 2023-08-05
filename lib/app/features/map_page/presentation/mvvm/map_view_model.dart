@@ -492,7 +492,6 @@ class MapViewModel extends BaseViewModel {
       southWestLlatitude: _lastHandledEvent!.visibleRect.southWestLat,
     ));
 
-    print("Doneeee");
     hideLoading1();
 
     Navigator.pushNamed(NavigationService.navigatorKey.currentContext!,
@@ -742,8 +741,11 @@ class MapViewModel extends BaseViewModel {
     await controller.removeAll();
     layerSelected.value = value;
     searchController.text = "";
+    viewHomeBottomSheet.value = true;
     viewHomeBottomSheet.notifyListeners();
+
     bottomSheetSize.notifyListeners();
+    bottomSheetSizeFraction.notifyListeners();
     gisSelectedLayer = GISMapLayers.values
             .firstWhereOrNull((element) => element.layerId == value.id) ??
         GISMapLayers.cityPlaces;

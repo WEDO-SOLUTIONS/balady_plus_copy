@@ -80,7 +80,7 @@ class ImtethalMapCard extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   CustomTextWidget(
-                    data.STAGENO ?? "",
+                    "المرحلة: ${data.STAGENO ?? ""}",
                     fontColor: AppColor.blackModern600Light,
                     fontSize: 12,
                     fontWeight: AppFontWeight.bold,
@@ -88,7 +88,7 @@ class ImtethalMapCard extends StatelessWidget {
                     maxLines: 3,
                   ),
                   CustomTextWidget(
-                    data.TARGETBUILDINGTYPE ?? "",
+                    "المستهدف: ${data.TARGETBUILDINGTYPE ?? ""}",
                     fontColor: AppColor.blackModern600Light,
                     fontSize: 12,
                     fontWeight: AppFontWeight.bold,

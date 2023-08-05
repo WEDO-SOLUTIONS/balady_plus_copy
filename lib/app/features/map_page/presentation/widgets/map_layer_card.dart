@@ -69,11 +69,15 @@ class MapLayerCard extends StatelessWidget {
                       isEntity: false,
                       onPress: () async {
                         if (selectedPoint?.TYPE == "TemporaryRental") {
+                          // await mapViewModel.getTempRentalDetails(
+                          //      "02-21-003709-106", "TempRental");
+
                           await mapViewModel.getTempRentalDetails(
-                              "02-21-003709-106", "TempRental");
+                              selectedPoint!.id, "TempRental");
                         } else {
+                          //"01-22-003709-21394"
                           await mapViewModel.getInvestmentDetails(
-                              "01-22-003709-21394", "Investment");
+                              selectedPoint!.id, "Investment");
                         }
                       },
                       onClose: () {

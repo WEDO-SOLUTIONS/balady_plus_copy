@@ -119,7 +119,7 @@
   "issue_health_certificate": "إصدار شهادة صحية",
   "issue_trade_license": "إصدار رخصة تجارية",
   "move_diseased": "نقل وتجهيز الموتى",
-  "municipal_advisor": "المستشار البلدي",
+  "municipal_advisor": "المستشار الذكي",
   "prayer_times": "أوقات الصلاة",
   "request_service": "طلب خدمة بلدية",
   "scanner": "ماسح الرمز السريع",
@@ -135,10 +135,10 @@
   "duration": "المدة",
   "warnings": "ملاحظات / تنبيهات",
   "start_service": "بدء الخدمة",
-  "_municipalAdvisorComments": "أي شيء يخص المستشار البلدي",
+  "_municipalAdvisorComments": "أي شيء يخص المستشار الذكي",
   "startChatting": "ابدأ المحادثة بكتابة رسالة",
   "chatHint": "اكتب إجابتك هنا... ",
-  "municipalAdvisorWelcome": "أهلا بك في المستشار البلدي!",
+  "municipalAdvisorWelcome": "أهلا بك في المستشار الذكي!",
   "municipalAdvisorHint": "يقدم لك المستشار دراسة شاملة تتطلب الإجابة على 10 أسئلة، مدة المحادثة 15 دقيقة.\r\n\r\nتتكون النتيجة النهائية للدراسة من:   \r\nمتطلبات الترخيص\r\nدراسة مالية\r\nالمرفقات المطلوبة للتقديم \r\n\r\nيمكنك أيضا الحصول على كل قسم من الدراسة بشكل منفصل.\r\n\r\nملاحظة: في حال إنهاء المحادثة قبل النتيجة الأخيرة سيتم إعادة المحادثة.",
   "municipalAdvisorTopic": "ما الذي تريد معرفته اليوم ؟",
   "municipalAdvisorChooseHint": "اختر من القائمة التالية",
@@ -2523,7 +2523,8 @@
   "sr_booklet": "ريال / الكراسة",
   "price_per_period": "ريال / الفترة",
   "sar_per_meter": "ريال / م٢ باليوم", 
-  "bid_end_date":"اخر موعد لتقديم الكراسة: "
+  "bid_end_date":"اخر موعد لتقديم الكراسة: ", 
+  "months": "أشهر"
 
 
 

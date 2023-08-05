@@ -50,7 +50,8 @@ class LayersRepositories {
                   element.id != 1 &&
                   element.id != 3 &&
                   element.id != 4 &&
-                  element.id != 6,
+                  element.id != 6 &&
+                  element.id != 5,
             )
             .toList();
       }
@@ -91,7 +92,7 @@ class LayersRepositories {
         q += "$key=$value&";
       });
       q = q.substring(0, q.length - 1);
-      print("QQQQ $q");
+
       final points = await webService.dio.get(
         '${Constants.mainUrl}/${params.layer.layerId}/query',
         queryParameters: params.toMap(),

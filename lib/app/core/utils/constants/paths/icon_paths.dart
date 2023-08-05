@@ -103,6 +103,7 @@ class IconPath {
   static const appiontments = '${_svgProfileIconPath}appiontments$_svg';
   static const settings = '${_svgProfileIconPath}settings$_svg';
   static const help = '${_svgProfileIconPath}help$_svg';
+  static const helpNew = '${_svgProfileIconPath}help_new$_svg';
   static const rateApp = '${_svgProfileIconPath}settings$_svg';
   static const aboutBalady = '${_svgProfileIconPath}about_balady$_svg';
   static const arrowDown = '${_svgProfileIconPath}arrow_down$_svg';

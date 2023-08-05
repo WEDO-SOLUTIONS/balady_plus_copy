@@ -41,10 +41,10 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
           y: latlng?.latitude ?? 24.744615305066496);
     }
 
-    // WeatherParams params =
-    //     e.params.copyWith(latitude: location.y, longitude: location.x);
+    WeatherParams params =
+        e.params.copyWith(latitude: location.y, longitude: location.x);
 
-    final failureOrSuccess = await _getWeatherInfo(e.params);
+    final failureOrSuccess = await _getWeatherInfo(params);
 
     failureOrSuccess.fold((failure) {
       print("failure: weather $failure");

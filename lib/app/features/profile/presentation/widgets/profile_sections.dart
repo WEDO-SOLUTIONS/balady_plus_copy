@@ -71,7 +71,7 @@ class ProfileSections {
         items: [
           ProfileItem(
             title: "help".tr(),
-            icon: IconPath.help,
+            icon: IconPath.helpNew,
             route: RouteName.help,
           ),
         ],
