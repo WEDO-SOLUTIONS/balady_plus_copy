@@ -122,5 +122,8 @@ class RouteName {
   static const violationsPage = '/violationsPage';
   static const violationDetailsPage = '/violationDetailsPage';
 
+  static const investmentPage = '/investmentPage';
+  static const tempRentalPage = '/tempRentalPage';
+
 
 }

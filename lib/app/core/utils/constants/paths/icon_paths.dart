@@ -48,6 +48,12 @@ class IconPath {
   static const global = '${_svgIconPath}global$_svg';
   static const mobile = '${_svgIconPath}mobile$_svg';
   static const magicStar = '${_svgIconPath}magic_star$_svg';
+  static const dollarCircle = '${_svgIconPath}dollar_circle$_svg';
+  static const stopCircle = '${_svgIconPath}stop_circle$_svg';
+  static const download = '${_svgIconPath}download$_svg';
+  static const download2 = '${_svgIconPath}download2$_svg';
+  static const moneyTime = '${_svgIconPath}money_time$_svg';
+  static const infoCircle = '${_svgIconPath}info_circle$_svg';
 
 
   static const informationCircleIcon =
