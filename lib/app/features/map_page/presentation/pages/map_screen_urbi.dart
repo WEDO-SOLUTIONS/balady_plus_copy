@@ -11,12 +11,7 @@ class MapScreenUrbi extends StatelessWidget {
   Widget build(BuildContext context) {
     MapViewModel mapViewModel = context.watch<MapViewModel?>()!;
 
-    return DgisMap(
-      androidUseExpensive: true,
-      onMapCreated: (DgisMapController controller) async {
-        await mapViewModel.initialize(controller);
-      },
-    );
+    return Container();
 
   }
 }

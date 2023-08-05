@@ -28,7 +28,7 @@ class ProviderDetailsContentContainer extends StatelessWidget {
       onTap: () => onTap,
       child: Container(
         width: MediaQuery.of(context).size.width,
-        height: 67,
+        height: 72,
         padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
         margin: const EdgeInsets.symmetric(vertical: 4),
         decoration: BoxDecoration(

@@ -1,28 +1,26 @@
+import 'package:balady_plus/app/core/utils/enums/app_font_weights.dart';
+import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/default_appbar_widget.dart';
+import 'package:balady_plus/app/features/vd/vd_exports.dart';
 import 'package:balady_plus/etmam_app/core/dependency_injection/dependency_injection_exports.dart'
     show sl;
 import 'package:balady_plus/etmam_app/core/services/services_exports.dart'
     show AppEvents;
 import 'package:balady_plus/etmam_app/core/utils/utils_exports.dart'
     show CommonFunctions, IconPath, trans;
-import 'package:balady_plus/app/core/utils/utils_exports.dart' show BlocStatus;
+import 'package:balady_plus/app/core/utils/utils_exports.dart'
+    show AppColor, BlocStatus;
 
 import 'package:balady_plus/etmam_app/features/_shared_feature_/shared/shared_feature_exports.dart'
     show CustomAppBar, CustomLoadingWidget;
 import 'package:balady_plus/etmam_app/features/my_orders/my_orders_exports.dart'
-    show
-        ActionParams,
-        OrderDetailsBloc,
-        OrderDetailsPageParams,
-        OrderDetailsState,
-        OrderInfoSectionWidget,
-        OtherInfoSectionWidget,
-        ProviderSectionWidget,
-        ServiceDetailsSectionWidget,
-        ShowActionsEvent;
+    show ActionParams, OrderDetailsBloc, OrderDetailsPageParams, OrderDetailsState, OrderInfoSectionWidget, OtherInfoSectionWidget, ProviderCardWidget, ProviderSectionWidget, ServiceDetailsSectionWidget, ShowActionsEvent;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../../app/features/_shared_feature_/shared_feature_exports.dart';
+import '../../../../../app/features/objectable_transactions/presentation/widgets/summery_widgets/field_data.dart';
 import '../../../submit_request/presentation/widgets/order_info/order_info_card_widget.dart';
+import '../../../submit_request/presentation/widgets/order_info/order_title_and_desc_widget.dart';
 
 class OrderDetailsPage extends StatefulWidget {
   final OrderDetailsPageParams args;
@@ -55,48 +53,217 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
         },
         builder: (context, state) {
           return Scaffold(
-            appBar: CustomAppBar(
-              title: trans('order_number')
-                  .replaceAll("-", state.response?.number ?? ""),
-              actionImg: (state.response?.actionsOnOrder != null &&
-                      (state.response?.actionsOnOrder?.length ?? 0) > 0)
-                  ? IconPath.moreDots
-                  : "",
-              actionOnPress: () {
-                context.read<OrderDetailsBloc>().add(ShowActionsEvent(
-                    params: ActionParams(
-                        allowedActions: state.response?.actionsOnOrder,
-                        orderId: state.response!.id!,
-                        subServiceId: state.response!.serviceId!,
-                        subServiceName: state.response!.serviceName ?? "")));
-              },
+            appBar: DefaultAppBarWidget(
+              title: "طلب ${state.response?.number}#",
+              actions: [
+                if ((state.response?.actionsOnOrder != null &&
+                    (state.response?.actionsOnOrder?.length ?? 0) > 0))
+                  GestureDetector(
+                    onTap: () {
+                      context.read<OrderDetailsBloc>().add(ShowActionsEvent(
+                          params: ActionParams(
+                              allowedActions: state.response?.actionsOnOrder,
+                              orderId: state.response!.id!,
+                              subServiceId: state.response!.serviceId!,
+                              subServiceName:
+                                  state.response!.serviceName ?? "")));
+                    },
+                    child: Padding(
+                      padding: const EdgeInsetsDirectional.only(end: 16),
+                      child: Image.asset(
+                        IconPath.settings,
+                        width: 48,
+                        height: 48,
+                      ),
+                    ),
+                  )
+              ],
             ),
+            // appBar: CustomAppBar(
+            //   title: trans('order_number')
+            //       .replaceAll("-", state.response?.number ?? ""),
+            // actionImg: (state.response?.actionsOnOrder != null &&
+            //         (state.response?.actionsOnOrder?.length ?? 0) > 0)
+            //     ? IconPath.moreDots
+            //     : "",
+            //   actionOnPress: () {
+            //     context.read<OrderDetailsBloc>().add(ShowActionsEvent(
+            //         params: ActionParams(
+            //             allowedActions: state.response?.actionsOnOrder,
+            //             orderId: state.response!.id!,
+            //             subServiceId: state.response!.serviceId!,
+            //             subServiceName: state.response!.serviceName ?? "")));
+            //   },
+            // ),
             body: SingleChildScrollView(
                 child: Stack(
               children: [
-                Column(
-                  children: [
-                    OrderInfoSectionWidget(
-                      orderStatusText: state.response?.status?.name ?? "",
-                      orderStatus: CommonFunctions.getOrderStatus(
-                          state.response?.status?.id),
-                      orderDate: state.response?.getCreatedDate(),
-                      orderService: state.response?.serviceName,
-                      orderRefrenceNumber:
-                          state.response?.platformReferenceNumber,
-                    ),
-                    ProviderSectionWidget(
-                      providerServiceName: state.response?.providerName,
-                      subServiceName: "",
-                    ),
-                    ServiceDetailsSectionWidget(),
-                    WhiteCardWidget(
-                      child: OtherInfoSectionWidget(
-                        city: state.response?.cityName,
-                        //  cancelPurpose: state.response?.pendingCancelRequest?.requestReason,
+                Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(
+                            children: [
+                              CustomSvgIconWidget(
+                                IconPath.calendar,
+                                iconSize: 18,
+                                iconColor: AppColor.primary600Light,
+                              ),
+                              SizedBox(width: 6),
+                              CustomTextWidget(
+                                state.response?.getCreatedDate() ?? '',
+                                fontSize: 12,
+                                fontWeight: AppFontWeight.bold,
+                                fontColor: AppColor.blackModern500Light,
+                              ),
+                            ],
+                          ),
+                          Container(
+                            padding: const EdgeInsets.symmetric(vertical: 8,horizontal: 16),
+                            decoration: const BoxDecoration(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(16)),
+                              color: AppColor.white,
+                            ),
+                            child: Row(
+                              children: [
+                                CustomTextWidget(
+                                  state.response?.status?.name ?? "",
+                                  fontSize: 11,
+                                  fontWeight: AppFontWeight.bold,
+                                  fontColor: AppColor.primary900Light,
+                                ),
+                                // SizedBox(width: 8),
+                                // Icon(
+                                //   Icons.arrow_drop_down_sharp,
+                                //   size: 16,
+                                //   color: AppColor.primary900Light,
+                                // ),
+                              ],
+                            ),
+                          )
+                        ],
                       ),
-                    ),
-                  ],
+                      const SizedBox(height: 16),
+                      CustomExpansionPanelWidget(
+                        leading: CustomSvgIconWidget(
+                          IconPath.personalInfoSectionIcon,
+                          iconColor: AppColor.primary600Light,
+                          iconSize: 20,
+                        ),
+                        title: "بيانات الطلب",
+                        children: [
+                          FieldData(
+                            title: "الخدمة",
+                            subTitle: state.response?.serviceName,
+                          ),
+                          if (state.response?.platformReferenceNumber != null)
+                            FieldData(
+                              title: trans('order_refrence_number'),
+                              subTitle: state.response?.platformReferenceNumber,
+                            ),
+                        ],
+                      ),
+                      const SizedBox(height: 12),
+                      CustomExpansionPanelWidget(
+                        leading: CustomSvgIconWidget(
+                          IconPath.personalInfoSectionIcon,
+                          iconColor: AppColor.primary600Light,
+                          iconSize: 20,
+                        ),
+                        title: "المكتب المفوض",
+                        children: [
+                          FieldData(
+                            title: "اسم المكتب",
+                            subTitle: state.response?.providerName,
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 12),
+                      CustomExpansionPanelWidget(
+                        leading: CustomSvgIconWidget(
+                          IconPath.personalInfoSectionIcon,
+                          iconColor: AppColor.primary600Light,
+                          iconSize: 20,
+                        ),
+                        title: "خدامات اضافية",
+                        children: [
+                          ListView.builder(
+                            shrinkWrap: true,
+                            itemCount: state.response?.subOrders?.length ?? 0,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemBuilder: (ctx, index) => Column(
+                              children: [
+                                OrderTitleAndDescWidget(
+                                  spaceBetweenTitleAndDesc: 8,
+                                  title:
+                                  state.response?.subOrders?[index].serviceName ??
+                                      "",
+                                  descWidget: ProviderCardWidget(
+                                    providerName: state.response?.subOrders?[index]
+                                        .providerName ??
+                                        "",
+                                    showMoreAction: (state.response?.subOrders?[index]
+                                        .actionsOnOrder !=
+                                        null &&
+                                        (state.response?.subOrders?[index]
+                                            .actionsOnOrder?.length ??
+                                            0) >
+                                            0),
+                                    onMoreAction: () {
+                                      context.read<OrderDetailsBloc>().add(
+                                          ShowActionsEvent(
+                                              params: ActionParams(
+                                                  allowedActions: state
+                                                      .response
+                                                      ?.subOrders?[index]
+                                                      .actionsOnOrder,
+                                                  orderId: state.response!
+                                                      .subOrders![index].id!,
+                                                  subServiceId: state.response!
+                                                      .subOrders![index].serviceId!,
+                                                  subServiceName: state
+                                                      .response!
+                                                      .subOrders?[index]
+                                                      .serviceName ??
+                                                      "")));
+                                    },
+                                    providerLogoUrl: state.response?.subOrders?[index]
+                                        .providerLogoUrl ??
+                                        "",
+                                    statusText: state
+                                        .response?.subOrders?[index].status?.name,
+                                    orderStatus: CommonFunctions.getOrderStatus(
+                                        state.response?.subOrders?[index].status?.id),
+                                  ),
+                                ),
+                                const CustomVerticalSpace(height: 16)
+                              ],
+                            ),
+                          ),
+
+                        ],
+                      ),
+                      const SizedBox(height: 12),
+                      CustomExpansionPanelWidget(
+                        leading: CustomSvgIconWidget(
+                          IconPath.personalInfoSectionIcon,
+                          iconColor: AppColor.primary600Light,
+                          iconSize: 20,
+                        ),
+                        title: "تفاصيل اخري",
+                        children: [
+                          FieldData(
+                            title: "المدينة",
+                            subTitle: state.response?.cityName,
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
                 if (state.status == BlocStatus.loading)
                   const CustomLoadingWidget(),

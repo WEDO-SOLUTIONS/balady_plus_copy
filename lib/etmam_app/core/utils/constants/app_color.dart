@@ -33,6 +33,7 @@ class AppColor {
   static const starRatingColor = Color(0xFF34BFA7);
 
   static const blue700 = Color(0xFF0033a0);
+  static const primary900 = Color(0xFF155F75);
   static const blue300 = Color(0xFF859DD1);
   static const blue200 = Color(0xFFA6B8DE);
   static const blue100 = Color(0xffc7d2ea);

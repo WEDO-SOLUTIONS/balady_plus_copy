@@ -1,6 +1,7 @@
 import 'package:balady_plus/app/core/utils/constants/route_names.dart';
 import 'package:balady_plus/app/core/services/local/navigation_services.dart';
-import 'package:balady_plus/app/core/utils/utils_exports.dart' show BlocStatus;
+import 'package:balady_plus/app/core/utils/utils_exports.dart'
+    show BlocStatus, IconPath;
 
 import 'package:balady_plus/etmam_app/features/_shared_feature_/shared/shared_feature_exports.dart'
     show
@@ -35,6 +36,7 @@ import 'package:balady_plus/etmam_app/features/home/home_exports.dart'
         SubServiceParams,
         SubServiceResponse;
 
+import '../../../../_shared_feature_/shared/presentation/widgets/custom_svg_icon_widget.dart';
 import '../../../../_shared_feature_/shared/presentation/widgets/header_with_all_button_widget.dart';
 
 class EtmamMainServicesWidget extends StatefulWidget {
@@ -207,7 +209,7 @@ class EtmamServiceCardWidget extends StatelessWidget {
           borderRadius: BorderRadius.circular(14),
         ),
         margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
-        height: 96,
+        height: 78,
         child: Row(
           children: [
             Container(
@@ -235,12 +237,14 @@ class EtmamServiceCardWidget extends StatelessWidget {
                     fontWeight: AppFontWeight.bold,
                     maxLines: 2,
                   ),
-                  subtitle: const CustomTextWidget(
-                    'يمكنك الآن حجز موعد عبر التطبيق !',
-                    fontSize: 12,
-                    fontColor: Color(0x6B111111),
-                  ),
                 ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: const CustomSvgIconWidget(
+                IconPath.arrowForward2,
+                iconColor: AppColor.black,
               ),
             ),
           ],

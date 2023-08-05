@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/custom_svg_icon_widget.dart';
 import 'package:balady_plus/etmam_app/core/utils/common_functions.dart';
 import 'package:balady_plus/etmam_app/features/providers/presentation/blocs/provider_details_bloc/provider_details_bloc.dart';
 import 'package:balady_plus/etmam_app/features/providers/presentation/widgets/provider_details/provider_content.dart';
@@ -5,6 +6,7 @@ import 'package:balady_plus/etmam_app/features/services/services_exports.dart'
     show InfoWithIcon;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../../../app/core/utils/constants/app_colors.dart';
 import '../../../../../core/utils/constants/icon_path.dart';
@@ -89,6 +91,7 @@ class EtmamProviderMainInfo extends StatelessWidget {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            const SizedBox(height: 28),
             const CustomTextWidget(
               'تفاصيل العمل والتواصل',
               fontColor: AppColor.blackModern800Light,
@@ -124,10 +127,37 @@ class EtmamProviderMainInfo extends StatelessWidget {
             ),
             ProviderDetailsContentContainer(
               title: 'رقم التواصل',
-              content: CustomTextWidget(state.args.mainBranchContact ?? "",
-                  fontSize: 13,
-                  fontWeight: AppFontWeight.bold,
-                  fontColor: AppColor.blackModern500Light),
+              content: Row(
+                children: [
+                  Expanded(
+                    child: CustomTextWidget(state.args.mainBranchContact ?? "",
+                        fontSize: 13,
+                        fontWeight: AppFontWeight.bold,
+                        fontColor: AppColor.blackModern500Light),
+                  ),
+                   Row(
+                    children: [
+                      const CustomSvgIconWidget(IconPath.phoneIcon),
+                      const SizedBox(width: 2),
+                      GestureDetector(
+                        onTap: (){
+                          launch("tel://${state.args.mainBranchContact}");
+                        },
+                        child: const CustomTextWidget(
+                          "اتصال",
+                          fontSize: 12,
+                          textStyle: TextStyle(
+                            decoration: TextDecoration.underline,
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                            color: AppColor.primary900Light
+                          ),
+                        ),
+                      ),
+                    ],
+                  )
+                ],
+              ),
               icon: IconPath.phoneIcon,
             ),
           ],
