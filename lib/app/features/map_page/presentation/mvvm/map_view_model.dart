@@ -53,6 +53,8 @@ class MapViewModel extends BaseViewModel {
 
   final viewHomeBottomSheet = ValueNotifier(true);
   final bottomSheetSize = ValueNotifier(0.5);
+  final bottomSheetSizeFraction = ValueNotifier(0.5);
+
   final locationEnabledState = ValueNotifier(false);
   final generalControlsState = ValueNotifier(false);
   final initialized = ValueNotifier(false);
@@ -103,10 +105,12 @@ class MapViewModel extends BaseViewModel {
     selectedPointId.notifyListeners();
 
     if (viewHomeBottomSheet.value == false) {
-      bottomSheetSize.value = 0.1;
+      // bottomSheetSizeFraction.value = 0.05;
+
       viewHomeBottomSheet.value = true;
       viewHomeBottomSheet.notifyListeners();
       bottomSheetSize.notifyListeners();
+      bottomSheetSizeFraction.notifyListeners();
     }
   }
 
@@ -175,8 +179,9 @@ class MapViewModel extends BaseViewModel {
               selectedPointId.notifyListeners();
               viewHomeBottomSheet.value = false;
               viewHomeBottomSheet.notifyListeners();
-              bottomSheetSize.value = 0.1;
+              // bottomSheetSizeFraction.value = 0.05;
               bottomSheetSize.notifyListeners();
+              bottomSheetSizeFraction.notifyListeners();
             },
           ));
         }
@@ -274,9 +279,11 @@ class MapViewModel extends BaseViewModel {
   void showDialog() {
     clearAllCards();
     viewHomeBottomSheet.value = true;
-    bottomSheetSize.value = 0.01;
-    bottomSheetSize.notifyListeners();
     viewHomeBottomSheet.notifyListeners();
+
+    //bottomSheetSizeFraction.value = 0.05;
+    bottomSheetSize.notifyListeners();
+    bottomSheetSizeFraction.notifyListeners();
   }
 
   void clearAllCards() {
@@ -570,24 +577,13 @@ class MapViewModel extends BaseViewModel {
               selectedPointId.notifyListeners();
               selectedPoint.notifyListeners();
 
-              bottomSheetSize.notifyListeners();
               showLegend.notifyListeners();
-              if (viewHomeBottomSheet.value != false) {
-                viewHomeBottomSheet.value = false;
-                viewHomeBottomSheet.notifyListeners();
-              }
 
+              viewHomeBottomSheet.value = false;
+              viewHomeBottomSheet.notifyListeners();
+              // bottomSheetSizeFraction.value = 0.05;
               bottomSheetSize.notifyListeners();
-
-              /* controller.setCameraPosition(
-                CameraPositionMessage(
-                  zoomValue: 17,
-                  geoPoint: GeoPointMessage(
-                    latitude: element.latLng.latitude,
-                    longitude: element.latLng.longitude,
-                  ),
-                ),
-              );*/
+              bottomSheetSizeFraction.notifyListeners();
             },
           );
         },
@@ -639,12 +635,11 @@ class MapViewModel extends BaseViewModel {
               bottomSheetSize.notifyListeners();
               showLegend.notifyListeners();
 
-              if (viewHomeBottomSheet.value != false) {
-                viewHomeBottomSheet.value = false;
-                viewHomeBottomSheet.notifyListeners();
-              }
-
+              viewHomeBottomSheet.value = false;
+              viewHomeBottomSheet.notifyListeners();
+              // bottomSheetSizeFraction.value = 0.05;
               bottomSheetSize.notifyListeners();
+              bottomSheetSizeFraction.notifyListeners();
               /*  controller.setCameraPosition(
                 CameraPositionMessage(
                   zoomValue: 17,
@@ -710,21 +705,11 @@ class MapViewModel extends BaseViewModel {
               bottomSheetSize.notifyListeners();
               showLegend.notifyListeners();
 
-              if (viewHomeBottomSheet.value != false) {
-                viewHomeBottomSheet.value = false;
-                viewHomeBottomSheet.notifyListeners();
-              }
-
+              viewHomeBottomSheet.value = false;
+              viewHomeBottomSheet.notifyListeners();
+              //  bottomSheetSizeFraction.value = 0.05;
+              bottomSheetSizeFraction.notifyListeners();
               bottomSheetSize.notifyListeners();
-              /*  controller.setCameraPosition(
-                CameraPositionMessage(
-                  zoomValue: 17,
-                  geoPoint: GeoPointMessage(
-                    latitude: element.paths.first.latitude,
-                    longitude: element.paths.first.longitude,
-                  ),
-                ),
-              );*/
             },
           ),
         );

@@ -19,22 +19,24 @@ class HomeBottomSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     MapViewModel mapViewModel = context.watch<MapViewModel?>()!;
+    print("initial ${mapViewModel.bottomSheetSizeFraction.value}");
     return ValueListenableBuilder<bool>(
         valueListenable: mapViewModel.viewHomeBottomSheet,
         builder: (_, visible, child) {
+          print("initial ${mapViewModel.bottomSheetSizeFraction.value}");
           return visible ? child! : const SizedBox();
         },
         child: DraggableSheetCard(
           minSize: 0.05,
           maxSize: 0.9,
           cornerRadius: 36,
-          initialChildSize: 0.5,
+          initialChildSize: mapViewModel.bottomSheetSizeFraction.value,
           children: [
             DraggableHeaderComponent(),
             ReportHomeCard(),
-            BaladySmartAdvisorCard(),
             PrayerHomeCard(),
             ReadHomeCard(),
+            BaladySmartAdvisorCard(),
             ChallengeHomeCard(),
             NewServices(),
             SizedBox(height: 30),

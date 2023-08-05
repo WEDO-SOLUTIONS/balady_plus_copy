@@ -3,12 +3,14 @@ import '../../constants/constants.dart';
 enum GISMapLayers {
   cityPlaces(
       layerId: 0,
+      cardHeight: 120,
       icon: Constants.bulidingLayerIcon,
       selectedIcon: Constants.bulidingSelectedLayerIcon,
       outFieldsShort: [],
       outFieldsLong: []),
   Opportunities(
       layerId: 2,
+      cardHeight: 145,
       icon: Constants.furasLayerIcon,
       selectedIcon: Constants.furasSelectedLayerIcon,
       outFieldsShort: [
@@ -35,6 +37,7 @@ enum GISMapLayers {
 
   Digging(
       layerId: 5,
+      cardHeight: 120,
       icon: Constants.diggingLayerIcon,
       selectedIcon: Constants.diggingSelectedLayerIcon,
       outFieldsShort: [
@@ -60,6 +63,7 @@ enum GISMapLayers {
 
   BSAimtithalBuildingsCertificateL(
       layerId: 7,
+      cardHeight: 172,
       icon: Constants.imtethalLayerIcon,
       selectedIcon: Constants.imtethalSelectedLayerIcon,
       outFieldsShort: [
@@ -108,6 +112,7 @@ enum GISMapLayers {
 
   BSWhiteParcelS(
       layerId: 8,
+      cardHeight: 160,
       icon: Constants.landsLayerIcon,
       selectedIcon: Constants.landsSelectedLayerIcon,
       outFieldsShort: [
@@ -140,6 +145,7 @@ enum GISMapLayers {
 
   CadastralParcels(
       layerId: 10,
+      cardHeight: 160,
       icon: Constants.landsLayerIcon,
       selectedIcon: Constants.landsSelectedLayerIcon,
       outFieldsShort: [
@@ -151,6 +157,7 @@ enum GISMapLayers {
 
   CadastralParcelsLand(
       layerId: 9,
+      cardHeight: 160,
       resultRecordCount: 50,
       icon: Constants.landsLayerIcon,
       selectedIcon: Constants.landsSelectedLayerIcon,
@@ -174,6 +181,7 @@ enum GISMapLayers {
       required this.outFieldsLong,
       required this.icon,
       required this.selectedIcon,
+      required this.cardHeight,
       this.resultRecordCount = 100});
   final int layerId;
 
@@ -182,5 +190,5 @@ enum GISMapLayers {
   final List<String> outFieldsLong;
   final String icon;
   final String selectedIcon;
-  final int long;
+  final int cardHeight;
 }

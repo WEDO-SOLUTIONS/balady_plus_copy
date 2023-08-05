@@ -60,14 +60,20 @@ class _DraggableSheetCardState extends State<DraggableSheetCard> {
       MapViewModel mapViewModel =
           Provider.of<MapViewModel>(context, listen: false);
 
-      mapViewModel.bottomSheetSize.value = draggableScrollableController.pixels;
+      draggableScrollableController
+          .jumpTo(mapViewModel.bottomSheetSizeFraction.value);
       mapViewModel.bottomSheetSize.notifyListeners();
 
       draggableScrollableController.addListener(() {
         mapViewModel.bottomSheetSize.value =
             draggableScrollableController.pixels;
         mapViewModel.bottomSheetSize.notifyListeners();
-        print(mapViewModel.bottomSheetSize.value);
+
+        mapViewModel.bottomSheetSizeFraction.value =
+            draggableScrollableController.size;
+        mapViewModel.bottomSheetSizeFraction.notifyListeners();
+
+        print(mapViewModel.bottomSheetSizeFraction.value);
       });
     });
   }

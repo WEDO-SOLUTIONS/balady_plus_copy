@@ -53,13 +53,7 @@ class _HomePageState extends State<HomePage> {
           child: Stack(
             children: [
               const HomeMap(),
-              ValueListenableBuilder<bool>(
-                valueListenable: mapViewModel.viewHomeBottomSheet,
-                builder: (_, visible, child) {
-                  return visible ? child! : const SizedBox();
-                },
-                child: const HomeBottomSheet(),
-              ),
+              const HomeBottomSheet(),
             ],
           ),
         ),

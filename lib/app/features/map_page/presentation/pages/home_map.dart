@@ -96,7 +96,12 @@ class HomeMap extends StatelessWidget {
                           },
                         ),
                         Container(
-                          margin: EdgeInsets.only(bottom: bottomSize),
+                          margin: EdgeInsets.only(
+                              bottom:
+                                  mapViewModel.viewHomeBottomSheet.value == true
+                                      ? bottomSize
+                                      : mapViewModel.gisSelectedLayer.cardHeight
+                                          .toDouble()),
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
