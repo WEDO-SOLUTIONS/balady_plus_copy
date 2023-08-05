@@ -141,6 +141,9 @@ class RouteName {
   static const athkarEntitesPage = '/athkarEntitesPage';
   static const athkarEntityContentPage = '/athkarEntityContentPage';
   static const boardingPage = '/boardingPage';
+
+  static const investmentPage = '/investmentPage';
+  static const tempRentalPage = '/tempRentalPage';
 }
 
 class EtmamRoutesNames {

@@ -210,6 +210,8 @@ flutter:
     - assets/icons/png/vd/
     - assets/icons/png/qr/
     - assets/icons/png/new_services/
+    - assets/icons/svg/weather/day/
+    - assets/icons/svg/weather/night/
     - assets/images/
     - assets/langs/
     - assets/quran/

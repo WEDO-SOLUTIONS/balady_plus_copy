@@ -21,7 +21,16 @@ import 'package:balady_plus/etmam_app/features/home/presentation/pages/etmam_hom
 import 'package:balady_plus/etmam_app/features/on_boarding_cities/presentation/pages/etmam_select_city_page.dart';
 import '../../../etmam_app/features/home/presentation/pages/etmam_main_page.dart';
 import '../../core/utils/utils_exports.dart'
-    show EtmamRoutesNames, RouteName, ScaleRotatePage, SliderUpPage;
+    show
+        EtmamRoutesNames,
+        RouteName,
+        ScaleRotatePage,
+        SliderUpPage,
+        RouteName,
+        ScaleRotatePage,
+        SliderUpPage;
+import '../../features/unknow/pages/investment_page.dart';
+import '../../features/unknow/pages/temp_rental_page.dart';
 import '../../features/_shared_feature_/presentation/pages/view_dms_image_screen.dart';
 import '../../features/_shared_feature_/shared_feature_exports.dart';
 import '../../features/_shared_feature_/data/entities/success_screen_args.dart';
@@ -361,6 +370,15 @@ class AppRouter {
       case RouteName.weatherMainPage:
         return MaterialPageRoute(
           builder: (_) => const WeatherMainPage(),
+        );
+
+      case RouteName.investmentPage:
+        return MaterialPageRoute(
+          builder: (_) => const InvestmentPage(),
+        );
+      case RouteName.tempRentalPage:
+        return MaterialPageRoute(
+          builder: (_) => const TempRentalPage(),
         );
 
       case RouteName.DCCameraPage:
