@@ -34,6 +34,7 @@ class EtmamTopRatedProvidersWidget extends StatelessWidget {
       },
       builder: (context, state) {
         return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             HeaderWithAllButtonWidget(
               showAllButton:
@@ -45,6 +46,7 @@ class EtmamTopRatedProvidersWidget extends StatelessWidget {
                     args: state.topRatedProviderResponse);
               },
               header: trans('top_rated_providers'),
+              fontSize: 18,
             ),
             if (state.topRatedProvidersStatus == BlocStatus.loading)
               const EtmamProvidersLoadingWidget(),
@@ -61,45 +63,48 @@ class EtmamTopRatedProvidersWidget extends StatelessWidget {
               ),
             if (state.topRatedProvidersStatus == BlocStatus.success)
               Container(
-                  padding: EdgeInsetsDirectional.only(start: 16, end: 16),
-                  height: 200,
-                  child: ListView.builder(
-                      clipBehavior: Clip.none,
-                      itemCount:
-                          state.topRatedProviderResponse?.items?.length ?? 0,
-                      scrollDirection: Axis.horizontal,
-                      itemBuilder: (ctx, index) {
-                        return EtmamServiceProviderItem(
-                          isFirst: index == 0,
-                          isLast: index ==
-                              ((state.topRatedProviderResponse?.items?.length ??
-                                      0) -
-                                  1),
-                          providerName: state.topRatedProviderResponse
-                                  ?.items?[index].serviceProviderName ??
-                              "",
-                          providerRating: state.topRatedProviderResponse
-                                  ?.items?[index].ratingAverage ??
-                              0,
-                          totalEvaluation: state.topRatedProviderResponse
-                                  ?.items?[index].totalEvaluationNumber ??
-                              0.0,
-                          providerIcon: state.topRatedProviderResponse
-                                  ?.items?[index].logoImageUrl ??
-                              "",
-                          onPress: () {
-                            context.read<HomeBloc>().add(
-                                GetProviderDetailsEvent(
-                                    params: ProviderDetailsParams(
-                                        cityId: CommonProperties.cityId,
-                                        providerId: state
-                                                .topRatedProviderResponse
-                                                ?.items?[index]
-                                                .id ??
-                                            "")));
-                          },
-                        );
-                      })),
+                // padding: const EdgeInsetsDirectional.only(start: 16, end: 16),
+                margin: const EdgeInsetsDirectional.only(bottom: 16),
+                height: 90,
+                child: ListView.builder(
+                  clipBehavior: Clip.none,
+                  itemCount: state.topRatedProviderResponse?.items?.length ?? 0,
+                  scrollDirection: Axis.horizontal,
+                  itemBuilder: (ctx, index) {
+                    return EtmamServiceProviderItem(
+                      isFirst: index == 0,
+                      isLast: index ==
+                          ((state.topRatedProviderResponse?.items?.length ??
+                                  0) -
+                              1),
+                      providerName: state.topRatedProviderResponse
+                              ?.items?[index].serviceProviderName ??
+                          "",
+                      providerRating: state.topRatedProviderResponse
+                              ?.items?[index].ratingAverage ??
+                          0,
+                      totalEvaluation: state.topRatedProviderResponse
+                              ?.items?[index].totalEvaluationNumber ??
+                          0.0,
+                      providerIcon: state.topRatedProviderResponse
+                              ?.items?[index].logoImageUrl ??
+                          "",
+                      onPress: () {
+                        context.read<HomeBloc>().add(
+                              GetProviderDetailsEvent(
+                                params: ProviderDetailsParams(
+                                  cityId: CommonProperties.cityId,
+                                  providerId: state.topRatedProviderResponse
+                                          ?.items?[index].id ??
+                                      "",
+                                ),
+                              ),
+                            );
+                      },
+                    );
+                  },
+                ),
+              ),
           ],
         );
       },
@@ -132,51 +137,40 @@ class EtmamServiceProviderItem extends StatelessWidget {
     return CustomInkWellButtonWidget(
       btnPressed: () => onPress(),
       widget: Container(
-        height: 200,
-        width: 208,
-        padding: EdgeInsets.symmetric(horizontal: 14, vertical: 20),
-        margin: EdgeInsetsDirectional.only(bottom: 12, end: 12),
-        decoration: new BoxDecoration(
-          color: Color(0xffffffff),
-          borderRadius: BorderRadius.circular(4),
-          boxShadow: [
-            BoxShadow(
-                color: Color(0x19000000),
-                offset: Offset(0, 2),
-                blurRadius: 10,
-                spreadRadius: 0)
-          ],
+        decoration: BoxDecoration(
+          color: AppColor.white,
+          borderRadius: BorderRadius.circular(14),
         ),
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          EtmamProviderLogoIcon(imageUrl: providerIcon),
-          CustomVerticalSpace(height: 14),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(
-                  flex: 2,
-                  child: CustomTextWidget(
+        width: 303,
+        margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+        child: Row(
+          children: [
+            Container(
+              margin: const EdgeInsetsDirectional.all(16),
+              child: EtmamProviderLogoIcon(
+                imageUrl: providerIcon,
+              ),
+            ),
+            Expanded(
+              child: SizedBox(
+                child: ListTile(
+                  title: CustomTextWidget(
                     providerName,
-                    fontSize: 17,
+                    fontSize: 16,
                     fontColor: AppColor.black,
                     fontWeight: AppFontWeight.bold,
                     maxLines: 2,
-                    textAlign: TextAlign.start,
-                    textOverflow: TextOverflow.ellipsis,
+                  ),
+                  subtitle: EtmamRatingEvaluationWidget(
+                    rating: providerRating,
+                    totalEvaluation: totalEvaluation,
+                    withDot: false,
                   ),
                 ),
-                Expanded(
-                    flex: 1,
-                    child: EtmamRatingEvaluationWidget(
-                      rating: providerRating,
-                      totalEvaluation: totalEvaluation,
-                      withDot: false,
-                    )),
-              ],
+              ),
             ),
-          )
-        ]),
+          ],
+        ),
       ),
     );
   }

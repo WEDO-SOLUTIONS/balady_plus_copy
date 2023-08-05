@@ -58,14 +58,14 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
           return Stack(
             children: [
               Column(children: [
-                ProviderDetailsHeader(
-                  imageUrl: state.response.provider?.logoUrl ?? "",
-                  providerName: state.response.provider?.name ?? "",
-                ),
-                Expanded(
+                // ProviderDetailsHeader(
+                //   imageUrl: state.response.provider?.logoUrl ?? "",
+                //   providerName: state.response.provider?.name ?? "",
+                // ),
+                const Expanded(
                   child: SingleChildScrollView(
                     child: Column(
-                      children: const [
+                      children: [
                         ServiceProviderMainInfo(),
                         // CustomVerticalSpace(height: 12),
                         ServiceInfoWidget(),

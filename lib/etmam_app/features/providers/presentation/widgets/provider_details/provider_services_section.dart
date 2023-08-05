@@ -1,3 +1,6 @@
+import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
+import 'package:balady_plus/app/core/utils/enums/app_font_weights.dart';
+import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import 'package:balady_plus/etmam_app/core/utils/common_properties.dart';
 import 'package:balady_plus/etmam_app/features/home/home_exports.dart';
 import 'package:balady_plus/etmam_app/features/providers/presentation/blocs/provider_details_bloc/provider_details_bloc.dart';
@@ -6,8 +9,6 @@ import 'package:balady_plus/etmam_app/features/services/services_exports.dart'
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../../core/utils/utils_exports.dart'
-    show AppColor, PrimaryIcons, trans;
 import '../../../../_shared_feature_/shared/shared_feature_exports.dart'
     show CustomVerticalSpace, SectionTitleWidget;
 
@@ -24,10 +25,13 @@ class ProviderServicesSection extends StatelessWidget {
                 child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      SectionTitleWidget(
-                        title: trans('provider_services'),
-                        primaryIcon: PrimaryIcons.providerServicesSectionIcon,
+                      const CustomTextWidget(
+                        "الخدمات المقدمة",
+                        fontColor: AppColor.blackModern800Light,
+                        fontSize: 18,
+                        fontWeight: AppFontWeight.bold,
                       ),
+                      const CustomVerticalSpace(height: 16),
                       GridView.builder(
                           shrinkWrap: true,
                           physics: const NeverScrollableScrollPhysics(),
@@ -62,7 +66,7 @@ class ProviderServicesSection extends StatelessWidget {
                               },
                             );
                           }),
-                      CustomVerticalSpace(height: 12),
+                      const CustomVerticalSpace(height: 12),
                     ]))
             : Container();
       },

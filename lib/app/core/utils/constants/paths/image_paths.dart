@@ -1,4 +1,6 @@
 const _imagePath = 'assets/images/';
+const _etmamImagePath = 'assets/etmam_app/images/';
+
 const _png = '.png';
 const _svg = '.svg';
 const _jpg = '.jpg';
@@ -73,4 +75,7 @@ class ImagePath {
   static const buildingReq10 = '${_imagePath}building_req10$_png';
   static const buildingReq11 = '${_imagePath}building_req11$_png';
   static const buildingReq12 = '${_imagePath}building_req12$_png';
+  //etmam app
+  static const providerDetailsImgExample =
+      '${_etmamImagePath}ProviderDetailsExample$_png';
 }

@@ -48,13 +48,13 @@ class OrderInfoSectionWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 16, vertical: 20),
-      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
       decoration: new BoxDecoration(
-        color: Color(0xffffffff),
+        color: const Color(0xffffffff),
         borderRadius: BorderRadius.circular(4),
         boxShadow: [
-          BoxShadow(
+          const BoxShadow(
               color: Color(0x26000000),
               offset: Offset(0, 2),
               blurRadius: 5,
@@ -86,7 +86,7 @@ class OrderInfoSectionWidget extends StatelessWidget {
             )
           ]),
           DrawLineWidget(
-            lineColor: Color(0xff979797).withOpacity(0.2000000029802322),
+            lineColor: const Color(0xff979797).withOpacity(0.2000000029802322),
             verticalMargin: 16,
           ),
           OrderTitleGreyAndDescWidget(
@@ -163,7 +163,7 @@ class ServiceDetailsSectionWidget extends StatelessWidget {
                     ListView.builder(
                       shrinkWrap: true,
                       itemCount: state.response?.subOrders?.length ?? 0,
-                      physics: NeverScrollableScrollPhysics(),
+                      physics: const NeverScrollableScrollPhysics(),
                       itemBuilder: (ctx, index) => Column(
                         children: [
                           OrderTitleAndDescWidget(
@@ -209,7 +209,7 @@ class ServiceDetailsSectionWidget extends StatelessWidget {
                                   state.response?.subOrders?[index].status?.id),
                             ),
                           ),
-                          CustomVerticalSpace(height: 16)
+                          const CustomVerticalSpace(height: 16)
                         ],
                       ),
                     ),

@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 
 import '../../../../core/utils/utils_exports.dart';
+import '../../../_shared_feature_/presentation/buttons/circular_container_icon_button.dart';
 import '../../../_shared_feature_/shared_feature_exports.dart';
 import '../bloc/weather_bloc.dart';
 import 'alerts_modalsheet_contents.dart';
@@ -43,13 +44,10 @@ class WeatherAppbar extends StatelessWidget {
                                 child: const AlertsModalSheetContent(),
                               ));
                     },
-                    child: Container(
-                      margin: const EdgeInsets.only(left: 16),
+                    child: const CircularContainerForIcons(
+                      iconPath: IconPath.danger,
                       width: 48,
                       height: 48,
-                      decoration: const BoxDecoration(
-                          color: Color(0x1FCDE0E0), shape: BoxShape.circle),
-                      child: Center(child: SvgPicture.asset(IconPath.danger)),
                     ),
                   ),
           ],

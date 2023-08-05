@@ -55,18 +55,18 @@ class _EtmamHomePage extends State<EtmamHomePage> {
         builder: (context, state) {
           return Column(
             children: [
-              EtmamHomeAppBarWidget(),
+              const EtmamHomeAppBarWidget(),
               Expanded(
                 child: SingleChildScrollView(
                   child: Stack(alignment: Alignment.center, children: [
-                    Column(children: [
+                    const Column(children: [
                       EtmamMainServicesWidget(),
                       EtmamBannerSlider(),
-                      EtmamSubServicesWidget(),
+                      // EtmamSubServicesWidget(),
                       EtmamTopRatedProvidersWidget(),
                     ]),
                     if (state.status == BlocStatus.loading)
-                      Center(child: const CustomLoadingWidget())
+                      const Center(child: CustomLoadingWidget())
                   ]),
                 ),
               ),

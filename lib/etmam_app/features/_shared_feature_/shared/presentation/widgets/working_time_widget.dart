@@ -28,71 +28,83 @@ class _WorkingDayListWidgetState extends State<WorkingDayListWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        CustomIconButtonWidget(
-          padding: EdgeInsets.zero,
-          btnPressed: () {
-            setState(() {
-              showAll = !showAll;
-            });
-          },
-          icon: Row(
-            children: [
-              CustomSvgIconWidget(
-                IconPath.workingHoursIcon,
-                iconSize: 14,
-              ),
-              CustomHorizontalSpace(width: 4),
-              CustomTextWidget(
-                trans('working_time'),
-                fontColor: AppColor.baladyDarkGreen2,
-                fontWeight: AppFontWeight.bold,
-                fontSize: 13,
-                textAlign: TextAlign.start,
-              ),
-              const CustomHorizontalSpace(width: 16),
-              CustomSvgIconWidget(
-                showAll
-                    ? IconPath.expansionArrowUp
-                    : IconPath.expansionArrowDown,
-                iconWidth: 9.5,
-                iconHeight: 5.5,
-                iconColor: AppColor.baladyDarkGreen2,
-              ),
-            ],
-          ),
+    return InkWell(
+      onTap: () {
+        setState(() {
+          showAll = !showAll;
+        });
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        margin: const EdgeInsets.symmetric(vertical: 4),
+        decoration: BoxDecoration(
+          color: AppColor.white,
+          borderRadius: BorderRadius.circular(16),
         ),
-        const CustomVerticalSpace(height: 8),
-        MediaQuery.removePadding(
-          context: context,
-          removeTop: true,
-          removeBottom: true,
-          child: ListView.builder(
-              shrinkWrap: true,
-              itemCount: showAll ? widget.workingHours?.length : 0,
-              physics: const NeverScrollableScrollPhysics(),
-              itemBuilder: (ctx, index) {
-                return WorkingTimeWidget(
-                  dayName: widget.workingHours?[index].day ?? "",
-                  firstShiftFromTime:
-                      widget.workingHours?[index].firstShift?.from ?? "",
-                  firstShiftToTime:
-                      widget.workingHours?[index].firstShift?.to ?? "",
-                  secondShiftFromTime:
-                      widget.workingHours?[index].secondShift?.from ?? "",
-                  secondShiftToTime:
-                      widget.workingHours?[index].secondShift?.to ?? "",
-                  showAll: showAll &&
-                      index != ((widget.workingHours?.length ?? 0) - 1),
-                  isClosed: widget.workingHours?[index].closed ?? false,
-                  isOpen24Hours: widget.workingHours?[index].fullTime ?? false,
-                );
-              }),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            CustomIconButtonWidget(
+              padding: EdgeInsets.zero,
+              btnPressed: () {},
+              icon: Row(
+                children: [
+                  const CustomSvgIconWidget(
+                    IconPath.workingHoursIcon,
+                    iconSize: 14,
+                  ),
+                  const CustomHorizontalSpace(width: 4),
+                  CustomTextWidget(
+                    trans('working_time'),
+                    fontColor: AppColor.black,
+                    fontWeight: AppFontWeight.bold,
+                    fontSize: 13,
+                    textAlign: TextAlign.start,
+                  ),
+                  const CustomHorizontalSpace(width: 16),
+                  CustomSvgIconWidget(
+                    showAll
+                        ? IconPath.expansionArrowUp
+                        : IconPath.expansionArrowDown,
+                    iconWidth: 9.5,
+                    iconHeight: 5.5,
+                    iconColor: AppColor.baladyDarkGreen2,
+                  ),
+                ],
+              ),
+            ),
+            const CustomVerticalSpace(height: 8),
+            MediaQuery.removePadding(
+              context: context,
+              removeTop: true,
+              removeBottom: true,
+              child: ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: showAll ? widget.workingHours?.length : 0,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemBuilder: (ctx, index) {
+                    return WorkingTimeWidget(
+                      dayName: widget.workingHours?[index].day ?? "",
+                      firstShiftFromTime:
+                          widget.workingHours?[index].firstShift?.from ?? "",
+                      firstShiftToTime:
+                          widget.workingHours?[index].firstShift?.to ?? "",
+                      secondShiftFromTime:
+                          widget.workingHours?[index].secondShift?.from ?? "",
+                      secondShiftToTime:
+                          widget.workingHours?[index].secondShift?.to ?? "",
+                      showAll: showAll &&
+                          index != ((widget.workingHours?.length ?? 0) - 1),
+                      isClosed: widget.workingHours?[index].closed ?? false,
+                      isOpen24Hours:
+                          widget.workingHours?[index].fullTime ?? false,
+                    );
+                  }),
+            ),
+            const CustomVerticalSpace(height: 24)
+          ],
         ),
-        const CustomVerticalSpace(height: 24)
-      ],
+      ),
     );
   }
 }

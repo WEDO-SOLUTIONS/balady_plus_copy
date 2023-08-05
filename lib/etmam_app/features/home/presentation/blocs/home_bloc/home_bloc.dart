@@ -8,6 +8,7 @@ import 'package:balady_plus/etmam_app/features/home/domain/entities/ads/ads_resp
 import 'package:balady_plus/etmam_app/features/home/domain/use_cases/get_ads.dart';
 import 'package:balady_plus/etmam_app/features/home/home_exports.dart'
     show
+        EtmamSubServicesPage,
         GetMainServices,
         GetSubService,
         GetTopOrderedSubService,
@@ -26,6 +27,7 @@ import 'package:balady_plus/etmam_app/features/providers/providers_exports.dart'
 import 'package:balady_plus/etmam_app/features/services/services_exports.dart'
     show ServiceParams, GetServicesProvidersByService;
 import 'package:balady_plus/app/core/utils/utils_exports.dart' show BlocStatus;
+import 'package:flutter/material.dart';
 
 part 'home_event.dart';
 
@@ -67,16 +69,25 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     on<GetProviderDetailsEvent>(_getProviderDetailsHandler);
     on<GetAdsEvent>(_getAdsDetailsHandler);
 
-    add(GetMainServicesEvent(
+    add(
+      GetMainServicesEvent(
         params: MainServiceParams(
-            cityId: CommonProperties.cityId, pageIndex: "1", pageSize: "3")));
-    add(GetTopOrderedSubServicesEvent(
+            cityId: CommonProperties.cityId, pageIndex: "0", pageSize: "4"),
+      ),
+    );
+    add(
+      GetTopOrderedSubServicesEvent(
         params: TopOrderedSubServiceParams(
-            cityId: CommonProperties.cityId, pageSize: "4", pageIndex: "1")));
+            cityId: CommonProperties.cityId, pageSize: "4", pageIndex: "1"),
+      ),
+    );
 
-    add(GetTopRatedProvidersEvent(
+    add(
+      GetTopRatedProvidersEvent(
         params: TopRatedProviderParams(
-            cityId: CommonProperties.cityId, pageSize: "4", pageIndex: "1")));
+            cityId: CommonProperties.cityId, pageSize: "4", pageIndex: "1"),
+      ),
+    );
 
     add(GetAdsEvent());
   }
@@ -159,11 +170,23 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       ));
 
       // Navigate to subservice screen
-      NavigationService.pushNamed(
-          routeName: EtmamRoutesNames.subServicesPage,
-          args: SubServicePageArgs(
-              mainServiceName: e.params.mainServiceName,
-              subServiceResponse: success.data!.result!));
+      // NavigationService.pushNamed(
+      //     routeName: EtmamRoutesNames.subServicesPage,
+      //     args: SubServicePageArgs(
+      //         mainServiceName: e.params.mainServiceName,
+      //         subServiceResponse: success.data!.result!));
+      showModalBottomSheet(
+        isScrollControlled: true,
+        useRootNavigator: true,
+        backgroundColor: Colors.transparent,
+        context: NavigationService.navigatorKey.currentContext!,
+        builder: (context) => EtmamSubServicesPage(
+          subServicePageArgs: SubServicePageArgs(
+            mainServiceName: e.params.mainServiceName,
+            subServiceResponse: success.data!.result!,
+          ),
+        ),
+      );
     });
   }
 
@@ -197,35 +220,57 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
     final failureOrSuccess = await _getProviderDetails(e.params);
 
-    failureOrSuccess.fold((failure) {
-      emitter(state.copyWith(
-        status: BlocStatus.failure,
-        errorMessage: (failure as ServerFailure).errorMessage,
-      ));
-    }, (success) {
-      emitter(state.copyWith(
-        status: BlocStatus.success,
-        errorMessage: "",
-      ));
+    failureOrSuccess.fold(
+      (failure) {
+        emitter(state.copyWith(
+          status: BlocStatus.failure,
+          errorMessage: (failure as ServerFailure).errorMessage,
+        ));
+      },
+      (success) {
+        emitter(state.copyWith(
+          status: BlocStatus.success,
+          errorMessage: "",
+        ));
 
-      // Navigate to Providers screen
-      NavigationService.pushNamed(
+        // Navigate to Providers screen
+        NavigationService.pushNamed(
           routeName: EtmamRoutesNames.providersDetails,
-          args: success.data!.result!);
-    });
+          args: success.data!.result!,
+        );
+      },
+    );
   }
 
   Future<void> _chaneCityHandler(ChangeCityEvent e, Emitter emitter) async {
-    add(GetMainServicesEvent(
+    add(
+      GetMainServicesEvent(
         params: MainServiceParams(
-            cityId: CommonProperties.cityId, pageIndex: "1", pageSize: "3")));
-    add(GetTopOrderedSubServicesEvent(
+          cityId: CommonProperties.cityId,
+          pageIndex: "1",
+          pageSize: "3",
+        ),
+      ),
+    );
+    add(
+      GetTopOrderedSubServicesEvent(
         params: TopOrderedSubServiceParams(
-            cityId: CommonProperties.cityId, pageSize: "4", pageIndex: "1")));
+          cityId: CommonProperties.cityId,
+          pageSize: "4",
+          pageIndex: "1",
+        ),
+      ),
+    );
 
-    add(GetTopRatedProvidersEvent(
+    add(
+      GetTopRatedProvidersEvent(
         params: TopRatedProviderParams(
-            cityId: CommonProperties.cityId, pageSize: "4", pageIndex: "1")));
+          cityId: CommonProperties.cityId,
+          pageSize: "4",
+          pageIndex: "1",
+        ),
+      ),
+    );
   }
 
   Future<void> _getAdsDetailsHandler(GetAdsEvent e, Emitter emitter) async {

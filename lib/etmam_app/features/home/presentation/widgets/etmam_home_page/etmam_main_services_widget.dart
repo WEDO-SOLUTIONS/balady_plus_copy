@@ -24,12 +24,16 @@ import 'package:balady_plus/etmam_app/core/utils/utils_exports.dart'
         trans;
 import 'package:balady_plus/etmam_app/features/home/home_exports.dart'
     show
+        EtmamSubServicesPage,
         GetMainServicesEvent,
         GetSubServicesEvent,
         HomeBloc,
         HomeState,
+        MainServiceItems,
         MainServiceParams,
-        SubServiceParams;
+        SubServicePageArgs,
+        SubServiceParams,
+        SubServiceResponse;
 
 import '../../../../_shared_feature_/shared/presentation/widgets/header_with_all_button_widget.dart';
 
@@ -42,6 +46,7 @@ class EtmamMainServicesWidget extends StatefulWidget {
 
 class _EtmamMainServicesWidget extends State<EtmamMainServicesWidget> {
   int currentIndex = 0;
+  int _numWidgetsPerPage = 3;
 
   @override
   Widget build(BuildContext context) {
@@ -51,16 +56,13 @@ class _EtmamMainServicesWidget extends State<EtmamMainServicesWidget> {
       },
       builder: (context, state) {
         return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            HeaderWithAllButtonWidget(
-              showAllButton: (state.mainServiceStatus == BlocStatus.success &&
-                  (state.mainServiceResponse?.items?.length ?? 0) > 0),
-              allOnPressed: () {
-                NavigationService.pushNamed(
-                    routeName: EtmamRoutesNames.mainServicesPage,
-                    args: state.mainServiceResponse);
-              },
-              header: trans('services'),
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: CustomTextWidget(
+                trans('services'),
+              ),
             ),
             if (state.mainServiceStatus == BlocStatus.loading)
               const EtmamServicesLoadingWidget(),
@@ -68,45 +70,99 @@ class _EtmamMainServicesWidget extends State<EtmamMainServicesWidget> {
               ReloadWidget(
                 widgetHeight: 96,
                 onTab: () {
-                  context.read<HomeBloc>().add(GetMainServicesEvent(
-                      params: MainServiceParams(
-                          cityId: CommonProperties.cityId,
-                          pageIndex: "1",
-                          pageSize: "3")));
+                  context.read<HomeBloc>().add(
+                        GetMainServicesEvent(
+                          params: MainServiceParams(
+                              cityId: CommonProperties.cityId,
+                              pageIndex: "0",
+                              pageSize: "4"),
+                        ),
+                      );
                 },
               ),
             if (state.mainServiceStatus == BlocStatus.success) ...[
               Container(
-                height: 100,
+                height: 325,
                 child: PageView.builder(
                   padEnds: false,
-                  itemCount: state.mainServiceResponse?.items?.length ?? 0,
-                  controller: PageController(viewportFraction: 0.7),
+                  itemCount: ((state.mainServiceResponse?.items?.length ?? 0) /
+                          _numWidgetsPerPage)
+                      .ceil(),
+                  controller: PageController(initialPage: 0),
                   onPageChanged: (index) {
                     setState(() {
                       currentIndex = index;
                     });
                   },
                   itemBuilder: (BuildContext context, int itemIndex) {
-                    return Container(
-                      margin: EdgeInsetsDirectional.only(
-                          start: itemIndex == 0 ? 16 : 0),
-                      child: EtmamServiceCardWidget(
-                          serviceName: state.mainServiceResponse
-                                  ?.items?[itemIndex].name ??
-                              "",
-                          serviceIcon: state.mainServiceResponse
-                                  ?.items?[itemIndex].logoUrl ??
-                              "",
-                          btnPressed: () {
-                            context.read<HomeBloc>().add(GetSubServicesEvent(
-                                params: SubServiceParams(
-                                    cityId: CommonProperties.cityId,
-                                    mainServiceId: state.mainServiceResponse!
-                                        .items![itemIndex].id!,
-                                    mainServiceName: state.mainServiceResponse!
-                                        .items![itemIndex].name!)));
-                          }),
+                    int startIndex = itemIndex * _numWidgetsPerPage;
+                    int endIndex = (itemIndex + 1) * _numWidgetsPerPage;
+
+                    List<MainServiceItems>? widgetsToShow =
+                        state.mainServiceResponse?.items?.sublist(
+                      startIndex,
+                      endIndex.clamp(
+                        0,
+                        state.mainServiceResponse?.items?.length ?? 0,
+                      ),
+                    );
+
+                    return Column(
+                      children: widgetsToShow!.map(
+                        (widget) {
+                          return Container(
+                            margin: const EdgeInsetsDirectional.symmetric(
+                              horizontal: 16,
+                            ),
+                            child: EtmamServiceCardWidget(
+                              serviceName: widget.name ?? "",
+                              // serviceName:
+                              //     state.mainServiceResponse?.items?[itemIndex].name ??
+                              //         "",
+                              serviceIcon: widget.logoUrl ?? "",
+                              btnPressed: () {
+                                context.read<HomeBloc>().add(
+                                      GetSubServicesEvent(
+                                        params: SubServiceParams(
+                                          cityId: CommonProperties.cityId,
+                                          mainServiceId: state
+                                              .mainServiceResponse!
+                                              .items![itemIndex]
+                                              .id!,
+                                          mainServiceName: state
+                                              .mainServiceResponse!
+                                              .items![itemIndex]
+                                              .name!,
+                                        ),
+                                      ),
+                                    );
+
+                                // show bottom modal sheet
+                                // showModalBottomSheet(
+                                //     context: context,
+                                //     isScrollControlled: true,
+                                //     shape: const RoundedRectangleBorder(
+                                //       borderRadius: BorderRadius.only(
+                                //         topLeft: Radius.circular(16),
+                                //         topRight: Radius.circular(16),
+                                //       ),
+                                //     ),
+                                //     builder: (context) {
+                                //       return EtmamSubServicesPage(
+                                //         subServicePageArgs: SubServicePageArgs(
+                                //           subServiceResponse:
+                                //           SubServiceResponse(
+                                //             items: widget.subServices
+                                //           ),
+
+                                //         )
+                                //       )
+                                //     });
+                              },
+                            ),
+                          );
+                        },
+                      ).toList(),
                     );
                   },
                 ),
@@ -114,11 +170,13 @@ class _EtmamMainServicesWidget extends State<EtmamMainServicesWidget> {
               const CustomVerticalSpace(height: 12),
               // indicator
               SizedBox(
-                  height: 10.0,
-                  child: CustomIndicatorWidget(
-                    currentIndex: currentIndex,
-                    length: state.mainServiceResponse?.items?.length ?? 0,
-                  )),
+                height: 10.0,
+                child: CustomIndicatorWidget(
+                  currentIndex: currentIndex,
+                  length: ((state.mainServiceResponse?.items?.length ?? 0) / 3)
+                      .ceil(),
+                ),
+              ),
             ],
           ],
         );
@@ -144,49 +202,47 @@ class EtmamServiceCardWidget extends StatelessWidget {
     return CustomInkWellButtonWidget(
       btnPressed: btnPressed,
       widget: Container(
-        decoration: new BoxDecoration(
+        decoration: BoxDecoration(
           color: AppColor.white,
-          borderRadius: BorderRadius.circular(4),
-          boxShadow: [
-            BoxShadow(
-                color: Color(0x14000000),
-                offset: Offset(0, 2),
-                blurRadius: 4,
-                spreadRadius: 0)
-          ],
+          borderRadius: BorderRadius.circular(14),
         ),
-        margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+        margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
         height: 96,
         child: Row(
           children: [
+            Container(
+              margin: const EdgeInsetsDirectional.all(16),
+              child: CustomNetworkImageWidget(
+                serviceIcon,
+                imageHeight: double.infinity,
+                imageWidth: double.infinity,
+                imageFit: BoxFit.contain,
+                placeHolderWidget: Container(
+                  color: Colors.grey,
+                  width: 55,
+                  height: 55,
+                ),
+              ),
+            ),
             Expanded(
-                flex: 4,
-                child: Container(
-                    margin: const EdgeInsetsDirectional.only(start: 16),
-                    child: CustomTextWidget(
-                      serviceName,
-                      fontSize: 17,
-                      fontColor: AppColor.black,
-                      fontWeight: AppFontWeight.bold,
-                      maxLines: 2,
-                    ))),
-            Expanded(
-              flex: 2,
+              flex: 4,
               child: Container(
-                margin: const EdgeInsetsDirectional.only(end: 5),
-                child: CustomNetworkImageWidget(
-                  serviceIcon,
-                  imageHeight: double.infinity,
-                  imageWidth: double.infinity,
-                  imageFit: BoxFit.contain,
-                  placeHolderWidget: Container(
-                    color: Colors.transparent,
-                    width: double.infinity,
-                    height: double.infinity,
+                child: ListTile(
+                  title: CustomTextWidget(
+                    serviceName,
+                    fontSize: 14,
+                    fontColor: AppColor.black,
+                    fontWeight: AppFontWeight.bold,
+                    maxLines: 2,
+                  ),
+                  subtitle: const CustomTextWidget(
+                    'يمكنك الآن حجز موعد عبر التطبيق !',
+                    fontSize: 12,
+                    fontColor: Color(0x6B111111),
                   ),
                 ),
               ),
-            )
+            ),
           ],
         ),
       ),

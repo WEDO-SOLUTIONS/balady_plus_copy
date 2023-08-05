@@ -9,6 +9,7 @@ class HomeState extends Equatable {
   final BlocStatus adsResponseStatus;
 
   final MainServiceResponse? mainServiceResponse;
+
   final ProviderResponse? topRatedProviderResponse;
   final SubServiceResponse? topOrderedsubServiceResponse;
   final AdsResponse? adsResponse;

@@ -3,7 +3,11 @@ import 'package:balady_plus/etmam_app/core/errors/failures.dart';
 import 'package:balady_plus/etmam_app/core/services/services_exports.dart';
 import 'package:balady_plus/etmam_app/core/utils/common_properties.dart';
 import 'package:balady_plus/etmam_app/features/home/home_exports.dart'
-    show MainServiceResponse, SubServicePageArgs, SubServiceParams;
+    show
+        EtmamSubServicesPage,
+        MainServiceResponse,
+        SubServicePageArgs,
+        SubServiceParams;
 import 'package:balady_plus/app/core/utils/utils_exports.dart' show BlocStatus;
 
 import 'package:bloc/bloc.dart';
@@ -17,6 +21,9 @@ import 'package:balady_plus/etmam_app/features/home/home_exports.dart'
         SubServiceParams;
 
 import 'package:balady_plus/app/core/services/local/navigation_services.dart';
+import 'package:flutter/material.dart';
+
+import '../../../domain/entities/sub_services/sub_services_response.dart';
 part 'main_services_event.dart';
 part 'main_services_state.dart';
 
@@ -66,24 +73,31 @@ class MainServicesBloc extends Bloc<MainServicesEvent, MainServicesState> {
 
     final failureOrSuccess = await _getSubService(e.params);
 
-    failureOrSuccess.fold((failure) {
-      emitter(state.copyWith(
-        blocStatus: BlocStatus.failure,
-        errorMessage: (failure as ServerFailure).errorMessage,
-      ));
-    }, (success) {
-      emitter(state.copyWith(
-        blocStatus: BlocStatus.success,
-        errorMessage: "",
-      ));
+    failureOrSuccess.fold(
+      (failure) {
+        emitter(state.copyWith(
+          blocStatus: BlocStatus.failure,
+          errorMessage: (failure as ServerFailure).errorMessage,
+        ));
+      },
+      (success) {
+        emitter(state.copyWith(
+          blocStatus: BlocStatus.success,
+          errorMessage: "",
+        ));
 
-      // Navigate to subservice screen
+        // Navigate to subservice screen
 
-      NavigationService.pushNamed(
-          routeName: EtmamRoutesNames.subServicesPage,
-          args: SubServicePageArgs(
-              mainServiceName: e.params.mainServiceName,
-              subServiceResponse: success.data!.result!));
-    });
+// NavigationService.navigatorKey.currentContext!
+        // NavigationService.pushNamed(
+        //   routeName: EtmamRoutesNames.subServicesPage,
+        //   args: SubServicePageArgs(
+        //       mainServiceName: e.params.mainServiceName,
+        //       subServiceResponse: success.data!.result!),
+        // );
+
+        //show a bottom sheet with the sub services as a grid view
+      },
+    );
   }
 }

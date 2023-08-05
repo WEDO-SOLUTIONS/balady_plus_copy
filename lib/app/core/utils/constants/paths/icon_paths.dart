@@ -1,6 +1,7 @@
 const _svgIconPath = 'assets/icons/svg/';
 const _svgPrayerIconPath = 'assets/icons/svg/prayers/';
 const _svgWeatherIconPath = 'assets/icons/svg/weather/';
+const _svgEtmamAppIconPath = 'assets//etmam_app/icons/svg/';
 const _svgMapIconPath = 'assets/icons/svg/map/';
 const _svgServicesIconPath = 'assets/icons/svg/services/';
 const _svgProfileIconPath = 'assets/icons/svg/profile/';
@@ -264,4 +265,5 @@ class IconPath {
       '${_svgAthkarIconPath}muslim_number_frame$_svg';
 
   static const boardingSplashLogo = '${_boardingLogoPath}balady_logo$_svg';
+  //etmam app
 }

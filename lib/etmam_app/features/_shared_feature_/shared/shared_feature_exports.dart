@@ -97,3 +97,4 @@ export 'presentation/widgets/social_media_primary_icon_widget.dart';
 export 'presentation/widgets/btn_icon_primary_widget.dart';
 export 'presentation/widgets/custom_network_icon_widget.dart';
 export 'presentation/widgets/etmam_provider_card.dart';
+export 'presentation/widgets/custom_circular_icon_button.dart';

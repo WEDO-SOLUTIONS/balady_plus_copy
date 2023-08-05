@@ -9,7 +9,11 @@ import 'package:balady_plus/etmam_app/features/on_boarding_cities/on_boarding_ci
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../_shared_feature_/shared/shared_feature_exports.dart'
-    show CustomSvgIconWidget, CustomTextButtonWithIconWidget, showDialogWidget;
+    show
+        CustomSvgIconWidget,
+        CustomTextButtonWithIconWidget,
+        CustomTextWidget,
+        showDialogWidget;
 
 class EtmamCityWidget extends StatelessWidget {
   const EtmamCityWidget({Key? key}) : super(key: key);
@@ -40,24 +44,8 @@ class EtmamCityNameWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CustomTextButtonWithIconWidget(
-      mainAxisAlignment: MainAxisAlignment.start,
-      btnText: cityName,
-      btnTextSize: 18,
-      btnTextColor: AppColor.white,
-      btnTextWeight: AppFontWeight.w600,
-      textOverflow: TextOverflow.ellipsis,
-      maxLines: 1,
-      withFlexible: true,
-      mainAxisSize: MainAxisSize.min,
-      icon: Container(
-        margin: const EdgeInsets.only(top: 5),
-        child: CustomSvgIconWidget(
-          IconPath.arrowDownWhite,
-          iconSize: 18,
-        ),
-      ),
-      btnPressed: () {
+    return InkWell(
+      onTap: () {
         showDialogWidget(context,
             headerText: trans('change_city_dialog_header'),
             haveBottomLine: true,
@@ -66,6 +54,31 @@ class EtmamCityNameWidget extends StatelessWidget {
               onSelect: onChanged,
             ));
       },
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(6),
+          border: Border.all(
+            color: const Color(0xA168A1A1),
+            width: 2,
+          ),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(12.0),
+          child:
+              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+            CustomTextWidget(
+              cityName,
+              fontSize: 14,
+              fontWeight: AppFontWeight.bold,
+              fontColor: AppColor.white,
+            ),
+            const Icon(
+              Icons.arrow_drop_down,
+              color: AppColor.white,
+            )
+          ]),
+        ),
+      ),
     );
   }
 }

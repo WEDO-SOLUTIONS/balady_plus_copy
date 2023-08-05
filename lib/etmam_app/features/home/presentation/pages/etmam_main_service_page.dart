@@ -75,25 +75,24 @@ class _EtmamMainServicesPageState extends State<EtmamMainServicesPage> {
                     itemCount: state.mainServiceResponse?.items?.length ?? 0,
                     itemBuilder: (ctx, index) {
                       return EtmamMainServiceCardWidget(
-                          serviceName:
-                              state.mainServiceResponse?.items?[index].name ??
-                                  "",
-                          serviceIcon: state
-                                  .mainServiceResponse?.items?[index].logoUrl ??
-                              "",
-                          btnPressed: () {
-                            context.read<MainServicesBloc>().add(
-                                GetSubServiceEvent(
-                                    params: SubServiceParams(
-                                        cityId: CommonProperties.cityId,
-                                        mainServiceId:
-                                            state.mainServiceResponse!
-                                                .items![index].id!,
-                                        mainServiceName: state
-                                            .mainServiceResponse!
-                                            .items![index]
-                                            .name!)));
-                          });
+                        serviceName:
+                            state.mainServiceResponse?.items?[index].name ?? "",
+                        serviceIcon:
+                            state.mainServiceResponse?.items?[index].logoUrl ??
+                                "",
+                        btnPressed: () {
+                          context.read<MainServicesBloc>().add(
+                              GetSubServiceEvent(
+                                  params: SubServiceParams(
+                                      cityId: CommonProperties.cityId,
+                                      mainServiceId: state.mainServiceResponse!
+                                          .items![index].id!,
+                                      mainServiceName: state
+                                          .mainServiceResponse!
+                                          .items![index]
+                                          .name!)));
+                        },
+                      );
                     }),
                 if (state.blocStatus == BlocStatus.loadingShimmer)
                   const CustomShimmerGridViewWidget(

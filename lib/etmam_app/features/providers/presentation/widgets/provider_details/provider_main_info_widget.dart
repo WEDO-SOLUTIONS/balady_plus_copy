@@ -1,12 +1,14 @@
 import 'package:balady_plus/etmam_app/core/utils/common_functions.dart';
 import 'package:balady_plus/etmam_app/features/providers/presentation/blocs/provider_details_bloc/provider_details_bloc.dart';
+import 'package:balady_plus/etmam_app/features/providers/presentation/widgets/provider_details/provider_content.dart';
 import 'package:balady_plus/etmam_app/features/services/services_exports.dart'
     show InfoWithIcon;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../../core/utils/utils_exports.dart'
-    show AppColor, AppFontWeight, IconPath, PrimaryIcons, trans;
+import '../../../../../../app/core/utils/constants/app_colors.dart';
+import '../../../../../core/utils/constants/icon_path.dart';
+import '../../../../../core/utils/enums/app_font_weight.dart';
 import '../../../../_shared_feature_/shared/shared_feature_exports.dart'
     show
         CustomTextWidget,
@@ -15,7 +17,8 @@ import '../../../../_shared_feature_/shared/shared_feature_exports.dart'
         RatingEvaluationWidget,
         SectionTitleWidget,
         SubTitleAndDescWidget,
-        SubTitleAndWidget;
+        SubTitleAndWidget,
+        WorkingDayListWidget;
 
 class ProviderMainInfo extends StatelessWidget {
   const ProviderMainInfo({Key? key}) : super(key: key);
@@ -42,8 +45,8 @@ class ProviderMainInfo extends StatelessWidget {
               children: [
                 CustomTextWidget(
                   state.args.name ?? "",
-                  fontColor: AppColor.hunterGreen,
-                  fontWeight: AppFontWeight.w600,
+                  fontColor: AppColor.blackModern800Light,
+                  fontWeight: AppFontWeight.bold,
                   fontSize: 18,
                   textAlign: TextAlign.start,
                 ),
@@ -83,36 +86,51 @@ class EtmamProviderMainInfo extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<ProviderDetailsBloc, ProviderDetailsState>(
       builder: (context, state) {
-        return Container(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SectionTitleWidget(
-                title: trans('office_info'),
-                primaryIcon: PrimaryIcons.providerOfficeIcon,
-              ),
-              const CustomVerticalSpace(height: 16),
-              SubTitleAndDescWidget(
-                  subTitle: trans('main_branch'),
-                  desc: state.args.mainBranchAddress ?? "",
-                  descPressedAction: () {
-                    CommonFunctions.launchMap(
-                        state.args.mainBranchLocation?.getLatLng());
-                  }),
-
-              SubTitleAndWidget(
-                  subTitle: trans('evaluate_office'),
-                  verticalSpace: 10,
-                  subTitleIcon: IconPath.subTitleStarIcon,
-                  widget: EtmamRatingEvaluationWidget(
-                    rating: state.args.rating,
-                    totalEvaluation: state.args.ratingsCount,
-                    withIcon: false,
-                  )),
-              // const CustomVerticalSpace(height: 16),
-            ],
-          ),
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const CustomTextWidget(
+              'تفاصيل العمل والتواصل',
+              fontColor: AppColor.blackModern800Light,
+              fontWeight: AppFontWeight.w600,
+              fontSize: 16,
+              textAlign: TextAlign.start,
+            ),
+            const CustomVerticalSpace(height: 16),
+            ProviderDetailsContentContainer(
+              title: 'الفرع الرئيسي',
+              content: CustomTextWidget(state.args.mainBranchAddress ?? "",
+                  fontSize: 13,
+                  fontWeight: AppFontWeight.bold,
+                  fontColor: AppColor.blackModern500Light),
+              icon: IconPath.locationSectionIcon,
+            ),
+            // ProviderDetailsContentContainer(
+            //   title: 'ساعات العمل',
+            //   content: WorkingDayListWidget(
+            //     workingHours: state.args.wrokDays,
+            //   ),
+            // ),
+            WorkingDayListWidget(
+              workingHours: state.args.wrokDays,
+            ),
+            ProviderDetailsContentContainer(
+              title: 'الموقع الإلكتروني',
+              content: CustomTextWidget(state.args.website ?? "",
+                  fontSize: 13,
+                  fontWeight: AppFontWeight.bold,
+                  fontColor: AppColor.blackModern500Light),
+              icon: IconPath.websiteIcon,
+            ),
+            ProviderDetailsContentContainer(
+              title: 'رقم التواصل',
+              content: CustomTextWidget(state.args.mainBranchContact ?? "",
+                  fontSize: 13,
+                  fontWeight: AppFontWeight.bold,
+                  fontColor: AppColor.blackModern500Light),
+              icon: IconPath.phoneIcon,
+            ),
+          ],
         );
       },
     );

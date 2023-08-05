@@ -10,11 +10,13 @@ class HeaderWithAllButtonWidget extends StatelessWidget {
   final String header;
   final bool showAllButton;
   final VoidCallback? allOnPressed;
+  final double? fontSize;
 
   const HeaderWithAllButtonWidget(
       {Key? key,
       required this.header,
       this.showAllButton = false,
+      this.fontSize = 22,
       this.allOnPressed})
       : super(key: key);
 
@@ -29,7 +31,7 @@ class HeaderWithAllButtonWidget extends StatelessWidget {
           Flexible(
             child: CustomTextWidget(
               header,
-              fontSize: 22.0,
+              fontSize: fontSize,
               fontColor: AppColor.black,
               textAlign: TextAlign.start,
               height: 1.2,
