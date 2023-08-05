@@ -35,7 +35,7 @@ class CurrentWeather extends StatelessWidget {
                 child: Row(
                   children: [
                     CustomSvgIconWidget(
-                      state.allWeatherInfo?.current?.condition?.iconPath??'',
+                      state.allWeatherInfo?.current?.condition?.iconPath ?? '',
                       iconSize: 28,
                     ),
                     const SizedBox(width: 6),
