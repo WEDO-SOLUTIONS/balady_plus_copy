@@ -54,6 +54,9 @@ PODS:
   - flutter_appauth (0.0.1):
     - AppAuth (= 1.4.0)
     - Flutter
+  - flutter_archive (0.0.1):
+    - Flutter
+    - ZIPFoundation (= 0.9.13)
   - flutter_compass (0.0.1):
     - Flutter
   - flutter_inappwebview (0.0.1):
@@ -198,6 +201,7 @@ PODS:
     - Flutter
   - webview_flutter_wkwebview (0.0.1):
     - Flutter
+  - ZIPFoundation (0.9.13)
 
 DEPENDENCIES:
   - AppAuth (from `https://github.com/MahmoudMB/AppAuth-iOS.git`)
@@ -208,6 +212,7 @@ DEPENDENCIES:
   - file_picker (from `.symlinks/plugins/file_picker/ios`)
   - Flutter (from `Flutter`)
   - flutter_appauth (from `.symlinks/plugins/flutter_appauth/ios`)
+  - flutter_archive (from `.symlinks/plugins/flutter_archive/ios`)
   - flutter_compass (from `.symlinks/plugins/flutter_compass/ios`)
   - flutter_inappwebview (from `.symlinks/plugins/flutter_inappwebview/ios`)
   - flutter_local_notifications (from `.symlinks/plugins/flutter_local_notifications/ios`)
@@ -264,6 +269,7 @@ SPEC REPOS:
     - Sentry
     - SentryPrivate
     - SwiftyGif
+    - ZIPFoundation
 
 EXTERNAL SOURCES:
   AppAuth:
@@ -282,6 +288,8 @@ EXTERNAL SOURCES:
     :path: Flutter
   flutter_appauth:
     :path: ".symlinks/plugins/flutter_appauth/ios"
+  flutter_archive:
+    :path: ".symlinks/plugins/flutter_archive/ios"
   flutter_compass:
     :path: ".symlinks/plugins/flutter_compass/ios"
   flutter_inappwebview:
@@ -356,6 +364,7 @@ SPEC CHECKSUMS:
   file_picker: ce3938a0df3cc1ef404671531facef740d03f920
   Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
   flutter_appauth: 05c3778a1e4ae23364dd2ef37cbae14b244f646b
+  flutter_archive: 1805fdd3a695fd284b43edb53dc35ca843fb761c
   flutter_compass: cbbd285cea1584c7ac9c4e0c3e1f17cbea55e855
   flutter_inappwebview: bfd58618f49dc62f2676de690fc6dcda1d6c3721
   flutter_local_notifications: 0c0b1ae97e741e1521e4c1629a459d04b9aec743
@@ -406,6 +415,7 @@ SPEC CHECKSUMS:
   SwiftyGif: 93a1cc87bf3a51916001cf8f3d63835fb64c819f
   url_launcher_ios: 08a3dfac5fb39e8759aeb0abbd5d9480f30fc8b4
   webview_flutter_wkwebview: 2e2d318f21a5e036e2c3f26171342e95908bd60a
+  ZIPFoundation: ae5b4b813d216d3bf0a148773267fff14bd51d37
 
 PODFILE CHECKSUM: c0db52e3d36134adff274677c480400a9ff013ef
 

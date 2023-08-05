@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:balady_plus/app/core/services/services_exports.dart';
 import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:balady_plus/app/core/utils/enums/app_font_weights.dart';
+import 'package:balady_plus/app/core/utils/enums/bloc_status.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports.dart';
 import 'package:balady_plus/app/features/quran/presentation/bloc/quran_bloc.dart';
@@ -16,6 +17,7 @@ import 'package:flutter_svg/svg.dart';
 import '../../../../core/utils/constants/constants.dart';
 import '../../../../core/utils/constants/paths/icon_paths.dart';
 import '../../../../core/utils/constants/paths/image_paths.dart';
+import '../../../_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
 import '../../data/models/quran_aya_model.dart';
 import '../widgets/main/book_mark_sign.dart';
 import '../widgets/main/quran_footer.dart';
@@ -107,9 +109,10 @@ class _QuranPageState extends State<QuranPage> {
                             return Container(
                                 margin: EdgeInsets.symmetric(horizontal: 10),
                                 // padding: EdgeInsets.all(8),
-                                child: i == 603
-                                    ? SvgPicture.asset("assets/quran/604.svg")
-                                    : ListView(children: [
+                                child: SvgPicture.file(context
+                                    .read<QuranBloc>()
+                                    .getImagePath((i + 1).toString()))
+                                /*: ListView(children: [
                                         for (int index = 0;
                                             (index <
                                                 (state.suras?[i + 1]?.values
@@ -165,7 +168,8 @@ class _QuranPageState extends State<QuranPage> {
                                           textAlign: TextAlign.center,
                                           fontWeight: AppFontWeight.bold,
                                         )
-                                      ]));
+                                      ])*/
+                                );
                           }),
                         ),
                       ),
@@ -178,6 +182,8 @@ class _QuranPageState extends State<QuranPage> {
                         QuranFooter()
                       ],
                       BookMarkSign(),
+                      if (state.status == BlocStatus.loading)
+                        CustomCircularLoadingWidget()
                     ],
                   ),
                 )),

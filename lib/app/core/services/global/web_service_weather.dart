@@ -126,6 +126,9 @@ class AppInterceptors extends Interceptor {
         break;
       case DioErrorType.unknown:
         throw NoInternetConnectionException(err.requestOptions);
+
+      default:
+        throw BadRequestException(err.requestOptions, err.response);
     }
 
     return handler.next(err);

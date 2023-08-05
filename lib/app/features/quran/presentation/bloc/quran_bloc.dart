@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
+import 'package:archive/archive.dart';
 import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/quran/data/models/quran_sura_model.dart';
@@ -12,6 +14,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import '../../../../core/services/local/shared_prefs_manager.dart';
 import '../../data/models/quran_aya_model.dart';
@@ -23,6 +27,7 @@ part 'quran_state.dart';
 
 class QuranBloc extends Bloc<QuranEvent, QuranState> {
   PageController controller = PageController();
+  late Directory appDocumentsDirectory;
 
   QuranBloc({required int initialSuraNo})
       : super(QuranState(currentPageValue: initialSuraNo)) {
@@ -61,12 +66,48 @@ class QuranBloc extends Bloc<QuranEvent, QuranState> {
     emitter(state.copyWith(showDetails: !(state.showDetails ?? false)));
   }
 
+  Future<void> unzipArchive() async {
+    ByteData data = await rootBundle.load('assets/quran/data2.zip');
+    List<int> bytes = data.buffer.asUint8List();
+
+    final archive = ZipDecoder().decodeBytes(bytes);
+    print(archive.files.length);
+    try {
+      for (final file in archive) {
+        print(file.name);
+        final filename = file.name;
+        print(filename);
+        if (file.isFile) {
+          final data = file.content as List<int>;
+          final outputFile =
+              await File("${appDocumentsDirectory.path}/$filename")
+                  .create(recursive: true, exclusive: true);
+          await outputFile.writeAsBytes(data);
+        }
+      }
+    } catch (ex) {
+      print("qurannn $ex");
+    }
+
+    // print("qurannn ${getImagePath("1")}");
+  }
+
+  File getImagePath(String pageNumper) {
+    return File(
+        '${appDocumentsDirectory.path}/data2/${pageNumper.padLeft(3, "0")}___Hafs39__DM-01.svg');
+  }
+
   Future<void> _initQuran(initQuranEvent e, Emitter emitter) async {
+    emitter(state.copyWith(status: BlocStatus.loading));
+    await Permission.storage.request();
+    appDocumentsDirectory = await getTemporaryDirectory();
+
     String quran =
         await rootBundle.loadString("assets/quran/hafs_smart_v8.json");
-
+    await unzipArchive();
     var r = json.decode(quran);
     //print(r);
+    emitter(state.copyWith(status: BlocStatus.success));
 
     List<QuranAyaModel> quranAyat =
         List<QuranAyaModel>.from(r.map((x) => QuranAyaModel.fromMap(x)));

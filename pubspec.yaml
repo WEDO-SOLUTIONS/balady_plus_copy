@@ -159,6 +159,8 @@ dependencies:
   timelines: ^0.1.0
   pdfx: 
   sentry_flutter: ^7.9.0
+  archive: ^3.3.7
+  flutter_archive: ^5.0.0
   #test_package:
  #   path: packages/test_package
   flutter_qiblah: ^2.2.0
