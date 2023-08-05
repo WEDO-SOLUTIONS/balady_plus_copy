@@ -135,13 +135,13 @@ class MapViewModel extends BaseViewModel {
       SearchResultMessage data = selectedCategory.value != null
           ? await controller.searchByCategory(
               selectedCategory.value!,
-              sortingType: SortingTypeMessage.byDistance,
+              sortingType: SortingTypeMessage.byRelevance,
               isOpenNow: false,
               searchRect: _lastHandledEvent?.visibleRect.geoRectMessage(),
             )
           : await controller.search(
               queryText,
-              sortingType: SortingTypeMessage.byDistance,
+              sortingType: SortingTypeMessage.byRelevance,
               isOpenNow: false,
               searchRect: _lastHandledEvent?.visibleRect.geoRectMessage(),
             );
@@ -242,7 +242,7 @@ class MapViewModel extends BaseViewModel {
 
     // setLocale(const Locale("ar", "US"), TextDirection.ltr);
     await controller.loadStyles(Constants.mapStyle);
-    await controller.overrideLocales(["ar-SA", "en-SA"]);
+    await controller.overrideLocales(["ar-SA"]);
     // await controller.overrideLocales([localeState.value.locale]);
     initialized.value = true;
     generalControlsState.value = true;

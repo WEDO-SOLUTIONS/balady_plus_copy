@@ -165,6 +165,27 @@ class SearchHandler(
         )
     }
 
+    fun searchByParkCategory(
+        searchGeoRect: GeoRect?,
+        weekTimeMessage: WeekTimeSearchMessage? = null,
+        sortingType: SortingTypeMessage,
+        pageSize: Int,
+        result: Result<SearchResultMessage>?
+    ) {
+        val query = SearchQueryBuilder.fromQueryText("park")
+            .setAllowedResultTypes(listOf(ObjectType.ADM_DIV, ObjectType.ATTRACTION))
+            .setSortingType(sortingType.toSortingType())
+            .setPageSize(pageSize.toInt())
+            .setDirectoryFilter(DirectoryFilter(weekTimeMessage.toFilter(), emptyList()))
+            .setAreaOfInterest(searchGeoRect)
+            .build()
+
+        performSearch(
+            query = query,
+            result = result
+        )
+    }
+
     private fun performSearch(
         query: SearchQuery,
         result: Result<SearchResultMessage>?
