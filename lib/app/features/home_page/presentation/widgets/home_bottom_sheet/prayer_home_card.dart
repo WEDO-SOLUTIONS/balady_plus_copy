@@ -13,13 +13,13 @@ class PrayerHomeCard extends StatelessWidget {
   const PrayerHomeCard({
     super.key,
   });
-
+ 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<PrayerTimesCubit, PrayerTimesState>(
       builder: (context, state) {
         return HomeSection(
-            title: "أوقات الصلاة",
+            title:  "home_prayer_time_title".tr(),
             child: state.nextPrayer != null
                 ? Container(
                     height: 234,

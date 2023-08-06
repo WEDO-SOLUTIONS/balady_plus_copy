@@ -44,7 +44,7 @@ class _ReplyAttachmentSectionState extends State<ReplyAttachmentSection> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   NotesFieldsSection(
-                    initialDesc: "",
+                    initialDesc: state.reasons?[index].notes,
                     index: index,
                     onDelete: () {
                       context
@@ -71,7 +71,11 @@ class _ReplyAttachmentSectionState extends State<ReplyAttachmentSection> {
                     ),
                   if (state.reasons?[index].file != null)
                     ObjectionReasonAttachment(
-                      onDelete: () {},
+                      onDelete: () {
+                        context
+                            .read<CreateObjectionBloc>()
+                            .add(RemoveFileEvent(index: index));
+                      },
                       fileName: state.reasons?[index].file?.fileName ?? "",
                       filePath: state.reasons?[index].file?.filePath ?? "",
                     ),

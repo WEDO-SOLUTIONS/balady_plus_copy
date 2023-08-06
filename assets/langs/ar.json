@@ -2524,8 +2524,10 @@
   "price_per_period": "ريال / الفترة",
   "sar_per_meter": "ريال / م٢ باليوم", 
   "bid_end_date":"اخر موعد لتقديم الكراسة: ", 
-  "months": "أشهر"
+  "months": "أشهر", 
 
 
 
+"HomePage":"HomePage", 
+"home_prayer_time_title":"أوقات الصلاة"
 }

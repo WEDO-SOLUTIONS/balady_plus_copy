@@ -47,22 +47,11 @@ class QuranHeader extends StatelessWidget {
               fontSize: 14,
               fontWeight: AppFontWeight.semiBold,
             ),
-            Stack(
-              alignment: Alignment.center,
-              children: [
-                SvgPicture.asset(
-                  IconPath.suraIcon,
-                  color: AppColor.white,
-                  width: 24,
-                  height: 24,
-                ),
-                CustomTextWidget(
-                  (pageNumber).toString(),
-                  fontColor: AppColor.white,
-                  fontSize: 14,
-                  fontWeight: AppFontWeight.semiBold,
-                )
-              ],
+            CustomTextWidget(
+              (pageNumber + 1).toString(),
+              fontColor: AppColor.white,
+              fontSize: 14,
+              fontWeight: AppFontWeight.semiBold,
             ),
           ]),
         );

@@ -23,6 +23,11 @@ class UploadFileEvent extends CreateObjectionEvent {
   UploadFileEvent({required this.params, required this.index});
 }
 
+class RemoveFileEvent extends CreateObjectionEvent {
+  final int index;
+  RemoveFileEvent({required this.index});
+}
+
 class SubmitIncidentEvent extends CreateObjectionEvent {
   SubmitIncidentEvent();
 }
