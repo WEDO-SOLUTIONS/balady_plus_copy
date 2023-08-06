@@ -148,11 +148,11 @@ class LayersRepositories {
           return whiteLandsFromJson(
             points.data['data']['result']['features'],
           );
-        case 10: //       حدود قطع الأراضي
-          return boundariesPlotsFromJson(
-            points.data['data']['result']['features'],
-          );
-        case 11: //       حدود المخططات التقسيمية
+        //case 10: //       حدود قطع الأراضي
+        //   return boundariesPlotsFromJson(
+        //   points.data['data']['result']['features'],
+        //  );
+        case 9: //       حدود المخططات التقسيمية
           return divisionalChartBoundariesFromJson(
             points.data['data']['result']['features'],
           );

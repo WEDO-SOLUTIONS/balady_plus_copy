@@ -178,7 +178,7 @@ class AppRouter {
         );
       case RouteName.qiblahCompass:
         return MaterialPageRoute(
-          builder: (_) => const QiblahCompassPage(),
+          builder: (_) => QiblahCompassPage(),
         );
       //? Municipal Services
       case RouteName.municipalAdvisor:

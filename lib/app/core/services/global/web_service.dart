@@ -110,10 +110,12 @@ class AppInterceptors extends Interceptor {
 
   @override
   void onError(DioError err, ErrorInterceptorHandler handler) {
-    "Opps, recieved Error: ${err}".errorLog();
-
     "Opps, recieved Error: ${err.response?.statusCode}".errorLog();
     "Opps, recieved Error: ${err.response?.data}".errorLog();
+    print(err);
+
+    print(err.error);
+    print(err.type);
 
     switch (err.type) {
       case DioErrorType.connectionTimeout:
@@ -124,7 +126,7 @@ class AppInterceptors extends Interceptor {
         switch (err.response?.statusCode) {
           case 400:
             if (err.response?.data['data']['responseCode'] == '2') {
-              throw NoDataFoundException(err.requestOptions);
+              throw NoDataFoundException(err.requestOptions, err.response);
             }
             throw BadRequestException(err.requestOptions, err.response);
           case 401:
@@ -152,11 +154,12 @@ class AppInterceptors extends Interceptor {
         throw NoInternetConnectionException(err.requestOptions);
         break;
       case DioErrorType.unknown:
-        throw NoInternetConnectionException(err.requestOptions);
+        throw BadRequestException(err.requestOptions, err.response);
 
       default:
         throw BadRequestException(err.requestOptions, err.response);
     }
+    throw BadRequestException(err.requestOptions, err.response);
 
     return handler.next(err);
   }

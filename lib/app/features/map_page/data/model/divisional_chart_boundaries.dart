@@ -40,7 +40,8 @@ class DivisionalChartBoundaries extends PointLayersData {
         name: json['attributes']["SUBDIVISIONNAME_AR"] ?? '',
         description: json['attributes']["DATAOWNER"] ?? '',
         type: json['attributes']["AREANAME_SPLIT"] ?? '',
-
+        color: 0x26000000,
+        strokeColor: 0xFF000000,
         SUBDIVISIONPARCELNUMBER:
             json['attributes']["SUBDIVISIONPARCELNUMBER"] ?? '',
         BLOCK_ID: json['attributes']["BLOCK_ID"] ?? '',

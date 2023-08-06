@@ -300,6 +300,8 @@ class MapViewModel extends BaseViewModel {
     selectedImtethalPoint.notifyListeners();
     selectedInvetmentPoint.notifyListeners();
     selectedPointId.notifyListeners();
+    selectedLands.notifyListeners();
+
     selectedWhiteLands.notifyListeners();
   }
 
@@ -462,6 +464,9 @@ class MapViewModel extends BaseViewModel {
         southWestLongitude: _lastHandledEvent!.visibleRect.southWestLon,
         southWestLlatitude: _lastHandledEvent!.visibleRect.southWestLat,
       ));
+      print("ccccccccvvvv ${layerSelected.value!.geometryType}");
+      print("ccccccccvvvv ${pointList?.length}");
+
       switch (layerSelected.value!.geometryType) {
         case 'esriGeometryPoint':
           addMarkersWithPoint(pointList, layerSelected.value!.id);
@@ -591,6 +596,8 @@ class MapViewModel extends BaseViewModel {
               selectedImtethalPoint.notifyListeners();
               selectedDiggingPoint.notifyListeners();
               selectedWhiteLands.notifyListeners();
+              selectedLands.notifyListeners();
+
               selectedPointId.notifyListeners();
               selectedPoint.notifyListeners();
 
@@ -698,11 +705,6 @@ class MapViewModel extends BaseViewModel {
               selectedDiggingPoint.value = null;
               showLegend.value = false;
               switch (gisSelectedLayer) {
-                case GISMapLayers.Digging:
-                  selectedDiggingPoint.value = element;
-
-                  break;
-
                 case GISMapLayers.BSAimtithalBuildingsCertificateL:
                   selectedImtethalPoint.value = element;
 
@@ -720,6 +722,7 @@ class MapViewModel extends BaseViewModel {
               selectedWhiteLands.notifyListeners();
               selectedPointId.notifyListeners();
               bottomSheetSize.notifyListeners();
+              selectedLands.notifyListeners();
               showLegend.notifyListeners();
 
               viewHomeBottomSheet.value = false;
@@ -727,6 +730,8 @@ class MapViewModel extends BaseViewModel {
               //  bottomSheetSizeFraction.value = 0.05;
               bottomSheetSizeFraction.notifyListeners();
               bottomSheetSize.notifyListeners();
+
+              print("ontap ${gisSelectedLayer}");
             },
           ),
         );
@@ -778,7 +783,6 @@ class MapViewModel extends BaseViewModel {
         : Duration.zero;
     Timer(duration, () async {
       if (CommonProperties.userLocation == null) {
-        print("FFFFFGGG 1");
         controller.setCameraPosition(CameraPositionMessage(
             point: kingdomTower, zoom: 17, tilt: 45, bearing: 0));
       } else {

@@ -92,6 +92,9 @@ class LandMapCard extends StatelessWidget {
                         ),
                       ],
                     ),
+                    CustomVerticalSpace(
+                      height: 24,
+                    ),
                     CustomTextWidget(
                       "القطعة: ${SUBDIVISIONPARCELNUMBER}",
                       fontColor: AppColor.blackModern500Light,

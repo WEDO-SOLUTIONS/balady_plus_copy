@@ -349,7 +349,7 @@ class EntryPointCubit extends Cubit<EntryPointState> {
 
   Future<(GISParams, GISResponse)?> getUserLocationData() async {
     emit(state.copyWith(gisStatus: BlocStatus.loading));
-    var latlng = await Helpers.getCurrentLocation();
+    var latlng = await Helpers.getMapLocation();
 
     if (latlng == null) {
     } else {

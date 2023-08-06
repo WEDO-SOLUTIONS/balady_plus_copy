@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
+import '../../../../../core/base/base_view_model.dart';
 import '../../../../../core/utils/utils_exports.dart';
 import '../../../../_shared_feature_/presentation/dialogs/need_login_dialog.dart';
 import '../../../../_shared_feature_/shared_feature_exports.dart';
+import '../../../../new_appointment/presentation/core/services/view_models/new_appointment_view_model.dart';
+import '../../../../new_appointment/presentation/dialogs/new_appointment_dialog.dart';
 import '../../../../services/services_exports.dart'
     show ServicesCubit, ServicesState;
 import '../../../home_exports.dart' show HomeSection;
@@ -209,10 +212,19 @@ class NewServices extends StatelessWidget {
                               btnHeight: 40,
                               btnPadding: const EdgeInsets.all(11),
                               text: "احجز موعد",
-                              onPressed: () {
+                              onPressed: () async {
                                 if (CommonProperties.isLoggedIn) {
-                                  Navigator.pushNamed(
-                                      context, RouteName.NewAppointmentPage);
+                                  bool isSuccess =
+                                      await locator<NewAppointmentViewModel>()
+                                          .loadInitialData();
+                                  if (isSuccess)
+                                    await BottomSheetDialog.showDraggableSheet(
+                                        context,
+                                        isFullHeight: false,
+                                        child: BottomSheetWithActions(
+                                          title: "اختر نوع الموعد".tr(),
+                                          body: NewAppointmentDialog(),
+                                        ));
                                 } else {
                                   showDialog(
                                       context: context,
@@ -220,8 +232,19 @@ class NewServices extends StatelessWidget {
                                               onSuccessLogin:
                                                   (bool? isSuccess) async {
                                             if (isSuccess ?? false) {
-                                              Navigator.pushNamed(context,
-                                                  RouteName.NewAppointmentPage);
+                                              await locator<
+                                                      NewAppointmentViewModel>()
+                                                  .loadInitialData();
+                                              await BottomSheetDialog
+                                                  .showDraggableSheet(context,
+                                                      isFullHeight: false,
+                                                      child:
+                                                          BottomSheetWithActions(
+                                                        title: "اختر نوع الموعد"
+                                                            .tr(),
+                                                        body:
+                                                            NewAppointmentDialog(),
+                                                      ));
                                             }
                                           }));
                                 }
