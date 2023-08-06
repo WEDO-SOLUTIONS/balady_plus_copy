@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 import '../../../../../core/utils/constants/constants.dart';
 import '../../../../../core/utils/utils_exports.dart';
 import '../../../../_shared_feature_/shared_feature_exports.dart';
@@ -9,7 +10,7 @@ class HelpScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const DefaultAppBarWidget(title: "المساعدة"),
+      appBar: DefaultAppBarWidget(title: "help_page_header".tr()),
       body: Container(
         margin: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
         decoration: const BoxDecoration(
@@ -23,7 +24,7 @@ class HelpScreen extends StatelessWidget {
             GestureDetector(
               onTap: () =>
                   Navigator.of(context).pushNamed(RouteName.contactInfoPage),
-              child: const Padding(
+              child: Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16, vertical: 20),
                 child: Row(
                   children: [
@@ -33,7 +34,7 @@ class HelpScreen extends StatelessWidget {
                     ),
                     SizedBox(width: 20),
                     CustomTextWidget(
-                      "معلومات التواصل",
+                      "lbl_more_contactInfo".tr(),
                       fontSize: 14,
                       fontWeight: AppFontWeight.bold,
                       fontColor: AppColor.blackModern600Light,
@@ -58,11 +59,11 @@ class HelpScreen extends StatelessWidget {
               onTap: () => Navigator.of(context).pushNamed(
                 RouteName.inappWebview,
                 arguments: (
-                  title: "موقع بلدي الالكتروني",
+                  title: "lbl_more_balady_website".tr(),
                   url: "https://balady.gov.sa/ar"
                 ),
               ),
-              child: const Padding(
+              child:  Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16, vertical: 20),
                 child: Row(
                   children: [
@@ -72,7 +73,7 @@ class HelpScreen extends StatelessWidget {
                     ),
                     SizedBox(width: 20),
                     CustomTextWidget(
-                      "موقع بلدي الالكتروني",
+                      "lbl_more_balady_website".tr(),
                       fontSize: 14,
                       fontWeight: AppFontWeight.bold,
                       fontColor: AppColor.blackModern600Light,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../core/utils/utils_exports.dart';
 import '../../../../_shared_feature_/shared_feature_exports.dart';
@@ -19,46 +20,46 @@ class ExtraActivityCard extends StatelessWidget {
         const BorderRadius.all(Radius.circular(8)),
         color: AppColor.primary50Light.withOpacity(0.5),
       ),
-      child: const Column(
+      child:  Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           CustomTextWidget(
-            "نشاط ايزيك",
+            "step2_label1".tr(),
             fontColor: AppColor.primary700Light,
             fontSize: 12,
             fontWeight: AppFontWeight.bold,
           ),
           SizedBox(height: 4),
           CustomTextWidget(
-            "بيع بالتجزئه",
+            "step2_label2".tr(),
             fontColor: AppColor.blackModern600Light,
             fontSize: 16,
             fontWeight: AppFontWeight.semiBold,
           ),
           SizedBox(height: 16),
           CustomTextWidget(
-            "النشاط التفصيلي",
+            'step2_label2'.tr(),
             fontColor: AppColor.primary700Light,
             fontSize: 12,
             fontWeight: AppFontWeight.bold,
           ),
           SizedBox(height: 4),
           CustomTextWidget(
-            "بيع بالتجزئه",
+            'selling_parts'.tr(),
             fontColor: AppColor.blackModern600Light,
             fontSize: 16,
             fontWeight: AppFontWeight.semiBold,
           ),
           SizedBox(height: 16),
           CustomTextWidget(
-            "المساحه الكليه للمحل",
+            'space_shop'.tr(),
             fontColor: AppColor.primary700Light,
             fontSize: 12,
             fontWeight: AppFontWeight.bold,
           ),
           SizedBox(height: 4),
           CustomTextWidget(
-            "16.0000 متر مربع",
+            'square_meter_16'.tr(),
             fontColor: AppColor.blackModern600Light,
             fontSize: 16,
             fontWeight: AppFontWeight.semiBold,

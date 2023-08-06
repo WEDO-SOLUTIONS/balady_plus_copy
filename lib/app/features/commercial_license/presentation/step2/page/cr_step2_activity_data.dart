@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 import '../../../../../core/utils/utils_exports.dart';
 import '../../../../_shared_feature_/presentation/widgets/custom_cupertino_drop_down_widget.dart';
 import '../../../../_shared_feature_/shared_feature_exports.dart';
@@ -20,7 +21,7 @@ class CRStep2ActivityData extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const CRHeaderDesc(header: "بيانات النـشاط"),
+                  CRHeaderDesc(header: 'step2_header'.tr()),
                   const SizedBox(height: 12),
                   BlocBuilder<CrStep1ApplicantDataCubit,
                       CrStep1ApplicantDataState>(
@@ -38,7 +39,7 @@ class CRStep2ActivityData extends StatelessWidget {
                                     ?.isicActivities ??
                                 [],
                             value: step2State.selectedIsicActivity,
-                            label: "شاط أيزيك",
+                            label: 'step2_label1'.tr(),
                             marginBottom: 8,
                             onChangeType: (item) => item != null
                                 ? context
@@ -50,22 +51,24 @@ class CRStep2ActivityData extends StatelessWidget {
                       );
                     },
                   ),
-                  const NotesWidget(
+                   NotesWidget(
                     notes: [
-                      "عزيزي المستفيد, يرجى اختيار النشاط المطابق للنشاط الفعلي للمحل، حيث أنه لا يمكن تعديل نشاط الرخصة بعد اصدارها.",
-                      "تأكد من وجود ترخيص لأي عامل حرفي في منشأتك حيث انه شرط أساسي لإصدار او تجديد الرخص التجارية"
+                      'note1'.tr(),
+                      'note2'.tr()
                     ],
                   ),
                   BlocBuilder<CrStep2ActivityDataCubit,
                       CrStep2ActivityDataState>(
                     buildWhen: (previous, current) =>
-                        previous.subActivitiesStatus != current.subActivitiesStatus,
+                        previous.subActivitiesStatus !=
+                        current.subActivitiesStatus,
                     builder: (context, state) {
                       return CustomTapWidgetForLongDialog(
                         items: state.subActivities,
                         value: state.selectedSubActivity,
-                        isLoading: state.subActivitiesStatus.isSubmissionLoading,
-                        label: "النشاط التفصيلي",
+                        isLoading:
+                            state.subActivitiesStatus.isSubmissionLoading,
+                        label: 'step2_label2'.tr(),
                         marginBottom: 8,
                         onChangeType: (item) => item != null
                             ? context
@@ -75,25 +78,25 @@ class CRStep2ActivityData extends StatelessWidget {
                       );
                     },
                   ),
-                  const NotesWidget(
+                   NotesWidget(
                     notes: [
-                      "عزيزي المستفيد, يمكنك الاستعلام عن تفاصيل الأنشطة التجارية واشتراطاتها من خلال زيارتك للرابط التالي:\n الأنشطة التجارية واشتراطاته"
+                      'note3'.tr(),
                     ],
                   ),
                   CustomTapWidgetForLongDialog(
                     items: const [],
                     value: null,
-                    label: "نوع المنشاه",
+                    label: 'step2_label3'.tr(),
                     marginBottom: 24,
                     onChangeType: (value) {},
                   ),
                   CustomTextFieldWidget(
-                    label: "المساحه الكليه للمحل",
-                    hintText: "ادخل المساحه الكليه للمحل",
+                    label:'step2_label4'.tr(),
+                    hintText: 'label4_hint'.tr(),
                     isDigitsOnly: true,
                     keyboardType: TextInputType.number,
-                    suffixIcon: const CustomTextWidget(
-                      "متر  مربع",
+                    suffixIcon:  CustomTextWidget(
+                      'square_meter'.tr(),
                       fontSize: 12,
                       fontWeight: AppFontWeight.semiBold,
                       fontColor: AppColor.blackModern400Light,

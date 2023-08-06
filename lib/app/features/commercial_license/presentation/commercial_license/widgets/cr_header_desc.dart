@@ -1,5 +1,6 @@
 import 'package:balady_plus/app/core/utils/enums/app_font_weights.dart';
 import 'package:flutter/material.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../core/utils/utils_exports.dart';
 import '../../../../_shared_feature_/shared_feature_exports.dart';
@@ -37,7 +38,7 @@ class CRHeaderDesc extends StatelessWidget {
         ),
         const CustomVerticalSpace(height: 8),
         CustomTextWidget(
-          desc ?? "من خلال هذه الخدمة يمكنك البدء بممارسة العمل التجاري",
+          desc ?? 'commercial_desc'.tr(),
           fontColor: AppColor.blackModern500Light,
           fontSize: 14.0,
           maxLines: maxLines,

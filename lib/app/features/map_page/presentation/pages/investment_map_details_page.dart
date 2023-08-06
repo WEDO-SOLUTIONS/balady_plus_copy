@@ -82,10 +82,10 @@ class InvestmentMapDetailsPage extends StatelessWidget {
                 ),
               ),
               MapDetailsSubHeader(
-                firstTitle: "سعر الكراسة".tr(),
+                firstTitle: 'map_price'.tr(),
                 firstSubTitle:
                     item.data?.result?.documentValue.toString() ?? "",
-                secondTitle: "مساحة الموقع",
+                secondTitle: 'map_space'.tr(),
                 secondSubTitle:
                     "${item.data?.result?.getTotalSiteArea()} م٢" ?? "",
               ),
@@ -99,24 +99,24 @@ class InvestmentMapDetailsPage extends StatelessWidget {
                 child: Column(
                   children: [
                     MapDetailsSection(
-                      title: "بيانات الفرصة",
+                      title: 'investment_space'.tr(),
                       icon: IconPath.investmentIcon,
                     ),
                     MapDetailsField(
-                      title: "رقم الفرصة",
+                      title: 'investment_number'.tr(),
                       subTitle: item.data?.result?.opportunityNumber ?? "",
                     ),
                     MapDetailsField(
-                      title: "نوع النشاط",
+                      title: 'investement_type'.tr(),
                       subTitle: item.data?.result?.mainActivity ?? "",
                     ),
                     MapDetailsField(
-                      title: "قيمة كراسة الشروط و المنافسات",
+                      title: 'investment_price'.tr(),
                       subTitle:
                           item.data?.result?.documentValue.toString() ?? "",
                     ),
                     MapDetailsField(
-                      title: "مدة العقد",
+                      title: 'investemnt_duration'.tr(),
                       subTitle: item.data?.result
                               ?.getContractDurationYearsAndMonth() ??
                           "",
@@ -134,16 +134,16 @@ class InvestmentMapDetailsPage extends StatelessWidget {
                 child: Column(
                   children: [
                     MapDetailsSection(
-                      title: "بيانات الموقع",
+                      title: 'investemnt_state'.tr(),
                       icon: IconPath.investmentIcon,
                     ),
                     MapDetailsField(
-                      title: "موقع إستلام المنافسات",
+                      title: 'investment_delivery'.tr(),
                       subTitle:
                           item.data?.result?.submittingEnvelopesLocation ?? "",
                     ),
                     MapDetailsField(
-                      title: "موقع فتح المظاريف",
+                      title: 'investement_open'.tr(),
                       subTitle:
                           item.data?.result?.envelopeOpeningLocation ?? "",
                     ),

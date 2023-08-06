@@ -85,7 +85,7 @@ class DCDetailsPage extends StatelessWidget {
                             leading: SvgPicture.asset(IconPath.vdSummuryDesc),
                             children: [
                               FieldData(
-                                title: ("رقم البلاغ").tr(),
+                                title: ("dc_number").tr(),
                                 subTitle: state.pageParams?.details.getId(),
                               ),
                               FieldData(
@@ -118,7 +118,7 @@ class DCDetailsPage extends StatelessWidget {
                           ),
                           CustomVerticalSpace(height: 16),
                           CustomExpansionPanelWidget(
-                              title: ("المرفقات").tr(),
+                              title: ("bookNewAppointmentAttachmentsWord").tr(),
                               leading: SvgPicture.asset(IconPath.vdSummuryDesc),
                               children: []),
                         ],

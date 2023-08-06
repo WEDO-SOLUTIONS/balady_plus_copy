@@ -36,7 +36,7 @@ class ZmZmAppBar extends StatelessWidget implements PreferredSizeWidget {
                   color: AppColor.white,
                 )),
             CustomTextWidget(
-              ("نقاط توزيع ماء زمزم").tr(),
+              ("zamzam_points").tr(),
               fontColor: AppColor.blackModern50Light,
               fontSize: 20,
               fontWeight: AppFontWeight.bold,
@@ -78,7 +78,7 @@ class ZmZmChangeCityDropDownButton extends StatelessWidget {
         child:
             Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
           CustomTextWidget(
-            currentCity ?? ("اختر المدينة").tr(),
+            currentCity ?? ("city_pick").tr(),
           ),
           Icon(Icons.arrow_drop_down, color: AppColor.white)
         ]),

@@ -60,7 +60,7 @@ class _HealthLicenseDetailsScreenState
                       isFullHeight: false,
                       height: 250,
                       child: BottomSheetWithActions(
-                        title: "الاجراءات".tr(),
+                        title: "actions".tr(),
                         body: Column(children: [
                           GestureDetector(
                             onTap: () {

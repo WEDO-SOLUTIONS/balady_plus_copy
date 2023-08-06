@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../core/utils/utils_exports.dart';
 import '../../../../_shared_feature_/shared_feature_exports.dart';
@@ -10,7 +11,7 @@ class BaladySmartAdvisorCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return HomeSection(
-      title: 'المستشار الذكي',
+      title: 'municipal_advisor'.tr(),
       child: Container(
         height: 172,
         width: MediaQuery.sizeOf(context).width,
@@ -31,15 +32,15 @@ class BaladySmartAdvisorCard extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const CustomTextWidget(
-                    "مستشارك الذكي",
+                   CustomTextWidget(
+                    'advisor_title'.tr(),
                     fontColor: AppColor.blackModern800Light,
                     fontWeight: AppFontWeight.bold,
                     fontSize: 14,
                   ),
                   const SizedBox(height: 6),
-                  const CustomTextWidget(
-                    "دليلك الآلي للحصول على إجابات سريعة حول الاشتراطات البلدية",
+                   CustomTextWidget(
+                    'advisor_desc'.tr(),
                     fontColor: AppColor.blackModern600Light,
                     fontWeight: AppFontWeight.bold,
                     fontSize: 12,
@@ -56,7 +57,7 @@ class BaladySmartAdvisorCard extends StatelessWidget {
                     ),
                     btnHeight: 40,
                     btnWidth: 163,
-                    text: "اسأل المستشار",
+                    text:'askAdvisor'.tr(),
                     onPressed: () {
                       Navigator.pushNamed(context, RouteName.municipalAdvisor);
                     },

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 import '../../../../_shared_feature_/presentation/widgets/custom_cupertino_drop_down_widget.dart';
 import '../../../../_shared_feature_/shared_feature_exports.dart';
 import '../../../commercial_license_exports.dart';
@@ -18,68 +19,70 @@ class CRStep3GeolocationData extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const CRHeaderDesc(header: "بيانات الموقع الجغرافي"),
+                  CRHeaderDesc(
+                    header: 'step3Title'.tr(),
+                  ),
                   const SizedBox(height: 12),
                   CustomTapWidgetForLongDialog(
                     items: const [],
                     value: null,
-                    label: "الموقع",
+                    label: "objection_location".tr(),
                     marginBottom: 24,
                     onChangeType: (item) {},
                   ),
                   CustomTapWidgetForLongDialog(
                     items: const [],
                     value: null,
-                    label: "المنطقه",
+                    label: "area_spot".tr(),
                     marginBottom: 24,
                     onChangeType: (item) {},
                   ),
                   CustomTapWidgetForLongDialog(
                     items: const [],
                     value: null,
-                    label: "الامانه",
+                    label: "trust_policy".tr(),
                     marginBottom: 24,
                     onChangeType: (value) {},
                   ),
                   CustomTapWidgetForLongDialog(
                     items: const [],
                     value: null,
-                    label: "الامانه",
+                    label: "trust_policy".tr(),
                     marginBottom: 24,
                     onChangeType: (value) {},
                   ),
                   CustomTapWidgetForLongDialog(
                     items: const [],
                     value: null,
-                    label: "البلديه",
+                    label: "daem_sub_municiplaity".tr(),
                     marginBottom: 24,
                     onChangeType: (value) {},
                   ),
                   CustomTapWidgetForLongDialog(
                     items: const [],
                     value: null,
-                    label: "الحي",
+                    label: "sub_street".tr(),
                     marginBottom: 24,
                     onChangeType: (value) {},
                   ),
                   CustomTapWidgetForLongDialog(
                     items: const [],
                     value: null,
-                    label: "الشارع",
+                    label: "street".tr(),
                     marginBottom: 24,
                     onChangeType: (value) {},
                   ),
                   CustomTextFieldWidget(
-                    label: "رقم المخطط",
-                    hintText: "ادخل رقم المخطط",
+                    label: "geoLocation_number".tr(),
+                    hintText: "geolocation_entry_number".tr(),
                     isDigitsOnly: true,
                     keyboardType: TextInputType.number,
                     bottomMargin: 24,
                     onChanged: (value) {},
                   ),
                   CustomTextFieldWidget(
-                    label: "رقم قطعه الارض",
-                    hintText: "ادخل رقم قطعه الارض",
+                    label: "ground_number".tr(),
+                    hintText: "ground_number_entry".tr(),
                     isDigitsOnly: true,
                     keyboardType: TextInputType.number,
                     bottomMargin: 24,

@@ -3,6 +3,7 @@ import 'package:balady_plus/app/features/map_page/data/model/excavations.dart';
 import 'package:balady_plus/app/features/map_page/presentation/widgets/map_details_header.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../core/utils/constants/app_colors.dart';
 import '../../../../core/utils/enums/app_font_weights.dart';
@@ -67,8 +68,8 @@ class StationDetailsPage extends StatelessWidget {
                 ),
               ),
               MapDetailsSubHeader(
-                firstTitle: "نوع المنشأة",
-                firstSubTitle: "محطة",
+                firstTitle: "step2_label3".tr(),
+                firstSubTitle: "station".tr(),
                 secondTitle: "          ",
                 secondSubTitle: "    ",
               ),
@@ -83,7 +84,7 @@ class StationDetailsPage extends StatelessWidget {
               CustomVerticalSpace(height: 16),*/
               CustomVerticalSpace(height: 16),
               CustomTextWidget(
-                "تفاصيل الموقع",
+                "qr_locatoin_details".tr(),
                 fontColor: AppColor.blackModern800Light,
                 fontWeight: AppFontWeight.bold,
                 textAlign: TextAlign.start,
@@ -91,23 +92,23 @@ class StationDetailsPage extends StatelessWidget {
               ),
               CustomVerticalSpace(height: 16),
               MapDetailsField(
-                title: "العنوان",
+                title: "address".tr(),
                 subTitle: item.$1.address?.addressComment ?? "",
               ),
               MapDetailsField(
-                title: "الأمانة",
+                title: "bookNewAppointmentMunicipalityDropDownTitleWord".tr(),
                 subTitle: "",
               ),
               MapDetailsField(
-                title: "البلدية",
+                title: "daem_sub_municiplaity".tr(),
                 subTitle: "",
               ),
               MapDetailsField(
-                title: "الحي",
+                title: "sub_street".tr(),
                 subTitle: "",
               ),
               MapDetailsField(
-                title: "الشارع",
+                title: "street".tr(),
                 subTitle: item.$1.address?.components.firstOrNull?.streetAddress
                         ?.street ??
                     "",

@@ -1,5 +1,6 @@
 import 'package:balady_plus/app/features/vd/presentation/widgets/details_widgets/incident_desc_widgets/vd_create_incident_addetional_fields.dart';
 import 'package:flutter/material.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 import '../../../../_shared_feature_/presentation/widgets/check_boxes/text_field_with_check_btn.dart';
 import '../../../../_shared_feature_/shared_feature_exports.dart';
 import '../../../commercial_license_exports.dart';
@@ -19,17 +20,17 @@ class CRStep7EstablishmentContactData extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const CRHeaderDesc(header: "بيانات تواصل المنشأة"),
+                  CRHeaderDesc(header: 'step7Ttitle'.tr()),
                   const SizedBox(height: 16),
-                  const CustomTextFieldWidget(
-                    label: "هويه مدير الموقع",
-                    hintText: "ادخل هويه مدير الموقع",
+                  CustomTextFieldWidget(
+                    label: 'managerId'.tr(),
+                    hintText: "managerEntry".tr(),
                     isDigitsOnly: true,
                     keyboardType: TextInputType.number,
                     bottomMargin: 24,
                   ),
                   HijriCalendarAddetionalField(
-                    fieldName: "تاريخ الميلاد",
+                    fieldName: "birth".tr(),
                     isMandatory: true,
                     onChanged: (date) {},
                   ),
@@ -38,33 +39,31 @@ class CRStep7EstablishmentContactData extends StatelessWidget {
                   const ManagerInfoCard(),
                   TextWithCheckBtn(
                     controller: TextEditingController(),
-                    title: "رقم الجوال",
-                    hint: "ادخل رقم الجوال",
+                    title: "user_data_applicant_mobile".tr(),
+                    hint: "number_entry".tr(),
                     validate: (String? t) {},
                     isValidate: false,
                     currentValue: null,
                     onTextChanged: (String text) {},
                     verify: () {},
                   ),
-                  const NotesWidget(
-                    notes: [
-                      "سوف يتم استلام جميع الاشعارات على رقم الجوال المسجل في النظام"
-                    ],
+                  NotesWidget(
+                    notes: ['note4'.tr()],
                   ),
                   CustomTextFieldWidget(
-                    label: "البريد الالكتروني",
-                    hintText: "ادخل البريد الالكتروني",
+                    label: "owner_email".tr(),
+                    hintText: "enter_email".tr(),
                     bottomMargin: 24,
                     onChanged: (value) {},
                   ),
-                  const CustomTextFieldWidget(
-                    label: "هاتف المنشاه",
-                    hintText: "ادخل هاتف المنشاه",
+                  CustomTextFieldWidget(
+                    label: "phone".tr(),
+                    hintText: "phoneEntry".tr(),
                     isDigitsOnly: true,
                     keyboardType: TextInputType.number,
                     bottomMargin: 24,
                   ),
-                  const CustomTextFieldWidget(
+                   CustomTextFieldWidget(
                     label: "رقم خدمه العملاء",
                     hintText: "ادخل رقم خدمه العملاء",
                     isDigitsOnly: true,

@@ -105,19 +105,19 @@ class ReqDetailsPage extends StatelessWidget {
                               leading: SvgPicture.asset(IconPath.vdSummuryDesc),
                               children: [
                                 FieldData(
-                                  title: ("العنوان").tr(),
+                                  title: ("address").tr(),
                                   subTitle:
                                       state.details?.locationInfo?.address,
                                 ),
                                 CustomVerticalSpace(height: 8),
                                 FieldData(
-                                  title: ("التصنيف التخصصي").tr(),
+                                  title: ("spl_classification").tr(),
                                   subTitle: state.pageParams?.details
                                       .getSplClassificationName(),
                                 ),
                                 CustomVerticalSpace(height: 8),
                                 FieldData(
-                                  title: ("الوصف").tr(),
+                                  title: ("description").tr(),
                                   subTitle: state.details?.incidentInformation
                                       ?.issueDescription,
                                 ),
@@ -157,7 +157,7 @@ class ReqDetailsPage extends StatelessWidget {
                                 ]),
                           CustomVerticalSpace(height: 16),
                           CustomExpansionPanelWidget(
-                              title: ("المرفقات").tr(),
+                              title: ("lbl_attachments").tr(),
                               leading: SvgPicture.asset(IconPath.vdSummuryDesc),
                               children: [AttachmentViewSection()]),
                         ],

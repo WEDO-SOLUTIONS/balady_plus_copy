@@ -61,7 +61,7 @@ class NewServices extends StatelessWidget {
                                 borderRadius: BorderRadius.circular(12),
                               ),
                               child: CustomTextWidget(
-                                "سجّل اعتراضك",
+                                'notice'.tr(),
                                 textStyle: AppStyle.tagStyle.copyWith(
                                   color: AppColor.blackModern700Light,
                                   fontWeight: FontWeight.w700,
@@ -71,14 +71,14 @@ class NewServices extends StatelessWidget {
                             ),
                             const SizedBox(height: 18),
                             CustomTextWidget(
-                              "خدمة الاعتراضات",
+                              'notice_service'.tr(),
                               fontColor: AppColor.blackModern800Light,
                               fontWeight: AppFontWeight.bold,
                               fontSize: 14,
                             ),
                             const SizedBox(height: 6),
                             CustomTextWidget(
-                              "اطلع على جميع المخالفات القابلة للاعتراض وإرسل اعتراضك مباشرة",
+                              'notice_desc'.tr(),
                               fontColor: AppColor.blackModern400Light,
                               fontWeight: AppFontWeight.medium,
                               maxLines: null,
@@ -94,7 +94,7 @@ class NewServices extends StatelessWidget {
                               ),
                               btnHeight: 40,
                               btnPadding: const EdgeInsets.all(11),
-                              text: "استعرض المخالفات",
+                              text: 'tickets_show'.tr(),
                               onPressed: () async {
                                 if (CommonProperties.isLoggedIn) {
                                   Navigator.pushNamed(context,
@@ -178,7 +178,7 @@ class NewServices extends StatelessWidget {
                                 borderRadius: BorderRadius.circular(12),
                               ),
                               child: CustomTextWidget(
-                                "تواصل معنا",
+                                "lbl_more_contactUs".tr(),
                                 textStyle: AppStyle.tagStyle.copyWith(
                                   color: AppColor.blackModern700Light,
                                   fontWeight: FontWeight.w700,
@@ -188,15 +188,15 @@ class NewServices extends StatelessWidget {
                             ),
                             const SizedBox(height: 18),
                             CustomTextWidget(
-                              "حجز موعد الكتروني",
+                              'schedule_date'.tr(),
                               fontColor: AppColor.blackModern800Light,
                               fontWeight: AppFontWeight.bold,
                               fontSize: 14,
                             ),
                             const SizedBox(height: 6),
                             CustomTextWidget(
-                              "احجز موعدًا للتواصل والاستفسار المباشر مع ممثلي البلدية",
-                              fontColor: AppColor.blackModern400Light,
+                              'booking_tickets'.tr(),
+                              fontColor: const Color.fromARGB(255, 10, 10, 15),
                               fontWeight: AppFontWeight.medium,
                               maxLines: null,
                               fontSize: 12,
@@ -211,7 +211,7 @@ class NewServices extends StatelessWidget {
                               ),
                               btnHeight: 40,
                               btnPadding: const EdgeInsets.all(11),
-                              text: "احجز موعد",
+                              text: "booking".tr(),
                               onPressed: () async {
                                 if (CommonProperties.isLoggedIn) {
                                   bool isSuccess =
@@ -222,7 +222,9 @@ class NewServices extends StatelessWidget {
                                         context,
                                         isFullHeight: false,
                                         child: BottomSheetWithActions(
-                                          title: "اختر نوع الموعد".tr(),
+                                          title:
+                                              'bookNewAppointmentChooseAppointmentTypeWord'
+                                                  .tr(),
                                           body: NewAppointmentDialog(),
                                         ));
                                 } else {
@@ -240,8 +242,9 @@ class NewServices extends StatelessWidget {
                                                       isFullHeight: false,
                                                       child:
                                                           BottomSheetWithActions(
-                                                        title: "اختر نوع الموعد"
-                                                            .tr(),
+                                                        title:
+                                                            "bookNewAppointmentChooseAppointmentTypeWord"
+                                                                .tr(),
                                                         body:
                                                             NewAppointmentDialog(),
                                                       ));

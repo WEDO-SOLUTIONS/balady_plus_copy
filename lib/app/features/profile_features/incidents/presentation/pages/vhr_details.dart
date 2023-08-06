@@ -134,7 +134,7 @@ class VHRDetailsPage extends StatelessWidget {
                           ),
                           CustomVerticalSpace(height: 16),
                           CustomExpansionPanelWidget(
-                              title: ("المرفقات").tr(),
+                              title: ("bookNewAppointmentAttachmentsWord").tr(),
                               leading: SvgPicture.asset(IconPath.vdSummuryDesc),
                               children: []),
                         ],

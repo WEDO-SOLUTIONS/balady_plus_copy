@@ -57,8 +57,8 @@ class AlertsModalSheetContent extends StatelessWidget {
                     ),
                     Row(
                       children: [
-                        const CustomTextWidget(
-                          "المناطق",
+                        CustomTextWidget(
+                          "areas".tr(),
                           fontColor: AppColor.blackModern700Light,
                           fontSize: 12,
                         ),
@@ -77,8 +77,8 @@ class AlertsModalSheetContent extends StatelessWidget {
                     ),
                     Row(
                       children: [
-                        const CustomTextWidget(
-                          "الفترة",
+                         CustomTextWidget(
+                          "period".tr(),
                           fontColor: AppColor.blackModern700Light,
                           fontSize: 12,
                         ),

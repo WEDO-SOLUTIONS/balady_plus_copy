@@ -209,14 +209,14 @@ class _TransactionsDetailsPageState extends State<TransactionsDetailsPage> {
                             if (state.gisLocation?.streetName != null &&
                                 state.gisLocation!.streetName!.isNotEmpty)
                               FieldData(
-                                title: "اسم الشارع",
+                                title: " street_name".tr(),
                                 subTitle: state.gisLocation?.streetName ?? "",
                               ),
                             const CustomVerticalSpace(height: 8),
                             if (state.gisLocation?.districtName != null &&
                                 state.gisLocation!.districtName!.isNotEmpty)
                               FieldData(
-                                title: "اسم الحي",
+                                title: "subStreet_name".tr(),
                                 subTitle: state.gisLocation?.districtName ?? "",
                               ),
                             const CustomVerticalSpace(height: 8),
@@ -340,7 +340,7 @@ class ViolationClauses extends StatelessWidget {
                                           CrossAxisAlignment.start,
                                       children: [
                                         FieldData(
-                                          title: "ملاحظات المراقب",
+                                          title: "transactionNotice".tr(),
                                           subTitle: state
                                                   .details
                                                   ?.nonComplianceClauses?[index]

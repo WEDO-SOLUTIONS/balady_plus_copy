@@ -56,7 +56,7 @@ class ShareWithUs extends StatelessWidget {
               onPressed: () async {
                 await BottomSheetDialog.showDraggableSheet(context,
                     child: BottomSheetWithActions(
-                      title: "اختر نوع البلاغ".tr(),
+                      title: "customerVoiceReportTypeWord".tr(),
                       body: VDTypesDialog(),
                     ));
               },

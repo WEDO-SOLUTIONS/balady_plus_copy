@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../core/utils/constants/constants.dart';
 import '../../../../../core/utils/utils_exports.dart';
@@ -13,9 +14,9 @@ class AboutBaladyScreen extends StatefulWidget {
 }
 
 class _AboutBaladyScreenState extends State<AboutBaladyScreen> {
-
   late YoutubePlayerController _controller;
-  String? videoId = YoutubePlayer.convertUrlToId("https://www.youtube.com/watch?v=eJOuxpH2hBo");
+  String? videoId = YoutubePlayer.convertUrlToId(
+      "https://www.youtube.com/watch?v=eJOuxpH2hBo");
   bool _isPlayerReady = false;
   late PlayerState _playerState;
   late YoutubeMetaData _videoMetaData;
@@ -52,16 +53,14 @@ class _AboutBaladyScreenState extends State<AboutBaladyScreen> {
     super.dispose();
   }
 
-
-
   @override
   Widget build(BuildContext context) {
-    return  Scaffold(
-      appBar: const DefaultAppBarWidget(
-        title: "عن بلدي",
+    return Scaffold(
+      appBar: DefaultAppBarWidget(
+        title: "about_balady".tr(),
       ),
       body: Container(
-        margin: const EdgeInsets.symmetric(vertical: 24,horizontal: 16),
+        margin: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
         padding: const EdgeInsets.all(20),
         decoration: const BoxDecoration(
           boxShadow: Constants.boxShadow,
@@ -97,7 +96,7 @@ class _AboutBaladyScreenState extends State<AboutBaladyScreen> {
               children: [
                 Padding(
                   padding: EdgeInsets.only(top: 10),
-                  child: Icon(Icons.circle , size: 6),
+                  child: Icon(Icons.circle, size: 6),
                 ),
                 SizedBox(width: 8),
                 Flexible(
@@ -118,7 +117,7 @@ class _AboutBaladyScreenState extends State<AboutBaladyScreen> {
               children: [
                 Padding(
                   padding: EdgeInsets.only(top: 10),
-                  child: Icon(Icons.circle , size: 6),
+                  child: Icon(Icons.circle, size: 6),
                 ),
                 SizedBox(width: 8),
                 Flexible(
@@ -139,7 +138,7 @@ class _AboutBaladyScreenState extends State<AboutBaladyScreen> {
               children: [
                 Padding(
                   padding: EdgeInsets.only(top: 10),
-                  child: Icon(Icons.circle , size: 6),
+                  child: Icon(Icons.circle, size: 6),
                 ),
                 SizedBox(width: 8),
                 Flexible(

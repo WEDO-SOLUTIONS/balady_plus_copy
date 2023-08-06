@@ -1,6 +1,7 @@
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports.dart';
 import 'package:flutter/material.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../core/dependency_injection/injection_container.dart';
 import '../cubit/prayer_times_cubit.dart';
@@ -40,7 +41,7 @@ class UnKownPrayerLocation extends StatelessWidget {
                       SizedBox(
                         width: 219,
                         child: CustomTextWidget(
-                          'حدد موقعك حتى يتم عرض اوقات الصلاة في مدينتك ',
+                          'prayerCurrentLocation'.tr(),
                           textAlign: TextAlign.right,
                           fontColor: Color(0xFFE6EFEF),
                           fontWeight: AppFontWeight.semiBold,
@@ -80,7 +81,7 @@ class UnKownPrayerLocation extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         CustomTextWidget(
-                          'تحديد الموقع',
+                          'municipalAdvisorLocationButton'.tr(),
                           textAlign: TextAlign.center,
                           fontColor: Colors.white,
                           fontSize: 12,

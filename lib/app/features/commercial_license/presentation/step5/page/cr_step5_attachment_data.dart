@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 import '../../../commercial_license_exports.dart';
 
 class CRStep5AttachmentData extends StatelessWidget {
@@ -16,34 +17,33 @@ class CRStep5AttachmentData extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const CRHeaderDesc(
+                  CRHeaderDesc(
                     maxLines: null,
                     textHeight: 1.5,
-                    header: "بيانات المرفق",
-                    desc:
-                        "امتداد الملفات المسموح بإرفاق jpeg، jpg، png، pdf لا يتعدى حجم الملف 10 ميجابايت",
+                    header: "step5title".tr(),
+                    desc: "step5titleDesc".tr(),
                   ),
                   const SizedBox(height: 12),
                   PickFileComponent(
-                    title: "رخصه بناء",
+                    title: "step5license".tr(),
                     file: null,
                     onDelete: () {},
                     onPickedFile: (file) {},
                   ),
                   PickFileComponent(
-                    title: "صورة المحل الخارجية باللوحة",
+                    title: 'step5LicnesePic'.tr(),
                     file: null,
                     onDelete: () {},
                     onPickedFile: (file) {},
                   ),
                   PickFileComponent(
-                    title: "عقد الاستثمار",
+                    title: "invest_contract".tr(),
                     file: null,
                     onDelete: () {},
                     onPickedFile: (file) {},
                   ),
                   PickFileComponent(
-                    title: "مستند اثبات ملكية العلامة التجارية",
+                    title: 'owner_proof'.tr(),
                     file: null,
                     onDelete: () {},
                     onPickedFile: (file) {},
