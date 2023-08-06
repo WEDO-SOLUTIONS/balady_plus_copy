@@ -37,6 +37,7 @@ class DefaultAppBarWidget extends StatelessWidget
             )
           : null,
       centerTitle: false,
+      titleSpacing: 0,
       title: CustomTextWidget(
         title ?? "",
         textAlign: TextAlign.center,

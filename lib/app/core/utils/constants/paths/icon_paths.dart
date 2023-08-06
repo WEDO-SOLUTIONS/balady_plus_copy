@@ -23,6 +23,9 @@ const _png = '.png';
 
 class IconPath {
   //! SVG Icons
+
+  static const iosArrowDown = '${_svgIconPath}ios_arrow_down$_svg';
+
   static const arrowBack = '${_svgIconPath}arrow_back_icon$_svg';
   static const close = '${_svgIconPath}arrow_back_icon$_svg';
   static const upload = '${_svgIconPath}arrow_back_icon$_svg';
@@ -110,6 +113,9 @@ class IconPath {
   static const contactInfo = '${_svgProfileIconPath}contact_info$_svg';
   static const leftArrow = '${_svgProfileIconPath}left_arrow$_svg';
   static const wallet = '${_svgProfileIconPath}wallet$_svg';
+  // static const requests = '${_svgProfileIconPath}document_bold$_svg';
+  static const bills = '${_svgProfileIconPath}bills$_svg';
+  static const flag = '${_svgProfileIconPath}flag$_svg';
 
   // Nearby
   static nearbyIcon(String name) => '$_svgNearbyIconPath$name$_svg';
