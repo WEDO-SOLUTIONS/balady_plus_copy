@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../../core/utils/utils_exports.dart';
+import '../../../../_shared_feature_/presentation/dialogs/need_login_dialog.dart';
 import '../../../../_shared_feature_/shared_feature_exports.dart';
 import '../../../home_exports.dart';
 
@@ -57,8 +58,21 @@ class BaladySmartAdvisorCard extends StatelessWidget {
                     btnHeight: 40,
                     btnWidth: 163,
                     text: "اسأل المستشار",
-                    onPressed: () {
-                      Navigator.pushNamed(context, RouteName.municipalAdvisor);
+                    onPressed: () async {
+                      if (CommonProperties.isLoggedIn) {
+                        Navigator.pushNamed(
+                            context, RouteName.municipalAdvisor);
+                      } else {
+                        showDialog(
+                            context: context,
+                            builder: (ctx) => NeedLoginDialog(
+                                    onSuccessLogin: (bool? isSuccess) async {
+                                  if (isSuccess ?? false) {
+                                    Navigator.pushNamed(
+                                        context, RouteName.municipalAdvisor);
+                                  }
+                                }));
+                      }
                     },
                   ),
                 ],

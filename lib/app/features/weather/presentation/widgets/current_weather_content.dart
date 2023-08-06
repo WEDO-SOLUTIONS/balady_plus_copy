@@ -67,11 +67,13 @@ class CurrentWeatherContent extends StatelessWidget {
                   ),
                 ],
               ),
-              UnKownWeatherLocation(
-                onTap: () {
-                  context.read<WeatherBloc>().add(GetWeatherForLocation());
-                },
-              ),
+              if (CommonProperties.userLocation == null)
+                UnKownWeatherLocation(
+                  onTap: () {
+                    print("tab");
+                    context.read<WeatherBloc>().add(GetWeatherForLocation());
+                  },
+                ),
               Divider(
                 color: AppColor.divider.withOpacity(0.2),
               ),

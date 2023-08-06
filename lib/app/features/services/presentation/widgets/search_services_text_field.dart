@@ -56,7 +56,7 @@ class _SearchServicesTextFieldState extends State<SearchServicesTextField> {
             ),
             borderRadius: 16,
             borderColor: AppColor.primary900Light16,
-            suffixIcon: _textEditingController.text.isNotEmpty
+            suffixIcon: /* _textEditingController.text.isNotEmpty  ,*/ true
                 ? InkWell(
                     onTap: () {
                       _textEditingController.text = '';

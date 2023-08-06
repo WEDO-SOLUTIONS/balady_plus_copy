@@ -44,6 +44,8 @@ class IconPath {
   static const warningIcon = '${_svgIconPath}danger$_svg';
   static const notificationIc = '${_svgIconPath}notification$_svg';
   static const notificationIc2 = '${_svgIconPath}notification2$_svg';
+  static const notificationFilled = '${_svgIconPath}notification_filled$_svg';
+
   static const arrowForward2 = '${_svgIconPath}arrow_forward$_svg';
   static const receiveSquare = '${_svgIconPath}receive-square$_svg';
   static const note2 = '${_svgIconPath}note_2$_svg';

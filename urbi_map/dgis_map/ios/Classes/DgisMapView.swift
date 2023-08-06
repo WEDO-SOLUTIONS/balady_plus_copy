@@ -262,6 +262,18 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         cancelable.append(moveCancelable)
     }
     
+    func calcPosition(forMarkersMarkers markers: [String], options: CalcPositionOptionsMessage, completion: @escaping (CameraPositionMessage?, FlutterError?) -> Void) {
+        self.objectTapHandler?.calcPosition(markers: markers, options: options, completion: completion)
+    }
+    
+    func calcPosition(forPolygonsPolygons polygons: [String], options: CalcPositionOptionsMessage, completion: @escaping (CameraPositionMessage?, FlutterError?) -> Void) {
+        self.objectTapHandler?.calcPosition(polygons: polygons, options: options, completion: completion)
+    }
+    
+    func calcPosition(forPolylinesPolylines polylines: [String], options: CalcPositionOptionsMessage, completion: @escaping (CameraPositionMessage?, FlutterError?) -> Void) {
+        self.objectTapHandler?.calcPosition(polylines: polylines, options: options, completion: completion)
+    }
+    
     func getCameraPosition(completion: @escaping (CameraPositionMessage?, FlutterError?) -> Void) {
         guard let map = self.map else {
             completion(nil, FlutterError(
@@ -321,6 +333,19 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
             ))
             return
         }
+
+        // TODO. Remove, when backend data will fixed.
+        if category == .parks {
+            searchHandler.searchByParkCategory(
+                searchGeoRect: searchRect?.geoRect,
+                weekTimeMessage: weekTime,
+                sortingType: sortingType,
+                pageSize: pageSize.int32Value,
+                completion: completion
+            )
+            return
+        }
+
         searchHandler.searchByCategories(
             category.toRubrics(),
             searchGeoRect: searchRect?.geoRect,
@@ -511,6 +536,20 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
     
     func removeMapObjectManagerId(_ id: MapObjectManagerMessage, completion: @escaping (FlutterError?) -> Void) {
         self.objectTapHandler?.removeMapObjectManager(id, completion: completion)
+    }
+    
+    func setClusterIconId(_ id: String, icon: String, completion: @escaping (FlutterError?) -> Void) {
+        self.objectTapHandler?.setClusterIcon(icon, for: id, completion: completion)
+    }
+    
+    func releaseClusterId(_ id: String, completion: @escaping (FlutterError?) -> Void) {
+        self.objectTapHandler?.releaseCluster(id)
+        completion(nil)
+    }
+    
+    func setMapObjectManagerIsVisibleIsVisible(_ isVisible: NSNumber, manager: MapObjectManagerMessage?, completion: @escaping (FlutterError?) -> Void) {
+        self.objectTapHandler?.setMapObjectManagerIsVisible(isVisible.boolValue, for: manager)
+        completion(nil)
     }
     
     func addPolygonPolygon(_ polygon: PolygonMessage, completion: @escaping (FlutterError?) -> Void) {

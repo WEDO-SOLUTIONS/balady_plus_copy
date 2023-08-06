@@ -47,7 +47,7 @@ abstract class MunicipalAdvisorRepository {
   );
   Future<Either<Failure, List<AccommodationTypeEntity>>>
       getAccommodationTypes();
-  Future<Either<Failure, String>> getConsultationKey();
+  Future<Either<Failure, (String, int)>> getConsultationKey();
   Future<Either<Failure, bool>> saveAdditionalActivities(
     AdditionalActivitiesParamsModel params,
   );

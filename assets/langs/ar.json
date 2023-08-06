@@ -244,6 +244,7 @@
   "municipalAdvisorTotalPermitFees": "رسوم التصريح  الإجمالي",
   "municipalAdvisorEndChatConfirmation": "هل انت متأكد من إنهاء المحادثة؟",
   "municipalAdvisorEndChatConfirmationHint": "سيؤدي هذا إلى مسح محفوظات المحادثة الخاصة بك",
+  "municipalAdvisorId":"رقم الدراسة", 
   "endChat": "إنهاء المحادثة",
   "undo": "تراجع",
   "municipalAdvisorAdditionalActivities": "هل توجد أنشطة إضافية ؟",
@@ -2529,5 +2530,6 @@
 
 
 "HomePage":"HomePage", 
-"home_prayer_time_title":"أوقات الصلاة"
+"home_prayer_time_title":"أوقات الصلاة", 
+"go_to_location":"انتقال عبر خرائط قوقل"
 }

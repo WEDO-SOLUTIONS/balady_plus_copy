@@ -27,7 +27,7 @@ class PointViewModel extends BaseViewModel {
       isLoadingData.notifyListeners();
       dataPoint.value = await controller.searchByObjectId(point);
       if (dataPoint.value != null) {
-        print(dataPoint.value?.toString());
+        print(dataPoint.value?.title.toString());
         //getPhotos(dataPoint.value!);
       }
       isLoadingData.value = false;

@@ -181,7 +181,7 @@ class EntryPointCubit extends Cubit<EntryPointState> {
       }
     });
     EasyLoading.dismiss();
-    getUserLocationData();
+    // getUserLocationData();
     //MM   sl<VDCategoryBloc>().add(RefreshCategoriesEvent());
     //MM return isLoggedIn;
     return CommonProperties.isLoggedIn;

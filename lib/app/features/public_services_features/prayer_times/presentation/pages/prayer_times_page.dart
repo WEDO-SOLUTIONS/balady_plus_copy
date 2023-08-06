@@ -96,7 +96,7 @@ class _PrayerTimesPageState extends State<PrayerTimesPage> {
                                     // onTap: () => NotificationService
                                     //     .showScheduledNotification(
                                     //     id: 1,
-                                    //     title: "حان الان موعد اذان العصر",
+                                    //     title: "حان الان موعد أذان العصر",
                                     //     // body: "Bahaaasaaa",
                                     //     // payload: "Payload",
                                     //     scheduledDate: DateTime.now()

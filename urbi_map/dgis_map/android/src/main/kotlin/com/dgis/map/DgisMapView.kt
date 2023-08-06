@@ -5,12 +5,7 @@ import android.location.Location
 import android.util.Size
 import android.view.LayoutInflater
 import com.dgis.map.control_handlers.*
-import com.dgis.map.extensions.toGeoPoint
-import com.dgis.map.extensions.toGeoRect
-import com.dgis.map.extensions.toMessage
-import com.dgis.map.extensions.toRubrics
-import com.dgis.map.extensions.toSdkAccuracy
-import com.dgis.map.extensions.unsafeLazy
+import com.dgis.map.extensions.*
 import com.dgis.map.map_api.Messages
 import com.dgis.map.map_api.Messages.*
 import io.flutter.FlutterInjector
@@ -23,7 +18,10 @@ import ru.dgis.sdk.File
 import ru.dgis.sdk.coordinates.Bearing
 import ru.dgis.sdk.coordinates.GeoPoint
 import ru.dgis.sdk.coordinates.GeoRect
+import ru.dgis.sdk.directory.DirectoryFilter
+import ru.dgis.sdk.directory.ObjectType
 import ru.dgis.sdk.directory.SearchManager
+import ru.dgis.sdk.directory.SearchQueryBuilder
 import ru.dgis.sdk.getLocaleManager
 import ru.dgis.sdk.map.*
 import ru.dgis.sdk.positioning.DefaultLocationSource
@@ -227,6 +225,30 @@ class DgisMapView(
         )
     }
 
+    override fun calcPositionForMarkers(
+        markers: List<String>,
+        options: CalcPositionOptionsMessage,
+        result: Messages.Result<CameraPositionMessage>?
+    ) {
+        objectTapHandler?.calcPositionForMarkers(markers, options, result)
+    }
+
+    override fun calcPositionForPolygons(
+        polygons: List<String>,
+        options: CalcPositionOptionsMessage,
+        result: Messages.Result<CameraPositionMessage>?
+    ) {
+        objectTapHandler?.calcPositionForPolygons(polygons, options, result)
+    }
+
+    override fun calcPositionForPolylines(
+        polylines: List<String>,
+        options: CalcPositionOptionsMessage,
+        result: Messages.Result<CameraPositionMessage>?
+    ) {
+        objectTapHandler?.calcPositionForPolylines(polylines, options, result)
+    }
+
     override fun searchByObjectId(
         objectId: DgisObjectIdMessage,
         result: Messages.Result<DirectoryObjectMessage>?
@@ -323,6 +345,17 @@ class DgisMapView(
         pageSize: Long,
         result: Messages.Result<SearchResultMessage>?
     ) {
+        if (category == SearchCategoryMessage.PARKS) {
+            searchHandler?.searchByParkCategory(
+                searchGeoRect = searchRect?.toGeoRect(),
+                weekTimeMessage = weekTime,
+                sortingType = sortingType,
+                pageSize = pageSize.toInt(),
+                result = result
+            )
+            return
+        }
+
         searchHandler?.searchByCategories(
             categories = category.toRubrics(),
             searchGeoRect = searchRect?.toGeoRect(),
@@ -396,6 +429,24 @@ class DgisMapView(
         result: Messages.Result<Void>?
     ) {
         objectTapHandler?.removeMapObjectManager(id, result)
+    }
+
+    override fun setMapObjectManagerIsVisible(
+        isVisible: Boolean,
+        manager: MapObjectManagerMessage?,
+        result: Messages.Result<Void>?
+    ) {
+        objectTapHandler?.setMapObjectManagerIsVisible(isVisible, manager)
+        result?.success(null)
+    }
+
+    override fun setClusterIcon(id: String, icon: String, result: Messages.Result<Void>?) {
+        objectTapHandler?.setClusterIcon(icon, id, result)
+    }
+
+    override fun releaseCluster(id: String, result: Messages.Result<Void>?) {
+        objectTapHandler?.releaseCluster(id)
+        result?.success(null)
     }
 
     override fun addPolygon(polygon: PolygonMessage, result: Messages.Result<Void>?) {

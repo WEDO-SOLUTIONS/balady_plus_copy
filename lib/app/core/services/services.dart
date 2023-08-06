@@ -80,7 +80,8 @@ Map<String, dynamic> servicesConfig = {
       "order": 13,
       "isNew": false,
       "isImportant": false,
-      "action": {"type": "page", "value": "/municipal-advisor"},
+      "requireLogin": true,
+      "action": {"type": "page", "value": RouteName.municipalAdvisor},
       "ar": {"title": "المستشار الذكي", "description": null, "tag": null},
       "en": {"title": "Municipal Advisor", "description": null, "tag": null}
     },
@@ -194,7 +195,11 @@ Map<String, dynamic> servicesConfig = {
       "isNew": false,
       "isImportant": false,
       "action": {"type": "page", "value": RouteName.etmamMainPage},
-      "ar": {"title": "بلدي أعمال", "description": null, "tag": null},
+      "ar": {
+        "title": "تفويض المكاتب الهندسية",
+        "description": null,
+        "tag": null
+      },
       "en": {"title": "Municipal Advisor", "description": null, "tag": null}
     },
   ],

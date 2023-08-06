@@ -78,7 +78,7 @@ class _BottomNavigationPageState extends State<BottomNavigationPage> {
             // Home-Page
             HomePage(),
             // Services-Page
-            NearbyPage(),
+            //  NearbyPage(),
             // Activities-Page
             ServicesPage(),
             // Profile-Page

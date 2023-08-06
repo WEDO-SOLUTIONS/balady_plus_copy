@@ -68,6 +68,7 @@ class MapViewModel extends BaseViewModel {
   VisibleRectEvent? _lastHandledEvent;
   double? _cameraTopPadding;
   double oldZoom = 13;
+  bool refreshMap = true;
 
   //final selectedPoint = ValueNotifier<DgisObjectIdMessage?>(null);
 
@@ -134,13 +135,13 @@ class MapViewModel extends BaseViewModel {
       SearchResultMessage data = selectedCategory.value != null
           ? await controller.searchByCategory(
               selectedCategory.value!,
-              sortingType: SortingTypeMessage.byDistance,
+              sortingType: SortingTypeMessage.byRelevance,
               isOpenNow: false,
               searchRect: _lastHandledEvent?.visibleRect.geoRectMessage(),
             )
           : await controller.search(
               queryText,
-              sortingType: SortingTypeMessage.byDistance,
+              sortingType: SortingTypeMessage.byRelevance,
               isOpenNow: false,
               searchRect: _lastHandledEvent?.visibleRect.geoRectMessage(),
             );
@@ -164,7 +165,19 @@ class MapViewModel extends BaseViewModel {
                 width: 24,
               ),
             ),
-            onTap: () {
+            onTap: () async {
+              refreshMap = false;
+              await controller.moveCamera(
+                  CameraPositionMessage(
+                      point: GeoPointMessage(
+                          latitude: markerInfo.geoPoint.latitude,
+                          longitude: markerInfo.geoPoint.longitude),
+                      zoom: 17,
+                      tilt: 0,
+                      bearing: 0),
+                  1,
+                  CameraAnimationTypeMessage.linear);
+
               selectedPointId.value = markerInfo.objectId;
               print("on Tap");
               print(markerInfo.objectId);
@@ -183,6 +196,11 @@ class MapViewModel extends BaseViewModel {
               // bottomSheetSizeFraction.value = 0.05;
               bottomSheetSize.notifyListeners();
               bottomSheetSizeFraction.notifyListeners();
+
+              Future.delayed(
+                const Duration(milliseconds: 300),
+              );
+              refreshMap = true;
             },
           ));
         }
@@ -241,7 +259,7 @@ class MapViewModel extends BaseViewModel {
 
     // setLocale(const Locale("ar", "US"), TextDirection.ltr);
     await controller.loadStyles(Constants.mapStyle);
-    await controller.overrideLocales(["ar-SA", "en-SA"]);
+    await controller.overrideLocales(["ar-SA"]);
     // await controller.overrideLocales([localeState.value.locale]);
     initialized.value = true;
     generalControlsState.value = true;
@@ -569,8 +587,14 @@ class MapViewModel extends BaseViewModel {
                 width: 30,
               ),
             ),
-            onTap: () {
-              print(element);
+            onTap: () async {
+              refreshMap = false;
+              await controller.moveCamera(
+                  CameraPositionMessage(
+                      point: element.latLng, zoom: 17, tilt: 0, bearing: 0),
+                  1,
+                  CameraAnimationTypeMessage.linear);
+
               selectedPointId.notifyListeners();
               selectedPoint.value = null;
               selectedInvetmentPoint.value = null;
@@ -608,6 +632,11 @@ class MapViewModel extends BaseViewModel {
               // bottomSheetSizeFraction.value = 0.05;
               bottomSheetSize.notifyListeners();
               bottomSheetSizeFraction.notifyListeners();
+
+              Future.delayed(
+                const Duration(milliseconds: 300),
+              );
+              refreshMap = true;
             },
           );
         },

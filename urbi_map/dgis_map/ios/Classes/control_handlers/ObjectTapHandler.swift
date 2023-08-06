@@ -1,6 +1,14 @@
 import Foundation
 import DGis
 
+struct MarkerId {
+    init(_ id: String) {
+        self.id = id
+    }
+
+    let id: String
+}
+
 class ObjectTapHandler {
     class Events {
         static let onObjectTap = "onObjectTap"
@@ -18,14 +26,6 @@ class ObjectTapHandler {
         let photoUrl: String
         let isPanoramic: Bool
         let azimuth: Double
-    }
-    
-    private struct MarkerId {
-        init(_ id: String) {
-            self.id = id
-        }
-
-        let id: String
     }
     
     private struct PolygonId {
@@ -67,6 +67,7 @@ class ObjectTapHandler {
     private var managers: Dictionary<String, MapObjectManager> = [:]
     private var polygons: Dictionary<String, Polygon> = [:]
     private var polylines: Dictionary<String, Polyline> = [:]
+    private var clusters: Dictionary<String, SimpleClusterObject> = [:]
     private var panoramasMarkers: Array<Marker> = []
     private var ioLayerMarkers: Array<Marker> = []
     
@@ -141,10 +142,12 @@ class ObjectTapHandler {
 //            return
         case let cluster as SimpleClusterObject:
             if let id = cluster.userData as? MapObjectManagerMessage {
+                let clusterId = UUID().uuidString
+                self.clusters[clusterId] = cluster
                 eventChannel.success([
                     "event": Events.onClusterTap,
                     "id": id.id,
-                    "cluster": cluster.toMap()
+                    "cluster": cluster.toMap(id: clusterId)
                 ] as [String : Any])
             }
             return
@@ -307,6 +310,56 @@ class ObjectTapHandler {
         self.objectsQueue.sync {
             if self.managers.removeValue(forKey: manager.id) != nil {
                 completion(nil)
+            }
+        }
+    }
+    
+    func releaseCluster(_ id: String) {
+        self.clusters.removeValue(forKey: id)
+    }
+    
+    func setClusterIcon(_ icon: String, for clusterId: String, completion: @escaping (FlutterError?) -> Void) {
+        guard let cluster = self.clusters[clusterId] else {
+            completion(FlutterError(
+                code: "Error setting icon for cluster",
+                message: "Cluster not found or already released",
+                details: nil)
+            )
+            return
+        }
+        
+        var markerImage: Image? = nil
+        if let cachedIcon = iconCache[icon] {
+            markerImage = cachedIcon
+        } else {
+            let assetKey = registrar.lookupKey(forAsset: icon)
+            
+            guard let assetPath = Bundle.main.path(forResource: assetKey, ofType: nil),
+                  let url = URL(string: "file://\(assetPath)"),
+                  let data = try? Data(contentsOf: url) else {
+                completion(
+                    FlutterError(
+                        code: "Error loading asset for marker",
+                        message: nil,
+                        details: nil
+                    ))
+                return
+            }
+            
+            let image = imageFactory.make(svgData: data, size: .zero)
+            markerImage = image
+            iconCache[icon] = image
+        }
+        
+        cluster.setIcon(icon: markerImage)
+    }
+    
+    func setMapObjectManagerIsVisible(_ isVisible: Bool, for manager: MapObjectManagerMessage?) {
+        self.objectsQueue.sync {
+            if let managerId = manager?.id, let manager = self.managers[managerId] {
+                manager.isVisible = isVisible
+            } else {
+                self.mapObjectManager.isVisible = isVisible
             }
         }
     }
@@ -577,6 +630,67 @@ class ObjectTapHandler {
     
     func showLastSearchMarker() {
         self.lastTappedSearchMarker?.iconOpacity = Opacity(value: 1.0)
+    }
+    
+    func calcPosition(markers: [String], options: CalcPositionOptionsMessage, completion: @escaping (CameraPositionMessage?, FlutterError?) -> Void) {
+        calcPosition(
+            objects: markers.compactMap { self.markers[$0] },
+            options: options,
+            completion: completion
+        )
+    }
+    
+    func calcPosition(polygons: [String], options: CalcPositionOptionsMessage, completion: @escaping (CameraPositionMessage?, FlutterError?) -> Void) {
+        calcPosition(
+            objects: polygons.compactMap { self.polygons[$0] },
+            options: options,
+            completion: completion
+        )
+    }
+    
+    func calcPosition(polylines: [String], options: CalcPositionOptionsMessage, completion: @escaping (CameraPositionMessage?, FlutterError?) -> Void) {
+        calcPosition(
+            objects: polylines.compactMap { self.polylines[$0] },
+            options: options,
+            completion: completion
+        )
+    }
+    
+    private func calcPosition(objects: [SimpleMapObject], options: CalcPositionOptionsMessage, completion: @escaping (CameraPositionMessage?, FlutterError?) -> Void) {
+        let cameraPosition = DGis.calcPosition(
+            camera: map.camera,
+            objects: objects,
+            screenArea: options.screenArea.map {
+                Padding(
+                    left: $0.leftPadding.uint32Value,
+                    top: $0.topPadding.uint32Value,
+                    right: $0.rightPadding.uint32Value,
+                    bottom: $0.bottomPadding.uint32Value
+                )
+            },
+            tilt: options.tilt.map {
+                Tilt(value: $0.floatValue)
+            },
+            bearing: options.bearing.map {
+                Bearing(value: $0.doubleValue)
+            },
+            size: options.size.map {
+                ScreenSize(
+                    width: $0.width.uint32Value,
+                    height: $0.height.uint32Value
+                )
+            }
+        )
+        
+        completion(
+            CameraPositionMessage.make(
+                withPoint: cameraPosition.point.toMessage(),
+                zoom: NSNumber(value: cameraPosition.zoom.value),
+                tilt: NSNumber(value: cameraPosition.tilt.value),
+                bearing: NSNumber(value: cameraPosition.bearing.value)
+            ),
+            nil
+        )
     }
     
     private func onDgisObjectTap(_ mapObject: DgisMapObject, _ objectInfo: DGis.RenderedObjectInfo) {

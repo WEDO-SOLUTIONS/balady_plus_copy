@@ -181,6 +181,8 @@ typedef NS_ENUM(NSUInteger, SearchCategoryMessage) {
 
 @class InitializeMessage;
 @class GeoPointMessage;
+@class ScreenSizeMessage;
+@class CalcPositionOptionsMessage;
 @class GeoPointWithElevationMessage;
 @class CameraPositionMessage;
 @class DgisObjectIdMessage;
@@ -270,6 +272,26 @@ typedef NS_ENUM(NSUInteger, SearchCategoryMessage) {
     longitude:(NSNumber *)longitude;
 @property(nonatomic, strong) NSNumber * latitude;
 @property(nonatomic, strong) NSNumber * longitude;
+@end
+
+@interface ScreenSizeMessage : NSObject
+/// `init` unavailable to enforce nonnull fields, see the `make` class method.
+- (instancetype)init NS_UNAVAILABLE;
++ (instancetype)makeWithWidth:(NSNumber *)width
+    height:(NSNumber *)height;
+@property(nonatomic, strong) NSNumber * width;
+@property(nonatomic, strong) NSNumber * height;
+@end
+
+@interface CalcPositionOptionsMessage : NSObject
++ (instancetype)makeWithScreenArea:(nullable CameraSetPaddingMessage *)screenArea
+    tilt:(nullable NSNumber *)tilt
+    bearing:(nullable NSNumber *)bearing
+    size:(nullable ScreenSizeMessage *)size;
+@property(nonatomic, strong, nullable) CameraSetPaddingMessage * screenArea;
+@property(nonatomic, strong, nullable) NSNumber * tilt;
+@property(nonatomic, strong, nullable) NSNumber * bearing;
+@property(nonatomic, strong, nullable) ScreenSizeMessage * size;
 @end
 
 @interface GeoPointWithElevationMessage : NSObject
@@ -1050,6 +1072,9 @@ NSObject<FlutterMessageCodec> *MapApiGetCodec(void);
 - (void)setCameraPositionCameraPosition:(CameraPositionMessage *)cameraPosition completion:(void (^)(FlutterError *_Nullable))completion;
 - (void)moveCameraCameraPosition:(CameraPositionMessage *)cameraPosition duration:(NSNumber *)duration animationType:(CameraAnimationTypeMessage)animationType completion:(void (^)(FlutterError *_Nullable))completion;
 - (void)getCameraPositionWithCompletion:(void (^)(CameraPositionMessage *_Nullable, FlutterError *_Nullable))completion;
+- (void)calcPositionForMarkersMarkers:(NSArray<NSString *> *)markers options:(CalcPositionOptionsMessage *)options completion:(void (^)(CameraPositionMessage *_Nullable, FlutterError *_Nullable))completion;
+- (void)calcPositionForPolygonsPolygons:(NSArray<NSString *> *)polygons options:(CalcPositionOptionsMessage *)options completion:(void (^)(CameraPositionMessage *_Nullable, FlutterError *_Nullable))completion;
+- (void)calcPositionForPolylinesPolylines:(NSArray<NSString *> *)polylines options:(CalcPositionOptionsMessage *)options completion:(void (^)(CameraPositionMessage *_Nullable, FlutterError *_Nullable))completion;
 - (void)searchByObjectIdObjectId:(DgisObjectIdMessage *)objectId completion:(void (^)(DirectoryObjectMessage *_Nullable, FlutterError *_Nullable))completion;
 - (void)getDistanceToPoints:(NSArray<DistanceRequestMessage *> *)points completion:(void (^)(NSArray<DistanceResponseMessage *> *_Nullable, FlutterError *_Nullable))completion;
 - (void)searchQueryText:(NSString *)queryText weekTime:(nullable WeekTimeSearchMessage *)weekTime searchRect:(nullable GeoRectMessage *)searchRect sortingType:(SortingTypeMessage)sortingType pageSize:(NSNumber *)pageSize completion:(void (^)(SearchResultMessage *_Nullable, FlutterError *_Nullable))completion;
@@ -1066,6 +1091,9 @@ NSObject<FlutterMessageCodec> *MapApiGetCodec(void);
 - (void)removeAllMarkersManager:(nullable MapObjectManagerMessage *)manager completion:(void (^)(FlutterError *_Nullable))completion;
 - (void)createMapObjectManagerWithClusteringMessage:(ClusteringMapObjectManagerOptionsMessage *)message completion:(void (^)(MapObjectManagerMessage *_Nullable, FlutterError *_Nullable))completion;
 - (void)removeMapObjectManagerId:(MapObjectManagerMessage *)id completion:(void (^)(FlutterError *_Nullable))completion;
+- (void)setClusterIconId:(NSString *)id icon:(NSString *)icon completion:(void (^)(FlutterError *_Nullable))completion;
+- (void)releaseClusterId:(NSString *)id completion:(void (^)(FlutterError *_Nullable))completion;
+- (void)setMapObjectManagerIsVisibleIsVisible:(NSNumber *)isVisible manager:(nullable MapObjectManagerMessage *)manager completion:(void (^)(FlutterError *_Nullable))completion;
 - (void)addPolygonPolygon:(PolygonMessage *)polygon completion:(void (^)(FlutterError *_Nullable))completion;
 - (void)addPolygonsPolygons:(NSArray<PolygonMessage *> *)polygons completion:(void (^)(FlutterError *_Nullable))completion;
 - (void)removePolygonId:(NSString *)id completion:(void (^)(FlutterError *_Nullable))completion;

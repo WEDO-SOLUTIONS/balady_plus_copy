@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
+import 'package:provider/provider.dart';
 
 import '../../../../../core/utils/utils_exports.dart';
 import '../../../../_shared_feature_/shared_feature_exports.dart';
@@ -13,13 +14,13 @@ class PrayerHomeCard extends StatelessWidget {
   const PrayerHomeCard({
     super.key,
   });
- 
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<PrayerTimesCubit, PrayerTimesState>(
       builder: (context, state) {
         return HomeSection(
-            title:  "home_prayer_time_title".tr(),
+            title: "home_prayer_time_title".tr(),
             child: state.nextPrayer != null
                 ? Container(
                     height: 234,
@@ -187,22 +188,39 @@ class PrayerHomeCard extends StatelessWidget {
                                                       : AppColor.white
                                                           .withOpacity(0.1),
                                     ),
-                                    child: CustomSvgIconWidget(
-                                      IconPath.notificationIc2,
-                                      iconColor: state.nextPrayer!.prayer ==
-                                              Prayers.fajr
-                                          ? AppColor.white
-                                          : state.nextPrayer!.prayer ==
-                                                  Prayers.dhuhr
-                                              ? AppColor.primary900Light
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        Provider.of<PrayerTimesCubit>(context,
+                                                listen: false)
+                                            .prayerSettingsOnOff();
+                                      },
+                                      child: BlocBuilder<PrayerTimesCubit,
+                                              PrayerTimesState>(
+                                          builder: (context, state) {
+                                        bool isNotificationDisabled =
+                                            state.isNotificationDisable;
+                                        return CustomSvgIconWidget(
+                                          isNotificationDisabled
+                                              ? IconPath.notificationIc2
+                                              : IconPath.notificationFilled,
+                                          iconColor: state.nextPrayer!.prayer ==
+                                                  Prayers.fajr
+                                              ? AppColor.white
                                               : state.nextPrayer!.prayer ==
-                                                      Prayers.asr
+                                                      Prayers.dhuhr
                                                   ? AppColor.primary900Light
                                                   : state.nextPrayer!.prayer ==
-                                                          Prayers.maghrib
+                                                          Prayers.asr
                                                       ? AppColor.primary900Light
-                                                      : AppColor.white,
-                                      iconSize: 24,
+                                                      : state.nextPrayer!
+                                                                  .prayer ==
+                                                              Prayers.maghrib
+                                                          ? AppColor
+                                                              .primary900Light
+                                                          : AppColor.white,
+                                          iconSize: 24,
+                                        );
+                                      }),
                                     ),
                                   ),
                                 ],
@@ -230,7 +248,7 @@ class PrayerHomeCard extends StatelessWidget {
                                       children: [
                                         if (state.nextPrayer != null)
                                           CustomTextWidget(
-                                            "متبقي على وقت اذان ${state.nextPrayer!.prayer.label.tr()}",
+                                            "متبقي على وقت أذان ${state.nextPrayer!.prayer.label.tr()}",
                                             fontColor: AppColor.white,
                                             fontWeight: AppFontWeight.bold,
                                             maxLines: 2,
@@ -270,7 +288,7 @@ class PrayerHomeCard extends StatelessWidget {
                                         ),
                                         btnHeight: 40,
                                         btnPadding: const EdgeInsets.all(11),
-                                        text: "عرض اوقات الصلوات",
+                                        text: "عرض الأوقات",
                                         onPressed: () {
                                           context.pushNamedRoute(
                                             RouteName.prayerTimes,

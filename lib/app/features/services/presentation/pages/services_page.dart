@@ -48,18 +48,21 @@ class ServicesPage extends StatelessWidget {
                 return SingleChildScrollView(
                   child: Column(
                     children: [
-                      ServicesList(
-                        title: "islamic_services".tr(),
-                        services: state.islamicServices,
-                      ),
-                      ServicesList(
-                        title: "customer_voice_services".tr(),
-                        services: state.customerVoiceServices,
-                      ),
-                      ServicesList(
-                        title: "business_license_services".tr(),
-                        services: state.businessLicenseServices,
-                      ),
+                      if (state.islamicServices.isNotEmpty)
+                        ServicesList(
+                          title: "islamic_services".tr(),
+                          services: state.islamicServices,
+                        ),
+                      if (state.customerVoiceServices.isNotEmpty)
+                        ServicesList(
+                          title: "customer_voice_services".tr(),
+                          services: state.customerVoiceServices,
+                        ),
+                      if (state.businessLicenseServices.isNotEmpty)
+                        ServicesList(
+                          title: "business_license_services".tr(),
+                          services: state.businessLicenseServices,
+                        ),
                       // ServicesList(
                       //   title: "honoring_the_dead_services".tr(),
                       //   services: state.honoringTheDeadServices,
@@ -68,10 +71,11 @@ class ServicesPage extends StatelessWidget {
                         title: "health_certificates_services".tr(),
                         services: state.healthCertificatesServices,
                       ),*/
-                      ServicesList(
-                        title: "help_services".tr(),
-                        services: state.helpServices,
-                      ),
+                      if (state.helpServices.isNotEmpty)
+                        ServicesList(
+                          title: "help_services".tr(),
+                          services: state.helpServices,
+                        ),
                     ],
                   ),
                 );

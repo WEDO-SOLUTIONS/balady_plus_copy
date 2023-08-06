@@ -67,7 +67,7 @@ abstract class MunicipalAdvisorRemoteDataSource {
     ActivityDetailsParamsModel params,
   );
   Future<List<AccommodationTypeEntity>> getAccommodationTypes();
-  Future<String> getConsultationKey();
+  Future<(String, int)> getConsultationKey();
   Future<bool> saveAdditionalActivities(
     AdditionalActivitiesParamsModel params,
   );
@@ -281,7 +281,7 @@ class MunicipalAdvisorRemoteDataSourceImplementation
   }
 
   @override
-  Future<String> getConsultationKey() async {
+  Future<(String, int)> getConsultationKey() async {
     try {
       final response = await webService.dio.post(ApiUrl.consultationKey);
 
@@ -290,7 +290,7 @@ class MunicipalAdvisorRemoteDataSourceImplementation
 
       final result = ResponseBodyModel.fromMap(data).data?.result;
 
-      return result['uniqueKey'] as String;
+      return (result['uniqueKey'] as String, result['id'] as int);
     } on DioError catch (error) {
       "DioError $error".errorLog();
       throw ServerException(
