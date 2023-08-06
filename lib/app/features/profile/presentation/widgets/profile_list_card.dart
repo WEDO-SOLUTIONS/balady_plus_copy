@@ -30,13 +30,13 @@ class ProfileListCard extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           decoration: const BoxDecoration(
             borderRadius: BorderRadius.all(Radius.circular(16)),
-            boxShadow: [
-              BoxShadow(
-                color: AppColor.darkSlateBlue6,
-                offset: Offset(0, -4),
-                blurRadius: 32,
-              )
-            ],
+            // boxShadow: [
+            //   // BoxShadow(
+            //   //   color: AppColor.darkSlateBlue6,
+            //   //   offset: Offset(0, -4),
+            //   //   blurRadius: 32,
+            //   // )
+            // ],
             color: AppColor.blackModern50Light,
           ),
           child: ListView.separated(

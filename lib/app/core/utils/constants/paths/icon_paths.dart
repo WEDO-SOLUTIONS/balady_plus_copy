@@ -116,6 +116,7 @@ class IconPath {
   // static const requests = '${_svgProfileIconPath}document_bold$_svg';
   static const bills = '${_svgProfileIconPath}bills$_svg';
   static const flag = '${_svgProfileIconPath}flag$_svg';
+  static const notification = '${_svgProfileIconPath}notification$_svg';
 
   // Nearby
   static nearbyIcon(String name) => '$_svgNearbyIconPath$name$_svg';
