@@ -46,4 +46,18 @@ class CrRepositoryImpl implements CrRepository {
           statusCode: error.statusCode, errorCode: error.errorCode));
     }
   }
+
+  @override
+  Future<Either<Failure, List<CrLookupsEntity>>> getAccommodationTypes() async {
+    try {
+      final data = await remoteDataSource.getAccommodationTypes();
+
+      return Right(data);
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage,
+          statusCode: error.statusCode, errorCode: error.errorCode));
+    }
+  }
+
 }
+

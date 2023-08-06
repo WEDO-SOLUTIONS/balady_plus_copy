@@ -59,12 +59,16 @@ class CRStep2ActivityData extends StatelessWidget {
                   BlocBuilder<CrStep2ActivityDataCubit,
                       CrStep2ActivityDataState>(
                     buildWhen: (previous, current) =>
-                        previous.subActivitiesStatus != current.subActivitiesStatus,
+                        previous.subActivitiesStatus !=
+                            current.subActivitiesStatus ||
+                        previous.selectedSubActivity !=
+                            current.selectedSubActivity,
                     builder: (context, state) {
                       return CustomTapWidgetForLongDialog(
                         items: state.subActivities,
                         value: state.selectedSubActivity,
-                        isLoading: state.subActivitiesStatus.isSubmissionLoading,
+                        isLoading:
+                            state.subActivitiesStatus.isSubmissionLoading,
                         label: "النشاط التفصيلي",
                         marginBottom: 8,
                         onChangeType: (item) => item != null

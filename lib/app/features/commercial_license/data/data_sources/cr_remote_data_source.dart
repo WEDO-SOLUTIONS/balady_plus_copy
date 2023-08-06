@@ -1,7 +1,6 @@
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:dio/dio.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
-
 import '../../../../core/errors/errors_exports.dart';
 import '../../../../core/services/services_exports.dart';
 import '../../../_shared_feature_/shared_feature_exports.dart';
@@ -14,12 +13,48 @@ abstract class CrRemoteDataSource {
   // Future<ResponseBodyModel<SubActivityModelDetailsModel>> getSubActivityDetails(
   //     {required String subActivityId});
   Future<bool> addIsicActivities({required AddIsicActivitiesParams params});
+  Future<List<CrLookupsModel>> getAccommodationTypes();
 }
 
 class CrRemoteDataSourceImpl extends CrRemoteDataSource {
   final WebService webService;
 
   CrRemoteDataSourceImpl({required this.webService});
+
+
+  @override
+  Future<List<CrLookupsModel>> getAccommodationTypes() async {
+    var response;
+
+    try {
+      response = await webService.dio.get(ApiUrl.accommodationTypesCL);
+
+      var data = response.data;
+
+      final result = ResponseBodyModel.fromMap(data).data?.result;
+
+      return result
+          .map<CrLookupsModel>(
+              (e) => CrLookupsModel.fromJson(e as Map<String, dynamic>))
+          .toList();
+    } on DioError catch (error) {
+      "DioError $error".errorLog();
+      if (error is NoDataFoundException) {
+        rethrow;
+      }
+      throw ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+      );
+    } catch (ex) {
+      "Catched $ex".errorLog();
+      if (ex is ServerException) {
+        rethrow;
+      } else {
+        throw ServerException("errors_server_error_2".tr());
+      }
+    }
+  }
 
   @override
   Future<bool> addIsicActivities(

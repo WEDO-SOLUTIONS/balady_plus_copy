@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/core/services/local/use_case.dart';
 import 'package:balady_plus/app/core/utils/enums/bloc_status.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -10,16 +11,17 @@ part 'cr_step2_activity_data_state.dart';
 
 class CrStep2ActivityDataCubit extends Cubit<CrStep2ActivityDataState> {
   final GetSubActivities _getSubActivities;
+  final GetAccommodationTypes _getAccommodationTypes;
 
   CrStep2ActivityDataCubit()
       : _getSubActivities = GetSubActivities(repository: sl()),
+        _getAccommodationTypes = GetAccommodationTypes(repository: sl()),
         super(const CrStep2ActivityDataState());
 
   void onSelectIsicActivity(DropDownItem isicActivity) async {
     emit(state.copyWith(
         selectedIsicActivity: isicActivity,
         subActivitiesStatus: BlocStatus.loading));
-
     final response = await _getSubActivities(isicActivity.id ?? '');
     response.fold(
         (failure) => emit(state.copyWith(
@@ -33,6 +35,24 @@ class CrStep2ActivityDataCubit extends Cubit<CrStep2ActivityDataState> {
         });
   }
 
+  void getAccommodationTypes() async {
+    emit(state.copyWith(accommodationTypesStatus: BlocStatus.loading));
+    final response = await _getAccommodationTypes(NoParams());
+    response.fold(
+        (failure) => emit(state.copyWith(
+          accommodationTypesStatus: BlocStatus.failure,
+              errorMessage: (failure as ServerFailure).errorMessage,
+            )),
+        (success) {
+          emit(state.copyWith(
+              accommodationTypesStatus: BlocStatus.success,
+              accommodationTypes: List.from(success)));
+        });
+  }
+
   void onSelectSubActivity(DropDownItem subActivity) =>
       emit(state.copyWith(selectedSubActivity: subActivity));
+
+  void onAccommodationTypes(DropDownItem accommodationTypes) =>
+      emit(state.copyWith(selectedAccommodationType: accommodationTypes));
 }

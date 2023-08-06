@@ -49,6 +49,7 @@ export 'domain/entities/submit_step1_params.dart';
 export 'domain/entities/sub_activit_entity.dart';
 export 'domain/entities/sub_activity_details_entity.dart';
 export 'domain/entities/add_isic_activities_params.dart';
+export 'domain/entities/cr_lookups_entity.dart';
 
 // repo
 export 'domain/repositories/cr_repository.dart';
@@ -59,6 +60,7 @@ export 'domain/use_cases/submit_step1.dart';
 export 'domain/use_cases/get_sub_activities.dart';
 export 'domain/use_cases/get_sub_activity_details.dart';
 export 'domain/use_cases/add_isic_activities.dart';
+export 'domain/use_cases/get_accommodation_types.dart';
 
 
 /// Data
@@ -69,6 +71,7 @@ export 'data/data_sources/cr_remote_data_source.dart';
 export 'data/models/record_info_model.dart';
 export 'data/models/sub_activity_model.dart';
 export 'data/models/sub_activity_details_model.dart';
+export 'data/models/cr_lookups_model.dart';
 
 // repo
 export 'data/repositories/cr_repository_impl.dart';

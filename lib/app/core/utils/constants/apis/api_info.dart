@@ -241,6 +241,8 @@ class ApiUrl {
       "/v1/balady-commercial-services/activities/";
   static const String addIsicActivities =
       "/v1/balady-commercial-services/isic-activities/add-cr";
+  static const String accommodationTypesCL =
+      "/v1/balady-commercial-services/accommodation-types";
 
 //! Violations
   static const String violationsStatus =
