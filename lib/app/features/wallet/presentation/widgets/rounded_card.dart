@@ -26,8 +26,8 @@ class RoundedCard extends StatelessWidget {
           decoration: BoxDecoration(
             borderRadius: const BorderRadius.all(Radius.circular(12)),
             color: isSelected
-                ? AppColor.primary800Light
-                : AppColor.secondary50Light.withOpacity(0.7),
+                ? AppColor.primary900Light
+                : AppColor.blueSkyLight800.withOpacity(0.1),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -38,7 +38,7 @@ class RoundedCard extends StatelessWidget {
                 iconSize: 27,
                 iconColor: isSelected
                     ? AppColor.blackModern50Light
-                    : AppColor.secondary300Light,
+                    : AppColor.primary900Light,
               ),
               const SizedBox(height: 8),
               CustomTextWidget(
