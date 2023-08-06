@@ -73,7 +73,7 @@ class CRStep1ApplicantData extends StatelessWidget {
                   CRPreviousNextButtons(
                       isBtnDisabled: false,
                       onPressed: () {
-                        if (!state.isicActivitiesNotExistInBalady.isNotEmpty) {
+                        if (state.isicActivitiesNotExistInBalady.isNotEmpty) {
                           BottomSheetDialog.showDraggableSheet(context,
                               child: BlocProvider.value(
                                   value: BlocProvider.of<

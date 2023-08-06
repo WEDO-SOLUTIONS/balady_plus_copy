@@ -27,12 +27,14 @@ class CrRemoteDataSourceImpl extends CrRemoteDataSource {
     var response;
 
     try {
-      print(params.toJson());
-      response = await webService.dio
-          .post(ApiUrl.addIsicActivities, data: params.toJson());
+      response = await webService.dio.post(ApiUrl.addIsicActivities,
+          data: params.toJson(),
+          options: Options(
+            headers: {"sid": ""},
+          ));
 
       final decodedResponse =
-      ResponseBodyModel<bool>.fromMap(response.data, parsedResult: true);
+          ResponseBodyModel<bool>.fromMap(response.data, parsedResult: true);
 
       return decodedResponse.data!.result!.toFuture();
     } on DioError catch (error) {
