@@ -10,7 +10,7 @@ enum GISMapLayers {
       outFieldsLong: []),
   Opportunities(
       layerId: 2,
-      cardHeight: 145,
+      cardHeight: 180,
       icon: Constants.furasLayerIcon,
       selectedIcon: Constants.furasSelectedLayerIcon,
       outFieldsShort: [

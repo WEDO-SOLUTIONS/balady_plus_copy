@@ -2,10 +2,12 @@ import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
 import 'package:balady_plus/app/core/utils/constants/route_names.dart';
 import 'package:balady_plus/app/core/utils/enums/bloc_status.dart';
 import 'package:balady_plus/app/core/utils/extensions/context_conversion.dart';
+import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/shimmer_effect_widget.dart';
 import 'package:balady_plus/app/features/weather/weather_exports.dart'
     hide Text;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../core/utils/utils_exports.dart'
@@ -64,6 +66,24 @@ class CurrentWeather extends StatelessWidget {
                 ),
               );
             }
+            if (state.allWeatherInfoStatus == BlocStatus.loading)
+              return ShimmerEffectWidget(
+                width: 70,
+                height: 20,
+              );
+            if (state.allWeatherInfoStatus == BlocStatus.failure)
+              return GestureDetector(
+                onTap: () {
+                  context.read<WeatherBloc>().add(GetWeatherForLocation());
+                },
+                child: SvgPicture.asset(
+                  IconPath.vdCameraFlashRetry,
+                  width: 24,
+                  color: AppColor.primary900Light,
+                  height: 24,
+                ),
+              );
+
             return Container();
           },
         ),

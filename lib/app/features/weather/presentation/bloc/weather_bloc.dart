@@ -28,57 +28,78 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
 
   Future<void> _getAllWeatherInfo(
       GetWeatherForLocation e, Emitter emitter) async {
-    if (state.allWeatherInfoStatus == BlocStatus.success) return;
+    if (state.allWeatherInfoStatus == BlocStatus.success &&
+        state.showLocationError == false) return;
 
     emitter(state.copyWith(allWeatherInfoStatus: BlocStatus.loading));
 
     GISParams? location = CommonProperties.userLocation;
 
-    if (location == null) {
+    if (location == null || CommonProperties.userLocationGIS == null) {
       LatLng? latlng = await Helpers.getMapLocation();
+
       location = GISParams(
           x: latlng?.longitude ?? 46.72364215018372,
           y: latlng?.latitude ?? 24.744615305066496);
+
+      if (latlng == null)
+        emitter(state.copyWith(showLocationError: true));
+      else
+        emitter(state.copyWith(showLocationError: false));
+
+      WeatherParams params =
+          e.params.copyWith(latitude: location.y, longitude: location.x);
+      final failureOrSuccess = await _getGISData(
+          GISParams(x: params.longitude!, y: params.latitude!));
+      await failureOrSuccess.fold((failure) {
+        emitter(state.copyWith(
+          allWeatherInfoStatus: BlocStatus.failure,
+          errorMessage: (failure as ServerFailure).errorMessage,
+        ));
+      }, (success) async {
+        emitter(state.copyWith(
+          gisResponse: success,
+          errorMessage: "",
+        ));
+        final failureOrSuccess = await _getWeatherInfo(params);
+        failureOrSuccess.fold((failure) {
+          print("failure: weather $failure");
+          emitter(state.copyWith(
+            allWeatherInfoStatus: BlocStatus.failure,
+            errorMessage: (failure as ServerFailure).errorMessage,
+          ));
+        }, (success) {
+          print("weather entity: $success");
+          emitter(state.copyWith(
+            allWeatherInfoStatus: BlocStatus.success,
+            allWeatherInfo: success,
+            errorMessage: "",
+          ));
+        });
+      });
+    } else {
+      WeatherParams params =
+          e.params.copyWith(latitude: location.y, longitude: location.x);
+
+      final failureOrSuccess = await _getWeatherInfo(params);
+      failureOrSuccess.fold((failure) {
+        print("failure: weather $failure");
+        emitter(state.copyWith(
+          allWeatherInfoStatus: BlocStatus.failure,
+          errorMessage: (failure as ServerFailure).errorMessage,
+        ));
+      }, (success) {
+        print("weather entity: $success");
+        emitter(state.copyWith(
+          allWeatherInfoStatus: BlocStatus.success,
+          allWeatherInfo: success,
+          gisResponse: CommonProperties.userLocationGIS,
+          showLocationError: false,
+          errorMessage: "",
+        ));
+      });
     }
 
-    WeatherParams params =
-        e.params.copyWith(latitude: location.y, longitude: location.x);
-
-    final failureOrSuccess = await _getWeatherInfo(params);
-
-    failureOrSuccess.fold((failure) {
-      print("failure: weather $failure");
-      emitter(state.copyWith(
-        allWeatherInfoStatus: BlocStatus.failure,
-        gisResponse: CommonProperties.userLocationGIS,
-        errorMessage: (failure as ServerFailure).errorMessage,
-      ));
-    }, (success) {
-      print("weather entity: $success");
-      emitter(state.copyWith(
-        allWeatherInfoStatus: BlocStatus.success,
-        //  categories: success.data?.result,
-        gisResponse: CommonProperties.userLocationGIS,
-        allWeatherInfo: success,
-        errorMessage: "",
-      ));
-    });
-
-/*  final failureOrSuccess = await _getGISData(
-        GISParams(x: e.params.longitude!, y: e.params.latitude!));
-
-    await failureOrSuccess.fold((failure) {
-      emitter(state.copyWith(
-        allWeatherInfoStatus: BlocStatus.failure,
-        errorMessage: (failure as ServerFailure).errorMessage,
-      ));
-    }, (success) async {
-      emitter(state.copyWith(
-        gisResponse: success,
-        errorMessage: "",
-      ));
-
-    
-    });*/
+/*  ;*/
   }
 }

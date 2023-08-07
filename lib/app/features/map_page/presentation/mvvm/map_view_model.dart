@@ -116,6 +116,8 @@ class MapViewModel extends BaseViewModel {
     }
   }
 
+//  late MapObjectManagerMessage mapObjectManager;
+
   Future<void> performSearch(
       {required String queryText,
       SearchCategoryMessage? category,
@@ -154,6 +156,8 @@ class MapViewModel extends BaseViewModel {
         final iconPath = selectedCategory.value != null
             ? selectedCategory.value!.markerIconName()
             : "assets/maps/icons/ic_marker.svg";
+
+        //  await controller.removeAllMarkers(fromManager: mapObjectManager);
 
         for (final markerInfo in data.itemMarkerInfos!) {
           markers.add(Marker(
@@ -206,6 +210,8 @@ class MapViewModel extends BaseViewModel {
         }
 
         await controller.addMarkers(markers);
+
+        await controller.addMarkers(markers);
       }
       if (data.firstPage?.items != null) {
         final responseDistance = await controller.getDistanceTo(
@@ -255,7 +261,7 @@ class MapViewModel extends BaseViewModel {
 
     _setupListeners();
 
-    // await controller.changeFollowState();
+    await controller.changeFollowState();
 
     // setLocale(const Locale("ar", "US"), TextDirection.ltr);
     await controller.loadStyles(Constants.mapStyle);
@@ -263,16 +269,58 @@ class MapViewModel extends BaseViewModel {
     // await controller.overrideLocales([localeState.value.locale]);
     initialized.value = true;
     generalControlsState.value = true;
-    goToLocation();
-    await controller.setMarkerOptions(
+    // goToLocation();
+    /* await controller.setMarkerOptions(
       MarkerOptionsMessageOld(
         svgAsset: "assets/maps/icons/ic_marker.svg.svg",
         width: 30.0,
         height: 46.0,
         iconWidth: 24,
       ),
+    );*/
+
+/*
+    mapObjectManager = await controller.createMapObjectManagerWithClustering(
+      ClusteringMapObjectManager(
+        options: ClusteringMapObjectManagerOptionsMessage(
+          logicalPixel: 40,
+          maxZoom: 16,
+        ),
+        renderCluster: (objectCount) {
+          return SimpleClusterOptionsMessage(
+            icon: MarkerIconMessage(
+              path: "assets/maps/icons/ic_marker.svg",
+              width: 24,
+            ),
+            text: "$objectCount",
+            textStyle: MarkerTextStyleMessage(fontSize: 16),
+          );
+        },
+        onTap: (clusterObject) async {
+          clusterObject.setIcon("assets/maps/icons/ic_marker_red.svg");
+
+          final clusterPosition = await controller.calcPositionForMarkers(
+            clusterObject.markers,
+            CalcPositionOptionsMessage(
+              screenArea: CameraSetPaddingMessage(
+                bottomPadding: 40,
+                leftPadding: 40,
+                topPadding: 40,
+                rightPadding: 40,
+              ),
+            ),
+          );
+          await controller.moveCamera(
+            clusterPosition,
+            1.5,
+            CameraAnimationTypeMessage.default_,
+          );
+        },
+      ),
     );
 
+
+*/
     return true;
   }
 
@@ -589,11 +637,11 @@ class MapViewModel extends BaseViewModel {
             ),
             onTap: () async {
               refreshMap = false;
-              await controller.moveCamera(
+              /*  await controller.moveCamera(
                   CameraPositionMessage(
                       point: element.latLng, zoom: 17, tilt: 0, bearing: 0),
                   1,
-                  CameraAnimationTypeMessage.linear);
+                  CameraAnimationTypeMessage.linear);*/
 
               selectedPointId.notifyListeners();
               selectedPoint.value = null;
@@ -830,11 +878,11 @@ class MapViewModel extends BaseViewModel {
               point: kingdomTower, zoom: 17, tilt: 45, bearing: 0));
         } else {
           if (gis.adminMunicipalityId == "004") {
-            controller.setCameraPosition(CameraPositionMessage(
-                point: kingdomTower, zoom: 17, tilt: 45, bearing: 0));
+            //    controller.setCameraPosition(CameraPositionMessage(
+            //       point: kingdomTower, zoom: 17, tilt: 45, bearing: 0));
           } else if (gis.adminMunicipalityId == "006") {
-            controller.setCameraPosition(CameraPositionMessage(
-                point: ithraa, zoom: 18, tilt: 45, bearing: 0));
+            // controller.setCameraPosition(CameraPositionMessage(
+            //     point: ithraa, zoom: 18, tilt: 45, bearing: 0));
           } else {
             controller.setCameraPosition(CameraPositionMessage(
                 point: GeoPointMessage(

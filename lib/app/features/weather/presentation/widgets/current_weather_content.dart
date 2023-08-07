@@ -67,7 +67,7 @@ class CurrentWeatherContent extends StatelessWidget {
                   ),
                 ],
               ),
-              if (CommonProperties.userLocation == null)
+              if (state.showLocationError ?? false)
                 UnKownWeatherLocation(
                   onTap: () {
                     print("tab");
