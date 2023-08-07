@@ -12,7 +12,7 @@ class ImagePath {
   static const shareUsBg = '${_imagePath}share_us_bg$_png';
   static const camera = '${_imagePath}camera$_png';
   static const gameChallenge = '${_imagePath}game_challenge$_png';
-  static const prayerTimesAppBar = '${_imagePath}prayer_times_appbar$_png';
+  static const prayerTimesAppBar = '${_imagePath}zmzm_background$_png';
   static const appBarBackground = '${_imagePath}app_bar_background$_png';
   static const successPageBackground = '${_imagePath}success_background$_png';
   static const boardingRiyadhImage = '${_imagePath}background$_png';
@@ -20,15 +20,15 @@ class ImagePath {
   static const needle = '${_imagePath}needle$_svg';
   static const compass = '${_imagePath}compass$_svg';
   static const zmzmBackground = '${_imagePath}zmzm_background$_png';
-  static const quranBackground = '${_imagePath}quran_background$_png';
-  static const quranBackgroundPage = '${_imagePath}quran_background_page$_png';
+  static const quranBackground = '${_imagePath}zmzm_background$_png';
+  static const quranBackgroundPage = '${_imagePath}zmzm_background$_png';
   static const logo2030 = '${_imagePath}logo2030$_png';
   static const qualityLogo = '${_imagePath}quality_logo$_png';
 
   static const investmentBg = '${_imagePath}investment_bg$_png';
   static const forasLogo = '${_imagePath}foras_logo$_png';
 
-  static const weatherBackground3x = '${_imagePath}weather_background3x$_png';
+  static const weatherBackground3x = '${_imagePath}zmzmz_background$_png';
 
   static const ayah = '${_imagePath}ayah$_svg';
 

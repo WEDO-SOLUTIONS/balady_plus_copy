@@ -3,8 +3,7 @@ import 'package:balady_plus/app/core/utils/enums/app_font_weights.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_compass/flutter_compass.dart';
-
+/*
 class CompassCalibration extends StatefulWidget {
   const CompassCalibration({super.key});
 
@@ -89,3 +88,4 @@ class _CompassCalibrationState extends State<CompassCalibration> {
 }
 
 enum compassCalibration { low, medium, high }
+*/

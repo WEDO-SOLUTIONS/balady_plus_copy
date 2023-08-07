@@ -210,8 +210,6 @@ class MapViewModel extends BaseViewModel {
         }
 
         await controller.addMarkers(markers);
-
-        await controller.addMarkers(markers);
       }
       if (data.firstPage?.items != null) {
         final responseDistance = await controller.getDistanceTo(
@@ -270,14 +268,14 @@ class MapViewModel extends BaseViewModel {
     initialized.value = true;
     generalControlsState.value = true;
     // goToLocation();
-    /* await controller.setMarkerOptions(
+    await controller.setMarkerOptions(
       MarkerOptionsMessageOld(
-        svgAsset: "assets/maps/icons/ic_marker.svg.svg",
+        svgAsset: "assets/maps/ic_marker.svg",
         width: 30.0,
         height: 46.0,
         iconWidth: 24,
       ),
-    );*/
+    );
 
 /*
     mapObjectManager = await controller.createMapObjectManagerWithClustering(

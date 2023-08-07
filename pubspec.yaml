@@ -161,17 +161,11 @@ dependencies:
   sentry_flutter: ^7.9.0
   archive: ^3.3.7
   flutter_archive: ^5.0.0
-  flutter_compass: '^0.7.0'
   #test_package:
  #   path: packages/test_package
   flutter_qiblah: ^2.2.0
-  smooth_compass: ^2.0.17
-  flutter_native_timezone: ^2.0.0
-  flutter_screenutil: ^5.0.0+2
-  geocoding: ^2.1.0
-  hydrated_bloc: ^9.0.0
-  motion_sensors: ^0.1.0
-  rxdart: ^0.27.1
+  #app_settings: ^4.1.5
+ 
 
 
 # Map urbi SKD
