@@ -29,12 +29,12 @@ class ServicesPage extends StatelessWidget {
                         context.read<ServicesCubit>().toggleSearchField();
                       },
                       child: const Padding(
-                        padding: EdgeInsets.all(8),
+                        padding: EdgeInsetsDirectional.only(end: 20),
                         child: CircleIcon(
-                          backgroundColor: AppColor.primary50Light,
+                          backgroundColor: AppColor.white,
                           icon: IconPath.appBarSearch,
                           circleSize: 48.0,
-                          iconSize: 30.0,
+                          iconSize: 26,
                         ),
                       ),
                     ),
@@ -76,6 +76,7 @@ class ServicesPage extends StatelessWidget {
                           title: "help_services".tr(),
                           services: state.helpServices,
                         ),
+                      const SizedBox(height: 24),
                     ],
                   ),
                 );
