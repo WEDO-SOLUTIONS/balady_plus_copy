@@ -29,7 +29,7 @@ class ImagePath {
   static const investmentBg = '${_imagePath}investment_bg$_png';
   static const forasLogo = '${_imagePath}foras_logo$_png';
 
-  static const weatherBackground3x = '${_imagePath}zmzmz_background$_png';
+  static const weatherBackground3x = '${_imagePath}zmzm_background$_png';
 
   static const ayah = '${_imagePath}ayah$_svg';
 
