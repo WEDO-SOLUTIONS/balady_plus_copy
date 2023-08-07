@@ -9,6 +9,19 @@ class CrRepositoryImpl implements CrRepository {
   CrRepositoryImpl({required this.remoteDataSource});
 
   @override
+  Future<Either<Failure, ResponseBodyModel<SubActivityDetails>>>
+      getSubActivityDetails({required String id}) async {
+    try {
+      final data =
+          await remoteDataSource.getSubActivityDetails(subActivityId: id);
+      return Right(data);
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage,
+          statusCode: error.statusCode, errorCode: error.errorCode));
+    }
+  }
+
+  @override
   Future<Either<Failure, ResponseBodyModel<RecordInfo>>> getRecordInfo(
       {required String crNumber}) async {
     try {
@@ -58,6 +71,4 @@ class CrRepositoryImpl implements CrRepository {
           statusCode: error.statusCode, errorCode: error.errorCode));
     }
   }
-
 }
-

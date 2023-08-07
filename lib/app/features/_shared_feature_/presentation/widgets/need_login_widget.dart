@@ -29,38 +29,59 @@ class _NeedLoginWidgetState extends State<NeedLoginWidget> {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
           children: [
-            Image.asset(
-              IconPath.needLogin, //MM
-              width: 184,
-              height: 190,
+            const CustomSvgIconWidget(
+              IconPath.lock,
+              iconSize: 82,
+              iconColor: AppColor.primary900Light,
             ),
-            const CustomVerticalSpace(height: 18),
+            const SizedBox(height: 16),
             CustomTextWidget(
               widget.title ?? ("انت غير مسجل دخول").tr(),
-              fontSize: 17.0,
-              fontColor: AppColor.black800,
+              fontColor: AppColor.blackModern600Light,
               fontWeight: AppFontWeight.bold,
+              fontSize: 20,
             ),
-            // if (widget.desc != null)
-            const CustomVerticalSpace(height: 18),
-            //if (widget.desc != null)
+            const SizedBox(height: 8),
             CustomTextWidget(
-              widget.desc ??
-                  ("يجب عليك تسجيل الدخول حتى يتم عرض حتى يتم عرض بيانات هذه الصفحة")
-                      .tr(),
-              fontSize: 13.0,
-              height: 1.6,
-              fontColor: AppColor.black400,
-              fontWeight: AppFontWeight.medium,
+              ("يجب عليك تسجيل الدخول حتى يتم عرض حتى يتم عرض بيانات هذه الصفحة")
+                  .tr(),
+              fontColor: AppColor.blackModern500Light,
+              fontWeight: AppFontWeight.bold,
+              fontSize: 13,
+              maxLines: null,
+              textAlign: TextAlign.center,
+              height: 1.5,
             ),
-            Constants.verticalSpaceMedium,
-            ElevatedButtonWidget.login(
-              onPressed: () async {
+            const SizedBox(height: 16),
+            EnhancedCustomElevatedButtonWidget(
+              btnPressed: () async{
                 Navigator.pop(context);
                 bool isSuccess = await CommonFunctions.onLogin();
                 if (widget.onSuccessLogin != null)
                   widget.onSuccessLogin!(isSuccess);
               },
+              btnText: ("تسجيل الدخول").tr(),
+              btnTextSize: 18,
+              btnTextWeight: AppFontWeight.bold,
+              btnTextColor: AppColor.white,
+              btnHeight: 56,
+              btnRadius: 8,
+            ),
+            const SizedBox(height: 12),
+            EnhancedCustomElevatedButtonWidget(
+              btnPressed: () {
+                Navigator.of(context).pop();
+
+              },
+              btnText: ("notNow").tr(),
+              btnTextSize: 16,
+              btnTextWeight: AppFontWeight.bold,
+              btnTextColor: AppColor.primary900Light,
+              btnBorderWidth: 1,
+              btnColor: Colors.transparent,
+              btnBorderColor: AppColor.primary900Light,
+              btnHeight: 56,
+              btnRadius: 8,
             ),
           ],
         ),

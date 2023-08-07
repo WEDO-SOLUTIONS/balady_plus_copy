@@ -10,8 +10,8 @@ abstract class CrRemoteDataSource {
   Future<ResponseBodyModel<RecordInfoModel>> getRecordInfo(
       {required String crNumber});
   Future<List<SubActivityModel>> getSubActivities({required String isicCode});
-  // Future<ResponseBodyModel<SubActivityModelDetailsModel>> getSubActivityDetails(
-  //     {required String subActivityId});
+  Future<ResponseBodyModel<SubActivityModelDetailsModel>> getSubActivityDetails(
+      {required String subActivityId});
   Future<bool> addIsicActivities({required AddIsicActivitiesParams params});
   Future<List<CrLookupsModel>> getAccommodationTypes();
 }
@@ -20,7 +20,6 @@ class CrRemoteDataSourceImpl extends CrRemoteDataSource {
   final WebService webService;
 
   CrRemoteDataSourceImpl({required this.webService});
-
 
   @override
   Future<List<CrLookupsModel>> getAccommodationTypes() async {
@@ -164,45 +163,46 @@ class CrRemoteDataSourceImpl extends CrRemoteDataSource {
       }
     }
   }
-  //
-  // @override
-  // Future<ResponseBodyModel<SubActivityModelDetailsModel>> getSubActivityDetails(
-  //     {required String subActivityId}) async {
-  //   var response;
-  //
-  //   try {
-  //     response = await webService.dio.get(
-  //       ApiUrl.recordInfo.replaceAll("crNumber", crNumber),
-  //     );
-  //
-  //     var data = response.data["data"]["result"];
-  //
-  //     var parsedResult = data != null ? RecordInfoModel.fromJson(data) : null;
-  //     final decodedResponse = ResponseBodyModel<RecordInfoModel>.fromMap(
-  //         response.data,
-  //         parsedResult: parsedResult);
-  //
-  //     return decodedResponse.toFuture();
-  //   } on DioError catch (error) {
-  //     var errorCode;
-  //     try {
-  //       final decodedResponse = ResponseBodyModel<RecordInfoModel>.fromMap(
-  //         error.response?.data,
-  //       );
-  //       errorCode = decodedResponse.data?.responseCode;
-  //     } catch (ex) {}
-  //
-  //     throw ServerException(error.toString(),
-  //         statusCode: error.response?.statusCode, errorCode: errorCode);
-  //   } catch (ex) {
-  //     if (ex is ServerException)
-  //       throw ex;
-  //     else {
-  //       try {
-  //         //MM    CommonFunctions.sendExceptionLog(exception: ex, response: response);
-  //       } catch (ex) {}
-  //       throw ServerException(("errors_server_error_1").tr());
-  //     }
-  //   }
-  // }
+
+  @override
+  Future<ResponseBodyModel<SubActivityModelDetailsModel>> getSubActivityDetails(
+      {required String subActivityId}) async {
+    var response;
+
+    try {
+      response =
+          await webService.dio.get(ApiUrl.subActivityDetails + subActivityId);
+
+      var data = response.data["data"]["result"];
+
+      var parsedResult =
+          data != null ? SubActivityModelDetailsModel.fromJson(data) : null;
+      final decodedResponse =
+          ResponseBodyModel<SubActivityModelDetailsModel>.fromMap(response.data,
+              parsedResult: parsedResult);
+
+      return decodedResponse.toFuture();
+    } on DioError catch (error) {
+      var errorCode;
+      try {
+        final decodedResponse =
+            ResponseBodyModel<SubActivityModelDetailsModel>.fromMap(
+          error.response?.data,
+        );
+        errorCode = decodedResponse.data?.responseCode;
+      } catch (ex) {}
+
+      throw ServerException(error.toString(),
+          statusCode: error.response?.statusCode, errorCode: errorCode);
+    } catch (ex) {
+      if (ex is ServerException)
+        throw ex;
+      else {
+        try {
+          //MM    CommonFunctions.sendExceptionLog(exception: ex, response: response);
+        } catch (ex) {}
+        throw ServerException(("errors_server_error_1").tr());
+      }
+    }
+  }
 }

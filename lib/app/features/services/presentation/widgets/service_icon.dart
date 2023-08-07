@@ -1,4 +1,6 @@
 import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
+import 'package:balady_plus/etmam_app/core/utils/enums/app_font_weight.dart';
+import 'package:balady_plus/etmam_app/features/_shared_feature_/shared/presentation/widgets/custom_text_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
@@ -252,13 +254,11 @@ class ServiceIcon extends StatelessWidget {
           Card(
             elevation: 0,
             shape: const CircleBorder(),
-            color: AppColor.blackModern100Light,
+            color: AppColor.blackModern100Light.withOpacity(0.6),
             child: LayoutBuilder(
               builder: (context, constraints) {
                 return Container(
-                  height: constraints.maxWidth - 24,
-                  padding: const EdgeInsets.all(8),
-                  width: double.infinity,
+                  padding: const EdgeInsets.all(18),
                   child: Center(
                     child: DrawIconBasedTypeWidget(
                       icon: IconPath.serviceIcon(service.iconName),
@@ -270,11 +270,16 @@ class ServiceIcon extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 4),
-          Text(
-            service.title,
-            style: AppStyle.serviceIconTextStyle,
-            textAlign: TextAlign.center,
-          )
+          Flexible(
+            child: CustomTextWidget(
+              service.title,
+              fontSize: 10,
+              maxLines: 2,
+              textAlign: TextAlign.center,
+              fontColor: AppColor.blackModern700Light,
+              fontWeight: AppFontWeight.bold,
+            ),
+          ),
         ],
       ),
     );

@@ -51,9 +51,10 @@ class _BottomSheetWithActionsState extends State<BottomSheetWithActions> {
   Widget build(BuildContext context) {
     return Container(
       padding: padding,
-      height: context.screenHeight * 0.90,
+      // height: context.screenHeight * 0.90,
       color: AppColor.white,
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
           const DrawLineWidget(
             lineWidth: 70.0,
@@ -112,14 +113,12 @@ class _BottomSheetWithActionsState extends State<BottomSheetWithActions> {
           if (widget.isList == true) widget.body,
           if (widget.isList == false) ...[
             const SizedBox(height: 16),
-            Expanded(
-              child: SingleChildScrollView(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    widget.body,
-                  ],
-                ),
+            SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  widget.body,
+                ],
               ),
             )
           ],

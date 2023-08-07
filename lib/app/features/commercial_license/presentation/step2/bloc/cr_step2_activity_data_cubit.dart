@@ -4,6 +4,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/dependency_injection/dependency_injection_exports.dart';
 import '../../../../../core/errors/errors_exports.dart';
+import '../../../../../core/utils/utils_exports.dart';
 import '../../../../_shared_feature_/shared_feature_exports.dart';
 import '../../../commercial_license_exports.dart';
 
@@ -12,15 +13,32 @@ part 'cr_step2_activity_data_state.dart';
 class CrStep2ActivityDataCubit extends Cubit<CrStep2ActivityDataState> {
   final GetSubActivities _getSubActivities;
   final GetAccommodationTypes _getAccommodationTypes;
+  final GetSubActivityDetails _getSubActivityDetails;
 
   CrStep2ActivityDataCubit()
       : _getSubActivities = GetSubActivities(repository: sl()),
         _getAccommodationTypes = GetAccommodationTypes(repository: sl()),
+        _getSubActivityDetails = GetSubActivityDetails(repository: sl()),
         super(const CrStep2ActivityDataState());
+
+
+  void getSubActivityDetails() async {
+    emit(state.copyWith(subActivityDetailsStatus: BlocStatus.loading));
+    final response = await _getSubActivityDetails(state.selectedSubActivity?.code??'');
+    response.fold(
+            (failure) => emit(state.copyWith(
+              subActivityDetailsStatus: BlocStatus.failure,
+          errorMessage: (failure as ServerFailure).errorMessage,
+        )),
+            (success) => emit(state.copyWith(
+                subActivityDetailsStatus: BlocStatus.success,
+            subActivityDetails: success.data?.result)));
+  }
 
   void onSelectIsicActivity(DropDownItem isicActivity) async {
     emit(state.copyWith(
         selectedIsicActivity: isicActivity,
+        selectedSubActivity: Nullable(null),
         subActivitiesStatus: BlocStatus.loading));
     final response = await _getSubActivities(isicActivity.id ?? '');
     response.fold(
@@ -50,8 +68,10 @@ class CrStep2ActivityDataCubit extends Cubit<CrStep2ActivityDataState> {
         });
   }
 
-  void onSelectSubActivity(DropDownItem subActivity) =>
-      emit(state.copyWith(selectedSubActivity: subActivity));
+  void onSelectSubActivity(DropDownItem subActivity) async {
+    emit(state.copyWith(selectedSubActivity: Nullable(subActivity)));
+    getSubActivityDetails();
+  }
 
   void onAccommodationTypes(DropDownItem accommodationTypes) =>
       emit(state.copyWith(selectedAccommodationType: accommodationTypes));
