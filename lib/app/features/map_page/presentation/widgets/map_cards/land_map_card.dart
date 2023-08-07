@@ -49,62 +49,60 @@ class LandMapCard extends StatelessWidget {
           ),
           child: Stack(
             children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    CustomTextWidget(
-                      "معلومات المخطط",
-                      fontColor: AppColor.blackModern800Light,
-                      fontSize: 16,
-                      fontWeight: AppFontWeight.bold,
-                      maxLines: 1,
-                    ),
-                    CustomVerticalSpace(height: 8),
-                    CustomTextWidget(
-                      "${municipality}, ${subMunicipality}",
-                      fontColor: AppColor.blackModern500Light,
-                      fontSize: 12,
-                      fontWeight: AppFontWeight.semiBold,
-                      height: 1.3,
-                      maxLines: 3,
-                    ),
-                    CustomVerticalSpace(height: 8),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        CustomTextWidget(
-                          "المخطط: ${SUBDIVISIONPLAN_ID}",
-                          fontColor: AppColor.blackModern500Light,
-                          fontSize: 12,
-                          fontWeight: AppFontWeight.semiBold,
-                          height: 1.3,
-                          maxLines: 3,
-                        ),
-                        CustomTextWidget(
-                          "البلوك: ${BLOCK_ID}",
-                          fontColor: AppColor.blackModern500Light,
-                          fontSize: 12,
-                          fontWeight: AppFontWeight.semiBold,
-                          height: 1.3,
-                          maxLines: 3,
-                        ),
-                      ],
-                    ),
-                    CustomVerticalSpace(
-                      height: 24,
-                    ),
-                    CustomTextWidget(
-                      "القطعة: ${SUBDIVISIONPARCELNUMBER}",
-                      fontColor: AppColor.blackModern500Light,
-                      fontSize: 12,
-                      fontWeight: AppFontWeight.semiBold,
-                      height: 1.3,
-                      maxLines: 3,
-                    ),
-                  ],
-                ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  CustomTextWidget(
+                    "معلومات المخطط",
+                    fontColor: AppColor.blackModern800Light,
+                    fontSize: 16,
+                    fontWeight: AppFontWeight.bold,
+                    maxLines: 1,
+                  ),
+                  CustomVerticalSpace(height: 8),
+                  CustomTextWidget(
+                    "${municipality}, ${subMunicipality}",
+                    fontColor: AppColor.blackModern500Light,
+                    fontSize: 12,
+                    fontWeight: AppFontWeight.semiBold,
+                    height: 1.3,
+                    maxLines: 3,
+                  ),
+                  CustomVerticalSpace(height: 8),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      CustomTextWidget(
+                        "المخطط: ${SUBDIVISIONPLAN_ID}",
+                        fontColor: AppColor.blackModern500Light,
+                        fontSize: 12,
+                        fontWeight: AppFontWeight.semiBold,
+                        height: 1.3,
+                        maxLines: 3,
+                      ),
+                      CustomTextWidget(
+                        "البلوك: ${BLOCK_ID}",
+                        fontColor: AppColor.blackModern500Light,
+                        fontSize: 12,
+                        fontWeight: AppFontWeight.semiBold,
+                        height: 1.3,
+                        maxLines: 3,
+                      ),
+                    ],
+                  ),
+                  CustomVerticalSpace(
+                    height: 24,
+                  ),
+                  CustomTextWidget(
+                    "القطعة: ${SUBDIVISIONPARCELNUMBER}",
+                    fontColor: AppColor.blackModern500Light,
+                    fontSize: 12,
+                    fontWeight: AppFontWeight.semiBold,
+                    height: 1.3,
+                    maxLines: 3,
+                  ),
+                ],
               ),
               Align(
                 alignment: Alignment.topLeft,
