@@ -269,12 +269,12 @@ class ServiceIcon extends StatelessWidget {
               },
             ),
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: 8),
           Flexible(
             child: CustomTextWidget(
               service.title,
               fontSize: 10,
-              maxLines: 2,
+              maxLines: 3,
               textAlign: TextAlign.center,
               fontColor: AppColor.blackModern700Light,
               fontWeight: AppFontWeight.bold,

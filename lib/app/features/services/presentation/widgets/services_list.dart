@@ -43,7 +43,9 @@ class ServicesList extends StatelessWidget {
           GridView.count(
             shrinkWrap: true,
             crossAxisCount: crossAxisCount,
-            mainAxisSpacing: 20,
+            mainAxisSpacing: 16,
+            crossAxisSpacing: 4,
+            childAspectRatio: 0.8,
             physics: const NeverScrollableScrollPhysics(),
             children: List.generate(
               services.length,
