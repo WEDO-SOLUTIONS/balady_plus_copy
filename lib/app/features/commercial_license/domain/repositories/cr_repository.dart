@@ -7,6 +7,9 @@ abstract class CrRepository {
   Future<Either<Failure, ResponseBodyModel<RecordInfo>>> getRecordInfo(
       {required String crNumber});
 
+  Future<Either<Failure, ResponseBodyModel<SubActivityDetails>>>
+      getSubActivityDetails({required String id});
+
   Future<Either<Failure, List<SubActivityEntity>>> getSubActivities(
       {required String isicCode});
 
