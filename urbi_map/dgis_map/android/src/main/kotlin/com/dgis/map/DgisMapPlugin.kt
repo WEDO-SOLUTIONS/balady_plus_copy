@@ -1,12 +1,17 @@
 package com.dgis.map
 
+import android.Manifest
 import android.content.Context
+import android.content.pm.PackageManager
+import android.util.Log
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import com.dgis.map.map_api.Messages.MapApi
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
 import ru.dgis.sdk.*
-import ru.dgis.sdk.positioning.DefaultLocationSource
+import ru.dgis.sdk.positioning.LocationSource
 import ru.dgis.sdk.positioning.registerPlatformLocationSource
 import ru.dgis.sdk.positioning.registerPlatformMagneticSource
 import ru.dgis.sdk.Context as SdkContext
@@ -14,9 +19,10 @@ import ru.dgis.sdk.Context as SdkContext
 class DgisMapPlugin : FlutterPlugin, ActivityAware {
     override fun onAttachedToEngine(binding: FlutterPlugin.FlutterPluginBinding) {
         val sdkContext = initializeDGis(binding.applicationContext)
-        registerServices(sdkContext, binding.applicationContext)
+        val locationSource = FusedLocationSource(binding.applicationContext)
+        registerServices(sdkContext, locationSource)
 
-        val viewFactory = DgisMapViewFactory(sdkContext, binding.binaryMessenger)
+        val viewFactory = DgisMapViewFactory(sdkContext, binding.binaryMessenger, locationSource)
 
         binding
             .platformViewRegistry
@@ -48,8 +54,7 @@ class DgisMapPlugin : FlutterPlugin, ActivityAware {
         )
     }
 
-    private fun registerServices(sdkContext: SdkContext, applicationContext: Context) {
-        val locationSource = DefaultLocationSource(applicationContext)
+    private fun registerServices(sdkContext: SdkContext, locationSource: LocationSource) {
         registerPlatformLocationSource(sdkContext, locationSource)
         registerPlatformMagneticSource(sdkContext, null)
     }

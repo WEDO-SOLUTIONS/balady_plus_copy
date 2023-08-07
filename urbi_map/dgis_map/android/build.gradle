@@ -54,7 +54,7 @@ android {
 }
 
 dependencies {
-    implementation "com.google.android.gms:play-services-location:20.0.0"
+    implementation"com.google.android.gms:play-services-location:21.0.1"
     // Dgis sdk
     implementation "ru.dgis.sdk:sdk-full:7.3.0"
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'

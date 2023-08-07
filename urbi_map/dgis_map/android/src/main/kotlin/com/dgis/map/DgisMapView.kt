@@ -26,6 +26,7 @@ import ru.dgis.sdk.getLocaleManager
 import ru.dgis.sdk.map.*
 import ru.dgis.sdk.positioning.DefaultLocationSource
 import ru.dgis.sdk.positioning.LocationChangeListener
+import ru.dgis.sdk.positioning.LocationSource
 import java.io.FileNotFoundException
 import kotlin.collections.Map
 import kotlin.math.round
@@ -38,6 +39,7 @@ class DgisMapView(
     private val binaryMessenger: BinaryMessenger,
     private val id: Int,
     private val context: Context,
+    private val locationSource: FusedLocationSource,
     creationParams: Map<*, *>?,
 ) : PlatformView, MapApi {
 
@@ -45,8 +47,6 @@ class DgisMapView(
         LayoutInflater.from(context).inflate(R.layout.map_view_layout, null) as MapView
 
     private var map: DgisMap? = null
-
-    private val locationSource by unsafeLazy { DefaultLocationSource(context) }
 
     private var zoomControlHandler: ZoomControlHandler? = null
     private var locationControlHandler: LocationControlHandler? = null
@@ -573,15 +573,6 @@ class DgisMapView(
     ) {
         locationSource.onPermissionGranted()
         locationSource.setDesiredAccuracy(desiredAccuracy.toSdkAccuracy())
-        locationSource.activate(object : LocationChangeListener {
-            override fun onAvailabilityChanged(availability: Boolean) {
-                // TODO(tharkahov): not used for now
-            }
-
-            override fun onLocationChanged(locations: Array<Location>) {
-                // TODO(tharkahov): not used for now
-            }
-        })
         result?.success(null)
     }
 

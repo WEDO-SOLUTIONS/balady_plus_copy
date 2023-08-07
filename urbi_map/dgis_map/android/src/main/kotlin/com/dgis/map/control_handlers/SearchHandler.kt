@@ -2,6 +2,7 @@ package com.dgis.map.control_handlers
 
 import android.content.res.Resources.NotFoundException
 import android.util.Log
+import com.dgis.map.FusedLocationSource
 import com.dgis.map.extensions.*
 import com.dgis.map.map_api.Messages.*
 import org.json.JSONObject
@@ -23,7 +24,7 @@ class SearchHandler(
     private val map: DgisMap,
     private val sdkContext: Context,
     private val searchManager: SearchManager,
-    private val locationSource: DefaultLocationSource,
+    private val locationSource: FusedLocationSource,
 ) : AutoCloseable {
     val twinsApiUrl = "https://apiservices.balady.gov.sa/v1/urbi-services/twins-api/v1/search/dgis"
 
