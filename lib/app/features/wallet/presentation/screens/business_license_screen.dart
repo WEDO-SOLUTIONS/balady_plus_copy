@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import '../../../../core/utils/utils_exports.dart';
+import '../../../_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
 import '../../../_shared_feature_/shared_feature_exports.dart';
 import '../../core/blocs/wallet_details/wallet_details_bloc.dart';
 import '../../core/models/wallet_item.dart';
@@ -73,6 +74,7 @@ class _QrCodeCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<WalletDetailsBloc, WalletDetailsState>(
       builder: (context, state) {
+        print("QRRRR Code ${state.selectedItem?.qrData ?? ""} ");
         return Container(
           width: MediaQuery.sizeOf(context).width,
           padding: const EdgeInsets.symmetric(vertical: 26, horizontal: 26),
@@ -91,7 +93,7 @@ class _QrCodeCard extends StatelessWidget {
                 children: [
                   const WalletUserImage(),
                   QrImageView(
-                    data: state.selectedItem?.qrUrl ?? "",
+                    data: state.selectedItem?.qrData ?? "",
                     size: 92,
                   ),
                 ],
@@ -174,29 +176,37 @@ class _BusinessLicenseFooter extends StatelessWidget {
       builder: (context, state) {
         return Positioned(
           bottom: 0,
-          child: Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 12,
-              vertical: 24,
-            ),
-            height: MediaQuery.sizeOf(context).height / 1.6,
-            width: MediaQuery.sizeOf(context).width,
-            decoration: const BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage(ImagePath.walletBg),
-                fit: BoxFit.fill,
+          child: Stack(
+            children: [
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 24,
+                ),
+                height: MediaQuery.sizeOf(context).height / 1.6,
+                width: MediaQuery.sizeOf(context).width,
+                decoration: const BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage(ImagePath.walletBg),
+                    fit: BoxFit.fill,
+                  ),
+                ),
+                child: Align(
+                  alignment: Alignment.bottomCenter,
+                  child: state.status == BlocStatus.download
+                      ? CircularProgressIndicator(
+                          color: AppColor.white,
+                        )
+                      : ElevatedButtonWidget.licenseDetails(
+                          onPressed: () {
+                            context.read<WalletDetailsBloc>().add(
+                                ShareWalletItem(
+                                    selectedIetm: state.selectedItem));
+                          },
+                        ),
+                ),
               ),
-            ),
-            child: Align(
-              alignment: Alignment.bottomCenter,
-              child: ElevatedButtonWidget.licenseDetails(
-                onPressed: () {
-                  context
-                      .read<WalletDetailsBloc>()
-                      .add(ShareWalletItem(selectedIetm: state.selectedItem));
-                },
-              ),
-            ),
+            ],
           ),
         );
       },

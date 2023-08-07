@@ -1,4 +1,6 @@
 import 'package:balady_plus/app/core/utils/enums/app_font_weights.dart';
+import 'package:balady_plus/app/features/_shared_feature_/presentation/buttons/elevated_button_widgets.dart';
+import 'package:balady_plus/app/features/home_page/home_exports.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../core/services/local/helpers.dart';
@@ -15,28 +17,52 @@ class ConfirmCancelLicenseDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: Constants.mediumPadding,
-        vertical: Constants.semiLargePadding,
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const CustomVerticalSpace(height: 40),
-          // subtitle
-          CustomTextWidget(
-            Helpers.translatingWord("confirmCancelLicenseSubtitleWord"),
-            fontColor: AppColor.warmGrey2,
-            fontWeight: AppFontWeight.medium,
-            maxLines: 10,
-          ),
-          const CustomVerticalSpace(height: 40),
-          // buttons
-          _ConfirmCancelLicenseDialogButtons(
-            onCancel: onCancel,
-          ),
-        ],
+    return Container(
+      color: AppColor.white,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: Constants.mediumPadding,
+          vertical: Constants.semiLargePadding,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                CustomTextWidget(
+                  Helpers.translatingWord("تأكيد الغاء الشهادة"),
+                  fontColor: AppColor.blackModern900Light,
+                  fontWeight: AppFontWeight.bold,
+                  maxLines: 10,
+                ),
+                InkWell(
+                    onTap: () => Navigator.pop(context),
+                    child: CircleIcon(
+                      icon: Icons.close,
+                      iconColor: AppColor.primary600Light,
+                      backgroundColor: AppColor.geyser.withOpacity(0.4),
+                      iconSize: 18,
+                    )),
+              ],
+            ),
+
+            const CustomVerticalSpace(height: 16),
+            // subtitle
+
+            CustomTextWidget(
+              Helpers.translatingWord("confirmCancelLicenseSubtitleWord"),
+              fontColor: AppColor.warmGrey2,
+              fontWeight: AppFontWeight.medium,
+              maxLines: 10,
+            ),
+            const CustomVerticalSpace(height: 40),
+            // buttons
+            _ConfirmCancelLicenseDialogButtons(
+              onCancel: onCancel,
+            ),
+          ],
+        ),
       ),
     );
   }

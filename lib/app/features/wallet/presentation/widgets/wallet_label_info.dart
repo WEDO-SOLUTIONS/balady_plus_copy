@@ -11,23 +11,27 @@ class WalletLabelInfo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        CustomTextWidget(
-          title ?? "",
-          fontSize: 11,
-          fontWeight: AppFontWeight.bold,
-          fontColor: AppColor.blackModern50Light.withOpacity(0.5),
-        ),
-        const SizedBox(height: 4),
-        CustomTextWidget(
-          subTitle ?? "",
-          fontSize: 13,
-          fontWeight: AppFontWeight.bold,
-          fontColor: AppColor.blackModern50Light,
-        ),
-      ],
+    return Flexible(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          CustomTextWidget(
+            title ?? "",
+            fontSize: 11,
+            fontWeight: AppFontWeight.bold,
+            fontColor: AppColor.blackModern50Light.withOpacity(0.5),
+          ),
+          const SizedBox(height: 4),
+          CustomTextWidget(
+            subTitle ?? "",
+            fontSize: 13,
+            maxLines: 10,
+            fontWeight: AppFontWeight.bold,
+            fontColor: AppColor.blackModern50Light,
+          ),
+        ],
+      ),
     );
   }
 }

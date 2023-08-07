@@ -13,7 +13,6 @@ class WalletItem {
       this.startDate,
       this.endDate,
       this.licenseId,
-      this.qrUrl,
       this.type,
       this.uuid,
       this.imageUrl,
@@ -35,7 +34,6 @@ class WalletItem {
   dynamic startDate;
   dynamic endDate;
   dynamic licenseId;
-  String? qrUrl;
   int? type;
   String? uuid;
   String? imageUrl;
@@ -58,7 +56,6 @@ class WalletItem {
       startDate: json["startDate"],
       endDate: json["endDate"],
       licenseId: json["licenseId"],
-      qrUrl: json["qrUrl"],
       type: json["typeId"],
       uuid: json["uuid"],
       imageUrl: json["imageUrl"],
@@ -81,7 +78,6 @@ class WalletItem {
         "startDate": startDate,
         "endDate": endDate,
         "licenseId": licenseId,
-        "qrUrl": qrUrl,
         "typeId": type,
         "uuid": uuid,
         "imageUrl": imageUrl,

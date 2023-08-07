@@ -531,8 +531,8 @@ class Helpers {
             "${DateTime.now().millisecondsSinceEpoch.toString()}$extension");
         await filetemp.writeAsBytes(bytes);
         //print(filetemp.path);
-        // OpenFile.open(filetemp.path);
-        Share.shareFiles([filetemp.path]);
+        OpenFile.open(filetemp.path);
+        //  Share.shareFiles([filetemp.path]);
       }
     } catch (ex) {
       print(ex);

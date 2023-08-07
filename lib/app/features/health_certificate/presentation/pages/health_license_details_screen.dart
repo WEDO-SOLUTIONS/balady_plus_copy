@@ -82,22 +82,23 @@ class _HealthLicenseDetailsScreenState
                           GestureDetector(
                             onTap: () async {
                               await BottomSheetDialog.showDraggableSheet(
-                                  context,
-                                  child: ConfirmCancelLicenseDialog());
-
-                              /*  HealthRequestDetailsViewModel model =
-                                  Provider.of<HealthRequestDetailsViewModel>(
-                                      context,
-                                      listen: false);
-                              int? certicateId = model
-                                  .requestDetails
-                                  ?.data
-                                  ?.result
-                                  ?.healthCertificateInfo
-                                  ?.certificateId;
-                              if (certicateId != null) {
-                                model.cancelHealthCertificate(certicateId);
-                              }*/
+                                  context, child: ConfirmCancelLicenseDialog(
+                                onCancel: () {
+                                  HealthRequestDetailsViewModel model = Provider
+                                      .of<HealthRequestDetailsViewModel>(
+                                          context,
+                                          listen: false);
+                                  int? certicateId = model
+                                      .requestDetails
+                                      ?.data
+                                      ?.result
+                                      ?.healthCertificateInfo
+                                      ?.certificateId;
+                                  if (certicateId != null) {
+                                    model.cancelHealthCertificate(certicateId);
+                                  }
+                                },
+                              ));
                             },
                             child: FieldData(
                               title:
