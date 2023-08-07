@@ -13,6 +13,7 @@ import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
 import ru.dgis.sdk.*
 import ru.dgis.sdk.positioning.LocationSource
 import ru.dgis.sdk.positioning.registerPlatformLocationSource
+import ru.dgis.sdk.positioning.registerPlatformMagneticSource
 import ru.dgis.sdk.Context as SdkContext
 
 class DgisMapPlugin : FlutterPlugin, ActivityAware {
@@ -55,5 +56,6 @@ class DgisMapPlugin : FlutterPlugin, ActivityAware {
 
     private fun registerServices(sdkContext: SdkContext, locationSource: LocationSource) {
         registerPlatformLocationSource(sdkContext, locationSource)
+        registerPlatformMagneticSource(sdkContext, null)
     }
 }
