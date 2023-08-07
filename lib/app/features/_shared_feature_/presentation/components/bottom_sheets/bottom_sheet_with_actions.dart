@@ -51,7 +51,7 @@ class _BottomSheetWithActionsState extends State<BottomSheetWithActions> {
   Widget build(BuildContext context) {
     return Container(
       padding: padding,
-      height: context.screenHeight * 0.90,
+      // height: context.screenHeight * 0.90,
       color: AppColor.white,
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -113,7 +113,7 @@ class _BottomSheetWithActionsState extends State<BottomSheetWithActions> {
           if (widget.isList == true) widget.body,
           if (widget.isList == false) ...[
             const SizedBox(height: 16),
-            Expanded(
+            Flexible(
               child: SingleChildScrollView(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,

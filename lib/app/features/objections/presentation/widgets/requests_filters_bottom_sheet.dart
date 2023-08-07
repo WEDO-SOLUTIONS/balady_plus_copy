@@ -24,6 +24,7 @@ class RequestsFilterBottomSheet extends StatelessWidget {
         width: double.infinity,
         child: Builder(builder: (context) {
           return const Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
               RequestsProductFilter(),
               RequestsTypeFilter(),
