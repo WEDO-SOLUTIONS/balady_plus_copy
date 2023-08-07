@@ -1,6 +1,8 @@
+import 'package:balady_plus/app/core/utils/enums/app_font_weights.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../core/utils/utils_exports.dart' show AppColor, AppStyle;
+import '../../../../core/utils/utils_exports.dart'
+    show AppColor, AppStyle, ImagePath;
 import '../../shared_feature_exports.dart' show CustomTextWidget;
 
 class DefaultAppBarWidget extends StatelessWidget
@@ -24,8 +26,11 @@ class DefaultAppBarWidget extends StatelessWidget
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      backgroundColor: AppColor.scaffoldBackground,
+      backgroundColor: flexibleSpace == null
+          ? Colors.transparent
+          : AppColor.scaffoldBackground,
       elevation: 0,
+      shadowColor: AppColor.primary100Light,
       leading: Navigator.canPop(context)
           ? IconButton(
               icon: Icon(
@@ -36,15 +41,21 @@ class DefaultAppBarWidget extends StatelessWidget
               onPressed: onBack ?? () => Navigator.of(context).pop(),
             )
           : null,
+      titleSpacing: 0,
       centerTitle: false,
       title: CustomTextWidget(
         title ?? "",
-        textAlign: TextAlign.center,
-        textStyle: AppStyle.appBarTitleTextStyle,
+        fontSize: 20,
+        fontWeight: AppFontWeight.bold,
+        fontColor: AppColor.blackModern700Light,
       ),
       bottom: bottom,
       actions: actions,
-      flexibleSpace: flexibleSpace,
+      flexibleSpace: flexibleSpace ??
+          Image.asset(
+            ImagePath.appbarBg,
+            fit: BoxFit.fill,
+          ),
     );
   }
 
