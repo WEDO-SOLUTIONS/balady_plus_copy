@@ -11,13 +11,18 @@ import '../../../../core/utils/constants/paths/icon_paths.dart';
 import '../../../../core/utils/enums/app_font_weights.dart';
 import '../../../_shared_feature_/presentation/components/bottom_sheets/bottom_sheet_with_actions.dart';
 import '../../../_shared_feature_/presentation/dialogs/bottom_sheet_dialogs.dart';
+import '../../../_shared_feature_/presentation/widgets/custom_popups_widgets.dart';
 import '../../../_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
 import '../../../_shared_feature_/presentation/widgets/details_header.dart';
 import '../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
+import '../../../appointments/presentation/dialogs/confirm_cancel_appointment_dialog.dart';
 import '../../../home_page/presentation/widgets/home_tag.dart';
 import '../../../vd/presentation/widgets/summery_widgets/field_data.dart';
 import '../../license_management_exports.dart'
-    show HealthRequestDetailsViewModel, HealthRequestDetailsScreenArgs;
+    show
+        ConfirmCancelLicenseDialog,
+        HealthRequestDetailsScreenArgs,
+        HealthRequestDetailsViewModel;
 import '../widgets/order_body_section_widget.dart';
 
 class HealthLicenseDetailsScreen extends StatefulWidget {
@@ -75,8 +80,12 @@ class _HealthLicenseDetailsScreenState
                           ),
                           CustomVerticalSpace(height: 16),
                           GestureDetector(
-                            onTap: () {
-                              /* HealthRequestDetailsViewModel model =
+                            onTap: () async {
+                              await BottomSheetDialog.showDraggableSheet(
+                                  context,
+                                  child: ConfirmCancelLicenseDialog());
+
+                              /*  HealthRequestDetailsViewModel model =
                                   Provider.of<HealthRequestDetailsViewModel>(
                                       context,
                                       listen: false);
@@ -227,4 +236,5 @@ class _HealthLicenseDetailsScreenState
     return LICENSE_MANAGEMENT_STATUS.awaitPayment;
   }*/
 //}
+
 

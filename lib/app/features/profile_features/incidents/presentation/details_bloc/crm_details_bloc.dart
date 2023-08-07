@@ -68,14 +68,6 @@ class CrmDetailsBloc extends Bloc<CrmDetailsEvent, CrmDetailsState> {
         }
         failureOrSuccess.fold(
           (failure) {
-            if (failure is NoDataFoundFailure) {
-              emit(
-                state.copyWith(
-                  crmRequestsStatus: BlocRequestStatus.submissionGetSuccess,
-                ),
-              );
-              return;
-            }
             emit(
               state.copyWith(
                 crmRequestsStatus: BlocRequestStatus.submissionGetFailure,
@@ -95,14 +87,6 @@ class CrmDetailsBloc extends Bloc<CrmDetailsEvent, CrmDetailsState> {
         failureOrSuccess = await getRequestDetails(event.id);
         failureOrSuccess.fold(
           (failure) {
-            if (failure is NoDataFoundFailure) {
-              emit(
-                state.copyWith(
-                  crmRequestsStatus: BlocRequestStatus.submissionGetSuccess,
-                ),
-              );
-              return;
-            }
             emit(
               state.copyWith(
                 crmRequestsStatus: BlocRequestStatus.submissionGetFailure,

@@ -177,9 +177,15 @@ class CRMRequestItem extends Equatable {
   }
 
   String getSplClassificationName() {
-    return (getRequestType() == RequestsType.TSR)
-        ? categoryAr ?? ""
-        : (splClassificationName) ?? (newClassificationName ?? "");
+    if (getRequestType() == RequestsType.TSR)
+      return categoryAr ?? "";
+    else {
+      if (splClassificationName?.isNotEmpty ?? false)
+        return splClassificationName ?? "";
+      if (newClassificationName?.isNotEmpty ?? false)
+        return newClassificationName ?? "";
+    }
+    return "";
   }
 
   String getStatusSTR() {

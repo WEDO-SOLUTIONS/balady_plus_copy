@@ -22,6 +22,7 @@ import '../../domain/entities/request_details_page_params.dart';
 import '../details_bloc/crm_details_bloc.dart';
 import '../widgets/replies_status_card.dart';
 import '../widgets/request_status_card.dart';
+import '../widgets/status_tag.dart';
 
 class VHRDetailsPage extends StatelessWidget {
   final RequestDetailsPageParams params;
@@ -45,23 +46,6 @@ class VHRDetailsPage extends StatelessWidget {
               appBar: DetailsHeader(
                 title: ("order_details").tr(),
                 onPrint: null,
-                procedures: () async {
-                  await BottomSheetDialog.showDraggableSheet(context,
-                      isFullHeight: false,
-                      height: 300,
-                      child: RepliesStatusCard(
-                        auditInformation: [
-                          state.requestDetails?.incidentInformation
-                                  ?.deptManagerNotes ??
-                              ""
-                        ],
-                        visibleFlag: state
-                            .requestDetails?.incidentInformation?.visibleFlag,
-                        status: state.pageParams?.details.statusAr,
-                        bloc: context.read<CrmDetailsBloc>(),
-                        pzInsKey: state.details?.pzInsKey ?? "",
-                      ));
-                },
               ),
               body: Stack(
                 children: [
@@ -90,10 +74,34 @@ class VHRDetailsPage extends StatelessWidget {
                                   )
                                 ],
                               ),
-                              HomeTag(
-                                title: state.pageParams?.details.statusAr ?? "",
-                                backgroundColor: AppColor.secondary100Light,
-                              ),
+                              StatusTag(
+                                  name:
+                                      state.pageParams?.details.statusAr ?? "",
+                                  onTap: () async {
+                                    await BottomSheetDialog.showDraggableSheet(
+                                        context,
+                                        isFullHeight: false,
+                                        height: 300,
+                                        child: RepliesStatusCard(
+                                          auditInformation: [
+                                            state
+                                                    .requestDetails
+                                                    ?.incidentInformation
+                                                    ?.deptManagerNotes ??
+                                                ""
+                                          ],
+                                          visibleFlag: state
+                                              .requestDetails
+                                              ?.incidentInformation
+                                              ?.visibleFlag,
+                                          status: state
+                                              .pageParams?.details.statusAr,
+                                          bloc: context.read<CrmDetailsBloc>(),
+                                          pzInsKey: state.pageParams?.details
+                                                  ?.pzInsKey ??
+                                              "",
+                                        ));
+                                  }),
                             ],
                           ),
                           const CustomVerticalSpace(height: 16),
