@@ -26,6 +26,7 @@ class ImagePath {
   static const qualityLogo = '${_imagePath}quality_logo$_png';
   static const union = '${_imagePath}union$_png';
   static const emptyDoc = '${_imagePath}empty_doc$_png';
+  static const appbarBg = '${_imagePath}appbar_bg$_png';
 
   static const investmentBg = '${_imagePath}investment_bg$_png';
   static const forasLogo = '${_imagePath}foras_logo$_png';
