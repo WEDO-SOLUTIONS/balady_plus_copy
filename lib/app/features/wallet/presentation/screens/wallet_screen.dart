@@ -21,9 +21,7 @@ class WalletScreen extends StatelessWidget {
     return BlocProvider<WalletBloc>(
       create: (context) => WalletBloc(),
       child: BlocConsumer<WalletBloc, WalletState>(
-        listener: (context, state) {
-          // TODO: implement listener
-        },
+        listener: (context, state) {},
         builder: (context, state) {
           return Scaffold(
             appBar: DefaultAppBarWidget(title: "wallet".tr()),
@@ -75,7 +73,7 @@ class WalletScreen extends StatelessWidget {
                           builder: (context, state) {
                             if ((state.status == BlocStatus.success &&
                                     state.getItems().length > 0) ||
-                                state.status == BlocStatus.loading)
+                                state.status == BlocStatus.loading) {
                               return state.showAll ?? false
                                   ? Flexible(
                                       child: ListView.separated(
@@ -93,24 +91,22 @@ class WalletScreen extends StatelessWidget {
                                           bgImagePath:
                                               "${ImagePath.visaBg}${index + 1}.png",
                                           title: state
-                                                  .getItems()?[index]
+                                                  .getItems()[index]
                                                   .getLicenseHeaderText() ??
                                               "",
                                           cardNumber: state
-                                                  .getItems()?[index]
+                                                  .getItems()[index]
                                                   .licenseId ??
                                               "",
                                           expireDate: state
-                                                  .getItems()?[index]
+                                                  .getItems()[index]
                                                   .endDateHijri ??
                                               "",
                                           creationDate: state.items?[index]
                                                   .startDateHijri ??
                                               "",
-                                          holderName: state
-                                                  .getItems()?[index]
-                                                  .getName() ??
-                                              "",
+                                          holderName:
+                                              state.getItems()[index].getName(),
                                           onPressed: () =>
                                               context.pushNamedRoute(
                                                   RouteName.businessLicensePage,
@@ -122,9 +118,14 @@ class WalletScreen extends StatelessWidget {
                                   : Flexible(
                                       child: Padding(
                                         padding: EdgeInsets.only(
-                                            top: MediaQuery.sizeOf(context)
-                                                    .height /
-                                                4),
+                                          top: state.getItems().length < 3
+                                              ? MediaQuery.sizeOf(context)
+                                                      .height /
+                                                  10
+                                              : MediaQuery.sizeOf(context)
+                                                      .height /
+                                                  4,
+                                        ),
                                         child: CardSwiper(
                                           isDisabled: true,
                                           cardsCount:
@@ -147,22 +148,22 @@ class WalletScreen extends StatelessWidget {
                                             bgImagePath:
                                                 "${ImagePath.visaBg}${index + 1}.png",
                                             title: state
-                                                    .getItems()?[index]
+                                                    .getItems()[index]
                                                     .getLicenseHeaderText() ??
                                                 "",
                                             cardNumber: state
-                                                    .getItems()?[index]
+                                                    .getItems()[index]
                                                     .licenseId ??
                                                 "",
                                             expireDate: state.items?[index]
                                                     .endDateHijri ??
                                                 "",
                                             creationDate: state
-                                                    .getItems()?[index]
+                                                    .getItems()[index]
                                                     .startDateHijri ??
                                                 "",
                                             holderName: state
-                                                    .getItems()?[index]
+                                                    .getItems()[index]
                                                     .getName() ??
                                                 "",
                                             onPressed: () => context
@@ -173,6 +174,7 @@ class WalletScreen extends StatelessWidget {
                                         ),
                                       ),
                                     );
+                            }
 
                             return Container();
                           },

@@ -24,6 +24,7 @@ class ImagePath {
   static const quranBackgroundPage = '${_imagePath}zmzm_background$_png';
   static const logo2030 = '${_imagePath}logo2030$_png';
   static const qualityLogo = '${_imagePath}quality_logo$_png';
+  static const union = '${_imagePath}union$_png';
 
   static const investmentBg = '${_imagePath}investment_bg$_png';
   static const forasLogo = '${_imagePath}foras_logo$_png';

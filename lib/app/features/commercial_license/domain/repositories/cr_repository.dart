@@ -12,4 +12,6 @@ abstract class CrRepository {
 
   Future<Either<Failure, bool>> addIsicActivities(
       {required AddIsicActivitiesParams params});
+
+  Future<Either<Failure, List<CrLookupsEntity>>> getAccommodationTypes();
 }
