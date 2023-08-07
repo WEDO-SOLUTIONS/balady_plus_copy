@@ -23,7 +23,7 @@ class RequestDetailsResponse {
   LocationInfo? locationInfo;
   List<AttachmentList>? attachmentList;
   AuditInformation? auditInformation;
-
+  List<Comments>? comments;
   RequestDetailsResponse(
       {this.pyId,
       this.incidentInformation,
@@ -38,7 +38,8 @@ class RequestDetailsResponse {
       this.attachmentList,
       this.amanaIncidentID,
       this.auditInformation,
-      this.daemInformation});
+      this.daemInformation,
+      this.comments});
 
   factory RequestDetailsResponse.fromJson(Map<String, dynamic> json,
       {RequestsType type = RequestsType.INC}) {
@@ -50,38 +51,41 @@ class RequestDetailsResponse {
     }
 
     return RequestDetailsResponse(
-      pyId: json["pyID"],
-      amanaIncidentID: json["AmanaIncidentID"],
-      incidentInformation: json["IncidentInformation"] != null
-          ? IncidentInformation.fromJson(json["IncidentInformation"])
-          : null,
-      customerInformation: json["CustomerInformation"] != null
-          ? CustomerInformation.fromJson(json["CustomerInformation"])
-          : null,
-      daemInformation: json["DaemInformation"] != null
-          ? DaemInformation.fromJson(json["DaemInformation"])
-          : null,
-      statusWork: json["StatusWork"],
-      pzInsKey: json["pzInsKey"],
-      caseGoal:
-          dateTime != null ? DateFormat('yyyy-MM-dd').format(dateTime) : "",
-      caseDeadline: json["CaseDeadline"],
-      pyLabel: json["pyLabel"],
-      errors: json["errors"] != null
-          ? List<ErrorResult>.from(
-              json["errors"].map((x) => ErrorResult.fromJson(x)))
-          : [],
-      locationInfo: json["LocationInfo"] != null
-          ? LocationInfo.fromJson(json["LocationInfo"])
-          : null,
-      attachmentList: json["AttachmentList"] != null
-          ? List<AttachmentList>.from(json["AttachmentList"]
-              .map((x) => AttachmentListModel.fromJson(x)))
-          : null,
-      auditInformation: json["AuditInformation"] != null
-          ? AuditInformation.fromJson(json["AuditInformation"], type: type)
-          : null,
-    );
+        pyId: json["pyID"],
+        amanaIncidentID: json["AmanaIncidentID"],
+        incidentInformation: json["IncidentInformation"] != null
+            ? IncidentInformation.fromJson(json["IncidentInformation"])
+            : null,
+        customerInformation: json["CustomerInformation"] != null
+            ? CustomerInformation.fromJson(json["CustomerInformation"])
+            : null,
+        daemInformation: json["DaemInformation"] != null
+            ? DaemInformation.fromJson(json["DaemInformation"])
+            : null,
+        statusWork: json["StatusWork"],
+        pzInsKey: json["pzInsKey"],
+        caseGoal:
+            dateTime != null ? DateFormat('yyyy-MM-dd').format(dateTime) : "",
+        caseDeadline: json["CaseDeadline"],
+        pyLabel: json["pyLabel"],
+        errors: json["errors"] != null
+            ? List<ErrorResult>.from(
+                json["errors"].map((x) => ErrorResult.fromJson(x)))
+            : [],
+        locationInfo: json["LocationInfo"] != null
+            ? LocationInfo.fromJson(json["LocationInfo"])
+            : null,
+        attachmentList: json["AttachmentList"] != null
+            ? List<AttachmentList>.from(json["AttachmentList"]
+                .map((x) => AttachmentListModel.fromJson(x)))
+            : null,
+        auditInformation: json["AuditInformation"] != null
+            ? AuditInformation.fromJson(json["AuditInformation"], type: type)
+            : null,
+        comments: json["CommentList"] != null
+            ? List<Comments>.from(
+                json["CommentList"].map((x) => Comments.fromJson(x)))
+            : []);
   }
 
   Map<String, dynamic> toJson() => {
@@ -713,4 +717,24 @@ class DaemInformation {
   String getLastUserComment() {
     return lastUserComment ?? "";
   }
+}
+
+class Comments {
+  final String? comment;
+  final String? commentAddedOn;
+
+  Comments({
+    this.comment,
+    this.commentAddedOn,
+  });
+
+  factory Comments.fromJson(Map<String, dynamic> json) => Comments(
+        comment: json["Comment"],
+        commentAddedOn: json["CommentAddedOn"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "Comment": comment,
+        "CommentAddedOn": commentAddedOn,
+      };
 }
