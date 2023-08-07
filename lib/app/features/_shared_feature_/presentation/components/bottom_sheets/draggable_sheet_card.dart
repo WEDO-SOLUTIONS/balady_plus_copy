@@ -160,6 +160,7 @@ class _DraggableSheetCardState extends State<DraggableSheetCard> {
       BuildContext context, LayersGisViewModel layersModel) async {
     BottomSheetDialog.showDraggableSheet(
       context,
+      isFullHeight: false,
       child: BottomSheetWithActions(
         title: "اختر نوع الخريطة".tr(),
         body: MapLayersDialog(layersModel: layersModel),

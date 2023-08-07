@@ -11,9 +11,9 @@ class BottomSheetDialog {
     Color? barrierColor,
     double borderRadius = 28.0,
     bool isDismissible = true,
-    bool isFullHeight = false,
+    bool isFullHeight = true,
     double? height,
-    bool isScrollControlled = false,
+    bool isScrollControlled = true,
     bool enableDrag = false,
   }) async {
     final screenHeight = context.screenHeight;
