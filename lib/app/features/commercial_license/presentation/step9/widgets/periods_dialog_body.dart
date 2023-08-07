@@ -1,6 +1,7 @@
 import 'package:balady_plus/app/features/commercial_license/commercial_license_exports.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 import '../../../../../core/utils/utils_exports.dart';
 import '../../../../_shared_feature_/shared_feature_exports.dart';
 
@@ -22,14 +23,13 @@ class PeriodsDialogBody extends StatelessWidget {
         builder: (context, state) {
           return Builder(builder: (context) {
             return BottomSheetWithActions(
-              title: "ساعات اليوم",
+              title: "daily_hour".tr(),
               action: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 16),
-                child: ElevatedButtonWidget.add(
-                    onPressed: () {
-                      context.popDialog();
-                      onSubmitPeriods(state.periods);
-                    }),
+                child: ElevatedButtonWidget.add(onPressed: () {
+                  context.popDialog();
+                  onSubmitPeriods(state.periods);
+                }),
               ),
               body: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -37,12 +37,12 @@ class PeriodsDialogBody extends StatelessWidget {
                 children: [
                   HorizontalRadioGroup(
                     currentItem: state.is24Hour
-                        ? RadioItem(id: 1, radioValue: "24 ساعه")
-                        : RadioItem(id: 0, radioValue: "فتره محدده"),
-                    groupName: "نوع الفتره",
+                        ? RadioItem(id: 1, radioValue: "24Hour".tr())
+                        : RadioItem(id: 0, radioValue: "limited".tr()),
+                    groupName: "durationType".tr(),
                     items: [
-                      RadioItem(id: 0, radioValue: "فتره محدده"),
-                      RadioItem(id: 1, radioValue: "24 ساعه"),
+                      RadioItem(id: 0, radioValue: "limited".tr()),
+                      RadioItem(id: 1, radioValue: "24Hour".tr()),
                     ],
                     onChanged: (radio) => context
                         .read<PeriodsCubit>()
@@ -51,8 +51,8 @@ class PeriodsDialogBody extends StatelessWidget {
                   if (!state.is24Hour) ...[
                     const Divider(thickness: 2),
                     const SizedBox(height: 24),
-                    const CustomTextWidget(
-                      "اضف الفتره",
+                    CustomTextWidget(
+                      'addDuration'.tr(),
                       fontSize: 16,
                       fontColor: AppColor.blackModern700Light,
                       fontWeight: AppFontWeight.bold,
@@ -67,7 +67,7 @@ class PeriodsDialogBody extends StatelessWidget {
                         children: [
                           Expanded(
                             child: ClockTimeWidget(
-                              title: "من",
+                              title: "from".tr(),
                               currentTime:
                                   state.periods[index].from.format(context),
                               onSelectedTime: (time) => time != null
@@ -81,7 +81,7 @@ class PeriodsDialogBody extends StatelessWidget {
                           const SizedBox(width: 24),
                           Expanded(
                             child: ClockTimeWidget(
-                              title: "الي",
+                              title: "to".tr(),
                               currentTime:
                                   state.periods[index].to.format(context),
                               onSelectedTime: (time) => time != null
@@ -111,8 +111,8 @@ class PeriodsDialogBody extends StatelessWidget {
                     const SizedBox(height: 24),
                     GestureDetector(
                       onTap: () => context.read<PeriodsCubit>().onAddPeriod(),
-                      child: const CustomTextWidget(
-                        "+ اضافه فتره",
+                      child:  CustomTextWidget(
+                        'addingExtraDuration'.tr(),
                         fontSize: 16,
                         fontWeight: AppFontWeight.bold,
                         fontColor: AppColor.primary900Light,

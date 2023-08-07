@@ -43,7 +43,7 @@ class ServiceIcon extends StatelessWidget {
         if (service.id == 1 && service.action.type == ServiceAction.cardsPage) {
           await BottomSheetDialog.showDraggableSheet(context,
               child: BottomSheetWithActions(
-                title: "اختر نوع البلاغ".tr(),
+                title: "customerVoiceReportTypeWord".tr(),
                 body: VDAllTypesDialog(),
               ));
         } else if (service.id == 3 &&
@@ -73,7 +73,7 @@ class ServiceIcon extends StatelessWidget {
           if (CommonProperties.isLoggedIn) {
             await BottomSheetDialog.showDraggableSheet(context,
                 child: BottomSheetWithActions(
-                  title: "اختر التصنيف".tr(),
+                  title: "choose_category".tr(),
                   body: GeneralInquiryTypeDialog(),
                 ));
           } else {
@@ -84,7 +84,7 @@ class ServiceIcon extends StatelessWidget {
                       if (isSuccess ?? false) {
                         await BottomSheetDialog.showDraggableSheet(context,
                             child: BottomSheetWithActions(
-                              title: "اختر التصنيف".tr(),
+                              title: "choose_category".tr(),
                               body: GeneralInquiryTypeDialog(),
                             ));
                       }
@@ -95,7 +95,7 @@ class ServiceIcon extends StatelessWidget {
           if (CommonProperties.isLoggedIn) {
             await BottomSheetDialog.showDraggableSheet(context,
                 child: BottomSheetWithActions(
-                  title: "اختر التصنيف".tr(),
+                  title: "choose_category".tr(),
                   body: MSRTypeDialog(),
                 ));
           } else {
@@ -106,7 +106,7 @@ class ServiceIcon extends StatelessWidget {
                       if (isSuccess ?? false) {
                         await BottomSheetDialog.showDraggableSheet(context,
                             child: BottomSheetWithActions(
-                              title: "اختر التصنيف".tr(),
+                              title: "choose_category".tr(),
                               body: MSRTypeDialog(),
                             ));
                       }
@@ -126,7 +126,7 @@ class ServiceIcon extends StatelessWidget {
               await BottomSheetDialog.showDraggableSheet(context,
                   isFullHeight: false,
                   child: BottomSheetWithActions(
-                    title: "اختر نوع الموعد".tr(),
+                    title: "bookNewAppointmentChooseAppointmentTypeWord".tr(),
                     body: NewAppointmentDialog(),
                   ));
           } else {
@@ -140,7 +140,7 @@ class ServiceIcon extends StatelessWidget {
                         await BottomSheetDialog.showDraggableSheet(context,
                             isFullHeight: false,
                             child: BottomSheetWithActions(
-                              title: "اختر نوع الموعد".tr(),
+                              title: "bookNewAppointmentChooseAppointmentTypeWord".tr(),
                               body: NewAppointmentDialog(),
                             ));
                       }

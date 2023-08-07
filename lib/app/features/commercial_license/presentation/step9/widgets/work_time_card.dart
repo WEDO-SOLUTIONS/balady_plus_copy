@@ -71,8 +71,8 @@ class WorkTimeCard extends StatelessWidget {
                                 .onAddPeriods(index: index, periods: periods),
                           ),
                         ),
-                        child: const CustomTextWidget(
-                          "اضف المواعيد",
+                        child: CustomTextWidget(
+                          'addAppointments'.tr(),
                           fontSize: 12,
                           fontWeight: AppFontWeight.bold,
                           fontColor: AppColor.primary700Light,

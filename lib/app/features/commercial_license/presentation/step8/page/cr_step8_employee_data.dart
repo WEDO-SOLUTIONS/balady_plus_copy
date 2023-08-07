@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 import '../../../../../core/utils/utils_exports.dart';
 import '../../../../_shared_feature_/shared_feature_exports.dart';
 import '../../../../vd/presentation/widgets/details_widgets/incident_desc_widgets/vd_create_incident_addetional_fields.dart';
@@ -19,19 +20,21 @@ class CRStep8EmployeeData extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const CRHeaderDesc(header: "بيانات العاملين"),
+                  CRHeaderDesc(
+                    header: 'step8title'.tr(),
+                  ),
                   const SizedBox(height: 16),
                   HorizontalRadioGroup(
-                    groupName: 'بيانات موقع المنشأة',
+                    groupName: 'step6groupName'.tr(),
                     currentItem: null,
                     items: [
-                      RadioItem(radioValue: "داخل مبني", id: 1),
-                      RadioItem(radioValue: "علي الشارع", id: 1),
+                      RadioItem(radioValue: 'step6Ratio1'.tr(), id: 1),
+                      RadioItem(radioValue: 'step6Ratio2'.tr(), id: 1),
                     ],
                     onChanged: (value) {},
                   ),
-                  const CustomTextWidget(
-                    "العاملين",
+                  CustomTextWidget(
+                    "workers".tr(),
                     fontSize: 16,
                     fontColor: AppColor.blackModern700Light,
                     fontWeight: AppFontWeight.bold,
@@ -41,7 +44,7 @@ class CRStep8EmployeeData extends StatelessWidget {
                     onPressed: () => BottomSheetDialog.showDraggableSheet(
                       context,
                       child: BottomSheetWithActions(
-                        title: "اضافة عامل",
+                        title: "addWorker".tr(),
                         action: Padding(
                           padding: const EdgeInsets.symmetric(vertical: 16),
                           child: ElevatedButtonWidget.add(onPressed: () {}),
@@ -50,15 +53,15 @@ class CRStep8EmployeeData extends StatelessWidget {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             CustomTextFieldWidget(
-                              label: "رقم الهوية",
-                              hintText: "ادخل رقم الهوية",
+                              label: "owner_id".tr(),
+                              hintText: 'id_entry'.tr(),
                               isDigitsOnly: true,
                               keyboardType: TextInputType.number,
                               bottomMargin: 24,
                               onChanged: (value) {},
                             ),
                             HijriCalendarAddetionalField(
-                              fieldName: "تاريخ الميلاد",
+                              fieldName: "birth".tr(),
                               isMandatory: true,
                               onChanged: (date) {},
                             ),
@@ -66,7 +69,7 @@ class CRStep8EmployeeData extends StatelessWidget {
                         ),
                       ),
                     ),
-                    text: "اضافه عامل",
+                    text: "addWorker".tr(),
                   ),
                   const SizedBox(height: 24),
                   const EmployeeInfoCard(),
@@ -78,21 +81,21 @@ class CRStep8EmployeeData extends StatelessWidget {
                       color: AppColor.primary50Light,
                     ),
                     child: CheckBoxWithTitle(
-                      title: "اتعهد انه تم تسجيل جميع العاملين في المحل",
+                      title: 'workerDesc'.tr(),
                       onChanged: (value) {},
                     ),
                   ),
                   CustomTextFieldWidget(
-                    label: "الرقم الاضافي",
-                    hintText: "ادخل الرقم الاضافي",
+                    label: 'step6AdditionNumber'.tr(),
+                    hintText: 'step6AdditionEntry'.tr(),
                     isDigitsOnly: true,
                     keyboardType: TextInputType.number,
                     bottomMargin: 24,
                     onChanged: (value) {},
                   ),
                   CustomTextFieldWidget(
-                    label: "الرمز البريدي",
-                    hintText: "ادخل الرمز البريدي",
+                    label: 'step6Email'.tr(),
+                    hintText: 'step6EmailEntry'.tr(),
                     isDigitsOnly: true,
                     keyboardType: TextInputType.number,
                     bottomMargin: 24,

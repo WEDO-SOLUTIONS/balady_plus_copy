@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 import '../../../../../core/utils/utils_exports.dart';
 import '../../../../_shared_feature_/data/entities/file_data_item.dart';
 import '../../../../_shared_feature_/shared_feature_exports.dart';
@@ -37,7 +38,7 @@ class PickFileComponent extends StatelessWidget {
                   final file = await CommonFunctions.pickFile(context);
                   onPickedFile(file);
                 },
-                text: "ارفاق",
+                text: "upload".tr(),
               )
             : Container(
                 padding: const EdgeInsets.only(

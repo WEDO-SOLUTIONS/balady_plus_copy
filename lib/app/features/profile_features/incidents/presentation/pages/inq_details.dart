@@ -83,7 +83,7 @@ class InqDetailsPage extends StatelessWidget {
                           ),
                           const CustomVerticalSpace(height: 16),
                           CustomExpansionPanelWidget(
-                              title: ("ملخص الاستفسار").tr(),
+                              title: ("inq_summary").tr(),
                               leading: SvgPicture.asset(IconPath.vdSummuryDesc),
                               children: [
                                 if (state.details?.incidentInformation

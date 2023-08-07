@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:launch_review/launch_review.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../core/utils/utils_exports.dart';
 import '../../_shared_feature_/shared_feature_exports.dart';
@@ -30,8 +31,8 @@ class DownloadForasApp extends StatelessWidget {
           children: [
             Image.asset(ImagePath.forasLogo, width: 58, height: 58),
             const SizedBox(width: 12),
-            const CustomTextWidget(
-              "حمل تطبيق فرص الآن",
+            CustomTextWidget(
+              'downloadforasApp'.tr(),
               fontSize: 16,
               fontWeight: AppFontWeight.bold,
               fontColor: AppColor.blackModern600Light,

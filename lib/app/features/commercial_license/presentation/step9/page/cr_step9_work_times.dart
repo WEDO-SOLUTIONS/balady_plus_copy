@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 import '../../../commercial_license_exports.dart';
 
 class CRStep9WorkTimes extends StatelessWidget {
@@ -17,7 +18,7 @@ class CRStep9WorkTimes extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const CRHeaderDesc(header: "مواعيد العمل"),
+                   CRHeaderDesc(header: 'step9title'.tr()),
                   const SizedBox(height: 16),
                   BlocBuilder<WorkTimesCubit, WorkTimesState>(
                     buildWhen: (previous, current) =>

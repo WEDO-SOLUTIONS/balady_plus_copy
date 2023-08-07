@@ -75,7 +75,7 @@ class _TransactionsDetailsPageState extends State<TransactionsDetailsPage> {
                                   IconPath.informationCircleIcon),
                               CustomHorizontalSpace(width: 12),
                               CustomTextWidget(
-                                "لا يمكن الاعتراض بسبب انتهاء مدة الاعتراض",
+                                'objectionPeriodExpired'.tr(),
                                 fontColor: AppColor.orange800,
                                 fontWeight: AppFontWeight.medium,
                                 fontSize: 13,
@@ -202,7 +202,7 @@ class _TransactionsDetailsPageState extends State<TransactionsDetailsPage> {
                     if (state.details?.lat != null &&
                         state.details?.lon != null)
                       CustomExpansionPanelWidget(
-                        title: ("موقع المخالفة").tr(),
+                        title: ("license_location").tr(),
                         leading: SvgPicture.asset(IconPath.vdSummuryPhoto),
                         children: [
                           if (state.gisStatus == BlocStatus.success) ...[

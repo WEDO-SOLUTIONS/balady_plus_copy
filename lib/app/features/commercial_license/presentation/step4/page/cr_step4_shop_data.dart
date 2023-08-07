@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 import '../../../../_shared_feature_/presentation/widgets/custom_cupertino_drop_down_widget.dart';
 import '../../../../_shared_feature_/shared_feature_exports.dart';
 import '../../../../vd/presentation/widgets/details_widgets/incident_desc_widgets/vd_create_incident_addetional_fields.dart';
@@ -19,151 +20,150 @@ class CRStep4ShopData extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const CRHeaderDesc(header: "بيانات المحل واللوحات"),
+                  CRHeaderDesc(header: 'step4Title'.tr()),
                   const SizedBox(height: 16),
                   YesNoRadioGroupWidget(
-                    groupName: 'هل يوجد لديك علامة تجارية ؟',
+                    groupName: 'step4GroupName'.tr(),
                     currentValue: null,
                     onChanged: (value) {},
                   ),
                   CustomTextFieldWidget(
-                    label: "اسم المحل",
-                    hintText: "ادخل اسم المحل",
+                    label: 'step6label1'.tr(),
+                    hintText: 'step6hint1'.tr(),
                     bottomMargin: 24,
                     onChanged: (value) {},
                   ),
                   CustomTextFieldWidget(
-                    label: "رقم المحل",
-                    hintText: "ادخل رقم المحل",
+                    label: 'step6label2'.tr(),
+                    hintText: 'step6hint2'.tr(),
                     isDigitsOnly: true,
                     keyboardType: TextInputType.number,
                     bottomMargin: 24,
                     onChanged: (value) {},
                   ),
                   CustomTextFieldWidget(
-                    label: "رقم العقار",
-                    hintText: "ادخل رقم العقار",
+                    label: 'step6label3'.tr(),
+                    hintText: 'step6hint3'.tr(),
                     isDigitsOnly: true,
                     keyboardType: TextInputType.number,
                     bottomMargin: 24,
                     onChanged: (value) {},
                   ),
                   CustomTextFieldWidget(
-                    label: "عدد الفتحات",
-                    hintText: "ادخل عدد الفتحات",
+                    label: 'step4label4'.tr(),
+                    hintText: 'step4hint4'.tr(),
                     isDigitsOnly: true,
                     keyboardType: TextInputType.number,
                     bottomMargin: 24,
                     onChanged: (value) {},
                   ),
                   CustomTextFieldWidget(
-                    label: "عدد الادوار في المحل",
-                    hintText: "ادخل عدد الادوار في المحل",
+                    label: 'step4label5'.tr(),
+                    hintText: 'step4hint5'.tr(),
                     isDigitsOnly: true,
                     keyboardType: TextInputType.number,
                     bottomMargin: 24,
                     onChanged: (value) {},
                   ),
                   CustomTextFieldWidget(
-                    label: "عدد الكاميرات في المحل",
-                    hintText: "ادخل عدد الكاميرات في المحل",
+                    label: 'step4label6'.tr(),
+                    hintText: 'step4hint6'.tr(),
                     isDigitsOnly: true,
                     keyboardType: TextInputType.number,
                     bottomMargin: 24,
                     onChanged: (value) {},
                   ),
                   UndertakingWidget(
-                    text: "أتعهد على جميع ماتم ذكره اعلاه",
-                    desc:
-                        "اتعهد انا (احمد بن خالد) بالإقرار على تركيب كاميرات مراقبة   وفقا لاشتراطات الجهة المعنية",
+                    text: 'step4text'.tr(),
+                    desc: 'step4desc'.tr(),
                     onChange: (value) {},
                     initialValue: false,
                   ),
                   YesNoRadioGroupWidget(
-                    groupName: 'هل يوجد مصعد في المحل ؟',
+                    groupName: 'step4groupName1'.tr(),
                     currentValue: null,
                     onChanged: (value) {},
                   ),
                   YesNoRadioGroupWidget(
-                    groupName: 'هل يقع المحل في مركز تجاري ؟',
+                    groupName: 'step4groupName2'.tr(),
                     currentValue: null,
                     onChanged: (value) {},
                   ),
                   CustomTapWidgetForLongDialog(
                     items: const [],
                     value: null,
-                    label: "المركز التجاري",
+                    label: 'step4label7'.tr(),
                     marginBottom: 24,
                     onChangeType: (item) {},
                   ),
-                  const CustomTextFieldWidget(
-                    label: "الطابق",
-                    hintText: "ادخل الطابق",
+                  CustomTextFieldWidget(
+                    label: 'step4label8'.tr(),
+                    hintText: 'step4hint8'.tr(),
                     isDigitsOnly: true,
                     keyboardType: TextInputType.number,
                     bottomMargin: 24,
                   ),
                   YesNoRadioGroupWidget(
-                    groupName: 'هل انت متعاقد مع احدى شركات النظافة ؟',
+                    groupName: 'step4groupName3'.tr(),
                     currentValue: null,
                     onChanged: (value) {},
                   ),
                   YesNoRadioGroupWidget(
-                    groupName: 'هل لديك تصريح سلامة ؟',
+                    groupName: 'step4groupName4'.tr(),
                     currentValue: null,
                     onChanged: (value) {},
                   ),
                   HorizontalRadioGroup(
-                    groupName: 'صفة المقدم بالنسبة لموقع المحل',
+                    groupName: 'step4groupName5'.tr(),
                     currentItem: null,
                     items: [
-                      RadioItem(radioValue: "مالك", id: 1),
-                      RadioItem(radioValue: "مستاجر", id: 0),
+                      RadioItem(radioValue: "owner_card".tr(), id: 1),
+                      RadioItem(radioValue: "renter".tr(), id: 0),
                     ],
                     onChanged: (value) {},
                   ),
                   HorizontalRadioGroup(
-                    groupName: 'نوع العقد',
+                    groupName: 'municipalAdvisorContractType'.tr(),
                     currentItem: null,
                     items: [
-                      RadioItem(radioValue: "عقد تملك المبنى (صك)", id: 1),
+                      RadioItem(radioValue: "ratio1".tr(), id: 1),
                     ],
                     onChanged: (value) {},
                   ),
                   HorizontalRadioGroup(
-                    groupName: 'طريقة ادخال العقد',
+                    groupName: 'contractEntry'.tr(),
                     currentItem: null,
                     items: [
-                      RadioItem(radioValue: "ارفاق ملف", id: 1),
-                      RadioItem(radioValue: "رقم عقد الصك الالكتروني", id: 1),
+                      RadioItem(radioValue: "fileUpload".tr(), id: 1),
+                      RadioItem(radioValue: "contractNumberEntry".tr(), id: 1),
                     ],
                     onChanged: (value) {},
                   ),
-                  const CustomTextFieldWidget(
-                    label: "رقم عقد التملك",
-                    hintText: "ادخل رقم عقد التملك",
+                  CustomTextFieldWidget(
+                    label: 'owningContractNumber'.tr(),
+                    hintText: 'owningContractEntry'.tr(),
                     isDigitsOnly: true,
                     keyboardType: TextInputType.number,
                     bottomMargin: 24,
                   ),
                   HijriCalendarAddetionalField(
-                    fieldName: 'تاريخ عقد التملك',
+                    fieldName: 'contractDate'.tr(),
                     isMandatory: true,
                     onChanged: (value) {},
                   ),
                   HorizontalRadioGroup(
-                    groupName: 'اللوحات',
+                    groupName: 'municipalAdvisorBoards'.tr(),
                     currentItem: null,
                     items: [
-                      RadioItem(radioValue: "اضافه عقد لوحه", id: 1),
-                      RadioItem(radioValue: "اضافه بيانات اللوحه", id: 1),
+                      RadioItem(radioValue: 'contractLicense'.tr(), id: 1),
+                      RadioItem(radioValue: 'contractAddition'.tr(), id: 1),
                     ],
                     onChanged: (value) {},
                   ),
                   const BillboardComponent(),
-                  const NotesWidget(
+                  NotesWidget(
                     notes: [
-                      "عزيزي المستفيد, يمكنك الاطلاع على إرشادات اللوحات"
+                      'note5'.tr(),
                     ],
                   ),
                 ],

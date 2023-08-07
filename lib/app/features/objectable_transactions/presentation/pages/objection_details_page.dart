@@ -256,7 +256,7 @@ class ObjectionReaason extends StatelessWidget {
                               topRight: Radius.circular(8)),
                         ),
                         FieldData(
-                          title: "المرفق",
+                          title: "title".tr(),
                           radius: BorderRadius.zero,
                         ),
                         Container(

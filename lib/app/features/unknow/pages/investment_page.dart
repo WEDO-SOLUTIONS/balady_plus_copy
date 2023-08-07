@@ -126,30 +126,30 @@ class InvestmentPage extends StatelessWidget {
                             data.data?.result?.getFormattedQueryDateAndTime() ??
                                 ""),
                     DetailsCard(
-                        title: 'آخر موعد لشراء الكراسة',
+                        title: 'dateChoose'.tr(),
                         value: data.data?.result
                                 ?.getFormattedLastBuyRFPAndTime() ??
                             ""),
                     DetailsCard(
-                        title: 'آخر موعد لتقديم العطاءات',
+                        title: 'lastDateToSubmit'.tr(),
                         value: data.data?.result
                                 ?.getFormattedLastBidDateAndTime() ??
                             ""),
                     DetailsCard(
-                        title: 'موعد فتح المظاريف',
+                        title: 'openingDate'.tr(),
                         value: data.data?.result
                                 ?.getFormattedEnvelopeOpenDateAndTime() ??
                             ""),
                     SizedBox(height: 18),
                     CustomTextWidget(
-                      "تفاصيل الموقع",
+                      'qr_locatoin_details'.tr(),
                       fontSize: 16,
                       fontWeight: AppFontWeight.bold,
                       fontColor: AppColor.blackModern800Light,
                     ),
                     SizedBox(height: 16),
                     DetailsCard(
-                        title: 'موقع فتح المظاريف',
+                        title: 'openinglocation'.tr(),
                         value:
                             data.data?.result?.envelopeOpeningLocation ?? ""),
                     DetailsCard(
@@ -163,14 +163,14 @@ class InvestmentPage extends StatelessWidget {
                         value: data.data?.result?.subMunicipality ?? ""),
                     SizedBox(height: 18),
                     CustomTextWidget(
-                      "المستندات المطلوبة",
+                      'askedenquiry'.tr(),
                       fontSize: 16,
                       fontWeight: AppFontWeight.bold,
                       fontColor: AppColor.blackModern800Light,
                     ),
                     SizedBox(height: 16),
                     RequirementAttachments(
-                      title: "المستندات الاجبارية",
+                      title: 'compulsoryEnquiry'.tr(),
                       attachments:
                           data.data?.result?.requiredAttachmentCategoryList
                                   ?.map((e) {
@@ -183,7 +183,7 @@ class InvestmentPage extends StatelessWidget {
                     ),
                     SizedBox(height: 10),
                     RequirementAttachments(
-                      title: "المستندات الاختيارية",
+                      title: 'testEnquiry'.tr(),
                       attachments:
                           data.data?.result?.requiredAttachmentCategoryList
                                   ?.map((e) {
@@ -196,7 +196,7 @@ class InvestmentPage extends StatelessWidget {
                     ),
                     SizedBox(height: 10),
                     CustomTextWidget(
-                      "كراسة الشروط والمواصفات",
+                      'investment_rules'.tr(),
                       fontSize: 16,
                       fontWeight: AppFontWeight.bold,
                       fontColor: AppColor.blackModern800Light,

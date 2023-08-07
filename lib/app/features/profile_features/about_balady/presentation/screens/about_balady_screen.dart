@@ -82,8 +82,8 @@ class _AboutBaladyScreenState extends State<AboutBaladyScreen> {
               ),
             ),
             const CustomVerticalSpace(height: 20),
-            const CustomTextWidget(
-              "تم تطوير بوابة بلدي بالتعاون مع جهات القطاع البلدي المختلفة لتكون البوابة الوطنية الداعمة للمجتمع البلدي. وتشمل هذه البوابة في المرحلة الحالية ثلاث مسؤوليات رئيسية وهي:",
+            CustomTextWidget(
+              'about_balady_text'.tr(),
               fontColor: AppColor.blackModern500Light,
               fontWeight: AppFontWeight.bold,
               maxLines: null,
@@ -91,7 +91,7 @@ class _AboutBaladyScreenState extends State<AboutBaladyScreen> {
               height: 1.5,
             ),
             const SizedBox(height: 10),
-            const Row(
+            Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Padding(
@@ -101,7 +101,7 @@ class _AboutBaladyScreenState extends State<AboutBaladyScreen> {
                 SizedBox(width: 8),
                 Flexible(
                   child: CustomTextWidget(
-                    "الخدمات التفاعلية التي تساعد في تعزيز مفهوم الشراكة المجتمعية لتحسين جودة الخدمات المقدمة للمستفيدين.",
+                    'about_balady_text2'.tr(),
                     fontColor: AppColor.blackModern500Light,
                     fontWeight: AppFontWeight.bold,
                     fontSize: 14,
@@ -112,7 +112,7 @@ class _AboutBaladyScreenState extends State<AboutBaladyScreen> {
               ],
             ),
             const SizedBox(height: 8),
-            const Row(
+            Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Padding(
@@ -122,7 +122,7 @@ class _AboutBaladyScreenState extends State<AboutBaladyScreen> {
                 SizedBox(width: 8),
                 Flexible(
                   child: CustomTextWidget(
-                    "الخدمات الإلكترونية التي تساعد على تقديم الطلبات الإلكترونية لاستخراج الرخص الأكثر استخدامًــا.",
+                    'about_balady_text3'.tr(),
                     fontColor: AppColor.blackModern500Light,
                     fontWeight: AppFontWeight.bold,
                     fontSize: 14,
@@ -133,7 +133,7 @@ class _AboutBaladyScreenState extends State<AboutBaladyScreen> {
               ],
             ),
             const SizedBox(height: 8),
-            const Row(
+            Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Padding(
@@ -143,7 +143,7 @@ class _AboutBaladyScreenState extends State<AboutBaladyScreen> {
                 SizedBox(width: 8),
                 Flexible(
                   child: CustomTextWidget(
-                    "الخدمات المعلوماتية والتي تساعد المستفيدين على اتخاذ القرارات ذات العلاقة بما يساهم في تحسين مستوى الرضا عن جهات القطاع البلدي.",
+                    'about_balady_text4'.tr(),
                     fontColor: AppColor.blackModern500Light,
                     fontWeight: AppFontWeight.bold,
                     fontSize: 14,

@@ -49,7 +49,7 @@ class OwnerInfoCard extends StatelessWidget {
                     ),
                     SizedBox(height: 8),
                     CustomTextWidget(
-                      "احمد خالد",
+                      'AhmadKhaled'.tr(),
                       fontColor: AppColor.blackModern600Light,
                       fontSize: 12,
                       textAlign: TextAlign.start,

@@ -4,6 +4,7 @@ import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/c
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_compass/flutter_compass.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
 class CompassCalibration extends StatefulWidget {
   const CompassCalibration({super.key});
@@ -20,7 +21,7 @@ class _CompassCalibrationState extends State<CompassCalibration> {
 
   @override
   Widget build(BuildContext context) {
-    return Container( 
+    return Container(
       height: 400,
       decoration: BoxDecoration(color: AppColor.white),
       child: Column(
@@ -33,7 +34,7 @@ class _CompassCalibrationState extends State<CompassCalibration> {
           ),
           CustomVerticalSpace(height: 16),
           CustomTextWidget(
-            "حرك جوالك ثلاث مرات كما في الصورة",
+            'compass_movement'.tr(),
             fontColor: AppColor.blackModern500Light,
             fontSize: 20,
             fontWeight: AppFontWeight.bold,
@@ -66,7 +67,7 @@ class _CompassCalibrationState extends State<CompassCalibration> {
                 return Row(
                   children: [
                     CustomTextWidget(
-                      "دقة البوصة: ",
+                      'compassCounter'.tr(),
                       fontColor: AppColor.blackModern500Light,
                       fontSize: 20,
                       fontWeight: AppFontWeight.bold,

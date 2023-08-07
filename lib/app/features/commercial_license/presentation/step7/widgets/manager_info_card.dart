@@ -49,7 +49,7 @@ class ManagerInfoCard extends StatelessWidget {
                     ),
                     SizedBox(height: 8),
                     CustomTextWidget(
-                      "احمد خالد",
+                      'AhmadKhaled'.tr(),
                       fontColor: AppColor.blackModern600Light,
                       fontSize: 12,
                       textAlign: TextAlign.start,
@@ -110,14 +110,14 @@ class ManagerInfoCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     CustomTextWidget(
-                      "المهنه",
+                      "employment".tr(),
                       fontColor: AppColor.primary700Light,
                       fontSize: 10,
                       fontWeight: AppFontWeight.semiBold,
                     ),
                     SizedBox(height: 8),
                     CustomTextWidget(
-                      "محاسب",
+                      "accountant".tr(),
                       fontColor: AppColor.blackModern600Light,
                       fontSize: 12,
                       textAlign: TextAlign.start,
