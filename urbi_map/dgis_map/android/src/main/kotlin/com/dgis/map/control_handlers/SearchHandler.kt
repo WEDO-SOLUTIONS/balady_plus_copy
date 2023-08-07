@@ -2,6 +2,7 @@ package com.dgis.map.control_handlers
 
 import android.content.res.Resources.NotFoundException
 import android.util.Log
+import com.dgis.map.FusedLocationSource
 import com.dgis.map.extensions.*
 import com.dgis.map.map_api.Messages.*
 import org.json.JSONObject
@@ -23,7 +24,7 @@ class SearchHandler(
     private val map: DgisMap,
     private val sdkContext: Context,
     private val searchManager: SearchManager,
-    private val locationSource: DefaultLocationSource,
+    private val locationSource: FusedLocationSource,
 ) : AutoCloseable {
     val twinsApiUrl = "https://apiservices.balady.gov.sa/v1/urbi-services/twins-api/v1/search/dgis"
 
@@ -155,27 +156,6 @@ class SearchHandler(
             .fromRubricIds(categories)
             .setSortingType(sortingType.toSortingType())
             .setPageSize(pageSize)
-            .setDirectoryFilter(DirectoryFilter(weekTimeMessage.toFilter(), emptyList()))
-            .setAreaOfInterest(searchGeoRect)
-            .build()
-
-        performSearch(
-            query = query,
-            result = result
-        )
-    }
-
-    fun searchByParkCategory(
-        searchGeoRect: GeoRect?,
-        weekTimeMessage: WeekTimeSearchMessage? = null,
-        sortingType: SortingTypeMessage,
-        pageSize: Int,
-        result: Result<SearchResultMessage>?
-    ) {
-        val query = SearchQueryBuilder.fromQueryText("park")
-            .setAllowedResultTypes(listOf(ObjectType.ADM_DIV, ObjectType.ATTRACTION))
-            .setSortingType(sortingType.toSortingType())
-            .setPageSize(pageSize.toInt())
             .setDirectoryFilter(DirectoryFilter(weekTimeMessage.toFilter(), emptyList()))
             .setAreaOfInterest(searchGeoRect)
             .build()

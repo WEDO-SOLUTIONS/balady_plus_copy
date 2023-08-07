@@ -189,7 +189,7 @@ class SearchHandler: NSObject {
         pageSize: Int32,
         completion: @escaping (SearchResultMessage?, FlutterError?) -> Void
     ) {
-        let query = SearchQueryBuilder.fromRubricIds(rubricIds: categories)
+        var query = SearchQueryBuilder.fromRubricIds(rubricIds: categories)
             .setPageSize(pageSize: pageSize)
             .setSortingType(sortingType: sortingType.toSortingType())
             .setDirectoryFilter(filter:
@@ -201,29 +201,6 @@ class SearchHandler: NSObject {
             .setAreaOfInterest(rect: searchGeoRect)
             .build()
         
-        performSearch(query, completion: completion)
-    }
-
-    func searchByParkCategory(
-        searchGeoRect: DGis.GeoRect?,
-        weekTimeMessage: WeekTimeSearchMessage?,
-        sortingType: SortingTypeMessage,
-        pageSize: Int32,
-        completion: @escaping (SearchResultMessage?, FlutterError?) -> Void
-    ) {
-        let query = SearchQueryBuilder.fromQueryText(queryText: "park")
-            .setAllowedResultTypes(allowedResultTypes: [.admDiv, .attraction])
-            .setPageSize(pageSize: pageSize)
-            .setSortingType(sortingType: sortingType.toSortingType())
-            .setDirectoryFilter(filter:
-                DirectoryFilter(
-                    workTime: buildWeekTimeFilter(weekTimeMessage),
-                    dynamic: []
-                )
-			)
-            .setAreaOfInterest(rect: searchGeoRect)
-            .build()
-
         performSearch(query, completion: completion)
     }
 

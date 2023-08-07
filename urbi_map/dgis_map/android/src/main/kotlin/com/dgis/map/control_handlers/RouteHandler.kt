@@ -1,6 +1,7 @@
 package com.dgis.map.control_handlers
 
 import android.content.res.Resources
+import com.dgis.map.FusedLocationSource
 import com.dgis.map.control_handlers.public_transport.PublicTransportHandler
 import com.dgis.map.map_api.Messages
 import com.dgis.map.map_api.Messages.RouteEditorRouteParamsMessage
@@ -21,7 +22,7 @@ class RouteHandler(
     private val map: DgisMap,
     sdkContext: Context,
     private val eventSink: EventChannel.EventSink,
-    private val locationSource: DefaultLocationSource,
+    private val locationSource: FusedLocationSource,
 ) : AutoCloseable {
     private val closables = mutableListOf<AutoCloseable>()
 

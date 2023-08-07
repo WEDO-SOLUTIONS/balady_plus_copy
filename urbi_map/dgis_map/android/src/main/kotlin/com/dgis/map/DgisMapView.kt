@@ -5,7 +5,12 @@ import android.location.Location
 import android.util.Size
 import android.view.LayoutInflater
 import com.dgis.map.control_handlers.*
-import com.dgis.map.extensions.*
+import com.dgis.map.extensions.toGeoPoint
+import com.dgis.map.extensions.toGeoRect
+import com.dgis.map.extensions.toMessage
+import com.dgis.map.extensions.toRubrics
+import com.dgis.map.extensions.toSdkAccuracy
+import com.dgis.map.extensions.unsafeLazy
 import com.dgis.map.map_api.Messages
 import com.dgis.map.map_api.Messages.*
 import io.flutter.FlutterInjector
@@ -18,14 +23,12 @@ import ru.dgis.sdk.File
 import ru.dgis.sdk.coordinates.Bearing
 import ru.dgis.sdk.coordinates.GeoPoint
 import ru.dgis.sdk.coordinates.GeoRect
-import ru.dgis.sdk.directory.DirectoryFilter
-import ru.dgis.sdk.directory.ObjectType
 import ru.dgis.sdk.directory.SearchManager
-import ru.dgis.sdk.directory.SearchQueryBuilder
 import ru.dgis.sdk.getLocaleManager
 import ru.dgis.sdk.map.*
 import ru.dgis.sdk.positioning.DefaultLocationSource
 import ru.dgis.sdk.positioning.LocationChangeListener
+import ru.dgis.sdk.positioning.LocationSource
 import java.io.FileNotFoundException
 import kotlin.collections.Map
 import kotlin.math.round
@@ -38,6 +41,7 @@ class DgisMapView(
     private val binaryMessenger: BinaryMessenger,
     private val id: Int,
     private val context: Context,
+    private val locationSource: FusedLocationSource,
     creationParams: Map<*, *>?,
 ) : PlatformView, MapApi {
 
@@ -45,8 +49,6 @@ class DgisMapView(
         LayoutInflater.from(context).inflate(R.layout.map_view_layout, null) as MapView
 
     private var map: DgisMap? = null
-
-    private val locationSource by unsafeLazy { DefaultLocationSource(context) }
 
     private var zoomControlHandler: ZoomControlHandler? = null
     private var locationControlHandler: LocationControlHandler? = null
@@ -345,17 +347,6 @@ class DgisMapView(
         pageSize: Long,
         result: Messages.Result<SearchResultMessage>?
     ) {
-        if (category == SearchCategoryMessage.PARKS) {
-            searchHandler?.searchByParkCategory(
-                searchGeoRect = searchRect?.toGeoRect(),
-                weekTimeMessage = weekTime,
-                sortingType = sortingType,
-                pageSize = pageSize.toInt(),
-                result = result
-            )
-            return
-        }
-
         searchHandler?.searchByCategories(
             categories = category.toRubrics(),
             searchGeoRect = searchRect?.toGeoRect(),
@@ -573,15 +564,6 @@ class DgisMapView(
     ) {
         locationSource.onPermissionGranted()
         locationSource.setDesiredAccuracy(desiredAccuracy.toSdkAccuracy())
-        locationSource.activate(object : LocationChangeListener {
-            override fun onAvailabilityChanged(availability: Boolean) {
-                // TODO(tharkahov): not used for now
-            }
-
-            override fun onLocationChanged(locations: Array<Location>) {
-                // TODO(tharkahov): not used for now
-            }
-        })
         result?.success(null)
     }
 
