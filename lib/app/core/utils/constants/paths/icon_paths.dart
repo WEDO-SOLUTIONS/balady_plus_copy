@@ -59,6 +59,7 @@ class IconPath {
   static const download2 = '${_svgIconPath}download2$_svg';
   static const moneyTime = '${_svgIconPath}money_time$_svg';
   static const infoCircle = '${_svgIconPath}info_circle$_svg';
+  static const camera = '${_svgIconPath}camera$_svg';
 
   static const informationCircleIcon =
       '${_svgIconPath}informationCircleIcon$_svg';
