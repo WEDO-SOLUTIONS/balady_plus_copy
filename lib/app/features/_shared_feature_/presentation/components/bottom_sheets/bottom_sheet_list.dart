@@ -61,8 +61,9 @@ class _BottomSheetListState extends State<BottomSheetList> {
               .toList();
         });
       },
-      body: Expanded(
+      body: Flexible(
         child: CustomScrollView(
+          shrinkWrap: true,
           slivers: <Widget>[
             SliverList(
               delegate: SliverChildBuilderDelegate(
@@ -73,7 +74,7 @@ class _BottomSheetListState extends State<BottomSheetList> {
                     child: Container(
                       height: 56,
                       padding: const EdgeInsetsDirectional.only(start: 12),
-                      margin: const EdgeInsets.only(top: 8),
+                      margin: const EdgeInsets.symmetric(vertical: 8),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(8),
                         color: AppColor.primary50Light50,

@@ -91,7 +91,7 @@ class _NeedLoginWidgetState extends State<NeedLoginWidget> {
 }
 
 class EmptyListWidget extends StatelessWidget {
-  final String? img;
+  final String img;
   final String? title;
   final String? desc;
   String btnText;
@@ -102,7 +102,7 @@ class EmptyListWidget extends StatelessWidget {
   EmptyListWidget(
       {Key? key,
       this.desc,
-      this.img = "noReports@3x.png",
+      this.img = ImagePath.emptyDoc,
       this.title,
       this.btnText = "",
       this.btnPressed,
@@ -120,7 +120,7 @@ class EmptyListWidget extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Image.asset(
-              IconPath.needLogin,
+              img,
               width: imgWidth,
               height: imgHeight,
             ),

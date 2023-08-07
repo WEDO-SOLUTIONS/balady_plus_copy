@@ -105,6 +105,7 @@ class _MapLayersDialogState extends State<MapLayersDialog> {
                             );
                           },
                         ),
+                        CustomVerticalSpace(height: 16),
                       ],
                     )
                   : const SizedBox();
