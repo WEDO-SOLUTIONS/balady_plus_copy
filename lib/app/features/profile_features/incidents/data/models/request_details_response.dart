@@ -23,6 +23,7 @@ class RequestDetailsResponse {
   LocationInfo? locationInfo;
   List<AttachmentList>? attachmentList;
   AuditInformation? auditInformation;
+
   RequestDetailsResponse(
       {this.pyId,
       this.incidentInformation,
