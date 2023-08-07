@@ -5,64 +5,67 @@
 import 'dart:convert';
 
 import 'package:balady_plus/app/features/profile_features/incidents/data/models/request_details_response.dart'
-    show AuditInformation;
+    show AuditInformation, Comments;
 
 import '../../domain/entities/request_details_response.dart';
 
 class CrmRequestDetailsModel extends CrmRequestDetails {
-  CrmRequestDetailsModel({
-    super.auditInformation,
-    super.customerInformation,
-    super.vehicleInformation,
-    super.pzInsKey,
-    super.caseDeadline,
-    super.locationInfo,
-    super.pyId,
-    super.incidentInformation,
-    super.statusAr,
-    super.statusWork,
-    super.caseGoal,
-    super.escalationRequestList,
-    super.attachmentList,
-    super.pyLabel,
-    super.errors,
-    super.amanaIncidentId,
-  });
+  CrmRequestDetailsModel(
+      {super.auditInformation,
+      super.customerInformation,
+      super.vehicleInformation,
+      super.pzInsKey,
+      super.caseDeadline,
+      super.locationInfo,
+      super.pyId,
+      super.incidentInformation,
+      super.statusAr,
+      super.statusWork,
+      super.caseGoal,
+      super.escalationRequestList,
+      super.attachmentList,
+      super.pyLabel,
+      super.errors,
+      super.amanaIncidentId,
+      super.comments});
 
   factory CrmRequestDetailsModel.fromJson(Map<String, dynamic> json) {
     print(json["VehicleInformation"]);
     return CrmRequestDetailsModel(
-      auditInformation: json["AuditInformation"] == null
-          ? null
-          : AuditInformation.fromJson(json["AuditInformation"]),
-      customerInformation: json["CustomerInformation"] == null
-          ? null
-          : CustomerInformationModel.fromJson(json["CustomerInformation"]),
-      vehicleInformation: json["VehicleInformation"] == null
-          ? null
-          : VehicleInformationModel.fromJson(json["VehicleInformation"]),
-      pzInsKey: json["pzInsKey"],
-      caseDeadline: json["CaseDeadline"],
-      locationInfo: json["LocationInfo"] == null
-          ? null
-          : LocationInfoModel.fromJson(json["LocationInfo"]),
-      pyId: json["pyID"],
-      incidentInformation: json["IncidentInformation"] == null
-          ? null
-          : IncidentInformationModel.fromJson(json["IncidentInformation"]),
-      statusAr: json["Status_Ar"],
-      statusWork: json["StatusWork"],
-      caseGoal: json["CaseGoal"],
-      attachmentList: json["AttachmentList"] == null
-          ? []
-          : List<AttachmentListModel>.from(json["AttachmentList"]!
-              .map((x) => AttachmentListModel.fromJson(x))),
-      pyLabel: json["pyLabel"],
-      errors: json["errors"] == null
-          ? []
-          : List<dynamic>.from(json["errors"]!.map((x) => x)),
-      amanaIncidentId: json["AmanaIncidentID"],
-    );
+        auditInformation: json["AuditInformation"] == null
+            ? null
+            : AuditInformation.fromJson(json["AuditInformation"]),
+        customerInformation: json["CustomerInformation"] == null
+            ? null
+            : CustomerInformationModel.fromJson(json["CustomerInformation"]),
+        vehicleInformation: json["VehicleInformation"] == null
+            ? null
+            : VehicleInformationModel.fromJson(json["VehicleInformation"]),
+        pzInsKey: json["pzInsKey"],
+        caseDeadline: json["CaseDeadline"],
+        locationInfo: json["LocationInfo"] == null
+            ? null
+            : LocationInfoModel.fromJson(json["LocationInfo"]),
+        pyId: json["pyID"],
+        incidentInformation: json["IncidentInformation"] == null
+            ? null
+            : IncidentInformationModel.fromJson(json["IncidentInformation"]),
+        statusAr: json["Status_Ar"],
+        statusWork: json["StatusWork"],
+        caseGoal: json["CaseGoal"],
+        attachmentList: json["AttachmentList"] == null
+            ? []
+            : List<AttachmentListModel>.from(json["AttachmentList"]!
+                .map((x) => AttachmentListModel.fromJson(x))),
+        pyLabel: json["pyLabel"],
+        errors: json["errors"] == null
+            ? []
+            : List<dynamic>.from(json["errors"]!.map((x) => x)),
+        amanaIncidentId: json["AmanaIncidentID"],
+        comments: json["CommentList"] != null
+            ? List<CommentsModel>.from(
+                json["CommentList"].map((x) => CommentsModel.fromJson(x)))
+            : []);
   }
 }
 
@@ -213,4 +216,21 @@ class VehicleInformationModel extends VehicleInformation {
         vehiclePlateNumber: json["VehiclePlateNumber"],
         vehicleType: json["VehicleType"],
       );
+}
+
+class CommentsModel extends Comments {
+  CommentsModel({
+    super.comment,
+    super.commentAddedOn,
+  });
+
+  factory CommentsModel.fromJson(Map<String, dynamic> json) => CommentsModel(
+        comment: json["Comment"],
+        commentAddedOn: json["CommentAddedOn"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "Comment": comment,
+        "CommentAddedOn": commentAddedOn,
+      };
 }

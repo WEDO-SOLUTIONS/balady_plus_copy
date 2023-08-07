@@ -1,24 +1,24 @@
 import '../../data/models/request_details_response.dart';
 
 class CrmRequestDetails {
-  CrmRequestDetails({
-    this.auditInformation,
-    this.customerInformation,
-    this.vehicleInformation,
-    this.pzInsKey,
-    this.caseDeadline,
-    this.locationInfo,
-    this.pyId,
-    this.incidentInformation,
-    this.statusAr,
-    this.statusWork,
-    this.caseGoal,
-    this.escalationRequestList,
-    this.attachmentList,
-    this.pyLabel,
-    this.errors,
-    this.amanaIncidentId,
-  });
+  CrmRequestDetails(
+      {this.auditInformation,
+      this.customerInformation,
+      this.vehicleInformation,
+      this.pzInsKey,
+      this.caseDeadline,
+      this.locationInfo,
+      this.pyId,
+      this.incidentInformation,
+      this.statusAr,
+      this.statusWork,
+      this.caseGoal,
+      this.escalationRequestList,
+      this.attachmentList,
+      this.pyLabel,
+      this.errors,
+      this.amanaIncidentId,
+      this.comments});
 
   AuditInformation? auditInformation;
   CustomerInformation? customerInformation;
@@ -36,6 +36,7 @@ class CrmRequestDetails {
   String? pyLabel;
   List<dynamic>? errors;
   String? amanaIncidentId;
+  List<Comments>? comments;
 }
 
 class AttachmentList {

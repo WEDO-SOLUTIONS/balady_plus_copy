@@ -96,7 +96,7 @@ class _InAppWebViewPageState extends State<InAppWebViewPage> {
                   // });
                 },
                 onLoadStop: (controller, Uri? url) {
-                  print("URL WebView: $url");
+                  /* print("URL WebView: $url");
                   if (url?.path.endsWith("/dashboardclient/dashboard") ??
                       false) {
                     Timer(const Duration(milliseconds: 1300), () async {
@@ -105,7 +105,7 @@ class _InAppWebViewPageState extends State<InAppWebViewPage> {
                         url: Uri.parse(widget.args.url),
                       ));
                     });
-                  }
+                  }*/
                   // setState(() {
                   //   this.url = url!.path;
                   // });

@@ -222,7 +222,7 @@ class AppStyle {
     height: 1.0,
   );
 
-  static final dashboardNoteTextStle = TextStyle(
+  static final dashboardNoteTextStyle = TextStyle(
     fontSize: 12.0,
     fontWeight: AppFontWeight.semiBold.fontWeight,
     color: AppColor.secondary900Light,

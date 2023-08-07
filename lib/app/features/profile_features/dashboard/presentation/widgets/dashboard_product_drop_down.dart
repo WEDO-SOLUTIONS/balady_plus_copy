@@ -1,6 +1,8 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../core/utils/utils_exports.dart'
@@ -60,7 +62,6 @@ class DashboardProductDropDown extends StatelessWidget {
           child: Container(
             height: 30,
             decoration: BoxDecoration(
-              color: AppColor.primary50Light,
               borderRadius: BorderRadius.circular(16),
             ),
             child: Padding(
@@ -93,10 +94,8 @@ class DashboardProductDropDown extends StatelessWidget {
                             maxLines: 2,
                           ),
                         ),
-                  const Icon(
-                    Icons.arrow_drop_down,
-                    color: AppColor.primary900Light,
-                  ),
+                  const CustomHorizontalSpace(width: 4),
+                  SvgPicture.asset(IconPath.iosArrowDown)
                 ],
               ),
             ),

@@ -27,10 +27,9 @@ class ProfileListItem extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 8),
         child: Row(
           children: [
-            CircleIcon(
+            DrawIconBasedTypeWidget(
               icon: item.icon,
               iconColor: AppColor.primary600Light,
-              backgroundColor: AppColor.primary50Light,
             ),
             const SizedBox(width: 16),
             CustomTextWidget(

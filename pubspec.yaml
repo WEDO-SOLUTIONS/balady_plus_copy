@@ -171,6 +171,7 @@ dependencies:
 # Map urbi SKD
   dgis_map:
     path: urbi_map/dgis_map
+  dotted_border: ^2.0.0+3
 #  provider: ^6.0.5
 
 
