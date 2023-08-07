@@ -22,7 +22,7 @@ class SplashScreenAnimator extends StatelessWidget {
         builder: (context, _) {
           return Stack(
             children: [
-              /*  Lottie.asset(
+              /* Lottie.asset(
                 'assets/animation/logo.json',
                 fit: BoxFit.fill,
                 height: MediaQuery.sizeOf(context).height,

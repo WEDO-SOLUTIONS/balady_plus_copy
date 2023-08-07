@@ -1,6 +1,8 @@
 import 'dart:async';
 
+import 'package:balady_plus/app/core/services/local/helpers.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_google_places/flutter_google_places.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -13,6 +15,7 @@ import '../../../../../core/utils/utils_exports.dart'
         AppFontWeight,
         AppStyle,
         BlocRequestStatus,
+        CommonFunctions,
         CommonProperties,
         IconPath;
 import '../../../../_shared_feature_/shared_feature_exports.dart'
@@ -52,6 +55,21 @@ class LocationPageState extends State<LocationPage> {
   );
   //Varaibles
   LatLng? coordinates;
+
+  @override
+  void initState() {
+    super.initState();
+
+    SchedulerBinding.instance.addPostFrameCallback((_) async {
+      bool isSuccess = await CommonFunctions.checkLocationSettings(context);
+      if (isSuccess) {
+        LatLng? latlng = await Helpers.getMapLocation();
+        mapController.animateCamera(CameraUpdate.newCameraPosition(
+          CameraPosition(target: latlng!, zoom: 16.0),
+        ));
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -180,7 +198,40 @@ class LocationPageState extends State<LocationPage> {
                     ),
                   );
                 },
-              )
+              ),
+              Container(
+                alignment: Alignment.bottomCenter,
+                margin: EdgeInsets.only(bottom: 230),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // current location button
+                    GestureDetector(
+                      onTap: () async {
+                        bool isSuccess =
+                            await CommonFunctions.checkLocationSettings(
+                                context);
+                        if (isSuccess) {
+                          LatLng? latlng = await Helpers.getMapLocation();
+                          mapController
+                              .animateCamera(CameraUpdate.newCameraPosition(
+                            CameraPosition(target: latlng!, zoom: 16.0),
+                          ));
+                        }
+                      },
+                      child: Container(
+                        margin: const EdgeInsetsDirectional.only(end: 12),
+                        alignment: AlignmentDirectional.topEnd,
+                        child: Image.asset(
+                          Constants.imgPath + 'location1@3x.png',
+                          height: 50,
+                          width: 50,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ],
           );
         }),

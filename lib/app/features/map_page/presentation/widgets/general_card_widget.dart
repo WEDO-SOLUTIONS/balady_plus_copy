@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:balady_plus/app/core/utils/constants/route_names.dart';
+import 'package:balady_plus/app/core/utils/map_utils.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/shimmer_effect_widget.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
@@ -21,6 +22,7 @@ import '../../../facility_qr/presentation/dialogs/facility_dialog.dart';
 import '../../../home_page/presentation/widgets/home_app_bar/circle_icon.dart';
 import '../../../vd/domain/entities/camera/camera_page_params.dart';
 import '../../../vd/domain/entities/categories/category_item.dart';
+import '../../constants/constants.dart';
 import '../mvvm/map_view_model.dart';
 import '../mvvm/point_view_model.dart';
 import 'package:collection/collection.dart';
@@ -137,6 +139,7 @@ class GeneralMapCardWidget extends StatelessWidget {
             return ValueListenableBuilder<DirectoryObjectMessage?>(
                 valueListenable: pointViewModel.dataPoint,
                 builder: (_, dataPoint, __) {
+                  print("is loading $isLoading");
                   return (isLoading ?? false)
                       ? ShimmerEffectWidget(
                           height: 120,
@@ -227,6 +230,34 @@ class GeneralMapCardWidget extends StatelessWidget {
                                                 height: 1.3,
                                                 maxLines: 2,
                                               ),
+                                              CustomVerticalSpace(height: 8),
+                                              GestureDetector(
+                                                onTap: () =>
+                                                    CommonFunctions.openMap(
+                                                        dataPoint!
+                                                            .markerPosition!
+                                                            .latitude,
+                                                        dataPoint
+                                                            .markerPosition!
+                                                            .longitude),
+                                                child: Row(
+                                                  children: [
+                                                    CustomTextWidget(
+                                                      "go_to_location".tr(),
+                                                      fontWeight:
+                                                          AppFontWeight.bold,
+                                                      fontSize: 12,
+                                                      fontColor: AppColor
+                                                          .primary800Light,
+                                                    ),
+                                                    CustomHorizontalSpace(
+                                                        width: 8),
+                                                    SvgPicture.asset(
+                                                        Constants.goToLocation),
+                                                  ],
+                                                ),
+                                              )
+
                                               /*  CustomVerticalSpace(height: 16),
                                       CustomTextWidget(
                                         dataPoint?.externalIds?.join(" ") ?? "[]",

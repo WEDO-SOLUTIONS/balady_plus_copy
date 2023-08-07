@@ -21,7 +21,17 @@ import 'package:balady_plus/etmam_app/features/home/presentation/pages/etmam_hom
 import 'package:balady_plus/etmam_app/features/on_boarding_cities/presentation/pages/etmam_select_city_page.dart';
 import '../../../etmam_app/features/home/presentation/pages/etmam_main_page.dart';
 import '../../core/utils/utils_exports.dart'
-    show EtmamRoutesNames, RouteName, ScaleRotatePage, SliderUpPage;
+    show
+        EtmamRoutesNames,
+        RouteName,
+        ScaleRotatePage,
+        SliderUpPage,
+        RouteName,
+        ScaleRotatePage,
+        SliderUpPage;
+import '../../features/map_page/data/model/rental_details_response.dart';
+import '../../features/unknow/pages/investment_page.dart';
+import '../../features/unknow/pages/temp_rental_page.dart';
 import '../../features/_shared_feature_/presentation/pages/view_dms_image_screen.dart';
 import '../../features/_shared_feature_/shared_feature_exports.dart';
 import '../../features/_shared_feature_/data/entities/success_screen_args.dart';
@@ -168,7 +178,7 @@ class AppRouter {
         );
       case RouteName.qiblahCompass:
         return MaterialPageRoute(
-          builder: (_) => const QiblahCompassPage(),
+          builder: (_) => QiblahCompassPage(),
         );
       //? Municipal Services
       case RouteName.municipalAdvisor:
@@ -361,6 +371,22 @@ class AppRouter {
       case RouteName.weatherMainPage:
         return MaterialPageRoute(
           builder: (_) => const WeatherMainPage(),
+        );
+
+      case RouteName.investmentPage:
+        InvestmentDetailsResponse? data =
+            settings.arguments as InvestmentDetailsResponse?;
+        return MaterialPageRoute(
+          builder: (_) => InvestmentPage(data: data!),
+        );
+      case RouteName.tempRentalPage:
+        RentalDetailsResponse? data =
+            settings.arguments as RentalDetailsResponse?;
+
+        return MaterialPageRoute(
+          builder: (_) => TempRentalPage(
+            data: data!,
+          ),
         );
 
       case RouteName.DCCameraPage:

@@ -42,12 +42,14 @@ class RoundedCard extends StatelessWidget {
               ),
               const SizedBox(height: 8),
               CustomTextWidget(
-                title,
+                title, //المتاجر المتنقلة
                 textAlign: TextAlign.center,
                 fontColor: isSelected
                     ? AppColor.blackModern50Light
                     : AppColor.blackModern900Light,
                 fontSize: 11,
+                height: 1.3,
+                maxLines: 2,
                 fontWeight: AppFontWeight.bold,
               ),
             ],

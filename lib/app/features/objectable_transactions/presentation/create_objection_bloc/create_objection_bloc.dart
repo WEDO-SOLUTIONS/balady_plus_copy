@@ -86,6 +86,8 @@ class CreateObjectionBloc
         emit(state.copyWith(status: BlocStatus.success, reasons: reasons));
       },
     );
+
+    on<RemoveFileEvent>(_removeFileHandler);
   }
 
   Future<void> _changeIssueDescHandler(
@@ -255,6 +257,20 @@ class CreateObjectionBloc
     List<ReasonModel> reasons = state.reasons ?? [];
 
     reasons[e.index].file = e.params;
+
+    emitter(state.copyWith(
+      status: BlocStatus.success,
+      reasons: reasons,
+      errorMessage: "",
+    ));
+  }
+
+  Future<void> _removeFileHandler(RemoveFileEvent e, Emitter emitter) async {
+    emitter(state.copyWith(status: BlocStatus.loading));
+
+    List<ReasonModel> reasons = state.reasons ?? [];
+
+    reasons[e.index].file = null;
 
     emitter(state.copyWith(
       status: BlocStatus.success,

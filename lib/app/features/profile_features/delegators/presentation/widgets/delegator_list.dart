@@ -4,6 +4,7 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../core/utils/utils_exports.dart'
     show BlocRequestStatus, CommonProperties;
+import '../../../../_shared_feature_/presentation/widgets/reload_widget.dart';
 import '../../../../_shared_feature_/shared_feature_exports.dart'
     show BottomSheetWithActions, ShimmerEffectWidget;
 import '../../../../profile/profile_exports.dart' show ProfileCard;
@@ -33,6 +34,12 @@ class DelegatorList extends StatelessWidget {
                     userInfo: CommonProperties.userInfo,
                     selected: state.selectedDelegate == null,
                   ),
+                  if (state.status == BlocRequestStatus.submissionGetFailure)
+                    ReloadWidget(
+                      onTab: () {
+                        _delegatorsCubit.getDelegators();
+                      },
+                    ),
                   if (state.status == BlocRequestStatus.submissionGetLoading)
                     ...List.generate(
                       5,

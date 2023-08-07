@@ -25,10 +25,10 @@ class CurrentWeatherContent extends StatelessWidget {
               SizedBox(
                 height: MediaQuery.of(context).padding.top,
               ),
-              Image.network(
-                'https:${state.allWeatherInfo?.current?.condition?.icon}',
-                height: 56,
-                width: 56,
+              CustomSvgIconWidget(
+                state.allWeatherInfo?.current?.condition?.iconPath ?? '',
+                iconSize: 56,
+                iconColor: AppColor.white,
               ),
               const SizedBox(height: 2),
               Row(
@@ -67,11 +67,13 @@ class CurrentWeatherContent extends StatelessWidget {
                   ),
                 ],
               ),
-              // UnKownWeatherLocation(
-              //   onTap: () {
-              //     context.read<WeatherBloc>().add(GetWeatherForLocation());
-              //   },
-              // ),
+              if (state.showLocationError ?? false)
+                UnKownWeatherLocation(
+                  onTap: () {
+                    print("tab");
+                    context.read<WeatherBloc>().add(GetWeatherForLocation());
+                  },
+                ),
               Divider(
                 color: AppColor.divider.withOpacity(0.2),
               ),

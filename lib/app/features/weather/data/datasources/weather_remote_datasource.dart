@@ -41,14 +41,17 @@ class WeatherRemoteDataSourceImpl extends WeatherRemoteDataSource {
       var alertsData = response.data['alerts'];
       // print(alertsData);
 
+      var decodedCurrentResponse;
       final decodedAlertsResponse = AlertsModel.fromJson(alertsData);
 
       final List forecastDayData = forecastData['forecastday'];
 
       final decodedLocationResponse = LocationModel.fromMap(locationData);
       final currentCondition = currentData['condition'];
-      final decodedCurrentResponse = CurrentModel.fromMap(
-          currentData, ConditionsModel.fromMap(currentCondition));
+
+      if (currentCondition != null)
+        decodedCurrentResponse = CurrentModel.fromMap(
+            currentData, ConditionsModel.fromMap(currentCondition));
 
       final List<ForecastDayModel> decodedForecastDayResponse =
           forecastDayData.map((forecastDay) {
@@ -61,16 +64,21 @@ class WeatherRemoteDataSourceImpl extends WeatherRemoteDataSource {
               ConditionsModel.fromMap(hour['condition']);
           return HourModel.fromMap(hour, decodedHourConditionResponse);
         }).toList();
-        final dayConditionData = dayData['condition'];
-        final ConditionsModel decodedDayConditionResponse =
-            ConditionsModel.fromMap(dayConditionData);
+        var dayConditionData;
+        ConditionsModel? decodedDayConditionResponse;
+        dayConditionData = dayData['condition'];
+        if (dayConditionData != null)
+          decodedDayConditionResponse =
+              ConditionsModel.fromMap(dayConditionData);
 
-        return ForecastDayModel.fromMap(
-          forecastDay,
-          AstroModel.fromMap(astroData),
-          DayModel.fromMap(dayData, decodedDayConditionResponse),
-          hourDataList,
-        );
+        return decodedDayConditionResponse != null
+            ? ForecastDayModel.fromMap(
+                forecastDay,
+                AstroModel.fromMap(astroData),
+                DayModel.fromMap(dayData, decodedDayConditionResponse),
+                hourDataList,
+              )
+            : ForecastDayModel();
       }).toList();
 
       final allWeatherData = AllWeatherInfoModel(
@@ -87,6 +95,7 @@ class WeatherRemoteDataSourceImpl extends WeatherRemoteDataSource {
       throw ServerException(error.toString(),
           statusCode: error.response?.statusCode);
     } catch (ex) {
+      print("EXEXEX $ex");
       if (ex is ServerException)
         throw ex;
       else {

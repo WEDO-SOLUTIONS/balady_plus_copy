@@ -117,6 +117,20 @@ class ServiceIcon extends StatelessWidget {
             RouteName.prayerTimes,
             arguments: context.read<PrayerTimesCubit>(),
           );
+        } else if (service.id == 13) {
+          if (CommonProperties.isLoggedIn) {
+            Navigator.pushNamed(context, RouteName.municipalAdvisor);
+          } else {
+            showDialog(
+                context: context,
+                builder: (ctx) =>
+                    NeedLoginDialog(onSuccessLogin: (bool? isSuccess) async {
+                      if (isSuccess ?? false) {
+                        Navigator.pushNamed(
+                            context, RouteName.municipalAdvisor);
+                      }
+                    }));
+          }
         } else if (service.id == 4 &&
             service.action.type == ServiceAction.dialog) {
           if (CommonProperties.isLoggedIn) {

@@ -26,6 +26,7 @@ import 'package:flutter/foundation.dart';
 
 import '../enums/map_enums.dart';
 import '../model/investment_details_response.dart';
+import '../model/rental_details_response.dart';
 import '../model/requests/map_requests_params.dart';
 
 class LayersRepositories {
@@ -49,7 +50,8 @@ class LayersRepositories {
                   element.id != 1 &&
                   element.id != 3 &&
                   element.id != 4 &&
-                  element.id != 6,
+                  element.id != 6 &&
+                  element.id != 5,
             )
             .toList();
       }
@@ -90,7 +92,7 @@ class LayersRepositories {
         q += "$key=$value&";
       });
       q = q.substring(0, q.length - 1);
-      print("QQQQ $q");
+
       final points = await webService.dio.get(
         '${Constants.mainUrl}/${params.layer.layerId}/query',
         queryParameters: params.toMap(),
@@ -146,11 +148,11 @@ class LayersRepositories {
           return whiteLandsFromJson(
             points.data['data']['result']['features'],
           );
-        case 10: //       حدود قطع الأراضي
-          return boundariesPlotsFromJson(
-            points.data['data']['result']['features'],
-          );
-        case 11: //       حدود المخططات التقسيمية
+        //case 10: //       حدود قطع الأراضي
+        //   return boundariesPlotsFromJson(
+        //   points.data['data']['result']['features'],
+        //  );
+        case 9: //       حدود المخططات التقسيمية
           return divisionalChartBoundariesFromJson(
             points.data['data']['result']['features'],
           );
@@ -210,19 +212,46 @@ class LayersRepositories {
       String investmentId, String type) async {
     try {
       final response = await webService.dio.get(
-        'https://apiservices.balady.gov.sa/v1/ims/investment-details',
+        sl<EnvType>().domain + "v1/ims/investment-details",
         queryParameters: {
           'Type': type,
           'RFPID': investmentId,
         },
         options: Options(headers: {
-          'Authorization': 'Bearer lvefKEOKASHGpQTjOrpzjQfEncqr',
+          'Authorization':
+              "Bearer ${sl<EntryPointCubit>().state.apigeeToken?.accessToken}",
         }),
       );
       print(response.data);
 
-      InvestmentDetailsResponse investmentDetailsResponse =
+      InvestmentDetailsResponse? investmentDetailsResponse =
           InvestmentDetailsResponse.fromJson(response.data);
+
+      print(investmentDetailsResponse);
+      return investmentDetailsResponse;
+    } catch (ex) {
+      print(ex);
+    }
+  }
+
+  Future<RentalDetailsResponse?> getTempRentalDetails(
+      String investmentId, String type) async {
+    try {
+      final response = await webService.dio.get(
+        sl<EnvType>().domain + "v1/ims/temp-rental-details",
+        queryParameters: {
+          'Type': type,
+          'RFPID': investmentId,
+        },
+        options: Options(headers: {
+          'Authorization':
+              "Bearer ${sl<EntryPointCubit>().state.apigeeToken?.accessToken}",
+        }),
+      );
+      print(response.data);
+
+      RentalDetailsResponse? investmentDetailsResponse =
+          RentalDetailsResponse.fromJson(response.data);
 
       print(investmentDetailsResponse);
       return investmentDetailsResponse;

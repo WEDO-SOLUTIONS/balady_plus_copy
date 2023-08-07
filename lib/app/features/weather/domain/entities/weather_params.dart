@@ -25,6 +25,8 @@ class WeatherParams {
         longitude: longitude ?? this.longitude,
         latitude: latitude ?? this.latitude,
         numberOfDays: numberOfDays ?? this.numberOfDays,
+        alert: alert,
+        languageCode: languageCode,
         key: key ?? this.key);
   }
 

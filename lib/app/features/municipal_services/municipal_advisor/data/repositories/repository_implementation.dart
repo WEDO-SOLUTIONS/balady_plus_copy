@@ -62,7 +62,7 @@ class MunicipalAdvisorRepositoryImplementation
   }
 
   @override
-  Future<Either<Failure, String>> getConsultationKey() async {
+  Future<Either<Failure, (String, int)>> getConsultationKey() async {
     try {
       final data = await remoteDataSource.getConsultationKey();
       return Right(data);

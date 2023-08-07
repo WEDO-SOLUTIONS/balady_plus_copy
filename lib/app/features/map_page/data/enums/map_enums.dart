@@ -10,7 +10,7 @@ enum GISMapLayers {
       outFieldsLong: []),
   Opportunities(
       layerId: 2,
-      cardHeight: 145,
+      cardHeight: 180,
       icon: Constants.furasLayerIcon,
       selectedIcon: Constants.furasSelectedLayerIcon,
       outFieldsShort: [
@@ -158,7 +158,7 @@ enum GISMapLayers {
   CadastralParcelsLand(
       layerId: 9,
       cardHeight: 160,
-      resultRecordCount: 50,
+      resultRecordCount: 30,
       icon: Constants.landsLayerIcon,
       selectedIcon: Constants.landsSelectedLayerIcon,
       outFieldsShort: [

@@ -44,6 +44,8 @@ class IconPath {
   static const warningIcon = '${_svgIconPath}danger$_svg';
   static const notificationIc = '${_svgIconPath}notification$_svg';
   static const notificationIc2 = '${_svgIconPath}notification2$_svg';
+  static const notificationFilled = '${_svgIconPath}notification_filled$_svg';
+
   static const arrowForward2 = '${_svgIconPath}arrow_forward$_svg';
   static const receiveSquare = '${_svgIconPath}receive-square$_svg';
   static const note2 = '${_svgIconPath}note_2$_svg';
@@ -51,6 +53,12 @@ class IconPath {
   static const global = '${_svgIconPath}global$_svg';
   static const mobile = '${_svgIconPath}mobile$_svg';
   static const magicStar = '${_svgIconPath}magic_star$_svg';
+  static const dollarCircle = '${_svgIconPath}dollar_circle$_svg';
+  static const stopCircle = '${_svgIconPath}stop_circle$_svg';
+  static const download = '${_svgIconPath}download$_svg';
+  static const download2 = '${_svgIconPath}download2$_svg';
+  static const moneyTime = '${_svgIconPath}money_time$_svg';
+  static const infoCircle = '${_svgIconPath}info_circle$_svg';
 
   static const informationCircleIcon =
       '${_svgIconPath}informationCircleIcon$_svg';
@@ -97,6 +105,7 @@ class IconPath {
   static const appiontments = '${_svgProfileIconPath}appiontments$_svg';
   static const settings = '${_svgProfileIconPath}settings$_svg';
   static const help = '${_svgProfileIconPath}help$_svg';
+  static const helpNew = '${_svgProfileIconPath}help_new$_svg';
   static const rateApp = '${_svgProfileIconPath}settings$_svg';
   static const aboutBalady = '${_svgProfileIconPath}about_balady$_svg';
   static const arrowDown = '${_svgProfileIconPath}arrow_down$_svg';
@@ -119,6 +128,9 @@ class IconPath {
   static const wind_speed = '${_svgWeatherIconPath}wind_speed$_svg';
   static const eye = '${_svgWeatherIconPath}eye$_svg';
   static const danger = '${_svgWeatherIconPath}danger$_svg';
+
+  static const weatherDay = 'assets/icons/svg/weather/day/';
+  static const weatherNight = 'assets/icons/svg/weather/night/';
 
   // Map
   static const layers = '${_svgMapIconPath}layers$_svg';

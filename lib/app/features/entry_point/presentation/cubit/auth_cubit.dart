@@ -181,6 +181,7 @@ class EntryPointCubit extends Cubit<EntryPointState> {
       }
     });
     EasyLoading.dismiss();
+    // getUserLocationData();
     //MM   sl<VDCategoryBloc>().add(RefreshCategoriesEvent());
     //MM return isLoggedIn;
     return CommonProperties.isLoggedIn;
@@ -263,15 +264,11 @@ class EntryPointCubit extends Cubit<EntryPointState> {
     final failureOrSuccess = await _clearAuth(NoParams());
 
     await failureOrSuccess.fold((l) {
-      if (l.toString().contains("-3")) {
-        print("logout falil $l");
-      } else {
-        sharedPrefs.setSSOToken(null);
-        clearSSOInfo();
-        emit(const EntryPointState(
-          status: AuthStatus.notAuthenticated,
-        ));
-      }
+      sharedPrefs.setSSOToken(null);
+      clearSSOInfo();
+      emit(const EntryPointState(
+        status: AuthStatus.notAuthenticated,
+      ));
     }, (r) {
       sharedPrefs.setSSOToken(null);
       //MM sharedPrefs.setUserProfile(null);
@@ -351,26 +348,22 @@ class EntryPointCubit extends Cubit<EntryPointState> {
   }
 
   Future<(GISParams, GISResponse)?> getUserLocationData() async {
-    print("GISSSSSS Succcess 1");
-
-    var latlng = await Helpers.getCurrentLocation();
-    print("GISSSSSS Succcess 2");
+    emit(state.copyWith(gisStatus: BlocStatus.loading));
+    var latlng = await Helpers.getMapLocation();
 
     if (latlng == null) {
-      print("GISSSSSS Succcess 3");
     } else {
-      print("GISSSSSS Succcess 4");
-
       emit(state.copyWith(
           userLocation: GISParams(x: latlng.longitude, y: latlng.latitude)));
 
       GetGISData getgis = GetGISData(repository: sl());
 
-      //
       var result =
           await getgis(GISParams(x: latlng.longitude, y: latlng.latitude));
-      result.fold((l) {}, (r) {
-        emit(state.copyWith(userLocationGIS: r));
+      result.fold((l) {
+        emit(state.copyWith(gisStatus: BlocStatus.failure));
+      }, (r) {
+        emit(state.copyWith(userLocationGIS: r, gisStatus: BlocStatus.success));
 
         return (state.userLocation, state.userLocationGIS);
       });

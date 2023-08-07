@@ -73,17 +73,34 @@ class ServicesCubit extends Cubit<ServicesState> {
 
   Future<void> searchServices(String? searchQuery) async {
     emit(state.copyWith(status: BlocStatus.loading));
-    final municipalServicesList = await businessLicenseServices(NoParams());
-    final publicServicesList = await businessLicenseServices(NoParams());
+
+    final islamicServicesList = await islamicServices(NoParams());
+    final customerVoiceServicesList = await customerVoiceServices(NoParams());
+
+    final businessLicenseServicesList =
+        await businessLicenseServices(NoParams());
+
+    //final healthCertificatesServicesList =
+    //    await healthCertificatesServices(NoParams());
+    final helpServicesList = await helpServices(NoParams());
+    final honoringTheDeadServicesList =
+        await honoringTheDeadServices(NoParams());
+
     emit(state.copyWith(status: BlocStatus.closeLoading));
     emit(state.copyWith(
       status: BlocStatus.success,
       businessLicenseServices:
-          municipalServicesList.getOrElse(() => []).where((service) {
+          businessLicenseServicesList.getOrElse(() => []).where((service) {
         return service.title.toLowerCase().contains(searchQuery!.toLowerCase());
       }).toList(),
-      healthCertificatesServices:
-          publicServicesList.getOrElse(() => []).where((service) {
+      islamicServices: islamicServicesList.getOrElse(() => []).where((service) {
+        return service.title.toLowerCase().contains(searchQuery!.toLowerCase());
+      }).toList(),
+      customerVoiceServices:
+          customerVoiceServicesList.getOrElse(() => []).where((service) {
+        return service.title.toLowerCase().contains(searchQuery!.toLowerCase());
+      }).toList(),
+      helpServices: helpServicesList.getOrElse(() => []).where((service) {
         return service.title.toLowerCase().contains(searchQuery!.toLowerCase());
       }).toList(),
       searchQuery: Nullable(searchQuery),

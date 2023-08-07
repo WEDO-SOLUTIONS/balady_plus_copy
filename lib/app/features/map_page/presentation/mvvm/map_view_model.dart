@@ -24,6 +24,7 @@ import '../../data/model/excavations.dart';
 import '../../data/model/investment_details_response.dart';
 import '../../data/model/investment_sites.dart';
 import '../../data/model/layers.dart';
+import '../../data/model/rental_details_response.dart';
 import '../../data/model/requests/map_requests_params.dart';
 import '../../data/model/white_lands.dart';
 import '../../data/repositories/layers_repositories.dart';
@@ -67,6 +68,7 @@ class MapViewModel extends BaseViewModel {
   VisibleRectEvent? _lastHandledEvent;
   double? _cameraTopPadding;
   double oldZoom = 13;
+  bool refreshMap = true;
 
   //final selectedPoint = ValueNotifier<DgisObjectIdMessage?>(null);
 
@@ -114,6 +116,8 @@ class MapViewModel extends BaseViewModel {
     }
   }
 
+//  late MapObjectManagerMessage mapObjectManager;
+
   Future<void> performSearch(
       {required String queryText,
       SearchCategoryMessage? category,
@@ -133,13 +137,13 @@ class MapViewModel extends BaseViewModel {
       SearchResultMessage data = selectedCategory.value != null
           ? await controller.searchByCategory(
               selectedCategory.value!,
-              sortingType: SortingTypeMessage.byDistance,
+              sortingType: SortingTypeMessage.byRelevance,
               isOpenNow: false,
               searchRect: _lastHandledEvent?.visibleRect.geoRectMessage(),
             )
           : await controller.search(
               queryText,
-              sortingType: SortingTypeMessage.byDistance,
+              sortingType: SortingTypeMessage.byRelevance,
               isOpenNow: false,
               searchRect: _lastHandledEvent?.visibleRect.geoRectMessage(),
             );
@@ -153,6 +157,8 @@ class MapViewModel extends BaseViewModel {
             ? selectedCategory.value!.markerIconName()
             : "assets/maps/icons/ic_marker.svg";
 
+        //  await controller.removeAllMarkers(fromManager: mapObjectManager);
+
         for (final markerInfo in data.itemMarkerInfos!) {
           markers.add(Marker(
             id: markerInfo?.objectId?.objectId.toString() ?? const Uuid().v4(),
@@ -163,7 +169,19 @@ class MapViewModel extends BaseViewModel {
                 width: 24,
               ),
             ),
-            onTap: () {
+            onTap: () async {
+              refreshMap = false;
+              await controller.moveCamera(
+                  CameraPositionMessage(
+                      point: GeoPointMessage(
+                          latitude: markerInfo.geoPoint.latitude,
+                          longitude: markerInfo.geoPoint.longitude),
+                      zoom: 17,
+                      tilt: 0,
+                      bearing: 0),
+                  1,
+                  CameraAnimationTypeMessage.linear);
+
               selectedPointId.value = markerInfo.objectId;
               print("on Tap");
               print(markerInfo.objectId);
@@ -182,9 +200,16 @@ class MapViewModel extends BaseViewModel {
               // bottomSheetSizeFraction.value = 0.05;
               bottomSheetSize.notifyListeners();
               bottomSheetSizeFraction.notifyListeners();
+
+              Future.delayed(
+                const Duration(milliseconds: 300),
+              );
+              refreshMap = true;
             },
           ));
         }
+
+        await controller.addMarkers(markers);
 
         await controller.addMarkers(markers);
       }
@@ -231,27 +256,71 @@ class MapViewModel extends BaseViewModel {
 
       return false;
     }
+    controller.setCameraPosition(CameraPositionMessage(
+        point: kingdomTower, zoom: 17, tilt: 45, bearing: 9));
 
     _setupListeners();
 
-    // await controller.changeFollowState();
+    await controller.changeFollowState();
 
     // setLocale(const Locale("ar", "US"), TextDirection.ltr);
     await controller.loadStyles(Constants.mapStyle);
-    await controller.overrideLocales(["ar-SA", "en-SA"]);
+    await controller.overrideLocales(["ar-SA"]);
     // await controller.overrideLocales([localeState.value.locale]);
     initialized.value = true;
     generalControlsState.value = true;
-    goToLocation();
-    await controller.setMarkerOptions(
+    // goToLocation();
+    /* await controller.setMarkerOptions(
       MarkerOptionsMessageOld(
         svgAsset: "assets/maps/icons/ic_marker.svg.svg",
         width: 30.0,
         height: 46.0,
         iconWidth: 24,
       ),
+    );*/
+
+/*
+    mapObjectManager = await controller.createMapObjectManagerWithClustering(
+      ClusteringMapObjectManager(
+        options: ClusteringMapObjectManagerOptionsMessage(
+          logicalPixel: 40,
+          maxZoom: 16,
+        ),
+        renderCluster: (objectCount) {
+          return SimpleClusterOptionsMessage(
+            icon: MarkerIconMessage(
+              path: "assets/maps/icons/ic_marker.svg",
+              width: 24,
+            ),
+            text: "$objectCount",
+            textStyle: MarkerTextStyleMessage(fontSize: 16),
+          );
+        },
+        onTap: (clusterObject) async {
+          clusterObject.setIcon("assets/maps/icons/ic_marker_red.svg");
+
+          final clusterPosition = await controller.calcPositionForMarkers(
+            clusterObject.markers,
+            CalcPositionOptionsMessage(
+              screenArea: CameraSetPaddingMessage(
+                bottomPadding: 40,
+                leftPadding: 40,
+                topPadding: 40,
+                rightPadding: 40,
+              ),
+            ),
+          );
+          await controller.moveCamera(
+            clusterPosition,
+            1.5,
+            CameraAnimationTypeMessage.default_,
+          );
+        },
+      ),
     );
 
+
+*/
     return true;
   }
 
@@ -297,6 +366,8 @@ class MapViewModel extends BaseViewModel {
     selectedImtethalPoint.notifyListeners();
     selectedInvetmentPoint.notifyListeners();
     selectedPointId.notifyListeners();
+    selectedLands.notifyListeners();
+
     selectedWhiteLands.notifyListeners();
   }
 
@@ -407,7 +478,7 @@ class MapViewModel extends BaseViewModel {
   }
 
   void getLocationAndMoveCamera() async {
-    var latlng = await Helpers.getCurrentLocation();
+    var latlng = await Helpers.getMapLocation();
 
     if (latlng != null)
       await controller.setCameraPosition(
@@ -459,6 +530,9 @@ class MapViewModel extends BaseViewModel {
         southWestLongitude: _lastHandledEvent!.visibleRect.southWestLon,
         southWestLlatitude: _lastHandledEvent!.visibleRect.southWestLat,
       ));
+      print("ccccccccvvvv ${layerSelected.value!.geometryType}");
+      print("ccccccccvvvv ${pointList?.length}");
+
       switch (layerSelected.value!.geometryType) {
         case 'esriGeometryPoint':
           addMarkersWithPoint(pointList, layerSelected.value!.id);
@@ -489,7 +563,6 @@ class MapViewModel extends BaseViewModel {
       southWestLlatitude: _lastHandledEvent!.visibleRect.southWestLat,
     ));
 
-    print("Doneeee");
     hideLoading1();
 
     Navigator.pushNamed(NavigationService.navigatorKey.currentContext!,
@@ -504,12 +577,27 @@ class MapViewModel extends BaseViewModel {
     InvestmentDetailsResponse? data =
         await layersRepositories.getInvetmentDetails(id, type);
 
-    print("Doneeee");
-    print(data);
+    hideLoading1();
+
+    Navigator.pushNamed(NavigationService.navigatorKey.currentContext!,
+        RouteName.investmentPage,
+        arguments: data);
+
+    return data;
+  }
+
+  Future<RentalDetailsResponse?> getTempRentalDetails(
+      String id, String type) async {
+    showLoading1();
+
+    RentalDetailsResponse? data =
+        await layersRepositories.getTempRentalDetails(id, type);
+
     hideLoading1();
     Navigator.pushNamed(NavigationService.navigatorKey.currentContext!,
-        RouteName.InvestmentMapDetailsPage,
+        RouteName.tempRentalPage,
         arguments: data);
+
     return data;
   }
 
@@ -547,8 +635,14 @@ class MapViewModel extends BaseViewModel {
                 width: 30,
               ),
             ),
-            onTap: () {
-              print(element);
+            onTap: () async {
+              refreshMap = false;
+              /*  await controller.moveCamera(
+                  CameraPositionMessage(
+                      point: element.latLng, zoom: 17, tilt: 0, bearing: 0),
+                  1,
+                  CameraAnimationTypeMessage.linear);*/
+
               selectedPointId.notifyListeners();
               selectedPoint.value = null;
               selectedInvetmentPoint.value = null;
@@ -574,6 +668,8 @@ class MapViewModel extends BaseViewModel {
               selectedImtethalPoint.notifyListeners();
               selectedDiggingPoint.notifyListeners();
               selectedWhiteLands.notifyListeners();
+              selectedLands.notifyListeners();
+
               selectedPointId.notifyListeners();
               selectedPoint.notifyListeners();
 
@@ -584,6 +680,11 @@ class MapViewModel extends BaseViewModel {
               // bottomSheetSizeFraction.value = 0.05;
               bottomSheetSize.notifyListeners();
               bottomSheetSizeFraction.notifyListeners();
+
+              Future.delayed(
+                const Duration(milliseconds: 300),
+              );
+              refreshMap = true;
             },
           );
         },
@@ -681,11 +782,6 @@ class MapViewModel extends BaseViewModel {
               selectedDiggingPoint.value = null;
               showLegend.value = false;
               switch (gisSelectedLayer) {
-                case GISMapLayers.Digging:
-                  selectedDiggingPoint.value = element;
-
-                  break;
-
                 case GISMapLayers.BSAimtithalBuildingsCertificateL:
                   selectedImtethalPoint.value = element;
 
@@ -703,6 +799,7 @@ class MapViewModel extends BaseViewModel {
               selectedWhiteLands.notifyListeners();
               selectedPointId.notifyListeners();
               bottomSheetSize.notifyListeners();
+              selectedLands.notifyListeners();
               showLegend.notifyListeners();
 
               viewHomeBottomSheet.value = false;
@@ -710,6 +807,8 @@ class MapViewModel extends BaseViewModel {
               //  bottomSheetSizeFraction.value = 0.05;
               bottomSheetSizeFraction.notifyListeners();
               bottomSheetSize.notifyListeners();
+
+              print("ontap ${gisSelectedLayer}");
             },
           ),
         );
@@ -724,8 +823,11 @@ class MapViewModel extends BaseViewModel {
     await controller.removeAll();
     layerSelected.value = value;
     searchController.text = "";
+    viewHomeBottomSheet.value = true;
     viewHomeBottomSheet.notifyListeners();
+
     bottomSheetSize.notifyListeners();
+    bottomSheetSizeFraction.notifyListeners();
     gisSelectedLayer = GISMapLayers.values
             .firstWhereOrNull((element) => element.layerId == value.id) ??
         GISMapLayers.cityPlaces;
@@ -758,7 +860,6 @@ class MapViewModel extends BaseViewModel {
         : Duration.zero;
     Timer(duration, () async {
       if (CommonProperties.userLocation == null) {
-        print("FFFFFGGG 1");
         controller.setCameraPosition(CameraPositionMessage(
             point: kingdomTower, zoom: 17, tilt: 45, bearing: 0));
       } else {
@@ -777,11 +878,11 @@ class MapViewModel extends BaseViewModel {
               point: kingdomTower, zoom: 17, tilt: 45, bearing: 0));
         } else {
           if (gis.adminMunicipalityId == "004") {
-            controller.setCameraPosition(CameraPositionMessage(
-                point: kingdomTower, zoom: 17, tilt: 45, bearing: 0));
+            //    controller.setCameraPosition(CameraPositionMessage(
+            //       point: kingdomTower, zoom: 17, tilt: 45, bearing: 0));
           } else if (gis.adminMunicipalityId == "006") {
-            controller.setCameraPosition(CameraPositionMessage(
-                point: ithraa, zoom: 18, tilt: 45, bearing: 0));
+            // controller.setCameraPosition(CameraPositionMessage(
+            //     point: ithraa, zoom: 18, tilt: 45, bearing: 0));
           } else {
             controller.setCameraPosition(CameraPositionMessage(
                 point: GeoPointMessage(

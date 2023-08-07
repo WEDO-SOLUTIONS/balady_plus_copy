@@ -198,11 +198,12 @@ class _InvoiceDetailBodyState extends State<InvoiceDetailBody> {
                       icon: IconPath.vdSummuryDesc,
                       children: const [InvoiceObjectionsList()],
                     ),
-                    ExpandableCard(
-                      title: 'invoice_notes'.tr(),
-                      icon: IconPath.vdSummuryDesc,
-                      children: const [InvoiceNotesList()],
-                    ),
+                    if (state.invoice?.invoiceStatusId != 3)
+                      ExpandableCard(
+                        title: 'invoice_notes'.tr(),
+                        icon: IconPath.vdSummuryDesc,
+                        children: const [InvoiceNotesList()],
+                      ),
                   ],
                 ),
               );

@@ -117,7 +117,7 @@ class _DraggableSheetCardState extends State<DraggableSheetCard> {
             expand: false,
             builder: (_, controller) => InkWell(
               onTap: () {
-                if (draggableScrollableController.size <= widget.minSize) {
+                /* if (draggableScrollableController.size <= widget.minSize) {
                   draggableScrollableController.animateTo(
                     widget.maxSize,
                     duration: const Duration(milliseconds: 500),
@@ -130,7 +130,7 @@ class _DraggableSheetCardState extends State<DraggableSheetCard> {
                     curve: Curves.easeOutBack,
                   );
                   controller.jumpTo(0);
-                }
+                }*/
               },
               child: GlowingScrollWidget(
                 child: SingleChildScrollView(

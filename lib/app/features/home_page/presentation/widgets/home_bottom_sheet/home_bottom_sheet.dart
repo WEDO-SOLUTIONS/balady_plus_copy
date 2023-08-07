@@ -37,7 +37,7 @@ class HomeBottomSheet extends StatelessWidget {
             PrayerHomeCard(),
             ReadHomeCard(),
             BaladySmartAdvisorCard(),
-            ChallengeHomeCard(),
+            //  ChallengeHomeCard(),
             NewServices(),
             SizedBox(height: 30),
           ],

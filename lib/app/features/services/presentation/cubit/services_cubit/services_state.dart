@@ -42,6 +42,7 @@ class ServicesState extends Equatable {
       newServices,
       importantServices,
       errorMessage,
+      showSearchField
     ];
   }
 

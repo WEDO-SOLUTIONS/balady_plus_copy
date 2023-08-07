@@ -1,6 +1,7 @@
 part of 'auth_cubit.dart';
 
 class EntryPointState extends Equatable {
+  final BlocStatus gisStatus;
   final AuthStatus status;
   final SSOToken? token;
   final ApigeeTokenResponse? apigeeToken;
@@ -16,6 +17,7 @@ class EntryPointState extends Equatable {
   const EntryPointState(
       {this.status = AuthStatus.initial,
       this.blocStatus = BlocStatus.initial,
+      this.gisStatus = BlocStatus.initial,
       this.token,
       this.apigeeToken,
       this.cityId,
@@ -31,6 +33,7 @@ class EntryPointState extends Equatable {
       BlocStatus? blocStatus,
       SSOToken? token,
       ApigeeTokenResponse? apigeeToken,
+      BlocStatus? gisStatus,
       String? errorMessage,
       final String? cityId,
       final String? cityName,
@@ -51,7 +54,8 @@ class EntryPointState extends Equatable {
             ? this.selectedDelegator
             : selectedDelegator.value,
         userLocation: userLocation ?? this.userLocation,
-        userLocationGIS: userLocationGIS ?? this.userLocationGIS);
+        userLocationGIS: userLocationGIS ?? this.userLocationGIS,
+        gisStatus: gisStatus ?? this.gisStatus);
   }
 
   String getSearchText() => userLocationGIS != null &&
@@ -69,7 +73,8 @@ class EntryPointState extends Equatable {
         apigeeToken,
         selectedDelegator,
         userLocation,
-        userLocationGIS
+        userLocationGIS,
+        gisStatus
       ];
 
   @override

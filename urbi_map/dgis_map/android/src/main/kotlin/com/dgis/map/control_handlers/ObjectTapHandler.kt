@@ -6,6 +6,7 @@ import com.dgis.map.R
 import com.dgis.map.extensions.toGeoPoint
 import com.dgis.map.extensions.toGeoPointWithElevation
 import com.dgis.map.extensions.toMap
+import com.dgis.map.extensions.toMessage
 import com.dgis.map.extensions.toTextStyle
 import com.dgis.map.extensions.unsafeLazy
 import com.dgis.map.map_api.Messages.*
@@ -14,7 +15,10 @@ import io.flutter.FlutterInjector
 import io.flutter.plugin.common.EventChannel.EventSink
 import kotlinx.coroutines.awaitAll
 import ru.dgis.sdk.Context
+import ru.dgis.sdk.DGis
 import ru.dgis.sdk.DgisObjectId
+import ru.dgis.sdk.ScreenSize
+import ru.dgis.sdk.coordinates.Bearing
 import ru.dgis.sdk.coordinates.GeoPoint
 import ru.dgis.sdk.coordinates.Latitude
 import ru.dgis.sdk.coordinates.Longitude
@@ -22,6 +26,7 @@ import ru.dgis.sdk.geometry.Elevation
 import ru.dgis.sdk.geometry.GeoPointWithElevation
 import ru.dgis.sdk.map.*
 import java.io.FileNotFoundException
+import java.lang.IllegalArgumentException
 import java.util.*
 import java.util.concurrent.Executors
 
@@ -53,13 +58,14 @@ class ObjectTapHandler(
         Executors.newSingleThreadExecutor()
     }
 
-    private data class MarkerId(val id: String);
+    data class MarkerId(val id: String);
     private data class PolygonId(val id: String);
     private data class PolylineId(val id: String);
 
     private val markers = mutableMapOf<String, Marker>();
     private val polygons = mutableMapOf<String, Polygon>();
     private val polylines = mutableMapOf<String, Polyline>();
+    private val clusters = mutableMapOf<String, SimpleClusterObject>();
     private val ioLayerMarkers = mutableListOf<Marker>();
     private val managers = mutableMapOf<String, MapObjectManager>()
 
@@ -121,7 +127,9 @@ class ObjectTapHandler(
                 val userData = tappedObject.userData
 
                 if (userData is MapObjectManagerMessage) {
-                    onClusterTap(userData.id, tappedObject)
+                    val clusterId = UUID.randomUUID().toString()
+                    this.clusters[clusterId] = tappedObject
+                    onClusterTap(userData.id, tappedObject, clusterId)
                     return
                 }
             }
@@ -273,6 +281,50 @@ class ObjectTapHandler(
             this.managers.remove(message.id).also {
                 result?.success(null)
             }
+        }
+    }
+
+    fun setClusterIcon(icon: String, clusterId: String, result: Result<Void>?) {
+        val cluster = this.clusters[clusterId];
+        if (cluster == null) {
+            result?.error(IllegalArgumentException("Cluster with given id not found or already released"))
+            return
+        }
+
+        var markerImage: Image? = null
+        if (icon in iconCache) {
+            markerImage = iconCache[icon]
+        } else {
+            try {
+                val asset =
+                    FlutterInjector
+                        .instance()
+                        .flutterLoader()
+                        .getLookupKeyForAsset(icon)
+
+                markerImage = imageFromAsset(sdkContext, asset, Size(0, 0))
+                iconCache[icon] = markerImage
+            } catch (e: FileNotFoundException) {
+                result?.error(e)
+                return
+            }
+        }
+
+        cluster.setIcon(markerImage)
+    }
+
+    fun releaseCluster(clusterId: String) {
+        this.clusters.remove(clusterId)
+    }
+
+    fun setMapObjectManagerIsVisible(
+        isVisible: Boolean,
+        manager: MapObjectManagerMessage?,
+    ) {
+        if (manager != null) {
+            this.managers[manager.id]?.isVisible = isVisible
+        } else {
+            this.mapObjectManager.isVisible = isVisible
         }
     }
 
@@ -535,6 +587,83 @@ class ObjectTapHandler(
         selectedPanorama?.iconMapDirection = MapDirection(value = degrees)
     }
 
+    fun calcPositionForMarkers(
+        markers: List<String>,
+        options: CalcPositionOptionsMessage,
+        result: Result<CameraPositionMessage>?
+    ) {
+        calcPositionForObjects(
+            objects =  markers.mapNotNull { this.markers[it] },
+            options = options,
+            result = result
+        )
+    }
+
+    fun calcPositionForPolygons(
+        polygons: List<String>,
+        options: CalcPositionOptionsMessage,
+        result: Result<CameraPositionMessage>?
+    ) {
+        calcPositionForObjects(
+            objects =  polygons.mapNotNull { this.polygons[it] },
+            options = options,
+            result = result
+        )
+    }
+
+    fun calcPositionForPolylines(
+        polylines: List<String>,
+        options: CalcPositionOptionsMessage,
+        result: Result<CameraPositionMessage>?
+    ) {
+        calcPositionForObjects(
+            objects =  polylines.mapNotNull { this.polylines[it] },
+            options = options,
+            result = result
+        )
+    }
+
+    private fun calcPositionForObjects(
+        objects: List<SimpleMapObject>,
+        options: CalcPositionOptionsMessage,
+        result: Result<CameraPositionMessage>?
+    ) {
+        val cameraPosition = calcPosition(
+            camera = map.camera,
+            objects = objects,
+            screenArea = options.screenArea?.let {
+                Padding(
+                    left = it.leftPadding.toInt(),
+                    top = it.topPadding.toInt(),
+                    right = it.rightPadding.toInt(),
+                    bottom = it.bottomPadding.toInt()
+                )
+            },
+            tilt = options.tilt?.let {
+                Tilt(it.toFloat())
+            },
+            bearing = options.bearing?.let {
+                Bearing(it)
+            },
+            size = options.size?.let {
+                ScreenSize(
+                    width = it.width.toInt(),
+                    height = it.height.toInt()
+                )
+            }
+        )
+
+        result?.success(
+            CameraPositionMessage
+                .Builder()
+                .setPoint(cameraPosition.point.toMessage())
+                .setZoom(cameraPosition.zoom.value.toDouble())
+                .setTilt(cameraPosition.tilt.value.toDouble())
+                .setBearing(cameraPosition.bearing.value)
+                .build()
+        )
+    }
+
     private fun onDgisMapObjectTap(mapObject: DgisMapObject, roi: RenderedObjectInfo) {
         source = roi.item.source as DgisSource
 
@@ -558,12 +687,12 @@ class ObjectTapHandler(
         )
     }
 
-    private fun onClusterTap(id: String, cluster: SimpleClusterObject) {
+    private fun onClusterTap(id: String, cluster: SimpleClusterObject, clusterId: String) {
         eventSink.success(
             mapOf(
                 "event" to Events.onClusterTap.name,
                 "id" to id,
-                "cluster" to cluster.toMap(),
+                "cluster" to cluster.toMap(clusterId),
             )
         )
     }

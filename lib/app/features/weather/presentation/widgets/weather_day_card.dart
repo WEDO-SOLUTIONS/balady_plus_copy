@@ -2,6 +2,7 @@ import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:balady_plus/app/core/utils/enums/app_font_weights.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart'
     show IconPath, WeatherDateFormatter;
+import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/custom_svg_icon_widget.dart';
 import 'package:balady_plus/app/features/weather/presentation/widgets/expansion_tile.dart';
 import 'package:balady_plus/app/features/weather/weather_exports.dart';
 import 'package:flutter/material.dart';
@@ -58,10 +59,9 @@ class WeatherDayCard extends StatelessWidget {
                 Expanded(
                   child: Row(
                     children: [
-                      Image.network(
-                        'https:${forecastDay?.day?.condition?.icon}',
-                        height: 26,
-                        width: 26,
+                      CustomSvgIconWidget(
+                        forecastDay?.day?.condition?.iconPath ?? '',
+                        iconSize: 26,
                       ),
                       CustomTextWidget(
                         forecastDay?.day?.condition?.text ?? '',
@@ -119,10 +119,9 @@ class WeatherDayCard extends StatelessWidget {
                             fontSize: 10,
                           ),
                           const SizedBox(height: 4),
-                          Image.network(
-                            'https:${hour?.condition?.icon}',
-                            width: 40,
-                            height: 40,
+                          CustomSvgIconWidget(
+                            hour?.condition?.iconPath ?? '',
+                            iconSize: 40,
                           ),
                           const SizedBox(height: 4),
                           CustomTextWidget(

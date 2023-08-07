@@ -175,9 +175,9 @@ class MunicipalAdvisorBloc
           (failure) => emitFailure(emit, failure),
           (consultationKey) => emit(
             state.copyWith(
-              status: BlocRequestStatus.submissionGetSuccess,
-              consultationKey: consultationKey,
-            ),
+                status: BlocRequestStatus.submissionGetSuccess,
+                consultationKey: consultationKey.$1,
+                id: consultationKey.$2),
           ),
         );
         if (failureOrSuccess.isLeft()) return;
@@ -1662,6 +1662,12 @@ class MunicipalAdvisorBloc
                 messages: [
                   ...state.messages,
                   ChatMessage(
+                    message: "${'municipalAdvisorId'.tr()}: ${state.id}",
+                    step: MunicipalAdvisorSteps.endChat,
+                    isResponse: true,
+                    customWidget: true,
+                  ),
+                  ChatMessage(
                     message: 'municipalAdvisorEndChat'.tr(),
                     step: MunicipalAdvisorSteps.endChat,
                     isResponse: true,
@@ -2099,6 +2105,12 @@ class MunicipalAdvisorBloc
         } else {
           return [
             ChatMessage(
+              message: "${'municipalAdvisorId'.tr()}: ${state.id}",
+              step: MunicipalAdvisorSteps.endChat,
+              isResponse: true,
+              customWidget: true,
+            ),
+            ChatMessage(
               message: 'municipalAdvisorEndChat'.tr(),
               step: MunicipalAdvisorSteps.endChat,
               isResponse: true,
@@ -2120,6 +2132,12 @@ class MunicipalAdvisorBloc
           return [];
         } else {
           return [
+            ChatMessage(
+              message: "${'municipalAdvisorId'.tr()}: ${state.id}",
+              step: MunicipalAdvisorSteps.endChat,
+              isResponse: true,
+              customWidget: true,
+            ),
             ChatMessage(
               message: 'municipalAdvisorEndChat'.tr(),
               step: MunicipalAdvisorSteps.endChat,
@@ -2144,6 +2162,12 @@ class MunicipalAdvisorBloc
           return [];
         } else {
           return [
+            ChatMessage(
+              message: "${'municipalAdvisorId'.tr()}: ${state.id}",
+              step: MunicipalAdvisorSteps.endChat,
+              isResponse: true,
+              customWidget: true,
+            ),
             ChatMessage(
               message: 'municipalAdvisorEndChat'.tr(),
               step: MunicipalAdvisorSteps.endChat,

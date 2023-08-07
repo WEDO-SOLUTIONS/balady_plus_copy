@@ -168,7 +168,7 @@ class RequestsRemoteDataSourceImplementation
         rethrow;
       }
       if (error.response?.statusCode == 400)
-        throw NoDataFoundException(error.requestOptions);
+        throw NoDataFoundException(error.requestOptions, error.response);
 
       throw ServerException(
         error.toString(),

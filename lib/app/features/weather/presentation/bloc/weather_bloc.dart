@@ -28,50 +28,78 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
 
   Future<void> _getAllWeatherInfo(
       GetWeatherForLocation e, Emitter emitter) async {
-    if (state.allWeatherInfoStatus == BlocStatus.success) return;
+    if (state.allWeatherInfoStatus == BlocStatus.success &&
+        state.showLocationError == false) return;
 
     emitter(state.copyWith(allWeatherInfoStatus: BlocStatus.loading));
-    //LatLng? location = await Helpers.getCurrentLocation();
 
-    e.params.copyWith(
-        latitude: CommonProperties.userLocation?.y,
-        longitude: CommonProperties.userLocation?.x);
+    GISParams? location = CommonProperties.userLocation;
 
-    final failureOrSuccess = await _getWeatherInfo(e.params);
+    if (location == null || CommonProperties.userLocationGIS == null) {
+      LatLng? latlng = await Helpers.getMapLocation();
 
-    failureOrSuccess.fold((failure) {
-      print("failure: $failure");
-      emitter(state.copyWith(
-        allWeatherInfoStatus: BlocStatus.failure,
-        gisResponse: CommonProperties.userLocationGIS,
-        errorMessage: (failure as ServerFailure).errorMessage,
-      ));
-    }, (success) {
-      print("weather entity: $success");
-      emitter(state.copyWith(
-        allWeatherInfoStatus: BlocStatus.success,
-        //  categories: success.data?.result,
-        gisResponse: CommonProperties.userLocationGIS,
-        allWeatherInfo: success,
-        errorMessage: "",
-      ));
-    });
+      location = GISParams(
+          x: latlng?.longitude ?? 46.72364215018372,
+          y: latlng?.latitude ?? 24.744615305066496);
 
-/*  final failureOrSuccess = await _getGISData(
-        GISParams(x: e.params.longitude!, y: e.params.latitude!));
+      if (latlng == null)
+        emitter(state.copyWith(showLocationError: true));
+      else
+        emitter(state.copyWith(showLocationError: false));
 
-    await failureOrSuccess.fold((failure) {
-      emitter(state.copyWith(
-        allWeatherInfoStatus: BlocStatus.failure,
-        errorMessage: (failure as ServerFailure).errorMessage,
-      ));
-    }, (success) async {
-      emitter(state.copyWith(
-        gisResponse: success,
-        errorMessage: "",
-      ));
+      WeatherParams params =
+          e.params.copyWith(latitude: location.y, longitude: location.x);
+      final failureOrSuccess = await _getGISData(
+          GISParams(x: params.longitude!, y: params.latitude!));
+      await failureOrSuccess.fold((failure) {
+        emitter(state.copyWith(
+          allWeatherInfoStatus: BlocStatus.failure,
+          errorMessage: (failure as ServerFailure).errorMessage,
+        ));
+      }, (success) async {
+        emitter(state.copyWith(
+          gisResponse: success,
+          errorMessage: "",
+        ));
+        final failureOrSuccess = await _getWeatherInfo(params);
+        failureOrSuccess.fold((failure) {
+          print("failure: weather $failure");
+          emitter(state.copyWith(
+            allWeatherInfoStatus: BlocStatus.failure,
+            errorMessage: (failure as ServerFailure).errorMessage,
+          ));
+        }, (success) {
+          print("weather entity: $success");
+          emitter(state.copyWith(
+            allWeatherInfoStatus: BlocStatus.success,
+            allWeatherInfo: success,
+            errorMessage: "",
+          ));
+        });
+      });
+    } else {
+      WeatherParams params =
+          e.params.copyWith(latitude: location.y, longitude: location.x);
 
-    
-    });*/
+      final failureOrSuccess = await _getWeatherInfo(params);
+      failureOrSuccess.fold((failure) {
+        print("failure: weather $failure");
+        emitter(state.copyWith(
+          allWeatherInfoStatus: BlocStatus.failure,
+          errorMessage: (failure as ServerFailure).errorMessage,
+        ));
+      }, (success) {
+        print("weather entity: $success");
+        emitter(state.copyWith(
+          allWeatherInfoStatus: BlocStatus.success,
+          allWeatherInfo: success,
+          gisResponse: CommonProperties.userLocationGIS,
+          showLocationError: false,
+          errorMessage: "",
+        ));
+      });
+    }
+
+/*  ;*/
   }
 }
