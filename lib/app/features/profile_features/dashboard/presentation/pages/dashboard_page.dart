@@ -1,3 +1,5 @@
+import 'package:balady_plus/app/core/utils/constants/paths/image_paths.dart';
+import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
@@ -33,8 +35,14 @@ class DashBoardPage extends StatelessWidget {
       create: (context) => sl<DashboardBloc>()..add(DashboardEventInitial()),
       child: Scaffold(
         appBar: DefaultAppBarWidget(
+          flexibleSpace: const Image(
+            image: AssetImage(
+              ImagePath.appBarBackground,
+            ),
+            fit: BoxFit.cover,
+          ),
           title: 'dashboard'.tr(),
-          actions: [
+          actions: const [
             /*Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8),
               child: GestureDetector(
@@ -102,7 +110,7 @@ class DashBoardPage extends StatelessWidget {
                                               "the_following_data".tr(),
                                               maxLines: 2,
                                               textStyle: AppStyle
-                                                  .dashboardNoteTextStle,
+                                                  .dashboardNoteTextStyle,
                                             ),
                                           ),
                                         )

@@ -87,9 +87,6 @@ class _QuranPageState extends State<QuranPage> {
                   ),
                 ),
                 body: Container(
-                  decoration: BoxDecoration(
-                      image: DecorationImage(
-                          image: AssetImage(ImagePath.quranBackgroundPage))),
                   child: Stack(
                     children: [
                       GestureDetector(

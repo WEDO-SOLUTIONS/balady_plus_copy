@@ -51,7 +51,8 @@ class LayersRepositories {
                   element.id != 3 &&
                   element.id != 4 &&
                   element.id != 6 &&
-                  element.id != 5,
+                  element.id != 5 &&
+                  element.id != 9,
             )
             .toList();
       }

@@ -183,6 +183,7 @@ class CRMRequestItem extends Equatable {
   }
 
   String getStatusSTR() {
+    if (getRequestType() == RequestsType.VHR) return statusAr ?? "";
     if (closureFlag == "Yes") return Helpers.translatingWord("solved");
 
     return Helpers.translatingWord("in_progress");

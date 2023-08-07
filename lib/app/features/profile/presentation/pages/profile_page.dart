@@ -1,4 +1,6 @@
+import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/image_paths.dart';
+import 'package:balady_plus/app/features/_shared_feature_/presentation/buttons/circular_container_icon_button.dart';
 import 'package:balady_plus/app/features/entry_point/presentation/cubit/auth_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -33,6 +35,15 @@ class ProfilePage extends StatelessWidget {
               image: AssetImage(ImagePath.appBarGradientBackground),
               fit: BoxFit.cover,
             ),
+            actions: [
+              CircularContainerForIcons(
+                onTap: () {},
+                iconPath: IconPath.notification,
+                width: 48,
+                height: 48,
+                color: Colors.white,
+              )
+            ],
           ),
           body: TabPageContainer(
             child: SingleChildScrollView(

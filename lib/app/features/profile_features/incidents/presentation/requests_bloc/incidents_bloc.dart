@@ -95,7 +95,7 @@ class IncidentsBloc extends Bloc<IncidentsEvent, IncidentsState> {
 
       var filtredRequest =
           state.crmRequests?.incidentRequestList?.where((element) {
-        if (element.getRequestType() == RequestsType.INC &&
+        if (element.getRequestType() == state.crmRequestType &&
             element.getId().toLowerCase().contains(event.query.toLowerCase()))
           return true;
         return false;

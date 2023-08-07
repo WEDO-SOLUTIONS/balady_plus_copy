@@ -62,7 +62,11 @@ class DashboardCard extends StatelessWidget {
                       ],
                     ),
                   ),
-                  Flexible(child: DashboardProductDropDown(card: card)),
+                  Flexible(
+                    child: DashboardProductDropDown(
+                      card: card,
+                    ),
+                  ),
                 ],
               ),
               state.cardsStates[card]?.totalCount == 0
