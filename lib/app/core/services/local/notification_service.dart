@@ -61,7 +61,7 @@ class NotificationService {
           importance: Importance.max,
           priority: Priority.high,
           ticker: 'ticker',
-          sound: RawResourceAndroidNotificationSound("azan"),
+          // sound: RawResourceAndroidNotificationSound("azan"),
           channelDescription: "Channel description"),
       iOS: DarwinNotificationDetails(sound: "azan.mp3"),
     );

@@ -1,6 +1,6 @@
+import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:balady_plus/etmam_app/core/utils/utils_exports.dart'
     show
-        AppColor,
         AppColorsTheme,
         AppFontWeight,
         ButtonIconPosition,
@@ -14,12 +14,13 @@ class ProviderButtons extends StatelessWidget {
   final Function onCallPressed;
   final Function onDelegatePress;
   final String? buttonTxt;
+  final double? btnSize;
 
   const ProviderButtons(
       {Key? key,
       required this.onCallPressed,
-      required this.onDelegatePress,
-      this.buttonTxt})
+      required this.onDelegatePress, this.btnSize,
+      this.buttonTxt,})
       : super(key: key);
 
   @override
@@ -30,6 +31,7 @@ class ProviderButtons extends StatelessWidget {
         Expanded(
           child: SubmitButton(
             btnTxt: buttonTxt,
+            btnSize: btnSize,
             onPressed: onDelegatePress,
           ),
         ),
@@ -37,6 +39,7 @@ class ProviderButtons extends StatelessWidget {
         Expanded(
           child: CallButton(
             onPressed: onCallPressed,
+            btnSize: btnSize,
           ),
         )
       ],
@@ -47,8 +50,9 @@ class ProviderButtons extends StatelessWidget {
 class SubmitButton extends StatelessWidget {
   Function onPressed;
   String? btnTxt;
+  double? btnSize;
 
-  SubmitButton({Key? key, required this.onPressed, this.btnTxt})
+  SubmitButton({Key? key, required this.onPressed, this.btnTxt , this.btnSize})
       : super(key: key);
 
   @override
@@ -56,20 +60,13 @@ class SubmitButton extends StatelessWidget {
     return CustomElevatedButtonWidget(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       btnText: btnTxt ?? trans("delegate"),
-      btnTextSize: 16,
-      btnHeight: 48,
-      btnRadius: 2,
-      buttonIconPosition: ButtonIconPosition.left,
+      btnTextSize: 14,
+      btnHeight: btnSize ?? 56,
+      btnRadius: 6,
       btnTextColor: AppColor.white,
-      btnTextWeight: AppFontWeight.medium,
-      spaceBetweenTextAndIcon: 30,
-      btnColor: AppColor.darkTurquoise,
+      btnTextWeight: AppFontWeight.bold,
+      btnColor: AppColor.primary900Light,
       btnPadding: EdgeInsets.symmetric(horizontal: 16),
-      mainAxisSize: MainAxisSize.max,
-      icon: const CustomSvgIconWidget(
-        IconPath.delegateIcon,
-        iconSize: 24,
-      ),
       btnPressed: () => onPressed(),
     );
   }
@@ -77,30 +74,23 @@ class SubmitButton extends StatelessWidget {
 
 class CallButton extends StatelessWidget {
   Function onPressed;
+  double? btnSize;
 
-  CallButton({Key? key, required this.onPressed}) : super(key: key);
+  CallButton({Key? key, required this.onPressed , this.btnSize}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return CustomElevatedButtonWidget(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       btnText: trans("call"),
-      btnTextSize: 16,
-      btnHeight: 48,
-      btnRadius: 4,
-      buttonIconPosition: ButtonIconPosition.left,
-      btnTextColor: AppColor.darkTurquoise,
-      btnTextWeight: AppFontWeight.medium,
-      spaceBetweenTextAndIcon: 30,
+      btnTextSize: 14,
+      btnHeight: btnSize ?? 56,
+      btnRadius: 6,
+      btnBorderWidth: 1,
+      btnTextColor: AppColor.primary900Light,
+      btnTextWeight: AppFontWeight.bold,
       btnColor: AppColor.white,
-      btnBorderColor: AppColor.darkTurquoise,
+      btnBorderColor: AppColor.primary900Light,
       btnPadding: EdgeInsets.symmetric(horizontal: 16),
-      mainAxisSize: MainAxisSize.max,
-      icon: CustomSvgIconWidget(
-        IconPath.callIcon,
-        iconSize: 24,
-        iconColor: AppColor.darkTurquoise,
-      ),
       btnPressed: () => onPressed(),
     );
   }

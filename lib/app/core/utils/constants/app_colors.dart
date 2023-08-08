@@ -68,6 +68,7 @@ class AppColor {
   static const greyishBrown = Color(0xff404040);
   static const primary800Light = Color(0xff2C6F83);
   static const secondary600Light = Color(0xffC1D6AB);
+  static const primary800Light2 = Color(0xff2C6F83);
   static const greyishTeal27 = Color(0x4568a1a1);
   static const primary500Light = Color(0xff739FAC);
   static const black54 = Color(0x8a111111);
@@ -87,6 +88,7 @@ class AppColor {
   static const primary300Light = Color(0xffB9CFD6);
   static const primary50Light = Color(0xffFFFFFF);
   static const primary700Light = Color(0xff447F91);
+  static const primary5Light = Color(0xffF5F9F9);
   static const blackModern600Light = Color(0xff52525b);
   static const primary600Light = Color(0xff5B8F9E);
   static const blackModern100Light = Color(0xfff4f4f5);

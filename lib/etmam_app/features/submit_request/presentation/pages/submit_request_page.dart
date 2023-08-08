@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/default_appbar_widget.dart';
 import 'package:balady_plus/etmam_app/core/services/services_exports.dart'
     show AppEvents;
 import 'package:balady_plus/etmam_app/core/utils/common_functions.dart';
@@ -49,7 +50,7 @@ class _SubmitRequestPageState extends State<SubmitRequestPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(
+      appBar: DefaultAppBarWidget(
         title: trans('etmam_order_info'),
       ),
       body: BlocProvider(

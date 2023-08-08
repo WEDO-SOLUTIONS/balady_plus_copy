@@ -19,12 +19,13 @@ class ProviderDetailsHeader extends StatelessWidget {
       contentPadding: EdgeInsets.zero,
       title: CustomTextWidget(
         providerName ?? "",
-        fontSize: 18,
+        fontSize: 16,
         fontWeight: AppFontWeight.bold,
         fontColor: AppColor.blackModern800Light,
       ),
       subtitle: CustomTextWidget(
         providerAdress ?? "",
+        height: 2,
         fontWeight: AppFontWeight.bold,
         fontColor: AppColor.blackModern500Light,
         fontSize: 14,

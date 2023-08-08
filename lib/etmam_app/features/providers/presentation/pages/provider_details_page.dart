@@ -5,18 +5,18 @@ import 'package:balady_plus/etmam_app/core/dependency_injection/dependency_injec
     show sl;
 
 import 'package:balady_plus/etmam_app/core/utils/utils_exports.dart'
-    show CommonFunctions;
+    show CommonFunctions, IconPath;
 import 'package:balady_plus/app/core/utils/utils_exports.dart'
     show AppFontWeight, BlocStatus;
 
 import 'package:balady_plus/etmam_app/features/providers/providers_exports.dart'
     show
-        AboutProviderOfficeWidget,
-        EtmamProviderMainInfo,
-        ProviderBranchesWidget,
-        ProviderDetailsResponse,
-        ProviderPreviousWorksWidgets,
-        ProviderServicesSection;
+    AboutProviderOfficeWidget,
+    EtmamProviderMainInfo,
+    ProviderBranchesWidget,
+    ProviderDetailsResponse,
+    ProviderPreviousWorksWidgets,
+    ProviderServicesSection;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -24,6 +24,7 @@ import '../../../_shared_feature_/shared/presentation/widgets/rating_evaluation_
 import '../../../_shared_feature_/shared/shared_feature_exports.dart'
     show CustomVerticalSpace, CustomLoadingWidget;
 import '../../../services/presentation/widgets/service_provider_details_widgets/service_details_header_widget.dart';
+import '../../../services/services_exports.dart';
 import '../blocs/provider_details_bloc/provider_details_bloc.dart';
 import '../widgets/provider_details/provider_content.dart';
 
@@ -45,111 +46,124 @@ class _ProviderDetailsPageState extends State<ProviderDetailsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: BlocProvider(
-        create: (context) =>
-            ProviderDetailsBloc(args: widget.args, getServiceDetails: sl()),
-        child: BlocConsumer<ProviderDetailsBloc, ProviderDetailsState>(
-          listener: (context, state) {
-            if (state.status == BlocStatus.failure) {
-              CommonFunctions.showError(state.errorMessage ?? "");
-            }
-          },
-          builder: (context, state) {
-            return Stack(
-              children: [
-                Positioned(
-                  left: 0,
-                  right: 0,
-                  child: Container(
-                    width: MediaQuery.of(context).size.width,
-                    height: MediaQuery.of(context).size.height * 0.275,
-                    decoration: const BoxDecoration(
-                      image: DecorationImage(
-                        image: AssetImage(ImagePath.providerDetailsImgExample),
-                        fit: BoxFit.cover,
+    return BlocProvider(
+      create: (context) =>
+          ProviderDetailsBloc(args: widget.args, getServiceDetails: sl()),
+      child: BlocBuilder<ProviderDetailsBloc, ProviderDetailsState>(
+        builder: (context, state) {
+          return Scaffold(
+            appBar: DefaultAppBarWidget(
+              title: state.args.name,
+            ),
+            body: BlocConsumer<ProviderDetailsBloc, ProviderDetailsState>(
+              listener: (context, state) {
+                if (state.status == BlocStatus.failure) {
+                  CommonFunctions.showError(state.errorMessage ?? "");
+                }
+              },
+              builder: (context, state) {
+                return Stack(
+                  children: [
+                    SingleChildScrollView(
+                      child: Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // ProviderDetailsHeader(
+                            //   providerName: state.args.name ?? "",
+                            //   providerAdress: state.args.mainBranchAddress ?? "",
+                            // ),
+                            // const SizedBox(height: 8),
+                            // ProviderDetailsContentContainer(
+                            //   title: 'تقييم المكتب',
+                            //   content: EtmamRatingEvaluationWidget(
+                            //     rating: state.args.rating ?? 0,
+                            //     totalEvaluation: state.args.ratingsCount ?? 0,
+                            //     withDot: false,
+                            //     isCenter: true,
+                            //   ),
+                            //   isCenter: true,
+                            // ),
+                            const EtmamProviderMainInfo(),
+                            if ((state.args.projects?.length ?? 0) > 0) ...[
+                              const SizedBox(height: 24),
+                              const CustomTextWidget(
+                                "الأعمال سابقة",
+                                fontColor: AppColor.blackModern800Light,
+                                fontWeight: AppFontWeight.bold,
+                                fontSize: 16,
+                              ),
+                              PreviousWorks(
+                                projects: state.args.projects,
+                              ),
+                              const SizedBox(height: 24),
+                            ],
+                            const ProviderServicesSection(),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                ),
-                Positioned(
-                  left: 0,
-                  right: 0,
-                  top: MediaQuery.of(context).size.height * 0.24,
-                  child: Container(
-                    height: MediaQuery.of(context).size.height * 0.76,
-                    padding: const EdgeInsets.all(16),
-                    decoration: const BoxDecoration(
-                      color: AppColor.white4,
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(25),
-                        topRight: Radius.circular(25),
-                      ),
-                    ),
-                    child: SingleChildScrollView(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          ProviderDetailsHeader(
-                            providerName: state.args.name ?? "",
-                            providerAdress: state.args.mainBranchAddress ?? "",
-                          ),
-                          ProviderDetailsContentContainer(
-                            title: 'تقييم المكتب',
-                            content: EtmamRatingEvaluationWidget(
-                              rating: state.args.rating ?? 0,
-                              totalEvaluation: state.args.ratingsCount ?? 0,
-                              withDot: false,
-                              isCenter: true,
-                            ),
-                            isCenter: true,
-                          ),
-                          const EtmamProviderMainInfo(),
-                          const ProviderServicesSection(),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-                Positioned(
-                  top: MediaQuery.of(context).size.height * 0.06,
-                  right: 13,
-                  child: IconButton(
-                    onPressed: Navigator.of(context).pop,
-                    icon: const Icon(Icons.close, color: AppColor.white4),
-                  ),
-                ),
 
-                // Column(
-                //   children: [
-                // ProviderDetailsHeader(
-                //   imageUrl: state.args.logoUrl ?? "",
-                //   providerName: state.args.name ?? "",
-                // ),
-                //     const Expanded(
-                //       child: SingleChildScrollView(
-                //         child: Column(
-                //           children: [
-                // EtmamProviderMainInfo(),
-                //             CustomVerticalSpace(height: 12),
-                //             AboutProviderOfficeWidget(),
-                // ProviderBranchesWidget(),
-                //             ProviderServicesSection(),
-                //             ProviderPreviousWorksWidgets(),
-                //             CustomVerticalSpace(height: 12),
-                //           ],
-                //         ),
-                //       ),
-                //     ),
-                //   ],
-                // ),
+                    // Positioned(
+                    //   left: 0,
+                    //   right: 0,
+                    //   child: Container(
+                    //     width: MediaQuery.of(context).size.width,
+                    //     height: MediaQuery.of(context).size.height * 0.275,
+                    //     decoration:
+                    //         const BoxDecoration(color: AppColor.secondary400Light),
+                    //   ),
+                    // ),
+                    // Positioned(
+                    //   top: MediaQuery.of(context).size.height * 0.06,
+                    //   right: 13,
+                    //   child: IconButton(
+                    //     onPressed: Navigator.of(context).pop,
+                    //     icon: const Icon(Icons.close, color: AppColor.white4),
+                    //   ),
+                    // ),
+                    // Positioned(
+                    //   top: MediaQuery.of(context).size.height * 0.08,
+                    //   right: 0,
+                    //   left: 0,
+                    //   child: const CustomSvgIconWidget(
+                    //     IconPath.bag,
+                    //   ),
+                    // ),
 
-                if (state.status == BlocStatus.loading)
-                  const CustomLoadingWidget()
-              ],
-            );
-          },
-        ),
+                    // Column(
+                    //   children: [
+                    // ProviderDetailsHeader(
+                    //   imageUrl: state.args.logoUrl ?? "",
+                    //   providerName: state.args.name ?? "",
+                    // ),
+                    //     const Expanded(
+                    //       child: SingleChildScrollView(
+                    //         child: Column(
+                    //           children: [
+                    // EtmamProviderMainInfo(),
+                    //             CustomVerticalSpace(height: 12),
+                    //             AboutProviderOfficeWidget(),
+                    // ProviderBranchesWidget(),
+                    //             ProviderServicesSection(),
+                    //             ProviderPreviousWorksWidgets(),
+                    //             CustomVerticalSpace(height: 12),
+                    //           ],
+                    //         ),
+                    //       ),
+                    //     ),
+                    //   ],
+                    // ),
+
+                    if (state.status == BlocStatus.loading)
+                      const CustomLoadingWidget()
+                  ],
+                );
+              },
+            ),
+          );
+        },
       ),
     );
   }

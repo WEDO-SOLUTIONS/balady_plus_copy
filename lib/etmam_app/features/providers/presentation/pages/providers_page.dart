@@ -67,13 +67,13 @@ class _ProvidersPageState extends State<ProvidersPage> {
             resizeToAvoidBottomInset: false,
             appBar: PreferredSize(
               preferredSize:
-                  Size.fromHeight(180 - MediaQuery.of(context).padding.top),
+                  Size.fromHeight(150 - MediaQuery.of(context).padding.top),
               child: CustomAppBarProvidersList(
                 title: trans("service_providers"),
                 bottomWidget: Padding(
                   padding: const EdgeInsets.fromLTRB(16, 16, 16, 20),
                   child: SearchTextFieldWidget(
-                    hintText: "ابحث",
+                    hintText: "ابحث...",
                     containerHeight: 50,
                     onTextChanged: (String? text) {
                       if (text != state.name) {

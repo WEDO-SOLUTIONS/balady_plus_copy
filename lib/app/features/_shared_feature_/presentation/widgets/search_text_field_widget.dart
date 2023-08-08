@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/custom_svg_icon_widget.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../core/utils/constants/app_colors.dart';
@@ -63,11 +64,10 @@ class _SearchTextFieldWidgetState extends State<SearchTextFieldWidget> {
               ),
               suffixIcon: Container(
                 margin: const EdgeInsetsDirectional.only(end: 5),
-                child: Image.asset(
-                  IconPath.vdmapSearchIcon,
-                  height: 20,
-                  width: 20,
-                  color: AppColor.primary700Light,
+                child: const CustomSvgIconWidget(
+                  IconPath.appBarSearch,
+                  iconSize: 20,
+                  iconColor: AppColor.primary700Light,
                 ),
               ),
               fillColor: Colors.transparent,

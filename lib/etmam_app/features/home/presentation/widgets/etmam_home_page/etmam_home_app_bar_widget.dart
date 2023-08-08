@@ -22,15 +22,15 @@ class EtmamHomeAppBarWidget extends StatelessWidget {
     return Container(
       // height: 150,
       width: double.infinity,
-      decoration: const BoxDecoration(
+      decoration:  BoxDecoration(
         boxShadow: [
           BoxShadow(
-            color: Color(0x663B69DE),
+            color: const Color(0xFF3B69DE).withOpacity(0.4),
             blurRadius: 12,
-            offset: Offset(0, 6.8),
+            offset: const Offset(0, 6.8),
           ),
         ],
-        gradient: LinearGradient(
+        gradient: const LinearGradient(
           colors: [
             Color(0xFF155F75),
             Color(0xFF3A879D),
@@ -48,7 +48,6 @@ class EtmamHomeAppBarWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               CustomNewIconButtonWidget(
                 btnPressed: () {
@@ -56,11 +55,14 @@ class EtmamHomeAppBarWidget extends StatelessWidget {
                 },
                 iconWidget: const Icon(Icons.close, color: AppColor.white),
               ),
-              CustomTextWidget(
-                "تفويض المكاتب الهندسية",
-                fontSize: 24,
-                textAlign: TextAlign.start,
-                fontColor: AppColor.white,
+              const Expanded(
+                child: CustomTextWidget(
+                  "بلدي أعمال",
+                  fontSize: 20,
+                  fontWeight: AppFontWeight.bold,
+                  textAlign: TextAlign.start,
+                  fontColor: AppColor.white,
+                ),
               ),
               // CustomIconButtonWidget(
               //   svgIcon: IconPath.searchIconWhite,
@@ -78,7 +80,7 @@ class EtmamHomeAppBarWidget extends StatelessWidget {
               //     NavigationService.pushNamed(
               //         routeName: EtmamRoutesNames.myOrdersPage);
               //   } ,)
-
+              const SizedBox(width: 8),
               CustomCircularContainerForIcons(
                 child: CustomIconButtonWidget(
                   svgIcon: IconPath.ordersIconWhite,
@@ -88,8 +90,8 @@ class EtmamHomeAppBarWidget extends StatelessWidget {
                   },
                   btnHeight: 32,
                   btnWidth: 32,
-                  svgIconWidth: 32,
-                  svgIconHeight: 32,
+                  svgIconWidth: 30,
+                  svgIconHeight: 30,
                 ),
               ),
             ],
@@ -98,7 +100,8 @@ class EtmamHomeAppBarWidget extends StatelessWidget {
           const CustomTextWidget(
             'حدد المدينة التي تريد تنفيذ الخدمة فيها',
             fontWeight: AppFontWeight.bold,
-            fontColor: Color(0xFFCADCB7),
+            fontColor: AppColor.secondary200,
+            fontSize: 14,
           ),
           const CustomVerticalSpace(height: 11),
           const EtmamCityWidget()

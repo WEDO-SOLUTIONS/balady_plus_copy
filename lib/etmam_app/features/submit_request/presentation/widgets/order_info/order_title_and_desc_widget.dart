@@ -132,8 +132,8 @@ class EtmamCustomReadOnlyTextWidget extends StatelessWidget {
       {Key? key,
       required this.label,
       required this.text,
-      this.labelColor = AppColor.baladyDarkGreen2,
-      this.labelSize = 13.0,
+      this.labelColor = AppColor.black700,
+      this.labelSize = 16,
       this.labelTextAlign = TextAlign.start,
       this.borderWidth = 1.0,
       this.borderColor = AppColor.black200,
@@ -155,29 +155,47 @@ class EtmamCustomReadOnlyTextWidget extends StatelessWidget {
               fontSize: labelSize,
               textAlign: labelTextAlign,
               fontWeight: AppFontWeight.bold),
+        // Container(
+        //   padding: const EdgeInsets.symmetric(vertical: 12),
+        //   width: double.infinity,
+        //   decoration: BoxDecoration(
+        //     border: Border(
+        //       bottom: BorderSide(width: borderWidth, color: borderColor),
+        //     ),
+        //   ),
+        //   child: Row(
+        //     children: [
+        //       Expanded(
+        //         child: CustomTextWidget(
+        //           text,
+        //           fontColor: AppColor.black,
+        //           fontSize: 16,
+        //           fontWeight: AppFontWeight.medium,
+        //         ),
+        //       ),
+        //       if (endWidget != null) endWidget!
+        //     ],
+        //   ),
+        // ),
+        const SizedBox(height: 12),
         Container(
-          padding: const EdgeInsets.symmetric(vertical: 12),
-          width: double.infinity,
+          width: MediaQuery.sizeOf(context).width,
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
           decoration: BoxDecoration(
-            border: Border(
-              bottom: BorderSide(width: borderWidth, color: borderColor),
+            borderRadius: const BorderRadius.all(Radius.circular(6)),
+            color: AppColor.white6.withOpacity(0.5),
+          ),
+          child:  Expanded(
+            child: CustomTextWidget(
+              text,
+              fontColor: AppColor.black700,
+              fontSize: 14,
+              maxLines: 2,
+              fontWeight: AppFontWeight.bold,
             ),
           ),
-          child: Row(
-            children: [
-              Expanded(
-                child: CustomTextWidget(
-                  text,
-                  fontColor: AppColor.black,
-                  fontSize: 16,
-                  fontWeight: AppFontWeight.medium,
-                ),
-              ),
-              if (endWidget != null) endWidget!
-            ],
-          ),
         ),
-        CustomVerticalSpace(height: spacerSize),
+        const SizedBox(height: 24),
       ],
     );
   }

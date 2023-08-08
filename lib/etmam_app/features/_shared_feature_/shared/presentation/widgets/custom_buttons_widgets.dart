@@ -506,15 +506,15 @@ class CustomPrimaryButton extends StatelessWidget {
             blurRadius: 8,
             spreadRadius: 0),
       ],
-      btnRadius: 2,
+      btnRadius: 8,
       btnColor: isBtnDisabled
           ? btnColor ?? AppColor.black200
-          : btnColor ?? AppColor.darkTurquoise,
+          : btnColor ?? AppColor.primary900,
       btnTextColor: textColor,
       btnPressed: isBtnDisabled ? () {} : onPressed,
       btnText: btnText,
       btnTextSize: 16.0,
-      btnTextWeight: AppFontWeight.medium,
+      btnTextWeight: AppFontWeight.bold,
       btnHeight: btnHeight,
       btnBorderColor: btnBorderColor,
       btnBorderWidth: 1,

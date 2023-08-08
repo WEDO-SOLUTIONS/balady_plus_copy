@@ -58,9 +58,10 @@ class EtmamCityNameWidget extends StatelessWidget {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(6),
           border: Border.all(
-            color: const Color(0xA168A1A1),
-            width: 2,
+            color: AppColor.primary900,
+            width: 1,
           ),
+          color: Colors.transparent
         ),
         child: Padding(
           padding: const EdgeInsets.all(12.0),
@@ -70,11 +71,11 @@ class EtmamCityNameWidget extends StatelessWidget {
               cityName,
               fontSize: 14,
               fontWeight: AppFontWeight.bold,
-              fontColor: AppColor.white,
+              fontColor: AppColor.black50,
             ),
             const Icon(
               Icons.arrow_drop_down,
-              color: AppColor.white,
+              color: AppColor.black50,
             )
           ]),
         ),
