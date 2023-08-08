@@ -32,8 +32,9 @@ class BusinessLicenseScreen extends StatelessWidget {
             body: Stack(
               children: [
                 const _BusinessLicenseFooter(),
-                Padding(
-                  padding: const EdgeInsets.all(24),
+                Container(
+                  margin: const EdgeInsets.only(bottom: 100),
+                  padding: const EdgeInsets.only(top: 24, left: 24, right: 24),
                   child: Column(
                     children: [
                       const SizedBox(height: 28),
@@ -47,8 +48,7 @@ class BusinessLicenseScreen extends StatelessWidget {
                         onPressed: () {},
                       ),
                       const SizedBox(height: 12),
-                      const _QrCodeCard(),
-                      const Spacer(),
+                      Expanded(flex: 3, child: const _QrCodeCard()),
                       /*  Align(
                         alignment: Alignment.bottomCenter,
                         child: ElevatedButtonWidget.licenseDetails(
@@ -58,6 +58,26 @@ class BusinessLicenseScreen extends StatelessWidget {
                     ],
                   ),
                 ),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 24,
+                  ),
+                  child: Align(
+                    alignment: Alignment.bottomCenter,
+                    child: state.status == BlocStatus.download
+                        ? CircularProgressIndicator(
+                            color: AppColor.white,
+                          )
+                        : ElevatedButtonWidget.licenseDetails(
+                            onPressed: () {
+                              context.read<WalletDetailsBloc>().add(
+                                  ShareWalletItem(
+                                      selectedIetm: state.selectedItem));
+                            },
+                          ),
+                  ),
+                )
               ],
             ),
           );
@@ -86,61 +106,29 @@ class _QrCodeCard extends StatelessWidget {
               image: AssetImage(ImagePath.qrBg),
             ),*/
               ),
-          child: Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const WalletUserImage(),
-                  QrImageView(
-                    data: state.selectedItem?.qrData ?? "",
-                    size: 92,
-                  ),
-                ],
-              ),
-              CustomVerticalSpace(height: 12),
-              Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      WalletLabelInfo(
-                        title: "id_number".tr(),
-                        subTitle: state.selectedItem?.getOwnerId(),
-                      ),
-                    ],
-                  ),
-                  CustomVerticalSpace(height: 12),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      WalletLabelInfo(
-                        title: "digitalWalletCardMunicipalityWord".tr(),
-                        subTitle: state.selectedItem?.municipilityName,
-                      ),
-                      WalletLabelInfo(
-                        title: "digitalWalletCardSubMunicipalityWord".tr(),
-                        subTitle: state.selectedItem?.subMunicipilityName,
-                      )
-                    ],
-                  ),
-                ],
-              ),
-              CustomVerticalSpace(height: 12),
-              if (state.selectedItem?.getLicenseType() == LicenseTypes.peddler)
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const WalletUserImage(),
+                    QrImageView(
+                      data: state.selectedItem?.qrData ?? "",
+                      size: 92,
+                    ),
+                  ],
+                ),
+                CustomVerticalSpace(height: 12),
                 Column(
                   children: [
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         WalletLabelInfo(
-                          title: "activity_name".tr(),
-                          subTitle: state.selectedItem?.activityName,
+                          title: "id_number".tr(),
+                          subTitle: state.selectedItem?.getOwnerId(),
                         ),
-                        WalletLabelInfo(
-                          title: "market_name".tr(),
-                          subTitle: state.selectedItem?.marketName,
-                        )
                       ],
                     ),
                     CustomVerticalSpace(height: 12),
@@ -148,18 +136,49 @@ class _QrCodeCard extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         WalletLabelInfo(
-                          title: "port_number".tr(),
-                          subTitle: state.selectedItem?.locationNumber,
+                          title: "digitalWalletCardMunicipalityWord".tr(),
+                          subTitle: state.selectedItem?.municipilityName,
                         ),
                         WalletLabelInfo(
-                          title: "market_name".tr(),
-                          subTitle: state.selectedItem?.marketName,
+                          title: "digitalWalletCardSubMunicipalityWord".tr(),
+                          subTitle: state.selectedItem?.subMunicipilityName,
                         )
                       ],
                     ),
                   ],
-                )
-            ],
+                ),
+                CustomVerticalSpace(height: 12),
+                if (state.selectedItem?.getLicenseType() ==
+                    LicenseTypes.peddler)
+                  Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          WalletLabelInfo(
+                            title: "market_name".tr(),
+                            subTitle: state.selectedItem?.marketName,
+                          ),
+                          WalletLabelInfo(
+                            title: "port_number".tr(),
+                            subTitle: state.selectedItem?.locationNumber,
+                          ),
+                        ],
+                      ),
+                      CustomVerticalSpace(height: 16),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          WalletLabelInfo(
+                            title: "activity_name".tr(),
+                            subTitle: state.selectedItem?.activityName,
+                          ),
+                        ],
+                      ),
+                    ],
+                  )
+              ],
+            ),
           ),
         );
       },
@@ -190,20 +209,6 @@ class _BusinessLicenseFooter extends StatelessWidget {
                     image: AssetImage(ImagePath.walletBg),
                     fit: BoxFit.fill,
                   ),
-                ),
-                child: Align(
-                  alignment: Alignment.bottomCenter,
-                  child: state.status == BlocStatus.download
-                      ? CircularProgressIndicator(
-                          color: AppColor.white,
-                        )
-                      : ElevatedButtonWidget.licenseDetails(
-                          onPressed: () {
-                            context.read<WalletDetailsBloc>().add(
-                                ShareWalletItem(
-                                    selectedIetm: state.selectedItem));
-                          },
-                        ),
                 ),
               ),
             ],

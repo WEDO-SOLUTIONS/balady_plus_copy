@@ -84,20 +84,26 @@ class _ConfirmCancelLicenseDialogButtons extends StatelessWidget {
               onCancel!();
             }
           },
-          btnColor: AppColor.primary900Light, // as Scaffold background
+          btnColor: Colors.transparent,
+          btnBorderColor: Color(0xFFDC2828), // as Scaffold background
           btnBorderWidth: 2.0,
           btnRadius: 8,
           btnText:
               Helpers.translatingWord('confirmCancelLicenseConfirmButtonWord'),
-          btnTextColor: AppColor.white,
+          btnTextColor: Color(0xFFDC2828),
           btnTextWeight: AppFontWeight.medium,
         ),
         Constants.verticalSpaceSmall,
-        CustomTextButtonWidget(
-          onPressed: () => Navigator.of(context).pop(),
-          text: Helpers.translatingWord("confirmCancelLicenseCancelButtonWord"),
-          btnTextColor: AppColor.primary900Light,
+        EnhancedCustomElevatedButtonWidget(
+          btnPressed: () => Navigator.of(context).pop(),
+          btnText:
+              Helpers.translatingWord("confirmCancelLicenseCancelButtonWord"),
+          btnBorderWidth: 2.0,
+          btnRadius: 8,
           btnTextSize: 16.0,
+          btnColor: AppColor.primary900Light, // as Scaffold background
+
+          btnTextColor: AppColor.white,
           btnTextWeight: AppFontWeight.medium,
         ),
       ],
