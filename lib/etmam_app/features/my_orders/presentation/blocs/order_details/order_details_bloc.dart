@@ -1,4 +1,6 @@
 import 'package:balady_plus/app/core/utils/constants/route_names.dart';
+import 'package:balady_plus/app/features/_shared_feature_/presentation/components/bottom_sheets/bottom_sheet_with_actions.dart';
+import 'package:balady_plus/app/features/_shared_feature_/presentation/dialogs/bottom_sheet_dialogs.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:balady_plus/etmam_app/core/errors/errors_exports.dart'
@@ -87,51 +89,55 @@ class OrderDetailsBloc extends Bloc<OrderDetailsEvent, OrderDetailsState> {
       ShowActionsEvent e, Emitter emitter) async {
     if (e.params.allowedActions != null &&
         e.params.allowedActions!.isNotEmpty) {
-      showDialogWidget(NavigationService.navigatorKey.currentContext!,
-          headerText: trans('order_more_dialog_header'),
-          isFullHeight: false,
-          dialogBody: MoreDialog(
-            actions: e.params.allowedActions!,
-            orderId: e.params.orderId!,
-            //   refresh: refresh,
-            onSelect: (OrderAction action) {
-              NavigationService.navigatorKey.currentState?.pop();
-              if (action == OrderAction.rate) {
-                NavigationService.pushNamed(
-                    routeName: EtmamRoutesNames.evaluateOrderRoute,
-                    args: RatingPageParams(
-                        //logoUrl: "",
-                        orderId: e.params.orderId!,
-                        refresh: () async {
-                          add(RefreshPageHandlerEvent());
-                        }
-                        // providerName: ""
-                        ));
-              }
+      BottomSheetDialog.showDraggableSheet(
+          NavigationService.navigatorKey.currentContext!,
+          // headerText: trans('order_more_dialog_header'),
+          child: BottomSheetWithActions(
+            title: 'الاجراءات',
+            body: MoreDialog(
+              actions: e.params.allowedActions!,
+              orderId: e.params.orderId!,
+              //   refresh: refresh,
+              onSelect: (OrderAction action) {
+                NavigationService.navigatorKey.currentState?.pop();
+                if (action == OrderAction.rate) {
+                  NavigationService.pushNamed(
+                      routeName: EtmamRoutesNames.evaluateOrderRoute,
+                      args: RatingPageParams(
+                          //logoUrl: "",
+                          orderId: e.params.orderId!,
+                          refresh: () async {
+                            add(RefreshPageHandlerEvent());
+                          }
+                          // providerName: ""
+                          ));
+                }
 
-              if (action == OrderAction.update) {
-                add(GetProvidersEvent(
-                  orderId: e.params.orderId!,
-                  params: ServiceParams(
-                      cityId: args.response?.cityId ?? "",
-                      pageIndex: "1",
-                      subServiceId: e.params.subServiceId ?? "",
-                      subServiceName: e.params.subServiceName ?? ""),
-                ));
-              }
-              if (action == OrderAction.cancel) {
-                showDialogWidget(NavigationService.navigatorKey.currentContext!,
-                    headerText: trans('etmam_cancel_order'),
-                    haveBottomLine: true,
-                    isFullHeight: true,
-                    dialogBody: CancelOrderDialog(
-                      refresh: () {
-                        add(RefreshPageHandlerEvent());
-                      },
-                      params: CancelOrderParams(orderId: e.params.orderId!),
-                    ));
-              }
-            },
+                if (action == OrderAction.update) {
+                  add(GetProvidersEvent(
+                    orderId: e.params.orderId!,
+                    params: ServiceParams(
+                        cityId: args.response?.cityId ?? "",
+                        pageIndex: "1",
+                        subServiceId: e.params.subServiceId ?? "",
+                        subServiceName: e.params.subServiceName ?? ""),
+                  ));
+                }
+                if (action == OrderAction.cancel) {
+                  showDialogWidget(
+                      NavigationService.navigatorKey.currentContext!,
+                      headerText: trans('etmam_cancel_order'),
+                      haveBottomLine: true,
+                      isFullHeight: true,
+                      dialogBody: CancelOrderDialog(
+                        refresh: () {
+                          add(RefreshPageHandlerEvent());
+                        },
+                        params: CancelOrderParams(orderId: e.params.orderId!),
+                      ));
+                }
+              },
+            ),
           ));
     }
   }

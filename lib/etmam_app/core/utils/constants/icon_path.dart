@@ -28,6 +28,7 @@ class IconPath {
   static const medalStar = '${_svgIconPath}medal_star$_svg';
   static const building = '${_svgIconPath}buliding$_svg';
   static const bag = '${_svgIconPath}bag$_svg';
+  static const edit = '${_svgIconPath}edit$_svg';
 
   static const defaultCardBackground = '${_svgIconPath}default_background$_svg';
   static const arrowLeft = '${_svgIconPath}arrow_left$_svg';
@@ -39,7 +40,7 @@ class IconPath {
   static const clipboardText = '${_svgIconPath}clipboard_text$_svg';
 
   static const ratingStar = '${_svgIconPath}rating$_svg';
-  static const calendar = '${_svgIconPath}Calendar$_svg';
+  static const calendar = '${_svgIconPath}calendar$_svg';
   static const hashtag = '${_svgIconPath}Hashtag$_svg';
   // static const moreDots = '${_svgIconPath}Dots_horizontal$_svg';
   static const moreDots = '${_svgIconPath}order_action_icon$_svg';
@@ -57,6 +58,8 @@ class IconPath {
   static const expansionArrowUp = '${_svgIconPath}arrow_up$_svg';
   static const expansionArrowDown = '${_svgIconPath}arrow_down$_svg';
   static const arrowForward2 = '${_svgIconPath}arrow_forward$_svg';
+  static const settings2 = '${_svgIconPath}settings2$_svg';
+
 
   // main services logo
   static const constructionIcon = '${_svgIconPath}construction_icon$_svg';

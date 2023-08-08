@@ -36,6 +36,7 @@ class AppColor {
 
   static const blue700 = Color(0xFF0033a0);
   static const primary900 = Color(0xFF155F75);
+  static const primary800 = Color(0xFF2C6F83);
   static const primary50 = Color(0xFFF5F9F9);
   static const primary600 = Color(0xFF5B8F9E);
   static const secondary200 = Color(0xFFE5EEDB);
