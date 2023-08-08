@@ -98,9 +98,9 @@ class DetailsAppBar extends StatelessWidget implements PreferredSizeWidget {
               percent: currentStep / (getPageList().length + 1),
               barRadius: const Radius.circular(33),
               backgroundColor: AppColor.primary100Light,
-              linearGradient: const LinearGradient(colors: [
-                Color(0xff036362),
-                Color(0xff21C45D),
+              linearGradient: LinearGradient(colors: [
+                Color(0xff155F75),
+                Color(0xff159EBB),
               ]),
             ),
           ),

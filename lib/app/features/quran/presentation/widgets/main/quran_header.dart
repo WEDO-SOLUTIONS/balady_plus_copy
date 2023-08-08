@@ -30,7 +30,7 @@ class QuranHeader extends StatelessWidget {
           padding: EdgeInsets.symmetric(horizontal: 16),
           width: double.infinity,
           decoration: BoxDecoration(
-            color: Color(0xff036362),
+            color: AppColor.primary900Light,
           ),
           child:
               Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
