@@ -20,7 +20,7 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
     required GetWeatherInfo getWeatherInfo,
   })  : _getWeatherInfo = getWeatherInfo,
         _getGISData = GetGISData(repository: sl()),
-        super(WeatherState()) {
+        super(WeatherState(gisResponse: CommonProperties.userLocationGIS)) {
     on<GetWeatherForLocation>(_getAllWeatherInfo);
 
     add(GetWeatherForLocation());
@@ -56,9 +56,9 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
           allWeatherInfoStatus: BlocStatus.failure,
           errorMessage: (failure as ServerFailure).errorMessage,
         ));
-      }, (success) async {
+      }, (gisSuccess) async {
         emitter(state.copyWith(
-          gisResponse: success,
+          gisResponse: gisSuccess,
           errorMessage: "",
         ));
         final failureOrSuccess = await _getWeatherInfo(params);
@@ -72,6 +72,7 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
           print("weather entity: $success");
           emitter(state.copyWith(
             allWeatherInfoStatus: BlocStatus.success,
+            gisResponse: gisSuccess,
             allWeatherInfo: success,
             errorMessage: "",
           ));

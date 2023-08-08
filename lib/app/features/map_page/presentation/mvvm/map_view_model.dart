@@ -4,11 +4,13 @@ import 'package:balady_plus/app/features/entry_point/presentation/cubit/auth_cub
 import 'package:balady_plus/app/features/vd/vd_exports.dart';
 import 'package:collection/collection.dart';
 import 'dart:math' show abs;
+import 'package:geolocator/geolocator.dart' as geoLocator;
 
 import 'package:balady_plus/app/core/base/base_view_model.dart';
 import 'package:balady_plus/app/features/map_page/extensions/search_category_ext.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/foundation.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:uuid/uuid.dart';
 import '../../../../core/dependency_injection/injection_container.dart';
 import '../../../../core/services/local/helpers.dart';
@@ -265,8 +267,6 @@ class MapViewModel extends BaseViewModel {
     await controller.loadStyles(Constants.mapStyle);
     await controller.overrideLocales(["ar-SA"]);
     // await controller.overrideLocales([localeState.value.locale]);
-    initialized.value = true;
-    generalControlsState.value = true;
     // goToLocation();
     await controller.setMarkerOptions(
       MarkerOptionsMessageOld(
@@ -319,10 +319,39 @@ class MapViewModel extends BaseViewModel {
 
 
 */
+
+    final permission = await Permission.location.request();
+    if (permission.isGranted) {
+      await controller.onLocationPremissionGranted();
+      geoLocator.Position position =
+          await geoLocator.Geolocator.getCurrentPosition(
+        desiredAccuracy: geoLocator.LocationAccuracy.high,
+        timeLimit: const Duration(seconds: 13),
+      );
+      await controller.setCameraPosition(
+        CameraPositionMessage(
+          point: GeoPointMessage(
+            latitude: position.latitude,
+            longitude: position.longitude,
+          ),
+          zoom: 13,
+          tilt: 0,
+          bearing: 0,
+        ),
+      );
+    }
+
+    initialized.value = true;
+    generalControlsState.value = true;
+
     return true;
   }
 
-  void onLocationTap() => unawaited(controller.changeFollowState());
+  void onLocationTap() async {
+    final permission = await Permission.location.request();
+
+    unawaited(controller.changeFollowState());
+  }
 
   void onLevelTap(IndoorLevel level) =>
       unawaited(controller.selectIndoorLevel(level));
