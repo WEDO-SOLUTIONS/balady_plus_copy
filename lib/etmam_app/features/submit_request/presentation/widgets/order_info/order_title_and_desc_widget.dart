@@ -23,13 +23,13 @@ class OrderTitleAndDescWidget extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        CustomTextWidget(title,
+        if(title.isNotEmpty)CustomTextWidget(title,
             fontColor: AppColor.baladyDarkGreen2,
             fontSize: 13,
             textAlign: TextAlign.start,
             fontWeight: AppFontWeight.bold),
         //TitleWidget(title: title),
-        CustomVerticalSpace(height: spaceBetweenTitleAndDesc),
+        if(title.isNotEmpty)CustomVerticalSpace(height: spaceBetweenTitleAndDesc),
         if (desc != null)
           CustomTextWidget(
             desc ?? "",

@@ -13,7 +13,17 @@ import 'package:balady_plus/app/core/utils/utils_exports.dart'
 import 'package:balady_plus/etmam_app/features/_shared_feature_/shared/shared_feature_exports.dart'
     show CustomAppBar, CustomLoadingWidget;
 import 'package:balady_plus/etmam_app/features/my_orders/my_orders_exports.dart'
-    show ActionParams, OrderDetailsBloc, OrderDetailsPageParams, OrderDetailsState, OrderInfoSectionWidget, OtherInfoSectionWidget, ProviderCardWidget, ProviderSectionWidget, ServiceDetailsSectionWidget, ShowActionsEvent;
+    show
+        ActionParams,
+        OrderDetailsBloc,
+        OrderDetailsPageParams,
+        OrderDetailsState,
+        OrderInfoSectionWidget,
+        OtherInfoSectionWidget,
+        ProviderCardWidget,
+        ProviderSectionWidget,
+        ServiceDetailsSectionWidget,
+        ShowActionsEvent;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -72,8 +82,8 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                       padding: const EdgeInsetsDirectional.only(end: 16),
                       child: Image.asset(
                         IconPath.settings,
-                        width: 48,
-                        height: 48,
+                        width: 42,
+                        height: 42,
                       ),
                     ),
                   )
@@ -102,55 +112,59 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                   padding: const EdgeInsets.all(16),
                   child: Column(
                     children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            children: [
-                              CustomSvgIconWidget(
-                                IconPath.calendar,
-                                iconSize: 18,
-                                iconColor: AppColor.primary600Light,
-                              ),
-                              SizedBox(width: 6),
-                              CustomTextWidget(
-                                state.response?.getCreatedDate() ?? '',
-                                fontSize: 12,
-                                fontWeight: AppFontWeight.bold,
-                                fontColor: AppColor.blackModern500Light,
-                              ),
-                            ],
-                          ),
-                          Container(
-                            padding: const EdgeInsets.symmetric(vertical: 8,horizontal: 16),
-                            decoration: const BoxDecoration(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(16)),
-                              color: AppColor.white,
-                            ),
-                            child: Row(
+                      Padding(
+                        padding: const EdgeInsetsDirectional.only(start: 12),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
                               children: [
-                                CustomTextWidget(
-                                  state.response?.status?.name ?? "",
-                                  fontSize: 11,
-                                  fontWeight: AppFontWeight.bold,
-                                  fontColor: AppColor.primary900Light,
+                                const CustomSvgIconWidget(
+                                  IconPath.calendar,
+                                  iconSize: 24,
+                                  iconColor: AppColor.primary600Light,
                                 ),
-                                // SizedBox(width: 8),
-                                // Icon(
-                                //   Icons.arrow_drop_down_sharp,
-                                //   size: 16,
-                                //   color: AppColor.primary900Light,
-                                // ),
+                                const SizedBox(width: 6),
+                                CustomTextWidget(
+                                  state.response?.getCreatedDate() ?? '',
+                                  fontSize: 12,
+                                  fontWeight: AppFontWeight.bold,
+                                  fontColor: AppColor.blackModern500Light,
+                                ),
                               ],
                             ),
-                          )
-                        ],
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 8, horizontal: 16),
+                              decoration: const BoxDecoration(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(16)),
+                                color: AppColor.white,
+                              ),
+                              child: Row(
+                                children: [
+                                  CustomTextWidget(
+                                    state.response?.status?.name ?? "",
+                                    fontSize: 11,
+                                    fontWeight: AppFontWeight.bold,
+                                    fontColor: AppColor.primary900Light,
+                                  ),
+                                  // SizedBox(width: 8),
+                                  // Icon(
+                                  //   Icons.arrow_drop_down_sharp,
+                                  //   size: 16,
+                                  //   color: AppColor.primary900Light,
+                                  // ),
+                                ],
+                              ),
+                            )
+                          ],
+                        ),
                       ),
                       const SizedBox(height: 16),
                       CustomExpansionPanelWidget(
-                        leading: CustomSvgIconWidget(
-                          IconPath.personalInfoSectionIcon,
+                        leading: const CustomSvgIconWidget(
+                          IconPath.edit,
                           iconColor: AppColor.primary600Light,
                           iconSize: 20,
                         ),
@@ -169,8 +183,8 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                       ),
                       const SizedBox(height: 12),
                       CustomExpansionPanelWidget(
-                        leading: CustomSvgIconWidget(
-                          IconPath.personalInfoSectionIcon,
+                        leading: const CustomSvgIconWidget(
+                          IconPath.edit,
                           iconColor: AppColor.primary600Light,
                           iconSize: 20,
                         ),
@@ -184,8 +198,8 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                       ),
                       const SizedBox(height: 12),
                       CustomExpansionPanelWidget(
-                        leading: CustomSvgIconWidget(
-                          IconPath.personalInfoSectionIcon,
+                        leading: const CustomSvgIconWidget(
+                          IconPath.edit,
                           iconColor: AppColor.primary600Light,
                           iconSize: 20,
                         ),
@@ -198,59 +212,67 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                             itemBuilder: (ctx, index) => Column(
                               children: [
                                 OrderTitleAndDescWidget(
-                                  spaceBetweenTitleAndDesc: 8,
-                                  title:
-                                  state.response?.subOrders?[index].serviceName ??
-                                      "",
+                                  spaceBetweenTitleAndDesc: 0,
+                                  title: "",
                                   descWidget: ProviderCardWidget(
-                                    providerName: state.response?.subOrders?[index]
-                                        .providerName ??
+                                    serviceName: state.response
+                                            ?.subOrders?[index].serviceName ??
                                         "",
-                                    showMoreAction: (state.response?.subOrders?[index]
-                                        .actionsOnOrder !=
-                                        null &&
+                                    providerName: state.response
+                                            ?.subOrders?[index].providerName ??
+                                        "",
+                                    showMoreAction: (state
+                                                .response
+                                                ?.subOrders?[index]
+                                                .actionsOnOrder !=
+                                            null &&
                                         (state.response?.subOrders?[index]
-                                            .actionsOnOrder?.length ??
-                                            0) >
+                                                    .actionsOnOrder?.length ??
+                                                0) >
                                             0),
                                     onMoreAction: () {
                                       context.read<OrderDetailsBloc>().add(
                                           ShowActionsEvent(
                                               params: ActionParams(
-                                                  allowedActions: state
-                                                      .response
-                                                      ?.subOrders?[index]
-                                                      .actionsOnOrder,
+                                                  allowedActions:
+                                                      state
+                                                          .response
+                                                          ?.subOrders?[index]
+                                                          .actionsOnOrder,
                                                   orderId: state.response!
                                                       .subOrders![index].id!,
-                                                  subServiceId: state.response!
-                                                      .subOrders![index].serviceId!,
-                                                  subServiceName: state
+                                                  subServiceId: state
                                                       .response!
-                                                      .subOrders?[index]
-                                                      .serviceName ??
+                                                      .subOrders![index]
+                                                      .serviceId!,
+                                                  subServiceName: state
+                                                          .response!
+                                                          .subOrders?[index]
+                                                          .serviceName ??
                                                       "")));
                                     },
-                                    providerLogoUrl: state.response?.subOrders?[index]
-                                        .providerLogoUrl ??
+                                    providerLogoUrl: state
+                                            .response
+                                            ?.subOrders?[index]
+                                            .providerLogoUrl ??
                                         "",
-                                    statusText: state
-                                        .response?.subOrders?[index].status?.name,
+                                    statusText: state.response
+                                        ?.subOrders?[index].status?.name,
                                     orderStatus: CommonFunctions.getOrderStatus(
-                                        state.response?.subOrders?[index].status?.id),
+                                        state.response?.subOrders?[index].status
+                                            ?.id),
                                   ),
                                 ),
                                 const CustomVerticalSpace(height: 16)
                               ],
                             ),
                           ),
-
                         ],
                       ),
                       const SizedBox(height: 12),
                       CustomExpansionPanelWidget(
-                        leading: CustomSvgIconWidget(
-                          IconPath.personalInfoSectionIcon,
+                        leading: const CustomSvgIconWidget(
+                          IconPath.edit,
                           iconColor: AppColor.primary600Light,
                           iconSize: 20,
                         ),

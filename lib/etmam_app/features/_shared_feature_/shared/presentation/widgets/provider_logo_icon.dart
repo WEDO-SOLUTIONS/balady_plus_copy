@@ -65,7 +65,8 @@ class EtmamProviderLogoIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       margin: imageMargin,
-      child: ClipOval(
+      child: ClipRRect(
+        borderRadius: const BorderRadius.all(Radius.circular(8)),
         child: CustomNetworkImageWidget(
           imageUrl,
           imageHeight: imageSize,
