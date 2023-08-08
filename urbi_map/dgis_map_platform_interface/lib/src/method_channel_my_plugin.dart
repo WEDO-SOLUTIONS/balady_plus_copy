@@ -672,31 +672,6 @@ class MethodChannelDgisMapPlugin implements DgisMapPlugin, FlutterMapApi {
   }
 
   @override
-  Future<void> setRouteParams(RouteEditorRouteParamsMessage params) {
-    return _api.setRouteParams(params);
-  }
-
-  @override
-  Future<void> hideRoutes() {
-    return _api.hideRoutes();
-  }
-
-  @override
-  Future<void> startNavigation() {
-    return _api.startNavigation();
-  }
-
-  @override
-  Future<void> startNavigationSimulation() {
-    return _api.startNavigationSimulation();
-  }
-
-  @override
-  Future<void> stopNavigation() {
-    return _api.stopNavigation();
-  }
-
-  @override
   Future<void> moveCameraToSelectedPanorama() {
     return _api.moveCameraToSelectedPanorama();
   }
@@ -717,26 +692,6 @@ class MethodChannelDgisMapPlugin implements DgisMapPlugin, FlutterMapApi {
   }
 
   @override
-  Future<void> onCompassClicked() {
-    return _api.onCompassClicked();
-  }
-
-  @override
-  Future<void> startFreeRoam() {
-    return _api.startFreeRoam();
-  }
-
-  @override
-  Future<void> stopFreeRoam() {
-    return _api.stopFreeRoam();
-  }
-
-  @override
-  Future<void> toggleSound() {
-    return _api.toggleSound();
-  }
-
-  @override
   Future<void> onTrafficAndParkingAttached() {
     return _api.onTrafficAndParkingAttached();
   }
@@ -754,10 +709,5 @@ class MethodChannelDgisMapPlugin implements DgisMapPlugin, FlutterMapApi {
   @override
   Future<void> onTrafficClicked() {
     return _api.onTrafficClicked();
-  }
-
-  @override
-  Future<void> setPublicTransportActiveRoute(int routeIndex) {
-    return _api.setPublicTransportActiveRoute(routeIndex);
   }
 }

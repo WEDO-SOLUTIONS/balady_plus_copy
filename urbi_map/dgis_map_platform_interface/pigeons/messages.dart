@@ -429,33 +429,6 @@ class MarkerOptionsMessageOld {
   final double iconWidth;
 }
 
-enum RouteSearchOptionsMessage {
-  car,
-  publicTransport,
-  bicycle,
-  pedestrian,
-  scooter,
-  truck,
-  taxi
-}
-
-class RouteEditorRouteParamsMessage {
-  RouteEditorRouteParamsMessage(
-    this.startPoint,
-    this.finishPoint,
-    // TODO: not yet supported
-    // this.intermediatePoints,
-    this.options,
-  );
-
-  final GeoPointMessage? startPoint;
-  final GeoPointMessage? finishPoint;
-
-  // TODO: not yet supported
-  // final List<RouteSearchPointMessage> intermediatePoints;
-  final RouteSearchOptionsMessage options;
-}
-
 enum DesiredAccuracyMessage { low, medium, high }
 
 class MarkerWithPhotoMessage {
@@ -1078,31 +1051,7 @@ abstract class MapApi {
   int overlappedBy(GeoRectMessage outerRect, GeoRectMessage innerRect);
 
   @async
-  void setRouteParams(RouteEditorRouteParamsMessage params);
-
-  @async
-  void hideRoutes();
-
-  @async
-  void startNavigation();
-
-  @async
-  void startNavigationSimulation();
-
-  @async
-  void stopNavigation();
-
-  @async
   void setPanoramaMarkerAzimuth(MarkerAzimuthMessage message);
-
-  @async
-  void onCompassClicked();
-
-  @async
-  void setPublicTransportActiveRoute(int routeIndex);
-
-  @async
-  void toggleSound();
 
   @async
   void onTrafficAndParkingAttached();
@@ -1115,12 +1064,6 @@ abstract class MapApi {
 
   @async
   void onTrafficClicked();
-
-  @async
-  void startFreeRoam();
-
-  @async
-  void stopFreeRoam();
 }
 
 @FlutterApi()
