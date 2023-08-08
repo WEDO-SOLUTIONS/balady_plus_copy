@@ -21,6 +21,7 @@ const _png = '.png';
 class IconPath {
   //! SVG Icons
   static const arrowBack = '${_svgIconPath}arrow_back_icon$_svg';
+
   static const close = '${_svgIconPath}arrow_back_icon$_svg';
   static const upload = '${_svgIconPath}arrow_back_icon$_svg';
   static const search = '${_svgIconPath}search_icon$_svg';
@@ -180,9 +181,16 @@ class IconPath {
 
   //Athkar
 
-  static const morningAthkarIcon = '${_svgAthkarIconPath}morning_athkar$_svg';
-  static const sleepingAthkarIcon = '${_svgAthkarIconPath}evening_athkar$_svg';
-  static const eveningAthkarIcon = '${_svgAthkarIconPath}sleeping_athkar$_svg';
+  static const morningAthkarIcon = '${_svgAthkarIconPath}morning$_svg';
+  static const sleepingAthkarIcon = '${_svgAthkarIconPath}evening$_svg';
+  static const eveningAthkarIcon = '${_svgAthkarIconPath}sleeping$_svg';
+  static const afterPrayerIcon = '${_svgAthkarIconPath}after_prayer$_svg';
+  static const praisesIcon = '${_svgAthkarIconPath}praises$_svg';
+  static const wakeUp = '${_svgAthkarIconPath}wake_up$_svg';
+  static const pray = '${_svgAthkarIconPath}pray$_svg';
+  static const handPrayer = '${_svgAthkarIconPath}hand-pray$_svg';
+  static const notificationOn = '${_svgAthkarIconPath}notification_on$_svg';
+
   static const reset = '${_svgAthkarIconPath}reset$_svg';
 
   static const muslimNumberFrame =

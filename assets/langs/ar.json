@@ -72,6 +72,7 @@
   "services": "الخدمات",
   "nearby": "قريب مني",
   "profile": "الحساب",
+  "timer_reminder":"تذكير باذكار الصباح",
 
   "male":"ذكر", 
   "female":"أنثى", 
@@ -2131,6 +2132,7 @@
 "support_momra_email": "BaladyBankCare@momrah.gov.sa",
 "choose_license": "اختيار الرخصة",
 "daem_ticket_info": "معلومات التذكرة",
+"reminder":"تذكير",
 "daem_municipality_subMunicipality": "الأمانة والبلدية",
 "daem_municiplaity": "الأمانة",
 "daem_sub_municiplaity": "البلدية",

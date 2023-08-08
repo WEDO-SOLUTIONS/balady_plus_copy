@@ -1295,22 +1295,22 @@ class StaticAthkarData {
     AthkarCategory(
         name: 'اذكار بعد الصلاة',
         athkarEntities: afterPrayerAthkarEntites,
-        icon: IconPath.eveningAthkarIcon),
+        icon: IconPath.afterPrayerIcon),
     AthkarCategory(
         name: 'التسابيح',
         athkarEntities: praisesAthkarEntities,
-        icon: IconPath.eveningAthkarIcon),
+        icon: IconPath.praisesIcon),
     AthkarCategory(
         name: 'اذكار الاستيقاظ من النوم',
         athkarEntities: wakeUpAthkarEntities,
-        icon: IconPath.morningAthkarIcon),
+        icon: IconPath.wakeUp),
     AthkarCategory(
-        name: 'اذكار بعد الصلاة',
+        name: 'اذكار الصلاة',
         athkarEntities: prayerAthkarEntities,
-        icon: IconPath.eveningAthkarIcon),
+        icon: IconPath.pray),
     AthkarCategory(
         name: 'جوامع الدعاء',
         athkarEntities: allAthkarEntities,
-        icon: IconPath.eveningAthkarIcon),
+        icon: IconPath.handPrayer),
   ];
 }

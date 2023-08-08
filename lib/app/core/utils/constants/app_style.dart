@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart' show EdgeInsets, TextStyle;
+import 'package:flutter/material.dart' show Color, EdgeInsets, TextStyle;
 
 import '../utils_exports.dart'
     show AppColor, AppConfig, AppFontWeight, UIHelper;
@@ -14,6 +14,25 @@ class AppStyle {
     color: AppColor.black,
     fontFamily: fontFamily,
   );
+  static final athkarTimeStyle = TextStyle(
+    fontSize: 14,
+    fontFamily: fontFamily,
+    color: Color(0xff2C6F83),
+    fontWeight: AppFontWeight.bold.fontWeight,
+  );
+  static final timerStyle = TextStyle(
+    fontSize: 23,
+    color: AppColor.black,
+    fontWeight: AppFontWeight.regular.fontWeight,
+    fontFamily: fontFamily,
+  );
+  static final athkarNameStyle = TextStyle(
+    fontSize: 15,
+    fontWeight: AppFontWeight.bold.fontWeight,
+    fontFamily: fontFamily,
+    color: AppColor.black,
+  );
+
   static final mainTextSecondaryStyle = TextStyle(
     fontSize: 16.0,
     fontWeight: AppFontWeight.medium.fontWeight,

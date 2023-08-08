@@ -30,7 +30,7 @@ class AthkarEntityContent extends StatelessWidget {
             textStyle: AppStyle.serviceDescriptionStyle,
             maxLines: 4,
           ),
-          Expanded(
+          const Expanded(
             child: SizedBox(),
           ),
           CounterAthkarWidget(
