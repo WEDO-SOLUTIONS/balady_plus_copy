@@ -17,4 +17,7 @@ class ImagePath {
 
   static const service_provider_image = '${_imagePath}default_background$_png';
   static const service_provider_logo = '${_imagePath}logo_temp$_png';
+
+  static const attach = '${_imagePath}attach$_png';
+
 }

@@ -25,6 +25,9 @@ class IconPath {
   static const checkRadioIcon = '${_svgIconPath}check_radio$_svg';
   static const serviceTempIcon = '${_svgIconPath}service_temp$_svg';
   static const serviceTempBaladyIcon = '${_svgIconPath}icon-enginner$_svg';
+  static const medalStar = '${_svgIconPath}medal_star$_svg';
+  static const building = '${_svgIconPath}buliding$_svg';
+  static const bag = '${_svgIconPath}bag$_svg';
 
   static const defaultCardBackground = '${_svgIconPath}default_background$_svg';
   static const arrowLeft = '${_svgIconPath}arrow_left$_svg';
@@ -44,9 +47,11 @@ class IconPath {
   // static const delegateIcon = '${_svgIconPath}delegateIcon$_svg';
   static const delegateIcon = '${_svgIconPath}delegate_icon$_svg';
   static const callIcon = '${_svgIconPath}callIcon$_svg';
+  static const call = '${_svgIconPath}call$_svg';
   static const favoriteHeartIcon = '${_svgIconPath}favoriteHeartIcon$_svg';
   static const logoutIcon = '${_svgIconPath}logoutIcon$_svg';
   static const settings = '${_pngIconPath}settings$_png';
+  static const attach = '${_pngIconPath}attach$_png';
 
   static const leftArrow = '${_svgIconPath}left_arrow$_svg';
   static const expansionArrowUp = '${_svgIconPath}arrow_up$_svg';

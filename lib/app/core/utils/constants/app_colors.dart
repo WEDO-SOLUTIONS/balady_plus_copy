@@ -67,6 +67,7 @@ class AppColor {
   static const iceBlue = Color(0xffe9f2f3);
   static const greyishBrown = Color(0xff404040);
   static const primary800Light = Color(0xff1c7372);
+  static const primary800Light2 = Color(0xff2C6F83);
   static const secondary600Light = Color(0xff84ad57);
   static const greyishTeal27 = Color(0x4568a1a1);
   static const primary500Light = Color(0xff68a1a1);
@@ -86,6 +87,7 @@ class AppColor {
   static const defaultWhite = Color(0xffffffff);
   static const primary300Light = Color(0xff9ac1c0);
   static const primary50Light = Color(0xffe6efef);
+  static const primary5Light = Color(0xffF5F9F9);
   static const primary700Light = Color(0xff358281);
   static const blackModern600Light = Color(0xff52525b);
   static const primary600Light = Color(0xff4f9291);

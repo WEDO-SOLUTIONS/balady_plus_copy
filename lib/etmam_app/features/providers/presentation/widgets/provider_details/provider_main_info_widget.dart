@@ -3,12 +3,13 @@ import 'package:balady_plus/etmam_app/core/utils/common_functions.dart';
 import 'package:balady_plus/etmam_app/features/providers/presentation/blocs/provider_details_bloc/provider_details_bloc.dart';
 import 'package:balady_plus/etmam_app/features/providers/presentation/widgets/provider_details/provider_content.dart';
 import 'package:balady_plus/etmam_app/features/services/services_exports.dart'
-    show InfoWithIcon;
+    show InfoCard, InfoWithIcon, PreviousWorks, ServiceFaqSection;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../../../app/core/utils/constants/app_colors.dart';
+import '../../../../../core/utils/constants/app_config.dart';
 import '../../../../../core/utils/constants/icon_path.dart';
 import '../../../../../core/utils/enums/app_font_weight.dart';
 import '../../../../_shared_feature_/shared/shared_feature_exports.dart'
@@ -91,74 +92,71 @@ class EtmamProviderMainInfo extends StatelessWidget {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(height: 28),
+            const SizedBox(height: 8),
+
             const CustomTextWidget(
               'تفاصيل العمل والتواصل',
               fontColor: AppColor.blackModern800Light,
-              fontWeight: AppFontWeight.w600,
+              fontWeight: AppFontWeight.bold,
               fontSize: 16,
               textAlign: TextAlign.start,
             ),
             const CustomVerticalSpace(height: 16),
-            ProviderDetailsContentContainer(
-              title: 'الفرع الرئيسي',
-              content: CustomTextWidget(state.args.mainBranchAddress ?? "",
-                  fontSize: 13,
-                  fontWeight: AppFontWeight.bold,
-                  fontColor: AppColor.blackModern500Light),
-              icon: IconPath.locationSectionIcon,
+            WorkingDayListWidget(
+              workingHours: state.args.wrokDays,
             ),
+            const CustomVerticalSpace(height: 8),
+            InfoCard(
+              iconPath: IconPath.locationSectionIcon,
+              title: trans('main_branch'),
+              value: state.args.mainBranchAddress ?? "",
+            ),
+            // ProviderDetailsContentContainer(
+            //   title: 'الفرع الرئيسي',
+            //   content: CustomTextWidget(state.args.mainBranchAddress ?? "",
+            //       fontSize: 13,
+            //       fontWeight: AppFontWeight.bold,
+            //       fontColor: AppColor.blackModern500Light),
+            //   icon: IconPath.locationSectionIcon,
+            // ),
             // ProviderDetailsContentContainer(
             //   title: 'ساعات العمل',
             //   content: WorkingDayListWidget(
             //     workingHours: state.args.wrokDays,
             //   ),
             // ),
-            WorkingDayListWidget(
-              workingHours: state.args.wrokDays,
+            InfoCard(
+              onTap: () => CommonFunctions.launch(state.args.website ?? ""),
+              iconPath: IconPath.websiteIcon,
+              title: "الموقع الإلكتروني",
+              value: state.args.website ?? "",
             ),
-            ProviderDetailsContentContainer(
-              title: 'الموقع الإلكتروني',
-              content: CustomTextWidget(state.args.website ?? "",
-                  fontSize: 13,
-                  fontWeight: AppFontWeight.bold,
-                  fontColor: AppColor.blackModern500Light),
-              icon: IconPath.websiteIcon,
-            ),
-            ProviderDetailsContentContainer(
-              title: 'رقم التواصل',
-              content: Row(
+            InfoCard(
+              onTap: () => CommonFunctions.call(state.args.mainBranchContact),
+              iconPath: IconPath.call,
+              title: trans('office_mobile'),
+              value: state.args.mainBranchContact,
+              leading: const Row(
                 children: [
-                  Expanded(
-                    child: CustomTextWidget(state.args.mainBranchContact ?? "",
-                        fontSize: 13,
-                        fontWeight: AppFontWeight.bold,
-                        fontColor: AppColor.blackModern500Light),
-                  ),
-                   Row(
-                    children: [
-                      const CustomSvgIconWidget(IconPath.phoneIcon),
-                      const SizedBox(width: 2),
-                      GestureDetector(
-                        onTap: (){
-                          launch("tel://${state.args.mainBranchContact}");
-                        },
-                        child: const CustomTextWidget(
-                          "اتصال",
-                          fontSize: 12,
-                          textStyle: TextStyle(
-                            decoration: TextDecoration.underline,
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold,
-                            color: AppColor.primary900Light
-                          ),
-                        ),
-                      ),
-                    ],
+                  CustomSvgIconWidget(IconPath.call),
+                  SizedBox(width: 4),
+                  CustomTextWidget(
+                    "اتصال",
+                    textStyle: TextStyle(
+                      fontSize: 12,
+                      decoration: TextDecoration.underline,
+                      fontWeight: FontWeight.bold,
+                      color: AppColor.primary900Light,
+                    ),
                   )
                 ],
               ),
-              icon: IconPath.phoneIcon,
+            ),
+            InfoCard(
+              iconPath: IconPath.medalStar,
+              title: trans('evaluate_office'),
+              value:
+              "${state.args.rating} (${state.args.ratingsCount})",
             ),
           ],
         );

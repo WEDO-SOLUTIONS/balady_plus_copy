@@ -52,6 +52,7 @@ export 'presentation/pages/office_info_page.dart';
 /// presentation -> widgets
 
 export 'presentation/widgets/service_provider_item.dart';
+export 'presentation/widgets/info_card.dart';
 export 'presentation/widgets/service_provider_details_widgets/service_details_header_widget.dart';
 export 'presentation/widgets/service_provider_details_widgets/service_main_info_widget.dart';
 export 'presentation/widgets/service_provider_details_widgets/service_info_widget.dart';

@@ -20,54 +20,52 @@ class ProviderServicesSection extends StatelessWidget {
     return BlocBuilder<ProviderDetailsBloc, ProviderDetailsState>(
       builder: (context, state) {
         return state.args.supportedServices != null
-            ? Container(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const CustomTextWidget(
-                        "الخدمات المقدمة",
-                        fontColor: AppColor.blackModern800Light,
-                        fontSize: 18,
-                        fontWeight: AppFontWeight.bold,
-                      ),
-                      const CustomVerticalSpace(height: 16),
-                      GridView.builder(
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                          padding: const EdgeInsets.only(top: 10),
-                          gridDelegate:
-                              const SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisCount: 2,
-                                  crossAxisSpacing: 20,
-                                  mainAxisSpacing: 20.0,
-                                  mainAxisExtent: 162),
-                          itemCount: state.args.supportedServices?.length ?? 0,
-                          itemBuilder: (ctx, index) {
-                            return EtmamSubServiceCardWidget(
-                              subServiceIcon: state.args
-                                      .supportedServices?[index].logoImageUrl ??
-                                  "",
-                              subServiceName: state.args
-                                      .supportedServices?[index].serviceName ??
-                                  "",
-                              btnPressed: () {
-                                context.read<ProviderDetailsBloc>().add(
-                                    GetServiceDetailsEvent(
-                                        params: ServiceDetailsParams(
-                                            serviceProviderId:
-                                                state.args.id ?? "",
-                                            cityId: CommonProperties.cityId,
-                                            subServiceId: state
-                                                    .args
-                                                    .supportedServices?[index]
-                                                    .serviceId ??
-                                                "")));
-                              },
-                            );
-                          }),
-                      const CustomVerticalSpace(height: 12),
-                    ]))
+            ? Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const CustomTextWidget(
+                    "الخدمات المقدمة",
+                    fontColor: AppColor.blackModern800Light,
+                    fontSize: 16,
+                    fontWeight: AppFontWeight.bold,
+                  ),
+                  const CustomVerticalSpace(height: 16),
+                  GridView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      padding: const EdgeInsets.only(top: 10),
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2,
+                              crossAxisSpacing: 20,
+                              mainAxisSpacing: 20.0,
+                              mainAxisExtent: 162),
+                      itemCount: state.args.supportedServices?.length ?? 0,
+                      itemBuilder: (ctx, index) {
+                        return EtmamSubServiceCardWidget(
+                          subServiceIcon: state.args
+                                  .supportedServices?[index].logoImageUrl ??
+                              "",
+                          subServiceName: state.args
+                                  .supportedServices?[index].serviceName ??
+                              "",
+                          btnPressed: () {
+                            context.read<ProviderDetailsBloc>().add(
+                                GetServiceDetailsEvent(
+                                    params: ServiceDetailsParams(
+                                        serviceProviderId:
+                                            state.args.id ?? "",
+                                        cityId: CommonProperties.cityId,
+                                        subServiceId: state
+                                                .args
+                                                .supportedServices?[index]
+                                                .serviceId ??
+                                            "")));
+                          },
+                        );
+                      }),
+                  const CustomVerticalSpace(height: 12),
+                ])
             : Container();
       },
     );

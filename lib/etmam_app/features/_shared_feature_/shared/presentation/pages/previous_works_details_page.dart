@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/default_appbar_widget.dart';
 import 'package:balady_plus/etmam_app/features/_shared_feature_/shared/shared_feature_exports.dart'
     show
         CustomAppBar,
@@ -35,7 +36,7 @@ class _PreviousWorksDetailsPageState extends State<PreviousWorksDetailsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: CustomAppBar(title: trans('project_details')),
+        appBar: DefaultAppBarWidget(title: trans('project_details')),
         body: SingleChildScrollView(
           child: Container(
             width: double.infinity,

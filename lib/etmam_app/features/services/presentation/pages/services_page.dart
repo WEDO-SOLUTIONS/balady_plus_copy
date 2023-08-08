@@ -98,13 +98,13 @@ class _ServicesPageState extends State<ServicesPage> {
             resizeToAvoidBottomInset: false,
             appBar: PreferredSize(
               preferredSize:
-                  Size.fromHeight(180 - MediaQuery.of(context).padding.top),
+                  Size.fromHeight(150 - MediaQuery.of(context).padding.top),
               child: CustomAppBarProvidersList(
                 title: 'مكاتب ${widget.args.response?.serviceName ?? ''}',
                 bottomWidget: Padding(
                   padding: const EdgeInsets.fromLTRB(16, 16, 16, 20),
                   child: SearchTextFieldWidget(
-                      hintText: "ابحث",
+                      hintText: "ابحث...",
                       containerHeight: 50,
                       onTextChanged: (String? text) {
                         if (text != state.name) {
@@ -112,7 +112,6 @@ class _ServicesPageState extends State<ServicesPage> {
                             context
                                 .read<ServicesBloc>()
                                 .add(GetServicesEvent(name: text));
-                            ;
                             //  setState(() {});
                           });
                         }

@@ -44,36 +44,33 @@ class _WorkingDayListWidgetState extends State<WorkingDayListWidget> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            CustomIconButtonWidget(
-              padding: EdgeInsets.zero,
-              btnPressed: () {},
-              icon: Row(
-                children: [
-                  const CustomSvgIconWidget(
-                    IconPath.workingHoursIcon,
-                    iconSize: 14,
-                  ),
-                  const CustomHorizontalSpace(width: 4),
-                  CustomTextWidget(
-                    trans('working_time'),
-                    fontColor: AppColor.black,
-                    fontWeight: AppFontWeight.bold,
-                    fontSize: 13,
-                    textAlign: TextAlign.start,
-                  ),
-                  const CustomHorizontalSpace(width: 16),
-                  CustomSvgIconWidget(
-                    showAll
-                        ? IconPath.expansionArrowUp
-                        : IconPath.expansionArrowDown,
-                    iconWidth: 9.5,
-                    iconHeight: 5.5,
-                    iconColor: AppColor.baladyDarkGreen2,
-                  ),
-                ],
-              ),
+            Row(
+              children: [
+                const CustomSvgIconWidget(
+                  IconPath.workingHoursIcon,
+                  iconSize: 16,
+                  iconColor: AppColor.primary600,
+                ),
+                const CustomHorizontalSpace(width: 4),
+                CustomTextWidget(
+                  trans('working_time'),
+                  fontColor: AppColor.black,
+                  fontWeight: AppFontWeight.bold,
+                  fontSize: 13,
+                  textAlign: TextAlign.start,
+                ),
+                Spacer(),
+                CustomSvgIconWidget(
+                  showAll
+                      ? IconPath.expansionArrowUp
+                      : IconPath.expansionArrowDown,
+                  iconWidth: 9.5,
+                  iconHeight: 5.5,
+                  iconColor: AppColor.baladyDarkGreen2,
+                ),
+              ],
             ),
-            const CustomVerticalSpace(height: 8),
+            if(showAll)const CustomVerticalSpace(height: 8),
             MediaQuery.removePadding(
               context: context,
               removeTop: true,

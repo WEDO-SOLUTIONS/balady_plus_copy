@@ -32,9 +32,9 @@ class _ExpansionItemWidgetState extends State<ExpansionItemWidget> {
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
-      decoration: BoxDecoration(
+      decoration:  BoxDecoration(
         borderRadius: BorderRadius.all(Radius.circular(12)),
-        //  color: widget.containerColor,
+         color: AppColor.primary50.withOpacity(0.9),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -57,12 +57,14 @@ class _ExpansionItemWidgetState extends State<ExpansionItemWidget> {
                       left: 12,
                       right: 12,
                       bottom: 16,
+                      top: 8
                     ),
                     child: CustomTextWidget(
                       widget.subTitle,
-                      fontSize: 14,
-                      fontColor: AppColor.greyText,
-                      fontWeight: AppFontWeight.medium,
+                      fontSize: 12,
+                      height: 2,
+                      fontColor: AppColor.black600,
+                      fontWeight: AppFontWeight.bold,
                     ),
                   )
                 : const SizedBox(),
@@ -73,7 +75,6 @@ class _ExpansionItemWidgetState extends State<ExpansionItemWidget> {
               );
             },
           ),
-          DrawLineWidget()
         ],
       ),
     );
@@ -96,26 +97,22 @@ class ExpansionItemHeaderWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () => onPress(),
-      child: Padding(
-        padding: const EdgeInsetsDirectional.only(
-            start: 12.0, top: 12, end: 17, bottom: 12),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 8,vertical: 12),
+        decoration: const BoxDecoration(
+          borderRadius: BorderRadius.all(Radius.circular(8)),
+          color: AppColor.primary50,
+        ),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
-                height: 4,
-                width: 6,
-                margin: EdgeInsets.only(top: 12),
-                decoration: BoxDecoration(
-                    color: AppColor.greenishYellow500,
-                    borderRadius: BorderRadius.circular(2))),
             const CustomHorizontalSpace(width: 6),
             Expanded(
               child: CustomTextWidget(
                 title,
-                fontSize: 17,
-                fontWeight: AppFontWeight.medium,
-                fontColor: AppColor.black,
+                fontSize: 12,
+                fontWeight: AppFontWeight.bold,
+                fontColor: AppColor.black700,
               ),
             ),
             const CustomHorizontalSpace(width: 8),

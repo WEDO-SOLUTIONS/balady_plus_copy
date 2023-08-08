@@ -1,4 +1,5 @@
 import 'package:balady_plus/app/core/utils/constants/route_names.dart';
+import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/default_appbar_widget.dart';
 import 'package:balady_plus/etmam_app/core/dependency_injection/injection_container.dart'
     show sl;
 import 'package:balady_plus/app/core/services/local/navigation_services.dart';
@@ -62,7 +63,7 @@ class _OrdersPage extends State<OrdersPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: CustomAppBar(
+        appBar: DefaultAppBarWidget(
           title: trans('orders_app_bar'),
         ),
         body: BlocProvider<MyOrdersBloc>(

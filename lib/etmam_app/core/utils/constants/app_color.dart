@@ -19,9 +19,11 @@ class AppColor {
   static const Color spruce = Color(0xFF0a4d4a);
 
   static const Color white5 = Color(0xFFe8e8e8);
+  static const Color white6 = Color(0xFFE4E4E7);
 
 
   static const Color black100 = Color(0xFFf2f2f2);
+  static const Color black50 = Color(0xFFFDFDFD);
   static const Color black200 = Color(0xFFe6e6e6);
   static const Color black300 = Color(0xFFbfbfbf);
   static const Color black400 = Color(0xFF999999);
@@ -34,6 +36,9 @@ class AppColor {
 
   static const blue700 = Color(0xFF0033a0);
   static const primary900 = Color(0xFF155F75);
+  static const primary50 = Color(0xFFF5F9F9);
+  static const primary600 = Color(0xFF5B8F9E);
+  static const secondary200 = Color(0xFFE5EEDB);
   static const blue300 = Color(0xFF859DD1);
   static const blue200 = Color(0xFFA6B8DE);
   static const blue100 = Color(0xffc7d2ea);

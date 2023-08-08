@@ -60,10 +60,14 @@ class _EtmamMainServicesWidget extends State<EtmamMainServicesWidget> {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            SizedBox(height: 12),
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: CustomTextWidget(
-                trans('services'),
+                "الخدمات المتاحة",
+                fontSize: 18,
+                fontWeight: AppFontWeight.bold,
+                fontColor: AppColor.black700,
               ),
             ),
             if (state.mainServiceStatus == BlocStatus.loading)

@@ -13,15 +13,22 @@ class ExpansionArrowWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 25.0,
-      height: 25.0,
+      width: 20,
+      height: 20,
       decoration: const BoxDecoration(
-        color: AppColor.white6,
+        color: AppColor.primary800Light2,
         shape: BoxShape.circle,
       ),
       child: RotatedBox(
         quarterTurns: expanded ? 1 : 3,
-        child: const Icon(Icons.arrow_back_ios_new, size: 13.0),
+        child: Padding(
+          padding: const EdgeInsets.all(2),
+          child: const Icon(
+            Icons.arrow_back_ios_new,
+            size: 11.0,
+            color: AppColor.white,
+          ),
+        ),
       ),
     );
   }

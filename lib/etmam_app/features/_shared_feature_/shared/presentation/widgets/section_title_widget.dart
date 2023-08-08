@@ -110,18 +110,18 @@ class SectionTitleWidget extends StatelessWidget {
       children: [
         Row(
           children: [
-            CustomSvgIconWidget(
-              primaryIcon?.icon ?? PrimaryIcons.none.icon,
-              iconHeight: 25,
-              iconWidth: 24,
-            ),
-            const CustomHorizontalSpace(width: 10),
+            // CustomSvgIconWidget(
+            //   primaryIcon?.icon ?? PrimaryIcons.none.icon,
+            //   iconHeight: 25,
+            //   iconWidth: 24,
+            // ),
+            // const CustomHorizontalSpace(width: 10),
             Expanded(
               child: CustomTextWidget(
                 title,
-                fontColor: AppColor.black,
+                fontColor: AppColor.black700,
                 fontWeight: AppFontWeight.bold,
-                fontSize: 17,
+                fontSize: 20,
                 textAlign: TextAlign.start,
               ),
             )
@@ -133,9 +133,9 @@ class SectionTitleWidget extends StatelessWidget {
             margin: const EdgeInsetsDirectional.only(start: 40),
             child: CustomTextWidget(
               desc ?? "",
-              fontColor: AppColor.bottomNavigationShadow,
-              fontWeight: AppFontWeight.regular,
-              fontSize: 12,
+              fontColor: AppColor.black500,
+              fontWeight: AppFontWeight.bold,
+              fontSize: 14,
               textAlign: TextAlign.start,
             ),
           ),

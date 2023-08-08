@@ -59,7 +59,7 @@ class _CustomAppBar extends State<CustomAppBarProvidersList> {
       flexibleSpace: Container(
         decoration: const BoxDecoration(
           image: DecorationImage(
-            image: AssetImage(ImagePath.appBarBackground),
+            image: AssetImage(ImagePath.appbarBg),
             fit: BoxFit.cover,
           ),
         ),
