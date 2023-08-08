@@ -19,6 +19,7 @@ import 'package:balady_plus/etmam_app/features/providers/providers_exports.dart'
         ProviderServicesSection;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../_shared_feature_/shared/presentation/widgets/rating_evaluation_widget.dart';
 import '../../../_shared_feature_/shared/shared_feature_exports.dart'
@@ -95,7 +96,7 @@ class _ProviderDetailsPageState extends State<ProviderDetailsPage> {
                             providerAdress: state.args.mainBranchAddress ?? "",
                           ),
                           ProviderDetailsContentContainer(
-                            title: 'تقييم المكتب',
+                            title: 'evaluate_office'.tr(),
                             content: EtmamRatingEvaluationWidget(
                               rating: state.args.rating ?? 0,
                               totalEvaluation: state.args.ratingsCount ?? 0,

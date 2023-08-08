@@ -371,7 +371,7 @@ class PriceWidget extends StatelessWidget {
       TextSpan(children: [
         if (!isInvestment && !isOrder && !isSeasonal && !isDirectRental)
           TextSpan(
-            text: ('يبدأ من').tr() + "  ",
+            text: ('start_from').tr() + "  ",
             style: AppStyle.cardTitleTextStle
                 .copyWith(color: AppColor.primary900Light, fontSize: 16),
           ),

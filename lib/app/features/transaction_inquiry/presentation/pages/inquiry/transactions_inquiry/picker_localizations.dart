@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
 abstract class PickerLocalizationsBase {
   final Locale? locale;
@@ -43,7 +44,7 @@ class PickerLocalizations extends PickerLocalizationsBase {
   ];
 
   /// Language Values
-  static const Map<dynamic, dynamic> localizedValues = {
+  static Map<dynamic, dynamic> localizedValues = {
     'en': {
       'cancelText': 'Cancel',
       'confirmText': 'Confirm',
@@ -65,9 +66,9 @@ class PickerLocalizations extends PickerLocalizationsBase {
       'ampm': ['AM', 'PM'],
     },
     'ar': {
-      'cancelText': 'إلغاء الأمر',
-      'confirmText': 'تأكيد',
-      'ampm': ['صباحاً', 'مساءً'],
+      'cancelText': 'cancelText'.tr(),
+      'confirmText': 'choose_city'.tr(),
+      'ampm': ['morning'.tr(), 'evening'.tr()],
     },
     'fr': {
       'cancelText': 'Annuler',

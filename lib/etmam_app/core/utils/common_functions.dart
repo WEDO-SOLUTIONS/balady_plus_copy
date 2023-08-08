@@ -8,6 +8,7 @@ import 'package:balady_plus/etmam_app/core/utils/enums/order_status.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'constants/app_color.dart';
@@ -205,19 +206,19 @@ class CommonFunctions {
   static String convertDayNameFromEnglishToArabic(String dayName) {
     switch (dayName.toLowerCase()) {
       case "sunday":
-        return "الأحد";
+        return "sunday".tr();
       case "monday":
-        return "الأثنين";
+        return "monday".tr();
       case "tuesday":
-        return "الثلاثاء";
+        return "tuesday".tr();
       case "wednesday":
-        return "الأربعاء";
+        return "wednesday".tr();
       case "thursday":
-        return "الخميس";
+        return "thursday".tr();
       case "friday":
-        return "الجمعه";
+        return "friday".tr();
       case "saturday":
-        return "السبت";
+        return "saturday".tr();
       default:
         return dayName;
     }

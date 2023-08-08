@@ -55,8 +55,8 @@ class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: const DefaultAppBarWidget(
-          title: "تفاصيل الخدمة",
+        appBar: DefaultAppBarWidget(
+          title: "order_info_service_details".tr(),
         ),
         body: BlocProvider(
           create: (context) => ServiceDetailsBloc(

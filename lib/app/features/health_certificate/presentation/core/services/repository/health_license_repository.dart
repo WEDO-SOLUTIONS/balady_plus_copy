@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:typed_data';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:tuple/tuple.dart';
 
 import '../../../../../../core/base/base_view_model.dart';
@@ -528,7 +529,7 @@ class HealthLicenseRepository {
         error = result.data?.responseMessage ?? error;
       }
       if (result.data?.responseCode == "2") {
-        error = "لا توجد مدن مفعله للخدمة في الموقع الذي قمت باختياره";
+        error = 'health_license_error'.tr();
       }
     } catch (ex) {
       print(ex);

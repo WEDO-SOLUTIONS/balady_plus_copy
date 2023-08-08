@@ -46,7 +46,7 @@ class ExtraActivityComponent extends StatelessWidget {
           ),
           const SizedBox(height: 12),
           PlusAddButton(
-            text: "ارفاق نشاط",
+            text: 'extra_add'.tr(),
             onPressed: () => BottomSheetDialog.showDraggableSheet(
               context,
               child: BottomSheetWithActions(
@@ -78,7 +78,7 @@ class ExtraActivityComponent extends StatelessWidget {
                       hintText: "space_label_shop_hint".tr(),
                       isDigitsOnly: true,
                       keyboardType: TextInputType.number,
-                      suffixIcon:  CustomTextWidget(
+                      suffixIcon: CustomTextWidget(
                         "square_meter".tr(),
                         fontSize: 12,
                         fontWeight: AppFontWeight.semiBold,

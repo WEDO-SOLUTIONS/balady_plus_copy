@@ -4,7 +4,6 @@
 
 list(APPEND FLUTTER_PLUGIN_LIST
   connectivity_plus_windows
-  file_selector_windows
   flutter_secure_storage_windows
   geolocator_windows
   network_info_plus_windows

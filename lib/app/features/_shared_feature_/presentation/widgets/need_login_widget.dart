@@ -36,7 +36,7 @@ class _NeedLoginWidgetState extends State<NeedLoginWidget> {
             ),
             const CustomVerticalSpace(height: 18),
             CustomTextWidget(
-              widget.title ?? ("انت غير مسجل دخول").tr(),
+              widget.title ?? ("not_registered").tr(),
               fontSize: 17.0,
               fontColor: AppColor.black800,
               fontWeight: AppFontWeight.bold,
@@ -45,9 +45,7 @@ class _NeedLoginWidgetState extends State<NeedLoginWidget> {
             const CustomVerticalSpace(height: 18),
             //if (widget.desc != null)
             CustomTextWidget(
-              widget.desc ??
-                  ("يجب عليك تسجيل الدخول حتى يتم عرض حتى يتم عرض بيانات هذه الصفحة")
-                      .tr(),
+              widget.desc ?? ('not_register_desc').tr(),
               fontSize: 13.0,
               height: 1.6,
               fontColor: AppColor.black400,

@@ -326,7 +326,7 @@ class FacilityQRDetailsViewModel extends BaseViewModel {
             WorkingTime day = workTimes.workingTimes![nextDay];
             if (day.openShiftOption == "OPEN_24HOUR") {
               if (i == 0) {
-                strWhenClosed = " . يفتح غداً ";
+                strWhenClosed = "qr_opens_tommorow".tr();
               } else {
                 strWhenClosed = " . يفتح ${day.dayName}";
               }

@@ -80,7 +80,6 @@ class _DraggableHeaderComponentState extends State<DraggableHeaderComponent> {
               builder: (context, authState) {
                 return CustomTextFieldWidget(
                   hintText: authState.getSearchText(),
-                  //   hintText: 'ابحث عن...'.tr(),
                   controller: searchController,
                   hintStyle: const TextStyle(
                     fontSize: 12,

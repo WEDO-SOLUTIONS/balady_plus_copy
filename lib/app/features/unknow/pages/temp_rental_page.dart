@@ -63,7 +63,7 @@ class TempRentalPage extends StatelessWidget {
                       firstTitle: 'invest_type'.tr(),
                       firstValue: "rent".tr(),
                       firstIconPath: IconPath.moneyTime,
-                      secondTitle: "السعر",
+                      secondTitle: "invest_price".tr(),
                       secondValue: getDailyCost(),
                     ),
                     CustomTextWidget(

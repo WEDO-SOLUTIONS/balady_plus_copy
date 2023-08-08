@@ -27,7 +27,7 @@ class _CompassCalibrationState extends State<CompassCalibration> {
       child: Column(
         children: [
           CustomTextWidget(
-            "ضبط البوصلة",
+            'ضبط البوصلة'.tr(),
             fontColor: AppColor.blackModern500Light,
             fontSize: 20,
             fontWeight: AppFontWeight.bold,

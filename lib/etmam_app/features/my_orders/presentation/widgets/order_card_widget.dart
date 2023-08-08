@@ -2,6 +2,7 @@ import 'package:balady_plus/app/features/_shared_feature_/presentation/buttons/e
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/buttons/custom_buttons_widgets.dart';
 import 'package:balady_plus/etmam_app/features/my_orders/my_orders_exports.dart';
 import 'package:flutter/material.dart' hide Action;
+import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../core/utils/enums/order_status.dart';
 import '../../../../core/utils/utils_exports.dart'
@@ -87,14 +88,14 @@ class OrderCardWidget extends StatelessWidget {
                       Expanded(
                         child: HeaderWithDescription(
                           details: orderNo ?? "",
-                          header: "رقم الطلب",
+                          header: 'request_no'.tr(),
                         ),
                       ),
                       CustomHorizontalSpace(width: 2),
                       Expanded(
                         child: HeaderWithDescription(
-                          details: statusText ??'',
-                          header: "حاله الطلب",
+                          details: statusText ?? '',
+                          header: 'request_status'.tr(),
                         ),
                       ),
                     ],
@@ -123,7 +124,7 @@ class OrderCardWidget extends StatelessWidget {
                       Expanded(
                         child: HeaderWithDescription(
                           details: date ?? "",
-                          header: "اخر تحديث",
+                          header: 'last_update'.tr(),
                         ),
                       ),
                     ],
@@ -142,10 +143,10 @@ class OrderCardWidget extends StatelessWidget {
                   fontSize: 16,
                 ),
                 btnHeight: 40,
-                text: "التفاصيل",
-                onPressed: (){
-                      if (onPress != null) onPress!();
-                      /*NavigationService.pushNamed(
+                text: "details".tr(),
+                onPressed: () {
+                  if (onPress != null) onPress!();
+                  /*NavigationService.pushNamed(
                           routeName: RouteName.etmam_orderDetailsRoute);*/
                 },
               ),

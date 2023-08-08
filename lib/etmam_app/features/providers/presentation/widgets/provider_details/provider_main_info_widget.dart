@@ -6,6 +6,7 @@ import 'package:balady_plus/etmam_app/features/services/services_exports.dart'
     show InfoWithIcon;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../../../app/core/utils/constants/app_colors.dart';
@@ -92,8 +93,8 @@ class EtmamProviderMainInfo extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 28),
-            const CustomTextWidget(
-              'تفاصيل العمل والتواصل',
+            CustomTextWidget(
+              'work_details'.tr(),
               fontColor: AppColor.blackModern800Light,
               fontWeight: AppFontWeight.w600,
               fontSize: 16,
@@ -101,7 +102,7 @@ class EtmamProviderMainInfo extends StatelessWidget {
             ),
             const CustomVerticalSpace(height: 16),
             ProviderDetailsContentContainer(
-              title: 'الفرع الرئيسي',
+              title: 'main_branch'.tr(),
               content: CustomTextWidget(state.args.mainBranchAddress ?? "",
                   fontSize: 13,
                   fontWeight: AppFontWeight.bold,
@@ -118,7 +119,7 @@ class EtmamProviderMainInfo extends StatelessWidget {
               workingHours: state.args.wrokDays,
             ),
             ProviderDetailsContentContainer(
-              title: 'الموقع الإلكتروني',
+              title: 'office_website'.tr(),
               content: CustomTextWidget(state.args.website ?? "",
                   fontSize: 13,
                   fontWeight: AppFontWeight.bold,
@@ -126,7 +127,7 @@ class EtmamProviderMainInfo extends StatelessWidget {
               icon: IconPath.websiteIcon,
             ),
             ProviderDetailsContentContainer(
-              title: 'رقم التواصل',
+              title: 'office_mobile'.tr(),
               content: Row(
                 children: [
                   Expanded(
@@ -135,23 +136,22 @@ class EtmamProviderMainInfo extends StatelessWidget {
                         fontWeight: AppFontWeight.bold,
                         fontColor: AppColor.blackModern500Light),
                   ),
-                   Row(
+                  Row(
                     children: [
                       const CustomSvgIconWidget(IconPath.phoneIcon),
                       const SizedBox(width: 2),
                       GestureDetector(
-                        onTap: (){
+                        onTap: () {
                           launch("tel://${state.args.mainBranchContact}");
                         },
                         child: const CustomTextWidget(
                           "اتصال",
                           fontSize: 12,
                           textStyle: TextStyle(
-                            decoration: TextDecoration.underline,
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold,
-                            color: AppColor.primary900Light
-                          ),
+                              decoration: TextDecoration.underline,
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                              color: AppColor.primary900Light),
                         ),
                       ),
                     ],

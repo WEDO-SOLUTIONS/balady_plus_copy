@@ -234,10 +234,10 @@ class CreateDCState extends Equatable {
     return [
       DropDownItem(
         id: "Damaged",
-        name: "تالفة",
+        name: "damaged".tr(),
       ),
-      DropDownItem(id: "BRoken", name: "آلية معطلة"),
-      DropDownItem(id: "Abandoned", name: "مهملة"),
+      DropDownItem(id: "BRoken", name: "broken_machine".tr()),
+      DropDownItem(id: "Abandoned", name: "abandoned".tr()),
     ];
   }
 

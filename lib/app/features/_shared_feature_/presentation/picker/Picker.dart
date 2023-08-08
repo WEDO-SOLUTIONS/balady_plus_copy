@@ -1225,19 +1225,19 @@ class DateTimePickerAdapter extends PickerAdapter<DateTime> {
     "December"
   ];
 
-  static const List<String> MonthsList_AR_L = const [
-    "يناير",
-    "فبراير",
-    "مارس",
-    "ابريل",
-    "مايو",
-    "يونيو",
-    "يوليو",
-    "اغسطس",
-    "سبتمبر",
-    "اكتوبر",
-    "نوفمبر",
-    "ديسبمر"
+  static List<String> MonthsList_AR_L =  [
+    "January".tr(),
+    "February".tr(),
+    "March".tr(),
+    "April".tr(),
+    "May".tr(),
+    "June".tr(),
+    "July".tr(),
+    "August".tr(),
+    "September".tr(),
+    "October".tr(),
+    "November".tr(),
+    "December".tr(),
   ];
 
   DateTimePickerAdapter({
