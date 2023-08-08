@@ -39,7 +39,7 @@ class RequestTypeHorizontalList extends StatelessWidget {
                 margin: const EdgeInsetsDirectional.only(end: 8),
                 decoration: ShapeDecoration(
                   color: selected == types[index]
-                      ? Color(0xFF036362)
+                      ? AppColor.primary900Light
                       : Colors.white,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),

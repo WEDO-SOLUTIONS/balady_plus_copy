@@ -1,7 +1,6 @@
 import 'package:balady_plus/app/core/dependency_injection/features/old_injection.dart';
 import 'package:balady_plus/app/core/dependency_injection/features/dc_injection.dart';
 import 'package:balady_plus/app/core/dependency_injection/features/profile/crm_requests_injection.dart';
-import 'package:balady_plus/app/core/services/global/web_service_weather.dart';
 import 'package:balady_plus/app/features/weather/weather_exports.dart'
     show
         WeatherRepository,
@@ -49,7 +48,6 @@ import '../dependency_injection/dependency_injection_exports.dart'
         VDInjection,
         ViolationsInjection;
 import '../services/global/crm_web_service.dart';
-import '../services/global/web_service_weather.dart';
 import '../services/services_exports.dart'
     show
         EntryPointBridge,
@@ -117,7 +115,6 @@ void initialize() {
   //! Core
   sl.registerLazySingleton(() => WebService(dio: sl()));
   sl.registerLazySingleton(() => CRMWebService(dio: Dio()));
-  sl.registerLazySingleton(() => WebServiceWeather(dio: Dio()));
 
 // Weather
   //Blocs
@@ -135,7 +132,7 @@ void initialize() {
   //DataSources
   sl.registerLazySingleton<WeatherRemoteDataSource>(
     () => WeatherRemoteDataSourceImpl(
-      webServiceWeather: sl(),
+      webService: sl(),
     ),
   );
 

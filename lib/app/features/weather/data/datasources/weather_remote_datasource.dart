@@ -1,9 +1,11 @@
 import 'package:dio/dio.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
+import '../../../../core/dependency_injection/injection_container.dart';
 import '../../../../core/errors/errors_exports.dart';
-import '../../../../core/services/global/web_service_weather.dart';
-import '../../../../core/utils/utils_exports.dart' show ApiUrl;
+import '../../../../core/services/global/web_service.dart';
+import '../../../../core/utils/utils_exports.dart'
+    show ApiHeader, ApiUrl, CommonFunctions, EnvType;
 import '../../weather_exports.dart'
     show
         AlertsModel,
@@ -24,22 +26,36 @@ abstract class WeatherRemoteDataSource {
 }
 
 class WeatherRemoteDataSourceImpl extends WeatherRemoteDataSource {
-  final WebServiceWeather webServiceWeather;
+  final WebService webService;
 
-  WeatherRemoteDataSourceImpl({required this.webServiceWeather});
+  WeatherRemoteDataSourceImpl({required this.webService});
   @override
   Future<AllWeatherInfoModel> getAllWeatherInfoForLocation(
       {required WeatherParams params}) async {
     var response;
+
     String weatherAPI = ApiUrl.weatherForcastAPI;
     try {
-      response = await webServiceWeather.dio
-          .get(weatherAPI, queryParameters: params.toMap());
-      var locationData = response.data['location'];
-      var currentData = response.data['current'];
-      var forecastData = response.data['forecast'];
-      var alertsData = response.data['alerts'];
-      // print(alertsData);
+      String q = "${sl<EnvType>().domain}v1/weather-services/forecast?";
+      params.toMap().forEach((key, value) {
+        q += "$key=$value&";
+      });
+      q = q.substring(0, q.length - 1);
+      print(q);
+      response = await webService.dio.get(weatherAPI,
+          queryParameters: params.toMap(),
+          options: Options(headers: {
+            "Accept-Language": "ar",
+            ApiHeader.requiresToken.eName: false,
+            ApiHeader.verifyingKEY.name: CommonFunctions.hashRequest(
+              q,
+              "GET",
+            )
+          }));
+      var locationData = response.data['data']['result']['location'];
+      var currentData = response.data['data']['result']['current'];
+      var forecastData = response.data['data']['result']['forecast'];
+      var alertsData = response.data['data']['result']['alerts'];
 
       var decodedCurrentResponse;
       final decodedAlertsResponse = AlertsModel.fromJson(alertsData);

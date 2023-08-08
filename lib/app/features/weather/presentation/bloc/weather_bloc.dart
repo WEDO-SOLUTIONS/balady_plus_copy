@@ -31,7 +31,9 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
     if (state.allWeatherInfoStatus == BlocStatus.success &&
         state.showLocationError == false) return;
 
-    emitter(state.copyWith(allWeatherInfoStatus: BlocStatus.loading));
+    emitter(state.copyWith(
+      allWeatherInfoStatus: BlocStatus.loading,
+    ));
 
     GISParams? location = CommonProperties.userLocation;
 

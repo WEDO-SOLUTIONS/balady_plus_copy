@@ -37,7 +37,6 @@ class WeatherParams {
       if (numberOfDays != null) "days": '$numberOfDays',
       if (languageCode != null) "lang": '$languageCode',
       if (alert != null) "alerts": '$alert',
-      if (key != null) "key": '$key',
     };
   }
 }
