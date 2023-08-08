@@ -2537,6 +2537,6 @@
 "Location service permission denied":"الرجاء تفعيل الموقع", 
 "Location service Denied Forever !":"الرجاء تفعيل الموقع", 
 "Please enable Location service":"الرجاء تفعيل الموقع", 
-"gyroscope_error":"الجهاز لا يدعم خاصية Gyroscopee" 
+"gyroscope_error":"عذراً، لايمكنك الاستفادة من الخدمة نظراً لعدم دعم جهازك لخاصية المدوار (Gyroscope)" 
 
 }

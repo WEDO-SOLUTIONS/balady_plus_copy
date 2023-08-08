@@ -1,4 +1,6 @@
 PODS:
+  - app_settings (4.3.0):
+    - Flutter
   - AppAuth (1.4.0):
     - AppAuth/Core (= 1.4.0)
     - AppAuth/ExternalUserAgent (= 1.4.0)
@@ -204,6 +206,7 @@ PODS:
   - ZIPFoundation (0.9.13)
 
 DEPENDENCIES:
+  - app_settings (from `.symlinks/plugins/app_settings/ios`)
   - AppAuth (from `https://github.com/MahmoudMB/AppAuth-iOS.git`)
   - camera_avfoundation (from `.symlinks/plugins/camera_avfoundation/ios`)
   - connectivity_plus (from `.symlinks/plugins/connectivity_plus/ios`)
@@ -272,6 +275,8 @@ SPEC REPOS:
     - ZIPFoundation
 
 EXTERNAL SOURCES:
+  app_settings:
+    :path: ".symlinks/plugins/app_settings/ios"
   AppAuth:
     :git: https://github.com/MahmoudMB/AppAuth-iOS.git
   camera_avfoundation:
@@ -353,6 +358,7 @@ CHECKOUT OPTIONS:
     :git: https://github.com/MahmoudMB/AppAuth-iOS.git
 
 SPEC CHECKSUMS:
+  app_settings: ee4ae4d1c9a907a23b81c40e5c56a5ca8a20a62b
   AppAuth: aadc4cc25bef2435551896b5bfa9316b42fde656
   camera_avfoundation: 3125e8cd1a4387f6f31c6c63abb8a55892a9eeeb
   connectivity_plus: 413a8857dd5d9f1c399a39130850d02fe0feaf7e
