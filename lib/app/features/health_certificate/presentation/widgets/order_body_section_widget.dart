@@ -174,7 +174,7 @@ class _TathqeefSehyDataWidget extends StatelessWidget {
     HealthRequestDetailsViewModel model =
         Provider.of<HealthRequestDetailsViewModel>(context);
     return CustomExpansionPanelWidget(
-      title: Helpers.translatingWord("health_medical_info"),
+      title: Helpers.translatingWord("medical_examination_data"),
       underline: false,
       children: [
         FieldData(

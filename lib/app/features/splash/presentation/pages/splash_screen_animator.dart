@@ -20,18 +20,14 @@ class SplashScreenAnimator extends StatelessWidget {
       body: AnimatedBuilder(
         animation: animation.controller,
         builder: (context, _) {
-          return Stack(
-            children: [
-              /* Lottie.asset(
-                'assets/animation/logo.json',
-                fit: BoxFit.fill,
-                height: MediaQuery.sizeOf(context).height,
-                width: MediaQuery.sizeOf(context).width,
-                controller: controller,
-              ),*/
-              BottomLogoWidget(animation: animation),
-              CenterLogoWidget(animation: animation),
-            ],
+          return Center(
+            child: Lottie.asset(
+              'assets/animation/logo.json',
+              fit: BoxFit.fill,
+              height: 168,
+              width: 228,
+              controller: controller,
+            ),
           );
         },
       ),
