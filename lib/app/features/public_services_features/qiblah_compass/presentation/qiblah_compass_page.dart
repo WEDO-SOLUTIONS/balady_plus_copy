@@ -1,8 +1,10 @@
 import 'dart:async';
+import 'dart:io';
 import 'dart:math';
 
 import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/image_paths.dart';
+import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/need_login_widget.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -26,12 +28,19 @@ class QiblahCompassPageState extends State<QiblahCompassPage> {
       StreamController<LocationStatus>.broadcast();
 
   Stream<LocationStatus> get stream => _locationStreamController.stream;
+  bool isAndroidSupport = false;
+
+  void checkAndroidSupport() async {
+    bool? r = await FlutterQiblah.androidDeviceSensorSupport();
+
+    isAndroidSupport = r ?? false;
+  }
 
   @override
   void initState() {
     super.initState();
     _checkLocationStatus();
-
+    checkAndroidSupport();
     /* SchedulerBinding.instance.addPostFrameCallback((_) {
       showDialog(
           context: context,
@@ -120,7 +129,9 @@ class QiblahCompassPageState extends State<QiblahCompassPage> {
                       ),
                     );
                   }
-                  if (snapshot.data!.enabled == true) {
+
+                  if (snapshot.data!.enabled == true &&
+                      (Platform.isIOS || isAndroidSupport)) {
                     switch (snapshot.data!.status) {
                       case LocationPermission.always:
                       case LocationPermission.whileInUse:
@@ -128,20 +139,24 @@ class QiblahCompassPageState extends State<QiblahCompassPage> {
 
                       case LocationPermission.denied:
                         return LocationErrorWidget(
-                          error: "Location service permission denied",
+                          error: "Location service permission denied".tr(),
                           callback: _checkLocationStatus,
                         );
                       case LocationPermission.deniedForever:
                         return LocationErrorWidget(
-                          error: "Location service Denied Forever !",
+                          error: "Location service Denied Forever !".tr(),
                           callback: _checkLocationStatus,
                         );
                       default:
                         return const SizedBox();
                     }
-                  } else {
+                  } else if ((isAndroidSupport == false && !Platform.isIOS))
+                    return EmptyListWidget(
+                      title: "gyroscope_error".tr(),
+                    );
+                  else {
                     return LocationErrorWidget(
-                      error: "Please enable Location service",
+                      error: "Please enable Location service".tr(),
                       callback: _checkLocationStatus,
                     );
                   }

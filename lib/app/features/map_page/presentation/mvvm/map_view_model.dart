@@ -256,10 +256,11 @@ class MapViewModel extends BaseViewModel {
 
       return false;
     }
-    controller.setCameraPosition(CameraPositionMessage(
-        point: kingdomTower, zoom: 17, tilt: 45, bearing: 9));
 
     _setupListeners();
+
+    controller.setCameraPosition(CameraPositionMessage(
+        point: kingdomTower, zoom: 17, tilt: 45, bearing: 9));
 
     await controller.changeFollowState();
 
@@ -320,25 +321,35 @@ class MapViewModel extends BaseViewModel {
 
 */
 
-    final permission = await Permission.location.request();
-    if (permission.isGranted) {
-      await controller.onLocationPremissionGranted();
-      geoLocator.Position position =
-          await geoLocator.Geolocator.getCurrentPosition(
-        desiredAccuracy: geoLocator.LocationAccuracy.high,
-        timeLimit: const Duration(seconds: 13),
-      );
-      await controller.setCameraPosition(
-        CameraPositionMessage(
-          point: GeoPointMessage(
-            latitude: position.latitude,
-            longitude: position.longitude,
+    try {
+      final permission = await Permission.location.request();
+      print("grfrsdcvdv $permission");
+      if (permission.isGranted) {
+        print("grfrsdcvdv granted");
+        await controller.onLocationPremissionGranted();
+        print("grfrsdcvdv granted 111");
+
+        geoLocator.Position position =
+            await geoLocator.Geolocator.getCurrentPosition(
+          desiredAccuracy: geoLocator.LocationAccuracy.high,
+          timeLimit: const Duration(seconds: 13),
+        );
+        print("grfrsdcvdv pos $position");
+
+        await controller.setCameraPosition(
+          CameraPositionMessage(
+            point: GeoPointMessage(
+              latitude: position.latitude,
+              longitude: position.longitude,
+            ),
+            zoom: 13,
+            tilt: 0,
+            bearing: 0,
           ),
-          zoom: 13,
-          tilt: 0,
-          bearing: 0,
-        ),
-      );
+        );
+      }
+    } catch (ex) {
+      print("grfrsdcvdv $ex");
     }
 
     initialized.value = true;
@@ -348,8 +359,6 @@ class MapViewModel extends BaseViewModel {
   }
 
   void onLocationTap() async {
-    final permission = await Permission.location.request();
-
     unawaited(controller.changeFollowState());
   }
 

@@ -164,7 +164,7 @@ dependencies:
   #test_package:
  #   path: packages/test_package
   flutter_qiblah: ^2.2.0
-  #app_settings: ^4.1.5
+  app_settings: ^5.0.0
  
 
 
@@ -175,8 +175,12 @@ dependencies:
 #  provider: ^6.0.5
 
 
-
+dependency_overrides:
+  geolocator_android: ^4.2.2
+  
 dev_dependencies:
+
+
 
   flutter_lints: ^2.0.1
   flutter_test:

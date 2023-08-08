@@ -39,7 +39,8 @@ class BusinessLicenseScreen extends StatelessWidget {
                     children: [
                       const SizedBox(height: 28),
                       BusinessLicenseCard(
-                        bgImagePath: "${ImagePath.visaBg}1.png",
+                        bgImagePath:
+                            state.selectedItem?.getLicenseImage() ?? "",
                         title: state.selectedItem?.getLicenseHeaderText() ?? "",
                         cardNumber: state.selectedItem?.licenseId ?? "",
                         expireDate: state.selectedItem?.endDateHijri ?? "",
@@ -98,9 +99,10 @@ class _QrCodeCard extends StatelessWidget {
         return Container(
           width: MediaQuery.sizeOf(context).width,
           padding: const EdgeInsets.symmetric(vertical: 26, horizontal: 26),
-          decoration: const BoxDecoration(
+          decoration: BoxDecoration(
               borderRadius: BorderRadius.all(Radius.circular(14)),
-              color: AppColor.primary300Light
+              color: state.selectedItem?.getLicenseDetailsColor() ??
+                  Color(0xffE1F6F6)
               /*  image: DecorationImage(
               fit: BoxFit.fitWidth,
               image: AssetImage(ImagePath.qrBg),

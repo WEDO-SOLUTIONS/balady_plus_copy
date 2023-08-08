@@ -2531,5 +2531,12 @@
 
 "HomePage":"HomePage", 
 "home_prayer_time_title":"أوقات الصلاة", 
-"go_to_location":"انتقال عبر خرائط قوقل"
+"go_to_location":"انتقال عبر خرائط قوقل", 
+
+
+"Location service permission denied":"الرجاء تفعيل الموقع", 
+"Location service Denied Forever !":"الرجاء تفعيل الموقع", 
+"Please enable Location service":"الرجاء تفعيل الموقع", 
+"gyroscope_error":"الجهاز لا يدعم خاصية Gyroscopee" 
+
 }

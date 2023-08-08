@@ -82,6 +82,23 @@ class InqDetailsPage extends StatelessWidget {
                             ],
                           ),
                           const CustomVerticalSpace(height: 16),
+                          if (state.details?.incidentInformation
+                                      ?.inquiryReply !=
+                                  null &&
+                              state.details!.incidentInformation!.inquiryReply!
+                                  .isNotEmpty)
+                            CustomExpansionPanelWidget(
+                                title: ("رد الدعم الفني").tr(),
+                                leading:
+                                    SvgPicture.asset(IconPath.vdSummuryDesc),
+                                children: [
+                                  FieldData(
+                                    title: ("تم الرد").tr(),
+                                    subTitle: state.details?.incidentInformation
+                                        ?.inquiryReply,
+                                  ),
+                                ]),
+                          CustomVerticalSpace(height: 16),
                           CustomExpansionPanelWidget(
                               title: ("ملخص الاستفسار").tr(),
                               leading: SvgPicture.asset(IconPath.vdSummuryDesc),

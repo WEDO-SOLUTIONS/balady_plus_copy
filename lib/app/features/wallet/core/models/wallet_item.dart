@@ -1,4 +1,7 @@
+import 'dart:ui';
+
 import '../../../../core/services/local/helpers.dart';
+import '../../../../core/utils/constants/paths/image_paths.dart';
 
 class WalletItem {
   WalletItem(
@@ -117,6 +120,25 @@ class WalletItem {
       return Helpers.translatingWord("peddler_license");
     else
       return "";
+  }
+
+  String getLicenseImage() {
+    if (getLicenseType() == LicenseTypes.health)
+      return "${ImagePath.visaBg}1.png";
+    else if (getLicenseType() == LicenseTypes.peddler)
+      return "${ImagePath.visaBg}2.png";
+    else
+      return "";
+  }
+
+  Color getLicenseDetailsColor() {
+    return Color(0xFFE1F6F6);
+    if (getLicenseType() == LicenseTypes.health)
+      return Color(0x264CD080);
+    else if (getLicenseType() == LicenseTypes.peddler)
+      return Color(0xFFE1F6F6);
+    else
+      return Color(0xFFE1F6F6);
   }
 }
 

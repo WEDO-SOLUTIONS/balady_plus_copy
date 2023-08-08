@@ -88,8 +88,9 @@ class WalletScreen extends StatelessWidget {
                                       shrinkWrap: true,
                                       itemBuilder: (_, index) =>
                                           BusinessLicenseCard(
-                                        bgImagePath:
-                                            "${ImagePath.visaBg}${index + 1}.png",
+                                        bgImagePath: state
+                                            .getItems()[index]
+                                            .getLicenseImage(),
                                         title: state
                                                 .getItems()[index]
                                                 .getLicenseHeaderText() ??
@@ -152,8 +153,9 @@ class WalletScreen extends StatelessWidget {
                                                 const Offset(0, -50),
                                             cardBuilder: (_, index, __, ___) =>
                                                 BusinessLicenseCard(
-                                              bgImagePath:
-                                                  "${ImagePath.visaBg}${index + 1}.png",
+                                              bgImagePath: state
+                                                  .getItems()[index]
+                                                  .getLicenseImage(),
                                               title: state
                                                       .getItems()[index]
                                                       .getLicenseHeaderText() ??

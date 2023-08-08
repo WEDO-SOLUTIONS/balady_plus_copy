@@ -49,7 +49,7 @@ class ReportHomeCard extends StatelessWidget {
                 ),
                 const SizedBox(height: 12),
                 CustomElevatedButtonWidget(
-                  btnColor: AppColor.secondary400Light,
+                  btnColor: AppColor.secondary900Light,
                   textStyle: AppStyle.elevatedButtonStyle.copyWith(
                     color: AppColor.white,
                     fontWeight: FontWeight.w700,
