@@ -20,8 +20,7 @@ class CommonProperties {
   static String? get token => sl<EntryPointCubit>().state.token?.token;
   static String? get profileId => sl<EtmamEntryPointCubit>().state.profile?.id;
   static AuthStatus get authStatus => sl<EntryPointCubit>().state.status;
-  static bool get isUserLogged =>
-      sl<EntryPointCubit>().state.status == AuthStatus.authenticated;
+  static bool get isUserLogged => sl<EntryPointCubit>().state.token != null;
   static String cityId = "";
   static CityItem? get cityItem => sl<CityBloc>().state.selectedItem;
 

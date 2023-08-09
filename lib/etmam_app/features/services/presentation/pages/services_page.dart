@@ -147,6 +147,9 @@ class _ServicesPageState extends State<ServicesPage> {
                           }
 
                           return ProviderItemWidget(
+                            buttonTxt: widget.args.changeProvider == true
+                                ? trans('choose_office')
+                                : trans("delegate"),
                             providerTotalEvaluation:
                                 state.items![index].ratingsCount,
                             providerRating: state.items![index].ratingAverage,
@@ -154,7 +157,19 @@ class _ServicesPageState extends State<ServicesPage> {
                                 state.items![index].serviceProviderName,
                             providerIcon: state.items![index].logoImageUrl,
                             contact: state.items![index].contact,
-                            onPressView: () {
+                            onPressView: widget.args.changeProvider == true
+                                ? () {}
+                                : () {
+                                    context.read<ServicesBloc>().add(
+                                        GetServiceDetailsEvent(
+                                            params: ServiceDetailsParams(
+                                                serviceProviderId:
+                                                    state.items![index].id!,
+                                                cityId: CommonProperties.cityId,
+                                                subServiceId:
+                                                    state.subServiceId!)));
+                                  },
+                            onDelegate: () {
                               if (!CommonProperties.isUserLogged) {
                                 showPopUpWidget(
                                   context,

@@ -13,6 +13,7 @@ class ProviderItemWidget extends StatelessWidget {
   final String? contact;
   final Function? onPressView;
   final Function? onDelegate;
+  final String? buttonTxt;
 
   const ProviderItemWidget(
       {Key? key,
@@ -22,6 +23,7 @@ class ProviderItemWidget extends StatelessWidget {
       this.providerName,
       this.providerRating,
       this.contact,
+      this.buttonTxt,
       this.providerTotalEvaluation})
       : super(key: key);
 
@@ -78,6 +80,7 @@ class ProviderItemWidget extends StatelessWidget {
             ),
             const SizedBox(height: 48),
             ProviderButtons(
+              buttonTxt: buttonTxt,
               btnSize: 42,
               onCallPressed: () {
                 CommonFunctions.call(contact);
