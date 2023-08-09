@@ -150,9 +150,6 @@ class DaemTypeWidget extends StatelessWidget {
 }
 
 String getIcon(String category) {
-  //MM
-  return IconPath.calendarIcon;
-
   switch (category) {
     case "السكن الجماعي":
       return 'assets/images/inq/Inq_1.svg';
