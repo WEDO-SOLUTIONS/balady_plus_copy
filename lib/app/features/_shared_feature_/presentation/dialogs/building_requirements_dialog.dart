@@ -13,6 +13,7 @@ class BuildingRequirementsDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      color: AppColor.white,
       padding: EdgeInsets.only(
         right: UIHelper.mediumPadding,
         left: UIHelper.mediumPadding,

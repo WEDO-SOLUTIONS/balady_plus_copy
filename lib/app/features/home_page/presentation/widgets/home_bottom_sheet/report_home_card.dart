@@ -67,6 +67,13 @@ class ReportHomeCard extends StatelessWidget {
                     btnHeight: 40,
                     btnWidth: 157,
                     text: "ارفع بلاغ",
+                    onPressed: () async {
+                      await BottomSheetDialog.showDraggableSheet(context,
+                          child: BottomSheetWithActions(
+                            title: "اختر نوع البلاغ".tr(),
+                            body: VDAllTypesDialog(),
+                          ));
+                    },
                   ),
                 ],
               ),

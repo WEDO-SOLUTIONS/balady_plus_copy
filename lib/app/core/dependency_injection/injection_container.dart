@@ -29,6 +29,7 @@ import '../../features/_shared_feature_/data/entities/device_details.dart';
 import '../../features/_shared_feature_/data/entities/package_details.dart';
 import '../../features/_shared_feature_/shared_feature_exports.dart'
     show BridgeParams, DropDownItem, FileInfo;
+import '../../features/bottom_navigation/presentation/cubits/bottom_nav_bar_cubit.dart';
 import '../../features/map_page/data/repositories/layers_repositories.dart';
 import '../../features/weather/presentation/bloc/weather_bloc.dart';
 import '../dependency_injection/dependency_injection_exports.dart'
@@ -54,6 +55,7 @@ import '../services/services_exports.dart'
         NetworkConnection,
         NetworkConnectionImplementation,
         WebService;
+import '../utils/enums/bottom_nav_bar.dart';
 import 'features/dc_injection.dart';
 import 'features/objectable_transactions_injection.dart';
 import 'features/objections_injection.dart';
@@ -115,6 +117,8 @@ void initialize() {
   //! Core
   sl.registerLazySingleton(() => WebService(dio: sl()));
   sl.registerLazySingleton(() => CRMWebService(dio: Dio()));
+  sl.registerLazySingleton(
+      () => BottomNavBarCubit(initialNavBar: BottomNavBar.home));
 
 // Weather
   //Blocs

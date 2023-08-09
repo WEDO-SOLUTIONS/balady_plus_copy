@@ -1,4 +1,5 @@
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
+import 'package:balady_plus/app/features/bottom_navigation/presentation/cubits/bottom_nav_bar_cubit.dart';
 import 'package:balady_plus/app/features/map_page/data/enums/map_enums.dart';
 import 'package:balady_plus/app/features/map_page/data/model/layers.dart';
 import 'package:balady_plus/app/features/map_page/extensions/search_category_ext.dart';
@@ -9,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:provider/provider.dart';
+import '../../../../core/dependency_injection/injection_container.dart';
 import '../../../../core/utils/constants/app_style.dart';
 import '../../../../core/utils/constants/route_names.dart';
 import '../../../home_page/presentation/widgets/home_app_bar/circle_icon.dart';
@@ -36,7 +38,9 @@ class SearchMapWidget extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               GestureDetector(
-                  onTap: () {},
+                  onTap: () {
+                    sl<BottomNavBarCubit>().onChangeBottomNavBar(2);
+                  },
                   child: CircleIcon(
                     icon: "assets/icons/svg/user.svg",
                   )),

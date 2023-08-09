@@ -47,8 +47,8 @@ class _BottomNavigationPageState extends State<BottomNavigationPage> {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider<BottomNavBarCubit>(
-          create: (_) => BottomNavBarCubit(initialNavBar: BottomNavBar.home),
+        BlocProvider<BottomNavBarCubit>.value(
+          value: sl<BottomNavBarCubit>(),
         ),
         BlocProvider<ServicesCubit>(
           create: (_) => ServicesCubit(

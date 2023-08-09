@@ -6,6 +6,7 @@ import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../_shared_feature_/presentation/components/bottom_sheets/bottom_sheet_with_actions.dart';
@@ -117,7 +118,7 @@ class ImtethalMapCard extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         CustomTextWidget(
-                          'عرض المتطلبات والاشتراطات',
+                          "downloadImtethalDocumwnt".tr(),
                           fontColor: AppColor.primary700Light,
                           fontSize: 12,
                           fontWeight: AppFontWeight.bold,

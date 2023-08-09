@@ -23,13 +23,15 @@ class OrderTitleAndDescWidget extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if(title.isNotEmpty)CustomTextWidget(title,
-            fontColor: AppColor.baladyDarkGreen2,
-            fontSize: 13,
-            textAlign: TextAlign.start,
-            fontWeight: AppFontWeight.bold),
+        if (title.isNotEmpty)
+          CustomTextWidget(title,
+              fontColor: AppColor.baladyDarkGreen2,
+              fontSize: 13,
+              textAlign: TextAlign.start,
+              fontWeight: AppFontWeight.bold),
         //TitleWidget(title: title),
-        if(title.isNotEmpty)CustomVerticalSpace(height: spaceBetweenTitleAndDesc),
+        if (title.isNotEmpty)
+          CustomVerticalSpace(height: spaceBetweenTitleAndDesc),
         if (desc != null)
           CustomTextWidget(
             desc ?? "",
@@ -185,14 +187,12 @@ class EtmamCustomReadOnlyTextWidget extends StatelessWidget {
             borderRadius: const BorderRadius.all(Radius.circular(6)),
             color: AppColor.white6.withOpacity(0.5),
           ),
-          child:  Expanded(
-            child: CustomTextWidget(
-              text,
-              fontColor: AppColor.black700,
-              fontSize: 14,
-              maxLines: 2,
-              fontWeight: AppFontWeight.bold,
-            ),
+          child: CustomTextWidget(
+            text,
+            fontColor: AppColor.black700,
+            fontSize: 14,
+            maxLines: 3,
+            fontWeight: AppFontWeight.bold,
           ),
         ),
         const SizedBox(height: 24),

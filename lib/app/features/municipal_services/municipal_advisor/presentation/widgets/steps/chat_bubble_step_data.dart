@@ -161,11 +161,13 @@ class ChatBubbleStepData extends StatelessWidget {
             return Padding(
               padding: const EdgeInsets.only(top: 24, bottom: 10),
               child: ElevatedIconButtonWidget.download(
-                onPressed: () {
-                  CommonFunctions.externalLaunch(
-                      "https://gisapps.momra.gov.sa/imtithal/assets/req.pdf");
+                onPressed: () async {
+                  await BottomSheetDialog.showDraggableSheet(
+                    context,
+                    child: BuildingRequirementsDialog(),
+                  );
                 },
-                text: "imtethalDownloadFile".tr(),
+                text: "downloadImtethalDocumwnt".tr(),
               ),
             );
           },
