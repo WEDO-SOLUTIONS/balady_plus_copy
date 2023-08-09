@@ -24,6 +24,7 @@ class WalletScreen extends StatelessWidget {
       child: BlocConsumer<WalletBloc, WalletState>(
         listener: (context, state) {},
         builder: (context, state) {
+          print(state);
           return Scaffold(
             appBar: DefaultAppBarWidget(title: "wallet".tr()),
             body: Stack(
@@ -189,8 +190,11 @@ class WalletScreen extends StatelessWidget {
                           return Container();
                         },
                       ),
-                      if (state.status == BlocStatus.failure)
-                        ReloadWidget(onTab: () {})
+                      if (state.status == BlocStatus.failure ||
+                          state.status == BlocStatus.retry)
+                        ReloadWidget(onTab: () {
+                          context.read<WalletBloc>().add(GetWalletDataEvent());
+                        })
                     ],
                   ),
                 ),

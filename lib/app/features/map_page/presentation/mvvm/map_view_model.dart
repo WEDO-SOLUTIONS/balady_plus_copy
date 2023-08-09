@@ -614,10 +614,10 @@ class MapViewModel extends BaseViewModel {
         await layersRepositories.getInvetmentDetails(id, type);
 
     hideLoading1();
-
-    Navigator.pushNamed(NavigationService.navigatorKey.currentContext!,
-        RouteName.investmentPage,
-        arguments: data);
+    if (data != null)
+      Navigator.pushNamed(NavigationService.navigatorKey.currentContext!,
+          RouteName.investmentPage,
+          arguments: data);
 
     return data;
   }
@@ -630,9 +630,10 @@ class MapViewModel extends BaseViewModel {
         await layersRepositories.getTempRentalDetails(id, type);
 
     hideLoading1();
-    Navigator.pushNamed(NavigationService.navigatorKey.currentContext!,
-        RouteName.tempRentalPage,
-        arguments: data);
+    if (data != null)
+      Navigator.pushNamed(NavigationService.navigatorKey.currentContext!,
+          RouteName.tempRentalPage,
+          arguments: data);
 
     return data;
   }
@@ -857,12 +858,14 @@ class MapViewModel extends BaseViewModel {
   void selectLayers(Layers value) async {
     print("LAyer selected");
     await controller.removeAll();
+    showLegend.value = null;
     layerSelected.value = value;
     searchController.text = "";
     viewHomeBottomSheet.value = true;
     viewHomeBottomSheet.notifyListeners();
 
     bottomSheetSize.notifyListeners();
+    showLegend.notifyListeners();
     bottomSheetSizeFraction.notifyListeners();
     gisSelectedLayer = GISMapLayers.values
             .firstWhereOrNull((element) => element.layerId == value.id) ??

@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:balady_plus/app/core/services/services_exports.dart'
     show NavigationService;
 import 'package:balady_plus/app/core/utils/constants/route_names.dart';
+import 'package:balady_plus/app/core/utils/utils_exports.dart';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -541,6 +542,11 @@ class Helpers {
 
   static void backToHome() {
     try {
+      print("aba");
+      CommonFunctions.showError("session_ended_error".tr());
+      NavigationService.navigatorKey.currentState!
+          .popUntil(ModalRoute.withName(RouteName.bottomNavigation));
+      return;
       NavigationService.navigatorKey.currentState!.popUntil((route) {
         if (route.settings.name == RouteName.bottomNavigation ||
             route.settings.name == null) {
@@ -548,6 +554,8 @@ class Helpers {
         }
         return false;
       });
-    } catch (ex) {}
+    } catch (ex) {
+      print(ex);
+    }
   }
 }

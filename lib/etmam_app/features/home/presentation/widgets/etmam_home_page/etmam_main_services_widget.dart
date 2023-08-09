@@ -9,20 +9,14 @@ import 'package:balady_plus/etmam_app/features/_shared_feature_/shared/shared_fe
         CustomInkWellButtonWidget,
         CustomNetworkImageWidget,
         CustomShimmerHorizontalListWidget,
+        CustomSvgIconWidget,
         CustomTextWidget,
         CustomVerticalSpace,
         ReloadWidget;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:balady_plus/etmam_app/core/utils/utils_exports.dart'
-    show
-        AppColor,
-        AppFontWeight,
-        BlocStatus,
-        CommonFunctions,
-        CommonProperties,
-        RouteName,
-        trans;
+    show AppColor, AppFontWeight, CommonFunctions, CommonProperties, trans;
 import 'package:balady_plus/etmam_app/features/home/home_exports.dart'
     show
         EtmamSubServicesPage,
@@ -36,7 +30,6 @@ import 'package:balady_plus/etmam_app/features/home/home_exports.dart'
         SubServiceParams,
         SubServiceResponse;
 
-import '../../../../_shared_feature_/shared/presentation/widgets/custom_svg_icon_widget.dart';
 import '../../../../_shared_feature_/shared/presentation/widgets/header_with_all_button_widget.dart';
 
 class EtmamMainServicesWidget extends StatefulWidget {
@@ -131,14 +124,8 @@ class _EtmamMainServicesWidget extends State<EtmamMainServicesWidget> {
                                       GetSubServicesEvent(
                                         params: SubServiceParams(
                                           cityId: CommonProperties.cityId,
-                                          mainServiceId: state
-                                              .mainServiceResponse!
-                                              .items![itemIndex]
-                                              .id!,
-                                          mainServiceName: state
-                                              .mainServiceResponse!
-                                              .items![itemIndex]
-                                              .name!,
+                                          mainServiceId: widget.id!,
+                                          mainServiceName: widget.name!,
                                         ),
                                       ),
                                     );
@@ -220,8 +207,8 @@ class EtmamServiceCardWidget extends StatelessWidget {
               margin: const EdgeInsetsDirectional.all(16),
               child: CustomNetworkImageWidget(
                 serviceIcon,
-                imageHeight: double.infinity,
-                imageWidth: double.infinity,
+                imageHeight: 35,
+                imageWidth: 35,
                 imageFit: BoxFit.contain,
                 placeHolderWidget: Container(
                   color: Colors.grey,
@@ -246,7 +233,7 @@ class EtmamServiceCardWidget extends StatelessWidget {
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: const CustomSvgIconWidget(
+              child: CustomSvgIconWidget(
                 IconPath.arrowForward2,
                 iconColor: AppColor.black,
               ),

@@ -73,20 +73,17 @@ class GetCookie extends UseCase<String, NoParams> {
                   : RemoteConfig.momraDomain,
               expiresDate: cookieExpiration);
         } catch (_) {}
-      } else if (element.contains(
-          "BIGipServerssoappdev.momra.gov.sa.app~ssoappdev.momra.gov.sa_pool")) {
-        int valueStartIndex = element.indexOf(
-                ".BIGipServerssoappdev.momra.gov.sa.app~ssoappdev.momra.gov.sa_pool=") +
-            ".BIGipServerssoappdev.momra.gov.sa.app~ssoappdev.momra.gov.sa_pool="
-                .length;
+      } else if (element.contains(RemoteConfig.webCookieHeader)) {
+        int valueStartIndex =
+            element.indexOf(".${RemoteConfig.webCookieHeader}=") +
+                ".${RemoteConfig.webCookieHeader}=".length;
         int valueEndIndex = element.indexOf(";");
         String value = element.substring(valueStartIndex + 1, valueEndIndex);
 
         try {
           await CookieManager.instance().setCookie(
               url: Uri.parse(RemoteConfig.cookieURL),
-              name:
-                  ".BIGipServerssoappdev.momra.gov.sa.app~ssoappdev.momra.gov.sa_pool",
+              name: ".${RemoteConfig.webCookieHeader}",
               value: value,
               domain: Platform.isIOS
                   ? RemoteConfig.ssoMomraDomain

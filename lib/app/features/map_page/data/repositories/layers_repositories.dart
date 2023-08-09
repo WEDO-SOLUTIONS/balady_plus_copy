@@ -52,7 +52,8 @@ class LayersRepositories {
                   element.id != 4 &&
                   element.id != 6 &&
                   element.id != 5 &&
-                  element.id != 9,
+                  element.id != 9 &&
+                  element.id != 7,
             )
             .toList();
       }
@@ -212,6 +213,8 @@ class LayersRepositories {
   Future<InvestmentDetailsResponse?> getInvetmentDetails(
       String investmentId, String type) async {
     try {
+      bool isSuccess = await sl<EntryPointCubit>().refreshAPIGeeToken();
+
       final response = await webService.dio.get(
         sl<EnvType>().domain + "v1/ims/investment-details",
         queryParameters: {
@@ -238,6 +241,8 @@ class LayersRepositories {
   Future<RentalDetailsResponse?> getTempRentalDetails(
       String investmentId, String type) async {
     try {
+      bool isSuccess = await sl<EntryPointCubit>().refreshAPIGeeToken();
+
       final response = await webService.dio.get(
         sl<EnvType>().domain + "v1/ims/temp-rental-details",
         queryParameters: {

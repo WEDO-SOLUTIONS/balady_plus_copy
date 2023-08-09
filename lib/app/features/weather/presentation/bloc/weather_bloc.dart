@@ -1,5 +1,6 @@
 import 'package:balady_plus/app/core/services/local/helpers.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
+import 'package:balady_plus/app/features/entry_point/presentation/cubit/auth_cubit.dart';
 import 'package:balady_plus/app/features/vd/vd_exports.dart';
 import 'package:balady_plus/app/features/weather/domain/usecases/get_weather_info.dart';
 import 'package:balady_plus/app/features/weather/weather_exports.dart';
@@ -22,14 +23,15 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
         _getGISData = GetGISData(repository: sl()),
         super(WeatherState(gisResponse: CommonProperties.userLocationGIS)) {
     on<GetWeatherForLocation>(_getAllWeatherInfo);
+    on<RefreshWeatherForLocation>(_refreshWeatherForLocation);
 
     add(GetWeatherForLocation());
   }
 
   Future<void> _getAllWeatherInfo(
       GetWeatherForLocation e, Emitter emitter) async {
-    if (state.allWeatherInfoStatus == BlocStatus.success &&
-        state.showLocationError == false) return;
+    //   if (state.allWeatherInfoStatus == BlocStatus.success &&
+    //     state.showLocationError == false) return;
 
     emitter(state.copyWith(
       allWeatherInfoStatus: BlocStatus.loading,
@@ -97,11 +99,33 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
           allWeatherInfoStatus: BlocStatus.success,
           allWeatherInfo: success,
           gisResponse: CommonProperties.userLocationGIS,
+          location: location,
           showLocationError: false,
           errorMessage: "",
         ));
       });
     }
+
+/*  ;*/
+  }
+
+  Future<void> _refreshWeatherForLocation(
+      RefreshWeatherForLocation e, Emitter emitter) async {
+    WeatherParams params = e.params
+        .copyWith(latitude: state.location?.y, longitude: state.location?.x);
+
+    final failureOrSuccess = await _getWeatherInfo(params);
+    failureOrSuccess.fold((failure) {
+      print("failure: weather $failure");
+      emitter(state.copyWith());
+    }, (success) {
+      print("weather entity: $success");
+      emitter(state.copyWith(
+        allWeatherInfoStatus: BlocStatus.success,
+        allWeatherInfo: success,
+        errorMessage: "",
+      ));
+    });
 
 /*  ;*/
   }

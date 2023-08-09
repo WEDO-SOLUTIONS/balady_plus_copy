@@ -35,6 +35,7 @@ class WebService {
     try {
       var headers = {
         'Authorization': 'Bearer ${CommonProperties.token}',
+        "x-channel-id": "MOBILE",
       };
 
       if (extraHeadersParams != null) headers.addAll(extraHeadersParams);
@@ -119,6 +120,7 @@ class WebService {
     try {
       var headers = {
         'Authorization': 'Bearer ${CommonProperties.token}',
+        "x-channel-id": "MOBILE",
       };
 
       if (extraHeadersParams != null) headers.addAll(extraHeadersParams);
@@ -220,7 +222,8 @@ class WebService {
           'Cookie': sl<EntryPointCubit>().state.token?.appCookie ?? "",
           "Content-Type": "application/json",
           "verifyingKEY": verifyingKEY,
-          "SSOToken": CommonProperties.token ?? ""
+          "SSOToken": CommonProperties.token ?? "",
+          "x-channel-id": "MOBILE",
         };
 
         if (extraHeadersParams != null) headers.addAll(extraHeadersParams);
@@ -336,7 +339,8 @@ class WebService {
         'Cookie': sl<EntryPointCubit>().state.token?.appCookie ?? "",
         "Content-Type": "application/json",
         "verifyingKEY": verifyingKEY,
-        "SSOToken": CommonProperties.token ?? ""
+        "SSOToken": CommonProperties.token ?? "",
+        "x-channel-id": "MOBILE",
       };
       print(headers);
       if (extraHeadersParams != null) headers.addAll(extraHeadersParams);
@@ -466,6 +470,7 @@ class WebService {
       request.headers['loginIdentityType'] = loginIdentityType;
       request.headers['verifyingKEY'] = verifyingKEY;
       request.headers['SSOToken'] = CommonProperties.token ?? "";
+      request.headers['x-channel-id'] = "MOBILE";
 
       http.MultipartFile file = http.MultipartFile.fromBytes(
           'file', base64!.toList(),
@@ -540,6 +545,7 @@ class WebService {
       }
       var headers = {
         'Content-type': 'application/json',
+        "x-channel-id": "MOBILE",
         if (CommonProperties.isLoggedIn)
           'Authorization': 'Bearer ${sl<EntryPointCubit>().state.token?.token}'
         else
@@ -642,6 +648,7 @@ class WebService {
       var response =
           await http.post(Uri.parse(requestUrl), body: data, headers: {
         'Content-type': 'application/json',
+        "x-channel-id": "MOBILE",
         if (CommonProperties.isLoggedIn)
           'Authorization': 'Bearer ${sl<EntryPointCubit>().state.token?.token}'
         else
@@ -719,7 +726,11 @@ class WebService {
     try {
       var response = await http.get(
         Uri.parse(requestUrl),
-        headers: headers ?? {"Content-Type": "application/json"},
+        headers: headers ??
+            {
+              "Content-Type": "application/json",
+              "x-channel-id": "MOBILE",
+            },
       );
       // print(utf8.decode(response.bodyBytes).toString());
       if (response.statusCode == HttpStatus.ok) {
@@ -786,7 +797,11 @@ class WebService {
         response = await http.post(
           Uri.parse(requestUrl),
           body: data,
-          headers: headers ?? {"Content-Type": "application/json"},
+          headers: headers ??
+              {
+                "Content-Type": "application/json",
+                "x-channel-id": "MOBILE",
+              },
         );
       } else {
         response = await http
@@ -870,7 +885,8 @@ class WebService {
           'Cookie': sl<EntryPointCubit>().state.token?.appCookie ?? "",
           "Content-Type": "application/json",
           "verifyingKEY": verifyingKEY,
-          "SSOToken": CommonProperties.token ?? ""
+          "SSOToken": CommonProperties.token ?? "",
+          "x-channel-id": "MOBILE",
         },
       );
       print("response: " + response.headers.toString());
@@ -933,6 +949,7 @@ class WebService {
     try {
       var headers = {
         'Authorization': 'Bearer ${CommonProperties.token}',
+        "x-channel-id": "MOBILE",
       };
 
       if (extraHeadersParams != null) headers.addAll(extraHeadersParams);

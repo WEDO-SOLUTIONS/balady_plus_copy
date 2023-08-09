@@ -108,7 +108,7 @@ class _EtmamSubServicesPageState extends State<EtmamSubServicesPage> {
                           gridDelegate:
                               const SliverGridDelegateWithFixedCrossAxisCount(
                             crossAxisCount: 2,
-                            childAspectRatio: 1.2,
+                            childAspectRatio: 1,
                             crossAxisSpacing: 10,
                             mainAxisSpacing: 10,
                           ),

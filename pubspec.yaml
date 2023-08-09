@@ -235,6 +235,9 @@ flutter:
     - assets/etmam_app/icons/svg/social_media/
     - assets/etmam_app/images/
     - assets/animation/
+    - assets/icons/svg/inq/
+    - assets/icons/svg/msr/
+    - assets/icons/svg/tsr/
     # - assets/services/
 
   # An image asset can refer to one or more resolution-specific "variants", see

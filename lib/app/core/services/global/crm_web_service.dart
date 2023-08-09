@@ -10,6 +10,7 @@ import '../../../core/dependency_injection/dependency_injection_exports.dart'
     show sl;
 import '../../../features/_shared_feature_/shared_feature_exports.dart'
     show AuthData, AuthDataModel;
+import '../../../features/entry_point/presentation/cubit/auth_cubit.dart';
 import '../../errors/errors_exports.dart'
     show
         BadRequestException,
@@ -105,6 +106,9 @@ class AppInterceptors extends Interceptor {
     options.headers
         .putIfAbsent(ApiHeader.verifyingKEY.name, () => verifyingKEY);
     options.headers.putIfAbsent("x-channel-id", () => "MOBILE");
+    options.headers.putIfAbsent(
+        'Cookie', () => sl<EntryPointCubit>().state.token?.appCookie ?? "");
+
     //if (options.headers['Authorization'] == null) {
     print(options.headers);
     return handler.next(options);
@@ -132,6 +136,7 @@ class AppInterceptors extends Interceptor {
             }
             throw BadRequestException(err.requestOptions, err.response);
           case 401:
+            sl<EntryPointCubit>().autoLogout();
             throw UnAuthorizedException(err.requestOptions, err.response);
           case 404:
             throw RequestNotFoundException(err.requestOptions, err.response);

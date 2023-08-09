@@ -1,8 +1,8 @@
 import 'package:balady_plus/etmam_app/core/utils/utils_exports.dart'
     show AppColor;
-import 'package:balady_plus/etmam_app/features/_shared_feature_/shared/shared_feature_exports.dart'
-    show CustomNetworkImageWidget;
 import 'package:flutter/material.dart';
+
+import '../../../../../../app/features/_shared_feature_/presentation/widgets/custom_svg_icon_widget.dart';
 
 class ProviderLogoIcon extends StatelessWidget {
   final String imageUrl;

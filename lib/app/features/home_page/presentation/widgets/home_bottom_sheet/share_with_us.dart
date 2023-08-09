@@ -12,6 +12,7 @@ import '../../../../_shared_feature_/shared_feature_exports.dart'
         BottomSheetWithActions,
         CustomTextWidget,
         ElevatedButtonWidget;
+import '../../../../vd/presentation/dialogs/vd_all_types_dialog.dart';
 import '../../../../vd/presentation/dialogs/vd_types_dialog.dart';
 import '../../../home_exports.dart' show HomeSection;
 
@@ -57,7 +58,7 @@ class ShareWithUs extends StatelessWidget {
                 await BottomSheetDialog.showDraggableSheet(context,
                     child: BottomSheetWithActions(
                       title: "اختر نوع البلاغ".tr(),
-                      body: VDTypesDialog(),
+                      body: VDAllTypesDialog(),
                     ));
               },
             )

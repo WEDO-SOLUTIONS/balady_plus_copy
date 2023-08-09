@@ -3,6 +3,7 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../core/utils/utils_exports.dart';
 import '../../../../_shared_feature_/shared_feature_exports.dart';
+import '../../../../vd/presentation/dialogs/vd_all_types_dialog.dart';
 import '../../../../vd/presentation/dialogs/vd_types_dialog.dart';
 
 class ReportHomeCard extends StatelessWidget {
@@ -62,7 +63,7 @@ class ReportHomeCard extends StatelessWidget {
                     await BottomSheetDialog.showDraggableSheet(context,
                         child: BottomSheetWithActions(
                           title: "اختر نوع البلاغ".tr(),
-                          body: VDTypesDialog(),
+                          body: VDAllTypesDialog(),
                         ));
                   },
                 ),

@@ -29,25 +29,25 @@ class _GeneralInquiryTypeDialog extends State<GeneralInquiryTypeDialog> {
     _list = [
       CustomerVoiceReportTypeModel(
           code: "INQC-006",
-          icon: IconPath.calendarIcon,
+          icon: IconPath.Inq_6Icon,
           key: "",
           title: "Inq_6",
           id: 6),
       CustomerVoiceReportTypeModel(
           code: "INQC-003",
-          icon: IconPath.calendarIcon,
+          icon: IconPath.Inq_3Icon,
           key: "",
           title: "Inq_3",
           id: 3),
       CustomerVoiceReportTypeModel(
           code: "INQC-014",
-          icon: IconPath.calendarIcon,
+          icon: IconPath.Inq_14Icon,
           key: "",
           title: "Inq_14",
           id: 14),
       CustomerVoiceReportTypeModel(
           code: "INQC-011",
-          icon: IconPath.calendarIcon,
+          icon: IconPath.Inq_11Icon,
           key: "",
           title: "Inq_11",
           id: 11),

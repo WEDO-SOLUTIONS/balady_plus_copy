@@ -97,8 +97,8 @@ class EntryPointCubit extends Cubit<EntryPointState> {
         sharedPrefs.setFirstDateTime();
       }
       refreshSSOProfile();
-      refreshAPIGeeToken();
     });
+    refreshAPIGeeToken();
     getUserLocationData();
   }
 
@@ -341,6 +341,10 @@ class EntryPointCubit extends Cubit<EntryPointState> {
     }, (r) {
       // print(r);
     });
+  }
+
+  void updateCurrentLocation(GISResponse response, GISParams params) {
+    emit(state.copyWith(userLocationGIS: response, userLocation: params));
   }
 
   void selectDelegator(DelegatorEntity? delegator) {

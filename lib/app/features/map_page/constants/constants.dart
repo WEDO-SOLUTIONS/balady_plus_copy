@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 
+import '../../../core/dependency_injection/injection_container.dart';
+import '../../../core/utils/constants/apis/env_types.dart';
+
 class Constants {
   // GIS API
-  static String mainUrl =
-      "https://apiservicesstg.balady.gov.sa/v1/gis-urbi-services/layers";
-  static String verifyingKEY = "P/uN+9S3wHuzQDlY7JM+nb58vesqLzrJ8VTBMvzsIaI=";
+  static String mainUrl = "${sl<EnvType>().domain}v1/gis-urbi-services/layers";
 
   // Map Style
   static String mapStyle = "assets/maps/styles/common-styles.2gis";

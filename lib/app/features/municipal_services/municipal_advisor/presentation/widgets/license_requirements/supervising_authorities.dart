@@ -16,7 +16,8 @@ class SupervisingAuthorities extends StatelessWidget {
           TextSpan(
             children: [
               TextSpan(
-                text: '5. ${"municipalAdvisorAdvertisingOfficesTitle".tr()}\n',
+                text:
+                    '5. ${"municipalAdvisorSupervisingAuthoritiesTitle".tr()}\n',
                 style: AppStyle.lightTitleTextStyle.copyWith(fontSize: 12),
               ),
               for (final supervisingAuthority

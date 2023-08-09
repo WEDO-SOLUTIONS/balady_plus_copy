@@ -62,6 +62,7 @@ class EtmamSubServicePageCardWidget extends StatelessWidget {
                       fontColor: AppColor.black,
                       fontSize: 14.0,
                       fontWeight: AppFontWeight.bold,
+                      maxLines: 2,
                     ),
                   ],
                 ),

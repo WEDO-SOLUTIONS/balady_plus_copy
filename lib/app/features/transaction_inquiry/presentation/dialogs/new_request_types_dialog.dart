@@ -29,31 +29,31 @@ class _MSRTypeDialog extends State<MSRTypeDialog> {
     _list = [
       CustomerVoiceReportTypeModel(
           code: "MSRC-001",
-          icon: IconPath.calendarIcon,
+          icon: IconPath.msrRoadsIcon,
           key: "",
           title: "msr_roads",
           id: 1),
       CustomerVoiceReportTypeModel(
           code: "MSRC-002",
-          icon: IconPath.calendarIcon,
+          icon: IconPath.msrWasteIcon,
           key: "",
-          title: "Inq_3",
+          title: "msr_waste",
           id: 2),
       CustomerVoiceReportTypeModel(
           code: "MSRC-003",
-          icon: IconPath.calendarIcon,
+          icon: IconPath.msrLightsIcon,
           key: "",
           title: "msr_lights",
           id: 3),
       CustomerVoiceReportTypeModel(
           code: "MSRC-004",
-          icon: IconPath.calendarIcon,
+          icon: IconPath.msrParksIcon,
           key: "",
           title: "msr_parks",
           id: 4),
       CustomerVoiceReportTypeModel(
           code: "MSRC-006",
-          icon: IconPath.calendarIcon,
+          icon: IconPath.msrCleanIcon,
           key: "",
           title: "msr_clean",
           id: 6),

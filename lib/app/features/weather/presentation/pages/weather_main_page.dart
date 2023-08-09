@@ -36,7 +36,7 @@ class _WeatherMainPageState extends State<WeatherMainPage> {
     final screenHeight = _size.height;
 
     return BlocProvider.value(
-      value: sl<WeatherBloc>(),
+      value: sl<WeatherBloc>()..add(GetWeatherForLocation()),
       child: BlocBuilder<WeatherBloc, WeatherState>(
         builder: (context, state) {
           // if (state.allWeatherInfoStatus == BlocStatus.loading) {

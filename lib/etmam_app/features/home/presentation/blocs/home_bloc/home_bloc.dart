@@ -72,7 +72,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     add(
       GetMainServicesEvent(
         params: MainServiceParams(
-            cityId: CommonProperties.cityId, pageIndex: "0", pageSize: "4"),
+            cityId: CommonProperties.cityId, pageIndex: "0", pageSize: "10"),
       ),
     );
     add(

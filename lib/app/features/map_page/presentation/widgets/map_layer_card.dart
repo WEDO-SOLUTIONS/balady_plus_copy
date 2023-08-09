@@ -74,11 +74,11 @@ class MapLayerCard extends StatelessWidget {
                           //      "02-21-003709-106", "TempRental");
 
                           await mapViewModel.getTempRentalDetails(
-                              selectedPoint!.id, "TempRental");
+                              selectedPoint!.OPPORTUNITYNUMBER!, "TempRental");
                         } else {
                           //"01-22-003709-21394"
                           await mapViewModel.getInvestmentDetails(
-                              selectedPoint!.id, "Investment");
+                              selectedPoint!.OPPORTUNITYNUMBER!, "Investment");
                         }
                       },
                       onClose: () {

@@ -11,6 +11,10 @@ const _svgVDIconPath = 'assets/icons/svg/vd/';
 const _svgAthkarIconPath = 'assets/icons/svg/athkar/';
 const _boardingLogoPath = 'assets/icons/svg/boarding/';
 
+const _inqPath = 'assets/icons/svg/inq/';
+const _msrPath = 'assets/icons/svg/msr/';
+const _tsrPath = 'assets/icons/svg/tsr/';
+
 const _pngQRIconPath = 'assets/icons/png/qr/';
 const _svgQRIconPath = 'assets/icons/svg/qr/';
 
@@ -250,6 +254,37 @@ class IconPath {
   static const quranSearchIcon = '${_svgIconPath}quran_search$_svg';
   static const quranMarkIcon = '${_svgIconPath}quran_mark$_svg';
   static const quranMainMarkIcon = '${_svgIconPath}quran_main_bookmark$_svg';
+
+//MSR
+  static const msrRoadsIcon = '${_msrPath}msrRoadsIcon$_svg';
+  static const msrWasteIcon = '${_msrPath}msrWasteIcon$_svg';
+  static const msrLightsIcon = '${_msrPath}msrLightsIcon$_svg';
+  static const msrParksIcon = '${_msrPath}msrParksIcon$_svg';
+  static const msrCleanIcon = '${_msrPath}msrCleanIcon$_svg';
+
+  static const Inq_6Icon = '${_inqPath}Inq_6Icon$_svg';
+  static const Inq_3Icon = '${_inqPath}Inq_3Icon$_svg';
+  static const Inq_14Icon = '${_inqPath}Inq_14Icon$_svg';
+  static const Inq_11Icon = '${_inqPath}Inq_11Icon$_svg';
+
+/*
+  static const Inq_6Icon = '${_tsrPath}Inq_6Icon$_svg';
+  static const Inq_3Icon = '${_tsrPath}Inq_3Icon$_svg';
+  static const Inq_14Icon = '${_tsrPath}Inq_14Icon$_svg';
+  static const Inq_11Icon = '${_tsrPath}Inq_11Icon$_svg';
+  static const Inq_11Icon = '${_tsrPath}Inq_11Icon$_svg';
+  static const Inq_11Icon = '${_tsrPath}Inq_11Icon$_svg';
+  static const Inq_11Icon = '${_tsrPath}Inq_11Icon$_svg';
+  static const Inq_11Icon = '${_tsrPath}Inq_11Icon$_svg';
+  static const Inq_11Icon = '${_tsrPath}Inq_11Icon$_svg';
+  static const Inq_11Icon = '${_tsrPath}Inq_11Icon$_svg';
+  static const Inq_11Icon = '${_tsrPath}Inq_11Icon$_svg';
+  static const Inq_11Icon = '${_tsrPath}Inq_11Icon$_svg';
+*/
+
+// INQ
+
+// Daem
 
   // CR
   static const additionalActivity = '${_svgCRIconPath}additional_activity$_svg';

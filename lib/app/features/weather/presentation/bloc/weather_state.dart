@@ -7,11 +7,13 @@ class WeatherState extends Equatable {
   final AllWeatherInfoEntity? allWeatherInfo;
   final GISResponse? gisResponse;
   final bool? showLocationError;
+  final GISParams? location;
   const WeatherState(
       {this.allWeatherInfoStatus = BlocStatus.initial,
       this.errorMessage,
       this.allWeatherInfo,
       this.showLocationError,
+      this.location,
       this.gisResponse});
 
   @override
@@ -23,12 +25,14 @@ class WeatherState extends Equatable {
       String? errorMessage,
       AllWeatherInfoEntity? allWeatherInfo,
       bool? showLocationError,
+      GISParams? location,
       GISResponse? gisResponse}) {
     return WeatherState(
         allWeatherInfoStatus: allWeatherInfoStatus ?? this.allWeatherInfoStatus,
         errorMessage: errorMessage ?? this.errorMessage,
         allWeatherInfo: allWeatherInfo ?? this.allWeatherInfo,
         showLocationError: showLocationError ?? this.showLocationError,
+        location: location ?? this.location,
         gisResponse: gisResponse ?? this.gisResponse);
   }
 }

@@ -49,7 +49,7 @@ class EtmamMainServiceCardWidget extends StatelessWidget {
                 imageWidth: 52,
                 imageFit: BoxFit.contain,
                 placeHolderWidget: Container(
-                  color: Colors.transparent,
+                  color: AppColor.primary900,
                   width: 52,
                   height: 52,
                 ),

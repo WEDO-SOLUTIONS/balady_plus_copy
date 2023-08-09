@@ -7,6 +7,7 @@ import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
 import '../../../core/dependency_injection/dependency_injection_exports.dart'
     show sl;
+import '../../../features/entry_point/presentation/cubit/auth_cubit.dart';
 import '../../errors/errors_exports.dart'
     show
         BadRequestException,
@@ -130,6 +131,7 @@ class AppInterceptors extends Interceptor {
             }
             throw BadRequestException(err.requestOptions, err.response);
           case 401:
+            sl<EntryPointCubit>().autoLogout();
             throw UnAuthorizedException(err.requestOptions, err.response);
           case 404:
             throw RequestNotFoundException(err.requestOptions, err.response);
