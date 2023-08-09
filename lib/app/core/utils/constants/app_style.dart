@@ -32,6 +32,12 @@ class AppStyle {
     fontFamily: fontFamily,
     color: AppColor.black,
   );
+  static final timePickerStyle = TextStyle(
+    color: AppColor.blueSkyLight800,
+    fontSize: 20.879,
+    fontWeight: AppFontWeight.regular.fontWeight,
+    fontFamily: fontFamily,
+  );
 
   static final mainTextSecondaryStyle = TextStyle(
     fontSize: 16.0,

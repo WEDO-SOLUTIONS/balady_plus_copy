@@ -190,6 +190,8 @@ class IconPath {
   static const pray = '${_svgAthkarIconPath}pray$_svg';
   static const handPrayer = '${_svgAthkarIconPath}hand-pray$_svg';
   static const notificationOn = '${_svgAthkarIconPath}notification_on$_svg';
+    static const notificationOff = '${_svgAthkarIconPath}notification_off$_svg';
+
 
   static const reset = '${_svgAthkarIconPath}reset$_svg';
 
