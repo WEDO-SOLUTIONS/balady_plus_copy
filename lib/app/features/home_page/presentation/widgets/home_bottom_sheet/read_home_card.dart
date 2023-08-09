@@ -9,21 +9,21 @@ class ReadHomeCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return HomeSection(
-      title: 'اقرأ ورتل',
-      child: Container(
-        width: MediaQuery.sizeOf(context).width,
-        padding: const EdgeInsetsDirectional.only(
-            start: 12, end: 18, top: 16, bottom: 16),
-        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-        decoration: const BoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(16)),
-          image: DecorationImage(image: AssetImage(ImagePath.readBg)),
-        ),
-        child: GestureDetector(
-          onTap: () {
-            Navigator.pushNamed(context, RouteName.menuQuranPage);
-          },
+    return GestureDetector(
+      onTap: () {
+        Navigator.pushNamed(context, RouteName.menuQuranPage);
+      },
+      child: HomeSection(
+        title: 'اقرأ ورتل',
+        child: Container(
+          width: MediaQuery.sizeOf(context).width,
+          padding: const EdgeInsetsDirectional.only(
+              start: 12, end: 18, top: 16, bottom: 16),
+          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          decoration: const BoxDecoration(
+            borderRadius: BorderRadius.all(Radius.circular(16)),
+            image: DecorationImage(image: AssetImage(ImagePath.readBg)),
+          ),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
