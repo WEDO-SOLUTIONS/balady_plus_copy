@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../core/utils/utils_exports.dart';
 import '../../../../_shared_feature_/shared_feature_exports.dart';
@@ -12,13 +13,12 @@ class ManagerInfoCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.only(bottom: 24),
-      padding: const EdgeInsets.symmetric(
-          horizontal: 16, vertical: 24),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
       decoration: const BoxDecoration(
         borderRadius: BorderRadius.all(Radius.circular(16)),
         color: AppColor.white,
       ),
-      child: const Column(
+      child: Column(
         children: [
           Row(
             children: [
@@ -26,7 +26,7 @@ class ManagerInfoCard extends StatelessWidget {
               SizedBox(width: 4),
               Flexible(
                 child: CustomTextWidget(
-                  "مدير الموقع",
+                  "managerLocation".tr(),
                   fontColor: AppColor.blackModern600Light,
                   fontSize: 18,
                   fontWeight: AppFontWeight.bold,
@@ -42,14 +42,14 @@ class ManagerInfoCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     CustomTextWidget(
-                      "الاسم",
+                      "user_data_applicant_name".tr(),
                       fontColor: AppColor.primary700Light,
                       fontSize: 10,
                       fontWeight: AppFontWeight.semiBold,
                     ),
                     SizedBox(height: 8),
                     CustomTextWidget(
-                      "احمد خالد",
+                      'AhmadKhaled'.tr(),
                       fontColor: AppColor.blackModern600Light,
                       fontSize: 12,
                       textAlign: TextAlign.start,
@@ -63,14 +63,14 @@ class ManagerInfoCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     CustomTextWidget(
-                      "الحنس",
+                      "sex".tr(),
                       fontColor: AppColor.primary700Light,
                       fontSize: 10,
                       fontWeight: AppFontWeight.semiBold,
                     ),
                     SizedBox(height: 8),
                     CustomTextWidget(
-                      "ذكر",
+                      "male".tr(),
                       fontColor: AppColor.blackModern600Light,
                       fontSize: 12,
                       textAlign: TextAlign.start,
@@ -89,14 +89,14 @@ class ManagerInfoCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     CustomTextWidget(
-                      "الجنسيه",
+                      "nationality".tr(),
                       fontColor: AppColor.primary700Light,
                       fontSize: 10,
                       fontWeight: AppFontWeight.semiBold,
                     ),
                     SizedBox(height: 8),
                     CustomTextWidget(
-                      "سعودي",
+                      "personal_saudi".tr(),
                       fontColor: AppColor.blackModern600Light,
                       fontSize: 12,
                       textAlign: TextAlign.start,
@@ -110,14 +110,14 @@ class ManagerInfoCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     CustomTextWidget(
-                      "المهنه",
+                      "employment".tr(),
                       fontColor: AppColor.primary700Light,
                       fontSize: 10,
                       fontWeight: AppFontWeight.semiBold,
                     ),
                     SizedBox(height: 8),
                     CustomTextWidget(
-                      "محاسب",
+                      "accountant".tr(),
                       fontColor: AppColor.blackModern600Light,
                       fontSize: 12,
                       textAlign: TextAlign.start,
@@ -128,7 +128,6 @@ class ManagerInfoCard extends StatelessWidget {
               ),
             ],
           ),
-
         ],
       ),
     );

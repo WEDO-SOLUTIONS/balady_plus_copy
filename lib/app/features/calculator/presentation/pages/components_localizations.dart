@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
 abstract class ComponentLocalizationsBase {
   final Locale? locale;
@@ -42,7 +43,7 @@ class ComponentLocalizations extends ComponentLocalizationsBase {
   ];
 
   /// Language Values
-  static const Map<String, Map<String, Object>> localizedValues = {
+  static Map<String, Map<String, Object>> localizedValues = {
     'en': {
       'cancelText': 'Cancel',
       'confirmText': 'Confirm',
@@ -50,10 +51,13 @@ class ComponentLocalizations extends ComponentLocalizationsBase {
       'ampm': ['AM', 'PM'],
     },
     'ar': {
-      'cancelText': 'إلغاء',
-      'confirmText': 'تأكيد',
-      'searchFor': 'ابحث...',
-      'ampm': ['صباحاً', 'مساءً'],
+      'cancelText': 'cancelButton'.tr(),
+      'confirmText': 'choose_city'.tr(),
+      'searchFor': 'searchForCalculator'.tr(),
+      'ampm': [
+        'morning'.tr(),
+        'evening'.tr(),
+      ],
     },
     'tr': {
       'cancelText': 'İptal',

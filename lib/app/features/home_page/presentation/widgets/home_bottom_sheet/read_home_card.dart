@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../core/utils/utils_exports.dart';
 import '../../../../_shared_feature_/shared_feature_exports.dart';
@@ -10,7 +11,7 @@ class ReadHomeCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return HomeSection(
-      title: 'اقرأ ورتل',
+      title: 'read_and_repeat'.tr(),
       child: Container(
         width: MediaQuery.sizeOf(context).width,
         padding: const EdgeInsetsDirectional.only(
@@ -34,14 +35,14 @@ class ReadHomeCard extends StatelessWidget {
                 height: 84,
               ),
               const SizedBox(width: 14),
-              const Expanded(
+              Expanded(
                 flex: 2,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     CustomTextWidget(
-                      "المصحف الشريف",
+                      'holy_quran'.tr(),
                       fontColor: AppColor.blackModern800Light,
                       fontWeight: AppFontWeight.bold,
                       fontSize: 14,
@@ -54,7 +55,7 @@ class ReadHomeCard extends StatelessWidget {
                           child: Padding(
                             padding: EdgeInsetsDirectional.only(end: 80),
                             child: CustomTextWidget(
-                              "احمل القرآن بين يديك، تلاوة في أي وقت ومكان.",
+                              'quran_quote'.tr(),
                               fontColor: AppColor.blackModern400Light,
                               fontWeight: AppFontWeight.bold,
                               fontSize: 12,

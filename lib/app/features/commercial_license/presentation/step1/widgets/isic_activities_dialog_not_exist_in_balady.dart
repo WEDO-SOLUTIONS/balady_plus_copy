@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/utils/utils_exports.dart';
 import '../../../../_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
 import '../../../../_shared_feature_/shared_feature_exports.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
 class IsicActivitiesDialogNotExistInBalady extends StatelessWidget {
   const IsicActivitiesDialogNotExistInBalady({
@@ -50,8 +51,8 @@ class IsicActivitiesDialogNotExistInBalady extends StatelessWidget {
                 children: [
                   const CustomSvgIconWidget(IconPath.warning2),
                   const SizedBox(height: 16),
-                  const CustomTextWidget(
-                    "بعض انشطة السجل التجاري غير موجودة في انشطة الوزارة،يمكنك استكمال  إصدار رخصة تجارية بالانشطة المتاحة او تحويل الطلب للمعنيين في الوزارة لاضافة الانشطة الغير موجودة",
+                   CustomTextWidget(
+                    'commercial_step1'.tr(),
                     fontWeight: AppFontWeight.bold,
                     fontColor: AppColor.blackModern700Light,
                     fontSize: 16,
@@ -61,7 +62,9 @@ class IsicActivitiesDialogNotExistInBalady extends StatelessWidget {
                   ),
                   const SizedBox(height: 16),
                   CustomExpansionPanelWidget(
-                    title: "الانشطة المدرجة",
+                    title:
+                     "commercial_activities".tr()
+                     ,
                     arrowBg: AppColor.primary300Light,
                     leading: const CustomSvgIconWidget(
                       IconPath.boxTick,
@@ -107,7 +110,7 @@ class IsicActivitiesDialogNotExistInBalady extends StatelessWidget {
                   ),
                   const SizedBox(height: 16),
                   CustomExpansionPanelWidget(
-                    title: "الانشطة الغير مدرجة",
+                    title: 'commerical_no_activities'.tr(),
                     arrowBg: AppColor.blue300Light,
                     leading: const CustomSvgIconWidget(
                       IconPath.boxTick,

@@ -1,5 +1,6 @@
 import 'package:balady_plus/app/core/utils/constants/route_names.dart';
 import 'package:flutter/material.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
 Map<String, dynamic> servicesConfig = {
   "islamic_services": [
@@ -11,7 +12,7 @@ Map<String, dynamic> servicesConfig = {
       "isNew": false,
       "isImportant": false,
       "action": {"type": "page", "value": RouteName.menuQuranPage},
-      "ar": {"title": "المصحف الشريف", "description": null, "tag": null},
+      "ar": {"title": "holy_quran".tr(), "description": null, "tag": null},
       "en": {"title": "Holy Quran", "description": null, "tag": null}
     },
     {
@@ -22,7 +23,7 @@ Map<String, dynamic> servicesConfig = {
       "isNew": false,
       "isImportant": false,
       "action": {"type": "page", "value": "/prayerTimes"},
-      "ar": {"title": "أوقات الصلاة", "description": null},
+      "ar": {"title": "prayer_times".tr(), "description": null},
       "en": {"title": "Prayer Times", "description": null}
     },
     {
@@ -33,7 +34,7 @@ Map<String, dynamic> servicesConfig = {
       "isNew": false,
       "isImportant": false,
       "action": {"type": "page", "value": RouteName.qiblahCompass},
-      "ar": {"title": "بوصلة القبلة", "description": null, "tag": null},
+      "ar": {"title": "qiblahCompass".tr(), "description": null, "tag": null},
       "en": {"title": "Zamzam Points", "description": null, "tag": null}
     },
     {
@@ -44,7 +45,11 @@ Map<String, dynamic> servicesConfig = {
       "isNew": false,
       "isImportant": false,
       "action": {"type": "page", "value": RouteName.mainAthkarPage},
-      "ar": {"title": "الأذكار", "description": null, "tag": null},
+      "ar": {
+        "title": "AthkarMainPageTitle".tr(),
+        "description": null,
+        "tag": null
+      },
       "en": {"title": "Azkar", "description": null, "tag": null}
     },
     {
@@ -55,7 +60,7 @@ Map<String, dynamic> servicesConfig = {
       "isNew": false,
       "isImportant": false,
       "action": {"type": "page", "value": RouteName.ZmZmPointsPage},
-      "ar": {"title": "نقاط توزيع ماء زمزم", "description": null, "tag": null},
+      "ar": {"title": "zamzam_points".tr(), "description": null, "tag": null},
       "en": {"title": "Zamzam Points", "description": null, "tag": null}
     },
   ],
@@ -68,7 +73,11 @@ Map<String, dynamic> servicesConfig = {
       "isNew": false,
       "isImportant": false,
       "action": {"type": "page", "value": "/move-diseased"},
-      "ar": {"title": "نقل وتجهيز الموتي", "description": null, "tag": null},
+      "ar": {
+        "title": "move_diseased_from".tr(),
+        "description": null,
+        "tag": null
+      },
       "en": {"title": "Move Diseased", "description": null, "tag": null}
     },
   ],
@@ -82,7 +91,11 @@ Map<String, dynamic> servicesConfig = {
       "isImportant": false,
       "requireLogin": true,
       "action": {"type": "page", "value": RouteName.municipalAdvisor},
-      "ar": {"title": "المستشار الذكي", "description": null, "tag": null},
+      "ar": {
+        "title": "municipal_advisor".tr(),
+        "description": null,
+        "tag": null
+      },
       "en": {"title": "Municipal Advisor", "description": null, "tag": null}
     },
     // {
@@ -104,7 +117,11 @@ Map<String, dynamic> servicesConfig = {
       "isNew": false,
       "isImportant": false,
       "action": {"type": "page", "value": RouteName.calculatorMapRoute},
-      "ar": {"title": "حاسبة الرسوم", "description": null, "tag": null},
+      "ar": {
+        "title": "homeAppsFeeCalculatorWord".tr(),
+        "description": null,
+        "tag": null
+      },
       "en": {"title": "Fee Calculator", "description": null, "tag": null}
     },
     {
@@ -116,8 +133,8 @@ Map<String, dynamic> servicesConfig = {
       "isImportant": false,
       "action": {"type": "page", "value": RouteName.qrScreenRoute},
       "ar": {
-        "title": "رأيك يفرق",
-        "description": "يمكنك الآن حجز موعد عبر التطبيق !",
+        "title": "homeAppsYourOpinionWord".tr(),
+        "description": 'booking_words'.tr(),
         "tag": null
       },
       "en": {
@@ -150,8 +167,8 @@ Map<String, dynamic> servicesConfig = {
         "value": RouteName.newTransactionInquiryScreen
       },
       "ar": {
-        "title": "استعلام عن معاملة",
-        "description": "يمكنك الآن حجز موعد عبر التطبيق !",
+        "title": 'treat_violator_types'.tr(),
+        "description": 'booking_words'.tr(),
         "tag": null
       },
       "en": {
@@ -170,7 +187,7 @@ Map<String, dynamic> servicesConfig = {
       "isImportant": true,
       "requireLogin": true,
       "action": {"type": "dialog", "value": "/supporter"},
-      "ar": {"title": "داعم", "description": null, "tag": null},
+      "ar": {"title": "supporter".tr(), "description": null, "tag": null},
       "en": {"title": "Supporter", "description": null, "tag": null}
     },
   ],
@@ -195,11 +212,7 @@ Map<String, dynamic> servicesConfig = {
       "isNew": false,
       "isImportant": false,
       "action": {"type": "page", "value": RouteName.etmamMainPage},
-      "ar": {
-        "title": "تفويض المكاتب الهندسية",
-        "description": null,
-        "tag": null
-      },
+      "ar": {"title": "balady_works".tr(), "description": null, "tag": null},
       "en": {"title": "Municipal Advisor", "description": null, "tag": null}
     },
   ],
@@ -213,7 +226,7 @@ Map<String, dynamic> servicesConfig = {
       "isImportant": false,
       "requireLogin": true,
       "action": {"type": "dialog", "value": RouteName.newMSRMapPage},
-      "ar": {"title": "طلب خدمة بلدية", "description": null, "tag": null},
+      "ar": {"title": "request_service".tr(), "description": null, "tag": null},
       "en": {"title": "Request Service", "description": null, "tag": null}
     },
     {
@@ -224,7 +237,11 @@ Map<String, dynamic> servicesConfig = {
       "isNew": true,
       "isImportant": false,
       "action": {"type": "page", "value": RouteName.newHealthCertificatePage},
-      "ar": {"title": "إصدار شهادة صحية", "description": null, "tag": null},
+      "ar": {
+        "title": 'issueCertificateTitleWord'.tr(),
+        "description": null,
+        "tag": null
+      },
       "en": {
         "title": "Issue Health Certificate",
         "description": null,
@@ -240,7 +257,7 @@ Map<String, dynamic> servicesConfig = {
       "isImportant": false,
       "requireLogin": true,
       "action": {"type": "dialog", "value": ""},
-      "ar": {"title": "حجز موعد الكتروني", "description": null, "tag": null},
+      "ar": {"title": 'schedule_date'.tr(), "description": null, "tag": null},
       "en": {"title": "Schedule Date", "description": null, "tag": null}
     },
     {
@@ -253,7 +270,7 @@ Map<String, dynamic> servicesConfig = {
       "requireLogin": true,
       "action": {"type": "page", "value": "/DCVeichlePage"},
       "ar": {
-        "title": "استعادة مركبة مسحوبة",
+        "title": "return_schedule".tr(),
         "description":
             "اطلع على جميع المعاملات القابلة للاعتراض وإرسل اعتراضك مباشرة",
         "tag": "سجّل اعتراضك"
@@ -280,7 +297,7 @@ Map<String, dynamic> servicesConfig = {
       "isImportant": false,
       "action": {"type": "cards", "value": ""},
       "ar": {
-        "title": "صور وارسل",
+        "title": 'send_image'.tr(),
         "description": "حسن المشهد الحضاري لمدينتك وبلغ عن مظاهر التشوه البصري",
         "tag": null,
         "warning":
@@ -300,7 +317,7 @@ Map<String, dynamic> servicesConfig = {
           "rate": 5.4,
           "duration": 5,
           "ar": {
-            "title": "وصف الخدمه",
+            "title": 'service_desc'.tr(),
             "description":
                 "من خلال هذه الخدمة يمكنك البدء بممارسة العمل التجاري من خلال إصدار رخصة نشاط تجاري  بالإضافة إلى تصريح السلامة الصادر من المديرية العامة للدفاع المدني لجميع الأنشطة التجارية المعتمدة لدى وزارة الشؤون البلدية والقروية والإسكان."
           },
@@ -315,7 +332,7 @@ Map<String, dynamic> servicesConfig = {
           "rate": 5.4,
           "duration": 5,
           "ar": {
-            "title": "المتطلبات",
+            "title": "serviceDetailsServiceRequirementsWord".tr(),
             "description":
                 "من خلال هذه الخدمة يمكنك البدء بممارسة العمل التجاري من خلال إصدار رخصة نشاط تجاري  بالإضافة إلى تصريح السلامة الصادر من المديرية العامة للدفاع المدني لجميع الأنشطة التجارية المعتمدة لدى وزارة الشؤون البلدية والقروية والإسكان."
           },
@@ -336,7 +353,11 @@ Map<String, dynamic> servicesConfig = {
       "isImportant": false,
       "requireLogin": true,
       "action": {"type": "page", "value": RouteName.DCCameraPage},
-      "ar": {"title": "بلاغ عن سيارة تالفة", "description": null, "tag": null},
+      "ar": {
+        "title": 'ruined_car_request'.tr(),
+        "description": null,
+        "tag": null
+      },
       "en": {"title": "Damaged Cars", "description": null, "tag": null}
     },
     {
@@ -349,9 +370,9 @@ Map<String, dynamic> servicesConfig = {
       "requireLogin": true,
       "action": {"type": "dialog", "value": "/general-inquiries"},
       "ar": {
-        "title": "الإستفسارات العامة",
+        "title": 'general_requests'.tr(),
         "description": "ارسل استفسارك عن كل خدمه",
-        "tag": "الخدمات"
+        "tag": "services".tr()
       },
       "en": {
         "title": "General Inquiries",

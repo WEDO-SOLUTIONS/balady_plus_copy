@@ -39,7 +39,7 @@ class _VeichlesListPageState extends State<VeichlesListPage> {
         builder: (context, state) {
           return Scaffold(
             appBar: DetailsHeader(
-              title: "عرض المركبات",
+              title: "retrieve_btn_text".tr(),
             ),
             body: Stack(
               children: [
@@ -87,7 +87,7 @@ class _VeichlesListPageState extends State<VeichlesListPage> {
                               btnTextColor: state.selectedVehicle == null
                                   ? AppColor.black400
                                   : AppColor.white,
-                              btnText: "إختيار",
+                              btnText: "bookNewAppointmentSelectWord".tr(),
                               btnRadius: 8,
                               btnHeight: 56,
                               btnPressed: () {

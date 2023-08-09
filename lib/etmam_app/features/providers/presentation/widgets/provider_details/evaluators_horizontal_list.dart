@@ -1,5 +1,6 @@
 import 'package:balady_plus/etmam_app/features/providers/providers_exports.dart';
 import 'package:flutter/material.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../_shared_feature_/shared/shared_feature_exports.dart'
     show CustomIndicatorWidget, CustomVerticalSpace;
@@ -15,10 +16,9 @@ class EvaluatorsHorizontalList extends StatefulWidget {
 class _EvaluatorsHorizontalListState extends State<EvaluatorsHorizontalList> {
   int currentIndex = 0;
 
-  String name = "احمد الفيصل";
+  String name = "ahmadfaisal".tr();
   double rating = 5;
-  String comment =
-      "هناك حقيقة مثبتة منذ زمن طويل وهي أن المحتوى المقروء لصفحة ما سيلهي القارئ عن التركيز على الشكل الخارجي للنص أو شكل توضع الفقرات في الصفحة التي يقرأها";
+  String comment = 'elevator_comment'.tr();
 
   @override
   Widget build(BuildContext context) {

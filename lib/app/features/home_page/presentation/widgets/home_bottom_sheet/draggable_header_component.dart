@@ -24,8 +24,8 @@ class _DraggableHeaderComponentState extends State<DraggableHeaderComponent> {
   @override
   Widget build(BuildContext context) {
     bool isLoggedIn = CommonProperties.isLoggedIn;
-    String pm = isLoggedIn ? "مساء الخير  " : "مساء الخير";
-    String am = isLoggedIn ? "صباح الخير  " : "صباح الخير";
+    String pm = isLoggedIn ? "good_evening".tr() : "good_evening".tr();
+    String am = isLoggedIn ? "good_moring".tr() : "good_moring".tr();
 
     return Container(
       width: MediaQuery.sizeOf(context).width,
@@ -80,7 +80,6 @@ class _DraggableHeaderComponentState extends State<DraggableHeaderComponent> {
               builder: (context, authState) {
                 return CustomTextFieldWidget(
                   hintText: authState.getSearchText(),
-                  //   hintText: 'ابحث عن...'.tr(),
                   controller: searchController,
                   hintStyle: const TextStyle(
                     fontSize: 12,

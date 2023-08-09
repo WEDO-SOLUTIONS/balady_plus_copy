@@ -87,7 +87,7 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
                       isFullHeight: false,
                       height: 250,
                       child: BottomSheetWithActions(
-                        title: "الاجراءات".tr(),
+                        title: "actions".tr(),
                         body: Column(children: [
                           if (appointmentItemInfoLocal?.confirmable ?? false)
                             GestureDetector(
@@ -95,7 +95,9 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
                                 model.confirmAppointment();
                               },
                               child: FieldData(
-                                title: "تأكيد الموعد",
+                                title:
+                                    "appointmentDetailsConfirmAppointmentWord"
+                                        .tr(),
                               ),
                             ),
                           CustomVerticalSpace(height: 16),
@@ -111,7 +113,8 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
                                     isFullHeight: false,
                                   );
                                 },
-                                child: FieldData(title: "الغاء الموعد"))
+                                child:
+                                    FieldData(title: "cancelAppointment".tr()))
                         ]),
                       ));
 
@@ -170,7 +173,9 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
                       ),
                       const CustomVerticalSpace(height: 16),
                       CustomExpansionPanelWidget(
-                          title: ("تاريح وقت الموعد").tr(),
+                          title:
+                              ("bookNewAppointmentAppointmentDateAndTimeWord")
+                                  .tr(),
                           leading: SvgPicture.asset(IconPath.vdSummuryDesc),
                           children: [
                             FieldData(
@@ -186,7 +191,9 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
                           ]),
                       CustomVerticalSpace(height: 16),
                       CustomExpansionPanelWidget(
-                          title: ("تفاصيل الموعد").tr(),
+                          title:
+                              ("homeUpComingAppointmentGoToAppointmentDetailsWord")
+                                  .tr(),
                           leading: SvgPicture.asset(IconPath.vdSummuryDesc),
                           children: [
                             FieldData(
@@ -210,7 +217,7 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
                       CustomVerticalSpace(height: 16),
                       if (widget.appointmentItemInfo?.uuid != null)
                         CustomExpansionPanelWidget(
-                            title: ("الرمز السريع").tr(),
+                            title: ("quick_pin").tr(),
                             leading: SvgPicture.asset(IconPath.vdSummuryDesc),
                             children: [
                               Card(

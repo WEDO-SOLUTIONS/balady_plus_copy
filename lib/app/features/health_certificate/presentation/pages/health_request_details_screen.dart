@@ -68,7 +68,7 @@ class _HealthRequestDetailsScreenState
                             isFullHeight: false,
                             height: 250,
                             child: BottomSheetWithActions(
-                              title: "الاجراءات".tr(),
+                              title: "actions".tr(),
                               body: Column(children: [
                                 if (model.requestDetails?.getRequestStatus() ==
                                     LICENSE_MANAGEMENT_STATUS.DRAFT)

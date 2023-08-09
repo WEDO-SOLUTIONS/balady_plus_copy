@@ -10,6 +10,7 @@ import 'package:balady_plus/etmam_app/features/home/home_exports.dart'
     show EtmamCityWidget;
 import 'package:flutter/material.dart';
 import 'package:balady_plus/etmam_app/features/_shared_feature_/shared/presentation/widgets/custom_icon_btn.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 import '../../../../../../app/core/services/local/navigation_services.dart';
 import '../../../../../core/utils/utils_exports.dart'
     show AppColor, AppFontWeight, IconPath, RouteName, trans;
@@ -22,7 +23,7 @@ class EtmamHomeAppBarWidget extends StatelessWidget {
     return Container(
       // height: 150,
       width: double.infinity,
-      decoration:  BoxDecoration(
+      decoration: BoxDecoration(
         boxShadow: [
           BoxShadow(
             color: const Color(0xFF3B69DE).withOpacity(0.4),
@@ -55,9 +56,9 @@ class EtmamHomeAppBarWidget extends StatelessWidget {
                 },
                 iconWidget: const Icon(Icons.close, color: AppColor.white),
               ),
-              const Expanded(
+              Expanded(
                 child: CustomTextWidget(
-                  "بلدي أعمال",
+                  "balady_works".tr(),
                   fontSize: 20,
                   fontWeight: AppFontWeight.bold,
                   textAlign: TextAlign.start,
@@ -97,8 +98,8 @@ class EtmamHomeAppBarWidget extends StatelessWidget {
             ],
           ),
           const CustomVerticalSpace(height: 11),
-          const CustomTextWidget(
-            'حدد المدينة التي تريد تنفيذ الخدمة فيها',
+          CustomTextWidget(
+            'etmam_appBar_text'.tr(),
             fontWeight: AppFontWeight.bold,
             fontColor: AppColor.secondary200,
             fontSize: 14,

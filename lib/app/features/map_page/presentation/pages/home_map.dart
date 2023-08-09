@@ -257,7 +257,7 @@ class HomeMap extends StatelessWidget {
     BottomSheetDialog.showDraggableSheet(
       context,
       child: BottomSheetWithActions(
-        title: "اختر نوع الخريطة".tr(),
+        title: 'plan_option'.tr(),
         body: MapLayersDialog(layersModel: layersModel),
       ),
     );

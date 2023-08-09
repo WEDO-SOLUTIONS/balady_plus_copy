@@ -273,7 +273,7 @@ class _ServiceCalculatorScreenState extends BaseState<ServiceCalculatorScreen,
               child: Row(
                 children: [
                   CustomTextIconButtonWidget(
-                    text: ('السابق').tr(),
+                    text: ('back').tr(),
                     icon: SvgPicture.asset(IconPath.vdAppBarBack),
                     iconTextTweenSpace: 5,
                     textStyle: TextStyle(
@@ -2672,7 +2672,7 @@ class _ServiceCalculatorScreenState extends BaseState<ServiceCalculatorScreen,
       children: <Widget>[
         Container(
           child: Text(
-            "إصدار تصريح نشاط التبغ",
+            'releaseText'.tr(),
             textScaleFactor: 1,
           ),
         )
@@ -3356,7 +3356,7 @@ class _ServiceCalculatorScreenState extends BaseState<ServiceCalculatorScreen,
   // Create Distance Widget
   Widget DistanceWidget() {
     return CustomTextFieldWidget(
-      label: Helpers.translatingWord("مساحة المنفذ بالمتر المربع"),
+      label: Helpers.translatingWord('space_square'),
       controller: _distanceController,
       focusNode: _distanceFocusNode,
       keyboardType: TextInputType.number,
@@ -3374,7 +3374,7 @@ class _ServiceCalculatorScreenState extends BaseState<ServiceCalculatorScreen,
 
   Widget PortLicenseDaysWidget() {
     return CustomTextFieldWidget(
-      label: Helpers.translatingWord("عدد أيام الترخيص"),
+      label: Helpers.translatingWord('approve_days'),
       controller: _portLicenseDays,
       focusNode: _portLicenseDaysFocusNode,
       keyboardType: TextInputType.number,
@@ -3392,7 +3392,7 @@ class _ServiceCalculatorScreenState extends BaseState<ServiceCalculatorScreen,
 
   Widget PortRentalWidget() {
     return CustomTextFieldWidget(
-      label: Helpers.translatingWord("القيمة الإيجارية اليومية"),
+      label: Helpers.translatingWord('daily_rent'),
       controller: _portRental,
       focusNode: _portRentalFocusNode,
       keyboardType: TextInputType.number,
@@ -4544,7 +4544,7 @@ class _ServiceCalculatorScreenState extends BaseState<ServiceCalculatorScreen,
       request.DailyRentCost = int.tryParse(_portRental.text.trim());
       presenter?.calculateV03(request);
     } else if (currentActivityId == 10 && (currentactionId == 1403)) {
-      showError("لا يوجد رسوم");
+      showError("no_fees".tr());
     }
   }
 
@@ -4589,7 +4589,8 @@ class _ServiceCalculatorScreenState extends BaseState<ServiceCalculatorScreen,
   _munucipilityInfoWidget() {
     String municipilityName = (_gisLocation != null &&
             _gisLocation!.subMunicipalityName != null &&
-            _gisLocation!.subMunicipalityName!.contains("بلدية"))
+            _gisLocation!.subMunicipalityName!
+                .contains("homeUpComingAppointmentMunicipalWord".tr()))
         ? "${_gisLocation!.subMunicipalityName}، ${_gisLocation!.municipalityName}"
         : "بلدية ${_gisLocation!.subMunicipalityName}، ${_gisLocation!.municipalityName}";
     return Column(

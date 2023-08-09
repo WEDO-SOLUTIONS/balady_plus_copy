@@ -4,6 +4,7 @@ import 'package:flutter/material.dart' as dialog;
 import 'package:hijri/hijri_calendar.dart';
 import 'dart:async';
 import 'picker_localizations.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
 const bool __printDebug = false;
 
@@ -1113,19 +1114,19 @@ class DateTimePickerAdapter extends PickerAdapter<DateTime> {
     "Dec"
   ];
 
-  static const List<String> monthsListENL = [
-    "محرم",
-    "صفر",
-    "ربيع الأول",
-    "ربيع الثاني",
-    "جمادي الأول",
-    "جمادي الثاني",
-    "رجب",
-    "شعبان",
-    " رمضان",
-    "شوال",
-    "ذو القعدة",
-    "ذو الحجة"
+  static List<String> monthsListENL = [
+    "month_1".tr(),
+    "month_2".tr(),
+    "month_3".tr(),
+    "month_4".tr(),
+    "month_5".tr(),
+    "month_6".tr(),
+    "month_7".tr(),
+    "month_8".tr(),
+    "month_9".tr(),
+    "month_10".tr(),
+    "month_11".tr(),
+    "month_12".tr(),
   ];
 
   DateTimePickerAdapter({

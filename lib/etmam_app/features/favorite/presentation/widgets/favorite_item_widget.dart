@@ -9,6 +9,7 @@ import 'package:balady_plus/etmam_app/features/_shared_feature_/shared/shared_fe
         RatingEvaluationWidget,
         ServiceProviderLogo;
 import 'package:flutter/material.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
 class FavoriteItemWidget extends StatelessWidget {
   const FavoriteItemWidget({Key? key}) : super(key: key);
@@ -53,10 +54,9 @@ class FavoriteItemWidget extends StatelessWidget {
               )
             ],
           ),
-          const Padding(
+           Padding(
             padding: EdgeInsetsDirectional.only(bottom: 7, top: 16),
-            child: CustomTextWidget(
-              "مكتب البعد التصميمي للاستشارات",
+            child: CustomTextWidget('favorite_item'.tr(),
               fontSize: 14,
               fontColor: AppColor.black,
               fontWeight: AppFontWeight.medium,

@@ -20,7 +20,7 @@ class PrayerHomeCard extends StatelessWidget {
     return BlocBuilder<PrayerTimesCubit, PrayerTimesState>(
       builder: (context, state) {
         return HomeSection(
-            title: "home_prayer_time_title".tr(),
+            title: "prayerTimes".tr(),
             child: state.nextPrayer != null
                 ? Container(
                     height: 234,
@@ -288,7 +288,7 @@ class PrayerHomeCard extends StatelessWidget {
                                         ),
                                         btnHeight: 40,
                                         btnPadding: const EdgeInsets.all(11),
-                                        text: "عرض الأوقات",
+                                        text: 'prayer_timings'.tr(),
                                         onPressed: () {
                                           context.pushNamedRoute(
                                             RouteName.prayerTimes,

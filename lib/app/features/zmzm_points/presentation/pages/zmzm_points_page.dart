@@ -31,7 +31,7 @@ class _ZmZmPointsPageState extends State<ZmZmPointsPage> {
                 BottomSheetDialog.showDraggableSheet(
                   context,
                   child: BottomSheetList(
-                    title: "اختر المدينه".tr(),
+                    title: "city_select".tr(),
                     items: state.cities ?? [],
                     selectedValue: state.selectedCity,
                     onTap: (item) {

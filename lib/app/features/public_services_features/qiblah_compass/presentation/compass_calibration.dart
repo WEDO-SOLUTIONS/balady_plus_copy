@@ -19,20 +19,20 @@ class _CompassCalibrationState extends State<CompassCalibration> {
 
   @override
   Widget build(BuildContext context) {
-    return Container( 
+    return Container(
       height: 400,
       decoration: BoxDecoration(color: AppColor.white),
       child: Column(
         children: [
           CustomTextWidget(
-            "ضبط البوصلة",
+            'ضبط البوصلة'.tr(),
             fontColor: AppColor.blackModern500Light,
             fontSize: 20,
             fontWeight: AppFontWeight.bold,
           ),
           CustomVerticalSpace(height: 16),
           CustomTextWidget(
-            "حرك جوالك ثلاث مرات كما في الصورة",
+            'compass_movement'.tr(),
             fontColor: AppColor.blackModern500Light,
             fontSize: 20,
             fontWeight: AppFontWeight.bold,
@@ -65,7 +65,7 @@ class _CompassCalibrationState extends State<CompassCalibration> {
                 return Row(
                   children: [
                     CustomTextWidget(
-                      "دقة البوصة: ",
+                      'compassCounter'.tr(),
                       fontColor: AppColor.blackModern500Light,
                       fontSize: 20,
                       fontWeight: AppFontWeight.bold,

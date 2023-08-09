@@ -16,7 +16,7 @@ class AddReasonWidget extends StatelessWidget {
     return BlocBuilder<CreateObjectionBloc, CreateObjectionState>(
         builder: (context, state) {
       return CustomElevatedIconButtonWidget(
-        text: ("إضافة سبب").tr(),
+        text: ("addReason").tr(),
         icon: const CustomSvgIconWidget(IconPath.add, iconSize: 18.0),
         btnColor: Colors.transparent,
         textStyle: AppStyle.elevatedButtonStyle.copyWith(

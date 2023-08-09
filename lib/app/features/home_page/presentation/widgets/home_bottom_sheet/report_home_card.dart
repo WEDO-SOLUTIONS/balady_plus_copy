@@ -32,15 +32,15 @@ class ReportHomeCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const CustomTextWidget(
-                  "صور وارسل",
+                CustomTextWidget(
+                  'sendImage'.tr(),
                   fontColor: AppColor.blackModern50Light,
                   fontWeight: AppFontWeight.bold,
                   fontSize: 14,
                 ),
                 const SizedBox(height: 6),
-                const CustomTextWidget(
-                  "حسن المشهد الحضري لمدينتك ، وبلغ عن مظاهر التشوه البصري",
+                CustomTextWidget(
+                  'image_quote'.tr(),
                   fontColor: AppColor.blackModern50Light,
                   fontWeight: AppFontWeight.bold,
                   fontSize: 12,
@@ -57,11 +57,11 @@ class ReportHomeCard extends StatelessWidget {
                   ),
                   btnHeight: 40,
                   btnWidth: 157,
-                  text: "ارفع بلاغ",
+                  text: "uploadReport".tr(),
                   onPressed: () async {
                     await BottomSheetDialog.showDraggableSheet(context,
                         child: BottomSheetWithActions(
-                          title: "اختر نوع البلاغ".tr(),
+                          title: "customerVoiceReportTypeWord".tr(),
                           body: VDTypesDialog(),
                         ));
                   },

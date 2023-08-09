@@ -1,4 +1,5 @@
 import 'dart:typed_data';
+import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:mime/mime.dart';
 import 'package:tuple/tuple.dart';
 
@@ -543,7 +544,7 @@ class NewAppointmentViewModel extends BaseViewModel {
       specialConditionItemOld = specialConditionTypeList?.data?.result
           ?.firstWhereOrNull((element) =>
               element.id == RemoteConfig.specialConditionOldId ||
-              element.name!.contains("كبير"));
+              element.name!.contains("big".tr()));
       if (specialConditionItemOld != null) {
         isSuccess = true;
       } else {

@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/weather/weather_exports.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
 class AllWeatherInfoModel extends AllWeatherInfoEntity {
   AllWeatherInfoModel(
@@ -32,15 +33,14 @@ class AlertsModel extends Alerts {
       "msgtype": '',
       "severity": '',
       "urgency": '',
-      "areas": 'الشرقية',
+      "areas": 'eastern'.tr(),
       "category": "Extreme temperature value",
       "certainty": '',
       "event": "Heat Advisory",
       "note": '',
       "effective": "2022-07-21T19:38:00.000Z",
       "expires": "2022-07-25T00:00:00.000Z",
-      "desc":
-          "الدفاع المدني يهيب بالجميع أخذ الحيطة والحذر والابتعاد عن بطون الأودية ومجاري السيول والالتزام بتعليماته.جعلها الله أمطار خير وبركة. تعاونكم هدفنا وسلامتكم غايتنا. ",
+      "desc":'weather_desc'.tr(),
       "instruction": ""
     };
 

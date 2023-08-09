@@ -2,15 +2,16 @@ import 'dart:ui';
 
 import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:dgis_map/library.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
 extension SearchCategoryData on SearchCategoryMessage {
   String displayName() {
     return switch (this) {
-      SearchCategoryMessage.mousques => "مساجد",
-      SearchCategoryMessage.gasStations => "محطات",
-      SearchCategoryMessage.cafe => "مقاهي",
-      SearchCategoryMessage.restaurants => "مطاعم",
-      SearchCategoryMessage.parks => "حدائق"
+      SearchCategoryMessage.mousques => "mosques".tr(),
+      SearchCategoryMessage.gasStations => "stations".tr(),
+      SearchCategoryMessage.cafe => "cafe".tr(),
+      SearchCategoryMessage.restaurants => "restaurants".tr(),
+      SearchCategoryMessage.parks => "park".tr()
     };
   }
 

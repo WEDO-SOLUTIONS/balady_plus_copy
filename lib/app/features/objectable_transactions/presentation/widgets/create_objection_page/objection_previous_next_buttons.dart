@@ -37,9 +37,7 @@ class ObjectionsNextButtons extends StatelessWidget {
                               .read<CreateObjectionBloc>()
                               .add(GoToNextPageEvent());
                         else {
-                          CommonFunctions.showError(
-                                  "عفواً، يلزم إدخال سبب واحد على الأقل للاعتراض")
-                              .tr();
+                          CommonFunctions.showError('objection_desc').tr();
                         }
                       } else
                         context

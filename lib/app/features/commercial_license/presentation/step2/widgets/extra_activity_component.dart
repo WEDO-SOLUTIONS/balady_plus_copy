@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 import '../../../../../core/utils/utils_exports.dart';
 import '../../../../_shared_feature_/presentation/widgets/custom_cupertino_drop_down_widget.dart';
 import '../../../../_shared_feature_/shared_feature_exports.dart';
@@ -20,7 +21,7 @@ class ExtraActivityComponent extends StatelessWidget {
       ),
       child: Column(
         children: [
-          const Row(
+          Row(
             children: [
               CustomSvgIconWidget(
                 IconPath.additionalActivity,
@@ -28,7 +29,7 @@ class ExtraActivityComponent extends StatelessWidget {
               ),
               SizedBox(width: 6),
               CustomTextWidget(
-                "نشاط اضافي",
+                "step2_more".tr(),
                 fontWeight: AppFontWeight.bold,
                 fontSize: 18,
                 fontColor: AppColor.blackModern600Light,
@@ -45,11 +46,11 @@ class ExtraActivityComponent extends StatelessWidget {
           ),
           const SizedBox(height: 12),
           PlusAddButton(
-            text: "ارفاق نشاط",
+            text: 'extra_add'.tr(),
             onPressed: () => BottomSheetDialog.showDraggableSheet(
               context,
               child: BottomSheetWithActions(
-                title: "إضافة نشاط",
+                title: "activity_add".tr(),
                 action: Padding(
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   child: ElevatedButtonWidget.add(onPressed: () {}),
@@ -60,24 +61,25 @@ class ExtraActivityComponent extends StatelessWidget {
                     CustomTapWidgetForLongDialog(
                       items: const [],
                       value: null,
-                      label: "شاط أيزيك",
+                      label:
+                          "userLicensesLicenseDetailsAIESECActivityWord".tr(),
                       marginBottom: 8,
                       onChangeType: (item) {},
                     ),
                     CustomTapWidgetForLongDialog(
                       items: const [],
                       value: null,
-                      label: "النشاط التفصيلي",
+                      label: "lbl_detailed_isic_activity_hint1".tr(),
                       marginBottom: 8,
                       onChangeType: (item) {},
                     ),
                     CustomTextFieldWidget(
-                      label: "المساحه الكليه للمحل",
-                      hintText: "ادخل المساحه الكليه للمحل",
+                      label: "space_label_shop".tr(),
+                      hintText: "space_label_shop_hint".tr(),
                       isDigitsOnly: true,
                       keyboardType: TextInputType.number,
-                      suffixIcon: const CustomTextWidget(
-                        "متر  مربع",
+                      suffixIcon: CustomTextWidget(
+                        "square_meter".tr(),
                         fontSize: 12,
                         fontWeight: AppFontWeight.semiBold,
                         fontColor: AppColor.blackModern400Light,

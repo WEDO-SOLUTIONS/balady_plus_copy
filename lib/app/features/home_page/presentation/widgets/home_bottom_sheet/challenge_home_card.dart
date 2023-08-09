@@ -3,14 +3,15 @@ import 'package:flutter/material.dart';
 import '../../../../../core/utils/utils_exports.dart';
 import '../../../../_shared_feature_/shared_feature_exports.dart';
 import '../../../home_exports.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
 class ChallengeHomeCard extends StatelessWidget {
   const ChallengeHomeCard({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return  HomeSection(
-      title: 'تحدي بلدي',
+    return HomeSection(
+      title: 'balady_challenge'.tr(),
       topPadding: 12,
       child: Container(
         height: 172,
@@ -31,15 +32,15 @@ class ChallengeHomeCard extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const CustomTextWidget(
-                    "شاركنا التحدي",
+                  CustomTextWidget(
+                    'join_challenge'.tr(),
                     fontColor: AppColor.blackModern50Light,
                     fontWeight: AppFontWeight.bold,
                     fontSize: 14,
                   ),
                   const SizedBox(height: 8),
-                  const CustomTextWidget(
-                    "وساهم في التصدي لمظاهر التلوث البصري في مدينتك",
+                  CustomTextWidget(
+                    'home_card_text'.tr(),
                     fontColor: AppColor.blackModern50Light,
                     fontWeight: AppFontWeight.bold,
                     fontSize: 12,
@@ -56,7 +57,7 @@ class ChallengeHomeCard extends StatelessWidget {
                     ),
                     btnHeight: 40,
                     btnWidth: 157,
-                    text: "ابدا التحدي",
+                    text: 'start_challenge'.tr(),
                     onPressed: () {},
                   ),
                 ],
@@ -67,6 +68,5 @@ class ChallengeHomeCard extends StatelessWidget {
         ),
       ),
     );
-
   }
 }

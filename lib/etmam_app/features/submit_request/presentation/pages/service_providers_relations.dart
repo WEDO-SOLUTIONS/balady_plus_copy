@@ -18,6 +18,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:balady_plus/etmam_app/core/utils/utils_exports.dart'
     show CommonFunctions, CommonProperties, trans, IconPath
     hide CommonFunctions;
+import 'package:localize_and_translate/localize_and_translate.dart';
 import '../../../../../app/features/_shared_feature_/presentation/widgets/search_text_field_widget.dart';
 import '../../../../core/utils/utils_exports.dart' show CommonFunctions, trans;
 import '../../submit_request_exports.dart'
@@ -119,7 +120,7 @@ class _ServiceTypesBodyState extends State<ServiceTypesBody> {
                   Padding(
                     padding: const EdgeInsets.all(16),
                     child: SearchTextFieldWidget(
-                        hintText: "ابحث",
+                        hintText: "search".tr(),
                         containerHeight: 50,
                         onTextChanged: (String? text) {
                           if (text != state.name)

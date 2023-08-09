@@ -36,15 +36,14 @@ class _NeedLoginWidgetState extends State<NeedLoginWidget> {
             ),
             const SizedBox(height: 16),
             CustomTextWidget(
-              widget.title ?? ("انت غير مسجل دخول").tr(),
+              widget.title ?? ("not_registered").tr(),
               fontColor: AppColor.blackModern600Light,
               fontWeight: AppFontWeight.bold,
               fontSize: 20,
             ),
             const SizedBox(height: 8),
             CustomTextWidget(
-              ("يجب عليك تسجيل الدخول حتى يتم عرض حتى يتم عرض بيانات هذه الصفحة")
-                  .tr(),
+              widget.desc ?? ('not_register_desc').tr(),
               fontColor: AppColor.blackModern500Light,
               fontWeight: AppFontWeight.bold,
               fontSize: 13,
@@ -54,7 +53,7 @@ class _NeedLoginWidgetState extends State<NeedLoginWidget> {
             ),
             const SizedBox(height: 16),
             EnhancedCustomElevatedButtonWidget(
-              btnPressed: () async{
+              btnPressed: () async {
                 Navigator.pop(context);
                 bool isSuccess = await CommonFunctions.onLogin();
                 if (widget.onSuccessLogin != null)
@@ -71,7 +70,6 @@ class _NeedLoginWidgetState extends State<NeedLoginWidget> {
             EnhancedCustomElevatedButtonWidget(
               btnPressed: () {
                 Navigator.of(context).pop();
-
               },
               btnText: ("notNow").tr(),
               btnTextSize: 16,

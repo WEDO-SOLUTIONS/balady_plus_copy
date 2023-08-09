@@ -34,7 +34,7 @@ class MenuAppBar extends StatelessWidget implements PreferredSizeWidget {
                   color: AppColor.white,
                 )),
             CustomTextWidget(
-              ("القران الكريم").tr(),
+              ("quran").tr(),
               fontColor: AppColor.blackModern50Light,
               fontSize: 20,
               fontWeight: AppFontWeight.bold,
@@ -55,7 +55,7 @@ class MenuAppBar extends StatelessWidget implements PreferredSizeWidget {
                 fillColor: Colors.transparent,
                 onChanged: onSearch,
                 onSubmitted: onSearch,
-                hintText: ("بحث  باسم السورة ...").tr(),
+                hintText: ("quranSearch").tr(),
                 textFieldStyle: TextStyle(color: AppColor.primary100Light),
                 hintStyle: TextStyle(color: AppColor.primary100Light),
               ),
@@ -97,7 +97,7 @@ class ZmZmChangeCityDropDownButton extends StatelessWidget {
         child:
             Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
           CustomTextWidget(
-            currentCity ?? ("اختر المدينة").tr(),
+            currentCity ?? ('chooseCity').tr(),
           ),
           Icon(Icons.arrow_drop_down, color: AppColor.white)
         ]),

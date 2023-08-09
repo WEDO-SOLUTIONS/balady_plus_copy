@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../core/utils/utils_exports.dart';
 import '../../../../_shared_feature_/shared_feature_exports.dart';
@@ -12,13 +13,12 @@ class OwnerInfoCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.only(bottom: 24),
-      padding: const EdgeInsets.symmetric(
-          horizontal: 16, vertical: 24),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
       decoration: const BoxDecoration(
         borderRadius: BorderRadius.all(Radius.circular(16)),
         color: AppColor.white,
       ),
-      child: const Column(
+      child: Column(
         children: [
           Row(
             children: [
@@ -26,7 +26,7 @@ class OwnerInfoCard extends StatelessWidget {
               SizedBox(width: 4),
               Flexible(
                 child: CustomTextWidget(
-                  "مالك",
+                  "owner_card".tr(),
                   fontColor: AppColor.blackModern600Light,
                   fontSize: 18,
                   fontWeight: AppFontWeight.bold,
@@ -42,14 +42,14 @@ class OwnerInfoCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     CustomTextWidget(
-                      "اسم المالك",
+                      "owner_name".tr(),
                       fontColor: AppColor.primary700Light,
                       fontSize: 10,
                       fontWeight: AppFontWeight.semiBold,
                     ),
                     SizedBox(height: 8),
                     CustomTextWidget(
-                      "احمد خالد",
+                      'AhmadKhaled'.tr(),
                       fontColor: AppColor.blackModern600Light,
                       fontSize: 12,
                       textAlign: TextAlign.start,
@@ -63,7 +63,7 @@ class OwnerInfoCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     CustomTextWidget(
-                      "رقم الجوال",
+                      "owner_number".tr(),
                       fontColor: AppColor.primary700Light,
                       fontSize: 10,
                       fontWeight: AppFontWeight.semiBold,
@@ -89,7 +89,7 @@ class OwnerInfoCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     CustomTextWidget(
-                      "رقم الهويه",
+                      "owner_id".tr(),
                       fontColor: AppColor.primary700Light,
                       fontSize: 10,
                       fontWeight: AppFontWeight.semiBold,
@@ -110,7 +110,7 @@ class OwnerInfoCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     CustomTextWidget(
-                      "البربد الالكتروني",
+                      "owner_email".tr(),
                       fontColor: AppColor.primary700Light,
                       fontSize: 10,
                       fontWeight: AppFontWeight.semiBold,
@@ -128,7 +128,6 @@ class OwnerInfoCard extends StatelessWidget {
               ),
             ],
           ),
-
         ],
       ),
     );

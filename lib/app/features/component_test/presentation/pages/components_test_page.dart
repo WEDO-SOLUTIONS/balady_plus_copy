@@ -68,9 +68,9 @@ class ComponentTest extends StatelessWidget {
               context,
               // child: const CloseRequestBottomSheetComponent(),
               child: DraggableSheetComponent(
-                title: "اختتر",
+                title: "select".tr(),
                 body: CustomEnhancedSheetDropDownWidget(
-                  label: "المدينة",
+                  label: "city".tr(),
                   items: List.generate(
                     30,
                     (index) => DropDownItem.byName(itemName: index.toString()),
@@ -307,7 +307,7 @@ class ComponentTest extends StatelessWidget {
           UIHelper.verticalSmallSpace,
           CustomEnhancedSheetDropDownWidget(
             errorMsg: "Sam",
-            label: "المدينة",
+            label: "city".tr(),
             items: List.generate(
               30,
               (index) => DropDownItem.byName(itemName: index.toString()),

@@ -6,6 +6,7 @@ import 'package:balady_plus/etmam_app/features/services/services_exports.dart'
     show InfoCard, InfoWithIcon, PreviousWorks, ServiceFaqSection;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../../../app/core/utils/constants/app_colors.dart';
@@ -92,10 +93,9 @@ class EtmamProviderMainInfo extends StatelessWidget {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(height: 8),
-
-            const CustomTextWidget(
-              'تفاصيل العمل والتواصل',
+            const SizedBox(height: 28),
+            CustomTextWidget(
+              'work_details'.tr(),
               fontColor: AppColor.blackModern800Light,
               fontWeight: AppFontWeight.bold,
               fontSize: 16,
@@ -155,8 +155,7 @@ class EtmamProviderMainInfo extends StatelessWidget {
             InfoCard(
               iconPath: IconPath.medalStar,
               title: trans('evaluate_office'),
-              value:
-              "${state.args.rating} (${state.args.ratingsCount})",
+              value: "${state.args.rating} (${state.args.ratingsCount})",
             ),
           ],
         );

@@ -6,6 +6,7 @@ import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:provider/provider.dart';
 
 import '../../../data/model/building_compliance_certificate.dart';
@@ -48,7 +49,7 @@ class LandsLegendsMapCard extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             CustomTextWidget(
-              "حالات تسوير الاراضي ",
+              'map_ground'.tr(),
               fontColor: AppColor.blackModern800Light,
               fontSize: 16,
               fontWeight: AppFontWeight.bold,
@@ -71,7 +72,7 @@ class LandsLegendsMapCard extends StatelessWidget {
                 CustomHorizontalSpace(width: 8),
                 Flexible(
                   child: CustomTextWidget(
-                    'أراضي مسورة',
+                    'map_fence'.tr(),
                     fontColor: Color(0xFF292929),
                     fontSize: 10,
                     fontWeight: AppFontWeight.medium,
@@ -98,7 +99,7 @@ class LandsLegendsMapCard extends StatelessWidget {
                 CustomHorizontalSpace(width: 8),
                 Flexible(
                   child: CustomTextWidget(
-                    'أراضي مستهدفة للتسوير',
+                    'map_legends'.tr(),
                     fontColor: Color(0xFF292929),
                     fontSize: 10,
                     fontWeight: AppFontWeight.medium,

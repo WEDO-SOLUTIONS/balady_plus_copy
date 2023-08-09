@@ -1708,7 +1708,7 @@ class MunicipalAdvisorBloc
                   for (int i = 0; i < data.length; i++)
                     ChatMessage(
                       message:
-                          '${'الأمانة'.tr()}: ${data[i].amananame}\n${'البلدية'.tr()}: ${data[i].municipalityname}\n${'الشارع'.tr()}: ${data[i].streetname}\n ${'المرحلة'.tr()}: ${data[i].stageno}\n${'حالة شهادة الامتثال'.tr()}: ${data[i].priorityarea}',
+                          '${'inquiry_municipality'.tr()}: ${data[i].amananame}\n${'daem_sub_municiplaity'.tr()}: ${data[i].municipalityname}\n${'street'.tr()}: ${data[i].streetname}\n ${'stages'.tr()}: ${data[i].stageno}\n${'municipalAdvisorTopicAnswer4'.tr()}: ${data[i].priorityarea}',
                       step: MunicipalAdvisorSteps.licenseCost,
                       isResponse: true,
                       customWidget: true,

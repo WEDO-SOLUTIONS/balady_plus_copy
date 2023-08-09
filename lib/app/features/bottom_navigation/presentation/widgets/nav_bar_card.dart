@@ -40,7 +40,7 @@ class BottomNavBarCardWidget extends StatelessWidget {
           ),
           // Label widget
           CustomAutoSizeTextWidget(
-            label.tr(),
+            'label'.tr(),
             textAlign: TextAlign.center,
             maxFontSize: labelSize,
             textStyle: AppStyle.mainTextStyle.copyWith(

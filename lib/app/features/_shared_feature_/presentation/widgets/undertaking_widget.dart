@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../core/utils/utils_exports.dart';
 import '../../shared_feature_exports.dart';
@@ -28,7 +29,7 @@ class UndertakingWidget extends StatelessWidget {
       ),
       child: Column(
         children: [
-          const Row(
+           Row(
             children: [
               CustomSvgIconWidget(
                 IconPath.undertaking,
@@ -36,7 +37,7 @@ class UndertakingWidget extends StatelessWidget {
               ),
               SizedBox(width: 4),
               CustomTextWidget(
-                "التعهدات",
+                "vd_pledges".tr(),
                 fontSize: 15,
                 fontColor: AppColor.blackModern600Light,
                 fontWeight: AppFontWeight.bold,

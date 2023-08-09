@@ -75,7 +75,7 @@ class _TransactionsDetailsPageState extends State<TransactionsDetailsPage> {
                                   IconPath.informationCircleIcon),
                               CustomHorizontalSpace(width: 12),
                               CustomTextWidget(
-                                "لا يمكن الاعتراض بسبب انتهاء مدة الاعتراض",
+                                'objectionPeriodExpired'.tr(),
                                 fontColor: AppColor.orange800,
                                 fontWeight: AppFontWeight.medium,
                                 fontSize: 13,
@@ -202,21 +202,21 @@ class _TransactionsDetailsPageState extends State<TransactionsDetailsPage> {
                     if (state.details?.lat != null &&
                         state.details?.lon != null)
                       CustomExpansionPanelWidget(
-                        title: ("موقع المخالفة").tr(),
+                        title: ("license_location").tr(),
                         leading: SvgPicture.asset(IconPath.vdSummuryPhoto),
                         children: [
                           if (state.gisStatus == BlocStatus.success) ...[
                             if (state.gisLocation?.streetName != null &&
                                 state.gisLocation!.streetName!.isNotEmpty)
                               FieldData(
-                                title: "اسم الشارع",
+                                title: " street_name".tr(),
                                 subTitle: state.gisLocation?.streetName ?? "",
                               ),
                             const CustomVerticalSpace(height: 8),
                             if (state.gisLocation?.districtName != null &&
                                 state.gisLocation!.districtName!.isNotEmpty)
                               FieldData(
-                                title: "اسم الحي",
+                                title: "subStreet_name".tr(),
                                 subTitle: state.gisLocation?.districtName ?? "",
                               ),
                             const CustomVerticalSpace(height: 8),
@@ -340,7 +340,7 @@ class ViolationClauses extends StatelessWidget {
                                           CrossAxisAlignment.start,
                                       children: [
                                         FieldData(
-                                          title: "ملاحظات المراقب",
+                                          title: "transactionNotice".tr(),
                                           subTitle: state
                                                   .details
                                                   ?.nonComplianceClauses?[index]

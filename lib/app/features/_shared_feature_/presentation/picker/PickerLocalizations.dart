@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
 abstract class PickerLocalizationsBase {
   final Locale locale;
@@ -13,26 +14,37 @@ abstract class PickerLocalizationsBase {
 
 /// localizations
 class PickerLocalizations extends PickerLocalizationsBase {
-  static PickerLocalizations _static =  PickerLocalizations(null);
-   PickerLocalizations(Locale? locale) : super(locale!);
+  static PickerLocalizations _static = PickerLocalizations(null);
+  PickerLocalizations(Locale? locale) : super(locale!);
 
   @override
   dynamic getItem(String key) {
     Map? localData;
-    if (locale != null)  localData = localizedValues[locale.languageCode];
+    if (locale != null) localData = localizedValues[locale.languageCode];
     if (localData == null) return localizedValues['en']![key]!;
     return localData[key];
   }
 
   static PickerLocalizations of(BuildContext context) {
-    return Localizations.of<PickerLocalizations>(context, PickerLocalizations) ?? _static;
+    return Localizations.of<PickerLocalizations>(
+            context, PickerLocalizations) ??
+        _static;
   }
 
   /// Language Support
-  static const List<String> languages = ['en', 'zh', 'ko', 'it', 'ar', 'fr', 'es', 'tr'];
+  static const List<String> languages = [
+    'en',
+    'zh',
+    'ko',
+    'it',
+    'ar',
+    'fr',
+    'es',
+    'tr'
+  ];
 
   /// Language Values
-  static const Map<String, Map<String, Object>> localizedValues = {
+  static Map<String, Map<String, Object>> localizedValues = {
     'en': {
       'cancelText': 'Cancel',
       'confirmText': 'Confirm',
@@ -53,10 +65,13 @@ class PickerLocalizations extends PickerLocalizationsBase {
       'confirmText': 'Conferma',
       'ampm': ['AM', 'PM'],
     },
-    'ar':{
-      'cancelText': 'إلغاء الأمر',
-      'confirmText': 'تأكيد',
-      'ampm': ['صباحاً', 'مساءً'],
+    'ar': {
+      'cancelText': 'cancelText'.tr(),
+      'confirmText': 'choose_city'.tr(),
+      'ampm': [
+        'morning'.tr(),
+        'evening'.tr(),
+      ],
     },
     'fr': {
       'cancelText': 'Annuler',
@@ -102,6 +117,4 @@ class PickerLocalizations extends PickerLocalizationsBase {
       ]
     },
   };
-
 }
-

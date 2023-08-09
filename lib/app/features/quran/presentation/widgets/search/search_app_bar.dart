@@ -34,7 +34,7 @@ class SearchAppBar extends StatelessWidget implements PreferredSizeWidget {
                   color: AppColor.white,
                 )),
             CustomTextWidget(
-              ("البحث").tr(),
+              ("Search_SearchHeader").tr(),
               fontColor: AppColor.blackModern50Light,
               fontSize: 20,
               fontWeight: AppFontWeight.bold,
@@ -53,7 +53,7 @@ class SearchAppBar extends StatelessWidget implements PreferredSizeWidget {
               CustomTextFieldWidget(
                 textFieldHeight: 48,
                 fillColor: Colors.transparent,
-                hintText: ("إبحث عن آية").tr(),
+                hintText: ('ayaSearch').tr(),
                 onChanged: onSearch,
                 onSubmitted: onSearch,
                 textFieldStyle: TextStyle(color: AppColor.primary100Light),
@@ -97,7 +97,7 @@ class ZmZmChangeCityDropDownButton extends StatelessWidget {
         child:
             Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
           CustomTextWidget(
-            currentCity ?? ("اختر المدينة").tr(),
+            currentCity ?? ("chooseCity").tr(),
           ),
           Icon(Icons.arrow_drop_down, color: AppColor.white)
         ]),

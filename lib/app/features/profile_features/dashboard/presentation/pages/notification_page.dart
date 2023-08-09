@@ -45,7 +45,7 @@ class NotificationCard extends StatelessWidget {
         boxShadow: Constants.boxShadow,
         color: AppColor.white,
       ),
-      child:  Row(
+      child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           const CustomSvgIconWidget(IconPath.magicStar),
@@ -54,8 +54,8 @@ class NotificationCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              const CustomTextWidget(
-                "أهلا بك في بلدي+ !",
+               CustomTextWidget(
+                'notifications_text'.tr(),
                 fontColor: AppColor.blackModern600Light,
                 fontSize: 14,
                 fontWeight: AppFontWeight.bold,

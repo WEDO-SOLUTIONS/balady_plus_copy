@@ -2,6 +2,7 @@ import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports.dart';
 import 'package:balady_plus/app/features/vd/presentation/widgets/summery_widgets/field_data.dart';
 import 'package:flutter/material.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../core/services/local/helpers.dart';
@@ -532,10 +533,10 @@ class BillDetailsCardWidget extends StatelessWidget {
                             fontFamily: Constants.appFontType,
                             fontWeight: FontWeight.bold,
                           ),
-                          children: const [
+                          children:  [
                             TextSpan(text: '  '),
                             TextSpan(
-                              text: 'ريال',
+                              text: 'sar'.tr(),
                               style: TextStyle(
                                 color: AppColor.black500,
                                 fontSize: 13.0,

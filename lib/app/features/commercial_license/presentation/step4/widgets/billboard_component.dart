@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 import '../../../../../core/utils/utils_exports.dart';
 import '../../../../_shared_feature_/presentation/widgets/custom_cupertino_drop_down_widget.dart';
 import '../../../../_shared_feature_/shared_feature_exports.dart';
@@ -20,7 +21,7 @@ class BillboardComponent extends StatelessWidget {
       ),
       child: Column(
         children: [
-          const Row(
+          Row(
             children: [
               CustomSvgIconWidget(
                 IconPath.additionalActivity,
@@ -28,7 +29,7 @@ class BillboardComponent extends StatelessWidget {
               ),
               SizedBox(width: 6),
               CustomTextWidget(
-                "لوحه اعلانيه",
+                'AdvertisingBoard'.tr(),
                 fontWeight: AppFontWeight.bold,
                 fontSize: 18,
                 fontColor: AppColor.blackModern600Light,
@@ -45,11 +46,11 @@ class BillboardComponent extends StatelessWidget {
           ),
           const SizedBox(height: 12),
           PlusAddButton(
-            text: "اضافه لوحه اعلانيه",
+            text: 'boardAddition'.tr(),
             onPressed: () => BottomSheetDialog.showDraggableSheet(
               context,
               child: BottomSheetWithActions(
-                title: "اضافه لوحه اعلانيه",
+                title: 'boardAddition'.tr(),
                 action: Padding(
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   child: ElevatedButtonWidget.add(onPressed: () {}),
@@ -60,17 +61,17 @@ class BillboardComponent extends StatelessWidget {
                     CustomTapWidgetForLongDialog(
                       items: const [],
                       value: null,
-                      label: "نوع اللوحة",
+                      label: 'BoardType'.tr(),
                       marginBottom: 8,
                       onChangeType: (item) {},
                     ),
                     CustomTextFieldWidget(
-                      label: "مساحة اللوحة",
-                      hintText: "ادخل مساحة اللوحة",
+                      label: "lbl_painting_space".tr(),
+                      hintText: "boardSpaceEntry".tr(),
                       isDigitsOnly: true,
                       keyboardType: TextInputType.number,
-                      suffixIcon: const CustomTextWidget(
-                        "متر  مربع",
+                      suffixIcon: CustomTextWidget(
+                        "m2".tr(),
                         fontSize: 12,
                         fontWeight: AppFontWeight.semiBold,
                         fontColor: AppColor.blackModern400Light,

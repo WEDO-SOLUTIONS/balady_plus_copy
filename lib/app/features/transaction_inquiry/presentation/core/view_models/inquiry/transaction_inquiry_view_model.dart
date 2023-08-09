@@ -20,7 +20,7 @@ class TransactionInquiryViewModel extends BaseViewModel {
 
   List<DropDownItem> types = [DropDownItem(id: "1", name: "معاملات واردة")];
   List<DropDownItem> municipalities = [
-    DropDownItem(id: "1", name: "وزارة الشؤون البلدية والقروية والإسكان"),
+    DropDownItem(id: "1", name: 'transation_inquiry_1'.tr()),
     DropDownItem(id: "2", name: "أمانة حفر الباطن"),
     DropDownItem(id: "3", name: "أمانة منطقة تبوك"),
     DropDownItem(id: "4", name: "أمانة منطقة حائل"),

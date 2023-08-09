@@ -1,5 +1,6 @@
 import 'package:balady_plus/app/core/utils/constants/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 import '../../../../../core/utils/utils_exports.dart';
 import '../../../../_shared_feature_/shared_feature_exports.dart';
 
@@ -9,7 +10,7 @@ class ContactInformationScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const DefaultAppBarWidget(title: "معلومات التواصل"),
+      appBar: DefaultAppBarWidget(title: "lbl_more_contactInfo".tr()),
       body: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
         margin: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
@@ -18,11 +19,11 @@ class ContactInformationScreen extends StatelessWidget {
           color: AppColor.white,
           boxShadow: Constants.boxShadow,
         ),
-        child: const Column(
+        child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             CustomTextWidget(
-              "نسعد بتواصلكم مع فريق بلدي، من خلال قنوات التواصل التالية:",
+              'contact_message'.tr(),
               fontColor: AppColor.blackModern600Light,
               fontWeight: AppFontWeight.bold,
               fontSize: 14,
@@ -31,17 +32,17 @@ class ContactInformationScreen extends StatelessWidget {
             ),
             SizedBox(height: 12),
             ContactInfoCard(
-              title: "حساب تويتر",
+              title: "twitter_account".tr(),
               value: "@Balady_CS",
             ),
             SizedBox(height: 8),
             ContactInfoCard(
-              title: "رقم التواصل",
+              title: "contact_number".tr(),
               value: "199040",
             ),
             SizedBox(height: 8),
             ContactInfoCard(
-              title: "البريد الالكتروني",
+              title: "emailFieldLabel".tr(),
               value: "support@balady.gov.sa",
             ),
           ],

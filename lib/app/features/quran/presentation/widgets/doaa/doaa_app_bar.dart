@@ -32,7 +32,7 @@ class DoaaAppBar extends StatelessWidget implements PreferredSizeWidget {
                   color: AppColor.white,
                 )),
             CustomTextWidget(
-              ("دعاء الختم").tr(),
+              ("end_doaa").tr(),
               fontColor: AppColor.blackModern50Light,
               fontSize: 20,
               fontWeight: AppFontWeight.bold,
