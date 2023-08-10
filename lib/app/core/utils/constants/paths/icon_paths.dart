@@ -11,9 +11,9 @@ const _svgVDIconPath = 'assets/icons/svg/vd/';
 const _svgAthkarIconPath = 'assets/icons/svg/athkar/';
 const _boardingLogoPath = 'assets/icons/svg/boarding/';
 
-const _inqPath = 'assets/icons/svg/inq/';
-const _msrPath = 'assets/icons/svg/msr/';
-const _tsrPath = 'assets/icons/svg/tsr/';
+const _inqPath = 'assets/icons/inq/';
+const _msrPath = 'assets/icons/msr/';
+const _tsrPath = 'assets/icons/tsr/';
 
 const _pngQRIconPath = 'assets/icons/png/qr/';
 const _svgQRIconPath = 'assets/icons/svg/qr/';

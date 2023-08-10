@@ -45,7 +45,7 @@ class NotificationCard extends StatelessWidget {
         boxShadow: Constants.boxShadow,
         color: AppColor.white,
       ),
-      child:  Row(
+      child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           const CustomSvgIconWidget(IconPath.magicStar),
@@ -62,7 +62,7 @@ class NotificationCard extends StatelessWidget {
               ),
               const SizedBox(height: 8),
               CustomTextWidget(
-                DateFormat("يوم yyyy-MM-dd الساغة hh:mm").format(date),
+                DateFormat("yyyy-MM-dd ").format(date),
                 fontColor: AppColor.blackModern400Light,
                 fontSize: 10,
                 fontWeight: AppFontWeight.bold,

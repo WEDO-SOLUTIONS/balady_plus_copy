@@ -182,6 +182,6 @@ String getIcon(String category) {
     case "التبغ":
       return "assets/images/inq/Inq_20.svg";
     default:
-      return Constants.imgPath + "iconCard60CustomerSupport@3x.png";
+      return IconPath.calendarIcon;
   }
 }

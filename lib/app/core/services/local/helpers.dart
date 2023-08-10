@@ -544,10 +544,8 @@ class Helpers {
     try {
       print("aba");
       CommonFunctions.showError("session_ended_error".tr());
-      NavigationService.navigatorKey.currentState!
-          .popUntil(ModalRoute.withName(RouteName.bottomNavigation));
-      return;
       NavigationService.navigatorKey.currentState!.popUntil((route) {
+        print("route route $route");
         if (route.settings.name == RouteName.bottomNavigation ||
             route.settings.name == null) {
           return true;
