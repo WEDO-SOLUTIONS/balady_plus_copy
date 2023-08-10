@@ -9,13 +9,11 @@ class BoardingWidget extends StatelessWidget {
   const BoardingWidget({
     super.key,
     required this.title,
-    required this.loadingImage,
     required this.phoneDisplay,
     required this.subtitle,
   });
   final String title;
   final String subtitle;
-  final String loadingImage;
   final String phoneDisplay;
 
   @override
@@ -81,8 +79,8 @@ class BoardingWidget extends StatelessWidget {
               const SizedBox(
                 height: 30,
               ),
-              Image.asset(
-                loadingImage,
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
               ),
               const SizedBox(
                 height: 20,

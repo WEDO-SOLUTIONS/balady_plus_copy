@@ -17,9 +17,6 @@ class AthkarTimeSetup extends StatelessWidget {
 
   final List athkarList = StaticAthkarData.athkarCategories;
 
-  List<bool> _pickerEnabled =
-      List.generate(StaticAthkarData.athkarCategories.length, (index) => true);
-
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<TimePickerBloc, TimePickerState>(
@@ -31,8 +28,10 @@ class AthkarTimeSetup extends StatelessWidget {
           itemBuilder: (context, index) {
             final AthkarCategory athkarCategory = athkarList[index];
             TimeOfDay? selectedTime = state.selectedTimes[index];
+            final int categoryId = athkarCategory.id;
+            bool isEnabled = state.categoryEnabledStates;
 
-            final selectedTimeString = selectedTime != null
+            final selectedTimeString = selectedTime != null && isEnabled
                 ? '${selectedTime.hour}:${selectedTime.minute}'
                 : '';
             return Column(
@@ -57,9 +56,10 @@ class AthkarTimeSetup extends StatelessWidget {
                       Row(
                         children: [
                           Opacity(
-                            opacity: selectedTime != null ? 1.0 : 0.5,
+                            opacity:
+                                isEnabled && selectedTime != null ? 1.0 : 0.5,
                             child: CupertinoButton(
-                              onPressed: _pickerEnabled[index]
+                              onPressed: isEnabled && selectedTime != null
                                   ? () async {
                                       await BottomSheetDialog
                                           .showDraggableSheet(
@@ -141,16 +141,16 @@ class AthkarTimeSetup extends StatelessWidget {
                             ),
                           ),
                           GestureDetector(
-                            onTap: () {
-                              _pickerEnabled[index] = !_pickerEnabled[index];
-                              BlocProvider.of<TimePickerBloc>(context)
-                                  .add(TogglePickerEvent(index));
-                            },
+                            onTap: isEnabled && selectedTime != null
+                                ? () {
+                                    BlocProvider.of<TimePickerBloc>(context)
+                                        .add(TogglePickerEvent(index));
+                                  }
+                                : null,
                             child: SvgPicture.asset(
-                              _pickerEnabled[index]
+                              isEnabled && selectedTime != null
                                   ? IconPath.notificationOn
                                   : IconPath.notificationOff,
-                              color: _pickerEnabled[index] ? null : Colors.grey,
                             ),
                           ),
                         ],

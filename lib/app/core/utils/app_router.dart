@@ -278,6 +278,7 @@ class AppRouter {
         return MaterialPageRoute(
           builder: (_) => AthkarEntityContent(
             params: params,
+            athkarEntitiesList: params.athkarEntitiesList, // Use params here
           ),
         );
 

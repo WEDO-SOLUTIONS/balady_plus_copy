@@ -141,6 +141,7 @@ dependencies:
   flutter_cached_pdfview: ^0.4.2
   pdfx: 
   bottom_picker: ^2.0.4
+  page_view_dot_indicator: ^2.3.0
 
 
   

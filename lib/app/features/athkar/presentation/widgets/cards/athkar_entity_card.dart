@@ -7,22 +7,45 @@ import '../../../../../core/utils/utils_exports.dart'
     show AppColor, AppFontWeight, IconPath, RouteName;
 import '../../../../_shared_feature_/shared_feature_exports.dart'
     show CustomTextWidget;
+import '../../../data/models/athkar_entites_params.dart';
 
-class AthkarEntityCard extends StatelessWidget {
+class AthkarEntityCard extends StatefulWidget {
   const AthkarEntityCard({
     super.key,
     required this.athkarEntity,
+    required this.pageNumber,
+    required this.athkarEntitiesList,
   });
 
   final AthkarEntity athkarEntity;
+  final int pageNumber;
+  final List<AthkarEntity> athkarEntitiesList;
+
+  @override
+  State<AthkarEntityCard> createState() => _AthkarEntityCardState();
+}
+
+class _AthkarEntityCardState extends State<AthkarEntityCard> {
+  final PageController _pageController = PageController();
+  late int _currentPage;
+
+  @override
+  void initState() {
+    super.initState();
+    _currentPage = widget.pageNumber;
+  }
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () => Navigator.pushNamed(
-          context, RouteName.athkarEntityContentPage,
-          arguments:
-              AthkarEntityContentParams(athkarEntity.name, athkarEntity)),
+      onTap: () =>
+          Navigator.pushNamed(context, RouteName.athkarEntityContentPage,
+              arguments: AthkarEntityContentParams(
+                widget.athkarEntity.name,
+                widget.athkarEntity,
+                _currentPage,
+                widget.athkarEntitiesList,
+              )),
       child: Container(
         margin: const EdgeInsets.only(bottom: 12.0),
         decoration: const BoxDecoration(
@@ -40,7 +63,7 @@ class AthkarEntityCard extends StatelessWidget {
               SizedBox(
                 width: 252,
                 child: CustomTextWidget(
-                  athkarEntity.name,
+                  widget.athkarEntity.name,
                   fontColor: Colors.black,
                   textOverflow: TextOverflow.ellipsis,
                   maxLines: 1,
@@ -55,7 +78,7 @@ class AthkarEntityCard extends StatelessWidget {
                     height: 36,
                   ),
                   CustomTextWidget(
-                    '${athkarEntity.quantity}',
+                    '${widget.athkarEntity.quantity}',
                     fontColor: AppColor.primary800Light,
                     fontWeight: AppFontWeight.semiBold,
                     fontSize: 14,
