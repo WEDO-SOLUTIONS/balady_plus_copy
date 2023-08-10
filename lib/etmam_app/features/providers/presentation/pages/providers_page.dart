@@ -22,6 +22,7 @@ import 'package:balady_plus/etmam_app/features/providers/providers_exports.dart'
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../app/features/_shared_feature_/presentation/widgets/search_text_field_widget.dart';
 import '../../../_shared_feature_/shared/presentation/widgets/custom_appbar_providers.dart';
@@ -73,7 +74,7 @@ class _ProvidersPageState extends State<ProvidersPage> {
                 bottomWidget: Padding(
                   padding: const EdgeInsets.fromLTRB(16, 16, 16, 20),
                   child: SearchTextFieldWidget(
-                    hintText: "ابحث...",
+                    hintText: "search".tr(),
                     containerHeight: 50,
                     onTextChanged: (String? text) {
                       if (text != state.name) {

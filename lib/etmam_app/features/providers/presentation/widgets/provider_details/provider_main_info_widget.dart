@@ -93,9 +93,8 @@ class EtmamProviderMainInfo extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 8),
-
-            const CustomTextWidget(
-              'تفاصيل العمل والتواصل',
+            CustomTextWidget(
+              'work_details'.tr(),
               fontColor: AppColor.blackModern800Light,
               fontWeight: AppFontWeight.bold,
               fontSize: 16,
@@ -155,8 +154,7 @@ class EtmamProviderMainInfo extends StatelessWidget {
             InfoCard(
               iconPath: IconPath.medalStar,
               title: trans('evaluate_office'),
-              value:
-              "${state.args.rating} (${state.args.ratingsCount})",
+              value: "${state.args.rating} (${state.args.ratingsCount})",
             ),
           ],
         );

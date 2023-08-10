@@ -104,7 +104,7 @@ class _ServicesPageState extends State<ServicesPage> {
                 bottomWidget: Padding(
                   padding: const EdgeInsets.fromLTRB(16, 16, 16, 20),
                   child: SearchTextFieldWidget(
-                      hintText: "ابحث...",
+                      hintText: "search".tr(),
                       containerHeight: 50,
                       onTextChanged: (String? text) {
                         if (text != state.name) {

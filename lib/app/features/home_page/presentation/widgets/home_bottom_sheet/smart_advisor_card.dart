@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../core/utils/utils_exports.dart';
 import '../../../../_shared_feature_/presentation/dialogs/need_login_dialog.dart';
@@ -26,7 +27,7 @@ class BaladySmartAdvisorCard extends StatelessWidget {
         }
       },
       child: HomeSection(
-        title: 'المستشار الذكي',
+        title: 'municipal_advisor'.tr(),
         child: Container(
           height: 172,
           width: MediaQuery.sizeOf(context).width,
@@ -42,41 +43,57 @@ class BaladySmartAdvisorCard extends StatelessWidget {
           child: Row(
             children: [
               Expanded(
-                flex: 4,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const CustomTextWidget(
-                      "مستشارك الذكي",
-                      fontColor: AppColor.blackModern800Light,
-                      fontWeight: AppFontWeight.bold,
-                      fontSize: 14,
-                    ),
-                    const SizedBox(height: 6),
-                    const CustomTextWidget(
-                      "دليلك الآلي للحصول على إجابات سريعة حول الاشتراطات البلدية",
-                      fontColor: AppColor.blackModern600Light,
-                      fontWeight: AppFontWeight.bold,
-                      fontSize: 12,
-                      maxLines: null,
-                      height: 1.5,
-                    ),
-                    const SizedBox(height: 12),
-                    CustomElevatedButtonWidget(
-                      btnColor: AppColor.primary900Light,
-                      textStyle: AppStyle.elevatedButtonStyle.copyWith(
-                        color: AppColor.white,
-                        fontWeight: FontWeight.w700,
-                        fontSize: 12,
+                  flex: 4,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      CustomTextWidget(
+                        'advisor_title'.tr(),
+                        fontColor: AppColor.blackModern800Light,
+                        fontWeight: AppFontWeight.bold,
+                        fontSize: 14,
                       ),
-                      btnHeight: 40,
-                      btnWidth: 163,
-                      text: "اسأل المستشار",
-                    ),
-                  ],
-                ),
-              ),
+                      const SizedBox(height: 6),
+                      CustomTextWidget(
+                        'advisor_desc'.tr(),
+                        fontColor: AppColor.blackModern600Light,
+                        fontWeight: AppFontWeight.bold,
+                        fontSize: 12,
+                        maxLines: null,
+                        height: 1.5,
+                      ),
+                      const SizedBox(height: 12),
+                      CustomElevatedButtonWidget(
+                        btnColor: AppColor.primary900Light,
+                        textStyle: AppStyle.elevatedButtonStyle.copyWith(
+                          color: AppColor.white,
+                          fontWeight: FontWeight.w700,
+                          fontSize: 12,
+                        ),
+                        btnHeight: 40,
+                        btnWidth: 163,
+                        text: 'askAdvisor'.tr(),
+                        onPressed: () async {
+                          if (CommonProperties.isLoggedIn) {
+                            Navigator.pushNamed(
+                                context, RouteName.municipalAdvisor);
+                          } else {
+                            showDialog(
+                                context: context,
+                                builder: (ctx) => NeedLoginDialog(
+                                        onSuccessLogin:
+                                            (bool? isSuccess) async {
+                                      if (isSuccess ?? false) {
+                                        Navigator.pushNamed(context,
+                                            RouteName.municipalAdvisor);
+                                      }
+                                    }));
+                          }
+                        },
+                      ),
+                    ],
+                  )),
               Expanded(
                 flex: 2,
                 child: Image.asset(ImagePath.supportImg),

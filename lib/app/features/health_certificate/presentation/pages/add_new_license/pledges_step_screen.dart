@@ -204,9 +204,7 @@ class _agreeAndButtonState extends State<agreeAndButton> {
                     });
                   },
                   checkboxValue: false,
-                  title: Helpers.translatingWord(
-                    "agree_all_the_above",
-                  ),
+                  title: "agree_all_the_above".tr(),
                   containerBackgroundColor: AppColor.white3,
                 ),
                 EnhancedCustomElevatedButtonWidget(

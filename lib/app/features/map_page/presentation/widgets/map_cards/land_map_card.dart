@@ -54,7 +54,7 @@ class LandMapCard extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   CustomTextWidget(
-                    "معلومات المخطط",
+                    'map_info'.tr(),
                     fontColor: AppColor.blackModern800Light,
                     fontSize: 16,
                     fontWeight: AppFontWeight.bold,

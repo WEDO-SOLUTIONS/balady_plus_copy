@@ -60,7 +60,7 @@ class WhiteLandMapCard extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   CustomTextWidget(
-                    "معلومات الإرض",
+                    "land_info".tr(),
                     fontColor: AppColor.blackModern800Light,
                     fontSize: 16,
                     fontWeight: AppFontWeight.bold,

@@ -73,15 +73,15 @@ class NewServices extends StatelessWidget {
                               ),
                             ),
                             const SizedBox(height: 18),
-                            const CustomTextWidget(
-                              "خدمة الاعتراضات",
+                            CustomTextWidget(
+                              "notice_service".tr(),
                               fontColor: AppColor.blackModern800Light,
                               fontWeight: AppFontWeight.bold,
                               fontSize: 14,
                             ),
                             const SizedBox(height: 6),
-                            const CustomTextWidget(
-                              "اطلع على جميع المخالفات القابلة للاعتراض وإرسل اعتراضك مباشرة",
+                            CustomTextWidget(
+                              'notice_desc'.tr(),
                               fontColor: AppColor.blackModern400Light,
                               fontWeight: AppFontWeight.medium,
                               maxLines: null,
@@ -186,16 +186,16 @@ class NewServices extends StatelessWidget {
                               ),
                             ),
                             const SizedBox(height: 18),
-                            const CustomTextWidget(
-                              "حجز موعد الكتروني",
+                            CustomTextWidget(
+                              'schedule_date'.tr(),
                               fontColor: AppColor.blackModern800Light,
                               fontWeight: AppFontWeight.bold,
                               fontSize: 14,
                             ),
                             const SizedBox(height: 6),
-                            const CustomTextWidget(
-                              "احجز موعدًا للتواصل والاستفسار المباشر مع ممثلي البلدية",
-                              fontColor: AppColor.blackModern400Light,
+                            CustomTextWidget(
+                              'booking_tickets'.tr(),
+                              fontColor: const Color.fromARGB(255, 10, 10, 15),
                               fontWeight: AppFontWeight.medium,
                               maxLines: null,
                               fontSize: 12,

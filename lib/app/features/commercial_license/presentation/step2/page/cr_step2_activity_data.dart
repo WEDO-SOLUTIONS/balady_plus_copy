@@ -50,26 +50,21 @@ class CRStep2ActivityData extends StatelessWidget {
                       );
                     },
                   ),
-                  const NotesWidget(
-                    notes: [
-                      "عزيزي المستفيد, يرجى اختيار النشاط المطابق للنشاط الفعلي للمحل، حيث أنه لا يمكن تعديل نشاط الرخصة بعد اصدارها.",
-                      "تأكد من وجود ترخيص لأي عامل حرفي في منشأتك حيث انه شرط أساسي لإصدار او تجديد الرخص التجارية"
-                    ],
+                  NotesWidget(
+                    notes: ['note1'.tr(), 'note2'.tr()],
                   ),
                   BlocBuilder<CrStep2ActivityDataCubit,
                       CrStep2ActivityDataState>(
                     buildWhen: (previous, current) =>
                         previous.subActivitiesStatus !=
-                            current.subActivitiesStatus ||
-                        previous.selectedSubActivity !=
-                            current.selectedSubActivity,
+                        current.subActivitiesStatus,
                     builder: (context, state) {
                       return CustomTapWidgetForLongDialog(
                         items: state.subActivities,
                         value: state.selectedSubActivity,
                         isLoading:
                             state.subActivitiesStatus.isSubmissionLoading,
-                        label: "النشاط التفصيلي",
+                        label: 'step2_label2'.tr(),
                         marginBottom: 8,
                         onChangeType: (item) => item != null
                             ? context
@@ -79,7 +74,7 @@ class CRStep2ActivityData extends StatelessWidget {
                       );
                     },
                   ),
-                  const NotesWidget(
+                  NotesWidget(
                     notes: [
                       "عزيزي المستفيد, يمكنك الاستعلام عن تفاصيل الأنشطة التجارية واشتراطاتها من خلال زيارتك للرابط التالي:\n الأنشطة التجارية واشتراطاته"
                     ],
@@ -92,12 +87,12 @@ class CRStep2ActivityData extends StatelessWidget {
                     onChangeType: (value) {},
                   ),
                   CustomTextFieldWidget(
-                    label: "المساحه الكليه للمحل",
-                    hintText: "ادخل المساحه الكليه للمحل",
+                    label: 'step2_label4'.tr(),
+                    hintText: 'label4_hint'.tr(),
                     isDigitsOnly: true,
                     keyboardType: TextInputType.number,
-                    suffixIcon: const CustomTextWidget(
-                      "متر  مربع",
+                    suffixIcon: CustomTextWidget(
+                      'square_meter'.tr(),
                       fontSize: 12,
                       fontWeight: AppFontWeight.semiBold,
                       fontColor: AppColor.blackModern400Light,

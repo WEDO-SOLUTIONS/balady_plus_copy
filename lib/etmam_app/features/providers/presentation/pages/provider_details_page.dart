@@ -11,12 +11,12 @@ import 'package:balady_plus/app/core/utils/utils_exports.dart'
 
 import 'package:balady_plus/etmam_app/features/providers/providers_exports.dart'
     show
-    AboutProviderOfficeWidget,
-    EtmamProviderMainInfo,
-    ProviderBranchesWidget,
-    ProviderDetailsResponse,
-    ProviderPreviousWorksWidgets,
-    ProviderServicesSection;
+        AboutProviderOfficeWidget,
+        EtmamProviderMainInfo,
+        ProviderBranchesWidget,
+        ProviderDetailsResponse,
+        ProviderPreviousWorksWidgets,
+        ProviderServicesSection;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
