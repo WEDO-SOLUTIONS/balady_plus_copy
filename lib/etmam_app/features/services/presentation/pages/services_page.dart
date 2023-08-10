@@ -47,6 +47,7 @@ import 'package:balady_plus/etmam_app/features/submit_request/submit_request_exp
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:balady_plus/app/features/entry_point/presentation/cubit/auth_cubit.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../app/features/_shared_feature_/presentation/widgets/search_text_field_widget.dart';
 import '../../../_shared_feature_/shared/presentation/widgets/custom_appbar_providers.dart';

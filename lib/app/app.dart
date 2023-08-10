@@ -20,6 +20,8 @@ import 'features/entry_point/presentation/cubit/auth_cubit.dart';
 
 import 'package:provider/provider.dart';
 
+import 'features/weather/presentation/bloc/weather_bloc.dart';
+
 class App extends StatelessWidget {
   const App({super.key});
 
@@ -32,6 +34,7 @@ class App extends StatelessWidget {
               MapViewModel(layersRepositories: sl()),
         ),
         BlocProvider.value(value: sl<EtmamEntryPointCubit>()),
+        BlocProvider.value(value: sl<WeatherBloc>()),
       ],
       child: BlocProvider<EntryPointCubit>.value(
           value: sl<EntryPointCubit>()..onLoadingApp(),

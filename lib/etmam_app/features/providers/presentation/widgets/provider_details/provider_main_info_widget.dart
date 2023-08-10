@@ -6,6 +6,7 @@ import 'package:balady_plus/etmam_app/features/services/services_exports.dart'
     show InfoCard, InfoWithIcon, PreviousWorks, ServiceFaqSection;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../../../app/core/utils/constants/app_colors.dart';

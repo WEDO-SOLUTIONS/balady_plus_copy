@@ -83,7 +83,6 @@ class _AppointmentsListScreenState extends State<AppointmentsListScreen> {
                         btnText: ('submit_new_appointment').tr(),
                         title: ('no_appointment').tr(),
                         //  desc: ('no_appointment_desc').tr(),
-                        img: "noAppointmentsIllustration@3x.png",
                         // btnPressed: () {}
                       )
                     : ListView(

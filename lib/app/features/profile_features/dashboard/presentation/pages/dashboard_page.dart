@@ -77,7 +77,7 @@ class DashBoardPage extends StatelessWidget {
                     case BlocRequestStatus.submissionGetLoading:
                       return const DashboardListShimmer();
                     case BlocRequestStatus.submissionGetSuccess:
-                      return state.showNoData
+                      return state.totalCount() == 0 && state.allCardsSuccess()
                           ? const NoDataComponent()
                           : SingleChildScrollView(
                               child: Column(

@@ -10,6 +10,7 @@ import 'package:balady_plus/app/features/weather/weather_exports.dart'
         SunriseOrSunsetTime,
         WeatherDayCard;
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:skeletonizer/skeletonizer.dart';
@@ -29,6 +30,16 @@ class _WeatherMainPageState extends State<WeatherMainPage> {
   int selectedTile = -1;
 
   @override
+  void initState() {
+    super.initState();
+
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      BlocProvider.of<WeatherBloc>(context, listen: false)
+          .add(RefreshWeatherForLocation());
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     final MediaQueryData _mediaQuery = MediaQuery.of(context);
     final Size _size = _mediaQuery.size;
@@ -36,7 +47,7 @@ class _WeatherMainPageState extends State<WeatherMainPage> {
     final screenHeight = _size.height;
 
     return BlocProvider.value(
-      value: sl<WeatherBloc>()..add(GetWeatherForLocation()),
+      value: sl<WeatherBloc>(),
       child: BlocBuilder<WeatherBloc, WeatherState>(
         builder: (context, state) {
           // if (state.allWeatherInfoStatus == BlocStatus.loading) {

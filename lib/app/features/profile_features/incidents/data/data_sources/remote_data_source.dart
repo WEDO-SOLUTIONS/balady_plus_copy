@@ -222,7 +222,8 @@ class RequestsRemoteDataSourceImplementation
           else
             "IqamaID": "${CommonProperties.userInfo!.idNo}",
           "FileKey": params.fileKey,
-          "DaemID": params.daemId
+          if (params.daemId != null && params.daemId!.isNotEmpty)
+            "DaemID": params.daemId
         };
       }
 

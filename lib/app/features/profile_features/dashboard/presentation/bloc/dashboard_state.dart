@@ -19,9 +19,10 @@ class DashboardState extends Equatable {
     for (var item in cardsStates.values) {
       if (item.totalCount != 0) showNoData.add(false);
       if (!item.productsStatus.isSubmissionGetSuccess) showNoData.add(false);
+
       showNoData.add(true);
     }
-    return !showNoData.contains(false);
+    return showNoData.contains(true);
   }
 
   DashboardState copyWith({
@@ -45,6 +46,23 @@ class DashboardState extends Equatable {
         cardsStates,
         errorMessage,
       ];
+
+  int totalCount() {
+    int totalCount = 0;
+    cardsStates.entries.forEach((element) {
+      totalCount += (element.value.totalCount ?? 0);
+    });
+    return totalCount;
+  }
+
+  bool allCardsSuccess() {
+    bool status = true;
+    cardsStates.entries.forEach((element) {
+      if (element.value.statisticsStatuses ==
+          BlocRequestStatus.submissionGetFailure) status = false;
+    });
+    return status;
+  }
 }
 
 class CardState extends Equatable {

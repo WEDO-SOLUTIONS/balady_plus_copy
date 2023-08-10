@@ -148,7 +148,7 @@ class _QuranFooterState extends State<QuranFooter> {
                     onTap: () async {
                       final bool? actionTaked =
                           await BottomSheetDialog.showDraggableSheet(context,
-                              isFullHeight: false,
+                              isFullHeight: true,
                               child: BottomSheetWithActions(
                                 body: Container(
                                   child: SingleChildScrollView(

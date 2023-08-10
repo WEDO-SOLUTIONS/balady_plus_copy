@@ -53,116 +53,120 @@ class _RequestStatusCardState extends State<RequestStatusCard> {
           color: Colors.white),
       // padding: const EdgeInsets.all(18),
       padding: const EdgeInsets.only(top: 18, right: 18, left: 18),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              CustomTextWidget(
-                ('order_status').tr(),
-                fontColor: AppColor.blackModern900Light,
-                fontWeight: AppFontWeight.bold,
-                fontSize: 20,
-              ),
-              HomeTag(
-                title: widget.status,
-                backgroundColor: AppColor.secondary100Light,
-              ),
-            ],
-          ),
-          CustomVerticalSpace(height: 12),
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                CustomTextWidget(
+                  ('order_status').tr(),
+                  fontColor: AppColor.blackModern900Light,
+                  fontWeight: AppFontWeight.bold,
+                  fontSize: 20,
+                ),
+                HomeTag(
+                  title: widget.status,
+                  backgroundColor: AppColor.secondary100Light,
+                ),
+              ],
+            ),
+            CustomVerticalSpace(height: 12),
 
-          ListView.builder(
-            shrinkWrap: true,
-            padding: EdgeInsets.zero,
-            itemCount:
-                !showInfo ? 1 : widget.auditInformation.auditList!.length,
-            physics: const NeverScrollableScrollPhysics(),
-            itemBuilder: (ctx, index) {
-              String desc = widget.auditInformation.auditList![index]
-                  .getDesc(widget.municipalityName, incidentType: widget.type);
-              return TimelineTile(
-                nodeAlign: TimelineNodeAlign.start,
-                contents: Container(
-                  margin: const EdgeInsetsDirectional.only(
-                      start: 16,
-                      top: /*desc != null &&
-                      widget.auditInformation.auditList[index]
-                          .getDesc(widget.municipalityName)
-                          .isNotEmpty
-                      ?*/
-                          20 /*: 5*/),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          CustomTextWidget(
-                            widget.auditInformation.auditList![index]
-                                .getTypeTitle(incidentType: widget.type),
-                            fontColor: Color(0xFF292929),
-                            fontWeight: AppFontWeight.bold,
-                            fontSize: 14,
-                            textAlign: TextAlign.start,
-                          ),
-                          const CustomVerticalSpace(height: 10),
-                          /*     desc != null &&
-                                  widget.auditInformation.auditList[index]
-                                      .getDesc(widget.municipalityName)
-                                      .isNotEmpty
-                              ?*/
-                          CustomTextWidget(
-                            /*widget.auditInformation.auditList[index].getTypeTitle()*/
-                            desc,
-                            fontColor: AppColor.blackModern500Light,
-                            fontSize: 11,
-                            fontWeight: AppFontWeight.bold,
-                            textAlign: TextAlign.start,
-                          ),
-                          const CustomVerticalSpace(height: 20),
-                        ],
-                      ),
-                      CustomTextWidget(
-                        widget.auditInformation.auditList?[index]
-                                .getDate(incidentType: widget.type) ??
-                            " ",
-                        fontColor: AppColor.primary600Light,
-                        fontWeight: AppFontWeight.bold,
-                        fontSize: 10,
-                      ),
-                    ],
-                  ),
-                ),
-                node: TimelineNode(
-                  indicator: const DotIndicator(
-                    color: AppColor.primary900Light,
-                    size: 10,
-                  ),
-                  startConnector: index == 0 &&
-                          !widget.auditInformation.isResolved()
-                      ? const SolidLineConnector(
-                          color: AppColor.primary50Light,
-                        )
-                      : index == 0 && widget.auditInformation.isResolved()
-                          ? const SolidLineConnector(color: Colors.transparent)
-                          : const SolidLineConnector(
-                              color: AppColor.primary50Light,
+            ListView.builder(
+              shrinkWrap: true,
+              padding: EdgeInsets.zero,
+              itemCount:
+                  !showInfo ? 1 : widget.auditInformation.auditList!.length,
+              physics: const NeverScrollableScrollPhysics(),
+              itemBuilder: (ctx, index) {
+                String desc = widget.auditInformation.auditList![index].getDesc(
+                    widget.municipalityName,
+                    incidentType: widget.type);
+                return TimelineTile(
+                  nodeAlign: TimelineNodeAlign.start,
+                  contents: Container(
+                    margin: const EdgeInsetsDirectional.only(
+                        start: 16,
+                        top: /*desc != null &&
+                        widget.auditInformation.auditList[index]
+                            .getDesc(widget.municipalityName)
+                            .isNotEmpty
+                        ?*/
+                            20 /*: 5*/),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            CustomTextWidget(
+                              widget.auditInformation.auditList![index]
+                                  .getTypeTitle(incidentType: widget.type),
+                              fontColor: Color(0xFF292929),
+                              fontWeight: AppFontWeight.bold,
+                              fontSize: 14,
+                              textAlign: TextAlign.start,
                             ),
-                  endConnector:
-                      index == widget.auditInformation.auditList!.length - 1
-                          ? const SolidLineConnector(color: Colors.transparent)
-                          : const SolidLineConnector(
-                              color: AppColor.primary50Light,
+                            const CustomVerticalSpace(height: 10),
+                            /*     desc != null &&
+                                    widget.auditInformation.auditList[index]
+                                        .getDesc(widget.municipalityName)
+                                        .isNotEmpty
+                                ?*/
+                            CustomTextWidget(
+                              /*widget.auditInformation.auditList[index].getTypeTitle()*/
+                              desc,
+                              fontColor: AppColor.blackModern500Light,
+                              fontSize: 11,
+                              fontWeight: AppFontWeight.bold,
+                              textAlign: TextAlign.start,
                             ),
-                ),
-              );
-            },
-          ),
-          //    if (showMoreDetails()) showMoreButton(),
-        ],
+                            const CustomVerticalSpace(height: 20),
+                          ],
+                        ),
+                        CustomTextWidget(
+                          widget.auditInformation.auditList?[index]
+                                  .getDate(incidentType: widget.type) ??
+                              " ",
+                          fontColor: AppColor.primary600Light,
+                          fontWeight: AppFontWeight.bold,
+                          fontSize: 10,
+                        ),
+                      ],
+                    ),
+                  ),
+                  node: TimelineNode(
+                    indicator: const DotIndicator(
+                      color: AppColor.primary900Light,
+                      size: 10,
+                    ),
+                    startConnector:
+                        index == 0 && !widget.auditInformation.isResolved()
+                            ? const SolidLineConnector(
+                                color: AppColor.primary50Light,
+                              )
+                            : index == 0 && widget.auditInformation.isResolved()
+                                ? const SolidLineConnector(
+                                    color: Colors.transparent)
+                                : const SolidLineConnector(
+                                    color: AppColor.primary50Light,
+                                  ),
+                    endConnector: index ==
+                            widget.auditInformation.auditList!.length - 1
+                        ? const SolidLineConnector(color: Colors.transparent)
+                        : const SolidLineConnector(
+                            color: AppColor.primary50Light,
+                          ),
+                  ),
+                );
+              },
+            ),
+            //    if (showMoreDetails()) showMoreButton(),
+          ],
+        ),
       ),
     );
   }
