@@ -191,7 +191,7 @@ class QiblahCompassPageWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
-      stream: FlutterQiblah.qiblahStream,
+      stream: Geolocator.getPositionStream(),
       builder: (_, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(
@@ -200,9 +200,13 @@ class QiblahCompassPageWidget extends StatelessWidget {
             ),
           );
         }
-
+        return CustomTextWidget(
+          snapshot.data?.latitude.toString() ?? "11",
+          textStyle: AppStyle.compassOffsetTextStyle,
+        );
+/*  
         final QiblahDirection qiblahDirection = snapshot.data!;
-
+        print("Direction ${qiblahDirection.direction}");
         return Column(
           children: [
             Expanded(
@@ -241,7 +245,7 @@ class QiblahCompassPageWidget extends StatelessWidget {
             const SizedBox(height: 80),
             const SafeArea(child: SizedBox())
           ],
-        );
+        );*/
       },
     );
   }

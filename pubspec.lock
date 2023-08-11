@@ -491,14 +491,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.1.0"
-  flutter_archive:
-    dependency: "direct main"
-    description:
-      name: flutter_archive
-      sha256: aec85d1da65e5b33a529db00a86df0b8e92bda78088a7cfaeeba5187701d0d85
-      url: "https://pub.dev"
-    source: hosted
-    version: "5.0.0"
   flutter_bloc:
     dependency: "direct main"
     description:
@@ -540,12 +532,13 @@ packages:
     source: hosted
     version: "6.0.0"
   flutter_compass:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
-      name: flutter_compass
-      sha256: "1a0121bff32df95193812b4e0f69e95f45fdec042ebd7a326ba087c0f6ec8304"
-      url: "https://pub.dev"
-    source: hosted
+      path: "."
+      ref: HEAD
+      resolved-ref: "8f753aefe76b08092c0e5bda93775ade8fe66016"
+      url: "https://github.com/hemanthrajv/flutter_compass.git"
+    source: git
     version: "0.7.0"
   flutter_easyloading:
     dependency: "direct main"
@@ -1619,14 +1612,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.0"
-  skeletonizer:
-    dependency: "direct main"
-    description:
-      name: skeletonizer
-      sha256: a201788634f9b0d3372767c3c03f36d85940e08a4498aecd7644136c1523d3f3
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.3.0"
   sky_engine:
     dependency: transitive
     description: flutter

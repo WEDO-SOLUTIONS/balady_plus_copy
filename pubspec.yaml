@@ -117,9 +117,6 @@ dependencies:
   youtube_player_flutter: ^8.0.0
   launch_review: ^3.0.1
 
-
-
-  
   flutter_appauth:
     path: flutter_appauth/flutter_appauth
   webview_flutter: ^4.2.2
@@ -132,8 +129,6 @@ dependencies:
   cached_network_image: ^3.2.2
   mime: ^1.0.4
   jwt_decoder:
-  skeletonizer: ^0.3.0
-
   photo_view: ^0.14.0
   flutter_rating_bar: ^4.0.0
   tuple: ^2.0.0
@@ -160,23 +155,25 @@ dependencies:
   pdfx: 
   sentry_flutter: ^7.9.0
   archive: ^3.3.7
-  flutter_archive: ^5.0.0
   #test_package:
  #   path: packages/test_package
   flutter_qiblah: ^2.2.0
   app_settings: ^5.0.0
- 
+  dotted_border: ^2.0.0+3
+
 
 
 # Map urbi SKD
   dgis_map:
     path: urbi_map/dgis_map
-  dotted_border: ^2.0.0+3
 #  provider: ^6.0.5
 
 
 dependency_overrides:
   geolocator_android: ^4.2.2
+  # flutter compass in pub.dev is not updated
+  flutter_compass:
+    git: https://github.com/hemanthrajv/flutter_compass.git
   
 dev_dependencies:
 
@@ -224,7 +221,6 @@ flutter:
     - assets/langs/
     - assets/quran/
     - assets/services/
-    # - assets/services/
     - assets/maps/styles/
     - assets/maps/icons/
     - assets/maps/icons/card_icon/
