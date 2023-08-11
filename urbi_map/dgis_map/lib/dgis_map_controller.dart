@@ -40,13 +40,6 @@ class DgisMapController {
   /// (e.g. [markerWithPhotoTapEvents])
   Stream<TapEvent> get objectTapEvents => _instance.objectTapEvents;
 
-  /// User taps route when there are several of them available.
-  Stream<RouteChangedEvent> get routeChangedEvents =>
-      _instance.routeChangedEvents;
-
-  /// Events during navigation.
-  Stream<NavigationEvent> get navigationEvents => _instance.navigationEvents;
-
   /// Events of visible rect changes.
   Stream<VisibleRectEvent> get visibleRectEvents => _instance.visibleRectEvents;
 
@@ -58,68 +51,15 @@ class DgisMapController {
   Stream<MarkerWithPhotoTapEvent> get markerWithPhotoTapEvents =>
       _instance.markerWithPhotoTapEvents;
 
-  Stream<PublicTransportRoutesChangedEvent>
-      get publicTransportRoutesChangedEvents =>
-          _instance.publicTransportRoutesChangedEvents;
-
-  Stream<PublicTransportActiveRouteChanged>
-      get publicTransportActiveRouteChangedEvents =>
-          _instance.publicTransportActiveRouteChangedEvents;
-
-  late NaviSpeedController naviSpeedController = NaviSpeedController(
-    _instance.naviSpeedEvents.asBroadcastStream(),
-  );
-
-  late NaviMessageController naviMessageController = NaviMessageController(
-    _instance.naviMessageEvents.asBroadcastStream(),
-  );
-
-  late NaviManeuverController naviManeuverController = NaviManeuverController(
-    _instance.naviManeuverEvents.asBroadcastStream(),
-  );
-
-  late NaviCompassController naviCompassController = NaviCompassController(
-    _instance.compassBearingEvents.asBroadcastStream(),
-    _instance.onCompassClicked,
-  );
-
   late NaviZoomController naviZoomController = NaviZoomController(
     _instance.zoomControlEnabledEvents.asBroadcastStream(),
     _instance.onZoomAction,
   )..init();
 
-  late NaviTrafficParkingController naviTrafficParkingController =
-      NaviTrafficParkingController(
-    parkingStateEvents: _instance.parkingStateEvents.asBroadcastStream(),
-    trafficStateEvents: _instance.trafficStateEvents.asBroadcastStream(),
-    onAttached: _instance.onTrafficAndParkingAttached,
-    onDetached: _instance.onTrafficAndParkingDetached,
-    onTrafficClicked: _instance.onTrafficClicked,
-    onParkingClicked: _instance.onParkingClicked,
-  );
-
-  late NaviFreeRoamController freeRoamController = NaviFreeRoamController(
-    _instance.navigationEvents,
-    start: _instance.startFreeRoam,
-    stop: _instance.stopFreeRoam,
-  );
-
-  late NaviPedestrianController naviPedestrianController =
-      NaviPedestrianController(
-    routeChangedEvents,
-  )..init();
-
-  Stream<NaviDashboardEvent> get naviDashboardEvents =>
-      _instance.naviDashboardEvents;
-
-  Stream<RouteOptionsEvent> get routeOptionEvents =>
-      _instance.routeOptionsEvent;
-
   /// Must be called **once** when controller becomes avalilable to initialize plugin.
   Future<InitializeMessage> initialize() async => _instance.initialize(_viewId);
 
   Future<void> dispose() async {
-    naviPedestrianController.dispose();
     naviZoomController.dispose();
     await _instance.dispose();
   }
@@ -216,6 +156,7 @@ class DgisMapController {
   /// Runs directory search by [queryText] query.
   Future<SearchResultMessage> search(
     String queryText, {
+    List<SearchCategoryMessage>? categories,
     required SortingTypeMessage sortingType,
     GeoRectMessage? searchRect,
     bool isOpenNow = false,
@@ -223,6 +164,7 @@ class DgisMapController {
   }) {
     return _instance.search(
       queryText,
+      categories: categories,
       sortingType: sortingType,
       weekTime: isOpenNow ? WeekTimeFactory.openNow() : null,
       pageSize: pageSize,
@@ -385,24 +327,13 @@ class DgisMapController {
     return _instance.overlappedBy(outer, inner);
   }
 
-  Future<void> setRouteParams(RouteEditorRouteParamsMessage params) async {
-    return _instance.setRouteParams(params);
+  /// Checks if [rect] contains [point]
+  Future<bool> contains(
+    GeoRectMessage rect,
+    GeoPointMessage point,
+  ) async {
+    return _instance.contains(rect, point);
   }
-
-  Future<void> hideRoutes() async {
-    return _instance.hideRoutes();
-  }
-
-  Future<void> startNavigation() => _instance.startNavigation();
-
-  /// Starts navigation sinulation.
-  Future<void> startNavigationSimulation() =>
-      _instance.startNavigationSimulation();
-
-  /// Stops navigation. To hide navigation overlay call [hideNativeNavigationOverlay].
-  Future<void> stopNavigation() => _instance.stopNavigation();
-
-  Future<void> toggleSound() => _instance.toggleSound();
 
   /// Used to setup platform. Should be called when permision was granted.
   /// Does not request permission by itself.
@@ -427,12 +358,18 @@ class DgisMapController {
     return _instance.removeEsriIOLayer();
   }
 
+  /// Sets map appearance
+  Future<void> setAppearance(MapAppearanceMessage appearance) {
+    return _instance.setAppearance(appearance);
+  }
+
+  /// Sets zoom restrictions for camera
+  Future<void> setZoomRestrictions({double? min, double? max}) {
+    return _instance.setZoomRestrictions(min, max);
+  }
+
   /// Does not apply filters immediately. Resets inner state.
   void resetCurrentEvergisFiltersState() => _evergisFilters.clear();
-
-  Future<void> setPublicTransportActiveRoute(int routeIndex) {
-    return _instance.setPublicTransportActiveRoute(routeIndex);
-  }
 }
 
 extension WeekTimeFactory on WeekTimeSearchMessage {

@@ -429,33 +429,6 @@ class MarkerOptionsMessageOld {
   final double iconWidth;
 }
 
-enum RouteSearchOptionsMessage {
-  car,
-  publicTransport,
-  bicycle,
-  pedestrian,
-  scooter,
-  truck,
-  taxi
-}
-
-class RouteEditorRouteParamsMessage {
-  RouteEditorRouteParamsMessage(
-    this.startPoint,
-    this.finishPoint,
-    // TODO: not yet supported
-    // this.intermediatePoints,
-    this.options,
-  );
-
-  final GeoPointMessage? startPoint;
-  final GeoPointMessage? finishPoint;
-
-  // TODO: not yet supported
-  // final List<RouteSearchPointMessage> intermediatePoints;
-  final RouteSearchOptionsMessage options;
-}
-
 enum DesiredAccuracyMessage { low, medium, high }
 
 class MarkerWithPhotoMessage {
@@ -832,6 +805,18 @@ enum SearchCategoryMessage {
   parks,
 }
 
+class SearchCategoryMessage_ {
+  SearchCategoryMessage_(this.category);
+
+  final SearchCategoryMessage category;
+}
+
+class SearchCategoriesMessage {
+  SearchCategoriesMessage(this.categories);
+
+  final List<SearchCategoryMessage_?> categories;
+}
+
 class SimpleClusterOptionsMessage {
   SimpleClusterOptionsMessage({
     this.icon,
@@ -863,6 +848,8 @@ class MapObjectManagerMessage {
 
   final String id;
 }
+
+enum MapAppearanceMessage { day, night, system }
 
 @ConfigurePigeon(
   PigeonOptions(
@@ -940,6 +927,7 @@ abstract class MapApi {
   @async
   SearchResultMessage search(
     String queryText,
+    SearchCategoriesMessage? categories,
     WeekTimeSearchMessage? weekTime,
     GeoRectMessage? searchRect,
     SortingTypeMessage sortingType,
@@ -1078,31 +1066,10 @@ abstract class MapApi {
   int overlappedBy(GeoRectMessage outerRect, GeoRectMessage innerRect);
 
   @async
-  void setRouteParams(RouteEditorRouteParamsMessage params);
-
-  @async
-  void hideRoutes();
-
-  @async
-  void startNavigation();
-
-  @async
-  void startNavigationSimulation();
-
-  @async
-  void stopNavigation();
+  bool contains(GeoRectMessage rect, GeoPointMessage point);
 
   @async
   void setPanoramaMarkerAzimuth(MarkerAzimuthMessage message);
-
-  @async
-  void onCompassClicked();
-
-  @async
-  void setPublicTransportActiveRoute(int routeIndex);
-
-  @async
-  void toggleSound();
 
   @async
   void onTrafficAndParkingAttached();
@@ -1117,10 +1084,10 @@ abstract class MapApi {
   void onTrafficClicked();
 
   @async
-  void startFreeRoam();
+  void setAppearance(MapAppearanceMessage appearance);
 
   @async
-  void stopFreeRoam();
+  void setZoomRestrictions(double? min, double? max);
 }
 
 @FlutterApi()

@@ -54,15 +54,6 @@ class DgisMapView(
     private var objectTapHandler: ObjectTapHandler? = null
     private var visibleRectHandler: VisibleRectHandler? = null
     private var searchHandler: SearchHandler? = null
-    private var routeHandler: RouteHandler? = null
-    private val navigationHandler by unsafeLazy {
-        NavigationHandler(
-            sdkContext = sdkContext,
-            navigationView = mapView.findViewById(R.id.navigationView),
-            eventSink = eventSink,
-        )
-    }
-    private var compassControlHandler: CompassControlHandler? = null
     private var trafficAndParkingControlHandler: TrafficAndParkingControlHandler? = null
 
     /**
@@ -82,14 +73,12 @@ class DgisMapView(
 
     override fun dispose() {
         map?.close()
-        routeHandler?.close()
         zoomControlHandler?.close()
         locationControlHandler?.close()
         indoorControlHandler?.close()
         searchHandler?.close()
         locationSource.deactivate()
         visibleRectHandler?.close()
-        compassControlHandler?.close()
         trafficAndParkingControlHandler?.close()
     }
 
@@ -285,7 +274,6 @@ class DgisMapView(
                     logicalPixel = LogicalPixel(value = 50f),
                     maxZoom = Zoom(value = 18f)
                 ),
-            routeHandler = routeHandler,
             eventSink = eventSink,
             sdkContext = sdkContext,
             api = FlutterMapApi(binaryMessenger)
@@ -303,6 +291,7 @@ class DgisMapView(
 
     override fun search(
         queryText: String,
+        categories: SearchCategoriesMessage?,
         weekTime: WeekTimeSearchMessage?,
         searchRect: GeoRectMessage?,
         sortingType: SortingTypeMessage,
@@ -311,6 +300,9 @@ class DgisMapView(
     ) {
         searchHandler?.search(
             queryText = queryText,
+            categories = categories?.categories?.flatMap {
+                it.category.toRubrics()
+            },
             searchGeoRect = searchRect?.toGeoRect(),
             weekTimeMessage = weekTime,
             sortingType = sortingType,
@@ -483,52 +475,6 @@ class DgisMapView(
         result?.success(null)
     }
 
-    override fun setRouteParams(
-        params: RouteEditorRouteParamsMessage,
-        result: Messages.Result<Void>?
-    ) {
-        routeHandler?.setRouteParams(params);
-        result?.success(null)
-    }
-
-    override fun hideRoutes(result: Messages.Result<Void>?) {
-        routeHandler?.setRoutesVisible(false)
-        result?.success(null)
-    }
-
-    override fun startNavigation(result: Messages.Result<Void>?) {
-        val routeHandler = routeHandler ?: kotlin.run {
-            result?.error(Exception("RouteHandler not initialized"))
-            return
-        }
-        routeHandler.setRoutesVisible(false)
-        navigationHandler.startNavigation(
-            finishPoint = routeHandler.finishPoint,
-            options = routeHandler.options,
-            route = routeHandler.selectedRoute,
-            result = result
-        )
-    }
-
-    override fun startNavigationSimulation(result: Messages.Result<Void>?) {
-        val routeHandler = routeHandler ?: kotlin.run {
-            result?.error(Exception("RouteHandler not initialized"))
-            return
-        }
-        routeHandler.setRoutesVisible(false)
-        navigationHandler.startSimulation(
-            finishPoint = routeHandler.finishPoint,
-            options = routeHandler.options,
-            route = routeHandler.selectedRoute,
-            result = result
-        )
-    }
-
-    override fun stopNavigation(result: Messages.Result<Void>?) {
-        navigationHandler.stopNavigation()
-        result?.success(null)
-    }
-
     override fun addPanoramasMarkers(
         message: AddMarkersWithPhotoMessage,
         result: Messages.Result<Void>?
@@ -589,16 +535,19 @@ class DgisMapView(
         result?.success(isOverlapped)
     }
 
+    override fun contains(
+        rect: GeoRectMessage,
+        point: GeoPointMessage,
+        result: Messages.Result<Boolean>?
+    ) {
+        result?.success(rect.toGeoRect().contains(point.toGeoPoint()))
+    }
+
     override fun setPanoramaMarkerAzimuth(
         message: MarkerAzimuthMessage,
         result: Messages.Result<Void>?
     ) {
         objectTapHandler?.setPanoramasAzimuth(message.degree)
-        result?.success(null)
-    }
-
-    override fun onCompassClicked(result: Messages.Result<Void>?) {
-        compassControlHandler?.onClicked()
         result?.success(null)
     }
 
@@ -655,23 +604,27 @@ class DgisMapView(
         result?.success(null)
     }
 
-    override fun setPublicTransportActiveRoute(routeIndex: Long, result: Messages.Result<Void>?) {
-        routeHandler?.setActiveRouteIndex(routeIndex)
+    override fun setAppearance(appearance: MapAppearanceMessage, result: Messages.Result<Void>?) {
+        when (appearance) {
+            MapAppearanceMessage.DAY -> mapView.setTheme("day", "night")
+            MapAppearanceMessage.NIGHT -> mapView.setTheme("day")
+            MapAppearanceMessage.SYSTEM -> mapView.setTheme("night")
+        }
+
         result?.success(null)
     }
 
-    override fun startFreeRoam(result: Messages.Result<Void>?) {
-        navigationHandler.startFreeRoam()
-        result?.success(null)
-    }
-
-    override fun stopFreeRoam(result: Messages.Result<Void>?) {
-        navigationHandler.stopFreeRoam()
-        result?.success(null)
-    }
-
-    override fun toggleSound(result: Messages.Result<Void>?) {
-        navigationHandler.toggleSounds()
+    override fun setZoomRestrictions(min: Double?, max: Double?, result: Messages.Result<Void>?) {
+        map?.let {map ->
+            map.camera.zoomRestrictions = CameraZoomRestrictions(
+                minZoom = min?.let {
+                    Zoom(it.toFloat())
+                } ?: Zoom(0f),
+                maxZoom = max?.let {
+                    Zoom(it.toFloat())
+                } ?: Zoom(20f)
+            )
+        }
         result?.success(null)
     }
 
@@ -685,7 +638,6 @@ class DgisMapView(
         )
         map.addSource(mapSource)
 
-        routeHandler = RouteHandler(map, sdkContext, eventSink, locationSource)
         zoomControlHandler = ZoomControlHandler(map, eventSink)
         locationControlHandler = LocationControlHandler(map, eventSink)
         indoorControlHandler = IndoorControlHandler(map, eventSink)
@@ -696,7 +648,6 @@ class DgisMapView(
             SearchManager.createOnlineManager(sdkContext),
             locationSource
         )
-        compassControlHandler = CompassControlHandler(map, eventSink)
         trafficAndParkingControlHandler = TrafficAndParkingControlHandler(map, eventSink)
         setupTapHandler()
 
