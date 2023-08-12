@@ -155,6 +155,11 @@ dependencies:
   pdfx: 
   sentry_flutter: ^7.9.0
   archive: ^3.3.7
+  bottom_picker: ^2.0.4
+  page_view_dot_indicator: ^2.3.0
+
+
+  
   #test_package:
  #   path: packages/test_package
   flutter_qiblah: ^2.2.0

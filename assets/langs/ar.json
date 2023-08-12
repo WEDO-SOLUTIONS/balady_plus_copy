@@ -77,6 +77,7 @@
   "profile": "الحساب",
   "male": "ذكر",
   "female": "أنثى",
+  "timer_reminder":"تذكير باذكار الصباح",
   "_tabsComment": "Anything for Tabs",
   "_concatenatingComment": "أي شيء يخص إضافة كلمة/جملة بعد هذه الكلمات",
   "select ": "اختر ",
@@ -2967,6 +2968,15 @@
   "DeductInitialyWarrantyFirstYear": "هل قيمة الضمان البنكي يتم خصمها من ايجار السنة الأولى",
   "DeductInitialyWarrantyFirstYear_Yes": "قيمة الضمان البنكي: يتم خصمها من ايجار السنة الأولى",
   "DeductInitialyWarrantyFirstYear_NO": "قيمة الضمان البنكي: لا يتم خصمها من ايجار السنة الأولى",
-  "insurance_number_total_error": "يجب ان تكون مجموع قيم الضمان {}% أو أكثر من قيمة الإيجار السنوي"
-
+  "insurance_number_total_error": "يجب ان تكون مجموع قيم الضمان {}% أو أكثر من قيمة الإيجار السنوي", 
+  "AthkarMainPageTitle" : "الاذكار",
+  "boarding_main_title": "الرئيسية",
+  "boarding_close_title":"قريب مني",
+  "boarding_service_title":"الخدمات",
+  "boarding_account_title":"الحساب",
+  "boarding_subtitle": "تعرف على الأماكن والخدمات القريبة منك وفقًا لتصنيفات متنوعة تجعل الوصول إليها أسهل.",
+  "boarding_button_text": "التالي",
+  "boarding_end_text":"انهاء",
+  "skip":"تخطى"
+  
 }

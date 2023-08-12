@@ -12,6 +12,9 @@ class Athkar extends StatelessWidget {
       // backgroundColor: AppColor.scaffoldBackground,
       appBar: AthkarAppBar(
         title: 'AthkarMainPageTitle'.tr(),
+        
+
+        
       ),
       body: AthkarListView(),
     );

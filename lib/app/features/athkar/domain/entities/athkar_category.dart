@@ -4,15 +4,17 @@ import 'package:equatable/equatable.dart';
 import 'athkar_entity.dart';
 
 class AthkarCategory extends Equatable {
+  final int id;
   final String name;
   final String icon;
   final List<AthkarEntity> athkarEntities; //   <----- Here
   const AthkarCategory({
+    required this.id,
     required this.name,
     required this.icon,
     required this.athkarEntities,
   });
 
   @override
-  List<Object?> get props => [name, icon, athkarEntities];
+  List<Object?> get props => [name, icon, athkarEntities, id];
 }

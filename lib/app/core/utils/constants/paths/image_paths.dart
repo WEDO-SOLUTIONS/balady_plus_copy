@@ -64,6 +64,7 @@ class ImagePath {
   static const boardingAccountImage = '${_imagePath}boarding_account$_png';
   static const boardingloader1 = '${_imagePath}loader1$_png';
   static const boardingloader2 = '${_imagePath}loader2$_png';
+  static const notifications = '${_imagePath}notification$_png';
 
   static const boardingloader3 = '${_imagePath}loader3$_png';
 

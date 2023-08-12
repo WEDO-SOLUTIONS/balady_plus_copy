@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/core/utils/constants/app_style.dart';
 import 'package:balady_plus/app/features/athkar/data/models/athkar_entites_params.dart';
 import 'package:flutter/material.dart';
 import 'package:balady_plus/app/features/athkar/domain/entities/athkar_category.dart';
@@ -42,7 +43,10 @@ class AthkarCard extends StatelessWidget {
                   const SizedBox(
                     width: 6,
                   ),
-                  Text(athkarCategory.name),
+                  Text(
+                    athkarCategory.name,
+                    style: AppStyle.athkarNameStyle,
+                  ),
                 ],
               ),
               CustomTextWidget(

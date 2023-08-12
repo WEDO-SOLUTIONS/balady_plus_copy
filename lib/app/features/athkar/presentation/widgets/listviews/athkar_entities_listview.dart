@@ -18,7 +18,11 @@ class AthkarEntitiesListView extends StatelessWidget {
       ),
       itemCount: athkarEntitiesList.length,
       itemBuilder: (context, index) {
-        return AthkarEntityCard(athkarEntity: athkarEntitiesList[index]);
+        return AthkarEntityCard(
+          athkarEntity: athkarEntitiesList[index],
+          pageNumber: index + 1,
+          athkarEntitiesList: athkarEntitiesList,
+        );
       },
     );
   }
