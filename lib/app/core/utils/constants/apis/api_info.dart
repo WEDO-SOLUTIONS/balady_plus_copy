@@ -254,6 +254,9 @@ class ApiUrl {
   static const String violationDetails =
       "/v1/balady-dashboard/violations/by-id";
 
+// ! Investment Fura
+  static const String DOWNLOAD_FILE_URL = '/v1/ims/download-file';
+
   //! POST
 
   //! Delete

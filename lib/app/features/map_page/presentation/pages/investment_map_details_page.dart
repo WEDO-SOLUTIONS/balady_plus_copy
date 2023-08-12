@@ -116,7 +116,7 @@ class InvestmentMapDetailsPage extends StatelessWidget {
                           item.data?.result?.documentValue.toString() ?? "",
                     ),
                     MapDetailsField(
-                      title: "مدة العقد",
+                      title: "investemnt_duration".tr(),
                       subTitle: item.data?.result
                               ?.getContractDurationYearsAndMonth() ??
                           "",

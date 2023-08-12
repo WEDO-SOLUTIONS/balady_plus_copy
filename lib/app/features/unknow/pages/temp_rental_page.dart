@@ -24,12 +24,17 @@ class TempRentalPage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Padding(
-                padding: EdgeInsetsDirectional.only(top: 34, start: 24),
-                child: Icon(
-                  Icons.close,
-                  size: 24,
-                  color: AppColor.blackModern50Light,
+              GestureDetector(
+                onTap: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Padding(
+                  padding: EdgeInsetsDirectional.only(top: 34, start: 24),
+                  child: Icon(
+                    Icons.close,
+                    size: 24,
+                    color: AppColor.blackModern50Light,
+                  ),
                 ),
               ),
               const SizedBox(height: 100),
@@ -77,11 +82,12 @@ class TempRentalPage extends StatelessWidget {
                         title: 'اسم الفرصة',
                         value: data.data?.details?.siteDescription ?? ""),
                     DetailsCard(
-                        title: 'رقم الفرصة',
-                        value: data.data?.details?.opportunityNumber ?? ""),
+                        title: 'رقم الموقع',
+                        value: data.data?.details?.id ?? ""),
                     DetailsCard(
                         title: 'الجهة',
-                        value: data.data?.details?.entityName ?? ""),
+                        value:
+                            data.data?.details?.getEntityORMinstryName() ?? ""),
                     DetailsCard(
                         title: 'نوع النشاط',
                         value: data.data?.details?.getActivityName() ?? ""),
@@ -90,17 +96,6 @@ class TempRentalPage extends StatelessWidget {
                       value: data.data?.details?.getPrice() ?? "",
                       note: "سعر المتر متغير بتغير اليوم",
                     ),
-                    SizedBox(height: 18),
-                    CustomTextWidget(
-                      "تواريخ الفرصة",
-                      fontSize: 16,
-                      fontWeight: AppFontWeight.bold,
-                      fontColor: AppColor.blackModern800Light,
-                    ),
-                    SizedBox(height: 16),
-                    DetailsCard(
-                        title: 'آخر موعد لتقديم الطلب',
-                        value: data.data?.details?.getEndPeriodDate() ?? ""),
                     SizedBox(height: 18),
                     CustomTextWidget(
                       "تفاصيل الموقع",
@@ -119,29 +114,6 @@ class TempRentalPage extends StatelessWidget {
                         title: 'البلدية',
                         value: data.data?.details?.subMunicipality ?? ""),
                     SizedBox(height: 18),
-                    CustomTextWidget(
-                      "المستندات المطلوبة",
-                      fontSize: 16,
-                      fontWeight: AppFontWeight.bold,
-                      fontColor: AppColor.blackModern800Light,
-                    ),
-                    SizedBox(height: 16),
-                    /*  RequirementAttachments(
-                      title: "المستندات الاجبارية",
-                      attachments: [
-                        "سجل تجاري ساري المدة",
-                        "سجل تجاري ساري المدة"
-                      ],
-                    ),
-                    SizedBox(height: 10),
-                    RequirementAttachments(
-                      title: "المستندات الاختيارية",
-                      attachments: [
-                        "سجل تجاري ساري المدة",
-                        "سجل تجاري ساري المدة"
-                      ],
-                    ),
-                    SizedBox(height: 14),*/
                     DownloadForasApp(),
                   ],
                 ),

@@ -2,8 +2,8 @@ import '../../municipal_advisor_exports.dart' show BoardsParamsModel;
 
 class BoardsParams extends BoardsParamsModel {
   const BoardsParams({
-    required super.typeId,
-    required super.area,
+    super.typeId,
+    super.area,
   });
 
   BoardsParams copyWith({
@@ -15,5 +15,4 @@ class BoardsParams extends BoardsParamsModel {
       area: area ?? super.area,
     );
   }
-
 }

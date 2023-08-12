@@ -230,7 +230,7 @@ class GeneralMapCardWidget extends StatelessWidget {
                                                 maxLines: 2,
                                               ),
                                               CustomVerticalSpace(height: 8),
-                                              GestureDetector(
+                                              /* GestureDetector(
                                                 onTap: () =>
                                                     CommonFunctions.openMap(
                                                         dataPoint!
@@ -255,7 +255,7 @@ class GeneralMapCardWidget extends StatelessWidget {
                                                         Constants.goToLocation),
                                                   ],
                                                 ),
-                                              )
+                                              )*/
 
                                               /*  CustomVerticalSpace(height: 16),
                                       CustomTextWidget(

@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
+import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/default_appbar_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cached_pdfview/flutter_cached_pdfview.dart';
@@ -33,9 +34,6 @@ class _PDFViewerState extends State<PDFViewer> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColor.white4,
-      appBar: DefaultAppBarWidget(
-        title: widget.title ?? "",
-      ),
       body: Stack(
         children: [
           Center(
@@ -54,7 +52,7 @@ class _PDFViewerState extends State<PDFViewer> {
                 margin: EdgeInsets.only(
                     top: MediaQuery.of(context).padding.top + 10, right: 16),
                 child: Image.asset(
-                  Constants.whiteCloseImg,
+                  IconPath.qrWhiteCloseIcon,
                   height: 24.0,
                   width: 24.0,
                   color: Colors.black,

@@ -41,6 +41,7 @@ class _DaemTypeDialog extends State<DaemTypeDialog> {
         },
         builder: (context, state) {
           return Stack(
+            alignment: Alignment.center,
             children: [
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

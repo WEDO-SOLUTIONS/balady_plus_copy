@@ -40,6 +40,11 @@ class MapViewModel extends BaseViewModel {
   final GeoPointMessage ithraa =
       GeoPointMessage(latitude: 26.336057, longitude: 50.120372);
 
+  static GeoRectMessage saRect = GeoRectMessage(
+    northEast: GeoPointMessage(latitude: 32.568765, longitude: 56.694472),
+    southWest: GeoPointMessage(latitude: 15.506104, longitude: 32.61185),
+  );
+
   final LayersRepositories layersRepositories;
 
   MapViewModel({required this.layersRepositories});
@@ -131,6 +136,24 @@ class MapViewModel extends BaseViewModel {
 
         showLoading1();
         selectedCategory.notifyListeners();
+
+        (double, double)? center = calculatePositionCenter(
+            _lastHandledEvent?.visibleRect.northEastLat,
+            _lastHandledEvent?.visibleRect.northEastLon,
+            _lastHandledEvent?.visibleRect.southWestLat,
+            _lastHandledEvent?.visibleRect.southWestLon);
+        if (center != null)
+          await controller.moveCamera(
+              CameraPositionMessage(
+                  point: GeoPointMessage(
+                    latitude: center.$1,
+                    longitude: center.$2,
+                  ),
+                  zoom: 13,
+                  tilt: 0,
+                  bearing: 0),
+              1,
+              CameraAnimationTypeMessage.linear);
       }
       searchController.text = selectedCategory.value != null
           ? selectedCategory.value!.displayName()
@@ -145,6 +168,10 @@ class MapViewModel extends BaseViewModel {
             )
           : await controller.search(
               queryText,
+              categories: [
+                SearchCategoryMessage.gasStations,
+                SearchCategoryMessage.mousques
+              ],
               sortingType: SortingTypeMessage.byRelevance,
               isOpenNow: false,
               searchRect: _lastHandledEvent?.visibleRect.geoRectMessage(),
@@ -277,6 +304,8 @@ class MapViewModel extends BaseViewModel {
         iconWidth: 24,
       ),
     );
+
+    await controller.setZoomRestrictions(min: 5.5);
 
 /*
     mapObjectManager = await controller.createMapObjectManagerWithClustering(
@@ -933,5 +962,13 @@ class MapViewModel extends BaseViewModel {
         }
       }
     });
+  }
+
+  (double, double)? calculatePositionCenter(
+      double? x1, double? y1, double? x2, double? y2) {
+    if (x1 == null || x2 == null || y1 == null || y2 == null) return null;
+    double center_x = (x1 + x2) / 2;
+    double center_y = (y1 + y2) / 2;
+    return (center_x, center_y);
   }
 }

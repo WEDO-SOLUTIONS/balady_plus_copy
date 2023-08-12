@@ -66,9 +66,13 @@ class RetrieveVehiclesBloc
         vehicleInquiryOptions: type));
 
     failureOrSuccess.fold((failure) {
+      ServerFailure f = (failure as ServerFailure);
+      final BlocStatus status = f.errorMessage == "CS_API_003"
+          ? BlocStatus.success
+          : BlocStatus.failure;
       emitter(state.copyWith(
-        status: BlocStatus.retry,
-        errorMessage: (failure as ServerFailure).errorMessage,
+        status: status,
+        errorMessage: f.errorMessage,
       ));
     }, (success) {
       emitter(state.copyWith(

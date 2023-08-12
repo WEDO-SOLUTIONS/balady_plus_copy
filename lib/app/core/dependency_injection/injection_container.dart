@@ -1,6 +1,7 @@
 import 'package:balady_plus/app/core/dependency_injection/features/old_injection.dart';
 import 'package:balady_plus/app/core/dependency_injection/features/dc_injection.dart';
 import 'package:balady_plus/app/core/dependency_injection/features/profile/crm_requests_injection.dart';
+import 'package:balady_plus/app/features/unknow/data/data_sources/remote_data_source.dart';
 import 'package:balady_plus/app/features/weather/weather_exports.dart'
     show
         WeatherRepository,
@@ -31,6 +32,8 @@ import '../../features/_shared_feature_/shared_feature_exports.dart'
     show BridgeParams, DropDownItem, FileInfo;
 import '../../features/bottom_navigation/presentation/cubits/bottom_nav_bar_cubit.dart';
 import '../../features/map_page/data/repositories/layers_repositories.dart';
+import '../../features/unknow/data/repositories/repository_implementation.dart';
+import '../../features/unknow/domain/repositories/repository.dart';
 import '../../features/weather/presentation/bloc/weather_bloc.dart';
 import '../dependency_injection/dependency_injection_exports.dart'
     show
@@ -160,4 +163,17 @@ void initialize() {
   sl.registerLazySingleton(() => Dio());
 
   sl.registerLazySingleton(() => LayersRepositories(webService: sl()));
+
+  sl.registerLazySingleton<InvestmentRepository>(
+    () => InvestmentRepositoryImplementation(
+      remoteDataSource: sl(),
+    ),
+  );
+
+  sl.registerLazySingleton<RequestsRemoteDataSource>(
+    () => RequestsRemoteDataSourceImplementation(
+        webService: sl(), crmWebService: sl()),
+  );
+
+  sl.registerLazySingleton(() => ());
 }

@@ -465,6 +465,7 @@ class _ServiceCalculatorScreenState extends BaseState<ServiceCalculatorScreen,
             hideKeybaord();
 
             await BottomSheetDialog.showDraggableSheet(context,
+                isFullHeight: true,
                 child: BottomSheetWithActions(
                   title: "lbl_edit_board".tr(),
                   body: AddBoardScreen(
@@ -541,6 +542,7 @@ class _ServiceCalculatorScreenState extends BaseState<ServiceCalculatorScreen,
             hideKeybaord();
 
             await BottomSheetDialog.showDraggableSheet(context,
+            isFullHeight: true, 
                 child: BottomSheetWithActions(
                   title: "lbl_edit_board".tr(),
                   body: AddBoardScreen(
@@ -633,6 +635,7 @@ class _ServiceCalculatorScreenState extends BaseState<ServiceCalculatorScreen,
             hideKeybaord();
 
             await BottomSheetDialog.showDraggableSheet(context,
+            isFullHeight:true, 
                 child: BottomSheetWithActions(
                   title: "lbl_edit_board".tr(),
                   body: AddBoardScreen(
@@ -759,6 +762,7 @@ class _ServiceCalculatorScreenState extends BaseState<ServiceCalculatorScreen,
                 hideKeybaord();
 
                 await BottomSheetDialog.showDraggableSheet(context,
+                isFullHeight: true, 
                     child: BottomSheetWithActions(
                       title: "lbl_add_new_board".tr(),
                       body: AddBoardScreen(
@@ -831,6 +835,7 @@ class _ServiceCalculatorScreenState extends BaseState<ServiceCalculatorScreen,
                 hideKeybaord();
 
                 await BottomSheetDialog.showDraggableSheet(context,
+                isFullHeight: true, 
                     child: BottomSheetWithActions(
                       title: "lbl_add_new_board".tr(),
                       body: AddBoardScreen(
@@ -902,6 +907,7 @@ class _ServiceCalculatorScreenState extends BaseState<ServiceCalculatorScreen,
                 hideKeybaord();
 
                 await BottomSheetDialog.showDraggableSheet(context,
+                isFullHeight: true, 
                     child: BottomSheetWithActions(
                       title: "lbl_edit_board".tr(),
                       body: AddBoardScreen(

@@ -37,3 +37,32 @@ class DownloadFileResult extends Equatable {
   @override
   List<Object?> get props => [id];
 }
+
+class DownloadIMSFileResult extends Equatable {
+  String? attachmentStream;
+  String? caseId;
+  String? attachName;
+  List<ErrorResult>? errors;
+  String? id;
+
+  DownloadIMSFileResult(
+      {this.attachmentStream,
+      this.caseId,
+      this.attachName,
+      this.errors,
+      this.id});
+
+  factory DownloadIMSFileResult.fromJson(Map<String, dynamic> json) =>
+      DownloadIMSFileResult(
+        attachmentStream: json["pyAttachStream"],
+        attachName: json["pxAttachName"],
+        caseId: json["CaseID"],
+        errors: json["errors"] != null
+            ? List<ErrorResult>.from(
+                json["errors"].map((x) => ErrorResult.fromJson(x)))
+            : [],
+      );
+
+  @override
+  List<Object?> get props => [id];
+}

@@ -11,7 +11,7 @@ class BottomSheetDialog {
     Color? barrierColor,
     double borderRadius = 28.0,
     bool isDismissible = true,
-    bool isFullHeight = false,
+    bool isFullHeight = true,
     double? height,
     bool isScrollControlled = true,
     bool enableDrag = false,
@@ -36,8 +36,9 @@ class BottomSheetDialog {
                   BorderRadius.vertical(top: Radius.circular(borderRadius)),
               child: SizedBox(
                 // height: height ?? screenHeight * 0.90, // 90% from screenHeight
-                height:
-                    isFullHeight ? screenHeight - screenStatusBarHeight : height,
+                height: isFullHeight
+                    ? screenHeight - screenStatusBarHeight
+                    : height,
                 child: child,
               ),
             ),

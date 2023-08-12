@@ -29,7 +29,10 @@ class BoardSelector extends StatelessWidget {
                 itemBuilder: (context, index) {
                   return BoardWidget(
                     key: Key(
-                      '$index-${state.boards[index].typeId}-${state.boards[index].area}',
+                      state.boards[index].typeId != null &&
+                              state.boards[index].area != null
+                          ? '$index-${state.boards[index].typeId}-${state.boards[index].area}'
+                          : '$index',
                     ),
                     board: state.boards[index],
                     index: index,

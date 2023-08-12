@@ -1041,12 +1041,13 @@ class MunicipalAdvisorBloc
               boards: [
                 ...state.boards,
                 BoardsParams(
-                  typeId: state.boardTypes.first.id,
-                  area: 1,
-                )
+                    // typeId: state.boardTypes.first.id,
+                    // area: 1,
+                    )
               ]),
         );
-        add(const MunicipalAdvisorCalculateLicenseEvent());
+
+        //  add(const MunicipalAdvisorCalculateLicenseEvent());
       },
     );
 
@@ -1066,13 +1067,21 @@ class MunicipalAdvisorBloc
     on<MunicipalAdvisorUpdateCommercialBoardEvent>(
       (event, emit) async {
         if (state.boards[event.index] == event.board) return;
+
         state.boards[event.index] = event.board;
+        emit(
+          state.copyWith(
+            lastEvent: event,
+          ),
+        );
+        if (event.board.area == null || event.board.typeId == null) return;
         emit(
           state.copyWith(
             status: BlocRequestStatus.submissionGetLoading,
             lastEvent: event,
           ),
         );
+
         add(const MunicipalAdvisorCalculateLicenseEvent());
       },
     );

@@ -29,6 +29,7 @@ class RequirementAttachments extends StatelessWidget {
           CustomTextWidget(
             title,
             fontSize: 15,
+            maxLines: 4,
             fontWeight: AppFontWeight.bold,
             fontColor: AppColor.blackModern600Light,
           ),
@@ -50,11 +51,14 @@ class RequirementAttachments extends StatelessWidget {
                 children: [
                   const CustomSvgIconWidget(IconPath.stopCircle),
                   const SizedBox(width: 8),
-                  CustomTextWidget(
-                    attachments[index],
-                    fontSize: 14,
-                    fontWeight: AppFontWeight.bold,
-                    fontColor: AppColor.blackModern500Light,
+                  Flexible(
+                    child: CustomTextWidget(
+                      attachments[index],
+                      fontSize: 14,
+                      maxLines: 10,
+                      fontWeight: AppFontWeight.bold,
+                      fontColor: AppColor.blackModern500Light,
+                    ),
                   ),
                 ],
               ),

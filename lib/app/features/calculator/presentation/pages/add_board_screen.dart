@@ -167,6 +167,7 @@ class _AddBoardScreenState extends State<AddBoardScreen> {
     }
 
     await CustomPopUpsWidgets.showBottomSheet(
+      isFullHeight: false,
       context,
       child: IncidentTypeWithSearchDialog(
         onSelect: (DropDownItem? e) {

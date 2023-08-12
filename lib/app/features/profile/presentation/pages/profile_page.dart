@@ -36,13 +36,13 @@ class ProfilePage extends StatelessWidget {
               fit: BoxFit.cover,
             ),
             actions: [
-              CircularContainerForIcons(
+              /* CircularContainerForIcons(
                 onTap: () {},
                 iconPath: IconPath.notification,
                 width: 48,
                 height: 48,
                 color: Colors.white,
-              )
+              )*/
             ],
           ),
           body: TabPageContainer(

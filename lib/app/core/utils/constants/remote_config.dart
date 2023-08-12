@@ -28,7 +28,7 @@ class RemoteConfig {
   static String get specialConditionId =>
       _RemoteConfig.specialConditionId[env]!;
 
-  List<String> get munciplities => _RemoteConfig.munciplities[env]!;
+  // List<String> get munciplities => _RemoteConfig.munciplities[env]!;
   static String get baladyToken => _RemoteConfig.baladyToken[env]!;
   static String get xBaladyToken => _RemoteConfig.xBaladyToken[env]!;
   static String get baladyBaseUrl => _RemoteConfig.baladyBaseUrl[env]!;
@@ -41,6 +41,9 @@ class RemoteConfig {
 
   static String get webCookieHeader => _RemoteConfig.webCookieHeader[env]!;
   static EnvType get env => sl<EnvType>();
+
+  static List<String> get MSRAllowedMuncipalites =>
+      _RemoteConfig.MSRAllowedMuncipalites[env]!;
 }
 
 //! First solution
@@ -190,11 +193,55 @@ class _RemoteConfig {
     prodVal: "BIGipServerssoapp.balady.gov.sa.app~ssoapp.balady.gov.sa_pool",
   );
 
-  static final munciplities = {
-    EnvType.dev: [""],
-    EnvType.stg: [""],
-    EnvType.prod: [""]
-  };
+  static final MSRAllowedMuncipalites = _initValues<List<String>>(devVal: [
+    "007",
+    "010",
+    "016",
+    "002",
+    "008",
+    "009",
+    "012",
+    "011",
+    "013",
+    "014",
+    "015",
+    "017",
+    "018",
+    "003",
+    "005"
+  ], stgVal: [
+    "007",
+    "010",
+    "016",
+    "002",
+    "008",
+    "009",
+    "012",
+    "011",
+    "013",
+    "014",
+    "015",
+    "017",
+    "018",
+    "003",
+    "005"
+  ], prodVal: [
+    "007",
+    "010",
+    "016",
+    "002",
+    "008",
+    "009",
+    "012",
+    "011",
+    "013",
+    "014",
+    "015",
+    "017",
+    "018",
+    "003",
+    "005"
+  ]);
 
   static Map<EnvType, T> _initValues<T>({
     dynamic devVal,

@@ -59,7 +59,7 @@ class MapCard extends StatelessWidget {
         onPress();
       },
       child: Container(
-        height: 180,
+        height: type == "Investment" ? 180 : 140,
         width: 325,
         padding: const EdgeInsets.only(left: 10, right: 10, bottom: 10),
         margin: const EdgeInsets.symmetric(horizontal: 2),

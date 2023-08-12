@@ -91,6 +91,7 @@ class OrderDetailsBloc extends Bloc<OrderDetailsEvent, OrderDetailsState> {
         e.params.allowedActions!.isNotEmpty) {
       BottomSheetDialog.showDraggableSheet(
           NavigationService.navigatorKey.currentContext!,
+          isFullHeight: false,
           // headerText: trans('order_more_dialog_header'),
           child: BottomSheetWithActions(
             title: 'الاجراءات',

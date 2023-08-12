@@ -119,6 +119,7 @@ class GeneralInquiryTypeWidget extends StatelessWidget {
                   fontSize: 14,
                   maxLines: 2,
                   height: 1.3,
+                  textAlign: TextAlign.center,
                   fontWeight: AppFontWeight.bold,
                 )
               ],

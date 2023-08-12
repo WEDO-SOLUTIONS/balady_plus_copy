@@ -6,6 +6,7 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:tuple/tuple.dart';
 
 import '../../../../../../core/base/base_view_model.dart';
+import '../../../../../../core/services/local/helpers.dart';
 import '../../../../../../core/services/local/navigation_services.dart';
 import '../../../../../../core/utils/constants/remote_config.dart';
 import '../../../../../../core/utils/enums/enums.dart';
@@ -13,6 +14,7 @@ import '../../../../../_shared_feature_/data/entities/drop_down_item.dart';
 import '../../../../../_shared_feature_/data/entities/success_screen_args.dart';
 import '../../../../../vd/presentation/dialogs/duplicate_request_dialog.dart';
 import '../../../../data/general_inquiry_data.dart';
+import '../../../dialogs/municipality_dialog_msr.dart';
 import '../../models/attachment_model.dart';
 import '../../models/classification.dart';
 import '../../models/create_incident_result.dart';
@@ -403,9 +405,6 @@ class NewMSRViewModel extends BaseViewModel {
       showError(("outside_saudiArabia").tr());
       return false;
     }
-    //MM
-    return true;
-/*
     if (gisResult?.adminMunicipalityId != null) {
       isAllowed = RemoteConfig.MSRAllowedMuncipalites.contains(
           gisResult!.adminMunicipalityId!);
@@ -414,8 +413,8 @@ class NewMSRViewModel extends BaseViewModel {
     if (!isAllowed) {
       showCustomDialog(MunicipalityMSRDialog());
     } else {
-      isExcepted = Helpers.checkForExpectedVD(gisResult, CRM_TYPE.req);
-    }*/
+      isExcepted = Helpers.checkForExpectedVD(gisResult);
+    }
     return isAllowed && !isExcepted;
   }
 

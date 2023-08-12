@@ -24,8 +24,8 @@ class BoardWidget extends StatelessWidget {
       ),
       child: BlocBuilder<MunicipalAdvisorBloc, MunicipalAdvisorState>(
         builder: (context, state) {
-          final type =
-              state.boardTypes.where((e) => e.id == board.typeId).first;
+          final BoardTypeEntity? type =
+              state.boardTypes.where((e) => e.id == board.typeId).firstOrNull;
           return Column(
             children: [
               Row(
@@ -56,7 +56,7 @@ class BoardWidget extends StatelessWidget {
                   Expanded(
                     child: DropDownWithTitle(
                       title: "CleaningMechanisms".tr(),
-                      selectedValue: type.name,
+                      selectedValue: type?.name,
                       height: 55,
                       onTap: () {
                         final List<String> items =
@@ -64,9 +64,9 @@ class BoardWidget extends StatelessWidget {
                         BottomSheetDialog.showDraggableSheet(
                           context,
                           child: BottomSheetList(
-                            title: "CleaningMechanisms".tr(),
+                            title: "BoardType".tr(),
                             items: items,
-                            selectedValue: type.name,
+                            selectedValue: type?.name,
                             onTap: (item) {
                               Navigator.pop(context);
                               final typeId = state.boardTypes
@@ -103,7 +103,9 @@ class BoardWidget extends StatelessWidget {
                           CustomTextFieldWidget(
                             borderColor: AppColor.primary900Light16,
                             // controller: _controller,
-                            initialValue: board.area.toString(),
+                            initialValue: board.area != null
+                                ? board.area.toString()
+                                : null,
                             keyboardType: const TextInputType.numberWithOptions(
                               signed: true,
                               decimal: true,

@@ -109,12 +109,17 @@ class HomeMap extends StatelessWidget {
                           ),
                           Container(
                             margin: EdgeInsets.only(
-                                bottom: mapViewModel
-                                            .viewHomeBottomSheet.value ==
-                                        true
-                                    ? bottomSize
-                                    : mapViewModel.gisSelectedLayer.cardHeight
-                                        .toDouble()),
+                                bottom:
+                                    mapViewModel.viewHomeBottomSheet.value ==
+                                            true
+                                        ? bottomSize
+                                        : (mapViewModel.selectedInvetmentPoint
+                                                    .value?.type ==
+                                                "Investment"
+                                            ? mapViewModel
+                                                .gisSelectedLayer.cardHeight
+                                                .toDouble()
+                                            : 160)),
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.start,
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -146,39 +151,44 @@ class HomeMap extends StatelessWidget {
                                         ),
                                       );
                                     }),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    ValueListenableBuilder<Layers?>(
-                                        valueListenable:
-                                            mapViewModel.layerSelected,
-                                        builder: (_, selectedPoint, __) {
-                                          return GestureDetector(
-                                            onTap: () => showMainLayersDialog(
-                                                context, layersModel),
-                                            child: CircleIcon(
-                                              icon: mapViewModel
-                                                      .gisSelectedLayer?.icon ??
-                                                  mapConstants
-                                                      .Constants.layerIcon,
-                                              iconColor: Color(0xFF52525B),
-                                              backgroundColor: AppColor.white,
-                                            ),
-                                          );
-                                        }),
-                                    Constants.verticalSpaceSmall,
-                                    GestureDetector(
-                                      onTap: () => mapViewModel.onLocationTap(),
-                                      child: const CircleIcon(
-                                        icon: IconPath.currentLocation,
-                                        iconColor: AppColor.white,
-                                        backgroundColor:
-                                            AppColor.primary900Light,
+                                if (mapViewModel
+                                        .bottomSheetSizeFraction.value <=
+                                    0.75)
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      ValueListenableBuilder<Layers?>(
+                                          valueListenable:
+                                              mapViewModel.layerSelected,
+                                          builder: (_, selectedPoint, __) {
+                                            return GestureDetector(
+                                              onTap: () => showMainLayersDialog(
+                                                  context, layersModel),
+                                              child: CircleIcon(
+                                                icon: mapViewModel
+                                                        .gisSelectedLayer
+                                                        ?.icon ??
+                                                    mapConstants
+                                                        .Constants.layerIcon,
+                                                iconColor: Color(0xFF52525B),
+                                                backgroundColor: AppColor.white,
+                                              ),
+                                            );
+                                          }),
+                                      Constants.verticalSpaceSmall,
+                                      GestureDetector(
+                                        onTap: () =>
+                                            mapViewModel.onLocationTap(),
+                                        child: const CircleIcon(
+                                          icon: IconPath.currentLocation,
+                                          iconColor: AppColor.white,
+                                          backgroundColor:
+                                              AppColor.primary900Light,
+                                        ),
                                       ),
-                                    ),
-                                  ],
-                                ),
+                                    ],
+                                  ),
                               ],
                             ),
                           ),
@@ -255,9 +265,10 @@ class HomeMap extends StatelessWidget {
       await layersModel.getMinLayers();
 
     BottomSheetDialog.showDraggableSheet(
+      isFullHeight: false,
       context,
       child: BottomSheetWithActions(
-        title: "اختر نوع الخريطة".tr(),
+        title: "plan_option".tr(),
         body: MapLayersDialog(layersModel: layersModel),
       ),
     );

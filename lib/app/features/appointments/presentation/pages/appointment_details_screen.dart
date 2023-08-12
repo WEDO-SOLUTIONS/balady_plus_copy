@@ -87,7 +87,7 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
                       isFullHeight: false,
                       height: 250,
                       child: BottomSheetWithActions(
-                        title: "الاجراءات".tr(),
+                        title: "actions".tr(),
                         body: Column(children: [
                           if (appointmentItemInfoLocal?.confirmable ?? false)
                             GestureDetector(

@@ -173,7 +173,7 @@ dependency_overrides:
   geolocator_android: ^4.2.2
   # flutter compass in pub.dev is not updated
   flutter_compass:
-    git: https://github.com/hemanthrajv/flutter_compass.git
+    path: flutter_compass
   
 dev_dependencies:
 
@@ -231,9 +231,9 @@ flutter:
     - assets/etmam_app/icons/svg/social_media/
     - assets/etmam_app/images/
     - assets/animation/
-    - assets/icons/svg/inq/
-    - assets/icons/svg/msr/
-    - assets/icons/svg/tsr/
+    - assets/icons/inq/
+    - assets/icons/msr/
+    - assets/icons/tsr/
     # - assets/services/
 
   # An image asset can refer to one or more resolution-specific "variants", see

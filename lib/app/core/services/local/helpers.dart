@@ -22,6 +22,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../../../features/_shared_feature_/presentation/dialogs/photo_permission_dialog.dart';
+import '../../../features/transaction_inquiry/presentation/core/models/gis_location_result.dart';
 import '../../utils/constants/constants.dart';
 
 // use it insead of print() or debugPrint()
@@ -125,12 +126,13 @@ class Helpers {
     return null;
   }
 
-  static Future<LatLng?> getCurrentLocation() async {
+  static Future<LatLng?> getCurrentLocation(
+      {geoLocator.LocationAccuracy? accuracy}) async {
     try {
       //  EasyLoading.show();
       geoLocator.Position position =
           await geoLocator.Geolocator.getCurrentPosition(
-              desiredAccuracy: geoLocator.LocationAccuracy.high,
+              desiredAccuracy: accuracy ?? geoLocator.LocationAccuracy.high,
               timeLimit: const Duration(seconds: 13));
       //    EasyLoading.dismiss();
 
@@ -285,42 +287,29 @@ class Helpers {
     }
     return newStr.isEmpty ? value : newStr;
   }
-/*
-  static bool checkForExpectedVD(GisLocationResult? gis, CRM_TYPE type) {
+
+  static bool checkForExpectedVD(GisLocationResult? gis) {
     if (gis != null) {
       if (gis.adminMunicipalityId == "003" && gis.municipalityName == "العلا") {
         try {
-          String error = ("ola_incident_error").tr();
-          if (type != CRM_TYPE.inc)
-            error = ("ola_request_error").tr();
-          showError(error);
+          String error = ("ola_request_error").tr();
+
+          CommonFunctions.showError(error);
         } catch (ex) {}
 
         return true;
       } else {
         if (gis.isVDExcepted()) {
-          String error = ("inc_vd_excepted").tr();
-          switch (type) {
-            case CRM_TYPE.inc:
-              error = ("inc_vd_excepted").tr();
-              break;
-            case CRM_TYPE.req:
-              error = ("req_vd_excepted").tr();
-              break;
-            case CRM_TYPE.vis:
-              error = ("vis_vd_excepted").tr();
-              break;
-            default:
-              break;
-          }
-          showError(error);
-          return true;
+          String error = ("req_vd_excepted").tr();
+          CommonFunctions.showError(error);
         }
+        return true;
       }
     }
+
     return false;
   }
-*/
+
   /*static void showLock() {
     Timer(const Duration(seconds: 3), () async {
       showLockScreen = true;

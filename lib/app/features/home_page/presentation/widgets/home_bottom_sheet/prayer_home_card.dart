@@ -21,7 +21,8 @@ class PrayerHomeCard extends StatelessWidget {
       builder: (context, state) {
         return HomeSection(
             title: "prayerTimes".tr(),
-            child: state.nextPrayer != null
+            child: state.nextPrayer != null &&
+                    state.status != BlocRequestStatus.submissionGetLoading
                 ? Container(
                     height: 234,
                     width: MediaQuery.sizeOf(context).width,
@@ -61,7 +62,7 @@ class PrayerHomeCard extends StatelessWidget {
                                     children: [
                                       state.nextPrayer != null
                                           ? CustomTextWidget(
-                                              "صلاه ${state.nextPrayer!.prayer.label.tr()}",
+                                              "صلاة ${state.nextPrayer!.prayer.label.tr()}",
                                               fontColor: state
                                                           .nextPrayer!.prayer ==
                                                       Prayers.fajr
@@ -69,12 +70,12 @@ class PrayerHomeCard extends StatelessWidget {
                                                   : state.nextPrayer!.prayer ==
                                                           Prayers.dhuhr
                                                       ? AppColor
-                                                          .secondary400Light
+                                                          .secondary900Light
                                                       : state.nextPrayer!
                                                                   .prayer ==
                                                               Prayers.asr
                                                           ? AppColor
-                                                              .secondary400Light
+                                                              .secondary900Light
                                                           : state.nextPrayer!
                                                                       .prayer ==
                                                                   Prayers
@@ -279,7 +280,7 @@ class PrayerHomeCard extends StatelessWidget {
                                       child: CustomElevatedButtonWidget(
                                         btnColor: state.isAM
                                             ? AppColor.primary900Light
-                                            : AppColor.secondary400Light,
+                                            : AppColor.secondary900Light,
                                         textStyle: AppStyle.elevatedButtonStyle
                                             .copyWith(
                                           color: AppColor.white,
