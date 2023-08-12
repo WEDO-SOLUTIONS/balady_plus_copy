@@ -56,7 +56,7 @@ class MapViewModel extends BaseViewModel {
   final layerSelected = ValueNotifier<Layers?>(null);
   GISMapLayers gisSelectedLayer = GISMapLayers.cityPlaces;
 //////////////////////////////////////////////////////
-
+  CameraPositionMessage? _lastCameraPosition;
   late DgisMapController controller;
 
   final viewHomeBottomSheet = ValueNotifier(true);
@@ -436,6 +436,15 @@ class MapViewModel extends BaseViewModel {
     selectedWhiteLands.notifyListeners();
   }
 
+  void _cameraPositionChangeListener(CameraPositionMessage event) async {
+    if ((!await controller.contains(saRect, event.point)) &&
+        _lastCameraPosition != null) {
+      await controller.setCameraPosition(_lastCameraPosition!);
+    } else {
+      _lastCameraPosition = event;
+    }
+  }
+
   void _setupListeners() {
     // add move carme map Listener
     _subscriptions.add(
@@ -472,27 +481,6 @@ class MapViewModel extends BaseViewModel {
       viewHomeBottomSheet.value = false;
       viewHomeBottomSheet.notifyListeners();
     }
-
-    // //
-    // switch (controller.activeLayerState.value.layer) {
-    //   case BusinessLayers.tourism:
-    //     if (event is ObjectTapEvent) {
-    //       selectedPointId.value = DgisObjectIdMessage(
-    //         objectId: event.dgisObjectId.objectId,
-    //         entranceId: event.dgisObjectId.entranceId,
-    //       );
-    //     }
-    //     return;
-    //   case BusinessLayers.idle:
-    //     // if (event is IdleTapEvent) unawaited(_handleIdleEvent(event));
-    //     return;
-    //   case BusinessLayers.io:
-    //     // if (event is IoTapEvent) unawaited(_handleIoEvent(event));
-    //     return;
-    //   case BusinessLayers.panoramas:
-    //     // handles by [_onPanoramaTap]
-    //     return;
-    // }
   }
 
   void _startRequestTimer(double oldZoom) {
@@ -525,17 +513,6 @@ class MapViewModel extends BaseViewModel {
     try {
       final data = event.photoData;
       print(data);
-      // panoramaState.value = PanoramaState(
-      //   photoUrl: data.photoUrl,
-      //   azimuth: data.azimuth,
-      // );
-
-      // if (!mapCardCollapsedState.value) {
-      //   _setCameraPaddings();
-      // }
-
-      // mapCardCollapsedState.value = true;
-      // topSheetVisibleState.value = false;
       unawaited(controller.moveCameraToSelectedPanorama());
     } catch (e) {
       print(e);

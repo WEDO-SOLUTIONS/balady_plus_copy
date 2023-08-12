@@ -28,7 +28,7 @@ class MapRequestParams {
       "geometry":
           "$southWestLongitude,$southWestLlatitude,$northEastLongitude,$northEastLatitude",
       "spatialRel": "esriSpatialRelIntersects",
-      "resultRecordCount": layer.resultRecordCount
+      //  "resultRecordCount": layer.resultRecordCount
     };
   }
 }

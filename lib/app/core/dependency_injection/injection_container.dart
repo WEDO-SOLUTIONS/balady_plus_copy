@@ -174,6 +174,4 @@ void initialize() {
     () => RequestsRemoteDataSourceImplementation(
         webService: sl(), crmWebService: sl()),
   );
-
-  sl.registerLazySingleton(() => ());
 }

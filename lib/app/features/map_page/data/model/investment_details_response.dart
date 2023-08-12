@@ -768,7 +768,7 @@ String getFormattedDateAndTimeV2(String dateStr) {
             .toString();
     if (CommonFunctions.isAppAR) {
       time = time
-          .replaceAll("ص", ("pm_full").tr())
+          .replaceAll("ص", ("am_full").tr())
           .replaceAll("م", ("pm_full").tr());
     }
     formmatedDateAndTime = date + "  |  " + time;

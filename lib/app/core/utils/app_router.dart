@@ -29,6 +29,7 @@ import '../../core/utils/utils_exports.dart'
         RouteName,
         ScaleRotatePage,
         SliderUpPage;
+import '../../features/_shared_feature_/presentation/pages/qiblah_webview_page.dart';
 import '../../features/map_page/data/model/rental_details_response.dart';
 import '../../features/unknow/pages/investment_page.dart';
 import '../../features/unknow/pages/temp_rental_page.dart';
@@ -178,7 +179,12 @@ class AppRouter {
         );
       case RouteName.qiblahCompass:
         return MaterialPageRoute(
-          builder: (_) => QiblahCompassPage(),
+          builder: (_) => QiblahWebViewPage(
+            args: (
+              title: "",
+              url: "https://qiblafinder.withgoogle.com/intl/ar/finder/ar"
+            ),
+          ),
         );
       //? Municipal Services
       case RouteName.municipalAdvisor:

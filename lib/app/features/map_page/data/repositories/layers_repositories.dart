@@ -95,6 +95,7 @@ class LayersRepositories {
       });
       q = q.substring(0, q.length - 1);
 
+      print(q);
       final points = await webService.dio.get(
         '${Constants.mainUrl}/${params.layer.layerId}/query',
         queryParameters: params.toMap(),

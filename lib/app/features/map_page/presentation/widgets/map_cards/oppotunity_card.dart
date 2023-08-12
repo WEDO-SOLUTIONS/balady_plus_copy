@@ -3,8 +3,10 @@ import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:intl/intl.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
+import '../../../../../core/utils/common_functions.dart';
 import '../../../../../core/utils/constants/app_style.dart';
 import '../../../../home_page/presentation/widgets/home_app_bar/circle_icon.dart';
 
@@ -60,7 +62,6 @@ class MapCard extends StatelessWidget {
       },
       child: Container(
         height: type == "Investment" ? 180 : 140,
-        width: 325,
         padding: const EdgeInsets.only(left: 10, right: 10, bottom: 10),
         margin: const EdgeInsets.symmetric(horizontal: 2),
         decoration: const BoxDecoration(
@@ -200,7 +201,7 @@ class MapCard extends StatelessWidget {
                         width: 6,
                       ),
                       Text(
-                        "${"bid_end_date".tr()} $bidEndDate",
+                        "${"bid_end_date".tr()} ${getBidEndDate(bidEndDate ?? "")}",
                         overflow: TextOverflow.ellipsis,
                         style: AppStyle.cardTitleTextStle
                             .copyWith(color: AppColor.kGray115, fontSize: 12),
@@ -320,6 +321,20 @@ String getActivityId(String? activityId) {
   } else {
     return 'activity_placeholder';
   }
+}
+
+String getBidEndDate(String bidEndDate) {
+  String date = "";
+  try {
+    if (bidEndDate != null) {
+      date = DateFormat.yMMMd(CommonFunctions.isAppAR ? 'ar_SA' : 'en_US')
+          .format(DateTime.parse(bidEndDate!));
+    }
+  } catch (ex) {}
+  if (CommonFunctions.isAppAR)
+    date = CommonFunctions.replaceArabicNumberWithEnglish(date);
+
+  return date;
 }
 
 class RentOrInvestWidget extends StatelessWidget {
