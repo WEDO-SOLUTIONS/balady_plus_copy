@@ -32,6 +32,7 @@ export 'presentation/widgets/home_bottom_sheet/challenge_home_card.dart';
 export 'presentation/widgets/home_bottom_sheet/read_home_card.dart';
 export 'presentation/widgets/home_bottom_sheet/draggable_header_component.dart';
 export 'presentation/widgets/home_bottom_sheet/prayer_next_home.dart';
+export 'presentation/widgets/home_bottom_sheet/certification_map_card.dart';
 export 'presentation/widgets/home_tag.dart';
 export 'presentation/widgets/services/important_services.dart';
 export 'presentation/widgets/services/new_services.dart';

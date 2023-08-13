@@ -65,6 +65,7 @@ class IconPath {
   static const camera = '${_svgIconPath}camera$_svg';
   static const location = '${_svgIconPath}location$_svg';
   static const lock = '${_svgIconPath}lock$_svg';
+  static const map = '${_svgIconPath}map$_svg';
 
   static const informationCircleIcon =
       '${_svgIconPath}informationCircleIcon$_svg';
