@@ -298,7 +298,7 @@ class MapViewModel extends BaseViewModel {
     // goToLocation();
     await controller.setMarkerOptions(
       MarkerOptionsMessageOld(
-        svgAsset: "assets/maps/ic_marker.svg",
+        svgAsset: "assets/maps/icons/ic_marker.svg",
         width: 30.0,
         height: 46.0,
         iconWidth: 24,
@@ -427,12 +427,13 @@ class MapViewModel extends BaseViewModel {
     selectedPointId.value = null;
     selectedWhiteLands.value = null;
     selectedLands.value = null;
+    showLegend.value = null;
     selectedDiggingPoint.notifyListeners();
     selectedImtethalPoint.notifyListeners();
     selectedInvetmentPoint.notifyListeners();
     selectedPointId.notifyListeners();
     selectedLands.notifyListeners();
-
+    showLegend.notifyListeners();
     selectedWhiteLands.notifyListeners();
   }
 
@@ -864,6 +865,7 @@ class MapViewModel extends BaseViewModel {
   void selectLayers(Layers value) async {
     print("LAyer selected");
     await controller.removeAll();
+    clearAllCards();
     showLegend.value = null;
     layerSelected.value = value;
     searchController.text = "";

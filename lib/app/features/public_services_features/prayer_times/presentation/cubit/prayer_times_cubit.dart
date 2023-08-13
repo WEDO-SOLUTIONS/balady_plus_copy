@@ -137,9 +137,9 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
 
     if (dateToCheck != null)
       aDate = DateTime(dateToCheck.year, dateToCheck.month, dateToCheck.day);
-
-    // request permission
-    /* final isEnabled = await Geolocator.isLocationServiceEnabled();
+    if (aDate != today || aDate == null || state.prayerTimesResponse == null) {
+      // request permission
+      /* final isEnabled = await Geolocator.isLocationServiceEnabled();
     if (!isEnabled) {
       emit(state.copyWith(
         status: BlocRequestStatus.submissionGetFailure,
@@ -148,66 +148,66 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
       return;
     }
     */
-    bool checkLoccationSettings = await CommonFunctions.checkLocationSettings(
-        NavigationService.navigatorKey.currentContext!);
+      bool checkLoccationSettings = await CommonFunctions.checkLocationSettings(
+          NavigationService.navigatorKey.currentContext!);
 
-    LatLng? position = await Helpers.getCurrentLocation();
-    double latitude = 21.424236910931974;
-    double longitude = 39.82589070176908;
-    if (position != null) {
-      emit(state.copyWith(userLocationUnkown: false));
+      LatLng? position = await Helpers.getCurrentLocation();
+      double latitude = 21.424236910931974;
+      double longitude = 39.82589070176908;
+      if (position != null) {
+        emit(state.copyWith(userLocationUnkown: false));
 
-      latitude = position.latitude;
-      longitude = position.longitude;
-    } else {
-      emit(state.copyWith(userLocationUnkown: true));
+        latitude = position.latitude;
+        longitude = position.longitude;
+      } else {
+        emit(state.copyWith(userLocationUnkown: true));
+      }
+      emit(state.copyWith(status: BlocRequestStatus.submissionGetLoading));
+      final gisFailureOrSuccess = await _getGISData(
+        GISParams(x: longitude, y: latitude),
+      );
+
+      gisFailureOrSuccess.fold(
+        (failure) {
+          emit(state.copyWith(
+            status: BlocRequestStatus.submissionGetFailure,
+            errorMessage: (failure as ServerFailure).errorMessage,
+          ));
+        },
+        (response) {
+          emit(state.copyWith(
+            gisResponse: response,
+          ));
+        },
+      );
+
+      if (gisFailureOrSuccess.isLeft()) return;
+
+      emit(state.copyWith(status: BlocRequestStatus.submissionGetLoading));
+      print("getPrayerTime 55");
+      final params = PrayerTimesParams(
+        latitude: latitude,
+        longitude: longitude,
+        date: DateTime.now(),
+      );
+      final failureOrSuccess = await _getPrayerTimes(params);
+
+      await failureOrSuccess.fold(
+        (failure) {
+          emit(state.copyWith(
+            status: BlocRequestStatus.submissionGetFailure,
+            errorMessage: (failure as ServerFailure).errorMessage,
+          ));
+        },
+        (response) {
+          print("getPrayerTime success $response");
+          emit(state.copyWith(
+              status: BlocRequestStatus.submissionGetSuccess,
+              prayerTimes: response,
+              lastUpdatedDate: DateTime.now()));
+        },
+      );
     }
-    print("Updating prayers");
-    emit(state.copyWith(status: BlocRequestStatus.submissionGetLoading));
-    final gisFailureOrSuccess = await _getGISData(
-      GISParams(x: longitude, y: latitude),
-    );
-
-    gisFailureOrSuccess.fold(
-      (failure) {
-        emit(state.copyWith(
-          status: BlocRequestStatus.submissionGetFailure,
-          errorMessage: (failure as ServerFailure).errorMessage,
-        ));
-      },
-      (response) {
-        emit(state.copyWith(
-          gisResponse: response,
-        ));
-      },
-    );
-
-    if (gisFailureOrSuccess.isLeft()) return;
-
-    emit(state.copyWith(status: BlocRequestStatus.submissionGetLoading));
-    print("getPrayerTime 55");
-    final params = PrayerTimesParams(
-      latitude: latitude,
-      longitude: longitude,
-      date: DateTime.now(),
-    );
-    final failureOrSuccess = await _getPrayerTimes(params);
-
-    await failureOrSuccess.fold(
-      (failure) {
-        emit(state.copyWith(
-          status: BlocRequestStatus.submissionGetFailure,
-          errorMessage: (failure as ServerFailure).errorMessage,
-        ));
-      },
-      (response) {
-        print("getPrayerTime success $response");
-        emit(state.copyWith(
-            status: BlocRequestStatus.submissionGetSuccess,
-            prayerTimes: response,
-            lastUpdatedDate: DateTime.now()));
-      },
-    );
 
     updateNextPrayer();
   }

@@ -233,6 +233,46 @@ class ServiceIcon extends StatelessWidget {
                         }));
               }
             }
+          } else if (service.iconName == "municipal_commercial" ||
+              service.iconName == "municpal_construction" ||
+              service.iconName == "municipal_shop" ||
+              service.iconName == "municpal_housing" ||
+              service.iconName == "municipal_ewaa" ||
+              service.iconName == "municpal_toppaco") {
+            if (CommonProperties.isLoggedIn) {
+              CommonFunctions.openBaladyWebView(service.action.value);
+            } else {
+              showDialog(
+                  context: context,
+                  builder: (ctx) =>
+                      NeedLoginDialog(onSuccessLogin: (bool? isSuccess) async {
+                        if (isSuccess ?? false) {
+                          CommonFunctions.openBaladyWebView(
+                              service.action.value);
+                        }
+                      }));
+            }
+          } else if (service.iconName == "municipal_health") {
+            if (CommonProperties.isLoggedIn) {
+              Navigator.pushNamed(
+                context,
+                service.action.value,
+              );
+            } else {
+              showDialog(
+                  context: context,
+                  builder: (ctx) =>
+                      NeedLoginDialog(onSuccessLogin: (bool? isSuccess) async {
+                        if (isSuccess ?? false) {
+                          Navigator.pushNamed(
+                            context,
+                            service.action.value,
+                          );
+                        }
+                      }));
+            }
+          } else if (service.iconName == "municpal_all") {
+            CommonFunctions.externalLaunch(service.action.value);
           } else {
             if (service.requireLogin != true) {
               Navigator.pushNamed(

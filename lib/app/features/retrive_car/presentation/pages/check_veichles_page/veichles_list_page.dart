@@ -11,6 +11,7 @@ import '../../../../../core/utils/constants/route_names.dart';
 import '../../../../../core/utils/enums/bloc_status.dart';
 import '../../../../_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
 import '../../../../_shared_feature_/presentation/widgets/empty_state_widget.dart';
+import '../../../../_shared_feature_/presentation/widgets/need_login_widget.dart';
 import '../../../data/model/veichles_list_page_params.dart';
 import '../../../domain/entities/create_retrive_page_params.dart';
 import '../../blocs/retrieve_vehicles_bloc/retrieve_vehicles_bloc.dart';
@@ -50,7 +51,7 @@ class _VeichlesListPageState extends State<VeichlesListPage> {
                     children: [
                       if (state.status == BlocStatus.success &&
                           (state.vehicleItem?.isEmpty ?? true))
-                        EmptyStateWidget(
+                        EmptyListWidget(
                           title: ("no_veichles").tr(),
                         ),
                       if (state.vehicleItem?.isNotEmpty ?? false) ...[

@@ -58,12 +58,13 @@ class _ChatBubbleRadioSelectorState extends State<ChatBubbleRadioSelector> {
                   ),
                   child: Row(
                     children: [
-                      CustomTextWidget(
-                        item,
-                        textStyle: AppStyle.listTitleTextStyle,
-                        maxLines: 2,
+                      Flexible(
+                        child: CustomTextWidget(
+                          item,
+                          textStyle: AppStyle.listTitleTextStyle,
+                          maxLines: 5,
+                        ),
                       ),
-                      const Spacer(),
                       Radio(
                         value: item,
                         groupValue: selectedValue,

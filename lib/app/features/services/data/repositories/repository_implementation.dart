@@ -94,4 +94,14 @@ class ServicesRepositoryImplementation implements ServicesRepository {
       return Left(CacheFailure());
     }
   }
+
+  @override
+  Future<Either<Failure, List<ServiceEntity>>> getMunicipalServices() async {
+    try {
+      final services = await localDataSource.getMunicipalServices();
+      return Right(services);
+    } catch (e) {
+      return Left(CacheFailure());
+    }
+  }
 }

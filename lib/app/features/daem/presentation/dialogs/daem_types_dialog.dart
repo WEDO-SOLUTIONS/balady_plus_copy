@@ -69,7 +69,8 @@ class _DaemTypeDialog extends State<DaemTypeDialog> {
                                 return DaemTypeWidget(
                                     name: state.categoryTypeList![index],
                                     icon: getIcon(
-                                        state.categoryTypeList![index].id!));
+                                        state.categoryTypeList![index].name ??
+                                            ""));
                               },
                             )
                           : Container()
@@ -151,37 +152,29 @@ class DaemTypeWidget extends StatelessWidget {
 }
 
 String getIcon(String category) {
+  print(category);
   switch (category) {
-    case "السكن الجماعي":
-      return 'assets/images/inq/Inq_1.svg';
-    case "المخططات":
-      return 'assets/images/inq/Inq_2.svg';
-    case "الرخص الإنشائية":
-      return 'assets/images/inq/Inq_3.svg';
-    case "كود البناء والتأمين السكني":
-      return 'assets/images/inq/Inq_4.svg';
-    case "الايواء":
-      return 'assets/images/inq/Inq_5.svg';
-    case "الرخص التجارية":
-      return 'assets/images/inq/Inq_6.svg';
-    case "إكرام الموتى":
-      return 'assets/images/inq/Inq_8.svg';
-    case "الشهادات الصحية":
-      return 'assets/images/inq/Inq_9.svg';
-    case "منصة ممتثل":
-      return 'assets/images/inq/Inq_10.svg';
-    case "تصنيف مقدمي خدمات المدن":
-      return 'assets/images/inq/Inq_11.svg';
+    case "خدمة الرخص الإنشائية":
+      return IconPath.tsr_1;
+    case "خدمة اعتماد المخططات الخاصة":
+      return IconPath.tsr_2;
+    case "مسار منصة الحفريات":
+      return IconPath.tsr_3;
+    case "نظام المتاجر المتنقلة":
+      return IconPath.tsr_4;
+    case "خدمة تصنيف مقدمي خدمات المدن":
+      return IconPath.tsr_5;
+    case "خدمة الفرص الإستثمارية":
+      return IconPath.tsr_6;
     case "صوت العميل":
-      return 'assets/images/inq/Inq_12.svg';
-    case "رخص الحفريات":
-      return 'assets/images/inq/Inq_13.svg';
-    case "الفرص الاستثمارية":
-      return 'assets/icons/iconServicesCustomerVoiceMarket.svg';
-    case "المتاجر المتنقلة":
-      return "";
-    case "التبغ":
-      return "assets/images/inq/Inq_20.svg";
+      return IconPath.tsr_7;
+    case "رمز الاستجابة السريع":
+      return IconPath.tsr_8;
+    case "خدمة الدمج والتجزئة":
+      return IconPath.tsr_9;
+    case "خدمة الرخص التجارية":
+      return IconPath.tsr_10;
+
     default:
       return IconPath.calendarIcon;
   }

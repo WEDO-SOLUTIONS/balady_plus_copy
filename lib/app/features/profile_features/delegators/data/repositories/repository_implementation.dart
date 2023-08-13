@@ -19,7 +19,8 @@ class DelegatorsRepositoryImplementation implements DelegatorsRepository {
       final data = await remoteDataSource.getDelegators();
       return Right(data);
     } on ServerException catch (error) {
-      return Left(ServerFailure(error.errorMessage));
+      return Left(
+          ServerFailure(error.errorMessage, errorCode: error.errorCode));
     }
   }
 }

@@ -40,6 +40,8 @@ class RemoteConfig {
       _RemoteConfig.publicLicenseShareURL[env]!;
 
   static String get webCookieHeader => _RemoteConfig.webCookieHeader[env]!;
+  static String get marketClass => _RemoteConfig.marketClass[env]!;
+
   static EnvType get env => sl<EnvType>();
 
   static List<String> get MSRAllowedMuncipalites =>
@@ -126,6 +128,12 @@ class _RemoteConfig {
     devVal: 20000000000000.0,
     stgVal: 2000000000000.0,
     prodVal: 2000.0,
+  );
+
+  static final marketClass = _initValues<String>(
+    devVal: "CG-14",
+    stgVal: "CG-14",
+    prodVal: "CG-6",
   );
 
   static final regaClass = _initValues<String>(

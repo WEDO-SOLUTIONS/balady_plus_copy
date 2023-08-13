@@ -162,7 +162,7 @@ dependencies:
   
   #test_package:
  #   path: packages/test_package
-  flutter_qiblah: ^2.2.0
+  #flutter_qiblah: ^2.2.0
   app_settings: ^5.0.0
   dotted_border: ^2.0.0+3
 
@@ -177,8 +177,8 @@ dependencies:
 dependency_overrides:
   geolocator_android: ^4.2.2
   # flutter compass in pub.dev is not updated
-  flutter_compass:
-    path: flutter_compass
+  #flutter_compass:
+  #  path: flutter_compass
   
 dev_dependencies:
 

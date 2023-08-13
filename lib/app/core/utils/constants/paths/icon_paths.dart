@@ -268,20 +268,16 @@ class IconPath {
   static const Inq_14Icon = '${_inqPath}Inq_14Icon$_svg';
   static const Inq_11Icon = '${_inqPath}Inq_11Icon$_svg';
 
-/*
-  static const Inq_6Icon = '${_tsrPath}Inq_6Icon$_svg';
-  static const Inq_3Icon = '${_tsrPath}Inq_3Icon$_svg';
-  static const Inq_14Icon = '${_tsrPath}Inq_14Icon$_svg';
-  static const Inq_11Icon = '${_tsrPath}Inq_11Icon$_svg';
-  static const Inq_11Icon = '${_tsrPath}Inq_11Icon$_svg';
-  static const Inq_11Icon = '${_tsrPath}Inq_11Icon$_svg';
-  static const Inq_11Icon = '${_tsrPath}Inq_11Icon$_svg';
-  static const Inq_11Icon = '${_tsrPath}Inq_11Icon$_svg';
-  static const Inq_11Icon = '${_tsrPath}Inq_11Icon$_svg';
-  static const Inq_11Icon = '${_tsrPath}Inq_11Icon$_svg';
-  static const Inq_11Icon = '${_tsrPath}Inq_11Icon$_svg';
-  static const Inq_11Icon = '${_tsrPath}Inq_11Icon$_svg';
-*/
+  static const tsr_1 = '${_tsrPath}1$_svg';
+  static const tsr_2 = '${_tsrPath}2$_svg';
+  static const tsr_3 = '${_tsrPath}3$_svg';
+  static const tsr_4 = '${_tsrPath}4$_svg';
+  static const tsr_5 = '${_tsrPath}5$_svg';
+  static const tsr_6 = '${_tsrPath}6$_svg';
+  static const tsr_7 = '${_tsrPath}7$_svg';
+  static const tsr_8 = '${_tsrPath}8$_svg';
+  static const tsr_9 = '${_tsrPath}9$_svg';
+  static const tsr_10 = '${_tsrPath}10$_svg';
 
 // INQ
 
@@ -323,8 +319,7 @@ class IconPath {
   static const pray = '${_svgAthkarIconPath}pray$_svg';
   static const handPrayer = '${_svgAthkarIconPath}hand-pray$_svg';
   static const notificationOn = '${_svgAthkarIconPath}notification_on$_svg';
-    static const notificationOff = '${_svgAthkarIconPath}notification_off$_svg';
-
+  static const notificationOff = '${_svgAthkarIconPath}notification_off$_svg';
 
   static const reset = '${_svgAthkarIconPath}reset$_svg';
 

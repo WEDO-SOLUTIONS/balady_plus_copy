@@ -20,7 +20,7 @@ class AthkarEntitiesListView extends StatelessWidget {
       itemBuilder: (context, index) {
         return AthkarEntityCard(
           athkarEntity: athkarEntitiesList[index],
-          pageNumber: index + 1,
+          pageNumber: index,
           athkarEntitiesList: athkarEntitiesList,
         );
       },

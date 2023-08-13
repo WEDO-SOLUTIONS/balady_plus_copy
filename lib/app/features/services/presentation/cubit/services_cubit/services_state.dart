@@ -9,6 +9,7 @@ class ServicesState extends Equatable {
   final List<ServiceEntity> healthCertificatesServices;
   final List<ServiceEntity> helpServices;
   final List<ServiceEntity> honoringTheDeadServices;
+  final List<ServiceEntity> municipalServicee;
 
   final List<ServiceEntity> newServices;
   final List<ServiceEntity> importantServices;
@@ -19,6 +20,7 @@ class ServicesState extends Equatable {
   const ServicesState({
     this.businessLicenseServices = const [],
     this.healthCertificatesServices = const [],
+    this.municipalServicee = const [],
     this.helpServices = const [],
     this.honoringTheDeadServices = const [],
     this.status = BlocStatus.initial,
@@ -38,6 +40,7 @@ class ServicesState extends Equatable {
     return [
       status,
       islamicServices,
+      municipalServicee,
       customerVoiceServices,
       newServices,
       importantServices,
@@ -49,6 +52,7 @@ class ServicesState extends Equatable {
   ServicesState copyWith({
     BlocStatus? status,
     List<ServiceEntity>? islamicServices,
+    List<ServiceEntity>? municipalServices,
     List<ServiceEntity>? customerVoiceServices,
     List<ServiceEntity>? businessLicenseServices,
     List<ServiceEntity>? healthCertificatesServices,
@@ -63,6 +67,7 @@ class ServicesState extends Equatable {
     return ServicesState(
       status: status ?? this.status,
       islamicServices: islamicServices ?? this.islamicServices,
+      municipalServicee: municipalServices ?? this.municipalServicee,
       customerVoiceServices:
           customerVoiceServices ?? this.customerVoiceServices,
       businessLicenseServices:

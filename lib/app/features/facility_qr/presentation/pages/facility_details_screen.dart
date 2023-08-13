@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/core/utils/constants/remote_config.dart';
 import 'package:balady_plus/app/core/utils/constants/route_names.dart';
 import 'package:balady_plus/app/core/utils/enums/app_font_weights.dart';
 import 'package:balady_plus/app/features/facility_qr/presentation/core/view_models/facility_details_view_model.dart';
@@ -627,7 +628,8 @@ class SubmitIncidentSection extends StatelessWidget {
             NavigationService.navigatorKey.currentState!.pushNamed(
                 RouteName.vdCameraPage,
                 arguments: CameraParamsPage(
-                    selectedCategory: CategoryItem(categoryId: "CG-14"),
+                    selectedCategory:
+                        CategoryItem(categoryId: RemoteConfig.marketClass),
                     isFromHome: false));
         },
         btnText: ("submit_incident_facility").tr(),

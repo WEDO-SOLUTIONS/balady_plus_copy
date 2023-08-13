@@ -13,4 +13,5 @@ abstract class ServicesRepository {
 
   Future<Either<Failure, List<ServiceEntity>>> getNewServices();
   Future<Either<Failure, List<ServiceEntity>>> getImportantServices();
+  Future<Either<Failure, List<ServiceEntity>>> getMunicipalServices();
 }

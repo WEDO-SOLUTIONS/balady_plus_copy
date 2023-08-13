@@ -42,11 +42,11 @@ class OTPRemoteDataSourceImpl extends OTPRemoteDataSource {
           options: Options(
             headers: {
               "Authorization": "Bearer " + (CommonProperties.token ?? ""),
-              /* ApiHeaders.xFeappId: CommonProperties.appName,
+              ApiHeaders.xFeappId: CommonProperties.appName,
               ApiHeaders.xFeDeviceId: CommonProperties.deviceId,
               ApiHeaders.xFeDeviceOs: CommonProperties.deviceOs,
               ApiHeaders.xCorrelationId: CommonFunctions.generateGUID(),
-              ApiHeaders.xSessionId: CommonProperties.sessionId,*/
+              ApiHeaders.xSessionId: CommonProperties.sessionId,
               "x-fe-client-ip": CommonProperties.clientIP,
               "x-fe-deployment-id": CommonProperties.appVersion,
               "Accept-Language": "ar",
@@ -97,11 +97,11 @@ class OTPRemoteDataSourceImpl extends OTPRemoteDataSource {
           },
           options: Options(headers: {
             "Authorization": "Bearer " + (CommonProperties.token ?? ""),
-            /* ApiHeaders.xFeappId: CommonProperties.appName,
-              ApiHeaders.xFeDeviceId: CommonProperties.deviceId,
-              ApiHeaders.xFeDeviceOs: CommonProperties.deviceOs,
-              ApiHeaders.xCorrelationId: CommonFunctions.generateGUID(),
-              ApiHeaders.xSessionId: CommonProperties.sessionId,*/
+            ApiHeaders.xFeappId: CommonProperties.appName,
+            ApiHeaders.xFeDeviceId: CommonProperties.deviceId,
+            ApiHeaders.xFeDeviceOs: CommonProperties.deviceOs,
+            ApiHeaders.xCorrelationId: CommonFunctions.generateGUID(),
+            ApiHeaders.xSessionId: CommonProperties.sessionId,
             "x-fe-client-ip": CommonProperties.clientIP,
             "x-fe-deployment-id": CommonProperties.appVersion,
             "Accept-Language": "ar",

@@ -43,6 +43,7 @@ class AthkarAppBar extends StatelessWidget implements PreferredSize {
         ),
         centerTitle: true,
         actions: [
+          /*
           IconButton(
               onPressed: () async {
                 await BottomSheetDialog.showDraggableSheet(context,
@@ -55,7 +56,7 @@ class AthkarAppBar extends StatelessWidget implements PreferredSize {
                       ),
                     ));
               },
-              icon: Icon(Icons.notifications))
+              icon: Icon(Icons.notifications))*/
         ],
         title: CustomTextWidget(
           title,

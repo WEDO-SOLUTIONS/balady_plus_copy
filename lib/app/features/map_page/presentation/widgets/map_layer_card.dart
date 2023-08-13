@@ -55,9 +55,10 @@ class MapLayerCard extends StatelessWidget {
                   ? MapCard(
                       activityId: selectedPoint?.MAIN_ACTIVITY_NAME ?? "",
                       desc: selectedPoint?.description ?? "",
-                      price: (selectedPoint?.DOCUMENTVALUE.toString() ??
-                              selectedPoint?.DAILYLEASECOST.toString()) ??
-                          "",
+                      price: (selectedPoint?.DOCUMENTVALUE != null &&
+                              selectedPoint?.DOCUMENTVALUE?.toString() != "")
+                          ? (selectedPoint?.DOCUMENTVALUE.toString() ?? "")
+                          : selectedPoint?.DAILYLEASECOST.toString() ?? "",
                       area: selectedPoint?.SITEAREA.toString() ?? "",
                       mainActivcity: selectedPoint?.MAIN_ACTIVITY_NAME ?? "",
                       duration: selectedPoint?.BIDENDDATE ?? "",

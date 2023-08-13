@@ -23,9 +23,13 @@ class DelegatorsCubit extends Cubit<DelegatorsState> {
 
     failureOrSuccess.fold(
       (failure) {
+        BlocRequestStatus status = (failure as ServerFailure).errorCode == "003"
+            ? BlocRequestStatus.submissionGetSuccess
+            : BlocRequestStatus.submissionGetFailure;
+
         emit(state.copyWith(
-          status: BlocRequestStatus.submissionGetFailure,
-          errorMessage: (failure as ServerFailure).errorMessage,
+          status: status,
+          errorMessage: failure.errorMessage,
         ));
       },
       (delegators) {

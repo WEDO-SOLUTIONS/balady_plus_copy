@@ -67,9 +67,8 @@ class RetrieveVehiclesBloc
 
     failureOrSuccess.fold((failure) {
       ServerFailure f = (failure as ServerFailure);
-      final BlocStatus status = f.errorMessage == "CS_API_003"
-          ? BlocStatus.success
-          : BlocStatus.failure;
+      final BlocStatus status =
+          f.errorCode == "CS_API_003" ? BlocStatus.success : BlocStatus.failure;
       emitter(state.copyWith(
         status: status,
         errorMessage: f.errorMessage,

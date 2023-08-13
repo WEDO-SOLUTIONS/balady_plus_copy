@@ -11,6 +11,7 @@ import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart' show PlatformFile;
 import 'package:flutter_bloc/flutter_bloc.dart' show EventTransformer;
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart' show DateFormat;
 import 'package:localize_and_translate/localize_and_translate.dart';
@@ -26,6 +27,7 @@ import 'package:uuid/uuid.dart';
 
 import '../../features/_shared_feature_/data/entities/file_data_item.dart';
 import '../../features/_shared_feature_/presentation/dialogs/upload_file_dialog.dart';
+import '../../features/entry_point/domain/use_cases/get_cookie.dart';
 import '../../features/vd/domain/entities/gis/gis_params.dart';
 import '../../features/vd/domain/entities/gis/gis_response.dart';
 import './utils_exports.dart'
@@ -35,6 +37,7 @@ import './utils_exports.dart'
         AppLanguage,
         EnvType,
         MimeType,
+        RouteName,
         UIHelper,
         WithDelay;
 import '../../features/_shared_feature_/data/entities/device_details.dart';
@@ -56,7 +59,7 @@ import '../../features/profile_features/delegators/delegators_exports.dart'
     show DelegatorEntity;
 import '../dependency_injection/dependency_injection_exports.dart' show sl;
 import '../services/services_exports.dart'
-    show AppInterceptors, EntryPointBridge, NavigationService;
+    show AppInterceptors, EntryPointBridge, NavigationService, NoParams;
 
 var carPlateLettersList = [
   "أ",
@@ -596,6 +599,21 @@ class CommonFunctions {
     }
 
     return false;
+  }
+
+  static void openBaladyWebView(String url) async {
+    EasyLoading.show();
+    GetCookie getCookie = GetCookie(repository: sl());
+    final failureOrSuccessForCookie = await getCookie(NoParams());
+    EasyLoading.dismiss();
+    failureOrSuccessForCookie.fold((l) {
+      CommonFunctions.showError("server_error_1".tr());
+    }, (r) async {
+      Navigator.of(NavigationService.navigatorKey.currentContext!).pushNamed(
+        RouteName.inappWebview,
+        arguments: (title: ''.tr(), url: url),
+      );
+    });
   }
 
   static showError(String error) {

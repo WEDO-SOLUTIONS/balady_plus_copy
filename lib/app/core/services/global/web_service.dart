@@ -4,7 +4,8 @@ import 'package:dio/dio.dart';
 import 'package:localize_and_translate/localize_and_translate.dart'
     show translator;
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
-
+import 'package:balady_plus/etmam_app/core/utils/utils_exports.dart'
+    as EtmamCommonProperties hide Log;
 import '../../../core/dependency_injection/dependency_injection_exports.dart'
     show sl;
 import '../../../features/entry_point/presentation/cubit/auth_cubit.dart';
@@ -71,6 +72,23 @@ class AppInterceptors extends Interceptor {
     "On-Sending-Request ${options.uri}".actionLog();
     // Update language
     options.headers[ApiHeader.language.eName] = languageCode;
+
+    if (options.uri.toString().toLowerCase().contains("etmamplus-services")) {
+      var headers = {
+        ApiHeaders.xFeappId: EtmamCommonProperties.CommonProperties.appName,
+        ApiHeaders.xFeAppVersion:
+            EtmamCommonProperties.CommonProperties.appVersion,
+        ApiHeaders.xFeDeviceId: EtmamCommonProperties.CommonProperties.deviceId,
+        ApiHeaders.xFeDeviceOs: EtmamCommonProperties.CommonProperties.deviceOs,
+        ApiHeaders.xSessionId: EtmamCommonProperties.CommonProperties.sessionId,
+        ApiHeaders.xCorrelationId:
+            EtmamCommonProperties.CommonFunctions.generateGUID(),
+        if (EtmamCommonProperties.CommonProperties.profileId != null)
+          ApiHeaders.xUserProfileId:
+              EtmamCommonProperties.CommonProperties.profileId
+      };
+      options.headers.addAll(headers);
+    }
 
     if (await networkConnection.isConnected == false) {
       "Request-Rejected because 'Network-Disconnected'".errorLog();
@@ -168,4 +186,16 @@ class AppInterceptors extends Interceptor {
 
   String get languageCode => translator.activeLanguageCode;
   bool get mounted => true;
+}
+
+class ApiHeaders {
+  static const authorization = "authorization";
+
+  static const xFeappId = "x-fe-app-id";
+  static const xFeAppVersion = "x-fe-app-version";
+  static const xFeDeviceId = "x-fe-device-id";
+  static const xFeDeviceOs = "x-fe-device-os";
+  static const xSessionId = "x-session-id";
+  static const xUserProfileId = "x-user-profile-id";
+  static const xCorrelationId = "x-correlation-id";
 }

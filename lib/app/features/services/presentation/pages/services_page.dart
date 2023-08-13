@@ -58,6 +58,11 @@ class ServicesPage extends StatelessWidget {
                           title: "customer_voice_services".tr(),
                           services: state.customerVoiceServices,
                         ),
+                      if (state.municipalServicee.isNotEmpty)
+                        ServicesList(
+                          title: "municipal_services".tr(),
+                          services: state.municipalServicee,
+                        ),
                       if (state.businessLicenseServices.isNotEmpty)
                         ServicesList(
                           title: "business_license_services".tr(),

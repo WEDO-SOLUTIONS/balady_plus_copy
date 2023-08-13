@@ -18,6 +18,7 @@ import '../../../../core/services/local/navigation_services.dart';
 import '../../../../core/utils/common_functions.dart';
 import '../../../../core/utils/constants/app_colors.dart';
 import '../../../../core/utils/constants/constants.dart';
+import '../../../../core/utils/constants/remote_config.dart';
 import '../../../../core/utils/constants/route_names.dart';
 import '../../../../core/utils/enums/app_font_weights.dart';
 import '../../../_shared_feature_/presentation/widgets/buttons/custom_buttons_widgets.dart';
@@ -235,8 +236,8 @@ void checkBarcode(BuildContext context) async {
                       NavigationService.navigatorKey.currentState!.pushNamed(
                           RouteName.vdCameraPage,
                           arguments: CameraParamsPage(
-                              selectedCategory:
-                                  CategoryItem(categoryId: "CG-14"),
+                              selectedCategory: CategoryItem(
+                                  categoryId: RemoteConfig.marketClass),
                               isFromHome: false));
                   },
                 ),

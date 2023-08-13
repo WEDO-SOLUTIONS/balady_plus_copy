@@ -58,6 +58,7 @@ class _BottomNavigationPageState extends State<BottomNavigationPage> {
             customerVoiceServices: sl(),
             businessLicenseServices: sl(),
             honoringTheDeadServices: sl(),
+            municipalServices: sl(),
             //healthCertificatesServices: sl(),
             helpServices: sl(),
           ),

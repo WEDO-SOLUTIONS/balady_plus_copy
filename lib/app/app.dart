@@ -9,10 +9,11 @@ import 'package:localize_and_translate/localize_and_translate.dart'
     show Translation, translator;
 
 import '../etmam_app/features/etmam_entry_point/presentation/cubit/etmam_entry_point_cubit.dart';
+import '../etmam_app/features/my_orders/presentation/pages/orders_page.dart';
 import './core/dependency_injection/dependency_injection_exports.dart' show sl;
 import './core/services/services_exports.dart' show NavigationService;
 import './core/utils/utils_exports.dart'
-    show AppColor, AppConfig, AppRouter, RouteName;
+    show AppColor, AppConfig, AppRouter, EtmamRoutesNames, RouteName;
 import './core/dependency_injection/dependency_injection_exports.dart' show sl;
 import 'features/appointments/presentation/pages/appointments_list_screen.dart';
 import 'features/bottom_navigation/presentation/pages/bottom_navigation_page.dart';
@@ -62,6 +63,7 @@ class App extends StatelessWidget {
                   const BottomNavigationPage(),
               RouteName.AppointmentsListScreen: (context) =>
                   const AppointmentsListScreen(),
+              EtmamRoutesNames.myOrdersPage: (context) => const OrdersPage()
             },
           )),
     );

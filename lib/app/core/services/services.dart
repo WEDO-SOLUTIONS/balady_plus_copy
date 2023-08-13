@@ -2,6 +2,8 @@ import 'package:balady_plus/app/core/utils/constants/route_names.dart';
 import 'package:flutter/material.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
+import '../utils/constants/remote_config.dart';
+
 Map<String, dynamic> servicesConfig = {
   "islamic_services": [
     {
@@ -217,7 +219,7 @@ Map<String, dynamic> servicesConfig = {
       "ar": {"title": "طلب خدمة بلدية", "description": null, "tag": null},
       "en": {"title": "Request Service", "description": null, "tag": null}
     },
-    {
+    /*  {
       "id": 15,
       "icon": "issue_health_certificate",
       "3d_icon": null,
@@ -231,7 +233,7 @@ Map<String, dynamic> servicesConfig = {
         "description": null,
         "tag": null
       }
-    },
+    },*/
     {
       "id": 4,
       "icon": "schedule_date",
@@ -359,6 +361,150 @@ Map<String, dynamic> servicesConfig = {
         "description": "Send your inquiry about any service",
         "tag": "Services"
       }
+    },
+  ],
+  "municipal_services": [
+    {
+      "id": 1,
+      "icon": "municipal_commercial",
+      "3d_icon": null,
+      "order": 1,
+      "isNew": false,
+      "isImportant": false,
+      "requireLogin": true,
+      "action": {
+        "type": "page",
+        "value": "https://balady.gov.sa/ar/products/10920"
+      },
+      "ar": {
+        "title": "municipal_commercial".tr(),
+        "description": null,
+        "tag": null
+      },
+      "en": {"title": "Request Service", "description": null, "tag": null}
+    },
+    {
+      "id": 2,
+      "icon": "municpal_construction",
+      "3d_icon": null,
+      "order": 2,
+      "isNew": false,
+      "isImportant": false,
+      "action": {
+        "type": "page",
+        "value": "https://balady.gov.sa/ar/products/10470"
+      },
+      "ar": {
+        "title": "municpal_construction".tr(),
+        "description": null,
+        "tag": null
+      },
+      "en": {
+        "title": "Issue Health Certificate",
+        "description": null,
+        "tag": null
+      }
+    },
+    {
+      "id": 3,
+      "icon": "municipal_health",
+      "3d_icon": null,
+      "order": 3,
+      "isNew": false,
+      "isImportant": false,
+      "requireLogin": true,
+      "action": {"type": "page", "value": RouteName.newHealthCertificatePage},
+      "ar": {
+        "title": "municipal_health".tr(),
+        "description": null,
+        "tag": null
+      },
+      "en": {"title": "Schedule Date", "description": null, "tag": null}
+    },
+    {
+      "id": 4,
+      "icon": "municipal_shop",
+      "3d_icon": null,
+      "order": 4,
+      "isNew": false,
+      "isImportant": false,
+      "requireLogin": true,
+      "action": {
+        "type": "page",
+        "value": "https://balady.gov.sa/ar/products/10574"
+      },
+      "ar": {"title": "municipal_shop".tr(), "description": null, "tag": null},
+      "en": {"title": "Schedule Date", "description": null, "tag": null}
+    },
+    {
+      "id": 5,
+      "icon": "municpal_housing",
+      "3d_icon": null,
+      "order": 5,
+      "isNew": false,
+      "isImportant": false,
+      "requireLogin": true,
+      "action": {
+        "type": "page",
+        "value": "https://balady.gov.sa/ar/products/10543"
+      },
+      "ar": {
+        "title": "municpal_housing".tr(),
+        "description": null,
+        "tag": null
+      },
+      "en": {"title": "Damaged Cars", "description": null, "tag": null}
+    },
+    {
+      "id": 6,
+      "icon": "municipal_ewaa",
+      "3d_icon": null,
+      "order": 6,
+      "isNew": false,
+      "isImportant": false,
+      "action": {"type": "page", "value": "https://fees.balady.gov.sa/ewaa"},
+      "ar": {"title": "municipal_ewaa".tr(), "description": null, "tag": null},
+      "en": {"title": "Objections", "description": null, "tag": null}
+    },
+    {
+      "id": 7,
+      "icon": "municpal_toppaco",
+      "3d_icon": null,
+      "order": 6,
+      "isNew": false,
+      "isImportant": false,
+      "action": {
+        "type": "page",
+        "value": RemoteConfig.baladyBaseUrl + "/Eservices/Tobacco"
+      },
+      "ar": {
+        "title": "municpal_toppaco".tr(),
+        "description": null,
+        "tag": null
+      },
+      "en": {"title": "Objections", "description": null, "tag": null}
+    },
+    {
+      "id": 8,
+      "icon": "municpal_all",
+      "3d_icon": null,
+      "order": 1,
+      "isNew": false,
+      "isImportant": false,
+      "action": {"type": "page", "value": "https://balady.gov.sa/ar"},
+      "ar": {
+        "title": "municpal_all".tr(),
+        "description": "",
+        "tag": null,
+      },
+      "en": {
+        "title": "Send Image",
+        "description":
+            "Improve the civil scene of your city and report visual pollution",
+        "tag": null,
+        "warning":
+            ". Please renew the license before it expires or cancel it if you do not want to renew it in order to avoid the required delay penalty fees.\n. The license can be renewed 90 days before its expiry date."
+      },
     },
   ]
 };

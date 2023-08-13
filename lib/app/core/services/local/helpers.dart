@@ -22,7 +22,9 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../../../features/_shared_feature_/presentation/dialogs/photo_permission_dialog.dart';
+import '../../../features/bottom_navigation/presentation/cubits/bottom_nav_bar_cubit.dart';
 import '../../../features/transaction_inquiry/presentation/core/models/gis_location_result.dart';
+import '../../dependency_injection/injection_container.dart';
 import '../../utils/constants/constants.dart';
 
 // use it insead of print() or debugPrint()
@@ -53,7 +55,8 @@ class Helpers {
 
   static bool isBiometricAvailable = true;
 
-  static void backNavigationToHomeScreen() {
+  static void backNavigationToHomeScreen({int index = 0}) {
+    sl<BottomNavBarCubit>().onChangeBottomNavBar(index);
     NavigationService.navigatorKey.currentState!
         .popUntil(ModalRoute.withName(RouteName.bottomNavigation));
   }
@@ -127,13 +130,13 @@ class Helpers {
   }
 
   static Future<LatLng?> getCurrentLocation(
-      {geoLocator.LocationAccuracy? accuracy}) async {
+      {geoLocator.LocationAccuracy? accuracy, Duration? duration}) async {
     try {
       //  EasyLoading.show();
       geoLocator.Position position =
           await geoLocator.Geolocator.getCurrentPosition(
               desiredAccuracy: accuracy ?? geoLocator.LocationAccuracy.high,
-              timeLimit: const Duration(seconds: 13));
+              timeLimit: duration ?? Duration(seconds: 13));
       //    EasyLoading.dismiss();
 
       return LatLng(position.latitude, position.longitude);

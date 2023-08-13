@@ -38,50 +38,64 @@ class _photoPreviewWidgetState extends State<photoPreviewWidgetNew> {
                   : Container(),
             ),
 
-            Align(
-              alignment: AlignmentDirectional.bottomEnd,
-              child: Container(
-                margin: const EdgeInsetsDirectional.only(bottom: 30, end: 16),
-                child: EnhancedCustomElevatedButtonWidget(
-                  btnPressed: () {
-                    // CreateVDParamsPage
-                    context.read<CameraBloc>().add(GetUserLocationEvent());
-                  },
-                  btnText: ("next").tr(),
-                  btnColor: AppColor.primary800Light,
-                  btnHeight: 56,
-                  btnTextSize: 16,
-                  btnTextWeight: AppFontWeight.bold,
-                  btnWidth: 105,
-                  btnRadius: 8,
-                  icon: Image.asset(
-                    IconPath.vdarrowLeftIcon,
-                    height: 16,
-                    width: 16,
-                    color: AppColor.white,
-                  ),
-                  buttonIconPosition: BUTTON_ICON_POSITION.left,
-                ),
-              ),
-            ),
             //
-
             Align(
-              alignment: AlignmentDirectional.bottomStart,
-              child: Container(
-                margin: const EdgeInsetsDirectional.only(
-                    bottom: 30, end: 16, start: 16),
-                child: EnhancedCustomElevatedButtonWidget(
-                  btnText: ("إعادة التصوير").tr(),
-                  btnHeight: 48,
-                  btnWidth: 114,
-                  btnRadius: 8,
-                  btnColor: AppColor.white,
-                  btnTextColor: AppColor.primary900Light,
-                  btnPressed: () {
-                    context.read<CameraBloc>().add(ReTakePhotoEvent());
-                  },
-                ),
+              alignment: AlignmentDirectional.bottomCenter,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Expanded(
+                    flex: 2,
+                    child: Container(
+                      margin: const EdgeInsetsDirectional.only(
+                          bottom: 30, end: 16, start: 16),
+                      child: EnhancedCustomElevatedButtonWidget(
+                        btnText: ("إعادة التصوير").tr(),
+                        btnHeight: 48,
+                        btnRadius: 8,
+                        btnColor: AppColor.white,
+                        btnTextColor: AppColor.primary900Light,
+                        btnPressed: () {
+                          context.read<CameraBloc>().add(ReTakePhotoEvent());
+                        },
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                      flex: 1,
+                      child: SizedBox(
+                        height: 1,
+                      )),
+                  Expanded(
+                    flex: 2,
+                    child: Container(
+                      margin:
+                          const EdgeInsetsDirectional.only(bottom: 30, end: 16),
+                      child: EnhancedCustomElevatedButtonWidget(
+                        btnPressed: () {
+                          // CreateVDParamsPage
+                          context
+                              .read<CameraBloc>()
+                              .add(GetUserLocationEvent());
+                        },
+                        btnText: ("next").tr(),
+                        btnColor: AppColor.primary800Light,
+                        btnHeight: 56,
+                        btnTextSize: 16,
+                        btnTextWeight: AppFontWeight.bold,
+                        btnWidth: 105,
+                        btnRadius: 8,
+                        icon: Image.asset(
+                          IconPath.vdarrowLeftIcon,
+                          height: 16,
+                          width: 16,
+                          color: AppColor.white,
+                        ),
+                        buttonIconPosition: BUTTON_ICON_POSITION.left,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
 

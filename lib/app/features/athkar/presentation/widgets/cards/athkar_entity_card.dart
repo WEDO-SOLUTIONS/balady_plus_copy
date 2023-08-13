@@ -26,13 +26,9 @@ class AthkarEntityCard extends StatefulWidget {
 }
 
 class _AthkarEntityCardState extends State<AthkarEntityCard> {
-  final PageController _pageController = PageController();
-  late int _currentPage;
-
   @override
   void initState() {
     super.initState();
-    _currentPage = widget.pageNumber;
   }
 
   @override
@@ -43,7 +39,7 @@ class _AthkarEntityCardState extends State<AthkarEntityCard> {
               arguments: AthkarEntityContentParams(
                 widget.athkarEntity.name,
                 widget.athkarEntity,
-                _currentPage,
+                widget.pageNumber,
                 widget.athkarEntitiesList,
               )),
       child: Container(

@@ -37,10 +37,16 @@ class DelegatorsRemoteDataSourceImplementation
       if (error is NoDataFoundException) {
         rethrow;
       }
-      throw ServerException(
-        error.toString(),
-        statusCode: error.response?.statusCode,
-      );
+      var errorCode;
+      try {
+        final decodedResponse = ResponseBodyModel.fromMap(
+          error.response?.data,
+        );
+        errorCode = decodedResponse.data?.responseCode;
+      } catch (ex) {}
+
+      throw ServerException(error.toString(),
+          statusCode: error.response?.statusCode, errorCode: errorCode);
     } catch (ex) {
       "Catched $ex".errorLog();
       if (ex is ServerException) {

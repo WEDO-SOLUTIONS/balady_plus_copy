@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../core/services/services_exports.dart' show NoParams;
 import '../../../../../core/utils/utils_exports.dart';
+import '../../../domain/use_cases/municipal_services.dart';
 import '../../../services_exports.dart'
     show
         ImportantServices,
@@ -24,6 +25,7 @@ class ServicesCubit extends Cubit<ServicesState> {
   final CustomerVoiceServices customerVoiceServices;
   final HonoringTheDeadServices honoringTheDeadServices;
   final HelpServices helpServices;
+  final MunicipalServices municipalServices;
   //final HealthCertificatesServices healthCertificatesServices;
   final BusinessLicenseServices businessLicenseServices;
 
@@ -31,6 +33,7 @@ class ServicesCubit extends Cubit<ServicesState> {
     required this.businessLicenseServices,
     required this.customerVoiceServices,
     // required this.healthCertificatesServices,
+    required this.municipalServices,
     required this.helpServices,
     required this.honoringTheDeadServices,
     required this.importantServices,
@@ -53,6 +56,8 @@ class ServicesCubit extends Cubit<ServicesState> {
     //final healthCertificatesServicesList =
     //    await healthCertificatesServices(NoParams());
     final helpServicesList = await helpServices(NoParams());
+    final municpalServicesList = await municipalServices(NoParams());
+
     final honoringTheDeadServicesList =
         await honoringTheDeadServices(NoParams());
 
@@ -62,10 +67,9 @@ class ServicesCubit extends Cubit<ServicesState> {
       importantServices: importantServicesList.getOrElse(() => []),
       newServices: newServicesList.getOrElse(() => []),
       islamicServices: islamicServicesList.getOrElse(() => []),
+      municipalServices: municpalServicesList.getOrElse(() => []),
       customerVoiceServices: customerVoiceServicesList.getOrElse(() => []),
       businessLicenseServices: businessLicenseServicesList.getOrElse(() => []),
-      // healthCertificatesServices:
-      //    healthCertificatesServicesList.getOrElse(() => []),
       helpServices: helpServicesList.getOrElse(() => []),
       honoringTheDeadServices: honoringTheDeadServicesList.getOrElse(() => []),
     ));

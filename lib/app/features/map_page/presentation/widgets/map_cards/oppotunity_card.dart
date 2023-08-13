@@ -99,12 +99,36 @@ class MapCard extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          desc,
-                          style: AppStyle.cardTitleTextStle
-                              .copyWith(fontSize: 13, color: AppColor.black),
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                desc,
+                                style: AppStyle.cardTitleTextStle.copyWith(
+                                    fontSize: 13,
+                                    color: AppColor.black,
+                                    height: 1.3),
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                            SizedBox(
+                              width: 8,
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                onClose();
+                              },
+                              child: CircleIcon(
+                                icon: Icons.close,
+                                circleSize: 24,
+                                iconColor: AppColor.primary600Light,
+                                backgroundColor:
+                                    AppColor.geyser.withOpacity(0.4),
+                                iconSize: 12,
+                              ),
+                            ),
+                          ],
                         ),
                         Text(
                           subMunicipality,
@@ -129,7 +153,7 @@ class MapCard extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Expanded(
-                              flex: 2,
+                              flex: 1,
                               child: Row(
                                 children: [
                                   Image.asset(
@@ -150,6 +174,7 @@ class MapCard extends StatelessWidget {
                               ),
                             ),
                             Expanded(
+                              flex: 2,
                               child: PriceWidget(
                                 price: price,
                                 isSeasonal: isSeasonal,
@@ -163,21 +188,6 @@ class MapCard extends StatelessWidget {
                           ],
                         ),
                       ],
-                    ),
-                  ),
-                  SizedBox(
-                    width: 8,
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      onClose();
-                    },
-                    child: CircleIcon(
-                      icon: Icons.close,
-                      circleSize: 24,
-                      iconColor: AppColor.primary600Light,
-                      backgroundColor: AppColor.geyser.withOpacity(0.4),
-                      iconSize: 12,
                     ),
                   ),
                 ],
@@ -389,8 +399,7 @@ class PriceWidget extends StatelessWidget {
         TextSpan(
             text: isFree && !isDirectRental ? ("free").tr() : price + "  ",
             style: AppStyle.cardTitleTextStle
-              ..copyWith(
-                  color: AppColor.primary900Light, fontSize: priceFontSize)),
+              ..copyWith(color: AppColor.primary900Light, fontSize: fontSize)),
         if (!isFree)
           TextSpan(
               text: isDirectRental

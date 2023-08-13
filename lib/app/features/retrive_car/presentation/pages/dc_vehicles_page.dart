@@ -9,6 +9,7 @@ import '../../../../core/utils/enums/bloc_status.dart';
 import '../../../_shared_feature_/presentation/dialogs/bottom_sheet_dialogs.dart';
 import '../../../_shared_feature_/presentation/widgets/custom_shimmer_list_widget.dart';
 import '../../../_shared_feature_/presentation/widgets/empty_state_widget.dart';
+import '../../../_shared_feature_/presentation/widgets/need_login_widget.dart';
 import '../../../_shared_feature_/presentation/widgets/reload_widget.dart';
 import '../../domain/entities/create_retrive_page_params.dart';
 import '../blocs/retrieve_vehicles_bloc/retrieve_vehicles_bloc.dart';
@@ -61,7 +62,7 @@ class DCVehiclesPage extends StatelessWidget {
 
                   if (state.status == BlocStatus.success &&
                       (state.vehicleItem?.isEmpty ?? true))
-                    EmptyStateWidget(
+                    EmptyListWidget(
                       title: ("no_veichles").tr(),
                     ),
                   if (state.status == BlocStatus.failure)

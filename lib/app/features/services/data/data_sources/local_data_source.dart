@@ -11,6 +11,7 @@ abstract class ServicesLocalDataSource {
   Future<List<ServiceEntity>> getIslamicServices();
   Future<List<ServiceEntity>> getBusinessLicenseServices();
   Future<List<ServiceEntity>> getHonoringTheDeadServices();
+  Future<List<ServiceEntity>> getMunicipalServices();
   //Future<List<ServiceEntity>> getHealthCertificatesServices();
   Future<List<ServiceEntity>> getHelpServices();
 
@@ -25,6 +26,7 @@ class ServicesLocalDataSourceImplementation implements ServicesLocalDataSource {
   final List<ServiceEntity> _honoringTheDeadServices = [];
   final List<ServiceEntity> _healthCertificatesServices = [];
   final List<ServiceEntity> _helpServices = [];
+  final List<ServiceEntity> _municipalServices = [];
 
   List<ServiceEntity> get _allServices =>
       _customerVoiceServices + _islamicServices;
@@ -104,6 +106,10 @@ class ServicesLocalDataSourceImplementation implements ServicesLocalDataSource {
         servicesJson['business_license_services'] as List<dynamic>;
     final honoringTheDeadServicesJson =
         servicesJson['honoring_the_dead_services'] as List<dynamic>;
+
+    final municpalServicesJson =
+        servicesJson['municipal_services'] as List<dynamic>;
+
     // final healthCertificatesServicesJson =
     //    servicesJson['health_certificates_services'] as List<dynamic>;
     final helpServicesJson = servicesJson['help_services'] as List<dynamic>;
@@ -121,6 +127,13 @@ class ServicesLocalDataSourceImplementation implements ServicesLocalDataSource {
         (service) => ServiceModel.fromJson(service as Map<String, dynamic>),
       ),
     );
+
+    _municipalServices.addAll(
+      municpalServicesJson.map(
+        (service) => ServiceModel.fromJson(service as Map<String, dynamic>),
+      ),
+    );
+
     _honoringTheDeadServices.addAll(
       honoringTheDeadServicesJson.map(
         (service) => ServiceModel.fromJson(service as Map<String, dynamic>),
@@ -138,5 +151,13 @@ class ServicesLocalDataSourceImplementation implements ServicesLocalDataSource {
         (service) => ServiceModel.fromJson(service as Map<String, dynamic>),
       ),
     );
+  }
+
+  @override
+  Future<List<ServiceEntity>> getMunicipalServices() async {
+    if (_municipalServices.isEmpty) {
+      await _loadServices();
+    }
+    return _municipalServices;
   }
 }

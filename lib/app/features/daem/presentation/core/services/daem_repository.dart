@@ -363,6 +363,7 @@ class DaemRepository {
     //print(body);
 
     final res = await webServices.postPegaRequest(url, body: body);
+    print(res);
     bool? state = res['state'];
     dynamic data = res['data'];
     String? error = res['error'];

@@ -78,7 +78,8 @@ class _QiblahWebViewPageState extends State<QiblahWebViewPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: DefaultAppBarWidget(
-        title: "back".tr(),
+        title: "qiblahCompass".tr(),
+        x: true,
       ),
       body: StreamBuilder<double?>(
         stream: _progessStream.stream,
@@ -98,26 +99,35 @@ class _QiblahWebViewPageState extends State<QiblahWebViewPage> {
                     useShouldOverrideUrlLoading: true,
                   ),
                 ),
-                onLoadStart: (controller, Uri? url) {
-                  //  print("URL WebView: $url");
-                  // setState(() {
-                  //   this.url = url!.path;
-                  // });
+                onLoadStart: (controller, Uri? url) async {
+                  /*    await _controller.evaluateJavascript(
+                      source:
+                          "document.getElementsByClassName('mat-raised-button')[0].click()");
+
+                  await _controller.evaluateJavascript(
+                      source:
+                          "document.getElementsByClassName('mat-raised-button')[0].click()");
+
+                  await _controller.evaluateJavascript(
+                      source:
+                          "document.getElementsByClassName('mat-focus-indicator mat-icon-button mat-button-base')[0].style.display='none'; document.getElementsByClassName('mat-focus-indicator mat-icon-button mat-button-base')[0].style.display='none'; document.getElementsByClassName('mat-fab mat-button-base')[0].style.display='none'; document.getElementsByClassName('expanded')[0].style.display='none'");*/
                 },
-                onLoadStop: (controller, Uri? url) {
-                  /* print("URL WebView: $url");
-                  if (url?.path.endsWith("/dashboardclient/dashboard") ??
-                      false) {
-                    Timer(const Duration(milliseconds: 1300), () async {
-                      _controller.loadUrl(
-                          urlRequest: URLRequest(
-                        url: Uri.parse(widget.args.url),
-                      ));
+                onLoadStop: (controller, Uri? url) async {
+                  Timer.periodic(const Duration(seconds: 1), (timer) async {
+                    await _controller.evaluateJavascript(
+                        source:
+                            "document.getElementsByClassName('mat-raised-button')[0].click()");
+
+                    Timer.periodic(const Duration(seconds: 2), (timer) async {
+                      await _controller.evaluateJavascript(
+                          source:
+                              "document.getElementsByClassName('mat-raised-button')[0].click()");
+
+                      await _controller.evaluateJavascript(
+                          source:
+                              "document.getElementsByClassName('mat-focus-indicator mat-icon-button mat-button-base')[0].style.display='none'; document.getElementsByClassName('mat-focus-indicator mat-icon-button mat-button-base')[0].style.display='none'; document.getElementsByClassName('mat-fab mat-button-base')[0].style.display='none'; document.getElementsByClassName('expanded')[0].style.display='none'");
                     });
-                  }*/
-                  // setState(() {
-                  //   this.url = url!.path;
-                  // });
+                  });
                 },
                 onLoadError: (controller, url, code, message) => print(message),
                 onProgressChanged: (controller, int progress) {
@@ -135,19 +145,24 @@ class _QiblahWebViewPageState extends State<QiblahWebViewPage> {
                     value: snapshot.data,
                   ),
                 ),
-              Align(
+              /*  Align(
                 alignment: Alignment.center,
                 child: ElevatedButtonWidget.add(
                   onPressed: () async {
                     print("FFFF");
-                    print((await controller.runJavaScriptReturningResult(
-                        "document.getElementsByTagName('button')[0].style.display='none'")));
+                    await _controller.evaluateJavascript(
+                        source:
+                            "document.getElementsByClassName('mat-focus-indicator mat-icon-button mat-button-base')[0].style.display='none'; document.getElementsByClassName('mat-focus-indicator mat-icon-button mat-button-base')[0].style.display='none'; document.getElementsByClassName('mat-fab mat-button-base')[0].style.display='none'; document.getElementsByClassName('expanded')[0].style.display='none'");
+
+                    //_controller.evaluateJavascript(
+                    //    source:
+                    //        "document.getElementsByClassName('expanded')[0].style.display='none'");
 
                     // controller.runJavaScript(
                     //     "document.getElementsByTagName('button')[1].style.display='none'");
                   },
                 ),
-              )
+              )*/
             ],
           );
         },

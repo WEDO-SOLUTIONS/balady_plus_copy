@@ -145,7 +145,7 @@
   "municipalAdvisorHint": "يقدم لك المستشار دراسة شاملة تتطلب الإجابة على 10 أسئلة، مدة المحادثة 15 دقيقة.\r\n\r\nتتكون النتيجة النهائية للدراسة من:   \r\nمتطلبات الترخيص\r\nدراسة مالية\r\nالمرفقات المطلوبة للتقديم \r\n\r\nيمكنك أيضا الحصول على كل قسم من الدراسة بشكل منفصل.\r\n\r\nملاحظة: في حال إنهاء المحادثة قبل النتيجة الأخيرة سيتم إعادة المحادثة.",
   "municipalAdvisorTopic": "ما الذي تريد معرفته اليوم ؟",
   "municipalAdvisorChooseHint": "اختر من القائمة التالية",
-  "municipalAdvisorTopicAnswer1": "دراسة استشارية شاملة",
+  "municipalAdvisorTopicAnswer1": "اشتراطات الترخيص المكاني والتكاليف المالية البلدية",
   "municipalAdvisorTopicAnswer2": "متطلبات إصدار رخصة تجارية لنشاطك",
   "municipalAdvisorTopicAnswer3": "التصاريح المتاحة لنشاطك",
   "municipalAdvisorTopicAnswer4": "حالة شهادة الامتثال",
@@ -1041,6 +1041,7 @@
   "personal_data": "البيانات الشخصية",
   "_providerDetailsComments": "provider_details_page",
   "main_branch": "الفرع الرئيسي",
+  "work_details":"تفاصيل العمل والتواصل",
   "view_branches": "عرض الفروع",
   "view_info": "عرض المعلومات",
   "service_info": "بيانات الخدمة",
@@ -2420,7 +2421,7 @@
   "warning": "تحذير",
   "islamic_services": "إسلاميات",
   "customer_voice_services": "خدمات تهمك",
-  "business_license_services": "خدمة التفويض للتراخيص والمخططات",
+  "business_license_services": "المتجر البلدي",
   "honoring_the_dead_services": "خدمات تكريم الموتى",
   "health_certificates_services": "خدمات الشهادات الصحية",
   "help_services": "خدمات مساعدة",
@@ -2952,7 +2953,7 @@
   "space_label_shop":"المساحة الكليه للمحل",
   "space_label_shop_hint":"ادخل المساحة الكليه للمحل",
 
-  "balady_works": "تفويض المكاتب الهندسية",
+  "balady_works":   "خدمات الترخيص والمخططات",
  
   "update_desc":"الرجاء التحديث للاستمرار في استخدام التطبيق. لقد قمنا بإطلاق تطبيق جديد!",
 
@@ -2977,6 +2978,15 @@
   "boarding_subtitle": "تعرف على الأماكن والخدمات القريبة منك وفقًا لتصنيفات متنوعة تجعل الوصول إليها أسهل.",
   "boarding_button_text": "التالي",
   "boarding_end_text":"انهاء",
-  "skip":"تخطى"
-  
+  "skip":"تخطى",
+ 
+  "land_info":"معلومات الارض",
+  "municipal_commercial":"الخدمات التجارية",
+  "municipal_ewaa":"منصة الإيواء",
+  "municipal_health":"إصدار شهادة صحية",
+  "municpal_all":"المزيد",
+  "municpal_construction":"الخدمات الإنشائية",
+  "municpal_housing":"رخص السكن الجماعي",
+  "municpal_toppaco":"منصة التبغ", 
+  "municipal_shop":"المتاجر المتنقلة"
 }

@@ -261,6 +261,8 @@ class EntryPointCubit extends Cubit<EntryPointState> {
 
   Future<void> clearAuth() async {
     //await _logout(NoParams());
+    sl<DelegatorsCubit>()
+        .emit(DelegatorsState(status: BlocRequestStatus.initial));
     final failureOrSuccess = await _clearAuth(NoParams());
 
     await failureOrSuccess.fold((l) {
@@ -281,12 +283,15 @@ class EntryPointCubit extends Cubit<EntryPointState> {
 
   Future<void> autoLogout() async {
     sharedPrefs.setSSOToken(null);
+    sl<DelegatorsCubit>()
+        .emit(DelegatorsState(status: BlocRequestStatus.initial));
     //MM sharedPrefs.setUserProfile(null);
     sharedPrefs.setSSOUserProfile(null);
     clearSSOInfo();
     emit(const EntryPointState(
       status: AuthStatus.notAuthenticated,
     ));
+
     _logout(NoParams());
     //MM  sl<VDCategoryBloc>().add(RefreshCategoriesEvent());
 
