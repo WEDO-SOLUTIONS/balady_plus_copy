@@ -34,6 +34,7 @@ class _WeatherMainPageState extends State<WeatherMainPage> {
     final screenWidth = _size.width;
     final screenHeight = _size.height;
 
+    print("screenWidth=$screenWidth, screenHeight=$screenHeight");
     return BlocProvider.value(
       value: sl<WeatherBloc>(),
       child: BlocBuilder<WeatherBloc, WeatherState>(
@@ -61,56 +62,61 @@ class _WeatherMainPageState extends State<WeatherMainPage> {
                   child: const WeatherAppbar(),
                 ),
               ),
-              body: Stack(children: [
-                Container(
-                  decoration: const BoxDecoration(
-                    image: DecorationImage(
-                        image: AssetImage(ImagePath.weatherBackground3x),
-                        fit: BoxFit.cover),
-                  ),
-                  height: MediaQuery.sizeOf(context).height * 0.5,
-                  width: double.infinity,
-                ),
-                BlocProvider.value(
-                    value: context.read<WeatherBloc>(),
-                    child: const CurrentWeatherContent()),
-                Positioned(
-                  //make it in the middle of the screen
-                  top: screenHeight * 0.5,
-
-                  child: SizedBox(
+              body: Container(
+                height:MediaQuery.of(context).size.height,
+                width: MediaQuery.of(context).size.width,
+                child: Stack(
+                    children: [
+                  Container(
+                    decoration: const BoxDecoration(
+                      image: DecorationImage(
+                          image: AssetImage(ImagePath.weatherBackground3x),
+                          fit: BoxFit.cover),
+                    ),
                     height: MediaQuery.sizeOf(context).height * 0.5,
-                    width: screenWidth,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: state.allWeatherInfoStatus == BlocStatus.success
-                          ? ListView.builder(
-                              padding: EdgeInsets.zero,
-                              itemCount: state.allWeatherInfo?.forecast
-                                      ?.forecastday?.length ??
-                                  0,
-                              itemBuilder: (context, index) {
-                                var forecastDay = state.allWeatherInfo?.forecast
-                                    ?.forecastday?[index];
-                                return WeatherDayCard(
-                                  forecastDay: forecastDay,
-                                  isExpanded: selectedTile == index,
-                                  onExpansionChanged: (bool expanded) {
-                                    setState(() {
-                                      selectedTile = expanded ? index : -1;
-                                    });
-                                  },
-                                );
-                              },
-                            )
-                          : CustomShimmerListWidget(
-                              height: 50,
-                              itemCount: 7,
-                            ),
+                    width: double.infinity,
+                  ),
+                  BlocProvider.value(
+                      value: context.read<WeatherBloc>(),
+                      child: const CurrentWeatherContent()),
+                  Positioned(
+                    //make it in the middle of the screen
+                    top: screenHeight * 0.5,
+
+                    child: SizedBox(
+                      height: MediaQuery.sizeOf(context).height * 0.5,
+                      width: screenWidth,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: state.allWeatherInfoStatus == BlocStatus.success
+                            ? ListView.builder(
+                                padding: EdgeInsets.zero,
+                                itemCount: state.allWeatherInfo?.forecast
+                                        ?.forecastday?.length ??
+                                    0,
+                                itemBuilder: (context, index) {
+                                  var forecastDay = state.allWeatherInfo?.forecast
+                                      ?.forecastday?[index];
+                                  return WeatherDayCard(
+                                    forecastDay: forecastDay,
+                                    isExpanded: selectedTile == index,
+                                    onExpansionChanged: (bool expanded) {
+                                      setState(() {
+                                        selectedTile = expanded ? index : -1;
+                                      });
+                                    },
+                                  );
+                                },
+                              )
+                            : CustomShimmerListWidget(
+                                height: 50,
+                                itemCount: 7,
+                              ),
+                      ),
                     ),
                   ),
-                ),
-              ]),
+                ]),
+              ),
             );
           }
         },
