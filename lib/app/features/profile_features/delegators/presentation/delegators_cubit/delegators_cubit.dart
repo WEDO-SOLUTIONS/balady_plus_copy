@@ -44,4 +44,13 @@ class DelegatorsCubit extends Cubit<DelegatorsState> {
   void selectDelegator(DelegatorEntity? delegator) {
     emit(state.copyWith(selectedDelegator: Nullable(delegator)));
   }
+
+  void clearDelegators() {
+    emit(state.copyWith(status: BlocRequestStatus.submissionGetLoading));
+
+    emit(state.copyWith(
+        status: BlocRequestStatus.submissionGetSuccess, delegators: []));
+
+    print("Cleared ${state.delegators}");
+  }
 }

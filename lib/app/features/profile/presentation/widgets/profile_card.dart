@@ -43,6 +43,8 @@ class ProfileCard extends StatelessWidget {
         if (userInfo == null && delegator == null) {
           return;
         }
+        print("FFF ${context.read<DelegatorsCubit>().state.delegators}");
+        print("GG");
         if (isListItem) {
           context.read<DelegatorsCubit>().selectDelegator(delegator);
           context.read<EntryPointCubit>().selectDelegator(delegator);

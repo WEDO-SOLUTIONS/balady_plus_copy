@@ -57,7 +57,8 @@ class LayersRepositories {
             )
             .toList();
       }
-    } catch (e) {
+    } catch (ex) {
+      try {} catch (ex) {}
       print(e);
     }
     return null;

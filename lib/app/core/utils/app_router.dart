@@ -3,6 +3,7 @@ import 'package:balady_plus/app/features/commercial_license/commercial_license_e
 import 'package:balady_plus/app/features/athkar/presentation/pages/athkar_entity_content.dart';
 import 'package:balady_plus/app/features/boarding/presentation/pages/boarding_main_page.dart';
 import 'package:balady_plus/app/features/boarding/presentation/pages/boarding_pages.dart';
+import 'package:balady_plus/app/features/force_update/presentation/pages/forceUpdatePage.dart';
 import 'package:balady_plus/app/features/objectable_transactions/domain/entities/create_objection_page_params.dart';
 import 'package:balady_plus/app/features/objections/domain/entities/objection_details.dart';
 import 'package:balady_plus/app/features/profile_features/incidents/presentation/pages/dc_details.dart';
@@ -704,6 +705,11 @@ class AppRouter {
             params: params,
             athkarEntitiesList: params.athkarEntitiesList, // Use params here
           ),
+        );
+
+      case RouteName.forceUpdateRoute:
+        return MaterialPageRoute(
+          builder: (_) => ForceUpdatePage(),
         );
 
       // error page

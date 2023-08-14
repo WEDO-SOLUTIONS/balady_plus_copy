@@ -47,9 +47,7 @@ class _FacilityRatingScreenState extends State<FacilityRatingScreen> {
                   title: ('facility_evaluation').tr(),
                   desc: ('need_login_desc_evaluation').tr(),
                   onSuccessLogin: (isSuccess) {
-                    if (isSuccess) {
-                      model.getUserLatestRating();
-                    }
+                    if (isSuccess) {}
                   },
                 )
               : Stack(

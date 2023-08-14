@@ -38,15 +38,22 @@ class FacilityRatingViewModel extends BaseViewModel {
   final facilityQRViewModel = locator<FacilityQRDetailsViewModel>();
   void getUserLatestRating() async {
     String licenseId = locator<FacilityQRDetailsViewModel>().getLicenseUuid();
-
     await getRatingsData();
 
     if (!CommonProperties.isLoggedIn) return;
-    showLoading();
+
+    try {
+      showLoading();
+    } catch (ex) {
+      print(ex);
+    }
+    print("QWWEE 4444");
+
     try {
       final LatestUserRatingResponse? response =
           await _repositry.getUserLatestRating(licenseId);
       print("HHJJ");
+
       if (response != null) {
         prevoiusUserRating = response;
         setPreviousRatings();
@@ -65,9 +72,14 @@ class FacilityRatingViewModel extends BaseViewModel {
   Future<bool> getRatingsData() async {
     if (ratingItems.isNotEmpty) return true;
     try {
+      print("QWWEE 00000");
+
       showLoading();
+      print("QWWEE 23232");
+
       final Tuple3<bool?, String?, LicenseRatingItems?> response =
           await _repositry.getLicenseRatingitems();
+      print("QWWEE 666");
 
       hideLoading();
 

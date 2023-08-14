@@ -6,7 +6,7 @@ import '../../../../features/profile_features/delegators/delegators_exports.dart
         DelegatorsRepository,
         DelegatorsRepositoryImplementation,
         GetDelegators;
-        
+
 import '../../dependency_injection_exports.dart' show sl;
 
 class DelegatorsInjection {
@@ -27,7 +27,7 @@ class DelegatorsInjection {
     );
 
     //! Cubit
-    sl.registerFactory(
+    sl.registerLazySingleton(
       () => DelegatorsCubit(sl()),
     );
   }

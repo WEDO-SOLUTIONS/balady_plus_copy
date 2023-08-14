@@ -261,8 +261,7 @@ class EntryPointCubit extends Cubit<EntryPointState> {
 
   Future<void> clearAuth() async {
     //await _logout(NoParams());
-    sl<DelegatorsCubit>()
-        .emit(DelegatorsState(status: BlocRequestStatus.initial));
+    sl<DelegatorsCubit>().clearDelegators();
     final failureOrSuccess = await _clearAuth(NoParams());
 
     await failureOrSuccess.fold((l) {
@@ -283,8 +282,7 @@ class EntryPointCubit extends Cubit<EntryPointState> {
 
   Future<void> autoLogout() async {
     sharedPrefs.setSSOToken(null);
-    sl<DelegatorsCubit>()
-        .emit(DelegatorsState(status: BlocRequestStatus.initial));
+    sl<DelegatorsCubit>().clearDelegators();
     //MM sharedPrefs.setUserProfile(null);
     sharedPrefs.setSSOUserProfile(null);
     clearSSOInfo();
@@ -337,6 +335,7 @@ class EntryPointCubit extends Cubit<EntryPointState> {
     //MM  locator<VisitMainViewModel>().reset();
     //MM  locator<CustomerSoundViewModel>().reset();
     await CookieManager.instance().deleteAllCookies();
+    sl<DelegatorsCubit>().clearDelegators();
   }
 
   testData() async {
