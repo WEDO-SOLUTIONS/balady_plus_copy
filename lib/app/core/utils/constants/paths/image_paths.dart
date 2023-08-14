@@ -58,6 +58,7 @@ class ImagePath {
   static const quranImg = '${_imagePath}quran_img$_png';
   static const challengeBaladyBg = '${_imagePath}challenge_balady_bg$_png';
   static const reportBg = '${_imagePath}report_bg$_png';
+  static const deformityBg = '${_imagePath}deformity_bg$_png';
   static const boardingSplashImage = '${_imagePath}balady_logo$_png';
   static const boardingMainImage = '${_imagePath}boarding_main$_png';
   static const boardingCloseImage = '${_imagePath}boarding_close$_png';
