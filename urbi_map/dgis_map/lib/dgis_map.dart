@@ -18,8 +18,10 @@ class DgisMap extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DgisMapPlugin.instance.buildView(
+      key: key,
       androidUseExpensive: androidUseExpensive,
-      onPlatformViewCreated: (viewId) => onMapCreated(DgisMapController(viewId)),
+      onPlatformViewCreated: (viewId) =>
+          onMapCreated(DgisMapController(viewId)),
     );
   }
 }
