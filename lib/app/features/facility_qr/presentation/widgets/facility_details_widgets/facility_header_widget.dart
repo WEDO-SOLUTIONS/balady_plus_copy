@@ -26,11 +26,15 @@ class FacilityHeaderWidget extends StatelessWidget {
       children: [
         Row(
           children: [
-            CustomTextWidget(
-              facilityName,
-              fontColor: AppColor.blackModern800Light,
-              fontSize: 18,
-              fontWeight: AppFontWeight.bold,
+            Flexible(
+              child: CustomTextWidget(
+                facilityName,
+                fontColor: AppColor.blackModern800Light,
+                fontSize: 18,
+                maxLines: 10,
+                height: 1.4,
+                fontWeight: AppFontWeight.bold,
+              ),
             ),
             const CustomHorizontalSpace(width: 24),
             CustomTextWidget(

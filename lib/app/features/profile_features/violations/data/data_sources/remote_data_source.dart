@@ -3,25 +3,28 @@ import 'package:localize_and_translate/localize_and_translate.dart'
     show Translation;
 
 import '../../../../../core/errors/errors_exports.dart'
-    show NoDataFoundException, ServerException;
+    show APIException, NoDataFoundException, ServerException;
 import '../../../../../core/services/services_exports.dart' show WebService;
-import '../../../../../core/utils/utils_exports.dart'
-    show ApiUrl, Log;
+import '../../../../../core/utils/utils_exports.dart' show ApiUrl, Log;
 import '../../../../_shared_feature_/shared_feature_exports.dart'
     show ResponseBodyModel;
 
 import '../../violations_exports.dart'
-    show InvoiceStatusesModel, ViolationDetailsModel, ViolationsModel, ViolationsParamsModel, ViolationsStatusModel;
+    show
+        InvoiceStatusesModel,
+        ViolationDetailsModel,
+        ViolationsModel,
+        ViolationsParamsModel,
+        ViolationsStatusModel;
 
 abstract class ViolationsRemoteDataSource {
   Future<List<ViolationsModel>> getViolations(
-      ViolationsParamsModel params,
-      );
+    ViolationsParamsModel params,
+  );
   Future<List<ViolationsStatusModel>> getViolationsStatuses();
   Future<List<InvoiceStatusesModel>> getInvoiceStatuses();
 
   Future<ViolationDetailsModel> getViolationDetails(String id);
-
 }
 
 class ViolationsRemoteDataSourceImplementation
@@ -30,13 +33,12 @@ class ViolationsRemoteDataSourceImplementation
 
   ViolationsRemoteDataSourceImplementation({required this.webService});
 
-
-
   @override
   Future<ViolationDetailsModel> getViolationDetails(String id) async {
+    var response;
     try {
-      final response = await webService.dio
-          .get(ApiUrl.violationDetails, queryParameters: {
+      response =
+          await webService.dio.get(ApiUrl.violationDetails, queryParameters: {
         "violationNumber": id,
       });
 
@@ -53,6 +55,7 @@ class ViolationsRemoteDataSourceImplementation
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
+        dioError: error,
       );
     } catch (ex) {
       "Catched $ex".errorLog();
@@ -61,17 +64,22 @@ class ViolationsRemoteDataSourceImplementation
         rethrow;
       } else {
         print(ex.toString());
-        throw ServerException("errors_server_error_2".tr());
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
       }
     }
   }
 
   @override
   Future<List<ViolationsModel>> getViolations(
-      ViolationsParamsModel params,
-      ) async {
+    ViolationsParamsModel params,
+  ) async {
+    var response;
     try {
-      final response = await webService.dio.post(
+      response = await webService.dio.post(
         ApiUrl.violations,
         data: params.toMap(),
       );
@@ -82,8 +90,8 @@ class ViolationsRemoteDataSourceImplementation
       final result = ResponseBodyModel.fromMap(data).data?.result;
 
       return result
-          .map<ViolationsModel>((e) =>
-          ViolationsModel.fromJson(e as Map<String, dynamic>))
+          .map<ViolationsModel>(
+              (e) => ViolationsModel.fromJson(e as Map<String, dynamic>))
           .toList();
     } on DioError catch (error) {
       "DioError $error".errorLog();
@@ -93,21 +101,27 @@ class ViolationsRemoteDataSourceImplementation
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
+        dioError: error,
       );
     } catch (ex) {
       "Catched $ex".errorLog();
       if (ex is ServerException) {
         rethrow;
       } else {
-        throw ServerException("errors_server_error_2".tr());
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
       }
     }
   }
 
   @override
   Future<List<ViolationsStatusModel>> getViolationsStatuses() async {
+    var response;
     try {
-      final response = await webService.dio.get(
+      response = await webService.dio.get(
         ApiUrl.violationsStatus,
       );
 
@@ -128,21 +142,27 @@ class ViolationsRemoteDataSourceImplementation
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
+        dioError: error,
       );
     } catch (ex) {
       "Catched $ex".errorLog();
       if (ex is ServerException) {
         rethrow;
       } else {
-        throw ServerException("errors_server_error_2".tr());
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
       }
     }
   }
 
   @override
   Future<List<InvoiceStatusesModel>> getInvoiceStatuses() async {
+    var response;
     try {
-      final response = await webService.dio.get(
+      response = await webService.dio.get(
         ApiUrl.invoiceStatus,
       );
 
@@ -163,13 +183,18 @@ class ViolationsRemoteDataSourceImplementation
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
+        dioError: error,
       );
     } catch (ex) {
       "Catched $ex".errorLog();
       if (ex is ServerException) {
         rethrow;
       } else {
-        throw ServerException("errors_server_error_2".tr());
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
       }
     }
   }

@@ -3,6 +3,7 @@ import 'dart:convert';
 // ignore: depend_on_referenced_packages
 import 'package:balady_plus/app/features/quran/data/models/quran_book_mark_item_model.dart';
 import 'package:balady_plus/app/features/quran/data/models/quran_book_mark_model.dart';
+import 'package:balady_plus/app/features/vd/vd_exports.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../etmam_app/features/_shared_feature_/shared/data/entities/city/city_item.dart';
@@ -12,6 +13,7 @@ import '../../../features/_shared_feature_/shared_feature_exports.dart'
     show AuthDataModel;
 import '../../../features/entry_point/data/models/sso_token_model.dart';
 import '../../../features/entry_point/data/models/sso_user_info_model.dart';
+import '../../../features/vd/domain/entities/gis/gis_params.dart';
 import '../../utils/utils_exports.dart' show LocalStorageKey;
 
 class SharedPrefs {
@@ -309,6 +311,44 @@ class SharedPrefs {
       return token;
     }
     return null;
+  }
+
+  setUserLocation(GISParams? item) async {
+    if (item != null) {
+      await _sharedPreferences?.setString(
+          'gis_user_location', json.encode(item.toMap()));
+    } else {
+      _sharedPreferences?.remove("gis_user_location");
+    }
+  }
+
+  Future<GISParams?> getUserLocation() async {
+    String? bookMarks = _sharedPreferences?.getString('gis_user_location');
+    GISParams? model = bookMarks != null
+        ? GISParams.fromMap(json
+            .decode(_sharedPreferences?.getString('gis_user_location') ?? ""))
+        : null;
+
+    return model;
+  }
+
+  setUserGISLoaction(GISResponseModel? item) async {
+    if (item != null) {
+      await _sharedPreferences?.setString(
+          'gis_user_data', json.encode(item.toMap()));
+    } else {
+      _sharedPreferences?.remove("gis_user_data");
+    }
+  }
+
+  Future<GISResponseModel?> getUserGISData() async {
+    String? bookMarks = _sharedPreferences?.getString('gis_user_data');
+    GISResponseModel? model = bookMarks != null
+        ? GISResponseModel.fromMap(
+            json.decode(_sharedPreferences?.getString('gis_user_data') ?? ""))
+        : null;
+
+    return model;
   }
 }
 

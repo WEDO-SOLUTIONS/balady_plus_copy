@@ -6,6 +6,8 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../core/dependency_injection/dependency_injection_exports.dart'
     show sl;
+import '../../../../../core/utils/app_analytics_events.dart';
+import '../../../../../core/utils/common_functions.dart';
 import '../../../../../core/utils/constants/constants.dart';
 import '../../../../../core/utils/enums/bloc_status.dart';
 import '../../../../../core/utils/utils_exports.dart'
@@ -26,8 +28,20 @@ import '../../dashboard_exports.dart'
         DashboardState,
         NoDataWidget;
 
-class DashBoardPage extends StatelessWidget {
+class DashBoardPage extends StatefulWidget {
   const DashBoardPage({super.key});
+
+  @override
+  State<DashBoardPage> createState() => _DashBoardPageState();
+}
+
+class _DashBoardPageState extends State<DashBoardPage> {
+  @override
+  void initState() {
+    super.initState();
+
+    CommonFunctions.sendEventToAnalytics(AppEvents.delegators);
+  }
 
   @override
   Widget build(BuildContext context) {

@@ -24,32 +24,37 @@ class CreateVDState extends Equatable {
   final bool? isSearchShown;
   final bool? isCrValid;
   final String? crNumber;
+  final bool qrCodeFlow;
+  final PAGE_TYPE? pageType;
   //final String? splSearchedText;
-  CreateVDState(
-      {this.status = BlocStatus.initial,
-      this.isFromHome,
-      this.errorMessage,
-      this.currentPageValue = 0,
-      required this.items,
-      this.selectedCategory,
-      this.splResponse,
-      this.splItems,
-      this.gisResponse,
-      this.location,
-      this.currentUserlocation,
-      this.splDetailsResponse,
-      this.otpResponse,
-      this.issueDesc,
-      this.selectedSPLIndex,
-      this.firstName,
-      this.lastName,
-      this.mobileNumber,
-      this.agreement,
-      this.isSearchShown = false,
-      this.isCrValid,
-      this.crNumber
-      //  this.splSearchedText
-      });
+  CreateVDState({
+    this.status = BlocStatus.initial,
+    this.isFromHome,
+    this.errorMessage,
+    this.currentPageValue = 0,
+    required this.items,
+    this.selectedCategory,
+    this.splResponse,
+    this.splItems,
+    this.gisResponse,
+    this.location,
+    this.currentUserlocation,
+    this.splDetailsResponse,
+    this.otpResponse,
+    this.issueDesc,
+    this.selectedSPLIndex,
+    this.firstName,
+    this.lastName,
+    this.mobileNumber,
+    this.agreement,
+    this.isSearchShown = false,
+    this.isCrValid,
+    this.crNumber,
+    this.qrCodeFlow = false,
+    this.pageType,
+
+    //  this.splSearchedText
+  });
 
   PhoneNumberValidation get phoneValidator => mobileNumber == null
       ? PhoneNumberValidation.pure()
@@ -174,7 +179,9 @@ class CreateVDState extends Equatable {
       bool? isSearchShown,
       String? splSearchedText,
       bool? isCrValid,
-      String? crNumber}) {
+      String? crNumber,
+      bool? qrCodeFlow,
+      PAGE_TYPE? pageType}) {
     return CreateVDState(
         status: status ?? this.status,
         errorMessage: errorMessage ?? this.errorMessage,
@@ -201,7 +208,9 @@ class CreateVDState extends Equatable {
         isSearchShown: isSearchShown ?? this.isSearchShown,
         splItems: clearSPLResponse == true ? null : splItems ?? this.splItems,
         isCrValid: isCrValid ?? this.isCrValid,
-        crNumber: crNumber ?? this.crNumber);
+        crNumber: crNumber ?? this.crNumber,
+        qrCodeFlow: qrCodeFlow ?? this.qrCodeFlow,
+        pageType: pageType ?? this.pageType);
   }
 
   String? getImagePath() {
@@ -236,6 +245,8 @@ class CreateVDState extends Equatable {
         splResponse,
         crNumber,
         isCrValid,
-        otpResponse
+        otpResponse,
+        qrCodeFlow,
+        pageType
       ];
 }

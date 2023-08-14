@@ -27,6 +27,7 @@ import 'package:balady_plus/app/core/utils/enums/bloc_status.dart';
 import 'package:geolocator/geolocator.dart';
 
 import '../../../../../core/utils/animators/route_animator.dart';
+import '../../../../../core/utils/enums/enums.dart';
 
 part 'camera_event.dart';
 
@@ -47,6 +48,11 @@ class CameraBloc extends Bloc<CameraEvent, CameraState> {
       : _getSplList = getSplList,
         _getGisData = getGisData,
         super(CameraState(
+            location: (params.lat != null && params.lon != null)
+                ? GISParams(x: params.lon!, y: params.lat!)
+                : null,
+            qrCodeFlow: params.qrCodeFlow,
+            pageType: params.pageType,
             selectedCattegory: params.selectedCategory!,
             isFromHome: params.isFromHome)) {
     on<InitCameraEvent>((event, emit) async {
@@ -138,7 +144,14 @@ class CameraBloc extends Bloc<CameraEvent, CameraState> {
         navigateToCreateVDPage();
       }
     } else {
-      navigateToCreateVDPage();
+      if (state.qrCodeFlow == true &&
+          state.location?.x != null &&
+          state.location?.x != null) {
+        add(GetGISEvent(
+            params: GISParams(x: state.location!.x, y: state.location!.y)));
+      } else {
+        navigateToCreateVDPage();
+      }
     }
   }
 
@@ -267,6 +280,8 @@ class CameraBloc extends Bloc<CameraEvent, CameraState> {
             splResponse: state.splResponse,
             location: location,
             gisResponse: gisResponse,
+            qrCodeFlow: state.qrCodeFlow,
+            pageType: state.pageType,
             isFromHome: state.isFromHome ?? false)));
     NavigationService.navigatorKey.currentState?.push(SliderUpPage(
       page: BlocProvider<CreateVDBloc>.value(

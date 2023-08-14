@@ -4,6 +4,7 @@ import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports
 import 'package:flutter/material.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
+import '../../../../../../core/utils/app_analytics_events.dart';
 import '../../../../../../core/utils/constants/app_colors.dart';
 import '../../../../../../core/utils/constants/constants.dart';
 import '../../../../../_shared_feature_/presentation/widgets/buttons/custom_buttons_widgets.dart';
@@ -19,6 +20,13 @@ class InquiryDetailsScreen extends StatefulWidget {
 }
 
 class _InquiryDetailsScreenState extends State<InquiryDetailsScreen> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    CommonFunctions.sendEventToAnalytics(AppEvents.TransactionInquiry);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

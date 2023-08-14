@@ -8,6 +8,7 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../core/base/base_view.dart';
 import '../../../../core/base/base_view_model.dart';
+import '../../../../core/utils/app_analytics_events.dart';
 import '../../../../core/utils/constants/constants.dart';
 import '../../../_shared_feature_/presentation/icons/general_icon.dart';
 import '../../../_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
@@ -37,6 +38,8 @@ class _AppointmentsListScreenState extends State<AppointmentsListScreen> {
   @override
   void initState() {
     super.initState();
+    CommonFunctions.sendEventToAnalytics(AppEvents.appointments);
+
     //MM Helpers.sendEventToAnalytics(AppEvents.Appointments_MiniApp);
   }
 

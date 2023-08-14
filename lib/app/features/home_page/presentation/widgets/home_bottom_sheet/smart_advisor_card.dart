@@ -30,7 +30,6 @@ class BaladySmartAdvisorCard extends StatelessWidget {
         title: 'municipal_advisor'.tr(),
         child: Container(
           height: 172,
-          width: MediaQuery.sizeOf(context).width,
           padding: const EdgeInsets.symmetric(horizontal: 20),
           margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           decoration: const BoxDecoration(

@@ -6,9 +6,10 @@ import 'package:balady_plus/etmam_app/features/_shared_feature_/shared/shared_fe
 
 import 'package:dio/dio.dart';
 import 'package:balady_plus/etmam_app/core/errors/errors_exports.dart'
-    show ServerException;
+    show APIException, ServerException;
 import 'package:balady_plus/etmam_app/core/utils/utils_exports.dart'
     show ApiUrl, ApiParams, WithDelay;
+import 'package:localize_and_translate/localize_and_translate.dart';
 
 abstract class CityRemoteDataSource {
   Future<ApigeeResponse<CityResponseModel>> getCities();
@@ -40,8 +41,11 @@ class CityRemoteDataSourceImpl extends CityRemoteDataSource {
           parsedResult: parsedResult);
       return decodedResponse.toFuture();
     } on DioError catch (error) {
-      throw ServerException(error.toString(),
-          statusCode: error.response?.statusCode);
+      throw ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
     } catch (ex) {
       if (ex is ServerException)
         throw ex;
@@ -49,7 +53,11 @@ class CityRemoteDataSourceImpl extends CityRemoteDataSource {
         try {
           CommonFunctions.sendExceptionLog(exception: ex, response: response);
         } catch (ex) {}
-        throw ServerException(trans("errors_server_error_2"));
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
       }
     }
   }

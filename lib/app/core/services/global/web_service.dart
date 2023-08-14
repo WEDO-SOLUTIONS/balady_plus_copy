@@ -6,6 +6,7 @@ import 'package:localize_and_translate/localize_and_translate.dart'
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 import 'package:balady_plus/etmam_app/core/utils/utils_exports.dart'
     as EtmamCommonProperties hide Log;
+import 'package:sentry_dio/sentry_dio.dart';
 import '../../../core/dependency_injection/dependency_injection_exports.dart'
     show sl;
 import '../../../features/entry_point/presentation/cubit/auth_cubit.dart';
@@ -45,6 +46,8 @@ class WebService {
     dio.options.receiveTimeout = const Duration(milliseconds: 60000);
     dio.options.sendTimeout = const Duration(milliseconds: 60000);
     dio.options.headers = {};
+    dio.addSentry();
+
     dio.interceptors.add(PrettyDioLogger(
       requestHeader: true,
       requestBody: true,

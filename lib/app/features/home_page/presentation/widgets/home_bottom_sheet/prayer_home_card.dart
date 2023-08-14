@@ -25,7 +25,6 @@ class PrayerHomeCard extends StatelessWidget {
                     state.status != BlocRequestStatus.submissionGetLoading
                 ? Container(
                     height: 234,
-                    width: MediaQuery.sizeOf(context).width,
                     margin: const EdgeInsets.only(left: 16, right: 16, top: 12),
                     decoration: BoxDecoration(
                       borderRadius: const BorderRadius.all(Radius.circular(16)),
@@ -85,7 +84,7 @@ class PrayerHomeCard extends StatelessWidget {
                                                                   .withOpacity(
                                                                       0.4),
                                               fontWeight: AppFontWeight.bold,
-                                              fontSize: 11,
+                                              fontSize: 13,
                                             )
                                           : const ShimmerEffectWidget(
                                               width: 80,
@@ -249,12 +248,12 @@ class PrayerHomeCard extends StatelessWidget {
                                       children: [
                                         if (state.nextPrayer != null)
                                           CustomTextWidget(
-                                            "متبقي على وقت أذان ${state.nextPrayer!.prayer.label.tr()}",
+                                            "متبقي على أذان ${state.nextPrayer!.prayer.label.tr()}",
                                             fontColor: AppColor.white,
                                             fontWeight: AppFontWeight.bold,
                                             maxLines: 2,
                                             height: 1.3,
-                                            fontSize: 12,
+                                            fontSize: 13,
                                           ),
                                         const SizedBox(height: 8),
                                         state.nextPrayer != null

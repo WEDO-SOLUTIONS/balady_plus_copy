@@ -74,15 +74,14 @@ class _CustomAppBar extends State<CustomAppBarProvidersList> {
       ),
       leading: (widget.withCloseImg || widget.withBackImg)
           ? IconButton(
-              iconSize: 24,
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              icon: CustomSvgIconWidget(
-                widget.withCloseImg ? IconPath.close : IconPath.appbarBackArrow,
-                iconSize: 24,
-                //  iconColor: AppColorsTheme.primary700, //MM
-              ))
+              icon: Icon(
+                widget.withCloseImg ? Icons.close : Icons.arrow_back_ios,
+                color: Color(0xff18181b),
+                size: widget.withCloseImg ? 28 : null,
+              ),
+              onPressed:
+                  widget.actionOnPress ?? () => Navigator.of(context).pop(),
+            )
           : null,
       actions: [
         if (widget.actionImg != null && widget.actionImg != "")

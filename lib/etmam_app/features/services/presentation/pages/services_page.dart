@@ -99,7 +99,7 @@ class _ServicesPageState extends State<ServicesPage> {
             resizeToAvoidBottomInset: false,
             appBar: PreferredSize(
               preferredSize:
-                  Size.fromHeight(150 - MediaQuery.of(context).padding.top),
+                  Size.fromHeight(180 - MediaQuery.of(context).padding.top),
               child: CustomAppBarProvidersList(
                 title: 'مكاتب ${widget.args.response?.serviceName ?? ''}',
                 bottomWidget: Padding(

@@ -9,6 +9,7 @@ class RouteName {
   static const inappWebview = '/inappWebview';
   static const dmsImageFullScreen = '/dmsImageFullScreen';
   static const etmamMainPage = '/etmamMainPage';
+  static const forceUpdateRoute = '/forceUpdateRoute';
 
   //! Services
   static const serviceCards = '/serviceCards';

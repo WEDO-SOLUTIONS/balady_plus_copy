@@ -7,7 +7,7 @@ import 'package:localize_and_translate/localize_and_translate.dart'
 
 import '../../../../../../etmam_app/core/dependency_injection/injection_container.dart';
 import '../../../../../core/errors/errors_exports.dart'
-    show NoDataFoundException, ServerException;
+    show APIException, NoDataFoundException, ServerException;
 import '../../../../../core/services/services_exports.dart' show WebService;
 import '../../../../../core/utils/utils_exports.dart'
     show ApiUrl, CommonProperties, Log;
@@ -144,8 +144,9 @@ class MunicipalAdvisorRemoteDataSourceImplementation
 
   @override
   Future<List<IsicActivityModel>> getIsicActivities() async {
+    var response;
     try {
-      final response = await webService.dio.get(
+      response = await webService.dio.get(
         ApiUrl.isicActivities,
       );
 
@@ -166,13 +167,18 @@ class MunicipalAdvisorRemoteDataSourceImplementation
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
+        dioError: error,
       );
     } catch (ex) {
       "Catched $ex".errorLog();
       if (ex is ServerException) {
         rethrow;
       } else {
-        throw ServerException("errors_server_error_2".tr());
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
       }
     }
   }
@@ -180,8 +186,9 @@ class MunicipalAdvisorRemoteDataSourceImplementation
   @override
   Future<List<IsicActivityModel>> getIsicSubActivities(
       IsicSubActivityParamsModel params) async {
+    var response;
     try {
-      final response = await webService.dio.get(
+      response = await webService.dio.get(
         ApiUrl.isicSubActivities,
         queryParameters: params.toMap(),
       );
@@ -203,13 +210,18 @@ class MunicipalAdvisorRemoteDataSourceImplementation
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
+        dioError: error,
       );
     } catch (ex) {
       "Catched $ex".errorLog();
       if (ex is ServerException) {
         rethrow;
       } else {
-        throw ServerException("errors_server_error_2".tr());
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
       }
     }
   }
@@ -217,8 +229,9 @@ class MunicipalAdvisorRemoteDataSourceImplementation
   @override
   Future<ActivityDetailsModel> getActivityDetails(
       ActivityDetailsParamsModel params) async {
+    var response;
     try {
-      final response = await webService.dio.get(
+      response = await webService.dio.get(
         "${ApiUrl.activityDetails}/${params.id}",
       );
 
@@ -233,21 +246,27 @@ class MunicipalAdvisorRemoteDataSourceImplementation
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
+        dioError: error,
       );
     } catch (ex) {
       "Catched $ex".errorLog();
       if (ex is ServerException) {
         rethrow;
       } else {
-        throw ServerException("errors_server_error_2".tr());
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
       }
     }
   }
 
   @override
   Future<List<AccommodationTypeEntity>> getAccommodationTypes() async {
+    var response;
     try {
-      final response = await webService.dio.get(
+      response = await webService.dio.get(
         ApiUrl.accommodationTypes,
       );
 
@@ -269,21 +288,27 @@ class MunicipalAdvisorRemoteDataSourceImplementation
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
+        dioError: error,
       );
     } catch (ex) {
       "Catched $ex".errorLog();
       if (ex is ServerException) {
         rethrow;
       } else {
-        throw ServerException("errors_server_error_2".tr());
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
       }
     }
   }
 
   @override
   Future<(String, int)> getConsultationKey() async {
+    var response;
     try {
-      final response = await webService.dio.post(ApiUrl.consultationKey);
+      response = await webService.dio.post(ApiUrl.consultationKey);
 
       final data = response.data;
       data.toString().successLog();
@@ -296,21 +321,27 @@ class MunicipalAdvisorRemoteDataSourceImplementation
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
+        dioError: error,
       );
     } catch (ex) {
       "Catched $ex".errorLog();
       if (ex is ServerException) {
         rethrow;
       } else {
-        throw ServerException("errors_server_error_2".tr());
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
       }
     }
   }
 
   @override
   Future<List<String>> getIssuingPredefinedConditions() async {
+    var response;
     try {
-      final response = await webService.dio.get(
+      response = await webService.dio.get(
         ApiUrl.issuingPredefinedConditions,
       );
 
@@ -328,13 +359,18 @@ class MunicipalAdvisorRemoteDataSourceImplementation
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
+        dioError: error,
       );
     } catch (ex) {
       "Catched $ex".errorLog();
       if (ex is ServerException) {
         rethrow;
       } else {
-        throw ServerException("errors_server_error_2".tr());
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
       }
     }
   }
@@ -342,8 +378,9 @@ class MunicipalAdvisorRemoteDataSourceImplementation
   @override
   Future<List<LicensePermitEntity>> getLicensePermits(
       KeyParamsModel params) async {
+    var response;
     try {
-      final response =
+      response =
           await webService.dio.get('${ApiUrl.licensePermits}/${params.key}');
 
       final data = response.data;
@@ -363,13 +400,18 @@ class MunicipalAdvisorRemoteDataSourceImplementation
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
+        dioError: error,
       );
     } catch (ex) {
       "Catched $ex".errorLog();
       if (ex is ServerException) {
         rethrow;
       } else {
-        throw ServerException("errors_server_error_2".tr());
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
       }
     }
   }
@@ -377,8 +419,9 @@ class MunicipalAdvisorRemoteDataSourceImplementation
   @override
   Future<List<SupervisingAuthorityEntity>> getSupervisingAuthorities(
       KeyParamsModel params) async {
+    var response;
     try {
-      final response = await webService.dio
+      response = await webService.dio
           .get('${ApiUrl.supervisingAuthorities}/${params.key}');
 
       final data = response.data;
@@ -398,13 +441,18 @@ class MunicipalAdvisorRemoteDataSourceImplementation
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
+        dioError: error,
       );
     } catch (ex) {
       "Catched $ex".errorLog();
       if (ex is ServerException) {
         rethrow;
       } else {
-        throw ServerException("errors_server_error_2".tr());
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
       }
     }
   }
@@ -413,6 +461,7 @@ class MunicipalAdvisorRemoteDataSourceImplementation
   Future<List<String>> getCivilDefensePredefinedConditions(
     KeyParamsModel params,
   ) async {
+    var response;
     try {
       final predefinedConditionsResponse = await webService.dio.get(
         ApiUrl.civilDefensePredefinedConditions,
@@ -426,7 +475,7 @@ class MunicipalAdvisorRemoteDataSourceImplementation
 
       predefinedConditionsResult.map<String>((e) => e as String).toList();
 
-      final response = await webService.dio.get(
+      response = await webService.dio.get(
         '${ApiUrl.civilDefense}/${params.key}',
       );
 
@@ -446,13 +495,18 @@ class MunicipalAdvisorRemoteDataSourceImplementation
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
+        dioError: error,
       );
     } catch (ex) {
       "Catched $ex".errorLog();
       if (ex is ServerException) {
         rethrow;
       } else {
-        throw ServerException("errors_server_error_2".tr());
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
       }
     }
   }
@@ -460,8 +514,9 @@ class MunicipalAdvisorRemoteDataSourceImplementation
   @override
   Future<List<CleaningEntity>> getCleaningMechanisms(
       KeyParamsModel params) async {
+    var response;
     try {
-      final response = await webService.dio
+      response = await webService.dio
           .get('${ApiUrl.cleaningMechanisms}/${params.key}');
 
       final data = response.data;
@@ -481,13 +536,18 @@ class MunicipalAdvisorRemoteDataSourceImplementation
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
+        dioError: error,
       );
     } catch (ex) {
       "Catched $ex".errorLog();
       if (ex is ServerException) {
         rethrow;
       } else {
-        throw ServerException("errors_server_error_2".tr());
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
       }
     }
   }
@@ -495,8 +555,9 @@ class MunicipalAdvisorRemoteDataSourceImplementation
   @override
   Future<List<CommercialOfficeEntity>> getCommercialOffices(
       KeyParamsModel params) async {
+    var response;
     try {
-      final response =
+      response =
           await webService.dio.get('${ApiUrl.commercialOffices}/${params.key}');
 
       final data = response.data;
@@ -516,13 +577,18 @@ class MunicipalAdvisorRemoteDataSourceImplementation
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
+        dioError: error,
       );
     } catch (ex) {
       "Catched $ex".errorLog();
       if (ex is ServerException) {
         rethrow;
       } else {
-        throw ServerException("errors_server_error_2".tr());
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
       }
     }
   }
@@ -530,8 +596,9 @@ class MunicipalAdvisorRemoteDataSourceImplementation
   @override
   Future<List<EngineeringOfficeEntity>> getEngineeringOffices(
       KeyParamsModel params) async {
+    var response;
     try {
-      final response = await webService.dio
+      response = await webService.dio
           .get('${ApiUrl.engineeringOffices}/${params.key}');
 
       final data = response.data;
@@ -551,13 +618,18 @@ class MunicipalAdvisorRemoteDataSourceImplementation
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
+        dioError: error,
       );
     } catch (ex) {
       "Catched $ex".errorLog();
       if (ex is ServerException) {
         rethrow;
       } else {
-        throw ServerException("errors_server_error_2".tr());
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
       }
     }
   }
@@ -566,8 +638,9 @@ class MunicipalAdvisorRemoteDataSourceImplementation
   Future<bool> saveConsultationProgress(
     SaveConsultationProgressParamsModel params,
   ) async {
+    var response;
     try {
-      final response = await webService.dio.post(
+      response = await webService.dio.post(
         '${ApiUrl.saveConsultationProgress}/${params.consultationKey}',
         data: params.toMap(),
       );
@@ -586,22 +659,28 @@ class MunicipalAdvisorRemoteDataSourceImplementation
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
+        dioError: error,
       );
     } catch (ex) {
       "Catched $ex".errorLog();
       if (ex is ServerException) {
         rethrow;
       } else {
-        throw ServerException("errors_server_error_2".tr());
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
       }
     }
   }
 
   @override
   Future<bool> saveActivities(SaveActivitiesParamsModel params) async {
+    var response;
     try {
       print("HEREEEEEEE");
-      final response = await webService.dio.post(
+      response = await webService.dio.post(
           '${ApiUrl.saveActivities}/${params.consultationKey}',
           data: params.activitiesIds.toList(),
           options: Options(headers: {"Content-Type": "application/json"}));
@@ -620,21 +699,27 @@ class MunicipalAdvisorRemoteDataSourceImplementation
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
+        dioError: error,
       );
     } catch (ex) {
       "Catched $ex".errorLog();
       if (ex is ServerException) {
         rethrow;
       } else {
-        throw ServerException("errors_server_error_2".tr());
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
       }
     }
   }
 
   @override
   Future<List<int>> getLicenseYears(GetLicenseYearsParamsModel params) async {
+    var response;
     try {
-      final response = await webService.dio.get(
+      response = await webService.dio.get(
         ApiUrl.licenseYears,
         queryParameters: params.toMap(),
       );
@@ -653,13 +738,18 @@ class MunicipalAdvisorRemoteDataSourceImplementation
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
+        dioError: error,
       );
     } catch (ex) {
       "Catched $ex".errorLog();
       if (ex is ServerException) {
         rethrow;
       } else {
-        throw ServerException("errors_server_error_2".tr());
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
       }
     }
   }
@@ -686,6 +776,7 @@ class MunicipalAdvisorRemoteDataSourceImplementation
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
+        dioError: error,
       );
     } catch (ex) {
       "Catched $ex".errorLog();
@@ -713,6 +804,7 @@ class MunicipalAdvisorRemoteDataSourceImplementation
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
+        dioError: error,
       );
     } catch (ex) {
       "Catched $ex".errorLog();
@@ -746,6 +838,7 @@ class MunicipalAdvisorRemoteDataSourceImplementation
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
+        dioError: error,
       );
     } catch (ex) {
       "Catched $ex".errorLog();
@@ -773,6 +866,7 @@ class MunicipalAdvisorRemoteDataSourceImplementation
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
+        dioError: error,
       );
     } catch (ex) {
       "Catched $ex".errorLog();
@@ -807,6 +901,7 @@ class MunicipalAdvisorRemoteDataSourceImplementation
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
+        dioError: error,
       );
     } catch (ex) {
       "Catched $ex".errorLog();
@@ -816,8 +911,9 @@ class MunicipalAdvisorRemoteDataSourceImplementation
 
   @override
   Future<bool> saveFinancialStudy(FinancialStudyParamsModel params) async {
+    var response;
     try {
-      final response = await webService.dio.post(
+      response = await webService.dio.post(
         "${ApiUrl.saveFinancialStudy}/${params.consultationKey}",
         data: params.toMap(),
       );
@@ -836,13 +932,18 @@ class MunicipalAdvisorRemoteDataSourceImplementation
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
+        dioError: error,
       );
     } catch (ex) {
       "Catched $ex".errorLog();
       if (ex is ServerException) {
         rethrow;
       } else {
-        throw ServerException("errors_server_error_2".tr());
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
       }
     }
   }
@@ -865,6 +966,7 @@ class MunicipalAdvisorRemoteDataSourceImplementation
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
+        dioError: error,
       );
     } catch (ex) {
       "Catched $ex".errorLog();
@@ -897,6 +999,7 @@ class MunicipalAdvisorRemoteDataSourceImplementation
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
+        dioError: error,
       );
     } catch (ex) {
       "Catched $ex".successLog();
@@ -924,6 +1027,7 @@ class MunicipalAdvisorRemoteDataSourceImplementation
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
+        dioError: error,
       );
     } catch (ex) {
       "Catched $ex".successLog();
@@ -955,6 +1059,7 @@ class MunicipalAdvisorRemoteDataSourceImplementation
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
+        dioError: error,
       );
     } catch (ex) {
       "Catched $ex".successLog();
@@ -984,6 +1089,7 @@ class MunicipalAdvisorRemoteDataSourceImplementation
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
+        dioError: error,
       );
     } catch (ex) {
       "Catched $ex".successLog();
@@ -1011,6 +1117,7 @@ class MunicipalAdvisorRemoteDataSourceImplementation
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
+        dioError: error,
       );
     } catch (ex) {
       "Catched $ex".successLog();
@@ -1043,6 +1150,7 @@ class MunicipalAdvisorRemoteDataSourceImplementation
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
+        dioError: error,
       );
     } catch (ex) {
       "Catched $ex".successLog();
@@ -1074,6 +1182,7 @@ class MunicipalAdvisorRemoteDataSourceImplementation
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
+        dioError: error,
       );
     } catch (ex) {
       "Catched $ex".successLog();
@@ -1100,6 +1209,7 @@ class MunicipalAdvisorRemoteDataSourceImplementation
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
+        dioError: error,
       );
     } catch (ex) {
       "Catched $ex".successLog();
@@ -1135,6 +1245,7 @@ class MunicipalAdvisorRemoteDataSourceImplementation
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
+        dioError: error,
       );
     } catch (ex) {
       "Catched $ex".errorLog();

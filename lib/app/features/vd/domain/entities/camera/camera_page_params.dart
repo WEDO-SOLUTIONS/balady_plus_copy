@@ -1,8 +1,24 @@
 import 'package:balady_plus/app/features/vd/vd_exports.dart' show CategoryItem;
 
-class CameraParamsPage {
-  CategoryItem? selectedCategory;
-  bool isFromHome;
+import '../../../../../core/utils/enums/enums.dart';
 
-  CameraParamsPage({this.selectedCategory, this.isFromHome = false});
+class CameraParamsPage {
+
+
+    CategoryItem? selectedCategory;
+  bool isFromHome;
+  String? address;
+  double? lat;
+  double? lon;
+  bool qrCodeFlow;
+  PAGE_TYPE? pageType;
+
+  CameraParamsPage(
+      {this.selectedCategory,
+      this.address,
+      this.lat,
+      this.lon,
+      this.isFromHome = false,
+      this.qrCodeFlow = false,
+      this.pageType});
 }

@@ -3,7 +3,7 @@ import 'package:localize_and_translate/localize_and_translate.dart'
     show Translation;
 
 import '../../../../../core/errors/errors_exports.dart'
-    show NoDataFoundException, ServerException;
+    show APIException, NoDataFoundException, ServerException;
 import '../../../../../core/services/services_exports.dart' show WebService;
 import '../../../../../core/utils/utils_exports.dart' show ApiUrl, Log;
 import '../../../../_shared_feature_/shared_feature_exports.dart'
@@ -43,8 +43,10 @@ class InvoicesRemoteDataSourceImplementation
   Future<List<InvoicesModel>> getInvoices(
     InvoicesParamsModel params,
   ) async {
+    var response;
+
     try {
-      final response = await webService.dio.post(
+      response = await webService.dio.post(
         ApiUrl.invoices,
         data: params.toMap(),
       );
@@ -66,21 +68,28 @@ class InvoicesRemoteDataSourceImplementation
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
+        dioError: error,
       );
     } catch (ex) {
       "Catched $ex".errorLog();
       if (ex is ServerException) {
         rethrow;
       } else {
-        throw ServerException("errors_server_error_2".tr());
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
       }
     }
   }
 
   @override
   Future<List<InvoiceStatusModel>> getInvoiceStatuses() async {
+    var response;
+
     try {
-      final response = await webService.dio.get(
+      response = await webService.dio.get(
         ApiUrl.invoiceStatuses,
       );
 
@@ -101,21 +110,28 @@ class InvoicesRemoteDataSourceImplementation
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
+        dioError: error,
       );
     } catch (ex) {
       "Catched $ex".errorLog();
       if (ex is ServerException) {
         rethrow;
       } else {
-        throw ServerException("errors_server_error_2".tr());
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
       }
     }
   }
 
   @override
   Future<List<InvoiceTypeModel>> getInvoiceTypes() async {
+    var response;
+
     try {
-      final response = await webService.dio.get(
+      response = await webService.dio.get(
         ApiUrl.invoiceTypes,
       );
 
@@ -136,13 +152,18 @@ class InvoicesRemoteDataSourceImplementation
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
+        dioError: error,
       );
     } catch (ex) {
       "Catched $ex".errorLog();
       if (ex is ServerException) {
         rethrow;
       } else {
-        throw ServerException("errors_server_error_2".tr());
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
       }
     }
   }
@@ -151,8 +172,10 @@ class InvoicesRemoteDataSourceImplementation
   Future<List<InvoiceSubTypeModel>> getInvoiceSubTypes(
     InvoiceSubTypeParamsModel params,
   ) async {
+    var response;
+
     try {
-      final response = await webService.dio.get(
+      response = await webService.dio.get(
         ApiUrl.invoiceSubTypes(params.id),
       );
 
@@ -173,13 +196,18 @@ class InvoicesRemoteDataSourceImplementation
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
+        dioError: error,
       );
     } catch (ex) {
       "Catched $ex".errorLog();
       if (ex is ServerException) {
         rethrow;
       } else {
-        throw ServerException("errors_server_error_2".tr());
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
       }
     }
   }
@@ -188,8 +216,10 @@ class InvoicesRemoteDataSourceImplementation
   Future<InvoiceDetailsModel> getInvoiceDetails(
     InvoiceDetailsParamsModel params,
   ) async {
+    var response;
+
     try {
-      final response = await webService.dio.post(
+      response = await webService.dio.post(
         ApiUrl.invoiceDetails,
         data: params.toMap(),
       );
@@ -208,6 +238,7 @@ class InvoicesRemoteDataSourceImplementation
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
+        dioError: error,
       );
     } catch (ex) {
       print(ex);
@@ -215,7 +246,11 @@ class InvoicesRemoteDataSourceImplementation
       if (ex is ServerException) {
         rethrow;
       } else {
-        throw ServerException("errors_server_error_2".tr());
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
       }
     }
   }

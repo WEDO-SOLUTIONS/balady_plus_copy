@@ -4,6 +4,8 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../core/dependency_injection/dependency_injection_exports.dart'
     show sl;
+import '../../../../core/utils/app_analytics_events.dart';
+import '../../../../core/utils/utils_exports.dart';
 import '../../../_shared_feature_/shared_feature_exports.dart'
     show
         BottomSheetDialog,
@@ -23,8 +25,21 @@ import '../../objections_exports.dart'
         SearchRequestsEvent;
 import '../widgets/requests_filters_bottom_sheet.dart';
 
-class ObjectableTransactionsPage extends StatelessWidget {
+class ObjectableTransactionsPage extends StatefulWidget {
   const ObjectableTransactionsPage({super.key});
+
+  @override
+  State<ObjectableTransactionsPage> createState() =>
+      _ObjectableTransactionsPageState();
+}
+
+class _ObjectableTransactionsPageState
+    extends State<ObjectableTransactionsPage> {
+  @override
+  void initState() {
+    super.initState();
+    CommonFunctions.sendEventToAnalytics(AppEvents.objectable);
+  }
 
   @override
   Widget build(BuildContext context) {

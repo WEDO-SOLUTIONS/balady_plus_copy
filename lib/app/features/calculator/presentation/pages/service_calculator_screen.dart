@@ -41,6 +41,7 @@ import 'package:percent_indicator/linear_percent_indicator.dart';
 
 import '../../../../core/base/base_view_model.dart';
 import '../../../../core/services/local/helpers.dart';
+import '../../../../core/utils/app_analytics_events.dart';
 import '../../../../core/utils/constants/app_colors.dart';
 import '../../../../core/utils/constants/constants.dart';
 import '../../../../core/utils/enums/enums.dart';
@@ -253,6 +254,8 @@ class _ServiceCalculatorScreenState extends BaseState<ServiceCalculatorScreen,
     _serviceCityIdController = model.cityId;
 
     //MM Helpers.sendEventToAnalytics(AppEvents.Calculator_details);
+
+    CommonFunctions.sendEventToAnalytics(AppEvents.calculator);
   }
 
   @override
@@ -542,7 +545,7 @@ class _ServiceCalculatorScreenState extends BaseState<ServiceCalculatorScreen,
             hideKeybaord();
 
             await BottomSheetDialog.showDraggableSheet(context,
-            isFullHeight: true, 
+                isFullHeight: true,
                 child: BottomSheetWithActions(
                   title: "lbl_edit_board".tr(),
                   body: AddBoardScreen(
@@ -635,7 +638,7 @@ class _ServiceCalculatorScreenState extends BaseState<ServiceCalculatorScreen,
             hideKeybaord();
 
             await BottomSheetDialog.showDraggableSheet(context,
-            isFullHeight:true, 
+                isFullHeight: true,
                 child: BottomSheetWithActions(
                   title: "lbl_edit_board".tr(),
                   body: AddBoardScreen(
@@ -727,7 +730,7 @@ class _ServiceCalculatorScreenState extends BaseState<ServiceCalculatorScreen,
           ),
           Container(
             width: double.infinity,
-            padding: const EdgeInsets.symmetric(horizontal: 10),
+            //  padding: const EdgeInsets.symmetric(horizontal: 10),
             child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
@@ -762,7 +765,7 @@ class _ServiceCalculatorScreenState extends BaseState<ServiceCalculatorScreen,
                 hideKeybaord();
 
                 await BottomSheetDialog.showDraggableSheet(context,
-                isFullHeight: true, 
+                    isFullHeight: true,
                     child: BottomSheetWithActions(
                       title: "lbl_add_new_board".tr(),
                       body: AddBoardScreen(
@@ -835,7 +838,7 @@ class _ServiceCalculatorScreenState extends BaseState<ServiceCalculatorScreen,
                 hideKeybaord();
 
                 await BottomSheetDialog.showDraggableSheet(context,
-                isFullHeight: true, 
+                    isFullHeight: true,
                     child: BottomSheetWithActions(
                       title: "lbl_add_new_board".tr(),
                       body: AddBoardScreen(
@@ -907,7 +910,7 @@ class _ServiceCalculatorScreenState extends BaseState<ServiceCalculatorScreen,
                 hideKeybaord();
 
                 await BottomSheetDialog.showDraggableSheet(context,
-                isFullHeight: true, 
+                    isFullHeight: true,
                     child: BottomSheetWithActions(
                       title: "lbl_edit_board".tr(),
                       body: AddBoardScreen(
@@ -3175,9 +3178,13 @@ class _ServiceCalculatorScreenState extends BaseState<ServiceCalculatorScreen,
           selectedDateHijri = date!;
           hijriDate = date;
           if (currentActivityId == 1)
-            _paymentEndDateController.text = date.toFormat("dd/mm/yyyy");
+            _paymentEndDateController.text =
+                CommonFunctions.replaceArabicNumberWithEnglish(
+                    date.toFormat("dd/mm/yyyy"));
           else if (currentActivityId == 8)
-            _certificatesEndDateController.text = date.toFormat("dd/mm/yyyy");
+            _certificatesEndDateController.text =
+                CommonFunctions.replaceArabicNumberWithEnglish(
+                    date.toFormat("dd/mm/yyyy"));
 
           changeBtnColor(_selectedServiceId, _selectedActionId);
         }).showModal(context);

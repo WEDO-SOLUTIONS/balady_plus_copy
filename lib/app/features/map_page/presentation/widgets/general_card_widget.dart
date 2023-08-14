@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:balady_plus/app/core/utils/constants/route_names.dart';
+import 'package:balady_plus/app/core/utils/enums/enums.dart';
 import 'package:balady_plus/app/core/utils/map_utils.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/shimmer_effect_widget.dart';
@@ -15,6 +16,7 @@ import '../../../../core/base/base_view_model.dart';
 import '../../../../core/services/local/navigation_services.dart';
 import '../../../../core/utils/common_functions.dart';
 import '../../../../core/utils/constants/app_style.dart';
+import '../../../../core/utils/constants/remote_config.dart';
 import '../../../../core/utils/enums/app_font_weights.dart';
 import '../../../facility_qr/presentation/core/view_models/facility_details_view_model.dart';
 import '../../../facility_qr/presentation/dialogs/facility_dialog.dart';
@@ -118,13 +120,36 @@ class GeneralMapCardWidget extends StatelessWidget {
                           bool isCameraAllowed =
                               await CommonFunctions.checkCameraSettings(
                                   context);
-                          if (isLocationAvailable && isCameraAllowed)
-                            NavigationService.navigatorKey.currentState!
-                                .pushNamed(RouteName.vdCameraPage,
-                                    arguments: CameraParamsPage(
-                                        selectedCategory:
-                                            CategoryItem(categoryId: "CG-14"),
-                                        isFromHome: false));
+                          if (isLocationAvailable && isCameraAllowed) {
+                            double? lat = viewModel
+                                .facilityRespoonse
+                                ?.data
+                                ?.result
+                                ?.comLicenseInfo
+                                ?.locationInfo
+                                ?.latitude;
+                            double? long = viewModel
+                                .facilityRespoonse
+                                ?.data
+                                ?.result
+                                ?.comLicenseInfo
+                                ?.locationInfo
+                                ?.longitude;
+
+                            if (lat != null && long != null) {
+                              NavigationService.navigatorKey.currentState!
+                                  .pushNamed(RouteName.vdCameraPage,
+                                      arguments: CameraParamsPage(
+                                          lat: lat,
+                                          lon: long,
+                                          qrCodeFlow: true,
+                                          pageType: PAGE_TYPE.qrDialog,
+                                          selectedCategory: CategoryItem(
+                                              categoryId:
+                                                  RemoteConfig.marketClass),
+                                          isFromHome: false));
+                            }
+                          }
                         },
                       ));
             }

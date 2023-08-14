@@ -30,7 +30,9 @@ class SearchMapWidget extends StatelessWidget {
       children: [
         Padding(
           padding: EdgeInsets.only(
-              top: MediaQuery.of(context).padding.top - 20,
+              top: MediaQuery.of(context).padding.top > 20
+                  ? MediaQuery.of(context).padding.top - 20
+                  : 0,
               left: 10,
               bottom: 10,
               right: 10),

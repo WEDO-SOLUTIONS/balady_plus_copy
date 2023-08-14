@@ -1,7 +1,8 @@
 import 'package:dio/dio.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../core/errors/errors_exports.dart'
-    show NoDataFoundException, ServerException;
+    show APIException, NoDataFoundException, ServerException;
 import '../../../../../core/services/services_exports.dart' show WebService;
 import '../../../../../core/utils/utils_exports.dart' show ApiUrl, Log;
 import '../../../../_shared_feature_/shared_feature_exports.dart'
@@ -20,8 +21,9 @@ class DelegatorsRemoteDataSourceImplementation
 
   @override
   Future<List<DelegatorModel>> getDelegators() async {
+    var response;
     try {
-      final response = await webService.dio.get(ApiUrl.delegators);
+      response = await webService.dio.get(ApiUrl.delegators);
 
       final data = response.data;
       data.toString().successLog();
@@ -45,14 +47,22 @@ class DelegatorsRemoteDataSourceImplementation
         errorCode = decodedResponse.data?.responseCode;
       } catch (ex) {}
 
-      throw ServerException(error.toString(),
-          statusCode: error.response?.statusCode, errorCode: errorCode);
+      throw ServerException(
+        error.toString(),
+        errorCode: errorCode,
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
     } catch (ex) {
       "Catched $ex".errorLog();
       if (ex is ServerException) {
         rethrow;
       } else {
-        throw ServerException(ex.toString());
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
       }
     }
   }

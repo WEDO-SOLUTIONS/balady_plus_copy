@@ -1,4 +1,6 @@
+import 'package:balady_plus/app/core/utils/enums/app_font_weights.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/icons/general_icon.dart';
+import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
@@ -38,22 +40,23 @@ class DetailsHeader extends StatelessWidget implements PreferredSizeWidget {
             onPressed: () => onPress != null ? onPress!() : null,
           )
       ],
-      leading: Container(
-        margin: const EdgeInsetsDirectional.only(start: 10),
-        child: Row(
-          children: [
-            CustomTextIconButtonWidget(
-              text: title,
-              icon: SvgPicture.asset(IconPath.vdAppBarBack),
-              iconTextTweenSpace: 5,
-              textStyle: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: AppColor.blackModern700Light,
-                  fontFamily: Constants.appFontType),
-              onPressed: () => Navigator.of(context).pop(),
+      leadingWidth: 0,
+      automaticallyImplyLeading: false,
+      title: Container(
+        child: GestureDetector(
+          onTap: () => Navigator.of(context).pop(),
+          child: Row(children: [
+            Icon(
+              Icons.arrow_back_ios,
+              color: AppColor.blackModern700Light,
+              size: 20,
             ),
-          ],
+            CustomTextWidget(title,
+                fontSize: 20,
+                fontWeight: AppFontWeight.bold,
+                fontColor: AppColor.blackModern700Light,
+                fontFamily: Constants.appFontType)
+          ]),
         ),
       ),
       systemOverlayStyle: SystemUiOverlayStyle.light.copyWith(

@@ -12,11 +12,12 @@ import 'package:balady_plus/app/features/entry_point/presentation/cubit/auth_cub
 
 import 'package:dio/dio.dart';
 import 'package:balady_plus/etmam_app/core/errors/errors_exports.dart'
-    show ServerException;
+    show APIException, ServerException;
 import 'package:balady_plus/etmam_app/core/utils/utils_exports.dart'
     show ApiUrl, ApiParams, WithDelay;
 import 'package:flutter/services.dart';
 import 'package:flutter_appauth/flutter_appauth.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
 abstract class AuthRemoteDataSource {
   Future<ApigeeResponseModel<ProfileModel>> getProfile();
@@ -56,16 +57,23 @@ class AuthRemoteDataSourceImpl extends AuthRemoteDataSource {
           parsedResult: parsedResult);
       return decodedResponse.toFuture();
     } on DioError catch (error) {
-      throw ServerException(error.toString(),
-          statusCode: error.response?.statusCode);
+      throw ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
     } catch (ex) {
       if (ex is ServerException)
         throw ex;
       else {
         try {
-          CommonFunctions.sendExceptionLog(exception: ex, response: response);
+          // CommonFunctions.sendExceptionLog(exception: ex, response: response);
         } catch (ex) {}
-        throw ServerException(trans("errors_server_error_2"));
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
       }
     }
   }
@@ -93,16 +101,21 @@ class AuthRemoteDataSourceImpl extends AuthRemoteDataSource {
           parsedResult: parsedResult);
       return decodedResponse.toFuture();
     } on DioError catch (error) {
-      throw ServerException(error.toString(),
-          statusCode: error.response?.statusCode);
+      throw ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
     } catch (ex) {
       if (ex is ServerException)
         throw ex;
       else {
-        try {
-          CommonFunctions.sendExceptionLog(exception: ex, response: response);
-        } catch (ex) {}
-        throw ServerException(trans("errors_server_error_2"));
+        try {} catch (ex) {}
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
       }
     }
   }
@@ -131,16 +144,23 @@ class AuthRemoteDataSourceImpl extends AuthRemoteDataSource {
           parsedResult: parsedResult);
       return decodedResponse.toFuture();
     } on DioError catch (error) {
-      throw ServerException(error.toString(),
-          statusCode: error.response?.statusCode);
+      throw ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
     } catch (ex) {
       if (ex is ServerException)
         throw ex;
       else {
         try {
-          CommonFunctions.sendExceptionLog(exception: ex, response: response);
+          // CommonFunctions.sendExceptionLog(exception: ex, response: response);
         } catch (ex) {}
-        throw ServerException(trans("errors_server_error_2"));
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
       }
     }
   }
@@ -171,16 +191,23 @@ class AuthRemoteDataSourceImpl extends AuthRemoteDataSource {
               parsedResult: parsedResult);
       return decodedResponse.toFuture();
     } on DioError catch (error) {
-      throw ServerException(error.toString(),
-          statusCode: error.response?.statusCode);
+      throw ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
     } catch (ex) {
       if (ex is ServerException)
         throw ex;
       else {
         try {
-          CommonFunctions.sendExceptionLog(exception: ex, response: response);
+          ///  CommonFunctions.sendExceptionLog(exception: ex, response: response);
         } catch (ex) {}
-        throw ServerException(trans("errors_server_error_2"));
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
       }
     }
   }
@@ -210,16 +237,23 @@ class AuthRemoteDataSourceImpl extends AuthRemoteDataSource {
               parsedResult: parsedResult);
       return decodedResponse.toFuture();
     } on DioError catch (error) {
-      throw ServerException(error.toString(),
-          statusCode: error.response?.statusCode);
+      throw ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
     } catch (ex) {
       if (ex is ServerException)
         throw ex;
       else {
         try {
-          CommonFunctions.sendExceptionLog(exception: ex, response: response);
+          //   CommonFunctions.sendExceptionLog(exception: ex, response: response);
         } catch (ex) {}
-        throw ServerException(trans("errors_server_error_2"));
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
       }
     }
   }
@@ -249,8 +283,11 @@ class AuthRemoteDataSourceImpl extends AuthRemoteDataSource {
       //    parsedResult: parsedResult);
       return parsedResult!.toFuture();
     } on DioError catch (error) {
-      throw ServerException(error.toString(),
-          statusCode: error.response?.statusCode);
+      throw ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
     } catch (ex) {
       print(ex);
       if (ex is ServerException)
@@ -259,7 +296,11 @@ class AuthRemoteDataSourceImpl extends AuthRemoteDataSource {
         try {
           CommonFunctions.sendExceptionLog(exception: ex, response: response);
         } catch (ex) {}
-        throw ServerException(trans("errors_server_error_2"));
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
       }
     }
   }

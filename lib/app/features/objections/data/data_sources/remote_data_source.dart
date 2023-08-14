@@ -3,7 +3,7 @@ import 'package:localize_and_translate/localize_and_translate.dart'
     show Translation;
 
 import '../../../../core/errors/errors_exports.dart'
-    show NoDataFoundException, ServerException;
+    show APIException, NoDataFoundException, ServerException;
 import '../../../../core/services/services_exports.dart' show WebService;
 import '../../../../core/utils/utils_exports.dart' show ApiUrl, Log;
 import '../../../_shared_feature_/shared_feature_exports.dart'
@@ -41,8 +41,9 @@ class RequestsRemoteDataSourceImplementation
   Future<List<ObjectionModel>> getObjectionRequests(
     ObjectionsParamsModel params,
   ) async {
+    var response;
     try {
-      final response = await webService.dio.get(
+      response = await webService.dio.get(
         ApiUrl.objectionsRequests,
         queryParameters: params.toMap(),
       );
@@ -64,21 +65,27 @@ class RequestsRemoteDataSourceImplementation
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
+        dioError: error,
       );
     } catch (ex) {
       "Catched $ex".errorLog();
       if (ex is ServerException) {
         rethrow;
       } else {
-        throw ServerException("errors_server_error_2".tr());
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
       }
     }
   }
 
   @override
   Future<List<RequestStatusModel>> getRequestStatuses() async {
+    var response;
     try {
-      final response = await webService.dio.get(
+      response = await webService.dio.get(
         ApiUrl.objectionsRequestStatus,
       );
 
@@ -99,21 +106,27 @@ class RequestsRemoteDataSourceImplementation
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
+        dioError: error,
       );
     } catch (ex) {
       "Catched $ex".errorLog();
       if (ex is ServerException) {
         rethrow;
       } else {
-        throw ServerException("errors_server_error_2".tr());
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
       }
     }
   }
 
   @override
   Future<List<RequestTypeModel>> getRequestTypes() async {
+    var response;
     try {
-      final response = await webService.dio.get(
+      response = await webService.dio.get(
         ApiUrl.applicationsLookUp,
       );
       final data = response.data;
@@ -134,13 +147,18 @@ class RequestsRemoteDataSourceImplementation
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
+        dioError: error,
       );
     } catch (ex) {
       "Catched $ex".errorLog();
       if (ex is ServerException) {
         rethrow;
       } else {
-        throw ServerException("errors_server_error_2".tr());
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
       }
     }
   }
@@ -149,8 +167,9 @@ class RequestsRemoteDataSourceImplementation
   Future<List<RequestSubTypeModel>> getRequestSubTypes(
     RequestSubTypeParamsModel params,
   ) async {
+    var response;
     try {
-      final response = await webService.dio.get(
+      response = await webService.dio.get(
         ApiUrl.servicesByApplicationId(params.id),
       );
 
@@ -173,21 +192,27 @@ class RequestsRemoteDataSourceImplementation
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
+        dioError: error,
       );
     } catch (ex) {
       "Catched $ex".errorLog();
       if (ex is ServerException) {
         rethrow;
       } else {
-        throw ServerException("errors_server_error_2".tr());
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
       }
     }
   }
 
   @override
   Future<ObjectionDetailsModel> getObjectionDetails(String id) async {
+    var response;
     try {
-      final response = await webService.dio
+      response = await webService.dio
           .get(ApiUrl.objectionRequestDetails, queryParameters: {
         "ObjectionRequestID": id,
       });
@@ -206,13 +231,18 @@ class RequestsRemoteDataSourceImplementation
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
+        dioError: error,
       );
     } catch (ex) {
       "Catched $ex".errorLog();
       if (ex is ServerException) {
         rethrow;
       } else {
-        throw ServerException("errors_server_error_2".tr());
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
       }
     }
   }

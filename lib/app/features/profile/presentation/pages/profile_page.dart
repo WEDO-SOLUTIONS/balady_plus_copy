@@ -8,6 +8,8 @@ import 'package:localize_and_translate/localize_and_translate.dart'
     show Translation;
 
 import '../../../../core/dependency_injection/injection_container.dart';
+import '../../../../core/utils/app_analytics_events.dart';
+import '../../../../core/utils/common_functions.dart';
 import '../../../../core/utils/utils_exports.dart'
     show CommonProperties, ImagePath;
 import '../../../_shared_feature_/shared_feature_exports.dart'
@@ -17,8 +19,21 @@ import '../../../profile_features/delegators/delegators_exports.dart'
 import '../../profile_exports.dart'
     show ProfileCard, ProfileListCard, ProfileSections, SignInCard;
 
-class ProfilePage extends StatelessWidget {
+class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
+
+  @override
+  State<ProfilePage> createState() => _ProfilePageState();
+}
+
+class _ProfilePageState extends State<ProfilePage> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    CommonFunctions.sendEventToAnalytics(AppEvents.more);
+  }
 
   @override
   Widget build(BuildContext context) {

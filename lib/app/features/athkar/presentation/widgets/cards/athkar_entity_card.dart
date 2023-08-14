@@ -56,8 +56,7 @@ class _AthkarEntityCardState extends State<AthkarEntityCard> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              SizedBox(
-                width: 252,
+              Flexible(
                 child: CustomTextWidget(
                   widget.athkarEntity.name,
                   fontColor: Colors.black,
@@ -65,7 +64,16 @@ class _AthkarEntityCardState extends State<AthkarEntityCard> {
                   maxLines: 1,
                 ),
               ),
-              Stack(
+              SizedBox(
+                width: 10,
+              ),
+              CustomTextWidget(
+                '${widget.athkarEntity.quantity}',
+                fontColor: AppColor.primary800Light,
+                fontWeight: AppFontWeight.semiBold,
+                fontSize: 14,
+              ),
+              /* Stack(
                 alignment: Alignment.center,
                 children: [
                   SvgPicture.asset(
@@ -80,7 +88,7 @@ class _AthkarEntityCardState extends State<AthkarEntityCard> {
                     fontSize: 14,
                   ),
                 ],
-              ),
+              ),*/
             ],
           ),
         ),

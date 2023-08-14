@@ -43,38 +43,48 @@ class FacilityRatingViewModel extends BaseViewModel {
 
     if (!CommonProperties.isLoggedIn) return;
     showLoading();
-    final LatestUserRatingResponse? response =
-        await _repositry.getUserLatestRating(licenseId);
-    hideLoading();
+    try {
+      final LatestUserRatingResponse? response =
+          await _repositry.getUserLatestRating(licenseId);
+      print("HHJJ");
+      if (response != null) {
+        prevoiusUserRating = response;
+        setPreviousRatings();
 
-    if (response != null) {
-      prevoiusUserRating = response;
-      setPreviousRatings();
-
-      notifyListeners();
-    } else {
-      // show Error
-      //showError("error3");
+        notifyListeners();
+      } else {
+        // show Error
+        //showError("error3");
+      }
+    } catch (ex) {
+      print(ex);
     }
+    hideLoading();
   }
 
   Future<bool> getRatingsData() async {
     if (ratingItems.isNotEmpty) return true;
+    try {
+      showLoading();
+      final Tuple3<bool?, String?, LicenseRatingItems?> response =
+          await _repositry.getLicenseRatingitems();
 
-    showLoading();
-    final Tuple3<bool?, String?, LicenseRatingItems?> response =
-        await _repositry.getLicenseRatingitems();
-    hideLoading();
+      hideLoading();
 
-    if (response.item3 != null && response.item1 == true) {
-      // ratingsData = response;
-      ratingItems = response.item3?.data?.result ?? [];
-      // setPreviousRatings();
-      notifyListeners();
-      return true;
-    } else {
-      // show Error
-      showError(response.item2 ?? "");
+      if (response.item3 != null && response.item1 == true) {
+        // ratingsData = response;
+        ratingItems = response.item3?.data?.result ?? [];
+        // setPreviousRatings();
+        notifyListeners();
+        return true;
+      } else {
+        // show Error
+        showError(response.item2 ?? "");
+        return false;
+      }
+    } catch (ex) {
+      print(ex);
+      hideLoading();
       return false;
     }
   }

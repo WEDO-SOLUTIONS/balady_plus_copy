@@ -1,5 +1,6 @@
 import 'package:balady_plus/app/core/utils/constants/route_names.dart';
 import 'package:balady_plus/app/core/utils/enums/app_font_weights.dart';
+import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../../core/base/base_view_model.dart';
@@ -18,6 +19,7 @@ class PhotoSection extends StatelessWidget {
 
     return Column(
       children: [
+        CustomVerticalSpace(height: 32),
         SizedBox(
           height: 190,
           child: ListView.builder(

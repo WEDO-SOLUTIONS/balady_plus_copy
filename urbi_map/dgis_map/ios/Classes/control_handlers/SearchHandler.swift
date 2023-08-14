@@ -218,7 +218,7 @@ class SearchHandler: NSObject {
         completion: @escaping (SearchResultMessage?, FlutterError?) -> Void
     ) {
         let query = SearchQueryBuilder.fromQueryText(queryText: "park")
-            .setAllowedResultTypes(allowedResultTypes: [.admDiv, .attraction])
+            .setAllowedResultTypes(allowedResultTypes: [.attraction])
             .setPageSize(pageSize: pageSize)
             .setSortingType(sortingType: sortingType.toSortingType())
             .setDirectoryFilter(filter:

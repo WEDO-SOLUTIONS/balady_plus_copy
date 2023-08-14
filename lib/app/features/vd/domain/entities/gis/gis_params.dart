@@ -14,6 +14,15 @@ class GISParams extends Equatable {
     return LatLng(y, x);
   }
 
+  double get lat => y;
+  double get lon => x;
+
+  factory GISParams.fromMap(Map<String, dynamic> json) {
+    return GISParams(
+      x: json["x"],
+      y: json["y"],
+    );
+  }
   Map<String, dynamic> toMap() {
     return {
       "x": x,

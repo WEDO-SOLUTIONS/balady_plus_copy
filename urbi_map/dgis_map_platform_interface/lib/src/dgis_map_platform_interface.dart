@@ -122,6 +122,7 @@ abstract class DgisMapPlugin extends PlatformInterface {
   Future<DirectoryObjectMessage> searchByObjectId(DgisObjectIdMessage objectId);
 
   Widget buildView({
+    Key? key,
     required PlatformViewCreatedCallback onPlatformViewCreated,
     bool androidUseExpensive = true,
   });

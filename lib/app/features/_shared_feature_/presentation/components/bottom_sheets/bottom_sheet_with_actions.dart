@@ -67,12 +67,15 @@ class _BottomSheetWithActionsState extends State<BottomSheetWithActions> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                CustomTextWidget(
-                  widget.title,
-                  textAlign: TextAlign.center,
-                  textStyle: AppStyle.mainTextSecondaryStyle.copyWith(
-                    fontSize: 24.0,
-                    color: AppColor.black,
+                Flexible(
+                  child: CustomTextWidget(
+                    widget.title,
+                    textAlign: TextAlign.start,
+                    maxLines: 3,
+                    textStyle: AppStyle.mainTextSecondaryStyle.copyWith(
+                      fontSize: 24.0,
+                      color: AppColor.black,
+                    ),
                   ),
                 ),
                 InkWell(

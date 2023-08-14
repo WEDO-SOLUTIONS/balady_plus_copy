@@ -3,7 +3,7 @@ import 'package:localize_and_translate/localize_and_translate.dart'
     show Translation;
 
 import '../../../../../core/errors/errors_exports.dart'
-    show NoDataFoundException, ServerException;
+    show APIException, NoDataFoundException, ServerException;
 import '../../../../../core/services/global/crm_web_service.dart';
 import '../../../../../core/services/services_exports.dart' show WebService;
 import '../../../../../core/utils/utils_exports.dart' show ApiUrl, Log;
@@ -54,8 +54,10 @@ class RequestsRemoteDataSourceImplementation
   Future<List<RequestsModel>> getRequests(
     RequestsParamsModel params,
   ) async {
+    var response;
+
     try {
-      final response = await webService.dio.post(
+      response = await webService.dio.post(
         ApiUrl.requests,
         data: params.toMap(),
       );
@@ -76,21 +78,28 @@ class RequestsRemoteDataSourceImplementation
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
+        dioError: error,
       );
     } catch (ex) {
       "Catched $ex".errorLog();
       if (ex is ServerException) {
         rethrow;
       } else {
-        throw ServerException("errors_server_error_2".tr());
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
       }
     }
   }
 
   @override
   Future<List<RequestStatusModel>> getRequestStatuses() async {
+    var response;
+
     try {
-      final response = await webService.dio.get(
+      response = await webService.dio.get(
         ApiUrl.requestStatuses,
       );
 
@@ -112,21 +121,28 @@ class RequestsRemoteDataSourceImplementation
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
+        dioError: error,
       );
     } catch (ex) {
       "Catched $ex".errorLog();
       if (ex is ServerException) {
         rethrow;
       } else {
-        throw ServerException("errors_server_error_2".tr());
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
       }
     }
   }
 
   @override
   Future<List<MunicipalityModel>> getMunicipalities() async {
+    var response;
+
     try {
-      final response = await webService.dio.get(
+      response = await webService.dio.get(
         ApiUrl.municipalities,
       );
 
@@ -147,13 +163,18 @@ class RequestsRemoteDataSourceImplementation
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
+        dioError: error,
       );
     } catch (ex) {
       "Catched $ex".errorLog();
       if (ex is ServerException) {
         rethrow;
       } else {
-        throw ServerException("errors_server_error_2".tr());
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
       }
     }
   }
@@ -162,8 +183,10 @@ class RequestsRemoteDataSourceImplementation
   Future<List<SubMunicipalityModel>> getSubMunicipalities(
     SubMunicipalityParamsModel params,
   ) async {
+    var response;
+
     try {
-      final response = await webService.dio.get(
+      response = await webService.dio.get(
         ApiUrl.subMunicipalities(params.id),
       );
 
@@ -184,21 +207,28 @@ class RequestsRemoteDataSourceImplementation
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
+        dioError: error,
       );
     } catch (ex) {
       "Catched $ex".errorLog();
       if (ex is ServerException) {
         rethrow;
       } else {
-        throw ServerException("errors_server_error_2".tr());
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
       }
     }
   }
 
   @override
   Future<List<RequestTypeModel>> getRequestTypes() async {
+    var response;
+
     try {
-      final response = await webService.dio.get(
+      response = await webService.dio.get(
         ApiUrl.requestTypes,
       );
 
@@ -219,13 +249,18 @@ class RequestsRemoteDataSourceImplementation
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
+        dioError: error,
       );
     } catch (ex) {
       "Catched $ex".errorLog();
       if (ex is ServerException) {
         rethrow;
       } else {
-        throw ServerException("errors_server_error_2".tr());
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
       }
     }
   }
@@ -234,8 +269,10 @@ class RequestsRemoteDataSourceImplementation
   Future<List<RequestSubTypeModel>> getRequestSubTypes(
     RequestSubTypeParamsModel params,
   ) async {
+    var response;
+
     try {
-      final response = await webService.dio.get(
+      response = await webService.dio.get(
         ApiUrl.requestSubTypes(params.id),
       );
 
@@ -256,21 +293,27 @@ class RequestsRemoteDataSourceImplementation
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
+        dioError: error,
       );
     } catch (ex) {
       "Catched $ex".errorLog();
       if (ex is ServerException) {
         rethrow;
       } else {
-        throw ServerException("errors_server_error_2".tr());
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
       }
     }
   }
 
   @override
   Future<CRMRequestModel> getCRMRequests(CRMRequestsParamsModel params) async {
+    var response;
     try {
-      final response = await crmWebService.dio
+      response = await crmWebService.dio
           .get(ApiUrl.crmRequestsList, queryParameters: params.toMap());
 
       final data = response.data;
@@ -287,13 +330,18 @@ class RequestsRemoteDataSourceImplementation
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
+        dioError: error,
       );
     } catch (ex) {
       "Catched $ex".errorLog();
       if (ex is ServerException) {
         rethrow;
       } else {
-        throw ServerException("errors_server_error_2".tr());
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
       }
     }
   }

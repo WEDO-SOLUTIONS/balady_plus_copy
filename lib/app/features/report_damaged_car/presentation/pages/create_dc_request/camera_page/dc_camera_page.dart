@@ -2,6 +2,7 @@ import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../../../core/utils/app_analytics_events.dart';
 import '../../../../../../core/utils/enums/bloc_status.dart';
 import '../../../../../vd/domain/entities/camera/camera_page_params.dart';
 import '../../../blocs/create_dc_request/camera_bloc/dc_camera_bloc.dart';
@@ -23,6 +24,8 @@ class _DCCameraPageState extends State<DCCameraPage>
   void initState() {
     super.initState();
     // Helpers.sendEventToAnalytics(AppEvents.VD_Open_Camera);
+
+    CommonFunctions.sendEventToAnalytics(AppEvents.damagedCarsReport);
   }
 
   @override

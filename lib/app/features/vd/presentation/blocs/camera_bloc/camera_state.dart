@@ -15,23 +15,26 @@ class CameraState extends Equatable {
   CategoryItem selectedCattegory;
   GISParams? location;
   GISResponse? gisResponse;
+  bool qrCodeFlow;
+  PAGE_TYPE? pageType;
 
-  CameraState({
-    this.status = BlocStatus.initial,
-    this.isFromHome = false,
-    this.errorMessage,
-    this.showCamera = true,
-    this.isFlashOn = false,
-    this.zoom = 0.0,
-    this.scaleFactor = 1.0,
-    this.multi = false,
-    this.isCameraInitialized,
-    this.files,
-    this.splResponse,
-    required this.selectedCattegory,
-    this.gisResponse,
-    this.location,
-  });
+  CameraState(
+      {this.status = BlocStatus.initial,
+      this.isFromHome = false,
+      this.errorMessage,
+      this.showCamera = true,
+      this.isFlashOn = false,
+      this.zoom = 0.0,
+      this.scaleFactor = 1.0,
+      this.multi = false,
+      this.isCameraInitialized,
+      this.files,
+      this.splResponse,
+      required this.selectedCattegory,
+      this.gisResponse,
+      this.location,
+      this.qrCodeFlow = false,
+      this.pageType});
 
   CameraState copyWith(
       {final BlocStatus? status,
@@ -47,7 +50,9 @@ class CameraState extends Equatable {
       SplResponse? splResponse,
       CategoryItem? selectedCattegory,
       final GISParams? location,
-      final GISResponse? gisResponse}) {
+      final GISResponse? gisResponse,
+      final bool? qrCodeFlow,
+      final PAGE_TYPE? pageType}) {
     return CameraState(
         status: status ?? this.status,
         errorMessage: errorMessage ?? this.errorMessage,
@@ -62,7 +67,9 @@ class CameraState extends Equatable {
         isCameraInitialized: isCameraInitialized ?? this.isCameraInitialized,
         isFromHome: isFromHome ?? this.isFromHome,
         location: location ?? this.location,
-        gisResponse: gisResponse ?? this.gisResponse);
+        gisResponse: gisResponse ?? this.gisResponse,
+        qrCodeFlow: qrCodeFlow ?? this.qrCodeFlow,
+        pageType: pageType ?? this.pageType);
   }
 
   @override
@@ -75,6 +82,8 @@ class CameraState extends Equatable {
         isCameraInitialized,
         isFromHome,
         gisResponse,
-        location
+        location,
+        qrCodeFlow,
+        pageType
       ];
 }

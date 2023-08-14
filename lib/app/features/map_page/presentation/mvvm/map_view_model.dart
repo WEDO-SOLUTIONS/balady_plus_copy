@@ -133,7 +133,7 @@ class MapViewModel extends BaseViewModel {
       if (showLoader) {
         await controller.removeAllMarkers();
         await controller.removeAll();
-
+        selectedCategory.value = null;
         showLoading1();
         selectedCategory.notifyListeners();
 
@@ -358,19 +358,11 @@ class MapViewModel extends BaseViewModel {
         await controller.onLocationPremissionGranted();
         print("grfrsdcvdv granted 111");
 
-        geoLocator.Position position =
-            await geoLocator.Geolocator.getCurrentPosition(
-          desiredAccuracy: geoLocator.LocationAccuracy.high,
-          timeLimit: const Duration(seconds: 13),
-        );
-        print("grfrsdcvdv pos $position");
-
         await controller.setCameraPosition(
           CameraPositionMessage(
             point: GeoPointMessage(
-              latitude: position.latitude,
-              longitude: position.longitude,
-            ),
+                latitude: CommonProperties.userLocation?.lat ?? 0,
+                longitude: CommonProperties.userLocation?.lon ?? 0),
             zoom: 13,
             tilt: 0,
             bearing: 0,

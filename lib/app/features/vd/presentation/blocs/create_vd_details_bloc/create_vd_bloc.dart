@@ -93,6 +93,8 @@ class CreateVDBloc extends Bloc<CreateVDEvent, CreateVDState> {
           location: params?.location,
           currentUserlocation: params?.location,
           gisResponse: params?.gisResponse,
+          pageType: params?.pageType,
+          qrCodeFlow: params?.qrCodeFlow ?? false,
           firstName: !CommonProperties.isLoggedIn
               ? sharedPrefs.getGuestFirstName()
               : null,

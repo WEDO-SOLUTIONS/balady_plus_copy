@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:dio/dio.dart' show DioError, RequestOptions, Response;
 
 import '../utils/utils_exports.dart' show ApiResponse;
@@ -7,13 +8,29 @@ class ServerException implements Exception {
   final String errorMessage;
   final int? statusCode;
   final String? statusMessage;
+  final DioError? dioError;
+  final Response? response;
   final dynamic errorCode;
+  final Exception? exception;
 
-  const ServerException(this.errorMessage,
-      {this.statusCode, this.statusMessage, this.errorCode});
+  ServerException(this.errorMessage,
+      {this.statusCode,
+      this.statusMessage,
+      this.dioError,
+      this.response,
+      this.errorCode,
+      this.exception}) {
+    CommonFunctions.sendEvent(
+        dioError: dioError, response: response, ex: exception);
+  }
+}
 
-  @override
-  String toString() => errorMessage;
+class APIException implements Exception {
+  final String? errorMessage;
+
+  APIException({
+    this.errorMessage,
+  }) {}
 }
 
 class ServerError implements Exception {

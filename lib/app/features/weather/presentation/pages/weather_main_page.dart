@@ -15,6 +15,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../../core/dependency_injection/injection_container.dart';
+import '../../../../core/utils/app_analytics_events.dart';
 import '../../../../core/utils/utils_exports.dart';
 import '../widgets/weather_appbar.dart';
 
@@ -36,6 +37,8 @@ class _WeatherMainPageState extends State<WeatherMainPage> {
       BlocProvider.of<WeatherBloc>(context, listen: false)
           .add(RefreshWeatherForLocation());
     });
+
+    CommonFunctions.sendEventToAnalytics(AppEvents.weather);
   }
 
   @override

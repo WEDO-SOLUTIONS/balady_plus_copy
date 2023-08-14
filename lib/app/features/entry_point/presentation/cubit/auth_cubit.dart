@@ -99,7 +99,7 @@ class EntryPointCubit extends Cubit<EntryPointState> {
       refreshSSOProfile();
     });
     refreshAPIGeeToken();
-    getUserLocationData();
+    //getUserLocationData();
   }
 
   Future<bool> onLogin({bool isFromEtmam = false}) async {

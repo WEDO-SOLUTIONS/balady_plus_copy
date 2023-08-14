@@ -14,7 +14,7 @@ Map<String, dynamic> servicesConfig = {
       "isNew": false,
       "isImportant": false,
       "action": {"type": "page", "value": RouteName.menuQuranPage},
-      "ar": {"title": "المصحف الشريف", "description": null, "tag": null},
+      "ar": {"title": "holy_quran".tr(), "description": null, "tag": null},
       "en": {"title": "Holy Quran", "description": null, "tag": null}
     },
     {

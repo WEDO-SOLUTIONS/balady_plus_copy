@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:sentry_dio/sentry_dio.dart';
 
 import '../../../../../core/services/global/web_service.dart';
 import '../../../../../core/services/local/navigation_services.dart';
@@ -152,6 +153,8 @@ class _ObjectionAttachmentItemState extends State<ObjectionAttachmentItem> {
     dio.options.receiveTimeout = const Duration(milliseconds: 60000);
     dio.options.sendTimeout = const Duration(milliseconds: 60000);
     dio.options.responseType = ResponseType.bytes;
+    dio.addSentry();
+
     dio.interceptors.add(AppInterceptors());
     ;
     Response r = await WebService(dio: dio).dio.getUri(Uri.parse(url));

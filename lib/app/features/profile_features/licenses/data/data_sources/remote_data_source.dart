@@ -3,7 +3,7 @@ import 'package:localize_and_translate/localize_and_translate.dart'
     show Translation;
 
 import '../../../../../core/errors/errors_exports.dart'
-    show NoDataFoundException, ServerException;
+    show APIException, NoDataFoundException, ServerException;
 import '../../../../../core/services/services_exports.dart' show WebService;
 import '../../../../../core/utils/utils_exports.dart' show ApiUrl, Log;
 import '../../../../_shared_feature_/shared_feature_exports.dart'
@@ -38,8 +38,10 @@ class LicensesRemoteDataSourceImplementation
   Future<List<LicensesModel>> getLicenses(
     LicensesParamsModel params,
   ) async {
+    var response;
+
     try {
-      final response = await webService.dio.post(
+      response = await webService.dio.post(
         ApiUrl.licenses,
         data: params.toMap(),
       );
@@ -61,21 +63,28 @@ class LicensesRemoteDataSourceImplementation
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
+        dioError: error,
       );
     } catch (ex) {
       "Catched $ex".errorLog();
       if (ex is ServerException) {
         rethrow;
       } else {
-        throw ServerException("errors_server_error_2".tr());
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
       }
     }
   }
 
   @override
   Future<List<LicenseStatusModel>> getLicenseStatuses() async {
+    var response;
+
     try {
-      final response = await webService.dio.get(
+      response = await webService.dio.get(
         ApiUrl.licenseStatuses,
       );
 
@@ -96,21 +105,28 @@ class LicensesRemoteDataSourceImplementation
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
+        dioError: error,
       );
     } catch (ex) {
       "Catched $ex".errorLog();
       if (ex is ServerException) {
         rethrow;
       } else {
-        throw ServerException("errors_server_error_2".tr());
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
       }
     }
   }
 
   @override
   Future<List<LicenseTypeModel>> getLicenseTypes() async {
+    var response;
+
     try {
-      final response = await webService.dio.get(
+      response = await webService.dio.get(
         ApiUrl.licenseTypes,
       );
 
@@ -131,13 +147,18 @@ class LicensesRemoteDataSourceImplementation
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
+        dioError: error,
       );
     } catch (ex) {
       "Catched $ex".errorLog();
       if (ex is ServerException) {
         rethrow;
       } else {
-        throw ServerException("errors_server_error_2".tr());
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
       }
     }
   }
@@ -146,8 +167,10 @@ class LicensesRemoteDataSourceImplementation
   Future<List<LicenseSubTypeModel>> getLicenseSubTypes(
     LicenseSubTypeParamsModel params,
   ) async {
+    var response;
+
     try {
-      final response = await webService.dio.get(
+      response = await webService.dio.get(
         ApiUrl.licenseSubTypes(params.id),
       );
 
@@ -168,13 +191,18 @@ class LicensesRemoteDataSourceImplementation
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
+        dioError: error,
       );
     } catch (ex) {
       "Catched $ex".errorLog();
       if (ex is ServerException) {
         rethrow;
       } else {
-        throw ServerException("errors_server_error_2".tr());
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
       }
     }
   }

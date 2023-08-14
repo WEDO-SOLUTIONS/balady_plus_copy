@@ -99,7 +99,7 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
       if (error.toString().contains("invalid_grant")) {
         sl<EntryPointCubit>().autoLogout();
       }
-      throw const ServerException(
+      throw ServerException(
         "",
       );
     }
@@ -120,8 +120,11 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
 
       return parsedResult.toFuture();
     } on DioError catch (error) {
-      throw ServerException(error.toString(),
-          statusCode: error.response?.statusCode);
+      throw ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
     } catch (ex) {
       print(ex);
       if (ex is ServerException) {
@@ -130,7 +133,11 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
         try {
           //MM   CommonFunctions.sendExceptionLog(exception: ex, response: response);
         } catch (_) {}
-        throw ServerException(("errors_server_error_2".tr()));
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
       }
     }
   }
@@ -156,8 +163,11 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
       //        parsedResult: parsedResult);
       return response.data;
     } on DioError catch (error) {
-      throw ServerException(error.toString(),
-          statusCode: error.response?.statusCode);
+      throw ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
     } catch (ex) {
       if (ex is ServerException) {
         rethrow;
@@ -165,7 +175,11 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
         try {
           //MM    CommonFunctions.sendExceptionLog(exception: ex, response: response);
         } catch (_) {}
-        throw ServerException(("errors_server_error_2").tr());
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
       }
     }
   }
@@ -195,8 +209,11 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
       //    parsedResult: parsedResult);
       return parsedResult!.toFuture();
     } on DioError catch (error) {
-      throw ServerException(error.toString(),
-          statusCode: error.response?.statusCode);
+      throw ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
     } catch (ex) {
       if (ex is ServerException) {
         rethrow;
@@ -204,7 +221,11 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
         try {
           //MM   CommonFunctions.sendExceptionLog(exception: ex, response: response);
         } catch (ex) {}
-        throw ServerException("errors_server_error_2".tr());
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
       }
     }
   }
@@ -242,8 +263,11 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
       print(cookie);
       return cookie;
     } on DioError catch (error) {
-      throw ServerException(error.toString(),
-          statusCode: error.response?.statusCode);
+      throw ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
     } catch (ex) {
       print(ex);
       if (ex is ServerException) {
@@ -252,7 +276,11 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
         try {
           //MM   CommonFunctions.sendExceptionLog(exception: ex, response: response);
         } catch (_) {}
-        throw ServerException(("errors_server_error_2".tr()));
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
       }
     }
   }
@@ -279,8 +307,11 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
           ApigeeTokenResponseModel.fromMap(response.data);
       return apigeeResponse.toFuture();
     } on DioError catch (error) {
-      throw ServerException(error.toString(),
-          statusCode: error.response?.statusCode);
+      throw ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
     } catch (ex) {
       if (ex is ServerException) {
         rethrow;
@@ -288,7 +319,11 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
         try {
           //MM   CommonFunctions.sendExceptionLog(exception: ex, response: response);
         } catch (_) {}
-        throw ServerException(("errors_server_error_2").tr());
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
       }
     }
   }
@@ -323,6 +358,7 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
+        dioError: error,
       );
     } catch (ex) {
       ex.errorLog();

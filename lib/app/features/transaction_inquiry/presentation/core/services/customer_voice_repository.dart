@@ -129,7 +129,7 @@ class CustomerVoiceRepository {
           SpecializedClassification.fromMap(json.decode(data));
       result = response;
       if (response.splClassificationList?.isEmpty ?? false) {
-        error = ("no_spl_classification_error");
+        error = ("no_spl_classification_error").tr();
       }
     } catch (ex) {
       print(ex);

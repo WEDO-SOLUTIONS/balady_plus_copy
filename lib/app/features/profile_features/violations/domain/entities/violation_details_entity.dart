@@ -1,7 +1,7 @@
 import 'package:intl/intl.dart';
 import '../../../../objectable_transactions/domain/entities/transaction_details.dart';
 
-class ViolationDetailsEntity extends TransactionDetails{
+class ViolationDetailsEntity extends TransactionDetails {
   ViolationDetailsEntity({
     super.subMunicipalityId,
     super.regulationClauseId,
@@ -54,7 +54,6 @@ class ViolationDetailsEntity extends TransactionDetails{
     // super.hashingViolationNumber,
   });
 
-
   String get licenseNumberOrID => (licenseNumber?.isNotEmpty ?? false)
       ? licenseNumber ?? ""
       : violatorId ?? "";
@@ -68,7 +67,6 @@ class ViolationDetailsEntity extends TransactionDetails{
   double? get lat => double.tryParse(coordinateX ?? "");
   double? get lon => double.tryParse(coordinateY ?? "");
 
-
   /*String? get getViolationPenaltyAmount =>
       violationPenaltyAmount?.truncateToDouble() == violationPenaltyAmount
           ? violationPenaltyAmount?.toInt().toString()
@@ -76,7 +74,7 @@ class ViolationDetailsEntity extends TransactionDetails{
 
   String? get getViolationPenaltyAmount {
     String formattedNumber =
-    NumberFormat('#,##0.########').format(totalViolationPenaltyAmount);
+        NumberFormat('#,##0.########').format(totalViolationPenaltyAmount);
 
     return "$formattedNumber ر.س.";
   }
@@ -86,31 +84,4 @@ class ViolationDetailsEntity extends TransactionDetails{
 
     return "$formattedNumber ر.س.";
   }
-
 }
-
-// class NonComplianceClause {
-//   dynamic clauseNo;
-//   String? clauseName;
-//   List<NonComplianceSubClause>? nonComplianceSubClauses;
-//
-//   NonComplianceClause({
-//     this.clauseNo,
-//     this.clauseName,
-//     this.nonComplianceSubClauses,
-//   });
-// }
-//
-// class NonComplianceSubClause {
-//   int? subClauseNo;
-//   String? subClauseName;
-//   String? notes;
-//   List<ReasonAttachment>? attachments;
-//
-//   NonComplianceSubClause({
-//     this.subClauseNo,
-//     this.subClauseName,
-//     this.notes,
-//     this.attachments,
-//   });
-// }

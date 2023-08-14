@@ -42,7 +42,7 @@ class DaemDetailsPage extends StatelessWidget {
           return Scaffold(
             backgroundColor: AppColor.white2,
             appBar: DetailsHeader(
-              title: state.pageParams?.details.getSplClassificationName() ?? "",
+              title: "order_details".tr(),
               onPrint: null,
             ),
             body: Stack(

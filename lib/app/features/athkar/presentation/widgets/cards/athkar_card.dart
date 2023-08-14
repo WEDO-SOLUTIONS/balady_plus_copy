@@ -39,7 +39,9 @@ class AthkarCard extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  SvgPicture.asset(athkarCategory.icon),
+                  SvgPicture.asset(
+                    athkarCategory.icon,
+                  ),
                   const SizedBox(
                     width: 6,
                   ),

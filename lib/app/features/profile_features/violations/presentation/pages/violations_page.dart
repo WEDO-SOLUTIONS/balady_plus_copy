@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
+import '../../../../../core/utils/app_analytics_events.dart';
+import '../../../../../core/utils/utils_exports.dart';
 import '../../../../_shared_feature_/shared_feature_exports.dart'
     show
         BottomSheetDialog,
@@ -19,8 +21,19 @@ import '../../violations_exports.dart'
         SearchViolationsEvent;
 import '../widgets/violations_filters_bottom_sheet.dart';
 
-class ViolationsPage extends StatelessWidget {
+class ViolationsPage extends StatefulWidget {
   const ViolationsPage({super.key});
+
+  @override
+  State<ViolationsPage> createState() => _ViolationsPageState();
+}
+
+class _ViolationsPageState extends State<ViolationsPage> {
+  @override
+  void initState() {
+    super.initState();
+    CommonFunctions.sendEventToAnalytics(AppEvents.profile);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,8 +44,7 @@ class ViolationsPage extends StatelessWidget {
           appBar: DefaultAppBarWidget(
             title: 'violations'.tr(),
             actions: [
-              BlocBuilder<ViolationsBloc,
-                  ViolationsState>(
+              BlocBuilder<ViolationsBloc, ViolationsState>(
                 builder: (context, state) {
                   return FilterIcon(
                     onTap: () async {
@@ -40,7 +52,8 @@ class ViolationsPage extends StatelessWidget {
                           .read<ViolationsBloc>()
                           .add(ViolationsLoadLookupsEvent());
                       final sortType = state.sortType;
-                      final selectedRequestStatus = state.selectedViolationStatus;
+                      final selectedRequestStatus =
+                          state.selectedViolationStatus;
 
                       final selectedRequestType = state.selectedInvoiceStatus;
 
@@ -50,12 +63,10 @@ class ViolationsPage extends StatelessWidget {
                         child: BottomSheetWithActions(
                           title: "filters".tr(),
                           body: ViolationsFilterBottomSheet(
-                            requestsBloc:
-                                context.read<ViolationsBloc>(),
+                            requestsBloc: context.read<ViolationsBloc>(),
                           ),
                           action: ViolationsFilterActions(
-                            requestsBloc:
-                                context.read<ViolationsBloc>(),
+                            requestsBloc: context.read<ViolationsBloc>(),
                           ),
                         ),
                       );

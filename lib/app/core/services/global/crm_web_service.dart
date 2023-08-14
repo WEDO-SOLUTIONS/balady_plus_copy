@@ -5,6 +5,7 @@ import 'package:dio/dio.dart';
 import 'package:localize_and_translate/localize_and_translate.dart'
     show translator;
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
+import 'package:sentry_dio/sentry_dio.dart';
 
 import '../../../core/dependency_injection/dependency_injection_exports.dart'
     show sl;
@@ -47,6 +48,7 @@ class CRMWebService {
     dio.options.receiveTimeout = const Duration(milliseconds: 60000);
     dio.options.sendTimeout = const Duration(milliseconds: 60000);
     dio.options.headers = {};
+    dio.addSentry();
     dio.interceptors.add(AppInterceptors());
 
     dio.interceptors.add(PrettyDioLogger(

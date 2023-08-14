@@ -16,3 +16,7 @@ class GettingLocationPermissionEvent extends LocationEvent {
 class GettingLocationDataEvent extends LocationEvent {
   const GettingLocationDataEvent();
 }
+
+class GettingLocationInit extends LocationEvent {
+  const GettingLocationInit();
+}

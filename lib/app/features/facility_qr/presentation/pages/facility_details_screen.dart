@@ -2,6 +2,7 @@ import 'package:balady_plus/app/core/utils/constants/remote_config.dart';
 import 'package:balady_plus/app/core/utils/constants/route_names.dart';
 import 'package:balady_plus/app/core/utils/enums/app_font_weights.dart';
 import 'package:balady_plus/app/features/facility_qr/presentation/core/view_models/facility_details_view_model.dart';
+import 'package:balady_plus/app/features/transaction_inquiry/presentation/core/models/selected_location.dart';
 import 'package:flutter/material.dart';
 import 'dart:async' show StreamController;
 
@@ -21,6 +22,7 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 import '../../../../core/base/base_view.dart';
 import '../../../../core/base/base_view_model.dart';
 import '../../../../core/services/local/navigation_services.dart';
+import '../../../../core/utils/app_analytics_events.dart';
 import '../../../../core/utils/common_functions.dart';
 import '../../../../core/utils/constants/app_colors.dart';
 import '../../../../core/utils/constants/constants.dart';
@@ -122,6 +124,8 @@ class _FacilityScreenState extends State<FacilityScreen> {
     _scrollController.addListener(
       () => _scrollListener(_scrollController.position.pixels),
     );
+
+    CommonFunctions.sendEventToAnalytics(AppEvents.qrCode);
 
     //MM  Helpers.sendEventToAnalytics(AppEvents.QR_Details);
   }
@@ -256,22 +260,22 @@ class FacilityInfoSection extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const CustomVerticalSpace(height: 16),
+        const CustomVerticalSpace(height: 24),
 
         FacilityHeaderWidget(
           openNow: viewModel.isOpenNow,
           facilityAddress: viewModel.getCityAndStreet(),
           facilityName: viewModel.getFacilityName(),
         ),
-        const CustomVerticalSpace(height: 32),
+        const CustomVerticalSpace(height: 24),
         FacilityRatingWidget(
           rating: viewModel.getFacilityAvrageRating(),
           reviews: viewModel.getFacilityTotalRatingCount(),
         ),
-        const CustomVerticalSpace(height: 50),
+        const CustomVerticalSpace(height: 24),
 
         QRLabelTextWidget(text: ("qr_working_details").tr()),
-        const CustomVerticalSpace(height: 16),
+        const CustomVerticalSpace(height: 24),
         if (viewModel.facilityRespoonse != null &&
             viewModel.facilityRespoonse!.data!.result!.workTimes != null)
           WorkingHourDetails(
@@ -285,20 +289,20 @@ class FacilityInfoSection extends StatelessWidget {
           desc: viewModel.getFacilityClassification(),
           descImg: viewModel.getFacilityClassificationImg(),
         ),*/
-        const CustomVerticalSpace(height: 16),
+        const CustomVerticalSpace(height: 24),
 
         QRLabelTextWidget(text: ('rating_tours').tr()),
-        const CustomVerticalSpace(height: 16),
+        const CustomVerticalSpace(height: 24),
 
         QrClassificationWidget(
           icon: viewModel.getFacilityClassificationImg(),
           text: viewModel.getFacilityClassification(),
         ),
 
-        const CustomVerticalSpace(height: 16),
+        const CustomVerticalSpace(height: 24),
 
         if (viewModel.getWebUrl().isNotEmpty) ...[
-          const CustomVerticalSpace(height: 16),
+          const CustomVerticalSpace(height: 24),
           LabelIconSubtitleComponent(
             text: ('website').tr(),
             icon: IconPath.qrWebIcon,
@@ -309,7 +313,7 @@ class FacilityInfoSection extends StatelessWidget {
           )
         ],
         if (viewModel.getEnterpriseUniqueCode().isNotEmpty) ...[
-          const CustomVerticalSpace(height: 16),
+          const CustomVerticalSpace(height: 24),
           LabelIconSubtitleComponent(
             text: ('contact_number').tr(),
             icon: IconPath.qrWebIcon,
@@ -333,7 +337,7 @@ class FacilityInfoSection extends StatelessWidget {
         ),
     
      */
-        const CustomVerticalSpace(height: 16),
+        const CustomVerticalSpace(height: 24),
       ],
     );
   }
@@ -624,13 +628,25 @@ class SubmitIncidentSection extends StatelessWidget {
               await CommonFunctions.checkLocationSettings(context);
           bool isCameraAllowed =
               await CommonFunctions.checkCameraSettings(context);
-          if (isLocationAvailable && isCameraAllowed)
-            NavigationService.navigatorKey.currentState!.pushNamed(
-                RouteName.vdCameraPage,
-                arguments: CameraParamsPage(
-                    selectedCategory:
-                        CategoryItem(categoryId: RemoteConfig.marketClass),
-                    isFromHome: false));
+          if (isLocationAvailable && isCameraAllowed) {
+            double? lat = viewModel.facilityRespoonse?.data?.result
+                ?.comLicenseInfo?.locationInfo?.latitude;
+            double? long = viewModel.facilityRespoonse?.data?.result
+                ?.comLicenseInfo?.locationInfo?.longitude;
+
+            if (lat != null && long != null) {
+              NavigationService.navigatorKey.currentState!.pushNamed(
+                  RouteName.vdCameraPage,
+                  arguments: CameraParamsPage(
+                      lat: lat,
+                      lon: long,
+                      qrCodeFlow: true,
+                      pageType: PAGE_TYPE.qrDetailsScreen,
+                      selectedCategory:
+                          CategoryItem(categoryId: RemoteConfig.marketClass),
+                      isFromHome: false));
+            }
+          }
         },
         btnText: ("submit_incident_facility").tr(),
         btnTextSize: 16,

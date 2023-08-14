@@ -69,6 +69,7 @@ abstract class AppEnv {
     }
     HijriCalendar.setLocal(translator.activeLanguageCode);
     configLoading();
+    NotificationService.configure();
   }
 
   static void configLoading() {

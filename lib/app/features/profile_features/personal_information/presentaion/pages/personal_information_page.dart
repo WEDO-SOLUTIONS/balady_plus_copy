@@ -2,19 +2,32 @@ import 'package:balady_plus/app/features/entry_point/entry_point_exports.dart';
 import 'package:flutter/material.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
-import '../../../../../core/utils/utils_exports.dart' show IconPath, ImagePath;
+import '../../../../../core/utils/app_analytics_events.dart';
+import '../../../../../core/utils/utils_exports.dart'
+    show CommonFunctions, IconPath, ImagePath;
 import '../../../../_shared_feature_/shared_feature_exports.dart'
     show CardParameter, DefaultAppBarWidget;
-import '../../personal_information_exports.dart'
-    show PersonalInfoCard;
+import '../../personal_information_exports.dart' show PersonalInfoCard;
 
-class PersonalInformationPage extends StatelessWidget {
+class PersonalInformationPage extends StatefulWidget {
   final SsoUserInfo userInfo;
 
   const PersonalInformationPage({
     super.key,
     required this.userInfo,
   });
+
+  @override
+  State<PersonalInformationPage> createState() =>
+      _PersonalInformationPageState();
+}
+
+class _PersonalInformationPageState extends State<PersonalInformationPage> {
+  @override
+  void initState() {
+    super.initState();
+    CommonFunctions.sendEventToAnalytics(AppEvents.profile);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,23 +47,23 @@ class PersonalInformationPage extends StatelessWidget {
                   const SizedBox(height: 8),
                   CardParameter(
                     title: "full_name".tr(),
-                    value: userInfo.arName ?? '',
+                    value: widget.userInfo.arName ?? '',
                   ),
                   CardParameter(
                     title: "identity".tr(),
-                    value: userInfo.idNo ?? '',
+                    value: widget.userInfo.idNo ?? '',
                   ),
                   CardParameter(
                     title: "date_of_birth".tr(),
-                    value: userInfo.getFormattedBirthDate(),
+                    value: widget.userInfo.getFormattedBirthDate(),
                   ),
                   CardParameter(
                     title: "nationality".tr(),
-                    value: userInfo.nationality ?? '',
+                    value: widget.userInfo.nationality ?? '',
                   ),
                   CardParameter(
                     title: "sex".tr(),
-                    value: userInfo.getGender(),
+                    value: widget.userInfo.getGender(),
                   ),
                 ],
               ),
@@ -61,11 +74,11 @@ class PersonalInformationPage extends StatelessWidget {
                   const SizedBox(height: 8),
                   CardParameter(
                     title: "phone_number".tr(),
-                    value: userInfo.getPhone(),
+                    value: widget.userInfo.getPhone(),
                   ),
                   CardParameter(
                     title: "email".tr(),
-                    value: userInfo.getEmail(),
+                    value: widget.userInfo.getEmail(),
                   ),
                 ],
               ),

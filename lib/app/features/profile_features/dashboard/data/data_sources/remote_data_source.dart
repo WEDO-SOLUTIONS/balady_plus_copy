@@ -2,7 +2,8 @@ import 'package:dio/dio.dart' show DioError;
 import 'package:localize_and_translate/localize_and_translate.dart'
     show Translation;
 
-import '../../../../../core/errors/errors_exports.dart' show ServerException;
+import '../../../../../core/errors/errors_exports.dart'
+    show APIException, ServerException;
 import '../../../../../core/services/services_exports.dart' show WebService;
 import '../../../../../core/utils/utils_exports.dart' show ApiUrl, Log;
 import '../../../../_shared_feature_/shared_feature_exports.dart'
@@ -31,8 +32,9 @@ class DashboardRemoteDataSourceImplementation
 
   @override
   Future<List<DashboardCardModel>> getDashboardCards() async {
+    var response;
     try {
-      final response = await webService.dio.get(
+      response = await webService.dio.get(
         ApiUrl.dashboardCards,
       );
 
@@ -50,13 +52,18 @@ class DashboardRemoteDataSourceImplementation
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
+        dioError: error,
       );
     } catch (ex) {
       "Catched $ex".errorLog();
       if (ex is ServerException) {
         rethrow;
       } else {
-        throw ServerException("errors_server_error_2".tr());
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
       }
     }
   }
@@ -64,8 +71,9 @@ class DashboardRemoteDataSourceImplementation
   @override
   Future<List<DashboardProductModel>> getCardProducts(
       DashboardProductsParamsModel params) async {
+    var response;
     try {
-      final response = await webService.dio.get(
+      response = await webService.dio.get(
         ApiUrl.dashboardCardProducts(params.cardId),
       );
 
@@ -83,13 +91,18 @@ class DashboardRemoteDataSourceImplementation
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
+        dioError: error,
       );
     } catch (ex) {
       "Catched $ex".errorLog();
       if (ex is ServerException) {
         rethrow;
       } else {
-        throw ServerException("errors_server_error_2".tr());
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
       }
     }
   }
@@ -97,8 +110,9 @@ class DashboardRemoteDataSourceImplementation
   @override
   Future<List<DashboardStatisticsModel>> getCardStatistics(
       DashboardStatisticsParamsModel params) async {
+    var response;
     try {
-      final response = await webService.dio.get(
+      response = await webService.dio.get(
         ApiUrl.dashboardCardStatistics,
         queryParameters: params.toMap(),
       );
@@ -117,13 +131,18 @@ class DashboardRemoteDataSourceImplementation
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
+        dioError: error,
       );
     } catch (ex) {
       "Catched $ex".errorLog();
       if (ex is ServerException) {
         rethrow;
       } else {
-        throw ServerException("errors_server_error_2".tr());
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
       }
     }
   }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../core/utils/utils_exports.dart';
 import '../../../../_shared_feature_/shared_feature_exports.dart';
@@ -14,9 +15,8 @@ class ReadHomeCard extends StatelessWidget {
         Navigator.pushNamed(context, RouteName.menuQuranPage);
       },
       child: HomeSection(
-        title: 'اقرأ ورتل',
+        title: 'read_and_repeat'.tr(),
         child: Container(
-          width: MediaQuery.sizeOf(context).width,
           padding: const EdgeInsetsDirectional.only(
               start: 12, end: 18, top: 16, bottom: 16),
           margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -34,14 +34,14 @@ class ReadHomeCard extends StatelessWidget {
                 height: 84,
               ),
               const SizedBox(width: 14),
-              const Expanded(
+              Expanded(
                 flex: 2,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     CustomTextWidget(
-                      "المصحف الشريف",
+                      "holy_quran".tr(),
                       fontColor: AppColor.blackModern800Light,
                       fontWeight: AppFontWeight.bold,
                       fontSize: 14,

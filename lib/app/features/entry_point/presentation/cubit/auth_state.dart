@@ -58,10 +58,10 @@ class EntryPointState extends Equatable {
         gisStatus: gisStatus ?? this.gisStatus);
   }
 
-  String getSearchText() => userLocationGIS != null &&
-          userLocationGIS!.cityName != null &&
-          userLocationGIS!.cityName!.isNotEmpty
-      ? 'ابحث في ${userLocationGIS!.cityName!} عن...'
+  String getSearchText() => CommonProperties.userLocationGIS != null &&
+          CommonProperties.userLocationGIS!.cityName != null &&
+          CommonProperties.userLocationGIS!.cityName!.isNotEmpty
+      ? 'ابحث في ${CommonProperties.userLocationGIS!.cityName!} عن...'
       : 'ابحث عن...';
 
   @override

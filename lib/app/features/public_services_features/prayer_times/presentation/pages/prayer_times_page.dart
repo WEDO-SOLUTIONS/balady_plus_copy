@@ -7,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hijri/hijri_calendar.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
+import '../../../../../core/utils/app_analytics_events.dart';
 import '../../../../../core/utils/utils_exports.dart'
     show
         AppColor,
@@ -41,6 +42,8 @@ class _PrayerTimesPageState extends State<PrayerTimesPage> {
 
     //widget.cubit.getPrayerTime();
     // widget.cubit.getPrayerTimeRange();
+
+    CommonFunctions.sendEventToAnalytics(AppEvents.prayingTimes);
   }
 
   @override

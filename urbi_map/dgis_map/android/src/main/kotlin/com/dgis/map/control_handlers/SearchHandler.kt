@@ -178,7 +178,7 @@ class SearchHandler(
         result: Result<SearchResultMessage>?
     ) {
         val query = SearchQueryBuilder.fromQueryText("park")
-            .setAllowedResultTypes(listOf(ObjectType.ADM_DIV, ObjectType.ATTRACTION))
+            .setAllowedResultTypes(listOf(ObjectType.ATTRACTION))
             .setSortingType(sortingType.toSortingType())
             .setPageSize(pageSize.toInt())
             .setDirectoryFilter(DirectoryFilter(weekTimeMessage.toFilter(), emptyList()))

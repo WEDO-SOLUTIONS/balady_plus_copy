@@ -604,6 +604,7 @@ class MethodChannelDgisMapPlugin implements DgisMapPlugin, FlutterMapApi {
 
   @override
   Widget buildView({
+    Key? key,
     required PlatformViewCreatedCallback onPlatformViewCreated,
     bool androidUseExpensive = true,
   }) {
@@ -611,40 +612,18 @@ class MethodChannelDgisMapPlugin implements DgisMapPlugin, FlutterMapApi {
     const Map<String, dynamic> creationParams = <String, dynamic>{};
 
     return defaultTargetPlatform == TargetPlatform.android
-        ? PlatformViewLink(
+        ? AndroidView(
+            key: key,
             viewType: _viewType,
-            surfaceFactory: (context, controller) {
-              return AndroidViewSurface(
-                controller: controller as AndroidViewController,
-                gestureRecognizers: const <
-                    Factory<OneSequenceGestureRecognizer>>{},
-                hitTestBehavior: PlatformViewHitTestBehavior.opaque,
-              );
-            },
-            onCreatePlatformView: (params) {
-              final viewFactory = androidUseExpensive
-                  ? PlatformViewsService.initExpensiveAndroidView
-                  : PlatformViewsService.initAndroidView;
-
-              final viewController = viewFactory(
-                id: params.id,
-                viewType: _viewType,
-                layoutDirection: TextDirection.ltr,
-                creationParams: creationParams,
-                creationParamsCodec: const StandardMessageCodec(),
-                onFocus: () {
-                  params.onFocusChanged(true);
-                },
-              );
-
-              return viewController
-                ..addOnPlatformViewCreatedListener(params.onPlatformViewCreated)
-                ..addOnPlatformViewCreatedListener(onPlatformViewCreated)
-                // ignore: discarded_futures
-                ..create();
-            },
+            onPlatformViewCreated: onPlatformViewCreated,
+            gestureRecognizers: const <Factory<OneSequenceGestureRecognizer>>{},
+            creationParams: creationParams,
+            creationParamsCodec: const StandardMessageCodec(),
+            hitTestBehavior: PlatformViewHitTestBehavior.opaque,
+            layoutDirection: TextDirection.ltr,
           )
         : UiKitView(
+            key: key,
             viewType: _viewType,
             layoutDirection: TextDirection.ltr,
             creationParams: creationParams,

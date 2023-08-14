@@ -1,11 +1,14 @@
 import 'dart:async';
+import 'package:balady_plus/app/core/utils/utils_exports.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 import 'package:flutter_timezone/flutter_timezone.dart';
 
 /// A notification action which triggers a App navigation event
-const String navigationActionId = 'id_3';
+String navigationActionId = 'id_3';
 
 @pragma('vm:entry-point')
 void notificationTapBackground(NotificationResponse notificationResponse) {
@@ -63,7 +66,7 @@ class NotificationService {
           ticker: 'ticker',
           // sound: RawResourceAndroidNotificationSound("azan"),
           channelDescription: "Channel description"),
-      iOS: DarwinNotificationDetails(sound: "azan.mp3"),
+      iOS: DarwinNotificationDetails(sound: ""),
     );
   }
 
@@ -105,4 +108,93 @@ class NotificationService {
   static void cancel(int id) => _notifications.cancel(id);
 
   static void cancelAll() => _notifications.cancelAll();
+
+  static void configure() async {
+    print("HEREE");
+    try {
+      await Firebase.initializeApp();
+    } catch (ex) {
+      print("EXCCCC $ex");
+    }
+    print("FIREBAASE");
+    NotificationSettings settings =
+        await FirebaseMessaging.instance.requestPermission(
+      alert: true,
+      badge: true,
+      sound: true,
+    );
+
+    // Set the background messaging handler early on, as a named top-level function
+    // FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+
+    /// Create an Android Notification Channel.
+    ///
+    /// We use this channel in the `AndroidManifest.xml` file to override the
+    /// default FCM channel to enable heads up notifications.
+
+    /// Update the iOS foreground notification presentation options to allow
+    /// heads up notifications.
+    await FirebaseMessaging.instance
+        .setForegroundNotificationPresentationOptions(
+      alert: true,
+      badge: true,
+      sound: true,
+    );
+
+    FirebaseMessaging.instance.getToken().then((value) {
+      print("Token Firebase $value");
+      //Helpers.sendLog(url: "token", data: value);
+    });
+    // FirebaseMessaging.instance.subscribeToTopic("all").then((value) {});
+    FirebaseMessaging.instance
+        .getInitialMessage()
+        .then((RemoteMessage? message) {
+      if (message != null) {
+        print(message);
+      }
+    });
+
+    showNotification(Map<String, dynamic> msg) {
+      var androidNotification = AndroidNotificationDetails(
+        'channelId',
+        'channelName',
+      );
+      DarwinNotificationDetails iOSPlatformChannelSpecifics =
+          DarwinNotificationDetails();
+      var notificationDetails = NotificationDetails(
+          android: androidNotification, iOS: iOSPlatformChannelSpecifics);
+      _notifications.show(0, msg['notification']['title'],
+          msg['notification']['body'], notificationDetails);
+    }
+
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      RemoteNotification? notification = message.notification;
+      AndroidNotification? android = message.notification?.android;
+
+      if (notification != null && android != null) {
+        _notifications.show(
+            notification.hashCode,
+            notification.title,
+            notification.body,
+            NotificationDetails(
+              android: AndroidNotificationDetails(
+                CommonFunctions.generateUUID(),
+                "Notification",
+                channelDescription: "Notification",
+
+                playSound: true,
+                timeoutAfter: 3000,
+
+                // TODO add a proper drawable resource to android, for now using
+                //      one that already exists in example app.
+                icon: 'mipmap/ic_launcher',
+              ),
+            ));
+      }
+    });
+
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      print('A new onMessageOpenedApp event was published!');
+    });
+  }
 }

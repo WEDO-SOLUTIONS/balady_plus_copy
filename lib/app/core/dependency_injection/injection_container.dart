@@ -31,6 +31,8 @@ import '../../features/_shared_feature_/data/entities/package_details.dart';
 import '../../features/_shared_feature_/shared_feature_exports.dart'
     show BridgeParams, DropDownItem, FileInfo;
 import '../../features/bottom_navigation/presentation/cubits/bottom_nav_bar_cubit.dart';
+import '../../features/force_update/presentation/core/force_update_view_model.dart';
+import '../../features/location/presentation/bloc/location_bloc.dart';
 import '../../features/map_page/data/repositories/layers_repositories.dart';
 import '../../features/unknow/data/repositories/repository_implementation.dart';
 import '../../features/unknow/domain/repositories/repository.dart';
@@ -156,6 +158,7 @@ void initialize() {
   sl.registerLazySingleton(() => DropDownItem.emptyState());
   sl.registerLazySingleton(() => const DeviceDetails());
   sl.registerLazySingleton(() => const PackageDetails());
+  sl.registerLazySingleton(() => LocationCubit());
 
   //! External
   sl.registerLazySingleton(() => const FlutterSecureStorage());
@@ -174,4 +177,6 @@ void initialize() {
     () => RequestsRemoteDataSourceImplementation(
         webService: sl(), crmWebService: sl()),
   );
+
+  sl.registerLazySingleton(() => ForceUpdateViewModel());
 }

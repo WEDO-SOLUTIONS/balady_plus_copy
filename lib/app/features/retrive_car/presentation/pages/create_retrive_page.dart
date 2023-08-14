@@ -2,6 +2,7 @@ import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../core/utils/app_analytics_events.dart';
 import '../../../../core/utils/enums/bloc_status.dart';
 import '../../../_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
 import '../../domain/entities/create_retrive_page_params.dart';
@@ -22,6 +23,8 @@ class _CreateRetriveDetailsPageState extends State<CreateRetriveDetailsPage> {
   void initState() {
     super.initState();
     //Helpers.sendEventToAnalytics(AppEvents.VD_Open_Details);
+
+    CommonFunctions.sendEventToAnalytics(AppEvents.vhrRequest);
   }
 
   @override

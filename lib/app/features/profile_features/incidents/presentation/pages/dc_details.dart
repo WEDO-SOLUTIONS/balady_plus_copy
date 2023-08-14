@@ -41,7 +41,7 @@ class DCDetailsPage extends StatelessWidget {
           return Scaffold(
               backgroundColor: AppColor.white2,
               appBar: DetailsHeader(
-                title: ("order_details").tr(),
+                title: ("inc_details").tr(),
                 onPrint: null,
               ),
               body: Stack(

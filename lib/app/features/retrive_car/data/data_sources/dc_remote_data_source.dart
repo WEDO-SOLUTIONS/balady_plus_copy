@@ -53,8 +53,12 @@ class DCRetriveRemoteDataSourceImpl extends DCRetriveRemoteDataSource {
         errorCode = decodedResponse.data?.responseCode;
       } catch (ex) {}
 
-      throw ServerException(error.toString(),
-          statusCode: error.response?.statusCode, errorCode: errorCode);
+      throw ServerException(
+        error.toString(),
+        errorCode: errorCode,
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
     } catch (ex) {
       if (ex is ServerException)
         throw ex;
@@ -62,7 +66,11 @@ class DCRetriveRemoteDataSourceImpl extends DCRetriveRemoteDataSource {
         try {
           //MM      CommonFunctions.sendExceptionLog(exception: ex, response: response);
         } catch (ex) {}
-        throw ServerException(("errors_server_error_2").tr());
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
       }
     }
   }
@@ -97,8 +105,12 @@ class DCRetriveRemoteDataSourceImpl extends DCRetriveRemoteDataSource {
         errorCode = decodedResponse.data?.responseCode;
       } catch (ex) {}
 
-      throw ServerException(error.toString(),
-          statusCode: error.response?.statusCode, errorCode: errorCode);
+      throw ServerException(
+        error.toString(),
+        errorCode: errorCode,
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
     } catch (ex) {
       if (ex is ServerException)
         throw ex;
@@ -106,7 +118,11 @@ class DCRetriveRemoteDataSourceImpl extends DCRetriveRemoteDataSource {
         try {
           //MM   CommonFunctions.sendExceptionLog(exception: ex, response: response);
         } catch (ex) {}
-        throw ServerException(("errors_server_error_2").tr());
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
       }
     }
   }

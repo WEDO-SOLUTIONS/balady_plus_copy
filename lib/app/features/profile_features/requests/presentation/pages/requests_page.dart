@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/core/utils/enums/enums.dart';
 import 'package:balady_plus/app/features/profile_features/requests/presentation/requests_bloc/requests_bloc.dart';
 import 'package:flutter/material.dart';
@@ -6,6 +7,7 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../core/dependency_injection/dependency_injection_exports.dart'
     show sl;
+import '../../../../../core/utils/app_analytics_events.dart';
 import '../../../../_shared_feature_/shared_feature_exports.dart'
     show
         BottomSheetDialog,
@@ -26,8 +28,21 @@ import '../../requests_exports.dart'
 import '../widgets/request_type_horizontal_list.dart';
 import '../widgets/requests_filters_bottom_sheet.dart';
 
-class RequestsPage extends StatelessWidget {
+class RequestsPage extends StatefulWidget {
   const RequestsPage({super.key});
+
+  @override
+  State<RequestsPage> createState() => _RequestsPageState();
+}
+
+class _RequestsPageState extends State<RequestsPage> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    CommonFunctions.sendEventToAnalytics(AppEvents.requests);
+  }
 
   @override
   Widget build(BuildContext context) {

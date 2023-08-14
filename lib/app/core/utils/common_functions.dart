@@ -5,10 +5,12 @@ import 'dart:ui';
 import 'dart:math' show asin, cos, sqrt;
 
 import 'package:balady_plus/app/core/utils/constants/remote_config.dart';
+import 'package:balady_plus/app/features/location/presentation/bloc/location_bloc.dart';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:crypto/crypto.dart';
 import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart' show PlatformFile;
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter_bloc/flutter_bloc.dart' show EventTransformer;
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -20,6 +22,8 @@ import 'package:path_provider/path_provider.dart' show getTemporaryDirectory;
 
 import 'package:flutter_bloc/flutter_bloc.dart' show EventTransformer;
 import 'package:permission_handler/permission_handler.dart';
+import 'package:sentry_dio/sentry_dio.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:stream_transform/stream_transform.dart' show RateLimit, Switch;
 import 'package:url_launcher/url_launcher.dart'
     show LaunchMode, canLaunchUrl, launchUrl;
@@ -60,6 +64,8 @@ import '../../features/profile_features/delegators/delegators_exports.dart'
 import '../dependency_injection/dependency_injection_exports.dart' show sl;
 import '../services/services_exports.dart'
     show AppInterceptors, EntryPointBridge, NavigationService, NoParams;
+
+FirebaseAnalytics fbAnalytics = FirebaseAnalytics.instance;
 
 var carPlateLettersList = [
   "أ",
@@ -157,6 +163,12 @@ class CommonFunctions {
     return fileInfo.toFuture();
   }
 
+  static void sendEventToAnalytics(String event) {
+    try {
+      fbAnalytics.logEvent(name: event);
+    } catch (ex) {}
+  }
+
   static Future<String> fileToBase64(
     String filePath, {
     String? mimeType,
@@ -185,6 +197,8 @@ class CommonFunctions {
     dio.options.receiveTimeout = const Duration(milliseconds: 60000);
     dio.options.sendTimeout = const Duration(milliseconds: 60000);
     dio.options.headers = {};
+    dio.addSentry();
+
     dio.interceptors.add(AppInterceptors());
     return dio;
   }
@@ -834,6 +848,43 @@ class CommonFunctions {
 
     return newStr.isEmpty ? value : newStr;
   }
+
+  static sendEvent({DioError? dioError, Response? response, Exception? ex}) {
+    try {
+      SentryRequest request = SentryRequest(
+        url: dioError?.requestOptions.path ?? response?.realUri.path,
+        data: dioError?.requestOptions.data ?? response?.requestOptions.data,
+        method:
+            dioError?.requestOptions.method ?? response?.requestOptions.method,
+        queryString: dioError?.requestOptions.queryParameters.toString() ??
+            response?.requestOptions.queryParameters.toString(),
+        headers: dioError?.requestOptions.headers.cast() ??
+            response?.requestOptions.headers.cast(),
+      );
+      SentryMessage sentryMessage = SentryMessage(
+        dioError?.response?.data.toString() ?? response?.data.toString() ?? "",
+      );
+
+      SentryUser sentryUser = SentryUser(
+          id: CommonProperties.userInfo?.idNo,
+          name: CommonProperties.userInfo?.arName,
+          email: "");
+
+      SentryEvent event = SentryEvent(
+          user: sentryUser,
+          request: request,
+          message: sentryMessage,
+          environment: sl<EnvType>().name,
+          exceptions: [
+            SentryException(
+                type: ex != null ? "Exception" : "APIError",
+                value: ex.toString())
+          ]);
+      Sentry.captureEvent(event);
+    } catch (ex) {
+      print(ex);
+    }
+  }
 }
 
 class CommonProperties {
@@ -860,10 +911,9 @@ class CommonProperties {
   static DelegatorEntity? get selectedDelegator =>
       sl<EntryPointCubit>().state.selectedDelegator;
   static bool get isLoggedIn => sl<EntryPointCubit>().state.token != null;
-  static GISParams? get userLocation =>
-      sl<EntryPointCubit>().state.userLocation;
+  static GISParams? get userLocation => sl<LocationCubit>().state.gisParams;
   static GISResponse? get userLocationGIS =>
-      sl<EntryPointCubit>().state.userLocationGIS;
+      sl<LocationCubit>().state.gisResponse;
 
   //static SsoUserInfo? userInfo = sl<EntryPointCubit>().state.userInfo;
 

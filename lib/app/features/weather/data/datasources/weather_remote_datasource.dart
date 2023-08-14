@@ -108,15 +108,22 @@ class WeatherRemoteDataSourceImpl extends WeatherRemoteDataSource {
 
       return allWeatherData;
     } on DioError catch (error) {
-      throw ServerException(error.toString(),
-          statusCode: error.response?.statusCode);
+      throw ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
     } catch (ex) {
       print("EXEXEX $ex");
       if (ex is ServerException)
         throw ex;
       else {
         try {} catch (ex) {}
-        throw ServerException(("errors_server_error_2").tr());
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
       }
     }
   }

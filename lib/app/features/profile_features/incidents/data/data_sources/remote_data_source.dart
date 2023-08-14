@@ -4,7 +4,7 @@ import 'package:localize_and_translate/localize_and_translate.dart'
     show Translation;
 
 import '../../../../../core/errors/errors_exports.dart'
-    show NoDataFoundException, ServerException;
+    show APIException, NoDataFoundException, ServerException;
 import '../../../../../core/services/global/crm_web_service.dart';
 import '../../../../../core/services/services_exports.dart' show WebService;
 import '../../../../../core/utils/utils_exports.dart'
@@ -51,6 +51,7 @@ class RequestsRemoteDataSourceImplementation
   @override
   Future<RequestDetailsResponse> getCRMIncidentRequestDetails(
       String params) async {
+    var response;
     try {
       Map<String, dynamic> queryParms = {};
       if (CommonProperties.userInfo?.idNo != null) {
@@ -62,7 +63,7 @@ class RequestsRemoteDataSourceImplementation
           "pzInsKey": params
         };
       }
-      final response = await crmWebService.dio
+      response = await crmWebService.dio
           .get(ApiUrl.IncidentRequestDetails, queryParameters: queryParms);
 
       final data = response.data;
@@ -79,19 +80,25 @@ class RequestsRemoteDataSourceImplementation
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
+        dioError: error,
       );
     } catch (ex) {
       "Catched $ex".errorLog();
       if (ex is ServerException) {
         rethrow;
       } else {
-        throw ServerException("errors_server_error_2".tr());
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
       }
     }
   }
 
   @override
   Future<RequestDetailsResponse> getCRMINQRequestDetails(String params) async {
+    var response;
     try {
       Map<String, dynamic> queryParms = {};
       if (CommonProperties.userInfo?.idNo != null) {
@@ -103,7 +110,7 @@ class RequestsRemoteDataSourceImplementation
           "pzInsKey": params
         };
       }
-      final response = await crmWebService.dio
+      response = await crmWebService.dio
           .get(ApiUrl.FetchInquiryRequest, queryParameters: queryParms);
 
       final data = response.data;
@@ -120,19 +127,25 @@ class RequestsRemoteDataSourceImplementation
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
+        dioError: error,
       );
     } catch (ex) {
       "Catched $ex".errorLog();
       if (ex is ServerException) {
         rethrow;
       } else {
-        throw ServerException("errors_server_error_2".tr());
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
       }
     }
   }
 
   @override
   Future<RequestDetailsResponse> getCRMREQRequestDetails(String params) async {
+    var response;
     try {
       Map<String, dynamic> queryParms = {};
       if (CommonProperties.userInfo?.idNo != null) {
@@ -144,7 +157,7 @@ class RequestsRemoteDataSourceImplementation
           "pzInsKey": params
         };
       }
-      final response = await crmWebService.dio
+      response = await crmWebService.dio
           .get(ApiUrl.MSRRequestDetails, queryParameters: queryParms);
 
       final data = response.data;
@@ -162,13 +175,18 @@ class RequestsRemoteDataSourceImplementation
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
+        dioError: error,
       );
     } catch (ex) {
       "Catched $ex".errorLog();
       if (ex is ServerException) {
         rethrow;
       } else {
-        throw ServerException("errors_server_error_2".tr());
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
       }
     }
   }
@@ -193,8 +211,12 @@ class RequestsRemoteDataSourceImplementation
     } on DioError catch (error) {
       var errorCode;
 
-      throw ServerException(error.toString(),
-          statusCode: error.response?.statusCode, errorCode: errorCode);
+      throw ServerException(
+        error.toString(),
+        errorCode: errorCode,
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
     } catch (ex) {
       print("failurefailure $ex");
       if (ex is ServerException)
@@ -203,7 +225,11 @@ class RequestsRemoteDataSourceImplementation
         try {
           //  CommonFunctions.sendExceptionLog(exception: ex, response: response);
         } catch (ex) {}
-        throw ServerException(("errors_server_error_2").tr());
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
       }
     }
   }
@@ -239,8 +265,12 @@ class RequestsRemoteDataSourceImplementation
     } on DioError catch (error) {
       var errorCode;
 
-      throw ServerException(error.toString(),
-          statusCode: error.response?.statusCode, errorCode: errorCode);
+      throw ServerException(
+        error.toString(),
+        errorCode: errorCode,
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
     } catch (ex) {
       if (ex is ServerException)
         throw ex;
@@ -248,7 +278,11 @@ class RequestsRemoteDataSourceImplementation
         try {
           //  CommonFunctions.sendExceptionLog(exception: ex, response: response);
         } catch (ex) {}
-        throw ServerException(("errors_server_error_2").tr());
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
       }
     }
   }
@@ -274,8 +308,12 @@ class RequestsRemoteDataSourceImplementation
     } on DioError catch (error) {
       var errorCode;
 
-      throw ServerException(error.toString(),
-          statusCode: error.response?.statusCode, errorCode: errorCode);
+      throw ServerException(
+        error.toString(),
+        errorCode: errorCode,
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
     } catch (ex) {
       if (ex is ServerException)
         throw ex;
@@ -283,7 +321,11 @@ class RequestsRemoteDataSourceImplementation
         try {
           //CommonFunctions.sendExceptionLog(exception: ex, response: response);
         } catch (ex) {}
-        throw ServerException(("errors_server_error_2").tr());
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
       }
     }
   }

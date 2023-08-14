@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:balady_plus/app/core/services/local/helpers.dart';
 import 'package:balady_plus/app/core/services/services_exports.dart';
+import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
@@ -138,16 +139,31 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
     if (dateToCheck != null)
       aDate = DateTime(dateToCheck.year, dateToCheck.month, dateToCheck.day);
     if (aDate != today || aDate == null || state.prayerTimesResponse == null) {
-      // request permission
-      /* final isEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!isEnabled) {
-      emit(state.copyWith(
-        status: BlocRequestStatus.submissionGetFailure,
-        errorMessage: "locationServiceDisabled".tr(),
-      ));
-      return;
-    }
-    */
+      emit(state.copyWith(status: BlocRequestStatus.submissionGetLoading));
+      final params = PrayerTimesParams(
+        latitude: CommonProperties.userLocation?.y ?? 21.424236910931974,
+        longitude: CommonProperties.userLocation?.x ?? 39.82589070176908,
+        date: DateTime.now(),
+      );
+      final failureOrSuccess = await _getPrayerTimes(params);
+
+      await failureOrSuccess.fold(
+        (failure) {
+          emit(state.copyWith(
+            status: BlocRequestStatus.submissionGetFailure,
+            errorMessage: (failure as ServerFailure).errorMessage,
+          ));
+        },
+        (response) {
+          print("getPrayerTime success $response");
+          emit(state.copyWith(
+              status: BlocRequestStatus.submissionGetSuccess,
+              prayerTimes: response,
+              lastUpdatedDate: DateTime.now()));
+        },
+      );
+      /*return;
+
       bool checkLoccationSettings = await CommonFunctions.checkLocationSettings(
           NavigationService.navigatorKey.currentContext!);
 
@@ -162,6 +178,7 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
       } else {
         emit(state.copyWith(userLocationUnkown: true));
       }
+
       emit(state.copyWith(status: BlocRequestStatus.submissionGetLoading));
       final gisFailureOrSuccess = await _getGISData(
         GISParams(x: longitude, y: latitude),
@@ -206,7 +223,7 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
               prayerTimes: response,
               lastUpdatedDate: DateTime.now()));
         },
-      );
+      );*/
     }
 
     updateNextPrayer();

@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:sentry_dio/sentry_dio.dart';
 
 import '../../../../../../core/services/services_exports.dart';
 import '../../../../../_shared_feature_/presentation/pages/pdf_view.dart';
@@ -145,6 +146,7 @@ class _ObjectionAttachmentItemState extends State<ObjectionAttachmentItem> {
     dio.options.receiveTimeout = const Duration(milliseconds: 60000);
 
     dio.options.sendTimeout = const Duration(milliseconds: 60000);
+    dio.addSentry();
 
     dio.options.responseType = ResponseType.bytes;
     dio.interceptors.add(AppInterceptors());
