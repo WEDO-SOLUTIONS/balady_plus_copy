@@ -604,11 +604,14 @@ class MethodChannelDgisMapPlugin implements DgisMapPlugin, FlutterMapApi {
         ? PlatformViewLink(
             viewType: _viewType,
             surfaceFactory: (context, controller) {
-              return AndroidViewSurface(
-                controller: controller as AndroidViewController,
-                gestureRecognizers: const <Factory<
-                    OneSequenceGestureRecognizer>>{},
+              return AndroidView(
+                viewType: _viewType,
+                onPlatformViewCreated: onPlatformViewCreated,
+                gestureRecognizers: const <Factory<OneSequenceGestureRecognizer>>{},
+                creationParams: creationParams,
+                creationParamsCodec: const StandardMessageCodec(),
                 hitTestBehavior: PlatformViewHitTestBehavior.opaque,
+                layoutDirection: TextDirection.ltr,
               );
             },
             onCreatePlatformView: (params) {
