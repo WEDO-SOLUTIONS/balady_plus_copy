@@ -34,7 +34,6 @@ class _WeatherMainPageState extends State<WeatherMainPage> {
     final screenWidth = _size.width;
     final screenHeight = _size.height;
 
-    print("screenWidth=$screenWidth, screenHeight=$screenHeight");
     return BlocProvider.value(
       value: sl<WeatherBloc>(),
       child: BlocBuilder<WeatherBloc, WeatherState>(
