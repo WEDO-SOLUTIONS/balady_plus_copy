@@ -58,7 +58,8 @@ class DeformityHomeCard extends StatelessWidget {
                   btnHeight: 40,
                   btnWidth: 157,
                   text: "تعرف على انواع التشوه",
-                  onPressed: () {},
+                  onPressed: () =>
+                      context.pushNamedRoute(RouteName.visualDistortionPage),
                 ),
               ],
             ),

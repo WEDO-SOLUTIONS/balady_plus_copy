@@ -125,6 +125,7 @@ import '../../features/transaction_inquiry/presentation/pages/inquiry/transactio
 import '../../features/transaction_inquiry/presentation/pages/request_service/new_request_service/new_request_service_location_screen.dart';
 import '../../features/transaction_inquiry/presentation/pages/request_service/new_request_service/new_request_service_page.dart';
 import '../../features/vd/vd_exports.dart';
+import '../../features/visual_distortion/visual_distoration_exports.dart';
 import '../../features/weather/weather_exports.dart';
 import '../../features/zmzm_points/presentation/pages/zmzm_points_page.dart';
 import '../../features/wallet/wallet_exports.dart';
@@ -132,6 +133,7 @@ import 'package:balady_plus/etmam_app/app.dart';
 import 'package:balady_plus/etmam_app/features/_shared_feature_/shared/shared_feature_exports.dart'
     as sharedEtmamFeature;
 
+import 'enums/visual_distortion.dart';
 import 'etmam_route_exports.dart' hide SplashPage;
 
 class AppRouter {
@@ -180,6 +182,17 @@ class AppRouter {
         return MaterialPageRoute(
           builder: (_) => QiblahCompassPage(),
         );
+      case RouteName.visualDistortionPage:
+        return MaterialPageRoute(
+          builder: (_) => const VisualDistortionScreen(),
+        );
+      case RouteName.visualDistortionDetailsPage:
+        return MaterialPageRoute(
+          builder: (_) => VisualDistortionDetailsScreen(
+            visualDistortion: settings.arguments as VisualDistortion,
+          ),
+        );
+
       //? Municipal Services
       case RouteName.municipalAdvisor:
         return MaterialPageRoute(

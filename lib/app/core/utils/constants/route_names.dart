@@ -144,6 +144,11 @@ class RouteName {
 
   static const investmentPage = '/investmentPage';
   static const tempRentalPage = '/tempRentalPage';
+
+  // Visual distortion
+  static const visualDistortionPage = '/visualDistortionPage';
+  static const visualDistortionDetailsPage = '/visualDistortionDetailsPage';
+
 }
 
 class EtmamRoutesNames {
