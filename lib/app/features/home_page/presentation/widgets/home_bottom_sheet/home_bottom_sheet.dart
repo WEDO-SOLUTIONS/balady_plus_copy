@@ -2,14 +2,7 @@ import 'package:flutter/material.dart';
 import '../../../../_shared_feature_/shared_feature_exports.dart';
 import '../../../../map_page/presentation/mvvm/map_view_model.dart';
 import '../../../home_exports.dart'
-    show
-        BaladySmartAdvisorCard,
-        ChallengeHomeCard,
-        DraggableHeaderComponent,
-        NewServices,
-        PrayerHomeCard,
-        ReadHomeCard,
-        ReportHomeCard;
+    show BaladySmartAdvisorCard, CertificationMapCard, ChallengeHomeCard, DeformityHomeCard, DraggableHeaderComponent, NewServices, PrayerHomeCard, ReadHomeCard, ReportHomeCard;
 
 import 'package:provider/provider.dart';
 
@@ -34,6 +27,8 @@ class HomeBottomSheet extends StatelessWidget {
           children: [
             DraggableHeaderComponent(),
             ReportHomeCard(),
+            CertificationMapCard(),
+            DeformityHomeCard(),
             PrayerHomeCard(),
             ReadHomeCard(),
             //  BaladySmartAdvisorCard(),

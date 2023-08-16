@@ -52,11 +52,13 @@ class ImagePath {
   static const fajrBg = '${_imagePath}fajr_bg$_png';
   static const asrBg = '${_imagePath}asr_bg$_png';
   static const smartAdvisorBg = '${_imagePath}balady_expert_bg$_png';
+  static const certificationMapBg = '${_imagePath}certification_map_bg$_png';
   static const supportImg = '${_imagePath}support_img$_png';
   static const readBg = '${_imagePath}read_bg$_png';
   static const quranImg = '${_imagePath}quran_img$_png';
   static const challengeBaladyBg = '${_imagePath}challenge_balady_bg$_png';
   static const reportBg = '${_imagePath}report_bg$_png';
+  static const deformityBg = '${_imagePath}deformity_bg$_png';
   static const boardingSplashImage = '${_imagePath}balady_logo$_png';
   static const boardingMainImage = '${_imagePath}boarding_main$_png';
   static const boardingCloseImage = '${_imagePath}boarding_close$_png';
@@ -83,6 +85,20 @@ class ImagePath {
   static const buildingReq10 = '${_imagePath}building_req10$_png';
   static const buildingReq11 = '${_imagePath}building_req11$_png';
   static const buildingReq12 = '${_imagePath}building_req12$_png';
+
+  // Visual Distoration
+  static const distortedWritings = '${_imagePath}distortedWritings$_png';
+  static const umbrellas = '${_imagePath}umbrellas$_png';
+  static const coveringPorches = '${_imagePath}coveringPorches$_png';
+  static const abandonedBuildings = '${_imagePath}abandonedBuildings$_png';
+  static const buildingFacades = '${_imagePath}buildingFacades$_png';
+  static const buildingFacadesBad = '${_imagePath}buildingFacadesBad$_png';
+  static const buildingFacadesGood = '${_imagePath}buildingFacadesGood$_png';
+  static const visualDistortionFooter = '${_imagePath}visual_distortion_footer$_png';
+  static const whiteBg = '${_imagePath}white_bg$_png';
+  static const grayBg = '${_imagePath}gray_bg$_png';
+
+
   //etmam app
   static const providerDetailsImgExample =
       '${_etmamImagePath}ProviderDetailsExample$_png';

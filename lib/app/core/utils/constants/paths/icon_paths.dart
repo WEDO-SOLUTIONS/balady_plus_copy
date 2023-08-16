@@ -53,6 +53,7 @@ class IconPath {
   static const notificationIc = '${_svgIconPath}notification$_svg';
   static const notificationIc2 = '${_svgIconPath}notification2$_svg';
   static const notificationFilled = '${_svgIconPath}notification_filled$_svg';
+  static const note = '${_svgIconPath}note$_svg';
 
   static const arrowForward2 = '${_svgIconPath}arrow_forward$_svg';
   static const receiveSquare = '${_svgIconPath}receive-square$_svg';
@@ -70,6 +71,7 @@ class IconPath {
   static const camera = '${_svgIconPath}camera$_svg';
   static const location = '${_svgIconPath}location$_svg';
   static const lock = '${_svgIconPath}lock$_svg';
+  static const map = '${_svgIconPath}map$_svg';
 
   static const informationCircleIcon =
       '${_svgIconPath}informationCircleIcon$_svg';
