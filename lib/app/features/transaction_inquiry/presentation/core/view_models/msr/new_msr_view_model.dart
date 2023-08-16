@@ -72,6 +72,7 @@ class NewMSRViewModel extends BaseViewModel {
         response.isSuccessfull!) {
       if (checkMuncupality(response)) {
         if (response.adminMunicipalityId != gisLocation?.adminMunicipalityId) {
+          print("HEREEE");
           getSPlList(
               category: type.code,
               snap: false,
@@ -415,6 +416,8 @@ class NewMSRViewModel extends BaseViewModel {
     } else {
       isExcepted = Helpers.checkForExpectedVD(gisResult);
     }
+    print(isAllowed);
+    print(isExcepted);
     return isAllowed && !isExcepted;
   }
 

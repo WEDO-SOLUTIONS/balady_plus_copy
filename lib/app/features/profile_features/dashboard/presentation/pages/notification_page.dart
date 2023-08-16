@@ -55,7 +55,7 @@ class NotificationCard extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               CustomTextWidget(
-                "in_balady".tr(),
+                "notifications_text".tr(),
                 fontColor: AppColor.blackModern600Light,
                 fontSize: 14,
                 fontWeight: AppFontWeight.bold,

@@ -305,8 +305,8 @@ class Helpers {
         if (gis.isVDExcepted()) {
           String error = ("req_vd_excepted").tr();
           CommonFunctions.showError(error);
+          return true;
         }
-        return true;
       }
     }
 
