@@ -16,7 +16,7 @@ A new Flutter plugin project.
   s.source_files = 'Classes/**/*'
   
   s.dependency 'Flutter'
-  s.dependency 'DGisMobileSDK', '7.3.0-map'
+  s.dependency 'DGisMobileSDK', '7.3.1-map'
   
   s.platform = :ios, '12.0'
 
