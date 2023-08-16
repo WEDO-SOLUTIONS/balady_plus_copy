@@ -198,7 +198,7 @@ class _ExpansionLeadingWidget extends StatelessWidget {
             height: 25.0,
             alignment: Alignment.center,
             decoration: BoxDecoration(
-              color: leadingBGColor,
+              color: AppColor.white,
               borderRadius: BorderRadius.circular(8.0),
             ),
             child: leading is Widget
@@ -241,31 +241,30 @@ class _ExpansionTitleWidget extends StatelessWidget {
   // double get titleWidth => leading == null
   //     ? width - (25.0 + 10.0)
   //     : width - (25.0 + 10.0 + 10.0 + 25.0);
-  TextStyle get textStyle => expanded
-      ? AppStyle.mainTextStyle
-      : AppStyle.mainTextThirdStyle.copyWith(
-          fontSize: 18.0,
-          color: AppColor.gray,
-        );
+  TextStyle get textStyle => AppStyle.mainTextThirdStyle.copyWith(
+      fontSize: 15.0,
+      color: AppColor.blackModern600Light,
+      fontWeight: FontWeight.bold);
 }
 
 class _ExpansionPanelArrowWidget extends StatelessWidget {
   final bool expanded;
+  final Color? arrowBg;
 
-  const _ExpansionPanelArrowWidget({required this.expanded});
+  const _ExpansionPanelArrowWidget({required this.expanded, this.arrowBg});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 25.0,
-      height: 25.0,
-      decoration: const BoxDecoration(
-        // color: expanded ? AppColor.mainDark : AppColor.mainTextThird,
+      width: 20,
+      height: 20,
+      decoration: BoxDecoration(
+        color: arrowBg ?? AppColor.primary300Light,
         shape: BoxShape.circle,
       ),
       child: Transform.rotate(
         angle: angle,
-        child: Icon(Icons.arrow_back_ios_new, size: 14.0, color: iconColor),
+        child: Icon(Icons.arrow_back_ios_new, size: 12, color: iconColor),
       ),
     );
   }
@@ -274,159 +273,5 @@ class _ExpansionPanelArrowWidget extends StatelessWidget {
   // so, if expanded we need to rotate it by 90', otherwise rotate by 270'
   double get angle =>
       expanded ? DIRECTION.downward.rotate : DIRECTION.upward.rotate;
-  Color get iconColor => expanded ? AppColor.black : AppColor.gray;
+  Color get iconColor => expanded ? AppColor.white : AppColor.white;
 }
-
-
-/* 
-
-BlocProvider<_ExpansionPanelCubit>(
-      create: (_) => _ExpansionPanelCubit(initialState: -1),
-      child: Builder(
-        builder: (context) {
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: List.generate(
-              children.length,
-              (index) => BlocBuilder<_ExpansionPanelCubit, int>(
-                builder: (_, panelIndex) {
-                  final expansionState = index == panelIndex;
-                  return Container(
-                    width:
-                        children[index].expansionWidth ?? context.screenWidth,
-                    // padding: expandedPadding ??
-                    //     const EdgeInsets.symmetric(
-                    //       horizontal: UIHelper.semiMediumPadding,
-                    //       vertical: 8.0,
-                    //     ),
-                    decoration: BoxDecoration(
-                      color: expansionState
-                          ? AppColor.mainGrayDark2
-                          : Theme.of(context).scaffoldBackgroundColor,
-                      border: Border(bottom: border(expansionState)),
-                    ),
-                    child: LayoutBuilder(
-                      builder: (_, constraints) => SizedBox(
-                        width: constraints.maxWidth,
-                        child: Theme(
-                          data: ThemeData()
-                              .copyWith(dividerColor: Colors.transparent),
-                          child: ListTileTheme(
-                            contentPadding: EdgeInsets.zero,
-                            dense: true,
-                            horizontalTitleGap: 10.0,
-                            minLeadingWidth: 25.0,
-                            minVerticalPadding: 0.0,
-                            selectedColor: Colors.transparent,
-                            selectedTileColor: Colors.transparent,
-                            child: ExpansionTile(
-                              key: UniqueKey(),
-                              tilePadding: headerPadding,
-                              childrenPadding: contentPadding,
-                              backgroundColor: Colors.transparent,
-                              collapsedBackgroundColor: Colors.transparent,
-                              maintainState: children[index].keepState,
-                              initiallyExpanded: expansionState,
-                              leading: _ExpansionLeadingWidget(
-                                expanded: expansionState,
-                                leading: children[index].leading,
-                              ),
-                              title: _ExpansionTitleWidget(
-                                expanded: expansionState,
-                                title: children[index].title,
-                              ),
-                              trailing: _ExpansionPanelArrowWidget(
-                                expanded: expansionState,
-                              ),
-                              children: [
-                                children[index].body ?? const SizedBox()
-                              ],
-                              expandedCrossAxisAlignment:
-                                  CrossAxisAlignment.start,
-                              onExpansionChanged: (state) {
-                                BlocProvider.of<_ExpansionPanelCubit>(context)
-                                    .onPanelChanged(index);
-                                if (children[index].onExpansionChanged !=
-                                    null) {
-                                  children[index]
-                                      .onExpansionChanged!(expansionState);
-                                }
-                                if (expansionCallback != null) {
-                                  expansionCallback!(index, state);
-                                }
-                              },
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  );
-                },
-              ),
-            ),
-          );
-        },
-      ),
-    )
-
-
-// return Accordion(
-    //   maxOpenSections: 1,
-    //   disableScrolling: true,
-    //   paddingListHorizontal: 0.0,
-    //   paddingListBottom: 0.0,
-    //   paddingListTop: 0.0,
-    //   children: List.generate(
-    //     children.length,
-    //     (index) => AccordionSection(
-    //       headerBackgroundColorOpened: AppColor.mainGrayDark2,
-    //       headerBackgroundColor: Theme.of(context).scaffoldBackgroundColor,
-    //       headerBorderRadius: 0.0,
-    //       headerPadding: EdgeInsets.zero,
-    //       contentBorderColor: Theme.of(context).scaffoldBackgroundColor,
-    //       contentBackgroundColor: AppColor.mainGrayDark2,
-    //       contentBorderRadius: 0.0,
-    //       contentBorderWidth: 0.0,
-    //       contentHorizontalPadding: 0.0,
-    //       contentVerticalPadding: 0.0,
-    //       paddingBetweenClosedSections: 10.0,
-    //       paddingBetweenOpenSections: 0.0,
-    //       isOpen: children[index].isExpanded,
-    //       leftIcon: Container(
-    //         decoration: const BoxDecoration(
-    //             border: Border(bottom: BorderSide(color: Colors.red))),
-    //         child: _ExpansionLeadingWidget(
-    //           expanded: children[index].isExpanded,
-    //           leading: children[index].leading,
-    //         ),
-    //       ),
-    //       header: Container(
-    //         decoration: const BoxDecoration(
-    //             border: Border(bottom: BorderSide(color: Colors.red))),
-    //         child: _ExpansionTitleWidget(
-    //           expanded: children[index].isExpanded,
-    //           title: children[index].title,
-    //         ),
-    //       ),
-    //       content: Container(
-    //         padding: contentPadding,
-    //         decoration:
-    //             BoxDecoration(border: Border(bottom: contentBottomBorder)),
-    //         child: children[index].body,
-    //       ),
-    //       onOpenSection: () {
-    //         if (expansionCallback != null) expansionCallback!(index, true);
-    //         if (children[index].onExpansionChanged != null) {
-    //           children[index].onExpansionChanged!(true);
-    //         }
-    //       },
-    //       onCloseSection: () {
-    //         if (expansionCallback != null) expansionCallback!(index, false);
-    //         if (children[index].onExpansionChanged != null) {
-    //           children[index].onExpansionChanged!(false);
-    //         }
-    //       },
-    //     ),
-    //   ),
-    // );
-*/

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../../../../core/utils/utils_exports.dart';
 import '../../../../_shared_feature_/presentation/dialogs/need_login_dialog.dart';
 import '../../../../_shared_feature_/shared_feature_exports.dart';
+import '../../../../map_page/presentation/mvvm/map_view_model.dart';
 import '../../../home_exports.dart';
 
 class CertificationMapCard extends StatelessWidget {
@@ -62,14 +64,20 @@ class CertificationMapCard extends StatelessWidget {
                       btnHeight: 40,
                       btnWidth: 163,
                       text: "عرض الاشتراطات",
-                      onPressed: () async {},
+                      onPressed: () async {
+                        await BottomSheetDialog.showDraggableSheet(
+                          context,
+                          child: BuildingRequirementsDialog(),
+                        );
+                      },
                     ),
                   ],
                 ),
               ),
               const Spacer(),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                 width: MediaQuery.sizeOf(context).width,
                 decoration: BoxDecoration(
                   borderRadius: const BorderRadius.only(
@@ -77,7 +85,7 @@ class CertificationMapCard extends StatelessWidget {
                       bottomLeft: Radius.circular(16)),
                   color: AppColor.white.withOpacity(0.6),
                 ),
-                child: const Row(
+                child: Row(
                   children: [
                     CustomTextWidget(
                       "لمعرفه المزيد عن الخريطه اطلع على",
@@ -86,11 +94,16 @@ class CertificationMapCard extends StatelessWidget {
                       fontColor: AppColor.blackModern900Light,
                     ),
                     SizedBox(width: 4),
-                    CustomTextWidget(
-                      "الاسئلة الشائعة",
-                      fontWeight: AppFontWeight.bold,
-                      fontSize: 12,
-                      fontColor: AppColor.primary900Light,
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.pushNamed(context, RouteName.QAPage);
+                      },
+                      child: CustomTextWidget(
+                        "الاسئلة الشائعة",
+                        fontWeight: AppFontWeight.bold,
+                        fontSize: 12,
+                        fontColor: AppColor.primary900Light,
+                      ),
                     ),
                   ],
                 ),
@@ -100,13 +113,21 @@ class CertificationMapCard extends StatelessWidget {
           PositionedDirectional(
             end: 18,
             top: 12,
-            child: Container(
-              padding: const EdgeInsets.all(12),
-              decoration: const BoxDecoration(
-                shape: BoxShape.circle,
-                color: AppColor.primary900Light,
+            child: GestureDetector(
+              onTap: () {
+                MapViewModel mapViewModel =
+                    Provider.of<MapViewModel>(context, listen: false);
+
+                mapViewModel.navigateToImtethal();
+              },
+              child: Container(
+                padding: const EdgeInsets.all(12),
+                decoration: const BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: AppColor.primary900Light,
+                ),
+                child: const CustomSvgIconWidget(IconPath.map, iconSize: 24),
               ),
-              child: const CustomSvgIconWidget(IconPath.map, iconSize: 24),
             ),
           ),
         ],

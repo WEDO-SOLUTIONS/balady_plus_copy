@@ -85,6 +85,8 @@ class ImagePath {
   static const buildingReq10 = '${_imagePath}building_req10$_png';
   static const buildingReq11 = '${_imagePath}building_req11$_png';
   static const buildingReq12 = '${_imagePath}building_req12$_png';
+  static const buildingReq13 = '${_imagePath}building_req13$_png';
+  static const buildingReq14 = '${_imagePath}building_req14$_png';
 
   // Visual Distoration
   static const distortedWritings = '${_imagePath}distortedWritings$_png';
@@ -94,10 +96,10 @@ class ImagePath {
   static const buildingFacades = '${_imagePath}buildingFacades$_png';
   static const buildingFacadesBad = '${_imagePath}buildingFacadesBad$_png';
   static const buildingFacadesGood = '${_imagePath}buildingFacadesGood$_png';
-  static const visualDistortionFooter = '${_imagePath}visual_distortion_footer$_png';
+  static const visualDistortionFooter =
+      '${_imagePath}visual_distortion_footer$_png';
   static const whiteBg = '${_imagePath}white_bg$_png';
   static const grayBg = '${_imagePath}gray_bg$_png';
-
 
   //etmam app
   static const providerDetailsImgExample =

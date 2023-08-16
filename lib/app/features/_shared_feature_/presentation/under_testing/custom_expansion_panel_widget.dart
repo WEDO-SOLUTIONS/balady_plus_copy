@@ -121,9 +121,7 @@ class CustomExpansionPanelWidget extends StatelessWidget {
         expandedPadding?.horizontal == null
             ? UIHelper.middlePadding
             : expandedPadding!.horizontal / 2.0,
-        expandedPadding?.vertical == null
-            ? 4
-            : expandedPadding!.vertical / 2.0,
+        expandedPadding?.vertical == null ? 4 : expandedPadding!.vertical / 2.0,
         expandedPadding?.horizontal == null
             ? UIHelper.middlePadding
             : expandedPadding!.horizontal / 2.0,
@@ -213,7 +211,7 @@ class _ExpansionPanelArrowWidget extends StatelessWidget {
   final bool expanded;
   final Color? arrowBg;
 
-  const _ExpansionPanelArrowWidget({required this.expanded , this.arrowBg});
+  const _ExpansionPanelArrowWidget({required this.expanded, this.arrowBg});
 
   @override
   Widget build(BuildContext context) {

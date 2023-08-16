@@ -10,6 +10,7 @@ class RouteName {
   static const dmsImageFullScreen = '/dmsImageFullScreen';
   static const etmamMainPage = '/etmamMainPage';
   static const forceUpdateRoute = '/forceUpdateRoute';
+  static const QAPage = '/QAPage';
 
   //! Services
   static const serviceCards = '/serviceCards';
@@ -149,7 +150,6 @@ class RouteName {
   // Visual distortion
   static const visualDistortionPage = '/visualDistortionPage';
   static const visualDistortionDetailsPage = '/visualDistortionDetailsPage';
-
 }
 
 class EtmamRoutesNames {

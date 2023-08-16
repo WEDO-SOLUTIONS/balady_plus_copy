@@ -32,6 +32,7 @@ import '../../core/utils/utils_exports.dart'
         SliderUpPage;
 import '../../features/_shared_feature_/presentation/pages/qiblah_webview_page.dart';
 import '../../features/map_page/data/model/rental_details_response.dart';
+import '../../features/qa/presentation/pages/qa_page.dart';
 import '../../features/unknow/pages/investment_page.dart';
 import '../../features/unknow/pages/temp_rental_page.dart';
 import '../../features/_shared_feature_/presentation/pages/view_dms_image_screen.dart';
@@ -723,6 +724,11 @@ class AppRouter {
       case RouteName.forceUpdateRoute:
         return MaterialPageRoute(
           builder: (_) => ForceUpdatePage(),
+        );
+
+      case RouteName.QAPage:
+        return MaterialPageRoute(
+          builder: (_) => QAPage(),
         );
 
       // error page

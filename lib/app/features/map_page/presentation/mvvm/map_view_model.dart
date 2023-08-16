@@ -30,6 +30,7 @@ import '../../data/model/rental_details_response.dart';
 import '../../data/model/requests/map_requests_params.dart';
 import '../../data/model/white_lands.dart';
 import '../../data/repositories/layers_repositories.dart';
+import 'layers_gis_view_model.dart';
 
 const int mil = 300;
 TextEditingController searchController = TextEditingController();
@@ -941,5 +942,21 @@ class MapViewModel extends BaseViewModel {
     double center_x = (x1 + x2) / 2;
     double center_y = (y1 + y2) / 2;
     return (center_x, center_y);
+  }
+
+  void navigateToImtethal() {
+    viewHomeBottomSheet.value = false;
+    viewHomeBottomSheet.notifyListeners();
+
+    bottomSheetSizeFraction.value = 0.1;
+    bottomSheetSizeFraction.notifyListeners();
+
+    Timer(const Duration(milliseconds: 50), () async {
+      viewHomeBottomSheet.value = true;
+      viewHomeBottomSheet.notifyListeners();
+    });
+
+    bottomSheetSize.value = 0;
+    bottomSheetSize.notifyListeners();
   }
 }

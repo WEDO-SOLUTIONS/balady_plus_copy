@@ -44,17 +44,14 @@ class LayersRepositories {
       );
       if (layersType.data != null) {
         return layersFromJson(layersType.data['data']['result']['layers'])
-            .where(
-              (element) =>
-                  element.id != 0 &&
-                  element.id != 1 &&
-                  element.id != 3 &&
-                  element.id != 4 &&
-                  element.id != 6 &&
-                  element.id != 5 &&
-                  element.id != 9 &&
-                  element.id != 7,
-            )
+            .where((element) =>
+                element.id != 0 &&
+                element.id != 1 &&
+                element.id != 3 &&
+                element.id != 4 &&
+                element.id != 6 &&
+                element.id != 5 &&
+                element.id != 9)
             .toList();
       }
     } catch (ex) {

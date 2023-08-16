@@ -17,7 +17,7 @@ class TopicSelector extends StatelessWidget {
     return ChatBubbleRadioSelector(
       items: [
         'municipalAdvisorTopicAnswer1'.tr(),
-        // 'municipalAdvisorTopicAnswer4'.tr()
+        'municipalAdvisorTopicAnswer4'.tr()
       ],
       onChoose: (value) {
         context.read<MunicipalAdvisorBloc>().add(
