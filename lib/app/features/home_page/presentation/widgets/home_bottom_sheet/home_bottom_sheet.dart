@@ -35,8 +35,8 @@ class HomeBottomSheet extends StatelessWidget {
           initialChildSize: mapViewModel.bottomSheetSizeFraction.value,
           children: [
             DraggableHeaderComponent(),
-            ReportHomeCard(),
             CertificationMapCard(),
+            ReportHomeCard(),
 
             // DeformityHomeCard(),
             PrayerHomeCard(),
