@@ -8,6 +8,7 @@ import 'package:tuple/tuple.dart';
 import '../../../../../core/base/base_view_model.dart';
 import '../../../../../core/remote_services/api_constants.dart';
 import '../../../../../core/remote_services/web_service.dart';
+import '../../../../../core/services/local/helpers.dart';
 import '../../../../../core/utils/constants/remote_config.dart';
 import '../models/classification.dart';
 import '../models/classification_response_model.dart';
@@ -40,11 +41,11 @@ class InquiryRepository {
       print(ex);
       CommonFunctions.showError(error);
       try {
-        /*   Helpers.sendLog(
-            url: RemoteConfig.gisURL + ApiConstants.GisGetLocation,
+        Helpers.sendLog(
+            url: RemoteConfig.gis + ApiConstants.GisGetLocation,
             data: data,
             qeuryParms: query,
-            errorMsg: ex.toString());*/
+            errorMsg: ex.toString());
       } catch (ex) {}
       return null;
     }
@@ -85,7 +86,7 @@ class InquiryRepository {
       try {
         String queryString = "?" + Uri(queryParameters: queryParms).query;
 
-        //MM   Helpers.sendLog(url: url, data: data, qeuryParms: queryString);
+        Helpers.sendLog(url: url, data: data, qeuryParms: queryString);
       } catch (ex) {}
     }
     return Tuple3<bool?, String?, ClassificationResponse?>(
@@ -128,11 +129,11 @@ class InquiryRepository {
         String queryString = "?" + Uri(queryParameters: queryParms).query;
 
 //
-        /* Helpers.sendLog(
+        Helpers.sendLog(
             url: url,
             data: data,
             qeuryParms: queryString,
-            errorMsg: ex.toString());*/
+            errorMsg: ex.toString());
       } catch (ex) {}
     }
     return Tuple3<bool?, String?, ClassificationResponse?>(
@@ -176,11 +177,11 @@ class InquiryRepository {
         String queryString = "?" + Uri(queryParameters: queryParms).query;
 
 //MM
-        /* Helpers.sendLog(
+        Helpers.sendLog(
             url: url,
             data: data,
             qeuryParms: queryString,
-            errorMsg: ex.toString());*/
+            errorMsg: ex.toString());
       } catch (ex) {}
     }
     return Tuple3<bool?, String?, ClassificationResponse?>(
@@ -218,7 +219,7 @@ class InquiryRepository {
       try {
         String queryString = "?" + Uri(queryParameters: queryParms).query;
 
-        //MM     Helpers.sendLog(url: url, data: data, qeuryParms: queryString);
+        Helpers.sendLog(url: url, data: data, qeuryParms: queryString);
       } catch (ex) {}
     }
     return Tuple3<bool?, String?, SubMainClassification?>(state, error, result);
@@ -258,11 +259,11 @@ class InquiryRepository {
       try {
         String queryString = "?" + Uri(queryParameters: queryParms).query;
 
-        /*  Helpers.sendLog(
+        Helpers.sendLog(
             url: url,
             data: data,
             qeuryParms: queryString,
-            errorMsg: ex.toString());*/ //MM
+            errorMsg: ex.toString());
       } catch (ex) {}
     }
     return Tuple3<bool?, String?, ClassificationResponse?>(
@@ -322,8 +323,8 @@ class InquiryRepository {
     } catch (ex) {
       print(ex);
       try {
-        // MM  Helpers.sendLog(
-        //      url: url, data: data, body: body, errorMsg: ex.toString());
+        Helpers.sendLog(
+            url: url, data: data, body: body, errorMsg: ex.toString());
       } catch (ex) {}
     }
     return Tuple3<bool?, String?, CreateIncidentResult?>(

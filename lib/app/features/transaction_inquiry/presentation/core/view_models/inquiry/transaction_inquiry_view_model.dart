@@ -6,6 +6,7 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../../core/base/base_view_model.dart';
 import '../../../../../../core/remote_services/web_service.dart';
+import '../../../../../../core/services/local/helpers.dart';
 import '../../../../../../core/services/local/navigation_services.dart';
 import '../../../../../_shared_feature_/data/entities/drop_down_item.dart';
 import '../../models/inquiry_transaction_response.dart';
@@ -119,10 +120,10 @@ class TransactionInquiryViewModel extends BaseViewModel {
         showError(msg);
 
       try {
-        /* Helpers.sendLog(
+        Helpers.sendLog(
             url: "/v1/cts/document-details",
             data: body["data"],
-            errorMsg: ex.toString());*/
+            errorMsg: ex.toString());
       } catch (ex) {}
 
       return Future.value(false);

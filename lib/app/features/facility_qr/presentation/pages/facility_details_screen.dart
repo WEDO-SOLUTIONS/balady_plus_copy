@@ -45,6 +45,7 @@ import '../../../_shared_feature_/shared_feature_exports.dart'
         LabelIconSubtitleComponent;
 import '../../../vd/domain/entities/camera/camera_page_params.dart';
 import '../../../vd/domain/entities/categories/category_item.dart';
+import '../../../vd/presentation/dialogs/qr_types_dialog.dart';
 import '../widgets/facility_details_widgets/facility_rating_widget.dart';
 import '../widgets/facility_details_widgets/qr_classification_widget.dart';
 
@@ -635,16 +636,18 @@ class SubmitIncidentSection extends StatelessWidget {
                 ?.comLicenseInfo?.locationInfo?.longitude;
 
             if (lat != null && long != null) {
-              NavigationService.navigatorKey.currentState!.pushNamed(
-                  RouteName.vdCameraPage,
-                  arguments: CameraParamsPage(
-                      lat: lat,
-                      lon: long,
-                      qrCodeFlow: true,
-                      pageType: PAGE_TYPE.qrDetailsScreen,
-                      selectedCategory:
-                          CategoryItem(categoryId: RemoteConfig.marketClass),
-                      isFromHome: false));
+              await BottomSheetDialog.showDraggableSheet(context,
+                  child: BottomSheetWithActions(
+                    title: "اختر نوع البلاغ".tr(),
+                    body: QrTypesDialog(
+                      cmeraParamsPage: CameraParamsPage(
+                          lat: lat,
+                          lon: long,
+                          qrCodeFlow: true,
+                          pageType: PAGE_TYPE.qrDetailsScreen,
+                          isFromHome: false),
+                    ),
+                  ));
             }
           }
         },

@@ -1,4 +1,5 @@
 import 'package:balady_plus/app/core/services/local/helpers.dart';
+import 'package:balady_plus/app/core/utils/constants/remote_config.dart';
 import 'package:balady_plus/app/features/vd/vd_exports.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
@@ -58,6 +59,10 @@ class VDCategoryBloc extends Bloc<VDCategoryEvent, VDCategoryState> {
         allCategorystatus: BlocStatus.success,
         //  categories: success.data?.result,
         allCategories: success.items,
+        qrCategory: (success.items ?? [])
+            .where((element) =>
+                RemoteConfig.marketClass.contains(element.categoryId))
+            .toList(),
         errorMessage: "",
       ));
     });

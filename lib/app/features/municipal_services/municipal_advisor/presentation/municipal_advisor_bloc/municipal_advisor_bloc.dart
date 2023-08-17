@@ -1706,7 +1706,23 @@ class MunicipalAdvisorBloc
         );
         final failureOrSuccess = await _getBuildingCompliance(state.location!);
         failureOrSuccess.fold(
-          (failure) => emitFailure(emit, failure),
+          (failure) {
+            dynamic code = (failure as ServerFailure).errorCode;
+            print("erroCode $code");
+
+            if (code != "GIS-5")
+              emitFailure(emit, failure);
+            else {
+              emit(state.copyWith(
+                status: BlocRequestStatus.failure,
+                errorMessage: failure.errorMessage,
+                messages: [
+                  ...state.messages,
+                  ...nextStep(MunicipalAdvisorSteps.retryLocation),
+                ],
+              ));
+            }
+          },
           (data) {
             emit(
               state.copyWith(
@@ -2216,6 +2232,14 @@ class MunicipalAdvisorBloc
         return [];
       case MunicipalAdvisorSteps.endChat:
         return [];
+      case MunicipalAdvisorSteps.retryLocation:
+        return [
+          ChatMessage(
+            message: 'municipalAdvisorLocationCorrect'.tr(),
+            step: MunicipalAdvisorSteps.retryLocation,
+            isResponse: true,
+          ),
+        ];
     }
   }
 }

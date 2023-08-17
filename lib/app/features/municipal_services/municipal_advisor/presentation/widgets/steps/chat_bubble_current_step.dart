@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/features/municipal_services/municipal_advisor/presentation/widgets/steps/retry_location.dart';
 import 'package:flutter/material.dart';
 
 import '../../../municipal_advisor_exports.dart'
@@ -42,6 +43,8 @@ class ChatBubbleCurrentStep extends StatelessWidget {
         return const LocationSelector();
       case MunicipalAdvisorSteps.confirmLocation:
         return const ConfirmLocation();
+      case MunicipalAdvisorSteps.retryLocation:
+        return const RetryLocation();
       case MunicipalAdvisorSteps.activity:
         return const ActivitySelector();
       case MunicipalAdvisorSteps.subActivity:

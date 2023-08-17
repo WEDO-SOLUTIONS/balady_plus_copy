@@ -85,8 +85,6 @@ class _DraggableSheetCardState extends State<DraggableSheetCard> {
 
   @override
   Widget build(BuildContext context) {
-    LayersGisViewModel layersModel = context.watch<LayersGisViewModel>();
-
     return Align(
       alignment: Alignment.bottomCenter,
       child: Container(
@@ -154,17 +152,5 @@ class _DraggableSheetCardState extends State<DraggableSheetCard> {
   void dispose() {
     draggableScrollableController.dispose();
     super.dispose();
-  }
-
-  void showMainLayersDialog(
-      BuildContext context, LayersGisViewModel layersModel) async {
-    BottomSheetDialog.showDraggableSheet(
-      context,
-      isFullHeight: false,
-      child: BottomSheetWithActions(
-        title: "اختر نوع الخريطة".tr(),
-        body: MapLayersDialog(layersModel: layersModel),
-      ),
-    );
   }
 }

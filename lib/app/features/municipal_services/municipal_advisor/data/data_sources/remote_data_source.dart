@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/core/utils/constants/apis/api_headers.dart';
 import 'package:balady_plus/app/features/entry_point/presentation/cubit/auth_cubit.dart';
 import 'package:balady_plus/app/features/municipal_services/municipal_advisor/data/models/building_compliance_model.dart';
 import 'package:balady_plus/app/features/vd/vd_exports.dart';
@@ -1224,8 +1225,7 @@ class MunicipalAdvisorRemoteDataSourceImplementation
       final response = await webService.dio.get(ApiUrl.buildingCompliance,
           queryParameters: params.toMap(),
           options: Options(headers: {
-            "Authorization": "Bearer " +
-                (sl<EntryPointCubit>().state.apigeeToken!.accessToken)
+            ApiHeader.requiresToken.eName: false,
           }));
 
       final data = response.data;
@@ -1242,9 +1242,16 @@ class MunicipalAdvisorRemoteDataSourceImplementation
       if (error is NoDataFoundException) {
         return [];
       }
+      var errorCode;
+      try {
+        final result = ResponseBodyModel.fromMap(error.response?.data).data;
+        errorCode = result?.responseCode;
+      } catch (ex) {}
+      print("erroCode $errorCode");
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
+        errorCode: errorCode,
         dioError: error,
       );
     } catch (ex) {

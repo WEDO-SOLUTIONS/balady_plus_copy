@@ -8,6 +8,7 @@ import 'package:tuple/tuple.dart';
 import '../../../../../core/base/base_view_model.dart';
 import '../../../../../core/remote_services/api_constants.dart';
 import '../../../../../core/remote_services/web_service.dart';
+import '../../../../../core/services/local/helpers.dart';
 import '../../../../../core/utils/constants/remote_config.dart';
 import '../models/classification.dart';
 import '../models/create_incident_result.dart';
@@ -40,11 +41,11 @@ class CustomerVoiceRepository {
       print(ex);
       CommonFunctions.showError(error);
       try {
-        /*   Helpers.sendLog(
-            url: RemoteConfig.gisURL + ApiConstants.GisGetLocation,
+        Helpers.sendLog(
+            url: RemoteConfig.gis + ApiConstants.GisGetLocation,
             data: data,
             qeuryParms: query,
-            errorMsg: ex.toString());*/
+            errorMsg: ex.toString());
       } catch (ex) {}
       return null;
     }
@@ -90,11 +91,11 @@ class CustomerVoiceRepository {
       try {
         String queryString = "?" + Uri(queryParameters: queryParms).query;
 
-        /*Helpers.sendLog(
+        Helpers.sendLog(
             url: url,
             data: data,
             qeuryParms: queryString,
-            errorMsg: ex.toString());*/
+            errorMsg: ex.toString());
       } catch (ex) {}
     }
     return Tuple3<bool?, String?, SpecializedClassification?>(
@@ -136,11 +137,11 @@ class CustomerVoiceRepository {
       try {
         String queryString = "?" + Uri(queryParameters: queryParms).query;
 
-        /* Helpers.sendLog(
+        Helpers.sendLog(
             url: url,
             data: data,
             qeuryParms: queryString,
-            errorMsg: ex.toString());*/
+            errorMsg: ex.toString());
       } catch (ex) {}
     }
     return Tuple3<bool?, String?, SpecializedClassification?>(
@@ -180,12 +181,12 @@ class CustomerVoiceRepository {
         String queryString = "?" + Uri(queryParameters: queryParms).query;
 
         //MM
-        /* 
-    // Helpers.sendLog(
+
+        Helpers.sendLog(
             url: url,
             data: data,
             qeuryParms: queryString,
-            errorMsg: ex.toString())*/
+            errorMsg: ex.toString());
       } catch (ex) {}
       return null;
     }
@@ -220,11 +221,11 @@ class CustomerVoiceRepository {
         String queryString = "?" + Uri(queryParameters: queryParms).query;
 
 //MM
-        /*  Helpers.sendLog(
+        Helpers.sendLog(
             url: url,
             data: data,
             qeuryParms: queryString,
-            errorMsg: ex.toString());*/
+            errorMsg: ex.toString());
       } catch (ex) {}
       return null;
     }
@@ -292,11 +293,11 @@ class CustomerVoiceRepository {
       print(ex);
       try {
         //MM
-        /*  Helpers.sendLog(
+        Helpers.sendLog(
             url: url,
             data: data,
             body: json.encode(body),
-            errorMsg: ex.toString());*/
+            errorMsg: ex.toString());
       } catch (ex) {}
     }
     return Tuple3<bool?, String?, UploadFileResult?>(state, error, response);
@@ -318,10 +319,10 @@ class CustomerVoiceRepository {
       response = CreateIncidentResult.fromJson(json.decode(data));
     } catch (ex) {
       //MM
-      /* try {
+      try {
         Helpers.sendLog(
             url: url, data: data, body: body, errorMsg: ex.toString());
-      } catch (ex) {}*/
+      } catch (ex) {}
       print(ex);
     }
     return Tuple3<bool?, String?, CreateIncidentResult?>(
@@ -346,8 +347,8 @@ class CustomerVoiceRepository {
       print(ex);
       try {
         //MM
-        /* Helpers.sendLog(
-            url: url, data: data, body: body, errorMsg: ex.toString());*/
+        Helpers.sendLog(
+            url: url, data: data, body: body, errorMsg: ex.toString());
       } catch (ex) {}
     }
     return Tuple3<bool?, String?, CreateIncidentResult?>(

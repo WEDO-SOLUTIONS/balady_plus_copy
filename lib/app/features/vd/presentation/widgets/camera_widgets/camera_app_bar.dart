@@ -47,7 +47,7 @@ class CameraAppBar extends StatelessWidget implements PreferredSizeWidget {
             margin: EdgeInsetsDirectional.only(end: !isFlashOn ? 18 : 16),
             child: CustomIconButtonWidget(
               icon:
-                  !isFlashOn ? IconPath.vdFlashOnIcon : IconPath.vdFlashOffIcon,
+                  !isFlashOn ? IconPath.vdFlashOffIcon : IconPath.vdFlashOnIcon,
               onPressed: flashOnPress,
               btnHeight: !isFlashOn ? 20 : 20,
               btnWidth: !isFlashOn ? 12 : 16,

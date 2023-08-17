@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:balady_plus/app/core/services/local/helpers.dart';
 import 'package:balady_plus/app/features/calculator/presentation/pages/presenter/ServiceCalculatorPresenter.dart';
 import 'package:http/http.dart' as http;
 
@@ -44,12 +45,26 @@ class WebServiceConnections {
             () => (response != null && response.body != null)
                 ? response.body.toString()
                 : null);
+
+        try {
+          Helpers.sendLog(
+              url: url,
+              data: apiName,
+              errorMsg: (response != null && response.body != null)
+                  ? response.body.toString()
+                  : "");
+        } catch (ex) {}
+
         return m;
       }
     } catch (error) {
       print(error);
-      if (error != null)
+      if (error != null) {
+        try {
+          Helpers.sendLog(url: url, errorMsg: error.toString());
+        } catch (ex) {}
         throw APIException(apiPath: url, fullPath: url, exception: error);
+      }
     }
     return new Map();
   }
@@ -59,6 +74,7 @@ class WebServiceConnections {
       Map<String, String>? headers,
       dynamic body,
       String? apiName}) async {
+    print("HEREE1");
     var data = body != null ? json.encode(body) : null;
     try {
       print(url);
@@ -75,6 +91,7 @@ class WebServiceConnections {
         m.putIfAbsent("RelativePath", () => url);
         return m;
       } else {
+        print("heret");
         Map<String, dynamic> m = new Map();
         m.putIfAbsent("state", () => false);
         m.putIfAbsent("StatusCode", () => response.statusCode);
@@ -86,11 +103,24 @@ class WebServiceConnections {
                 ? response.body.toString()
                 : null);
 
+        try {
+          Helpers.sendLog(
+              url: url,
+              data: body.toString(),
+              errorMsg: (response != null && response.body != null)
+                  ? response.body.toString()
+                  : "");
+        } catch (ex) {}
         return m;
       }
     } catch (error) {
-      if (error != null)
+      if (error != null) {
+        try {
+          Helpers.sendLog(
+              url: url, data: body.toString(), errorMsg: error.toString());
+        } catch (ex) {}
         throw APIException(apiPath: url, fullPath: url, exception: error);
+      }
     }
 
     return new Map();

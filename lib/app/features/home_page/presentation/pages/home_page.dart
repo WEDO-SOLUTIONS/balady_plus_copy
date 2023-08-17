@@ -38,24 +38,14 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     MapViewModel mapViewModel = context.watch<MapViewModel?>()!;
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(
-          create: (BuildContext context) => LayersGisViewModel(
-            layersRepositories: sl(),
-            mapViewModel: mapViewModel,
-          ),
-        )
-      ],
-      child: Scaffold(
-        key: mapKey,
-        body: TabPageContainer(
-          child: Stack(
-            children: [
-              const HomeMap(),
-              const HomeBottomSheet(),
-            ],
-          ),
+    return Scaffold(
+      key: mapKey,
+      body: TabPageContainer(
+        child: Stack(
+          children: [
+            const HomeMap(),
+            const HomeBottomSheet(),
+          ],
         ),
       ),
     );

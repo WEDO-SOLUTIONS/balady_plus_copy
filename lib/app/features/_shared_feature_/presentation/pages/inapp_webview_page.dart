@@ -27,42 +27,13 @@ class InAppWebViewPage extends StatefulWidget {
 
 class _InAppWebViewPageState extends State<InAppWebViewPage> {
   late StreamController<double?> _progessStream;
-  late WebViewController controller;
-  late InAppWebViewController _controller;
+  InAppWebViewController? _controller;
   @override
   void initState() {
     super.initState();
     //CookieManager.instance().deleteAllCookies();
 
     _progessStream = StreamController<double?>();
-
-    controller = WebViewController()
-      ..setJavaScriptMode(JavaScriptMode.unrestricted)
-      ..setBackgroundColor(const Color(0x00000000))
-      ..setNavigationDelegate(
-        NavigationDelegate(
-          onProgress: (int progress) {
-            final percent = progress / 100;
-            if (!_progessStream.isClosed) {
-              _progessStream.sink.add(
-                percent,
-              );
-            }
-          },
-          onPageStarted: (String url) {},
-          onPageFinished: (String url) {
-            controller.runJavaScript(
-                "document.getElementsByClassName('site-header-cont')[0].style.display='none';document.getElementsByClassName('footer')[0].style.display='none';document.getElementsByClassName('breadcrumb')[0].style.display='none'");
-          },
-          onWebResourceError: (WebResourceError error) {},
-          onNavigationRequest: (NavigationRequest request) {
-            return NavigationDecision.navigate;
-          },
-        ),
-      )
-      ..loadRequest(Uri.parse(widget.args.url), headers: {
-        "Authorization": "Bearer " + (CommonProperties.token ?? "")
-      });
   }
 
   @override
@@ -109,6 +80,12 @@ class _InAppWebViewPageState extends State<InAppWebViewPage> {
                   // setState(() {
                   //   this.url = url!.path;
                   // });
+
+                  try {
+                    _controller?.evaluateJavascript(
+                        source:
+                            "document.getElementsByClassName('site-header-cont')[0].style.display='none';document.getElementsByClassName('footer')[0].style.display='none';document.getElementsByClassName('breadcrumb')[0].style.display='none'");
+                  } catch (ex) {}
                 },
                 onLoadError: (controller, url, code, message) => print(message),
                 onProgressChanged: (controller, int progress) {
@@ -136,6 +113,9 @@ class _InAppWebViewPageState extends State<InAppWebViewPage> {
   @override
   void dispose() {
     _progessStream.close();
+    _controller?.stopLoading();
+    _controller?.removeAllUserScripts();
+    _controller = null;
     super.dispose();
   }
 }

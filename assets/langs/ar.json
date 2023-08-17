@@ -155,6 +155,8 @@
   "municipalAdvisorLocationCorrect": "هل الموقع صحيح ؟",
   "municipalAdvisorLocationCorrectAnswer1": "نعم",
   "municipalAdvisorLocationCorrectAnswer2": "لا، تصحيح الموقع",
+  "municipalAdvisorLocationCorrectAnswer3": "تصحيح الموقع",
+
   "municipalAdvisorActivity": "ما هو النشاط الاقتصادي (ISIC) الخاص بك ؟",
   "municipalAdvisorActivityHint": "النشاط الاقتصادي (ISIC)",
   "municipalAdvisorSubActivity": "ما هو النشاط التفصيلي الخاص بك ؟",
@@ -2489,7 +2491,7 @@
   "objectionLastApplyDate": "اخر موعد للاعتراض",
   "violationAmount": "قيمه الغرامة",
   "clear": "مشمس",
-  "buildingRequirements": "مخالفات شهادة امتثال المباني",
+  "buildingRequirements": "متطلبات شهادة امتثال المباني",
   "buildingDesignElements": "عناصر تصميم المبنى",
   "buildingDesignElements1": "عدم فتح شبابيك في الملاحق العلوية مخالفة لأنظمة البناء أو الاشتراطات التصميمية للفتحات",
   "buildingDesignElements2": "عدم ارتفاع سترة السطح عن 2.1م كحد أعلى وعدم وضع فتحات على السور تسمح للرؤية",

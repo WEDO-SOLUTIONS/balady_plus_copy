@@ -24,7 +24,7 @@ import '../widgets/search_map_widget.dart';
 import '../../../../core/dependency_injection/injection_container.dart';
 import '../../../../core/utils/constants/constants.dart';
 import '../../../../core/utils/utils_exports.dart'
-    show AppColor, BlocStatus, IconPath;
+    show AppColor, BlocStatus, CommonFunctions, IconPath;
 import '../../../_shared_feature_/presentation/dialogs/bottom_sheet_dialogs.dart';
 import '../mvvm/layers_gis_view_model.dart';
 import '../mvvm/map_view_model.dart';
@@ -41,7 +41,6 @@ class HomeMap extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     MapViewModel mapViewModel = context.watch<MapViewModel?>()!;
-    LayersGisViewModel layersModel = context.watch<LayersGisViewModel>();
 
     return Stack(
       children: [
@@ -152,7 +151,7 @@ class HomeMap extends StatelessWidget {
                                         builder: (_, selectedPoint, __) {
                                           return GestureDetector(
                                             onTap: () => showMainLayersDialog(
-                                                context, layersModel),
+                                                context, mapViewModel),
                                             child: CircleIcon(
                                               icon: mapViewModel
                                                       .gisSelectedLayer?.icon ??
@@ -245,17 +244,20 @@ class HomeMap extends StatelessWidget {
   }
 
   void showMainLayersDialog(
-      BuildContext context, LayersGisViewModel layersModel) async {
-    if (layersModel.layers.value?.isEmpty ?? true)
-      await layersModel.getMinLayers();
-
-    BottomSheetDialog.showDraggableSheet(
-      isFullHeight: false,
-      context,
-      child: BottomSheetWithActions(
-        title: "plan_option".tr(),
-        body: MapLayersDialog(layersModel: layersModel),
-      ),
-    );
+      BuildContext context, MapViewModel mapViewModel) async {
+    if (mapViewModel.layers.value?.isEmpty ?? true)
+      await mapViewModel.getMinLayers();
+    if (mapViewModel.layers.value != null)
+      BottomSheetDialog.showDraggableSheet(
+        isFullHeight: false,
+        context,
+        child: BottomSheetWithActions(
+          title: "plan_option".tr(),
+          body: MapLayersDialog(mapModel: mapViewModel),
+        ),
+      );
+    else {
+      CommonFunctions.showError("server_error_1".tr());
+    }
   }
 }

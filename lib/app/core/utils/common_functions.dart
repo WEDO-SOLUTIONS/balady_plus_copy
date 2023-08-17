@@ -874,6 +874,9 @@ class CommonFunctions {
           user: sentryUser,
           request: request,
           message: sentryMessage,
+          transaction:
+              (dioError?.requestOptions.path ?? response?.realUri.path) ??
+                  ex.toString(),
           environment: sl<EnvType>().name,
           exceptions: [
             SentryException(

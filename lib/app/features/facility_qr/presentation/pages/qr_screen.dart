@@ -22,10 +22,13 @@ import '../../../../core/utils/constants/remote_config.dart';
 import '../../../../core/utils/constants/route_names.dart';
 import '../../../../core/utils/enums/app_font_weights.dart';
 import '../../../../core/utils/enums/enums.dart';
+import '../../../_shared_feature_/presentation/components/bottom_sheets/bottom_sheet_with_actions.dart';
+import '../../../_shared_feature_/presentation/dialogs/bottom_sheet_dialogs.dart';
 import '../../../_shared_feature_/presentation/widgets/buttons/custom_buttons_widgets.dart';
 import '../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import '../../../vd/domain/entities/camera/camera_page_params.dart';
 import '../../../vd/domain/entities/categories/category_item.dart';
+import '../../../vd/presentation/dialogs/qr_types_dialog.dart';
 
 String scanResult = "";
 late QRViewController controller;
@@ -240,16 +243,18 @@ void checkBarcode(BuildContext context) async {
                           ?.comLicenseInfo?.locationInfo?.longitude;
 
                       if (lat != null && long != null) {
-                        NavigationService.navigatorKey.currentState!.pushNamed(
-                            RouteName.vdCameraPage,
-                            arguments: CameraParamsPage(
-                                lat: lat,
-                                lon: long,
-                                qrCodeFlow: true,
-                                pageType: PAGE_TYPE.qrDialog,
-                                selectedCategory: CategoryItem(
-                                    categoryId: RemoteConfig.marketClass),
-                                isFromHome: false));
+                        await BottomSheetDialog.showDraggableSheet(context,
+                            child: BottomSheetWithActions(
+                              title: "اختر نوع البلاغ".tr(),
+                              body: QrTypesDialog(
+                                cmeraParamsPage: CameraParamsPage(
+                                    lat: lat,
+                                    lon: long,
+                                    qrCodeFlow: true,
+                                    pageType: PAGE_TYPE.qrDialog,
+                                    isFromHome: false),
+                              ),
+                            ));
                       }
                     }
                   },

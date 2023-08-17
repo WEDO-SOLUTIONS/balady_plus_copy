@@ -19,6 +19,7 @@ import 'package:path_provider/path_provider.dart';
 
 import 'dart:developer' as devtools show log;
 import 'package:permission_handler/permission_handler.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../../../features/_shared_feature_/presentation/dialogs/photo_permission_dialog.dart';
@@ -326,41 +327,35 @@ class Helpers {
       dynamic body,
       int? statusCode,
       String? errorMsg}) async {
-    // print("Send Log");
-    /* try {
-      PackageInfo packageInfo = await PackageInfo.fromPlatform();
-      SentryUser? user;
-      String? userID = CommonProperties.getSSOProfile?.idNo;
-      if (userID != null) {
-        String? mobile = CommonProperties.getSSOProfile?.phone;
-        String? email = CommonProperties.getSSOProfile?.mail;
-        String? name = CommonProperties.getSSOProfile?.arName;
-        user = SentryUser(
-            id: userID,
-            extras: {"mobile": mobile, "email": email, "name": name});
-      }
-      SentryMessage msg = SentryMessage(data != null ? data.toString() : "");
-      SentryRequest req = SentryRequest(
+    print("Send Log");
+
+    try {
+      SentryRequest request = SentryRequest(
           url: url,
           queryString: qeuryParms,
           data: body != null ? body.toString() : "",
           other: {"StatusCode": (statusCode ?? 0).toString()});
+      SentryMessage sentryMessage =
+          SentryMessage(data != null ? data.toString() : "");
+
+      SentryUser sentryUser = SentryUser(
+          id: CommonProperties.userInfo?.idNo,
+          name: CommonProperties.userInfo?.arName,
+          email: "");
+
       SentryEvent event = SentryEvent(
-        user: user,
-        message: msg,
-        request: req,
-        release: packageInfo.version,
-        environment: RemoteConfig.env,
-        extra: {"errorMsg": errorMsg},
+        user: sentryUser,
+        request: request,
+        message: sentryMessage,
+        transaction: url,
         tags: {"StatusCode": (statusCode ?? 0).toString()},
+        environment: sl<EnvType>().name,
         exceptions: [SentryException(value: url ?? "", type: url)],
       );
       Sentry.captureEvent(event);
-      //print("sent log");
     } catch (ex) {
-      print("exx");
       print(ex);
-    }*/
+    }
   }
 
   static String? getDaemValue(String? value) {

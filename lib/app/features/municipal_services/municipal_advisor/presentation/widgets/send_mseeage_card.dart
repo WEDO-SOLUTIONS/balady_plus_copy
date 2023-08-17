@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/core/utils/enums/bloc_status.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
@@ -37,9 +38,11 @@ class _SendMessageCardState extends State<SendMessageCard> {
       child: SafeArea(
         top: false,
         child: BlocConsumer<MunicipalAdvisorBloc, MunicipalAdvisorState>(
-          listenWhen: (previous, current) => previous.error != current.error,
+          listenWhen: (previous, current) => previous.status != current.status,
           listener: (_, state) async {
-            if (state.error.isNotEmpty) {
+            if (state.error.isNotEmpty &&
+                (state.status == BlocRequestStatus.submissionGetFailure ||
+                    state.status == BlocRequestStatus.failure)) {
               MessageDialog.showErrorNotification(msg: state.error);
             }
           },

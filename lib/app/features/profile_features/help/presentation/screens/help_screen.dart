@@ -20,10 +20,10 @@ class HelpScreen extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            GestureDetector(
+            InkWell(
               onTap: () =>
                   Navigator.of(context).pushNamed(RouteName.contactInfoPage),
-              child: const Padding(
+              child: Container(
                 padding: EdgeInsets.symmetric(horizontal: 16, vertical: 20),
                 child: Row(
                   children: [
@@ -54,7 +54,7 @@ class HelpScreen extends StatelessWidget {
                 color: AppColor.blackModern200Light,
               ),
             ),
-            GestureDetector(
+            InkWell(
               onTap: () => Navigator.of(context).pushNamed(
                 RouteName.inappWebview,
                 arguments: (
@@ -62,7 +62,7 @@ class HelpScreen extends StatelessWidget {
                   url: "https://balady.gov.sa/ar"
                 ),
               ),
-              child: const Padding(
+              child: Container(
                 padding: EdgeInsets.symmetric(horizontal: 16, vertical: 20),
                 child: Row(
                   children: [

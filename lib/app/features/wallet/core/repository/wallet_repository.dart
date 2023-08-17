@@ -67,6 +67,13 @@ class WalletRepository {
       // print(result);
       if (!state) {
         //   error = result.data?.responseMessage ?? error;
+
+        try {
+          Helpers.sendLog(
+              url: ApiConstants.printWalletLicense,
+              data: data,
+              errorMsg: body.toString() ?? "");
+        } catch (ex) {}
       }
     } catch (ex) {
       print(ex);

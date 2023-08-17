@@ -4,19 +4,27 @@ class QAState extends Equatable {
   //error message
   final String? errorMessage;
   final List<QAModel>? list;
+  final BlocStatus status;
+  final List<QAModel>? filtered;
 
-  const QAState({this.errorMessage, this.list});
+  const QAState(
+      {this.errorMessage,
+      this.list,
+      this.filtered,
+      this.status = BlocStatus.initial});
 
-  QAState copyWith({String? errorMessage, List<QAModel>? list}) {
+  QAState copyWith(
+      {String? errorMessage,
+      List<QAModel>? list,
+      List<QAModel>? filtered,
+      BlocStatus? status}) {
     return QAState(
         errorMessage: errorMessage ?? this.errorMessage,
+        status: status ?? this.status,
+        filtered: filtered ?? this.filtered,
         list: list ?? this.list);
   }
 
-  QAState clearFilters() => QAState(
-        errorMessage: errorMessage,
-      );
-
   @override
-  List<Object?> get props => [errorMessage, list];
+  List<Object?> get props => [errorMessage, list, filtered, status];
 }

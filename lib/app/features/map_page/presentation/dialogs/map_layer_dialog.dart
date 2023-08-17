@@ -15,8 +15,8 @@ import '../../data/model/layers.dart';
 import 'package:provider/provider.dart';
 
 class MapLayersDialog extends StatefulWidget {
-  final LayersGisViewModel layersModel;
-  const MapLayersDialog({super.key, required this.layersModel});
+  final MapViewModel mapModel;
+  const MapLayersDialog({super.key, required this.mapModel});
 
   @override
   State<MapLayersDialog> createState() => _MapLayersDialogState();
@@ -27,7 +27,7 @@ class _MapLayersDialogState extends State<MapLayersDialog> {
   @override
   void initState() {
     super.initState();
-    layerSelected = widget.layersModel.layerSelected.value;
+    layerSelected = widget.mapModel.layerSelected.value;
   }
 
   @override
@@ -40,7 +40,7 @@ class _MapLayersDialogState extends State<MapLayersDialog> {
         mainAxisSize: MainAxisSize.min,
         children: [
           ValueListenableBuilder<List<Layers>?>(
-            valueListenable: widget.layersModel.layers,
+            valueListenable: widget.mapModel.layers,
             builder: (_, layers, __) {
               return layers?.isNotEmpty ?? false
                   ? Column(
@@ -59,7 +59,6 @@ class _MapLayersDialogState extends State<MapLayersDialog> {
                                   print(layerSelected);
                                 });
                                 mapViewModel.selectLayers(layers[index]);
-                                widget.layersModel.selectLayers(layers[index]);
                                 Navigator.of(context).pop();
                               },
                               child: Container(
@@ -94,8 +93,7 @@ class _MapLayersDialogState extends State<MapLayersDialog> {
 
                                         mapViewModel
                                             .selectLayers(layers[index]);
-                                        widget.layersModel
-                                            .selectLayers(layers[index]);
+
                                         Navigator.of(context).pop();
                                       },
                                     )

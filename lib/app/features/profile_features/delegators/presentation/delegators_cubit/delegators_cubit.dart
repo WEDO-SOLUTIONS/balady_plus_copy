@@ -16,9 +16,11 @@ class DelegatorsCubit extends Cubit<DelegatorsState> {
   ) : super(const DelegatorsState());
 
   void getDelegators() async {
-    if (state.delegators.isNotEmpty) return;
+    if (state.delegators.isEmpty)
+      emit(state.copyWith(status: BlocRequestStatus.submissionGetLoading));
+    else
+      emit(state.copyWith(status: BlocRequestStatus.submissionPostLoading));
 
-    emit(state.copyWith(status: BlocRequestStatus.submissionGetLoading));
     final failureOrSuccess = await _getDelegators(NoParams());
 
     failureOrSuccess.fold(

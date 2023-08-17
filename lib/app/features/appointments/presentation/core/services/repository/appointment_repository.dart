@@ -5,6 +5,7 @@ import 'package:tuple/tuple.dart';
 import '../../../../../../core/base/base_view_model.dart';
 import '../../../../../../core/remote_services/api_constants.dart';
 import '../../../../../../core/remote_services/web_service.dart';
+import '../../../../../../core/services/local/helpers.dart';
 import '../../../../../../core/utils/common_functions.dart';
 import '../../../../../new_appointment/presentation/core/models/appointment_details_model.dart';
 import '../../../../../new_appointment/presentation/core/models/cancel_appointment_response.dart';
@@ -42,13 +43,13 @@ class AppointmentRepository {
       }
     } catch (ex) {
       print(ex);
-      /*try {
+      try {
         Helpers.sendLog(
             url: ApiConstants.MyAppointments,
             qeuryParms: query,
             data: data,
             errorMsg: ex.toString());
-      } catch (ex) {}*/
+      } catch (ex) {}
     }
     return Tuple3<bool?, String?, MyAppointmentsResponse?>(
         state, error, result);
@@ -73,13 +74,13 @@ class AppointmentRepository {
       }
     } catch (ex) {
       print(ex);
-      /*try {
+      try {
         Helpers.sendLog(
             url: ApiConstants.AppointmentDetails,
             qeuryParms: query,
             data: data,
             errorMsg: ex.toString());
-      } catch (ex) {}*/
+      } catch (ex) {}
     }
     return Tuple3<bool?, String?, AppointmentDetails?>(state, error, result);
   }
@@ -103,13 +104,13 @@ class AppointmentRepository {
       print(result);
     } catch (ex) {
       print(ex);
-      /* try {
+      try {
         Helpers.sendLog(
             url: ApiConstants.PrintAppointmentDetails,
             qeuryParms: query,
             data: data,
             errorMsg: ex.toString());
-      } catch (ex) {}*/
+      } catch (ex) {}
     }
     return Tuple4<bool?, String?, Uint8List?, String?>(
         state, error, result, contentType);
@@ -136,11 +137,11 @@ class AppointmentRepository {
     } catch (ex) {
       print(ex);
       try {
-        /* Helpers.sendLog(
+        Helpers.sendLog(
             url: ApiConstants.CancelAppointment,
             qeuryParms: query,
             data: data,
-            errorMsg: ex.toString());*/
+            errorMsg: ex.toString());
       } catch (ex) {}
     }
     return Tuple3<bool?, String?, CancelAppointmentResponse?>(
@@ -169,13 +170,13 @@ class AppointmentRepository {
       }
     } catch (ex) {
       print(ex);
-      /*try {
+      try {
         Helpers.sendLog(
             url: ApiConstants.ConfirmAppointment,
             qeuryParms: query,
             data: data,
             errorMsg: ex.toString());
-      } catch (ex) {}*/
+      } catch (ex) {}
     }
     return Tuple3<bool?, String?, ConfirmAppointmentResponse?>(
         state, error, result);
@@ -199,13 +200,13 @@ class AppointmentRepository {
       }
     } catch (ex) {
       print(ex);
-      /* try {
+      try {
         Helpers.sendLog(
             url: ApiConstants.AppointmentSave,
             body: reqBody,
             data: data,
             errorMsg: ex.toString());
-      } catch (ex) {}*/
+      } catch (ex) {}
     }
     return Tuple3<bool?, String?, SaveAppointmentResponse?>(
         state, error, result);

@@ -26,7 +26,7 @@ part 'quran_event.dart';
 part 'quran_state.dart';
 
 class QuranBloc extends Bloc<QuranEvent, QuranState> {
-  PageController controller = PageController();
+  PageController controller = PageController(viewportFraction: 0.98);
   late Directory appDocumentsDirectory;
 
   QuranBloc({required int initialSuraNo})

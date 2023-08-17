@@ -19,7 +19,7 @@ class BuildingComplianceCertificate extends PointLayersData {
   String? DISTRICTNAME;
   String? STREETTYPE;
   String? STREETWIDTH;
-  final List<List<gm.LatLng>>? pathsGoogle;
+  final List<List<GeoPointMessage>>? pathsGoogle;
 
   BuildingComplianceCertificate(
       {required this.paths,

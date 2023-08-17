@@ -94,6 +94,7 @@ class _QuranPageState extends State<QuranPage> {
                           context.read<QuranBloc>().add(ToggleDetailsEvent());
                         },
                         child: PageView.builder(
+                          physics: AlwaysScrollableScrollPhysics(),
                           controller: context.read<QuranBloc>().controller,
                           onPageChanged: (int page) {
                             context

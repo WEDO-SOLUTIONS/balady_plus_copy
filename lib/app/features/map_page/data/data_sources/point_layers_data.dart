@@ -28,8 +28,6 @@ enum LayersType {
   layersSeventh,
 }
 
-//, ,  and
-
 List<GeoPointMessage> getList(List list) {
   final List<GeoPointMessage> paths = [];
   for (var pointList in list) {
@@ -61,16 +59,16 @@ List<GeoPointMessage> getPolyLines(List list) {
   return paths;
 }
 
-List<List<gm.LatLng>> getGoogleList(List list) {
-  final List<List<gm.LatLng>> paths = [];
+List<List<GeoPointMessage>> getGoogleList(List list) {
+  final List<List<GeoPointMessage>> paths = [];
   for (var pointList in list) {
-    final List<gm.LatLng> inside = [];
+    final List<GeoPointMessage> inside = [];
 
     for (var point in pointList) {
       inside.add(
-        gm.LatLng(
-          double.parse(point[1].toString()),
-          double.parse(point[0].toString()),
+        GeoPointMessage(
+          latitude: double.parse(point[1].toString()),
+          longitude: double.parse(point[0].toString()),
         ),
       );
     }

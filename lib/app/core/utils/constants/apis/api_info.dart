@@ -70,8 +70,7 @@ class ApiUrl {
       '/v1/balady-consultation-services/updated-permit-cost';
   static const submitConsultation = '/v1/balady-consultation-services/submit';
 
-  static const buildingCompliance =
-      '/v1/gis-services/building-compliance-details';
+  static const buildingCompliance = '/v1/crm/gis/building-compliance-details';
 
   //! Profile
   //! Delegators

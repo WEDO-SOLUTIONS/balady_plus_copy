@@ -42,24 +42,33 @@ class _QAPageState extends State<QAPage> {
                         SearchTextFieldWidget(
                           containerHeight: 52,
                           hintText: "search".tr(),
-                          onTextChanged: (String text) {},
-                          onSubmitSearch: (String val) {},
+                          onTextChanged: (String text) {
+                            context
+                                .read<QABloc>()
+                                .add(GetQADatSearchedaEvent(text: text));
+                          },
+                          onSubmitSearch: (String val) {
+                            context
+                                .read<QABloc>()
+                                .add(GetQADatSearchedaEvent(text: val));
+                          },
                         ),
                         const CustomVerticalSpace(height: 32),
                         ListView.builder(
-                            itemCount: state.list?.length ?? 0,
+                            itemCount: state.filtered?.length ?? 0,
                             shrinkWrap: true,
                             physics: NeverScrollableScrollPhysics(),
                             itemBuilder: (ctx, index) {
                               return Column(
                                 children: [
                                   CustomEnhancedExpansionPanelWidget(
-                                    title: state.list?[index].question ?? "",
+                                    title:
+                                        state.filtered?[index].question ?? "",
                                     leadingWidth: 0,
                                     leading: null,
                                     children: [
                                       CustomTextWidget(
-                                        state.list?[index].answer ?? "",
+                                        state.filtered?[index].answer ?? "",
                                         fontColor: Color(0xFF52525B),
                                         fontWeight: AppFontWeight.bold,
                                         fontSize: 12,

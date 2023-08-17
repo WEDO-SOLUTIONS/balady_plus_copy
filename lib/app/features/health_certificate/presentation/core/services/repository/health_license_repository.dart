@@ -46,11 +46,11 @@ class HealthLicenseRepository {
       print(ex);
       try {
         //MM
-        /*  Helpers.sendLog(
-            url: RemoteConfig.gisURL + ApiConstants.GisGetLocation,
+        Helpers.sendLog(
+            url: RemoteConfig.gis + ApiConstants.GisGetLocation,
             qeuryParms: query,
             data: data,
-            errorMsg: ex.toString());*/
+            errorMsg: ex.toString());
       } catch (ex) {}
     }
     return Tuple3<bool?, String?, GisLocationResult?>(state, error, result);

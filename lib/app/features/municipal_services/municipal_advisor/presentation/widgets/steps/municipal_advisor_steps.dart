@@ -32,4 +32,5 @@ enum MunicipalAdvisorSteps {
   continueToRequestPath,
   requestPath,
   imtethal,
+  retryLocation
 }

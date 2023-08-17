@@ -28,50 +28,13 @@ class QiblahWebViewPage extends StatefulWidget {
 
 class _QiblahWebViewPageState extends State<QiblahWebViewPage> {
   late StreamController<double?> _progessStream;
-  late WebViewController controller;
-  late InAppWebViewController _controller;
+  InAppWebViewController? _controller;
   @override
   void initState() {
     super.initState();
     //CookieManager.instance().deleteAllCookies();
 
     _progessStream = StreamController<double?>();
-
-    controller = WebViewController()
-      ..setJavaScriptMode(JavaScriptMode.unrestricted)
-      ..setBackgroundColor(const Color(0x00000000))
-      ..clearCache()
-      ..clearLocalStorage()
-      ..setNavigationDelegate(
-        NavigationDelegate(
-          onProgress: (int progress) {
-            final percent = progress / 100;
-            if (!_progessStream.isClosed) {
-              _progessStream.sink.add(
-                percent,
-              );
-            }
-          },
-          onPageStarted: (String url) {},
-          onPageFinished: (String url) {
-            //   controller.runJavaScript(
-            //     "document.getElementsByClassName('site-header-cont')[0].style.display='none';document.getElementsByClassName('footer')[0].style.display='none';document.getElementsByClassName('breadcrumb')[0].style.display='none'");
-
-            print(url);
-            // controller.runJavaScript(
-            //     "document.getElementsByClassName('mat-raised-button').click");
-          },
-          onWebResourceError: (WebResourceError error) {},
-          onNavigationRequest: (NavigationRequest request) {
-            return NavigationDecision.navigate;
-          },
-        ),
-      )
-      ..loadRequest(Uri.parse(widget.args.url), headers: {
-        "Authorization": "Bearer " + (CommonProperties.token ?? "")
-      });
-
-    controller.clearCache();
   }
 
   @override
@@ -99,35 +62,24 @@ class _QiblahWebViewPageState extends State<QiblahWebViewPage> {
                     useShouldOverrideUrlLoading: true,
                   ),
                 ),
-                onLoadStart: (controller, Uri? url) async {
-                  /*    await _controller.evaluateJavascript(
-                      source:
-                          "document.getElementsByClassName('mat-raised-button')[0].click()");
-
-                  await _controller.evaluateJavascript(
-                      source:
-                          "document.getElementsByClassName('mat-raised-button')[0].click()");
-
-                  await _controller.evaluateJavascript(
-                      source:
-                          "document.getElementsByClassName('mat-focus-indicator mat-icon-button mat-button-base')[0].style.display='none'; document.getElementsByClassName('mat-focus-indicator mat-icon-button mat-button-base')[0].style.display='none'; document.getElementsByClassName('mat-fab mat-button-base')[0].style.display='none'; document.getElementsByClassName('expanded')[0].style.display='none'");*/
-                },
+                onLoadStart: (controller, Uri? url) async {},
                 onLoadStop: (controller, Uri? url) async {
-                  Timer.periodic(const Duration(seconds: 1), (timer) async {
-                    await _controller.evaluateJavascript(
-                        source:
-                            "document.getElementsByClassName('mat-raised-button')[0].click()");
-
-                    Timer.periodic(const Duration(seconds: 2), (timer) async {
-                      await _controller.evaluateJavascript(
+                  if (mounted)
+                    Timer.periodic(const Duration(seconds: 1), (timer) async {
+                      await _controller?.evaluateJavascript(
                           source:
                               "document.getElementsByClassName('mat-raised-button')[0].click()");
 
-                      await _controller.evaluateJavascript(
-                          source:
-                              "document.getElementsByClassName('mat-focus-indicator mat-icon-button mat-button-base')[0].style.display='none'; document.getElementsByClassName('mat-focus-indicator mat-icon-button mat-button-base')[0].style.display='none'; document.getElementsByClassName('mat-fab mat-button-base')[0].style.display='none'; document.getElementsByClassName('expanded')[0].style.display='none'");
+                      Timer.periodic(const Duration(seconds: 2), (timer) async {
+                        await _controller?.evaluateJavascript(
+                            source:
+                                "document.getElementsByClassName('mat-raised-button')[0].click()");
+
+                        await _controller?.evaluateJavascript(
+                            source:
+                                "document.getElementsByClassName('mat-focus-indicator mat-icon-button mat-button-base')[0].style.display='none'; document.getElementsByClassName('mat-focus-indicator mat-icon-button mat-button-base')[0].style.display='none'; document.getElementsByClassName('mat-fab mat-button-base')[0].style.display='none'; document.getElementsByClassName('expanded')[0].style.display='none'");
+                      });
                     });
-                  });
                 },
                 onLoadError: (controller, url, code, message) => print(message),
                 onProgressChanged: (controller, int progress) {
@@ -173,6 +125,9 @@ class _QiblahWebViewPageState extends State<QiblahWebViewPage> {
   @override
   void dispose() {
     _progessStream.close();
+    _controller?.stopLoading();
+    _controller?.removeAllUserScripts();
+    _controller = null;
     super.dispose();
   }
 }

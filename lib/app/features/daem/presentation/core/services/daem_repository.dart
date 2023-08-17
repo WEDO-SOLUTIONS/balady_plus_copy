@@ -1,11 +1,13 @@
 import 'dart:convert';
 
 import 'package:balady_plus/app/core/utils/constants/apis/api_info.dart';
+import 'package:balady_plus/app/core/utils/extensions/log.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:tuple/tuple.dart';
 
 import '../../../../../core/base/base_view_model.dart';
 import '../../../../../core/remote_services/web_service.dart';
+import '../../../../../core/services/local/helpers.dart';
 import '../../../../../core/utils/common_functions.dart';
 import '../../../../transaction_inquiry/presentation/core/models/download_file_result.dart';
 import '../../../../transaction_inquiry/presentation/core/models/upload_file_result.dart';
@@ -52,7 +54,7 @@ class DaemRepository {
     } catch (ex) {
       print(ex);
       try {
-        //MM    Helpers.sendLog(url: url, data: data, errorMsg: ex.toString());
+        Helpers.sendLog(url: url, data: data, errorMsg: ex.toString());
       } catch (ex) {}
     }
     return Tuple3<bool?, String?, DaemCategoryTypeResponse?>(
@@ -91,7 +93,7 @@ class DaemRepository {
     } catch (ex) {
       print(ex);
       try {
-        //  Helpers.sendLog(url: url, data: data, errorMsg: ex.toString());
+        Helpers.sendLog(url: url, data: data, errorMsg: ex.toString());
       } catch (ex) {}
     }
     return Tuple3<bool?, String?, DaemSubCategoryTypeResponse?>(
@@ -131,7 +133,7 @@ class DaemRepository {
     } catch (ex) {
       print(ex);
       try {
-        //MM    Helpers.sendLog(url: url, data: data, errorMsg: ex.toString());
+        Helpers.sendLog(url: url, data: data, errorMsg: ex.toString());
       } catch (ex) {}
     }
     return Tuple3<bool?, String?, DaemAreaTypeResponse?>(state, error, result);
@@ -173,7 +175,7 @@ class DaemRepository {
     } catch (ex) {
       print(ex);
       try {
-        //MM    Helpers.sendLog(url: url, data: data, errorMsg: ex.toString());
+        Helpers.sendLog(url: url, data: data, errorMsg: ex.toString());
       } catch (ex) {}
     }
     return Tuple3<bool?, String?, DaemIssueTypeResponse?>(state, error, result);
@@ -209,7 +211,7 @@ class DaemRepository {
     } catch (ex) {
       print(ex);
       try {
-        //MM   Helpers.sendLog(url: url, data: data, errorMsg: ex.toString());
+        Helpers.sendLog(url: url, data: data, errorMsg: ex.toString());
       } catch (ex) {}
     }
     return Tuple3<bool?, String?, DaemMunicipalityResponse?>(
@@ -248,7 +250,7 @@ class DaemRepository {
     } catch (ex) {
       print(ex);
       try {
-        //MM   Helpers.sendLog(url: url, data: data, errorMsg: ex.toString());
+        Helpers.sendLog(url: url, data: data, errorMsg: ex.toString());
       } catch (ex) {}
     }
     return Tuple3<bool?, String?, DaemSubMunicipalityResponse?>(
@@ -309,7 +311,7 @@ class DaemRepository {
     } catch (ex) {
       print(ex);
       try {
-        //MM   Helpers.sendLog(url: url, data: data, errorMsg: ex.toString());
+        Helpers.sendLog(url: url, data: data, errorMsg: ex.toString());
       } catch (ex) {}
     }
     return Tuple3<bool?, String?, DaemCreateTicket?>(state, error, result);
@@ -360,7 +362,9 @@ class DaemRepository {
       };
     }
     String url = ApiUrl.DaemUploadFile;
-    //print(body);
+    // body.toString().actionLog();
+    print(url);
+    CommonProperties.token.actionLog();
 
     final res = await webServices.postPegaRequest(url, body: body);
     print(res);
@@ -376,23 +380,23 @@ class DaemRepository {
         state = false;
         try {
           //MM
-          /* Helpers.sendLog(
+          Helpers.sendLog(
               url: url,
               data: data,
               body: json.encode(body),
-              errorMsg: response.errors![0].message);*/
+              errorMsg: response.errors![0].message);
         } catch (ex) {}
       }
     } catch (ex) {
       print(ex);
       //MM
-      /* try {
+      try {
         Helpers.sendLog(
             url: url,
             data: data,
             body: json.encode(body),
             errorMsg: ex.toString());
-      } catch (ex) {}*/
+      } catch (ex) {}
     }
     return Tuple3<bool?, String?, UploadFileResult?>(state, error, response);
   }
@@ -425,11 +429,11 @@ class DaemRepository {
       try {
         String queryString = "?" + Uri(queryParameters: queryParms).query;
 //MM
-        /*Helpers.sendLog(
+        Helpers.sendLog(
             url: url,
             data: data,
             qeuryParms: queryString,
-            errorMsg: ex.toString());*/
+            errorMsg: ex.toString());
       } catch (ex) {}
     }
 

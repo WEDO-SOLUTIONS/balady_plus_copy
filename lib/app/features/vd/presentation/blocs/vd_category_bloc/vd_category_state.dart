@@ -11,12 +11,15 @@ class VDCategoryState extends Equatable {
   final List<CategoryItem>? allCategories;
   final List<CategoryItem>? vdCategories;
   final List<CategoryItem>? promotedCategories;
+  final List<CategoryItem>? qrCategory;
+
   VDCategoryState(
       {
       //this.status = BlocStatus.initial,
       this.allCategorystatus = BlocStatus.initial,
       this.vdCategorystatus = BlocStatus.initial,
       this.promotedCategorystatus = BlocStatus.initial,
+      this.qrCategory,
       this.categories,
       this.errorMessage,
       this.allCategories,
@@ -28,6 +31,7 @@ class VDCategoryState extends Equatable {
     final BlocStatus? allCategorystatus,
     final BlocStatus? vdCategorystatus,
     final BlocStatus? promotedCategorystatus,
+    final List<CategoryItem>? qrCategory,
     final String? errorMessage,
     final CategoriesResponse? categories,
     final List<CategoryItem>? allCategories,
@@ -44,12 +48,13 @@ class VDCategoryState extends Equatable {
         categories: categories ?? this.categories,
         allCategories: allCategories ?? this.allCategories,
         promotedCategories: promotedCategories ?? this.promotedCategories,
-        vdCategories: vdCategories ?? this.vdCategories);
+        vdCategories: vdCategories ?? this.vdCategories,
+        qrCategory: qrCategory ?? this.qrCategory);
   }
 
   @override
   List<Object> get props => [
         //  status,
-        allCategorystatus, vdCategorystatus, promotedCategorystatus
+        allCategorystatus, vdCategorystatus, promotedCategorystatus,
       ];
 }

@@ -18,11 +18,14 @@ import '../../../../core/utils/common_functions.dart';
 import '../../../../core/utils/constants/app_style.dart';
 import '../../../../core/utils/constants/remote_config.dart';
 import '../../../../core/utils/enums/app_font_weights.dart';
+import '../../../_shared_feature_/presentation/components/bottom_sheets/bottom_sheet_with_actions.dart';
+import '../../../_shared_feature_/presentation/dialogs/bottom_sheet_dialogs.dart';
 import '../../../facility_qr/presentation/core/view_models/facility_details_view_model.dart';
 import '../../../facility_qr/presentation/dialogs/facility_dialog.dart';
 import '../../../home_page/presentation/widgets/home_app_bar/circle_icon.dart';
 import '../../../vd/domain/entities/camera/camera_page_params.dart';
 import '../../../vd/domain/entities/categories/category_item.dart';
+import '../../../vd/presentation/dialogs/qr_types_dialog.dart';
 import '../../constants/constants.dart';
 import '../mvvm/map_view_model.dart';
 import '../mvvm/point_view_model.dart';
@@ -137,17 +140,19 @@ class GeneralMapCardWidget extends StatelessWidget {
                                 ?.longitude;
 
                             if (lat != null && long != null) {
-                              NavigationService.navigatorKey.currentState!
-                                  .pushNamed(RouteName.vdCameraPage,
-                                      arguments: CameraParamsPage(
+                              await BottomSheetDialog.showDraggableSheet(
+                                  context,
+                                  child: BottomSheetWithActions(
+                                    title: "اختر نوع البلاغ".tr(),
+                                    body: QrTypesDialog(
+                                      cmeraParamsPage: CameraParamsPage(
                                           lat: lat,
                                           lon: long,
                                           qrCodeFlow: true,
                                           pageType: PAGE_TYPE.qrDialog,
-                                          selectedCategory: CategoryItem(
-                                              categoryId:
-                                                  RemoteConfig.marketClass),
-                                          isFromHome: false));
+                                          isFromHome: false),
+                                    ),
+                                  ));
                             }
                           }
                         },

@@ -10,3 +10,8 @@ abstract class QADataEvent extends Equatable {
 class GetQADataEvent extends QADataEvent {
   const GetQADataEvent();
 }
+
+class GetQADatSearchedaEvent extends QADataEvent {
+  final String? text;
+  const GetQADatSearchedaEvent({this.text});
+}

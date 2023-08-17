@@ -7,6 +7,7 @@ import 'package:tuple/tuple.dart';
 import '../../../../../../core/base/base_view_model.dart';
 import '../../../../../../core/remote_services/api_constants.dart';
 import '../../../../../../core/remote_services/web_service.dart';
+import '../../../../../../core/services/local/helpers.dart';
 import '../../../../../../core/utils/common_functions.dart';
 import '../../models/appointment_details_model.dart';
 import '../../models/available_dates_response.dart';
@@ -45,11 +46,11 @@ class AppointmentRepository {
     } catch (ex) {
       print(ex);
       try {
-        /*Helpers.sendLog(
+        Helpers.sendLog(
             url: ApiConstants.AppointmentLookUpList,
             qeuryParms: query,
             data: data,
-            errorMsg: ex.toString());*/
+            errorMsg: ex.toString());
       } catch (ex) {}
     }
     return Tuple3<bool?, String?, LookUpList?>(state, error, result);
@@ -71,12 +72,12 @@ class AppointmentRepository {
     } catch (ex) {
       print(ex);
       //MM
-      /*try {
+      try {
         Helpers.sendLog(
             url: ApiConstants.AppointmentMunicipalities,
             data: data,
             errorMsg: ex.toString());
-      } catch (ex) {}*/
+      } catch (ex) {}
     }
     return Tuple3<bool?, String?, Municipality?>(state, error, result);
   }
@@ -100,11 +101,11 @@ class AppointmentRepository {
     } catch (ex) {
       print(ex);
       try {
-        /*   Helpers.sendLog(
+        Helpers.sendLog(
             url: ApiConstants.AppointmentSubMunicipalities,
             qeuryParms: query,
             data: data,
-            errorMsg: ex.toString());*/
+            errorMsg: ex.toString());
       } catch (ex) {}
     }
     return Tuple3<bool?, String?, SubMunicipality?>(state, error, result);
@@ -128,13 +129,13 @@ class AppointmentRepository {
       }
     } catch (ex) {
       print(ex);
-      /* try {
+      try {
         Helpers.sendLog(
             url: ApiConstants.AppointmentDepartments,
             qeuryParms: query,
             data: data,
             errorMsg: ex.toString());
-      } catch (ex) {}*/
+      } catch (ex) {}
     }
     return Tuple3<bool?, String?, DepartmentList?>(state, error, result);
   }
@@ -159,11 +160,11 @@ class AppointmentRepository {
     } catch (ex) {
       print(ex);
       try {
-        /* Helpers.sendLog(
+        Helpers.sendLog(
             url: ApiConstants.AppointmentMainClasssifications,
             qeuryParms: query,
             data: data,
-            errorMsg: ex.toString());*/
+            errorMsg: ex.toString());
       } catch (ex) {}
     }
     return Tuple3<bool?, String?, MainClassResponse?>(state, error, result);
@@ -188,11 +189,11 @@ class AppointmentRepository {
     } catch (ex) {
       print(ex);
       try {
-        /*Helpers.sendLog(
+        Helpers.sendLog(
             url: ApiConstants.AppointmentSubClasssifications,
             qeuryParms: query,
             data: data,
-            errorMsg: ex.toString());*/
+            errorMsg: ex.toString());
       } catch (ex) {}
     }
     return Tuple3<bool?, String?, SubClassResponse?>(state, error, result);
@@ -218,11 +219,11 @@ class AppointmentRepository {
     } catch (ex) {
       print(ex);
       try {
-        /*   Helpers.sendLog(
+        Helpers.sendLog(
             url: ApiConstants.AppointmentServiceConfig,
             qeuryParms: query,
             data: data,
-            errorMsg: ex.toString());*/
+            errorMsg: ex.toString());
       } catch (ex) {}
     }
     return Tuple3<bool?, String?, ServiceConfigResponse?>(state, error, result);
@@ -248,11 +249,11 @@ class AppointmentRepository {
     } catch (ex) {
       print(ex);
       try {
-        /*Helpers.sendLog(
+        Helpers.sendLog(
             url: ApiConstants.AppointmentAvailableDates,
             qeuryParms: query,
             data: data,
-            errorMsg: ex.toString());*/
+            errorMsg: ex.toString());
       } catch (ex) {}
     }
     return Tuple3<bool?, String?, AvailableDatesResponse?>(
@@ -279,11 +280,11 @@ class AppointmentRepository {
     } catch (ex) {
       print(ex);
       try {
-        /*   Helpers.sendLog(
+        Helpers.sendLog(
             url: ApiConstants.AppointmentAvailableTimes,
             qeuryParms: query,
             data: data,
-            errorMsg: ex.toString());*/
+            errorMsg: ex.toString());
       } catch (ex) {}
     }
     return Tuple3<bool?, String?, AvailableTimesResponse?>(
@@ -318,11 +319,11 @@ class AppointmentRepository {
     } catch (ex) {
       print(ex);
       try {
-        /*Helpers.sendLog(
+        Helpers.sendLog(
             url: ApiConstants.MyAppointments,
             qeuryParms: query,
             data: data,
-            errorMsg: ex.toString());*/
+            errorMsg: ex.toString());
       } catch (ex) {}
     }
     return Tuple3<bool?, String?, MyAppointmentsResponse?>(
@@ -349,11 +350,11 @@ class AppointmentRepository {
     } catch (ex) {
       print(ex);
       try {
-        /*Helpers.sendLog(
+        Helpers.sendLog(
             url: ApiConstants.AppointmentDetails,
             qeuryParms: query,
             data: data,
-            errorMsg: ex.toString());*/
+            errorMsg: ex.toString());
       } catch (ex) {}
     }
     return Tuple3<bool?, String?, AppointmentDetails?>(state, error, result);
@@ -379,11 +380,11 @@ class AppointmentRepository {
     } catch (ex) {
       print(ex);
       try {
-        /* Helpers.sendLog(
+        Helpers.sendLog(
             url: ApiConstants.PrintAppointmentDetails,
             qeuryParms: query,
             data: data,
-            errorMsg: ex.toString());*/
+            errorMsg: ex.toString());
       } catch (ex) {}
     }
     return Tuple4<bool?, String?, Uint8List?, String?>(
@@ -411,11 +412,11 @@ class AppointmentRepository {
     } catch (ex) {
       print(ex);
       try {
-        /* Helpers.sendLog(
+        Helpers.sendLog(
             url: ApiConstants.CancelAppointment,
             qeuryParms: query,
             data: data,
-            errorMsg: ex.toString());*/
+            errorMsg: ex.toString());
       } catch (ex) {}
     }
     return Tuple3<bool?, String?, CancelAppointmentResponse?>(
@@ -445,11 +446,11 @@ class AppointmentRepository {
     } catch (ex) {
       print(ex);
       try {
-        /* Helpers.sendLog(
+        Helpers.sendLog(
             url: ApiConstants.ConfirmAppointment,
             qeuryParms: query,
             data: data,
-            errorMsg: ex.toString());*/
+            errorMsg: ex.toString());
       } catch (ex) {}
     }
     return Tuple3<bool?, String?, ConfirmAppointmentResponse?>(
@@ -475,11 +476,11 @@ class AppointmentRepository {
     } catch (ex) {
       print(ex);
       try {
-        /*Helpers.sendLog(
+        Helpers.sendLog(
             url: ApiConstants.AppointmentSave,
             body: reqBody,
             data: data,
-            errorMsg: ex.toString());*/
+            errorMsg: ex.toString());
       } catch (ex) {}
     }
     return Tuple3<bool?, String?, SaveAppointmentResponse?>(
@@ -511,11 +512,11 @@ class AppointmentRepository {
     } catch (ex) {
       print(ex);
       try {
-        /* Helpers.sendLog(
+        Helpers.sendLog(
             url: ApiConstants.AppointmentUploadFile,
             qeuryParms: filePath,
             data: data,
-            errorMsg: ex.toString());*/
+            errorMsg: ex.toString());
       } catch (ex) {}
     }
     return Tuple3<bool?, String?, UploadFileResponse?>(state, error, result);

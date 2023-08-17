@@ -40,7 +40,7 @@ class RemoteConfig {
       _RemoteConfig.publicLicenseShareURL[env]!;
 
   static String get webCookieHeader => _RemoteConfig.webCookieHeader[env]!;
-  static String get marketClass => _RemoteConfig.marketClass[env]!;
+  static List<String> get marketClass => _RemoteConfig.marketClass[env]!;
 
   static EnvType get env => sl<EnvType>();
 
@@ -130,10 +130,10 @@ class _RemoteConfig {
     prodVal: 2000.0,
   );
 
-  static final marketClass = _initValues<String>(
-    devVal: "CG-14",
-    stgVal: "CG-14",
-    prodVal: "CG-6",
+  static final marketClass = _initValues<List<String>>(
+    devVal: ["CG-14"],
+    stgVal: ["CG-14"],
+    prodVal: ["CG-6", "CG-9"],
   );
 
   static final regaClass = _initValues<String>(

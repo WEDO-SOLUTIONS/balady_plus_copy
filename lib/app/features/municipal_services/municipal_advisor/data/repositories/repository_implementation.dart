@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:balady_plus/app/features/municipal_services/municipal_advisor/data/models/building_compliance_model.dart';
 import 'package:balady_plus/app/features/vd/domain/entities/gis/gis_params.dart';
 import 'package:dartz/dartz.dart';
@@ -35,7 +37,9 @@ class MunicipalAdvisorRepositoryImplementation
       final data = await remoteDataSource.getIsicSubActivities(params);
       return Right(data);
     } on ServerException catch (error) {
-      return Left(ServerFailure(error.errorMessage));
+      return Left(ServerFailure(
+        error.errorMessage,
+      ));
     }
   }
 
@@ -354,7 +358,8 @@ class MunicipalAdvisorRepositoryImplementation
       final data = await remoteDataSource.getBuildingCompliance(params);
       return Right(data);
     } on ServerException catch (error) {
-      return Left(ServerFailure(error.errorMessage));
+      return Left(
+          ServerFailure(error.errorMessage, errorCode: error.errorCode));
     }
   }
 }

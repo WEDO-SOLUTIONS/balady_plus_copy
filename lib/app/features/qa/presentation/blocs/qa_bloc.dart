@@ -10,6 +10,7 @@ import '../../../../core/errors/errors_exports.dart'
     show NoDataFoundFailure, ServerFailure;
 import '../../../../core/services/services_exports.dart'
     show NavigationService, NoParams;
+import '../../../../core/utils/enums/bloc_status.dart';
 
 part 'qa_event.dart';
 part 'qa_state.dart';
@@ -17,6 +18,8 @@ part 'qa_state.dart';
 class QABloc extends Bloc<QADataEvent, QAState> {
   QABloc() : super(const QAState()) {
     on<GetQADataEvent>(_getQaDataHandler);
+    on<GetQADatSearchedaEvent>(_getQaDataSearchedHandler);
+
     add(const GetQADataEvent());
   }
 
@@ -31,6 +34,27 @@ class QABloc extends Bloc<QADataEvent, QAState> {
           : null;
 
       emitter(state.copyWith(list: d));
+
+      print(d);
+    } catch (ex) {
+      print(ex);
+    }
+    // print(newQAList);
+  }
+
+  Future<void> _getQaDataSearchedHandler(
+      GetQADatSearchedaEvent e, Emitter emitter) async {
+    try {
+      emitter(state.copyWith(status: BlocStatus.loading));
+
+      List<QAModel>? d = (state.list ?? [])
+              .where((element) =>
+                  (element.question ?? "").contains(e.text ?? "") ||
+                  (element.answer ?? "").contains(e.text ?? ""))
+              .toList() ??
+          [];
+
+      emitter(state.copyWith(filtered: d, status: BlocStatus.success));
 
       print(d);
     } catch (ex) {

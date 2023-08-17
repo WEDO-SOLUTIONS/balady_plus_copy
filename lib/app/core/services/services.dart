@@ -61,6 +61,17 @@ Map<String, dynamic> servicesConfig = {
       "ar": {"title": "نقاط توزيع ماء زمزم", "description": null, "tag": null},
       "en": {"title": "Zamzam Points", "description": null, "tag": null}
     },
+    {
+      "id": 5,
+      "icon": "weather",
+      "3d_icon": null,
+      "order": 4,
+      "isNew": false,
+      "isImportant": false,
+      "action": {"type": "page", "value": RouteName.weatherMainPage},
+      "ar": {"title": "الطقس", "description": null, "tag": null},
+      "en": {"title": "weather", "description": null, "tag": null}
+    },
   ],
   "honoring_the_dead_services": [
     {
@@ -284,7 +295,8 @@ Map<String, dynamic> servicesConfig = {
       "action": {"type": "cards", "value": ""},
       "ar": {
         "title": "صور وارسل",
-        "description": "حسن المشهد الحضاري لمدينتك وبلغ عن مظاهر التشوه البصري",
+        "description":
+            "حسّن المشهد الحضري في مدينتك، وبلّغ عن مظاهر التشوه البصري",
         "tag": null,
         "warning":
             ". يرجى الالتزام بتجديد الرخصة قبل انتهائها أو إلغائها في حالة عدم الرغبة في تجديدها وذلك لتجنب رسوم غرامة المشترطة على التأخير في التجديد.\n. يمكن تجديد الرخصة قبل 90 يوم من تاريخ انتهائها."

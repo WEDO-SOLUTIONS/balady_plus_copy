@@ -37,7 +37,8 @@ class HomeBottomSheet extends StatelessWidget {
             DraggableHeaderComponent(),
             ReportHomeCard(),
             CertificationMapCard(),
-            DeformityHomeCard(),
+
+            // DeformityHomeCard(),
             PrayerHomeCard(),
             ReadHomeCard(),
             //  BaladySmartAdvisorCard(),

@@ -167,6 +167,7 @@ dependencies:
   app_settings: ^5.0.0
   dotted_border: ^2.0.0+3
   sentry_dio: ^7.9.0
+  linkable: ^3.0.0
 
 
 

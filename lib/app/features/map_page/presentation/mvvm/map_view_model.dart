@@ -10,7 +10,9 @@ import 'package:balady_plus/app/core/base/base_view_model.dart';
 import 'package:balady_plus/app/features/map_page/extensions/search_category_ext.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/foundation.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 import '../../../../core/dependency_injection/injection_container.dart';
 import '../../../../core/services/local/helpers.dart';
@@ -31,6 +33,7 @@ import '../../data/model/requests/map_requests_params.dart';
 import '../../data/model/white_lands.dart';
 import '../../data/repositories/layers_repositories.dart';
 import 'layers_gis_view_model.dart';
+import 'map_view_model.dart';
 
 const int mil = 300;
 TextEditingController searchController = TextEditingController();
@@ -40,7 +43,12 @@ class MapViewModel extends BaseViewModel {
       GeoPointMessage(latitude: 24.712301, longitude: 46.674175);
   final GeoPointMessage ithraa =
       GeoPointMessage(latitude: 26.336057, longitude: 50.120372);
-
+  Layers cityPlaces = Layers(
+      id: 0,
+      type: "",
+      geometryType: "",
+      name: "وصول أسهل",
+      defaultVisibility: true);
   static GeoRectMessage saRect = GeoRectMessage(
     northEast: GeoPointMessage(latitude: 32.568765, longitude: 56.694472),
     southWest: GeoPointMessage(latitude: 15.506104, longitude: 32.61185),
@@ -48,11 +56,17 @@ class MapViewModel extends BaseViewModel {
 
   final LayersRepositories layersRepositories;
 
-  MapViewModel({required this.layersRepositories});
+  MapViewModel({required this.layersRepositories}) {
+    getMinLayers();
+
+    layerSelected.value = cityPlaces;
+  }
   final selectedPointId = ValueNotifier<DgisObjectIdMessage?>(null);
   final selectedPoint = ValueNotifier<PointLayersData?>(null);
 
   ValueNotifier<SearchCategoryMessage?> selectedCategory = ValueNotifier(null);
+
+  final layers = ValueNotifier<List<Layers>?>(null);
 
   final layerSelected = ValueNotifier<Layers?>(null);
   GISMapLayers gisSelectedLayer = GISMapLayers.cityPlaces;
@@ -736,49 +750,51 @@ class MapViewModel extends BaseViewModel {
     if (pointList != null && pointList.isNotEmpty) {
       final List<Polyline> polylines = [];
       for (var element in pointList) {
-        int id = int.parse(element.id);
-        polylines.add(
-          Polyline(
-            id: id.toString(),
-            options: PolylineOptionsMessage(
-                points: element.paths, width: 4, color: 0xff358281),
-            onTap: () {
-              selectedDiggingPoint.value = null;
-              selectedInvetmentPoint.value = null;
-              selectedImtethalPoint.value = null;
-              selectedWhiteLands.value = null;
-              selectedLands.value = null;
-              showLegend.value = false;
-              switch (gisSelectedLayer) {
-                case GISMapLayers.Digging:
-                  selectedDiggingPoint.value = element;
+        for (List<GeoPointMessage> i in element.pathsGoogle) {
+          int id = int.parse(element.id);
+          String idPolyline = "${id.toString()}+${i}";
+          polylines.add(
+            Polyline(
+              id: idPolyline,
+              options: PolylineOptionsMessage(
+                  points: i, width: 4, color: 0xff358281),
+              onTap: () {
+                selectedDiggingPoint.value = null;
+                selectedInvetmentPoint.value = null;
+                selectedImtethalPoint.value = null;
+                selectedWhiteLands.value = null;
+                selectedLands.value = null;
+                showLegend.value = false;
+                switch (gisSelectedLayer) {
+                  case GISMapLayers.Digging:
+                    selectedDiggingPoint.value = element;
 
-                  break;
+                    break;
 
-                case GISMapLayers.BSAimtithalBuildingsCertificateL:
-                  selectedImtethalPoint.value = element;
+                  case GISMapLayers.BSAimtithalBuildingsCertificateL:
+                    selectedImtethalPoint.value = element;
 
-                case GISMapLayers.BSWhiteParcelS:
-                  selectedWhiteLands.value = element;
+                  case GISMapLayers.BSWhiteParcelS:
+                    selectedWhiteLands.value = element;
 
-                default:
-                  break;
-              }
-              selectedPointId.value = null;
-              selectedImtethalPoint.notifyListeners();
-              selectedDiggingPoint.notifyListeners();
-              selectedWhiteLands.notifyListeners();
-              selectedLands.notifyListeners();
-              selectedPointId.notifyListeners();
-              bottomSheetSize.notifyListeners();
-              showLegend.notifyListeners();
+                  default:
+                    break;
+                }
+                selectedPointId.value = null;
+                selectedImtethalPoint.notifyListeners();
+                selectedDiggingPoint.notifyListeners();
+                selectedWhiteLands.notifyListeners();
+                selectedLands.notifyListeners();
+                selectedPointId.notifyListeners();
+                bottomSheetSize.notifyListeners();
+                showLegend.notifyListeners();
 
-              viewHomeBottomSheet.value = false;
-              viewHomeBottomSheet.notifyListeners();
-              // bottomSheetSizeFraction.value = 0.05;
-              bottomSheetSize.notifyListeners();
-              bottomSheetSizeFraction.notifyListeners();
-              /*  controller.setCameraPosition(
+                viewHomeBottomSheet.value = false;
+                viewHomeBottomSheet.notifyListeners();
+                // bottomSheetSizeFraction.value = 0.05;
+                bottomSheetSize.notifyListeners();
+                bottomSheetSizeFraction.notifyListeners();
+                /*  controller.setCameraPosition(
                 CameraPositionMessage(
                   zoomValue: 17,
                   geoPoint: GeoPointMessage(
@@ -787,9 +803,10 @@ class MapViewModel extends BaseViewModel {
                   ),
                 ),
               );*/
-            },
-          ),
-        );
+              },
+            ),
+          );
+        }
       }
       //  await controller.removeAllMarkers();
       unawaited(controller.addPolylines(polylines));
@@ -856,9 +873,14 @@ class MapViewModel extends BaseViewModel {
   }
 
   void selectLayers(Layers value) async {
-    print("LAyer selected");
+    await controller.removeAllMarkers();
+
     await controller.removeAll();
     clearAllCards();
+    print("LAyer selected");
+    layerSelected.value = value;
+    layerSelected.notifyListeners();
+
     showLegend.value = null;
     layerSelected.value = value;
     searchController.text = "";
@@ -944,19 +966,55 @@ class MapViewModel extends BaseViewModel {
     return (center_x, center_y);
   }
 
-  void navigateToImtethal() {
+  void navigateToImtethal() async {
+    if (layers.value?.isEmpty ?? true) await getMinLayers();
+    if (layers.value == null) {
+      CommonFunctions.showError("server_error_1".tr());
+
+      return;
+    }
+
     viewHomeBottomSheet.value = false;
     viewHomeBottomSheet.notifyListeners();
 
-    bottomSheetSizeFraction.value = 0.1;
+    bottomSheetSizeFraction.value = 0.05;
     bottomSheetSizeFraction.notifyListeners();
 
-    Timer(const Duration(milliseconds: 50), () async {
+    Timer(const Duration(milliseconds: 200), () async {
       viewHomeBottomSheet.value = true;
       viewHomeBottomSheet.notifyListeners();
+      selectLayers(layers.value!.firstWhere((element) => element.id == 7));
+
+      (double, double)? center = calculatePositionCenter(
+          _lastHandledEvent?.visibleRect.northEastLat,
+          _lastHandledEvent?.visibleRect.northEastLon,
+          _lastHandledEvent?.visibleRect.southWestLat,
+          _lastHandledEvent?.visibleRect.southWestLon);
+      if (center != null)
+        await controller.moveCamera(
+            CameraPositionMessage(
+                point: GeoPointMessage(
+                  latitude: center.$1,
+                  longitude: center.$2,
+                ),
+                zoom: 13,
+                tilt: 0,
+                bearing: 0),
+            1,
+            CameraAnimationTypeMessage.linear);
     });
 
     bottomSheetSize.value = 0;
     bottomSheetSize.notifyListeners();
+  }
+
+  Future<void> getMinLayers() async {
+    try {
+      layers.value = await layersRepositories.getMinLayers();
+      layers.value?.insert(0, cityPlaces);
+      layers.notifyListeners();
+    } catch (e) {
+      print(e);
+    }
   }
 }

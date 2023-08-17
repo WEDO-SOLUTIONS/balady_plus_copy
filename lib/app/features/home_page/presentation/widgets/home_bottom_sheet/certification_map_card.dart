@@ -44,7 +44,7 @@ class CertificationMapCard extends StatelessWidget {
                     const Padding(
                       padding: EdgeInsetsDirectional.only(end: 110),
                       child: CustomTextWidget(
-                        "استفد من خريطة الإمتثال لمعرفة أولوية متى يجب أن تحصل على شهادة الإمتثال لمتجرك",
+                        "تعرف على الطرق المستهدفة لتطبيق شهادة الامتثال من خلال الخريطة",
                         fontColor: AppColor.blackModern600Light,
                         fontWeight: AppFontWeight.bold,
                         fontSize: 12,
@@ -53,7 +53,7 @@ class CertificationMapCard extends StatelessWidget {
                         height: 1.5,
                       ),
                     ),
-                    const SizedBox(height: 12),
+                    const SizedBox(height: 24),
                     CustomElevatedButtonWidget(
                       btnColor: AppColor.primary900Light,
                       textStyle: AppStyle.elevatedButtonStyle.copyWith(
@@ -88,7 +88,7 @@ class CertificationMapCard extends StatelessWidget {
                 child: Row(
                   children: [
                     CustomTextWidget(
-                      "لمعرفه المزيد عن الخريطه اطلع على",
+                      "لمعرفة المزيد عن الخريطه اطلع على",
                       fontWeight: AppFontWeight.bold,
                       fontSize: 10,
                       fontColor: AppColor.blackModern900Light,
