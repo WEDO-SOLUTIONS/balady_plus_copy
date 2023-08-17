@@ -70,7 +70,7 @@ class QADetailsHeader extends StatelessWidget implements PreferredSizeWidget {
               boxShadow: Constants.appBarBoxShadow,
             ),
           ),
-          Align(
+          /* Align(
             alignment: AlignmentDirectional.bottomStart,
             child: Container(
               height: 34,
@@ -96,7 +96,7 @@ class QADetailsHeader extends StatelessWidget implements PreferredSizeWidget {
                 ],
               ),
             ),
-          )
+          )*/
         ],
       ),
     );

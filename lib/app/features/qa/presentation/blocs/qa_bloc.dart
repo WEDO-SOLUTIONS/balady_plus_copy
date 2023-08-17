@@ -33,7 +33,7 @@ class QABloc extends Bloc<QADataEvent, QAState> {
           ? List<QAModel>.from(r.map((x) => QAModel.fromJson(x)))
           : null;
 
-      emitter(state.copyWith(list: d));
+      emitter(state.copyWith(list: d, filtered: d));
 
       print(d);
     } catch (ex) {
