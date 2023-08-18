@@ -1,4 +1,5 @@
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
+import 'package:balady_plus/app/features/bottom_navigation/presentation/cubits/bottom_nav_bar_cubit.dart';
 import 'package:balady_plus/app/features/map_page/data/enums/map_enums.dart';
 import 'package:balady_plus/app/features/map_page/data/model/layers.dart';
 import 'package:balady_plus/app/features/map_page/extensions/search_category_ext.dart';
@@ -9,8 +10,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:provider/provider.dart';
+import '../../../../core/dependency_injection/injection_container.dart';
 import '../../../../core/utils/constants/app_style.dart';
 import '../../../../core/utils/constants/route_names.dart';
+import '../../../home_page/presentation/widgets/home_app_bar/circle_icon.dart';
 import '../../../home_page/presentation/widgets/home_tag.dart';
 
 class SearchMapWidget extends StatelessWidget {
@@ -25,19 +28,32 @@ class SearchMapWidget extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            GestureDetector(
-                onTap: () {},
-                child: SvgPicture.asset("assets/icons/svg/profile.svg")),
-            GestureDetector(
-                onTap: () {
-                  // Navigator.pushNamed(context, RouteName.notificationPage);
-                },
-                child: SvgPicture.asset(
-                    "assets/icons/svg/notifications_icon.svg")),
-          ],
+        Padding(
+          padding: EdgeInsets.only(
+              top: MediaQuery.of(context).padding.top > 20
+                  ? MediaQuery.of(context).padding.top - 20
+                  : 0,
+              left: 10,
+              bottom: 10,
+              right: 10),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              GestureDetector(
+                  onTap: () {
+                    sl<BottomNavBarCubit>().onChangeBottomNavBar(2);
+                  },
+                  child: CircleIcon(
+                    icon: "assets/icons/svg/user.svg",
+                  )),
+              GestureDetector(
+                  onTap: () {},
+                  child: CircleIcon(
+                    icon: "assets/icons/svg/notification_active.svg",
+                    iconSize: 40,
+                  )),
+            ],
+          ),
         )
 
         /* TextFormField(
@@ -86,80 +102,84 @@ class SearchMapWidget extends StatelessWidget {
         ),*/
         // Container(color: Colors.black, height: 10, width: 20,),
         ,
-        ValueListenableBuilder(
-            valueListenable: mapViewModel.selectedCategory,
-            builder: (context, value, _) {
-              return mapViewModel.gisSelectedLayer == GISMapLayers.cityPlaces
-                  ? SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Row(
-                        children: [
-                          SearchCategoryMessage.mousques,
-                          SearchCategoryMessage.gasStations,
-                          // SearchCategoryMessage.cafe,
-                          // SearchCategoryMessage.restaurants,
-                          SearchCategoryMessage.parks,
-                        ]
-                            .map(
-                              (e) => Row(
-                                children: [
-                                  const SizedBox(
-                                    width: 8,
-                                  ),
-                                  Container(
-                                    padding:
-                                        EdgeInsets.symmetric(horizontal: 4),
-                                    decoration: BoxDecoration(
-                                      color: value == e
-                                          ? Color(0xFF4B5563)
-                                          : Colors.white,
-                                      borderRadius: BorderRadius.circular(8.0),
+        Padding(
+          padding: const EdgeInsets.only(right: 4.0),
+          child: ValueListenableBuilder(
+              valueListenable: mapViewModel.selectedCategory,
+              builder: (context, value, _) {
+                return mapViewModel.gisSelectedLayer == GISMapLayers.cityPlaces
+                    ? SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                          children: [
+                            SearchCategoryMessage.mousques,
+                            SearchCategoryMessage.gasStations,
+                            // SearchCategoryMessage.cafe,
+                            // SearchCategoryMessage.restaurants,
+                            SearchCategoryMessage.parks,
+                          ]
+                              .map(
+                                (e) => Row(
+                                  children: [
+                                    const SizedBox(
+                                      width: 8,
                                     ),
-                                    child: InkWell(
-                                      onTap: () {
-                                        mapViewModel.selectCategory(
-                                            category: e);
-                                        print("Changing ctaegory to: $e");
-                                      },
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(4.0),
-                                        child: Row(
-                                          children: [
-                                            SizedBox(
-                                              width: 16,
-                                              height: 16,
-                                              child: SvgPicture.asset(
-                                                  e.iconName()),
-                                            ),
-                                            SizedBox(
-                                              width: 4,
-                                            ),
-                                            CustomTextWidget(
-                                              e.displayName(),
-                                              textStyle: AppStyle
-                                                  .serviceDescriptionStyle
-                                                  .copyWith(
-                                                color: mapViewModel
-                                                            .selectedCategory
-                                                            .value ==
-                                                        e
-                                                    ? Colors.white
-                                                    : Colors.black,
+                                    Container(
+                                      padding:
+                                          EdgeInsets.symmetric(horizontal: 4),
+                                      decoration: BoxDecoration(
+                                        color: value == e
+                                            ? Color(0xFF4B5563)
+                                            : Colors.white,
+                                        borderRadius:
+                                            BorderRadius.circular(8.0),
+                                      ),
+                                      child: InkWell(
+                                        onTap: () {
+                                          mapViewModel.selectCategory(
+                                              category: e);
+                                          print("Changing ctaegory to: $e");
+                                        },
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(4.0),
+                                          child: Row(
+                                            children: [
+                                              SizedBox(
+                                                width: 16,
+                                                height: 16,
+                                                child: SvgPicture.asset(
+                                                    e.iconName()),
                                               ),
-                                            ),
-                                          ],
+                                              SizedBox(
+                                                width: 4,
+                                              ),
+                                              CustomTextWidget(
+                                                e.displayName(),
+                                                textStyle: AppStyle
+                                                    .serviceDescriptionStyle
+                                                    .copyWith(
+                                                  color: mapViewModel
+                                                              .selectedCategory
+                                                              .value ==
+                                                          e
+                                                      ? Colors.white
+                                                      : Colors.black,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
                                         ),
                                       ),
                                     ),
-                                  ),
-                                ],
-                              ),
-                            )
-                            .toList(),
-                      ),
-                    )
-                  : SizedBox();
-            }),
+                                  ],
+                                ),
+                              )
+                              .toList(),
+                        ),
+                      )
+                    : SizedBox();
+              }),
+        ),
       ],
     );
   }

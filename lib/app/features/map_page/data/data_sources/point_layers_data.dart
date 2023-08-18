@@ -1,4 +1,5 @@
 import 'package:dgis_map/library.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart' as gm;
 
 class PointLayersData {
   final String id;
@@ -27,8 +28,6 @@ enum LayersType {
   layersSeventh,
 }
 
-//, ,  and
-
 List<GeoPointMessage> getList(List list) {
   final List<GeoPointMessage> paths = [];
   for (var pointList in list) {
@@ -41,5 +40,40 @@ List<GeoPointMessage> getList(List list) {
       );
     }
   }
+  return paths;
+}
+
+List<GeoPointMessage> getPolyLines(List list) {
+  final List<GeoPointMessage> paths = [];
+  for (var pointList in list) {
+    final List<GeoPointMessage> inside = [];
+    for (var point in pointList) {
+      paths.add(
+        GeoPointMessage(
+          latitude: double.parse(point[1].toString()),
+          longitude: double.parse(point[0].toString()),
+        ),
+      );
+    }
+  }
+  return paths;
+}
+
+List<List<GeoPointMessage>> getGoogleList(List list) {
+  final List<List<GeoPointMessage>> paths = [];
+  for (var pointList in list) {
+    final List<GeoPointMessage> inside = [];
+
+    for (var point in pointList) {
+      inside.add(
+        GeoPointMessage(
+          latitude: double.parse(point[1].toString()),
+          longitude: double.parse(point[0].toString()),
+        ),
+      );
+    }
+    paths.add(inside);
+  }
+
   return paths;
 }

@@ -2,6 +2,8 @@ import 'dart:math';
 
 import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:balady_plus/app/core/utils/constants/route_names.dart';
+import 'package:balady_plus/app/core/utils/enums/enums.dart';
+import 'package:balady_plus/app/core/utils/map_utils.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/shimmer_effect_widget.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
@@ -14,12 +16,14 @@ import '../../../../core/base/base_view_model.dart';
 import '../../../../core/services/local/navigation_services.dart';
 import '../../../../core/utils/common_functions.dart';
 import '../../../../core/utils/constants/app_style.dart';
+import '../../../../core/utils/constants/remote_config.dart';
 import '../../../../core/utils/enums/app_font_weights.dart';
-import '../../../qr/presentation/core/view_models/facility_details_view_model.dart';
-import '../../../qr/presentation/dialogs/facility_dialog.dart';
+import '../../../_shared_feature_/presentation/components/bottom_sheets/bottom_sheet_with_actions.dart';
+import '../../../_shared_feature_/presentation/dialogs/bottom_sheet_dialogs.dart';
 import '../../../home_page/presentation/widgets/home_app_bar/circle_icon.dart';
 import '../../../vd/domain/entities/camera/camera_page_params.dart';
 import '../../../vd/domain/entities/categories/category_item.dart';
+import '../../constants/constants.dart';
 import '../mvvm/map_view_model.dart';
 import '../mvvm/point_view_model.dart';
 import 'package:collection/collection.dart';
@@ -82,51 +86,7 @@ class GeneralMapCardWidget extends StatelessWidget {
             mapViewModel.selectedCategory.value ==
                 SearchCategoryMessage.gasStations) {
           String? qr = pointViewModel.dataPoint.value?.externalIds?.join(" ");
-          if (qr != null) {
-            final FacilityQRDetailsViewModel viewModel =
-                locator<FacilityQRDetailsViewModel>();
-
-            bool isLicenseFound = false;
-
-            isLicenseFound = await viewModel.getFacilityData(qr);
-            if (isLicenseFound) {
-              showDialog(
-                  context: context,
-                  barrierDismissible: false,
-                  builder: (ctx) => FacilityDialog(
-                        address: viewModel.getCityAndStreet(),
-                        facilityImg: viewModel.getCoverPhotoUrl(),
-                        rate: viewModel.getFacilityAvrageRating(),
-                        facilityName: viewModel.getFacilityName(),
-                        reviewers: viewModel.getFacilityTotalRatingCount(),
-                        onDetailsScreen: () {
-                          /* NavigationService.navigatorKey.currentState!.pushNamed(
-                        RoutesNames.facilityScreenRoute,
-                        arguments: viewModel.facilityRespoonse);*/
-                        },
-                        onRatingScreen: () {
-                          /*NavigationService.navigatorKey.currentState!.pushNamed(
-                        RoutesNames.facilityRatingRoute,
-                        arguments: viewModel.facilityRespoonse);*/
-                        },
-                        onIncidentScreen: () async {
-                          bool isLocationAvailable =
-                              await CommonFunctions.checkLocationSettings(
-                                  context);
-                          bool isCameraAllowed =
-                              await CommonFunctions.checkCameraSettings(
-                                  context);
-                          if (isLocationAvailable && isCameraAllowed)
-                            NavigationService.navigatorKey.currentState!
-                                .pushNamed(RouteName.vdCameraPage,
-                                    arguments: CameraParamsPage(
-                                        selectedCategory:
-                                            CategoryItem(categoryId: "CG-14"),
-                                        isFromHome: false));
-                        },
-                      ));
-            }
-          }
+          if (qr != null) {}
         }
         // }
       },
@@ -136,6 +96,7 @@ class GeneralMapCardWidget extends StatelessWidget {
             return ValueListenableBuilder<DirectoryObjectMessage?>(
                 valueListenable: pointViewModel.dataPoint,
                 builder: (_, dataPoint, __) {
+                  print("is loading $isLoading");
                   return (isLoading ?? false)
                       ? ShimmerEffectWidget(
                           height: 120,
@@ -226,6 +187,34 @@ class GeneralMapCardWidget extends StatelessWidget {
                                                 height: 1.3,
                                                 maxLines: 2,
                                               ),
+                                              CustomVerticalSpace(height: 8),
+                                              /* GestureDetector(
+                                                onTap: () =>
+                                                    CommonFunctions.openMap(
+                                                        dataPoint!
+                                                            .markerPosition!
+                                                            .latitude,
+                                                        dataPoint
+                                                            .markerPosition!
+                                                            .longitude),
+                                                child: Row(
+                                                  children: [
+                                                    CustomTextWidget(
+                                                      "go_to_location".tr(),
+                                                      fontWeight:
+                                                          AppFontWeight.bold,
+                                                      fontSize: 12,
+                                                      fontColor: AppColor
+                                                          .primary800Light,
+                                                    ),
+                                                    CustomHorizontalSpace(
+                                                        width: 8),
+                                                    SvgPicture.asset(
+                                                        Constants.goToLocation),
+                                                  ],
+                                                ),
+                                              )*/
+
                                               /*  CustomVerticalSpace(height: 16),
                                       CustomTextWidget(
                                         dataPoint?.externalIds?.join(" ") ?? "[]",

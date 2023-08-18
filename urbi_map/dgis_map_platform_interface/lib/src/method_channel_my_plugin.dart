@@ -320,6 +320,7 @@ class MethodChannelDgisMapPlugin implements DgisMapPlugin, FlutterMapApi {
   @override
   Future<SearchResultMessage> search(
     String queryText, {
+    List<SearchCategoryMessage>? categories,
     required SortingTypeMessage sortingType,
     required int pageSize,
     WeekTimeSearchMessage? weekTime,
@@ -327,6 +328,15 @@ class MethodChannelDgisMapPlugin implements DgisMapPlugin, FlutterMapApi {
   }) {
     return _api.search(
       queryText,
+      categories != null
+          ? SearchCategoriesMessage(
+              categories: categories
+                  .map(
+                    (e) => SearchCategoryMessage_(category: e),
+                  )
+                  .toList(),
+            )
+          : null,
       weekTime,
       searchRect,
       sortingType,
@@ -644,6 +654,11 @@ class MethodChannelDgisMapPlugin implements DgisMapPlugin, FlutterMapApi {
   }
 
   @override
+  Future<bool> contains(GeoRectMessage rect, GeoPointMessage point) {
+    return _api.contains(rect, point);
+  }
+
+  @override
   Future<void> moveCameraToSelectedPanorama() {
     return _api.moveCameraToSelectedPanorama();
   }
@@ -681,5 +696,15 @@ class MethodChannelDgisMapPlugin implements DgisMapPlugin, FlutterMapApi {
   @override
   Future<void> onTrafficClicked() {
     return _api.onTrafficClicked();
+  }
+
+  @override
+  Future<void> setAppearance(MapAppearanceMessage appearance) {
+    return _api.setAppearance(appearance);
+  }
+
+  @override
+  Future<void> setZoomRestrictions(double? min, double? max) {
+    return _api.setZoomRestrictions(min, max);
   }
 }

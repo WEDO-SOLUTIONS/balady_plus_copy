@@ -11,6 +11,8 @@ extension DirectoryObject {
             id: self.id?.toMessage(),
             markerPosition: self.markerPosition?.toMessage(),
             address: self.address?.toMessage(),
+            fullAddressName: self.formattedAddress(type: .full)?.toMessage(),
+            shortAddressName: self.formattedAddress(type: .short)?.toMessage(),
             attributes: self.attributes.map { $0.toMessage() },
             contextAttributes: self.attributes.map { $0.toMessage() },
             timeZoneOffset: self.timeZoneOffset.map {
@@ -95,6 +97,17 @@ extension Address {
             postCode: self.postCode,
             buildingCode: self.buildingCode,
             addressComment: self.addressComment
+        )
+    }
+}
+
+extension FormattedAddress {
+    fileprivate func toMessage() -> FormattedAddressMessage {
+        FormattedAddressMessage.make(
+            withDrilldownAddress: self.drilldownAddress,
+            streetAddress: self.streetAddress,
+            addressComment: self.addressComment,
+            postCode: self.postCode
         )
     }
 }

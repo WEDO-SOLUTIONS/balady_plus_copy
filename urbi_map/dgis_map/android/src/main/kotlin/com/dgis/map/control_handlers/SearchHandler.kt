@@ -95,14 +95,18 @@ class SearchHandler(
 
     fun search(
         queryText: String,
+        categories: List<RubricId>?,
         searchGeoRect: GeoRect?,
         weekTimeMessage: WeekTimeSearchMessage? = null,
         sortingType: SortingTypeMessage,
         pageSize: Int,
         result: Result<SearchResultMessage>?
     ) {
-        val query = SearchQueryBuilder
-            .fromQueryText(queryText)
+        val queryBuilder = if (categories != null)
+            SearchQueryBuilder.fromQueryTextAndRubricIds(queryText, categories!!) else
+            SearchQueryBuilder.fromQueryText(queryText)
+
+        val query = queryBuilder
             .setSortingType(sortingType.toSortingType())
             .setPageSize(pageSize)
             .setDirectoryFilter(DirectoryFilter(weekTimeMessage.toFilter(), emptyList()))
@@ -174,7 +178,7 @@ class SearchHandler(
         result: Result<SearchResultMessage>?
     ) {
         val query = SearchQueryBuilder.fromQueryText("park")
-            .setAllowedResultTypes(listOf(ObjectType.ADM_DIV, ObjectType.ATTRACTION))
+            .setAllowedResultTypes(listOf(ObjectType.ATTRACTION))
             .setSortingType(sortingType.toSortingType())
             .setPageSize(pageSize.toInt())
             .setDirectoryFilter(DirectoryFilter(weekTimeMessage.toFilter(), emptyList()))

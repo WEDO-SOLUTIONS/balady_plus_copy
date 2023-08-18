@@ -156,6 +156,7 @@ class DgisMapController {
   /// Runs directory search by [queryText] query.
   Future<SearchResultMessage> search(
     String queryText, {
+    List<SearchCategoryMessage>? categories,
     required SortingTypeMessage sortingType,
     GeoRectMessage? searchRect,
     bool isOpenNow = false,
@@ -163,6 +164,7 @@ class DgisMapController {
   }) {
     return _instance.search(
       queryText,
+      categories: categories,
       sortingType: sortingType,
       weekTime: isOpenNow ? WeekTimeFactory.openNow() : null,
       pageSize: pageSize,
@@ -325,6 +327,14 @@ class DgisMapController {
     return _instance.overlappedBy(outer, inner);
   }
 
+  /// Checks if [rect] contains [point]
+  Future<bool> contains(
+    GeoRectMessage rect,
+    GeoPointMessage point,
+  ) async {
+    return _instance.contains(rect, point);
+  }
+
   /// Used to setup platform. Should be called when permision was granted.
   /// Does not request permission by itself.
   Future<void> onLocationPremissionGranted({
@@ -346,6 +356,16 @@ class DgisMapController {
 
   Future<void> removeEsriIOLayer() {
     return _instance.removeEsriIOLayer();
+  }
+
+  /// Sets map appearance
+  Future<void> setAppearance(MapAppearanceMessage appearance) {
+    return _instance.setAppearance(appearance);
+  }
+
+  /// Sets zoom restrictions for camera
+  Future<void> setZoomRestrictions({double? min, double? max}) {
+    return _instance.setZoomRestrictions(min, max);
   }
 
   /// Does not apply filters immediately. Resets inner state.

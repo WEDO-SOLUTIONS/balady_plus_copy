@@ -1,6 +1,7 @@
 import 'package:dgis_map/library.dart';
 
 import '../data_sources/point_layers_data.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart' as gm;
 
 List<BuildingComplianceCertificate> buildingComplianceCertificateFromJson(
         List list) =>
@@ -18,6 +19,7 @@ class BuildingComplianceCertificate extends PointLayersData {
   String? DISTRICTNAME;
   String? STREETTYPE;
   String? STREETWIDTH;
+  final List<List<GeoPointMessage>>? pathsGoogle;
 
   BuildingComplianceCertificate(
       {required this.paths,
@@ -26,6 +28,7 @@ class BuildingComplianceCertificate extends PointLayersData {
       required type,
       required description,
       latLng,
+      this.pathsGoogle,
       this.AMANANAME,
       this.DISTRICTNAME,
       this.MUNICIPALITYNAME,
@@ -59,7 +62,7 @@ class BuildingComplianceCertificate extends PointLayersData {
           DISTRICTNAME: json['attributes']["DISTRICTNAME"] ?? 'type',
           STREETTYPE: json['attributes']["STREETTYPE"] ?? 'type',
           STREETWIDTH: json['attributes']["STREETWIDTH"] ?? 'type',
-
+          pathsGoogle: getGoogleList(json['geometry']["paths"]),
           ///////////////
           paths: getList(json['geometry']["paths"])
 

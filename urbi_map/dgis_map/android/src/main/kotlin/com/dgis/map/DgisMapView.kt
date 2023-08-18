@@ -290,6 +290,7 @@ class DgisMapView(
 
     override fun search(
         queryText: String,
+        categories: SearchCategoriesMessage?,
         weekTime: WeekTimeSearchMessage?,
         searchRect: GeoRectMessage?,
         sortingType: SortingTypeMessage,
@@ -298,6 +299,9 @@ class DgisMapView(
     ) {
         searchHandler?.search(
             queryText = queryText,
+            categories = categories?.categories?.flatMap {
+                it.category.toRubrics()
+            },
             searchGeoRect = searchRect?.toGeoRect(),
             weekTimeMessage = weekTime,
             sortingType = sortingType,
@@ -530,6 +534,14 @@ class DgisMapView(
         result?.success(isOverlapped)
     }
 
+    override fun contains(
+        rect: GeoRectMessage,
+        point: GeoPointMessage,
+        result: Messages.Result<Boolean>?
+    ) {
+        result?.success(rect.toGeoRect().contains(point.toGeoPoint()))
+    }
+
     override fun setPanoramaMarkerAzimuth(
         message: MarkerAzimuthMessage,
         result: Messages.Result<Void>?
@@ -587,6 +599,30 @@ class DgisMapView(
     override fun moveCameraToSelectedPanorama(result: Messages.Result<Void>?) {
         map?.let {
             objectTapHandler?.moveCameraToSelectedPanorama(it)
+        }
+        result?.success(null)
+    }
+
+    override fun setAppearance(appearance: MapAppearanceMessage, result: Messages.Result<Void>?) {
+        when (appearance) {
+            MapAppearanceMessage.DAY -> mapView.setTheme("day", "night")
+            MapAppearanceMessage.NIGHT -> mapView.setTheme("day")
+            MapAppearanceMessage.SYSTEM -> mapView.setTheme("night")
+        }
+
+        result?.success(null)
+    }
+
+    override fun setZoomRestrictions(min: Double?, max: Double?, result: Messages.Result<Void>?) {
+        map?.let {map ->
+            map.camera.zoomRestrictions = CameraZoomRestrictions(
+                minZoom = min?.let {
+                    Zoom(it.toFloat())
+                } ?: Zoom(0f),
+                maxZoom = max?.let {
+                    Zoom(it.toFloat())
+                } ?: Zoom(20f)
+            )
         }
         result?.success(null)
     }

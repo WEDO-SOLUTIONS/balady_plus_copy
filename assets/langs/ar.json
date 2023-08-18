@@ -2524,7 +2524,9 @@
   "price_per_period": "ريال / الفترة",
   "sar_per_meter": "ريال / م٢ باليوم", 
   "bid_end_date":"اخر موعد لتقديم الكراسة: ", 
-  "months": "أشهر"
+  "months": "أشهر", 
+  "plan_option": "اختر نوع الخريطة"
+
 
 
 

@@ -125,13 +125,19 @@ class SearchHandler: NSObject {
     
     func search(
         _ queryText: String,
+        categories: [RubricId]?,
         searchGeoRect: DGis.GeoRect?,
         weekTimeMessage: WeekTimeSearchMessage?,
         sortingType: SortingTypeMessage,
         pageSize: Int32,
         completion: @escaping (SearchResultMessage?, FlutterError?) -> Void
     ) {
-        var query = SearchQueryBuilder.fromQueryText(queryText: queryText)
+        
+        let queryBuilder = categories != nil ?
+            SearchQueryBuilder.fromQueryTextAndRubricIds(queryText: queryText, rubricIds: categories!) :
+            SearchQueryBuilder.fromQueryText(queryText: queryText)
+        
+        let query = queryBuilder
             .setPageSize(pageSize: pageSize)
             .setSortingType(sortingType: sortingType.toSortingType())
             .setDirectoryFilter(filter:
@@ -212,7 +218,7 @@ class SearchHandler: NSObject {
         completion: @escaping (SearchResultMessage?, FlutterError?) -> Void
     ) {
         let query = SearchQueryBuilder.fromQueryText(queryText: "park")
-            .setAllowedResultTypes(allowedResultTypes: [.admDiv, .attraction])
+            .setAllowedResultTypes(allowedResultTypes: [.attraction])
             .setPageSize(pageSize: pageSize)
             .setSortingType(sortingType: sortingType.toSortingType())
             .setDirectoryFilter(filter:

@@ -9,7 +9,7 @@ import 'package:provider/provider.dart';
 import '../../../../home_page/presentation/widgets/home_app_bar/circle_icon.dart';
 import '../../../data/model/investment_sites.dart';
 import '../../mvvm/map_view_model.dart';
-/*
+
 class InvestmentMapCard extends StatelessWidget {
   final InvestmentSites data;
   final Function onClose;
@@ -111,4 +111,3 @@ class InvestmentMapCard extends StatelessWidget {
     );
   }
 }
-*/

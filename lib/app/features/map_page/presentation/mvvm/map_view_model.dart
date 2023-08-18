@@ -1,19 +1,22 @@
 import 'dart:async';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/entry_point/presentation/cubit/auth_cubit.dart';
+import 'package:balady_plus/app/features/vd/vd_exports.dart';
 import 'package:collection/collection.dart';
 import 'dart:math' show abs;
+import 'package:geolocator/geolocator.dart' as geoLocator;
 
 import 'package:balady_plus/app/core/base/base_view_model.dart';
 import 'package:balady_plus/app/features/map_page/extensions/search_category_ext.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/foundation.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 import '../../../../core/dependency_injection/injection_container.dart';
 import '../../../../core/services/local/helpers.dart';
 import '../../../../core/services/local/navigation_services.dart';
-import '../../../vd/domain/entities/gis/gis_params.dart';
-import '../../../vd/domain/entities/gis/gis_response.dart';
 import '../../constants/constants.dart';
 import 'package:flutter/widgets.dart';
 
@@ -29,6 +32,8 @@ import '../../data/model/rental_details_response.dart';
 import '../../data/model/requests/map_requests_params.dart';
 import '../../data/model/white_lands.dart';
 import '../../data/repositories/layers_repositories.dart';
+import 'layers_gis_view_model.dart';
+import 'map_view_model.dart';
 
 const int mil = 300;
 TextEditingController searchController = TextEditingController();
@@ -38,19 +43,35 @@ class MapViewModel extends BaseViewModel {
       GeoPointMessage(latitude: 24.712301, longitude: 46.674175);
   final GeoPointMessage ithraa =
       GeoPointMessage(latitude: 26.336057, longitude: 50.120372);
+  Layers cityPlaces = Layers(
+      id: 0,
+      type: "",
+      geometryType: "",
+      name: "وصول أسهل",
+      defaultVisibility: true);
+  static GeoRectMessage saRect = GeoRectMessage(
+    northEast: GeoPointMessage(latitude: 32.568765, longitude: 56.694472),
+    southWest: GeoPointMessage(latitude: 15.506104, longitude: 32.61185),
+  );
 
   final LayersRepositories layersRepositories;
 
-  MapViewModel({required this.layersRepositories});
+  MapViewModel({required this.layersRepositories}) {
+    getMinLayers();
+
+    layerSelected.value = cityPlaces;
+  }
   final selectedPointId = ValueNotifier<DgisObjectIdMessage?>(null);
   final selectedPoint = ValueNotifier<PointLayersData?>(null);
 
   ValueNotifier<SearchCategoryMessage?> selectedCategory = ValueNotifier(null);
 
+  final layers = ValueNotifier<List<Layers>?>(null);
+
   final layerSelected = ValueNotifier<Layers?>(null);
   GISMapLayers gisSelectedLayer = GISMapLayers.cityPlaces;
 //////////////////////////////////////////////////////
-
+  CameraPositionMessage? _lastCameraPosition;
   late DgisMapController controller;
 
   final viewHomeBottomSheet = ValueNotifier(true);
@@ -69,6 +90,7 @@ class MapViewModel extends BaseViewModel {
   VisibleRectEvent? _lastHandledEvent;
   double? _cameraTopPadding;
   double oldZoom = 13;
+  bool refreshMap = true;
 
   //final selectedPoint = ValueNotifier<DgisObjectIdMessage?>(null);
 
@@ -94,14 +116,14 @@ class MapViewModel extends BaseViewModel {
     } else {
       selectedCategory.value = category;
     }
-    showLoading();
-    await controller.removeAllMarkers();
+    showLoading1();
+    await clearAll();
 
     if (selectedCategory.value != null)
       performSearch(
         queryText: selectedCategory.value!.displayName(),
       );
-    hideLoading();
+    hideLoading1();
 
     selectedPointId.value = null;
     selectedPointId.notifyListeners();
@@ -116,17 +138,37 @@ class MapViewModel extends BaseViewModel {
     }
   }
 
+//  late MapObjectManagerMessage mapObjectManager;
+
   Future<void> performSearch(
       {required String queryText,
       SearchCategoryMessage? category,
       bool showLoader = false}) async {
     try {
       if (showLoader) {
-        await controller.removeAllMarkers();
-        await controller.removeAll();
+        await clearAll();
 
-        showLoading();
+        selectedCategory.value = null;
+        showLoading1();
         selectedCategory.notifyListeners();
+
+        (double, double)? center = calculatePositionCenter(
+            _lastHandledEvent?.visibleRect.northEastLat,
+            _lastHandledEvent?.visibleRect.northEastLon,
+            _lastHandledEvent?.visibleRect.southWestLat,
+            _lastHandledEvent?.visibleRect.southWestLon);
+        if (center != null)
+          await controller.moveCamera(
+              CameraPositionMessage(
+                  point: GeoPointMessage(
+                    latitude: center.$1,
+                    longitude: center.$2,
+                  ),
+                  zoom: 13,
+                  tilt: 0,
+                  bearing: 0),
+              1,
+              CameraAnimationTypeMessage.linear);
       }
       searchController.text = selectedCategory.value != null
           ? selectedCategory.value!.displayName()
@@ -141,12 +183,16 @@ class MapViewModel extends BaseViewModel {
             )
           : await controller.search(
               queryText,
+              categories: [
+                SearchCategoryMessage.gasStations,
+                SearchCategoryMessage.mousques
+              ],
               sortingType: SortingTypeMessage.byRelevance,
               isOpenNow: false,
               searchRect: _lastHandledEvent?.visibleRect.geoRectMessage(),
             );
 
-      if (showLoader) hideLoading();
+      if (showLoader) hideLoading1();
 
       if (data.itemMarkerInfos != null) {
         List<Marker> markers = [];
@@ -154,6 +200,8 @@ class MapViewModel extends BaseViewModel {
         final iconPath = selectedCategory.value != null
             ? selectedCategory.value!.markerIconName()
             : "assets/maps/icons/ic_marker.svg";
+
+        //  await controller.removeAllMarkers(fromManager: mapObjectManager);
 
         for (final markerInfo in data.itemMarkerInfos!) {
           markers.add(Marker(
@@ -165,9 +213,20 @@ class MapViewModel extends BaseViewModel {
                 width: 24,
               ),
             ),
-            onTap: () {
+            onTap: () async {
+              refreshMap = false;
+              await controller.moveCamera(
+                  CameraPositionMessage(
+                      point: GeoPointMessage(
+                          latitude: markerInfo.geoPoint.latitude,
+                          longitude: markerInfo.geoPoint.longitude),
+                      zoom: 17,
+                      tilt: 0,
+                      bearing: 0),
+                  1,
+                  CameraAnimationTypeMessage.linear);
+
               selectedPointId.value = markerInfo.objectId;
-              print("on Tap");
               print(markerInfo.objectId);
               selectedDiggingPoint.value = null;
               selectedInvetmentPoint.value = null;
@@ -184,6 +243,11 @@ class MapViewModel extends BaseViewModel {
               // bottomSheetSizeFraction.value = 0.05;
               bottomSheetSize.notifyListeners();
               bottomSheetSizeFraction.notifyListeners();
+
+              Future.delayed(
+                const Duration(milliseconds: 300),
+              );
+              refreshMap = true;
             },
           ));
         }
@@ -198,10 +262,8 @@ class MapViewModel extends BaseViewModel {
                 .toList(),
           ),
         );
-        print(responseDistance);
       }
       if (data.firstPage != null) {
-        print("Releasing page");
         await controller.releasePage(data.firstPage!);
       }
       print(data);
@@ -227,39 +289,104 @@ class MapViewModel extends BaseViewModel {
   Future<bool> initialize(DgisMapController controllerMap) async {
     controller = controllerMap;
     final result = await controller.initialize();
-    print("wasInitialized ${result.wasInitialized}");
     if (!result.wasInitialized) {
       initialized.value = false;
 
       return false;
     }
-    controller.setCameraPosition(CameraPositionMessage(
-        point: kingdomTower, zoom: 17, tilt: 45, bearing: 9));
 
     _setupListeners();
 
-    // await controller.changeFollowState();
+    //controller.setCameraPosition(CameraPositionMessage(
+    //   point: kingdomTower, zoom: 17, tilt: 45, bearing: 9));
 
     // setLocale(const Locale("ar", "US"), TextDirection.ltr);
     await controller.loadStyles(Constants.mapStyle);
     await controller.overrideLocales(["ar-SA"]);
     // await controller.overrideLocales([localeState.value.locale]);
-    initialized.value = true;
-    generalControlsState.value = true;
-    goToLocation();
+    // goToLocation();
     await controller.setMarkerOptions(
       MarkerOptionsMessageOld(
-        svgAsset: "assets/maps/icons/ic_marker.svg.svg",
+        svgAsset: "assets/maps/icons/ic_marker.svg",
         width: 30.0,
         height: 46.0,
         iconWidth: 24,
       ),
     );
 
+    await controller.setZoomRestrictions(min: 5.5);
+
+/*
+    mapObjectManager = await controller.createMapObjectManagerWithClustering(
+      ClusteringMapObjectManager(
+        options: ClusteringMapObjectManagerOptionsMessage(
+          logicalPixel: 40,
+          maxZoom: 16,
+        ),
+        renderCluster: (objectCount) {
+          return SimpleClusterOptionsMessage(
+            icon: MarkerIconMessage(
+              path: "assets/maps/icons/ic_marker.svg",
+              width: 24,
+            ),
+            text: "$objectCount",
+            textStyle: MarkerTextStyleMessage(fontSize: 16),
+          );
+        },
+        onTap: (clusterObject) async {
+          clusterObject.setIcon("assets/maps/icons/ic_marker_red.svg");
+
+          final clusterPosition = await controller.calcPositionForMarkers(
+            clusterObject.markers,
+            CalcPositionOptionsMessage(
+              screenArea: CameraSetPaddingMessage(
+                bottomPadding: 40,
+                leftPadding: 40,
+                topPadding: 40,
+                rightPadding: 40,
+              ),
+            ),
+          );
+          await controller.moveCamera(
+            clusterPosition,
+            1.5,
+            CameraAnimationTypeMessage.default_,
+          );
+        },
+      ),
+    );
+
+
+*/
+
+    try {
+      final permission = await Permission.location.request();
+      if (permission.isGranted) {
+        await controller.onLocationPremissionGranted();
+        await controller.changeFollowState();
+
+        /* await controller.setCameraPosition(
+          CameraPositionMessage(
+            point: GeoPointMessage(
+                latitude: CommonProperties.userLocation?.lat ?? 0,
+                longitude: CommonProperties.userLocation?.lon ?? 0),
+            zoom: 13,
+            tilt: 0,
+            bearing: 0,
+          ),
+        );*/
+      }
+    } catch (ex) {}
+
+    initialized.value = true;
+    generalControlsState.value = true;
+
     return true;
   }
 
-  void onLocationTap() => unawaited(controller.changeFollowState());
+  void onLocationTap() async {
+    unawaited(controller.changeFollowState());
+  }
 
   void onLevelTap(IndoorLevel level) =>
       unawaited(controller.selectIndoorLevel(level));
@@ -297,11 +424,23 @@ class MapViewModel extends BaseViewModel {
     selectedPointId.value = null;
     selectedWhiteLands.value = null;
     selectedLands.value = null;
+    showLegend.value = null;
     selectedDiggingPoint.notifyListeners();
     selectedImtethalPoint.notifyListeners();
     selectedInvetmentPoint.notifyListeners();
     selectedPointId.notifyListeners();
+    selectedLands.notifyListeners();
+    showLegend.notifyListeners();
     selectedWhiteLands.notifyListeners();
+  }
+
+  void _cameraPositionChangeListener(CameraPositionMessage event) async {
+    if ((!await controller.contains(saRect, event.point)) &&
+        _lastCameraPosition != null) {
+      await controller.setCameraPosition(_lastCameraPosition!);
+    } else {
+      _lastCameraPosition = event;
+    }
   }
 
   void _setupListeners() {
@@ -340,27 +479,6 @@ class MapViewModel extends BaseViewModel {
       viewHomeBottomSheet.value = false;
       viewHomeBottomSheet.notifyListeners();
     }
-
-    // //
-    // switch (controller.activeLayerState.value.layer) {
-    //   case BusinessLayers.tourism:
-    //     if (event is ObjectTapEvent) {
-    //       selectedPointId.value = DgisObjectIdMessage(
-    //         objectId: event.dgisObjectId.objectId,
-    //         entranceId: event.dgisObjectId.entranceId,
-    //       );
-    //     }
-    //     return;
-    //   case BusinessLayers.idle:
-    //     // if (event is IdleTapEvent) unawaited(_handleIdleEvent(event));
-    //     return;
-    //   case BusinessLayers.io:
-    //     // if (event is IoTapEvent) unawaited(_handleIoEvent(event));
-    //     return;
-    //   case BusinessLayers.panoramas:
-    //     // handles by [_onPanoramaTap]
-    //     return;
-    // }
   }
 
   void _startRequestTimer(double oldZoom) {
@@ -374,7 +492,6 @@ class MapViewModel extends BaseViewModel {
       ),
     ).listen((_) async {
       this.oldZoom = oldZoom;
-      print("updateMap ${this.oldZoom.toInt()} ${zoomValue.toInt()}");
       if (this.oldZoom.toInt() != zoomValue.toInt()) {
         zoomValue = oldZoom;
 
@@ -392,18 +509,6 @@ class MapViewModel extends BaseViewModel {
   void _onPanoramaTap(MarkerWithPhotoTapEvent event) {
     try {
       final data = event.photoData;
-      print(data);
-      // panoramaState.value = PanoramaState(
-      //   photoUrl: data.photoUrl,
-      //   azimuth: data.azimuth,
-      // );
-
-      // if (!mapCardCollapsedState.value) {
-      //   _setCameraPaddings();
-      // }
-
-      // mapCardCollapsedState.value = true;
-      // topSheetVisibleState.value = false;
       unawaited(controller.moveCameraToSelectedPanorama());
     } catch (e) {
       print(e);
@@ -428,30 +533,24 @@ class MapViewModel extends BaseViewModel {
   }
 
   callSearch() async {
-    print("search");
-    await controller.removeAllMarkers();
-
-    await controller.removeAll();
+    await clearAll();
 
     String? query = selectedCategory.value != null
         ? selectedCategory.value!.displayName()
         : searchController.text;
     if (query != null && query.isNotEmpty) {
-      showLoading();
+      showLoading1();
 
       await performSearch(
         queryText: query,
       );
-      hideLoading();
+      hideLoading1();
     }
 
-    print("layerSelected $layerSelected");
-
     if (layerSelected.value == null) return;
-    print("HEREE");
     GISMapLayers? gisLayer = GISMapLayers.values.firstWhereOrNull(
         (element) => element.layerId == layerSelected.value!.id);
-    showLoading();
+    showLoading1();
     bottomSheetSize.notifyListeners();
 
     if (gisLayer != null) {
@@ -475,13 +574,12 @@ class MapViewModel extends BaseViewModel {
           break;
       }
     }
-    print("Doneeee");
     _clearDebounce();
-    hideLoading();
+    hideLoading1();
   }
 
   getPointDetails(int objectId) async {
-    showLoading();
+    showLoading1();
 
     List? pointList = await layersRepositories.getPointDetailsInLayers(
         params: MapRequestParams(
@@ -493,7 +591,7 @@ class MapViewModel extends BaseViewModel {
       southWestLlatitude: _lastHandledEvent!.visibleRect.southWestLat,
     ));
 
-    hideLoading();
+    hideLoading1();
 
     Navigator.pushNamed(NavigationService.navigatorKey.currentContext!,
         RouteName.DiggingMapDetailsPage,
@@ -502,31 +600,32 @@ class MapViewModel extends BaseViewModel {
 
   Future<InvestmentDetailsResponse?> getInvestmentDetails(
       String id, String type) async {
-    showLoading();
+    showLoading1();
 
     InvestmentDetailsResponse? data =
         await layersRepositories.getInvetmentDetails(id, type);
 
-    hideLoading();
-
-    Navigator.pushNamed(NavigationService.navigatorKey.currentContext!,
-        RouteName.investmentPage,
-        arguments: data);
+    hideLoading1();
+    if (data != null)
+      Navigator.pushNamed(NavigationService.navigatorKey.currentContext!,
+          RouteName.investmentPage,
+          arguments: data);
 
     return data;
   }
 
   Future<RentalDetailsResponse?> getTempRentalDetails(
       String id, String type) async {
-    showLoading();
+    showLoading1();
 
     RentalDetailsResponse? data =
         await layersRepositories.getTempRentalDetails(id, type);
 
-    hideLoading();
-    Navigator.pushNamed(NavigationService.navigatorKey.currentContext!,
-        RouteName.tempRentalPage,
-        arguments: data);
+    hideLoading1();
+    if (data != null)
+      Navigator.pushNamed(NavigationService.navigatorKey.currentContext!,
+          RouteName.tempRentalPage,
+          arguments: data);
 
     return data;
   }
@@ -565,8 +664,14 @@ class MapViewModel extends BaseViewModel {
                 width: 30,
               ),
             ),
-            onTap: () {
-              print(element);
+            onTap: () async {
+              refreshMap = false;
+              /*  await controller.moveCamera(
+                  CameraPositionMessage(
+                      point: element.latLng, zoom: 17, tilt: 0, bearing: 0),
+                  1,
+                  CameraAnimationTypeMessage.linear);*/
+
               selectedPointId.notifyListeners();
               selectedPoint.value = null;
               selectedInvetmentPoint.value = null;
@@ -592,6 +697,8 @@ class MapViewModel extends BaseViewModel {
               selectedImtethalPoint.notifyListeners();
               selectedDiggingPoint.notifyListeners();
               selectedWhiteLands.notifyListeners();
+              selectedLands.notifyListeners();
+
               selectedPointId.notifyListeners();
               selectedPoint.notifyListeners();
 
@@ -602,66 +709,87 @@ class MapViewModel extends BaseViewModel {
               // bottomSheetSizeFraction.value = 0.05;
               bottomSheetSize.notifyListeners();
               bottomSheetSizeFraction.notifyListeners();
+
+              Future.delayed(
+                const Duration(milliseconds: 300),
+              );
+              refreshMap = true;
             },
           );
         },
       ).toList();
       //await controller.removeAllMarkers();
+      await clearAll();
+
       controller.addMarkers(markers);
     }
   }
 
   void addPolylineWithPoint(List? pointList, int layerId) async {
-    print(pointList);
     if (pointList != null && pointList.isNotEmpty) {
       final List<Polyline> polylines = [];
       for (var element in pointList) {
-        int id = int.parse(element.id);
-        polylines.add(
-          Polyline(
-            id: id.toString(),
-            options: PolylineOptionsMessage(
-                points: element.paths, width: 4, color: 0xff358281),
-            onTap: () {
-              selectedDiggingPoint.value = null;
-              selectedInvetmentPoint.value = null;
-              selectedImtethalPoint.value = null;
-              selectedWhiteLands.value = null;
-              selectedLands.value = null;
-              showLegend.value = false;
-              switch (gisSelectedLayer) {
-                case GISMapLayers.Digging:
-                  selectedDiggingPoint.value = element;
+        for (List<GeoPointMessage> i in element.pathsGoogle) {
+          int id = int.parse(element.id);
+          String idPolyline = "${id.toString()}+${i}";
+          polylines.add(
+            Polyline(
+              id: idPolyline,
+              options: PolylineOptionsMessage(
+                  points: i, width: 2, color: 0xff358281),
+              onTap: () {
+                selectedDiggingPoint.value = null;
+                selectedInvetmentPoint.value = null;
+                selectedImtethalPoint.value = null;
+                selectedWhiteLands.value = null;
+                selectedLands.value = null;
+                showLegend.value = false;
+                switch (gisSelectedLayer) {
+                  case GISMapLayers.Digging:
+                    selectedDiggingPoint.value = element;
 
-                  break;
+                    break;
 
-                case GISMapLayers.BSAimtithalBuildingsCertificateL:
-                  selectedImtethalPoint.value = element;
+                  case GISMapLayers.BSAimtithalBuildingsCertificateL:
+                    selectedImtethalPoint.value = element;
 
-                case GISMapLayers.BSWhiteParcelS:
-                  selectedWhiteLands.value = element;
+                  case GISMapLayers.BSWhiteParcelS:
+                    selectedWhiteLands.value = element;
 
-                default:
-                  break;
-              }
-              selectedPointId.value = null;
-              selectedImtethalPoint.notifyListeners();
-              selectedDiggingPoint.notifyListeners();
-              selectedWhiteLands.notifyListeners();
-              selectedLands.notifyListeners();
-              selectedPointId.notifyListeners();
-              bottomSheetSize.notifyListeners();
-              showLegend.notifyListeners();
+                  default:
+                    break;
+                }
+                selectedPointId.value = null;
+                selectedImtethalPoint.notifyListeners();
+                selectedDiggingPoint.notifyListeners();
+                selectedWhiteLands.notifyListeners();
+                selectedLands.notifyListeners();
+                selectedPointId.notifyListeners();
+                bottomSheetSize.notifyListeners();
+                showLegend.notifyListeners();
 
-              viewHomeBottomSheet.value = false;
-              viewHomeBottomSheet.notifyListeners();
-              bottomSheetSize.notifyListeners();
-              bottomSheetSizeFraction.notifyListeners();
-            },
-          ),
-        );
+                viewHomeBottomSheet.value = false;
+                viewHomeBottomSheet.notifyListeners();
+                // bottomSheetSizeFraction.value = 0.05;
+                bottomSheetSize.notifyListeners();
+                bottomSheetSizeFraction.notifyListeners();
+                /*  controller.setCameraPosition(
+                CameraPositionMessage(
+                  zoomValue: 17,
+                  geoPoint: GeoPointMessage(
+                    latitude: element.paths.first.latitude,
+                    longitude: element.paths.first.longitude,
+                  ),
+                ),
+              );*/
+              },
+            ),
+          );
+        }
       }
       //  await controller.removeAllMarkers();
+      await clearAll();
+
       unawaited(controller.addPolylines(polylines));
     }
   }
@@ -689,11 +817,6 @@ class MapViewModel extends BaseViewModel {
               selectedDiggingPoint.value = null;
               showLegend.value = false;
               switch (gisSelectedLayer) {
-                case GISMapLayers.Digging:
-                  selectedDiggingPoint.value = element;
-
-                  break;
-
                 case GISMapLayers.BSAimtithalBuildingsCertificateL:
                   selectedImtethalPoint.value = element;
 
@@ -711,6 +834,7 @@ class MapViewModel extends BaseViewModel {
               selectedWhiteLands.notifyListeners();
               selectedPointId.notifyListeners();
               bottomSheetSize.notifyListeners();
+              selectedLands.notifyListeners();
               showLegend.notifyListeners();
 
               viewHomeBottomSheet.value = false;
@@ -723,19 +847,27 @@ class MapViewModel extends BaseViewModel {
         );
       }
       //await controller.removeAllMarkers();
+      await clearAll();
+
       unawaited(controller.addPolygons(polygons));
     }
   }
 
   void selectLayers(Layers value) async {
-    print("LAyer selected");
-    await controller.removeAll();
+    await clearAll();
+
+    clearAllCards();
+    layerSelected.value = value;
+    layerSelected.notifyListeners();
+
+    showLegend.value = null;
     layerSelected.value = value;
     searchController.text = "";
     viewHomeBottomSheet.value = true;
     viewHomeBottomSheet.notifyListeners();
 
     bottomSheetSize.notifyListeners();
+    showLegend.notifyListeners();
     bottomSheetSizeFraction.notifyListeners();
     gisSelectedLayer = GISMapLayers.values
             .firstWhereOrNull((element) => element.layerId == value.id) ??
@@ -753,14 +885,12 @@ class MapViewModel extends BaseViewModel {
   dynamic getMapCardData() {}
   void getGISData() {}
 
-  @override
-  void showLoading() {
+  void showLoading1() {
     isSearchLoading.value = true;
     isSearchLoading.notifyListeners();
   }
 
-  @override
-  void hideLoading() {
+  void hideLoading1() {
     isSearchLoading.value = false;
     isSearchLoading.notifyListeners();
   }
@@ -771,16 +901,15 @@ class MapViewModel extends BaseViewModel {
         : Duration.zero;
     Timer(duration, () async {
       if (CommonProperties.userLocation == null) {
-        print("FFFFFGGG 1");
         controller.setCameraPosition(CameraPositionMessage(
             point: kingdomTower, zoom: 17, tilt: 45, bearing: 0));
       } else {
         GISResponse? gis = CommonProperties.userLocationGIS;
         GISParams? userLocation = CommonProperties.userLocation;
         if (gis == null) {
-          showLoading();
+          showLoading1();
           var location = await sl<EntryPointCubit>().getUserLocationData();
-          hideLoading();
+          hideLoading1();
           gis = location?.$2;
           userLocation = location?.$1;
         }
@@ -790,11 +919,11 @@ class MapViewModel extends BaseViewModel {
               point: kingdomTower, zoom: 17, tilt: 45, bearing: 0));
         } else {
           if (gis.adminMunicipalityId == "004") {
-            controller.setCameraPosition(CameraPositionMessage(
-                point: kingdomTower, zoom: 17, tilt: 45, bearing: 0));
+            //    controller.setCameraPosition(CameraPositionMessage(
+            //       point: kingdomTower, zoom: 17, tilt: 45, bearing: 0));
           } else if (gis.adminMunicipalityId == "006") {
-            controller.setCameraPosition(CameraPositionMessage(
-                point: ithraa, zoom: 18, tilt: 45, bearing: 0));
+            // controller.setCameraPosition(CameraPositionMessage(
+            //     point: ithraa, zoom: 18, tilt: 45, bearing: 0));
           } else {
             controller.setCameraPosition(CameraPositionMessage(
                 point: GeoPointMessage(
@@ -806,5 +935,73 @@ class MapViewModel extends BaseViewModel {
         }
       }
     });
+  }
+
+  (double, double)? calculatePositionCenter(
+      double? x1, double? y1, double? x2, double? y2) {
+    if (x1 == null || x2 == null || y1 == null || y2 == null) return null;
+    double center_x = (x1 + x2) / 2;
+    double center_y = (y1 + y2) / 2;
+    return (center_x, center_y);
+  }
+
+  void navigateToImtethal() async {
+    if (layers.value?.isEmpty ?? true) await getMinLayers();
+    if (layers.value == null) {
+      CommonFunctions.showError("server_error_1".tr());
+
+      return;
+    }
+
+    viewHomeBottomSheet.value = false;
+    viewHomeBottomSheet.notifyListeners();
+
+    bottomSheetSizeFraction.value = 0.05;
+    bottomSheetSizeFraction.notifyListeners();
+
+    Timer(const Duration(milliseconds: 200), () async {
+      viewHomeBottomSheet.value = true;
+      viewHomeBottomSheet.notifyListeners();
+      selectLayers(layers.value!.firstWhere((element) => element.id == 7));
+
+      (double, double)? center = calculatePositionCenter(
+          _lastHandledEvent?.visibleRect.northEastLat,
+          _lastHandledEvent?.visibleRect.northEastLon,
+          _lastHandledEvent?.visibleRect.southWestLat,
+          _lastHandledEvent?.visibleRect.southWestLon);
+      if (center != null)
+        await controller.moveCamera(
+            CameraPositionMessage(
+                point: GeoPointMessage(
+                  latitude: center.$1,
+                  longitude: center.$2,
+                ),
+                zoom: 13,
+                tilt: 0,
+                bearing: 0),
+            1,
+            CameraAnimationTypeMessage.linear);
+    });
+
+    bottomSheetSize.value = 0;
+    bottomSheetSize.notifyListeners();
+  }
+
+  Future<void> getMinLayers() async {
+    try {
+      layers.value = await layersRepositories.getMinLayers();
+      layers.value?.insert(0, cityPlaces);
+      layers.notifyListeners();
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future clearAll() async {
+    await controller.removeAllMarkers();
+    await controller.removeAllPolygons();
+    await controller.removeAllPolylines();
+    await controller.removeAll();
+    return;
   }
 }

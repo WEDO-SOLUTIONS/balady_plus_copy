@@ -16,7 +16,7 @@ import ru.dgis.sdk.positioning.registerPlatformMagneticSource
 class DgisMapViewFactory(
     private val binaryMessenger: BinaryMessenger,
     private val locationSource: FusedLocationSource
-) : PlatformViewFactory(StandardMessageCodec()) {
+) : PlatformViewFactory(MapApi.getCodec()) {
     override fun create(context: Context, viewId: Int, args: Any?): PlatformView {
         if (DgisMapPlugin.sdkContext == null) {
             throw Error("Plugin has not been initialized")

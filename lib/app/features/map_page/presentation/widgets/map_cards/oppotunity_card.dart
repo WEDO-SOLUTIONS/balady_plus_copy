@@ -1,9 +1,12 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
+import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:intl/intl.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
+import '../../../../../core/utils/common_functions.dart';
 import '../../../../../core/utils/constants/app_style.dart';
 import '../../../../home_page/presentation/widgets/home_app_bar/circle_icon.dart';
 
@@ -24,6 +27,7 @@ class MapCard extends StatelessWidget {
   List<String>? locations;
   bool isEntity;
   bool isFree;
+  String mainActivcity;
 
   final Function onPress;
   final Function onClose;
@@ -37,6 +41,7 @@ class MapCard extends StatelessWidget {
       required this.type,
       required this.distance,
       required this.subMunicipality,
+      required this.mainActivcity,
       this.isFavorite = false,
       this.isSeasonal = false,
       this.bidEndDate,
@@ -56,8 +61,7 @@ class MapCard extends StatelessWidget {
         onPress();
       },
       child: Container(
-        height: 150,
-        width: 325,
+        height: type == "Investment" ? 180 : 140,
         padding: const EdgeInsets.only(left: 10, right: 10, bottom: 10),
         margin: const EdgeInsets.symmetric(horizontal: 2),
         decoration: const BoxDecoration(
@@ -70,147 +74,153 @@ class MapCard extends StatelessWidget {
                   spreadRadius: 0)
             ],
             color: AppColor.white),
-        child: Row(
-          children: [
-            Expanded(
-              child: Container(
-                margin: const EdgeInsets.only(top: 0),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        child: Container(
+          margin: const EdgeInsets.only(top: 10, right: 10, left: 10),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Image.asset(
+                    type == "Investment"
+                        ? "assets/icons/svg/map/investment.png"
+                        : "assets/icons/svg/map/temprental.png",
+                    height: 58,
+                    width: 58,
+                  ),
+                  SizedBox(
+                    width: 8,
+                  ),
+                  Expanded(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        RentOrInvestWidget(type: type),
-                        GestureDetector(
-                          onTap: () {
-                            onClose();
-                          },
-                          child: CircleIcon(
-                            icon: Icons.close,
-                            circleSize: 24,
-                            iconColor: AppColor.primary600Light,
-                            backgroundColor: AppColor.geyser.withOpacity(0.4),
-                            iconSize: 12,
-                          ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(
-                      height: 8,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Expanded(
-                          child: PriceWidget(
-                            price: price,
-                            isSeasonal: isSeasonal,
-                            isInvestment: type == "Investment",
-                            fontSize: 10,
-                            priceFontSize: 12,
-                            isFree: isFree,
-                            isDirectRental: type == "DirectRental",
-                          ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Text(
-                      desc,
-                      style: AppStyle.cardTitleTextStle
-                          .copyWith(fontSize: 13, color: AppColor.black),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Row(
-                      //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        /*    Expanded(
-                          //flex: 2,
-                          child: Row(
-                            children: [
-                              Image.asset(
-                                "assets/images/" + 'pinLocation@3x.png',
-                                height: 12,
-                                width: 11,
-                              ),
-                              SizedBox(
-                                width: 6,
-                              ),
-                              /*EntityLocationWithBadge(
-                                location: location,
-                                locations: locations,
-                              )*/
-                            ],
-                          ),
-                        ),*/
-                      ],
-                    ),
-                    if (type == "Investment")
-                      SizedBox(
-                        height: 11,
-                      ),
-                    if (type == "Investment")
-                      Expanded(
-                        flex: 2,
-                        child: Row(
+                        Row(
                           children: [
-                            Image.asset(
-                              "assets/images/" + 'distance@3x.png',
-                              height: 12,
-                              width: 12,
+                            Expanded(
+                              child: Text(
+                                desc,
+                                style: AppStyle.cardTitleTextStle.copyWith(
+                                    fontSize: 13,
+                                    color: AppColor.black,
+                                    height: 1.3),
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                              ),
                             ),
                             SizedBox(
-                              width: 6,
+                              width: 8,
                             ),
-                            Text(
-                              "${"bid_end_date".tr()} $bidEndDate",
-                              overflow: TextOverflow.ellipsis,
-                              style: AppStyle.cardTitleTextStle.copyWith(
-                                  color: AppColor.kGray115, fontSize: 12),
+                            GestureDetector(
+                              onTap: () {
+                                onClose();
+                              },
+                              child: CircleIcon(
+                                icon: Icons.close,
+                                circleSize: 24,
+                                iconColor: AppColor.primary600Light,
+                                backgroundColor:
+                                    AppColor.geyser.withOpacity(0.4),
+                                iconSize: 12,
+                              ),
                             ),
                           ],
                         ),
-                      ),
-                    SizedBox(
-                      height: 11,
-                    ),
-                    Row(
-                      children: [
-                        Expanded(
-                          flex: 2,
-                          child: Row(
-                            children: [
-                              Image.asset(
-                                "assets/images/" + 'map_area_icon.png',
-                                height: 12,
-                                width: 12,
+                        Text(
+                          subMunicipality,
+                          style: AppStyle.cardTitleTextStle
+                              .copyWith(fontSize: 13, color: AppColor.black),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        RentOrInvestWidget(type: type),
+                        CustomVerticalSpace(height: 4),
+                        Text(
+                          "نوع النشاط: ${mainActivcity}",
+                          style: AppStyle.cardTitleTextStle
+                              .copyWith(fontSize: 13, color: AppColor.black),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Expanded(
+                              flex: 1,
+                              child: Row(
+                                children: [
+                                  Image.asset(
+                                    "assets/images/" + 'map_area_icon.png',
+                                    height: 12,
+                                    width: 12,
+                                  ),
+                                  SizedBox(
+                                    width: 6,
+                                  ),
+                                  Text(
+                                    area + " م٢ ",
+                                    overflow: TextOverflow.ellipsis,
+                                    style: AppStyle.cardTitleTextStle.copyWith(
+                                        color: AppColor.kGray115, fontSize: 12),
+                                  ),
+                                ],
                               ),
-                              SizedBox(
-                                width: 6,
+                            ),
+                            Expanded(
+                              flex: 2,
+                              child: PriceWidget(
+                                price: price,
+                                isSeasonal: isSeasonal,
+                                isInvestment: type == "Investment",
+                                fontSize: 10,
+                                priceFontSize: 12,
+                                isFree: isFree,
+                                isDirectRental: type == "DirectRental",
                               ),
-                              Text(
-                                area + " م٢ ",
-                                overflow: TextOverflow.ellipsis,
-                                style: AppStyle.cardTitleTextStle.copyWith(
-                                    color: AppColor.kGray115, fontSize: 12),
-                              ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-            ),
-          ],
+              if (type == "Investment")
+                SizedBox(
+                  height: 11,
+                ),
+              if (type == "Investment")
+                Expanded(
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Image.asset(
+                        "assets/images/" + 'distance@3x.png',
+                        height: 12,
+                        width: 12,
+                      ),
+                      SizedBox(
+                        width: 6,
+                      ),
+                      Text(
+                        "${"bid_end_date".tr()} ${getBidEndDate(bidEndDate ?? "")}",
+                        overflow: TextOverflow.ellipsis,
+                        style: AppStyle.cardTitleTextStle
+                            .copyWith(color: AppColor.kGray115, fontSize: 12),
+                      ),
+                    ],
+                  ),
+                ),
+            ],
+          ),
         ),
       ),
     );
@@ -323,6 +333,20 @@ String getActivityId(String? activityId) {
   }
 }
 
+String getBidEndDate(String bidEndDate) {
+  String date = "";
+  try {
+    if (bidEndDate != null) {
+      date = DateFormat.yMMMd(CommonFunctions.isAppAR ? 'ar_SA' : 'en_US')
+          .format(DateTime.parse(bidEndDate!));
+    }
+  } catch (ex) {}
+  if (CommonFunctions.isAppAR)
+    date = CommonFunctions.replaceArabicNumberWithEnglish(date);
+
+  return date;
+}
+
 class RentOrInvestWidget extends StatelessWidget {
   final String type;
   const RentOrInvestWidget({Key? key, required this.type}) : super(key: key);
@@ -330,16 +354,13 @@ class RentOrInvestWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(7),
-      decoration: BoxDecoration(
-          borderRadius: const BorderRadius.all(Radius.circular(4)),
-          color: type == "TempRental"
-              ? AppColor.primary700Light
-              : AppColor.primary700Light),
       child: Text(
         type == "Investment" ? ('investment').tr() : ('rent').tr(),
         style: AppStyle.cardTitleTextStle.copyWith(
             fontSize: 12,
-            color: type == "Investment" ? AppColor.white : AppColor.white),
+            color: type == "Investment"
+                ? AppColor.secondary900Light
+                : AppColor.secondary900Light),
       ),
     );
   }
@@ -378,8 +399,7 @@ class PriceWidget extends StatelessWidget {
         TextSpan(
             text: isFree && !isDirectRental ? ("free").tr() : price + "  ",
             style: AppStyle.cardTitleTextStle
-              ..copyWith(
-                  color: AppColor.primary900Light, fontSize: priceFontSize)),
+              ..copyWith(color: AppColor.primary900Light, fontSize: fontSize)),
         if (!isFree)
           TextSpan(
               text: isDirectRental

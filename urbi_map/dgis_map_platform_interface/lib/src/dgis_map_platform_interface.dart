@@ -132,6 +132,7 @@ abstract class DgisMapPlugin extends PlatformInterface {
 
   Future<SearchResultMessage> search(
     String queryText, {
+    List<SearchCategoryMessage>? categories,
     required SortingTypeMessage sortingType,
     GeoRectMessage? searchRect,
     required int pageSize,
@@ -234,6 +235,11 @@ abstract class DgisMapPlugin extends PlatformInterface {
     GeoRectMessage innerRect,
   );
 
+  Future<bool> contains(
+    GeoRectMessage rect,
+    GeoPointMessage point,
+  );
+
   Future<void> setPanoramasPaddings(CameraSetPaddingMessage message);
 
   Future<void> moveCameraToSelectedPanorama();
@@ -251,4 +257,8 @@ abstract class DgisMapPlugin extends PlatformInterface {
   Future<void> onParkingClicked();
 
   Future<void> onTrafficClicked();
+
+  Future<void> setAppearance(MapAppearanceMessage appearance);
+
+  Future<void> setZoomRestrictions(double? min, double? max);
 }

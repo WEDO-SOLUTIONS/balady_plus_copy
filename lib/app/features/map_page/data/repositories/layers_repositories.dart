@@ -44,18 +44,18 @@ class LayersRepositories {
       );
       if (layersType.data != null) {
         return layersFromJson(layersType.data['data']['result']['layers'])
-            .where(
-              (element) =>
-                  element.id != 0 &&
-                  element.id != 1 &&
-                  element.id != 3 &&
-                  element.id != 4 &&
-                  element.id != 6 &&
-                  element.id != 5,
-            )
+            .where((element) =>
+                element.id != 0 &&
+                element.id != 1 &&
+                element.id != 3 &&
+                element.id != 4 &&
+                element.id != 6 &&
+                element.id != 5 &&
+                element.id != 9)
             .toList();
       }
-    } catch (e) {
+    } catch (ex) {
+      try {} catch (ex) {}
       print(e);
     }
     return null;
@@ -93,6 +93,7 @@ class LayersRepositories {
       });
       q = q.substring(0, q.length - 1);
 
+      print(q);
       final points = await webService.dio.get(
         '${Constants.mainUrl}/${params.layer.layerId}/query',
         queryParameters: params.toMap(),
@@ -148,11 +149,11 @@ class LayersRepositories {
           return whiteLandsFromJson(
             points.data['data']['result']['features'],
           );
-        case 10: //       حدود قطع الأراضي
-          return boundariesPlotsFromJson(
-            points.data['data']['result']['features'],
-          );
-        case 11: //       حدود المخططات التقسيمية
+        //case 10: //       حدود قطع الأراضي
+        //   return boundariesPlotsFromJson(
+        //   points.data['data']['result']['features'],
+        //  );
+        case 9: //       حدود المخططات التقسيمية
           return divisionalChartBoundariesFromJson(
             points.data['data']['result']['features'],
           );
@@ -211,6 +212,8 @@ class LayersRepositories {
   Future<InvestmentDetailsResponse?> getInvetmentDetails(
       String investmentId, String type) async {
     try {
+      bool isSuccess = await sl<EntryPointCubit>().refreshAPIGeeToken();
+
       final response = await webService.dio.get(
         sl<EnvType>().domain + "v1/ims/investment-details",
         queryParameters: {
@@ -237,6 +240,8 @@ class LayersRepositories {
   Future<RentalDetailsResponse?> getTempRentalDetails(
       String investmentId, String type) async {
     try {
+      bool isSuccess = await sl<EntryPointCubit>().refreshAPIGeeToken();
+
       final response = await webService.dio.get(
         sl<EnvType>().domain + "v1/ims/temp-rental-details",
         queryParameters: {

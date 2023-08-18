@@ -80,7 +80,7 @@ class InvestmentSites extends PointLayersData {
         OPPORTUNITYNUMBER: json['attributes']["OPPORTUNITYNUMBER"] ?? '',
         ID: json['attributes']["ID"] ?? '',
         DOCUMENTVALUE: json['attributes']["DOCUMENTVALUE"] ?? '',
-        DAILYLEASECOST: json['attributes']["STATUS"] ?? '',
+        DAILYLEASECOST: json['attributes']["DAILYLEASECOST"] ?? '',
         TYPE: json['attributes']["TYPE"] ?? '',
         OPPORTUNITYDESCRIPTION:
             json['attributes']["OPPORTUNITYDESCRIPTION"] ?? '',

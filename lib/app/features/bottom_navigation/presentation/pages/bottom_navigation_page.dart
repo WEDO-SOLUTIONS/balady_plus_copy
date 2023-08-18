@@ -24,6 +24,7 @@ class BottomNavigationPage extends StatefulWidget {
 
 class _BottomNavigationPageState extends State<BottomNavigationPage> {
   late PageController _pageViewController;
+  bool resizeToAvoidBottomInset = false;
 
   @override
   void initState() {
@@ -58,6 +59,7 @@ class _BottomNavigationPageState extends State<BottomNavigationPage> {
       ],
       child: Scaffold(
         key: NavigationService.bottomNavKey,
+        resizeToAvoidBottomInset: resizeToAvoidBottomInset,
         body: PageView(
           controller: _pageViewController,
           physics: const NeverScrollableScrollPhysics(),
@@ -78,6 +80,8 @@ class _BottomNavigationPageState extends State<BottomNavigationPage> {
             _pageViewController.jumpToPage(
               index,
             );
+            resizeToAvoidBottomInset = index == 0 ? false : true;
+            setState(() {});
           },
         ),
       ),

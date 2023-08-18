@@ -6,6 +6,7 @@ import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../_shared_feature_/presentation/components/bottom_sheets/bottom_sheet_with_actions.dart';
@@ -13,7 +14,6 @@ import '../../../../_shared_feature_/presentation/dialogs/bottom_sheet_dialogs.d
 import '../../../../home_page/presentation/widgets/home_app_bar/circle_icon.dart';
 import '../../../data/model/building_compliance_certificate.dart';
 import '../../../data/model/excavations.dart';
-import '../../dialogs/building_requirements_dialog.dart';
 import '../../mvvm/map_view_model.dart';
 
 class ImtethalMapCard extends StatelessWidget {
@@ -99,12 +99,7 @@ class ImtethalMapCard extends StatelessWidget {
               ),
               CustomVerticalSpace(height: 10),
               GestureDetector(
-                onTap: () async {
-                  await BottomSheetDialog.showDraggableSheet(
-                    context,
-                    child: BuildingRequirementsDialog(),
-                  );
-                },
+                onTap: () async {},
                 child: Container(
                     height: 40,
                     padding: const EdgeInsets.only(left: 7.50, right: 16),
@@ -117,7 +112,7 @@ class ImtethalMapCard extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         CustomTextWidget(
-                          'عرض المتطلبات والاشتراطات',
+                          "downloadImtethalDocumwnt".tr(),
                           fontColor: AppColor.primary700Light,
                           fontSize: 12,
                           fontWeight: AppFontWeight.bold,

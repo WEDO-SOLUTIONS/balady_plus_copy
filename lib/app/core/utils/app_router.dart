@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart'
     show AppBar, Center, MaterialPageRoute, Route, RouteSettings, Scaffold;
+import 'package:flutter/widgets.dart';
 
 import '../../core/utils/utils_exports.dart'
     show RouteName, ScaleRotatePage, SliderUpPage;
@@ -12,10 +13,7 @@ import '../../features/bottom_navigation/bottom_navigation_exports.dart'
 import '../../features/map_page/data/model/investment_details_response.dart';
 import '../../features/map_page/data/model/rental_details_response.dart';
 import '../../features/map_page/presentation/mvvm/point_view_model.dart';
-import '../../features/map_page/presentation/pages/investment_page.dart';
 import '../../features/map_page/presentation/pages/map_details_page.dart';
-
-import '../../features/map_page/presentation/pages/temp_rental_page.dart';
 import '../../features/services/services_exports.dart'
     show ServiceCardsPage, ServiceEntity;
 import '../../features/splash/splash_exports.dart' show SplashPage;
@@ -71,16 +69,14 @@ class AppRouter {
         InvestmentDetailsResponse? data =
             settings.arguments as InvestmentDetailsResponse?;
         return MaterialPageRoute(
-          builder: (_) => InvestmentPage(data: data!),
+          builder: (_) => Container(),
         );
       case RouteName.tempRentalPage:
         RentalDetailsResponse? data =
             settings.arguments as RentalDetailsResponse?;
 
         return MaterialPageRoute(
-          builder: (_) => TempRentalPage(
-            data: data!,
-          ),
+          builder: (_) => Container(),
         );
       // error page
       default:

@@ -55,10 +55,12 @@ class MapLayerCard extends StatelessWidget {
                   ? MapCard(
                       activityId: selectedPoint?.MAIN_ACTIVITY_NAME ?? "",
                       desc: selectedPoint?.description ?? "",
-                      price: (selectedPoint?.DOCUMENTVALUE.toString() ??
-                              selectedPoint?.DAILYLEASECOST.toString()) ??
-                          "",
+                      price: (selectedPoint?.DOCUMENTVALUE != null &&
+                              selectedPoint?.DOCUMENTVALUE?.toString() != "")
+                          ? (selectedPoint?.DOCUMENTVALUE.toString() ?? "")
+                          : selectedPoint?.DAILYLEASECOST.toString() ?? "",
                       area: selectedPoint?.SITEAREA.toString() ?? "",
+                      mainActivcity: selectedPoint?.MAIN_ACTIVITY_NAME ?? "",
                       duration: selectedPoint?.BIDENDDATE ?? "",
                       type: selectedPoint?.TYPE ?? "",
                       distance: "",
@@ -73,16 +75,28 @@ class MapLayerCard extends StatelessWidget {
                           //      "02-21-003709-106", "TempRental");
 
                           await mapViewModel.getTempRentalDetails(
-                              selectedPoint!.id, "TempRental");
+                              selectedPoint!.ID!, "TempRental");
                         } else {
                           //"01-22-003709-21394"
                           await mapViewModel.getInvestmentDetails(
-                              selectedPoint!.id, "Investment");
+                              selectedPoint!.OPPORTUNITYNUMBER!, "Investment");
                         }
                       },
                       onClose: () {
                         mapViewModel.showDialog();
                       })
+                  : Container();
+              return mapViewModel.selectedInvetmentPoint.value != null
+                  ? mapViewModel.selectedInvetmentPoint.value!.TYPE ==
+                          "Investment"
+                      ? InvestmentMapCard(
+                          data: mapViewModel.selectedInvetmentPoint.value!,
+                          onClose: () {
+                            mapViewModel.showDialog();
+                          })
+                      : RentalMapCard(
+                          data: mapViewModel.selectedInvetmentPoint.value!,
+                        )
                   : Container();
             },
           );
@@ -118,10 +132,11 @@ class MapLayerCard extends StatelessWidget {
             },
           );
 
-        case GISMapLayers.CadastralParcels:
+        case GISMapLayers.CadastralParcelsLand:
           return ValueListenableBuilder<DivisionalChartBoundaries?>(
             valueListenable: mapViewModel.selectedLands,
             builder: (_, selectedPoint, __) {
+              print("Selecteeeed point ${selectedPoint}");
               return selectedPoint == null
                   ? const SizedBox()
                   : LandMapCard(

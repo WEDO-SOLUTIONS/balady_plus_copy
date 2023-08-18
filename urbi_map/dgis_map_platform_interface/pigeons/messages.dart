@@ -172,6 +172,20 @@ class AddressMessage {
   final String? addressComment;
 }
 
+class FormattedAddressMessage {
+  FormattedAddressMessage(
+    this.drilldownAddress,
+    this.streetAddress,
+    this.addressComment,
+    this.postCode,
+  );
+
+  final String? drilldownAddress;
+  final String? streetAddress;
+  final String? addressComment;
+  final String? postCode;
+}
+
 class AttributeMessage {
   AttributeMessage(this.tag, this.value);
 
@@ -350,6 +364,8 @@ class DirectoryObjectMessage {
     this.id,
     this.markerPosition,
     this.address,
+    this.fullAddressName,
+    this.shortAddressName,
     this.attributes,
     this.contextAttributes,
     this.timeZoneOffset,
@@ -372,6 +388,8 @@ class DirectoryObjectMessage {
   final DgisObjectIdMessage? id;
   final GeoPointWithElevationMessage? markerPosition;
   final AddressMessage? address;
+  final FormattedAddressMessage? fullAddressName;
+  final FormattedAddressMessage? shortAddressName;
   final List<AttributeMessage?> attributes;
   final List<AttributeMessage?> contextAttributes;
   final double? timeZoneOffset;
@@ -805,6 +823,18 @@ enum SearchCategoryMessage {
   parks,
 }
 
+class SearchCategoryMessage_ {
+  SearchCategoryMessage_(this.category);
+
+  final SearchCategoryMessage category;
+}
+
+class SearchCategoriesMessage {
+  SearchCategoriesMessage(this.categories);
+
+  final List<SearchCategoryMessage_?> categories;
+}
+
 class SimpleClusterOptionsMessage {
   SimpleClusterOptionsMessage({
     this.icon,
@@ -836,6 +866,8 @@ class MapObjectManagerMessage {
 
   final String id;
 }
+
+enum MapAppearanceMessage { day, night, system }
 
 enum LogLevelMessage { verbose, info, warning, error, fatal, off }
 
@@ -923,6 +955,7 @@ abstract class MapApi {
   @async
   SearchResultMessage search(
     String queryText,
+    SearchCategoriesMessage? categories,
     WeekTimeSearchMessage? weekTime,
     GeoRectMessage? searchRect,
     SortingTypeMessage sortingType,
@@ -1061,6 +1094,9 @@ abstract class MapApi {
   int overlappedBy(GeoRectMessage outerRect, GeoRectMessage innerRect);
 
   @async
+  bool contains(GeoRectMessage rect, GeoPointMessage point);
+
+  @async
   void setPanoramaMarkerAzimuth(MarkerAzimuthMessage message);
 
   @async
@@ -1074,6 +1110,12 @@ abstract class MapApi {
 
   @async
   void onTrafficClicked();
+
+  @async
+  void setAppearance(MapAppearanceMessage appearance);
+
+  @async
+  void setZoomRestrictions(double? min, double? max);
 }
 
 @FlutterApi()
