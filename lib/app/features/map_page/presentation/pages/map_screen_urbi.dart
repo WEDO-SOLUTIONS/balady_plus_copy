@@ -23,8 +23,8 @@ class _MapScreenUrbiState extends State<MapScreenUrbi>
     return DgisMap(
       key: MapScreenUrbi.mapKey,
       logOptions: LogOptionsMessage(
-        systemLevel: LogLevelMessage.error,
-        customLevel: LogLevelMessage.error,
+        systemLevel: LogLevelMessage.verbose,
+        customLevel: LogLevelMessage.verbose,
         customSink: "BaladyDGis",
       ),
       androidUseExpensive: true,

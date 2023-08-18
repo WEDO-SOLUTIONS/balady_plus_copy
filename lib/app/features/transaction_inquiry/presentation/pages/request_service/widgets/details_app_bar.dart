@@ -58,8 +58,7 @@ class DetailsAppBar extends StatelessWidget implements PreferredSizeWidget {
           Padding(
             padding: const EdgeInsetsDirectional.only(end: 10),
             child: InkWell(
-              onTap: () =>
-                  context.read<TransactionInquiryBloc>().cancelIncident(),
+              onTap: () => context.read<MSRBloc>().cancelIncident(),
               child: CircleIcon(
                 icon: Icons.close,
                 iconColor: AppColor.primary600Light,

@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/need_login_widget.dart';
 import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports.dart';
 import 'package:flutter/material.dart';
@@ -36,6 +37,7 @@ class _ZmZmPointsPageState extends State<ZmZmPointsPage> {
                     items: state.cities ?? [],
                     selectedValue: state.selectedCity,
                     onTap: (item) {
+                      // CommonFunctions.sendUrbiMapLogs();
                       context.read<ZmZmBloc>().add(ChangeCityEvent(city: item));
                       Navigator.pop(context);
                     },

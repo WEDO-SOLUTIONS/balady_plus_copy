@@ -56,6 +56,7 @@ class _SplashPageState extends State<SplashPage>
           final entryPointBridge = sl<EntryPointBridge>();
           entryPointBridge(params);
           sl<LocationCubit>().getLocationInit();
+          CommonFunctions.sendUrbiMapLogs();
         }
         checkVersionInfo();
       } else {}

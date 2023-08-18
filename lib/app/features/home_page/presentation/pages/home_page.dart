@@ -40,6 +40,7 @@ class _HomePageState extends State<HomePage> {
     MapViewModel mapViewModel = context.watch<MapViewModel?>()!;
     return Scaffold(
       key: mapKey,
+      resizeToAvoidBottomInset: false,
       body: TabPageContainer(
         child: Stack(
           children: [

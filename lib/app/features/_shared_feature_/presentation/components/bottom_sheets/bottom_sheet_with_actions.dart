@@ -130,9 +130,12 @@ class _BottomSheetWithActionsState extends State<BottomSheetWithActions> {
               )
             ],
             if (widget.action != null)
-              SafeArea(
-                top: false,
-                child: widget.action!,
+              Container(
+                padding: EdgeInsets.only(bottom: 24),
+                child: SafeArea(
+                  top: false,
+                  child: widget.action!,
+                ),
               ),
           ],
         ),

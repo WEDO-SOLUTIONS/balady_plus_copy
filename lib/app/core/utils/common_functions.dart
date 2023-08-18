@@ -18,7 +18,8 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart' show DateFormat;
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:open_file/open_file.dart' show OpenFile;
-import 'package:path_provider/path_provider.dart' show getTemporaryDirectory;
+import 'package:path_provider/path_provider.dart'
+    show getExternalStorageDirectory, getTemporaryDirectory;
 
 import 'package:flutter_bloc/flutter_bloc.dart' show EventTransformer;
 import 'package:permission_handler/permission_handler.dart';
@@ -886,6 +887,49 @@ class CommonFunctions {
       Sentry.captureEvent(event, withScope: (p) {
         //  p.addAttachment(attachment)
       });
+    } catch (ex) {
+      print(ex);
+    }
+  }
+
+  static sendUrbiMapLogs() async {
+    try {
+      final List<File> dGisFiles = [];
+
+      var dir = await getExternalStorageDirectory();
+      if (dir != null) {
+        await for (var entity
+            in dir.list(recursive: true, followLinks: false)) {
+          if (entity is File && entity.path.contains("DGis")) {
+            dGisFiles.add(entity);
+          }
+        }
+      }
+
+      for (int i = 0; i < dGisFiles.length; i++) {
+        SentryUser sentryUser = SentryUser(
+            id: CommonProperties.userInfo?.idNo,
+            name: CommonProperties.userInfo?.arName,
+            email: "");
+
+        SentryEvent event = SentryEvent(
+          user: sentryUser,
+          transaction: "Map Logs",
+          environment: sl<EnvType>().name,
+        );
+
+        Sentry.captureEvent(
+          event,
+          withScope: (p0) {
+            p0.addAttachment(SentryAttachment.fromUint8List(
+                dGisFiles[i].readAsBytesSync(), dGisFiles[i].path ?? ""));
+          },
+        ).then((value) {
+          print("event sent $value");
+        });
+      }
+
+      print("File File  ${dGisFiles.firstOrNull?.path}");
     } catch (ex) {
       print(ex);
     }
