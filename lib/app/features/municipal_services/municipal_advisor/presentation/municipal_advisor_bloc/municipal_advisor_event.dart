@@ -26,13 +26,13 @@ class MunicipalAdvisorGetConsultationKeyEvent extends MunicipalAdvisorEvent {}
 
 class MunicipalAdvisorGetGisLocationEvent extends MunicipalAdvisorEvent {
   final LatLng latLng;
+  final bool? getImage;
 
-  const MunicipalAdvisorGetGisLocationEvent({
-    required this.latLng,
-  });
+  const MunicipalAdvisorGetGisLocationEvent(
+      {required this.latLng, this.getImage});
 
   @override
-  List<Object?> get props => [latLng];
+  List<Object?> get props => [latLng, getImage];
 }
 
 class MunicipalAdvisorSelectLocationEvent extends MunicipalAdvisorEvent {

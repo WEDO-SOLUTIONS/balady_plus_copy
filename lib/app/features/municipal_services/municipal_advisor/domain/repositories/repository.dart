@@ -119,4 +119,8 @@ abstract class MunicipalAdvisorRepository {
   Future<Either<Failure, List<BuildingComplianceEntity>>> getBuildingCompliance(
     GISParams params,
   );
+
+  Future<Either<Failure, String>> getGISImage(
+    GISParams params,
+  );
 }

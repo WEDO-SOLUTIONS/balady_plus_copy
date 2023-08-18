@@ -17,6 +17,8 @@ fun DirectoryObject.toMessage(externalIds: List<String>?): DirectoryObjectMessag
         .setId(this.id?.toMessage())
         .setMarkerPosition(this.markerPosition?.toMessage())
         .setAddress(this.address?.toMessage())
+        .setFullAddressName(this.formattedAddress(FormattingType.FULL)?.toMessage())
+        .setShortAddressName(this.formattedAddress(FormattingType.SHORT)?.toMessage())
         .setAttributes(this.attributes.map {
             it.toMessage()
         })
@@ -76,6 +78,15 @@ fun Address.toMessage(): AddressMessage {
         .setPostCode(this.postCode)
         .setBuildingCode(this.buildingCode)
         .setAddressComment(this.addressComment)
+        .build()
+}
+
+fun FormattedAddress.toMessage(): FormattedAddressMessage {
+    return FormattedAddressMessage.Builder()
+        .setDrilldownAddress(this.drilldownAddress)
+        .setStreetAddress(this.streetAddress)
+        .setAddressComment(this.addressComment)
+        .setPostCode(this.postCode)
         .build()
 }
 

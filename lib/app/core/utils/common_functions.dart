@@ -883,7 +883,9 @@ class CommonFunctions {
                 type: ex != null ? "Exception" : "APIError",
                 value: ex.toString())
           ]);
-      Sentry.captureEvent(event);
+      Sentry.captureEvent(event, withScope: (p) {
+        //  p.addAttachment(attachment)
+      });
     } catch (ex) {
       print(ex);
     }

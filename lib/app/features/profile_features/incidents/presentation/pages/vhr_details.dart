@@ -15,6 +15,7 @@ import '../../../../_shared_feature_/presentation/under_testing/custom_expansion
 import '../../../../_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
 import '../../../../_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
 import '../../../../_shared_feature_/presentation/widgets/details_header.dart';
+import '../../../../_shared_feature_/presentation/widgets/reload_widget.dart';
 import '../../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import '../../../../home_page/presentation/widgets/home_tag.dart';
 import '../../../../objectable_transactions/presentation/widgets/summery_widgets/field_data.dart';
@@ -149,7 +150,14 @@ class VHRDetailsPage extends StatelessWidget {
                       ))),
                   if (state.crmRequestsStatus ==
                       BlocRequestStatus.submissionGetLoading)
-                    CustomCircularLoadingWidget()
+                    CustomCircularLoadingWidget(),
+                  if (state.crmRequestsStatus ==
+                      BlocRequestStatus.submissionGetFailure)
+                    ReloadWidget(
+                      onTab: () {
+                        context.read<CrmDetailsBloc>().loadData();
+                      },
+                    )
                 ],
               ));
         },

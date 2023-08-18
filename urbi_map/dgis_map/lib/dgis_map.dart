@@ -8,17 +8,20 @@ import 'dgis_map_controller.dart';
 class DgisMap extends StatelessWidget {
   const DgisMap({
     required this.onMapCreated,
+    this.logOptions,
     this.androidUseExpensive = false,
     super.key,
   });
 
   final Function(DgisMapController controller) onMapCreated;
   final bool androidUseExpensive;
+  final LogOptionsMessage? logOptions;
 
   @override
   Widget build(BuildContext context) {
     return DgisMapPlugin.instance.buildView(
       key: key,
+      logOptions: logOptions,
       androidUseExpensive: androidUseExpensive,
       onPlatformViewCreated: (viewId) =>
           onMapCreated(DgisMapController(viewId)),

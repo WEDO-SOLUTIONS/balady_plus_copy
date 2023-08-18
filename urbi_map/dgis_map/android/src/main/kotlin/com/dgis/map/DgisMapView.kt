@@ -40,7 +40,6 @@ class DgisMapView(
     private val id: Int,
     private val context: Context,
     private val locationSource: FusedLocationSource,
-    creationParams: Map<*, *>?,
 ) : PlatformView, MapApi {
 
     private val mapView: MapView =
@@ -657,5 +656,9 @@ class DgisMapView(
                 .setErrorDescription("")
                 .build()
         )
+    }
+
+    override fun pigeonHack(message: LogOptionsMessage, result: Messages.Result<Void>?) {
+        result?.success(null)
     }
 }

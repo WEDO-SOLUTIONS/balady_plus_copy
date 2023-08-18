@@ -301,10 +301,8 @@ class MapViewModel extends BaseViewModel {
 
     _setupListeners();
 
-    controller.setCameraPosition(CameraPositionMessage(
-        point: kingdomTower, zoom: 17, tilt: 45, bearing: 9));
-
-    await controller.changeFollowState();
+    //controller.setCameraPosition(CameraPositionMessage(
+    //   point: kingdomTower, zoom: 17, tilt: 45, bearing: 9));
 
     // setLocale(const Locale("ar", "US"), TextDirection.ltr);
     await controller.loadStyles(Constants.mapStyle);
@@ -373,7 +371,9 @@ class MapViewModel extends BaseViewModel {
         await controller.onLocationPremissionGranted();
         print("grfrsdcvdv granted 111");
 
-        await controller.setCameraPosition(
+        await controller.changeFollowState();
+
+        /* await controller.setCameraPosition(
           CameraPositionMessage(
             point: GeoPointMessage(
                 latitude: CommonProperties.userLocation?.lat ?? 0,
@@ -382,7 +382,7 @@ class MapViewModel extends BaseViewModel {
             tilt: 0,
             bearing: 0,
           ),
-        );
+        );*/
       }
     } catch (ex) {
       print("grfrsdcvdv $ex");
@@ -874,6 +874,8 @@ class MapViewModel extends BaseViewModel {
 
   void selectLayers(Layers value) async {
     await controller.removeAllMarkers();
+    await controller.removeAllPolygons();
+    await controller.removeAllPolylines();
 
     await controller.removeAll();
     clearAllCards();

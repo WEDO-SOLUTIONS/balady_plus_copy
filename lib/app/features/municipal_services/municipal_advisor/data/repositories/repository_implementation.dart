@@ -362,4 +362,15 @@ class MunicipalAdvisorRepositoryImplementation
           ServerFailure(error.errorMessage, errorCode: error.errorCode));
     }
   }
+
+  @override
+  Future<Either<Failure, String>> getGISImage(GISParams params) async {
+    try {
+      final data = await remoteDataSource.getImageUrl(params);
+      return Right(data);
+    } on ServerException catch (error) {
+      return Left(
+          ServerFailure(error.errorMessage, errorCode: error.errorCode));
+    }
+  }
 }

@@ -104,6 +104,11 @@ class CrmDetailsBloc extends Bloc<CrmDetailsEvent, CrmDetailsState> {
         );
       }
     });
+
+    loadData();
+  }
+
+  void loadData() {
     if (state.crmRequestType != RequestsType.DC &&
         state.crmRequestType != RequestsType.VHR &&
         state.crmRequestType != RequestsType.TSR) {

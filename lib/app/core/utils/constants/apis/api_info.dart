@@ -72,6 +72,8 @@ class ApiUrl {
 
   static const buildingCompliance = '/v1/crm/gis/building-compliance-details';
 
+  static const gisImageUrl = '/v1/gis-services/image-url';
+
   //! Profile
   //! Delegators
   static const delegators =

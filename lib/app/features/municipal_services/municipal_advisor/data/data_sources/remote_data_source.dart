@@ -135,6 +135,8 @@ abstract class MunicipalAdvisorRemoteDataSource {
   );
 
   Future<List<BuildingComplianceModel>> getBuildingCompliance(GISParams params);
+
+  Future<String> getImageUrl(GISParams params);
 }
 
 class MunicipalAdvisorRemoteDataSourceImplementation
@@ -1242,6 +1244,42 @@ class MunicipalAdvisorRemoteDataSourceImplementation
       if (error is NoDataFoundException) {
         return [];
       }
+      var errorCode;
+      try {
+        final result = ResponseBodyModel.fromMap(error.response?.data).data;
+        errorCode = result?.responseCode;
+      } catch (ex) {}
+      print("erroCode $errorCode");
+      throw ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+        errorCode: errorCode,
+        dioError: error,
+      );
+    } catch (ex) {
+      "Catched $ex".errorLog();
+      throw ServerException("errors_server_error_2".tr());
+    }
+  }
+
+  @override
+  Future<String> getImageUrl(GISParams params) async {
+    try {
+      final response = await webService.dio.get(ApiUrl.gisImageUrl,
+          queryParameters: params.toMap(),
+          options: Options(headers: {
+            ApiHeader.requiresToken.eName: false,
+          }));
+
+      final data = response.data;
+      data.toString().successLog();
+
+      final result = ResponseBodyModel.fromMap(data).data?.result;
+      print(result);
+      return result["ImageURL"];
+    } on DioError catch (error) {
+      "DioError $error".errorLog();
+
       var errorCode;
       try {
         final result = ResponseBodyModel.fromMap(error.response?.data).data;

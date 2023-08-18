@@ -172,6 +172,20 @@ class AddressMessage {
   final String? addressComment;
 }
 
+class FormattedAddressMessage {
+  FormattedAddressMessage(
+    this.drilldownAddress,
+    this.streetAddress,
+    this.addressComment,
+    this.postCode,
+  );
+
+  final String? drilldownAddress;
+  final String? streetAddress;
+  final String? addressComment;
+  final String? postCode;
+}
+
 class AttributeMessage {
   AttributeMessage(this.tag, this.value);
 
@@ -350,6 +364,8 @@ class DirectoryObjectMessage {
     this.id,
     this.markerPosition,
     this.address,
+    this.fullAddressName,
+    this.shortAddressName,
     this.attributes,
     this.contextAttributes,
     this.timeZoneOffset,
@@ -372,6 +388,8 @@ class DirectoryObjectMessage {
   final DgisObjectIdMessage? id;
   final GeoPointWithElevationMessage? markerPosition;
   final AddressMessage? address;
+  final FormattedAddressMessage? fullAddressName;
+  final FormattedAddressMessage? shortAddressName;
   final List<AttributeMessage?> attributes;
   final List<AttributeMessage?> contextAttributes;
   final double? timeZoneOffset;
@@ -851,6 +869,16 @@ class MapObjectManagerMessage {
 
 enum MapAppearanceMessage { day, night, system }
 
+enum LogLevelMessage { verbose, info, warning, error, fatal, off }
+
+class LogOptionsMessage {
+  LogOptionsMessage(this.systemLevel, this.customLevel, this.customSink);
+
+  final LogLevelMessage systemLevel;
+  final LogLevelMessage customLevel;
+  final String? customSink;
+}
+
 @ConfigurePigeon(
   PigeonOptions(
     dartOut: 'lib/src/pigeons/messages.g.dart',
@@ -1088,6 +1116,10 @@ abstract class MapApi {
 
   @async
   void setZoomRestrictions(double? min, double? max);
+
+  @async
+  // pigeon will not generate codec for unused classes
+  void pigeonHack(LogOptionsMessage message);
 }
 
 @FlutterApi()

@@ -1,11 +1,6 @@
 package com.dgis.map
 
-import android.Manifest
 import android.content.Context
-import android.content.pm.PackageManager
-import android.util.Log
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import com.dgis.map.map_api.Messages.MapApi
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
@@ -18,11 +13,8 @@ import ru.dgis.sdk.Context as SdkContext
 
 class DgisMapPlugin : FlutterPlugin, ActivityAware {
     override fun onAttachedToEngine(binding: FlutterPlugin.FlutterPluginBinding) {
-        val sdkContext = initializeDGis(binding.applicationContext)
         val locationSource = FusedLocationSource(binding.applicationContext)
-        registerServices(sdkContext, locationSource)
-
-        val viewFactory = DgisMapViewFactory(sdkContext, binding.binaryMessenger, locationSource)
+        val viewFactory = DgisMapViewFactory(binding.binaryMessenger, locationSource)
 
         binding
             .platformViewRegistry
@@ -43,19 +35,5 @@ class DgisMapPlugin : FlutterPlugin, ActivityAware {
     }
 
     override fun onDetachedFromActivity() {
-    }
-
-    private fun initializeDGis(appContext: Context): SdkContext {
-        return DGis.initialize(
-            appContext,
-            vendorConfig = VendorConfig(
-                fromAsset = VendorConfigFromAsset("vendor-config.jsonx")
-            )
-        )
-    }
-
-    private fun registerServices(sdkContext: SdkContext, locationSource: LocationSource) {
-        registerPlatformLocationSource(sdkContext, locationSource)
-        registerPlatformMagneticSource(sdkContext, null)
     }
 }

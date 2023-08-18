@@ -1,5 +1,6 @@
 import 'package:balady_plus/app/features/municipal_services/municipal_advisor/domain/use_cases/get_building_complince.dart';
 
+import '../../../../../features/municipal_services/municipal_advisor/domain/use_cases/get_gis_image.dart';
 import '../../../../../features/municipal_services/municipal_advisor/municipal_advisor_exports.dart'
     show
         CalculateLicenseFees,
@@ -73,6 +74,7 @@ class MunicipalAdvisorInjection {
     sl.registerLazySingleton(() => SaveInteractiveInfo(sl()));
     sl.registerLazySingleton(() => SubmitConsultation(sl()));
     sl.registerLazySingleton(() => GetBuildingCompliance(sl()));
+    sl.registerLazySingleton(() => GetGISImage(sl()));
 
     //! Repository
     sl.registerLazySingleton<MunicipalAdvisorRepository>(
