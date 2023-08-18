@@ -88,7 +88,7 @@ class CertificationMapCard extends StatelessWidget {
                 child: Row(
                   children: [
                     CustomTextWidget(
-                      "لمعرفة المزيد عن الخريطه اطلع على",
+                      "الإطلاع على",
                       fontWeight: AppFontWeight.bold,
                       fontSize: 10,
                       fontColor: AppColor.blackModern900Light,
@@ -111,7 +111,7 @@ class CertificationMapCard extends StatelessWidget {
             ],
           ),
           PositionedDirectional(
-            end: 18,
+            end: 8,
             top: 12,
             child: GestureDetector(
               onTap: () {
