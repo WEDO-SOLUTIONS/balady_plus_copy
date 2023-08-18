@@ -2,12 +2,10 @@ import Foundation
 import DGis
 
 class DgisMapViewFactory: NSObject, FlutterPlatformViewFactory {
-    private let sdk: DGis.Container
     private let registrar: FlutterPluginRegistrar
 
-    init(dgisSdk sdk: DGis.Container, registrar: FlutterPluginRegistrar) {
+    init(registrar: FlutterPluginRegistrar) {
         self.registrar = registrar
-        self.sdk = sdk
         
         super.init()
     }
@@ -17,8 +15,12 @@ class DgisMapViewFactory: NSObject, FlutterPlatformViewFactory {
         viewIdentifier viewId: Int64,
         arguments args: Any?
     ) -> FlutterPlatformView {
+        guard let sdk = SwiftDgisMapPlugin.sdkContext else {
+            fatalError("Plugin has not been initialized")
+        }
+
         return DgisMapView(
-            dgisSdk: self.sdk,
+            dgisSdk: sdk,
             frame: frame,
             viewIdentifier: viewId,
             arguments: args,

@@ -837,6 +837,16 @@ class MapObjectManagerMessage {
   final String id;
 }
 
+enum LogLevelMessage { verbose, info, warning, error, fatal, off }
+
+class LogOptionsMessage {
+  LogOptionsMessage(this.systemLevel, this.customLevel, this.customSink);
+
+  final LogLevelMessage systemLevel;
+  final LogLevelMessage customLevel;
+  final String? customSink;
+}
+
 @ConfigurePigeon(
   PigeonOptions(
     dartOut: 'lib/src/pigeons/messages.g.dart',
@@ -1072,4 +1082,10 @@ abstract class FlutterMapApi {
     MapObjectManagerMessage manager,
     int objectCount,
   );
+}
+
+@HostApi()
+abstract class PluginApi {
+  @async
+  void initialize(LogOptionsMessage? message);
 }
