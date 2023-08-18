@@ -117,7 +117,7 @@ class MapViewModel extends BaseViewModel {
       selectedCategory.value = category;
     }
     showLoading1();
-    await controller.removeAllMarkers();
+    await clearAll();
 
     if (selectedCategory.value != null)
       performSearch(
@@ -146,8 +146,8 @@ class MapViewModel extends BaseViewModel {
       bool showLoader = false}) async {
     try {
       if (showLoader) {
-        await controller.removeAllMarkers();
-        await controller.removeAll();
+        await clearAll();
+
         selectedCategory.value = null;
         showLoading1();
         selectedCategory.notifyListeners();
@@ -546,9 +546,7 @@ class MapViewModel extends BaseViewModel {
 
   callSearch() async {
     print("search");
-    await controller.removeAllMarkers();
-
-    await controller.removeAll();
+    await clearAll();
 
     String? query = selectedCategory.value != null
         ? selectedCategory.value!.displayName()
@@ -741,6 +739,8 @@ class MapViewModel extends BaseViewModel {
         },
       ).toList();
       //await controller.removeAllMarkers();
+      await clearAll();
+
       controller.addMarkers(markers);
     }
   }
@@ -757,7 +757,7 @@ class MapViewModel extends BaseViewModel {
             Polyline(
               id: idPolyline,
               options: PolylineOptionsMessage(
-                  points: i, width: 4, color: 0xff358281),
+                  points: i, width: 2, color: 0xff358281),
               onTap: () {
                 selectedDiggingPoint.value = null;
                 selectedInvetmentPoint.value = null;
@@ -809,6 +809,8 @@ class MapViewModel extends BaseViewModel {
         }
       }
       //  await controller.removeAllMarkers();
+      await clearAll();
+
       unawaited(controller.addPolylines(polylines));
     }
   }
@@ -868,16 +870,15 @@ class MapViewModel extends BaseViewModel {
         );
       }
       //await controller.removeAllMarkers();
+      await clearAll();
+
       unawaited(controller.addPolygons(polygons));
     }
   }
 
   void selectLayers(Layers value) async {
-    await controller.removeAllMarkers();
-    await controller.removeAllPolygons();
-    await controller.removeAllPolylines();
+    await clearAll();
 
-    await controller.removeAll();
     clearAllCards();
     print("LAyer selected");
     layerSelected.value = value;
@@ -1018,5 +1019,13 @@ class MapViewModel extends BaseViewModel {
     } catch (e) {
       print(e);
     }
+  }
+
+  Future clearAll() async {
+    await controller.removeAllMarkers();
+    await controller.removeAllPolygons();
+    await controller.removeAllPolylines();
+    await controller.removeAll();
+    return;
   }
 }

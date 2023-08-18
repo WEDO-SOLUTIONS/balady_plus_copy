@@ -14,7 +14,7 @@ class BottomSheetDialog {
     bool isFullHeight = true,
     double? height,
     bool isScrollControlled = true,
-    bool enableDrag = false,
+    bool enableDrag = true,
   }) async {
     final screenHeight = context.screenHeight;
     final screenStatusBarHeight = context.topPadding + 20.0;
