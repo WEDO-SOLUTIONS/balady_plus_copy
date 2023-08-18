@@ -297,9 +297,6 @@ class MapViewModel extends BaseViewModel {
 
     _setupListeners();
 
-    //controller.setCameraPosition(CameraPositionMessage(
-    //   point: kingdomTower, zoom: 17, tilt: 45, bearing: 9));
-
     // setLocale(const Locale("ar", "US"), TextDirection.ltr);
     await controller.loadStyles(Constants.mapStyle);
     await controller.overrideLocales(["ar-SA"]);
@@ -376,7 +373,16 @@ class MapViewModel extends BaseViewModel {
           ),
         );*/
       }
-    } catch (ex) {}
+    } catch (ex) {
+      await controller.setCameraPosition(
+        CameraPositionMessage(
+          point: kingdomTower,
+          zoom: 17,
+          tilt: 45,
+          bearing: 9,
+        ),
+      );
+    }
 
     initialized.value = true;
     generalControlsState.value = true;
@@ -448,6 +454,12 @@ class MapViewModel extends BaseViewModel {
     _subscriptions.add(
       controller.visibleRectEvents.listen(
         _visibleRectChangeListener,
+      ),
+    );
+
+    _subscriptions.add(
+      controller.cameraPositionEvents.listen(
+        _cameraPositionChangeListener,
       ),
     );
 
