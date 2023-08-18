@@ -598,17 +598,12 @@ class MethodChannelDgisMapPlugin implements DgisMapPlugin, FlutterMapApi {
     required PlatformViewCreatedCallback onPlatformViewCreated,
     bool androidUseExpensive = true,
   }) {
-    // Pass parameters to the platform side.
-    const Map<String, dynamic> creationParams = <String, dynamic>{};
-
     return defaultTargetPlatform == TargetPlatform.android
         ? AndroidView(
             key: key,
             viewType: _viewType,
             onPlatformViewCreated: onPlatformViewCreated,
             gestureRecognizers: const <Factory<OneSequenceGestureRecognizer>>{},
-            creationParams: creationParams,
-            creationParamsCodec: const StandardMessageCodec(),
             hitTestBehavior: PlatformViewHitTestBehavior.opaque,
             layoutDirection: TextDirection.ltr,
           )
@@ -616,8 +611,6 @@ class MethodChannelDgisMapPlugin implements DgisMapPlugin, FlutterMapApi {
             key: key,
             viewType: _viewType,
             layoutDirection: TextDirection.ltr,
-            creationParams: creationParams,
-            creationParamsCodec: const StandardMessageCodec(),
             onPlatformViewCreated: onPlatformViewCreated,
           );
   }
