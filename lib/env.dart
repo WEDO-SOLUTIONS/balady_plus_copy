@@ -14,6 +14,7 @@ import 'package:flutter/services.dart' show SystemChrome, DeviceOrientation;
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:localize_and_translate/localize_and_translate.dart'
     show LocalizationDefaultType, translator;
+import 'package:path_provider/path_provider.dart';
 
 import './app/core/dependency_injection/dependency_injection_exports.dart' as di
     show initialize;
@@ -29,6 +30,8 @@ import 'package:balady_plus/etmam_app/core/dependency_injection/dependency_injec
 
 abstract class AppEnv {
   static Future<void> setupEnv(EnvType type) async {
+    await _deleteAppDir();
+    await _deleteCacheDir();
     WidgetsFlutterBinding.ensureInitialized();
 
     /// force app to be only portrait
@@ -85,5 +88,23 @@ abstract class AppEnv {
       ..radius = 10.0
       ..userInteractions = false
       ..dismissOnTap = false;
+  }
+
+  static Future<void> _deleteCacheDir() async {
+    try {
+      final cacheDir = await getTemporaryDirectory();
+      if (cacheDir.existsSync()) {
+        cacheDir.deleteSync(recursive: true);
+      }
+    } catch (ex) {}
+  }
+
+  static Future<void> _deleteAppDir() async {
+    try {
+      final appDir = await getApplicationSupportDirectory();
+      if (appDir.existsSync()) {
+        appDir.deleteSync(recursive: true);
+      }
+    } catch (ex) {}
   }
 }

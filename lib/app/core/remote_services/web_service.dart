@@ -30,7 +30,7 @@ class WebService {
     }
 
     var requestUrl = baseURL + url + queryString;
-    //print("url: " + requestUrl);
+    ////print("url: " + requestUrl);
     Map<String, dynamic> result = {};
     try {
       var headers = {
@@ -44,7 +44,7 @@ class WebService {
         Uri.parse(requestUrl),
         headers: headers,
       );
-      // print("url response: " + utf8.decode(response.bodyBytes).toString());
+      // //print("url response: " + utf8.decode(response.bodyBytes).toString());
       if (response.statusCode == HttpStatus.ok) {
         result.putIfAbsent("state", () => true);
         result.putIfAbsent(
@@ -81,8 +81,8 @@ class WebService {
         } catch (ex) {}
       }
     } catch (ex) {
-      print(ex);
-      print("HERRRRRRRRR");
+      //print(ex);
+      //print("HERRRRRRRRR");
       result.putIfAbsent("state", () => false);
       result.putIfAbsent("error", () => ('errors_server_error_2').tr());
       var connectivityResult = await (Connectivity().checkConnectivity());
@@ -115,7 +115,7 @@ class WebService {
     }
 
     var requestUrl = baseURL + url + queryString;
-    //print("url: " + requestUrl);
+    ////print("url: " + requestUrl);
     Map<String, dynamic> result = {};
     try {
       var headers = {
@@ -129,7 +129,7 @@ class WebService {
         Uri.parse(requestUrl),
         headers: headers,
       );
-      // print("url response: " + utf8.decode(response.bodyBytes).toString());
+      // //print("url response: " + utf8.decode(response.bodyBytes).toString());
       if (response.statusCode == HttpStatus.ok) {
         result.putIfAbsent("state", () => true);
         result.putIfAbsent(
@@ -166,8 +166,8 @@ class WebService {
         } catch (ex) {}
       }
     } catch (ex) {
-      print(ex);
-      print("HERRRRRRRRR");
+      //print(ex);
+      //print("HERRRRRRRRR");
       result.putIfAbsent("state", () => false);
       result.putIfAbsent("error", () => ('errors_server_error_2').tr());
       var connectivityResult = await (Connectivity().checkConnectivity());
@@ -202,7 +202,7 @@ class WebService {
     }
 
     var requestUrl = baseURL + url + queryString;
-    print("url: " + requestUrl);
+    //print("url: " + requestUrl);
     Map<String, dynamic> result = {};
     if (isSuccess) {
       try {
@@ -213,7 +213,7 @@ class WebService {
             loginIdentityId: loginIdentityId,
             loginIdentityType: loginIdentityType);
 
-        //  print(verifyingKEY);
+        //  //print(verifyingKEY);
         var headers = {
           'Authorization':
               'Bearer ${sl<EntryPointCubit>().state.apigeeToken?.accessToken}',
@@ -232,7 +232,7 @@ class WebService {
           Uri.parse(requestUrl),
           headers: headers,
         );
-        print("url response: " + utf8.decode(response.bodyBytes).toString());
+        //print("url response: " + utf8.decode(response.bodyBytes).toString());
         if (response.statusCode == HttpStatus.ok) {
           result.putIfAbsent("state", () => true);
           result.putIfAbsent(
@@ -269,8 +269,8 @@ class WebService {
           } catch (ex) {}
         }
       } catch (ex) {
-        // print(ex);
-        // print("HERRRRRRRRR");
+        // //print(ex);
+        // //print("HERRRRRRRRR");
         result.putIfAbsent("state", () => false);
         result.putIfAbsent("error", () => ('errors_server_error_2').tr());
         var connectivityResult = await (Connectivity().checkConnectivity());
@@ -309,8 +309,8 @@ class WebService {
 
     String queryString = "";
     var data = body != null ? json.encode(body) : null;
-    print(data);
-    print(url);
+    //print(data);
+    //print(url);
     if (relativePath != null) {
       queryString = relativePath;
     }
@@ -319,7 +319,7 @@ class WebService {
           Uri.decodeQueryComponent(Uri(queryParameters: queryParams).query);
     }
     var requestUrl = baseURL + url + queryString;
-    //print(requestUrl);
+    ////print(requestUrl);
 
     Map<String, dynamic> result = {};
     try {
@@ -342,11 +342,11 @@ class WebService {
         "SSOToken": CommonProperties.token ?? "",
         "x-channel-id": "MOBILE",
       };
-      print(headers);
+      //print(headers);
       if (extraHeadersParams != null) headers.addAll(extraHeadersParams);
       var response =
           await http.post(Uri.parse(requestUrl), body: data, headers: headers);
-      //print(utf8.decode(response.bodyBytes).toString());
+      ////print(utf8.decode(response.bodyBytes).toString());
       if (response.statusCode == HttpStatus.ok) {
         result.putIfAbsent("state", () => true);
         result.putIfAbsent(
@@ -437,7 +437,7 @@ class WebService {
 
     String queryString = "";
     var data = body != null ? json.encode(body) : null;
-    // print(data);
+    // //print(data);
 
     if (relativePath != null) {
       queryString = relativePath;
@@ -447,7 +447,7 @@ class WebService {
           Uri.decodeQueryComponent(Uri(queryParameters: queryParams).query);
     }
     var requestUrl = baseURL + url + queryString;
-    //print(requestUrl);
+    ////print(requestUrl);
     Map<String, dynamic> result = {};
     try {
       var request = http.MultipartRequest(
@@ -531,7 +531,7 @@ class WebService {
     }
 
     var requestUrl = pegaBaseURL + url + queryString;
-    print(requestUrl);
+    //print(requestUrl);
 
     Map<String, dynamic> result = {};
     try {
@@ -599,7 +599,7 @@ class WebService {
         } catch (ex) {}
       }
     } catch (ex) {
-      print(ex);
+      //print(ex);
       result.putIfAbsent("state", () => false);
       result.putIfAbsent("error", () => ('errors_server_error_2').tr());
       var connectivityResult = await (Connectivity().checkConnectivity());
@@ -624,7 +624,7 @@ class WebService {
       dynamic body}) async {
     String queryString = "";
     var data = body != null ? json.encode(body) : null;
-    // print(data);
+    // //print(data);
     if (relativePath != null) {
       queryString = relativePath;
     }
@@ -633,7 +633,7 @@ class WebService {
           Uri.decodeQueryComponent(Uri(queryParameters: queryParams).query);
     }
     var requestUrl = pegaBaseURL + url + queryString;
-    // print(requestUrl);
+    // //print(requestUrl);
     Map<String, dynamic> result = {};
     String basicAuthForGuest = "";
 
@@ -653,8 +653,8 @@ class WebService {
         else
           "Authorization": basicAuthForGuest
       });
-      // print(response.statusCode);
-      // print(response.body);
+      // //print(response.statusCode);
+      // //print(response.body);
       if (response.statusCode == HttpStatus.ok) {
         result.putIfAbsent("state", () => true);
         result.putIfAbsent("data", () => response.body);
@@ -720,7 +720,7 @@ class WebService {
     }
 
     var requestUrl = url + queryString;
-    //print(requestUrl);
+    ////print(requestUrl);
     Map<String, dynamic> result = {};
     try {
       var response = await http.get(
@@ -731,7 +731,7 @@ class WebService {
               "x-channel-id": "MOBILE",
             },
       );
-      // print(utf8.decode(response.bodyBytes).toString());
+      // //print(utf8.decode(response.bodyBytes).toString());
       if (response.statusCode == HttpStatus.ok) {
         result.putIfAbsent("state", () => true);
         result.putIfAbsent(
@@ -751,7 +751,7 @@ class WebService {
         } catch (ex) {}
       }
     } catch (ex) {
-      print(ex);
+      //print(ex);
       result.putIfAbsent("state", () => false);
       result.putIfAbsent("error", () => ('errors_server_error_2').tr());
       var connectivityResult = await (Connectivity().checkConnectivity());
@@ -788,7 +788,7 @@ class WebService {
     var data = body != null ? json.encode(body) : null;
 
     var requestUrl = url + queryString;
-    // print(requestUrl);
+    // //print(requestUrl);
     Map<String, dynamic> result = {};
     try {
       var response;
@@ -812,7 +812,7 @@ class WebService {
             .timeout(duration);
       }
 
-      // print(response.body);
+      // //print(response.body);
       if (response.statusCode == HttpStatus.ok) {
         result.putIfAbsent("state", () => true);
         result.putIfAbsent("data", () => response.body.toString());
@@ -831,7 +831,7 @@ class WebService {
         } catch (ex) {}
       }
     } catch (ex) {
-      print(ex);
+      //print(ex);
       result.putIfAbsent("state", () => false);
       result.putIfAbsent("error", () => ('errors_server_error_2').tr());
       var connectivityResult = await (Connectivity().checkConnectivity());
@@ -864,7 +864,7 @@ class WebService {
     }
 
     var requestUrl = baseURL + url + queryString;
-    print("url: " + requestUrl);
+    //print("url: " + requestUrl);
     Map<String, dynamic> result = {};
     try {
       String loginIdentityId = CommonProperties.userInfo?.idNo ?? "";
@@ -888,8 +888,8 @@ class WebService {
           "x-channel-id": "MOBILE",
         },
       );
-      print("response: " + response.headers.toString());
-      print(response.statusCode);
+      //print("response: " + response.headers.toString());
+      //print(response.statusCode);
       if (response.statusCode == HttpStatus.ok) {
         result.putIfAbsent("state", () => true);
         result.putIfAbsent("data", () => response.bodyBytes);
@@ -909,7 +909,7 @@ class WebService {
         } catch (ex) {}
       }
     } catch (ex) {
-      print("exception: " + ex.toString());
+      //print("exception: " + ex.toString());
       result.putIfAbsent("state", () => false);
       result.putIfAbsent("error", () => ('errors_server_error_2').tr());
       var connectivityResult = await (Connectivity().checkConnectivity());
@@ -943,7 +943,7 @@ class WebService {
     }
 
     var requestUrl = baseURL + url + queryString;
-    print("url: " + requestUrl);
+    //print("url: " + requestUrl);
     Map<String, dynamic> result = {};
     try {
       var headers = {
@@ -957,8 +957,8 @@ class WebService {
         Uri.parse(requestUrl),
         headers: headers,
       );
-      print("response: " + response.body);
-      print(response.statusCode);
+      //print("response: " + response.body);
+      //print(response.statusCode);
       if (response.statusCode == HttpStatus.ok) {
         result.putIfAbsent("state", () => true);
         result.putIfAbsent("data", () => response.bodyBytes);
@@ -978,7 +978,7 @@ class WebService {
         } catch (ex) {}
       }
     } catch (ex) {
-      print("exception: " + ex.toString());
+      //print("exception: " + ex.toString());
       result.putIfAbsent("state", () => false);
       result.putIfAbsent("error", () => ('errors_server_error_2').tr());
       var connectivityResult = await (Connectivity().checkConnectivity());

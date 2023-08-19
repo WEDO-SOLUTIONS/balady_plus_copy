@@ -40,10 +40,10 @@ class HealthLicenseRepository {
       GisLocationResult response =
           GisLocationResult.fromJson(json.decode(data));
       result = response;
-      print("success gis");
+      //print("success gis");
     } catch (ex) {
-      print("HEREEEE");
-      print(ex);
+      //print("HEREEEE");
+      //print(ex);
       try {
         //MM
         Helpers.sendLog(
@@ -75,7 +75,7 @@ class HealthLicenseRepository {
     });
     bool state = body['state'];
     dynamic data = body['data'];
-    print(data);
+    //print(data);
     String error =
         body['error'] ?? Helpers.translatingWord("errors_server_error_2");
     ValidateHealthCertificateResponse? result;
@@ -88,7 +88,7 @@ class HealthLicenseRepository {
         error = result.data?.responseMessage ?? error;
       }
     } catch (ex) {
-      print(ex);
+      //print(ex);
       try {
         Helpers.sendLog(
           url: url,
@@ -151,7 +151,7 @@ class HealthLicenseRepository {
         error = result.data?.responseMessage ?? error;
       }
     } catch (ex) {
-      print(ex);
+      //print(ex);
       try {
         Helpers.sendLog(url: url, data: data, errorMsg: ex.toString());
       } catch (ex) {}
@@ -188,7 +188,7 @@ class HealthLicenseRepository {
         error = result.data?.responseMessage ?? error;
       }
     } catch (ex) {
-      print(ex);
+      //print(ex);
       try {
         Helpers.sendLog(
             url: ApiConstants.CancelHelathCertificatesRequest,
@@ -222,7 +222,7 @@ class HealthLicenseRepository {
         error = result.data?.responseMessage ?? error;
       }
     } catch (ex) {
-      print(ex);
+      //print(ex);
       try {
         Helpers.sendLog(
             url: url,
@@ -255,7 +255,7 @@ class HealthLicenseRepository {
         error = result.data?.responseMessage ?? error;
       }
     } catch (ex) {
-      print(ex);
+      //print(ex);
       try {
         Helpers.sendLog(
             url: ApiConstants.CrInfoService,
@@ -297,7 +297,7 @@ class HealthLicenseRepository {
         error = result.data?.responseMessage ?? error;
       }
     } catch (ex) {
-      print(ex);
+      //print(ex);
       try {
         Helpers.sendLog(
             url: ApiConstants.LicenseInfoService,
@@ -330,7 +330,7 @@ class HealthLicenseRepository {
         error = result.data?.responseMessage ?? error;
       }
     } catch (ex) {
-      print(ex);
+      //print(ex);
     }
     return Tuple3<bool?, String?, HealthRequestDetails?>(state, error, result);
   }
@@ -355,7 +355,7 @@ class HealthLicenseRepository {
         error = result.data?.responseMessage ?? error;
       }
     } catch (ex) {
-      print(ex);
+      //print(ex);
     }
     return Tuple3<bool?, String?, DeleteRequestResponse?>(state, error, result);
   }
@@ -373,18 +373,18 @@ class HealthLicenseRepository {
     String error =
         body['error'] ?? Helpers.translatingWord("errors_server_error_1");
     String? contentType = body['Content-Type'];
-    print("COOOOO");
-    print(contentType);
+    //print("COOOOO");
+    //print(contentType);
     try {
       // DeleteRequestResponse response =
       //     DeleteRequestResponse.fromJson(json.decode(data));
       result = data;
-      //print(result);
+      ////print(result);
       if (!state) {
         //   error = result.data?.responseMessage ?? error;
       }
     } catch (ex) {
-      print(ex);
+      //print(ex);
     }
     return Tuple4<bool?, String?, Uint8List?, String?>(
         state, error, result, contentType);
@@ -403,18 +403,18 @@ class HealthLicenseRepository {
     String error =
         body['error'] ?? Helpers.translatingWord("errors_server_error_1");
     String? contentType = body['Content-Type'];
-    print("COOOOO");
-    print(contentType);
-    print(state);
+    //print("COOOOO");
+    //print(contentType);
+    //print(state);
     try {
       if (state) result = data;
 
-      // print(result);
+      // //print(result);
       if (!state) {
         //   error = result.data?.responseMessage ?? error;
       }
     } catch (ex) {
-      print(ex);
+      //print(ex);
     }
     return Tuple4<bool?, String?, Uint8List?, String?>(
         state, error, result, contentType);
@@ -433,18 +433,18 @@ class HealthLicenseRepository {
     String error =
         body['error'] ?? Helpers.translatingWord("errors_server_error_1");
     String? contentType = body['Content-Type'];
-    print("COOOOO");
-    print(contentType);
-    print(state);
+    //print("COOOOO");
+    //print(contentType);
+    //print(state);
     try {
       if (state) result = data;
 
-      // print(result);
+      // //print(result);
       if (!state) {
         //   error = result.data?.responseMessage ?? error;
       }
     } catch (ex) {
-      print(ex);
+      //print(ex);
     }
     return Tuple4<bool?, String?, Uint8List?, String?>(
         state, error, result, contentType);
@@ -463,19 +463,19 @@ class HealthLicenseRepository {
     String error =
         body['error'] ?? Helpers.translatingWord("errors_server_error_1");
     String? contentType = body['Content-Type'];
-    print("COOOOO");
-    print(contentType);
-    print(state);
+    //print("COOOOO");
+    //print(contentType);
+    //print(state);
     try {
       // DeleteRequestResponse response =
       //     DeleteRequestResponse.fromJson(json.decode(data));
       result = data;
-      //print(result);
+      ////print(result);
       if (!state) {
         //   error = result.data?.responseMessage ?? error;
       }
     } catch (ex) {
-      print(ex);
+      //print(ex);
     }
     return Tuple4<bool?, String?, Uint8List?, String?>(
         state, error, result, contentType);
@@ -501,7 +501,7 @@ class HealthLicenseRepository {
         error = result.data?.responseMessage ?? error;
       }
     } catch (ex) {
-      print(ex);
+      //print(ex);
     }
     return Tuple3<bool?, String?, RatingInfoResponse?>(state, error, result);
   }
@@ -515,7 +515,7 @@ class HealthLicenseRepository {
         autoLogout: false);
     bool state = body['state'];
     dynamic data = body['data'];
-    print(data);
+    //print(data);
     ListResponse? result;
     String error =
         body['error'] ?? Helpers.translatingWord("errors_server_error_1");
@@ -531,7 +531,7 @@ class HealthLicenseRepository {
         error = "لا توجد مدن مفعله للخدمة في الموقع الذي قمت باختياره";
       }
     } catch (ex) {
-      print(ex);
+      //print(ex);
     }
     return Tuple3<bool?, String?, ListResponse?>(state, error, result);
   }
@@ -557,7 +557,7 @@ class HealthLicenseRepository {
         error = result.data?.responseMessage ?? error;
       }
     } catch (ex) {
-      print(ex);
+      //print(ex);
     }
     return Tuple3<bool?, String?, ListResponse?>(state, error, result);
   }

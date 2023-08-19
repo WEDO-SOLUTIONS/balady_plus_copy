@@ -12,13 +12,13 @@ String navigationActionId = 'id_3';
 
 @pragma('vm:entry-point')
 void notificationTapBackground(NotificationResponse notificationResponse) {
-  // ignore: avoid_print
-  print('notification(${notificationResponse.id}) action tapped: '
+  // ignore: avoid_//print
+  //print('notification(${notificationResponse.id}) action tapped: '
       '${notificationResponse.actionId} with'
       ' payload: ${notificationResponse.payload}');
   if (notificationResponse.input?.isNotEmpty ?? false) {
-    // ignore: avoid_print
-    print(
+    // ignore: avoid_//print
+    //print(
         'notification action tapped with input: ${notificationResponse.input}');
   }
 }
@@ -110,13 +110,13 @@ class NotificationService {
   static void cancelAll() => _notifications.cancelAll();
 
   static void configure() async {
-    print("HEREE");
+    //print("HEREE");
     try {
       await Firebase.initializeApp();
     } catch (ex) {
-      print("EXCCCC $ex");
+      //print("EXCCCC $ex");
     }
-    print("FIREBAASE");
+    //print("FIREBAASE");
     NotificationSettings settings =
         await FirebaseMessaging.instance.requestPermission(
       alert: true,
@@ -142,7 +142,7 @@ class NotificationService {
     );
 
     FirebaseMessaging.instance.getToken().then((value) {
-      print("Token Firebase $value");
+      //print("Token Firebase $value");
       //Helpers.sendLog(url: "token", data: value);
     });
     // FirebaseMessaging.instance.subscribeToTopic("all").then((value) {});
@@ -150,7 +150,7 @@ class NotificationService {
         .getInitialMessage()
         .then((RemoteMessage? message) {
       if (message != null) {
-        print(message);
+        //print(message);
       }
     });
 
@@ -194,7 +194,7 @@ class NotificationService {
     });
 
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      print('A new onMessageOpenedApp event was published!');
+      //print('A new onMessageOpenedApp event was published!');
     });
   }
 }

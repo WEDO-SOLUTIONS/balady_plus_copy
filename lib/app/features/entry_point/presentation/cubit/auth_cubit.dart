@@ -70,7 +70,7 @@ class EntryPointCubit extends Cubit<EntryPointState> {
 
   Future<void> onLoadingApp() async {
     //setTheme();
-    print("onLoadingApp");
+    //print("onLoadingApp");
 
     // state.token?.token.log();
 
@@ -115,7 +115,7 @@ class EntryPointCubit extends Cubit<EntryPointState> {
         errorMessage: (failure as ServerFailure).errorMessage,
       ));
     }, (success) async {
-      print("success.idToken ${success.idToken}");
+      //print("success.idToken ${success.idToken}");
       SSOToken token = SSOToken(
           token: success.accessToken,
           refreshToken: success.refreshToken,
@@ -215,22 +215,22 @@ class EntryPointCubit extends Cubit<EntryPointState> {
   }
 
   Future<bool> refreshAPIGeeToken() async {
-    print("refreshAPIGeeToken");
-    print(state.apigeeToken);
+    //print("refreshAPIGeeToken");
+    //print(state.apigeeToken);
     DateTime? expireTime =
         DateTime.tryParse(state.apigeeToken?.expirationTime ?? "");
 
     if (expireTime == null ||
         (expireTime.difference(DateTime.now()).inHours <= 2)) {
       final failureOrSuccess = await _getAPIgeeToken(NoParams());
-      print("refreshAPIGeeToken 2");
+      //print("refreshAPIGeeToken 2");
       return await failureOrSuccess.fold((failure) {
-        print(failure);
-        print("refreshAPIGeeToken $failure");
+        //print(failure);
+        //print("refreshAPIGeeToken $failure");
         return false;
       }, (success) async {
-        print("success apigee");
-        print("refreshAPIGeeToken $success");
+        //print("success apigee");
+        //print("refreshAPIGeeToken $success");
 
         success.expirationTime = success.getExpireTime().toString();
         emit(state.copyWith(apigeeToken: success));
@@ -297,7 +297,7 @@ class EntryPointCubit extends Cubit<EntryPointState> {
   }
 
   Future<void> refreshSSOProfile() async {
-    print("refreshSSOProfile");
+    //print("refreshSSOProfile");
     try {
       final failureOrSuccessForProfile = await _getProfile(NoParams());
       await failureOrSuccessForProfile.fold((failure) async {},
@@ -317,7 +317,7 @@ class EntryPointCubit extends Cubit<EntryPointState> {
     await Future.delayed(const Duration(seconds: 7));
     final failureOrSuccessForProfile = await _getForceVersion(NoParams());
     await failureOrSuccessForProfile.fold((failure) async {}, (success) async {
-      //s print("SUCCCCCCCCESSSSSS ${success}");
+      //s //print("SUCCCCCCCCESSSSSS ${success}");
       //  if (success)
       //   showUpdateAppPopUpWidget(
       //      NavigationService.navigatorKey.currentContext!);
@@ -341,9 +341,9 @@ class EntryPointCubit extends Cubit<EntryPointState> {
   testData() async {
     final failureOrSuccess = await _getTestData(NoParams());
     failureOrSuccess.fold((l) {
-      //  print(l);
+      //  //print(l);
     }, (r) {
-      // print(r);
+      // //print(r);
     });
   }
 

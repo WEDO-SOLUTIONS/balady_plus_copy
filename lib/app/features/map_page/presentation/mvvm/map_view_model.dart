@@ -227,8 +227,7 @@ class MapViewModel extends BaseViewModel {
                   CameraAnimationTypeMessage.linear);
 
               selectedPointId.value = markerInfo.objectId;
-              print("on Tap");
-              print(markerInfo.objectId);
+
               selectedDiggingPoint.value = null;
               selectedInvetmentPoint.value = null;
               selectedImtethalPoint.value = null;
@@ -252,7 +251,7 @@ class MapViewModel extends BaseViewModel {
             },
           ));
         }
-
+        await clearAll();
         await controller.addMarkers(markers);
       }
       if (data.firstPage?.items != null) {
@@ -263,15 +262,14 @@ class MapViewModel extends BaseViewModel {
                 .toList(),
           ),
         );
-        print(responseDistance);
       }
       if (data.firstPage != null) {
-        print("Releasing page");
+        //print("Releasing page");
         await controller.releasePage(data.firstPage!);
       }
-      print(data);
+      //print(data);
     } catch (e) {
-      print(e);
+      //print(e);
     }
   }
 
@@ -292,7 +290,7 @@ class MapViewModel extends BaseViewModel {
   Future<bool> initialize(DgisMapController controllerMap) async {
     controller = controllerMap;
     final result = await controller.initialize();
-    print("wasInitialized ${result.wasInitialized}");
+    //print("wasInitialized ${result.wasInitialized}");
     if (!result.wasInitialized) {
       initialized.value = false;
 
@@ -365,11 +363,11 @@ class MapViewModel extends BaseViewModel {
 
     try {
       final permission = await Permission.location.request();
-      print("grfrsdcvdv $permission");
+      //print("grfrsdcvdv $permission");
       if (permission.isGranted) {
-        print("grfrsdcvdv granted");
+        //print("grfrsdcvdv granted");
         await controller.onLocationPremissionGranted();
-        print("grfrsdcvdv granted 111");
+        //print("grfrsdcvdv granted 111");
 
         await controller.changeFollowState();
 
@@ -385,7 +383,7 @@ class MapViewModel extends BaseViewModel {
         );*/
       }
     } catch (ex) {
-      print("grfrsdcvdv $ex");
+      //print("grfrsdcvdv $ex");
     }
 
     initialized.value = true;
@@ -477,7 +475,7 @@ class MapViewModel extends BaseViewModel {
   void _visibleRectChangeListener(VisibleRectEvent event) {
     _lastHandledEvent = event;
     // start Timer when stop move camera  call search funcation
-    print(event.visibleRect.zoom);
+    //  //print(event.visibleRect.zoom);
 
     _startRequestTimer(event.visibleRect.zoom);
   }
@@ -502,7 +500,7 @@ class MapViewModel extends BaseViewModel {
       ),
     ).listen((_) async {
       this.oldZoom = oldZoom;
-      print("updateMap ${this.oldZoom.toInt()} ${zoomValue.toInt()}");
+      // //print("updateMap ${this.oldZoom.toInt()} ${zoomValue.toInt()}");
       if (this.oldZoom.toInt() != zoomValue.toInt()) {
         zoomValue = oldZoom;
 
@@ -520,10 +518,10 @@ class MapViewModel extends BaseViewModel {
   void _onPanoramaTap(MarkerWithPhotoTapEvent event) {
     try {
       final data = event.photoData;
-      print(data);
+      //   //print(data);
       unawaited(controller.moveCameraToSelectedPanorama());
     } catch (e) {
-      print(e);
+      //print(e);
     }
   }
 
@@ -545,7 +543,7 @@ class MapViewModel extends BaseViewModel {
   }
 
   callSearch() async {
-    print("search");
+    //print("search");
     await clearAll();
 
     String? query = selectedCategory.value != null
@@ -560,10 +558,10 @@ class MapViewModel extends BaseViewModel {
       hideLoading1();
     }
 
-    print("layerSelected $layerSelected");
+    // //print("layerSelected $layerSelected");
 
     if (layerSelected.value == null) return;
-    print("HEREE");
+    //print("HEREE");
     GISMapLayers? gisLayer = GISMapLayers.values.firstWhereOrNull(
         (element) => element.layerId == layerSelected.value!.id);
     showLoading1();
@@ -578,9 +576,6 @@ class MapViewModel extends BaseViewModel {
         southWestLongitude: _lastHandledEvent!.visibleRect.southWestLon,
         southWestLlatitude: _lastHandledEvent!.visibleRect.southWestLat,
       ));
-      print("ccccccccvvvv ${layerSelected.value!.geometryType}");
-      print("ccccccccvvvv ${pointList?.length}");
-
       switch (layerSelected.value!.geometryType) {
         case 'esriGeometryPoint':
           addMarkersWithPoint(pointList, layerSelected.value!.id);
@@ -593,7 +588,6 @@ class MapViewModel extends BaseViewModel {
           break;
       }
     }
-    print("Doneeee");
     _clearDebounce();
     hideLoading1();
   }
@@ -746,7 +740,6 @@ class MapViewModel extends BaseViewModel {
   }
 
   void addPolylineWithPoint(List? pointList, int layerId) async {
-    print(pointList);
     if (pointList != null && pointList.isNotEmpty) {
       final List<Polyline> polylines = [];
       for (var element in pointList) {
@@ -863,8 +856,6 @@ class MapViewModel extends BaseViewModel {
               //  bottomSheetSizeFraction.value = 0.05;
               bottomSheetSizeFraction.notifyListeners();
               bottomSheetSize.notifyListeners();
-
-              print("ontap ${gisSelectedLayer}");
             },
           ),
         );
@@ -880,7 +871,6 @@ class MapViewModel extends BaseViewModel {
     await clearAll();
 
     clearAllCards();
-    print("LAyer selected");
     layerSelected.value = value;
     layerSelected.notifyListeners();
 
@@ -1017,7 +1007,7 @@ class MapViewModel extends BaseViewModel {
       layers.value?.insert(0, cityPlaces);
       layers.notifyListeners();
     } catch (e) {
-      print(e);
+      //print(e);
     }
   }
 

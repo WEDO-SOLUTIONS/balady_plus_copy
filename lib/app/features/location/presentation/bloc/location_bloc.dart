@@ -51,7 +51,7 @@ class LocationCubit extends Cubit<LocationState> {
             locationPermissionStatus: BlocStatus.locationPermissionSuceess));
       }
     } else {
-      print("disabled");
+      //print("disabled");
       emit(state.copyWith(
           locationServiceStatus: BlocStatus.locationServiceFailed));
     }
@@ -75,20 +75,20 @@ class LocationCubit extends Cubit<LocationState> {
   }
 
   Future<void> getGISData() async {
-    print("getGISData11");
+    //print("getGISData11");
     if (state.locationStatus == BlocStatus.success && state.gisParams != null) {
       emit(state.copyWith(requestsStatus: BlocStatus.loading));
 
       final failureOrSuccess = await _getGISData(state.gisParams!);
 
       failureOrSuccess.fold((l) {
-        print("Succccceesss 33 $l");
+        //print("Succccceesss 33 $l");
 
         emit(state.copyWith(requestsStatus: BlocStatus.failure));
       }, (r) {
         sharedPrefs.setUserGISLoaction(r.toModel);
         sharedPrefs.setUserLocation(state.gisParams);
-        print("Succccceesss $r");
+        //print("Succccceesss $r");
         emit(
             state.copyWith(requestsStatus: BlocStatus.success, gisResponse: r));
       });
@@ -126,10 +126,10 @@ class LocationCubit extends Cubit<LocationState> {
 
       await getLocationPermission();
 
-      print("PERMISSIN ${state.locationPermissionStatus}");
-      print("PERMISSIN ${state.locationServiceStatus}");
-      print("PERMISSIN ${cachedLocation}");
-      print("PERMISSIN ${cachedGIS}");
+      //print("PERMISSIN ${state.locationPermissionStatus}");
+      //print("PERMISSIN ${state.locationServiceStatus}");
+      //print("PERMISSIN ${cachedLocation}");
+      //print("PERMISSIN ${cachedGIS}");
 
       if (cachedLocation != null &&
           cachedGIS != null &&
@@ -137,8 +137,8 @@ class LocationCubit extends Cubit<LocationState> {
                   BlocStatus.locationPermissionSuceess &&
               state.locationServiceStatus ==
                   BlocStatus.locationServiceSuceess)) {
-        print("HEREEE");
-        print("HEREEE ${state.requestsStatus}");
+        //print("HEREEE");
+        //print("HEREEE ${state.requestsStatus}");
 
         emit(state.copyWith(
             loadAppStatus: BlocStatus.success,
@@ -146,7 +146,7 @@ class LocationCubit extends Cubit<LocationState> {
             gisResponse: cachedGIS,
             gisParams: cachedLocation));
 
-        print("HEREEE ${state.requestsStatus}");
+        //print("HEREEE ${state.requestsStatus}");
       }
       await getLocationData();
       await getGISData();

@@ -30,10 +30,10 @@ class CustomNetworkImageWidget extends StatefulWidget {
 class _CustomNetworkImageWidgetState extends State<CustomNetworkImageWidget> {
   @override
   Widget build(BuildContext context) {
-    print("DSCdc ${widget.imagePath.isUrl}");
+    //print("DSCdc ${widget.imagePath.isUrl}");
 
-    print("DSCdc ${widget.imagePath.isSvgIcon}");
-    print("DSCdc ${widget.imagePath}");
+    //print("DSCdc ${widget.imagePath.isSvgIcon}");
+    //print("DSCdc ${widget.imagePath}");
 
     return widget.imagePath.isUrl
         ? widget.imagePath.isSvgIcon
@@ -142,7 +142,7 @@ class _SvgNetworkState extends State<SvgNetwork> {
 
   @override
   Widget build(BuildContext context) {
-    print("ffldmvldk ${widget.imagePath}");
+    //print("ffldmvldk ${widget.imagePath}");
     return /*isSvg
         ?*/
         SvgPicture.network(

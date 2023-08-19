@@ -19,20 +19,20 @@ class WebServiceConnections {
   Future<Map<String, dynamic>> sendGetRequest(
       {String? url, Map<String, String>? headers, String? apiName}) async {
     try {
-      print(url);
+      //print(url);
       final response = await http.get(Uri.parse(url ?? ""), headers: headers);
-      // print(response.body);
+      // //print(response.body);
       if (response.statusCode == HttpStatus.ok ||
           (response.statusCode == HttpStatus.accepted)) {
-        //print("OKKK");
+        ////print("OKKK");
         Map<String, dynamic> m = new Map();
         m.putIfAbsent("state", () => true);
         m.putIfAbsent("StatusCode", () => response.statusCode);
         m.putIfAbsent("path", () => url);
         m.putIfAbsent('data', () => response.body.toString());
         m.putIfAbsent("RelativePath", () => url);
-        //print("OOOO");
-        //print(m);
+        ////print("OOOO");
+        ////print(m);
         return m;
       } else {
         Map<String, dynamic> m = new Map();
@@ -58,7 +58,7 @@ class WebServiceConnections {
         return m;
       }
     } catch (error) {
-      print(error);
+      //print(error);
       if (error != null) {
         try {
           Helpers.sendLog(url: url, errorMsg: error.toString());
@@ -74,14 +74,14 @@ class WebServiceConnections {
       Map<String, String>? headers,
       dynamic body,
       String? apiName}) async {
-    print("HEREE1");
+    //print("HEREE1");
     var data = body != null ? json.encode(body) : null;
     try {
-      print(url);
+      //print(url);
       var response =
           await http.post(Uri.parse(url ?? ""), headers: headers, body: data);
 
-      //print(response.body);
+      ////print(response.body);
       if (response.statusCode == HttpStatus.ok) {
         Map<String, dynamic> m = new Map();
         m.putIfAbsent("state", () => true);
@@ -91,7 +91,7 @@ class WebServiceConnections {
         m.putIfAbsent("RelativePath", () => url);
         return m;
       } else {
-        print("heret");
+        //print("heret");
         Map<String, dynamic> m = new Map();
         m.putIfAbsent("state", () => false);
         m.putIfAbsent("StatusCode", () => response.statusCode);

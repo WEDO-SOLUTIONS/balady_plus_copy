@@ -273,10 +273,10 @@ class AuthRemoteDataSourceImpl extends AuthRemoteDataSource {
       );
 
       var data = response.data["data"]?["result"];
-      print("GGSSSSSS ${data}");
+      //print("GGSSSSSS ${data}");
       var parsedResult =
           data != null ? ForceUpdateResponseModel.fromMap(data) : null;
-      print("GGSSSSSS ${parsedResult?.versionNumber}");
+      //print("GGSSSSSS ${parsedResult?.versionNumber}");
 
       //final decodedResponse =
       //  ApigeeResponseModel<ForceUpdateResponseModel>.fromMap(response.data,
@@ -289,7 +289,7 @@ class AuthRemoteDataSourceImpl extends AuthRemoteDataSource {
         dioError: error,
       );
     } catch (ex) {
-      print(ex);
+      //print(ex);
       if (ex is ServerException)
         throw ex;
       else {

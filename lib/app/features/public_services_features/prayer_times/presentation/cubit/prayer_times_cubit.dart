@@ -155,7 +155,7 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
           ));
         },
         (response) {
-          print("getPrayerTime success $response");
+          //print("getPrayerTime success $response");
           emit(state.copyWith(
               status: BlocRequestStatus.submissionGetSuccess,
               prayerTimes: response,
@@ -201,7 +201,7 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
       if (gisFailureOrSuccess.isLeft()) return;
 
       emit(state.copyWith(status: BlocRequestStatus.submissionGetLoading));
-      print("getPrayerTime 55");
+      //print("getPrayerTime 55");
       final params = PrayerTimesParams(
         latitude: latitude,
         longitude: longitude,
@@ -217,7 +217,7 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
           ));
         },
         (response) {
-          print("getPrayerTime success $response");
+          //print("getPrayerTime success $response");
           emit(state.copyWith(
               status: BlocRequestStatus.submissionGetSuccess,
               prayerTimes: response,
@@ -230,7 +230,7 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
   }
 
   void updateNextPrayer() {
-    print("updateNextPrayer");
+    //print("updateNextPrayer");
     if (state.prayerTimesResponse == null) return;
     final now = DateTime.now();
     if (now.isAfter(state.prayerTimesResponse!.isha.dateTime)) {
@@ -247,9 +247,9 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
       emit(state.copyWith(nextPrayer: state.prayerTimesResponse!.fajr));
     }
     final nextPrayerTimeDiff = state.nextPrayer!.dateTime.difference(now);
-    print("nextPrayerTimeDiff ${state.nextPrayer!.dateTime}");
-    print("nextPrayerTimeDiff ${now}");
+    //print("nextPrayerTimeDiff ${state.nextPrayer!.dateTime}");
+    //print("nextPrayerTimeDiff ${now}");
 
-    print("nextPrayerTimeDiff $nextPrayerTimeDiff");
+    //print("nextPrayerTimeDiff $nextPrayerTimeDiff");
   }
 }

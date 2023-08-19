@@ -72,7 +72,7 @@ class CameraBloc extends Bloc<CameraEvent, CameraState> {
           initializingCamera = false;
           cameraController?.setFlashMode(FlashMode.off);
         } catch (e) {
-          print("CameraException initState: " + e.toString());
+          //print("CameraException initState: " + e.toString());
         }
       }
       emit(state.copyWith(
@@ -156,7 +156,7 @@ class CameraBloc extends Bloc<CameraEvent, CameraState> {
   }
 
   Future<void> _takePhotoHandler(TakePhoto e, Emitter emitter) async {
-    print("_takePhotoHandler");
+    //print("_takePhotoHandler");
 
     if (state.status == BlocStatus.loading) return;
     try {
@@ -168,7 +168,7 @@ class CameraBloc extends Bloc<CameraEvent, CameraState> {
         String base64File = base64Encode(fileBytes);
         AttachmentItem item =
             AttachmentItem(base64: base64File, filePath: file?.path);
-        //print("_takePhotoHandler photo ${item}");
+        ////print("_takePhotoHandler photo ${item}");
         emitter(state.copyWith(status: BlocStatus.loading));
 
         List<AttachmentItem> items = state.files ?? [];
@@ -215,7 +215,7 @@ class CameraBloc extends Bloc<CameraEvent, CameraState> {
       initializingCamera = false;
       _controller.setFlashMode(FlashMode.off);
     } on CameraException catch (e) {
-      print("CameraException: " + e.toString());
+      //print("CameraException: " + e.toString());
     }
     emitter(state.copyWith(
         status: BlocStatus.success,
@@ -250,7 +250,7 @@ class CameraBloc extends Bloc<CameraEvent, CameraState> {
         }
       }
     } catch (ex) {
-      print(ex);
+      //print(ex);
     }
   }
 
@@ -301,7 +301,7 @@ class CameraBloc extends Bloc<CameraEvent, CameraState> {
   @override
   Future<void> close() async {
     super.close();
-    //print("closeclose");
+    ////print("closeclose");
     cameraController?.dispose();
   }
 }

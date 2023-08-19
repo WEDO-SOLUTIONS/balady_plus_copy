@@ -30,7 +30,7 @@ class CommonFunctions {
             hideCloseButton: true,
             duration: const Duration(seconds: 3));
       } catch (ex) {
-        print(ex);
+        //print(ex);
       }
     }
   }
@@ -50,7 +50,7 @@ class CommonFunctions {
       String? errorMsg,
       dynamic headers,
       String enviroment = "Staging"}) async {
-    /* print("Send Log");
+    /* //print("Send Log");
     try {
       SentryUser? user;
 
@@ -78,7 +78,7 @@ class CommonFunctions {
                 .map((key, value) => MapEntry(key, value?.toString() ?? ""))
             : null;
       } catch (ex) {
-        print(ex);
+        //print(ex);
       }
 
       SentryMessage msg = SentryMessage(data != null ? data.toString() : "");
@@ -97,11 +97,11 @@ class CommonFunctions {
         tags: {"StatusCode": (statusCode ?? 0).toString()},
         exceptions: [SentryException(value: url ?? "", type: url)],
       );
-      Sentry.captureEvent(event).then((value) => print(value));
-      print("sent log");
+      Sentry.captureEvent(event).then((value) => //print(value));
+      //print("sent log");
     } catch (ex) {
-      print("exx");
-      print(ex);
+      //print("exx");
+      //print(ex);
     }*/
   }
 
@@ -116,7 +116,7 @@ class CommonFunctions {
           headers: response?.requestOptions.headers,
           enviroment: "Exceptions-Staging");
     } catch (ex) {
-      print(ex);
+      //print(ex);
     }
   }
 
@@ -156,7 +156,7 @@ class CommonFunctions {
       String time = DateFormat("h:mm a", 'ar_SA').format(tempTime).toString();
       formattedTime = time;
     } catch (ex) {
-      print(ex);
+      //print(ex);
     }
     return replaceArabicNumberWithEnglish(formattedTime);
   }
@@ -251,8 +251,8 @@ class CommonFunctions {
       String v1UUID = CommonProperties.uuidInstance.v1();
       String v5UUID =
           CommonProperties.uuidInstance.v5(v1UUID, CommonProperties.deviceId);
-      print("v5UUID");
-      print(v5UUID);
+      //print("v5UUID");
+      //print(v5UUID);
       if (v5UUID.isNotEmpty)
         return v5UUID.replaceAll("-", "");
       else if (v1UUID.isNotEmpty)
@@ -260,8 +260,8 @@ class CommonFunctions {
       else
         return DateTime.now().millisecondsSinceEpoch.toString();
     } catch (ex) {
-      print("EXXXXXX GUId");
-      print(ex);
+      //print("EXXXXXX GUId");
+      //print(ex);
       return DateTime.now().millisecondsSinceEpoch.toString();
     }
   }
