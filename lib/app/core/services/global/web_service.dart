@@ -49,8 +49,8 @@ class WebService {
     dio.addSentry();
 
     dio.interceptors.add(PrettyDioLogger(
-      requestHeader: true,
-      requestBody: true,
+      requestHeader: false,
+      requestBody: false,
       responseBody: false,
     ));
     dio.interceptors.add(AppInterceptors());
