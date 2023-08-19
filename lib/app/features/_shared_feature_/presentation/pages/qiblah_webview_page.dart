@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:balady_plus/app/core/utils/constants/remote_config.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/buttons/elevated_button_widgets.dart';
+import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
@@ -29,6 +30,7 @@ class QiblahWebViewPage extends StatefulWidget {
 class _QiblahWebViewPageState extends State<QiblahWebViewPage> {
   late StreamController<double?> _progessStream;
   InAppWebViewController? _controller;
+  bool isLoading = true;
   @override
   void initState() {
     super.initState();
@@ -57,20 +59,44 @@ class _QiblahWebViewPageState extends State<QiblahWebViewPage> {
                   // url: Uri.parse('https://flutter.dev/'),
                   url: Uri.parse(widget.args.url),
                 ),
+                androidOnGeolocationPermissionsShowPrompt:
+                    (controller, origin) async {
+                  return GeolocationPermissionShowPromptResponse(
+                      origin: origin, allow: true, retain: true);
+                },
                 initialOptions: InAppWebViewGroupOptions(
+                  android: AndroidInAppWebViewOptions(
+                    // useHybridComposition: true,
+                    geolocationEnabled: true,
+                    // safeBrowsingEnabled: false,
+                  ),
                   crossPlatform: InAppWebViewOptions(
                     useShouldOverrideUrlLoading: true,
+                    javaScriptCanOpenWindowsAutomatically: true,
+                    //  allowUniversalAccessFromFileURLs: true,
+                    //  preferredContentMode: UserPreferredContentMode.MOBILE
                   ),
                 ),
                 onLoadStart: (controller, Uri? url) async {},
                 onLoadStop: (controller, Uri? url) async {
+                  print(url);
                   if (mounted)
                     Timer.periodic(const Duration(seconds: 1), (timer) async {
                       await _controller?.evaluateJavascript(
                           source:
                               "document.getElementsByClassName('mat-raised-button')[0].click()");
+                      await _controller?.evaluateJavascript(
+                          source:
+                              "document.getElementsByClassName('mat-raised-button')[0].click()");
+
+                      await _controller?.evaluateJavascript(
+                          source:
+                              "document.getElementsByClassName('mat-focus-indicator mat-icon-button mat-button-base')[0].style.display='none'; document.getElementsByClassName('mat-focus-indicator mat-icon-button mat-button-base')[0].style.display='none'; document.getElementsByClassName('mat-fab mat-button-base')[0].style.display='none'; document.getElementsByClassName('expanded')[0].style.display='none'");
 
                       Timer.periodic(const Duration(seconds: 2), (timer) async {
+                        setState(() {
+                          isLoading = false;
+                        });
                         await _controller?.evaluateJavascript(
                             source:
                                 "document.getElementsByClassName('mat-raised-button')[0].click()");
@@ -84,6 +110,8 @@ class _QiblahWebViewPageState extends State<QiblahWebViewPage> {
                 onLoadError: (controller, url, code, message) => print(message),
                 onProgressChanged: (controller, int progress) {
                   final percent = progress / 100;
+                  print(percent);
+                  _progessStream.add(percent);
                 },
                 onConsoleMessage: (controller, ConsoleMessage consoleMessage) {
                   "$consoleMessage".warningLog();
@@ -91,11 +119,9 @@ class _QiblahWebViewPageState extends State<QiblahWebViewPage> {
                       .warningLog();
                 },
               ),
-              if (snapshot.data != null && snapshot.data! < 1)
+              if (isLoading)
                 Center(
-                  child: CircularProgressIndicator(
-                    value: snapshot.data,
-                  ),
+                  child: CustomCircularLoadingWidget(),
                 ),
               /*  Align(
                 alignment: Alignment.center,

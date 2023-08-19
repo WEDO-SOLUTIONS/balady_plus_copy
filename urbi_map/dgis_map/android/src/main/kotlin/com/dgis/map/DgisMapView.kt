@@ -657,8 +657,4 @@ class DgisMapView(
                 .build()
         )
     }
-
-    override fun pigeonHack(message: LogOptionsMessage, result: Messages.Result<Void>?) {
-        result?.success(null)
-    }
 }

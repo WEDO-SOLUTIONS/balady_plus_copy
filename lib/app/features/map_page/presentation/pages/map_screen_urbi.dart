@@ -22,11 +22,6 @@ class _MapScreenUrbiState extends State<MapScreenUrbi>
 
     return DgisMap(
       key: MapScreenUrbi.mapKey,
-      logOptions: LogOptionsMessage(
-        systemLevel: LogLevelMessage.verbose,
-        customLevel: LogLevelMessage.verbose,
-        customSink: "BaladyDGis",
-      ),
       androidUseExpensive: true,
       onMapCreated: (DgisMapController controller) async {
         await mapViewModel.initialize(controller);

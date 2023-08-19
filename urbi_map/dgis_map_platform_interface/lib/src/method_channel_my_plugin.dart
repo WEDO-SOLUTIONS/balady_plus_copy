@@ -605,7 +605,6 @@ class MethodChannelDgisMapPlugin implements DgisMapPlugin, FlutterMapApi {
   @override
   Widget buildView({
     Key? key,
-    LogOptionsMessage? logOptions,
     required PlatformViewCreatedCallback onPlatformViewCreated,
     bool androidUseExpensive = true,
   }) {
@@ -615,8 +614,6 @@ class MethodChannelDgisMapPlugin implements DgisMapPlugin, FlutterMapApi {
             viewType: _viewType,
             onPlatformViewCreated: onPlatformViewCreated,
             gestureRecognizers: const <Factory<OneSequenceGestureRecognizer>>{},
-            creationParams: logOptions,
-            creationParamsCodec: MapApi.codec,
             hitTestBehavior: PlatformViewHitTestBehavior.opaque,
             layoutDirection: TextDirection.ltr,
           )
@@ -624,8 +621,6 @@ class MethodChannelDgisMapPlugin implements DgisMapPlugin, FlutterMapApi {
             key: key,
             viewType: _viewType,
             layoutDirection: TextDirection.ltr,
-            creationParams: logOptions,
-            creationParamsCodec: MapApi.codec,
             onPlatformViewCreated: onPlatformViewCreated,
           );
   }

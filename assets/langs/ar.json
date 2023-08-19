@@ -2491,6 +2491,7 @@
   "objectionLastApplyDate": "اخر موعد للاعتراض",
   "violationAmount": "قيمه الغرامة",
   "clear": "مشمس",
+  "buildingRequirements_desc":"يشترط خلو المبنى من المخالفات التالية:",
   "buildingRequirements": "متطلبات شهادة امتثال المباني",
   "buildingDesignElements": "عناصر تصميم المبنى",
   "buildingDesignElements1": "عدم فتح شبابيك في الملاحق العلوية مخالفة لأنظمة البناء أو الاشتراطات التصميمية للفتحات",

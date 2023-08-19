@@ -802,8 +802,4 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         
         completion(nil)
     }
-    
-    func pigeonHackMessage(_ message: LogOptionsMessage, completion: @escaping (FlutterError?) -> Void) {
-        completion(nil)
-    }
 }

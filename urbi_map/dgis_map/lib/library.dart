@@ -1,5 +1,7 @@
 library dgis_map;
 
+import 'package:dgis_map_platform_interface/library.dart';
+
 export 'package:dgis_map_platform_interface/library.dart';
 
 export 'dgis_map.dart';
@@ -33,3 +35,7 @@ export 'navi/message_controller.dart';
 export 'navi/traffic_parking_controller.dart';
 
 export 'navi/zoom_controller.dart';
+
+/// Initialize DGis plugin with options
+Future<void> initialiseDGis({LogOptionsMessage? logOptions}) =>
+    PluginApi().initialize(logOptions);

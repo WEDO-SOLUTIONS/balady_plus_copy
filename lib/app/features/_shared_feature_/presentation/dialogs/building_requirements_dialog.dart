@@ -23,6 +23,7 @@ class BuildingRequirementsDialog extends StatelessWidget {
       child: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const DrawLineWidget(
               lineWidth: 53,
@@ -35,6 +36,14 @@ class BuildingRequirementsDialog extends StatelessWidget {
               title: "buildingRequirements".tr(),
             ),
             const SizedBox(height: 12),
+            CustomTextWidget(
+              "buildingRequirements_desc".tr(),
+              fontWeight: AppFontWeight.bold,
+              fontSize: 14,
+              textAlign: TextAlign.start,
+              fontColor: AppColor.blackModern600Light,
+            ),
+            const SizedBox(height: 12),
             Container(
               padding: const EdgeInsets.all(16),
               decoration: const BoxDecoration(
@@ -45,7 +54,7 @@ class BuildingRequirementsDialog extends StatelessWidget {
                 children: [
                   BuildingReqCard(
                     title:
-                        'تعديل استخدام المواقف المعتمدة في قبو المبنى، وفق الترخيص الصادر له من الأمانة/البلدية.',
+                        'تعديل استخدام المواقف المعتمدة في قبو المبنى، بخلاف الترخيص الصادر له من الأمانة/البلدية.',
                   ),
                   BuildingReqCard(
                     title:

@@ -9,28 +9,16 @@ class DgisMapViewFactory: NSObject, FlutterPlatformViewFactory {
         
         super.init()
     }
-    
-    private func initializeDGis(logOptions: LogOptions?) -> DGis.Container {
-        let vendorConfigFile = Bundle.main.path(forResource: "vendor-config", ofType: "jsonx").map { File(path: $0) }
-        
-        return Container(
-            logOptions: logOptions ?? LogOptions(
-                osLogLevel: .warning,
-                customLogLevel: .warning,
-                customSink: nil
-            ),
-            vendorConfigFile: vendorConfigFile
-        )
-    }
 
     func create(
         withFrame frame: CGRect,
         viewIdentifier viewId: Int64,
         arguments args: Any?
     ) -> FlutterPlatformView {
-        let logOptions: LogOptionsMessage? = args as? LogOptionsMessage
-        let sdk = initializeDGis(logOptions: logOptions?.logOptions)
-        
+        guard let sdk = SwiftDgisMapPlugin.sdkContext else {
+            fatalError("Plugin has not been initialized")
+        }
+
         return DgisMapView(
             dgisSdk: sdk,
             frame: frame,
@@ -38,9 +26,5 @@ class DgisMapViewFactory: NSObject, FlutterPlatformViewFactory {
             arguments: args,
             registrar: registrar
         )
-    }
-    
-    public func createArgsCodec() -> FlutterMessageCodec & NSObjectProtocol {
-        return MapApiGetCodec()
     }
 }

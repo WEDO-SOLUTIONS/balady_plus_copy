@@ -18,26 +18,17 @@ class DgisMapViewFactory(
     private val locationSource: FusedLocationSource
 ) : PlatformViewFactory(MapApi.getCodec()) {
     override fun create(context: Context, viewId: Int, args: Any?): PlatformView {
-        val logLevel = args as? LogOptionsMessage
-        val sdkContext = initializeDGis(context, logLevel?.toLogOptions(context))
-        registerServices(sdkContext, locationSource)
+        if (DgisMapPlugin.sdkContext == null) {
+            throw Error("Plugin has not been initialized")
+        }
+        registerServices(DgisMapPlugin.sdkContext!!, locationSource)
 
         return DgisMapView(
-            sdkContext = sdkContext,
+            sdkContext = DgisMapPlugin.sdkContext!!,
             context = context,
             id = viewId,
             binaryMessenger = binaryMessenger,
             locationSource = locationSource
-        )
-    }
-
-    private fun initializeDGis(appContext: Context, logOptions: LogOptions?): ru.dgis.sdk.Context {
-        return DGis.initialize(
-            appContext,
-            logOptions = logOptions ?: LogOptions(),
-            vendorConfig = VendorConfig(
-                fromAsset = VendorConfigFromAsset("vendor-config.jsonx")
-            )
         )
     }
 

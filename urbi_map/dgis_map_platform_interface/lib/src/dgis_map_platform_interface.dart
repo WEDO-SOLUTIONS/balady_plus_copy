@@ -123,7 +123,6 @@ abstract class DgisMapPlugin extends PlatformInterface {
 
   Widget buildView({
     Key? key,
-    LogOptionsMessage? logOptions,
     required PlatformViewCreatedCallback onPlatformViewCreated,
     bool androidUseExpensive = true,
   });

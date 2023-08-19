@@ -1,47 +1,41 @@
-// import 'package:flutter/material.dart' show WidgetsFlutterBinding, runApp;
-// import 'package:flutter_bloc/flutter_bloc.dart' show Bloc;
-// import 'package:flutter/services.dart' show SystemChrome, DeviceOrientation;
-// import 'package:localize_and_translate/localize_and_translate.dart'
-//     show LocalizationDefaultType, LocalizedApp, translator;
-// import './app/core/dependency_injection/dependency_injection_exports.dart' as di
-//     show initialize;
+import 'package:dgis_map/library.dart';
+import 'package:flutter/material.dart' show runApp;
+import 'package:localize_and_translate/localize_and_translate.dart'
+    show LocalizedApp;
+import 'package:sentry_flutter/sentry_flutter.dart';
 
-// import './app/core/services/services_exports.dart'
-//     show HiveManager, SimpleBlocObserver;
-// import './app/core/utils/utils_exports.dart' show AppConfig, EnvType;
-// import './app/app.dart';
-// import './app/core/dependency_injection/dependency_injection_exports.dart'
-//     show sl;
+import './app/core/utils/utils_exports.dart' show EnvType;
+import './app/app.dart';
+import './env.dart';
+import 'app/core/dependency_injection/injection_container.dart';
 
-// void main() async {
-//   WidgetsFlutterBinding.ensureInitialized();
+void main() async {
+  await AppEnv.setupEnv(EnvType.prod);
+  await initialiseDGis(
+    logOptions: LogOptionsMessage(
+      systemLevel: LogLevelMessage.verbose,
+      customLevel: LogLevelMessage.verbose,
+      customSink: "BaladyDGis",
+    ),
+  );
+  await SentryFlutter.init(
+    (options) {
+      options.dsn =
+          'https://c9e9c70957e4433e99fb6be6fc1cafc8@sentry.42.solutions/24';
+      // Set tracesSampleRate to 1.0 to capture 100% of transactions for performance monitoring.
+      // We recommend adjusting this value in production.
+      options.tracesSampleRate = 1.0;
+      // Set tracesSampleRate to 1.0 to capture 100% of transactions for performance monitoring.
+      // We recommend adjusting this value in production.
+      options.attachScreenshot = true;
+      options.enableUserInteractionTracing = true;
+      options.captureFailedRequests = true;
+      options.environment = sl<EnvType>().name;
+    },
+    appRunner: () => runApp(SentryScreenshotWidget(
+        child: SentryUserInteractionWidget(
+            child: LocalizedApp(child: const App())))),
+  );
 
-//   /// force app to be only portrait
-//   SystemChrome.setPreferredOrientations([
-//     DeviceOrientation.portraitUp,
-//     DeviceOrientation.portraitDown,
-//   ]);
-
-//   // di: dependency injection
-//   di.initialize();
-
-//   //! Please assign environment firstly
-//   sl.registerLazySingleton<EnvType>(() => EnvType.dev);
-
-//   // Initialize hive and open all needed boxes
-//   await HiveManager.initializeHive();
-
-//   await translator.init(
-//     // localeType: LocalizationDefaultType.device, // based on device language
-//     // localeType: LocalizationDefaultType.asDefined, // based on first element at languageList
-//     localeType: LocalizationDefaultType.asDefined,
-//     languagesList: AppConfig.defaultAppLanguage.languages,
-//     assetsDirectory: AppConfig.appLanguagesPath,
-//   );
-
-//   //! comment it in release mode
-//   // to observe all blocs movements
-//   if (sl<EnvType>().isDev) Bloc.observer = SimpleBlocObserver();
-
-//   runApp(LocalizedApp(child: const App()));
-// }
+  ;
+}

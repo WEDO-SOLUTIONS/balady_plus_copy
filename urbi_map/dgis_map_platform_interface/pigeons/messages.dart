@@ -1116,10 +1116,6 @@ abstract class MapApi {
 
   @async
   void setZoomRestrictions(double? min, double? max);
-
-  @async
-  // pigeon will not generate codec for unused classes
-  void pigeonHack(LogOptionsMessage message);
 }
 
 @FlutterApi()
@@ -1128,4 +1124,10 @@ abstract class FlutterMapApi {
     MapObjectManagerMessage manager,
     int objectCount,
   );
+}
+
+@HostApi()
+abstract class PluginApi {
+  @async
+  void initialize(LogOptionsMessage? message);
 }
