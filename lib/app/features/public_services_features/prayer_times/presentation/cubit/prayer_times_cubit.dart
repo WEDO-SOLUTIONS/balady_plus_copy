@@ -44,10 +44,14 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
   }
 
   void setNotifications() {
+    print("setNotifications");
     final isNotificationTurnOff = !state.prayerTimeSettings.contains("1");
     if (isNotificationTurnOff) return NotificationService.cancelAll();
 
     for (var prayer in state.prayersRange) {
+      print(prayer.zuhrId);
+      print(prayer.fajrId);
+
       state.prayerTimeSettings[0] == "1"
           ? NotificationService.showScheduledNotification(
               id: prayer.fajrId,
@@ -105,29 +109,26 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
   }
 
   void getPrayerTimeRange() async {
-    LatLng? position = await Helpers.getCurrentLocation();
-    if (position != null) {
-      final params = PrayerTimeRangeParams(
-        startDate: DateFormat("dd/MM/yyyy").format(DateTime.now()),
-        endDate: DateFormat("dd/MM/yyyy")
-            .format(DateTime.now().copyWith(day: DateTime.now().day + 5)),
-        dateType: 'GRG',
-        isFormat24Hours: "true",
-        lat: position.latitude.toString(),
-        lng: position.longitude.toString(),
-      );
+    final params = PrayerTimeRangeParams(
+      startDate: DateFormat("dd/MM/yyyy").format(DateTime.now()),
+      endDate: DateFormat("dd/MM/yyyy")
+          .format(DateTime.now().copyWith(day: DateTime.now().day + 5)),
+      dateType: 'GRG',
+      isFormat24Hours: "true",
+      lat: CommonProperties.userLocation?.lat.toString() ?? "",
+      lng: CommonProperties.userLocation?.lon.toString() ?? "",
+    );
 
-      final failureOrSuccess = await _getPrayerTimesRange(params);
+    final failureOrSuccess = await _getPrayerTimesRange(params);
 
-      failureOrSuccess.fold(
-        (failure) {},
-        (prayersRange) {
-          emit(state.copyWith(prayersRange: prayersRange));
-          setNotifications();
-          // setNotifications();
-        },
-      );
-    }
+    failureOrSuccess.fold(
+      (failure) {},
+      (prayersRange) {
+        emit(state.copyWith(prayersRange: prayersRange));
+        setNotifications();
+        // setNotifications();
+      },
+    );
   }
 
   void getPrayerTime() async {

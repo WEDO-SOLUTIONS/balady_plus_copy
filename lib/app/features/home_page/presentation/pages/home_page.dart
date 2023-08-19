@@ -27,11 +27,10 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+
     SchedulerBinding.instance.addPostFrameCallback((_) {
       MapViewModel mapViewModel =
           Provider.of<MapViewModel>(context, listen: false);
-
-      // mapViewModel.goToLocation();
     });
   }
 

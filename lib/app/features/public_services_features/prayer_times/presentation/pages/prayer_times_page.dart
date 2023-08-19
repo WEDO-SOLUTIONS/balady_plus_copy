@@ -40,8 +40,8 @@ class _PrayerTimesPageState extends State<PrayerTimesPage> {
   void initState() {
     super.initState();
 
-    //widget.cubit.getPrayerTime();
-    // widget.cubit.getPrayerTimeRange();
+    widget.cubit.getPrayerTime();
+    widget.cubit.getPrayerTimeRange();
 
     CommonFunctions.sendEventToAnalytics(AppEvents.prayingTimes);
   }

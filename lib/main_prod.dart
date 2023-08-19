@@ -13,8 +13,8 @@ void main() async {
   await AppEnv.setupEnv(EnvType.prod);
   await initialiseDGis(
     logOptions: LogOptionsMessage(
-      systemLevel: LogLevelMessage.verbose,
-      customLevel: LogLevelMessage.verbose,
+      systemLevel: LogLevelMessage.off,
+      customLevel: LogLevelMessage.off,
       customSink: "BaladyDGis",
     ),
   );

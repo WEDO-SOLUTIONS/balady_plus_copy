@@ -13,7 +13,7 @@ class BuildingRequirementsDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: AppColor.white,
+      color: Color(0xFFF5F8FA),
       padding: EdgeInsets.only(
         right: UIHelper.mediumPadding,
         left: UIHelper.mediumPadding,
@@ -23,7 +23,6 @@ class BuildingRequirementsDialog extends StatelessWidget {
       child: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const DrawLineWidget(
               lineWidth: 53,
@@ -36,12 +35,18 @@ class BuildingRequirementsDialog extends StatelessWidget {
               title: "buildingRequirements".tr(),
             ),
             const SizedBox(height: 12),
-            CustomTextWidget(
-              "buildingRequirements_desc".tr(),
-              fontWeight: AppFontWeight.bold,
-              fontSize: 14,
-              textAlign: TextAlign.start,
-              fontColor: AppColor.blackModern600Light,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                CustomTextWidget(
+                  "buildingRequirements_desc".tr(),
+                  fontWeight: AppFontWeight.bold,
+                  fontSize: 14,
+                  textAlign: TextAlign.start,
+                  fontColor: AppColor.blackModern600Light,
+                ),
+              ],
             ),
             const SizedBox(height: 12),
             Container(
@@ -52,10 +57,10 @@ class BuildingRequirementsDialog extends StatelessWidget {
               ),
               child: const Column(
                 children: [
-                  BuildingReqCard(
+                  /* BuildingReqCard(
                     title:
                         'تعديل استخدام المواقف المعتمدة في قبو المبنى، بخلاف الترخيص الصادر له من الأمانة/البلدية.',
-                  ),
+                  ),*/
                   BuildingReqCard(
                     title:
                         'عدم تنفيذ منحدر للأشخاص ذوي الإعاقة وفق (الدليل المبسط لمعايير الوصول الشامل للمنشآت)',
@@ -72,12 +77,8 @@ class BuildingRequirementsDialog extends StatelessWidget {
                     imgPath: ImagePath.buildingReq3,
                   ),
                   BuildingReqCard(
-                    title:
-                        "وجود أرصفة منفذة من قبل مالك المبنى أو مالك حق الانتفاع به متهالكة أو غير مكتملة -جهة الشارع التجاري-",
-                    imgPath: ImagePath.buildingReq4,
-                  ),
-                  BuildingReqCard(
-                    title: "وجود أسوار متهالكة أو غير مكتملة.",
+                    title: "وجود أسوار متهالكة أو غير مكتملة",
+                    imgPath: ImagePath.buildingReq15,
                   ),
                   BuildingReqCard(
                     title:
@@ -102,9 +103,11 @@ class BuildingRequirementsDialog extends StatelessWidget {
                   BuildingReqCard(
                     title:
                         "وجود أطباق الأقمار الصناعية على الشرفات أو كامل واجهة المبنى المطل على الشارع التجاري.",
+                    imgPath: ImagePath.buildingReq16,
                   ),
                   BuildingReqCard(
                     title: "وجود مظلات أو هناجر خارج حدود الملكية.",
+                    imgPath: ImagePath.buildingReq17,
                   ),
                   BuildingReqCard(
                     title:
@@ -119,15 +122,17 @@ class BuildingRequirementsDialog extends StatelessWidget {
                   BuildingReqCard(
                     title:
                         "وضع المداخن على واجهة المبنى من دون أن تكون في جانب المبنى، أو أن يتجاوز ارتفاعها في جانب المبنى عن البناء أكثر من (2) متر",
+                    imgPath: ImagePath.buildingReq18,
                   ),
                   BuildingReqCard(
                     title:
                         "عدم مطابقة اللوحات التجارية الخاصة بالمحلات للاشتراطات البلدية.",
+                    imgPath: ImagePath.buildingReq19,
                   ),
                   BuildingReqCard(
                     title:
                         "وجود لوحات إعلانية لمحلات تجارية مغلقة بتراخيص غير سارية أو منتهية، أو وجود الأساسات الحديدية لتثبيت اللوحات المزالة.",
-                    imgPath: ImagePath.buildingReq11,
+                    imgPath: ImagePath.buildingReq20,
                   ),
                   BuildingReqCard(
                     title:
@@ -137,10 +142,17 @@ class BuildingRequirementsDialog extends StatelessWidget {
                   BuildingReqCard(
                     title:
                         "وجود مخلفات ومواد بناء تعيق الحركة على الرصيف الخاص بالمبنى. الموقع والرصيف الأمامي للمبنى",
+                    imgPath: ImagePath.buildingReq21,
                   ),
                   BuildingReqCard(
-                    title: "عدم وجود صناديق بريد أو صحف متهالكة وغير مستخدمة",
-                    imgPath: ImagePath.buildingReq14,
+                    title:
+                        "وجود أرصفة منفذة من قبل مالك المبنى أو مالك حق الانتفاع به متهالكة أو غير مكتملة -جهة الشارع التجاري-",
+                    imgPath: ImagePath.buildingReq4,
+                  ),
+                  BuildingReqCard(
+                    title:
+                        "تعديل استخدام المواقف المعتمدة في قبو المبنى، وفق الترخيص الصادر له من الأمانة/البلدية.",
+                    imgPath: ImagePath.buildingReq22,
                   ),
                 ],
               ),
@@ -170,7 +182,7 @@ class BuildingReqCard extends StatelessWidget {
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         borderRadius: const BorderRadius.all(Radius.circular(8)),
-        color: AppColor.primary50Light.withOpacity(0.5),
+        color: Color(0xFFE6EFEF).withOpacity(0.5),
       ),
       child: Column(
         children: [

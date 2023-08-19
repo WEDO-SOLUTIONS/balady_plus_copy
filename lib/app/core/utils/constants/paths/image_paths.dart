@@ -83,12 +83,17 @@ class ImagePath {
   static const buildingReq8 = '${_imagePath}building_req8$_png';
   static const buildingReq9 = '${_imagePath}building_req9$_png';
   static const buildingReq10 = '${_imagePath}building_req10$_png';
-  static const buildingReq11 = '${_imagePath}building_req11$_png';
-  static const buildingReq12 = '${_imagePath}building_req12$_png';
   static const buildingReq13 = '${_imagePath}building_req13$_png';
-  static const buildingReq14 = '${_imagePath}building_req14$_png';
+  static const buildingReq15 = '${_imagePath}building_req15$_png';
+  static const buildingReq16 = '${_imagePath}building_req16$_png';
+  static const buildingReq17 = '${_imagePath}building_req17$_png';
+  static const buildingReq18 = '${_imagePath}building_req18$_png';
+  static const buildingReq19 = '${_imagePath}building_req19$_png';
+  static const buildingReq20 = '${_imagePath}building_req20$_png';
+  static const buildingReq21 = '${_imagePath}building_req21$_png';
+  static const buildingReq22 = '${_imagePath}building_req22$_png';
 
-  // Visual Distoration
+  // Visual Distoration  static const buildingReq17 = '${_imagePath}building_req17$_png';
   static const distortedWritings = '${_imagePath}distortedWritings$_png';
   static const umbrellas = '${_imagePath}umbrellas$_png';
   static const coveringPorches = '${_imagePath}coveringPorches$_png';

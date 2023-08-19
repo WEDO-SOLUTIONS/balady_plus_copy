@@ -81,7 +81,7 @@ class _QiblahWebViewPageState extends State<QiblahWebViewPage> {
                 onLoadStop: (controller, Uri? url) async {
                   print(url);
                   if (mounted)
-                    Timer.periodic(const Duration(seconds: 1), (timer) async {
+                    Timer(const Duration(seconds: 1), () async {
                       await _controller?.evaluateJavascript(
                           source:
                               "document.getElementsByClassName('mat-raised-button')[0].click()");
@@ -93,7 +93,7 @@ class _QiblahWebViewPageState extends State<QiblahWebViewPage> {
                           source:
                               "document.getElementsByClassName('mat-focus-indicator mat-icon-button mat-button-base')[0].style.display='none'; document.getElementsByClassName('mat-focus-indicator mat-icon-button mat-button-base')[0].style.display='none'; document.getElementsByClassName('mat-fab mat-button-base')[0].style.display='none'; document.getElementsByClassName('expanded')[0].style.display='none'");
 
-                      Timer.periodic(const Duration(seconds: 2), (timer) async {
+                      Timer(const Duration(seconds: 2), () async {
                         setState(() {
                           isLoading = false;
                         });
@@ -111,7 +111,6 @@ class _QiblahWebViewPageState extends State<QiblahWebViewPage> {
                 onProgressChanged: (controller, int progress) {
                   final percent = progress / 100;
                   print(percent);
-                  _progessStream.add(percent);
                 },
                 onConsoleMessage: (controller, ConsoleMessage consoleMessage) {
                   "$consoleMessage".warningLog();

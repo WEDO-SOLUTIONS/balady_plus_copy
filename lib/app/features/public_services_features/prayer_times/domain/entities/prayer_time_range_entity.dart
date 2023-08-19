@@ -65,16 +65,11 @@ class PrayerTimeRangeEntity extends Equatable {
         int.parse(zuhr.split(":").last),
       );
 
-  int get asrId =>
-      int.parse("$year$month$day${asr.split(":").first}");
-  int get fajrId =>
-      int.parse("$year$month$day${fajr.split(":").first}");
-  int get ishaId =>
-      int.parse("$year$month$day${isha.split(":").first}");
-  int get magribId =>
-      int.parse("$year$month$day${magrib.split(":").first}");
-  int get zuhrId =>
-      int.parse("$year$month$day${zuhr.split(":").first}");
+  int get asrId => int.parse("$year$month$day${"003"}");
+  int get fajrId => int.parse("$year$month$day${"001"}");
+  int get ishaId => int.parse("$year$month$day${"005"}");
+  int get magribId => int.parse("$year$month$day${"004"}");
+  int get zuhrId => int.parse("$year$month$day${"002"}");
 
   @override
   List<Object> get props => [

@@ -33,6 +33,8 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
     //   if (state.allWeatherInfoStatus == BlocStatus.success &&
     //     state.showLocationError == false) return;
 
+    print("_getAllWeatherInfo");
+
     emitter(state.copyWith(
       allWeatherInfoStatus: BlocStatus.loading,
     ));
@@ -40,26 +42,31 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
     GISParams? location = CommonProperties.userLocation;
 
     if (location == null || CommonProperties.userLocationGIS == null) {
-      LatLng? latlng = await Helpers.getMapLocation();
-
-      location = GISParams(
-          x: latlng?.longitude ?? 46.72364215018372,
-          y: latlng?.latitude ?? 24.744615305066496);
-
-      if (latlng == null)
-        emitter(state.copyWith(showLocationError: true));
-      else
-        emitter(state.copyWith(showLocationError: false));
-
       WeatherParams params =
-          e.params.copyWith(latitude: location.y, longitude: location.x);
+          e.params.copyWith(latitude: location?.y, longitude: location?.x);
       final failureOrSuccess = await _getGISData(
           GISParams(x: params.longitude!, y: params.latitude!));
-      await failureOrSuccess.fold((failure) {
+      await failureOrSuccess.fold((failure) async {
         emitter(state.copyWith(
           allWeatherInfoStatus: BlocStatus.failure,
           errorMessage: (failure as ServerFailure).errorMessage,
         ));
+
+        final failureOrSuccess = await _getWeatherInfo(params);
+        failureOrSuccess.fold((failure) {
+          print("failure: weather $failure");
+          emitter(state.copyWith(
+            allWeatherInfoStatus: BlocStatus.failure,
+            errorMessage: (failure as ServerFailure).errorMessage,
+          ));
+        }, (success) {
+          print("weather entity: $success");
+          emitter(state.copyWith(
+            allWeatherInfoStatus: BlocStatus.success,
+            allWeatherInfo: success,
+            errorMessage: "",
+          ));
+        });
       }, (gisSuccess) async {
         emitter(state.copyWith(
           gisResponse: gisSuccess,
@@ -111,8 +118,10 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
 
   Future<void> _refreshWeatherForLocation(
       RefreshWeatherForLocation e, Emitter emitter) async {
-    WeatherParams params = e.params
-        .copyWith(latitude: state.location?.y, longitude: state.location?.x);
+    GISParams? location = CommonProperties.userLocation;
+
+    WeatherParams params =
+        e.params.copyWith(latitude: location?.y, longitude: location?.x);
 
     final failureOrSuccess = await _getWeatherInfo(params);
     failureOrSuccess.fold((failure) {

@@ -37,6 +37,7 @@ import 'map_view_model.dart';
 
 const int mil = 300;
 TextEditingController searchController = TextEditingController();
+FocusNode searchFocusNode = FocusNode();
 
 class MapViewModel extends BaseViewModel {
   final GeoPointMessage kingdomTower =
@@ -469,6 +470,24 @@ class MapViewModel extends BaseViewModel {
         _onPanoramaTap,
       ),
     );
+
+    /* searchFocusNode.addListener(() {
+      if (searchFocusNode.hasFocus || searchFocusNode.hasPrimaryFocus) {
+        viewHomeBottomSheet.value = false;
+        viewHomeBottomSheet.notifyListeners();
+
+        bottomSheetSizeFraction.value = bottomSheetSizeFraction.value >= 0.7
+            ? bottomSheetSizeFraction.value
+            : 0.7;
+        bottomSheetSizeFraction.notifyListeners();
+
+        Timer(const Duration(milliseconds: 10), () async {
+          viewHomeBottomSheet.value = true;
+          viewHomeBottomSheet.notifyListeners();
+          searchFocusNode.requestFocus();
+        });
+      }
+    });*/
   }
 
   // When move camera map any change zoom in, zoom out ...

@@ -30,8 +30,8 @@ import 'package:balady_plus/etmam_app/core/dependency_injection/dependency_injec
 
 abstract class AppEnv {
   static Future<void> setupEnv(EnvType type) async {
-    await _deleteAppDir();
-    await _deleteCacheDir();
+    ///  await _deleteAppDir();
+    // await _deleteCacheDir();
     WidgetsFlutterBinding.ensureInitialized();
 
     /// force app to be only portrait

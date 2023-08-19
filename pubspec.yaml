@@ -225,7 +225,6 @@ flutter:
     - assets/images/
     - assets/langs/
     - assets/quran/
-    - assets/services/
     - assets/maps/styles/
     - assets/maps/icons/
     - assets/maps/icons/card_icon/
