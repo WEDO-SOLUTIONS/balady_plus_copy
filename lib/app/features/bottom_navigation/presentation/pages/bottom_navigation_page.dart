@@ -71,6 +71,9 @@ class _BottomNavigationPageState extends State<BottomNavigationPage> {
         BlocProvider<PrayerTimesCubit>(
           create: (_) => sl<PrayerTimesCubit>(),
         ),
+        BlocProvider<WeatherBloc>(
+          create: (_) => sl<WeatherBloc>(),
+        ),
       ],
       child: Scaffold(
         key: NavigationService.bottomNavKey,

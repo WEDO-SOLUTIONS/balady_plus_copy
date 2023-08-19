@@ -64,14 +64,11 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
           emitter(state.copyWith(
             allWeatherInfoStatus: BlocStatus.success,
             allWeatherInfo: success,
+            gisResponse: CommonProperties.userLocationGIS,
             errorMessage: "",
           ));
         });
       }, (gisSuccess) async {
-        emitter(state.copyWith(
-          gisResponse: gisSuccess,
-          errorMessage: "",
-        ));
         final failureOrSuccess = await _getWeatherInfo(params);
         failureOrSuccess.fold((failure) {
           print("failure: weather $failure");
@@ -90,6 +87,7 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
         });
       });
     } else {
+      print("_getAllWeatherInfo 2");
       WeatherParams params =
           e.params.copyWith(latitude: location.y, longitude: location.x);
 

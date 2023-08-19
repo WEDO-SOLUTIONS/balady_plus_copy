@@ -34,8 +34,7 @@ class _WeatherMainPageState extends State<WeatherMainPage> {
     super.initState();
 
     SchedulerBinding.instance.addPostFrameCallback((_) {
-      BlocProvider.of<WeatherBloc>(context, listen: false)
-          .add(RefreshWeatherForLocation());
+      sl<WeatherBloc>().add(RefreshWeatherForLocation());
     });
 
     CommonFunctions.sendEventToAnalytics(AppEvents.weather);
