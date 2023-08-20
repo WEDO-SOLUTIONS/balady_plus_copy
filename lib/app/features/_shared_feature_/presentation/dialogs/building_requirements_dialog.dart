@@ -141,7 +141,7 @@ class BuildingRequirementsDialog extends StatelessWidget {
                   ),
                   BuildingReqCard(
                     title:
-                        "وجود مخلفات ومواد بناء تعيق الحركة على الرصيف الخاص بالمبنى. الموقع والرصيف الأمامي للمبنى",
+                        "وجود مخلفات ومواد بناء تعيق الحركة على الرصيف الخاص بالمبنى",
                     imgPath: ImagePath.buildingReq21,
                   ),
                   BuildingReqCard(

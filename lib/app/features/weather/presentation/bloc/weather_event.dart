@@ -30,3 +30,8 @@ class RefreshWeatherForLocation extends WeatherEvent {
 
   RefreshWeatherForLocation({this.showLoading = true});
 }
+
+class ChangeIndexEvent extends WeatherEvent {
+  final int index;
+  const ChangeIndexEvent({required this.index});
+}

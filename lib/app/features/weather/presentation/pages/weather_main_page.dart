@@ -48,14 +48,11 @@ class _WeatherMainPageState extends State<WeatherMainPage> {
     final screenHeight = _size.height;
 
     return BlocProvider.value(
-      value: sl<WeatherBloc>(),
+      value: sl<WeatherBloc>()
+        ..add(GetWeatherForLocation())
+        ..add(ChangeIndexEvent(index: -1)),
       child: BlocBuilder<WeatherBloc, WeatherState>(
         builder: (context, state) {
-          // if (state.allWeatherInfoStatus == BlocStatus.loading) {
-          //   return const Center(
-          //     child: CircularProgressIndicator(),
-          //   );
-          // }
           if (state.allWeatherInfoStatus == BlocStatus.failure) {
             return Center(
               child: ReloadWidget(
@@ -69,10 +66,7 @@ class _WeatherMainPageState extends State<WeatherMainPage> {
               extendBodyBehindAppBar: true,
               appBar: PreferredSize(
                 preferredSize: const Size.fromHeight(56),
-                child: BlocProvider.value(
-                  value: context.read<WeatherBloc>(),
-                  child: const WeatherAppbar(),
-                ),
+                child: const WeatherAppbar(),
               ),
               body: Column(children: [
                 Stack(
@@ -88,9 +82,7 @@ class _WeatherMainPageState extends State<WeatherMainPage> {
                           : screenHeight * 0.4,
                       width: double.infinity,
                     ),
-                    BlocProvider.value(
-                        value: context.read<WeatherBloc>(),
-                        child: const CurrentWeatherContent()),
+                    const CurrentWeatherContent()
                   ],
                 ),
                 Expanded(
@@ -108,11 +100,11 @@ class _WeatherMainPageState extends State<WeatherMainPage> {
                                   ?.forecastday?[index];
                               return WeatherDayCard(
                                 forecastDay: forecastDay,
-                                isExpanded: selectedTile == index,
+                                isExpanded: state.selectedTile == index,
                                 onExpansionChanged: (bool expanded) {
-                                  setState(() {
-                                    selectedTile = expanded ? index : -1;
-                                  });
+                                  context.read<WeatherBloc>().add(
+                                      ChangeIndexEvent(
+                                          index: expanded ? index : -1));
                                 },
                               );
                             },

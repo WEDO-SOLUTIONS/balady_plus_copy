@@ -35,7 +35,6 @@ class App extends StatelessWidget {
               MapViewModel(layersRepositories: sl()),
         ),
         BlocProvider.value(value: sl<EtmamEntryPointCubit>()),
-        BlocProvider.value(value: sl<WeatherBloc>()),
       ],
       child: BlocProvider<EntryPointCubit>.value(
           value: sl<EntryPointCubit>()..onLoadingApp(),

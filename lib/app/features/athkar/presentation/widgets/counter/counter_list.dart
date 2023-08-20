@@ -3,7 +3,7 @@ import 'package:balady_plus/app/features/athkar/presentation/widgets/counter/ath
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-class CounterList extends StatelessWidget {
+/*class CounterList extends StatelessWidget {
   const CounterList({
     super.key,
     required this.count,
@@ -21,4 +21,4 @@ class CounterList extends StatelessWidget {
       );
     }));
   }
-}
+}*/

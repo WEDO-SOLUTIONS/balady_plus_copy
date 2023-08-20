@@ -93,7 +93,7 @@ class _QiblahWebViewPageState extends State<QiblahWebViewPage> {
                           source:
                               "document.getElementsByClassName('mat-focus-indicator mat-icon-button mat-button-base')[0].style.display='none'; document.getElementsByClassName('mat-focus-indicator mat-icon-button mat-button-base')[0].style.display='none'; document.getElementsByClassName('mat-fab mat-button-base')[0].style.display='none'; document.getElementsByClassName('expanded')[0].style.display='none'");
 
-                      Timer(const Duration(seconds: 2), () async {
+                      Timer(const Duration(seconds: 3), () async {
                         setState(() {
                           isLoading = false;
                         });

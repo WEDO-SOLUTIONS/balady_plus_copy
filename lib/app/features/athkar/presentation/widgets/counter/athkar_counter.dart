@@ -6,36 +6,26 @@ import 'package:flutter/material.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 class CounterAthkarWidget extends StatefulWidget {
-  const CounterAthkarWidget({
-    Key? key,
-    required this.count,
-    required this.countText,
-  }) : super(key: key);
+  const CounterAthkarWidget(
+      {Key? key,
+      required this.count,
+      required this.countText,
+      required this.counter,
+      required this.incrementCounter,
+      required this.reset})
+      : super(key: key);
 
   final int count;
   final String countText;
+  final int counter;
+  final Function incrementCounter;
+  final Function reset;
 
   @override
   State<CounterAthkarWidget> createState() => _CounterAthkarWidgetState();
 }
 
 class _CounterAthkarWidgetState extends State<CounterAthkarWidget> {
-  int counter = 0;
-
-  void _incrementCounter() {
-    if (counter < widget.count) {
-      setState(() {
-        counter++;
-      });
-    }
-  }
-
-  void _resetCounter() {
-    setState(() {
-      counter = 0;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -79,18 +69,18 @@ class _CounterAthkarWidgetState extends State<CounterAthkarWidget> {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               GestureDetector(
-                onTap: _incrementCounter,
+                onTap: () => widget.incrementCounter(),
                 child: Container(
                   height: 80,
                   width: 80,
                   decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: (counter == widget.count)
+                      color: (widget.counter == widget.count)
                           ? AppColor.primary900Light
                           : AppColor.primary600Light),
                   child: Center(
                     child: Text(
-                      '$counter',
+                      '${widget.counter}',
                       style: AppStyle.countAthkarStyle,
                     ),
                   ),
@@ -98,7 +88,7 @@ class _CounterAthkarWidgetState extends State<CounterAthkarWidget> {
               ),
               const SizedBox(height: 20),
               GestureDetector(
-                onTap: _resetCounter,
+                onTap: () => widget.reset(),
                 child: Row(children: [
                   const CustomSvgIconWidget(
                     IconPath.reset,

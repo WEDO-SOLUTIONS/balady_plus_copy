@@ -49,6 +49,7 @@ class _AthkarEntityContentState extends State<AthkarEntityContent> {
                   setState(() {
                     _currentIndex = index;
                   });
+                  _resetCounter();
                 },
                 itemBuilder: (context, index) {
                   return Padding(
@@ -78,6 +79,9 @@ class _AthkarEntityContentState extends State<AthkarEntityContent> {
                 }),
           ),
           CounterAthkarWidget(
+            counter: counter,
+            reset: _resetCounter,
+            incrementCounter: _incrementCounter,
             countText:
                 widget.params.athkarEntitiesList[_currentIndex].quantityText,
             count: widget.params.athkarEntitiesList[_currentIndex].quantity,
@@ -85,5 +89,21 @@ class _AthkarEntityContentState extends State<AthkarEntityContent> {
         ],
       ),
     );
+  }
+
+  int counter = 0;
+
+  void _incrementCounter() {
+    if (counter < widget.params.athkarEntitiesList[_currentIndex].quantity) {
+      setState(() {
+        counter++;
+      });
+    }
+  }
+
+  void _resetCounter() {
+    setState(() {
+      counter = 0;
+    });
   }
 }

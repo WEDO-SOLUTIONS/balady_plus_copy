@@ -24,7 +24,7 @@ class CurrentWeather extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider.value(
-      value: sl<WeatherBloc>(),
+      value: sl<WeatherBloc>()..add(GetWeatherForLocation()),
       child: GestureDetector(
         onTap: () {
           context.pushNamedRoute(RouteName.weatherMainPage);

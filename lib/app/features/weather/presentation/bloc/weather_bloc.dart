@@ -25,7 +25,8 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
     on<GetWeatherForLocation>(_getAllWeatherInfo);
     on<RefreshWeatherForLocation>(_refreshWeatherForLocation);
 
-    add(GetWeatherForLocation());
+    on<ChangeIndexEvent>(
+        (event, emit) => emit(state.copyWith(selectedTile: event.index)));
   }
 
   Future<void> _getAllWeatherInfo(
