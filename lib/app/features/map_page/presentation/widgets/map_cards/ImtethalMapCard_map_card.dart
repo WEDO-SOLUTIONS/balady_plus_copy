@@ -60,7 +60,7 @@ class ImtethalMapCard extends StatelessWidget {
               ),
               CustomVerticalSpace(height: 8),
               CustomTextWidget(
-                data.getMunAndDis(),
+                data.getStreetName(),
                 fontColor: AppColor.blackModern500Light,
                 fontSize: 12,
                 fontWeight: AppFontWeight.bold,

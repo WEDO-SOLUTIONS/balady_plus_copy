@@ -109,14 +109,19 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
   }
 
   void getPrayerTimeRange() async {
+    if (CommonProperties.userLocation == null) return;
     final params = PrayerTimeRangeParams(
       startDate: DateFormat("dd/MM/yyyy").format(DateTime.now()),
       endDate: DateFormat("dd/MM/yyyy")
           .format(DateTime.now().copyWith(day: DateTime.now().day + 5)),
       dateType: 'GRG',
       isFormat24Hours: "true",
-      lat: CommonProperties.userLocation?.lat.toString() ?? "",
-      lng: CommonProperties.userLocation?.lon.toString() ?? "",
+      lat: CommonProperties.userLocation != null
+          ? CommonProperties.userLocation!.y.toString()
+          : "21.424236910931974",
+      lng: CommonProperties.userLocation != null
+          ? CommonProperties.userLocation!.x.toString()
+          : "39.82589070176908",
     );
 
     final failureOrSuccess = await _getPrayerTimesRange(params);
@@ -139,31 +144,57 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
 
     if (dateToCheck != null)
       aDate = DateTime(dateToCheck.year, dateToCheck.month, dateToCheck.day);
-    if (aDate != today || aDate == null || state.prayerTimesResponse == null) {
-      emit(state.copyWith(status: BlocRequestStatus.submissionGetLoading));
-      final params = PrayerTimesParams(
-        latitude: CommonProperties.userLocation?.y ?? 21.424236910931974,
-        longitude: CommonProperties.userLocation?.x ?? 39.82589070176908,
-        date: DateTime.now(),
-      );
-      final failureOrSuccess = await _getPrayerTimes(params);
+    //  if (aDate != today || aDate == null || state.prayerTimesResponse == null) {
 
-      await failureOrSuccess.fold(
-        (failure) {
-          emit(state.copyWith(
-            status: BlocRequestStatus.submissionGetFailure,
-            errorMessage: (failure as ServerFailure).errorMessage,
-          ));
-        },
-        (response) {
-          //print("getPrayerTime success $response");
-          emit(state.copyWith(
-              status: BlocRequestStatus.submissionGetSuccess,
-              prayerTimes: response,
-              lastUpdatedDate: DateTime.now()));
-        },
+    CommonFunctions.checkLocationSettings(
+        NavigationService.navigatorKey!.currentContext!);
+    emit(state.copyWith(status: BlocRequestStatus.submissionGetLoading));
+
+    GISParams? userLocation = CommonProperties.userLocation;
+    print("HEREE 1111");
+
+    if (CommonProperties.userLocation == null) {
+      LatLng? locaton = await Helpers.getCurrentLocation(
+        accuracy: LocationAccuracy.low,
       );
-      /*return;
+      print("HEREE $locaton");
+
+      userLocation = GISParams(
+          x: locaton?.longitude ?? 39.82589070176908,
+          y: locaton?.latitude ?? 21.424236910931974);
+      if (locaton == null)
+        emit(state.copyWith(userLocationUnkown: true));
+      else {
+        emit(state.copyWith(userLocationUnkown: false));
+      }
+    } else {
+      emit(state.copyWith(userLocationUnkown: false));
+    }
+    print("HEREE 666 $userLocation");
+
+    final params = PrayerTimesParams(
+      latitude: userLocation!.lat,
+      longitude: userLocation.lon,
+      date: DateTime.now(),
+    );
+    final failureOrSuccess = await _getPrayerTimes(params);
+
+    await failureOrSuccess.fold(
+      (failure) {
+        emit(state.copyWith(
+          status: BlocRequestStatus.submissionGetFailure,
+          errorMessage: (failure as ServerFailure).errorMessage,
+        ));
+      },
+      (response) {
+        //print("getPrayerTime success $response");
+        emit(state.copyWith(
+            status: BlocRequestStatus.submissionGetSuccess,
+            prayerTimes: response,
+            lastUpdatedDate: DateTime.now()));
+      },
+    );
+    /*return;
 
       bool checkLoccationSettings = await CommonFunctions.checkLocationSettings(
           NavigationService.navigatorKey.currentContext!);
@@ -225,7 +256,7 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
               lastUpdatedDate: DateTime.now()));
         },
       );*/
-    }
+    // }
 
     updateNextPrayer();
   }

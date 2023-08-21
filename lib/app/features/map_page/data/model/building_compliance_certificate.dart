@@ -19,6 +19,7 @@ class BuildingComplianceCertificate extends PointLayersData {
   String? DISTRICTNAME;
   String? STREETTYPE;
   String? STREETWIDTH;
+  String? STREETNAME;
   final List<List<GeoPointMessage>>? pathsGoogle;
 
   BuildingComplianceCertificate(
@@ -29,6 +30,7 @@ class BuildingComplianceCertificate extends PointLayersData {
       required description,
       latLng,
       this.pathsGoogle,
+      this.STREETNAME,
       this.AMANANAME,
       this.DISTRICTNAME,
       this.MUNICIPALITYNAME,
@@ -52,6 +54,7 @@ class BuildingComplianceCertificate extends PointLayersData {
           name: json['attributes']["DISTRICTNAME"] ?? '',
           description: json['attributes']["AMANANAME"] ?? '',
           type: json['attributes']["MUNICIPALITYNAME"] ?? '',
+          STREETNAME: json['attributes']["STREETNAME"] ?? '',
           PRIORITYAREA: json['attributes']["PRIORITYAREA"] ?? '',
           STARTDATE: json['attributes']["STARTDATE"] ?? '',
           TARGETBUILDINGTYPE: json['attributes']["TARGETBUILDINGTYPE"] ?? '',
@@ -80,5 +83,9 @@ class BuildingComplianceCertificate extends PointLayersData {
           );
   String getMunAndDis() {
     return (MUNICIPALITYNAME ?? "") + "," + (DISTRICTNAME ?? "");
+  }
+
+  String getStreetName() {
+    return STREETNAME ?? "";
   }
 }

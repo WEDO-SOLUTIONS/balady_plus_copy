@@ -29,13 +29,13 @@ class LocationRetriveLocation extends StatelessWidget {
                   iconSize: 82,
                 ),
                 CustomVerticalSpace(height: 32),
-                CustomTextWidget(
+                /* CustomTextWidget(
                   "location_retrive_location_title".tr(),
                   fontColor: Color(0xff52525B),
                   fontSize: 18,
                   fontWeight: AppFontWeight.bold,
                 ),
-                CustomVerticalSpace(height: 16),
+                CustomVerticalSpace(height: 16),*/
                 CustomTextWidget(
                   "loaction_retrive_location_sub".tr(),
                   fontColor: Color(0xff71717A),

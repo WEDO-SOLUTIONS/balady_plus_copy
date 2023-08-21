@@ -16,6 +16,7 @@ import '../../../../core/errors/failures.dart';
 import '../../../../core/services/local/helpers.dart';
 import '../../../../core/services/services_exports.dart';
 import '../../../../core/utils/utils_exports.dart';
+import '../../../location/presentation/bloc/location_bloc.dart';
 import '../../../profile_features/delegators/delegators_exports.dart';
 import '../../entry_point_exports.dart';
 
@@ -75,6 +76,7 @@ class EntryPointCubit extends Cubit<EntryPointState> {
     // state.token?.token.log();
 
     emit(state.copyWith(status: AuthStatus.loading));
+    sl<LocationCubit>().getLocationInit();
     final failureOrSuccess = await _checkAuth(NoParams());
     await failureOrSuccess.fold((failure) {
       emit(state.copyWith(

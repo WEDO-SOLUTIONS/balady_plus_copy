@@ -47,17 +47,17 @@ class _SplashPageState extends State<SplashPage>
 
     _controller.addStatusListener((status) async {
       if (status == AnimationStatus.completed) {
-        if ((await sl<LocationCubit>().getLocationCachedInit()) != true) {
+        /*  if ((await sl<LocationCubit>().getLocationCachedInit()) != true) {
           Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) {
             return AcquireLocationPage();
           }));
-        } else {
-          final params = sl<BridgeParams>().copyWith(isAuthenticated: true);
-          final entryPointBridge = sl<EntryPointBridge>();
-          entryPointBridge(params);
-          sl<LocationCubit>().getLocationInit();
-       //   CommonFunctions.sendUrbiMapLogs();
-        }
+        } else {*/
+        final params = sl<BridgeParams>().copyWith(isAuthenticated: true);
+        final entryPointBridge = sl<EntryPointBridge>();
+        entryPointBridge(params);
+
+        //   CommonFunctions.sendUrbiMapLogs();
+        //  }
         checkVersionInfo();
       } else {}
     });

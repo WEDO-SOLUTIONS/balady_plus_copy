@@ -64,7 +64,8 @@ class LocationCubit extends Cubit<LocationState> {
     emit(state.copyWith(locationStatus: BlocStatus.loading));
 
     LatLng? location = await Helpers.getCurrentLocation(
-        accuracy: LocationAccuracy.high, duration: Duration(minutes: 2));
+        accuracy: LocationAccuracy.medium, duration: Duration(seconds: 1));
+
     if (location != null) {
       emit(state.copyWith(
           locationStatus: BlocStatus.success,
@@ -75,20 +76,17 @@ class LocationCubit extends Cubit<LocationState> {
   }
 
   Future<void> getGISData() async {
-    //print("getGISData11");
     if (state.locationStatus == BlocStatus.success && state.gisParams != null) {
       emit(state.copyWith(requestsStatus: BlocStatus.loading));
 
       final failureOrSuccess = await _getGISData(state.gisParams!);
 
       failureOrSuccess.fold((l) {
-        //print("Succccceesss 33 $l");
-
+        print("Succccceesss 33 $l");
         emit(state.copyWith(requestsStatus: BlocStatus.failure));
       }, (r) {
         sharedPrefs.setUserGISLoaction(r.toModel);
         sharedPrefs.setUserLocation(state.gisParams);
-        //print("Succccceesss $r");
         emit(
             state.copyWith(requestsStatus: BlocStatus.success, gisResponse: r));
       });
@@ -119,11 +117,11 @@ class LocationCubit extends Cubit<LocationState> {
   }
 
   Future<void> getLocationInit() async {
+    print("getLocationInit");
     if (state.locationStatus != BlocStatus.loading &&
         state.requestsStatus != BlocStatus.loading) {
       GISParams? cachedLocation = await sharedPrefs.getUserLocation();
       GISResponse? cachedGIS = await sharedPrefs.getUserGISData();
-
       await getLocationPermission();
 
       //print("PERMISSIN ${state.locationPermissionStatus}");
@@ -137,17 +135,13 @@ class LocationCubit extends Cubit<LocationState> {
                   BlocStatus.locationPermissionSuceess &&
               state.locationServiceStatus ==
                   BlocStatus.locationServiceSuceess)) {
-        //print("HEREEE");
-        //print("HEREEE ${state.requestsStatus}");
-
         emit(state.copyWith(
             loadAppStatus: BlocStatus.success,
             requestsStatus: BlocStatus.success,
             gisResponse: cachedGIS,
             gisParams: cachedLocation));
-
-        //print("HEREEE ${state.requestsStatus}");
       }
+
       await getLocationData();
       await getGISData();
     }

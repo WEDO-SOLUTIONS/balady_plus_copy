@@ -2995,6 +2995,6 @@
   "location_retrive_data":"جاري جلب البيانات...", 
   "location_retrive_data_desc":"نعمل على تحديد موقعك بدقة لضمان خدمتك بالشكل الأمثل", 
   "location_retrive_location_title":"صلاحية الموقع مطلوبة", 
-  "loaction_retrive_location_sub":"عزيزي المستخدم، لكي تتمكن من استخدام التطبيق يجب عليك إتاحة صلاحية الحصول على الموقع للتطبيق", 
+  "loaction_retrive_location_sub":"للاستفادة من الميزات الكاملة للتطبيق يرجى تفعيل الموقع من الإعدادات", 
   "inc_details":"تفاصيل البلاغ"
 }

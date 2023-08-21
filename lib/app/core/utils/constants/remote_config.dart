@@ -53,75 +53,75 @@ class _RemoteConfig {
   static final gis = _initValues<String>(
     devVal: "https://gisappstg.momra.gov.sa",
     stgVal: "https://gisappstg.momra.gov.sa",
-    prodVal: "https://gisapps.momra.gov.sa",
+    prodVal: "",
   );
   static final hmCode = _initValues<String>(
     devVal: "oxqUHJH1KXD84vP0KYBnyaHDUk5sJ9HkzqPDTice5TABqvfACZaLscG1TjjyPgIT",
     stgVal: "oxqUHJH1KXD84vP0KYBnyaHDUk5sJ9HkzqPDTice5TABqvfACZaLscG1TjjyPgIT",
-    prodVal: "TU9NUkEgTW9iaWxlIFRlYW0gMjAyMg==",
+    prodVal: "",
   );
 
   static final apigeeURL = _initValues<String>(
     devVal: "https://apiservicesstg.balady.gov.sa",
     stgVal: "https://apiservicesstg.balady.gov.sa",
-    prodVal: "https://apiservices.balady.gov.sa",
+    prodVal: "",
   );
   static final pegaURL = _initValues<String>(
     devVal: "https://crmustg.momra.gov.sa",
     stgVal: "https://crmustg.momra.gov.sa",
-    prodVal: "https://crm.balady.gov.sa",
+    prodVal: "",
   );
 
   static final apigeeUsername = _initValues<String>(
     devVal: "7RmIkhYi6v4M7GUibBrpFdZuo8NsL2CC",
     stgVal: "7RmIkhYi6v4M7GUibBrpFdZuo8NsL2CC",
-    prodVal: "4YxScCXqgTqPUpNqTH8rX1QZZUUzfbtw",
+    prodVal: "",
   );
   static final apigeePassword = _initValues<String>(
     devVal: "ak3JXde3KdBB1xbM",
     stgVal: "ak3JXde3KdBB1xbM",
-    prodVal: "b4Ocmvf3sNDNDdrs",
+    prodVal: "",
   );
   static final ssoUrl = _initValues<String>(
     devVal: "https://ssoappdev.momra.gov.sa",
     stgVal: "https://ssoappdev.momra.gov.sa",
-    prodVal: "https://ssoapp.balady.gov.sa",
+    prodVal: "",
   );
   static final ssoLoginUrl = _initValues<String>(
     devVal: "com.momra.balady://callback",
     stgVal: "com.momra.balady://callback",
-    prodVal: "com.balady://callback",
+    prodVal: "",
   );
   static final ssoSecret = _initValues<String>(
     devVal: "secret",
     stgVal: "secret",
-    prodVal: "d19e0d31729144d3bff32d5cebbaef63",
+    prodVal: "",
   );
   static final ssoLogOutUrl = _initValues<String>(
     devVal: "com.momra.balady://logout",
     stgVal: "com.momra.balady://logout",
-    prodVal: "com.balady://logout",
+    prodVal: "",
   );
   static final momraDomain = _initValues<String>(
     devVal: ".momra.gov.sa",
     stgVal: ".momra.gov.sa",
-    prodVal: ".balady.gov.sa",
+    prodVal: "",
   );
   static final ssoMomraDomain = _initValues<String>(
     devVal: ".ssoappdev.momra.gov.sa",
     stgVal: ".ssoappdev.momra.gov.sa",
-    prodVal: ".ssoapp.balady.gov.sa",
+    prodVal: "",
   );
   static final cookieURL = _initValues<String>(
     devVal: "https://baladyapps.momra.gov.sa/",
     stgVal: "https://baladyapps.momra.gov.sa/",
-    prodVal: "https://apps.balady.gov.sa/",
+    prodVal: "",
   );
 
   static final ssoClient = _initValues<String>(
     devVal: "balady_mobile_app",
     stgVal: "balady_mobile_app",
-    prodVal: "balady_mobile_app",
+    prodVal: "",
   );
 
   static final mapRadius = _initValues<double>(

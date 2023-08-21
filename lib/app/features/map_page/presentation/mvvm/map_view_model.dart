@@ -372,19 +372,47 @@ class MapViewModel extends BaseViewModel {
 
         await controller.changeFollowState();
 
-        /* await controller.setCameraPosition(
+        await controller.setCameraPosition(
           CameraPositionMessage(
-            point: GeoPointMessage(
-                latitude: CommonProperties.userLocation?.lat ?? 0,
-                longitude: CommonProperties.userLocation?.lon ?? 0),
-            zoom: 13,
-            tilt: 0,
+            point: CommonProperties.userLocation != null
+                ? GeoPointMessage(
+                    latitude: CommonProperties.userLocation?.lat ?? 0,
+                    longitude: CommonProperties.userLocation?.lon ?? 0)
+                : kingdomTower,
+            zoom: CommonProperties.userLocation != null ? 13 : 17,
+            tilt: CommonProperties.userLocation != null ? 0 : 45,
             bearing: 0,
           ),
-        );*/
+        );
+      } else {
+        await controller.changeFollowState();
+        await controller.setCameraPosition(
+          CameraPositionMessage(
+            point: CommonProperties.userLocation != null
+                ? GeoPointMessage(
+                    latitude: CommonProperties.userLocation?.lat ?? 0,
+                    longitude: CommonProperties.userLocation?.lon ?? 0)
+                : kingdomTower,
+            zoom: 17,
+            tilt: CommonProperties.userLocation != null ? 0 : 45,
+            bearing: 0,
+          ),
+        );
       }
     } catch (ex) {
-      //print("grfrsdcvdv $ex");
+      await controller.changeFollowState();
+      await controller.setCameraPosition(
+        CameraPositionMessage(
+          point: CommonProperties.userLocation != null
+              ? GeoPointMessage(
+                  latitude: CommonProperties.userLocation?.lat ?? 0,
+                  longitude: CommonProperties.userLocation?.lon ?? 0)
+              : kingdomTower,
+          zoom: 17,
+          tilt: CommonProperties.userLocation != null ? 0 : 45,
+          bearing: 0,
+        ),
+      );
     }
 
     initialized.value = true;
@@ -1036,5 +1064,31 @@ class MapViewModel extends BaseViewModel {
     await controller.removeAllPolylines();
     await controller.removeAll();
     return;
+  }
+
+  void moveCamera() async {
+    try {
+      final permission = await Permission.location.request();
+      //print("grfrsdcvdv $permission");
+      if (permission.isGranted) {
+        //print("grfrsdcvdv granted");
+        await controller.onLocationPremissionGranted();
+        //print("grfrsdcvdv granted 111");
+      }
+    } catch (ex) {}
+    await controller.changeFollowState();
+
+    await controller.setCameraPosition(
+      CameraPositionMessage(
+        point: CommonProperties.userLocation != null
+            ? GeoPointMessage(
+                latitude: CommonProperties.userLocation?.lat ?? 0,
+                longitude: CommonProperties.userLocation?.lon ?? 0)
+            : kingdomTower,
+        zoom: CommonProperties.userLocation != null ? 13 : 17,
+        tilt: CommonProperties.userLocation != null ? 0 : 45,
+        bearing: 0,
+      ),
+    );
   }
 }
