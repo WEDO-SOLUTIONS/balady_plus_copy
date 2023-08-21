@@ -60,9 +60,9 @@ class SubLayers {
 
   factory SubLayers.fromJson(Map<String, dynamic> json) => SubLayers(
         name: json["label"] ?? 'name',
-        type: json['symbol']["type"] ?? 'type',
-        url: json['symbol']["url"] ?? 'url',
-        imageData: json['symbol']["imageData"] ?? 'imageData',
+        type: json['symbol']["type"] ?? '',
+        url: json['symbol']["url"] ?? '',
+        imageData: json['symbol']["imageData"] ?? '',
       );
 
   Map<String, dynamic> toJson() => {

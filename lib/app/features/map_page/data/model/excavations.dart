@@ -59,7 +59,7 @@ class Excavations extends PointLayersData {
 
   factory Excavations.fromJson(Map<String, dynamic> json) => Excavations(
         id: json['attributes']["OBJECTID"].toString(),
-        name: json['attributes']["PROJECT_NAME"] ?? 'name',
+        name: json['attributes']["PROJECT_NAME"] ?? '',
         description: "",
         type: "",
         latLng: null,
@@ -70,8 +70,7 @@ class Excavations extends PointLayersData {
               double.parse(json['attributes']["START_POINT_Y"].toString()),
         ),*/
         /////////////////////////
-        contractorName:
-            json['attributes']["CONTRACTOR_NAME"] ?? 'contractorName',
+        contractorName: json['attributes']["CONTRACTOR_NAME"] ?? '',
 
         status: json['attributes']["STATUS"],
 

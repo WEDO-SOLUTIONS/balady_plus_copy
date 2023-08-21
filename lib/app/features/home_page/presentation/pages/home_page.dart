@@ -18,11 +18,20 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends State<HomePage> /*with WidgetsBindingObserver*/ {
   @override
   void dispose() {
     super.dispose();
+    //  WidgetsBinding.instance.removeObserver(this);
   }
+
+  /*@override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      setState(() {});
+      print("update status");
+    }
+  }*/
 
   @override
   void initState() {
@@ -32,6 +41,8 @@ class _HomePageState extends State<HomePage> {
       MapViewModel mapViewModel =
           Provider.of<MapViewModel>(context, listen: false);
     });
+
+    // WidgetsBinding.instance.addObserver(this);
   }
 
   @override
@@ -43,8 +54,8 @@ class _HomePageState extends State<HomePage> {
       body: TabPageContainer(
         child: Stack(
           children: [
-            const HomeMap(),
-            const HomeBottomSheet(),
+            HomeMap(),
+            HomeBottomSheet(),
           ],
         ),
       ),
