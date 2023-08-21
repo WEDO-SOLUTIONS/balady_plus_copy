@@ -6,14 +6,46 @@ import 'package:provider/provider.dart';
 class MapScreenUrbi extends StatefulWidget {
   const MapScreenUrbi({Key? key}) : super(key: key);
 
-  static ValueKey mapKey = const ValueKey("DgisMap");
-
   @override
   State<MapScreenUrbi> createState() => _MapScreenUrbiState();
 }
 
 class _MapScreenUrbiState extends State<MapScreenUrbi>
-    with AutomaticKeepAliveClientMixin {
+    with AutomaticKeepAliveClientMixin, WidgetsBindingObserver {
+  int _keyIndex = 0;
+  bool _needRefresh = false;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    WidgetsBinding.instance.removeObserver(this);
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    if (_needRefresh && state == AppLifecycleState.resumed) {
+      setState(() {
+        _needRefresh = false;
+        _keyIndex += 1;
+      });
+    }
+  }
+
+  @override
+  void didHaveMemoryPressure() {
+    setState(() {
+      _needRefresh = true;
+    });
+    super.didHaveMemoryPressure();
+  }
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -21,7 +53,7 @@ class _MapScreenUrbiState extends State<MapScreenUrbi>
     MapViewModel mapViewModel = context.watch<MapViewModel?>()!;
 
     return DgisMap(
-      key: MapScreenUrbi.mapKey,
+      key: ValueKey(_keyIndex),
       androidUseExpensive: true,
       onMapCreated: (DgisMapController controller) async {
         await mapViewModel.initialize(controller);
