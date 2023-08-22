@@ -1,3 +1,4 @@
+import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart' show runApp;
 import 'package:localize_and_translate/localize_and_translate.dart'
     show LocalizedApp;
@@ -7,6 +8,13 @@ import './app/app.dart';
 import './env.dart';
 
 void main() async {
+  await initialiseDGis(
+    logOptions: LogOptionsMessage(
+      systemLevel: LogLevelMessage.off,
+      customLevel: LogLevelMessage.off,
+      customSink: "BaladyDGis",
+    ),
+  );
   await AppEnv.setupEnv(EnvType.stg);
 
   runApp(LocalizedApp(child: const App()));

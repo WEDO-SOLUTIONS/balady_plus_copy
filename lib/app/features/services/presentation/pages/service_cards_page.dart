@@ -11,16 +11,22 @@ import '../../services_exports.dart'
         ServiceEntity,
         ServiceWarningWidget;
 
-class ServiceCardsPage extends StatelessWidget {
-  final ServiceEntity service;
-
+class ServiceCardsPage extends StatefulWidget {
   const ServiceCardsPage({
     super.key,
-    required this.service,
   });
 
   @override
+  State<ServiceCardsPage> createState() => _ServiceCardsPageState();
+}
+
+class _ServiceCardsPageState extends State<ServiceCardsPage> {
+  late final ServiceEntity service;
+
+  @override
   Widget build(BuildContext context) {
+    service = ModalRoute.of(context)!.settings.arguments as ServiceEntity;
+
     return BlocProvider(
       create: (context) => ServiceCardsCubit(service),
       child: Scaffold(

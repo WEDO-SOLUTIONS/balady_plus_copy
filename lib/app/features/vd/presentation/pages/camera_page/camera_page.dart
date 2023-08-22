@@ -15,9 +15,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class VDCameraPage extends StatefulWidget {
-  final CameraParamsPage params;
-
-  VDCameraPage({super.key, required this.params});
+  VDCameraPage({
+    super.key,
+  });
 
   @override
   State<VDCameraPage> createState() => _VDCameraPageState();
@@ -25,6 +25,8 @@ class VDCameraPage extends StatefulWidget {
 
 class _VDCameraPageState extends State<VDCameraPage>
     with TickerProviderStateMixin {
+  late final CameraParamsPage params;
+
   @override
   void initState() {
     super.initState();
@@ -33,6 +35,8 @@ class _VDCameraPageState extends State<VDCameraPage>
 
   @override
   Widget build(BuildContext context) {
+    params = ModalRoute.of(context)!.settings.arguments as CameraParamsPage;
+
     return MultiBlocProvider(
       providers: [
         BlocProvider<CreateVDBloc>(
@@ -49,7 +53,7 @@ class _VDCameraPageState extends State<VDCameraPage>
         BlocProvider<CameraBloc>(
             create: (BuildContext context) => CameraBloc(
                 getSplList: sl(),
-                params: widget.params,
+                params: params,
                 getGisData: sl(),
                 createVdBloc: context.read<CreateVDBloc>())),
       ],

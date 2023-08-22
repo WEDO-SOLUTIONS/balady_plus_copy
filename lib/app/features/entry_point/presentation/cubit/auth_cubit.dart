@@ -7,6 +7,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import 'package:flutter_uxcam/flutter_uxcam.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
@@ -91,6 +92,8 @@ class EntryPointCubit extends Cubit<EntryPointState> {
           userInfo: profile,
           errorMessage: "",
         ));
+        FlutterUxcam.setUserIdentity(profile.idNo);
+        FlutterUxcam.setUserProperty("name", profile.arName ?? "");
       });
       //MM sl<EtmamEntryPointCubit>().onLoadingApp();
 
@@ -143,6 +146,8 @@ class EntryPointCubit extends Cubit<EntryPointState> {
             userInfo: user,
             errorMessage: "",
           ));
+          FlutterUxcam.setUserIdentity(user.idNo);
+          FlutterUxcam.setUserProperty("name", user.arName ?? "");
         }
 
         final failureOrSuccessForCookie = await _getCookie(NoParams());

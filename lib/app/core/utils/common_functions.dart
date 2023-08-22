@@ -320,6 +320,13 @@ class CommonFunctions {
     }
   }
 
+  static Future<void> openUber(double latitude, double longitude) async {
+    final String url =
+        'https://m.uber.com/ul/?action=setPickup&pickup=my_location&dropoff[latitude]=$latitude&dropoff[longitude]=$longitude';
+
+    await externalLaunch(url);
+  }
+
   static String mapARNumbersToENNumbers(String numbers) {
     Map<String, String> arToEnMapper = {
       '٠': '0',

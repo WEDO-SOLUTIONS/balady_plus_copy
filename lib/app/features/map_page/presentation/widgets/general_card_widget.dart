@@ -260,9 +260,9 @@ class GeneralMapCardWidget extends StatelessWidget {
                                                 maxLines: 2,
                                               ),
                                               CustomVerticalSpace(height: 8),
-                                              /* GestureDetector(
+                                              GestureDetector(
                                                 onTap: () =>
-                                                    CommonFunctions.openMap(
+                                                    CommonFunctions.openUber(
                                                         dataPoint!
                                                             .markerPosition!
                                                             .latitude,
@@ -272,7 +272,7 @@ class GeneralMapCardWidget extends StatelessWidget {
                                                 child: Row(
                                                   children: [
                                                     CustomTextWidget(
-                                                      "go_to_location".tr(),
+                                                      "فتح تطبيق أوبر".tr(),
                                                       fontWeight:
                                                           AppFontWeight.bold,
                                                       fontSize: 12,
@@ -285,7 +285,7 @@ class GeneralMapCardWidget extends StatelessWidget {
                                                         Constants.goToLocation),
                                                   ],
                                                 ),
-                                              )*/
+                                              )
 
                                               /*  CustomVerticalSpace(height: 16),
                                       CustomTextWidget(

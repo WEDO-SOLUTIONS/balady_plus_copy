@@ -24,23 +24,28 @@ import '../widgets/main/quran_footer.dart';
 import '../widgets/main/quran_header.dart';
 
 class QuranPage extends StatefulWidget {
-  final int initialSuraNo;
-  const QuranPage({super.key, required this.initialSuraNo});
+  const QuranPage({super.key});
 
   @override
   State<QuranPage> createState() => _QuranPageState();
 }
 
 class _QuranPageState extends State<QuranPage> {
+  late final int initialSuraNo;
+
   @override
   void initState() {
     super.initState();
+
+    // WidgetsBinding.instance!.addPostFrameCallback((_) {});
   }
 
   @override
   Widget build(BuildContext context) {
+    initialSuraNo = ModalRoute.of(context)!.settings.arguments as int;
+
     return BlocProvider(
-      create: (context) => QuranBloc(initialSuraNo: widget.initialSuraNo),
+      create: (context) => QuranBloc(initialSuraNo: initialSuraNo),
       child: BlocBuilder<QuranBloc, QuranState>(
         builder: (context, state) {
           return BlocListener<QuranBloc, QuranState>(

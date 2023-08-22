@@ -10,11 +10,8 @@ import '../../../../_shared_feature_/shared_feature_exports.dart'
 import '../../personal_information_exports.dart' show PersonalInfoCard;
 
 class PersonalInformationPage extends StatefulWidget {
-  final SsoUserInfo userInfo;
-
   const PersonalInformationPage({
     super.key,
-    required this.userInfo,
   });
 
   @override
@@ -23,6 +20,8 @@ class PersonalInformationPage extends StatefulWidget {
 }
 
 class _PersonalInformationPageState extends State<PersonalInformationPage> {
+  late final SsoUserInfo userInfo;
+
   @override
   void initState() {
     super.initState();
@@ -31,6 +30,7 @@ class _PersonalInformationPageState extends State<PersonalInformationPage> {
 
   @override
   Widget build(BuildContext context) {
+    userInfo = ModalRoute.of(context)!.settings.arguments as SsoUserInfo;
     return Scaffold(
       appBar: DefaultAppBarWidget(
         title: 'personal_information'.tr(),
@@ -47,23 +47,23 @@ class _PersonalInformationPageState extends State<PersonalInformationPage> {
                   const SizedBox(height: 8),
                   CardParameter(
                     title: "full_name".tr(),
-                    value: widget.userInfo.arName ?? '',
+                    value: userInfo.arName ?? '',
                   ),
                   CardParameter(
                     title: "identity".tr(),
-                    value: widget.userInfo.idNo ?? '',
+                    value: userInfo.idNo ?? '',
                   ),
                   CardParameter(
                     title: "date_of_birth".tr(),
-                    value: widget.userInfo.getFormattedBirthDate(),
+                    value: userInfo.getFormattedBirthDate(),
                   ),
                   CardParameter(
                     title: "nationality".tr(),
-                    value: widget.userInfo.nationality ?? '',
+                    value: userInfo.nationality ?? '',
                   ),
                   CardParameter(
                     title: "sex".tr(),
-                    value: widget.userInfo.getGender(),
+                    value: userInfo.getGender(),
                   ),
                 ],
               ),
@@ -74,11 +74,11 @@ class _PersonalInformationPageState extends State<PersonalInformationPage> {
                   const SizedBox(height: 8),
                   CardParameter(
                     title: "phone_number".tr(),
-                    value: widget.userInfo.getPhone(),
+                    value: userInfo.getPhone(),
                   ),
                   CardParameter(
                     title: "email".tr(),
-                    value: widget.userInfo.getEmail(),
+                    value: userInfo.getEmail(),
                   ),
                 ],
               ),

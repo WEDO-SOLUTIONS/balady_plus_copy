@@ -10,14 +10,17 @@ import '../create_objection_bloc/create_objection_bloc.dart';
 import '../widgets/create_objection_page/objection_request_app_bar.dart';
 
 class CreateObjectionPage extends StatefulWidget {
-  final CreateObjectionPageParams params;
-  const CreateObjectionPage({super.key, required this.params});
+  const CreateObjectionPage({
+    super.key,
+  });
 
   @override
   State<CreateObjectionPage> createState() => _CreateObjectionPageState();
 }
 
 class _CreateObjectionPageState extends State<CreateObjectionPage> {
+  late final CreateObjectionPageParams params;
+
   @override
   void initState() {
     super.initState();
@@ -25,10 +28,13 @@ class _CreateObjectionPageState extends State<CreateObjectionPage> {
 
   @override
   Widget build(BuildContext context) {
+    params =
+        ModalRoute.of(context)!.settings.arguments as CreateObjectionPageParams;
+
     return BlocProvider(
       create: (context) => CreateObjectionBloc(
-        details: widget.params.details,
-        item: widget.params.item,
+        details: params.details,
+        item: params.item,
       ),
       child: BlocConsumer<CreateObjectionBloc, CreateObjectionState>(
           listener: (context, state) {

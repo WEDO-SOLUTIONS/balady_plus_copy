@@ -8,8 +8,7 @@ import '../widgets/search/search_app_bar.dart';
 import '../widgets/search/search_card_widget.dart';
 
 class QuranSearchPage extends StatefulWidget {
-  final Map<int, Map<int, QuranSuraModel>>? suras;
-  const QuranSearchPage({super.key, this.suras});
+  const QuranSearchPage({super.key});
 
   @override
   State<QuranSearchPage> createState() => _QuranSearchPageState();
@@ -17,11 +16,21 @@ class QuranSearchPage extends StatefulWidget {
 
 class _QuranSearchPageState extends State<QuranSearchPage> {
   final Debouncer _debouncer = Debouncer(milliseconds: 500);
+  late Map<int, Map<int, QuranSuraModel>>? suras;
+
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance!.addPostFrameCallback((_) {});
+  }
 
   @override
   Widget build(BuildContext context) {
+    suras = ModalRoute.of(context)!.settings.arguments
+        as Map<int, Map<int, QuranSuraModel>>;
     return BlocProvider(
-      create: (context) => SearchBloc(suras: widget.suras),
+      create: (context) => SearchBloc(suras: suras),
       child: BlocConsumer<SearchBloc, SearchState>(
         listener: (context, state) {
           // TODO: implement listener

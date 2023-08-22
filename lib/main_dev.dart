@@ -1,6 +1,7 @@
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart' show runApp;
 import 'package:flutter_bloc/flutter_bloc.dart' show Bloc;
+import 'package:flutter_uxcam/flutter_uxcam.dart';
 import 'package:localize_and_translate/localize_and_translate.dart'
     show LocalizedApp;
 import 'package:sentry_flutter/sentry_flutter.dart';
@@ -24,6 +25,7 @@ void main() async {
       customSink: "BaladyDGis",
     ),
   );
+
   await SentryFlutter.init(
     (options) {
       options.dsn =

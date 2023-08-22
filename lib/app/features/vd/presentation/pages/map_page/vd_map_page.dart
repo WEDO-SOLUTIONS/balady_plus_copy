@@ -19,19 +19,20 @@ class VDMapScreen extends StatefulWidget {
   final bool showSearchPaddingScreen;
   final bool showSearch;
   final bool closeIcon;
-  final MapScreenParams? params;
 
-  VDMapScreen(
-      {this.showSearch = false,
-      this.closeIcon = false,
-      this.showSearchPaddingScreen = false,
-      this.params});
+  VDMapScreen({
+    this.showSearch = false,
+    this.closeIcon = false,
+    this.showSearchPaddingScreen = false,
+  });
 
   @override
   _VDMapScreen createState() => _VDMapScreen();
 }
 
 class _VDMapScreen extends State<VDMapScreen> {
+  late final MapScreenParams? params;
+
   @override
   void initState() {
     super.initState();
@@ -40,11 +41,13 @@ class _VDMapScreen extends State<VDMapScreen> {
 
   @override
   Widget build(BuildContext context) {
+    params = ModalRoute.of(context)!.settings.arguments as MapScreenParams;
+
     return Scaffold(
         backgroundColor: AppColor.white4,
         appBar: null,
         body: BlocProvider(
-          create: (context) => MapBloc(getGisData: sl(), params: widget.params),
+          create: (context) => MapBloc(getGisData: sl(), params: params),
           child: BlocConsumer<MapBloc, MapState>(
             listener: (context, state) {
               // TODO: implement listener

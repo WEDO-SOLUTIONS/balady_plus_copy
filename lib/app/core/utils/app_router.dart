@@ -151,76 +151,18 @@ class AppRouter {
       case RouteName.etmamMainPage:
         return MaterialPageRoute(builder: (_) => const EtmamMainPage());
 
-      case RouteName.inappWebview:
-        return MaterialPageRoute(
-          builder: (_) => InAppWebViewPage(
-            args: settings.arguments as ({String title, String url}),
-          ),
-        );
       // bottom-navigation-bar page
       case RouteName.bottomNavigation:
         // return MaterialPageRoute(builder: (_) => const BottomNavigationPage());
         return SliderUpPage(page: const b.BottomNavigationPage());
 
-      case RouteName.dmsImageFullScreen:
-        String url = settings.arguments as String;
-        return MaterialPageRoute(
-          builder: (_) => ViewDMSImageScreen(url: url),
-        );
       //! Services
-      case RouteName.serviceCards:
-        return MaterialPageRoute(
-          builder: (_) => ServiceCardsPage(
-            service: settings.arguments as ServiceEntity,
-          ),
-        );
-      //? General Services
-      case RouteName.prayerTimes:
-        return MaterialPageRoute(
-          builder: (_) => PrayerTimesPage(
-            cubit: settings.arguments as PrayerTimesCubit,
-          ),
-        );
-      case RouteName.qiblahCompass:
-        return MaterialPageRoute(
-          builder: (_) => QiblahWebViewPage(
-            args: (
-              title: "",
-              url: "https://qiblafinder.withgoogle.com/intl/ar/finder/ar"
-            ),
-          ),
-        );
+
       case RouteName.visualDistortionPage:
         return MaterialPageRoute(
           builder: (_) => const VisualDistortionScreen(),
         );
-      case RouteName.visualDistortionDetailsPage:
-        return MaterialPageRoute(
-          builder: (_) => VisualDistortionDetailsScreen(
-            visualDistortion: settings.arguments as VisualDistortion,
-          ),
-        );
 
-      //? Municipal Services
-      case RouteName.municipalAdvisor:
-        return MaterialPageRoute(
-          builder: (_) => const MunicipalAdvisorPage(),
-        );
-      case RouteName.locationPage:
-        return MaterialPageRoute(
-          builder: (_) => LocationPage(
-            bloc: settings.arguments as MunicipalAdvisorBloc,
-          ),
-        );
-
-      //! Setting
-      //? personalInformation page
-      case RouteName.personalInformation:
-        return MaterialPageRoute(
-          builder: (_) => PersonalInformationPage(
-            userInfo: settings.arguments as SsoUserInfo,
-          ),
-        );
       //? dashboard page
       case RouteName.dashboard:
         return MaterialPageRoute(builder: (_) => const DashBoardPage());
@@ -232,12 +174,7 @@ class AppRouter {
       //? invoices page
       case RouteName.invoices:
         return MaterialPageRoute(builder: (_) => const InvoicesPage());
-      case RouteName.invoiceDetails:
-        return MaterialPageRoute(
-          builder: (_) => InvoiceDetailsPage(
-            invoiceEntity: settings.arguments as InvoiceEntity,
-          ),
-        );
+
       //? licenses page
       case RouteName.licenses:
         return MaterialPageRoute(builder: (_) => const LicensesPage());
@@ -267,48 +204,16 @@ class AppRouter {
         return MaterialPageRoute(
             builder: (_) => const ObjectableTransactionsPage());
 
-      case RouteName.createObjectionDetails:
-        CreateObjectionPageParams params =
-            settings.arguments as CreateObjectionPageParams;
-        return MaterialPageRoute(
-          builder: (_) => CreateObjectionPage(
-            params: params,
-          ),
-        );
-
       // -------  VD ---------
-      case RouteName.vdCameraPage:
-        CameraParamsPage params = settings.arguments as CameraParamsPage;
 
-        return MaterialPageRoute(
-          builder: (_) => VDCameraPage(
-            params: params,
-          ),
-        );
       case RouteName.vdCreateVDDetailsPage:
-        // CreateVDParamsPage params = settings.arguments as CreateVDParamsPage;
         return MaterialPageRoute(
           builder: (_) => const CreateVDDetailsPage(),
         );
 
-      case RouteName.vdMapRoute:
-        MapScreenParams? params = settings.arguments != null
-            ? settings.arguments as MapScreenParams
-            : null;
-        return MaterialPageRoute(
-          builder: (_) => VDMapScreen(params: params),
-        );
       case RouteName.vdGuestOtpScreen:
         return MaterialPageRoute(
           builder: (_) => VDGuestOtpScreen(),
-        );
-
-      case RouteName.successRoute:
-        final args = settings.arguments as SuccessScreenArgs;
-        return MaterialPageRoute(
-          builder: (_) => SuccessScreen(
-            successScreenArgs: args,
-          ),
         );
 
       // ------ Commercial License -----
@@ -321,13 +226,6 @@ class AppRouter {
       case RouteName.walletPage:
         return MaterialPageRoute(
           builder: (_) => const WalletScreen(),
-        );
-      case RouteName.businessLicensePage:
-        final WalletItem? item = settings.arguments as WalletItem?;
-        return MaterialPageRoute(
-          builder: (_) => BusinessLicenseScreen(
-            item: item,
-          ),
         );
 
       // ------ Violations -------
@@ -418,7 +316,6 @@ class AppRouter {
         );
 
       case RouteName.createDCDetailsPage:
-        // CreateVDParamsPage params = settings.arguments as CreateVDParamsPage;
         return MaterialPageRoute(
           builder: (_) => const CreateDCDetailsPage(),
         );
@@ -512,7 +409,6 @@ class AppRouter {
 
       case RouteName.appointmentDetailsRoute:
         final args = settings.arguments as AppointmentDetailsScreenArgs;
-        //final args = settings.arguments as int;
         return MaterialPageRoute(
           builder: (_) => AppointmentDetailsScreen(
             // appointmentId: args,
@@ -524,7 +420,6 @@ class AppRouter {
         );
 
       case RouteName.newMSRPage:
-        //final args = settings.arguments as int;
         return MaterialPageRoute(
           builder: (_) => NewMSRPage(),
         );
@@ -576,13 +471,6 @@ class AppRouter {
           ),
         );
 
-      case RouteName.quranScreen:
-        final int initialSuraNo = settings.arguments as int;
-        return MaterialPageRoute(
-          builder: (_) => QuranPage(
-            initialSuraNo: initialSuraNo,
-          ),
-        );
       case RouteName.menuQuranPage:
         return MaterialPageRoute(
           builder: (_) => MenuQuranPage(),
@@ -597,12 +485,6 @@ class AppRouter {
         return MaterialPageRoute(
           builder: (_) => QuranDoaaPage(),
         );
-
-      case RouteName.quranSearchPage:
-        Map<int, Map<int, QuranSuraModel>>? suras =
-            settings.arguments as Map<int, Map<int, QuranSuraModel>>;
-
-        return MaterialPageRoute(builder: (_) => QuranSearchPage(suras: suras));
 
       case RouteName.ZmZmPointsPage:
         return MaterialPageRoute(

@@ -8,15 +8,17 @@ import '../../../../core/utils/enums/visual_distortion.dart';
 import '../../../_shared_feature_/shared_feature_exports.dart';
 
 class VisualDistortionDetailsScreen extends StatelessWidget {
-  const VisualDistortionDetailsScreen({
+  VisualDistortionDetailsScreen({
     Key? key,
-    required this.visualDistortion,
   }) : super(key: key);
 
-  final VisualDistortion visualDistortion;
+  late final VisualDistortion visualDistortion;
 
   @override
   Widget build(BuildContext context) {
+    visualDistortion =
+        ModalRoute.of(context)!.settings.arguments as VisualDistortion;
+
     return Scaffold(
       appBar: DefaultAppBarWidget(
         actions: [

@@ -14,16 +14,17 @@ import '../widgets/custom_spaces_widgets.dart';
 import '../widgets/texts/custom_text_widget.dart';
 
 class SuccessScreen extends StatefulWidget {
-  final SuccessScreenArgs successScreenArgs;
-
-  const SuccessScreen({Key? key, required this.successScreenArgs})
-      : super(key: key);
+  const SuccessScreen({
+    Key? key,
+  }) : super(key: key);
 
   @override
   State<SuccessScreen> createState() => _SuccessScreenState();
 }
 
 class _SuccessScreenState extends State<SuccessScreen> {
+  late final SuccessScreenArgs successScreenArgs;
+
   @override
   void initState() {
     // TODO: implement initState
@@ -33,6 +34,9 @@ class _SuccessScreenState extends State<SuccessScreen> {
 
   @override
   Widget build(BuildContext context) {
+    successScreenArgs =
+        ModalRoute.of(context)!.settings.arguments as SuccessScreenArgs;
+
     return Scaffold(
         appBar: null,
         body: Container(
@@ -59,11 +63,11 @@ class _SuccessScreenState extends State<SuccessScreen> {
                 ),
               ),
               SuccessBody(
-                successScreenArgs: widget.successScreenArgs,
+                successScreenArgs: successScreenArgs,
               ),
               SuccessButtons(
-                fromHomePage: widget.successScreenArgs.fromHomePage ?? false,
-                pageType: widget.successScreenArgs.type,
+                fromHomePage: successScreenArgs.fromHomePage ?? false,
+                pageType: successScreenArgs.type,
               )
             ],
           ),

@@ -798,6 +798,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.7"
+  flutter_uxcam:
+    dependency: "direct main"
+    description:
+      name: flutter_uxcam
+      sha256: cf654988f549ad30ec3eec4f8c0574ebf7583dc76068f3f0b385e336798294b4
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.4.3"
   flutter_web_plugins:
     dependency: transitive
     description: flutter
@@ -1977,6 +1985,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.3"
+  visibility_detector:
+    dependency: transitive
+    description:
+      name: visibility_detector
+      sha256: dd5cc11e13494f432d15939c3aa8ae76844c42b723398643ce9addb88a5ed420
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.4.0+2"
   watcher:
     dependency: transitive
     description:

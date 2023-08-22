@@ -12,11 +12,13 @@ import '../widgets/wallet_label_info.dart';
 import '../widgets/wallet_user_image_widget.dart';
 
 class BusinessLicenseScreen extends StatelessWidget {
-  final WalletItem? item;
-  const BusinessLicenseScreen({Key? key, this.item}) : super(key: key);
+  late final WalletItem? item;
+  BusinessLicenseScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    item = ModalRoute.of(context)!.settings.arguments as WalletItem;
+
     return BlocProvider(
       create: (context) => WalletDetailsBloc(item),
       child: BlocConsumer<WalletDetailsBloc, WalletDetailsState>(

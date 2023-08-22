@@ -20,6 +20,11 @@ class QuranDoaaPage extends StatefulWidget {
 
 class _QuranDoaaPageState extends State<QuranDoaaPage> {
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: DoaaAppBar(),

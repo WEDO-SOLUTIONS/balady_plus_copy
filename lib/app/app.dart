@@ -5,6 +5,7 @@ import 'package:country_picker/country_picker.dart' show CountryLocalizations;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart' show BlocProvider;
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_uxcam/flutter_uxcam.dart';
 import 'package:localize_and_translate/localize_and_translate.dart'
     show Translation, translator;
 
@@ -15,6 +16,7 @@ import './core/services/services_exports.dart' show NavigationService;
 import './core/utils/utils_exports.dart'
     show AppColor, AppConfig, AppRouter, EtmamRoutesNames, RouteName;
 import './core/dependency_injection/dependency_injection_exports.dart' show sl;
+import 'core/utils/routes.dart';
 import 'features/appointments/presentation/pages/appointments_list_screen.dart';
 import 'features/bottom_navigation/presentation/pages/bottom_navigation_page.dart';
 import 'features/entry_point/presentation/cubit/auth_cubit.dart';
@@ -29,6 +31,17 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    FlutterUxcam
+        .optIntoSchematicRecordings(); // Confirm that you have user permission for screen recording
+    FlutterUxConfig config = FlutterUxConfig(
+        enableAdvancedGestureRecognition: true,
+        enableCrashHandling: true,
+        enableMultiSessionRecord: true,
+        enableNetworkLogging: true,
+        userAppKey: "2w1otnta9bvvhzo",
+        enableAutomaticScreenNameTagging: false);
+    FlutterUxcam.startWithConfiguration(config);
+    FlutterUxcam.setAutomaticScreenNameTagging(false);
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(
@@ -52,20 +65,17 @@ class App extends StatelessWidget {
             ),
 
             builder: EasyLoading.init(builder: BotToastInit()),
-            navigatorObservers: [BotToastNavigatorObserver()],
+            navigatorObservers: [
+              BotToastNavigatorObserver(),
+              FlutterUxcamNavigatorObserver(),
+            ],
             localizationsDelegates: translator.delegates.toList()
               ..add(CountryLocalizations.delegate), // Android + iOS Delegates
             locale: translator.activeLocale, // Active locale
             supportedLocales: translator.locals(), // Locals list
             initialRoute: RouteName.splash,
             onGenerateRoute: AppRouter.allRoutes,
-            routes: {
-              RouteName.bottomNavigation: (context) =>
-                  const BottomNavigationPage(),
-              RouteName.AppointmentsListScreen: (context) =>
-                  const AppointmentsListScreen(),
-              EtmamRoutesNames.myOrdersPage: (context) => const OrdersPage()
-            },
+            routes: Routes.routes(),
           )),
     );
   }

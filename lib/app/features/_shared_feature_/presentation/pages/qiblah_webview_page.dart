@@ -16,11 +16,8 @@ import '../../../entry_point/presentation/cubit/auth_cubit.dart';
 import '../../shared_feature_exports.dart' show DefaultAppBarWidget;
 
 class QiblahWebViewPage extends StatefulWidget {
-  final ({String title, String url}) args;
-
   const QiblahWebViewPage({
     super.key,
-    required this.args,
   });
 
   @override
@@ -31,6 +28,8 @@ class _QiblahWebViewPageState extends State<QiblahWebViewPage> {
   late StreamController<double?> _progessStream;
   InAppWebViewController? _controller;
   bool isLoading = true;
+  late final ({String title, String url}) args;
+
   @override
   void initState() {
     super.initState();
@@ -41,6 +40,11 @@ class _QiblahWebViewPageState extends State<QiblahWebViewPage> {
 
   @override
   Widget build(BuildContext context) {
+    args = ModalRoute.of(context)!.settings.arguments as ({
+      String title,
+      String url
+    });
+
     return Scaffold(
       appBar: DefaultAppBarWidget(
         title: "qiblahCompass".tr(),
@@ -57,7 +61,7 @@ class _QiblahWebViewPageState extends State<QiblahWebViewPage> {
                 },
                 initialUrlRequest: URLRequest(
                   // url: Uri.parse('https://flutter.dev/'),
-                  url: Uri.parse(widget.args.url),
+                  url: Uri.parse(args.url),
                 ),
                 androidOnGeolocationPermissionsShowPrompt:
                     (controller, origin) async {

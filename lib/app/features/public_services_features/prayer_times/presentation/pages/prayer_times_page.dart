@@ -24,11 +24,8 @@ import '../../prayer_times_exports.dart';
 import '../widgets/prayer_unkown_location.dart';
 
 class PrayerTimesPage extends StatefulWidget {
-  final PrayerTimesCubit cubit;
-
   const PrayerTimesPage({
     super.key,
-    required this.cubit,
   });
 
   @override
@@ -37,19 +34,23 @@ class PrayerTimesPage extends StatefulWidget {
 
 class _PrayerTimesPageState extends State<PrayerTimesPage> {
   @override
+  late final PrayerTimesCubit cubit;
+
   void initState() {
     super.initState();
 
-    widget.cubit.getPrayerTime();
-    widget.cubit.getPrayerTimeRange();
+    cubit.getPrayerTime();
+    cubit.getPrayerTimeRange();
 
     CommonFunctions.sendEventToAnalytics(AppEvents.prayingTimes);
   }
 
   @override
   Widget build(BuildContext context) {
+    cubit = ModalRoute.of(context)!.settings.arguments as PrayerTimesCubit;
+
     return BlocProvider.value(
-      value: widget.cubit,
+      value: cubit,
       child: Scaffold(
         body: Column(
           children: [
@@ -151,7 +152,7 @@ class _PrayerTimesPageState extends State<PrayerTimesPage> {
                           }
                           if (state.userLocationUnkown == true) {
                             return UnKownPrayerLocation(
-                              onTap: () => widget.cubit.getPrayerTime(),
+                              onTap: () => cubit.getPrayerTime(),
                             );
                           }
                           if (state.nextPrayer != null)
@@ -175,8 +176,8 @@ class _PrayerTimesPageState extends State<PrayerTimesPage> {
                     if (state.status ==
                         BlocRequestStatus.submissionGetFailure) {
                       return ReloadWidget(onTab: () {
-                        widget.cubit.getPrayerTime();
-                        widget.cubit.getPrayerTimeRange();
+                        cubit.getPrayerTime();
+                        cubit.getPrayerTimeRange();
                       });
                     }
                     return Column(

@@ -14,11 +14,8 @@ import '../../../entry_point/presentation/cubit/auth_cubit.dart';
 import '../../shared_feature_exports.dart' show DefaultAppBarWidget;
 
 class InAppWebViewPage extends StatefulWidget {
-  final ({String title, String url}) args;
-
   const InAppWebViewPage({
     super.key,
-    required this.args,
   });
 
   @override
@@ -28,6 +25,8 @@ class InAppWebViewPage extends StatefulWidget {
 class _InAppWebViewPageState extends State<InAppWebViewPage> {
   late StreamController<double?> _progessStream;
   InAppWebViewController? _controller;
+  late final ({String title, String url}) args;
+
   @override
   void initState() {
     super.initState();
@@ -38,6 +37,11 @@ class _InAppWebViewPageState extends State<InAppWebViewPage> {
 
   @override
   Widget build(BuildContext context) {
+    args = ModalRoute.of(context)!.settings.arguments as ({
+      String title,
+      String url
+    });
+
     return Scaffold(
       appBar: DefaultAppBarWidget(
         title: "back".tr(),
@@ -53,7 +57,7 @@ class _InAppWebViewPageState extends State<InAppWebViewPage> {
                 },
                 initialUrlRequest: URLRequest(
                   // url: Uri.parse('https://flutter.dev/'),
-                  url: Uri.parse(widget.args.url),
+                  url: Uri.parse(args.url),
                 ),
                 initialOptions: InAppWebViewGroupOptions(
                   crossPlatform: InAppWebViewOptions(
