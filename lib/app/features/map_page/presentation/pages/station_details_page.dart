@@ -1,5 +1,6 @@
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
 import 'package:balady_plus/app/features/map_page/data/model/excavations.dart';
+import 'package:balady_plus/app/features/map_page/extensions/directory_object_ext.dart';
 import 'package:balady_plus/app/features/map_page/presentation/widgets/map_details_header.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
@@ -108,9 +109,7 @@ class StationDetailsPage extends StatelessWidget {
               ),
               MapDetailsField(
                 title: "الشارع",
-                subTitle: item.$1.address?.components.firstOrNull?.streetAddress
-                        ?.street ??
-                    "",
+                subTitle: item.$1.makeAddress(),
               ),
             ]),
           ),

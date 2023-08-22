@@ -17,6 +17,7 @@ import '../../../../core/services/local/navigation_services.dart';
 import '../../../../core/utils/common_functions.dart';
 import '../../../../core/utils/constants/app_style.dart';
 import '../../../../core/utils/constants/remote_config.dart';
+import 'package:balady_plus/app/features/map_page/extensions/directory_object_ext.dart';
 import '../../../../core/utils/enums/app_font_weights.dart';
 import '../../../_shared_feature_/presentation/components/bottom_sheets/bottom_sheet_with_actions.dart';
 import '../../../_shared_feature_/presentation/dialogs/bottom_sheet_dialogs.dart';
@@ -169,16 +170,7 @@ class GeneralMapCardWidget extends StatelessWidget {
                                               ),
                                               CustomVerticalSpace(height: 8),
                                               CustomTextWidget(
-                                                dataPoint?.address?.components
-                                                        ?.firstWhereOrNull(
-                                                          (element) =>
-                                                              element
-                                                                  ?.streetAddress !=
-                                                              null,
-                                                        )
-                                                        ?.streetAddress
-                                                        ?.street ??
-                                                    "",
+                                                dataPoint?.makeAddress() ?? "",
                                                 fontColor: AppColor
                                                     .blackModern500Light,
                                                 fontSize: 12,
@@ -315,14 +307,7 @@ class GeneralMapCardWidget extends StatelessWidget {
                             ),
                             const SizedBox(height: 6),
                             Text(
-                              dataPoint.address?.components
-                                      ?.firstWhereOrNull(
-                                        (element) =>
-                                            element?.streetAddress != null,
-                                      )
-                                      ?.streetAddress
-                                      ?.street ??
-                                  'Address',
+                              dataPoint.makeAddress(),
                               style: AppStyle.serviceDescriptionStyle,
                             ),
                             const CustomVerticalSpace(height: 8),
