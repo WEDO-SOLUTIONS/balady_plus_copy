@@ -304,6 +304,11 @@ class IconPath {
   //Map
   static const investmentIcon = '${_svgIconPath}invetment_icon$_svg';
   static const mapLocationIcon = '${_svgIconPath}map_location_icon$_svg';
+  static const searchSuggestIcon = '${_svgIconPath}search_normal$_svg';
+  static const closeIcon = '${_svgIconPath}close$_svg';
+
+
+
 
   // Building Requirements
   static const checked = '${_svgIconPath}checked$_svg';

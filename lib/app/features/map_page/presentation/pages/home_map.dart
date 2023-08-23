@@ -35,6 +35,19 @@ import '../../../home_page/home_exports.dart' show HomeAppBar, CircleIcon;
 
 import 'map_screen_urbi.dart';
 
+
+
+import '../../../../core/dependency_injection/injection_container.dart';
+
+import '../../../../core/utils/constants/route_names.dart';
+import '../../../home_page/presentation/widgets/home_app_bar/circle_icon.dart';
+import '../../../home_page/presentation/widgets/home_tag.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
+import 'package:balady_plus/app/features/map_page/presentation/mvvm/layers_gis_view_model.dart';
+import 'package:balady_plus/app/features/map_page/data/model/layers.dart';
+import 'package:balady_plus/app/features/bottom_navigation/presentation/cubits/bottom_nav_bar_cubit.dart';
+
+
 class HomeMap extends StatelessWidget {
   const HomeMap({super.key});
 
@@ -47,11 +60,41 @@ class HomeMap extends StatelessWidget {
         const MapScreenUrbi(),
         Container(
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               //    const HomeAppBar(),
-              SizedBox(
-                height: 16,
+              Padding(
+                padding: EdgeInsets.only(
+                    top: MediaQuery.of(context).padding.top > 20
+                        ? MediaQuery.of(context).padding.top - 20
+                        : 0,
+                    left: 10,
+                    bottom: 10,
+                    right: 10),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    GestureDetector(
+                        onTap: () {
+                          sl<BottomNavBarCubit>().onChangeBottomNavBar(2);
+                        },
+                        child: CircleIcon(
+                          icon: "assets/icons/svg/user.svg",
+                        )),
+                    GestureDetector(
+                        onTap: () {
+                          Navigator.pushNamed(
+                              context, RouteName.notificationPage);
+                        },
+                        child: CircleIcon(
+                          icon: "assets/icons/svg/notification_active.svg",
+                          iconSize: 40,
+                        )),
+                  ],
+                ),
               ),
+              const SizedBox(height: 16),
               const SearchMapWidget(),
               /*ValueListenableBuilder<bool>(
                   valueListenable: mapViewModel.viewHomeBottomSheet,
