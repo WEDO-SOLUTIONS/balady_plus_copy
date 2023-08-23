@@ -7,6 +7,7 @@ import 'dart:math' show abs;
 import 'package:geolocator/geolocator.dart' as geoLocator;
 
 import 'package:balady_plus/app/core/base/base_view_model.dart';
+import 'package:balady_plus/app/features/map_page/data/model/states.dart';
 import 'package:balady_plus/app/features/map_page/extensions/search_category_ext.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/foundation.dart';
@@ -63,6 +64,9 @@ class MapViewModel extends BaseViewModel {
   }
   final selectedPointId = ValueNotifier<DgisObjectIdMessage?>(null);
   final selectedPoint = ValueNotifier<PointLayersData?>(null);
+
+  ValueNotifier<IndoorState> indoorState =
+      ValueNotifier(IndoorState.disabled());
 
   ValueNotifier<SearchCategoryMessage?> selectedCategory = ValueNotifier(null);
 
@@ -472,6 +476,32 @@ class MapViewModel extends BaseViewModel {
       controller.markerWithPhotoTapEvents.listen(
         _onPanoramaTap,
       ),
+    );
+
+    _subscriptions.add(
+      controller.indoorLevelNames.listen(
+        _indoorLevelsListener,
+      ),
+    );
+    _subscriptions.add(
+      controller.indoorActiveIndex.listen(
+        _indoorActiveLevelListener,
+      ),
+    );
+  }
+
+  void _indoorLevelsListener(IndoorLevelsEvent event) {
+    indoorState.value = event.levelNames.isEmpty
+        ? IndoorState.disabled()
+        : indoorState.value.copyWith(
+            hasLevels: true,
+            levelNames: event.levelNames,
+          );
+  }
+
+  void _indoorActiveLevelListener(IndoorActiveLevelEvent event) {
+    indoorState.value = indoorState.value.copyWith(
+      activeLevel: event.index,
     );
   }
 
