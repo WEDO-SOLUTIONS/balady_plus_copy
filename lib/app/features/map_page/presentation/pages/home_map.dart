@@ -2,6 +2,7 @@ import 'package:balady_plus/app/core/services/services_exports.dart';
 import 'package:balady_plus/app/features/entry_point/presentation/cubit/auth_cubit.dart';
 import 'package:balady_plus/app/features/map_page/extensions/search_category_ext.dart';
 import 'package:balady_plus/app/features/map_page/presentation/dialogs/map_layer_dialog.dart';
+import 'package:balady_plus/app/features/map_page/presentation/widgets/indoor_control_widget.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -238,6 +239,16 @@ class HomeMap extends StatelessWidget {
                 ? Center(child: CustomCircularLoadingWidget())
                 : const SizedBox();
           },
+        ),
+        Align(
+          alignment: Alignment.centerLeft,
+          child: Padding(
+            padding: const EdgeInsets.only(left: 16),
+            child: IndoorControl(
+              indoorState: mapViewModel.indoorState,
+              onLevelTaped: mapViewModel.onLevelTap,
+            ),
+          ),
         ),
       ],
     );
