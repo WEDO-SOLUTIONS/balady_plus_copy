@@ -37,6 +37,7 @@ class AppColor {
   static const Color duckEggBlue = Color(0xFFf6fdfd);
   static const Color algae = Color(0xFF4dac5f);
   static const Color greenishYellow500 = Color(0xFF9bd65c);
+  static const Color grayLight100 = Color(0xffF3F7F8);
   static const Color blueSkyLight800 = Color(0xff155f75);
   static const Color greenishYellow800 = Color(0xFF4f8a0f);
   static const Color lichen = Color(0xFF95b46a);
@@ -67,6 +68,7 @@ class AppColor {
   static const greyishBrown = Color(0xff404040);
   static const primary800Light = Color(0xff1c7372);
   static const secondary600Light = Color(0xff84ad57);
+  static const greenLight800 = Color(0xff2C6F83);
   static const greyishTeal27 = Color(0x4568a1a1);
   static const primary500Light = Color(0xff68a1a1);
   static const black54 = Color(0x8a111111);
@@ -93,6 +95,7 @@ class AppColor {
   static const secondary900Light = Color(0xff4f8a0f);
   static const secondary800Light = Color(0xff619627);
   static const dirtBrown = Color(0xff8d5a39);
+  static const greenLight600 = Color(0xff5B8F9E);
   static const dullOrange = Color(0xffc8a83a);
   static const terraCotta = Color(0xffd26f33);
   static const salmon = Color(0xfff97777);
@@ -111,8 +114,12 @@ class AppColor {
   static const primary400Light = Color(0xff81b1b1);
   static const secondary100Light = Color(0xffdce8cf);
   static const secondary400Light = Color(0xffa7c587);
+  static const lightOrange100 = Color(0xffE7B366);
+  static const lightOrange200 = Color(0xffD48C82);
   static const geyser = Color(0xffCDE0E0);
   static const veryLightPink0 = Color(0x00f2f2f2);
+  static const grayLight = Color(0xffE8EFF1);
+  static const blue100 = Color(0xff308FAB);
   static const primary900Light16 = Color(0x29036362);
   static const scaffoldBackground = Color(0xfff5f8fa);
   static const macaroniAndCheese = Color(0xffedb629);
@@ -130,6 +137,10 @@ class AppColor {
   static const Color kGray191 = Color.fromARGB(255, 191, 191, 191);
   static const Color kGray230 = Color.fromARGB(255, 230, 230, 230);
   static const Color kGray153 = Color.fromARGB(255, 153, 153, 153);
+  static const bleuDeFrance = Color(0xFF2C83DB);
+  static const brightGray = Color(0xFFEAF0F6);
+  static const ghostWhite = Color(0xFFF7F9FC);
+  static const uclaBlue = Color(0xFF57739A);
 
   static const Color greyStarRating = Color(0xffd9d9d9);
   static const Color yellowStarRating = Color(0xfff7bf35);
@@ -140,7 +151,10 @@ class AppColor {
   static const Color warmGreyText = Color(0xff808080);
 
   static const Color green60 = Color(0x99E6EFEF);
+  static const maastrichtBlue = Color(0xFF0E1C2F);
+  static const indigo = Color(0xFF264269);
 
   static const Color athkarAppbarGreen = Color(0xff1C7372);
   static const Color athkarAppbarGreen2 = Color(0xff127F4C);
+  static const Color grayOpacity = Color.fromRGBO(255, 255, 255, 0.42);
 }

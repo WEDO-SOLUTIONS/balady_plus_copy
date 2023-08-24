@@ -269,6 +269,12 @@ class AppStyle {
     fontFamily: fontFamily,
     height: 1.0,
   );
+  static final s14 = TextStyle(
+    fontSize: 14.0,
+    fontWeight: AppFontWeight.semiBold.fontWeight,
+    color: AppColor.maastrichtBlue,
+    fontFamily: fontFamily,
+  );
 
   static final requestParamterValueTextStle = TextStyle(
     fontSize: 12.0,
@@ -398,6 +404,175 @@ class AppStyle {
   static final countTextAthkarStyle = TextStyle(
     color: AppColor.blackModern900Light,
     fontSize: 18,
+    fontWeight: AppFontWeight.bold.fontWeight,
+    fontFamily: fontFamily,
+  );
+  // Violation page styling
+  static final violationSelectGuideTitlePageStyle = TextStyle(
+    color: AppColor.white,
+    fontSize: 24,
+    fontWeight: AppFontWeight.bold.fontWeight,
+    fontFamily: fontFamily,
+  );
+  static final violationSelectGuideSubtitleStyle = TextStyle(
+    color: AppColor.white,
+    fontSize: 14,
+    fontWeight: AppFontWeight.bold.fontWeight,
+    fontFamily: fontFamily,
+  );
+  static final violationSelectOptionTitleStyle = TextStyle(
+    color: AppColor.white,
+    fontSize: 14,
+    fontWeight: AppFontWeight.bold.fontWeight,
+    fontFamily: fontFamily,
+  );
+  static final violationSelectOptionSubtitleStyle = TextStyle(
+    color: AppColor.grayOpacity,
+    fontSize: 12,
+    fontWeight: AppFontWeight.bold.fontWeight,
+    fontFamily: fontFamily,
+  );
+  static final violationCreateAppBarTitle = TextStyle(
+    color: AppColor.blackModern900Light,
+    fontSize: 16,
+    fontWeight: AppFontWeight.bold.fontWeight,
+    fontFamily: fontFamily,
+  );
+  static final violationCreateTitle = TextStyle(
+    color: AppColor.blackModern900Light,
+    fontSize: 20,
+    fontWeight: AppFontWeight.bold.fontWeight,
+    fontFamily: fontFamily,
+  );
+  static final violatioCreateSubtitle = TextStyle(
+    color: AppColor.blackModern800Light,
+    fontSize: 14,
+    fontWeight: AppFontWeight.bold.fontWeight,
+    fontFamily: fontFamily,
+  );
+  static final violationCreateStyle = TextStyle(
+    color: AppColor.blackModern50Light,
+    fontSize: 14,
+    fontWeight: AppFontWeight.bold.fontWeight,
+    fontFamily: fontFamily,
+  );
+  static final violationLocationAdressStyle = TextStyle(
+    color: AppColor.blackModern800Light,
+    fontSize: 15,
+    fontWeight: AppFontWeight.bold.fontWeight,
+    fontFamily: fontFamily,
+  );
+  static final violationLocationMapStyle = TextStyle(
+    color: AppColor.greenLight600,
+    fontSize: 14,
+    fontWeight: AppFontWeight.bold.fontWeight,
+    fontFamily: fontFamily,
+  );
+  static final violationLocationDammamMapStyle = TextStyle(
+    color: AppColor.blueSkyLight800,
+    fontSize: 14,
+    fontWeight: AppFontWeight.bold.fontWeight,
+    fontFamily: fontFamily,
+  );
+  static final violationLocationCategoryMapStyle = TextStyle(
+    color: AppColor.blueSkyLight800,
+    fontSize: 12,
+    fontWeight: AppFontWeight.bold.fontWeight,
+    fontFamily: fontFamily,
+  );
+  static final violationResultsHeaderStyle = TextStyle(
+    color: AppColor.primary50Light,
+    fontSize: 15,
+    fontWeight: AppFontWeight.bold.fontWeight,
+    fontFamily: fontFamily,
+  );
+  static final violationStyle = TextStyle(
+    color: AppColor.primary50Light,
+    fontSize: 12,
+    fontWeight: AppFontWeight.bold.fontWeight,
+    fontFamily: fontFamily,
+  );
+  static final violationNumberStyle = TextStyle(
+    color: AppColor.secondary100Light,
+    fontSize: 36,
+    fontWeight: AppFontWeight.bold.fontWeight,
+    fontFamily: fontFamily,
+  );
+  static final violationResultsSectionStyle = TextStyle(
+    color: AppColor.blackModern700Light,
+    fontSize: 14,
+    fontWeight: AppFontWeight.bold.fontWeight,
+    fontFamily: fontFamily,
+  );
+  static final violationResultSelectedOptionStyle = TextStyle(
+    color: AppColor.primary50Light,
+    fontSize: 13,
+    fontWeight: AppFontWeight.bold.fontWeight,
+    fontFamily: fontFamily,
+  );
+  static final violationResultUnSelectedOptionStyle = TextStyle(
+    color: AppColor.blackModern700Light,
+    fontSize: 13,
+    fontWeight: AppFontWeight.bold.fontWeight,
+    fontFamily: fontFamily,
+  );
+  static final violationListTitleResultStyle = TextStyle(
+    color: AppColor.blackModern700Light,
+    fontSize: 16,
+    fontWeight: AppFontWeight.bold.fontWeight,
+    fontFamily: fontFamily,
+  );
+  static final violationListTitleStyle = TextStyle(
+    color: AppColor.blackModern700Light,
+    fontSize: 12,
+    fontWeight: AppFontWeight.bold.fontWeight,
+    fontFamily: fontFamily,
+  );
+  static final violationStartFromStyle = TextStyle(
+    color: AppColor.blackModern900Light,
+    fontSize: 9,
+    fontWeight: AppFontWeight.bold.fontWeight,
+    fontFamily: fontFamily,
+  );
+  static final violationNumberStyle1 = TextStyle(
+    color: AppColor.blueSkyLight800,
+    fontSize: 13.5,
+    fontWeight: AppFontWeight.bold.fontWeight,
+    fontFamily: fontFamily,
+  );
+  static final violationRiyalPerWorkerStyle = TextStyle(
+    color: AppColor.blueSkyLight800,
+    fontSize: 9,
+    fontWeight: AppFontWeight.bold.fontWeight,
+    fontFamily: fontFamily,
+  );
+  static final approvedViolationSectiontitleStyle = TextStyle(
+    color: AppColor.blackModern50Light,
+    fontSize: 14,
+    fontWeight: AppFontWeight.bold.fontWeight,
+    fontFamily: fontFamily,
+  );
+  static final approvedViolationSectionSubtitleStyle = TextStyle(
+    color: AppColor.secondary400Light,
+    fontSize: 14,
+    fontWeight: AppFontWeight.bold.fontWeight,
+    fontFamily: fontFamily,
+  );
+  static final approvedViolationSelectedNumber = TextStyle(
+    color: AppColor.blackModern50Light,
+    fontSize: 14,
+    fontWeight: AppFontWeight.bold.fontWeight,
+    fontFamily: fontFamily,
+  );
+  static final approvedViolationLabelStyle = TextStyle(
+    color: AppColor.blueSkyLight800,
+    fontSize: 14,
+    fontWeight: AppFontWeight.bold.fontWeight,
+    fontFamily: fontFamily,
+  );
+  static final approvedViolationSubtitle = TextStyle(
+    color: AppColor.grey1000,
+    fontSize: 16,
     fontWeight: AppFontWeight.bold.fontWeight,
     fontFamily: fontFamily,
   );

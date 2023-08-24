@@ -25,4 +25,5 @@ class ImagePath {
   static const boardingloader3 = '${_imagePath}loader3$_png';
 
   static const boardingloader4 = '${_imagePath}loader4$_png';
+  static const violationImage = '${_imagePath}violation_image$_png';
 }

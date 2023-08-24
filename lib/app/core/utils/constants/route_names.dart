@@ -60,4 +60,7 @@ class RouteName {
   static const athkarEntityContentPage = '/athkarEntityContentPage';
 
   static const boardingPage = '/boardingPage';
+
+  // -------  Violations ---------
+  static const violationMainPage = '/violationMainPage';
 }

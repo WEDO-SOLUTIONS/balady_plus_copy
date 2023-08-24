@@ -3,6 +3,7 @@ import 'package:balady_plus/app/features/boarding/presentation/pages/boarding_ma
 import 'package:balady_plus/app/features/boarding/presentation/pages/boarding_pages.dart';
 import 'package:balady_plus/app/features/objectable_transactions/domain/entities/create_objection_page_params.dart';
 import 'package:balady_plus/app/features/objections/domain/entities/objection_details.dart';
+import 'package:balady_plus/app/features/violation_guide/presentation/pages/violation_guide_select_page.dart';
 import 'package:flutter/material.dart'
     show AppBar, Center, MaterialPageRoute, Route, RouteSettings, Scaffold;
 import 'package:flutter/widgets.dart' show SizedBox;
@@ -281,7 +282,11 @@ class AppRouter {
             athkarEntitiesList: params.athkarEntitiesList, // Use params here
           ),
         );
-
+      // Violations
+      case RouteName.violationMainPage:
+        return MaterialPageRoute(
+          builder: (_) => ViolationGuideSelectPage(),
+        );
       // error page
       default:
         return MaterialPageRoute(
