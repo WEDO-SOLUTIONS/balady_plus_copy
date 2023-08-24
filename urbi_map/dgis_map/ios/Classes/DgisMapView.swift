@@ -650,6 +650,10 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         completion(NSNumber(value: rect.geoRect.contains(point: point.geoPoint)), nil)
     }
     
+    func containsRectOuter(_ outer: GeoRectMessage, inner: GeoRectMessage, completion: @escaping (NSNumber?, FlutterError?) -> Void) {
+        completion(NSNumber(value: outer.geoRect.contains(rect2: inner.geoRect)), nil)
+    }
+    
     func onLocationPremissionGrantedDesiredAccuracy(
         _ desiredAccuracy: DesiredAccuracyMessage,
         completion: @escaping (FlutterError?) -> Void

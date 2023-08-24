@@ -240,6 +240,11 @@ abstract class DgisMapPlugin extends PlatformInterface {
     GeoPointMessage point,
   );
 
+  Future<bool> containsRect(
+    GeoRectMessage outer,
+    GeoRectMessage inner,
+  );
+
   Future<void> setPanoramasPaddings(CameraSetPaddingMessage message);
 
   Future<void> moveCameraToSelectedPanorama();
