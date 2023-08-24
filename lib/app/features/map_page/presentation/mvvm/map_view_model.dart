@@ -76,6 +76,7 @@ class MapViewModel extends BaseViewModel {
   GISMapLayers gisSelectedLayer = GISMapLayers.cityPlaces;
 //////////////////////////////////////////////////////
   CameraPositionMessage? _lastCameraPosition;
+  CameraPositionMessage? _lastRectPosition;
   late DgisMapController controller;
 
   final viewHomeBottomSheet = ValueNotifier(true);
@@ -305,7 +306,6 @@ class MapViewModel extends BaseViewModel {
     await controller.loadStyles(Constants.mapStyle);
     await controller.overrideLocales(["ar-SA"]);
     // await controller.overrideLocales([localeState.value.locale]);
-    // goToLocation();
     await controller.setMarkerOptions(
       MarkerOptionsMessageOld(
         svgAsset: "assets/maps/icons/ic_marker.svg",
@@ -360,24 +360,24 @@ class MapViewModel extends BaseViewModel {
 
 */
 
-    try {
-      final permission = await Permission.location.request();
-      if (permission.isGranted) {
-        await controller.onLocationPremissionGranted();
-        await controller.changeFollowState();
-
-        /* await controller.setCameraPosition(
-          CameraPositionMessage(
-            point: GeoPointMessage(
-                latitude: CommonProperties.userLocation?.lat ?? 0,
-                longitude: CommonProperties.userLocation?.lon ?? 0),
-            zoom: 13,
-            tilt: 0,
-            bearing: 0,
-          ),
-        );*/
+    var permission = await Permission.location.status;
+    if (!permission.isGranted) {
+      while (true) {
+        try {
+          permission = await Permission.location.request();
+          break;
+        } catch (ex) {
+          await Future.delayed(const Duration(milliseconds: 500));
+        }
       }
-    } catch (ex) {
+    }
+
+    if (permission.isGranted) {
+      await controller.onLocationPremissionGranted(
+        desiredAccuracy: DesiredAccuracyMessage.high,
+      );
+      await controller.changeFollowState();
+    } else {
       await controller.setCameraPosition(
         CameraPositionMessage(
           point: kingdomTower,
@@ -444,15 +444,6 @@ class MapViewModel extends BaseViewModel {
     selectedWhiteLands.notifyListeners();
   }
 
-  void _cameraPositionChangeListener(CameraPositionMessage event) async {
-    if ((!await controller.contains(saRect, event.point)) &&
-        _lastCameraPosition != null) {
-      await controller.setCameraPosition(_lastCameraPosition!);
-    } else {
-      _lastCameraPosition = event;
-    }
-  }
-
   void _setupListeners() {
     // add move carme map Listener
     _subscriptions.add(
@@ -505,12 +496,22 @@ class MapViewModel extends BaseViewModel {
     );
   }
 
+  void _cameraPositionChangeListener(CameraPositionMessage event) async {
+    _lastCameraPosition = event;
+  }
+
   // When move camera map any change zoom in, zoom out ...
-  void _visibleRectChangeListener(VisibleRectEvent event) {
+  void _visibleRectChangeListener(VisibleRectEvent event) async {
+    if ((!await controller.containsRect(
+        saRect, event.visibleRect.geoRectMessage()))) {
+      if (_lastRectPosition != null) {
+        await controller.setCameraPosition(_lastRectPosition!);
+      }
+    } else {
+      _lastRectPosition = _lastCameraPosition;
+    }
     _lastHandledEvent = event;
     // start Timer when stop move camera  call search funcation
-    print(event.visibleRect.zoom);
-
     _startRequestTimer(event.visibleRect.zoom);
   }
 

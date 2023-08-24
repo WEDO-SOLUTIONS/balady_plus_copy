@@ -335,6 +335,14 @@ class DgisMapController {
     return _instance.contains(rect, point);
   }
 
+  /// Checks if [outer] rect contains [inner]
+  Future<bool> containsRect(
+    GeoRectMessage outer,
+    GeoRectMessage inner,
+  ) async {
+    return _instance.containsRect(outer, inner);
+  }
+
   /// Used to setup platform. Should be called when permision was granted.
   /// Does not request permission by itself.
   Future<void> onLocationPremissionGranted({
