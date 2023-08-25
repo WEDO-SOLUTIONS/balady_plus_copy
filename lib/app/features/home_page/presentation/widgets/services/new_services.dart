@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../core/base/base_view_model.dart';
+import '../../../../../core/utils/constants/dialog_names.dart';
 import '../../../../../core/utils/utils_exports.dart';
 import '../../../../_shared_feature_/presentation/dialogs/need_login_dialog.dart';
 import '../../../../_shared_feature_/shared_feature_exports.dart';
@@ -219,6 +220,9 @@ class NewServices extends StatelessWidget {
                                   if (isSuccess)
                                     await BottomSheetDialog.showDraggableSheet(
                                         context,
+                                        dialogKeyName: DialogName
+                                            .selectAppointmentTypeDialog,
+                                        currentRouteName: "HomePage",
                                         isFullHeight: false,
                                         child: BottomSheetWithActions(
                                           title: "اختر نوع الموعد".tr(),

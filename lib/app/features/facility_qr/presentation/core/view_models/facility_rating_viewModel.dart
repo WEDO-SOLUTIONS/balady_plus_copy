@@ -12,6 +12,7 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 
 import 'package:tuple/tuple.dart';
 
+import '../../../../../core/utils/constants/dialog_names.dart';
 import '../../../../../core/utils/enums/enums.dart';
 import '../../../../_shared_feature_/data/entities/success_screen_args.dart';
 import '../../../../_shared_feature_/presentation/dialogs/bottom_sheet_dialogs.dart';
@@ -114,6 +115,8 @@ class FacilityRatingViewModel extends BaseViewModel {
       navigation.currentState?.pop();
       BottomSheetDialog.showDraggableSheet(navigation.currentContext!,
           isFullHeight: false,
+          dialogKeyName: DialogName.qrRatingSuccessDialog,
+          currentRouteName: DialogName.qrRatingDialog,
           height: 400,
           child: SuccessRatingDialog(
             title: ("send_evaluation").tr(),

@@ -1,4 +1,5 @@
 import 'package:balady_plus/app/core/utils/common_functions.dart';
+import 'package:balady_plus/app/core/utils/constants/route_names.dart';
 import 'package:balady_plus/app/core/utils/enums/enums.dart';
 import 'package:balady_plus/app/features/profile_features/requests/presentation/requests_bloc/requests_bloc.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +10,7 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 import '../../../../../core/dependency_injection/dependency_injection_exports.dart'
     show sl;
 import '../../../../../core/utils/app_analytics_events.dart';
+import '../../../../../core/utils/constants/dialog_names.dart';
 import '../../../../_shared_feature_/shared_feature_exports.dart'
     show
         BottomSheetDialog,
@@ -93,10 +95,11 @@ class _RequestsPageState extends State<RequestsPage> {
                             final selectedRequestDate =
                                 state.selectedRequestDate;
 
-                            FlutterUxcam.tagScreenName("RequestsFilterDialog");
                             final bool? actionTaked =
                                 await BottomSheetDialog.showDraggableSheet(
                               context,
+                              dialogKeyName: DialogName.requestsFilterDialog,
+                              currentRouteName: RouteName.requests,
                               child: BottomSheetWithActions(
                                 title: "filters".tr(),
                                 body: RequestsFilterBottomSheet(

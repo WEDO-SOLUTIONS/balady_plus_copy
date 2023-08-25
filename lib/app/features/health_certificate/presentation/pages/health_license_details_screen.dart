@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import '../../../../core/services/local/helpers.dart';
 import '../../../../core/utils/common_functions.dart';
 import '../../../../core/utils/constants/app_colors.dart';
+import '../../../../core/utils/constants/dialog_names.dart';
 import '../../../../core/utils/constants/paths/icon_paths.dart';
 import '../../../../core/utils/enums/app_font_weights.dart';
 import '../../../_shared_feature_/presentation/components/bottom_sheets/bottom_sheet_with_actions.dart';
@@ -35,11 +36,11 @@ class HealthLicenseDetailsScreen extends StatefulWidget {
 
 class _HealthLicenseDetailsScreenState
     extends State<HealthLicenseDetailsScreen> {
-
   @override
   Widget build(BuildContext context) {
-   HealthRequestDetailsScreenArgs args = ModalRoute.of(context)!.settings.arguments
-        as HealthRequestDetailsScreenArgs;
+    HealthRequestDetailsScreenArgs args = ModalRoute.of(context)!
+        .settings
+        .arguments as HealthRequestDetailsScreenArgs;
 
     return ChangeNotifierProvider(
         create: (context) => HealthRequestDetailsViewModel(
@@ -63,6 +64,8 @@ class _HealthLicenseDetailsScreenState
                   await BottomSheetDialog.showDraggableSheet(context,
                       isFullHeight: false,
                       height: 250,
+                      dialogKeyName: DialogName.healthCertificateActionsDialog,
+                      currentRouteName: RouteName.healthLicenseDetailsScreen,
                       child: BottomSheetWithActions(
                         title: "actions".tr(),
                         body: Column(children: [
@@ -81,7 +84,12 @@ class _HealthLicenseDetailsScreenState
                           GestureDetector(
                             onTap: () async {
                               await BottomSheetDialog.showDraggableSheet(
-                                  context, child: ConfirmCancelLicenseDialog(
+                                  context,
+                                  dialogKeyName: DialogName
+                                      .healthCertificateCancelActionsDialog,
+                                  currentRouteName:
+                                      RouteName.healthLicenseDetailsScreen,
+                                  child: ConfirmCancelLicenseDialog(
                                 onCancel: () {
                                   HealthRequestDetailsViewModel model = Provider
                                       .of<HealthRequestDetailsViewModel>(

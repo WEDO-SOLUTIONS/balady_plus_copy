@@ -5,6 +5,7 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 import '../../../../core/dependency_injection/dependency_injection_exports.dart'
     show sl;
 import '../../../../core/utils/app_analytics_events.dart';
+import '../../../../core/utils/constants/dialog_names.dart';
 import '../../../../core/utils/utils_exports.dart';
 import '../../../_shared_feature_/shared_feature_exports.dart'
     show
@@ -76,6 +77,8 @@ class _ObjectableTransactionsPageState
                       final bool? actionTaked =
                           await BottomSheetDialog.showDraggableSheet(
                         context,
+                        dialogKeyName: DialogName.objectablePageFilters,
+                        currentRouteName: RouteName.objectableTransactions,
                         child: BottomSheetWithActions(
                           title: "filters".tr(),
                           body: RequestsFilterBottomSheet(

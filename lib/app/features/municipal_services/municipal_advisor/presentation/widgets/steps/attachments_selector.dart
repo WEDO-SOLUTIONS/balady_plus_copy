@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
+import '../../../../../../core/utils/constants/dialog_names.dart';
 import '../../../../../../core/utils/utils_exports.dart';
 import '../../../../../_shared_feature_/shared_feature_exports.dart';
 import '../../../municipal_advisor_exports.dart';
@@ -73,6 +74,8 @@ class AttachmentsSelector extends StatelessWidget {
                     .cast<String>();
                 BottomSheetDialog.showDraggableSheet(
                   context,
+                  dialogKeyName: DialogName.municipalOwnerShipDialog,
+                  currentRouteName: RouteName.municipalAdvisor,
                   child: BottomSheetList(
                     title: "municipalAdvisorOwnershipProofType".tr(),
                     items: items,
@@ -104,6 +107,8 @@ class AttachmentsSelector extends StatelessWidget {
                         .cast<String>();
                 BottomSheetDialog.showDraggableSheet(
                   context,
+                  dialogKeyName: DialogName.municipalContractDialog,
+                  currentRouteName: RouteName.municipalAdvisor,
                   child: BottomSheetList(
                     title: "municipalAdvisorContractType".tr(),
                     items: items,

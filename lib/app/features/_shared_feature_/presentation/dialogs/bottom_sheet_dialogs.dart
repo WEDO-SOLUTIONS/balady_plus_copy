@@ -1,24 +1,28 @@
 import 'package:flutter/cupertino.dart' show showCupertinoModalPopup;
 import 'package:flutter/material.dart';
+import 'package:flutter_uxcam/flutter_uxcam.dart';
 
 import '../../../../core/utils/utils_exports.dart' show ContextConversion;
 
 class BottomSheetDialog {
-  static Future<T> showDraggableSheet<T>(
-    BuildContext context, {
-    required Widget child,
-    Color? backgroundColor,
-    Color? barrierColor,
-    double borderRadius = 28.0,
-    bool isDismissible = true,
-    bool isFullHeight = true,
-    double? height,
-    bool isScrollControlled = true,
-    bool enableDrag = true,
-  }) async {
+  static Future<T> showDraggableSheet<T>(BuildContext context,
+      {required Widget child,
+      Color? backgroundColor,
+      Color? barrierColor,
+      double borderRadius = 28.0,
+      bool isDismissible = true,
+      bool isFullHeight = true,
+      double? height,
+      bool isScrollControlled = true,
+      bool enableDrag = true,
+      String? currentRouteName,
+      String? dialogKeyName}) async {
     final screenHeight = context.screenHeight;
     final screenStatusBarHeight = context.topPadding + 20.0;
-    return (await showModalBottomSheet(
+
+    if (dialogKeyName != null) FlutterUxcam.tagScreenName(dialogKeyName);
+
+    dynamic value = (await showModalBottomSheet(
           context: context,
           isDismissible: isDismissible,
           isScrollControlled: isScrollControlled,
@@ -45,6 +49,10 @@ class BottomSheetDialog {
           ),
         )) ??
         false;
+
+    if (currentRouteName != null) FlutterUxcam.tagScreenName(currentRouteName);
+
+    return value;
   }
 
   static Future<bool> showRequestService(

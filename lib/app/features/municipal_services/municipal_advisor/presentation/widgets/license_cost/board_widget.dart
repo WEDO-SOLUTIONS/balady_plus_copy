@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
+import '../../../../../../core/utils/constants/dialog_names.dart';
 import '../../../municipal_advisor_exports.dart';
 
 class BoardWidget extends StatelessWidget {
@@ -63,6 +64,8 @@ class BoardWidget extends StatelessWidget {
                             state.boardTypes.map((e) => e.name).toList();
                         BottomSheetDialog.showDraggableSheet(
                           context,
+                          dialogKeyName: DialogName.municipalAdvisorBoardType,
+                          currentRouteName: RouteName.municipalAdvisor,
                           child: BottomSheetList(
                             title: "BoardType".tr(),
                             items: items,

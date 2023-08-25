@@ -9,6 +9,7 @@ import 'package:qr_flutter/qr_flutter.dart';
 import '../../../../core/base/base_view.dart';
 import '../../../../core/base/base_view_model.dart';
 import '../../../../core/utils/constants/constants.dart';
+import '../../../../core/utils/constants/dialog_names.dart';
 import '../../../../core/utils/constants/remote_config.dart';
 import '../../../_shared_feature_/presentation/components/bottom_sheets/bottom_sheet_with_actions.dart';
 import '../../../_shared_feature_/presentation/dialogs/bottom_sheet_dialogs.dart';
@@ -90,6 +91,8 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
               await BottomSheetDialog.showDraggableSheet(context,
                   isFullHeight: false,
                   height: 250,
+                  dialogKeyName: DialogName.appointmentsActionsDialog,
+                  currentRouteName: RouteName.appointmentDetailsRoute,
                   child: BottomSheetWithActions(
                     title: "actions".tr(),
                     body: Column(children: [
@@ -110,6 +113,10 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
                             onTap: () async {
                               await BottomSheetDialog.showDraggableSheet(
                                 context,
+                                dialogKeyName:
+                                    DialogName.appointmentsActionsCancelDialog,
+                                currentRouteName:
+                                    RouteName.appointmentDetailsRoute,
                                 child: const ConfirmCancelAppointmentDialog(),
                                 isFullHeight: false,
                               );

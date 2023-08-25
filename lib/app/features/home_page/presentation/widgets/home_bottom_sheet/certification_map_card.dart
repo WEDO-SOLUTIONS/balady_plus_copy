@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../../../core/utils/constants/dialog_names.dart';
 import '../../../../../core/utils/utils_exports.dart';
 import '../../../../_shared_feature_/presentation/dialogs/need_login_dialog.dart';
 import '../../../../_shared_feature_/shared_feature_exports.dart';
@@ -67,6 +68,8 @@ class CertificationMapCard extends StatelessWidget {
                       onPressed: () async {
                         await BottomSheetDialog.showDraggableSheet(
                           context,
+                          dialogKeyName: DialogName.buildingComplianceDialog,
+                          currentRouteName: "HomePage",
                           child: BuildingRequirementsDialog(),
                         );
                       },

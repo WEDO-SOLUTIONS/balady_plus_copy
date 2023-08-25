@@ -18,6 +18,7 @@ import '../../../../core/services/local/navigation_services.dart';
 import '../../../../core/utils/common_functions.dart';
 import '../../../../core/utils/constants/app_colors.dart';
 import '../../../../core/utils/constants/constants.dart';
+import '../../../../core/utils/constants/dialog_names.dart';
 import '../../../../core/utils/constants/remote_config.dart';
 import '../../../../core/utils/constants/route_names.dart';
 import '../../../../core/utils/enums/app_font_weights.dart';
@@ -244,6 +245,8 @@ void checkBarcode(BuildContext context) async {
 
                       if (lat != null && long != null) {
                         await BottomSheetDialog.showDraggableSheet(context,
+                            dialogKeyName: DialogName.vdTypesDialog,
+                            currentRouteName: RouteName.qrFacilityScreenRoute,
                             child: BottomSheetWithActions(
                               title: "اختر نوع البلاغ".tr(),
                               body: QrTypesDialog(

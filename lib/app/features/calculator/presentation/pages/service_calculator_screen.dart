@@ -44,6 +44,7 @@ import '../../../../core/services/local/helpers.dart';
 import '../../../../core/utils/app_analytics_events.dart';
 import '../../../../core/utils/constants/app_colors.dart';
 import '../../../../core/utils/constants/constants.dart';
+import '../../../../core/utils/constants/dialog_names.dart';
 import '../../../../core/utils/enums/enums.dart';
 import '../../../_shared_feature_/presentation/dialogs/incident_type_with_search_dialog.dart';
 import '../../../_shared_feature_/presentation/widgets/custom_cupertino_drop_down_widget.dart';
@@ -469,6 +470,8 @@ class _ServiceCalculatorScreenState extends BaseState<ServiceCalculatorScreen,
 
             await BottomSheetDialog.showDraggableSheet(context,
                 isFullHeight: true,
+                dialogKeyName: DialogName.calculatorEditBoardDialog,
+                currentRouteName: RouteName.calculatorRoute,
                 child: BottomSheetWithActions(
                   title: "lbl_edit_board".tr(),
                   body: AddBoardScreen(
@@ -546,6 +549,8 @@ class _ServiceCalculatorScreenState extends BaseState<ServiceCalculatorScreen,
 
             await BottomSheetDialog.showDraggableSheet(context,
                 isFullHeight: true,
+                dialogKeyName: DialogName.calculatorEditBoardDialog,
+                currentRouteName: RouteName.calculatorRoute,
                 child: BottomSheetWithActions(
                   title: "lbl_edit_board".tr(),
                   body: AddBoardScreen(
@@ -639,6 +644,8 @@ class _ServiceCalculatorScreenState extends BaseState<ServiceCalculatorScreen,
 
             await BottomSheetDialog.showDraggableSheet(context,
                 isFullHeight: true,
+                dialogKeyName: DialogName.calculatorEditBoardDialog,
+                currentRouteName: RouteName.calculatorRoute,
                 child: BottomSheetWithActions(
                   title: "lbl_edit_board".tr(),
                   body: AddBoardScreen(
@@ -766,6 +773,8 @@ class _ServiceCalculatorScreenState extends BaseState<ServiceCalculatorScreen,
 
                 await BottomSheetDialog.showDraggableSheet(context,
                     isFullHeight: true,
+                    dialogKeyName: DialogName.calculatorAddBoardDialog,
+                    currentRouteName: RouteName.calculatorRoute,
                     child: BottomSheetWithActions(
                       title: "lbl_add_new_board".tr(),
                       body: AddBoardScreen(
@@ -839,6 +848,8 @@ class _ServiceCalculatorScreenState extends BaseState<ServiceCalculatorScreen,
 
                 await BottomSheetDialog.showDraggableSheet(context,
                     isFullHeight: true,
+                    dialogKeyName: DialogName.calculatorAddBoardDialog,
+                    currentRouteName: RouteName.calculatorRoute,
                     child: BottomSheetWithActions(
                       title: "lbl_add_new_board".tr(),
                       body: AddBoardScreen(
@@ -911,6 +922,8 @@ class _ServiceCalculatorScreenState extends BaseState<ServiceCalculatorScreen,
 
                 await BottomSheetDialog.showDraggableSheet(context,
                     isFullHeight: true,
+                    dialogKeyName: DialogName.calculatorEditBoardDialog,
+                    currentRouteName: RouteName.calculatorRoute,
                     child: BottomSheetWithActions(
                       title: "lbl_edit_board".tr(),
                       body: AddBoardScreen(

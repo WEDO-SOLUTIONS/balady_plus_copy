@@ -18,6 +18,7 @@ import '../../../../core/base/base_view_model.dart';
 import '../../../../core/services/local/navigation_services.dart';
 import '../../../../core/utils/common_functions.dart';
 import '../../../../core/utils/constants/app_style.dart';
+import '../../../../core/utils/constants/dialog_names.dart';
 import '../../../../core/utils/constants/remote_config.dart';
 import '../../../../core/utils/enums/app_font_weights.dart';
 import '../../../_shared_feature_/presentation/components/bottom_sheets/bottom_sheet_with_actions.dart';
@@ -144,6 +145,8 @@ class GeneralMapCardWidget extends StatelessWidget {
                             if (lat != null && long != null) {
                               await BottomSheetDialog.showDraggableSheet(
                                   context,
+                                  dialogKeyName: DialogName.vdTypesDialog,
+                                  currentRouteName: "HomePage",
                                   child: BottomSheetWithActions(
                                     title: "اختر نوع البلاغ".tr(),
                                     body: QrTypesDialog(

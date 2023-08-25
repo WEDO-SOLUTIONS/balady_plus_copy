@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import '../../../../core/services/local/helpers.dart';
 import '../../../../core/utils/common_functions.dart';
 import '../../../../core/utils/constants/app_colors.dart';
+import '../../../../core/utils/constants/dialog_names.dart';
 import '../../../../core/utils/constants/paths/icon_paths.dart';
 import '../../../../core/utils/constants/route_names.dart';
 import '../../../../core/utils/enums/app_font_weights.dart';
@@ -68,6 +69,10 @@ class _HealthRequestDetailsScreenState
                         await BottomSheetDialog.showDraggableSheet(context,
                             isFullHeight: false,
                             height: 250,
+                            dialogKeyName: DialogName
+                                .healthCertificateRequestActionsDialog,
+                            currentRouteName:
+                                RouteName.healthRequestDetailsScreen,
                             child: BottomSheetWithActions(
                               title: "actions".tr(),
                               body: Column(children: [

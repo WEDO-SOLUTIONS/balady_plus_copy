@@ -6,6 +6,7 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
+import '../../../../core/utils/constants/dialog_names.dart';
 import '../../../_shared_feature_/presentation/components/bottom_sheets/bottom_sheet_with_actions.dart';
 import '../../../_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
 import '../../data/data_sources/point_layers_data.dart';
@@ -249,6 +250,8 @@ class HomeMap extends StatelessWidget {
       await mapViewModel.getMinLayers();
     if (mapViewModel.layers.value != null)
       BottomSheetDialog.showDraggableSheet(
+        dialogKeyName: DialogName.selectGISLayers,
+        currentRouteName: "HomePage",
         isFullHeight: false,
         context,
         child: BottomSheetWithActions(

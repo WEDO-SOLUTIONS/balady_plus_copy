@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
+import '../../../../../../core/utils/constants/dialog_names.dart';
 import '../../../municipal_advisor_exports.dart'
     show
         AdditionalInformation,
@@ -164,6 +165,8 @@ class ChatBubbleStepData extends StatelessWidget {
                 onPressed: () async {
                   await BottomSheetDialog.showDraggableSheet(
                     context,
+                    dialogKeyName: DialogName.buildingComplianceDialog,
+                    currentRouteName: RouteName.municipalAdvisor,
                     child: BuildingRequirementsDialog(),
                   );
                 },

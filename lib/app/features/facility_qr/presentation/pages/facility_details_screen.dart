@@ -26,6 +26,7 @@ import '../../../../core/utils/app_analytics_events.dart';
 import '../../../../core/utils/common_functions.dart';
 import '../../../../core/utils/constants/app_colors.dart';
 import '../../../../core/utils/constants/constants.dart';
+import '../../../../core/utils/constants/dialog_names.dart';
 import '../../../../core/utils/constants/paths/icon_paths.dart';
 import '../../../../core/utils/enums/enums.dart';
 import '../../../../core/utils/map_utils.dart';
@@ -452,6 +453,8 @@ class EvaluationSection extends StatelessWidget {
                         btnRadius: 8,
                         btnPressed: () async {
                           await BottomSheetDialog.showDraggableSheet(context,
+                              dialogKeyName: DialogName.qrRatingDialog,
+                              currentRouteName: RouteName.qrFacilityScreenRoute,
                               child: BottomSheetWithActions(
                                 title: ("review").tr() +
                                     " " +
@@ -637,6 +640,8 @@ class SubmitIncidentSection extends StatelessWidget {
 
             if (lat != null && long != null) {
               await BottomSheetDialog.showDraggableSheet(context,
+                  dialogKeyName: DialogName.vdTypesDialog,
+                  currentRouteName: RouteName.qrFacilityScreenRoute,
                   child: BottomSheetWithActions(
                     title: "اختر نوع البلاغ".tr(),
                     body: QrTypesDialog(

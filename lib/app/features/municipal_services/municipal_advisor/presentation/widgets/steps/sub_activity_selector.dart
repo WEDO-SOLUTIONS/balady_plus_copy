@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
+import '../../../../../../core/utils/constants/dialog_names.dart';
+import '../../../../../../core/utils/constants/route_names.dart';
 import '../../../../../_shared_feature_/shared_feature_exports.dart';
 import '../../../municipal_advisor_exports.dart'
     show
@@ -41,6 +43,8 @@ class _SubActivitySelectorState extends State<SubActivitySelector> {
                     state.isicSubActivities.map((e) => e.name).toList();
                 BottomSheetDialog.showDraggableSheet(
                   context,
+                  dialogKeyName: DialogName.municipalSubActivityDialog,
+                  currentRouteName: RouteName.municipalAdvisor,
                   child: BottomSheetList(
                     title: "municipalAdvisorSubActivityHint".tr(),
                     items: items,
