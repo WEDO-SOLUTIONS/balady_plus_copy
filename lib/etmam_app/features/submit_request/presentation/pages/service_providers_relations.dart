@@ -29,10 +29,7 @@ import '../../submit_request_exports.dart'
         SelectServiceProviderEvent;
 
 class ServiceProvidersRelations extends StatefulWidget {
-  final ProviderRelationPageParams args;
-
-  const ServiceProvidersRelations({Key? key, required this.args})
-      : super(key: key);
+  const ServiceProvidersRelations({Key? key}) : super(key: key);
 
   @override
   State<ServiceProvidersRelations> createState() =>
@@ -51,6 +48,9 @@ class _ServiceProvidersRelations extends State<ServiceProvidersRelations> {
 
   @override
   Widget build(BuildContext context) {
+    ProviderRelationPageParams args = ModalRoute.of(context)!.settings.arguments
+        as ProviderRelationPageParams;
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: CustomAppBar(
@@ -58,10 +58,10 @@ class _ServiceProvidersRelations extends State<ServiceProvidersRelations> {
       ),
       body: BlocProvider(
         create: (context) => ServiceProvidersBloc(
-            response: widget.args.serviceProviders,
+            response: args.serviceProviders,
             getServicesProvidersByService: sl(),
             scrollController: _scrollController,
-            selectedProviderId: widget.args.selectedProviderId),
+            selectedProviderId: args.selectedProviderId),
         child: BlocConsumer<ServiceProvidersBloc, ServiceProvidersState>(
           listener: (context, state) {
             // TODO: implement listener

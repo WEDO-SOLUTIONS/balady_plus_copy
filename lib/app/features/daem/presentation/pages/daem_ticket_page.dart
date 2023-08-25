@@ -12,9 +12,7 @@ import '../core/bloc/new_ticket_bloc/new_daem_ticket_bloc.dart';
 import '../widgets/details_app_bar.dart';
 
 class NewDaemPage extends StatefulWidget {
-  final NewTicketPageArgs args;
-
-  const NewDaemPage({super.key, required this.args});
+  const NewDaemPage({super.key});
 
   @override
   State<NewDaemPage> createState() => _NewDaemPageState();
@@ -31,16 +29,19 @@ class _NewDaemPageState extends State<NewDaemPage> {
 
   @override
   Widget build(BuildContext context) {
+    NewTicketPageArgs args =
+        ModalRoute.of(context)!.settings.arguments as NewTicketPageArgs;
+
     return BlocProvider<NewDaemTicketBloc>(
       create: (context) => NewDaemTicketBloc(
-          category: widget.args.category,
-          subCategoryTypeList: widget.args.subCategoryTypeList,
-          municipalities: widget.args.municipalities,
-          areaList: widget.args.areaList,
-          issueypeList: widget.args.issuesList,
-          subCategory: widget.args.subCategory,
-          area: widget.args.area,
-          issue: widget.args.issueType),
+          category: args.category,
+          subCategoryTypeList: args.subCategoryTypeList,
+          municipalities: args.municipalities,
+          areaList: args.areaList,
+          issueypeList: args.issuesList,
+          subCategory: args.subCategory,
+          area: args.area,
+          issue: args.issueType),
       child: BlocConsumer<NewDaemTicketBloc, NewDaemTicketState>(
         listener: (context, state) {
           if (state.status == BlocStatus.failure) {

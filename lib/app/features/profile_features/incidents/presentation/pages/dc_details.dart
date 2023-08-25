@@ -21,12 +21,22 @@ import '../../domain/entities/request_details_page_params.dart';
 import '../details_bloc/crm_details_bloc.dart';
 import '../widgets/status_tag.dart';
 
-class DCDetailsPage extends StatelessWidget {
-  final RequestDetailsPageParams params;
-  const DCDetailsPage({super.key, required this.params});
+class DCDetailsPage extends StatefulWidget {
+  const DCDetailsPage({
+    super.key,
+  });
+
+  @override
+  State<DCDetailsPage> createState() => _DCDetailsPageState();
+}
+
+class _DCDetailsPageState extends State<DCDetailsPage> {
 
   @override
   Widget build(BuildContext context) {
+ RequestDetailsPageParams   params =
+        ModalRoute.of(context)!.settings.arguments as RequestDetailsPageParams;
+
     return BlocProvider(
       create: (context) =>
           CrmDetailsBloc(crmRequestType: RequestsType.DC, pageParams: params),

@@ -20,15 +20,15 @@ import '../../../../core/utils/utils_exports.dart'
     show AppFontWeight, CommonFunctions, IconPath, trans;
 
 class OfficeInfoPage extends StatefulWidget {
-  Provider provider;
-
-  OfficeInfoPage({Key? key, required this.provider}) : super(key: key);
+  const OfficeInfoPage({Key? key}) : super(key: key);
 
   @override
   State<OfficeInfoPage> createState() => _OfficeInfoPageState();
 }
 
 class _OfficeInfoPageState extends State<OfficeInfoPage> {
+  late Provider provider;
+
   @override
   void initState() {
     super.initState();
@@ -37,6 +37,8 @@ class _OfficeInfoPageState extends State<OfficeInfoPage> {
 
   @override
   Widget build(BuildContext context) {
+    provider = ModalRoute.of(context)!.settings.arguments as Provider;
+
     return Scaffold(
         appBar: DefaultAppBarWidget(
           title: trans('office_info'),
@@ -56,32 +58,33 @@ class _OfficeInfoPageState extends State<OfficeInfoPage> {
                 ),
                 const SizedBox(height: 16),
                 WorkingDayListWidget(
-                  workingHours: widget.provider.wrokDays,
+                  workingHours: provider.wrokDays,
                 ),
                 const SizedBox(height: 8),
                 InfoCard(
-                  onTap: () =>
-                      CommonFunctions.launch(widget.provider.website ?? ""),
+                  onTap: () => CommonFunctions.launch(provider.website ?? ""),
                   iconPath: IconPath.websiteIcon,
                   title: trans('office_website'),
-                  value: widget.provider.website,
+                  value: provider.website,
                 ),
                 InfoCard(
-                  onTap: () =>
-                      CommonFunctions.call(widget.provider.mainBranchContact),
+                  onTap: () => CommonFunctions.call(provider.mainBranchContact),
                   iconPath: IconPath.call,
                   title: trans('office_mobile'),
-                  value: widget.provider.mainBranchContact,
+                  value: provider.mainBranchContact,
                   leading: const Row(
                     children: [
                       CustomSvgIconWidget(IconPath.call),
                       SizedBox(width: 4),
-                      CustomTextWidget("اتصال" , textStyle: TextStyle(
-                        fontSize: 12,
-                        decoration: TextDecoration.underline,
-                        fontWeight: FontWeight.bold,
-                        color: AppColor.primary900Light,
-                      ),)
+                      CustomTextWidget(
+                        "اتصال",
+                        textStyle: TextStyle(
+                          fontSize: 12,
+                          decoration: TextDecoration.underline,
+                          fontWeight: FontWeight.bold,
+                          color: AppColor.primary900Light,
+                        ),
+                      )
                     ],
                   ),
                 ),

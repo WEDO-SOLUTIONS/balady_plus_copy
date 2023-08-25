@@ -30,9 +30,9 @@ import '../transaction_details_bloc/transaction_details_bloc.dart';
 import '../widgets/create_objection_page/objection_attachment_item.dart';
 
 class TransactionsDetailsPage extends StatefulWidget {
-  final CreateObjectionPageParams params;
-  const TransactionsDetailsPage({Key? key, required this.params})
-      : super(key: key);
+  const TransactionsDetailsPage({
+    Key? key,
+  }) : super(key: key);
 
   @override
   State<TransactionsDetailsPage> createState() =>
@@ -42,9 +42,12 @@ class TransactionsDetailsPage extends StatefulWidget {
 class _TransactionsDetailsPageState extends State<TransactionsDetailsPage> {
   @override
   Widget build(BuildContext context) {
+  CreateObjectionPageParams  params =
+        ModalRoute.of(context)!.settings.arguments as CreateObjectionPageParams;
+
     return BlocProvider(
       create: (context) =>
-          TransactionDetailsBloc(transactionDetails: widget.params.details),
+          TransactionDetailsBloc(transactionDetails: params.details),
       child: BlocBuilder<TransactionDetailsBloc, TransactionDetailsState>(
         builder: (context, state) {
           return Stack(

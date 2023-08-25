@@ -15,10 +15,7 @@ import '../../shared_feature_exports.dart'
         SuccessScreenArgs;
 
 class SuccessScreen extends StatefulWidget {
-  final SuccessScreenArgs successScreenArgs;
-
-  const SuccessScreen({Key? key, required this.successScreenArgs})
-      : super(key: key);
+  const SuccessScreen({Key? key}) : super(key: key);
 
   @override
   State<SuccessScreen> createState() => _SuccessScreenState();
@@ -28,11 +25,15 @@ class _SuccessScreenState extends State<SuccessScreen> {
   @override
   void initState() {
     super.initState();
-    sendAnalytics(widget.successScreenArgs.type);
+
+    WidgetsBinding.instance!.addPostFrameCallback((_) {});
   }
 
   @override
   Widget build(BuildContext context) {
+    SuccessScreenArgs successScreenArgs =
+        ModalRoute.of(context)!.settings.arguments as SuccessScreenArgs;
+
     return Scaffold(
         appBar: null,
         body: Container(
@@ -52,38 +53,15 @@ class _SuccessScreenState extends State<SuccessScreen> {
                 ),
               ),
               SuccessBody(
-                successScreenArgs: widget.successScreenArgs,
+                successScreenArgs: successScreenArgs,
               ),
               SuccessButtons(
-                fromHomePage: widget.successScreenArgs.fromHomePage ?? false,
-                pageType: widget.successScreenArgs.type,
+                fromHomePage: successScreenArgs.fromHomePage ?? false,
+                pageType: successScreenArgs.type,
               )
             ],
           ),
         ));
-  }
-
-  void sendAnalytics(PageTypes type) {
-    try {
-      switch (type) {
-        case PageTypes.orderScreen:
-          if (widget.successScreenArgs.changeProvider == true)
-            //CommonFunctions.sendEventToAnalytics(
-            //  AppEvents.SuccessChangeProvider);
-            //  else
-            //CommonFunctions.sendEventToAnalytics(AppEvents.SuccessNewRequest);
-            break;
-        case PageTypes.cancelOrder:
-          //CommonFunctions.sendEventToAnalytics(AppEvents.SuccessCancelOrder);
-          break;
-        case PageTypes.evaluateOrder:
-          //CommonFunctions.sendEventToAnalytics(AppEvents.SuccessEvaluateOrder);
-          break;
-        case PageTypes.orderDetails:
-          //CommonFunctions.sendEventToAnalytics(AppEvents.SuccessChangeProvider);
-          break;
-      }
-    } catch (ex) {}
   }
 }
 

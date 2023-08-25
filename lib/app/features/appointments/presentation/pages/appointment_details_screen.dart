@@ -19,6 +19,7 @@ import '../../../_shared_feature_/presentation/widgets/custom_spaces_widgets.dar
 import '../../../_shared_feature_/presentation/widgets/details_header.dart';
 import '../../../new_appointment/presentation/core/models/appointment_details_model.dart';
 import '../../../vd/presentation/widgets/summery_widgets/field_data.dart';
+import '../core/models/appointment_details_screen_args.dart';
 import '../core/services/view_models/appontment_details_view_model.dart';
 import '../dialogs/confirm_cancel_appointment_dialog.dart';
 import '../widgets/appointment_details_widgets/appointment_details_card_widget.dart';
@@ -26,20 +27,11 @@ import '../widgets/appointment_details_widgets/appointment_details_card_widget.d
 class AppointmentDetailsScreen extends StatefulWidget {
   // final int appointmentId;
 
-  AppointmentItemInfo? appointmentItemInfo;
-  bool? isCancelable;
-  bool? isPrintable;
-  bool? fromHomePage;
+  const AppointmentDetailsScreen({
+    Key? key,
 
-  AppointmentDetailsScreen(
-      {Key? key,
-      this.appointmentItemInfo,
-      this.isCancelable,
-      this.isPrintable,
-      this.fromHomePage = false
-      // required this.appointmentId,
-      })
-      : super(key: key);
+    // required this.appointmentId,
+  }) : super(key: key);
 
   @override
   State<AppointmentDetailsScreen> createState() =>
@@ -50,9 +42,13 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
   final model = locator<AppointmentDetailsViewModel>();
   AppointmentItemInfo? appointmentItemInfoLocal;
 
+  AppointmentItemInfo? appointmentItemInfo;
+  bool? isCancelable;
+  bool? isPrintable;
+  bool? fromHomePage = false;
+
   @override
   void initState() {
-    model.fromHomePage = widget.fromHomePage ?? false;
     super.initState();
   }
 
@@ -64,56 +60,63 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BaseView<AppointmentDetailsViewModel>(
-        onModelReady: (model) {},
-        builder: (context, model, child) {
-          if (widget.appointmentItemInfo != null) {
-            appointmentItemInfoLocal = widget.appointmentItemInfo;
-          } else {
-            appointmentItemInfoLocal = model.getAppointmentsInfo();
-          }
-          return Scaffold(
-              backgroundColor: AppColor.white2,
-              appBar: DetailsHeader(
-                title: ("appointment").tr(),
-                onPrint: (widget.isPrintable ?? false)
-                    ? () {
-                        model.printAppointmentFunction(
-                            widget.appointmentItemInfo!.id!);
-                      }
-                    : null,
-                procedures: () async {
-                  await BottomSheetDialog.showDraggableSheet(context,
-                      isFullHeight: false,
-                      height: 250,
-                      child: BottomSheetWithActions(
-                        title: "actions".tr(),
-                        body: Column(children: [
-                          if (appointmentItemInfoLocal?.confirmable ?? false)
-                            GestureDetector(
-                              onTap: () {
-                                model.confirmAppointment();
-                              },
-                              child: FieldData(
-                                title: "تأكيد الموعد",
-                              ),
-                            ),
-                          CustomVerticalSpace(height: 16),
-                          if (widget.isCancelable ??
-                              appointmentItemInfoLocal!.cancelable ??
-                              false)
-                            GestureDetector(
-                                onTap: () async {
-                                  await BottomSheetDialog.showDraggableSheet(
-                                    context,
-                                    child:
-                                        const ConfirmCancelAppointmentDialog(),
-                                    isFullHeight: false,
-                                  );
-                                },
-                                child: FieldData(title: "الغاء الموعد"))
-                        ]),
-                      ));
+    AppointmentDetailsScreenArgs args = ModalRoute.of(context)!
+        .settings
+        .arguments as AppointmentDetailsScreenArgs;
+
+    appointmentItemInfo = args.appointmentItemInfo;
+    isCancelable = args.isCancelable;
+    isPrintable = args.isPrintable;
+    fromHomePage = args.fromHomePage;
+
+    return BaseView<AppointmentDetailsViewModel>(onModelReady: (model) {
+      model.fromHomePage = fromHomePage ?? false;
+    }, builder: (context, model, child) {
+      if (appointmentItemInfo != null) {
+        appointmentItemInfoLocal = appointmentItemInfo;
+      } else {
+        appointmentItemInfoLocal = model.getAppointmentsInfo();
+      }
+      return Scaffold(
+          backgroundColor: AppColor.white2,
+          appBar: DetailsHeader(
+            title: ("appointment").tr(),
+            onPrint: (isPrintable ?? false)
+                ? () {
+                    model.printAppointmentFunction(appointmentItemInfo!.id!);
+                  }
+                : null,
+            procedures: () async {
+              await BottomSheetDialog.showDraggableSheet(context,
+                  isFullHeight: false,
+                  height: 250,
+                  child: BottomSheetWithActions(
+                    title: "actions".tr(),
+                    body: Column(children: [
+                      if (appointmentItemInfoLocal?.confirmable ?? false)
+                        GestureDetector(
+                          onTap: () {
+                            model.confirmAppointment();
+                          },
+                          child: FieldData(
+                            title: "تأكيد الموعد",
+                          ),
+                        ),
+                      CustomVerticalSpace(height: 16),
+                      if (isCancelable ??
+                          appointmentItemInfoLocal!.cancelable ??
+                          false)
+                        GestureDetector(
+                            onTap: () async {
+                              await BottomSheetDialog.showDraggableSheet(
+                                context,
+                                child: const ConfirmCancelAppointmentDialog(),
+                                isFullHeight: false,
+                              );
+                            },
+                            child: FieldData(title: "الغاء الموعد"))
+                    ]),
+                  ));
 
 /*
 
@@ -129,107 +132,103 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
                     false)
 */
 
-                  /*await CustomPopUpsWidgets.showBottomSheet(
+              /*await CustomPopUpsWidgets.showBottomSheet(
                     context,
                     child: const ConfirmCancelAppointmentDialog(),
                     isFullHeight: false,
                   );*/
-                },
-              ),
-              body: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: SingleChildScrollView(
-                      child: Column(
+            },
+          ),
+          body: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: SingleChildScrollView(
+                  child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Row(
-                            children: [
-                              SvgPicture.asset(
-                                IconPath.calendarIcon,
-                                width: 24,
-                                height: 24,
-                              ),
-                              CustomHorizontalSpace(width: 8),
-                              CustomTextWidget(
-                                CommonFunctions.getFormattedDate(
-                                  widget.appointmentItemInfo?.visitDate,
-                                ),
-                                fontColor: AppColor.blackModern500Light,
-                                fontSize: 12,
-                                fontWeight: AppFontWeight.bold,
-                              )
-                            ],
+                          SvgPicture.asset(
+                            IconPath.calendarIcon,
+                            width: 24,
+                            height: 24,
                           ),
-                          HomeTag(
-                            title: widget.appointmentItemInfo?.statusName ?? "",
-                            backgroundColor: AppColor.secondary100Light,
-                          ),
+                          CustomHorizontalSpace(width: 8),
+                          CustomTextWidget(
+                            CommonFunctions.getFormattedDate(
+                              appointmentItemInfo?.visitDate,
+                            ),
+                            fontColor: AppColor.blackModern500Light,
+                            fontSize: 12,
+                            fontWeight: AppFontWeight.bold,
+                          )
                         ],
                       ),
-                      const CustomVerticalSpace(height: 16),
-                      CustomExpansionPanelWidget(
-                          title: ("تاريح وقت الموعد").tr(),
-                          leading: SvgPicture.asset(IconPath.vdSummuryDesc),
-                          children: [
-                            FieldData(
-                              title: ("appointmentsAppointmentDateWord").tr(),
-                              subTitle: CommonFunctions.getFormattedDate(
-                                  widget.appointmentItemInfo?.visitDate),
-                            ),
-                            const CustomVerticalSpace(height: 8),
-                            FieldData(
-                              title: ("appointmentsAppointmentTimeWord").tr(),
-                              subTitle: widget.appointmentItemInfo?.visitTime,
-                            ),
-                          ]),
-                      CustomVerticalSpace(height: 16),
-                      CustomExpansionPanelWidget(
-                          title: ("تفاصيل الموعد").tr(),
-                          leading: SvgPicture.asset(IconPath.vdSummuryDesc),
-                          children: [
-                            FieldData(
-                              title: ("appointmentDetailsEntityNameWord").tr(),
-                              subTitle: widget
-                                  .appointmentItemInfo?.subMunicipalityName,
-                            ),
-                            const CustomVerticalSpace(height: 8),
-                            FieldData(
-                              title: ("appointmentDetailsServiceWord").tr(),
-                              subTitle:
-                                  widget.appointmentItemInfo?.subClassName,
-                            ),
-                            const CustomVerticalSpace(height: 8),
-                            FieldData(
-                              title: ("visit_purpose").tr(),
-                              subTitle: widget
-                                  .appointmentItemInfo?.appointmentDetails,
-                            ),
-                          ]),
-                      CustomVerticalSpace(height: 16),
-                      if (widget.appointmentItemInfo?.uuid != null)
-                        CustomExpansionPanelWidget(
-                            title: ("الرمز السريع").tr(),
-                            leading: SvgPicture.asset(IconPath.vdSummuryDesc),
-                            children: [
-                              Card(
-                                  margin: const EdgeInsets.symmetric(
-                                    horizontal: Constants.semiMediumPadding,
-                                  ),
-                                  color: AppColor.white2,
-                                  child: QrImageView(
-                                    data:
-                                        RemoteConfig.publicAppointmentShareURL +
-                                            widget.appointmentItemInfo!.uuid!,
-                                    version: QrVersions.auto,
-                                    size: 180.0,
-                                    padding: const EdgeInsets.all(
-                                        Constants.smallPadding),
-                                  ))
-                            ]),
+                      HomeTag(
+                        title: appointmentItemInfo?.statusName ?? "",
+                        backgroundColor: AppColor.secondary100Light,
+                      ),
                     ],
-                  ))));
+                  ),
+                  const CustomVerticalSpace(height: 16),
+                  CustomExpansionPanelWidget(
+                      title: ("تاريح وقت الموعد").tr(),
+                      leading: SvgPicture.asset(IconPath.vdSummuryDesc),
+                      children: [
+                        FieldData(
+                          title: ("appointmentsAppointmentDateWord").tr(),
+                          subTitle: CommonFunctions.getFormattedDate(
+                              appointmentItemInfo?.visitDate),
+                        ),
+                        const CustomVerticalSpace(height: 8),
+                        FieldData(
+                          title: ("appointmentsAppointmentTimeWord").tr(),
+                          subTitle: appointmentItemInfo?.visitTime,
+                        ),
+                      ]),
+                  CustomVerticalSpace(height: 16),
+                  CustomExpansionPanelWidget(
+                      title: ("تفاصيل الموعد").tr(),
+                      leading: SvgPicture.asset(IconPath.vdSummuryDesc),
+                      children: [
+                        FieldData(
+                          title: ("appointmentDetailsEntityNameWord").tr(),
+                          subTitle: appointmentItemInfo?.subMunicipalityName,
+                        ),
+                        const CustomVerticalSpace(height: 8),
+                        FieldData(
+                          title: ("appointmentDetailsServiceWord").tr(),
+                          subTitle: appointmentItemInfo?.subClassName,
+                        ),
+                        const CustomVerticalSpace(height: 8),
+                        FieldData(
+                          title: ("visit_purpose").tr(),
+                          subTitle: appointmentItemInfo?.appointmentDetails,
+                        ),
+                      ]),
+                  CustomVerticalSpace(height: 16),
+                  if (appointmentItemInfo?.uuid != null)
+                    CustomExpansionPanelWidget(
+                        title: ("الرمز السريع").tr(),
+                        leading: SvgPicture.asset(IconPath.vdSummuryDesc),
+                        children: [
+                          Card(
+                              margin: const EdgeInsets.symmetric(
+                                horizontal: Constants.semiMediumPadding,
+                              ),
+                              color: AppColor.white2,
+                              child: QrImageView(
+                                data: RemoteConfig.publicAppointmentShareURL +
+                                    appointmentItemInfo!.uuid!,
+                                version: QrVersions.auto,
+                                size: 180.0,
+                                padding: const EdgeInsets.all(
+                                    Constants.smallPadding),
+                              ))
+                        ]),
+                ],
+              ))));
 
 /*
             ListView(
@@ -265,7 +264,7 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
               ],
             ),
           );*/
-        });
+    });
   }
 }
 

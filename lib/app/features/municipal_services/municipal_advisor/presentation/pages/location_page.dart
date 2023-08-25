@@ -42,8 +42,6 @@ class LocationPage extends StatefulWidget {
 }
 
 class LocationPageState extends State<LocationPage> {
-  late final MunicipalAdvisorBloc bloc;
-
   final Completer<GoogleMapController> _controller =
       Completer<GoogleMapController>();
   late GoogleMapController mapController;
@@ -72,7 +70,8 @@ class LocationPageState extends State<LocationPage> {
 
   @override
   Widget build(BuildContext context) {
-    bloc = ModalRoute.of(context)!.settings.arguments as MunicipalAdvisorBloc;
+    MunicipalAdvisorBloc bloc =
+        ModalRoute.of(context)!.settings.arguments as MunicipalAdvisorBloc;
 
     return Scaffold(
       body: BlocProvider.value(

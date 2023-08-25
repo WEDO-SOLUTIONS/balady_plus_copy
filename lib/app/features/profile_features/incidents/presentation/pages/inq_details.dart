@@ -23,12 +23,22 @@ import '../details_bloc/crm_details_bloc.dart';
 import '../widgets/attachment_list_widget.dart';
 import '../widgets/status_tag.dart';
 
-class InqDetailsPage extends StatelessWidget {
-  final RequestDetailsPageParams params;
-  const InqDetailsPage({super.key, required this.params});
+class InqDetailsPage extends StatefulWidget {
+  const InqDetailsPage({
+    super.key,
+  });
+
+  @override
+  State<InqDetailsPage> createState() => _InqDetailsPageState();
+}
+
+class _InqDetailsPageState extends State<InqDetailsPage> {
 
   @override
   Widget build(BuildContext context) {
+   RequestDetailsPageParams params =
+        ModalRoute.of(context)!.settings.arguments as RequestDetailsPageParams;
+
     return BlocProvider(
       create: (context) =>
           CrmDetailsBloc(crmRequestType: RequestsType.INQ, pageParams: params),

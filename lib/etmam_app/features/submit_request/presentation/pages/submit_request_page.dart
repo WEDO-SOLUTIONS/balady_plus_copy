@@ -32,9 +32,7 @@ import '../../../_shared_feature_/shared/shared_feature_exports.dart'
 import '../../submit_request_exports.dart' show RelationBloc;
 
 class SubmitRequestPage extends StatefulWidget {
-  SubmitPageParams args;
-
-  SubmitRequestPage({Key? key, required this.args}) : super(key: key);
+  const SubmitRequestPage({Key? key}) : super(key: key);
 
   @override
   State<SubmitRequestPage> createState() => _SubmitRequestPageState();
@@ -49,6 +47,9 @@ class _SubmitRequestPageState extends State<SubmitRequestPage> {
 
   @override
   Widget build(BuildContext context) {
+    SubmitPageParams args =
+        ModalRoute.of(context)!.settings.arguments as SubmitPageParams;
+
     return Scaffold(
       appBar: DefaultAppBarWidget(
         title: trans('etmam_order_info'),
@@ -57,13 +58,13 @@ class _SubmitRequestPageState extends State<SubmitRequestPage> {
         create: (context) {
           var relationBloc;
           try {
-            relationBloc = BlocProvider.of<RelationBloc>(context);
+            relationBloc = args.releationBloc;
           } catch (e) {}
 
           return SubmitRequestBloc(
               relationBloc: relationBloc,
               submitRequest: sl(),
-              args: widget.args,
+              args: args,
               sendOTP: sl());
         },
         child: BlocConsumer<SubmitRequestBloc, SubmitRequestState>(
@@ -87,7 +88,7 @@ class _SubmitRequestPageState extends State<SubmitRequestPage> {
                             providerId: state.serviceProviderId,
                             relationId: state.relationId,
                             changeProvider: state.changeProvider,
-                            pageType: widget.args.pageType,
+                            pageType: args.pageType,
                             orderId: state.orderId,
                             subOrders: state.getSubOrders())));
                   },

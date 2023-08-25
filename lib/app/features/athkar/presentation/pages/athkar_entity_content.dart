@@ -12,11 +12,7 @@ import 'package:flutter/scheduler.dart';
 class AthkarEntityContent extends StatefulWidget {
   const AthkarEntityContent({
     super.key,
-    required this.params,
-    required this.athkarEntitiesList,
   });
-  final AthkarEntityContentParams params;
-  final List<AthkarEntity> athkarEntitiesList;
 
   @override
   State<AthkarEntityContent> createState() => _AthkarEntityContentState();
@@ -25,25 +21,30 @@ class AthkarEntityContent extends StatefulWidget {
 class _AthkarEntityContentState extends State<AthkarEntityContent> {
   PageController _controller = PageController();
   int _currentIndex = 0;
-
+  late AthkarEntityContentParams params;
+  late List<AthkarEntity> athkarEntitiesList;
   @override
   void initState() {
     super.initState();
 
     SchedulerBinding.instance.addPostFrameCallback((_) {
-      _controller.jumpToPage(widget.params.pageNumber);
+      _controller.jumpToPage(params.pageNumber);
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    params =
+        ModalRoute.of(context)!.settings.arguments as AthkarEntityContentParams;
+    athkarEntitiesList = params.athkarEntitiesList;
+
     return Scaffold(
       appBar: const AthkarAppBar(title: ''),
       body: Column(
         children: [
           Expanded(
             child: PageView.builder(
-                itemCount: widget.athkarEntitiesList.length,
+                itemCount: athkarEntitiesList.length,
                 controller: _controller,
                 onPageChanged: (int index) {
                   setState(() {
@@ -58,7 +59,7 @@ class _AthkarEntityContentState extends State<AthkarEntityContent> {
                       child: Column(
                         children: [
                           CustomTextWidget(
-                            widget.params.athkarEntitiesList[index].content,
+                            params.athkarEntitiesList[index].content,
                             fontColor: Colors.black,
                             maxLines: 2000,
                             height: 1.6,
@@ -67,7 +68,7 @@ class _AthkarEntityContentState extends State<AthkarEntityContent> {
                             height: 32,
                           ),
                           CustomTextWidget(
-                            widget.params.athkarEntitiesList[index].description,
+                            params.athkarEntitiesList[index].description,
                             textStyle: AppStyle.serviceDescriptionStyle
                                 .copyWith(color: AppColor.primary800Light),
                             maxLines: 100,
@@ -82,9 +83,8 @@ class _AthkarEntityContentState extends State<AthkarEntityContent> {
             counter: counter,
             reset: _resetCounter,
             incrementCounter: _incrementCounter,
-            countText:
-                widget.params.athkarEntitiesList[_currentIndex].quantityText,
-            count: widget.params.athkarEntitiesList[_currentIndex].quantity,
+            countText: params.athkarEntitiesList[_currentIndex].quantityText,
+            count: params.athkarEntitiesList[_currentIndex].quantity,
           ),
         ],
       ),
@@ -94,7 +94,7 @@ class _AthkarEntityContentState extends State<AthkarEntityContent> {
   int counter = 0;
 
   void _incrementCounter() {
-    if (counter < widget.params.athkarEntitiesList[_currentIndex].quantity) {
+    if (counter < params.athkarEntitiesList[_currentIndex].quantity) {
       setState(() {
         counter++;
       });

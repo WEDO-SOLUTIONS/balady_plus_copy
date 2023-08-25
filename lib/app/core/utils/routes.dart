@@ -148,11 +148,114 @@ import 'enums/visual_distortion.dart';
 import 'etmam_route_exports.dart' hide SplashPage;
 
 class Routes {
+  static Map<String, Widget Function(BuildContext)> etmamRoutes() => {};
+
   static Map<String, Widget Function(BuildContext)> routes() => {
+//! Etmam Start
+        EtmamRoutesNames.bottomNavigation: (context) =>
+            const BottomNavigationPage(),
+
+        // home page
+        EtmamRoutesNames.home: (context) => const EtmamHomePage(),
+
+        // search page
+        EtmamRoutesNames.searchPage: (context) => const SearchPage(),
+
+//    cubit = ModalRoute.of(context)!.settings.arguments as PrayerTimesCubit;
+
+        // Main Services Page
+        EtmamRoutesNames.mainServicesPage: (context) =>
+            const EtmamMainServicesPage(),
+
+//    cubit = ModalRoute.of(context)!.settings.arguments as PrayerTimesCubit;
+
+        // Sub Services Page
+        /*EtmamRoutesNames.subServicesPage: (context) =>
+            const EtmamSubServicesPage(),
+*/
+        // Providers By Service
+
+        EtmamRoutesNames.providersByService: (context) => const ServicesPage(),
+
+        EtmamRoutesNames.serviceProvidersDetails: (context) =>
+            const ServiceDetailsPage(),
+
+        EtmamRoutesNames.faqPage: (context) => const FaqPage(),
+
+        EtmamRoutesNames.officeInfoPage: (context) => const OfficeInfoPage(),
+
+        //    provider = ModalRoute.of(context)!.settings.arguments as Provider;
+
+        EtmamRoutesNames.branchesMapPage: (context) => const BranchesMapPage(),
+
+        EtmamRoutesNames.providersDetails: (context) =>
+            const ProviderDetailsPage(),
+
+        // on boarding
+
+        EtmamRoutesNames.onBoardingRoute: (context) =>
+            const OnBoardingCitiesPage(),
+
+        // Submit Request
+
+        EtmamRoutesNames.relationsList: (context) =>
+            const RelationRequestPage(),
+
+        EtmamRoutesNames.providersListPage: (context) => const ProvidersPage(),
+
+        /* case EtmamRoutesNames.providersListPage:
+        //ProviderResponse response = settings.arguments as ProviderResponse;
+        return MaterialPageRoute(
+            builder: (_) => ProvidersPage(
+                //  providerResponse: response,
+                ));*/
+
+        EtmamRoutesNames.previousWorksPage: (context) =>
+            const PreviousWorksPage(),
+
+        EtmamRoutesNames.previousWorksDetailsPage: (context) =>
+            const PreviousWorksDetailsPage(),
+
+        EtmamRoutesNames.serviceTypesList: (context) =>
+            const ServiceProvidersRelations(),
+
+        EtmamRoutesNames.orderInfo: (context) => const SubmitRequestPage(),
+
+        EtmamRoutesNames.myOrdersPage: (context) => const OrdersPage(),
+
+        // Success Page
+
+        EtmamRoutesNames.successRoute: (context) =>
+            const sharedEtmamFeature.SuccessScreen(),
+
+        // otp page
+
+        EtmamRoutesNames.otpRoute: (context) => const EtmamOtpScreen(),
+
+        // orders details page
+        EtmamRoutesNames.orderDetailsRoute: (context) =>
+            const OrderDetailsPage(),
+
+        // evaluate order
+        EtmamRoutesNames.evaluateOrderRoute: (context) =>
+            const EvaluateOrderPage(),
+
+        // personal info
+        EtmamRoutesNames.personalInfoRoute: (context) =>
+            const PersonalInfoPage(),
+
+        // help
+        EtmamRoutesNames.helpRoute: (context) => const HelpPage(),
+
+        // Select City Page
+        EtmamRoutesNames.selectCityPage: (context) =>
+            const EtmamSelectCityPage(),
+
+//! Etmam End
+
         RouteName.bottomNavigation: (context) => const b.BottomNavigationPage(),
         RouteName.AppointmentsListScreen: (context) =>
             const AppointmentsListScreen(),
-        EtmamRoutesNames.myOrdersPage: (context) => const OrdersPage(),
 
         RouteName.splash: (context) => const SplashPage(),
         RouteName.etmamMainPage: (context) => const EtmamMainPage(),
@@ -236,7 +339,7 @@ class Routes {
 
         RouteName.prayerTimes: (context) => PrayerTimesPage(),
 
-        RouteName.qiblahCompass: (context) => QiblahWebViewPage(),
+        RouteName.qiblahCompass: (context) => const QiblahWebViewPage(),
 
         RouteName.visualDistortionDetailsPage: (context) =>
             VisualDistortionDetailsScreen(),
@@ -273,336 +376,99 @@ class Routes {
         // ------ Violations -------
         RouteName.violationsPage: (context) => ViolationsPage(),
 
-/*
-      case RouteName.violationDetailsPage:
-        return MaterialPageRoute(
-          builder: (_) => ViolationsDetailsPage(
-            violationsEntity: settings.arguments as ViolationsEntity,
-          ),
-        );
-      case RouteName.createViolationObjectionDetails:
-        CreateViolationObjectionPageParams params =
-            settings.arguments as CreateViolationObjectionPageParams;
-        return MaterialPageRoute(
-          builder: (_) => CreateViolationObjectionPage(
-            params: params,
-          ),
-        );
+        RouteName.violationDetailsPage: (context) => ViolationsDetailsPage(),
 
-      case RouteName.transactionDetailsPage:
-        CreateObjectionPageParams? params =
-            settings.arguments as CreateObjectionPageParams?;
-        return MaterialPageRoute(
-          builder: (_) => TransactionsDetailsPage(
-            params: params!,
-          ),
-        );
+        RouteName.createViolationObjectionDetails: (context) =>
+            const CreateViolationObjectionPage(),
 
-      case RouteName.objectionsDetailsPage:
-        ObjectionDetails? params = settings.arguments as ObjectionDetails?;
-        return MaterialPageRoute(
-          builder: (_) => ObjectionsDetailsPage(
-            params: params!,
-          ),
-        );
+        RouteName.transactionDetailsPage: (context) =>
+            const TransactionsDetailsPage(),
 
-      case RouteName.weatherMainPage:
-        return MaterialPageRoute(
-          builder: (_) => const WeatherMainPage(),
-        );
+        RouteName.objectionsDetailsPage: (context) =>
+            const ObjectionsDetailsPage(),
 
-      case RouteName.investmentPage:
-        InvestmentDetailsResponse? data =
-            settings.arguments as InvestmentDetailsResponse?;
-        return MaterialPageRoute(
-          builder: (_) => InvestmentPage(data: data!),
-        );
-      case RouteName.tempRentalPage:
-        RentalDetailsResponse? data =
-            settings.arguments as RentalDetailsResponse?;
+        RouteName.weatherMainPage: (context) => const WeatherMainPage(),
 
-        return MaterialPageRoute(
-          builder: (_) => TempRentalPage(
-            data: data!,
-          ),
-        );
+        RouteName.investmentPage: (context) => const InvestmentPage(),
 
-      case RouteName.DCCameraPage:
-        CameraParamsPage params = settings.arguments as CameraParamsPage;
+        RouteName.tempRentalPage: (context) => const TempRentalPage(),
 
-        return MaterialPageRoute(
-          builder: (_) => DCCameraPage(params: params),
-        );
+        RouteName.DCCameraPage: (context) => const DCCameraPage(),
 
-      case RouteName.createDCDetailsPage:
-        return MaterialPageRoute(
-          builder: (_) => const CreateDCDetailsPage(),
-        );
+        RouteName.createDCDetailsPage: (context) => const CreateDCDetailsPage(),
 
-      case RouteName.dcMapRoute:
-        MapScreenParams? params = settings.arguments != null
-            ? settings.arguments as MapScreenParams
-            : null;
-        return MaterialPageRoute(
-          builder: (_) => DCMapScreen(params: params),
-        );
+        RouteName.dcMapRoute: (context) => const DCMapScreen(),
 
-      case RouteName.CheckVeichlesPage:
-        String type = settings.arguments as String;
-        return MaterialPageRoute(
-          builder: (_) => CheckVeichlesPage(
-            type: type,
-          ),
-        );
+        RouteName.CheckVeichlesPage: (context) => const CheckVeichlesPage(),
 
-      case RouteName.VeichlesListPage:
-        VeichlesListPageParams params =
-            settings.arguments as VeichlesListPageParams;
-        return MaterialPageRoute(
-          builder: (_) => VeichlesListPage(params: params),
-        );
+        RouteName.VeichlesListPage: (context) => const VeichlesListPage(),
 
-      case RouteName.CreateRetriveDetailsPage:
-        CreateRetrivePageParams params =
-            settings.arguments as CreateRetrivePageParams;
-        return MaterialPageRoute(
-          builder: (_) => CreateRetriveDetailsPage(params: params),
-        );
+        RouteName.CreateRetriveDetailsPage: (context) =>
+            const CreateRetriveDetailsPage(),
 
-      case RouteName.DCVeichlePage:
-        return MaterialPageRoute(
-          builder: (_) => const DCVehiclesPage(),
-        );
+        RouteName.DCVeichlePage: (context) => const DCVehiclesPage(),
 
-      case RouteName.DCSelectRetreiveTypePage:
-        return MaterialPageRoute(
-          builder: (_) => const DCSelectRetrieveTypePage(),
-        );
-      case RouteName.weatherMainPage:
-        return MaterialPageRoute(
-          builder: (_) => const WeatherMainPage(),
-        );
+        RouteName.DCSelectRetreiveTypePage: (context) =>
+            const DCSelectRetrieveTypePage(),
 
-      case RouteName.NewAppointmentPage:
-        bool? withPreviousTransaction = settings.arguments as bool?;
-        return MaterialPageRoute(
-          builder: (_) => NewAppointmentPage(
-            withPreviousTransaction: withPreviousTransaction ?? false,
-          ),
-        );
+        RouteName.NewAppointmentPage: (context) => const NewAppointmentPage(),
+        RouteName.newDaemTicket: (context) => const NewDaemPage(),
+        RouteName.newTransactionInquiryScreen: (context) =>
+            const NewTransactionPage(),
 
-      case RouteName.newDaemTicket:
-        final args = settings.arguments as NewTicketPageArgs;
+        RouteName.inquiryDetailsScreen: (context) =>
+            const InquiryDetailsScreen(),
 
-        return MaterialPageRoute(
-          builder: (_) => NewDaemPage(
-            args: args,
-          ),
-        );
+        RouteName.generalInquiryPage: (context) => const GeneralInquiryPage(),
 
-      case RouteName.newTransactionInquiryScreen:
-        return MaterialPageRoute(
-          builder: (_) => NewTransactionPage(),
-        );
+        RouteName.previousAppointmentsRoute: (context) =>
+            const PreviousAppointmentsScreen(),
 
-      case RouteName.inquiryDetailsScreen:
-        InquiryTransactionResponse args =
-            settings.arguments as InquiryTransactionResponse;
-        return MaterialPageRoute(
-          builder: (_) => InquiryDetailsScreen(
-            result: args,
-          ),
-        );
+        RouteName.appointmentDetailsRoute: (context) =>
+            const AppointmentDetailsScreen(),
 
-      case RouteName.generalInquiryPage:
-        CustomerVoiceReportTypeModel inqTypeModel =
-            settings.arguments as CustomerVoiceReportTypeModel;
-        return MaterialPageRoute(
-          builder: (_) => GeneralInquiryPage(inqTypeModel: inqTypeModel),
-        );
+        RouteName.newMSRPage: (context) => const NewMSRPage(),
 
-      case RouteName.previousAppointmentsRoute:
-        return MaterialPageRoute(
-          builder: (_) => const PreviousAppointmentsScreen(),
-        );
+        RouteName.newMSRMapPage: (context) => const NewRequestLocationScreen(),
 
-      case RouteName.appointmentDetailsRoute:
-        final args = settings.arguments as AppointmentDetailsScreenArgs;
-        return MaterialPageRoute(
-          builder: (_) => AppointmentDetailsScreen(
-            // appointmentId: args,
-            appointmentItemInfo: args.appointmentItemInfo,
-            isCancelable: args.isCancelable,
-            isPrintable: args.isPrintable,
-            fromHomePage: args.fromHomePage,
-          ),
-        );
+        RouteName.calculatorMapRoute: (context) =>
+            const ServiceCalculatorLocationScreen(),
 
-      case RouteName.newMSRPage:
-        return MaterialPageRoute(
-          builder: (_) => NewMSRPage(),
-        );
-      case RouteName.newMSRMapPage:
-        final args = settings.arguments as CustomerVoiceReportTypeModel;
-        return MaterialPageRoute(
-          builder: (_) => NewRequestLocationScreen(reportType: args),
-        );
+        RouteName.calculatorRoute: (context) => const ServiceCalculatorScreen(),
 
-      case RouteName.calculatorMapRoute:
-        return MaterialPageRoute(
-          builder: (_) => ServiceCalculatorLocationScreen(),
-        );
+        RouteName.newHealthCertificatePage: (context) =>
+            const NewHealthCertificatePage(),
 
-      case RouteName.calculatorRoute:
-        final args = settings.arguments as GisLocationResult;
-        return MaterialPageRoute(
-          builder: (_) => ServiceCalculatorScreen(
-            gisLocationResult: args,
-          ),
-        );
+        RouteName.healthLicenseDetailsScreen: (context) =>
+            const HealthLicenseDetailsScreen(),
 
-      case RouteName.AppointmentsListScreen:
-        return MaterialPageRoute(
-          builder: (_) => AppointmentsListScreen(),
-        );
+        RouteName.healthRequestDetailsScreen: (context) =>
+            const HealthRequestDetailsScreen(),
 
-      case RouteName.newHealthCertificatePage:
-        bool? isRenew = settings.arguments as bool?;
-        return MaterialPageRoute(
-          builder: (_) => NewHealthCertificatePage(
-            renew: isRenew ?? false,
-          ),
-        );
+        RouteName.DiggingMapDetailsPage: (context) =>
+            const DiggingMapDetailsPage(),
 
-      case RouteName.healthLicenseDetailsScreen:
-        final args = settings.arguments as HealthRequestDetailsScreenArgs;
-        return MaterialPageRoute(
-          builder: (_) => HealthLicenseDetailsScreen(
-            args: args,
-          ),
-        );
+        RouteName.InvestmentMapDetailsPage: (context) =>
+            const InvestmentMapDetailsPage(),
 
-      case RouteName.healthRequestDetailsScreen:
-        final args = settings.arguments as HealthRequestDetailsScreenArgs;
-        return MaterialPageRoute(
-          builder: (_) => HealthRequestDetailsScreen(
-            args: args,
-          ),
-        );
+        RouteName.DCDetails: (context) => const DCDetailsPage(),
 
-      case RouteName.DiggingMapDetailsPage:
-        Excavations? item = settings.arguments as Excavations?;
-        return MaterialPageRoute(
-          builder: (_) => DiggingMapDetailsPage(
-            item: item!,
-          ),
-        );
+        RouteName.IncidentDetails: (context) => const IncidentDetailsPage(),
 
-      case RouteName.InvestmentMapDetailsPage:
-        InvestmentDetailsResponse? item =
-            settings.arguments as InvestmentDetailsResponse?;
-        return MaterialPageRoute(
-          builder: (_) => InvestmentMapDetailsPage(
-            item: item!,
-          ),
-        );
+        RouteName.InqDetails: (context) => const InqDetailsPage(),
 
-      case RouteName.InvestmentMapDetailsPage:
-        InvestmentDetailsResponse? item =
-            settings.arguments as InvestmentDetailsResponse?;
-        return MaterialPageRoute(
-          builder: (_) => InvestmentMapDetailsPage(
-            item: item!,
-          ),
-        );
+        RouteName.ReqDetails: (context) => const ReqDetailsPage(),
+        RouteName.VHRDetails: (context) => const VHRDetailsPage(),
+        RouteName.DaemDetails: (context) => const DaemDetailsPage(),
+        RouteName.mainAthkarPage: (context) => Athkar(),
 
-      case RouteName.InvestmentMapDetailsPage:
-        InvestmentDetailsResponse? item =
-            settings.arguments as InvestmentDetailsResponse?;
-        return MaterialPageRoute(
-          builder: (_) => InvestmentMapDetailsPage(
-            item: item!,
-          ),
-        );
+        RouteName.boardingPage: (context) => const BoardingMainPage(),
+        RouteName.athkarEntitesPage: (context) => const AthkarEntities(),
 
-      case RouteName.DCDetails:
-        RequestDetailsPageParams? item =
-            settings.arguments as RequestDetailsPageParams?;
-        return MaterialPageRoute(
-          builder: (_) => DCDetailsPage(
-            params: item!,
-          ),
-        );
+        RouteName.athkarEntityContentPage: (context) =>
+            const AthkarEntityContent(),
 
-      case RouteName.IncidentDetails:
-        RequestDetailsPageParams? item =
-            settings.arguments as RequestDetailsPageParams?;
-        return MaterialPageRoute(
-          builder: (_) => IncidentDetailsPage(
-            params: item!,
-          ),
-        );
-      case RouteName.InqDetails:
-        RequestDetailsPageParams? item =
-            settings.arguments as RequestDetailsPageParams?;
-        return MaterialPageRoute(
-          builder: (_) => InqDetailsPage(
-            params: item!,
-          ),
-        );
-
-      case RouteName.ReqDetails:
-        RequestDetailsPageParams? item =
-            settings.arguments as RequestDetailsPageParams?;
-        return MaterialPageRoute(
-          builder: (_) => ReqDetailsPage(
-            params: item!,
-          ),
-        );
-
-      case RouteName.VHRDetails:
-        RequestDetailsPageParams? item =
-            settings.arguments as RequestDetailsPageParams?;
-        return MaterialPageRoute(
-          builder: (_) => VHRDetailsPage(
-            params: item!,
-          ),
-        );
-
-      case RouteName.DaemDetails:
-        RequestDetailsPageParams? item =
-            settings.arguments as RequestDetailsPageParams?;
-        return MaterialPageRoute(
-          builder: (_) => DaemDetailsPage(
-            params: item!,
-          ),
-        );
-
-      case RouteName.mainAthkarPage:
-        return MaterialPageRoute(
-          builder: (_) => Athkar(),
-        );
-      case RouteName.boardingPage:
-        return MaterialPageRoute(
-          builder: (_) => BoardingMainPage(),
-        );
-      case RouteName.athkarEntitesPage:
-        final params = settings.arguments as AthkarEntitiesParams;
-        return MaterialPageRoute(
-          builder: (_) => AthkarEntities(
-            params: params,
-          ),
-        );
-      case RouteName.athkarEntityContentPage:
-        final params = settings.arguments as AthkarEntityContentParams;
-        return MaterialPageRoute(
-          builder: (_) => AthkarEntityContent(
-            params: params,
-            athkarEntitiesList: params.athkarEntitiesList, // Use params here
-          ),
-        );
-
-*/
+//    cubit = ModalRoute.of(context)!.settings.arguments as PrayerTimesCubit;
       };
 }
 
@@ -630,178 +496,6 @@ class AppRouter1 {
   static Route<dynamic>? etmamRoutes(RouteSettings settings) {
     switch (settings.name) {
       // bottom-navigation-bar page
-      case EtmamRoutesNames.bottomNavigation:
-        return MaterialPageRoute(builder: (_) => const BottomNavigationPage());
-
-      // home page
-      case EtmamRoutesNames.home:
-        return MaterialPageRoute(builder: (_) => const EtmamHomePage());
-
-      // search page
-      case EtmamRoutesNames.searchPage:
-        return MaterialPageRoute(builder: (_) => const SearchPage());
-
-      // Main Services Page
-      case EtmamRoutesNames.mainServicesPage:
-        final MainServiceResponse resopnse =
-            settings.arguments as MainServiceResponse;
-        return MaterialPageRoute(
-            builder: (_) => EtmamMainServicesPage(
-                  mainServiceResponse: resopnse,
-                ));
-
-      // Sub Services Page
-      case EtmamRoutesNames.subServicesPage:
-        final SubServicePageArgs resopnse =
-            settings.arguments as SubServicePageArgs;
-        return MaterialPageRoute(
-            builder: (_) => EtmamSubServicesPage(
-                  subServicePageArgs: resopnse,
-                ));
-
-      // Providers By Service
-      case EtmamRoutesNames.providersByService:
-        final ServicePageParams args = settings.arguments as ServicePageParams;
-        // final ServiceResponse resopnse = settings.arguments as ServiceResponse;
-        return MaterialPageRoute(
-            builder: (_) => ServicesPage(
-                  args: args,
-                ));
-      case EtmamRoutesNames.serviceProvidersDetails:
-        final ServiceDetailsResponse response =
-            settings.arguments as ServiceDetailsResponse;
-        return MaterialPageRoute(
-            builder: (_) =>
-                ServiceDetailsPage(serviceDetailsResponse: response));
-      case EtmamRoutesNames.faqPage:
-        List<Faq> faqList = settings.arguments as List<Faq>;
-        return MaterialPageRoute(
-            builder: (_) => FaqPage(
-                  faqList: faqList,
-                ));
-      case EtmamRoutesNames.officeInfoPage:
-        Provider args = settings.arguments as Provider;
-        return MaterialPageRoute(
-            builder: (_) => OfficeInfoPage(
-                  provider: args,
-                ));
-      case EtmamRoutesNames.branchesMapPage:
-        final List<Branch> args = settings.arguments as List<Branch>;
-        return MaterialPageRoute(
-            builder: (_) => BranchesMapPage(
-                  branches: args,
-                ));
-
-      case EtmamRoutesNames.providersDetails:
-        ProviderDetailsResponse args =
-            settings.arguments as ProviderDetailsResponse;
-        return MaterialPageRoute(
-            builder: (_) => ProviderDetailsPage(
-                  args: args,
-                ));
-
-      // on boarding
-      case EtmamRoutesNames.onBoardingRoute:
-        return MaterialPageRoute(builder: (_) => const OnBoardingCitiesPage());
-
-      // Submit Request
-      case EtmamRoutesNames.relationsList:
-        RelationPageParam args = settings.arguments as RelationPageParam;
-
-        return MaterialPageRoute(
-            builder: (_) => RelationRequestPage(
-                  args: args,
-                ));
-
-      case EtmamRoutesNames.providersListPage:
-        //ProviderResponse response = settings.arguments as ProviderResponse;
-        return MaterialPageRoute(
-            builder: (_) => ProvidersPage(
-                //  providerResponse: response,
-                ));
-
-      case EtmamRoutesNames.previousWorksPage:
-        List<Project>? projects = settings.arguments as List<Project>?;
-        return MaterialPageRoute(
-            builder: (_) => PreviousWorksPage(
-                  projects: projects,
-                ));
-      case EtmamRoutesNames.previousWorksDetailsPage:
-        Project project = settings.arguments as Project;
-        return MaterialPageRoute(
-            builder: (_) => PreviousWorksDetailsPage(
-                  project: project,
-                ));
-
-      case EtmamRoutesNames.serviceTypesList:
-        final ProviderRelationPageParams args =
-            settings.arguments as ProviderRelationPageParams;
-
-        return MaterialPageRoute(
-            builder: (_) => ServiceProvidersRelations(args: args));
-
-      case EtmamRoutesNames.orderInfo:
-        SubmitPageParams args = settings.arguments as SubmitPageParams;
-        return MaterialPageRoute(
-            builder: (_) => SubmitRequestPage(
-                  args: args,
-                ));
-
-      case EtmamRoutesNames.myOrdersPage:
-        return MaterialPageRoute(builder: (_) => OrdersPage());
-      // Success Page
-      case EtmamRoutesNames.successRoute:
-        final args = settings.arguments as sharedEtmamFeature.SuccessScreenArgs;
-        return MaterialPageRoute(
-          builder: (_) => sharedEtmamFeature.SuccessScreen(
-            successScreenArgs: args,
-          ),
-        );
-      // Success Page
-      case EtmamRoutesNames.successRoute:
-        final args = settings.arguments as sharedEtmamFeature.SuccessScreenArgs;
-        return MaterialPageRoute(
-          builder: (_) => sharedEtmamFeature.SuccessScreen(
-            successScreenArgs: args,
-          ),
-        );
-
-      // otp page
-      case EtmamRoutesNames.otpRoute:
-        final OTPPageParams? args = settings.arguments as OTPPageParams;
-        return MaterialPageRoute(
-            builder: (_) => EtmamOtpScreen(
-                  args: args,
-                ));
-
-      // orders details page
-      case EtmamRoutesNames.orderDetailsRoute:
-        OrderDetailsPageParams args =
-            settings.arguments as OrderDetailsPageParams;
-        return MaterialPageRoute(
-            builder: (_) => OrderDetailsPage(
-                  args: args,
-                ));
-
-      // evaluate order
-      case EtmamRoutesNames.evaluateOrderRoute:
-        RatingPageParams args = settings.arguments as RatingPageParams;
-        return MaterialPageRoute(
-            builder: (_) => EvaluateOrderPage(
-                  args: args,
-                ));
-
-      // personal info
-      case EtmamRoutesNames.personalInfoRoute:
-        return MaterialPageRoute(builder: (_) => const PersonalInfoPage());
-
-      // help
-      case EtmamRoutesNames.helpRoute:
-        return MaterialPageRoute(builder: (_) => const HelpPage());
-
-      // Select City Page
-      case EtmamRoutesNames.selectCityPage:
-        return MaterialPageRoute(builder: (_) => const EtmamSelectCityPage());
     }
     return null;
   }

@@ -4,16 +4,22 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 import '../../../../_shared_feature_/shared_feature_exports.dart';
 import '../../violations_exports.dart';
 
-class ViolationsDetailsPage extends StatelessWidget {
-  final ViolationsEntity violationsEntity;
-
+class ViolationsDetailsPage extends StatefulWidget {
   const ViolationsDetailsPage({
     super.key,
-    required this.violationsEntity,
   });
 
   @override
+  State<ViolationsDetailsPage> createState() => _ViolationsDetailsPageState();
+}
+
+class _ViolationsDetailsPageState extends State<ViolationsDetailsPage> {
+
+  @override
   Widget build(BuildContext context) {
+  ViolationsEntity  violationsEntity =
+        ModalRoute.of(context)!.settings.arguments as ViolationsEntity;
+
     return BlocProvider(
       create: (context) => ViolationDetailsBloc()
         ..add(GetViolationDetailsEvent(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_uxcam/flutter_uxcam.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../core/utils/utils_exports.dart' show AppColor, IconPath;
@@ -14,6 +15,8 @@ class ServicesPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    FlutterUxcam.tagScreenName("ServicesPage");
+
     return BlocBuilder<ServicesCubit, ServicesState>(
       buildWhen: (previous, current) =>
           previous.showSearchField != current.showSearchField,

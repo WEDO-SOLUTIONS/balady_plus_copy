@@ -170,11 +170,11 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       ));
 
       // Navigate to subservice screen
-      // NavigationService.pushNamed(
-      //     routeName: EtmamRoutesNames.subServicesPage,
-      //     args: SubServicePageArgs(
-      //         mainServiceName: e.params.mainServiceName,
-      //         subServiceResponse: success.data!.result!));
+      /*NavigationService.pushNamed(
+          routeName: EtmamRoutesNames.subServicesPage,
+          args: SubServicePageArgs(
+              mainServiceName: e.params.mainServiceName,
+              subServiceResponse: success.data!.result!));*/
       showModalBottomSheet(
         isScrollControlled: true,
         useRootNavigator: true,

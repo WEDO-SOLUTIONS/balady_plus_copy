@@ -31,6 +31,9 @@ class NewHealthCertificateBloc
 
     on<GoToNextPageEvent>(_goToNextPageHandler);
     on<GoToPreviousPageEvent>(_goToPreviousPageHandler);
+
+    final model = locator<NewDetailsHealthLicenseViewModel>();
+    model.init(isRenew: renew ?? false);
   }
 
   void cancelIncident() {

@@ -12,11 +12,10 @@ class VisualDistortionDetailsScreen extends StatelessWidget {
     Key? key,
   }) : super(key: key);
 
-  late final VisualDistortion visualDistortion;
 
   @override
   Widget build(BuildContext context) {
-    visualDistortion =
+   VisualDistortion visualDistortion =
         ModalRoute.of(context)!.settings.arguments as VisualDistortion;
 
     return Scaffold(

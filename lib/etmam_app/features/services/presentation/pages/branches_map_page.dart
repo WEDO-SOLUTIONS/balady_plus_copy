@@ -17,9 +17,7 @@ import '../../../_shared_feature_/shared/shared_feature_exports.dart'
 import '../../services_exports.dart' show BranchCard, Branch;
 
 class BranchesMapPage extends StatefulWidget {
-  List<Branch> branches;
-
-  BranchesMapPage({Key? key, required this.branches}) : super(key: key);
+  const BranchesMapPage({Key? key}) : super(key: key);
 
   @override
   State<BranchesMapPage> createState() => _BranchesMapPageState();
@@ -27,6 +25,7 @@ class BranchesMapPage extends StatefulWidget {
 
 class _BranchesMapPageState extends State<BranchesMapPage> {
   final int selectedBranch = -1;
+  late List<Branch> branches;
 
   @override
   void initState() {
@@ -36,10 +35,12 @@ class _BranchesMapPageState extends State<BranchesMapPage> {
 
   @override
   Widget build(BuildContext context) {
+    branches = ModalRoute.of(context)!.settings.arguments as List<Branch>;
+
     return Scaffold(
         appBar: null,
         body: BlocProvider(
-          create: (context) => BranchMapBloc(branches: widget.branches),
+          create: (context) => BranchMapBloc(branches: branches),
           child: BlocConsumer<BranchMapBloc, BranchMapState>(
             listener: (context, state) {
               if (state.status == BlocStatus.failure) {
@@ -59,7 +60,7 @@ class _BranchesMapPageState extends State<BranchesMapPage> {
                     // myLocationButtonEnabled: true,
                     markers: context.read<BranchMapBloc>().getMarkers(),
                     initialCameraPosition: CameraPosition(
-                        target: widget.branches.firstOrNull?.getLatLng() ??
+                        target: branches.firstOrNull?.getLatLng() ??
                             CommonProperties.defaultLocation,
                         zoom: 7),
                   ),

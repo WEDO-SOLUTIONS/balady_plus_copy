@@ -3,6 +3,7 @@ import 'package:balady_plus/app/core/utils/enums/enums.dart';
 import 'package:balady_plus/app/features/profile_features/requests/presentation/requests_bloc/requests_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_uxcam/flutter_uxcam.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../core/dependency_injection/dependency_injection_exports.dart'
@@ -92,6 +93,7 @@ class _RequestsPageState extends State<RequestsPage> {
                             final selectedRequestDate =
                                 state.selectedRequestDate;
 
+                            FlutterUxcam.tagScreenName("RequestsFilterDialog");
                             final bool? actionTaked =
                                 await BottomSheetDialog.showDraggableSheet(
                               context,
@@ -105,6 +107,7 @@ class _RequestsPageState extends State<RequestsPage> {
                                 ),
                               ),
                             );
+
                             if (actionTaked != true && context.mounted) {
                               context.read<RequestsBloc>().add(
                                     ResetRequestsFiltersEvent(

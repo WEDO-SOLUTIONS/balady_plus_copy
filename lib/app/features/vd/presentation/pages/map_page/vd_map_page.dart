@@ -31,8 +31,6 @@ class VDMapScreen extends StatefulWidget {
 }
 
 class _VDMapScreen extends State<VDMapScreen> {
-  late final MapScreenParams? params;
-
   @override
   void initState() {
     super.initState();
@@ -41,7 +39,8 @@ class _VDMapScreen extends State<VDMapScreen> {
 
   @override
   Widget build(BuildContext context) {
-    params = ModalRoute.of(context)!.settings.arguments as MapScreenParams;
+    MapScreenParams? params =
+        ModalRoute.of(context)!.settings.arguments as MapScreenParams;
 
     return Scaffold(
         backgroundColor: AppColor.white4,

@@ -21,11 +21,10 @@ class ServiceCardsPage extends StatefulWidget {
 }
 
 class _ServiceCardsPageState extends State<ServiceCardsPage> {
-  late final ServiceEntity service;
-
   @override
   Widget build(BuildContext context) {
-    service = ModalRoute.of(context)!.settings.arguments as ServiceEntity;
+    ServiceEntity service =
+        ModalRoute.of(context)!.settings.arguments as ServiceEntity;
 
     return BlocProvider(
       create: (context) => ServiceCardsCubit(service),

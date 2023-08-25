@@ -2,6 +2,7 @@ import 'package:balady_plus/app/features/map_page/presentation/mvvm/layers_gis_v
 import 'package:balady_plus/app/features/map_page/presentation/mvvm/map_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter_uxcam/flutter_uxcam.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../core/dependency_injection/injection_container.dart';
@@ -47,6 +48,8 @@ class _HomePageState extends State<HomePage> /*with WidgetsBindingObserver*/ {
 
   @override
   Widget build(BuildContext context) {
+    FlutterUxcam.tagScreenName("HomePage");
+
     MapViewModel mapViewModel = context.watch<MapViewModel?>()!;
     return Scaffold(
       key: mapKey,

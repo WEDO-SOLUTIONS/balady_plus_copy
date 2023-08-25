@@ -10,9 +10,7 @@ import '../../../../core/utils/utils_exports.dart'
 import '../../../_shared_feature_/shared/presentation/widgets/custom_expansion_widget.dart';
 
 class FaqPage extends StatefulWidget {
-  final List<Faq> faqList;
-
-  const FaqPage({Key? key, required this.faqList}) : super(key: key);
+  const FaqPage({Key? key}) : super(key: key);
 
   @override
   State<FaqPage> createState() => _FaqPageState();
@@ -27,6 +25,7 @@ class _FaqPageState extends State<FaqPage> {
 
   @override
   Widget build(BuildContext context) {
+    List<Faq> faqList = ModalRoute.of(context)!.settings.arguments as List<Faq>;
     return Scaffold(
         appBar: DefaultAppBarWidget(
           title: trans('service_faq'),
@@ -40,11 +39,11 @@ class _FaqPageState extends State<FaqPage> {
           ),
           child: ListView.builder(
             shrinkWrap: true,
-            itemCount: widget.faqList.length,
+            itemCount: faqList.length,
             itemBuilder: (ctx, index) {
               return ExpansionItemWidget(
-                title: widget.faqList[index].question ?? "",
-                subTitle: widget.faqList[index].answer ?? "",
+                title: faqList[index].question ?? "",
+                subTitle: faqList[index].answer ?? "",
                 isExpanded: index == 0,
                 containerColor: AppColor.white,
               );

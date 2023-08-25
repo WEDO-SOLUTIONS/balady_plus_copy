@@ -14,9 +14,7 @@ import '../../../../core/utils/utils_exports.dart';
 import '../../../_shared_feature_/shared/shared_feature_exports.dart';
 
 class EtmamOtpScreen extends StatefulWidget {
-  final OTPPageParams? args;
-
-  const EtmamOtpScreen({Key? key, this.args}) : super(key: key);
+  const EtmamOtpScreen({Key? key}) : super(key: key);
 
   @override
   _EtmamOtpScreenState createState() => _EtmamOtpScreenState();
@@ -42,6 +40,8 @@ class _EtmamOtpScreenState extends State<EtmamOtpScreen> {
 
   @override
   Widget build(BuildContext context) {
+   OTPPageParams? args = ModalRoute.of(context)!.settings.arguments as OTPPageParams;
+
     return Directionality(
       textDirection: (TextDirection.rtl),
       child: Scaffold(
@@ -58,8 +58,8 @@ class _EtmamOtpScreenState extends State<EtmamOtpScreen> {
           create: (context) => OtpBloc(
               sendOTP: sl(),
               verifyOTP: sl(),
-              serviceId: widget.args?.serviceId,
-              sendOTPResponse: widget.args?.otpResponse),
+              serviceId: args?.serviceId,
+              sendOTPResponse: args?.otpResponse),
           child: BlocConsumer<OtpBloc, OtpState>(
             listener: (context, state) {
               // TODO: implement listener
@@ -90,8 +90,7 @@ class _EtmamOtpScreenState extends State<EtmamOtpScreen> {
                                       params: OTPVerifyParamas(
                                           otpId: state.sendOTPResponse?.otpId ??
                                               "",
-                                          serviceId:
-                                              widget.args?.serviceId ?? "",
+                                          serviceId: args?.serviceId ?? "",
                                           token: _code)));
                                 },
                               ),

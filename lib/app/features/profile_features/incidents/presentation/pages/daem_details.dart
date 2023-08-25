@@ -22,12 +22,19 @@ import '../details_bloc/crm_details_bloc.dart';
 import '../widgets/attachment_list_widget.dart';
 import '../widgets/status_tag.dart';
 
-class DaemDetailsPage extends StatelessWidget {
-  final RequestDetailsPageParams params;
-  const DaemDetailsPage({super.key, required this.params});
+class DaemDetailsPage extends StatefulWidget {
+  const DaemDetailsPage({super.key});
 
   @override
+  State<DaemDetailsPage> createState() => _DaemDetailsPageState();
+}
+
+class _DaemDetailsPageState extends State<DaemDetailsPage> {
+  @override
   Widget build(BuildContext context) {
+    RequestDetailsPageParams params =
+        ModalRoute.of(context)!.settings.arguments as RequestDetailsPageParams;
+
     return BlocProvider(
       create: (context) =>
           CrmDetailsBloc(crmRequestType: RequestsType.TSR, pageParams: params),

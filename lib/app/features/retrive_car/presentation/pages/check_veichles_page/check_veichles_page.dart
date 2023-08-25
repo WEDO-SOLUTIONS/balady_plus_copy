@@ -16,18 +16,20 @@ import '../../widgets/check_veichles_page/fields/dc_cr_number.dart';
 import '../../widgets/check_veichles_page/fields/dead_person_field.dart';
 
 class CheckVeichlesPage extends StatefulWidget {
-  final String type;
-  const CheckVeichlesPage({super.key, required this.type});
+  const CheckVeichlesPage({super.key});
 
   @override
   State<CheckVeichlesPage> createState() => _CheckVeichlesPageState();
 }
 
 class _CheckVeichlesPageState extends State<CheckVeichlesPage> {
+
   @override
   Widget build(BuildContext context) {
+   String type = ModalRoute.of(context)!.settings.arguments as String;
+
     return BlocProvider(
-      create: (context) => RetrieveVehiclesBloc(type: widget.type, items: []),
+      create: (context) => RetrieveVehiclesBloc(type: type, items: []),
       child: BlocConsumer<RetrieveVehiclesBloc, RetrieveVehiclesState>(
         listener: (context, state) {
           if (state.status == BlocStatus.failure) {

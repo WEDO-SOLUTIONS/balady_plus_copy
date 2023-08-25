@@ -75,7 +75,6 @@ class RouteName {
   // -------  Appointments ---------
 
   static const NewAppointmentPage = '/NewAppointmentPage';
-  static const appointmentsRoute = 'appointments';
   static const previousAppointmentsRoute = 'previous-appointments';
   static const appointmentDetailsRoute = 'appointment-details';
   static const AppointmentsListScreen = 'AppointmentsListScreen';
@@ -155,7 +154,7 @@ class RouteName {
 class EtmamRoutesNames {
   static const splash = '/splash';
   static const home = '/home';
-  static const bottomNavigation = '/bottomNavigation';
+  static const bottomNavigation = '/etmamBottomNavigation';
 
   static const searchPage = '/searchPage';
   static const mainServicesPage = '/mainServices';

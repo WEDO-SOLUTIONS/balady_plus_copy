@@ -29,7 +29,7 @@ import '../../../_shared_feature_/shared/presentation/widgets/custom_appbar_prov
 
 class ProvidersPage extends StatefulWidget {
   //final ProviderResponse providerResponse;
-  ProvidersPage({
+  const ProvidersPage({
     Key? key,
     //required this.providerResponse,
   }) : super(key: key);

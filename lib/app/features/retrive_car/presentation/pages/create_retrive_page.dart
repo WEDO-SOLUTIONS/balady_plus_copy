@@ -10,8 +10,9 @@ import '../blocs/create_retrive_bloc/create_retrive_bloc.dart';
 import '../widgets/create_retrive_car/details_app_bar.dart';
 
 class CreateRetriveDetailsPage extends StatefulWidget {
-  final CreateRetrivePageParams params;
-  const CreateRetriveDetailsPage({super.key, required this.params});
+  const CreateRetriveDetailsPage({
+    super.key,
+  });
 
   @override
   State<CreateRetriveDetailsPage> createState() =>
@@ -29,9 +30,11 @@ class _CreateRetriveDetailsPageState extends State<CreateRetriveDetailsPage> {
 
   @override
   Widget build(BuildContext context) {
+    CreateRetrivePageParams params =
+        ModalRoute.of(context)!.settings.arguments as CreateRetrivePageParams;
+
     return BlocProvider(
-      create: (context) =>
-          CreateRetriveCarBloc(vehicleItem: widget.params.item),
+      create: (context) => CreateRetriveCarBloc(vehicleItem: params.item),
       child: BlocConsumer<CreateRetriveCarBloc, CreateRetriveCarState>(
         listener: (context, state) {
           if (state.status == BlocStatus.failure) {

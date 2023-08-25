@@ -14,9 +14,7 @@ import '../../../core/view_models/inquiry/new_inquiry_view_model.dart';
 import 'details_app_bar.dart';
 
 class GeneralInquiryPage extends StatefulWidget {
-  final CustomerVoiceReportTypeModel inqTypeModel;
-
-  const GeneralInquiryPage({super.key, required this.inqTypeModel});
+  const GeneralInquiryPage({super.key});
 
   @override
   State<GeneralInquiryPage> createState() => _GeneralInquiryPageState();
@@ -33,6 +31,10 @@ class _GeneralInquiryPageState extends State<GeneralInquiryPage> {
 
   @override
   Widget build(BuildContext context) {
+    CustomerVoiceReportTypeModel inqTypeModel = ModalRoute.of(context)!
+        .settings
+        .arguments as CustomerVoiceReportTypeModel;
+
     return BlocProvider<GeneralInquiryBloc>(
       create: (context) => GeneralInquiryBloc(),
       child: BlocConsumer<GeneralInquiryBloc, GeneralInquiryState>(
@@ -59,7 +61,7 @@ class _GeneralInquiryPageState extends State<GeneralInquiryPage> {
                       .add(GoToPreviousPageEvent()),
                 ),
                 body: ChangeNotifierProvider<NewInquiryViewModel>(
-                  create: (context) => NewInquiryViewModel(widget.inqTypeModel),
+                  create: (context) => NewInquiryViewModel(inqTypeModel),
                   builder: (context, child) {
                     NewInquiryViewModel model =
                         Provider.of<NewInquiryViewModel>(context, listen: true);

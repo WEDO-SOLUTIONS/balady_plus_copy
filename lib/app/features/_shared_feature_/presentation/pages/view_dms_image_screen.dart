@@ -12,11 +12,9 @@ class ViewDMSImageScreen extends StatefulWidget {
 }
 
 class _ViewDMSImageScreenState extends State<ViewDMSImageScreen> {
-  late final String url;
-
   @override
   Widget build(BuildContext context) {
-    url = ModalRoute.of(context)!.settings.arguments as String;
+    String url = ModalRoute.of(context)!.settings.arguments as String;
     return Stack(
       children: [
         PhotoView(

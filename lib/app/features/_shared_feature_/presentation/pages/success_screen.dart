@@ -23,8 +23,6 @@ class SuccessScreen extends StatefulWidget {
 }
 
 class _SuccessScreenState extends State<SuccessScreen> {
-  late final SuccessScreenArgs successScreenArgs;
-
   @override
   void initState() {
     // TODO: implement initState
@@ -34,7 +32,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
 
   @override
   Widget build(BuildContext context) {
-    successScreenArgs =
+    SuccessScreenArgs successScreenArgs =
         ModalRoute.of(context)!.settings.arguments as SuccessScreenArgs;
 
     return Scaffold(

@@ -15,17 +15,19 @@ import '../../../../services/services_exports.dart'
     show PreviousWorkCard, Project;
 
 class PreviousWorksPage extends StatefulWidget {
-  final List<Project>? projects;
-  const PreviousWorksPage({Key? key, this.projects}) : super(key: key);
+  const PreviousWorksPage({Key? key}) : super(key: key);
 
   @override
   State<PreviousWorksPage> createState() => _PreviousWorksPageState();
 }
 
 class _PreviousWorksPageState extends State<PreviousWorksPage> {
+  List<Project>? projects;
 
   @override
   Widget build(BuildContext context) {
+    projects = ModalRoute.of(context)!.settings.arguments as List<Project>?;
+
     return Scaffold(
       appBar: DefaultAppBarWidget(title: trans('previous_works')),
       body: Container(
@@ -38,9 +40,9 @@ class _PreviousWorksPageState extends State<PreviousWorksPage> {
         child: ListView.separated(
           shrinkWrap: true,
           separatorBuilder: (_, __) => const SizedBox(height: 8),
-          itemCount: widget.projects?.length ?? 0,
+          itemCount: projects?.length ?? 0,
           itemBuilder: (_, index) => PreviousWorkCard(
-            project: widget.projects?[index],
+            project: projects?[index],
           ),
         ),
       ),

@@ -27,10 +27,9 @@ import '../../license_management_exports.dart'
 import '../widgets/order_body_section_widget.dart';
 
 class HealthRequestDetailsScreen extends StatefulWidget {
-  final HealthRequestDetailsScreenArgs args;
-
-  const HealthRequestDetailsScreen({Key? key, required this.args})
-      : super(key: key);
+  const HealthRequestDetailsScreen({
+    Key? key,
+  }) : super(key: key);
 
   @override
   _HealthRequestDetailsScreenState createState() =>
@@ -41,11 +40,14 @@ class _HealthRequestDetailsScreenState
     extends State<HealthRequestDetailsScreen> {
   @override
   Widget build(BuildContext context) {
+    HealthRequestDetailsScreenArgs args = ModalRoute.of(context)!
+        .settings
+        .arguments as HealthRequestDetailsScreenArgs;
+
     return ChangeNotifierProvider(
         create: (context) => HealthRequestDetailsViewModel(
-            requestDetails: widget.args.healthRequestDetails,
-            isPrintable:
-                widget.args.healthRequestDetails?.data?.result?.printable),
+            requestDetails: args.healthRequestDetails,
+            isPrintable: args.healthRequestDetails?.data?.result?.printable),
         builder: (context, child) {
           HealthRequestDetailsViewModel model =
               Provider.of<HealthRequestDetailsViewModel>(context);
@@ -54,8 +56,7 @@ class _HealthRequestDetailsScreenState
               backgroundColor: AppColor.white2,
               appBar: DetailsHeader(
                 title: ("details").tr(),
-                onPrint: (widget.args.healthRequestDetails?.data?.result
-                            ?.printable ??
+                onPrint: (args.healthRequestDetails?.data?.result?.printable ??
                         false)
                     ? () {
                         model.printLicense();

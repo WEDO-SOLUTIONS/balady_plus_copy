@@ -529,7 +529,6 @@ class Helpers {
 
   static void backToHome() {
     try {
-      print("aba");
       CommonFunctions.showError("session_ended_error".tr());
       NavigationService.navigatorKey.currentState!.popUntil((route) {
         print("route route $route");

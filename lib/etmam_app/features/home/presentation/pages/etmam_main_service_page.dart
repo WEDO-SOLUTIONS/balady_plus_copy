@@ -24,16 +24,14 @@ import 'package:balady_plus/etmam_app/features/_shared_feature_/shared/shared_fe
 import '../../../../../app/core/utils/constants/constants.dart';
 
 class EtmamMainServicesPage extends StatefulWidget {
-  final MainServiceResponse mainServiceResponse;
-
-  EtmamMainServicesPage({Key? key, required this.mainServiceResponse})
-      : super(key: key);
+  const EtmamMainServicesPage({Key? key}) : super(key: key);
 
   @override
   State<EtmamMainServicesPage> createState() => _EtmamMainServicesPageState();
 }
 
 class _EtmamMainServicesPageState extends State<EtmamMainServicesPage> {
+
   @override
   void initState() {
     super.initState();
@@ -42,12 +40,15 @@ class _EtmamMainServicesPageState extends State<EtmamMainServicesPage> {
 
   @override
   Widget build(BuildContext context) {
+   MainServiceResponse mainServiceResponse =
+        ModalRoute.of(context)!.settings.arguments as MainServiceResponse;
+
     return Scaffold(
       appBar: CustomAppBar(title: trans('services')),
       body: BlocProvider(
         create: (context) => MainServicesBloc(
             getSubService: sl(),
-            mainServiceResponse: widget.mainServiceResponse,
+            mainServiceResponse: mainServiceResponse,
             getMainServices: sl()),
         child: BlocConsumer<MainServicesBloc, MainServicesState>(
           listener: (context, state) {

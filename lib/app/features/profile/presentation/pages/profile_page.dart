@@ -4,6 +4,7 @@ import 'package:balady_plus/app/features/_shared_feature_/presentation/buttons/c
 import 'package:balady_plus/app/features/entry_point/presentation/cubit/auth_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_uxcam/flutter_uxcam.dart';
 import 'package:localize_and_translate/localize_and_translate.dart'
     show Translation;
 
@@ -37,6 +38,8 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
+    FlutterUxcam.tagScreenName("MorePage");
+
     return BlocBuilder<EntryPointCubit, EntryPointState>(
       builder: (context, state) {
         bool isLoggedin = CommonProperties.isLoggedIn;

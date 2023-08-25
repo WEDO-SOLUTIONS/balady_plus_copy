@@ -13,9 +13,9 @@ import '../../core/services/view_models/new_details_health_license_view_model.da
 import '../../widgets/new_health_certificate_widgets/details_app_bar.dart';
 
 class NewHealthCertificatePage extends StatefulWidget {
-  final bool renew;
-
-  const NewHealthCertificatePage({super.key, required this.renew});
+  const NewHealthCertificatePage({
+    super.key,
+  });
 
   @override
   State<NewHealthCertificatePage> createState() =>
@@ -23,12 +23,9 @@ class NewHealthCertificatePage extends StatefulWidget {
 }
 
 class _NewHealthCertificatePageState extends State<NewHealthCertificatePage> {
-  final model = locator<NewDetailsHealthLicenseViewModel>();
-
   @override
   void initState() {
     super.initState();
-    model.init(isRenew: widget.renew ?? false);
 
     CommonFunctions.sendEventToAnalytics(AppEvents.IssuHealthCert);
 
@@ -37,8 +34,10 @@ class _NewHealthCertificatePageState extends State<NewHealthCertificatePage> {
 
   @override
   Widget build(BuildContext context) {
+    bool renew = (ModalRoute.of(context)!.settings.arguments as bool?) ?? false;
+
     return BlocProvider<NewHealthCertificateBloc>(
-      create: (context) => NewHealthCertificateBloc(renew: widget.renew),
+      create: (context) => NewHealthCertificateBloc(renew: renew),
       child: BlocConsumer<NewHealthCertificateBloc, NewHealthCertificateState>(
         listener: (context, state) {
           if (state.status == BlocStatus.failure) {

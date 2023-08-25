@@ -25,8 +25,6 @@ class VDCameraPage extends StatefulWidget {
 
 class _VDCameraPageState extends State<VDCameraPage>
     with TickerProviderStateMixin {
-  late final CameraParamsPage params;
-
   @override
   void initState() {
     super.initState();
@@ -35,7 +33,8 @@ class _VDCameraPageState extends State<VDCameraPage>
 
   @override
   Widget build(BuildContext context) {
-    params = ModalRoute.of(context)!.settings.arguments as CameraParamsPage;
+    CameraParamsPage params =
+        ModalRoute.of(context)!.settings.arguments as CameraParamsPage;
 
     return MultiBlocProvider(
       providers: [

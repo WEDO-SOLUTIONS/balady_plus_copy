@@ -12,12 +12,20 @@ import '../widgets/pdf_component.dart';
 import '../widgets/requirment_attachments.dart';
 import 'package:collection/collection.dart';
 
-class InvestmentPage extends StatelessWidget {
-  final InvestmentDetailsResponse data;
-  const InvestmentPage({Key? key, required this.data}) : super(key: key);
+class InvestmentPage extends StatefulWidget {
+  const InvestmentPage({Key? key}) : super(key: key);
+
+  @override
+  State<InvestmentPage> createState() => _InvestmentPageState();
+}
+
+class _InvestmentPageState extends State<InvestmentPage> {
 
   @override
   Widget build(BuildContext context) {
+   InvestmentDetailsResponse data =
+        ModalRoute.of(context)!.settings.arguments as InvestmentDetailsResponse;
+
     return BlocProvider(
       create: (context) => InvestmentDetailsBloc(),
       child: BlocListener<InvestmentDetailsBloc, InvestmentDetailsState>(

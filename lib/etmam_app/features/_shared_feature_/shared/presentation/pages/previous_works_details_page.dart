@@ -16,10 +16,7 @@ import '../../../../../core/utils/utils_exports.dart'
     show AppColor, AppFontWeight, CommonFunctions, trans;
 
 class PreviousWorksDetailsPage extends StatefulWidget {
-  final Project project;
-
-  const PreviousWorksDetailsPage({Key? key, required this.project})
-      : super(key: key);
+  const PreviousWorksDetailsPage({Key? key}) : super(key: key);
 
   @override
   State<PreviousWorksDetailsPage> createState() =>
@@ -33,8 +30,12 @@ class _PreviousWorksDetailsPageState extends State<PreviousWorksDetailsPage> {
     //CommonFunctions.sendEventToAnalytics(AppEvents.PreviousWorksDetailsPage);
   }
 
+  late Project project;
+
   @override
   Widget build(BuildContext context) {
+    project = ModalRoute.of(context)!.settings.arguments as Project;
+
     return Scaffold(
         appBar: DefaultAppBarWidget(title: trans('project_details')),
         body: SingleChildScrollView(
@@ -44,14 +45,13 @@ class _PreviousWorksDetailsPageState extends State<PreviousWorksDetailsPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                if (widget.project.images != null &&
-                    (widget.project.images?.length ?? 0) > 0)
+                if (project.images != null && (project.images?.length ?? 0) > 0)
                   ProjectImagesSliderWidget(
-                    images: widget.project.images ?? [],
+                    images: project.images ?? [],
                   ),
                 const CustomVerticalSpace(height: 16),
                 CustomTextWidget(
-                  widget.project.name ?? "",
+                  project.name ?? "",
                   fontSize: 16,
                   fontColor: AppColor.hunterGreen,
                   fontWeight: AppFontWeight.w600,
@@ -59,17 +59,17 @@ class _PreviousWorksDetailsPageState extends State<PreviousWorksDetailsPage> {
                 ),
                 const CustomVerticalSpace(height: 8),
                 CustomTextWidget(
-                  widget.project.description ?? "",
+                  project.description ?? "",
                   fontSize: 12,
                   fontColor: AppColor.greyText,
                   fontWeight: AppFontWeight.regular,
                   textAlign: TextAlign.start,
                 ),
                 const CustomVerticalSpace(height: 32),
-                if (widget.project.documentUrl != null &&
-                    widget.project.documentUrl!.isNotEmpty) ...[
+                if (project.documentUrl != null &&
+                    project.documentUrl!.isNotEmpty) ...[
                   DownloadProjectFileButton(
-                    documentUrl: widget.project.documentUrl ?? "",
+                    documentUrl: project.documentUrl ?? "",
                   ),
                   const CustomVerticalSpace(height: 30),
                 ]

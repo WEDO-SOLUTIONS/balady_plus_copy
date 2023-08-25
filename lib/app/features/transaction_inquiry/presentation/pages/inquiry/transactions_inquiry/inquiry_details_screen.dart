@@ -12,8 +12,9 @@ import '../../../core/models/inquiry_transaction_response.dart';
 import '../../../widgets/inquiry/inquiry_result_body.dart';
 
 class InquiryDetailsScreen extends StatefulWidget {
-  InquiryTransactionResponse result;
-  InquiryDetailsScreen({Key? key, required this.result}) : super(key: key);
+  const InquiryDetailsScreen({
+    Key? key,
+  }) : super(key: key);
 
   @override
   _InquiryDetailsScreenState createState() => _InquiryDetailsScreenState();
@@ -29,6 +30,9 @@ class _InquiryDetailsScreenState extends State<InquiryDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    InquiryTransactionResponse result = ModalRoute.of(context)!
+        .settings
+        .arguments as InquiryTransactionResponse;
     return Scaffold(
         body: Container(
       color: AppColor.white,
@@ -54,7 +58,7 @@ class _InquiryDetailsScreenState extends State<InquiryDetailsScreen> {
           ),
           // body
           InquiryBody(
-            result: widget.result,
+            result: result,
           ),
           // button
           const InquiryButton(),

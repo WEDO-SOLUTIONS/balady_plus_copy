@@ -25,12 +25,21 @@ import '../widgets/attachment_list_widget.dart';
 import '../widgets/request_status_card.dart';
 import '../widgets/status_tag.dart';
 
-class ReqDetailsPage extends StatelessWidget {
-  final RequestDetailsPageParams params;
-  const ReqDetailsPage({super.key, required this.params});
+class ReqDetailsPage extends StatefulWidget {
+  const ReqDetailsPage({
+    super.key,
+  });
 
   @override
+  State<ReqDetailsPage> createState() => _ReqDetailsPageState();
+}
+
+class _ReqDetailsPageState extends State<ReqDetailsPage> {
+  @override
   Widget build(BuildContext context) {
+    RequestDetailsPageParams params =
+        ModalRoute.of(context)!.settings.arguments as RequestDetailsPageParams;
+
     return BlocProvider(
       create: (context) =>
           CrmDetailsBloc(crmRequestType: RequestsType.REQ, pageParams: params),

@@ -58,9 +58,9 @@ enum ActivityIsicListDetailType { Normal, Current, New }
 enum ActivityDetailType { Normal, Current, New }
 
 class ServiceCalculatorScreen extends StatefulWidget {
-  GisLocationResult? gisLocationResult;
-
-  ServiceCalculatorScreen({Key? key, this.gisLocationResult}) : super(key: key);
+  const ServiceCalculatorScreen({
+    Key? key,
+  }) : super(key: key);
 
   @override
   _ServiceCalculatorScreenState createState() =>

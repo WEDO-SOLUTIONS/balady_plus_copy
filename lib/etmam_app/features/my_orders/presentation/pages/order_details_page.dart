@@ -33,9 +33,7 @@ import '../../../submit_request/presentation/widgets/order_info/order_info_card_
 import '../../../submit_request/presentation/widgets/order_info/order_title_and_desc_widget.dart';
 
 class OrderDetailsPage extends StatefulWidget {
-  final OrderDetailsPageParams args;
-
-  const OrderDetailsPage({Key? key, required this.args}) : super(key: key);
+  const OrderDetailsPage({Key? key}) : super(key: key);
 
   @override
   State<OrderDetailsPage> createState() => _OrderDetailsPageState();
@@ -50,9 +48,12 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
 
   @override
   Widget build(BuildContext context) {
+    OrderDetailsPageParams args =
+        ModalRoute.of(context)!.settings.arguments as OrderDetailsPageParams;
+
     return BlocProvider(
       create: (context) => OrderDetailsBloc(
-          args: widget.args,
+          args: args,
           getServicesProvidersByService: sl(),
           getOrderDetails: sl()),
       child: BlocConsumer<OrderDetailsBloc, OrderDetailsState>(

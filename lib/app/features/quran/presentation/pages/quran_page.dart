@@ -31,8 +31,6 @@ class QuranPage extends StatefulWidget {
 }
 
 class _QuranPageState extends State<QuranPage> {
-  late final int initialSuraNo;
-
   @override
   void initState() {
     super.initState();
@@ -42,7 +40,7 @@ class _QuranPageState extends State<QuranPage> {
 
   @override
   Widget build(BuildContext context) {
-    initialSuraNo = ModalRoute.of(context)!.settings.arguments as int;
+    int initialSuraNo = ModalRoute.of(context)!.settings.arguments as int;
 
     return BlocProvider(
       create: (context) => QuranBloc(initialSuraNo: initialSuraNo),

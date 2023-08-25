@@ -14,19 +14,19 @@ class DCMapScreen extends StatefulWidget {
   final bool showSearchPaddingScreen;
   final bool showSearch;
   final bool closeIcon;
-  final MapScreenParams? params;
 
-  DCMapScreen(
-      {this.showSearch = false,
-      this.closeIcon = false,
-      this.showSearchPaddingScreen = false,
-      this.params});
+  const DCMapScreen({
+    this.showSearch = false,
+    this.closeIcon = false,
+    this.showSearchPaddingScreen = false,
+  });
 
   @override
   _DCMapScreen createState() => _DCMapScreen();
 }
 
 class _DCMapScreen extends State<DCMapScreen> {
+
   @override
   void initState() {
     super.initState();
@@ -35,12 +35,14 @@ class _DCMapScreen extends State<DCMapScreen> {
 
   @override
   Widget build(BuildContext context) {
+  MapScreenParams?  params = ModalRoute.of(context)!.settings.arguments as MapScreenParams;
+
     return Scaffold(
         backgroundColor: AppColor.white4,
         appBar: null,
         body: BlocProvider(
           create: (context) => DCMapBloc(
-            params: widget.params,
+            params: params,
           ),
           child: BlocConsumer<DCMapBloc, DCMapState>(
             listener: (context, state) {

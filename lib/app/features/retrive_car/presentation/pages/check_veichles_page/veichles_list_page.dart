@@ -18,19 +18,22 @@ import '../../blocs/retrieve_vehicles_bloc/retrieve_vehicles_bloc.dart';
 import '../../widgets/check_veichles_page/car_plate_widget.dart';
 
 class VeichlesListPage extends StatefulWidget {
-  final VeichlesListPageParams params;
-  const VeichlesListPage({super.key, required this.params});
+  const VeichlesListPage({super.key});
 
   @override
   State<VeichlesListPage> createState() => _VeichlesListPageState();
 }
 
 class _VeichlesListPageState extends State<VeichlesListPage> {
+
   @override
   Widget build(BuildContext context) {
+   VeichlesListPageParams params =
+        ModalRoute.of(context)!.settings.arguments as VeichlesListPageParams;
+
     return BlocProvider(
-      create: (context) => RetrieveVehiclesBloc(
-          type: widget.params.type, items: widget.params.items),
+      create: (context) =>
+          RetrieveVehiclesBloc(type: params.type, items: params.items),
       child: BlocConsumer<RetrieveVehiclesBloc, RetrieveVehiclesState>(
         listener: (context, state) {
           if (state.status == BlocStatus.failure) {

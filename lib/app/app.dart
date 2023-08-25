@@ -31,8 +31,6 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    FlutterUxcam
-        .optIntoSchematicRecordings(); // Confirm that you have user permission for screen recording
     FlutterUxConfig config = FlutterUxConfig(
         enableAdvancedGestureRecognition: true,
         enableCrashHandling: true,
@@ -41,7 +39,6 @@ class App extends StatelessWidget {
         userAppKey: "2w1otnta9bvvhzo",
         enableAutomaticScreenNameTagging: false);
     FlutterUxcam.startWithConfiguration(config);
-    FlutterUxcam.setAutomaticScreenNameTagging(false);
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(
@@ -74,7 +71,6 @@ class App extends StatelessWidget {
             locale: translator.activeLocale, // Active locale
             supportedLocales: translator.locals(), // Locals list
             initialRoute: RouteName.splash,
-            onGenerateRoute: AppRouter.allRoutes,
             routes: Routes.routes(),
           )),
     );

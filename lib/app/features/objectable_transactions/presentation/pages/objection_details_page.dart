@@ -23,10 +23,9 @@ import '../objections_details_bloc/objection_details_bloc.dart';
 import '../widgets/create_objection_page/objection_attachment_item.dart';
 
 class ObjectionsDetailsPage extends StatefulWidget {
-  final ObjectionDetails? params;
-
-  const ObjectionsDetailsPage({Key? key, required this.params})
-      : super(key: key);
+  const ObjectionsDetailsPage({
+    Key? key,
+  }) : super(key: key);
 
   @override
   State<ObjectionsDetailsPage> createState() => _ObjectionsDetailsPageState();
@@ -35,8 +34,11 @@ class ObjectionsDetailsPage extends StatefulWidget {
 class _ObjectionsDetailsPageState extends State<ObjectionsDetailsPage> {
   @override
   Widget build(BuildContext context) {
+    ObjectionDetails? params =
+        ModalRoute.of(context)!.settings.arguments as ObjectionDetails;
+
     return BlocProvider(
-      create: (context) => ObjectionsDetailsBloc(details: widget.params),
+      create: (context) => ObjectionsDetailsBloc(details: params),
       child: BlocBuilder<ObjectionsDetailsBloc, ObjectionDetailsState>(
         buildWhen: (previous, current) => previous.status != current.status,
         builder: (context, state) {

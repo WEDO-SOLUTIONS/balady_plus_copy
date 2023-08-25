@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/core/utils/constants/route_names.dart';
 import 'package:balady_plus/etmam_app/core/dependency_injection/dependency_injection_exports.dart'
     show sl;
 import 'package:balady_plus/etmam_app/core/services/services_exports.dart'
@@ -36,9 +37,7 @@ import '../../submit_request_exports.dart'
         SubmitRequestPage;
 
 class RelationRequestPage extends StatefulWidget {
-  final RelationPageParam args;
-
-  const RelationRequestPage({Key? key, required this.args}) : super(key: key);
+  const RelationRequestPage({Key? key}) : super(key: key);
 
   @override
   State<RelationRequestPage> createState() => _RelationRequestPageState();
@@ -56,15 +55,18 @@ class _RelationRequestPageState extends State<RelationRequestPage> {
 
   @override
   Widget build(BuildContext context) {
+    RelationPageParam args =
+        ModalRoute.of(context)!.settings.arguments as RelationPageParam;
+
     return Scaffold(
       appBar: CustomAppBar(
         title: trans('extra_services'),
       ),
       body: BlocProvider(
         create: (context) => RelationBloc(
-            relationResponse: widget.args.relationResponse,
+            relationResponse: args.relationResponse,
             getServicesProvidersByService: sl(),
-            args: widget.args),
+            args: args),
         child: BlocConsumer<RelationBloc, RelationState>(
           listener: (context, state) {
             if (state.status == BlocStatus.failure) {
@@ -78,30 +80,27 @@ class _RelationRequestPageState extends State<RelationRequestPage> {
                 const RelationRequestBody(),
                 // submit button
                 CustomStackFooterButtonWidget(
-                  btnText: widget.args.changeProvider == true
+                  btnText: args.changeProvider == true
                       ? trans('update_order')
                       : trans('start_request'),
                   isBtnDisabled: !state.isValidToSubmit(),
                   onPressed: () {
-                    Navigator.of(context).push(MaterialPageRoute(
-                        builder: (c) => BlocProvider.value(
-                              value: BlocProvider.of<RelationBloc>(context),
-                              child: SubmitRequestPage(
-                                  args: SubmitPageParams(
-                                      serviceProviderId:
-                                          state.serviceProviderId,
-                                      serviceProviderName:
-                                          state.serviceProviderName,
-                                      subServiceId: state.subServiceId,
-                                      relationId: state.relationRespone?.id,
-                                      subServiceName: state.subServiceName,
-                                      subRelations: state.subRelations,
-                                      orderId: widget.args.orderId,
-                                      callBack: widget.args.callBack,
-                                      pageType: widget.args.pageType,
-                                      changeProvider:
-                                          widget.args.changeProvider)),
-                            )));
+                    Navigator.of(context).pushNamed(
+                      EtmamRoutesNames.orderInfo,
+                      arguments: SubmitPageParams(
+                          serviceProviderId: state.serviceProviderId,
+                          serviceProviderName: state.serviceProviderName,
+                          subServiceId: state.subServiceId,
+                          relationId: state.relationRespone?.id,
+                          subServiceName: state.subServiceName,
+                          subRelations: state.subRelations,
+                          orderId: args.orderId,
+                          callBack: args.callBack,
+                          pageType: args.pageType,
+                          releationBloc: BlocProvider.value(
+                              value: BlocProvider.of<RelationBloc>(context)),
+                          changeProvider: args.changeProvider),
+                    );
                   },
                 ),
               ],

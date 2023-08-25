@@ -25,12 +25,20 @@ import '../widgets/replies_status_card.dart';
 import '../widgets/request_status_card.dart';
 import '../widgets/status_tag.dart';
 
-class VHRDetailsPage extends StatelessWidget {
-  final RequestDetailsPageParams params;
-  const VHRDetailsPage({super.key, required this.params});
+class VHRDetailsPage extends StatefulWidget {
+  const VHRDetailsPage({super.key});
+
+  @override
+  State<VHRDetailsPage> createState() => _VHRDetailsPageState();
+}
+
+class _VHRDetailsPageState extends State<VHRDetailsPage> {
 
   @override
   Widget build(BuildContext context) {
+   RequestDetailsPageParams params =
+        ModalRoute.of(context)!.settings.arguments as RequestDetailsPageParams;
+
     return BlocProvider(
       create: (context) =>
           CrmDetailsBloc(crmRequestType: RequestsType.VHR, pageParams: params),

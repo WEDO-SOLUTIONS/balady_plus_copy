@@ -8,6 +8,7 @@ import './app/app.dart';
 import './env.dart';
 
 void main() async {
+  await AppEnv.setupEnv(EnvType.stg);
   await initialiseDGis(
     logOptions: LogOptionsMessage(
       systemLevel: LogLevelMessage.off,
@@ -15,7 +16,5 @@ void main() async {
       customSink: "BaladyDGis",
     ),
   );
-  await AppEnv.setupEnv(EnvType.stg);
-
   runApp(LocalizedApp(child: const App()));
 }

@@ -24,9 +24,7 @@ import '../../../_shared_feature_/shared/shared_feature_exports.dart';
 import '../../../submit_request/presentation/widgets/order_info/order_info_card_widget.dart';
 
 class EvaluateOrderPage extends StatefulWidget {
-  final RatingPageParams args;
-
-  const EvaluateOrderPage({Key? key, required this.args}) : super(key: key);
+  const EvaluateOrderPage({Key? key}) : super(key: key);
 
   @override
   State<EvaluateOrderPage> createState() => _EvaluateOrderPage();
@@ -41,13 +39,16 @@ class _EvaluateOrderPage extends State<EvaluateOrderPage> {
 
   @override
   Widget build(BuildContext context) {
+    RatingPageParams args =
+        ModalRoute.of(context)!.settings.arguments as RatingPageParams;
+
     return Scaffold(
         appBar: CustomAppBar(
           title: trans("evaluate_order"),
         ),
         body: BlocProvider(
-          create: (context) => RatingBloc(
-              args: widget.args, getRatingItems: sl(), submitRating: sl()),
+          create: (context) =>
+              RatingBloc(args: args, getRatingItems: sl(), submitRating: sl()),
           child: BlocConsumer<RatingBloc, RatingState>(
             listener: (context, state) {
               if (state.status == BlocStatus.failure) {

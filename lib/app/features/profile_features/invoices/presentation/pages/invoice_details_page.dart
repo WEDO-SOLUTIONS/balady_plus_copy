@@ -7,14 +7,13 @@ import '../../invoices_exports.dart'
     show InvoiceDetailBody, InvoiceDetailsCubit, InvoiceEntity;
 
 class InvoiceDetailsPage extends StatelessWidget {
-  late final InvoiceEntity invoiceEntity;
   InvoiceDetailsPage({
     super.key,
   });
 
   @override
   Widget build(BuildContext context) {
-    invoiceEntity = ModalRoute.of(context)!.settings.arguments as InvoiceEntity;
+ InvoiceEntity  invoiceEntity = ModalRoute.of(context)!.settings.arguments as InvoiceEntity;
 
     return BlocProvider(
       create: (context) => sl<InvoiceDetailsCubit>(),

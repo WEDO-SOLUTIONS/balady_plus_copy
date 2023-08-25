@@ -15,10 +15,7 @@ import '../../services_exports.dart';
 import '../widgets/service_provider_details_widgets/service_details_buttons.dart';
 
 class ServiceDetailsPage extends StatefulWidget {
-  ServiceDetailsResponse serviceDetailsResponse;
-
-  ServiceDetailsPage({Key? key, required this.serviceDetailsResponse})
-      : super(key: key);
+  const ServiceDetailsPage({Key? key}) : super(key: key);
 
   @override
   State<ServiceDetailsPage> createState() => _ServiceDetailsPageState();
@@ -27,13 +24,16 @@ class ServiceDetailsPage extends StatefulWidget {
 class _ServiceDetailsPageState extends State<ServiceDetailsPage> {
   @override
   Widget build(BuildContext context) {
+    ServiceDetailsResponse serviceDetailsResponse =
+        ModalRoute.of(context)!.settings.arguments as ServiceDetailsResponse;
+
     return Scaffold(
         appBar: const DefaultAppBarWidget(
           title: "تفاصيل الخدمة",
         ),
         body: BlocProvider(
           create: (context) => ServiceDetailsBloc(
-              response: widget.serviceDetailsResponse, getRelations: sl()),
+              response: serviceDetailsResponse, getRelations: sl()),
           child: BlocConsumer<ServiceDetailsBloc, ServiceDetailsState>(
             listener: (context, state) {
               if (state.status == BlocStatus.failure) {

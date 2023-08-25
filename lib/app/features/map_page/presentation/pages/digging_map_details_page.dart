@@ -15,13 +15,19 @@ import '../mvvm/point_view_model.dart';
 import '../widgets/map_details_field.dart';
 import '../widgets/map_details_sub_header.dart';
 
-class DiggingMapDetailsPage extends StatelessWidget {
-  final Excavations item;
+class DiggingMapDetailsPage extends StatefulWidget {
+  const DiggingMapDetailsPage({super.key});
 
-  const DiggingMapDetailsPage({super.key, required this.item});
+  @override
+  State<DiggingMapDetailsPage> createState() => _DiggingMapDetailsPageState();
+}
+
+class _DiggingMapDetailsPageState extends State<DiggingMapDetailsPage> {
 
   @override
   Widget build(BuildContext context) {
+ Excavations   item = ModalRoute.of(context)!.settings.arguments as Excavations;
+
     return Scaffold(
         body: Stack(
       children: [

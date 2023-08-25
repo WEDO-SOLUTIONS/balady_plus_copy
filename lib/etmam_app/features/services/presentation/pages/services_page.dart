@@ -54,11 +54,8 @@ import '../../../_shared_feature_/shared/presentation/widgets/custom_appbar_prov
 import '../../../providers/presentation/widgets/provider_item.dart';
 
 class ServicesPage extends StatefulWidget {
-  final ServicePageParams args;
-
   const ServicesPage({
     Key? key,
-    required this.args,
   }) : super(key: key);
 
   @override
@@ -77,17 +74,20 @@ class _ServicesPageState extends State<ServicesPage> {
 
   @override
   Widget build(BuildContext context) {
+    ServicePageParams args =
+        ModalRoute.of(context)!.settings.arguments as ServicePageParams;
+
     return BlocProvider(
       create: (context) => ServicesBloc(
           getServicesProvidersByService: sl(),
           getServiceDetails: sl(),
           getRelations: sl(),
           scrollController: _scrollController,
-          response: widget.args.response!,
-          changeProvider: widget.args.changeProvider,
-          orderId: widget.args.orderId,
-          callBack: widget.args.callBack,
-          pageType: widget.args.pageType),
+          response: args.response!,
+          changeProvider: args.changeProvider,
+          orderId: args.orderId,
+          callBack: args.callBack,
+          pageType: args.pageType),
       child: BlocConsumer<ServicesBloc, ServicesState>(
         listener: (context, state) {
           if (state.status == BlocStatus.failure) {
@@ -101,7 +101,7 @@ class _ServicesPageState extends State<ServicesPage> {
               preferredSize:
                   Size.fromHeight(180 - MediaQuery.of(context).padding.top),
               child: CustomAppBarProvidersList(
-                title: 'مكاتب ${widget.args.response?.serviceName ?? ''}',
+                title: 'مكاتب ${args.response?.serviceName ?? ''}',
                 bottomWidget: Padding(
                   padding: const EdgeInsets.fromLTRB(16, 16, 16, 20),
                   child: SearchTextFieldWidget(
@@ -148,7 +148,7 @@ class _ServicesPageState extends State<ServicesPage> {
                           }
 
                           return ProviderItemWidget(
-                            buttonTxt: widget.args.changeProvider == true
+                            buttonTxt: args.changeProvider == true
                                 ? trans('choose_office')
                                 : trans("delegate"),
                             providerTotalEvaluation:
@@ -158,7 +158,7 @@ class _ServicesPageState extends State<ServicesPage> {
                                 state.items![index].serviceProviderName,
                             providerIcon: state.items![index].logoImageUrl,
                             contact: state.items![index].contact,
-                            onPressView: widget.args.changeProvider == true
+                            onPressView: args.changeProvider == true
                                 ? () {}
                                 : () {
                                     context.read<ServicesBloc>().add(
@@ -180,8 +180,7 @@ class _ServicesPageState extends State<ServicesPage> {
                                       if (isSuccess == true) {
                                         Navigator.of(context).pop();
 
-                                        if (widget.args.changeProvider ==
-                                            true) {
+                                        if (args.changeProvider == true) {
                                           NavigationService.pushNamed(
                                               routeName:
                                                   EtmamRoutesNames.orderInfo,
@@ -198,13 +197,11 @@ class _ServicesPageState extends State<ServicesPage> {
                                                   subServiceName:
                                                       state.subServiceName,
                                                   subRelations: [],
-                                                  changeProvider: widget
-                                                      .args.changeProvider,
-                                                  orderId: widget.args.orderId,
-                                                  callBack:
-                                                      widget.args.callBack,
-                                                  pageType:
-                                                      widget.args.pageType));
+                                                  changeProvider:
+                                                      args.changeProvider,
+                                                  orderId: args.orderId,
+                                                  callBack: args.callBack,
+                                                  pageType: args.pageType));
                                         } else {
                                           context.read<ServicesBloc>().add(
                                                 GetRelationsEvent(
@@ -227,7 +224,7 @@ class _ServicesPageState extends State<ServicesPage> {
                                   ),
                                 );
                               } else {
-                                if (widget.args.changeProvider == true) {
+                                if (args.changeProvider == true) {
                                   NavigationService.pushNamed(
                                       routeName: EtmamRoutesNames.orderInfo,
                                       args: SubmitPageParams(
@@ -241,11 +238,10 @@ class _ServicesPageState extends State<ServicesPage> {
                                           relationId: "",
                                           subServiceName: state.subServiceName,
                                           subRelations: [],
-                                          changeProvider:
-                                              widget.args.changeProvider,
-                                          orderId: widget.args.orderId,
-                                          callBack: widget.args.callBack,
-                                          pageType: widget.args.pageType));
+                                          changeProvider: args.changeProvider,
+                                          orderId: args.orderId,
+                                          callBack: args.callBack,
+                                          pageType: args.pageType));
                                 } else {
                                   context.read<ServicesBloc>().add(
                                       GetRelationsEvent(
@@ -342,7 +338,7 @@ class _ServicesPageState extends State<ServicesPage> {
         //                       }
         //                     }
         //                     return ServiceProviderItem(
-        //                       buttonTxt: widget.args.changeProvider == true
+        //                       buttonTxt: args.changeProvider == true
         //                           ? trans('choose_office')
         //                           : trans("delegate"),
         //                       providerTotalEvaluation:
@@ -353,7 +349,7 @@ class _ServicesPageState extends State<ServicesPage> {
         //                           state.items![index].serviceProviderName,
         //                       providerIcon: state.items![index].logoImageUrl,
         //                       contact: state.items![index].contact,
-        //                       onPressView: widget.args.changeProvider == true
+        //                       onPressView: args.changeProvider == true
         //                           ? () {}
         //                           : () {
         //                               context.read<ServicesBloc>().add(
@@ -375,7 +371,7 @@ class _ServicesPageState extends State<ServicesPage> {
         //                                   if (isSuccess == true) {
         //                                     Navigator.of(context).pop();
 
-        //                                     if (widget.args.changeProvider ==
+        //                                     if (args.changeProvider ==
         //                                         true) {
         //                                       NavigationService.pushNamed(
         //                                           routeName: EtmamRoutesNames
@@ -397,7 +393,7 @@ class _ServicesPageState extends State<ServicesPage> {
         //                                                   .args
         //                                                   .changeProvider,
         //                                               orderId:
-        //                                                   widget.args.orderId,
+        //                                                   args.orderId,
         //                                               callBack: widget
         //                                                   .args.callBack,
         //                                               pageType: widget
@@ -427,7 +423,7 @@ class _ServicesPageState extends State<ServicesPage> {
         //                                 },
         //                               ));
         //                         } else {
-        //                           if (widget.args.changeProvider == true) {
+        //                           if (args.changeProvider == true) {
         //                             NavigationService.pushNamed(
         //                                 routeName: EtmamRoutesNames.orderInfo,
         //                                 args: SubmitPageParams(
@@ -443,10 +439,10 @@ class _ServicesPageState extends State<ServicesPage> {
         //                                         state.subServiceName,
         //                                     subRelations: [],
         //                                     changeProvider:
-        //                                         widget.args.changeProvider,
-        //                                     orderId: widget.args.orderId,
-        //                                     callBack: widget.args.callBack,
-        //                                     pageType: widget.args.pageType));
+        //                                         args.changeProvider,
+        //                                     orderId: args.orderId,
+        //                                     callBack: args.callBack,
+        //                                     pageType: args.pageType));
         //                           } else {
         //                             context.read<ServicesBloc>().add(
         //                                 GetRelationsEvent(

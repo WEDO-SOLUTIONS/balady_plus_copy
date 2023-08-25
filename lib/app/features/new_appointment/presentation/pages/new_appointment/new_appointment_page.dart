@@ -11,9 +11,9 @@ import '../../../../_shared_feature_/presentation/widgets/custom_circular_loadin
 import '../../widgets/details_app_bar.dart';
 
 class NewAppointmentPage extends StatefulWidget {
-  final bool withPreviousTransaction;
-
-  const NewAppointmentPage({super.key, required this.withPreviousTransaction});
+  const NewAppointmentPage({
+    super.key,
+  });
 
   @override
   State<NewAppointmentPage> createState() => _NewAppointmentPageState();
@@ -30,9 +30,12 @@ class _NewAppointmentPageState extends State<NewAppointmentPage> {
 
   @override
   Widget build(BuildContext context) {
+    bool withPreviousTransaction =
+        ModalRoute.of(context)!.settings.arguments as bool;
+
     return BlocProvider<NewAppointmentBloc>(
-      create: (context) => NewAppointmentBloc(
-          withPreviousTransaction: widget.withPreviousTransaction),
+      create: (context) =>
+          NewAppointmentBloc(withPreviousTransaction: withPreviousTransaction),
       child: BlocConsumer<NewAppointmentBloc, NewAppointmentState>(
         listener: (context, state) {
           if (state.status == BlocStatus.failure) {

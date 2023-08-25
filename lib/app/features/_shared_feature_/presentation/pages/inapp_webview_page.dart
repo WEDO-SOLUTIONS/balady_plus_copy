@@ -25,7 +25,6 @@ class InAppWebViewPage extends StatefulWidget {
 class _InAppWebViewPageState extends State<InAppWebViewPage> {
   late StreamController<double?> _progessStream;
   InAppWebViewController? _controller;
-  late final ({String title, String url}) args;
 
   @override
   void initState() {
@@ -37,10 +36,9 @@ class _InAppWebViewPageState extends State<InAppWebViewPage> {
 
   @override
   Widget build(BuildContext context) {
-    args = ModalRoute.of(context)!.settings.arguments as ({
-      String title,
-      String url
-    });
+    ({String title, String url}) args = ModalRoute.of(context)!
+        .settings
+        .arguments as ({String title, String url});
 
     return Scaffold(
       appBar: DefaultAppBarWidget(

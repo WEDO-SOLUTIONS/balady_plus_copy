@@ -34,17 +34,18 @@ class PrayerTimesPage extends StatefulWidget {
 
 class _PrayerTimesPageState extends State<PrayerTimesPage> {
   @override
-  late final PrayerTimesCubit cubit;
-
   void initState() {
     super.initState();
 
-    cubit.getPrayerTime();
-    cubit.getPrayerTimeRange();
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
+      cubit.getPrayerTime();
+      cubit.getPrayerTimeRange();
+    });
 
     CommonFunctions.sendEventToAnalytics(AppEvents.prayingTimes);
   }
 
+  late PrayerTimesCubit cubit;
   @override
   Widget build(BuildContext context) {
     cubit = ModalRoute.of(context)!.settings.arguments as PrayerTimesCubit;

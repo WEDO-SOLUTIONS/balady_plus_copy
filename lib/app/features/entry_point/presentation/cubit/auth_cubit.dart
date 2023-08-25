@@ -104,6 +104,7 @@ class EntryPointCubit extends Cubit<EntryPointState> {
       refreshSSOProfile();
     });
     refreshAPIGeeToken();
+
     //getUserLocationData();
   }
 

@@ -10,6 +10,8 @@ import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/t
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:balady_plus/app/features/map_page/extensions/directory_object_ext.dart';
+
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:provider/provider.dart';
 import '../../../../core/base/base_view_model.dart';
@@ -241,16 +243,7 @@ class GeneralMapCardWidget extends StatelessWidget {
                                               ),
                                               CustomVerticalSpace(height: 8),
                                               CustomTextWidget(
-                                                dataPoint?.address?.components
-                                                        ?.firstWhereOrNull(
-                                                          (element) =>
-                                                              element
-                                                                  ?.streetAddress !=
-                                                              null,
-                                                        )
-                                                        ?.streetAddress
-                                                        ?.street ??
-                                                    "",
+                                                dataPoint?.makeAddress() ?? "",
                                                 fontColor: AppColor
                                                     .blackModern500Light,
                                                 fontSize: 12,
@@ -260,7 +253,7 @@ class GeneralMapCardWidget extends StatelessWidget {
                                                 maxLines: 2,
                                               ),
                                               CustomVerticalSpace(height: 8),
-                                              GestureDetector(
+                                              /* GestureDetector(
                                                 onTap: () =>
                                                     CommonFunctions.openUber(
                                                         dataPoint!
@@ -285,7 +278,7 @@ class GeneralMapCardWidget extends StatelessWidget {
                                                         Constants.goToLocation),
                                                   ],
                                                 ),
-                                              )
+                                              )*/
 
                                               /*  CustomVerticalSpace(height: 16),
                                       CustomTextWidget(

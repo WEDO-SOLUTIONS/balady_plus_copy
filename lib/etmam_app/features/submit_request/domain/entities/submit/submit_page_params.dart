@@ -1,5 +1,6 @@
 import 'package:balady_plus/etmam_app/core/utils/enums/page_type.dart';
 import 'package:balady_plus/etmam_app/features/services/services_exports.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class SubmitPageParams {
   List<RelationItem>? subRelations;
@@ -13,6 +14,7 @@ class SubmitPageParams {
   String? orderId;
   Function? callBack;
   PageTypes? pageType;
+  BlocProvider? releationBloc;
 
   SubmitPageParams(
       {this.serviceProviderId,
@@ -24,5 +26,6 @@ class SubmitPageParams {
       this.changeProvider = false,
       this.orderId,
       this.callBack,
-      this.pageType});
+      this.pageType,
+      this.releationBloc});
 }

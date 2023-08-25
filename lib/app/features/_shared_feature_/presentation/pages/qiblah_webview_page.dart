@@ -28,7 +28,6 @@ class _QiblahWebViewPageState extends State<QiblahWebViewPage> {
   late StreamController<double?> _progessStream;
   InAppWebViewController? _controller;
   bool isLoading = true;
-  late final ({String title, String url}) args;
 
   @override
   void initState() {
@@ -40,11 +39,6 @@ class _QiblahWebViewPageState extends State<QiblahWebViewPage> {
 
   @override
   Widget build(BuildContext context) {
-    args = ModalRoute.of(context)!.settings.arguments as ({
-      String title,
-      String url
-    });
-
     return Scaffold(
       appBar: DefaultAppBarWidget(
         title: "qiblahCompass".tr(),
@@ -61,7 +55,8 @@ class _QiblahWebViewPageState extends State<QiblahWebViewPage> {
                 },
                 initialUrlRequest: URLRequest(
                   // url: Uri.parse('https://flutter.dev/'),
-                  url: Uri.parse(args.url),
+                  url: Uri.parse(
+                      "https://qiblafinder.withgoogle.com/intl/ar/finder/ar"),
                 ),
                 androidOnGeolocationPermissionsShowPrompt:
                     (controller, origin) async {

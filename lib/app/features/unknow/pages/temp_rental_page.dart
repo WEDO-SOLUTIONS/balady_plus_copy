@@ -8,12 +8,21 @@ import '../widgets/download_foras_app.dart';
 import '../widgets/header_with_divider.dart';
 import '../widgets/requirment_attachments.dart';
 
-class TempRentalPage extends StatelessWidget {
-  final RentalDetailsResponse data;
-  const TempRentalPage({Key? key, required this.data}) : super(key: key);
+class TempRentalPage extends StatefulWidget {
+  const TempRentalPage({
+    Key? key,
+  }) : super(key: key);
 
   @override
+  State<TempRentalPage> createState() => _TempRentalPageState();
+}
+
+class _TempRentalPageState extends State<TempRentalPage> {
+  late RentalDetailsResponse data;
+  @override
   Widget build(BuildContext context) {
+    data = ModalRoute.of(context)!.settings.arguments as RentalDetailsResponse;
+
     return Stack(
       children: [
         //  Image.asset(ImagePath.investmentBg),

@@ -29,9 +29,7 @@ import '../blocs/provider_details_bloc/provider_details_bloc.dart';
 import '../widgets/provider_details/provider_content.dart';
 
 class ProviderDetailsPage extends StatefulWidget {
-  ProviderDetailsResponse args;
-
-  ProviderDetailsPage({Key? key, required this.args}) : super(key: key);
+  const ProviderDetailsPage({Key? key}) : super(key: key);
 
   @override
   State<ProviderDetailsPage> createState() => _ProviderDetailsPageState();
@@ -44,11 +42,16 @@ class _ProviderDetailsPageState extends State<ProviderDetailsPage> {
     //CommonFunctions.sendEventToAnalytics(AppEvents.ProviderDetails);
   }
 
+  late ProviderDetailsResponse args;
+
   @override
   Widget build(BuildContext context) {
+    args =
+        ModalRoute.of(context)!.settings.arguments as ProviderDetailsResponse;
+
     return BlocProvider(
       create: (context) =>
-          ProviderDetailsBloc(args: widget.args, getServiceDetails: sl()),
+          ProviderDetailsBloc(args: args, getServiceDetails: sl()),
       child: BlocBuilder<ProviderDetailsBloc, ProviderDetailsState>(
         builder: (context, state) {
           return Scaffold(

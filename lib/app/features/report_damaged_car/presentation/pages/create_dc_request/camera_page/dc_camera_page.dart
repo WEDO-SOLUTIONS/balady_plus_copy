@@ -10,9 +10,7 @@ import '../../../blocs/create_dc_request/create_dc_details_bloc/create_dc_bloc.d
 import '../../../widgets/create_dc_request/camera_widgets/camera_view_widget.dart';
 
 class DCCameraPage extends StatefulWidget {
-  final CameraParamsPage params;
-
-  DCCameraPage({super.key, required this.params});
+  const DCCameraPage({super.key});
 
   @override
   State<DCCameraPage> createState() => _DCCameraPageState();
@@ -30,14 +28,16 @@ class _DCCameraPageState extends State<DCCameraPage>
 
   @override
   Widget build(BuildContext context) {
+    CameraParamsPage params =
+        ModalRoute.of(context)!.settings.arguments as CameraParamsPage;
+
     return MultiBlocProvider(
       providers: [
         BlocProvider<CreateDCBloc>(
             create: (BuildContext context) => CreateDCBloc()),
         BlocProvider<DCCameraBloc>(
             create: (BuildContext context) => DCCameraBloc(
-                params: widget.params,
-                createDCBloc: context.read<CreateDCBloc>())),
+                params: params, createDCBloc: context.read<CreateDCBloc>())),
       ],
       child: BlocConsumer<DCCameraBloc, DCCameraState>(
         listener: (context, state) {
