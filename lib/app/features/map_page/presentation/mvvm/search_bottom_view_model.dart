@@ -1,5 +1,6 @@
 import 'package:balady_plus/app/core/base/base_view_model.dart';
-import 'package:balady_plus/app/core/utils/extensions/json_conversion.dart';
+import 'package:balady_plus/app/core/services/local/shared_prefs_manager.dart';
+import 'package:balady_plus/app/features/map_page/data/model/suggest_history.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/widgets.dart';
 
@@ -10,14 +11,18 @@ FocusNode searchFocusNode = FocusNode();
 class SearchBottomViewModel extends BaseViewModel {
   String queryText = '';
   String oldQueryText = '';
-  TextEditingController searchController = TextEditingController();
+
+  // TextEditingController searchController = TextEditingController();
   final showSearchView = ValueNotifier<bool>(false);
 
   final MapViewModel mapViewModel;
 
   final suggestResultMessage = ValueNotifier<SuggestResultMessage?>(null);
+  final suggestResultMessageHistory =
+      ValueNotifier<Map<int, SuggestHistory>?>(null);
 
   SearchBottomViewModel(this.mapViewModel) {
+    fetchSuggestHistory();
     searchFocusNode.addListener(() {
       showSearchView.value = searchFocusNode.hasFocus;
       queryText = '';
@@ -54,6 +59,14 @@ class SearchBottomViewModel extends BaseViewModel {
     }
   }
 
+  void fetchSuggestHistory() async {
+    try {
+      suggestResultMessageHistory.value = await sharedPrefs
+          .getSuggestResultHistory();
+      suggestResultMessageHistory.notifyListeners();
+    } catch (_) {}
+  }
+
   void removeSuggestList() {
     suggestResultMessage.value = null;
     oldQueryText = '';
@@ -62,13 +75,14 @@ class SearchBottomViewModel extends BaseViewModel {
   }
 
   void saveItemHistory(SuggestObjectHandlerMessage objectHandler) {
-    String data = objectHandler.toJson();
-
-
-
-
+    suggestResultMessageHistory.value![objectHandler.item.id!.objectId] =
+        SuggestHistory(
+      id: objectHandler.item.id!,
+      markerPosition: objectHandler.item.markerPosition!,
+      title: objectHandler.item.title ?? '',
+      subtitle: objectHandler.item.fullAddressName?.streetAddress ?? '',
+    );
+    sharedPrefs.setSuggestResultHistory(suggestResultMessageHistory.value!);
+    suggestResultMessageHistory.notifyListeners();
   }
-
-
-
 }

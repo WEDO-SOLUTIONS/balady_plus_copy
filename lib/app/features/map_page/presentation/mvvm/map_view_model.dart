@@ -632,15 +632,15 @@ class MapViewModel extends BaseViewModel {
     return data;
   }
 
-  void addOneMarkerWithMoveCamera(DirectoryObjectMessage item) async {
+  void addOneMarkerWithMoveCamera(GeoPointWithElevationMessage markerPosition,DgisObjectIdMessage id) async {
     selectedCategory.value = null;
     selectedCategory.notifyListeners();
     await clearAll();
     await controller.moveCamera(
       CameraPositionMessage(
         point: GeoPointMessage(
-          latitude: item.markerPosition!.latitude,
-          longitude: item.markerPosition!.longitude,
+          latitude: markerPosition.latitude,
+          longitude: markerPosition.longitude,
         ),
         zoom: 17,
         tilt: 0,
@@ -651,9 +651,9 @@ class MapViewModel extends BaseViewModel {
     );
     controller.addMarkers([
       Marker(
-        id: item.id.toString(),
+        id: id.toString(),
         options: MarkerOptionsMessage(
-          position: item.markerPosition!,
+          position: markerPosition,
           icon: MarkerIconMessage(
             path: Constants.icMarker,
             width: 40,
@@ -661,7 +661,7 @@ class MapViewModel extends BaseViewModel {
         ),
         onTap: () async {
 
-          selectedPointId.value = item.id;
+          selectedPointId.value = id;
           viewHomeBottomSheet.value = false;
           viewHomeBottomSheet.notifyListeners();
         },
@@ -669,7 +669,7 @@ class MapViewModel extends BaseViewModel {
     ]);
 
 
-    selectedPointId.value = item.id;
+    selectedPointId.value = id;
     viewHomeBottomSheet.value = false;
     viewHomeBottomSheet.notifyListeners();
 
