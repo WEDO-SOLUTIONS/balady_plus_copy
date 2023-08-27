@@ -3,6 +3,7 @@ import 'package:balady_plus/app/features/report_damaged_car/presentation/widgets
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
+import '../../../../../../core/utils/constants/dialog_names.dart';
 import '../../../../../_shared_feature_/presentation/components/bottom_sheets/bottom_sheet_with_actions.dart';
 import '../../../../../_shared_feature_/presentation/components/bottom_sheets/draggable_sheet_component.dart';
 import '../../../../../_shared_feature_/presentation/dialogs/bottom_sheet_dialogs.dart';
@@ -172,6 +173,8 @@ class PlateNumberWidget extends StatelessWidget {
       bool? middleLetter = false}) async {
     await BottomSheetDialog.showDraggableSheet(
       context,
+      dialogKeyName: DialogName.dcPlateDialog,
+      currentRouteName: RouteName.createDCDetailsPage,
       isFullHeight: false,
       // child: const CloseRequestBottomSheetComponent(),
       child: PlateNumberKeyBoard(

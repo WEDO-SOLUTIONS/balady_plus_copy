@@ -15,6 +15,7 @@ import '../../../../core/utils/constants/app_style.dart';
 import '../../../../core/utils/constants/route_names.dart';
 import '../../../home_page/presentation/widgets/home_app_bar/circle_icon.dart';
 import '../../../home_page/presentation/widgets/home_tag.dart';
+import '../mvvm/search_bottom_view_model.dart';
 
 class SearchMapWidget extends StatelessWidget {
   const SearchMapWidget({
@@ -140,6 +141,7 @@ class SearchMapWidget extends StatelessWidget {
                                         onTap: () {
                                           mapViewModel.selectCategory(
                                               category: e);
+                                          searchFocusNode.unfocus();
                                           print("Changing ctaegory to: $e");
                                         },
                                         child: Padding(

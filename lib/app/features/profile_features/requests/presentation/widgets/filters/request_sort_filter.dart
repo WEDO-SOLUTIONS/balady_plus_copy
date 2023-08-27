@@ -3,13 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
+import '../../../../../../core/utils/constants/dialog_names.dart';
+import '../../../../../../core/utils/constants/route_names.dart';
 import '../../../../../_shared_feature_/shared_feature_exports.dart'
     show BottomSheetDialog, BottomSheetList, DropDownWithTitle;
 import '../../../requests_exports.dart'
-    show
-        RequestsBloc,
-        RequestsSortChangedEvent,
-        RequestsState;
+    show RequestsBloc, RequestsSortChangedEvent, RequestsState;
 
 class RequestsSortFilter extends StatelessWidget {
   const RequestsSortFilter({super.key});
@@ -27,6 +26,8 @@ class RequestsSortFilter extends StatelessWidget {
                 SortType.values.map((e) => e.value.tr()).toList();
             BottomSheetDialog.showDraggableSheet(
               context,
+              dialogKeyName: DialogName.requestsSortFilterDialog,
+              currentRouteName: RouteName.requests,
               child: BottomSheetList(
                 title: "sort".tr(),
                 items: items,

@@ -38,8 +38,6 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    FlutterUxcam.tagScreenName("MorePage");
-
     return BlocBuilder<EntryPointCubit, EntryPointState>(
       builder: (context, state) {
         bool isLoggedin = CommonProperties.isLoggedIn;

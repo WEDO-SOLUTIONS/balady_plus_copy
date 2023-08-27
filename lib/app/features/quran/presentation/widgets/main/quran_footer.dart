@@ -14,6 +14,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
+import '../../../../../core/utils/constants/dialog_names.dart';
 import '../../../data/models/quran_sura_info_model.dart';
 import '../jozz/menu_card_widget.dart';
 import '../menu/menu_card_widget.dart';
@@ -149,6 +150,8 @@ class _QuranFooterState extends State<QuranFooter> {
                       final bool? actionTaked =
                           await BottomSheetDialog.showDraggableSheet(context,
                               isFullHeight: true,
+                              dialogKeyName: DialogName.quranPageFilterDialog,
+                              currentRouteName: RouteName.quranScreen,
                               child: BottomSheetWithActions(
                                 body: Container(
                                   child: SingleChildScrollView(
@@ -245,6 +248,8 @@ class _QuranFooterState extends State<QuranFooter> {
                        */
                       final bool? actionTaked =
                           await BottomSheetDialog.showDraggableSheet(context,
+                              dialogKeyName: DialogName.quranSuraFilterDialog,
+                              currentRouteName: RouteName.quranScreen,
                               child: BottomSheetWithActions(
                                 body: Container(
                                   padding: EdgeInsets.all(16),
@@ -300,6 +305,8 @@ class _QuranFooterState extends State<QuranFooter> {
                     onTap: () async {
                       final bool? actionTaked =
                           await BottomSheetDialog.showDraggableSheet(context,
+                              dialogKeyName: DialogName.quranJozzFilterDialog,
+                              currentRouteName: RouteName.quranScreen,
                               child: BottomSheetWithActions(
                                 body: Container(
                                   padding: EdgeInsets.all(16),

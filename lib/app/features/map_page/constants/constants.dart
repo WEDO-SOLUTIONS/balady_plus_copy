@@ -12,6 +12,7 @@ class Constants {
   static double markerElevation = 0;
 
   // Map Icons
+  static String icMarker = "assets/maps/icons/ic_marker.svg";
   static String icMarkerInvestmentSites =
       "assets/maps/icons/ic_marker_investment_sites.svg";
   static String icMarkerCemeteries =

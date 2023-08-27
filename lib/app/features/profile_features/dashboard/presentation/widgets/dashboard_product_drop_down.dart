@@ -5,8 +5,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
+import '../../../../../core/utils/constants/dialog_names.dart';
 import '../../../../../core/utils/utils_exports.dart'
-    show AppColor, BlocRequestStatus;
+    show AppColor, BlocRequestStatus, RouteName;
 import '../../../../_shared_feature_/shared_feature_exports.dart';
 import '../../dashboard_exports.dart'
     show
@@ -115,6 +116,8 @@ class DashboardProductDropDown extends StatelessWidget {
 
     BottomSheetDialog.showDraggableSheet(
       context,
+      dialogKeyName: DialogName.dashboardSelectProductDialog,
+      currentRouteName: RouteName.dashboard,
       child: BottomSheetList(
         title: "product".tr(),
         items: items,

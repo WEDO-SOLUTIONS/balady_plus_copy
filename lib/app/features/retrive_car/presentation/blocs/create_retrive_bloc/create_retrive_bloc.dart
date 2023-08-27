@@ -158,7 +158,7 @@ class CreateRetriveCarBloc
       NavigationService.navigatorKey.currentState!.pushNamedAndRemoveUntil(
           RouteName.successRoute, predicate,
           arguments: SuccessScreenArgs(
-              type: PAGE_TYPE.dc,
+              type: PAGE_TYPE.vhr,
               fromHomePage: false,
               thanksMessage: success.data?.responseMessage));
 

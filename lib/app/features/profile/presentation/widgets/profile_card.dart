@@ -4,7 +4,9 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../core/utils/constants/app_style.dart';
-import '../../../../core/utils/utils_exports.dart' show IconPath, AppColor;
+import '../../../../core/utils/constants/dialog_names.dart';
+import '../../../../core/utils/utils_exports.dart'
+    show AppColor, IconPath, RouteName;
 import '../../../_shared_feature_/shared_feature_exports.dart'
     show BottomSheetDialog, CustomAutoSizeTextWidget, CustomTextWidget;
 import '../../../entry_point/entry_point_exports.dart' show SsoUserInfo;
@@ -53,6 +55,8 @@ class ProfileCard extends StatelessWidget {
           context.read<DelegatorsCubit>().getDelegators();
           await BottomSheetDialog.showDraggableSheet(
             context,
+            dialogKeyName: DialogName.delegatorsDialog,
+            currentRouteName: "MorePage",
             child: DelegatorList(
               delegatorsCubit: context.read<DelegatorsCubit>(),
             ),

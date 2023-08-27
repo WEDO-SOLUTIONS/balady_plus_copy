@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
+import '../../../../../../core/utils/constants/dialog_names.dart';
+import '../../../../../../core/utils/constants/route_names.dart';
 import '../../../../../_shared_feature_/shared_feature_exports.dart'
     show BottomSheetDialog, BottomSheetList, DropDownWithTitle, MessageDialog;
 import '../../../invoices_exports.dart'
@@ -47,6 +49,8 @@ class InvoicesTypeFilter extends StatelessWidget {
                 state.invoiceSubTypes.map((e) => e.name).toList();
             BottomSheetDialog.showDraggableSheet(
               context,
+              dialogKeyName: DialogName.invoicesTypeFilters,
+              currentRouteName: RouteName.invoices,
               child: BottomSheetList(
                 title: "invoice_type".tr(),
                 items: items,

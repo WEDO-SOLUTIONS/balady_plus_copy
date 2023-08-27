@@ -42,12 +42,92 @@ class DialogName {
 
   static const municipainspectionDialog = '/municipalInspectionDialog';
 
-    static const municipalOwnerShipDialog = '/municipalOwnerShipDialog';
-        static const municipalContractDialog = '/municipalContractDialog';
-        static const municipalSubActivityDialog = '/municipalSubActivityDialog';
+  static const municipalOwnerShipDialog = '/municipalOwnerShipDialog';
+  static const municipalContractDialog = '/municipalContractDialog';
+  static const municipalSubActivityDialog = '/municipalSubActivityDialog';
 
+  static const objectablePageFilters = '/objectablePageFiltersDialog';
 
-        static const objectablePageFilters = '/objectablePageFiltersDialog';
+  static const objectablePageProductsFilters =
+      '/objectablePageProductsFiltersDialog';
 
+  static const objectablePageStatusFiltersDialog =
+      '/objectablePageStatusFiltersDialog';
+
+  static const objectablePageTrasnsactionFiltersDialog =
+      '/objectablePageTrasnsactionFiltersDialog';
+
+  static const objectionsPageFilters = '/objectionsPageFiltersDialog';
+  static const objectionsProductPageFilters =
+      '/objectionsProductPageFiltersDialog';
+  static const objectionsStatusPageFilters =
+      '/objectionsStatusPageFiltersDialog';
+
+  static const objectionsTransactoinsPageFilters =
+      '/objectionsTransactoinsPageFiltersDialog';
+
+  static const delegatorsDialog = '/delegatorsDialog';
+
+  static const dashboardSelectProductDialog = '/dashboardSelectProductDialog';
+
+  static const incidentDetailsStatusDialog = '/incidentDetailsStatusDialog';
+  static const reqDetailsStatusDialog = '/reqDetailsStatusDialog';
+
+  static const vhrDetailsStatusDialog = '/vhrDetailsStatusDialog';
+
+  static const invoicesPageFilters = '/invoicesPageFiltersDialog';
+
+  static const invoicesPageProductsFilters =
+      '/invoicesPageProductsFiltersDialog';
+
+  static const invoicesSortFilters = '/invoicesSortFiltersDialog';
+  static const invoicesStatusFilters = '/invoicesStatusFiltersDialog';
+
+  static const invoicesTypeFilters = '/invoicesTypeFiltersDialog';
+
+  static const licensesPageFilters = '/licensesPageFiltersDialog';
+  static const licensesMunicipalityFilters =
+      '/licensesMunicipalityFiltersDialog';
+  static const licensesSortFilters = '/licensesSortFiltersDialog';
+
+  static const licensesProductsFilters = '/licensesProductsFiltersDialog';
+
+  static const licensesSubMunicapilityFilters =
+      '/licensesSubMunicapilityFiltersDialog';
+
+  static const licensesTypesFilters = '/licensesTypesFiltersDialog';
+
+  static const requestsMunicipalityFilterDialog =
+      '/requestsMunicipalityFilterDialog';
+  static const requestsProductsFilterDialog = '/requestsProductsFilterDialog';
+
+  static const requestsSortFilterDialog = '/requestsSortFilterDialog';
+
+  static const requestsStatusFilterDialog = '/requestsStatusFilterDialog';
+
+  static const requestsSubMunicapilityFilterDialog =
+      '/requestsSubMunicapilityFilterDialog';
+  static const requestsTypeFilterDialog = '/requestsTypeFilterDialog';
+  static const violationsFilterDialog = '/violationsFilterDialog';
+
+  static const violationsSortFilterDialog = '/violationsSortFilterDialog';
+  static const violationsBillStatusFilterDialog =
+      '/violationsBillStatusFilterDialog';
+
+  static const violationsViolationsStatusFilterDialog =
+      '/violationsViolationsStatusFilterDialog';
+
+  static const quranPageFilterDialog = '/quranPageFilterDialog';
+  static const quranSuraFilterDialog = '/quranSuraFilterDialog';
+  static const quranJozzFilterDialog = '/quranJozzFilterDialog';
+  static const dcPlateDialog = '/dcPlateDialog';
+  static const dcVeichlesDialog = '/dcVeichlesDialog';
+
+  static const ZmZmPointsCityDialog = '/ZmZmPointsCityDialog';
+  static const etmamDetailsActions = '/etmamDetailsActions';
+
+  static const daemDialog = '/daemDialog';
+  static const InqueryDialog = '/InqueryDialog';
+    static const msrDialog = '/msrDialog';
 
 }

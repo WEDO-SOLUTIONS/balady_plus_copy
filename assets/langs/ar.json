@@ -2996,5 +2996,11 @@
   "location_retrive_data_desc":"نعمل على تحديد موقعك بدقة لضمان خدمتك بالشكل الأمثل", 
   "location_retrive_location_title":"صلاحية الموقع مطلوبة", 
   "loaction_retrive_location_sub":"للاستفادة من الميزات الكاملة للتطبيق يرجى تفعيل الموقع من الإعدادات", 
-  "inc_details":"تفاصيل البلاغ"
+  "inc_details":"تفاصيل البلاغ",
+
+
+  "qa_ask_more":"لم تعثر على سؤالك ؟",
+  "qa_ask_more_desc":"يمكنك التواصل معنا وارسال استفسارك",
+  "qa_send_question":"إرسال سؤال"
+
 }

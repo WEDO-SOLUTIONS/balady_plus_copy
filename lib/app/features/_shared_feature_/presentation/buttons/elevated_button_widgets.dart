@@ -322,6 +322,22 @@ class ElevatedButtonWidget extends _ElevatedButton {
           text: text,
           onPressed: onPressed,
         ));
+
+  ElevatedButtonWidget.primaryCustomBorder({
+    required VoidCallback onPressed,
+    required String text,
+  }) : super(CustomElevatedButtonWidget(
+          btnColor: Colors.white,
+          btnBorderColor: AppColor.primary800Light,
+          textStyle: AppStyle.elevatedButtonStyle.copyWith(
+            color: AppColor.primary800Light,
+            fontWeight: FontWeight.w700,
+            fontSize: 16,
+          ),
+          btnHeight: 56,
+          text: text,
+          onPressed: onPressed,
+        ));
   ElevatedButtonWidget.attachFile({required VoidCallback onPressed})
       : super(CustomElevatedButtonWidget(
           btnColor: Colors.transparent,

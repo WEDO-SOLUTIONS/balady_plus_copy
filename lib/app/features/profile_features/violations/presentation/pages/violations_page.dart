@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import '../../../../../core/utils/app_analytics_events.dart';
+import '../../../../../core/utils/constants/dialog_names.dart';
 import '../../../../../core/utils/utils_exports.dart';
 import '../../../../_shared_feature_/shared_feature_exports.dart'
     show
@@ -60,6 +61,8 @@ class _ViolationsPageState extends State<ViolationsPage> {
                       final bool? actionTaked =
                           await BottomSheetDialog.showDraggableSheet(
                         context,
+                        dialogKeyName: DialogName.violationsFilterDialog,
+                        currentRouteName: RouteName.violationsPage,
                         child: BottomSheetWithActions(
                           title: "filters".tr(),
                           body: ViolationsFilterBottomSheet(

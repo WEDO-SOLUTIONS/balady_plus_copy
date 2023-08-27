@@ -36,6 +36,13 @@ class _MapScreenUrbiState extends State<MapScreenUrbi>
         _keyIndex += 1;
       });
     }
+
+    if (state == AppLifecycleState.paused) {
+      MapViewModel mapViewModel =
+          Provider.of<MapViewModel>(context, listen: false);
+
+      mapViewModel.saveMapState();
+    }
   }
 
   @override

@@ -72,6 +72,7 @@ class IconPath {
   static const location = '${_svgIconPath}location$_svg';
   static const lock = '${_svgIconPath}lock$_svg';
   static const map = '${_svgIconPath}map$_svg';
+  static const archiveBook = '${_svgIconPath}archive_book$_svg';
 
   static const informationCircleIcon =
       '${_svgIconPath}informationCircleIcon$_svg';
@@ -304,6 +305,8 @@ class IconPath {
   //Map
   static const investmentIcon = '${_svgIconPath}invetment_icon$_svg';
   static const mapLocationIcon = '${_svgIconPath}map_location_icon$_svg';
+  static const searchSuggestIcon = '${_svgIconPath}search_normal$_svg';
+  static const closeIcon = '${_svgIconPath}close$_svg';
 
   // Building Requirements
   static const checked = '${_svgIconPath}checked$_svg';

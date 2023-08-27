@@ -8,6 +8,7 @@ import '../../../../../../core/base/base_view_model.dart';
 import '../../../../../../core/remote_services/web_service.dart';
 import '../../../../../../core/services/local/helpers.dart';
 import '../../../../../../core/services/local/navigation_services.dart';
+import '../../../../../../core/utils/app_analytics_events.dart';
 import '../../../../../_shared_feature_/data/entities/drop_down_item.dart';
 import '../../models/inquiry_transaction_response.dart';
 
@@ -85,6 +86,8 @@ class TransactionInquiryViewModel extends BaseViewModel {
           status &&
           response.data?.responseCode == 1) {
         this.response = response;
+        CommonFunctions.sendEventToAnalytics(
+            AppEvents.TransactionInquirySuccess);
 
         NavigationService.navigatorKey.currentState!.pushNamed(
             RouteName.inquiryDetailsScreen,

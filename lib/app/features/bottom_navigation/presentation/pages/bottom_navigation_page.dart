@@ -1,6 +1,8 @@
+import 'package:balady_plus/app/features/map_page/presentation/mvvm/search_bottom_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart'
     show BlocProvider, MultiBlocProvider;
+import 'package:provider/provider.dart';
 
 import '../../../../core/dependency_injection/dependency_injection_exports.dart'
     show sl;
@@ -47,59 +49,65 @@ class _BottomNavigationPageState extends State<BottomNavigationPage> {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider<BottomNavBarCubit>.value(
-          value: sl<BottomNavBarCubit>(),
-        ),
-        BlocProvider<ServicesCubit>(
-          create: (_) => ServicesCubit(
-            importantServices: sl(),
-            newServices: sl(),
-            islamicServices: sl(),
-            customerVoiceServices: sl(),
-            businessLicenseServices: sl(),
-            honoringTheDeadServices: sl(),
-            municipalServices: sl(),
-            //healthCertificatesServices: sl(),
-            helpServices: sl(),
+    MapViewModel mapViewModel = context.watch<MapViewModel?>()!;
+    return ChangeNotifierProvider(
+      create: (_) {
+        return SearchBottomViewModel(mapViewModel);
+      },
+      child: MultiBlocProvider(
+        providers: [
+          BlocProvider<BottomNavBarCubit>.value(
+            value: sl<BottomNavBarCubit>(),
           ),
-        ),
-        BlocProvider<DelegatorsCubit>(
-          create: (_) => sl<DelegatorsCubit>(),
-        ),
-        BlocProvider<PrayerTimesCubit>(
-          create: (_) => sl<PrayerTimesCubit>(),
-        ),
-        BlocProvider<WeatherBloc>(
-          create: (_) => sl<WeatherBloc>(),
-        ),
-      ],
-      child: Scaffold(
-        key: NavigationService.bottomNavKey,
-        resizeToAvoidBottomInset: resizeToAvoidBottomInset,
-        body: PageView(
-          controller: _pageViewController,
-          physics: const NeverScrollableScrollPhysics(),
-          children: const [
-            // Home-Page
-            HomePage(),
-            // Services-Page
-            //  NearbyPage(),
-            // Activities-Page
-            ServicesPage(),
-            // Profile-Page
-            ProfilePage(),
-          ],
-        ),
-        bottomNavigationBar: BottomNavBarWidget(
-          onSelectedBottomNavBar: (index) {
-            _pageViewController.jumpToPage(
-              index,
-            );
-            resizeToAvoidBottomInset = index == 0 ? false : true;
-            setState(() {});
-          },
+          BlocProvider<ServicesCubit>(
+            create: (_) => ServicesCubit(
+              importantServices: sl(),
+              newServices: sl(),
+              islamicServices: sl(),
+              customerVoiceServices: sl(),
+              businessLicenseServices: sl(),
+              honoringTheDeadServices: sl(),
+              municipalServices: sl(),
+              //healthCertificatesServices: sl(),
+              helpServices: sl(),
+            ),
+          ),
+          BlocProvider<DelegatorsCubit>(
+            create: (_) => sl<DelegatorsCubit>(),
+          ),
+          BlocProvider<PrayerTimesCubit>(
+            create: (_) => sl<PrayerTimesCubit>(),
+          ),
+          BlocProvider<WeatherBloc>(
+            create: (_) => sl<WeatherBloc>(),
+          ),
+        ],
+        child: Scaffold(
+          key: NavigationService.bottomNavKey,
+          resizeToAvoidBottomInset: resizeToAvoidBottomInset,
+          body: PageView(
+            controller: _pageViewController,
+            physics: const NeverScrollableScrollPhysics(),
+            children: const [
+              // Home-Page
+              HomePage(),
+              // Services-Page
+              //  NearbyPage(),
+              // Activities-Page
+              ServicesPage(),
+              // Profile-Page
+              ProfilePage(),
+            ],
+          ),
+          bottomNavigationBar: BottomNavBarWidget(
+            onSelectedBottomNavBar: (index) {
+              _pageViewController.jumpToPage(
+                index,
+              );
+              resizeToAvoidBottomInset = index == 0 ? false : true;
+              setState(() {});
+            },
+          ),
         ),
       ),
     );

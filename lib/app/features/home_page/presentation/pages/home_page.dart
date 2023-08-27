@@ -24,6 +24,7 @@ class _HomePageState extends State<HomePage> /*with WidgetsBindingObserver*/ {
   void dispose() {
     super.dispose();
     //  WidgetsBinding.instance.removeObserver(this);
+    print("home page dispose");
   }
 
   /*@override
@@ -44,11 +45,12 @@ class _HomePageState extends State<HomePage> /*with WidgetsBindingObserver*/ {
     });
 
     // WidgetsBinding.instance.addObserver(this);
+    print("home page init State");
   }
 
   @override
   Widget build(BuildContext context) {
-    FlutterUxcam.tagScreenName("HomePage");
+    print("home page init build");
 
     MapViewModel mapViewModel = context.watch<MapViewModel?>()!;
     return Scaffold(

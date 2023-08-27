@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/core/utils/app_analytics_events.dart';
 import 'package:flutter/material.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
@@ -5,10 +6,23 @@ import '../../../../core/utils/utils_exports.dart';
 import '../../shared_feature_exports.dart';
 import 'dialog_header.dart';
 
-class BuildingRequirementsDialog extends StatelessWidget {
+class BuildingRequirementsDialog extends StatefulWidget {
   const BuildingRequirementsDialog({
     super.key,
   });
+
+  @override
+  State<BuildingRequirementsDialog> createState() =>
+      _BuildingRequirementsDialogState();
+}
+
+class _BuildingRequirementsDialogState
+    extends State<BuildingRequirementsDialog> {
+  @override
+  void initState() {
+    super.initState();
+    CommonFunctions.sendEventToAnalytics(AppEvents.buildingCompliance);
+  }
 
   @override
   Widget build(BuildContext context) {

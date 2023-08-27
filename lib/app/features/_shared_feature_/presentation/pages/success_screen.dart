@@ -1,6 +1,8 @@
+import 'package:balady_plus/app/core/utils/app_analytics_events.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/image_paths.dart';
 import 'package:balady_plus/app/core/utils/enums/app_font_weights.dart';
+import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:flutter/material.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
@@ -27,7 +29,12 @@ class _SuccessScreenState extends State<SuccessScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    //MM Helpers.sendSuccessEvent(widget.successScreenArgs.type);
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      SuccessScreenArgs successScreenArgs =
+          ModalRoute.of(context)!.settings.arguments as SuccessScreenArgs;
+      sendSuccessEvent(successScreenArgs.type);
+    });
   }
 
   @override
@@ -70,6 +77,104 @@ class _SuccessScreenState extends State<SuccessScreen> {
             ],
           ),
         ));
+  }
+
+  void sendSuccessEvent(PAGE_TYPE type) {
+    switch (type) {
+      case PAGE_TYPE.appointmentScreen:
+        CommonFunctions.sendEventToAnalytics(AppEvents.makeAppointmentSuccess);
+        break;
+
+      case PAGE_TYPE.cancelAppointment:
+        CommonFunctions.sendEventToAnalytics(
+            AppEvents.cancelAppointmentSuccess);
+
+        break;
+
+      case PAGE_TYPE.confirmAppointment:
+        CommonFunctions.sendEventToAnalytics(
+            AppEvents.confirmAppointmentSuccess);
+
+        break;
+
+      case PAGE_TYPE.daem:
+        CommonFunctions.sendEventToAnalytics(AppEvents.DaemSuccess);
+
+        break;
+
+      case PAGE_TYPE.dc:
+        CommonFunctions.sendEventToAnalytics(
+            AppEvents.damagedCarsReportSuccess);
+
+        break;
+
+      case PAGE_TYPE.vhr:
+        CommonFunctions.sendEventToAnalytics(AppEvents.vhrRequestSuccess);
+
+        break;
+
+      case PAGE_TYPE.deleteRequestScreen:
+        CommonFunctions.sendEventToAnalytics(
+            AppEvents.IssuHealthCertDeleteSuccess);
+
+        break;
+
+      case PAGE_TYPE.facilityIncidentScreen:
+        CommonFunctions.sendEventToAnalytics(AppEvents.snapAndSendSuccess);
+
+        break;
+
+      case PAGE_TYPE.incidentsScreen:
+        CommonFunctions.sendEventToAnalytics(AppEvents.snapAndSendSuccess);
+
+        break;
+
+      case PAGE_TYPE.inquiry:
+        CommonFunctions.sendEventToAnalytics(AppEvents.generalInqSuccess);
+
+        break;
+
+      case PAGE_TYPE.msr:
+        CommonFunctions.sendEventToAnalytics(AppEvents.municipalRequestSuccess);
+
+        break;
+      case PAGE_TYPE.newVD:
+        CommonFunctions.sendEventToAnalytics(AppEvents.snapAndSendSuccess);
+
+        break;
+
+      case PAGE_TYPE.objction:
+        CommonFunctions.sendEventToAnalytics(AppEvents.objectableSuccess);
+
+        break;
+      case PAGE_TYPE.qrDetailsScreen:
+        CommonFunctions.sendEventToAnalytics(AppEvents.snapAndSendSuccess);
+
+        break;
+
+      case PAGE_TYPE.qrDialog:
+        CommonFunctions.sendEventToAnalytics(AppEvents.snapAndSendSuccess);
+
+        break;
+
+      case PAGE_TYPE.ratingScreen:
+        break;
+
+      case PAGE_TYPE.licenseScreen:
+        break;
+
+      case PAGE_TYPE.coObserver:
+        break;
+
+      case PAGE_TYPE.contactUs:
+        break;
+
+      case PAGE_TYPE.visitScreen:
+        break;
+
+      case PAGE_TYPE.other:
+        break;
+    }
   }
 }
 
@@ -155,6 +260,7 @@ class SuccessBody extends StatelessWidget {
       case PAGE_TYPE.daem:
       case PAGE_TYPE.newVD:
       case PAGE_TYPE.dc:
+      case PAGE_TYPE.vhr:
       case PAGE_TYPE.objction:
         return "vd_request_submit".tr();
         return ('lbl_thank_you').tr();
@@ -229,6 +335,7 @@ class SuccessBody extends StatelessWidget {
 
       case PAGE_TYPE.newVD:
       case PAGE_TYPE.dc:
+      case PAGE_TYPE.vhr:
         return successScreenArgs?.thanksMessage ?? "";
 
       case PAGE_TYPE.other:
@@ -292,6 +399,7 @@ class SuccessButtons extends StatelessWidget {
       case PAGE_TYPE.incidentsScreen:
       case PAGE_TYPE.newVD:
       case PAGE_TYPE.dc:
+      case PAGE_TYPE.vhr:
       case PAGE_TYPE.msr:
       case PAGE_TYPE.qrDetailsScreen:
       case PAGE_TYPE.qrDialog:
@@ -328,6 +436,7 @@ class SuccessButtons extends StatelessWidget {
       case PAGE_TYPE.incidentsScreen:
       case PAGE_TYPE.newVD:
       case PAGE_TYPE.dc:
+      case PAGE_TYPE.vhr:
       case PAGE_TYPE.msr:
       case PAGE_TYPE.qrDetailsScreen:
       case PAGE_TYPE.qrDialog:
@@ -384,6 +493,7 @@ class SuccessButtons extends StatelessWidget {
       case PAGE_TYPE.incidentsScreen:
       case PAGE_TYPE.newVD:
       case PAGE_TYPE.dc:
+      case PAGE_TYPE.vhr:
       case PAGE_TYPE.msr:
       case PAGE_TYPE.facilityIncidentScreen:
       case PAGE_TYPE.inquiry:
@@ -415,6 +525,7 @@ class SuccessButtons extends StatelessWidget {
       case PAGE_TYPE.incidentsScreen:
       case PAGE_TYPE.newVD:
       case PAGE_TYPE.dc:
+      case PAGE_TYPE.vhr:
       case PAGE_TYPE.msr:
       case PAGE_TYPE.facilityIncidentScreen:
       case PAGE_TYPE.inquiry:

@@ -142,7 +142,7 @@ class NotificationService {
     );
 
     FirebaseMessaging.instance.getToken().then((value) {
-      //print("Token Firebase $value");
+      print("Token Firebase $value");
       //Helpers.sendLog(url: "token", data: value);
     });
     // FirebaseMessaging.instance.subscribeToTopic("all").then((value) {});

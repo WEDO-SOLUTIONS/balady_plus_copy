@@ -215,11 +215,13 @@ class GeneralMapCardWidget extends StatelessWidget {
                                               borderRadius:
                                                   BorderRadius.circular(16),
                                             )),
-                                        child: Image.asset(
-                                          icon,
-                                          width: 24,
-                                          height: 24,
-                                        ),
+                                        child: icon.isNotEmpty
+                                            ? Image.asset(
+                                                icon,
+                                                width: 24,
+                                                height: 24,
+                                              )
+                                            : Container(),
                                       ),
                                       CustomHorizontalSpace(width: 8),
                                       Expanded(

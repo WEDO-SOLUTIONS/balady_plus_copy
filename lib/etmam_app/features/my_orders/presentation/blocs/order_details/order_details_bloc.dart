@@ -29,6 +29,8 @@ import 'package:balady_plus/etmam_app/features/my_orders/presentation/blocs/my_o
 import 'package:balady_plus/etmam_app/features/services/services_exports.dart'
     show GetServicesProvidersByService, ServiceParams;
 
+import '../../../../../../app/core/utils/constants/dialog_names.dart';
+
 part 'order_details_event.dart';
 
 part 'order_details_state.dart';
@@ -92,6 +94,8 @@ class OrderDetailsBloc extends Bloc<OrderDetailsEvent, OrderDetailsState> {
       BottomSheetDialog.showDraggableSheet(
           NavigationService.navigatorKey.currentContext!,
           isFullHeight: false,
+          dialogKeyName: DialogName.etmamDetailsActions,
+          currentRouteName: EtmamRoutesNames.orderDetailsRoute,
           // headerText: trans('order_more_dialog_header'),
           child: BottomSheetWithActions(
             title: 'الاجراءات',

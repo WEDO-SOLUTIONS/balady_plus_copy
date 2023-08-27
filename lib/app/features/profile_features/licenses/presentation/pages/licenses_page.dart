@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/core/utils/constants/route_names.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
@@ -6,6 +7,7 @@ import '../../../../../core/dependency_injection/dependency_injection_exports.da
     show sl;
 import '../../../../../core/utils/app_analytics_events.dart';
 import '../../../../../core/utils/common_functions.dart';
+import '../../../../../core/utils/constants/dialog_names.dart';
 import '../../../../_shared_feature_/shared_feature_exports.dart'
     show
         BottomSheetDialog,
@@ -77,6 +79,8 @@ class _LicensesPageState extends State<LicensesPage> {
                       final bool? actionTaked =
                           await BottomSheetDialog.showDraggableSheet(
                         context,
+                        dialogKeyName: DialogName.licensesPageFilters,
+                        currentRouteName: RouteName.licenses,
                         child: BottomSheetWithActions(
                           title: "filters".tr(),
                           body: LicensesFilterBottomSheet(

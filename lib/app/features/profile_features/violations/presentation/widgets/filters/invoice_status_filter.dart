@@ -2,10 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
+import '../../../../../../core/utils/constants/dialog_names.dart';
+import '../../../../../../core/utils/constants/route_names.dart';
 import '../../../../../_shared_feature_/shared_feature_exports.dart'
     show BottomSheetDialog, BottomSheetList, DropDownWithTitle;
 import '../../../violations_exports.dart'
-    show GetInvoiceStatusesEvent, InvoiceStatusesSelectedEvent, ViolationsBloc, ViolationsState;
+    show
+        GetInvoiceStatusesEvent,
+        InvoiceStatusesSelectedEvent,
+        ViolationsBloc,
+        ViolationsState;
 
 class InvoiceStatusFilter extends StatelessWidget {
   const InvoiceStatusFilter({super.key});
@@ -29,6 +35,8 @@ class InvoiceStatusFilter extends StatelessWidget {
                 state.invoiceStatuses.map((e) => e.name).toList();
             BottomSheetDialog.showDraggableSheet(
               context,
+              dialogKeyName: DialogName.violationsBillStatusFilterDialog,
+              currentRouteName: RouteName.violationsPage,
               child: BottomSheetList(
                 title: "transaction_details_bill_status".tr(),
                 items: items,
@@ -37,7 +45,7 @@ class InvoiceStatusFilter extends StatelessWidget {
                   final invoiceStatus =
                       state.invoiceStatuses.where((e) => e.name == item).first;
                   context.read<ViolationsBloc>().add(
-                    InvoiceStatusesSelectedEvent(
+                        InvoiceStatusesSelectedEvent(
                           invoiceStatus: invoiceStatus,
                         ),
                       );

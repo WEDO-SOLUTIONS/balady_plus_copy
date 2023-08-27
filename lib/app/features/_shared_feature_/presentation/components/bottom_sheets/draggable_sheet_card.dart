@@ -2,6 +2,7 @@ import 'package:balady_plus/app/core/utils/enums/app_font_weights.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter_uxcam/flutter_uxcam.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:provider/provider.dart';
 
@@ -74,6 +75,12 @@ class _DraggableSheetCardState extends State<DraggableSheetCard> {
         mapViewModel.bottomSheetSizeFraction.notifyListeners();
 
         print(mapViewModel.bottomSheetSizeFraction.value);
+
+        if (draggableScrollableController.size > 0.6) {
+          FlutterUxcam.tagScreenName("HomeDialog");
+        } else {
+          FlutterUxcam.tagScreenName("HomePage");
+        }
       });
     });
   }

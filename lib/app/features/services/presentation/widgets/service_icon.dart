@@ -7,6 +7,7 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../core/base/base_view_model.dart';
 import '../../../../core/services/local/navigation_services.dart';
+import '../../../../core/utils/constants/dialog_names.dart';
 import '../../../../core/utils/utils_exports.dart'
     show
         AppStyle,
@@ -44,6 +45,8 @@ class ServiceIcon extends StatelessWidget {
       onTap: () async {
         if (service.id == 1 && service.action.type == ServiceAction.cardsPage) {
           await BottomSheetDialog.showDraggableSheet(context,
+              dialogKeyName: DialogName.vdTypesDialog,
+              currentRouteName: "ServicesPage",
               child: BottomSheetWithActions(
                 title: "اختر نوع البلاغ".tr(),
                 body: VDAllTypesDialog(),
@@ -52,6 +55,8 @@ class ServiceIcon extends StatelessWidget {
             service.action.type == ServiceAction.dialog) {
           if (CommonProperties.isLoggedIn) {
             await BottomSheetDialog.showDraggableSheet(context,
+                dialogKeyName: DialogName.daemDialog,
+                currentRouteName: "ServicesPage",
                 child: BottomSheetWithActions(
                   title: "daem_select_category".tr(),
                   body: DaemTypeDialog(),
@@ -63,6 +68,8 @@ class ServiceIcon extends StatelessWidget {
                     NeedLoginDialog(onSuccessLogin: (bool? isSuccess) async {
                       if (isSuccess ?? false) {
                         await BottomSheetDialog.showDraggableSheet(context,
+                            dialogKeyName: DialogName.daemDialog,
+                            currentRouteName: "ServicesPage",
                             child: BottomSheetWithActions(
                               title: "daem_select_category".tr(),
                               body: DaemTypeDialog(),
@@ -74,6 +81,8 @@ class ServiceIcon extends StatelessWidget {
             service.action.type == ServiceAction.dialog) {
           if (CommonProperties.isLoggedIn) {
             await BottomSheetDialog.showDraggableSheet(context,
+                dialogKeyName: DialogName.InqueryDialog,
+                currentRouteName: "ServicesPage",
                 child: BottomSheetWithActions(
                   title: "اختر التصنيف".tr(),
                   body: GeneralInquiryTypeDialog(),
@@ -85,6 +94,8 @@ class ServiceIcon extends StatelessWidget {
                     NeedLoginDialog(onSuccessLogin: (bool? isSuccess) async {
                       if (isSuccess ?? false) {
                         await BottomSheetDialog.showDraggableSheet(context,
+                            dialogKeyName: DialogName.InqueryDialog,
+                            currentRouteName: "ServicesPage",
                             child: BottomSheetWithActions(
                               title: "اختر التصنيف".tr(),
                               body: GeneralInquiryTypeDialog(),
@@ -96,6 +107,8 @@ class ServiceIcon extends StatelessWidget {
             service.action.type == ServiceAction.dialog) {
           if (CommonProperties.isLoggedIn) {
             await BottomSheetDialog.showDraggableSheet(context,
+                dialogKeyName: DialogName.msrDialog,
+                currentRouteName: "ServicesPage",
                 child: BottomSheetWithActions(
                   title: "اختر التصنيف".tr(),
                   body: MSRTypeDialog(),
@@ -107,6 +120,8 @@ class ServiceIcon extends StatelessWidget {
                     NeedLoginDialog(onSuccessLogin: (bool? isSuccess) async {
                       if (isSuccess ?? false) {
                         await BottomSheetDialog.showDraggableSheet(context,
+                            dialogKeyName: DialogName.msrDialog,
+                            currentRouteName: "ServicesPage",
                             child: BottomSheetWithActions(
                               title: "اختر التصنيف".tr(),
                               body: MSRTypeDialog(),
@@ -153,6 +168,8 @@ class ServiceIcon extends StatelessWidget {
                 await locator<NewAppointmentViewModel>().loadInitialData();
             if (isSuccess)
               await BottomSheetDialog.showDraggableSheet(context,
+                  dialogKeyName: DialogName.selectAppointmentTypeDialog,
+                  currentRouteName: "ServicesPage",
                   isFullHeight: false,
                   child: BottomSheetWithActions(
                     title: "اختر نوع الموعد".tr(),
@@ -167,6 +184,9 @@ class ServiceIcon extends StatelessWidget {
                         await locator<NewAppointmentViewModel>()
                             .loadInitialData();
                         await BottomSheetDialog.showDraggableSheet(context,
+                            dialogKeyName:
+                                DialogName.selectAppointmentTypeDialog,
+                            currentRouteName: "ServicesPage",
                             isFullHeight: false,
                             child: BottomSheetWithActions(
                               title: "اختر نوع الموعد".tr(),

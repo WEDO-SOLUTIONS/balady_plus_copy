@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
+import '../../../../../../core/utils/constants/dialog_names.dart';
+import '../../../../../../core/utils/constants/route_names.dart';
 import '../../../../../_shared_feature_/shared_feature_exports.dart'
     show BottomSheetDialog, BottomSheetList, DropDownWithTitle;
 import '../../../violations_exports.dart';
@@ -23,6 +25,8 @@ class ViolationsSortFilter extends StatelessWidget {
                 SortType.values.map((e) => e.value.tr()).toList();
             BottomSheetDialog.showDraggableSheet(
               context,
+              dialogKeyName: DialogName.violationsSortFilterDialog,
+              currentRouteName: RouteName.violationsPage,
               child: BottomSheetList(
                 title: "sort".tr(),
                 items: items,
@@ -31,7 +35,7 @@ class ViolationsSortFilter extends StatelessWidget {
                   final slectedSort =
                       SortType.values.where((e) => e.value.tr() == item).first;
                   context.read<ViolationsBloc>().add(
-                    ViolationsSortChangedEvent(
+                        ViolationsSortChangedEvent(
                           sortType: slectedSort,
                         ),
                       );

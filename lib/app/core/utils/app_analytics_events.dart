@@ -73,4 +73,46 @@ class AppEvents {
   static const String delegators = "Super_App_Open_Delegators";
 
   static const String weather = "Super_App_Open_weather";
+
+  static const String faq = "Super_App_Open_FAQ";
+  static const String buildingCompliance = "Super_App_Open_Building_Compliance";
+  static const String askBuildingCompliance =
+      "Super_App_Open_Ask_Building_Compliance";
+
+  static const String navigateToBuildingComplianceFromHome =
+      "Super_App_Open_Navigate_To_Building_Compliance_From_Home";
+
+  static const String municipalRequestSuccess =
+      "Super_App_Municipal_Request_Success";
+  static const String makeAppointmentSuccess =
+      "Super_App_Make_Appointment_Success";
+
+  static const String cancelAppointmentSuccess =
+      "Super_App_Cancel_Appointment_Success";
+
+  static const String confirmAppointmentSuccess =
+      "Super_App_Confirm_Appointment_Success";
+
+  static const String vhrRequestSuccess = "Super_App_VHR_Request_Success"; //
+
+  static const String transactionsRequestsSuccess =
+      "Super_App_Transactions_Requests_Success"; //
+
+  static const String snapAndSendSuccess = "Super_App_Open_Snap_Success";
+
+  static const String damagedCarsReportSuccess =
+      "Super_App_Report_Damaged_Car_Success";
+
+  static const String generalInqSuccess = "Super_App_General_Inq_Success";
+
+  static const String TransactionInquirySuccess =
+      "Super_App_Open_Transaction_Inquiry_Success";
+
+  static const String DaemSuccess = "Super_App_Open_Daem_Success";
+
+  static const String IssuHealthCertDeleteSuccess =
+      "Super_App_Issues_Helth_Cert_Delete_Success";
+
+  static const String calculatorSuccess = "Super_App_Open_Calculator_Success";
+  static const String objectableSuccess = "Super_App_Open_Objections_Success";
 }

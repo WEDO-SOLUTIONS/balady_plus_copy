@@ -35,7 +35,8 @@ class _NewGeneralInquiryScreen extends State<NewGeneralInquiryScreen> {
         Expanded(
           child: SingleChildScrollView(
             child: Container(
-              padding: const EdgeInsets.only(bottom: 85, right: 30, left: 30),
+              padding: const EdgeInsets.only(
+                  bottom: 85, right: 30, left: 30, top: 32),
               child: Column(
                   mainAxisSize: MainAxisSize.max,
                   crossAxisAlignment: CrossAxisAlignment.start,

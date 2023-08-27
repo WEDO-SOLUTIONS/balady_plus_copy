@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
+import '../../../../../../core/utils/constants/dialog_names.dart';
+import '../../../../../../core/utils/constants/route_names.dart';
 import '../../../../../_shared_feature_/shared_feature_exports.dart'
     show BottomSheetDialog, BottomSheetList, DropDownWithTitle, MessageDialog;
 import '../../../requests_exports.dart'
@@ -45,6 +47,8 @@ class RequestsTypeFilter extends StatelessWidget {
                 state.requestSubTypes.map((e) => e.name).toList();
             BottomSheetDialog.showDraggableSheet(
               context,
+              dialogKeyName: DialogName.requestsTypeFilterDialog,
+              currentRouteName: RouteName.requests,
               child: BottomSheetList(
                 title: "request_type".tr(),
                 items: items,

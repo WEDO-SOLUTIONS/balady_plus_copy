@@ -15,8 +15,6 @@ class ServicesPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    FlutterUxcam.tagScreenName("ServicesPage");
-
     return BlocBuilder<ServicesCubit, ServicesState>(
       buildWhen: (previous, current) =>
           previous.showSearchField != current.showSearchField,

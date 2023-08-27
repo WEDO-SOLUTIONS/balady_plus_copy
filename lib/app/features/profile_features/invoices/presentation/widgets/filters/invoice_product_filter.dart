@@ -2,9 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
+import '../../../../../../core/utils/constants/dialog_names.dart';
+import '../../../../../../core/utils/constants/route_names.dart';
 import '../../../../../_shared_feature_/shared_feature_exports.dart'
     show BottomSheetDialog, BottomSheetList, DropDownWithTitle;
-import '../../../invoices_exports.dart' show GetInvoiceTypesEvent, InvoiceTypeSelectedEvent, InvoicesBloc, InvoicesState;
+import '../../../invoices_exports.dart'
+    show
+        GetInvoiceTypesEvent,
+        InvoiceTypeSelectedEvent,
+        InvoicesBloc,
+        InvoicesState;
 
 class InvoicesProductFilter extends StatelessWidget {
   const InvoicesProductFilter({super.key});
@@ -28,6 +35,8 @@ class InvoicesProductFilter extends StatelessWidget {
                 state.invoiceTypes.map((e) => e.name).toList();
             BottomSheetDialog.showDraggableSheet(
               context,
+              dialogKeyName: DialogName.invoicesPageProductsFilters,
+              currentRouteName: RouteName.invoices,
               child: BottomSheetList(
                 title: "product".tr(),
                 items: items,

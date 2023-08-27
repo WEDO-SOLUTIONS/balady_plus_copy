@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../core/services/local/navigation_services.dart';
+import '../../../../core/utils/constants/dialog_names.dart';
 import '../../../../core/utils/constants/route_names.dart';
 import '../../../../core/utils/enums/bloc_status.dart';
 import '../../../_shared_feature_/presentation/dialogs/bottom_sheet_dialogs.dart';
@@ -33,6 +34,8 @@ class DCVehiclesPage extends StatelessWidget {
                 onPress: () {
                   //Test
                   BottomSheetDialog.showDraggableSheet(context,
+                      dialogKeyName: DialogName.dcVeichlesDialog,
+                      currentRouteName: RouteName.DCVeichlePage,
                       isFullHeight: false,
                       height: 550,
                       child: DCSelectRetrieveTypePage());

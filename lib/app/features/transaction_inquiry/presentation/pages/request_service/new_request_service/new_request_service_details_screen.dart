@@ -64,7 +64,7 @@ class _MSRBody extends State<MSRBody> {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: Container(
-        padding: const EdgeInsets.only(bottom: 85),
+        padding: const EdgeInsets.only(bottom: 85, top: 32),
         margin: const EdgeInsets.symmetric(horizontal: 30),
         child: Column(
             mainAxisSize: MainAxisSize.max,

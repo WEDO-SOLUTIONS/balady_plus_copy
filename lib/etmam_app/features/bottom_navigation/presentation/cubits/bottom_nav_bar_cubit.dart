@@ -5,6 +5,7 @@ class BottomNavBarCubit extends Cubit<BottomNavBar> {
   BottomNavBarCubit({required BottomNavBar initialNavBar})
       : super(initialNavBar);
 
-  void onChangeBottomNavBar(int index) =>
-      emit(BottomNavBar.values.elementAt(index));
+  void onChangeBottomNavBar(int index) {
+    emit(BottomNavBar.values.elementAt(index));
+  }
 }

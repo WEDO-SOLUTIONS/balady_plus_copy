@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/core/utils/app_analytics_events.dart';
 import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:balady_plus/app/core/utils/enums/app_font_weights.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
@@ -14,6 +15,7 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 import '../../../_shared_feature_/presentation/under_testing/custom_enhanced_expansion_panel_widget.dart';
 import '../../../_shared_feature_/presentation/widgets/search_text_field_widget.dart';
 import '../blocs/qa_bloc.dart';
+import '../widgets/qa_ask_more.dart';
 import '../widgets/qa_page_header.dart';
 
 class QAPage extends StatefulWidget {
@@ -25,6 +27,12 @@ class QAPage extends StatefulWidget {
 
 class _QAPageState extends State<QAPage> {
   @override
+  void initState() {
+    super.initState();
+    CommonFunctions.sendEventToAnalytics(AppEvents.faq);
+  }
+
+  @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => QABloc(),
@@ -35,7 +43,7 @@ class _QAPageState extends State<QAPage> {
         builder: (context, state) {
           return Scaffold(
               appBar: QADetailsHeader(
-                title: "الاسئلة الشائعة",
+                title: "faq".tr(),
               ),
               body: Container(
                   padding: EdgeInsets.all(16),
@@ -57,69 +65,82 @@ class _QAPageState extends State<QAPage> {
                           },
                         ),
                         const CustomVerticalSpace(height: 32),
-                        ListView.builder(
-                            itemCount: state.filtered?.length ?? 0,
-                            shrinkWrap: true,
-                            physics: NeverScrollableScrollPhysics(),
-                            itemBuilder: (ctx, index) {
-                              return Column(
-                                children: [
-                                  CustomEnhancedExpansionPanelWidget(
-                                    title:
-                                        state.filtered?[index].question ?? "",
-                                    leadingWidth: 0,
-                                    leading: null,
-                                    children: [
-                                      if (state.filtered?[index].answer == "1")
-                                        RichText(
-                                          text: TextSpan(
-                                            children: [
-                                              TextSpan(
+                        Container(
+                          decoration: ShapeDecoration(
+                              color: Colors.white,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16),
+                              )),
+                          padding: const EdgeInsets.all(17),
+                          child: ListView.builder(
+                              itemCount: state.filtered?.length ?? 0,
+                              shrinkWrap: true,
+                              physics: NeverScrollableScrollPhysics(),
+                              itemBuilder: (ctx, index) {
+                                return Column(
+                                  children: [
+                                    CustomEnhancedExpansionPanelWidget(
+                                      title:
+                                          state.filtered?[index].question ?? "",
+                                      leadingWidth: 0,
+                                      leading: null,
+                                      children: [
+                                        if (state.filtered?[index].answer ==
+                                            "1")
+                                          RichText(
+                                            text: TextSpan(
+                                              children: [
+                                                TextSpan(
+                                                    text:
+                                                        'يلزم للحصول على شهادة الامتثال تحقيق معايير ( تصميم المبنى، الموقع العام، التشوه البصري) وللتعرّف على مزيد من المعلومات يمكنكم الاطلاع على',
+                                                    style: TextStyle(
+                                                      color: Color(0xFF52525B),
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      fontSize: 12,
+                                                      height: 1.6,
+                                                    )),
+                                                TextSpan(
                                                   text:
-                                                      'يلزم للحصول على شهادة الامتثال تحقيق معايير ( تصميم المبنى، الموقع العام، التشوه البصري) وللتعرّف على مزيد من المعلومات يمكنكم الاطلاع على',
+                                                      ' دليل إجراءات شهادة امتثال المباني  ',
                                                   style: TextStyle(
-                                                    color: Color(0xFF52525B),
+                                                    color: AppColor
+                                                        .primary900Light,
                                                     fontWeight: FontWeight.bold,
-                                                    fontSize: 12,
-                                                    height: 1.6,
-                                                  )),
-                                              TextSpan(
-                                                text:
-                                                    ' دليل إجراءات شهادة امتثال المباني  ',
-                                                style: TextStyle(
-                                                  color:
-                                                      AppColor.primary900Light,
-                                                  fontWeight: FontWeight.bold,
-                                                  decoration:
-                                                      TextDecoration.none,
+                                                    decoration:
+                                                        TextDecoration.none,
+                                                  ),
+                                                  recognizer:
+                                                      TapGestureRecognizer()
+                                                        ..onTap = () {
+                                                          CommonFunctions
+                                                              .externalLaunch(
+                                                                  "https://momrah.gov.sa/sites/default/files/2023-03/dlyl-ajraat-shhadt-amtthal-almbany000.pdf");
+                                                        },
                                                 ),
-                                                recognizer:
-                                                    TapGestureRecognizer()
-                                                      ..onTap = () {
-                                                        CommonFunctions
-                                                            .externalLaunch(
-                                                                "https://momrah.gov.sa/sites/default/files/2023-03/dlyl-ajraat-shhadt-amtthal-almbany000.pdf");
-                                                      },
-                                              ),
-                                              TextSpan(text: '.'),
-                                            ],
+                                                TextSpan(text: '.'),
+                                              ],
+                                            ),
                                           ),
-                                        ),
-                                      if (state.filtered?[index].answer != "1")
-                                        CustomTextWidget(
-                                          state.filtered?[index].answer ?? "",
-                                          fontColor: Color(0xFF52525B),
-                                          fontWeight: AppFontWeight.bold,
-                                          fontSize: 12,
-                                          height: 1.6,
-                                          maxLines: 100,
-                                        )
-                                    ],
-                                  ),
-                                  CustomVerticalSpace(height: 16)
-                                ],
-                              );
-                            }),
+                                        if (state.filtered?[index].answer !=
+                                            "1")
+                                          CustomTextWidget(
+                                            state.filtered?[index].answer ?? "",
+                                            fontColor: Color(0xFF52525B),
+                                            fontWeight: AppFontWeight.bold,
+                                            fontSize: 12,
+                                            height: 1.6,
+                                            maxLines: 100,
+                                          )
+                                      ],
+                                    ),
+                                    CustomVerticalSpace(height: 16)
+                                  ],
+                                );
+                              }),
+                        ),
+                        const CustomVerticalSpace(height: 32),
+                        QAAskMore(),
                       ],
                     ),
                   )));

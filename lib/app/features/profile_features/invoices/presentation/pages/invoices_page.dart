@@ -6,6 +6,8 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 import '../../../../../core/dependency_injection/dependency_injection_exports.dart'
     show sl;
 import '../../../../../core/utils/app_analytics_events.dart';
+import '../../../../../core/utils/constants/dialog_names.dart';
+import '../../../../../core/utils/constants/route_names.dart';
 import '../../../../_shared_feature_/shared_feature_exports.dart'
     show
         BottomSheetDialog,
@@ -71,6 +73,8 @@ class _InvoicesPageState extends State<InvoicesPage> {
                         final bool? actionTaked =
                             await BottomSheetDialog.showDraggableSheet(
                           context,
+                          dialogKeyName: DialogName.invoicesPageFilters,
+                          currentRouteName: RouteName.invoices,
                           child: BottomSheetWithActions(
                             title: "filters".tr(),
                             body: InvoicesFilterBottomSheet(

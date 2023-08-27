@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../../core/utils/constants/dialog_names.dart';
@@ -102,7 +103,7 @@ class CertificationMapCard extends StatelessWidget {
                         Navigator.pushNamed(context, RouteName.QAPage);
                       },
                       child: CustomTextWidget(
-                        "الاسئلة الشائعة",
+                        "faq".tr(),
                         fontWeight: AppFontWeight.bold,
                         fontSize: 12,
                         fontColor: AppColor.primary900Light,

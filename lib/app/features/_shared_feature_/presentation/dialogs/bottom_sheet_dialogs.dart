@@ -20,7 +20,7 @@ class BottomSheetDialog {
     final screenHeight = context.screenHeight;
     final screenStatusBarHeight = context.topPadding + 20.0;
 
-    if (dialogKeyName != null) FlutterUxcam.tagScreenName(dialogKeyName);
+    if (dialogKeyName != null) await FlutterUxcam.tagScreenName(dialogKeyName);
 
     dynamic value = (await showModalBottomSheet(
           context: context,
@@ -49,8 +49,9 @@ class BottomSheetDialog {
           ),
         )) ??
         false;
-
-    if (currentRouteName != null) FlutterUxcam.tagScreenName(currentRouteName);
+    print("dialog closed");
+    if (currentRouteName != null)
+      await FlutterUxcam.tagScreenName(currentRouteName);
 
     return value;
   }

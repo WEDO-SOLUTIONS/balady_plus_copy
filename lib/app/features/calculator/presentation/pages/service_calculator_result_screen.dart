@@ -12,6 +12,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../core/services/local/helpers.dart';
+import '../../../../core/utils/app_analytics_events.dart';
 import '../../../../core/utils/constants/constants.dart';
 import '../../../_shared_feature_/presentation/widgets/buttons/custom_buttons_widgets.dart';
 import '../../../_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
@@ -51,7 +52,7 @@ class _ServiceCalculatorResultScreenState
     } else if (widget.calculateDiggingResponse != null) {
       totalCost = widget.calculateDiggingResponse?.totalCost;
     }
-    //MM   Helpers.sendEventToAnalytics(AppEvents.Calculator_result);
+    CommonFunctions.sendEventToAnalytics(AppEvents.calculatorSuccess);
   }
 
   @override

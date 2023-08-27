@@ -7,7 +7,9 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../core/utils/common_functions.dart';
 import '../../../../../core/utils/constants/app_colors.dart';
+import '../../../../../core/utils/constants/dialog_names.dart';
 import '../../../../../core/utils/constants/paths/icon_paths.dart';
+import '../../../../../core/utils/constants/route_names.dart';
 import '../../../../../core/utils/enums/app_font_weights.dart';
 import '../../../../../core/utils/enums/bloc_status.dart';
 import '../../../../_shared_feature_/presentation/components/bottom_sheets/bottom_sheet_with_actions.dart';
@@ -34,10 +36,9 @@ class IncidentDetailsPage extends StatefulWidget {
 }
 
 class _IncidentDetailsPageState extends State<IncidentDetailsPage> {
-
   @override
   Widget build(BuildContext context) {
-   RequestDetailsPageParams params =
+    RequestDetailsPageParams params =
         ModalRoute.of(context)!.settings.arguments as RequestDetailsPageParams;
 
     return BlocProvider(
@@ -92,6 +93,10 @@ class _IncidentDetailsPageState extends State<IncidentDetailsPage> {
                                 onTap: () async {
                                   await BottomSheetDialog.showDraggableSheet(
                                       context,
+                                      dialogKeyName: DialogName
+                                          .incidentDetailsStatusDialog,
+                                      currentRouteName:
+                                          RouteName.IncidentDetails,
                                       isFullHeight: false,
                                       height: 300,
                                       child: RequestStatusCard(

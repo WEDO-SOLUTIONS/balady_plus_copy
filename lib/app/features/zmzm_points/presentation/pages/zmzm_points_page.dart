@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
+import '../../../../core/utils/constants/dialog_names.dart';
 import '../../data/models/zmzm_item_model.dart';
 import '../bloc/zmzm_bloc.dart';
 import '../widgets/zmzm_app_bar.dart';
@@ -32,6 +33,8 @@ class _ZmZmPointsPageState extends State<ZmZmPointsPage> {
                 BottomSheetDialog.showDraggableSheet(
                   isFullHeight: false,
                   context,
+                  dialogKeyName: DialogName.ZmZmPointsCityDialog,
+                  currentRouteName: RouteName.ZmZmPointsPage,
                   child: BottomSheetList(
                     title: "اختر المدينه".tr(),
                     items: state.cities ?? [],
