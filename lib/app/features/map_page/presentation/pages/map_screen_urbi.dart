@@ -57,6 +57,7 @@ class _MapScreenUrbiState extends State<MapScreenUrbi>
       androidUseExpensive: true,
       onMapCreated: (DgisMapController controller) async {
         await mapViewModel.initialize(controller);
+        mapViewModel.restorePosition();
       },
     );
   }

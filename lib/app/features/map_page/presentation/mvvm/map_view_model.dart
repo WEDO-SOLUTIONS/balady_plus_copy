@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:async/async.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/entry_point/presentation/cubit/auth_cubit.dart';
 import 'package:balady_plus/app/features/vd/vd_exports.dart';
@@ -92,6 +93,7 @@ class MapViewModel extends BaseViewModel {
   final _subscriptions = <StreamSubscription>[];
 
   StreamSubscription? _debounce;
+  CancelableOperation? _searchOperation;
   VisibleRectEvent? _lastHandledEvent;
   double? _cameraTopPadding;
   double oldZoom = 13;
@@ -146,6 +148,22 @@ class MapViewModel extends BaseViewModel {
 //  late MapObjectManagerMessage mapObjectManager;
 
   Future<void> performSearch(
+      {required String queryText,
+      SearchCategoryMessage? category,
+      bool showLoader = false}) async {
+    if (_searchOperation != null) {
+      _searchOperation!.cancel();
+    }
+    _searchOperation = CancelableOperation.fromFuture(
+      _performSearch(
+        queryText: queryText,
+        category: category,
+        showLoader: showLoader,
+      ),
+    );
+  }
+
+  Future<void> _performSearch(
       {required String queryText,
       SearchCategoryMessage? category,
       bool showLoader = false}) async {
@@ -256,7 +274,7 @@ class MapViewModel extends BaseViewModel {
             },
           ));
         }
-
+        await clearAll();
         await controller.addMarkers(markers);
       }
       if (data.firstPage?.items != null) {
@@ -290,6 +308,12 @@ class MapViewModel extends BaseViewModel {
                 dgisObjectId: e.id!,
               ))
           .toList();
+
+  Future<void> restorePosition() async {
+    if (_lastRectPosition != null) {
+      await controller.setCameraPosition(_lastRectPosition!);
+    }
+  }
 
   Future<bool> initialize(DgisMapController controllerMap) async {
     controller = controllerMap;
