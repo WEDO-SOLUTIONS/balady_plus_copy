@@ -21,7 +21,7 @@ class ElevatedIconButtonWidget extends _ElevatedIconButton {
   ///
   ElevatedIconButtonWidget.upload({required VoidCallback onPressed})
       : super(CustomElevatedIconButtonWidget(
-          text: "attachFileButton".tr(),
+          text: "compliance_image_upload".tr(),
           btnColor: Colors.transparent,
           btnBorderColor: AppColor.primary800Light,
           textStyle: AppStyle.elevatedButtonStyle.copyWith(

@@ -136,6 +136,18 @@ class ElevatedButtonWidget extends _ElevatedButton {
           text: "choose".tr(),
           onPressed: onPressed,
         ));
+  ElevatedButtonWidget.next({required VoidCallback onPressed})
+      : super(CustomElevatedButtonWidget(
+          btnColor: AppColor.primary800Light,
+          textStyle: AppStyle.elevatedButtonStyle.copyWith(
+            color: AppColor.white,
+            fontWeight: FontWeight.w700,
+            fontSize: 16,
+          ),
+          btnHeight: 56,
+          text: "nextButton".tr(),
+          onPressed: onPressed,
+        ));
 
   ElevatedButtonWidget.signIn({required VoidCallback onPressed})
       : super(CustomElevatedButtonWidget(

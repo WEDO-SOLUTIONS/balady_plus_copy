@@ -109,4 +109,8 @@ class ImagePath {
   //etmam app
   static const providerDetailsImgExample =
       '${_etmamImagePath}ProviderDetailsExample$_png';
+
+  static const violationImage = '${_imagePath}violation_image$_png';
+  static const complianceFirstImage = '${_imagePath}compliance1$_png';
+  static const complianceSecondImage = '${_imagePath}compliance2$_png';
 }

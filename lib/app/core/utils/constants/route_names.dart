@@ -149,6 +149,11 @@ class RouteName {
   // Visual distortion
   static const visualDistortionPage = '/visualDistortionPage';
   static const visualDistortionDetailsPage = '/visualDistortionDetailsPage';
+
+  static const violationMainPage = '/violationMainPage';
+
+  // -------  Create Compliance ---------
+  static const createCompliancePage = '/createCompliance';
 }
 
 class EtmamRoutesNames {

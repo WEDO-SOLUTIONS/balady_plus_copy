@@ -50,10 +50,7 @@ class DraggableSheetComponent extends StatelessWidget {
                   CustomTextWidget(
                     title,
                     textAlign: TextAlign.center,
-                    textStyle: AppStyle.mainTextSecondaryStyle.copyWith(
-                      fontSize: 24.0,
-                      color: AppColor.black,
-                    ),
+                    textStyle: AppStyle.createComplianceRiyadhTitle,
                   ),
                   InkWell(
                     onTap: context.popDialog,

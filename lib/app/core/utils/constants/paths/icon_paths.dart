@@ -17,6 +17,7 @@ const _tsrPath = 'assets/icons/tsr/';
 
 const _pngQRIconPath = 'assets/icons/png/qr/';
 const _svgQRIconPath = 'assets/icons/svg/qr/';
+const _svgViolationPath = 'assets/icons/svg/violations/';
 
 const _svgCRIconPath = 'assets/icons/svg/cr/';
 const _svgWalletIconPath = 'assets/icons/svg/wallet/';
@@ -326,7 +327,15 @@ class IconPath {
   static const notificationOn = '${_svgAthkarIconPath}notification_on$_svg';
   static const notificationOff = '${_svgAthkarIconPath}notification_off$_svg';
 
+  // Violations
+  static const magicStar = '${_svgViolationPath}magic-star$_svg';
+  static const calculator = '${_svgViolationPath}calculator$_svg';
+  static const location = '${_svgViolationPath}location$_svg';
+  static const user = '${_svgViolationPath}user$_svg';
+  static const laptop = '${_svgViolationPath}laptop$_svg';
   static const reset = '${_svgAthkarIconPath}reset$_svg';
+  static const whiteArrow = '${_svgViolationPath}white_arrow$_svg';
+  static const blackArrow = '${_svgViolationPath}black_arrow$_svg';
 
   static const muslimNumberFrame =
       '${_svgAthkarIconPath}muslim_number_frame$_svg';
