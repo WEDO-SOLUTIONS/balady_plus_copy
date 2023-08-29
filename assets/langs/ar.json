@@ -106,7 +106,7 @@
   "am": "ص",
   "pm": "م",
   "allTimes": "كل الأوقات",
-
+"name_ahmad":"احمد بن خالد",
   "_servicesComment": "أى شئ يخص الخدمات",
   "public_services": "الخدمات العامة",
   "municipal_services": "الخدمات البلدية",
@@ -191,6 +191,7 @@
   "invoice_amount": "قيمة الفاتورة",
   "invoice": "فاتورة",
   "invoice_due_date": "اخر تاريخ للسداد",
+  "due_license":"اخر عملية",
   "invoice_issue_date": "تاريخ  اصدار الفاتورة",
 
   "_licensesComment": "أى شئ يخص الرخص",
@@ -643,23 +644,6 @@
 "attachment_name": "اسم المرفق",
 "images": "الصور",
 "files": "الملفات",
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 "home_bottom_navigation": "الرئيسية",
 "orders_bottom_navigation": "الطلبات",
 "favorite_bottom_navigation": "المفضلة",
@@ -1039,6 +1023,7 @@
 "userLicensesLicenseDetailsLicenseNumberWord": "رقم الرخصة",
 "userLicensesLicenseDetailsLicenseNumberTempValueWord": "13932930449",
 "userLicensesLicenseDetailsActionWord": "الإجراء",
+"license_1":"رخصة تجارية",
 "userLicensesLicenseDetailsActionTempValueWord": "إصدار رخصة تجارية",
 "userLicensesLicenseDetailsMunicipalityWord": "الأمانة",
 "userLicensesLicenseDetailsMunicipalityTempValueWord": "الحدود الشمالية",
@@ -1625,6 +1610,7 @@
 "msr_Resolved": "تم إغلاق الطلب",
 "msr_inProgress": "قيد التنفيذ",
 "msr_rejected": "تم رفض الطلب",
+"expiry_date":"تاريخ الانتهاء",
 "msr_future1": "مشاريع مستقبلية، تاريخ الانتهاء %s",
 "msr_future": "مشروع مستقبلي",
 "msr_Pending_Sadad_Payment": "انتظار سداد الرسوم",
@@ -2346,6 +2332,7 @@
 "address_1":"العنوان",
 "khobar_location":"طريق الملك عبد الله، الخبر",
 "dammam_balady":" بلدية غرب الدمام",
+"west_dammam":"غرب الدمام",
 "first_category":"التصنيف الاول",
 "result-1":"النتيجة",
 "60":"60",
@@ -2375,7 +2362,41 @@
 "action_text_taken":"إغلاق المحل / المنشأة ولا يتم الفتح الا بعد توقيع تعهد بعدم التكرار",
 "additions":"الايضاحات",
 "violation_fixed_text":"مع تصحيح المخالفة",
-"violation_image":"صورة توضيحية"
+"violation_image":"صورة توضيحية",
+"riyadh_location_question":"هل يقع المبنى في منطقة الرياض ؟",
+"representation_title":"آلية التقديم",
+"representation_subtitle":"اهناك حقيقة مثبتة منذ زمن طويل وهي أن المحتوى.",
+"representation_radio_option1":"التقديم بنفسي",
+"representation_option1_subtitle":"استكمال مراحل اصدار شهادة امتثال",
+"representation_radio_option2":"التقديم عن طريق مكتب هندسي",
+"representation_option2_subtitle":"التعاقد مع مكتب هندسي لفحص بنود الامتثال واصدار الشهادة",
+"fees":"الرسوم",
+"free":"مجاني",
+"office_fees":"رسوم المكتب",
+"user_info_details_title":"بيانات مقدم الطلب",
+"user_info_details_subtitle":"من خلال هذه الخدمة يمكنك البدء بممارسة العمل التجاري",
+"user_name_label":"الاسم كاملا",
+"phone_number_label":"رقم الجوال",
+"submission_document":"بيانات وثيقة التقديم ",
+"submission_document_subtitle":"من خلال هذه الخدمة يمكنك البدء بممارسة العمل التجاري",
+"choose_document":"اختر الوثيقة التي تريد التقديم بها",
+"document_1":"رخصة بناء",
+"document_2":"وثيقة ملكية",
+"document_message":"في حالة ان رخصة البناء غير موجودة ضمن الرخص المعروضة الخاصة بكم، يمكنكم التقديم بإستخدام خيار التقديم باستخدام وثيقة الملكية .",
+"document_dropdown_title":"الرخصة المراد التقديم بها",
+"choose_license1":"اختر الرخصة",
+"compliance_clauses_title":"بنود الامتثال",
+"compliance_clauses_subtitle":"من خلال هذه الخدمة يمكنك البدء بممارسة العمل التجاري",
+"clauses_image_text":"عدم تعديل استخدام المواقف المعتمدة في القبو",
+"clauses_option1":"ممتثل",
+"clauses_option2":"غير ممتثل",
+"compliance_complain_title":"بيانات المرفقات والملاحظات",
+"compliance_complain_subtitle":"امتداد الملفات المسموح بإرفاق jpeg، jpg، png، pdf لا يتعدى حجم الملف 10 ميجابايت",
+"compliance_image_upload_title":"صور واجهة المبنى",
+"compliance_image_upload":"ارفاق",
+"compliance_notes_title":"الملاحظات (اختياري)",
+"comliance_message_hint":"من خلال هذه الخدمة يمكنك البدء بممارسة العمل التجاري من خلال إصدار رخصة نشاط تجاري. من خلال هذه الخدمة يمكنك البدء بممارسة العمل التجاري من خلال إصدار رخصة نشاط تجاري."
+
 
 
 

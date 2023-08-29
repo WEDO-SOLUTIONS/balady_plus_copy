@@ -63,4 +63,7 @@ class RouteName {
 
   // -------  Violations ---------
   static const violationMainPage = '/violationMainPage';
+
+  // -------  Create Compliance ---------
+  static const createCompliancePage = '/createCompliance';
 }

@@ -9,32 +9,9 @@ class ViolationAddressSelectPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColor.scaffoldBackground,
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        elevation: 0,
-        actions: [
-          IconButton(
-            icon: const Icon(
-              Icons.close,
-            ),
-            color: Colors.black,
-            onPressed: () {
-              Navigator.pop(context);
-            },
-          )
-        ],
-        backgroundColor: AppColor.scaffoldBackground,
-        title: Text(
-          'back'.tr(),
-          style: AppStyle.violationCreateAppBarTitle,
-        ),
-      ),
-      body: Container(
-        padding: const EdgeInsets.all(16),
-        child: const ViolationLocationListWidget(),
-      ),
+    return Container(
+      padding: const EdgeInsets.all(16),
+      child: const ViolationLocationListWidget(),
     );
   }
 }

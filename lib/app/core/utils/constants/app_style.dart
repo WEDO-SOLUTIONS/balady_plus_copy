@@ -576,6 +576,108 @@ class AppStyle {
     fontWeight: AppFontWeight.bold.fontWeight,
     fontFamily: fontFamily,
   );
+  static final createComplianceRiyadhTitle = TextStyle(
+    color: AppColor.blackModern900Light,
+    fontSize: 20,
+    fontWeight: AppFontWeight.bold.fontWeight,
+    fontFamily: fontFamily,
+  );
+  static final createComplianceRiyadhRadioStyle = TextStyle(
+    color: AppColor.blackModern700Light,
+    fontSize: 12,
+    fontWeight: AppFontWeight.bold.fontWeight,
+    fontFamily: fontFamily,
+  );
+  static final complianceTitleStyle = TextStyle(
+    color: AppColor.blackModern700Light,
+    fontSize: 20,
+    fontWeight: AppFontWeight.bold.fontWeight,
+    fontFamily: fontFamily,
+  );
+  static final complianceSubtitle = TextStyle(
+    color: AppColor.blackModern500Light,
+    fontSize: 14,
+    fontWeight: AppFontWeight.bold.fontWeight,
+    fontFamily: fontFamily,
+  );
+  static final complianceFirstSubmitTitleRadioStyle = TextStyle(
+    color: AppColor.blackModern800Light,
+    fontSize: 14,
+    fontWeight: AppFontWeight.bold.fontWeight,
+    fontFamily: fontFamily,
+  );
+  static final complianceFirstSubmitSubtitleStyle = TextStyle(
+    color: AppColor.blackModern500Light,
+    fontSize: 12,
+    fontWeight: AppFontWeight.bold.fontWeight,
+    fontFamily: fontFamily,
+  );
+  static final complianceFeesStyle = TextStyle(
+    color: AppColor.blackModern900Light,
+    fontSize: 9,
+    fontWeight: AppFontWeight.bold.fontWeight,
+    fontFamily: fontFamily,
+  );
+  static final complianceFeesStatusStyle = TextStyle(
+    color: AppColor.blueSkyLight800,
+    fontSize: 13.5,
+    fontWeight: AppFontWeight.bold.fontWeight,
+    fontFamily: fontFamily,
+  );
+  static final complianceLabelStyle = TextStyle(
+    color: AppColor.blackModern700Light,
+    fontSize: 16,
+    fontWeight: AppFontWeight.bold.fontWeight,
+    fontFamily: fontFamily,
+  );
+  static final complianceSubtitleStyle = TextStyle(
+    color: AppColor.blackModern700Light,
+    fontSize: 14,
+    fontWeight: AppFontWeight.bold.fontWeight,
+    fontFamily: fontFamily,
+  );
+  static final complianceDocumentTitleStyle = TextStyle(
+    color: AppColor.blackModern700Light,
+    fontSize: 16,
+    fontWeight: AppFontWeight.bold.fontWeight,
+    fontFamily: fontFamily,
+  );
+  static final comlianceDocumentMessageStyle = TextStyle(
+    color: AppColor.blueSkyLight800,
+    fontSize: 15,
+    fontWeight: AppFontWeight.bold.fontWeight,
+    fontFamily: fontFamily,
+  );
+  static final complianceClausesTextStyle = TextStyle(
+    color: AppColor.blueSkyLight800,
+    fontSize: 14,
+    fontWeight: AppFontWeight.bold.fontWeight,
+    fontFamily: fontFamily,
+  );
+  static final complianceClausesOptionStyle = TextStyle(
+    color: AppColor.blackModern700Light,
+    fontSize: 12,
+    fontWeight: AppFontWeight.medium.fontWeight,
+    fontFamily: fontFamily,
+  );
+  static final comlianceImageUploadStyle = TextStyle(
+    color: AppColor.blueSkyLight800,
+    fontSize: 16,
+    fontWeight: AppFontWeight.bold.fontWeight,
+    fontFamily: fontFamily,
+  );
+  static final complianceTitleLabelLicenseStyle = TextStyle(
+    color: AppColor.blueSkyLight800,
+    fontSize: 12,
+    fontWeight: AppFontWeight.bold.fontWeight,
+    fontFamily: fontFamily,
+  );
+  static final complianceSubtitleLicenseStyle = TextStyle(
+    color: AppColor.blackModern600Light,
+    fontSize: 14,
+    fontWeight: AppFontWeight.bold.fontWeight,
+    fontFamily: fontFamily,
+  );
 
   /// Padding
   static const defaultPadding = EdgeInsets.symmetric(

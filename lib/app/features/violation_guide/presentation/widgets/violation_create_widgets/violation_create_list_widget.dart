@@ -7,7 +7,11 @@ import 'package:flutter/material.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 class ViolationCreateListWidget extends StatelessWidget {
-  const ViolationCreateListWidget({super.key});
+  const ViolationCreateListWidget({
+    super.key,
+    required this.onPressed,
+  });
+  final VoidCallback onPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -29,13 +33,7 @@ class ViolationCreateListWidget extends StatelessWidget {
               height: 24,
             ),
             ViolationCreateOptionWidget(
-              onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) =>
-                            const ViolationAddressSelectPage()));
-              },
+              onPressed: onPressed,
               optionTitle: 'single'.tr(),
               color: AppColor.greenLight800,
               logoPath: IconPath.user,

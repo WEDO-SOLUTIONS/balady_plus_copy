@@ -11,3 +11,8 @@ class CategorySelectedEvent extends ViolationEvent {
   final int index;
   const CategorySelectedEvent(this.index);
 }
+
+class ChangePageEvent extends ViolationEvent {
+  final double index;
+  const ChangePageEvent(this.index);
+}

@@ -67,12 +67,13 @@ class CustomRadioButtonWidget extends StatelessWidget {
                 radioValue: radioValue,
                 onSelected: onSelected,
               ),
+              SizedBox(
+                width: 6,
+              ),
               // Label
-              Expanded(
-                child: CustomTextWidget(
-                  label,
-                  textStyle: labelStyle ?? AppStyle.radioButtonStyle,
-                ),
+              CustomTextWidget(
+                label,
+                textStyle: labelStyle ?? AppStyle.radioButtonStyle,
               ),
             ].addPadding(end: radioLabelSpace),
           ),

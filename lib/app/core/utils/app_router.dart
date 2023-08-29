@@ -1,6 +1,8 @@
 import 'package:balady_plus/app/features/athkar/presentation/pages/athkar_entity_content.dart';
 import 'package:balady_plus/app/features/boarding/presentation/pages/boarding_main_page.dart';
 import 'package:balady_plus/app/features/boarding/presentation/pages/boarding_pages.dart';
+import 'package:balady_plus/app/features/create_compliance/presentation/pages/create_compliance_location_confirm_page.dart';
+import 'package:balady_plus/app/features/create_compliance/presentation/pages/submit_compliance_page.dart';
 import 'package:balady_plus/app/features/objectable_transactions/domain/entities/create_objection_page_params.dart';
 import 'package:balady_plus/app/features/objections/domain/entities/objection_details.dart';
 import 'package:balady_plus/app/features/violation_guide/presentation/pages/violation_guide_select_page.dart';
@@ -252,6 +254,11 @@ class AppRouter {
       case RouteName.DCVeichlePage:
         return MaterialPageRoute(
           builder: (_) => DCVehiclesPage(),
+        );
+      // Create Compliance
+      case RouteName.createCompliancePage:
+        return MaterialPageRoute(
+          builder: (_) => SubmitCompliancePage(),
         );
 
       case RouteName.DCSelectRetreiveTypePage:
