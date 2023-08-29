@@ -59,10 +59,15 @@ class SearchBottomViewModel extends BaseViewModel {
     }
   }
 
+  /////////////////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////////
+
   void fetchSuggestHistory() async {
     try {
-      suggestResultMessageHistory.value = await sharedPrefs
-          .getSuggestResultHistory();
+      suggestResultMessageHistory.value =
+          await sharedPrefs.getSuggestResultHistory();
       suggestResultMessageHistory.notifyListeners();
     } catch (_) {}
   }
@@ -75,6 +80,13 @@ class SearchBottomViewModel extends BaseViewModel {
   }
 
   void saveItemHistory(SuggestObjectHandlerMessage objectHandler) {
+    if (suggestResultMessageHistory.value![objectHandler.item.id!.objectId] ==
+            null &&
+        suggestResultMessageHistory.value!.length == 20) {
+      suggestResultMessageHistory.value!.remove(
+        suggestResultMessageHistory.value!.keys.first,
+      );
+    }
     suggestResultMessageHistory.value![objectHandler.item.id!.objectId] =
         SuggestHistory(
       id: objectHandler.item.id!,
@@ -82,7 +94,11 @@ class SearchBottomViewModel extends BaseViewModel {
       title: objectHandler.item.title ?? '',
       subtitle: objectHandler.item.fullAddressName?.streetAddress ?? '',
     );
-    sharedPrefs.setSuggestResultHistory(suggestResultMessageHistory.value!);
+    try{
+      sharedPrefs.setSuggestResultHistory(suggestResultMessageHistory.value!);
+    } catch(e){
+      print(e);
+    }
     suggestResultMessageHistory.notifyListeners();
   }
 }
