@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 // ignore: depend_on_referenced_packages
+import 'package:balady_plus/app/features/map_page/data/model/suggest_history.dart';
 import 'package:balady_plus/app/features/quran/data/models/quran_book_mark_item_model.dart';
 import 'package:balady_plus/app/features/quran/data/models/quran_book_mark_model.dart';
 import 'package:balady_plus/app/features/vd/vd_exports.dart';
@@ -243,6 +244,7 @@ class SharedPrefs {
 
   setPrayerSettings(List<String> settings) async =>
       await _sharedPreferences?.setStringList('prayer_settings', settings);
+
   List<String> getPrayerSettings() =>
       _sharedPreferences?.getStringList('prayer_settings') ??
       // "0" to set all prayer times setting to false
@@ -349,6 +351,36 @@ class SharedPrefs {
         : null;
 
     return model;
+  }
+
+  /////////////////////////////////////////////////////////////
+  setSuggestResultHistory(Map<int, SuggestHistory> data) async {
+    try {
+      Map<int, Map<String, dynamic>> dataMap = {};
+      for (var element in data.keys) {
+        dataMap[element] = data[element]!.toJson();
+      }
+      await _sharedPreferences?.setString(
+        'SuggestHistory',
+        json.encode(dataMap),
+      );
+    } catch (ex) {}
+  }
+
+  Future<Map<int, SuggestHistory>> getSuggestResultHistory() async {
+    String? data = _sharedPreferences?.getString('SuggestHistory');
+
+    Map<int, SuggestHistory> dataS = {};
+    try {
+      if (data != null) {
+        Map<int, Map<String, dynamic>> dataMap = json.decode(data);
+        for (var element in dataMap.keys) {
+          dataS[element] = SuggestHistory.fromJson(dataMap[element]!);
+        }
+      }
+    } catch (ex) {}
+
+    return dataS;
   }
 }
 

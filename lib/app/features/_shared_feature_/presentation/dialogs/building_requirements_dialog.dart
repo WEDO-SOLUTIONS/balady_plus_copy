@@ -77,96 +77,96 @@ class _BuildingRequirementsDialogState
                   ),*/
                   BuildingReqCard(
                     title:
-                        'عدم تنفيذ منحدر للأشخاص ذوي الإعاقة وفق (الدليل المبسط لمعايير الوصول الشامل للمنشآت)',
+                        'عدم تنفيذ منحدر للأشخاص ذوي الهمم وفق (الدليل المبسط لمعايير الوصول الشامل للمنشآت)',
                     imgPath: ImagePath.buildingReq1,
                   ),
                   BuildingReqCard(
                     title:
-                        'عدم توفير ممر الوصول الجانبي أمام المنحدر الخاص لذوي الإعاقة وفق (الدليل المبسط لمعايير الوصول الشامل للمنشآت) للمباني التجارية',
+                        'عدم توفير ممر الوصول الجانبي أمام المنحدر الخاص لذوي الهمم وفق (الدليل المبسط لمعايير الوصول الشامل للمنشآت) للمباني التجارية',
                     imgPath: ImagePath.buildingReq2,
                   ),
                   BuildingReqCard(
                     title:
-                        "عدم تغطية خزانات الصرف الصحي بأغطية واقية وسليمة وفق الاشتراطات البلدية",
+                        "وجود وحدات تكييف منفصلة في كامل واجهة المبنى المطل على الشـــارع التجاري",
                     imgPath: ImagePath.buildingReq3,
                   ),
                   BuildingReqCard(
-                    title: "وجود أسوار متهالكة أو غير مكتملة",
-                    imgPath: ImagePath.buildingReq15,
-                  ),
-                  BuildingReqCard(
                     title:
-                        "وجود حواجز مشوهة (أشاير حديد / شينكو) على سور الارتداد أو السطح",
-                    imgPath: ImagePath.buildingReq5,
-                  ),
-                  BuildingReqCard(
-                    title:
-                        "وجود وحدات تكييف منفصلة في كامل واجهة المبنى المطل على الشارع التجاري",
-                    imgPath: ImagePath.buildingReq6,
-                  ),
-                  BuildingReqCard(
-                    title:
-                        "وجود تمديدات (كهربائية – صحية - ميكانيكية) ظاهرة في كامل واجهة المبنى المطل على الشارع التجاري ",
-                    imgPath: ImagePath.buildingReq7,
-                  ),
-                  BuildingReqCard(
-                    title:
-                        "وجود تشققات أو تلف (دهانات، تكسيات) أو صدأ على المواد المعدنية في كامل واجهة المبنى بإجمالي مساحة تزيد عن متر مربع",
-                    imgPath: ImagePath.buildingReq8,
-                  ),
-                  BuildingReqCard(
-                    title:
-                        "وجود أطباق الأقمار الصناعية على الشرفات أو كامل واجهة المبنى المطل على الشارع التجاري.",
-                    imgPath: ImagePath.buildingReq16,
-                  ),
-                  BuildingReqCard(
-                    title: "وجود مظلات أو هناجر خارج حدود الملكية.",
-                    imgPath: ImagePath.buildingReq17,
-                  ),
-                  BuildingReqCard(
-                    title:
-                        "تغطية الشرفات دون الحصول على التراخيص اللازمة من الأمانة/البلدية",
-                    imgPath: ImagePath.buildingReq9,
-                  ),
-                  BuildingReqCard(
-                    title:
-                        "وجود كتابات مخالفة على كامل واجهة المبنى المطل على الشارع التجاري",
-                    imgPath: ImagePath.buildingReq10,
-                  ),
-                  BuildingReqCard(
-                    title:
-                        "وضع المداخن على واجهة المبنى من دون أن تكون في جانب المبنى، أو أن يتجاوز ارتفاعها في جانب المبنى عن البناء أكثر من (2) متر",
-                    imgPath: ImagePath.buildingReq18,
-                  ),
-                  BuildingReqCard(
-                    title:
-                        "عدم مطابقة اللوحات التجارية الخاصة بالمحلات للاشتراطات البلدية.",
-                    imgPath: ImagePath.buildingReq19,
-                  ),
-                  BuildingReqCard(
-                    title:
-                        "وجود لوحات إعلانية لمحلات تجارية مغلقة بتراخيص غير سارية أو منتهية، أو وجود الأساسات الحديدية لتثبيت اللوحات المزالة.",
-                    imgPath: ImagePath.buildingReq20,
-                  ),
-                  BuildingReqCard(
-                    title:
-                        "وجود ملصقات إعلانية قديمة أو متهالكة على واجهة المبنى",
-                    imgPath: ImagePath.buildingReq13,
-                  ),
-                  BuildingReqCard(
-                    title:
-                        "وجود مخلفات ومواد بناء تعيق الحركة على الرصيف الخاص بالمبنى",
-                    imgPath: ImagePath.buildingReq21,
-                  ),
-                  BuildingReqCard(
-                    title:
-                        "وجود أرصفة منفذة من قبل مالك المبنى أو مالك حق الانتفاع به متهالكة أو غير مكتملة -جهة الشارع التجاري-",
+                        "تعديل استخدام المواقف المعتمدة في قبو  المبنى، وفق الترخيص الصادر له من الأمانة/البلدية",
                     imgPath: ImagePath.buildingReq4,
                   ),
                   BuildingReqCard(
                     title:
-                        "تعديل استخدام المواقف المعتمدة في قبو المبنى، وفق الترخيص الصادر له من الأمانة/البلدية.",
-                    imgPath: ImagePath.buildingReq22,
+                        "وجود تمديدات (كهربائية – صحية - ميكانيكية) ظاهرة في كامل واجهة المبنى المطل على الشارع التجاري",
+                    imgPath: ImagePath.buildingReq5,
+                  ),
+                  BuildingReqCard(
+                    title:
+                        "تغطية الشرفات دون الحصول على التراخيص اللازمة من الأمانة/البلدية",
+                    imgPath: ImagePath.buildingReq6,
+                  ),
+                  BuildingReqCard(
+                    title:
+                        "وجود حواجز مشوهه (أشاير حديد / شينكو) على سور الارتداد أو السطح",
+                    imgPath: ImagePath.buildingReq7,
+                  ),
+                  BuildingReqCard(
+                    title:
+                        "عدم تغطية خزانات الصرف الصحي بأغطية واقية وسليمة وفق الاشتراطات البلدية",
+                    imgPath: ImagePath.buildingReq8,
+                  ),
+                  BuildingReqCard(
+                    title:
+                        "وجود أرصفة منفذة من قبل مالك المبنى أو مالك حق الانتفاع به متهالكة أو غير مكتملة -جهة الشارع التجاري",
+                    imgPath: ImagePath.buildingReq9,
+                  ),
+                  BuildingReqCard(
+                    title:
+                        "وجود ملصقات إعلانية قديمة أو متهالكة على واجهة المبنى",
+                    imgPath: ImagePath.buildingReq10,
+                  ),
+                  BuildingReqCard(
+                    title:
+                        "وجود كتابات مخالفة على كامل واجهة المبنى المطل على الشارع التجاري",
+                    imgPath: ImagePath.buildingReq11,
+                  ),
+                  BuildingReqCard(
+                    title:
+                        "وجود تشققات أو تلف (دهانات، تكسيات) أو صدأ على المواد المعدنية في كامل واجهة المبنى بإجمالي مساحة تزيد عن متر مربع",
+                    imgPath: ImagePath.buildingReq12,
+                  ),
+                  BuildingReqCard(
+                    title: "وجود أسوار متهالكة أو غير مكتملة",
+                    imgPath: ImagePath.buildingReq13,
+                  ),
+                  BuildingReqCard(
+                    title:
+                        "وجود أطباق الأقمار الصناعية على الشرفات أو كامل واجهة المبنى المطل على الشارع التجاري",
+                    imgPath: ImagePath.buildingReq14,
+                  ),
+                  BuildingReqCard(
+                    title: "وجود مظلات أو هناجر خارج حدود الملكية",
+                    imgPath: ImagePath.buildingReq15,
+                  ),
+                  BuildingReqCard(
+                    title:
+                        "وضع المداخن على واجهة المبنى من دون أن تكون في جانب المبنى، أو أن يتجاوز ارتفاعها في جانب المبنى عن البناء أكثر من (2) متر",
+                    imgPath: ImagePath.buildingReq16,
+                  ),
+                  BuildingReqCard(
+                    title:
+                        "عدم مطابقة اللوحات التجارية الخاصة بالمحلات للاشتراطات البلدية",
+                    imgPath: ImagePath.buildingReq17,
+                  ),
+                  BuildingReqCard(
+                    title:
+                        "وجود مخلفات ومواد بناء تعيق الحركة على الرصيف الخاص بالمبنى",
+                    imgPath: ImagePath.buildingReq18,
+                  ),
+                  BuildingReqCard(
+                    title:
+                        "وجود لوحات إعلانية لمحلات تجارية مغلقة بتراخيص غير سارية أو منتهية، أو وجود الأساسات الحديدية لتثبيت اللوحات المزاله",
+                    imgPath: ImagePath.buildingReq19,
                   ),
                 ],
               ),

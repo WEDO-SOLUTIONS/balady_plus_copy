@@ -41,7 +41,7 @@ class DefaultAppBarWidget extends StatelessWidget
               onPressed: onBack ?? () => Navigator.of(context).pop(),
             )
           : null,
-      titleSpacing: 0,
+      titleSpacing: Navigator.canPop(context) ? 0 : 16,
       centerTitle: false,
       title: CustomTextWidget(
         title ?? "",

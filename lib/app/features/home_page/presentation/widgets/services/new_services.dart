@@ -196,7 +196,7 @@ class NewServices extends StatelessWidget {
                             const SizedBox(height: 6),
                             CustomTextWidget(
                               'booking_tickets'.tr(),
-                              fontColor: const Color.fromARGB(255, 10, 10, 15),
+                              fontColor: AppColor.blackModern400Light,
                               fontWeight: AppFontWeight.medium,
                               maxLines: null,
                               fontSize: 12,
