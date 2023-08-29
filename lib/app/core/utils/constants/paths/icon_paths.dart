@@ -328,9 +328,9 @@ class IconPath {
   static const notificationOff = '${_svgAthkarIconPath}notification_off$_svg';
 
   // Violations
-  static const magicStar = '${_svgViolationPath}magic-star$_svg';
+  //static const magicStar = '${_svgViolationPath}magic-star$_svg';
   static const calculator = '${_svgViolationPath}calculator$_svg';
-  static const location = '${_svgViolationPath}location$_svg';
+  //static const location = '${_svgViolationPath}location$_svg';
   static const user = '${_svgViolationPath}user$_svg';
   static const laptop = '${_svgViolationPath}laptop$_svg';
   static const reset = '${_svgAthkarIconPath}reset$_svg';
