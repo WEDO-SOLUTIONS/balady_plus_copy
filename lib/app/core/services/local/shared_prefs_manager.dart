@@ -355,9 +355,9 @@ class SharedPrefs {
 
   /////////////////////////////////////////////////////////////
   setSuggestResultHistory(Map<int, SuggestHistory> data) async {
-    Map<int, Map<String, dynamic>> dataMap = {};
+    Map<String, Map<String, dynamic>> dataMap = {};
     for (var element in data.keys) {
-      dataMap[element] = data[element]!.toJson();
+      dataMap[element.toString()] = data[element]!.toJson();
     }
     await _sharedPreferences?.setString(
       'SuggestHistory',
@@ -369,9 +369,9 @@ class SharedPrefs {
     String? data = _sharedPreferences?.getString('SuggestHistory');
     Map<int, SuggestHistory> dataS = {};
     if(data != null) {
-      Map<int, Map<String, dynamic>> dataMap = json.decode(data);
+      Map<String, dynamic> dataMap = json.decode(data);
       for (var element in dataMap.keys) {
-        dataS[element] = SuggestHistory.fromJson(dataMap[element]!);
+        dataS[int.parse(element)] = SuggestHistory.fromJson(dataMap[element]!);
       }
     }
     return dataS;
