@@ -258,6 +258,15 @@ class ApiUrl {
 // ! Investment Fura
   static const String DOWNLOAD_FILE_URL = '/v1/ims/download-file';
 
+  // ! Create Compliance
+  static const String applyBeneficiaryCompliance =
+      '/v1/compliance-certificate-mobile-services/apply-beneficiary';
+  static const String getComplianceRequestById =
+      '/v1/compliance-certificate-mobile-services/certificate/';
+
+  static const String saveLocationCompliance =
+      '/v1/compliance-certificate-mobile-services/save-location-info/';
+
   //! POST
 
   //! Delete
