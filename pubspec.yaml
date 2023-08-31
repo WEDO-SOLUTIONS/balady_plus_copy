@@ -178,6 +178,7 @@ flutter:
     - assets/icons/svg/nearby/
     - assets/icons/svg/violations/
     - assets/icons/svg/events/
+    - assets/icons/svg/self_rating/
     - assets/icons/svg/vd/
     - assets/icons/svg/qr/
     - assets/icons/svg/dc/

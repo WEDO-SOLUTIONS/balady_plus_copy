@@ -14,6 +14,7 @@ const _pngQRIconPath = 'assets/icons/png/qr/';
 const _svgQRIconPath = 'assets/icons/svg/qr/';
 const _svgViolationPath = 'assets/icons/svg/violations/';
 const _svgEventsPath = 'assets/icons/svg/events/';
+const _svgSelfRatingPage = 'assets/icons/svg/self_rating/';
 
 const _svg = '.svg';
 
@@ -220,4 +221,8 @@ class IconPath {
   static const calendar = '${_svgEventsPath}calendar$_svg';
   static const exportW = '${_svgEventsPath}Frame$_svg';
   static const notFound = '${_svgEventsPath}not_found$_svg';
+
+  // Self Rating
+
+  static const selfRatingBuilding = '${_svgSelfRatingPage}building$_svg';
 }

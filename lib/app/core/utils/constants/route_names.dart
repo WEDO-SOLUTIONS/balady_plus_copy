@@ -69,4 +69,7 @@ class RouteName {
 
   // -------  Events ---------
   static const eventsMainPage = '/eventsMainPage';
+
+  // Self Rating
+  static const selfRatingMainPage = '/selfRatingMainPage';
 }

@@ -787,6 +787,25 @@ class AppStyle {
     fontWeight: AppFontWeight.bold.fontWeight,
     fontFamily: fontFamily,
   );
+  static final selfRatingTitleStyle = TextStyle(
+    color: AppColor.blackModern900Light,
+    fontSize: 20,
+    fontWeight: AppFontWeight.bold.fontWeight,
+    fontFamily: fontFamily,
+  );
+  static final selfRatingSubtitleStyle = TextStyle(
+    color: AppColor.blackModern800Light,
+    fontSize: 14,
+    fontWeight: AppFontWeight.bold.fontWeight,
+    fontFamily: fontFamily,
+  );
+  static final selfRatingSectionTextStyle = TextStyle(
+    color: AppColor.blackModern900Light,
+    fontSize: 14,
+    fontWeight: AppFontWeight.bold.fontWeight,
+    fontFamily: fontFamily,
+  );
+  
 
   /// Padding
   static const defaultPadding = EdgeInsets.symmetric(

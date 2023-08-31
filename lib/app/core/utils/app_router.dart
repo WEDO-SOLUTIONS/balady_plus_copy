@@ -55,6 +55,7 @@ import '../../features/retrive_car/presentation/pages/check_veichles_page/veichl
 import '../../features/retrive_car/presentation/pages/create_retrive_page.dart';
 import '../../features/retrive_car/presentation/pages/dc_select_retrive_request_type.dart';
 import '../../features/retrive_car/presentation/pages/dc_vehicles_page.dart';
+import '../../features/self_ratiing/presentation/pages/self_rating_main_page.dart';
 import '../../features/services/services_exports.dart'
     show ServiceCardsPage, ServiceEntity;
 import '../../features/splash/splash_exports.dart' show SplashPage;
@@ -121,7 +122,9 @@ class AppRouter {
       // objections page
       case RouteName.objections:
         return MaterialPageRoute(builder: (_) => const ObjectionsPage());
-
+      // self rating pages
+      case RouteName.selfRatingMainPage:
+        return MaterialPageRoute(builder: (_) => const SelfRatingMainPage());
       // objectable transactions page
       case RouteName.objectableTransactions:
         return MaterialPageRoute(
