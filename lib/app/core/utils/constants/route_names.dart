@@ -66,4 +66,7 @@ class RouteName {
 
   // -------  Create Compliance ---------
   static const createCompliancePage = '/createCompliance';
+
+  // -------  Events ---------
+  static const eventsMainPage = '/eventsMainPage';
 }

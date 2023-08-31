@@ -5,9 +5,7 @@ import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/b
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/texts/custom_text_field_widget.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import 'package:balady_plus/app/features/create_compliance/presentation/widgets/compliance_title_widget.dart';
-import 'package:balady_plus/app/features/create_compliance/presentation/widgets/custom_radio.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 class SecondSubmissonCompliance extends StatelessWidget {
@@ -47,16 +45,16 @@ class SecondSubmissonCompliance extends StatelessWidget {
             'phone_number_label'.tr(),
             textStyle: AppStyle.complianceLabelStyle,
           ),
-          SizedBox(
+          const SizedBox(
             height: 10,
           ),
           Container(
-            padding: EdgeInsets.all(2),
+            padding: const EdgeInsets.all(2),
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(6),
                 border: Border.all(
                   width: 1,
-                  color: Color(0xffD4D4D8),
+                  color: const Color(0xffD4D4D8),
                 )),
             child: TextField(
               decoration: InputDecoration(

@@ -25,22 +25,22 @@ class FifthComplianceSubmitStep extends StatelessWidget {
             'compliance_image_upload_title'.tr(),
             textStyle: AppStyle.complianceDocumentTitleStyle,
           ),
-          SizedBox(
+          const SizedBox(
             height: 16,
           ),
           ElevatedIconButtonWidget.upload(onPressed: () {}),
-          SizedBox(
+          const SizedBox(
             height: 32,
           ),
           CustomTextWidget(
             'compliance_notes_title'.tr(),
             textStyle: AppStyle.complianceDocumentTitleStyle,
           ),
-          SizedBox(
+          const SizedBox(
             height: 6,
           ),
           Container(
-            padding: EdgeInsets.symmetric(
+            padding: const EdgeInsets.symmetric(
               horizontal: 12,
               vertical: 10,
             ),
@@ -57,7 +57,7 @@ class FifthComplianceSubmitStep extends StatelessWidget {
               maxLines: 4,
             ),
           ),
-          Expanded(
+          const Expanded(
             child: SizedBox(),
           ),
           ElevatedButtonWidget.next(

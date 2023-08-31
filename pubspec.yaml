@@ -142,6 +142,8 @@ dependencies:
   pdfx: 
   bottom_picker: ^2.0.4
   page_view_dot_indicator: ^2.3.0
+  card_swiper: ^3.0.1
+  carousel_slider: ^4.2.1
 
 
   
@@ -175,6 +177,7 @@ flutter:
     - assets/icons/svg/profile/
     - assets/icons/svg/nearby/
     - assets/icons/svg/violations/
+    - assets/icons/svg/events/
     - assets/icons/svg/vd/
     - assets/icons/svg/qr/
     - assets/icons/svg/dc/

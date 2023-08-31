@@ -153,6 +153,8 @@ class AppColor {
   static const Color green60 = Color(0x99E6EFEF);
   static const maastrichtBlue = Color(0xFF0E1C2F);
   static const indigo = Color(0xFF264269);
+  static const blackOpacity = Color(0x80000000);
+  static const greenOpacity = Color(0xE5145E75);
 
   static const Color athkarAppbarGreen = Color(0xff1C7372);
   static const Color athkarAppbarGreen2 = Color(0xff127F4C);

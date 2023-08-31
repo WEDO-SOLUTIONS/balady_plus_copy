@@ -152,6 +152,7 @@
   "support": "الدعم",
   "help": "المساعدة",
   "rate_app": "تقييم التطبيق",
+  "content_not_found":"لا يوجد فعاليات قريبة منك",
   "about_balady": "عن بلدي",
   "choose_profile": "اختر الحساب",
   "hi": "اهلا بك",
@@ -426,6 +427,7 @@
   "asc": "الأقدم",
   "days": "أيام",
   "after": "بعد",
+
 
 
 
@@ -2395,7 +2397,42 @@
 "compliance_image_upload_title":"صور واجهة المبنى",
 "compliance_image_upload":"ارفاق",
 "compliance_notes_title":"الملاحظات (اختياري)",
-"comliance_message_hint":"من خلال هذه الخدمة يمكنك البدء بممارسة العمل التجاري من خلال إصدار رخصة نشاط تجاري. من خلال هذه الخدمة يمكنك البدء بممارسة العمل التجاري من خلال إصدار رخصة نشاط تجاري."
+"comliance_message_hint":"من خلال هذه الخدمة يمكنك البدء بممارسة العمل التجاري من خلال إصدار رخصة نشاط تجاري. من خلال هذه الخدمة يمكنك البدء بممارسة العمل التجاري من خلال إصدار رخصة نشاط تجاري.",
+"events_main_title_page":"تقويم الفعاليات",
+"shopping":"التسوق",
+"food":"الأكل",
+"traditions":"التراث",
+"safari_experience":"تجربة سفاري مختلفة",
+"400_riyals":"400",
+"for_free":"مجانا",
+"dariyah_history":" تاريخ الدرعيه",
+"safari":" تجربة سفاري مختلفة ",
+"elephant_stone":" صخرة الفيل ",
+"location_event_text":"الرياض , طريق الأمير تركي الأول",
+"events_sorting":"التصنيفات",
+"event_date":"تاريخ الفعالية",
+"event_time":"وقت الفعالية",
+"event_genre":"الفئة المستهدفة",
+"event_website":"الموقع الالكتروني",
+"event_date_subtitle":"21 اغسطس   - 22 اغسطس",
+"event_time_subtitle":" 4:25 PM - 8:25 PM",
+"events_genre_subtitle":"اطفال",
+"events_website_subtitle":"www.elfeel.com",
+"event_description_title":"نبذة عن الفعالية",
+"events_description_subtitle":"يتربّع جبل الفيل رمال الصحراء الذهبية بمشهد يخطف الأنظار، ويعانق سماء العلا بجسده وخرطومه على ارتفاع 52 متر.",
+"event_location_title":"موقع الفعالية",
+"events_description2":"تعود نشأة الدرعية التاريخية إلى عام 1446م، بعد مجيء مانع بن ربيعة المريدي من بلدة صغيرة تقع بجوار القطيف، إلى أرض خصبة على ضفاف وادي حنيفة، فاستقر بها مع عائلته، واتسعت مع مرور الوقت نفوذهم ومزارعهم، حتى أصبحوا أمراء تلك المنطقة وما جوارها.",
+"event_button_text":"الانتقال الى التفاصيل",
+"nature":"طبيعة",
+"events_details":" تفاصيل الفعالية ",
+"ola_moment":"لحظات العلا",
+"dariyah_season":"موسم الدرعية",
+"self_review":"التقييم الذاتي",
+"self_review_subtitle":"قيم نفسك في عدة مجالات",
+"review-building":"قيم مبناك",
+"review_building_subtitle":"تعرف على  انواع المخالفات البلدية واجراءاتها"
+
+
 
 
 

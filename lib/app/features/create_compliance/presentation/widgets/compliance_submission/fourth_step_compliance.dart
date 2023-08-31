@@ -22,19 +22,19 @@ class FourthStepCompliance extends StatelessWidget {
               title: 'compliance_clauses_title'.tr(),
               subtitle: 'compliance_clauses_subtitle'.tr(),
             ),
-            SizedBox(
+            const SizedBox(
               height: 10,
             ),
-            ComplianceImageWidget(),
-            SizedBox(
+            const ComplianceImageWidget(),
+            const SizedBox(
               height: 10,
             ),
-            ComplianceImageWidget(),
-            SizedBox(
+            const ComplianceImageWidget(),
+            const SizedBox(
               height: 10,
             ),
-            ComplianceImageWidget(),
-            SizedBox(
+            const ComplianceImageWidget(),
+            const SizedBox(
               height: 10,
             ),
             ElevatedButtonWidget.next(

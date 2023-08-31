@@ -3,6 +3,7 @@ import 'package:balady_plus/app/features/boarding/presentation/pages/boarding_ma
 import 'package:balady_plus/app/features/boarding/presentation/pages/boarding_pages.dart';
 import 'package:balady_plus/app/features/create_compliance/presentation/pages/create_compliance_location_confirm_page.dart';
 import 'package:balady_plus/app/features/create_compliance/presentation/pages/submit_compliance_page.dart';
+import 'package:balady_plus/app/features/events/presentation/pages/page.dart';
 import 'package:balady_plus/app/features/objectable_transactions/domain/entities/create_objection_page_params.dart';
 import 'package:balady_plus/app/features/objections/domain/entities/objection_details.dart';
 import 'package:balady_plus/app/features/violation_guide/presentation/pages/violation_guide_select_page.dart';
@@ -25,6 +26,7 @@ import '../../features/athkar/athkar_exports.dart'
 import '../../features/bottom_navigation/bottom_navigation_exports.dart'
     show BottomNavigationPage;
 import '../../features/entry_point/entry_point_exports.dart' show SsoUserInfo;
+import '../../features/events/presentation/pages/events_main_page.dart';
 import '../../features/objectable_transactions/objections_exports.dart'
     show ObjectableTransactionsPage;
 import '../../features/facility_qr/facility_qr_exports.dart';
@@ -190,7 +192,11 @@ class AppRouter {
         return MaterialPageRoute(
           builder: (_) => const FacilityPhotosScreen(),
         );
-
+// Events
+      case RouteName.eventsMainPage:
+        return MaterialPageRoute(
+          builder: (_) => const EventsPageViewer(),
+        );
       case RouteName.transactionDetailsPage:
         CreateObjectionPageParams? params =
             settings.arguments as CreateObjectionPageParams?;

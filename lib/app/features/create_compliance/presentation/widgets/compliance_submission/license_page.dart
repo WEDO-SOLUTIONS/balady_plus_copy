@@ -83,7 +83,7 @@ class ComplianceLicensePage extends StatelessWidget {
             const SizedBox(
               height: 10,
             ),
-            ComplianceLicenseItemWidget(),
+            const ComplianceLicenseItemWidget(),
             ElevatedButtonWidget.next(
               onPressed: onPressed,
             )

@@ -4,8 +4,6 @@ import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/t
 import 'package:flutter/material.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
-import '../../../_shared_feature_/presentation/widgets/radio_buttons/custom_radio_button_widget copy.dart';
-
 class ComplianceRadioWidget extends StatelessWidget {
   const ComplianceRadioWidget({
     super.key,
@@ -27,7 +25,7 @@ class ComplianceRadioWidget extends StatelessWidget {
             width: 1.5,
           )),
       child: RadioListTile(
-        contentPadding: EdgeInsets.all(10),
+        contentPadding: const EdgeInsets.all(10),
         groupValue: 0,
         onChanged: (value) {},
         value: 0,

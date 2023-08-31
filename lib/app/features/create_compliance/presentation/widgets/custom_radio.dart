@@ -28,7 +28,7 @@ class CustomRadio1 extends StatelessWidget {
         return Column(
           children: [
             Container(
-              padding: EdgeInsets.all(8),
+              padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(5),
                   border: Border.all(
@@ -55,11 +55,11 @@ class CustomRadio1 extends StatelessWidget {
                       .add(RadioSelectEvent(val ?? 0));
                 },
                 activeColor:
-                    state.radioSelect == value ? Color(0xff447F91) : null,
+                    state.radioSelect == value ? const Color(0xff447F91) : null,
                 secondary: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(
+                    const SizedBox(
                       height: 5,
                     ),
                     CustomTextWidget(

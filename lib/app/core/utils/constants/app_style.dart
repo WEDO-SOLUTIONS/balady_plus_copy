@@ -678,6 +678,115 @@ class AppStyle {
     fontWeight: AppFontWeight.bold.fontWeight,
     fontFamily: fontFamily,
   );
+  // Events Styles
+  static final eventsMainPageStyle = TextStyle(
+    color: AppColor.blackModern700Light,
+    fontSize: 20,
+    fontWeight: AppFontWeight.bold.fontWeight,
+    fontFamily: fontFamily,
+  );
+  static final eventsOptionsStyle = TextStyle(
+    color: AppColor.blackModern900Light,
+    fontSize: 12,
+    fontWeight: AppFontWeight.semiBold.fontWeight,
+    fontFamily: fontFamily,
+  );
+  static final eventsMonthStyle = TextStyle(
+    color: AppColor.blackOpacity,
+    fontSize: 13,
+    fontWeight: AppFontWeight.regular.fontWeight,
+    fontFamily: fontFamily,
+  );
+  static final eventsMonthStyle1 = TextStyle(
+    color: AppColor.white,
+    fontSize: 13,
+    fontWeight: AppFontWeight.regular.fontWeight,
+    fontFamily: fontFamily,
+  );
+  static final eventsDayStyle = TextStyle(
+    color: AppColor.black,
+    fontSize: 26,
+    fontWeight: AppFontWeight.bold.fontWeight,
+    fontFamily: fontFamily,
+  );
+  static final eventsDayStyle1 = TextStyle(
+    color: AppColor.white,
+    fontSize: 26,
+    fontWeight: AppFontWeight.bold.fontWeight,
+    fontFamily: fontFamily,
+  );
+  static final eventsSectionTitleStyle = TextStyle(
+    color: AppColor.blackModern50Light,
+    fontSize: 14,
+    fontWeight: AppFontWeight.semiBold.fontWeight,
+    fontFamily: fontFamily,
+  );
+  static final eventsLocationTextStyle = TextStyle(
+    color: AppColor.blackModern300Light,
+    fontSize: 9,
+    fontWeight: AppFontWeight.semiBold.fontWeight,
+    fontFamily: fontFamily,
+  );
+  static final moneyStyleEvents = TextStyle(
+    color: AppColor.white,
+    fontSize: 16,
+    fontWeight: AppFontWeight.bold.fontWeight,
+    fontFamily: fontFamily,
+  );
+  static final riyalEventStyle = TextStyle(
+    color: AppColor.white,
+    fontSize: 9,
+    fontWeight: AppFontWeight.bold.fontWeight,
+    fontFamily: fontFamily,
+  );
+  static final eventMainTitleStyle = TextStyle(
+    color: AppColor.blackModern900Light,
+    fontSize: 24,
+    fontWeight: AppFontWeight.bold.fontWeight,
+    fontFamily: fontFamily,
+  );
+  static final eventsMainSubtitleStyle = TextStyle(
+    color: AppColor.blackModern900Light,
+    fontSize: 12,
+    fontWeight: AppFontWeight.semiBold.fontWeight,
+    fontFamily: fontFamily,
+  );
+  static final eventsTitleSectionStyle = TextStyle(
+    color: AppColor.blackModern900Light,
+    fontSize: 18,
+    fontWeight: AppFontWeight.bold.fontWeight,
+    fontFamily: fontFamily,
+  );
+  static final eventsDetailsTitleStyle = TextStyle(
+    color: AppColor.blackModern600Light,
+    fontSize: 15,
+    fontWeight: AppFontWeight.bold.fontWeight,
+    fontFamily: fontFamily,
+  );
+  static final eventsDetailsSubtitleStyle = TextStyle(
+    color: AppColor.blackModern500Light,
+    fontSize: 15,
+    fontWeight: AppFontWeight.bold.fontWeight,
+    fontFamily: fontFamily,
+  );
+  static final eventsDescriptionTextStyle = TextStyle(
+    color: AppColor.blackModern500Light,
+    fontSize: 12,
+    fontWeight: AppFontWeight.semiBold.fontWeight,
+    fontFamily: fontFamily,
+  );
+  static final eventsCategory = TextStyle(
+    color: AppColor.greenOpacity,
+    fontSize: 12,
+    fontWeight: AppFontWeight.semiBold.fontWeight,
+    fontFamily: fontFamily,
+  );
+  static final eventNotFoundTextStyle = TextStyle(
+    color: AppColor.grey1000,
+    fontSize: 16,
+    fontWeight: AppFontWeight.bold.fontWeight,
+    fontFamily: fontFamily,
+  );
 
   /// Padding
   static const defaultPadding = EdgeInsets.symmetric(

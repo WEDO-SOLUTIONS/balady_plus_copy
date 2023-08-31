@@ -13,6 +13,7 @@ const _boardingLogoPath = 'assets/icons/svg/boarding/';
 const _pngQRIconPath = 'assets/icons/png/qr/';
 const _svgQRIconPath = 'assets/icons/svg/qr/';
 const _svgViolationPath = 'assets/icons/svg/violations/';
+const _svgEventsPath = 'assets/icons/svg/events/';
 
 const _svg = '.svg';
 
@@ -207,4 +208,16 @@ class IconPath {
       '${_svgAthkarIconPath}muslim_number_frame$_svg';
 
   static const boardingSplashLogo = '${_boardingLogoPath}balady_logo$_svg';
+  // Events Page
+
+  static const eventsLocationIcon = '${_svgEventsPath}location$_svg';
+  static const locationBlack = '${_svgEventsPath}locationb$_svg';
+  static const clock = '${_svgEventsPath}clock$_svg';
+  static const export = '${_svgEventsPath}export$_svg';
+  static const wallet = '${_svgEventsPath}wallet-money$_svg';
+  static const profileCircle = '${_svgEventsPath}profile-circle$_svg';
+  static const linkSquare = '${_svgEventsPath}link-square$_svg';
+  static const calendar = '${_svgEventsPath}calendar$_svg';
+  static const exportW = '${_svgEventsPath}Frame$_svg';
+  static const notFound = '${_svgEventsPath}not_found$_svg';
 }
