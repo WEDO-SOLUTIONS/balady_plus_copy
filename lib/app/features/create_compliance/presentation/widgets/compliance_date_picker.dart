@@ -46,27 +46,35 @@ class _ComplianceDatePickerState extends State<ComplianceDatePicker> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.end,
       children: [
-        DropDownWithTitle(
-          title: widget.title,
-          selectedValue: _selectedDate?.formatTo(_dateForm),
-          showArrow: false,
-          onTap: () async {
-            if (_dateForm == DateForm.gregorian) {
-              showPickerDate(_selectedDate, context);
-            } else {
-              showPickerHijriDate(_selectedDate, context);
-            }
-          },
+        Expanded(
+          child: DropDownWithTitle(
+            title: widget.title,
+            selectedValue: _selectedDate?.formatTo(_dateForm),
+            showArrow: false,
+            onTap: () async {
+              if (_dateForm == DateForm.gregorian) {
+                showPickerDate(_selectedDate, context);
+              } else {
+                showPickerHijriDate(_selectedDate, context);
+              }
+            },
+          ),
         ),
-        DateFromSelector(
-          initialDateForm: _dateForm,
-          onChange: (dateForm) {
-            setState(() => _dateForm = dateForm);
-            if (_selectedDate != null)
-              widget.onChange(_selectedDate!, _dateForm);
-          },
+        SizedBox(width: 3),
+        Expanded(
+          flex: 2,
+          child: DateFromSelector(
+            initialDateForm: _dateForm,
+            onChange: (dateForm) {
+              setState(() => _dateForm = dateForm);
+              if (_selectedDate != null)
+                widget.onChange(_selectedDate!, _dateForm);
+            },
+          ),
         ),
       ],
     );

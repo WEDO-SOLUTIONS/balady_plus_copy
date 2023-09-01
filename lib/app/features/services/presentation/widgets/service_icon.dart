@@ -253,6 +253,27 @@ class ServiceIcon extends StatelessWidget {
                         }));
               }
             }
+          } else if (service.action.value == RouteName.createCompliancePage) {
+            bool isLocationAvailable =
+                await CommonFunctions.checkLocationSettings(context);
+            bool isCameraAllowed =
+                await CommonFunctions.checkCameraSettings(context);
+            if (isLocationAvailable && isCameraAllowed) {
+              if (CommonProperties.isLoggedIn) {
+                NavigationService.navigatorKey.currentState!
+                    .pushNamed(RouteName.createCompliancePage);
+              } else {
+                showDialog(
+                    context: context,
+                    builder: (ctx) => NeedLoginDialog(
+                            onSuccessLogin: (bool? isSuccess) async {
+                          if (isSuccess ?? false) {
+                            NavigationService.navigatorKey.currentState!
+                                .pushNamed(RouteName.createCompliancePage);
+                          }
+                        }));
+              }
+            }
           } else if (service.iconName == "municipal_commercial" ||
               service.iconName == "municpal_construction" ||
               service.iconName == "municipal_shop" ||

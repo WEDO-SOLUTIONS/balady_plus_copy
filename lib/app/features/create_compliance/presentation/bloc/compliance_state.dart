@@ -172,25 +172,23 @@ class ComplianceState extends Equatable {
       if (documentTypeSelection == null) return false;
 
       if (documentTypeSelection == 1) {
-        if (selectedLicense == null ||
-            selectedMainUsage == null ||
-            selectedSubUsage == null) return false;
+        if (selectedLicense == null) return false;
       }
 
       if (documentTypeSelection == 2) {
-        if (selectedMainUsage == null ||
-            selectedSubUsage == null ||
-            selectedOwnerShip == null ||
+        if (selectedOwnerShip == null ||
             (ownershipText?.isEmpty ?? true) ||
             ownershipDate == null ||
             gisResponse == null) return false;
       }
     } else if (currentStep == 3) {
+      if (selectedMainUsage == null || selectedSubUsage == null) return false;
+    } else if (currentStep == 4) {
       bool valid = requestDetails?.emtithalItems?.firstWhereOrNull(
               (element) => element.submitterAnswer == null) ==
           null;
       return valid;
-    } else if (currentStep == 4) {
+    } else if (currentStep == 5) {
       bool isValid = true;
       if (attachments != null && attachments!.isNotEmpty) {
         attachments!.forEach((element) {

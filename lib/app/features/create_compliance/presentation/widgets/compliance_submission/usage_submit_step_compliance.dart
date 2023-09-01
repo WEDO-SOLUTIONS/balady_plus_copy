@@ -18,10 +18,6 @@ import 'package:balady_plus/app/features/create_compliance/presentation/widgets/
 import '../../../../../core/services/local/navigation_services.dart';
 import '../../../../vd/domain/entities/map/map_screen_params.dart';
 import '../../bloc/compliance_bloc.dart';
-import '../bottom_sheet_list.dart';
-import '../compliance_date_picker.dart';
-import '../compliance_ownership_field.dart';
-import '../license_item_widget.dart';
 
 class UsageSubmissionCompliance extends StatelessWidget {
   const UsageSubmissionCompliance({
@@ -34,282 +30,96 @@ class UsageSubmissionCompliance extends StatelessWidget {
       builder: (context, state) {
         return Padding(
           padding: const EdgeInsets.all(16.0),
-          child: Expanded(
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  ComplianceSubmitTitle(
-                    title: 'submission_document'.tr(),
-                    subtitle: 'submission_document_subtitle'.tr(),
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  CustomTextWidget(
-                    'choose_document'.tr(),
-                    textStyle: AppStyle.complianceDocumentTitleStyle,
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      SingleRatioOption(
-                        value: 1,
-                        selected: state.documentTypeSelection,
-                        width: MediaQuery.of(context).size.width * 0.4,
-                        title: 'document_1'.tr(),
-                        titleStyle: AppStyle.createComplianceRiyadhRadioStyle,
-                        onChanged: (int val) {
-                          context
-                              .read<ComplianceBloc>()
-                              .add(UpdateFieldsEvent(documentTypeSelection: 1));
-                        },
-                      ),
-                      SingleRatioOption(
-                        value: 2,
-                        selected: state.documentTypeSelection,
-                        width: MediaQuery.of(context).size.width * 0.4,
-                        title: 'document_2'.tr(),
-                        titleStyle: AppStyle.createComplianceRiyadhRadioStyle,
-                        onChanged: (int val) {
-                          context
-                              .read<ComplianceBloc>()
-                              .add(UpdateFieldsEvent(documentTypeSelection: 2));
-                        },
-                      ),
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 16,
-                  ),
-                  if (state.documentTypeSelection == 1) ...[
-                    Container(
-                      width: 321,
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 12,
-                        horizontal: 10,
-                      ),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8),
-                        color: const Color(0xffE8EFF1),
-                      ),
-                      child: CustomTextWidget(
-                        'document_message'.tr(),
-                        maxLines: 3,
-                        textAlign: TextAlign.right,
-                        textStyle: AppStyle.comlianceDocumentMessageStyle,
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 32,
-                    ),
-                    CustomTextWidget(
-                      'document_dropdown_title'.tr(),
-                      textStyle: AppStyle.complianceDocumentTitleStyle,
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    DropDownWithTitle(
-                      title: "choose_license1".tr(),
-                      selectedValue: state.selectedLicense?.licenseId
-                              ?.toInt()
-                              .toString() ??
-                          "",
-                      status: state.licenseStatus,
-                      onRetry: () {
-                        context.read<ComplianceBloc>().add(
-                              const GetLicensesEvent(),
-                            );
-                      },
-                      onTap: () {
-                        BottomSheetDialog.showDraggableSheet(
-                          context,
-                          // dialogKeyName: DialogName.licensesSubMunicapilityFilters,
-                          //  currentRouteName: RouteName.licenses,
-                          child: LicenseBottomSheetList(
-                            title: "choose_license1".tr(),
-                            items: state.licenes?.items ?? [],
-                            selectedValue: state.selectedLicense,
-                            onTap: (item) {
-                              final selectedItem = item;
-                              context.read<ComplianceBloc>().add(
-                                    UpdateFieldsEvent(
-                                      selectedLicense: selectedItem,
-                                    ),
-                                  );
-                              Navigator.pop(context);
-                            },
-                          ),
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                ComplianceSubmitTitle(
+                  title: 'submission_document'.tr(),
+                  subtitle: 'submission_document_subtitle'.tr(),
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                DropDownWithTitle(
+                  title: "الاستخدام الرئيسي".tr(),
+                  selectedValue: state.selectedMainUsage?.name,
+                  status: state.mainUsagesStatus,
+                  onRetry: () {
+                    context.read<ComplianceBloc>().add(
+                          const GetMainUsagesEvent(),
                         );
-                      },
-                    ),
-                    if (state.selectedLicense != null)
-                      ComplianceLicenseItemWidget(
-                        status: state.selectedLicense?.statusName,
-                        expiryDate: state.selectedLicense?.expirationDate,
-                        dueDate: state.selectedLicense?.issuingDate,
-                        licenseNo:
-                            "${state.selectedLicense?.licenseId?.toInt()}",
-                        licenseType: state.selectedLicense?.licenseType,
-                        municipality: state.selectedLicense?.municipalityName,
-                      ),
-                  ],
-                  if (state.documentTypeSelection == 2) ...[
-                    DropDownWithTitle(
-                      title: "الموقع الجغرافي".tr(),
-                      selectedValue: state.gisResponse?.getFullAddress(),
-                      onRetry: () {
-                        context.read<ComplianceBloc>().add(
-                              const GetSubUsagesEvent(),
-                            );
-                      },
-                      onTap: () async {
-                        await NavigationService.navigatorKey.currentState!
-                            .pushNamed(RouteName.complinaceMapView,
-                                arguments: MapScreenParams(
-                                  gisParams: state.gisParams,
-                                  complianceGIS: state.gisResponse,
-                                ))
-                            .then((value) {
-                          if (value != null) {
-                            MapScreenParams? params = value as MapScreenParams;
-                            context.read<ComplianceBloc>().emit(state.copyWith(
-                                gisResponse: params.complianceGIS,
-                                gisParams: params.gisParams));
-                          }
-                        });
-                      },
-                    ),
-                    DropDownWithTitle(
-                      title: "نوع وثيقة الملكية".tr(),
-                      selectedValue: state.selectedOwnerShip?.name,
-                      status: state.ownerShipsStatus,
-                      onRetry: () {
-                        context.read<ComplianceBloc>().add(
-                              const GetOwnerShipTypesEvent(),
-                            );
-                      },
-                      onTap: () {
-                        final List<String> items =
-                            (state.ownerShipsTypes?.items ?? [])
-                                .map((e) => e.name ?? "")
-                                .toList();
-                        BottomSheetDialog.showDraggableSheet(
-                          context,
-                          // dialogKeyName: DialogName.licensesSubMunicapilityFilters,
-                          //  currentRouteName: RouteName.licenses,
-                          child: BottomSheetList(
-                            title: "نوع وثيقة الملكية".tr(),
-                            items: items,
-                            selectedValue: state.selectedOwnerShip?.name,
-                            onTap: (item) {
-                              final selectedItem =
-                                  (state.ownerShipsTypes?.items ?? [])
-                                      .where((e) => e.name == item)
-                                      .first;
-                              context.read<ComplianceBloc>().add(
-                                    UpdateFieldsEvent(
-                                      selectedOwnerShip: selectedItem,
-                                    ),
-                                  );
-                              Navigator.pop(context);
-                            },
-                          ),
-                        );
-                      },
-                    ),
-                    ComplianceOwnerShipField(),
-                    CustomVerticalSpace(height: 12),
-                    ComplianceDatePicker(
-                      title: "تاريخ الوثيقة".tr(),
-                      initialDateForm: DateForm.gregorian,
-                      onChange: (DateTime time, DateForm form) {
-                        context.read<ComplianceBloc>().add(UpdateFieldsEvent(
-                            ownershipDate: time.toHijriFormattedDate1()));
-                      },
-                    ),
-                  ],
-                  DropDownWithTitle(
-                    title: "الاستخدام الرئيسي".tr(),
-                    selectedValue: state.selectedMainUsage?.name,
-                    status: state.mainUsagesStatus,
-                    onRetry: () {
-                      context.read<ComplianceBloc>().add(
-                            const GetMainUsagesEvent(),
-                          );
-                    },
-                    onTap: () {
-                      final List<String> items = (state.mainUsages?.items ?? [])
-                          .map((e) => e.name ?? "")
-                          .toList();
-                      BottomSheetDialog.showDraggableSheet(
-                        context,
-                        // dialogKeyName: DialogName.licensesSubMunicapilityFilters,
-                        //  currentRouteName: RouteName.licenses,
-                        child: BottomSheetList(
-                          title: "الاستخدام الرئيسي".tr(),
-                          items: items,
-                          selectedValue: state.selectedMainUsage?.name,
-                          onTap: (item) {
-                            final selectedItem = (state.mainUsages?.items ?? [])
-                                .where((e) => e.name == item)
-                                .first;
-                            context.read<ComplianceBloc>().add(
-                                  GetSubUsagesEvent(item: selectedItem),
-                                );
+                  },
+                  onTap: () {
+                    if (state.requestDetails?.usageDisable == true) return;
+                    final List<String> items = (state.mainUsages?.items ?? [])
+                        .map((e) => e.name ?? "")
+                        .toList();
+                    BottomSheetDialog.showDraggableSheet(
+                      context,
+                      // dialogKeyName: DialogName.licensesSubMunicapilityFilters,
+                      //  currentRouteName: RouteName.licenses,
+                      child: BottomSheetList(
+                        title: "الاستخدام الرئيسي".tr(),
+                        items: items,
+                        selectedValue: state.selectedMainUsage?.name,
+                        onTap: (item) {
+                          final selectedItem = (state.mainUsages?.items ?? [])
+                              .where((e) => e.name == item)
+                              .first;
+                          context.read<ComplianceBloc>().add(
+                                GetSubUsagesEvent(item: selectedItem),
+                              );
 
-                            Navigator.pop(context);
-                          },
-                        ),
-                      );
-                    },
-                  ),
-                  DropDownWithTitle(
-                    title: "الاستخدام الفرعي".tr(),
-                    selectedValue: state.selectedSubUsage?.name,
-                    status: state.subUsagesStatus,
-                    onRetry: () {
-                      context.read<ComplianceBloc>().add(
-                            const GetSubUsagesEvent(),
-                          );
-                    },
-                    onTap: () {
-                      final List<String> items = (state.subUsages?.items ?? [])
-                          .map((e) => e.name ?? "")
-                          .toList();
-                      BottomSheetDialog.showDraggableSheet(
-                        context,
-                        // dialogKeyName: DialogName.licensesSubMunicapilityFilters,
-                        //  currentRouteName: RouteName.licenses,
-                        child: BottomSheetList(
-                          title: "الاستخدام الفرعي".tr(),
-                          items: items,
-                          selectedValue: state.selectedSubUsage?.name,
-                          onTap: (item) {
-                            final selectedItem = (state.subUsages?.items ?? [])
-                                .where((e) => e.name == item)
-                                .first;
-                            context.read<ComplianceBloc>().add(
-                                  UpdateFieldsEvent(
-                                    selectedSubUsage: selectedItem,
-                                  ),
-                                );
-                            Navigator.pop(context);
-                          },
-                        ),
-                      );
-                    },
-                  ),
-                  SizedBox(
-                    height: 32,
-                  ),
-                  PreviousNextButtons()
-                ],
-              ),
+                          Navigator.pop(context);
+                        },
+                      ),
+                    );
+                  },
+                ),
+                DropDownWithTitle(
+                  title: "الاستخدام الفرعي".tr(),
+                  selectedValue: state.selectedSubUsage?.name,
+                  status: state.subUsagesStatus,
+                  onRetry: () {
+                    context.read<ComplianceBloc>().add(
+                          const GetSubUsagesEvent(),
+                        );
+                  },
+                  onTap: () {
+                    if (state.requestDetails?.usageDisable == true) return;
+
+                    final List<String> items = (state.subUsages?.items ?? [])
+                        .map((e) => e.name ?? "")
+                        .toList();
+                    BottomSheetDialog.showDraggableSheet(
+                      context,
+                      // dialogKeyName: DialogName.licensesSubMunicapilityFilters,
+                      //  currentRouteName: RouteName.licenses,
+                      child: BottomSheetList(
+                        title: "الاستخدام الفرعي".tr(),
+                        items: items,
+                        selectedValue: state.selectedSubUsage?.name,
+                        onTap: (item) {
+                          final selectedItem = (state.subUsages?.items ?? [])
+                              .where((e) => e.name == item)
+                              .first;
+                          context.read<ComplianceBloc>().add(
+                                UpdateFieldsEvent(
+                                  selectedSubUsage: selectedItem,
+                                ),
+                              );
+                          Navigator.pop(context);
+                        },
+                      ),
+                    );
+                  },
+                ),
+                SizedBox(
+                  height: 32,
+                ),
+                PreviousNextButtons()
+              ],
             ),
           ),
         );

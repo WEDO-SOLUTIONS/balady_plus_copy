@@ -19,6 +19,7 @@ import '../../data/models/compliance_certificate_items_request.dart';
 import '../../data/models/save_location_compliance_request.dart';
 import '../../domain/entities/comliance_request_details.dart';
 import '../../domain/entities/compliance_attachment_request.dart';
+import '../../domain/entities/ownership_doc_type_response.dart';
 import '../../domain/use_cases/apply_compliance.dart';
 import '../../domain/use_cases/get_compliance_details.dart';
 import '../../domain/use_cases/get_compliance_engoffices.dart';
@@ -38,6 +39,7 @@ import '../widgets/compliance_submission/first_submit_step_compliance.dart';
 import '../widgets/compliance_submission/fourth_step_compliance.dart';
 import '../widgets/compliance_submission/second_submit_step_compliance.dart';
 import '../widgets/compliance_submission/third_submit_step_compliance.dart';
+import '../widgets/compliance_submission/usage_submit_step_compliance.dart';
 
 class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
   PageController pageController = PageController(initialPage: 0);
@@ -45,6 +47,7 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
     FirstComplianceSubmissionWidget(),
     SecondSubmissonCompliance(),
     ThirdSubmissionCompliance(),
+    UsageSubmissionCompliance(),
     FourthStepCompliance(),
     FifthComplianceSubmitStep(),
   ];
@@ -308,13 +311,32 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
               isUploaded: false))
           .toList();
 
+      ComplinaceLookUpItem? selectedMainUsage = state.selectedMainUsage;
+      ComplinaceLookUpItem? selectedSubUsage = state.selectedSubUsage;
+
+      if (r.mainUsageCode != null && r.mainUsageName != null) {
+        selectedMainUsage =
+            ComplinaceLookUpItem(id: r.mainUsageCode, name: r.mainUsageName);
+      }
+      if (r.subUsageCode != null && r.subUsageName != null) {
+        selectedSubUsage =
+            ComplinaceLookUpItem(id: r.subUsageCode, name: r.subUsageName);
+      }
+
       emitter(state.copyWith(
           requestDetails: r,
           errorMessage: "",
+          selectedMainUsage: selectedMainUsage,
+          selectedSubUsage: selectedSubUsage,
           detailsStatus: BlocRequestStatus.submissionGetSuccess,
           attachments: attachmentData));
 
-      add(SaveLocationData());
+      int nextPage = state.currentStep + 1;
+      emitter(state.copyWith(status: BlocStatus.performing));
+      emitter(state.copyWith(
+          status: BlocStatus.success, currentStep: nextPage, errorMessage: ""));
+      await pageController.animateToPage(nextPage,
+          duration: Duration(milliseconds: 400), curve: Curves.easeIn);
     });
 
     // await _(ComplianceCertificateItemsRequest(requestId: state.requestId, ));
@@ -424,6 +446,8 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
         add(ApplyEvent());
       }
     } else if (state.currentStep == 3) {
+      add(SaveLocationData());
+    } else if (state.currentStep == 4) {
       add(SaveImtethalItemsEvent());
     } else {
       if (state.status == BlocStatus.performing) return;
