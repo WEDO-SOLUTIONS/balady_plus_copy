@@ -3,6 +3,7 @@ import 'package:balady_plus/app/core/utils/constants/constants.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/image_paths.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/buttons/custom_buttons_widgets.dart';
+import 'package:balady_plus/app/features/create_compliance/presentation/bloc/compliance_bloc.dart';
 import 'package:balady_plus/app/features/home_page/presentation/widgets/home_app_bar/circle_icon.dart';
 import 'package:balady_plus/app/features/vd/vd_exports.dart';
 import 'package:flutter/material.dart';
@@ -59,7 +60,7 @@ class ViolationAppBar extends StatelessWidget implements PreferredSizeWidget {
         Padding(
           padding: const EdgeInsetsDirectional.only(end: 10),
           child: InkWell(
-            onTap: () => context.read<CreateVDBloc>().cancelIncident(),
+            onTap: () => context.read<ComplianceBloc>().cancelIncident(),
             child: CircleIcon(
               icon: Icons.close,
               iconColor: AppColor.primary600Light,

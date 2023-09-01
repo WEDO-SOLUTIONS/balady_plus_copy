@@ -47,10 +47,13 @@ class DraggableSheetComponent extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  CustomTextWidget(
-                    title,
-                    textAlign: TextAlign.center,
-                    textStyle: AppStyle.createComplianceRiyadhTitle,
+                  Flexible(
+                    child: CustomTextWidget(
+                      title,
+                      maxLines: 10,
+                      textAlign: TextAlign.start,
+                      textStyle: AppStyle.createComplianceRiyadhTitle,
+                    ),
                   ),
                   InkWell(
                     onTap: context.popDialog,

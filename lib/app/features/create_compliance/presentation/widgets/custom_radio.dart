@@ -37,7 +37,7 @@ class CustomRadio1 extends StatelessWidget {
                   )),
               child: RadioListTile(
                 value: value ?? 0,
-                groupValue: state.radioSelect,
+                groupValue: state.benificiaryTypeSelection,
                 title: CustomTextWidget(
                   title,
                   textAlign: TextAlign.right,
@@ -52,10 +52,11 @@ class CustomRadio1 extends StatelessWidget {
                 onChanged: (val) {
                   context
                       .read<ComplianceBloc>()
-                      .add(RadioSelectEvent(val ?? 0));
+                      .add(UpdateFieldsEvent(benificiaryTypeSelection: val));
                 },
-                activeColor:
-                    state.radioSelect == value ? Color(0xff447F91) : null,
+                activeColor: state.benificiaryTypeSelection == value
+                    ? Color(0xff447F91)
+                    : null,
                 secondary: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [

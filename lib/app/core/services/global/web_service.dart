@@ -50,7 +50,7 @@ class WebService {
 
     dio.interceptors.add(PrettyDioLogger(
       requestHeader: false,
-      requestBody: false,
+      requestBody: true,
       responseBody: false,
     ));
     dio.interceptors.add(AppInterceptors());
@@ -150,6 +150,9 @@ class AppInterceptors extends Interceptor {
             if (err.response?.data['data']['responseCode'] == '2') {
               throw NoDataFoundException(err.requestOptions, err.response);
             }
+            throw BadRequestException(err.requestOptions, err.response);
+
+          case 202:
             throw BadRequestException(err.requestOptions, err.response);
           case 401:
             sl<EntryPointCubit>().autoLogout();

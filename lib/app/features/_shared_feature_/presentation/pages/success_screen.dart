@@ -81,6 +81,8 @@ class _SuccessScreenState extends State<SuccessScreen> {
 
   void sendSuccessEvent(PAGE_TYPE type) {
     switch (type) {
+      case PAGE_TYPE.emtethal:
+      break; 
       case PAGE_TYPE.appointmentScreen:
         CommonFunctions.sendEventToAnalytics(AppEvents.makeAppointmentSuccess);
         break;
@@ -262,6 +264,7 @@ class SuccessBody extends StatelessWidget {
       case PAGE_TYPE.dc:
       case PAGE_TYPE.vhr:
       case PAGE_TYPE.objction:
+      case PAGE_TYPE.emtethal:
         return "vd_request_submit".tr();
         return ('lbl_thank_you').tr();
       default:
@@ -336,6 +339,7 @@ class SuccessBody extends StatelessWidget {
       case PAGE_TYPE.newVD:
       case PAGE_TYPE.dc:
       case PAGE_TYPE.vhr:
+       case PAGE_TYPE.emtethal:
         return successScreenArgs?.thanksMessage ?? "";
 
       case PAGE_TYPE.other:
@@ -411,6 +415,7 @@ class SuccessButtons extends StatelessWidget {
       case PAGE_TYPE.objction:
       case PAGE_TYPE.licenseScreen:
       case PAGE_TYPE.deleteRequestScreen:
+      case PAGE_TYPE.emtethal:
         return ('go_to_home').tr();
       //   return Helpers.translatingWord('go_back_to_customer_voice_page');
       // case PAGE_TYPE.licenseScreen:
@@ -446,6 +451,7 @@ class SuccessButtons extends StatelessWidget {
       case PAGE_TYPE.visitScreen:
       case PAGE_TYPE.daem:
       case PAGE_TYPE.objction:
+      case PAGE_TYPE.emtethal:
       case PAGE_TYPE.licenseScreen:
       case PAGE_TYPE.deleteRequestScreen:
         {
@@ -513,6 +519,7 @@ class SuccessButtons extends StatelessWidget {
         return ('go_to_visit_list').tr();
 
       case PAGE_TYPE.objction:
+      case PAGE_TYPE.emtethal:
         return ('go_to_orders_page').tr();
 
       default:
@@ -575,6 +582,7 @@ class SuccessButtons extends StatelessWidget {
         break;
 
       case PAGE_TYPE.objction:
+      case PAGE_TYPE.emtethal:
         /*{
           NavigationService.goBack();
         }*/

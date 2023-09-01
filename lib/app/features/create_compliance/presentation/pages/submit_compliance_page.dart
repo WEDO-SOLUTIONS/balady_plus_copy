@@ -1,4 +1,5 @@
 import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
+import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/create_compliance/presentation/bloc/compliance_bloc.dart';
 import 'package:balady_plus/app/features/create_compliance/presentation/bloc/compliance_event.dart';
 import 'package:balady_plus/app/features/create_compliance/presentation/bloc/compliance_state.dart';
@@ -13,6 +14,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../core/utils/enums/bloc_status.dart';
+import '../../../_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
+
 class SubmitCompliancePage extends StatefulWidget {
   const SubmitCompliancePage({super.key});
 
@@ -21,66 +25,53 @@ class SubmitCompliancePage extends StatefulWidget {
 }
 
 class _SubmitCompliancePageState extends State<SubmitCompliancePage> {
-  PageController pageController = PageController(initialPage: 0);
   double currentStep = 1;
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => ComplianceBloc(),
-      child: BlocBuilder<ComplianceBloc, ComplianceState>(
-        builder: (context, state) {
-          return Scaffold(
-            backgroundColor: AppColor.scaffoldBackground,
-            appBar: ViolationAppBar(
-              backOnPress: () {},
-              stepCounter: 6,
-              currentStep: state.currentStep,
-            ),
-            body: Container(
-                padding: const EdgeInsets.all(8),
-                child: PageView(
-                  onPageChanged: (int index) {
-                    context
-                        .read<ComplianceBloc>()
-                        .add(ChangePageEvent(index.toDouble()));
-                  },
-                  controller: pageController,
-                  children: [
-                    FirstComplianceSubmissionWidget(
-                      onPressed: () {
-                        pageController.jumpToPage(1);
-                        context.read<ComplianceBloc>().add(ChangePageEvent(2));
-                      },
-                    ),
-                    SecondSubmissonCompliance(
-                      onPressed: () {
-                        pageController.jumpToPage(2);
-                        context.read<ComplianceBloc>().add(ChangePageEvent(3));
-                      },
-                    ),
-                    ThirdSubmissionCompliance(
-                      onPressed: () {
-                        pageController.jumpToPage(3);
-                        context.read<ComplianceBloc>().add(ChangePageEvent(4));
-                      },
-                    ),
-                    ComplianceLicensePage(
-                      onPressed: () {
-                        pageController.jumpToPage(4);
-                        context.read<ComplianceBloc>().add(ChangePageEvent(5));
-                      },
-                    ),
-                    FourthStepCompliance(
-                      onPressed: () {
-                        pageController.jumpToPage(5);
-                        context.read<ComplianceBloc>().add(ChangePageEvent(6));
-                      },
-                    ),
-                    FifthComplianceSubmitStep(),
-                  ],
-                )),
-          );
+      child: BlocListener<ComplianceBloc, ComplianceState>(
+        listener: (context, state) {
+          if (state.status == BlocStatus.failure)
+            CommonFunctions.showError(state.errorMessage ?? "");
         },
+        child: BlocBuilder<ComplianceBloc, ComplianceState>(
+          builder: (context, state) {
+            return Scaffold(
+                backgroundColor: AppColor.scaffoldBackground,
+                appBar: ViolationAppBar(
+                  stepCounter: context.read<ComplianceBloc>().pagesList.length,
+                  currentStep: state.currentStep + 1,
+                  backOnPress: () => context
+                      .read<ComplianceBloc>()
+                      .add(GoToPreviousPageEvent()),
+                ),
+                body: Container(
+                    padding: const EdgeInsets.all(8),
+                    child: Stack(
+                      children: [
+                        PageView.builder(
+                            itemCount:
+                                context.read<ComplianceBloc>().pagesList.length,
+                            scrollDirection: Axis.vertical,
+                            physics: NeverScrollableScrollPhysics(),
+                            controller:
+                                context.read<ComplianceBloc>().pageController,
+                            itemBuilder: (context, position) {
+                              return AnimatedContainer(
+                                curve: Curves.easeIn,
+                                duration: Duration(milliseconds: 300),
+                                child: context
+                                    .read<ComplianceBloc>()
+                                    .pagesList[position],
+                              );
+                            }),
+                        if (state.status == BlocStatus.loading)
+                          const CustomCircularLoadingWidget(),
+                      ],
+                    )));
+          },
+        ),
       ),
     );
   }

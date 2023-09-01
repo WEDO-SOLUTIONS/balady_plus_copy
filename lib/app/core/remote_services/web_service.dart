@@ -518,6 +518,71 @@ class WebService {
     return result;
   }
 
+  Future<Map<String, dynamic>> uploadFileSSO(String url,
+      {Uint8List? base64,
+      String? fileName,
+      String? mimeType,
+      dynamic body}) async {
+    var data = body != null ? json.encode(body) : null;
+
+    var requestUrl = baseURL + url;
+    ////print(requestUrl);
+    Map<String, dynamic> result = {};
+    print("start uploading");
+    try {
+      var request = http.MultipartRequest(
+        'POST',
+        Uri.parse(requestUrl),
+      );
+
+      request.headers['fileContentType'] = mimeType ?? "";
+      request.headers['authorization'] = 'Bearer ${CommonProperties.token}';
+
+      request.headers['x-channel-id'] = "MOBILE";
+
+      http.MultipartFile file = http.MultipartFile.fromBytes(
+        'file',
+        base64!.toList(),
+        filename: fileName,
+      );
+
+      request.files.add(file);
+
+      var response = await request.send();
+      final respStr = await response.stream.bytesToString();
+      if (response.statusCode == HttpStatus.ok) {
+        result.putIfAbsent("state", () => true);
+        result.putIfAbsent("data", () => respStr);
+      } else {
+        result.putIfAbsent("state", () => false);
+        result.putIfAbsent("data", () => respStr);
+        result.putIfAbsent("error", () => ('errors_server_error_1').tr());
+
+        try {
+          Helpers.sendLog(
+              url: baseURL + url,
+              data: respStr,
+              body: data,
+              statusCode: response.statusCode);
+        } catch (ex) {}
+      }
+    } catch (ex) {
+      result.putIfAbsent("state", () => false);
+      result.putIfAbsent("error", () => ('errors_server_error_2').tr());
+      var connectivityResult = await (Connectivity().checkConnectivity());
+      if (connectivityResult == ConnectivityResult.none) {
+        result["error"] = ('errors_internet_error_1').tr();
+      }
+
+      try {
+        Helpers.sendLog(
+            url: baseURL + url, data: ex.toString(), body: data, statusCode: 0);
+      } catch (ex) {}
+    }
+
+    return result;
+  }
+
   Future<Map<String, dynamic>> getPegaRequest(String url,
       {String? relativePath,
       Map<String, dynamic>? queryParams,

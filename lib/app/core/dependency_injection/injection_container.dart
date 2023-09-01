@@ -61,6 +61,7 @@ import '../services/services_exports.dart'
         NetworkConnectionImplementation,
         WebService;
 import '../utils/enums/bottom_nav_bar.dart';
+import 'features/compliance_injection.dart';
 import 'features/dc_injection.dart';
 import 'features/objectable_transactions_injection.dart';
 import 'features/objections_injection.dart';
@@ -118,6 +119,9 @@ void initialize() {
   CRMRequestsInjection.init();
 //? Cr
   CrInjection.init();
+
+  //?
+  ComplianceInjection.init();
 
   //! Core
   sl.registerLazySingleton(() => WebService(dio: sl()));

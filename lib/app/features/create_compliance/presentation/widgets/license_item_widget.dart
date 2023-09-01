@@ -4,7 +4,21 @@ import 'package:flutter/material.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 class ComplianceLicenseItemWidget extends StatelessWidget {
-  const ComplianceLicenseItemWidget({super.key});
+  final String? licenseNo;
+  final String? licenseType;
+  final String? municipality;
+  final String? status;
+  final String? dueDate;
+  final String? expiryDate;
+  const ComplianceLicenseItemWidget({
+    super.key,
+    this.dueDate,
+    this.licenseNo,
+    this.licenseType,
+    this.municipality,
+    this.expiryDate,
+    this.status,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +44,7 @@ class ComplianceLicenseItemWidget extends StatelessWidget {
                       height: 4,
                     ),
                     CustomTextWidget(
-                      'license_1'.tr(),
+                      licenseNo ?? "",
                       textStyle: AppStyle.complianceSubtitleLicenseStyle,
                     ),
                   ],
@@ -49,7 +63,7 @@ class ComplianceLicenseItemWidget extends StatelessWidget {
                       height: 4,
                     ),
                     CustomTextWidget(
-                      '5/1/2021'.tr(),
+                      licenseType ?? "",
                       textStyle: AppStyle.complianceSubtitleLicenseStyle,
                     ),
                   ],
@@ -61,14 +75,14 @@ class ComplianceLicenseItemWidget extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     CustomTextWidget(
-                      'due_license'.tr(),
+                      'userLicensesLicenseDetailsMunicipalWord'.tr(),
                       textStyle: AppStyle.complianceTitleLabelLicenseStyle,
                     ),
                     const SizedBox(
                       height: 4,
                     ),
                     CustomTextWidget(
-                      '5/1/2021'.tr(),
+                      municipality ?? "",
                       textStyle: AppStyle.complianceSubtitleLicenseStyle,
                     ),
                   ],
@@ -89,7 +103,7 @@ class ComplianceLicenseItemWidget extends StatelessWidget {
                       height: 4,
                     ),
                     CustomTextWidget(
-                      'west_dammam'.tr(),
+                      status ?? "",
                       textStyle: AppStyle.complianceSubtitleLicenseStyle,
                     ),
                   ],
@@ -101,14 +115,14 @@ class ComplianceLicenseItemWidget extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     CustomTextWidget(
-                      'userLicensesLicenseDetailsMunicipalWord'.tr(),
+                      'تاريخ الاصدار'.tr(),
                       textStyle: AppStyle.complianceTitleLabelLicenseStyle,
                     ),
                     const SizedBox(
                       height: 4,
                     ),
                     CustomTextWidget(
-                      '5/1/2021'.tr(),
+                      dueDate ?? "",
                       textStyle: AppStyle.complianceSubtitleLicenseStyle,
                     ),
                   ],
@@ -120,14 +134,14 @@ class ComplianceLicenseItemWidget extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     CustomTextWidget(
-                      'expiry_date'.tr(),
+                      'تاريخ الانتهاء'.tr(),
                       textStyle: AppStyle.complianceTitleLabelLicenseStyle,
                     ),
                     const SizedBox(
                       height: 4,
                     ),
                     CustomTextWidget(
-                      '5/1/2021'.tr(),
+                      expiryDate ?? "",
                       textStyle: AppStyle.complianceSubtitleLicenseStyle,
                     ),
                   ],

@@ -44,7 +44,8 @@ enum PAGE_TYPE {
   newVD,
   objction,
   dc,
-  vhr, 
+  vhr,
+  emtethal,
   other
 }
 

@@ -2,6 +2,7 @@ import 'package:balady_plus/app/features/_shared_feature_/presentation/buttons/e
 import 'package:balady_plus/app/features/create_compliance/presentation/bloc/compliance_bloc.dart';
 import 'package:balady_plus/app/features/create_compliance/presentation/bloc/compliance_state.dart';
 import 'package:balady_plus/app/features/create_compliance/presentation/widgets/compliance_first_radio.dart';
+import 'package:balady_plus/app/features/create_compliance/presentation/widgets/compliance_submission/previous_next_buttons.dart';
 import 'package:balady_plus/app/features/create_compliance/presentation/widgets/compliance_title_widget.dart';
 import 'package:balady_plus/app/features/create_compliance/presentation/widgets/custom_radio.dart';
 import 'package:flutter/widgets.dart';
@@ -11,9 +12,7 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 class FirstComplianceSubmissionWidget extends StatelessWidget {
   const FirstComplianceSubmissionWidget({
     super.key,
-    required this.onPressed,
   });
-  final VoidCallback onPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -48,9 +47,10 @@ class FirstComplianceSubmissionWidget extends StatelessWidget {
               const Expanded(
                 child: SizedBox(),
               ),
-              ElevatedButtonWidget.next(
-                onPressed: onPressed,
+              SizedBox(
+                height: 32,
               ),
+              PreviousNextButtons()
             ],
           ),
         );

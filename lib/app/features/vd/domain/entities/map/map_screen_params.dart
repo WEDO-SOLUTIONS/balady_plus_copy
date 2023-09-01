@@ -1,8 +1,15 @@
 import 'package:balady_plus/app/features/vd/vd_exports.dart';
 
+import '../../../../create_compliance/domain/entities/compliance_gis_resopnse.dart';
+
 class MapScreenParams {
   GISParams? gisParams;
+  ComplainceGISResponse? complianceGIS;
   GISResponse? gisResponse;
   GISParams? currentUserLocation;
-  MapScreenParams({this.gisResponse, this.gisParams, this.currentUserLocation});
+  MapScreenParams(
+      {this.gisResponse,
+      this.complianceGIS,
+      this.gisParams,
+      this.currentUserLocation});
 }

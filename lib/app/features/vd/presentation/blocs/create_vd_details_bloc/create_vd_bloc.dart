@@ -695,7 +695,6 @@ class CreateVDBloc extends Bloc<CreateVDEvent, CreateVDState> {
                 gisResponse: state.gisResponse,
                 currentUserLocation: currentLocation))
         .then((value) {
-      //print(value);
       if (value != null) {
         MapScreenParams? params = value as MapScreenParams;
         emitter(state.copyWith(

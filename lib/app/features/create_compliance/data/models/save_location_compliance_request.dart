@@ -8,9 +8,9 @@ class SaveLocationComplianceRequest extends Equatable {
   final int? subUsageCode;
   final String? municipalityId;
   final String? subMunicipalityId;
-  final int? districtId;
-  final int? cityId;
-  final int? streetId;
+  final String? districtId;
+  final String? cityId;
+  final String? streetId;
   final String? streetName;
   final String? mapNumber;
   final String? mapName;
@@ -19,24 +19,27 @@ class SaveLocationComplianceRequest extends Equatable {
   final String? landNumber;
   final String? landArea;
   final String? guid;
+  final int? requsestId;
+  final bool? isLicense;
 
-  const SaveLocationComplianceRequest({
-    this.mainUsageCode,
-    this.subUsageCode,
-    this.municipalityId,
-    this.subMunicipalityId,
-    this.districtId,
-    this.cityId,
-    this.streetId,
-    this.streetName,
-    this.mapNumber,
-    this.mapName,
-    this.x,
-    this.y,
-    this.landNumber,
-    this.landArea,
-    this.guid,
-  });
+  const SaveLocationComplianceRequest(
+      {this.mainUsageCode,
+      this.subUsageCode,
+      this.municipalityId,
+      this.subMunicipalityId,
+      this.districtId,
+      this.cityId,
+      this.streetId,
+      this.streetName,
+      this.mapNumber,
+      this.mapName,
+      this.x,
+      this.y,
+      this.landNumber,
+      this.landArea,
+      this.guid,
+      this.requsestId,
+      this.isLicense});
 
   @override
   List<Object?> get props => [
@@ -54,26 +57,31 @@ class SaveLocationComplianceRequest extends Equatable {
         y,
         landNumber,
         landArea,
-        guid
+        guid,
+        requsestId,
+        isLicense
       ];
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'mainUsageCode': mainUsageCode,
       'subUsageCode': subUsageCode,
-      'municipalityId': municipalityId,
-      'subMunicipalityId': subMunicipalityId,
-      'districtId': districtId,
-      'cityId': cityId,
-      'streetId': streetId,
-      'streetName': streetName,
-      'mapNumber': mapNumber,
-      'mapName': mapName,
-      'x': x,
-      'y': y,
-      'landNumber': landNumber,
-      'landArea': landArea,
-      'guid': guid,
+      if (isLicense != true)
+        "geoInfoDto": {
+          'municipalityId': municipalityId,
+          'subMunicipalityId': subMunicipalityId,
+          'districtId': districtId,
+          'cityId': cityId,
+          'streetId': streetId,
+          'streetName': streetName,
+          'mapNumber': mapNumber,
+          'mapName': mapName,
+          'x': x,
+          'y': y,
+          'landNumber': landNumber,
+          'landArea': landArea,
+          'guid': guid ?? "",
+        }
     };
   }
 }

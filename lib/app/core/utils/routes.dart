@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/features/create_compliance/presentation/pages/create_compliance_location_confirm_page.dart';
 import 'package:balady_plus/app/features/daem/daem_exports.dart';
 import 'package:balady_plus/app/features/commercial_license/commercial_license_exports.dart';
 import 'package:balady_plus/app/features/athkar/presentation/pages/athkar_entity_content.dart';
@@ -39,6 +40,7 @@ import '../../core/utils/utils_exports.dart'
         ScaleRotatePage,
         SliderUpPage;
 import '../../features/_shared_feature_/presentation/pages/qiblah_webview_page.dart';
+import '../../features/create_compliance/presentation/pages/map_page/complinace_map_page.dart';
 import '../../features/map_page/data/model/rental_details_response.dart';
 import '../../features/qa/presentation/pages/qa_page.dart';
 import '../../features/unknow/pages/investment_page.dart';
@@ -327,7 +329,9 @@ class Routes {
 
         RouteName.quranSearchPage: (context) => QuranSearchPage(),
 
-        RouteName.ZmZmPointsPage: (context) => ZmZmPointsPage(),
+        RouteName.ZmZmPointsPage: (context) => CreateComplianceLocationPage(),
+        RouteName.createCompliancePage: (context) =>
+            CreateComplianceLocationPage(),
 
         RouteName.inappWebview: (context) => InAppWebViewPage(),
 
@@ -467,6 +471,8 @@ class Routes {
 
         RouteName.athkarEntityContentPage: (context) =>
             const AthkarEntityContent(),
+
+        RouteName.complinaceMapView: (context) => ComplinaceMapScreen(),
 
 //    cubit = ModalRoute.of(context)!.settings.arguments as PrayerTimesCubit;
       };

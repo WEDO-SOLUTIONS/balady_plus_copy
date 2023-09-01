@@ -1,3 +1,5 @@
+import '../../common_functions.dart';
+
 class ApiUrl {
   static const apiV1 = 'v1/';
 
@@ -266,6 +268,38 @@ class ApiUrl {
 
   static const String saveLocationCompliance =
       '/v1/compliance-certificate-mobile-services/save-location-info/';
+
+  static const String saveContractCompliance =
+      '/v1/compliance-certificate-mobile-services/save-contract-info/';
+
+  static const String saveComplianceCertificateItems =
+      '/v1/compliance-certificate-mobile-services/save-compliance-certificate-items/';
+
+  static const String submitComplianceRequest =
+      '/v1/compliance-certificate-mobile-services/submit-request/';
+
+  static const String complicanecOwnershioDocType =
+      '/v1/compliance-certificate-mobile-services/ownership-doc-type';
+
+  static String complianceMyLicenses =
+      '/v1/compliance-certificate-mobile-services/my-licenses/${CommonProperties.userInfo?.idNo}/HIMSELF';
+
+  static const String complianceMainUsage =
+      '/v1/compliance-certificate-mobile-services/lookup/main-usage';
+
+  static String complianceSubUsage(int mainId) =>
+      '/v1/compliance-certificate-mobile-services/lookup/sub-buliding/$mainId';
+
+  static const String complianceEngOffices =
+      '/v1/compliance-certificate-mobile-services/eng-offices';
+
+  static String complinaceEngOfficesDetails(String id) =>
+      '/v1/compliance-certificate-mobile-services/eng-offices/$id';
+
+  static const String complianceGIS =
+      '/v1/gis-services/compliance-certificates/point-data';
+  static String complianceAttachment(String requestId, String fileTypeId) =>
+      '/v1/compliance-certificate-mobile-services/${requestId}/upload-attahchment/${fileTypeId}';
 
   //! POST
 

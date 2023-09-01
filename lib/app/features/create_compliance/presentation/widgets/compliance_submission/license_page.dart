@@ -38,20 +38,7 @@ class ComplianceLicensePage extends StatelessWidget {
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                SingleRatioOption(
-                  value: 1,
-                  width: MediaQuery.of(context).size.width * 0.4,
-                  title: 'document_1'.tr(),
-                  titleStyle: AppStyle.createComplianceRiyadhRadioStyle,
-                ),
-                SingleRatioOption(
-                  value: 2,
-                  width: MediaQuery.of(context).size.width * 0.4,
-                  title: 'document_2'.tr(),
-                  titleStyle: AppStyle.createComplianceRiyadhRadioStyle,
-                ),
-              ],
+              children: [],
             ),
             const SizedBox(
               height: 16,
@@ -83,7 +70,6 @@ class ComplianceLicensePage extends StatelessWidget {
             const SizedBox(
               height: 10,
             ),
-            ComplianceLicenseItemWidget(),
             ElevatedButtonWidget.next(
               onPressed: onPressed,
             )

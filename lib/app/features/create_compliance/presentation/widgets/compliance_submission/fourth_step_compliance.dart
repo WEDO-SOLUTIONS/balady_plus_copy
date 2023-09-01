@@ -1,48 +1,61 @@
 import 'package:balady_plus/app/features/_shared_feature_/presentation/buttons/elevated_button_widgets.dart';
+import 'package:balady_plus/app/features/create_compliance/presentation/bloc/compliance_bloc.dart';
+import 'package:balady_plus/app/features/create_compliance/presentation/bloc/compliance_event.dart';
+import 'package:balady_plus/app/features/create_compliance/presentation/bloc/compliance_state.dart';
 import 'package:balady_plus/app/features/create_compliance/presentation/widgets/compliance_image_widget.dart';
+import 'package:balady_plus/app/features/create_compliance/presentation/widgets/compliance_submission/previous_next_buttons.dart';
 import 'package:balady_plus/app/features/create_compliance/presentation/widgets/compliance_title_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
+import '../../../domain/entities/comliance_request_details.dart';
+
 class FourthStepCompliance extends StatelessWidget {
-  const FourthStepCompliance({
+  FourthStepCompliance({
     super.key,
-    required this.onPressed,
   });
-  final VoidCallback onPressed;
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            ComplianceSubmitTitle(
-              title: 'compliance_clauses_title'.tr(),
-              subtitle: 'compliance_clauses_subtitle'.tr(),
+    return BlocBuilder<ComplianceBloc, ComplianceState>(
+      builder: (context, state) {
+        print("BUIKL");
+        return SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              children: [
+                ComplianceSubmitTitle(
+                  title: 'compliance_clauses_title'.tr(),
+                  subtitle: 'compliance_clauses_subtitle'.tr(),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                ListView.builder(
+                  shrinkWrap: true,
+                  physics: NeverScrollableScrollPhysics(),
+                  itemCount: state.requestDetails?.emtithalItems?.length ?? 0,
+                  itemBuilder: (ctx, index) {
+                    return ComplianceImageWidget(
+                      item: state.requestDetails?.emtithalItems?[index],
+                      onChange: (EmtithalItem val) {
+                        context.read<ComplianceBloc>().add(
+                            ChangeImtethalItemEvent(index: index, item: val));
+                      },
+                    );
+                  },
+                ),
+                SizedBox(
+                  height: 32,
+                ),
+                PreviousNextButtons()
+              ],
             ),
-            SizedBox(
-              height: 10,
-            ),
-            ComplianceImageWidget(),
-            SizedBox(
-              height: 10,
-            ),
-            ComplianceImageWidget(),
-            SizedBox(
-              height: 10,
-            ),
-            ComplianceImageWidget(),
-            SizedBox(
-              height: 10,
-            ),
-            ElevatedButtonWidget.next(
-              onPressed: onPressed,
-            ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 }

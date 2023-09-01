@@ -293,7 +293,7 @@ class EmtithalItem {
   final int? itemId;
   final String? momItemId;
   final String? itemDesc;
-  final bool? submitterAnswer;
+  bool? submitterAnswer;
   final dynamic empAnswer;
 
   EmtithalItem({

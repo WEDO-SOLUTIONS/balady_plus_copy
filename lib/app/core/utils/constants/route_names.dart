@@ -154,6 +154,7 @@ class RouteName {
 
   // -------  Create Compliance ---------
   static const createCompliancePage = '/createCompliance';
+  static const complinaceMapView = '/complinaceMapView';
 }
 
 class EtmamRoutesNames {
