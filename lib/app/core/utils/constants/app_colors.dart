@@ -163,6 +163,8 @@ class AppColor {
 
   static const maastrichtBlue = Color(0xFF0E1C2F);
   static const indigo = Color(0xFF264269);
+  static const blackOpacity = Color(0x80000000);
+  static const greenOpacity = Color(0xE5145E75);
 
   static const Color grayOpacity = Color.fromRGBO(255, 255, 255, 0.42);
 

@@ -113,4 +113,14 @@ class ImagePath {
   static const violationImage = '${_imagePath}violation_image$_png';
   static const complianceFirstImage = '${_imagePath}compliance1$_png';
   static const complianceSecondImage = '${_imagePath}compliance2$_png';
+  static const eventsImage1 = '${_imagePath}events1$_png';
+  static const eventsImage2 = '${_imagePath}events2$_png';
+  static const eventsImage3 = '${_imagePath}events3$_png';
+  static const eventsImage4 = '${_imagePath}events4$_png';
+  static const candle = '${_imagePath}candle$_png';
+  static const elephantStone = '${_imagePath}elephant$_png';
+  static const swiperImage = '${_imagePath}image_swiper1$_png';
+  static const swiperImage2 = '${_imagePath}imageSwipe2$_png';
+  static const dariyahImage = '${_imagePath}dariyah$_png';
+  static const eventsMap = '${_imagePath}eventsMap$_png';
 }

@@ -7,9 +7,7 @@ import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/t
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import 'package:balady_plus/app/features/create_compliance/presentation/widgets/compliance_submission/previous_next_buttons.dart';
 import 'package:balady_plus/app/features/create_compliance/presentation/widgets/compliance_title_widget.dart';
-import 'package:balady_plus/app/features/create_compliance/presentation/widgets/custom_radio.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../../etmam_app/features/otp/domain/entities/otp_page_params.dart';

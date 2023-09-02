@@ -20,7 +20,7 @@ class ComplianceSubmitTitle extends StatelessWidget {
           title,
           textStyle: AppStyle.complianceTitleStyle,
         ),
-        SizedBox(
+        const SizedBox(
           height: 7,
         ),
         CustomTextWidget(

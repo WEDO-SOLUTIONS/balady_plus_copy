@@ -155,6 +155,12 @@ class RouteName {
   // -------  Create Compliance ---------
   static const createCompliancePage = '/createCompliance';
   static const complinaceMapView = '/complinaceMapView';
+
+  // -------  Events ---------
+  static const eventsMainPage = '/eventsMainPage';
+
+  // Self Rating
+  static const selfRatingMainPage = '/selfRatingMainPage';
 }
 
 class EtmamRoutesNames {

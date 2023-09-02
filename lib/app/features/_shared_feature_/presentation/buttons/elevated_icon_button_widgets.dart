@@ -49,4 +49,18 @@ class ElevatedIconButtonWidget extends _ElevatedIconButton {
               const CustomSvgIconWidget(IconPath.receiveSquare, iconSize: 14.0),
           onPressed: onPressed,
         ));
+
+  ElevatedIconButtonWidget.export({required VoidCallback onPressed})
+      : super(CustomElevatedIconButtonWidget(
+          text: "event_button_text".tr(),
+          btnColor: AppColor.primary800Light,
+          btnBorderColor: AppColor.primary800Light,
+          textStyle: AppStyle.elevatedButtonStyle.copyWith(
+            color: AppColor.white,
+            fontWeight: FontWeight.w700,
+            fontSize: 16,
+          ),
+          icon: const CustomSvgIconWidget(IconPath.exportW, iconSize: 18.0),
+          onPressed: onPressed,
+        ));
 }

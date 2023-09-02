@@ -28,7 +28,7 @@ class CustomRadio1 extends StatelessWidget {
         return Column(
           children: [
             Container(
-              padding: EdgeInsets.all(8),
+              padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
                   borderRadius:
                       BorderRadius.circular(8), //Rev: should be 8 not 5
@@ -61,7 +61,7 @@ class CustomRadio1 extends StatelessWidget {
                 secondary: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(
+                    const SizedBox(
                       height: 5,
                     ),
                     CustomTextWidget(
