@@ -43,6 +43,7 @@ import '../../features/_shared_feature_/presentation/pages/qiblah_webview_page.d
 import '../../features/create_compliance/presentation/pages/map_page/complinace_map_page.dart';
 import '../../features/map_page/data/model/rental_details_response.dart';
 import '../../features/qa/presentation/pages/qa_page.dart';
+import '../../features/self_ratiing/presentation/pages/self_rating_main_page.dart';
 import '../../features/unknow/pages/investment_page.dart';
 import '../../features/unknow/pages/temp_rental_page.dart';
 import '../../features/_shared_feature_/presentation/pages/view_dms_image_screen.dart';
@@ -329,7 +330,7 @@ class Routes {
 
         RouteName.quranSearchPage: (context) => QuranSearchPage(),
 
-        RouteName.ZmZmPointsPage: (context) => CreateComplianceLocationPage(),
+        RouteName.ZmZmPointsPage: (context) => ZmZmPointsPage(),
         RouteName.createCompliancePage: (context) =>
             CreateComplianceLocationPage(),
 
@@ -473,6 +474,7 @@ class Routes {
             const AthkarEntityContent(),
 
         RouteName.complinaceMapView: (context) => ComplinaceMapScreen(),
+        RouteName.selfRatingMainPage: (context) => SelfRatingMainPage(),
 
 //    cubit = ModalRoute.of(context)!.settings.arguments as PrayerTimesCubit;
       };
