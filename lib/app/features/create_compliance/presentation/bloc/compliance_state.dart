@@ -49,6 +49,7 @@ class ComplianceState extends Equatable {
   final List<AttachmentData>? attachments;
   final ApplyCreateComplianceRequest? applyRequest;
   final String? contactMobileNumber;
+  final bool? agreement;
 
   PhoneNumberValidation get phoneValidator => contactMobileNumber == null
       ? PhoneNumberValidation.pure()
@@ -66,6 +67,7 @@ class ComplianceState extends Equatable {
     this.ownerShipsStatus = BlocRequestStatus.initial,
     this.licenseStatus = BlocRequestStatus.initial,
     this.licenes,
+    this.agreement,
     this.contactMobileNumber,
     this.applyRequest,
     this.benificiaryTypeSelection,
@@ -93,6 +95,7 @@ class ComplianceState extends Equatable {
       final int? benificiaryTypeSelection,
       final int? documentTypeSelection,
       final int? requestId,
+      final bool? agreement,
       final ComplianceRequestDetails? requestDetails,
       final ComplinaceLookUpResponse? mainUsages,
       final ComplinaceLookUpResponse? subUsages,
@@ -120,6 +123,7 @@ class ComplianceState extends Equatable {
         status: status ?? this.status,
         contactMobileNumber: contactMobileNumber ?? this.contactMobileNumber,
         currentStep: currentStep ?? this.currentStep,
+        agreement: agreement ?? this.agreement,
         benificiaryTypeSelection:
             benificiaryTypeSelection ?? this.benificiaryTypeSelection,
         documentTypeSelection:
@@ -196,6 +200,8 @@ class ComplianceState extends Equatable {
         });
       }
       return isValid;
+    } else if (currentStep == 6) {
+      return agreement ?? false;
     }
     return true;
   }
@@ -247,6 +253,7 @@ class ComplianceState extends Equatable {
         applyRequest,
         documentTypeSelection,
         contactMobileNumber,
-        benificiaryTypeSelection
+        benificiaryTypeSelection,
+        agreement
       ];
 }

@@ -122,3 +122,9 @@ class GetComplianceGISEvent extends ComplianceEvent {
   final GISParams params;
   const GetComplianceGISEvent({required this.params});
 }
+
+
+class ChangeAgreementEvent extends ComplianceEvent {
+  final bool? isagree;
+  ChangeAgreementEvent({this.isagree});
+}

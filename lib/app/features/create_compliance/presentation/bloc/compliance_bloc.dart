@@ -34,6 +34,7 @@ import '../../domain/use_cases/save_compliance_certificate_items.dart';
 import '../../domain/use_cases/save_compliance_contract.dart';
 import '../../domain/use_cases/save_compliance_location.dart';
 import '../../domain/use_cases/submit_compliance_request.dart';
+import '../widgets/compliance_submission/create_compliance_summery.dart';
 import '../widgets/compliance_submission/fifth_submit_step.dart';
 import '../widgets/compliance_submission/first_submit_step_compliance.dart';
 import '../widgets/compliance_submission/fourth_step_compliance.dart';
@@ -50,6 +51,7 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
     UsageSubmissionCompliance(),
     FourthStepCompliance(),
     FifthComplianceSubmitStep(),
+    CreateComplianceSummurySection()
   ];
 
   final ApplyCompliance _applyCompliance;
@@ -112,6 +114,7 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
     on<GetComplianceGISEvent>(_getGISInfo);
     on<SaveLocationData>(_saveLocationData);
     on<DeleteFileEvent>(_deleteFile);
+    on<ChangeAgreementEvent>(_changeAgreementHandler);
     add(const GetMainUsagesEvent());
     add(const GetOwnerShipTypesEvent());
     add(GetLicensesEvent());
@@ -561,5 +564,12 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
 
   hideKeyboard() {
     FocusManager.instance.primaryFocus?.unfocus();
+  }
+
+  Future<void> _changeAgreementHandler(
+      ChangeAgreementEvent e, Emitter emitter) async {
+    hideKeyboard();
+    print(e.isagree);
+    emitter(state.copyWith(agreement: e.isagree, errorMessage: ""));
   }
 }

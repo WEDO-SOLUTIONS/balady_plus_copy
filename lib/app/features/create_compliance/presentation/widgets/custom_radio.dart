@@ -30,9 +30,10 @@ class CustomRadio1 extends StatelessWidget {
             Container(
               padding: EdgeInsets.all(8),
               decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(5),
+                  borderRadius:
+                      BorderRadius.circular(8), //Rev: should be 8 not 5
                   border: Border.all(
-                    width: 1.5,
+                    width: 1, //Rev: should be 1 not 1.5
                     color: AppColor.blueSkyLight800,
                   )),
               child: RadioListTile(
