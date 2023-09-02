@@ -44,7 +44,7 @@ class ThirdSubmissionCompliance extends StatelessWidget {
               children: [
                 ComplianceSubmitTitle(
                   title: 'submission_document'.tr(),
-                  subtitle: 'submission_document_subtitle'.tr(),
+                  subtitle: "",
                 ),
                 const SizedBox(
                   height: 10,
@@ -186,7 +186,7 @@ class ThirdSubmissionCompliance extends StatelessWidget {
                     },
                   ),
                   DropDownWithTitle(
-                    title: "نوع وثيقة الملكية".tr(),
+                    title: "compliance_ownership_type".tr(),
                     selectedValue: state.selectedOwnerShip?.name,
                     status: state.ownerShipsStatus,
                     onRetry: () {
@@ -204,7 +204,7 @@ class ThirdSubmissionCompliance extends StatelessWidget {
                         // dialogKeyName: DialogName.licensesSubMunicapilityFilters,
                         //  currentRouteName: RouteName.licenses,
                         child: BottomSheetList(
-                          title: "نوع وثيقة الملكية".tr(),
+                          title: "compliance_ownership_type".tr(),
                           items: items,
                           selectedValue: state.selectedOwnerShip?.name,
                           onTap: (item) {
@@ -226,7 +226,7 @@ class ThirdSubmissionCompliance extends StatelessWidget {
                   ComplianceOwnerShipField(),
                   CustomVerticalSpace(height: 12),
                   ComplianceDatePicker(
-                    title: "تاريخ الوثيقة".tr(),
+                    title: "compliance_ownership_date".tr(),
                     initialDateForm: DateForm.gregorian,
                     onChange: (DateTime time, DateForm form) {
                       context.read<ComplianceBloc>().add(UpdateFieldsEvent(

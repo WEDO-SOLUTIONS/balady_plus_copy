@@ -61,7 +61,8 @@ class CustomRadioButtonWidget extends StatelessWidget {
               // Radio
               _RadioWidget(
                 radius: radioRadius,
-                radioColor: radioColor ?? AppColor.white,
+                radioColor: radioColor ??
+                    (isSelected ? AppColor.white : Colors.transparent),
                 fillColor: _fillColor,
                 borderColor: _borderColor,
                 radioValue: radioValue,
@@ -87,9 +88,9 @@ class CustomRadioButtonWidget extends StatelessWidget {
   bool get isSelected => selected || radioGroupValue == radioValue;
 
   Color get _fillColor =>
-      isSelected ? radioColor ?? AppColor.blue : Colors.transparent;
+      isSelected ? radioColor ?? AppColor.primary900Light : Colors.transparent;
   Color get _borderColor =>
-      isSelected ? fillColor ?? Colors.transparent : AppColor.gray;
+      isSelected ? fillColor ?? Colors.transparent : AppColor.primary900Light;
 }
 
 class _RadioWidget extends StatelessWidget {

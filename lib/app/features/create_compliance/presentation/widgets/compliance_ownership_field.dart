@@ -15,8 +15,8 @@ class ComplianceOwnerShipField extends StatelessWidget {
     return BlocBuilder<ComplianceBloc, ComplianceState>(
       builder: (context, state) {
         return CustomTextFieldWithValueWidget(
-          label: "رقم الوثيقة".tr(),
-          hintText: "رقم الوثيقة".tr(),
+          label: "compliance_ownership_text".tr(),
+          hintText: "compliance_ownership_text".tr(),
           value: state.ownershipText,
           keyboardType: TextInputType.text,
           inputFormatters: [],

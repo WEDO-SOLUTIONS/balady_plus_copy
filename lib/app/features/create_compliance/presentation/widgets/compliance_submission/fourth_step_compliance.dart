@@ -28,7 +28,7 @@ class FourthStepCompliance extends StatelessWidget {
               children: [
                 ComplianceSubmitTitle(
                   title: 'compliance_clauses_title'.tr(),
-                  subtitle: 'compliance_clauses_subtitle'.tr(),
+                  subtitle: "",
                 ),
                 SizedBox(
                   height: 10,

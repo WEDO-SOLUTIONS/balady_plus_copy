@@ -61,7 +61,7 @@ class _BottomSheetWithActionsState extends State<BottomSheetWithActions> {
             const DrawLineWidget(
               lineWidth: 70.0,
               lineHeight: 6.0,
-              lineColor: AppColor.gray,
+              lineColor: AppColor.blackModern200Light,
               radius: 46.0,
             ),
             Row(

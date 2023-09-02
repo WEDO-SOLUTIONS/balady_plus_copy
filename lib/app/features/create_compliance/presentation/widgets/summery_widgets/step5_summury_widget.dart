@@ -19,7 +19,7 @@ class Step5SummeryWidget extends StatelessWidget {
     return BlocBuilder<ComplianceBloc, ComplianceState>(
       builder: (context, state) {
         return CustomExpansionPanelWidget(
-          title: ("بنود الامتثال").tr(),
+          title: ("compliance_clauses_title").tr(),
           leading: SvgPicture.asset(IconPath.vdSummuryDesc),
           children: [
             ListView.builder(

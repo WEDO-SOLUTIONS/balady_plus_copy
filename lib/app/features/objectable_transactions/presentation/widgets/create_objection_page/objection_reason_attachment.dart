@@ -11,12 +11,14 @@ class ObjectionReasonAttachment extends StatelessWidget {
   final Function onDelete;
   final String fileName;
   final String filePath;
+  final bool showDelete;
 
   const ObjectionReasonAttachment(
       {super.key,
       required this.fileName,
       required this.filePath,
-      required this.onDelete});
+      required this.onDelete,
+      this.showDelete = true});
 
   @override
   Widget build(BuildContext context) {
@@ -51,15 +53,16 @@ class ObjectionReasonAttachment extends StatelessWidget {
             ],
           ),
         ),
-        InkWell(
-          onTap: () => onDelete(),
-          child: CircleIcon(
-            icon: Icons.close,
-            iconColor: AppColor.primary600Light,
-            backgroundColor: AppColor.geyser.withOpacity(0.4),
-            iconSize: 18,
+        if (showDelete == true)
+          InkWell(
+            onTap: () => onDelete(),
+            child: CircleIcon(
+              icon: Icons.close,
+              iconColor: AppColor.primary600Light,
+              backgroundColor: AppColor.geyser.withOpacity(0.4),
+              iconSize: 18,
+            ),
           ),
-        ),
       ]),
     );
   }

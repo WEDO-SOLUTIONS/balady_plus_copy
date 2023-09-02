@@ -23,11 +23,11 @@ class Step4SummeryWidget extends StatelessWidget {
           leading: SvgPicture.asset(IconPath.vdSummuryDesc),
           children: [
             FieldData(
-                title: ("الاستخدام الرئيسي").tr(),
+                title: ("compliance_main_usage").tr(),
                 subTitle: state.selectedMainUsage?.name),
             CustomVerticalSpace(height: 8),
             FieldData(
-                title: ("الاستخدام الفرعي").tr(),
+                title: ("compliance_sub_usage").tr(),
                 subTitle: state.selectedSubUsage?.name),
           ],
         );

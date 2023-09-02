@@ -125,6 +125,7 @@ class _ServiceCardsPageState extends State<CreateComplianceLocationPage> {
                   BottomSheetDialog.showDraggableSheet(context,
                       // dialogKeyName: DialogName.dcVeichlesDialog,
                       // currentRouteName: RouteName.DCVeichlePage,
+
                       isFullHeight: false,
                       child: CreateComplianceLocationWidget());
                 },

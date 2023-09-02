@@ -26,6 +26,7 @@ class Step6SummeryWidget extends StatelessWidget {
             AttachmentListWidget(
               attachments: state.attachments ?? [],
               deleteFile: (int index) {},
+              showDelete: false,
               saveFile: (int index, String filePath, String fileName,
                   String base64) {},
             ),

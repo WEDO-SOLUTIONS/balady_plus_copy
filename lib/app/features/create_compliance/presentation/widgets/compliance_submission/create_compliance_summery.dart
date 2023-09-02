@@ -55,7 +55,7 @@ class _CreateComplianceSummurySectionState
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       VdHeaderDesc(
-                        header: ("مراجعة الطلب").tr(),
+                        header: ("review_request").tr(),
                       ),
                       Step1SummeryWidget(),
                       CustomVerticalSpace(height: 16),

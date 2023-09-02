@@ -31,6 +31,7 @@ class AttachmentWidget extends StatelessWidget {
   final Function(int index) deleteFile;
   final bool isRequired;
   final String hint;
+  final bool showDelete;
 
   const AttachmentWidget({
     required this.fileIndex,
@@ -42,6 +43,7 @@ class AttachmentWidget extends StatelessWidget {
     required this.saveFile,
     required this.deleteFile,
     this.isRequired = false,
+    this.showDelete = true,
     this.hint = "",
   });
 
@@ -89,7 +91,7 @@ class AttachmentWidget extends StatelessWidget {
             },
           )
         else
-          photoInfo(context),
+          photoInfo(context, showDelete: showDelete),
       ],
     );
   }
@@ -138,10 +140,11 @@ class AttachmentWidget extends StatelessWidget {
     }
   }
 
-  Widget photoInfo(BuildContext context) {
+  Widget photoInfo(BuildContext context, {bool showDelete = true}) {
     return ObjectionReasonAttachment(
         fileName: fileName ?? "",
         filePath: path ?? "",
+        showDelete: showDelete,
         onDelete: () => deleteFile(fileIndex));
   }
 }

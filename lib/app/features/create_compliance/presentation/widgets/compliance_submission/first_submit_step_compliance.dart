@@ -24,7 +24,7 @@ class FirstComplianceSubmissionWidget extends StatelessWidget {
             children: [
               ComplianceSubmitTitle(
                 title: 'representation_title'.tr(),
-                subtitle: 'representation_subtitle'.tr(),
+                subtitle: "",
               ),
               const SizedBox(
                 height: 10,

@@ -17,7 +17,7 @@ class Step1SummeryWidget extends StatelessWidget {
     return BlocBuilder<ComplianceBloc, ComplianceState>(
       builder: (context, state) {
         return CustomExpansionPanelWidget(
-          title: ("آلية التقديم").tr(),
+          title: ("complinace_submission").tr(),
           leading: SvgPicture.asset(IconPath.vdSummurySPL),
           children: [
             FieldData(title: "representation_radio_option1".tr()),

@@ -38,14 +38,16 @@ class Step3SummeryWidget extends StatelessWidget {
             CustomVerticalSpace(height: 8),
             if (state.documentTypeSelection == 2) ...[
               FieldData(
-                  title: ("نوع وثيقة الملكية ").tr(),
+                  title: ("compliance_ownership_type").tr(),
                   subTitle: state.selectedOwnerShip?.name),
               CustomVerticalSpace(height: 8),
               FieldData(
-                  title: ("رقم الوثيقة").tr(), subTitle: state.ownershipText),
+                  title: ("compliance_ownership_text").tr(),
+                  subTitle: state.ownershipText),
               CustomVerticalSpace(height: 8),
               FieldData(
-                  title: ("تاريخ الوثيقة").tr(), subTitle: state.ownershipDate),
+                  title: ("compliance_ownership_date").tr(),
+                  subTitle: state.ownershipDate),
             ],
           ],
         );

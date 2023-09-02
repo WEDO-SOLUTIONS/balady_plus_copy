@@ -35,14 +35,14 @@ class UsageSubmissionCompliance extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 ComplianceSubmitTitle(
-                  title: 'submission_document'.tr(),
-                  subtitle: 'submission_document_subtitle'.tr(),
+                  title: 'compliance_usages'.tr(),
+                  subtitle: "",
                 ),
                 const SizedBox(
                   height: 10,
                 ),
                 DropDownWithTitle(
-                  title: "الاستخدام الرئيسي".tr(),
+                  title: "compliance_main_usage".tr(),
                   selectedValue: state.selectedMainUsage?.name,
                   status: state.mainUsagesStatus,
                   onRetry: () {
@@ -60,7 +60,7 @@ class UsageSubmissionCompliance extends StatelessWidget {
                       // dialogKeyName: DialogName.licensesSubMunicapilityFilters,
                       //  currentRouteName: RouteName.licenses,
                       child: BottomSheetList(
-                        title: "الاستخدام الرئيسي".tr(),
+                        title: "compliance_main_usage".tr(),
                         items: items,
                         selectedValue: state.selectedMainUsage?.name,
                         onTap: (item) {
@@ -78,7 +78,7 @@ class UsageSubmissionCompliance extends StatelessWidget {
                   },
                 ),
                 DropDownWithTitle(
-                  title: "الاستخدام الفرعي".tr(),
+                  title: "compliance_sub_usage".tr(),
                   selectedValue: state.selectedSubUsage?.name,
                   status: state.subUsagesStatus,
                   onRetry: () {
@@ -97,7 +97,7 @@ class UsageSubmissionCompliance extends StatelessWidget {
                       // dialogKeyName: DialogName.licensesSubMunicapilityFilters,
                       //  currentRouteName: RouteName.licenses,
                       child: BottomSheetList(
-                        title: "الاستخدام الفرعي".tr(),
+                        title: "compliance_sub_usage".tr(),
                         items: items,
                         selectedValue: state.selectedSubUsage?.name,
                         onTap: (item) {

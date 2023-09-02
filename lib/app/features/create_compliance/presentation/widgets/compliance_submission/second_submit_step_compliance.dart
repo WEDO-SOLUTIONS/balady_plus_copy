@@ -31,7 +31,7 @@ class SecondSubmissonCompliance extends StatelessWidget {
           children: [
             ComplianceSubmitTitle(
               title: 'user_info_details_title'.tr(),
-              subtitle: 'user_info_details_subtitle'.tr(),
+              subtitle: "",
             ),
             const SizedBox(
               height: 7,

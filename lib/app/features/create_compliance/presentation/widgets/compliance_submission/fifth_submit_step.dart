@@ -105,6 +105,7 @@ class FifthComplianceSubmitStep extends StatelessWidget {
 
 class AttachmentListWidget extends StatelessWidget {
   final List<AttachmentData> attachments;
+  final bool showDelete;
   final Function(int index, String filePath, String fileName, String base64)
       saveFile;
   final Function(int index) deleteFile;
@@ -113,7 +114,8 @@ class AttachmentListWidget extends StatelessWidget {
       {Key? key,
       required this.attachments,
       required this.saveFile,
-      required this.deleteFile})
+      required this.deleteFile,
+      this.showDelete = true})
       : super(key: key);
 
   @override
@@ -139,6 +141,7 @@ class AttachmentListWidget extends StatelessWidget {
               enableButton: (status) {},
               saveFile: saveFile,
               deleteFile: deleteFile,
+              showDelete: showDelete,
             ),
           );
         },
