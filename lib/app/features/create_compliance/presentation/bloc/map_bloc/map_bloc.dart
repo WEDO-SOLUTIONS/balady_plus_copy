@@ -14,9 +14,11 @@ import '../../../../../core/errors/failures.dart';
 import '../../../../../core/services/local/navigation_services.dart';
 import '../../../../../core/utils/common_functions.dart';
 import '../../../../../core/utils/enums/bloc_status.dart';
+import '../../../../transaction_inquiry/customer_voice_exports.dart';
 import '../../../../vd/domain/entities/gis/gis_params.dart';
 import '../../../../vd/domain/entities/map/map_screen_params.dart';
 import '../../../domain/entities/compliance_gis_resopnse.dart';
+import '../../dialogs/compliance_municipality_dialog_msr.dart';
 
 part 'map_event.dart';
 part 'map_state.dart';
@@ -59,9 +61,13 @@ class MapBloc extends Bloc<MapEvent, MapState> {
         errorMessage: "",
       ));
 
-      if (e.popPage) {
-        NavigationService.navigatorKey.currentState?.pop(MapScreenParams(
-            gisParams: e.params, complianceGIS: state.gisResponse));
+      if (success.amanaCode?.startsWith("004") ?? false) {
+        showCustomDialog(ComplianceMunicipalityMSRDialog());
+      } else {
+        if (e.popPage) {
+          NavigationService.navigatorKey.currentState?.pop(MapScreenParams(
+              gisParams: e.params, complianceGIS: state.gisResponse));
+        }
       }
     });
   }
@@ -191,5 +197,15 @@ class MapBloc extends Bloc<MapEvent, MapState> {
       return true;
     }
     return false;
+  }
+
+  static showCustomDialog(Widget dialog, {bool isDismiss = true}) {
+    showDialog(
+        context: NavigationService.navigatorKey.currentState!.context,
+        barrierDismissible: isDismiss,
+        builder: (ctx) => Dialog(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12.0)),
+            child: dialog));
   }
 }

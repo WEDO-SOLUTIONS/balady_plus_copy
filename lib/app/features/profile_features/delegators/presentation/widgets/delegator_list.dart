@@ -12,10 +12,11 @@ import '../../delegators_exports.dart' show DelegatorsCubit, DelegatorsState;
 
 class DelegatorList extends StatelessWidget {
   final DelegatorsCubit _delegatorsCubit;
-
+  final bool showAccount;
   const DelegatorList({
     super.key,
     required DelegatorsCubit delegatorsCubit,
+    this.showAccount = true,
   }) : _delegatorsCubit = delegatorsCubit;
 
   @override
@@ -30,10 +31,11 @@ class DelegatorList extends StatelessWidget {
               return Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  ProfileCard(
-                    userInfo: CommonProperties.userInfo,
-                    selected: state.selectedDelegate == null,
-                  ),
+                  if (showAccount)
+                    ProfileCard(
+                      userInfo: CommonProperties.userInfo,
+                      selected: state.selectedDelegate == null,
+                    ),
                   if (state.status == BlocRequestStatus.submissionGetFailure)
                     ReloadWidget(
                       onTab: () {

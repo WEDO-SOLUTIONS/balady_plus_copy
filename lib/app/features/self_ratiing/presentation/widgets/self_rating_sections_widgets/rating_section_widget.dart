@@ -7,87 +7,74 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
-final List<String> imgList = [
-  ImagePath.violationImage,
-  ImagePath.violationImage,
-  ImagePath.violationImage,
-  ImagePath.violationImage,
-];
+import '../../../data/models/self_rating_item.dart';
 
-class SelfRatingSectionWidget extends StatefulWidget {
-  const SelfRatingSectionWidget({
-    super.key,
-    required this.ratingText,
-  });
-  final String ratingText;
+class SelfRatingSectionWidget extends StatelessWidget {
+  const SelfRatingSectionWidget(
+      {super.key, required this.item, required this.onSelect});
+  final SelfRatingItem item;
+  final Function onSelect;
 
-  @override
-  State<SelfRatingSectionWidget> createState() =>
-      _SelfRatingSectionWidgetState();
-}
-
-class _SelfRatingSectionWidgetState extends State<SelfRatingSectionWidget> {
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: ShapeDecoration(
-          color: Colors.white,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-          ),
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: ShapeDecoration(
+        color: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
         ),
-        child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(
-                  height: 311,
-                  child: Swiper(
-                    itemCount: imgList.length,
-                    itemBuilder: (context, index) {
-                      return Image.asset(
-                        imgList[index],
-                      );
-                    },
-                  )),
-              SizedBox(
-                height: 8,
-              ),
-              CustomTextWidget(
-                widget.ratingText,
-                maxLines: 5,
-                textAlign: TextAlign.right,
-                textStyle: AppStyle.selfRatingSectionTextStyle,
-              ),
-              const SizedBox(
-                height: 8,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  RatingSingleRatioOption(
-                    value: 1,
-                    title: 'clauses_option1'.tr(),
-                    width: MediaQuery.of(context).size.width * 0.35,
-                    height: MediaQuery.of(context).size.height * 0.05,
-                    titleStyle: AppStyle.complianceClausesOptionStyle,
-                  ),
-                  const SizedBox(
-                    width: 6,
-                  ),
-                  RatingSingleRatioOption(
-                    title: 'clauses_option2'.tr(),
-                    value: 2,
-                    width: MediaQuery.of(context).size.width * 0.35,
-                    height: MediaQuery.of(context).size.height * 0.05,
-                    titleStyle: AppStyle.complianceClausesOptionStyle,
-                  ),
-                ],
-              )
-            ]),
       ),
+      child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(
+                height: 311,
+                child: Image.asset(
+                  item.image,
+                )),
+            SizedBox(
+              height: 8,
+            ),
+            CustomTextWidget(
+              item.condition,
+              maxLines: 5,
+              textAlign: TextAlign.right,
+              textStyle: AppStyle.selfRatingSectionTextStyle,
+            ),
+            const SizedBox(
+              height: 8,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                RatingSingleRatioOption(
+                  value: 1,
+                  title: 'clauses_option1'.tr(),
+                  height: 54,
+                  selectdValue: item.compliance == true ? 1 : null,
+                  titleStyle: AppStyle.complianceClausesOptionStyle,
+                  onChanged: (int value) {
+                    onSelect(true);
+                  },
+                ),
+                const SizedBox(
+                  width: 6,
+                ),
+                RatingSingleRatioOption(
+                  title: 'clauses_option2'.tr(),
+                  value: 2,
+                  height: 54,
+                  selectdValue: item.compliance == false ? 2 : null,
+                  titleStyle: AppStyle.complianceClausesOptionStyle,
+                  onChanged: (int value) {
+                    onSelect(false);
+                  },
+                ),
+              ],
+            )
+          ]),
     );
   }
 }

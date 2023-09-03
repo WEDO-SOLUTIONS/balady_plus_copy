@@ -44,9 +44,6 @@ class FirstComplianceSubmissionWidget extends StatelessWidget {
                 subtitle: 'representation_option2_subtitle'.tr(),
                 feesStatus: 'office_fees'.tr(),
               ),
-              const Expanded(
-                child: SizedBox(),
-              ),
               SizedBox(
                 height: 32,
               ),

@@ -25,59 +25,57 @@ class CustomRadio1 extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<ComplianceBloc, ComplianceState>(
       builder: (context, state) {
-        return Column(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                  borderRadius:
-                      BorderRadius.circular(8), //Rev: should be 8 not 5
-                  border: Border.all(
-                    width: 1, //Rev: should be 1 not 1.5
-                    color: AppColor.blueSkyLight800,
-                  )),
-              child: RadioListTile(
-                value: value ?? 0,
-                groupValue: state.benificiaryTypeSelection,
-                title: CustomTextWidget(
-                  title,
-                  textAlign: TextAlign.right,
-                  textStyle: AppStyle.complianceFirstSubmitTitleRadioStyle,
+        return Container(
+          // padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(8), //Rev: should be 8 not 5
+              border: Border.all(
+                width: 1, //Rev: should be 1 not 1.5
+                color: AppColor.blueSkyLight800,
+              )),
+          child: RadioListTile(
+            value: value ?? 0,
+            contentPadding: EdgeInsets.all(8),
+            groupValue: state.benificiaryTypeSelection,
+            title: CustomTextWidget(
+              title,
+              maxLines: 10,
+              textAlign: TextAlign.right,
+              textStyle: AppStyle.complianceFirstSubmitTitleRadioStyle,
+            ),
+            subtitle: CustomTextWidget(
+              subtitle,
+              maxLines: 2,
+              textAlign: TextAlign.right,
+              height: 1.6,
+              textStyle: AppStyle.complianceFirstSubmitSubtitleStyle,
+            ),
+            onChanged: (val) {
+              context
+                  .read<ComplianceBloc>()
+                  .add(UpdateFieldsEvent(benificiaryTypeSelection: val));
+            },
+            activeColor: state.benificiaryTypeSelection == value
+                ? Color(0xff447F91)
+                : null,
+            secondary: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                CustomTextWidget(
+                  'fees'.tr(),
+                  textAlign: TextAlign.start,
+                  textStyle: AppStyle.complianceFeesStyle,
                 ),
-                subtitle: CustomTextWidget(
-                  subtitle,
-                  maxLines: 2,
-                  textAlign: TextAlign.right,
-                  textStyle: AppStyle.complianceFirstSubmitSubtitleStyle,
+                CustomTextWidget(
+                  feesStatus,
+                  textAlign: TextAlign.start,
+                  textStyle: AppStyle.complianceFeesStatusStyle,
                 ),
-                onChanged: (val) {
-                  context
-                      .read<ComplianceBloc>()
-                      .add(UpdateFieldsEvent(benificiaryTypeSelection: val));
-                },
-                activeColor: state.benificiaryTypeSelection == value
-                    ? Color(0xff447F91)
-                    : null,
-                secondary: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(
-                      height: 5,
-                    ),
-                    CustomTextWidget(
-                      'fees'.tr(),
-                      textStyle: AppStyle.complianceFeesStyle,
-                    ),
-                    CustomTextWidget(
-                      feesStatus,
-                      textStyle: AppStyle.complianceFeesStatusStyle,
-                    ),
-                  ],
-                ),
-                selected: false,
-              ),
-            )
-          ],
+              ],
+            ),
+            selected: false,
+          ),
         );
       },
     );

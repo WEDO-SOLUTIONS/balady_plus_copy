@@ -13,12 +13,14 @@ class DefaultAppBarWidget extends StatelessWidget
   final bool x;
   final Widget? flexibleSpace;
   final VoidCallback? onBack;
+  final bool showBack;
 
   const DefaultAppBarWidget(
       {super.key,
       this.title,
       this.bottom,
       this.actions,
+      this.showBack = true,
       this.x = false,
       this.onBack,
       this.flexibleSpace});
@@ -31,7 +33,8 @@ class DefaultAppBarWidget extends StatelessWidget
           : AppColor.scaffoldBackground,
       elevation: 0,
       shadowColor: AppColor.primary100Light,
-      leading: Navigator.canPop(context)
+      leadingWidth: showBack == true ? null : 8,
+      leading: Navigator.canPop(context) && showBack
           ? IconButton(
               icon: Icon(
                 x ? Icons.close : Icons.arrow_back_ios,

@@ -34,6 +34,8 @@ class IconPath {
   static const iosArrowDown = '${_svgIconPath}ios_arrow_down$_svg';
 
   static const arrowBack = '${_svgIconPath}arrow_back_icon$_svg';
+  static const star = '${_svgIconPath}Star$_svg';
+  static const dangerIcon = '${_svgIconPath}danger_red$_svg';
 
   static const close = '${_svgIconPath}arrow_back_icon$_svg';
   static const upload = '${_svgIconPath}arrow_back_icon$_svg';
@@ -350,7 +352,7 @@ class IconPath {
   static const locationBlack = '${_svgEventsPath}locationb$_svg';
   static const clock = '${_svgEventsPath}clock$_svg';
   static const export = '${_svgEventsPath}export$_svg';
-  static const wallet = '${_svgEventsPath}wallet-money$_svg';
+  static const walletEvents = '${_svgEventsPath}wallet-money$_svg';
   static const profileCircle = '${_svgEventsPath}profile-circle$_svg';
   static const linkSquare = '${_svgEventsPath}link-square$_svg';
   static const calendar = '${_svgEventsPath}calendar$_svg';

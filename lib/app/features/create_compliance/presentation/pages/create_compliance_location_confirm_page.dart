@@ -14,11 +14,18 @@ class CreateComplianceLocationPage extends StatelessWidget {
   }
 }*/
 
+import 'package:balady_plus/app/core/services/services_exports.dart';
+import 'package:balady_plus/app/core/utils/constants/route_names.dart';
+import 'package:balady_plus/app/features/profile_features/delegators/delegators_exports.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../core/dependency_injection/injection_container.dart';
+import '../../../../core/utils/constants/app_colors.dart';
+import '../../../../core/utils/constants/dialog_names.dart';
 import '../../../_shared_feature_/shared_feature_exports.dart'
     show BottomSheetDialog, DefaultAppBarWidget, ElevatedButtonWidget;
+import '../../../home_page/presentation/widgets/home_app_bar/circle_icon.dart';
 import '../../../services/data/models/service_model.dart';
 import '../../../services/domain/entities/service_entity.dart';
 import '../../../services/presentation/cubit/service_cards_cubit/service_cards_cubit.dart';
@@ -104,6 +111,34 @@ class _ServiceCardsPageState extends State<CreateComplianceLocationPage> {
       child: Scaffold(
         appBar: DefaultAppBarWidget(
           title: service.title,
+          actions: [
+            Padding(
+              padding: const EdgeInsetsDirectional.only(end: 10),
+              child: InkWell(
+                onTap: () async {
+                  try {
+                    sl<DelegatorsCubit>().getDelegators();
+                    await BottomSheetDialog.showDraggableSheet(
+                      context,
+                      dialogKeyName: DialogName.delegatorsDialog,
+                      currentRouteName: RouteName.createCompliancePage,
+                      child: DelegatorList(
+                        delegatorsCubit: sl<DelegatorsCubit>(),
+                      ),
+                    );
+                  } catch (ex) {
+                    print(ex);
+                  }
+                },
+                child: CircleIcon(
+                  icon: Icons.supervised_user_circle,
+                  iconColor: AppColor.primary600Light,
+                  backgroundColor: AppColor.geyser.withOpacity(0.4),
+                  iconSize: 18,
+                ),
+              ),
+            ),
+          ],
           bottom: ServiceCardsList(
             cards: service.cards,
           ),
@@ -118,7 +153,7 @@ class _ServiceCardsPageState extends State<CreateComplianceLocationPage> {
                 ],
               ),
             ),
-            if (service.warning != null)
+            /* if (service.warning != null)
               ServiceWarningWidget(
                 warning: service.warning ?? "",
                 onPress: () {
@@ -130,18 +165,23 @@ class _ServiceCardsPageState extends State<CreateComplianceLocationPage> {
                       child: CreateComplianceLocationWidget());
                 },
               )
-            else
-              SafeArea(
-                top: false,
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: ElevatedButtonWidget.startService(
-                    onPressed: () {
-                      print("HEREE");
-                    },
-                  ),
+            else*/
+            SafeArea(
+              top: false,
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: ElevatedButtonWidget.startService(
+                  onPressed: () {
+                    BottomSheetDialog.showDraggableSheet(context,
+                        // dialogKeyName: DialogName.dcVeichlesDialog,
+                        // currentRouteName: RouteName.DCVeichlePage,
+
+                        isFullHeight: false,
+                        child: CreateComplianceLocationWidget());
+                  },
                 ),
-              )
+              ),
+            )
           ],
         ),
       ),

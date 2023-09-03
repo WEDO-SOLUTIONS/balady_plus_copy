@@ -25,6 +25,7 @@ class FourthStepCompliance extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 ComplianceSubmitTitle(
                   title: 'compliance_clauses_title'.tr(),

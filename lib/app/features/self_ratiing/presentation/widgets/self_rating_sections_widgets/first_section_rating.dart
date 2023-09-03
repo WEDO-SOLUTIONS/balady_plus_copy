@@ -2,7 +2,12 @@ import 'package:balady_plus/app/features/_shared_feature_/presentation/buttons/e
 import 'package:balady_plus/app/features/self_ratiing/presentation/widgets/self_rating_sections_widgets/rating_section_widget.dart';
 import 'package:balady_plus/app/features/self_ratiing/presentation/widgets/self_rating_sections_widgets/self_ratiing_sections_title.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
+
+import '../../bloc/self_rating_bloc.dart';
+import '../../bloc/self_rating_state.dart';
+import '../../bloc/self_rating_event.dart';
 
 class FirstSectionRatingWidget extends StatelessWidget {
   const FirstSectionRatingWidget({
@@ -13,37 +18,38 @@ class FirstSectionRatingWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<String> ratingText = [
-      'review1_section_1'.tr(),
-      'review1_section_2'.tr(),
-      'review1_section3'.tr(),
-    ];
-    return Column(
-      children: [
-        SelfRatingSectionsTitle(
-          title: 'review_title_1'.tr(),
+    return BlocBuilder<SelfRatingBloc, SelfRatingState>(
+        builder: (context, state) {
+      return SingleChildScrollView(
+        child: Column(
+          children: [
+            SelfRatingSectionsTitle(
+              title: 'review_title_1'.tr(),
+            ),
+            SizedBox(
+              height: 16,
+            ),
+            ListView.builder(
+              shrinkWrap: true,
+              physics: NeverScrollableScrollPhysics(),
+              itemCount: state.items?.length ?? 0,
+              itemBuilder: (context, index) {
+                return SelfRatingSectionWidget(
+                  item: state.items![index],
+                  onSelect: (bool selected) {
+                    context.read<SelfRatingBloc>().add(
+                        SelfRatingRadioSelectEvent(
+                            index: index, compliance: selected));
+                  },
+                );
+              },
+            ),
+            ElevatedButtonWidget.next(
+              onPressed: onPressed,
+            ),
+          ],
         ),
-        SizedBox(
-          height: 16,
-        ),
-        SizedBox(
-          height: 450,
-          child: ListView.builder(
-            itemCount: ratingText.length,
-            itemBuilder: (context, index) {
-              return SelfRatingSectionWidget(
-                ratingText: ratingText[index],
-              );
-            },
-          ),
-        ),
-        Expanded(
-          child: SizedBox(),
-        ),
-        ElevatedButtonWidget.next(
-          onPressed: onPressed,
-        ),
-      ],
-    );
+      );
+    });
   }
 }

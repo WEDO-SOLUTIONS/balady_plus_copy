@@ -14,5 +14,10 @@ class SelfRatingChangePageEvent extends SelfRatingEvent {
 
 class SelfRatingRadioSelectEvent extends SelfRatingEvent {
   final int index;
-  SelfRatingRadioSelectEvent(this.index);
+  final bool compliance;
+  SelfRatingRadioSelectEvent({required this.index, required this.compliance});
+}
+
+class InitSelfRatingEvent extends SelfRatingEvent {
+  const InitSelfRatingEvent();
 }

@@ -39,7 +39,7 @@ class _SubmitCompliancePageState extends State<SubmitCompliancePage> {
             return Scaffold(
                 backgroundColor: AppColor.scaffoldBackground,
                 appBar: ViolationAppBar(
-                  stepCounter: context.read<ComplianceBloc>().pagesList.length,
+                  stepCounter: context.read<ComplianceBloc>().pages().length,
                   currentStep: state.currentStep + 1,
                   backOnPress: () => context
                       .read<ComplianceBloc>()
@@ -51,7 +51,7 @@ class _SubmitCompliancePageState extends State<SubmitCompliancePage> {
                       children: [
                         PageView.builder(
                             itemCount:
-                                context.read<ComplianceBloc>().pagesList.length,
+                                context.read<ComplianceBloc>().pages().length,
                             scrollDirection: Axis.vertical,
                             physics: NeverScrollableScrollPhysics(),
                             controller:
@@ -62,7 +62,7 @@ class _SubmitCompliancePageState extends State<SubmitCompliancePage> {
                                 duration: Duration(milliseconds: 300),
                                 child: context
                                     .read<ComplianceBloc>()
-                                    .pagesList[position],
+                                    .pages()[position],
                               );
                             }),
                         if (state.status == BlocStatus.loading)

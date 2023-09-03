@@ -16,6 +16,7 @@ import '../../../../core/utils/enums/enums.dart';
 import '../../../_shared_feature_/data/entities/success_screen_args.dart';
 import '../../data/models/apply_create_compliance_request_model.dart';
 import '../../data/models/compliance_certificate_items_request.dart';
+import '../../data/models/save_contract_info_request.dart';
 import '../../data/models/save_location_compliance_request.dart';
 import '../../domain/entities/comliance_request_details.dart';
 import '../../domain/entities/compliance_attachment_request.dart';
@@ -35,6 +36,7 @@ import '../../domain/use_cases/save_compliance_contract.dart';
 import '../../domain/use_cases/save_compliance_location.dart';
 import '../../domain/use_cases/submit_compliance_request.dart';
 import '../widgets/compliance_submission/create_compliance_summery.dart';
+import '../widgets/compliance_submission/engoffice_submit_step_compliance.dart';
 import '../widgets/compliance_submission/fifth_submit_step.dart';
 import '../widgets/compliance_submission/first_submit_step_compliance.dart';
 import '../widgets/compliance_submission/fourth_step_compliance.dart';
@@ -44,12 +46,23 @@ import '../widgets/compliance_submission/usage_submit_step_compliance.dart';
 
 class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
   PageController pageController = PageController(initialPage: 0);
-  late List pagesList = [
+
+  List pagesListHimSelf = [
     FirstComplianceSubmissionWidget(),
     SecondSubmissonCompliance(),
     ThirdSubmissionCompliance(),
     UsageSubmissionCompliance(),
     FourthStepCompliance(),
+    FifthComplianceSubmitStep(),
+    CreateComplianceSummurySection()
+  ];
+
+  List pagesListEngOffice = [
+    FirstComplianceSubmissionWidget(),
+    SecondSubmissonCompliance(),
+    ThirdSubmissionCompliance(),
+    UsageSubmissionCompliance(),
+    EngOfficeSubmissionCompliance(),
     FifthComplianceSubmitStep(),
     CreateComplianceSummurySection()
   ];
@@ -101,6 +114,8 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
     on<GetMainUsagesEvent>(_getMainUsagesHandler);
     on<GetSubUsagesEvent>(_getSubUsagesHandler);
     on<GetOwnerShipTypesEvent>(_getOwnerShipTypeHandeler);
+    on<GetEngOfficesListEvent>(_getEngOfficesHandler);
+    on<SaveContractEvent>(_saveContractData);
     on<UpdateFieldsEvent>(_updateFormFields);
     on<ApplyEvent>(_applyEventHandler);
     on<GetLicensesEvent>(_getLicensesHandler);
@@ -115,8 +130,10 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
     on<SaveLocationData>(_saveLocationData);
     on<DeleteFileEvent>(_deleteFile);
     on<ChangeAgreementEvent>(_changeAgreementHandler);
+    on<GetEngOfficeDetailsEvent>(_getEngOfficeDetailsHandler);
     add(const GetMainUsagesEvent());
     add(const GetOwnerShipTypesEvent());
+    add(const GetEngOfficesListEvent());
     add(GetLicensesEvent());
   }
   Future<void> _pageChangeHandler(ChangePageEvent e, Emitter emitter) async {
@@ -176,6 +193,30 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
       ));
     }, (r) {
       emitter(state.copyWith(gisResponse: r, status: BlocStatus.success));
+    });
+  }
+
+  Future<void> _saveContractData(SaveContractEvent e, Emitter emitter) async {
+    emitter(state.copyWith(
+      status: BlocStatus.loading,
+    ));
+
+    final failOrSuccess = await _saveContractCompliance(SaveContractInfoRequest(
+        designerEngOfficeId: state.selectedEngOffice?.engOfficeNo,
+        requestId: state.requestId));
+
+    failOrSuccess.fold((l) {
+      emitter(state.copyWith(
+        errorMessage: (l as ServerFailure).errorMessage,
+        status: BlocStatus.failure,
+      ));
+    }, (r) async {
+      int nextPage = state.currentStep + 1;
+      emitter(state.copyWith(status: BlocStatus.performing));
+      emitter(state.copyWith(
+          status: BlocStatus.success, currentStep: nextPage, errorMessage: ""));
+      await pageController.animateToPage(nextPage,
+          duration: Duration(milliseconds: 400), curve: Curves.easeIn);
     });
   }
 
@@ -345,6 +386,50 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
     // await _(ComplianceCertificateItemsRequest(requestId: state.requestId, ));
   }
 
+  Future<void> _getEngOfficesHandler(
+      GetEngOfficesListEvent e, Emitter emitter) async {
+    emitter(state.copyWith(
+        enginnerOfficesStatus: BlocRequestStatus.submissionGetLoading,
+        selectedEngOffice: null,
+        engOfficeDetails: null));
+
+    final failOrSuccess = await _getComplianceEngOffices(NoParams());
+
+    failOrSuccess.fold((l) {
+      emitter(state.copyWith(
+        errorMessage: (l as ServerFailure).errorMessage,
+        enginnerOfficesStatus: BlocRequestStatus.failure,
+      ));
+    }, (r) {
+      emitter(state.copyWith(
+          engOffices: r,
+          enginnerOfficesStatus: BlocRequestStatus.submissionGetSuccess));
+    });
+  }
+
+  Future<void> _getEngOfficeDetailsHandler(
+      GetEngOfficeDetailsEvent e, Emitter emitter) async {
+    emitter(state.copyWith(
+        status: BlocStatus.loading,
+        selectedEngOffice: Nullable(null),
+        engOfficeDetails: Nullable(null)));
+
+    final failOrSuccess =
+        await _getComplianceEngOfficesDetails(e.item.engOfficeNo ?? "");
+
+    failOrSuccess.fold((l) {
+      emitter(state.copyWith(
+        errorMessage: (l as ServerFailure).errorMessage,
+        status: BlocStatus.failure,
+      ));
+    }, (r) {
+      emitter(state.copyWith(
+          engOfficeDetails: Nullable(r),
+          selectedEngOffice: Nullable(e.item),
+          status: BlocStatus.success));
+    });
+  }
+
   Future<void> _getOwnerShipTypeHandeler(
       GetOwnerShipTypesEvent e, Emitter emitter) async {
     emitter(state.copyWith(
@@ -437,12 +522,13 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
     if (isLastPage()) {
       print("HERE");
       add(SubmitComplianceEvent());
-    } else if (state.currentStep == 0 && state.benificiaryTypeSelection == 2) {
+    } /*else if (state.currentStep == 0 && state.benificiaryTypeSelection == 2) {
       bool Function(Route<dynamic>) predicate =
           ModalRoute.withName(RouteName.bottomNavigation);
       NavigationService.navigatorKey.currentState!
           .pushNamedAndRemoveUntil(RouteName.etmamMainPage, predicate);
-    } else if (state.currentStep == 2) {
+    }*/
+    else if (state.currentStep == 2) {
       if (state.generateRequest() == state.applyRequest) {
         add(GetRequestDetails());
       } else {
@@ -450,8 +536,10 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
       }
     } else if (state.currentStep == 3) {
       add(SaveLocationData());
-    } else if (state.currentStep == 4) {
+    } else if (state.currentStep == 4 && state.benificiaryTypeSelection == 1) {
       add(SaveImtethalItemsEvent());
+    } else if (state.currentStep == 4 && state.benificiaryTypeSelection == 2) {
+      add(SaveContractEvent());
     } else {
       if (state.status == BlocStatus.performing) return;
       int nextPage = state.currentStep + 1;
@@ -559,8 +647,12 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
   }
 
   bool isLastPage() {
-    return state.currentStep == (pagesList.length - 1);
+    return state.currentStep == (pages().length - 1);
   }
+
+  List<dynamic> pages() => state.benificiaryTypeSelection == 1
+      ? pagesListHimSelf
+      : pagesListEngOffice;
 
   hideKeyboard() {
     FocusManager.instance.primaryFocus?.unfocus();

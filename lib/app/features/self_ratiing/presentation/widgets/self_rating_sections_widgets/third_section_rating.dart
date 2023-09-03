@@ -4,7 +4,7 @@ import 'package:balady_plus/app/features/self_ratiing/presentation/widgets/self_
 import 'package:flutter/material.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
-class ThirdSectionRatingWidget extends StatelessWidget {
+/*class ThirdSectionRatingWidget extends StatelessWidget {
   const ThirdSectionRatingWidget({
     super.key,
     required this.onPressed,
@@ -47,3 +47,4 @@ class ThirdSectionRatingWidget extends StatelessWidget {
     );
   }
 }
+*/

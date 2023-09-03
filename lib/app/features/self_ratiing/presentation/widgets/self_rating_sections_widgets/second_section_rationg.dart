@@ -3,7 +3,7 @@ import 'package:balady_plus/app/features/self_ratiing/presentation/widgets/self_
 import 'package:balady_plus/app/features/self_ratiing/presentation/widgets/self_rating_sections_widgets/self_ratiing_sections_title.dart';
 import 'package:flutter/material.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
-
+/*
 class SecondSectionRatingWidget extends StatelessWidget {
   const SecondSectionRatingWidget({
     super.key,
@@ -48,3 +48,4 @@ class SecondSectionRatingWidget extends StatelessWidget {
     );
   }
 }
+*/

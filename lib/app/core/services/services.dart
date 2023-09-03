@@ -229,6 +229,17 @@ Map<String, dynamic> servicesConfig = {
       "ar": {"title": "شهادة الامتثال", "description": null, "tag": null},
       "en": {"title": "Zamzam Points", "description": null, "tag": null}
     },
+    /*{
+      "id": 51,
+      "icon": "request_service",
+      "3d_icon": null,
+      "order": 4,
+      "isNew": false,
+      "isImportant": false,
+      "action": {"type": "page", "value": RouteName.selfRatingMainPage},
+      "ar": {"title": "قيم مبناك", "description": null, "tag": null},
+      "en": {"title": "Zamzam Points", "description": null, "tag": null}
+    },*/
     {
       "id": 5,
       "icon": "request_service",

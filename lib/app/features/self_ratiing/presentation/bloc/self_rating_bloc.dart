@@ -1,14 +1,18 @@
+import 'dart:convert';
+
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/self_ratiing/presentation/bloc/self_rating_event.dart';
 import 'package:balady_plus/app/features/self_ratiing/presentation/bloc/self_rating_state.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../data/models/self_rating_item.dart';
 
 class SelfRatingBloc extends Bloc<SelfRatingEvent, SelfRatingState> {
   SelfRatingBloc()
       : super(const SelfRatingState(
           currentStep: 0,
           status: BlocStatus.initial,
-          radioSelect: 1,
         )) {
     on<SelfRatingEvent>(
       (event, emit) {
@@ -18,6 +22,9 @@ class SelfRatingBloc extends Bloc<SelfRatingEvent, SelfRatingState> {
     add(const SelfRatingEvent());
     on<SelfRatingChangePageEvent>(_pageChangeHandler);
     on<SelfRatingRadioSelectEvent>(_radioChangeHandler);
+
+    on<InitSelfRatingEvent>(_init);
+    add(const InitSelfRatingEvent());
   }
   Future<void> _pageChangeHandler(
       SelfRatingChangePageEvent e, Emitter emitter) async {
@@ -28,6 +35,32 @@ class SelfRatingBloc extends Bloc<SelfRatingEvent, SelfRatingState> {
 
   Future<void> _radioChangeHandler(
       SelfRatingRadioSelectEvent e, Emitter emitter) async {
-    emitter(state.copyWith(radioSelect: e.index));
+    emitter(state.copyWith(status: BlocStatus.loading));
+
+    List<SelfRatingItem> list = state.items ?? [];
+
+    list[e.index].compliance = e.compliance;
+
+    emitter(state.copyWith(items: list, status: BlocStatus.success));
+  }
+
+  Future<void> _init(InitSelfRatingEvent e, Emitter emitter) async {
+    emitter(state.copyWith(status: BlocStatus.loading));
+
+    String qa = await rootBundle.loadString("assets/self_rating.json");
+    //print(qa);
+    var r = json.decode(qa);
+    print(r);
+    try {
+      List<SelfRatingItem>? d = r != null
+          ? List<SelfRatingItem>.from(r.map((x) => SelfRatingItem.fromMap(x)))
+          : null;
+
+      emitter(state.copyWith(items: d, status: BlocStatus.success));
+      print("YYY");
+      print(d);
+    } catch (ex) {
+      print(ex);
+    }
   }
 }

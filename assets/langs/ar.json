@@ -3147,7 +3147,15 @@
 "rating_again":"إعادة التقييم",
 "rating_late_description":" المبنى الخاص بكم يلتزم بالقوانين البلدية بنسبة 100%، وهذا يعكس الامتثال الجدي للضوابط المحلية والالتزام الواضح بالمعايير المعمول بها.",
 "rating_last_description2":"يمكنك المباشرة باصدار شهادة امتثال للمبنى",
-"download_certificate":"اصدار شهادة الامتثال"
+"download_certificate":"اصدار شهادة الامتثال", 
+"complinace_eng_office_data":"بيانات التعاقد", 
+"complianace_eng_office_title":"المكتب الهندسي المصمم", 
+"complianace_eng_office_mobile":"رقم جوال المكتب", 
+"complianace_eng_office_email":"البريد الإلكتروني", 
+"complianace_eng_office_license":"رقم ترخيص المكتب", 
+"self_rating_result":"النتيجة", 
+"self_rating_result_title":"حسب اجاباتك، انت"
+
 
 
 

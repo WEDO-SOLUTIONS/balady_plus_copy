@@ -2,6 +2,7 @@ import 'package:balady_plus/app/features/vd/domain/entities/gis/gis_params.dart'
 import 'package:equatable/equatable.dart';
 
 import '../../domain/entities/comliance_request_details.dart';
+import '../../domain/entities/complinace_engoffice_response.dart';
 import '../../domain/entities/complinace_licenses_response.dart';
 import '../../domain/entities/ownership_doc_type_response.dart';
 
@@ -123,8 +124,20 @@ class GetComplianceGISEvent extends ComplianceEvent {
   const GetComplianceGISEvent({required this.params});
 }
 
-
 class ChangeAgreementEvent extends ComplianceEvent {
   final bool? isagree;
   ChangeAgreementEvent({this.isagree});
+}
+
+class GetEngOfficesListEvent extends ComplianceEvent {
+  const GetEngOfficesListEvent();
+}
+
+class GetEngOfficeDetailsEvent extends ComplianceEvent {
+  final ComplinaecEngOfficeItem item;
+  const GetEngOfficeDetailsEvent({required this.item});
+}
+
+class SaveContractEvent extends ComplianceEvent {
+  const SaveContractEvent();
 }

@@ -12,7 +12,9 @@ import '../../../../core/utils/nullable.dart';
 import 'package:balady_plus/app/features/transaction_inquiry/presentation/core/models/attachment_model.dart';
 import '../../../_shared_feature_/data/entities/validators/phone_number_validation.dart';
 import '../../data/models/apply_create_compliance_request_model.dart';
+import '../../domain/entities/compliance_engoffice_details.dart';
 import '../../domain/entities/compliance_gis_resopnse.dart';
+import '../../domain/entities/complinace_engoffice_response.dart';
 import '../../domain/entities/complinace_licenses_response.dart';
 import '../../domain/entities/ownership_doc_type_response.dart';
 
@@ -35,12 +37,14 @@ class ComplianceState extends Equatable {
   final ComplinaceLookUpResponse? mainUsages;
   final ComplinaceLookUpResponse? subUsages;
   final ComplinaceLookUpResponse? ownerShipsTypes;
-
+  final ComplinaecEngOfficeReponse? engOffices;
+  final ComplinaecEngOfficeItem? selectedEngOffice;
   final ComplinaceLookUpItem? selectedMainUsage;
   final ComplinaceLookUpItem? selectedSubUsage;
   final ComplinaceLookUpItem? selectedOwnerShip;
   final String? ownershipText;
   final String? ownershipDate;
+  final ComplianceEngOfficeDetails? engOfficeDetails;
 
   final ComplinaecLicensesReponse? licenes;
   final ComplianceLisenseItem? selectedLicense;
@@ -58,106 +62,120 @@ class ComplianceState extends Equatable {
       ? (phoneValidator.error?.message ?? "").tr()
       : null;
 
-  ComplianceState({
-    required this.currentStep,
-    this.status = BlocStatus.initial,
-    this.mainUsagesStatus = BlocRequestStatus.initial,
-    this.enginnerOfficesStatus = BlocRequestStatus.initial,
-    this.subUsagesStatus = BlocRequestStatus.initial,
-    this.ownerShipsStatus = BlocRequestStatus.initial,
-    this.licenseStatus = BlocRequestStatus.initial,
-    this.licenes,
-    this.agreement,
-    this.contactMobileNumber,
-    this.applyRequest,
-    this.benificiaryTypeSelection,
-    this.documentTypeSelection,
-    this.requestId,
-    this.requestDetails,
-    this.mainUsages,
-    this.subUsages,
-    this.ownerShipsTypes,
-    this.errorMessage,
-    this.selectedMainUsage,
-    this.selectedOwnerShip,
-    this.selectedSubUsage,
-    this.ownershipText,
-    this.ownershipDate,
-    this.selectedLicense,
-    this.detailsStatus = BlocRequestStatus.initial,
-    this.gisResponse,
-    this.gisParams,
-    this.attachments,
-  });
-  ComplianceState copyWith(
-      {final BlocStatus? status,
-      final int? currentStep,
-      final int? benificiaryTypeSelection,
-      final int? documentTypeSelection,
-      final int? requestId,
-      final bool? agreement,
-      final ComplianceRequestDetails? requestDetails,
-      final ComplinaceLookUpResponse? mainUsages,
-      final ComplinaceLookUpResponse? subUsages,
-      final ComplinaceLookUpResponse? ownerShipsTypes,
-      final BlocRequestStatus? mainUsagesStatus,
-      final BlocRequestStatus? ownerShipsStatus,
-      final BlocRequestStatus? enginnerOfficesStatus,
-      final BlocRequestStatus? subUsagesStatus,
-      final BlocRequestStatus? licenseStatus,
-      final String? errorMessage,
-      final ComplinaceLookUpItem? selectedMainUsage,
-      final ComplinaceLookUpItem? selectedSubUsage,
-      final Nullable<ComplinaceLookUpItem?>? selectedOwnerShip,
-      final Nullable<String?>? ownershipText,
-      final Nullable<String?>? ownershipDate,
-      final ComplinaecLicensesReponse? licenes,
-      final Nullable<ComplianceLisenseItem?>? selectedLicense,
-      final BlocRequestStatus? detailsStatus,
-      final ComplainceGISResponse? gisResponse,
-      final GISParams? gisParams,
-      final List<AttachmentData>? attachments,
-      final ApplyCreateComplianceRequest? applyRequest,
-      final String? contactMobileNumber}) {
+  ComplianceState(
+      {required this.currentStep,
+      this.status = BlocStatus.initial,
+      this.mainUsagesStatus = BlocRequestStatus.initial,
+      this.enginnerOfficesStatus = BlocRequestStatus.initial,
+      this.subUsagesStatus = BlocRequestStatus.initial,
+      this.ownerShipsStatus = BlocRequestStatus.initial,
+      this.licenseStatus = BlocRequestStatus.initial,
+      this.licenes,
+      this.agreement,
+      this.contactMobileNumber,
+      this.applyRequest,
+      this.benificiaryTypeSelection,
+      this.documentTypeSelection,
+      this.requestId,
+      this.requestDetails,
+      this.mainUsages,
+      this.subUsages,
+      this.ownerShipsTypes,
+      this.errorMessage,
+      this.selectedMainUsage,
+      this.selectedOwnerShip,
+      this.selectedSubUsage,
+      this.ownershipText,
+      this.ownershipDate,
+      this.selectedLicense,
+      this.detailsStatus = BlocRequestStatus.initial,
+      this.gisResponse,
+      this.gisParams,
+      this.attachments,
+      this.engOffices,
+      this.selectedEngOffice,
+      this.engOfficeDetails});
+  ComplianceState copyWith({
+    final BlocStatus? status,
+    final int? currentStep,
+    final int? benificiaryTypeSelection,
+    final int? documentTypeSelection,
+    final int? requestId,
+    final bool? agreement,
+    final ComplianceRequestDetails? requestDetails,
+    final ComplinaceLookUpResponse? mainUsages,
+    final ComplinaceLookUpResponse? subUsages,
+    final ComplinaceLookUpResponse? ownerShipsTypes,
+    final BlocRequestStatus? mainUsagesStatus,
+    final BlocRequestStatus? ownerShipsStatus,
+    final BlocRequestStatus? enginnerOfficesStatus,
+    final BlocRequestStatus? subUsagesStatus,
+    final BlocRequestStatus? licenseStatus,
+    final String? errorMessage,
+    final ComplinaceLookUpItem? selectedMainUsage,
+    final ComplinaceLookUpItem? selectedSubUsage,
+    final ComplinaecEngOfficeReponse? engOffices,
+    final Nullable<ComplinaceLookUpItem?>? selectedOwnerShip,
+    final Nullable<String?>? ownershipText,
+    final Nullable<String?>? ownershipDate,
+    final ComplinaecLicensesReponse? licenes,
+    final Nullable<ComplianceLisenseItem?>? selectedLicense,
+    final BlocRequestStatus? detailsStatus,
+    final ComplainceGISResponse? gisResponse,
+    final GISParams? gisParams,
+    final List<AttachmentData>? attachments,
+    final ApplyCreateComplianceRequest? applyRequest,
+    final String? contactMobileNumber,
+    final Nullable<ComplinaecEngOfficeItem?>? selectedEngOffice,
+    final Nullable<ComplianceEngOfficeDetails?>? engOfficeDetails,
+  }) {
     return ComplianceState(
-        status: status ?? this.status,
-        contactMobileNumber: contactMobileNumber ?? this.contactMobileNumber,
-        currentStep: currentStep ?? this.currentStep,
-        agreement: agreement ?? this.agreement,
-        benificiaryTypeSelection:
-            benificiaryTypeSelection ?? this.benificiaryTypeSelection,
-        documentTypeSelection:
-            documentTypeSelection ?? this.documentTypeSelection,
-        requestId: requestId ?? this.requestId,
-        requestDetails: requestDetails ?? this.requestDetails,
-        mainUsages: mainUsages ?? this.mainUsages,
-        subUsages: subUsages ?? this.subUsages,
-        ownerShipsTypes: ownerShipsTypes ?? this.ownerShipsTypes,
-        enginnerOfficesStatus:
-            enginnerOfficesStatus ?? this.enginnerOfficesStatus,
-        ownerShipsStatus: ownerShipsStatus ?? this.ownerShipsStatus,
-        mainUsagesStatus: mainUsagesStatus ?? this.mainUsagesStatus,
-        licenseStatus: licenseStatus ?? this.licenseStatus,
-        errorMessage: errorMessage ?? this.errorMessage,
-        selectedMainUsage: selectedMainUsage ?? this.selectedMainUsage,
-        selectedOwnerShip: selectedOwnerShip == null
-            ? this.selectedOwnerShip
-            : selectedOwnerShip.value,
-        selectedSubUsage: selectedSubUsage ?? this.selectedSubUsage,
-        ownershipText:
-            ownershipText == null ? this.ownershipText : ownershipText.value,
-        ownershipDate:
-            ownershipDate == null ? this.ownershipDate : ownershipDate.value,
-        subUsagesStatus: subUsagesStatus ?? this.subUsagesStatus,
-        licenes: licenes ?? this.licenes,
-        selectedLicense: selectedLicense == null
-            ? this.selectedLicense
-            : selectedLicense.value,
-        detailsStatus: detailsStatus ?? this.detailsStatus,
-        gisResponse: gisResponse ?? this.gisResponse,
-        gisParams: gisParams ?? this.gisParams,
-        attachments: attachments ?? this.attachments,
-        applyRequest: applyRequest ?? this.applyRequest);
+      status: status ?? this.status,
+      contactMobileNumber: contactMobileNumber ?? this.contactMobileNumber,
+      currentStep: currentStep ?? this.currentStep,
+      agreement: agreement ?? this.agreement,
+      benificiaryTypeSelection:
+          benificiaryTypeSelection ?? this.benificiaryTypeSelection,
+      documentTypeSelection:
+          documentTypeSelection ?? this.documentTypeSelection,
+      requestId: requestId ?? this.requestId,
+      requestDetails: requestDetails ?? this.requestDetails,
+      mainUsages: mainUsages ?? this.mainUsages,
+      subUsages: subUsages ?? this.subUsages,
+      ownerShipsTypes: ownerShipsTypes ?? this.ownerShipsTypes,
+      enginnerOfficesStatus:
+          enginnerOfficesStatus ?? this.enginnerOfficesStatus,
+      ownerShipsStatus: ownerShipsStatus ?? this.ownerShipsStatus,
+      mainUsagesStatus: mainUsagesStatus ?? this.mainUsagesStatus,
+      licenseStatus: licenseStatus ?? this.licenseStatus,
+      errorMessage: errorMessage ?? this.errorMessage,
+      selectedMainUsage: selectedMainUsage ?? this.selectedMainUsage,
+      selectedOwnerShip: selectedOwnerShip == null
+          ? this.selectedOwnerShip
+          : selectedOwnerShip.value,
+      selectedSubUsage: selectedSubUsage ?? this.selectedSubUsage,
+      ownershipText:
+          ownershipText == null ? this.ownershipText : ownershipText.value,
+      ownershipDate:
+          ownershipDate == null ? this.ownershipDate : ownershipDate.value,
+      subUsagesStatus: subUsagesStatus ?? this.subUsagesStatus,
+      licenes: licenes ?? this.licenes,
+      selectedLicense: selectedLicense == null
+          ? this.selectedLicense
+          : selectedLicense.value,
+      detailsStatus: detailsStatus ?? this.detailsStatus,
+      gisResponse: gisResponse ?? this.gisResponse,
+      gisParams: gisParams ?? this.gisParams,
+      attachments: attachments ?? this.attachments,
+      applyRequest: applyRequest ?? this.applyRequest,
+      engOffices: engOffices ?? this.engOffices,
+      selectedEngOffice: selectedEngOffice == null
+          ? this.selectedEngOffice
+          : selectedEngOffice.value,
+      engOfficeDetails: engOfficeDetails == null
+          ? this.engOfficeDetails
+          : engOfficeDetails.value,
+    );
   }
 
   bool isNextButtonEnabled() {
@@ -187,10 +205,13 @@ class ComplianceState extends Equatable {
       }
     } else if (currentStep == 3) {
       if (selectedMainUsage == null || selectedSubUsage == null) return false;
-    } else if (currentStep == 4) {
+    } else if (currentStep == 4 && benificiaryTypeSelection == 1) {
       bool valid = requestDetails?.emtithalItems?.firstWhereOrNull(
               (element) => element.submitterAnswer == null) ==
           null;
+      return valid;
+    } else if (currentStep == 4 && benificiaryTypeSelection == 2) {
+      bool valid = engOfficeDetails != null;
       return valid;
     } else if (currentStep == 5) {
       bool isValid = true;
@@ -200,7 +221,7 @@ class ComplianceState extends Equatable {
         });
       }
       return isValid;
-    } else if (currentStep == 6) {
+    } else if ((currentStep == 6)) {
       return agreement ?? false;
     }
     return true;
@@ -254,6 +275,9 @@ class ComplianceState extends Equatable {
         documentTypeSelection,
         contactMobileNumber,
         benificiaryTypeSelection,
-        agreement
+        agreement,
+        selectedEngOffice,
+        engOffices,
+        engOfficeDetails
       ];
 }

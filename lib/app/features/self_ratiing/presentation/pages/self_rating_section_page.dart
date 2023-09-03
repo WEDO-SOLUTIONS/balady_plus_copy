@@ -1,3 +1,5 @@
+import 'package:balady_plus/app/core/services/local/navigation_services.dart';
+import 'package:balady_plus/app/core/utils/constants/route_names.dart';
 import 'package:balady_plus/app/features/self_ratiing/presentation/bloc/self_rating_bloc.dart';
 import 'package:balady_plus/app/features/self_ratiing/presentation/bloc/self_rating_event.dart';
 import 'package:balady_plus/app/features/self_ratiing/presentation/bloc/self_rating_state.dart';
@@ -8,6 +10,8 @@ import 'package:balady_plus/app/features/self_ratiing/presentation/widgets/self_
 import 'package:balady_plus/app/features/self_ratiing/presentation/widgets/self_rating_sections_widgets/third_section_rating.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../data/models/rating_self_success_result.dart';
 
 class SelfRatingSectionPage extends StatefulWidget {
   const SelfRatingSectionPage({super.key});
@@ -28,44 +32,20 @@ class _SelfRatingSectionPageState extends State<SelfRatingSectionPage> {
           return Scaffold(
             appBar: SelfRatingAppBar(
               currentStep: state.currentStep,
-              stepCounter: 4,
+              stepCounter: 1,
               backOnPress: () {},
             ),
             body: Padding(
               padding: EdgeInsets.all(16),
-              child: PageView(
-                onPageChanged: (int index) {
-                  context
-                      .read<SelfRatingBloc>()
-                      .add(SelfRatingChangePageEvent(index.toDouble()));
+              child: FirstSectionRatingWidget(
+                onPressed: () {
+                  NavigationService.pushNamed(
+                      routeName: RouteName.selfRatingResultPage,
+                      args: RatingSelfSuccessResult(
+                          totalViolation: state.totalViolation,
+                          percentage: state.percentage,
+                          complianes: state.complianes));
                 },
-                controller: pageController,
-                children: [
-                  FirstSectionRatingWidget(
-                    onPressed: () {
-                      pageController.jumpToPage(1);
-                      context
-                          .read<SelfRatingBloc>()
-                          .add(SelfRatingChangePageEvent(2));
-                    },
-                  ),
-                  SecondSectionRatingWidget(
-                    onPressed: () {
-                      pageController.jumpToPage(2);
-                      context
-                          .read<SelfRatingBloc>()
-                          .add(SelfRatingChangePageEvent(3));
-                    },
-                  ),
-                  ThirdSectionRatingWidget(
-                    onPressed: () {
-                      pageController.jumpToPage(3);
-                      context
-                          .read<SelfRatingBloc>()
-                          .add(SelfRatingChangePageEvent(4));
-                    },
-                  ),
-                ],
               ),
             ),
           );

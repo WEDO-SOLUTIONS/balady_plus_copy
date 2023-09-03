@@ -1,4 +1,6 @@
-class ComplianceEngOfficeDetails {
+import 'package:equatable/equatable.dart';
+
+class ComplianceEngOfficeDetails extends Equatable {
   final dynamic profileCompleted;
   final int? classificationStatus;
   final String? engOfficeNo;
@@ -37,7 +39,7 @@ class ComplianceEngOfficeDetails {
 
   factory ComplianceEngOfficeDetails.fromJson(Map<String, dynamic> json) =>
       ComplianceEngOfficeDetails(
-        profileCompleted: json["profileCompleted"],
+        //  profileCompleted: json["profileCompleted"],
         classificationStatus: json["ClassificationStatus"],
         engOfficeNo: json["EngOfficeNO"],
         engOfficeName: json["EngOfficeName"],
@@ -54,4 +56,7 @@ class ComplianceEngOfficeDetails {
         suspendingMunicipalityId: json["SuspendingMunicipalityId"],
         suspendingMunicipalityName: json["SuspendingMunicipalityName"],
       );
+
+  @override
+  List<Object?> get props => [engOfficeNo, engOfficeName];
 }
