@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/core/services/services_exports.dart';
 import 'package:flutter/material.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:provider/provider.dart';
@@ -56,24 +57,47 @@ class CertificationMapCard extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 24),
-                    CustomElevatedButtonWidget(
-                      btnColor: AppColor.primary900Light,
-                      textStyle: AppStyle.elevatedButtonStyle.copyWith(
-                        color: AppColor.white,
-                        fontWeight: FontWeight.w700,
-                        fontSize: 12,
-                      ),
-                      btnHeight: 40,
-                      btnWidth: 163,
-                      text: "عرض الاشتراطات",
-                      onPressed: () async {
-                        await BottomSheetDialog.showDraggableSheet(
-                          context,
-                          dialogKeyName: DialogName.buildingComplianceDialog,
-                          currentRouteName: "HomePage",
-                          child: BuildingRequirementsDialog(),
-                        );
-                      },
+                    Row(
+                      children: [
+                        Expanded(
+                          child: CustomElevatedButtonWidget(
+                            btnColor: AppColor.primary900Light,
+                            textStyle: AppStyle.elevatedButtonStyle.copyWith(
+                              color: AppColor.white,
+                              fontWeight: FontWeight.w700,
+                              fontSize: 12,
+                            ),
+                            btnHeight: 40,
+                            btnRadius: 7,
+                            btnPadding: EdgeInsets.all(8),
+                            text: "complinace_view_conditions".tr(),
+                            onPressed: () async {
+                              Navigator.pushNamed(
+                                  context, RouteName.createCompliancePage);
+                            },
+                          ),
+                        ),
+                        const CustomHorizontalSpace(width: 8),
+                        Expanded(
+                          child: CustomElevatedButtonWidget(
+                            btnColor: AppColor.white,
+                            btnRadius: 7,
+                            btnPadding: EdgeInsets.all(8),
+                            btnBorderColor: AppColor.primary900Light,
+                            textStyle: AppStyle.elevatedButtonStyle.copyWith(
+                              color: AppColor.primary900Light,
+                              fontWeight: FontWeight.w700,
+                              fontSize: 12,
+                            ),
+                            btnHeight: 40,
+                            text: "self_rating".tr(),
+                            onPressed: () async {
+                              Navigator.pushNamed(
+                                  context, RouteName.selfRatingMainPage);
+                            },
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
@@ -92,18 +116,36 @@ class CertificationMapCard extends StatelessWidget {
                 child: Row(
                   children: [
                     CustomTextWidget(
-                      "الإطلاع على",
+                      "to_know_more".tr(),
                       fontWeight: AppFontWeight.bold,
                       fontSize: 10,
                       fontColor: AppColor.blackModern900Light,
                     ),
-                    SizedBox(width: 4),
+                    const SizedBox(width: 6),
                     GestureDetector(
                       onTap: () {
                         Navigator.pushNamed(context, RouteName.QAPage);
                       },
                       child: CustomTextWidget(
-                        "faq".tr(),
+                        "check_faq".tr(),
+                        fontWeight: AppFontWeight.bold,
+                        fontSize: 12,
+                        fontColor: AppColor.primary900Light,
+                      ),
+                    ),
+                    const SizedBox(width: 6),
+                    const SizedBox(width: 6),
+                    GestureDetector(
+                      onTap: () async {
+                        await BottomSheetDialog.showDraggableSheet(
+                          context,
+                          dialogKeyName: DialogName.buildingComplianceDialog,
+                          currentRouteName: "HomePage",
+                          child: BuildingRequirementsDialog(),
+                        );
+                      },
+                      child: CustomTextWidget(
+                        "home_view_condition".tr(),
                         fontWeight: AppFontWeight.bold,
                         fontSize: 12,
                         fontColor: AppColor.primary900Light,

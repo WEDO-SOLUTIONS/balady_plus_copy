@@ -3154,7 +3154,13 @@
 "complianace_eng_office_email":"البريد الإلكتروني", 
 "complianace_eng_office_license":"رقم ترخيص المكتب", 
 "self_rating_result":"النتيجة", 
-"self_rating_result_title":"حسب اجاباتك، انت"
+"self_rating_result_title":"حسب اجاباتك، انت",
+"complinace_view_conditions":"عرض الاشتراطات", 
+"self_rating":"قيم مبناك", 
+"compliance_check":"الإطلاع على", 
+"to_know_more":"لمعرفة المزيد", 
+"check_faq":"اطلع على الاسئلة الشائعة", 
+"home_view_condition":"استعرض الاشتراطات"
 
 
 
