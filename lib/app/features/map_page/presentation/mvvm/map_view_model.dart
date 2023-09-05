@@ -208,7 +208,8 @@ class MapViewModel extends BaseViewModel {
               queryText,
               categories: [
                 SearchCategoryMessage.gasStations,
-                SearchCategoryMessage.mousques
+                SearchCategoryMessage.mousques,
+                SearchCategoryMessage.restaurants,
               ],
               sortingType: SortingTypeMessage.byRelevance,
               isOpenNow: false,

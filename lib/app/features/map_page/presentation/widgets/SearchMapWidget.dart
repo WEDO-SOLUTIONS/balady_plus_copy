@@ -115,7 +115,7 @@ class SearchMapWidget extends StatelessWidget {
                             SearchCategoryMessage.mousques,
                             SearchCategoryMessage.gasStations,
                             // SearchCategoryMessage.cafe,
-                            // SearchCategoryMessage.restaurants,
+                            SearchCategoryMessage.restaurants,
                             SearchCategoryMessage.parks,
                           ]
                               .map(
@@ -148,7 +148,8 @@ class SearchMapWidget extends StatelessWidget {
                                                 width: 16,
                                                 height: 16,
                                                 child: SvgPicture.asset(
-                                                    e.iconName()),
+                                                  e.iconName(),
+                                                ),
                                               ),
                                               SizedBox(
                                                 width: 4,
