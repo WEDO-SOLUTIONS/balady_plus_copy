@@ -854,9 +854,11 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
     return state.currentStep == (pages().length - 1);
   }
 
-  List<dynamic> pages() => state.benificiaryTypeSelection == 1
+  List<dynamic> pages() =>
+      pagesListHimSelf /*  state.benificiaryTypeSelection == 1
       ? pagesListHimSelf
-      : pagesListEngOffice;
+      : pagesListEngOffice*/
+      ;
 
   hideKeyboard() {
     FocusManager.instance.primaryFocus?.unfocus();

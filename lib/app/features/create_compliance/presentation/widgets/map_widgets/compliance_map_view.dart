@@ -26,11 +26,13 @@ class ComplinaceMapView extends StatefulWidget {
   final bool showSearch;
   final bool showSearchPaddingScreen;
   final bool showRadius;
+  final bool readOnly;
 
   ComplinaceMapView(
       {this.showSearch = true,
       this.showSearchPaddingScreen = false,
-      this.showRadius = false});
+      this.showRadius = false,
+      this.readOnly = false});
 
   @override
   _ComplinaceMapViewState createState() => _ComplinaceMapViewState();
@@ -53,11 +55,12 @@ class _ComplinaceMapViewState extends State<ComplinaceMapView> {
           children: <Widget>[
             // google map section
             GoogleMapSection(
+              readOnly: widget.readOnly,
               currentUserLocation: state.userLocation?.getLatLng(),
               incidentLocation: state.location?.getLatLng() ??
                   state.userLocation?.getLatLng(),
               onCameraIdle: (bool isIdle) {
-                if (movedPosition != null)
+                if (widget.readOnly != true) if (movedPosition != null)
                   context
                       .read<MapBloc>()
                       .add(SelectLocationEvent(location: movedPosition!));
@@ -102,20 +105,21 @@ class _ComplinaceMapViewState extends State<ComplinaceMapView> {
                     ),
                   ),
                   //  address card
-                  MapAddressCard(
-                    address: state.gisResponse?.amanaName,
-                    submitLocation: () {
-                      context
-                          .read<MapBloc>()
-                          .add(GetGISDataEvent(params: state.location!));
-                    },
-                    isValidLocation: true,
-                  ),
+                  if (widget.readOnly != true)
+                    MapAddressCard(
+                      address: state.gisResponse?.amanaName,
+                      submitLocation: () {
+                        context
+                            .read<MapBloc>()
+                            .add(GetGISDataEvent(params: state.location!));
+                      },
+                      isValidLocation: true,
+                    ),
                 ],
               ),
             ),
             // search section
-            if (widget.showSearch)
+            if (widget.showSearch && (widget.readOnly != true))
               MapSearchSection(
                 showBigPaddingScreen: widget.showSearchPaddingScreen,
                 onSearchResult: (LatLng location) {
@@ -143,6 +147,7 @@ class GoogleMapSection extends StatefulWidget {
   final LatLng? currentUserLocation;
   final LatLng? incidentLocation;
   final bool showRadius;
+  final bool readOnly;
 
   const GoogleMapSection(
       {Key? key,
@@ -151,7 +156,8 @@ class GoogleMapSection extends StatefulWidget {
       required this.currentUserLocation,
       required this.incidentLocation,
       required this.onMapController,
-      required this.showRadius})
+      required this.showRadius,
+      this.readOnly = false})
       : super(key: key);
 
   @override
@@ -165,7 +171,7 @@ class _GoogleMapSectionState extends State<GoogleMapSection> {
   @override
   void initState() {
     super.initState();
-    zoom = widget.currentUserLocation != null ? 16 : 5;
+    zoom = (widget.currentUserLocation != null || widget.readOnly) ? 16 : 5;
   }
 
   @override
@@ -177,6 +183,7 @@ class _GoogleMapSectionState extends State<GoogleMapSection> {
       circles: circles ?? {},
       onMapCreated: widget.onMapController,
       myLocationButtonEnabled: false,
+      scrollGesturesEnabled: widget.readOnly != true,
       //circles: circles != null ? circles : {},
       onCameraMove: (position) {
         widget.updateMovedPosition(position.target);

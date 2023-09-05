@@ -24,7 +24,7 @@ class FirstSectionRatingWidget extends StatelessWidget {
         child: Column(
           children: [
             SelfRatingSectionsTitle(
-              title: 'review_title_1'.tr(),
+              title: ' شهاده تقييم المبنى'.tr(),
             ),
             SizedBox(
               height: 16,

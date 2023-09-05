@@ -56,17 +56,17 @@ class SelfRatingItem extends Equatable {
       case "10":
         return ImagePath.buildingReq10;
       case "11":
-        return ImagePath.buildingReq1;
+        return ImagePath.buildingReq11;
       case "12":
-        return ImagePath.buildingReq1;
+        return ImagePath.buildingReq12;
       case "13":
-        return ImagePath.buildingReq1;
+        return ImagePath.buildingReq13;
       case "14":
-        return ImagePath.buildingReq1;
+        return ImagePath.buildingReq14;
       case "15":
-        return ImagePath.buildingReq1;
+        return ImagePath.buildingReq15;
       case "16":
-        return ImagePath.buildingReq1;
+        return ImagePath.buildingReq16;
       case "17":
         return ImagePath.buildingReq17;
       case "18":

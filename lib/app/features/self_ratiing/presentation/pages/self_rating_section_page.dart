@@ -33,9 +33,11 @@ class _SelfRatingSectionPageState extends State<SelfRatingSectionPage> {
         builder: (context, state) {
           return Scaffold(
             appBar: SelfRatingAppBar(
-              currentStep: state.currentStep,
+              currentStep: 1,
               stepCounter: 1,
-              backOnPress: () {},
+              backOnPress: () {
+                Navigator.pop(context);
+              },
             ),
             body: Padding(
               padding: EdgeInsets.all(16),

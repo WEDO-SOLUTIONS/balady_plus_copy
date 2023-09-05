@@ -60,7 +60,7 @@ class SelfRatingAppBar extends StatelessWidget implements PreferredSizeWidget {
         Padding(
           padding: const EdgeInsetsDirectional.only(end: 10),
           child: InkWell(
-            onTap: () => context.read<CreateVDBloc>().cancelIncident(),
+            onTap: () => Navigator.pop(context),
             child: CircleIcon(
               icon: Icons.close,
               iconColor: AppColor.primary600Light,

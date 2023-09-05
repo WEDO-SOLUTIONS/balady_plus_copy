@@ -7,9 +7,10 @@ class MapScreenParams {
   ComplainceGISResponse? complianceGIS;
   GISResponse? gisResponse;
   GISParams? currentUserLocation;
+  bool? readOnly; 
   MapScreenParams(
       {this.gisResponse,
       this.complianceGIS,
-      this.gisParams,
+      this.gisParams, this.readOnly, 
       this.currentUserLocation});
 }

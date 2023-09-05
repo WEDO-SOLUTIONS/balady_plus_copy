@@ -113,7 +113,7 @@ class RequestsListItem extends StatelessWidget {
                           isDeletable: false,
                           isPrintable: false));
                 }
-              } else if (request.requestMainTypeId == "1100") {
+              } else if (request.requestTypeId == 1130) {
                 Navigator.pushNamed(context, RouteName.complianceDetailsPage,
                     arguments: (
                       request.requestNumber.toString(),

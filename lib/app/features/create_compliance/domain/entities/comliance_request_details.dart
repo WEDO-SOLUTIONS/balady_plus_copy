@@ -412,6 +412,42 @@ class LocationResponseInfoDto {
         "isLocationCorrect": isLocationCorrect,
         "guid": guid,
       };
+
+  String getFullAddress({
+    bool includeStreetName = true,
+    bool includeDistrictName = true,
+    bool includeSubMunicipalityName = true,
+    bool includeAdminMunicipalityName = true,
+  }) {
+    String address = "";
+    var streetName = this.streetName;
+    var districtName = this.districtName;
+    var subMunicipalityName = this.subMunicipalityName;
+    var adminMunicipalityName = this.municipalityName;
+
+    if (includeStreetName &&
+        streetName != null &&
+        streetName.toLowerCase() != "null" &&
+        streetName.isNotEmpty) address += "$streetName, ";
+
+    if (includeDistrictName &&
+        districtName != null &&
+        districtName.toLowerCase() != "null" &&
+        districtName.isNotEmpty) address += "$districtName, ";
+
+    if (includeSubMunicipalityName &&
+        subMunicipalityName != null &&
+        subMunicipalityName.toLowerCase() != "null" &&
+        subMunicipalityName.isNotEmpty) address += "$subMunicipalityName, ";
+
+    if (includeAdminMunicipalityName &&
+        adminMunicipalityName != null &&
+        adminMunicipalityName.isNotEmpty) {
+      address += adminMunicipalityName;
+    }
+
+    return address;
+  }
 }
 
 class OwnerDto {

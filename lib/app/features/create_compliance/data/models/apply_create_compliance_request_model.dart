@@ -31,7 +31,9 @@ class ApplyCreateComplianceRequest extends Equatable {
       "contactMobile": contactMobile,
       if (licenseNumber != null) "licenseNumber": licenseNumber,
       "submitterThrough": submitterThrough,
-      "submitterType": CommonProperties.selectedDelegator?.getRole() ?? "",
+      "submitterType": CommonProperties.selectedDelegator != null
+          ? CommonProperties.selectedDelegator?.getRole()
+          : "HIMSELF",
       "ownerIdentityType":
           CommonProperties.selectedDelegator != null ? "CR" : null,
       "ownerIdentity": CommonProperties.selectedDelegator?.crNumber,

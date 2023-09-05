@@ -115,38 +115,12 @@ class UsageSubmissionCompliance extends StatelessWidget {
                     );
                   },
                 ),
-                ...[
+                if (state.documentTypeSelection == 2) ...[
                   CustomVerticalSpace(height: 16),
                   ComplianceSubmitTitle(
                     title: 'بيانات الموقع'.tr(),
                     subtitle: "",
                   ),
-                  if (state.documentTypeSelection == 1)
-                    DropDownWithTitle(
-                      title: "الموقع الجغرافي".tr(),
-                      selectedValue: state.gisResponse?.getFullAddress(),
-                      onRetry: () {
-                        context.read<ComplianceBloc>().add(
-                              const GetSubUsagesEvent(),
-                            );
-                      },
-                      onTap: () async {
-                        await NavigationService.navigatorKey.currentState!
-                            .pushNamed(RouteName.complinaceMapView,
-                                arguments: MapScreenParams(
-                                  gisParams: state.gisParams,
-                                  complianceGIS: state.gisResponse,
-                                ))
-                            .then((value) {
-                          if (value != null) {
-                            MapScreenParams? params = value as MapScreenParams;
-                            context.read<ComplianceBloc>().emit(state.copyWith(
-                                gisResponse: params.complianceGIS,
-                                gisParams: params.gisParams));
-                          }
-                        });
-                      },
-                    ),
                   ReadOnlyField(
                       title: "الأمانة".tr(),
                       subTitle: state.gisResponse?.amanaName ?? ""),
@@ -188,6 +162,98 @@ class UsageSubmissionCompliance extends StatelessWidget {
                   ReadOnlyField(
                       title: "الاحداثي الصادي".tr(),
                       subTitle: state.gisParams?.y.toString() ?? ""),
+                ],
+                if (state.documentTypeSelection == 1) ...[
+                  CustomVerticalSpace(height: 16),
+                  ComplianceSubmitTitle(
+                    title: 'بيانات الموقع'.tr(),
+                    subtitle: "",
+                  ),
+                  DropDownWithTitle(
+                    title: "الموقع الجغرافي".tr(),
+                    selectedValue: state.requestDetails?.locationResponseInfoDto
+                        ?.getFullAddress(),
+                    onRetry: () {},
+                    onTap: () async {
+                      await NavigationService.navigatorKey.currentState!
+                          .pushNamed(RouteName.complinaceMapView,
+                              arguments: MapScreenParams(
+                                  gisParams: state.gisParams,
+                                  complianceGIS: state.gisResponse,
+                                  readOnly: true))
+                          .then((value) {
+                        if (value != null) {
+                          MapScreenParams? params = value as MapScreenParams;
+                          context.read<ComplianceBloc>().emit(state.copyWith(
+                              gisResponse: params.complianceGIS,
+                              gisParams: params.gisParams));
+                        }
+                      });
+                    },
+                  ),
+                  ReadOnlyField(
+                      title: "الأمانة".tr(),
+                      subTitle: state.requestDetails?.locationResponseInfoDto
+                              ?.municipalityName ??
+                          ""),
+                  ReadOnlyField(
+                      title: "البلدية".tr(),
+                      subTitle: state.requestDetails?.locationResponseInfoDto
+                              ?.subMunicipalityName ??
+                          ""),
+                  ReadOnlyField(
+                      title: "المدينة".tr(),
+                      subTitle: state.requestDetails?.locationResponseInfoDto
+                              ?.cityName ??
+                          ""),
+                  ReadOnlyField(
+                      title: "الحي".tr(),
+                      subTitle: state.requestDetails?.locationResponseInfoDto
+                              ?.districtName ??
+                          ""),
+                  ReadOnlyField(
+                      title: "رقم المخطط".tr(),
+                      subTitle: state.requestDetails?.locationResponseInfoDto
+                              ?.mapNumber ??
+                          ""),
+                  ReadOnlyField(
+                      title: "اسم المخطط".tr(),
+                      subTitle: state.requestDetails?.locationResponseInfoDto
+                              ?.mapName ??
+                          ""),
+                  ReadOnlyField(
+                      title: "اسم الشارع".tr(),
+                      subTitle: state.requestDetails?.locationResponseInfoDto
+                              ?.streetName ??
+                          ""),
+                  ComplianceSubmitTitle(
+                    title: 'بيانات قطع الأراضي'.tr(),
+                    subtitle: "",
+                  ),
+                  ReadOnlyField(
+                      title: "رقم قطعة الأرض".tr(),
+                      subTitle: state.requestDetails?.locationResponseInfoDto
+                              ?.landNumber ??
+                          ""),
+                  ReadOnlyField(
+                      title: "مساحة الارض".tr(),
+                      subTitle: state.requestDetails?.locationResponseInfoDto
+                              ?.landArea ??
+                          ""),
+                  ComplianceSubmitTitle(
+                    title: 'الاحداثيات'.tr(),
+                    subtitle: "",
+                  ),
+                  ReadOnlyField(
+                      title: "الاحداثي السيني".tr(),
+                      subTitle:
+                          state.requestDetails?.locationResponseInfoDto?.x ??
+                              ""),
+                  ReadOnlyField(
+                      title: "الاحداثي الصادي".tr(),
+                      subTitle:
+                          state.requestDetails?.locationResponseInfoDto?.y ??
+                              ""),
                 ],
                 SizedBox(
                   height: 32,

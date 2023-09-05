@@ -29,6 +29,7 @@ class SelfRatingResultNotCompleted extends StatelessWidget {
         fontSize: 16,
         fontColor: AppColor.blackModern900Light,
       ),
+      CustomVerticalSpace(height: 16),
       ListView.builder(
           itemCount: result.complianes.length ?? 0,
           shrinkWrap: true,

@@ -32,6 +32,7 @@ class MapBloc extends Bloc<MapEvent, MapState> {
         super(MapState(
             gisResponse: params?.complianceGIS,
             location: params?.gisParams,
+            readOnly: params?.readOnly,
             userLocation: params?.currentUserLocation)) {
     on<GetGISDataEvent>(_getGisDataHandler);
     on<InitMapEvent>(_initMapHandler);
@@ -118,44 +119,48 @@ class MapBloc extends Bloc<MapEvent, MapState> {
   }
 
   Future<void> _initMapHandler(InitMapEvent e, Emitter emitter) async {
-    if (state.location != null && state.gisResponse == null) {
-      add(GetGISDataEvent(params: state.location!, popPage: false));
-    } else if (state.location != null && state.gisResponse != null) {
+    if (state.readOnly == true) {
     } else {
-      try {
-        emitter(state.copyWith(status: BlocStatus.loading));
-
-        Position position = await Geolocator.getCurrentPosition(
-            desiredAccuracy: LocationAccuracy.best,
-            timeLimit: const Duration(seconds: 20));
-        emitter(state.copyWith(
-            status: BlocStatus.success,
-            location: GISParams(x: position.longitude, y: position.latitude),
-            userLocation:
-                GISParams(x: position.longitude, y: position.latitude)));
-      } catch (ex) {
-        Position? position;
+      if (state.location != null && state.gisResponse == null) {
+        add(GetGISDataEvent(params: state.location!, popPage: false));
+      } else if (state.location != null && state.gisResponse != null) {
+      } else {
         try {
-          position = await Geolocator.getLastKnownPosition();
-        } catch (ex) {}
-        if (position != null) {
+          emitter(state.copyWith(status: BlocStatus.loading));
+
+          Position position = await Geolocator.getCurrentPosition(
+              desiredAccuracy: LocationAccuracy.best,
+              timeLimit: const Duration(seconds: 20));
           emitter(state.copyWith(
               status: BlocStatus.success,
               location: GISParams(x: position.longitude, y: position.latitude),
               userLocation:
                   GISParams(x: position.longitude, y: position.latitude)));
+        } catch (ex) {
+          Position? position;
+          try {
+            position = await Geolocator.getLastKnownPosition();
+          } catch (ex) {}
+          if (position != null) {
+            emitter(state.copyWith(
+                status: BlocStatus.success,
+                location:
+                    GISParams(x: position.longitude, y: position.latitude),
+                userLocation:
+                    GISParams(x: position.longitude, y: position.latitude)));
+          }
         }
-      }
 
-      if (state.location == null) {
-        emitter(state.copyWith(
-            status: BlocStatus.success,
-            location: GISParams(
-                x: CommonProperties.defaultLocation.longitude,
-                y: CommonProperties.defaultLocation.latitude),
-            userLocation: GISParams(
-                x: CommonProperties.defaultLocation.longitude,
-                y: CommonProperties.defaultLocation.latitude)));
+        if (state.location == null) {
+          emitter(state.copyWith(
+              status: BlocStatus.success,
+              location: GISParams(
+                  x: CommonProperties.defaultLocation.longitude,
+                  y: CommonProperties.defaultLocation.latitude),
+              userLocation: GISParams(
+                  x: CommonProperties.defaultLocation.longitude,
+                  y: CommonProperties.defaultLocation.latitude)));
+        }
       }
       animateCamera(state.location!.y, state.location!.x);
     }

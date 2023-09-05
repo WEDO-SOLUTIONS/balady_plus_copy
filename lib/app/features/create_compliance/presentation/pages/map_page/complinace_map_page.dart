@@ -57,6 +57,7 @@ class _ComplinaceMapScreen extends State<ComplinaceMapScreen> {
                   ComplinaceMapView(
                     showRadius: false,
                     showSearchPaddingScreen: true,
+                    readOnly: params.readOnly ?? false,
                   ),
                   // exit button
                   Align(
