@@ -109,7 +109,7 @@ extension SearchCategoryMessage {
         case .cafe:
             return [159, 162]
         case .restaurants:
-            return [161, 1203, 112658, 51459, 110376, 166, 15791, 111593]
+            return [161]
         case .parks:
             return [168]
         }

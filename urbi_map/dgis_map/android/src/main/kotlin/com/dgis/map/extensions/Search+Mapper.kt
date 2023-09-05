@@ -80,7 +80,7 @@ fun SearchCategoryMessage.toRubrics(): List<RubricId> {
         SearchCategoryMessage.MOUSQUES -> listOf(13374)
         SearchCategoryMessage.GAS_STATIONS -> listOf(18547)
         SearchCategoryMessage.CAFE -> listOf(159, 162)
-        SearchCategoryMessage.RESTAURANTS -> listOf(161, 1203, 112658, 51459, 110376, 166, 15791, 111593)
+        SearchCategoryMessage.RESTAURANTS -> listOf(161)
         SearchCategoryMessage.PARKS -> listOf(168)
     }
 
