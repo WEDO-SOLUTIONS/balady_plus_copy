@@ -1,4 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:equatable/equatable.dart';
 
 class ApplyCreateComplianceRequest extends Equatable {
@@ -9,15 +10,20 @@ class ApplyCreateComplianceRequest extends Equatable {
   String? ownershipDocumentDate;
   String? ownershipDocumentNo;
   int? ownershipDocumentType;
-  ApplyCreateComplianceRequest({
-    this.certificateType,
-    this.contactMobile,
-    this.licenseNumber,
-    this.submitterThrough,
-    this.ownershipDocumentDate,
-    this.ownershipDocumentNo,
-    this.ownershipDocumentType,
-  });
+  String? ownerIdentity;
+  String? ownerIdentityType;
+  String? submitterType;
+  ApplyCreateComplianceRequest(
+      {this.certificateType,
+      this.contactMobile,
+      this.licenseNumber,
+      this.submitterThrough,
+      this.ownershipDocumentDate,
+      this.ownershipDocumentNo,
+      this.ownershipDocumentType,
+      this.submitterType,
+      this.ownerIdentityType,
+      this.ownerIdentity});
 
   Map<String, dynamic> toMap() {
     return {
@@ -25,6 +31,10 @@ class ApplyCreateComplianceRequest extends Equatable {
       "contactMobile": contactMobile,
       if (licenseNumber != null) "licenseNumber": licenseNumber,
       "submitterThrough": submitterThrough,
+      "submitterType": CommonProperties.selectedDelegator?.getRole() ?? "",
+      "ownerIdentityType":
+          CommonProperties.selectedDelegator != null ? "CR" : null,
+      "ownerIdentity": CommonProperties.selectedDelegator?.crNumber,
       if (ownershipDocumentType != null)
         "ownershipDocInfoDto": {
           "ownershipDocumentDate": ownershipDocumentDate,
@@ -43,6 +53,9 @@ class ApplyCreateComplianceRequest extends Equatable {
         submitterThrough,
         ownershipDocumentType,
         ownershipDocumentNo,
-        ownershipDocumentType
+        ownershipDocumentType,
+        submitterType,
+        ownerIdentityType,
+        ownerIdentity
       ];
 }

@@ -24,7 +24,7 @@ class ServiceCardParameter extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       decoration: const BoxDecoration(
         borderRadius: BorderRadius.all(Radius.circular(10)),
-        color: AppColor.blackModern100Light,
+        color: Color(0x80E6EFEF),
       ),
       child: Column(
         children: [
@@ -37,13 +37,17 @@ class ServiceCardParameter extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               DrawIconBasedTypeWidget(
-                icon: Image.asset(iconName),
+                icon: iconName,
                 iconSize: 16,
               ),
               const SizedBox(width: 4),
-              CustomTextWidget(
-                value,
-                textStyle: AppStyle.serviceCardParameterTitleTextStyle,
+              Flexible(
+                child: CustomTextWidget(
+                  value,
+                  maxLines: 1,
+                  textStyle: AppStyle.serviceCardParameterTitleTextStyle
+                      .copyWith(color: AppColor.blackModern500Light),
+                ),
               ),
             ],
           )

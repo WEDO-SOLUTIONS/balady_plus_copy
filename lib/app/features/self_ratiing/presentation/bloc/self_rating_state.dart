@@ -29,10 +29,12 @@ class SelfRatingState extends Equatable {
 
   int get totalViolation =>
       items?.where((element) => element.compliance == false).length ?? 0;
+  int get totalCompliance =>
+      items?.where((element) => element.compliance == true).length ?? 0;
   List<SelfRatingItem> get complianes =>
       items?.where((element) => element.compliance == false).toList() ?? [];
   String get percentage =>
-      ((totalViolation / items!.length) * 100).toStringAsFixed(2);
+      ((totalCompliance / items!.length) * 100).toStringAsFixed(1);
   @override
   List<Object?> get props => [
         status,

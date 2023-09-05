@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/self_ratiing/presentation/widgets/self_rating_result_widgets/self_rating_result_section.dart';
 import 'package:flutter/material.dart';
 
@@ -50,7 +51,10 @@ class SelfRatingResultCompleted extends StatelessWidget {
           ),
           CustomVerticalSpace(height: 16),
           ElevatedButtonWidget.primaryCustom(
-              text: "اصدار شهادة الامتثال", onPressed: () {})
+              text: "إصدار شهادة الامتثال",
+              onPressed: () {
+                Navigator.pushNamed(context, RouteName.createCompliancePage);
+              })
         ]),
       ),
     ]);

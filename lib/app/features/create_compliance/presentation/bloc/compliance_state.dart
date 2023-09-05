@@ -1,13 +1,16 @@
 import 'package:balady_plus/app/core/utils/enums/bloc_status.dart';
+import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/create_compliance/create_compliance_exports.dart';
 import 'package:balady_plus/app/features/vd/domain/entities/gis/gis_params.dart';
 import 'package:balady_plus/app/features/vd/domain/entities/gis/gis_response.dart';
 import 'package:equatable/equatable.dart';
 import 'package:formz/formz.dart';
+import 'package:hijri/hijri_calendar.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:collection/collection.dart';
 
 import '../../../../core/utils/common_functions.dart';
+import '../../../../core/utils/enums/date_form.dart';
 import '../../../../core/utils/nullable.dart';
 import 'package:balady_plus/app/features/transaction_inquiry/presentation/core/models/attachment_model.dart';
 import '../../../_shared_feature_/data/entities/validators/phone_number_validation.dart';
@@ -17,6 +20,7 @@ import '../../domain/entities/compliance_gis_resopnse.dart';
 import '../../domain/entities/complinace_engoffice_response.dart';
 import '../../domain/entities/complinace_licenses_response.dart';
 import '../../domain/entities/ownership_doc_type_response.dart';
+import '../../domain/entities/send_otp_response.dart';
 
 class ComplianceState extends Equatable {
   final BlocStatus status;
@@ -44,6 +48,7 @@ class ComplianceState extends Equatable {
   final ComplinaceLookUpItem? selectedOwnerShip;
   final String? ownershipText;
   final String? ownershipDate;
+  final DateForm? form;
   final ComplianceEngOfficeDetails? engOfficeDetails;
 
   final ComplinaecLicensesReponse? licenes;
@@ -54,6 +59,11 @@ class ComplianceState extends Equatable {
   final ApplyCreateComplianceRequest? applyRequest;
   final String? contactMobileNumber;
   final bool? agreement;
+  final bool? emtethalAgreement;
+  final bool? ownerShipAgreement;
+  final bool? contactMobileVerified;
+  final SendOtpResponse? sendOtpResponse;
+  final bool? isDraft;
 
   PhoneNumberValidation get phoneValidator => contactMobileNumber == null
       ? PhoneNumberValidation.pure()
@@ -74,6 +84,8 @@ class ComplianceState extends Equatable {
       this.agreement,
       this.contactMobileNumber,
       this.applyRequest,
+      this.form,
+      this.isDraft,
       this.benificiaryTypeSelection,
       this.documentTypeSelection,
       this.requestId,
@@ -94,88 +106,106 @@ class ComplianceState extends Equatable {
       this.attachments,
       this.engOffices,
       this.selectedEngOffice,
-      this.engOfficeDetails});
-  ComplianceState copyWith({
-    final BlocStatus? status,
-    final int? currentStep,
-    final int? benificiaryTypeSelection,
-    final int? documentTypeSelection,
-    final int? requestId,
-    final bool? agreement,
-    final ComplianceRequestDetails? requestDetails,
-    final ComplinaceLookUpResponse? mainUsages,
-    final ComplinaceLookUpResponse? subUsages,
-    final ComplinaceLookUpResponse? ownerShipsTypes,
-    final BlocRequestStatus? mainUsagesStatus,
-    final BlocRequestStatus? ownerShipsStatus,
-    final BlocRequestStatus? enginnerOfficesStatus,
-    final BlocRequestStatus? subUsagesStatus,
-    final BlocRequestStatus? licenseStatus,
-    final String? errorMessage,
-    final ComplinaceLookUpItem? selectedMainUsage,
-    final ComplinaceLookUpItem? selectedSubUsage,
-    final ComplinaecEngOfficeReponse? engOffices,
-    final Nullable<ComplinaceLookUpItem?>? selectedOwnerShip,
-    final Nullable<String?>? ownershipText,
-    final Nullable<String?>? ownershipDate,
-    final ComplinaecLicensesReponse? licenes,
-    final Nullable<ComplianceLisenseItem?>? selectedLicense,
-    final BlocRequestStatus? detailsStatus,
-    final ComplainceGISResponse? gisResponse,
-    final GISParams? gisParams,
-    final List<AttachmentData>? attachments,
-    final ApplyCreateComplianceRequest? applyRequest,
-    final String? contactMobileNumber,
-    final Nullable<ComplinaecEngOfficeItem?>? selectedEngOffice,
-    final Nullable<ComplianceEngOfficeDetails?>? engOfficeDetails,
-  }) {
+      this.engOfficeDetails,
+      this.emtethalAgreement,
+      this.ownerShipAgreement,
+      this.contactMobileVerified,
+      this.sendOtpResponse});
+  ComplianceState copyWith(
+      {final BlocStatus? status,
+      final int? currentStep,
+      final int? benificiaryTypeSelection,
+      final int? documentTypeSelection,
+      final int? requestId,
+      final bool? agreement,
+      final ComplianceRequestDetails? requestDetails,
+      final ComplinaceLookUpResponse? mainUsages,
+      final ComplinaceLookUpResponse? subUsages,
+      final ComplinaceLookUpResponse? ownerShipsTypes,
+      final BlocRequestStatus? mainUsagesStatus,
+      final BlocRequestStatus? ownerShipsStatus,
+      final BlocRequestStatus? enginnerOfficesStatus,
+      final BlocRequestStatus? subUsagesStatus,
+      final BlocRequestStatus? licenseStatus,
+      final String? errorMessage,
+      final ComplinaceLookUpItem? selectedMainUsage,
+      final ComplinaceLookUpItem? selectedSubUsage,
+      final ComplinaecEngOfficeReponse? engOffices,
+      final Nullable<ComplinaceLookUpItem?>? selectedOwnerShip,
+      final Nullable<String?>? ownershipText,
+      final Nullable<String?>? ownershipDate,
+      final DateForm? form,
+      final ComplinaecLicensesReponse? licenes,
+      final Nullable<ComplianceLisenseItem?>? selectedLicense,
+      final BlocRequestStatus? detailsStatus,
+      final ComplainceGISResponse? gisResponse,
+      final GISParams? gisParams,
+      final List<AttachmentData>? attachments,
+      final ApplyCreateComplianceRequest? applyRequest,
+      final String? contactMobileNumber,
+      final Nullable<ComplinaecEngOfficeItem?>? selectedEngOffice,
+      final Nullable<ComplianceEngOfficeDetails?>? engOfficeDetails,
+      final bool? emtethalAgreement,
+      final bool? ownerShipAgreement,
+      final Nullable<bool?>? contactMobileVerified,
+      final Nullable<SendOtpResponse?>? sendOtpResponse,
+      final bool? isDraft}) {
     return ComplianceState(
-      status: status ?? this.status,
-      contactMobileNumber: contactMobileNumber ?? this.contactMobileNumber,
-      currentStep: currentStep ?? this.currentStep,
-      agreement: agreement ?? this.agreement,
-      benificiaryTypeSelection:
-          benificiaryTypeSelection ?? this.benificiaryTypeSelection,
-      documentTypeSelection:
-          documentTypeSelection ?? this.documentTypeSelection,
-      requestId: requestId ?? this.requestId,
-      requestDetails: requestDetails ?? this.requestDetails,
-      mainUsages: mainUsages ?? this.mainUsages,
-      subUsages: subUsages ?? this.subUsages,
-      ownerShipsTypes: ownerShipsTypes ?? this.ownerShipsTypes,
-      enginnerOfficesStatus:
-          enginnerOfficesStatus ?? this.enginnerOfficesStatus,
-      ownerShipsStatus: ownerShipsStatus ?? this.ownerShipsStatus,
-      mainUsagesStatus: mainUsagesStatus ?? this.mainUsagesStatus,
-      licenseStatus: licenseStatus ?? this.licenseStatus,
-      errorMessage: errorMessage ?? this.errorMessage,
-      selectedMainUsage: selectedMainUsage ?? this.selectedMainUsage,
-      selectedOwnerShip: selectedOwnerShip == null
-          ? this.selectedOwnerShip
-          : selectedOwnerShip.value,
-      selectedSubUsage: selectedSubUsage ?? this.selectedSubUsage,
-      ownershipText:
-          ownershipText == null ? this.ownershipText : ownershipText.value,
-      ownershipDate:
-          ownershipDate == null ? this.ownershipDate : ownershipDate.value,
-      subUsagesStatus: subUsagesStatus ?? this.subUsagesStatus,
-      licenes: licenes ?? this.licenes,
-      selectedLicense: selectedLicense == null
-          ? this.selectedLicense
-          : selectedLicense.value,
-      detailsStatus: detailsStatus ?? this.detailsStatus,
-      gisResponse: gisResponse ?? this.gisResponse,
-      gisParams: gisParams ?? this.gisParams,
-      attachments: attachments ?? this.attachments,
-      applyRequest: applyRequest ?? this.applyRequest,
-      engOffices: engOffices ?? this.engOffices,
-      selectedEngOffice: selectedEngOffice == null
-          ? this.selectedEngOffice
-          : selectedEngOffice.value,
-      engOfficeDetails: engOfficeDetails == null
-          ? this.engOfficeDetails
-          : engOfficeDetails.value,
-    );
+        status: status ?? this.status,
+        contactMobileNumber: contactMobileNumber ?? this.contactMobileNumber,
+        currentStep: currentStep ?? this.currentStep,
+        agreement: agreement ?? this.agreement,
+        benificiaryTypeSelection:
+            benificiaryTypeSelection ?? this.benificiaryTypeSelection,
+        documentTypeSelection:
+            documentTypeSelection ?? this.documentTypeSelection,
+        requestId: requestId ?? this.requestId,
+        requestDetails: requestDetails ?? this.requestDetails,
+        mainUsages: mainUsages ?? this.mainUsages,
+        subUsages: subUsages ?? this.subUsages,
+        ownerShipsTypes: ownerShipsTypes ?? this.ownerShipsTypes,
+        enginnerOfficesStatus:
+            enginnerOfficesStatus ?? this.enginnerOfficesStatus,
+        ownerShipsStatus: ownerShipsStatus ?? this.ownerShipsStatus,
+        mainUsagesStatus: mainUsagesStatus ?? this.mainUsagesStatus,
+        licenseStatus: licenseStatus ?? this.licenseStatus,
+        errorMessage: errorMessage ?? this.errorMessage,
+        selectedMainUsage: selectedMainUsage ?? this.selectedMainUsage,
+        selectedOwnerShip: selectedOwnerShip == null
+            ? this.selectedOwnerShip
+            : selectedOwnerShip.value,
+        selectedSubUsage: selectedSubUsage ?? this.selectedSubUsage,
+        ownershipText:
+            ownershipText == null ? this.ownershipText : ownershipText.value,
+        ownershipDate:
+            ownershipDate == null ? this.ownershipDate : ownershipDate.value,
+        form: form ?? this.form,
+        subUsagesStatus: subUsagesStatus ?? this.subUsagesStatus,
+        licenes: licenes ?? this.licenes,
+        selectedLicense: selectedLicense == null
+            ? this.selectedLicense
+            : selectedLicense.value,
+        detailsStatus: detailsStatus ?? this.detailsStatus,
+        gisResponse: gisResponse ?? this.gisResponse,
+        gisParams: gisParams ?? this.gisParams,
+        attachments: attachments ?? this.attachments,
+        applyRequest: applyRequest ?? this.applyRequest,
+        engOffices: engOffices ?? this.engOffices,
+        selectedEngOffice: selectedEngOffice == null
+            ? this.selectedEngOffice
+            : selectedEngOffice.value,
+        engOfficeDetails: engOfficeDetails == null
+            ? this.engOfficeDetails
+            : engOfficeDetails.value,
+        emtethalAgreement: emtethalAgreement ?? this.emtethalAgreement,
+        ownerShipAgreement: ownerShipAgreement ?? this.ownerShipAgreement,
+        contactMobileVerified: contactMobileVerified == null
+            ? this.contactMobileVerified
+            : contactMobileVerified.value,
+        sendOtpResponse: sendOtpResponse == null
+            ? this.sendOtpResponse
+            : sendOtpResponse.value,
+        isDraft: isDraft ?? this.isDraft);
   }
 
   bool isNextButtonEnabled() {
@@ -186,10 +216,11 @@ class ComplianceState extends Equatable {
       return isValid;
     } else if (currentStep == 1) {
       bool form = Formz.validate([phoneValidator]);
-      if (form)
-        return true;
-      else
-        return false;
+      //    if (form)
+      //      return true;
+      //    else
+      //    return false;
+      return true;
     } else if (currentStep == 2) {
       if (documentTypeSelection == null) return false;
 
@@ -201,15 +232,18 @@ class ComplianceState extends Equatable {
         if (selectedOwnerShip == null ||
             (ownershipText?.isEmpty ?? true) ||
             ownershipDate == null ||
-            gisResponse == null) return false;
+            gisResponse == null ||
+            ownerShipAgreement != true) return false;
       }
     } else if (currentStep == 3) {
       if (selectedMainUsage == null || selectedSubUsage == null) return false;
     } else if (currentStep == 4 && benificiaryTypeSelection == 1) {
-      bool valid = requestDetails?.emtithalItems?.firstWhereOrNull(
+      /* bool valid = requestDetails?.emtithalItems?.firstWhereOrNull(
               (element) => element.submitterAnswer == null) ==
           null;
-      return valid;
+      return valid;*/
+
+      return true;
     } else if (currentStep == 4 && benificiaryTypeSelection == 2) {
       bool valid = engOfficeDetails != null;
       return valid;
@@ -245,6 +279,34 @@ class ComplianceState extends Equatable {
               ? "BENEFICARY"
               : "ENGINEERING_OFFICE");
 
+  DateTime? getOwnerShipDate() {
+    if (ownershipDate != null) {
+      List<String> date = ownershipDate!.split("/");
+      int? year = int.tryParse(date[0]);
+      int? month = int.tryParse(date[1]);
+      int? day = int.tryParse(date[2]);
+      if (year != null && month != null && day != null) {
+        HijriCalendar calendar = HijriCalendar();
+
+        calendar.hDay = day;
+        calendar.hMonth = month;
+        calendar.hYear = year;
+        return calendar.hijriToGregorian(year, month, day);
+      }
+      return null;
+    }
+  }
+
+  String? getOwnerShipDateStr() {
+    if ((ownershipDate != null && form == null) || form == DateForm.hijri) {
+      return ownershipDate!;
+    } else {
+      print("DAAAATE $ownershipDate");
+      return DateTime.tryParse(ownershipDate ?? "")!.toHijriFormattedDate1();
+    }
+    return null;
+  }
+
   @override
   List<Object?> get props => [
         status,
@@ -278,6 +340,11 @@ class ComplianceState extends Equatable {
         agreement,
         selectedEngOffice,
         engOffices,
-        engOfficeDetails
+        engOfficeDetails,
+        ownerShipAgreement,
+        emtethalAgreement,
+        contactMobileVerified,
+        form,
+        isDraft
       ];
 }

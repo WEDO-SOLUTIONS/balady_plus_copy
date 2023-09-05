@@ -25,7 +25,7 @@ class PledgesSummuryWidget extends StatelessWidget {
           isExpanded: true,
           children: [
             CustomTextWidget(
-              ("consent_body").tr(),
+              ("compliance_body").tr(),
               fontColor: AppColor.blackModern700Light,
               maxLines: 90,
               height: 1.3,

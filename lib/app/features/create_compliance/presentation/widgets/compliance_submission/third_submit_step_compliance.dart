@@ -11,6 +11,7 @@ import 'package:balady_plus/app/features/create_compliance/presentation/widgets/
 import 'package:balady_plus/app/features/create_compliance/presentation/widgets/radio_custom.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hijri/hijri_calendar.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:balady_plus/app/features/create_compliance/presentation/widgets/compliance_title_widget.dart';
 
@@ -22,6 +23,7 @@ import '../../../../_shared_feature_/presentation/widgets/pickers/filter_date_pi
 import '../../../../vd/domain/entities/map/map_screen_params.dart';
 import '../../bloc/compliance_bloc.dart';
 import '../bottom_sheet_list.dart';
+import '../compliance_consetnt.dart';
 import '../compliance_date_picker.dart';
 import '../compliance_ownership_field.dart';
 import '../license_item_widget.dart';
@@ -226,12 +228,25 @@ class ThirdSubmissionCompliance extends StatelessWidget {
                   CustomVerticalSpace(height: 12),
                   ComplianceDatePicker(
                     title: "compliance_ownership_date".tr(),
-                    initialDateForm: DateForm.gregorian,
+                    initialDateForm: state.form ?? DateForm.hijri,
+                    initialDate: state.ownershipDate != null
+                        ? state.getOwnerShipDate()
+                        : null,
+                    endDate: DateTime.now(),
                     onChange: (DateTime time, DateForm form) {
                       context.read<ComplianceBloc>().add(UpdateFieldsEvent(
+                          form: form,
                           ownershipDate: time.toHijriFormattedDate1()));
                     },
                   ),
+                  ComplianceConsent(
+                    body: "compliance_ownerShip_body".tr(),
+                    agreement: state.ownerShipAgreement ?? false,
+                    onChanged: (val) {
+                      context.read<ComplianceBloc>().add(
+                          UpdateFieldsEvent(ownershipAgreement: val ?? false));
+                    },
+                  )
                 ],
                 SizedBox(
                   height: 32,

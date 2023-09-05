@@ -30,7 +30,7 @@ class ApiUrl {
       '/v1/balady-consultation-services/activity-detail-info';
   static const accommodationTypes =
       '/v1/balady-consultation-services/accommodation-types';
-  static const consultationKey = '/v1/balady-consultation-services/apply';
+  static const consultationKey = '/v2/balady-consultation-services/apply';
   static const issuingPredefinedConditions =
       '/v1/balady-consultation-services/predefined-conditions?typeId=ISSUING';
   static const licensePermits =
@@ -73,6 +73,8 @@ class ApiUrl {
   static const submitConsultation = '/v1/balady-consultation-services/submit';
 
   static const buildingCompliance = '/v1/crm/gis/building-compliance-details';
+  static const complianceSendOTP = '/v1/utility-services/otp/send';
+  static const complianceVerify = '/v1/utility-services/otp/verify';
 
   static const gisImageUrl = '/v1/gis-services/image-url';
 
@@ -262,7 +264,7 @@ class ApiUrl {
 
   // ! Create Compliance
   static const String applyBeneficiaryCompliance =
-      '/v1/compliance-certificate-mobile-services/apply-beneficiary';
+      '/v2/compliance-certificate-mobile-services/apply-beneficiary';
   static const String getComplianceRequestById =
       '/v1/compliance-certificate-mobile-services/certificate/';
 
@@ -281,8 +283,9 @@ class ApiUrl {
   static const String complicanecOwnershioDocType =
       '/v1/compliance-certificate-mobile-services/ownership-doc-type';
 
-  static String complianceMyLicenses =
-      '/v1/compliance-certificate-mobile-services/my-licenses/${CommonProperties.userInfo?.idNo}/HIMSELF';
+  static String complianceMyLicenses(
+          {required String id, required String type}) =>
+      '/v1/compliance-certificate-mobile-services/my-licenses/$id/$type';
 
   static const String complianceMainUsage =
       '/v1/compliance-certificate-mobile-services/lookup/main-usage';

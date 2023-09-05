@@ -113,6 +113,12 @@ class RequestsListItem extends StatelessWidget {
                           isDeletable: false,
                           isPrintable: false));
                 }
+              } else if (request.requestMainTypeId == "1100") {
+                Navigator.pushNamed(context, RouteName.complianceDetailsPage,
+                    arguments: (
+                      request.requestNumber.toString(),
+                      request.redirectUrl
+                    ));
               } else {
                 if (request.redirectUrl == null) {
                   if (request.requestTypeId == 50001) {
@@ -133,21 +139,8 @@ class RequestsListItem extends StatelessWidget {
                     return;
                   }
                 } else {
-                  EasyLoading.show();
-                  GetCookie getCookie = GetCookie(repository: sl());
-                  final failureOrSuccessForCookie = await getCookie(NoParams());
-                  EasyLoading.dismiss();
-                  failureOrSuccessForCookie.fold((l) {
-                    CommonFunctions.showError("server_error_1".tr());
-                  }, (r) async {
-                    Navigator.of(context).pushNamed(
-                      RouteName.inappWebview,
-                      arguments: (
-                        title: 'request'.tr(),
-                        url: request.redirectUrl
-                      ),
-                    );
-                  });
+                  CommonFunctions.openBaldyWithRefreshCookie(
+                      request.redirectUrl);
                 }
               }
             },

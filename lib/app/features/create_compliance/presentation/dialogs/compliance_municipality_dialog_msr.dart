@@ -21,7 +21,8 @@ class ComplianceMunicipalityMSRDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String msg = Helpers.translatingWord("service_not_available");
+    String msg = Helpers.translatingWord(
+        "إذا كان المبنى في نطاق منطقة الرياض، نأمل الدخول على بوابة أمانة الرياض من خلال الرابط الآتي لاستكمال طلبك");
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -48,13 +49,14 @@ class ComplianceMunicipalityMSRDialog extends StatelessWidget {
                   iconSize: 82,
                 ),
                 Constants.verticalSpaceLarge,
-                CustomTextWidget(
-                  Helpers.translatingWord("region_coverage_error"),
+                /*CustomTextWidget(
+                  Helpers.translatingWord(
+                      "إذام كان المبنى في نطاق منطقة الرياض، نأمل الدخول على بواية أمانة الرياض من خلال الرابط الآتي لاستكمال طلبك"),
                   fontColor: AppColor.blackModern600Light,
                   fontWeight: AppFontWeight.bold,
                   fontSize: 20,
                 ),
-                Constants.verticalSpaceMedium,
+                Constants.verticalSpaceMedium,*/
                 CustomTextWidget(
                   msg,
                   fontColor: AppColor.blackModern500Light,

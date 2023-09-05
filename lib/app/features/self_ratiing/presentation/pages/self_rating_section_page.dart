@@ -5,12 +5,14 @@ import 'package:balady_plus/app/features/self_ratiing/presentation/bloc/self_rat
 import 'package:balady_plus/app/features/self_ratiing/presentation/bloc/self_rating_state.dart';
 import 'package:balady_plus/app/features/self_ratiing/presentation/widgets/self_rating_sections_widgets/first_section_rating.dart';
 import 'package:balady_plus/app/features/self_ratiing/presentation/widgets/self_rating_sections_widgets/second_section_rationg.dart';
+import 'package:collection/collection.dart';
 
 import 'package:balady_plus/app/features/self_ratiing/presentation/widgets/self_rating_sections_widgets/self_rating_appbar.dart';
 import 'package:balady_plus/app/features/self_ratiing/presentation/widgets/self_rating_sections_widgets/third_section_rating.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../core/utils/common_functions.dart';
 import '../../data/models/rating_self_success_result.dart';
 
 class SelfRatingSectionPage extends StatefulWidget {
@@ -39,12 +41,21 @@ class _SelfRatingSectionPageState extends State<SelfRatingSectionPage> {
               padding: EdgeInsets.all(16),
               child: FirstSectionRatingWidget(
                 onPressed: () {
-                  NavigationService.pushNamed(
-                      routeName: RouteName.selfRatingResultPage,
-                      args: RatingSelfSuccessResult(
-                          totalViolation: state.totalViolation,
-                          percentage: state.percentage,
-                          complianes: state.complianes));
+                  bool valid = state.items?.firstWhereOrNull(
+                          (element) => element.compliance == null) ==
+                      null;
+
+                  if (valid) {
+                    NavigationService.navigatorKey.currentState!
+                        .pushReplacementNamed(RouteName.selfRatingResultPage,
+                            arguments: RatingSelfSuccessResult(
+                                totalViolation: state.totalViolation,
+                                percentage: state.percentage,
+                                complianes: state.complianes));
+                  } else {
+                    CommonFunctions.showError(
+                        "الرجاء اختيار جميع بنود الإمتثال");
+                  }
                 },
               ),
             ),

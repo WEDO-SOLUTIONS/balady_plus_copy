@@ -128,7 +128,7 @@ class _BuildingRequirementsDialogState
                   BuildingReqCard(
                     title:
                         "وجود كتابات مخالفة على كامل واجهة المبنى المطل على الشارع التجاري",
-                    imgPath: ImagePath.buildingReq11,
+                    imgPath: ImagePath.buildingReq14,
                   ),
                   BuildingReqCard(
                     title:

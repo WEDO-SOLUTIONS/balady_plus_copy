@@ -37,6 +37,7 @@ class CustomEnhancedExpansionPanelWidget extends StatelessWidget {
   final bool underline;
   final void Function(bool)? onExpansionChanged;
   final double? leadingWidth;
+  final Color? backgroundColor;
   const CustomEnhancedExpansionPanelWidget({
     super.key,
     this.keepState = true,
@@ -49,6 +50,7 @@ class CustomEnhancedExpansionPanelWidget extends StatelessWidget {
     this.isExpanded = false,
     this.underline = true,
     this.leadingWidth,
+    this.backgroundColor,
     this.onExpansionChanged,
   });
 
@@ -67,7 +69,7 @@ class CustomEnhancedExpansionPanelWidget extends StatelessWidget {
               //       vertical: 8.0,
               //     ),
               decoration: BoxDecoration(
-                color: Color(0x7FE6EFEF),
+                color: backgroundColor ?? Color(0x7FE6EFEF),
                 borderRadius: BorderRadius.circular(16.0),
               ),
               child: LayoutBuilder(

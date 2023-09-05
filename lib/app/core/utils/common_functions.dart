@@ -623,7 +623,7 @@ class CommonFunctions {
     return false;
   }
 
-  static void openBaladyWebView(String url) async {
+  static void openBaladyWebView(String? url) async {
     EasyLoading.show();
     GetCookie getCookie = GetCookie(repository: sl());
     final failureOrSuccessForCookie = await getCookie(NoParams());
@@ -831,10 +831,27 @@ class CommonFunctions {
     }
   }
 
-  static externalLaunch(String url) async {
+  static externalLaunch(String? url) async {
+    if (url == null) return;
     final Uri convertUrl = Uri.parse(url);
     if (!await launchUrl(convertUrl, mode: LaunchMode.externalApplication))
       throw 'Could not launch $convertUrl';
+  }
+
+  static openBaldyWithRefreshCookie(String? redirectUrl) async {
+    if (redirectUrl == null) return;
+    EasyLoading.show();
+    GetCookie getCookie = GetCookie(repository: sl());
+    final failureOrSuccessForCookie = await getCookie(NoParams());
+    EasyLoading.dismiss();
+    failureOrSuccessForCookie.fold((l) {
+      CommonFunctions.showError("server_error_1".tr());
+    }, (r) async {
+      NavigationService.navigatorKey.currentState?.pushNamed(
+        RouteName.inappWebview,
+        arguments: (title: 'request'.tr(), url: redirectUrl),
+      );
+    });
   }
 
   static String getCarPlateEnlgishLetters(String value) {

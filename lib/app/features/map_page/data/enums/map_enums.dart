@@ -63,7 +63,7 @@ enum GISMapLayers {
 
   BSAimtithalBuildingsCertificateL(
       layerId: 7,
-      cardHeight: 172,
+      cardHeight: 180,
       icon: Constants.imtethalLayerIcon,
       selectedIcon: Constants.imtethalSelectedLayerIcon,
       outFieldsShort: [

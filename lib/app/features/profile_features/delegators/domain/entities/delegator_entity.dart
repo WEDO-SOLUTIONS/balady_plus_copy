@@ -34,4 +34,11 @@ class DelegatorEntity extends Equatable {
         roleName,
         entityName,
       ];
+
+  String getRole() {
+    if (roleId == "20") return "OWNER_MANAGER";
+    if (roleId == "30") return "DELEGATOR";
+
+    return "";
+  }
 }

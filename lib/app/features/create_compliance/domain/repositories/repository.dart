@@ -14,6 +14,8 @@ import '../entities/apply_create_compliance_response.dart';
 import '../entities/comliance_request_details.dart';
 import '../entities/compliance_attachment_request.dart';
 import '../entities/compliance_gis_resopnse.dart';
+import '../entities/send_otp_response.dart';
+import '../entities/verify_otp_request.dart';
 
 abstract class CreateComplianceRepository {
   Future<Either<Failure, ApplyCreateComplianceResponse>> applyCreateCompliance(
@@ -59,4 +61,8 @@ abstract class CreateComplianceRepository {
 
   Future<Either<Failure, bool>> saveAttachment(
       {required ComplinaceAttachmentRequest params});
+
+  Future<Either<Failure, SendOtpResponse>> sendOTP({required String params});
+
+  Future<Either<Failure, bool>> verifyOTP({required VerifyOTPRequest params});
 }

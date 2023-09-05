@@ -115,6 +115,80 @@ class UsageSubmissionCompliance extends StatelessWidget {
                     );
                   },
                 ),
+                ...[
+                  CustomVerticalSpace(height: 16),
+                  ComplianceSubmitTitle(
+                    title: 'بيانات الموقع'.tr(),
+                    subtitle: "",
+                  ),
+                  if (state.documentTypeSelection == 1)
+                    DropDownWithTitle(
+                      title: "الموقع الجغرافي".tr(),
+                      selectedValue: state.gisResponse?.getFullAddress(),
+                      onRetry: () {
+                        context.read<ComplianceBloc>().add(
+                              const GetSubUsagesEvent(),
+                            );
+                      },
+                      onTap: () async {
+                        await NavigationService.navigatorKey.currentState!
+                            .pushNamed(RouteName.complinaceMapView,
+                                arguments: MapScreenParams(
+                                  gisParams: state.gisParams,
+                                  complianceGIS: state.gisResponse,
+                                ))
+                            .then((value) {
+                          if (value != null) {
+                            MapScreenParams? params = value as MapScreenParams;
+                            context.read<ComplianceBloc>().emit(state.copyWith(
+                                gisResponse: params.complianceGIS,
+                                gisParams: params.gisParams));
+                          }
+                        });
+                      },
+                    ),
+                  ReadOnlyField(
+                      title: "الأمانة".tr(),
+                      subTitle: state.gisResponse?.amanaName ?? ""),
+                  ReadOnlyField(
+                      title: "البلدية".tr(),
+                      subTitle: state.gisResponse?.municipalityName ?? ""),
+                  ReadOnlyField(
+                      title: "المدينة".tr(),
+                      subTitle: state.gisResponse?.city ?? ""),
+                  ReadOnlyField(
+                      title: "الحي".tr(),
+                      subTitle: state.gisResponse?.districtName ?? ""),
+                  ReadOnlyField(
+                      title: "رقم المخطط".tr(),
+                      subTitle: state.gisResponse?.planNo ?? ""),
+                  ReadOnlyField(
+                      title: "اسم المخطط".tr(),
+                      subTitle: state.gisResponse?.planName ?? ""),
+                  ReadOnlyField(
+                      title: "اسم الشارع".tr(),
+                      subTitle: state.gisResponse?.streetName ?? ""),
+                  ComplianceSubmitTitle(
+                    title: 'بيانات قطع الأراضي'.tr(),
+                    subtitle: "",
+                  ),
+                  ReadOnlyField(
+                      title: "رقم قطعة الأرض".tr(),
+                      subTitle: state.gisResponse?.parcelNo ?? ""),
+                  ReadOnlyField(
+                      title: "مساحة الارض".tr(),
+                      subTitle: state.gisResponse?.area ?? ""),
+                  ComplianceSubmitTitle(
+                    title: 'الاحداثيات'.tr(),
+                    subtitle: "",
+                  ),
+                  ReadOnlyField(
+                      title: "الاحداثي السيني".tr(),
+                      subTitle: state.gisParams?.x.toString() ?? ""),
+                  ReadOnlyField(
+                      title: "الاحداثي الصادي".tr(),
+                      subTitle: state.gisParams?.y.toString() ?? ""),
+                ],
                 SizedBox(
                   height: 32,
                 ),

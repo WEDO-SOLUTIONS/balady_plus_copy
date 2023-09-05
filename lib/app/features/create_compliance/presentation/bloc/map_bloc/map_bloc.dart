@@ -61,13 +61,12 @@ class MapBloc extends Bloc<MapEvent, MapState> {
         errorMessage: "",
       ));
 
-      if (success.amanaCode?.startsWith("004") ?? false) {
-        showCustomDialog(ComplianceMunicipalityMSRDialog());
-      } else {
-        if (e.popPage) {
+      if (e.popPage) {
+        if (success.amanaCode?.startsWith("004") ?? false) {
+          showCustomDialog(ComplianceMunicipalityMSRDialog());
+        } else
           NavigationService.navigatorKey.currentState?.pop(MapScreenParams(
               gisParams: e.params, complianceGIS: state.gisResponse));
-        }
       }
     });
   }

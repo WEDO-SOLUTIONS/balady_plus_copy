@@ -35,11 +35,13 @@ class ObjectionReasonAttachment extends StatelessWidget {
             children: [
               ((fileName.split(".").last.toLowerCase().contains("pdf")))
                   ? const CustomSvgIconWidget(IconPath.pdf)
-                  : Image.file(
-                      File(filePath),
-                      width: 24,
-                      height: 28,
-                    ),
+                  : filePath.startsWith("http")
+                      ? Container()
+                      : Image.file(
+                          File(filePath),
+                          width: 24,
+                          height: 28,
+                        ),
               CustomHorizontalSpace(width: 8),
               Flexible(
                 child: CustomTextWidget(

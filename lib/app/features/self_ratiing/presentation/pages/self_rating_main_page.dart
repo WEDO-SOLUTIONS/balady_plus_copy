@@ -6,6 +6,8 @@ import 'package:balady_plus/app/features/violation_guide/presentation/widgets/vi
 import 'package:flutter/material.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
+import '../../../../core/utils/constants/paths/image_paths.dart';
+
 class SelfRatingMainPage extends StatelessWidget {
   const SelfRatingMainPage({super.key});
 
@@ -14,37 +16,49 @@ class SelfRatingMainPage extends StatelessWidget {
     return Scaffold(
       body: Container(
         decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              Color(0xFFFFFFFF),
-              Color(0xff2C6F83),
-            ],
-          ),
-        ),
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child:
-                Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-              const SelfRatingMainTitleWidget(),
-              ViolationSelectOptionsWidget(
-                title: 'review-building'.tr(),
-                subtitle: 'review_building_subtitle'.tr(),
-                color1: AppColor.lightOrange200,
-                color2: AppColor.lightOrange100,
-                logo: IconPath.selfRatingBuilding,
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const SelfRatingSectionPage()),
-                  );
-                },
+            image: DecorationImage(
+                image: AssetImage("assets/images/balady_bg.png"),
+                fit: BoxFit.cover)),
+        child: Stack(
+          children: [
+            Container(
+              padding: EdgeInsets.only(
+                  left: 16, top: MediaQuery.of(context).padding.top),
+              child: IconButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  icon: Icon(
+                    Icons.close,
+                    color: AppColor.white,
+                  )),
+            ),
+            Center(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const SelfRatingMainTitleWidget(),
+                      ViolationSelectOptionsWidget(
+                        title: 'review-building'.tr(),
+                        subtitle: 'review_building_subtitle'.tr(),
+                        color1: AppColor.lightOrange200,
+                        color2: AppColor.lightOrange100,
+                        logo: IconPath.selfRatingBuilding,
+                        onPressed: () {
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    const SelfRatingSectionPage()),
+                          );
+                        },
+                      ),
+                    ]),
               ),
-            ]),
-          ),
+            ),
+          ],
         ),
       ),
     );

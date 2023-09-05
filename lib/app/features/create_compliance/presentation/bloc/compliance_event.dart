@@ -1,6 +1,7 @@
 import 'package:balady_plus/app/features/vd/domain/entities/gis/gis_params.dart';
 import 'package:equatable/equatable.dart';
 
+import '../../../../core/utils/enums/date_form.dart';
 import '../../domain/entities/comliance_request_details.dart';
 import '../../domain/entities/complinace_engoffice_response.dart';
 import '../../domain/entities/complinace_licenses_response.dart';
@@ -32,7 +33,8 @@ class GetLicensesEvent extends ComplianceEvent {
 }
 
 class GetRequestDetails extends ComplianceEvent {
-  const GetRequestDetails();
+  final String? requestId;
+  const GetRequestDetails({this.requestId});
 }
 
 class GetMainUsagesEvent extends ComplianceEvent {
@@ -63,6 +65,9 @@ class UpdateFieldsEvent extends ComplianceEvent {
   final int? documentTypeSelection;
   final int? benificiaryTypeSelection;
   final String? mobileNumber;
+  final bool? emtethalAgreeemnt;
+  final bool? ownershipAgreement;
+  final DateForm? form;
   const UpdateFieldsEvent(
       {this.selectedOwnerShip,
       this.selectedMainUsage,
@@ -72,7 +77,10 @@ class UpdateFieldsEvent extends ComplianceEvent {
       this.documentTypeSelection,
       this.benificiaryTypeSelection,
       this.mobileNumber,
-      this.selectedLicense});
+      this.selectedLicense,
+      this.emtethalAgreeemnt,
+      this.ownershipAgreement,
+      this.form});
 }
 
 class GoToNextPageEvent extends ComplianceEvent {
@@ -140,4 +148,14 @@ class GetEngOfficeDetailsEvent extends ComplianceEvent {
 
 class SaveContractEvent extends ComplianceEvent {
   const SaveContractEvent();
+}
+
+class SendOTPEvent extends ComplianceEvent {
+  final bool? showOTPPage;
+  const SendOTPEvent({this.showOTPPage});
+}
+
+class VerifyOTPEvent extends ComplianceEvent {
+  final String otpValue;
+  const VerifyOTPEvent({required this.otpValue});
 }

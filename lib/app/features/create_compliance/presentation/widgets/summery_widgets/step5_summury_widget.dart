@@ -37,7 +37,11 @@ class Step5SummeryWidget extends StatelessWidget {
                                     .submitterAnswer ==
                                 true
                             ? "compliance".tr()
-                            : "nonـcompliance".tr()),
+                            : state.requestDetails?.emtithalItems?[index]
+                                        .submitterAnswer ==
+                                    false
+                                ? "nonـcompliance".tr()
+                                : ""),
                     CustomVerticalSpace(height: 8),
                   ],
                 );

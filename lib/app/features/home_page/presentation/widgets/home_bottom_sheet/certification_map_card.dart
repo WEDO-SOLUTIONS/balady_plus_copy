@@ -70,7 +70,7 @@ class CertificationMapCard extends StatelessWidget {
                             btnHeight: 40,
                             btnRadius: 7,
                             btnPadding: EdgeInsets.all(8),
-                            text: "complinace_view_conditions".tr(),
+                            text: "complinace_isue".tr(),
                             onPressed: () async {
                               Navigator.pushNamed(
                                   context, RouteName.createCompliancePage);
@@ -105,7 +105,7 @@ class CertificationMapCard extends StatelessWidget {
               const Spacer(),
               Container(
                 padding:
-                    const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                    const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
                 width: MediaQuery.sizeOf(context).width,
                 decoration: BoxDecoration(
                   borderRadius: const BorderRadius.only(
@@ -134,6 +134,12 @@ class CertificationMapCard extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(width: 6),
+                    CustomTextWidget(
+                      "or".tr(),
+                      fontWeight: AppFontWeight.bold,
+                      fontSize: 12,
+                      fontColor: AppColor.blackModern500Light,
+                    ),
                     const SizedBox(width: 6),
                     GestureDetector(
                       onTap: () async {

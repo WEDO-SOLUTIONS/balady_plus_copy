@@ -448,7 +448,6 @@ class RequestsBloc extends Bloc<RequestsEvent, RequestsState> {
             return false;
           }).toList();
 
-          print("Succccesss ${requests.incidentRequestList?.length}");
           emit(
             state.copyWith(
               crmRequestsStatus: BlocRequestStatus.submissionGetSuccess,

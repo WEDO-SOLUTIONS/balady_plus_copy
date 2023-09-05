@@ -5,19 +5,23 @@ import 'package:balady_plus/app/features/create_compliance/data/models/complianc
 import 'package:balady_plus/app/features/create_compliance/data/models/complinace_engoffice_response_model.dart';
 import 'package:balady_plus/app/features/create_compliance/data/models/ownership_doc_type_response_model.dart';
 import 'package:balady_plus/app/features/create_compliance/domain/entities/compliance_attachment_request.dart';
+import 'package:balady_plus/app/features/create_compliance/domain/entities/verify_otp_request.dart';
 import 'package:dio/dio.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:mime/mime.dart';
-
+import 'package:balady_plus/etmam_app/core/utils/utils_exports.dart'
+    as EtmamCommonProperties hide Log;
 import '../../../../core/base/base_view_model.dart';
 import '../../../../core/errors/exceptions.dart';
 import '../../../../core/services/local/helpers.dart';
 import '../../../../core/services/services_exports.dart';
+import '../../../../core/utils/common_functions.dart';
 import '../../../../core/utils/constants/apis/api_info.dart';
 import '../../../transaction_inquiry/customer_voice_exports.dart';
 import '../../../vd/data/model/create_incident/create_incident_response_model.dart';
 import '../../../vd/domain/entities/gis/gis_params.dart';
 import '../../domain/entities/ownership_doc_type_response.dart';
+import '../../domain/entities/send_otp_response.dart';
 import '../models/apply_create_compliance_request_model.dart';
 import '../models/apply_create_compliance_response_model.dart';
 import '../models/comliance_request_details_model.dart';
@@ -67,6 +71,9 @@ abstract class CreateComplianceRemoteDataSource {
   Future<ComplainceGISResponseModel> getGISInfo({required GISParams params});
 
   Future<bool> saveAttachment({required ComplinaceAttachmentRequest params});
+
+  Future<SendOtpResponse> sendOTP({required String params});
+  Future<bool> verifyOTP({required VerifyOTPRequest params});
 }
 
 class CreateComplianceRemoteDataSourceImpl
@@ -381,9 +388,17 @@ class CreateComplianceRemoteDataSourceImpl
   @override
   Future<ComplinaecLicensesReponseModel> getComplianceLicense() async {
     var response;
+    String url = ApiUrl.complianceMyLicenses(
+        id: CommonProperties.userInfo?.idNo ?? "", type: "HIMSELF");
+
+    if (CommonProperties.selectedDelegator != null) {
+      url = ApiUrl.complianceMyLicenses(
+          id: CommonProperties.selectedDelegator?.crNumber ?? "",
+          type: CommonProperties.selectedDelegator?.getRole() ?? "");
+    }
 
     try {
-      response = await webService.dio.get(ApiUrl.complianceMyLicenses);
+      response = await webService.dio.get(url);
 
       final data = response.data;
 
@@ -669,6 +684,112 @@ class CreateComplianceRemoteDataSourceImpl
           errorMessage: ex.toString(),
         ),
       );
+    }
+  }
+
+  @override
+  Future<SendOtpResponse> sendOTP({required String params}) async {
+    var response;
+
+    try {
+      response = await webService.dio.post(
+        ApiUrl.complianceSendOTP,
+        options: Options(headers: {
+          ApiHeaders.xFeappId: CommonProperties.appName,
+          ApiHeaders.xCorrelationId: CommonFunctions.generateGUID(),
+          "x-sso-session-id": EtmamCommonProperties.CommonProperties.sessionId,
+          "x-fe-deployment-id":
+              EtmamCommonProperties.CommonProperties.appVersion,
+          "Accept-Language": "ar",
+          "x-fe-service-id": "compliance",
+          "Content-Type": "application/json",
+        }),
+        data: {"mobileNumber": params},
+      );
+
+      final data = response.data;
+
+      final result = ResponseBodyModel.fromMap(data).data?.result;
+      return SendOtpResponse.fromJson(result);
+    } on DioError catch (error) {
+      var errorCode;
+      try {
+        final decodedResponse = ResponseBodyModel.fromMap(
+          error.response?.data,
+        );
+        errorCode = decodedResponse.data?.responseCode;
+      } catch (ex) {}
+
+      throw ServerException(
+        error.toString(),
+        errorCode: errorCode,
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
+    } catch (ex) {
+      if (ex is ServerException)
+        throw ex;
+      else {
+        try {} catch (ex) {}
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
+      }
+    }
+  }
+
+  @override
+  Future<bool> verifyOTP({required VerifyOTPRequest params}) async {
+    var response;
+
+    try {
+      response = await webService.dio.post(ApiUrl.complianceVerify,
+          options: Options(headers: {
+            ApiHeaders.xFeappId: CommonProperties.appName,
+            ApiHeaders.xCorrelationId: CommonFunctions.generateGUID(),
+            "x-sso-session-id":
+                EtmamCommonProperties.CommonProperties.sessionId,
+            "x-fe-deployment-id":
+                EtmamCommonProperties.CommonProperties.appVersion,
+            "Accept-Language": "ar",
+            "x-fe-service-id": "compliance",
+            "Content-Type": "application/json",
+          }),
+          data: params.toMap());
+
+      final data = response.data;
+
+      final result = ResponseBodyModel.fromMap(data).data?.result;
+      NavigationService.goBack();
+      return true;
+    } on DioError catch (error) {
+      var errorCode;
+      try {
+        final decodedResponse = ResponseBodyModel.fromMap(
+          error.response?.data,
+        );
+        errorCode = decodedResponse.data?.responseCode;
+      } catch (ex) {}
+
+      throw ServerException(
+        error.toString(),
+        errorCode: errorCode,
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
+    } catch (ex) {
+      if (ex is ServerException)
+        throw ex;
+      else {
+        try {} catch (ex) {}
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
+      }
     }
   }
 }

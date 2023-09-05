@@ -219,28 +219,6 @@ Map<String, dynamic> servicesConfig = {
   ],
   "customer_voice_services": [
     {
-      "id": 50,
-      "icon": "request_service",
-      "3d_icon": null,
-      "order": 4,
-      "isNew": false,
-      "isImportant": false,
-      "action": {"type": "page", "value": RouteName.createCompliancePage},
-      "ar": {"title": "شهادة الامتثال", "description": null, "tag": null},
-      "en": {"title": "Zamzam Points", "description": null, "tag": null}
-    },
-    /*{
-      "id": 51,
-      "icon": "request_service",
-      "3d_icon": null,
-      "order": 4,
-      "isNew": false,
-      "isImportant": false,
-      "action": {"type": "page", "value": RouteName.selfRatingMainPage},
-      "ar": {"title": "قيم مبناك", "description": null, "tag": null},
-      "en": {"title": "Zamzam Points", "description": null, "tag": null}
-    },*/
-    {
       "id": 5,
       "icon": "request_service",
       "3d_icon": null,
@@ -361,7 +339,7 @@ Map<String, dynamic> servicesConfig = {
             "description":
                 "Through this service, you can start practicing business by issuing a commercial activity license in addition to the safety permit issued by the General Directorate of Civil Defense for all commercial activities approved by the Ministry of Municipal and Rural Affairs and Housing."
           }
-        }
+        },
       ]
     },
     {
@@ -539,6 +517,28 @@ Map<String, dynamic> servicesConfig = {
         "warning":
             ". Please renew the license before it expires or cancel it if you do not want to renew it in order to avoid the required delay penalty fees.\n. The license can be renewed 90 days before its expiry date."
       },
+    },
+    {
+      "id": 50,
+      "icon": "submit_compliance",
+      "3d_icon": null,
+      "order": 4,
+      "isNew": false,
+      "isImportant": false,
+      "action": {"type": "page", "value": RouteName.createCompliancePage},
+      "ar": {"title": "شهادة الإمتثال", "description": null, "tag": null},
+      "en": {"title": "Zamzam Points", "description": null, "tag": null}
+    },
+    {
+      "id": 51,
+      "icon": "self_rating",
+      "3d_icon": null,
+      "order": 4,
+      "isNew": false,
+      "isImportant": false,
+      "action": {"type": "page", "value": RouteName.selfRatingMainPage},
+      "ar": {"title": "قيم مبناك", "description": null, "tag": null},
+      "en": {"title": "Zamzam Points", "description": null, "tag": null}
     },
   ]
 };

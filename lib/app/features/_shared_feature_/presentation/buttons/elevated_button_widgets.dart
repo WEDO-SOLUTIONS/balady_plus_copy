@@ -320,33 +320,37 @@ class ElevatedButtonWidget extends _ElevatedButton {
           onPressed: onPressed,
         ));
 
-  ElevatedButtonWidget.primaryCustom({
-    required VoidCallback onPressed,
-    required String text,
-  }) : super(CustomElevatedButtonWidget(
+  ElevatedButtonWidget.primaryCustom(
+      {required VoidCallback onPressed,
+      required String text,
+      double? height,
+      double? fontSize})
+      : super(CustomElevatedButtonWidget(
           btnColor: AppColor.primary800Light,
           textStyle: AppStyle.elevatedButtonStyle.copyWith(
             color: AppColor.blackModern50Light,
             fontWeight: FontWeight.w700,
-            fontSize: 16,
+            fontSize: fontSize ?? 16,
           ),
-          btnHeight: 56,
+          btnHeight: height ?? 56,
           text: text,
           onPressed: onPressed,
         ));
 
-  ElevatedButtonWidget.primaryCustomBorder({
-    required VoidCallback onPressed,
-    required String text,
-  }) : super(CustomElevatedButtonWidget(
+  ElevatedButtonWidget.primaryCustomBorder(
+      {required VoidCallback onPressed,
+      required String text,
+      double? height,
+      double? fontSize})
+      : super(CustomElevatedButtonWidget(
           btnColor: Colors.white,
           btnBorderColor: AppColor.primary800Light,
           textStyle: AppStyle.elevatedButtonStyle.copyWith(
             color: AppColor.primary800Light,
             fontWeight: FontWeight.w700,
-            fontSize: 16,
+            fontSize: fontSize ?? 16,
           ),
-          btnHeight: 56,
+          btnHeight: height ?? 56,
           text: text,
           onPressed: onPressed,
         ));

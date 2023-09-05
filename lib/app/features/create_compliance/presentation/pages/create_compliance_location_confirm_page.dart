@@ -15,14 +15,18 @@ class CreateComplianceLocationPage extends StatelessWidget {
 }*/
 
 import 'package:balady_plus/app/core/services/services_exports.dart';
+import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
 import 'package:balady_plus/app/core/utils/constants/route_names.dart';
 import 'package:balady_plus/app/features/profile_features/delegators/delegators_exports.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/dependency_injection/injection_container.dart';
+import '../../../../core/utils/common_functions.dart';
 import '../../../../core/utils/constants/app_colors.dart';
 import '../../../../core/utils/constants/dialog_names.dart';
+import '../../../../core/utils/enums/enums.dart';
+import '../../../_shared_feature_/presentation/dialogs/need_login_dialog.dart';
 import '../../../_shared_feature_/shared_feature_exports.dart'
     show BottomSheetDialog, DefaultAppBarWidget, ElevatedButtonWidget;
 import '../../../home_page/presentation/widgets/home_app_bar/circle_icon.dart';
@@ -57,11 +61,9 @@ class _ServiceCardsPageState extends State<CreateComplianceLocationPage> {
         "action": {"type": "cards", "value": ""},
         "ar": {
           "title": "إصدار شهادة امتثال المباني",
-          "description":
-              "حسّن المشهد الحضري في مدينتك، وبلّغ عن مظاهر التشوه البصري",
+          "description": "",
           "tag": null,
-          "warning":
-              ". يرجى الالتزام بتجديد الرخصة قبل انتهائها أو إلغائها في حالة عدم الرغبة في تجديدها وذلك لتجنب رسوم غرامة المشترطة على التأخير في التجديد.\n. يمكن تجديد الرخصة قبل 90 يوم من تاريخ انتهائها."
+          "warning": ""
         },
         "en": {
           "title": "Send Image",
@@ -73,34 +75,63 @@ class _ServiceCardsPageState extends State<CreateComplianceLocationPage> {
         },
         "cards": [
           {
-            "iconName": "service_description",
-            "rate": 5.4,
-            "duration": 5,
+            "iconName": IconPath.serviceCardDesc,
+            "type": ServiceCardsTypes.desc,
+            "rate": 0,
+            "duration": 0,
+            "fees": 0,
             "ar": {
-              "title": "وصف الخدمه",
+              "title": "وصف الخدمة",
               "description":
-                  "من خلال هذه الخدمة يمكنك البدء بممارسة العمل التجاري من خلال إصدار رخصة نشاط تجاري  بالإضافة إلى تصريح السلامة الصادر من المديرية العامة للدفاع المدني لجميع الأنشطة التجارية المعتمدة لدى وزارة الشؤون البلدية والقروية والإسكان."
+                  "هي خدمة يتم من خلالها إصدار شهادة امتثال للمبنى تفيد بالتزام المبنى بمجموعة من الاشتراطات التي أقرتها وزارة الشؤون البلدية والقروية وذلك للحد من مظاهر التشوه البصري في المباني التجارية والسكنية والارتقاء بجودة المشهد الحضري في المدن"
             },
-            "en": {
-              "title": "Service Description",
-              "description":
-                  "Through this service, you can start practicing business by issuing a commercial activity license in addition to the safety permit issued by the General Directorate of Civil Defense for all commercial activities approved by the Ministry of Municipal and Rural Affairs and Housing."
-            }
+            "en": {"title": "Service Description", "description": ""}
           },
           {
-            "iconName": "requirements",
-            "rate": 5.4,
-            "duration": 5,
-            "ar": {
-              "title": "المتطلبات",
-              "description":
-                  "من خلال هذه الخدمة يمكنك البدء بممارسة العمل التجاري من خلال إصدار رخصة نشاط تجاري  بالإضافة إلى تصريح السلامة الصادر من المديرية العامة للدفاع المدني لجميع الأنشطة التجارية المعتمدة لدى وزارة الشؤون البلدية والقروية والإسكان."
-            },
-            "en": {
-              "title": "Requirements",
-              "description":
-                  "Through this service, you can start practicing business by issuing a commercial activity license in addition to the safety permit issued by the General Directorate of Civil Defense for all commercial activities approved by the Ministry of Municipal and Rural Affairs and Housing."
-            }
+            "iconName": IconPath.serviceCardReq,
+            "type": ServiceCardsTypes.req,
+            "rate": 0,
+            "duration": 0,
+            "requirements": [
+              "يجب أن يكون مقدم الطلب هو المالك للمبنى أو مفوض من مالك المبنى بتفويض إليكتروني ساري وصادر من بلدي.",
+              "يجب أن يكون لدى مقدم الطلب رخصة إنشائية أو صك ملكية."
+            ],
+            "ar": {"title": "المتطلبات", "description": ""},
+            "en": {"title": "Requirements", "description": ""}
+          },
+          {
+            "iconName": IconPath.serviceCardFlow,
+            "type": ServiceCardsTypes.flow,
+            "rate": 0,
+            "duration": 0,
+            "flow": [
+              {
+                "title": "من خلال المستفيد بنفسه (بدون مكتب هندسي)",
+                "steps": [
+                  "تسجيل الدخول عبر تطبيق بلدي.",
+                  "الدخول على خدمة إصدار شهادة امتثال المباني.",
+                  "إدخال بيانات رخصة البناء أو الوثيقة الملكية للمبنى واستكمال كافة البيانات المطلوبة في نموذج طلب إصدار شهادة الامتثال.",
+                  "الإقرار في الطلب باستيفاء عناصر التقييم الخاصة بإصدار شهادة امتثال المباني الواردة في هذا الدليل",
+                  "قيام البلدية بجدولة زيارة للتحقق من البيانات المدخلة",
+                  "موافقة الأمانة/البلدية على الطلب.",
+                  "إصدار شهادة امتثال المباني للمبنى.",
+                ]
+              },
+              {
+                "title": "من خلال المكتب الهندسي المؤهل",
+                "steps": [
+                  "تسجيل الدخول عبر تطبيق بلدي والدخول على الخدمة.",
+                  "تفويض مكتب هندسي مؤهل لاستكمال إجراءات إصدار شهادة امتثال المباني.",
+                  "قيام المكتب الهندسي المؤهل باستكمال كافة البيانات المطلوبة في نموذج طلب إصدار شهادة الامتثال.",
+                  "قيام المكتب الهندسي المؤهل بالتحقق من استيفاء المبنى لجميع اشتراطات ومتطلبات شهادة امتثال المباني.",
+                  "الإقرار باستيفاء جميع اشتراطات ومتطلبات إصدار شهادة امتثال المباني الواردة في هذا الدليل.",
+                  "يقوم المكتب الهندسي المؤهل باستكمال إجراءات إصدار الشهادة وفق الاجراءات المتبعة في الأمانة/البلدية.",
+                  "إصدار شهادة امتثال المباني من قبل الأمانة/البلدية من خلال المكتب الهندسي المؤهل."
+                ]
+              }
+            ],
+            "ar": {"title": "خطوات التقديم", "description": ""},
+            "en": {"title": "", "description": ""}
           }
         ]
       },
@@ -131,7 +162,7 @@ class _ServiceCardsPageState extends State<CreateComplianceLocationPage> {
                   }
                 },
                 child: CircleIcon(
-                  icon: Icons.supervised_user_circle,
+                  icon: IconPath.switchProfileIcon,
                   iconColor: AppColor.primary600Light,
                   backgroundColor: AppColor.geyser.withOpacity(0.4),
                   iconSize: 18,
@@ -171,13 +202,36 @@ class _ServiceCardsPageState extends State<CreateComplianceLocationPage> {
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: ElevatedButtonWidget.startService(
-                  onPressed: () {
-                    BottomSheetDialog.showDraggableSheet(context,
-                        // dialogKeyName: DialogName.dcVeichlesDialog,
-                        // currentRouteName: RouteName.DCVeichlePage,
+                  onPressed: () async {
+                    bool isLocationAvailable =
+                        await CommonFunctions.checkLocationSettings(context);
 
-                        isFullHeight: false,
-                        child: CreateComplianceLocationWidget());
+                    if (isLocationAvailable) {
+                      if (CommonProperties.isLoggedIn) {
+                        BottomSheetDialog.showDraggableSheet(context,
+                            // dialogKeyName: DialogName.dcVeichlesDialog,
+                            // currentRouteName: RouteName.DCVeichlePage,
+
+                            isFullHeight: false,
+                            child: CreateComplianceLocationWidget());
+                      } else {
+                        showDialog(
+                            context: context,
+                            builder: (ctx) => NeedLoginDialog(
+                                    onSuccessLogin: (bool? isSuccess) async {
+                                  if (isSuccess ?? false) {
+                                    BottomSheetDialog.showDraggableSheet(
+                                        context,
+                                        // dialogKeyName: DialogName.dcVeichlesDialog,
+                                        // currentRouteName: RouteName.DCVeichlePage,
+
+                                        isFullHeight: false,
+                                        child:
+                                            CreateComplianceLocationWidget());
+                                  }
+                                }));
+                      }
+                    }
                   },
                 ),
               ),

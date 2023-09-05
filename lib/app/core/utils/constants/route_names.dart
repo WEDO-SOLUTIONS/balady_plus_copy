@@ -155,6 +155,7 @@ class RouteName {
   // -------  Create Compliance ---------
   static const createCompliancePage = '/createCompliance';
   static const complinaceMapView = '/complinaceMapView';
+  static const complianceDetailsPage  = '/ComplianceDetailsPage';
 
   // -------  Events ---------
   static const eventsMainPage = '/eventsMainPage';

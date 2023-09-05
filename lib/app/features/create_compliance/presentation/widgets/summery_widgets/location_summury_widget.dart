@@ -1,4 +1,5 @@
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
+import 'package:balady_plus/app/features/vd/presentation/widgets/summery_widgets/field_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -20,16 +21,70 @@ class LocationSummuryWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<ComplianceBloc, ComplianceState>(
       builder: (context, state) {
-        return CustomExpansionPanelWidget(
-          title: ("bd_confirm_location").tr(),
-          leading: SvgPicture.asset(IconPath.vdSummuryPhoto),
-          children: [
-            CustomVerticalSpace(height: 16),
-            LocationSection(
-              showOnly: true,
-            ),
-          ],
-        );
+        return state.requestDetails?.locationResponseInfoDto?.municipalityId !=
+                null
+            ? Column(
+                children: [
+                  CustomExpansionPanelWidget(
+                    title: ('بيانات الموقع').tr(),
+                    leading: SvgPicture.asset(IconPath.vdSummuryPhoto),
+                    children: [
+                      CustomVerticalSpace(height: 16),
+                      FieldData(
+                          title: "الأمانة".tr(),
+                          subTitle: state.gisResponse?.amanaName ?? ""),
+                      CustomVerticalSpace(height: 16),
+                      FieldData(
+                          title: "البلدية".tr(),
+                          subTitle: state.gisResponse?.municipalityName ?? ""),
+                      CustomVerticalSpace(height: 16),
+                      FieldData(
+                          title: "المدينة".tr(),
+                          subTitle: state.gisResponse?.city ?? ""),
+                      CustomVerticalSpace(height: 16),
+                      FieldData(
+                          title: "الحي".tr(),
+                          subTitle: state.gisResponse?.districtName ?? ""),
+                      CustomVerticalSpace(height: 16),
+                      FieldData(
+                          title: "رقم المخطط".tr(),
+                          subTitle: state.gisResponse?.planNo ?? ""),
+                      CustomVerticalSpace(height: 16),
+                      FieldData(
+                          title: "اسم المخطط".tr(),
+                          subTitle: state.gisResponse?.planName ?? ""),
+                      CustomVerticalSpace(height: 16),
+                      FieldData(
+                          title: "اسم الشارع".tr(),
+                          subTitle: state.gisResponse?.streetName ?? ""),
+                      CustomVerticalSpace(height: 16),
+                      FieldData(
+                          title: "اسم الشارع".tr(),
+                          subTitle: state.gisResponse?.streetName ?? ""),
+                      CustomVerticalSpace(height: 16),
+                      FieldData(
+                          title: "رقم قطعة الأرض".tr(),
+                          subTitle: state.gisResponse?.parcelNo ?? ""),
+                      CustomVerticalSpace(height: 16),
+                      FieldData(
+                          title: "مساحة الارض".tr(),
+                          subTitle: state.gisResponse?.area ?? ""),
+                      CustomVerticalSpace(height: 16),
+                      FieldData(
+                          title: "الاحداثي السيني".tr(),
+                          subTitle: state.gisParams?.x.toString() ?? ""),
+                      CustomVerticalSpace(height: 16),
+                      FieldData(
+                          title: "الاحداثي الصادي".tr(),
+                          subTitle: state.gisParams?.y.toString() ?? ""),
+                    ],
+                  ),
+                  CustomVerticalSpace(
+                    height: 16,
+                  ),
+                ],
+              )
+            : Container();
       },
     );
   }

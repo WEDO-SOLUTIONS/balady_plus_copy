@@ -37,6 +37,10 @@ class IconPath {
   static const star = '${_svgIconPath}Star$_svg';
   static const dangerIcon = '${_svgIconPath}danger_red$_svg';
 
+  static const walletNoFees = '${_svgIconPath}wallet_no_fees$_svg';
+  static const switchProfileIcon = '${_svgIconPath}profile-2user$_svg';
+
+
   static const close = '${_svgIconPath}arrow_back_icon$_svg';
   static const upload = '${_svgIconPath}arrow_back_icon$_svg';
   static const search = '${_svgIconPath}search_icon$_svg';
@@ -58,6 +62,10 @@ class IconPath {
   static const notificationIc = '${_svgIconPath}notification$_svg';
   static const notificationIc2 = '${_svgIconPath}notification2$_svg';
   static const notificationFilled = '${_svgIconPath}notification_filled$_svg';
+  static const serviceCardDesc = '${_svgIconPath}service_card_desc$_svg';
+  static const serviceCardFlow = '${_svgIconPath}service_card_flow$_svg';
+  static const serviceCardReq = '${_svgIconPath}service_card_req$_svg';
+
   static const note = '${_svgIconPath}note$_svg';
 
   static const arrowForward2 = '${_svgIconPath}arrow_forward$_svg';

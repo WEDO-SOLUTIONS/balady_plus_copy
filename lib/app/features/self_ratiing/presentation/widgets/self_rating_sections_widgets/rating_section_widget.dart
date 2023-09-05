@@ -19,6 +19,7 @@ class SelfRatingSectionWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(16),
+      margin: EdgeInsets.only(bottom: 16),
       decoration: ShapeDecoration(
         color: Colors.white,
         shape: RoundedRectangleBorder(
@@ -32,7 +33,7 @@ class SelfRatingSectionWidget extends StatelessWidget {
             SizedBox(
                 height: 311,
                 child: Image.asset(
-                  item.image,
+                  item.getImage(),
                 )),
             SizedBox(
               height: 8,

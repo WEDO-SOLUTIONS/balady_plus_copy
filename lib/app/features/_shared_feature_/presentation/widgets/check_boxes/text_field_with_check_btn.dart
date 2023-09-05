@@ -15,6 +15,8 @@ class TextWithCheckBtn extends StatefulWidget {
   final Function verify;
   final Function validate;
   final TextEditingController controller;
+  final String? errorText;
+  final Color? backgroundColor;
 
   TextWithCheckBtn(
       {required this.title,
@@ -26,6 +28,8 @@ class TextWithCheckBtn extends StatefulWidget {
       required this.isValidate,
       this.bottomViewInsets = 0,
       required this.verify,
+      this.errorText,
+      this.backgroundColor,
       required this.validate});
   @override
   _TextWithCheckBtnState createState() => _TextWithCheckBtnState();
@@ -49,8 +53,10 @@ class _TextWithCheckBtnState extends State<TextWithCheckBtn> {
         CustomTextFieldWidget(
           label: widget.title,
           controller: widget.controller,
+          fillColor: widget.backgroundColor,
           focusNode: _focusNode,
           hintText: widget.hint ?? "",
+          errorText: widget.errorText,
           keyboardType: TextInputType.numberWithOptions(signed: false),
           maxLength: 10,
           onValidate: (String? t) => widget.validate(t),

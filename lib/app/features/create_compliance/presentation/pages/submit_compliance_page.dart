@@ -28,10 +28,15 @@ class _SubmitCompliancePageState extends State<SubmitCompliancePage> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => ComplianceBloc(),
+      create: (context) => ComplianceBloc()
+        ..add(const GetMainUsagesEvent())
+        ..add(const GetOwnerShipTypesEvent())
+        ..add(const GetEngOfficesListEvent())
+        ..add(GetLicensesEvent()),
       child: BlocListener<ComplianceBloc, ComplianceState>(
         listener: (context, state) {
-          if (state.status == BlocStatus.failure)
+          if (state.status == BlocStatus.failure ||
+              state.detailsStatus == BlocRequestStatus.failure)
             CommonFunctions.showError(state.errorMessage ?? "");
         },
         child: BlocBuilder<ComplianceBloc, ComplianceState>(
@@ -65,7 +70,9 @@ class _SubmitCompliancePageState extends State<SubmitCompliancePage> {
                                     .pages()[position],
                               );
                             }),
-                        if (state.status == BlocStatus.loading)
+                        if (state.status == BlocStatus.loading ||
+                            state.detailsStatus ==
+                                BlocRequestStatus.submissionGetLoading)
                           const CustomCircularLoadingWidget(),
                       ],
                     )));

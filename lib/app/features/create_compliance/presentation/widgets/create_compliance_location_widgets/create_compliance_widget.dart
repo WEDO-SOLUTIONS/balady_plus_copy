@@ -7,6 +7,7 @@ import 'package:balady_plus/app/features/create_compliance/presentation/pages/su
 import 'package:flutter/material.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
+import '../../../../../core/utils/common_functions.dart';
 import '../../../../_shared_feature_/presentation/components/bottom_sheets/bottom_sheet_with_actions.dart';
 import '../../../../_shared_feature_/presentation/widgets/radio_buttons/custom_radio_button_widget.dart';
 
@@ -76,13 +77,8 @@ class _CreateComplianceLocationWidgetState
                   MaterialPageRoute(
                       builder: (context) => const SubmitCompliancePage()));
             } else if (selected == 0) {
-              Navigator.of(context).pushNamed(
-                RouteName.inappWebview,
-                arguments: (
-                  title: "موقع بلدي الالكتروني",
-                  url: "https://balady.gov.sa/ar"
-                ),
-              );
+              CommonFunctions.externalLaunch(
+                  "https://balady.alriyadh.gov.sa/Pages/Balady/Default.aspx");
             }
           }),
         ]),

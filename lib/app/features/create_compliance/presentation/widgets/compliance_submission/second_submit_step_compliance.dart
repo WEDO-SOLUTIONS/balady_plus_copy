@@ -46,13 +46,6 @@ class SecondSubmissonCompliance extends StatelessWidget {
             const SizedBox(
               height: 24,
             ),
-            CustomTextWidget(
-              'phone_number_label'.tr(),
-              textStyle: AppStyle.complianceLabelStyle,
-            ),
-            SizedBox(
-              height: 10,
-            ),
             MobileNumberField(),
             SizedBox(
               height: 32,

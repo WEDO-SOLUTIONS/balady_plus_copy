@@ -10,6 +10,8 @@ import 'package:balady_plus/app/features/create_compliance/domain/entities/apply
 import 'package:balady_plus/app/features/create_compliance/domain/entities/comliance_request_details.dart';
 import 'package:balady_plus/app/features/create_compliance/domain/entities/compliance_attachment_request.dart';
 import 'package:balady_plus/app/features/create_compliance/domain/entities/compliance_gis_resopnse.dart';
+import 'package:balady_plus/app/features/create_compliance/domain/entities/send_otp_response.dart';
+import 'package:balady_plus/app/features/create_compliance/domain/entities/verify_otp_request.dart';
 import 'package:balady_plus/app/features/vd/domain/entities/gis/gis_params.dart';
 import 'package:dartz/dartz.dart';
 
@@ -173,6 +175,28 @@ class CreateComplianceRepositoryImplementation
       {required ComplinaceAttachmentRequest params}) async {
     try {
       final data = await remoteDataSource.saveAttachment(params: params);
+      return Right(data);
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage));
+    }
+  }
+
+  @override
+  Future<Either<Failure, SendOtpResponse>> sendOTP(
+      {required String params}) async {
+    try {
+      final data = await remoteDataSource.sendOTP(params: params);
+      return Right(data);
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage));
+    }
+  }
+
+  @override
+  Future<Either<Failure, bool>> verifyOTP(
+      {required VerifyOTPRequest params}) async {
+    try {
+      final data = await remoteDataSource.verifyOTP(params: params);
       return Right(data);
     } on ServerException catch (error) {
       return Left(ServerFailure(error.errorMessage));

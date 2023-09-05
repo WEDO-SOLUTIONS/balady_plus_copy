@@ -10,6 +10,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../domain/entities/comliance_request_details.dart';
+import '../compliance_consetnt.dart';
 
 class FourthStepCompliance extends StatelessWidget {
   FourthStepCompliance({
@@ -48,6 +49,14 @@ class FourthStepCompliance extends StatelessWidget {
                     );
                   },
                 ),
+                /* ComplianceConsent(
+                  body: "compliance_emtethal_body".tr(),
+                  agreement: state.emtethalAgreement ?? false,
+                  onChanged: (val) {
+                    context.read<ComplianceBloc>().add(
+                        UpdateFieldsEvent(emtethalAgreeemnt: val ?? false));
+                  },
+                ),*/
                 SizedBox(
                   height: 32,
                 ),
