@@ -224,9 +224,10 @@ class HomeMap extends StatelessWidget {
                           mapViewModel.showDialog();
                         },
                         pointViewModel: PointViewModel(
-                            controller: mapViewModel.controller,
-                            point: selectedPoint,
-                            webService: sl()),
+                          controller: mapViewModel.controller,
+                          point: selectedPoint,
+                          webService: sl(),
+                        ),
                       );
               },
             ),

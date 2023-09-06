@@ -542,10 +542,10 @@ class MapViewModel extends BaseViewModel {
 
   // When click on ayn object
   Future<void> _objectTapListener(TapEvent event) async {
-    // when Click on Map hide ViewHomeBottomSheet if he is not hide
-    if (viewHomeBottomSheet.value != false) {
-      viewHomeBottomSheet.value = false;
-      viewHomeBottomSheet.notifyListeners();
+    if (event is ObjectTapEvent) {
+      if (event.levelId != null) {
+        selectedPointId.value = event.dgisObjectId.toMessage();
+      }
     }
   }
 
