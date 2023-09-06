@@ -84,11 +84,13 @@ class UpdateFieldsEvent extends ComplianceEvent {
 }
 
 class GoToNextPageEvent extends ComplianceEvent {
-  GoToNextPageEvent();
+  final bool? save;
+  const GoToNextPageEvent({this.save});
 }
 
 class GoToPreviousPageEvent extends ComplianceEvent {
-  GoToPreviousPageEvent();
+  final bool? save;
+  const GoToPreviousPageEvent({this.save});
 }
 
 class ChangeImtethalItemEvent extends ComplianceEvent {
@@ -98,7 +100,8 @@ class ChangeImtethalItemEvent extends ComplianceEvent {
 }
 
 class SaveImtethalItemsEvent extends ComplianceEvent {
-  const SaveImtethalItemsEvent();
+  final bool? save;
+  const SaveImtethalItemsEvent({this.save});
 }
 
 class SaveFileEvent extends ComplianceEvent {
@@ -120,11 +123,15 @@ class DeleteFileEvent extends ComplianceEvent {
 }
 
 class SubmitComplianceEvent extends ComplianceEvent {
-  const SubmitComplianceEvent();
+  final bool? save;
+
+  const SubmitComplianceEvent({this.save});
 }
 
 class SaveLocationData extends ComplianceEvent {
-  const SaveLocationData();
+   final bool? save;
+
+  const SaveLocationData({this.save});
 }
 
 class GetComplianceGISEvent extends ComplianceEvent {

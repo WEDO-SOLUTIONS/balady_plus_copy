@@ -42,6 +42,8 @@ import '../../domain/use_cases/save_compliance_location.dart';
 import '../../domain/use_cases/send_otp.dart';
 import '../../domain/use_cases/submit_compliance_request.dart';
 import '../../domain/use_cases/verify_otp.dart';
+import '../dialogs/exit_draft_dialog.dart';
+import '../dialogs/save_draft_dialog.dart';
 import '../pages/otp_page/compliance_otp_screen.dart';
 import '../widgets/compliance_submission/create_compliance_summery.dart';
 import '../widgets/compliance_submission/engoffice_submit_step_compliance.dart';
@@ -275,12 +277,20 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
         status: BlocStatus.failure,
       ));
     }, (r) async {
-      int nextPage = state.currentStep + 1;
-      emitter(state.copyWith(status: BlocStatus.performing));
-      emitter(state.copyWith(
-          status: BlocStatus.success, currentStep: nextPage, errorMessage: ""));
-      await pageController.animateToPage(nextPage,
-          duration: Duration(milliseconds: 400), curve: Curves.easeIn);
+      if (e.save == true) {
+        bool Function(Route<dynamic>) predicate =
+            ModalRoute.withName(RouteName.bottomNavigation);
+        NavigationService.navigatorKey.currentState!.popUntil((predicate));
+      } else {
+        int nextPage = state.currentStep + 1;
+        emitter(state.copyWith(status: BlocStatus.performing));
+        emitter(state.copyWith(
+            status: BlocStatus.success,
+            currentStep: nextPage,
+            errorMessage: ""));
+        await pageController.animateToPage(nextPage,
+            duration: Duration(milliseconds: 400), curve: Curves.easeIn);
+      }
     });
   }
 
@@ -437,7 +447,7 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
           ComplinaceLookUpItem(id: r?.subUsageCode, name: r?.subUsageName);
     }
 
-    if (r?.subUsageCode != null && r?.subUsageName != null) {
+    if (r?.ownershipDocInfoDto?.ownershipDocumentType != null) {
       selectedOwnerShip = ComplinaceLookUpItem(
           id: r?.ownershipDocInfoDto?.ownershipDocumentType,
           name: r?.ownershipDocInfoDto?.ownerShipDocTypeName);
@@ -459,6 +469,7 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
     emit(state.copyWith(
         requestDetails: r,
         isDraft: true,
+        currentStep: 3,
         requestId: requestId,
         contactMobileVerified: Nullable(true),
         selectedOwnerShip: Nullable(selectedOwnerShip),
@@ -691,9 +702,28 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
 
   void cancelIncident() {
     hideKeyboard(); //MM
-    bool Function(Route<dynamic>) predicate =
-        ModalRoute.withName(RouteName.bottomNavigation);
-    NavigationService.navigatorKey.currentState!.popUntil((predicate));
+
+    if (state.currentStep >= 3 && !isLastPage()) {
+      showCustomDialog(SaveDraftDialog(
+        onClose: () {},
+        onSave: () {
+          add(GoToNextPageEvent(save: true));
+        },
+      ));
+    } else if (state.currentStep < 3) {
+      showCustomDialog(ExitDraftDialog(
+        onClose: () {},
+        onSave: () {
+          bool Function(Route<dynamic>) predicate =
+              ModalRoute.withName(RouteName.bottomNavigation);
+          NavigationService.navigatorKey.currentState!.popUntil((predicate));
+        },
+      ));
+    } else {
+      bool Function(Route<dynamic>) predicate =
+          ModalRoute.withName(RouteName.bottomNavigation);
+      NavigationService.navigatorKey.currentState!.popUntil((predicate));
+    }
   }
 
   Future<void> _goToNextPageHandler(
@@ -731,13 +761,13 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
         add(ApplyEvent());
       }
     } else if (state.currentStep == 3) {
-      add(SaveLocationData());
+      add(SaveLocationData(save: e.save));
     } else if (state.currentStep == 4 && state.benificiaryTypeSelection == 1) {
       bool valid = state.requestDetails?.emtithalItems?.firstWhereOrNull(
               (element) => element.submitterAnswer == null) ==
           null;
       if (valid)
-        add(SaveImtethalItemsEvent());
+        add(SaveImtethalItemsEvent(save: e.save));
       else {
         CommonFunctions.showError("الرجاء اختيار جميع بنود الإمتثال");
       }
@@ -760,7 +790,7 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
   Future<void> _goToPreviousPageHandler(
       GoToPreviousPageEvent e, Emitter emitter) async {
     if (state.currentStep == 0.0 ||
-        (state.isDraft == true && state.currentStep == 2)) {
+        (state.isDraft == true && state.currentStep == 3)) {
       NavigationService.navigatorKey.currentState!.pop();
     } else {
       if (state.status == BlocStatus.performing) return;
@@ -804,6 +834,17 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
                 .toList()));
 
     failOrSuccess.fold((l) {
+      if ((l as ServerFailure).errorCode == "2" &&
+          state.requestDetails?.emtithalItems?.firstWhereOrNull(
+                  (element) => element.submitterAnswer == false) !=
+              null &&
+          e.save != true) {
+        bool Function(Route<dynamic>) predicate =
+            ModalRoute.withName(RouteName.bottomNavigation);
+        NavigationService.navigatorKey.currentState!
+            .pushNamed(RouteName.nonComplianceScreen);
+      }
+
       emitter(state.copyWith(
         errorMessage: (l as ServerFailure).errorMessage,
         status: BlocStatus.failure,
@@ -812,15 +853,22 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
       emitter(state.copyWith(
         status: BlocStatus.success,
       ));
-
-      int nextPage = state.currentStep + 1;
-      emitter(state.copyWith(
-        status: BlocStatus.performing,
-      ));
-      emitter(state.copyWith(
-          status: BlocStatus.success, currentStep: nextPage, errorMessage: ""));
-      await pageController.animateToPage(nextPage,
-          duration: Duration(milliseconds: 400), curve: Curves.easeIn);
+      if (e.save == true) {
+        bool Function(Route<dynamic>) predicate =
+            ModalRoute.withName(RouteName.bottomNavigation);
+        NavigationService.navigatorKey.currentState!.popUntil((predicate));
+      } else {
+        int nextPage = state.currentStep + 1;
+        emitter(state.copyWith(
+          status: BlocStatus.performing,
+        ));
+        emitter(state.copyWith(
+            status: BlocStatus.success,
+            currentStep: nextPage,
+            errorMessage: ""));
+        await pageController.animateToPage(nextPage,
+            duration: Duration(milliseconds: 400), curve: Curves.easeIn);
+      }
     });
   }
 
@@ -869,5 +917,15 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
     hideKeyboard();
     print(e.isagree);
     emitter(state.copyWith(agreement: e.isagree, errorMessage: ""));
+  }
+
+  static showCustomDialog(Widget dialog, {bool isDismiss = true}) {
+    showDialog(
+        context: NavigationService.navigatorKey.currentState!.context,
+        barrierDismissible: isDismiss,
+        builder: (ctx) => Dialog(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12.0)),
+            child: dialog));
   }
 }

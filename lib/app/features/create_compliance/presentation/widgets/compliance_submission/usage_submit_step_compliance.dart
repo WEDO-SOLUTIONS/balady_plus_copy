@@ -16,6 +16,7 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:balady_plus/app/features/create_compliance/presentation/widgets/compliance_title_widget.dart';
 
 import '../../../../../core/services/local/navigation_services.dart';
+import '../../../../vd/domain/entities/gis/gis_params.dart';
 import '../../../../vd/domain/entities/map/map_screen_params.dart';
 import '../../bloc/compliance_bloc.dart';
 
@@ -152,7 +153,7 @@ class UsageSubmissionCompliance extends StatelessWidget {
                   ReadOnlyField(
                       title: "مساحة الارض".tr(),
                       subTitle: state.gisResponse?.area ?? ""),
-                  ComplianceSubmitTitle(
+                  /*ComplianceSubmitTitle(
                     title: 'الاحداثيات'.tr(),
                     subtitle: "",
                   ),
@@ -161,7 +162,7 @@ class UsageSubmissionCompliance extends StatelessWidget {
                       subTitle: state.gisParams?.x.toString() ?? ""),
                   ReadOnlyField(
                       title: "الاحداثي الصادي".tr(),
-                      subTitle: state.gisParams?.y.toString() ?? ""),
+                      subTitle: state.gisParams?.y.toString() ?? ""),*/
                 ],
                 if (state.documentTypeSelection == 1) ...[
                   CustomVerticalSpace(height: 16),
@@ -178,7 +179,9 @@ class UsageSubmissionCompliance extends StatelessWidget {
                       await NavigationService.navigatorKey.currentState!
                           .pushNamed(RouteName.complinaceMapView,
                               arguments: MapScreenParams(
-                                  gisParams: state.gisParams,
+                                  gisParams: state
+                                      .requestDetails?.locationResponseInfoDto
+                                      ?.gisParams(),
                                   complianceGIS: state.gisResponse,
                                   readOnly: true))
                           .then((value) {
@@ -240,7 +243,7 @@ class UsageSubmissionCompliance extends StatelessWidget {
                       subTitle: state.requestDetails?.locationResponseInfoDto
                               ?.landArea ??
                           ""),
-                  ComplianceSubmitTitle(
+                  /*ComplianceSubmitTitle(
                     title: 'الاحداثيات'.tr(),
                     subtitle: "",
                   ),
@@ -253,7 +256,7 @@ class UsageSubmissionCompliance extends StatelessWidget {
                       title: "الاحداثي الصادي".tr(),
                       subTitle:
                           state.requestDetails?.locationResponseInfoDto?.y ??
-                              ""),
+                              ""),*/
                 ],
                 SizedBox(
                   height: 32,

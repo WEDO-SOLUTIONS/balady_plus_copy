@@ -35,7 +35,7 @@ class _CompleteCompliancePageState extends State<CompleteCompliancePage> {
       ..add(GetLicensesEvent());
 
     WidgetsBinding.instance!.addPostFrameCallback((_) {
-      widget.bloc.pageController.jumpToPage(2);
+      widget.bloc.pageController.jumpToPage(3);
     });
   }
 
@@ -55,8 +55,8 @@ class _CompleteCompliancePageState extends State<CompleteCompliancePage> {
             return Scaffold(
                 backgroundColor: AppColor.scaffoldBackground,
                 appBar: ViolationAppBar(
-                  stepCounter: context.read<ComplianceBloc>().pages().length,
-                  currentStep: state.currentStep + 1,
+                  stepCounter: 4,
+                  currentStep: (state.currentStep - 4) + 1,
                   backOnPress: () => context
                       .read<ComplianceBloc>()
                       .add(GoToPreviousPageEvent()),

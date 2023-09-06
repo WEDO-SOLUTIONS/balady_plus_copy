@@ -497,28 +497,6 @@ Map<String, dynamic> servicesConfig = {
       "en": {"title": "Objections", "description": null, "tag": null}
     },
     {
-      "id": 8,
-      "icon": "municpal_all",
-      "3d_icon": null,
-      "order": 1,
-      "isNew": false,
-      "isImportant": false,
-      "action": {"type": "page", "value": "https://balady.gov.sa/ar"},
-      "ar": {
-        "title": "municpal_all".tr(),
-        "description": "",
-        "tag": null,
-      },
-      "en": {
-        "title": "Send Image",
-        "description":
-            "Improve the civil scene of your city and report visual pollution",
-        "tag": null,
-        "warning":
-            ". Please renew the license before it expires or cancel it if you do not want to renew it in order to avoid the required delay penalty fees.\n. The license can be renewed 90 days before its expiry date."
-      },
-    },
-    {
       "id": 50,
       "icon": "submit_compliance",
       "3d_icon": null,
@@ -539,6 +517,28 @@ Map<String, dynamic> servicesConfig = {
       "action": {"type": "page", "value": RouteName.selfRatingMainPage},
       "ar": {"title": "قيم مبناك", "description": null, "tag": null},
       "en": {"title": "Zamzam Points", "description": null, "tag": null}
+    },
+    {
+      "id": 8,
+      "icon": "municpal_all",
+      "3d_icon": null,
+      "order": 1,
+      "isNew": false,
+      "isImportant": false,
+      "action": {"type": "page", "value": "https://balady.gov.sa/ar"},
+      "ar": {
+        "title": "municpal_all".tr(),
+        "description": "",
+        "tag": null,
+      },
+      "en": {
+        "title": "Send Image",
+        "description":
+            "Improve the civil scene of your city and report visual pollution",
+        "tag": null,
+        "warning":
+            ". Please renew the license before it expires or cancel it if you do not want to renew it in order to avoid the required delay penalty fees.\n. The license can be renewed 90 days before its expiry date."
+      },
     },
   ]
 };

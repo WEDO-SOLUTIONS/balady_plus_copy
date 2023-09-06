@@ -134,7 +134,8 @@ class CreateComplianceRepositoryImplementation
           await remoteDataSource.saveComplianceCertificateItems(params);
       return Right(data);
     } on ServerException catch (error) {
-      return Left(ServerFailure(error.errorMessage));
+      return Left(
+          ServerFailure(error.errorMessage, errorCode: error.errorCode));
     }
   }
 

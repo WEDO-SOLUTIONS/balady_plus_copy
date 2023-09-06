@@ -42,6 +42,7 @@ import '../../core/utils/utils_exports.dart'
 import '../../features/_shared_feature_/presentation/pages/qiblah_webview_page.dart';
 import '../../features/create_compliance/presentation/pages/compliance_details_page.dart';
 import '../../features/create_compliance/presentation/pages/map_page/complinace_map_page.dart';
+import '../../features/create_compliance/presentation/pages/non_compliance_screen.dart';
 import '../../features/map_page/data/model/rental_details_response.dart';
 import '../../features/qa/presentation/pages/qa_page.dart';
 import '../../features/self_ratiing/presentation/pages/self_rating_main_page.dart';
@@ -479,7 +480,8 @@ class Routes {
         RouteName.selfRatingMainPage: (context) => SelfRatingMainPage(),
         RouteName.selfRatingResultPage: (context) => SelfRatingResultPage(),
 
-        RouteName.complianceDetailsPage: (context) => ComplianceDetailsPage()
+        RouteName.complianceDetailsPage: (context) => ComplianceDetailsPage(),
+        RouteName.nonComplianceScreen: (context) => NonComplianceScreen()
 
 //    cubit = ModalRoute.of(context)!.settings.arguments as PrayerTimesCubit;
       };

@@ -32,51 +32,67 @@ class LocationSummuryWidget extends StatelessWidget {
                       CustomVerticalSpace(height: 16),
                       FieldData(
                           title: "الأمانة".tr(),
-                          subTitle: state.gisResponse?.amanaName ?? ""),
+                          subTitle: state.requestDetails
+                                  ?.locationResponseInfoDto?.municipalityName ??
+                              ""),
                       CustomVerticalSpace(height: 16),
                       FieldData(
                           title: "البلدية".tr(),
-                          subTitle: state.gisResponse?.municipalityName ?? ""),
+                          subTitle: state
+                                  .requestDetails
+                                  ?.locationResponseInfoDto
+                                  ?.subMunicipalityName ??
+                              ""),
                       CustomVerticalSpace(height: 16),
                       FieldData(
                           title: "المدينة".tr(),
-                          subTitle: state.gisResponse?.city ?? ""),
+                          subTitle: state.requestDetails
+                                  ?.locationResponseInfoDto?.cityName ??
+                              ""),
                       CustomVerticalSpace(height: 16),
                       FieldData(
                           title: "الحي".tr(),
-                          subTitle: state.gisResponse?.districtName ?? ""),
+                          subTitle: state.requestDetails
+                                  ?.locationResponseInfoDto?.districtName ??
+                              ""),
                       CustomVerticalSpace(height: 16),
                       FieldData(
                           title: "رقم المخطط".tr(),
-                          subTitle: state.gisResponse?.planNo ?? ""),
+                          subTitle: state.requestDetails
+                                  ?.locationResponseInfoDto?.mapNumber ??
+                              ""),
                       CustomVerticalSpace(height: 16),
                       FieldData(
                           title: "اسم المخطط".tr(),
-                          subTitle: state.gisResponse?.planName ?? ""),
+                          subTitle: state.requestDetails
+                                  ?.locationResponseInfoDto?.mapName ??
+                              ""),
                       CustomVerticalSpace(height: 16),
                       FieldData(
                           title: "اسم الشارع".tr(),
-                          subTitle: state.gisResponse?.streetName ?? ""),
-                      CustomVerticalSpace(height: 16),
-                      FieldData(
-                          title: "اسم الشارع".tr(),
-                          subTitle: state.gisResponse?.streetName ?? ""),
+                          subTitle: state.requestDetails
+                                  ?.locationResponseInfoDto?.streetName ??
+                              ""),
                       CustomVerticalSpace(height: 16),
                       FieldData(
                           title: "رقم قطعة الأرض".tr(),
-                          subTitle: state.gisResponse?.parcelNo ?? ""),
+                          subTitle: state.requestDetails
+                                  ?.locationResponseInfoDto?.landNumber ??
+                              ""),
                       CustomVerticalSpace(height: 16),
                       FieldData(
                           title: "مساحة الارض".tr(),
-                          subTitle: state.gisResponse?.area ?? ""),
+                          subTitle: state.requestDetails
+                                  ?.locationResponseInfoDto?.landArea ??
+                              ""),
                       CustomVerticalSpace(height: 16),
-                      FieldData(
+                      /* FieldData(
                           title: "الاحداثي السيني".tr(),
                           subTitle: state.gisParams?.x.toString() ?? ""),
                       CustomVerticalSpace(height: 16),
                       FieldData(
                           title: "الاحداثي الصادي".tr(),
-                          subTitle: state.gisParams?.y.toString() ?? ""),
+                          subTitle: state.gisParams?.y.toString() ?? ""),*/
                     ],
                   ),
                   CustomVerticalSpace(

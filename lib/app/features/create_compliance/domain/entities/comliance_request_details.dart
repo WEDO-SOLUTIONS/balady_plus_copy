@@ -1,5 +1,7 @@
 import 'package:equatable/equatable.dart';
 
+import '../../../vd/domain/entities/gis/gis_params.dart';
+
 class ComplianceRequestDetails extends Equatable {
   final int? requestId;
   final dynamic requestNote;
@@ -447,6 +449,20 @@ class LocationResponseInfoDto {
     }
 
     return address;
+  }
+
+  double? getX() {
+    return x != null ? double.tryParse(x!) : null;
+  }
+
+  double? getY() {
+    return y != null ? double.tryParse(y!) : null;
+  }
+
+  GISParams? gisParams() {
+    return getX() != null && getY() != null
+        ? GISParams(x: getX()!, y: getY()!)
+        : null;
   }
 }
 
