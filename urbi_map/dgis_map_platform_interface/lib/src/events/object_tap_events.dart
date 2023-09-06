@@ -51,6 +51,10 @@ class DgisObjectId {
 
   final int objectId;
   final int entranceId;
+
+  DgisObjectIdMessage toMessage() {
+    return DgisObjectIdMessage(objectId: objectId, entranceId: entranceId);
+  }
 }
 
 /// Tap on IO layer
