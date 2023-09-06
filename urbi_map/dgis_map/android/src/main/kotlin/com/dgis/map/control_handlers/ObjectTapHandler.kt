@@ -17,6 +17,7 @@ import kotlinx.coroutines.awaitAll
 import ru.dgis.sdk.Context
 import ru.dgis.sdk.DGis
 import ru.dgis.sdk.DgisObjectId
+import ru.dgis.sdk.LevelId
 import ru.dgis.sdk.ScreenSize
 import ru.dgis.sdk.coordinates.Bearing
 import ru.dgis.sdk.coordinates.GeoPoint
@@ -115,10 +116,10 @@ class ObjectTapHandler(
                     return
                 }
             }
-//            is DgisMapObject -> {
-//                onDgisMapObjectTap(tappedObject, roi)
-//                return
-//            }
+            is DgisMapObject -> {
+                onDgisMapObjectTap(tappedObject, roi)
+                return
+            }
             is SimpleClusterObject -> {
                 val userData = tappedObject.userData
 
@@ -663,7 +664,7 @@ class ObjectTapHandler(
     private fun onDgisMapObjectTap(mapObject: DgisMapObject, roi: RenderedObjectInfo) {
         source = roi.item.source as DgisSource
 
-        sendDgisObjectEvent(mapObject.id, roi.closestMapPoint)
+        sendDgisObjectEvent(mapObject.id, roi.closestMapPoint, roi.item.levelId)
     }
 
     private fun onMarkerTap(marker: Marker) {
@@ -743,7 +744,7 @@ class ObjectTapHandler(
         mapObjectsExecutorService.shutdown()
     }
 
-    private fun sendDgisObjectEvent(id: DgisObjectId, position: GeoPointWithElevation) {
+    private fun sendDgisObjectEvent(id: DgisObjectId, position: GeoPointWithElevation, levelId: LevelId? = null) {
         eventSink.success(
             mapOf(
                 "event" to Events.onObjectTap.name,
@@ -751,6 +752,7 @@ class ObjectTapHandler(
                     "objectId" to id.objectId,
                     "entranceId" to id.entranceId,
                 ),
+                "levelId" to levelId,
                 "latlng" to mapOf(
                     "latitude" to position.latitude.value,
                     "longitude" to position.longitude.value,
