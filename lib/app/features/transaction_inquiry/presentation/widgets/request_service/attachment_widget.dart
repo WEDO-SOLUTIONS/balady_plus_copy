@@ -141,10 +141,13 @@ class AttachmentWidget extends StatelessWidget {
   }
 
   Widget photoInfo(BuildContext context, {bool showDelete = true}) {
-    return ObjectionReasonAttachment(
-        fileName: fileName ?? "",
-        filePath: path ?? "",
-        showDelete: showDelete,
-        onDelete: () => deleteFile(fileIndex));
+    return GestureDetector(
+      onTap: () => onPress(),
+      child: ObjectionReasonAttachment(
+          fileName: fileName ?? "",
+          filePath: path ?? "",
+          showDelete: showDelete,
+          onDelete: () => deleteFile(fileIndex)),
+    );
   }
 }

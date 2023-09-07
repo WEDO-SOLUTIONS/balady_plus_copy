@@ -20,7 +20,7 @@ class _EtmamSelectCityPageState extends State<EtmamSelectCityPage> {
       appBar: CustomAppBar(
         title: trans('choose_your_city'),
         withBackImg: false,
-        withCloseImg: false,
+        withCloseImg: true,
       ),
       body: Container(
         child: EtmamCitiesContainerWidget(),

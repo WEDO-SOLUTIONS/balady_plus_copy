@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:dartz/dartz.dart';
 
 import '../../../../core/errors/errors_exports.dart' show Failure;
@@ -65,4 +67,11 @@ abstract class CreateComplianceRepository {
   Future<Either<Failure, SendOtpResponse>> sendOTP({required String params});
 
   Future<Either<Failure, bool>> verifyOTP({required VerifyOTPRequest params});
+  Future<Either<Failure, Uint8List?>> downLoadCertificate(
+      {required String params});
+
+  Future<Either<Failure, bool?>> deleteComplianeRequeest(
+      {required String params});
+
+  Future<Either<Failure, String?>> getEtmamId({required String params});
 }

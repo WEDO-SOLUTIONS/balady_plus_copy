@@ -2,6 +2,8 @@ part of 'city_bloc.dart';
 
 class CityState extends Equatable {
   BlocStatus status;
+  BlocStatus providersStatus;
+
   String? errorMessage;
   List<CityItem>? items;
   List<CityItem>? searchedItems;
@@ -10,8 +12,10 @@ class CityState extends Equatable {
   int? totalPageCount;
   int? totalItemCount;
   int nextPageIndex;
+
   CityState(
       {this.status = BlocStatus.initial,
+      this.providersStatus = BlocStatus.initial,
       this.errorMessage,
       this.items,
       this.nextPageIndex = 1,
@@ -23,6 +27,7 @@ class CityState extends Equatable {
   CityState copyWith(
       {BlocStatus? status,
       String? errorMessage,
+      BlocStatus? providersStatus,
       List<CityItem>? items,
       List<CityItem>? searchedItems,
       int? totalPageCount,
@@ -37,9 +42,10 @@ class CityState extends Equatable {
         totalItemCount: totalItemCount ?? this.totalItemCount,
         nextPageIndex: nextPageIndex ?? this.nextPageIndex,
         selectedItem: selectedItem ?? this.selectedItem,
+        providersStatus: providersStatus ?? this.providersStatus,
         searchedItems: searchedItems ?? this.searchedItems);
   }
 
   @override
-  List<Object> get props => [status, selectedItem ?? 0];
+  List<Object> get props => [status, selectedItem ?? 0, providersStatus];
 }

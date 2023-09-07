@@ -219,6 +219,20 @@ class CommonFunctions {
     OpenFile.open(tempDocumentPath);
   }
 
+  static Future<void> createOpenTempBytesFile(
+    String fileName,
+    Uint8List bytes,
+  ) async {
+    // create Temporary File
+    final tempDir = await getTemporaryDirectory();
+    final tempDocumentPath = '${tempDir.path}/$fileName';
+    final file = await File(tempDocumentPath).create(recursive: true);
+    file.writeAsBytesSync(bytes);
+
+    // Open File From file path
+    OpenFile.open(tempDocumentPath);
+  }
+
   static Future<void> openFile(File file) async {
     final url = file.path;
 

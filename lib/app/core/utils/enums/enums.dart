@@ -46,6 +46,8 @@ enum PAGE_TYPE {
   dc,
   vhr,
   emtethal,
+  deleteEmtethal,
+
   other
 }
 

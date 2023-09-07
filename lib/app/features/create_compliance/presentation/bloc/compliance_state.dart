@@ -129,7 +129,7 @@ class ComplianceState extends Equatable {
       final BlocRequestStatus? licenseStatus,
       final String? errorMessage,
       final ComplinaceLookUpItem? selectedMainUsage,
-      final ComplinaceLookUpItem? selectedSubUsage,
+      final Nullable<ComplinaceLookUpItem?>? selectedSubUsage,
       final ComplinaecEngOfficeReponse? engOffices,
       final Nullable<ComplinaceLookUpItem?>? selectedOwnerShip,
       final Nullable<String?>? ownershipText,
@@ -174,7 +174,9 @@ class ComplianceState extends Equatable {
         selectedOwnerShip: selectedOwnerShip == null
             ? this.selectedOwnerShip
             : selectedOwnerShip.value,
-        selectedSubUsage: selectedSubUsage ?? this.selectedSubUsage,
+        selectedSubUsage: selectedSubUsage == null
+            ? this.selectedSubUsage
+            : selectedSubUsage.value,
         ownershipText:
             ownershipText == null ? this.ownershipText : ownershipText.value,
         ownershipDate:

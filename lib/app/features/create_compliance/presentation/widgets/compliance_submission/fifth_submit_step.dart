@@ -1,3 +1,8 @@
+import 'dart:io';
+import 'dart:typed_data';
+
+import 'package:balady_plus/app/core/services/local/helpers.dart';
+import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:balady_plus/app/core/utils/constants/app_style.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/buttons/elevated_button_widgets.dart';
@@ -8,10 +13,20 @@ import 'package:balady_plus/app/features/create_compliance/presentation/bloc/com
 import 'package:balady_plus/app/features/create_compliance/presentation/bloc/compliance_state.dart';
 import 'package:balady_plus/app/features/create_compliance/presentation/widgets/compliance_submission/previous_next_buttons.dart';
 import 'package:balady_plus/app/features/create_compliance/presentation/widgets/compliance_title_widget.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
+import 'package:open_file/open_file.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:sentry_dio/sentry_dio.dart';
 
+import '../../../../../core/services/global/web_service.dart';
+import '../../../../../core/services/local/navigation_services.dart';
+import '../../../../../core/utils/constants/remote_config.dart';
+import '../../../../../core/utils/constants/route_names.dart';
+import '../../../../objections/domain/entities/objection_details.dart';
 import '../../../../transaction_inquiry/customer_voice_exports.dart';
 
 class FifthComplianceSubmitStep extends StatelessWidget {
@@ -136,7 +151,16 @@ class AttachmentListWidget extends StatelessWidget {
               isRequired: attachments[index].isRequired,
               path: attachments[index].filePath,
               fileName: attachments[index].fileName,
-              onPress: () {},
+              onPress: () {
+                if (attachments[index].filePath != null &&
+                    !attachments[index].filePath!.startsWith("http"))
+                  CommonFunctions.openFile(File(attachments[index].filePath!));
+                else if (attachments[index].filePath != null &&
+                    attachments[index].filePath!.startsWith("http")) {
+                  showFile(attachments[index].filePath ?? "",
+                      attachments[index].fileName!);
+                }
+              },
               hint: attachments[index].hint,
               enableButton: (status) {},
               saveFile: saveFile,
@@ -147,5 +171,67 @@ class AttachmentListWidget extends StatelessWidget {
         },
       ),
     );
+  }
+
+  void showFile(String fileUrl, String fileName) async {
+    try {
+      print("HFRR");
+      if (fileName.toLowerCase().contains(".png") ||
+          fileName.toLowerCase().contains(".jpeg") ||
+          fileName.toLowerCase().contains(".jpg")) {
+        //MM
+        print("HEETT");
+        NavigationService.navigatorKey.currentState!
+            .pushNamed(RouteName.apigeeImageFullScreen, arguments: fileUrl);
+      } else {
+        try {
+          EasyLoading.show();
+          File fileDownloaded = await createFileOfPdfUrl(fileUrl, fileName);
+          EasyLoading.dismiss();
+
+          if (fileName.toLowerCase().contains(".pdf")) {
+            Uint8List bytes = fileDownloaded.readAsBytesSync();
+
+            Navigator.push(
+                NavigationService.navigatorKey.currentContext!,
+                MaterialPageRoute(
+                    builder: (context) => PDFViewer(
+                          file: bytes,
+                          title: fileName,
+                        )));
+          } else {
+            OpenFile.open(fileDownloaded.path);
+          }
+        } catch (ex) {
+          EasyLoading.dismiss();
+
+          print(ex);
+        }
+      }
+    } catch (ex) {
+      EasyLoading.dismiss();
+    }
+  }
+
+  Future<File> createFileOfPdfUrl(String fileUrl, String fileName) async {
+    final url = fileUrl;
+    Dio dio = Dio();
+    dio.options.baseUrl = RemoteConfig.apigeeURL;
+    dio.options.connectTimeout = const Duration(milliseconds: 60000);
+
+    dio.options.receiveTimeout = const Duration(milliseconds: 60000);
+
+    dio.options.sendTimeout = const Duration(milliseconds: 60000);
+    dio.addSentry();
+
+    dio.options.responseType = ResponseType.bytes;
+    dio.interceptors.add(AppInterceptors());
+    ;
+    Response r = await WebService(dio: dio).dio.getUri(Uri.parse(url));
+
+    String dir = (await getTemporaryDirectory()).path;
+    File file = new File('$dir/$fileName');
+    await file.writeAsBytes(r.data);
+    return file;
   }
 }

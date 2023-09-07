@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../core/services/local/navigation_services.dart';
 import '../../../../core/utils/constants/app_colors.dart';
+import '../../../../core/utils/constants/constants.dart';
 import '../../../../core/utils/constants/paths/icon_paths.dart';
 import '../../../../core/utils/constants/paths/image_paths.dart';
 import '../../../../core/utils/constants/route_names.dart';
 import '../../../../core/utils/enums/app_font_weights.dart';
 import '../../../_shared_feature_/presentation/buttons/elevated_button_widgets.dart';
+import '../../../_shared_feature_/presentation/widgets/buttons/custom_buttons_widgets.dart';
 import '../../../_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
 import '../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 
@@ -25,7 +29,7 @@ class NonComplianceScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Container(
+                /*Container(
                   margin: EdgeInsetsDirectional.only(
                       top: MediaQuery.of(context).padding.top + 10, start: 16),
                   child: GestureDetector(
@@ -38,6 +42,23 @@ class NonComplianceScreen extends StatelessWidget {
                       width: 20.0,
                       color: Colors.black,
                     ),
+                  ),
+                ),*/
+                Container(
+                  margin: EdgeInsetsDirectional.only(
+                      top: MediaQuery.of(context).padding.top + 10, start: 16),
+                  child: CustomTextIconButtonWidget(
+                    text: ('السابق').tr(),
+                    icon: SvgPicture.asset(IconPath.vdAppBarBack),
+                    iconTextTweenSpace: 5,
+                    textStyle: const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: AppColor.blackModern700Light,
+                        fontFamily: Constants.appFontType),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
                   ),
                 ),
                 Expanded(

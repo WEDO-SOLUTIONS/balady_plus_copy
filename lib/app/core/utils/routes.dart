@@ -29,6 +29,7 @@ import 'package:flutter/material.dart'
 import 'package:flutter/widgets.dart' show SizedBox;
 import 'package:balady_plus/etmam_app/features/home/presentation/pages/etmam_home_page.dart';
 import 'package:balady_plus/etmam_app/features/on_boarding_cities/presentation/pages/etmam_select_city_page.dart';
+import '../../../etmam_app/features/home/presentation/pages/etmam_main_city_page.dart';
 import '../../../etmam_app/features/home/presentation/pages/etmam_main_page.dart';
 import '../../core/utils/utils_exports.dart'
     show
@@ -40,6 +41,7 @@ import '../../core/utils/utils_exports.dart'
         ScaleRotatePage,
         SliderUpPage;
 import '../../features/_shared_feature_/presentation/pages/qiblah_webview_page.dart';
+import '../../features/_shared_feature_/presentation/pages/view_apigee_image_screen.dart';
 import '../../features/create_compliance/presentation/pages/compliance_details_page.dart';
 import '../../features/create_compliance/presentation/pages/map_page/complinace_map_page.dart';
 import '../../features/create_compliance/presentation/pages/non_compliance_screen.dart';
@@ -265,6 +267,7 @@ class Routes {
 
         RouteName.splash: (context) => const SplashPage(),
         RouteName.etmamMainPage: (context) => const EtmamMainPage(),
+        RouteName.etmamMainPageCitySelector: (context) => const EtmamMainCityPage(),
 
         //! Services
 
@@ -340,6 +343,7 @@ class Routes {
         RouteName.inappWebview: (context) => InAppWebViewPage(),
 
         RouteName.dmsImageFullScreen: (context) => ViewDMSImageScreen(),
+        RouteName.apigeeImageFullScreen: (context) => ViewAPIGEEImageScreen(),
 
         RouteName.serviceCards: (context) => ServiceCardsPage(),
 

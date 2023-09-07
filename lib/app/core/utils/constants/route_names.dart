@@ -8,7 +8,11 @@ class RouteName {
   static const error = '/error';
   static const inappWebview = '/inappWebview';
   static const dmsImageFullScreen = '/dmsImageFullScreen';
+  static const apigeeImageFullScreen = '/apigeeImageFullScreen';
+
   static const etmamMainPage = '/etmamMainPage';
+  static const etmamMainPageCitySelector = '/etmamMainPageCitySelector';
+
   static const forceUpdateRoute = '/forceUpdateRoute';
   static const QAPage = '/QAPage';
 
@@ -155,7 +159,7 @@ class RouteName {
   // -------  Create Compliance ---------
   static const createCompliancePage = '/createCompliance';
   static const complinaceMapView = '/complinaceMapView';
-  static const complianceDetailsPage  = '/ComplianceDetailsPage';
+  static const complianceDetailsPage = '/ComplianceDetailsPage';
   static const nonComplianceScreen = '/NonComplianceScreen';
 
   // -------  Events ---------
@@ -164,8 +168,6 @@ class RouteName {
   // Self Rating
   static const selfRatingMainPage = '/selfRatingMainPage';
   static const selfRatingResultPage = '/selfRatingResultPage';
-
-  
 }
 
 class EtmamRoutesNames {

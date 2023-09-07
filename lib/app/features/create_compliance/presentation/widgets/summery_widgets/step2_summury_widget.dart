@@ -28,6 +28,10 @@ class Step2SummeryWidget extends StatelessWidget {
             ),
             CustomVerticalSpace(height: 8),
             FieldData(
+                title: ("رقم الهوية / السجل التجاري").tr(),
+                subTitle: state.requestDetails?.ownerDto?.identityNumber),
+            CustomVerticalSpace(height: 8),
+            FieldData(
               title: ("vd_mobile_number").tr(),
               subTitle: state.contactMobileNumber ?? "",
             ),

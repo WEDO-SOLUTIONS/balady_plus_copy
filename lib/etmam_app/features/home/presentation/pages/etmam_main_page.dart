@@ -3,9 +3,12 @@ import 'package:balady_plus/etmam_app/core/utils/utils_exports.dart';
 import 'package:balady_plus/etmam_app/features/home/home_exports.dart';
 import 'package:balady_plus/etmam_app/features/on_boarding_cities/on_boarding_cities_exports.dart';
 import 'package:balady_plus/etmam_app/features/on_boarding_cities/presentation/pages/etmam_select_city_page.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../../providers/domain/entities/provider_details_response.dart';
 
 class EtmamMainPage extends StatelessWidget {
   const EtmamMainPage({super.key});

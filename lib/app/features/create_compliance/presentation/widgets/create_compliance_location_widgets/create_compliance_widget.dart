@@ -78,7 +78,7 @@ class _CreateComplianceLocationWidgetState
                       builder: (context) => const SubmitCompliancePage()));
             } else if (selected == 0) {
               CommonFunctions.externalLaunch(
-                  "https://balady.alriyadh.gov.sa/Pages/Balady/Default.aspx");
+                  "https://eservices.alriyadh.gov.sa/Pages/ServicesRedirect.aspx?ServiceCode=2&MainServiceCode=67");
             }
           }),
         ]),

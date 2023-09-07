@@ -82,7 +82,9 @@ class _SuccessScreenState extends State<SuccessScreen> {
   void sendSuccessEvent(PAGE_TYPE type) {
     switch (type) {
       case PAGE_TYPE.emtethal:
-      break; 
+        break;
+      case PAGE_TYPE.deleteEmtethal:
+        break;
       case PAGE_TYPE.appointmentScreen:
         CommonFunctions.sendEventToAnalytics(AppEvents.makeAppointmentSuccess);
         break;
@@ -265,6 +267,7 @@ class SuccessBody extends StatelessWidget {
       case PAGE_TYPE.vhr:
       case PAGE_TYPE.objction:
       case PAGE_TYPE.emtethal:
+      case PAGE_TYPE.deleteEmtethal:
         return "vd_request_submit".tr();
         return ('lbl_thank_you').tr();
       default:
@@ -336,10 +339,15 @@ class SuccessBody extends StatelessWidget {
             .tr()
             .replaceAll("-", successScreenArgs?.idNumber ?? "--");
 
+      case PAGE_TYPE.deleteEmtethal:
+        return ("delete_compliance_request_message")
+            .tr()
+            .replaceAll("_", successScreenArgs?.idNumber ?? "--");
+
       case PAGE_TYPE.newVD:
       case PAGE_TYPE.dc:
       case PAGE_TYPE.vhr:
-       case PAGE_TYPE.emtethal:
+      case PAGE_TYPE.emtethal:
         return successScreenArgs?.thanksMessage ?? "";
 
       case PAGE_TYPE.other:
@@ -416,6 +424,7 @@ class SuccessButtons extends StatelessWidget {
       case PAGE_TYPE.licenseScreen:
       case PAGE_TYPE.deleteRequestScreen:
       case PAGE_TYPE.emtethal:
+      case PAGE_TYPE.deleteEmtethal:
         return ('go_to_home').tr();
       //   return Helpers.translatingWord('go_back_to_customer_voice_page');
       // case PAGE_TYPE.licenseScreen:
@@ -452,6 +461,7 @@ class SuccessButtons extends StatelessWidget {
       case PAGE_TYPE.daem:
       case PAGE_TYPE.objction:
       case PAGE_TYPE.emtethal:
+      case PAGE_TYPE.deleteEmtethal:
       case PAGE_TYPE.licenseScreen:
       case PAGE_TYPE.deleteRequestScreen:
         {
@@ -583,6 +593,7 @@ class SuccessButtons extends StatelessWidget {
 
       case PAGE_TYPE.objction:
       case PAGE_TYPE.emtethal:
+      case PAGE_TYPE.deleteEmtethal:
         /*{
           NavigationService.goBack();
         }*/

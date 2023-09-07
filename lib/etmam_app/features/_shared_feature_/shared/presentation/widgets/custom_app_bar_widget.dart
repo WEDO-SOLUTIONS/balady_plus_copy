@@ -56,7 +56,7 @@ class _CustomAppBar extends State<CustomAppBar> {
               },
               icon: CustomSvgIconWidget(
                 widget.withCloseImg ? IconPath.close : IconPath.appbarBackArrow,
-                iconSize: 24,
+                iconSize: widget.withCloseImg ? 16 : 24,
                 //  iconColor: AppColorsTheme.primary700, //MM
               ))
           : null,

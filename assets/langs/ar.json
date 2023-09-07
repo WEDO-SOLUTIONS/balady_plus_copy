@@ -3077,7 +3077,7 @@
 "clauses_image_text":"عدم تعديل استخدام المواقف المعتمدة في القبو",
 "clauses_option1":"ممتثل",
 "clauses_option2":"غير ممتثل",
-"compliance_complain_title":"بيانات المرفقات والملاحظات",
+"compliance_complain_title":"بيانات المرفقات",
 "compliance_complain_subtitle":"امتداد الملفات المسموح بإرفاق jpeg، jpg، png، pdf لا يتعدى حجم الملف 10 ميجابايت",
 "compliance_image_upload_title":"صور واجهة المبنى",
 "compliance_image_upload":"ارفاق",
@@ -3156,7 +3156,7 @@
 "self_rating_result":"النتيجة", 
 "self_rating_result_title":"حسب اجاباتك، انت",
 "complinace_view_conditions":"عرض الاشتراطات", 
-"complinace_isue":"اصدار الشهادة", 
+"complinace_isue":"أصدر الشهادة", 
 
 "self_rating":"قيم مبناك", 
 "compliance_check":"الإطلاع على", 
@@ -3169,7 +3169,10 @@
 "or":"أو", 
 "compliance_ownerShip_body":"أتعهد واقر بان التقديم باستخدام هذه الوثيقة لا يعتد به كإثبات لملكية العقار وإخلاء مسؤولية الوزارة عن ملكية العقار وإنني المسؤول عن أي مطالبات من اطراف خارجية", 
 "compliance_emtethal_body":"أتعهد أنا مقدم الطلب بصحة بيانات الطلب وأقر بإلتزامي بكافة بنود وإشتراطات شهادة إمتثال المباني التي أقرتها وزارة الشؤون البلدية والقروية والإسكان والموضحة في دليل إجراءات إمتثال المباني وأتحمل كافة العواقب والمخالفات الواقعة في حال ثبوت غير ذلك", 
-"compliance_check_mobile":"الرجاء التحقق من رقم الجوال"
+"compliance_check_mobile":"الرجاء التحقق من رقم الجوال", 
+"delete_compliance_request_message":"عزيزي المستفيد تم إلغاء طلب إصدار شهادة امتثال للمبنى رقم _", 
+"delete_compliance_request_title":"الغاء الطلب", 
+"delete_compliance_request_title_yes":"نعم، إلغاء الطلب"
 
 
 

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports.dart';
 import 'package:balady_plus/app/features/create_compliance/data/models/compliance_engoffice_details_model.dart';
@@ -11,6 +12,8 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:mime/mime.dart';
 import 'package:balady_plus/etmam_app/core/utils/utils_exports.dart'
     as EtmamCommonProperties hide Log;
+import '../../../../core/remote_services/web_service.dart' as web;
+
 import '../../../../core/base/base_view_model.dart';
 import '../../../../core/errors/exceptions.dart';
 import '../../../../core/services/local/helpers.dart';
@@ -74,6 +77,10 @@ abstract class CreateComplianceRemoteDataSource {
 
   Future<SendOtpResponse> sendOTP({required String params});
   Future<bool> verifyOTP({required VerifyOTPRequest params});
+
+  Future<Uint8List?> downLoadCertificate({required String params});
+  Future<bool?> deleteComplianceRequwst({required String params});
+  Future<String?> getEtmamId({required String params});
 }
 
 class CreateComplianceRemoteDataSourceImpl
@@ -764,6 +771,132 @@ class CreateComplianceRemoteDataSourceImpl
       final result = ResponseBodyModel.fromMap(data).data?.result;
       NavigationService.goBack();
       return true;
+    } on DioError catch (error) {
+      var errorCode;
+      try {
+        final decodedResponse = ResponseBodyModel.fromMap(
+          error.response?.data,
+        );
+        errorCode = decodedResponse.data?.responseCode;
+      } catch (ex) {}
+
+      throw ServerException(
+        error.toString(),
+        errorCode: errorCode,
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
+    } catch (ex) {
+      if (ex is ServerException)
+        throw ex;
+      else {
+        try {} catch (ex) {}
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
+      }
+    }
+  }
+
+  @override
+  Future<Uint8List?> downLoadCertificate({required String params}) async {
+    final body = await locator<web.WebService>()
+        .getNewApigeeRequestWithoutUTF(ApiUrl.downLoadBuildingLicense(params));
+    bool state = body['state'];
+    dynamic data = body['data'];
+    Uint8List? result;
+    String error =
+        body['error'] ?? Helpers.translatingWord("errors_server_error_1");
+    String? contentType = body['Content-Type'];
+    print("COOOOO");
+    print(contentType);
+    print(state);
+    print(body);
+    //  print(data);
+    try {
+      if (state) result = data;
+
+      // print(result);
+      if (!state) {
+        //   error = result.data?.responseMessage ?? error;
+
+        try {
+          Helpers.sendLog(
+              url: ApiUrl.downLoadBuildingLicense(params),
+              data: data,
+              errorMsg: body.toString() ?? "");
+        } catch (ex) {}
+      }
+    } catch (ex) {
+      print(ex);
+    }
+    return Future.value(result);
+  }
+
+  @override
+  Future<bool?> deleteComplianceRequwst({required String params}) async {
+    var response;
+
+    try {
+      response = await webService.dio
+          .delete(ApiUrl.deleteComplianceRequest + params, data: params);
+
+      final data = response.data;
+
+      final result = ResponseBodyModel.fromMap(data).data?.result;
+
+      return true;
+    } on DioError catch (error) {
+      var errorCode;
+      try {
+        final decodedResponse = ResponseBodyModel.fromMap(
+          error.response?.data,
+        );
+        errorCode = decodedResponse.data?.responseCode;
+      } catch (ex) {}
+
+      throw ServerException(
+        error.toString(),
+        errorCode: errorCode,
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
+    } catch (ex) {
+      if (ex is ServerException)
+        throw ex;
+      else {
+        try {} catch (ex) {}
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
+      }
+    }
+  }
+
+  @override
+  Future<String?> getEtmamId({required String params}) async {
+    var response;
+
+    try {
+      response = await webService.dio.post(ApiUrl.etmamProfileEntity, data: {
+        "platformId": "balady",
+        "entities": [
+          {
+            "entityId": "service",
+            "ids": ["1130"]
+          }
+        ]
+      });
+
+      final data = response.data;
+
+      final result = ResponseBodyModel.fromMap(data).data?.result;
+
+      return result["entities"]["service"]["profiles"]["1130"]["internalId"];
     } on DioError catch (error) {
       var errorCode;
       try {

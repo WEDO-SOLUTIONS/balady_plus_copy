@@ -279,7 +279,8 @@ class ApiUrl {
 
   static const String submitComplianceRequest =
       '/v1/compliance-certificate-mobile-services/submit-request/';
-
+  static const String deleteComplianceRequest =
+      '/v1/compliance-certificate-mobile-services/request/';
   static const String complicanecOwnershioDocType =
       '/v1/compliance-certificate-mobile-services/ownership-doc-type';
 
@@ -303,6 +304,12 @@ class ApiUrl {
       '/v1/gis-services/compliance-certificates/point-data';
   static String complianceAttachment(String requestId, String fileTypeId) =>
       '/v1/compliance-certificate-mobile-services/${requestId}/upload-attahchment/${fileTypeId}';
+
+  static String downLoadBuildingLicense(String id) =>
+      '/v1/compliance-certificate-mobile-services/download-request-files/$id';
+
+  static const String etmamProfileEntity =
+      '/v1/etmamplus-platform-services/search-profiles';
 
   //! POST
 

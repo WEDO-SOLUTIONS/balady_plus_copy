@@ -122,6 +122,31 @@ class UsageSubmissionCompliance extends StatelessWidget {
                     title: 'بيانات الموقع'.tr(),
                     subtitle: "",
                   ),
+                  DropDownWithTitle(
+                    title: "الموقع الجغرافي".tr(),
+                    selectedValue: state.gisResponse?.getFullAddress(),
+                    onRetry: () {
+                      context.read<ComplianceBloc>().add(
+                            const GetSubUsagesEvent(),
+                          );
+                    },
+                    onTap: () async {
+                      await NavigationService.navigatorKey.currentState!
+                          .pushNamed(RouteName.complinaceMapView,
+                              arguments: MapScreenParams(
+                                gisParams: state.gisParams,
+                                complianceGIS: state.gisResponse,
+                              ))
+                          .then((value) {
+                        if (value != null) {
+                          MapScreenParams? params = value as MapScreenParams;
+                          context.read<ComplianceBloc>().emit(state.copyWith(
+                              gisResponse: params.complianceGIS,
+                              gisParams: params.gisParams));
+                        }
+                      });
+                    },
+                  ),
                   ReadOnlyField(
                       title: "الأمانة".tr(),
                       subTitle: state.gisResponse?.amanaName ?? ""),

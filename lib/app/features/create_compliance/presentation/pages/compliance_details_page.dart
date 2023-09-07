@@ -23,6 +23,7 @@ import '../../../vd/presentation/widgets/summery_widgets/field_data.dart';
 import '../bloc/compliance_bloc.dart';
 import '../bloc/compliance_event.dart';
 import '../bloc/compliance_state.dart';
+import '../dialogs/confirm_cancel_license_dialog.dart';
 import '../widgets/summery_widgets/location_summury_widget.dart';
 import '../widgets/summery_widgets/step1_summury_widget.dart';
 import '../widgets/summery_widgets/step2_summury_widget.dart';
@@ -51,7 +52,11 @@ class ComplianceDetailsPage extends StatelessWidget {
               backgroundColor: AppColor.white2,
               appBar: DetailsHeader(
                 title: "order_details".tr(),
-                onPrint: null,
+                onPrint: state.requestDetails?.statusId == 5
+                    ? () => context
+                        .read<ComplianceBloc>()
+                        .add(DownloadCertificateEvent())
+                    : null,
                 procedures: (state.requestDetails?.statusId == 1)
                     ? () async {
                         await BottomSheetDialog.showDraggableSheet(context,
@@ -83,6 +88,29 @@ class ComplianceDetailsPage extends StatelessWidget {
                                   },
                                   child: FieldData(
                                     title: Helpers.translatingWord('تعديل'),
+                                  ),
+                                ),
+                                CustomVerticalSpace(height: 16),
+                                GestureDetector(
+                                  onTap: () async {
+                                    await BottomSheetDialog.showDraggableSheet(
+                                        context,
+                                        isFullHeight: false,
+                                        // dialogKeyName: DialogName
+                                        //     .healthCertificateCancelActionsDialog,
+                                        //  currentRouteName: RouteName
+                                        //      .healthLicenseDetailsScreen,
+                                        child: ConfirmCancelLicenseDialog(
+                                      onCancel: () {
+                                        Navigator.of(context).pop();
+                                        Navigator.of(context).pop();
+                                        context.read<ComplianceBloc>().add(
+                                            DeleteComplianceRequestEvent());
+                                      },
+                                    ));
+                                  },
+                                  child: FieldData(
+                                    title: Helpers.translatingWord('الغاء'),
                                   ),
                                 ),
                               ]),
@@ -143,7 +171,8 @@ class ComplianceDetailsPage extends StatelessWidget {
                           ],
                         ))),
                   if (state.detailsStatus ==
-                      BlocRequestStatus.submissionGetLoading)
+                          BlocRequestStatus.submissionGetLoading ||
+                      state.status == BlocStatus.loading)
                     CustomCircularLoadingWidget(),
                   if (state.detailsStatus == BlocRequestStatus.failure)
                     ReloadWidget(

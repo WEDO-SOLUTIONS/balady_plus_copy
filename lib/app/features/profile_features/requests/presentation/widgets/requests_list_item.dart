@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/features/create_compliance/presentation/bloc/compliance_event.dart';
 import 'package:balady_plus/app/features/home_page/home_exports.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -7,11 +8,13 @@ import 'package:dartz/dartz.dart' show Either, Right, Left;
 
 import '../../../../../core/base/base_view_model.dart';
 import '../../../../../core/dependency_injection/injection_container.dart';
+import '../../../../../core/errors/failures.dart';
 import '../../../../../core/services/local/navigation_services.dart';
 import '../../../../../core/services/local/use_case.dart';
 import '../../../../../core/utils/utils_exports.dart'
     show AppColor, AppStyle, CommonFunctions, IconPath, RouteName;
 import '../../../../_shared_feature_/shared_feature_exports.dart';
+import '../../../../create_compliance/domain/use_cases/get_compliance_details.dart';
 import '../../../../entry_point/domain/use_cases/get_cookie.dart';
 import '../../../../health_certificate/presentation/core/models/health_request_details.dart';
 import '../../../../health_certificate/presentation/core/models/health_request_details_screen_args.dart';
@@ -114,11 +117,33 @@ class RequestsListItem extends StatelessWidget {
                           isPrintable: false));
                 }
               } else if (request.requestTypeId == 1130) {
-                Navigator.pushNamed(context, RouteName.complianceDetailsPage,
+                /*  Navigator.pushNamed(context, RouteName.complianceDetailsPage,
                     arguments: (
                       request.requestNumber.toString(),
                       request.redirectUrl
+                    ));*/
+                EasyLoading.show();
+                final getComplicanceDetails =
+                    GetComplianceByRequestId(repository: sl());
+
+                final details = await getComplicanceDetails(
+                    request.requestNumber.toString());
+                EasyLoading.dismiss();
+
+                details.fold((l) {
+                  CommonFunctions.showError((l as ServerFailure).errorMessage);
+                }, (r) {
+                  if (r.submitterThrough == "BENEFICARY") {
+                    Navigator.pushNamed(
+                        context, RouteName.complianceDetailsPage, arguments: (
+                      request.requestNumber.toString(),
+                      request.redirectUrl
                     ));
+                  } else {
+                    CommonFunctions.openBaldyWithRefreshCookie(
+                        request.redirectUrl);
+                  }
+                });
               } else {
                 if (request.redirectUrl == null) {
                   if (request.requestTypeId == 50001) {

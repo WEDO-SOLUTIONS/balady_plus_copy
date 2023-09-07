@@ -13,7 +13,8 @@ class GetCitiesEvent extends CityEvent {
 
 class SelectCityEvent extends CityEvent {
   final CityItem? item;
-  const SelectCityEvent({this.item});
+  final String? subServiceid;
+  const SelectCityEvent({this.item, this.subServiceid});
 }
 
 class GetLocalCities extends CityEvent {
@@ -23,4 +24,9 @@ class GetLocalCities extends CityEvent {
 class SearchForCityEvent extends CityEvent {
   String? text;
   SearchForCityEvent({this.text});
+}
+
+class GetProvidersForASubServiceEvent extends CityEvent {
+  final String? subServiceId;
+  GetProvidersForASubServiceEvent({this.subServiceId});
 }

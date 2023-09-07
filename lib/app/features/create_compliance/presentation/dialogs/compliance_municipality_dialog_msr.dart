@@ -70,7 +70,7 @@ class ComplianceMunicipalityMSRDialog extends StatelessWidget {
                 EnhancedCustomElevatedButtonWidget(
                   btnPressed: () {
                     CommonFunctions.externalLaunch(
-                        "https://balady.alriyadh.gov.sa/Pages/Balady/Default.aspx");
+                        "https://eservices.alriyadh.gov.sa/Pages/ServicesRedirect.aspx?ServiceCode=2&MainServiceCode=67");
                   },
                   btnText: Helpers.translatingWord("الذهاب للخدمة"),
                   btnTextSize: 18,

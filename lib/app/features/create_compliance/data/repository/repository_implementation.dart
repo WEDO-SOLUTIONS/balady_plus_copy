@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:balady_plus/app/features/create_compliance/data/models/apply_create_compliance_request_model.dart';
 import 'package:balady_plus/app/features/create_compliance/data/models/compliance_certificate_items_request.dart';
 import 'package:balady_plus/app/features/create_compliance/data/models/compliance_engoffice_details_model.dart';
@@ -198,6 +200,39 @@ class CreateComplianceRepositoryImplementation
       {required VerifyOTPRequest params}) async {
     try {
       final data = await remoteDataSource.verifyOTP(params: params);
+      return Right(data);
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage));
+    }
+  }
+
+  @override
+  Future<Either<Failure, Uint8List?>> downLoadCertificate(
+      {required String params}) async {
+    try {
+      final data = await remoteDataSource.downLoadCertificate(params: params);
+      return Right(data);
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage));
+    }
+  }
+
+  @override
+  Future<Either<Failure, bool?>> deleteComplianeRequeest(
+      {required String params}) async {
+    try {
+      final data =
+          await remoteDataSource.deleteComplianceRequwst(params: params);
+      return Right(data);
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage));
+    }
+  }
+
+  @override
+  Future<Either<Failure, String?>> getEtmamId({required String params}) async {
+    try {
+      final data = await remoteDataSource.getEtmamId(params: params);
       return Right(data);
     } on ServerException catch (error) {
       return Left(ServerFailure(error.errorMessage));

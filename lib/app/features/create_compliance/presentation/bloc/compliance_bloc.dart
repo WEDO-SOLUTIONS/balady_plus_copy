@@ -4,6 +4,7 @@ import 'package:balady_plus/app/core/services/services_exports.dart';
 import 'package:balady_plus/app/core/utils/enums/bloc_status.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/create_compliance/domain/entities/verify_otp_request.dart';
+import 'package:balady_plus/app/features/create_compliance/domain/use_cases/delete_compliance_request.dart';
 import 'package:balady_plus/app/features/create_compliance/presentation/bloc/compliance_event.dart';
 import 'package:balady_plus/app/features/create_compliance/presentation/bloc/compliance_state.dart';
 import 'package:balady_plus/app/features/transaction_inquiry/presentation/core/models/attachment_model.dart';
@@ -27,6 +28,7 @@ import '../../domain/entities/compliance_gis_resopnse.dart';
 import '../../domain/entities/complinace_licenses_response.dart';
 import '../../domain/entities/ownership_doc_type_response.dart';
 import '../../domain/use_cases/apply_compliance.dart';
+import '../../domain/use_cases/download_compliance_certificate.dart';
 import '../../domain/use_cases/get_compliance_details.dart';
 import '../../domain/use_cases/get_compliance_engoffices.dart';
 import '../../domain/use_cases/get_compliance_engoffices_details.dart';
@@ -34,6 +36,7 @@ import '../../domain/use_cases/get_compliance_gis.dart';
 import '../../domain/use_cases/get_compliance_license.dart';
 import '../../domain/use_cases/get_compliance_main_usage.dart';
 import '../../domain/use_cases/get_compliance_sub_usage.dart';
+import '../../domain/use_cases/get_entity_etmam_id.dart';
 import '../../domain/use_cases/get_ownership_types.dart';
 import '../../domain/use_cases/save_attachment.dart';
 import '../../domain/use_cases/save_compliance_certificate_items.dart';
@@ -93,7 +96,9 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
   final SaveAttachment _saveAttachment;
   final SendOTP _sendOTP;
   final VerifyOTP _verifyOTP;
-
+  final DownloadComplianceCertificate _downloadCmplianceCertificate;
+  final DeleteComplianceRequest _deleteComlianceRequest;
+  final GetEtmamId _getEtmamId;
   ComplianceBloc()
       : _applyCompliance = ApplyCompliance(repository: sl()),
         _getComplianceByRequestId = GetComplianceByRequestId(repository: sl()),
@@ -113,6 +118,10 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
         _saveAttachment = SaveAttachment(repository: sl()),
         _sendOTP = SendOTP(repository: sl()),
         _verifyOTP = VerifyOTP(repository: sl()),
+        _deleteComlianceRequest = DeleteComplianceRequest(repository: sl()),
+        _downloadCmplianceCertificate =
+            DownloadComplianceCertificate(repository: sl()),
+        _getEtmamId = GetEtmamId(repository: sl()),
         super(ComplianceState(
           status: BlocStatus.initial,
           currentStep: 0,
@@ -147,6 +156,9 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
     on<GetEngOfficeDetailsEvent>(_getEngOfficeDetailsHandler);
     on<SendOTPEvent>(_sendOTPHandler);
     on<VerifyOTPEvent>(_verifyOTPHandler);
+    on<DownloadCertificateEvent>(_downloadCertificate);
+    on<DeleteComplianceRequestEvent>(_deleteComplianceRequest);
+    on<GetEtmamEntityIdEvent>(_getEtmamIdHandler);
   }
   Future<void> _pageChangeHandler(ChangePageEvent e, Emitter emitter) async {
     emitter(state.copyWith(currentStep: e.index, errorMessage: ""));
@@ -166,7 +178,9 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
             : e.selectedOwnerShip),
         selectedMainUsage: e.selectedMainUsage,
         contactMobileNumber: e.mobileNumber,
-        selectedSubUsage: e.selectedSubUsage,
+        selectedSubUsage: Nullable(e.selectedSubUsage == null
+            ? state.selectedSubUsage
+            : e.selectedSubUsage),
         selectedLicense: Nullable(e.selectedLicense == null
             ? state.selectedLicense
             : e.selectedLicense),
@@ -397,7 +411,7 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
           requestDetails: r,
           errorMessage: "",
           selectedMainUsage: selectedMainUsage,
-          selectedSubUsage: selectedSubUsage,
+          selectedSubUsage: Nullable(selectedSubUsage),
           detailsStatus: BlocRequestStatus.submissionGetSuccess,
           attachments: attachmentData));
 
@@ -452,7 +466,9 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
           id: r?.ownershipDocInfoDto?.ownershipDocumentType,
           name: r?.ownershipDocInfoDto?.ownerShipDocTypeName);
     }
-
+    if (r?.mainUsageCode != null && r?.mainUsageName != null) {
+      add(GetSubUsagesEvent(item: selectedMainUsage, clearSub: false));
+    }
     if (r?.submitterThrough == "BENEFICARY") {
       submitterThrough = 1;
     } else {
@@ -465,7 +481,7 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
       certificateBaseType = 1;
     }
     requestId = r?.requestId;
-
+    print("SETTTTTUP current step save${r?.certificateBaseType}");
     emit(state.copyWith(
         requestDetails: r,
         isDraft: true,
@@ -477,12 +493,7 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
             Nullable(r?.ownershipDocInfoDto?.ownershipDocumentNo ?? ""),
         ownershipDate:
             Nullable(r?.ownershipDocInfoDto?.ownershipDocumentDate ?? ""),
-        gisParams: (r?.locationResponseInfoDto?.x != null &&
-                r?.locationResponseInfoDto?.y != null)
-            ? GISParams(
-                x: double.tryParse(r!.locationResponseInfoDto!.x!)!,
-                y: double.tryParse(r!.locationResponseInfoDto!.y!)!)
-            : null,
+        gisParams: r?.locationResponseInfoDto?.gisParams(),
         gisResponse: r?.locationResponseInfoDto?.municipalityId != null
             ? ComplainceGISResponse(
                 amanaCode: r?.locationResponseInfoDto?.municipalityId,
@@ -520,14 +531,14 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
             : true,*/
         selectedLicense: r?.licenseNumber != null
             ? Nullable(ComplianceLisenseItem(
-                licenseId: double.tryParse(r?.licenseNumber),
+                licenseId: r?.licenseNumber?.toDouble(),
                 expirationDate: r?.licenseExpiryDate,
                 issuingDate: r?.licenseIssueDate,
                 statusName: r?.licenseStatusName,
                 statusId: r?.licenseStatusId))
             : null,
         selectedMainUsage: selectedMainUsage,
-        selectedSubUsage: selectedSubUsage,
+        selectedSubUsage: Nullable(selectedSubUsage),
         detailsStatus: BlocRequestStatus.submissionGetSuccess,
         attachments: attachmentData));
   }
@@ -601,6 +612,27 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
     });
   }
 
+  Future<void> _downloadCertificate(
+      DownloadCertificateEvent e, Emitter emitter) async {
+    emitter(state.copyWith(
+      status: BlocStatus.loading,
+    ));
+
+    final failOrSuccess =
+        await _downloadCmplianceCertificate(state.requestId.toString());
+
+    failOrSuccess.fold((l) {
+      emitter(state.copyWith(
+        errorMessage: (l as ServerFailure).errorMessage,
+        status: BlocStatus.failure,
+      ));
+    }, (r) {
+      emitter(state.copyWith(status: BlocStatus.success));
+      CommonFunctions.createOpenTempBytesFile(
+          "${DateTime.now().millisecondsSinceEpoch}.pdf", r!);
+    });
+  }
+
   Future<void> _verifyOTPHandler(VerifyOTPEvent e, Emitter emitter) async {
     emitter(state.copyWith(
       status: BlocStatus.loading,
@@ -646,7 +678,8 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
       GetSubUsagesEvent e, Emitter emitter) async {
     emitter(state.copyWith(
         subUsagesStatus: BlocRequestStatus.submissionGetLoading,
-        selectedMainUsage: e.item));
+        selectedMainUsage: e.item,
+        selectedSubUsage: e.clearSub == false ? null : Nullable(null)));
 
     final failOrSuccess = await _getComplianceSubUsages(
         (e.item?.id ?? state.selectedMainUsage?.id) ?? 0);
@@ -703,11 +736,17 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
   void cancelIncident() {
     hideKeyboard(); //MM
 
-    if (state.currentStep >= 3 && !isLastPage()) {
+    if (state.currentStep >= 3) {
       showCustomDialog(SaveDraftDialog(
         onClose: () {},
         onSave: () {
-          add(GoToNextPageEvent(save: true));
+          if (state.currentStep == 5 || isLastPage()) {
+            bool Function(Route<dynamic>) predicate =
+                ModalRoute.withName(RouteName.bottomNavigation);
+            NavigationService.navigatorKey.currentState!.popUntil((predicate));
+          } else {
+            add(GoToNextPageEvent(save: true));
+          }
         },
       ));
     } else if (state.currentStep < 3) {
@@ -733,10 +772,7 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
       print("HERE");
       add(SubmitComplianceEvent());
     } else if (state.currentStep == 0 && state.benificiaryTypeSelection == 2) {
-      bool Function(Route<dynamic>) predicate =
-          ModalRoute.withName(RouteName.bottomNavigation);
-      NavigationService.navigatorKey.currentState!
-          .pushNamedAndRemoveUntil(RouteName.etmamMainPage, predicate);
+      add(GetEtmamEntityIdEvent());
     } else if (state.currentStep == 1) {
       if (state.contactMobileVerified != true) {
         CommonFunctions.showError("compliance_check_mobile".tr());
@@ -894,6 +930,56 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
           arguments: SuccessScreenArgs(
               thanksMessage: r,
               type: PAGE_TYPE.emtethal,
+              idNumber: state.requestId.toString()));
+    });
+  }
+
+  Future<void> _getEtmamIdHandler(
+      GetEtmamEntityIdEvent e, Emitter emitter) async {
+    emitter(state.copyWith(
+      status: BlocStatus.loading,
+    ));
+    final failOrSuccess = await _getEtmamId(state.requestId.toString());
+    failOrSuccess.fold((l) {
+      emitter(state.copyWith(
+        errorMessage: (l as ServerFailure).errorMessage,
+        status: BlocStatus.failure,
+      ));
+    }, (r) async {
+      emitter(state.copyWith(
+        status: BlocStatus.success,
+      ));
+
+      bool Function(Route<dynamic>) predicate =
+          ModalRoute.withName(RouteName.bottomNavigation);
+      NavigationService.navigatorKey.currentState!.pushNamedAndRemoveUntil(
+          RouteName.etmamMainPageCitySelector, predicate,
+          arguments: r);
+    });
+  }
+
+  Future<void> _deleteComplianceRequest(
+      DeleteComplianceRequestEvent e, Emitter emitter) async {
+    emitter(state.copyWith(
+      status: BlocStatus.loading,
+    ));
+    final failOrSuccess =
+        await _deleteComlianceRequest(state.requestId.toString());
+    failOrSuccess.fold((l) {
+      emitter(state.copyWith(
+        errorMessage: (l as ServerFailure).errorMessage,
+        status: BlocStatus.failure,
+      ));
+    }, (r) async {
+      emitter(state.copyWith(
+        status: BlocStatus.success,
+      ));
+      add(GetRequestDetails());
+
+      NavigationService.navigatorKey.currentState!.pushNamed(
+          RouteName.successRoute,
+          arguments: SuccessScreenArgs(
+              type: PAGE_TYPE.deleteEmtethal,
               idNumber: state.requestId.toString()));
     });
   }

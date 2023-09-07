@@ -43,7 +43,8 @@ class GetMainUsagesEvent extends ComplianceEvent {
 
 class GetSubUsagesEvent extends ComplianceEvent {
   final ComplinaceLookUpItem? item;
-  const GetSubUsagesEvent({this.item});
+  final bool? clearSub;
+  const GetSubUsagesEvent({this.item, this.clearSub});
 }
 
 class GetOwnerShipTypesEvent extends ComplianceEvent {
@@ -129,7 +130,7 @@ class SubmitComplianceEvent extends ComplianceEvent {
 }
 
 class SaveLocationData extends ComplianceEvent {
-   final bool? save;
+  final bool? save;
 
   const SaveLocationData({this.save});
 }
@@ -165,4 +166,16 @@ class SendOTPEvent extends ComplianceEvent {
 class VerifyOTPEvent extends ComplianceEvent {
   final String otpValue;
   const VerifyOTPEvent({required this.otpValue});
+}
+
+class DownloadCertificateEvent extends ComplianceEvent {
+  const DownloadCertificateEvent();
+}
+
+class DeleteComplianceRequestEvent extends ComplianceEvent {
+  const DeleteComplianceRequestEvent();
+}
+
+class GetEtmamEntityIdEvent extends ComplianceEvent {
+  const GetEtmamEntityIdEvent();
 }
