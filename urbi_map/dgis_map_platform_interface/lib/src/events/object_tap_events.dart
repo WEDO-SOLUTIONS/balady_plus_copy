@@ -1,3 +1,4 @@
+import 'package:dgis_map_platform_interface/library.dart';
 import 'package:dgis_map_platform_interface/src/events/models/lat_lng.dart';
 
 abstract class TapEvent {
@@ -33,11 +34,12 @@ class PolylineTapEvent extends TapEvent {
 }
 
 class ObjectTapEvent extends TapEvent {
-  const ObjectTapEvent(this.dgisObjectId, this.latLng);
+  const ObjectTapEvent(this.dgisObjectId, this.latLng, this.levelId);
 
   static const name = "onObjectTap";
 
   final DgisObjectId dgisObjectId;
+  final int? levelId;
   final LatLng latLng;
 }
 
@@ -49,6 +51,10 @@ class DgisObjectId {
 
   final int objectId;
   final int entranceId;
+
+  DgisObjectIdMessage toMessage() {
+    return DgisObjectIdMessage(objectId: objectId, entranceId: entranceId);
+  }
 }
 
 /// Tap on IO layer

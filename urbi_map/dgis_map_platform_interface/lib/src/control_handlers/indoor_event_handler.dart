@@ -12,9 +12,10 @@ class IndoorEventHandler {
   Stream<IndoorActiveLevelEvent> get indoorActiveLevel =>
       _indoorActiveLevelController.stream;
 
-  final _indoorLevelNamesController = StreamController<IndoorLevelsEvent>();
+  final _indoorLevelNamesController =
+      StreamController<IndoorLevelsEvent>.broadcast();
   final _indoorActiveLevelController =
-      StreamController<IndoorActiveLevelEvent>();
+      StreamController<IndoorActiveLevelEvent>.broadcast();
 
   final MapApi _api;
 

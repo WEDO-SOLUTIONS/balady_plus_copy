@@ -133,10 +133,10 @@ class ObjectTapHandler {
                 return
             }
             return
-//        case is DgisMapObject:
-//            guard let mapObject = tappedObject as? DgisMapObject else { return }
-//            self.onDgisObjectTap(mapObject, objectInfo)
-//            return
+        case is DgisMapObject:
+            guard let mapObject = tappedObject as? DgisMapObject else { return }
+            self.onDgisObjectTap(mapObject, objectInfo)
+            return
         case let cluster as SimpleClusterObject:
             if let id = cluster.userData as? MapObjectManagerMessage {
                 let clusterId = UUID().uuidString
@@ -695,7 +695,7 @@ class ObjectTapHandler {
         
         self.source = source
         
-        self.sendDgisObjectEvent(mapObject.id, objectInfo.closestMapPoint)
+        self.sendDgisObjectEvent(mapObject.id, objectInfo.closestMapPoint, objectInfo.item.levelId)
     }
     
     private func onMarkerTap(_ marker: Marker) {
@@ -740,17 +740,18 @@ class ObjectTapHandler {
         ] as [String : Any])
     }
     
-    private func sendDgisObjectEvent(_ id: DgisObjectId, _ position: GeoPointWithElevation) {
+    private func sendDgisObjectEvent(_ id: DgisObjectId, _ position: GeoPointWithElevation, _ levelId: LevelId? = nil) {
         eventChannel.success([
             "event": Events.onObjectTap,
             "dgisObjectId": [
                 "objectId": id.objectId,
                 "entranceId": id.entranceId,
             ],
+            "levelId": levelId?.value,
             "latlng": [
                 "latitude": position.latitude.value,
                 "longitude": position.longitude.value,
             ],
-        ] as [String : Any])
+        ] as [String : Any?])
     }
 }

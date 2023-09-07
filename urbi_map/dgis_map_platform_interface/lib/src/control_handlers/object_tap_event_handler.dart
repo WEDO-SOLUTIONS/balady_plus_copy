@@ -136,6 +136,7 @@ class ObjectTapEventHandler {
         latitude: latLngMap["latitude"],
         longitude: latLngMap["longitude"],
       ),
+      map["levelId"],
     ));
   }
 

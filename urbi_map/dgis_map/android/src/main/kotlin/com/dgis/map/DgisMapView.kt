@@ -542,6 +542,10 @@ class DgisMapView(
         result?.success(rect.toGeoRect().contains(point.toGeoPoint()))
     }
 
+    override fun containsRect(outer: GeoRectMessage, inner: GeoRectMessage, result: Messages.Result<Boolean>?) {
+        result?.success(outer.toGeoRect().contains(inner.toGeoRect()))
+    }
+
     override fun setPanoramaMarkerAzimuth(
         message: MarkerAzimuthMessage,
         result: Messages.Result<Void>?
