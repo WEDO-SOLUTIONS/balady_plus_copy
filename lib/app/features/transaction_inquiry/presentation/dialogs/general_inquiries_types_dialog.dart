@@ -51,6 +51,12 @@ class _GeneralInquiryTypeDialog extends State<GeneralInquiryTypeDialog> {
           key: "",
           title: "Inq_11",
           id: 11),
+      CustomerVoiceReportTypeModel(
+          code: "INQC-016",
+          icon: IconPath.Inq_3Icon,
+          key: "",
+          title: "Inq_16",
+          id: 15)
     ];
   }
 

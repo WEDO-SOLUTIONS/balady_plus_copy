@@ -659,6 +659,11 @@ class MethodChannelDgisMapPlugin implements DgisMapPlugin, FlutterMapApi {
   }
 
   @override
+  Future<bool> containsRect(GeoRectMessage outer, GeoRectMessage inner) {
+    return _api.containsRect(outer, inner);
+  }
+
+  @override
   Future<void> moveCameraToSelectedPanorama() {
     return _api.moveCameraToSelectedPanorama();
   }

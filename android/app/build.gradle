@@ -54,7 +54,7 @@ android {
         applicationId "momra.balady.android"
         minSdkVersion 23
         multiDexEnabled true
-        targetSdkVersion 32
+        targetSdkVersion 33
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
         manifestPlaceholders = [

@@ -12,6 +12,7 @@ import '../../../../core/services/local/navigation_services.dart';
 import '../../../../core/utils/constants/paths/icon_paths.dart';
 import '../../../../core/utils/constants/route_names.dart';
 import '../../../_shared_feature_/presentation/buttons/elevated_button_widgets.dart';
+import '../../../_shared_feature_/presentation/dialogs/need_login_dialog.dart';
 import '../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import '../../../transaction_inquiry/data/general_inquiry_data.dart';
 import '../../../transaction_inquiry/presentation/core/view_models/inquiry/inquiry_view_model.dart';
@@ -58,8 +59,6 @@ class QAAskMore extends StatelessWidget {
         CustomVerticalSpace(height: 32),
         ElevatedButtonWidget.primaryCustomBorder(
             onPressed: () async {
-              CommonFunctions.sendEventToAnalytics(
-                  AppEvents.askBuildingCompliance);
               CustomerVoiceReportTypeModel type = CustomerVoiceReportTypeModel(
                   code: "INQC-016",
                   icon: IconPath.Inq_3Icon,
@@ -67,13 +66,38 @@ class QAAskMore extends StatelessWidget {
                   title: "Inq_3",
                   id: 15);
 
-              bool isSuccess = await locator<InquiryViewModel>()
-                  .getAllSplClassifications(type);
+              if (CommonProperties.isLoggedIn) {
+                bool isSuccess = await locator<InquiryViewModel>()
+                    .getAllSplClassifications(type);
 
-              //MM
-              if (isSuccess) {
-                NavigationService.navigatorKey.currentState!
-                    .pushNamed(RouteName.generalInquiryPage, arguments: type);
+                //MM
+                if (isSuccess) {
+                  CommonFunctions.sendEventToAnalytics(
+                      AppEvents.askBuildingCompliance);
+
+                  NavigationService.navigatorKey.currentState!
+                      .pushNamed(RouteName.generalInquiryPage, arguments: type);
+                }
+              } else {
+                showDialog(
+                    context: context,
+                    builder: (ctx) => NeedLoginDialog(
+                            onSuccessLogin: (bool? isSuccess) async {
+                          if (isSuccess ?? false) {
+                            bool isSuccess = await locator<InquiryViewModel>()
+                                .getAllSplClassifications(type);
+
+                            //MM
+                            if (isSuccess) {
+                              CommonFunctions.sendEventToAnalytics(
+                                  AppEvents.askBuildingCompliance);
+
+                              NavigationService.navigatorKey.currentState!
+                                  .pushNamed(RouteName.generalInquiryPage,
+                                      arguments: type);
+                            }
+                          }
+                        }));
               }
             },
             text: "qa_send_question".tr())

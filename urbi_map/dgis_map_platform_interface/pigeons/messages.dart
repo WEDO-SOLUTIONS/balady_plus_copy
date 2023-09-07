@@ -1097,6 +1097,9 @@ abstract class MapApi {
   bool contains(GeoRectMessage rect, GeoPointMessage point);
 
   @async
+  bool containsRect(GeoRectMessage outer, GeoRectMessage inner);
+
+  @async
   void setPanoramaMarkerAzimuth(MarkerAzimuthMessage message);
 
   @async
