@@ -517,6 +517,7 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
                 parcelNo: r?.locationResponseInfoDto?.landNumber,
                 area: r?.locationResponseInfoDto?.landArea,
                 guid: r?.locationResponseInfoDto?.guid,
+                streetName: r?.locationResponseInfoDto?.guid,
               )
             : null,
         ownerShipAgreement: true,

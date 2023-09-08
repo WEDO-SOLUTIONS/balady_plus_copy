@@ -154,6 +154,7 @@ class _ServiceCardsPageState extends State<CreateComplianceLocationPage> {
                       dialogKeyName: DialogName.delegatorsDialog,
                       currentRouteName: RouteName.createCompliancePage,
                       child: DelegatorList(
+                        fromService: true,
                         delegatorsCubit: sl<DelegatorsCubit>(),
                       ),
                     );

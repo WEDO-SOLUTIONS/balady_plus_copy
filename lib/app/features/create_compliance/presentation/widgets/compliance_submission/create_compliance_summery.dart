@@ -13,6 +13,7 @@ import '../../bloc/compliance_state.dart';
 import '../map_widgets/compliance_header_desc_widget.dart';
 import '../summery_widgets/pledges_summury_widget.dart';
 import '../summery_widgets/step1_summury_widget.dart';
+import '../summery_widgets/step2_2_summury_widget.dart';
 import '../summery_widgets/step2_summury_widget.dart';
 import '../summery_widgets/step3_summury_widget.dart';
 import '../summery_widgets/step4_summury_widget.dart';
@@ -60,6 +61,8 @@ class _CreateComplianceSummurySectionState
                       Step1SummeryWidget(),
                       CustomVerticalSpace(height: 16),
                       Step2SummeryWidget(),
+                      CustomVerticalSpace(height: 16),
+                      Step2_2SummeryWidget(),
                       CustomVerticalSpace(height: 16),
                       Step3SummeryWidget(),
                       CustomVerticalSpace(height: 16),

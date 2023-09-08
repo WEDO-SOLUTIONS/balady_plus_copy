@@ -19,7 +19,7 @@ class Step2SummeryWidget extends StatelessWidget {
     return BlocBuilder<ComplianceBloc, ComplianceState>(
       builder: (context, state) {
         return CustomExpansionPanelWidget(
-          title: ("vd_user_info").tr(),
+          title: ("بيانات مقدم الطلب").tr(),
           leading: SvgPicture.asset(IconPath.vdSummuryUserInfo),
           children: [
             FieldData(
@@ -28,8 +28,15 @@ class Step2SummeryWidget extends StatelessWidget {
             ),
             CustomVerticalSpace(height: 8),
             FieldData(
-                title: ("رقم الهوية / السجل التجاري").tr(),
-                subTitle: state.requestDetails?.ownerDto?.identityNumber),
+                title: ("user_data_applicant_id").tr(),
+                subTitle:
+                    state.requestDetails?.submitterDto?.submitterIdNumber),
+            CustomVerticalSpace(height: 8),
+            FieldData(
+              title: ("user_data_applicant_type").tr(),
+              subTitle:
+                  state.requestDetails?.submitterDto?.submitterIdentityTypeName,
+            ),
             CustomVerticalSpace(height: 8),
             FieldData(
               title: ("vd_mobile_number").tr(),
@@ -41,6 +48,6 @@ class Step2SummeryWidget extends StatelessWidget {
     );
   }
 
-  String? get fullName => CommonProperties.userInfo?.getFirstAndLastName();
+  String? get fullName => CommonProperties.userInfo?.arName;
   String? get mobileNumber => CommonProperties.userInfo?.getPhone();
 }

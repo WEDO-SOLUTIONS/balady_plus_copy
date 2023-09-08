@@ -42,10 +42,7 @@ class MapBloc extends Bloc<MapEvent, MapState> {
   }
 
   Future<void> _getGisDataHandler(GetGISDataEvent e, Emitter emitter) async {
-    if ((state.gisResponse != null &&
-            e.popPage == false &&
-            !e.refreshLocation) ||
-        (state.status == BlocStatus.loading)) return;
+    if ((state.status == BlocStatus.loading)) return;
     emitter(state.copyWith(status: BlocStatus.loading));
 
     final failureOrSuccess = await _getGisData(e.params);
@@ -107,6 +104,7 @@ class MapBloc extends Bloc<MapEvent, MapState> {
 
   Future<void> _selectLocationEventHandler(
       SelectLocationEvent e, Emitter emitter) async {
+    print("SelectLocationEvent");
     emitter(state.copyWith(status: BlocStatus.loading));
 
     emitter(state.copyWith(

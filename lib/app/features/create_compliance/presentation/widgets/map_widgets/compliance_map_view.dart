@@ -60,10 +60,12 @@ class _ComplinaceMapViewState extends State<ComplinaceMapView> {
               incidentLocation: state.location?.getLatLng() ??
                   state.userLocation?.getLatLng(),
               onCameraIdle: (bool isIdle) {
-                if (widget.readOnly != true) if (movedPosition != null)
-                  context
-                      .read<MapBloc>()
-                      .add(SelectLocationEvent(location: movedPosition!));
+                if (widget.readOnly != true) {
+                  if (movedPosition != null)
+                    context
+                        .read<MapBloc>()
+                        .add(SelectLocationEvent(location: movedPosition!));
+                }
               },
               updateMovedPosition: (LatLng p) {
                 movedPosition = p;
@@ -107,7 +109,7 @@ class _ComplinaceMapViewState extends State<ComplinaceMapView> {
                   //  address card
                   if (widget.readOnly != true)
                     MapAddressCard(
-                      address: state.gisResponse?.amanaName,
+                      address: state.gisResponse?.getFullAddress(),
                       submitLocation: () {
                         context
                             .read<MapBloc>()

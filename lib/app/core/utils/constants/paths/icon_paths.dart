@@ -32,14 +32,14 @@ class IconPath {
   //! SVG Icons
 
   static const iosArrowDown = '${_svgIconPath}ios_arrow_down$_svg';
-
+  static const noAvailableAccounts =
+      '${_svgIconPath}no_available_accounts$_svg';
   static const arrowBack = '${_svgIconPath}arrow_back_icon$_svg';
   static const star = '${_svgIconPath}Star$_svg';
   static const dangerIcon = '${_svgIconPath}danger_red$_svg';
 
   static const walletNoFees = '${_svgIconPath}wallet_no_fees$_svg';
   static const switchProfileIcon = '${_svgIconPath}profile-2user$_svg';
-
 
   static const close = '${_svgIconPath}arrow_back_icon$_svg';
   static const upload = '${_svgIconPath}arrow_back_icon$_svg';

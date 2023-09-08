@@ -26,6 +26,7 @@ import '../bloc/compliance_state.dart';
 import '../dialogs/confirm_cancel_license_dialog.dart';
 import '../widgets/summery_widgets/location_summury_widget.dart';
 import '../widgets/summery_widgets/step1_summury_widget.dart';
+import '../widgets/summery_widgets/step2_2_summury_widget.dart';
 import '../widgets/summery_widgets/step2_summury_widget.dart';
 import '../widgets/summery_widgets/step3_summury_widget.dart';
 import '../widgets/summery_widgets/step4_summury_widget.dart';
@@ -157,6 +158,9 @@ class ComplianceDetailsPage extends StatelessWidget {
                             CustomVerticalSpace(height: 16),
                             Step2SummeryWidget(),
                             CustomVerticalSpace(height: 16),
+                            Step2_2SummeryWidget(), 
+                                                        CustomVerticalSpace(height: 16),
+
                             Step3SummeryWidget(),
                             CustomVerticalSpace(height: 16),
                             LocationSummuryWidget(),
