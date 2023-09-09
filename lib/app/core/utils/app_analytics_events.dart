@@ -81,6 +81,8 @@ class AppEvents {
 
   static const String navigateToBuildingComplianceFromHome =
       "Super_App_Open_Navigate_To_Building_Compliance_From_Home";
+  static const String navigateToCityScapeFromHome =
+      "Super_App_Open_Navigate_To_City_Scape";
 
   static const String municipalRequestSuccess =
       "Super_App_Municipal_Request_Success";

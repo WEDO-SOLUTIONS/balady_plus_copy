@@ -18,6 +18,7 @@ import 'package:provider/provider.dart';
 import '../../data/model/white_lands.dart';
 import '../widgets/SearchMapWidget.dart';
 import '../widgets/general_card_widget.dart';
+import '../widgets/indoor_control_widget.dart';
 import '../widgets/map_cards/lands_legends_map_card.dart';
 import '../widgets/map_layer_card.dart';
 import '../widgets/search_map_widget.dart';
@@ -215,11 +216,11 @@ class HomeMap extends StatelessWidget {
                         color: mapViewModel.selectedCategory.value != null
                             ? mapViewModel.selectedCategory.value!
                                 .cardIconColor()
-                            : Color(0xFFC8A83A),
+                            : AppColor.primary600Light,
                         icon: mapViewModel.selectedCategory.value != null
                             ? mapViewModel.selectedCategory.value!
                                 .cardIconName()
-                            : "",
+                            : "assets/maps/icons/card_icon/general.png",
                         onClose: () {
                           mapViewModel.showDialog();
                         },
@@ -239,6 +240,16 @@ class HomeMap extends StatelessWidget {
                 ? Center(child: CustomCircularLoadingWidget())
                 : const SizedBox();
           },
+        ),
+        Align(
+          alignment: Alignment.centerLeft,
+          child: Padding(
+            padding: const EdgeInsets.only(left: 16),
+            child: IndoorControl(
+              indoorState: mapViewModel.indoorState,
+              onLevelTaped: mapViewModel.onLevelTap,
+            ),
+          ),
         ),
       ],
     );

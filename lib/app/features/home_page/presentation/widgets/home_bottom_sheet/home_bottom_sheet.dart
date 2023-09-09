@@ -20,6 +20,7 @@ import '../../../home_exports.dart'
 
 import 'package:provider/provider.dart';
 
+import 'cityscape_map_card.dart';
 import 'location_home_card.dart';
 
 class HomeBottomSheet extends StatelessWidget {
@@ -60,6 +61,7 @@ class HomeBottomSheet extends StatelessWidget {
                     return !visible
                         ? Column(
                             children: [
+                              CityScapeMapCard(),
                               if (CommonProperties.userLocation == null)
                                 const LocationHomeCard(),
                               const CertificationMapCard(),

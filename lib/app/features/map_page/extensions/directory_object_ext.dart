@@ -14,11 +14,8 @@ extension DirectoryObjectAddr on DirectoryObjectMessage {
         ?.streetAddress
         ?.street;
 
-    return [
-      street != null ? street + "، " : "",
-      districtArea?.name != null ? (districtArea!.name + "، ") : "",
-      district?.name != null ? district!.name + "، " : "",
-      region?.name != null ? region!.name : ""
-    ].join();
+    return [street, district?.name, districtArea?.name, region?.name]
+        .whereNotNull()
+        .join(", ");
   }
 }

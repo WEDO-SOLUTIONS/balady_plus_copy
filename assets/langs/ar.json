@@ -3174,44 +3174,10 @@
 "compliance_check_mobile":"الرجاء التحقق من رقم الجوال", 
 "delete_compliance_request_message":"عزيزي المستفيد تم إلغاء طلب إصدار شهادة امتثال للمبنى رقم _", 
 "delete_compliance_request_title":"الغاء الطلب", 
-"delete_compliance_request_title_yes":"نعم، إلغاء الطلب"
+"delete_compliance_request_title_yes":"نعم، إلغاء الطلب", 
+  "city_scape_title":"سيتي سكيب العالمي 23", 
+  "city_scape_desc":"تعرف على المعرض العقاري الأضخم في العالم وعش تجربة فريدة من خلال إستعراض موقع الحدث والأجنحة المشاركة والتنقل بمسارات المعرض بشكل فريد عبر خرائط بلدي التفاعلية ", 
+  "city_scape":"ابدأ الآن" 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
- 
 
 }

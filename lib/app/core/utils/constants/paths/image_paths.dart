@@ -55,6 +55,8 @@ class ImagePath {
   static const asrBg = '${_imagePath}asr_bg$_png';
   static const smartAdvisorBg = '${_imagePath}balady_expert_bg$_png';
   static const certificationMapBg = '${_imagePath}certification_map_bg$_png';
+  static const cityScapeBg = '${_imagePath}city_scape_bg$_png';
+
   static const supportImg = '${_imagePath}support_img$_png';
   static const readBg = '${_imagePath}read_bg$_png';
   static const quranImg = '${_imagePath}quran_img$_png';
