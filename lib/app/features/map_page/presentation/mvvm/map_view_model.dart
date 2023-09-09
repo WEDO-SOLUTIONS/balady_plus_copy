@@ -28,6 +28,7 @@ import '../../data/model/investment_sites.dart';
 import '../../data/model/layers.dart';
 import '../../data/model/rental_details_response.dart';
 import '../../data/model/requests/map_requests_params.dart';
+import '../../data/model/states.dart';
 import '../../data/model/white_lands.dart';
 import '../../data/repositories/layers_repositories.dart';
 
@@ -65,6 +66,8 @@ class MapViewModel extends BaseViewModel {
 
   final selectedPointId = ValueNotifier<DgisObjectIdMessage?>(null);
   final selectedPoint = ValueNotifier<PointLayersData?>(null);
+  ValueNotifier<IndoorState> indoorState =
+      ValueNotifier(IndoorState.disabled());
 
   ValueNotifier<SearchCategoryMessage?> selectedCategory = ValueNotifier(null);
 
@@ -73,8 +76,8 @@ class MapViewModel extends BaseViewModel {
   final layerSelected = ValueNotifier<Layers?>(null);
   GISMapLayers gisSelectedLayer = GISMapLayers.cityPlaces;
 
-//////////////////////////////////////////////////////
-//   CameraPositionMessage? _lastCameraPosition;
+  CameraPositionMessage? _lastCameraPosition;
+  CameraPositionMessage? _lastRectPosition;
   late DgisMapController controller;
 
   final viewHomeBottomSheet = ValueNotifier(true);
@@ -279,6 +282,12 @@ class MapViewModel extends BaseViewModel {
     }
   }
 
+  Future<void> restorePosition() async {
+    if (_lastRectPosition != null) {
+      await controller.setCameraPosition(_lastRectPosition!);
+    }
+  }
+
   Future<bool> initialize(DgisMapController controllerMap) async {
     controller = controllerMap;
     final result = await controller.initialize();
@@ -410,15 +419,6 @@ class MapViewModel extends BaseViewModel {
     selectedWhiteLands.notifyListeners();
   }
 
-  // void _cameraPositionChangeListener(CameraPositionMessage event) async {
-  //   if ((!await controller.contains(saRect, event.point)) &&
-  //       _lastCameraPosition != null) {
-  //     await controller.setCameraPosition(_lastCameraPosition!);
-  //   } else {
-  //     _lastCameraPosition = event;
-  //   }
-  // }
-
   void _setupListeners() {
     // add move carme map Listener
     _subscriptions.add(
@@ -435,6 +435,23 @@ class MapViewModel extends BaseViewModel {
     _subscriptions.add(
       controller.markerWithPhotoTapEvents.listen(
         _onPanoramaTap,
+      ),
+    );
+
+    _subscriptions.add(
+      controller.cameraPositionEvents.listen(
+        _cameraPositionChangeListener,
+      ),
+    );
+
+    _subscriptions.add(
+      controller.indoorLevelNames.listen(
+        _indoorLevelsListener,
+      ),
+    );
+    _subscriptions.add(
+      controller.indoorActiveIndex.listen(
+        _indoorActiveLevelListener,
       ),
     );
 
@@ -457,21 +474,52 @@ class MapViewModel extends BaseViewModel {
     });*/
   }
 
+  void _indoorLevelsListener(IndoorLevelsEvent event) {
+    indoorState.value = event.levelNames.isEmpty
+        ? IndoorState.disabled()
+        : indoorState.value.copyWith(
+            hasLevels: true,
+            levelNames: event.levelNames,
+          );
+  }
+
+  void _indoorActiveLevelListener(IndoorActiveLevelEvent event) {
+    indoorState.value = indoorState.value.copyWith(
+      activeLevel: event.index,
+    );
+  }
+
+  void _cameraPositionChangeListener(CameraPositionMessage event) async {
+    _lastCameraPosition = event;
+  }
+
   // When move camera map any change zoom in, zoom out ...
-  void _visibleRectChangeListener(VisibleRectEvent event) {
+  void _visibleRectChangeListener(VisibleRectEvent event) async {
+    if ((!await controller.containsRect(
+        saRect, event.visibleRect.geoRectMessage()))) {
+      if (_lastRectPosition != null) {
+        await controller.setCameraPosition(_lastRectPosition!);
+      }
+    } else {
+      _lastRectPosition = _lastCameraPosition;
+    }
     _lastHandledEvent = event;
     // start Timer when stop move camera  call search funcation
-    //  //print(event.visibleRect.zoom);
-
     _startRequestTimer(event.visibleRect.zoom);
   }
 
   // When click on ayn object
   Future<void> _objectTapListener(TapEvent event) async {
     // when Click on Map hide ViewHomeBottomSheet if he is not hide
-    if (viewHomeBottomSheet.value != false) {
-      viewHomeBottomSheet.value = false;
-      viewHomeBottomSheet.notifyListeners();
+
+    if (event is ObjectTapEvent) {
+      if (event.levelId != null) {
+        selectedPointId.value = event.dgisObjectId.toMessage();
+      }
+      if (viewHomeBottomSheet.value != false) {
+        viewHomeBottomSheet.value = false;
+        viewHomeBottomSheet.notifyListeners();
+      }
     }
   }
 

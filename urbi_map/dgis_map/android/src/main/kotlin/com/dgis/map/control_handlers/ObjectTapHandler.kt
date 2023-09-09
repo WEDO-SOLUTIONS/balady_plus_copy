@@ -752,7 +752,7 @@ class ObjectTapHandler(
                     "objectId" to id.objectId,
                     "entranceId" to id.entranceId,
                 ),
-                "levelId" to levelId,
+                "levelId" to levelId?.value,
                 "latlng" to mapOf(
                     "latitude" to position.latitude.value,
                     "longitude" to position.longitude.value,
