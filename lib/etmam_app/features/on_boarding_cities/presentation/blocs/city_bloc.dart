@@ -118,7 +118,7 @@ class CityBloc extends Bloc<CityEvent, CityState> {
         pageIndex: "1",
         cityId: CommonProperties.cityId,
         subServiceId: e.subServiceId ?? "",
-        subServiceName: ""));
+        subServiceName: "إصدار شهادة امتثال المباني"));
 
     failureOrSuccess.fold((failure) {
       emitter(state.copyWith(

@@ -257,7 +257,7 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
     ));
 
     SaveLocationComplianceRequest? request;
-
+    print("GUIIIIID ${state.gisResponse?.guid}");
     if (state.documentTypeSelection == 1) {
       request = SaveLocationComplianceRequest(
           mainUsageCode: state.selectedMainUsage?.id,

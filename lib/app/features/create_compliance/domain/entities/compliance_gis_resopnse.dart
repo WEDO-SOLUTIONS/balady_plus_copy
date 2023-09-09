@@ -41,26 +41,27 @@ class ComplainceGISResponse extends Equatable {
       this.imageUrl,
       this.guid});
 
-  factory ComplainceGISResponse.fromJson(Map<String, dynamic> json) =>
-      ComplainceGISResponse(
-          amanaCode: json["Amana_code"],
-          amanaName: json["Amana_Name"],
-          municipalityCode: json["MunicipalityCode"],
-          municipalityName: json["MunicipalityName"],
-          districtCode: json["DistrictCode"],
-          districtName: json["DistrictName"],
-          streetName: json["StreetName"],
-          streetCode: json["StreetCode"],
-          city: json["City"],
-          cityCode: json["CityCode"],
-          planName: json["PlanName"],
-          planNo: json["PlanNO"],
-          parcelNo: json["ParcelNo"],
-          area: json["Area"],
-          region: json["Region"],
-          regionCode: json["RegionCode"],
-          imageUrl: json["ImageUrl"],
-          guid: json["ParcelBuilding"]?[0]?["GUID"] ?? "");
+  factory ComplainceGISResponse.fromJson(Map<String, dynamic> json) {
+    return ComplainceGISResponse(
+        amanaCode: json["Amana_code"],
+        amanaName: json["Amana_Name"],
+        municipalityCode: json["MunicipalityCode"],
+        municipalityName: json["MunicipalityName"],
+        districtCode: json["DistrictCode"],
+        districtName: json["DistrictName"],
+        streetName: json["StreetName"],
+        streetCode: json["StreetCode"],
+        city: json["City"],
+        cityCode: json["CityCode"],
+        planName: json["PlanName"],
+        planNo: json["PlanNO"],
+        parcelNo: json["ParcelNo"],
+        area: json["Area"],
+        region: json["Region"],
+        regionCode: json["RegionCode"],
+        imageUrl: json["ImageUrl"],
+        guid: json["ParcelBuilding"]?[0]?["GUID"]);
+  }
 
   @override
   List<Object?> get props => [
@@ -80,7 +81,8 @@ class ComplainceGISResponse extends Equatable {
         area,
         region,
         regionCode,
-        imageUrl
+        imageUrl,
+        guid
       ];
 
   String getFullAddress({
