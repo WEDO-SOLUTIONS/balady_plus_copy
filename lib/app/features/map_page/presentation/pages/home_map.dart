@@ -216,11 +216,11 @@ class HomeMap extends StatelessWidget {
                         color: mapViewModel.selectedCategory.value != null
                             ? mapViewModel.selectedCategory.value!
                                 .cardIconColor()
-                            : Color(0xFFC8A83A),
+                            : AppColor.primary600Light,
                         icon: mapViewModel.selectedCategory.value != null
                             ? mapViewModel.selectedCategory.value!
                                 .cardIconName()
-                            : "",
+                            : "assets/maps/icons/card_icon/general.png",
                         onClose: () {
                           mapViewModel.showDialog();
                         },

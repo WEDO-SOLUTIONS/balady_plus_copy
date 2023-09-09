@@ -244,24 +244,9 @@ class MapViewModel extends BaseViewModel {
                   CameraAnimationTypeMessage.linear,
                 );
 
+                refreshView();
                 selectedPointId.value = markerInfo.objectId;
-
-                selectedDiggingPoint.value = null;
-                selectedInvetmentPoint.value = null;
-                selectedImtethalPoint.value = null;
-                selectedWhiteLands.value = null;
-                selectedLands.value = null;
-                selectedImtethalPoint.notifyListeners();
-                selectedDiggingPoint.notifyListeners();
-                selectedWhiteLands.notifyListeners();
-                selectedLands.notifyListeners();
                 selectedPointId.notifyListeners();
-                viewHomeBottomSheet.value = false;
-                viewHomeBottomSheet.notifyListeners();
-                // bottomSheetSizeFraction.value = 0.05;
-                bottomSheetSize.notifyListeners();
-                bottomSheetSizeFraction.notifyListeners();
-
                 Future.delayed(const Duration(milliseconds: 300));
                 refreshMap = true;
               },
@@ -514,11 +499,9 @@ class MapViewModel extends BaseViewModel {
 
     if (event is ObjectTapEvent) {
       if (event.levelId != null) {
+        refreshView();
         selectedPointId.value = event.dgisObjectId.toMessage();
-      }
-      if (viewHomeBottomSheet.value != false) {
-        viewHomeBottomSheet.value = false;
-        viewHomeBottomSheet.notifyListeners();
+        selectedPointId.notifyListeners();
       }
     }
   }
@@ -715,17 +698,19 @@ class MapViewModel extends BaseViewModel {
           ),
         ),
         onTap: () async {
+          refreshView();
           selectedPointId.value = id;
-          viewHomeBottomSheet.value = false;
-          viewHomeBottomSheet.notifyListeners();
+          selectedPointId.notifyListeners();
         },
       )
     ]);
 
     selectedPointId.value = id;
     viewHomeBottomSheet.value = false;
+    selectedPointId.notifyListeners();
     viewHomeBottomSheet.notifyListeners();
-    refreshMap = true;
+    // await Future.delayed(const Duration(milliseconds: 300));
+    //  refreshMap = true;
   }
 
   void addMarkersWithPoint(List? pointList, int layerId) async {
@@ -764,23 +749,8 @@ class MapViewModel extends BaseViewModel {
             ),
             onTap: () async {
               refreshMap = false;
-              /*  await controller.moveCamera(
-                  CameraPositionMessage(
-                      point: element.latLng, zoom: 17, tilt: 0, bearing: 0),
-                  1,
-                  CameraAnimationTypeMessage.linear);*/
 
-              selectedPointId.notifyListeners();
-              selectedPoint.value = null;
-              selectedInvetmentPoint.value = null;
-              selectedDiggingPoint.value = null;
-              selectedImtethalPoint.value = null;
-              selectedWhiteLands.value = null;
-              selectedLands.value = null;
-
-              selectedPointId.value = null;
-              showLegend.value = false;
-              showLegend.value = false;
+              refreshView();
               switch (gisSelectedLayer) {
                 case GISMapLayers.Opportunities:
                   selectedPoint.value = element;
@@ -790,20 +760,7 @@ class MapViewModel extends BaseViewModel {
                   break;
               }
 
-              selectedInvetmentPoint.notifyListeners();
-              selectedImtethalPoint.notifyListeners();
-              selectedDiggingPoint.notifyListeners();
-              selectedWhiteLands.notifyListeners();
-              selectedLands.notifyListeners();
-              selectedPointId.notifyListeners();
-              selectedPoint.notifyListeners();
-              showLegend.notifyListeners();
-              viewHomeBottomSheet.value = false;
-              viewHomeBottomSheet.notifyListeners();
-              // bottomSheetSizeFraction.value = 0.05;
-              bottomSheetSize.notifyListeners();
-              bottomSheetSizeFraction.notifyListeners();
-              Future.delayed(
+              await Future.delayed(
                 const Duration(milliseconds: 300),
               );
               refreshMap = true;
@@ -834,12 +791,7 @@ class MapViewModel extends BaseViewModel {
                 color: 0xff358281,
               ),
               onTap: () {
-                selectedDiggingPoint.value = null;
-                selectedInvetmentPoint.value = null;
-                selectedImtethalPoint.value = null;
-                selectedWhiteLands.value = null;
-                selectedLands.value = null;
-                showLegend.value = false;
+                refreshView();
                 switch (gisSelectedLayer) {
                   case GISMapLayers.Digging:
                     selectedDiggingPoint.value = element;
@@ -855,29 +807,6 @@ class MapViewModel extends BaseViewModel {
                   default:
                     break;
                 }
-                selectedPointId.value = null;
-                selectedImtethalPoint.notifyListeners();
-                selectedDiggingPoint.notifyListeners();
-                selectedWhiteLands.notifyListeners();
-                selectedLands.notifyListeners();
-                selectedPointId.notifyListeners();
-                bottomSheetSize.notifyListeners();
-                showLegend.notifyListeners();
-
-                viewHomeBottomSheet.value = false;
-                viewHomeBottomSheet.notifyListeners();
-                // bottomSheetSizeFraction.value = 0.05;
-                bottomSheetSize.notifyListeners();
-                bottomSheetSizeFraction.notifyListeners();
-                /*  controller.setCameraPosition(
-                CameraPositionMessage(
-                  zoomValue: 17,
-                  geoPoint: GeoPointMessage(
-                    latitude: element.paths.first.latitude,
-                    longitude: element.paths.first.longitude,
-                  ),
-                ),
-              );*/
               },
             ),
           );
@@ -904,12 +833,9 @@ class MapViewModel extends BaseViewModel {
               contours: [element.paths],
             ),
             onTap: () {
+              refreshView();
               selectedPoint.value = element;
-              selectedInvetmentPoint.value = null;
-              selectedImtethalPoint.value = null;
-              selectedWhiteLands.value = null;
-              selectedDiggingPoint.value = null;
-              showLegend.value = false;
+
               switch (gisSelectedLayer) {
                 case GISMapLayers.BSAimtithalBuildingsCertificateL:
                   selectedImtethalPoint.value = element;
@@ -922,20 +848,6 @@ class MapViewModel extends BaseViewModel {
                 default:
                   break;
               }
-              selectedPointId.value = null;
-              selectedImtethalPoint.notifyListeners();
-              selectedDiggingPoint.notifyListeners();
-              selectedWhiteLands.notifyListeners();
-              selectedPointId.notifyListeners();
-              bottomSheetSize.notifyListeners();
-              selectedLands.notifyListeners();
-              showLegend.notifyListeners();
-
-              viewHomeBottomSheet.value = false;
-              viewHomeBottomSheet.notifyListeners();
-              //  bottomSheetSizeFraction.value = 0.05;
-              bottomSheetSizeFraction.notifyListeners();
-              bottomSheetSize.notifyListeners();
             },
           ),
         );
@@ -1022,7 +934,7 @@ class MapViewModel extends BaseViewModel {
           } else {
             controller.setCameraPosition(CameraPositionMessage(
                 point: GeoPointMessage(
-                    latitude: userLocation.y, longitude: userLocation.x),
+                    latitude: 24.753021922291822, longitude: 46.72691177371778),
                 zoom: 18,
                 tilt: 45,
                 bearing: 0));
@@ -1081,6 +993,36 @@ class MapViewModel extends BaseViewModel {
           CameraAnimationTypeMessage.linear,
         );
       }
+    });
+
+    bottomSheetSize.value = 0;
+    bottomSheetSize.notifyListeners();
+  }
+
+  void navigateToCityScape() async {
+    CommonFunctions.sendEventToAnalytics(AppEvents.navigateToCityScapeFromHome);
+
+    viewHomeBottomSheet.value = false;
+    viewHomeBottomSheet.notifyListeners();
+
+    bottomSheetSizeFraction.value = 0.05;
+    bottomSheetSizeFraction.notifyListeners();
+
+    Timer(const Duration(milliseconds: 200), () async {
+      viewHomeBottomSheet.value = true;
+      viewHomeBottomSheet.notifyListeners();
+      await controller.moveCamera(
+        CameraPositionMessage(
+            point: GeoPointMessage(
+              latitude: 25.2522719,
+              longitude: 46.3872519,
+            ),
+            zoom: 17,
+            tilt: 45,
+            bearing: 0),
+        1,
+        CameraAnimationTypeMessage.linear,
+      );
     });
 
     bottomSheetSize.value = 0;
@@ -1156,5 +1098,13 @@ class MapViewModel extends BaseViewModel {
     refreshMap = true;
     oldZoom = currentCameraPosition!.zoom;
     callSearch();
+  }
+
+  void refreshView() {
+    clearAllCards();
+    viewHomeBottomSheet.value = false;
+    viewHomeBottomSheet.notifyListeners();
+    bottomSheetSize.notifyListeners();
+    bottomSheetSizeFraction.notifyListeners();
   }
 }

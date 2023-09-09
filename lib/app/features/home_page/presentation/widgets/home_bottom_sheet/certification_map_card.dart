@@ -64,7 +64,7 @@ class CertificationMapCard extends StatelessWidget {
                         fontSize: 12,
                       ),
                       btnHeight: 40,
-                      btnWidth: 163,
+                      btnWidth: 157,
                       text: "عرض الاشتراطات",
                       onPressed: () async {
                         await BottomSheetDialog.showDraggableSheet(
