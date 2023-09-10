@@ -6,6 +6,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 import 'dart:io';
 import 'dart:math' show cos, sqrt, asin;
 
@@ -66,9 +67,12 @@ class MapBloc extends Bloc<MapEvent, MapState> {
       if (e.popPage) {
         if (success.amanaCode?.startsWith("004") ?? false) {
           showCustomDialog(ComplianceMunicipalityMSRDialog());
-        } else
+        } else if (success.guid == null) {
+          CommonFunctions.showError("complianec_no_guid_error".tr());
+        } else {
           NavigationService.navigatorKey.currentState?.pop(MapScreenParams(
               gisParams: e.params, complianceGIS: state.gisResponse));
+        }
       }
     });
   }
