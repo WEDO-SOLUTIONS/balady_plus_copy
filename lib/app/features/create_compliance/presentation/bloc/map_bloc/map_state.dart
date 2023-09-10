@@ -8,6 +8,7 @@ class MapState extends Equatable {
   final GISParams? userLocation;
   final bool? isLocationAllowed;
   final bool? readOnly;
+  final int? requestNo;
   MapState(
       {this.status = BlocStatus.initial,
       this.errorMessage,
@@ -15,7 +16,8 @@ class MapState extends Equatable {
       this.location,
       this.userLocation,
       this.isLocationAllowed = true,
-      this.readOnly = false});
+      this.readOnly = false,
+      this.requestNo});
 
   MapState copyWith(
       {final BlocStatus? status,
@@ -24,7 +26,8 @@ class MapState extends Equatable {
       final GISParams? location,
       final GISParams? userLocation,
       final bool? isLocationAllowed,
-      final bool? readOnly}) {
+      final bool? readOnly,
+      final int? requestNo}) {
     return MapState(
         status: status ?? this.status,
         errorMessage: errorMessage ?? this.errorMessage,
@@ -32,7 +35,8 @@ class MapState extends Equatable {
         location: location ?? this.location,
         userLocation: userLocation ?? this.userLocation,
         isLocationAllowed: isLocationAllowed ?? this.isLocationAllowed,
-        readOnly: readOnly ?? this.readOnly);
+        readOnly: readOnly ?? this.readOnly,
+        requestNo: requestNo ?? this.requestNo);
   }
 
   @override
@@ -42,6 +46,7 @@ class MapState extends Equatable {
         userLocation,
         gisResponse,
         isLocationAllowed,
-        readOnly
+        readOnly,
+        requestNo
       ];
 }

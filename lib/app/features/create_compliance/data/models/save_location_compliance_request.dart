@@ -80,7 +80,7 @@ class SaveLocationComplianceRequest extends Equatable {
           'y': y,
           'landNumber': landNumber,
           'landArea': landArea,
-          'guid': guid ?? "",
+          'guid': guid,
         }
     };
   }

@@ -161,7 +161,7 @@ class ThirdSubmissionCompliance extends StatelessWidget {
                     ),
                 ],
                 if (state.documentTypeSelection == 2) ...[
-                  DropDownWithTitle(
+                  /*   DropDownWithTitle(
                     title: "الموقع الجغرافي".tr(),
                     selectedValue: state.gisResponse?.getFullAddress(),
                     onRetry: () {
@@ -173,9 +173,9 @@ class ThirdSubmissionCompliance extends StatelessWidget {
                       await NavigationService.navigatorKey.currentState!
                           .pushNamed(RouteName.complinaceMapView,
                               arguments: MapScreenParams(
-                                gisParams: state.gisParams,
-                                complianceGIS: state.gisResponse,
-                              ))
+                                  gisParams: state.gisParams,
+                                  complianceGIS: state.gisResponse,
+                                  requestNo: state.requestId))
                           .then((value) {
                         if (value != null) {
                           MapScreenParams? params = value as MapScreenParams;
@@ -185,7 +185,7 @@ class ThirdSubmissionCompliance extends StatelessWidget {
                         }
                       });
                     },
-                  ),
+                  ),*/
                   DropDownWithTitle(
                     title: "compliance_ownership_type".tr(),
                     selectedValue: state.selectedOwnerShip?.name,

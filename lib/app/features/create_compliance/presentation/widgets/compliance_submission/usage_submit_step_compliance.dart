@@ -126,17 +126,17 @@ class UsageSubmissionCompliance extends StatelessWidget {
                     title: "الموقع الجغرافي".tr(),
                     selectedValue: state.gisResponse?.getFullAddress(),
                     onRetry: () {
-                      context.read<ComplianceBloc>().add(
+                      /* context.read<ComplianceBloc>().add(
                             const GetSubUsagesEvent(),
-                          );
+                          );*/
                     },
                     onTap: () async {
                       await NavigationService.navigatorKey.currentState!
                           .pushNamed(RouteName.complinaceMapView,
                               arguments: MapScreenParams(
-                                gisParams: state.gisParams,
-                                complianceGIS: state.gisResponse,
-                              ))
+                                  gisParams: state.gisParams,
+                                  complianceGIS: state.gisResponse,
+                                  requestNo: state.requestId))
                           .then((value) {
                         if (value != null) {
                           MapScreenParams? params = value as MapScreenParams;
@@ -147,38 +147,39 @@ class UsageSubmissionCompliance extends StatelessWidget {
                       });
                     },
                   ),
-                  ReadOnlyField(
-                      title: "الأمانة".tr(),
-                      subTitle: state.gisResponse?.amanaName ?? ""),
-                  ReadOnlyField(
-                      title: "البلدية".tr(),
-                      subTitle: state.gisResponse?.municipalityName ?? ""),
-                  ReadOnlyField(
-                      title: "المدينة".tr(),
-                      subTitle: state.gisResponse?.city ?? ""),
-                  ReadOnlyField(
-                      title: "الحي".tr(),
-                      subTitle: state.gisResponse?.districtName ?? ""),
-                  ReadOnlyField(
-                      title: "رقم المخطط".tr(),
-                      subTitle: state.gisResponse?.planNo ?? ""),
-                  ReadOnlyField(
-                      title: "اسم المخطط".tr(),
-                      subTitle: state.gisResponse?.planName ?? ""),
-                  ReadOnlyField(
-                      title: "اسم الشارع".tr(),
-                      subTitle: state.gisResponse?.streetName ?? ""),
-                  ComplianceSubmitTitle(
-                    title: 'بيانات قطع الأراضي'.tr(),
-                    subtitle: "",
-                  ),
-                  ReadOnlyField(
-                      title: "رقم قطعة الأرض".tr(),
-                      subTitle: state.gisResponse?.parcelNo ?? ""),
-                  ReadOnlyField(
-                      title: "مساحة الارض".tr(),
-                      subTitle: state.gisResponse?.area ?? ""),
-                  /*ComplianceSubmitTitle(
+                  if (state.gisResponse != null) ...[
+                    ReadOnlyField(
+                        title: "الأمانة".tr(),
+                        subTitle: state.gisResponse?.amanaName ?? ""),
+                    ReadOnlyField(
+                        title: "البلدية".tr(),
+                        subTitle: state.gisResponse?.municipalityName ?? ""),
+                    ReadOnlyField(
+                        title: "المدينة".tr(),
+                        subTitle: state.gisResponse?.city ?? ""),
+                    ReadOnlyField(
+                        title: "الحي".tr(),
+                        subTitle: state.gisResponse?.districtName ?? ""),
+                    ReadOnlyField(
+                        title: "رقم المخطط".tr(),
+                        subTitle: state.gisResponse?.planNo ?? ""),
+                    ReadOnlyField(
+                        title: "اسم المخطط".tr(),
+                        subTitle: state.gisResponse?.planName ?? ""),
+                    ReadOnlyField(
+                        title: "اسم الشارع".tr(),
+                        subTitle: state.gisResponse?.streetName ?? ""),
+                    ComplianceSubmitTitle(
+                      title: 'بيانات قطع الأراضي'.tr(),
+                      subtitle: "",
+                    ),
+                    ReadOnlyField(
+                        title: "رقم قطعة الأرض".tr(),
+                        subTitle: state.gisResponse?.parcelNo ?? ""),
+                    ReadOnlyField(
+                        title: "مساحة الارض".tr(),
+                        subTitle: state.gisResponse?.area ?? ""),
+                    /*ComplianceSubmitTitle(
                     title: 'الاحداثيات'.tr(),
                     subtitle: "",
                   ),
@@ -188,6 +189,7 @@ class UsageSubmissionCompliance extends StatelessWidget {
                   ReadOnlyField(
                       title: "الاحداثي الصادي".tr(),
                       subTitle: state.gisParams?.y.toString() ?? ""),*/
+                  ]
                 ],
                 if (state.documentTypeSelection == 1) ...[
                   CustomVerticalSpace(height: 16),
@@ -208,7 +210,8 @@ class UsageSubmissionCompliance extends StatelessWidget {
                                       .requestDetails?.locationResponseInfoDto
                                       ?.gisParams(),
                                   complianceGIS: state.gisResponse,
-                                  readOnly: true))
+                                  readOnly: true,
+                                  requestNo: state.requestId))
                           .then((value) {
                         if (value != null) {
                           MapScreenParams? params = value as MapScreenParams;

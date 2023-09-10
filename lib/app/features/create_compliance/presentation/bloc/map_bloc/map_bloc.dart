@@ -33,6 +33,7 @@ class MapBloc extends Bloc<MapEvent, MapState> {
             gisResponse: params?.complianceGIS,
             location: params?.gisParams,
             readOnly: params?.readOnly,
+            requestNo: params?.requestNo,
             userLocation: params?.currentUserLocation)) {
     on<GetGISDataEvent>(_getGisDataHandler);
     on<InitMapEvent>(_initMapHandler);
@@ -44,6 +45,9 @@ class MapBloc extends Bloc<MapEvent, MapState> {
   Future<void> _getGisDataHandler(GetGISDataEvent e, Emitter emitter) async {
     if ((state.status == BlocStatus.loading)) return;
     emitter(state.copyWith(status: BlocStatus.loading));
+    GISParams params = e.params;
+
+    if (e.popPage) params.requestNo = state.requestNo;
 
     final failureOrSuccess = await _getGisData(e.params);
 

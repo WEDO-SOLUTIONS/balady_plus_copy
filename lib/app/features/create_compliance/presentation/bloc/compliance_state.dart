@@ -234,11 +234,12 @@ class ComplianceState extends Equatable {
         if (selectedOwnerShip == null ||
             (ownershipText?.isEmpty ?? true) ||
             ownershipDate == null ||
-            gisResponse == null ||
             ownerShipAgreement != true) return false;
       }
     } else if (currentStep == 3) {
-      if (selectedMainUsage == null || selectedSubUsage == null) return false;
+      if (selectedMainUsage == null ||
+          selectedSubUsage == null ||
+          (gisResponse == null && documentTypeSelection == 2)) return false;
     } else if (currentStep == 4 && benificiaryTypeSelection == 1) {
       /* bool valid = requestDetails?.emtithalItems?.firstWhereOrNull(
               (element) => element.submitterAnswer == null) ==

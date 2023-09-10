@@ -15,6 +15,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:collection/collection.dart';
 
+import '../../../../../etmam_app/features/etmam_entry_point/presentation/cubit/etmam_entry_point_cubit.dart';
 import '../../../../core/utils/constants/route_names.dart';
 import '../../../../core/utils/enums/enums.dart';
 import '../../../_shared_feature_/data/entities/success_screen_args.dart';
@@ -950,7 +951,7 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
       emitter(state.copyWith(
         status: BlocStatus.success,
       ));
-
+      sl<EtmamEntryPointCubit>().onLogin();
       bool Function(Route<dynamic>) predicate =
           ModalRoute.withName(RouteName.bottomNavigation);
       NavigationService.navigatorKey.currentState!.pushNamedAndRemoveUntil(
