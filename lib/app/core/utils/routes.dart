@@ -45,6 +45,7 @@ import '../../features/_shared_feature_/presentation/pages/view_apigee_image_scr
 import '../../features/create_compliance/presentation/pages/compliance_details_page.dart';
 import '../../features/create_compliance/presentation/pages/map_page/complinace_map_page.dart';
 import '../../features/create_compliance/presentation/pages/non_compliance_screen.dart';
+import '../../features/create_compliance/presentation/pages/submit_compliance_page.dart';
 import '../../features/map_page/data/model/rental_details_response.dart';
 import '../../features/qa/presentation/pages/qa_page.dart';
 import '../../features/self_ratiing/presentation/pages/self_rating_main_page.dart';
@@ -267,7 +268,8 @@ class Routes {
 
         RouteName.splash: (context) => const SplashPage(),
         RouteName.etmamMainPage: (context) => const EtmamMainPage(),
-        RouteName.etmamMainPageCitySelector: (context) => const EtmamMainCityPage(),
+        RouteName.etmamMainPageCitySelector: (context) =>
+            const EtmamMainCityPage(),
 
         //! Services
 
@@ -485,7 +487,9 @@ class Routes {
         RouteName.selfRatingResultPage: (context) => SelfRatingResultPage(),
 
         RouteName.complianceDetailsPage: (context) => ComplianceDetailsPage(),
-        RouteName.nonComplianceScreen: (context) => NonComplianceScreen()
+        RouteName.nonComplianceScreen: (context) => NonComplianceScreen(),
+
+        RouteName.submitCompliancePage: (context) => SubmitCompliancePage()
 
 //    cubit = ModalRoute.of(context)!.settings.arguments as PrayerTimesCubit;
       };

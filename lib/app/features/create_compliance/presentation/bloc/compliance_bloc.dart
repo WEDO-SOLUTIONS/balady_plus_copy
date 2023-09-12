@@ -320,7 +320,7 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
     failOrSuccess.fold((l) {
       emitter(state.copyWith(
         errorMessage: (l as ServerFailure).errorMessage,
-        mainUsagesStatus: BlocRequestStatus.failure,
+        mainUsagesStatus: BlocRequestStatus.submissionGetFailure,
       ));
     }, (r) {
       emitter(state.copyWith(
@@ -361,10 +361,15 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
     final failOrSuccess = await _getComplianceLicenses(NoParams());
 
     failOrSuccess.fold((l) {
-      emitter(state.copyWith(
-        errorMessage: (l as ServerFailure).errorMessage,
-        licenseStatus: BlocRequestStatus.failure,
-      ));
+      if ((l as ServerFailure).errorCode == "2") {
+        emitter(state.copyWith(
+            licenseStatus: BlocRequestStatus.submissionGetSuccess));
+      } else {
+        emitter(state.copyWith(
+          errorMessage: (l as ServerFailure).errorMessage,
+          licenseStatus: BlocRequestStatus.submissionGetFailure,
+        ));
+      }
     }, (r) {
       emitter(state.copyWith(
           licenes: r, licenseStatus: BlocRequestStatus.submissionGetSuccess));
@@ -667,7 +672,7 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
     failOrSuccess.fold((l) {
       emitter(state.copyWith(
         errorMessage: (l as ServerFailure).errorMessage,
-        ownerShipsStatus: BlocRequestStatus.failure,
+        ownerShipsStatus: BlocRequestStatus.submissionGetFailure,
       ));
     }, (r) {
       emitter(state.copyWith(
@@ -689,7 +694,7 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
     failOrSuccess.fold((l) {
       emitter(state.copyWith(
         errorMessage: (l as ServerFailure).errorMessage,
-        subUsagesStatus: BlocRequestStatus.failure,
+        subUsagesStatus: BlocRequestStatus.submissionGetFailure,
       ));
     }, (r) {
       emitter(state.copyWith(

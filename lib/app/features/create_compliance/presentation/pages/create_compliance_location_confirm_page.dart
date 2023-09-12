@@ -79,11 +79,10 @@ class _ServiceCardsPageState extends State<CreateComplianceLocationPage> {
             "type": ServiceCardsTypes.desc,
             "rate": 0,
             "duration": 0,
-            "fees": 0,
             "ar": {
               "title": "وصف الخدمة",
               "description":
-                  "هي خدمة يتم من خلالها إصدار شهادة امتثال للمبنى تفيد بالتزام المبنى بمجموعة من الاشتراطات التي أقرتها وزارة الشؤون البلدية والقروية وذلك للحد من مظاهر التشوه البصري في المباني التجارية والسكنية والارتقاء بجودة المشهد الحضري في المدن"
+                  "هي خدمة يتم من خلالها إصدار شهادة امتثال للمبنى تفيد بالتزام المبنى بمجموعة من الاشتراطات التي أقرتها وزارة الشؤون البلدية والقروية والإسكان وذلك للحد من مظاهر التشوه البصري في المباني التجارية والسكنية والارتقاء بجودة المشهد الحضري في المدن"
             },
             "en": {"title": "Service Description", "description": ""}
           },
@@ -210,9 +209,9 @@ class _ServiceCardsPageState extends State<CreateComplianceLocationPage> {
                     if (isLocationAvailable) {
                       if (CommonProperties.isLoggedIn) {
                         BottomSheetDialog.showDraggableSheet(context,
-                            // dialogKeyName: DialogName.dcVeichlesDialog,
-                            // currentRouteName: RouteName.DCVeichlePage,
-
+                            dialogKeyName:
+                                DialogName.complianceConfirmLocationDialog,
+                            currentRouteName: RouteName.createCompliancePage,
                             isFullHeight: false,
                             child: CreateComplianceLocationWidget());
                       } else {
@@ -223,9 +222,10 @@ class _ServiceCardsPageState extends State<CreateComplianceLocationPage> {
                                   if (isSuccess ?? false) {
                                     BottomSheetDialog.showDraggableSheet(
                                         context,
-                                        // dialogKeyName: DialogName.dcVeichlesDialog,
-                                        // currentRouteName: RouteName.DCVeichlePage,
-
+                                        dialogKeyName: DialogName
+                                            .complianceConfirmLocationDialog,
+                                        currentRouteName:
+                                            RouteName.createCompliancePage,
                                         isFullHeight: false,
                                         child:
                                             CreateComplianceLocationWidget());

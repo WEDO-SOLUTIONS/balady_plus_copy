@@ -1,5 +1,7 @@
+import 'package:balady_plus/app/core/utils/app_analytics_events.dart';
 import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
+import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/self_ratiing/presentation/pages/self_rating_section_page.dart';
 import 'package:balady_plus/app/features/self_ratiing/presentation/widgets/self_rating_main_widgets/self_rating_main_title_widget.dart';
 import 'package:balady_plus/app/features/violation_guide/presentation/widgets/violation_guide_select_widgets.dart/violation_options_select.dart';
@@ -8,8 +10,20 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../core/utils/constants/paths/image_paths.dart';
 
-class SelfRatingMainPage extends StatelessWidget {
+class SelfRatingMainPage extends StatefulWidget {
   const SelfRatingMainPage({super.key});
+
+  @override
+  State<SelfRatingMainPage> createState() => _SelfRatingMainPageState();
+}
+
+class _SelfRatingMainPageState extends State<SelfRatingMainPage> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    CommonFunctions.sendEventToAnalytics(AppEvents.selfRating);
+  }
 
   @override
   Widget build(BuildContext context) {

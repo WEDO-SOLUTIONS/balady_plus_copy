@@ -9,7 +9,9 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 import '../../../../core/services/local/helpers.dart';
 import '../../../../core/utils/common_functions.dart';
 import '../../../../core/utils/constants/app_colors.dart';
+import '../../../../core/utils/constants/dialog_names.dart';
 import '../../../../core/utils/constants/paths/icon_paths.dart';
+import '../../../../core/utils/constants/route_names.dart';
 import '../../../../core/utils/enums/app_font_weights.dart';
 import '../../../../core/utils/enums/bloc_status.dart';
 import '../../../_shared_feature_/presentation/under_testing/custom_expansion_panel_widget.dart';
@@ -63,10 +65,9 @@ class ComplianceDetailsPage extends StatelessWidget {
                         await BottomSheetDialog.showDraggableSheet(context,
                             isFullHeight: false,
                             height: 250, //MM
-                            // dialogKeyName: DialogName
-                            //     .healthCertificateRequestActionsDialog,
-                            //  currentRouteName:
-                            //      RouteName.healthRequestDetailsScreen,
+                            dialogKeyName:
+                                DialogName.complianceRequestActionsDialog,
+                            currentRouteName: RouteName.complianceDetailsPage,
                             child: BottomSheetWithActions(
                               title: "actions".tr(),
                               body: Column(children: [
@@ -97,10 +98,10 @@ class ComplianceDetailsPage extends StatelessWidget {
                                     await BottomSheetDialog.showDraggableSheet(
                                         context,
                                         isFullHeight: false,
-                                        // dialogKeyName: DialogName
-                                        //     .healthCertificateCancelActionsDialog,
-                                        //  currentRouteName: RouteName
-                                        //      .healthLicenseDetailsScreen,
+                                        dialogKeyName: DialogName
+                                            .complianceRequestActionsDeleteDialog,
+                                        currentRouteName:
+                                            RouteName.complianceDetailsPage,
                                         child: ConfirmCancelLicenseDialog(
                                       onCancel: () {
                                         Navigator.of(context).pop();
@@ -158,9 +159,8 @@ class ComplianceDetailsPage extends StatelessWidget {
                             CustomVerticalSpace(height: 16),
                             Step2SummeryWidget(),
                             CustomVerticalSpace(height: 16),
-                            Step2_2SummeryWidget(), 
-                                                        CustomVerticalSpace(height: 16),
-
+                            Step2_2SummeryWidget(),
+                            CustomVerticalSpace(height: 16),
                             Step3SummeryWidget(),
                             CustomVerticalSpace(height: 16),
                             LocationSummuryWidget(),

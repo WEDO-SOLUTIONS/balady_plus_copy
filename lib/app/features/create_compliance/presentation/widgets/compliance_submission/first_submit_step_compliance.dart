@@ -29,7 +29,7 @@ class FirstComplianceSubmissionWidget extends StatelessWidget {
               const SizedBox(
                 height: 10,
               ),
-              CustomRadio1(
+              RadioCustomWidget(
                 value: 1,
                 title: 'representation_radio_option1'.tr(),
                 subtitle: 'representation_option1_subtitle'.tr(),
@@ -38,7 +38,7 @@ class FirstComplianceSubmissionWidget extends StatelessWidget {
               const SizedBox(
                 height: 10,
               ),
-              CustomRadio1(
+              RadioCustomWidget(
                 value: 2,
                 title: 'representation_radio_option2'.tr(),
                 subtitle: 'representation_option2_subtitle'.tr(),

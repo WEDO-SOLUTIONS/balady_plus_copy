@@ -16,6 +16,7 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:balady_plus/app/features/create_compliance/presentation/widgets/compliance_title_widget.dart';
 
 import '../../../../../core/services/local/navigation_services.dart';
+import '../../../../../core/utils/constants/dialog_names.dart';
 import '../../../../_shared_feature_/presentation/components/bottom_sheets/bottom_sheet_list.dart';
 import '../../../../_shared_feature_/presentation/dialogs/bottom_sheet_dialogs.dart';
 import '../../../../_shared_feature_/presentation/widgets/drop_downs/drop_down_box_with_title.dart';
@@ -131,8 +132,8 @@ class ThirdSubmissionCompliance extends StatelessWidget {
                     onTap: () {
                       BottomSheetDialog.showDraggableSheet(
                         context,
-                        // dialogKeyName: DialogName.licensesSubMunicapilityFilters,
-                        //  currentRouteName: RouteName.licenses,
+                        dialogKeyName: DialogName.complianceChooseLicenseDialog,
+                        currentRouteName: RouteName.submitCompliancePage,
                         child: LicenseBottomSheetList(
                           title: "choose_license1".tr(),
                           items: state.licenes?.items ?? [],
@@ -202,8 +203,8 @@ class ThirdSubmissionCompliance extends StatelessWidget {
                               .toList();
                       BottomSheetDialog.showDraggableSheet(
                         context,
-                        // dialogKeyName: DialogName.licensesSubMunicapilityFilters,
-                        //  currentRouteName: RouteName.licenses,
+                        dialogKeyName: DialogName.complianceOwnerShipseDialog,
+                        currentRouteName: RouteName.submitCompliancePage,
                         child: BottomSheetList(
                           title: "compliance_ownership_type".tr(),
                           items: items,

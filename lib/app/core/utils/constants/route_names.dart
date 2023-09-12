@@ -161,6 +161,7 @@ class RouteName {
   static const complinaceMapView = '/complinaceMapView';
   static const complianceDetailsPage = '/ComplianceDetailsPage';
   static const nonComplianceScreen = '/NonComplianceScreen';
+  static const submitCompliancePage = '/submitCompliancePage';
 
   // -------  Events ---------
   static const eventsMainPage = '/eventsMainPage';

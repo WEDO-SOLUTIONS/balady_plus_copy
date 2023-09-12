@@ -13,6 +13,7 @@ import 'package:balady_plus/app/features/violation_guide/presentation/widgets/de
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../core/utils/app_analytics_events.dart';
 import '../../../../core/utils/enums/bloc_status.dart';
 import '../../../_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
 
@@ -25,6 +26,14 @@ class SubmitCompliancePage extends StatefulWidget {
 
 class _SubmitCompliancePageState extends State<SubmitCompliancePage> {
   double currentStep = 1;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    CommonFunctions.sendEventToAnalytics(AppEvents.createCompliance);
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider(

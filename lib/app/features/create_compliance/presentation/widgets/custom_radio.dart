@@ -8,6 +8,95 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
+import '../../../_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
+
+class RadioCustomWidget extends StatelessWidget {
+  const RadioCustomWidget({
+    super.key,
+    required this.feesStatus,
+    required this.subtitle,
+    required this.title,
+    this.value,
+  });
+  final String title;
+  final String subtitle;
+  final int? value;
+  final String feesStatus;
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<ComplianceBloc, ComplianceState>(
+      builder: (context, state) {
+        return Container(
+          padding: const EdgeInsets.all(15),
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(8), //Rev: should be 8 not 5
+              border: Border.all(
+                width: 1, //Rev: should be 1 not 1.5
+                color: AppColor.blueSkyLight800,
+              )),
+          child:
+              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+            Radio(
+              value: value,
+              activeColor: state.benificiaryTypeSelection == value
+                  ? Color(0xff447F91)
+                  : null,
+              groupValue: state.benificiaryTypeSelection,
+              onChanged: (value) {
+                context
+                    .read<ComplianceBloc>()
+                    .add(UpdateFieldsEvent(benificiaryTypeSelection: value));
+              },
+            ),
+            Expanded(
+              flex: 2,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  CustomTextWidget(
+                    title,
+                    textAlign: TextAlign.right,
+                    textStyle: AppStyle.complianceFirstSubmitTitleRadioStyle,
+                  ),
+                  CustomVerticalSpace(
+                    height: 4,
+                  ),
+                  CustomTextWidget(
+                    subtitle,
+                    maxLines: 4,
+                    textAlign: TextAlign.right,
+                    textStyle: AppStyle.complianceFirstSubmitSubtitleStyle,
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(
+              width: 4,
+            ),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  CustomTextWidget(
+                    'fees'.tr(),
+                    textStyle: AppStyle.complianceFeesStyle,
+                  ),
+                  CustomTextWidget(
+                    feesStatus,
+                    maxLines: 3,
+                    textStyle: AppStyle.complianceFeesStatusStyle,
+                  ),
+                ],
+              ),
+            )
+          ]),
+        );
+      },
+    );
+  }
+}
+
 class CustomRadio1 extends StatelessWidget {
   const CustomRadio1({
     super.key,

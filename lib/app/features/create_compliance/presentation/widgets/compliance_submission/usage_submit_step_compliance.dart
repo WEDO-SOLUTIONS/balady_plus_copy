@@ -16,6 +16,7 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:balady_plus/app/features/create_compliance/presentation/widgets/compliance_title_widget.dart';
 
 import '../../../../../core/services/local/navigation_services.dart';
+import '../../../../../core/utils/constants/dialog_names.dart';
 import '../../../../vd/domain/entities/gis/gis_params.dart';
 import '../../../../vd/domain/entities/map/map_screen_params.dart';
 import '../../bloc/compliance_bloc.dart';
@@ -58,8 +59,8 @@ class UsageSubmissionCompliance extends StatelessWidget {
                         .toList();
                     BottomSheetDialog.showDraggableSheet(
                       context,
-                      // dialogKeyName: DialogName.licensesSubMunicapilityFilters,
-                      //  currentRouteName: RouteName.licenses,
+                      dialogKeyName: DialogName.complianceMainUsagesDialog,
+                      currentRouteName: RouteName.submitCompliancePage,
                       child: BottomSheetList(
                         title: "compliance_main_usage".tr(),
                         items: items,
@@ -95,8 +96,8 @@ class UsageSubmissionCompliance extends StatelessWidget {
                         .toList();
                     BottomSheetDialog.showDraggableSheet(
                       context,
-                      // dialogKeyName: DialogName.licensesSubMunicapilityFilters,
-                      //  currentRouteName: RouteName.licenses,
+                      dialogKeyName: DialogName.complianceSubUsagesDialog,
+                      currentRouteName: RouteName.submitCompliancePage,
                       child: BottomSheetList(
                         title: "compliance_sub_usage".tr(),
                         items: items,

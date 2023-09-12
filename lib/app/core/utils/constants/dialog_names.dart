@@ -128,6 +128,24 @@ class DialogName {
 
   static const daemDialog = '/daemDialog';
   static const InqueryDialog = '/InqueryDialog';
-    static const msrDialog = '/msrDialog';
+  static const msrDialog = '/msrDialog';
+
+  static const complianceRequestActionsDialog =
+      '/complianceRequestActionsDialog';
+
+  static const complianceRequestActionsDeleteDialog =
+      '/complianceRequestActionsDeleteDialog';
+
+  static const complianceConfirmLocationDialog =
+      '/complianceConfirmLocationDialog';
+
+  static const complianceChooseLicenseDialog = '/complianceChooseLicenseDialog';
+
+  static const complianceOwnerShipseDialog = '/complianceOwnerShipseDialog';
+
+    static const complianceMainUsagesDialog = '/complianceMainUsagesDialog';
+
+        static const complianceSubUsagesDialog = '/complianceSubUsagesDialog';
+
 
 }

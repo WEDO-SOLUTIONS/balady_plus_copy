@@ -117,4 +117,11 @@ class AppEvents {
 
   static const String calculatorSuccess = "Super_App_Open_Calculator_Success";
   static const String objectableSuccess = "Super_App_Open_Objections_Success";
+
+  static const String createCompliance = "Super_App_Open_Create_Compliance";
+  static const String createComplianceSuccess =
+      "Super_App_Open_Create_Compliance_success";
+
+  static const String selfRating = "Super_App_Open_Self_Rating";
+  static const String selfRatingSuccess = "Super_App_Open_Self_Rating_success";
 }

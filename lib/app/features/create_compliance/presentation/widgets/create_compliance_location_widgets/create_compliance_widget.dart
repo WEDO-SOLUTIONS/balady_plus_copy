@@ -72,10 +72,7 @@ class _CreateComplianceLocationWidgetState
           ),
           ElevatedButtonWidget.next(onPressed: () {
             if (selected == 1) {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const SubmitCompliancePage()));
+              Navigator.pushNamed(context, RouteName.submitCompliancePage);
             } else if (selected == 0) {
               CommonFunctions.externalLaunch(
                   "https://eservices.alriyadh.gov.sa/Pages/ServicesRedirect.aspx?ServiceCode=2&MainServiceCode=67");

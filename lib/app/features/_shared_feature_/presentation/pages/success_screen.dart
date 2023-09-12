@@ -82,6 +82,8 @@ class _SuccessScreenState extends State<SuccessScreen> {
   void sendSuccessEvent(PAGE_TYPE type) {
     switch (type) {
       case PAGE_TYPE.emtethal:
+        CommonFunctions.sendEventToAnalytics(AppEvents.createComplianceSuccess);
+
         break;
       case PAGE_TYPE.deleteEmtethal:
         break;
