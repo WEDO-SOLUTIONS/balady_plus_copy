@@ -79,6 +79,7 @@ class _ServiceCardsPageState extends State<CreateComplianceLocationPage> {
             "type": ServiceCardsTypes.desc,
             "rate": 0,
             "duration": 0,
+            "fees": 0,
             "ar": {
               "title": "وصف الخدمة",
               "description":

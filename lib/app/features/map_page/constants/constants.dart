@@ -60,5 +60,7 @@ class Constants {
       "assets/maps/icons/gis_layers_icons/imtethal_selected.svg";
 
   static const String infoCircleIcon = "assets/maps/icons/info_circle.svg";
+  static const String closeCircleIcon = "assets/maps/icons/close_circle.svg";
+
   static const String goToLocation = "assets/maps/icons/go_to_location.svg";
 }

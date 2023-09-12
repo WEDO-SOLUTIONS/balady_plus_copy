@@ -51,6 +51,7 @@ class MapViewModel extends BaseViewModel {
     name: "وصول أسهل",
     defaultVisibility: true,
   );
+  LatLng? currentTappedLocation;
   static GeoRectMessage saRect = GeoRectMessage(
     northEast: GeoPointMessage(latitude: 32.568765, longitude: 56.694472),
     southWest: GeoPointMessage(latitude: 15.506104, longitude: 32.61185),
@@ -108,6 +109,7 @@ class MapViewModel extends BaseViewModel {
 
   final selectedWhiteLands = ValueNotifier<WhiteLands?>(null);
   final showLegend = ValueNotifier<bool?>(null);
+  final showComplianceLegend = ValueNotifier<bool?>(null);
 
   final selectedLands = ValueNotifier<DivisionalChartBoundaries?>(null);
 
@@ -395,12 +397,14 @@ class MapViewModel extends BaseViewModel {
     selectedWhiteLands.value = null;
     selectedLands.value = null;
     showLegend.value = null;
+    showComplianceLegend.value = null;
     selectedDiggingPoint.notifyListeners();
     selectedImtethalPoint.notifyListeners();
     selectedInvetmentPoint.notifyListeners();
     selectedPointId.notifyListeners();
     selectedLands.notifyListeners();
     showLegend.notifyListeners();
+    showComplianceLegend.notifyListeners();
     selectedWhiteLands.notifyListeners();
   }
 
@@ -496,6 +500,7 @@ class MapViewModel extends BaseViewModel {
   // When click on ayn object
   Future<void> _objectTapListener(TapEvent event) async {
     // when Click on Map hide ViewHomeBottomSheet if he is not hide
+    print("tapped ddd ${event}");
 
     if (event is ObjectTapEvent) {
       if (event.levelId != null) {
@@ -503,6 +508,8 @@ class MapViewModel extends BaseViewModel {
         selectedPointId.value = event.dgisObjectId.toMessage();
         selectedPointId.notifyListeners();
       }
+      print("tapped ${event.latLng}");
+      currentTappedLocation = event.latLng;
     }
   }
 
@@ -713,6 +720,41 @@ class MapViewModel extends BaseViewModel {
     //  refreshMap = true;
   }
 
+  void addOneMarkerToPosisiotnWithMoveCamera(
+      GeoPointWithElevationMessage markerPosition) async {
+    await clearAll();
+    await controller.moveCamera(
+      CameraPositionMessage(
+        point: GeoPointMessage(
+          latitude: markerPosition.latitude,
+          longitude: markerPosition.longitude,
+        ),
+        zoom: 17,
+        tilt: 0,
+        bearing: 0,
+      ),
+      1,
+      CameraAnimationTypeMessage.linear,
+    );
+    controller.addMarkers([
+      Marker(
+        id: "ComplianceRoad",
+        options: MarkerOptionsMessage(
+          position: markerPosition,
+          icon: MarkerIconMessage(
+            path: Constants.icMarker,
+            width: 40,
+          ),
+        ),
+        onTap: () async {},
+      )
+    ]);
+
+    viewHomeBottomSheet.value = false;
+    selectedPointId.notifyListeners();
+    viewHomeBottomSheet.notifyListeners();
+  }
+
   void addMarkersWithPoint(List? pointList, int layerId) async {
     if (pointList != null && pointList.isNotEmpty) {
       String iconPath = Constants.icMarkerRestaurant;
@@ -800,6 +842,12 @@ class MapViewModel extends BaseViewModel {
 
                   case GISMapLayers.BSAimtithalBuildingsCertificateL:
                     selectedImtethalPoint.value = element;
+                  /* if (currentTappedLocation != null)
+                      addOneMarkerToPosisiotnWithMoveCamera(
+                          GeoPointWithElevationMessage(
+                              latitude: currentTappedLocation!.latitude,
+                              longitude: currentTappedLocation!.longitude,
+                              elevation: 0));*/
 
                   case GISMapLayers.BSWhiteParcelS:
                     selectedWhiteLands.value = element;
@@ -867,6 +915,7 @@ class MapViewModel extends BaseViewModel {
     layerSelected.notifyListeners();
 
     showLegend.value = null;
+    showComplianceLegend.value = null;
     layerSelected.value = value;
     searchController.text = "";
     viewHomeBottomSheet.value = true;
@@ -874,6 +923,7 @@ class MapViewModel extends BaseViewModel {
 
     bottomSheetSize.notifyListeners();
     showLegend.notifyListeners();
+    showComplianceLegend.notifyListeners();
     bottomSheetSizeFraction.notifyListeners();
     gisSelectedLayer = GISMapLayers.values
             .firstWhereOrNull((element) => element.layerId == value.id) ??

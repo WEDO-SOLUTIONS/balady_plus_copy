@@ -27,7 +27,7 @@ class LandsLegendsMapCard extends StatelessWidget {
       child: Container(
         height: 140,
         width: 200,
-        margin: EdgeInsets.only(bottom: 32),
+        margin: EdgeInsets.only(bottom: 16),
         padding: const EdgeInsets.all(16),
         decoration: ShapeDecoration(
           color: Colors.white,
