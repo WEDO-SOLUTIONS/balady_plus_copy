@@ -70,6 +70,7 @@ class MapViewModel extends BaseViewModel {
       ValueNotifier(IndoorState.disabled());
 
   ValueNotifier<SearchCategoryMessage?> selectedCategory = ValueNotifier(null);
+  ValueNotifier<List<SuggestMessage>?> suggests = ValueNotifier(null);
 
   final layers = ValueNotifier<List<Layers>?>(null);
 
@@ -329,7 +330,7 @@ class MapViewModel extends BaseViewModel {
 
     // setLocale(const Locale("ar", "US"), TextDirection.ltr);
     await controller.loadStyles(Constants.mapStyle);
-    await controller.overrideLocales(["ar-SA"]);
+    // await controller.overrideLocales(["ar-SA"]);
     // await controller.overrideLocales([localeState.value.locale]);
     await controller.setMarkerOptions(
       MarkerOptionsMessageOld(
@@ -438,6 +439,8 @@ class MapViewModel extends BaseViewModel {
     _subscriptions.clear();
 
     locationEnabledState.dispose();
+
+    _suggestDebounce?.cancel();
 
     unawaited(controller.dispose());
   }
@@ -1071,5 +1074,38 @@ class MapViewModel extends BaseViewModel {
     await controller.removeAllPolylines();
     await controller.removeAll();
     return;
+  }
+
+  Timer? _suggestDebounce;
+
+  void updateSuggest({required String queryText}) {
+    _suggestDebounce?.cancel();
+    _suggestDebounce = Timer(const Duration(milliseconds: 500), () {
+      _searchOperation?.cancel();
+      _searchOperation = CancelableOperation.fromFuture(
+        _updateSuggest(
+          queryText: queryText,
+        ),
+      );
+    });
+  }
+
+  Future<void> _updateSuggest({required String queryText}) async {
+    final result = await controller.fetchSuggest(
+      queryText,
+      // categories: [
+      //   SearchCategoryMessage.gasStations,
+      //   SearchCategoryMessage.mousques,
+      //   // SearchCategoryMessage.restaurants,
+      // ],
+      // sortingType: SortingTypeMessage.byRelevance,
+      // isOpenNow: false,
+      searchRect: _lastHandledEvent?.visibleRect.geoRectMessage(),
+    );
+
+    suggests.value = result.suggests
+        .whereNotNull()
+        .where((element) => element.handler.objectHandler != null)
+        .toList();
   }
 }

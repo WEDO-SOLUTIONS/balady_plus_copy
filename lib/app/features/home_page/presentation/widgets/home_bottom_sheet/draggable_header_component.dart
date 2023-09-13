@@ -96,15 +96,23 @@ class _DraggableHeaderComponentState extends State<DraggableHeaderComponent> {
                   ),
                   borderRadius: 26,
                   borderColor: AppColor.primary900Light.withOpacity(0.1),
-                  onSubmitted: (text) {
+                  onChanged: (text) {
                     if (text.isNotEmpty) {
                       MapViewModel mapViewModel =
                           Provider.of<MapViewModel>(context, listen: false);
 
-                      mapViewModel.performSearch(
-                          queryText: text, showLoader: true);
+                      mapViewModel.updateSuggest(queryText: text);
                     }
                   },
+                  // onSubmitted: (text) {
+                  //   if (text.isNotEmpty) {
+                  //     MapViewModel mapViewModel =
+                  //         Provider.of<MapViewModel>(context, listen: false);
+
+                  //     mapViewModel.performSearch(
+                  //         queryText: text, showLoader: true);
+                  //   }
+                  // },
                 );
               }),
           const SizedBox(height: 10),
