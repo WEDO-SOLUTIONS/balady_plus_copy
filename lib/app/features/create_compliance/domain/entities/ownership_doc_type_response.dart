@@ -18,6 +18,8 @@ class ComplinaceLookUpItem extends Equatable {
     this.name,
   });
 
+  String get text => name ?? "";
+
   @override
   List<Object?> get props => [id, name];
 }

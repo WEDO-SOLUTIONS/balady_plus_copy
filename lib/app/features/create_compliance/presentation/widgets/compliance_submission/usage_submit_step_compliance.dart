@@ -17,8 +17,10 @@ import 'package:balady_plus/app/features/create_compliance/presentation/widgets/
 
 import '../../../../../core/services/local/navigation_services.dart';
 import '../../../../../core/utils/constants/dialog_names.dart';
+import '../../../../_shared_feature_/presentation/components/bottom_sheets/generic_bottom_sheet_list.dart';
 import '../../../../vd/domain/entities/gis/gis_params.dart';
 import '../../../../vd/domain/entities/map/map_screen_params.dart';
+import '../../../domain/entities/ownership_doc_type_response.dart';
 import '../../bloc/compliance_bloc.dart';
 
 class UsageSubmissionCompliance extends StatelessWidget {
@@ -54,25 +56,20 @@ class UsageSubmissionCompliance extends StatelessWidget {
                   },
                   onTap: () {
                     if (state.requestDetails?.usageDisable == true) return;
-                    final List<String> items = (state.mainUsages?.items ?? [])
-                        .map((e) => e.name ?? "")
-                        .toList();
+
                     BottomSheetDialog.showDraggableSheet(
                       context,
                       dialogKeyName: DialogName.complianceMainUsagesDialog,
                       currentRouteName: RouteName.submitCompliancePage,
-                      child: BottomSheetList(
+                      child: GenericBottomSheetList<ComplinaceLookUpItem>(
                         title: "compliance_main_usage".tr(),
-                        items: items,
-                        selectedValue: state.selectedMainUsage?.name,
+                        items: state.mainUsages?.items ?? [],
+                        selectedValue: state.selectedMainUsage,
                         onTap: (item) {
-                          final selectedItem = (state.mainUsages?.items ?? [])
-                              .where((e) => e.name == item)
-                              .first;
                           context.read<ComplianceBloc>().add(
-                                GetSubUsagesEvent(item: selectedItem),
+                                GetSubUsagesEvent(item: item),
                               );
-
+                          print(item);
                           Navigator.pop(context);
                         },
                       ),
@@ -91,24 +88,18 @@ class UsageSubmissionCompliance extends StatelessWidget {
                   onTap: () {
                     if (state.requestDetails?.usageDisable == true) return;
 
-                    final List<String> items = (state.subUsages?.items ?? [])
-                        .map((e) => e.name ?? "")
-                        .toList();
                     BottomSheetDialog.showDraggableSheet(
                       context,
                       dialogKeyName: DialogName.complianceSubUsagesDialog,
                       currentRouteName: RouteName.submitCompliancePage,
-                      child: BottomSheetList(
+                      child: GenericBottomSheetList<ComplinaceLookUpItem>(
                         title: "compliance_sub_usage".tr(),
-                        items: items,
-                        selectedValue: state.selectedSubUsage?.name,
+                        items: state.subUsages?.items ?? [],
+                        selectedValue: state.selectedSubUsage,
                         onTap: (item) {
-                          final selectedItem = (state.subUsages?.items ?? [])
-                              .where((e) => e.name == item)
-                              .first;
                           context.read<ComplianceBloc>().add(
                                 UpdateFieldsEvent(
-                                  selectedSubUsage: selectedItem,
+                                  selectedSubUsage: item,
                                 ),
                               );
                           Navigator.pop(context);

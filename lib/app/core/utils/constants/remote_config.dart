@@ -58,7 +58,7 @@ class _RemoteConfig {
   static final hmCode = _initValues<String>(
     devVal: "oxqUHJH1KXD84vP0KYBnyaHDUk5sJ9HkzqPDTice5TABqvfACZaLscG1TjjyPgIT",
     stgVal: "oxqUHJH1KXD84vP0KYBnyaHDUk5sJ9HkzqPDTice5TABqvfACZaLscG1TjjyPgIT",
-    prodVal: "TU9NUkEgTW9iaWxlIFRlYW0gMjAyMg==",
+    prodVal: "",
   );
 
   static final apigeeURL = _initValues<String>(
