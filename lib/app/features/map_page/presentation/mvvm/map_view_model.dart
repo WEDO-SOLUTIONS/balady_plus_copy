@@ -41,6 +41,8 @@ const int mil = 300;
 TextEditingController searchController = TextEditingController();
 
 class MapViewModel extends BaseViewModel {
+  final draggableScrollableController = DraggableScrollableController();
+
   final GeoPointMessage kingdomTower =
       GeoPointMessage(latitude: 24.712301, longitude: 46.674175);
   final GeoPointMessage ithraa =
@@ -151,6 +153,7 @@ class MapViewModel extends BaseViewModel {
   Future<void> performSearch(
       {required String queryText,
       SearchCategoryMessage? category,
+      SearchQueryMessage? searchQuery,
       bool showLoader = false}) async {
     if (_searchOperation != null) {
       _searchOperation!.cancel();
@@ -159,6 +162,7 @@ class MapViewModel extends BaseViewModel {
       _performSearch(
         queryText: queryText,
         category: category,
+        searchQuery: searchQuery,
         showLoader: showLoader,
       ),
     );
@@ -167,6 +171,7 @@ class MapViewModel extends BaseViewModel {
   Future<void> _performSearch(
       {required String queryText,
       SearchCategoryMessage? category,
+      SearchQueryMessage? searchQuery,
       bool showLoader = false}) async {
     try {
       if (showLoader) {
@@ -205,17 +210,22 @@ class MapViewModel extends BaseViewModel {
               isOpenNow: false,
               searchRect: _lastHandledEvent?.visibleRect.geoRectMessage(),
             )
-          : await controller.search(
-              queryText,
-              categories: [
-                SearchCategoryMessage.gasStations,
-                SearchCategoryMessage.mousques,
-                SearchCategoryMessage.restaurants,
-              ],
-              sortingType: SortingTypeMessage.byRelevance,
-              isOpenNow: false,
-              searchRect: _lastHandledEvent?.visibleRect.geoRectMessage(),
-            );
+          : (searchQuery != null
+              ? await controller.searchByQuery(
+                  searchQuery,
+                  sortingType: SortingTypeMessage.byRelevance,
+                )
+              : await controller.search(
+                  queryText,
+                  categories: [
+                    SearchCategoryMessage.gasStations,
+                    SearchCategoryMessage.mousques,
+                    SearchCategoryMessage.restaurants,
+                  ],
+                  sortingType: SortingTypeMessage.byRelevance,
+                  isOpenNow: false,
+                  searchRect: _lastHandledEvent?.visibleRect.geoRectMessage(),
+                ));
 
       if (showLoader) hideLoading1();
 
@@ -330,7 +340,7 @@ class MapViewModel extends BaseViewModel {
 
     // setLocale(const Locale("ar", "US"), TextDirection.ltr);
     await controller.loadStyles(Constants.mapStyle);
-    // await controller.overrideLocales(["ar-SA"]);
+    await controller.overrideLocales(["ar-SA"]);
     // await controller.overrideLocales([localeState.value.locale]);
     await controller.setMarkerOptions(
       MarkerOptionsMessageOld(
@@ -441,6 +451,8 @@ class MapViewModel extends BaseViewModel {
     locationEnabledState.dispose();
 
     _suggestDebounce?.cancel();
+
+    draggableScrollableController.dispose();
 
     unawaited(controller.dispose());
   }
@@ -1103,9 +1115,6 @@ class MapViewModel extends BaseViewModel {
       searchRect: _lastHandledEvent?.visibleRect.geoRectMessage(),
     );
 
-    suggests.value = result.suggests
-        .whereNotNull()
-        .where((element) => element.handler.objectHandler != null)
-        .toList();
+    suggests.value = result.suggests.whereNotNull().toList();
   }
 }

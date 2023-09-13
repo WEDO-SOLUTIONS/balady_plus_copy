@@ -53,10 +53,11 @@ class HomeBottomSheet extends StatelessWidget {
                     },
                     itemBuilder: (context, index) {
                       final address = suggests[index]
-                          .handler
-                          .objectHandler
-                          ?.item
-                          .makeAddress();
+                              .handler
+                              .objectHandler
+                              ?.item
+                              .makeAddress() ??
+                          suggests[index].subtitle.text;
                       return InkWell(
                         onTap: () {
                           final objectHandler =
@@ -84,9 +85,31 @@ class HomeBottomSheet extends StatelessWidget {
                               );
                             }
                           }
+
+                          final incompleteTextHandler =
+                              suggests[index].handler.incompleteTextHandler;
+                          if (incompleteTextHandler != null) {
+                            searchController.text =
+                                incompleteTextHandler.queryText;
+                            mapViewModel.updateSuggest(
+                              queryText: incompleteTextHandler.queryText,
+                            );
+                          }
+
+                          final performSearchHandler =
+                              suggests[index].handler.performSearchHandler;
+                          if (performSearchHandler != null) {
+                            // mapViewModel.viewHomeBottomSheet.value = false;
+                            mapViewModel.performSearch(
+                              queryText: '',
+                              searchQuery: performSearchHandler.searchQuery,
+                            );
+                            mapViewModel.draggableScrollableController
+                                .jumpTo(0.05);
+                          }
                         },
                         child: SizedBox(
-                          height: 60,
+                          height: 80,
                           child: Padding(
                             padding: const EdgeInsets.all(16.0),
                             child: Column(
@@ -102,7 +125,7 @@ class HomeBottomSheet extends StatelessWidget {
                                       height: 1),
                                 ),
                                 Text(
-                                  address ?? '',
+                                  address,
                                   style: AppStyle.mainTextStyle.copyWith(
                                     color: AppColor.blackModern600Light,
                                     fontSize: 12,

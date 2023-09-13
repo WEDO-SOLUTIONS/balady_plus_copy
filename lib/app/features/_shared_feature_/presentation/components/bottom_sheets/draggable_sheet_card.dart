@@ -51,7 +51,6 @@ class DraggableSheetCard extends StatefulWidget {
 }
 
 class _DraggableSheetCardState extends State<DraggableSheetCard> {
-  final draggableScrollableController = DraggableScrollableController();
   @override
   void initState() {
     super.initState();
@@ -60,17 +59,17 @@ class _DraggableSheetCardState extends State<DraggableSheetCard> {
       MapViewModel mapViewModel =
           Provider.of<MapViewModel>(context, listen: false);
 
-      draggableScrollableController
+      mapViewModel.draggableScrollableController
           .jumpTo(mapViewModel.bottomSheetSizeFraction.value);
       mapViewModel.bottomSheetSize.notifyListeners();
 
-      draggableScrollableController.addListener(() {
+      mapViewModel.draggableScrollableController.addListener(() {
         mapViewModel.bottomSheetSize.value =
-            draggableScrollableController.pixels;
+            mapViewModel.draggableScrollableController.pixels;
         mapViewModel.bottomSheetSize.notifyListeners();
 
         mapViewModel.bottomSheetSizeFraction.value =
-            draggableScrollableController.size;
+            mapViewModel.draggableScrollableController.size;
         mapViewModel.bottomSheetSizeFraction.notifyListeners();
 
         print(mapViewModel.bottomSheetSizeFraction.value);
@@ -85,6 +84,9 @@ class _DraggableSheetCardState extends State<DraggableSheetCard> {
 
   @override
   Widget build(BuildContext context) {
+    MapViewModel mapViewModel =
+        Provider.of<MapViewModel>(context, listen: false);
+
     return Align(
       alignment: Alignment.bottomCenter,
       child: Container(
@@ -108,7 +110,7 @@ class _DraggableSheetCardState extends State<DraggableSheetCard> {
             topRight: Radius.circular(widget.cornerRadius ?? 36),
           ),
           child: DraggableScrollableSheet(
-            controller: draggableScrollableController,
+            controller: mapViewModel.draggableScrollableController,
             initialChildSize: widget.initialChildSize,
             minChildSize: widget.minSize,
             maxChildSize: widget.maxSize,
@@ -150,7 +152,6 @@ class _DraggableSheetCardState extends State<DraggableSheetCard> {
 
   @override
   void dispose() {
-    draggableScrollableController.dispose();
     super.dispose();
   }
 }
