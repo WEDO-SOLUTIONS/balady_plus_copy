@@ -1,6 +1,8 @@
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
+import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports.dart';
 import 'package:balady_plus/app/features/entry_point/presentation/cubit/auth_cubit.dart';
 import 'package:flutter/material.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../../app/core/dependency_injection/injection_container.dart';
 import '../../../../../../app/core/utils/constants/app_colors.dart';
@@ -19,22 +21,23 @@ class EtmamBiddingWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 197,
+      height: 250,
       padding: EdgeInsets.only(top: 16, left: 16, right: 16),
       margin: EdgeInsets.only(left: 16, right: 16, top: 16),
       decoration: new BoxDecoration(
         color: AppColor.white,
-        borderRadius: BorderRadius.circular(4),
-        boxShadow: [
+        borderRadius: BorderRadius.circular(8),
+        /* boxShadow: [
           BoxShadow(
               color: Color(0x14000000),
               offset: Offset(0, 2),
               blurRadius: 4,
               spreadRadius: 0)
-        ],
+        ],*/
       ),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        CustomSvgIconWidget(IconPath.Inq_11Icon, iconWidth: 58, iconHeight: 58),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
+        Image.asset("assets/etmam_app/images/bidding_icon.png",
+            width: 92, height: 92),
         CustomVerticalSpace(height: 14),
         CustomTextWidget(trans("biddng_home_title"),
             fontColor: AppColor.black,
@@ -45,25 +48,22 @@ class EtmamBiddingWidget extends StatelessWidget {
             fontColor: AppColor.kGray115,
             fontSize: 13,
             fontWeight: AppFontWeight.medium),
-        CustomGoToDetailsButtonWidget(
-          padding: EdgeInsets.only(
-              top: Constants.semiMediumPadding,
-              bottom: Constants.semiMediumPadding),
-          onPressed: () {
-            if (CommonProperties.isLoggedIn) {
-              Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => BiddingTypeDialog()));
-            } else {
-              sl<EntryPointCubit>().onLogin(isFromEtmam: true).then((value) {
-                if (value == true) {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => BiddingTypeDialog()));
-                }
-              });
-            }
-          },
-          label: trans('bidding_home_publish'),
-        )
+        CustomVerticalSpace(height: 16),
+        ElevatedButtonWidget.primaryCustom(
+            onPressed: () {
+              if (CommonProperties.isLoggedIn) {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => BiddingTypeDialog()));
+              } else {
+                sl<EntryPointCubit>().onLogin(isFromEtmam: true).then((value) {
+                  if (value == true) {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => BiddingTypeDialog()));
+                  }
+                });
+              }
+            },
+            text: "bidding_home_publish".tr())
       ]),
     );
   }

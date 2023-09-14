@@ -14,8 +14,8 @@ class SubmitPageParams {
   String? orderId;
   Function? callBack;
   PageTypes? pageType;
-  BlocProvider? releationBloc;
-
+  Bloc? releationBloc;
+  bool? inputsRequired;
   SubmitPageParams(
       {this.serviceProviderId,
       this.relationId,
@@ -27,5 +27,6 @@ class SubmitPageParams {
       this.orderId,
       this.callBack,
       this.pageType,
-      this.releationBloc});
+      this.releationBloc,
+      this.inputsRequired});
 }

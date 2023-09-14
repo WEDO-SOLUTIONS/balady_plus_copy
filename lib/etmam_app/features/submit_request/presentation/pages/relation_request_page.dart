@@ -97,8 +97,7 @@ class _RelationRequestPageState extends State<RelationRequestPage> {
                           orderId: args.orderId,
                           callBack: args.callBack,
                           pageType: args.pageType,
-                          releationBloc: BlocProvider.value(
-                              value: BlocProvider.of<RelationBloc>(context)),
+                          releationBloc: BlocProvider.of<RelationBloc>(context),
                           changeProvider: args.changeProvider),
                     );
                   },
