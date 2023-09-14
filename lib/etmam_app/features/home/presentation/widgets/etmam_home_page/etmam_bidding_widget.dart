@@ -20,51 +20,69 @@ class EtmamBiddingWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 250,
-      padding: EdgeInsets.only(top: 16, left: 16, right: 16),
-      margin: EdgeInsets.only(left: 16, right: 16, top: 16),
-      decoration: new BoxDecoration(
-        color: AppColor.white,
-        borderRadius: BorderRadius.circular(8),
-        /* boxShadow: [
-          BoxShadow(
-              color: Color(0x14000000),
-              offset: Offset(0, 2),
-              blurRadius: 4,
-              spreadRadius: 0)
-        ],*/
-      ),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
-        Image.asset("assets/etmam_app/images/bidding_icon.png",
-            width: 92, height: 92),
-        CustomVerticalSpace(height: 14),
-        CustomTextWidget(trans("biddng_home_title"),
-            fontColor: AppColor.black,
-            fontSize: 17,
-            fontWeight: AppFontWeight.bold),
-        CustomVerticalSpace(height: 10),
-        CustomTextWidget(trans("bidding_home_desc"),
-            fontColor: AppColor.kGray115,
-            fontSize: 13,
-            fontWeight: AppFontWeight.medium),
-        CustomVerticalSpace(height: 16),
-        ElevatedButtonWidget.primaryCustom(
-            onPressed: () {
-              if (CommonProperties.isLoggedIn) {
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => BiddingTypeDialog()));
-              } else {
-                sl<EntryPointCubit>().onLogin(isFromEtmam: true).then((value) {
-                  if (value == true) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(height: 12),
+        Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: CustomTextWidget(
+            "bidding_test_launch".tr(),
+            fontSize: 18,
+            fontWeight: AppFontWeight.bold,
+            fontColor: AppColor.black700,
+          ),
+        ),
+        Container(
+          height: 250,
+          padding: EdgeInsets.only(top: 16, left: 16, right: 16),
+          margin: EdgeInsets.only(left: 16, right: 16, top: 16),
+          decoration: new BoxDecoration(
+            color: AppColor.white,
+            borderRadius: BorderRadius.circular(8),
+            /* boxShadow: [
+              BoxShadow(
+                  color: Color(0x14000000),
+                  offset: Offset(0, 2),
+                  blurRadius: 4,
+                  spreadRadius: 0)
+            ],*/
+          ),
+          child:
+              Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
+            Image.asset("assets/etmam_app/images/bidding_icon.png",
+                width: 92, height: 92),
+            CustomVerticalSpace(height: 14),
+            CustomTextWidget(trans("biddng_home_title"),
+                fontColor: AppColor.black,
+                fontSize: 17,
+                fontWeight: AppFontWeight.bold),
+            CustomVerticalSpace(height: 10),
+            CustomTextWidget(trans("bidding_home_desc"),
+                fontColor: AppColor.kGray115,
+                fontSize: 13,
+                fontWeight: AppFontWeight.medium),
+            CustomVerticalSpace(height: 16),
+            ElevatedButtonWidget.primaryCustom(
+                onPressed: () {
+                  if (CommonProperties.isLoggedIn) {
                     Navigator.of(context).push(MaterialPageRoute(
                         builder: (context) => BiddingTypeDialog()));
+                  } else {
+                    sl<EntryPointCubit>()
+                        .onLogin(isFromEtmam: true)
+                        .then((value) {
+                      if (value == true) {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => BiddingTypeDialog()));
+                      }
+                    });
                   }
-                });
-              }
-            },
-            text: "bidding_home_publish".tr())
-      ]),
+                },
+                text: "bidding_home_publish".tr())
+          ]),
+        ),
+      ],
     );
   }
 }

@@ -36,29 +36,32 @@ class _OrdersTabsWidgetState extends State<OrdersTabsWidget> {
             .asMap()
             .map((i, tabs) => MapEntry(
                 i,
-                TabWidget(
-                  btnPressed: () {
-                    if (state.status == BlocStatus.loadingShimmer) return;
-                    if (tabs == "order_all") {
-                      context.read<MyRequestsBloc>().add(GetMyRequestsEvent(
-                          params: GetOrdersParams(pageIndex: "1")));
-                    } else if (tabs == "ongoing_orders") {
-                      context.read<MyRequestsBloc>().add(GetMyRequestsEvent(
-                          params:
-                              GetOrdersParams(pageIndex: "1", closed: false)));
-                    } else if (tabs == "previous_orders") {
-                      context.read<MyRequestsBloc>().add(GetMyRequestsEvent(
-                          params:
-                              GetOrdersParams(pageIndex: "1", closed: true)));
-                    }
-                    setState(() {
-                      selectedIndex = i;
-                    });
-                  },
-                  tabText: tabs,
-                  isSelected: i == selectedIndex,
-                  // isSelected: i == state.gettCurrenttTabIndex(),
-                  haveSeperator: tabs != tabsList[tabsList.length - 1],
+                Expanded(
+                  flex: tabs == "order_all" ? 1 : 2,
+                  child: TabWidget(
+                    btnPressed: () {
+                      if (state.status == BlocStatus.loadingShimmer) return;
+                      if (tabs == "order_all") {
+                        context.read<MyRequestsBloc>().add(GetMyRequestsEvent(
+                            params: GetOrdersParams(pageIndex: "1")));
+                      } else if (tabs == "ongoing_orders") {
+                        context.read<MyRequestsBloc>().add(GetMyRequestsEvent(
+                            params: GetOrdersParams(
+                                pageIndex: "1", closed: false)));
+                      } else if (tabs == "previous_orders") {
+                        context.read<MyRequestsBloc>().add(GetMyRequestsEvent(
+                            params:
+                                GetOrdersParams(pageIndex: "1", closed: true)));
+                      }
+                      setState(() {
+                        selectedIndex = i;
+                      });
+                    },
+                    tabText: tabs,
+                    isSelected: i == selectedIndex,
+                    // isSelected: i == state.gettCurrenttTabIndex(),
+                    haveSeperator: tabs != tabsList[tabsList.length - 1],
+                  ),
                 )))
             .values
             .toList(),
@@ -145,34 +148,29 @@ class TabWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        CustomInkWellButtonWidget(
-          btnPressed: () {
-            btnPressed!();
-          },
-          widget: Container(
-            padding: const EdgeInsets.all(8),
-            // margin: const EdgeInsets.all(8),
-            margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
-            decoration: BoxDecoration(
-                color: isSelected ? AppColor.darkTurquoise : Colors.transparent,
-                border: Border.all(width: 1, color: AppColor.darkTurquoise),
-                borderRadius: BorderRadius.circular(4)),
-            child: CustomTextWidget(
-              trans(tabText),
-              fontSize: 13.0,
-              fontWeight: AppFontWeight.medium,
-              // fontWeight:
-              //     isSelected ? AppFontWeight.medium : AppFontWeight.regular,
-              fontColor: isSelected ? AppColor.white : AppColor.darkTurquoise,
-              maxLines: 1,
-              textOverflow: TextOverflow.ellipsis,
-              textAlign: TextAlign.center,
-            ),
-          ),
+    return CustomInkWellButtonWidget(
+      btnPressed: () {
+        btnPressed!();
+      },
+      widget: Container(
+        padding: const EdgeInsets.all(8),
+        // margin: const EdgeInsets.all(8),
+        margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
+        decoration: BoxDecoration(
+            color: isSelected ? AppColor.primary900 : AppColor.white,
+            borderRadius: BorderRadius.circular(12)),
+        child: CustomTextWidget(
+          trans(tabText),
+          fontSize: 11.0,
+          fontWeight: AppFontWeight.bold,
+          // fontWeight:
+          //     isSelected ? AppFontWeight.medium : AppFontWeight.regular,
+          fontColor: isSelected ? AppColor.white : AppColor.primary900,
+          maxLines: 1,
+          textOverflow: TextOverflow.ellipsis,
+          textAlign: TextAlign.center,
         ),
-      ],
+      ),
     );
   }
 }

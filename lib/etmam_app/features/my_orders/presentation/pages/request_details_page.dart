@@ -13,8 +13,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../app/core/dependency_injection/injection_container.dart';
 import '../../../../../app/core/services/local/navigation_services.dart';
+import '../../../../../app/core/utils/constants/paths/icon_paths.dart';
 import '../../../../../app/core/utils/constants/route_names.dart';
 import '../../../../../app/core/utils/enums/bloc_status.dart';
+import '../../../../../app/features/_shared_feature_/presentation/widgets/default_appbar_widget.dart';
 
 class RequestDetailsPage extends StatefulWidget {
   const RequestDetailsPage({super.key});
@@ -48,6 +50,32 @@ class _RequestDetailsPageState extends State<RequestDetailsPage> {
               title: trans('order_number')
                   .replaceAll("-", state.response?.requestNumber ?? ""),
             ),
+            /* appBar: DefaultAppBarWidget(
+              title: "طلب ${state.response?.requestNumber}#",
+              actions: [
+                if ((state.response?.actionsOnOrder != null &&
+                    (state.response?.actionsOnOrder?.length ?? 0) > 0))
+                  GestureDetector(
+                    onTap: () {
+                      context.read<OrderDetailsBloc>().add(ShowActionsEvent(
+                          params: ActionParams(
+                              allowedActions: state.response?.actionsOnOrder,
+                              orderId: state.response!.id!,
+                              subServiceId: state.response!.serviceId!,
+                              subServiceName:
+                                  state.response!.serviceName ?? "")));
+                    },
+                    child: Padding(
+                      padding: const EdgeInsetsDirectional.only(end: 16),
+                      child: Image.asset(
+                        IconPath.settings,
+                        width: 42,
+                        height: 42,
+                      ),
+                    ),
+                  )
+              ],
+            ),*/
             body: SingleChildScrollView(
                 child: Stack(
               children: [
