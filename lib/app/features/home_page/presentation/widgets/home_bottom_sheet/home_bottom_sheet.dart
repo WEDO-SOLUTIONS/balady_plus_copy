@@ -59,29 +59,34 @@ class HomeBottomSheet extends StatelessWidget {
                               .makeAddress() ??
                           suggests[index].subtitle.text;
                       return InkWell(
-                        onTap: () {
+                        onTap: () async {
                           final objectHandler =
                               suggests[index].handler.objectHandler;
                           if (objectHandler != null) {
                             mapViewModel.selectedPointId.value =
                                 objectHandler.item.id;
+                            final objectId = objectHandler.item.id;
+                            mapViewModel.searchOnCameraMove = false;
+                            if (objectId != null) {
+                              await mapViewModel.controller.setHighlighted(
+                                [objectId],
+                              );
+                            }
                             mapViewModel.viewHomeBottomSheet.value = false;
                             final position = objectHandler.item.markerPosition;
                             if (position != null) {
-                              unawaited(
-                                mapViewModel.controller.moveCamera(
-                                  CameraPositionMessage(
-                                    point: GeoPointMessage(
-                                      latitude: position.latitude,
-                                      longitude: position.longitude,
-                                    ),
-                                    zoom: 17,
-                                    tilt: 0,
-                                    bearing: 0,
+                              await mapViewModel.controller.moveCamera(
+                                CameraPositionMessage(
+                                  point: GeoPointMessage(
+                                    latitude: position.latitude,
+                                    longitude: position.longitude,
                                   ),
-                                  1,
-                                  CameraAnimationTypeMessage.linear,
+                                  zoom: 17,
+                                  tilt: 0,
+                                  bearing: 0,
                                 ),
+                                1,
+                                CameraAnimationTypeMessage.linear,
                               );
                             }
                           }

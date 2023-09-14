@@ -205,7 +205,7 @@ class SearchHandler(
                         }
 
                         result?.success(
-                            response.toMessage(pageId, items)
+                            response.toMessage(pageId, map.camera, items)
                         )
                     }
                     onError { error ->

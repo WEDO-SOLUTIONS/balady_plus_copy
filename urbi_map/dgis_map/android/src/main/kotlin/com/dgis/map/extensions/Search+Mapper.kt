@@ -2,11 +2,23 @@ package com.dgis.map.extensions
 
 import com.dgis.map.map_api.Messages.*
 import ru.dgis.sdk.directory.*
+import ru.dgis.sdk.map.Camera
+import ru.dgis.sdk.map.calcPosition
 
-fun SearchResult.toMessage(pageId: String, items: List<ItemMarkerInfo>?): SearchResultMessage {
+fun SearchResult.toMessage(pageId: String, camera: Camera, items: List<ItemMarkerInfo>?): SearchResultMessage {
     return SearchResultMessage.Builder()
         .setFirstPage(this.firstPage?.toMessage(pageId))
         .setRepresentativeArea(this.representativeArea?.toMessage())
+        .setAreaOfInterestPosition(this.representativeArea?.let {
+            val cameraPosition = calcPosition(camera, it)
+            CameraPositionMessage
+                    .Builder()
+                    .setPoint(cameraPosition.point.toMessage())
+                    .setZoom(cameraPosition.zoom.value.toDouble())
+                    .setTilt(cameraPosition.tilt.value.toDouble())
+                    .setBearing(cameraPosition.bearing.value)
+                    .build()
+        })
         .setItemMarkerInfos(items?.map {
             it.toMessage()
         })

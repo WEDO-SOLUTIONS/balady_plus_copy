@@ -1,5 +1,6 @@
 package com.dgis.map.control_handlers
 
+import android.util.Log
 import android.util.Size
 import com.dgis.map.FlutterClusterRenderer
 import com.dgis.map.R
@@ -492,7 +493,14 @@ class ObjectTapHandler(
         objectIds: List<DgisObjectId>,
         result: Result<Void>?
     ) {
-        val source = source
+        for (source in map.sources) {
+            val mSource = source as? DgisSource
+            if (mSource != null) {
+                this.source = mSource
+                break
+            }
+        }
+        val source = this.source
         if (source == null) {
             result?.error(Exception("Map source is null"))
             return
@@ -662,8 +670,6 @@ class ObjectTapHandler(
     }
 
     private fun onDgisMapObjectTap(mapObject: DgisMapObject, roi: RenderedObjectInfo) {
-        source = roi.item.source as DgisSource
-
         sendDgisObjectEvent(mapObject.id, roi.closestMapPoint, roi.item.levelId)
     }
 

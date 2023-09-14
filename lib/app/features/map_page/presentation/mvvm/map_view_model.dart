@@ -101,6 +101,7 @@ class MapViewModel extends BaseViewModel {
   double? _cameraTopPadding;
   double oldZoom = 13;
   bool refreshMap = true;
+  bool searchOnCameraMove = false;
 
   //final selectedPoint = ValueNotifier<DgisObjectIdMessage?>(null);
 
@@ -228,6 +229,16 @@ class MapViewModel extends BaseViewModel {
                 ));
 
       if (showLoader) hideLoading1();
+
+      searchOnCameraMove = false;
+      if (data.areaOfInterestPosition != null) {
+        await controller.moveCamera(
+          data.areaOfInterestPosition!,
+          1,
+          CameraAnimationTypeMessage.linear,
+        );
+      }
+      searchOnCameraMove = true;
 
       if (data.itemMarkerInfos != null) {
         List<Marker> markers = [];
@@ -551,8 +562,10 @@ class MapViewModel extends BaseViewModel {
       _lastRectPosition = _lastCameraPosition;
     }
     _lastHandledEvent = event;
-    // start Timer when stop move camera  call search funcation
-    _startRequestTimer(event.visibleRect.zoom);
+    if (searchOnCameraMove) {
+      // start Timer when stop move camera  call search funcation
+      _startRequestTimer(event.visibleRect.zoom);
+    }
   }
 
   // When click on ayn object
@@ -1085,6 +1098,9 @@ class MapViewModel extends BaseViewModel {
     await controller.removeAllPolygons();
     await controller.removeAllPolylines();
     await controller.removeAll();
+    try {
+      await controller.removeAllHighlights();
+    } catch (e) {}
     return;
   }
 
