@@ -64,6 +64,7 @@ class _EtmamHomePage extends State<EtmamHomePage> {
                     const Column(children: [
                       EtmamMainServicesWidget(),
                       EtmamBannerSlider(),
+
                       EtmamBiddingWidget(),
                       // EtmamSubServicesWidget(),
                       EtmamTopRatedProvidersWidget(),
