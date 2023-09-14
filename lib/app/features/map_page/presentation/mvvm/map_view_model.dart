@@ -209,7 +209,7 @@ class MapViewModel extends BaseViewModel {
               categories: [
                 SearchCategoryMessage.gasStations,
                 SearchCategoryMessage.mousques,
-                // SearchCategoryMessage.restaurants,
+                SearchCategoryMessage.restaurants,
               ],
               sortingType: SortingTypeMessage.byRelevance,
               isOpenNow: false,
