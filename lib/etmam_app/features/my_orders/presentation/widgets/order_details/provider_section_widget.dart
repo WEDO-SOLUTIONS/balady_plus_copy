@@ -35,6 +35,7 @@ class OrderInfoSectionWidget extends StatelessWidget {
   final OrderStatus orderStatus;
   final String orderStatusText;
   final String? orderRefrenceNumber;
+  final String? requestType;
 
   const OrderInfoSectionWidget(
       {Key? key,
@@ -42,19 +43,20 @@ class OrderInfoSectionWidget extends StatelessWidget {
       this.orderService,
       required this.orderStatus,
       required this.orderStatusText,
-      this.orderRefrenceNumber})
+      this.orderRefrenceNumber,
+      this.requestType})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+      margin: EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 20),
       decoration: new BoxDecoration(
-        color: const Color(0xffffffff),
+        color: Color(0xffffffff),
         borderRadius: BorderRadius.circular(4),
         boxShadow: [
-          const BoxShadow(
+          BoxShadow(
               color: Color(0x26000000),
               offset: Offset(0, 2),
               blurRadius: 5,
@@ -86,12 +88,22 @@ class OrderInfoSectionWidget extends StatelessWidget {
             )
           ]),
           DrawLineWidget(
-            lineColor: const Color(0xff979797).withOpacity(0.2000000029802322),
+            lineColor: Color(0xff979797).withOpacity(0.2000000029802322),
             verticalMargin: 16,
           ),
-          OrderTitleGreyAndDescWidget(
-            title: trans('etmam_order_date'),
-            desc: orderDate ?? "",
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              OrderTitleGreyAndDescWidget(
+                title: trans('etmam_order_date'),
+                desc: orderDate ?? "",
+              ),
+              if (requestType != null && requestType!.isNotEmpty)
+                OrderTitleGreyAndDescWidget(
+                  title: trans('etmam_order_type'),
+                  desc: requestType ?? "",
+                ),
+            ],
           ),
           const CustomVerticalSpace(height: 14),
           OrderTitleGreyAndDescWidget(
@@ -163,7 +175,7 @@ class ServiceDetailsSectionWidget extends StatelessWidget {
                     ListView.builder(
                       shrinkWrap: true,
                       itemCount: state.response?.subOrders?.length ?? 0,
-                      physics: const NeverScrollableScrollPhysics(),
+                      physics: NeverScrollableScrollPhysics(),
                       itemBuilder: (ctx, index) => Column(
                         children: [
                           OrderTitleAndDescWidget(
@@ -209,7 +221,7 @@ class ServiceDetailsSectionWidget extends StatelessWidget {
                                   state.response?.subOrders?[index].status?.id),
                             ),
                           ),
-                          const CustomVerticalSpace(height: 16)
+                          CustomVerticalSpace(height: 16)
                         ],
                       ),
                     ),

@@ -1,15 +1,10 @@
-import 'package:balady_plus/app/core/utils/constants/route_names.dart';
-import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/default_appbar_widget.dart';
+import 'package:balady_plus/app/features/entry_point/presentation/cubit/auth_cubit.dart';
 import 'package:balady_plus/etmam_app/core/dependency_injection/injection_container.dart'
     show sl;
-import 'package:balady_plus/app/core/services/local/navigation_services.dart';
-import 'package:balady_plus/app/core/utils/utils_exports.dart'
-    show AuthStatus, BlocStatus;
 
 import 'package:balady_plus/etmam_app/core/services/services_exports.dart'
     show AppEvents;
-import 'package:balady_plus/app/core/services/local/navigation_services.dart';
-import 'package:balady_plus/app/features/entry_point/presentation/cubit/auth_cubit.dart';
+
 import 'package:balady_plus/etmam_app/features/my_orders/my_orders_exports.dart'
     show
         CancelOrderDialog,
@@ -25,10 +20,13 @@ import 'package:balady_plus/etmam_app/features/services/services_exports.dart'
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../../app/core/services/local/navigation_services.dart';
+import '../../../../../app/core/utils/constants/route_names.dart';
+import '../../../../../app/core/utils/enums/auth_status.dart';
+import '../../../../../app/core/utils/enums/bloc_status.dart';
 import '../../../../core/utils/utils_exports.dart'
     show
         AppColorsTheme,
-        AuthStatus,
         CommonFunctions,
         CommonProperties,
         IconPath,
@@ -57,13 +55,13 @@ class _OrdersPage extends State<OrdersPage> {
   @override
   void initState() {
     super.initState();
-    //CommonFunctions.sendEventToAnalytics(AppEvents.MyOrders);
+    CommonFunctions.sendEventToAnalytics(AppEvents.MyOrders);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: DefaultAppBarWidget(
+        appBar: CustomAppBar(
           title: trans('orders_app_bar'),
         ),
         body: BlocProvider<MyOrdersBloc>(

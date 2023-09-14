@@ -1,5 +1,5 @@
 class OrderDetailsParams {
   String? orderId;
-
-  OrderDetailsParams({this.orderId});
+  String? type;
+  OrderDetailsParams({this.orderId, this.type});
 }

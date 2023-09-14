@@ -1,4 +1,4 @@
-import 'package:balady_plus/app/core/utils/utils_exports.dart' show BlocStatus;
+import 'package:balady_plus/etmam_app/features/my_orders/presentation/blocs/my_requests/my_requests_bloc.dart';
 import 'package:balady_plus/etmam_app/core/utils/utils_exports.dart'
     show AppColor, AppFontWeight, trans;
 import 'package:balady_plus/etmam_app/features/my_orders/my_orders_exports.dart';
@@ -6,6 +6,7 @@ import 'package:balady_plus/etmam_app/features/my_orders/presentation/blocs/my_o
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../../app/core/utils/enums/bloc_status.dart';
 import '../../../_shared_feature_/shared/shared_feature_exports.dart'
     show CustomInkWellButtonWidget, CustomTextWidget;
 
@@ -22,7 +23,8 @@ class _OrdersTabsWidgetState extends State<OrdersTabsWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<MyOrdersBloc, MyOrdersState>(builder: (context, state) {
+    return BlocBuilder<MyRequestsBloc, MyRequestsState>(
+        builder: (context, state) {
       return Container(
           // decoration: const BoxDecoration(
           //     borderRadius: BorderRadius.all(Radius.circular(16)),
@@ -34,32 +36,29 @@ class _OrdersTabsWidgetState extends State<OrdersTabsWidget> {
             .asMap()
             .map((i, tabs) => MapEntry(
                 i,
-                Expanded(
-                  flex:  tabs == "order_all" ? 1:2 ,
-                  child: TabWidget(
-                    btnPressed: () {
-                      if (state.status == BlocStatus.loadingShimmer) return;
-                      if (tabs == "order_all") {
-                        context.read<MyOrdersBloc>().add(GetMyOrdersEvent(
-                            params: GetOrdersParams(pageIndex: "1")));
-                      } else if (tabs == "ongoing_orders") {
-                        context.read<MyOrdersBloc>().add(GetMyOrdersEvent(
-                            params:
-                                GetOrdersParams(pageIndex: "1", closed: false)));
-                      } else if (tabs == "previous_orders") {
-                        context.read<MyOrdersBloc>().add(GetMyOrdersEvent(
-                            params:
-                                GetOrdersParams(pageIndex: "1", closed: true)));
-                      }
-                      setState(() {
-                        selectedIndex = i;
-                      });
-                    },
-                    tabText: tabs,
-                    isSelected: i == selectedIndex,
-                    // isSelected: i == state.gettCurrenttTabIndex(),
-                    haveSeperator: tabs != tabsList[tabsList.length - 1],
-                  ),
+                TabWidget(
+                  btnPressed: () {
+                    if (state.status == BlocStatus.loadingShimmer) return;
+                    if (tabs == "order_all") {
+                      context.read<MyRequestsBloc>().add(GetMyRequestsEvent(
+                          params: GetOrdersParams(pageIndex: "1")));
+                    } else if (tabs == "ongoing_orders") {
+                      context.read<MyRequestsBloc>().add(GetMyRequestsEvent(
+                          params:
+                              GetOrdersParams(pageIndex: "1", closed: false)));
+                    } else if (tabs == "previous_orders") {
+                      context.read<MyRequestsBloc>().add(GetMyRequestsEvent(
+                          params:
+                              GetOrdersParams(pageIndex: "1", closed: true)));
+                    }
+                    setState(() {
+                      selectedIndex = i;
+                    });
+                  },
+                  tabText: tabs,
+                  isSelected: i == selectedIndex,
+                  // isSelected: i == state.gettCurrenttTabIndex(),
+                  haveSeperator: tabs != tabsList[tabsList.length - 1],
                 )))
             .values
             .toList(),
@@ -146,29 +145,34 @@ class TabWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CustomInkWellButtonWidget(
-      btnPressed: () {
-        btnPressed!();
-      },
-      widget: Container(
-        padding: const EdgeInsets.all(8),
-        // margin: const EdgeInsets.all(8),
-        margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
-        decoration: BoxDecoration(
-            color: isSelected ? AppColor.primary900 : AppColor.white,
-            borderRadius: BorderRadius.circular(12)),
-        child: CustomTextWidget(
-          trans(tabText),
-          fontSize: 11.0,
-          fontWeight: AppFontWeight.bold,
-          // fontWeight:
-          //     isSelected ? AppFontWeight.medium : AppFontWeight.regular,
-          fontColor: isSelected ? AppColor.white : AppColor.primary900,
-          maxLines: 1,
-          textOverflow: TextOverflow.ellipsis,
-          textAlign: TextAlign.center,
+    return Row(
+      children: [
+        CustomInkWellButtonWidget(
+          btnPressed: () {
+            btnPressed!();
+          },
+          widget: Container(
+            padding: const EdgeInsets.all(8),
+            // margin: const EdgeInsets.all(8),
+            margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
+            decoration: BoxDecoration(
+                color: isSelected ? AppColor.darkTurquoise : Colors.transparent,
+                border: Border.all(width: 1, color: AppColor.darkTurquoise),
+                borderRadius: BorderRadius.circular(4)),
+            child: CustomTextWidget(
+              trans(tabText),
+              fontSize: 13.0,
+              fontWeight: AppFontWeight.medium,
+              // fontWeight:
+              //     isSelected ? AppFontWeight.medium : AppFontWeight.regular,
+              fontColor: isSelected ? AppColor.white : AppColor.darkTurquoise,
+              maxLines: 1,
+              textOverflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.center,
+            ),
+          ),
         ),
-      ),
+      ],
     );
   }
 }

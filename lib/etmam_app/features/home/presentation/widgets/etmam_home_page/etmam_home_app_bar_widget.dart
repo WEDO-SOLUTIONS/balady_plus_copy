@@ -87,7 +87,7 @@ class EtmamHomeAppBarWidget extends StatelessWidget {
                   svgIcon: IconPath.ordersIconWhite,
                   btnPressed: () {
                     NavigationService.pushNamed(
-                        routeName: EtmamRoutesNames.myOrdersPage);
+                        routeName: EtmamRoutesNames.myRequestsPage);
                   },
                   btnHeight: 32,
                   btnWidth: 32,

@@ -4,7 +4,6 @@ import 'package:balady_plus/etmam_app/core/services/services_exports.dart'
     show AppEvents;
 import 'package:balady_plus/etmam_app/core/utils/utils_exports.dart'
     show AppColor, AppFontWeight, CommonFunctions, trans;
-import 'package:balady_plus/app/core/utils/utils_exports.dart' show BlocStatus;
 
 import 'package:balady_plus/etmam_app/features/my_orders/my_orders_exports.dart'
     show
@@ -20,6 +19,7 @@ import 'package:balady_plus/etmam_app/features/services/services_exports.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../../app/core/utils/enums/bloc_status.dart';
 import '../../../_shared_feature_/shared/shared_feature_exports.dart';
 import '../../../submit_request/presentation/widgets/order_info/order_info_card_widget.dart';
 
@@ -34,7 +34,7 @@ class _EvaluateOrderPage extends State<EvaluateOrderPage> {
   @override
   void initState() {
     super.initState();
-    //CommonFunctions.sendEventToAnalytics(AppEvents.EvaluateOrder);
+    CommonFunctions.sendEventToAnalytics(AppEvents.EvaluateOrder);
   }
 
   @override

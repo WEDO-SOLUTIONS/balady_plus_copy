@@ -21,6 +21,8 @@ import 'package:balady_plus/etmam_app/features/home/home_exports.dart'
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../widgets/etmam_home_page/etmam_bidding_widget.dart';
+
 class EtmamHomePage extends StatefulWidget {
   const EtmamHomePage({Key? key}) : super(key: key);
 
@@ -62,6 +64,7 @@ class _EtmamHomePage extends State<EtmamHomePage> {
                     const Column(children: [
                       EtmamMainServicesWidget(),
                       EtmamBannerSlider(),
+                      EtmamBiddingWidget(),
                       // EtmamSubServicesWidget(),
                       EtmamTopRatedProvidersWidget(),
                     ]),

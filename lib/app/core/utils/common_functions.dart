@@ -637,6 +637,25 @@ class CommonFunctions {
     return false;
   }
 
+  static showSuccess(String msg) {
+    if (msg.isNotEmpty) {
+      try {
+        BotToast.showSimpleNotification(
+            title: msg,
+            backgroundColor: AppColor.baladyDarkGreen2,
+            titleStyle: const TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.w500,
+                fontStyle: FontStyle.normal,
+                fontSize: 16.0),
+            hideCloseButton: true,
+            duration: const Duration(seconds: 3));
+      } catch (ex) {
+        print(ex);
+      }
+    }
+  }
+
   static void openBaladyWebView(String? url) async {
     EasyLoading.show();
     GetCookie getCookie = GetCookie(repository: sl());
