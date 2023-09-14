@@ -8,6 +8,38 @@ enum GISMapLayers {
       selectedIcon: Constants.bulidingSelectedLayerIcon,
       outFieldsShort: [],
       outFieldsLong: []),
+
+  Resturants(
+      layerId: 1,
+      cardHeight: 180,
+      icon: Constants.restaurantLayerIcon,
+      selectedIcon: Constants.restaurantLayerIcon,
+      outFieldsShort: [
+        "OBJECTID",
+        "XCOORDINATE",
+        "YCOORDINATE",
+        "STREET_NAME",
+        "ACTIVITY_DETAILED_DESCRIPTION",
+        "TRADENAME",
+        "REGION_ID",
+        "AMANA_ID",
+        "DISTRICT_ID",
+        "CITY_ID",
+        "SUNDAY",
+        "MONDAY",
+        "TUESDAY",
+        "WEDNESDAY",
+        "THURSDAY",
+        "FRIDAY",
+        "SATURDAY",
+        "RATE",
+        "OPENSTATUS",
+        "REVIEW",
+      ],
+      outFieldsLong: [
+        "*"
+      ]),
+
   Opportunities(
       layerId: 2,
       cardHeight: 180,
