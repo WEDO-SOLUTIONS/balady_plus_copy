@@ -29,6 +29,7 @@ import '../enums/map_enums.dart';
 import '../model/investment_details_response.dart';
 import '../model/rental_details_response.dart';
 import '../model/requests/map_requests_params.dart';
+import '../model/resturant_model.dart';
 
 class LayersRepositories {
   final WebService webService;
@@ -48,7 +49,6 @@ class LayersRepositories {
         return layersFromJson(layersType.data['data']['result']['layers'])
             .where((element) =>
                 element.id != 0 &&
-                element.id != 1 &&
                 element.id != 3 &&
                 element.id != 4 &&
                 element.id != 6 &&
@@ -145,6 +145,10 @@ class LayersRepositories {
       );
 
       switch (params.layer.layerId) {
+        case 1: //     المطاعم
+          return resturantFromJson(
+            points.data['data']['result']['features'],
+          );
         case 2: //     المواقع الاستثمارية
           return investmentSitesFromJson(
             points.data['data']['result']['features'],

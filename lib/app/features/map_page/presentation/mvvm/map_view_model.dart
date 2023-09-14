@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:balady_plus/app/core/utils/app_analytics_events.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/entry_point/presentation/cubit/auth_cubit.dart';
+import 'package:balady_plus/app/features/map_page/data/model/resturant_model.dart';
 import 'package:balady_plus/app/features/vd/vd_exports.dart';
 import 'package:collection/collection.dart';
 
@@ -104,6 +105,8 @@ class MapViewModel extends BaseViewModel {
 
   final selectedDiggingPoint = ValueNotifier<Excavations?>(null);
   final selectedInvetmentPoint = ValueNotifier<InvestmentSites?>(null);
+  final selectedResturantPoint = ValueNotifier<ResturantModel?>(null);
+
   final selectedImtethalPoint =
       ValueNotifier<BuildingComplianceCertificate?>(null);
 
@@ -393,6 +396,7 @@ class MapViewModel extends BaseViewModel {
     selectedDiggingPoint.value = null;
     selectedImtethalPoint.value = null;
     selectedInvetmentPoint.value = null;
+    selectedResturantPoint.value = null;
     selectedPointId.value = null;
     selectedWhiteLands.value = null;
     selectedLands.value = null;
@@ -401,6 +405,7 @@ class MapViewModel extends BaseViewModel {
     selectedDiggingPoint.notifyListeners();
     selectedImtethalPoint.notifyListeners();
     selectedInvetmentPoint.notifyListeners();
+    selectedResturantPoint.notifyListeners();
     selectedPointId.notifyListeners();
     selectedLands.notifyListeners();
     showLegend.notifyListeners();
@@ -797,6 +802,11 @@ class MapViewModel extends BaseViewModel {
                 case GISMapLayers.Opportunities:
                   selectedPoint.value = element;
                   selectedInvetmentPoint.value = element;
+                  break;
+
+                case GISMapLayers.Resturants:
+                  selectedPoint.value = element;
+                  selectedResturantPoint.value = element;
                   break;
                 default:
                   break;

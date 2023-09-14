@@ -1,6 +1,8 @@
+import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/map_page/data/enums/map_enums.dart';
 import 'package:balady_plus/app/features/map_page/extensions/search_category_ext.dart';
 import 'package:balady_plus/app/features/map_page/presentation/widgets/map_cards/digging_map_card.dart';
+import 'package:balady_plus/app/features/map_page/presentation/widgets/resturant_card_widget.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -12,6 +14,7 @@ import '../../data/model/divisional_chart_boundaries.dart';
 import '../../data/model/excavations.dart';
 import '../../data/model/investment_details_response.dart';
 import '../../data/model/investment_sites.dart';
+import '../../data/model/resturant_model.dart';
 import '../../data/model/white_lands.dart';
 import '../mvvm/map_view_model.dart';
 import '../mvvm/point_view_model.dart';
@@ -109,6 +112,22 @@ class MapLayerCard extends StatelessWidget {
                   ? const SizedBox()
                   : ImtethalMapCard(
                       data: mapViewModel.selectedImtethalPoint.value!,
+                      onClose: () {
+                        mapViewModel.showDialog();
+                      });
+            },
+          );
+
+        case GISMapLayers.Resturants:
+          return ValueListenableBuilder<ResturantModel?>(
+            valueListenable: mapViewModel.selectedResturantPoint,
+            builder: (_, selectedPoint, __) {
+              return selectedPoint == null
+                  ? const SizedBox()
+                  : ResturantMapCardWidget(
+                      data: mapViewModel.selectedResturantPoint.value!,
+                      icon: mapViewModel.gisSelectedLayer.icon,
+                      color: AppColor.primary900Light,
                       onClose: () {
                         mapViewModel.showDialog();
                       });

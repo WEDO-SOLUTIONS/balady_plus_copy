@@ -24,13 +24,16 @@ class Constants {
   static String icMarkerGasStations =
       "assets/maps/icons/ic_marker_gas_stations.svg";
   static String icMarkerMosques = "assets/maps/icons/ic_marker_mosques.svg";
-  static String icMarkerRestaurant =
+  static const String icMarkerRestaurant =
       "assets/maps/icons/ic_marker_restaurant.svg";
 
   static const String diggingLayerIcon =
       "assets/maps/icons/gis_layers_icons/digging.svg";
   static const String diggingSelectedLayerIcon =
       "assets/maps/icons/gis_layers_icons/digging_selected.svg";
+
+  static const String restaurantLayerIcon =
+      "assets/maps/icons/gis_layers_icons/resturant.svg";
 
   static const String landsLayerIcon =
       "assets/maps/icons/gis_layers_icons/lands.svg";
