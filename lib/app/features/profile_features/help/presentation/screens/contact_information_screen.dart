@@ -42,7 +42,7 @@ class ContactInformationScreen extends StatelessWidget {
             SizedBox(height: 8),
             ContactInfoCard(
               title: "البريد الالكتروني",
-              value: "support@balady.gov.sa",
+              value: "infoCS@balady.gov.sa",
             ),
           ],
         ),

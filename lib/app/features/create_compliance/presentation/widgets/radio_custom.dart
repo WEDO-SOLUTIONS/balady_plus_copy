@@ -50,7 +50,7 @@ class SingleRatioOption extends StatelessWidget {
             child: CustomTextWidget(
               title,
               textStyle: titleStyle,
-              maxLines: 1,
+              maxLines: 3,
             ),
           ),
         ],

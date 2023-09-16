@@ -61,16 +61,15 @@ class HomeBottomSheet extends StatelessWidget {
                     return !visible
                         ? Column(
                             children: [
-                              CityScapeMapCard(),
                               if (CommonProperties.userLocation == null)
                                 const LocationHomeCard(),
                               const CertificationMapCard(),
                               const ReportHomeCard(),
                               if (CommonProperties.userLocation != null)
                                 const PrayerHomeCard(),
-                              const ReadHomeCard(),
+                              //    const ReadHomeCard(),
                               // DeformityHomeCard(),
-                              //  BaladySmartAdvisorCard(),
+                              BaladySmartAdvisorCard(),
                               //  ChallengeHomeCard(),
                               const NewServices(),
                               const SizedBox(height: 30),
