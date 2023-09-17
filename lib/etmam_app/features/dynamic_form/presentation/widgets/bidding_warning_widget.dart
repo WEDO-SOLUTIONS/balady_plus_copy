@@ -29,6 +29,7 @@ class BidddingWarningWidget extends StatelessWidget {
         fontSize: 13,
         textAlign: TextAlign.start,
         height: 1.6,
+        maxLines: 10,
         fontWeight: AppFontWeight.bold,
       ),
     );

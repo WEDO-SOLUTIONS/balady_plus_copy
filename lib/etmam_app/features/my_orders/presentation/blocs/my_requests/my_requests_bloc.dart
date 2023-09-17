@@ -181,7 +181,7 @@ class MyRequestsBloc extends Bloc<MyRequestsEvent, MyRequestsState> {
       GetRequestDetailsEvent e, Emitter emitter) async {
     emitter(state.copyWith(status: BlocStatus.loading));
 
-    if (e.params.type == "bidding") {
+    if (e.params.type?.contains("bidding") ?? false) {
       final failureOrSuccess = await _getRequestDetails(e.params);
 
       failureOrSuccess.fold((failure) {

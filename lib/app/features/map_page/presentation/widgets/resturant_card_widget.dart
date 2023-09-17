@@ -103,14 +103,18 @@ class ResturantMapCardWidget extends StatelessWidget {
                                       mainAxisAlignment:
                                           MainAxisAlignment.center,
                                       children: [
-                                        CustomTextWidget(
-                                          data.TRADENAME ?? "",
-                                          fontColor:
-                                              AppColor.blackModern800Light,
-                                          fontSize: 16,
-                                          textOverflow: TextOverflow.ellipsis,
-                                          fontWeight: AppFontWeight.bold,
-                                          maxLines: 2,
+                                        Container(
+                                          margin: EdgeInsetsDirectional.only(
+                                              end: 3),
+                                          child: CustomTextWidget(
+                                            data.TRADENAME ?? "",
+                                            fontColor:
+                                                AppColor.blackModern800Light,
+                                            fontSize: 16,
+                                            textOverflow: TextOverflow.ellipsis,
+                                            fontWeight: AppFontWeight.bold,
+                                            maxLines: 2,
+                                          ),
                                         ),
                                         CustomVerticalSpace(height: 8),
                                         Row(
@@ -134,38 +138,43 @@ class ResturantMapCardWidget extends StatelessWidget {
                                               ],
                                             ),
                                             CustomHorizontalSpace(width: 16),
-                                            Row(
-                                              children: [
-                                                SvgPicture.asset(
-                                                  IconPath.qrRatingStarIcon,
-                                                  color: Color(0xffBD591D),
-                                                  height: 14,
-                                                ),
-                                                CustomHorizontalSpace(width: 4),
-                                                Row(
-                                                  children: [
-                                                    CustomTextWidget(
-                                                      data.getRating ?? "",
-                                                      fontColor: AppColor
-                                                          .blackModern500Light,
-                                                      fontSize: 12,
-                                                      fontWeight:
-                                                          AppFontWeight.bold,
-                                                    ),
-                                                    CustomHorizontalSpace(
-                                                        width: 4),
-                                                    CustomTextWidget(
-                                                      data.getReviews ?? "",
-                                                      fontColor: AppColor
-                                                          .blackModern500Light,
-                                                      fontSize: 10,
-                                                      fontWeight:
-                                                          AppFontWeight.bold,
-                                                    ),
-                                                  ],
-                                                ),
-                                              ],
-                                            )
+                                            if (data.getRating.isNotEmpty)
+                                              Row(
+                                                children: [
+                                                  SvgPicture.asset(
+                                                    IconPath.qrRatingStarIcon,
+                                                    color: Color(0xffBD591D),
+                                                    height: 14,
+                                                  ),
+                                                  CustomHorizontalSpace(
+                                                      width: 4),
+                                                  Row(
+                                                    children: [
+                                                      CustomTextWidget(
+                                                        data.getRating ?? "",
+                                                        fontColor: AppColor
+                                                            .blackModern500Light,
+                                                        fontSize: 12,
+                                                        fontWeight:
+                                                            AppFontWeight.bold,
+                                                      ),
+                                                      CustomHorizontalSpace(
+                                                          width: 4),
+                                                      if (data.getReviews
+                                                          .isNotEmpty)
+                                                        CustomTextWidget(
+                                                          data.getReviews ?? "",
+                                                          fontColor: AppColor
+                                                              .blackModern500Light,
+                                                          fontSize: 10,
+                                                          fontWeight:
+                                                              AppFontWeight
+                                                                  .bold,
+                                                        ),
+                                                    ],
+                                                  ),
+                                                ],
+                                              )
                                           ],
                                         ),
                                         CustomVerticalSpace(height: 8),
@@ -208,26 +217,32 @@ class ResturantMapCardWidget extends StatelessWidget {
                                                 )
                                               ],
                                             ),
-                                            CustomVerticalSpace(height: 4),
-                                            CustomTextWidget(
-                                              data.getSecondShift ?? "",
-                                              fontColor:
-                                                  AppColor.blackModern500Light,
-                                              fontSize: 12,
-                                              fontWeight: AppFontWeight.bold,
-                                              height: 1.3,
-                                              maxLines: 2,
-                                            ),
-                                            CustomVerticalSpace(height: 4),
-                                            CustomTextWidget(
-                                              data.getThirdhift ?? "",
-                                              fontColor:
-                                                  AppColor.blackModern500Light,
-                                              fontSize: 12,
-                                              fontWeight: AppFontWeight.bold,
-                                              height: 1.3,
-                                              maxLines: 2,
-                                            ),
+                                            if ((data.getSecondShift ?? "")
+                                                .isNotEmpty) ...[
+                                              CustomVerticalSpace(height: 4),
+                                              CustomTextWidget(
+                                                data.getSecondShift ?? "",
+                                                fontColor: AppColor
+                                                    .blackModern500Light,
+                                                fontSize: 12,
+                                                fontWeight: AppFontWeight.bold,
+                                                height: 1.3,
+                                                maxLines: 2,
+                                              )
+                                            ],
+                                            if ((data.getThirdhift ?? "")
+                                                .isNotEmpty) ...[
+                                              CustomVerticalSpace(height: 4),
+                                              CustomTextWidget(
+                                                data.getThirdhift ?? "",
+                                                fontColor: AppColor
+                                                    .blackModern500Light,
+                                                fontSize: 12,
+                                                fontWeight: AppFontWeight.bold,
+                                                height: 1.3,
+                                                maxLines: 2,
+                                              ),
+                                            ]
                                           ],
                                         )
                                       ],

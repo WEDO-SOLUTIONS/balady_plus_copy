@@ -31,28 +31,31 @@ class _OffersTabsWidgetState extends State<OffersTabsWidget> {
               //     color: AppColor.white),
               // margin: const EdgeInsets.symmetric(vertical: 16),
               //padding: const EdgeInsets.symmetric(vertical: 13),
-              child: Row(
-            children: (state.requestReplies ?? [])
-                .asMap()
-                .map((i, tabs) => MapEntry(
-                    i,
-                    TabWidget(
-                      btnPressed: () {
-                        setState(() {
-                          selectedIndex = i;
-                        });
-                        context
-                            .read<RequestOfferBloc>()
-                            .add(GetOffersEvent(request: tabs));
-                      },
-                      tabText: tabs.subServiceName ?? "",
-                      isSelected: i == selectedIndex,
-                      // isSelected: i == state.gettCurrenttTabIndex(),
-                      haveSeperator:
-                          (state.requestReplies ?? []).length != i + 1,
-                    )))
-                .values
-                .toList(),
+              child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: (state.requestReplies ?? [])
+                  .asMap()
+                  .map((i, tabs) => MapEntry(
+                      i,
+                      TabWidget(
+                        btnPressed: () {
+                          setState(() {
+                            selectedIndex = i;
+                          });
+                          context
+                              .read<RequestOfferBloc>()
+                              .add(GetOffersEvent(request: tabs));
+                        },
+                        tabText: tabs.subServiceName ?? "",
+                        isSelected: i == selectedIndex,
+                        // isSelected: i == state.gettCurrenttTabIndex(),
+                        haveSeperator:
+                            (state.requestReplies ?? []).length != i + 1,
+                      )))
+                  .values
+                  .toList(),
+            ),
           ));
         });
   }
@@ -147,16 +150,15 @@ class TabWidget extends StatelessWidget {
             // margin: const EdgeInsets.all(8),
             margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
             decoration: BoxDecoration(
-                color: isSelected ? AppColor.darkTurquoise : Colors.transparent,
-                border: Border.all(width: 1, color: AppColor.darkTurquoise),
-                borderRadius: BorderRadius.circular(4)),
+                color: isSelected ? AppColor.primary900 : AppColor.white,
+                borderRadius: BorderRadius.circular(12)),
             child: CustomTextWidget(
               trans(tabText),
-              fontSize: 13.0,
-              fontWeight: AppFontWeight.medium,
+              fontSize: 11.0,
+              fontWeight: AppFontWeight.bold,
               // fontWeight:
               //     isSelected ? AppFontWeight.medium : AppFontWeight.regular,
-              fontColor: isSelected ? AppColor.white : AppColor.darkTurquoise,
+              fontColor: isSelected ? AppColor.white : AppColor.primary900,
               maxLines: 1,
               textOverflow: TextOverflow.ellipsis,
               textAlign: TextAlign.center,

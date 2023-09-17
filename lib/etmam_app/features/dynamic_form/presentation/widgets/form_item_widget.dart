@@ -9,6 +9,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../app/features/_shared_feature_/data/entities/drop_down_item.dart';
 import '../../../../core/utils/enums/dynamic_forms.dart';
 import '../../../submit_request/presentation/widgets/order_info/order_title_and_desc_widget.dart';
+import 'previous_next_buttons.dart';
 
 class FormItemWidget extends StatefulWidget {
   final CreateFormItemResponse form;
@@ -96,6 +97,7 @@ class _FormItemWidgetState extends State<FormItemWidget> {
                         );
                       return Container(child: Text("No Element"));
                     }),
+                PreviousNextButtons(),
                 CustomVerticalSpace(height: 80),
               ],
             ),

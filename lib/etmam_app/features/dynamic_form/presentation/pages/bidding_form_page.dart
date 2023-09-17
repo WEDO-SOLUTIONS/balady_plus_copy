@@ -83,7 +83,7 @@ class _BiddingFormPageState extends State<BiddingFormPage> {
                         }),
                     if (state.status == BlocStatus.loading)
                       CustomCircularLoadingWidget(),
-                    PreviousNextButtons(),
+
                     /*  CustomStackFooterButtonWidget(
                       isBtnDisabled: false,
                       btnText:
