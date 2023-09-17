@@ -28,7 +28,7 @@ class SearchMapDialogWidget extends StatelessWidget {
                         SearchCategoryMessage.mousques,
                         SearchCategoryMessage.gasStations,
                         // SearchCategoryMessage.cafe,
-                        // SearchCategoryMessage.restaurants,
+                        SearchCategoryMessage.restaurants,
                         SearchCategoryMessage.parks,
                       ]
                           .map(

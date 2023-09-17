@@ -43,7 +43,7 @@ class ResturantMapCardWidget extends StatelessWidget {
               arguments: data);
         },
         child: Container(
-          height: 180,
+          height: 120,
           padding: const EdgeInsets.all(16),
           decoration: ShapeDecoration(
             color: Colors.white,
@@ -188,7 +188,7 @@ class ResturantMapCardWidget extends StatelessWidget {
                                           maxLines: 2,
                                         ),
                                         CustomVerticalSpace(height: 8),
-                                        Column(
+                                        /*        Column(
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
                                           children: [
@@ -245,6 +245,7 @@ class ResturantMapCardWidget extends StatelessWidget {
                                             ]
                                           ],
                                         )
+                                   */
                                       ],
                                     ),
                                   ),

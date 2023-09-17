@@ -49,7 +49,7 @@ extension SearchCategoryData on SearchCategoryMessage {
         "assets/maps/icons/card_icon/station.png",
       SearchCategoryMessage.cafe => "assets/maps/icons/card_icon/coffee.png",
       SearchCategoryMessage.restaurants =>
-        "assets/maps/icons/card_icon/restaurant.png",
+        "assets/maps/icons/card_icon/resturant.png",
       SearchCategoryMessage.parks => "assets/maps/icons/card_icon/park.png"
     };
   }
@@ -59,7 +59,7 @@ extension SearchCategoryData on SearchCategoryMessage {
       SearchCategoryMessage.mousques => Color(0xFFC8A83A),
       SearchCategoryMessage.gasStations => Color(0xFF2E88F6),
       SearchCategoryMessage.cafe => AppColor.secondary200Light,
-      SearchCategoryMessage.restaurants => Color(0xFFC8A83A),
+      SearchCategoryMessage.restaurants => Color(0xffCD5D1A),
       SearchCategoryMessage.parks => AppColor.secondary200Light,
     };
   }
