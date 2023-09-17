@@ -2,23 +2,26 @@ import 'package:equatable/equatable.dart' show Equatable;
 
 class DropDownItem extends Equatable {
   final String name;
+  final String? id;
 
   /// Value which returned or posted to server
-  final String value;
-  final String code;
+  final String? value;
+  final String? code;
   final int order;
 
   const DropDownItem({
     required this.name,
-    required this.value,
-    required this.code,
+    this.id,
+    this.value,
+    this.code,
     this.order = 0,
   });
 
   factory DropDownItem.emptyState() =>
       const DropDownItem(name: "", value: "", code: "");
 
-  bool get isEmpty => name.isEmpty && value.isEmpty && code.isEmpty;
+  bool get isEmpty =>
+      name.isEmpty && (value?.isEmpty ?? true) && (code?.isEmpty ?? true);
 
   @override
   List<Object?> get props => [name, value, code, order];
@@ -28,13 +31,14 @@ class DropDownItem extends Equatable {
     String? value,
     String? code,
     int? order,
+    String? id,
   }) {
     return DropDownItem(
-      name: name ?? this.name,
-      value: value ?? this.value,
-      code: code ?? this.code,
-      order: order ?? this.order,
-    );
+        name: name ?? this.name,
+        value: value ?? this.value,
+        code: code ?? this.code,
+        order: order ?? this.order,
+        id: id ?? this.id);
   }
 
   @override

@@ -252,6 +252,7 @@ class CustomElevatedButtonWidget extends StatelessWidget {
   final MainAxisSize mainAxisSize;
   final EdgeInsetsGeometry btnPadding;
   final List<BoxShadow>? boxShadow;
+  final double horizontalMargin;
 
   const CustomElevatedButtonWidget(
       {Key? key,
@@ -275,6 +276,7 @@ class CustomElevatedButtonWidget extends StatelessWidget {
       this.mainAxisSize = MainAxisSize.min,
       this.btnPadding = EdgeInsets.zero,
       this.boxShadow,
+      this.horizontalMargin = 0,
       this.icon})
       : super(key: key);
 
@@ -290,6 +292,9 @@ class CustomElevatedButtonWidget extends StatelessWidget {
         width: btnWidth,
         alignment: btnAlignment,
         padding: btnPadding,
+        margin: EdgeInsets.symmetric(
+          horizontal: horizontalMargin,
+        ),
         decoration: BoxDecoration(
             borderRadius: BorderRadius.all(Radius.circular(btnRadius)),
             border: Border.all(

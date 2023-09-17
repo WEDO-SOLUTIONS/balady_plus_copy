@@ -12,6 +12,7 @@ class RelationPageParam {
   String? orderId;
   Function? callBack;
   PageTypes? pageType;
+  bool? inputsRequired;
   RelationPageParam(
       {this.relationResponse,
       this.serviceProviderId,
@@ -21,5 +22,6 @@ class RelationPageParam {
       this.changeProvider,
       this.orderId,
       this.callBack,
-      this.pageType});
+      this.pageType,
+      this.inputsRequired});
 }

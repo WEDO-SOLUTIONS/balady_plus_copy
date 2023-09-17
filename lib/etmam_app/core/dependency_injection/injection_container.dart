@@ -20,6 +20,7 @@ import '../dependency_injection/dependency_injection_exports.dart'
         SubmitRequestInjection;
 import '../services/services_exports.dart'
     show NetworkConnection, NetworkConnectionImplementation, WebService;
+import 'features/dynamic_form_injection.dart';
 
 /// sl -> Service Locator
 final sl = GetIt.instance;
@@ -56,7 +57,7 @@ void initialize() {
 
   //? Auth
   //AuthInjection.init();
-
+  DynamicFormsInjection.init();
   //? shared Prefs
   Initializers.loadData();
 

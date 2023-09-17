@@ -1,13 +1,13 @@
-import 'package:balady_plus/app/features/_shared_feature_/presentation/buttons/elevated_button_widgets.dart';
-import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/buttons/custom_buttons_widgets.dart';
 import 'package:balady_plus/etmam_app/features/my_orders/my_orders_exports.dart';
 import 'package:flutter/material.dart' hide Action;
 
+import '../../../../../app/features/_shared_feature_/presentation/widgets/buttons/custom_buttons_widgets.dart';
 import '../../../../core/utils/enums/order_status.dart';
 import '../../../../core/utils/utils_exports.dart'
     show AppColor, AppColorsTheme, AppStyle, IconPath, trans;
 import '../../../_shared_feature_/shared/shared_feature_exports.dart'
     show
+        CustomGoToDetailsButtonWidget,
         CustomHorizontalSpace,
         CustomNewIconButtonWidget,
         CustomVerticalSpace,
@@ -15,8 +15,6 @@ import '../../../_shared_feature_/shared/shared_feature_exports.dart'
         DrawLineWidget,
         HeaderWithDescription,
         showDialogWidget;
-import 'package:balady_plus/etmam_app/features/_shared_feature_/shared/shared_feature_exports.dart'
-    show CustomGoToDetailsButtonWidget;
 
 class OrderCardWidget extends StatelessWidget {
   String? date;
@@ -31,6 +29,7 @@ class OrderCardWidget extends StatelessWidget {
   //final Function? refresh;
   final Function? onSelectMore;
   final Function? onPress;
+  final Tag? tag;
 
   OrderCardWidget(
       {Key? key,
@@ -40,6 +39,7 @@ class OrderCardWidget extends StatelessWidget {
       this.orderServices,
       this.orderType,
       this.actions,
+      this.tag,
       this.statusText,
       this.orderStatus,
       // this.refresh,
@@ -50,7 +50,7 @@ class OrderCardWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        height: 280,
+        height: 290,
         margin: const EdgeInsets.symmetric(vertical: 6),
         decoration: BoxDecoration(
             borderRadius: const BorderRadius.all(Radius.circular(12)),
@@ -93,7 +93,7 @@ class OrderCardWidget extends StatelessWidget {
                       CustomHorizontalSpace(width: 2),
                       Expanded(
                         child: HeaderWithDescription(
-                          details: statusText ??'',
+                          details: statusText ?? '',
                           header: "حاله الطلب",
                         ),
                       ),
@@ -123,11 +123,17 @@ class OrderCardWidget extends StatelessWidget {
                       Expanded(
                         child: HeaderWithDescription(
                           details: date ?? "",
-                          header: "اخر تحديث",
+                          header: "تاريخ الطلب",
                         ),
                       ),
                     ],
                   ),
+                  SizedBox(height: 24),
+                  CustomVerticalSpace(height: 10),
+                  if (tag != null && tag?.value != null)
+                    TagWidget(
+                      text: tag!.value!,
+                    )
                 ],
               ),
             ),
@@ -142,10 +148,10 @@ class OrderCardWidget extends StatelessWidget {
                   fontSize: 16,
                 ),
                 btnHeight: 40,
-                text: "التفاصيل",
-                onPressed: (){
-                      if (onPress != null) onPress!();
-                      /*NavigationService.pushNamed(
+                text: trans('order_details'),
+                onPressed: () {
+                  if (onPress != null) onPress!();
+                  /*NavigationService.pushNamed(
                           routeName: RouteName.etmam_orderDetailsRoute);*/
                 },
               ),

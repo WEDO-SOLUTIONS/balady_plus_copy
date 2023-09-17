@@ -22,3 +22,7 @@ class ShowActionsEvent extends OrderDetailsEvent {
 class RefreshPageHandlerEvent extends OrderDetailsEvent {
   RefreshPageHandlerEvent();
 }
+
+class GetFormViewEvent extends OrderDetailsEvent {
+  GetFormViewEvent();
+}
