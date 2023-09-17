@@ -47,6 +47,7 @@ import '../../features/create_compliance/presentation/pages/map_page/complinace_
 import '../../features/create_compliance/presentation/pages/non_compliance_screen.dart';
 import '../../features/create_compliance/presentation/pages/submit_compliance_page.dart';
 import '../../features/map_page/data/model/rental_details_response.dart';
+import '../../features/map_page/presentation/pages/resturant_details_page.dart';
 import '../../features/qa/presentation/pages/qa_page.dart';
 import '../../features/self_ratiing/presentation/pages/self_rating_main_page.dart';
 import '../../features/self_ratiing/presentation/pages/self_rating_result_page.dart';
@@ -464,6 +465,8 @@ class Routes {
 
         RouteName.InvestmentMapDetailsPage: (context) =>
             const InvestmentMapDetailsPage(),
+        RouteName.ResturantDetailsPage: (context) =>
+            const ResturantDetailsPage(),
 
         RouteName.DCDetails: (context) => const DCDetailsPage(),
 

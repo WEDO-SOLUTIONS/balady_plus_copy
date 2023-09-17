@@ -1,9 +1,8 @@
 import 'dart:math';
 
 import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
-import 'package:balady_plus/app/core/utils/constants/route_names.dart';
-import 'package:balady_plus/app/core/utils/enums/enums.dart';
-import 'package:balady_plus/app/core/utils/map_utils.dart';
+import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
+import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/shimmer_effect_widget.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
@@ -14,17 +13,7 @@ import 'package:balady_plus/app/features/map_page/extensions/directory_object_ex
 
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:provider/provider.dart';
-import '../../../../core/base/base_view_model.dart';
-import '../../../../core/services/local/navigation_services.dart';
-import '../../../../core/utils/common_functions.dart';
-import '../../../../core/utils/constants/app_style.dart';
-import '../../../../core/utils/constants/dialog_names.dart';
-import '../../../../core/utils/constants/remote_config.dart';
 import '../../../../core/utils/enums/app_font_weights.dart';
-import '../../../_shared_feature_/presentation/components/bottom_sheets/bottom_sheet_with_actions.dart';
-import '../../../_shared_feature_/presentation/dialogs/bottom_sheet_dialogs.dart';
-import '../../../facility_qr/presentation/core/view_models/facility_details_view_model.dart';
-import '../../../facility_qr/presentation/dialogs/facility_dialog.dart';
 import '../../../home_page/presentation/widgets/home_app_bar/circle_icon.dart';
 import '../../../vd/domain/entities/camera/camera_page_params.dart';
 import '../../../vd/domain/entities/categories/category_item.dart';
@@ -35,23 +24,13 @@ import '../mvvm/map_view_model.dart';
 import '../mvvm/point_view_model.dart';
 import 'package:collection/collection.dart';
 
-import '../pages/mosque_details_page.dart';
-import '../pages/parks_details_page.dart';
-import '../pages/station_details_page.dart';
-
 class ResturantMapCardWidget extends StatelessWidget {
   final ResturantModel data;
-  final String icon;
-  final Color color;
 
   final Function onClose;
 
   const ResturantMapCardWidget(
-      {super.key,
-      required this.data,
-      required this.icon,
-      required this.color,
-      required this.onClose});
+      {super.key, required this.data, required this.onClose});
 
   @override
   Widget build(BuildContext context) {
@@ -60,10 +39,11 @@ class ResturantMapCardWidget extends StatelessWidget {
 
     return GestureDetector(
         onTap: () async {
-          // }
+          Navigator.pushNamed(context, RouteName.ResturantDetailsPage,
+              arguments: data);
         },
         child: Container(
-          height: 120,
+          height: 180,
           padding: const EdgeInsets.all(16),
           decoration: ShapeDecoration(
             color: Colors.white,
@@ -88,102 +68,179 @@ class ResturantMapCardWidget extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Container(
-                        width: 58,
-                        height: 58,
-                        padding: const EdgeInsets.all(16.0),
-                        decoration: ShapeDecoration(
-                            color: color,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(16),
-                            )),
-                        child: icon.isNotEmpty
-                            ? Image.asset(
-                                icon,
-                                width: 24,
-                                height: 24,
-                              )
-                            : Container(),
-                      ),
-                      CustomHorizontalSpace(width: 8),
                       Expanded(
                         child: Padding(
                           padding: const EdgeInsetsDirectional.only(end: 16.0),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.start,
                             children: [
                               CustomVerticalSpace(height: 8),
-                              CustomTextWidget(
-                                data.TRADENAME ?? "",
-                                fontColor: AppColor.blackModern800Light,
-                                fontSize: 16,
-                                textOverflow: TextOverflow.ellipsis,
-                                fontWeight: AppFontWeight.bold,
-                                maxLines: 2,
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Container(
+                                      width: 58,
+                                      height: 58,
+                                      padding: const EdgeInsets.all(16.0),
+                                      decoration: ShapeDecoration(
+                                          color: Color(0xffCD5D1A),
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(16),
+                                          )),
+                                      child: SvgPicture.asset(
+                                        Constants.restaurantLayerIcon,
+                                        width: 16,
+                                        height: 16,
+                                      )),
+                                  CustomHorizontalSpace(width: 8),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        CustomTextWidget(
+                                          data.TRADENAME ?? "",
+                                          fontColor:
+                                              AppColor.blackModern800Light,
+                                          fontSize: 16,
+                                          textOverflow: TextOverflow.ellipsis,
+                                          fontWeight: AppFontWeight.bold,
+                                          maxLines: 2,
+                                        ),
+                                        CustomVerticalSpace(height: 8),
+                                        Row(
+                                          children: [
+                                            Row(
+                                              children: [
+                                                SvgPicture.asset(
+                                                  Constants.restaurantLayerIcon,
+                                                  color: Color(0xffBD591D),
+                                                  height: 14,
+                                                ),
+                                                CustomHorizontalSpace(width: 4),
+                                                CustomTextWidget(
+                                                  data.ACTIVITY_DETAILED_DESCRIPTION ??
+                                                      "",
+                                                  fontColor: Color(0xff71717A),
+                                                  fontSize: 14,
+                                                  fontWeight:
+                                                      AppFontWeight.bold,
+                                                ),
+                                              ],
+                                            ),
+                                            CustomHorizontalSpace(width: 16),
+                                            Row(
+                                              children: [
+                                                SvgPicture.asset(
+                                                  IconPath.qrRatingStarIcon,
+                                                  color: Color(0xffBD591D),
+                                                  height: 14,
+                                                ),
+                                                CustomHorizontalSpace(width: 4),
+                                                Row(
+                                                  children: [
+                                                    CustomTextWidget(
+                                                      data.getRating ?? "",
+                                                      fontColor: AppColor
+                                                          .blackModern500Light,
+                                                      fontSize: 12,
+                                                      fontWeight:
+                                                          AppFontWeight.bold,
+                                                    ),
+                                                    CustomHorizontalSpace(
+                                                        width: 4),
+                                                    CustomTextWidget(
+                                                      data.getReviews ?? "",
+                                                      fontColor: AppColor
+                                                          .blackModern500Light,
+                                                      fontSize: 10,
+                                                      fontWeight:
+                                                          AppFontWeight.bold,
+                                                    ),
+                                                  ],
+                                                ),
+                                              ],
+                                            )
+                                          ],
+                                        ),
+                                        CustomVerticalSpace(height: 8),
+                                        CustomTextWidget(
+                                          data.getAddress,
+                                          fontColor:
+                                              AppColor.blackModern500Light,
+                                          fontSize: 12,
+                                          fontWeight: AppFontWeight.semiBold,
+                                          height: 1.3,
+                                          maxLines: 2,
+                                        ),
+                                        CustomVerticalSpace(height: 8),
+                                        Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                CustomTextWidget(
+                                                  data.getFirstShift ?? "",
+                                                  fontColor: AppColor
+                                                      .blackModern500Light,
+                                                  fontSize: 12,
+                                                  fontWeight:
+                                                      AppFontWeight.bold,
+                                                  height: 1.3,
+                                                  maxLines: 2,
+                                                ),
+                                                CustomTextWidget(
+                                                  data.OPENSTATUS ?? "",
+                                                  textStyle: TextStyle(
+                                                    color: Color(0xFFA7C587),
+                                                    fontSize: 12,
+                                                    fontWeight: FontWeight.w700,
+                                                  ),
+                                                )
+                                              ],
+                                            ),
+                                            CustomVerticalSpace(height: 4),
+                                            CustomTextWidget(
+                                              data.getSecondShift ?? "",
+                                              fontColor:
+                                                  AppColor.blackModern500Light,
+                                              fontSize: 12,
+                                              fontWeight: AppFontWeight.bold,
+                                              height: 1.3,
+                                              maxLines: 2,
+                                            ),
+                                            CustomVerticalSpace(height: 4),
+                                            CustomTextWidget(
+                                              data.getThirdhift ?? "",
+                                              fontColor:
+                                                  AppColor.blackModern500Light,
+                                              fontSize: 12,
+                                              fontWeight: AppFontWeight.bold,
+                                              height: 1.3,
+                                              maxLines: 2,
+                                            ),
+                                          ],
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                ],
                               ),
                               CustomVerticalSpace(height: 8),
-                              CustomTextWidget(
-                                data.STREET_NAME ?? "",
-                                fontColor: AppColor.blackModern500Light,
-                                fontSize: 12,
-                                fontWeight: AppFontWeight.semiBold,
-                                height: 1.3,
-                                maxLines: 2,
-                              ),
-                              CustomVerticalSpace(height: 8),
-                              /* GestureDetector(
-                                          onTap: () =>
-                                              CommonFunctions.openUber(
-                                                  dataPoint!
-                                                      .markerPosition!
-                                                      .latitude,
-                                                  dataPoint
-                                                      .markerPosition!
-                                                      .longitude),
-                                          child: Row(
-                                            children: [
-                                              CustomTextWidget(
-                                                "فتح تطبيق أوبر".tr(),
-                                                fontWeight:
-                                                    AppFontWeight.bold,
-                                                fontSize: 12,
-                                                fontColor: AppColor
-                                                    .primary800Light,
-                                              ),
-                                              CustomHorizontalSpace(
-                                                  width: 8),
-                                              SvgPicture.asset(
-                                                  Constants.goToLocation),
-                                            ],
-                                          ),
-                                        )*/
-
-                              /*  CustomVerticalSpace(height: 16),
-                                CustomTextWidget(
-                                  dataPoint?.externalIds?.join(" ") ?? "[]",
-                                  fontColor: AppColor.blackModern500Light,
-                                  fontSize: 12,
-                                  fontWeight: AppFontWeight.semiBold,
-                                  height: 1.3,
-                                  maxLines: 2,
-                                ),*/
                             ],
                           ),
                         ),
                       )
                     ]),
-              ),
-              Align(
-                alignment: Alignment.bottomLeft,
-                child: CustomTextWidget(
-                  data.OPENSTATUS ?? "",
-                  textStyle: TextStyle(
-                    color: Color(0xFFA7C587),
-                    fontSize: 12,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
               ),
               Align(
                 alignment: Alignment.topLeft,

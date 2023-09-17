@@ -1,6 +1,7 @@
 import 'package:dgis_map/library.dart';
 
 import '../data_sources/point_layers_data.dart';
+import 'package:collection/collection.dart';
 
 List<ResturantModel> resturantFromJson(List list) =>
     List<ResturantModel>.from(list.map((x) => ResturantModel.fromJson(x)));
@@ -92,4 +93,112 @@ class ResturantModel extends PointLayersData {
           longitude: double.parse(json['geometry']["x"].toString()),
         ),
       );
+
+  String get getRating => "${RATE}/5";
+  String get getReviews => "(${REVIEW})";
+  String get getAddress => [STREET_NAME, DISTRICT_ID, CITY_ID, REGION_ID]
+      .whereNotNull()
+      .whereNot((element) => element.isEmpty)
+      .join(", ");
+
+  String? getCurrentDay() {
+    switch (DateTime.now().weekday) {
+      case DateTime.monday:
+        return MONDAY?.replaceAll("الاثنين،", "");
+
+      case DateTime.tuesday:
+        return TUESDAY?.replaceAll("الثلاثاء،", "");
+
+      case DateTime.wednesday:
+        return WEDNESDAY?.replaceAll("الأربعاء،", "");
+
+      case DateTime.thursday:
+        return THURSDAY?.replaceAll("الخميس،", "");
+
+      case DateTime.friday:
+        return FRIDAY?.replaceAll("الجمعة،", "");
+
+      case DateTime.saturday:
+        return SATURDAY?.replaceAll("السبت،", "");
+
+      case DateTime.sunday:
+        return SUNDAY?.replaceAll("الأحد،", "");
+
+      default:
+        return "";
+    }
+  }
+
+  String? getDayByNameIndex(int index) {
+    switch (index) {
+      case 1:
+        return SUNDAY?.split("،")[0];
+
+      case 2:
+        return MONDAY?.split("،")[0];
+
+      case 3:
+        return TUESDAY?.split("،")[0];
+
+      case 4:
+        return WEDNESDAY?.split("،")[0];
+
+      case 5:
+        return THURSDAY?.split("،")[0];
+
+      case 6:
+        return FRIDAY?.split("،")[0];
+
+      case 7:
+        return SATURDAY?.split("،")[0];
+
+      default:
+        return "";
+    }
+  }
+
+  String? getDayByIndex(int index) {
+    switch (index) {
+      case 1:
+        return SUNDAY?.replaceAll("الأحد،", "");
+
+      case 2:
+        return MONDAY?.replaceAll("الاثنين،", "");
+
+      case 3:
+        return TUESDAY?.replaceAll("الثلاثاء،", "");
+
+      case 4:
+        return WEDNESDAY?.replaceAll("الأربعاء،", "");
+
+      case 5:
+        return THURSDAY?.replaceAll("الخميس،", "");
+
+      case 6:
+        return FRIDAY?.replaceAll("الجمعة،", "");
+
+      case 7:
+        return SATURDAY?.replaceAll("السبت،", "");
+
+      default:
+        return "";
+    }
+  }
+
+  int get shiftNo => (getCurrentDay()?.split("،").length ?? 0);
+  String? get getFirstShift => getCurrentDay()?.split("،")[0];
+  String? get getSecondShift =>
+      shiftNo > 1 ? getFirstShift?.split("،")[0] : null;
+
+  String? get getThirdhift =>
+      shiftNo > 2 ? getSecondShift?.split("،")[0] : null;
+
+  int shiftsNOByIndex(int index) =>
+      (getDayByIndex(index)?.split("،").length ?? 0);
+  String? getFirstShiftByIndex(int index) =>
+      getDayByIndex(index)?.split("،")[0];
+  String? getSecondShiftByIndex(int index) =>
+      shiftsNOByIndex(index) > 1 ? getDayByIndex(index)?.split("،")[1] : null;
+  String? getThirdShiftByIndex(int index) =>
+      shiftsNOByIndex(index) > 2 ? getDayByIndex(index)?.split("،")[2] : null;
 }

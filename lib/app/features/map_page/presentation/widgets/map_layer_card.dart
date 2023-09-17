@@ -126,8 +126,6 @@ class MapLayerCard extends StatelessWidget {
                   ? const SizedBox()
                   : ResturantMapCardWidget(
                       data: mapViewModel.selectedResturantPoint.value!,
-                      icon: mapViewModel.gisSelectedLayer.icon,
-                      color: AppColor.primary900Light,
                       onClose: () {
                         mapViewModel.showDialog();
                       });

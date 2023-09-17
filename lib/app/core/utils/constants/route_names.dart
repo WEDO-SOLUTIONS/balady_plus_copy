@@ -128,6 +128,7 @@ class RouteName {
   static const MapDetailsPage = '/mapDetailsPage';
   static const DiggingMapDetailsPage = '/DiggingMapDetailsPage';
   static const InvestmentMapDetailsPage = '/InvestmentMapDetailsPage';
+  static const ResturantDetailsPage = "/ResturantDetailsPage";
 
   // -------  CRM Details ---------
   static const DCDetails = '/DCDetails';
