@@ -138,7 +138,7 @@ class ResturantMapCardWidget extends StatelessWidget {
                                               ],
                                             ),
                                             CustomHorizontalSpace(width: 16),
-                                            if (data.getRating.isNotEmpty)
+                                            /* if (data.getRating.isNotEmpty)
                                               Row(
                                                 children: [
                                                   SvgPicture.asset(
@@ -174,7 +174,7 @@ class ResturantMapCardWidget extends StatelessWidget {
                                                     ],
                                                   ),
                                                 ],
-                                              )
+                                              )*/
                                           ],
                                         ),
                                         CustomVerticalSpace(height: 8),

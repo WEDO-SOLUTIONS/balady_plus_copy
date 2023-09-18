@@ -65,41 +65,43 @@ class MapDetailsSubHeader extends StatelessWidget {
                 ),
               ],
             ),
-            DrawLineWidget(
-              lineWidth: 1,
-              lineHeight: 30,
-              lineColor: AppColor.blackModern300Light,
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                CustomTextWidget(
-                  secondTitle,
-                  fontColor: AppColor.blackModern600Light,
-                  fontWeight: AppFontWeight.bold,
-                  fontSize: 13,
-                ),
-                CustomVerticalSpace(height: 8),
-                Row(
-                  children: [
-                    if (secondIcon != null) ...[
-                      SvgPicture.asset(
-                        secondIcon!,
-                        height: 14,
-                        color: Color(0xffBD591D),
+            if (secondTitle.isNotEmpty) ...[
+              DrawLineWidget(
+                lineWidth: 1,
+                lineHeight: 30,
+                lineColor: AppColor.blackModern300Light,
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  CustomTextWidget(
+                    secondTitle,
+                    fontColor: AppColor.blackModern600Light,
+                    fontWeight: AppFontWeight.bold,
+                    fontSize: 13,
+                  ),
+                  CustomVerticalSpace(height: 8),
+                  Row(
+                    children: [
+                      if (secondIcon != null) ...[
+                        SvgPicture.asset(
+                          secondIcon!,
+                          height: 14,
+                          color: Color(0xffBD591D),
+                        ),
+                        CustomHorizontalSpace(width: 4)
+                      ],
+                      CustomTextWidget(
+                        secondSubTitle,
+                        fontColor: AppColor.blackModern600Light,
+                        fontWeight: AppFontWeight.bold,
+                        fontSize: 13,
                       ),
-                      CustomHorizontalSpace(width: 4)
                     ],
-                    CustomTextWidget(
-                      secondSubTitle,
-                      fontColor: AppColor.blackModern600Light,
-                      fontWeight: AppFontWeight.bold,
-                      fontSize: 13,
-                    ),
-                  ],
-                ),
-              ],
-            ),
+                  ),
+                ],
+              ),
+            ]
           ],
         ));
   }
