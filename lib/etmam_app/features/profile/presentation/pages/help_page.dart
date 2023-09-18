@@ -85,10 +85,9 @@ class _HelpPage extends State<HelpPage> {
                       ),
                       CardSectionWidget(
                         icon: IconPath.helpEmail,
-                        label: "support@balady.gov.sa",
+                        label: "infoCS@balady.gov.sa",
                         onPressed: () {
-                          CommonFunctions.launch(
-                              'mailto:support@balady.gov.sa');
+                          CommonFunctions.launch('mailto:infoCS@balady.gov.sa');
                         },
                       ),
                     ],
