@@ -36,7 +36,7 @@ class ReplyItemWidget extends StatelessWidget {
           ],
         ),
         CustomVerticalSpace(height: 16),
-        DrawLineWidget()
+        DrawLineWidget(lineColor: AppColor.black.withOpacity(0.1)),
       ],
     );
   }

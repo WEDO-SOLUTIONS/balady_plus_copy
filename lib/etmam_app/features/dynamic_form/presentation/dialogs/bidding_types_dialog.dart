@@ -143,6 +143,9 @@ class _BiddingTypeDialog extends State<BiddingTypeDialog> {
                     ],
                     EtmamCustomPrimaryButton(
                       isBtnDisabled: state.selectedResponse == null,
+                      textColor: state.selectedResponse == null
+                          ? AppColor.black400
+                          : AppColor.white,
                       onPressed: () {
                         NavigationService.pushNamed(
                             routeName: EtmamRoutesNames.biddingForm,

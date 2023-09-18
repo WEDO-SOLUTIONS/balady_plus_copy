@@ -54,8 +54,8 @@ class _BiddingFormPageState extends State<BiddingFormPage> {
                 appBar: FormAppBar(
                   // title: trans('bidding_step_app_bar'),
                   //  nextStep: trans('send_order'),
-                  currentStep: state.currentPageValue,
-                  pageLength: state.formsCount + 1,
+                  currentStep: state.currentPageValue + 1,
+                  pageLength: state.formsCount == 0 ? 1 : state.formsCount,
                   backOnPress: () {
                     context
                         .read<BiddingFormBloc>()

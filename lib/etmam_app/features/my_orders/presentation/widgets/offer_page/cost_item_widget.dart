@@ -2,6 +2,7 @@ import 'package:balady_plus/etmam_app/core/utils/constants/app_config.dart';
 import 'package:balady_plus/etmam_app/features/my_orders/presentation/dialogs/cost_notes_dialog.dart';
 import 'package:flutter/material.dart';
 
+import '../../../../../../app/features/_shared_feature_/presentation/dialogs/bottom_sheet_dialogs.dart';
 import '../../../../../../app/features/_shared_feature_/presentation/widgets/custom_popups_widgets.dart';
 import '../../../../../../app/features/_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
 import '../../../../../../app/features/_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
@@ -38,7 +39,7 @@ class CostItemWidget extends StatelessWidget {
                 // if (notes != null && notes!.isNotEmpty)
                 GestureDetector(
                   onTap: () {
-                    CustomPopUpsWidgets.showBottomSheet(context,
+                    BottomSheetDialog.showDraggableSheet(context,
                         child: OfferCostNotesDialog(
                           notes: notes ?? "",
                         ),
