@@ -68,7 +68,7 @@ class OfferCard extends StatelessWidget {
         margin: const EdgeInsetsDirectional.only(
             bottom: 12, start: 16, end: 16, top: 5),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(4),
+          borderRadius: BorderRadius.circular(8),
           color: AppColor.white,
           boxShadow: [
             BoxShadow(
