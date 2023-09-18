@@ -81,13 +81,14 @@ class ResturantDetailsPage extends StatelessWidget {
                       ),
                       CustomVerticalSpace(height: 16),
                       MapDetailsSubHeader(
-                        firstTitle: "نوع المنشأة",
-                        firstSubTitle: item.ACTIVITY_DETAILED_DESCRIPTION ?? "",
-                        firstIcon: Constants.restaurantLayerIcon,
-                        secondTitle: "تقيم المنشأة",
-                        secondSubTitle: item.getRating,
-                        secondIcon: IconPath.qrRatingStarIcon,
-                      ),
+                          firstTitle: "نوع المنشأة",
+                          firstSubTitle:
+                              item.ACTIVITY_DETAILED_DESCRIPTION ?? "",
+                          firstIcon: Constants.restaurantLayerIcon,
+                          secondTitle: "", //"تقيم المنشأة",
+                          secondSubTitle: "", //item.getRating,
+                          secondIcon: null //IconPath.qrRatingStarIcon,
+                          ),
                       CustomVerticalSpace(height: 24),
                       CustomTextWidget(
                         "تفاصيل العمل",
