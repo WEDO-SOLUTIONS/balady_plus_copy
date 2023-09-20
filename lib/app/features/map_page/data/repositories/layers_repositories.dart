@@ -49,6 +49,7 @@ class LayersRepositories {
         return layersFromJson(layersType.data['data']['result']['layers'])
             .where((element) =>
                 element.id != 0 &&
+                element.id != 1 &&
                 element.id != 3 &&
                 element.id != 4 &&
                 element.id != 6 &&

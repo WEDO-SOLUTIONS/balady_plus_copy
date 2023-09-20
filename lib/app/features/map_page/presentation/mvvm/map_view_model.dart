@@ -130,13 +130,17 @@ class MapViewModel extends BaseViewModel {
     } else {
       selectedCategory.value = category;
     }
+
     showLoading1();
     await clearAll();
 
-    if (selectedCategory.value != null) {
+    if (selectedCategory.value != null &&
+        selectedCategory.value != SearchCategoryMessage.restaurants) {
       performSearch(
         queryText: selectedCategory.value!.displayName(),
       );
+    } else if (selectedCategory.value == SearchCategoryMessage.restaurants) {
+      callSearch();
     }
     hideLoading1();
 
@@ -575,23 +579,34 @@ class MapViewModel extends BaseViewModel {
     //print("search");
     await clearAll();
 
-    String? query = selectedCategory.value != null
-        ? selectedCategory.value!.displayName()
-        : searchController.text;
-    if (query != null && query.isNotEmpty) {
-      showLoading1();
+    if (selectedCategory.value != SearchCategoryMessage.restaurants) {
+      String? query = selectedCategory.value != null
+          ? selectedCategory.value!.displayName()
+          : searchController.text;
+      if (query != null && query.isNotEmpty) {
+        showLoading1();
 
-      await performSearch(
-        queryText: query,
-      );
-      hideLoading1();
+        await performSearch(
+          queryText: query,
+        );
+        hideLoading1();
+      }
+    } else {
+      layerSelected.value = Layers(
+          id: 1,
+          name: "مطاعم",
+          defaultVisibility: true,
+          type: "",
+          geometryType: "esriGeometryPoint");
+      layerSelected.notifyListeners();
     }
 
     if (layerSelected.value == null) return;
-    //print("HEREE");
+    print("HEREE ١١١١١١١١١ ${layerSelected.value}");
     GISMapLayers? gisLayer = GISMapLayers.values.firstWhereOrNull(
       (element) => element.layerId == layerSelected.value!.id,
     );
+    print("GISMapLayers $gisLayer");
     if (gisLayer == GISMapLayers.cityPlaces) return;
     showLoading1();
     bottomSheetSize.notifyListeners();
@@ -761,6 +776,7 @@ class MapViewModel extends BaseViewModel {
   }
 
   void addMarkersWithPoint(List? pointList, int layerId) async {
+    print("addMarkersWithPoint");
     if (pointList != null && pointList.isNotEmpty) {
       String iconPath = Constants.icMarkerRestaurant;
       switch (layerId) {
@@ -795,6 +811,8 @@ class MapViewModel extends BaseViewModel {
               ),
             ),
             onTap: () async {
+              print("on Tap ${layerSelected.value?.id}");
+
               refreshMap = false;
 
               refreshView();
@@ -812,6 +830,15 @@ class MapViewModel extends BaseViewModel {
                   break;
               }
 
+              if (layerSelected.value?.id ==
+                  1) // Temp code for resturant Layers
+              {
+                print("GTGGGG");
+                selectedPoint.value = element;
+                selectedResturantPoint.value = element;
+                selectedResturantPoint.notifyListeners();
+              }
+
               await Future.delayed(
                 const Duration(milliseconds: 300),
               );
@@ -822,7 +849,7 @@ class MapViewModel extends BaseViewModel {
       ).toList();
       //await controller.removeAllMarkers();
       await clearAll();
-
+      print(markers.length);
       controller.addMarkers(markers);
     }
   }

@@ -36,7 +36,7 @@ class Layers extends Equatable {
 
   @override
   // TODO: implement props
-  List<Object?> get props => [id, name];
+  List<Object?> get props => [id, name, geometryType];
 }
 
 ///////////////////////////////////////////////////////////////////////////

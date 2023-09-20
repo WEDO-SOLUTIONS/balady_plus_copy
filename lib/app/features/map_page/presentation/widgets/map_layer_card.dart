@@ -36,6 +36,19 @@ class MapLayerCard extends StatelessWidget {
     return Builder(builder: (context) {
       MapViewModel mapViewModel = context.watch<MapViewModel?>()!;
 
+      return ValueListenableBuilder<ResturantModel?>(
+        valueListenable: mapViewModel.selectedResturantPoint,
+        builder: (_, selectedPoint, __) {
+          return selectedPoint == null
+              ? const SizedBox()
+              : ResturantMapCardWidget(
+                  data: mapViewModel.selectedResturantPoint.value!,
+                  onClose: () {
+                    mapViewModel.showDialog();
+                  });
+        },
+      );
+
       switch (mapViewModel.gisSelectedLayer) {
         case GISMapLayers.Digging:
           return ValueListenableBuilder<Excavations?>(
