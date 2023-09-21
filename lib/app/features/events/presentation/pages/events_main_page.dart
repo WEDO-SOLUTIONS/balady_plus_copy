@@ -1,51 +1,81 @@
+import 'package:balady_plus/app/core/dependency_injection/injection_container.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/dialogs/bottom_sheet_dialogs.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/default_appbar_widget.dart';
+import 'package:balady_plus/app/features/events/presentation/bloc/events_bloc.dart';
 import 'package:balady_plus/app/features/events/presentation/widgets/events_main_page_widgets/events_picker.dart';
 import 'package:balady_plus/app/features/events/presentation/widgets/events_main_page_widgets/events_tile.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
+
+import '../../../_shared_feature_/presentation/components/bottom_sheets/bottom_sheet_with_actions.dart';
+import '../../../_shared_feature_/presentation/icons/filter_icon.dart';
+import '../../../profile_features/violations/presentation/widgets/violations_filters_actions.dart';
+import '../bloc/events_event.dart';
+import '../bloc/events_state.dart';
+import '../widgets/events_main_page_widgets/events_filters_actions.dart';
 
 class EventsMainPage extends StatelessWidget {
   const EventsMainPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: DefaultAppBarWidget(
-        title: 'events_main_title_page'.tr(),
-        actions: [
-          Row(
-            children: [
-              GestureDetector(
-                onTap: () {
-                  BottomSheetDialog.showDraggableSheet(
-                    context,
-                    child: const EventsPickerWidget(),
-                  );
-                },
-                child: Container(
-                  padding: const EdgeInsets.all(9),
-                  decoration: const BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Color(0xffE8EFF1),
-                  ),
-                  child: Center(
-                      child: Image.asset(
-                    ImagePath.candle,
-                  )),
-                ),
-              ),
-              const SizedBox(
-                width: 6,
-              ),
-            ],
-          ),
-        ],
-      ),
-      body: const Padding(
-        padding: EdgeInsets.all(16.0),
-        child: EventsSectionWidget(),
+    return BlocProvider(
+      create: (context) => EventsBloc()..add(const GetSearchEvent()),
+      child: Scaffold(
+        appBar: DefaultAppBarWidget(
+          title: 'events_main_title_page'.tr(),
+          actions: [
+            BlocBuilder<EventsBloc, EventsState>(
+              builder: (context, state) {
+                return FilterIcon(
+                  onTap: () async {
+                    context.read<EventsBloc>().add(GetCategoriesEvent());
+                    context.read<EventsBloc>().add(GetAudienceEvent());
+                    context.read<EventsBloc>().add(GetCitiesEvent());
+                    context.read<EventsBloc>().add(GetSeasonsEvent());
+
+                    /*   final sortType = state.sortType;
+                    final selectedRequestStatus = state.selectedViolationStatus;
+
+                    final selectedRequestType = state.selectedInvoiceStatus;
+*/
+                    final bool? actionTaked =
+                        await BottomSheetDialog.showDraggableSheet(
+                      context,
+                      //  dialogKeyName: DialogName.violationsFilterDialog,
+                      //  currentRouteName: RouteName.violationsPage,
+                      child: BottomSheetWithActions(
+                        title: "filters".tr(),
+                        body: EventsPickerWidget(
+                          requestsBloc: context.read<EventsBloc>(),
+                        ),
+                        action: EventsFilterActions(
+                          requestsBloc: context.read<EventsBloc>(),
+                        ),
+                      ),
+                    );
+                    if (actionTaked != true && context.mounted) {
+                      context.read<EventsBloc>().add(GetSearchEvent());
+                      /*   context.read<EventsBloc>().add(
+                            ResetViolationsFiltersEvent(
+                                selectedSortType: sortType,
+                                selectedRequestStatus: selectedRequestStatus,
+                                selectedRequestType: selectedRequestType,
+                                dateForm: state.lastDateForm),
+                          );*/
+                    }
+                  },
+                );
+              },
+            ),
+          ],
+        ),
+        body: const Padding(
+          padding: EdgeInsets.all(16.0),
+          child: EventsSectionWidget(),
+        ),
       ),
     );
   }
