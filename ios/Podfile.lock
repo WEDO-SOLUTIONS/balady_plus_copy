@@ -1,4 +1,6 @@
 PODS:
+  - add_2_calendar (0.0.1):
+    - Flutter
   - app_settings (4.3.0):
     - Flutter
   - AppAuth (1.4.0):
@@ -294,6 +296,7 @@ PODS:
     - Flutter
 
 DEPENDENCIES:
+  - add_2_calendar (from `.symlinks/plugins/add_2_calendar/ios`)
   - app_settings (from `.symlinks/plugins/app_settings/ios`)
   - AppAuth (from `https://github.com/MahmoudMB/AppAuth-iOS.git`)
   - camera_avfoundation (from `.symlinks/plugins/camera_avfoundation/ios`)
@@ -371,6 +374,8 @@ SPEC REPOS:
     - UXCam
 
 EXTERNAL SOURCES:
+  add_2_calendar:
+    :path: ".symlinks/plugins/add_2_calendar/ios"
   app_settings:
     :path: ".symlinks/plugins/app_settings/ios"
   AppAuth:
@@ -456,6 +461,7 @@ CHECKOUT OPTIONS:
     :git: https://github.com/MahmoudMB/AppAuth-iOS.git
 
 SPEC CHECKSUMS:
+  add_2_calendar: e9d68636aed37fb18e12f5a3d74c2e0589487af0
   app_settings: ee4ae4d1c9a907a23b81c40e5c56a5ca8a20a62b
   AppAuth: aadc4cc25bef2435551896b5bfa9316b42fde656
   camera_avfoundation: 3125e8cd1a4387f6f31c6c63abb8a55892a9eeeb

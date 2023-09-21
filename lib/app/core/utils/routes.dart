@@ -54,6 +54,8 @@ import '../../features/create_compliance/presentation/pages/compliance_details_p
 import '../../features/create_compliance/presentation/pages/map_page/complinace_map_page.dart';
 import '../../features/create_compliance/presentation/pages/non_compliance_screen.dart';
 import '../../features/create_compliance/presentation/pages/submit_compliance_page.dart';
+import '../../features/events/presentation/pages/events_main_page.dart';
+import '../../features/events/presentation/pages/single_image_page.dart';
 import '../../features/map_page/data/model/rental_details_response.dart';
 import '../../features/map_page/presentation/pages/resturant_details_page.dart';
 import '../../features/qa/presentation/pages/qa_page.dart';
@@ -370,7 +372,7 @@ class Routes {
 
         RouteName.quranSearchPage: (context) => QuranSearchPage(),
 
-        RouteName.ZmZmPointsPage: (context) => ZmZmPointsPage(),
+        RouteName.ZmZmPointsPage: (context) => EventsMainPage(),
         RouteName.createCompliancePage: (context) =>
             CreateComplianceLocationPage(),
 
@@ -523,7 +525,11 @@ class Routes {
         RouteName.complianceDetailsPage: (context) => ComplianceDetailsPage(),
         RouteName.nonComplianceScreen: (context) => NonComplianceScreen(),
 
-        RouteName.submitCompliancePage: (context) => SubmitCompliancePage()
+        RouteName.submitCompliancePage: (context) => SubmitCompliancePage(),
+
+        RouteName.eventsMainPage: (context) => EventsMainPage(),
+
+        RouteName.eventsDetailsPage: (context) => SingleEventDescriptionPage()
 
 //    cubit = ModalRoute.of(context)!.settings.arguments as PrayerTimesCubit;
       };

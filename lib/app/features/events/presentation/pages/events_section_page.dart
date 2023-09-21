@@ -6,21 +6,21 @@ import 'package:balady_plus/app/features/events/presentation/widgets/event_descr
 import 'package:balady_plus/app/features/events/presentation/widgets/event_description_widgets.dart/events_category_widget.dart';
 import 'package:balady_plus/app/features/events/presentation/widgets/event_description_widgets.dart/events_description_widget.dart';
 import 'package:balady_plus/app/features/events/presentation/widgets/event_description_widgets.dart/events_title_location_widget.dart';
-import 'package:balady_plus/app/features/events/presentation/widgets/events_main_page_widgets/events_day_month.dart';
+import 'package:balady_plus/app/features/events/presentation/widgets/events_main_page_widgets/events_start_day_month.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
-
+/*
 class DariyahEventPage extends StatelessWidget {
   const DariyahEventPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    List<String> category = [
+    /* List<String> category = [
       "shopping".tr(),
       "food".tr(),
       "traditions".tr(),
-    ];
+    ];*/
     return Scaffold(
       backgroundColor: const Color(0xFFF5F8FA),
       body: SingleChildScrollView(
@@ -69,12 +69,13 @@ class DariyahEventPage extends StatelessWidget {
                   children: [
                     EventsTitleLocationWidget(
                       title: 'dariyah_season'.tr(),
+                      city: '',
                     ),
                     const SizedBox(
                       height: 18,
                     ),
                     EventCategoryWidget(
-                      category: category,
+                      category: ,
                     ),
                     const SizedBox(
                       height: 18,
@@ -98,3 +99,4 @@ class DariyahEventPage extends StatelessWidget {
     );
   }
 }
+*/

@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 class EventsActivitiesWidget extends StatelessWidget {
-  const EventsActivitiesWidget({super.key});
+  const EventsActivitiesWidget({super.key, required this.category});
+  final String category;
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +27,7 @@ class EventsActivitiesWidget extends StatelessWidget {
               vertical: 4,
             ),
             child: CustomTextWidget(
-              "shopping".tr(),
+              category,
               textStyle: AppStyle.eventsOptionsStyle,
             ),
           ),
@@ -47,7 +48,7 @@ class EventsActivitiesWidget extends StatelessWidget {
               vertical: 4,
             ),
             child: CustomTextWidget(
-              "food".tr(),
+              category,
               textStyle: AppStyle.eventsOptionsStyle,
             ),
           ),

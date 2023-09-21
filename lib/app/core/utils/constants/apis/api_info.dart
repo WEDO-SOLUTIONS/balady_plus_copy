@@ -311,6 +311,12 @@ class ApiUrl {
   static const String etmamProfileEntity =
       '/v1/etmamplus-platform-services/search-profiles';
 
+// ! Events
+
+  static const eventsSearch = '/v1/balady-events-services/events/search';
+  static const eventsDetails = '/v1/balady-events-services/events';
+  static const eventsCategory = '/v1/balady-events-services/category/';
+
   //! POST
 
   //! Delete

@@ -22,10 +22,10 @@ class EventsNotFoundPage extends StatelessWidget {
             children: [
               GestureDetector(
                 onTap: () {
-                  BottomSheetDialog.showDraggableSheet(
+                  /*  BottomSheetDialog.showDraggableSheet(
                     context,
                     child: const EventsPickerWidget(),
-                  );
+                  );*/
                 },
                 child: Container(
                   padding: const EdgeInsets.all(9),

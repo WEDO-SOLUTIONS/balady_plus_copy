@@ -812,7 +812,6 @@ class AppStyle {
     fontWeight: AppFontWeight.bold.fontWeight,
     fontFamily: fontFamily,
   );
-  
 
   static final dateTextStyle = TextStyle(
     fontSize: 12.0,
@@ -904,6 +903,25 @@ class AppStyle {
     color: AppColor.blackModern500Light,
     fontFamily: fontFamily,
     height: 1.5,
+  );
+
+  static final resultsLastDescription = TextStyle(
+    color: AppColor.secondary400Light,
+    fontSize: 14,
+    fontWeight: AppFontWeight.medium.fontWeight,
+    fontFamily: fontFamily,
+  );
+  static final eventsStateMonthStyle = TextStyle(
+    color: AppColor.blackModern900Light,
+    fontSize: 9,
+    fontWeight: AppFontWeight.bold.fontWeight,
+    fontFamily: fontFamily,
+  );
+  static final eventsStateDayStyle = TextStyle(
+    color: AppColor.blackModern900Light,
+    fontSize: 14,
+    fontWeight: AppFontWeight.bold.fontWeight,
+    fontFamily: fontFamily,
   );
 
   /// Padding

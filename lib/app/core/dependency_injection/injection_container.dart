@@ -63,6 +63,7 @@ import '../services/services_exports.dart'
 import '../utils/enums/bottom_nav_bar.dart';
 import 'features/compliance_injection.dart';
 import 'features/dc_injection.dart';
+import 'features/events_injection.dart';
 import 'features/objectable_transactions_injection.dart';
 import 'features/objections_injection.dart';
 import 'features/retrive_dc_injection.dart';
@@ -122,6 +123,8 @@ void initialize() {
 
   //?
   ComplianceInjection.init();
+
+  EventsInjection.init();
 
   //! Core
   sl.registerLazySingleton(() => WebService(dio: sl()));

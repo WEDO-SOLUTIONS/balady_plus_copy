@@ -1,6 +1,10 @@
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../bloc/events_bloc.dart';
+import '../../bloc/events_state.dart';
 
 final List<String> imgList = [
   ImagePath.swiperImage,
@@ -31,26 +35,45 @@ class EventImageSwiper extends StatefulWidget {
 }
 
 class _EventImageSwiperState extends State<EventImageSwiper> {
-  final List<Widget> imageSliders = imgList
-      .map((item) => Container(
-            child: Image.asset(
-              item,
-              fit: BoxFit.fill,
-            ),
-          ))
-      .toList();
+  int _currentIndex = 0;
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: CarouselSlider(
-        options: CarouselOptions(
-          autoPlay: true,
-          aspectRatio: 1.5,
-          enlargeCenterPage: true,
+    return BlocBuilder<EventsBloc, EventsState>(builder: (context, state) {
+      return SizedBox(
+        height: 112,
+        child: ListView.builder(
+          scrollDirection: Axis.horizontal,
+          itemCount: state.eventDetails.pictures?.length ?? 0,
+          itemBuilder: (c, index) {
+            return Padding(
+              padding: EdgeInsets.all(8.0),
+              child: GestureDetector(
+                onTap: () {
+                  setState(() {
+                    _currentIndex = index;
+                  });
+                },
+                child: Container(
+                  width: index == _currentIndex ? 122 : 90,
+                  height: 100,
+                  decoration: ShapeDecoration(
+                    image: DecorationImage(
+                      image: NetworkImage(
+                        state.eventDetails.pictures?[index].url ?? "",
+                      ),
+                      fit: BoxFit.fill,
+                    ),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8)),
+                  ),
+                ),
+              ),
+            );
+          },
         ),
-        items: imageSliders,
-      ),
-    );
+      );
+    });
   }
 }
 
@@ -64,24 +87,41 @@ class EventImageSwiper2 extends StatefulWidget {
 }
 
 class _EventImageSwiper2State extends State<EventImageSwiper2> {
-  final List<Widget> imageSliders2 = imgList2
-      .map((item) => Container(
-            child: Image.asset(
-              item,
-              fit: BoxFit.fill,
-            ),
-          ))
-      .toList();
+  int _currentIndex = 0;
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: CarouselSlider(
-        options: CarouselOptions(
-          autoPlay: true,
-          aspectRatio: 1.5,
-          enlargeCenterPage: true,
-        ),
-        items: imageSliders2,
+    return SizedBox(
+      height: 112,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: imgList.length,
+        itemBuilder: (context, index) {
+          return Padding(
+            padding: EdgeInsets.all(8.0),
+            child: GestureDetector(
+              onTap: () {
+                setState(() {
+                  _currentIndex = index;
+                });
+              },
+              child: Container(
+                width: index == _currentIndex ? 122 : 90,
+                height: 100,
+                decoration: ShapeDecoration(
+                  image: DecorationImage(
+                    image: AssetImage(
+                      imgList[index],
+                    ),
+                    fit: BoxFit.fill,
+                  ),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8)),
+                ),
+              ),
+            ),
+          );
+        },
       ),
     );
   }

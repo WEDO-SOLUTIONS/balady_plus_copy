@@ -9,8 +9,10 @@ class EventsTitleLocationWidget extends StatelessWidget {
   const EventsTitleLocationWidget({
     super.key,
     required this.title,
+    required this.city,
   });
   final String title;
+  final String city;
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +33,7 @@ class EventsTitleLocationWidget extends StatelessWidget {
                   width: 1,
                 ),
                 CustomTextWidget(
-                  'location_event_text'.tr(),
+                  city,
                   textStyle: AppStyle.eventsMainSubtitleStyle,
                 )
               ],
