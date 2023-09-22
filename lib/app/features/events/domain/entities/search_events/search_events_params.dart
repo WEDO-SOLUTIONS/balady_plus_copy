@@ -1,6 +1,7 @@
 class SearchEventsParams {
   int? page;
   int? size;
+  String? keyword;
   String? category;
   String? city;
   String? season;
@@ -9,6 +10,7 @@ class SearchEventsParams {
   SearchEventsParams({
     this.page,
     this.size,
+    this.keyword,
     this.category,
     this.city,
     this.season,
@@ -19,6 +21,7 @@ class SearchEventsParams {
   SearchEventsParams copyWith({
     int? page,
     int? size,
+    String? keyword,
     String? category,
     String? city,
     String? season,
@@ -28,6 +31,7 @@ class SearchEventsParams {
     return SearchEventsParams(
       page: page ?? this.page,
       size: size ?? this.size,
+      keyword: keyword ?? this.keyword,
       category: category ?? this.category,
       city: city ?? this.city,
       season: season ?? this.season,
@@ -40,6 +44,7 @@ class SearchEventsParams {
     return {
       "page": page,
       "size": size,
+      if (keyword != null) "keyword": keyword,
       if (category != null) "category": category,
       if (city != null) "city": city,
       if (season != null) "season": season,

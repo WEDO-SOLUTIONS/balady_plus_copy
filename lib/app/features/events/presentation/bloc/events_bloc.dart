@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/core/errors/errors_exports.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/events/domain/entities/events_category/events_category_params.dart';
 import 'package:balady_plus/app/features/events/domain/entities/events_details/event_details_item.dart';
@@ -26,6 +27,7 @@ class EventsBloc extends Bloc<EventsEvent, EventsState> {
         super(EventsState(
           eventDetails: EventDetailsResponse(),
           searchItems: [],
+          searchedParams: SearchEventsParams(),
           status: BlocStatus.initial,
         )) {
     on<EventsEvent>(
@@ -44,14 +46,21 @@ class EventsBloc extends Bloc<EventsEvent, EventsState> {
   }
   Future<void> _getSearchEventsHandler(
       GetSearchEvent e, Emitter emitter) async {
-    final failureOrSuccess =
-        await _getSearchEvents(SearchEventsParams(page: 1, size: 10));
+    emitter(
+        state.copyWith(status: BlocStatus.loading, searchedParams: e.params));
+    final failureOrSuccess = await _getSearchEvents(
+        SearchEventsParams(page: 1, size: 10, keyword: e.params?.keyword));
+
     failureOrSuccess.fold((l) {
-      emitter(
-        state.copyWith(
-          status: BlocStatus.failure,
-        ),
-      );
+      if (l == NoDataFoundFailure())
+        emitter(state.copyWith(status: BlocStatus.success, searchItems: []));
+      else {
+        emitter(
+          state.copyWith(
+              status: BlocStatus.failure,
+              errorMessage: (l as ServerFailure).errorMessage),
+        );
+      }
     }, (r) {
       emitter(state.copyWith(
         status: BlocStatus.success,
@@ -63,6 +72,9 @@ class EventsBloc extends Bloc<EventsEvent, EventsState> {
 
   Future<void> _getEventsDetailsHandler(
       GetEventsDetails e, Emitter emitter) async {
+    emitter(state.copyWith(
+      status: BlocStatus.loading,
+    ));
     final failureOrSuccess = await _getEventDetails(EventDetailsParams(
       key: e.id,
     ));

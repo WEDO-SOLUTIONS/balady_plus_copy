@@ -21,6 +21,8 @@ class EventRepositoryImpl implements EventRepository {
     try {
       final data = await remoteDataSource.getSearchEvents(params: params);
       return Right(data);
+    } on NoDataFoundException {
+      return Left(NoDataFoundFailure());
     } on ServerException catch (error) {
       return Left(ServerFailure(
         error.errorMessage,

@@ -13,16 +13,17 @@ class FilterTextField extends StatelessWidget {
   final Debouncer _debouncer = Debouncer(milliseconds: 1000);
   final String? initialValue;
   final String? hintText;
+  final TextInputType? textInputType;
   final void Function(String)? onChanged;
   final void Function(String)? onSubmitted;
 
-  FilterTextField({
-    super.key,
-    this.initialValue,
-    this.hintText,
-    this.onChanged,
-    this.onSubmitted,
-  });
+  FilterTextField(
+      {super.key,
+      this.initialValue,
+      this.hintText,
+      this.onChanged,
+      this.onSubmitted,
+      this.textInputType});
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +37,7 @@ class FilterTextField extends StatelessWidget {
         ),
         initialValue: initialValue,
         borderRadius: 8,
-        keyboardType: TextInputType.number,
+        keyboardType: textInputType ?? TextInputType.number,
         inputFormatters: [
           NumberTextInputFormatter(onError: (bool isValid) {
             //  if (!isValid)

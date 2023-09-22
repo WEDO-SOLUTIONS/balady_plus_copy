@@ -1,7 +1,9 @@
 import 'package:balady_plus/app/core/utils/constants/app_style.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/image_paths.dart';
+import 'package:balady_plus/app/core/utils/enums/bloc_status.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/buttons/elevated_icon_button_widgets.dart';
+import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
 import 'package:balady_plus/app/features/events/presentation/bloc/events_bloc.dart';
 import 'package:balady_plus/app/features/events/presentation/bloc/events_event.dart';
 import 'package:balady_plus/app/features/events/presentation/bloc/events_state.dart';
@@ -42,13 +44,16 @@ class _SingleEventDescriptionPageState
       create: (context) => EventsBloc()..add(GetEventsDetails(id: id)),
       child: Scaffold(
         backgroundColor: const Color(0xFFF5F8FA),
-        body: SingleChildScrollView(
-          child: BlocBuilder<EventsBloc, EventsState>(
-            builder: (context, state) {
-              return RefreshIndicator(
-                onRefresh: () async {
-                  context.read<EventsBloc>().add(GetEventsDetails(id: id));
-                },
+        body: BlocBuilder<EventsBloc, EventsState>(
+          builder: (context, state) {
+            if (state.status == BlocStatus.loading)
+              return Center(child: CustomCircularLoadingWidget());
+
+            return RefreshIndicator(
+              onRefresh: () async {
+                context.read<EventsBloc>().add(GetEventsDetails(id: id));
+              },
+              child: SingleChildScrollView(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
@@ -144,9 +149,9 @@ class _SingleEventDescriptionPageState
                     ),
                   ],
                 ),
-              );
-            },
-          ),
+              ),
+            );
+          },
         ),
       ),
     );

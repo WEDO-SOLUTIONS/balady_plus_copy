@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 
 import '../../domain/entities/events_category/events_category_item.dart';
+import '../../domain/entities/search_events/search_events_params.dart';
 
 abstract class EventsEvent extends Equatable {
   const EventsEvent();
@@ -10,7 +11,8 @@ abstract class EventsEvent extends Equatable {
 }
 
 class GetSearchEvent extends EventsEvent {
-  const GetSearchEvent();
+  final SearchEventsParams? params;
+  const GetSearchEvent({this.params});
 }
 
 class GetEventsDetails extends EventsEvent {

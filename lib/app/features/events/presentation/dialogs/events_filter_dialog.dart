@@ -3,23 +3,34 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
-import '../../../../_shared_feature_/presentation/widgets/drop_downs/drop_down_box_with_title.dart';
-import '../../../../_shared_feature_/presentation/widgets/texts/filter_text_field.dart';
-import '../../bloc/events_bloc.dart';
-import '../../bloc/events_state.dart';
+import '../../../_shared_feature_/presentation/buttons/elevated_button_widgets.dart';
+import '../../../_shared_feature_/presentation/widgets/drop_downs/drop_down_box_with_title.dart';
+import '../../../_shared_feature_/presentation/widgets/texts/filter_text_field.dart';
+import '../../domain/entities/search_events/search_events_params.dart';
+import '../bloc/events_bloc.dart';
+import '../bloc/events_state.dart';
 
-class EventsPickerWidget extends StatelessWidget {
+class EventsFilterDialog extends StatefulWidget {
   final EventsBloc requestsBloc;
+  final SearchEventsParams params;
 
-  const EventsPickerWidget({
+  const EventsFilterDialog({
     super.key,
     required this.requestsBloc,
+    required this.params,
   });
+
+  @override
+  State<EventsFilterDialog> createState() => _EventsFilterDialogState();
+}
+
+class _EventsFilterDialogState extends State<EventsFilterDialog> {
+  String? keyword;
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider.value(
-      value: requestsBloc,
+      value: widget.requestsBloc,
       child: SizedBox(
         width: double.infinity,
         child: BlocBuilder<EventsBloc, EventsState>(builder: (context, state) {
@@ -27,15 +38,37 @@ class EventsPickerWidget extends StatelessWidget {
             children: [
               FilterTextField(
                 hintText: "search".tr(),
-                initialValue: state.searchKeyword,
+                textInputType: TextInputType.text,
+                initialValue: widget.params.keyword,
                 onChanged: (value) {
-                  context.read<InvoicesBloc>().add(
-                        SearchWithInvoiceNumberEvent(
-                          query: value,
-                        ),
-                      );
+                  print(value);
+                  keyword = value;
                 },
               ),
+              Column(
+                children: [
+                  ElevatedButtonWidget.apply(
+                    onPressed: () {
+                      print("key word ${keyword}");
+                      print(
+                          "key word ${widget.params.copyWith(keyword: keyword).keyword}");
+
+                      Navigator.pop(
+                          context, widget.params.copyWith(keyword: keyword));
+                    },
+                  ),
+                  const SizedBox(height: 16),
+                  ElevatedButtonWidget.deletaAll(
+                    onPressed: () {
+                      /* context.read<ViolationsBloc>().add(
+                      ClearViolationsFiltersEvent(),
+                    );*/
+                      Navigator.pop(context, true);
+                    },
+                  ),
+                ],
+              )
+              /*
               DropDownWithTitle(
                 title: "product".tr(),
                 selectedValue: state.selectedRequestType?.name,
@@ -68,7 +101,7 @@ class EventsPickerWidget extends StatelessWidget {
                     ),
                   );
                 },
-              )
+              )*/
             ],
           );
         }),

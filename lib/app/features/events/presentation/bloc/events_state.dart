@@ -4,6 +4,8 @@ import 'package:balady_plus/app/features/events/domain/entities/search_events/se
 import 'package:balady_plus/app/features/events/domain/entities/events_category/events_category_item.dart';
 import 'package:equatable/equatable.dart';
 
+import '../../domain/entities/search_events/search_events_params.dart';
+
 class EventsState extends Equatable {
   final List<SearchEventsItem> searchItems;
 
@@ -30,6 +32,8 @@ class EventsState extends Equatable {
   final DateTime? toDate;
   final String? sortBy;
 
+  final SearchEventsParams searchedParams;
+
   EventsState(
       {this.errorMessage,
       required this.eventDetails,
@@ -38,6 +42,7 @@ class EventsState extends Equatable {
       this.seasonStatus = BlocStatus.initial,
       this.categoryStatus = BlocStatus.initial,
       this.audinceStatus = BlocStatus.initial,
+      required this.searchedParams,
       this.citiesList,
       this.seasonList,
       this.categoryList,
@@ -58,6 +63,7 @@ class EventsState extends Equatable {
       final BlocStatus? seasonStatus,
       final BlocStatus? categoryStatus,
       final BlocStatus? audinceStatus,
+      final SearchEventsParams? searchedParams,
       final List<SearchEventsItem>? searchItems,
       final EventDetailsResponse? eventDetails,
       final String? errorMessage,
@@ -76,6 +82,7 @@ class EventsState extends Equatable {
     return EventsState(
         searchItems: searchItems ?? this.searchItems,
         status: status ?? this.status,
+        searchedParams: searchedParams ?? this.searchedParams,
         errorMessage: errorMessage ?? this.errorMessage,
         eventDetails: eventDetails ?? this.eventDetails,
         cityStatus: cityStatus ?? this.cityStatus,
@@ -101,6 +108,7 @@ class EventsState extends Equatable {
         searchItems,
         status,
         errorMessage,
+        searchedParams,
         eventDetails,
         audinceStatus,
         categoryStatus,

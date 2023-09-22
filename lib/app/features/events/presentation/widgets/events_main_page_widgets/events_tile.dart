@@ -1,6 +1,7 @@
 import 'package:balady_plus/app/core/utils/constants/app_style.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/image_paths.dart';
 import 'package:balady_plus/app/core/utils/constants/route_names.dart';
+import 'package:balady_plus/app/core/utils/enums/bloc_status.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import 'package:balady_plus/app/features/events/presentation/bloc/events_bloc.dart';
 import 'package:balady_plus/app/features/events/presentation/bloc/events_event.dart';
@@ -15,6 +16,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
+import '../../../../_shared_feature_/presentation/widgets/custom_shimmer_list_widget.dart';
+import '../../pages/events_not_found_page.dart';
+
 class EventsSectionWidget extends StatelessWidget {
   const EventsSectionWidget({super.key});
 
@@ -22,6 +26,14 @@ class EventsSectionWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<EventsBloc, EventsState>(
       builder: (context, state) {
+        if (state.status == BlocStatus.loading)
+          return CustomShimmerListWidget(
+            height: 189,
+            itemCount: 10,
+          );
+        if (state.status == BlocStatus.success && state.searchItems.isEmpty)
+          return EventsNotFoundPage();
+
         return RefreshIndicator(
           onRefresh: () async {
             context.read<EventsBloc>().add(const GetSearchEvent());

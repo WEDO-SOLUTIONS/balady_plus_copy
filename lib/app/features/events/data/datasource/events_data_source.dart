@@ -42,6 +42,10 @@ class EventDataSourceImpl extends EventsRemoteDataSource {
 
       return SearchEventResponseModel.fromMap(result);
     } on DioError catch (error) {
+      if (error is NoDataFoundException) {
+        rethrow;
+      }
+
       throw ServerException(error.toString(),
           statusCode: error.response?.statusCode);
     } catch (ex) {
