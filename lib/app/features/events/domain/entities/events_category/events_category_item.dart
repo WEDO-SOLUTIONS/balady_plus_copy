@@ -1,5 +1,5 @@
 class EventCategoryItem {
-  final String? id;
+  final int? id;
   final String? nameEn;
   final String? name;
 
@@ -8,4 +8,6 @@ class EventCategoryItem {
     this.name,
     this.nameEn,
   });
+
+  String? get text => name;
 }

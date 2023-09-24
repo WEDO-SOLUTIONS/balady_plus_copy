@@ -13,10 +13,10 @@ class EventsState extends Equatable {
   final BlocStatus status;
   final String? errorMessage;
 
-  final BlocStatus cityStatus;
-  final BlocStatus seasonStatus;
-  final BlocStatus categoryStatus;
-  final BlocStatus audinceStatus;
+  final BlocRequestStatus cityStatus;
+  final BlocRequestStatus seasonStatus;
+  final BlocRequestStatus categoryStatus;
+  final BlocRequestStatus audinceStatus;
 
   final List<EventCategoryItem>? citiesList;
   final List<EventCategoryItem>? seasonList;
@@ -38,10 +38,10 @@ class EventsState extends Equatable {
       {this.errorMessage,
       required this.eventDetails,
       this.status = BlocStatus.initial,
-      this.cityStatus = BlocStatus.initial,
-      this.seasonStatus = BlocStatus.initial,
-      this.categoryStatus = BlocStatus.initial,
-      this.audinceStatus = BlocStatus.initial,
+      this.cityStatus = BlocRequestStatus.initial,
+      this.seasonStatus = BlocRequestStatus.initial,
+      this.categoryStatus = BlocRequestStatus.initial,
+      this.audinceStatus = BlocRequestStatus.initial,
       required this.searchedParams,
       this.citiesList,
       this.seasonList,
@@ -59,10 +59,10 @@ class EventsState extends Equatable {
 
   EventsState copyWith(
       {final BlocStatus? status,
-      final BlocStatus? cityStatus,
-      final BlocStatus? seasonStatus,
-      final BlocStatus? categoryStatus,
-      final BlocStatus? audinceStatus,
+      final BlocRequestStatus? cityStatus,
+      final BlocRequestStatus? seasonStatus,
+      final BlocRequestStatus? categoryStatus,
+      final BlocRequestStatus? audinceStatus,
       final SearchEventsParams? searchedParams,
       final List<SearchEventsItem>? searchItems,
       final EventDetailsResponse? eventDetails,

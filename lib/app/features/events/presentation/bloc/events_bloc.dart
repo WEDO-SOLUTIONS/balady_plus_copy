@@ -96,18 +96,18 @@ class EventsBloc extends Bloc<EventsEvent, EventsState> {
   Future<void> _getCitiesEventsHandler(
       GetCitiesEvent e, Emitter emitter) async {
     emitter(state.copyWith(
-      cityStatus: BlocStatus.loading,
+      cityStatus: BlocRequestStatus.submissionGetLoading,
     ));
     final failureOrSuccess = await _getCategory(EventsCategoryParams(key: 8));
     failureOrSuccess.fold((l) {
       emitter(
         state.copyWith(
-          cityStatus: BlocStatus.failure,
+          cityStatus: BlocRequestStatus.submissionGetFailure,
         ),
       );
     }, (r) {
       emitter(state.copyWith(
-        cityStatus: BlocStatus.success,
+        cityStatus: BlocRequestStatus.submissionGetSuccess,
         citiesList: r.items,
         errorMessage: "",
       ));
@@ -117,18 +117,18 @@ class EventsBloc extends Bloc<EventsEvent, EventsState> {
   Future<void> _getSesonsEventsHandler(
       GetSeasonsEvent e, Emitter emitter) async {
     emitter(state.copyWith(
-      seasonStatus: BlocStatus.loading,
+      seasonStatus: BlocRequestStatus.submissionGetLoading,
     ));
     final failureOrSuccess = await _getCategory(EventsCategoryParams(key: 1));
     failureOrSuccess.fold((l) {
       emitter(
         state.copyWith(
-          seasonStatus: BlocStatus.failure,
+          seasonStatus: BlocRequestStatus.submissionGetFailure,
         ),
       );
     }, (r) {
       emitter(state.copyWith(
-        seasonStatus: BlocStatus.success,
+        seasonStatus: BlocRequestStatus.submissionGetSuccess,
         seasonList: r.items,
         errorMessage: "",
       ));
@@ -138,18 +138,18 @@ class EventsBloc extends Bloc<EventsEvent, EventsState> {
   Future<void> _getAudinceEventsHandler(
       GetAudienceEvent e, Emitter emitter) async {
     emitter(state.copyWith(
-      audinceStatus: BlocStatus.loading,
+      audinceStatus: BlocRequestStatus.submissionGetLoading,
     ));
     final failureOrSuccess = await _getCategory(EventsCategoryParams(key: 16));
     failureOrSuccess.fold((l) {
       emitter(
         state.copyWith(
-          audinceStatus: BlocStatus.failure,
+          audinceStatus: BlocRequestStatus.submissionGetFailure,
         ),
       );
     }, (r) {
       emitter(state.copyWith(
-        audinceStatus: BlocStatus.success,
+        audinceStatus: BlocRequestStatus.submissionGetSuccess,
         audinceList: r.items,
         errorMessage: "",
       ));
@@ -159,18 +159,18 @@ class EventsBloc extends Bloc<EventsEvent, EventsState> {
   Future<void> _getCategoriesEventsHandler(
       GetCategoriesEvent e, Emitter emitter) async {
     emitter(state.copyWith(
-      categoryStatus: BlocStatus.loading,
+      categoryStatus: BlocRequestStatus.submissionGetLoading,
     ));
     final failureOrSuccess = await _getCategory(EventsCategoryParams(key: 4));
     failureOrSuccess.fold((l) {
       emitter(
         state.copyWith(
-          categoryStatus: BlocStatus.failure,
+          categoryStatus: BlocRequestStatus.submissionGetFailure,
         ),
       );
     }, (r) {
       emitter(state.copyWith(
-        categoryStatus: BlocStatus.success,
+        categoryStatus: BlocRequestStatus.submissionGetSuccess,
         categoryList: r.items,
         errorMessage: "",
       ));
