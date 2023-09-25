@@ -92,12 +92,12 @@ enum WeekDayMessage {
 
 class WeekTimeMessage {
   const WeekTimeMessage({
-    this.weekDay,
-    this.time,
+    required this.weekDay,
+    required this.time,
   });
 
-  final WeekDayMessage? weekDay;
-  final DayTimeMessage? time;
+  final WeekDayMessage weekDay;
+  final DayTimeMessage time;
 }
 
 class WeekTimeIntervalMessage {

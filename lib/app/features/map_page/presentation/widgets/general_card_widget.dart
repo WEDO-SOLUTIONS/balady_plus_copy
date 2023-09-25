@@ -7,6 +7,7 @@ import 'package:balady_plus/app/core/utils/map_utils.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/shimmer_effect_widget.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
+import 'package:balady_plus/app/features/map_page/extensions/week_day_ext.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -103,7 +104,7 @@ class GeneralMapCardWidget extends StatelessWidget {
                           height: 120,
                         )
                       : Container(
-                          height: 120,
+                          height: 200,
                           padding: const EdgeInsets.all(16),
                           decoration: ShapeDecoration(
                             color: Colors.white,
@@ -123,104 +124,181 @@ class GeneralMapCardWidget extends StatelessWidget {
                             children: [
                               Align(
                                 alignment: Alignment.centerRight,
-                                child: Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Container(
-                                        width: 58,
-                                        height: 58,
-                                        padding: const EdgeInsets.all(16.0),
-                                        decoration: ShapeDecoration(
-                                            color: color,
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(16),
-                                            )),
-                                        child: Image.asset(
-                                          icon,
-                                          width: 24,
-                                          height: 24,
-                                        ),
-                                      ),
-                                      CustomHorizontalSpace(width: 8),
-                                      Expanded(
-                                        child: Padding(
-                                          padding:
-                                              const EdgeInsetsDirectional.only(
-                                                  end: 16.0),
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              CustomVerticalSpace(height: 8),
-                                              CustomTextWidget(
-                                                dataPoint?.title ?? "",
-                                                fontColor: AppColor
-                                                    .blackModern800Light,
-                                                fontSize: 16,
-                                                textOverflow:
-                                                    TextOverflow.ellipsis,
-                                                fontWeight: AppFontWeight.bold,
-                                                maxLines: 2,
-                                              ),
-                                              CustomVerticalSpace(height: 8),
-                                              CustomTextWidget(
-                                                dataPoint?.makeAddress() ?? "",
-                                                fontColor: AppColor
-                                                    .blackModern500Light,
-                                                fontSize: 12,
-                                                fontWeight:
-                                                    AppFontWeight.semiBold,
-                                                height: 1.3,
-                                                maxLines: 2,
-                                              ),
-                                              CustomVerticalSpace(height: 8),
-                                              /* GestureDetector(
-                                                onTap: () =>
-                                                    CommonFunctions.openMap(
-                                                        dataPoint!
-                                                            .markerPosition!
-                                                            .latitude,
-                                                        dataPoint
-                                                            .markerPosition!
-                                                            .longitude),
-                                                child: Row(
-                                                  children: [
-                                                    CustomTextWidget(
-                                                      "go_to_location".tr(),
-                                                      fontWeight:
-                                                          AppFontWeight.bold,
-                                                      fontSize: 12,
-                                                      fontColor: AppColor
-                                                          .primary800Light,
-                                                    ),
-                                                    CustomHorizontalSpace(
-                                                        width: 8),
-                                                    SvgPicture.asset(
-                                                        Constants.goToLocation),
-                                                  ],
-                                                ),
-                                              )*/
-
-                                              /*  CustomVerticalSpace(height: 16),
-                                      CustomTextWidget(
-                                        dataPoint?.externalIds?.join(" ") ?? "[]",
-                                        fontColor: AppColor.blackModern500Light,
-                                        fontSize: 12,
-                                        fontWeight: AppFontWeight.semiBold,
-                                        height: 1.3,
-                                        maxLines: 2,
-                                      ),*/
-                                            ],
+                                child: Column(
+                                  children: [
+                                    Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Container(
+                                            width: 58,
+                                            height: 58,
+                                            padding: const EdgeInsets.all(16.0),
+                                            decoration: ShapeDecoration(
+                                                color: color,
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(16),
+                                                )),
+                                            child: Image.asset(
+                                              icon,
+                                              width: 24,
+                                              height: 24,
+                                            ),
                                           ),
-                                        ),
-                                      )
-                                    ]),
+                                          CustomHorizontalSpace(width: 8),
+                                          Expanded(
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsetsDirectional
+                                                      .only(end: 16.0),
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  CustomVerticalSpace(
+                                                      height: 8),
+                                                  CustomTextWidget(
+                                                    dataPoint?.title ?? "",
+                                                    fontColor: AppColor
+                                                        .blackModern800Light,
+                                                    fontSize: 16,
+                                                    textOverflow:
+                                                        TextOverflow.ellipsis,
+                                                    fontWeight:
+                                                        AppFontWeight.bold,
+                                                    maxLines: 2,
+                                                  ),
+                                                  CustomVerticalSpace(
+                                                      height: 8),
+                                                  CustomTextWidget(
+                                                    dataPoint?.makeAddress() ??
+                                                        "",
+                                                    fontColor: AppColor
+                                                        .blackModern500Light,
+                                                    fontSize: 12,
+                                                    fontWeight:
+                                                        AppFontWeight.semiBold,
+                                                    height: 1.3,
+                                                    maxLines: 2,
+                                                  ),
+                                                  CustomVerticalSpace(
+                                                      height: 8),
+                                                  Row(
+                                                    children: [
+                                                      CustomTextWidget(
+                                                        "Is open 24x7:",
+                                                        textStyle: AppStyle
+                                                            .serviceDescriptionStyle,
+                                                      ),
+                                                      CustomTextWidget(
+                                                        dataPoint?.openingHours
+                                                                    ?.isOpen24x7 ==
+                                                                true
+                                                            ? "Yes"
+                                                            : "No",
+                                                        textStyle: AppStyle
+                                                            .serviceDescriptionStyle,
+                                                      ),
+                                                    ],
+                                                  ),
+
+                                                  /* GestureDetector(
+                                                    onTap: () =>
+                                                        CommonFunctions.openMap(
+                                                            dataPoint!
+                                                                .markerPosition!
+                                                                .latitude,
+                                                            dataPoint
+                                                                .markerPosition!
+                                                                .longitude),
+                                                    child: Row(
+                                                      children: [
+                                                        CustomTextWidget(
+                                                          "go_to_location".tr(),
+                                                          fontWeight:
+                                                              AppFontWeight.bold,
+                                                          fontSize: 12,
+                                                          fontColor: AppColor
+                                                              .primary800Light,
+                                                        ),
+                                                        CustomHorizontalSpace(
+                                                            width: 8),
+                                                        SvgPicture.asset(
+                                                            Constants.goToLocation),
+                                                      ],
+                                                    ),
+                                                  )*/
+
+                                                  /*  CustomVerticalSpace(height: 16),
+                                          CustomTextWidget(
+                                            dataPoint?.externalIds?.join(" ") ?? "[]",
+                                            fontColor: AppColor.blackModern500Light,
+                                            fontSize: 12,
+                                            fontWeight: AppFontWeight.semiBold,
+                                            height: 1.3,
+                                            maxLines: 2,
+                                          ),*/
+                                                ],
+                                              ),
+                                            ),
+                                          )
+                                        ]),
+                                    CustomVerticalSpace(height: 16),
+                                    Row(
+                                      children: dataPoint?.openingHours?.values
+                                              .where(
+                                                  (e) => e!.values.isNotEmpty)
+                                              .map(
+                                                (e) => Expanded(
+                                                  child: Column(
+                                                    children: [
+                                                      CustomTextWidget(
+                                                        e!.values[0]!.startTime
+                                                            .weekDay
+                                                            .displayName(),
+                                                        fontColor: AppColor
+                                                            .blackModern800Light,
+                                                        fontSize: 16,
+                                                        textOverflow:
+                                                            TextOverflow
+                                                                .ellipsis,
+                                                        fontWeight:
+                                                            AppFontWeight.bold,
+                                                        maxLines: 2,
+                                                      ),
+                                                      ...e.values
+                                                          .map((e) => [
+                                                                CustomVerticalSpace(
+                                                                    height: 8),
+                                                                CustomTextWidget(
+                                                                  "${e!.startTime.time.hours}:${e.startTime.time.minutes} – ${e.finishTime.time.hours}:${e.finishTime.time.minutes}"
+                                                                      .toString(),
+                                                                  maxLines: 3,
+                                                                  textStyle:
+                                                                      AppStyle
+                                                                          .serviceDescriptionStyle,
+                                                                  textDirection:
+                                                                      TextDirection
+                                                                          .ltr,
+                                                                ),
+                                                              ])
+                                                          .toList()
+                                                          .flattened,
+                                                    ],
+                                                  ),
+                                                ),
+                                              )
+                                              .toList() ??
+                                          [],
+                                    ),
+                                  ],
+                                ),
                               ),
                               Align(
                                 alignment: Alignment.bottomLeft,
