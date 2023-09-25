@@ -1,5 +1,6 @@
 import 'package:balady_plus/app/features/events/domain/entities/events_details/events_location.dart';
 import 'package:balady_plus/app/features/events/domain/entities/events_details/events_picture.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 class EventDetailsResponse {
@@ -19,25 +20,26 @@ class EventDetailsResponse {
   final Location? location;
   final String? ticketUrl;
   final List<Picture>? pictures;
+  final double? fees;
 
-  EventDetailsResponse({
-    this.id,
-    this.name,
-    this.description,
-    this.category,
-    this.city,
-    this.startDate,
-    this.endDate,
-    this.startTime,
-    this.endTime,
-    this.logoUrl,
-    this.feesType,
-    this.season,
-    this.audience,
-    this.location,
-    this.ticketUrl,
-    this.pictures,
-  });
+  EventDetailsResponse(
+      {this.id,
+      this.name,
+      this.description,
+      this.category,
+      this.city,
+      this.startDate,
+      this.endDate,
+      this.startTime,
+      this.endTime,
+      this.logoUrl,
+      this.feesType,
+      this.season,
+      this.audience,
+      this.location,
+      this.ticketUrl,
+      this.pictures,
+      this.fees});
 
   Map<int, String> monthNames = {
     1: 'January'.tr(),
@@ -81,5 +83,73 @@ class EventDetailsResponse {
       return monthNames[endDate!.month] ?? "";
     }
     return '';
+  }
+
+  String getDate() {
+    return " ${getStartDay()} ${getStartMonth()} - ${getEndDay()} ${getEndMonth()}";
+  }
+
+  String getTime() {
+    return "${startTime?.replaceAll("AM", "ص").replaceAll("PM", "م")} - ${endTime?.replaceAll("AM", "ص").replaceAll("PM", "م")}";
+  }
+
+  DateTime? getStartDateFull() {
+    if (startDate != null && startTime != null)
+      return (setTimeInDateTime(startDate!, startTime!));
+  }
+
+  DateTime? getEndDateFull() {
+    if (endDate != null && endTime != null)
+      return (setTimeInDateTime(endDate!, endTime!));
+  }
+
+  String getFess() {
+    if (fees == 0 || fees == null) {
+      return "مجاني";
+    }
+    return "${fees} ${"sar".tr()}";
+  }
+
+  LatLng? getLocation() {
+    double? lon = double.tryParse(location?.x ?? "");
+    double? lat = double.tryParse(location?.y ?? "");
+
+    if (lat != null && lon != null) return LatLng(lat, lon);
+    return null;
+  }
+
+  DateTime setTimeInDateTime(DateTime dateTime, String timeString) {
+    // Define a regular expression pattern to match the time string
+    final pattern = r'^(\d{1,2}):(\d{2}) (AM|PM)$';
+    final regex = RegExp(pattern);
+
+    // Try to match the time string with the regular expression
+    final match = regex.firstMatch(timeString);
+
+    if (match == null) {
+      throw ArgumentError(
+          'Invalid time format. Should be in HH:mm AM/PM format');
+    }
+
+    var hour = int.parse(match.group(1)!);
+    var minute = int.parse(match.group(2)!);
+    final amOrPm = match.group(3);
+
+    if (hour < 1 || hour > 12 || minute < 0 || minute > 59) {
+      throw ArgumentError('Invalid hour or minute');
+    }
+
+    // Adjust the hour based on AM or PM
+    if (amOrPm == 'PM' && hour != 12) {
+      hour += 12;
+    } else if (amOrPm == 'AM' && hour == 12) {
+      hour = 0;
+    }
+
+    // Create a new DateTime object with the provided time and the date from the input DateTime
+    final newDateTime =
+        DateTime(dateTime.year, dateTime.month, dateTime.day, hour, minute);
+
+    return newDateTime;
   }
 }

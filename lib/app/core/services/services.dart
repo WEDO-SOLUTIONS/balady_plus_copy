@@ -72,6 +72,17 @@ Map<String, dynamic> servicesConfig = {
       "ar": {"title": "الطقس", "description": null, "tag": null},
       "en": {"title": "weather", "description": null, "tag": null}
     },
+    {
+      "id": 4,
+      "icon": "zamzam_points",
+      "3d_icon": null,
+      "order": 4,
+      "isNew": false,
+      "isImportant": false,
+      "action": {"type": "page", "value": RouteName.eventsMainPage},
+      "ar": {"title": "الفعاليات", "description": null, "tag": null},
+      "en": {"title": "Zamzam Points", "description": null, "tag": null}
+    },
   ],
   "honoring_the_dead_services": [
     {

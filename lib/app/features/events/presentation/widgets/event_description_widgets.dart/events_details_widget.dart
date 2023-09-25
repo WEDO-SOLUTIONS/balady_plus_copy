@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:balady_plus/app/core/utils/constants/app_style.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
@@ -10,14 +11,14 @@ class EventsDetailsWidget extends StatelessWidget {
   const EventsDetailsWidget({
     super.key,
     required this.feesType,
-    required this.endDate,
-    required this.startDate,
+    required this.date,
+    required this.time,
     required this.genre,
     required this.website,
   });
   final String feesType;
-  final String startDate;
-  final String endDate;
+  final String date;
+  final String time;
   final String genre;
   final String website;
 
@@ -60,7 +61,10 @@ class EventsDetailsWidget extends StatelessWidget {
                 children: [
                   Row(
                     children: [
-                      SvgPicture.asset(detailIcon[0]),
+                      SvgPicture.asset(
+                        detailIcon[0],
+                        color: AppColor.primary900Light,
+                      ),
                       SizedBox(
                         width: 2,
                       ),
@@ -110,7 +114,7 @@ class EventsDetailsWidget extends StatelessWidget {
                     height: 4,
                   ),
                   CustomTextWidget(
-                    startDate,
+                    date,
                     textStyle: AppStyle.eventsDetailsSubtitleStyle,
                   )
                 ],
@@ -146,7 +150,7 @@ class EventsDetailsWidget extends StatelessWidget {
                     height: 4,
                   ),
                   CustomTextWidget(
-                    endDate,
+                    time,
                     textStyle: AppStyle.eventsDetailsSubtitleStyle,
                   )
                 ],
@@ -191,7 +195,7 @@ class EventsDetailsWidget extends StatelessWidget {
             SizedBox(
               height: 8,
             ),
-            Container(
+            /*  Container(
               padding: const EdgeInsets.all(12),
               decoration: ShapeDecoration(
                 color: Colors.white,
@@ -223,7 +227,7 @@ class EventsDetailsWidget extends StatelessWidget {
                   )
                 ],
               ),
-            ),
+            )*/
           ],
         ),
       ],

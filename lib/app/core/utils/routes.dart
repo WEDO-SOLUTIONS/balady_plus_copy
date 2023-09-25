@@ -372,7 +372,7 @@ class Routes {
 
         RouteName.quranSearchPage: (context) => QuranSearchPage(),
 
-        RouteName.ZmZmPointsPage: (context) => EventsMainPage(),
+        RouteName.ZmZmPointsPage: (context) => ZmZmPointsPage(),
         RouteName.createCompliancePage: (context) =>
             CreateComplianceLocationPage(),
 
