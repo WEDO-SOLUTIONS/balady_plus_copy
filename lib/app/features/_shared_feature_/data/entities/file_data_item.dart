@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:equatable/equatable.dart';
 
 class FileDataItem extends Equatable {
@@ -5,17 +7,18 @@ class FileDataItem extends Equatable {
   final String filePath;
   final String fileBase64;
   final bool? isUploaded;
+  final Uint8List? bytes;
   final String? id;
   final int sizeInMB;
 
-  const FileDataItem({
-    required this.fileBase64,
-    required this.fileName,
-    required this.filePath,
-    this.isUploaded = false,
-    this.id,
-    this.sizeInMB = 0,
-  });
+  const FileDataItem(
+      {required this.fileBase64,
+      required this.fileName,
+      required this.filePath,
+      this.isUploaded = false,
+      this.id,
+      this.sizeInMB = 0,
+      this.bytes});
 
   FileDataItem initialState() => const FileDataItem(
         fileBase64: "",
@@ -33,6 +36,7 @@ class FileDataItem extends Equatable {
     bool? isUploaded,
     String? id,
     int? sizeInMB,
+     Uint8List? bytes
   }) {
     return FileDataItem(
       fileBase64: fileBase64 ?? this.fileBase64,
@@ -41,6 +45,7 @@ class FileDataItem extends Equatable {
       isUploaded: isUploaded ?? this.isUploaded,
       id: id ?? this.id,
       sizeInMB: sizeInMB ?? this.sizeInMB,
+      bytes: bytes ?? this.bytes
     );
   }
 

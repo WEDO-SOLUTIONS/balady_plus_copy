@@ -77,6 +77,9 @@ class ApiUrl {
 
   static const cancelRequest = '$apiV1/biddings-services/user/cancel/';
 
+  static const bidAttachments =
+      '$apiV1//etmamplus-archiving-services/attachments';
+
   //! Delete
 
   //! Patch

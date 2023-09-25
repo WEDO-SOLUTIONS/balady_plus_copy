@@ -66,11 +66,12 @@ class UploadFileDialog extends StatelessWidget {
                       final fileBytes = await File(path).readAsBytes();
                       String base64File = base64Encode(fileBytes);
                       FileDataItem file = FileDataItem(
-                        fileBase64: base64File,
-                        fileName: fileName,
-                        filePath: path,
-                        // sizeInMB: CommonFunctions.convertBytesToMB(imageSize),
-                      );
+                          fileBase64: base64File,
+                          fileName: fileName,
+                          filePath: path,
+                          bytes: fileBytes
+                          // sizeInMB: CommonFunctions.convertBytesToMB(imageSize),
+                          );
                       onConfirm(file);
                     }
                   }
@@ -132,11 +133,13 @@ class UploadFileDialog extends StatelessWidget {
             final fileBytes = await File(path).readAsBytes();
             String base64File = base64Encode(fileBytes);
             FileDataItem file = FileDataItem(
-              fileBase64: base64File,
-              fileName: fileName,
-              filePath: path,
-              //  sizeInMB: CommonFunctions.convertBytesToMB(platformFile.size),
-            );
+                fileBase64: base64File,
+                fileName: fileName,
+                filePath: path,
+                bytes: fileBytes
+
+                //  sizeInMB: CommonFunctions.convertBytesToMB(platformFile.size),
+                );
             onConfirm(file);
           }
         }

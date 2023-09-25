@@ -7,8 +7,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../app/features/_shared_feature_/data/entities/drop_down_item.dart';
+import '../../../../../app/features/_shared_feature_/presentation/widgets/buttons/custom_buttons_widgets.dart';
 import '../../../../core/utils/enums/dynamic_forms.dart';
 import '../../../submit_request/presentation/widgets/order_info/order_title_and_desc_widget.dart';
+import 'bidding_upload_widget.dart';
 import 'previous_next_buttons.dart';
 
 class FormItemWidget extends StatefulWidget {
@@ -97,6 +99,16 @@ class _FormItemWidgetState extends State<FormItemWidget> {
                         );
                       return Container(child: Text("No Element"));
                     }),
+                /*  if (context.read<BiddingFormBloc>().isLastPage()) ...[
+                  LabelTextWithOptional(
+                    label: "تفاصيل الخدمة المطلوبة",
+                    labelSize: 16,
+                    showOptional: true,
+                  ),
+                  const CustomVerticalSpace(height: 10),
+                  BidddingUploadWidget(),
+                  const CustomVerticalSpace(height: 32),
+                ],*/
                 PreviousNextButtons(),
                 CustomVerticalSpace(height: 80),
               ],
