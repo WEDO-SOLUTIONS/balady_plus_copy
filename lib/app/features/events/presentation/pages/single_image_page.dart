@@ -2,6 +2,7 @@ import 'package:balady_plus/app/core/utils/constants/app_style.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/image_paths.dart';
 import 'package:balady_plus/app/core/utils/enums/bloc_status.dart';
+import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/buttons/elevated_icon_button_widgets.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
 import 'package:balady_plus/app/features/events/presentation/bloc/events_bloc.dart';
@@ -74,8 +75,13 @@ class _SingleEventDescriptionPageState
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              SvgPicture.asset(
-                                IconPath.vdAppBarBack,
+                              InkWell(
+                                child: SvgPicture.asset(
+                                  IconPath.vdAppBarBack,
+                                ),
+                                onTap: () {
+                                  Navigator.of(context).pop();
+                                },
                               ),
                               EventsDayMonthEvent(
                                 color: const Color(0xFF145E75),
@@ -117,13 +123,11 @@ class _SingleEventDescriptionPageState
                             height: 16,
                           ),
                           EventsDetailsWidget(
-                            feesType: state.eventDetails.feesType ?? '',
-                            startDate:
-                                "${state.eventDetails.getStartDay() ?? ""} ${state.eventDetails.getStartMonth() ?? ""} -  ${state.eventDetails.getEndDay() ?? ""} ${state.eventDetails.getEndMonth() ?? ""}",
-                            endDate:
-                                "${state.eventDetails.startTime ?? ""} - ${state.eventDetails.endTime ?? ""}",
+                            feesType: state.eventDetails.getFess() ?? '',
+                            date: state.eventDetails.getDate(),
+                            time: state.eventDetails.getTime(),
                             genre: state.eventDetails.audience ?? "",
-                            website: state.eventDetails.ticketUrl ?? "",
+                            website: "",
                           ),
                           const SizedBox(
                             height: 16,
@@ -134,15 +138,17 @@ class _SingleEventDescriptionPageState
                           const SizedBox(
                             height: 16,
                           ),
-                          if (state.eventDetails.location?.mapLatLng != null)
-                            EventMapWidget(
-                                mapLatLng:
-                                    state.eventDetails.location!.mapLatLng!),
+                          EventMapWidget(
+                            location: state.eventDetails.getLocation(),
+                          ),
                           const SizedBox(
                             height: 16,
                           ),
                           ElevatedIconButtonWidget.export(
-                            onPressed: () {},
+                            onPressed: () {
+                              CommonFunctions.externalLaunch(
+                                  state.eventDetails.ticketUrl);
+                            },
                           ),
                         ],
                       ),

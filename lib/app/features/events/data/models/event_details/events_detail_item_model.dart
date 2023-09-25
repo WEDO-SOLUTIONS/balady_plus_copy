@@ -1,42 +1,33 @@
 import 'package:balady_plus/app/features/events/domain/entities/events_details/event_details_item.dart';
 import 'package:balady_plus/app/features/events/domain/entities/events_details/events_location.dart';
 import 'package:balady_plus/app/features/events/domain/entities/events_details/events_picture.dart';
+import 'package:intl/intl.dart';
 
 class EventsDetailsItemModel extends EventDetailsResponse {
-  EventsDetailsItemModel({
-    super.audience,
-    super.category,
-    super.city,
-    super.description,
-    super.endDate,
-    super.endTime,
-    super.name,
-    super.feesType,
-    super.id,
-    super.logoUrl,
-    super.season,
-    super.startDate,
-    super.startTime,
-    super.location,
-    super.pictures,
-    super.ticketUrl,
-  });
+  EventsDetailsItemModel(
+      {super.audience,
+      super.category,
+      super.city,
+      super.description,
+      super.endDate,
+      super.endTime,
+      super.name,
+      super.feesType,
+      super.id,
+      super.logoUrl,
+      super.season,
+      super.startDate,
+      super.startTime,
+      super.location,
+      super.pictures,
+      super.ticketUrl,
+      super.fees});
 
   factory EventsDetailsItemModel.fromJson(Map<String, dynamic> json) {
     DateTime? parseDate(String? dateString) {
       if (dateString != null && dateString.isNotEmpty) {
-        try {
-          final parts = dateString.split('/');
-          if (parts.length == 3) {
-            final month = int.tryParse(parts[0]);
-            final day = int.tryParse(parts[1]);
-            final year = int.tryParse(parts[2]);
-
-            if (month != null && day != null && year != null) {
-              return DateTime(year, month, day);
-            }
-          }
-        } catch (e) {}
+        DateTime date = DateFormat("MM/dd/yyyy").parse(dateString);
+        return date;
       }
       return null;
     }
@@ -59,6 +50,7 @@ class EventsDetailsItemModel extends EventDetailsResponse {
       location:
           json["location"] == null ? null : Location.fromJson(json["location"]),
       ticketUrl: json["ticketURL"],
+      fees: json["fees"],
       pictures: json["pictures"] == null
           ? []
           : List<Picture>.from(

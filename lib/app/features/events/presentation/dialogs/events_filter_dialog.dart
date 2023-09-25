@@ -3,16 +3,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
+import '../../../../core/utils/constants/app_style.dart';
+import '../../../../core/utils/enums/date_form.dart';
 import '../../../_shared_feature_/presentation/buttons/elevated_button_widgets.dart';
 import '../../../_shared_feature_/presentation/components/bottom_sheets/generic_bottom_sheet_list.dart';
 import '../../../_shared_feature_/presentation/dialogs/bottom_sheet_dialogs.dart';
 import '../../../_shared_feature_/presentation/widgets/drop_downs/drop_down_box_with_title.dart';
+import '../../../_shared_feature_/presentation/widgets/radio_buttons/custom_radio_button_widget copy.dart';
+import '../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import '../../../_shared_feature_/presentation/widgets/texts/filter_text_field.dart';
 import '../../domain/entities/events_category/events_category_item.dart';
 import '../../domain/entities/search_events/search_events_params.dart';
 import '../bloc/events_bloc.dart';
 import '../bloc/events_event.dart';
 import '../bloc/events_state.dart';
+import '../widgets/filter_date_picker.dart';
 
 class EventsFilterDialog extends StatefulWidget {
   final EventsBloc requestsBloc;
@@ -34,6 +39,25 @@ class _EventsFilterDialogState extends State<EventsFilterDialog> {
   EventCategoryItem? selectedSeason;
   EventCategoryItem? selectedAudince;
   EventCategoryItem? selectedCategory;
+  DateTime? dateFrom;
+  DateTime? dateTo;
+  bool? isFree;
+  String? sortBy;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    keyword = widget.params.keyword;
+    selectedCity = widget.params.selectedCity;
+    selectedSeason = widget.params.selectedSeason;
+    selectedAudince = widget.params.selectedAudince;
+    selectedCategory = widget.params.selectedCategory;
+    dateFrom = widget.params.dateFrom;
+    dateTo = widget.params.dateTo;
+    isFree = widget.params.isFree;
+    sortBy = widget.params.sortBy;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,6 +67,7 @@ class _EventsFilterDialogState extends State<EventsFilterDialog> {
         width: double.infinity,
         child: BlocBuilder<EventsBloc, EventsState>(builder: (context, state) {
           return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               FilterTextField(
                 hintText: "search".tr(),
@@ -54,8 +79,8 @@ class _EventsFilterDialogState extends State<EventsFilterDialog> {
                 },
               ),
               DropDownWithTitle(
-                title: "product".tr(),
-                selectedValue: state.selectedCity?.name,
+                title: "events_filter_city".tr(),
+                selectedValue: selectedCity?.name,
                 status: state.cityStatus,
                 onRetry: () => context.read<EventsBloc>().add(
                       GetCitiesEvent(),
@@ -67,11 +92,13 @@ class _EventsFilterDialogState extends State<EventsFilterDialog> {
                     // dialogKeyName: DialogName.objectablePageProductsFilters,
                     // currentRouteName: RouteName.objectableTransactions,
                     child: GenericBottomSheetList<EventCategoryItem>(
-                      title: "product".tr(),
+                      title: "events_filter_city".tr(),
                       items: state.citiesList ?? [],
-                      selectedValue: state.selectedCity,
+                      selectedValue: selectedCity,
                       onTap: (item) {
-                        selectedCity = item;
+                        setState(() {
+                          selectedCity = item;
+                        });
                         Navigator.pop(context);
                       },
                     ),
@@ -79,8 +106,8 @@ class _EventsFilterDialogState extends State<EventsFilterDialog> {
                 },
               ),
               DropDownWithTitle(
-                title: "product".tr(),
-                selectedValue: state.selectedSeason?.name,
+                title: "events_filter_season".tr(),
+                selectedValue: selectedSeason?.name,
                 status: state.seasonStatus,
                 onRetry: () => context.read<EventsBloc>().add(
                       GetSeasonsEvent(),
@@ -92,11 +119,13 @@ class _EventsFilterDialogState extends State<EventsFilterDialog> {
                     // dialogKeyName: DialogName.objectablePageProductsFilters,
                     // currentRouteName: RouteName.objectableTransactions,
                     child: GenericBottomSheetList<EventCategoryItem>(
-                      title: "product".tr(),
+                      title: "events_filter_season".tr(),
                       items: state.seasonList ?? [],
-                      selectedValue: state.selectedSeason,
+                      selectedValue: selectedSeason,
                       onTap: (item) {
-                        selectedSeason = item;
+                        setState(() {
+                          selectedSeason = item;
+                        });
                         Navigator.pop(context);
                       },
                     ),
@@ -104,8 +133,8 @@ class _EventsFilterDialogState extends State<EventsFilterDialog> {
                 },
               ),
               DropDownWithTitle(
-                title: "product".tr(),
-                selectedValue: state.selectedAudince?.name,
+                title: "events_filter_audience".tr(),
+                selectedValue: selectedAudince?.name,
                 status: state.audinceStatus,
                 onRetry: () => context.read<EventsBloc>().add(
                       GetAudienceEvent(),
@@ -117,11 +146,13 @@ class _EventsFilterDialogState extends State<EventsFilterDialog> {
                     // dialogKeyName: DialogName.objectablePageProductsFilters,
                     // currentRouteName: RouteName.objectableTransactions,
                     child: GenericBottomSheetList<EventCategoryItem>(
-                      title: "product".tr(),
+                      title: "events_filter_audience".tr(),
                       items: state.audinceList ?? [],
-                      selectedValue: state.selectedAudince,
+                      selectedValue: selectedAudince,
                       onTap: (item) {
-                        selectedAudince = item;
+                        setState(() {
+                          selectedAudince = item;
+                        });
                         Navigator.pop(context);
                       },
                     ),
@@ -129,8 +160,8 @@ class _EventsFilterDialogState extends State<EventsFilterDialog> {
                 },
               ),
               DropDownWithTitle(
-                title: "product".tr(),
-                selectedValue: state.selectedCategory?.name,
+                title: "events_filter_category".tr(),
+                selectedValue: selectedCategory?.name,
                 status: state.categoryStatus,
                 onRetry: () => context.read<EventsBloc>().add(
                       GetCategoriesEvent(),
@@ -142,9 +173,9 @@ class _EventsFilterDialogState extends State<EventsFilterDialog> {
                     // dialogKeyName: DialogName.objectablePageProductsFilters,
                     // currentRouteName: RouteName.objectableTransactions,
                     child: GenericBottomSheetList<EventCategoryItem>(
-                      title: "product".tr(),
+                      title: "events_filter_category".tr(),
                       items: state.categoryList ?? [],
-                      selectedValue: state.selectedCategory,
+                      selectedValue: selectedCategory,
                       onTap: (item) {
                         setState(() {
                           selectedCategory = item;
@@ -155,25 +186,191 @@ class _EventsFilterDialogState extends State<EventsFilterDialog> {
                   );
                 },
               ),
+              Row(
+                children: [
+                  Expanded(
+                    child: EventFilterDatePicker(
+                      title: "events_filter_dateFrom".tr(),
+                      initialDateForm: DateForm.gregorian,
+                      initialDate: dateFrom,
+                      onChange: (DateTime date, DateForm dateForm) {
+                        setState(() {
+                          this.dateFrom = date;
+                        });
+                      },
+                    ),
+                  ),
+                  SizedBox(width: 16),
+                  Expanded(
+                    child: EventFilterDatePicker(
+                      title: "events_filter_dateTo".tr(),
+                      initialDateForm: DateForm.gregorian,
+                      initialDate: dateTo,
+                      onChange: (DateTime date, DateForm dateForm) {
+                        setState(() {
+                          this.dateTo = date;
+                        });
+                      },
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(
+                height: 16,
+              ),
+              CustomTextWidget(
+                "events_filter_fess".tr(),
+                textStyle: AppStyle.dropDownTitleTextStyle,
+              ),
+              SizedBox(
+                height: 16,
+              ),
+              Row(
+                children: [
+                  Expanded(
+                    child: Container(
+                      height: 48,
+                      padding: EdgeInsets.symmetric(vertical: 8),
+                      decoration: ShapeDecoration(
+                        color: Color(0x66E6EFEF),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8)),
+                      ),
+                      child: CustomRadioButtonEnd<bool>(
+                        title: "events_filter_fess_free".tr(),
+                        value: true,
+                        currentSelected: isFree,
+                        onChange: (var r) {
+                          setState(() {
+                            isFree = r;
+                          });
+                        },
+                        endRadio: false,
+                        unSelectedBackgroundColor: Colors.transparent,
+                        textSize: 16,
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    width: 16,
+                  ),
+                  Expanded(
+                    child: Container(
+                      height: 48,
+                      decoration: ShapeDecoration(
+                        color: Color(0x66E6EFEF),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8)),
+                      ),
+                      padding: EdgeInsets.symmetric(vertical: 8),
+                      child: CustomRadioButtonEnd<bool>(
+                        title: "events_filter_fess_not_free".tr(),
+                        value: false,
+                        currentSelected: isFree,
+                        onChange: (var r) {
+                          setState(() {
+                            isFree = r;
+                          });
+                        },
+                        endRadio: false,
+                        unSelectedBackgroundColor: Colors.transparent,
+                        textSize: 16,
+                      ),
+                    ),
+                  )
+                ],
+              ),
+              SizedBox(
+                height: 16,
+              ),
+              CustomTextWidget(
+                "events_filter_fess_sort".tr(),
+                textStyle: AppStyle.dropDownTitleTextStyle,
+              ),
+              SizedBox(
+                height: 16,
+              ),
+              Row(
+                children: [
+                  Expanded(
+                    child: Container(
+                      height: 48,
+                      decoration: ShapeDecoration(
+                        color: Color(0x66E6EFEF),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8)),
+                      ),
+                      padding: EdgeInsets.symmetric(vertical: 8),
+                      child: CustomRadioButtonEnd<String>(
+                        title: "events_filter_fess_sort_price".tr(),
+                        value: "price",
+                        currentSelected: sortBy,
+                        onChange: (var r) {
+                          setState(() {
+                            sortBy = r;
+                          });
+                        },
+                        endRadio: false,
+                        unSelectedBackgroundColor: Colors.transparent,
+                        textSize: 16,
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    width: 16,
+                  ),
+                  Expanded(
+                    child: Container(
+                      height: 48,
+                      decoration: ShapeDecoration(
+                        color: Color(0x66E6EFEF),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8)),
+                      ),
+                      padding: EdgeInsets.symmetric(vertical: 8),
+                      child: CustomRadioButtonEnd<String>(
+                        title: "events_filter_fess_sort_date".tr(),
+                        value: "date",
+                        currentSelected: sortBy,
+                        onChange: (var r) {
+                          setState(() {
+                            sortBy = r;
+                          });
+                        },
+                        endRadio: false,
+                        unSelectedBackgroundColor: Colors.transparent,
+                        textSize: 16,
+                      ),
+                    ),
+                  )
+                ],
+              ),
+              SizedBox(
+                height: 40,
+              ),
               Column(
                 children: [
                   ElevatedButtonWidget.apply(
                     onPressed: () {
-                      print("key word ${keyword}");
-                      print(
-                          "key word ${widget.params.copyWith(keyword: keyword).keyword}");
-
                       Navigator.pop(
-                          context, widget.params.copyWith(keyword: keyword));
+                          context,
+                          widget.params.copyWith(
+                            keyword: keyword,
+                            selectedAudince: selectedAudince,
+                            selectedCategory: selectedCategory,
+                            selectedCity: selectedCity,
+                            selectedSeason: selectedSeason,
+                            sortBy: sortBy,
+                            dateFrom: dateFrom,
+                            dateTo: dateTo,
+                            isFree: isFree,
+                          ));
                     },
                   ),
                   const SizedBox(height: 16),
                   ElevatedButtonWidget.deletaAll(
                     onPressed: () {
-                      /* context.read<ViolationsBloc>().add(
-                      ClearViolationsFiltersEvent(),
-                    );*/
-                      Navigator.pop(context, true);
+                      Navigator.pop(context, SearchEventsParams());
                     },
                   ),
                 ],

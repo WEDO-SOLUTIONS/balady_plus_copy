@@ -63,6 +63,8 @@
 	<string>By Acceing the mic, the app can register the sound for Reports</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Photo Library is used to choose photos for Reports</string>
+	<key>NSCalendarsUsageDescription</key>
+<string>To Allow to Add Events to the calendar</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>

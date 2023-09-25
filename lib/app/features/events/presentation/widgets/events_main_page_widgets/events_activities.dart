@@ -31,27 +31,6 @@ class EventsActivitiesWidget extends StatelessWidget {
               textStyle: AppStyle.eventsOptionsStyle,
             ),
           ),
-          SizedBox(
-            width: 6,
-          ),
-          Container(
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(6),
-                color: Color.fromRGBO(
-                  4,
-                  4,
-                  4,
-                  0.10,
-                )),
-            padding: EdgeInsets.symmetric(
-              horizontal: 6,
-              vertical: 4,
-            ),
-            child: CustomTextWidget(
-              category,
-              textStyle: AppStyle.eventsOptionsStyle,
-            ),
-          ),
         ],
       ),
     );

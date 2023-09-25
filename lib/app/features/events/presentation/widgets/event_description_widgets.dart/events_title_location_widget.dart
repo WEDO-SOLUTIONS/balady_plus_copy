@@ -1,9 +1,16 @@
+import 'package:add_2_calendar/add_2_calendar.dart';
+import 'package:balady_plus/app/core/services/local/helpers.dart';
 import 'package:balady_plus/app/core/utils/constants/app_style.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
+import 'package:share_plus/share_plus.dart';
+
+import '../../bloc/events_bloc.dart';
+import '../../bloc/events_state.dart';
 
 class EventsTitleLocationWidget extends StatelessWidget {
   const EventsTitleLocationWidget({
@@ -16,43 +23,111 @@ class EventsTitleLocationWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            CustomTextWidget(
-              title,
-              textStyle: AppStyle.eventMainTitleStyle,
-            ),
-            Row(
-              children: [
-                SvgPicture.asset(IconPath.locationBlack),
-                SizedBox(
-                  width: 1,
+    return BlocBuilder<EventsBloc, EventsState>(builder: (context, state) {
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              CustomTextWidget(
+                title,
+                textStyle: AppStyle.eventMainTitleStyle,
+              ),
+              Row(
+                children: [
+                  SvgPicture.asset(IconPath.locationBlack),
+                  SizedBox(
+                    width: 1,
+                  ),
+                  CustomTextWidget(
+                    city,
+                    textStyle: AppStyle.eventsMainSubtitleStyle,
+                  )
+                ],
+              )
+            ],
+          ),
+          Row(
+            children: [
+              if (state.eventDetails.ticketUrl != null)
+                InkWell(
+                  onTap: () {
+                    Share.share(state.eventDetails.ticketUrl ?? "");
+                  },
+                  child: Container(
+                    width: 36,
+                    height: 36,
+                    padding: EdgeInsets.all(5),
+                    decoration: ShapeDecoration(
+                      color: const Color(0xFFE8EFF1),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                    child: SvgPicture.asset(
+                      IconPath.export,
+                    ),
+                  ),
                 ),
-                CustomTextWidget(
-                  city,
-                  textStyle: AppStyle.eventsMainSubtitleStyle,
-                )
-              ],
-            )
-          ],
-        ),
-        Container(
-          padding: EdgeInsets.all(5),
-          decoration: ShapeDecoration(
-            color: const Color(0xFFE8EFF1),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
-          ),
-          child: SvgPicture.asset(
-            IconPath.export,
-          ),
-        )
-      ],
+              SizedBox(
+                width: 16,
+              ),
+              if (state.eventDetails.getEndDateFull() != null &&
+                  state.eventDetails.getStartDateFull() != null)
+                InkWell(
+                  onTap: () {
+                    Add2Calendar.addEvent2Cal(
+                      buildEvent(
+                        title: state.eventDetails.name ?? "",
+                        desc: state.eventDetails.description ?? "",
+                        url: state.eventDetails.ticketUrl ?? "",
+                        city: state.eventDetails.city ?? "",
+                        startDate: state.eventDetails.getStartDateFull()!,
+                        endDate: state.eventDetails.getEndDateFull()!,
+                      ),
+                    );
+                  },
+                  child: Container(
+                    width: 36,
+                    height: 36,
+                    padding: EdgeInsets.all(5),
+                    decoration: ShapeDecoration(
+                      color: const Color(0xFFE8EFF1),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                    child: SvgPicture.asset(
+                      IconPath.calendar,
+                    ),
+                  ),
+                ),
+            ],
+          )
+        ],
+      );
+    });
+  }
+
+  Event buildEvent({
+    required String title,
+    required String desc,
+    required String city,
+    required DateTime startDate,
+    required DateTime endDate,
+    required String url,
+  }) {
+    return Event(
+      title: title,
+      description: desc,
+      location: city,
+      startDate: startDate,
+      endDate: endDate,
+      allDay: false,
+      iosParams: IOSParams(
+        url: url,
+      ),
     );
   }
 }

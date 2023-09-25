@@ -1,5 +1,6 @@
 import 'package:balady_plus/app/core/errors/exceptions.dart';
 import 'package:balady_plus/app/features/events/domain/entities/search_events/search_events_item.dart';
+import 'package:intl/intl.dart';
 
 class SearchEventsItemModel extends SearchEventsItem {
   SearchEventsItemModel({
@@ -17,31 +18,19 @@ class SearchEventsItemModel extends SearchEventsItem {
   factory SearchEventsItemModel.fromMap(Map<String, dynamic> json) {
     DateTime? parseDate(String? dateString) {
       if (dateString != null && dateString.isNotEmpty) {
-        try {
-          final parts = dateString.split('/');
-          if (parts.length == 3) {
-            final month = int.tryParse(parts[0]);
-            final day = int.tryParse(parts[1]);
-            final year = int.tryParse(parts[2]);
-
-            if (month != null && day != null && year != null) {
-              return DateTime(year, month, day);
-            }
-          }
-        } catch (e) {
-          throw ServerException("errors_server_error_2");
-        }
+        DateTime date = DateFormat("MM/dd/yyyy").parse(dateString);
+        return date;
       }
       return null;
     }
 
     return SearchEventsItemModel(
-      id: json["id"],
-      eventName: json["name"],
-      category: json["category"],
-      city: json["city"],
-      startDate: parseDate(json["startDate"]),
-      endDate: parseDate(json["endDate"]),
-    );
+        id: json["id"],
+        eventName: json["name"],
+        category: json["category"],
+        city: json["city"],
+        startDate: parseDate(json["startDate"]),
+        endDate: parseDate(json["endDate"]),
+        logoImage: json["logoImage"]);
   }
 }

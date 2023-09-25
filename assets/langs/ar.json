@@ -3144,6 +3144,19 @@
 "events_description2":"تعود نشأة الدرعية التاريخية إلى عام 1446م، بعد مجيء مانع بن ربيعة المريدي من بلدة صغيرة تقع بجوار القطيف، إلى أرض خصبة على ضفاف وادي حنيفة، فاستقر بها مع عائلته، واتسعت مع مرور الوقت نفوذهم ومزارعهم، حتى أصبحوا أمراء تلك المنطقة وما جوارها.",
 "event_button_text":"الانتقال الى التفاصيل",
 "nature":"طبيعة",
+"events_filter_season":"الموسم", 
+"events_filter_category":"الإهتمام", 
+"events_filter_city":"المدينة", 
+"events_filter_audience":"الجمهور المستهدف", 
+"events_filter_dateFrom":"التاريخ من",
+"events_filter_dateTo":"إلي",
+"events_filter_fess":"الرسوم",
+"events_filter_fess_free":"مجاني",
+"events_filter_fess_not_free":"نطاق سعر",
+"events_filter_fess_sort":"رتب حسب",
+"events_filter_fess_sort_price":"السعر",
+"events_filter_fess_sort_date":"التاريخ",
+
 "events_details":" تفاصيل الفعالية ",
 "ola_moment":"لحظات العلا",
 "dariyah_season":"موسم الدرعية",
@@ -3203,6 +3216,7 @@
   "city_scape_title":"سيتي سكيب العالمي 23", 
   "city_scape_desc":"تعرف على المعرض العقاري الأضخم في العالم وعش تجربة فريدة من خلال إستعراض موقع الحدث والأجنحة المشاركة والتنقل بمسارات المعرض بشكل فريد عبر خرائط بلدي التفاعلية ", 
   "city_scape":"ابدأ الآن" 
+  
 
 
 }

@@ -9,6 +9,10 @@ extension DateTimeExtension on DateTime {
     return "$year/$month/$day";
   }
 
+  String toFormattedDate1() {
+    return "$month/$day/$year";
+  }
+
   String toHijriFormattedDate() {
     final date = CommonFunctions.mapARNumbersToENNumbers(
         HijriCalendar.fromDate(this).toFormat("yyyy/mm/dd"));

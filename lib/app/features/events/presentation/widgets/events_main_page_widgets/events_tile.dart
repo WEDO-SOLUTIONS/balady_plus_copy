@@ -54,7 +54,8 @@ class EventsSectionWidget extends StatelessWidget {
                         borderRadius: BorderRadius.circular(8),
                         image: DecorationImage(
                           fit: BoxFit.fill,
-                          image: AssetImage(ImagePath.eventsImage1),
+                          image: NetworkImage(
+                              state.searchItems[index].logoImage ?? ""),
                         ),
                       ),
                       child: Column(
