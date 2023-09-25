@@ -20,20 +20,25 @@ import 'package:collection/collection.dart';
 import 'package:balady_plus/etmam_app/features/dynamic_form/dynamic_forms_exports.dart'
     show
         CreateBiddingForm,
-        CreateFormParams,
         CreateFormItemResponse,
-        GetFormFieldData;
+        CreateFormParams,
+        GetFormFieldData,
+        UploadBidAttachment,
+        UploadBidAttachmentResponse;
 import 'package:balady_plus/etmam_app/features/etmam_entry_point/presentation/cubit/etmam_entry_point_cubit.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:collection/collection.dart';
+import 'package:mime/mime.dart';
 
 import '../../../../../../app/core/dependency_injection/injection_container.dart';
 import '../../../../../../app/core/services/local/navigation_services.dart';
 import '../../../../../../app/core/utils/enums/bloc_status.dart';
 import '../../../../../../app/features/_shared_feature_/data/entities/drop_down_item.dart';
+import '../../../../../../app/features/_shared_feature_/data/entities/file_data_item.dart';
 import '../../../../../core/utils/enums/dynamic_forms.dart';
+import '../../../domain/use_cases/upload_bid_attachment.dart';
 
 part 'bidding_form_event.dart';
 part 'bidding_form_state.dart';
@@ -44,6 +49,7 @@ class BiddingFormBloc extends Bloc<BiddingFormEvent, BiddingFormState> {
   final GetFormFieldData _getFormFieldData;
   final SubmitDynamicForm _submitDynamicForm;
   final ValidateDynamicForm _validateDynamicForm;
+  final UploadBiddingAttachment _uploadBiddingAttachment;
 
   BiddingFormBloc({
     required CreateBiddingForm createBiddingForm,
@@ -55,6 +61,7 @@ class BiddingFormBloc extends Bloc<BiddingFormEvent, BiddingFormState> {
         _getFormFieldData = getFormFieldData,
         _submitDynamicForm = submitDynamicForm,
         _validateDynamicForm = validateDynamicForm,
+        _uploadBiddingAttachment = UploadBiddingAttachment(repository: sl()),
         super(BiddingFormState(params: params)) {
     on<BiddingFormEvent>((event, emit) {
       // TODO: implement event handler
@@ -70,7 +77,7 @@ class BiddingFormBloc extends Bloc<BiddingFormEvent, BiddingFormState> {
     on<SubmitFormEvent>(_submitFormEventHandler);
 
     on<ValidateFormEvent>(_validateFormEventHandler);
-
+    on<UploadBiddingAttachmentEvent>(_uploadBiddingAttachmentHandler);
     add(GetBiddingFormEvent(
         params: CreateFormParams(
             profileId: sl<EtmamEntryPointCubit>().state.profile?.id,
@@ -301,6 +308,9 @@ class BiddingFormBloc extends Bloc<BiddingFormEvent, BiddingFormState> {
           if ((e.isSelected ?? false) || (e.mandatory ?? false))
             return SubmitFormParams(
               cityId: CommonProperties.cityId,
+              uploadTransactionId:
+                  state.uploadBidAttachmentResponse?.uploadTransactionId,
+              descAttachmentId: state.uploadBidAttachmentResponse?.attachmentId,
               profileId: CommonProperties.profileId ?? "",
               formId: e.id!,
               relationId: e.id!,
@@ -336,6 +346,36 @@ class BiddingFormBloc extends Bloc<BiddingFormEvent, BiddingFormState> {
           arguments: SuccessScreenArgs(
               thanksMessage: success.data?.result?.responseMessage,
               type: PageTypes.orderScreen));
+    });
+  }
+
+  Future<void> _uploadBiddingAttachmentHandler(
+      UploadBiddingAttachmentEvent e, Emitter emitter) async {
+    emitter(state.copyWith(status: BlocStatus.loading));
+    UploadBidAttachment params = UploadBidAttachment(
+      requestTypeId: "bidding.bidding",
+      attachmentTypeId: "bidding.bidding-desc",
+      base64: e.file.bytes!,
+      fileName: e.file.fileName,
+      filePath: e.file.filePath,
+      mimeType: lookupMimeType(e.file.filePath) ?? "",
+    );
+
+    final failureOrSuccess = await _uploadBiddingAttachment(params);
+
+    failureOrSuccess.fold((failure) {
+      emitter(state.copyWith(status: BlocStatus.loading));
+
+      emitter(state.copyWith(
+        status: BlocStatus.failure,
+        errorMessage: (failure as ServerFailure).errorMessage,
+      ));
+    }, (r) {
+      emitter(state.copyWith(
+          status: BlocStatus.success,
+          errorMessage: "",
+          attachmentName: params.fileName,
+          attachmentPath: params.filePath));
     });
   }
 

@@ -8,9 +8,12 @@ import 'package:http/http.dart' as http;
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../dependency_injection/injection_container.dart';
+import '../services/global/web_service.dart';
 import '../services/local/helpers.dart';
 import '../utils/common_functions.dart';
 import '../utils/constants/remote_config.dart';
+import 'package:balady_plus/etmam_app/core/utils/utils_exports.dart'
+    as EtmamCommonProperties hide Log;
 
 class WebService {
   static String baseURL = RemoteConfig.apigeeURL;
@@ -522,7 +525,8 @@ class WebService {
       {Uint8List? base64,
       String? fileName,
       String? mimeType,
-      dynamic body}) async {
+      dynamic body,
+      Map<String, String>? fields}) async {
     var data = body != null ? json.encode(body) : null;
 
     var requestUrl = baseURL + url;
@@ -540,6 +544,17 @@ class WebService {
 
       request.headers['x-channel-id'] = "MOBILE";
 
+      if (fields != null) {
+        request.headers[ApiHeaders.xCorrelationId] =
+            CommonFunctions.generateGUID();
+        request.headers["x-sso-session-id"] =
+            EtmamCommonProperties.CommonProperties.sessionId ??
+                CommonFunctions.generateGUID();
+        request.headers["Accept-Language"] = "ar";
+      }
+      print(fileName);
+
+      request.fields.addAll(fields ?? {});
       http.MultipartFile file = http.MultipartFile.fromBytes(
         'file',
         base64!.toList(),

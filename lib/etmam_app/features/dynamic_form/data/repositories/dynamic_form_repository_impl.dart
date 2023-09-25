@@ -176,4 +176,16 @@ class DynamicFormsRepositoryImpl implements DynamicFormsRepository {
           ServerFailure(error.errorMessage, statusCode: error.statusCode));
     }
   }
+
+  @override
+  Future<Either<Failure, ApigeeResponse<UploadBidAttachmentResponse>>>
+      uploadBidAttachment(UploadBidAttachment params) async {
+    try {
+      final data = await remoteDataSource.uploadBidAttachment(params);
+      return Right(data);
+    } on ServerException catch (error) {
+      return Left(
+          ServerFailure(error.errorMessage, statusCode: error.statusCode));
+    }
+  }
 }

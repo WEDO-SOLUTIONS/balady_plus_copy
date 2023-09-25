@@ -52,4 +52,7 @@ abstract class DynamicFormsRepository {
 
   Future<Either<Failure, ApigeeResponse<SubmitFormResponse>>> editForm(
       {required SubmitFormParams params});
+
+  Future<Either<Failure, ApigeeResponse<UploadBidAttachmentResponse>>>
+      uploadBidAttachment(UploadBidAttachment params);
 }

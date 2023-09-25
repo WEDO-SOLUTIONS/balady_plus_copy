@@ -35,7 +35,9 @@ class EventDataSourceImpl extends EventsRemoteDataSource {
     try {
       response = await webService.dio.get(ApiUrl.eventsSearch,
           queryParameters: params.toMap(),
-          options: Options(headers: {/*"Authorization": token*/}));
+          options: Options(headers: {
+            /*"Authorization": token*/
+          }));
       final data = response.data;
 
       final result = ResponseBodyModel.fromMap(data).data?.result;

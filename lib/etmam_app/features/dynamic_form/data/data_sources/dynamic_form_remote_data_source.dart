@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:balady_plus/app/core/dependency_injection/dependency_injection_exports.dart';
+import 'package:balady_plus/app/core/utils/extensions/json_conversion.dart';
 import 'package:balady_plus/etmam_app/features/dynamic_form/data/models/bidding_type/bidding_type_response_model.dart';
 import 'package:balady_plus/etmam_app/features/dynamic_form/data/models/form_data_response_model.dart';
 import 'package:balady_plus/etmam_app/features/dynamic_form/data/models/offers/offers_response.dart';
@@ -11,6 +14,9 @@ import 'package:balady_plus/etmam_app/features/dynamic_form/domain/entities/subm
 import 'package:balady_plus/etmam_app/features/dynamic_form/domain/entities/validate/validate_form_params.dart';
 import 'package:balady_plus/etmam_app/features/dynamic_form/dynamic_forms_exports.dart';
 import 'package:balady_plus/etmam_app/features/etmam_entry_point/presentation/cubit/etmam_entry_point_cubit.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
+import '../../../../../app/core/services/local/helpers.dart';
+import 'package:balady_plus/app/core/remote_services/web_service.dart' as web;
 
 import 'package:balady_plus/etmam_app/core/utils/common_functions.dart';
 import 'package:balady_plus/etmam_app/core/utils/constants/app_config.dart';
@@ -20,10 +26,12 @@ import 'package:balady_plus/etmam_app/features/_shared_feature_/shared/shared_fe
 
 import 'package:dio/dio.dart';
 import 'package:balady_plus/etmam_app/core/errors/errors_exports.dart'
-    show ServerException;
+    show APIException, ServerException;
 import 'package:balady_plus/etmam_app/core/utils/utils_exports.dart'
     show ApiUrl, ApiParams, WithDelay;
+import 'package:mime/mime.dart';
 
+import '../../../../../app/core/base/base_view_model.dart';
 import '../../../../../app/core/services/global/web_service.dart';
 import '../../../../../app/core/utils/common_functions.dart'
     show CommonProperties;
@@ -64,6 +72,9 @@ abstract class DynamicFormRemoteDataSource {
 
   Future<ApigeeResponse<SubmitFormResponseModel>> editForm(
       SubmitFormParams params);
+
+  Future<ApigeeResponse<UploadBidAttachmentResponseModel>> uploadBidAttachment(
+      UploadBidAttachment params);
 }
 
 class DynamicFormRemoteDataSourceImpl extends DynamicFormRemoteDataSource {
@@ -666,6 +677,58 @@ class DynamicFormRemoteDataSourceImpl extends DynamicFormRemoteDataSource {
         } catch (ex) {}
         throw ServerException(trans("errors_server_error_2"));
       }
+    }
+  }
+
+  @override
+  Future<ApigeeResponse<UploadBidAttachmentResponseModel>> uploadBidAttachment(
+      UploadBidAttachment params) async {
+    final mimeType = lookupMimeType(params.filePath);
+
+    final body = await locator<web.WebService>().uploadFileSSO(
+        ApiUrl.bidAttachments,
+        base64: params.base64,
+        fileName: params.fileName,
+        mimeType: mimeType,
+        fields: params.toMap());
+    ;
+    bool state = body['state'];
+    dynamic data = body['data'];
+    String error = body['error'] ?? ("errors_server_error_1").tr();
+    print(data);
+    try {
+      if (state == true) {
+        var parsedResult = data != null
+            ? UploadBidAttachmentResponseModel.fromJson(data)
+            : null;
+
+        print(data);
+        final decodedResponse =
+            ApigeeResponseModel<UploadBidAttachmentResponseModel>.fromMap(data,
+                parsedResult: parsedResult);
+
+        return decodedResponse.toFuture();
+      } else {
+        throw ServerException(
+          "errors_server_error_2".tr(),
+          exception: APIException(
+            errorMessage: data,
+          ),
+        );
+      }
+    } catch (ex) {
+      print(ex);
+      try {
+        Helpers.sendLog(
+            url: ApiUrl.bidAttachments, data: data, errorMsg: ex.toString());
+      } catch (ex) {}
+
+      throw ServerException(
+        "errors_server_error_2".tr(),
+        exception: APIException(
+          errorMessage: ex.toString(),
+        ),
+      );
     }
   }
 }

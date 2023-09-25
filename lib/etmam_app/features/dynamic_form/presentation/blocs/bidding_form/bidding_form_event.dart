@@ -44,3 +44,8 @@ class SubmitFormEvent extends BiddingFormEvent {
 class ValidateFormEvent extends BiddingFormEvent {
   const ValidateFormEvent();
 }
+
+class UploadBiddingAttachmentEvent extends BiddingFormEvent {
+  final FileDataItem file;
+  const UploadBiddingAttachmentEvent({required this.file});
+}

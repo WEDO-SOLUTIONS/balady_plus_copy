@@ -5,17 +5,24 @@ class SubmitFormParams {
   String relationId;
   Map<String, dynamic>? fields;
   List<SubmitFormParams>? subBiddings;
+  String? uploadTransactionId;
+  String? descAttachmentId;
   SubmitFormParams(
       {required this.cityId,
       required this.relationId,
       required this.profileId,
       required this.formId,
       this.subBiddings,
-      this.fields});
+      this.fields,
+      this.uploadTransactionId,
+      this.descAttachmentId});
   Map<String, dynamic> toMap() => {
         "profileId": profileId,
         "cityId": cityId,
         "relationId": relationId,
+        if (uploadTransactionId != null)
+          "uploadTransactionId": uploadTransactionId,
+        if (descAttachmentId != null) "descAttachmentId": descAttachmentId,
         if (fields != null && fields!.isNotEmpty)
           "inputs": {
             "fields": fields!.map((key, value) {

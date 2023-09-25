@@ -7,6 +7,9 @@ class BiddingFormState extends Equatable {
   final BiddingFormParams? params;
   final int currentPageValue;
   final ValidateFormResponse? formValidation;
+  final UploadBidAttachmentResponse? uploadBidAttachmentResponse;
+  final String? attachmentPath;
+  final String? attachmentName;
 
   const BiddingFormState(
       {this.status = BlocStatus.initial,
@@ -14,11 +17,22 @@ class BiddingFormState extends Equatable {
       this.params,
       this.errorMessage,
       this.formResponses,
-      this.formValidation});
+      this.formValidation,
+      this.uploadBidAttachmentResponse,
+      this.attachmentPath,
+      this.attachmentName});
 
   @override
-  List<Object?> get props =>
-      [status, errorMessage, currentPageValue, params, formValidation];
+  List<Object?> get props => [
+        status,
+        errorMessage,
+        currentPageValue,
+        params,
+        formValidation,
+        uploadBidAttachmentResponse,
+        attachmentPath,
+        attachmentName
+      ];
 
   BiddingFormState copyWith(
       {final BlocStatus? status,
@@ -27,14 +41,21 @@ class BiddingFormState extends Equatable {
       final String? currentFormId,
       final int? currentPageValue,
       final BiddingFormParams? params,
-      final ValidateFormResponse? formValidation}) {
+      final ValidateFormResponse? formValidation,
+      final UploadBidAttachmentResponse? uploadBidAttachmentResponse,
+      final String? attachmentPath,
+      final String? attachmentName}) {
     return BiddingFormState(
         errorMessage: errorMessage ?? this.errorMessage,
         status: status ?? this.status,
         formResponses: formResponses ?? this.formResponses,
         currentPageValue: currentPageValue ?? this.currentPageValue,
         params: params ?? this.params,
-        formValidation: formValidation ?? this.formValidation);
+        formValidation: formValidation ?? this.formValidation,
+        uploadBidAttachmentResponse:
+            uploadBidAttachmentResponse ?? this.uploadBidAttachmentResponse,
+        attachmentPath: attachmentPath ?? this.attachmentPath,
+        attachmentName: attachmentName ?? this.attachmentName);
   }
 
   int get formsCount => formResponses?.length ?? 0;
