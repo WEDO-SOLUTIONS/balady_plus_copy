@@ -107,7 +107,7 @@ class EventDetailsResponse {
     if (fees == 0 || fees == null) {
       return "مجاني";
     }
-    return "${fees} ${"sar".tr()}";
+    return "${fees} ر.س";
   }
 
   LatLng? getLocation() {
