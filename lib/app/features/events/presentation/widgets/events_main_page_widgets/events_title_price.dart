@@ -58,7 +58,7 @@ class EventsTitlePriceWidget extends StatelessWidget {
               )
             ],
           ),
-          Row(
+          /*  Row(
             children: [
               CustomTextWidget(
                 '400_riyals'.tr(),
@@ -72,7 +72,7 @@ class EventsTitlePriceWidget extends StatelessWidget {
                 textStyle: AppStyle.riyalEventStyle,
               ),
             ],
-          )
+          )*/
         ],
       ),
     );
