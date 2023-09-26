@@ -8,6 +8,7 @@ class UploadBidAttachment extends Equatable {
   final String requestTypeId;
   final String attachmentTypeId;
   final Uint8List base64;
+  final String base64Str;
   final String fileName;
   final String mimeType;
   final String filePath;
@@ -16,6 +17,7 @@ class UploadBidAttachment extends Equatable {
       {required this.requestTypeId,
       required this.attachmentTypeId,
       required this.base64,
+      required this.base64Str,
       required this.fileName,
       required this.mimeType,
       required this.filePath});

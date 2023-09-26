@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:http_parser/http_parser.dart';
 
 import 'package:balady_plus/app/core/dependency_injection/dependency_injection_exports.dart';
 import 'package:balady_plus/app/core/utils/extensions/json_conversion.dart';
@@ -20,7 +21,8 @@ import 'package:balady_plus/app/core/remote_services/web_service.dart' as web;
 
 import 'package:balady_plus/etmam_app/core/utils/common_functions.dart';
 import 'package:balady_plus/etmam_app/core/utils/constants/app_config.dart';
-
+import 'package:balady_plus/etmam_app/core/utils/utils_exports.dart'
+    as EtmamCommonProperties hide Log;
 import 'package:balady_plus/etmam_app/features/_shared_feature_/shared/shared_feature_exports.dart'
     show ApigeeResponse, ApigeeResponseModel;
 
@@ -685,50 +687,60 @@ class DynamicFormRemoteDataSourceImpl extends DynamicFormRemoteDataSource {
       UploadBidAttachment params) async {
     final mimeType = lookupMimeType(params.filePath);
 
-    final body = await locator<web.WebService>().uploadFileSSO(
-        ApiUrl.bidAttachments,
-        base64: params.base64,
-        fileName: params.fileName,
-        mimeType: mimeType,
-        fields: params.toMap());
-    ;
-    bool state = body['state'];
-    dynamic data = body['data'];
-    String error = body['error'] ?? ("errors_server_error_1").tr();
-    print(data);
+    String fileName = params.filePath.split('/').last;
+    FormData formData = FormData.fromMap({
+      "file": await MultipartFile.fromFile(params.filePath,
+          filename: fileName, contentType: MediaType.parse(mimeType!)),
+      'request-type-id': params.requestTypeId,
+      'attachment-type-id': params.attachmentTypeId,
+    });
     try {
-      if (state == true) {
-        var parsedResult = data != null
-            ? UploadBidAttachmentResponseModel.fromJson(data)
-            : null;
+      print("HEREEEE");
+      var response = await webService.dio.post(ApiUrl.bidAttachments,
+          data: formData,
+          options: Options(headers: {
+            'fileContentType': mimeType ?? "",
+            'authorization': 'Bearer ${CommonProperties.token}',
+            'x-channel-id': "MOBILE",
+            ApiHeaders.xCorrelationId: CommonFunctions.generateGUID(),
+            "x-sso-session-id":
+                EtmamCommonProperties.CommonProperties.sessionId ??
+                    CommonFunctions.generateGUID(),
+            "Accept-Language": "ar",
+            'Content-Type': 'multipart/form-data'
+          }));
+      print("HEREEE 3333");
 
-        print(data);
-        final decodedResponse =
-            ApigeeResponseModel<UploadBidAttachmentResponseModel>.fromMap(data,
-                parsedResult: parsedResult);
+      var data = response.data["data"];
 
-        return decodedResponse.toFuture();
-      } else {
-        throw ServerException(
-          "errors_server_error_2".tr(),
-          exception: APIException(
-            errorMessage: data,
-          ),
-        );
-      }
+      var parsedResult = data != null
+          ? UploadBidAttachmentResponseModel.fromJson(data["result"])
+          : null;
+
+      print(data);
+      final decodedResponse =
+          ApigeeResponseModel<UploadBidAttachmentResponseModel>.fromMap(
+              response.data,
+              parsedResult: parsedResult);
+
+      return decodedResponse.toFuture();
+    } on DioError catch (error) {
+      print(error);
+      print(error);
+      throw ServerException(error.toString(),
+          statusCode: error.response?.statusCode);
     } catch (ex) {
       print(ex);
-      try {
-        Helpers.sendLog(
-            url: ApiUrl.bidAttachments, data: data, errorMsg: ex.toString());
-      } catch (ex) {}
-
-      throw ServerException(
-        "errors_server_error_2".tr(),
-        exception: APIException(
-          errorMessage: ex.toString(),
-        ),
-      );
+      if (ex is ServerException)
+        throw ex;
+      else {
+        try {
+          CommonFunctions.sendExceptionLog(
+            exception: ex,
+          );
+        } catch (ex) {}
+        throw ServerException(trans("errors_server_error_2"));
+      }
     }
   }
 }

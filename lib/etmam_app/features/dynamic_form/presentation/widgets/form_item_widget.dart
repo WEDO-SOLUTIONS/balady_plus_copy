@@ -99,7 +99,7 @@ class _FormItemWidgetState extends State<FormItemWidget> {
                         );
                       return Container(child: Text("No Element"));
                     }),
-                /*  if (context.read<BiddingFormBloc>().isLastPage()) ...[
+                if (context.read<BiddingFormBloc>().isLastPage()) ...[
                   LabelTextWithOptional(
                     label: "تفاصيل الخدمة المطلوبة",
                     labelSize: 16,
@@ -108,7 +108,7 @@ class _FormItemWidgetState extends State<FormItemWidget> {
                   const CustomVerticalSpace(height: 10),
                   BidddingUploadWidget(),
                   const CustomVerticalSpace(height: 32),
-                ],*/
+                ],
                 PreviousNextButtons(),
                 CustomVerticalSpace(height: 80),
               ],

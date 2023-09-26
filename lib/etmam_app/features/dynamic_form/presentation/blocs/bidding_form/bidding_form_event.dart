@@ -49,3 +49,7 @@ class UploadBiddingAttachmentEvent extends BiddingFormEvent {
   final FileDataItem file;
   const UploadBiddingAttachmentEvent({required this.file});
 }
+
+class RemoveBiddingAttachmentEvent extends BiddingFormEvent {
+  const RemoveBiddingAttachmentEvent();
+}

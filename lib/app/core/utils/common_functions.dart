@@ -386,18 +386,18 @@ class CommonFunctions {
   }
 
   static Future<FileDataItem?> pickFile(BuildContext context,
-      {bool imagesOnly = false}) async {
+      {bool imagesOnly = false, bool filesOnly = false}) async {
     final file = await BottomSheetDialog.showDraggableSheet(context,
         isFullHeight: false,
         height: 300,
         child: BottomSheetWithActions(
           title: imagesOnly ? ('uploadImage').tr() : ('uploadFile').tr(),
           body: UploadFileDialog(
-            onConfirm: (FileDataItem file) {
-              NavigationService.navigatorKey.currentState?.pop(file);
-            },
-            imagesOnly: imagesOnly,
-          ),
+              onConfirm: (FileDataItem file) {
+                NavigationService.navigatorKey.currentState?.pop(file);
+              },
+              imagesOnly: imagesOnly,
+              filesOnly: filesOnly),
         ));
 
     return Future.value(file is FileDataItem ? file : null);
