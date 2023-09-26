@@ -21,7 +21,8 @@ class BidddingUploadWidget extends StatelessWidget {
         if (state.uploadBidAttachmentResponse == null)
           return ElevatedIconButtonWidget.upload(
             onPressed: () async {
-              FileDataItem? file = await CommonFunctions.pickFile(context);
+              FileDataItem? file =
+                  await CommonFunctions.pickFile(context, filesOnly: true);
               if (file != null)
                 context
                     .read<BiddingFormBloc>()
@@ -32,7 +33,9 @@ class BidddingUploadWidget extends StatelessWidget {
             state.attachmentPath != null)
           return ObjectionReasonAttachment(
             onDelete: () {
-              //   context.read<CreateRetriveCarBloc>().add(DeleteFileEvent());
+              context
+                  .read<BiddingFormBloc>()
+                  .add(RemoveBiddingAttachmentEvent());
             },
             fileName: state.attachmentPath ?? "",
             filePath: state.attachmentName ?? "",

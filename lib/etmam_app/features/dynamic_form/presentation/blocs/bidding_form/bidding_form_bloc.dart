@@ -78,11 +78,24 @@ class BiddingFormBloc extends Bloc<BiddingFormEvent, BiddingFormState> {
 
     on<ValidateFormEvent>(_validateFormEventHandler);
     on<UploadBiddingAttachmentEvent>(_uploadBiddingAttachmentHandler);
+    on<RemoveBiddingAttachmentEvent>(_deleteBiddingAttachmentHandler);
     add(GetBiddingFormEvent(
         params: CreateFormParams(
             profileId: sl<EtmamEntryPointCubit>().state.profile?.id,
             requestTypeId: "bidding",
             services: state.getServicesIds)));
+  }
+
+  Future<void> _deleteBiddingAttachmentHandler(
+      RemoveBiddingAttachmentEvent e, Emitter emitter) async {
+    print("GGGF");
+    emitter(state.copyWith(status: BlocStatus.loading));
+
+    emitter(state.copyWith(
+        status: BlocStatus.success,
+        uploadBidAttachmentResponse: Nullable(null),
+        attachmentPath: Nullable(null),
+        attachmentName: Nullable(null)));
   }
 
   Future<void> _getBiddingFormsEventHandler(
@@ -280,6 +293,9 @@ class BiddingFormBloc extends Bloc<BiddingFormEvent, BiddingFormState> {
 
     SubmitFormParams params = SubmitFormParams(
       cityId: CommonProperties.cityId,
+      uploadTransactionId:
+          state.uploadBidAttachmentResponse?.uploadTransactionId,
+      descAttachmentId: state.uploadBidAttachmentResponse?.attachmentId,
       profileId: CommonProperties.profileId ?? "",
       formId: firstForm!.id!,
       relationId: firstForm.relationId!,
@@ -356,6 +372,7 @@ class BiddingFormBloc extends Bloc<BiddingFormEvent, BiddingFormState> {
       requestTypeId: "bidding.bidding",
       attachmentTypeId: "bidding.bidding-desc",
       base64: e.file.bytes!,
+      base64Str: e.file.fileBase64,
       fileName: e.file.fileName,
       filePath: e.file.filePath,
       mimeType: lookupMimeType(e.file.filePath) ?? "",
@@ -371,11 +388,13 @@ class BiddingFormBloc extends Bloc<BiddingFormEvent, BiddingFormState> {
         errorMessage: (failure as ServerFailure).errorMessage,
       ));
     }, (r) {
+      print("uccccess ${r.data?.result}");
       emitter(state.copyWith(
           status: BlocStatus.success,
+          uploadBidAttachmentResponse: Nullable(r.data?.result),
           errorMessage: "",
-          attachmentName: params.fileName,
-          attachmentPath: params.filePath));
+          attachmentName: Nullable(params.fileName),
+          attachmentPath: Nullable(params.filePath)));
     });
   }
 

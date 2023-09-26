@@ -42,20 +42,24 @@ class BiddingFormState extends Equatable {
       final int? currentPageValue,
       final BiddingFormParams? params,
       final ValidateFormResponse? formValidation,
-      final UploadBidAttachmentResponse? uploadBidAttachmentResponse,
-      final String? attachmentPath,
-      final String? attachmentName}) {
+      final Nullable<UploadBidAttachmentResponse?>? uploadBidAttachmentResponse,
+      final Nullable<String?>? attachmentPath,
+      final Nullable<String?>? attachmentName}) {
     return BiddingFormState(
-        errorMessage: errorMessage ?? this.errorMessage,
-        status: status ?? this.status,
-        formResponses: formResponses ?? this.formResponses,
-        currentPageValue: currentPageValue ?? this.currentPageValue,
-        params: params ?? this.params,
-        formValidation: formValidation ?? this.formValidation,
-        uploadBidAttachmentResponse:
-            uploadBidAttachmentResponse ?? this.uploadBidAttachmentResponse,
-        attachmentPath: attachmentPath ?? this.attachmentPath,
-        attachmentName: attachmentName ?? this.attachmentName);
+      errorMessage: errorMessage ?? this.errorMessage,
+      status: status ?? this.status,
+      formResponses: formResponses ?? this.formResponses,
+      currentPageValue: currentPageValue ?? this.currentPageValue,
+      params: params ?? this.params,
+      formValidation: formValidation ?? this.formValidation,
+      uploadBidAttachmentResponse: uploadBidAttachmentResponse == null
+          ? this.uploadBidAttachmentResponse
+          : uploadBidAttachmentResponse.value,
+      attachmentPath:
+          attachmentPath == null ? this.attachmentPath : attachmentPath.value,
+      attachmentName:
+          attachmentName == null ? this.attachmentName : attachmentName.value,
+    );
   }
 
   int get formsCount => formResponses?.length ?? 0;
