@@ -703,9 +703,9 @@ class DynamicFormRemoteDataSourceImpl extends DynamicFormRemoteDataSource {
             'authorization': 'Bearer ${CommonProperties.token}',
             'x-channel-id': "MOBILE",
             ApiHeaders.xCorrelationId: CommonFunctions.generateGUID(),
-            "x-sso-session-id":
+            /* "x-sso-session-id":
                 EtmamCommonProperties.CommonProperties.sessionId ??
-                    CommonFunctions.generateGUID(),
+                    CommonFunctions.generateGUID(),*/
             "Accept-Language": "ar",
             'Content-Type': 'multipart/form-data'
           }));
