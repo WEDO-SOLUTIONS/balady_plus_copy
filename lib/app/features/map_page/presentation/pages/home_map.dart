@@ -201,9 +201,10 @@ class HomeMap extends StatelessWidget {
           alignment: Alignment.bottomCenter,
           child: Padding(
             padding: const EdgeInsets.only(
-                left: Constants.semiMediumPadding,
-                right: Constants.semiMediumPadding,
-                bottom: Constants.semiSmallPadding),
+              left: Constants.semiSmallPadding,
+              right: Constants.semiSmallPadding,
+              bottom: Constants.semiSmallPadding,
+            ),
             child: ValueListenableBuilder<DgisObjectIdMessage?>(
               valueListenable: mapViewModel.selectedPointId,
               builder: (_, selectedPoint, __) {
