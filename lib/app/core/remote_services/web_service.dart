@@ -545,11 +545,25 @@ class WebService {
       request.headers['x-channel-id'] = "MOBILE";
 
       if (fields != null) {
+        request.headers[ApiHeaders.xFeappId] =
+            EtmamCommonProperties.CommonProperties.appName;
+        request.headers[ApiHeaders.xFeAppVersion] =
+            EtmamCommonProperties.CommonProperties.appVersion ?? "";
+        request.headers[ApiHeaders.xFeDeviceId] =
+            EtmamCommonProperties.CommonProperties.deviceId ?? "";
+        request.headers[ApiHeaders.xFeDeviceOs] =
+            EtmamCommonProperties.CommonProperties.deviceOs ?? "";
+        request.headers[ApiHeaders.xSessionId] =
+            EtmamCommonProperties.CommonProperties.sessionId ?? "";
         request.headers[ApiHeaders.xCorrelationId] =
-            CommonFunctions.generateGUID();
-        request.headers["x-sso-session-id"] =
+            EtmamCommonProperties.CommonFunctions.generateGUID();
+        if (EtmamCommonProperties.CommonProperties.profileId != null)
+          request.headers[ApiHeaders.xUserProfileId] =
+              EtmamCommonProperties.CommonProperties.profileId!;
+
+        /* request.headers["x-sso-session-id"] =
             EtmamCommonProperties.CommonProperties.sessionId ??
-                CommonFunctions.generateGUID();
+                CommonFunctions.generateGUID();*/
         request.headers["Accept-Language"] = "ar";
       }
       print(fileName);

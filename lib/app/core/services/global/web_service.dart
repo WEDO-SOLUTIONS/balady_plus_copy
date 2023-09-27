@@ -77,7 +77,8 @@ class AppInterceptors extends Interceptor {
     options.headers[ApiHeader.language.eName] = languageCode;
 
     if (options.uri.toString().toLowerCase().contains("etmamplus-services") ||
-        options.uri.toString().toLowerCase().contains("dashboard-services")) {
+        options.uri.toString().toLowerCase().contains("dashboard-services") ||
+        options.uri.toString().toLowerCase().contains("mobile-dynamic-forms")) {
       var headers = {
         ApiHeaders.xFeappId: EtmamCommonProperties.CommonProperties.appName,
         ApiHeaders.xFeAppVersion:
