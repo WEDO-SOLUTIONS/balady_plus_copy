@@ -561,9 +561,6 @@ class WebService {
           request.headers[ApiHeaders.xUserProfileId] =
               EtmamCommonProperties.CommonProperties.profileId!;
 
-        /* request.headers["x-sso-session-id"] =
-            EtmamCommonProperties.CommonProperties.sessionId ??
-                CommonFunctions.generateGUID();*/
         request.headers["Accept-Language"] = "ar";
       }
       print(fileName);

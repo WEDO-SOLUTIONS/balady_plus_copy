@@ -78,7 +78,8 @@ class AppInterceptors extends Interceptor {
 
     if (options.uri.toString().toLowerCase().contains("etmamplus-services") ||
         options.uri.toString().toLowerCase().contains("dashboard-services") ||
-        options.uri.toString().toLowerCase().contains("mobile-dynamic-forms")) {
+        options.uri.toString().toLowerCase().contains("mobile-dynamic-forms") ||
+        options.uri.toString().toLowerCase().contains("biddings-services")) {
       var headers = {
         ApiHeaders.xFeappId: EtmamCommonProperties.CommonProperties.appName,
         ApiHeaders.xFeAppVersion:
