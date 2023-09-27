@@ -37,8 +37,8 @@ class BidddingUploadWidget extends StatelessWidget {
                   .read<BiddingFormBloc>()
                   .add(RemoveBiddingAttachmentEvent());
             },
-            fileName: state.attachmentPath ?? "",
-            filePath: state.attachmentName ?? "",
+            fileName: state.attachmentName ?? "",
+            filePath: state.attachmentPath ?? "",
           );
 
         return Container();
