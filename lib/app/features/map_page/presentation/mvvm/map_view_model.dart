@@ -493,6 +493,7 @@ class MapViewModel extends BaseViewModel {
     selectedLands.notifyListeners();
     showLegend.notifyListeners();
     selectedWhiteLands.notifyListeners();
+    controller.setHighlighted([]);
   }
 
   void _setupListeners() {
@@ -571,9 +572,12 @@ class MapViewModel extends BaseViewModel {
   // When click on ayn object
   Future<void> _objectTapListener(TapEvent event) async {
     if (event is ObjectTapEvent) {
-      if (event.levelId != null) {
-        selectedPointId.value = event.dgisObjectId.toMessage();
-      }
+      selectedPointId.value = event.dgisObjectId.toMessage();
+      viewHomeBottomSheet.value = false;
+      viewHomeBottomSheet.notifyListeners();
+      bottomSheetSize.notifyListeners();
+      bottomSheetSizeFraction.notifyListeners();
+      controller.setHighlighted([event.dgisObjectId.toMessage()]);
     }
   }
 
