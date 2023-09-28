@@ -2,10 +2,20 @@ import Foundation
 import DGis
 
 extension SearchResult {
-    func toMessage(withId pageId: String, items: [ItemMarkerInfo]?) -> SearchResultMessage {
+    func toMessage(withId pageId: String, camera: Camera, items: [ItemMarkerInfo]?) -> SearchResultMessage {
         SearchResultMessage.make(
             withFirstPage: self.firstPage?.toMessage(withId: pageId),
             representativeArea: self.representativeArea?.toMessage(),
+            areaOfInterestPosition: self.representativeArea.map {
+                let cameraPosition = calcPosition(camera: camera, geometry: $0)
+                
+                return CameraPositionMessage.make(
+                    withPoint: cameraPosition.point.toMessage(),
+                    zoom: NSNumber(value: cameraPosition.zoom.value),
+                    tilt: NSNumber(value: cameraPosition.tilt.value),
+                    bearing: NSNumber(value: cameraPosition.bearing.value)
+                )
+            },
             itemMarkerInfos: items?.toMessage(),
             searchResultType: self.searchResultType.toMessage(),
             dynamicFilters: self.dynamicFilters.map {

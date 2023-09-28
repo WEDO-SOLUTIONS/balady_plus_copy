@@ -41,6 +41,8 @@ const int mil = 300;
 TextEditingController searchController = TextEditingController();
 
 class MapViewModel extends BaseViewModel {
+  final draggableScrollableController = DraggableScrollableController();
+
   final GeoPointMessage kingdomTower =
       GeoPointMessage(latitude: 24.712301, longitude: 46.674175);
   final GeoPointMessage ithraa =
@@ -70,6 +72,7 @@ class MapViewModel extends BaseViewModel {
       ValueNotifier(IndoorState.disabled());
 
   ValueNotifier<SearchCategoryMessage?> selectedCategory = ValueNotifier(null);
+  ValueNotifier<List<SuggestMessage>?> suggests = ValueNotifier(null);
 
   final layers = ValueNotifier<List<Layers>?>(null);
 
@@ -98,6 +101,7 @@ class MapViewModel extends BaseViewModel {
   double? _cameraTopPadding;
   double oldZoom = 13;
   bool refreshMap = true;
+  bool searchOnCameraMove = false;
 
   //final selectedPoint = ValueNotifier<DgisObjectIdMessage?>(null);
 
@@ -150,6 +154,7 @@ class MapViewModel extends BaseViewModel {
   Future<void> performSearch(
       {required String queryText,
       SearchCategoryMessage? category,
+      SearchQueryMessage? searchQuery,
       bool showLoader = false}) async {
     if (_searchOperation != null) {
       _searchOperation!.cancel();
@@ -158,6 +163,7 @@ class MapViewModel extends BaseViewModel {
       _performSearch(
         queryText: queryText,
         category: category,
+        searchQuery: searchQuery,
         showLoader: showLoader,
       ),
     );
@@ -166,6 +172,7 @@ class MapViewModel extends BaseViewModel {
   Future<void> _performSearch(
       {required String queryText,
       SearchCategoryMessage? category,
+      SearchQueryMessage? searchQuery,
       bool showLoader = false}) async {
     try {
       if (showLoader) {
@@ -204,19 +211,34 @@ class MapViewModel extends BaseViewModel {
               isOpenNow: false,
               searchRect: _lastHandledEvent?.visibleRect.geoRectMessage(),
             )
-          : await controller.search(
-              queryText,
-              categories: [
-                SearchCategoryMessage.gasStations,
-                SearchCategoryMessage.mousques,
-                SearchCategoryMessage.restaurants,
-              ],
-              sortingType: SortingTypeMessage.byRelevance,
-              isOpenNow: false,
-              searchRect: _lastHandledEvent?.visibleRect.geoRectMessage(),
-            );
+          : (searchQuery != null
+              ? await controller.searchByQuery(
+                  searchQuery,
+                  sortingType: SortingTypeMessage.byRelevance,
+                )
+              : await controller.search(
+                  queryText,
+                  categories: [
+                    SearchCategoryMessage.gasStations,
+                    SearchCategoryMessage.mousques,
+                    SearchCategoryMessage.restaurants,
+                  ],
+                  sortingType: SortingTypeMessage.byRelevance,
+                  isOpenNow: false,
+                  searchRect: _lastHandledEvent?.visibleRect.geoRectMessage(),
+                ));
 
       if (showLoader) hideLoading1();
+
+      searchOnCameraMove = false;
+      if (data.areaOfInterestPosition != null) {
+        await controller.moveCamera(
+          data.areaOfInterestPosition!,
+          1,
+          CameraAnimationTypeMessage.linear,
+        );
+      }
+      searchOnCameraMove = true;
 
       if (data.itemMarkerInfos != null) {
         List<Marker> markers = [];
@@ -439,6 +461,10 @@ class MapViewModel extends BaseViewModel {
 
     locationEnabledState.dispose();
 
+    _suggestDebounce?.cancel();
+
+    draggableScrollableController.dispose();
+
     unawaited(controller.dispose());
   }
 
@@ -536,8 +562,10 @@ class MapViewModel extends BaseViewModel {
       _lastRectPosition = _lastCameraPosition;
     }
     _lastHandledEvent = event;
-    // start Timer when stop move camera  call search funcation
-    _startRequestTimer(event.visibleRect.zoom);
+    if (searchOnCameraMove) {
+      // start Timer when stop move camera  call search funcation
+      _startRequestTimer(event.visibleRect.zoom);
+    }
   }
 
   // When click on ayn object
@@ -1070,6 +1098,39 @@ class MapViewModel extends BaseViewModel {
     await controller.removeAllPolygons();
     await controller.removeAllPolylines();
     await controller.removeAll();
+    try {
+      await controller.removeAllHighlights();
+    } catch (e) {}
     return;
+  }
+
+  Timer? _suggestDebounce;
+
+  void updateSuggest({required String queryText}) {
+    _suggestDebounce?.cancel();
+    _suggestDebounce = Timer(const Duration(milliseconds: 500), () {
+      _searchOperation?.cancel();
+      _searchOperation = CancelableOperation.fromFuture(
+        _updateSuggest(
+          queryText: queryText,
+        ),
+      );
+    });
+  }
+
+  Future<void> _updateSuggest({required String queryText}) async {
+    final result = await controller.fetchSuggest(
+      queryText,
+      // categories: [
+      //   SearchCategoryMessage.gasStations,
+      //   SearchCategoryMessage.mousques,
+      //   SearchCategoryMessage.restaurants,
+      // ],
+      // sortingType: SortingTypeMessage.byRelevance,
+      // isOpenNow: false,
+      searchRect: _lastHandledEvent?.visibleRect.geoRectMessage(),
+    );
+
+    suggests.value = result.suggests.whereNotNull().toList();
   }
 }

@@ -714,6 +714,7 @@ class SearchResultMessage {
   SearchResultMessage(
     this.firstPage,
     this.representativeArea,
+    this.areaOfInterestPosition,
     this.itemMarkerInfos,
     this.searchResultType,
     this.dynamicFilters,
@@ -722,6 +723,7 @@ class SearchResultMessage {
 
   final PageMessage? firstPage;
   final GeometryMessage? representativeArea;
+  final CameraPositionMessage? areaOfInterestPosition;
   final List<ItemMarkerInfoMessage?>? itemMarkerInfos;
   final SearchResultTypeMessage searchResultType;
   final List<DynamicFilterMessage?> dynamicFilters;

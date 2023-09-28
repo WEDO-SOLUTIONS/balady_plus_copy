@@ -60,7 +60,7 @@ class ObjectTapHandler {
     private lazy var panoramaMarkerSelected: Image = self.imageFactory.make(image: UIImage(named: "ic_street_view_marker")!)
     private var iconWidth: LogicalPixel?
     
-    private var source: DgisSource?
+    var source: DgisSource?
 
     private var markers: Dictionary<String, Marker> = [:]
     private var managers: Dictionary<String, MapObjectManager> = [:]
@@ -528,6 +528,14 @@ class ObjectTapHandler {
     }
     
     func setHighlighted(_ objects: [DgisObjectId], _ completion: @escaping (FlutterError?) -> Void) {
+        for source in map.sources {
+            let mSource = source as? DgisSource
+            if mSource != nil {
+                self.source = mSource
+                break
+            }
+        }
+        
         guard let source = self.source else {
             completion(FlutterError(code: "Map source is null", message: nil, details: nil))
             return
@@ -692,8 +700,6 @@ class ObjectTapHandler {
             self.eventChannel.error(code: Events.objectTapError)
             return
         }
-        
-        self.source = source
         
         self.sendDgisObjectEvent(mapObject.id, objectInfo.closestMapPoint, objectInfo.item.levelId)
     }

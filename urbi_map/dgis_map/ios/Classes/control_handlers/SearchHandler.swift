@@ -251,7 +251,7 @@ class SearchHandler: NSObject {
                 }
 
                 completion(
-                    response.toMessage(withId: pageId, items: itemMarkerInfos),
+                    response.toMessage(withId: pageId, camera: self.map.camera, items: itemMarkerInfos),
                     nil
                 )
             }, failure: { error in
