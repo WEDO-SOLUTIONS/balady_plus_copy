@@ -1,6 +1,5 @@
 package com.dgis.map.control_handlers
 
-import android.util.Log
 import android.util.Size
 import com.dgis.map.FlutterClusterRenderer
 import com.dgis.map.R
