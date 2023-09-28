@@ -43,6 +43,7 @@ class PointViewModel extends BaseViewModel {
         mapViewModel.bottomSheetSize.notifyListeners();
         mapViewModel.selectedPointId.value = null;
         mapViewModel.selectedPointId.notifyListeners();
+        mapViewModel.controller.setHighlighted([]);
       }
       if (dataPoint.value != null) {
         print(dataPoint.value?.title.toString());
