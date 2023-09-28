@@ -823,6 +823,8 @@ enum SearchCategoryMessage {
   cafe,
   restaurants,
   parks,
+  hospitals,
+  schools,
 }
 
 class SearchCategoryMessage_ {

@@ -122,6 +122,10 @@ extension SearchCategoryMessage {
             return [161]
         case .parks:
             return [168]
+        case .hospitals:
+            return [201]
+        case .schools:
+            return [245]
         }
     }
     
