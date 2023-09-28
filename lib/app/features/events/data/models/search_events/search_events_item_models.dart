@@ -31,6 +31,6 @@ class SearchEventsItemModel extends SearchEventsItem {
         city: json["city"],
         startDate: parseDate(json["startDate"]),
         endDate: parseDate(json["endDate"]),
-        logoImage: json["logoImage"]);
+        logoImage: json["logoURL"]);
   }
 }
