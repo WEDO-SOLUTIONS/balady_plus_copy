@@ -85,150 +85,79 @@ class GeneralMapCardWidget extends StatelessWidget {
                       ? const ShimmerEffectWidget(
                           height: 120,
                         )
-                      : Container(
-                          height: 200,
-                          padding: const EdgeInsets.all(16),
-                          decoration: ShapeDecoration(
-                            color: Colors.white,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(16),
-                            ),
-                            shadows: [
-                              const BoxShadow(
-                                color: Color(0x1C77758D),
-                                blurRadius: 22,
-                                offset: Offset(0, 4),
-                                spreadRadius: 0,
-                              )
-                            ],
-                          ),
-                          child: Stack(
-                            children: [
-                              Align(
-                                alignment: Alignment.centerRight,
-                                child: Column(
-                                  children: [
-                                    Row(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          Container(
-                                            width: 58,
-                                            height: 58,
-                                            padding: const EdgeInsets.all(16.0),
-                                            decoration: ShapeDecoration(
-                                                color: color,
-                                                shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(16),
-                                                )),
-                                            child: Image.asset(
-                                              icon,
-                                              width: 24,
-                                              height: 24,
-                                            ),
-                                          ),
-                                          const CustomHorizontalSpace(width: 8),
-                                          Expanded(
-                                            child: Padding(
-                                              padding:
-                                                  const EdgeInsetsDirectional
-                                                      .only(end: 16.0),
-                                              child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                children: [
-                                                  const CustomVerticalSpace(
-                                                      height: 8),
-                                                  CustomTextWidget(
-                                                    dataPoint?.title ?? "",
-                                                    fontColor: AppColor
-                                                        .blackModern800Light,
-                                                    fontSize: 16,
-                                                    textOverflow:
-                                                        TextOverflow.ellipsis,
-                                                    fontWeight:
-                                                        AppFontWeight.bold,
-                                                    maxLines: 2,
-                                                  ),
-                                                  const CustomVerticalSpace(
-                                                      height: 8),
-                                                  CustomTextWidget(
-                                                    dataPoint?.makeAddress() ??
-                                                        "",
-                                                    fontColor: AppColor
-                                                        .blackModern500Light,
-                                                    fontSize: 12,
-                                                    fontWeight:
-                                                        AppFontWeight.semiBold,
-                                                    height: 1.3,
-                                                    maxLines: 2,
-                                                  ),
-                                                  const CustomVerticalSpace(
-                                                    height: 8,
-                                                  ),
-                                                  /* GestureDetector(
-                                                    onTap: () =>
-                                                        CommonFunctions.openMap(
-                                                            dataPoint!
-                                                                .markerPosition!
-                                                                .latitude,
-                                                            dataPoint
-                                                                .markerPosition!
-                                                                .longitude),
-                                                    child: Row(
-                                                      children: [
-                                                        CustomTextWidget(
-                                                          "go_to_location".tr(),
-                                                          fontWeight:
-                                                              AppFontWeight.bold,
-                                                          fontSize: 12,
-                                                          fontColor: AppColor
-                                                              .primary800Light,
-                                                        ),
-                                                        CustomHorizontalSpace(
-                                                            width: 8),
-                                                        SvgPicture.asset(
-                                                            Constants.goToLocation),
-                                                      ],
-                                                    ),
-                                                  )*/
-
-                                                  /*  CustomVerticalSpace(height: 16),
-                                          CustomTextWidget(
-                                            dataPoint?.externalIds?.join(" ") ?? "[]",
-                                            fontColor: AppColor.blackModern500Light,
-                                            fontSize: 12,
-                                            fontWeight: AppFontWeight.semiBold,
-                                            height: 1.3,
-                                            maxLines: 2,
-                                          ),*/
-                                                ],
+                      : Column(
+                          children: [
+                            const Spacer(),
+                            Container(
+                              padding: const EdgeInsets.all(16),
+                              decoration: ShapeDecoration(
+                                color: Colors.white,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(16),
+                                ),
+                                shadows: [
+                                  const BoxShadow(
+                                    color: Color(0x1C77758D),
+                                    blurRadius: 22,
+                                    offset: Offset(0, 4),
+                                    spreadRadius: 0,
+                                  )
+                                ],
+                              ),
+                              child: Stack(
+                                children: [
+                                  Align(
+                                    alignment: Alignment.centerRight,
+                                    child: Column(
+                                      children: [
+                                        Row(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Container(
+                                                width: 58,
+                                                height: 58,
+                                                padding:
+                                                    const EdgeInsets.all(16.0),
+                                                decoration: ShapeDecoration(
+                                                    color: color,
+                                                    shape:
+                                                        RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              16),
+                                                    )),
+                                                child: Image.asset(
+                                                  icon,
+                                                  width: 24,
+                                                  height: 24,
+                                                ),
                                               ),
-                                            ),
-                                          )
-                                        ]),
-                                    const CustomVerticalSpace(height: 16),
-                                    Row(
-                                      children: dataPoint?.openingHours?.values
-                                              .where(
-                                                  (e) => e!.values.isNotEmpty)
-                                              .map(
-                                                (e) => Expanded(
+                                              const CustomHorizontalSpace(
+                                                  width: 8),
+                                              Expanded(
+                                                child: Padding(
+                                                  padding:
+                                                      const EdgeInsetsDirectional
+                                                          .only(end: 16.0),
                                                   child: Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
                                                     children: [
+                                                      const CustomVerticalSpace(
+                                                          height: 8),
                                                       CustomTextWidget(
-                                                        e!.values[0]!.startTime
-                                                            .weekDay
-                                                            .displayName(),
+                                                        dataPoint?.title ?? "",
                                                         fontColor: AppColor
                                                             .blackModern800Light,
-                                                        fontSize: 14,
+                                                        fontSize: 16,
                                                         textOverflow:
                                                             TextOverflow
                                                                 .ellipsis,
@@ -236,65 +165,159 @@ class GeneralMapCardWidget extends StatelessWidget {
                                                             AppFontWeight.bold,
                                                         maxLines: 2,
                                                       ),
-                                                      ...e.values
-                                                          .map((e) => [
-                                                                const CustomVerticalSpace(
-                                                                  height: 8,
-                                                                ),
-                                                                CustomTextWidget(
-                                                                  e!.displayTime(),
-                                                                  maxLines: 3,
-                                                                  textStyle:
-                                                                      AppStyle
-                                                                          .serviceDescriptionStyle,
-                                                                  textDirection:
-                                                                      TextDirection
-                                                                          .ltr,
-                                                                ),
-                                                              ])
-                                                          .toList()
-                                                          .flattened,
+                                                      const CustomVerticalSpace(
+                                                          height: 8),
+                                                      CustomTextWidget(
+                                                        dataPoint
+                                                                ?.makeAddress() ??
+                                                            "",
+                                                        fontColor: AppColor
+                                                            .blackModern500Light,
+                                                        fontSize: 12,
+                                                        fontWeight:
+                                                            AppFontWeight
+                                                                .semiBold,
+                                                        height: 1.3,
+                                                        maxLines: 2,
+                                                      ),
+                                                      const CustomVerticalSpace(
+                                                        height: 8,
+                                                      ),
+                                                      /* GestureDetector(
+                                                        onTap: () =>
+                                                            CommonFunctions.openMap(
+                                                                dataPoint!
+                                                                    .markerPosition!
+                                                                    .latitude,
+                                                                dataPoint
+                                                                    .markerPosition!
+                                                                    .longitude),
+                                                        child: Row(
+                                                          children: [
+                                                            CustomTextWidget(
+                                                              "go_to_location".tr(),
+                                                              fontWeight:
+                                                                  AppFontWeight.bold,
+                                                              fontSize: 12,
+                                                              fontColor: AppColor
+                                                                  .primary800Light,
+                                                            ),
+                                                            CustomHorizontalSpace(
+                                                                width: 8),
+                                                            SvgPicture.asset(
+                                                                Constants.goToLocation),
+                                                          ],
+                                                        ),
+                                                      )*/
+
+                                                      /*  CustomVerticalSpace(height: 16),
+                                              CustomTextWidget(
+                                                dataPoint?.externalIds?.join(" ") ?? "[]",
+                                                fontColor: AppColor.blackModern500Light,
+                                                fontSize: 12,
+                                                fontWeight: AppFontWeight.semiBold,
+                                                height: 1.3,
+                                                maxLines: 2,
+                                              ),*/
                                                     ],
                                                   ),
                                                 ),
                                               )
-                                              .toList() ??
-                                          [],
+                                            ]),
+                                        const CustomVerticalSpace(height: 16),
+                                        Row(
+                                          children:
+                                              dataPoint?.openingHours?.values
+                                                      .where((e) =>
+                                                          e!.values.isNotEmpty)
+                                                      .map(
+                                                        (e) => Expanded(
+                                                          child: Column(
+                                                            children: [
+                                                              CustomTextWidget(
+                                                                e!
+                                                                    .values[0]!
+                                                                    .startTime
+                                                                    .weekDay
+                                                                    .displayName(),
+                                                                fontColor: AppColor
+                                                                    .blackModern800Light,
+                                                                fontSize: 12,
+                                                                textOverflow:
+                                                                    TextOverflow
+                                                                        .ellipsis,
+                                                                fontWeight:
+                                                                    AppFontWeight
+                                                                        .bold,
+                                                                maxLines: 2,
+                                                              ),
+                                                              ...e.values
+                                                                  .map((e) => [
+                                                                        const CustomVerticalSpace(
+                                                                          height:
+                                                                              8,
+                                                                        ),
+                                                                        CustomTextWidget(
+                                                                          e!.displayTime(),
+                                                                          fontColor:
+                                                                              AppColor.blackModern500Light,
+                                                                          fontSize:
+                                                                              8,
+                                                                          textOverflow:
+                                                                              TextOverflow.ellipsis,
+                                                                          fontWeight:
+                                                                              AppFontWeight.bold,
+                                                                          maxLines:
+                                                                              3,
+                                                                          textDirection:
+                                                                              TextDirection.ltr,
+                                                                        ),
+                                                                      ])
+                                                                  .toList()
+                                                                  .flattened,
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      )
+                                                      .toList() ??
+                                                  [],
+                                        ),
+                                      ],
                                     ),
-                                  ],
-                                ),
-                              ),
-                              Align(
-                                alignment: Alignment.bottomLeft,
-                                child: CustomTextWidget(
-                                  dataPoint?.workStatus?.isOpen == true
-                                      ? "open".tr()
-                                      : "".tr(),
-                                  textStyle: const TextStyle(
-                                    color: Color(0xFFA7C587),
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w700,
                                   ),
-                                ),
-                              ),
-                              Align(
-                                alignment: Alignment.topLeft,
-                                child: GestureDetector(
-                                  onTap: () {
-                                    onClose();
-                                  },
-                                  child: CircleIcon(
-                                    icon: Icons.close,
-                                    circleSize: 24,
-                                    iconColor: AppColor.primary600Light,
-                                    backgroundColor:
-                                        AppColor.geyser.withOpacity(0.4),
-                                    iconSize: 12,
+                                  Align(
+                                    alignment: Alignment.bottomLeft,
+                                    child: CustomTextWidget(
+                                      dataPoint?.workStatus?.isOpen == true
+                                          ? "open".tr()
+                                          : "".tr(),
+                                      textStyle: const TextStyle(
+                                        color: Color(0xFFA7C587),
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w700,
+                                      ),
+                                    ),
                                   ),
-                                ),
+                                  Align(
+                                    alignment: Alignment.topLeft,
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        onClose();
+                                      },
+                                      child: CircleIcon(
+                                        icon: Icons.close,
+                                        circleSize: 24,
+                                        iconColor: AppColor.primary600Light,
+                                        backgroundColor:
+                                            AppColor.geyser.withOpacity(0.4),
+                                        iconSize: 12,
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         );
                 });
           }),
