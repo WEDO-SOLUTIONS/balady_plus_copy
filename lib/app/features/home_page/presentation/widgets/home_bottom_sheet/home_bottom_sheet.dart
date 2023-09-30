@@ -77,7 +77,7 @@ class HomeBottomSheet extends StatelessWidget {
                             double zoom = 17;
                             if (objectHandler.item.types[0]?.type ==
                                 ObjectTypeMessage.admDiv) {
-                              zoom = 10;
+                              zoom = 14;
                             } else if ([
                               ObjectTypeMessage.road,
                               ObjectTypeMessage.street,
