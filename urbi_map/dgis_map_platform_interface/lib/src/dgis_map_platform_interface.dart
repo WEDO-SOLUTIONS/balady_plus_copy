@@ -166,6 +166,7 @@ abstract class DgisMapPlugin extends PlatformInterface {
   Future<SuggestResultMessage> fetchSuggests(
     String queryText, {
     GeoRectMessage? searchRect,
+    List<SuggestedTypeMessage_>? allowedResultTypes,
   });
 
   Future<void> setMarkerOptions(MarkerOptionsMessageOld markerOptions);

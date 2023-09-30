@@ -110,7 +110,9 @@ class _DraggableHeaderComponentState extends State<DraggableHeaderComponent> {
                   //         Provider.of<MapViewModel>(context, listen: false);
 
                   //     mapViewModel.performSearch(
-                  //         queryText: text, showLoader: true);
+                  //       queryText: text,
+                  //       showLoader: true,
+                  //     );
                   //   }
                   // },
                 );

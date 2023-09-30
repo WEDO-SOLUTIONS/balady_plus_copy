@@ -1140,8 +1140,40 @@ class MapViewModel extends BaseViewModel {
   }
 
   Future<void> _updateSuggest({required String queryText}) async {
+    List<SuggestedTypeMessage>? allowedResultTypes;
+    if (queryText.contains("منطقة") &&
+        queryText.contains("منطقه") &&
+        queryText.contains("محافظة") &&
+        queryText.contains("محافظه") &&
+        queryText.contains("مدينة") &&
+        queryText.contains("مدينه") &&
+        queryText.contains("حى") &&
+        queryText.contains("حي")) {
+      allowedResultTypes = [SuggestedTypeMessage.admDiv];
+    } else {
+      allowedResultTypes = [
+        SuggestedTypeMessage.admDiv,
+        SuggestedTypeMessage.attraction,
+        SuggestedTypeMessage.attribute,
+        SuggestedTypeMessage.branch,
+        SuggestedTypeMessage.building,
+        SuggestedTypeMessage.coordinates,
+        SuggestedTypeMessage.crossroad,
+        SuggestedTypeMessage.districtArea,
+        SuggestedTypeMessage.parking,
+        SuggestedTypeMessage.region,
+        SuggestedTypeMessage.road,
+        SuggestedTypeMessage.route,
+        SuggestedTypeMessage.station,
+        SuggestedTypeMessage.stationEntrance,
+        SuggestedTypeMessage.street,
+        SuggestedTypeMessage.text,
+      ];
+    }
+
     final result = await controller.fetchSuggest(
       queryText,
+      allowedResultTypes: allowedResultTypes,
       // categories: [
       //   SearchCategoryMessage.gasStations,
       //   SearchCategoryMessage.mousques,

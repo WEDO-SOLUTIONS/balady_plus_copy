@@ -400,9 +400,10 @@ class MethodChannelDgisMapPlugin implements DgisMapPlugin, FlutterMapApi {
   @override
   Future<SuggestResultMessage> fetchSuggests(
     String queryText, {
+    List<SuggestedTypeMessage_>? allowedResultTypes,
     GeoRectMessage? searchRect,
   }) =>
-      _api.fetchSuggests(queryText, searchRect);
+      _api.fetchSuggests(queryText, allowedResultTypes, searchRect);
 
   @override
   Future<List<DistanceResponseMessage?>> getDistanceTo(

@@ -371,11 +371,13 @@ class DgisMapView(
 
     override fun fetchSuggests(
         queryText: String,
+        allowedResultTypes: List<SuggestedTypeMessage_>?,
         searchRect: GeoRectMessage?,
         result: Messages.Result<SuggestResultMessage>?
     ) {
         searchHandler?.fetchSuggests(
             queryText = queryText,
+            allowedResultTypes = allowedResultTypes,
             searchGeoRect = searchRect?.toGeoRect(),
             result = result
         )

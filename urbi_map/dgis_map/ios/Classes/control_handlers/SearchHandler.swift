@@ -384,13 +384,21 @@ class SearchHandler: NSObject {
     
     func fetchSuggests(
         queryText: String,
+        allowedResultTypes: [SuggestedTypeMessage_]?,
         searchGeoRect: DGis.GeoRect?,
         completion: @escaping (SuggestResultMessage?, FlutterError?) -> Void
     ) {
-        let suggestQuery = SuggestQueryBuilder
+        var suggestQueryBuilder = SuggestQueryBuilder
             .fromQueryText(queryText: queryText)
             .setAreaOfInterest(rect: searchGeoRect)
-            .build()
+        
+        if let allowedResultTypes {
+            suggestQueryBuilder = suggestQueryBuilder.setAllowedResultTypes(
+                allowedResultTypes: allowedResultTypes.map { $0.type.suggestedType }
+            )
+        }
+            
+        let suggestQuery = suggestQueryBuilder.build()
 
         suggestCancelable = searchManager.suggest(query: suggestQuery).sink(
             receiveValue: {
