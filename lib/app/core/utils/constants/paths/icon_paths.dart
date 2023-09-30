@@ -10,6 +10,7 @@ const _pngVDIconPath = 'assets/icons/png/vd/';
 const _svgVDIconPath = 'assets/icons/svg/vd/';
 const _svgAthkarIconPath = 'assets/icons/svg/athkar/';
 const _boardingLogoPath = 'assets/icons/svg/boarding/';
+const _eventsPath = 'assets/icons/svg/home_events/';
 
 const _inqPath = 'assets/icons/inq/';
 const _msrPath = 'assets/icons/msr/';
@@ -370,4 +371,11 @@ class IconPath {
   // Self Rating
 
   static const selfRatingBuilding = '${_svgSelfRatingPage}building$_svg';
+
+  // Home Events
+  static const rockHomeEvents = '${_eventsPath}rock$_png';
+  static const bookmarkHomeEvents = '${_eventsPath}bookmark$_svg';
+  static const locationHomeEvents = '${_eventsPath}location$_svg';
+  static const planetRingedHomeEvents = '${_eventsPath}planet_ringed$_svg';
+  static const tagHomeEvents = '${_eventsPath}tag$_svg';
 }

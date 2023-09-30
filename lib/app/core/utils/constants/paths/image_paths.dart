@@ -127,4 +127,8 @@ class ImagePath {
   static const swiperImage2 = '${_imagePath}imageSwipe2$_png';
   static const dariyahImage = '${_imagePath}dariyah$_png';
   static const eventsMap = '${_imagePath}eventsMap$_png';
+
+  // Calendar
+  static const calendarNationalDay = '${_imagePath}calendar_national_day$_png';
+  static const saudiFlag = '${_imagePath}saudi_flag$_png';
 }

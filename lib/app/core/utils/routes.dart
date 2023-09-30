@@ -50,6 +50,7 @@ import '../../core/utils/utils_exports.dart'
         SliderUpPage;
 import '../../features/_shared_feature_/presentation/pages/qiblah_webview_page.dart';
 import '../../features/_shared_feature_/presentation/pages/view_apigee_image_screen.dart';
+import '../../features/calendar/calendar_exports.dart';
 import '../../features/create_compliance/presentation/pages/compliance_details_page.dart';
 import '../../features/create_compliance/presentation/pages/map_page/complinace_map_page.dart';
 import '../../features/create_compliance/presentation/pages/non_compliance_screen.dart';
@@ -529,8 +530,8 @@ class Routes {
 
         RouteName.eventsMainPage: (context) => EventsMainPage(),
 
-        RouteName.eventsDetailsPage: (context) => SingleEventDescriptionPage()
-
+        RouteName.eventsDetailsPage: (context) => SingleEventDescriptionPage(),
+        RouteName.calendarMainPage: (context) => const MainPageCalendar()
 //    cubit = ModalRoute.of(context)!.settings.arguments as PrayerTimesCubit;
       };
 }
