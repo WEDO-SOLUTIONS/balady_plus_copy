@@ -238,7 +238,7 @@ class MapViewModel extends BaseViewModel {
           CameraAnimationTypeMessage.linear,
         );
       }
-      searchOnCameraMove = true;
+      // searchOnCameraMove = true;
 
       if (data.itemMarkerInfos != null) {
         List<Marker> markers = [];
@@ -250,6 +250,7 @@ class MapViewModel extends BaseViewModel {
         //  await controller.removeAllMarkers(fromManager: mapObjectManager);
 
         for (final markerInfo in data.itemMarkerInfos!) {
+          final markerCategory = selectedCategory.value;
           markers.add(Marker(
             id: markerInfo?.objectId?.objectId.toString() ?? const Uuid().v4(),
             options: MarkerOptionsMessage(
@@ -289,6 +290,7 @@ class MapViewModel extends BaseViewModel {
               // bottomSheetSizeFraction.value = 0.05;
               bottomSheetSize.notifyListeners();
               bottomSheetSizeFraction.notifyListeners();
+              selectedCategory.value = markerCategory;
 
               Future.delayed(
                 const Duration(milliseconds: 300),
@@ -511,6 +513,12 @@ class MapViewModel extends BaseViewModel {
     );
 
     _subscriptions.add(
+      controller.cameraStateEvents.listen(
+        _cameraStateChangeListener,
+      ),
+    );
+
+    _subscriptions.add(
       controller.objectTapEvents.listen(
         _objectTapListener,
       ),
@@ -552,6 +560,14 @@ class MapViewModel extends BaseViewModel {
     _lastCameraPosition = event;
   }
 
+  void _cameraStateChangeListener(CameraStateEvent event) async {
+    if (event.state == CameraState.fly) {
+      searchOnCameraMove = false;
+    } else if (event.state == CameraState.busy) {
+      searchOnCameraMove = true;
+    }
+  }
+
   // When move camera map any change zoom in, zoom out ...
   void _visibleRectChangeListener(VisibleRectEvent event) async {
     if ((!await controller.containsRect(
@@ -572,6 +588,7 @@ class MapViewModel extends BaseViewModel {
   // When click on ayn object
   Future<void> _objectTapListener(TapEvent event) async {
     if (event is ObjectTapEvent) {
+      selectedCategory.value = null;
       selectedPointId.value = event.dgisObjectId.toMessage();
       viewHomeBottomSheet.value = false;
       viewHomeBottomSheet.notifyListeners();
@@ -1123,8 +1140,40 @@ class MapViewModel extends BaseViewModel {
   }
 
   Future<void> _updateSuggest({required String queryText}) async {
+    List<SuggestedTypeMessage>? allowedResultTypes;
+    if (queryText.contains("منطقة") &&
+        queryText.contains("منطقه") &&
+        queryText.contains("محافظة") &&
+        queryText.contains("محافظه") &&
+        queryText.contains("مدينة") &&
+        queryText.contains("مدينه") &&
+        queryText.contains("حى") &&
+        queryText.contains("حي")) {
+      allowedResultTypes = [SuggestedTypeMessage.admDiv];
+    } else {
+      allowedResultTypes = [
+        SuggestedTypeMessage.admDiv,
+        SuggestedTypeMessage.attraction,
+        SuggestedTypeMessage.attribute,
+        SuggestedTypeMessage.branch,
+        SuggestedTypeMessage.building,
+        SuggestedTypeMessage.coordinates,
+        SuggestedTypeMessage.crossroad,
+        SuggestedTypeMessage.districtArea,
+        SuggestedTypeMessage.parking,
+        SuggestedTypeMessage.region,
+        SuggestedTypeMessage.road,
+        SuggestedTypeMessage.route,
+        SuggestedTypeMessage.station,
+        SuggestedTypeMessage.stationEntrance,
+        SuggestedTypeMessage.street,
+        SuggestedTypeMessage.text,
+      ];
+    }
+
     final result = await controller.fetchSuggest(
       queryText,
+      allowedResultTypes: allowedResultTypes,
       // categories: [
       //   SearchCategoryMessage.gasStations,
       //   SearchCategoryMessage.mousques,

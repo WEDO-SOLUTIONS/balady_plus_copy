@@ -58,6 +58,34 @@ class HomeBottomSheet extends StatelessWidget {
                               ?.item
                               .makeAddress() ??
                           suggests[index].subtitle.text;
+                      final objectHandler =
+                          suggests[index].handler.objectHandler;
+                      String title = suggests[index].title.text;
+                      if (objectHandler != null) {
+                        final admType =
+                            objectHandler.item.address?.drilldown.first?.type;
+                        switch (admType) {
+                          case "region":
+                            title = "منطقة";
+                            break;
+                          case "governorate":
+                            title = "محافظة";
+                            break;
+                          case "city":
+                            title = "مدينة";
+                            break;
+                          case "district":
+                            title = "حى";
+                            break;
+                          case "streets":
+                            title = "شارع";
+                            break;
+                          case "buildings":
+                            title = "مبنى";
+                            break;
+                        }
+                      }
+
                       return InkWell(
                         onTap: () async {
                           final objectHandler =
@@ -74,6 +102,16 @@ class HomeBottomSheet extends StatelessWidget {
                             }
                             mapViewModel.viewHomeBottomSheet.value = false;
                             final position = objectHandler.item.markerPosition;
+                            double zoom = 17;
+                            if (objectHandler.item.types[0]?.type ==
+                                ObjectTypeMessage.admDiv) {
+                              zoom = 14;
+                            } else if ([
+                              ObjectTypeMessage.road,
+                              ObjectTypeMessage.street,
+                            ].contains(objectHandler.item.types[0]?.type)) {
+                              zoom = 16;
+                            }
                             if (position != null) {
                               await mapViewModel.controller.moveCamera(
                                 CameraPositionMessage(
@@ -81,7 +119,7 @@ class HomeBottomSheet extends StatelessWidget {
                                     latitude: position.latitude,
                                     longitude: position.longitude,
                                   ),
-                                  zoom: 17,
+                                  zoom: zoom,
                                   tilt: 0,
                                   bearing: 0,
                                 ),
@@ -122,7 +160,7 @@ class HomeBottomSheet extends StatelessWidget {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
-                                  suggests[index].title.text,
+                                  title,
                                   style: AppStyle.mainTextStyle.copyWith(
                                       color: AppColor.blackModern600Light,
                                       fontSize: 16,

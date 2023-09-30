@@ -802,6 +802,12 @@ class MarkedUpTextMessage {
   final List<MarkedUpTextSpanMessage?> matchedParts;
 }
 
+class SuggestedTypeMessage_ {
+  SuggestedTypeMessage_(this.type);
+
+  final SuggestedTypeMessage type;
+}
+
 class SuggestMessage {
   SuggestMessage(this.handler, this.suggestedType, this.title, this.subtitle);
 
@@ -996,6 +1002,7 @@ abstract class MapApi {
   @async
   SuggestResultMessage fetchSuggests(
     String queryText,
+    List<SuggestedTypeMessage_>? allowedResultTypes,
     GeoRectMessage? searchRect,
   );
 

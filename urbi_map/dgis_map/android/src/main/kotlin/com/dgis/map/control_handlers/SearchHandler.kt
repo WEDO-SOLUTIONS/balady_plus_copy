@@ -281,12 +281,20 @@ class SearchHandler(
 
     fun fetchSuggests(
         queryText: String,
+        allowedResultTypes: List<SuggestedTypeMessage_>?,
         searchGeoRect: GeoRect?,
         result: Result<SuggestResultMessage>?
     ) {
-        val suggestQuery = SuggestQueryBuilder.fromQueryText(queryText)
+        var suggestQueryBuilder = SuggestQueryBuilder.fromQueryText(queryText)
             .setAreaOfInterest(searchGeoRect)
-            .build()
+
+        if (allowedResultTypes != null) {
+            suggestQueryBuilder = suggestQueryBuilder.setAllowedResultTypes(
+                allowedResultTypes.map { it.type.toSuggestType() }
+            )
+        }
+
+        val suggestQuery = suggestQueryBuilder.build()
 
         suggestFuture = searchManager.suggest(suggestQuery).apply {
             onResult { response ->

@@ -20,6 +20,23 @@ class VisibleRectHandler(
         closeables.add(map.camera.positionChannel.connect {
             positionChanged(it)
         })
+        closeables.add(map.camera.stateChannel.connect {
+            stateChanged(it)
+        })
+    }
+
+    private fun stateChanged(state: CameraState) {
+        eventSink.success(
+            mapOf(
+                "event" to Events.cameraStateChanged.name,
+                "state" to when (state) {
+                    CameraState.BUSY -> "busy"
+                    CameraState.FLY -> "fly"
+                    CameraState.FOLLOW_POSITION -> "follow"
+                    CameraState.FREE -> "free"
+                }
+            )
+        )
     }
 
     private fun positionChanged(position: CameraPosition) {
@@ -63,7 +80,8 @@ class VisibleRectHandler(
     companion object {
         private enum class Events {
             visibleRectChanged,
-            cameraPositionChanged
+            cameraPositionChanged,
+            cameraStateChanged
         }
     }
 }

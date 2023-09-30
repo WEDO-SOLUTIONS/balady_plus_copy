@@ -154,7 +154,10 @@ class GeneralMapCardWidget extends StatelessWidget {
                                                       const CustomVerticalSpace(
                                                           height: 8),
                                                       CustomTextWidget(
-                                                        dataPoint?.title ?? "",
+                                                        dataPoint?.address
+                                                                ?.buildingName ??
+                                                            dataPoint?.title ??
+                                                            "",
                                                         fontColor: AppColor
                                                             .blackModern800Light,
                                                         fontSize: 16,
