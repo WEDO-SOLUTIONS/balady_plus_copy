@@ -74,6 +74,16 @@ class HomeBottomSheet extends StatelessWidget {
                             }
                             mapViewModel.viewHomeBottomSheet.value = false;
                             final position = objectHandler.item.markerPosition;
+                            double zoom = 17;
+                            if (objectHandler.item.types[0]?.type ==
+                                ObjectTypeMessage.admDiv) {
+                              zoom = 10;
+                            } else if ([
+                              ObjectTypeMessage.road,
+                              ObjectTypeMessage.street,
+                            ].contains(objectHandler.item.types[0]?.type)) {
+                              zoom = 16;
+                            }
                             if (position != null) {
                               await mapViewModel.controller.moveCamera(
                                 CameraPositionMessage(
@@ -81,7 +91,7 @@ class HomeBottomSheet extends StatelessWidget {
                                     latitude: position.latitude,
                                     longitude: position.longitude,
                                   ),
-                                  zoom: 17,
+                                  zoom: zoom,
                                   tilt: 0,
                                   bearing: 0,
                                 ),

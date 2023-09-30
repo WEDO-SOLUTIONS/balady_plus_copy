@@ -48,6 +48,8 @@ abstract class DgisMapPlugin extends PlatformInterface {
 
   Stream<CameraPositionMessage> get cameraPositionEvents;
 
+  Stream<CameraStateEvent> get cameraStateEvents;
+
   Stream<MarkerWithPhotoTapEvent> get markerWithPhotoTapEvents;
 
   Stream<RouteChangedEvent> get routeChangedEvents;

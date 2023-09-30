@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:dgis_map_platform_interface/library.dart';
+import 'package:dgis_map_platform_interface/src/control_handlers/camera_state_event_handler.dart';
 import 'package:dgis_map_platform_interface/src/control_handlers/indoor_event_handler.dart';
 import 'package:dgis_map_platform_interface/src/control_handlers/location_event_handler.dart';
 import 'package:dgis_map_platform_interface/src/control_handlers/navigation/maneuver_event_handler.dart';
@@ -42,6 +43,7 @@ class MethodChannelDgisMapPlugin implements DgisMapPlugin, FlutterMapApi {
   late final _indoorEventHandler = IndoorEventHandler(_api);
   late final _objectTapEventHandler = ObjectTapEventHandler();
   late final _visibleRectEventHandler = VisibleRectEventHandler();
+  late final _cameraStateEventHandler = CameraStateEventHandler();
   late final _markerTapEventHandler = MarkerTapEventHandler();
   late final _routeChangedEventHandler = RouteChangedEventHandler();
   late final _navigationEventHandler = NavigationEventHandler();
@@ -85,6 +87,10 @@ class MethodChannelDgisMapPlugin implements DgisMapPlugin, FlutterMapApi {
   @override
   Stream<CameraPositionMessage> get cameraPositionEvents =>
       _visibleRectEventHandler.cameraPositionEvents;
+
+  @override
+  Stream<CameraStateEvent> get cameraStateEvents =>
+      _cameraStateEventHandler.cameraStateEvents;
 
   @override
   Stream<MarkerWithPhotoTapEvent> get markerWithPhotoTapEvents =>
@@ -225,6 +231,8 @@ class MethodChannelDgisMapPlugin implements DgisMapPlugin, FlutterMapApi {
             return _visibleRectEventHandler.visibleRectEvent(map);
           case "cameraPositionChanged":
             return _visibleRectEventHandler.cameraPositionEvent(map);
+          case CameraStateEvent.name:
+            return _cameraStateEventHandler.cameraStateEvent(map);
           case MarkerWithPhotoTapEvent.name:
             return _markerTapEventHandler.markerWithPhotoTapEvent(map);
           case RouteChangedEvent.name:

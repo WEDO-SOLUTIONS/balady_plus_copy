@@ -47,6 +47,9 @@ class DgisMapController {
   Stream<CameraPositionMessage> get cameraPositionEvents =>
       _instance.cameraPositionEvents;
 
+  /// Events of camera state changes.
+  Stream<CameraStateEvent> get cameraStateEvents => _instance.cameraStateEvents;
+
   /// Tap events for panorama markers.
   Stream<MarkerWithPhotoTapEvent> get markerWithPhotoTapEvents =>
       _instance.markerWithPhotoTapEvents;
