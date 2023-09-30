@@ -35,7 +35,7 @@ class GetCookie extends UseCase<String, NoParams> {
 
         try {
           await CookieManager.instance().setCookie(
-              url: Uri.parse(RemoteConfig.cookieURL),
+              url: WebUri(RemoteConfig.cookieURL),
               name: ".AspNetCore.Identity.Application",
               value: value,
               domain: Platform.isIOS
@@ -51,7 +51,7 @@ class GetCookie extends UseCase<String, NoParams> {
         appCookie = ".ASPXFORMSAUTH=$value";
         try {
           await CookieManager.instance().setCookie(
-              url: Uri.parse(RemoteConfig.cookieURL),
+              url: WebUri(RemoteConfig.cookieURL),
               name: ".ASPXFORMSAUTH",
               value: value,
               domain: RemoteConfig.momraDomain,
