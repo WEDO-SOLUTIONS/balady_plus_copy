@@ -1,6 +1,10 @@
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
+import 'package:balady_plus/app/features/transaction_inquiry/presentation/pages/inquiry/transactions_inquiry/details_app_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
+import '../../../_shared_feature_/presentation/icons/filter_icon.dart';
+import '../../../_shared_feature_/presentation/widgets/default_appbar_widget.dart';
 import '../../calendar_exports.dart'
     show SectionDate, SectionContainer, NationalDay;
 
@@ -10,15 +14,17 @@ class MainPageCalendar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        flexibleSpace: Container(
-          height: 135,
-          color: Colors.white,
-        ),
+      appBar: DefaultAppBarWidget(
+        title: 'تقويم المملكة'.tr(),
+        showBack: true,
+        actions: [FilterIcon(onTap: () async {})],
       ),
       body: const SingleChildScrollView(
         child: Column(
           children: [
+            SizedBox(
+              height: 16,
+            ),
             SectionDate(
               month: 'سبتمبر',
               year: '2023',

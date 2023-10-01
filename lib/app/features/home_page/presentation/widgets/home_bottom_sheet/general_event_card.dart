@@ -10,79 +10,85 @@ class GeneralEventHomeCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Container(
-            width: 343,
-            height: 187,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(20)),
-              image: DecorationImage(
-                  colorFilter:
-                      ColorFilter.mode(Color(0x33034356), BlendMode.srcOver),
-                  image: AssetImage(
-                    IconPath.rockHomeEvents,
-                  )),
-            )),
-        Positioned(
-          top: 15,
-          left: 18,
-          child: Container(
-            width: 32,
-            height: 32,
-            decoration: BoxDecoration(
-              color: const Color(0x4CE8EFF1),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: SvgPicture.asset(width: 15, IconPath.bookmarkHomeEvents),
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(8.0),
+      child: Stack(
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(8.0),
+            child: Container(
+                width: 343,
+                height: 187,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(20)),
+                  image: DecorationImage(
+                      colorFilter: ColorFilter.mode(
+                          Color(0x33034356), BlendMode.srcOver),
+                      image: AssetImage(
+                        IconPath.rockHomeEvents,
+                      )),
+                )),
+          ),
+          Positioned(
+            top: 15,
+            left: 18,
+            child: Container(
+              width: 32,
+              height: 32,
+              decoration: BoxDecoration(
+                color: const Color(0x4CE8EFF1),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: SvgPicture.asset(width: 15, IconPath.bookmarkHomeEvents),
+              ),
             ),
           ),
-        ),
-        const Positioned(
-          bottom: 10,
-          right: 20,
-          child: SizedBox(
-            width: 270,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Date(),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('صخرة الفيل',
-                        textAlign: TextAlign.right,
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 14,
-                          fontFamily: 'Arabic UI Display',
-                          fontWeight: FontWeight.w700,
-                        )),
-                    IconName(
-                      icon: IconPath.locationHomeEvents,
-                      name: 'الدرعية, السمحانية',
-                      color: Color(0xFFE7E7E8),
-                    ),
-                  ],
-                ),
-                IconName(
-                  icon: IconPath.planetRingedHomeEvents,
-                  name: 'معلم',
-                  color: Colors.white,
-                ),
-                IconName(
-                  icon: IconPath.tagHomeEvents,
-                  name: 'مجانا',
-                  color: Colors.white,
-                ),
-              ],
+          const Positioned(
+            bottom: 10,
+            right: 20,
+            child: SizedBox(
+              width: 270,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Date(),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('صخرة الفيل',
+                          textAlign: TextAlign.right,
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 14,
+                            fontFamily: 'Arabic UI Display',
+                            fontWeight: FontWeight.w700,
+                          )),
+                      IconName(
+                        icon: IconPath.locationHomeEvents,
+                        name: 'الدرعية, السمحانية',
+                        color: Color(0xFFE7E7E8),
+                      ),
+                    ],
+                  ),
+                  IconName(
+                    icon: IconPath.planetRingedHomeEvents,
+                    name: 'معلم',
+                    color: Colors.white,
+                  ),
+                  IconName(
+                    icon: IconPath.tagHomeEvents,
+                    name: 'مجانا',
+                    color: Colors.white,
+                  ),
+                ],
+              ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
