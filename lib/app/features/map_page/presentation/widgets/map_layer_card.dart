@@ -1,4 +1,5 @@
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
+import 'package:balady_plus/app/features/events/domain/entities/search_events/search_events_item.dart';
 import 'package:balady_plus/app/features/map_page/data/enums/map_enums.dart';
 import 'package:balady_plus/app/features/map_page/extensions/search_category_ext.dart';
 import 'package:balady_plus/app/features/map_page/presentation/widgets/map_cards/digging_map_card.dart';
@@ -18,6 +19,7 @@ import '../../data/model/resturant_model.dart';
 import '../../data/model/white_lands.dart';
 import '../mvvm/map_view_model.dart';
 import '../mvvm/point_view_model.dart';
+import 'event_card_widget.dart';
 import 'general_card_widget.dart';
 import 'map_cards/ImtethalMapCard_map_card.dart';
 import 'map_cards/investment_map_card.dart';
@@ -120,17 +122,35 @@ class MapLayerCard extends StatelessWidget {
 
         case GISMapLayers.Resturants:
         case GISMapLayers.cityPlaces:
-          return ValueListenableBuilder<ResturantModel?>(
-            valueListenable: mapViewModel.selectedResturantPoint,
-            builder: (_, selectedPoint, __) {
-              return selectedPoint == null
-                  ? const SizedBox()
-                  : ResturantMapCardWidget(
-                      data: mapViewModel.selectedResturantPoint.value!,
-                      onClose: () {
-                        mapViewModel.showDialog();
-                      });
-            },
+        case GISMapLayers.Events:
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ValueListenableBuilder<ResturantModel?>(
+                valueListenable: mapViewModel.selectedResturantPoint,
+                builder: (_, selectedPoint, __) {
+                  return selectedPoint == null
+                      ? const SizedBox()
+                      : ResturantMapCardWidget(
+                          data: mapViewModel.selectedResturantPoint.value!,
+                          onClose: () {
+                            mapViewModel.showDialog();
+                          });
+                },
+              ),
+              ValueListenableBuilder<SearchEventsItem?>(
+                valueListenable: mapViewModel.selectedEventPoint,
+                builder: (_, selectedPoint, __) {
+                  return selectedPoint == null
+                      ? const SizedBox()
+                      : EventMapCardWidget(
+                          data: mapViewModel.selectedEventPoint.value!,
+                          onClose: () {
+                            mapViewModel.showDialog();
+                          });
+                },
+              )
+            ],
           );
 
         case GISMapLayers.BSWhiteParcelS:

@@ -401,7 +401,7 @@ class AppointmentRepository {
     dynamic data = body['data'];
     CancelAppointmentResponse? result;
     String error = body['error'] ?? ("errors_server_error_1").tr();
-
+    print(data);
     try {
       CancelAppointmentResponse response =
           CancelAppointmentResponse.fromJson(json.decode(data));

@@ -3132,7 +3132,7 @@
 "events_sorting":"التصنيفات",
 "event_date":"تاريخ الفعالية",
 "event_time":"وقت الفعالية",
-"event_genre":"الفئة المستهدفة",
+"event_genre":"الجمهور المستهدف",
 "event_website":"الموقع الالكتروني",
 "event_date_subtitle":"21 اغسطس   - 22 اغسطس",
 "event_time_subtitle":" 4:25 PM - 8:25 PM",
@@ -3156,6 +3156,7 @@
 "events_filter_fess_sort":"رتب حسب",
 "events_filter_fess_sort_price":"السعر",
 "events_filter_fess_sort_date":"التاريخ",
+
 
 "events_details":" تفاصيل الفعالية ",
 "ola_moment":"لحظات العلا",

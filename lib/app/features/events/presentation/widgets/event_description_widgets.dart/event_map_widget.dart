@@ -17,7 +17,7 @@ class EventMapWidget extends StatelessWidget {
             children: [
               EventsTitleWidget(title: 'event_location_title'.tr()),
               Container(
-                padding: EdgeInsets.all(12),
+                padding: const EdgeInsets.all(12),
                 decoration: ShapeDecoration(
                   color: AppColor.white,
                   shape: RoundedRectangleBorder(
@@ -28,9 +28,15 @@ class EventMapWidget extends StatelessWidget {
                   height: 178,
                   child: GoogleMap(
                       myLocationButtonEnabled: false,
+                      markers: {
+                        Marker(
+                          markerId: MarkerId("location"),
+                          position: location!,
+                        )
+                      },
                       initialCameraPosition: CameraPosition(
                         target: location!,
-                        zoom: 17,
+                        zoom: 15,
                       )),
                 ),
               )

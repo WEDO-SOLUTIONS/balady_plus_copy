@@ -14,6 +14,7 @@ import 'package:equatable/equatable.dart';
 
 import '../../../../core/dependency_injection/injection_container.dart';
 import '../../../../core/services/local/use_case.dart';
+import '../../domain/entities/search_events/search_events_item.dart';
 import '../../domain/usecase/get_category_event.dart';
 
 class EventsBloc extends Bloc<EventsEvent, EventsState> {
@@ -43,14 +44,19 @@ class EventsBloc extends Bloc<EventsEvent, EventsState> {
     on<GetAudienceEvent>(_getAudinceEventsHandler);
     on<GetSeasonsEvent>(_getSesonsEventsHandler);
     on<UpdateSearchParamsEvent>(_updateSearchParamsHandler);
+
+    on<GetMoreSearchEvent>(_getMoreSearchEventsHandler);
   }
   Future<void> _getSearchEventsHandler(
       GetSearchEvent e, Emitter emitter) async {
-    emitter(
-        state.copyWith(status: BlocStatus.loading, searchedParams: e.params));
+    emitter(state.copyWith(
+        status: BlocStatus.loading,
+        searchedParams: e.params != null
+            ? e.params!.copyWith(page: 1, size: 10)
+            : SearchEventsParams(page: 1, size: 10)));
     final failureOrSuccess = await _getSearchEvents(e.params != null
-        ? e.params!.copyWith(page: 1, size: 20)
-        : SearchEventsParams(page: 1, size: 20));
+        ? e.params!.copyWith(page: 1, size: 10)
+        : SearchEventsParams(page: 1, size: 10));
 
     failureOrSuccess.fold((l) {
       if (l == NoDataFoundFailure())
@@ -66,6 +72,38 @@ class EventsBloc extends Bloc<EventsEvent, EventsState> {
       emitter(state.copyWith(
         status: BlocStatus.success,
         searchItems: r.items,
+        errorMessage: "",
+      ));
+    });
+  }
+
+  Future<void> _getMoreSearchEventsHandler(
+      GetMoreSearchEvent e, Emitter emitter) async {
+    emitter(state.copyWith(
+      status: BlocStatus.loadMore,
+    ));
+    final failureOrSuccess = await _getSearchEvents(state.searchedParams);
+
+    failureOrSuccess.fold((l) {
+      if (l == NoDataFoundFailure())
+        emitter(
+          state.copyWith(status: BlocStatus.failure, errorMessage: ""),
+        );
+      else {
+        emitter(
+          state.copyWith(
+              status: BlocStatus.failure,
+              errorMessage: (l as ServerFailure).errorMessage),
+        );
+      }
+    }, (r) {
+      List<SearchEventsItem>? items = state.searchItems ?? [];
+      items.addAll(r.items ?? []);
+      emitter(state.copyWith(
+        status: BlocStatus.success,
+        searchItems: items,
+        searchedParams: state.searchedParams
+            .copyWith(page: (state.searchedParams.page ?? 1) + 1),
         errorMessage: "",
       ));
     });

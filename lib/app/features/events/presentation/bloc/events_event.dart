@@ -57,3 +57,7 @@ class UpdateSearchParamsEvent extends EventsEvent {
       this.sortBy,
       this.searchKeyword);
 }
+
+class GetMoreSearchEvent extends EventsEvent {
+  const GetMoreSearchEvent();
+}

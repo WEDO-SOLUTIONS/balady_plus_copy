@@ -15,21 +15,24 @@ class ConfirmCancelAppointmentDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.symmetric(
-        horizontal: Constants.mediumPadding,
-        vertical: Constants.semiLargePadding,
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          DialogHeader(title: "confirmCancelAppointmentTitleWord".tr()),
-          CustomVerticalSpace(
-            height: 24,
-          ),
-          // buttons
-          const _ConfirmCancelAppointmentDialogButtons(),
-        ],
+    return Container(
+      color: AppColor.white,
+      child: Padding(
+        padding: EdgeInsets.symmetric(
+          horizontal: Constants.mediumPadding,
+          vertical: Constants.semiLargePadding,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            DialogHeader(title: "confirmCancelAppointmentTitleWord".tr()),
+            CustomVerticalSpace(
+              height: 24,
+            ),
+            // buttons
+            const _ConfirmCancelAppointmentDialogButtons(),
+          ],
+        ),
       ),
     );
   }

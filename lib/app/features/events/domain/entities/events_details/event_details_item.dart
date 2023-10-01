@@ -71,6 +71,14 @@ class EventDetailsResponse {
     return '';
   }
 
+  String getStartYear() {
+    if (startDate != null) {
+      //return startDate!.month.toString();
+      return startDate!.year.toString();
+    }
+    return '';
+  }
+
   String getEndDay() {
     if (endDate != null) {
       return endDate!.day.toString();
@@ -85,8 +93,15 @@ class EventDetailsResponse {
     return '';
   }
 
+  String getEndYear() {
+    if (endDate != null) {
+      return endDate!.year.toString();
+    }
+    return '';
+  }
+
   String getDate() {
-    return " ${getStartDay()} ${getStartMonth()} - ${getEndDay()} ${getEndMonth()}";
+    return " ${getStartDay()} ${getStartMonth()} ${getStartYear()}   - ${getEndDay()} ${getEndMonth()} ${getEndYear()}";
   }
 
   String getTime() {

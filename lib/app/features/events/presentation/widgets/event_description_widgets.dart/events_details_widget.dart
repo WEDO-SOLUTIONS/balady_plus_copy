@@ -15,11 +15,17 @@ class EventsDetailsWidget extends StatelessWidget {
     required this.time,
     required this.genre,
     required this.website,
+    required this.category,
+    required this.city,
+    required this.season,
   });
   final String feesType;
   final String date;
   final String time;
   final String genre;
+  final String category;
+  final String season;
+  final String city;
   final String website;
 
   @override
@@ -28,16 +34,11 @@ class EventsDetailsWidget extends StatelessWidget {
       'fees'.tr(),
       'event_date'.tr(),
       'event_time'.tr(),
+      'events_filter_city'.tr(),
       'event_genre'.tr(),
+      'events_filter_category'.tr(),
+      'events_filter_season'.tr(),
       'event_website'.tr(),
-    ];
-
-    List<String> detailIcon = [
-      IconPath.wallet,
-      IconPath.calendar,
-      IconPath.clock,
-      IconPath.profileCircle,
-      IconPath.linkSquare,
     ];
 
     return Column(
@@ -48,153 +49,49 @@ class EventsDetailsWidget extends StatelessWidget {
         ),
         Column(
           children: [
-            Container(
-              padding: const EdgeInsets.all(12),
-              decoration: ShapeDecoration(
-                color: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
-                ),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      SvgPicture.asset(
-                        detailIcon[0],
-                        color: AppColor.primary900Light,
-                      ),
-                      SizedBox(
-                        width: 2,
-                      ),
-                      CustomTextWidget(
-                        detailTitle[0],
-                        textStyle: AppStyle.eventsDetailsTitleStyle,
-                      ),
-                    ],
-                  ),
-                  SizedBox(
-                    height: 4,
-                  ),
-                  CustomTextWidget(
-                    feesType,
-                    textStyle: AppStyle.eventsDetailsSubtitleStyle,
-                  )
-                ],
-              ),
+            EventItemWidget(
+                icon: IconPath.wallet, text: 'fees'.tr(), value: feesType),
+            SizedBox(
+              height: 8,
+            ),
+            EventItemWidget(
+                icon: IconPath.calendar, text: 'event_date'.tr(), value: date),
+            SizedBox(
+              height: 8,
+            ),
+            EventItemWidget(
+                icon: IconPath.clock, text: 'event_time'.tr(), value: time),
+            SizedBox(
+              height: 8,
+            ),
+            EventItemWidget(
+                icon: IconPath.profileCircle,
+                text: 'events_filter_city'.tr(),
+                value: city),
+            SizedBox(
+              height: 8,
+            ),
+            EventItemWidget(
+                icon: IconPath.profileCircle,
+                text: 'event_genre'.tr(),
+                value: genre),
+            SizedBox(
+              height: 8,
             ),
             SizedBox(
               height: 8,
             ),
-            Container(
-              padding: const EdgeInsets.all(12),
-              decoration: ShapeDecoration(
-                color: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
-                ),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      SvgPicture.asset(detailIcon[1]),
-                      SizedBox(
-                        width: 2,
-                      ),
-                      CustomTextWidget(
-                        detailTitle[1],
-                        textStyle: AppStyle.eventsDetailsTitleStyle,
-                      ),
-                    ],
-                  ),
-                  SizedBox(
-                    height: 4,
-                  ),
-                  CustomTextWidget(
-                    date,
-                    textStyle: AppStyle.eventsDetailsSubtitleStyle,
-                  )
-                ],
-              ),
-            ),
+            EventItemWidget(
+                icon: IconPath.profileCircle,
+                text: 'events_filter_category'.tr(),
+                value: category),
             SizedBox(
               height: 8,
             ),
-            Container(
-              padding: const EdgeInsets.all(12),
-              decoration: ShapeDecoration(
-                color: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
-                ),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      SvgPicture.asset(detailIcon[2]),
-                      SizedBox(
-                        width: 2,
-                      ),
-                      CustomTextWidget(
-                        detailTitle[2],
-                        textStyle: AppStyle.eventsDetailsTitleStyle,
-                      ),
-                    ],
-                  ),
-                  SizedBox(
-                    height: 4,
-                  ),
-                  CustomTextWidget(
-                    time,
-                    textStyle: AppStyle.eventsDetailsSubtitleStyle,
-                  )
-                ],
-              ),
-            ),
-            SizedBox(
-              height: 8,
-            ),
-            Container(
-              padding: const EdgeInsets.all(12),
-              decoration: ShapeDecoration(
-                color: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
-                ),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      SvgPicture.asset(detailIcon[3]),
-                      SizedBox(
-                        width: 2,
-                      ),
-                      CustomTextWidget(
-                        detailTitle[3],
-                        textStyle: AppStyle.eventsDetailsTitleStyle,
-                      ),
-                    ],
-                  ),
-                  SizedBox(
-                    height: 4,
-                  ),
-                  CustomTextWidget(
-                    genre,
-                    textStyle: AppStyle.eventsDetailsSubtitleStyle,
-                  )
-                ],
-              ),
-            ),
-            SizedBox(
-              height: 8,
-            ),
+            EventItemWidget(
+                icon: IconPath.profileCircle,
+                text: 'events_filter_season'.tr(),
+                value: season),
             /*  Container(
               padding: const EdgeInsets.all(12),
               decoration: ShapeDecoration(
@@ -226,11 +123,61 @@ class EventsDetailsWidget extends StatelessWidget {
                     textStyle: AppStyle.eventsDetailsSubtitleStyle,
                   )
                 ],
-              ),
+              ), 
             )*/
           ],
         ),
       ],
     );
+  }
+}
+
+class EventItemWidget extends StatelessWidget {
+  final String icon;
+  final String text;
+  final String value;
+  const EventItemWidget(
+      {super.key, required this.icon, required this.text, required this.value});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(children: [
+      SizedBox(
+        height: 8,
+      ),
+      Container(
+        padding: const EdgeInsets.all(12),
+        decoration: ShapeDecoration(
+          color: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                SvgPicture.asset(icon),
+                SizedBox(
+                  width: 2,
+                ),
+                CustomTextWidget(
+                  text,
+                  textStyle: AppStyle.eventsDetailsTitleStyle,
+                ),
+              ],
+            ),
+            SizedBox(
+              height: 4,
+            ),
+            CustomTextWidget(
+              value,
+              textStyle: AppStyle.eventsDetailsSubtitleStyle,
+            )
+          ],
+        ),
+      )
+    ]);
   }
 }
