@@ -172,6 +172,9 @@ class RouteName {
   // Self Rating
   static const selfRatingMainPage = '/selfRatingMainPage';
   static const selfRatingResultPage = '/selfRatingResultPage';
+
+  // Calendar
+  static const calendarMainPage = '/MainPageCalendar';
 }
 
 class EtmamRoutesNames {
