@@ -1,7 +1,6 @@
 import 'package:balady_plus/etmam_app/core/dependency_injection/injection_container.dart'
     show sl;
-import 'package:balady_plus/etmam_app/core/utils/utils_exports.dart'
-    show CommonFunctions;
+
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 
 import 'package:balady_plus/etmam_app/core/services/services_exports.dart'
@@ -52,7 +51,9 @@ class _EtmamHomePage extends State<EtmamHomePage> {
           getAds: sl()),
       child: BlocConsumer<HomeBloc, HomeState>(
         listener: (context, state) {
-          // TODO: implement listener
+          if (state.status == BlocStatus.failure) {
+            CommonFunctions.showError(state.errorMessage ?? "");
+          }
         },
         builder: (context, state) {
           return Column(

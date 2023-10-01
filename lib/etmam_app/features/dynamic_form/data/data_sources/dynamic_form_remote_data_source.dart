@@ -189,6 +189,9 @@ class DynamicFormRemoteDataSourceImpl extends DynamicFormRemoteDataSource {
     var response;
     try {
       response = await webService.dio.get(ApiUrl.findByRequestType,
+          queryParameters: {
+            "city-id": EtmamCommonProperties.CommonProperties.cityId
+          },
           options: Options(headers: {
             "Authorization": "Bearer " + (CommonProperties.token ?? "")
           }));
