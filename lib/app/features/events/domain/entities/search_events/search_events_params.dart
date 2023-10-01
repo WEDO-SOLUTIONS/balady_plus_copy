@@ -10,6 +10,7 @@ class SearchEventsParams {
   EventCategoryItem? selectedSeason;
   EventCategoryItem? selectedAudince;
   EventCategoryItem? selectedCategory;
+  EventCategoryItem? selectedFees;
   DateTime? dateFrom;
   DateTime? dateTo;
   bool? isFree;
@@ -25,7 +26,8 @@ class SearchEventsParams {
       this.dateFrom,
       this.dateTo,
       this.isFree,
-      this.sortBy});
+      this.sortBy,
+      this.selectedFees});
 
   SearchEventsParams copyWith(
       {int? page,
@@ -35,6 +37,7 @@ class SearchEventsParams {
       EventCategoryItem? selectedSeason,
       EventCategoryItem? selectedAudince,
       EventCategoryItem? selectedCategory,
+      EventCategoryItem? selectedFees,
       DateTime? dateFrom,
       DateTime? dateTo,
       bool? isFree,
@@ -50,7 +53,8 @@ class SearchEventsParams {
         dateFrom: dateFrom ?? this.dateFrom,
         dateTo: dateTo ?? this.dateTo,
         isFree: isFree ?? this.isFree,
-        sortBy: sortBy ?? this.sortBy);
+        sortBy: sortBy ?? this.sortBy,
+        selectedFees: selectedFees ?? this.selectedFees);
   }
 
   Map<String, dynamic> toMap() {
@@ -64,7 +68,7 @@ class SearchEventsParams {
       if (selectedCategory != null) "category": selectedCategory!.id,
       if (dateFrom != null) "from": dateFrom!.toFormattedDate1(),
       if (dateTo != null) "to": dateTo!.toFormattedDate1(),
-      if (isFree != null) "fees-type": isFree == false ? 23 : 21,
+      if (selectedFees != null) "fees-type": selectedFees!.id,
       if (sortBy != null) "sort-dir": "asc",
       if (sortBy != null) "sort-by": sortBy == "price" ? "Fees" : "StartDate",
     };

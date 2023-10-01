@@ -25,7 +25,7 @@ extension SearchCategoryData on SearchCategoryMessage {
       SearchCategoryMessage.restaurants =>
         "assets/maps/icons/poi_eat_light.svg",
       SearchCategoryMessage.parks => "assets/maps/icons/poi_park_light.svg",
-      SearchCategoryMessage.events => "assets/maps/icons/poi_park_light.svg"
+      SearchCategoryMessage.events => "assets/maps/icons/ticket.svg"
     };
   }
 
@@ -40,8 +40,7 @@ extension SearchCategoryData on SearchCategoryMessage {
         "assets/maps/icons/ic_marker_restaurant.svg",
       SearchCategoryMessage.parks =>
         "assets/maps/icons/ic_marker_gardens_parks.svg",
-      SearchCategoryMessage.events =>
-        "assets/maps/icons/ic_marker_gardens_parks.svg"
+      SearchCategoryMessage.events => "assets/maps/icons/ic_marker.svg"
     };
   }
 
@@ -55,7 +54,7 @@ extension SearchCategoryData on SearchCategoryMessage {
       SearchCategoryMessage.restaurants =>
         "assets/maps/icons/card_icon/resturant.png",
       SearchCategoryMessage.parks => "assets/maps/icons/card_icon/park.png",
-      SearchCategoryMessage.events => "assets/maps/icons/card_icon/park.png"
+      SearchCategoryMessage.events => "assets/maps/icons/card_icon/ticket.png"
     };
   }
 

@@ -43,6 +43,8 @@ class EventsBloc extends Bloc<EventsEvent, EventsState> {
 
     on<GetAudienceEvent>(_getAudinceEventsHandler);
     on<GetSeasonsEvent>(_getSesonsEventsHandler);
+    on<GetFeesEvent>(_getFeesEventsHandler);
+
     on<UpdateSearchParamsEvent>(_updateSearchParamsHandler);
 
     on<GetMoreSearchEvent>(_getMoreSearchEventsHandler);
@@ -173,6 +175,28 @@ class EventsBloc extends Bloc<EventsEvent, EventsState> {
       emitter(state.copyWith(
         seasonStatus: BlocRequestStatus.submissionGetSuccess,
         seasonList: r.items,
+        errorMessage: "",
+      ));
+    });
+  }
+
+  Future<void> _getFeesEventsHandler(GetFeesEvent e, Emitter emitter) async {
+    if (state.feesList?.isNotEmpty ?? false) return;
+
+    emitter(state.copyWith(
+      feesStatus: BlocRequestStatus.submissionGetLoading,
+    ));
+    final failureOrSuccess = await _getCategory(EventsCategoryParams(key: 17));
+    failureOrSuccess.fold((l) {
+      emitter(
+        state.copyWith(
+          feesStatus: BlocRequestStatus.submissionGetFailure,
+        ),
+      );
+    }, (r) {
+      emitter(state.copyWith(
+        feesStatus: BlocRequestStatus.submissionGetSuccess,
+        feesList: r.items,
         errorMessage: "",
       ));
     });

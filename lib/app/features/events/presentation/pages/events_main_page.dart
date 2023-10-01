@@ -41,6 +41,7 @@ class EventsMainPage extends StatelessWidget {
                       context.read<EventsBloc>().add(GetAudienceEvent());
                       context.read<EventsBloc>().add(GetCitiesEvent());
                       context.read<EventsBloc>().add(GetSeasonsEvent());
+                      context.read<EventsBloc>().add(GetFeesEvent());
 
                       /*   final sortType = state.sortType;
                           final selectedRequestStatus = state.selectedViolationStatus;

@@ -39,9 +39,11 @@ class _EventsFilterDialogState extends State<EventsFilterDialog> {
   EventCategoryItem? selectedSeason;
   EventCategoryItem? selectedAudince;
   EventCategoryItem? selectedCategory;
+  EventCategoryItem? selectedFees;
+
   DateTime? dateFrom;
   DateTime? dateTo;
-  bool? isFree;
+  //bool? isFree;
   String? sortBy;
 
   @override
@@ -53,9 +55,10 @@ class _EventsFilterDialogState extends State<EventsFilterDialog> {
     selectedSeason = widget.params.selectedSeason;
     selectedAudince = widget.params.selectedAudince;
     selectedCategory = widget.params.selectedCategory;
+    selectedFees = widget.params.selectedFees;
     dateFrom = widget.params.dateFrom;
     dateTo = widget.params.dateTo;
-    isFree = widget.params.isFree;
+    //   isFree = widget.params.isFree;
     sortBy = widget.params.sortBy;
   }
 
@@ -186,6 +189,33 @@ class _EventsFilterDialogState extends State<EventsFilterDialog> {
                   );
                 },
               ),
+              DropDownWithTitle(
+                title: "events_filter_fess".tr(),
+                selectedValue: selectedFees?.name,
+                status: state.feesStatus,
+                onRetry: () => context.read<EventsBloc>().add(
+                      GetFeesEvent(),
+                    ),
+                onTap: () {
+                  //MMDialog
+                  BottomSheetDialog.showDraggableSheet<EventCategoryItem>(
+                    context,
+                    // dialogKeyName: DialogName.objectablePageProductsFilters,
+                    // currentRouteName: RouteName.objectableTransactions,
+                    child: GenericBottomSheetList<EventCategoryItem>(
+                      title: "events_filter_fess".tr(),
+                      items: state.feesList ?? [],
+                      selectedValue: selectedFees,
+                      onTap: (item) {
+                        setState(() {
+                          selectedFees = item;
+                        });
+                        Navigator.pop(context);
+                      },
+                    ),
+                  );
+                },
+              ),
               Row(
                 children: [
                   Expanded(
@@ -218,7 +248,7 @@ class _EventsFilterDialogState extends State<EventsFilterDialog> {
               SizedBox(
                 height: 16,
               ),
-              CustomTextWidget(
+              /*   CustomTextWidget(
                 "events_filter_fess".tr(),
                 textStyle: AppStyle.dropDownTitleTextStyle,
               ),
@@ -279,7 +309,7 @@ class _EventsFilterDialogState extends State<EventsFilterDialog> {
                     ),
                   )
                 ],
-              ),
+              ),*/
               SizedBox(
                 height: 16,
               ),
@@ -363,7 +393,7 @@ class _EventsFilterDialogState extends State<EventsFilterDialog> {
                             sortBy: sortBy,
                             dateFrom: dateFrom,
                             dateTo: dateTo,
-                            isFree: isFree,
+                            selectedFees: selectedFees,
                           ));
                     },
                   ),

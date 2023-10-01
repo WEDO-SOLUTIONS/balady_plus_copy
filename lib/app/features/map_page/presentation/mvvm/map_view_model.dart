@@ -545,7 +545,8 @@ class MapViewModel extends BaseViewModel {
       this.oldZoom = oldZoom;
       if (this.oldZoom.toInt() != zoomValue.toInt()) {
         zoomValue = oldZoom;
-        callSearch();
+        if (selectedCategory.value != SearchCategoryMessage.events)
+          callSearch();
       }
     });
     _subscriptions.add(_debounce!);
@@ -587,7 +588,6 @@ class MapViewModel extends BaseViewModel {
   callSearch() async {
     //print("search");
 
-    if (selectedCategory.value == SearchCategoryMessage.events) return;
     await clearAll();
 
     if (selectedCategory.value != SearchCategoryMessage.restaurants &&
@@ -603,7 +603,7 @@ class MapViewModel extends BaseViewModel {
         );
         hideLoading1();
       }
-    } else {
+    } else if (selectedCategory.value == SearchCategoryMessage.restaurants) {
       layerSelected.value = Layers(
           id: 1,
           name: "مطاعم",
@@ -611,6 +611,9 @@ class MapViewModel extends BaseViewModel {
           type: "",
           geometryType: "esriGeometryPoint");
       layerSelected.notifyListeners();
+    } else if (selectedCategory.value == SearchCategoryMessage.events) {
+      // callEventsSearch();
+      return;
     }
 
     if (layerSelected.value == null) return;

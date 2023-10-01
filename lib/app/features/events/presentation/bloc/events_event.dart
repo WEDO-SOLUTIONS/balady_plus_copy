@@ -36,6 +36,10 @@ class GetCitiesEvent extends EventsEvent {
   const GetCitiesEvent();
 }
 
+class GetFeesEvent extends EventsEvent {
+  const GetFeesEvent();
+}
+
 class UpdateSearchParamsEvent extends EventsEvent {
   final String? searchKeyword;
 
