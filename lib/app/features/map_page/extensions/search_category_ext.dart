@@ -63,7 +63,7 @@ extension SearchCategoryData on SearchCategoryMessage {
       SearchCategoryMessage.mousques => Color(0xFFC8A83A),
       SearchCategoryMessage.gasStations => Color(0xFF2E88F6),
       SearchCategoryMessage.cafe => AppColor.secondary200Light,
-      SearchCategoryMessage.restaurants => Color(0xffCD5D1A),
+      SearchCategoryMessage.restaurants => Color(0xFFC8A83A),
       SearchCategoryMessage.parks => AppColor.secondary200Light,
       SearchCategoryMessage.events => AppColor.secondary200Light,
     };

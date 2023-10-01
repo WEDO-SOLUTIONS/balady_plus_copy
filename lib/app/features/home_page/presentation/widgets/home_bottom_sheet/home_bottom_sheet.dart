@@ -21,6 +21,8 @@ import '../../../home_exports.dart'
 import 'package:provider/provider.dart';
 
 import 'cityscape_map_card.dart';
+import 'event_home_card.dart';
+import 'general_event_card.dart';
 import 'location_home_card.dart';
 
 class HomeBottomSheet extends StatelessWidget {
@@ -63,6 +65,7 @@ class HomeBottomSheet extends StatelessWidget {
                             children: [
                               if (CommonProperties.userLocation == null)
                                 const LocationHomeCard(),
+
                               const CertificationMapCard(),
                               const ReportHomeCard(),
                               if (CommonProperties.userLocation != null)
@@ -70,6 +73,22 @@ class HomeBottomSheet extends StatelessWidget {
                               //    const ReadHomeCard(),
                               // DeformityHomeCard(),
                               BaladySmartAdvisorCard(),
+
+                              GeneralEventHomeCard(),
+                              SizedBox(
+                                height: 32,
+                              ),
+                              EventHomeCard(
+                                  background:
+                                      "assets/images/saudi-national-day.png",
+                                  dayName: "السبت",
+                                  day: "23",
+                                  month: "09",
+                                  btnText: "إضافة الى تقويمي",
+                                  eventName: "اليوم الوطني",
+                                  remainingText: "متبقي على اليوم الوطني",
+                                  timer: '30 : 22'),
+
                               //  ChallengeHomeCard(),
                               const NewServices(),
                               const SizedBox(height: 30),
