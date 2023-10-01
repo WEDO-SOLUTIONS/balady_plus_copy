@@ -64,6 +64,9 @@ class EventHomeCard extends StatelessWidget {
                 name: dayName,
                 size: 14,
               ),
+              SizedBox(
+                height: 4,
+              ),
               Row(
                 children: [
                   SaudiDay(
@@ -79,6 +82,9 @@ class EventHomeCard extends StatelessWidget {
                     size: 28,
                   ),
                 ],
+              ),
+              SizedBox(
+                height: 4,
               ),
               SaudiDay(
                 name: eventName,

@@ -26,6 +26,7 @@ class SectionContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: 343,
+      height: 95,
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(14),
@@ -83,6 +84,7 @@ class SectionContainer extends StatelessWidget {
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Row(
                   children: [

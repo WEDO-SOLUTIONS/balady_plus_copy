@@ -75,6 +75,9 @@ class HomeBottomSheet extends StatelessWidget {
                               BaladySmartAdvisorCard(),
 
                               GeneralEventHomeCard(),
+                              SizedBox(
+                                height: 32,
+                              ),
                               EventHomeCard(
                                   background:
                                       "assets/images/saudi-national-day.png",
