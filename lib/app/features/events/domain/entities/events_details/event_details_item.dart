@@ -120,9 +120,11 @@ class EventDetailsResponse {
 
   String getFess() {
     if (fees == 0 || fees == null) {
-      return "مجاني";
+      //   return "مجاني";
     }
-    return "${fees} ر.س";
+    // return "${fees} ر.س";
+
+    return feesType ?? "";
   }
 
   LatLng? getLocation() {

@@ -15,13 +15,7 @@ class EventsActivitiesWidget extends StatelessWidget {
         children: [
           Container(
             decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(6),
-                color: Color.fromRGBO(
-                  4,
-                  4,
-                  4,
-                  0.10,
-                )),
+                borderRadius: BorderRadius.circular(6), color: Colors.white),
             padding: EdgeInsets.symmetric(
               horizontal: 6,
               vertical: 4,

@@ -17,45 +17,51 @@ class EventsState extends Equatable {
   final BlocRequestStatus seasonStatus;
   final BlocRequestStatus categoryStatus;
   final BlocRequestStatus audinceStatus;
-
+  final BlocRequestStatus feesStatus;
   final List<EventCategoryItem>? citiesList;
   final List<EventCategoryItem>? seasonList;
   final List<EventCategoryItem>? categoryList;
   final List<EventCategoryItem>? audinceList;
+  final List<EventCategoryItem>? feesList;
   final String? searchKeyword;
 
   final EventCategoryItem? selectedCity;
   final EventCategoryItem? selectedSeason;
   final EventCategoryItem? selectedCategory;
   final EventCategoryItem? selectedAudince;
+  final EventCategoryItem? selectedFees;
   final DateTime? fromDate;
   final DateTime? toDate;
   final String? sortBy;
 
   final SearchEventsParams searchedParams;
 
-  EventsState(
-      {this.errorMessage,
-      required this.eventDetails,
-      this.status = BlocStatus.initial,
-      this.cityStatus = BlocRequestStatus.initial,
-      this.seasonStatus = BlocRequestStatus.initial,
-      this.categoryStatus = BlocRequestStatus.initial,
-      this.audinceStatus = BlocRequestStatus.initial,
-      required this.searchedParams,
-      this.citiesList,
-      this.seasonList,
-      this.categoryList,
-      this.audinceList,
-      this.searchKeyword,
-      this.selectedCity,
-      this.selectedSeason,
-      this.selectedCategory,
-      this.selectedAudince,
-      this.fromDate,
-      this.toDate,
-      required this.searchItems,
-      this.sortBy});
+  EventsState({
+    this.errorMessage,
+    required this.eventDetails,
+    this.status = BlocStatus.initial,
+    this.cityStatus = BlocRequestStatus.initial,
+    this.seasonStatus = BlocRequestStatus.initial,
+    this.categoryStatus = BlocRequestStatus.initial,
+    this.audinceStatus = BlocRequestStatus.initial,
+    this.feesStatus = BlocRequestStatus.initial,
+    required this.searchedParams,
+    this.citiesList,
+    this.seasonList,
+    this.categoryList,
+    this.audinceList,
+    this.feesList,
+    this.searchKeyword,
+    this.selectedCity,
+    this.selectedSeason,
+    this.selectedCategory,
+    this.selectedAudince,
+    this.selectedFees,
+    this.fromDate,
+    this.toDate,
+    required this.searchItems,
+    this.sortBy,
+  });
 
   EventsState copyWith(
       {final BlocStatus? status,
@@ -63,6 +69,7 @@ class EventsState extends Equatable {
       final BlocRequestStatus? seasonStatus,
       final BlocRequestStatus? categoryStatus,
       final BlocRequestStatus? audinceStatus,
+      final BlocRequestStatus? feesStatus,
       final SearchEventsParams? searchedParams,
       final List<SearchEventsItem>? searchItems,
       final EventDetailsResponse? eventDetails,
@@ -71,11 +78,13 @@ class EventsState extends Equatable {
       final List<EventCategoryItem>? seasonList,
       final List<EventCategoryItem>? categoryList,
       final List<EventCategoryItem>? audinceList,
+      final List<EventCategoryItem>? feesList,
       final String? searchKeyword,
       final EventCategoryItem? selectedCity,
       final EventCategoryItem? selectedSeason,
       final EventCategoryItem? selectedCategory,
       final EventCategoryItem? selectedAudince,
+      final EventCategoryItem? selectedFees,
       final DateTime? fromDate,
       final DateTime? toDate,
       final String? sortBy}) {
@@ -89,8 +98,10 @@ class EventsState extends Equatable {
         seasonStatus: seasonStatus ?? this.seasonStatus,
         categoryStatus: categoryStatus ?? this.categoryStatus,
         audinceStatus: audinceStatus ?? this.audinceStatus,
+        feesStatus: feesStatus ?? this.feesStatus,
         citiesList: citiesList ?? this.citiesList,
         seasonList: seasonList ?? this.seasonList,
+        feesList: feesList ?? this.feesList,
         categoryList: categoryList ?? this.categoryList,
         audinceList: audinceList ?? this.audinceList,
         searchKeyword: searchKeyword ?? this.searchKeyword,
@@ -98,6 +109,7 @@ class EventsState extends Equatable {
         selectedSeason: selectedSeason ?? this.selectedSeason,
         selectedCategory: selectedCategory ?? this.selectedCategory,
         selectedAudince: selectedAudince ?? this.selectedAudince,
+        selectedFees: selectedFees ?? this.selectedFees,
         fromDate: fromDate ?? this.fromDate,
         sortBy: sortBy ?? this.sortBy,
         toDate: toDate ?? this.toDate);
@@ -114,13 +126,16 @@ class EventsState extends Equatable {
         categoryStatus,
         seasonStatus,
         cityStatus,
+        feesStatus,
         selectedAudince,
         selectedCategory,
         selectedSeason,
         selectedCity,
+        selectedFees,
         searchKeyword,
         audinceList,
         categoryList,
+        feesList,
         toDate,
         fromDate,
         sortBy

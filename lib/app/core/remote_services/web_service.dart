@@ -205,7 +205,7 @@ class WebService {
     }
 
     var requestUrl = baseURL + url + queryString;
-    //print("url: " + requestUrl);
+    print("url: " + requestUrl);
     Map<String, dynamic> result = {};
     if (isSuccess) {
       try {
@@ -235,7 +235,7 @@ class WebService {
           Uri.parse(requestUrl),
           headers: headers,
         );
-        //print("url response: " + utf8.decode(response.bodyBytes).toString());
+        print("url response: " + utf8.decode(response.bodyBytes).toString());
         if (response.statusCode == HttpStatus.ok) {
           result.putIfAbsent("state", () => true);
           result.putIfAbsent(

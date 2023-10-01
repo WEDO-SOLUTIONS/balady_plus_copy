@@ -90,6 +90,7 @@ class _SingleEventDescriptionPageState
                               InkWell(
                                 child: SvgPicture.asset(
                                   IconPath.vdAppBarBack,
+                                  color: Colors.white,
                                 ),
                                 onTap: () {
                                   Navigator.of(context).pop();
