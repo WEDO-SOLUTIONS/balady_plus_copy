@@ -1,3 +1,4 @@
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 class SearchEventsItem {
@@ -64,5 +65,17 @@ class SearchEventsItem {
       return monthNames[endDate!.month] ?? "";
     }
     return '';
+  }
+
+  LatLng? getLocation() {
+    double? lon = double.tryParse(locationY ?? "");
+    double? lat = double.tryParse(locationX ?? "");
+
+    if (lat != null && lon != null) return LatLng(lat, lon);
+    return null;
+  }
+
+  String getDate() {
+    return " ${getStartDay()} ${getStartMonth()} - ${getEndDay()} ${getEndMonth()}";
   }
 }

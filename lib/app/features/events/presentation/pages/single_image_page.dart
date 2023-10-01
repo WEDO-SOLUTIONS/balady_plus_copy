@@ -18,6 +18,7 @@ import 'package:balady_plus/app/features/events/presentation/widgets/events_main
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_svg_provider/flutter_svg_provider.dart' as svgProvider;
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 class SingleEventDescriptionPage extends StatefulWidget {
@@ -37,6 +38,7 @@ class _SingleEventDescriptionPageState
     WidgetsBinding.instance.addPostFrameCallback((_) {});
   }
 
+  String img = "";
   @override
   Widget build(BuildContext context) {
     String id = ModalRoute.of(context)!.settings.arguments as String;
@@ -47,6 +49,7 @@ class _SingleEventDescriptionPageState
         backgroundColor: const Color(0xFFF5F8FA),
         body: BlocBuilder<EventsBloc, EventsState>(
           builder: (context, state) {
+            if (img.isEmpty) img = state.eventDetails.logoUrl ?? "";
             if (state.status == BlocStatus.loading)
               return Center(child: CustomCircularLoadingWidget());
 
@@ -55,6 +58,7 @@ class _SingleEventDescriptionPageState
                 context.read<EventsBloc>().add(GetEventsDetails(id: id));
               },
               child: SingleChildScrollView(
+                physics: const ClampingScrollPhysics(),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
@@ -65,10 +69,18 @@ class _SingleEventDescriptionPageState
                         right: 16,
                       ),
                       decoration: BoxDecoration(
-                        image: DecorationImage(
-                          image: NetworkImage(state.eventDetails.logoUrl ?? ""),
-                          fit: BoxFit.fill,
-                        ),
+                        image: (img.endsWith(".svg"))
+                            ? DecorationImage(
+                                image: svgProvider.Svg(
+                                  img,
+                                  source: svgProvider.SvgSource.network,
+                                ),
+                                fit: BoxFit.fill,
+                              )
+                            : DecorationImage(
+                                image: NetworkImage(img),
+                                fit: BoxFit.fill,
+                              ),
                       ),
                       child: Column(
                         children: [
@@ -97,7 +109,13 @@ class _SingleEventDescriptionPageState
                           ),
                           SizedBox(
                             height: 120,
-                            child: EventImageSwiper(),
+                            child: EventImageSwiper(
+                              onChange: (String img) {
+                                setState(() {
+                                  this.img = img;
+                                });
+                              },
+                            ),
                           ),
                         ],
                       ),
@@ -123,11 +141,14 @@ class _SingleEventDescriptionPageState
                             height: 16,
                           ),
                           EventsDetailsWidget(
-                            feesType: state.eventDetails.getFess() ?? '',
+                            feesType: state.eventDetails.getFess(),
                             date: state.eventDetails.getDate(),
                             time: state.eventDetails.getTime(),
                             genre: state.eventDetails.audience ?? "",
                             website: "",
+                            city: state.eventDetails.city ?? "",
+                            category: state.eventDetails.category ?? "",
+                            season: state.eventDetails.season ?? "",
                           ),
                           const SizedBox(
                             height: 16,

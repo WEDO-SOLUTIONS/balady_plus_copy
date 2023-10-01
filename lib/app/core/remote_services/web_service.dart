@@ -312,8 +312,8 @@ class WebService {
 
     String queryString = "";
     var data = body != null ? json.encode(body) : null;
-    //print(data);
-    //print(url);
+    print(data);
+    print(url);
     if (relativePath != null) {
       queryString = relativePath;
     }
@@ -322,7 +322,7 @@ class WebService {
           Uri.decodeQueryComponent(Uri(queryParameters: queryParams).query);
     }
     var requestUrl = baseURL + url + queryString;
-    ////print(requestUrl);
+    print(requestUrl);
 
     Map<String, dynamic> result = {};
     try {
@@ -349,7 +349,7 @@ class WebService {
       if (extraHeadersParams != null) headers.addAll(extraHeadersParams);
       var response =
           await http.post(Uri.parse(requestUrl), body: data, headers: headers);
-      ////print(utf8.decode(response.bodyBytes).toString());
+      print(utf8.decode(response.bodyBytes).toString());
       if (response.statusCode == HttpStatus.ok) {
         result.putIfAbsent("state", () => true);
         result.putIfAbsent(

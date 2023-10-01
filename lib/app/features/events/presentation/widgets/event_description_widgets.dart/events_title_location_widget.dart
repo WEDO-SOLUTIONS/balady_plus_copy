@@ -27,83 +27,92 @@ class EventsTitleLocationWidget extends StatelessWidget {
       return Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              CustomTextWidget(
-                title,
-                textStyle: AppStyle.eventMainTitleStyle,
-              ),
-              Row(
-                children: [
-                  SvgPicture.asset(IconPath.locationBlack),
-                  SizedBox(
-                    width: 1,
-                  ),
-                  CustomTextWidget(
-                    city,
-                    textStyle: AppStyle.eventsMainSubtitleStyle,
-                  )
-                ],
-              )
-            ],
+          Expanded(
+            flex: 3,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                CustomTextWidget(
+                  title,
+                  textStyle: AppStyle.eventMainTitleStyle,
+                  maxLines: 10,
+                ),
+                Row(
+                  children: [
+                    SvgPicture.asset(IconPath.locationBlack),
+                    SizedBox(
+                      width: 1,
+                    ),
+                    CustomTextWidget(
+                      city,
+                      textStyle: AppStyle.eventsMainSubtitleStyle,
+                    )
+                  ],
+                )
+              ],
+            ),
           ),
-          Row(
-            children: [
-              if (state.eventDetails.ticketUrl != null)
-                InkWell(
-                  onTap: () {
-                    Share.share(state.eventDetails.ticketUrl ?? "");
-                  },
-                  child: Container(
-                    width: 36,
-                    height: 36,
-                    padding: EdgeInsets.all(5),
-                    decoration: ShapeDecoration(
-                      color: const Color(0xFFE8EFF1),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
+          SizedBox(
+            width: 8,
+          ),
+          Expanded(
+            child: Row(
+              children: [
+                if (state.eventDetails.ticketUrl != null)
+                  InkWell(
+                    onTap: () {
+                      Share.share(state.eventDetails.ticketUrl ?? "");
+                    },
+                    child: Container(
+                      width: 36,
+                      height: 36,
+                      padding: EdgeInsets.all(5),
+                      decoration: ShapeDecoration(
+                        color: const Color(0xFFE8EFF1),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
                       ),
-                    ),
-                    child: SvgPicture.asset(
-                      IconPath.export,
+                      child: SvgPicture.asset(
+                        IconPath.export,
+                      ),
                     ),
                   ),
+                SizedBox(
+                  width: 8,
                 ),
-              SizedBox(
-                width: 16,
-              ),
-              if (state.eventDetails.getEndDateFull() != null &&
-                  state.eventDetails.getStartDateFull() != null)
-                InkWell(
-                  onTap: () {
-                    Add2Calendar.addEvent2Cal(
-                      buildEvent(
-                        title: state.eventDetails.name ?? "",
-                        desc: state.eventDetails.description ?? "",
-                        url: state.eventDetails.ticketUrl ?? "",
-                        city: state.eventDetails.city ?? "",
-                        startDate: state.eventDetails.getStartDateFull()!,
-                        endDate: state.eventDetails.getEndDateFull()!,
+                if (state.eventDetails.getEndDateFull() != null &&
+                    state.eventDetails.getStartDateFull() != null)
+                  InkWell(
+                    onTap: () {
+                      Add2Calendar.addEvent2Cal(
+                        buildEvent(
+                          title: state.eventDetails.name ?? "",
+                          desc: state.eventDetails.description ?? "",
+                          url: state.eventDetails.ticketUrl ?? "",
+                          city: state.eventDetails.city ?? "",
+                          startDate: state.eventDetails.getStartDateFull()!,
+                          endDate: state.eventDetails.getEndDateFull()!,
+                        ),
+                      );
+                    },
+                    child: Container(
+                      width: 36,
+                      height: 36,
+                      padding: EdgeInsets.all(5),
+                      decoration: ShapeDecoration(
+                        color: const Color(0xFFE8EFF1),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
                       ),
-                    );
-                  },
-                  child: Container(
-                    width: 36,
-                    height: 36,
-                    padding: EdgeInsets.all(5),
-                    decoration: ShapeDecoration(
-                      color: const Color(0xFFE8EFF1),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
+                      child: SvgPicture.asset(
+                        IconPath.calendar,
                       ),
-                    ),
-                    child: SvgPicture.asset(
-                      IconPath.calendar,
                     ),
                   ),
-                ),
-            ],
+              ],
+            ),
           )
         ],
       );

@@ -25,12 +25,15 @@ class SearchEventsItemModel extends SearchEventsItem {
     }
 
     return SearchEventsItemModel(
-        id: json["id"],
-        eventName: json["name"],
-        category: json["category"],
-        city: json["city"],
-        startDate: parseDate(json["startDate"]),
-        endDate: parseDate(json["endDate"]),
-        logoImage: json["logoURL"]);
+      id: json["id"],
+      eventName: json["name"],
+      category: json["category"],
+      city: json["city"],
+      startDate: parseDate(json["startDate"]),
+      endDate: parseDate(json["endDate"]),
+      logoImage: json["logoURL"],
+      locationX: json["location"]?["x"],
+      locationY: json["location"]?["y"],
+    );
   }
 }

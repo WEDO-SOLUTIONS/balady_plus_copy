@@ -120,6 +120,7 @@ class SearchMapWidget extends StatelessWidget {
                             // SearchCategoryMessage.cafe,
                             SearchCategoryMessage.restaurants,
                             SearchCategoryMessage.parks,
+                            SearchCategoryMessage.events,
                           ]
                               .map(
                                 (e) => Row(

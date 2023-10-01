@@ -207,6 +207,14 @@ enum GISMapLayers {
         "SUBDIVISIONPARCELNUMBER",
         "SUBDIVISIONPLAN_ID"
       ]),
+
+  Events(
+      layerId: 13,
+      cardHeight: 180,
+      icon: Constants.restaurantLayerIcon,
+      selectedIcon: Constants.restaurantLayerIcon,
+      outFieldsShort: ["*"],
+      outFieldsLong: ["*"]),
   ;
 
   const GISMapLayers(

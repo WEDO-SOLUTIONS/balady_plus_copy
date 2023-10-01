@@ -16,6 +16,9 @@ import 'package:uuid/uuid.dart';
 import '../../../../core/dependency_injection/injection_container.dart';
 import '../../../../core/services/local/helpers.dart';
 import '../../../../core/services/local/navigation_services.dart';
+import '../../../events/domain/entities/search_events/search_events_item.dart';
+import '../../../events/domain/entities/search_events/search_events_params.dart';
+import '../../../events/domain/usecase/get_search_events.dart';
 import '../../constants/constants.dart';
 import 'package:flutter/widgets.dart';
 
@@ -106,6 +109,7 @@ class MapViewModel extends BaseViewModel {
   final selectedDiggingPoint = ValueNotifier<Excavations?>(null);
   final selectedInvetmentPoint = ValueNotifier<InvestmentSites?>(null);
   final selectedResturantPoint = ValueNotifier<ResturantModel?>(null);
+  final selectedEventPoint = ValueNotifier<SearchEventsItem?>(null);
 
   final selectedImtethalPoint =
       ValueNotifier<BuildingComplianceCertificate?>(null);
@@ -135,12 +139,15 @@ class MapViewModel extends BaseViewModel {
     await clearAll();
 
     if (selectedCategory.value != null &&
-        selectedCategory.value != SearchCategoryMessage.restaurants) {
+        selectedCategory.value != SearchCategoryMessage.restaurants &&
+        selectedCategory.value != SearchCategoryMessage.events) {
       performSearch(
         queryText: selectedCategory.value!.displayName(),
       );
     } else if (selectedCategory.value == SearchCategoryMessage.restaurants) {
       callSearch();
+    } else if (selectedCategory.value == SearchCategoryMessage.events) {
+      callEventsSearch();
     }
     hideLoading1();
 
@@ -401,6 +408,7 @@ class MapViewModel extends BaseViewModel {
     selectedImtethalPoint.value = null;
     selectedInvetmentPoint.value = null;
     selectedResturantPoint.value = null;
+    selectedEventPoint.value = null;
     selectedPointId.value = null;
     selectedWhiteLands.value = null;
     selectedLands.value = null;
@@ -410,6 +418,7 @@ class MapViewModel extends BaseViewModel {
     selectedImtethalPoint.notifyListeners();
     selectedInvetmentPoint.notifyListeners();
     selectedResturantPoint.notifyListeners();
+    selectedEventPoint.notifyListeners();
     selectedPointId.notifyListeners();
     selectedLands.notifyListeners();
     showLegend.notifyListeners();
@@ -577,9 +586,12 @@ class MapViewModel extends BaseViewModel {
 
   callSearch() async {
     //print("search");
+
+    if (selectedCategory.value == SearchCategoryMessage.events) return;
     await clearAll();
 
-    if (selectedCategory.value != SearchCategoryMessage.restaurants) {
+    if (selectedCategory.value != SearchCategoryMessage.restaurants &&
+        selectedCategory.value != SearchCategoryMessage.events) {
       String? query = selectedCategory.value != null
           ? selectedCategory.value!.displayName()
           : searchController.text;
@@ -632,6 +644,92 @@ class MapViewModel extends BaseViewModel {
           addPolygonWithPoint(pointList, layerSelected.value!.id);
           break;
       }
+    }
+    _clearDebounce();
+    hideLoading1();
+  }
+
+  callEventsSearch() async {
+    //print("search");
+    await clearAll();
+
+    GISMapLayers? gisLayer = GISMapLayers.values.firstWhereOrNull(
+      (element) => element.layerId == 13,
+    );
+    print("GISMapLayers $gisLayer");
+    showLoading1();
+    bottomSheetSize.notifyListeners();
+
+    if (gisLayer != null) {
+      /*  List? pointList = await layersRepositories.getPointsInLayers(
+        params: MapRequestParams(
+          layer: gisLayer,
+          northEastLatitude: _lastHandledEvent!.visibleRect.northEastLat,
+          northEastLongitude: _lastHandledEvent!.visibleRect.northEastLon,
+          southWestLongitude: _lastHandledEvent!.visibleRect.southWestLon,
+          southWestLlatitude: _lastHandledEvent!.visibleRect.southWestLat,
+        ),
+      );
+      switch (layerSelected.value!.geometryType) {
+        case 'esriGeometryPoint':
+          addMarkersWithPoint(pointList, layerSelected.value!.id);
+          break;
+        case 'esriGeometryPolyline':
+          addPolylineWithPoint(pointList, layerSelected.value!.id);
+          break;
+        case 'esriGeometryPolygon':
+          addPolygonWithPoint(pointList, layerSelected.value!.id);
+          break;
+      }*/
+      final searchEvents = GetSearchEvents(repository: sl());
+      final getEventsFailureOrSuccess =
+          await searchEvents(SearchEventsParams(size: 100, page: 1));
+
+      await getEventsFailureOrSuccess.fold((l) {}, (r) async {
+        final markers = r.items
+            ?.map(
+              (element) {
+                print("HHHHH");
+                if (element.getLocation() != null)
+                  return Marker(
+                    id: element.id.toString(),
+                    options: MarkerOptionsMessage(
+                      position: GeoPointWithElevationMessage(
+                          elevation: 1,
+                          latitude: element.getLocation()!.latitude,
+                          longitude: element.getLocation()!.longitude),
+                      icon: MarkerIconMessage(
+                        path: Constants.icMarkerGardensParks,
+                        width: 30,
+                      ),
+                    ),
+                    onTap: () async {
+                      print("on Tap ${layerSelected.value?.id}");
+
+                      refreshMap = false;
+
+                      refreshView();
+                      selectedEventPoint.value = element;
+
+                      selectedEventPoint.value = element;
+                      selectedEventPoint.notifyListeners();
+
+                      await Future.delayed(
+                        const Duration(milliseconds: 300),
+                      );
+                      refreshMap = true;
+                    },
+                  );
+                return null;
+              },
+            )
+            .whereNotNull()
+            .toList();
+        print("YYYY ${markers?[0].options.position.latitude}");
+        //await controller.removeAllMarkers();
+        await clearAll();
+        controller.addMarkers(markers ?? []);
+      });
     }
     _clearDebounce();
     hideLoading1();
@@ -827,6 +925,10 @@ class MapViewModel extends BaseViewModel {
                   selectedPoint.value = element;
                   selectedResturantPoint.value = element;
                   break;
+                case GISMapLayers.Events:
+                  selectedPoint.value = element;
+                  selectedEventPoint.value = element;
+                  break;
                 default:
                   break;
               }
@@ -838,6 +940,12 @@ class MapViewModel extends BaseViewModel {
                 selectedPoint.value = element;
                 selectedResturantPoint.value = element;
                 selectedResturantPoint.notifyListeners();
+              }
+
+              if (selectedCategory.value == SearchCategoryMessage.events) {
+                selectedPoint.value = element;
+                selectedEventPoint.value = element;
+                selectedEventPoint.notifyListeners();
               }
 
               await Future.delayed(

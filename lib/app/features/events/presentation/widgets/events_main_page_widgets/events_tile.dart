@@ -15,12 +15,34 @@ import 'package:balady_plus/app/features/events/presentation/widgets/events_main
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
+import 'package:flutter_svg_provider/flutter_svg_provider.dart' as svgProvider;
 
+import '../../../../_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
 import '../../../../_shared_feature_/presentation/widgets/custom_shimmer_list_widget.dart';
 import '../../pages/events_not_found_page.dart';
 
-class EventsSectionWidget extends StatelessWidget {
+class EventsSectionWidget extends StatefulWidget {
   const EventsSectionWidget({super.key});
+
+  @override
+  State<EventsSectionWidget> createState() => _EventsSectionWidgetState();
+}
+
+class _EventsSectionWidgetState extends State<EventsSectionWidget> {
+  final _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(_onScroll);
+  }
+
+  void _onScroll() {
+    if (_scrollController.position.pixels ==
+        _scrollController.position.maxScrollExtent) {
+      context.read<EventsBloc>().add(GetMoreSearchEvent());
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,8 +61,19 @@ class EventsSectionWidget extends StatelessWidget {
             context.read<EventsBloc>().add(const GetSearchEvent());
           },
           child: ListView.builder(
-            itemCount: state.searchItems.length,
+            controller: _scrollController,
+            itemCount: state.searchItems.length + 1,
             itemBuilder: (context, index) {
+              if (index >= (state.searchItems.length)) {
+                if (state.status == BlocStatus.loadMore) {
+                  return const SizedBox(
+                    height: 50,
+                    child: Center(child: CustomCircularLoadingWidget()),
+                  );
+                } else {
+                  return Container(height: 50);
+                }
+              }
               return GestureDetector(
                 onTap: () {
                   Navigator.pushNamed(context, RouteName.eventsDetailsPage,
@@ -52,11 +85,21 @@ class EventsSectionWidget extends StatelessWidget {
                       height: 180,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(8),
-                        image: DecorationImage(
-                          fit: BoxFit.fill,
-                          image: NetworkImage(
-                              state.searchItems[index].logoImage ?? ""),
-                        ),
+                        image: (state.searchItems[index].logoImage
+                                    ?.endsWith(".svg") ??
+                                false)
+                            ? DecorationImage(
+                                image: svgProvider.Svg(
+                                  state.searchItems[index].logoImage ?? ""!,
+                                  source: svgProvider.SvgSource.network,
+                                ),
+                                fit: BoxFit.fill,
+                              )
+                            : DecorationImage(
+                                image: NetworkImage(
+                                    state.searchItems[index].logoImage ?? ""),
+                                fit: BoxFit.fill,
+                              ),
                       ),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
