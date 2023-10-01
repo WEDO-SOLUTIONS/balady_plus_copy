@@ -238,4 +238,7 @@ class EtmamRoutesNames {
   static const deleteOrdersPage = '/DeleteOrdersPage';
 
   static const editBiddingForm = '/EditBiddingForm';
+
+    static const biddingReleationTypes = '/biddingReleationTypes';
+
 }

@@ -820,6 +820,7 @@ class MapViewModel extends BaseViewModel {
                 case GISMapLayers.Opportunities:
                   selectedPoint.value = element;
                   selectedInvetmentPoint.value = element;
+
                   break;
 
                 case GISMapLayers.Resturants:

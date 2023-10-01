@@ -29,6 +29,7 @@ import 'package:flutter/material.dart'
 import 'package:flutter/widgets.dart' show SizedBox;
 import 'package:balady_plus/etmam_app/features/home/presentation/pages/etmam_home_page.dart';
 import 'package:balady_plus/etmam_app/features/on_boarding_cities/presentation/pages/etmam_select_city_page.dart';
+import '../../../etmam_app/features/dynamic_form/presentation/dialogs/bidding_types_dialog.dart';
 import '../../../etmam_app/features/dynamic_form/presentation/pages/bidding_form_page.dart';
 import '../../../etmam_app/features/dynamic_form/presentation/pages/bidding_type_page.dart';
 import '../../../etmam_app/features/dynamic_form/presentation/pages/edit_bidding_form_page.dart';
@@ -293,6 +294,9 @@ class Routes {
 
         EtmamRoutesNames.editBiddingForm: (context) =>
             const EditBiddingFormPage(),
+
+        EtmamRoutesNames.biddingReleationTypes: (context) =>
+            BiddingTypeDialog(),
 
 //! Etmam End
 
