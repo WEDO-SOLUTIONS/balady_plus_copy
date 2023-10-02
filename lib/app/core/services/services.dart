@@ -83,6 +83,17 @@ Map<String, dynamic> servicesConfig = {
       "ar": {"title": "الفعاليات", "description": null, "tag": null},
       "en": {"title": "Zamzam Points", "description": null, "tag": null}
     },
+    {
+      "id": 5,
+      "icon": "ticket-2",
+      "3d_icon": null,
+      "order": 5,
+      "isNew": false,
+      "isImportant": false,
+      "action": {"type": "page", "value": RouteName.calendarMainPage},
+      "ar": {"title": "تقويم المملكة", "description": null, "tag": null},
+      "en": {"title": "Zamzam Points", "description": null, "tag": null}
+    },
   ],
   "honoring_the_dead_services": [
     {

@@ -51,6 +51,12 @@ extension DateTimeExtension on DateTime {
     return CommonFunctions.mapARNumbersToENNumbers(formattedDate);
   }
 
+  String toDayName() {
+    final formatter = DateFormat('EE', translator.activeLanguageCode);
+    final formattedDate = formatter.format(this);
+    return CommonFunctions.mapARNumbersToENNumbers(formattedDate);
+  }
+
   String toTime() {
     final formatter = DateFormat('h:mm a', translator.activeLanguageCode);
     final formattedDate = formatter.format(this);

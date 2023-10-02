@@ -74,20 +74,9 @@ class HomeBottomSheet extends StatelessWidget {
                               // DeformityHomeCard(),
                               BaladySmartAdvisorCard(),
 
-                              GeneralEventHomeCard(),
-                              SizedBox(
-                                height: 32,
-                              ),
-                              EventHomeCard(
-                                  background:
-                                      "assets/images/saudi-national-day.png",
-                                  dayName: "السبت",
-                                  day: "23",
-                                  month: "09",
-                                  btnText: "إضافة الى تقويمي",
-                                  eventName: "اليوم الوطني",
-                                  remainingText: "متبقي على اليوم الوطني",
-                                  timer: '30 : 22'),
+                              // GeneralEventHomeCard(),
+
+                              EventHomeCard(),
 
                               //  ChallengeHomeCard(),
                               const NewServices(),

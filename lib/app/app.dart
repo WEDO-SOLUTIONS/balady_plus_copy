@@ -19,6 +19,8 @@ import './core/dependency_injection/dependency_injection_exports.dart' show sl;
 import 'core/utils/routes.dart';
 import 'features/appointments/presentation/pages/appointments_list_screen.dart';
 import 'features/bottom_navigation/presentation/pages/bottom_navigation_page.dart';
+import 'features/calendar/presentation/bloc/calendar_bloc.dart';
+import 'features/calendar/presentation/bloc/calendar_event.dart';
 import 'features/entry_point/presentation/cubit/auth_cubit.dart';
 
 import 'package:provider/provider.dart';
@@ -46,7 +48,8 @@ class App extends StatelessWidget {
               MapViewModel(layersRepositories: sl()),
         ),
         BlocProvider.value(value: sl<EtmamEntryPointCubit>()),
-        BlocProvider.value(value: sl<LocationCubit>())
+        BlocProvider.value(value: sl<LocationCubit>()),
+        BlocProvider.value(value: sl<CalendarBloc>()..add(GetSearchEvent()))
       ],
       child: BlocProvider<EntryPointCubit>.value(
           value: sl<EntryPointCubit>()..onLoadingApp(),

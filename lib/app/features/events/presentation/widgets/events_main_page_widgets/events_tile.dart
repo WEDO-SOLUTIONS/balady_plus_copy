@@ -112,26 +112,33 @@ class _EventsSectionWidgetState extends State<EventsSectionWidget> {
                                   category:
                                       state.searchItems[index].category ?? '',
                                 ),
-                                state.searchItems[index].getStartMonth() ==
-                                        state.searchItems[index].getEndMonth()
-                                    ? EventsStartDateEvent(
+                                //  state.searchItems[index].getStartMonth() ==
+                                //       state.searchItems[index].getEndMonth()
+                                /*   ? 
+                                    EventsStartDateEvent(
                                         month: state.searchItems[index]
                                             .getStartMonth(),
                                         day1: state.searchItems[index]
                                             .getStartDay(),
                                         day2: state.searchItems[index]
                                             .getEndDay(),
-                                      )
-                                    : EventsEndDate(
-                                        month1: state.searchItems[index]
-                                            .getStartMonth(),
-                                        month2: state.searchItems[index]
-                                            .getEndMonth(),
-                                        day1: state.searchItems[index]
-                                            .getStartDay(),
-                                        day2: state.searchItems[index]
-                                            .getEndDay(),
-                                      ),
+                                      )*/
+                                //:
+                                EventsEndDate(
+                                  month1:
+                                      state.searchItems[index].getStartMonth(),
+                                  month2:
+                                      state.searchItems[index].getEndMonth(),
+                                  year1: state
+                                          .searchItems[index].startDate?.year
+                                          .toString() ??
+                                      "",
+                                  year2: state.searchItems[index].endDate?.year
+                                          .toString() ??
+                                      "",
+                                  day1: state.searchItems[index].getStartDay(),
+                                  day2: state.searchItems[index].getEndDay(),
+                                ),
                               ]),
                           EventsTitlePriceWidget(
                             address: state.searchItems[index].city ?? "",

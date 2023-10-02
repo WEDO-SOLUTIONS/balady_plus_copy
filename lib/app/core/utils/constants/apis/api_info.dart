@@ -317,6 +317,8 @@ class ApiUrl {
   static const eventsDetails = '/v1/balady-events-services/events';
   static const eventsCategory = '/v1/balady-events-services/category/';
 
+  static const calendarSearch = '/v1/saudi-calendar-services/entries/search';
+
   //! POST
 
   //! Delete

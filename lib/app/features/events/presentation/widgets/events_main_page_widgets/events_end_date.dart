@@ -3,17 +3,20 @@ import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/t
 import 'package:flutter/material.dart';
 
 class EventsEndDate extends StatelessWidget {
-  const EventsEndDate({
-    super.key,
-    required this.day1,
-    required this.day2,
-    required this.month1,
-    required this.month2,
-  });
+  const EventsEndDate(
+      {super.key,
+      required this.day1,
+      required this.day2,
+      required this.month1,
+      required this.month2,
+      required this.year1,
+      required this.year2});
   final String day1;
   final String day2;
   final String month1;
   final String month2;
+  final String year1;
+  final String year2;
 
   @override
   Widget build(BuildContext context) {
@@ -30,13 +33,20 @@ class EventsEndDate extends StatelessWidget {
             children: [
               CustomTextWidget(
                 day1,
-                textStyle: AppStyle.eventsStateDayStyle,
+                textStyle: AppStyle.eventsStateMonthStyle,
               ),
               SizedBox(
-                width: 1,
+                width: 2,
               ),
               CustomTextWidget(
                 month1,
+                textStyle: AppStyle.eventsStateMonthStyle,
+              ),
+              SizedBox(
+                width: 2,
+              ),
+              CustomTextWidget(
+                year1,
                 textStyle: AppStyle.eventsStateMonthStyle,
               ),
             ],
@@ -48,13 +58,20 @@ class EventsEndDate extends StatelessWidget {
             children: [
               CustomTextWidget(
                 day2,
-                textStyle: AppStyle.eventsStateDayStyle,
+                textStyle: AppStyle.eventsStateMonthStyle,
               ),
               SizedBox(
                 width: 2,
               ),
               CustomTextWidget(
                 month2,
+                textStyle: AppStyle.eventsStateMonthStyle,
+              ),
+              SizedBox(
+                width: 2,
+              ),
+              CustomTextWidget(
+                year2,
                 textStyle: AppStyle.eventsStateMonthStyle,
               ),
             ],

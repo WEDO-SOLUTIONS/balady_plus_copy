@@ -1,6 +1,7 @@
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg_provider/flutter_svg_provider.dart' as svgProvider;
 
 class SectionContainer extends StatelessWidget {
   final String name;
@@ -30,11 +31,6 @@ class SectionContainer extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(14),
-        image: imageBackground != null
-            ? DecorationImage(
-                image: AssetImage(imageBackground!),
-              )
-            : null,
         boxShadow: const [
           BoxShadow(
             color: Color(0x4CE9EAF1),
@@ -43,111 +39,100 @@ class SectionContainer extends StatelessWidget {
             spreadRadius: 0,
           ),
         ],
+        image: (imageBackground?.endsWith(".svg") ?? false)
+            ? DecorationImage(
+                image: svgProvider.Svg(
+                  imageBackground ?? "",
+                  source: svgProvider.SvgSource.network,
+                ),
+                fit: BoxFit.fill,
+              )
+            : DecorationImage(
+                image: NetworkImage(imageBackground ?? ""),
+                fit: BoxFit.fill,
+              ),
       ),
       margin: const EdgeInsets.all(6),
       padding: const EdgeInsets.all(14),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Row(
-                children: [
-                  CustomTextWidget(
-                    name,
-                    fontSize: 14,
-                    fontColor: Color(0xFF3F3F46),
-                    fontWeight: AppFontWeight.bold,
-                  ),
-                ], //ImagePathCalendar.flag
-              ),
-              CustomVerticalSpace(height: 8),
-              CustomTextWidget(
-                date,
-                fontSize: 12,
-                fontColor: Color(0x6B111111),
-                fontWeight: AppFontWeight.bold,
-              ),
-            ],
-          ),
-          Container(
-            padding: const EdgeInsets.all(15),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(12),
-              gradient: LinearGradient(
-                begin: const Alignment(0.76, 0.64),
-                end: const Alignment(-0.76, -0.64),
-                colors: [color1, color2],
-              ),
-            ),
+          Expanded(
+            flex: 3,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Row(
                   children: [
-                    CustomTextWidget(
-                      day,
-                      fontSize: 16,
-                      fontColor: AppColor.white,
-                      fontWeight: AppFontWeight.bold,
+                    Flexible(
+                      child: CustomTextWidget(
+                        name,
+                        fontSize: 14,
+                        fontColor: Color(0xFF3F3F46),
+                        fontWeight: AppFontWeight.bold,
+                        maxLines: 10,
+                      ),
                     ),
-                    const SizedBox(
-                      width: 5,
-                    ),
-                    CustomTextWidget(
-                      month,
-                      fontSize: 12,
-                      fontColor: AppColor.white,
-                      fontWeight: AppFontWeight.bold,
-                    ),
-                  ],
+                  ], //ImagePathCalendar.flag
                 ),
+                CustomVerticalSpace(height: 8),
                 CustomTextWidget(
-                  timer,
+                  date,
+                  fontSize: 12,
+                  height: 1.4,
+                  fontColor: Color(0x6B111111),
                   fontWeight: AppFontWeight.bold,
-                  fontColor: AppColor.white,
-                  fontSize: 10.3,
                 ),
-                /*  const Row(
-                  children: [
-                    StyleText(
-                      text: '23 ',
-                      size: 10.35,
-                    ),
-                    StyleText(
-                      text: 'يوم ',
-                      size: 8.87,
-                    ),
-                    StyleText(
-                      text: ':',
-                      size: 11.83,
-                    ),
-                    StyleText(
-                      text: '21',
-                      size: 10.35,
-                    ),
-                    StyleText(
-                      text: 'س ',
-                      size: 8.87,
-                    ),
-                    StyleText(
-                      text: ':',
-                      size: 11.83,
-                    ),
-                    StyleText(
-                      text: '19 ',
-                      size: 10.35,
-                    ),
-                    StyleText(
-                      text: 'د',
-                      size: 8.87,
-                    ),
-                  ],
-                ),*/
               ],
+            ),
+          ),
+          SizedBox(
+            width: 16,
+          ),
+          Expanded(
+            flex: 2,
+            child: Container(
+              padding: const EdgeInsets.all(15),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+                gradient: LinearGradient(
+                  begin: const Alignment(0.76, 0.64),
+                  end: const Alignment(-0.76, -0.64),
+                  colors: [color1, color2],
+                ),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      CustomTextWidget(
+                        day,
+                        fontSize: 16,
+                        fontColor: AppColor.white,
+                        fontWeight: AppFontWeight.bold,
+                      ),
+                      const SizedBox(
+                        width: 5,
+                      ),
+                      CustomTextWidget(
+                        month,
+                        fontSize: 12,
+                        fontColor: AppColor.white,
+                        fontWeight: AppFontWeight.bold,
+                      ),
+                    ],
+                  ),
+                  CustomTextWidget(
+                    timer,
+                    fontWeight: AppFontWeight.bold,
+                    fontColor: AppColor.white,
+                    fontSize: 10.3,
+                  ),
+                ],
+              ),
             ),
           ),
         ],
