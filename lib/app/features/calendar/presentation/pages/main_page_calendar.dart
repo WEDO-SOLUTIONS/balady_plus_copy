@@ -1,95 +1,140 @@
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
+import 'package:balady_plus/app/features/calendar/presentation/bloc/calendar_state.dart';
 import 'package:balady_plus/app/features/transaction_inquiry/presentation/pages/inquiry/transactions_inquiry/details_app_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
+import '../../../_shared_feature_/presentation/components/bottom_sheets/bottom_sheet_with_actions.dart';
+import '../../../_shared_feature_/presentation/dialogs/bottom_sheet_dialogs.dart';
 import '../../../_shared_feature_/presentation/icons/filter_icon.dart';
+import '../../../_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
+import '../../../_shared_feature_/presentation/widgets/custom_shimmer_list_widget.dart';
 import '../../../_shared_feature_/presentation/widgets/default_appbar_widget.dart';
+import '../../../events/presentation/pages/events_not_found_page.dart';
 import '../../calendar_exports.dart'
     show SectionDate, SectionContainer, NationalDay;
+import '../../domain/entities/search_calendar/search_calendar_params.dart';
+import '../bloc/calendar_bloc.dart';
+import '../bloc/calendar_event.dart';
+import '../dialogs/calendar_filter_dialog.dart';
+import '../widgets/calendar_not_found_page.dart';
 
-class MainPageCalendar extends StatelessWidget {
+class MainPageCalendar extends StatefulWidget {
   const MainPageCalendar({super.key});
 
   @override
+  State<MainPageCalendar> createState() => _MainPageCalendarState();
+}
+
+class _MainPageCalendarState extends State<MainPageCalendar> {
+  final _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(_onScroll);
+  }
+
+  void _onScroll() {
+    if (_scrollController.position.pixels ==
+        _scrollController.position.maxScrollExtent) {
+      context.read<CalendarBloc>().add(GetMoreSearchEvent());
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: DefaultAppBarWidget(
-        title: 'تقويم المملكة'.tr(),
-        showBack: true,
-        actions: [FilterIcon(onTap: () async {})],
-      ),
-      body: const SingleChildScrollView(
-        child: Column(
-          children: [
-            SizedBox(
-              height: 16,
+    return BlocProvider(
+      create: (context) => CalendarBloc()..add(GetSearchEvent()),
+      child: BlocBuilder<CalendarBloc, CalendarState>(
+        builder: (context, state) {
+          return Scaffold(
+            appBar: DefaultAppBarWidget(
+              title: "saudi_calendar".tr(),
+              showBack: true,
+              actions: [
+                FilterIcon(onTap: () async {
+                  context.read<CalendarBloc>().add(GetSeasonsEvent());
+
+                  final SearchCalendarParams? params =
+                      await BottomSheetDialog.showDraggableSheet(
+                    context,
+                    //  dialogKeyName: DialogName.violationsFilterDialog,
+                    //  currentRouteName: RouteName.violationsPage,
+                    child: BottomSheetWithActions(
+                      title: "filters".tr(),
+                      body: CalendarFilterDialog(
+                        requestsBloc: context.read<CalendarBloc>(),
+                        params: state.searchedParams,
+                      ),
+                    ),
+                  );
+                  if (context.mounted) {
+                    context
+                        .read<CalendarBloc>()
+                        .add(GetSearchEvent(params: params));
+                  }
+                })
+              ],
             ),
-            SectionDate(
-              month: 'سبتمبر',
-              year: '2023',
+            body: BlocBuilder<CalendarBloc, CalendarState>(
+              builder: (context, state) {
+                if (state.status == BlocStatus.loading)
+                  return CustomShimmerListWidget(
+                    height: 189,
+                    itemCount: 10,
+                  );
+                if (state.status == BlocStatus.success &&
+                    state.searchItems.isEmpty) return CalendarNotFoundPage();
+
+                return RefreshIndicator(
+                  onRefresh: () async {
+                    context.read<CalendarBloc>().add(const GetSearchEvent());
+                  },
+                  child: ListView.builder(
+                    controller: _scrollController,
+                    itemCount: state.searchItems.length + 1,
+                    itemBuilder: (context, index) {
+                      if (index >= (state.searchItems.length)) {
+                        if (state.status == BlocStatus.loadMore) {
+                          return const SizedBox(
+                            height: 50,
+                            child: Center(child: CustomCircularLoadingWidget()),
+                          );
+                        } else {
+                          return Container(height: 50);
+                        }
+                      }
+                      return Column(
+                        children: [
+                          /* SectionDate(
+                            month: state.searchItems[index].getStartDay(),
+                            year: state.searchItems[index].startDate?.year
+                                    .toString() ??
+                                "",
+                          ),*/
+                          SectionContainer(
+                            imageBackground: state.searchItems[index].logoURL,
+                            name: state.searchItems[index].name ?? "",
+                            date: state.searchItems[index].getDate(),
+                            day: state.searchItems[index].getStartDay(),
+                            month: state.searchItems[index].getStartMonth(),
+                            color1:
+                                state.searchItems[index].getColors(index)[0],
+                            color2:
+                                state.searchItems[index].getColors(index)[1],
+                            timer: state.searchItems[index].remainingDays(),
+                          ),
+                        ],
+                      );
+                    },
+                  ),
+                );
+              },
             ),
-            SectionContainer(
-              name: 'حساب المواطن',
-              date: '25 / 2 / 1445 هـ - 10 / 9 / 2023 م',
-              day: '10',
-              month: 'سبتمبر',
-              color1: Color(0xFF65C1C0),
-              color2: Color(0xFFA6D377),
-              timer: "٢٣ يوم : ٢١ س : ١٩ د",
-            ),
-            SectionContainer(
-              name: 'الضمان',
-              date: '25 / 2 / 1445 هـ - 10 / 9 / 2023 م',
-              day: '20',
-              month: 'سبتمبر',
-              color1: Color(0xFFD48C82),
-              color2: Color(0xFFE7B366),
-              timer: "٢٣ يوم : ٢١ س: ١٩ د",
-            ),
-            SectionContainer(
-              name: 'رواتب المتقاعدين',
-              date: '25 / 2 / 1445 هـ - 10 / 9 / 2023 م',
-              day: '25',
-              month: 'سبتمبر',
-              color1: Color(0xFF6090B9),
-              color2: Color(0xFF67C2D2),
-              timer: "٢٣ يوم : ٢١ س : ١٩ د",
-            ),
-            SectionContainer(
-              name: 'اليوم الوطني',
-              date: '25 / 2 / 1445 هـ - 10 / 9 / 2023 م',
-              day: '30',
-              month: 'سبتمبر',
-              color1: Color(0xFF0A7E47),
-              color2: Color(0xFF3AB379),
-              timer: "٢٣ يوم : ٢١ س : ١٩ د",
-              imageBackground: ImagePath.calendarNationalDay,
-            ),
-            SectionDate(
-              month: 'اكتوبر',
-              year: '2023',
-            ),
-            SectionContainer(
-              name: 'حساب المواطن',
-              date: '25 / 2 / 1445 هـ - 10 / 9 / 2023 م',
-              day: '10',
-              month: 'سبتمبر',
-              color1: Color(0xFF65C1C0),
-              color2: Color(0xFFA6D377),
-              timer: "٢٣ يوم : ٢١ س : ١٩ د",
-            ),
-            SectionContainer(
-              name: 'الضمان',
-              date: '25 / 2 / 1445 هـ - 10 / 9 / 2023 م',
-              day: '20',
-              month: 'سبتمبر',
-              color1: Color(0xFFD48C82),
-              color2: Color(0xFFE7B366),
-              timer: "٢٣ يوم : ٢١ س : ١٩ د",
-            ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }

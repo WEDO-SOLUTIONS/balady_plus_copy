@@ -1,6 +1,7 @@
 import 'package:balady_plus/app/core/dependency_injection/features/old_injection.dart';
 import 'package:balady_plus/app/core/dependency_injection/features/dc_injection.dart';
 import 'package:balady_plus/app/core/dependency_injection/features/profile/crm_requests_injection.dart';
+import 'package:balady_plus/app/features/calendar/presentation/bloc/calendar_bloc.dart';
 import 'package:balady_plus/app/features/unknow/data/data_sources/remote_data_source.dart';
 import 'package:balady_plus/app/features/weather/weather_exports.dart'
     show
@@ -61,6 +62,7 @@ import '../services/services_exports.dart'
         NetworkConnectionImplementation,
         WebService;
 import '../utils/enums/bottom_nav_bar.dart';
+import 'features/calendar_injection.dart';
 import 'features/compliance_injection.dart';
 import 'features/dc_injection.dart';
 import 'features/events_injection.dart';
@@ -126,6 +128,8 @@ void initialize() {
 
   EventsInjection.init();
 
+  CalendarInjection.init();
+
   //! Core
   sl.registerLazySingleton(() => WebService(dio: sl()));
   sl.registerLazySingleton(() => CRMWebService(dio: Dio()));
@@ -166,6 +170,7 @@ void initialize() {
   sl.registerLazySingleton(() => const DeviceDetails());
   sl.registerLazySingleton(() => const PackageDetails());
   sl.registerLazySingleton(() => LocationCubit());
+  sl.registerLazySingleton(() => CalendarBloc());
 
   //! External
   sl.registerLazySingleton(() => const FlutterSecureStorage());

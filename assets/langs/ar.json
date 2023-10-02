@@ -3216,8 +3216,16 @@
 "delete_compliance_request_title_yes":"نعم، إلغاء الطلب", 
   "city_scape_title":"سيتي سكيب العالمي 23", 
   "city_scape_desc":"تعرف على المعرض العقاري الأضخم في العالم وعش تجربة فريدة من خلال إستعراض موقع الحدث والأجنحة المشاركة والتنقل بمسارات المعرض بشكل فريد عبر خرائط بلدي التفاعلية ", 
-  "city_scape":"ابدأ الآن" 
+  "city_scape":"ابدأ الآن" , 
   
+"saudi_calendar":"تقويم المملكة", 
+"saudi_calendar_day":"{} يوم", 
+
+"saudi_calendar_type":"المناسبة", 
+"saudi_calendar_remain":"متبقي على {}", 
+"saudi_calendar_add":"إضافة إلى تقويمي", 
+"remaining":"متبقي", 
+"saudi_calendar_no_data":"عفوا، ال يوجد مناسبات تطابق محددات البحث الخاصة بك."
 
 
 }
