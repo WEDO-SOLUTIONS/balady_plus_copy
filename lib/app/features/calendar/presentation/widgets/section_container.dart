@@ -71,7 +71,8 @@ class SectionContainer extends StatelessWidget {
                         fontSize: 14,
                         fontColor: Color(0xFF3F3F46),
                         fontWeight: AppFontWeight.bold,
-                        maxLines: 10,
+                        maxLines: 2,
+                        textOverflow: TextOverflow.ellipsis,
                       ),
                     ),
                   ], //ImagePathCalendar.flag

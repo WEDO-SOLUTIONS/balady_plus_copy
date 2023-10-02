@@ -28,21 +28,6 @@ class MainPageCalendar extends StatefulWidget {
 }
 
 class _MainPageCalendarState extends State<MainPageCalendar> {
-  final _scrollController = ScrollController();
-
-  @override
-  void initState() {
-    super.initState();
-    _scrollController.addListener(_onScroll);
-  }
-
-  void _onScroll() {
-    if (_scrollController.position.pixels ==
-        _scrollController.position.maxScrollExtent) {
-      context.read<CalendarBloc>().add(GetMoreSearchEvent());
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
@@ -78,64 +63,97 @@ class _MainPageCalendarState extends State<MainPageCalendar> {
                 })
               ],
             ),
-            body: BlocBuilder<CalendarBloc, CalendarState>(
-              builder: (context, state) {
-                if (state.status == BlocStatus.loading)
-                  return CustomShimmerListWidget(
-                    height: 189,
-                    itemCount: 10,
-                  );
-                if (state.status == BlocStatus.success &&
-                    state.searchItems.isEmpty) return CalendarNotFoundPage();
-
-                return RefreshIndicator(
-                  onRefresh: () async {
-                    context.read<CalendarBloc>().add(const GetSearchEvent());
-                  },
-                  child: ListView.builder(
-                    controller: _scrollController,
-                    itemCount: state.searchItems.length + 1,
-                    itemBuilder: (context, index) {
-                      if (index >= (state.searchItems.length)) {
-                        if (state.status == BlocStatus.loadMore) {
-                          return const SizedBox(
-                            height: 50,
-                            child: Center(child: CustomCircularLoadingWidget()),
-                          );
-                        } else {
-                          return Container(height: 50);
-                        }
-                      }
-                      return Column(
-                        children: [
-                          /* SectionDate(
-                            month: state.searchItems[index].getStartDay(),
-                            year: state.searchItems[index].startDate?.year
-                                    .toString() ??
-                                "",
-                          ),*/
-                          SectionContainer(
-                            imageBackground: state.searchItems[index].logoURL,
-                            name: state.searchItems[index].name ?? "",
-                            date: state.searchItems[index].getDate(),
-                            day: state.searchItems[index].getStartDay(),
-                            month: state.searchItems[index].getStartMonth(),
-                            color1:
-                                state.searchItems[index].getColors(index)[0],
-                            color2:
-                                state.searchItems[index].getColors(index)[1],
-                            timer: state.searchItems[index].remainingDays(),
-                          ),
-                        ],
-                      );
-                    },
-                  ),
-                );
-              },
-            ),
+            body: CalendarBody(),
           );
         },
       ),
+    );
+  }
+}
+
+class CalendarBody extends StatefulWidget {
+  const CalendarBody({
+    super.key,
+  });
+
+  @override
+  State<CalendarBody> createState() => _CalendarBodyState();
+}
+
+class _CalendarBodyState extends State<CalendarBody> {
+  final _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+
+    _scrollController.addListener(_onScroll);
+  }
+
+  void _onScroll() {
+    if (_scrollController.position.pixels ==
+        _scrollController.position.maxScrollExtent) {
+      print("scroll");
+      context.read<CalendarBloc>().add(GetMoreSearchEvent());
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<CalendarBloc, CalendarState>(
+      builder: (context, state) {
+        if (state.status == BlocStatus.loading)
+          return CustomShimmerListWidget(
+            height: 189,
+            itemCount: 10,
+          );
+        if (state.status == BlocStatus.success && state.searchItems.isEmpty)
+          return CalendarNotFoundPage();
+
+        return RefreshIndicator(
+          onRefresh: () async {
+            context
+                .read<CalendarBloc>()
+                .add(GetSearchEvent(params: SearchCalendarParams()));
+          },
+          child: ListView.builder(
+            controller: _scrollController,
+            itemCount: state.searchItems.length + 1,
+            itemBuilder: (context, index) {
+              if (index >= (state.searchItems.length)) {
+                if (state.status == BlocStatus.loadMore) {
+                  return const SizedBox(
+                    height: 50,
+                    child: Center(child: CustomCircularLoadingWidget()),
+                  );
+                } else {
+                  return Container(height: 50);
+                }
+              }
+              return Column(
+                children: [
+                  /* SectionDate(
+                    month: state.searchItems[index].getStartDay(),
+                    year: state.searchItems[index].startDate?.year
+                            .toString() ??
+                        "",
+                  ),*/
+                  SectionContainer(
+                    imageBackground: state.searchItems[index].logoURL,
+                    name: state.searchItems[index].name ?? "",
+                    date: state.searchItems[index].getDate(),
+                    day: state.searchItems[index].getStartDay(),
+                    month: state.searchItems[index].getStartMonth(),
+                    color1: state.searchItems[index].getColors(index)[0],
+                    color2: state.searchItems[index].getColors(index)[1],
+                    timer: state.searchItems[index].remainingDays(),
+                  ),
+                ],
+              );
+            },
+          ),
+        );
+      },
     );
   }
 }

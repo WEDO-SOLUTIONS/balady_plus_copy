@@ -49,7 +49,6 @@ class App extends StatelessWidget {
         ),
         BlocProvider.value(value: sl<EtmamEntryPointCubit>()),
         BlocProvider.value(value: sl<LocationCubit>()),
-        BlocProvider.value(value: sl<CalendarBloc>()..add(GetSearchEvent()))
       ],
       child: BlocProvider<EntryPointCubit>.value(
           value: sl<EntryPointCubit>()..onLoadingApp(),
