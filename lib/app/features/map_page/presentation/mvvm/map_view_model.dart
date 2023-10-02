@@ -579,7 +579,7 @@ class MapViewModel extends BaseViewModel {
       _lastRectPosition = _lastCameraPosition;
     }
     _lastHandledEvent = event;
-    if (searchOnCameraMove) {
+    if (searchOnCameraMove && selectedPointId.value == null) {
       // start Timer when stop move camera  call search funcation
       _startRequestTimer(event.visibleRect.zoom);
     }
