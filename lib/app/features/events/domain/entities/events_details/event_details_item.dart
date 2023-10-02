@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/core/utils/extensions/date_time_extension.dart';
 import 'package:balady_plus/app/features/events/domain/entities/events_details/events_location.dart';
 import 'package:balady_plus/app/features/events/domain/entities/events_details/events_picture.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -41,20 +42,7 @@ class EventDetailsResponse {
       this.pictures,
       this.fees});
 
-  Map<int, String> monthNames = {
-    1: 'January'.tr(),
-    2: 'February'.tr(),
-    3: 'March'.tr(),
-    4: 'April'.tr(),
-    5: 'May'.tr(),
-    6: 'June'.tr(),
-    7: 'July'.tr(),
-    8: 'August'.tr(),
-    9: 'September'.tr(),
-    10: 'October'.tr(),
-    11: 'November'.tr(),
-    12: 'December'.tr(),
-  };
+
 
   String getStartDay() {
     if (startDate != null) {
@@ -65,8 +53,7 @@ class EventDetailsResponse {
 
   String getStartMonth() {
     if (startDate != null) {
-      //return startDate!.month.toString();
-      return monthNames[startDate!.month] ?? "";
+      return startDate!.toMonthName();
     }
     return '';
   }
@@ -88,7 +75,7 @@ class EventDetailsResponse {
 
   String getEndMonth() {
     if (endDate != null) {
-      return monthNames[endDate!.month] ?? "";
+      return endDate!.toMonthName();
     }
     return '';
   }

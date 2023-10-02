@@ -86,15 +86,16 @@ class EventMapCardWidget extends StatelessWidget {
                                       height: 58,
                                       padding: const EdgeInsets.all(16.0),
                                       decoration: ShapeDecoration(
-                                          color: Color(0xffCD5D1A),
+                                          color: Color(0xff77AEA0),
                                           shape: RoundedRectangleBorder(
                                             borderRadius:
                                                 BorderRadius.circular(16),
                                           )),
                                       child: SvgPicture.asset(
-                                        Constants.restaurantLayerIcon,
+                                        Constants.eventLayerIcon,
                                         width: 16,
                                         height: 16,
+                                        color: Colors.white,
                                       )),
                                   CustomHorizontalSpace(width: 8),
                                   Expanded(
@@ -138,9 +139,7 @@ class EventMapCardWidget extends StatelessWidget {
                                                       .spaceBetween,
                                               children: [
                                                 CustomTextWidget(
-                                                  data.startDate
-                                                          ?.toFormattedDate() ??
-                                                      "",
+                                                  data.getStartDate(),
                                                   fontColor: AppColor
                                                       .blackModern500Light,
                                                   fontSize: 12,
@@ -162,9 +161,7 @@ class EventMapCardWidget extends StatelessWidget {
                                             if (data.endDate != null) ...[
                                               CustomVerticalSpace(height: 4),
                                               CustomTextWidget(
-                                                data.endDate
-                                                        ?.toFormattedDate() ??
-                                                    "",
+                                                data.getEndDate(),
                                                 fontColor: AppColor
                                                     .blackModern500Light,
                                                 fontSize: 12,

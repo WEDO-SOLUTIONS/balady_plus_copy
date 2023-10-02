@@ -24,7 +24,7 @@ class SearchCalendarItem {
     this.timeToStartInDays,
     this.logoURL,
   });
-  Map<int, String> monthNames = {
+  /* Map<int, String> monthNames = {
     1: 'January'.tr(),
     2: 'February'.tr(),
     3: 'March'.tr(),
@@ -37,7 +37,7 @@ class SearchCalendarItem {
     10: 'October'.tr(),
     11: 'November'.tr(),
     12: 'December'.tr(),
-  };
+  };*/
 
   String getStartDay() {
     if (startDate != null) {
@@ -70,7 +70,7 @@ class SearchCalendarItem {
   String getStartMonth() {
     if (startDate != null) {
       //return startDate!.month.toString();
-      return monthNames[startDate!.month] ?? "";
+      return startDate!.toMonthName();
     }
     return '';
   }
@@ -84,7 +84,7 @@ class SearchCalendarItem {
 
   String getEndMonth() {
     if (endDate != null) {
-      return monthNames[endDate!.month] ?? "";
+      return endDate!.toMonthName();
     }
     return '';
   }

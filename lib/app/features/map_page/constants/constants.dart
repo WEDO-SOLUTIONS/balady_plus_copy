@@ -27,8 +27,15 @@ class Constants {
   static const String icMarkerRestaurant =
       "assets/maps/icons/ic_marker_restaurant.svg";
 
+  static const String icMarkerEvents =
+      "assets/maps/icons/ic_marker_restaurant.svg";
+
   static const String diggingLayerIcon =
       "assets/maps/icons/gis_layers_icons/digging.svg";
+
+        static const String eventLayerIcon =
+      "assets/maps/icons/ticket.svg";
+
   static const String diggingSelectedLayerIcon =
       "assets/maps/icons/gis_layers_icons/digging_selected.svg";
 

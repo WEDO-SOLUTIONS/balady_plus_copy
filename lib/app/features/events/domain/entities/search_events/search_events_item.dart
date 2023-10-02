@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/core/utils/extensions/date_time_extension.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
@@ -23,46 +24,45 @@ class SearchEventsItem {
     this.locationY,
     this.logoImage,
   });
-  Map<int, String> monthNames = {
-    1: 'January'.tr(),
-    2: 'February'.tr(),
-    3: 'March'.tr(),
-    4: 'April'.tr(),
-    5: 'May'.tr(),
-    6: 'June'.tr(),
-    7: 'July'.tr(),
-    8: 'August'.tr(),
-    9: 'September'.tr(),
-    10: 'October'.tr(),
-    11: 'November'.tr(),
-    12: 'December'.tr(),
-  };
 
   String getStartDay() {
     if (startDate != null) {
-      return startDate!.day.toString();
+      return startDate!.day.toString().padLeft(2, "0");
     }
     return '';
   }
 
   String getStartMonth() {
     if (startDate != null) {
-      //return startDate!.month.toString();
-      return monthNames[startDate!.month] ?? "";
+      return startDate!.toMonthName();
     }
     return '';
   }
 
   String getEndDay() {
     if (endDate != null) {
-      return endDate!.day.toString();
+      return endDate!.day.toString().padLeft(2, "0");
+    }
+    return '';
+  }
+
+  String getEndYear() {
+    if (endDate != null) {
+      return endDate!.year.toString();
+    }
+    return '';
+  }
+
+  String getStartYear() {
+    if (startDate != null) {
+      return startDate!.year.toString();
     }
     return '';
   }
 
   String getEndMonth() {
     if (endDate != null) {
-      return monthNames[endDate!.month] ?? "";
+      return endDate!.toMonthName();
     }
     return '';
   }
@@ -76,6 +76,14 @@ class SearchEventsItem {
   }
 
   String getDate() {
-    return " ${getStartDay()} ${getStartMonth()} - ${getEndDay()} ${getEndMonth()}";
+    return "${getStartDay()} ${getStartMonth()}  - ${getEndDay()} ${getEndMonth()}";
+  }
+
+  String getStartDate() {
+    return "${getStartDay()} ${getStartMonth()} ${getStartYear()}";
+  }
+
+  String getEndDate() {
+    return "${getEndDay()} ${getEndMonth()} ${getEndYear()}";
   }
 }

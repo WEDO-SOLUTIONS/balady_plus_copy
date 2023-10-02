@@ -617,7 +617,6 @@ class MapViewModel extends BaseViewModel {
     }
 
     if (layerSelected.value == null) return;
-    print("HEREE ١١١١١١١١١ ${layerSelected.value}");
     GISMapLayers? gisLayer = GISMapLayers.values.firstWhereOrNull(
       (element) => element.layerId == layerSelected.value!.id,
     );
@@ -686,7 +685,7 @@ class MapViewModel extends BaseViewModel {
       }*/
       final searchEvents = GetSearchEvents(repository: sl());
       final getEventsFailureOrSuccess =
-          await searchEvents(SearchEventsParams(size: 100, page: 1));
+          await searchEvents(SearchEventsParams(size: 1000, page: 1));
 
       await getEventsFailureOrSuccess.fold((l) {}, (r) async {
         final markers = r.items
@@ -702,7 +701,7 @@ class MapViewModel extends BaseViewModel {
                           latitude: element.getLocation()!.latitude,
                           longitude: element.getLocation()!.longitude),
                       icon: MarkerIconMessage(
-                        path: Constants.icMarkerGardensParks,
+                        path: Constants.icMarker,
                         width: 30,
                       ),
                     ),
