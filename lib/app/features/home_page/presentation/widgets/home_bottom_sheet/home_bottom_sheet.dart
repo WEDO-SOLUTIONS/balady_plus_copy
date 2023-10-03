@@ -58,33 +58,6 @@ class HomeBottomSheet extends StatelessWidget {
                               ?.item
                               .makeAddress() ??
                           suggests[index].subtitle.text;
-                      final objectHandler =
-                          suggests[index].handler.objectHandler;
-                      String title = suggests[index].title.text;
-                      if (objectHandler != null) {
-                        final admType =
-                            objectHandler.item.address?.drilldown.first?.type;
-                        switch (admType) {
-                          case "region":
-                            title = "منطقة";
-                            break;
-                          case "governorate":
-                            title = "محافظة";
-                            break;
-                          case "city":
-                            title = "مدينة";
-                            break;
-                          case "district":
-                            title = "حى";
-                            break;
-                          case "streets":
-                            title = "شارع";
-                            break;
-                          case "buildings":
-                            title = "مبنى";
-                            break;
-                        }
-                      }
 
                       return InkWell(
                         onTap: () async {
@@ -160,7 +133,7 @@ class HomeBottomSheet extends StatelessWidget {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
-                                  title,
+                                  suggests[index].title.text,
                                   style: AppStyle.mainTextStyle.copyWith(
                                       color: AppColor.blackModern600Light,
                                       fontSize: 16,

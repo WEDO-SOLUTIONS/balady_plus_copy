@@ -32,6 +32,7 @@ class PointViewModel extends BaseViewModel {
       try {
         dataPoint.value = await controller.searchByObjectId(point);
       } catch (ex) {
+        print("performSearch: ${ex}");
         isLoadingData.value = false;
         isLoadingData.notifyListeners();
         MapViewModel mapViewModel = Provider.of<MapViewModel>(

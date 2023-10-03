@@ -126,6 +126,7 @@ class SearchHandler: NSObject {
     func search(
         _ queryText: String,
         categories: [RubricId]?,
+        spatialRestriction: [GeoPointMessage]?,
         searchGeoRect: DGis.GeoRect?,
         weekTimeMessage: WeekTimeSearchMessage?,
         sortingType: SortingTypeMessage,
@@ -133,7 +134,7 @@ class SearchHandler: NSObject {
         completion: @escaping (SearchResultMessage?, FlutterError?) -> Void
     ) {
         
-        let queryBuilder = categories != nil ?
+        var queryBuilder = categories != nil ?
             SearchQueryBuilder.fromQueryTextAndRubricIds(queryText: queryText, rubricIds: categories!) :
             SearchQueryBuilder.fromQueryText(queryText: queryText)
         
@@ -147,6 +148,9 @@ class SearchHandler: NSObject {
                 )
             )
             .setAreaOfInterest(rect: searchGeoRect)
+            .setSpatialRestriction(spatialRestriction: spatialRestriction?.map {
+                $0.geoPoint
+            })
             .build()
         
         performSearch(query, completion: completion)
@@ -154,6 +158,7 @@ class SearchHandler: NSObject {
     
     func searchByQuery(
         _ query: SearchQueryMessage,
+        spatialRestriction: [GeoPointMessage]?,
         searchGeoRect: DGis.GeoRect?,
         weekTimeMessage: WeekTimeSearchMessage?,
         sortingType: SortingTypeMessage,
@@ -182,6 +187,9 @@ class SearchHandler: NSObject {
                 )
             )
             .setAreaOfInterest(rect: searchGeoRect)
+            .setSpatialRestriction(spatialRestriction: spatialRestriction?.map {
+                $0.geoPoint
+            })
             .build()
         
         performSearch(query, completion: completion)
@@ -189,6 +197,7 @@ class SearchHandler: NSObject {
     
     func searchByCategories(
         _ categories: [RubricId],
+        spatialRestriction: [GeoPointMessage]?,
         searchGeoRect: DGis.GeoRect?,
         weekTimeMessage: WeekTimeSearchMessage?,
         sortingType: SortingTypeMessage,
@@ -205,12 +214,16 @@ class SearchHandler: NSObject {
                 )
             )
             .setAreaOfInterest(rect: searchGeoRect)
+            .setSpatialRestriction(spatialRestriction: spatialRestriction?.map {
+                $0.geoPoint
+            })
             .build()
         
         performSearch(query, completion: completion)
     }
 
     func searchByParkCategory(
+        spatialRestriction: [GeoPointMessage]?,
         searchGeoRect: DGis.GeoRect?,
         weekTimeMessage: WeekTimeSearchMessage?,
         sortingType: SortingTypeMessage,
@@ -228,6 +241,9 @@ class SearchHandler: NSObject {
                 )
 			)
             .setAreaOfInterest(rect: searchGeoRect)
+            .setSpatialRestriction(spatialRestriction: spatialRestriction?.map {
+                $0.geoPoint
+            })
             .build()
 
         performSearch(query, completion: completion)

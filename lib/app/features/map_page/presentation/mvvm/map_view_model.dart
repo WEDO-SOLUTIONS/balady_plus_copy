@@ -57,6 +57,12 @@ class MapViewModel extends BaseViewModel {
     northEast: GeoPointMessage(latitude: 32.568765, longitude: 56.694472),
     southWest: GeoPointMessage(latitude: 15.506104, longitude: 32.61185),
   );
+  static List<GeoPointMessage> saRestrictions = [
+    GeoPointMessage(latitude: 32.568765, longitude: 56.694472),
+    GeoPointMessage(latitude: 32.568765, longitude: 32.61185),
+    GeoPointMessage(latitude: 15.506104, longitude: 32.61185),
+    GeoPointMessage(latitude: 15.506104, longitude: 56.694472),
+  ];
 
   final LayersRepositories layersRepositories;
 
@@ -149,6 +155,17 @@ class MapViewModel extends BaseViewModel {
     }
   }
 
+  Timer? _searchClearDebounce;
+
+  void clearSearch() {
+    _searchClearDebounce?.cancel();
+    _searchClearDebounce = Timer(const Duration(milliseconds: 500), () async {
+      await clearAll();
+      suggests.value = [];
+      searchController.text = "";
+    });
+  }
+
 //  late MapObjectManagerMessage mapObjectManager;
 
   Future<void> performSearch(
@@ -159,6 +176,8 @@ class MapViewModel extends BaseViewModel {
     if (_searchOperation != null) {
       _searchOperation!.cancel();
     }
+    bottomSheetSizeFraction.value = 0.05;
+    bottomSheetSizeFraction.notifyListeners();
     _searchOperation = CancelableOperation.fromFuture(
       _performSearch(
         queryText: queryText,
@@ -210,11 +229,13 @@ class MapViewModel extends BaseViewModel {
               sortingType: SortingTypeMessage.byRelevance,
               isOpenNow: false,
               searchRect: _lastHandledEvent?.visibleRect.geoRectMessage(),
+              spatialRestriction: saRestrictions,
             )
           : (searchQuery != null
               ? await controller.searchByQuery(
                   searchQuery,
                   sortingType: SortingTypeMessage.byRelevance,
+                  spatialRestriction: saRestrictions,
                 )
               : await controller.search(
                   queryText,
@@ -226,11 +247,13 @@ class MapViewModel extends BaseViewModel {
                   sortingType: SortingTypeMessage.byRelevance,
                   isOpenNow: false,
                   searchRect: _lastHandledEvent?.visibleRect.geoRectMessage(),
+                  spatialRestriction: saRestrictions,
                 ));
 
       if (showLoader) hideLoading1();
 
       searchOnCameraMove = false;
+      print("areaOfInterest: ${data.areaOfInterestPosition}");
       if (data.areaOfInterestPosition != null) {
         await controller.moveCamera(
           data.areaOfInterestPosition!,
@@ -1140,6 +1163,11 @@ class MapViewModel extends BaseViewModel {
   }
 
   Future<void> _updateSuggest({required String queryText}) async {
+    if (queryText.isEmpty) {
+      suggests.value = [];
+      return;
+    }
+
     List<SuggestedTypeMessage>? allowedResultTypes;
     if (queryText.contains("منطقة") &&
         queryText.contains("منطقه") &&
