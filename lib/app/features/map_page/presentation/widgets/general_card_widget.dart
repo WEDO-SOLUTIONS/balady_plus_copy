@@ -114,8 +114,7 @@ class GeneralMapCardWidget extends StatelessWidget {
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.center,
                                             mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            mainAxisSize: MainAxisSize.min,
+                                                MainAxisAlignment.start,
                                             children: [
                                               Container(
                                                 width: 58,
@@ -151,8 +150,6 @@ class GeneralMapCardWidget extends StatelessWidget {
                                                         MainAxisAlignment
                                                             .center,
                                                     children: [
-                                                      const CustomVerticalSpace(
-                                                          height: 8),
                                                       CustomTextWidget(
                                                         dataPoint?.address
                                                                 ?.buildingName ??
@@ -167,9 +164,32 @@ class GeneralMapCardWidget extends StatelessWidget {
                                                         fontWeight:
                                                             AppFontWeight.bold,
                                                         maxLines: 2,
+                                                        textAlign:
+                                                            TextAlign.start,
                                                       ),
                                                       const CustomVerticalSpace(
-                                                          height: 8),
+                                                        height: 11,
+                                                      ),
+                                                      if (dataPoint?.workStatus
+                                                              ?.isOpen ==
+                                                          true)
+                                                        CustomTextWidget(
+                                                          "open".tr(),
+                                                          textStyle:
+                                                              const TextStyle(
+                                                            color: Color(
+                                                                0xFFA7C587),
+                                                            fontSize: 12,
+                                                            fontWeight:
+                                                                FontWeight.w700,
+                                                          ),
+                                                        ),
+                                                      if (dataPoint?.workStatus
+                                                              ?.isOpen ==
+                                                          true)
+                                                        const CustomVerticalSpace(
+                                                          height: 10,
+                                                        ),
                                                       CustomTextWidget(
                                                         dataPoint
                                                                 ?.makeAddress() ??
@@ -182,6 +202,8 @@ class GeneralMapCardWidget extends StatelessWidget {
                                                                 .semiBold,
                                                         height: 1.3,
                                                         maxLines: 2,
+                                                        textAlign:
+                                                            TextAlign.start,
                                                       ),
                                                       const CustomVerticalSpace(
                                                         height: 8,
@@ -236,6 +258,9 @@ class GeneralMapCardWidget extends StatelessWidget {
                                                       .map(
                                                         (e) => Expanded(
                                                           child: Column(
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment
+                                                                    .start,
                                                             children: [
                                                               CustomTextWidget(
                                                                 e!
@@ -253,6 +278,9 @@ class GeneralMapCardWidget extends StatelessWidget {
                                                                     AppFontWeight
                                                                         .bold,
                                                                 maxLines: 2,
+                                                                textAlign:
+                                                                    TextAlign
+                                                                        .start,
                                                               ),
                                                               ...e.values
                                                                   .map((e) => [
@@ -272,8 +300,8 @@ class GeneralMapCardWidget extends StatelessWidget {
                                                                               AppFontWeight.bold,
                                                                           maxLines:
                                                                               3,
-                                                                          textDirection:
-                                                                              TextDirection.ltr,
+                                                                          textAlign:
+                                                                              TextAlign.start,
                                                                         ),
                                                                       ])
                                                                   .toList()
@@ -286,19 +314,6 @@ class GeneralMapCardWidget extends StatelessWidget {
                                                   [],
                                         ),
                                       ],
-                                    ),
-                                  ),
-                                  Align(
-                                    alignment: Alignment.bottomLeft,
-                                    child: CustomTextWidget(
-                                      dataPoint?.workStatus?.isOpen == true
-                                          ? "open".tr()
-                                          : "".tr(),
-                                      textStyle: const TextStyle(
-                                        color: Color(0xFFA7C587),
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.w700,
-                                      ),
                                     ),
                                   ),
                                   Align(
