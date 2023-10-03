@@ -66,7 +66,7 @@ class _BottomNavigationPageState extends State<BottomNavigationPage> {
           children: [
             // Home-Page
             const HomePage(),
-            NearbyPage(),
+            const NearbyPage(),
             // Services-Page
             Container(),
             // Activities-Page

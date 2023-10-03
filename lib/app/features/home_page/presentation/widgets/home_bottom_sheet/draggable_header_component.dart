@@ -16,8 +16,7 @@ class DraggableHeaderComponent extends StatefulWidget {
   });
 
   @override
-  State<DraggableHeaderComponent> createState() =>
-      _DraggableHeaderComponentState();
+  State<DraggableHeaderComponent> createState() => _DraggableHeaderComponentState();
 }
 
 class _DraggableHeaderComponentState extends State<DraggableHeaderComponent> {
@@ -97,8 +96,7 @@ class _DraggableHeaderComponentState extends State<DraggableHeaderComponent> {
                           color: AppColor.primary900Light,
                           onPressed: () {
                             MapViewModel mapViewModel =
-                                Provider.of<MapViewModel>(context,
-                                    listen: false);
+                                Provider.of<MapViewModel>(context, listen: false);
 
                             mapViewModel.clearSearch();
                           },
@@ -111,18 +109,20 @@ class _DraggableHeaderComponentState extends State<DraggableHeaderComponent> {
                   ),
                   borderRadius: 26,
                   borderColor: AppColor.primary900Light.withOpacity(0.1),
+                  onTap: () {
+                    MapViewModel mapViewModel = Provider.of<MapViewModel>(context, listen: false);
+                    mapViewModel.draggableScrollableController.jumpTo(0.9);
+                  },
                   onChanged: (text) {
                     setState(() {
                       showClear = text.isNotEmpty;
                     });
-                    MapViewModel mapViewModel =
-                        Provider.of<MapViewModel>(context, listen: false);
+                    MapViewModel mapViewModel = Provider.of<MapViewModel>(context, listen: false);
 
                     mapViewModel.updateSuggest(queryText: text);
                   },
                   onSubmitted: (text) {
-                    MapViewModel mapViewModel =
-                        Provider.of<MapViewModel>(context, listen: false);
+                    MapViewModel mapViewModel = Provider.of<MapViewModel>(context, listen: false);
 
                     mapViewModel.performSearch(
                       queryText: text,
