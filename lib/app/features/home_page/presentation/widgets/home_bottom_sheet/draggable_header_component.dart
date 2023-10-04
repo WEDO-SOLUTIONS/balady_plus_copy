@@ -24,6 +24,12 @@ class _DraggableHeaderComponentState extends State<DraggableHeaderComponent> {
   bool showClear = false;
 
   @override
+  void initState() {
+    super.initState();
+    showClear = searchController.text.isNotEmpty;
+  }
+
+  @override
   Widget build(BuildContext context) {
     bool isLoggedIn = CommonProperties.isLoggedIn;
     String pm = isLoggedIn ? "مساء الخير  " : "مساء الخير";
@@ -101,6 +107,9 @@ class _DraggableHeaderComponentState extends State<DraggableHeaderComponent> {
                                     listen: false);
 
                             mapViewModel.clearSearch();
+                            setState(() {
+                              showClear = false;
+                            });
                           },
                         )
                       : null,
@@ -129,11 +138,15 @@ class _DraggableHeaderComponentState extends State<DraggableHeaderComponent> {
                     MapViewModel mapViewModel =
                         Provider.of<MapViewModel>(context, listen: false);
 
-                    mapViewModel.performSearch(
-                      queryText: text,
-                      showLoader: true,
-                    );
-                    mapViewModel.draggableScrollableController.jumpTo(0.5);
+                    if (text.isNotEmpty) {
+                      mapViewModel.performSearch(
+                        queryText: text,
+                        showLoader: true,
+                      );
+                      mapViewModel.draggableScrollableController.jumpTo(0.5);
+                    } else {
+                      mapViewModel.clearSearch();
+                    }
                   },
                   onTapOutside: (e) {
                     FocusManager.instance.primaryFocus?.unfocus();
