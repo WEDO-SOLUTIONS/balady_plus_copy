@@ -46,45 +46,37 @@ class HomeBottomSheet extends StatelessWidget {
                   return ListView.separated(
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
+                    keyboardDismissBehavior:
+                        ScrollViewKeyboardDismissBehavior.onDrag,
                     separatorBuilder: (context, index) {
                       return const Divider(
                         color: Colors.black,
                       );
                     },
                     itemBuilder: (context, index) {
+                      final prefixMapping = {
+                        ", region": "منطقة",
+                        ", governorate": "محافظة",
+                        ", city": "مدينة",
+                        ", district area": "محافظة",
+                        ", district": "حى",
+                        ", street": "شارع",
+                        ", buildings": "مبنى",
+                        ", park": "بارك",
+                      };
+                      String title = suggests[index].title.text;
+                      prefixMapping.forEach((key, replacement) {
+                        if (title.contains(key)) {
+                          title = "$replacement ${title.replaceAll(key, "")}";
+                        }
+                      });
+
                       final address = suggests[index]
                               .handler
                               .objectHandler
                               ?.item
                               .makeAddress() ??
                           suggests[index].subtitle.text;
-                      final objectHandler =
-                          suggests[index].handler.objectHandler;
-                      String title = suggests[index].title.text;
-                      if (objectHandler != null) {
-                        final admType =
-                            objectHandler.item.address?.drilldown.first?.type;
-                        switch (admType) {
-                          case "region":
-                            title = "منطقة";
-                            break;
-                          case "governorate":
-                            title = "محافظة";
-                            break;
-                          case "city":
-                            title = "مدينة";
-                            break;
-                          case "district":
-                            title = "حى";
-                            break;
-                          case "streets":
-                            title = "شارع";
-                            break;
-                          case "buildings":
-                            title = "مبنى";
-                            break;
-                        }
-                      }
 
                       return InkWell(
                         onTap: () async {

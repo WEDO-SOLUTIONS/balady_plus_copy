@@ -57,6 +57,12 @@ class MapViewModel extends BaseViewModel {
     northEast: GeoPointMessage(latitude: 32.568765, longitude: 56.694472),
     southWest: GeoPointMessage(latitude: 15.506104, longitude: 32.61185),
   );
+  static List<GeoPointMessage> saRestrictions = [
+    GeoPointMessage(latitude: 32.568765, longitude: 56.694472),
+    GeoPointMessage(latitude: 32.568765, longitude: 32.61185),
+    GeoPointMessage(latitude: 15.506104, longitude: 32.61185),
+    GeoPointMessage(latitude: 15.506104, longitude: 56.694472),
+  ];
 
   final LayersRepositories layersRepositories;
 
@@ -67,11 +73,13 @@ class MapViewModel extends BaseViewModel {
   }
   final selectedPointId = ValueNotifier<DgisObjectIdMessage?>(null);
   final selectedPoint = ValueNotifier<PointLayersData?>(null);
+  final selectedPointCategory = ValueNotifier<SearchCategoryMessage?>(null);
 
   ValueNotifier<IndoorState> indoorState =
       ValueNotifier(IndoorState.disabled());
 
   ValueNotifier<SearchCategoryMessage?> selectedCategory = ValueNotifier(null);
+
   ValueNotifier<List<SuggestMessage>?> suggests = ValueNotifier(null);
 
   final layers = ValueNotifier<List<Layers>?>(null);
@@ -123,6 +131,7 @@ class MapViewModel extends BaseViewModel {
   Future<void> selectCategory({required SearchCategoryMessage category}) async {
     searchController.clear();
     if (category == selectedCategory.value) {
+      _searchOperation?.cancel();
       selectedCategory.value = null;
     } else {
       selectedCategory.value = category;
@@ -130,10 +139,11 @@ class MapViewModel extends BaseViewModel {
     showLoading1();
     await clearAll();
 
-    if (selectedCategory.value != null)
+    if (selectedCategory.value != null) {
       performSearch(
         queryText: selectedCategory.value!.displayName(),
       );
+    }
     hideLoading1();
 
     selectedPointId.value = null;
@@ -149,31 +159,47 @@ class MapViewModel extends BaseViewModel {
     }
   }
 
+  Timer? _searchClearDebounce;
+
+  void clearSearch() {
+    _searchClearDebounce?.cancel();
+    _searchClearDebounce = Timer(const Duration(milliseconds: 500), () async {
+      await clearAll();
+      suggests.value = null;
+      searchController.text = "";
+    });
+  }
+
 //  late MapObjectManagerMessage mapObjectManager;
 
-  Future<void> performSearch(
-      {required String queryText,
-      SearchCategoryMessage? category,
-      SearchQueryMessage? searchQuery,
-      bool showLoader = false}) async {
-    if (_searchOperation != null) {
-      _searchOperation!.cancel();
-    }
+  Future<void> performSearch({
+    required String queryText,
+    SearchCategoryMessage? category,
+    SearchQueryMessage? searchQuery,
+    bool showLoader = false,
+    bool moveCamera = true,
+  }) async {
+    _searchOperation?.cancel();
+    bottomSheetSizeFraction.value = 0.05;
+    bottomSheetSizeFraction.notifyListeners();
     _searchOperation = CancelableOperation.fromFuture(
       _performSearch(
         queryText: queryText,
         category: category,
         searchQuery: searchQuery,
         showLoader: showLoader,
+        moveCamera: moveCamera,
       ),
     );
   }
 
-  Future<void> _performSearch(
-      {required String queryText,
-      SearchCategoryMessage? category,
-      SearchQueryMessage? searchQuery,
-      bool showLoader = false}) async {
+  Future<void> _performSearch({
+    required String queryText,
+    SearchCategoryMessage? category,
+    SearchQueryMessage? searchQuery,
+    bool showLoader = false,
+    bool moveCamera = true,
+  }) async {
     try {
       if (showLoader) {
         await clearAll();
@@ -210,11 +236,13 @@ class MapViewModel extends BaseViewModel {
               sortingType: SortingTypeMessage.byRelevance,
               isOpenNow: false,
               searchRect: _lastHandledEvent?.visibleRect.geoRectMessage(),
+              spatialRestriction: saRestrictions,
             )
           : (searchQuery != null
               ? await controller.searchByQuery(
                   searchQuery,
                   sortingType: SortingTypeMessage.byRelevance,
+                  spatialRestriction: saRestrictions,
                 )
               : await controller.search(
                   queryText,
@@ -226,12 +254,20 @@ class MapViewModel extends BaseViewModel {
                   sortingType: SortingTypeMessage.byRelevance,
                   isOpenNow: false,
                   searchRect: _lastHandledEvent?.visibleRect.geoRectMessage(),
+                  spatialRestriction: saRestrictions,
                 ));
 
       if (showLoader) hideLoading1();
+      if (_searchOperation?.isCanceled == true) {
+        if (data.firstPage != null) {
+          await controller.releasePage(data.firstPage!);
+        }
+        return;
+      }
 
       searchOnCameraMove = false;
-      if (data.areaOfInterestPosition != null) {
+      print("areaOfInterest: ${data.areaOfInterestPosition}");
+      if (data.areaOfInterestPosition != null && moveCamera) {
         await controller.moveCamera(
           data.areaOfInterestPosition!,
           1,
@@ -274,7 +310,6 @@ class MapViewModel extends BaseViewModel {
                   CameraAnimationTypeMessage.linear);
 
               selectedPointId.value = markerInfo.objectId;
-              print(markerInfo.objectId);
               selectedDiggingPoint.value = null;
               selectedInvetmentPoint.value = null;
               selectedImtethalPoint.value = null;
@@ -290,7 +325,7 @@ class MapViewModel extends BaseViewModel {
               // bottomSheetSizeFraction.value = 0.05;
               bottomSheetSize.notifyListeners();
               bottomSheetSizeFraction.notifyListeners();
-              selectedCategory.value = markerCategory;
+              selectedPointCategory.value = markerCategory;
 
               Future.delayed(
                 const Duration(milliseconds: 300),
@@ -298,6 +333,12 @@ class MapViewModel extends BaseViewModel {
               refreshMap = true;
             },
           ));
+        }
+        if (_searchOperation?.isCanceled == true) {
+          if (data.firstPage != null) {
+            await controller.releasePage(data.firstPage!);
+          }
+          return;
         }
         await clearAll();
         await controller.addMarkers(markers);
@@ -579,7 +620,7 @@ class MapViewModel extends BaseViewModel {
       _lastRectPosition = _lastCameraPosition;
     }
     _lastHandledEvent = event;
-    if (searchOnCameraMove) {
+    if (searchOnCameraMove && selectedPointId.value == null) {
       // start Timer when stop move camera  call search funcation
       _startRequestTimer(event.visibleRect.zoom);
     }
@@ -588,8 +629,8 @@ class MapViewModel extends BaseViewModel {
   // When click on ayn object
   Future<void> _objectTapListener(TapEvent event) async {
     if (event is ObjectTapEvent) {
-      selectedCategory.value = null;
       selectedPointId.value = event.dgisObjectId.toMessage();
+      selectedPointCategory.value = null;
       viewHomeBottomSheet.value = false;
       viewHomeBottomSheet.notifyListeners();
       bottomSheetSize.notifyListeners();
@@ -650,49 +691,52 @@ class MapViewModel extends BaseViewModel {
   }
 
   callSearch() async {
-    await clearAll();
-
+    // await clearAll();
     String? query = selectedCategory.value != null
         ? selectedCategory.value!.displayName()
         : searchController.text;
     if (query != null && query.isNotEmpty) {
-      showLoading1();
+      // showLoading1();
 
       await performSearch(
         queryText: query,
+        moveCamera: false,
       );
-      hideLoading1();
+      // hideLoading1();
+
+      print("Query?");
     }
 
-    if (layerSelected.value == null) return;
-    GISMapLayers? gisLayer = GISMapLayers.values.firstWhereOrNull(
-        (element) => element.layerId == layerSelected.value!.id);
-    showLoading1();
-    bottomSheetSize.notifyListeners();
+    // if (layerSelected.value == null) return;
+    // print("Layer? ${layerSelected.value}");
+    // GISMapLayers? gisLayer = GISMapLayers.values.firstWhereOrNull(
+    //     (element) => element.layerId == layerSelected.value!.id);
+    // showLoading1();
+    // bottomSheetSize.notifyListeners();
 
-    if (gisLayer != null) {
-      List? pointList = await layersRepositories.getPointsInLayers(
-          params: MapRequestParams(
-        layer: gisLayer,
-        northEastLatitude: _lastHandledEvent!.visibleRect.northEastLat,
-        northEastLongitude: _lastHandledEvent!.visibleRect.northEastLon,
-        southWestLongitude: _lastHandledEvent!.visibleRect.southWestLon,
-        southWestLlatitude: _lastHandledEvent!.visibleRect.southWestLat,
-      ));
-      switch (layerSelected.value!.geometryType) {
-        case 'esriGeometryPoint':
-          addMarkersWithPoint(pointList, layerSelected.value!.id);
-          break;
-        case 'esriGeometryPolyline':
-          addPolylineWithPoint(pointList, layerSelected.value!.id);
-          break;
-        case 'esriGeometryPolygon':
-          addPolygonWithPoint(pointList, layerSelected.value!.id);
-          break;
-      }
-    }
+    // if (gisLayer != null) {
+    //   List? pointList = await layersRepositories.getPointsInLayers(
+    //       params: MapRequestParams(
+    //     layer: gisLayer,
+    //     northEastLatitude: _lastHandledEvent!.visibleRect.northEastLat,
+    //     northEastLongitude: _lastHandledEvent!.visibleRect.northEastLon,
+    //     southWestLongitude: _lastHandledEvent!.visibleRect.southWestLon,
+    //     southWestLlatitude: _lastHandledEvent!.visibleRect.southWestLat,
+    //   ));
+    //   switch (layerSelected.value!.geometryType) {
+    //     case 'esriGeometryPoint':
+    //       addMarkersWithPoint(pointList, layerSelected.value!.id);
+    //       break;
+    //     case 'esriGeometryPolyline':
+    //       addPolylineWithPoint(pointList, layerSelected.value!.id);
+    //       break;
+    //     case 'esriGeometryPolygon':
+    //       addPolygonWithPoint(pointList, layerSelected.value!.id);
+    //       break;
+    //   }
+    // }
     _clearDebounce();
-    hideLoading1();
+    // hideLoading1();
   }
 
   getPointDetails(int objectId) async {
@@ -1140,6 +1184,11 @@ class MapViewModel extends BaseViewModel {
   }
 
   Future<void> _updateSuggest({required String queryText}) async {
+    if (queryText.isEmpty) {
+      suggests.value = null;
+      return;
+    }
+
     List<SuggestedTypeMessage>? allowedResultTypes;
     if (queryText.contains("منطقة") &&
         queryText.contains("منطقه") &&

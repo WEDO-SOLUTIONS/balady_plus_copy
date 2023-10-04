@@ -329,6 +329,7 @@ class MethodChannelDgisMapPlugin implements DgisMapPlugin, FlutterMapApi {
   Future<SearchResultMessage> search(
     String queryText, {
     List<SearchCategoryMessage>? categories,
+    List<GeoPointMessage>? spatialRestriction,
     required SortingTypeMessage sortingType,
     required int pageSize,
     WeekTimeSearchMessage? weekTime,
@@ -345,6 +346,7 @@ class MethodChannelDgisMapPlugin implements DgisMapPlugin, FlutterMapApi {
                   .toList(),
             )
           : null,
+      spatialRestriction,
       weekTime,
       searchRect,
       sortingType,
@@ -355,6 +357,7 @@ class MethodChannelDgisMapPlugin implements DgisMapPlugin, FlutterMapApi {
   @override
   Future<SearchResultMessage> searchByQuery(
     SearchQueryMessage query, {
+    List<GeoPointMessage>? spatialRestriction,
     required SortingTypeMessage sortingType,
     required int pageSize,
     WeekTimeSearchMessage? weekTime,
@@ -362,6 +365,7 @@ class MethodChannelDgisMapPlugin implements DgisMapPlugin, FlutterMapApi {
   }) {
     return _api.searchByQuery(
       query,
+      spatialRestriction,
       weekTime,
       searchRect,
       sortingType,
@@ -372,6 +376,7 @@ class MethodChannelDgisMapPlugin implements DgisMapPlugin, FlutterMapApi {
   @override
   Future<SearchResultMessage> searchByCategory(
     SearchCategoryMessage category, {
+    List<GeoPointMessage>? spatialRestriction,
     required SortingTypeMessage sortingType,
     required int pageSize,
     WeekTimeSearchMessage? weekTime,
@@ -379,6 +384,7 @@ class MethodChannelDgisMapPlugin implements DgisMapPlugin, FlutterMapApi {
   }) {
     return _api.searchByCategory(
       category,
+      spatialRestriction,
       weekTime,
       searchRect,
       sortingType,

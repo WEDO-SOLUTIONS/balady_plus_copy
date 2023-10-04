@@ -21,6 +21,14 @@ class DraggableHeaderComponent extends StatefulWidget {
 }
 
 class _DraggableHeaderComponentState extends State<DraggableHeaderComponent> {
+  bool showClear = false;
+
+  @override
+  void initState() {
+    super.initState();
+    showClear = searchController.text.isNotEmpty;
+  }
+
   @override
   Widget build(BuildContext context) {
     bool isLoggedIn = CommonProperties.isLoggedIn;
@@ -89,32 +97,60 @@ class _DraggableHeaderComponentState extends State<DraggableHeaderComponent> {
                     height: 1,
                   ),
                   textFieldVerticalPadding: 16,
-                  suffixIcon: const DrawIconBasedTypeWidget(
+                  suffixIcon: showClear
+                      ? IconButton(
+                          icon: const Icon(Icons.close),
+                          color: AppColor.primary900Light,
+                          onPressed: () {
+                            MapViewModel mapViewModel =
+                                Provider.of<MapViewModel>(context,
+                                    listen: false);
+
+                            mapViewModel.clearSearch();
+                            setState(() {
+                              showClear = false;
+                            });
+                          },
+                        )
+                      : null,
+                  prefixIcon: const DrawIconBasedTypeWidget(
                     icon: IconPath.search,
                     iconSize: 20,
                     iconColor: AppColor.primary900Light,
                   ),
                   borderRadius: 26,
                   borderColor: AppColor.primary900Light.withOpacity(0.1),
+                  onTap: () {
+                    MapViewModel mapViewModel =
+                        Provider.of<MapViewModel>(context, listen: false);
+                    mapViewModel.draggableScrollableController.jumpTo(0.9);
+                  },
                   onChanged: (text) {
-                    if (text.isNotEmpty) {
-                      MapViewModel mapViewModel =
-                          Provider.of<MapViewModel>(context, listen: false);
+                    setState(() {
+                      showClear = text.isNotEmpty;
+                    });
+                    MapViewModel mapViewModel =
+                        Provider.of<MapViewModel>(context, listen: false);
 
-                      mapViewModel.updateSuggest(queryText: text);
+                    mapViewModel.updateSuggest(queryText: text);
+                  },
+                  onSubmitted: (text) {
+                    MapViewModel mapViewModel =
+                        Provider.of<MapViewModel>(context, listen: false);
+
+                    if (text.isNotEmpty) {
+                      mapViewModel.performSearch(
+                        queryText: text,
+                        showLoader: true,
+                      );
+                      // mapViewModel.draggableScrollableController.jumpTo(0.5);
+                    } else {
+                      mapViewModel.clearSearch();
                     }
                   },
-                  // onSubmitted: (text) {
-                  //   if (text.isNotEmpty) {
-                  //     MapViewModel mapViewModel =
-                  //         Provider.of<MapViewModel>(context, listen: false);
-
-                  //     mapViewModel.performSearch(
-                  //       queryText: text,
-                  //       showLoader: true,
-                  //     );
-                  //   }
-                  // },
+                  onTapOutside: (e) {
+                    FocusManager.instance.primaryFocus?.unfocus();
+                  },
                 );
               }),
           const SizedBox(height: 10),
