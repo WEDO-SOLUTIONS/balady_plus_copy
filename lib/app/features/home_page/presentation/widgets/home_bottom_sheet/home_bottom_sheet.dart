@@ -60,9 +60,11 @@ class HomeBottomSheet extends StatelessWidget {
                           .replaceAll("region", "منطقة")
                           .replaceAll("governorate", "محافظة")
                           .replaceAll("city", "مدينة")
+                          .replaceAll("district area", "محافظة")
                           .replaceAll("district", "حى")
-                          .replaceAll("streets", "شارع")
+                          .replaceAll("street", "شارع")
                           .replaceAll("buildings", "مبنى");
+
                       final address = suggests[index]
                               .handler
                               .objectHandler
