@@ -113,9 +113,12 @@ class _CalendarBodyState extends State<CalendarBody> {
 
         return RefreshIndicator(
           onRefresh: () async {
-            context
-                .read<CalendarBloc>()
-                .add(GetSearchEvent(params: SearchCalendarParams()));
+            context.read<CalendarBloc>().add(GetSearchEvent(
+                update: false,
+                params: state.searchedParams.copyWith(
+                    page: 1,
+                    size: ((state.searchedParams.page ?? 1) - 1) *
+                        (state.searchedParams.size ?? 10))));
           },
           child: ListView.builder(
             controller: _scrollController,

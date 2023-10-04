@@ -85,7 +85,7 @@ Map<String, dynamic> servicesConfig = {
     },
     {
       "id": 5,
-      "icon": "ticket-2",
+      "icon": "calendar-2",
       "3d_icon": null,
       "order": 5,
       "isNew": false,

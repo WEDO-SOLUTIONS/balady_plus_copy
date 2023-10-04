@@ -141,6 +141,8 @@ class _CalendarFilterDialogState extends State<CalendarFilterDialog> {
                       Navigator.pop(
                           context,
                           widget.params.copyWith(
+                            page: 1,
+                            size: 10,
                             keyword: keyword,
                             selectedSeason: selectedSeason,
                             dateFrom: dateFrom,
@@ -151,7 +153,8 @@ class _CalendarFilterDialogState extends State<CalendarFilterDialog> {
                   const SizedBox(height: 16),
                   ElevatedButtonWidget.deletaAll(
                     onPressed: () {
-                      Navigator.pop(context, SearchCalendarParams());
+                      Navigator.pop(
+                          context, SearchCalendarParams(page: 1, size: 10));
                     },
                   ),
                 ],

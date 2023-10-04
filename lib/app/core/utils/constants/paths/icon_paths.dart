@@ -167,6 +167,8 @@ class IconPath {
   // Map
   static const layers = '${_svgMapIconPath}layers$_svg';
   static const currentLocation = '${_svgMapIconPath}current_location$_svg';
+  static const mapAppearnaceDay = '${_svgMapIconPath}sun$_svg';
+  static const mapAppearnaceNight = '${_svgMapIconPath}moon$_svg';
 
   //! PNG Icons
   static const arrowForward = '${_pngIconPath}arrow_forward_icon$_png';

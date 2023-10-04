@@ -12,7 +12,8 @@ abstract class CalendarEvent extends Equatable {
 
 class GetSearchEvent extends CalendarEvent {
   final SearchCalendarParams? params;
-  const GetSearchEvent({this.params});
+  final bool update;
+  const GetSearchEvent({this.params, this.update = true});
 }
 
 class GetSeasonsEvent extends CalendarEvent {
@@ -35,6 +36,6 @@ class GetMoreSearchEvent extends CalendarEvent {
 }
 
 class GetCalendarDetailsEvent extends CalendarEvent {
-  final String id; 
+  final String id;
   const GetCalendarDetailsEvent({required this.id});
 }

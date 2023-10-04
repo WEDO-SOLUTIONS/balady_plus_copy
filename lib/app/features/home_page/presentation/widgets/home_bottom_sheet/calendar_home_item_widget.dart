@@ -9,6 +9,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../core/dependency_injection/injection_container.dart';
+import '../../../../../core/utils/constants/app_style.dart';
 import '../../../../../core/utils/constants/route_names.dart';
 import '../../../../calendar/domain/entities/search_calendar/search_calendar_item.dart';
 import '../../../../calendar/presentation/bloc/calendar_bloc.dart';
@@ -28,91 +29,134 @@ class CalendarHomeItemWidget extends StatelessWidget {
             BlocBuilder<CalendarBloc, CalendarState>(builder: (context, state) {
           var item = state.searchItems.firstOrNull;
           if (item == null) return Container();
-          return GestureDetector(
-            onTap: () {
-              Navigator.of(context)
-                  .pushNamed(RouteName.calendarDetailsPage, arguments: item);
-            },
-            child: Container(
-              height: 170,
-              width: MediaQuery.of(context).size.width,
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(14),
-                boxShadow: const [
-                  BoxShadow(
-                    color: Color(0x4CE9EAF1),
-                    blurRadius: 40,
-                    offset: Offset(0, 10),
-                    spreadRadius: 0,
-                  ),
-                ],
-                image: calendarImage(
-                    item.logoURL, "assets/images/calendar_bg_home.png"),
+          return Column(
+            children: [
+              SizedBox(
+                height: 16,
               ),
-              child: Stack(
-                children: [
-                  Container(
-                    width: MediaQuery.of(context).size.width * 0.75,
-                    child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    CustomTextWidget(
+                      'saudi_calendar'.tr(),
+                      textStyle: AppStyle.sectionTitleStyle,
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.pushNamed(
+                            context, RouteName.calendarMainPage);
+                      },
+                      child: CustomTextWidget(
+                        "show_all".tr(),
+                        fontColor: AppColor.kGray115,
+                        fontSize: 13,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(
+                height: 8,
+              ),
+              Container(
+                height: 190,
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  shrinkWrap: true,
+                  itemCount: state.searchItems.length ?? 0,
+                  itemBuilder: (context, index) => GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).pushNamed(
+                          RouteName.calendarDetailsPage,
+                          arguments: item);
+                    },
+                    child: Container(
+                      height: 180,
+                      width: MediaQuery.of(context).size.width,
+                      margin: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 8),
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(14),
+                        boxShadow: const [
+                          BoxShadow(
+                            color: Color(0x4CE9EAF1),
+                            blurRadius: 40,
+                            offset: Offset(0, 10),
+                            spreadRadius: 0,
+                          ),
+                        ],
+                        image: calendarImage(
+                            item.logoURL, "assets/images/calendar_bg_home.png"),
+                      ),
+                      child: Stack(
                         children: [
-                          CalendarTag(
-                            text: item.type ?? "",
+                          Container(
+                            width: MediaQuery.of(context).size.width * 0.75,
+                            child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  CalendarTag(
+                                    text: item.type ?? "",
+                                  ),
+                                  const SizedBox(
+                                    height: 8,
+                                  ),
+                                  CustomTextWidget(
+                                    item.name ?? "",
+                                    fontColor: const Color(0xFF3F3F46),
+                                    fontSize: 14,
+                                    fontWeight: AppFontWeight.bold,
+                                    height: 1.4,
+                                    maxLines: 2,
+                                  ),
+                                  const SizedBox(
+                                    height: 8,
+                                  ),
+                                  CustomTextWidget(
+                                    item.getDate(),
+                                    fontColor: const Color(0xFF71717A),
+                                    fontSize: 12,
+                                    fontWeight: AppFontWeight.bold,
+                                    height: 1.4,
+                                    maxLines: 2,
+                                  ),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                  SizedBox(
+                                    width: 130,
+                                    child: ElevatedButtonWidget.primaryCustom(
+                                        height: 40,
+                                        onPressed: () {
+                                          Add2Calendar.addEvent2Cal(
+                                            buildEvent(
+                                              title: item.name ?? "",
+                                              startDate: item.startDate!,
+                                              endDate: (item.endDate) ??
+                                                  (item.startDate!),
+                                            ),
+                                          );
+                                        },
+                                        fontSize: 12,
+                                        text: "saudi_calendar_add".tr()),
+                                  )
+                                ]),
                           ),
-                          const SizedBox(
-                            height: 8,
-                          ),
-                          CustomTextWidget(
-                            item.name ?? "",
-                            fontColor: const Color(0xFF3F3F46),
-                            fontSize: 14,
-                            fontWeight: AppFontWeight.bold,
-                            height: 1.4,
-                            maxLines: 2,
-                          ),
-                          const SizedBox(
-                            height: 8,
-                          ),
-                          CustomTextWidget(
-                            item.getDate(),
-                            fontColor: const Color(0xFF71717A),
-                            fontSize: 12,
-                            fontWeight: AppFontWeight.bold,
-                            height: 1.4,
-                            maxLines: 2,
-                          ),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          SizedBox(
-                            width: 130,
-                            child: ElevatedButtonWidget.primaryCustom(
-                                height: 40,
-                                onPressed: () {
-                                  Add2Calendar.addEvent2Cal(
-                                    buildEvent(
-                                      title: item.name ?? "",
-                                      startDate: item.startDate!,
-                                      endDate:
-                                          (item.endDate) ?? (item.startDate!),
-                                    ),
-                                  );
-                                },
-                                fontSize: 12,
-                                text: "saudi_calendar_add".tr()),
-                          )
-                        ]),
+                          if (item.timeToStartInDays != null)
+                            RemainingDaysWidget(
+                              dayNo: item.timeToStartInDays!,
+                            )
+                        ],
+                      ),
+                    ),
                   ),
-                  if (item.timeToStartInDays != null)
-                    RemainingDaysWidget(
-                      dayNo: item.timeToStartInDays!,
-                    )
-                ],
+                ),
               ),
-            ),
+            ],
           );
         }));
   }
