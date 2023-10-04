@@ -7,6 +7,7 @@ import 'package:balady_plus/app/features/events/domain/entities/events_details/e
 
 import 'package:dartz/dartz.dart';
 
+import '../../domain/entities/search_calendar/calendar_details_response.dart';
 import '../../domain/entities/search_calendar/search_calendar_params.dart';
 import '../../domain/entities/search_calendar/search_calendar_response.dart';
 import '../../domain/repository/events_repository.dart';
@@ -39,6 +40,22 @@ class CalendarRepositoryImpl implements CalendarRepository {
       final data = await remoteDataSource.getEventCategory(params: params);
       return Right(data);
     } on ServerException catch (error) {
+      return Left(ServerFailure(
+        error.errorMessage,
+        statusCode: error.statusCode,
+      ));
+    }
+  }
+
+  @override
+  Future<Either<Failure, CalendarDetailsResponse>> getEventDetails(
+      {required String params}) async {
+    try {
+      final data = await remoteDataSource.getEventDetails(params: params);
+      print(data);
+      return Right(data);
+    } on ServerException catch (error) {
+      print(error);
       return Left(ServerFailure(
         error.errorMessage,
         statusCode: error.statusCode,

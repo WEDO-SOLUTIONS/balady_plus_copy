@@ -175,6 +175,10 @@ class RouteName {
 
   // Calendar
   static const calendarMainPage = '/MainPageCalendar';
+
+  // Calendar Details
+
+  static const calendarDetailsPage = '/calendarDetailsPage';
 }
 
 class EtmamRoutesNames {
@@ -242,6 +246,5 @@ class EtmamRoutesNames {
 
   static const editBiddingForm = '/EditBiddingForm';
 
-    static const biddingReleationTypes = '/biddingReleationTypes';
-
+  static const biddingReleationTypes = '/biddingReleationTypes';
 }

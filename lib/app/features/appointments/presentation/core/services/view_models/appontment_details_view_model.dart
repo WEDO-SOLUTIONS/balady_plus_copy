@@ -10,10 +10,12 @@ import 'package:tuple/tuple.dart';
 import '../../../../../../core/base/base_view_model.dart';
 import '../../../../../../core/services/local/navigation_services.dart';
 import '../../../../../../core/utils/enums/enums.dart';
+import '../../../../../_shared_feature_/data/entities/drop_down_item.dart';
 import '../../../../../_shared_feature_/data/entities/success_screen_args.dart';
 import '../../../../../new_appointment/presentation/core/models/appointment_details_model.dart';
 import '../../../../../new_appointment/presentation/core/models/cancel_appointment_response.dart';
 import '../../../../../new_appointment/presentation/core/models/confirm_appointment_response.dart';
+import '../../../../../new_appointment/presentation/core/models/lookup_list_model.dart';
 import '../../../../../new_appointment/presentation/core/services/repository/appointment_repository.dart';
 import 'my_appointments_view_model.dart';
 
@@ -24,6 +26,11 @@ class AppointmentDetailsViewModel extends BaseViewModel {
   bool? isCancelable;
   bool? isPrintable;
   int? appointmentID;
+  LookUpList? cancelReasonsList;
+  DropDownItem? selectedCancelReason;
+  LookUpItem? selectedCancelReasonItem;
+  List<DropDownItem> cancelList = [];
+  String? cancelReason;
 
   AppointmentDetailsViewModel(
       {this.appointmentID,
@@ -135,7 +142,9 @@ class AppointmentDetailsViewModel extends BaseViewModel {
 
   Future<CancelAppointmentResponse?> cancelAppointment() async {
     CancelAppointmentResponse? result = await cancelAppointmentApi(
-        appointmentDetailsResponse?.data?.result?.id ?? 0);
+        appointmentDetailsResponse?.data?.result?.id ?? 0,
+        [selectedCancelReasonItem!],
+        cancelReason);
     if (result != null &&
         result.data?.result != null &&
         result.data?.result == true) {
@@ -169,11 +178,12 @@ class AppointmentDetailsViewModel extends BaseViewModel {
     return result;
   }
 
-  Future<CancelAppointmentResponse?> cancelAppointmentApi(
-      int requestNumber) async {
+  Future<CancelAppointmentResponse?> cancelAppointmentApi(int requestNumber,
+      List<LookUpItem> cancelReasons, String? otherReason) async {
     showLoading();
     Tuple3<bool?, String?, CancelAppointmentResponse?> response =
-        await _repository.cancelAppointment(requestNumber);
+        await _repository.cancelAppointment(
+            requestNumber, cancelReasons, otherReason);
     hideLoading();
     if (response.item3 != null &&
         response.item3?.data != null &&
@@ -203,7 +213,35 @@ class AppointmentDetailsViewModel extends BaseViewModel {
     return null;
   }
 
+  Future<bool> getLookUpList() async {
+    showLoading();
+    Tuple3<bool?, String?, LookUpList?> response =
+        await _repository.getLookupList("CANCEL_REASONS");
+    hideLoading();
+    if (response.item1 != null &&
+        response.item1! &&
+        response.item3?.data?.result != null) {
+      setCancelReasons(response.item3);
+
+      return true;
+    } else {
+      showError(response.item2 ?? "");
+    }
+    return false;
+  }
+
+  void setCancelReasons(LookUpList? data) {
+    cancelReasonsList = data;
+    cancelList = cancelReasonsList!.data!.result!
+        .map<DropDownItem>(
+            (e) => DropDownItem(id: e.id.toString(), name: e.name ?? ""))
+        .toList();
+  }
+
   void reset() {
     appointmentDetailsResponse = null;
+    selectedCancelReason = null;
+    selectedCancelReasonItem = null;
+    cancelReason = null;
   }
 }
