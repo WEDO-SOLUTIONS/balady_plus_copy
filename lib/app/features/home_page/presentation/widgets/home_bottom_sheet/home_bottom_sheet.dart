@@ -54,16 +54,22 @@ class HomeBottomSheet extends StatelessWidget {
                       );
                     },
                     itemBuilder: (context, index) {
-                      final title = suggests[index]
-                          .title
-                          .text
-                          .replaceAll("region", "منطقة")
-                          .replaceAll("governorate", "محافظة")
-                          .replaceAll("city", "مدينة")
-                          .replaceAll("district area", "محافظة")
-                          .replaceAll("district", "حى")
-                          .replaceAll("street", "شارع")
-                          .replaceAll("buildings", "مبنى");
+                      final prefixMapping = {
+                        ", region": "منطقة",
+                        ", governorate": "محافظة",
+                        ", city": "مدينة",
+                        ", district area": "محافظة",
+                        ", district": "حى",
+                        ", street": "شارع",
+                        ", buildings": "مبنى",
+                        ", park": "بارك",
+                      };
+                      String title = suggests[index].title.text;
+                      prefixMapping.forEach((key, replacement) {
+                        if (title.contains(key)) {
+                          title = "$replacement ${title.replaceAll(key, "")}";
+                        }
+                      });
 
                       final address = suggests[index]
                               .handler
