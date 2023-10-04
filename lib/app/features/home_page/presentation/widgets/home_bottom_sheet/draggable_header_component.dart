@@ -128,6 +128,7 @@ class _DraggableHeaderComponentState extends State<DraggableHeaderComponent> {
                       queryText: text,
                       showLoader: true,
                     );
+                    mapViewModel.draggableScrollableController.jumpTo(0.05);
                   },
                 );
               }),
