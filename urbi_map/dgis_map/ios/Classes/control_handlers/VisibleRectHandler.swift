@@ -5,6 +5,7 @@ class VisibleRectHandler {
     private class Events {
         static let visibleRectChanged = "visibleRectChanged"
         static let cameraPositionChanged = "cameraPositionChanged"
+        static let cameraStateChanged = "cameraStateChanged"
     }
     
     private var cancelable: Array<Cancellable> = []
@@ -16,6 +17,27 @@ class VisibleRectHandler {
         cancelable.append(map.camera.positionChannel.sink { [weak self] value in
             self?.cameraPositionChanged(position: value, eventChannel: eventChannel)
         })
+        cancelable.append(map.camera.stateChannel.sink { [weak self] value in
+            self?.stateChanged(state: value, eventChannel: eventChannel)
+        })
+    }
+    
+    func stateChanged(state: CameraState, eventChannel: DgisStreamHandler) {
+        eventChannel.success([
+            "event": Events.cameraStateChanged,
+            "state": {
+                switch state {
+                case .busy:
+                    return "busy"
+                case .fly:
+                    return "fly"
+                case .followPosition:
+                    return "follow"
+                case .free:
+                    return "free"
+                }
+            }()
+        ])
     }
     
     func cameraPositionChanged(position: CameraPosition, eventChannel: DgisStreamHandler) {

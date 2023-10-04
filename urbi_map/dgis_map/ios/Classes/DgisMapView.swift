@@ -463,6 +463,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
     
     func fetchSuggestsQueryText(
         _ queryText: String,
+        allowedResultTypes: [SuggestedTypeMessage_]?,
         searchRect: GeoRectMessage?,
         completion: @escaping (SuggestResultMessage?, FlutterError?) -> Void
     ) {
@@ -480,6 +481,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
 
         searchHandler.fetchSuggests(
             queryText: queryText,
+            allowedResultTypes: allowedResultTypes,
             searchGeoRect: searchRect?.geoRect,
             completion: completion
         )
