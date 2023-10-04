@@ -54,6 +54,15 @@ class HomeBottomSheet extends StatelessWidget {
                       );
                     },
                     itemBuilder: (context, index) {
+                      final title = suggests[index]
+                          .title
+                          .text
+                          .replaceAll("region", "منطقة")
+                          .replaceAll("governorate", "محافظة")
+                          .replaceAll("city", "مدينة")
+                          .replaceAll("district", "حى")
+                          .replaceAll("streets", "شارع")
+                          .replaceAll("buildings", "مبنى");
                       final address = suggests[index]
                               .handler
                               .objectHandler
@@ -135,7 +144,7 @@ class HomeBottomSheet extends StatelessWidget {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
-                                  suggests[index].title.text,
+                                  title,
                                   style: AppStyle.mainTextStyle.copyWith(
                                       color: AppColor.blackModern600Light,
                                       fontSize: 16,
