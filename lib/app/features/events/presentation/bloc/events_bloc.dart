@@ -74,6 +74,8 @@ class EventsBloc extends Bloc<EventsEvent, EventsState> {
       emitter(state.copyWith(
         status: BlocStatus.success,
         searchItems: r.items,
+        searchedParams: state.searchedParams
+            .copyWith(page: (state.searchedParams.page ?? 1) + 1),
         errorMessage: "",
       ));
     });

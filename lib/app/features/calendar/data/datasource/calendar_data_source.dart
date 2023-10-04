@@ -1,16 +1,15 @@
 import 'package:balady_plus/app/core/errors/exceptions.dart';
 import 'package:balady_plus/app/core/utils/constants/apis/api_info.dart';
 import 'package:balady_plus/app/core/utils/extensions/delay.dart';
-import 'package:balady_plus/app/features/events/data/models/event_details/events_detail_item_model.dart';
 import 'package:balady_plus/app/features/events/data/models/events_category/events_cateogry_response_model.dart';
-import 'package:balady_plus/app/features/events/data/models/search_events/search_events_response_model.dart';
 import 'package:balady_plus/app/features/events/domain/entities/events_category/events_category_params.dart';
 import 'package:balady_plus/app/features/events/domain/entities/events_details/event_details_params.dart';
-import 'package:balady_plus/app/features/events/domain/entities/search_events/search_events_params.dart';
 import 'package:dio/dio.dart';
 import '../../../../core/services/global/web_service.dart';
 import '../../../_shared_feature_/data/models/response_body_model.dart';
+import '../../domain/entities/search_calendar/calendar_details_response.dart';
 import '../../domain/entities/search_calendar/search_calendar_params.dart';
+import '../models/calendar_details/calendar_detail_model.dart';
 import '../models/search_calendar/search_calendars_response_model.dart';
 
 abstract class CalendarRemoteDataSource {
@@ -21,6 +20,8 @@ abstract class CalendarRemoteDataSource {
 
   Future<EventsCategoryResponseModel> getEventCategory(
       {required EventsCategoryParams params});
+
+  Future<CalendarDetailsModel> getEventDetails({required String params});
 }
 
 class CalendarRemoteDataSourceImpl extends CalendarRemoteDataSource {
@@ -79,6 +80,35 @@ class CalendarRemoteDataSourceImpl extends CalendarRemoteDataSource {
     } catch (ex) {
       print(ex);
       if (ex is ServerException) {
+        rethrow;
+      } else {
+        try {} catch (_) {}
+        throw ServerException("errors_server_error_2");
+      }
+    }
+  }
+
+  @override
+  Future<CalendarDetailsModel> getEventDetails({required String params}) async {
+    var response;
+    try {
+      response = await webService.dio.get(
+        "${ApiUrl.calendarDetails}/${params}",
+        options: Options(headers: {/*"Authorization": token*/}),
+      );
+
+      var data = response.data;
+      final result = ResponseBodyModel.fromMap(data).data?.result;
+      print(result);
+
+      return CalendarDetailsModel.fromJson(result);
+    } on DioError catch (error) {
+      print(error);
+      throw ServerException(error.toString(),
+          statusCode: error.response?.statusCode);
+    } catch (ex) {
+      if (ex is ServerException) {
+        print(ex);
         rethrow;
       } else {
         try {} catch (_) {}

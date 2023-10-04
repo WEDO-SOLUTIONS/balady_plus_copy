@@ -34,29 +34,33 @@ class EventsTitlePriceWidget extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              CustomTextWidget(
-                title,
-                textStyle: AppStyle.eventsSectionTitleStyle,
-              ),
-              SizedBox(
-                height: 5,
-              ),
-              Row(
-                children: [
-                  SvgPicture.asset(
-                    IconPath.eventsLocationIcon,
-                  ),
-                  CustomTextWidget(
-                    address,
-                    textStyle: AppStyle.eventsLocationTextStyle,
-                  ),
-                ],
-              )
-            ],
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                CustomTextWidget(
+                  title,
+                  textStyle: AppStyle.eventsSectionTitleStyle,
+                  maxLines: 2,
+                  textOverflow: TextOverflow.ellipsis,
+                ),
+                SizedBox(
+                  height: 5,
+                ),
+                Row(
+                  children: [
+                    SvgPicture.asset(
+                      IconPath.eventsLocationIcon,
+                    ),
+                    CustomTextWidget(
+                      address,
+                      textStyle: AppStyle.eventsLocationTextStyle,
+                    ),
+                  ],
+                )
+              ],
+            ),
           ),
           /*  Row(
             children: [

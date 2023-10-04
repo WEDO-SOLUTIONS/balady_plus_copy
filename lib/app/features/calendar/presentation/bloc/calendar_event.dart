@@ -33,3 +33,8 @@ class UpdateSearchParamsEvent extends CalendarEvent {
 class GetMoreSearchEvent extends CalendarEvent {
   const GetMoreSearchEvent();
 }
+
+class GetCalendarDetailsEvent extends CalendarEvent {
+  final String id; 
+  const GetCalendarDetailsEvent({required this.id});
+}

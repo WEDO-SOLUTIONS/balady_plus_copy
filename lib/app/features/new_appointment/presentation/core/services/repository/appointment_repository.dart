@@ -392,11 +392,22 @@ class AppointmentRepository {
   }
 
   Future<Tuple3<bool?, String?, CancelAppointmentResponse?>> cancelAppointment(
-      int requestId) async {
+      int requestId,
+      List<LookUpItem> cancelReasons,
+      String? otherReason) async {
     String query = "$requestId";
 
-    final body = await webServices
-        .postApigeeRequest(ApiConstants.CancelAppointment, relativePath: query);
+    final body =
+        await webServices.postApigeeRequest(ApiConstants.CancelAppointment,
+            body: {
+              "cancelReason": [
+                {
+                  "id": cancelReasons.first.id,
+                }
+              ],
+              if (cancelReasons.first.isOther == true) "note": otherReason
+            },
+            relativePath: query);
     bool state = body['state'];
     dynamic data = body['data'];
     CancelAppointmentResponse? result;

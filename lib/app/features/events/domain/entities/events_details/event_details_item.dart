@@ -42,8 +42,6 @@ class EventDetailsResponse {
       this.pictures,
       this.fees});
 
-
-
   String getStartDay() {
     if (startDate != null) {
       return startDate!.day.toString();
@@ -115,8 +113,8 @@ class EventDetailsResponse {
   }
 
   LatLng? getLocation() {
-    double? lon = double.tryParse(location?.x ?? "");
-    double? lat = double.tryParse(location?.y ?? "");
+    double? lon = double.tryParse(location?.y ?? "");
+    double? lat = double.tryParse(location?.x ?? "");
 
     if (lat != null && lon != null) return LatLng(lat, lon);
     return null;

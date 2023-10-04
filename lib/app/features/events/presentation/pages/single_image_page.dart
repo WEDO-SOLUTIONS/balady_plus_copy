@@ -21,6 +21,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart' as svgProvider;
 import 'package:localize_and_translate/localize_and_translate.dart';
 
+import '../../../_shared_feature_/presentation/widgets/retry_widget.dart';
+
 class SingleEventDescriptionPage extends StatefulWidget {
   const SingleEventDescriptionPage({Key? key}) : super(key: key);
 
@@ -52,6 +54,13 @@ class _SingleEventDescriptionPageState
             if (img.isEmpty) img = state.eventDetails.logoUrl ?? "";
             if (state.status == BlocStatus.loading)
               return Center(child: CustomCircularLoadingWidget());
+
+            if (state.status == BlocStatus.failure)
+              return Center(child: RetryWidget(
+                onRetry: () {
+                  context.read<EventsBloc>().add(GetEventsDetails(id: id));
+                },
+              ));
 
             return RefreshIndicator(
               onRefresh: () async {

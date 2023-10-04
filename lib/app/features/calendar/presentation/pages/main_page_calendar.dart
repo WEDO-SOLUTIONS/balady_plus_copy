@@ -18,6 +18,7 @@ import '../../domain/entities/search_calendar/search_calendar_params.dart';
 import '../bloc/calendar_bloc.dart';
 import '../bloc/calendar_event.dart';
 import '../dialogs/calendar_filter_dialog.dart';
+import '../widgets/calendar_item_widget.dart';
 import '../widgets/calendar_not_found_page.dart';
 
 class MainPageCalendar extends StatefulWidget {
@@ -138,15 +139,13 @@ class _CalendarBodyState extends State<CalendarBody> {
                             .toString() ??
                         "",
                   ),*/
-                  SectionContainer(
-                    imageBackground: state.searchItems[index].logoURL,
-                    name: state.searchItems[index].name ?? "",
-                    date: state.searchItems[index].getDate(),
-                    day: state.searchItems[index].getStartDay(),
-                    month: state.searchItems[index].getStartMonth(),
-                    color1: state.searchItems[index].getColors(index)[0],
-                    color2: state.searchItems[index].getColors(index)[1],
-                    timer: state.searchItems[index].remainingDays(),
+                  CalendarItemWidget(
+                    item: state.searchItems[index],
+                    onPress: () {
+                      Navigator.of(context).pushNamed(
+                          RouteName.calendarDetailsPage,
+                          arguments: state.searchItems[index]);
+                    },
                   ),
                 ],
               );

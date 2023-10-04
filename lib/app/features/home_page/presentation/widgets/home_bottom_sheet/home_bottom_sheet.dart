@@ -20,6 +20,7 @@ import '../../../home_exports.dart'
 
 import 'package:provider/provider.dart';
 
+import 'calendar_home_item_widget.dart';
 import 'cityscape_map_card.dart';
 import 'event_home_card.dart';
 import 'general_event_card.dart';
@@ -76,7 +77,7 @@ class HomeBottomSheet extends StatelessWidget {
 
                               // GeneralEventHomeCard(),
 
-                              EventHomeCard(),
+                              CalendarHomeItemWidget(),
 
                               //  ChallengeHomeCard(),
                               const NewServices(),

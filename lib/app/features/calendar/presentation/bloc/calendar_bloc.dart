@@ -10,15 +10,18 @@ import '../../domain/entities/search_calendar/search_calendar_item.dart';
 import '../../domain/entities/search_calendar/search_calendar_params.dart';
 import '../../domain/usecase/get_category_event.dart';
 import '../../domain/usecase/get_search_events.dart';
+import '../../domain/usecase/grt_calendar_details.dart';
 import 'calendar_event.dart';
 import 'calendar_state.dart';
 
 class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
   final GetSearchEvents _getSearchEvents;
   final GetCategory _getCategory;
+  final GetCalendarDetails _getCalendarDetails;
   CalendarBloc()
       : _getSearchEvents = GetSearchEvents(repository: sl()),
         _getCategory = GetCategory(repository: sl()),
+        _getCalendarDetails = GetCalendarDetails(repository: sl()),
         super(CalendarState(
           searchItems: [],
           searchedParams: SearchCalendarParams(),
@@ -32,6 +35,7 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
     on<GetSearchEvent>(_getSearchEventsHandler);
 
     on<GetSeasonsEvent>(_getSesonsEventsHandler);
+    on<GetCalendarDetailsEvent>(_getCalendarDetailsHandler);
 
     on<UpdateSearchParamsEvent>(_updateSearchParamsHandler);
 
@@ -62,6 +66,8 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
       emitter(state.copyWith(
         status: BlocStatus.success,
         searchItems: r.items,
+        searchedParams: state.searchedParams
+            .copyWith(page: (state.searchedParams.page ?? 1) + 1),
         errorMessage: "",
       ));
     });
@@ -131,5 +137,26 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
       searchKeyword: e.searchKeyword,
       selectedSeason: e.selectedSeason,
     ));
+  }
+
+  Future<void> _getCalendarDetailsHandler(
+      GetCalendarDetailsEvent e, Emitter emitter) async {
+    emitter(state.copyWith(
+      status: BlocStatus.loading,
+    ));
+    final failureOrSuccess = await _getCalendarDetails(e.id);
+    failureOrSuccess.fold((l) {
+      emitter(
+        state.copyWith(
+          status: BlocStatus.failure,
+        ),
+      );
+    }, (r) {
+      emitter(state.copyWith(
+        status: BlocStatus.success,
+        details: r,
+        errorMessage: "",
+      ));
+    });
   }
 }

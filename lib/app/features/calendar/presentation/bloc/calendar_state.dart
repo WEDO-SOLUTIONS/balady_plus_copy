@@ -1,10 +1,9 @@
 import 'package:balady_plus/app/core/utils/enums/bloc_status.dart';
 import 'package:balady_plus/app/features/calendar/domain/entities/search_calendar/search_calendar_item.dart';
-import 'package:balady_plus/app/features/events/domain/entities/events_details/event_details_item.dart';
-import 'package:balady_plus/app/features/events/domain/entities/search_events/search_events_item.dart';
 import 'package:balady_plus/app/features/events/domain/entities/events_category/events_category_item.dart';
 import 'package:equatable/equatable.dart';
 
+import '../../domain/entities/search_calendar/calendar_details_response.dart';
 import '../../domain/entities/search_calendar/search_calendar_params.dart';
 
 class CalendarState extends Equatable {
@@ -21,6 +20,7 @@ class CalendarState extends Equatable {
   final DateTime? toDate;
 
   final SearchCalendarParams searchedParams;
+  final CalendarDetailsResponse? details;
 
   CalendarState({
     this.errorMessage,
@@ -32,6 +32,7 @@ class CalendarState extends Equatable {
     this.selectedSeason,
     this.fromDate,
     this.toDate,
+    this.details,
     required this.searchItems,
   });
 
@@ -45,7 +46,8 @@ class CalendarState extends Equatable {
       final String? searchKeyword,
       final EventCategoryItem? selectedSeason,
       final DateTime? fromDate,
-      final DateTime? toDate}) {
+      final DateTime? toDate,
+      final CalendarDetailsResponse? details}) {
     return CalendarState(
         searchItems: searchItems ?? this.searchItems,
         status: status ?? this.status,
@@ -56,7 +58,8 @@ class CalendarState extends Equatable {
         searchKeyword: searchKeyword ?? this.searchKeyword,
         selectedSeason: selectedSeason ?? this.selectedSeason,
         fromDate: fromDate ?? this.fromDate,
-        toDate: toDate ?? this.toDate);
+        toDate: toDate ?? this.toDate,
+        details: details ?? this.details);
   }
 
   @override
@@ -70,5 +73,6 @@ class CalendarState extends Equatable {
         searchKeyword,
         toDate,
         fromDate,
+        details
       ];
 }

@@ -318,6 +318,7 @@ class ApiUrl {
   static const eventsCategory = '/v1/balady-events-services/category/';
 
   static const calendarSearch = '/v1/saudi-calendar-services/entries/search';
+  static const calendarDetails = '/v1/saudi-calendar-services/entries';
 
   //! POST
 

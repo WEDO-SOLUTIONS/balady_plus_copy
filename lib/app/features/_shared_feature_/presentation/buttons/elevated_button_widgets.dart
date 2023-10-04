@@ -341,10 +341,12 @@ class ElevatedButtonWidget extends _ElevatedButton {
       {required VoidCallback onPressed,
       required String text,
       double? height,
-      double? fontSize})
+      double? fontSize,
+      double? width})
       : super(CustomElevatedButtonWidget(
           btnColor: Colors.white,
           btnBorderColor: AppColor.primary800Light,
+          btnWidth: width,
           textStyle: AppStyle.elevatedButtonStyle.copyWith(
             color: AppColor.primary800Light,
             fontWeight: FontWeight.w700,

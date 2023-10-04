@@ -100,7 +100,9 @@ class SearchCalendarItem {
   }
 
   String getDate() {
-    return " ${getStartDay()} ${getStartMonth()} ${getStartYear()} - ${getEndDay()} ${getEndMonth()} ${getEndYear()}";
+    if (startDate == endDate)
+      return "${getStartDay()} ${getStartMonth()} ${getStartYear()}";
+    return "${getStartDay()} ${getStartMonth()} ${getStartYear()} - ${getEndDay()} ${getEndMonth()} ${getEndYear()}";
   }
 
   List<Color> getColors(int index) {
