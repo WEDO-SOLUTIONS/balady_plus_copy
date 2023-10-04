@@ -165,7 +165,7 @@ class MapViewModel extends BaseViewModel {
     _searchClearDebounce?.cancel();
     _searchClearDebounce = Timer(const Duration(milliseconds: 500), () async {
       await clearAll();
-      suggests.value = [];
+      suggests.value = null;
       searchController.text = "";
     });
   }
@@ -1185,7 +1185,7 @@ class MapViewModel extends BaseViewModel {
 
   Future<void> _updateSuggest({required String queryText}) async {
     if (queryText.isEmpty) {
-      suggests.value = [];
+      suggests.value = null;
       return;
     }
 
