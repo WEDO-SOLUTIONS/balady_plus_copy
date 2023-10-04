@@ -69,6 +69,7 @@ class CustomTextFieldWidget extends StatelessWidget {
   final void Function(String)? onChanged;
   final void Function(String)? onSubmitted;
   final void Function()? onTap;
+  final void Function(PointerDownEvent)? onTapOutside;
   final String? Function(String?)? onValidate;
 
   const CustomTextFieldWidget({
@@ -126,6 +127,7 @@ class CustomTextFieldWidget extends StatelessWidget {
     this.onChanged,
     this.onSubmitted,
     this.onTap,
+    this.onTapOutside,
     this.onValidate,
   });
 
@@ -297,6 +299,7 @@ class CustomTextFieldWidget extends StatelessWidget {
           ),
           onTap: onTap,
           onChanged: onChanged,
+          onTapOutside: onTapOutside,
           onFieldSubmitted: onSubmitted,
           validator: onValidate,
         ),

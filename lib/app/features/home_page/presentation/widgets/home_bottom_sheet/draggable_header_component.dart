@@ -135,6 +135,9 @@ class _DraggableHeaderComponentState extends State<DraggableHeaderComponent> {
                     );
                     mapViewModel.draggableScrollableController.jumpTo(0.5);
                   },
+                  onTapOutside: (e) {
+                    FocusManager.instance.primaryFocus?.unfocus();
+                  },
                 );
               }),
           const SizedBox(height: 10),

@@ -46,6 +46,8 @@ class HomeBottomSheet extends StatelessWidget {
                   return ListView.separated(
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
+                    keyboardDismissBehavior:
+                        ScrollViewKeyboardDismissBehavior.onDrag,
                     separatorBuilder: (context, index) {
                       return const Divider(
                         color: Colors.black,
