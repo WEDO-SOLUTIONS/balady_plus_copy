@@ -270,7 +270,7 @@ class GeneralMapCardWidget extends StatelessWidget {
                                                                     .displayName(),
                                                                 fontColor: AppColor
                                                                     .blackModern800Light,
-                                                                fontSize: 12,
+                                                                fontSize: 10,
                                                                 textOverflow:
                                                                     TextOverflow
                                                                         .ellipsis,
@@ -286,14 +286,14 @@ class GeneralMapCardWidget extends StatelessWidget {
                                                                   .map((e) => [
                                                                         const CustomVerticalSpace(
                                                                           height:
-                                                                              8,
+                                                                              6,
                                                                         ),
                                                                         CustomTextWidget(
                                                                           e!.displayTime(),
                                                                           fontColor:
                                                                               AppColor.blackModern500Light,
                                                                           fontSize:
-                                                                              8,
+                                                                              6,
                                                                           textOverflow:
                                                                               TextOverflow.ellipsis,
                                                                           fontWeight:
