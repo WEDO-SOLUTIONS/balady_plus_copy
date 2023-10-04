@@ -12,6 +12,8 @@ extension SearchCategoryData on SearchCategoryMessage {
       SearchCategoryMessage.restaurants => "مطاعم",
       SearchCategoryMessage.parks => "حدائق",
       SearchCategoryMessage.events => "الفعاليات",
+      SearchCategoryMessage.hospitals => "المستشفيات",
+      SearchCategoryMessage.schools => "المدارس",
     };
   }
 
@@ -25,7 +27,9 @@ extension SearchCategoryData on SearchCategoryMessage {
       SearchCategoryMessage.restaurants =>
         "assets/maps/icons/poi_eat_light.svg",
       SearchCategoryMessage.parks => "assets/maps/icons/poi_park_light.svg",
-      SearchCategoryMessage.events => "assets/maps/icons/ticket.svg"
+      SearchCategoryMessage.events => "assets/maps/icons/ticket.svg",
+      SearchCategoryMessage.hospitals => "assets/maps/icons/poi_eat_light.svg",
+      SearchCategoryMessage.schools => "assets/maps/icons/poi_park_light.svg",
     };
   }
 
@@ -40,7 +44,11 @@ extension SearchCategoryData on SearchCategoryMessage {
         "assets/maps/icons/ic_marker_restaurant.svg",
       SearchCategoryMessage.parks =>
         "assets/maps/icons/ic_marker_gardens_parks.svg",
-      SearchCategoryMessage.events => "assets/maps/icons/ic_marker.svg"
+      SearchCategoryMessage.events => "assets/maps/icons/ic_marker.svg",
+      SearchCategoryMessage.hospitals =>
+        "assets/maps/icons/ic_marker_restaurant.svg",
+      SearchCategoryMessage.schools =>
+        "assets/maps/icons/ic_marker_gardens_parks.svg",
     };
   }
 
@@ -54,7 +62,10 @@ extension SearchCategoryData on SearchCategoryMessage {
       SearchCategoryMessage.restaurants =>
         "assets/maps/icons/card_icon/resturant.png",
       SearchCategoryMessage.parks => "assets/maps/icons/card_icon/park.png",
-      SearchCategoryMessage.events => "assets/maps/icons/card_icon/ticket.png"
+      SearchCategoryMessage.events => "assets/maps/icons/card_icon/ticket.png",
+      SearchCategoryMessage.hospitals =>
+        "assets/maps/icons/card_icon/restaurant.png",
+      SearchCategoryMessage.schools => "assets/maps/icons/card_icon/park.png",
     };
   }
 
@@ -66,6 +77,8 @@ extension SearchCategoryData on SearchCategoryMessage {
       SearchCategoryMessage.restaurants => Color(0xFFC8A83A),
       SearchCategoryMessage.parks => AppColor.secondary200Light,
       SearchCategoryMessage.events => AppColor.secondary200Light,
+      SearchCategoryMessage.hospitals => AppColor.secondary200Light,
+      SearchCategoryMessage.schools => AppColor.secondary200Light,
     };
   }
 }

@@ -30,17 +30,10 @@ class CalendarDetailsModel extends CalendarDetailsResponse {
           json["startDate"] != null ? parseDate(json["startDate"]) : null,
       endDate: json["endDate"] != null ? parseDate(json["endDate"]) : null,
       logoUrl: json["logoURL"],
-      pictures: [
-        Picture(
-            url:
-                "https://scth.scene7.com/is/image/scth/the-line-exhibition-riyadh-cover:crop-315x177?defaultImage=the-line-exhibition-riyadh-cover"),
-        Picture(
-            url:
-                "https://scth.scene7.com/is/image/scth/the-line-exhibition-riyadh-cover:crop-315x177?defaultImage=the-line-exhibition-riyadh-cover"),
-        Picture(
-            url:
-                "https://scth.scene7.com/is/image/scth/the-line-exhibition-riyadh-cover:crop-315x177?defaultImage=the-line-exhibition-riyadh-cover")
-      ],
+      pictures: json["pictures"] == null
+          ? []
+          : List<Picture>.from(
+              json["pictures"]!.map((x) => Picture.fromJson(x))),
     );
   }
 }

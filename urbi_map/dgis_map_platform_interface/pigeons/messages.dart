@@ -831,6 +831,7 @@ enum SearchCategoryMessage {
   parks,
   hospitals,
   schools,
+  events
 }
 
 class SearchCategoryMessage_ {

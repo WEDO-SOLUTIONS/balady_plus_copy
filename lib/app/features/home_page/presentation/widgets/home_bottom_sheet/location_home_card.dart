@@ -6,8 +6,6 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 import '../../../../../core/utils/utils_exports.dart';
 import '../../../../_shared_feature_/shared_feature_exports.dart';
 import '../../../../location/presentation/pages/acquire_location_page.dart';
-import '../../../../vd/presentation/dialogs/vd_all_types_dialog.dart';
-import '../../../../vd/presentation/dialogs/vd_types_dialog.dart';
 
 class LocationHomeCard extends StatelessWidget {
   const LocationHomeCard({

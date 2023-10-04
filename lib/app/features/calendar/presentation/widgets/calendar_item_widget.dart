@@ -21,10 +21,10 @@ class CalendarItemWidget extends StatelessWidget {
     return GestureDetector(
       onTap: () => onPress(),
       child: Container(
-        height: 170,
+        height: 180,
         width: MediaQuery.of(context).size.width,
         margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.only(top: 16, right: 16, left: 16),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(14),
@@ -41,7 +41,7 @@ class CalendarItemWidget extends StatelessWidget {
         child: Stack(
           children: [
             Container(
-              width: MediaQuery.of(context).size.width * 0.75,
+              width: MediaQuery.of(context).size.width * 0.65,
               child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -58,6 +58,7 @@ class CalendarItemWidget extends StatelessWidget {
                       fontWeight: AppFontWeight.bold,
                       height: 1.4,
                       maxLines: 2,
+                      textOverflow: TextOverflow.ellipsis,
                     ),
                     const SizedBox(
                       height: 8,

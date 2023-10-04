@@ -193,6 +193,7 @@ class HomeMap extends StatelessWidget {
                                 Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
+                                  crossAxisAlignment: CrossAxisAlignment.end,
                                   children: [
                                     ValueListenableBuilder<Layers?>(
                                         valueListenable:
@@ -213,14 +214,56 @@ class HomeMap extends StatelessWidget {
                                           );
                                         }),
                                     Constants.verticalSpaceSmall,
-                                    GestureDetector(
-                                      onTap: () => mapViewModel.onLocationTap(),
-                                      child: const CircleIcon(
-                                        icon: IconPath.currentLocation,
-                                        iconColor: AppColor.white,
-                                        backgroundColor:
-                                            AppColor.primary900Light,
-                                      ),
+                                    Column(
+                                      children: [
+                                        ValueListenableBuilder<
+                                                MapAppearanceMessage?>(
+                                            valueListenable: mapViewModel
+                                                .mapAppearanceMessage,
+                                            builder:
+                                                (_, mapAppearanceMessage, __) {
+                                              return GestureDetector(
+                                                onTap: () => mapViewModel
+                                                    .onChangeTheme(),
+                                                child: CircleIcon(
+                                                  icon: mapAppearanceMessage ==
+                                                          MapAppearanceMessage
+                                                              .night
+                                                      ? IconPath
+                                                          .mapAppearnaceDay
+                                                      : IconPath
+                                                          .mapAppearnaceNight,
+                                                  iconColor:
+                                                      mapAppearanceMessage ==
+                                                              MapAppearanceMessage
+                                                                  .night
+                                                          ? AppColor.white
+                                                          : AppColor
+                                                              .primary900Light,
+                                                  backgroundColor:
+                                                      mapAppearanceMessage ==
+                                                              MapAppearanceMessage
+                                                                  .night
+                                                          ? AppColor
+                                                              .primary900Light
+                                                          : AppColor.white,
+                                                ),
+                                              );
+                                            }),
+                                        SizedBox(
+                                          height: 16,
+                                        ),
+                                        GestureDetector(
+                                          onTap: () =>
+                                              mapViewModel.onLocationTap(),
+                                          child: const CircleIcon(
+                                            icon: IconPath.currentLocation,
+                                            iconColor: AppColor.white,
+                                            backgroundColor:
+                                                AppColor.primary900Light,
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ],
                                 ),

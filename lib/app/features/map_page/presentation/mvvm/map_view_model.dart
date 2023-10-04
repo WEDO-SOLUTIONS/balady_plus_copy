@@ -40,6 +40,9 @@ const int mil = 300;
 TextEditingController searchController = TextEditingController();
 
 class MapViewModel extends BaseViewModel {
+  final mapAppearanceMessage =
+      ValueNotifier<MapAppearanceMessage?>(MapAppearanceMessage.day);
+
   final GeoPointMessage kingdomTower = GeoPointMessage(
     latitude: 24.712301,
     longitude: 46.674175,
@@ -377,6 +380,17 @@ class MapViewModel extends BaseViewModel {
     unawaited(controller.changeFollowState());
   }
 
+  void onChangeTheme() async {
+    if (mapAppearanceMessage.value == MapAppearanceMessage.day) {
+      mapAppearanceMessage.value = MapAppearanceMessage.night;
+    } else {
+      mapAppearanceMessage.value = MapAppearanceMessage.day;
+    }
+    controller.setAppearance(mapAppearanceMessage.value!);
+
+    mapAppearanceMessage.notifyListeners();
+  }
+
   void onLevelTap(IndoorLevel level) =>
       unawaited(controller.selectIndoorLevel(level));
 
@@ -520,6 +534,17 @@ class MapViewModel extends BaseViewModel {
     // when Click on Map hide ViewHomeBottomSheet if he is not hide
     print("tapped ddd ${event}");
 
+    /* if (event is ObjectTapEvent) {
+      selectedCategory.value = null;
+      selectedPointId.value = event.dgisObjectId.toMessage();
+      viewHomeBottomSheet.value = false;
+      viewHomeBottomSheet.notifyListeners();
+      bottomSheetSize.notifyListeners();
+      bottomSheetSizeFraction.notifyListeners();
+      controller.setHighlighted([event.dgisObjectId.toMessage()]);
+      //  refreshView();
+    }*/
+
     if (event is ObjectTapEvent) {
       if (event.levelId != null) {
         refreshView();
@@ -590,6 +615,7 @@ class MapViewModel extends BaseViewModel {
 
     await clearAll();
 
+    print("Gggg ${selectedCategory.value}");
     if (selectedCategory.value != SearchCategoryMessage.restaurants &&
         selectedCategory.value != SearchCategoryMessage.events) {
       String? query = selectedCategory.value != null
@@ -604,13 +630,35 @@ class MapViewModel extends BaseViewModel {
         hideLoading1();
       }
     } else if (selectedCategory.value == SearchCategoryMessage.restaurants) {
-      layerSelected.value = Layers(
+      Layers layer = Layers(
           id: 1,
           name: "مطاعم",
           defaultVisibility: true,
           type: "",
           geometryType: "esriGeometryPoint");
-      layerSelected.notifyListeners();
+
+      GISMapLayers? gisLayer = GISMapLayers.values.firstWhereOrNull(
+        (element) => element.layerId == layer.id,
+      );
+      showLoading1();
+      bottomSheetSize.notifyListeners();
+
+      List? pointList = await layersRepositories.getPointsInLayers(
+        params: MapRequestParams(
+          layer: gisLayer!,
+          northEastLatitude: _lastHandledEvent!.visibleRect.northEastLat,
+          northEastLongitude: _lastHandledEvent!.visibleRect.northEastLon,
+          southWestLongitude: _lastHandledEvent!.visibleRect.southWestLon,
+          southWestLlatitude: _lastHandledEvent!.visibleRect.southWestLat,
+        ),
+      );
+
+      addMarkersWithPoint(pointList, layer.id);
+
+      _clearDebounce();
+      hideLoading1();
+
+      return;
     } else if (selectedCategory.value == SearchCategoryMessage.events) {
       // callEventsSearch();
       return;
@@ -935,8 +983,9 @@ class MapViewModel extends BaseViewModel {
                   break;
               }
 
-              if (layerSelected.value?.id ==
-                  1) // Temp code for resturant Layers
+              if (selectedCategory.value ==
+                  SearchCategoryMessage
+                      .restaurants) // Temp code for resturant Layers
               {
                 print("GTGGGG");
                 selectedPoint.value = element;
@@ -1073,6 +1122,8 @@ class MapViewModel extends BaseViewModel {
     showLegend.notifyListeners();
     showComplianceLegend.notifyListeners();
     bottomSheetSizeFraction.notifyListeners();
+    controller.setHighlighted([]);
+
     gisSelectedLayer = GISMapLayers.values
             .firstWhereOrNull((element) => element.layerId == value.id) ??
         GISMapLayers.cityPlaces;

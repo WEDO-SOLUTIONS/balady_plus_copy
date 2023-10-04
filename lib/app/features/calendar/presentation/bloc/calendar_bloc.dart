@@ -24,7 +24,7 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
         _getCalendarDetails = GetCalendarDetails(repository: sl()),
         super(CalendarState(
           searchItems: [],
-          searchedParams: SearchCalendarParams(),
+          searchedParams: SearchCalendarParams(page: 1, size: 10),
           status: BlocStatus.initial,
         )) {
     on<CalendarEvent>(
@@ -45,12 +45,13 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
       GetSearchEvent e, Emitter emitter) async {
     emitter(state.copyWith(
         status: BlocStatus.loading,
-        searchedParams: e.params != null
-            ? e.params!.copyWith(page: 1, size: 10)
-            : SearchCalendarParams(page: 1, size: 10)));
-    final failureOrSuccess = await _getSearchEvents(e.params != null
-        ? e.params!.copyWith(page: 1, size: 10)
-        : SearchCalendarParams(page: 1, size: 10));
+        searchedParams: e.update
+            ? (e.params != null
+                ? e.params!.copyWith(page: 1, size: 10)
+                : SearchCalendarParams(page: 1, size: 10))
+            : null));
+    final failureOrSuccess = await _getSearchEvents(
+        e.params != null ? e.params! : SearchCalendarParams(page: 1, size: 10));
 
     failureOrSuccess.fold((l) {
       if (l == NoDataFoundFailure())
@@ -66,8 +67,10 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
       emitter(state.copyWith(
         status: BlocStatus.success,
         searchItems: r.items,
-        searchedParams: state.searchedParams
-            .copyWith(page: (state.searchedParams.page ?? 1) + 1),
+        searchedParams: e.update
+            ? state.searchedParams
+                .copyWith(page: (state.searchedParams.page ?? 1) + 1)
+            : null,
         errorMessage: "",
       ));
     });
