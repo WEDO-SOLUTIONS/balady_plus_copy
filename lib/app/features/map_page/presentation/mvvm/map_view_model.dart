@@ -131,6 +131,7 @@ class MapViewModel extends BaseViewModel {
   Future<void> selectCategory({required SearchCategoryMessage category}) async {
     searchController.clear();
     if (category == selectedCategory.value) {
+      _searchOperation?.cancel();
       selectedCategory.value = null;
     } else {
       selectedCategory.value = category;
@@ -138,10 +139,11 @@ class MapViewModel extends BaseViewModel {
     showLoading1();
     await clearAll();
 
-    if (selectedCategory.value != null)
+    if (selectedCategory.value != null) {
       performSearch(
         queryText: selectedCategory.value!.displayName(),
       );
+    }
     hideLoading1();
 
     selectedPointId.value = null;
@@ -177,9 +179,7 @@ class MapViewModel extends BaseViewModel {
     bool showLoader = false,
     bool moveCamera = true,
   }) async {
-    if (_searchOperation != null) {
-      _searchOperation!.cancel();
-    }
+    _searchOperation?.cancel();
     bottomSheetSizeFraction.value = 0.05;
     bottomSheetSizeFraction.notifyListeners();
     _searchOperation = CancelableOperation.fromFuture(
@@ -258,6 +258,12 @@ class MapViewModel extends BaseViewModel {
                 ));
 
       if (showLoader) hideLoading1();
+      if (_searchOperation?.isCanceled == true) {
+        if (data.firstPage != null) {
+          await controller.releasePage(data.firstPage!);
+        }
+        return;
+      }
 
       searchOnCameraMove = false;
       print("areaOfInterest: ${data.areaOfInterestPosition}");
@@ -327,6 +333,12 @@ class MapViewModel extends BaseViewModel {
               refreshMap = true;
             },
           ));
+        }
+        if (_searchOperation?.isCanceled == true) {
+          if (data.firstPage != null) {
+            await controller.releasePage(data.firstPage!);
+          }
+          return;
         }
         await clearAll();
         await controller.addMarkers(markers);
