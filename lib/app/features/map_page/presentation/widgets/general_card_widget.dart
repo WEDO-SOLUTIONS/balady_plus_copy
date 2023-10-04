@@ -112,7 +112,7 @@ class GeneralMapCardWidget extends StatelessWidget {
                                       children: [
                                         Row(
                                             crossAxisAlignment:
-                                                CrossAxisAlignment.center,
+                                                CrossAxisAlignment.start,
                                             mainAxisAlignment:
                                                 MainAxisAlignment.start,
                                             children: [
@@ -299,7 +299,7 @@ class GeneralMapCardWidget extends StatelessWidget {
                                                                           fontWeight:
                                                                               AppFontWeight.bold,
                                                                           maxLines:
-                                                                              3,
+                                                                              5,
                                                                           textAlign:
                                                                               TextAlign.start,
                                                                         ),
