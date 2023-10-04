@@ -94,6 +94,52 @@ extension SuggestedType {
     }
 }
 
+extension SuggestedTypeMessage {
+    var suggestedType: SuggestedType {
+        switch self {
+        case .admDiv:
+            return .admDiv
+        case .attraction:
+            return .attraction
+        case .attribute:
+            return .attribute
+        case .branch:
+            return .branch
+        case .building:
+            return .building
+        case .coordinates:
+            return .coordinates
+        case .crossroad:
+            return .crossroad
+        case .districtArea:
+            return .districtArea
+        case .org:
+            return .org
+        case .orgCategory:
+            return .orgCategory
+        case .parking:
+            return .parking
+        case .region:
+            return .region
+        case .road:
+            return .road
+        case .route:
+            return .route
+        case .station:
+            return .station
+        case .stationEntrance:
+            return .stationEntrance
+        case .street:
+            return .street
+        case .text:
+            return .text
+        case .unknown:
+            return .unknown
+        }
+    }
+}
+
+
 extension MarkedUpText {
     fileprivate func toMessage() -> MarkedUpTextMessage {
         MarkedUpTextMessage.make(

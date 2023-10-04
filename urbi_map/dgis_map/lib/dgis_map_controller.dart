@@ -47,6 +47,9 @@ class DgisMapController {
   Stream<CameraPositionMessage> get cameraPositionEvents =>
       _instance.cameraPositionEvents;
 
+  /// Events of camera state changes.
+  Stream<CameraStateEvent> get cameraStateEvents => _instance.cameraStateEvents;
+
   /// Tap events for panorama markers.
   Stream<MarkerWithPhotoTapEvent> get markerWithPhotoTapEvents =>
       _instance.markerWithPhotoTapEvents;
@@ -299,10 +302,14 @@ class DgisMapController {
   Future<SuggestResultMessage> fetchSuggest(
     String queryText, {
     GeoRectMessage? searchRect,
+    List<SuggestedTypeMessage>? allowedResultTypes,
   }) =>
       _instance.fetchSuggests(
         queryText,
         searchRect: searchRect,
+        allowedResultTypes: allowedResultTypes
+            ?.map((e) => SuggestedTypeMessage_(type: e))
+            .toList(),
       );
 
   /// Hide panorama markers. Used for optimization. In most cases should not be used directly.
