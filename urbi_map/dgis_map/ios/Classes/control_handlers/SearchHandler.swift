@@ -85,12 +85,10 @@ class SearchHandler: NSObject {
             URLSession.shared.dataTask(with: request) { data, _, error in
                 guard error == nil, let data = data else {
                     completion(
-                        nil,
-                        FlutterError(
-                            code: "TwinsError",
-                            message: error?.localizedDescription,
-                            details: nil
-                        )
+                        response.toMessage(
+                            externalIds: nil
+                        ),
+                        nil
                     )
                     return
                 }
@@ -99,12 +97,10 @@ class SearchHandler: NSObject {
                 
                 guard let twinsResponse = twinsResponse, twinsResponse.meta.code == 200 else {
                     completion(
-                        nil,
-                        FlutterError(
-                            code: "TwinsError",
-                            message: error?.localizedDescription,
-                            details: nil
-                        )
+                        response.toMessage(
+                            externalIds: nil
+                        ),
+                        nil
                     )
                     return
                 }

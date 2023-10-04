@@ -289,7 +289,7 @@ class GeneralMapCardWidget extends StatelessWidget {
                                                                               6,
                                                                         ),
                                                                         CustomTextWidget(
-                                                                          e!.displayTime(),
+                                                                          e!.displayStartTime(),
                                                                           fontColor:
                                                                               AppColor.blackModern500Light,
                                                                           fontSize:
@@ -302,6 +302,25 @@ class GeneralMapCardWidget extends StatelessWidget {
                                                                               5,
                                                                           textAlign:
                                                                               TextAlign.start,
+                                                                          textDirection:
+                                                                              TextDirection.ltr,
+                                                                        ),
+                                                                        CustomTextWidget(
+                                                                          e!.displayFinishTime(),
+                                                                          fontColor:
+                                                                              AppColor.blackModern500Light,
+                                                                          fontSize:
+                                                                              6,
+                                                                          textOverflow:
+                                                                              TextOverflow.ellipsis,
+                                                                          fontWeight:
+                                                                              AppFontWeight.bold,
+                                                                          maxLines:
+                                                                              5,
+                                                                          textAlign:
+                                                                              TextAlign.start,
+                                                                          textDirection:
+                                                                              TextDirection.ltr,
                                                                         ),
                                                                       ])
                                                                   .toList()
