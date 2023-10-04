@@ -70,7 +70,7 @@ class CalendarHomeItemWidget extends StatelessWidget {
                     onTap: () {
                       Navigator.of(context).pushNamed(
                           RouteName.calendarDetailsPage,
-                          arguments: item);
+                          arguments: state.searchItems[index]);
                     },
                     child: Container(
                       height: 180,
@@ -100,13 +100,13 @@ class CalendarHomeItemWidget extends StatelessWidget {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   CalendarTag(
-                                    text: item.type ?? "",
+                                    text: state.searchItems[index].type ?? "",
                                   ),
                                   const SizedBox(
                                     height: 8,
                                   ),
                                   CustomTextWidget(
-                                    item.name ?? "",
+                                    state.searchItems[index].name ?? "",
                                     fontColor: const Color(0xFF3F3F46),
                                     fontSize: 14,
                                     fontWeight: AppFontWeight.bold,
@@ -117,7 +117,7 @@ class CalendarHomeItemWidget extends StatelessWidget {
                                     height: 8,
                                   ),
                                   CustomTextWidget(
-                                    item.getDate(),
+                                    state.searchItems[index].getDate(),
                                     fontColor: const Color(0xFF71717A),
                                     fontSize: 12,
                                     fontWeight: AppFontWeight.bold,
@@ -134,10 +134,16 @@ class CalendarHomeItemWidget extends StatelessWidget {
                                         onPressed: () {
                                           Add2Calendar.addEvent2Cal(
                                             buildEvent(
-                                              title: item.name ?? "",
-                                              startDate: item.startDate!,
-                                              endDate: (item.endDate) ??
-                                                  (item.startDate!),
+                                              title: state.searchItems[index]
+                                                      .name ??
+                                                  "",
+                                              startDate: state
+                                                  .searchItems[index]
+                                                  .startDate!,
+                                              endDate: (state.searchItems[index]
+                                                      .endDate) ??
+                                                  (state.searchItems[index]
+                                                      .startDate!),
                                             ),
                                           );
                                         },
