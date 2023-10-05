@@ -143,9 +143,16 @@ class DialogName {
 
   static const complianceOwnerShipseDialog = '/complianceOwnerShipseDialog';
 
-    static const complianceMainUsagesDialog = '/complianceMainUsagesDialog';
+  static const complianceMainUsagesDialog = '/complianceMainUsagesDialog';
 
-        static const complianceSubUsagesDialog = '/complianceSubUsagesDialog';
+  static const complianceSubUsagesDialog = '/complianceSubUsagesDialog';
 
+  static const reasonCancelDialog = '/reasonCancelDialog';
+
+
+
+  static const commercialLicenseActionSheetDialog = '/commercialLicenseActionSheetDialog';
+  static const commercialLicenseReasonCancelSheet = '/commercialLicenseReasonCancelSheet';
+  // static const reasonCancelDialog = '/reasonCancelDialog';
 
 }

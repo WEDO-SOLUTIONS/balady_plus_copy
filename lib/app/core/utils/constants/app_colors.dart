@@ -172,4 +172,7 @@ class AppColor {
   static const lightOrange200 = Color(0xffD48C82);
   static const grayLight = Color(0xffE8EFF1);
   static const blue100 = Color(0xff308FAB);
+  static const golden = Color(0xffDFB300);
+
+
 }

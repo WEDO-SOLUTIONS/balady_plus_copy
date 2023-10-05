@@ -169,6 +169,18 @@ class RouteName {
   // Self Rating
   static const selfRatingMainPage = '/selfRatingMainPage';
   static const selfRatingResultPage = '/selfRatingResultPage';
+
+
+// -------  Commercial License Cancel ---------
+  static const commercialLicenseApplyCancel = '/commercialLicenseApplyCancel';
+  static const commercialLicenseCancel = '/commercialLicenseCancel';
+  static const submitApplicationSuccessfullyCancel = '/submitApplicationSuccessfullyCancel';
+  static const submitRatingCancelScreen = '/submitRatingCancelScreen';
+
+
+  static const commercialLicenseDetails  = '/commercialLicenseDetails';
+
+
 }
 
 class EtmamRoutesNames {
@@ -235,4 +247,8 @@ class EtmamRoutesNames {
   static const deleteOrdersPage = '/DeleteOrdersPage';
 
   static const editBiddingForm = '/EditBiddingForm';
+
+
+
+
 }

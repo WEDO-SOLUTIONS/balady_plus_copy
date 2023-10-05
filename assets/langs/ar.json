@@ -3177,7 +3177,105 @@
 "delete_compliance_request_title_yes":"نعم، إلغاء الطلب", 
   "city_scape_title":"سيتي سكيب العالمي 23", 
   "city_scape_desc":"تعرف على المعرض العقاري الأضخم في العالم وعش تجربة فريدة من خلال إستعراض موقع الحدث والأجنحة المشاركة والتنقل بمسارات المعرض بشكل فريد عبر خرائط بلدي التفاعلية ", 
-  "city_scape":"ابدأ الآن" 
+  "city_scape":"ابدأ الآن",
 
+
+
+
+
+
+
+
+
+  "commercial_license_cancel": "حدد سبب الإلغاء",
+  "reason_cancellation": "سبب الالغاء",
+  "procedures": "الاجراءات",
+
+
+  "cr_Number": "رقم السجل التجاري",
+  "submitterName": "اسم مقدم الطلب",
+  "applicant_adjective": "صفة مقدم الطلب",
+  "submitterIdNumber": " هوية مقدم الطلب",
+  "isicActivityName": "النشاط الرئيسي ISIC",
+  "isicActivityName_sub": "النشاط ISIC",
+  "detailedActivityName": "النشاط التفصيلي",
+  "total_area_activity": "المساحة الكلية للنشاط",
+  "basic_activity_area": "مساحة النشاط الأساس",
+  "list_additional_activities": "قائمة الانشطة الاضافية",
+  "plaest_data_paintings": "بيانات المحل واللوحات",
+  "locationInfo": "بيانات الموقع الجغرافي",
+  "municipalityName": "الامانة",
+  "subMunicipalityName": " البلدية",
+  "latitude":"الاحداثي س",
+  "longitude":"الاحداثي ص",
+  "shopName": "اسم المحل",
+  "holesCount": "عدد الفتحات",
+  "planNumber": "رقم المخطط",
+  "shopUnitNumber": " رقم المحل",
+  "blockNumber": "رقم العقار",
+  "landNo": "رقم القطعة",
+  "floorNumber": "رقم الطابق",
+  "floorCount": "عدد الادوار في المحل",
+  "noOfCameras": "عدد الكاميرات في المحل",
+  "hasElevator": "هل يوجد مصعد في المحل ؟",
+  "mall": "المركز التجاري",
+  "aske B": "الطابق",
+  "salamaIssueNo": "رقم تصريح سلامة",
+  "slamaReportNumber": "رقم التقرير الفني",
+  "salamaBillNumber": "رقم فاتورة أدوات سلامة",
+  "contractType": "نوع ملكية المحل",
+  "contractNumber": "رقم صك الملكية",
+  "contractOption": "آلية عقد النظافة",
+
+  "data_attachments":"بيانات المرفقات",
+  "permitType": "نوع التصريح",
+  "expirationDate": "ينتهي",
+
+  "permit": " تصريح",
+
+  "quick_code": "الرمز السريع",
+
+
+
+  "cancellation_license": "الغاء الرخصة",
+  "cancellation_license_message": "تم انشاء مسودة لطلبك، يمكنك العودة للطلب أو اكماله لاحقاً من الطلبات",
+
+  "reason_cancel": "سبب الإلغاء",
+  "start_cancellation_request": "بدء طلب الالغاء",
+
+  "actual_shutdown_facility": "مرفق الاغلاق الفعلي",
+  "attachment": "ارفاق",
+  "attachment_message_typ": "مرفق واحد من نوع",
+  "attachment_message_size": "وبحد اقصي",
+
+
+
+  "back_licenses_page": "العودة لصفحة  الرخص",
+
+
+  "viewـinvoice": "عرض الفاتورة",
+
+
+  "note": "ملاحظة",
+  "notes_submit_commercial_description": " الخدمة فورية، سيتم الغاء الرخصة فورياً بعد تقديم الطلب",
+  "pledges_submit_commercial_description": "أقر وأتعهد بصحة كافة البيانات والمرفقات التي تم رفعها على التطبيق وأتحمل كامل المسؤولية القانونية حيال البلاغات الكاذبة والكيدية وفقاً للأنظمة والتعليمات في حال تبين خلاف ذلك",
+  "acknowledge_pledge": "أقر وأتعهد على جميع ماتم ذكره اعلاه",
+
+
+  "return_home_page": "العودة للصفحة الرئيسية",
+  "select_rating": "آختير التقيم",
+
+  "done_send_rating": "تم إرسال تقييمك بنجاح",
+
+ "show_details": "اظهار التفاصيل",
+
+  "activityCancellationDate": "تاريخ إلغاء النشاط",
+
+  "exit_order": "الخروج من الطلب",
+  "save_exit": "حفظ وخروج",
+  "back_order": "العودة للطلب",
+  "scan_qr_code_message": "يمكنك مسح الرمز السريع لعرض البيانات الخدمة",
+  "submit_application_successfully_cancel_message" : "تم اصدار الفاتورة الخاصة بخدمة الغاء رخصة تجارية",
+  "ATTACH": "مرفق"
 
 }

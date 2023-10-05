@@ -1,3 +1,8 @@
+import 'package:balady_plus/app/features/commercial_license_cancel/presentation/apply_cancel/screens/apply_cancel_screen.dart';
+import 'package:balady_plus/app/features/commercial_license_cancel/presentation/commercial_license_cancel/screens/commercial_license_cancel_screen.dart';
+import 'package:balady_plus/app/features/commercial_license_cancel/presentation/submit_application_successfully_cancel/screens/submit_application_successfully_cancel.dart';
+import 'package:balady_plus/app/features/commercial_license_cancel/presentation/submit_application_successfully_cancel/screens/submit_rating_cancel_screen.dart';
+import 'package:balady_plus/app/features/commercial_license_details/presentation/pages/commercial_license_details_page.dart';
 import 'package:balady_plus/app/features/create_compliance/presentation/pages/create_compliance_location_confirm_page.dart';
 import 'package:balady_plus/app/features/daem/daem_exports.dart';
 import 'package:balady_plus/app/features/commercial_license/commercial_license_exports.dart';
@@ -489,9 +494,21 @@ class Routes {
         RouteName.complianceDetailsPage: (context) => ComplianceDetailsPage(),
         RouteName.nonComplianceScreen: (context) => NonComplianceScreen(),
 
-        RouteName.submitCompliancePage: (context) => SubmitCompliancePage()
+        RouteName.submitCompliancePage: (context) => SubmitCompliancePage(),
 
 //    cubit = ModalRoute.of(context)!.settings.arguments as PrayerTimesCubit;
+        // -------  Commercial License Cancel ---------
+        RouteName.commercialLicenseApplyCancel: (context) =>
+            const ApplyCancelScreen(),
+        RouteName.commercialLicenseCancel: (context) =>
+            const CommercialLicenseCancelScreen(),
+        RouteName.submitApplicationSuccessfullyCancel: (context) =>
+            const SubmitApplicationSuccessfullyCancel(),
+        RouteName.submitRatingCancelScreen: (context) =>
+            const SubmitRatingCancelScreen(),
+
+        RouteName.commercialLicenseDetails: (context) =>
+            const CommercialLicenseDetailsPage(),
       };
 }
 

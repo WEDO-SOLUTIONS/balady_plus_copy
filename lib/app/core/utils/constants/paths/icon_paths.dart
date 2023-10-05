@@ -370,4 +370,26 @@ class IconPath {
   // Self Rating
 
   static const selfRatingBuilding = '${_svgSelfRatingPage}building$_svg';
+
+
+
+
+
+
+
+// -------  Commercial License Cancel ---------
+  static const submitApplicationSuccessfullyCancel = '${_svgIconPath}submit_application_successfully_cancel$_svg';
+  static const successfullySubmitRating = '${_svgIconPath}successfully_submit_rating$_svg';
+  static const like = '${_pngIconPath}Like$_png';
+  static const saveIcon = '${_svgIconPath}save_icon$_svg';
+  static const element_3Icon = '${_svgIconPath}element_3$_svg';
+  static const scannerIcon = '${_svgIconPath}scanner$_svg';
+  static const cancelOrder = '${_svgIconPath}closeـsquare$_svg';
+  static const editIcon = '${_svgIconPath}edit_icon$_svg';
+  static const logoutIcon = '${_svgIconPath}logout$_svg';
+
+
+
+
+
 }
