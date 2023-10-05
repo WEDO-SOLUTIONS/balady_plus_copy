@@ -10,9 +10,14 @@ class ApplyCreateComplianceRequest extends Equatable {
   String? ownershipDocumentDate;
   String? ownershipDocumentNo;
   int? ownershipDocumentType;
+
   String? ownerIdentity;
   String? ownerIdentityType;
   String? submitterType;
+
+  int? receiptTypeId;
+  bool? paper;
+
   ApplyCreateComplianceRequest(
       {this.certificateType,
       this.contactMobile,
@@ -23,7 +28,9 @@ class ApplyCreateComplianceRequest extends Equatable {
       this.ownershipDocumentType,
       this.submitterType,
       this.ownerIdentityType,
-      this.ownerIdentity});
+      this.ownerIdentity,
+      this.receiptTypeId,
+      this.paper});
 
   Map<String, dynamic> toMap() {
     return {
@@ -41,8 +48,10 @@ class ApplyCreateComplianceRequest extends Equatable {
         "ownershipDocInfoDto": {
           "ownershipDocumentDate": ownershipDocumentDate,
           "ownershipDocumentNo": ownershipDocumentNo,
-          "ownershipDocumentType": ownershipDocumentType
-        }
+          "ownershipDocumentType": ownershipDocumentType,
+        },
+      if (receiptTypeId != null) "receiptTypeId": receiptTypeId,
+      if (paper != null) "paper": paper
     };
   }
 
@@ -58,6 +67,8 @@ class ApplyCreateComplianceRequest extends Equatable {
         ownershipDocumentType,
         submitterType,
         ownerIdentityType,
-        ownerIdentity
+        ownerIdentity,
+        paper,
+        receiptTypeId
       ];
 }
