@@ -367,9 +367,7 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
     emitter(state.copyWith(
       status: BlocStatus.loading,
     ));
-    print("FFF");
     ApplyCreateComplianceRequest request = state.generateRequest();
-    print("GG");
     final failOrSuccess = await _applyCompliance(request);
 
     failOrSuccess.fold((l) {

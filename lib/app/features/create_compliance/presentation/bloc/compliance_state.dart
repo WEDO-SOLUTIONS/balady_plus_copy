@@ -285,23 +285,25 @@ class ComplianceState extends Equatable {
     return true;
   }
 
-  ApplyCreateComplianceRequest generateRequest() =>
-      ApplyCreateComplianceRequest(
-          certificateType:
-              documentTypeSelection == 1 ? "LICENSE_NUMBER" : "OWNERSHIP_DOC",
-          licenseNumber: documentTypeSelection == 1
-              ? selectedLicense?.licenseId?.toInt()
-              : null,
-          contactMobile: CommonProperties.userInfo?.getPhone(),
-          ownershipDocumentDate:
-              documentTypeSelection == 2 ? ownershipDate : null,
-          ownershipDocumentNo:
-              documentTypeSelection == 2 ? ownershipText : null,
-          ownershipDocumentType:
-              documentTypeSelection == 2 ? selectedOwnerShip?.id : null,
-          submitterThrough: benificiaryTypeSelection == 1
-              ? "BENEFICARY"
-              : "ENGINEERING_OFFICE");
+  ApplyCreateComplianceRequest generateRequest() {
+    return ApplyCreateComplianceRequest(
+      certificateType:
+          documentTypeSelection == 1 ? "LICENSE_NUMBER" : "OWNERSHIP_DOC",
+      licenseNumber: documentTypeSelection == 1
+          ? selectedLicense?.licenseId?.toInt()
+          : null,
+      contactMobile: CommonProperties.userInfo?.getPhone(),
+      ownershipDocumentDate: documentTypeSelection == 2 ? ownershipDate : null,
+      ownershipDocumentNo: documentTypeSelection == 2 ? ownershipText : null,
+      ownershipDocumentType:
+          documentTypeSelection == 2 ? selectedOwnerShip?.id : null,
+      submitterThrough:
+          benificiaryTypeSelection == 1 ? "BENEFICARY" : "ENGINEERING_OFFICE",
+      paper: selectedOwnerShip?.id == 112 ? isDeedPaper : null,
+      receiptTypeId:
+          selectedOwnerShip?.id == 340 ? selectedReciptType?.id : null,
+    );
+  }
 
   DateTime? getOwnerShipDate() {
     if (ownershipDate != null) {
