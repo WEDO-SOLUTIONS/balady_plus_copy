@@ -31,6 +31,8 @@ class ComplianceState extends Equatable {
   final BlocRequestStatus detailsStatus;
 
   final BlocRequestStatus ownerShipsStatus;
+  final BlocRequestStatus reciptTypesStatus;
+
   final BlocRequestStatus enginnerOfficesStatus;
 
   final int currentStep;
@@ -41,11 +43,15 @@ class ComplianceState extends Equatable {
   final ComplinaceLookUpResponse? mainUsages;
   final ComplinaceLookUpResponse? subUsages;
   final ComplinaceLookUpResponse? ownerShipsTypes;
+  final ComplinaceLookUpResponse? reciptLists;
+
   final ComplinaecEngOfficeReponse? engOffices;
   final ComplinaecEngOfficeItem? selectedEngOffice;
   final ComplinaceLookUpItem? selectedMainUsage;
   final ComplinaceLookUpItem? selectedSubUsage;
   final ComplinaceLookUpItem? selectedOwnerShip;
+  final ComplinaceLookUpItem? selectedReciptType;
+
   final String? ownershipText;
   final String? ownershipDate;
   final DateForm? form;
@@ -64,6 +70,7 @@ class ComplianceState extends Equatable {
   final bool? contactMobileVerified;
   final SendOtpResponse? sendOtpResponse;
   final bool? isDraft;
+  final bool? isDeedPaper;
 
   PhoneNumberValidation get phoneValidator => contactMobileNumber == null
       ? PhoneNumberValidation.pure()
@@ -80,6 +87,7 @@ class ComplianceState extends Equatable {
       this.subUsagesStatus = BlocRequestStatus.initial,
       this.ownerShipsStatus = BlocRequestStatus.initial,
       this.licenseStatus = BlocRequestStatus.initial,
+      this.reciptTypesStatus = BlocRequestStatus.initial,
       this.licenes,
       this.agreement,
       this.contactMobileNumber,
@@ -110,7 +118,10 @@ class ComplianceState extends Equatable {
       this.emtethalAgreement,
       this.ownerShipAgreement,
       this.contactMobileVerified,
-      this.sendOtpResponse});
+      this.sendOtpResponse,
+      this.isDeedPaper,
+      this.selectedReciptType,
+      this.reciptLists});
   ComplianceState copyWith(
       {final BlocStatus? status,
       final int? currentStep,
@@ -127,6 +138,7 @@ class ComplianceState extends Equatable {
       final BlocRequestStatus? enginnerOfficesStatus,
       final BlocRequestStatus? subUsagesStatus,
       final BlocRequestStatus? licenseStatus,
+      final BlocRequestStatus? reciptTypesStatus,
       final String? errorMessage,
       final ComplinaceLookUpItem? selectedMainUsage,
       final Nullable<ComplinaceLookUpItem?>? selectedSubUsage,
@@ -149,7 +161,10 @@ class ComplianceState extends Equatable {
       final bool? ownerShipAgreement,
       final Nullable<bool?>? contactMobileVerified,
       final Nullable<SendOtpResponse?>? sendOtpResponse,
-      final bool? isDraft}) {
+      final bool? isDraft,
+      final Nullable<bool?>? isDeedPaper,
+      final Nullable<ComplinaceLookUpItem?>? selectedReciptType,
+      final ComplinaceLookUpResponse? reciptLists}) {
     return ComplianceState(
         status: status ?? this.status,
         contactMobileNumber: contactMobileNumber ?? this.contactMobileNumber,
@@ -207,7 +222,13 @@ class ComplianceState extends Equatable {
         sendOtpResponse: sendOtpResponse == null
             ? this.sendOtpResponse
             : sendOtpResponse.value,
-        isDraft: isDraft ?? this.isDraft);
+        isDraft: isDraft ?? this.isDraft,
+        isDeedPaper: isDeedPaper == null ? this.isDeedPaper : isDeedPaper.value,
+        selectedReciptType: selectedReciptType == null
+            ? this.selectedReciptType
+            : selectedReciptType.value,
+        reciptTypesStatus: reciptTypesStatus ?? this.reciptTypesStatus,
+        reciptLists: reciptLists);
   }
 
   bool isNextButtonEnabled() {
@@ -348,6 +369,10 @@ class ComplianceState extends Equatable {
         emtethalAgreement,
         contactMobileVerified,
         form,
-        isDraft
+        isDraft,
+        isDeedPaper,
+        selectedReciptType,
+        reciptTypesStatus,
+        reciptLists
       ];
 }

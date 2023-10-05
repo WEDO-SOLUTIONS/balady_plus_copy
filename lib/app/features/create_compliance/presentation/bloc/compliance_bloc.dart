@@ -160,6 +160,7 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
     on<DownloadCertificateEvent>(_downloadCertificate);
     on<DeleteComplianceRequestEvent>(_deleteComplianceRequest);
     on<GetEtmamEntityIdEvent>(_getEtmamIdHandler);
+    on<GetReciptTypesEvent>(_getReciptTypesHandler);
   }
   Future<void> _pageChangeHandler(ChangePageEvent e, Emitter emitter) async {
     emitter(state.copyWith(currentStep: e.index, errorMessage: ""));
@@ -185,12 +186,25 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
         selectedLicense: Nullable(e.selectedLicense == null
             ? state.selectedLicense
             : e.selectedLicense),
-        ownershipDate: Nullable(
-            e.ownershipDate == null ? state.ownershipDate : e.ownershipDate),
+        ownershipDate: ((state.ownershipDate != e.ownershipDate) &&
+                e.ownershipDate != null)
+            ? Nullable(null)
+            : Nullable(e.ownershipDate == null
+                ? state.ownershipDate
+                : e.ownershipDate),
         emtethalAgreement: e.emtethalAgreeemnt,
         ownerShipAgreement: e.ownershipAgreement,
-        ownershipText: Nullable(
-            e.ownershipText == null ? state.ownershipText : e.ownershipText)));
+        isDeedPaper:
+            Nullable(e.isDeedPaper == null ? state.isDeedPaper : e.isDeedPaper),
+        selectedReciptType: Nullable(e.selectedReciptType == null
+            ? state.selectedReciptType
+            : e.selectedReciptType),
+        ownershipText: ((state.selectedOwnerShip != e.selectedOwnerShip) &&
+                e.selectedOwnerShip != null)
+            ? Nullable(null)
+            : Nullable(e.ownershipText == null
+                ? state.ownershipText
+                : e.ownershipText)));
 
     if (e.documentTypeSelection != null)
       emitter(state.copyWith(
@@ -306,6 +320,26 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
         await pageController.animateToPage(nextPage,
             duration: Duration(milliseconds: 400), curve: Curves.easeIn);
       }
+    });
+  }
+
+  Future<void> _getReciptTypesHandler(
+      GetReciptTypesEvent e, Emitter emitter) async {
+    emitter(state.copyWith(
+      reciptTypesStatus: BlocRequestStatus.submissionGetLoading,
+    ));
+
+    final failOrSuccess = await _getComplianceMainUsages(NoParams());
+
+    failOrSuccess.fold((l) {
+      emitter(state.copyWith(
+        errorMessage: (l as ServerFailure).errorMessage,
+        reciptTypesStatus: BlocRequestStatus.submissionGetFailure,
+      ));
+    }, (r) {
+      emitter(state.copyWith(
+          reciptLists: r,
+          reciptTypesStatus: BlocRequestStatus.submissionGetSuccess));
     });
   }
 
@@ -781,7 +815,7 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
     } else if (state.currentStep == 0 && state.benificiaryTypeSelection == 2) {
       add(GetEtmamEntityIdEvent());
     } else if (state.currentStep == 1) {
-      if (state.contactMobileVerified != true) {
+      if (state.contactMobileVerified == true) {
         CommonFunctions.showError("compliance_check_mobile".tr());
       } else {
         if (state.status == BlocStatus.performing) return;

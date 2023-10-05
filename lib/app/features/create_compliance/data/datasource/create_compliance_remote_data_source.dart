@@ -81,6 +81,8 @@ abstract class CreateComplianceRemoteDataSource {
   Future<Uint8List?> downLoadCertificate({required String params});
   Future<bool?> deleteComplianceRequwst({required String params});
   Future<String?> getEtmamId({required String params});
+
+  Future<ComplinaceLookUpResponseModel> getReciptTypes();
 }
 
 class CreateComplianceRemoteDataSourceImpl
@@ -897,6 +899,46 @@ class CreateComplianceRemoteDataSourceImpl
       final result = ResponseBodyModel.fromMap(data).data?.result;
 
       return result["entities"]["service"]["profiles"]["1130"]["internalId"];
+    } on DioError catch (error) {
+      var errorCode;
+      try {
+        final decodedResponse = ResponseBodyModel.fromMap(
+          error.response?.data,
+        );
+        errorCode = decodedResponse.data?.responseCode;
+      } catch (ex) {}
+
+      throw ServerException(
+        error.toString(),
+        errorCode: errorCode,
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
+    } catch (ex) {
+      if (ex is ServerException)
+        throw ex;
+      else {
+        try {} catch (ex) {}
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
+      }
+    }
+  }
+
+  @override
+  Future<ComplinaceLookUpResponseModel> getReciptTypes() async {
+    var response;
+
+    try {
+      response = await webService.dio.get(ApiUrl.complianceReciptTypes);
+
+      final data = response.data;
+
+      final result = ResponseBodyModel.fromMap(data).data?.result;
+      return ComplinaceLookUpResponseModel.fromJson(result);
     } on DioError catch (error) {
       var errorCode;
       try {

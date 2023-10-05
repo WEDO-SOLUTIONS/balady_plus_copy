@@ -311,6 +311,9 @@ class ApiUrl {
   static const String etmamProfileEntity =
       '/v1/etmamplus-platform-services/search-profiles';
 
+ static const String complianceReciptTypes =
+      '/v1/compliance-certificate-mobile-services/receipt-types';
+
 // ! Events
 
   static const eventsSearch = '/v1/balady-events-services/events/search';
