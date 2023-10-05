@@ -239,4 +239,15 @@ class CreateComplianceRepositoryImplementation
       return Left(ServerFailure(error.errorMessage));
     }
   }
+
+  @override
+  Future<Either<Failure, ComplinaceLookUpResponseModel>>
+      getReciptTypes() async {
+    try {
+      final data = await remoteDataSource.getReciptTypes();
+      return Right(data);
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage));
+    }
+  }
 }

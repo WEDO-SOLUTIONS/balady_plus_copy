@@ -27,6 +27,16 @@ import '../bottom_sheet_list.dart';
 import '../compliance_consetnt.dart';
 import '../compliance_date_picker.dart';
 import '../compliance_ownership_field.dart';
+import '../fields/deed/deed_number_date_field.dart';
+import '../fields/deed/deed_number_text_field.dart';
+import '../fields/deed/deed_type_widget.dart';
+import '../fields/electricity/electricity_number_date_field.dart';
+import '../fields/electricity/electricity_number_text_field.dart';
+import '../fields/electricity/electricity_recipt_type_field.dart';
+import '../fields/estehkam/estehkam_number_date_field.dart';
+import '../fields/estehkam/estehkam_number_text_field.dart';
+import '../fields/investment/investment_number_date_field.dart';
+import '../fields/investment/investment_number_text_field.dart';
 import '../license_item_widget.dart';
 
 class ThirdSubmissionCompliance extends StatelessWidget {
@@ -225,6 +235,35 @@ class ThirdSubmissionCompliance extends StatelessWidget {
                       );
                     },
                   ),
+
+                  // صك
+                  if (state.selectedOwnerShip?.id == 112) ...[
+                    DeedTypeWidget(),
+                    DeadNumberTextField(),
+                    DeedNumberDateField(),
+                  ],
+
+//عقد اسكان
+                  if (state.selectedOwnerShip?.id == 146) ...[],
+
+//ايصال كهرباء او مياه
+                  if (state.selectedOwnerShip?.id == 340) ...[
+                    ElectricityReciptTypeField(),
+                    ElectricityNumberTextField(),
+                    ElectricityNumberDateField(),
+                  ],
+
+                  // عقد استثماري - تخصيص حكومي
+                  if (state.selectedOwnerShip?.id == 664) ...[
+                    InvestmentNumberTextField(),
+                    InvestmentNumberDateField(),
+                  ],
+// حجة استحكام
+                  if (state.selectedOwnerShip?.id == 690) ...[
+                    EstehkamNumberTextField(),
+                    EstehkamNumberDateField()
+                  ],
+
                   ComplianceOwnerShipField(),
                   CustomVerticalSpace(height: 12),
                   ComplianceDatePicker(
@@ -240,6 +279,7 @@ class ThirdSubmissionCompliance extends StatelessWidget {
                           ownershipDate: time.toHijriFormattedDate1()));
                     },
                   ),
+
                   ComplianceConsent(
                     body: "compliance_ownerShip_body".tr(),
                     agreement: state.ownerShipAgreement ?? false,

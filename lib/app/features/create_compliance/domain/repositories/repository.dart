@@ -74,4 +74,6 @@ abstract class CreateComplianceRepository {
       {required String params});
 
   Future<Either<Failure, String?>> getEtmamId({required String params});
+
+  Future<Either<Failure, ComplinaceLookUpResponseModel>> getReciptTypes();
 }

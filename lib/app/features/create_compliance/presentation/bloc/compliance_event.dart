@@ -41,6 +41,10 @@ class GetMainUsagesEvent extends ComplianceEvent {
   const GetMainUsagesEvent();
 }
 
+class GetReciptTypesEvent extends ComplianceEvent {
+  const GetReciptTypesEvent();
+}
+
 class GetSubUsagesEvent extends ComplianceEvent {
   final ComplinaceLookUpItem? item;
   final bool? clearSub;
@@ -60,6 +64,7 @@ class UpdateFieldsEvent extends ComplianceEvent {
   final ComplinaceLookUpItem? selectedMainUsage;
   final ComplinaceLookUpItem? selectedSubUsage;
   final ComplianceLisenseItem? selectedLicense;
+  final ComplinaceLookUpItem? selectedReciptType;
 
   final String? ownershipText;
   final String? ownershipDate;
@@ -69,6 +74,7 @@ class UpdateFieldsEvent extends ComplianceEvent {
   final bool? emtethalAgreeemnt;
   final bool? ownershipAgreement;
   final DateForm? form;
+  final bool? isDeedPaper;
   const UpdateFieldsEvent(
       {this.selectedOwnerShip,
       this.selectedMainUsage,
@@ -81,7 +87,9 @@ class UpdateFieldsEvent extends ComplianceEvent {
       this.selectedLicense,
       this.emtethalAgreeemnt,
       this.ownershipAgreement,
-      this.form});
+      this.form,
+      this.isDeedPaper,
+      this.selectedReciptType});
 }
 
 class GoToNextPageEvent extends ComplianceEvent {
