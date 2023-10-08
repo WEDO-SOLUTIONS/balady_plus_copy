@@ -73,6 +73,7 @@ class _SingleEventDescriptionPageState
                   children: [
                     Container(
                       height: 455,
+                      width: MediaQuery.of(context).size.width,
                       padding: EdgeInsets.only(
                         top: MediaQuery.of(context).padding.top,
                         right: 16,

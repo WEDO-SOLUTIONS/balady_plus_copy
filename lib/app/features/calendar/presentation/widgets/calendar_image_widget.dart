@@ -21,6 +21,7 @@ DecorationImage calendarImage(String? url, String? defaultImage) =>
                   source: svgProvider.SvgSource.network,
                 ),
                 fit: BoxFit.fill,
+                onError: (exception, stackTrace) => print(exception),
               )
             : DecorationImage(
                 image: NetworkImage(url),

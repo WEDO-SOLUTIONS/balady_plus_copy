@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:add_2_calendar/add_2_calendar.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports.dart';
+import 'package:flutter_svg/svg.dart';
 
 import 'package:localize_and_translate/localize_and_translate.dart';
 
@@ -30,75 +31,86 @@ class OldCalendarCard extends StatelessWidget {
         ],
         image: calendarImage(item.logoURL, ImagePath.calendarBackground),
       ),
-      child: Container(
-        padding: EdgeInsets.only(left: 16, right: 16, top: 16),
-        child: Column(
-          children: [
-            /* Positioned(
-                    top: 15,
-                    left: 18,
-                    child: CircleAvatar(
-                      backgroundColor: const Color(0xA5F7FFFD),
-                      radius: 24,
-                      child: SvgPicture.asset(IconPath.notification),
-                    ),
-                  ),*/
-
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+      child: Stack(
+        children: [
+          /* CustomNetworkImageWidget(
+            item.logoURL ?? "",
+            imageHeight: 201,
+            imageFit: BoxFit.fill,
+            placeHolderWidget: SvgPicture.asset(ImagePath.calendarBackground),
+          ),*/
+          Container(
+            padding: EdgeInsets.only(left: 16, right: 16, top: 16),
+            child: Column(
               children: [
-                SaudiDay(
-                  name: item.getStartDayName(),
-                  size: 14,
-                ),
-                SizedBox(
-                  height: 4,
-                ),
-                Row(
+                /* Positioned(
+                        top: 15,
+                        left: 18,
+                        child: CircleAvatar(
+                          backgroundColor: const Color(0xA5F7FFFD),
+                          radius: 24,
+                          child: SvgPicture.asset(IconPath.notification),
+                        ),
+                      ),*/
+
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     SaudiDay(
-                      name: item.startDate?.month.toString() ?? "",
-                      size: 20,
+                      name: item.getStartDayName(),
+                      size: 14,
+                    ),
+                    SizedBox(
+                      height: 4,
+                    ),
+                    Row(
+                      children: [
+                        SaudiDay(
+                          name: item.startDate?.month.toString() ?? "",
+                          size: 20,
+                        ),
+                        SaudiDay(
+                          name: '  / ',
+                          size: 20,
+                        ),
+                        SaudiDay(
+                          name:
+                              item.startDate?.day.toString().padLeft(2, "0") ??
+                                  "",
+                          size: 28,
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 4,
                     ),
                     SaudiDay(
-                      name: '  / ',
+                      name: item.name ?? "",
                       size: 20,
-                    ),
-                    SaudiDay(
-                      name:
-                          item.startDate?.day.toString().padLeft(2, "0") ?? "",
-                      size: 28,
                     ),
                   ],
                 ),
                 SizedBox(
-                  height: 4,
+                  height: 32,
                 ),
-                SaudiDay(
-                  name: item.name ?? "",
-                  size: 20,
+                SaudiContainer(
+                  btnText: "saudi_calendar_add".tr(),
+                  remainingText: item.remainingText() ?? "",
+                  timer: item.remainingDays(),
+                  addToCalendar: () {
+                    Add2Calendar.addEvent2Cal(
+                      buildEvent(
+                        title: item.name ?? "",
+                        startDate: item.startDate!,
+                        endDate: item.endDate!,
+                      ),
+                    );
+                  },
                 ),
               ],
             ),
-            SizedBox(
-              height: 32,
-            ),
-            SaudiContainer(
-              btnText: "saudi_calendar_add".tr(),
-              remainingText: item.remainingText() ?? "",
-              timer: item.remainingDays(),
-              addToCalendar: () {
-                Add2Calendar.addEvent2Cal(
-                  buildEvent(
-                    title: item.name ?? "",
-                    startDate: item.startDate!,
-                    endDate: item.endDate!,
-                  ),
-                );
-              },
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -139,7 +151,7 @@ class SaudiContainer extends StatelessWidget {
       height: 66,
       padding: EdgeInsets.symmetric(horizontal: 16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Color(0x8cffffff),
         borderRadius: BorderRadius.circular(20),
       ),
       child: Row(
