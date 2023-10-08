@@ -153,15 +153,9 @@ class _CalendarBodyState extends State<CalendarBody> {
                     },
                   ),*/
 
-                  GestureDetector(
-                      onTap: () {
-                        Navigator.of(context).pushNamed(
-                            RouteName.calendarDetailsPage,
-                            arguments: state.searchItems[index]);
-                      },
-                      child: OldCalendarCard(
-                        item: state.searchItems[index],
-                      ))
+                  OldCalendarCard(
+                    item: state.searchItems[index],
+                  )
                 ],
               );
             },

@@ -78,10 +78,10 @@ class EventsTitleLocationWidget extends StatelessWidget {
                       ),
                     ),
                   ),
-                SizedBox(
+                /*  SizedBox(
                   width: 8,
                 ),
-                if (state.eventDetails.getEndDateFull() != null &&
+               if (state.eventDetails.getEndDateFull() != null &&
                     state.eventDetails.getStartDateFull() != null)
                   InkWell(
                     onTap: () {
@@ -110,33 +110,12 @@ class EventsTitleLocationWidget extends StatelessWidget {
                         IconPath.calendar,
                       ),
                     ),
-                  ),
+                  ),*/
               ],
             ),
           )
         ],
       );
     });
-  }
-
-  Event buildEvent({
-    required String title,
-    required String desc,
-    required String city,
-    required DateTime startDate,
-    required DateTime endDate,
-    required String url,
-  }) {
-    return Event(
-      title: title,
-      description: desc,
-      location: city,
-      startDate: startDate,
-      endDate: endDate,
-      allDay: false,
-      iosParams: IOSParams(
-        url: url,
-      ),
-    );
   }
 }
