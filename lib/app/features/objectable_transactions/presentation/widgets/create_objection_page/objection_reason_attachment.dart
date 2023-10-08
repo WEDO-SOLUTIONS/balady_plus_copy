@@ -42,7 +42,7 @@ class ObjectionReasonAttachment extends StatelessWidget {
                           width: 24,
                           height: 28,
                         ),
-              CustomHorizontalSpace(width: 8),
+              const CustomHorizontalSpace(width: 8),
               Flexible(
                 child: CustomTextWidget(
                   fileName,
