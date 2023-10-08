@@ -14,22 +14,26 @@ class EventsNotFoundPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-        child: Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        SvgPicture.asset(
-          IconPath.notFound,
-        ),
-        const SizedBox(
-          height: 12,
-        ),
-        CustomTextWidget(
-          'content_not_found'.tr(),
-          textStyle: AppStyle.eventNotFoundTextStyle,
-        )
-      ],
-    ));
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Center(
+          child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          SvgPicture.asset(
+            IconPath.notFound,
+          ),
+          const SizedBox(
+            height: 12,
+          ),
+          CustomTextWidget(
+            'content_not_found'.tr(),
+            textStyle: AppStyle.eventNotFoundTextStyle,
+            textAlign: TextAlign.center,
+          )
+        ],
+      )),
+    );
   }
 }

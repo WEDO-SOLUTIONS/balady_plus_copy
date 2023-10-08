@@ -20,6 +20,7 @@ import 'package:flutter_svg_provider/flutter_svg_provider.dart' as svgProvider;
 import '../../../../_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
 import '../../../../_shared_feature_/presentation/widgets/custom_shimmer_list_widget.dart';
 import '../../pages/events_not_found_page.dart';
+import '../old_event_card.dart';
 
 class EventsSectionWidget extends StatefulWidget {
   const EventsSectionWidget({super.key});
@@ -74,6 +75,16 @@ class _EventsSectionWidgetState extends State<EventsSectionWidget> {
                   return Container(height: 50);
                 }
               }
+
+              return GestureDetector(
+                onTap: () {
+                  Navigator.pushNamed(context, RouteName.eventsDetailsPage,
+                      arguments: state.searchItems[index].id);
+                },
+                child: OldEventHomeCard(
+                  item: state.searchItems[index],
+                ),
+              );
               return GestureDetector(
                 onTap: () {
                   Navigator.pushNamed(context, RouteName.eventsDetailsPage,

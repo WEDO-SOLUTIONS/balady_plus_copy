@@ -2,7 +2,7 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:flutter/material.dart';
-import 'package:open_file/open_file.dart';
+import 'package:open_file_plus/open_file_plus.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:tuple/tuple.dart';
@@ -127,16 +127,22 @@ class AppointmentDetailsViewModel extends BaseViewModel {
     String extension =
         contentType != null ? ("." + contentType.split("/").last) : "";
     try {
+      print("appintment hereee");
+
       if (extension.isNotEmpty) {
+        print("appintment $extension");
+
         String dir = (await getTemporaryDirectory()).path;
+        print("appintment $dir");
+
         File filetemp = File("$dir/" +
             "${DateTime.now().millisecondsSinceEpoch.toString()}$extension");
         await filetemp.writeAsBytes(bytes);
-        //print(filetemp.path);
-        OpenFile.open(filetemp.path);
+        print(filetemp.path);
+        OpenFile.open(filetemp.path).then((value) => print(value.message));
       }
     } catch (ex) {
-      print(ex);
+      print("appintment $ex");
     }
   }
 
