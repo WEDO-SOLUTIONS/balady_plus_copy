@@ -542,7 +542,7 @@ class Routes {
 
         RouteName.eventsDetailsPage: (context) => SingleEventDescriptionPage(),
         RouteName.calendarMainPage: (context) => const MainPageCalendar(),
-        RouteName.calendarDetailsPage: (context) => const CalendarDetailsPage()
+        RouteName.calendarDetailsPage: (context) => const CalendarDetailsPage(),
 //    cubit = ModalRoute.of(context)!.settings.arguments as PrayerTimesCubit;
         // -------  Commercial License Cancel ---------
         RouteName.commercialLicenseApplyCancel: (context) =>
