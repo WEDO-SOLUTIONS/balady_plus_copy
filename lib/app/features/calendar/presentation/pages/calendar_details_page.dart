@@ -163,14 +163,17 @@ class _CalendarDetailsPageState extends State<CalendarDetailsPage> {
                               const CustomVerticalSpace(height: 24),
                               CalendarDetailsItem(),
                               const CustomVerticalSpace(height: 24),
-                              CustomTextWidget(
-                                "saudi_calendar_type_photos".tr(),
-                                fontWeight: AppFontWeight.bold,
-                                fontSize: 18,
-                                fontColor: AppColor.black,
-                              ),
-                              const CustomVerticalSpace(height: 24),
-                              StaggredCalendarPhotos()
+                              if ((state.details?.pictures?.length ?? 0) >
+                                  0) ...[
+                                CustomTextWidget(
+                                  "saudi_calendar_type_photos".tr(),
+                                  fontWeight: AppFontWeight.bold,
+                                  fontSize: 18,
+                                  fontColor: AppColor.black,
+                                ),
+                                const CustomVerticalSpace(height: 24),
+                                StaggredCalendarPhotos()
+                              ]
                             ],
                           ),
                         ),

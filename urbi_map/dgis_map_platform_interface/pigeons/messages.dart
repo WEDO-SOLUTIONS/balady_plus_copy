@@ -831,7 +831,6 @@ enum SearchCategoryMessage {
   parks,
   hospitals,
   schools,
-  events
 }
 
 class SearchCategoryMessage_ {
@@ -967,6 +966,7 @@ abstract class MapApi {
   SearchResultMessage search(
     String queryText,
     SearchCategoriesMessage? categories,
+    List<GeoPointMessage>? spatialRestriction,
     WeekTimeSearchMessage? weekTime,
     GeoRectMessage? searchRect,
     SortingTypeMessage sortingType,
@@ -976,6 +976,7 @@ abstract class MapApi {
   @async
   SearchResultMessage searchByQuery(
     SearchQueryMessage query,
+    List<GeoPointMessage>? spatialRestriction,
     WeekTimeSearchMessage? weekTime,
     GeoRectMessage? searchRect,
     SortingTypeMessage sortingType,
@@ -985,6 +986,7 @@ abstract class MapApi {
   @async
   SearchResultMessage searchByCategory(
     SearchCategoryMessage category,
+    List<GeoPointMessage>? spatialRestriction,
     WeekTimeSearchMessage? weekTime,
     GeoRectMessage? searchRect,
     SortingTypeMessage sortingType,

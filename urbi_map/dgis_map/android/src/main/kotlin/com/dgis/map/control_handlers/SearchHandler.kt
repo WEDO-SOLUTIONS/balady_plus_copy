@@ -96,6 +96,7 @@ class SearchHandler(
     fun search(
         queryText: String,
         categories: List<RubricId>?,
+        spatialRestriction: List<GeoPoint>?,
         searchGeoRect: GeoRect?,
         weekTimeMessage: WeekTimeSearchMessage? = null,
         sortingType: SortingTypeMessage,
@@ -111,6 +112,7 @@ class SearchHandler(
             .setPageSize(pageSize)
             .setDirectoryFilter(DirectoryFilter(weekTimeMessage.toFilter(), emptyList()))
             .setAreaOfInterest(searchGeoRect)
+            .setSpatialRestriction(spatialRestriction)
             .build()
 
         performSearch(
@@ -121,6 +123,7 @@ class SearchHandler(
 
     fun searchByQuery(
         queryId: SearchQueryMessage,
+        spatialRestriction: List<GeoPoint>?,
         searchGeoRect: GeoRect?,
         weekTimeMessage: WeekTimeSearchMessage? = null,
         sortingType: SortingTypeMessage,
@@ -140,6 +143,7 @@ class SearchHandler(
             .setPageSize(pageSize)
             .setDirectoryFilter(DirectoryFilter(weekTimeMessage.toFilter(), emptyList()))
             .setAreaOfInterest(searchGeoRect)
+            .setSpatialRestriction(spatialRestriction)
             .build()
 
         performSearch(
@@ -150,6 +154,7 @@ class SearchHandler(
 
     fun searchByCategories(
         categories: List<RubricId>,
+        spatialRestriction: List<GeoPoint>?,
         searchGeoRect: GeoRect?,
         weekTimeMessage: WeekTimeSearchMessage? = null,
         sortingType: SortingTypeMessage,
@@ -162,6 +167,7 @@ class SearchHandler(
             .setPageSize(pageSize)
             .setDirectoryFilter(DirectoryFilter(weekTimeMessage.toFilter(), emptyList()))
             .setAreaOfInterest(searchGeoRect)
+            .setSpatialRestriction(spatialRestriction)
             .build()
 
         performSearch(
@@ -172,6 +178,7 @@ class SearchHandler(
 
     fun searchByParkCategory(
         searchGeoRect: GeoRect?,
+        spatialRestriction: List<GeoPoint>?,
         weekTimeMessage: WeekTimeSearchMessage? = null,
         sortingType: SortingTypeMessage,
         pageSize: Int,
@@ -183,6 +190,7 @@ class SearchHandler(
             .setPageSize(pageSize.toInt())
             .setDirectoryFilter(DirectoryFilter(weekTimeMessage.toFilter(), emptyList()))
             .setAreaOfInterest(searchGeoRect)
+            .setSpatialRestriction(spatialRestriction)
             .build()
 
         performSearch(

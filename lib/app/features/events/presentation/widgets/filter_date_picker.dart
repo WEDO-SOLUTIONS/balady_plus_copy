@@ -11,15 +11,15 @@ import '../../../_shared_feature_/presentation/enhanced_widgets/pickers/hijri_pi
 import '../../../_shared_feature_/shared_feature_exports.dart'
     show CustomTextWidget, DropDownWithTitle;
 
-class EventFilterDatePicker extends StatefulWidget {
+class EventFilterDatePicker extends StatelessWidget {
   final String title;
-  final DateTime? initialDate;
-  final DateForm initialDateForm;
+  DateTime? initialDate;
+  DateForm initialDateForm;
   final DateTime? startDate;
   final DateTime? endDate;
   final void Function(DateTime, DateForm) onChange;
 
-  const EventFilterDatePicker({
+  EventFilterDatePicker({
     super.key,
     required this.title,
     this.initialDate,
@@ -30,35 +30,20 @@ class EventFilterDatePicker extends StatefulWidget {
   });
 
   @override
-  State<EventFilterDatePicker> createState() => _EventFilterDatePickerState();
-}
-
-class _EventFilterDatePickerState extends State<EventFilterDatePicker> {
-  late DateForm _dateForm;
-  DateTime? _selectedDate;
-
-  @override
-  void initState() {
-    super.initState();
-    _dateForm = widget.initialDateForm;
-    _selectedDate = widget.initialDate;
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const SizedBox(height: 8),
         DropDownWithTitle(
-          title: widget.title,
-          selectedValue: _selectedDate?.formatTo(_dateForm),
+          title: title,
+          selectedValue: initialDate?.formatTo(initialDateForm),
           showArrow: false,
           onTap: () async {
-            if (_dateForm == DateForm.gregorian) {
-              showPickerDate(_selectedDate, context);
+            if (initialDateForm == DateForm.gregorian) {
+              showPickerDate(initialDate, context);
             } else {
-              showPickerHijriDate(_selectedDate, context);
+              showPickerHijriDate(initialDate, context);
             }
           },
         ),
@@ -67,11 +52,9 @@ class _EventFilterDatePickerState extends State<EventFilterDatePicker> {
   }
 
   void showPickerHijriDate(DateTime? currentDate, BuildContext context) {
-    final minValue = widget.startDate == null
-        ? null
-        : HijriCalendar.fromDate(widget.startDate!);
-    final maxValue =
-        widget.endDate == null ? null : HijriCalendar.fromDate(widget.endDate!);
+    final minValue =
+        startDate == null ? null : HijriCalendar.fromDate(startDate!);
+    final maxValue = endDate == null ? null : HijriCalendar.fromDate(endDate!);
     final date =
         currentDate == null ? null : HijriCalendar.fromDate(currentDate);
 
@@ -85,7 +68,7 @@ class _EventFilterDatePickerState extends State<EventFilterDatePicker> {
       height: 270,
       confirmText: 'choose'.tr(),
       title: CustomTextWidget(
-        widget.title,
+        title,
         textStyle: AppStyle.dropDownTitleTextStyle,
       ),
       hideHeader: false,
@@ -100,15 +83,14 @@ class _EventFilterDatePickerState extends State<EventFilterDatePicker> {
         final date =
             (picker.adapter as hijri_picker.DateTimePickerAdapter).value;
 
-        setState(() {
-          _selectedDate = date?.hijriToGregorian(
-            date.hYear,
-            date.hMonth,
-            date.hDay,
-          );
-        });
-        if (_selectedDate == null) return;
-        widget.onChange(_selectedDate!, _dateForm);
+        initialDate = date?.hijriToGregorian(
+          date.hYear,
+          date.hMonth,
+          date.hDay,
+        );
+
+        if (initialDate == null) return;
+        onChange(initialDate!, initialDateForm);
       },
     ).showModal(context);
   }
@@ -123,23 +105,22 @@ class _EventFilterDatePickerState extends State<EventFilterDatePicker> {
       height: 270,
       confirmText: 'choose'.tr(),
       title: CustomTextWidget(
-        widget.title,
+        title,
         textStyle: AppStyle.dropDownTitleTextStyle,
       ),
       hideHeader: false,
       adapter: DateTimePickerAdapter(
-        minValue: widget.startDate,
-        maxValue: widget.endDate,
+        minValue: startDate,
+        maxValue: endDate,
         customColumnType: CommonFunctions.isAppAR ? [2, 1, 0] : [0, 1, 2],
-        value: _selectedDate,
+        value: initialDate,
       ),
       selectedTextStyle: const TextStyle(color: AppColor.primary900Light),
       onConfirm: (picker, value) {
-        setState(() {
-          _selectedDate = (picker.adapter as DateTimePickerAdapter).value;
-        });
-        if (_selectedDate == null) return;
-        widget.onChange(_selectedDate!, _dateForm);
+        initialDate = (picker.adapter as DateTimePickerAdapter).value;
+
+        if (initialDate == null) return;
+        onChange(initialDate!, initialDateForm);
       },
     ).showModal(context);
   }

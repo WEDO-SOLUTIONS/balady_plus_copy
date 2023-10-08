@@ -4,7 +4,7 @@ import 'dart:typed_data';
 
 import 'package:balady_plus/app/core/utils/constants/route_names.dart';
 import 'package:flutter/material.dart';
-import 'package:open_file/open_file.dart';
+import 'package:open_file_plus/open_file_plus.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:tuple/tuple.dart';
 

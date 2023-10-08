@@ -20,6 +20,7 @@ import '../bloc/calendar_event.dart';
 import '../dialogs/calendar_filter_dialog.dart';
 import '../widgets/calendar_item_widget.dart';
 import '../widgets/calendar_not_found_page.dart';
+import '../widgets/old_calendar_card.dart';
 
 class MainPageCalendar extends StatefulWidget {
   const MainPageCalendar({super.key});
@@ -142,14 +143,25 @@ class _CalendarBodyState extends State<CalendarBody> {
                             .toString() ??
                         "",
                   ),*/
-                  CalendarItemWidget(
+
+                  /* CalendarItemWidget(
                     item: state.searchItems[index],
                     onPress: () {
                       Navigator.of(context).pushNamed(
                           RouteName.calendarDetailsPage,
                           arguments: state.searchItems[index]);
                     },
-                  ),
+                  ),*/
+
+                  GestureDetector(
+                      onTap: () {
+                        Navigator.of(context).pushNamed(
+                            RouteName.calendarDetailsPage,
+                            arguments: state.searchItems[index]);
+                      },
+                      child: OldCalendarCard(
+                        item: state.searchItems[index],
+                      ))
                 ],
               );
             },

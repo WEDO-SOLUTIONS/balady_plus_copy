@@ -3,6 +3,7 @@ import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/t
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_uxcam/flutter_uxcam.dart';
+
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:provider/provider.dart';
 
@@ -52,7 +53,6 @@ class DraggableSheetCard extends StatefulWidget {
 }
 
 class _DraggableSheetCardState extends State<DraggableSheetCard> {
-  final draggableScrollableController = DraggableScrollableController();
   @override
   void initState() {
     super.initState();
@@ -61,22 +61,21 @@ class _DraggableSheetCardState extends State<DraggableSheetCard> {
       MapViewModel mapViewModel =
           Provider.of<MapViewModel>(context, listen: false);
 
-      draggableScrollableController
+      mapViewModel.draggableScrollableController
           .jumpTo(mapViewModel.bottomSheetSizeFraction.value);
       mapViewModel.bottomSheetSize.notifyListeners();
 
-      draggableScrollableController.addListener(() {
+      mapViewModel.draggableScrollableController.addListener(() {
         mapViewModel.bottomSheetSize.value =
-            draggableScrollableController.pixels;
+            mapViewModel.draggableScrollableController.pixels;
         mapViewModel.bottomSheetSize.notifyListeners();
 
         mapViewModel.bottomSheetSizeFraction.value =
-            draggableScrollableController.size;
+            mapViewModel.draggableScrollableController.size;
         mapViewModel.bottomSheetSizeFraction.notifyListeners();
 
         print(mapViewModel.bottomSheetSizeFraction.value);
-
-        if (draggableScrollableController.size > 0.6) {
+        if (mapViewModel.draggableScrollableController.size > 0.6) {
           FlutterUxcam.tagScreenName("HomeDialog");
         } else {
           FlutterUxcam.tagScreenName("HomePage");
@@ -92,6 +91,9 @@ class _DraggableSheetCardState extends State<DraggableSheetCard> {
 
   @override
   Widget build(BuildContext context) {
+    MapViewModel mapViewModel =
+        Provider.of<MapViewModel>(context, listen: false);
+
     return Align(
       alignment: Alignment.bottomCenter,
       child: Container(
@@ -115,7 +117,7 @@ class _DraggableSheetCardState extends State<DraggableSheetCard> {
             topRight: Radius.circular(widget.cornerRadius ?? 36),
           ),
           child: DraggableScrollableSheet(
-            controller: draggableScrollableController,
+            controller: mapViewModel.draggableScrollableController,
             initialChildSize: widget.initialChildSize,
             minChildSize: widget.minSize,
             maxChildSize: widget.maxSize,
@@ -157,7 +159,6 @@ class _DraggableSheetCardState extends State<DraggableSheetCard> {
 
   @override
   void dispose() {
-    draggableScrollableController.dispose();
     super.dispose();
   }
 }

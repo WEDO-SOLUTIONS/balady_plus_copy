@@ -160,6 +160,7 @@ class DgisMapController {
   Future<SearchResultMessage> search(
     String queryText, {
     List<SearchCategoryMessage>? categories,
+    List<GeoPointMessage>? spatialRestriction,
     required SortingTypeMessage sortingType,
     GeoRectMessage? searchRect,
     bool isOpenNow = false,
@@ -168,6 +169,7 @@ class DgisMapController {
     return _instance.search(
       queryText,
       categories: categories,
+      spatialRestriction: spatialRestriction,
       sortingType: sortingType,
       weekTime: isOpenNow ? WeekTimeFactory.openNow() : null,
       pageSize: pageSize,
@@ -178,6 +180,7 @@ class DgisMapController {
   /// Runs directory search by [SearchQueryMessage] query.
   Future<SearchResultMessage> searchByQuery(
     SearchQueryMessage query, {
+    List<GeoPointMessage>? spatialRestriction,
     required SortingTypeMessage sortingType,
     GeoRectMessage? searchRect,
     bool isOpenNow = false,
@@ -185,6 +188,7 @@ class DgisMapController {
   }) {
     return _instance.searchByQuery(
       query,
+      spatialRestriction: spatialRestriction,
       sortingType: sortingType,
       weekTime: isOpenNow ? WeekTimeFactory.openNow() : null,
       pageSize: pageSize,
@@ -195,6 +199,7 @@ class DgisMapController {
   /// Runs directory search by [SearchCategoryMessage] category.
   Future<SearchResultMessage> searchByCategory(
     SearchCategoryMessage category, {
+    List<GeoPointMessage>? spatialRestriction,
     required SortingTypeMessage sortingType,
     GeoRectMessage? searchRect,
     bool isOpenNow = false,
@@ -202,6 +207,7 @@ class DgisMapController {
   }) {
     return _instance.searchByCategory(
       category,
+      spatialRestriction: spatialRestriction,
       sortingType: sortingType,
       weekTime: isOpenNow ? WeekTimeFactory.openNow() : null,
       pageSize: pageSize,

@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import '../../../../core/utils/constants/app_style.dart';
+import '../../data/enums/custom_search_category.dart';
 
 class SearchMapDialogWidget extends StatelessWidget {
   const SearchMapDialogWidget({super.key});
@@ -32,66 +33,82 @@ class SearchMapDialogWidget extends StatelessWidget {
                         SearchCategoryMessage.parks,
                         SearchCategoryMessage.hospitals,
                         SearchCategoryMessage.schools,
-                        SearchCategoryMessage.events,
-                      ]
-                          .map(
-                            (e) => Row(
-                              children: [
-                                const SizedBox(
-                                  width: 8,
+                        CustomSearchCategory.events
+                      ].map(
+                        (e) {
+                          SearchCategoryMessage? category;
+                          CustomSearchCategory? custom;
+
+                          late String displayName;
+                          late String iconName;
+
+                          if (e is CustomSearchCategory) {
+                            iconName = e.iconName();
+                            displayName = e.displayName();
+                            custom = e;
+                          } else if (e is SearchCategoryMessage) {
+                            iconName = e.iconName();
+                            displayName = e.displayName();
+                            category = e;
+                          }
+
+                          return Row(
+                            children: [
+                              const SizedBox(
+                                width: 8,
+                              ),
+                              Container(
+                                padding: EdgeInsets.symmetric(horizontal: 4),
+                                width: 59,
+                                height: 77,
+                                decoration: BoxDecoration(
+                                  color: mapViewModel.selectedCategory.value ==
+                                          category
+                                      ? Color(0xFF4B5563)
+                                      : Colors.white,
+                                  borderRadius: BorderRadius.circular(8.0),
                                 ),
-                                Container(
-                                  padding: EdgeInsets.symmetric(horizontal: 4),
-                                  width: 59,
-                                  height: 77,
-                                  decoration: BoxDecoration(
-                                    color: value == e
-                                        ? Color(0xFF4B5563)
-                                        : Colors.white,
-                                    borderRadius: BorderRadius.circular(8.0),
-                                  ),
-                                  child: InkWell(
-                                    onTap: () {
-                                      mapViewModel.selectCategory(category: e);
-                                      searchFocusNode.unfocus();
-                                    },
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(4.0),
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          SizedBox(
-                                            width: 24,
-                                            height: 24,
-                                            child:
-                                                SvgPicture.asset(e.iconName()),
+                                child: InkWell(
+                                  onTap: () {
+                                    mapViewModel.selectCategory(
+                                        category: category, custom: custom);
+                                    searchFocusNode.unfocus();
+                                  },
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(4.0),
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        SizedBox(
+                                          width: 24,
+                                          height: 24,
+                                          child: SvgPicture.asset(iconName),
+                                        ),
+                                        SizedBox(
+                                          height: 8,
+                                        ),
+                                        CustomTextWidget(
+                                          displayName,
+                                          textStyle: AppStyle
+                                              .serviceDescriptionStyle
+                                              .copyWith(
+                                            color: mapViewModel.selectedCategory
+                                                        .value ==
+                                                    category
+                                                ? Colors.white
+                                                : Colors.black,
                                           ),
-                                          SizedBox(
-                                            height: 8,
-                                          ),
-                                          CustomTextWidget(
-                                            e.displayName(),
-                                            textStyle: AppStyle
-                                                .serviceDescriptionStyle
-                                                .copyWith(
-                                              color: mapViewModel
-                                                          .selectedCategory
-                                                          .value ==
-                                                      e
-                                                  ? Colors.white
-                                                  : Colors.black,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
+                                        ),
+                                      ],
                                     ),
                                   ),
                                 ),
-                              ],
-                            ),
-                          )
-                          .toList(),
+                              ),
+                            ],
+                          );
+                        },
+                      ).toList(),
                     ),
                   )
                 : SizedBox();
