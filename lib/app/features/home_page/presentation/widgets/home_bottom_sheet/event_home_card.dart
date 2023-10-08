@@ -42,7 +42,57 @@ class EventHomeCard extends StatelessWidget {
           SearchCalendarItem? item = state.searchItems.firstOrNull;
           if (item == null) return Container();
 
-          return OldCalendarCard(item: item);
+          return Column(
+            //   mainAxisSize: MainAxisSize.min,
+            children: [
+              SizedBox(
+                height: 16,
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    CustomTextWidget(
+                      'saudi_calendar'.tr(),
+                      textStyle: AppStyle.sectionTitleStyle,
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.pushNamed(
+                            context, RouteName.calendarMainPage);
+                      },
+                      child: CustomTextWidget(
+                        "show_all".tr(),
+                        fontColor: AppColor.kGray115,
+                        fontSize: 13,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(
+                height: 8,
+              ),
+              Container(
+                  height: 230,
+                  child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      shrinkWrap: true,
+                      itemCount: ((state.searchItems.length) > 4)
+                          ? 4
+                          : state.searchItems.length,
+                      padding: EdgeInsets.symmetric(vertical: 8),
+                      itemBuilder: (context, index) {
+                        return Container(
+                            width: MediaQuery.of(context).size.width - 30,
+                            child: OldCalendarCard(item: item));
+                      })),
+              SizedBox(
+                height: 8,
+              ),
+            ],
+          );
         },
       ),
     );

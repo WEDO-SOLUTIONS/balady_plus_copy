@@ -17,16 +17,17 @@ class OldCalendarCard extends StatelessWidget {
     return Container(
       margin: EdgeInsets.only(top: 16, left: 16, right: 16),
       height: 201,
+      width: MediaQuery.of(context).size.width - 32,
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(14),
         boxShadow: const [
           BoxShadow(
-            color: Color(0x4CE9EAF1),
-            blurRadius: 40,
-            offset: Offset(0, 10),
+            color: Color(0x14000000),
+            blurRadius: 4,
+            offset: Offset(0, 4),
             spreadRadius: 0,
-          ),
+          )
         ],
         image: calendarImage(item.logoURL, ImagePath.calendarBackground),
       ),
@@ -34,16 +35,6 @@ class OldCalendarCard extends StatelessWidget {
         padding: EdgeInsets.only(left: 16, right: 16, top: 16),
         child: Column(
           children: [
-            /* Positioned(
-                    top: 15,
-                    left: 18,
-                    child: CircleAvatar(
-                      backgroundColor: const Color(0xA5F7FFFD),
-                      radius: 24,
-                      child: SvgPicture.asset(IconPath.notification),
-                    ),
-                  ),*/
-
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -85,7 +76,7 @@ class OldCalendarCard extends StatelessWidget {
             ),
             SaudiContainer(
               btnText: "saudi_calendar_add".tr(),
-              remainingText: item.remainingText() ?? "",
+              remainingText: item.remainingDays() ?? "",
               timer: item.remainingDays(),
               addToCalendar: () {
                 Add2Calendar.addEvent2Cal(
