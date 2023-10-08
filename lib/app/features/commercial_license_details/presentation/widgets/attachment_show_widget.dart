@@ -34,7 +34,7 @@ class AttachmentShowWidget extends StatelessWidget {
         color: const Color(0x80E6EFEF),
       ),
       child: InkWell(
-        onTap: fileName.isNotEmpty ? () => showFile(filePath,fileName) : null,
+        onTap: fileName.isNotEmpty ? () => showFile(filePath, fileName) : null,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -45,12 +45,12 @@ class AttachmentShowWidget extends StatelessWidget {
                   ((fileName.split(".").last.toLowerCase().contains("pdf")))
                       ? const CustomSvgIconWidget(IconPath.pdf)
                       : filePath.startsWith("http")
-                      ? Container()
-                      : Image.file(
-                    File(filePath),
-                    width: 24,
-                    height: 28,
-                  ),
+                          ? Container()
+                          : Image.file(
+                              File(filePath),
+                              width: 24,
+                              height: 28,
+                            ),
                   const CustomHorizontalSpace(width: 8),
                   Flexible(
                     child: CustomTextWidget(
@@ -64,7 +64,9 @@ class AttachmentShowWidget extends StatelessWidget {
                 ],
               ),
             ),
-            const DrawIconBasedTypeWidget(icon: IconPath.download),
+            fileName.isNotEmpty
+                ? const DrawIconBasedTypeWidget(icon: IconPath.download)
+                : const SizedBox(),
           ],
         ),
       ),
@@ -73,7 +75,9 @@ class AttachmentShowWidget extends StatelessWidget {
 
   void showFile(String fileUrl, String fileName) async {
     try {
-      if (fileName.toLowerCase().contains(".png") || fileName.toLowerCase().contains(".jpeg") || fileName.toLowerCase().contains(".jpg")) {
+      if (fileName.toLowerCase().contains(".png") ||
+          fileName.toLowerCase().contains(".jpeg") ||
+          fileName.toLowerCase().contains(".jpg")) {
         NavigationService.navigatorKey.currentState!.pushNamed(
           RouteName.apigeeImageFullScreen,
           arguments: fileUrl,
