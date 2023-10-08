@@ -11,7 +11,7 @@ import 'package:dio/dio.dart';
 import 'package:mime/mime.dart';
 import 'package:http_parser/http_parser.dart' as http;
 
-class CommercialLicenseAttachmentsViewModel extends BaseViewModel {
+class RequestAttachmentsViewModel extends BaseViewModel {
   final WebService webService;
 
   List<AttachmentModel> attachments = [];
@@ -20,7 +20,7 @@ class CommercialLicenseAttachmentsViewModel extends BaseViewModel {
 
   bool fileDone = true;
 
-  CommercialLicenseAttachmentsViewModel(
+  RequestAttachmentsViewModel(
       {required this.webService, required this.requestId}) {
     getCommercialLicenseCancelAttachments(requestId);
   }

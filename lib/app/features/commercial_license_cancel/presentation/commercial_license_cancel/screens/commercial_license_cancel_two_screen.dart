@@ -4,7 +4,7 @@ import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
 import 'package:balady_plus/app/core/utils/enums/app_font_weights.dart';
 import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports.dart';
 import 'package:balady_plus/app/features/commercial_license_cancel/presentation/commercial_license_cancel/blocs/commercial_license_cancel/commercial_license_cancel_bloc.dart';
-import 'package:balady_plus/app/features/commercial_license_cancel/presentation/commercial_license_cancel/mvvm/commercial_license_attachments_view_model.dart';
+import 'package:balady_plus/app/features/commercial_license_cancel/presentation/commercial_license_cancel/mvvm/request_attachments_view_model.dart';
 import 'package:balady_plus/app/features/commercial_license_cancel/presentation/commercial_license_cancel/widgets/card_cost_info_widget.dart';
 import 'package:balady_plus/app/features/commercial_license_cancel/presentation/commercial_license_cancel/widgets/card_desc_widget.dart';
 import 'package:balady_plus/app/features/commercial_license_cancel/presentation/commercial_license_cancel/widgets/widget_title_invoice.dart';
@@ -22,8 +22,8 @@ class CommercialLicenseCancelTwoScreen extends StatelessWidget {
     CommercialLicenseCancelBloc bloc =
         context.watch<CommercialLicenseCancelBloc>();
 
-    CommercialLicenseAttachmentsViewModel viewModel =
-        context.watch<CommercialLicenseAttachmentsViewModel>();
+    RequestAttachmentsViewModel viewModel =
+        context.watch<RequestAttachmentsViewModel>();
     return Column(
       children: [
         Expanded(

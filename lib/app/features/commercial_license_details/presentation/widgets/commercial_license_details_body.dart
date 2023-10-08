@@ -5,9 +5,9 @@ import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports
 import 'package:balady_plus/app/features/commercial_license_cancel/presentation/commercial_license_cancel/mvvm/commercial_license_attachments_view_model.dart';
 import 'package:balady_plus/app/features/commercial_license_cancel/presentation/commercial_license_cancel/mvvm/commercial_license_permits_view_model.dart';
 import 'package:balady_plus/app/features/commercial_license_details/presentation/bloc/commercial_license_details_cubit.dart';
+import 'package:balady_plus/app/features/commercial_license_details/presentation/widgets/attachment_show_widget.dart';
 import 'package:balady_plus/app/features/commercial_license_details/presentation/widgets/commercial_license_permits_widget.dart';
 import 'package:balady_plus/app/features/create_compliance/data/models/comliance_request_details_model.dart';
-import 'package:balady_plus/app/features/create_compliance/presentation/widgets/compliance_submission/fifth_submit_step.dart';
 import 'package:balady_plus/app/features/transaction_inquiry/presentation/core/models/attachment_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -67,7 +67,7 @@ class _CommercialLicenseDetailsBodyState
                 create: (BuildContext context) {
                   return CommercialLicenseAttachmentsViewModel(
                     webService: sl(),
-                    requestId: commercialLicenceDetails.requestId,
+                    licenseId: bloc.commercialLicenseId,
                   );
                 },
               ),
@@ -345,18 +345,18 @@ class _CommercialLicenseDetailsBodyState
                       ),
                       CardParameter(
                         title: 'contractType'.tr(),
-                        value: commercialLicenceDetails.shopInfo
-                                .contractInfoResponseDto.contractType ,
+                        value: commercialLicenceDetails
+                            .shopInfo.contractInfoResponseDto.contractType,
                       ),
                       CardParameter(
                         title: 'contractNumber'.tr(),
-                        value: commercialLicenceDetails.shopInfo
-                                .contractInfoResponseDto.contractNumber,
+                        value: commercialLicenceDetails
+                            .shopInfo.contractInfoResponseDto.contractNumber,
                       ),
                       CardParameter(
                         title: 'contractOption'.tr(),
                         value: (commercialLicenceDetails.shopInfo
-                                    .contractInfoResponseDto.contractOption)
+                                .contractInfoResponseDto.contractOption)
                             .tr(),
                       ),
                     ],
@@ -371,12 +371,22 @@ class _CommercialLicenseDetailsBodyState
                         icon: IconPath.editIcon,
                         children: [
                           attachments.isNotEmpty
-                              ? AttachmentListWidget(
-                                  attachments: getNewModelList(attachments),
-                                  saveFile: (int index, String filePath,
-                                      String fileName, String base64) {},
-                                  showDelete: false,
-                                  deleteFile: (int index) {},
+                              ? ListView.builder(
+                                  itemCount: attachments.length,
+                                  shrinkWrap: true,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  itemBuilder: (ctx, index) {
+                                    return attachments[index].attachUrl != null
+                                        ? AttachmentShowWidget(
+                                      fileName:
+                                      attachments[index].fileName ??
+                                          attachments[index].name ??
+                                          '',
+                                      filePath:
+                                      attachments[index].attachUrl!,
+                                    )
+                                        : const SizedBox();
+                                  },
                                 )
                               : const SizedBox(),
                         ],
@@ -433,17 +443,19 @@ class _CommercialLicenseDetailsBodyState
     );
   }
 
-  List<AttachmentData> getNewModelList(List<AttachmentModel> attachments) {
-    return attachments
-        .map(
-          (attachment) => AttachmentData(
-            id: attachment.id.toString(),
-            memo: "attachment",
-            title: attachment.name ?? '',
-            isRequired: attachment.isMandatory ?? false,
-            isUploaded: attachment.updatable ?? false,
-          ),
-        )
-        .toList();
-  }
+  // List<AttachmentData> getNewModelList(List<AttachmentModel> attachments) {
+  //   return attachments
+  //       .map(
+  //         (attachment) => AttachmentData(
+  //           id: attachment.id.toString(),
+  //           memo: "attachment",
+  //           title: attachment.name ?? '',
+  //           fileName: attachment.fileName ?? attachment.name,
+  //           filePath: attachment.attachUrl,
+  //           isRequired: attachment.isMandatory ?? false,
+  //           isUploaded: attachment.updatable ?? false,
+  //         ),
+  //       )
+  //       .toList();
+  // }
 }

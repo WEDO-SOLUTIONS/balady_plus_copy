@@ -314,8 +314,8 @@ class ApiUrl {
 
 // -------  Commercial License Details ---------
   static  String getCommercialLicenseDetails(int licenseId) => '/v1/balady-commercial-services/licenses/$licenseId';
-  static  String commercialLicensePermits(int requestId) => '/v1/balady-commercial-services/licenses/permits/$requestId';
-  // static  String commercialLicenseQRCode(int requestId) => '/v1/balady-commercial-services/licenses/permits/$requestId';
+  static  String commercialLicensePermits(int licenseId) => '/v1/balady-commercial-services/licenses/permits/$licenseId';
+  static  String getLicenseAttachments(int licenseId) => '/v1/balady-commercial-services/license-attachments/$licenseId';
 // -------  Commercial License Cancel ---------
   static const String commercialLicenseAllowedActions = '/v1/balady-commercial-services/mobile/allowed-actions';
 /////////////////////////////////////////////////////////

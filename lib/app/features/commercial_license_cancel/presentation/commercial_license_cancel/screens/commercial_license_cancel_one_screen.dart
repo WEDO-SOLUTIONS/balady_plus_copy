@@ -9,7 +9,7 @@ import 'package:balady_plus/app/features/_shared_feature_/presentation/component
 import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports.dart';
 import 'package:balady_plus/app/features/commercial_license/presentation/commercial_license/widgets/cr_header_desc.dart';
 import 'package:balady_plus/app/features/commercial_license_cancel/presentation/commercial_license_cancel/blocs/commercial_license_cancel/commercial_license_cancel_bloc.dart';
-import 'package:balady_plus/app/features/commercial_license_cancel/presentation/commercial_license_cancel/mvvm/commercial_license_attachments_view_model.dart';
+import 'package:balady_plus/app/features/commercial_license_cancel/presentation/commercial_license_cancel/mvvm/request_attachments_view_model.dart';
 import 'package:balady_plus/app/features/commercial_license_details/data/models/reason_cancel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -27,8 +27,8 @@ class CommercialLicenseCancelOneScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     CommercialLicenseCancelBloc bloc =
         context.watch<CommercialLicenseCancelBloc>();
-    CommercialLicenseAttachmentsViewModel viewModel =
-        context.watch<CommercialLicenseAttachmentsViewModel>();
+    RequestAttachmentsViewModel viewModel =
+        context.watch<RequestAttachmentsViewModel>();
 
     return Column(
       children: [
@@ -146,7 +146,7 @@ class CommercialLicenseCancelOneScreen extends StatelessWidget {
                       );
                     },
                   ),
-                  Consumer<CommercialLicenseAttachmentsViewModel>(
+                  Consumer<RequestAttachmentsViewModel>(
                     builder: (context, provider, child) {
                       return !provider.isLoading
                           ? Column(
@@ -258,7 +258,7 @@ class CommercialLicenseCancelOneScreen extends StatelessWidget {
               bool isBtnDisabled = !(bloc.reasonCancel != null &&
                   viewModel.fileDone &&
                   (bloc.hijriCalendar == null && !bloc.cancellationRequestResponse.availableCloseDate));
-              return Selector<CommercialLicenseAttachmentsViewModel, bool>(
+              return Selector<RequestAttachmentsViewModel, bool>(
                 selector: (_, provider) => provider.isLoading,
                 builder: (_, isLoading, child) {
                   if (isLoading) {

@@ -8,7 +8,7 @@ import 'package:balady_plus/app/features/_shared_feature_/presentation/buttons/e
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/custom_alert_dialog_widget.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/custom_popups_widgets.dart';
 import 'package:balady_plus/app/features/commercial_license_cancel/presentation/commercial_license_cancel/blocs/commercial_license_cancel/commercial_license_cancel_bloc.dart';
-import 'package:balady_plus/app/features/commercial_license_cancel/presentation/commercial_license_cancel/mvvm/commercial_license_attachments_view_model.dart';
+import 'package:balady_plus/app/features/commercial_license_cancel/presentation/commercial_license_cancel/mvvm/request_attachments_view_model.dart';
 import 'package:balady_plus/app/features/commercial_license_cancel/presentation/commercial_license_cancel/screens/commercial_license_cancel_one_screen.dart';
 import 'package:balady_plus/app/features/commercial_license_cancel/presentation/commercial_license_cancel/screens/commercial_license_cancel_two_screen.dart';
 import 'package:balady_plus/app/features/commercial_license_cancel/presentation/submit_application_successfully_cancel/mvvm/submit_rating_view_model.dart';
@@ -60,7 +60,7 @@ class _CommercialLicenseCancelScreenState
         providers: [
           ChangeNotifierProvider(
             create: (BuildContext context) {
-              return CommercialLicenseAttachmentsViewModel(
+              return RequestAttachmentsViewModel(
                 webService: sl(),
                 requestId: bloc.cancellationRequestResponse.requestId,
               );
