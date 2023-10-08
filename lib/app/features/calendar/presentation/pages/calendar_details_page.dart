@@ -78,7 +78,11 @@ class _CalendarDetailsPageState extends State<CalendarDetailsPage> {
                     children: [
                       Stack(
                         children: [
-                          Image.asset("assets/images/calendar_details_bg.png"),
+                          Image.asset(
+                            "assets/images/calendar_details_bg.png",
+                            width: MediaQuery.of(context).size.width,
+                            fit: BoxFit.fill,
+                          ),
                           Padding(
                             padding: EdgeInsets.only(
                                 top: MediaQuery.of(context).padding.top + 16,
