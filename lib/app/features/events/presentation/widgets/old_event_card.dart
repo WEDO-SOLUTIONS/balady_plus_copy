@@ -19,69 +19,88 @@ class OldEventHomeCard extends StatelessWidget {
     return Container(
       height: 187,
       margin: EdgeInsets.only(left: 16, right: 16, top: 16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(14),
-        boxShadow: const [
-          BoxShadow(
-            color: Color(0x03435633),
-            blurRadius: 40,
-            offset: Offset(0, 10),
-            spreadRadius: 0,
-          ),
-        ],
-        image: calendarImage(item.logoImage, ImagePath.calendarBackground),
-      ),
-      alignment: Alignment.bottomRight,
       child: Container(
-        padding: EdgeInsets.only(right: 20, bottom: 16),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(14),
+        ),
+        alignment: Alignment.bottomRight,
+        child: Stack(
           children: [
-            Date(
-              day: item.getStartDay(),
-              month: item.getStartMonth(),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(14),
+              child: CustomNetworkImageWidget(
+                item.logoImage ?? "",
+                imageWidth: MediaQuery.of(context).size.width,
+                imageHeight: 187,
+                placeHolderWidget:
+                    SvgPicture.asset(ImagePath.calendarBackground),
+              ),
             ),
-            CustomHorizontalSpace(width: 16),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(item.eventName ?? "",
-                    textAlign: TextAlign.right,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 14,
-                      fontFamily: 'Arabic UI Display',
-                      fontWeight: FontWeight.w700,
-                    )),
-                CustomVerticalSpace(height: 4),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+            Container(
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(14),
+                  gradient: LinearGradient(
+                      begin: FractionalOffset.topCenter,
+                      end: FractionalOffset.bottomCenter,
+                      colors: [
+                        Color(0x0000394A),
+                        Color(0x99155F75),
+                      ])),
+            ),
+            Align(
+              alignment: Alignment.bottomRight,
+              child: Container(
+                padding: EdgeInsets.only(right: 20, bottom: 16),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    IconName(
-                      icon: IconPath.locationHomeEvents,
-                      name: item.city ?? "",
-                      color: Color(0xFFE7E7E8),
+                    Date(
+                      day: item.getStartDay(),
+                      month: item.getStartMonth(),
                     ),
-                    CustomHorizontalSpace(width: 8),
-                    IconName(
-                      icon: IconPath.planetRingedHomeEvents,
-                      name: item.category ?? "",
-                      color: Colors.white,
+                    CustomHorizontalSpace(width: 16),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        CustomTextWidget(item.eventName ?? "",
+                            textAlign: TextAlign.right,
+                            textStyle: TextStyle(
+                              color: Colors.white,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w700,
+                            )),
+                        CustomVerticalSpace(height: 6),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            IconName(
+                              icon: IconPath.locationHomeEvents,
+                              name: item.city ?? "",
+                              color: Color(0xFFE7E7E8),
+                            ),
+                            CustomHorizontalSpace(width: 8),
+                            IconName(
+                              icon: IconPath.planetRingedHomeEvents,
+                              name: item.category ?? "",
+                              color: Colors.white,
+                            ),
+                          ],
+                        )
+                      ],
                     ),
-                  ],
-                )
-              ],
-            ),
 
-            /* IconName(
-              icon: IconPath.tagHomeEvents,
-              name: 'مجانا',
-              color: Colors.white,
-            ),*/
+                    /* IconName(
+                      icon: IconPath.tagHomeEvents,
+                      name: 'مجانا',
+                      color: Colors.white,
+                    ),*/
+                  ],
+                ),
+              ),
+            ),
           ],
         ),
       ),
@@ -162,12 +181,12 @@ DecorationImage calendarImage(String? url, String? defaultImage) => (url
             image: svgProvider.Svg(defaultImage ?? "",
                 source: svgProvider.SvgSource.asset),
             fit: BoxFit.fill,
-            colorFilter: ColorFilter.mode(Color(0x33034356), BlendMode.srcOver),
+            colorFilter: ColorFilter.mode(Color(0x33034356), BlendMode.darken),
           )
         : DecorationImage(
             image: AssetImage(defaultImage ?? ""),
             fit: BoxFit.fill,
-            colorFilter: ColorFilter.mode(Color(0x33034356), BlendMode.srcOver),
+            colorFilter: ColorFilter.mode(Color(0x33034356), BlendMode.darken),
           )
     : (url!.endsWith(".svg"))
         ? DecorationImage(
@@ -176,10 +195,10 @@ DecorationImage calendarImage(String? url, String? defaultImage) => (url
               source: svgProvider.SvgSource.network,
             ),
             fit: BoxFit.fill,
-            colorFilter: ColorFilter.mode(Color(0x33034356), BlendMode.srcOver),
+            colorFilter: ColorFilter.mode(Color(0x33034356), BlendMode.darken),
           )
         : DecorationImage(
             image: NetworkImage(url),
             fit: BoxFit.fill,
-            colorFilter: ColorFilter.mode(Color(0x33034356), BlendMode.srcOver),
+            colorFilter: ColorFilter.mode(Color(0x33034356), BlendMode.darken),
           );

@@ -152,13 +152,10 @@ class AttachmentListWidget extends StatelessWidget {
               path: attachments[index].filePath,
               fileName: attachments[index].fileName,
               onPress: () {
-                if (attachments[index].filePath != null &&
-                    !attachments[index].filePath!.startsWith("http"))
+                if (attachments[index].filePath != null && !attachments[index].filePath!.startsWith("http"))
                   CommonFunctions.openFile(File(attachments[index].filePath!));
-                else if (attachments[index].filePath != null &&
-                    attachments[index].filePath!.startsWith("http")) {
-                  showFile(attachments[index].filePath ?? "",
-                      attachments[index].fileName!);
+                else if (attachments[index].filePath != null && attachments[index].filePath!.startsWith("http")) {
+                  showFile(attachments[index].filePath ?? "", attachments[index].fileName!);
                 }
               },
               hint: attachments[index].hint,

@@ -18,30 +18,26 @@ class OldCalendarCard extends StatelessWidget {
     return Container(
       margin: EdgeInsets.only(top: 16, left: 16, right: 16),
       height: 201,
+      width: MediaQuery.of(context).size.width - 32,
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(14),
         boxShadow: const [
           BoxShadow(
-            color: Color(0x4CE9EAF1),
-            blurRadius: 40,
-            offset: Offset(0, 10),
+            color: Color(0x14000000),
+            blurRadius: 4,
+            offset: Offset(0, 4),
             spreadRadius: 0,
-          ),
+          )
         ],
         image: calendarImage(item.logoURL, ImagePath.calendarBackground),
       ),
-      child: Stack(
-        children: [
-          /* CustomNetworkImageWidget(
-            item.logoURL ?? "",
-            imageHeight: 201,
-            imageFit: BoxFit.fill,
-            placeHolderWidget: SvgPicture.asset(ImagePath.calendarBackground),
-          ),*/
-          Container(
-            padding: EdgeInsets.only(left: 16, right: 16, top: 16),
-            child: Column(
+      child: Container(
+        padding: EdgeInsets.only(left: 16, right: 16, top: 16),
+        child: Column(
+          children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 /* Positioned(
                         top: 15,
@@ -109,8 +105,25 @@ class OldCalendarCard extends StatelessWidget {
                 ),
               ],
             ),
-          ),
-        ],
+            SizedBox(
+              height: 32,
+            ),
+            SaudiContainer(
+              btnText: "saudi_calendar_add".tr(),
+              remainingText: item.remainingDays() ?? "",
+              timer: item.remainingDays(),
+              addToCalendar: () {
+                Add2Calendar.addEvent2Cal(
+                  buildEvent(
+                    title: item.name ?? "",
+                    startDate: item.startDate!,
+                    endDate: item.endDate!,
+                  ),
+                );
+              },
+            ),
+          ],
+        ),
       ),
     );
   }

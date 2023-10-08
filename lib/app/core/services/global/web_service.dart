@@ -116,19 +116,21 @@ class AppInterceptors extends Interceptor {
     if (options.headers[ApiHeader.requiresToken.eName] == false)
       options.headers.remove("Authorization");
 
-    if (!url.contains("etmamplus-archiving-services")) {
-      final verifyingKEY = CommonFunctions.hashRequest(url, method,
-          body: (options.data != null &&
-                  !options.uri.toString().contains("bcg/upload-file"))
-              ? json.encode(options.data)
-              : null,
-          authorization: !options.uri.toString().contains("bcg/upload-file")
-              ? options.headers.containsKey("Authorization")
-              : false);
+    if (options.data is! FormData) {
+      final verifyingKEY = CommonFunctions.hashRequest(
+        url,
+        method,
+        body: (options.data != null &&
+                !options.uri.toString().contains("bcg/upload-file"))
+            ? json.encode(options.data)
+            : null,
+        authorization: !options.uri.toString().contains("bcg/upload-file")
+            ? options.headers.containsKey("Authorization")
+            : false,
+      );
       options.headers
           .putIfAbsent(ApiHeader.verifyingKEY.name, () => verifyingKEY);
     }
-
     options.headers.putIfAbsent("x-channel-id", () => "MOBILE");
     //if (options.headers['Authorization'] == null) {
     print(options.headers);

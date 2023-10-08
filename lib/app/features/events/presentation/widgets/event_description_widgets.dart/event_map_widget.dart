@@ -1,4 +1,6 @@
+import 'package:balady_plus/app/core/services/local/helpers.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/image_paths.dart';
+import 'package:balady_plus/app/core/utils/map_utils.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/events/presentation/widgets/event_description_widgets.dart/event_title.dart';
 import 'package:flutter/material.dart';
@@ -12,35 +14,40 @@ class EventMapWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return location != null
-        ? Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              EventsTitleWidget(title: 'event_location_title'.tr()),
-              Container(
-                padding: const EdgeInsets.all(12),
-                decoration: ShapeDecoration(
-                  color: AppColor.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
+        ? GestureDetector(
+            onTap: () {
+              CommonFunctions.openMap(location!.latitude, location!.longitude);
+            },
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                EventsTitleWidget(title: 'event_location_title'.tr()),
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: ShapeDecoration(
+                    color: AppColor.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
                   ),
-                ),
-                child: SizedBox(
-                  height: 178,
-                  child: GoogleMap(
-                      myLocationButtonEnabled: false,
-                      markers: {
-                        Marker(
-                          markerId: MarkerId("location"),
-                          position: location!,
-                        )
-                      },
-                      initialCameraPosition: CameraPosition(
-                        target: location!,
-                        zoom: 15,
-                      )),
-                ),
-              )
-            ],
+                  child: SizedBox(
+                    height: 178,
+                    child: GoogleMap(
+                        myLocationButtonEnabled: false,
+                        markers: {
+                          Marker(
+                            markerId: MarkerId("location"),
+                            position: location!,
+                          )
+                        },
+                        initialCameraPosition: CameraPosition(
+                          target: location!,
+                          zoom: 15,
+                        )),
+                  ),
+                )
+              ],
+            ),
           )
         : Container();
   }

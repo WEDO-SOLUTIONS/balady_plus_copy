@@ -1,3 +1,7 @@
+import 'package:balady_plus/app/features/commercial_license_details/data/data_sources/remote_data_source.dart';
+import 'package:balady_plus/app/features/commercial_license_details/data/repositories/repository_implementation.dart';
+import 'package:balady_plus/app/features/commercial_license_details/domain/use_cases/get_commercial_license_details.dart';
+import 'package:balady_plus/app/features/commercial_license_details/presentation/bloc/commercial_license_details_cubit.dart';
 import 'package:balady_plus/app/features/home_page/home_exports.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -112,6 +116,20 @@ class LicensesListItem extends StatelessWidget {
                         isDeletable: false,
                         isPrintable: false));
               }
+            } else if (license.requestMainTypeId == "1003") {
+              Navigator.pushNamed(
+                context,
+                RouteName.commercialLicenseDetails,
+                arguments: CommercialLicenseDetailsCubit(
+                  GetCommercialLicenseDetails(
+                    repository: CommercialLicenseDetailsRepositoryImplementation(
+                        remoteDataSource:
+                            CommercialLicenseDetailsRemoteDataSourceImplementation(
+                                webService: sl())),
+                  ),
+                  license.licenseNumber,
+                ),
+              );
             } else {
               if (license.redirectUrl == null) return;
               print(license.redirectUrl);
