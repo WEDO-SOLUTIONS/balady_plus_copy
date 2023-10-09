@@ -1,3 +1,4 @@
+import 'package:add_2_calendar/add_2_calendar.dart';
 import 'package:balady_plus/app/core/utils/constants/app_style.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/image_paths.dart';
@@ -20,6 +21,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart' as svgProvider;
 import 'package:localize_and_translate/localize_and_translate.dart';
+import 'package:share_plus/share_plus.dart';
 
 import '../../../_shared_feature_/presentation/widgets/retry_widget.dart';
 
@@ -105,16 +107,45 @@ class _SingleEventDescriptionPageState
                                   Navigator.of(context).pop();
                                 },
                               ),
-                              EventsDayMonthEvent(
+                              /*  EventsDayMonthEvent(
                                 color: const Color(0xFF145E75),
                                 monthStyle: AppStyle.eventsMonthStyle1,
                                 dayStyle: AppStyle.eventsDayStyle1,
                                 startDay: state.eventDetails.getStartDay(),
                                 startMonth: state.eventDetails.getStartMonth(),
-                              ),
+                              ),*/
+                              if (state.eventDetails.getEndDateFull() != null &&
+                                  state.eventDetails.getStartDateFull() != null)
+                                Padding(
+                                  padding: EdgeInsets.only(
+                                      top: MediaQuery.of(context).padding.top,
+                                      left: 16),
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      if (state.eventDetails.ticketUrl != null)
+                                        Share.share(
+                                            state.eventDetails.ticketUrl ?? "");
+                                    },
+                                    child: Container(
+                                      width: 36,
+                                      height: 36,
+                                      padding: EdgeInsets.all(5),
+                                      decoration: ShapeDecoration(
+                                        color: const Color(0xFFE8EFF1),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                        ),
+                                      ),
+                                      child: SvgPicture.asset(
+                                        IconPath.export,
+                                      ),
+                                    ),
+                                  ),
+                                )
                             ],
                           ),
-                          const Expanded(
+                          /* const Expanded(
                             child: SizedBox(),
                           ),
                           SizedBox(
@@ -126,7 +157,7 @@ class _SingleEventDescriptionPageState
                                 });
                               },
                             ),
-                          ),
+                          ),*/
                         ],
                       ),
                     ),

@@ -16,6 +16,7 @@ class FilterTextField extends StatelessWidget {
   final TextInputType? textInputType;
   final void Function(String)? onChanged;
   final void Function(String)? onSubmitted;
+  final TextEditingController? textEditingController;
 
   FilterTextField(
       {super.key,
@@ -23,7 +24,8 @@ class FilterTextField extends StatelessWidget {
       this.hintText,
       this.onChanged,
       this.onSubmitted,
-      this.textInputType});
+      this.textInputType,
+      this.textEditingController});
 
   @override
   Widget build(BuildContext context) {
@@ -31,6 +33,7 @@ class FilterTextField extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: CustomTextFieldWidget(
         hintText: hintText ?? 'search'.tr(),
+        controller: textEditingController,
         suffixIcon: const DrawIconBasedTypeWidget(
           icon: IconPath.search,
           iconColor: AppColor.blackModern600Light,

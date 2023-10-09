@@ -291,6 +291,7 @@ class DgisMapView(
     override fun search(
         queryText: String,
         categories: SearchCategoriesMessage?,
+        spatialRestriction: List<GeoPointMessage>?,
         weekTime: WeekTimeSearchMessage?,
         searchRect: GeoRectMessage?,
         sortingType: SortingTypeMessage,
@@ -302,6 +303,9 @@ class DgisMapView(
             categories = categories?.categories?.flatMap {
                 it.category.toRubrics()
             },
+            spatialRestriction = spatialRestriction?.map {
+                it.toGeoPoint()
+            },
             searchGeoRect = searchRect?.toGeoRect(),
             weekTimeMessage = weekTime,
             sortingType = sortingType,
@@ -312,6 +316,7 @@ class DgisMapView(
 
     override fun searchByQuery(
         query: SearchQueryMessage,
+        spatialRestriction: List<GeoPointMessage>?,
         weekTime: WeekTimeSearchMessage?,
         searchRect: GeoRectMessage?,
         sortingType: SortingTypeMessage,
@@ -320,6 +325,9 @@ class DgisMapView(
     ) {
         searchHandler?.searchByQuery(
             queryId = query,
+            spatialRestriction = spatialRestriction?.map {
+                it.toGeoPoint()
+            },
             searchGeoRect = searchRect?.toGeoRect(),
             weekTimeMessage = weekTime,
             sortingType = sortingType,
@@ -330,6 +338,7 @@ class DgisMapView(
 
     override fun searchByCategory(
         category: SearchCategoryMessage,
+        spatialRestriction: List<GeoPointMessage>?,
         weekTime: WeekTimeSearchMessage?,
         searchRect: GeoRectMessage?,
         sortingType: SortingTypeMessage,
@@ -339,6 +348,9 @@ class DgisMapView(
         if (category == SearchCategoryMessage.PARKS) {
             searchHandler?.searchByParkCategory(
                 searchGeoRect = searchRect?.toGeoRect(),
+                spatialRestriction = spatialRestriction?.map {
+                    it.toGeoPoint()
+                },
                 weekTimeMessage = weekTime,
                 sortingType = sortingType,
                 pageSize = pageSize.toInt(),
@@ -349,6 +361,9 @@ class DgisMapView(
 
         searchHandler?.searchByCategories(
             categories = category.toRubrics(),
+            spatialRestriction = spatialRestriction?.map {
+                it.toGeoPoint()
+            },
             searchGeoRect = searchRect?.toGeoRect(),
             weekTimeMessage = weekTime,
             sortingType = sortingType,

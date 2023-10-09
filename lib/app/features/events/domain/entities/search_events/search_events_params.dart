@@ -1,3 +1,4 @@
+import '../../../../../core/utils/nullable.dart';
 import '../events_category/events_category_item.dart';
 import '../../../../../core/utils/utils_exports.dart'
     show AppColor, AppStyle, CommonFunctions, DateForm, DateTimeExtension;
@@ -32,29 +33,37 @@ class SearchEventsParams {
   SearchEventsParams copyWith(
       {int? page,
       int? size,
-      String? keyword,
-      EventCategoryItem? selectedCity,
-      EventCategoryItem? selectedSeason,
-      EventCategoryItem? selectedAudince,
-      EventCategoryItem? selectedCategory,
-      EventCategoryItem? selectedFees,
-      DateTime? dateFrom,
-      DateTime? dateTo,
-      bool? isFree,
-      String? sortBy}) {
+      Nullable<String?>? keyword,
+      Nullable<EventCategoryItem?>? selectedCity,
+      Nullable<EventCategoryItem?>? selectedSeason,
+      Nullable<EventCategoryItem?>? selectedAudince,
+      Nullable<EventCategoryItem?>? selectedCategory,
+      Nullable<EventCategoryItem?>? selectedFees,
+      Nullable<DateTime?>? dateFrom,
+      Nullable<DateTime?>? dateTo,
+      Nullable<bool?>? isFree,
+      Nullable<String?>? sortBy}) {
     return SearchEventsParams(
-        page: page ?? this.page,
-        size: size ?? this.size,
-        keyword: keyword ?? this.keyword,
-        selectedCity: selectedCity ?? this.selectedCity,
-        selectedSeason: selectedSeason ?? this.selectedSeason,
-        selectedAudince: selectedAudince ?? this.selectedAudince,
-        selectedCategory: selectedCategory ?? this.selectedCategory,
-        dateFrom: dateFrom ?? this.dateFrom,
-        dateTo: dateTo ?? this.dateTo,
-        isFree: isFree ?? this.isFree,
-        sortBy: sortBy ?? this.sortBy,
-        selectedFees: selectedFees ?? this.selectedFees);
+      page: page ?? this.page,
+      size: size ?? this.size,
+      keyword: keyword == null ? this.keyword : keyword.value,
+      selectedCity:
+          selectedCity == null ? this.selectedCity : selectedCity.value,
+      selectedSeason:
+          selectedSeason == null ? this.selectedSeason : selectedSeason.value,
+      selectedAudince: selectedAudince == null
+          ? this.selectedAudince
+          : selectedAudince.value,
+      selectedCategory: selectedCategory == null
+          ? this.selectedCategory
+          : selectedCategory.value,
+      dateFrom: dateFrom == null ? this.dateFrom : dateFrom.value,
+      dateTo: dateTo == null ? this.dateTo : dateTo.value,
+      isFree: isFree == null ? this.isFree : isFree.value,
+      sortBy: sortBy == null ? this.sortBy : sortBy.value,
+      selectedFees:
+          selectedFees == null ? this.selectedFees : selectedFees.value,
+    );
   }
 
   Map<String, dynamic> toMap() {

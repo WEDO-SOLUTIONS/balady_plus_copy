@@ -304,12 +304,12 @@ class HomeMap extends StatelessWidget {
                 return selectedPoint == null
                     ? const SizedBox()
                     : GeneralMapCardWidget(
-                        color: mapViewModel.selectedCategory.value != null
-                            ? mapViewModel.selectedCategory.value!
+                        color: mapViewModel.selectedPointCategory.value != null
+                            ? mapViewModel.selectedPointCategory.value!
                                 .cardIconColor()
-                            : AppColor.primary600Light,
-                        icon: mapViewModel.selectedCategory.value != null
-                            ? mapViewModel.selectedCategory.value!
+                            : Color(0xFFC8A83A),
+                        icon: mapViewModel.selectedPointCategory.value != null
+                            ? mapViewModel.selectedPointCategory.value!
                                 .cardIconName()
                             : "assets/maps/icons/card_icon/general.png",
                         onClose: () {
