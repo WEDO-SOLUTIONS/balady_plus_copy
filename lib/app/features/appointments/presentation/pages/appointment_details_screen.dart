@@ -111,15 +111,20 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
                           false)
                         GestureDetector(
                             onTap: () async {
-                              await BottomSheetDialog.showDraggableSheet(
-                                context,
-                                dialogKeyName:
-                                    DialogName.appointmentsActionsCancelDialog,
-                                currentRouteName:
-                                    RouteName.appointmentDetailsRoute,
-                                child: const ConfirmCancelAppointmentDialog(),
-                                isFullHeight: false,
-                              );
+                              final model =
+                                  locator<AppointmentDetailsViewModel>();
+                              await model.getLookUpList();
+
+                              if (model.cancelReasonsList != null)
+                                await BottomSheetDialog.showDraggableSheet(
+                                  context,
+                                  dialogKeyName: DialogName
+                                      .appointmentsActionsCancelDialog,
+                                  currentRouteName:
+                                      RouteName.appointmentDetailsRoute,
+                                  child: const ConfirmCancelAppointmentDialog(),
+                                  isFullHeight: false,
+                                );
                             },
                             child: FieldData(title: "الغاء الموعد"))
                     ]),

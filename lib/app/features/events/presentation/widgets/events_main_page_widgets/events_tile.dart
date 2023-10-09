@@ -19,6 +19,7 @@ import 'package:flutter_svg_provider/flutter_svg_provider.dart' as svgProvider;
 
 import '../../../../_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
 import '../../../../_shared_feature_/presentation/widgets/custom_shimmer_list_widget.dart';
+import '../../../../_shared_feature_/presentation/widgets/reload_widget.dart';
 import '../../pages/events_not_found_page.dart';
 import '../old_event_card.dart';
 
@@ -56,6 +57,13 @@ class _EventsSectionWidgetState extends State<EventsSectionWidget> {
           );
         if (state.status == BlocStatus.success && state.searchItems.isEmpty)
           return EventsNotFoundPage();
+
+        if (state.status == BlocStatus.failure)
+          return ReloadWidget(
+            onTab: () {
+              context.read<EventsBloc>().add(const GetSearchEvent());
+            },
+          );
 
         return RefreshIndicator(
           onRefresh: () async {
