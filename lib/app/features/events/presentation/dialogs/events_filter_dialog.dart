@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/components/bottom_sheets/draggable_sheet_component.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -46,6 +47,8 @@ class _EventsFilterDialogState extends State<EventsFilterDialog> {
   //bool? isFree;
   String? sortBy;
 
+  final TextEditingController? textEditingController = TextEditingController();
+
   @override
   void initState() {
     // TODO: implement initState
@@ -74,6 +77,7 @@ class _EventsFilterDialogState extends State<EventsFilterDialog> {
             children: [
               FilterTextField(
                 hintText: "search".tr(),
+                textEditingController: textEditingController,
                 textInputType: TextInputType.text,
                 initialValue: widget.params.keyword,
                 onChanged: (value) {
@@ -385,22 +389,34 @@ class _EventsFilterDialogState extends State<EventsFilterDialog> {
                       Navigator.pop(
                           context,
                           widget.params.copyWith(
-                            keyword: keyword,
-                            selectedAudince: selectedAudince,
-                            selectedCategory: selectedCategory,
-                            selectedCity: selectedCity,
-                            selectedSeason: selectedSeason,
-                            sortBy: sortBy,
-                            dateFrom: dateFrom,
-                            dateTo: dateTo,
-                            selectedFees: selectedFees,
+                            keyword: Nullable(keyword),
+                            selectedAudince: Nullable(selectedAudince),
+                            selectedCategory: Nullable(selectedCategory),
+                            selectedCity: Nullable(selectedCity),
+                            selectedSeason: Nullable(selectedSeason),
+                            sortBy: Nullable(sortBy),
+                            dateFrom: Nullable(dateFrom),
+                            dateTo: Nullable(dateTo),
+                            selectedFees: Nullable(selectedFees),
                           ));
                     },
                   ),
                   const SizedBox(height: 16),
                   ElevatedButtonWidget.deletaAll(
                     onPressed: () {
-                      Navigator.pop(context, SearchEventsParams());
+                      //   Navigator.pop(context, SearchEventsParams());
+                      textEditingController?.text = "";
+                      keyword = null;
+                      selectedCity = null;
+                      selectedSeason = null;
+                      selectedAudince = null;
+                      selectedCategory = null;
+                      selectedFees = null;
+                      dateFrom = null;
+                      dateTo = null;
+                      //   isFree = widget.params.isFree;
+                      sortBy = null;
+                      setState(() {});
                     },
                   ),
                 ],

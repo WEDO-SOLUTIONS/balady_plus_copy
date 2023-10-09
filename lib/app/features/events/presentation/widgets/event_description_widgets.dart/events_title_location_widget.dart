@@ -9,6 +9,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:share_plus/share_plus.dart';
 
+import '../../../../_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
+import '../../../../calendar/presentation/widgets/old_calendar_card.dart';
 import '../../bloc/events_bloc.dart';
 import '../../bloc/events_state.dart';
 
@@ -26,9 +28,9 @@ class EventsTitleLocationWidget extends StatelessWidget {
     return BlocBuilder<EventsBloc, EventsState>(builder: (context, state) {
       return Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Expanded(
-            flex: 3,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -37,6 +39,7 @@ class EventsTitleLocationWidget extends StatelessWidget {
                   textStyle: AppStyle.eventMainTitleStyle,
                   maxLines: 10,
                 ),
+                CustomVerticalSpace(height: 4),
                 Row(
                   children: [
                     SvgPicture.asset(IconPath.locationBlack),
@@ -52,67 +55,70 @@ class EventsTitleLocationWidget extends StatelessWidget {
               ],
             ),
           ),
-          SizedBox(
-            width: 8,
-          ),
-          Expanded(
-            child: Row(
-              children: [
-                if (state.eventDetails.ticketUrl != null)
-                  InkWell(
-                    onTap: () {
-                      Share.share(state.eventDetails.ticketUrl ?? "");
-                    },
-                    child: Container(
-                      width: 36,
-                      height: 36,
-                      padding: EdgeInsets.all(5),
-                      decoration: ShapeDecoration(
-                        color: const Color(0xFFE8EFF1),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                      child: SvgPicture.asset(
-                        IconPath.export,
-                      ),
+          Row(
+            children: [
+              InkWell(
+                onTap: () {
+                  Add2Calendar.addEvent2Cal(
+                    buildEvent(
+                      title: state.eventDetails.name ?? "",
+                      desc: state.eventDetails.description ?? "",
+                      url: state.eventDetails.ticketUrl ?? "",
+                      city: state.eventDetails.city ?? "",
+                      startDate: state.eventDetails.getStartDateFull()!,
+                      endDate: state.eventDetails.getEndDateFull()!,
+                    ),
+                  );
+                },
+                child: Container(
+                  width: 36,
+                  height: 36,
+                  padding: EdgeInsets.all(5),
+                  decoration: ShapeDecoration(
+                    color: const Color(0xFFE8EFF1),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
                     ),
                   ),
-                SizedBox(
-                  width: 8,
+                  child: SvgPicture.asset(
+                    IconPath.calendar,
+                  ),
                 ),
-                if (state.eventDetails.getEndDateFull() != null &&
-                    state.eventDetails.getStartDateFull() != null)
-                  InkWell(
-                    onTap: () {
-                      Add2Calendar.addEvent2Cal(
-                        buildEvent(
-                          title: state.eventDetails.name ?? "",
-                          desc: state.eventDetails.description ?? "",
-                          url: state.eventDetails.ticketUrl ?? "",
-                          city: state.eventDetails.city ?? "",
-                          startDate: state.eventDetails.getStartDateFull()!,
-                          endDate: state.eventDetails.getEndDateFull()!,
-                        ),
-                      );
-                    },
-                    child: Container(
-                      width: 36,
-                      height: 36,
-                      padding: EdgeInsets.all(5),
-                      decoration: ShapeDecoration(
-                        color: const Color(0xFFE8EFF1),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
+              ),
+              /*  SizedBox(
+                width: 8,
+              ),
+             if (state.eventDetails.getEndDateFull() != null &&
+                  state.eventDetails.getStartDateFull() != null)
+                InkWell(
+                  onTap: () {
+                    Add2Calendar.addEvent2Cal(
+                      buildEvent(
+                        title: state.eventDetails.name ?? "",
+                        desc: state.eventDetails.description ?? "",
+                        url: state.eventDetails.ticketUrl ?? "",
+                        city: state.eventDetails.city ?? "",
+                        startDate: state.eventDetails.getStartDateFull()!,
+                        endDate: state.eventDetails.getEndDateFull()!,
                       ),
-                      child: SvgPicture.asset(
-                        IconPath.calendar,
+                    );
+                  },
+                  child: Container(
+                    width: 36,
+                    height: 36,
+                    padding: EdgeInsets.all(5),
+                    decoration: ShapeDecoration(
+                      color: const Color(0xFFE8EFF1),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
                       ),
                     ),
+                    child: SvgPicture.asset(
+                      IconPath.calendar,
+                    ),
                   ),
-              ],
-            ),
+                ),*/
+            ],
           )
         ],
       );

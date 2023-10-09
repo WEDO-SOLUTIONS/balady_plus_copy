@@ -1,0 +1,164 @@
+import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
+import 'package:balady_plus/app/core/utils/constants/app_style.dart';
+import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
+import 'package:balady_plus/app/core/utils/enums/app_font_weights.dart';
+import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports.dart';
+import 'package:balady_plus/app/features/commercial_license_cancel/presentation/commercial_license_cancel/blocs/commercial_license_cancel/commercial_license_cancel_bloc.dart';
+import 'package:balady_plus/app/features/commercial_license_cancel/presentation/commercial_license_cancel/mvvm/request_attachments_view_model.dart';
+import 'package:balady_plus/app/features/commercial_license_cancel/presentation/commercial_license_cancel/widgets/card_cost_info_widget.dart';
+import 'package:balady_plus/app/features/commercial_license_cancel/presentation/commercial_license_cancel/widgets/card_desc_widget.dart';
+import 'package:balady_plus/app/features/commercial_license_cancel/presentation/commercial_license_cancel/widgets/widget_title_invoice.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/provider.dart';
+
+class CommercialLicenseCancelTwoScreen extends StatelessWidget {
+  const CommercialLicenseCancelTwoScreen({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    CommercialLicenseCancelBloc bloc =
+        context.watch<CommercialLicenseCancelBloc>();
+
+    RequestAttachmentsViewModel viewModel =
+        context.watch<RequestAttachmentsViewModel>();
+    return Column(
+      children: [
+        Expanded(
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: 16),
+                  CustomEnhancedExpansionPanelWidget(
+                    title: 'request_data'.tr(),
+                    isExpanded: true,
+                    backgroundColor: AppColor.blackModern50Light,
+                    leading:
+                        const DrawIconBasedTypeWidget(icon: IconPath.clipboard),
+                    // backgroundColor: const Color(0x80E6EFEF),
+                    children: [
+                      CardParameter(
+                        title: 'reason_cancellation'.tr(),
+                        value: bloc.reasonCancel!.text,
+                      ),
+                      Column(
+                        children: viewModel.attachments
+                            .map(
+                              (attachment) => Container(
+                                width: double.infinity,
+                                padding: const EdgeInsets.all(12),
+                                margin: const EdgeInsets.only(top: 8),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(8),
+                                  color: AppColor.primary50Light50,
+                                ),
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Flexible(
+                                      fit: FlexFit.tight,
+                                      child: CustomTextWidget(
+                                        attachment.name ?? '',
+                                        textStyle: AppStyle.personalInfoParameterValueTextStyle,
+                                        maxLines: 3,
+                                      ),
+                                    ),
+                                    InkWell(
+                                      child:
+                                          SvgPicture.asset(IconPath.download),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            )
+                            .toList(),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  CardDescWidget(
+                    icon: IconPath.saveIcon,
+                    title: 'note'.tr(),
+                    description: 'notes_submit_commercial_description'.tr(),
+                  ),
+                  const SizedBox(height: 16),
+                  CardDescWidget(
+                    icon: IconPath.saveIcon,
+                    title: 'pledges'.tr(),
+                    description: 'pledges_submit_commercial_description'.tr(),
+                    widget: BlocBuilder<CommercialLicenseCancelBloc,
+                        CommercialLicenseCancelState>(
+                      builder: (context, state) {
+                        return InkWell(
+                          onTap: () {
+                            bloc.add(SelectAcknowledgePledge(
+                                !bloc.acknowledgePledge));
+                          },
+                          child: Row(
+                            children: [
+                              Checkbox(
+                                value: bloc.acknowledgePledge,
+                                onChanged: (bool? value) {
+                                  bloc.add(
+                                      SelectAcknowledgePledge(value ?? false));
+                                },
+                              ),
+                              const SizedBox(width: 2),
+                              Text(
+                                'acknowledge_pledge'.tr(),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+        Container(
+          color: Colors.transparent,
+          padding:
+              const EdgeInsets.only(right: 16, left: 16, top: 5, bottom: 30),
+          child: Column(
+            children: [
+              const CardCostInfoWidget(),
+
+              BlocBuilder<CommercialLicenseCancelBloc,
+                  CommercialLicenseCancelState>(
+                builder: (context, state) {
+                  return EnhancedCustomElevatedButtonWidget(
+                    btnColor: !bloc.acknowledgePledge
+                        ? AppColor.black200
+                        : AppColor.primary900Light,
+                    btnTextColor: !bloc.acknowledgePledge
+                        ? AppColor.black400
+                        : AppColor.white,
+                    btnPressed: !bloc.acknowledgePledge
+                        ? null
+                        : () {
+                            bloc.add(const SubmitCancelRequestPage());
+                          },
+                    btnRadius: 8,
+                    btnText: "submit_order".tr(),
+                    btnTextSize: 16,
+                    btnTextWeight: AppFontWeight.bold,
+                    btnHeight: 56,
+                  );
+                },
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 20)
+      ],
+    );
+  }
+}

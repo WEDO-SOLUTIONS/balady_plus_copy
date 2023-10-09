@@ -6,6 +6,7 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../core/utils/constants/app_style.dart';
 import '../../../../core/utils/enums/date_form.dart';
+import '../../../../core/utils/nullable.dart';
 import '../../../_shared_feature_/presentation/buttons/elevated_button_widgets.dart';
 import '../../../_shared_feature_/presentation/components/bottom_sheets/generic_bottom_sheet_list.dart';
 import '../../../_shared_feature_/presentation/dialogs/bottom_sheet_dialogs.dart';
@@ -41,7 +42,7 @@ class _CalendarFilterDialogState extends State<CalendarFilterDialog> {
   DateTime? dateFrom;
   DateTime? dateTo;
   String? sortBy;
-
+  final TextEditingController? textEditingController = TextEditingController();
   @override
   void initState() {
     // TODO: implement initState
@@ -65,6 +66,7 @@ class _CalendarFilterDialogState extends State<CalendarFilterDialog> {
             children: [
               FilterTextField(
                 hintText: "search".tr(),
+                textEditingController: textEditingController,
                 textInputType: TextInputType.text,
                 initialValue: widget.params.keyword,
                 onChanged: (value) {
@@ -143,18 +145,24 @@ class _CalendarFilterDialogState extends State<CalendarFilterDialog> {
                           widget.params.copyWith(
                             page: 1,
                             size: 10,
-                            keyword: keyword,
-                            selectedSeason: selectedSeason,
-                            dateFrom: dateFrom,
-                            dateTo: dateTo,
+                            keyword: Nullable(keyword),
+                            selectedSeason: Nullable(selectedSeason),
+                            dateFrom: Nullable(dateFrom),
+                            dateTo: Nullable(dateTo),
                           ));
                     },
                   ),
                   const SizedBox(height: 16),
                   ElevatedButtonWidget.deletaAll(
                     onPressed: () {
-                      Navigator.pop(
-                          context, SearchCalendarParams(page: 1, size: 10));
+                      keyword = null;
+                      selectedSeason = null;
+                      dateFrom = null;
+                      dateTo = null;
+                      textEditingController?.text = "";
+                      setState(() {});
+                      //  Navigator.pop(
+                      //      context, SearchCalendarParams(page: 1, size: 10));
                     },
                   ),
                 ],

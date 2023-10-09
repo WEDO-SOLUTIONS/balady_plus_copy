@@ -1,28 +1,34 @@
 import 'dart:async';
-import 'package:balady_plus/app/core/utils/app_analytics_events.dart';
+import 'package:async/async.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/entry_point/presentation/cubit/auth_cubit.dart';
-import 'package:balady_plus/app/features/map_page/data/model/resturant_model.dart';
-import 'package:balady_plus/app/features/vd/vd_exports.dart';
 import 'package:collection/collection.dart';
+import 'dart:math' show abs;
+import 'package:geolocator/geolocator.dart' as geoLocator;
 
 import 'package:balady_plus/app/core/base/base_view_model.dart';
+import 'package:balady_plus/app/features/map_page/data/model/states.dart';
 import 'package:balady_plus/app/features/map_page/extensions/search_category_ext.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/foundation.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 import '../../../../core/dependency_injection/injection_container.dart';
 import '../../../../core/services/local/helpers.dart';
 import '../../../../core/services/local/navigation_services.dart';
+import '../../../../core/utils/app_analytics_events.dart';
 import '../../../events/domain/entities/search_events/search_events_item.dart';
 import '../../../events/domain/entities/search_events/search_events_params.dart';
 import '../../../events/domain/usecase/get_search_events.dart';
+import '../../../vd/domain/entities/gis/gis_params.dart';
+import '../../../vd/domain/entities/gis/gis_response.dart';
 import '../../constants/constants.dart';
 import 'package:flutter/widgets.dart';
 
 import '../../data/data_sources/point_layers_data.dart';
+import '../../data/enums/custom_search_category.dart';
 import '../../data/enums/map_enums.dart';
 import '../../data/model/building_compliance_certificate.dart';
 import '../../data/model/divisional_chart_boundaries.dart';
@@ -32,9 +38,11 @@ import '../../data/model/investment_sites.dart';
 import '../../data/model/layers.dart';
 import '../../data/model/rental_details_response.dart';
 import '../../data/model/requests/map_requests_params.dart';
-import '../../data/model/states.dart';
+import '../../data/model/resturant_model.dart';
 import '../../data/model/white_lands.dart';
 import '../../data/repositories/layers_repositories.dart';
+import 'layers_gis_view_model.dart';
+import 'map_view_model.dart';
 
 const int mil = 300;
 TextEditingController searchController = TextEditingController();
@@ -43,26 +51,29 @@ class MapViewModel extends BaseViewModel {
   final mapAppearanceMessage =
       ValueNotifier<MapAppearanceMessage?>(MapAppearanceMessage.day);
 
-  final GeoPointMessage kingdomTower = GeoPointMessage(
-    latitude: 24.712301,
-    longitude: 46.674175,
-  );
-  final GeoPointMessage ithraa = GeoPointMessage(
-    latitude: 26.336057,
-    longitude: 50.120372,
-  );
+  String? currentSearchSelectionId;
+  final draggableScrollableController = DraggableScrollableController();
+
+  final GeoPointMessage kingdomTower =
+      GeoPointMessage(latitude: 24.712301, longitude: 46.674175);
+  final GeoPointMessage ithraa =
+      GeoPointMessage(latitude: 26.336057, longitude: 50.120372);
   Layers cityPlaces = Layers(
-    id: 0,
-    type: "",
-    geometryType: "",
-    name: "وصول أسهل",
-    defaultVisibility: true,
-  );
-  LatLng? currentTappedLocation;
+      id: 0,
+      type: "",
+      geometryType: "",
+      name: "وصول أسهل",
+      defaultVisibility: true);
   static GeoRectMessage saRect = GeoRectMessage(
     northEast: GeoPointMessage(latitude: 32.568765, longitude: 56.694472),
     southWest: GeoPointMessage(latitude: 15.506104, longitude: 32.61185),
   );
+  static List<GeoPointMessage> saRestrictions = [
+    GeoPointMessage(latitude: 32.568765, longitude: 56.694472),
+    GeoPointMessage(latitude: 32.568765, longitude: 32.61185),
+    GeoPointMessage(latitude: 15.506104, longitude: 32.61185),
+    GeoPointMessage(latitude: 15.506104, longitude: 56.694472),
+  ];
 
   final LayersRepositories layersRepositories;
 
@@ -71,19 +82,24 @@ class MapViewModel extends BaseViewModel {
 
     layerSelected.value = cityPlaces;
   }
-
   final selectedPointId = ValueNotifier<DgisObjectIdMessage?>(null);
   final selectedPoint = ValueNotifier<PointLayersData?>(null);
+  final selectedPointCategory = ValueNotifier<SearchCategoryMessage?>(null);
+
   ValueNotifier<IndoorState> indoorState =
       ValueNotifier(IndoorState.disabled());
 
   ValueNotifier<SearchCategoryMessage?> selectedCategory = ValueNotifier(null);
+  ValueNotifier<CustomSearchCategory?> selectedCustomCategory =
+      ValueNotifier(null);
+
+  ValueNotifier<List<SuggestMessage>?> suggests = ValueNotifier(null);
 
   final layers = ValueNotifier<List<Layers>?>(null);
 
   final layerSelected = ValueNotifier<Layers?>(null);
   GISMapLayers gisSelectedLayer = GISMapLayers.cityPlaces;
-
+//////////////////////////////////////////////////////
   CameraPositionMessage? _lastCameraPosition;
   CameraPositionMessage? _lastRectPosition;
   late DgisMapController controller;
@@ -101,11 +117,12 @@ class MapViewModel extends BaseViewModel {
   final _subscriptions = <StreamSubscription>[];
 
   StreamSubscription? _debounce;
+  CancelableOperation? _searchOperation;
   VisibleRectEvent? _lastHandledEvent;
-
-  // double? _cameraTopPadding;
+  double? _cameraTopPadding;
   double oldZoom = 13;
   bool refreshMap = true;
+  bool searchOnCameraMove = false;
 
   //final selectedPoint = ValueNotifier<DgisObjectIdMessage?>(null);
 
@@ -113,7 +130,6 @@ class MapViewModel extends BaseViewModel {
   final selectedInvetmentPoint = ValueNotifier<InvestmentSites?>(null);
   final selectedResturantPoint = ValueNotifier<ResturantModel?>(null);
   final selectedEventPoint = ValueNotifier<SearchEventsItem?>(null);
-
   final selectedImtethalPoint =
       ValueNotifier<BuildingComplianceCertificate?>(null);
 
@@ -128,28 +144,36 @@ class MapViewModel extends BaseViewModel {
   double zoomValue = 13;
   bool updateMap = true;
 
-  CameraPositionMessage? currentCameraPosition;
-
-  Future<void> selectCategory({required SearchCategoryMessage category}) async {
+  Future<void> selectCategory(
+      {SearchCategoryMessage? category, CustomSearchCategory? custom}) async {
     searchController.clear();
     if (category == selectedCategory.value) {
+      _searchOperation?.cancel();
       selectedCategory.value = null;
     } else {
       selectedCategory.value = category;
+      selectedCustomCategory.value = null;
     }
-
+    if (custom == selectedCustomCategory.value) {
+      selectedCustomCategory.value = null;
+    } else {
+      selectedCustomCategory.value = custom;
+      selectedCategory.value = null;
+    }
+    selectedCategory.notifyListeners();
+    selectedCustomCategory.notifyListeners();
     showLoading1();
     await clearAll();
 
     if (selectedCategory.value != null &&
         selectedCategory.value != SearchCategoryMessage.restaurants &&
-        selectedCategory.value != SearchCategoryMessage.events) {
+        custom == null) {
       performSearch(
         queryText: selectedCategory.value!.displayName(),
       );
     } else if (selectedCategory.value == SearchCategoryMessage.restaurants) {
       callSearch();
-    } else if (selectedCategory.value == SearchCategoryMessage.events) {
+    } else if (selectedCustomCategory.value == CustomSearchCategory.events) {
       callEventsSearch();
     }
     hideLoading1();
@@ -167,12 +191,46 @@ class MapViewModel extends BaseViewModel {
     }
   }
 
+  Timer? _searchClearDebounce;
+
+  void clearSearch() {
+    _searchClearDebounce?.cancel();
+    _searchClearDebounce = Timer(const Duration(milliseconds: 500), () async {
+      await clearAll();
+      suggests.value = null;
+      searchController.text = "";
+    });
+  }
+
 //  late MapObjectManagerMessage mapObjectManager;
 
   Future<void> performSearch({
     required String queryText,
     SearchCategoryMessage? category,
+    SearchQueryMessage? searchQuery,
     bool showLoader = false,
+    bool moveCamera = true,
+  }) async {
+    _searchOperation?.cancel();
+    bottomSheetSizeFraction.value = 0.05;
+    bottomSheetSizeFraction.notifyListeners();
+    _searchOperation = CancelableOperation.fromFuture(
+      _performSearch(
+        queryText: queryText,
+        category: category,
+        searchQuery: searchQuery,
+        showLoader: showLoader,
+        moveCamera: moveCamera,
+      ),
+    );
+  }
+
+  Future<void> _performSearch({
+    required String queryText,
+    SearchCategoryMessage? category,
+    SearchQueryMessage? searchQuery,
+    bool showLoader = false,
+    bool moveCamera = true,
   }) async {
     try {
       if (showLoader) {
@@ -183,30 +241,26 @@ class MapViewModel extends BaseViewModel {
         selectedCategory.notifyListeners();
 
         (double, double)? center = calculatePositionCenter(
-          _lastHandledEvent?.visibleRect.northEastLat,
-          _lastHandledEvent?.visibleRect.northEastLon,
-          _lastHandledEvent?.visibleRect.southWestLat,
-          _lastHandledEvent?.visibleRect.southWestLon,
-        );
-        if (center != null) {
+            _lastHandledEvent?.visibleRect.northEastLat,
+            _lastHandledEvent?.visibleRect.northEastLon,
+            _lastHandledEvent?.visibleRect.southWestLat,
+            _lastHandledEvent?.visibleRect.southWestLon);
+        if (center != null)
           await controller.moveCamera(
-            CameraPositionMessage(
-              point: GeoPointMessage(
-                latitude: center.$1,
-                longitude: center.$2,
-              ),
-              zoom: 13,
-              tilt: 0,
-              bearing: 0,
-            ),
-            1,
-            CameraAnimationTypeMessage.linear,
-          );
-        }
+              CameraPositionMessage(
+                  point: GeoPointMessage(
+                    latitude: center.$1,
+                    longitude: center.$2,
+                  ),
+                  zoom: 13,
+                  tilt: 0,
+                  bearing: 0),
+              1,
+              CameraAnimationTypeMessage.linear);
       }
-      // searchController.text = selectedCategory.value != null
-      //     ? selectedCategory.value!.displayName()
-      //     : queryText;
+      searchController.text = selectedCategory.value != null
+          ? selectedCategory.value!.displayName()
+          : queryText;
 
       SearchResultMessage data = selectedCategory.value != null
           ? await controller.searchByCategory(
@@ -214,19 +268,45 @@ class MapViewModel extends BaseViewModel {
               sortingType: SortingTypeMessage.byRelevance,
               isOpenNow: false,
               searchRect: _lastHandledEvent?.visibleRect.geoRectMessage(),
+              spatialRestriction: saRestrictions,
             )
-          : await controller.search(
-              queryText,
-              categories: [
-                SearchCategoryMessage.gasStations,
-                SearchCategoryMessage.mousques
-              ],
-              sortingType: SortingTypeMessage.byRelevance,
-              isOpenNow: false,
-              searchRect: _lastHandledEvent?.visibleRect.geoRectMessage(),
-            );
+          : (searchQuery != null
+              ? await controller.searchByQuery(
+                  searchQuery,
+                  sortingType: SortingTypeMessage.byRelevance,
+                  spatialRestriction: saRestrictions,
+                )
+              : await controller.search(
+                  queryText,
+                  categories: [
+                    SearchCategoryMessage.gasStations,
+                    SearchCategoryMessage.mousques,
+                    SearchCategoryMessage.restaurants,
+                  ],
+                  sortingType: SortingTypeMessage.byRelevance,
+                  isOpenNow: false,
+                  searchRect: _lastHandledEvent?.visibleRect.geoRectMessage(),
+                  spatialRestriction: saRestrictions,
+                ));
 
       if (showLoader) hideLoading1();
+      if (_searchOperation?.isCanceled == true) {
+        if (data.firstPage != null) {
+          await controller.releasePage(data.firstPage!);
+        }
+        return;
+      }
+
+      searchOnCameraMove = false;
+      print("areaOfInterest: ${data.areaOfInterestPosition}");
+      if (data.areaOfInterestPosition != null && moveCamera) {
+        await controller.moveCamera(
+          data.areaOfInterestPosition!,
+          1,
+          CameraAnimationTypeMessage.linear,
+        );
+      }
+      // searchOnCameraMove = true;
 
       if (data.itemMarkerInfos != null) {
         List<Marker> markers = [];
@@ -238,20 +318,19 @@ class MapViewModel extends BaseViewModel {
         //  await controller.removeAllMarkers(fromManager: mapObjectManager);
 
         for (final markerInfo in data.itemMarkerInfos!) {
-          markers.add(
-            Marker(
-              id: markerInfo?.objectId?.objectId.toString() ??
-                  const Uuid().v4(),
-              options: MarkerOptionsMessage(
-                position: markerInfo!.geoPoint,
-                icon: MarkerIconMessage(
-                  path: iconPath,
-                  width: 24,
-                ),
+          final markerCategory = selectedCategory.value;
+          markers.add(Marker(
+            id: markerInfo?.objectId?.objectId.toString() ?? const Uuid().v4(),
+            options: MarkerOptionsMessage(
+              position: markerInfo!.geoPoint,
+              icon: MarkerIconMessage(
+                path: iconPath,
+                width: 24,
               ),
-              onTap: () async {
-                refreshMap = false;
-                await controller.moveCamera(
+            ),
+            onTap: () async {
+              refreshMap = false;
+              await controller.moveCamera(
                   CameraPositionMessage(
                       point: GeoPointMessage(
                           latitude: markerInfo.geoPoint.latitude,
@@ -260,31 +339,60 @@ class MapViewModel extends BaseViewModel {
                       tilt: 0,
                       bearing: 0),
                   1,
-                  CameraAnimationTypeMessage.linear,
-                );
+                  CameraAnimationTypeMessage.linear);
 
-                refreshView();
-                selectedPointId.value = markerInfo.objectId;
-                selectedPointId.notifyListeners();
-                Future.delayed(const Duration(milliseconds: 300));
-                refreshMap = true;
-              },
-            ),
-          );
+              refreshView();
+              selectedPointId.value = markerInfo.objectId;
+
+              selectedPointCategory.value = markerCategory;
+
+              Future.delayed(
+                const Duration(milliseconds: 300),
+              );
+              refreshMap = true;
+            },
+          ));
+        }
+        if (_searchOperation?.isCanceled == true) {
+          if (data.firstPage != null) {
+            await controller.releasePage(data.firstPage!);
+          }
+          return;
         }
         await clearAll();
         await controller.addMarkers(markers);
-      } else {
-        showError('no_data'.tr());
+      }
+      if (data.firstPage?.items != null) {
+        final responseDistance = await controller.getDistanceTo(
+          _mapToDistanceRequest(
+            data.firstPage!.items
+                .map((e) => e as DirectoryObjectMessage)
+                .toList(),
+          ),
+        );
       }
       if (data.firstPage != null) {
         await controller.releasePage(data.firstPage!);
       }
-      //print(data);
+      print(data);
     } catch (e) {
-      //print(e);
+      print(e);
     }
   }
+
+  List<DistanceRequestMessage> _mapToDistanceRequest(
+          List<DirectoryObjectMessage> values) =>
+      values
+          .where((element) => element.id != null)
+          .where((element) => element.markerPosition != null)
+          .map((e) => DistanceRequestMessage(
+                geoPoint: GeoPointMessage(
+                  latitude: e.markerPosition!.latitude,
+                  longitude: e.markerPosition!.longitude,
+                ),
+                dgisObjectId: e.id!,
+              ))
+          .toList();
 
   Future<void> restorePosition() async {
     if (_lastRectPosition != null) {
@@ -297,12 +405,16 @@ class MapViewModel extends BaseViewModel {
     final result = await controller.initialize();
     if (!result.wasInitialized) {
       initialized.value = false;
+
       return false;
     }
+
     _setupListeners();
 
+    // setLocale(const Locale("ar", "US"), TextDirection.ltr);
     await controller.loadStyles(Constants.mapStyle);
     await controller.overrideLocales(["ar-SA"]);
+    // await controller.overrideLocales([localeState.value.locale]);
     await controller.setMarkerOptions(
       MarkerOptionsMessageOld(
         svgAsset: "assets/maps/icons/ic_marker.svg",
@@ -311,7 +423,51 @@ class MapViewModel extends BaseViewModel {
         iconWidth: 24,
       ),
     );
+
     await controller.setZoomRestrictions(min: 5.5);
+
+/*
+    mapObjectManager = await controller.createMapObjectManagerWithClustering(
+      ClusteringMapObjectManager(
+        options: ClusteringMapObjectManagerOptionsMessage(
+          logicalPixel: 40,
+          maxZoom: 16,
+        ),
+        renderCluster: (objectCount) {
+          return SimpleClusterOptionsMessage(
+            icon: MarkerIconMessage(
+              path: "assets/maps/icons/ic_marker.svg",
+              width: 24,
+            ),
+            text: "$objectCount",
+            textStyle: MarkerTextStyleMessage(fontSize: 16),
+          );
+        },
+        onTap: (clusterObject) async {
+          clusterObject.setIcon("assets/maps/icons/ic_marker_red.svg");
+
+          final clusterPosition = await controller.calcPositionForMarkers(
+            clusterObject.markers,
+            CalcPositionOptionsMessage(
+              screenArea: CameraSetPaddingMessage(
+                bottomPadding: 40,
+                leftPadding: 40,
+                topPadding: 40,
+                rightPadding: 40,
+              ),
+            ),
+          );
+          await controller.moveCamera(
+            clusterPosition,
+            1.5,
+            CameraAnimationTypeMessage.default_,
+          );
+        },
+      ),
+    );
+
+
+*/
 
     try {
       final permission = await Permission.location.request();
@@ -394,6 +550,10 @@ class MapViewModel extends BaseViewModel {
   void onLevelTap(IndoorLevel level) =>
       unawaited(controller.selectIndoorLevel(level));
 
+  void setCameraTopPadding(double? topPadding) {
+    _cameraTopPadding = topPadding;
+  }
+
   @override
   void dispose() {
     for (final sub in _subscriptions) {
@@ -403,8 +563,11 @@ class MapViewModel extends BaseViewModel {
 
     locationEnabledState.dispose();
 
+    _suggestDebounce?.cancel();
+
+    draggableScrollableController.dispose();
+
     unawaited(controller.dispose());
-    super.dispose();
   }
 
   void showDialog() {
@@ -437,7 +600,9 @@ class MapViewModel extends BaseViewModel {
     selectedLands.notifyListeners();
     showLegend.notifyListeners();
     showComplianceLegend.notifyListeners();
+
     selectedWhiteLands.notifyListeners();
+    controller.setHighlighted([]);
   }
 
   void _setupListeners() {
@@ -445,6 +610,18 @@ class MapViewModel extends BaseViewModel {
     _subscriptions.add(
       controller.visibleRectEvents.listen(
         _visibleRectChangeListener,
+      ),
+    );
+
+    _subscriptions.add(
+      controller.cameraPositionEvents.listen(
+        _cameraPositionChangeListener,
+      ),
+    );
+
+    _subscriptions.add(
+      controller.cameraStateEvents.listen(
+        _cameraStateChangeListener,
       ),
     );
 
@@ -460,12 +637,6 @@ class MapViewModel extends BaseViewModel {
     );
 
     _subscriptions.add(
-      controller.cameraPositionEvents.listen(
-        _cameraPositionChangeListener,
-      ),
-    );
-
-    _subscriptions.add(
       controller.indoorLevelNames.listen(
         _indoorLevelsListener,
       ),
@@ -475,24 +646,6 @@ class MapViewModel extends BaseViewModel {
         _indoorActiveLevelListener,
       ),
     );
-
-    /* searchFocusNode.addListener(() {
-      if (searchFocusNode.hasFocus || searchFocusNode.hasPrimaryFocus) {
-        viewHomeBottomSheet.value = false;
-        viewHomeBottomSheet.notifyListeners();
-
-        bottomSheetSizeFraction.value = bottomSheetSizeFraction.value >= 0.7
-            ? bottomSheetSizeFraction.value
-            : 0.7;
-        bottomSheetSizeFraction.notifyListeners();
-
-        Timer(const Duration(milliseconds: 10), () async {
-          viewHomeBottomSheet.value = true;
-          viewHomeBottomSheet.notifyListeners();
-          searchFocusNode.requestFocus();
-        });
-      }
-    });*/
   }
 
   void _indoorLevelsListener(IndoorLevelsEvent event) {
@@ -514,6 +667,14 @@ class MapViewModel extends BaseViewModel {
     _lastCameraPosition = event;
   }
 
+  void _cameraStateChangeListener(CameraStateEvent event) async {
+    if (event.state == CameraState.fly) {
+      searchOnCameraMove = false;
+    } else if (event.state == CameraState.busy) {
+      searchOnCameraMove = true;
+    }
+  }
+
   // When move camera map any change zoom in, zoom out ...
   void _visibleRectChangeListener(VisibleRectEvent event) async {
     if ((!await controller.containsRect(
@@ -525,39 +686,28 @@ class MapViewModel extends BaseViewModel {
       _lastRectPosition = _lastCameraPosition;
     }
     _lastHandledEvent = event;
-    // start Timer when stop move camera  call search funcation
-    _startRequestTimer(event.visibleRect.zoom);
+    if (searchOnCameraMove && selectedPointId.value == null) {
+      // start Timer when stop move camera  call search funcation
+      _startRequestTimer(event.visibleRect.zoom);
+    }
   }
 
   // When click on ayn object
   Future<void> _objectTapListener(TapEvent event) async {
-    // when Click on Map hide ViewHomeBottomSheet if he is not hide
-    print("tapped ddd ${event}");
-
-    /* if (event is ObjectTapEvent) {
-      selectedCategory.value = null;
+    if (event is ObjectTapEvent) {
       selectedPointId.value = event.dgisObjectId.toMessage();
+      selectedPointCategory.value = null;
       viewHomeBottomSheet.value = false;
       viewHomeBottomSheet.notifyListeners();
       bottomSheetSize.notifyListeners();
       bottomSheetSizeFraction.notifyListeners();
       controller.setHighlighted([event.dgisObjectId.toMessage()]);
-      //  refreshView();
-    }*/
-
-    if (event is ObjectTapEvent) {
-      if (event.levelId != null) {
-        refreshView();
-        selectedPointId.value = event.dgisObjectId.toMessage();
-        selectedPointId.notifyListeners();
-      }
-      print("tapped ${event.latLng}");
-      currentTappedLocation = event.latLng;
     }
   }
 
   void _startRequestTimer(double oldZoom) {
     if (refreshMap == false) return;
+
     if (_debounce != null) {
       unawaited(_debounce!.cancel());
       _clearDebounce();
@@ -570,8 +720,8 @@ class MapViewModel extends BaseViewModel {
       this.oldZoom = oldZoom;
       if (this.oldZoom.toInt() != zoomValue.toInt()) {
         zoomValue = oldZoom;
-        if (selectedCategory.value != SearchCategoryMessage.events)
-          callSearch();
+
+        if (selectedCustomCategory.value == null) callSearch();
       }
     });
     _subscriptions.add(_debounce!);
@@ -584,18 +734,17 @@ class MapViewModel extends BaseViewModel {
 
   void _onPanoramaTap(MarkerWithPhotoTapEvent event) {
     try {
-      // final data = event.photoData;
-      //   //print(data);
+      final data = event.photoData;
       unawaited(controller.moveCameraToSelectedPanorama());
     } catch (e) {
-      //print(e);
+      print(e);
     }
   }
 
   void getLocationAndMoveCamera() async {
     var latlng = await Helpers.getMapLocation();
 
-    if (latlng != null) {
+    if (latlng != null)
       await controller.setCameraPosition(
         CameraPositionMessage(
           zoom: 20,
@@ -607,69 +756,53 @@ class MapViewModel extends BaseViewModel {
           ),
         ),
       );
-    }
   }
 
   callSearch() async {
-    //print("search");
-
-    await clearAll();
-
-    print("Gggg ${selectedCategory.value}");
+    // await clearAll();
     if (selectedCategory.value != SearchCategoryMessage.restaurants &&
-        selectedCategory.value != SearchCategoryMessage.events) {
+        selectedCustomCategory.value == null) {
       String? query = selectedCategory.value != null
           ? selectedCategory.value!.displayName()
           : searchController.text;
       if (query != null && query.isNotEmpty) {
-        showLoading1();
+        // showLoading1();
 
         await performSearch(
           queryText: query,
+          moveCamera: false,
         );
-        hideLoading1();
+        // hideLoading1();
+
+        print("Query?");
       }
-    } else if (selectedCategory.value == SearchCategoryMessage.restaurants) {
-      Layers layer = Layers(
-          id: 1,
-          name: "مطاعم",
-          defaultVisibility: true,
-          type: "",
-          geometryType: "esriGeometryPoint");
-
-      GISMapLayers? gisLayer = GISMapLayers.values.firstWhereOrNull(
-        (element) => element.layerId == layer.id,
-      );
-      showLoading1();
-      bottomSheetSize.notifyListeners();
-
-      List? pointList = await layersRepositories.getPointsInLayers(
-        params: MapRequestParams(
-          layer: gisLayer!,
-          northEastLatitude: _lastHandledEvent!.visibleRect.northEastLat,
-          northEastLongitude: _lastHandledEvent!.visibleRect.northEastLon,
-          southWestLongitude: _lastHandledEvent!.visibleRect.southWestLon,
-          southWestLlatitude: _lastHandledEvent!.visibleRect.southWestLat,
-        ),
-      );
-
-      addMarkersWithPoint(pointList, layer.id);
-
       _clearDebounce();
       hideLoading1();
+    } else if (selectedCategory.value == SearchCategoryMessage.restaurants) {
+      callResturantsSearch();
 
       return;
-    } else if (selectedCategory.value == SearchCategoryMessage.events) {
+    } else if (selectedCustomCategory.value != null) {
       // callEventsSearch();
       return;
     }
 
-    if (layerSelected.value == null) return;
     GISMapLayers? gisLayer = GISMapLayers.values.firstWhereOrNull(
       (element) => element.layerId == layerSelected.value!.id,
     );
     print("GISMapLayers $gisLayer");
-    if (gisLayer == GISMapLayers.cityPlaces) return;
+    if (gisLayer == GISMapLayers.cityPlaces)
+      return;
+    else {
+      callGISLayersSearch();
+    }
+  }
+
+  void callGISLayersSearch() async {
+    GISMapLayers? gisLayer = GISMapLayers.values.firstWhereOrNull(
+      (element) => element.layerId == layerSelected.value!.id,
+    );
+
     showLoading1();
     bottomSheetSize.notifyListeners();
 
@@ -711,26 +844,6 @@ class MapViewModel extends BaseViewModel {
     bottomSheetSize.notifyListeners();
 
     if (gisLayer != null) {
-      /*  List? pointList = await layersRepositories.getPointsInLayers(
-        params: MapRequestParams(
-          layer: gisLayer,
-          northEastLatitude: _lastHandledEvent!.visibleRect.northEastLat,
-          northEastLongitude: _lastHandledEvent!.visibleRect.northEastLon,
-          southWestLongitude: _lastHandledEvent!.visibleRect.southWestLon,
-          southWestLlatitude: _lastHandledEvent!.visibleRect.southWestLat,
-        ),
-      );
-      switch (layerSelected.value!.geometryType) {
-        case 'esriGeometryPoint':
-          addMarkersWithPoint(pointList, layerSelected.value!.id);
-          break;
-        case 'esriGeometryPolyline':
-          addPolylineWithPoint(pointList, layerSelected.value!.id);
-          break;
-        case 'esriGeometryPolygon':
-          addPolygonWithPoint(pointList, layerSelected.value!.id);
-          break;
-      }*/
       final searchEvents = GetSearchEvents(repository: sl());
       final getEventsFailureOrSuccess =
           await searchEvents(SearchEventsParams(size: 1000, page: 1));
@@ -785,19 +898,49 @@ class MapViewModel extends BaseViewModel {
     hideLoading1();
   }
 
-  getPointDetails(int objectId) async {
-    showLoading1();
+  callResturantsSearch() async {
+    //print("search");
+    Layers layer = Layers(
+        id: 1,
+        name: "مطاعم",
+        defaultVisibility: true,
+        type: "",
+        geometryType: "esriGeometryPoint");
 
-    List? pointList = await layersRepositories.getPointDetailsInLayers(
+    GISMapLayers? gisLayer = GISMapLayers.values.firstWhereOrNull(
+      (element) => element.layerId == layer.id,
+    );
+    showLoading1();
+    bottomSheetSize.notifyListeners();
+
+    List? pointList = await layersRepositories.getPointsInLayers(
       params: MapRequestParams(
-        layer: gisSelectedLayer,
-        objectId: objectId,
+        layer: gisLayer!,
         northEastLatitude: _lastHandledEvent!.visibleRect.northEastLat,
         northEastLongitude: _lastHandledEvent!.visibleRect.northEastLon,
         southWestLongitude: _lastHandledEvent!.visibleRect.southWestLon,
         southWestLlatitude: _lastHandledEvent!.visibleRect.southWestLat,
       ),
     );
+
+    addMarkersWithPoint(pointList, layer.id);
+
+    _clearDebounce();
+    hideLoading1();
+  }
+
+  getPointDetails(int objectId) async {
+    showLoading1();
+
+    List? pointList = await layersRepositories.getPointDetailsInLayers(
+        params: MapRequestParams(
+      layer: gisSelectedLayer!,
+      objectId: objectId,
+      northEastLatitude: _lastHandledEvent!.visibleRect.northEastLat,
+      northEastLongitude: _lastHandledEvent!.visibleRect.northEastLon,
+      southWestLongitude: _lastHandledEvent!.visibleRect.southWestLon,
+      southWestLlatitude: _lastHandledEvent!.visibleRect.southWestLat,
+    ));
 
     hideLoading1();
 
@@ -814,13 +957,11 @@ class MapViewModel extends BaseViewModel {
         await layersRepositories.getInvetmentDetails(id, type);
 
     hideLoading1();
-    if (data != null) {
-      Navigator.pushNamed(
-        NavigationService.navigatorKey.currentContext!,
-        RouteName.investmentPage,
-        arguments: data,
-      );
-    }
+    if (data != null)
+      Navigator.pushNamed(NavigationService.navigatorKey.currentContext!,
+          RouteName.investmentPage,
+          arguments: data);
+
     return data;
   }
 
@@ -832,13 +973,10 @@ class MapViewModel extends BaseViewModel {
         await layersRepositories.getTempRentalDetails(id, type);
 
     hideLoading1();
-    if (data != null) {
-      Navigator.pushNamed(
-        NavigationService.navigatorKey.currentContext!,
-        RouteName.tempRentalPage,
-        arguments: data,
-      );
-    }
+    if (data != null)
+      Navigator.pushNamed(NavigationService.navigatorKey.currentContext!,
+          RouteName.tempRentalPage,
+          arguments: data);
 
     return data;
   }
@@ -924,7 +1062,6 @@ class MapViewModel extends BaseViewModel {
   }
 
   void addMarkersWithPoint(List? pointList, int layerId) async {
-    print("addMarkersWithPoint");
     if (pointList != null && pointList.isNotEmpty) {
       String iconPath = Constants.icMarkerRestaurant;
       switch (layerId) {
@@ -959,17 +1096,12 @@ class MapViewModel extends BaseViewModel {
               ),
             ),
             onTap: () async {
-              print("on Tap ${layerSelected.value?.id}");
-
               refreshMap = false;
-
               refreshView();
               switch (gisSelectedLayer) {
                 case GISMapLayers.Opportunities:
                   selectedPoint.value = element;
                   selectedInvetmentPoint.value = element;
-
-                  break;
 
                 case GISMapLayers.Resturants:
                   selectedPoint.value = element;
@@ -978,6 +1110,7 @@ class MapViewModel extends BaseViewModel {
                 case GISMapLayers.Events:
                   selectedPoint.value = element;
                   selectedEventPoint.value = element;
+
                   break;
                 default:
                   break;
@@ -993,12 +1126,11 @@ class MapViewModel extends BaseViewModel {
                 selectedResturantPoint.notifyListeners();
               }
 
-              if (selectedCategory.value == SearchCategoryMessage.events) {
+              if (selectedCustomCategory.value == CustomSearchCategory.events) {
                 selectedPoint.value = element;
                 selectedEventPoint.value = element;
                 selectedEventPoint.notifyListeners();
               }
-
               await Future.delayed(
                 const Duration(milliseconds: 300),
               );
@@ -1009,7 +1141,7 @@ class MapViewModel extends BaseViewModel {
       ).toList();
       //await controller.removeAllMarkers();
       await clearAll();
-      print(markers.length);
+
       controller.addMarkers(markers);
     }
   }
@@ -1020,15 +1152,12 @@ class MapViewModel extends BaseViewModel {
       for (var element in pointList) {
         for (List<GeoPointMessage> i in element.pathsGoogle) {
           int id = int.parse(element.id);
-          String idPolyline = "${id.toString()}+$i";
+          String idPolyline = "${id.toString()}+${i}";
           polylines.add(
             Polyline(
               id: idPolyline,
               options: PolylineOptionsMessage(
-                points: i,
-                width: 2,
-                color: 0xff358281,
-              ),
+                  points: i, width: 2, color: 0xff358281),
               onTap: () {
                 refreshView();
                 switch (gisSelectedLayer) {
@@ -1039,12 +1168,6 @@ class MapViewModel extends BaseViewModel {
 
                   case GISMapLayers.BSAimtithalBuildingsCertificateL:
                     selectedImtethalPoint.value = element;
-                  /* if (currentTappedLocation != null)
-                      addOneMarkerToPosisiotnWithMoveCamera(
-                          GeoPointWithElevationMessage(
-                              latitude: currentTappedLocation!.latitude,
-                              longitude: currentTappedLocation!.longitude,
-                              elevation: 0));*/
 
                   case GISMapLayers.BSWhiteParcelS:
                     selectedWhiteLands.value = element;
@@ -1073,8 +1196,10 @@ class MapViewModel extends BaseViewModel {
             id: element.id.toString(),
             options: PolygonOptionsMessage(
               strokeWidth: 2,
-              strokeColor: element.strokeColor ?? 0x26000000,
-              color: element.color ?? 0xFF000000,
+              strokeColor: element.strokeColor != null
+                  ? element.strokeColor
+                  : 0x26000000,
+              color: element.color != null ? element.color : 0xFF000000,
               contours: [element.paths],
             ),
             onTap: () {
@@ -1121,9 +1246,8 @@ class MapViewModel extends BaseViewModel {
     bottomSheetSize.notifyListeners();
     showLegend.notifyListeners();
     showComplianceLegend.notifyListeners();
-    bottomSheetSizeFraction.notifyListeners();
-    controller.setHighlighted([]);
 
+    bottomSheetSizeFraction.notifyListeners();
     gisSelectedLayer = GISMapLayers.values
             .firstWhereOrNull((element) => element.layerId == value.id) ??
         GISMapLayers.cityPlaces;
@@ -1153,7 +1277,7 @@ class MapViewModel extends BaseViewModel {
 
   void goToLocation() async {
     Duration duration = CommonProperties.userLocationGIS == null
-        ? const Duration(seconds: 3)
+        ? Duration(seconds: 3)
         : Duration.zero;
     Timer(duration, () async {
       if (CommonProperties.userLocation == null) {
@@ -1183,7 +1307,7 @@ class MapViewModel extends BaseViewModel {
           } else {
             controller.setCameraPosition(CameraPositionMessage(
                 point: GeoPointMessage(
-                    latitude: 24.753021922291822, longitude: 46.72691177371778),
+                    latitude: userLocation.y, longitude: userLocation.x),
                 zoom: 18,
                 tilt: 45,
                 bearing: 0));
@@ -1196,15 +1320,14 @@ class MapViewModel extends BaseViewModel {
   (double, double)? calculatePositionCenter(
       double? x1, double? y1, double? x2, double? y2) {
     if (x1 == null || x2 == null || y1 == null || y2 == null) return null;
-    double centerX = (x1 + x2) / 2;
-    double centerY = (y1 + y2) / 2;
-    return (centerX, centerY);
+    double center_x = (x1 + x2) / 2;
+    double center_y = (y1 + y2) / 2;
+    return (center_x, center_y);
   }
 
   void navigateToImtethal() async {
     CommonFunctions.sendEventToAnalytics(
         AppEvents.navigateToBuildingComplianceFromHome);
-
     if (layers.value?.isEmpty ?? true) await getMinLayers();
     if (layers.value == null) {
       CommonFunctions.showError("server_error_1".tr());
@@ -1228,20 +1351,18 @@ class MapViewModel extends BaseViewModel {
           _lastHandledEvent?.visibleRect.northEastLon,
           _lastHandledEvent?.visibleRect.southWestLat,
           _lastHandledEvent?.visibleRect.southWestLon);
-      if (center != null) {
+      if (center != null)
         await controller.moveCamera(
-          CameraPositionMessage(
-              point: GeoPointMessage(
-                latitude: center.$1,
-                longitude: center.$2,
-              ),
-              zoom: 13,
-              tilt: 0,
-              bearing: 0),
-          1,
-          CameraAnimationTypeMessage.linear,
-        );
-      }
+            CameraPositionMessage(
+                point: GeoPointMessage(
+                  latitude: center.$1,
+                  longitude: center.$2,
+                ),
+                zoom: 13,
+                tilt: 0,
+                bearing: 0),
+            1,
+            CameraAnimationTypeMessage.linear);
     });
 
     bottomSheetSize.value = 0;
@@ -1284,7 +1405,7 @@ class MapViewModel extends BaseViewModel {
       layers.value?.insert(0, cityPlaces);
       layers.notifyListeners();
     } catch (e) {
-      //print(e);
+      print(e);
     }
   }
 
@@ -1293,7 +1414,79 @@ class MapViewModel extends BaseViewModel {
     await controller.removeAllPolygons();
     await controller.removeAllPolylines();
     await controller.removeAll();
+    try {
+      await controller.removeAllHighlights();
+    } catch (e) {}
     return;
+  }
+
+  Timer? _suggestDebounce;
+
+  void updateSuggest({required String queryText}) {
+    _suggestDebounce?.cancel();
+    _suggestDebounce = Timer(const Duration(milliseconds: 500), () {
+      _searchOperation?.cancel();
+      _searchOperation = CancelableOperation.fromFuture(
+        _updateSuggest(
+          queryText: queryText,
+        ),
+      );
+    });
+  }
+
+  Future<void> _updateSuggest({required String queryText}) async {
+    if (queryText.isEmpty) {
+      suggests.value = null;
+      return;
+    }
+
+    List<SuggestedTypeMessage>? allowedResultTypes;
+    if (queryText.contains("منطقة") &&
+        queryText.contains("منطقه") &&
+        queryText.contains("محافظة") &&
+        queryText.contains("محافظه") &&
+        queryText.contains("مدينة") &&
+        queryText.contains("مدينه") &&
+        queryText.contains("حى") &&
+        queryText.contains("حي")) {
+      allowedResultTypes = [SuggestedTypeMessage.admDiv];
+    } else {
+      allowedResultTypes = [
+        SuggestedTypeMessage.admDiv,
+        SuggestedTypeMessage.attraction,
+        SuggestedTypeMessage.attribute,
+        SuggestedTypeMessage.branch,
+        SuggestedTypeMessage.building,
+        SuggestedTypeMessage.coordinates,
+        SuggestedTypeMessage.crossroad,
+        SuggestedTypeMessage.districtArea,
+        SuggestedTypeMessage.parking,
+        SuggestedTypeMessage.region,
+        SuggestedTypeMessage.road,
+        SuggestedTypeMessage.route,
+        SuggestedTypeMessage.station,
+        SuggestedTypeMessage.stationEntrance,
+        SuggestedTypeMessage.street,
+        SuggestedTypeMessage.text,
+      ];
+    }
+    showLoading1();
+
+    final result = await controller.fetchSuggest(
+      queryText,
+      allowedResultTypes: allowedResultTypes,
+      // categories: [
+      //   SearchCategoryMessage.gasStations,
+      //   SearchCategoryMessage.mousques,
+      //   SearchCategoryMessage.restaurants,
+      // ],
+      // sortingType: SortingTypeMessage.byRelevance,
+      // isOpenNow: false,
+      searchRect: _lastHandledEvent?.visibleRect.geoRectMessage(),
+    );
+    hideLoading1();
+
+    suggests.value = result.suggests.whereNotNull().toList();
   }
 
   void moveCamera() async {
@@ -1330,22 +1523,21 @@ class MapViewModel extends BaseViewModel {
     bottomSheetSize.value = 0;
     bottomSheetSize.notifyListeners();
   }
+  // To retreive the map state when goes to the background.
 
 // To Save the map state when goes to the background.
   void saveMapState() async {
     print("saveMapState");
-    currentCameraPosition = await controller.getCameraPosition();
+    _lastCameraPosition = await controller.getCameraPosition();
   }
 
-// To retreive the map state when goes to the background.
-
   void retreiveMapState() {
-    print("retreiveMapState $currentCameraPosition");
+    print("retreiveMapState $_lastCameraPosition");
 
-    if (currentCameraPosition != null)
-      controller.setCameraPosition(currentCameraPosition!);
+    if (_lastCameraPosition != null)
+      controller.setCameraPosition(_lastCameraPosition!);
     refreshMap = true;
-    oldZoom = currentCameraPosition!.zoom;
+    oldZoom = _lastCameraPosition!.zoom;
     callSearch();
   }
 

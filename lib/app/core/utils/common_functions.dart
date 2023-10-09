@@ -17,7 +17,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart' show DateFormat;
 import 'package:localize_and_translate/localize_and_translate.dart';
-import 'package:open_file/open_file.dart' show OpenFile;
+import 'package:open_file_plus/open_file_plus.dart';
 import 'package:path_provider/path_provider.dart'
     show getExternalStorageDirectory, getTemporaryDirectory;
 

@@ -18,7 +18,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
-import 'package:open_file/open_file.dart';
+import 'package:open_file_plus/open_file_plus.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sentry_dio/sentry_dio.dart';
 
@@ -152,13 +152,10 @@ class AttachmentListWidget extends StatelessWidget {
               path: attachments[index].filePath,
               fileName: attachments[index].fileName,
               onPress: () {
-                if (attachments[index].filePath != null &&
-                    !attachments[index].filePath!.startsWith("http"))
+                if (attachments[index].filePath != null && !attachments[index].filePath!.startsWith("http"))
                   CommonFunctions.openFile(File(attachments[index].filePath!));
-                else if (attachments[index].filePath != null &&
-                    attachments[index].filePath!.startsWith("http")) {
-                  showFile(attachments[index].filePath ?? "",
-                      attachments[index].fileName!);
+                else if (attachments[index].filePath != null && attachments[index].filePath!.startsWith("http")) {
+                  showFile(attachments[index].filePath ?? "", attachments[index].fileName!);
                 }
               },
               hint: attachments[index].hint,
