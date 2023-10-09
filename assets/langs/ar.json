@@ -3333,6 +3333,7 @@
   "back_order": "العودة للطلب",
   "scan_qr_code_message": "يمكنك مسح الرمز السريع لعرض البيانات الخدمة",
   "submit_application_successfully_cancel_message" : "تم اصدار الفاتورة الخاصة بخدمة الغاء رخصة تجارية",
-  "ATTACH": "مرفق"
+  "ATTACH": "مرفق", 
+  "event_location_with_google": "الوصول للفعالية عبر خرائط قوقل"
 
 }
