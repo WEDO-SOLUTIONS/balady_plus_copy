@@ -7,6 +7,7 @@ import 'package:balady_plus/etmam_app/features/on_boarding_cities/on_boarding_ci
 
 import '../../../../core/errors/errors_exports.dart'
     show Failure, ServerException, ServerFailure;
+import '../../domain/entities/city_params.dart';
 
 class CityRepositoryImpl implements CityRepository {
   final CityRemoteDataSource remoteDataSource;
@@ -16,9 +17,10 @@ class CityRepositoryImpl implements CityRepository {
       {required this.remoteDataSource, required this.localDataSource});
 
   @override
-  Future<Either<Failure, ApigeeResponse<CityResponse>>> getCities() async {
+  Future<Either<Failure, ApigeeResponse<CityResponse>>> getCities(
+      CityParams params) async {
     try {
-      final data = await remoteDataSource.getCities();
+      final data = await remoteDataSource.getCities(params);
 
       return Right(data);
     } on ServerException catch (error) {

@@ -9,14 +9,15 @@ import 'package:balady_plus/etmam_app/features/on_boarding_cities/on_boarding_ci
     show CityRepository;
 
 import '../../../../core/errors/errors_exports.dart' show Failure;
+import '../entities/city_params.dart';
 
-class GetCities extends UseCase<ApigeeResponse<CityResponse>, NoParams> {
+class GetCities extends UseCase<ApigeeResponse<CityResponse>, CityParams> {
   final CityRepository repository;
 
   GetCities({required this.repository});
   @override
   Future<Either<Failure, ApigeeResponse<CityResponse>>> call(
-      NoParams params) async {
-    return await repository.getCities();
+      CityParams params) async {
+    return await repository.getCities(params);
   }
 }

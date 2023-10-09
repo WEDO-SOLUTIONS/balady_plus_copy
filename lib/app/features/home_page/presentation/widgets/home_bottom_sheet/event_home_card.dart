@@ -71,9 +71,6 @@ class EventHomeCard extends StatelessWidget {
                   ],
                 ),
               ),
-              SizedBox(
-                height: 8,
-              ),
               Container(
                   height: 240,
                   child: ListView.builder(

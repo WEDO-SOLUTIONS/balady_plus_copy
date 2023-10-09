@@ -314,10 +314,10 @@ class _EventsFilterDialogState extends State<EventsFilterDialog> {
                   )
                 ],
               ),*/
-              SizedBox(
-                height: 16,
-              ),
-              CustomTextWidget(
+              // SizedBox(
+              //    height: 16,
+              //  ),
+              /* CustomTextWidget(
                 "events_filter_fess_sort".tr(),
                 textStyle: AppStyle.dropDownTitleTextStyle,
               ),
@@ -378,7 +378,7 @@ class _EventsFilterDialogState extends State<EventsFilterDialog> {
                     ),
                   )
                 ],
-              ),
+              ),*/
               SizedBox(
                 height: 40,
               ),

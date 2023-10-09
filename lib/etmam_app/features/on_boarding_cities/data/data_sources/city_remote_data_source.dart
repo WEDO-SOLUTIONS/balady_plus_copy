@@ -11,8 +11,10 @@ import 'package:balady_plus/etmam_app/core/utils/utils_exports.dart'
     show ApiUrl, ApiParams, WithDelay;
 import 'package:localize_and_translate/localize_and_translate.dart';
 
+import '../../domain/entities/city_params.dart';
+
 abstract class CityRemoteDataSource {
-  Future<ApigeeResponse<CityResponseModel>> getCities();
+  Future<ApigeeResponse<CityResponseModel>> getCities(CityParams params);
 }
 
 class CityRemoteDataSourceImpl extends CityRemoteDataSource {
@@ -21,7 +23,7 @@ class CityRemoteDataSourceImpl extends CityRemoteDataSource {
   CityRemoteDataSourceImpl({required this.webService});
 
   @override
-  Future<ApigeeResponse<CityResponseModel>> getCities() async {
+  Future<ApigeeResponse<CityResponseModel>> getCities(CityParams params) async {
     var response;
 
     try {
