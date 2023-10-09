@@ -29,7 +29,7 @@ class CommercialLicensePermitsViewModel extends BaseViewModel {
               (e) => CommercialLicensePermits.fromJson(e as Map<String, dynamic>)
       ).toList();
     } catch (e) {
-      showError(e.toString());
+      // showError(e.toString());
     }
     isLoading = false;
     notifyListeners();

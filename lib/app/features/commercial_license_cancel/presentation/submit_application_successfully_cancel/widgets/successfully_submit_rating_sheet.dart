@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/core/services/local/helpers.dart';
 import 'package:balady_plus/app/core/services/local/navigation_services.dart';
 import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:balady_plus/app/core/utils/constants/app_style.dart';
@@ -62,13 +63,10 @@ class SuccessfullySubmitRatingSheet extends StatelessWidget {
             text: 'return_home_page'.tr(),
             onPressed: () {
               // go to home Page
-              bool Function(Route<dynamic>) predicate =
-                  ModalRoute.withName(RouteName.bottomNavigation);
-              NavigationService.navigatorKey.currentState!
-                  .pushNamedAndRemoveUntil(
-                RouteName.etmamMainPageCitySelector,
-                predicate,
-              );
+              // bool Function(Route<dynamic>) predicate =
+              // ModalRoute.withName(RouteName.bottomNavigation);
+              // NavigationService.navigatorKey.currentState!.popUntil((predicate));
+              Helpers.backNavigationToHomeScreen();
             },
           ),
         ],
