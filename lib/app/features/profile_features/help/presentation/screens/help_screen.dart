@@ -58,7 +58,7 @@ class HelpScreen extends StatelessWidget {
               onTap: () => Navigator.of(context).pushNamed(
                 RouteName.inappWebview,
                 arguments: (
-                  title: "موقع بلدي الالكتروني",
+                  requestNum: "موقع بلدي الالكتروني",
                   url: "https://balady.gov.sa/ar"
                 ),
               ),

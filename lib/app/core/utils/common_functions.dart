@@ -666,7 +666,7 @@ class CommonFunctions {
     }, (r) async {
       Navigator.of(NavigationService.navigatorKey.currentContext!).pushNamed(
         RouteName.inappWebview,
-        arguments: (title: ''.tr(), url: url),
+        arguments: (requestNum: ''.tr(), url: url),
       );
     });
   }
@@ -882,7 +882,7 @@ class CommonFunctions {
     }, (r) async {
       NavigationService.navigatorKey.currentState?.pushNamed(
         RouteName.inappWebview,
-        arguments: (title: 'request'.tr(), url: redirectUrl),
+        arguments: (requestNum: 'request'.tr(), url: redirectUrl),
       );
     });
   }

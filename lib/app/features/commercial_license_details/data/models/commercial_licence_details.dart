@@ -465,7 +465,7 @@ class LicenseInfo {
   // dynamic sadadPeriod;
   int licenseId;
 
-  // int statusId;
+  int statusId;
   // int expireInDays;
   // dynamic oldLicenseNo;
   // String issueDate;
@@ -482,7 +482,7 @@ class LicenseInfo {
     // required this.licensePeriod,
     // required this.sadadPeriod,
     required this.licenseId,
-    // required this.statusId,
+    required this.statusId,
     // required this.expireInDays,
     // required this.oldLicenseNo,
     // required this.issueDate,
@@ -499,7 +499,7 @@ class LicenseInfo {
         // licensePeriod: json["licensePeriod"],
         // sadadPeriod: json["sadadPeriod"],
         licenseId: json["licenseId"],
-        // statusId: json["statusId"],
+        statusId: json["statusId"],
         // expireInDays: json["expireInDays"],
         // oldLicenseNo: json["oldLicenseNo"],
         // issueDate: json["issueDate"],
