@@ -33,7 +33,6 @@ class SubmitRatingViewModel extends BaseViewModel {
       final data = response.data;
       final result = ResponseBodyModel.fromMap(data).data?.result;
       responseRating = result;
-      return responseRating;
     } catch (e) {
       showError(e.toString());
     }
