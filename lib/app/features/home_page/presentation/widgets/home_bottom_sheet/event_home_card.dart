@@ -75,7 +75,7 @@ class EventHomeCard extends StatelessWidget {
                 height: 8,
               ),
               Container(
-                  height: 230,
+                  height: 240,
                   child: ListView.builder(
                       scrollDirection: Axis.horizontal,
                       shrinkWrap: true,
