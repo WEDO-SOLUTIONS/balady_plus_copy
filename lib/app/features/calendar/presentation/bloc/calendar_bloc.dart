@@ -59,7 +59,7 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
       else {
         emitter(
           state.copyWith(
-              status: BlocStatus.failure,
+              status: BlocStatus.retry,
               errorMessage: (l as ServerFailure).errorMessage),
         );
       }

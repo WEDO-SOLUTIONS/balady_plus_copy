@@ -66,7 +66,7 @@ class EventsBloc extends Bloc<EventsEvent, EventsState> {
       else {
         emitter(
           state.copyWith(
-              status: BlocStatus.failure,
+              status: BlocStatus.retry,
               errorMessage: (l as ServerFailure).errorMessage),
         );
       }

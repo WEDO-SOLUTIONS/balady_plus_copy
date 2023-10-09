@@ -26,7 +26,8 @@ class EventsMainPage extends StatelessWidget {
       create: (context) => EventsBloc()..add(const GetSearchEvent()),
       child: BlocListener<EventsBloc, EventsState>(
         listener: (context, state) {
-          if (state.status == BlocStatus.failure)
+          if (state.status == BlocStatus.failure ||
+              state.status == BlocStatus.retry)
             CommonFunctions.showError(state.errorMessage ?? "");
         },
         child: Scaffold(
