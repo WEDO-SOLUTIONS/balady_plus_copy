@@ -813,7 +813,7 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
     } else if (state.currentStep == 0 && state.benificiaryTypeSelection == 2) {
       add(GetEtmamEntityIdEvent());
     } else if (state.currentStep == 1) {
-      if (state.contactMobileVerified == true) {
+      if (state.contactMobileVerified != true) {
         CommonFunctions.showError("compliance_check_mobile".tr());
       } else {
         if (state.status == BlocStatus.performing) return;
