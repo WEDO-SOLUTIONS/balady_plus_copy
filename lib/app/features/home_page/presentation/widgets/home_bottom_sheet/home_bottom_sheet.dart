@@ -105,18 +105,9 @@ class HomeBottomSheet extends StatelessWidget {
                               zoom = 16;
                             }
                             if (position != null) {
-                              await mapViewModel.controller.moveCamera(
-                                CameraPositionMessage(
-                                  point: GeoPointMessage(
-                                    latitude: position.latitude,
-                                    longitude: position.longitude,
-                                  ),
-                                  zoom: zoom,
-                                  tilt: 0,
-                                  bearing: 0,
-                                ),
-                                1,
-                                CameraAnimationTypeMessage.linear,
+                              await mapViewModel.moveCamera(
+                                position,
+                                zoom,
                               );
                             }
                           }

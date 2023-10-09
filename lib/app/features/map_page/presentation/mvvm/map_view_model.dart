@@ -1158,6 +1158,25 @@ class MapViewModel extends BaseViewModel {
     }
   }
 
+  Future<void> moveCamera(
+    GeoPointWithElevationMessage point,
+    double zoom,
+  ) async {
+    await controller.moveCamera(
+      CameraPositionMessage(
+        point: GeoPointMessage(
+          latitude: point.latitude,
+          longitude: point.longitude,
+        ),
+        zoom: zoom,
+        tilt: _lastCameraPosition?.tilt ?? 0,
+        bearing: _lastCameraPosition?.bearing ?? 0,
+      ),
+      1,
+      CameraAnimationTypeMessage.linear,
+    );
+  }
+
   Future clearAll() async {
     await controller.removeAllMarkers();
     await controller.removeAllPolygons();
