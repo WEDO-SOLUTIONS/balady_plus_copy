@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:open_file_plus/open_file_plus.dart';
 import 'package:path_provider/path_provider.dart';
@@ -139,7 +140,10 @@ class AppointmentDetailsViewModel extends BaseViewModel {
             "${DateTime.now().millisecondsSinceEpoch.toString()}$extension");
         await filetemp.writeAsBytes(bytes);
         print(filetemp.path);
-        OpenFile.open(filetemp.path).then((value) => print(value.message));
+        OpenFile.open(filetemp.path).then((value) => CommonFunctions.sendEvent(
+            dioError: DioException(
+                requestOptions: RequestOptions(baseUrl: "OpenFile")),
+            ex: Exception(value)));
       }
     } catch (ex) {
       print("appintment $ex");
