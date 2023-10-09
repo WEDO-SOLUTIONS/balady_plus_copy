@@ -11,6 +11,8 @@ import '../../../_shared_feature_/presentation/icons/filter_icon.dart';
 import '../../../_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
 import '../../../_shared_feature_/presentation/widgets/custom_shimmer_list_widget.dart';
 import '../../../_shared_feature_/presentation/widgets/default_appbar_widget.dart';
+import '../../../_shared_feature_/presentation/widgets/reload_widget.dart';
+import '../../../_shared_feature_/presentation/widgets/retry_widget.dart';
 import '../../../events/presentation/pages/events_not_found_page.dart';
 import '../../calendar_exports.dart'
     show SectionDate, SectionContainer, NationalDay;
@@ -111,6 +113,18 @@ class _CalendarBodyState extends State<CalendarBody> {
           );
         if (state.status == BlocStatus.success && state.searchItems.isEmpty)
           return CalendarNotFoundPage();
+
+        if (state.status == BlocStatus.failure)
+          return ReloadWidget(
+            onTab: () {
+              context.read<CalendarBloc>().add(GetSearchEvent(
+                  update: false,
+                  params: state.searchedParams.copyWith(
+                      page: 1,
+                      size: ((state.searchedParams.page ?? 1) - 1) *
+                          (state.searchedParams.size ?? 10))));
+            },
+          );
 
         return RefreshIndicator(
           onRefresh: () async {
