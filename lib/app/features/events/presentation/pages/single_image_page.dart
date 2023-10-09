@@ -16,6 +16,7 @@ import 'package:balady_plus/app/features/events/presentation/widgets/event_descr
 import 'package:balady_plus/app/features/events/presentation/widgets/event_description_widgets.dart/events_details_widget.dart';
 import 'package:balady_plus/app/features/events/presentation/widgets/event_description_widgets.dart/events_title_location_widget.dart';
 import 'package:balady_plus/app/features/events/presentation/widgets/events_main_page_widgets/events_start_day_month.dart';
+import 'package:balady_plus/app/features/home_page/home_exports.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -75,6 +76,7 @@ class _SingleEventDescriptionPageState
                   children: [
                     Container(
                       height: 455,
+                      width: MediaQuery.of(context).size.width,
                       padding: EdgeInsets.only(
                         top: MediaQuery.of(context).padding.top,
                         right: 16,
@@ -95,32 +97,38 @@ class _SingleEventDescriptionPageState
                       ),
                       child: Column(
                         children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              InkWell(
-                                child: SvgPicture.asset(
-                                  IconPath.vdAppBarBack,
-                                  color: Colors.white,
+                          Padding(
+                            padding: EdgeInsets.only(
+                                top: MediaQuery.of(context).padding.top,
+                                left: 16),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                InkWell(
+                                  child: CircleIcon(
+                                    iconSize: 24,
+                                    circleSize: 36,
+                                    icon: Icons.close,
+                                    backgroundColor:
+                                        Colors.white.withOpacity(0.7),
+                                  ),
+                                  onTap: () {
+                                    Navigator.of(context).pop();
+                                  },
                                 ),
-                                onTap: () {
-                                  Navigator.of(context).pop();
-                                },
-                              ),
-                              /*  EventsDayMonthEvent(
-                                color: const Color(0xFF145E75),
-                                monthStyle: AppStyle.eventsMonthStyle1,
-                                dayStyle: AppStyle.eventsDayStyle1,
-                                startDay: state.eventDetails.getStartDay(),
-                                startMonth: state.eventDetails.getStartMonth(),
-                              ),*/
-                              if (state.eventDetails.getEndDateFull() != null &&
-                                  state.eventDetails.getStartDateFull() != null)
-                                Padding(
-                                  padding: EdgeInsets.only(
-                                      top: MediaQuery.of(context).padding.top,
-                                      left: 16),
-                                  child: GestureDetector(
+                                /*  EventsDayMonthEvent(
+                                  color: const Color(0xFF145E75),
+                                  monthStyle: AppStyle.eventsMonthStyle1,
+                                  dayStyle: AppStyle.eventsDayStyle1,
+                                  startDay: state.eventDetails.getStartDay(),
+                                  startMonth: state.eventDetails.getStartMonth(),
+                                ),*/
+                                if (state.eventDetails.getEndDateFull() !=
+                                        null &&
+                                    state.eventDetails.getStartDateFull() !=
+                                        null)
+                                  GestureDetector(
                                     onTap: () {
                                       if (state.eventDetails.ticketUrl != null)
                                         Share.share(
@@ -141,9 +149,9 @@ class _SingleEventDescriptionPageState
                                         IconPath.export,
                                       ),
                                     ),
-                                  ),
-                                )
-                            ],
+                                  )
+                              ],
+                            ),
                           ),
                           /* const Expanded(
                             child: SizedBox(),

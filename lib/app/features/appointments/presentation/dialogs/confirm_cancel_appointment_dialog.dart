@@ -29,8 +29,6 @@ class _ConfirmCancelAppointmentDialogState
   void initState() {
     // TODO: implement initState
     super.initState();
-    final model = locator<AppointmentDetailsViewModel>();
-    model.getLookUpList().then((value) => setState(() {}));
   }
 
   @override

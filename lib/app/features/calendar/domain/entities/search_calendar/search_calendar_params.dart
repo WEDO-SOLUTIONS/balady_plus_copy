@@ -36,7 +36,7 @@ class SearchCalendarParams {
   }) {
     return SearchCalendarParams(
       page: page ?? this.page,
-      size: size ?? this.size,
+      size: size == 0 ? 1 : (size ?? this.size),
       keyword: keyword == null ? this.keyword : keyword.value,
       selectedSeason:
           selectedSeason == null ? this.selectedSeason : selectedSeason.value,

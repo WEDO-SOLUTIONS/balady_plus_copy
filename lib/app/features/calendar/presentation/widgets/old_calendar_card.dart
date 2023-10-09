@@ -19,11 +19,11 @@ class OldCalendarCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       margin: padding ?? EdgeInsets.only(top: 16, left: 16, right: 16),
-      height: 221,
+      height: 230,
       width: width ?? MediaQuery.of(context).size.width - 32,
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(17),
         boxShadow: const [
           BoxShadow(
             color: Color(0x14000000),
@@ -38,9 +38,16 @@ class OldCalendarCard extends StatelessWidget {
         children: [
           Container(
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(14),
-              color: Color(0xCCffffff),
-            ),
+                borderRadius: BorderRadius.circular(17),
+                color: Colors.white.withOpacity(0.8),
+                boxShadow: [
+                  BoxShadow(
+                    color: Color(0x14000000),
+                    blurRadius: 4,
+                    offset: Offset(0, 4),
+                    spreadRadius: 0,
+                  )
+                ]),
           ),
           Container(
             padding: EdgeInsets.only(left: 16, right: 16, top: 16),
