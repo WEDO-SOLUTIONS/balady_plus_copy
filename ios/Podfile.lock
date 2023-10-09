@@ -250,8 +250,6 @@ PODS:
     - Flutter
   - open_file_plus (1.0.0):
     - Flutter
-  - open_file_plus (1.0.0):
-    - Flutter
   - OrderedSet (5.0.0)
   - package_info_plus (0.4.5):
     - Flutter

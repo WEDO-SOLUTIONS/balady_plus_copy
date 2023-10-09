@@ -105,7 +105,7 @@ class ComplianceRequestDetailsModel extends ComplianceRequestDetails {
                 json["requestAttachments"]!.map((x) => Attachment.fromJson(x))),
         notes: json["notes"] == null
             ? []
-            : List<dynamic>.from(json["notes"]!.map((x) => x)),
+            : List<Note>.from(json["notes"]!.map((x) => Note.fromJson(x))),
         locationResponseInfoDto: json["locationResponseInfoDto"] == null
             ? null
             : LocationResponseInfoDto.fromJson(json["locationResponseInfoDto"]),

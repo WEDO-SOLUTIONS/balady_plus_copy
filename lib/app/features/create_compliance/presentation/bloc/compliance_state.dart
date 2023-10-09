@@ -250,6 +250,10 @@ class ComplianceState extends Equatable {
       if (documentTypeSelection == 1) {
         if (selectedLicense == null) return false;
       }
+      print(selectedOwnerShip);
+      print(ownershipDate);
+      print(ownershipText);
+      print(ownerShipAgreement);
 
       if (documentTypeSelection == 2) {
         if (selectedOwnerShip == null ||

@@ -53,6 +53,7 @@ class ProfileCard extends StatelessWidget {
           Navigator.of(context).pop();
         } else {
           context.read<DelegatorsCubit>().getDelegators();
+          context.read<DelegatorsCubit>().getAgents();
           await BottomSheetDialog.showDraggableSheet(
             context,
             dialogKeyName: DialogName.delegatorsDialog,
