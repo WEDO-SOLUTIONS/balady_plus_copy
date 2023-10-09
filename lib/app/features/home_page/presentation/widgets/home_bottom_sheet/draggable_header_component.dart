@@ -133,6 +133,10 @@ class _DraggableHeaderComponentState extends State<DraggableHeaderComponent> {
                         Provider.of<MapViewModel>(context, listen: false);
 
                     mapViewModel.updateSuggest(queryText: text);
+
+                    if (text.isEmpty) {
+                      mapViewModel.clearSearch();
+                    }
                   },
                   onSubmitted: (text) {
                     MapViewModel mapViewModel =
