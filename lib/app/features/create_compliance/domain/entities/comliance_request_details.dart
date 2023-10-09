@@ -4,7 +4,7 @@ import '../../../vd/domain/entities/gis/gis_params.dart';
 
 class ComplianceRequestDetails extends Equatable {
   final int? requestId;
-  final dynamic requestNote;
+  final String? requestNote;
   final String? creationDate;
   final dynamic emtithalCertNumber;
   final dynamic emtithalCertIssueDate;
@@ -40,7 +40,7 @@ class ComplianceRequestDetails extends Equatable {
   final List<Attachment>? beneficaryAttachments;
   final List<Attachment>? officeAttachments;
   final List<Attachment>? requestAttachments;
-  final List<dynamic>? notes;
+  final List<Note>? notes;
   final LocationResponseInfoDto? locationResponseInfoDto;
   final bool? isFawry;
   final List<EmtithalItem>? emtithalItems;
@@ -151,7 +151,7 @@ class ComplianceRequestDetails extends Equatable {
                 json["requestAttachments"]!.map((x) => Attachment.fromJson(x))),
         notes: json["notes"] == null
             ? []
-            : List<dynamic>.from(json["notes"]!.map((x) => x)),
+            : List<Note>.from(json["notes"]!.map((x) => Note.fromJson(x))),
         locationResponseInfoDto: json["locationResponseInfoDto"] == null
             ? null
             : LocationResponseInfoDto.fromJson(json["locationResponseInfoDto"]),
@@ -214,7 +214,9 @@ class ComplianceRequestDetails extends Equatable {
         "requestAttachments": requestAttachments == null
             ? []
             : List<dynamic>.from(requestAttachments!.map((x) => x.toJson())),
-        "notes": notes == null ? [] : List<dynamic>.from(notes!.map((x) => x)),
+        "notes": notes == null
+            ? []
+            : List<dynamic>.from(notes!.map((x) => x.toJson())),
         "locationResponseInfoDto": locationResponseInfoDto?.toJson(),
         "isFawry": isFawry,
         "emtithalItems": emtithalItems == null
@@ -227,7 +229,9 @@ class ComplianceRequestDetails extends Equatable {
         "etmamOrderResponseDto": etmamOrderResponseDto,
         "usageDisable": usageDisable,
       };
+
   @override
+  // TODO: implement props
   List<Object?> get props => [];
 }
 
@@ -414,7 +418,6 @@ class LocationResponseInfoDto {
         "isLocationCorrect": isLocationCorrect,
         "guid": guid,
       };
-
   String getFullAddress({
     bool includeStreetName = true,
     bool includeDistrictName = true,
@@ -466,6 +469,34 @@ class LocationResponseInfoDto {
   }
 }
 
+class Note {
+  final String? note;
+  final String? date;
+  final String? statusName;
+  final String? author;
+
+  Note({
+    this.note,
+    this.date,
+    this.statusName,
+    this.author,
+  });
+
+  factory Note.fromJson(Map<String, dynamic> json) => Note(
+        note: json["note"],
+        date: json["date"],
+        statusName: json["statusName"],
+        author: json["author"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "note": note,
+        "date": date,
+        "statusName": statusName,
+        "author": author,
+      };
+}
+
 class OwnerDto {
   final String? identityNumber;
   final int? identityType;
@@ -473,7 +504,7 @@ class OwnerDto {
   final String? ownerName;
   final dynamic agentType;
   final dynamic agencyDto;
-  final bool? specialIqama;
+  final dynamic specialIqama;
 
   OwnerDto({
     this.identityNumber,

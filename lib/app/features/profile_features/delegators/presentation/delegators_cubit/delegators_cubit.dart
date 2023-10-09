@@ -5,15 +5,17 @@ import '../../../../../core/errors/errors_exports.dart' show ServerFailure;
 import '../../../../../core/services/services_exports.dart' show NoParams;
 import '../../../../../core/utils/utils_exports.dart'
     show BlocRequestStatus, Nullable;
-import '../../delegators_exports.dart' show DelegatorEntity, GetDelegators;
+import '../../delegators_exports.dart'
+    show AgentEntity, DelegatorEntity, GetDelegators, GetAgents;
 
 part 'delegators_state.dart';
 
 class DelegatorsCubit extends Cubit<DelegatorsState> {
   final GetDelegators _getDelegators;
-  DelegatorsCubit(
-    this._getDelegators,
-  ) : super(const DelegatorsState());
+  final GetAgents _getAgents;
+
+  DelegatorsCubit(this._getDelegators, this._getAgents)
+      : super(const DelegatorsState());
 
   void getDelegators() async {
     if (state.delegators.isEmpty)
@@ -47,11 +49,49 @@ class DelegatorsCubit extends Cubit<DelegatorsState> {
     emit(state.copyWith(selectedDelegator: Nullable(delegator)));
   }
 
+  void getAgents() async {
+    if (state.agents.isEmpty)
+      emit(state.copyWith(agentStatus: BlocRequestStatus.submissionGetLoading));
+    else
+      emit(
+          state.copyWith(agentStatus: BlocRequestStatus.submissionPostLoading));
+
+    final failureOrSuccess = await _getAgents(NoParams());
+
+    failureOrSuccess.fold(
+      (failure) {
+        BlocRequestStatus status = (failure as ServerFailure).errorCode == "2"
+            ? BlocRequestStatus.submissionGetSuccess
+            : BlocRequestStatus.submissionGetFailure;
+
+        emit(state.copyWith(
+          agentStatus: status,
+          errorMessage: failure.errorMessage,
+        ));
+      },
+      (delegators) {
+        emit(state.copyWith(
+          agentStatus: BlocRequestStatus.submissionGetSuccess,
+          agents: delegators,
+        ));
+      },
+    );
+  }
+
+  void selectAgent(AgentEntity? delegator) {
+    emit(state.copyWith(sAgent: Nullable(delegator)));
+  }
+
   void clearDelegators() {
-    emit(state.copyWith(status: BlocRequestStatus.submissionGetLoading));
+    emit(state.copyWith(
+        status: BlocRequestStatus.submissionGetLoading,
+        agentStatus: BlocRequestStatus.submissionGetLoading));
 
     emit(state.copyWith(
-        status: BlocRequestStatus.submissionGetSuccess, delegators: []));
+        status: BlocRequestStatus.submissionGetSuccess,
+        agentStatus: BlocRequestStatus.submissionGetSuccess,
+        delegators: [],
+        agents: []));
 
     print("Cleared ${state.delegators}");
   }

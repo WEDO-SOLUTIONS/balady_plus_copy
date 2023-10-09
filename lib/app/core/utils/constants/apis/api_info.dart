@@ -82,6 +82,10 @@ class ApiUrl {
   //! Delegators
   static const delegators =
       '/v1/delegation-services/delegated-commercial-records';
+
+  //! Agetns
+  static const agents = '/v1/balady-dashboard/active/agencies';
+
   //! Dashboard
   static const dashboardCards =
       '/v1/balady-dashboard/balady-life-style/main-cards';
@@ -311,7 +315,7 @@ class ApiUrl {
   static const String etmamProfileEntity =
       '/v1/etmamplus-platform-services/search-profiles';
 
- static const String complianceReciptTypes =
+  static const String complianceReciptTypes =
       '/v1/compliance-certificate-mobile-services/receipt-types';
 
 // ! Events

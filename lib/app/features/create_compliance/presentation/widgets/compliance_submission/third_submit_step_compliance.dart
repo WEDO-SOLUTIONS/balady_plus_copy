@@ -238,8 +238,11 @@ class ThirdSubmissionCompliance extends StatelessWidget {
 
                   // صك
                   if (state.selectedOwnerShip?.id == 112) ...[
+                    CustomVerticalSpace(height: 12),
                     DeedTypeWidget(),
+                    CustomVerticalSpace(height: 12),
                     DeadNumberTextField(),
+                    CustomVerticalSpace(height: 12),
                     DeedNumberDateField(),
                   ],
 
@@ -249,22 +252,26 @@ class ThirdSubmissionCompliance extends StatelessWidget {
 //ايصال كهرباء او مياه
                   if (state.selectedOwnerShip?.id == 340) ...[
                     ElectricityReciptTypeField(),
+                    CustomVerticalSpace(height: 12),
                     ElectricityNumberTextField(),
+                    CustomVerticalSpace(height: 12),
                     ElectricityNumberDateField(),
                   ],
 
                   // عقد استثماري - تخصيص حكومي
                   if (state.selectedOwnerShip?.id == 664) ...[
                     InvestmentNumberTextField(),
+                    CustomVerticalSpace(height: 12),
                     InvestmentNumberDateField(),
                   ],
 // حجة استحكام
                   if (state.selectedOwnerShip?.id == 690) ...[
                     EstehkamNumberTextField(),
+                    CustomVerticalSpace(height: 12),
                     EstehkamNumberDateField()
                   ],
 
-                  ComplianceOwnerShipField(),
+                  /* ComplianceOwnerShipField(),
                   CustomVerticalSpace(height: 12),
                   ComplianceDatePicker(
                     title: "compliance_ownership_date".tr(),
@@ -278,7 +285,7 @@ class ThirdSubmissionCompliance extends StatelessWidget {
                           form: form,
                           ownershipDate: time.toHijriFormattedDate1()));
                     },
-                  ),
+                  ),*/
 
                   ComplianceConsent(
                     body: "compliance_ownerShip_body".tr(),
