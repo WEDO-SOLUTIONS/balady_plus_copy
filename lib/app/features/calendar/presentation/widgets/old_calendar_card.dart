@@ -20,7 +20,7 @@ class OldCalendarCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       margin: padding ?? EdgeInsets.only(top: 16, left: 16, right: 16),
-      height: 230,
+      height: 220,
       width: width ?? MediaQuery.of(context).size.width - 32,
       decoration: BoxDecoration(
         color: Colors.white,
@@ -51,8 +51,9 @@ class OldCalendarCard extends StatelessWidget {
                 ]),
           ),
           Container(
-            padding: EdgeInsets.only(left: 16, right: 16, top: 16),
+            padding: EdgeInsets.only(left: 16, right: 16, top: 16, bottom: 16),
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -94,9 +95,6 @@ class OldCalendarCard extends StatelessWidget {
                       size: 20,
                     ),
                   ],
-                ),
-                SizedBox(
-                  height: 32,
                 ),
                 SaudiContainer(
                   btnText: "saudi_calendar_add".tr(),

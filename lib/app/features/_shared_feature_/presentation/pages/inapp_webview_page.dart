@@ -36,9 +36,9 @@ class _InAppWebViewPageState extends State<InAppWebViewPage> {
 
   @override
   Widget build(BuildContext context) {
-    ({String title, String url}) args = ModalRoute.of(context)!
+    ({String requestNum, String url}) args = ModalRoute.of(context)!
         .settings
-        .arguments as ({String title, String url});
+        .arguments as ({String requestNum, String url});
 
     return Scaffold(
       appBar: DefaultAppBarWidget(
