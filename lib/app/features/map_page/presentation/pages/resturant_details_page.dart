@@ -90,18 +90,20 @@ class ResturantDetailsPage extends StatelessWidget {
                           secondIcon: null //IconPath.qrRatingStarIcon,
                           ),
                       CustomVerticalSpace(height: 24),
-                      CustomTextWidget(
-                        "تفاصيل العمل",
-                        fontColor: AppColor.blackModern800Light,
-                        fontWeight: AppFontWeight.bold,
-                        textAlign: TextAlign.start,
-                        fontSize: 18,
-                      ),
-                      CustomVerticalSpace(height: 16),
-                      WorkingDayListWidget(
-                        model: item,
-                      ),
-                      CustomVerticalSpace(height: 16),
+                      if (item.showWorkingHours) ...[
+                        CustomTextWidget(
+                          "تفاصيل العمل",
+                          fontColor: AppColor.blackModern800Light,
+                          fontWeight: AppFontWeight.bold,
+                          textAlign: TextAlign.start,
+                          fontSize: 18,
+                        ),
+                        CustomVerticalSpace(height: 16),
+                        WorkingDayListWidget(
+                          model: item,
+                        ),
+                        CustomVerticalSpace(height: 16),
+                      ],
                       CustomTextWidget(
                         "تفاصيل الموقع",
                         fontColor: AppColor.blackModern800Light,

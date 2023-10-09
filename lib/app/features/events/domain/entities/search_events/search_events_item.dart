@@ -12,6 +12,7 @@ class SearchEventsItem {
   String? locationX;
   String? locationY;
   String? logoImage;
+  String? feesType; 
 
   SearchEventsItem({
     this.id,
@@ -22,7 +23,7 @@ class SearchEventsItem {
     this.endDate,
     this.locationX,
     this.locationY,
-    this.logoImage,
+    this.logoImage, this.feesType
   });
 
   String getStartDay() {

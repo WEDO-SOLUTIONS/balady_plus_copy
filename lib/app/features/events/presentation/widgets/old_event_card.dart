@@ -50,7 +50,7 @@ class OldEventHomeCard extends StatelessWidget {
             Align(
               alignment: Alignment.bottomRight,
               child: Container(
-                padding: EdgeInsets.only(right: 20, bottom: 16),
+                padding: EdgeInsets.only(right: 8, bottom: 16),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -60,43 +60,50 @@ class OldEventHomeCard extends StatelessWidget {
                       day: item.getStartDay(),
                       month: item.getStartMonth(),
                     ),
-                    CustomHorizontalSpace(width: 16),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        CustomTextWidget(item.eventName ?? "",
-                            textAlign: TextAlign.right,
-                            textStyle: TextStyle(
-                              color: Colors.white,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w700,
-                            )),
-                        CustomVerticalSpace(height: 6),
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            IconName(
-                              icon: IconPath.locationHomeEvents,
-                              name: item.city ?? "",
-                              color: Color(0xFFE7E7E8),
-                            ),
-                            CustomHorizontalSpace(width: 8),
-                            IconName(
-                              icon: IconPath.planetRingedHomeEvents,
-                              name: item.category ?? "",
-                              color: Colors.white,
-                            ),
-                          ],
-                        )
-                      ],
+                    CustomHorizontalSpace(width: 10),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Flexible(
+                            child: CustomTextWidget(item.eventName ?? "",
+                                textAlign: TextAlign.right,
+                                maxLines: 2,
+                                textStyle: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w700,
+                                )),
+                          ),
+                          CustomVerticalSpace(height: 6),
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              IconName(
+                                icon: IconPath.locationHomeEvents,
+                                name: item.city ?? "",
+                                color: Color(0xFFE7E7E8),
+                              ),
+                              CustomHorizontalSpace(width: 8),
+                              IconName(
+                                icon: IconPath.planetRingedHomeEvents,
+                                name: item.category ?? "",
+                                color: Colors.white,
+                              ),
+                              CustomHorizontalSpace(width: 8),
+                              if (item.feesType != null &&
+                                  item.feesType!.isNotEmpty)
+                                IconName(
+                                  icon: IconPath.tagHomeEvents,
+                                  name: item.feesType!,
+                                  color: Colors.white,
+                                ),
+                            ],
+                          )
+                        ],
+                      ),
                     ),
-
-                    /* IconName(
-                      icon: IconPath.tagHomeEvents,
-                      name: 'مجانا',
-                      color: Colors.white,
-                    ),*/
                   ],
                 ),
               ),
@@ -145,8 +152,8 @@ class Date extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 42,
-      height: 40,
+      width: 49,
+      height: 49,
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
@@ -154,6 +161,7 @@ class Date extends StatelessWidget {
         borderRadius: BorderRadius.circular(8),
       ),
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           CustomTextWidget(
             day,
@@ -161,9 +169,12 @@ class Date extends StatelessWidget {
             fontColor: AppColor.white,
             fontWeight: AppFontWeight.bold,
           ),
+          CustomVerticalSpace(
+            height: 2,
+          ),
           CustomTextWidget(
             month,
-            fontSize: 8,
+            fontSize: 12,
             fontColor: AppColor.white,
             fontWeight: AppFontWeight.medium,
           )
