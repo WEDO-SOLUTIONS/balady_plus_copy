@@ -13,13 +13,14 @@ extension CustomSearchCategoryData on CustomSearchCategory {
 
   String iconName() {
     return switch (this) {
-      CustomSearchCategory.events => "assets/maps/icons/ticket.svg",
+      CustomSearchCategory.events =>
+        "assets/maps/icons/events_category_icon.svg",
     };
   }
 
   String markerIconName() {
     return switch (this) {
-      CustomSearchCategory.events => "assets/maps/icons/ic_marker.svg",
+      CustomSearchCategory.events => "assets/maps/icons/events_pin.svg",
     };
   }
 

@@ -3,17 +3,17 @@ import 'package:balady_plus/app/features/events/domain/entities/search_events/se
 import 'package:intl/intl.dart';
 
 class SearchEventsItemModel extends SearchEventsItem {
-  SearchEventsItemModel({
-    super.category,
-    super.city,
-    super.endDate,
-    super.eventName,
-    super.id,
-    super.locationX,
-    super.locationY,
-    super.logoImage,
-    super.startDate,
-  });
+  SearchEventsItemModel(
+      {super.category,
+      super.city,
+      super.endDate,
+      super.eventName,
+      super.id,
+      super.locationX,
+      super.locationY,
+      super.logoImage,
+      super.startDate,
+      super.feesType});
 
   factory SearchEventsItemModel.fromMap(Map<String, dynamic> json) {
     DateTime? parseDate(String? dateString) {
@@ -25,15 +25,15 @@ class SearchEventsItemModel extends SearchEventsItem {
     }
 
     return SearchEventsItemModel(
-      id: json["id"],
-      eventName: json["name"],
-      category: json["category"],
-      city: json["city"],
-      startDate: parseDate(json["startDate"]),
-      endDate: parseDate(json["endDate"]),
-      logoImage: json["logoURL"],
-      locationX: json["location"]?["x"],
-      locationY: json["location"]?["y"],
-    );
+        id: json["id"],
+        eventName: json["name"],
+        category: json["category"],
+        city: json["city"],
+        startDate: parseDate(json["startDate"]),
+        endDate: parseDate(json["endDate"]),
+        logoImage: json["logoURL"],
+        locationX: json["location"]?["x"],
+        locationY: json["location"]?["y"],
+        feesType: json["feesType"]);
   }
 }

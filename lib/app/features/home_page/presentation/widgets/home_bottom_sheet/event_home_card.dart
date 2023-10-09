@@ -85,8 +85,10 @@ class EventHomeCard extends StatelessWidget {
                       padding: EdgeInsets.symmetric(vertical: 8),
                       itemBuilder: (context, index) {
                         return Container(
-                            width: MediaQuery.of(context).size.width - 30,
-                            child: OldCalendarCard(item: item));
+                            child: OldCalendarCard(
+                                width: MediaQuery.of(context).size.width - 60,
+                                padding: EdgeInsets.only(top: 16, right: 16),
+                                item: state.searchItems[index]));
                       })),
               SizedBox(
                 height: 8,

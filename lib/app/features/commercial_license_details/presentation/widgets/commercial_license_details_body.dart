@@ -378,12 +378,8 @@ class _CommercialLicenseDetailsBodyState
                                   itemBuilder: (ctx, index) {
                                     return attachments[index].attachUrl != null
                                         ? AttachmentShowWidget(
-                                      fileName:
-                                      attachments[index].fileName ??
-                                          attachments[index].name ??
-                                          '',
-                                      filePath:
-                                      attachments[index].attachUrl!,
+                                      fileName: attachments[index].fileName ?? '',
+                                      filePath: attachments[index].attachUrl!,
                                     )
                                         : const SizedBox();
                                   },
