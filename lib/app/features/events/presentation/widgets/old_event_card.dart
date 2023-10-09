@@ -39,13 +39,11 @@ class OldEventHomeCard extends StatelessWidget {
             Container(
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(14),
+                  //   color: Color(0x3303435633),
                   gradient: LinearGradient(
                       begin: FractionalOffset.topCenter,
                       end: FractionalOffset.bottomCenter,
-                      colors: [
-                        Color(0x0000394A),
-                        Color(0x99155F75),
-                      ])),
+                      colors: [Color(0x0000394A), Color(0xFF155F75)])),
             ),
             Align(
               alignment: Alignment.bottomRight,
