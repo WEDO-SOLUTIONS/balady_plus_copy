@@ -21,6 +21,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart' as svgProvider;
 import 'package:localize_and_translate/localize_and_translate.dart';
+import 'package:share_plus/share_plus.dart';
 
 import '../../../_shared_feature_/presentation/widgets/retry_widget.dart';
 
@@ -107,43 +108,39 @@ class _SingleEventDescriptionPageState
                                   Navigator.of(context).pop();
                                 },
                               ),
-                              EventsDayMonthEvent(
+                              /*  EventsDayMonthEvent(
                                 color: const Color(0xFF145E75),
                                 monthStyle: AppStyle.eventsMonthStyle1,
                                 dayStyle: AppStyle.eventsDayStyle1,
                                 startDay: state.eventDetails.getStartDay(),
                                 startMonth: state.eventDetails.getStartMonth(),
-                              ),
+                              ),*/
                               if (state.eventDetails.getEndDateFull() != null &&
                                   state.eventDetails.getStartDateFull() != null)
-                                GestureDetector(
-                                  onTap: () {
-                                    Add2Calendar.addEvent2Cal(
-                                      buildEvent(
-                                        title: state.eventDetails.name ?? "",
-                                        desc: state.eventDetails.description ??
-                                            "",
-                                        url: state.eventDetails.ticketUrl ?? "",
-                                        city: state.eventDetails.city ?? "",
-                                        startDate: state.eventDetails
-                                            .getStartDateFull()!,
-                                        endDate: state.eventDetails
-                                            .getEndDateFull()!,
+                                Padding(
+                                  padding: EdgeInsets.only(
+                                      top: MediaQuery.of(context).padding.top,
+                                      left: 16),
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      if (state.eventDetails.ticketUrl != null)
+                                        Share.share(
+                                            state.eventDetails.ticketUrl ?? "");
+                                    },
+                                    child: Container(
+                                      width: 36,
+                                      height: 36,
+                                      padding: EdgeInsets.all(5),
+                                      decoration: ShapeDecoration(
+                                        color: const Color(0xFFE8EFF1),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                        ),
                                       ),
-                                    );
-                                  },
-                                  child: Container(
-                                    width: 36,
-                                    height: 36,
-                                    padding: EdgeInsets.all(5),
-                                    decoration: ShapeDecoration(
-                                      color: const Color(0xFFE8EFF1),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(10),
+                                      child: SvgPicture.asset(
+                                        IconPath.export,
                                       ),
-                                    ),
-                                    child: SvgPicture.asset(
-                                      IconPath.calendar,
                                     ),
                                   ),
                                 )
@@ -225,27 +222,6 @@ class _SingleEventDescriptionPageState
             );
           },
         ),
-      ),
-    );
-  }
-
-  Event buildEvent({
-    required String title,
-    required String desc,
-    required String city,
-    required DateTime startDate,
-    required DateTime endDate,
-    required String url,
-  }) {
-    return Event(
-      title: title,
-      description: desc,
-      location: city,
-      startDate: startDate,
-      endDate: endDate,
-      allDay: false,
-      iosParams: IOSParams(
-        url: url,
       ),
     );
   }

@@ -1,12 +1,8 @@
-import 'package:balady_plus/app/core/dependency_injection/injection_container.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
-import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports.dart';
-import 'package:balady_plus/app/features/commercial_license_cancel/data/models/submit_response.dart';
 import 'package:balady_plus/app/features/commercial_license_cancel/presentation/submit_application_successfully_cancel/mvvm/submit_rating_view_model.dart';
 import 'package:balady_plus/app/features/commercial_license_cancel/presentation/submit_application_successfully_cancel/widgets/submit_rating_sheet.dart';
 import 'package:balady_plus/app/features/commercial_license_cancel/presentation/submit_application_successfully_cancel/widgets/successfully_submit_rating_sheet.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 
 class SubmitRatingCancelScreen extends StatelessWidget {
@@ -53,7 +49,7 @@ class SubmitRatingCancelScreen extends StatelessWidget {
                         BorderRadius.vertical(top: Radius.circular(40)),
                       ),
                       margin: EdgeInsets.zero,
-                      child: Selector<SubmitRatingViewModel, Map<String, dynamic>?>(
+                      child: Selector<SubmitRatingViewModel, int?>(
                         selector: (_, provider) => provider.responseRating,
                         builder: (context, responseRating, child) {
                           return responseRating != null

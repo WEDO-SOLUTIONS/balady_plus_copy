@@ -11,14 +11,17 @@ import 'calendar_image_widget.dart';
 
 class OldCalendarCard extends StatelessWidget {
   final SearchCalendarItem item;
-  const OldCalendarCard({super.key, required this.item});
+  final double? width;
+  final EdgeInsets? padding;
+  const OldCalendarCard(
+      {super.key, required this.item, this.width, this.padding});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(top: 16, left: 16, right: 16),
-      height: 201,
-      width: MediaQuery.of(context).size.width - 32,
+      margin: padding ?? EdgeInsets.only(top: 16, left: 16, right: 16),
+      height: 221,
+      width: width ?? MediaQuery.of(context).size.width - 32,
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(14),
@@ -32,23 +35,18 @@ class OldCalendarCard extends StatelessWidget {
         ],
         image: calendarImage(item.logoURL, ImagePath.calendarBackground),
       ),
-      child: Container(
-        padding: EdgeInsets.only(left: 16, right: 16, top: 16),
-        child: Column(
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+      child: Stack(
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(14),
+              color: Color(0xCCffffff),
+            ),
+          ),
+          Container(
+            padding: EdgeInsets.only(left: 16, right: 16, top: 16),
+            child: Column(
               children: [
-                /* Positioned(
-                        top: 15,
-                        left: 18,
-                        child: CircleAvatar(
-                          backgroundColor: const Color(0xA5F7FFFD),
-                          radius: 24,
-                          child: SvgPicture.asset(IconPath.notification),
-                        ),
-                      ),*/
-
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -57,12 +55,15 @@ class OldCalendarCard extends StatelessWidget {
                       size: 14,
                     ),
                     SizedBox(
-                      height: 4,
+                      height: 8,
                     ),
                     Row(
                       children: [
                         SaudiDay(
-                          name: item.startDate?.month.toString() ?? "",
+                          name: item.startDate?.month
+                                  .toString()
+                                  .padLeft(2, "0") ??
+                              "",
                           size: 20,
                         ),
                         SaudiDay(
@@ -78,10 +79,11 @@ class OldCalendarCard extends StatelessWidget {
                       ],
                     ),
                     SizedBox(
-                      height: 4,
+                      height: 8,
                     ),
                     SaudiDay(
-                      name: item.name ?? "",
+                      name: (item.name ?? ""),
+                      height: 1.1,
                       size: 20,
                     ),
                   ],
@@ -91,7 +93,7 @@ class OldCalendarCard extends StatelessWidget {
                 ),
                 SaudiContainer(
                   btnText: "saudi_calendar_add".tr(),
-                  remainingText: item.remainingText() ?? "",
+                  remainingText: "remaining".tr(),
                   timer: item.remainingDays(),
                   addToCalendar: () {
                     Add2Calendar.addEvent2Cal(
@@ -105,25 +107,8 @@ class OldCalendarCard extends StatelessWidget {
                 ),
               ],
             ),
-            SizedBox(
-              height: 32,
-            ),
-            SaudiContainer(
-              btnText: "saudi_calendar_add".tr(),
-              remainingText: item.remainingDays() ?? "",
-              timer: item.remainingDays(),
-              addToCalendar: () {
-                Add2Calendar.addEvent2Cal(
-                  buildEvent(
-                    title: item.name ?? "",
-                    startDate: item.startDate!,
-                    endDate: item.endDate!,
-                  ),
-                );
-              },
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -132,7 +117,9 @@ class OldCalendarCard extends StatelessWidget {
 class SaudiDay extends StatelessWidget {
   final String name;
   final double size;
-  const SaudiDay({super.key, required this.name, required this.size});
+  final double? height;
+  const SaudiDay(
+      {super.key, required this.name, required this.size, this.height});
 
   @override
   Widget build(BuildContext context) {
@@ -140,6 +127,8 @@ class SaudiDay extends StatelessWidget {
       name,
       fontColor: const Color(0xFF145E75),
       fontSize: size,
+      maxLines: 2,
+      height: height,
       fontWeight: AppFontWeight.bold,
     );
   }
@@ -161,7 +150,7 @@ class SaudiContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       //width: MediaQuery.of(context).size.width,
-      height: 66,
+      height: 71,
       padding: EdgeInsets.symmetric(horizontal: 16),
       decoration: BoxDecoration(
         color: Color(0x8cffffff),
@@ -170,36 +159,33 @@ class SaudiContainer extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Expanded(
-            flex: 1,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Flexible(
-                  child: CustomTextWidget(
-                    remainingText,
-                    fontColor: Color(0xFF145E75),
-                    height: 1.4,
-                    fontSize: 11,
-                    maxLines: 4,
-                    fontWeight: AppFontWeight.bold,
-                  ),
-                ),
-                SizedBox(
-                  height: 8,
-                ),
-                CustomTextWidget(
-                  timer,
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Flexible(
+                child: CustomTextWidget(
+                  remainingText,
                   fontColor: Color(0xFF145E75),
-                  fontSize: 24,
+                  height: 1.4,
+                  fontSize: 11,
+                  maxLines: 4,
                   fontWeight: AppFontWeight.bold,
                 ),
-              ],
-            ),
+              ),
+              SizedBox(
+                height: 8,
+              ),
+              CustomTextWidget(
+                timer,
+                fontColor: Color(0xFF145E75),
+                fontSize: 24,
+                fontWeight: AppFontWeight.bold,
+              ),
+            ],
           ),
-          Expanded(
-            flex: 1,
+          Container(
+            height: 40,
             child: ElevatedButton(
               onPressed: () => addToCalendar(),
               style: ElevatedButton.styleFrom(
