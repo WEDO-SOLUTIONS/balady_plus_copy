@@ -114,7 +114,7 @@ class _CalendarBodyState extends State<CalendarBody> {
         if (state.status == BlocStatus.success && state.searchItems.isEmpty)
           return CalendarNotFoundPage();
 
-        if (state.status == BlocStatus.failure)
+        if (state.status == BlocStatus.retry)
           return ReloadWidget(
             onTab: () {
               context.read<CalendarBloc>().add(GetSearchEvent(

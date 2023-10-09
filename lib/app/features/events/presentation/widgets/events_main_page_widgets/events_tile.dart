@@ -58,7 +58,7 @@ class _EventsSectionWidgetState extends State<EventsSectionWidget> {
         if (state.status == BlocStatus.success && state.searchItems.isEmpty)
           return EventsNotFoundPage();
 
-        if (state.status == BlocStatus.failure)
+        if (state.status == BlocStatus.retry)
           return ReloadWidget(
             onTab: () {
               context.read<EventsBloc>().add(const GetSearchEvent());
