@@ -116,7 +116,7 @@ class LicensesListItem extends StatelessWidget {
                         isDeletable: false,
                         isPrintable: false));
               }
-            } else if (license.requestMainTypeId == "1003") {
+            } /*else if (license.requestMainTypeId == "1003") {
               Navigator.pushNamed(
                 context,
                 RouteName.commercialLicenseDetails,
@@ -130,7 +130,8 @@ class LicensesListItem extends StatelessWidget {
                   license.licenseNumber,
                 ),
               );
-            } else {
+            }*/
+            else {
               if (license.redirectUrl == null) return;
               print(license.redirectUrl);
 

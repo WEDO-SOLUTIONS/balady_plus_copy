@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:balady_plus/app/core/utils/constants/remote_config.dart';
+import 'package:balady_plus/etmam_app/features/_shared_feature_/shared/shared_feature_exports.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
@@ -23,15 +24,15 @@ class InAppWebViewPage extends StatefulWidget {
 }
 
 class _InAppWebViewPageState extends State<InAppWebViewPage> {
-  late StreamController<double?> _progessStream;
+  ///late StreamController<double?> _progessStream;
   InAppWebViewController? _controller;
-
+  bool isLoading = true;
   @override
   void initState() {
     super.initState();
     //CookieManager.instance().deleteAllCookies();
 
-    _progessStream = StreamController<double?>();
+    //  _progessStream = StreamController<double?>();
   }
 
   @override
@@ -44,77 +45,74 @@ class _InAppWebViewPageState extends State<InAppWebViewPage> {
       appBar: DefaultAppBarWidget(
         title: "back".tr(),
       ),
-      body: StreamBuilder<double?>(
-        stream: _progessStream.stream,
-        builder: (context, snapshot) {
-          return Stack(
-            children: [
-              InAppWebView(
-                onWebViewCreated: (InAppWebViewController controller) {
-                  _controller = controller;
-                },
-                initialUrlRequest: URLRequest(
-                  // url: Uri.parse('https://flutter.dev/'),
-                  url: Uri.parse(args.url),
-                ),
-                initialOptions: InAppWebViewGroupOptions(
-                  crossPlatform: InAppWebViewOptions(
-                    useShouldOverrideUrlLoading: true,
-                  ),
-                ),
-                onLoadStart: (controller, Uri? url) {
-                  //  print("URL WebView: $url");
-                  // setState(() {
-                  //   this.url = url!.path;
-                  // });
-                },
-                onLoadStop: (controller, Uri? url) {
-                  /* print("URL WebView: $url");
-                  if (url?.path.endsWith("/dashboardclient/dashboard") ??
-                      false) {
-                    Timer(const Duration(milliseconds: 1300), () async {
-                      _controller.loadUrl(
-                          urlRequest: URLRequest(
-                        url: Uri.parse(widget.args.url),
-                      ));
-                    });
-                  }*/
-                  // setState(() {
-                  //   this.url = url!.path;
-                  // });
-
-                  try {
-                    _controller?.evaluateJavascript(
-                        source:
-                            "document.getElementsByClassName('site-header-cont')[0].style.display='none';document.getElementsByClassName('footer')[0].style.display='none';document.getElementsByClassName('breadcrumb')[0].style.display='none'");
-                  } catch (ex) {}
-                },
-                onLoadError: (controller, url, code, message) => print(message),
-                onProgressChanged: (controller, int progress) {
-                  final percent = progress / 100;
-                },
-                onConsoleMessage: (controller, ConsoleMessage consoleMessage) {
-                  "$consoleMessage".warningLog();
-                  "Message coming from Dart side: ${consoleMessage.message}"
-                      .warningLog();
-                },
+      body: Stack(
+        children: [
+          InAppWebView(
+            onWebViewCreated: (InAppWebViewController controller) {
+              _controller = controller;
+            },
+            initialUrlRequest: URLRequest(
+              // url: Uri.parse('https://flutter.dev/'),
+              url: Uri.parse(args.url),
+            ),
+            initialOptions: InAppWebViewGroupOptions(
+              crossPlatform: InAppWebViewOptions(
+                useShouldOverrideUrlLoading: true,
               ),
-              if (snapshot.data != null && snapshot.data! < 1)
-                Center(
-                  child: CircularProgressIndicator(
-                    value: snapshot.data,
-                  ),
-                ),
-            ],
-          );
-        },
+            ),
+            onLoadStart: (controller, Uri? url) {
+              //  print("URL WebView: $url");
+              // setState(() {
+              //   this.url = url!.path;
+              // });
+            },
+            onLoadStop: (controller, Uri? url) {
+              /* print("URL WebView: $url");
+              if (url?.path.endsWith("/dashboardclient/dashboard") ??
+                  false) {
+                Timer(const Duration(milliseconds: 1300), () async {
+                  _controller.loadUrl(
+                      urlRequest: URLRequest(
+                    url: Uri.parse(widget.args.url),
+                  ));
+                });
+              }*/
+              // setState(() {
+              //   this.url = url!.path;
+              // });
+
+              try {
+                _controller?.evaluateJavascript(
+                    source:
+                        "document.getElementsByClassName('site-header-cont')[0].style.display='none';document.getElementsByClassName('footer')[0].style.display='none';document.getElementsByClassName('breadcrumb')[0].style.display='none'");
+              } catch (ex) {}
+
+              setState(() {
+                isLoading = false;
+              });
+            },
+            onLoadError: (controller, url, code, message) => print(message),
+            onProgressChanged: (controller, int progress) {
+              final percent = progress / 100;
+            },
+            onConsoleMessage: (controller, ConsoleMessage consoleMessage) {
+              "$consoleMessage".warningLog();
+              "Message coming from Dart side: ${consoleMessage.message}"
+                  .warningLog();
+            },
+          ),
+          if (isLoading)
+            Center(
+              child: CustomLoadingWidget(),
+            ),
+        ],
       ),
     );
   }
 
   @override
   void dispose() {
-    _progessStream.close();
+    // _progessStream.close();
     _controller?.stopLoading();
     _controller?.removeAllUserScripts();
     _controller = null;
