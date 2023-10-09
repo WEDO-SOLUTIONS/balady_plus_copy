@@ -25,15 +25,15 @@ class CurrentWeather extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider.value(
-      value: sl<WeatherBloc>(), //..add(GetWeatherForLocation()),
+      value: sl<WeatherBloc>()..add(GetWeatherForLocation()),
       child: GestureDetector(
         onTap: () {
           context.pushNamedRoute(RouteName.weatherMainPage);
         },
         child: BlocListener<LocationCubit, LocationState>(
           listener: (context, state) {
-            // if (state.requestsStatus == BlocStatus.success)
-            //    sl<WeatherBloc>().add(GetWeatherForLocation());
+            if (state.requestsStatus == BlocStatus.success)
+              sl<WeatherBloc>().add(GetWeatherForLocation());
           },
           child: BlocBuilder<LocationCubit, LocationState>(
             builder: (context, state) {
