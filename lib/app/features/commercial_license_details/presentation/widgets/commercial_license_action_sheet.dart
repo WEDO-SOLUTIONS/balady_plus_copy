@@ -51,8 +51,7 @@ class CommercialLicenseActionSheet extends StatelessWidget {
                                             create: (BuildContext context) =>
                                                 CommercialLicenseReasonCancelViewModel(
                                               webService: sl(),
-                                              submitterInfo:
-                                                  provider.submitterInfo,
+                                              submitterInfo: provider.submitterInfo,
                                               licenseId: provider.licenseId,
                                             ),
                                             child:

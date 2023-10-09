@@ -76,38 +76,38 @@ class CommercialLicenseReasonCancelSheet extends StatelessWidget {
             },
           ),
           const SizedBox(height: 16),
-          ElevatedButtonWidget.primaryCustom(
-            text: "undo".tr(),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          ),
-          const SizedBox(height: 16),
           Consumer<CommercialLicenseReasonCancelViewModel>(
             builder: (context, isLoading, child) {
               return ElevatedButtonWidget.primaryCustomBorder(
                 text: 'start_cancellation_request'.tr(),
                 onPressed: !provider.isLoading
                     ? () async {
-                        if (provider.reasonCancel != null) {
-                          Navigator.pop(context);
-                          Navigator.pushNamed(
-                            context,
-                            RouteName.commercialLicenseApplyCancel,
-                            arguments: ApplyCancelViewModel(
-                              webService: sl(),
-                              licenseId: provider.licenseId,
-                              reasonCancel: provider.reasonCancel!,
-                              submitterInfo: provider.submitterInfo,
-                            ),
-                          );
-                        } else {
-                          CommonFunctions.showError(
-                              'select_cancellation_reason');
-                        }
-                      }
+                  if (provider.reasonCancel != null) {
+                    Navigator.pop(context);
+                    Navigator.pushNamed(
+                      context,
+                      RouteName.commercialLicenseApplyCancel,
+                      arguments: ApplyCancelViewModel(
+                        webService: sl(),
+                        licenseId: provider.licenseId,
+                        reasonCancel: provider.reasonCancel!,
+                        submitterInfo: provider.submitterInfo,
+                      ),
+                    );
+                  } else {
+                    CommonFunctions.showError(
+                        'select_cancellation_reason'.tr());
+                  }
+                }
                     : () {},
               );
+            },
+          ),
+          const SizedBox(height: 16),
+          ElevatedButtonWidget.primaryCustom(
+            text: "undo".tr(),
+            onPressed: () {
+              Navigator.of(context).pop();
             },
           ),
         ],

@@ -100,7 +100,7 @@ class InvoicesListItem extends StatelessWidget {
               } else if (invoice.redirectUrl != null) {
                 context.pushNamedRoute(
                   RouteName.inappWebview,
-                  arguments: (title: 'invoice'.tr(), url: invoice.redirectUrl),
+                  arguments: (requestNum: 'invoice'.tr(), url: invoice.redirectUrl),
                 );
                 return;
               }

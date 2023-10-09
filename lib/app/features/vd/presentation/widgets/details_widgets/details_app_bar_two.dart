@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/core/utils/constants/app_style.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/image_paths.dart';
 import 'package:balady_plus/app/features/vd/vd_exports.dart';
 import 'package:flutter/material.dart';
@@ -15,20 +16,20 @@ import '../../../../_shared_feature_/shared_feature_exports.dart';
 import '../../../../home_page/home_exports.dart' show CircleIcon;
 
 class DetailsAppBarTwo extends StatelessWidget implements PreferredSizeWidget {
+  final int requestNum;
   final double currentStep;
   final int pageLength;
   final VoidCallback backOnPress;
   final VoidCallback onTapCloseAction;
 
-
-  const DetailsAppBarTwo(
-      {Key? key,
-      required this.currentStep,
-      required this.backOnPress,
-      required this.pageLength,
-      required this.onTapCloseAction,
-      })
-      : super(key: key);
+  const DetailsAppBarTwo({
+    Key? key,
+    required this.currentStep,
+    required this.backOnPress,
+    required this.pageLength,
+    required this.onTapCloseAction,
+    required this.requestNum,
+  }) : super(key: key);
 
   @override
   Size get preferredSize => const Size.fromHeight(120);
@@ -37,7 +38,7 @@ class DetailsAppBarTwo extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     return AppBar(
       elevation: 0,
-      leadingWidth: 200,
+      leadingWidth: double.maxFinite,
       leading: GestureDetector(
         behavior: HitTestBehavior.translucent,
         onTap: backOnPress,
@@ -56,6 +57,25 @@ class DetailsAppBarTwo extends StatelessWidget implements PreferredSizeWidget {
                     fontFamily: Constants.appFontType),
                 onPressed: backOnPress,
               ),
+              Expanded(
+                flex: 6,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    CustomTextWidget(
+                      'request'.tr(),
+                      textStyle: AppStyle.radioButtonStyle,
+                    ),
+                    CustomTextWidget(
+                      " #$requestNum",
+                      textStyle: AppStyle.radioButtonStyle.copyWith(
+                        color: AppColor.blackModern500Light,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const Expanded(flex: 2,child: SizedBox())
             ],
           ),
         ),
