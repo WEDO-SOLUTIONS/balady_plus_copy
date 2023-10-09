@@ -297,8 +297,8 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
     }
     
     func search(
-        byCategoryCategory category:
-        SearchCategoryMessage,
+        byCategoryCategory category: SearchCategoryMessage,
+        spatialRestriction: [GeoPointMessage]?,
         weekTime: WeekTimeSearchMessage?,
         searchRect: GeoRectMessage?,
         sortingType: SortingTypeMessage,
@@ -317,6 +317,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         // TODO. Remove, when backend data will fixed.
         if category == .parks {
             searchHandler.searchByParkCategory(
+                spatialRestriction: spatialRestriction,
                 searchGeoRect: searchRect?.geoRect,
                 weekTimeMessage: weekTime,
                 sortingType: sortingType,
@@ -328,6 +329,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
 
         searchHandler.searchByCategories(
             category.toRubrics(),
+            spatialRestriction: spatialRestriction,
             searchGeoRect: searchRect?.geoRect,
             weekTimeMessage: weekTime,
             sortingType: sortingType,
@@ -358,6 +360,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
     func searchQueryText(
         _ queryText: String,
         categories: SearchCategoriesMessage?,
+        spatialRestriction: [GeoPointMessage]?,
         weekTime: WeekTimeSearchMessage?,
         searchRect: GeoRectMessage?,
         sortingType: SortingTypeMessage,
@@ -380,6 +383,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
             categories: categories?.categories.flatMap {
                 $0.category.toRubrics()
             },
+            spatialRestriction: spatialRestriction,
             searchGeoRect: searchRect?.geoRect,
             weekTimeMessage: weekTime,
             sortingType: sortingType,
@@ -390,6 +394,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
     
     func search(
         byQueryQuery query: SearchQueryMessage,
+        spatialRestriction: [GeoPointMessage]?,
         weekTime: WeekTimeSearchMessage?,
         searchRect: GeoRectMessage?,
         sortingType: SortingTypeMessage,
@@ -409,6 +414,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         
         searchHandler.searchByQuery(
             query,
+            spatialRestriction: spatialRestriction,
             searchGeoRect: searchRect?.geoRect,
             weekTimeMessage: weekTime,
             sortingType: sortingType,
@@ -463,6 +469,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
     
     func fetchSuggestsQueryText(
         _ queryText: String,
+        allowedResultTypes: [SuggestedTypeMessage_]?,
         searchRect: GeoRectMessage?,
         completion: @escaping (SuggestResultMessage?, FlutterError?) -> Void
     ) {
@@ -480,6 +487,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
 
         searchHandler.fetchSuggests(
             queryText: queryText,
+            allowedResultTypes: allowedResultTypes,
             searchGeoRect: searchRect?.geoRect,
             completion: completion
         )

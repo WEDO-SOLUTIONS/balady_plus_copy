@@ -85,12 +85,10 @@ class SearchHandler: NSObject {
             URLSession.shared.dataTask(with: request) { data, _, error in
                 guard error == nil, let data = data else {
                     completion(
-                        nil,
-                        FlutterError(
-                            code: "TwinsError",
-                            message: error?.localizedDescription,
-                            details: nil
-                        )
+                        response.toMessage(
+                            externalIds: nil
+                        ),
+                        nil
                     )
                     return
                 }
@@ -99,12 +97,10 @@ class SearchHandler: NSObject {
                 
                 guard let twinsResponse = twinsResponse, twinsResponse.meta.code == 200 else {
                     completion(
-                        nil,
-                        FlutterError(
-                            code: "TwinsError",
-                            message: error?.localizedDescription,
-                            details: nil
-                        )
+                        response.toMessage(
+                            externalIds: nil
+                        ),
+                        nil
                     )
                     return
                 }
@@ -126,6 +122,7 @@ class SearchHandler: NSObject {
     func search(
         _ queryText: String,
         categories: [RubricId]?,
+        spatialRestriction: [GeoPointMessage]?,
         searchGeoRect: DGis.GeoRect?,
         weekTimeMessage: WeekTimeSearchMessage?,
         sortingType: SortingTypeMessage,
@@ -133,7 +130,7 @@ class SearchHandler: NSObject {
         completion: @escaping (SearchResultMessage?, FlutterError?) -> Void
     ) {
         
-        let queryBuilder = categories != nil ?
+        var queryBuilder = categories != nil ?
             SearchQueryBuilder.fromQueryTextAndRubricIds(queryText: queryText, rubricIds: categories!) :
             SearchQueryBuilder.fromQueryText(queryText: queryText)
         
@@ -147,6 +144,9 @@ class SearchHandler: NSObject {
                 )
             )
             .setAreaOfInterest(rect: searchGeoRect)
+            .setSpatialRestriction(spatialRestriction: spatialRestriction?.map {
+                $0.geoPoint
+            })
             .build()
         
         performSearch(query, completion: completion)
@@ -154,6 +154,7 @@ class SearchHandler: NSObject {
     
     func searchByQuery(
         _ query: SearchQueryMessage,
+        spatialRestriction: [GeoPointMessage]?,
         searchGeoRect: DGis.GeoRect?,
         weekTimeMessage: WeekTimeSearchMessage?,
         sortingType: SortingTypeMessage,
@@ -182,6 +183,9 @@ class SearchHandler: NSObject {
                 )
             )
             .setAreaOfInterest(rect: searchGeoRect)
+            .setSpatialRestriction(spatialRestriction: spatialRestriction?.map {
+                $0.geoPoint
+            })
             .build()
         
         performSearch(query, completion: completion)
@@ -189,6 +193,7 @@ class SearchHandler: NSObject {
     
     func searchByCategories(
         _ categories: [RubricId],
+        spatialRestriction: [GeoPointMessage]?,
         searchGeoRect: DGis.GeoRect?,
         weekTimeMessage: WeekTimeSearchMessage?,
         sortingType: SortingTypeMessage,
@@ -205,12 +210,16 @@ class SearchHandler: NSObject {
                 )
             )
             .setAreaOfInterest(rect: searchGeoRect)
+            .setSpatialRestriction(spatialRestriction: spatialRestriction?.map {
+                $0.geoPoint
+            })
             .build()
         
         performSearch(query, completion: completion)
     }
 
     func searchByParkCategory(
+        spatialRestriction: [GeoPointMessage]?,
         searchGeoRect: DGis.GeoRect?,
         weekTimeMessage: WeekTimeSearchMessage?,
         sortingType: SortingTypeMessage,
@@ -228,6 +237,9 @@ class SearchHandler: NSObject {
                 )
 			)
             .setAreaOfInterest(rect: searchGeoRect)
+            .setSpatialRestriction(spatialRestriction: spatialRestriction?.map {
+                $0.geoPoint
+            })
             .build()
 
         performSearch(query, completion: completion)
@@ -251,7 +263,7 @@ class SearchHandler: NSObject {
                 }
 
                 completion(
-                    response.toMessage(withId: pageId, items: itemMarkerInfos),
+                    response.toMessage(withId: pageId, camera: self.map.camera, items: itemMarkerInfos),
                     nil
                 )
             }, failure: { error in
@@ -384,13 +396,21 @@ class SearchHandler: NSObject {
     
     func fetchSuggests(
         queryText: String,
+        allowedResultTypes: [SuggestedTypeMessage_]?,
         searchGeoRect: DGis.GeoRect?,
         completion: @escaping (SuggestResultMessage?, FlutterError?) -> Void
     ) {
-        let suggestQuery = SuggestQueryBuilder
+        var suggestQueryBuilder = SuggestQueryBuilder
             .fromQueryText(queryText: queryText)
             .setAreaOfInterest(rect: searchGeoRect)
-            .build()
+        
+        if let allowedResultTypes {
+            suggestQueryBuilder = suggestQueryBuilder.setAllowedResultTypes(
+                allowedResultTypes: allowedResultTypes.map { $0.type.suggestedType }
+            )
+        }
+            
+        let suggestQuery = suggestQueryBuilder.build()
 
         suggestCancelable = searchManager.suggest(query: suggestQuery).sink(
             receiveValue: {

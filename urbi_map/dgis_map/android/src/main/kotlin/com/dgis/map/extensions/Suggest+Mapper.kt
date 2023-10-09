@@ -65,6 +65,28 @@ fun SuggestedType.toMessage(): SuggestedTypeMessage = when(this) {
     SuggestedType.UNKNOWN -> SuggestedTypeMessage.UNKNOWN
 }
 
+fun SuggestedTypeMessage.toSuggestType(): SuggestedType = when(this) {
+    SuggestedTypeMessage.ADM_DIV -> SuggestedType.ADM_DIV
+    SuggestedTypeMessage.ATTRACTION -> SuggestedType.ATTRACTION
+    SuggestedTypeMessage.ATTRIBUTE -> SuggestedType.ATTRIBUTE
+    SuggestedTypeMessage.BRANCH -> SuggestedType.BRANCH
+    SuggestedTypeMessage.BUILDING -> SuggestedType.BUILDING
+    SuggestedTypeMessage.COORDINATES -> SuggestedType.COORDINATES
+    SuggestedTypeMessage.CROSSROAD -> SuggestedType.CROSSROAD
+    SuggestedTypeMessage.DISTRICT_AREA -> SuggestedType.DISTRICT_AREA
+    SuggestedTypeMessage.ORG -> SuggestedType.ORG
+    SuggestedTypeMessage.ORG_CATEGORY -> SuggestedType.ORG_CATEGORY
+    SuggestedTypeMessage.PARKING -> SuggestedType.PARKING
+    SuggestedTypeMessage.REGION -> SuggestedType.REGION
+    SuggestedTypeMessage.ROAD -> SuggestedType.ROAD
+    SuggestedTypeMessage.ROUTE -> SuggestedType.ROUTE
+    SuggestedTypeMessage.STATION -> SuggestedType.STATION
+    SuggestedTypeMessage.STATION_ENTRANCE -> SuggestedType.STATION_ENTRANCE
+    SuggestedTypeMessage.STREET -> SuggestedType.STREET
+    SuggestedTypeMessage.TEXT -> SuggestedType.TEXT
+    SuggestedTypeMessage.UNKNOWN -> SuggestedType.UNKNOWN
+}
+
 fun MarkedUpText.toMessage(): MarkedUpTextMessage {
     return MarkedUpTextMessage.Builder()
         .setText(this.text)

@@ -45,4 +45,6 @@ export 'src/events/traffic_state_event.dart'
 
 export 'src/events/navi_message_events.dart';
 
+export 'src/events/camera_state_events.dart';
+
 export 'src/models.dart';

@@ -17,9 +17,9 @@ class SuccessfullySubmitRatingSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BottomSheetWithActions(
-      title: "",
-      body: Column(
+    return Padding(
+      padding: const EdgeInsets.all(22.0),
+      child: Column(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -34,7 +34,9 @@ class SuccessfullySubmitRatingSheet extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               InkWell(
-                onTap: () => Navigator.pop(context),
+                onTap: () {
+                  Helpers.backNavigationToHomeScreen();
+                },
                 child: CircleIcon(
                   icon: Icons.close,
                   iconColor: AppColor.primary600Light,
@@ -54,12 +56,10 @@ class SuccessfullySubmitRatingSheet extends StatelessWidget {
           const SizedBox(height: 16),
           CustomAutoSizeTextWidget(
             'done_send_rating'.tr(),
-            textStyle: AppStyle.profileNameTextStyle.copyWith(
-              color: AppColor.blackModern600Light,
-            ),
+            textStyle: AppStyle.complianceSubtitle.copyWith(),
           ),
           const SizedBox(height: 16),
-          ElevatedButtonWidget.primaryCustomBorder(
+          ElevatedButtonWidget.primaryCustom(
             text: 'return_home_page'.tr(),
             onPressed: () {
               // go to home Page
@@ -69,6 +69,7 @@ class SuccessfullySubmitRatingSheet extends StatelessWidget {
               Helpers.backNavigationToHomeScreen();
             },
           ),
+          const SizedBox(height: 22),
         ],
       ),
     );

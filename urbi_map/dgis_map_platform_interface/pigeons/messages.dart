@@ -92,12 +92,12 @@ enum WeekDayMessage {
 
 class WeekTimeMessage {
   const WeekTimeMessage({
-    this.weekDay,
-    this.time,
+    required this.weekDay,
+    required this.time,
   });
 
-  final WeekDayMessage? weekDay;
-  final DayTimeMessage? time;
+  final WeekDayMessage weekDay;
+  final DayTimeMessage time;
 }
 
 class WeekTimeIntervalMessage {
@@ -714,6 +714,7 @@ class SearchResultMessage {
   SearchResultMessage(
     this.firstPage,
     this.representativeArea,
+    this.areaOfInterestPosition,
     this.itemMarkerInfos,
     this.searchResultType,
     this.dynamicFilters,
@@ -722,6 +723,7 @@ class SearchResultMessage {
 
   final PageMessage? firstPage;
   final GeometryMessage? representativeArea;
+  final CameraPositionMessage? areaOfInterestPosition;
   final List<ItemMarkerInfoMessage?>? itemMarkerInfos;
   final SearchResultTypeMessage searchResultType;
   final List<DynamicFilterMessage?> dynamicFilters;
@@ -800,6 +802,12 @@ class MarkedUpTextMessage {
   final List<MarkedUpTextSpanMessage?> matchedParts;
 }
 
+class SuggestedTypeMessage_ {
+  SuggestedTypeMessage_(this.type);
+
+  final SuggestedTypeMessage type;
+}
+
 class SuggestMessage {
   SuggestMessage(this.handler, this.suggestedType, this.title, this.subtitle);
 
@@ -821,6 +829,8 @@ enum SearchCategoryMessage {
   cafe,
   restaurants,
   parks,
+  hospitals,
+  schools,
 }
 
 class SearchCategoryMessage_ {
@@ -956,6 +966,7 @@ abstract class MapApi {
   SearchResultMessage search(
     String queryText,
     SearchCategoriesMessage? categories,
+    List<GeoPointMessage>? spatialRestriction,
     WeekTimeSearchMessage? weekTime,
     GeoRectMessage? searchRect,
     SortingTypeMessage sortingType,
@@ -965,6 +976,7 @@ abstract class MapApi {
   @async
   SearchResultMessage searchByQuery(
     SearchQueryMessage query,
+    List<GeoPointMessage>? spatialRestriction,
     WeekTimeSearchMessage? weekTime,
     GeoRectMessage? searchRect,
     SortingTypeMessage sortingType,
@@ -974,6 +986,7 @@ abstract class MapApi {
   @async
   SearchResultMessage searchByCategory(
     SearchCategoryMessage category,
+    List<GeoPointMessage>? spatialRestriction,
     WeekTimeSearchMessage? weekTime,
     GeoRectMessage? searchRect,
     SortingTypeMessage sortingType,
@@ -992,6 +1005,7 @@ abstract class MapApi {
   @async
   SuggestResultMessage fetchSuggests(
     String queryText,
+    List<SuggestedTypeMessage_>? allowedResultTypes,
     GeoRectMessage? searchRect,
   );
 

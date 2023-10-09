@@ -48,6 +48,8 @@ abstract class DgisMapPlugin extends PlatformInterface {
 
   Stream<CameraPositionMessage> get cameraPositionEvents;
 
+  Stream<CameraStateEvent> get cameraStateEvents;
+
   Stream<MarkerWithPhotoTapEvent> get markerWithPhotoTapEvents;
 
   Stream<RouteChangedEvent> get routeChangedEvents;
@@ -133,6 +135,7 @@ abstract class DgisMapPlugin extends PlatformInterface {
   Future<SearchResultMessage> search(
     String queryText, {
     List<SearchCategoryMessage>? categories,
+    List<GeoPointMessage>? spatialRestriction,
     required SortingTypeMessage sortingType,
     GeoRectMessage? searchRect,
     required int pageSize,
@@ -141,6 +144,7 @@ abstract class DgisMapPlugin extends PlatformInterface {
 
   Future<SearchResultMessage> searchByQuery(
     SearchQueryMessage query, {
+    List<GeoPointMessage>? spatialRestriction,
     required SortingTypeMessage sortingType,
     required int pageSize,
     WeekTimeSearchMessage? weekTime,
@@ -149,6 +153,7 @@ abstract class DgisMapPlugin extends PlatformInterface {
 
   Future<SearchResultMessage> searchByCategory(
     SearchCategoryMessage query, {
+    List<GeoPointMessage>? spatialRestriction,
     required SortingTypeMessage sortingType,
     required int pageSize,
     WeekTimeSearchMessage? weekTime,
@@ -164,6 +169,7 @@ abstract class DgisMapPlugin extends PlatformInterface {
   Future<SuggestResultMessage> fetchSuggests(
     String queryText, {
     GeoRectMessage? searchRect,
+    List<SuggestedTypeMessage_>? allowedResultTypes,
   });
 
   Future<void> setMarkerOptions(MarkerOptionsMessageOld markerOptions);

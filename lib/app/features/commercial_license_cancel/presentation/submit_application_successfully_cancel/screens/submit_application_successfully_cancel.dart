@@ -1,7 +1,5 @@
 import 'package:balady_plus/app/core/dependency_injection/injection_container.dart';
-import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:balady_plus/app/core/utils/constants/app_style.dart';
-import 'package:balady_plus/app/core/utils/constants/dialog_names.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
 import 'package:balady_plus/app/core/utils/constants/route_names.dart';
 import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports.dart';
@@ -11,7 +9,6 @@ import 'package:balady_plus/app/features/profile_features/invoices/domain/entiti
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
-import 'package:provider/provider.dart';
 
 class SubmitApplicationSuccessfullyCancel extends StatelessWidget {
   const SubmitApplicationSuccessfullyCancel({Key? key}) : super(key: key);
@@ -43,6 +40,12 @@ class SubmitApplicationSuccessfullyCancel extends StatelessWidget {
                       'vd_request_submit'.tr(),
                       textStyle: AppStyle.sectionTitleStyle,
                     ),
+                    // CustomAutoSizeTextWidget(
+                    //   'submit_application_successfully_cancel_message'.tr(),
+                    //   textStyle: AppStyle.serviceListTitleTextStyle,
+                    //   maxLines: 3,
+                    //   textAlign: TextAlign.center,
+                    // ),
                     const SizedBox(height: 16),
                     CustomAutoSizeTextWidget(
                       'submit_application_successfully_cancel_message'.tr(),

@@ -103,7 +103,7 @@ class CommercialLicenseReasonCancelSheet extends StatelessWidget {
                           );
                         } else {
                           CommonFunctions.showError(
-                              'select_cancellation_reason');
+                              'select_cancellation_reason'.tr());
                         }
                       }
                     : () {},

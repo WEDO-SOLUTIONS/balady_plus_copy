@@ -96,6 +96,7 @@ class SearchHandler(
     fun search(
         queryText: String,
         categories: List<RubricId>?,
+        spatialRestriction: List<GeoPoint>?,
         searchGeoRect: GeoRect?,
         weekTimeMessage: WeekTimeSearchMessage? = null,
         sortingType: SortingTypeMessage,
@@ -111,6 +112,7 @@ class SearchHandler(
             .setPageSize(pageSize)
             .setDirectoryFilter(DirectoryFilter(weekTimeMessage.toFilter(), emptyList()))
             .setAreaOfInterest(searchGeoRect)
+            .setSpatialRestriction(spatialRestriction)
             .build()
 
         performSearch(
@@ -121,6 +123,7 @@ class SearchHandler(
 
     fun searchByQuery(
         queryId: SearchQueryMessage,
+        spatialRestriction: List<GeoPoint>?,
         searchGeoRect: GeoRect?,
         weekTimeMessage: WeekTimeSearchMessage? = null,
         sortingType: SortingTypeMessage,
@@ -140,6 +143,7 @@ class SearchHandler(
             .setPageSize(pageSize)
             .setDirectoryFilter(DirectoryFilter(weekTimeMessage.toFilter(), emptyList()))
             .setAreaOfInterest(searchGeoRect)
+            .setSpatialRestriction(spatialRestriction)
             .build()
 
         performSearch(
@@ -150,6 +154,7 @@ class SearchHandler(
 
     fun searchByCategories(
         categories: List<RubricId>,
+        spatialRestriction: List<GeoPoint>?,
         searchGeoRect: GeoRect?,
         weekTimeMessage: WeekTimeSearchMessage? = null,
         sortingType: SortingTypeMessage,
@@ -162,6 +167,7 @@ class SearchHandler(
             .setPageSize(pageSize)
             .setDirectoryFilter(DirectoryFilter(weekTimeMessage.toFilter(), emptyList()))
             .setAreaOfInterest(searchGeoRect)
+            .setSpatialRestriction(spatialRestriction)
             .build()
 
         performSearch(
@@ -172,6 +178,7 @@ class SearchHandler(
 
     fun searchByParkCategory(
         searchGeoRect: GeoRect?,
+        spatialRestriction: List<GeoPoint>?,
         weekTimeMessage: WeekTimeSearchMessage? = null,
         sortingType: SortingTypeMessage,
         pageSize: Int,
@@ -183,6 +190,7 @@ class SearchHandler(
             .setPageSize(pageSize.toInt())
             .setDirectoryFilter(DirectoryFilter(weekTimeMessage.toFilter(), emptyList()))
             .setAreaOfInterest(searchGeoRect)
+            .setSpatialRestriction(spatialRestriction)
             .build()
 
         performSearch(
@@ -205,7 +213,7 @@ class SearchHandler(
                         }
 
                         result?.success(
-                            response.toMessage(pageId, items)
+                            response.toMessage(pageId, map.camera, items)
                         )
                     }
                     onError { error ->
@@ -281,12 +289,20 @@ class SearchHandler(
 
     fun fetchSuggests(
         queryText: String,
+        allowedResultTypes: List<SuggestedTypeMessage_>?,
         searchGeoRect: GeoRect?,
         result: Result<SuggestResultMessage>?
     ) {
-        val suggestQuery = SuggestQueryBuilder.fromQueryText(queryText)
+        var suggestQueryBuilder = SuggestQueryBuilder.fromQueryText(queryText)
             .setAreaOfInterest(searchGeoRect)
-            .build()
+
+        if (allowedResultTypes != null) {
+            suggestQueryBuilder = suggestQueryBuilder.setAllowedResultTypes(
+                allowedResultTypes.map { it.type.toSuggestType() }
+            )
+        }
+
+        val suggestQuery = suggestQueryBuilder.build()
 
         suggestFuture = searchManager.suggest(suggestQuery).apply {
             onResult { response ->

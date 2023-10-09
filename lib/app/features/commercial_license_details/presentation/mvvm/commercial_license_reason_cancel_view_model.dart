@@ -16,7 +16,7 @@ class CommercialLicenseReasonCancelViewModel extends BaseViewModel {
   List<ReasonCancel> reasonCancelList = [];
   ReasonCancel? reasonCancel;
 
-  CommercialLicenseReasonCancelViewModel({required this.submitterInfo, required this.webService,required this.licenseId}) {
+  CommercialLicenseReasonCancelViewModel({required this.submitterInfo, required this.webService,required this.licenseId,}) {
     getCommercialLicenseCancellationReasons();
   }
 

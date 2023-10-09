@@ -47,6 +47,9 @@ class DgisMapController {
   Stream<CameraPositionMessage> get cameraPositionEvents =>
       _instance.cameraPositionEvents;
 
+  /// Events of camera state changes.
+  Stream<CameraStateEvent> get cameraStateEvents => _instance.cameraStateEvents;
+
   /// Tap events for panorama markers.
   Stream<MarkerWithPhotoTapEvent> get markerWithPhotoTapEvents =>
       _instance.markerWithPhotoTapEvents;
@@ -157,6 +160,7 @@ class DgisMapController {
   Future<SearchResultMessage> search(
     String queryText, {
     List<SearchCategoryMessage>? categories,
+    List<GeoPointMessage>? spatialRestriction,
     required SortingTypeMessage sortingType,
     GeoRectMessage? searchRect,
     bool isOpenNow = false,
@@ -165,6 +169,7 @@ class DgisMapController {
     return _instance.search(
       queryText,
       categories: categories,
+      spatialRestriction: spatialRestriction,
       sortingType: sortingType,
       weekTime: isOpenNow ? WeekTimeFactory.openNow() : null,
       pageSize: pageSize,
@@ -175,6 +180,7 @@ class DgisMapController {
   /// Runs directory search by [SearchQueryMessage] query.
   Future<SearchResultMessage> searchByQuery(
     SearchQueryMessage query, {
+    List<GeoPointMessage>? spatialRestriction,
     required SortingTypeMessage sortingType,
     GeoRectMessage? searchRect,
     bool isOpenNow = false,
@@ -182,6 +188,7 @@ class DgisMapController {
   }) {
     return _instance.searchByQuery(
       query,
+      spatialRestriction: spatialRestriction,
       sortingType: sortingType,
       weekTime: isOpenNow ? WeekTimeFactory.openNow() : null,
       pageSize: pageSize,
@@ -192,6 +199,7 @@ class DgisMapController {
   /// Runs directory search by [SearchCategoryMessage] category.
   Future<SearchResultMessage> searchByCategory(
     SearchCategoryMessage category, {
+    List<GeoPointMessage>? spatialRestriction,
     required SortingTypeMessage sortingType,
     GeoRectMessage? searchRect,
     bool isOpenNow = false,
@@ -199,6 +207,7 @@ class DgisMapController {
   }) {
     return _instance.searchByCategory(
       category,
+      spatialRestriction: spatialRestriction,
       sortingType: sortingType,
       weekTime: isOpenNow ? WeekTimeFactory.openNow() : null,
       pageSize: pageSize,
@@ -299,10 +308,14 @@ class DgisMapController {
   Future<SuggestResultMessage> fetchSuggest(
     String queryText, {
     GeoRectMessage? searchRect,
+    List<SuggestedTypeMessage>? allowedResultTypes,
   }) =>
       _instance.fetchSuggests(
         queryText,
         searchRect: searchRect,
+        allowedResultTypes: allowedResultTypes
+            ?.map((e) => SuggestedTypeMessage_(type: e))
+            .toList(),
       );
 
   /// Hide panorama markers. Used for optimization. In most cases should not be used directly.
