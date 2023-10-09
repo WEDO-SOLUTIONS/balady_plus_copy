@@ -26,8 +26,10 @@ extension SearchCategoryData on SearchCategoryMessage {
       SearchCategoryMessage.restaurants =>
         "assets/maps/icons/poi_eat_light.svg",
       SearchCategoryMessage.parks => "assets/maps/icons/poi_park_light.svg",
-      SearchCategoryMessage.hospitals => "assets/maps/icons/hospital.svg",
-      SearchCategoryMessage.schools => "assets/maps/icons/school.svg",
+      SearchCategoryMessage.hospitals =>
+        "assets/maps/icons/hospital_category_icon.svg",
+      SearchCategoryMessage.schools =>
+        "assets/maps/icons/school_category_icon.svg",
     };
   }
 
@@ -42,8 +44,8 @@ extension SearchCategoryData on SearchCategoryMessage {
         "assets/maps/icons/ic_marker_restaurant.svg",
       SearchCategoryMessage.parks =>
         "assets/maps/icons/ic_marker_gardens_parks.svg",
-      SearchCategoryMessage.hospitals => "assets/maps/icons/ic_marker.svg",
-      SearchCategoryMessage.schools => "assets/maps/icons/ic_marker.svg",
+      SearchCategoryMessage.hospitals => "assets/maps/icons/hospital_pin.svg",
+      SearchCategoryMessage.schools => "assets/maps/icons/school_pin.svg",
     };
   }
 

@@ -15,6 +15,8 @@ import 'package:balady_plus/app/features/map_page/extensions/directory_object_ex
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:provider/provider.dart';
 import '../../../../core/utils/enums/app_font_weights.dart';
+import '../../../_shared_feature_/presentation/widgets/custom_svg_icon_widget.dart';
+import '../../../calendar/presentation/widgets/calendar_image_widget.dart';
 import '../../../home_page/presentation/widgets/home_app_bar/circle_icon.dart';
 import '../../../vd/domain/entities/camera/camera_page_params.dart';
 import '../../../vd/domain/entities/categories/category_item.dart';
@@ -90,13 +92,17 @@ class EventMapCardWidget extends StatelessWidget {
                                           shape: RoundedRectangleBorder(
                                             borderRadius:
                                                 BorderRadius.circular(16),
-                                          )),
-                                      child: SvgPicture.asset(
-                                        Constants.eventLayerIcon,
-                                        width: 16,
-                                        height: 16,
-                                        color: Colors.white,
-                                      )),
+                                          ),
+                                          image: calendarImage(data.logoImage,
+                                              Constants.eventLayerIcon)),
+                                      child: (data.logoImage?.isEmpty ?? true)
+                                          ? SvgPicture.asset(
+                                              Constants.eventLayerIcon,
+                                              width: 16,
+                                              height: 16,
+                                              color: Colors.white,
+                                            )
+                                          : Container()),
                                   CustomHorizontalSpace(width: 8),
                                   Expanded(
                                     child: Column(

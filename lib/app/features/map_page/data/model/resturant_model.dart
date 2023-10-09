@@ -187,6 +187,15 @@ class ResturantModel extends PointLayersData {
     }
   }
 
+  bool get showWorkingHours =>
+      SUNDAY != null && SUNDAY!.isNotEmpty ||
+      MONDAY != null && MONDAY!.isNotEmpty ||
+      TUESDAY != null && TUESDAY!.isNotEmpty ||
+      WEDNESDAY != null && WEDNESDAY!.isNotEmpty ||
+      THURSDAY != null && THURSDAY!.isNotEmpty ||
+      FRIDAY != null && FRIDAY!.isNotEmpty ||
+      SATURDAY != null && SATURDAY!.isNotEmpty;
+
   int get shiftNo => (getCurrentDay()?.split("،").length ?? 0);
   String? get getFirstShift => getCurrentDay()?.split("،")[0];
   String? get getSecondShift =>
