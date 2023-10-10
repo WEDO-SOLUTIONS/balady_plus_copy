@@ -31,6 +31,7 @@ import 'package:balady_plus/etmam_app/features/home/home_exports.dart'
         SubServiceResponse;
 
 import '../../../../_shared_feature_/shared/presentation/widgets/header_with_all_button_widget.dart';
+import '../../../../_shared_feature_/shared/presentation/widgets/no_data_widget.dart';
 
 class EtmamMainServicesWidget extends StatefulWidget {
   const EtmamMainServicesWidget({Key? key}) : super(key: key);
@@ -63,6 +64,9 @@ class _EtmamMainServicesWidget extends State<EtmamMainServicesWidget> {
                 fontColor: AppColor.black700,
               ),
             ),
+            if (state.mainServiceStatus == BlocStatus.success &&
+                (state.mainServiceResponse?.items?.isEmpty ?? true))
+              NoDataWidget(),
             if (state.mainServiceStatus == BlocStatus.loading)
               const EtmamServicesLoadingWidget(),
             if (state.mainServiceStatus == BlocStatus.failure)

@@ -99,7 +99,8 @@ class _CityListState extends State<CityList> {
           return Column(
             children: [
               if (state.status == BlocStatus.success ||
-                  state.status == BlocStatus.loadMore) ...[
+                  state.status == BlocStatus.loadMore ||
+                  state.status == BlocStatus.loadingShimmer) ...[
                 SearchWidget(
                   hint: trans('city_search_hint'),
                   onChange: /* () {},*/
@@ -121,7 +122,7 @@ class _CityListState extends State<CityList> {
                           itemCount: (state.searchedItems?.length ?? 0 + 1),
                           controller: _scrollController,
                           itemBuilder: (ctx, index) {
-                            if (index >= (state.items?.length ?? 0)) {
+                            /* if (index >= (state.items?.length ?? 0)) {
                               if (state.status == BlocStatus.loadMore) {
                                 return const SizedBox(
                                   height: 50,
@@ -130,7 +131,7 @@ class _CityListState extends State<CityList> {
                               } else {
                                 return Container(height: 50);
                               }
-                            }
+                            }*/
 
                             return CityWidget(
                                 cityName:
@@ -149,6 +150,7 @@ class _CityListState extends State<CityList> {
                           })
                       : EmptySearchWidget(),
                 ),
+                if (state.status == BlocStatus.loadMore) CustomLoadingWidget(),
                 const CustomVerticalSpace(height: 15),
                 CustomPrimaryButton(
                     isBtnDisabled: selectedIndex < 0,

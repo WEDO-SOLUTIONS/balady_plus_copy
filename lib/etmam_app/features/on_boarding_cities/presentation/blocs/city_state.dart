@@ -12,6 +12,7 @@ class CityState extends Equatable {
   int? totalPageCount;
   int? totalItemCount;
   int nextPageIndex;
+  String? searchText;
 
   CityState(
       {this.status = BlocStatus.initial,
@@ -22,7 +23,8 @@ class CityState extends Equatable {
       this.searchedItems,
       this.selectedItem,
       this.totalItemCount,
-      this.totalPageCount});
+      this.totalPageCount,
+      this.searchText});
 
   CityState copyWith(
       {BlocStatus? status,
@@ -33,7 +35,8 @@ class CityState extends Equatable {
       int? totalPageCount,
       int? totalItemCount,
       int? nextPageIndex,
-      CityItem? selectedItem}) {
+      CityItem? selectedItem,
+      String? searchText}) {
     return CityState(
         status: status ?? this.status,
         errorMessage: errorMessage ?? this.errorMessage,
@@ -43,9 +46,11 @@ class CityState extends Equatable {
         nextPageIndex: nextPageIndex ?? this.nextPageIndex,
         selectedItem: selectedItem ?? this.selectedItem,
         providersStatus: providersStatus ?? this.providersStatus,
-        searchedItems: searchedItems ?? this.searchedItems);
+        searchedItems: searchedItems ?? this.searchedItems,
+        searchText: searchText ?? this.searchText);
   }
 
   @override
-  List<Object> get props => [status, selectedItem ?? 0, providersStatus];
+  List<Object?> get props =>
+      [status, selectedItem ?? 0, providersStatus, searchText];
 }

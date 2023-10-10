@@ -48,45 +48,47 @@ class _OnBoardingCitiesPageState extends State<OnBoardingCitiesPage> {
       child: Scaffold(
           appBar: null,
           backgroundColor: AppColor.blue700,
-          body: BlocConsumer<CityBloc, CityState>(
-            bloc: sl(),
-            listener: (context, state) {
-              // TODO: implement listener
-            },
-            builder: (context, state) {
-              return Stack(
-                children: [
-                  Column(
-                    children: [
-                      Expanded(
-                          flex: 5,
-                          child: Container(
-                            decoration: const BoxDecoration(
-                              image: DecorationImage(
-                                image: AssetImage(ImagePath.onBoardingBg),
-                                fit: BoxFit.fill,
+          body: BlocBuilder<CityBloc, CityState>(builder: (context, state) {
+            return BlocConsumer<CityBloc, CityState>(
+              bloc: sl(),
+              listener: (context, state) {
+                // TODO: implement listener
+              },
+              builder: (context, state) {
+                return Stack(
+                  children: [
+                    Column(
+                      children: [
+                        Expanded(
+                            flex: 5,
+                            child: Container(
+                              decoration: const BoxDecoration(
+                                image: DecorationImage(
+                                  image: AssetImage(ImagePath.onBoardingBg),
+                                  fit: BoxFit.fill,
+                                ),
                               ),
-                            ),
-                            child: Center(
-                                child: CustomTextWidget(
-                              trans('on_boarding_header'),
-                              fontColor: AppColor.white,
-                              fontSize: 24,
-                              fontWeight: AppFontWeight.w600,
+                              child: Center(
+                                  child: CustomTextWidget(
+                                trans('on_boarding_header'),
+                                fontColor: AppColor.white,
+                                fontSize: 24,
+                                fontWeight: AppFontWeight.w600,
+                              )),
                             )),
-                          )),
-                      const Expanded(flex: 7, child: CitiesContainerWidget()),
-                      // Container(
-                      //     height: 485,
-                      //     child: CitiesContainerWidget()),
-                    ],
-                  ),
-                  if (state.status == BlocStatus.loading)
-                    const CustomLoadingWidget()
-                ],
-              );
-            },
-          )),
+                        const Expanded(flex: 7, child: CitiesContainerWidget()),
+                        // Container(
+                        //     height: 485,
+                        //     child: CitiesContainerWidget()),
+                      ],
+                    ),
+                    if (state.status == BlocStatus.loading)
+                      const CustomLoadingWidget()
+                  ],
+                );
+              },
+            );
+          })),
     );
   }
 

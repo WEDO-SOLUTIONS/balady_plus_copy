@@ -12,7 +12,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/utils/utils_exports.dart'
     show AppColor, AppFontWeight, BorderType, IconPath, trans;
-import 'package:balady_plus/app/core/utils/utils_exports.dart' show BlocStatus;
+import 'package:balady_plus/app/core/utils/utils_exports.dart'
+    show BlocStatus, Debouncer;
 
 import '../../../_shared_feature_/shared/shared_feature_exports.dart'
     show
@@ -40,6 +41,7 @@ class _CityContainerWidgetState extends State<EtmamCitiesContainerWidget> {
   int selectedIndex = -1;
   final TextEditingController _controller = TextEditingController();
   ScrollController _scrollController = new ScrollController();
+  final _debouncer = Debouncer(milliseconds: 500);
 
   @override
   void initState() {
@@ -75,7 +77,9 @@ class _CityContainerWidgetState extends State<EtmamCitiesContainerWidget> {
             return Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                if (state.status == BlocStatus.success) ...[
+                if (state.status == BlocStatus.success ||
+                    state.status == BlocStatus.loadMore ||
+                    state.status == BlocStatus.loadingShimmer) ...[
                   const CustomVerticalSpace(height: 24),
                   CustomTextFieldWidget(
                     label: "",
@@ -91,65 +95,44 @@ class _CityContainerWidgetState extends State<EtmamCitiesContainerWidget> {
                     ),
                     suffixSize: 29,
                     onChanged: (String text) {
-                      sl<CityBloc>().add(SearchForCityEvent(text: text));
-                      setState(() {});
+                      _debouncer.run(() {
+                        sl<CityBloc>().add(SearchForCityEvent(text: text));
+                      });
                     },
                     validator: (_) {},
                   ),
                   Expanded(
                     child: (state.searchedItems != null &&
                             (state.searchedItems?.length ?? 0) > 0)
-                        ? NotificationListener<ScrollNotification>(
-                            onNotification: (scrollNotification) {
-                              if (scrollNotification.metrics.pixels ==
-                                  scrollNotification.metrics.maxScrollExtent) {
-                                context
-                                    .read<CityBloc>()
-                                    .add(GetMoreCitiesEvent());
-                              }
-                              return true;
-                            },
-                            child: GridView.builder(
-                                shrinkWrap: true,
-                                controller: _scrollController,
-                                padding:
-                                    const EdgeInsets.only(top: 20, bottom: 5),
-                                //   physics: const BouncingScrollPhysics(),
-                                gridDelegate:
-                                    const SliverGridDelegateWithFixedCrossAxisCount(
-                                        crossAxisCount: 5, mainAxisExtent: 120),
-                                itemCount:
-                                    (state.searchedItems?.length ?? 0) + 1,
-                                itemBuilder: (ctx, index) {
-                                  if (index >= (state.items?.length ?? 0)) {
-                                    if (state.status == BlocStatus.loadMore) {
-                                      return const SizedBox(
-                                        height: 50,
-                                        child: Center(
-                                            child: CustomLoadingWidget()),
-                                      );
-                                    } else {
-                                      return Container(height: 50);
-                                    }
-                                  }
-
-                                  return CityWidget(
-                                      cityName:
-                                          state.searchedItems?[index].name ??
-                                              "",
-                                      cityIcon: state
-                                              .searchedItems?[index].imageUrl ??
+                        ? GridView.builder(
+                            shrinkWrap: true,
+                            controller: _scrollController,
+                            padding: const EdgeInsets.only(top: 20, bottom: 5),
+                            //   physics: const BouncingScrollPhysics(),
+                            gridDelegate:
+                                const SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: 5, mainAxisExtent: 120),
+                            itemCount: (state.searchedItems?.length ?? 0),
+                            itemBuilder: (ctx, index) {
+                              return CityWidget(
+                                  cityName:
+                                      state.searchedItems?[index].name ?? "",
+                                  cityIcon:
+                                      state.searchedItems?[index].imageUrl ??
                                           "",
-                                      isSelected: index == selectedIndex,
-                                      btnPressed: () {
-                                        selectedIndex = index;
-                                        setState(() {});
-                                      });
-                                }),
-                          )
+                                  isSelected: index == selectedIndex,
+                                  btnPressed: () {
+                                    selectedIndex = index;
+                                    setState(() {});
+                                  });
+                            })
                         : EmptySearchWidget(),
                   ),
                   const CustomVerticalSpace(height: 15),
+                  if (state.status == BlocStatus.loading ||
+                      state.status == BlocStatus.loadMore ||
+                      state.providersStatus == BlocStatus.loading)
+                    const CustomLoadingWidget(),
                   CustomPrimaryButton(
                     onPressed: () {
                       //   sharedPrefs.setIsFirstLaunch(false);
@@ -170,9 +153,6 @@ class _CityContainerWidgetState extends State<EtmamCitiesContainerWidget> {
                       sl<CityBloc>().add(GetCitiesEvent());
                     },
                   ),
-                if (state.status == BlocStatus.loading ||
-                    state.providersStatus == BlocStatus.loading)
-                  const CustomLoadingWidget()
               ],
             );
           },
