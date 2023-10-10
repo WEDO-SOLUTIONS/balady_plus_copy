@@ -78,7 +78,9 @@ class _ChangeCityDialogState extends State<ChangeCityDialog> {
               const CustomVerticalSpace(height: 20),
               // incident type list
 
-              if (state.status == BlocStatus.success) ...[
+              if (state.status == BlocStatus.success ||
+                  state.status == BlocStatus.loadMore ||
+                  state.status == BlocStatus.success) ...[
                 Expanded(
                   child: (state.searchedItems != null &&
                           (state.searchedItems?.length ?? 0) > 0)

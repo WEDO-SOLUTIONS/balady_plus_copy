@@ -67,7 +67,9 @@ class CityBloc extends Bloc<CityEvent, CityState> {
           totalItemCount: success.data?.result?.totalItemCount,
           totalPageCount: success.data?.result?.totalPageCount,
           errorMessage: "",
-          nextPageIndex: state.nextPageIndex + 1,
+          nextPageIndex: ((success.data?.result?.items?.length ?? 0) > 0)
+              ? state.nextPageIndex + 1
+              : state.nextPageIndex,
           searchedItems: success.data?.result?.items));
 
       sharedPrefs.setCitiesList(
@@ -84,8 +86,12 @@ class CityBloc extends Bloc<CityEvent, CityState> {
 
     failureOrSuccess.fold((failure) {
       emitter(state.copyWith(
-        status: BlocStatus.failure,
-        errorMessage: (failure as ServerFailure).errorMessage,
+        status: (failure as ServerFailure).statusCode == "2"
+            ? BlocStatus.success
+            : BlocStatus.failure,
+        errorMessage: (failure as ServerFailure).statusCode == "2"
+            ? ""
+            : (failure as ServerFailure).errorMessage,
       ));
     }, (success) {
       List<CityItem> searchedItems = state.searchedItems ?? [];
@@ -94,7 +100,9 @@ class CityBloc extends Bloc<CityEvent, CityState> {
           status: BlocStatus.success,
           totalItemCount: success.data?.result?.totalItemCount,
           totalPageCount: success.data?.result?.totalPageCount,
-          nextPageIndex: state.nextPageIndex + 1,
+          nextPageIndex: ((success.data?.result?.items?.length ?? 0) > 0)
+              ? state.nextPageIndex + 1
+              : state.nextPageIndex,
           errorMessage: "",
           searchedItems: searchedItems));
 
@@ -133,13 +141,30 @@ class CityBloc extends Bloc<CityEvent, CityState> {
 
   Future<void> _searchForCityHandler(
       SearchForCityEvent e, Emitter emitter) async {
-    emitter(state.copyWith(status: BlocStatus.loading));
-    List<CityItem>? items = state.items
-            ?.where((element) => element.name?.contains(e.text ?? "") ?? false)
-            .toList() ??
-        [];
+    emitter(state.copyWith(status: BlocStatus.loadingShimmer));
 
-    emitter(state.copyWith(status: BlocStatus.success, searchedItems: items));
+    final failureOrSuccess =
+        await _getCities(CityParams(pageNo: 1, pageSize: 20, text: e.text));
+
+    failureOrSuccess.fold((failure) {
+      emitter(state.copyWith(
+        status: BlocStatus.failure,
+        errorMessage: (failure as ServerFailure).errorMessage,
+      ));
+    }, (success) {
+      emitter(state.copyWith(
+          status: BlocStatus.success,
+          items: success.data?.result?.items,
+          totalItemCount: success.data?.result?.totalItemCount,
+          totalPageCount: success.data?.result?.totalPageCount,
+          errorMessage: "",
+          searchText: e.text,
+          nextPageIndex: 2,
+          searchedItems: success.data?.result?.items));
+
+      sharedPrefs.setCitiesList(
+          success.data?.result?.items?.map((e) => e.toModel).toList());
+    });
   }
 
   Future<void> _getProvidersHandler(
