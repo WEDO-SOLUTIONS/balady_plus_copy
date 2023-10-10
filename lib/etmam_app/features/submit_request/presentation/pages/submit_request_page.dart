@@ -64,11 +64,8 @@ class _SubmitRequestPageState extends State<SubmitRequestPage> {
           return SubmitRequestBloc(
               relationBloc: relationBloc,
               submitRequest: sl(),
-              createBiddingForm: sl(),
               args: args,
-              sendOTP: sl(),
-              getFormFieldData: sl(),
-              validateDynamicForm: sl());
+              sendOTP: sl());
         },
         child: BlocConsumer<SubmitRequestBloc, SubmitRequestState>(
           listener: (context, state) {
@@ -85,31 +82,15 @@ class _SubmitRequestPageState extends State<SubmitRequestPage> {
                 CustomStackFooterButtonWidget(
                   btnText: trans('confirm_order'),
                   onPressed: () {
-                    if (state.form == null) {
-                      context.read<SubmitRequestBloc>().add(SubmitEvent(
-                          params: SubmitParams(
-                              cityId: CommonProperties.cityId,
-                              providerId: state.serviceProviderId,
-                              relationId: state.relationId,
-                              changeProvider: state.changeProvider,
-                              pageType: args.pageType,
-                              orderId: state.orderId,
-                              subOrders: state.getSubOrders(),
-                              formId: state.form?.id,
-                              fields: state.form?.getFieldsRequest())));
-                    } else {
-                      context.read<SubmitRequestBloc>().add(ValidateFormEvent(
-                          params: SubmitParams(
-                              cityId: CommonProperties.cityId,
-                              providerId: state.serviceProviderId,
-                              relationId: state.relationId,
-                              changeProvider: state.changeProvider,
-                              pageType: args.pageType,
-                              orderId: state.orderId,
-                              subOrders: state.getSubOrders(),
-                              formId: state.form?.id,
-                              fields: state.form?.getFieldsRequest())));
-                    }
+                    context.read<SubmitRequestBloc>().add(SubmitEvent(
+                        params: SubmitParams(
+                            cityId: CommonProperties.cityId,
+                            providerId: state.serviceProviderId,
+                            relationId: state.relationId,
+                            changeProvider: state.changeProvider,
+                            pageType: args.pageType,
+                            orderId: state.orderId,
+                            subOrders: state.getSubOrders())));
                   },
                 ),
                 if (state.status == BlocStatus.loading)

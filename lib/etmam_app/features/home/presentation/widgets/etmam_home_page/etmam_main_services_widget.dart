@@ -79,8 +79,7 @@ class _EtmamMainServicesWidget extends State<EtmamMainServicesWidget> {
                       );
                 },
               ),
-            if (state.mainServiceStatus == BlocStatus.success &&
-                (state.mainServiceResponse?.items?.length ?? 0) > 0) ...[
+            if (state.mainServiceStatus == BlocStatus.success) ...[
               Container(
                 height: 325,
                 child: PageView.builder(

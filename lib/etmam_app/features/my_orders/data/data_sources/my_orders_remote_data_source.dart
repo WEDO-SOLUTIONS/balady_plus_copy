@@ -1,4 +1,5 @@
-import 'package:balady_plus/etmam_app/features/my_orders/data/models/request_details_response_model.dart';
+import 'package:balady_plus/app/core/services/global/web_service.dart';
+
 import 'package:balady_plus/etmam_app/core/utils/common_functions.dart';
 import 'package:balady_plus/etmam_app/core/utils/common_properties.dart';
 import 'package:balady_plus/etmam_app/core/utils/constants/app_config.dart';
@@ -8,7 +9,7 @@ import 'package:balady_plus/etmam_app/features/_shared_feature_/shared/shared_fe
 
 import 'package:dio/dio.dart';
 import 'package:balady_plus/etmam_app/core/errors/errors_exports.dart'
-    show ServerException;
+    show APIException, ServerException;
 import 'package:balady_plus/etmam_app/core/utils/utils_exports.dart'
     show ApiUrl, ApiParams, WithDelay;
 import 'package:balady_plus/etmam_app/features/my_orders/data/models/order_details_response_model.dart';
@@ -21,16 +22,10 @@ import 'package:balady_plus/etmam_app/features/my_orders/my_orders_exports.dart'
         GetOrdersParams,
         CancelOrderResponseModel,
         CancelOrderParams,
-        RequestResponseModel,
-        RequestItemModel,
         CancelOrderResponse;
-
-import '../../../../../app/core/services/global/web_service.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
 abstract class MyOrdersRemoteDataSource {
-  Future<ApigeeResponse<RequestResponseModel>> getMyRequests(
-      {required GetOrdersParams params});
-
   Future<ApigeeResponse<OrdersResponseModel>> getMyOrders(
       {required GetOrdersParams params});
 
@@ -40,9 +35,6 @@ abstract class MyOrdersRemoteDataSource {
   Future<ApigeeResponse<List<RatingItemModel>>> getRatingItems();
 
   Future<ApigeeResponse<OrderDetailsResponseModel>> getOrderDetails(
-      {required OrderDetailsParams params});
-
-  Future<ApigeeResponse<RequestDetailsResponseModel>> getRequestDetails(
       {required OrderDetailsParams params});
 
   Future<ApigeeResponse> submitRating({required SubmitRatingParams params});
@@ -91,8 +83,12 @@ class MyOrdersRemoteDataSourceImpl extends MyOrdersRemoteDataSource {
         errorCode = decodedResponse.data?.responseCode;
       } catch (ex) {}
 
-      throw ServerException(error.toString(),
-          statusCode: error.response?.statusCode, errorCode: errorCode);
+      throw ServerException(
+        error.toString(),
+        errorCode: errorCode,
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
     } catch (ex) {
       if (ex is ServerException)
         throw ex;
@@ -100,7 +96,11 @@ class MyOrdersRemoteDataSourceImpl extends MyOrdersRemoteDataSource {
         try {
           CommonFunctions.sendExceptionLog(exception: ex, response: response);
         } catch (ex) {}
-        throw ServerException(trans("errors_server_error_2"));
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
       }
     }
   }
@@ -138,8 +138,11 @@ class MyOrdersRemoteDataSourceImpl extends MyOrdersRemoteDataSource {
               parsedResult: parsedResult);
       return decodedResponse.toFuture();
     } on DioError catch (error) {
-      throw ServerException(error.toString(),
-          statusCode: error.response?.statusCode);
+      throw ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
     } catch (ex) {
       if (ex is ServerException)
         throw ex;
@@ -147,7 +150,11 @@ class MyOrdersRemoteDataSourceImpl extends MyOrdersRemoteDataSource {
         try {
           CommonFunctions.sendExceptionLog(exception: ex, response: response);
         } catch (ex) {}
-        throw ServerException(trans("errors_server_error_2"));
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
       }
     }
   }
@@ -174,8 +181,11 @@ class MyOrdersRemoteDataSourceImpl extends MyOrdersRemoteDataSource {
               parsedResult: parsedResult);
       return decodedResponse.toFuture();
     } on DioError catch (error) {
-      throw ServerException(error.toString(),
-          statusCode: error.response?.statusCode);
+      throw ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
     } catch (ex) {
       if (ex is ServerException)
         throw ex;
@@ -183,7 +193,11 @@ class MyOrdersRemoteDataSourceImpl extends MyOrdersRemoteDataSource {
         try {
           CommonFunctions.sendExceptionLog(exception: ex, response: response);
         } catch (ex) {}
-        throw ServerException(trans("errors_server_error_2"));
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
       }
     }
   }
@@ -211,8 +225,11 @@ class MyOrdersRemoteDataSourceImpl extends MyOrdersRemoteDataSource {
               parsedResult: parsedResult);
       return decodedResponse.toFuture();
     } on DioError catch (error) {
-      throw ServerException(error.toString(),
-          statusCode: error.response?.statusCode);
+      throw ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
     } catch (ex) {
       if (ex is ServerException)
         throw ex;
@@ -220,7 +237,11 @@ class MyOrdersRemoteDataSourceImpl extends MyOrdersRemoteDataSource {
         try {
           CommonFunctions.sendExceptionLog(exception: ex, response: response);
         } catch (ex) {}
-        throw ServerException(trans("errors_server_error_2"));
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
       }
     }
   }
@@ -251,8 +272,11 @@ class MyOrdersRemoteDataSourceImpl extends MyOrdersRemoteDataSource {
       );
       return decodedResponse.toFuture();
     } on DioError catch (error) {
-      throw ServerException(error.toString(),
-          statusCode: error.response?.statusCode);
+      throw ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
     } catch (ex) {
       if (ex is ServerException)
         throw ex;
@@ -260,97 +284,11 @@ class MyOrdersRemoteDataSourceImpl extends MyOrdersRemoteDataSource {
         try {
           CommonFunctions.sendExceptionLog(exception: ex, response: response);
         } catch (ex) {}
-        throw ServerException(trans("errors_server_error_2"));
-      }
-    }
-  }
-
-  @override
-  Future<ApigeeResponse<RequestResponseModel>> getMyRequests(
-      {required GetOrdersParams params}) async {
-    var response;
-
-    try {
-      response = await webService.dio.get(ApiUrl.myRequests,
-          queryParameters: {
-            ApiParams.page_No: params.pageIndex,
-            ApiParams.page_Size: 10,
-            ApiParams.profileId: CommonProperties.profileId,
-            if (params.closed != null) "closed-status": params.closed,
-          },
-          options: Options(headers: {
-            "Authorization": "Bearer " + (CommonProperties.token ?? "")
-          }));
-
-      var data = response.data["data"]?["result"];
-
-      var parsedResult =
-          data != null ? RequestResponseModel.fromMap(data) : null;
-      final decodedResponse = ApigeeResponseModel<RequestResponseModel>.fromMap(
-          response.data,
-          parsedResult: parsedResult);
-      return decodedResponse.toFuture();
-    } on DioError catch (error) {
-      // Temp Code to handle only the empty list in my orders
-      var errorCode;
-      try {
-        final decodedResponse =
-            ApigeeResponseModel<RequestResponseModel>.fromMap(
-          error.response?.data,
-        );
-        errorCode = decodedResponse.data?.responseCode;
-      } catch (ex) {}
-
-      throw ServerException(error.toString(),
-          statusCode: error.response?.statusCode, errorCode: errorCode);
-    } catch (ex) {
-      print(ex);
-      if (ex is ServerException)
-        throw ex;
-      else {
-        try {
-          CommonFunctions.sendExceptionLog(exception: ex, response: response);
-        } catch (ex) {}
-        throw ServerException(trans("errors_server_error_2"));
-      }
-    }
-  }
-
-  @override
-  Future<ApigeeResponse<RequestDetailsResponseModel>> getRequestDetails(
-      {required OrderDetailsParams params}) async {
-    var response;
-
-    try {
-      response = await webService.dio.get(
-          ApiUrl.requestDetails + params.orderId!,
-          queryParameters: {
-            ApiParams.profileId: CommonProperties.profileId,
-          },
-          options: Options(headers: {
-            "Authorization": "Bearer " + (CommonProperties.token ?? "")
-          }));
-
-      var data = response.data["data"]?["result"];
-
-      var parsedResult =
-          data != null ? RequestDetailsResponseModel.fromMap(data) : null;
-      final decodedResponse =
-          ApigeeResponseModel<RequestDetailsResponseModel>.fromMap(
-              response.data,
-              parsedResult: parsedResult);
-      return decodedResponse.toFuture();
-    } on DioError catch (error) {
-      throw ServerException(error.toString(),
-          statusCode: error.response?.statusCode);
-    } catch (ex) {
-      if (ex is ServerException)
-        throw ex;
-      else {
-        try {
-          CommonFunctions.sendExceptionLog(exception: ex, response: response);
-        } catch (ex) {}
-        throw ServerException(trans("errors_server_error_2"));
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
       }
     }
   }
@@ -382,8 +320,11 @@ class MyOrdersRemoteDataSourceImpl extends MyOrdersRemoteDataSource {
       
       
 
-      throw ServerException(error.toString(),
-          statusCode: error.response?.statusCode);
+        throw ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
     }
   }*/
 }

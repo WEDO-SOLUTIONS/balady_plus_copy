@@ -147,6 +147,7 @@ class MapViewModel extends BaseViewModel {
   Future<void> selectCategory(
       {SearchCategoryMessage? category, CustomSearchCategory? custom}) async {
     searchController.clear();
+    clearAllCards();
     if (category == selectedCategory.value) {
       _searchOperation?.cancel();
       selectedCategory.value = null;
@@ -468,7 +469,6 @@ class MapViewModel extends BaseViewModel {
 
 
 */
-
     try {
       final permission = await Permission.location.request();
       //print("grfrsdcvdv $permission");

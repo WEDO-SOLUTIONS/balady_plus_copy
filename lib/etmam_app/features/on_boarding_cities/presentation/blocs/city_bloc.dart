@@ -18,7 +18,6 @@ import 'package:balady_plus/etmam_app/core/errors/errors_exports.dart'
 
 import '../../../../../app/core/services/local/navigation_services.dart';
 import '../../../services/domain/use_cases/get_services.dart';
-import '../../domain/entities/city_params.dart';
 
 part 'city_event.dart';
 
@@ -50,8 +49,7 @@ class CityBloc extends Bloc<CityEvent, CityState> {
   Future<void> _getCitiesHandler(GetCitiesEvent e, Emitter emitter) async {
     emitter(state.copyWith(status: BlocStatus.loading));
 
-    final failureOrSuccess =
-        await _getCities(CityParams(pageNo: 1, pageSize: 20));
+    final failureOrSuccess = await _getCities(NoParams());
 
     failureOrSuccess.fold((failure) {
       emitter(state.copyWith(

@@ -31,7 +31,6 @@ import '../../../../../app/features/_shared_feature_/shared_feature_exports.dart
 import '../../../../../app/features/objectable_transactions/presentation/widgets/summery_widgets/field_data.dart';
 import '../../../submit_request/presentation/widgets/order_info/order_info_card_widget.dart';
 import '../../../submit_request/presentation/widgets/order_info/order_title_and_desc_widget.dart';
-import '../widgets/order_details/form_view_widget.dart';
 
 class OrderDetailsPage extends StatefulWidget {
   const OrderDetailsPage({Key? key}) : super(key: key);
@@ -54,11 +53,9 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
 
     return BlocProvider(
       create: (context) => OrderDetailsBloc(
-        args: args,
-        getServicesProvidersByService: sl(),
-        getOrderDetails: sl(),
-        getFormView: sl(),
-      ),
+          args: args,
+          getServicesProvidersByService: sl(),
+          getOrderDetails: sl()),
       child: BlocConsumer<OrderDetailsBloc, OrderDetailsState>(
         listener: (context, state) {
           if (state.status == BlocStatus.failure) {
@@ -207,7 +204,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                           iconColor: AppColor.primary600Light,
                           iconSize: 20,
                         ),
-                        title: "خدمات اضافية",
+                        title: "خدامات اضافية",
                         children: [
                           ListView.builder(
                             shrinkWrap: true,
@@ -219,6 +216,9 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                                   spaceBetweenTitleAndDesc: 0,
                                   title: "",
                                   descWidget: ProviderCardWidget(
+                                    serviceName: state.response
+                                            ?.subOrders?[index].serviceName ??
+                                        "",
                                     providerName: state.response
                                             ?.subOrders?[index].providerName ??
                                         "",
@@ -285,7 +285,6 @@ class _OrderDetailsPageState extends State<OrderDetailsPage> {
                           ),
                         ],
                       ),
-                      FormViewWidget(),
                     ],
                   ),
                 ),

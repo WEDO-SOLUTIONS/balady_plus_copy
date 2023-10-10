@@ -21,6 +21,7 @@ class MoreDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
+      mainAxisSize: MainAxisSize.min,
       children: [
         ListView.builder(
             shrinkWrap: true,

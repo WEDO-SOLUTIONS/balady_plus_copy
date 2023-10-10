@@ -23,7 +23,6 @@ class ApiUrl {
   static const defaultProfile = '$apiV1/etmamplus-services/profiles/default';
   static const myOrders =
       '$apiV1/etmamplus-services/order-management/orders/search';
-  static const myRequests = '$apiV1/dashboard-services/user/by-user';
 
   static const cities = '$apiV1/etmamplus-services/cities';
 
@@ -33,11 +32,6 @@ class ApiUrl {
 
   static const orderDetails =
       '$apiV1/etmamplus-services/order-management/order-details/';
-
-  static const requestDetails = '$apiV1/biddings-services/user/by-user/';
-
-  static const findByRequestType =
-      '$apiV1/etmamplus-services/order-management/relations/by-request-type/bidding';
 
   //! POST
   static const submitRequest =
@@ -57,28 +51,6 @@ class ApiUrl {
   static const addDeviceToken = '$apiV1/etmamplus-services/devices';
 
   static const forceUpdate = 'force-update-apps/version';
-
-  static const createDynamicForm = '$apiV1/mobile-dynamic-forms/create';
-  static const getFormFieldsData =
-      '$apiV1/mobile-dynamic-forms/data/form-fields';
-
-  static const submitBiddingForm = '$apiV1/biddings-services/user/submit';
-  static const editBiddingForm = '$apiV1/biddings-services/user/update';
-
-  static const validateBiddingForm = '$apiV1/mobile-dynamic-forms/validate/';
-
-  static const viewFormData = '$apiV1/mobile-dynamic-forms/view/';
-  static const viewEditFormData = '$apiV1/mobile-dynamic-forms/for-edit/';
-
-  static const getOffers = '$apiV1/biddings-services/user/offers/';
-  static const acceptOffers = '$apiV1/offers-services/user/accept/';
-  static const rejectOffers = '$apiV1/offers-services/user/reject/';
-  static const submitOrder = '$apiV1/biddings-services/user/submit-order/';
-
-  static const cancelRequest = '$apiV1/biddings-services/user/cancel/';
-
-  static const bidAttachments =
-      '$apiV1/etmamplus-archiving-services/attachments';
 
   //! Delete
 

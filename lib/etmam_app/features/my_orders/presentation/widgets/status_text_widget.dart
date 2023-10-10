@@ -16,16 +16,15 @@ class StatusTextWidget extends StatelessWidget {
       required this.orderStatus,
       required this.text,
       this.maxLines = 1,
-      this.textSize = 13})
+      this.textSize = 11})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(
-          horizontal: textSize == 13 ? 12 : 8, vertical: 4),
+      padding: EdgeInsets.symmetric(horizontal: 12 , vertical: 8),
       decoration: BoxDecoration(
-          borderRadius: const BorderRadius.all(Radius.circular(6)),
+          borderRadius: const BorderRadius.all(Radius.circular(12)),
           color: orderStatus.backGroundcolor),
       child: CustomTextWidget(
         text,

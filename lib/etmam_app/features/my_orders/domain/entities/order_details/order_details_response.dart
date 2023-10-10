@@ -26,8 +26,7 @@ class OrderDetailsResponse extends Equatable {
       this.serviceName,
       this.providerLogoUrl,
       this.actionsOnOrder,
-      this.platformReferenceNumber,
-      this.formId});
+      this.platformReferenceNumber});
 
   String? id;
   String? number;
@@ -38,7 +37,6 @@ class OrderDetailsResponse extends Equatable {
   String? providerId;
   bool? mandatory;
   bool? independent;
-  String? formId;
   Status? status;
   List<Action>? allowedActions;
   String? createDate;

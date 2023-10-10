@@ -21,6 +21,7 @@ class AppColor {
   static const Color white5 = Color(0xFFe8e8e8);
   static const Color white6 = Color(0xFFE4E4E7);
 
+
   static const Color black100 = Color(0xFFf2f2f2);
   static const Color black50 = Color(0xFFFDFDFD);
   static const Color black200 = Color(0xFFe6e6e6);
@@ -63,14 +64,15 @@ class AppColor {
 
   static const Color lightTurquoise = Color(0xFFecf9f8);
 
-  static const Color darkTurquoise = Color(0xff155F75);
+  static const Color darkTurquoise = Color(0xFF036362);
   static const Color warmGrey2 = Color(0xFF979797);
   static const Color baladyDarkGreen2 = Color(0xFF389492);
-  static const Color greenishYellow500 = Color(0xFF9bd65c);
+    static const Color greenishYellow500 = Color(0xFF9bd65c);
   static const Color duckEggBlue = Color(0xFFf6fdfd);
 
   static const green1 = Color(0xFF036362);
   static const green2 = Color(0xFFf6fdfd);
+
 
   static const white3 = Color(0xFFE6EFEF);
 
