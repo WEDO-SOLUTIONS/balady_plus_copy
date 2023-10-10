@@ -378,9 +378,13 @@ class _CommercialLicenseDetailsBodyState
                                   itemBuilder: (ctx, index) {
                                     return attachments[index].attachUrl != null
                                         ? AttachmentShowWidget(
-                                      fileName: attachments[index].fileName ?? '',
-                                      filePath: attachments[index].attachUrl!,
-                                    )
+                                            fileName:
+                                                attachments[index].fileName ??
+                                                    '',
+                                            name: attachments[index].name ?? '',
+                                            filePath:
+                                                attachments[index].attachUrl!,
+                                          )
                                         : const SizedBox();
                                   },
                                 )
@@ -439,19 +443,19 @@ class _CommercialLicenseDetailsBodyState
     );
   }
 
-  // List<AttachmentData> getNewModelList(List<AttachmentModel> attachments) {
-  //   return attachments
-  //       .map(
-  //         (attachment) => AttachmentData(
-  //           id: attachment.id.toString(),
-  //           memo: "attachment",
-  //           title: attachment.name ?? '',
-  //           fileName: attachment.fileName ?? attachment.name,
-  //           filePath: attachment.attachUrl,
-  //           isRequired: attachment.isMandatory ?? false,
-  //           isUploaded: attachment.updatable ?? false,
-  //         ),
-  //       )
-  //       .toList();
-  // }
+// List<AttachmentData> getNewModelList(List<AttachmentModel> attachments) {
+//   return attachments
+//       .map(
+//         (attachment) => AttachmentData(
+//           id: attachment.id.toString(),
+//           memo: "attachment",
+//           title: attachment.name ?? '',
+//           fileName: attachment.fileName ?? attachment.name,
+//           filePath: attachment.attachUrl,
+//           isRequired: attachment.isMandatory ?? false,
+//           isUploaded: attachment.updatable ?? false,
+//         ),
+//       )
+//       .toList();
+// }
 }

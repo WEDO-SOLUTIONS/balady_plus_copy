@@ -22,7 +22,6 @@ class SubmitApplicationSuccessfullyCancel extends StatelessWidget {
         return Future<bool>.value(false);
       },
       child: Scaffold(
-        appBar: const DefaultAppBarWidget(),
         body: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(

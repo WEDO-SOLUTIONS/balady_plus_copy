@@ -8,6 +8,7 @@ import 'package:balady_plus/app/features/commercial_license_cancel/presentation/
 import 'package:balady_plus/app/features/commercial_license_cancel/presentation/commercial_license_cancel/widgets/card_cost_info_widget.dart';
 import 'package:balady_plus/app/features/commercial_license_cancel/presentation/commercial_license_cancel/widgets/card_desc_widget.dart';
 import 'package:balady_plus/app/features/commercial_license_cancel/presentation/commercial_license_cancel/widgets/widget_title_invoice.dart';
+import 'package:balady_plus/app/features/commercial_license_details/presentation/widgets/attachment_show_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
@@ -46,34 +47,19 @@ class CommercialLicenseCancelTwoScreen extends StatelessWidget {
                         title: 'reason_cancellation'.tr(),
                         value: bloc.reasonCancel!.text,
                       ),
+                      bloc.hijriCalendar != null
+                          ? CardParameter(
+                              title: 'activityCancellationDate'.tr(),
+                              value: bloc.hijriCalendar.toString(),
+                            )
+                          : const SizedBox(),
                       Column(
                         children: viewModel.attachments
                             .map(
-                              (attachment) => Container(
-                                width: double.infinity,
-                                padding: const EdgeInsets.all(12),
-                                margin: const EdgeInsets.only(top: 8),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(8),
-                                  color: AppColor.primary50Light50,
-                                ),
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Flexible(
-                                      fit: FlexFit.tight,
-                                      child: CustomTextWidget(
-                                        attachment.name ?? '',
-                                        textStyle: AppStyle.personalInfoParameterValueTextStyle,
-                                        maxLines: 3,
-                                      ),
-                                    ),
-                                    InkWell(
-                                      child:
-                                          SvgPicture.asset(IconPath.download),
-                                    ),
-                                  ],
-                                ),
+                              (attachment) => AttachmentShowWidget(
+                                fileName: attachment.fileName ?? '',
+                                name: attachment.name ?? '',
+                                filePath: attachment.attachUrl ?? '',
                               ),
                             )
                             .toList(),
@@ -130,7 +116,6 @@ class CommercialLicenseCancelTwoScreen extends StatelessWidget {
           child: Column(
             children: [
               const CardCostInfoWidget(),
-
               BlocBuilder<CommercialLicenseCancelBloc,
                   CommercialLicenseCancelState>(
                 builder: (context, state) {
