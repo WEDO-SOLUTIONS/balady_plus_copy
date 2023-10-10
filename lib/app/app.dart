@@ -17,6 +17,8 @@ import 'features/entry_point/presentation/cubit/auth_cubit.dart';
 
 import 'package:provider/provider.dart';
 
+import 'features/location/presentation/bloc/location_bloc.dart';
+
 class App extends StatelessWidget {
   const App({super.key});
 
@@ -28,6 +30,7 @@ class App extends StatelessWidget {
           create: (BuildContext context) =>
               MapViewModel(layersRepositories: sl()),
         ),
+        BlocProvider.value(value: sl<LocationCubit>()),
       ],
       child: BlocProvider<EntryPointCubit>.value(
         value: sl<EntryPointCubit>()..onLoadingApp(),
