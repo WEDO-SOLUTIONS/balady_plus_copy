@@ -29,10 +29,7 @@ class CityRemoteDataSourceImpl extends CityRemoteDataSource {
     try {
       response = await webService.dio.get(
         ApiUrl.cities,
-        queryParameters: {
-          ApiParams.page_No: 1,
-          // ApiParams.page_Size: 100,
-        },
+        queryParameters: params.toMap(),
       );
 
       var data = response.data["data"]?["result"];
