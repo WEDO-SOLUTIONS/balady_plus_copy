@@ -8,10 +8,15 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:provider/provider.dart';
+import '../../../../core/base/base_view_model.dart';
+import '../../../../core/utils/common_functions.dart';
 import '../../../../core/utils/constants/app_style.dart';
 import 'package:balady_plus/app/features/map_page/extensions/directory_object_ext.dart';
 import '../../../../core/utils/enums/app_font_weights.dart';
+import '../../../../core/utils/enums/enums.dart';
+import '../../../_shared_feature_/shared_feature_exports.dart';
 import '../../../home_page/presentation/widgets/home_app_bar/circle_icon.dart';
+import '../../../vd/domain/entities/camera/camera_page_params.dart';
 import '../mvvm/map_view_model.dart';
 import '../mvvm/point_view_model.dart';
 import 'package:collection/collection.dart';
@@ -129,11 +134,13 @@ class GeneralMapCardWidget extends StatelessWidget {
                                                           BorderRadius.circular(
                                                               16),
                                                     )),
-                                                child: Image.asset(
-                                                  icon,
-                                                  width: 24,
-                                                  height: 24,
-                                                ),
+                                                child: icon.isNotEmpty
+                                                    ? Image.asset(
+                                                        icon,
+                                                        width: 24,
+                                                        height: 24,
+                                                      )
+                                                    : Container(),
                                               ),
                                               const CustomHorizontalSpace(
                                                   width: 8),
@@ -250,7 +257,7 @@ class GeneralMapCardWidget extends StatelessWidget {
                                               )
                                             ]),
                                         const CustomVerticalSpace(height: 16),
-                                        Row(
+                                        /* Row(
                                           children:
                                               dataPoint?.openingHours?.values
                                                       .where((e) =>
@@ -331,7 +338,7 @@ class GeneralMapCardWidget extends StatelessWidget {
                                                       )
                                                       .toList() ??
                                                   [],
-                                        ),
+                                        ),*/
                                       ],
                                     ),
                                   ),

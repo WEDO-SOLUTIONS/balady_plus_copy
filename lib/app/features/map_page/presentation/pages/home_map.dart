@@ -2,7 +2,6 @@ import 'package:balady_plus/app/core/services/services_exports.dart';
 import 'package:balady_plus/app/features/entry_point/presentation/cubit/auth_cubit.dart';
 import 'package:balady_plus/app/features/map_page/extensions/search_category_ext.dart';
 import 'package:balady_plus/app/features/map_page/presentation/dialogs/map_layer_dialog.dart';
-import 'package:balady_plus/app/features/map_page/presentation/widgets/indoor_control_widget.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -18,6 +17,8 @@ import 'package:provider/provider.dart';
 import '../../data/model/white_lands.dart';
 import '../widgets/SearchMapWidget.dart';
 import '../widgets/general_card_widget.dart';
+import '../widgets/indoor_control_widget.dart';
+import '../widgets/map_cards/compliance_legends_map_card.dart';
 import '../widgets/map_cards/lands_legends_map_card.dart';
 import '../widgets/map_layer_card.dart';
 import '../widgets/search_map_widget.dart';
@@ -99,6 +100,14 @@ class HomeMap extends StatelessWidget {
                                 : SizedBox();
                           },
                         ),
+                        ValueListenableBuilder<bool?>(
+                          valueListenable: mapViewModel.showComplianceLegend,
+                          builder: (_, value, __) {
+                            return value == true
+                                ? const ComplianceLegendsMapCard()
+                                : SizedBox();
+                          },
+                        ),
                         Container(
                           margin: EdgeInsets.only(
                               bottom: mapViewModel.viewHomeBottomSheet.value ==
@@ -118,13 +127,13 @@ class HomeMap extends StatelessWidget {
                                   valueListenable: mapViewModel.showLegend,
                                   builder: (_, value, __) {
                                     return Visibility(
-                                      visible:
-                                          mapViewModel.showLegend != true &&
-                                              mapViewModel.gisSelectedLayer ==
-                                                  GISMapLayers.BSWhiteParcelS,
+                                      visible: mapViewModel.gisSelectedLayer ==
+                                          GISMapLayers.BSWhiteParcelS,
                                       child: GestureDetector(
                                         onTap: () {
-                                          mapViewModel.showLegend.value = true;
+                                          mapViewModel.showLegend.value =
+                                              !(mapViewModel.showLegend.value ??
+                                                  false);
                                           mapViewModel.showLegend
                                               .notifyListeners();
                                         },
@@ -132,9 +141,47 @@ class HomeMap extends StatelessWidget {
                                           padding: const EdgeInsets.only(
                                               bottom: 16.0),
                                           child: CircleIcon(
-                                            icon: mapConstants
-                                                .Constants.infoCircleIcon,
-                                            backgroundColor: AppColor.white,
+                                            icon:
+                                                mapViewModel.showLegend.value ==
+                                                        true
+                                                    ? mapConstants.Constants
+                                                        .closeCircleIcon
+                                                    : mapConstants.Constants
+                                                        .infoCircleIcon,
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                  }),
+                              ValueListenableBuilder<bool?>(
+                                  valueListenable:
+                                      mapViewModel.showComplianceLegend,
+                                  builder: (_, value, __) {
+                                    return Visibility(
+                                      visible: mapViewModel.gisSelectedLayer ==
+                                          GISMapLayers
+                                              .BSAimtithalBuildingsCertificateL,
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          mapViewModel.showComplianceLegend
+                                              .value = !(mapViewModel
+                                                  .showComplianceLegend.value ??
+                                              false);
+                                          mapViewModel.showComplianceLegend
+                                              .notifyListeners();
+                                        },
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(
+                                              bottom: 16.0),
+                                          child: CircleIcon(
+                                            icon: mapViewModel
+                                                        .showComplianceLegend
+                                                        .value ==
+                                                    true
+                                                ? mapConstants
+                                                    .Constants.closeCircleIcon
+                                                : mapConstants
+                                                    .Constants.infoCircleIcon,
                                           ),
                                         ),
                                       ),
@@ -145,6 +192,7 @@ class HomeMap extends StatelessWidget {
                                 Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
+                                  crossAxisAlignment: CrossAxisAlignment.end,
                                   children: [
                                     ValueListenableBuilder<Layers?>(
                                         valueListenable:
@@ -158,20 +206,63 @@ class HomeMap extends StatelessWidget {
                                                       .gisSelectedLayer?.icon ??
                                                   mapConstants
                                                       .Constants.layerIcon,
-                                              iconColor: Color(0xFF52525B),
+                                              iconColor:
+                                                  AppColor.primary900Light,
                                               backgroundColor: AppColor.white,
                                             ),
                                           );
                                         }),
                                     Constants.verticalSpaceSmall,
-                                    GestureDetector(
-                                      onTap: () => mapViewModel.onLocationTap(),
-                                      child: const CircleIcon(
-                                        icon: IconPath.currentLocation,
-                                        iconColor: AppColor.white,
-                                        backgroundColor:
-                                            AppColor.primary900Light,
-                                      ),
+                                    Column(
+                                      children: [
+                                        ValueListenableBuilder<
+                                                MapAppearanceMessage?>(
+                                            valueListenable: mapViewModel
+                                                .mapAppearanceMessage,
+                                            builder:
+                                                (_, mapAppearanceMessage, __) {
+                                              return GestureDetector(
+                                                onTap: () => mapViewModel
+                                                    .onChangeTheme(),
+                                                child: CircleIcon(
+                                                  icon: mapAppearanceMessage ==
+                                                          MapAppearanceMessage
+                                                              .night
+                                                      ? IconPath
+                                                          .mapAppearnaceDay
+                                                      : IconPath
+                                                          .mapAppearnaceNight,
+                                                  iconColor:
+                                                      mapAppearanceMessage ==
+                                                              MapAppearanceMessage
+                                                                  .night
+                                                          ? AppColor.white
+                                                          : AppColor
+                                                              .primary900Light,
+                                                  backgroundColor:
+                                                      mapAppearanceMessage ==
+                                                              MapAppearanceMessage
+                                                                  .night
+                                                          ? AppColor
+                                                              .primary900Light
+                                                          : AppColor.white,
+                                                ),
+                                              );
+                                            }),
+                                        SizedBox(
+                                          height: 16,
+                                        ),
+                                        GestureDetector(
+                                          onTap: () =>
+                                              mapViewModel.onLocationTap(),
+                                          child: const CircleIcon(
+                                            icon: IconPath.currentLocation,
+                                            iconColor: AppColor.white,
+                                            backgroundColor:
+                                                AppColor.primary900Light,
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ],
                                 ),
@@ -201,10 +292,9 @@ class HomeMap extends StatelessWidget {
           alignment: Alignment.bottomCenter,
           child: Padding(
             padding: const EdgeInsets.only(
-              left: Constants.semiSmallPadding,
-              right: Constants.semiSmallPadding,
-              bottom: Constants.semiSmallPadding,
-            ),
+                left: Constants.semiMediumPadding,
+                right: Constants.semiMediumPadding,
+                bottom: Constants.semiSmallPadding),
             child: ValueListenableBuilder<DgisObjectIdMessage?>(
               valueListenable: mapViewModel.selectedPointId,
               builder: (_, selectedPoint, __) {
@@ -220,15 +310,14 @@ class HomeMap extends StatelessWidget {
                         icon: mapViewModel.selectedPointCategory.value != null
                             ? mapViewModel.selectedPointCategory.value!
                                 .cardIconName()
-                            : "",
+                            : "assets/maps/icons/card_icon/general.png",
                         onClose: () {
                           mapViewModel.showDialog();
                         },
                         pointViewModel: PointViewModel(
-                          controller: mapViewModel.controller,
-                          point: selectedPoint,
-                          webService: sl(),
-                        ),
+                            controller: mapViewModel.controller,
+                            point: selectedPoint,
+                            webService: sl()),
                       );
               },
             ),
@@ -262,6 +351,8 @@ class HomeMap extends StatelessWidget {
       await mapViewModel.getMinLayers();
     if (mapViewModel.layers.value != null)
       BottomSheetDialog.showDraggableSheet(
+        //   dialogKeyName: DialogName.selectGISLayers,
+        //  currentRouteName: "HomePage",
         isFullHeight: false,
         context,
         child: BottomSheetWithActions(

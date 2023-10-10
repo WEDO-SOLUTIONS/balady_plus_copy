@@ -536,68 +536,18 @@ class CommonFunctions {
     return "";
   }
 
-  static String getFormattedTime(String? timeFrom, String? timeTo) {
-    if (timeFrom != null && timeTo != null) {
-      int? hoursFrom = int.tryParse(timeFrom.split(":")[0]) != null
-          ? int.parse(timeFrom.split(":")[0])
-          : null;
-      int? hoursTo = int.tryParse(timeTo.split(":")[0]) != null
-          ? int.parse(timeTo.split(":")[0])
-          : null;
-
-      int? minuteFrom = int.tryParse(timeFrom.split(":")[1]) != null
-          ? int.parse(timeFrom.split(":")[1])
-          : null;
-      int? minuteTo = int.tryParse(timeTo.split(":")[1]) != null
-          ? int.parse(timeTo.split(":")[1])
-          : null;
-      String minuteFromStr = minuteFrom! < 10 ? "0$minuteFrom" : "$minuteFrom";
-      String minuteToStr = minuteTo! < 10 ? "0$minuteTo" : "$minuteTo";
-      TimeOfDay fromTime =
-          TimeOfDay(hour: hoursFrom!, minute: minuteFrom); // 3:00 PM
-      TimeOfDay toTime = TimeOfDay(hour: hoursTo!, minute: minuteTo); // 5:00 AM
-
-      int hoursFromAS12 = hoursFrom;
-      int hoursToAS12 = hoursTo;
-
-      if (hoursFrom == 0) hoursFromAS12 += 12;
-
-      if (hoursTo == 0) hoursToAS12 += 12;
-
-      if (hoursFrom >= 13 && hoursFrom <= 23) {
-        hoursFromAS12 = hoursFromAS12 - 12;
-      }
-
-      if (hoursTo >= 13 && hoursTo <= 23) hoursToAS12 = hoursToAS12 - 12;
-
-      String time = "";
-
-      if (fromTime.period == DayPeriod.am && toTime.period == DayPeriod.am) {
-        time = "$hoursFromAS12:$minuteFromStr - $hoursToAS12:$minuteToStr ص";
-        return time;
-      } else if (fromTime.period == DayPeriod.pm &&
-          toTime.period == DayPeriod.pm) {
-        time = "$hoursFromAS12:$minuteFromStr - $hoursToAS12:$minuteToStr م";
-        return time;
-      } else {
-        String from = "";
-        String to = "";
-        if (fromTime.period == DayPeriod.pm) {
-          from = "$hoursFromAS12:$minuteFromStr م";
-        }
-
-        if (fromTime.period == DayPeriod.am) {
-          from = "$hoursFromAS12:$minuteFromStr ص";
-        }
-
-        if (toTime.period == DayPeriod.pm) to = "$hoursToAS12:$minuteToStr م";
-
-        if (toTime.period == DayPeriod.am) to = "$hoursToAS12:$minuteToStr ص";
-
-        return "$from - $to";
-      }
+  static String getFormattedTime(String? timeStr,
+      {Duration? subtractedDuration}) {
+    String formattedTime = "";
+    try {
+      String biddingEndingTime = timeStr ?? "";
+      DateTime tempTime = DateFormat("hh:mm").parse(biddingEndingTime);
+      String time = DateFormat("h:mm a", 'ar_SA').format(tempTime).toString();
+      formattedTime = time;
+    } catch (ex) {
+      //print(ex);
     }
-    return "";
+    return replaceArabicNumberWithEnglish(formattedTime);
   }
 
   static String getFormattedTimeforQR(String? timeFrom, String? timeTo) {

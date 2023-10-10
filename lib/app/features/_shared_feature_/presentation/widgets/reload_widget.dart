@@ -37,7 +37,7 @@ class ReloadWidget extends StatelessWidget {
           CustomTextWidget(
             ('data_not_retrieved').tr(),
             fontSize: 14,
-            fontColor: AppColor.darkTurquoise,
+            fontColor: AppColor.primary900Light,
             fontWeight: AppFontWeight.regular,
             textAlign: TextAlign.center,
           ),

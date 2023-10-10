@@ -18,25 +18,39 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends State<HomePage> /*with WidgetsBindingObserver*/ {
   @override
   void dispose() {
     super.dispose();
+    //  WidgetsBinding.instance.removeObserver(this);
+    print("home page dispose");
   }
+
+  /*@override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      setState(() {});
+      print("update status");
+    }
+  }*/
 
   @override
   void initState() {
     super.initState();
+
     SchedulerBinding.instance.addPostFrameCallback((_) {
       MapViewModel mapViewModel =
           Provider.of<MapViewModel>(context, listen: false);
-
-      // mapViewModel.goToLocation();
     });
+
+    // WidgetsBinding.instance.addObserver(this);
+    print("home page init State");
   }
 
   @override
   Widget build(BuildContext context) {
+    print("home page init build");
+
     MapViewModel mapViewModel = context.watch<MapViewModel?>()!;
     return Scaffold(
       key: mapKey,
@@ -44,8 +58,8 @@ class _HomePageState extends State<HomePage> {
       body: TabPageContainer(
         child: Stack(
           children: [
-            const HomeMap(),
-            const HomeBottomSheet(),
+            HomeMap(),
+            HomeBottomSheet(),
           ],
         ),
       ),

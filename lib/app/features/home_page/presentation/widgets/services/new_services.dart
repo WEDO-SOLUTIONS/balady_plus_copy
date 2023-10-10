@@ -31,12 +31,15 @@ class NewServices extends StatelessWidget {
                       Container(
                         margin: const EdgeInsetsDirectional.only(
                             top: 12, bottom: 4, end: 6, start: 6),
-                        width: MediaQuery.sizeOf(context).width / 2.2,
+                        width: MediaQuery.sizeOf(context).width / 2.25,
                         padding: const EdgeInsets.all(12),
                         decoration: BoxDecoration(
                           borderRadius:
                               const BorderRadius.all(Radius.circular(12)),
-                          color: AppColor.white,
+                          color: Colors.transparent,
+                          image: const DecorationImage(
+                              image: AssetImage(ImagePath.union),
+                              fit: BoxFit.fill),
                           boxShadow: [
                             BoxShadow(
                               color:
@@ -69,17 +72,17 @@ class NewServices extends StatelessWidget {
                             ),
                             const SizedBox(height: 18),
                             CustomTextWidget(
-                              "خدمة الاعتراضات",
+                              "notice_service".tr(),
                               fontColor: AppColor.blackModern800Light,
                               fontWeight: AppFontWeight.bold,
                               fontSize: 14,
                             ),
                             const SizedBox(height: 6),
                             CustomTextWidget(
-                              "اطلع على جميع المخالفات القابلة للاعتراض وإرسل اعتراضك مباشرة",
+                              'notice_desc'.tr(),
                               fontColor: AppColor.blackModern400Light,
                               fontWeight: AppFontWeight.medium,
-                              maxLines: 10,
+                              maxLines: null,
                               fontSize: 12,
                             ),
                             const SizedBox(height: 16),
@@ -117,24 +120,17 @@ class NewServices extends StatelessWidget {
                         ),
                       ),
                       PositionedDirectional(
-                        end: 0,
+                        end: 10,
                         top: 0,
                         child: Container(
-                          padding: const EdgeInsets.all(6),
+                          padding: const EdgeInsets.all(11),
                           decoration: const BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: AppColor.scaffoldBackground,
-                          ),
-                          child: Container(
-                            padding: const EdgeInsets.all(11),
-                            decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: AppColor.secondary400Light),
-                            child: CustomSvgIconWidget(
-                              IconPath.warningIcon,
-                              iconSize: 24,
-                              iconColor: AppColor.white,
-                            ),
+                              shape: BoxShape.circle,
+                              color: AppColor.secondary400Light),
+                          child: const CustomSvgIconWidget(
+                            IconPath.warningIcon,
+                            iconSize: 27,
+                            iconColor: AppColor.white,
                           ),
                         ),
                       ),
@@ -148,12 +144,15 @@ class NewServices extends StatelessWidget {
                       Container(
                         margin: const EdgeInsetsDirectional.only(
                             top: 12, bottom: 4, end: 6, start: 6),
-                        width: MediaQuery.sizeOf(context).width / 2.2,
+                        width: MediaQuery.sizeOf(context).width / 2.25,
                         padding: const EdgeInsets.all(12),
                         decoration: BoxDecoration(
                           borderRadius:
                               const BorderRadius.all(Radius.circular(12)),
-                          color: AppColor.white,
+                          color: Colors.transparent,
+                          image: const DecorationImage(
+                              image: AssetImage(ImagePath.union),
+                              fit: BoxFit.fill),
                           boxShadow: [
                             BoxShadow(
                               color:
@@ -186,17 +185,17 @@ class NewServices extends StatelessWidget {
                             ),
                             const SizedBox(height: 18),
                             CustomTextWidget(
-                              "حجز موعد الكتروني",
+                              'schedule_date'.tr(),
                               fontColor: AppColor.blackModern800Light,
                               fontWeight: AppFontWeight.bold,
                               fontSize: 14,
                             ),
                             const SizedBox(height: 6),
                             CustomTextWidget(
-                              "احجز موعدًا للتواصل والاستفسار المباشر مع ممثلي البلدية",
+                              'booking_tickets'.tr(),
                               fontColor: AppColor.blackModern400Light,
                               fontWeight: AppFontWeight.medium,
-                              maxLines: 10,
+                              maxLines: null,
                               fontSize: 12,
                             ),
                             const SizedBox(height: 16),
@@ -216,23 +215,16 @@ class NewServices extends StatelessWidget {
                         ),
                       ),
                       PositionedDirectional(
-                        end: 0,
+                        end: 10,
                         top: 0,
                         child: Container(
-                          padding: const EdgeInsets.all(6),
+                          padding: const EdgeInsets.all(11),
                           decoration: const BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: AppColor.scaffoldBackground,
-                          ),
-                          child: Container(
-                            padding: const EdgeInsets.all(11),
-                            decoration: BoxDecoration(
-                                shape: BoxShape.circle, color: AppColor.brown),
-                            child: CustomSvgIconWidget(
-                              IconPath.calendarIcon,
-                              iconSize: 24,
-                              iconColor: AppColor.white,
-                            ),
+                              shape: BoxShape.circle, color: AppColor.brown),
+                          child: const CustomSvgIconWidget(
+                            IconPath.calendarIcon,
+                            iconSize: 27,
+                            iconColor: AppColor.white,
                           ),
                         ),
                       ),

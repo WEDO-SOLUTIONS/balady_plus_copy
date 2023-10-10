@@ -32,7 +32,6 @@ class PointViewModel extends BaseViewModel {
       try {
         dataPoint.value = await controller.searchByObjectId(point);
       } catch (ex) {
-        print("performSearch: ${ex}");
         isLoadingData.value = false;
         isLoadingData.notifyListeners();
         MapViewModel mapViewModel = Provider.of<MapViewModel>(
@@ -44,7 +43,6 @@ class PointViewModel extends BaseViewModel {
         mapViewModel.bottomSheetSize.notifyListeners();
         mapViewModel.selectedPointId.value = null;
         mapViewModel.selectedPointId.notifyListeners();
-        mapViewModel.controller.setHighlighted([]);
       }
       if (dataPoint.value != null) {
         print(dataPoint.value?.title.toString());

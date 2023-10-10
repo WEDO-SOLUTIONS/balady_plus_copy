@@ -5,6 +5,7 @@ import 'package:balady_plus/app/core/utils/enums/app_font_weights.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
+import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports.dart';
 import 'package:flutter/material.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:provider/provider.dart';
@@ -27,8 +28,8 @@ class ImtethalMapCard extends StatelessWidget {
     MapViewModel mapViewModel = context.watch<MapViewModel?>()!;
 
     return Container(
-      height: 172,
-      width: MediaQuery.of(context).size.width - 50,
+      height: 180,
+      width: MediaQuery.of(context).size.width - 30,
       padding: const EdgeInsets.all(16),
       decoration: ShapeDecoration(
         color: Colors.white,
@@ -59,7 +60,7 @@ class ImtethalMapCard extends StatelessWidget {
               ),
               CustomVerticalSpace(height: 8),
               CustomTextWidget(
-                data.getMunAndDis(),
+                data.getStreetName(),
                 fontColor: AppColor.blackModern500Light,
                 fontSize: 12,
                 fontWeight: AppFontWeight.bold,
@@ -98,8 +99,45 @@ class ImtethalMapCard extends StatelessWidget {
                 ],
               ),
               CustomVerticalSpace(height: 10),
-              GestureDetector(
-                onTap: () async {},
+              Row(
+                children: [
+                  Expanded(
+                    child: ElevatedButtonWidget.primaryCustom(
+                        text: "إصدار شهادة الامتثال",
+                        fontSize: 13,
+                        height: 40,
+                        onPressed: () {
+                          //   Navigator.pushNamed(
+                          //        context, RouteName.createCompliancePage);
+                        }),
+                  ),
+                  CustomHorizontalSpace(width: 4),
+                  Expanded(
+                    child: ElevatedButtonWidget.primaryCustomBorder(
+                      height: 40,
+                      fontSize: 13,
+                      onPressed: () async {
+                        /* await BottomSheetDialog.showDraggableSheet(
+                          context,
+                          //dialogKeyName: DialogName.buildingComplianceDialog,
+                          // currentRouteName: "HomePage",
+                          child: BuildingRequirementsDialog(),
+                        );*/
+                      },
+                      text: "المتطلبات والإشتراطات".tr(),
+                    ),
+                  ),
+                ],
+              ),
+              /* GestureDetector(
+                onTap: () async {
+                  await BottomSheetDialog.showDraggableSheet(
+                    context,
+                    dialogKeyName: DialogName.buildingComplianceDialog,
+                    currentRouteName: "HomePage",
+                    child: BuildingRequirementsDialog(),
+                  );
+                },
                 child: Container(
                     height: 40,
                     padding: const EdgeInsets.only(left: 7.50, right: 16),
@@ -127,7 +165,7 @@ class ImtethalMapCard extends StatelessWidget {
                             ))
                       ],
                     )),
-              )
+              )*/
             ],
           ),
           Align(

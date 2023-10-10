@@ -36,7 +36,7 @@ class Layers extends Equatable {
 
   @override
   // TODO: implement props
-  List<Object?> get props => [id, name];
+  List<Object?> get props => [id, name, geometryType];
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -60,9 +60,9 @@ class SubLayers {
 
   factory SubLayers.fromJson(Map<String, dynamic> json) => SubLayers(
         name: json["label"] ?? 'name',
-        type: json['symbol']["type"] ?? 'type',
-        url: json['symbol']["url"] ?? 'url',
-        imageData: json['symbol']["imageData"] ?? 'imageData',
+        type: json['symbol']["type"] ?? '',
+        url: json['symbol']["url"] ?? '',
+        imageData: json['symbol']["imageData"] ?? '',
       );
 
   Map<String, dynamic> toJson() => {

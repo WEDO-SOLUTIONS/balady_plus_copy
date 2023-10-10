@@ -10,9 +10,17 @@ const _pngVDIconPath = 'assets/icons/png/vd/';
 const _svgVDIconPath = 'assets/icons/svg/vd/';
 const _svgAthkarIconPath = 'assets/icons/svg/athkar/';
 const _boardingLogoPath = 'assets/icons/svg/boarding/';
+const _eventsPath = 'assets/icons/svg/home_events/';
+
+const _inqPath = 'assets/icons/inq/';
+const _msrPath = 'assets/icons/msr/';
+const _tsrPath = 'assets/icons/tsr/';
 
 const _pngQRIconPath = 'assets/icons/png/qr/';
 const _svgQRIconPath = 'assets/icons/svg/qr/';
+const _svgViolationPath = 'assets/icons/svg/violations/';
+const _svgEventsPath = 'assets/icons/svg/events/';
+const _svgSelfRatingPage = 'assets/icons/svg/self_rating/';
 
 const _svgCRIconPath = 'assets/icons/svg/cr/';
 const _svgWalletIconPath = 'assets/icons/svg/wallet/';
@@ -23,7 +31,17 @@ const _png = '.png';
 
 class IconPath {
   //! SVG Icons
+
+  static const iosArrowDown = '${_svgIconPath}ios_arrow_down$_svg';
+  static const noAvailableAccounts =
+      '${_svgIconPath}no_available_accounts$_svg';
   static const arrowBack = '${_svgIconPath}arrow_back_icon$_svg';
+  static const star = '${_svgIconPath}Star$_svg';
+  static const dangerIcon = '${_svgIconPath}danger_red$_svg';
+
+  static const walletNoFees = '${_svgIconPath}wallet_no_fees$_svg';
+  static const switchProfileIcon = '${_svgIconPath}profile-2user$_svg';
+
   static const close = '${_svgIconPath}arrow_back_icon$_svg';
   static const upload = '${_svgIconPath}arrow_back_icon$_svg';
   static const search = '${_svgIconPath}search_icon$_svg';
@@ -44,6 +62,13 @@ class IconPath {
   static const warningIcon = '${_svgIconPath}danger$_svg';
   static const notificationIc = '${_svgIconPath}notification$_svg';
   static const notificationIc2 = '${_svgIconPath}notification2$_svg';
+  static const notificationFilled = '${_svgIconPath}notification_filled$_svg';
+  static const serviceCardDesc = '${_svgIconPath}service_card_desc$_svg';
+  static const serviceCardFlow = '${_svgIconPath}service_card_flow$_svg';
+  static const serviceCardReq = '${_svgIconPath}service_card_req$_svg';
+
+  static const note = '${_svgIconPath}note$_svg';
+
   static const arrowForward2 = '${_svgIconPath}arrow_forward$_svg';
   static const receiveSquare = '${_svgIconPath}receive-square$_svg';
   static const note2 = '${_svgIconPath}note_2$_svg';
@@ -57,6 +82,11 @@ class IconPath {
   static const download2 = '${_svgIconPath}download2$_svg';
   static const moneyTime = '${_svgIconPath}money_time$_svg';
   static const infoCircle = '${_svgIconPath}info_circle$_svg';
+  static const camera = '${_svgIconPath}camera$_svg';
+  static const location = '${_svgIconPath}location$_svg';
+  static const lock = '${_svgIconPath}lock$_svg';
+  static const map = '${_svgIconPath}map$_svg';
+  static const archiveBook = '${_svgIconPath}archive_book$_svg';
 
   static const informationCircleIcon =
       '${_svgIconPath}informationCircleIcon$_svg';
@@ -110,6 +140,10 @@ class IconPath {
   static const contactInfo = '${_svgProfileIconPath}contact_info$_svg';
   static const leftArrow = '${_svgProfileIconPath}left_arrow$_svg';
   static const wallet = '${_svgProfileIconPath}wallet$_svg';
+  // static const requests = '${_svgProfileIconPath}document_bold$_svg';
+  static const bills = '${_svgProfileIconPath}bills$_svg';
+  static const flag = '${_svgProfileIconPath}flag$_svg';
+  static const notification = '${_svgProfileIconPath}notification$_svg';
 
   // Nearby
   static nearbyIcon(String name) => '$_svgNearbyIconPath$name$_svg';
@@ -133,6 +167,8 @@ class IconPath {
   // Map
   static const layers = '${_svgMapIconPath}layers$_svg';
   static const currentLocation = '${_svgMapIconPath}current_location$_svg';
+  static const mapAppearnaceDay = '${_svgMapIconPath}sun$_svg';
+  static const mapAppearnaceNight = '${_svgMapIconPath}moon$_svg';
 
   //! PNG Icons
   static const arrowForward = '${_pngIconPath}arrow_forward_icon$_png';
@@ -239,6 +275,33 @@ class IconPath {
   static const quranMarkIcon = '${_svgIconPath}quran_mark$_svg';
   static const quranMainMarkIcon = '${_svgIconPath}quran_main_bookmark$_svg';
 
+//MSR
+  static const msrRoadsIcon = '${_msrPath}msrRoadsIcon$_svg';
+  static const msrWasteIcon = '${_msrPath}msrWasteIcon$_svg';
+  static const msrLightsIcon = '${_msrPath}msrLightsIcon$_svg';
+  static const msrParksIcon = '${_msrPath}msrParksIcon$_svg';
+  static const msrCleanIcon = '${_msrPath}msrCleanIcon$_svg';
+
+  static const Inq_6Icon = '${_inqPath}Inq_6Icon$_svg';
+  static const Inq_3Icon = '${_inqPath}Inq_3Icon$_svg';
+  static const Inq_14Icon = '${_inqPath}Inq_14Icon$_svg';
+  static const Inq_11Icon = '${_inqPath}Inq_11Icon$_svg';
+
+  static const tsr_1 = '${_tsrPath}1$_svg';
+  static const tsr_2 = '${_tsrPath}2$_svg';
+  static const tsr_3 = '${_tsrPath}3$_svg';
+  static const tsr_4 = '${_tsrPath}4$_svg';
+  static const tsr_5 = '${_tsrPath}5$_svg';
+  static const tsr_6 = '${_tsrPath}6$_svg';
+  static const tsr_7 = '${_tsrPath}7$_svg';
+  static const tsr_8 = '${_tsrPath}8$_svg';
+  static const tsr_9 = '${_tsrPath}9$_svg';
+  static const tsr_10 = '${_tsrPath}10$_svg';
+
+// INQ
+
+// Daem
+
   // CR
   static const additionalActivity = '${_svgCRIconPath}additional_activity$_svg';
   static const undertaking = '${_svgCRIconPath}undertaking$_svg';
@@ -258,6 +321,8 @@ class IconPath {
   //Map
   static const investmentIcon = '${_svgIconPath}invetment_icon$_svg';
   static const mapLocationIcon = '${_svgIconPath}map_location_icon$_svg';
+  static const searchSuggestIcon = '${_svgIconPath}search_normal$_svg';
+  static const closeIcon = '${_svgIconPath}close$_svg';
 
   // Building Requirements
   static const checked = '${_svgIconPath}checked$_svg';
@@ -266,13 +331,66 @@ class IconPath {
   static const taskSquare3 = '${_svgIconPath}task_square3$_svg';
   //Athkar
 
-  static const morningAthkarIcon = '${_svgAthkarIconPath}morning_athkar$_svg';
-  static const sleepingAthkarIcon = '${_svgAthkarIconPath}evening_athkar$_svg';
-  static const eveningAthkarIcon = '${_svgAthkarIconPath}sleeping_athkar$_svg';
+  static const morningAthkarIcon = '${_svgAthkarIconPath}morning$_svg';
+  static const sleepingAthkarIcon = '${_svgAthkarIconPath}evening$_svg';
+  static const eveningAthkarIcon = '${_svgAthkarIconPath}sleeping$_svg';
+  static const afterPrayerIcon = '${_svgAthkarIconPath}after_prayer$_svg';
+  static const praisesIcon = '${_svgAthkarIconPath}praises$_svg';
+  static const wakeUp = '${_svgAthkarIconPath}wake_up$_svg';
+  static const pray = '${_svgAthkarIconPath}pray$_svg';
+  static const handPrayer = '${_svgAthkarIconPath}hand-pray$_svg';
+  static const notificationOn = '${_svgAthkarIconPath}notification_on$_svg';
+  static const notificationOff = '${_svgAthkarIconPath}notification_off$_svg';
+
+  // Violations
+  //static const magicStar = '${_svgViolationPath}magic-star$_svg';
+  static const calculator = '${_svgViolationPath}calculator$_svg';
+  //static const location = '${_svgViolationPath}location$_svg';
+  static const user = '${_svgViolationPath}user$_svg';
+  static const laptop = '${_svgViolationPath}laptop$_svg';
   static const reset = '${_svgAthkarIconPath}reset$_svg';
+  static const whiteArrow = '${_svgViolationPath}white_arrow$_svg';
+  static const blackArrow = '${_svgViolationPath}black_arrow$_svg';
 
   static const muslimNumberFrame =
       '${_svgAthkarIconPath}muslim_number_frame$_svg';
+
   static const boardingSplashLogo = '${_boardingLogoPath}balady_logo$_svg';
   //etmam app
+  // Events Page
+
+  static const eventsLocationIcon = '${_svgEventsPath}location$_svg';
+  static const locationBlack = '${_svgEventsPath}locationb$_svg';
+  static const clock = '${_svgEventsPath}clock$_svg';
+  static const export = '${_svgEventsPath}export$_svg';
+  static const walletEvents = '${_svgEventsPath}wallet-money$_svg';
+  static const profileCircle = '${_svgEventsPath}profile-circle$_svg';
+  static const linkSquare = '${_svgEventsPath}link-square$_svg';
+  static const calendar = '${_svgEventsPath}calendar$_svg';
+  static const exportW = '${_svgEventsPath}Frame$_svg';
+  static const notFound = '${_svgEventsPath}not_found$_svg';
+
+  // Self Rating
+
+  static const selfRatingBuilding = '${_svgSelfRatingPage}building$_svg';
+
+  // Home Events
+  static const rockHomeEvents = '${_eventsPath}rock$_png';
+  static const bookmarkHomeEvents = '${_eventsPath}bookmark$_svg';
+  static const locationHomeEvents = '${_eventsPath}location$_svg';
+  static const planetRingedHomeEvents = '${_eventsPath}planet_ringed$_svg';
+  static const tagHomeEvents = '${_eventsPath}tag$_svg';
+
+// -------  Commercial License Cancel ---------
+  static const submitApplicationSuccessfullyCancel =
+      '${_svgIconPath}submit_application_successfully_cancel$_svg';
+  static const successfullySubmitRating =
+      '${_svgIconPath}successfully_submit_rating$_svg';
+  static const like = '${_pngIconPath}Like$_png';
+  static const saveIcon = '${_svgIconPath}save_icon$_svg';
+  static const element_3Icon = '${_svgIconPath}element_3$_svg';
+  static const scannerIcon = '${_svgIconPath}scanner$_svg';
+  static const cancelOrder = '${_svgIconPath}closeـsquare$_svg';
+  static const editIcon = '${_svgIconPath}edit_icon$_svg';
+  static const logoutIcon = '${_svgIconPath}logout$_svg';
 }

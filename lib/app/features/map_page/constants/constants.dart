@@ -12,6 +12,7 @@ class Constants {
   static double markerElevation = 0;
 
   // Map Icons
+  static String icMarker = "assets/maps/icons/ic_marker.svg";
   static String icMarkerInvestmentSites =
       "assets/maps/icons/ic_marker_investment_sites.svg";
   static String icMarkerCemeteries =
@@ -23,13 +24,23 @@ class Constants {
   static String icMarkerGasStations =
       "assets/maps/icons/ic_marker_gas_stations.svg";
   static String icMarkerMosques = "assets/maps/icons/ic_marker_mosques.svg";
-  static String icMarkerRestaurant =
+  static const String icMarkerRestaurant =
+      "assets/maps/icons/ic_marker_restaurant.svg";
+
+  static const String icMarkerEvents =
       "assets/maps/icons/ic_marker_restaurant.svg";
 
   static const String diggingLayerIcon =
       "assets/maps/icons/gis_layers_icons/digging.svg";
+
+        static const String eventLayerIcon =
+      "assets/maps/icons/ticket.svg";
+
   static const String diggingSelectedLayerIcon =
       "assets/maps/icons/gis_layers_icons/digging_selected.svg";
+
+  static const String restaurantLayerIcon =
+      "assets/maps/icons/gis_layers_icons/resturant.svg";
 
   static const String landsLayerIcon =
       "assets/maps/icons/gis_layers_icons/lands.svg";
@@ -59,5 +70,7 @@ class Constants {
       "assets/maps/icons/gis_layers_icons/imtethal_selected.svg";
 
   static const String infoCircleIcon = "assets/maps/icons/info_circle.svg";
+  static const String closeCircleIcon = "assets/maps/icons/close_circle.svg";
+
   static const String goToLocation = "assets/maps/icons/go_to_location.svg";
 }

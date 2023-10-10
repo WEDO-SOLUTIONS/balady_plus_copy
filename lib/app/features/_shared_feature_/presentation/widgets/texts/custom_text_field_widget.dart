@@ -477,7 +477,7 @@ class CustomTextFieldWidgetWithOptinal extends StatelessWidget {
                       filled: filled,
                       fillColor: readOnly ? AppColor.black400 : fillColor,
                       enabledBorder: _getBorder(borderColor),
-                      focusedBorder: _getBorder(AppColor.darkTurquoise),
+                      focusedBorder: _getBorder(AppColor.primary900Light),
                       errorBorder: _getBorder(AppColor.redBrown),
                       hintTextDirection: textDirection,
                       focusedErrorBorder: _getBorder(AppColor.redBrown),
