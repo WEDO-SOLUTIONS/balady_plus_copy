@@ -1,8 +1,10 @@
-import 'package:balady_plus/etmam_app/features/my_orders/domain/use_cases/get_my_requests_old.dart';
+import 'package:balady_plus/app/core/utils/constants/route_names.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:balady_plus/etmam_app/core/errors/errors_exports.dart'
     show ServerFailure;
+import 'package:balady_plus/app/core/services/local/navigation_services.dart';
+import 'package:balady_plus/app/core/utils/utils_exports.dart' show BlocStatus;
 
 import 'package:balady_plus/etmam_app/core/utils/utils_exports.dart';
 import 'package:balady_plus/etmam_app/features/_shared_feature_/shared/data/entities/services_page_params.dart';
@@ -10,13 +12,9 @@ import 'package:balady_plus/etmam_app/features/my_orders/domain/entities/order_d
 import 'package:balady_plus/etmam_app/features/my_orders/domain/entities/order_details/order_details_params.dart';
 import 'package:balady_plus/etmam_app/features/my_orders/domain/use_cases/get_order_details.dart';
 import 'package:balady_plus/etmam_app/features/my_orders/my_orders_exports.dart'
-    show OrderItem, GetOrdersParams, CancelOrder;
+    show OrderItem, GetOrdersParams, GetMyOrders, CancelOrder;
 import 'package:balady_plus/etmam_app/features/services/services_exports.dart';
 import 'package:flutter/cupertino.dart';
-
-import '../../../../../../app/core/services/local/navigation_services.dart';
-import '../../../../../../app/core/utils/constants/route_names.dart';
-import '../../../../../../app/core/utils/enums/bloc_status.dart';
 
 part 'my_orders_event.dart';
 
@@ -193,10 +191,10 @@ class MyOrdersBloc extends Bloc<MyOrdersEvent, MyOrdersState> {
       ));
 
       // Navigate to Providers screen
-      /*  NavigationService.pushNamed(
+      NavigationService.pushNamed(
           routeName: EtmamRoutesNames.orderDetailsRoute,
           args: OrderDetailsPageParams(
-              response: success.data?.result, myOrdersBloc: this));*/
+              response: success.data?.result, myOrdersBloc: this));
     });
   }
 

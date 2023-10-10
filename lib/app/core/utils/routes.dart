@@ -34,17 +34,17 @@ import 'package:flutter/material.dart'
 import 'package:flutter/widgets.dart' show SizedBox;
 import 'package:balady_plus/etmam_app/features/home/presentation/pages/etmam_home_page.dart';
 import 'package:balady_plus/etmam_app/features/on_boarding_cities/presentation/pages/etmam_select_city_page.dart';
-import '../../../etmam_app/features/dynamic_form/presentation/dialogs/bidding_types_dialog.dart';
-import '../../../etmam_app/features/dynamic_form/presentation/pages/bidding_form_page.dart';
-import '../../../etmam_app/features/dynamic_form/presentation/pages/bidding_type_page.dart';
-import '../../../etmam_app/features/dynamic_form/presentation/pages/edit_bidding_form_page.dart';
-import '../../../etmam_app/features/my_orders/presentation/pages/requests_page.dart'
-    as etmamRequestsPage;
+//import '../../../etmam_app/features/dynamic_form/presentation/dialogs/bidding_types_dialog.dart';
+//import '../../../etmam_app/features/dynamic_form/presentation/pages/bidding_form_page.dart';
+//import '../../../etmam_app/features/dynamic_form/presentation/pages/bidding_type_page.dart';
+//import '../../../etmam_app/features/dynamic_form/presentation/pages/edit_bidding_form_page.dart';
+//import '../../../etmam_app/features/my_orders/presentation/pages/requests_page.dart'
+//    as etmamRequestsPage;
 import '../../../etmam_app/features/home/presentation/pages/etmam_main_city_page.dart';
 import '../../../etmam_app/features/home/presentation/pages/etmam_main_page.dart';
-import '../../../etmam_app/features/my_orders/presentation/pages/delete_orders_page.dart';
-import '../../../etmam_app/features/my_orders/presentation/pages/request_details_page.dart';
-import '../../../etmam_app/features/my_orders/presentation/pages/request_offers_page.dart';
+//import '../../../etmam_app/features/my_orders/presentation/pages/delete_orders_page.dart';
+//import '../../../etmam_app/features/my_orders/presentation/pages/request_details_page.dart';
+//import '../../../etmam_app/features/my_orders/presentation/pages/request_offers_page.dart';
 import '../../core/utils/utils_exports.dart'
     show
         EtmamRoutesNames,
@@ -263,7 +263,7 @@ class Routes {
         // orders details page
         EtmamRoutesNames.orderDetailsRoute: (context) =>
             const OrderDetailsPage(),
-
+/*
         EtmamRoutesNames.requestDetailsRoute: (context) =>
             const RequestDetailsPage(),
 
@@ -272,7 +272,7 @@ class Routes {
 
         EtmamRoutesNames.requestOffersPage: (context) =>
             const RequestOffersPage(),
-
+*/
         // evaluate order
         EtmamRoutesNames.evaluateOrderRoute: (context) =>
             const EvaluateOrderPage(),
@@ -287,7 +287,7 @@ class Routes {
         // Select City Page
         EtmamRoutesNames.selectCityPage: (context) =>
             const EtmamSelectCityPage(),
-
+/*
         // Bidding Type Form
 
         EtmamRoutesNames.biddingType: (context) => const BiddingTypePage(),
@@ -303,7 +303,7 @@ class Routes {
             const EditBiddingFormPage(),
 
         EtmamRoutesNames.biddingReleationTypes: (context) =>
-            BiddingTypeDialog(),
+            BiddingTypeDialog(),*/
 
 //! Etmam End
 

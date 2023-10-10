@@ -1,4 +1,4 @@
-import 'package:balady_plus/etmam_app/features/my_orders/presentation/blocs/my_requests/my_requests_bloc.dart';
+import 'package:balady_plus/app/core/utils/utils_exports.dart' show BlocStatus;
 import 'package:balady_plus/etmam_app/core/utils/utils_exports.dart'
     show AppColor, AppFontWeight, trans;
 import 'package:balady_plus/etmam_app/features/my_orders/my_orders_exports.dart';
@@ -6,7 +6,6 @@ import 'package:balady_plus/etmam_app/features/my_orders/presentation/blocs/my_o
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../../app/core/utils/enums/bloc_status.dart';
 import '../../../_shared_feature_/shared/shared_feature_exports.dart'
     show CustomInkWellButtonWidget, CustomTextWidget;
 
@@ -23,8 +22,7 @@ class _OrdersTabsWidgetState extends State<OrdersTabsWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<MyRequestsBloc, MyRequestsState>(
-        builder: (context, state) {
+    return BlocBuilder<MyOrdersBloc, MyOrdersState>(builder: (context, state) {
       return Container(
           // decoration: const BoxDecoration(
           //     borderRadius: BorderRadius.all(Radius.circular(16)),
@@ -37,19 +35,19 @@ class _OrdersTabsWidgetState extends State<OrdersTabsWidget> {
             .map((i, tabs) => MapEntry(
                 i,
                 Expanded(
-                  flex: tabs == "order_all" ? 1 : 2,
+                  flex:  tabs == "order_all" ? 1:2 ,
                   child: TabWidget(
                     btnPressed: () {
                       if (state.status == BlocStatus.loadingShimmer) return;
                       if (tabs == "order_all") {
-                        context.read<MyRequestsBloc>().add(GetMyRequestsEvent(
+                        context.read<MyOrdersBloc>().add(GetMyOrdersEvent(
                             params: GetOrdersParams(pageIndex: "1")));
                       } else if (tabs == "ongoing_orders") {
-                        context.read<MyRequestsBloc>().add(GetMyRequestsEvent(
-                            params: GetOrdersParams(
-                                pageIndex: "1", closed: false)));
+                        context.read<MyOrdersBloc>().add(GetMyOrdersEvent(
+                            params:
+                                GetOrdersParams(pageIndex: "1", closed: false)));
                       } else if (tabs == "previous_orders") {
-                        context.read<MyRequestsBloc>().add(GetMyRequestsEvent(
+                        context.read<MyOrdersBloc>().add(GetMyOrdersEvent(
                             params:
                                 GetOrdersParams(pageIndex: "1", closed: true)));
                       }

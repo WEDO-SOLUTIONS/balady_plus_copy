@@ -44,7 +44,3 @@ class GetProviderDetailsEvent extends HomeEvent {
 class GetAdsEvent extends HomeEvent {
   GetAdsEvent();
 }
-
-class FindByRequestTypeEvent extends HomeEvent {
-  const FindByRequestTypeEvent();
-}

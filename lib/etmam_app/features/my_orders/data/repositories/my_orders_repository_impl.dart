@@ -1,6 +1,5 @@
 import 'package:balady_plus/etmam_app/features/_shared_feature_/shared/shared_feature_exports.dart'
     show ApigeeResponse;
-import 'package:balady_plus/etmam_app/features/my_orders/domain/entities/order_details/request_details_response.dart';
 
 import 'package:dartz/dartz.dart' show Either, Left, Right;
 import 'package:balady_plus/etmam_app/features/my_orders/domain/entities/cancel_order_params.dart';
@@ -12,11 +11,7 @@ import 'package:balady_plus/etmam_app/features/my_orders/domain/entities/get_ord
 import 'package:balady_plus/etmam_app/features/my_orders/domain/entities/rating/rating_item.dart';
 import 'package:balady_plus/etmam_app/features/my_orders/domain/use_cases/submit_rating_params.dart';
 import 'package:balady_plus/etmam_app/features/my_orders/my_orders_exports.dart'
-    show
-        MyOrdersRemoteDataSource,
-        MyOrdersLocalDataSource,
-        MyOrdersRepository,
-        RequestResponseModel;
+    show MyOrdersRemoteDataSource, MyOrdersLocalDataSource, MyOrdersRepository;
 import '../../../../core/errors/errors_exports.dart'
     show Failure, ServerException, ServerFailure;
 
@@ -84,32 +79,6 @@ class MyOrdersRepositoryImpl implements MyOrdersRepository {
       {required SubmitRatingParams params}) async {
     try {
       final data = await remoteDataSource.submitRating(params: params);
-
-      return Right(data);
-    } on ServerException catch (error) {
-      return Left(
-          ServerFailure(error.errorMessage, statusCode: error.statusCode));
-    }
-  }
-
-  @override
-  Future<Either<Failure, ApigeeResponse<RequestResponseModel>>> getMyRequests(
-      {required GetOrdersParams params}) async {
-    try {
-      final data = await remoteDataSource.getMyRequests(params: params);
-
-      return Right(data);
-    } on ServerException catch (error) {
-      return Left(ServerFailure(error.errorMessage,
-          statusCode: error.statusCode, errorCode: error.errorCode));
-    }
-  }
-
-  @override
-  Future<Either<Failure, ApigeeResponse<RequestDetailsResponse>>>
-      getRequestDetails({required OrderDetailsParams params}) async {
-    try {
-      final data = await remoteDataSource.getRequestDetails(params: params);
 
       return Right(data);
     } on ServerException catch (error) {

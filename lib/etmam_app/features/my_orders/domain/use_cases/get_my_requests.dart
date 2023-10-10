@@ -4,21 +4,17 @@ import 'package:balady_plus/etmam_app/features/_shared_feature_/shared/data/enti
 
 import 'package:dartz/dartz.dart' show Either;
 import 'package:balady_plus/etmam_app/features/my_orders/my_orders_exports.dart'
-    show
-        OrdersResponse,
-        GetOrdersParams,
-        MyOrdersRepository,
-        RequestResponseModel;
+    show OrdersResponse, GetOrdersParams, MyOrdersRepository;
 import '../../../../core/errors/errors_exports.dart' show Failure;
 
-class GetMyRequests
-    extends UseCase<ApigeeResponse<RequestResponseModel>, GetOrdersParams> {
+class GetMyOrders
+    extends UseCase<ApigeeResponse<OrdersResponse>, GetOrdersParams> {
   final MyOrdersRepository repository;
 
-  GetMyRequests({required this.repository});
+  GetMyOrders({required this.repository});
   @override
-  Future<Either<Failure, ApigeeResponse<RequestResponseModel>>> call(
+  Future<Either<Failure, ApigeeResponse<OrdersResponse>>> call(
       GetOrdersParams params) async {
-    return await repository.getMyRequests(params: params);
+    return await repository.getMyOrders(params: params);
   }
 }

@@ -14,48 +14,23 @@ import 'package:balady_plus/etmam_app/features/submit_request/domain/use_cases/s
 import 'package:balady_plus/etmam_app/features/submit_request/submit_request_exports.dart';
 import 'package:flutter/material.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart' show BlocStatus;
-import 'package:collection/collection.dart';
-
-import '../../../../../../../app/core/dependency_injection/injection_container.dart';
-import '../../../../../../../app/features/_shared_feature_/data/entities/drop_down_item.dart';
-import '../../../../../../core/utils/enums/dynamic_forms.dart';
-import '../../../../../dynamic_form/domain/entities/create_form_item_response.dart';
-import '../../../../../dynamic_form/domain/entities/create_form_params.dart';
-import '../../../../../dynamic_form/domain/entities/get_data_params.dart';
-import '../../../../../dynamic_form/domain/entities/validate/validate_form_params.dart';
-import '../../../../../dynamic_form/domain/entities/validate/validate_form_response.dart';
-import '../../../../../dynamic_form/domain/use_cases/create_bidding_form.dart';
-import '../../../../../dynamic_form/domain/use_cases/get_form_field_data.dart';
-import '../../../../../dynamic_form/domain/use_cases/validate_dynamic_form.dart';
-import '../../../../../etmam_entry_point/presentation/cubit/etmam_entry_point_cubit.dart';
-
 part 'submit_request_event.dart';
 part 'submit_request_state.dart';
 
 class SubmitRequestBloc extends Bloc<SubmitRequestEvent, SubmitRequestState> {
   SubmitRequest _submitRequest;
   RelationBloc? _relationBloc;
-  CreateBiddingForm _createBiddingForm;
-  final GetFormFieldData _getFormFieldData;
-  final ValidateDynamicForm _validateDynamicForm;
-
   final SendOTP _sendOTP;
-  final Function? callBack;
 
+  final Function? callBack;
   SubmitRequestBloc(
       {required SubmitRequest submitRequest,
       required SendOTP sendOTP,
-      required CreateBiddingForm createBiddingForm,
-      required GetFormFieldData getFormFieldData,
-      required ValidateDynamicForm validateDynamicForm,
       RelationBloc? relationBloc,
       required SubmitPageParams args})
       : _sendOTP = sendOTP,
         _submitRequest = submitRequest,
         _relationBloc = relationBloc,
-        _createBiddingForm = createBiddingForm,
-        _getFormFieldData = getFormFieldData,
-        _validateDynamicForm = validateDynamicForm,
         callBack = args.callBack,
         super(SubmitRequestState(
           relationId: args.relationId,
@@ -67,45 +42,13 @@ class SubmitRequestBloc extends Bloc<SubmitRequestEvent, SubmitRequestState> {
           changeProvider: args.changeProvider,
           orderId: args.orderId,
         )) {
-    on<SubmitRequestEvent>((event, emit) {});
-    on<SubmitEvent>(_submitRequestHandler);
-    on<CreateFormEvent>(_createFormHandler);
-    on<DeleteSubReleation>(_deleteSubRelationHandler);
-    on<ChangeTextComponentEvent>(_changeTextComponentEventHandler);
-    on<ValidateFormEvent>(_validateFormEventHandler);
-
-    on<SelectFormFieldDataEvent>(_selectDropDownComponentEventHandler);
-    if (args.subServiceId != null &&
-        args.subServiceId!.isNotEmpty &&
-        args.inputsRequired == true)
-      add(CreateFormEvent(serviceId: args.subServiceId));
-  }
-
-  Future<void> _createFormHandler(CreateFormEvent e, Emitter emitter) async {
-    emitter(state.copyWith(formStatus: BlocStatus.loading));
-
-    final failureOrSuccess = await _createBiddingForm(CreateFormParams(
-        profileId: CommonProperties.profileId,
-        requestTypeId: "delegate",
-        services: [e.serviceId ?? state.subServiceId ?? ""]));
-
-    failureOrSuccess.fold((failure) {
-      print("failure $failure");
-      emitter(state.copyWith(
-        formStatus: BlocStatus.failure,
-        errorMessage: (failure as ServerFailure).errorMessage,
-      ));
-    }, (success) {
-      CreateFormItemResponse? form = success.data?.result?.first;
-      form?.relationId = state.relationId;
-      form?.serviceName = state.subServiceName;
-      print("HEREEEE $form");
-      emitter(state.copyWith(
-        formStatus: BlocStatus.success,
-        form: form,
-        errorMessage: "",
-      ));
+    on<SubmitRequestEvent>((event, emit) {
+      // TODO: implement event handler
     });
+
+    on<SubmitEvent>(_submitRequestHandler);
+
+    on<DeleteSubReleation>(_deleteSubRelationHandler);
   }
 
   Future<void> _submitRequestHandler(SubmitEvent e, Emitter emitter) async {
@@ -189,195 +132,5 @@ class SubmitRequestBloc extends Bloc<SubmitRequestEvent, SubmitRequestState> {
     emitter(state.copyWith(status: BlocStatus.loading));
     _relationBloc?.add(DeleteRelationItem(id: e.id));
     emitter(state.copyWith(status: BlocStatus.success));
-  }
-
-  Future<void> _changeTextComponentEventHandler(
-      ChangeTextComponentEvent e, Emitter emitter) async {
-    emitter(state.copyWith(status: BlocStatus.loading));
-    CreateFormItemResponse? form = state.form;
-
-    if (form != null) {
-      int? fieldIndex =
-          form.items?.indexWhere((element) => element.field?.id == e.fieldId);
-      FormItems? field = form.items?[fieldIndex!];
-
-      if (form != null) {
-        FormItems? field = form.items
-            ?.firstWhereOrNull((element) => element.field?.id == e.fieldId);
-
-        if (field?.getFieldDataType() == DynamicFormFieldDataType.integer)
-          field!.value = int.tryParse(e.text ?? "");
-        else if (field?.getFieldDataType() == DynamicFormFieldDataType.decimal)
-          field!.value = double.tryParse(e.text ?? "");
-        else
-          field!.value = e.text;
-
-        field.errors = null;
-      }
-
-      form.items?[fieldIndex!] = field!;
-      CreateFormItemResponse? newFormResponse = state.form;
-      newFormResponse = form;
-      emitter(state.copyWith(
-          status: BlocStatus.success, errorMessage: "", form: newFormResponse));
-    }
-  }
-
-  Future<void> _selectDropDownComponentEventHandler(
-      SelectFormFieldDataEvent e, Emitter emitter) async {
-    emitter(state.copyWith(status: BlocStatus.loading));
-    CreateFormItemResponse? form = state.form;
-
-    if (form != null) {
-      int? fieldIndex =
-          form.items?.indexWhere((element) => element.field?.id == e.fieldId);
-      FormItems? field = form.items?[fieldIndex!];
-      field?.selectedDataItem = e.item;
-      field?.errors = null;
-
-      form.items?[fieldIndex!] = field!;
-
-      /** Clear Lists releated to this field */
-      form.items = form.items?.map((el) {
-        if (el.field?.dataSourceFields?.contains(e.fieldId!) ?? false) {
-          el.selectedDataItem = null;
-          el.dataItems = null;
-        }
-        return el;
-      }).toList();
-      /** */
-      CreateFormItemResponse? newFormResponse = state.form;
-      newFormResponse = form;
-      emitter(state.copyWith(
-          status: BlocStatus.success, errorMessage: "", form: newFormResponse));
-    }
-  }
-
-  Future<List<DropDownItem>?> getDataEventHandler(
-      GetFormFieldDataEvent e) async {
-    CreateFormItemResponse? form = state.form;
-
-    if (form != null) {
-      int? fieldIndex =
-          form.items?.indexWhere((element) => element.field?.id == e.fieldId);
-      FormItems? field = form.items?[fieldIndex!];
-      Map<String, dynamic> dependantFields = {};
-      if (field?.field?.dataSourceFields != null &&
-          (field?.field?.dataSourceFields?.isNotEmpty ?? false)) {
-        field?.field?.dataSourceFields?.forEach((e) {
-          FormItems? field =
-              form.items?.firstWhereOrNull((element) => element.field?.id == e);
-
-          if (field?.value != null) {
-            dependantFields.putIfAbsent(field!.field!.id!, () => field.value);
-          } else if (field?.getComponentType() ==
-                  DynamicFormComponentType.dropDown &&
-              field?.selectedDataItem != null) {
-            dependantFields.putIfAbsent(
-                field!.field!.id!, () => field.selectedDataItem!.id);
-          } else if (field?.getComponentType() ==
-              DynamicFormComponentType.hidden) {
-            dependantFields.putIfAbsent(
-                field!.field!.id!, () => CommonProperties.cityId);
-          } else {
-            CommonFunctions.showError(trans("bidding_fill_filed")
-                .replaceAll("{}", field?.fieldLabel ?? ""));
-          }
-        });
-      }
-
-      if ((field?.field?.dataSourceFields?.length ?? 0) ==
-          dependantFields.length) {
-        GetDataParams params = GetDataParams(
-            fieldId: field!.field!.id!,
-            profileId: sl<EtmamEntryPointCubit>().state.profile!.id!,
-            fields: dependantFields);
-        emit(state.copyWith(status: BlocStatus.loading));
-
-        final failureOrSuccess = await _getFormFieldData(params);
-
-        return await failureOrSuccess.fold((failure) async {
-          print(failure);
-          emit(state.copyWith(
-            status: BlocStatus.failure,
-            errorMessage: (failure as ServerFailure).errorMessage,
-          ));
-          return null;
-        }, (success) async {
-          print(success);
-          field.dataItems = success.data?.result;
-          form.items?[fieldIndex!] = field;
-          CreateFormItemResponse? newFormResponse = state.form;
-          newFormResponse = form;
-          emit(state.copyWith(
-              status: BlocStatus.success,
-              errorMessage: "",
-              form: newFormResponse));
-
-          return field.dataItems;
-        });
-      }
-    }
-    return null;
-  }
-
-  Future<void> _validateFormEventHandler(
-      ValidateFormEvent e, Emitter emitter) async {
-    emitter(state.copyWith(status: BlocStatus.loading));
-
-    ValidateFormParams params = ValidateFormParams(
-      profileId: CommonProperties.profileId ?? "",
-      formId: state.form!.id!,
-      fields: state.form?.getFieldsRequest(),
-    );
-
-    final failureOrSuccess = await _validateDynamicForm(params);
-    failureOrSuccess.fold((failure) {
-      print(failure);
-      emitter(state.copyWith(
-        status: BlocStatus.failure,
-        errorMessage: (failure as ServerFailure).errorMessage,
-      ));
-    }, (success) {
-      emitter(state.copyWith(
-        status: BlocStatus.success,
-        errorMessage: "",
-      ));
-      if (success.data?.result?.isSuccess == true) {
-        emitter(state.copyWith(
-            status: BlocStatus.success,
-            errorMessage: "",
-            formValidation: success.data?.result));
-        add(SubmitEvent(params: e.params));
-      } else {
-/**
- *  Set Validations Errors for each field 
- */
-
-        List<ValidationsErrors> errors = success.data?.result?.errors ?? [];
-
-        CreateFormItemResponse? form = state.form;
-
-        if (form != null) {
-          for (int i = 0; i < (form.items?.length ?? 0); i++) {
-            FormItems? field = form.items?[i];
-
-            ValidationsErrors? error = errors
-                .firstWhereOrNull((element) => element.id == field?.field?.id);
-
-            field?.errors = error;
-            form.items?[i] = field!;
-          }
-
-          CreateFormItemResponse? newFormResponse = state.form;
-          newFormResponse = form;
-          emitter(state.copyWith(
-              status: BlocStatus.success,
-              errorMessage: "",
-              form: newFormResponse,
-              formValidation: success.data?.result));
-        }
-      }
-    });
   }
 }

@@ -7,13 +7,10 @@ class ServicePageParams {
   ServiceResponse? response;
   final Function? callBack;
   PageTypes? pageType;
-  final bool? inputsRequired;
-
   ServicePageParams(
       {this.changeProvider,
       this.orderId,
       this.response,
       this.callBack,
-      this.pageType,
-      this.inputsRequired});
+      this.pageType});
 }

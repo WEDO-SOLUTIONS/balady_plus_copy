@@ -29,10 +29,6 @@ import 'package:balady_plus/etmam_app/features/services/services_exports.dart'
 import 'package:balady_plus/app/core/utils/utils_exports.dart' show BlocStatus;
 import 'package:flutter/material.dart';
 
-import '../../../../../../app/core/dependency_injection/injection_container.dart';
-import '../../../../dynamic_form/domain/use_cases/find_by_request_type.dart';
-import '../../../../dynamic_form/presentation/dialogs/bidding_types_dialog.dart';
-
 part 'home_event.dart';
 
 part 'home_state.dart';
@@ -45,8 +41,6 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   final GetServicesProvidersByService _getServicesProvidersByService;
   final GetProviderDetails _getProviderDetails;
   final GetAds _getAds;
-  final FindByRequestType _findByRequestType;
-
   HomeBloc({
     required GetMainServices getMainServices,
     required GetTopOrderedSubService getTopOrderedSubService,
@@ -62,7 +56,6 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         _getServicesProvidersByService = getServicesProvidersByService,
         _getProviderDetails = getProviderDetails,
         _getAds = getAds,
-        _findByRequestType = FindByRequestType(repository: sl()),
         super(const HomeState()) {
     on<HomeEvent>((event, emit) {});
 
@@ -75,7 +68,6 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
     on<GetProviderDetailsEvent>(_getProviderDetailsHandler);
     on<GetAdsEvent>(_getAdsDetailsHandler);
-    on<FindByRequestTypeEvent>(_findByRequestTypeEventHandler);
 
     add(
       GetMainServicesEvent(
@@ -100,29 +92,9 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     add(GetAdsEvent());
   }
 
-  Future<void> _findByRequestTypeEventHandler(
-      FindByRequestTypeEvent e, Emitter emitter) async {
-    emitter(state.copyWith(status: BlocStatus.loading));
-    final failureOrSuccess = await _findByRequestType(NoParams());
-    failureOrSuccess.fold((failure) {
-      emitter(state.copyWith(
-        status: BlocStatus.failure,
-        errorMessage: (failure as ServerFailure).errorMessage,
-      ));
-    }, (success) {
-      NavigationService.navigatorKey.currentState!
-          .pushNamed(EtmamRoutesNames.biddingReleationTypes);
-      emitter(state.copyWith(
-        status: BlocStatus.success,
-        errorMessage: "",
-      ));
-    });
-  }
-
   Future<void> _getMainServicesHandler(
       GetMainServicesEvent e, Emitter emitter) async {
-    emitter(state.copyWith(
-        mainServiceStatus: BlocStatus.loading, errorMessage: ""));
+    emitter(state.copyWith(mainServiceStatus: BlocStatus.loading));
 
     final failureOrSuccess = await _getMainServices(e.params);
 
@@ -142,8 +114,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
   Future<void> _getGetTopOrderedSubServicesHandler(
       GetTopOrderedSubServicesEvent e, Emitter emitter) async {
-    emitter(state.copyWith(
-        topOrderedSubServiceStatus: BlocStatus.loading, errorMessage: ""));
+    emitter(state.copyWith(topOrderedSubServiceStatus: BlocStatus.loading));
 
     final failureOrSuccess = await _getTopOrderedSubService(e.params);
 
@@ -163,8 +134,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
   Future<void> _getGetTopRatedProvidersHandler(
       GetTopRatedProvidersEvent e, Emitter emitter) async {
-    emitter(state.copyWith(
-        topRatedProvidersStatus: BlocStatus.loading, errorMessage: ""));
+    emitter(state.copyWith(topRatedProvidersStatus: BlocStatus.loading));
 
     final failureOrSuccess = await _getTopRatedProviders(e.params);
 
@@ -184,7 +154,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
   Future<void> _getSubServicesHandler(
       GetSubServicesEvent e, Emitter emitter) async {
-    emitter(state.copyWith(status: BlocStatus.loading, errorMessage: ""));
+    emitter(state.copyWith(status: BlocStatus.loading));
 
     final failureOrSuccess = await _getSubService(e.params);
 
@@ -221,7 +191,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   }
 
   Future<void> _getProvidersHandler(GetProviders e, Emitter emitter) async {
-    emitter(state.copyWith(status: BlocStatus.loading, errorMessage: ""));
+    emitter(state.copyWith(status: BlocStatus.loading));
 
     final failureOrSuccess = await _getServicesProvidersByService(e.params);
 
@@ -246,7 +216,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
   Future<void> _getProviderDetailsHandler(
       GetProviderDetailsEvent e, Emitter emitter) async {
-    emitter(state.copyWith(status: BlocStatus.loading, errorMessage: ""));
+    emitter(state.copyWith(status: BlocStatus.loading));
 
     final failureOrSuccess = await _getProviderDetails(e.params);
 
@@ -304,8 +274,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   }
 
   Future<void> _getAdsDetailsHandler(GetAdsEvent e, Emitter emitter) async {
-    emitter(state.copyWith(
-        adsResponseStatus: BlocStatus.loading, errorMessage: ""));
+    emitter(state.copyWith(adsResponseStatus: BlocStatus.loading));
 
     final failureOrSuccess = await _getAds(NoParams());
 

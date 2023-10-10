@@ -1,6 +1,7 @@
 import 'package:balady_plus/etmam_app/core/dependency_injection/injection_container.dart'
     show sl;
-
+import 'package:balady_plus/etmam_app/core/utils/utils_exports.dart'
+    show CommonFunctions;
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 
 import 'package:balady_plus/etmam_app/core/services/services_exports.dart'
@@ -19,8 +20,6 @@ import 'package:balady_plus/etmam_app/features/home/home_exports.dart'
         HomeState;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../widgets/etmam_home_page/etmam_bidding_widget.dart';
 
 class EtmamHomePage extends StatefulWidget {
   const EtmamHomePage({Key? key}) : super(key: key);
@@ -51,9 +50,7 @@ class _EtmamHomePage extends State<EtmamHomePage> {
           getAds: sl()),
       child: BlocConsumer<HomeBloc, HomeState>(
         listener: (context, state) {
-          if (state.status == BlocStatus.failure) {
-            CommonFunctions.showError(state.errorMessage ?? "");
-          }
+          // TODO: implement listener
         },
         builder: (context, state) {
           return Column(
@@ -65,8 +62,6 @@ class _EtmamHomePage extends State<EtmamHomePage> {
                     const Column(children: [
                       EtmamMainServicesWidget(),
                       EtmamBannerSlider(),
-
-                      EtmamBiddingWidget(),
                       // EtmamSubServicesWidget(),
                       EtmamTopRatedProvidersWidget(),
                     ]),

@@ -183,7 +183,7 @@ class SuccessButtons extends StatelessWidget {
       case PageTypes.orderScreen:
         {
           Navigator.of(context)
-              .pushReplacementNamed(EtmamRoutesNames.myRequestsPage);
+              .pushReplacementNamed(EtmamRoutesNames.myOrdersPage);
           // bottomNavigationPickItemService.pickBottomNavigationItem(1);
         }
         break;
@@ -191,7 +191,7 @@ class SuccessButtons extends StatelessWidget {
       case PageTypes.evaluateOrder:
       case PageTypes.orderDetails:
         Navigator.of(context)
-            .popUntil(ModalRoute.withName(EtmamRoutesNames.myRequestsPage));
+            .popUntil(ModalRoute.withName(EtmamRoutesNames.myOrdersPage));
 
         break;
       default:

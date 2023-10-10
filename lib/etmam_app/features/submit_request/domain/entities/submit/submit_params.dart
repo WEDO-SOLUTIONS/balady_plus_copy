@@ -10,9 +10,6 @@ class SubmitParams {
   PageTypes? pageType;
   String? orderId;
 
-  String? formId;
-  Map<String, dynamic>? fields;
-
   SubmitParams(
       {this.cityId,
       this.providerId,
@@ -20,9 +17,7 @@ class SubmitParams {
       this.relationId,
       this.changeProvider,
       this.orderId,
-      this.pageType,
-      this.formId,
-      this.fields});
+      this.pageType});
 }
 
 class subOrder {

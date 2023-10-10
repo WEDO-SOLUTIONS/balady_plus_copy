@@ -48,14 +48,7 @@ class SubmitRequestRemoteDataSourceImpl extends SubmitRequestRemoteDataSource {
                           "providerId": e.providerId,
                           "subRelationId": e.subRelationId
                         })
-                    .toList(),
-              if (params.fields != null && params.fields!.isNotEmpty)
-                "inputs": {
-                  "fields": params.fields!.map((key, value) {
-                    return MapEntry(key, {"value": value});
-                  }),
-                  "id": params.formId
-                },
+                    .toList()
             };
       var url;
       url = params.changeProvider == true
