@@ -4,6 +4,7 @@ import 'package:balady_plus/etmam_app/features/on_boarding_cities/on_boarding_ci
         CityBloc,
         CityState,
         GetCitiesEvent,
+        GetMoreCitiesEvent,
         SearchForCityEvent,
         SelectCityEvent;
 import 'package:flutter/material.dart';
@@ -11,7 +12,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/utils/utils_exports.dart'
     show AppColor, AppFontWeight, BorderType, IconPath, trans;
-import 'package:balady_plus/app/core/utils/utils_exports.dart' show BlocStatus;
+import 'package:balady_plus/app/core/utils/utils_exports.dart'
+    show BlocStatus, Debouncer;
 
 import '../../../_shared_feature_/shared/shared_feature_exports.dart'
     show
@@ -38,6 +40,20 @@ class EtmamCitiesContainerWidget extends StatefulWidget {
 class _CityContainerWidgetState extends State<EtmamCitiesContainerWidget> {
   int selectedIndex = -1;
   final TextEditingController _controller = TextEditingController();
+  ScrollController _scrollController = new ScrollController();
+  final _debouncer = Debouncer(milliseconds: 500);
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels ==
+          _scrollController.position.maxScrollExtent) {
+        print("max");
+        context.read<CityBloc>().add(GetMoreCitiesEvent());
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -61,7 +77,9 @@ class _CityContainerWidgetState extends State<EtmamCitiesContainerWidget> {
             return Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                if (state.status == BlocStatus.success) ...[
+                if (state.status == BlocStatus.success ||
+                    state.status == BlocStatus.loadMore ||
+                    state.status == BlocStatus.loadingShimmer) ...[
                   const CustomVerticalSpace(height: 24),
                   CustomTextFieldWidget(
                     label: "",
@@ -77,8 +95,9 @@ class _CityContainerWidgetState extends State<EtmamCitiesContainerWidget> {
                     ),
                     suffixSize: 29,
                     onChanged: (String text) {
-                      sl<CityBloc>().add(SearchForCityEvent(text: text));
-                      setState(() {});
+                      _debouncer.run(() {
+                        sl<CityBloc>().add(SearchForCityEvent(text: text));
+                      });
                     },
                     validator: (_) {},
                   ),
@@ -87,12 +106,13 @@ class _CityContainerWidgetState extends State<EtmamCitiesContainerWidget> {
                             (state.searchedItems?.length ?? 0) > 0)
                         ? GridView.builder(
                             shrinkWrap: true,
+                            controller: _scrollController,
                             padding: const EdgeInsets.only(top: 20, bottom: 5),
-                            physics: const BouncingScrollPhysics(),
+                            //   physics: const BouncingScrollPhysics(),
                             gridDelegate:
                                 const SliverGridDelegateWithFixedCrossAxisCount(
                                     crossAxisCount: 5, mainAxisExtent: 120),
-                            itemCount: state.searchedItems?.length ?? 0,
+                            itemCount: (state.searchedItems?.length ?? 0),
                             itemBuilder: (ctx, index) {
                               return CityWidget(
                                   cityName:
@@ -109,6 +129,10 @@ class _CityContainerWidgetState extends State<EtmamCitiesContainerWidget> {
                         : EmptySearchWidget(),
                   ),
                   const CustomVerticalSpace(height: 15),
+                  if (state.status == BlocStatus.loading ||
+                      state.status == BlocStatus.loadMore ||
+                      state.providersStatus == BlocStatus.loading)
+                    const CustomLoadingWidget(),
                   CustomPrimaryButton(
                     onPressed: () {
                       //   sharedPrefs.setIsFirstLaunch(false);
@@ -129,9 +153,6 @@ class _CityContainerWidgetState extends State<EtmamCitiesContainerWidget> {
                       sl<CityBloc>().add(GetCitiesEvent());
                     },
                   ),
-                if (state.status == BlocStatus.loading ||
-                    state.providersStatus == BlocStatus.loading)
-                  const CustomLoadingWidget()
               ],
             );
           },
