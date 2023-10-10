@@ -3306,6 +3306,7 @@
   "attachment_message_typ": "مرفق واحد من نوع",
   "attachment_message_size": "وبحد اقصي",
 
+  "data_not_have_actions": "لاويوجد إجراء متاح",
 
 
   "back_licenses_page": "العودة لصفحة  الرخص",
@@ -3335,6 +3336,8 @@
   "scan_qr_code_message": "يمكنك مسح الرمز السريع لعرض البيانات الخدمة",
   "submit_application_successfully_cancel_message" : "تم اصدار الفاتورة الخاصة بخدمة الغاء رخصة تجارية",
   "ATTACH": "مرفق", 
-  "event_location_with_google": "الوصول للفعالية عبر خرائط قوقل"
+  "event_location_with_google": "الوصول للفعالية عبر خرائط قوقل" , 
+  "ATTACH": "مرفق"
+
 
 }

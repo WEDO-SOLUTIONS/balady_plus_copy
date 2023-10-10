@@ -94,10 +94,11 @@ class CommercialLicenseActionSheet extends StatelessWidget {
                               .toList(),
                         )
                       : Center(
-                          child: ReloadWidget(
-                            onTab: () {
-                              provider.getCommercialLicenseAllowedActions();
-                            },
+                          child: CustomTextWidget(
+                            ('data_not_have_actions').tr(),
+                            fontSize: 14,
+                            fontColor: AppColor.primary900Light,
+                            textAlign: TextAlign.center,
                           ),
                         )
                   : const LoadingListWidget();

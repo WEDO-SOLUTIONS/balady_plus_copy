@@ -16,11 +16,13 @@ import 'package:sentry_dio/sentry_dio.dart';
 
 class AttachmentShowWidget extends StatelessWidget {
   final String fileName;
+  final String name;
   final String filePath;
 
   const AttachmentShowWidget({
     super.key,
     required this.fileName,
+    required this.name,
     required this.filePath,
   });
 
@@ -54,7 +56,7 @@ class AttachmentShowWidget extends StatelessWidget {
                   const CustomHorizontalSpace(width: 8),
                   Flexible(
                     child: CustomTextWidget(
-                      fileName,
+                      fileName.isNotEmpty ? fileName : name,
                       fontColor: AppColor.blackModern700Light,
                       fontSize: 12,
                       maxLines: 1,
