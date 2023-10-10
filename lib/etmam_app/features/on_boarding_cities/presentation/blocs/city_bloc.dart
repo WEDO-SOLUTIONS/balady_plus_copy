@@ -45,6 +45,8 @@ class CityBloc extends Bloc<CityEvent, CityState> {
 
     on<SearchForCityEvent>(_searchForCityHandler);
     on<GetProvidersForASubServiceEvent>(_getProvidersHandler);
+
+    on<GetMoreCitiesEvent>(_getMoreCitiesHandler);
   }
 
   Future<void> _getCitiesHandler(GetCitiesEvent e, Emitter emitter) async {
@@ -65,10 +67,38 @@ class CityBloc extends Bloc<CityEvent, CityState> {
           totalItemCount: success.data?.result?.totalItemCount,
           totalPageCount: success.data?.result?.totalPageCount,
           errorMessage: "",
+          nextPageIndex: state.nextPageIndex + 1,
           searchedItems: success.data?.result?.items));
 
       sharedPrefs.setCitiesList(
           success.data?.result?.items?.map((e) => e.toModel).toList());
+    });
+  }
+
+  Future<void> _getMoreCitiesHandler(
+      GetMoreCitiesEvent e, Emitter emitter) async {
+    emitter(state.copyWith(status: BlocStatus.loadMore));
+
+    final failureOrSuccess =
+        await _getCities(CityParams(pageNo: state.nextPageIndex, pageSize: 20));
+
+    failureOrSuccess.fold((failure) {
+      emitter(state.copyWith(
+        status: BlocStatus.failure,
+        errorMessage: (failure as ServerFailure).errorMessage,
+      ));
+    }, (success) {
+      List<CityItem> searchedItems = state.searchedItems ?? [];
+      searchedItems.addAll(success.data?.result?.items ?? []);
+      emitter(state.copyWith(
+          status: BlocStatus.success,
+          totalItemCount: success.data?.result?.totalItemCount,
+          totalPageCount: success.data?.result?.totalPageCount,
+          nextPageIndex: state.nextPageIndex + 1,
+          errorMessage: "",
+          searchedItems: searchedItems));
+
+      sharedPrefs.setCitiesList(searchedItems.map((e) => e.toModel).toList());
     });
   }
 

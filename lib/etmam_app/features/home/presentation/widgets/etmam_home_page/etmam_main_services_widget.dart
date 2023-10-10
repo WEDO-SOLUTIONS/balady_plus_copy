@@ -74,7 +74,7 @@ class _EtmamMainServicesWidget extends State<EtmamMainServicesWidget> {
                           params: MainServiceParams(
                               cityId: CommonProperties.cityId,
                               pageIndex: "0",
-                              pageSize: "4"),
+                              pageSize: "20"),
                         ),
                       );
                 },

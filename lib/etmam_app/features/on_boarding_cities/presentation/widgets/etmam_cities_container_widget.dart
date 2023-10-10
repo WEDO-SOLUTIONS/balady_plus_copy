@@ -4,6 +4,7 @@ import 'package:balady_plus/etmam_app/features/on_boarding_cities/on_boarding_ci
         CityBloc,
         CityState,
         GetCitiesEvent,
+        GetMoreCitiesEvent,
         SearchForCityEvent,
         SelectCityEvent;
 import 'package:flutter/material.dart';
@@ -38,6 +39,19 @@ class EtmamCitiesContainerWidget extends StatefulWidget {
 class _CityContainerWidgetState extends State<EtmamCitiesContainerWidget> {
   int selectedIndex = -1;
   final TextEditingController _controller = TextEditingController();
+  ScrollController _scrollController = new ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels ==
+          _scrollController.position.maxScrollExtent) {
+        print("max");
+        context.read<CityBloc>().add(GetMoreCitiesEvent());
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -85,27 +99,54 @@ class _CityContainerWidgetState extends State<EtmamCitiesContainerWidget> {
                   Expanded(
                     child: (state.searchedItems != null &&
                             (state.searchedItems?.length ?? 0) > 0)
-                        ? GridView.builder(
-                            shrinkWrap: true,
-                            padding: const EdgeInsets.only(top: 20, bottom: 5),
-                            physics: const BouncingScrollPhysics(),
-                            gridDelegate:
-                                const SliverGridDelegateWithFixedCrossAxisCount(
-                                    crossAxisCount: 5, mainAxisExtent: 120),
-                            itemCount: state.searchedItems?.length ?? 0,
-                            itemBuilder: (ctx, index) {
-                              return CityWidget(
-                                  cityName:
-                                      state.searchedItems?[index].name ?? "",
-                                  cityIcon:
-                                      state.searchedItems?[index].imageUrl ??
+                        ? NotificationListener<ScrollNotification>(
+                            onNotification: (scrollNotification) {
+                              if (scrollNotification.metrics.pixels ==
+                                  scrollNotification.metrics.maxScrollExtent) {
+                                context
+                                    .read<CityBloc>()
+                                    .add(GetMoreCitiesEvent());
+                              }
+                              return true;
+                            },
+                            child: GridView.builder(
+                                shrinkWrap: true,
+                                controller: _scrollController,
+                                padding:
+                                    const EdgeInsets.only(top: 20, bottom: 5),
+                                //   physics: const BouncingScrollPhysics(),
+                                gridDelegate:
+                                    const SliverGridDelegateWithFixedCrossAxisCount(
+                                        crossAxisCount: 5, mainAxisExtent: 120),
+                                itemCount:
+                                    (state.searchedItems?.length ?? 0) + 1,
+                                itemBuilder: (ctx, index) {
+                                  if (index >= (state.items?.length ?? 0)) {
+                                    if (state.status == BlocStatus.loadMore) {
+                                      return const SizedBox(
+                                        height: 50,
+                                        child: Center(
+                                            child: CustomLoadingWidget()),
+                                      );
+                                    } else {
+                                      return Container(height: 50);
+                                    }
+                                  }
+
+                                  return CityWidget(
+                                      cityName:
+                                          state.searchedItems?[index].name ??
+                                              "",
+                                      cityIcon: state
+                                              .searchedItems?[index].imageUrl ??
                                           "",
-                                  isSelected: index == selectedIndex,
-                                  btnPressed: () {
-                                    selectedIndex = index;
-                                    setState(() {});
-                                  });
-                            })
+                                      isSelected: index == selectedIndex,
+                                      btnPressed: () {
+                                        selectedIndex = index;
+                                        setState(() {});
+                                      });
+                                }),
+                          )
                         : EmptySearchWidget(),
                   ),
                   const CustomVerticalSpace(height: 15),
