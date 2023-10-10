@@ -1,0 +1,117 @@
+# yamllint disable rule:line-length
+---
+name: 🔨🧪 Build & Test
+
+permissions: write-all
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref }}
+  cancel-in-progress: true
+
+on:
+  push:
+    branches:
+      - 'urbi'
+      - 'urbi-release-*'
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+    branches:
+      - 'urbi'
+    paths-ignore:
+      - '**.md'
+      - 'doc/**'
+      - '.git/'
+      - '.vscode/'
+
+jobs:
+  # analyze:
+  #   name: Analyze
+  #   if: github.event.pull_request.draft == false
+  #   timeout-minutes: 30
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: ⬇️ Checkout repository
+  #       uses: actions/checkout@v3
+  #     - name: ⚙️ Setup Flutter
+  #       uses: subosito/flutter-action@v2
+  #       with:
+  #         flutter-version: '3.10.3'
+  #         channel: 'stable'
+  #     - name: 🤖🔨 Development setup dgis_map
+  #       run: |
+  #         cd urbi_map/dgis_map
+  #         flutter pub get
+  #         flutter pub run build_runner build --delete-conflicting-outputs
+  #     - name: 🤖🔨 Development setup dgis_map_platform_interface
+  #       run: |
+  #         cd urbi_map/dgis_map_platform_interface
+  #         mkdir lib/src/pigeons/
+  #         mkdir ../dgis_map/android/src/main/kotlin/com/dgis/map/map_api 
+  #         flutter pub get
+  #         flutter pub run pigeon --input pigeons/messages.dart
+  #     - name: 🤖🔨 Development setup balady
+  #       run: |
+  #         flutter pub get
+      # - name: ⚠️ℹ️ Run Dart analysis for app package
+      #   uses: zgosalvez/github-actions-analyze-dart@v2.0.9
+      # - name: ⚠️ℹ️ Run Dart analysis for dgis_map package
+      #   uses: zgosalvez/github-actions-analyze-dart@v2.0.9
+      #   with:
+      #     working-directory: "${{github.workspace}}/urbi_map/dgis_map"
+      # - name: ⚠️ℹ️ Run Dart analysis for dgis_map_platform_interface package
+      #   uses: zgosalvez/github-actions-analyze-dart@v2.0.9
+      #   with:
+      #     working-directory: "${{github.workspace}}/urbi_map/dgis_map_platform_interface"
+
+  build:
+    name: Build Android
+    if: github.event.pull_request.draft == false
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: ⬇️ Checkout repository
+        uses: actions/checkout@v3
+      - name: ⚙️ Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.10.3'
+          channel: 'stable'
+          cache: true
+      - name: ⚙️ Setup Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: "12.x"
+          cache: 'gradle'
+        id: java
+      - name: 🤖🔨 Development setup dgis_map_platform_interface
+        run: |
+          cd urbi_map/dgis_map_platform_interface
+          mkdir lib/src/pigeons/
+          mkdir ../dgis_map/android/src/main/kotlin/com/dgis/map/map_api
+          flutter pub get
+          flutter pub run pigeon --input pigeons/messages.dart
+      - name: 🤖🔨 Development setup dgis_map
+        run: |
+          cd urbi_map/dgis_map
+          flutter pub get
+          flutter pub run build_runner build --delete-conflicting-outputs
+      - name: 🤖🔨 Build Android app
+        run: |
+          flutter build apk --target lib/main_dev.dart
+          mv build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/app-production.apk
+          mv ./.github/workflows/staging-vendor-config.jsonx android/app/src/main/assets/vendor-config.jsonx
+          flutter build apk --target lib/main_dev.dart
+      - name: 🤖🔨 Upload Production apk
+        uses: actions/upload-artifact@v3
+        with:
+          name: app-production.apk
+          path: build/app/outputs/flutter-apk/app-production.apk
+      - name: 🤖🔨 Upload Staging apk
+        uses: actions/upload-artifact@v3
+        with:
+          name: app-staging.apk
+          path: build/app/outputs/flutter-apk/app-release.apk
