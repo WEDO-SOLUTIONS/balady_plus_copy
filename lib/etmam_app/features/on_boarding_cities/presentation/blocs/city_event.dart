@@ -11,6 +11,10 @@ class GetCitiesEvent extends CityEvent {
   const GetCitiesEvent();
 }
 
+class GetMoreCitiesEvent extends CityEvent {
+  const GetMoreCitiesEvent();
+}
+
 class SelectCityEvent extends CityEvent {
   final CityItem? item;
   final String? subServiceid;
