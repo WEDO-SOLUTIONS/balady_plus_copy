@@ -9,6 +9,7 @@ import '../../features/_shared_feature_/data/entities/device_details.dart';
 import '../../features/_shared_feature_/data/entities/package_details.dart';
 import '../../features/_shared_feature_/shared_feature_exports.dart'
     show BridgeParams, DropDownItem, FileInfo;
+import '../../features/location/presentation/bloc/location_bloc.dart';
 import '../../features/map_page/data/repositories/layers_repositories.dart';
 import '../../features/weather/weather_exports.dart';
 import '../dependency_injection/dependency_injection_exports.dart'
@@ -31,6 +32,7 @@ import '../services/services_exports.dart'
         NetworkConnection,
         NetworkConnectionImplementation,
         WebService;
+import 'features/events_injection.dart';
 import 'features/services/public_services/prayer_times_injection.dart';
 import 'features/vd_injection.dart';
 
@@ -50,6 +52,8 @@ void initialize() {
   ServicesInjection.init();
   PrayerTimesInjection.init();
 
+  EventsInjection.init();
+
   VDInjection.init();
   //! Services
   //* Public Services
@@ -64,6 +68,7 @@ void initialize() {
   sl.registerLazySingleton(() => const FileInfo());
   sl.registerLazySingleton(() => DropDownItem.emptyState());
   sl.registerLazySingleton(() => const DeviceDetails());
+  sl.registerLazySingleton(() => LocationCubit());
   sl.registerLazySingleton(() => const PackageDetails());
   //! External
   sl.registerLazySingleton(() => const FlutterSecureStorage());

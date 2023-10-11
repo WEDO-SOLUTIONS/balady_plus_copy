@@ -26,9 +26,9 @@ class BoundariesPlots extends PointLayersData {
   factory BoundariesPlots.fromJson(Map<String, dynamic> json) =>
       BoundariesPlots(
         id: json['attributes']["OBJECTID"].toString(),
-        name: json['attributes']["SUBDIVISIONPLANNAME_AR"] ?? 'name',
-        description: json['attributes']["SUBTYPEDESCRIPTION"] ?? 'description',
-        type: json['attributes']["AREANAME_SPLIT"] ?? 'type',
+        name: json['attributes']["SUBDIVISIONPLANNAME_AR"] ?? '',
+        description: json['attributes']["SUBTYPEDESCRIPTION"] ?? '',
+        type: json['attributes']["AREANAME_SPLIT"] ?? '',
 
         /////////////////////////
         paths: getList(json['geometry']["rings"]), // not tested yat

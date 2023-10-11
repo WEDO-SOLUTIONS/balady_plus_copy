@@ -90,6 +90,7 @@ class _DraggableHeaderComponentState extends State<DraggableHeaderComponent> {
                   hintText: authState.getSearchText(),
                   //   hintText: 'ابحث عن...'.tr(),
                   controller: searchController,
+
                   hintStyle: const TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.bold,

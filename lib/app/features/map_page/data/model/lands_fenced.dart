@@ -28,9 +28,9 @@ class LandsFenced extends PointLayersData {
 
   factory LandsFenced.fromJson(Map<String, dynamic> json) => LandsFenced(
         id: json['attributes']["OBJECTID"].toString(),
-        name: json['attributes']["AREANAME"] ?? 'name',
-        description: json['attributes']["AREANAME_SPLIT"] ?? 'description',
-        type: json['attributes']["DESCRIPTION"] ?? 'type',
+        name: json['attributes']["AREANAME"] ?? '',
+        description: json['attributes']["AREANAME_SPLIT"] ?? '',
+        type: json['attributes']["DESCRIPTION"] ?? '',
         color: int.parse(
             "0xFF${json['attributes']["COLOR"].toString().replaceAll("#", "")}"),
 

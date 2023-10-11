@@ -2,7 +2,6 @@ import 'dart:async';
 import 'package:async/async.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/entry_point/presentation/cubit/auth_cubit.dart';
-import 'package:balady_plus/app/features/vd/vd_exports.dart';
 import 'package:collection/collection.dart';
 import 'dart:math' show abs;
 import 'package:geolocator/geolocator.dart' as geoLocator;
@@ -19,10 +18,17 @@ import 'package:uuid/uuid.dart';
 import '../../../../core/dependency_injection/injection_container.dart';
 import '../../../../core/services/local/helpers.dart';
 import '../../../../core/services/local/navigation_services.dart';
+//import '../../../../core/utils/app_analytics_events.dart';
+import '../../../events/domain/entities/search_events/search_events_item.dart';
+import '../../../events/domain/entities/search_events/search_events_params.dart';
+import '../../../events/domain/usecase/get_search_events.dart';
+import '../../../vd/domain/entities/gis/gis_params.dart';
+import '../../../vd/domain/entities/gis/gis_response.dart';
 import '../../constants/constants.dart';
 import 'package:flutter/widgets.dart';
 
 import '../../data/data_sources/point_layers_data.dart';
+import '../../data/enums/custom_search_category.dart';
 import '../../data/enums/map_enums.dart';
 import '../../data/model/building_compliance_certificate.dart';
 import '../../data/model/divisional_chart_boundaries.dart';
@@ -32,6 +38,7 @@ import '../../data/model/investment_sites.dart';
 import '../../data/model/layers.dart';
 import '../../data/model/rental_details_response.dart';
 import '../../data/model/requests/map_requests_params.dart';
+import '../../data/model/resturant_model.dart';
 import '../../data/model/white_lands.dart';
 import '../../data/repositories/layers_repositories.dart';
 import 'layers_gis_view_model.dart';
@@ -41,6 +48,10 @@ const int mil = 300;
 TextEditingController searchController = TextEditingController();
 
 class MapViewModel extends BaseViewModel {
+  final mapAppearanceMessage =
+      ValueNotifier<MapAppearanceMessage?>(MapAppearanceMessage.day);
+
+  String? currentSearchSelectionId;
   final draggableScrollableController = DraggableScrollableController();
 
   final GeoPointMessage kingdomTower =
@@ -79,6 +90,8 @@ class MapViewModel extends BaseViewModel {
       ValueNotifier(IndoorState.disabled());
 
   ValueNotifier<SearchCategoryMessage?> selectedCategory = ValueNotifier(null);
+  ValueNotifier<CustomSearchCategory?> selectedCustomCategory =
+      ValueNotifier(null);
 
   ValueNotifier<List<SuggestMessage>?> suggests = ValueNotifier(null);
 
@@ -115,11 +128,14 @@ class MapViewModel extends BaseViewModel {
 
   final selectedDiggingPoint = ValueNotifier<Excavations?>(null);
   final selectedInvetmentPoint = ValueNotifier<InvestmentSites?>(null);
+  final selectedResturantPoint = ValueNotifier<ResturantModel?>(null);
+  final selectedEventPoint = ValueNotifier<SearchEventsItem?>(null);
   final selectedImtethalPoint =
       ValueNotifier<BuildingComplianceCertificate?>(null);
 
   final selectedWhiteLands = ValueNotifier<WhiteLands?>(null);
   final showLegend = ValueNotifier<bool?>(null);
+  final showComplianceLegend = ValueNotifier<bool?>(null);
 
   final selectedLands = ValueNotifier<DivisionalChartBoundaries?>(null);
 
@@ -128,21 +144,37 @@ class MapViewModel extends BaseViewModel {
   double zoomValue = 13;
   bool updateMap = true;
 
-  Future<void> selectCategory({required SearchCategoryMessage category}) async {
+  Future<void> selectCategory(
+      {SearchCategoryMessage? category, CustomSearchCategory? custom}) async {
     searchController.clear();
     if (category == selectedCategory.value) {
       _searchOperation?.cancel();
       selectedCategory.value = null;
     } else {
       selectedCategory.value = category;
+      selectedCustomCategory.value = null;
     }
+    if (custom == selectedCustomCategory.value) {
+      selectedCustomCategory.value = null;
+    } else {
+      selectedCustomCategory.value = custom;
+      selectedCategory.value = null;
+    }
+    selectedCategory.notifyListeners();
+    selectedCustomCategory.notifyListeners();
     showLoading1();
     await clearAll();
 
-    if (selectedCategory.value != null) {
+    if (selectedCategory.value != null &&
+        selectedCategory.value != SearchCategoryMessage.restaurants &&
+        custom == null) {
       performSearch(
         queryText: selectedCategory.value!.displayName(),
       );
+    } else if (selectedCategory.value == SearchCategoryMessage.restaurants) {
+      callSearch();
+    } else if (selectedCustomCategory.value == CustomSearchCategory.events) {
+      callEventsSearch();
     }
     hideLoading1();
 
@@ -309,22 +341,9 @@ class MapViewModel extends BaseViewModel {
                   1,
                   CameraAnimationTypeMessage.linear);
 
+              refreshView();
               selectedPointId.value = markerInfo.objectId;
-              selectedDiggingPoint.value = null;
-              selectedInvetmentPoint.value = null;
-              selectedImtethalPoint.value = null;
-              selectedWhiteLands.value = null;
-              selectedLands.value = null;
-              selectedImtethalPoint.notifyListeners();
-              selectedDiggingPoint.notifyListeners();
-              selectedWhiteLands.notifyListeners();
-              selectedLands.notifyListeners();
-              selectedPointId.notifyListeners();
-              viewHomeBottomSheet.value = false;
-              viewHomeBottomSheet.notifyListeners();
-              // bottomSheetSizeFraction.value = 0.05;
-              bottomSheetSize.notifyListeners();
-              bottomSheetSizeFraction.notifyListeners();
+
               selectedPointCategory.value = markerCategory;
 
               Future.delayed(
@@ -450,30 +469,57 @@ class MapViewModel extends BaseViewModel {
 
 */
 
-    var permission = await Permission.location.status;
-    if (!permission.isGranted) {
-      while (true) {
-        try {
-          permission = await Permission.location.request();
-          break;
-        } catch (ex) {
-          await Future.delayed(const Duration(milliseconds: 500));
-        }
-      }
-    }
+    try {
+      final permission = await Permission.location.request();
+      //print("grfrsdcvdv $permission");
+      if (permission.isGranted) {
+        //print("grfrsdcvdv granted");
+        await controller.onLocationPremissionGranted();
+        //print("grfrsdcvdv granted 111");
 
-    if (permission.isGranted) {
-      await controller.onLocationPremissionGranted(
-        desiredAccuracy: DesiredAccuracyMessage.high,
-      );
+        await controller.changeFollowState();
+
+        await controller.setCameraPosition(
+          CameraPositionMessage(
+            point: CommonProperties.userLocation != null
+                ? GeoPointMessage(
+                    latitude: CommonProperties.userLocation?.lat ?? 0,
+                    longitude: CommonProperties.userLocation?.lon ?? 0,
+                  )
+                : kingdomTower,
+            zoom: CommonProperties.userLocation != null ? 13 : 17,
+            tilt: CommonProperties.userLocation != null ? 0 : 45,
+            bearing: 0,
+          ),
+        );
+      } else {
+        await controller.changeFollowState();
+        await controller.setCameraPosition(
+          CameraPositionMessage(
+            point: CommonProperties.userLocation != null
+                ? GeoPointMessage(
+                    latitude: CommonProperties.userLocation?.lat ?? 0,
+                    longitude: CommonProperties.userLocation?.lon ?? 0,
+                  )
+                : kingdomTower,
+            zoom: 17,
+            tilt: CommonProperties.userLocation != null ? 0 : 45,
+            bearing: 0,
+          ),
+        );
+      }
+    } catch (ex) {
       await controller.changeFollowState();
-    } else {
       await controller.setCameraPosition(
         CameraPositionMessage(
-          point: kingdomTower,
+          point: CommonProperties.userLocation != null
+              ? GeoPointMessage(
+                  latitude: CommonProperties.userLocation?.lat ?? 0,
+                  longitude: CommonProperties.userLocation?.lon ?? 0)
+              : kingdomTower,
           zoom: 17,
-          tilt: 45,
-          bearing: 9,
+          tilt: CommonProperties.userLocation != null ? 0 : 45,
+          bearing: 0,
         ),
       );
     }
@@ -481,11 +527,24 @@ class MapViewModel extends BaseViewModel {
     initialized.value = true;
     generalControlsState.value = true;
 
+    retreiveMapState();
+
     return true;
   }
 
   void onLocationTap() async {
     unawaited(controller.changeFollowState());
+  }
+
+  void onChangeTheme() async {
+    if (mapAppearanceMessage.value == MapAppearanceMessage.day) {
+      mapAppearanceMessage.value = MapAppearanceMessage.night;
+    } else {
+      mapAppearanceMessage.value = MapAppearanceMessage.day;
+    }
+    controller.setAppearance(mapAppearanceMessage.value!);
+
+    mapAppearanceMessage.notifyListeners();
   }
 
   void onLevelTap(IndoorLevel level) =>
@@ -525,16 +584,23 @@ class MapViewModel extends BaseViewModel {
     selectedDiggingPoint.value = null;
     selectedImtethalPoint.value = null;
     selectedInvetmentPoint.value = null;
+    selectedResturantPoint.value = null;
+    selectedEventPoint.value = null;
     selectedPointId.value = null;
     selectedWhiteLands.value = null;
     selectedLands.value = null;
     showLegend.value = null;
+    showComplianceLegend.value = null;
     selectedDiggingPoint.notifyListeners();
     selectedImtethalPoint.notifyListeners();
     selectedInvetmentPoint.notifyListeners();
+    selectedResturantPoint.notifyListeners();
+    selectedEventPoint.notifyListeners();
     selectedPointId.notifyListeners();
     selectedLands.notifyListeners();
     showLegend.notifyListeners();
+    showComplianceLegend.notifyListeners();
+
     selectedWhiteLands.notifyListeners();
     controller.setHighlighted([]);
   }
@@ -640,6 +706,8 @@ class MapViewModel extends BaseViewModel {
   }
 
   void _startRequestTimer(double oldZoom) {
+    if (refreshMap == false) return;
+
     if (_debounce != null) {
       unawaited(_debounce!.cancel());
       _clearDebounce();
@@ -653,7 +721,7 @@ class MapViewModel extends BaseViewModel {
       if (this.oldZoom.toInt() != zoomValue.toInt()) {
         zoomValue = oldZoom;
 
-        callSearch();
+        if (selectedCustomCategory.value == null) callSearch();
       }
     });
     _subscriptions.add(_debounce!);
@@ -692,51 +760,173 @@ class MapViewModel extends BaseViewModel {
 
   callSearch() async {
     // await clearAll();
-    String? query = selectedCategory.value != null
-        ? selectedCategory.value!.displayName()
-        : searchController.text;
-    if (query != null && query.isNotEmpty) {
-      // showLoading1();
+    if (selectedCategory.value != SearchCategoryMessage.restaurants &&
+        selectedCustomCategory.value == null) {
+      String? query = selectedCategory.value != null
+          ? selectedCategory.value!.displayName()
+          : searchController.text;
+      if (query != null && query.isNotEmpty) {
+        // showLoading1();
 
-      await performSearch(
-        queryText: query,
-        moveCamera: false,
-      );
-      // hideLoading1();
+        await performSearch(
+          queryText: query,
+          moveCamera: false,
+        );
+        // hideLoading1();
 
-      print("Query?");
+        print("Query?");
+      }
+      _clearDebounce();
+      hideLoading1();
+    } else if (selectedCategory.value == SearchCategoryMessage.restaurants) {
+      callResturantsSearch();
+
+      return;
+    } else if (selectedCustomCategory.value != null) {
+      // callEventsSearch();
+      return;
     }
 
-    // if (layerSelected.value == null) return;
-    // print("Layer? ${layerSelected.value}");
-    // GISMapLayers? gisLayer = GISMapLayers.values.firstWhereOrNull(
-    //     (element) => element.layerId == layerSelected.value!.id);
-    // showLoading1();
-    // bottomSheetSize.notifyListeners();
+    GISMapLayers? gisLayer = GISMapLayers.values.firstWhereOrNull(
+      (element) => element.layerId == layerSelected.value!.id,
+    );
+    print("GISMapLayers $gisLayer");
+    if (gisLayer == GISMapLayers.cityPlaces)
+      return;
+    else {
+      callGISLayersSearch();
+    }
+  }
 
-    // if (gisLayer != null) {
-    //   List? pointList = await layersRepositories.getPointsInLayers(
-    //       params: MapRequestParams(
-    //     layer: gisLayer,
-    //     northEastLatitude: _lastHandledEvent!.visibleRect.northEastLat,
-    //     northEastLongitude: _lastHandledEvent!.visibleRect.northEastLon,
-    //     southWestLongitude: _lastHandledEvent!.visibleRect.southWestLon,
-    //     southWestLlatitude: _lastHandledEvent!.visibleRect.southWestLat,
-    //   ));
-    //   switch (layerSelected.value!.geometryType) {
-    //     case 'esriGeometryPoint':
-    //       addMarkersWithPoint(pointList, layerSelected.value!.id);
-    //       break;
-    //     case 'esriGeometryPolyline':
-    //       addPolylineWithPoint(pointList, layerSelected.value!.id);
-    //       break;
-    //     case 'esriGeometryPolygon':
-    //       addPolygonWithPoint(pointList, layerSelected.value!.id);
-    //       break;
-    //   }
-    // }
+  void callGISLayersSearch() async {
+    GISMapLayers? gisLayer = GISMapLayers.values.firstWhereOrNull(
+      (element) => element.layerId == layerSelected.value!.id,
+    );
+
+    showLoading1();
+    bottomSheetSize.notifyListeners();
+
+    if (gisLayer != null) {
+      List? pointList = await layersRepositories.getPointsInLayers(
+        params: MapRequestParams(
+          layer: gisLayer,
+          northEastLatitude: _lastHandledEvent!.visibleRect.northEastLat,
+          northEastLongitude: _lastHandledEvent!.visibleRect.northEastLon,
+          southWestLongitude: _lastHandledEvent!.visibleRect.southWestLon,
+          southWestLlatitude: _lastHandledEvent!.visibleRect.southWestLat,
+        ),
+      );
+      switch (layerSelected.value!.geometryType) {
+        case 'esriGeometryPoint':
+          addMarkersWithPoint(pointList, layerSelected.value!.id);
+          break;
+        case 'esriGeometryPolyline':
+          addPolylineWithPoint(pointList, layerSelected.value!.id);
+          break;
+        case 'esriGeometryPolygon':
+          addPolygonWithPoint(pointList, layerSelected.value!.id);
+          break;
+      }
+    }
     _clearDebounce();
-    // hideLoading1();
+    hideLoading1();
+  }
+
+  callEventsSearch() async {
+    //print("search");
+    await clearAll();
+
+    GISMapLayers? gisLayer = GISMapLayers.values.firstWhereOrNull(
+      (element) => element.layerId == 13,
+    );
+    print("GISMapLayers $gisLayer");
+    showLoading1();
+    bottomSheetSize.notifyListeners();
+
+    if (gisLayer != null) {
+      final searchEvents = GetSearchEvents(repository: sl());
+      final getEventsFailureOrSuccess =
+          await searchEvents(SearchEventsParams(size: 1000, page: 1));
+
+      await getEventsFailureOrSuccess.fold((l) {}, (r) async {
+        final markers = r.items
+            ?.map(
+              (element) {
+                print("HHHHH");
+                if (element.getLocation() != null)
+                  return Marker(
+                    id: element.id.toString(),
+                    options: MarkerOptionsMessage(
+                      position: GeoPointWithElevationMessage(
+                          elevation: 1,
+                          latitude: element.getLocation()!.latitude,
+                          longitude: element.getLocation()!.longitude),
+                      icon: MarkerIconMessage(
+                        path: Constants.icMarker,
+                        width: 30,
+                      ),
+                    ),
+                    onTap: () async {
+                      print("on Tap ${layerSelected.value?.id}");
+
+                      refreshMap = false;
+
+                      refreshView();
+                      selectedEventPoint.value = element;
+
+                      selectedEventPoint.value = element;
+                      selectedEventPoint.notifyListeners();
+
+                      await Future.delayed(
+                        const Duration(milliseconds: 300),
+                      );
+                      refreshMap = true;
+                    },
+                  );
+                return null;
+              },
+            )
+            .whereNotNull()
+            .toList();
+        print("YYYY ${markers?[0].options.position.latitude}");
+        //await controller.removeAllMarkers();
+        await clearAll();
+        controller.addMarkers(markers ?? []);
+      });
+    }
+    _clearDebounce();
+    hideLoading1();
+  }
+
+  callResturantsSearch() async {
+    //print("search");
+    Layers layer = Layers(
+        id: 1,
+        name: "مطاعم",
+        defaultVisibility: true,
+        type: "",
+        geometryType: "esriGeometryPoint");
+
+    GISMapLayers? gisLayer = GISMapLayers.values.firstWhereOrNull(
+      (element) => element.layerId == layer.id,
+    );
+    showLoading1();
+    bottomSheetSize.notifyListeners();
+
+    List? pointList = await layersRepositories.getPointsInLayers(
+      params: MapRequestParams(
+        layer: gisLayer!,
+        northEastLatitude: _lastHandledEvent!.visibleRect.northEastLat,
+        northEastLongitude: _lastHandledEvent!.visibleRect.northEastLon,
+        southWestLongitude: _lastHandledEvent!.visibleRect.southWestLon,
+        southWestLlatitude: _lastHandledEvent!.visibleRect.southWestLat,
+      ),
+    );
+
+    addMarkersWithPoint(pointList, layer.id);
+
+    _clearDebounce();
+    hideLoading1();
   }
 
   getPointDetails(int objectId) async {
@@ -791,6 +981,86 @@ class MapViewModel extends BaseViewModel {
     return data;
   }
 
+  void addOneMarkerWithMoveCamera(GeoPointWithElevationMessage markerPosition,
+      DgisObjectIdMessage id) async {
+    selectedCategory.value = null;
+    selectedCategory.notifyListeners();
+    refreshMap = false;
+    await clearAll();
+    await controller.moveCamera(
+      CameraPositionMessage(
+        point: GeoPointMessage(
+          latitude: markerPosition.latitude,
+          longitude: markerPosition.longitude,
+        ),
+        zoom: 17,
+        tilt: 0,
+        bearing: 0,
+      ),
+      1,
+      CameraAnimationTypeMessage.linear,
+    );
+    controller.addMarkers([
+      Marker(
+        id: id.toString(),
+        options: MarkerOptionsMessage(
+          position: markerPosition,
+          icon: MarkerIconMessage(
+            path: Constants.icMarker,
+            width: 40,
+          ),
+        ),
+        onTap: () async {
+          refreshView();
+          selectedPointId.value = id;
+          selectedPointId.notifyListeners();
+        },
+      )
+    ]);
+
+    selectedPointId.value = id;
+    viewHomeBottomSheet.value = false;
+    selectedPointId.notifyListeners();
+    viewHomeBottomSheet.notifyListeners();
+    // await Future.delayed(const Duration(milliseconds: 300));
+    //  refreshMap = true;
+  }
+
+  void addOneMarkerToPosisiotnWithMoveCamera(
+      GeoPointWithElevationMessage markerPosition) async {
+    await clearAll();
+    await controller.moveCamera(
+      CameraPositionMessage(
+        point: GeoPointMessage(
+          latitude: markerPosition.latitude,
+          longitude: markerPosition.longitude,
+        ),
+        zoom: 17,
+        tilt: 0,
+        bearing: 0,
+      ),
+      1,
+      CameraAnimationTypeMessage.linear,
+    );
+    controller.addMarkers([
+      Marker(
+        id: "ComplianceRoad",
+        options: MarkerOptionsMessage(
+          position: markerPosition,
+          icon: MarkerIconMessage(
+            path: Constants.icMarker,
+            width: 40,
+          ),
+        ),
+        onTap: () async {},
+      )
+    ]);
+
+    viewHomeBottomSheet.value = false;
+    selectedPointId.notifyListeners();
+    viewHomeBottomSheet.notifyListeners();
+  }
+
   void addMarkersWithPoint(List? pointList, int layerId) async {
     if (pointList != null && pointList.isNotEmpty) {
       String iconPath = Constants.icMarkerRestaurant;
@@ -827,51 +1097,41 @@ class MapViewModel extends BaseViewModel {
             ),
             onTap: () async {
               refreshMap = false;
-              /*  await controller.moveCamera(
-                  CameraPositionMessage(
-                      point: element.latLng, zoom: 17, tilt: 0, bearing: 0),
-                  1,
-                  CameraAnimationTypeMessage.linear);*/
-
-              selectedPointId.notifyListeners();
-              selectedPoint.value = null;
-              selectedInvetmentPoint.value = null;
-              selectedDiggingPoint.value = null;
-              selectedImtethalPoint.value = null;
-              selectedWhiteLands.value = null;
-              selectedLands.value = null;
-
-              selectedPointId.value = null;
-              showLegend.value = false;
-              showLegend.value = false;
+              refreshView();
               switch (gisSelectedLayer) {
                 case GISMapLayers.Opportunities:
                   selectedPoint.value = element;
                   selectedInvetmentPoint.value = element;
+
+                case GISMapLayers.Resturants:
+                  selectedPoint.value = element;
+                  selectedResturantPoint.value = element;
+                  break;
+                case GISMapLayers.Events:
+                  selectedPoint.value = element;
+                  selectedEventPoint.value = element;
 
                   break;
                 default:
                   break;
               }
 
-              selectedInvetmentPoint.notifyListeners();
-              selectedImtethalPoint.notifyListeners();
-              selectedDiggingPoint.notifyListeners();
-              selectedWhiteLands.notifyListeners();
-              selectedLands.notifyListeners();
+              if (selectedCategory.value ==
+                  SearchCategoryMessage
+                      .restaurants) // Temp code for resturant Layers
+              {
+                print("GTGGGG");
+                selectedPoint.value = element;
+                selectedResturantPoint.value = element;
+                selectedResturantPoint.notifyListeners();
+              }
 
-              selectedPointId.notifyListeners();
-              selectedPoint.notifyListeners();
-
-              showLegend.notifyListeners();
-
-              viewHomeBottomSheet.value = false;
-              viewHomeBottomSheet.notifyListeners();
-              // bottomSheetSizeFraction.value = 0.05;
-              bottomSheetSize.notifyListeners();
-              bottomSheetSizeFraction.notifyListeners();
-
-              Future.delayed(
+              if (selectedCustomCategory.value == CustomSearchCategory.events) {
+                selectedPoint.value = element;
+                selectedEventPoint.value = element;
+                selectedEventPoint.notifyListeners();
+              }
+              await Future.delayed(
                 const Duration(milliseconds: 300),
               );
               refreshMap = true;
@@ -899,12 +1159,7 @@ class MapViewModel extends BaseViewModel {
               options: PolylineOptionsMessage(
                   points: i, width: 2, color: 0xff358281),
               onTap: () {
-                selectedDiggingPoint.value = null;
-                selectedInvetmentPoint.value = null;
-                selectedImtethalPoint.value = null;
-                selectedWhiteLands.value = null;
-                selectedLands.value = null;
-                showLegend.value = false;
+                refreshView();
                 switch (gisSelectedLayer) {
                   case GISMapLayers.Digging:
                     selectedDiggingPoint.value = element;
@@ -920,29 +1175,6 @@ class MapViewModel extends BaseViewModel {
                   default:
                     break;
                 }
-                selectedPointId.value = null;
-                selectedImtethalPoint.notifyListeners();
-                selectedDiggingPoint.notifyListeners();
-                selectedWhiteLands.notifyListeners();
-                selectedLands.notifyListeners();
-                selectedPointId.notifyListeners();
-                bottomSheetSize.notifyListeners();
-                showLegend.notifyListeners();
-
-                viewHomeBottomSheet.value = false;
-                viewHomeBottomSheet.notifyListeners();
-                // bottomSheetSizeFraction.value = 0.05;
-                bottomSheetSize.notifyListeners();
-                bottomSheetSizeFraction.notifyListeners();
-                /*  controller.setCameraPosition(
-                CameraPositionMessage(
-                  zoomValue: 17,
-                  geoPoint: GeoPointMessage(
-                    latitude: element.paths.first.latitude,
-                    longitude: element.paths.first.longitude,
-                  ),
-                ),
-              );*/
               },
             ),
           );
@@ -971,12 +1203,9 @@ class MapViewModel extends BaseViewModel {
               contours: [element.paths],
             ),
             onTap: () {
+              refreshView();
               selectedPoint.value = element;
-              selectedInvetmentPoint.value = null;
-              selectedImtethalPoint.value = null;
-              selectedWhiteLands.value = null;
-              selectedDiggingPoint.value = null;
-              showLegend.value = false;
+
               switch (gisSelectedLayer) {
                 case GISMapLayers.BSAimtithalBuildingsCertificateL:
                   selectedImtethalPoint.value = element;
@@ -989,20 +1218,6 @@ class MapViewModel extends BaseViewModel {
                 default:
                   break;
               }
-              selectedPointId.value = null;
-              selectedImtethalPoint.notifyListeners();
-              selectedDiggingPoint.notifyListeners();
-              selectedWhiteLands.notifyListeners();
-              selectedPointId.notifyListeners();
-              bottomSheetSize.notifyListeners();
-              selectedLands.notifyListeners();
-              showLegend.notifyListeners();
-
-              viewHomeBottomSheet.value = false;
-              viewHomeBottomSheet.notifyListeners();
-              //  bottomSheetSizeFraction.value = 0.05;
-              bottomSheetSizeFraction.notifyListeners();
-              bottomSheetSize.notifyListeners();
             },
           ),
         );
@@ -1022,6 +1237,7 @@ class MapViewModel extends BaseViewModel {
     layerSelected.notifyListeners();
 
     showLegend.value = null;
+    showComplianceLegend.value = null;
     layerSelected.value = value;
     searchController.text = "";
     viewHomeBottomSheet.value = true;
@@ -1029,6 +1245,8 @@ class MapViewModel extends BaseViewModel {
 
     bottomSheetSize.notifyListeners();
     showLegend.notifyListeners();
+    showComplianceLegend.notifyListeners();
+
     bottomSheetSizeFraction.notifyListeners();
     gisSelectedLayer = GISMapLayers.values
             .firstWhereOrNull((element) => element.layerId == value.id) ??
@@ -1044,6 +1262,7 @@ class MapViewModel extends BaseViewModel {
   }
 
   dynamic getMapCardData() {}
+
   void getGISData() {}
 
   void showLoading1() {
@@ -1107,6 +1326,8 @@ class MapViewModel extends BaseViewModel {
   }
 
   void navigateToImtethal() async {
+    //CommonFunctions.sendEventToAnalytics(
+    //    AppEvents.navigateToBuildingComplianceFromHome);
     if (layers.value?.isEmpty ?? true) await getMinLayers();
     if (layers.value == null) {
       CommonFunctions.showError("server_error_1".tr());
@@ -1148,6 +1369,36 @@ class MapViewModel extends BaseViewModel {
     bottomSheetSize.notifyListeners();
   }
 
+  void navigateToCityScape() async {
+    // CommonFunctions.sendEventToAnalytics(AppEvents.navigateToCityScapeFromHome);
+
+    viewHomeBottomSheet.value = false;
+    viewHomeBottomSheet.notifyListeners();
+
+    bottomSheetSizeFraction.value = 0.05;
+    bottomSheetSizeFraction.notifyListeners();
+
+    Timer(const Duration(milliseconds: 200), () async {
+      viewHomeBottomSheet.value = true;
+      viewHomeBottomSheet.notifyListeners();
+      await controller.moveCamera(
+        CameraPositionMessage(
+            point: GeoPointMessage(
+              latitude: 25.2522719,
+              longitude: 46.3872519,
+            ),
+            zoom: 17,
+            tilt: 45,
+            bearing: 0),
+        1,
+        CameraAnimationTypeMessage.linear,
+      );
+    });
+
+    bottomSheetSize.value = 0;
+    bottomSheetSize.notifyListeners();
+  }
+
   Future<void> getMinLayers() async {
     try {
       layers.value = await layersRepositories.getMinLayers();
@@ -1158,7 +1409,7 @@ class MapViewModel extends BaseViewModel {
     }
   }
 
-  Future<void> moveCamera(
+  Future<void> moveCameraTo(
     GeoPointWithElevationMessage point,
     double zoom,
   ) async {
@@ -1238,6 +1489,7 @@ class MapViewModel extends BaseViewModel {
         SuggestedTypeMessage.text,
       ];
     }
+    showLoading1();
 
     final result = await controller.fetchSuggest(
       queryText,
@@ -1251,7 +1503,68 @@ class MapViewModel extends BaseViewModel {
       // isOpenNow: false,
       searchRect: _lastHandledEvent?.visibleRect.geoRectMessage(),
     );
+    hideLoading1();
 
     suggests.value = result.suggests.whereNotNull().toList();
+  }
+
+  void moveCamera() async {
+    try {
+      final permission = await Permission.location.request();
+      //print("grfrsdcvdv $permission");
+      if (permission.isGranted) {
+        //print("grfrsdcvdv granted");
+        await controller.onLocationPremissionGranted();
+        //print("grfrsdcvdv granted 111");
+      }
+    } catch (ex) {
+      // print(ex);
+    }
+    await controller.changeFollowState();
+
+    await controller.setCameraPosition(
+      CameraPositionMessage(
+        point: CommonProperties.userLocation != null
+            ? GeoPointMessage(
+                latitude: CommonProperties.userLocation?.lat ?? 0,
+                longitude: CommonProperties.userLocation?.lon ?? 0)
+            : kingdomTower,
+        zoom: CommonProperties.userLocation != null ? 13 : 17,
+        tilt: CommonProperties.userLocation != null ? 0 : 45,
+        bearing: 0,
+      ),
+    );
+  }
+
+  void setBottomSheetSize(double size) {
+    bottomSheetSizeFraction.value = size;
+    bottomSheetSizeFraction.notifyListeners();
+    bottomSheetSize.value = 0;
+    bottomSheetSize.notifyListeners();
+  }
+  // To retreive the map state when goes to the background.
+
+// To Save the map state when goes to the background.
+  void saveMapState() async {
+    print("saveMapState");
+    _lastCameraPosition = await controller.getCameraPosition();
+  }
+
+  void retreiveMapState() {
+    print("retreiveMapState $_lastCameraPosition");
+
+    if (_lastCameraPosition != null)
+      controller.setCameraPosition(_lastCameraPosition!);
+    refreshMap = true;
+    oldZoom = _lastCameraPosition!.zoom;
+    callSearch();
+  }
+
+  void refreshView() {
+    clearAllCards();
+    viewHomeBottomSheet.value = false;
+    viewHomeBottomSheet.notifyListeners();
+    bottomSheetSize.notifyListeners();
+    bottomSheetSizeFraction.notifyListeners();
   }
 }

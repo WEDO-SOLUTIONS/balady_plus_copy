@@ -6,8 +6,10 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 
 class MapDetailsSubHeader extends StatelessWidget {
   final String firstTitle;
+  final String? firstIcon;
   final String firstSubTitle;
   final String secondTitle;
+  final String? secondIcon;
   final String secondSubTitle;
 
   const MapDetailsSubHeader(
@@ -15,7 +17,9 @@ class MapDetailsSubHeader extends StatelessWidget {
       required this.firstTitle,
       required this.firstSubTitle,
       required this.secondTitle,
-      required this.secondSubTitle});
+      required this.secondSubTitle,
+      this.firstIcon,
+      this.secondIcon});
 
   @override
   Widget build(BuildContext context) {
@@ -41,37 +45,63 @@ class MapDetailsSubHeader extends StatelessWidget {
                   fontSize: 13,
                 ),
                 CustomVerticalSpace(height: 8),
-                CustomTextWidget(
-                  firstSubTitle,
-                  fontColor: AppColor.blackModern600Light,
-                  fontWeight: AppFontWeight.bold,
-                  fontSize: 13,
+                Row(
+                  children: [
+                    if (firstIcon != null) ...[
+                      SvgPicture.asset(
+                        firstIcon!,
+                        height: 14,
+                        color: Color(0xffBD591D),
+                      ),
+                      CustomHorizontalSpace(width: 4)
+                    ],
+                    CustomTextWidget(
+                      firstSubTitle,
+                      fontColor: AppColor.blackModern600Light,
+                      fontWeight: AppFontWeight.bold,
+                      fontSize: 13,
+                    ),
+                  ],
                 ),
               ],
             ),
-            DrawLineWidget(
-              lineWidth: 1,
-              lineHeight: 30,
-              lineColor: AppColor.blackModern300Light,
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                CustomTextWidget(
-                  secondTitle,
-                  fontColor: AppColor.blackModern600Light,
-                  fontWeight: AppFontWeight.bold,
-                  fontSize: 13,
-                ),
-                CustomVerticalSpace(height: 8),
-                CustomTextWidget(
-                  secondSubTitle,
-                  fontColor: AppColor.blackModern600Light,
-                  fontWeight: AppFontWeight.bold,
-                  fontSize: 13,
-                ),
-              ],
-            ),
+            if (secondTitle.isNotEmpty) ...[
+              DrawLineWidget(
+                lineWidth: 1,
+                lineHeight: 30,
+                lineColor: AppColor.blackModern300Light,
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  CustomTextWidget(
+                    secondTitle,
+                    fontColor: AppColor.blackModern600Light,
+                    fontWeight: AppFontWeight.bold,
+                    fontSize: 13,
+                  ),
+                  CustomVerticalSpace(height: 8),
+                  Row(
+                    children: [
+                      if (secondIcon != null) ...[
+                        SvgPicture.asset(
+                          secondIcon!,
+                          height: 14,
+                          color: Color(0xffBD591D),
+                        ),
+                        CustomHorizontalSpace(width: 4)
+                      ],
+                      CustomTextWidget(
+                        secondSubTitle,
+                        fontColor: AppColor.blackModern600Light,
+                        fontWeight: AppFontWeight.bold,
+                        fontSize: 13,
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ]
           ],
         ));
   }

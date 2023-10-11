@@ -26,8 +26,10 @@ extension SearchCategoryData on SearchCategoryMessage {
       SearchCategoryMessage.restaurants =>
         "assets/maps/icons/poi_eat_light.svg",
       SearchCategoryMessage.parks => "assets/maps/icons/poi_park_light.svg",
-      SearchCategoryMessage.hospitals => "assets/maps/icons/poi_eat_light.svg",
-      SearchCategoryMessage.schools => "assets/maps/icons/poi_park_light.svg",
+      SearchCategoryMessage.hospitals =>
+        "assets/maps/icons/hospital_category_icon.svg",
+      SearchCategoryMessage.schools =>
+        "assets/maps/icons/school_category_icon.svg",
     };
   }
 
@@ -42,10 +44,8 @@ extension SearchCategoryData on SearchCategoryMessage {
         "assets/maps/icons/ic_marker_restaurant.svg",
       SearchCategoryMessage.parks =>
         "assets/maps/icons/ic_marker_gardens_parks.svg",
-      SearchCategoryMessage.hospitals =>
-        "assets/maps/icons/ic_marker_restaurant.svg",
-      SearchCategoryMessage.schools =>
-        "assets/maps/icons/ic_marker_gardens_parks.svg",
+      SearchCategoryMessage.hospitals => "assets/maps/icons/hospital_pin.svg",
+      SearchCategoryMessage.schools => "assets/maps/icons/school_pin.svg",
     };
   }
 
@@ -57,11 +57,11 @@ extension SearchCategoryData on SearchCategoryMessage {
         "assets/maps/icons/card_icon/station.png",
       SearchCategoryMessage.cafe => "assets/maps/icons/card_icon/coffee.png",
       SearchCategoryMessage.restaurants =>
-        "assets/maps/icons/card_icon/restaurant.png",
+        "assets/maps/icons/card_icon/resturant.png",
       SearchCategoryMessage.parks => "assets/maps/icons/card_icon/park.png",
       SearchCategoryMessage.hospitals =>
-        "assets/maps/icons/card_icon/restaurant.png",
-      SearchCategoryMessage.schools => "assets/maps/icons/card_icon/park.png",
+        "assets/maps/icons/card_icon/hospital.png",
+      SearchCategoryMessage.schools => "assets/maps/icons/card_icon/school.png",
     };
   }
 
@@ -72,8 +72,8 @@ extension SearchCategoryData on SearchCategoryMessage {
       SearchCategoryMessage.cafe => AppColor.secondary200Light,
       SearchCategoryMessage.restaurants => Color(0xFFC8A83A),
       SearchCategoryMessage.parks => AppColor.secondary200Light,
-      SearchCategoryMessage.hospitals => AppColor.black,
-      SearchCategoryMessage.schools => AppColor.black,
+      SearchCategoryMessage.hospitals => Color(0xff50A99E),
+      SearchCategoryMessage.schools => Color(0xff976403),
     };
   }
 }

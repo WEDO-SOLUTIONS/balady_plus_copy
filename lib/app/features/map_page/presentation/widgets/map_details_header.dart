@@ -1,6 +1,7 @@
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 class MapDetailsHeader extends StatelessWidget {
@@ -41,12 +42,18 @@ class MapDetailsHeader extends StatelessWidget {
           children: [
             Align(
               alignment: Alignment.center,
-              child: Image.asset(
-                image,
-                fit: BoxFit.contain,
-                width: 32,
-                height: 32,
-              ),
+              child: image.endsWith(".svg")
+                  ? SvgPicture.asset(
+                      image,
+                      width: 32,
+                      height: 32,
+                    )
+                  : Image.asset(
+                      image,
+                      fit: BoxFit.contain,
+                      width: 32,
+                      height: 32,
+                    ),
             ),
             Align(
               alignment: Alignment.topRight,

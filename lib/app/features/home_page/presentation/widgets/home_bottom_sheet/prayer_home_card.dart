@@ -3,10 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
+import 'package:provider/provider.dart';
 
 import '../../../../../core/utils/utils_exports.dart';
 import '../../../../_shared_feature_/shared_feature_exports.dart';
-import '../../../../public_services_features/prayer_times/presentation/cubit/prayer_times_cubit.dart';
+import '../../../../public_services_features/prayer_times/prayer_times_exports.dart';
 import '../../../home_exports.dart';
 
 class PrayerHomeCard extends StatelessWidget {
@@ -19,11 +20,11 @@ class PrayerHomeCard extends StatelessWidget {
     return BlocBuilder<PrayerTimesCubit, PrayerTimesState>(
       builder: (context, state) {
         return HomeSection(
-            title: "أوقات الصلاة",
-            child: state.nextPrayer != null
+            title: "prayerTimes".tr(),
+            child: state.nextPrayer != null &&
+                    state.status != BlocRequestStatus.submissionGetLoading
                 ? Container(
                     height: 234,
-                    width: MediaQuery.sizeOf(context).width,
                     margin: const EdgeInsets.only(left: 16, right: 16, top: 12),
                     decoration: BoxDecoration(
                       borderRadius: const BorderRadius.all(Radius.circular(16)),
@@ -60,7 +61,7 @@ class PrayerHomeCard extends StatelessWidget {
                                     children: [
                                       state.nextPrayer != null
                                           ? CustomTextWidget(
-                                              "صلاه ${state.nextPrayer!.prayer.label.tr()}",
+                                              "صلاة ${state.nextPrayer!.prayer.label.tr()}",
                                               fontColor: state
                                                           .nextPrayer!.prayer ==
                                                       Prayers.fajr
@@ -68,12 +69,12 @@ class PrayerHomeCard extends StatelessWidget {
                                                   : state.nextPrayer!.prayer ==
                                                           Prayers.dhuhr
                                                       ? AppColor
-                                                          .secondary400Light
+                                                          .secondary900Light
                                                       : state.nextPrayer!
                                                                   .prayer ==
                                                               Prayers.asr
                                                           ? AppColor
-                                                              .secondary400Light
+                                                              .secondary900Light
                                                           : state.nextPrayer!
                                                                       .prayer ==
                                                                   Prayers
@@ -83,7 +84,7 @@ class PrayerHomeCard extends StatelessWidget {
                                                                   .withOpacity(
                                                                       0.4),
                                               fontWeight: AppFontWeight.bold,
-                                              fontSize: 11,
+                                              fontSize: 13,
                                             )
                                           : const ShimmerEffectWidget(
                                               width: 80,
@@ -187,22 +188,39 @@ class PrayerHomeCard extends StatelessWidget {
                                                       : AppColor.white
                                                           .withOpacity(0.1),
                                     ),
-                                    child: CustomSvgIconWidget(
-                                      IconPath.notificationIc2,
-                                      iconColor: state.nextPrayer!.prayer ==
-                                              Prayers.fajr
-                                          ? AppColor.white
-                                          : state.nextPrayer!.prayer ==
-                                                  Prayers.dhuhr
-                                              ? AppColor.primary900Light
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        /* Provider.of<PrayerTimesCubit>(context,
+                                                listen: false)
+                                            .prayerSettingsOnOff();*/
+                                      },
+                                      child: BlocBuilder<PrayerTimesCubit,
+                                              PrayerTimesState>(
+                                          builder: (context, state) {
+                                        bool isNotificationDisabled =
+                                            state.isNotificationDisable;
+                                        return CustomSvgIconWidget(
+                                          isNotificationDisabled
+                                              ? IconPath.notificationIc2
+                                              : IconPath.notificationFilled,
+                                          iconColor: state.nextPrayer!.prayer ==
+                                                  Prayers.fajr
+                                              ? AppColor.white
                                               : state.nextPrayer!.prayer ==
-                                                      Prayers.asr
+                                                      Prayers.dhuhr
                                                   ? AppColor.primary900Light
                                                   : state.nextPrayer!.prayer ==
-                                                          Prayers.maghrib
+                                                          Prayers.asr
                                                       ? AppColor.primary900Light
-                                                      : AppColor.white,
-                                      iconSize: 24,
+                                                      : state.nextPrayer!
+                                                                  .prayer ==
+                                                              Prayers.maghrib
+                                                          ? AppColor
+                                                              .primary900Light
+                                                          : AppColor.white,
+                                          iconSize: 24,
+                                        );
+                                      }),
                                     ),
                                   ),
                                 ],
@@ -230,12 +248,12 @@ class PrayerHomeCard extends StatelessWidget {
                                       children: [
                                         if (state.nextPrayer != null)
                                           CustomTextWidget(
-                                            "متبقي على وقت اذان ${state.nextPrayer!.prayer.label.tr()}",
+                                            "متبقي على أذان ${state.nextPrayer!.prayer.label.tr()}",
                                             fontColor: AppColor.white,
                                             fontWeight: AppFontWeight.bold,
                                             maxLines: 2,
                                             height: 1.3,
-                                            fontSize: 12,
+                                            fontSize: 13,
                                           ),
                                         const SizedBox(height: 8),
                                         state.nextPrayer != null
@@ -261,7 +279,7 @@ class PrayerHomeCard extends StatelessWidget {
                                       child: CustomElevatedButtonWidget(
                                         btnColor: state.isAM
                                             ? AppColor.primary900Light
-                                            : AppColor.secondary400Light,
+                                            : AppColor.secondary900Light,
                                         textStyle: AppStyle.elevatedButtonStyle
                                             .copyWith(
                                           color: AppColor.white,
@@ -270,7 +288,7 @@ class PrayerHomeCard extends StatelessWidget {
                                         ),
                                         btnHeight: 40,
                                         btnPadding: const EdgeInsets.all(11),
-                                        text: "عرض اوقات الصلوات",
+                                        text: 'prayer_timings'.tr(),
                                         onPressed: () {
                                           context.pushNamedRoute(
                                             RouteName.prayerTimes,

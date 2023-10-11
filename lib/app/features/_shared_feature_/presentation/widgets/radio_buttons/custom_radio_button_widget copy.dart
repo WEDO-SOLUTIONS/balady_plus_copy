@@ -39,7 +39,7 @@ class CustomRadioButtonWidget extends StatelessWidget {
     this.height = 60.0,
     this.width = double.infinity,
     this.borderColor = AppColor.black200,
-    this.borderSelectedColor = AppColor.darkTurquoise,
+    this.borderSelectedColor = AppColor.primary900Light,
     this.borderRadius = 4.0,
     required this.onSelected,
     this.isSelected = false,
@@ -51,7 +51,7 @@ class CustomRadioButtonWidget extends StatelessWidget {
     this.verticalPadding = 0.0,
     this.radioHeight = 25.0,
     this.radioWidth = 25.0,
-    this.radioSelectedColor = AppColor.darkTurquoise,
+    this.radioSelectedColor = AppColor.primary900Light,
     this.radioUnSelectedColor = AppColor.white,
     required this.radioValue,
     required this.radioGroupValue,
@@ -219,7 +219,7 @@ class CustomRadioButtonEnd<T> extends StatelessWidget {
           /* border: Border.all(
               width: 1,
               color: currentSelected == value
-                  ? AppColor.darkTurquoise
+                  ? AppColor.primary900Light
                   : AppColor.black200,
             )*/
         ),
@@ -230,7 +230,7 @@ class CustomRadioButtonEnd<T> extends StatelessWidget {
                 Radio<T>(
                   value: value,
                   groupValue: currentSelected,
-                  activeColor: AppColor.darkTurquoise,
+                  activeColor: AppColor.primary900Light,
                   onChanged: (v) {
                     onChange(v);
                   },
@@ -266,7 +266,7 @@ class CustomRadioButtonEnd<T> extends StatelessWidget {
                 Radio<T>(
                   value: value,
                   groupValue: currentSelected,
-                  activeColor: AppColor.darkTurquoise,
+                  activeColor: AppColor.primary900Light,
                   onChanged: (v) {
                     onChange(v);
                   },
@@ -302,7 +302,7 @@ class CustomRadioButtonWithoutDecoration extends StatelessWidget {
           Radio<String>(
             value: value,
             groupValue: currentSelected,
-            activeColor: AppColor.darkTurquoise,
+            activeColor: AppColor.primary900Light,
             onChanged: (v) {
               onChange(v);
             },

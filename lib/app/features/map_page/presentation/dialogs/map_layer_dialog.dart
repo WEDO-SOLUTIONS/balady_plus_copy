@@ -73,7 +73,9 @@ class _MapLayersDialogState extends State<MapLayersDialog> {
                                 child: Row(
                                   children: [
                                     SvgPicture.asset(
-                                        GISMapLayers.values[index].icon),
+                                      GISMapLayers.values[index].icon,
+                                      color: AppColor.primary900Light,
+                                    ),
                                     CustomHorizontalSpace(width: 8),
                                     CustomTextWidget(
                                       layers[index].name,

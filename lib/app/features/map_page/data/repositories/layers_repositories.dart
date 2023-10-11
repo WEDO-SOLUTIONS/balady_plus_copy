@@ -19,6 +19,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import '../../../../core/dependency_injection/injection_container.dart';
+import '../../../../core/errors/exceptions.dart';
 import '../../../../core/services/global/web_service.dart';
 import '../../../entry_point/presentation/cubit/auth_cubit.dart';
 import '../../data/model/layers.dart';
@@ -28,6 +29,7 @@ import '../enums/map_enums.dart';
 import '../model/investment_details_response.dart';
 import '../model/rental_details_response.dart';
 import '../model/requests/map_requests_params.dart';
+import '../model/resturant_model.dart';
 
 class LayersRepositories {
   final WebService webService;
@@ -35,8 +37,9 @@ class LayersRepositories {
   LayersRepositories({required this.webService});
 
   Future<List<Layers>?> getMinLayers() async {
+    var layersType;
     try {
-      final layersType = await webService.dio.get(
+      layersType = await webService.dio.get(
         Constants.mainUrl,
         options: Options(headers: {
           ApiHeader.requiresToken.eName: false,
@@ -54,7 +57,20 @@ class LayersRepositories {
                 element.id != 9)
             .toList();
       }
+    } on DioError catch (error) {
+      "DioError $error".errorLog();
+      try {
+        // CommonFunctions.sendEvent(dioError: error, response: null, ex: null);
+      } catch (ex) {}
     } catch (ex) {
+      try {
+        /* CommonFunctions.sendEvent(
+          response: layersType,
+          ex: APIException(
+            errorMessage: ex.toString(),
+          ),
+        );*/
+      } catch (ex) {}
       try {} catch (ex) {}
       print(e);
     }
@@ -86,6 +102,7 @@ class LayersRepositories {
 
   Future<List<PointLayersData>?> getPointsInLayers(
       {required MapRequestParams params}) async {
+    var points;
     try {
       String q = "${Constants.mainUrl}/${params.layer.layerId}/query?";
       params.toMap().forEach((key, value) {
@@ -94,7 +111,7 @@ class LayersRepositories {
       q = q.substring(0, q.length - 1);
 
       print(q);
-      final points = await webService.dio.get(
+      points = await webService.dio.get(
         '${Constants.mainUrl}/${params.layer.layerId}/query',
         queryParameters: params.toMap(),
         options: Options(headers: {
@@ -129,6 +146,10 @@ class LayersRepositories {
       );
 
       switch (params.layer.layerId) {
+        case 1: //     المطاعم
+          return resturantFromJson(
+            points.data['data']['result']['features'],
+          );
         case 2: //     المواقع الاستثمارية
           return investmentSitesFromJson(
             points.data['data']['result']['features'],
@@ -158,7 +179,21 @@ class LayersRepositories {
             points.data['data']['result']['features'],
           );
       }
-    } catch (e) {
+    } on DioError catch (error) {
+      "DioError $error".errorLog();
+      try {
+        // CommonFunctions.sendEvent(dioError: error, response: null, ex: null);
+      } catch (ex) {}
+    } catch (ex) {
+      try {
+        /*  CommonFunctions.sendEvent(
+          response: points,
+          ex: APIException(
+            errorMessage: ex.toString(),
+          ),
+        );*/
+      } catch (ex) {}
+      try {} catch (ex) {}
       print(e);
     }
     return null;

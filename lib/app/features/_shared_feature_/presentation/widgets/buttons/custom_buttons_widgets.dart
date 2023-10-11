@@ -260,7 +260,7 @@ class EnhancedCustomElevatedButtonWidget extends StatelessWidget {
   const EnhancedCustomElevatedButtonWidget(
       {Key? key,
       required this.btnPressed,
-      this.btnColor = AppColor.darkTurquoise,
+      this.btnColor = AppColor.primary900Light,
       this.btnHeight = 65.0,
       this.btnWidth = double.infinity,
       this.btnRadius = 2,
@@ -681,7 +681,8 @@ class CustomTextButtonWithIconWidget extends StatelessWidget {
     return TextButton(
       onPressed: btnPressed,
       style: TextButton.styleFrom(
-        foregroundColor: btnEffectColor ?? btnBackgroundColor ?? btnTextColor, padding: padding,
+        foregroundColor: btnEffectColor ?? btnBackgroundColor ?? btnTextColor,
+        padding: padding,
         backgroundColor: btnBackgroundColor,
         alignment: btnAlignment,
         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -753,7 +754,8 @@ class CustomTextButtonWithIconWidgetWithFlexible extends StatelessWidget {
     return TextButton(
       onPressed: btnPressed,
       style: TextButton.styleFrom(
-        foregroundColor: btnEffectColor ?? btnBackgroundColor ?? btnTextColor, backgroundColor: btnBackgroundColor,
+        foregroundColor: btnEffectColor ?? btnBackgroundColor ?? btnTextColor,
+        backgroundColor: btnBackgroundColor,
         padding: padding,
       ),
       child: Row(
@@ -808,7 +810,7 @@ class CustomElevatedButtonWidget1 extends StatelessWidget {
   const CustomElevatedButtonWidget1(
       {Key? key,
       required this.btnPressed,
-      this.btnColor = AppColor.darkTurquoise,
+      this.btnColor = AppColor.primary900Light,
       this.btnHeight = 65.0,
       this.btnWidth = double.infinity,
       this.btnRadius = 2.5,
@@ -994,7 +996,7 @@ class CustomElevatedButtonWithIconWidget1 extends StatelessWidget {
   const CustomElevatedButtonWithIconWidget1({
     Key? key,
     required this.btnPressed,
-    this.btnColor = AppColor.darkTurquoise,
+    this.btnColor = AppColor.primary900Light,
     this.btnHeight = 65.0,
     this.btnWidth = double.infinity,
     this.btnRadius = 2.5,
@@ -1083,7 +1085,7 @@ class CustomElevatedButtonWithIconWidget extends StatelessWidget {
   const CustomElevatedButtonWithIconWidget({
     Key? key,
     required this.btnPressed,
-    this.btnColor = AppColor.darkTurquoise,
+    this.btnColor = AppColor.primary900Light,
     this.btnHeight = 65.0,
     this.btnWidth = double.infinity,
     this.btnRadius = 2.5,
@@ -1293,7 +1295,8 @@ class LabelTextWithOptional extends StatelessWidget {
   final bool? showOptional;
 
   const LabelTextWithOptional(
-      {super.key, required this.label,
+      {super.key,
+      required this.label,
       this.labelColor = AppColor.blackModern700Light,
       this.labelSize = 13.0,
       this.labelTextAlign = TextAlign.start,

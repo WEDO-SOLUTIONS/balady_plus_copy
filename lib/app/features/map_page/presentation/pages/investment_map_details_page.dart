@@ -18,13 +18,22 @@ import '../widgets/map_details_field.dart';
 import '../widgets/map_details_section.dart';
 import '../widgets/map_details_sub_header.dart';
 
-class InvestmentMapDetailsPage extends StatelessWidget {
-  final InvestmentDetailsResponse item;
+class InvestmentMapDetailsPage extends StatefulWidget {
+  const InvestmentMapDetailsPage({
+    super.key,
+  });
 
-  const InvestmentMapDetailsPage({super.key, required this.item});
+  @override
+  State<InvestmentMapDetailsPage> createState() =>
+      _InvestmentMapDetailsPageState();
+}
+
+class _InvestmentMapDetailsPageState extends State<InvestmentMapDetailsPage> {
 
   @override
   Widget build(BuildContext context) {
+  InvestmentDetailsResponse  item =
+        ModalRoute.of(context)!.settings.arguments as InvestmentDetailsResponse;
     return Scaffold(
         body: Stack(
       children: [

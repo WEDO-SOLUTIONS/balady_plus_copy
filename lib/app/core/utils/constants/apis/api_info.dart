@@ -46,6 +46,13 @@ class ApiUrl {
       '/v1/balady-dashboard/license/sub-main-types/$id';
   static const licenseStatuses = '/v1/balady-dashboard/license/statuses';
 
+  static const eventsSearch = '/v1/balady-events-services/events/search';
+  static const eventsDetails = '/v1/balady-events-services/events';
+  static const eventsCategory = '/v1/balady-events-services/category/';
+
+  static const calendarSearch = '/v1/saudi-calendar-services/entries/search';
+  static const calendarDetails = '/v1/saudi-calendar-services/entries';
+
 //! Objections
 
   static const objectionsRequests = '/v1/balady-dashboard/objection-requests';

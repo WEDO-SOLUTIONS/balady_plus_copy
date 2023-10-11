@@ -15,6 +15,7 @@ import '../../../../core/utils/constants/app_style.dart';
 import '../../../../core/utils/constants/route_names.dart';
 import '../../../home_page/presentation/widgets/home_app_bar/circle_icon.dart';
 import '../../../home_page/presentation/widgets/home_tag.dart';
+import '../../data/enums/custom_search_category.dart';
 
 class SearchMapWidget extends StatelessWidget {
   const SearchMapWidget({
@@ -119,65 +120,85 @@ class SearchMapWidget extends StatelessWidget {
                             SearchCategoryMessage.parks,
                             SearchCategoryMessage.hospitals,
                             SearchCategoryMessage.schools,
-                          ]
-                              .map(
-                                (e) => Row(
-                                  children: [
-                                    const SizedBox(
-                                      width: 8,
-                                    ),
-                                    Container(
-                                      padding:
-                                          EdgeInsets.symmetric(horizontal: 4),
-                                      decoration: BoxDecoration(
-                                        color: value == e
-                                            ? Color(0xFF4B5563)
-                                            : Colors.white,
-                                        borderRadius:
-                                            BorderRadius.circular(8.0),
-                                      ),
-                                      child: InkWell(
-                                        onTap: () {
-                                          mapViewModel.selectCategory(
-                                              category: e);
-                                          print("Changing ctaegory to: $e");
-                                        },
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(4.0),
-                                          child: Row(
-                                            children: [
-                                              SizedBox(
-                                                width: 16,
-                                                height: 16,
-                                                child: SvgPicture.asset(
-                                                  e.iconName(),
-                                                ),
-                                              ),
-                                              SizedBox(
-                                                width: 4,
-                                              ),
-                                              CustomTextWidget(
-                                                e.displayName(),
-                                                textStyle: AppStyle
-                                                    .serviceDescriptionStyle
-                                                    .copyWith(
-                                                  color: mapViewModel
-                                                              .selectedCategory
-                                                              .value ==
-                                                          e
-                                                      ? Colors.white
-                                                      : Colors.black,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
+                            CustomSearchCategory.events
+                          ].map((e) {
+                            SearchCategoryMessage? category;
+                            CustomSearchCategory? custom;
+
+                            late String displayName;
+                            late String iconName;
+
+                            if (e is CustomSearchCategory) {
+                              iconName = e.iconName();
+                              displayName = e.displayName();
+                              custom = e;
+                            } else if (e is SearchCategoryMessage) {
+                              iconName = e.iconName();
+                              displayName = e.displayName();
+                              category = e;
+                            }
+                            print("categoet11 $category");
+                            print(
+                                "categoet ${mapViewModel.selectedCategory.value}");
+
+                            final bool isActive = ((mapViewModel
+                                            .selectedCategory.value ==
+                                        category) &&
+                                    mapViewModel.selectedCategory.value !=
+                                        null) ||
+                                ((mapViewModel.selectedCustomCategory.value ==
+                                        custom) &&
+                                    mapViewModel.selectedCustomCategory.value !=
+                                        null);
+                            return Row(
+                              children: [
+                                const SizedBox(
+                                  width: 8,
                                 ),
-                              )
-                              .toList(),
+                                Container(
+                                  padding: EdgeInsets.symmetric(horizontal: 4),
+                                  decoration: BoxDecoration(
+                                    color: isActive
+                                        ? Color(0xFF4B5563)
+                                        : Colors.white,
+                                    borderRadius: BorderRadius.circular(8.0),
+                                  ),
+                                  child: InkWell(
+                                    onTap: () {
+                                      mapViewModel.selectCategory(
+                                          category: category, custom: custom);
+                                      print("Changing ctaegory to: $e");
+                                    },
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(4.0),
+                                      child: Row(
+                                        children: [
+                                          SizedBox(
+                                            width: 16,
+                                            height: 16,
+                                            child: SvgPicture.asset(iconName),
+                                          ),
+                                          SizedBox(
+                                            width: 4,
+                                          ),
+                                          CustomTextWidget(
+                                            displayName,
+                                            textStyle: AppStyle
+                                                .serviceDescriptionStyle
+                                                .copyWith(
+                                              color: isActive
+                                                  ? Colors.white
+                                                  : Colors.black,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            );
+                          }).toList(),
                         ),
                       )
                     : SizedBox();
