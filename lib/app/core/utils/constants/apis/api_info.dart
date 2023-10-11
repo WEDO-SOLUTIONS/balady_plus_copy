@@ -249,6 +249,9 @@ class ApiUrl {
   static const String accommodationTypesCL =
       "/v1/balady-commercial-services/accommodation-types";
 
+  static const String saveComSubmitterAndOwner =
+      "v1/balady-commercial-services/new-request/submitter-owner-details";
+
 //! Violations
   static const String violationsStatus =
       "/v1/balady-dashboard/violations/statuses";

@@ -21,18 +21,23 @@ class CrStep2ActivityDataCubit extends Cubit<CrStep2ActivityDataState> {
         _getSubActivityDetails = GetSubActivityDetails(repository: sl()),
         super(const CrStep2ActivityDataState());
 
-
-  void getSubActivityDetails() async {
+  void getSubActivityDetails(DropDownItem subActivity) async {
     emit(state.copyWith(subActivityDetailsStatus: BlocStatus.loading));
-    final response = await _getSubActivityDetails(state.selectedSubActivity?.code??'');
+    final response =
+        await _getSubActivityDetails(subActivity.id.toString() ?? '');
     response.fold(
-            (failure) => emit(state.copyWith(
+        (failure) => emit(state.copyWith(
               subActivityDetailsStatus: BlocStatus.failure,
-          errorMessage: (failure as ServerFailure).errorMessage,
-        )),
-            (success) => emit(state.copyWith(
-                subActivityDetailsStatus: BlocStatus.success,
-            subActivityDetails: success.data?.result)));
+              errorMessage: (failure as ServerFailure).errorMessage,
+            )), (success) {
+      emit(state.copyWith(
+          selectedSubActivity: Nullable(subActivity),
+          subActivityDetailsStatus: BlocStatus.success,
+          subActivityDetails: success.data?.result));
+
+      print("STATE ${state.selectedSubActivity}");
+      print("STATE ${success.data?.result}");
+    });
   }
 
   void onSelectIsicActivity(DropDownItem isicActivity) async {
@@ -45,12 +50,11 @@ class CrStep2ActivityDataCubit extends Cubit<CrStep2ActivityDataState> {
         (failure) => emit(state.copyWith(
               subActivitiesStatus: BlocStatus.failure,
               errorMessage: (failure as ServerFailure).errorMessage,
-            )),
-        (success) {
-          emit(state.copyWith(
-            subActivitiesStatus: BlocStatus.success,
-            subActivities: List.from(success)));
-        });
+            )), (success) {
+      emit(state.copyWith(
+          subActivitiesStatus: BlocStatus.success,
+          subActivities: List.from(success)));
+    });
   }
 
   void getAccommodationTypes() async {
@@ -58,19 +62,18 @@ class CrStep2ActivityDataCubit extends Cubit<CrStep2ActivityDataState> {
     final response = await _getAccommodationTypes(NoParams());
     response.fold(
         (failure) => emit(state.copyWith(
-          accommodationTypesStatus: BlocStatus.failure,
+              accommodationTypesStatus: BlocStatus.failure,
               errorMessage: (failure as ServerFailure).errorMessage,
-            )),
-        (success) {
-          emit(state.copyWith(
-              accommodationTypesStatus: BlocStatus.success,
-              accommodationTypes: List.from(success)));
-        });
+            )), (success) {
+      emit(state.copyWith(
+          accommodationTypesStatus: BlocStatus.success,
+          accommodationTypes: List.from(success)));
+    });
   }
 
   void onSelectSubActivity(DropDownItem subActivity) async {
-    emit(state.copyWith(selectedSubActivity: Nullable(subActivity)));
-    getSubActivityDetails();
+    print("onSelectSubActivity $subActivity");
+    getSubActivityDetails(subActivity);
   }
 
   void onAccommodationTypes(DropDownItem accommodationTypes) =>
