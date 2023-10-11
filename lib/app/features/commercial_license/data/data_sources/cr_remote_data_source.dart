@@ -5,6 +5,7 @@ import '../../../../core/errors/errors_exports.dart';
 import '../../../../core/services/services_exports.dart';
 import '../../../_shared_feature_/shared_feature_exports.dart';
 import '../../commercial_license_exports.dart';
+import '../models/save_com_submitter_and_owner_request_model.dart';
 
 abstract class CrRemoteDataSource {
   Future<ResponseBodyModel<RecordInfoModel>> getRecordInfo(
@@ -14,6 +15,9 @@ abstract class CrRemoteDataSource {
       {required String subActivityId});
   Future<bool> addIsicActivities({required AddIsicActivitiesParams params});
   Future<List<CrLookupsModel>> getAccommodationTypes();
+
+  Future<String> saveComSubmitterAndOwner(
+      {SaveComSubmitterAndOwnerRequestModel? params});
 }
 
 class CrRemoteDataSourceImpl extends CrRemoteDataSource {
@@ -206,8 +210,10 @@ class CrRemoteDataSourceImpl extends CrRemoteDataSource {
           ResponseBodyModel<SubActivityModelDetailsModel>.fromMap(response.data,
               parsedResult: parsedResult);
 
+      print(decodedResponse);
       return decodedResponse.toFuture();
     } on DioError catch (error) {
+      print(error);
       var errorCode;
       try {
         final decodedResponse =
@@ -224,6 +230,53 @@ class CrRemoteDataSourceImpl extends CrRemoteDataSource {
         dioError: error,
       );
     } catch (ex) {
+      print(ex);
+      if (ex is ServerException)
+        throw ex;
+      else {
+        try {
+          //MM    CommonFunctions.sendExceptionLog(exception: ex, response: response);
+        } catch (ex) {}
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
+      }
+    }
+  }
+
+  @override
+  Future<String> saveComSubmitterAndOwner(
+      {SaveComSubmitterAndOwnerRequestModel? params}) async {
+    var response;
+
+    try {
+      response = await webService.dio
+          .post(ApiUrl.saveComSubmitterAndOwner, data: params?.toMap());
+
+      var data = response.data["data"]["result"];
+
+      return data["requestNumber"];
+    } on DioError catch (error) {
+      print(error);
+      var errorCode;
+      try {
+        final decodedResponse =
+            ResponseBodyModel<SubActivityModelDetailsModel>.fromMap(
+          error.response?.data,
+        );
+        errorCode = decodedResponse.data?.responseCode;
+      } catch (ex) {}
+
+      throw ServerException(
+        error.toString(),
+        errorCode: errorCode,
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
+    } catch (ex) {
+      print(ex);
       if (ex is ServerException)
         throw ex;
       else {

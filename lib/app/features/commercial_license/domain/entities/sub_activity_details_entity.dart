@@ -1,10 +1,10 @@
-class SubActivityDetails{
+class SubActivityDetails {
   int? id;
   String? name;
   String? ename;
   dynamic nameEn;
-  dynamic maxArea;
-  int? minArea;
+  double? maxArea;
+  double? minArea;
   MainActivity? mainActivity;
   int? isicNumber;
   SubSubActivity? subActivity;

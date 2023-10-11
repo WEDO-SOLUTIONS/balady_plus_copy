@@ -10,7 +10,8 @@ import '../../../commercial_license_exports.dart';
 part 'commercial_license_event.dart';
 part 'commercial_license_state.dart';
 
-class CommercialLicenseBloc extends Bloc<CommercialLicenseEvent, CommercialLicenseState> {
+class CommercialLicenseBloc
+    extends Bloc<CommercialLicenseEvent, CommercialLicenseState> {
   PageController controller = PageController();
 
   CommercialLicenseBloc() : super(const CommercialLicenseState()) {
@@ -18,13 +19,11 @@ class CommercialLicenseBloc extends Bloc<CommercialLicenseEvent, CommercialLicen
     on<GoToPreviousPageEvent>(_goToPreviousPageHandler);
   }
 
-
   Future<void> _goToNextPageHandler(
       GoToNextPageEvent e, Emitter emitter) async {
     //print("next page");
     print("DataLog ${state}");
     if (isLastPage()) {
-
     } else {
       if (state.status == BlocStatus.performing) return;
       int nextPage = state.currentPageValue + 1;
@@ -33,12 +32,11 @@ class CommercialLicenseBloc extends Bloc<CommercialLicenseEvent, CommercialLicen
         status: BlocStatus.performing,
       ));
 
-        await controller.animateToPage(nextPage,
-            duration: const Duration(milliseconds: 400), curve: Curves.easeIn);
+      await controller.animateToPage(nextPage,
+          duration: const Duration(milliseconds: 400), curve: Curves.easeIn);
 
-        emitter(state.copyWith(
-            status: BlocStatus.success,
-            currentPageValue: nextPage));
+      emitter(state.copyWith(
+          status: BlocStatus.success, currentPageValue: nextPage));
     }
     hideKeyboard();
   }
@@ -56,12 +54,10 @@ class CommercialLicenseBloc extends Bloc<CommercialLicenseEvent, CommercialLicen
       await controller.animateToPage(prvoiusPage,
           duration: const Duration(milliseconds: 400), curve: Curves.easeIn);
       emitter(state.copyWith(
-          status: BlocStatus.success,
-          currentPageValue: prvoiusPage));
+          status: BlocStatus.success, currentPageValue: prvoiusPage));
     }
     hideKeyboard();
   }
-
 
   bool isLastPage() {
     return state.currentPageValue == (state.pagesList.length - 1);
@@ -70,5 +66,4 @@ class CommercialLicenseBloc extends Bloc<CommercialLicenseEvent, CommercialLicen
   hideKeyboard() {
     FocusManager.instance.primaryFocus?.unfocus();
   }
-
 }

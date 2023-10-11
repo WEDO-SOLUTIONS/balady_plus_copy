@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/features/commercial_license/data/models/save_com_submitter_and_owner_request_model.dart';
 import 'package:dartz/dartz.dart' show Either, Left, Right;
 import '../../../../core/errors/errors_exports.dart';
 import '../../../_shared_feature_/shared_feature_exports.dart';
@@ -65,6 +66,19 @@ class CrRepositoryImpl implements CrRepository {
     try {
       final data = await remoteDataSource.getAccommodationTypes();
 
+      return Right(data);
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage,
+          statusCode: error.statusCode, errorCode: error.errorCode));
+    }
+  }
+
+  @override
+  Future<Either<Failure, String>> saveComSubmitterAndOwner(
+      SaveComSubmitterAndOwnerRequestModel? params) async {
+    try {
+      final data =
+          await remoteDataSource.saveComSubmitterAndOwner(params: params);
       return Right(data);
     } on ServerException catch (error) {
       return Left(ServerFailure(error.errorMessage,

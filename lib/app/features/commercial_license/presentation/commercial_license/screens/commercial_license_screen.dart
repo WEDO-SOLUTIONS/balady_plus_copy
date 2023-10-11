@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../../core/dependency_injection/injection_container.dart';
 import '../../../commercial_license_exports.dart';
 
 class CommercialLicenseScreen extends StatelessWidget {
@@ -10,9 +11,6 @@ class CommercialLicenseScreen extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (context) => CommercialLicenseBloc(),
-        ),
-        BlocProvider(
           create: (context) => WorkTimesCubit(),
         ),
         BlocProvider(
@@ -21,6 +19,9 @@ class CommercialLicenseScreen extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => CrStep2ActivityDataCubit(),
+        ),
+        BlocProvider.value(
+          value: sl<CommercialLicenseBloc>(),
         ),
       ],
       child: const CommercialLicenseBody(),

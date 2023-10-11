@@ -82,8 +82,8 @@ class CRStep1ApplicantData extends StatelessWidget {
                                       const IsicActivitiesDialogNotExistInBalady()));
                         } else {
                           context
-                              .read<CommercialLicenseBloc>()
-                              .add(const GoToNextPageEvent());
+                              .read<CrStep1ApplicantDataCubit>()
+                              .saveComSubmitterAndOwner();
                         }
                       }),
                 ],

@@ -383,7 +383,7 @@ class Routes {
 
         RouteName.quranSearchPage: (context) => QuranSearchPage(),
 
-        RouteName.ZmZmPointsPage: (context) => ZmZmPointsPage(),
+        RouteName.ZmZmPointsPage: (context) => CommercialLicenseScreen(),
         RouteName.createCompliancePage: (context) =>
             CreateComplianceLocationPage(),
 
