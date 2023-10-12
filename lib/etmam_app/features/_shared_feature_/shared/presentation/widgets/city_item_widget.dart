@@ -72,14 +72,14 @@ class CityWidget extends StatelessWidget {
               ),
               const CustomVerticalSpace(height: 4),
               SizedBox(
-                width: 48,
+                width: 50,
                 child: Center(
                   child: CustomTextWidget(
                     cityName,
                     textAlign: TextAlign.center,
                     fontSize: 13,
-                    maxLines: 2,
-                    textOverflow: TextOverflow.ellipsis,
+                    maxLines: 3,
+                    //  textOverflow: TextOverflow.,
                     fontWeight: AppFontWeight.medium,
                     fontColor:
                         isSelected ? AppColor.darkTurquoise : AppColor.black,

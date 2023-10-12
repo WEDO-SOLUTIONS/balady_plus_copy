@@ -65,13 +65,14 @@ class _QiblahWebViewPageState extends State<QiblahWebViewPage> {
                 },
                 initialOptions: InAppWebViewGroupOptions(
                   android: AndroidInAppWebViewOptions(
-                    // useHybridComposition: true,
+                    useHybridComposition: true,
                     geolocationEnabled: true,
                     // safeBrowsingEnabled: false,
                   ),
                   crossPlatform: InAppWebViewOptions(
                     useShouldOverrideUrlLoading: true,
                     javaScriptCanOpenWindowsAutomatically: true,
+
                     //  allowUniversalAccessFromFileURLs: true,
                     //  preferredContentMode: UserPreferredContentMode.MOBILE
                   ),

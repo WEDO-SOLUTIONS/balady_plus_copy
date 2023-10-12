@@ -56,6 +56,10 @@ class _InAppWebViewPageState extends State<InAppWebViewPage> {
               url: Uri.parse(args.url),
             ),
             initialOptions: InAppWebViewGroupOptions(
+              android: AndroidInAppWebViewOptions(
+                useHybridComposition: true,
+                // safeBrowsingEnabled: false,
+              ),
               crossPlatform: InAppWebViewOptions(
                 useShouldOverrideUrlLoading: true,
               ),
