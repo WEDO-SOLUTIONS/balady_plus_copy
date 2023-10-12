@@ -1,4 +1,0 @@
-enum DateForm {
-  hijri,
-  gregorian,
-}
