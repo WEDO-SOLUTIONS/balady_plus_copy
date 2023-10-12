@@ -1,0 +1,333 @@
+import 'dart:convert';
+
+import 'package:balady_plus/app/core/errors/errors_exports.dart';
+import 'package:balady_plus/app/core/utils/utils_exports.dart';
+import 'package:balady_plus/app/features/entry_point/data/models/test_model.dart';
+import 'package:balady_plus/app/features/entry_point/presentation/cubit/auth_cubit.dart';
+import 'package:dio/dio.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_appauth/flutter_appauth.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
+import 'package:localize_and_translate/localize_and_translate.dart'
+    show Translation;
+
+import '../../../../core/dependency_injection/injection_container.dart';
+import '../../../../core/services/services_exports.dart';
+import '../../../../core/utils/constants/remote_config.dart';
+import '../../../_shared_feature_/data/models/response_body_model.dart';
+import '../../entry_point_exports.dart';
+
+abstract class EntryPointRemoteDataSource {
+  Future<AuthorizationTokenResponse> authorize();
+  Future<EndSessionResponse> endSession();
+  Future<String> logout();
+
+  Future<TokenResponse> refreshToken(String refreshToken);
+  Future<SsoUserInfoModel?> getSSOProfile();
+  Future<String?> getCookie();
+  Future<ApigeeTokenResponse> getAPIgeeToken();
+  Future<ForceUpdateResponseModel> getForceVersion(
+      {required ForceUpdateParams params});
+
+  Future<dynamic> getDataTest();
+}
+
+class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
+  final WebService webService;
+
+  final WebService webServiceSSo = WebService.newDio(
+      dio: CommonFunctions.getDio(baseUrl: RemoteConfig.ssoUrl));
+
+  final FlutterAppAuth _appAuth = FlutterAppAuth();
+  final AuthorizationServiceConfiguration _serviceConfiguration =
+      AuthorizationServiceConfiguration(
+    authorizationEndpoint: '${RemoteConfig.ssoUrl}/connect/authorize',
+    tokenEndpoint: '${RemoteConfig.ssoUrl}/connect/token',
+    endSessionEndpoint: "${RemoteConfig.ssoUrl}/connect/endsession",
+  );
+
+  EntryPointRemoteDataSourceImpl({required this.webService});
+
+  @override
+  Future<AuthorizationTokenResponse> authorize() async {
+    try {
+      AuthorizationTokenResponse? response =
+          await _appAuth.authorizeAndExchangeCode(
+        AuthorizationTokenRequest(
+          RemoteConfig.ssoClient,
+          RemoteConfig.ssoLoginUrl,
+          serviceConfiguration: _serviceConfiguration,
+          clientSecret: RemoteConfig.ssoSecret,
+          scopes: [
+            'openid',
+            'profile',
+            'offline_access',
+            'EmployeeAdminstration.Api',
+          ],
+        ),
+      );
+      response?.accessToken.actionLog();
+      return response!;
+    } catch (error) {
+      print(error);
+      throw ServerException(
+        error.toString(),
+      );
+    }
+  }
+
+  @override
+  Future<TokenResponse> refreshToken(String refreshToken) async {
+    try {
+      TokenResponse? response = await _appAuth.token(
+        TokenRequest(
+          RemoteConfig.ssoClient,
+          RemoteConfig.ssoLoginUrl,
+          serviceConfiguration: _serviceConfiguration,
+          refreshToken: refreshToken,
+          clientSecret: RemoteConfig.ssoSecret,
+          scopes: [
+            'openid',
+            'profile',
+            'offline_access',
+          ],
+        ),
+      );
+      //  print(response?.refreshToken);
+      return response!;
+    } on PlatformException catch (error) {
+      if (error.toString().contains("invalid_grant")) {
+        sl<EntryPointCubit>().autoLogout();
+      }
+      throw const ServerException(
+        "",
+      );
+    }
+  }
+
+  @override
+  Future<SsoUserInfoModel?> getSSOProfile() async {
+    Response? response;
+    try {
+      response = await webServiceSSo.dio.get(ApiUrl.ssoUserInfo,
+          options: Options(headers: {
+            "Authorization": "Bearer ${CommonProperties.token ?? ""}"
+          }));
+
+      var data = response.data;
+
+      var parsedResult = data != null ? SsoUserInfoModel.fromJson(data) : null;
+
+      return parsedResult.toFuture();
+    } on DioError catch (error) {
+      throw ServerException(error.toString(),
+          statusCode: error.response?.statusCode);
+    } catch (ex) {
+      print(ex);
+      if (ex is ServerException) {
+        rethrow;
+      } else {
+        try {
+          //MM   CommonFunctions.sendExceptionLog(exception: ex, response: response);
+        } catch (_) {}
+        throw ServerException(("errors_server_error_2".tr()));
+      }
+    }
+  }
+
+  @override
+  Future<String> logout() async {
+    Response? response;
+
+    try {
+      response = await webService.dio.get(
+        "${RemoteConfig.ssoUrl}/connect/endsession",
+        queryParameters: {
+          "id_token_hint": sl<EntryPointCubit>().state.token?.idToken,
+          "post_logout_redirect_uri": RemoteConfig.ssoLogOutUrl
+        },
+      );
+
+      // var data = response.data["data"]?["result"];
+
+      // var parsedResult = data != null ? data : null;
+      // final decodedResponse =
+      //    ApigeeResponseModel<UpdateDeviceResponseModel>.fromMap(response.data,
+      //        parsedResult: parsedResult);
+      return response.data;
+    } on DioError catch (error) {
+      throw ServerException(error.toString(),
+          statusCode: error.response?.statusCode);
+    } catch (ex) {
+      if (ex is ServerException) {
+        rethrow;
+      } else {
+        try {
+          //MM    CommonFunctions.sendExceptionLog(exception: ex, response: response);
+        } catch (_) {}
+        throw ServerException(("errors_server_error_2").tr());
+      }
+    }
+  }
+
+  @override
+  Future<ForceUpdateResponseModel> getForceVersion(
+      {required ForceUpdateParams params}) async {
+    Response? response;
+
+    try {
+      response = await webService.dio.get(
+        ApiUrl.forceUpdate,
+        queryParameters: {
+          ApiParam.type.name: params.type,
+          ApiParam.appID.name: params.appId,
+        },
+      );
+
+      var data = response.data["data"]?["result"];
+      //  print("GGSSSSSS ${data}");
+      var parsedResult =
+          data != null ? ForceUpdateResponseModel.fromMap(data) : null;
+      //  print("GGSSSSSS ${parsedResult?.versionNumber}");
+
+      //final decodedResponse =
+      //  ApigeeResponseModel<ForceUpdateResponseModel>.fromMap(response.data,
+      //    parsedResult: parsedResult);
+      return parsedResult!.toFuture();
+    } on DioError catch (error) {
+      throw ServerException(error.toString(),
+          statusCode: error.response?.statusCode);
+    } catch (ex) {
+      if (ex is ServerException) {
+        rethrow;
+      } else {
+        try {
+          //MM   CommonFunctions.sendExceptionLog(exception: ex, response: response);
+        } catch (ex) {}
+        throw ServerException("errors_server_error_2".tr());
+      }
+    }
+  }
+
+  @override
+  Future<EndSessionResponse> endSession() async {
+    try {
+      EndSessionResponse? response = await _appAuth.endSession(
+        EndSessionRequest(
+          idTokenHint: sl<EntryPointCubit>().state.token?.idToken,
+          postLogoutRedirectUrl: RemoteConfig.ssoLogOutUrl,
+          serviceConfiguration: _serviceConfiguration,
+        ),
+      );
+
+      return response!;
+    } catch (error) {
+      throw ServerException("", errorCode: error.toString());
+    }
+  }
+
+  @override
+  Future<String?> getCookie() async {
+    Response? response;
+    try {
+      response = await webServiceSSo.dio.get(ApiUrl.ssoUserCookie,
+          options: Options(headers: {
+            "Authorization": "Bearer ${CommonProperties.token ?? ""}"
+          }));
+      String? cookie;
+      if (response.headers['set-cookie']?.toString() != null) {
+        cookie = response.headers['set-cookie'].toString();
+      }
+      return cookie;
+    } on DioError catch (error) {
+      throw ServerException(error.toString(),
+          statusCode: error.response?.statusCode);
+    } catch (ex) {
+      print(ex);
+      if (ex is ServerException) {
+        rethrow;
+      } else {
+        try {
+          //MM   CommonFunctions.sendExceptionLog(exception: ex, response: response);
+        } catch (_) {}
+        throw ServerException(("errors_server_error_2".tr()));
+      }
+    }
+  }
+
+  @override
+  Future<ApigeeTokenResponse> getAPIgeeToken() async {
+    Response? response;
+    try {
+      String username = RemoteConfig.apigeeUsername;
+      String password = RemoteConfig.apigeePassword;
+      String basicAuth =
+          'Basic ${base64Encode(utf8.encode('$username:$password'))}';
+
+      response = await webService.dio.post(ApiUrl.apigeeToken,
+          options: Options(
+            headers: {
+              "Content-Type": "application/x-www-form-urlencoded",
+              "Authorization": basicAuth
+            },
+          ),
+          data: {"grant_type": "client_credentials"});
+      ApigeeTokenResponseModel apigeeResponse =
+          ApigeeTokenResponseModel.fromMap(response.data);
+      return apigeeResponse.toFuture();
+    } on DioError catch (error) {
+      throw ServerException(error.toString(),
+          statusCode: error.response?.statusCode);
+    } catch (ex) {
+      if (ex is ServerException) {
+        rethrow;
+      } else {
+        try {
+          //MM   CommonFunctions.sendExceptionLog(exception: ex, response: response);
+        } catch (_) {}
+        throw ServerException(("errors_server_error_2").tr());
+      }
+    }
+  }
+
+  @override
+  Future getDataTest() async {
+    try {
+      final response = await webService.dio.get(
+        ApiUrl.dashboardCards,
+      );
+
+      var data = response.data;
+      data.toString().successLog();
+
+      /*  final result =
+          ApigeeResponseModel<List<TestModel>>.fromMap(data).data?.result;
+      print("Ff $result");
+      List<TestModel>? d = result != null
+          ? List<TestModel>.from(result.map((x) => TestModel.fromMap(x)))
+          : null;
+
+      print(d?.length);*/
+
+      final result = ResponseBodyModel.fromMap(data).data?.result;
+      List<TestModel>? d = result != null
+          ? List<TestModel>.from(result.map((x) => TestModel.fromMap(x)))
+          : null;
+      print(d?.length);
+      return result.toFuture();
+    } on DioError catch (error) {
+      error.errorLog();
+      throw ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+      );
+    } catch (ex) {
+      ex.errorLog();
+      if (ex is ServerException) {
+        rethrow;
+      } else {
+        throw ServerException("errors_server_error_2".tr());
+      }
+    }
+  }
+}

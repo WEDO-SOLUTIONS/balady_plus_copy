@@ -13,7 +13,7 @@ class MyApp extends ConsumerWidget {
       child: MaterialApp.router(
         routerConfig: goRouter,
         theme: ThemeData(
-          primarySwatch: Colors.indigo,
+          primarySwatch: Colors.green,
           unselectedWidgetColor: Colors.grey,
           appBarTheme: const AppBarTheme(
             elevation: 2.0,
