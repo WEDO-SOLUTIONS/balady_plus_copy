@@ -16,7 +16,7 @@ abstract class CrRemoteDataSource {
   Future<bool> addIsicActivities({required AddIsicActivitiesParams params});
   Future<List<CrLookupsModel>> getAccommodationTypes();
 
-  Future<String> saveComSubmitterAndOwner(
+  Future<int> saveComSubmitterAndOwner(
       {SaveComSubmitterAndOwnerRequestModel? params});
 }
 
@@ -247,7 +247,7 @@ class CrRemoteDataSourceImpl extends CrRemoteDataSource {
   }
 
   @override
-  Future<String> saveComSubmitterAndOwner(
+  Future<int> saveComSubmitterAndOwner(
       {SaveComSubmitterAndOwnerRequestModel? params}) async {
     var response;
 
@@ -255,7 +255,7 @@ class CrRemoteDataSourceImpl extends CrRemoteDataSource {
       response = await webService.dio
           .post(ApiUrl.saveComSubmitterAndOwner, data: params?.toMap());
 
-      var data = response.data["data"]["result"];
+      var data = response.data["data"]?["result"];
 
       return data["requestNumber"];
     } on DioError catch (error) {

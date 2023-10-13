@@ -74,7 +74,7 @@ class CrRepositoryImpl implements CrRepository {
   }
 
   @override
-  Future<Either<Failure, String>> saveComSubmitterAndOwner(
+  Future<Either<Failure, int>> saveComSubmitterAndOwner(
       SaveComSubmitterAndOwnerRequestModel? params) async {
     try {
       final data =

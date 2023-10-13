@@ -1,4 +1,5 @@
 import 'package:balady_plus/app/core/services/local/use_case.dart';
+import 'package:balady_plus/app/core/services/services_exports.dart';
 import 'package:balady_plus/app/core/utils/enums/bloc_status.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -21,10 +22,10 @@ class CrStep2ActivityDataCubit extends Cubit<CrStep2ActivityDataState> {
         _getSubActivityDetails = GetSubActivityDetails(repository: sl()),
         super(const CrStep2ActivityDataState());
 
-  void getSubActivityDetails(DropDownItem subActivity) async {
+  void getSubActivityDetails(SubActivityEntity subActivity) async {
     emit(state.copyWith(subActivityDetailsStatus: BlocStatus.loading));
     final response =
-        await _getSubActivityDetails(subActivity.id.toString() ?? '');
+        await _getSubActivityDetails(subActivity.activityId.toString() ?? '');
     response.fold(
         (failure) => emit(state.copyWith(
               subActivityDetailsStatus: BlocStatus.failure,
@@ -37,10 +38,16 @@ class CrStep2ActivityDataCubit extends Cubit<CrStep2ActivityDataState> {
 
       print("STATE ${state.selectedSubActivity}");
       print("STATE ${success.data?.result}");
+
+      BottomSheetDialog.showDraggableSheet(
+          NavigationService.navigatorKey.currentContext!,
+          child: CrStep2ConditionsPage(
+            activityTerms: success.data?.result?.activityTerms,
+          ));
     });
   }
 
-  void onSelectIsicActivity(DropDownItem isicActivity) async {
+  void onSelectIsicActivity(IsicActivity isicActivity) async {
     emit(state.copyWith(
         selectedIsicActivity: isicActivity,
         selectedSubActivity: Nullable(null),
@@ -71,11 +78,20 @@ class CrStep2ActivityDataCubit extends Cubit<CrStep2ActivityDataState> {
     });
   }
 
-  void onSelectSubActivity(DropDownItem subActivity) async {
+  void onSelectSubActivity(SubActivityEntity subActivity) async {
     print("onSelectSubActivity $subActivity");
     getSubActivityDetails(subActivity);
   }
 
   void onAccommodationTypes(DropDownItem accommodationTypes) =>
       emit(state.copyWith(selectedAccommodationType: accommodationTypes));
+
+  void updateArea(double? area) {
+    emit(state.copyWith(totalArea: area));
+  }
+
+  void updateWorkerType(WorkersTypes type) {
+    print(type);
+    emit(state.copyWith(workerType: type));
+  }
 }

@@ -33,7 +33,7 @@ class CRStep1ApplicantData extends StatelessWidget {
                                     .isNotEmpty) ...[
                               ReadOnlyField(
                                 title: "phone_number".tr(),
-                                subTitle: state.recordInfo?.crInfo?.phoneNo,
+                                subTitle: CommonProperties.userInfo?.getPhone(),
                                 showSpace: false,
                               ),
                               const SizedBox(height: 8),

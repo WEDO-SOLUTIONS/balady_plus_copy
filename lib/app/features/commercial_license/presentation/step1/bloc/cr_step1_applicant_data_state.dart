@@ -58,4 +58,11 @@ class CrStep1ApplicantDataState extends Equatable {
       errorMessage: errorMessage ?? this.errorMessage,
     );
   }
+
+  List<IsicActivity> getIsicActivities() {
+    return recordInfo?.crInfo?.activities?.isicActivities
+            ?.where((element) => element.existInBalady == true)
+            .toList() ??
+        [];
+  }
 }

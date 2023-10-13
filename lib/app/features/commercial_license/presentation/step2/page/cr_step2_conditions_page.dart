@@ -1,0 +1,158 @@
+import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
+import 'package:balady_plus/app/core/utils/enums/app_font_weights.dart';
+import 'package:balady_plus/app/features/_shared_feature_/presentation/under_testing/custom_enhanced_expansion_panel_widget.dart';
+import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
+import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
+import 'package:flutter/material.dart';
+
+import '../../../../../core/utils/constants/app_style.dart';
+import '../../../../_shared_feature_/presentation/components/bottom_sheets/bottom_sheet_with_actions.dart';
+import '../../../../_shared_feature_/presentation/widgets/draw_line_widget.dart';
+import '../../../../home_page/home_exports.dart';
+import '../../../domain/entities/sub_activity_details_entity.dart';
+
+class CrStep2ConditionsPage extends StatelessWidget {
+  final List<ActivityTerm>? activityTerms;
+
+  const CrStep2ConditionsPage({super.key, this.activityTerms});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+      child: Container(
+        // height: context.screenHeight * 0.90,
+        color: AppColor.scaffoldBackground,
+        padding: EdgeInsets.all(16),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const DrawLineWidget(
+              lineWidth: 70.0,
+              lineHeight: 6.0,
+              lineColor: AppColor.blackModern200Light,
+              radius: 46.0,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Flexible(
+                  child: CustomTextWidget(
+                    "",
+                    textAlign: TextAlign.start,
+                    maxLines: 3,
+                    textStyle: AppStyle.mainTextSecondaryStyle.copyWith(
+                      fontSize: 24.0,
+                      color: AppColor.black,
+                    ),
+                  ),
+                ),
+                InkWell(
+                  onTap: () => Navigator.pop(context),
+                  child: CircleIcon(
+                    icon: Icons.close,
+                    iconColor: AppColor.primary600Light,
+                    backgroundColor: AppColor.geyser.withOpacity(0.4),
+                    iconSize: 18,
+                  ),
+                ),
+              ],
+            ),
+            ...[
+              const SizedBox(height: 16),
+              Flexible(
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      ListView.builder(
+                          itemCount: activityTerms?.length ?? 0,
+                          shrinkWrap: true,
+                          physics: NeverScrollableScrollPhysics(),
+                          itemBuilder: (ctx, index) {
+                            return Container(
+                              margin: EdgeInsets.only(bottom: 8),
+                              child: ExpansionSectionItem(
+                                term: activityTerms![index],
+                              ),
+                            );
+                          })
+                    ],
+                  ),
+                ),
+              )
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class ConditionItem extends StatelessWidget {
+  final String? name;
+  final List<String>? values;
+  const ConditionItem({super.key, this.name, this.values});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.all(8),
+      margin: EdgeInsets.only(bottom: 8),
+      decoration: BoxDecoration(
+          color: Color(0x80E6EFEF),
+          borderRadius: BorderRadius.all(Radius.circular(8))),
+      width: MediaQuery.of(context).size.width,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (name != null && name!.isNotEmpty)
+            CustomTextWidget(
+              name!,
+              fontColor: AppColor.primary700Light,
+              fontSize: 12,
+              fontWeight: AppFontWeight.bold,
+            ),
+          if (name != null && name!.isNotEmpty)
+            const CustomVerticalSpace(height: 4),
+          if ((values?.length ?? 0) <= 1)
+            CustomTextWidget(
+              values?.firstOrNull ?? "",
+              fontColor: AppColor.blackModern700Light,
+              fontSize: 14,
+              fontWeight: AppFontWeight.bold,
+            ),
+          if ((values?.length ?? 0) > 1)
+            ListView.builder(
+                itemCount: values?.length ?? 0,
+                itemBuilder: (context, index) {
+                  return CustomTextWidget(
+                    values?[index] ?? "",
+                    fontColor: AppColor.blackModern700Light,
+                    fontSize: 14,
+                    fontWeight: AppFontWeight.bold,
+                  );
+                }),
+        ],
+      ),
+    );
+  }
+}
+
+class ExpansionSectionItem extends StatelessWidget {
+  final ActivityTerm term;
+
+  const ExpansionSectionItem({super.key, required this.term});
+
+  @override
+  Widget build(BuildContext context) {
+    return CustomEnhancedExpansionPanelWidget(
+      title: term.sectionName,
+      backgroundColor: AppColor.white,
+      children: term.sectionContent?.map((e) {
+            return ConditionItem(name: e.label, values: e.value ?? []);
+          }).toList() ??
+          [],
+    );
+  }
+}

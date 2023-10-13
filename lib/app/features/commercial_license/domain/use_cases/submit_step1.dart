@@ -6,12 +6,12 @@ import '../../commercial_license_exports.dart';
 import '../../data/models/save_com_submitter_and_owner_request_model.dart';
 
 class SaveComSubmitterAndOwner
-    extends UseCase<String, SaveComSubmitterAndOwnerRequestModel> {
+    extends UseCase<int, SaveComSubmitterAndOwnerRequestModel> {
   final CrRepository repository;
 
   SaveComSubmitterAndOwner({required this.repository});
   @override
-  Future<Either<Failure, String>> call(
+  Future<Either<Failure, int>> call(
       SaveComSubmitterAndOwnerRequestModel params) async {
     return await repository.saveComSubmitterAndOwner(params);
   }

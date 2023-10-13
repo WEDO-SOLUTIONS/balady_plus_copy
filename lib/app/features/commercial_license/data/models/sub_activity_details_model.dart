@@ -47,9 +47,9 @@ class SubActivityModelDetailsModel extends SubActivityDetails {
             : SubSubActivityModel.fromJson(json["subActivityModel"]),
         isLicenseOwnerFemaleOnly: json["isLicenseOwnerFemaleOnly"],
         isWorkerTypeFemaleOnly: json["isWorkerTypeFemaleOnly"],
-        activityTerms: json["activityTermModels"] == null
+        activityTerms: json["activityTerms"] == null
             ? []
-            : List<ActivityTermModel>.from(json["activityTermModels"]!
+            : List<ActivityTermModel>.from(json["activityTerms"]!
                 .map((x) => ActivityTermModel.fromJson(x))),
         unit: json["unit"],
         unitDesc: json["unitDesc"],
@@ -77,9 +77,9 @@ class ActivityTermModel extends ActivityTerm {
   factory ActivityTermModel.fromJson(Map<String, dynamic> json) =>
       ActivityTermModel(
         sectionName: json["sectionName"],
-        sectionContent: json["sectionContentModel"] == null
+        sectionContent: json["sectionContent"] == null
             ? []
-            : List<SectionContentModel>.from(json["sectionContentModel"]!
+            : List<SectionContentModel>.from(json["sectionContent"]!
                 .map((x) => SectionContentModel.fromJson(x))),
       );
 }
