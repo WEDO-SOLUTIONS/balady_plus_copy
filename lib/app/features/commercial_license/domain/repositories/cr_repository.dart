@@ -19,6 +19,6 @@ abstract class CrRepository {
 
   Future<Either<Failure, List<CrLookupsEntity>>> getAccommodationTypes();
 
-  Future<Either<Failure, String>> saveComSubmitterAndOwner(
+  Future<Either<Failure, int>> saveComSubmitterAndOwner(
       SaveComSubmitterAndOwnerRequestModel? params);
 }

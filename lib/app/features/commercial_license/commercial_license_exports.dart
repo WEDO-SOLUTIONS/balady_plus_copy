@@ -11,6 +11,8 @@ export 'presentation/step2/bloc/cr_step2_activity_data_cubit.dart';
 export 'presentation/commercial_license/screens/commercial_license_screen.dart';
 export 'presentation/step1/page/cr_step1_applicant_data.dart';
 export 'presentation/step2/page/cr_step2_activity_data.dart';
+export 'presentation/step2/page/cr_step2_conditions_page.dart';
+
 export 'presentation/step3/page/cr_step3_geolocation_data.dart';
 export 'presentation/step4/page/cr_step4_shop_data.dart';
 export 'presentation/step5/page/cr_step5_attachment_data.dart';
@@ -40,7 +42,6 @@ export 'presentation/step9/widgets/work_time_card.dart';
 export 'presentation/step9/widgets/periods_dialog_body.dart';
 export 'presentation/step9/widgets/clock_time_widget.dart';
 
-
 /// Domain
 // Entities
 export 'domain/entities/work_times_entity.dart';
@@ -61,7 +62,6 @@ export 'domain/use_cases/get_sub_activities.dart';
 export 'domain/use_cases/get_sub_activity_details.dart';
 export 'domain/use_cases/add_isic_activities.dart';
 export 'domain/use_cases/get_accommodation_types.dart';
-
 
 /// Data
 // data sources

@@ -23,7 +23,7 @@ class CrStep1ApplicantDataCubit extends Cubit<CrStep1ApplicantDataState> {
 
   void getRecordInfo() async {
     emit(state.copyWith(recordStatus: BlocStatus.loading));
-    final response = await _getRecordInfo("1010709880");
+    final response = await _getRecordInfo("4030125231");
 
     /// TODO: UnComment below line
     // final response = await _getRecordInfo(
