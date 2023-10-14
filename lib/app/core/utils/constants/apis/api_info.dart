@@ -318,6 +318,12 @@ class ApiUrl {
   static const String complianceReciptTypes =
       '/v1/compliance-certificate-mobile-services/receipt-types';
 
+  static const String complianceDeedInfo =
+      '/v1/compliance-certificate-mobile-services/deed-info';
+
+  static const String complianceLandContract =
+      '/v1/compliance-certificate-mobile-services/land-subsidy-contracts';
+
 // ! Events
 
   static const eventsSearch = '/v1/balady-events-services/events/search';

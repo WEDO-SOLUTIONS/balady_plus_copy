@@ -16,17 +16,19 @@ class DeedNumberDateField extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<ComplianceBloc, ComplianceState>(
         builder: (context, state) {
-      return ComplianceDatePicker(
-        title: "compliance_ownership_date".tr(),
-        initialDateForm: state.form ?? DateForm.hijri,
-        initialDate:
-            state.ownershipDate != null ? state.getOwnerShipDate() : null,
-        endDate: DateTime.now(),
-        onChange: (DateTime time, DateForm form) {
-          context.read<ComplianceBloc>().add(UpdateFieldsEvent(
-              form: form, ownershipDate: time.toHijriFormattedDate1()));
-        },
-      );
+      return state.isDeedPaper == true
+          ? ComplianceDatePicker(
+              title: "compliance_deed_number_date".tr(),
+              initialDateForm: state.form ?? DateForm.hijri,
+              initialDate:
+                  state.ownershipDate != null ? state.getOwnerShipDate() : null,
+              endDate: DateTime.now(),
+              onChange: (DateTime time, DateForm form) {
+                context.read<ComplianceBloc>().add(UpdateFieldsEvent(
+                    form: form, ownershipDate: time.toHijriFormattedDate1()));
+              },
+            )
+          : Container();
     });
   }
 }

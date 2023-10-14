@@ -41,6 +41,7 @@ class _CompleteCompliancePageState extends State<CompleteCompliancePage> {
   }
 
   double currentStep = 1;
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider.value(

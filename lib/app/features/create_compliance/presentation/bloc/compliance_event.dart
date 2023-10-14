@@ -187,3 +187,11 @@ class DeleteComplianceRequestEvent extends ComplianceEvent {
 class GetEtmamEntityIdEvent extends ComplianceEvent {
   const GetEtmamEntityIdEvent();
 }
+
+class GetComplianceDeedInfoEvent extends ComplianceEvent {
+  const GetComplianceDeedInfoEvent();
+}
+
+class GetComplianceLandContractEvent extends ComplianceEvent {
+  const GetComplianceLandContractEvent();
+}

@@ -15,7 +15,11 @@ import '../../data/models/save_location_compliance_request.dart';
 import '../entities/apply_create_compliance_response.dart';
 import '../entities/comliance_request_details.dart';
 import '../entities/compliance_attachment_request.dart';
+import '../entities/compliance_deed_info.dart';
+import '../entities/compliance_deed_info_request.dart';
 import '../entities/compliance_gis_resopnse.dart';
+import '../entities/land_subsidy_contract.dart';
+import '../entities/land_subsidy_contract_request.dart';
 import '../entities/send_otp_response.dart';
 import '../entities/verify_otp_request.dart';
 
@@ -39,7 +43,7 @@ abstract class CreateComplianceRepository {
     ComplianceCertificateItemsRequest params,
   );
 
-  Future<Either<Failure, String>> submitRequest(
+  Future<Either<Failure, (String, bool?)>> submitRequest(
     String params,
   );
   Future<Either<Failure, ComplinaceLookUpResponseModel>>
@@ -76,4 +80,9 @@ abstract class CreateComplianceRepository {
   Future<Either<Failure, String?>> getEtmamId({required String params});
 
   Future<Either<Failure, ComplinaceLookUpResponseModel>> getReciptTypes();
+
+  Future<Either<Failure, ComplianceDeedInfo>> getDeedInfo(
+      ComplianceDeedInfoRequest params);
+  Future<Either<Failure, LandSubsidyContract>> getLandContract(
+      LandSubsidyContractRequest params);
 }

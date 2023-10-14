@@ -3249,8 +3249,13 @@
 "compliance_electricity_number":"رقم آخر إيصال مصدر",
 "compliance_electricity_number_date":"تاريخ آخر إيصال مصدر", 
 
+"compliance_land_number":"رقم عقد الإسكان",
+"compliance_land_date":"تاريخ عقد الإسكان",
+
+
 "compliance_investment_number":"رقم  عقد الإستثمار",
 "compliance_investment_number_date": "تاريخ عقد الإستثمار", 
+"compliance_show_certificate": "عرض الشهادة", 
 
 
 

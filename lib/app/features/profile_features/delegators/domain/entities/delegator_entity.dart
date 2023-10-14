@@ -9,17 +9,18 @@ class DelegatorEntity extends Equatable {
   final String roleId;
   final String roleName;
   final String entityName;
+  final String crType;
 
-  const DelegatorEntity({
-    this.crNumber,
-    this.unifiedNationalNumber,
-    required this.delegationSource,
-    required this.relationTypeId,
-    required this.relationTypeName,
-    required this.roleId,
-    required this.roleName,
-    required this.entityName,
-  });
+  const DelegatorEntity(
+      {this.crNumber,
+      this.unifiedNationalNumber,
+      required this.delegationSource,
+      required this.relationTypeId,
+      required this.relationTypeName,
+      required this.roleId,
+      required this.roleName,
+      required this.entityName,
+      required this.crType});
 
   String get id => (crNumber ?? unifiedNationalNumber) ?? "";
 
@@ -33,6 +34,7 @@ class DelegatorEntity extends Equatable {
         roleId,
         roleName,
         entityName,
+        crType
       ];
 
   String getRole() {

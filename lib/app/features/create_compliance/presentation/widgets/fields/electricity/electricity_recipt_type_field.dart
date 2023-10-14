@@ -31,14 +31,13 @@ class ElectricityReciptTypeField extends StatelessWidget {
                 );
           },
           onTap: () {
-            if (state.requestDetails?.usageDisable == true) return;
-
+            print("recipt types ${state.reciptLists}");
             BottomSheetDialog.showDraggableSheet(
               context,
               //  dialogKeyName: DialogName.complianceSubUsagesDialog,
               //   currentRouteName: RouteName.submitCompliancePage,
               child: GenericBottomSheetList<ComplinaceLookUpItem>(
-                title: "compliance_sub_usage".tr(),
+                title: "compliance_electricity_type".tr(),
                 items: state.reciptLists?.items ?? [],
                 selectedValue: state.selectedReciptType,
                 onTap: (item) {

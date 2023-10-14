@@ -49,14 +49,13 @@ class ApplyCreateComplianceRequest extends Equatable {
           "ownershipDocumentDate": ownershipDocumentDate,
           "ownershipDocumentNo": ownershipDocumentNo,
           "ownershipDocumentType": ownershipDocumentType,
+          if (receiptTypeId != null) "receiptTypeId": receiptTypeId,
+          if (paper != null) "paper": paper
         },
-      if (receiptTypeId != null) "receiptTypeId": receiptTypeId,
-      if (paper != null) "paper": paper
     };
   }
 
   @override
-  // TODO: implement props
   List<Object?> get props => [
         certificateType,
         contactMobile,
