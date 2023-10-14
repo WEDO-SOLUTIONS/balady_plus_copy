@@ -6,9 +6,9 @@ import '../../data/models/ownership_doc_type_response_model.dart';
 import '../entities/ownership_doc_type_response.dart';
 import '../repositories/repository.dart';
 
-class GetOwnerShipTypes extends UseCase<ComplinaceLookUpResponse, NoParams> {
+class GetReciptTypes extends UseCase<ComplinaceLookUpResponse, NoParams> {
   final CreateComplianceRepository repository;
-  GetOwnerShipTypes({required this.repository});
+  GetReciptTypes({required this.repository});
   @override
   Future<Either<Failure, ComplinaceLookUpResponse>> call(
       NoParams params) async {

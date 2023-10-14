@@ -17,6 +17,7 @@ class TextWithCheckBtn extends StatefulWidget {
   final TextEditingController controller;
   final String? errorText;
   final Color? backgroundColor;
+  final int? maxLength;
 
   TextWithCheckBtn(
       {required this.title,
@@ -30,6 +31,7 @@ class TextWithCheckBtn extends StatefulWidget {
       required this.verify,
       this.errorText,
       this.backgroundColor,
+      this.maxLength,
       required this.validate});
   @override
   _TextWithCheckBtnState createState() => _TextWithCheckBtnState();
@@ -58,12 +60,13 @@ class _TextWithCheckBtnState extends State<TextWithCheckBtn> {
           hintText: widget.hint ?? "",
           errorText: widget.errorText,
           keyboardType: TextInputType.numberWithOptions(signed: false),
-          maxLength: 10,
+          maxLength: widget.maxLength,
           onValidate: (String? t) => widget.validate(t),
           onChanged: (value) => {widget.onTextChanged(value)},
         ),
         Padding(
-          padding: const EdgeInsets.only(bottom: 0.0, left: 8),
+          padding: EdgeInsets.only(
+              bottom: 0.0, left: 8, top: widget.maxLength == null ? 20 : 0),
           child: InkWell(
             onTap: widget.isValidate
                 ? null

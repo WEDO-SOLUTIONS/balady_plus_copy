@@ -34,9 +34,13 @@ class _DeadNumberTextFieldState extends State<DeadNumberTextField> {
                       .read<ComplianceBloc>()
                       .add(UpdateFieldsEvent(ownershipText: text));
                 },
-                verify: () {},
+                verify: () {
+                  context
+                      .read<ComplianceBloc>()
+                      .add(const GetComplianceDeedInfoEvent());
+                },
                 backgroundColor: Colors.transparent,
-                isValidate: false,
+                isValidate: state.deedInfo?.deedNumber != null,
                 validate: (String? t) {},
               )
             : CustomTextFieldWithValueWidget(

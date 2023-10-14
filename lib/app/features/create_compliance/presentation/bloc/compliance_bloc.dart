@@ -25,8 +25,10 @@ import '../../data/models/save_contract_info_request.dart';
 import '../../data/models/save_location_compliance_request.dart';
 import '../../domain/entities/comliance_request_details.dart';
 import '../../domain/entities/compliance_attachment_request.dart';
+import '../../domain/entities/compliance_deed_info_request.dart';
 import '../../domain/entities/compliance_gis_resopnse.dart';
 import '../../domain/entities/complinace_licenses_response.dart';
+import '../../domain/entities/land_subsidy_contract_request.dart';
 import '../../domain/entities/ownership_doc_type_response.dart';
 import '../../domain/use_cases/apply_compliance.dart';
 import '../../domain/use_cases/download_compliance_certificate.dart';
@@ -37,8 +39,11 @@ import '../../domain/use_cases/get_compliance_gis.dart';
 import '../../domain/use_cases/get_compliance_license.dart';
 import '../../domain/use_cases/get_compliance_main_usage.dart';
 import '../../domain/use_cases/get_compliance_sub_usage.dart';
+import '../../domain/use_cases/get_deed_info.dart';
 import '../../domain/use_cases/get_entity_etmam_id.dart';
+import '../../domain/use_cases/get_land_contract.dart';
 import '../../domain/use_cases/get_ownership_types.dart';
+import '../../domain/use_cases/get_recipt_types.dart';
 import '../../domain/use_cases/save_attachment.dart';
 import '../../domain/use_cases/save_compliance_certificate_items.dart';
 import '../../domain/use_cases/save_compliance_contract.dart';
@@ -100,6 +105,9 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
   final DownloadComplianceCertificate _downloadCmplianceCertificate;
   final DeleteComplianceRequest _deleteComlianceRequest;
   final GetEtmamId _getEtmamId;
+  final GetReciptTypes _getReciptTypes;
+  final GetDeedInfo _getDeedInfo;
+  final GetLandContract _getLandContract;
   ComplianceBloc()
       : _applyCompliance = ApplyCompliance(repository: sl()),
         _getComplianceByRequestId = GetComplianceByRequestId(repository: sl()),
@@ -123,6 +131,9 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
         _downloadCmplianceCertificate =
             DownloadComplianceCertificate(repository: sl()),
         _getEtmamId = GetEtmamId(repository: sl()),
+        _getDeedInfo = GetDeedInfo(repository: sl()),
+        _getLandContract = GetLandContract(repository: sl()),
+        _getReciptTypes = GetReciptTypes(repository: sl()),
         super(ComplianceState(
           status: BlocStatus.initial,
           currentStep: 0,
@@ -161,6 +172,9 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
     on<DeleteComplianceRequestEvent>(_deleteComplianceRequest);
     on<GetEtmamEntityIdEvent>(_getEtmamIdHandler);
     on<GetReciptTypesEvent>(_getReciptTypesHandler);
+
+    on<GetComplianceDeedInfoEvent>(_getDeedInfoHandler);
+    on<GetComplianceLandContractEvent>(_getLandContractHandler);
   }
   Future<void> _pageChangeHandler(ChangePageEvent e, Emitter emitter) async {
     emitter(state.copyWith(currentStep: e.index, errorMessage: ""));
@@ -169,42 +183,53 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
 
   Future<void> _updateFormFields(UpdateFieldsEvent e, Emitter emitter) async {
     emitter(state.copyWith(
-        errorMessage: "",
-        form: e.form,
-        sendOtpResponse: e.mobileNumber != null ? Nullable(null) : null,
-        contactMobileVerified: e.mobileNumber != null ? Nullable(null) : null,
-        benificiaryTypeSelection: e.benificiaryTypeSelection,
-        documentTypeSelection: e.documentTypeSelection,
-        selectedOwnerShip: Nullable(e.selectedOwnerShip == null
-            ? state.selectedOwnerShip
-            : e.selectedOwnerShip),
-        selectedMainUsage: e.selectedMainUsage,
-        contactMobileNumber: e.mobileNumber,
-        selectedSubUsage: Nullable(e.selectedSubUsage == null
-            ? state.selectedSubUsage
-            : e.selectedSubUsage),
-        selectedLicense: Nullable(e.selectedLicense == null
-            ? state.selectedLicense
-            : e.selectedLicense),
-        ownershipDate: ((state.ownershipDate != e.ownershipDate) &&
-                e.ownershipDate != null)
-            ? Nullable(null)
-            : Nullable(e.ownershipDate == null
-                ? state.ownershipDate
-                : e.ownershipDate),
-        emtethalAgreement: e.emtethalAgreeemnt,
-        ownerShipAgreement: e.ownershipAgreement,
-        isDeedPaper:
-            Nullable(e.isDeedPaper == null ? state.isDeedPaper : e.isDeedPaper),
-        selectedReciptType: Nullable(e.selectedReciptType == null
-            ? state.selectedReciptType
-            : e.selectedReciptType),
-        ownershipText: ((state.selectedOwnerShip != e.selectedOwnerShip) &&
-                e.selectedOwnerShip != null)
-            ? Nullable(null)
-            : Nullable(e.ownershipText == null
-                ? state.ownershipText
-                : e.ownershipText)));
+      errorMessage: "",
+      form: e.form,
+      sendOtpResponse: e.mobileNumber != null ? Nullable(null) : null,
+      contactMobileVerified: e.mobileNumber != null ? Nullable(null) : null,
+      benificiaryTypeSelection: e.benificiaryTypeSelection,
+      documentTypeSelection: e.documentTypeSelection,
+      selectedOwnerShip: Nullable(e.selectedOwnerShip == null
+          ? state.selectedOwnerShip
+          : e.selectedOwnerShip),
+      selectedMainUsage: e.selectedMainUsage,
+      contactMobileNumber: e.mobileNumber,
+      selectedSubUsage: Nullable(e.selectedSubUsage == null
+          ? state.selectedSubUsage
+          : e.selectedSubUsage),
+      selectedLicense: Nullable(e.selectedLicense == null
+          ? state.selectedLicense
+          : e.selectedLicense),
+      ownershipDate: ((state.selectedOwnerShip != e.selectedOwnerShip) &&
+              e.selectedOwnerShip != null)
+          ? Nullable(null)
+          : Nullable(
+              e.ownershipDate == null ? state.ownershipDate : e.ownershipDate),
+      emtethalAgreement: e.emtethalAgreeemnt,
+      ownerShipAgreement: e.ownershipAgreement,
+      isDeedPaper:
+          Nullable(e.isDeedPaper == null ? state.isDeedPaper : e.isDeedPaper),
+      selectedReciptType: Nullable(e.selectedReciptType == null
+          ? state.selectedReciptType
+          : e.selectedReciptType),
+      ownershipText: ((state.selectedOwnerShip != e.selectedOwnerShip) &&
+              e.selectedOwnerShip != null)
+          ? Nullable(null)
+          : Nullable(
+              e.ownershipText == null ? state.ownershipText : e.ownershipText),
+      deedInfo: ((state.selectedOwnerShip != e.selectedOwnerShip) &&
+                  e.selectedOwnerShip != null) ||
+              (e.ownershipText != null &&
+                  (e.ownershipText != state.ownershipText))
+          ? Nullable(null)
+          : Nullable(state.deedInfo),
+      landSubsidyContract: ((state.selectedOwnerShip != e.selectedOwnerShip) &&
+                  e.selectedOwnerShip != null) ||
+              (e.ownershipText != null &&
+                  (e.ownershipText != state.ownershipText))
+          ? Nullable(null)
+          : Nullable(state.landSubsidyContract),
+    ));
 
     if (e.documentTypeSelection != null)
       emitter(state.copyWith(
@@ -272,7 +297,6 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
     ));
 
     SaveLocationComplianceRequest? request;
-    print("GUIIIIID ${state.gisResponse?.guid}");
     if (state.documentTypeSelection == 1) {
       request = SaveLocationComplianceRequest(
           mainUsageCode: state.selectedMainUsage?.id,
@@ -325,18 +349,23 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
 
   Future<void> _getReciptTypesHandler(
       GetReciptTypesEvent e, Emitter emitter) async {
+    print("recipt types Calls");
     emitter(state.copyWith(
       reciptTypesStatus: BlocRequestStatus.submissionGetLoading,
     ));
 
-    final failOrSuccess = await _getComplianceMainUsages(NoParams());
+    final failOrSuccess = await _getReciptTypes(NoParams());
 
     failOrSuccess.fold((l) {
+      print("recipt types fail");
+
       emitter(state.copyWith(
         errorMessage: (l as ServerFailure).errorMessage,
         reciptTypesStatus: BlocRequestStatus.submissionGetFailure,
       ));
     }, (r) {
+      print("recipt types successs ${r.items?.length}");
+
       emitter(state.copyWith(
           reciptLists: r,
           reciptTypesStatus: BlocRequestStatus.submissionGetSuccess));
@@ -967,7 +996,8 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
       NavigationService.navigatorKey.currentState!.pushNamedAndRemoveUntil(
           RouteName.successRoute, predicate,
           arguments: SuccessScreenArgs(
-              thanksMessage: r,
+              thanksMessage: r.$1,
+              isFawry: r.$2,
               type: PAGE_TYPE.emtethal,
               idNumber: state.requestId.toString()));
     });
@@ -1020,6 +1050,54 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
           arguments: SuccessScreenArgs(
               type: PAGE_TYPE.deleteEmtethal,
               idNumber: state.requestId.toString()));
+    });
+  }
+
+  Future<void> _getDeedInfoHandler(
+      GetComplianceDeedInfoEvent e, Emitter emitter) async {
+    emitter(state.copyWith(
+      status: BlocStatus.loading,
+    ));
+
+    String? ownerId = CommonProperties.selectedDelegator?.crNumber;
+    String? crType = CommonProperties.selectedDelegator?.crType;
+    String? deedNumber = state.ownershipText;
+    final failOrSuccess = await _getDeedInfo(ComplianceDeedInfoRequest(
+        ownerId: ownerId, ownerIdType: crType, deedNumber: deedNumber));
+
+    failOrSuccess.fold((l) {
+      emitter(state.copyWith(
+        errorMessage: (l as ServerFailure).errorMessage,
+        status: BlocStatus.failure,
+      ));
+    }, (r) {
+      emitter(state.copyWith(
+          deedInfo: Nullable(r),
+          status: BlocStatus.success,
+          ownershipDate: Nullable(r.getDeedDate()),
+          ownershipText: Nullable(r.deedNumber.toString())));
+    });
+  }
+
+  Future<void> _getLandContractHandler(
+      GetComplianceLandContractEvent e, Emitter emitter) async {
+    emitter(state.copyWith(
+      status: BlocStatus.loading,
+    ));
+
+    final failOrSuccess = await _getLandContract(LandSubsidyContractRequest());
+
+    failOrSuccess.fold((l) {
+      emitter(state.copyWith(
+        errorMessage: (l as ServerFailure).errorMessage,
+        status: BlocStatus.failure,
+      ));
+    }, (r) {
+      emitter(state.copyWith(
+          landSubsidyContract: Nullable(r),
+          status: BlocStatus.success,
+          ownershipDate: Nullable(r.getDate()),
+          ownershipText: Nullable(r.contractNumber.toString())));
     });
   }
 
