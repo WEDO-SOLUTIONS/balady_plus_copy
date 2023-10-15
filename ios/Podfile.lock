@@ -466,7 +466,7 @@ SPEC CHECKSUMS:
   AppAuth: aadc4cc25bef2435551896b5bfa9316b42fde656
   camera_avfoundation: 3125e8cd1a4387f6f31c6c63abb8a55892a9eeeb
   connectivity_plus: 413a8857dd5d9f1c399a39130850d02fe0feaf7e
-  device_info_plus: c6fb39579d0f423935b0c9ce7ee2f44b71b9fce6
+  device_info_plus: 7545d84d8d1b896cb16a4ff98c19f07ec4b298ea
   dgis_map: 2733685f443b0ef4851e49f8a81d3ea388241440
   DGisMobileSDK: d8ce2a703695db34f47cac783fd58d4ed8bcef69
   DKImagePickerController: b512c28220a2b8ac7419f21c491fc8534b7601ac
