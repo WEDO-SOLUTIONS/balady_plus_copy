@@ -1309,10 +1309,9 @@ packages:
   open_file_plus:
     dependency: "direct main"
     description:
-      name: open_file_plus
-      sha256: f087e32722ffe4bac71925e7a1a9848a1008fd789e47c6628da3ed7845922227
-      url: "https://pub.dev"
-    source: hosted
+      path: "packages/open_file_plus-3.4.1"
+      relative: true
+    source: path
     version: "3.4.1"
   package_config:
     dependency: transitive
