@@ -345,7 +345,9 @@ class ComplianceState extends Equatable {
       licenseNumber: documentTypeSelection == 1
           ? selectedLicense?.licenseId?.toInt()
           : null,
-      contactMobile: CommonProperties.userInfo?.getPhone(),
+      agencyRequestKey:
+          CommonProperties.getCurrentUserProfile()?.agencyRequestKey,
+      contactMobile: contactMobileNumber,
       ownershipDocumentDate: ownershipDateValue,
       ownershipDocumentNo: ownershipTextValue,
       ownershipDocumentType:

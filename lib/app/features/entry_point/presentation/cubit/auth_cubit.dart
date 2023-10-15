@@ -360,7 +360,13 @@ class EntryPointCubit extends Cubit<EntryPointState> {
   }
 
   void selectDelegator(DelegatorEntity? delegator) {
-    emit(state.copyWith(selectedDelegator: Nullable(delegator)));
+    emit(state.copyWith(
+        selectedDelegator: Nullable(delegator), selectedAgent: Nullable(null)));
+  }
+
+  void selectAgent(AgentEntity? agent) {
+    emit(state.copyWith(
+        selectedDelegator: Nullable(null), selectedAgent: Nullable(agent)));
   }
 
   Future<(GISParams, GISResponse)?> getUserLocationData() async {

@@ -3315,6 +3315,14 @@
 
 
 
+
+"profile_switch_account":"تحويل الى الحساب الشخصي", 
+"profile_switch_entity":"او تحويل الي حساب احد المنشات", 
+"profile_switch_delegator":"المفوضين", 
+"profile_switch_agent":"الوكلاء", 
+
+
+
   "cancellation_license": "الغاء الرخصة",
   "cancellation_license_message": "تم انشاء مسودة لطلبك، يمكنك العودة للطلب أو اكماله لاحقاً من الطلبات",
 

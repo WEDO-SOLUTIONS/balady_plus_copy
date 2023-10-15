@@ -1059,8 +1059,8 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
       status: BlocStatus.loading,
     ));
 
-    String? ownerId = CommonProperties.selectedDelegator?.crNumber;
-    String? crType = CommonProperties.selectedDelegator?.crType;
+    String? ownerId = CommonProperties.getCurrentUserProfile()?.id;
+    String? crType = CommonProperties.getCurrentUserProfile()?.type;
     String? deedNumber = state.ownershipText;
     final failOrSuccess = await _getDeedInfo(ComplianceDeedInfoRequest(
         ownerId: ownerId, ownerIdType: crType, deedNumber: deedNumber));
