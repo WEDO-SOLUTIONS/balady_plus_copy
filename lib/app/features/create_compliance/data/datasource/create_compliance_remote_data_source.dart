@@ -408,10 +408,10 @@ class CreateComplianceRemoteDataSourceImpl
     String url = ApiUrl.complianceMyLicenses(
         id: CommonProperties.userInfo?.idNo ?? "", type: "HIMSELF");
 
-    if (CommonProperties.selectedDelegator != null) {
+    if (CommonProperties.getCurrentUserProfile() != null) {
       url = ApiUrl.complianceMyLicenses(
-          id: CommonProperties.selectedDelegator?.crNumber ?? "",
-          type: CommonProperties.selectedDelegator?.getRole() ?? "");
+          id: CommonProperties.getCurrentUserProfile()?.id ?? "",
+          type: CommonProperties.getCurrentUserProfile()?.getRole() ?? "");
     }
 
     try {

@@ -17,6 +17,7 @@ class ApplyCreateComplianceRequest extends Equatable {
 
   int? receiptTypeId;
   bool? paper;
+  String? agencyRequestKey;
 
   ApplyCreateComplianceRequest(
       {this.certificateType,
@@ -30,20 +31,29 @@ class ApplyCreateComplianceRequest extends Equatable {
       this.ownerIdentityType,
       this.ownerIdentity,
       this.receiptTypeId,
-      this.paper});
+      this.paper,
+      this.agencyRequestKey});
 
   Map<String, dynamic> toMap() {
     return {
+      if (agencyRequestKey != null) "agencyRequestKey": agencyRequestKey,
       "certificateType": certificateType,
       "contactMobile": contactMobile,
       if (licenseNumber != null) "licenseNumber": licenseNumber,
       "submitterThrough": submitterThrough,
-      "submitterType": CommonProperties.selectedDelegator != null
-          ? CommonProperties.selectedDelegator?.getRole()
-          : "HIMSELF",
-      "ownerIdentityType":
-          CommonProperties.selectedDelegator != null ? "CR" : null,
-      "ownerIdentity": CommonProperties.selectedDelegator?.crNumber,
+
+      "submitterType":
+          CommonProperties.getCurrentUserProfile()?.getRole() != null
+              ? CommonProperties.getCurrentUserProfile()?.getRole()
+              : "HIMSELF",
+      //"ownerIdentityType":
+      //    CommonProperties.selectedDelegator != null ? "CR" : null,
+      //  "ownerIdentity": CommonProperties.selectedDelegator?.crNumber,
+      "ownerIdentityType": CommonProperties.getCurrentUserProfile() != null
+          ? CommonProperties.getCurrentUserProfile()!.type
+          : null,
+      if (CommonProperties.getCurrentUserProfile()?.id != null)
+        "ownerIdentity": CommonProperties.getCurrentUserProfile()?.id,
       if (ownershipDocumentType != null)
         "ownershipDocInfoDto": {
           "ownershipDocumentDate": ownershipDocumentDate,

@@ -15,7 +15,7 @@ class DelegatorsCubit extends Cubit<DelegatorsState> {
   final GetAgents _getAgents;
 
   DelegatorsCubit(this._getDelegators, this._getAgents)
-      : super(const DelegatorsState());
+      : super(const DelegatorsState(tab: 0));
 
   void getDelegators() async {
     if (state.delegators.isEmpty)
@@ -46,7 +46,17 @@ class DelegatorsCubit extends Cubit<DelegatorsState> {
   }
 
   void selectDelegator(DelegatorEntity? delegator) {
-    emit(state.copyWith(selectedDelegator: Nullable(delegator)));
+    emit(state.copyWith(
+        selectedDelegator: Nullable(delegator), sAgent: Nullable(null)));
+  }
+
+  void selectAgent(AgentEntity? agent) {
+    emit(state.copyWith(
+        selectedDelegator: Nullable(null), sAgent: Nullable(agent)));
+  }
+
+  void changeTab(int index) {
+    emit(state.copyWith(tab: index));
   }
 
   void getAgents() async {
@@ -76,10 +86,6 @@ class DelegatorsCubit extends Cubit<DelegatorsState> {
         ));
       },
     );
-  }
-
-  void selectAgent(AgentEntity? delegator) {
-    emit(state.copyWith(sAgent: Nullable(delegator)));
   }
 
   void clearDelegators() {

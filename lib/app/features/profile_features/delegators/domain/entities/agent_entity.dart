@@ -1,44 +1,45 @@
 import 'package:equatable/equatable.dart';
 
 class AgentEntity extends Equatable {
-  final String? crNumber;
-  final String? unifiedNationalNumber;
-  final String delegationSource;
-  final String relationTypeId;
-  final String relationTypeName;
-  final String roleId;
-  final String roleName;
-  final String entityName;
+  final String? agencyNumber;
+  final String? agencyTypeId;
+  final String? agencyTypeName;
+  final String? agentNumber;
+  final String? agentTypeId;
+  final String? agentTypeName;
+  final String? agentName;
+  final String? grantorName;
+  final String? grantorNumber;
+  final String? grantorTypeId;
+  final String? grantorTypeName;
+  final String? ownerNumber;
+  final String? ownerTypeId;
+  final String? correlationId;
+  final String? active;
+  final bool? isActive;
 
   const AgentEntity({
-    this.crNumber,
-    this.unifiedNationalNumber,
-    required this.delegationSource,
-    required this.relationTypeId,
-    required this.relationTypeName,
-    required this.roleId,
-    required this.roleName,
-    required this.entityName,
+    this.agencyNumber,
+    this.agencyTypeId,
+    this.agencyTypeName,
+    this.agentNumber,
+    this.agentTypeId,
+    this.agentTypeName,
+    this.agentName,
+    this.grantorName,
+    this.grantorNumber,
+    this.grantorTypeId,
+    this.grantorTypeName,
+    this.ownerNumber,
+    this.ownerTypeId,
+    this.correlationId,
+    this.active,
+    this.isActive,
   });
 
-  String get id => (crNumber ?? unifiedNationalNumber) ?? "";
+  String? get id => agentNumber;
+  String? get type => agentTypeId;
 
   @override
-  List<Object?> get props => [
-        crNumber,
-        unifiedNationalNumber,
-        delegationSource,
-        relationTypeId,
-        relationTypeName,
-        roleId,
-        roleName,
-        entityName,
-      ];
-
-  String getRole() {
-    if (roleId == "20") return "OWNER_MANAGER";
-    if (roleId == "30") return "DELEGATOR";
-
-    return "";
-  }
+  List<Object?> get props => [agencyNumber, agencyTypeId];
 }

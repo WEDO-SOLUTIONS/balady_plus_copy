@@ -2,26 +2,42 @@ import '../../delegators_exports.dart' show AgentEntity;
 
 class AgentModel extends AgentEntity {
   const AgentModel({
-    super.crNumber,
-    super.unifiedNationalNumber,
-    required super.delegationSource,
-    required super.relationTypeId,
-    required super.relationTypeName,
-    required super.roleId,
-    required super.roleName,
-    required super.entityName,
+    super.agencyNumber,
+    super.agencyTypeId,
+    super.agencyTypeName,
+    super.agentNumber,
+    super.agentTypeId,
+    super.agentTypeName,
+    super.agentName,
+    super.grantorName,
+    super.grantorNumber,
+    super.grantorTypeId,
+    super.grantorTypeName,
+    super.ownerNumber,
+    super.ownerTypeId,
+    super.correlationId,
+    super.active,
+    super.isActive,
   });
 
-  factory AgentModel.fromMap(Map<String, dynamic> map) {
+  factory AgentModel.fromMap(Map<String, dynamic> json) {
     return AgentModel(
-      crNumber: map['crNumber'],
-      unifiedNationalNumber: map['unifiedNationalNumber'],
-      delegationSource: map['delegationSource'] as String? ?? '',
-      relationTypeId: map['relationTypeId'] as String? ?? '',
-      relationTypeName: map['relationTypeName'] as String? ?? '',
-      roleId: map['roleId'] as String? ?? '',
-      roleName: map['roleName'] as String? ?? '',
-      entityName: map['entityName'] as String? ?? '',
+      agencyNumber: json["agencyNumber"],
+      agencyTypeId: json["agencyTypeId"],
+      agencyTypeName: json["agencyTypeName"],
+      agentNumber: json["agentNumber"],
+      agentTypeId: json["agentTypeId"],
+      agentTypeName: json["agentTypeName"],
+      agentName: json["agentName"],
+      grantorName: json["grantorName"],
+      grantorNumber: json["grantorNumber"],
+      grantorTypeId: json["grantorTypeId"],
+      grantorTypeName: json["grantorTypeName"],
+      ownerNumber: json["ownerNumber"],
+      ownerTypeId: json["ownerTypeId"],
+      correlationId: json["correlationId"],
+      active: json["active"],
+      isActive: json["isActive"],
     );
   }
 }

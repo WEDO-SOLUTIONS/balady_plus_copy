@@ -33,6 +33,7 @@ import 'package:uuid/uuid.dart';
 import '../../features/_shared_feature_/data/entities/file_data_item.dart';
 import '../../features/_shared_feature_/presentation/dialogs/upload_file_dialog.dart';
 import '../../features/entry_point/domain/use_cases/get_cookie.dart';
+import '../../features/profile_features/delegators/domain/entities/user_profile_entity.dart';
 import '../../features/vd/domain/entities/gis/gis_params.dart';
 import '../../features/vd/domain/entities/gis/gis_response.dart';
 import './utils_exports.dart'
@@ -61,10 +62,11 @@ import '../../features/entry_point/domain/entities/sso_user_info.dart'
 import '../../features/entry_point/domain/entities/sso_user_info.dart';
 import '../../features/entry_point/presentation/cubit/auth_cubit.dart';
 import '../../features/profile_features/delegators/delegators_exports.dart'
-    show DelegatorEntity;
+    show AgentEntity, DelegatorEntity;
 import '../dependency_injection/dependency_injection_exports.dart' show sl;
 import '../services/services_exports.dart'
     show AppInterceptors, EntryPointBridge, NavigationService, NoParams;
+import 'enums/enums.dart';
 
 FirebaseAnalytics fbAnalytics = FirebaseAnalytics.instance;
 
@@ -1016,6 +1018,31 @@ class CommonProperties {
   static SsoUserInfo? get userInfo => sl<EntryPointCubit>().state.userInfo;
   static DelegatorEntity? get selectedDelegator =>
       sl<EntryPointCubit>().state.selectedDelegator;
+
+  static AgentEntity? get selectedAgent =>
+      sl<EntryPointCubit>().state.selectedAgent;
+
+  static UserProfileEntity? getCurrentUserProfile() {
+    if (selectedDelegator != null) {
+      return UserProfileEntity(
+          id: selectedDelegator?.crNumber,
+          type: selectedDelegator?.crType,
+          profileType: UserProfileType.Delegator,
+          roleId: selectedDelegator?.roleId,
+          roleName: selectedDelegator?.roleName,
+          name: selectedDelegator?.entityName);
+    } else if (selectedAgent != null) {
+      return UserProfileEntity(
+          id: selectedAgent?.grantorNumber,
+          type: selectedAgent?.grantorTypeId,
+          profileType: UserProfileType.Agent,
+          agencyRequestKey: selectedAgent?.agencyNumber,
+          roleName: selectedAgent?.agencyTypeName,
+          name: selectedAgent?.grantorName);
+    }
+    return null;
+  }
+
   static bool get isLoggedIn => sl<EntryPointCubit>().state.token != null;
   static GISParams? get userLocation => sl<LocationCubit>().state.gisParams;
   static GISResponse? get userLocationGIS =>
