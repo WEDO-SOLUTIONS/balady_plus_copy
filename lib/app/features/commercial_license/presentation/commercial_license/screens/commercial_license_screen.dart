@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/dependency_injection/injection_container.dart';
 import '../../../commercial_license_exports.dart';
 import '../../step3/bloc/map_bloc.dart';
+import '../../step4/bloc/cr_step4_shop_data_cubit.dart';
 
 class CommercialLicenseScreen extends StatelessWidget {
   const CommercialLicenseScreen({Key? key}) : super(key: key);
@@ -26,6 +27,9 @@ class CommercialLicenseScreen extends StatelessWidget {
         ),
         BlocProvider.value(
           value: sl<CommercialLicenseBloc>(),
+        ),
+        BlocProvider(
+          create: (context) => CrStep4ShopDataCubit(),
         ),
       ],
       child: const CommercialLicenseBody(),
