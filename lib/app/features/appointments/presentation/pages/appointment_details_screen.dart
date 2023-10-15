@@ -106,7 +106,7 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
                           ),
                         ),
                       CustomVerticalSpace(height: 16),
-                      /* if (isCancelable ??
+                      if (isCancelable ??
                           appointmentItemInfoLocal!.cancelable ??
                           false)
                         GestureDetector(
@@ -126,7 +126,7 @@ class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
                                   isFullHeight: false,
                                 );
                             },
-                            child: FieldData(title: "الغاء الموعد"))*/
+                            child: FieldData(title: "الغاء الموعد"))
                     ]),
                   ));
 
