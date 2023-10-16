@@ -121,6 +121,12 @@ class CommercialLicenseCancelTwoScreen extends StatelessWidget {
               BlocBuilder<CommercialLicenseCancelBloc,
                   CommercialLicenseCancelState>(
                 builder: (context, state) {
+                  if (state is CommercialLicenseCancelLoadingState) {
+                    return const ShimmerEffectWidget(
+                      height: 60,
+                      borderRadius: 8,
+                    );
+                  }
                   return EnhancedCustomElevatedButtonWidget(
                     btnColor: !bloc.acknowledgePledge
                         ? AppColor.black200
