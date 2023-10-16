@@ -1,4 +1,5 @@
 import 'package:balady_plus/app/core/utils/constants/app_style.dart';
+import 'package:balady_plus/app/core/utils/enums/enums.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/_shared_feature_/data/entities/custom_expansion_panel.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/buttons/elevated_button_widgets.dart';
@@ -221,8 +222,9 @@ class ThirdSubmissionCompliance extends StatelessWidget {
                             title: "compliance_ownership_type".tr(),
                             items: (state.ownerShipsTypes?.items ?? [])
                                 .where((element) {
-                              if (CommonProperties.getCurrentUserProfile() !=
-                                      null &&
+                              if (CommonProperties.getCurrentUserProfile()
+                                          ?.profileType ==
+                                      UserProfileType.Delegator &&
                                   element.id == 146) {
                                 return false;
                               }
@@ -232,7 +234,7 @@ class ThirdSubmissionCompliance extends StatelessWidget {
                             onTap: (item) {
                               final selectedItem =
                                   (state.ownerShipsTypes?.items ?? [])
-                                      .where((e) => e.name == item)
+                                      .where((e) => e == item)
                                       .first;
                               context.read<ComplianceBloc>().add(
                                     UpdateFieldsEvent(

@@ -415,7 +415,11 @@ class CreateComplianceRemoteDataSourceImpl
     }
 
     try {
-      response = await webService.dio.get(url);
+      response = await webService.dio.get(url,
+          options: Options(
+              headers: (CommonProperties.selectedDelegator != null)
+                  ? {"x-owner-type": CommonProperties.selectedDelegator?.crType}
+                  : {}));
 
       final data = response.data;
 
@@ -1024,7 +1028,8 @@ class CreateComplianceRemoteDataSourceImpl
     var response;
 
     try {
-      response = await webService.dio.get(ApiUrl.complianceLandContract);
+      response = await webService.dio.get(ApiUrl.complianceLandContract,
+          queryParameters: {if (params.id != null) "id_number": params.id});
 
       final data = response.data;
 

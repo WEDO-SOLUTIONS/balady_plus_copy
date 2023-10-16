@@ -27,7 +27,9 @@ class _EskanNumberTextFieldState extends State<EskanNumberTextField> {
           title: "user_data_applicant_id".tr(),
           hint: "user_data_applicant_id".tr(),
           controller: controller,
-          currentValue: CommonProperties.userInfo?.idNo,
+          currentValue: CommonProperties.selectedAgent != null
+              ? CommonProperties.selectedAgent?.grantorNumber
+              : CommonProperties.userInfo?.idNo,
           // keyboardType: TextInputType.text,
           //  inputFormatters: [],
 

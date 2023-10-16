@@ -36,7 +36,7 @@ class ApplyCreateComplianceRequest extends Equatable {
 
   Map<String, dynamic> toMap() {
     return {
-      if (agencyRequestKey != null) "agencyRequestKey": agencyRequestKey,
+      if (agencyRequestKey != null) "agencyRequestKey": agencyRequestKey, //GUID
       "certificateType": certificateType,
       "contactMobile": contactMobile,
       if (licenseNumber != null) "licenseNumber": licenseNumber,
@@ -49,10 +49,12 @@ class ApplyCreateComplianceRequest extends Equatable {
       //"ownerIdentityType":
       //    CommonProperties.selectedDelegator != null ? "CR" : null,
       //  "ownerIdentity": CommonProperties.selectedDelegator?.crNumber,
-      "ownerIdentityType": CommonProperties.getCurrentUserProfile() != null
-          ? CommonProperties.getCurrentUserProfile()!.type
-          : null,
-      if (CommonProperties.getCurrentUserProfile()?.id != null)
+
+      if (CommonProperties.selectedDelegator != null)
+        "ownerIdentityType": CommonProperties.getCurrentUserProfile() != null
+            ? CommonProperties.getCurrentUserProfile()!.type
+            : null,
+      if (CommonProperties.selectedDelegator != null)
         "ownerIdentity": CommonProperties.getCurrentUserProfile()?.id,
       if (ownershipDocumentType != null)
         "ownershipDocInfoDto": {
