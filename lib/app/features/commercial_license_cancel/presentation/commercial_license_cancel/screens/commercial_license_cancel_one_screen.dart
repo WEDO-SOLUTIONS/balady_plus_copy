@@ -257,7 +257,7 @@ class CommercialLicenseCancelOneScreen extends StatelessWidget {
 
               bool isBtnDisabled = !(bloc.reasonCancel != null &&
                   viewModel.fileDone &&
-                  (bloc.hijriCalendar == null && !bloc.cancellationRequestResponse.availableCloseDate));
+                  (bloc.hijriCalendar != null || !bloc.cancellationRequestResponse.availableCloseDate));
               return Selector<RequestAttachmentsViewModel, bool>(
                 selector: (_, provider) => provider.isLoading,
                 builder: (_, isLoading, child) {

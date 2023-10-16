@@ -214,7 +214,7 @@ class AttachmentModel extends Attachment {
         updatable: json["updatable"],
         maxSize: json["maxSize"],
         attachDescription: json["attachDescription"],
-        fileName: json["fileName"],
+        fileName: json["fileName"] ?? json["originFileName"],
       );
 }
 
