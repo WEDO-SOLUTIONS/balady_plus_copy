@@ -3279,6 +3279,7 @@
   "scan_qr_code_message": "يمكنك مسح الرمز السريع لعرض البيانات الخدمة",
   "submit_application_successfully_cancel_message" : "تم اصدار الفاتورة الخاصة بخدمة الغاء رخصة تجارية",
   "ATTACH": "مرفق",
+  "data_not_have_permits": "لاويوجد تصاريح متاح"
 
 
 }

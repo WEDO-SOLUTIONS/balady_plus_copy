@@ -516,8 +516,8 @@ class LocationInfo {
 
   // int districtCode;
   // int streetCode;
-  String latitude;
-  String longitude;
+  String? latitude;
+  String? longitude;
   String mapNo;
   String landNo;
   String streetName;
@@ -558,8 +558,8 @@ class LocationInfo {
         subMunicipalityGisCode: json["subMunicipalityGisCode"] ?? '',
         // districtCode: json["districtCode"],
         // streetCode: json["streetCode"],
-        latitude: json["latitude"] ?? '',
-        longitude: json["longitude"] ?? '',
+        latitude: json["latitude"] ,
+        longitude: json["longitude"],
         mapNo: json["mapNo"] ?? '',
         landNo: json["landNo"] ?? '',
         streetName: json["streetName"] ?? '',
