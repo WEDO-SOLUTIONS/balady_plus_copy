@@ -209,33 +209,37 @@ class _CommercialLicenseDetailsBodyState
                     icon: IconPath.qrLocationIcon,
                     children: [
                       const SizedBox(height: 16),
-                      SizedBox(
-                        height: 250,
-                        child: GoogleMap(
-                          initialCameraPosition: CameraPosition(
-                              target: LatLng(
-                                double.parse(commercialLicenceDetails
-                                    .locationInfo.latitude),
-                                double.parse(commercialLicenceDetails
-                                    .locationInfo.longitude),
-                              ),
-                              zoom: 16),
-                          markers: {
-                            Marker(
-                              markerId: const MarkerId('position'),
-                              position: LatLng(
-                                double.parse(commercialLicenceDetails
-                                    .locationInfo.latitude),
-                                double.parse(commercialLicenceDetails
-                                    .locationInfo.longitude),
+                      commercialLicenceDetails.locationInfo.latitude != null &&
+                              commercialLicenceDetails.locationInfo.longitude !=
+                                  null
+                          ? SizedBox(
+                              height: 250,
+                              child: GoogleMap(
+                                initialCameraPosition: CameraPosition(
+                                    target: LatLng(
+                                      double.parse(commercialLicenceDetails
+                                          .locationInfo.latitude!),
+                                      double.parse(commercialLicenceDetails
+                                          .locationInfo.longitude!),
+                                    ),
+                                    zoom: 16),
+                                markers: {
+                                  Marker(
+                                    markerId: const MarkerId('position'),
+                                    position: LatLng(
+                                      double.parse(commercialLicenceDetails
+                                          .locationInfo.latitude!),
+                                      double.parse(commercialLicenceDetails
+                                          .locationInfo.longitude!),
+                                    ),
+                                  )
+                                },
+                                zoomControlsEnabled: false,
+                                zoomGesturesEnabled: false,
+                                scrollGesturesEnabled: false,
                               ),
                             )
-                          },
-                          zoomControlsEnabled: false,
-                          zoomGesturesEnabled: false,
-                          scrollGesturesEnabled: false,
-                        ),
-                      ),
+                          : const SizedBox(),
                       CardParameter(
                         title: 'region'.tr(),
                         value: commercialLicenceDetails.locationInfo.regionName,
@@ -263,11 +267,14 @@ class _CommercialLicenseDetailsBodyState
                       ),
                       CardParameter(
                         title: 'latitude'.tr(),
-                        value: commercialLicenceDetails.locationInfo.latitude,
+                        value: commercialLicenceDetails.locationInfo.latitude ??
+                            '',
                       ),
                       CardParameter(
                         title: 'longitude'.tr(),
-                        value: commercialLicenceDetails.locationInfo.longitude,
+                        value:
+                            commercialLicenceDetails.locationInfo.longitude ??
+                                '',
                       ),
                     ],
                   ),
