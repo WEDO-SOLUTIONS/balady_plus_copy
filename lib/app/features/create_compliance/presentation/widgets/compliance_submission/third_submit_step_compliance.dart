@@ -18,10 +18,12 @@ import 'package:balady_plus/app/features/create_compliance/presentation/widgets/
 import '../../../../../core/services/local/navigation_services.dart';
 import '../../../../../core/utils/constants/dialog_names.dart';
 import '../../../../_shared_feature_/presentation/components/bottom_sheets/bottom_sheet_list.dart';
+import '../../../../_shared_feature_/presentation/components/bottom_sheets/generic_bottom_sheet_list.dart';
 import '../../../../_shared_feature_/presentation/dialogs/bottom_sheet_dialogs.dart';
 import '../../../../_shared_feature_/presentation/widgets/drop_downs/drop_down_box_with_title.dart';
 import '../../../../_shared_feature_/presentation/widgets/pickers/filter_date_picker.dart';
 import '../../../../vd/domain/entities/map/map_screen_params.dart';
+import '../../../domain/entities/ownership_doc_type_response.dart';
 import '../../bloc/compliance_bloc.dart';
 import '../bottom_sheet_list.dart';
 import '../compliance_consetnt.dart';
@@ -212,28 +214,34 @@ class ThirdSubmissionCompliance extends StatelessWidget {
                           (state.ownerShipsTypes?.items ?? [])
                               .map((e) => e.name ?? "")
                               .toList();
-                      BottomSheetDialog.showDraggableSheet(
-                        context,
-                        dialogKeyName: DialogName.complianceOwnerShipseDialog,
-                        currentRouteName: RouteName.submitCompliancePage,
-                        child: BottomSheetList(
-                          title: "compliance_ownership_type".tr(),
-                          items: items,
-                          selectedValue: state.selectedOwnerShip?.name,
-                          onTap: (item) {
-                            final selectedItem =
-                                (state.ownerShipsTypes?.items ?? [])
-                                    .where((e) => e.name == item)
-                                    .first;
-                            context.read<ComplianceBloc>().add(
-                                  UpdateFieldsEvent(
-                                    selectedOwnerShip: selectedItem,
-                                  ),
-                                );
-                            Navigator.pop(context);
-                          },
-                        ),
-                      );
+                      BottomSheetDialog.showDraggableSheet(context,
+                          dialogKeyName: DialogName.complianceOwnerShipseDialog,
+                          currentRouteName: RouteName.submitCompliancePage,
+                          child: GenericBottomSheetList<ComplinaceLookUpItem>(
+                            title: "compliance_ownership_type".tr(),
+                            items: (state.ownerShipsTypes?.items ?? [])
+                                .where((element) {
+                              if (CommonProperties.getCurrentUserProfile() !=
+                                      null &&
+                                  element.id == 146) {
+                                return false;
+                              }
+                              return true;
+                            }).toList(),
+                            selectedValue: state.selectedOwnerShip,
+                            onTap: (item) {
+                              final selectedItem =
+                                  (state.ownerShipsTypes?.items ?? [])
+                                      .where((e) => e.name == item)
+                                      .first;
+                              context.read<ComplianceBloc>().add(
+                                    UpdateFieldsEvent(
+                                      selectedOwnerShip: selectedItem,
+                                    ),
+                                  );
+                              Navigator.pop(context);
+                            },
+                          ));
                     },
                   ),
 
