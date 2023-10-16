@@ -1033,10 +1033,10 @@ class CommonProperties {
           name: selectedDelegator?.entityName);
     } else if (selectedAgent != null) {
       return UserProfileEntity(
-          id: selectedAgent?.grantorNumber,
+          id: selectedAgent?.requestId,
           type: selectedAgent?.grantorTypeId,
           profileType: UserProfileType.Agent,
-          agencyRequestKey: selectedAgent?.agencyNumber,
+          agencyRequestKey: selectedAgent?.requestId,
           roleName: selectedAgent?.agencyTypeName,
           name: selectedAgent?.grantorName);
     }

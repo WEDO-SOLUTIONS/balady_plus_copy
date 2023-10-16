@@ -1058,9 +1058,20 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
     emitter(state.copyWith(
       status: BlocStatus.loading,
     ));
+    String? ownerId;
+    String? crType;
+    if (CommonProperties.getCurrentUserProfile()?.profileType ==
+        UserProfileType.Agent) {
+      ownerId = CommonProperties.selectedAgent?.grantorNumber;
+      crType = CommonProperties.selectedAgent?.grantorTypeId;
+    }
 
-    String? ownerId = CommonProperties.getCurrentUserProfile()?.id;
-    String? crType = CommonProperties.getCurrentUserProfile()?.type;
+    if (CommonProperties.getCurrentUserProfile()?.profileType ==
+        UserProfileType.Delegator) {
+      ownerId = CommonProperties.getCurrentUserProfile()?.id;
+      crType = CommonProperties.getCurrentUserProfile()?.type;
+    }
+
     String? deedNumber = state.ownershipText;
     final failOrSuccess = await _getDeedInfo(ComplianceDeedInfoRequest(
         ownerId: ownerId, ownerIdType: crType, deedNumber: deedNumber));
@@ -1085,7 +1096,15 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
       status: BlocStatus.loading,
     ));
 
-    final failOrSuccess = await _getLandContract(LandSubsidyContractRequest());
+    String? ownerId;
+
+    if (CommonProperties.getCurrentUserProfile()?.profileType ==
+        UserProfileType.Agent) {
+      ownerId = CommonProperties.selectedAgent?.grantorNumber;
+    }
+
+    final failOrSuccess =
+        await _getLandContract(LandSubsidyContractRequest(id: ownerId));
 
     failOrSuccess.fold((l) {
       emitter(state.copyWith(
