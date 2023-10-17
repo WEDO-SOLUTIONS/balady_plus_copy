@@ -1,5 +1,9 @@
 import 'package:balady_plus/app/features/create_compliance/presentation/bloc/compliance_event.dart';
 import 'package:balady_plus/app/features/home_page/home_exports.dart';
+import 'package:balady_plus/app/features/request_commercial_license_details/data/data_sources/remote_data_source.dart';
+import 'package:balady_plus/app/features/request_commercial_license_details/data/repositories/repository_implementation.dart';
+import 'package:balady_plus/app/features/request_commercial_license_details/domain/use_cases/get_request_commercial_license_details.dart';
+import 'package:balady_plus/app/features/request_commercial_license_details/presentation/bloc/request_commercial_license_details_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:intl/intl.dart';
@@ -144,6 +148,23 @@ class RequestsListItem extends StatelessWidget {
                         request.redirectUrl);
                   }
                 });
+              } else if (request.requestTypeId == 1003) {
+                Navigator.pushNamed(
+                  context,
+                  RouteName.commercialLicenseDetails,
+                  arguments: RequestCommercialLicenseDetailsCubit(
+                    GetRequestCommercialLicenseDetails(
+                      repository:
+                          RequestCommercialLicenseDetailsRepositoryImplementation(
+                        remoteDataSource:
+                            RequestCommercialLicenseDetailsRemoteDataSourceImplementation(
+                          webService: sl(),
+                        ),
+                      ),
+                    ),
+                    request.requestNumber,
+                  ),
+                );
               } else {
                 if (request.redirectUrl == null) {
                   if (request.requestTypeId == 50001) {

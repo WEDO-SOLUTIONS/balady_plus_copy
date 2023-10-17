@@ -82,7 +82,7 @@ class CommercialLicenseDetailsPage extends StatelessWidget {
         ),
         body: const Padding(
           padding:  EdgeInsets.all(16),
-          child:  CommercialLicenseDetailsBody(),
+          child:  RequestCommercialLicenseDetailsBody(),
         ),
       ),
     );

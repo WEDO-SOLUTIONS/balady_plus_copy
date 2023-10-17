@@ -19,6 +19,7 @@ import 'package:balady_plus/app/features/profile_features/help/presentation/scre
 import 'package:balady_plus/app/features/profile_features/rate_us/rate_us.dart';
 import 'package:balady_plus/app/features/quran/presentation/pages/quran_bookmarks.dart';
 import 'package:balady_plus/app/features/quran/quran_exports.dart';
+import 'package:balady_plus/app/features/request_commercial_license_details/presentation/pages/request_commercial_license_details_page.dart';
 import 'package:balady_plus/app/features/wallet/core/models/wallet_item.dart';
 import 'package:balady_plus/app/features/weather/presentation/pages/weather_main_page.dart';
 import 'package:flutter/material.dart'
@@ -556,6 +557,8 @@ class Routes {
 
         RouteName.commercialLicenseDetails: (context) =>
             const CommercialLicenseDetailsPage(),
+        RouteName.requestCommercialLicenseDetails: (context) =>
+            const RequestCommercialLicenseDetailsPage(),
       };
 }
 
