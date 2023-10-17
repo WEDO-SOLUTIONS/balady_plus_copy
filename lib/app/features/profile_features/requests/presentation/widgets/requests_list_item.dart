@@ -1,25 +1,17 @@
-import 'package:balady_plus/app/features/create_compliance/presentation/bloc/compliance_event.dart';
 import 'package:balady_plus/app/features/home_page/home_exports.dart';
-import 'package:balady_plus/app/features/request_commercial_license_details/data/data_sources/remote_data_source.dart';
-import 'package:balady_plus/app/features/request_commercial_license_details/data/repositories/repository_implementation.dart';
-import 'package:balady_plus/app/features/request_commercial_license_details/domain/use_cases/get_request_commercial_license_details.dart';
-import 'package:balady_plus/app/features/request_commercial_license_details/presentation/bloc/request_commercial_license_details_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:intl/intl.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
-import 'package:dartz/dartz.dart' show Either, Right, Left;
 
 import '../../../../../core/base/base_view_model.dart';
 import '../../../../../core/dependency_injection/injection_container.dart';
 import '../../../../../core/errors/failures.dart';
 import '../../../../../core/services/local/navigation_services.dart';
-import '../../../../../core/services/local/use_case.dart';
 import '../../../../../core/utils/utils_exports.dart'
     show AppColor, AppStyle, CommonFunctions, IconPath, RouteName;
 import '../../../../_shared_feature_/shared_feature_exports.dart';
 import '../../../../create_compliance/domain/use_cases/get_compliance_details.dart';
-import '../../../../entry_point/domain/use_cases/get_cookie.dart';
 import '../../../../health_certificate/presentation/core/models/health_request_details.dart';
 import '../../../../health_certificate/presentation/core/models/health_request_details_screen_args.dart';
 import '../../../../health_certificate/presentation/core/services/view_models/main_health_license_view_model.dart';
@@ -148,24 +140,7 @@ class RequestsListItem extends StatelessWidget {
                         request.redirectUrl);
                   }
                 });
-              } else if (request.requestTypeId == 1003) {
-                Navigator.pushNamed(
-                  context,
-                  RouteName.commercialLicenseDetails,
-                  arguments: RequestCommercialLicenseDetailsCubit(
-                    GetRequestCommercialLicenseDetails(
-                      repository:
-                          RequestCommercialLicenseDetailsRepositoryImplementation(
-                        remoteDataSource:
-                            RequestCommercialLicenseDetailsRemoteDataSourceImplementation(
-                          webService: sl(),
-                        ),
-                      ),
-                    ),
-                    request.requestNumber,
-                  ),
-                );
-              } else {
+              }  else {
                 if (request.redirectUrl == null) {
                   if (request.requestTypeId == 50001) {
                     EasyLoading.show();

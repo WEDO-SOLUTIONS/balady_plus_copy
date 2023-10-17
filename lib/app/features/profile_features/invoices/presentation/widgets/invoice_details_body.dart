@@ -38,9 +38,12 @@ import '../../invoices_exports.dart'
 
 class InvoiceDetailBody extends StatefulWidget {
   final InvoiceEntity invoiceEntity;
+  final String crNumber;
+
   const InvoiceDetailBody({
     super.key,
     required this.invoiceEntity,
+    required this.crNumber,
   });
 
   @override
@@ -53,6 +56,7 @@ class _InvoiceDetailBodyState extends State<InvoiceDetailBody> {
     super.initState();
     context.read<InvoiceDetailsCubit>().getInvoiceDetailsById(
           widget.invoiceEntity.id!,
+          widget.crNumber,
         );
   }
 
@@ -481,6 +485,7 @@ class InvoiceNotesList extends StatelessWidget {
 class PaymentOptionWidget extends StatelessWidget {
   final String title;
   final String icon;
+
   const PaymentOptionWidget(
       {super.key, required this.icon, required this.title});
 
