@@ -617,7 +617,7 @@ class ShopInfo {
   String planNumber;
   dynamic salamaBillNumber;
 
-  // List<BoardsInfo> boardsInfo;
+  List<BoardsInfo>? boardsInfo;
   ContractInfoResponseDto contractInfoResponseDto;
 
   // bool showShopOwnership;
@@ -657,7 +657,7 @@ class ShopInfo {
     // required this.landNumber,
     required this.planNumber,
     required this.salamaBillNumber,
-    // required this.boardsInfo,
+    required this.boardsInfo,
     required this.contractInfoResponseDto,
     // required this.showShopOwnership,
     // required this.slamaBillOptions,
@@ -695,7 +695,7 @@ class ShopInfo {
         // landNumber: json["landNumber"],
         planNumber: json["planNumber"] ?? '',
         salamaBillNumber: json["salamaBillNumber"] ?? '',
-        // boardsInfo: List<BoardsInfo>.from(json["boardsInfo"].map((x) => BoardsInfo.fromJson(x))),
+        boardsInfo: json["boardsInfo"] != null ? List<BoardsInfo>.from(json["boardsInfo"].map((x) => BoardsInfo.fromJson(x))) : null,
         contractInfoResponseDto:
             ContractInfoResponseDto.fromJson(json["contractInfoResponseDto"]),
         // showShopOwnership: json["showShopOwnership"],
@@ -718,24 +718,24 @@ class ShopInfo {
       );
 }
 
-// class BoardsInfo {
-//   int typeId;
-//   String typeName;
-//   int area;
-//
-//   BoardsInfo({
-//     required this.typeId,
-//     required this.typeName,
-//     required this.area,
-//   });
-//
-//   factory BoardsInfo.fromJson(Map<String, dynamic> json) => BoardsInfo(
-//     typeId: json["typeId"],
-//     typeName: json["typeName"],
-//     area: json["area"],
-//   );
-//
-// }
+class BoardsInfo {
+  int typeId;
+  String typeName;
+  int area;
+
+  BoardsInfo({
+    required this.typeId,
+    required this.typeName,
+    required this.area,
+  });
+
+  factory BoardsInfo.fromJson(Map<String, dynamic> json) => BoardsInfo(
+    typeId: json["typeId"],
+    typeName: json["typeName"],
+    area: json["area"],
+  );
+
+}
 
 // class CleanContractOptions {
 //   String cleanOption;

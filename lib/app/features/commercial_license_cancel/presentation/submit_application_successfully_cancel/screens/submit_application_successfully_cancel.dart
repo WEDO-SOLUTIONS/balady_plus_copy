@@ -47,7 +47,10 @@ class SubmitApplicationSuccessfullyCancel extends StatelessWidget {
                     // ),
                     const SizedBox(height: 16),
                     CustomAutoSizeTextWidget(
-                      'submit_application_successfully_cancel_message'.tr(),
+                      submitResponse.payUrl != null
+                          ? 'submit_application_successfully_cancel_message'
+                              .tr()
+                          : ''.tr(),
                       textStyle: AppStyle.serviceListTitleTextStyle,
                       maxLines: 3,
                       textAlign: TextAlign.center,

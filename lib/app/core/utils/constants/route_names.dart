@@ -188,6 +188,7 @@ class RouteName {
   static const submitRatingCancelScreen = '/submitRatingCancelScreen';
 
   static const commercialLicenseDetails = '/commercialLicenseDetails';
+  static const requestCommercialLicenseDetails = '/requestCommercialLicenseDetails';
 }
 
 class EtmamRoutesNames {
