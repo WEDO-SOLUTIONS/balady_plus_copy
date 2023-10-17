@@ -4,6 +4,7 @@ class CrStep2ActivityDataState extends Equatable {
   final BlocStatus subActivitiesStatus;
   final BlocStatus accommodationTypesStatus;
   final BlocStatus subActivityDetailsStatus;
+  final BlocStatus status;
 
   final List<SubActivityEntity> subActivities;
   final List<CrLookupsEntity> accommodationTypes;
@@ -22,6 +23,7 @@ class CrStep2ActivityDataState extends Equatable {
       {this.subActivitiesStatus = BlocStatus.initial,
       this.accommodationTypesStatus = BlocStatus.initial,
       this.subActivityDetailsStatus = BlocStatus.initial,
+      this.status = BlocStatus.initial,
       this.selectedIsicActivity,
       this.selectedSubActivity,
       this.subActivityDetails,
@@ -52,6 +54,7 @@ class CrStep2ActivityDataState extends Equatable {
       {BlocStatus? subActivitiesStatus,
       BlocStatus? accommodationTypesStatus,
       BlocStatus? subActivityDetailsStatus,
+      BlocStatus? status,
       List<SubActivityEntity>? subActivities,
       List<CrLookupsEntity>? accommodationTypes,
       SubActivityDetails? subActivityDetails,
@@ -62,6 +65,7 @@ class CrStep2ActivityDataState extends Equatable {
       double? totalArea,
       WorkersTypes? workerType}) {
     return CrStep2ActivityDataState(
+        status: status ?? this.status,
         subActivitiesStatus: subActivitiesStatus ?? this.subActivitiesStatus,
         accommodationTypesStatus:
             accommodationTypesStatus ?? this.accommodationTypesStatus,

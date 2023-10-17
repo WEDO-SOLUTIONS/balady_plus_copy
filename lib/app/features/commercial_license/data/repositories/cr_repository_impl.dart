@@ -85,4 +85,28 @@ class CrRepositoryImpl implements CrRepository {
           statusCode: error.statusCode, errorCode: error.errorCode));
     }
   }
+
+  @override
+  Future<Either<Failure, int>> saveActivityDetails(
+      SubmitActivityDetailRequest? params) async {
+    try {
+      final data = await remoteDataSource.saveActivityDetails(params: params);
+      return Right(data);
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage,
+          statusCode: error.statusCode, errorCode: error.errorCode));
+    }
+  }
+
+  @override
+  Future<Either<Failure, SaveLocationResponseModel>> saveLocationDetails(
+      SaveLocationDataRequest? params) async {
+    try {
+      final data = await remoteDataSource.saveLocationDetails(params: params);
+      return Right(data);
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage,
+          statusCode: error.statusCode, errorCode: error.errorCode));
+    }
+  }
 }

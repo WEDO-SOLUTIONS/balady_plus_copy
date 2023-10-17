@@ -15,11 +15,13 @@ class CrStep2ActivityDataCubit extends Cubit<CrStep2ActivityDataState> {
   final GetSubActivities _getSubActivities;
   final GetAccommodationTypes _getAccommodationTypes;
   final GetSubActivityDetails _getSubActivityDetails;
+  final SaveActivityDetails _saveActivityDetails;
 
   CrStep2ActivityDataCubit()
       : _getSubActivities = GetSubActivities(repository: sl()),
         _getAccommodationTypes = GetAccommodationTypes(repository: sl()),
         _getSubActivityDetails = GetSubActivityDetails(repository: sl()),
+        _saveActivityDetails = SaveActivityDetails(repository: sl()),
         super(const CrStep2ActivityDataState());
 
   void getSubActivityDetails(SubActivityEntity subActivity) async {
@@ -93,5 +95,23 @@ class CrStep2ActivityDataCubit extends Cubit<CrStep2ActivityDataState> {
   void updateWorkerType(WorkersTypes type) {
     print(type);
     emit(state.copyWith(workerType: type));
+  }
+
+  void save(int requestId) async {
+    emit(state.copyWith(status: BlocStatus.loading));
+    final response = await _saveActivityDetails(SubmitActivityDetailRequest(
+        requestId: requestId,
+        workerTypeId: state.workerType!.index,
+        area: state.totalArea ?? 0,
+        detailedActivityId: state.selectedSubActivity!.activityId));
+
+    response.fold(
+        (failure) => emit(state.copyWith(
+              status: BlocStatus.failure,
+              errorMessage: (failure as ServerFailure).errorMessage,
+            )), (success) {
+      sl<CommercialLicenseBloc>().add((const GoToNextPageEvent()));
+      emit(state.copyWith(status: BlocStatus.success));
+    });
   }
 }

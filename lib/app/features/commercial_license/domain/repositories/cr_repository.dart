@@ -21,4 +21,10 @@ abstract class CrRepository {
 
   Future<Either<Failure, int>> saveComSubmitterAndOwner(
       SaveComSubmitterAndOwnerRequestModel? params);
+
+  Future<Either<Failure, int>> saveActivityDetails(
+      SubmitActivityDetailRequest? params);
+
+  Future<Either<Failure, SaveLocationResponseModel>> saveLocationDetails(
+      SaveLocationDataRequest? params);
 }
