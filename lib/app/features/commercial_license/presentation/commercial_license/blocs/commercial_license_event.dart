@@ -15,3 +15,8 @@ class GoToNextPageEvent extends CommercialLicenseEvent {
 class GoToPreviousPageEvent extends CommercialLicenseEvent {
   const GoToPreviousPageEvent();
 }
+
+class UpdateRequestFieldEvent extends CommercialLicenseEvent {
+  final int requestId;
+  const UpdateRequestFieldEvent({required this.requestId});
+}

@@ -17,6 +17,8 @@ class CommercialLicenseBloc
   CommercialLicenseBloc() : super(const CommercialLicenseState()) {
     on<GoToNextPageEvent>(_goToNextPageHandler);
     on<GoToPreviousPageEvent>(_goToPreviousPageHandler);
+
+    on<UpdateRequestFieldEvent>(_updateRequestIdHandler);
   }
 
   Future<void> _goToNextPageHandler(
@@ -65,5 +67,10 @@ class CommercialLicenseBloc
 
   hideKeyboard() {
     FocusManager.instance.primaryFocus?.unfocus();
+  }
+
+  Future<void> _updateRequestIdHandler(
+      UpdateRequestFieldEvent e, Emitter emitter) async {
+    emitter(state.copyWith(requestId: e.requestId));
   }
 }

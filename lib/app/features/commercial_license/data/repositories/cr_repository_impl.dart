@@ -24,9 +24,10 @@ class CrRepositoryImpl implements CrRepository {
 
   @override
   Future<Either<Failure, ResponseBodyModel<RecordInfo>>> getRecordInfo(
-      {required String crNumber}) async {
+      {required String crNumber, required String role}) async {
     try {
-      final data = await remoteDataSource.getRecordInfo(crNumber: crNumber);
+      final data =
+          await remoteDataSource.getRecordInfo(crNumber: crNumber, role: role);
 
       return Right(data);
     } on ServerException catch (error) {

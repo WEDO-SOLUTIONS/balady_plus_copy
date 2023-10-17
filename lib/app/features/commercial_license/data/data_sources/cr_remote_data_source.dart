@@ -9,7 +9,7 @@ import '../models/save_com_submitter_and_owner_request_model.dart';
 
 abstract class CrRemoteDataSource {
   Future<ResponseBodyModel<RecordInfoModel>> getRecordInfo(
-      {required String crNumber});
+      {required String crNumber, required String role});
   Future<List<SubActivityModel>> getSubActivities({required String isicCode});
   Future<ResponseBodyModel<SubActivityModelDetailsModel>> getSubActivityDetails(
       {required String subActivityId});
@@ -108,12 +108,12 @@ class CrRemoteDataSourceImpl extends CrRemoteDataSource {
 
   @override
   Future<ResponseBodyModel<RecordInfoModel>> getRecordInfo(
-      {required String crNumber}) async {
+      {required String crNumber, required String role}) async {
     var response;
 
     try {
       response = await webService.dio.get(
-        ApiUrl.recordInfo.replaceAll("crNumber", crNumber),
+        ApiUrl.recordInfo(crNumber: crNumber, role: role),
       );
 
       var data = response.data["data"]["result"];

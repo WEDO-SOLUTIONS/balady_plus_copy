@@ -6,7 +6,7 @@ import '../../data/models/save_com_submitter_and_owner_request_model.dart';
 
 abstract class CrRepository {
   Future<Either<Failure, ResponseBodyModel<RecordInfo>>> getRecordInfo(
-      {required String crNumber});
+      {required String crNumber, required String role});
 
   Future<Either<Failure, ResponseBodyModel<SubActivityDetails>>>
       getSubActivityDetails({required String id});

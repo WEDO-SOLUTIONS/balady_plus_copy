@@ -4,10 +4,12 @@ class CommercialLicenseState extends Equatable {
   final BlocStatus status;
   final int currentPageValue;
   final List<Widget> pagesList;
+  final int? requestId;
 
   const CommercialLicenseState({
     this.status = BlocStatus.initial,
     this.currentPageValue = 0,
+    this.requestId,
     this.pagesList = const [
       CRStep1ApplicantData(),
       CRStep2ActivityData(),
@@ -24,21 +26,17 @@ class CommercialLicenseState extends Equatable {
   });
 
   @override
-  List<Object> get props => [
-        status,
-        currentPageValue,
-        pagesList,
-      ];
+  List<Object?> get props => [status, currentPageValue, pagesList, requestId];
 
-  CommercialLicenseState copyWith({
-    BlocStatus? status,
-    int? currentPageValue,
-    List<Widget>? pagesList,
-  }) {
+  CommercialLicenseState copyWith(
+      {BlocStatus? status,
+      int? currentPageValue,
+      List<Widget>? pagesList,
+      int? requestId}) {
     return CommercialLicenseState(
-      status: status ?? this.status,
-      currentPageValue: currentPageValue ?? this.currentPageValue,
-      pagesList: pagesList ?? this.pagesList,
-    );
+        status: status ?? this.status,
+        currentPageValue: currentPageValue ?? this.currentPageValue,
+        pagesList: pagesList ?? this.pagesList,
+        requestId: requestId ?? this.requestId);
   }
 }
