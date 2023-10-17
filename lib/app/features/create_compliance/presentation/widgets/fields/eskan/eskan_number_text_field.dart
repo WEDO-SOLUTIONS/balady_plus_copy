@@ -39,6 +39,7 @@ class _EskanNumberTextFieldState extends State<EskanNumberTextField> {
                 .read<ComplianceBloc>()
                 .add(const GetComplianceLandContractEvent());
           },
+          enabled: false,
           backgroundColor: Colors.transparent,
           isValidate: state.landSubsidyContract != null,
           validate: (String? t) {},

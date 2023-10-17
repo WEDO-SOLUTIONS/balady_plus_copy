@@ -36,7 +36,7 @@ class ApplyCreateComplianceRequest extends Equatable {
 
   Map<String, dynamic> toMap() {
     return {
-      if (agencyRequestKey != null) "agencyRequestKey": agencyRequestKey, //GUID
+      if (agencyRequestKey != null) "agencyRequestId": agencyRequestKey, //GUID
       "certificateType": certificateType,
       "contactMobile": contactMobile,
       if (licenseNumber != null) "licenseNumber": licenseNumber,

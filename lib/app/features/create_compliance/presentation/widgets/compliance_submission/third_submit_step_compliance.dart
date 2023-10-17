@@ -252,9 +252,11 @@ class ThirdSubmissionCompliance extends StatelessWidget {
                     CustomVerticalSpace(height: 12),
                     DeedTypeWidget(),
                     CustomVerticalSpace(height: 12),
-                    DeadNumberTextField(),
-                    CustomVerticalSpace(height: 12),
-                    DeedNumberDateField(),
+                    if (state.isDeedPaper != null) ...[
+                      DeadNumberTextField(),
+                      CustomVerticalSpace(height: 12),
+                      DeedNumberDateField(),
+                    ]
                   ],
 
 //عقد اسكان
