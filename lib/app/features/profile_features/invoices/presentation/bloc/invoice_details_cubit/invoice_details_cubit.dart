@@ -1,7 +1,8 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../../../core/utils/utils_exports.dart' show BlocRequestStatus;
+import '../../../../../../core/utils/utils_exports.dart'
+    show BlocRequestStatus, CommonProperties;
 import '../../../invoices_exports.dart'
     show
         GetInvoiceDetails,
@@ -22,7 +23,14 @@ class InvoiceDetailsCubit extends Cubit<InvoiceDetailsState> {
     emit(
       state.copyWith(status: BlocRequestStatus.submissionGetLoading),
     );
-    final params = InvoiceDetailsParams(invoiceId: id);
+    final unifiedNationalNumber =
+        CommonProperties.selectedDelegator?.unifiedNationalNumber;
+    final identityNumber = CommonProperties.selectedDelegator?.crNumber;
+
+    final params = InvoiceDetailsParams(
+        invoiceId: id,
+        unifiedNationalNumber: unifiedNationalNumber,
+        identityNumber: identityNumber);
     final failureOrSuccess = await getInvoiceDetails(params);
     failureOrSuccess.fold(
       (failure) {
