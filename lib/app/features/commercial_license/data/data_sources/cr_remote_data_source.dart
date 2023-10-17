@@ -18,6 +18,10 @@ abstract class CrRemoteDataSource {
 
   Future<int> saveComSubmitterAndOwner(
       {SaveComSubmitterAndOwnerRequestModel? params});
+
+  Future<int> saveActivityDetails({SubmitActivityDetailRequest? params});
+  Future<SaveLocationResponseModel> saveLocationDetails(
+      {SaveLocationDataRequest? params});
 }
 
 class CrRemoteDataSourceImpl extends CrRemoteDataSource {
@@ -264,6 +268,105 @@ class CrRemoteDataSourceImpl extends CrRemoteDataSource {
       try {
         final decodedResponse =
             ResponseBodyModel<SubActivityModelDetailsModel>.fromMap(
+          error.response?.data,
+        );
+        errorCode = decodedResponse.data?.responseCode;
+      } catch (ex) {}
+
+      throw ServerException(
+        error.toString(),
+        errorCode: errorCode,
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
+    } catch (ex) {
+      print(ex);
+      if (ex is ServerException)
+        throw ex;
+      else {
+        try {
+          //MM    CommonFunctions.sendExceptionLog(exception: ex, response: response);
+        } catch (ex) {}
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
+      }
+    }
+  }
+
+  @override
+  Future<int> saveActivityDetails({SubmitActivityDetailRequest? params}) async {
+    var response;
+
+    try {
+      response = await webService.dio.post(
+          ApiUrl.saveActivityDetails(params!.requestId!),
+          data: params.toMap());
+
+      var data = response.data["data"]?["result"];
+
+      return data["requestId"];
+    } on DioError catch (error) {
+      print(error);
+      var errorCode;
+      try {
+        final decodedResponse = ResponseBodyModel<dynamic>.fromMap(
+          error.response?.data,
+        );
+        errorCode = decodedResponse.data?.responseCode;
+      } catch (ex) {}
+
+      throw ServerException(
+        error.toString(),
+        errorCode: errorCode,
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
+    } catch (ex) {
+      print(ex);
+      if (ex is ServerException)
+        throw ex;
+      else {
+        try {
+          //MM    CommonFunctions.sendExceptionLog(exception: ex, response: response);
+        } catch (ex) {}
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
+      }
+    }
+  }
+
+  @override
+  Future<SaveLocationResponseModel> saveLocationDetails(
+      {SaveLocationDataRequest? params}) async {
+    var response;
+
+    try {
+      response = await webService.dio.post(
+          ApiUrl.saveLocationDetails(params!.requestId!),
+          data: params?.toMap());
+
+      var data = response.data["data"]["result"];
+
+      var parsedResult =
+          data != null ? SaveLocationResponseModel.fromJson(data) : null;
+      final decodedResponse =
+          ResponseBodyModel<SaveLocationResponseModel>.fromMap(response.data,
+              parsedResult: parsedResult);
+
+      print(decodedResponse);
+      return decodedResponse.data!.result!.toFuture();
+    } on DioError catch (error) {
+      print(error);
+      var errorCode;
+      try {
+        final decodedResponse =
+            ResponseBodyModel<SaveLocationResponseModel>.fromMap(
           error.response?.data,
         );
         errorCode = decodedResponse.data?.responseCode;

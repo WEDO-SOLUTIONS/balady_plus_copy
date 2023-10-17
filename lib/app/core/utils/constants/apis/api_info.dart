@@ -252,6 +252,12 @@ class ApiUrl {
   static const String saveComSubmitterAndOwner =
       "v1/balady-commercial-services/new-request/submitter-owner-details";
 
+  static String saveActivityDetails(int requestId) =>
+      "v1/balady-commercial-services/new-request/$requestId/activity-details";
+
+  static String saveLocationDetails(int requestId) =>
+      "v1/balady-commercial-services/new-request/$requestId/location-details";
+
 //! Violations
   static const String violationsStatus =
       "/v1/balady-dashboard/violations/statuses";
