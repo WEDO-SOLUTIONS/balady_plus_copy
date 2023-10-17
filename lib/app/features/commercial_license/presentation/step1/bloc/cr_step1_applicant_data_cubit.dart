@@ -23,7 +23,10 @@ class CrStep1ApplicantDataCubit extends Cubit<CrStep1ApplicantDataState> {
 
   void getRecordInfo() async {
     emit(state.copyWith(recordStatus: BlocStatus.loading));
-    final response = await _getRecordInfo("4030125231");
+    final response = await _getRecordInfo((
+      CommonProperties.selectedDelegator!.crNumber!,
+      CommonProperties.selectedDelegator!.getRole()
+    ));
 
     /// TODO: UnComment below line
     // final response = await _getRecordInfo(
@@ -69,6 +72,9 @@ class CrStep1ApplicantDataCubit extends Cubit<CrStep1ApplicantDataState> {
               addIsicActivitiesStatus: BlocStatus.failure,
               errorMessage: (failure as ServerFailure).errorMessage,
             )), (success) {
+      sl<CommercialLicenseBloc>()
+          .add((UpdateRequestFieldEvent(requestId: success)));
+
       sl<CommercialLicenseBloc>().add((const GoToNextPageEvent()));
       emit(state.copyWith(addIsicActivitiesStatus: BlocStatus.success));
     });

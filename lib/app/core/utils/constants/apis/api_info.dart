@@ -238,8 +238,8 @@ class ApiUrl {
   static const requestDetails =
       'v1/damaged-vehicle-mobile/incident-request-details';
   // CR
-  static const String recordInfo =
-      'v1/balady-commercial-services/mci/record-Info/crNumber/DELEGATOR/1004';
+  static String recordInfo({required String crNumber, required String role}) =>
+      'v1/balady-commercial-services/mci/record-Info/$crNumber/$role/1004';
   static const String subActivities =
       "/v1/balady-commercial-services/activities/by-isic/details/isicCode/1004";
   static const String subActivityDetails =

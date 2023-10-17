@@ -115,9 +115,7 @@ class CRStep2ActivityData extends StatelessWidget {
                     WorkerTypeComponent(
                       selectedWorkerType: state.workerType,
                       onSelectedType: (type) {
-                        context
-                            .read<CrStep2ActivityDataCubit>()
-                            .updateWorkerType(type);
+                        context.read<CrStep2ActivityDataCubit>().save();
                       },
                     ),
                     const CustomVerticalSpace(height: 16),
@@ -128,7 +126,12 @@ class CRStep2ActivityData extends StatelessWidget {
               ),
             ),
           ),
-          const CRPreviousNextButtons(isBtnDisabled: false),
+          CRPreviousNextButtons(
+            isBtnDisabled: false,
+            onPressed: () {
+              context.read<CommercialLicenseBloc>();
+            },
+          ),
         ],
       );
     });

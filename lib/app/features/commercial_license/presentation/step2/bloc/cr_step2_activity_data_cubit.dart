@@ -97,7 +97,9 @@ class CrStep2ActivityDataCubit extends Cubit<CrStep2ActivityDataState> {
     emit(state.copyWith(workerType: type));
   }
 
-  void save(int requestId) async {
+  void save() async {
+    int requestId = sl<CommercialLicenseBloc>().state.requestId!;
+
     emit(state.copyWith(status: BlocStatus.loading));
     final response = await _saveActivityDetails(SubmitActivityDetailRequest(
         requestId: requestId,
