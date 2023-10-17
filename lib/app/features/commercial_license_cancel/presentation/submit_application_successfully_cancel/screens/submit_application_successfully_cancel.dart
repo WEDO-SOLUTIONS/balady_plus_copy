@@ -5,6 +5,7 @@ import 'package:balady_plus/app/core/utils/constants/route_names.dart';
 import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports.dart';
 import 'package:balady_plus/app/features/commercial_license_cancel/data/models/submit_response.dart';
 import 'package:balady_plus/app/features/commercial_license_cancel/presentation/submit_application_successfully_cancel/mvvm/submit_rating_view_model.dart';
+import 'package:balady_plus/app/features/profile_features/invoices/data/models/invoices_model.dart';
 import 'package:balady_plus/app/features/profile_features/invoices/domain/entities/invoice_entity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -79,20 +80,23 @@ class SubmitApplicationSuccessfullyCancel extends StatelessWidget {
                       onPressed: () async {
                         Navigator.of(context).popAndPushNamed(
                           RouteName.invoiceDetails,
-                          arguments: InvoiceEntity(
-                            id: submitResponse.payUrl.toString(),
-                            accountNumber: '',
-                            requestNumber: '',
-                            invoiceStatusId: 0,
-                            invoiceStatusName: '',
-                            invoiceTypeName: '',
-                            requestTypeName: '',
-                            amount: 0,
-                            creationDate: DateTime.now(),
-                            dueDate: DateTime.now(),
-                            sadadDate: DateTime.now(),
-                            updatedDate: DateTime.now(),
-                          ),
+                          arguments: [
+                            InvoicesModel(
+                              id: submitResponse.payUrl.toString(),
+                              accountNumber: '',
+                              requestNumber: '',
+                              invoiceStatusId: 0,
+                              invoiceStatusName: '',
+                              invoiceTypeName: '',
+                              requestTypeName: '',
+                              amount: 0,
+                              creationDate: DateTime.now(),
+                              dueDate: DateTime.now(),
+                              sadadDate: DateTime.now(),
+                              updatedDate: DateTime.now(),
+                            ),
+                            submitResponse.crNumber,
+                          ],
                         );
                       },
                     )

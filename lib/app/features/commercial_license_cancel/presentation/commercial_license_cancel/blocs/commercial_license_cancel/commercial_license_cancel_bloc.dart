@@ -1,4 +1,3 @@
-import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/core/utils/constants/apis/api_info.dart';
 import 'package:balady_plus/app/features/_shared_feature_/data/models/response_body_model.dart';
 import 'package:balady_plus/app/features/commercial_license_cancel/data/models/cancellation_rquest_response.dart';
@@ -22,7 +21,7 @@ class CommercialLicenseCancelBloc
   final WebService webService;
 
   // final SubmitterInfo submitterInfo;
-  // final int licenseId;
+  final String crNumber ;
   final CancellationRequestResponse cancellationRequestResponse;
   ReasonCancel? reasonCancel;
   HijriCalendar? hijriCalendar;
@@ -35,7 +34,7 @@ class CommercialLicenseCancelBloc
 
   CommercialLicenseCancelBloc({
     required this.webService,
-    // required this.licenseId,
+    required this.crNumber,
     required this.cancellationRequestResponse,
     // required this.submitterInfo,
     required this.reasonCancel,
@@ -93,10 +92,10 @@ class CommercialLicenseCancelBloc
       final data = response.data;
       final result = ResponseBodyModel.fromMap(data).data?.result;
       submitResponse = SubmitResponse.fromJson(result);
+      submitResponse!.crNumber = crNumber;
       emitter(
           SubmitCancelRequestSucceededState(submitResponse: submitResponse!));
     } catch (e) {
-      print(e.toString());
       emitter(CommercialLicenseCancelFailureState(e.toString()));
     }
   }
