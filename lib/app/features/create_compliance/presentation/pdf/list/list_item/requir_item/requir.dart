@@ -20,6 +20,7 @@ class _RequirementsState extends State<Requirements> {
   List<ConditionsModel> data = [];
 
   Future<void> readdata() async {
+    if (data.isNotEmpty) return;
     String ad = await rootBundle
         .loadString("assets/compliance_pdf/text/conditions.json");
     var A = json.decode(ad);
@@ -36,7 +37,6 @@ class _RequirementsState extends State<Requirements> {
   @override
   void initState() {
     super.initState();
-    readdata();
   }
 
   @override

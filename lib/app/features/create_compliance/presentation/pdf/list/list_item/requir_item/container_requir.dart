@@ -9,7 +9,6 @@ class ContainerRequir extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Container(
-        width: 343,
         height: 60,
         margin: const EdgeInsets.all(8),
         decoration: BoxDecoration(
@@ -23,7 +22,6 @@ class ContainerRequir extends StatelessWidget {
             children: [
               SvgPicture.asset(ImagePath.circle),
               const SizedBox(
-                width: 289,
                 child: Text(
                   'الصور المعروضة توضيحية ولا تتحدد شكل المخالفة بشكل خاص',
                   style: TextStyle(

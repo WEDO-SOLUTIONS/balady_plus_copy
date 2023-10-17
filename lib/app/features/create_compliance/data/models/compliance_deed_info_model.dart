@@ -27,10 +27,10 @@ class ComplianceDeedInfoModel extends ComplianceDeedInfo {
 
   factory ComplianceDeedInfoModel.fromJson(Map<String, dynamic> json) =>
       ComplianceDeedInfoModel(
-        deedSerialNumber: json["DeedSerialNumber"],
-        deedNumber: json["DeedNumber"],
-        dateIssuanceDeed: json["DateIssuanceDeed"],
-        issuerCourtCode: json["IssuerCourtCode"],
+        // deedSerialNumber: json["DeedSerialNumber"],
+        deedNumber: json["deedNumber"],
+        dateIssuanceDeed: json["deedIssuanceDate"],
+        /* issuerCourtCode: json["IssuerCourtCode"],
         issuerCourtName: json["IssuerCourtName"],
         cityCode: json["CityCode"],
         cityName: json["CityName"],
@@ -52,7 +52,7 @@ class ComplianceDeedInfoModel extends ComplianceDeedInfo {
         ownersInfoList: json["OwnersInfoList"] == null
             ? null
             : OwnersInfoListModel.fromJson(json["OwnersInfoList"]),
-        deedStatusCode: json["DeedStatusCode"],
+        deedStatusCode: json["DeedStatusCode"],*/
       );
 
   @override

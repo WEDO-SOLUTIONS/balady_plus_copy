@@ -32,8 +32,7 @@ class RequirementsItem extends StatelessWidget {
                   const SizedBox(
                     width: 4,
                   ),
-                  SizedBox(
-                    width: 260,
+                  Flexible(
                     child: Text(
                       desc,
                       style: const TextStyle(
@@ -50,7 +49,6 @@ class RequirementsItem extends StatelessWidget {
                 height: 12,
               ),
               Container(
-                width: 287.29,
                 height: 191,
                 decoration: BoxDecoration(
                   image: DecorationImage(
