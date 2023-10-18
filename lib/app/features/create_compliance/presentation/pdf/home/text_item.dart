@@ -19,7 +19,7 @@ class TextItem extends StatelessWidget {
             style: TextStyle(
               color: const Color(0xFF145E75),
               fontSize: size,
-              fontFamily: 'Arabic UI Display',
+              fontFamily: 'ArabicUIText',
               fontWeight: FontWeight.w700,
             ),
           ),
@@ -28,7 +28,7 @@ class TextItem extends StatelessWidget {
             style: const TextStyle(
               color: Color(0xFF52525B),
               fontSize: 14,
-              fontFamily: 'Arabic UI Display',
+              fontFamily: 'ArabicUIText',
               fontWeight: FontWeight.w600,
             ),
           ),

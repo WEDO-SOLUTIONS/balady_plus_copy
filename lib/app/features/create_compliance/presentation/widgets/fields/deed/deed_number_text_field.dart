@@ -45,7 +45,7 @@ class _DeadNumberTextFieldState extends State<DeadNumberTextField> {
               )
             : CustomTextFieldWithValueWidget(
                 label: "compliance_deed_number_text".tr(),
-                hintText: "compliance_deed_number_date".tr(),
+                hintText: "compliance_deed_number_text".tr(),
                 value: state.ownershipText,
                 keyboardType: TextInputType.text,
                 inputFormatters: [],

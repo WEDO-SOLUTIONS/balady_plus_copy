@@ -1,4 +1,5 @@
 import 'dart:convert';
+import '../../../../../core/utils/constants/constants.dart';
 import '../core/image_path.dart';
 import '../home/custom_app_bar.dart';
 import '../home/stack_image.dart';
@@ -162,7 +163,7 @@ class _CompliancePDFHomePageState extends State<CompliancePDFHomePage> {
                     style: TextStyle(
                       color: Color(0xFF145E75),
                       fontSize: 18,
-                      fontFamily: 'Arabic UI Display',
+                      fontFamily: Constants.appFontType,
                       fontWeight: FontWeight.w700,
                     ),
                   ),
@@ -186,7 +187,7 @@ class _CompliancePDFHomePageState extends State<CompliancePDFHomePage> {
                     style: TextStyle(
                       color: Color(0xFF145E75),
                       fontSize: 16,
-                      fontFamily: 'Arabic UI Display',
+                      fontFamily: 'ArabicUIText',
                       fontWeight: FontWeight.w700,
                     ),
                   ),
@@ -223,7 +224,7 @@ class _CompliancePDFHomePageState extends State<CompliancePDFHomePage> {
                     style: TextStyle(
                       color: Color(0xFF145E75),
                       fontSize: 16,
-                      fontFamily: 'Arabic UI Display',
+                      fontFamily: 'ArabicUIText',
                       fontWeight: FontWeight.w700,
                     ),
                   ),
@@ -263,7 +264,7 @@ class _CompliancePDFHomePageState extends State<CompliancePDFHomePage> {
                     style: TextStyle(
                       color: Color(0xFF145E75),
                       fontSize: 17,
-                      fontFamily: 'Arabic UI Display',
+                      fontFamily: 'ArabicUIText',
                       fontWeight: FontWeight.w700,
                     ),
                   ),

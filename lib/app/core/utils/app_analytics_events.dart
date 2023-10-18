@@ -124,4 +124,9 @@ class AppEvents {
 
   static const String selfRating = "Super_App_Open_Self_Rating";
   static const String selfRatingSuccess = "Super_App_Open_Self_Rating_success";
+
+
+
+    static const String events = "Super_App_Open_Events";
+    static const String calendar = "Super_App_Open_Calendar";
 }

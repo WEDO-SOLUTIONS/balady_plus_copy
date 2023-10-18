@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
+import '../../../../core/utils/app_analytics_events.dart';
 import '../../../_shared_feature_/presentation/components/bottom_sheets/bottom_sheet_with_actions.dart';
 import '../../../_shared_feature_/presentation/dialogs/bottom_sheet_dialogs.dart';
 import '../../../_shared_feature_/presentation/icons/filter_icon.dart';
@@ -32,6 +33,13 @@ class MainPageCalendar extends StatefulWidget {
 }
 
 class _MainPageCalendarState extends State<MainPageCalendar> {
+  @override
+  void initState() {
+    super.initState();
+
+    CommonFunctions.sendEventToAnalytics(AppEvents.calendar);
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider(

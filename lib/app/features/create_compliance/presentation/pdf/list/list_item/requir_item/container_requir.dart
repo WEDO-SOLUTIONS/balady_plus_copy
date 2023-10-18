@@ -21,13 +21,13 @@ class ContainerRequir extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               SvgPicture.asset(ImagePath.circle),
-              const SizedBox(
+              Flexible(
                 child: Text(
                   'الصور المعروضة توضيحية ولا تتحدد شكل المخالفة بشكل خاص',
                   style: TextStyle(
                     color: Color(0xFF52525B),
                     fontSize: 14,
-                    fontFamily: 'Arabic UI Display',
+                    fontFamily: 'ArabicUIText',
                     fontWeight: FontWeight.w700,
                   ),
                 ),

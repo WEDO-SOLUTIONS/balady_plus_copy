@@ -38,7 +38,7 @@ class ListItem extends StatelessWidget {
                   style: const TextStyle(
                     color: Color(0xFF3F3F46),
                     fontSize: 15,
-                    fontFamily: 'Arabic UI Display',
+                    fontFamily: 'ArabicUIText',
                     fontWeight: FontWeight.w700,
                   ),
                 ),
@@ -47,7 +47,7 @@ class ListItem extends StatelessWidget {
                   style: const TextStyle(
                     color: Color(0xFF3F3F46),
                     fontSize: 15,
-                    fontFamily: 'Arabic UI Display',
+                    fontFamily: 'ArabicUIText',
                     fontWeight: FontWeight.w700,
                   ),
                 )

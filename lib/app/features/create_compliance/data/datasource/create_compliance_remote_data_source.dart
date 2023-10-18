@@ -103,7 +103,6 @@ class CreateComplianceRemoteDataSourceImpl
   Future<ApplyCreateComplianceResponseModel> applyCreateCompliance(
       ApplyCreateComplianceRequest params) async {
     var response;
-
     try {
       response = await webService.dio.post(
         ApiUrl.applyBeneficiaryCompliance,
@@ -682,15 +681,19 @@ class CreateComplianceRemoteDataSourceImpl
       if (state == true) {
         return true;
       } else {
+        ResponseBodyModel? r =
+            data != null ? ResponseBodyModel.fromMap(json.decode(data)) : null;
+        print("RRRR ${r?.data?.responseMessage}");
+        String error = r?.data?.responseMessage ?? "errors_server_error_2".tr();
         throw ServerException(
-          "errors_server_error_2".tr(),
+          error,
           exception: APIException(
             errorMessage: data,
           ),
         );
       }
     } catch (ex) {
-      print(ex);
+      if (ex is ServerException) rethrow;
       try {
         Helpers.sendLog(
             url: ApiUrl.complianceAttachment(

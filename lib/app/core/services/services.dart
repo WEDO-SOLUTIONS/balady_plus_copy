@@ -408,7 +408,7 @@ Map<String, dynamic> servicesConfig = {
       "requireLogin": true,
       "action": {
         "type": "page",
-        "value": "https://balady.gov.sa/ar/products/10920"
+        "value": "${RemoteConfig.webSiteUrl}/ar/products/10920"
       },
       "ar": {
         "title": "municipal_commercial".tr(),
@@ -426,7 +426,7 @@ Map<String, dynamic> servicesConfig = {
       "isImportant": false,
       "action": {
         "type": "page",
-        "value": "https://balady.gov.sa/ar/products/10470"
+        "value": "${RemoteConfig.webSiteUrl}/ar/products/10470"
       },
       "ar": {
         "title": "municpal_construction".tr(),
@@ -465,7 +465,7 @@ Map<String, dynamic> servicesConfig = {
       "requireLogin": true,
       "action": {
         "type": "page",
-        "value": "https://balady.gov.sa/ar/products/10574"
+        "value": "${RemoteConfig.webSiteUrl}/ar/products/10574"
       },
       "ar": {"title": "municipal_shop".tr(), "description": null, "tag": null},
       "en": {"title": "Schedule Date", "description": null, "tag": null}
@@ -480,7 +480,7 @@ Map<String, dynamic> servicesConfig = {
       "requireLogin": true,
       "action": {
         "type": "page",
-        "value": "https://balady.gov.sa/ar/products/10543"
+        "value": "${RemoteConfig.webSiteUrl}/ar/products/10543"
       },
       "ar": {
         "title": "municpal_housing".tr(),
@@ -547,7 +547,7 @@ Map<String, dynamic> servicesConfig = {
       "order": 1,
       "isNew": false,
       "isImportant": false,
-      "action": {"type": "page", "value": "https://balady.gov.sa/ar"},
+      "action": {"type": "page", "value": "${RemoteConfig.webSiteUrl}/ar"},
       "ar": {
         "title": "municpal_all".tr(),
         "description": "",
