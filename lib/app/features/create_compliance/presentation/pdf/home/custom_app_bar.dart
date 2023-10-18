@@ -8,11 +8,13 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String icon;
   final String name;
   final String listicon;
+  final bool showList;
   const CustomAppBar({
     super.key,
     required this.icon,
     required this.name,
     required this.listicon,
+    this.showList = true,
   });
 
   @override
@@ -51,25 +53,26 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                 ),
               ],
             ),
-            CircleAvatar(
-              backgroundColor: const Color(0x66CDE0E0),
-              radius: 24,
-              child: IconButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const ListPage(),
-                    ),
-                  );
-                },
-                icon: SvgPicture.asset(
-                  listicon,
-                  width: 24,
-                  height: 24,
+            if (showList)
+              CircleAvatar(
+                backgroundColor: const Color(0x66CDE0E0),
+                radius: 24,
+                child: IconButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const ListPage(),
+                      ),
+                    );
+                  },
+                  icon: SvgPicture.asset(
+                    listicon,
+                    width: 24,
+                    height: 24,
+                  ),
                 ),
-              ),
-            )
+              )
           ],
         ),
       ),

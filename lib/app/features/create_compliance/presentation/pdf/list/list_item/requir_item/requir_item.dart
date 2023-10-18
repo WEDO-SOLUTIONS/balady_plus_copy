@@ -26,7 +26,7 @@ class RequirementsItem extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   SvgPicture.asset(ImagePath.flag),
                   const SizedBox(
