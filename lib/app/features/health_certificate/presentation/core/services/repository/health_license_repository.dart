@@ -12,6 +12,7 @@ import '../../../../../../core/utils/constants/remote_config.dart';
 import '../../../../../transaction_inquiry/presentation/core/models/gis_location_result.dart';
 import '../../models/apply_new_health_request.dart';
 import '../../models/cancel_health_certificate_response.dart';
+import '../../models/check_update_photo_client.dart';
 import '../../models/cr_information.dart';
 import '../../models/delete_request_response.dart';
 import '../../models/health_request_details.dart';
@@ -538,6 +539,32 @@ class HealthLicenseRepository {
 
   Future<Tuple3<bool?, String?, ListResponse?>> getHealthCenters(
       String baladiyahID) async {
+    String query = "$baladiyahID";
+
+    final body = await webServices.getApigeeRequest(
+        ApiConstants.healthCertificatesCenters,
+        relativePath: query,
+        autoLogout: false);
+    bool state = body['state'];
+    dynamic data = body['data'];
+    ListResponse? result;
+    String error =
+        body['error'] ?? Helpers.translatingWord("errors_server_error_1");
+
+    try {
+      ListResponse response = ListResponse.fromJson(json.decode(data));
+      result = response;
+      if (!state) {
+        error = result.data?.responseMessage ?? error;
+      }
+    } catch (ex) {
+      //print(ex);
+    }
+    return Tuple3<bool?, String?, ListResponse?>(state, error, result);
+  }
+
+  Future<Tuple3<bool?, String?, CheckUpdatePhotoClientResponse?>>
+      getHealthCenters(String baladiyahID) async {
     String query = "$baladiyahID";
 
     final body = await webServices.getApigeeRequest(
