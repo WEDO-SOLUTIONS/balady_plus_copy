@@ -27,16 +27,9 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
-  cloud_firestore: ^4.9.2
-  cupertino_icons: ^1.0.6
+  cupertino_icons: ^1.0.2
   flutter:
     sdk: flutter
-  flutter_riverpod: ^2.4.1
-  go_router: 11.1.1
-  rxdart: ^0.27.7
-  shared_preferences: ^2.2.1
-  # the annotation package containing @riverpod
-  riverpod_annotation: 2.1.6
 
   async: ^2.11.0
   # Localization app to support multiple languages
@@ -161,22 +154,16 @@ dependencies:
   # Map urbi SKD
   dgis_map:
     path: urbi_map/dgis_map
+
+  # Mapness 
+  mapness:
+    path: mapness
 #  provider: ^6.0.5
 
 dev_dependencies:
+  flutter_lints: ^2.0.1
   flutter_test:
     sdk: flutter
-  mocktail: ^1.0.0
-  random_string: ^2.3.1
-  flutter_lints: ^2.0.3
-  # a tool for running code generators
-  build_runner: 2.4.6
-  # the code generator
-  riverpod_generator: 2.3.3
-  # riverpod_lint makes it easier to work with Riverpod
-  riverpod_lint: 2.1.1
-  # import custom_lint too as riverpod_lint depends on it
-  custom_lint: 0.5.3
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -211,8 +198,6 @@ flutter:
     - assets/icons/svg/weather/night/
     - assets/images/
     - assets/langs/
-    - assets/quran/
-    - assets/services/
     # - assets/services/
     - assets/maps/styles/
     - assets/maps/icons/

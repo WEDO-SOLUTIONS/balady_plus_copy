@@ -1,54 +1,47 @@
-import 'package:balady_plus/app.dart';
-import 'package:balady_plus/utils/format.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:shared_preferences/shared_preferences.dart'; // ignore:depend_on_referenced_packages
-import 'package:flutter_web_plugins/url_strategy.dart';
+// import 'package:flutter/material.dart' show WidgetsFlutterBinding, runApp;
+// import 'package:flutter_bloc/flutter_bloc.dart' show Bloc;
+// import 'package:flutter/services.dart' show SystemChrome, DeviceOrientation;
+// import 'package:localize_and_translate/localize_and_translate.dart'
+//     show LocalizationDefaultType, LocalizedApp, translator;
+// import './app/core/dependency_injection/dependency_injection_exports.dart' as di
+//     show initialize;
 
-Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+// import './app/core/services/services_exports.dart'
+//     show HiveManager, SimpleBlocObserver;
+// import './app/core/utils/utils_exports.dart' show AppConfig, EnvType;
+// import './app/app.dart';
+// import './app/core/dependency_injection/dependency_injection_exports.dart'
+//     show sl;
 
-  // turn off the # in the URLs on the web
-  usePathUrlStrategy();
-  final sharedPreferences = await SharedPreferences.getInstance();
-  // * Register error handlers. For more info, see:
-  // * https://docs.flutter.dev/testing/errors
-  registerErrorHandlers();
-  // * Entry point of the app
+// void main() async {
+//   WidgetsFlutterBinding.ensureInitialized();
 
-  final container = ProviderContainer(
-    overrides: [
-      // onboardingRepositoryProvider.overrideWithValue(
-      //   OnboardingRepository(sharedPreferences),
-      // ),
-    ],
-  );
-  runApp(UncontrolledProviderScope(
-    container: container,
-    child: const MyApp(),
-  ));
-}
+//   /// force app to be only portrait
+//   SystemChrome.setPreferredOrientations([
+//     DeviceOrientation.portraitUp,
+//     DeviceOrientation.portraitDown,
+//   ]);
 
-void registerErrorHandlers() {
-  // * Show some error UI if any uncaught exception happens
-  FlutterError.onError = (FlutterErrorDetails details) {
-    FlutterError.presentError(details);
-    debugPrint(details.toString());
-  };
-  // * Handle errors from the underlying platform/OS
-  PlatformDispatcher.instance.onError = (Object error, StackTrace stack) {
-    debugPrint(error.toString());
-    return true;
-  };
-  // * Show some error UI when any widget in the app fails to build
-  ErrorWidget.builder = (FlutterErrorDetails details) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.red,
-        title: Text('An error occurred'.hardcoded),
-      ),
-      body: Center(child: Text(details.toString())),
-    );
-  };
-}
+//   // di: dependency injection
+//   di.initialize();
+
+//   //! Please assign environment firstly
+//   sl.registerLazySingleton<EnvType>(() => EnvType.dev);
+
+//   // Initialize hive and open all needed boxes
+//   await HiveManager.initializeHive();
+
+//   await translator.init(
+//     // localeType: LocalizationDefaultType.device, // based on device language
+//     // localeType: LocalizationDefaultType.asDefined, // based on first element at languageList
+//     localeType: LocalizationDefaultType.asDefined,
+//     languagesList: AppConfig.defaultAppLanguage.languages,
+//     assetsDirectory: AppConfig.appLanguagesPath,
+//   );
+
+//   //! comment it in release mode
+//   // to observe all blocs movements
+//   if (sl<EnvType>().isDev) Bloc.observer = SimpleBlocObserver();
+
+//   runApp(LocalizedApp(child: const App()));
+// }
