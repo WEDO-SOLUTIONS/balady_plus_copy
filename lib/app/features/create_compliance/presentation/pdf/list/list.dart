@@ -20,6 +20,7 @@ class ListPage extends StatelessWidget {
         icon: ImagePath.closebutton,
         name: 'الفهرس',
         listicon: ImagePath.frame,
+        showList: false,
       ),
       body: Directionality(
         textDirection: TextDirection.rtl,

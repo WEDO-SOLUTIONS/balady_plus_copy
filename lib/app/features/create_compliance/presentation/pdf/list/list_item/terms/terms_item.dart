@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:flutter/material.dart';
 
 class TermsItem extends StatelessWidget {
@@ -22,12 +23,12 @@ class TermsItem extends StatelessWidget {
             ),
           ),
           Container(
-            width: 340,
             padding: const EdgeInsets.all(14),
+            width: double.infinity,
             margin: const EdgeInsets.symmetric(vertical: 8),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(8),
-              color: const Color(0xFFE8EFF1),
+              color: AppColor.primary100Light,
             ),
             child: Text(
               desc,
