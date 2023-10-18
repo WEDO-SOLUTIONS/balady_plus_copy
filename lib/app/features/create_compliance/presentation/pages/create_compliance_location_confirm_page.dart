@@ -78,7 +78,7 @@ class _ServiceCardsPageState extends State<CreateComplianceLocationPage> {
             "iconName": IconPath.serviceCardDesc,
             "type": ServiceCardsTypes.desc,
             "rate": 0,
-            "duration": 0,
+            "duration": "",
             "fees": 0,
             "ar": {
               "title": "وصف الخدمة",
@@ -91,7 +91,7 @@ class _ServiceCardsPageState extends State<CreateComplianceLocationPage> {
             "iconName": IconPath.serviceCardReq,
             "type": ServiceCardsTypes.req,
             "rate": 0,
-            "duration": 0,
+            "duration": "",
             "requirements": [
               "يجب أن يكون مقدم الطلب هو المالك للمبنى أو مفوض من مالك المبنى بتفويض إليكتروني ساري وصادر من بلدي.",
               "يجب أن يكون لدى مقدم الطلب رخصة إنشائية أو صك ملكية."
@@ -103,7 +103,7 @@ class _ServiceCardsPageState extends State<CreateComplianceLocationPage> {
             "iconName": IconPath.serviceCardFlow,
             "type": ServiceCardsTypes.flow,
             "rate": 0,
-            "duration": 0,
+            "duration": "",
             "flow": [
               {
                 "title": "من خلال المستفيد بنفسه (بدون مكتب هندسي)",
