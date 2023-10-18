@@ -1,5 +1,6 @@
 import 'dart:convert';
 import '../../../../../core/utils/constants/constants.dart';
+import '../../../../_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
 import '../core/image_path.dart';
 import '../home/custom_app_bar.dart';
 import '../home/stack_image.dart';
@@ -86,7 +87,6 @@ class _CompliancePDFHomePageState extends State<CompliancePDFHomePage> {
   Widget build(BuildContext context) {
     readdata();
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 239, 238, 238),
       appBar: const CustomAppBar(
         icon: ImagePath.closebutton,
         name: 'شهادة امتثال المباني',
