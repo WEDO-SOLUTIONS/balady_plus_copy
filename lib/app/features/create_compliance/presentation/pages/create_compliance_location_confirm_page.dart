@@ -149,6 +149,7 @@ class _ServiceCardsPageState extends State<CreateComplianceLocationPage> {
                 onTap: () async {
                   try {
                     sl<DelegatorsCubit>().getDelegators();
+                    sl<DelegatorsCubit>().getAgents();
                     await BottomSheetDialog.showDraggableSheet(
                       context,
                       dialogKeyName: DialogName.delegatorsDialog,

@@ -95,6 +95,7 @@ class AppInterceptors extends Interceptor {
       };
       options.headers.addAll(headers);
     }
+    print(options.headers);
     if (await networkConnection.isConnected == false) {
       "Request-Rejected because 'Network-Disconnected'".errorLog();
       return handler.reject(NoInternetConnectionException(options));

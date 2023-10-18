@@ -3238,6 +3238,27 @@
 "appointments_cancel_reasons_text":"أذكر الأسباب الأخرى",
 
 
+"compliance_deed_number_text":"رقم الصك", 
+"compliance_deed_number_date":"تاريخ الصك", 
+"compliance_deed_number_paper":"ورقي", 
+"compliance_deed_number_electronic":"إلكتروني", 
+
+"compliance_eskan_national_id":"رقم الهوية", 
+
+"compliance_electricity_type":"نوع الإيصال", 
+"compliance_electricity_number":"رقم آخر إيصال مصدر",
+"compliance_electricity_number_date":"تاريخ آخر إيصال مصدر", 
+
+"compliance_land_number":"رقم عقد الإسكان",
+"compliance_land_date":"تاريخ عقد الإسكان",
+
+
+"compliance_investment_number":"رقم  عقد الإستثمار",
+"compliance_investment_number_date": "تاريخ عقد الإستثمار", 
+"compliance_show_certificate": "عرض الشهادة", 
+
+
+
 
 
 
@@ -3292,6 +3313,14 @@
   "permit": " تصريح",
 
   "quick_code": "الرمز السريع",
+
+
+
+
+"profile_switch_account":"تحويل الى الحساب الشخصي", 
+"profile_switch_entity":"او تحويل الي حساب احد المنشات", 
+"profile_switch_delegator":"المفوضين", 
+"profile_switch_agent":"الوكلاء", 
 
 
 

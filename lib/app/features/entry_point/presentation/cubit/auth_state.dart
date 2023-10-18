@@ -7,6 +7,8 @@ class EntryPointState extends Equatable {
   final ApigeeTokenResponse? apigeeToken;
   final SsoUserInfo? userInfo;
   final DelegatorEntity? selectedDelegator;
+  final AgentEntity? selectedAgent;
+
   final String? cityId;
   final String? cityName;
   final String? errorMessage;
@@ -25,6 +27,7 @@ class EntryPointState extends Equatable {
       this.errorMessage,
       this.userInfo,
       this.selectedDelegator,
+      this.selectedAgent,
       this.userLocation,
       this.userLocationGIS});
 
@@ -39,6 +42,7 @@ class EntryPointState extends Equatable {
       final String? cityName,
       SsoUserInfo? userInfo,
       Nullable<DelegatorEntity?>? selectedDelegator,
+      Nullable<AgentEntity?>? selectedAgent,
       GISParams? userLocation,
       GISResponse? userLocationGIS}) {
     return EntryPointState(
@@ -53,6 +57,8 @@ class EntryPointState extends Equatable {
         selectedDelegator: selectedDelegator == null
             ? this.selectedDelegator
             : selectedDelegator.value,
+        selectedAgent:
+            selectedAgent == null ? this.selectedAgent : selectedAgent.value,
         userLocation: userLocation ?? this.userLocation,
         userLocationGIS: userLocationGIS ?? this.userLocationGIS,
         gisStatus: gisStatus ?? this.gisStatus);
@@ -72,6 +78,7 @@ class EntryPointState extends Equatable {
         blocStatus,
         apigeeToken,
         selectedDelegator,
+        selectedAgent,
         userLocation,
         userLocationGIS,
         gisStatus
