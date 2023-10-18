@@ -72,8 +72,8 @@ class CRStep2ActivityData extends StatelessWidget {
                             marginBottom: 8,
                             onChangeType: (item) {
                               SubActivityEntity? i = state.subActivities
-                                  .firstWhereOrNull((element) =>
-                                      element.activityId == item?.id);
+                                  .firstWhereOrNull(
+                                      (element) => element.id == item?.id);
                               i != null
                                   ? context
                                       .read<CrStep2ActivityDataCubit>()
@@ -89,7 +89,7 @@ class CRStep2ActivityData extends StatelessWidget {
                     ),
                     ReadOnlyField(
                       title: "نوع المنشاه".tr(),
-                      subTitle: "",
+                      subTitle: state.selectedSubActivity?.facilityName,
                       showSpace: false,
                     ),
                     const CustomVerticalSpace(height: 16),
@@ -115,7 +115,9 @@ class CRStep2ActivityData extends StatelessWidget {
                     WorkerTypeComponent(
                       selectedWorkerType: state.workerType,
                       onSelectedType: (type) {
-                        context.read<CrStep2ActivityDataCubit>().save();
+                        context
+                            .read<CrStep2ActivityDataCubit>()
+                            .updateWorkerType(type);
                       },
                     ),
                     const CustomVerticalSpace(height: 16),
@@ -129,7 +131,7 @@ class CRStep2ActivityData extends StatelessWidget {
           CRPreviousNextButtons(
             isBtnDisabled: false,
             onPressed: () {
-              context.read<CommercialLicenseBloc>();
+              context.read<CrStep2ActivityDataCubit>().save();
             },
           ),
         ],

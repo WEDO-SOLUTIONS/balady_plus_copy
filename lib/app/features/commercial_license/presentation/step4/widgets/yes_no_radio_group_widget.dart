@@ -38,15 +38,19 @@ class YesNoRadioGroupWidget extends StatelessWidget {
                     child: Padding(
                       padding: EdgeInsetsDirectional.only(
                           end: e == "No".tr() ? 0 : 16),
-                      child: CustomRadioButtonEnd<RadioItem>(
+                      child: CustomRadioButtonEnd<RadioItem<String>>(
                         title: e,
-                        value: RadioItem(radioValue: e, id: 0),
+                        value: RadioItem<String>(radioValue: e, radioText: e),
                         height: 48,
                         currentSelected: currentValue == null
                             ? null
                             : currentValue == true
-                                ? RadioItem(radioValue: "Yes".tr(), id: 0)
-                                : RadioItem(radioValue: "No".tr(), id: 0),
+                                ? RadioItem<String>(
+                                    radioValue: "Yes".tr(),
+                                    radioText: "Yes".tr())
+                                : RadioItem<String>(
+                                    radioValue: "No".tr(),
+                                    radioText: "No".tr()),
                         onChange: (RadioItem? item) {
                           onChanged(
                               item?.radioValue == "Yes".tr() ? true : false);

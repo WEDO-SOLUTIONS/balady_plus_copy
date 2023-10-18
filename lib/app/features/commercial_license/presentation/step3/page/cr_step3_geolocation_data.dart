@@ -87,7 +87,9 @@ class CRStep3GeolocationData extends StatelessWidget {
               ),
             ),
           ),
-          const CRPreviousNextButtons(isBtnDisabled: false),
+          CRPreviousNextButtons(
+            isBtnDisabled: false,
+          ),
         ],
       );
     });

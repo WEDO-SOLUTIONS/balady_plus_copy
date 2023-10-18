@@ -27,7 +27,7 @@ class CrStep2ActivityDataCubit extends Cubit<CrStep2ActivityDataState> {
   void getSubActivityDetails(SubActivityEntity subActivity) async {
     emit(state.copyWith(subActivityDetailsStatus: BlocStatus.loading));
     final response =
-        await _getSubActivityDetails(subActivity.activityId.toString() ?? '');
+        await _getSubActivityDetails(subActivity.id.toString() ?? '');
     response.fold(
         (failure) => emit(state.copyWith(
               subActivityDetailsStatus: BlocStatus.failure,
@@ -105,7 +105,7 @@ class CrStep2ActivityDataCubit extends Cubit<CrStep2ActivityDataState> {
         requestId: requestId,
         workerTypeId: state.workerType!.index,
         area: state.totalArea ?? 0,
-        detailedActivityId: state.selectedSubActivity!.activityId));
+        detailedActivityId: state.selectedSubActivity!.id!));
 
     response.fold(
         (failure) => emit(state.copyWith(

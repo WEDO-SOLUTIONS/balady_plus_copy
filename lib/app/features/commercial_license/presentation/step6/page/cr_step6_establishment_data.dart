@@ -24,8 +24,8 @@ class CRStep6EstablishmentData extends StatelessWidget {
                     groupName: 'بيانات موقع المنشأة',
                     currentItem: null,
                     items: [
-                      RadioItem(radioValue: "داخل مبني", id: 1),
-                      RadioItem(radioValue: "علي الشارع", id: 0),
+                      //   RadioItem(radioValue: "داخل مبني", id: 1),
+                      //   RadioItem(radioValue: "علي الشارع", id: 0),
                     ],
                     onChanged: (value) {},
                   ),
@@ -94,4 +94,3 @@ class CRStep6EstablishmentData extends StatelessWidget {
     );
   }
 }
-

@@ -73,3 +73,8 @@ enum RequestsType {
 enum ATHKAR_CATAGORIES { morning, sleep, evening }
 
 enum ServiceCardsTypes { desc, req, flow }
+
+enum CRSubmitterType { owner, rental }
+
+enum CRContractType { deed, invest, ejar }
+enum CRContractOption { attach, service }
