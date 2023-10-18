@@ -13,12 +13,17 @@ class InvoiceDetailsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
- InvoiceEntity  invoiceEntity = ModalRoute.of(context)!.settings.arguments as InvoiceEntity;
+    List  arguments = ModalRoute.of(context)!.settings.arguments as List;
+    String  invoiceId = arguments[0];
+    String  crNumber = arguments[1];
+    String  crType = arguments[2];
 
     return BlocProvider(
       create: (context) => sl<InvoiceDetailsCubit>(),
       child: InvoiceDetailBody(
-        invoiceEntity: invoiceEntity,
+        invoiceId: invoiceId,
+        crNumber: crNumber,
+        crType: crType,
       ),
     );
   }
