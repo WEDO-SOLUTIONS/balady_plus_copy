@@ -393,4 +393,8 @@ class IconPath {
   static const cancelOrder = '${_svgIconPath}closeـsquare$_svg';
   static const editIcon = '${_svgIconPath}edit_icon$_svg';
   static const logoutIcon = '${_svgIconPath}logout$_svg';
+  static const notificationStatusIcon = '${_svgIconPath}notification_status$_svg';
+
+
+
 }

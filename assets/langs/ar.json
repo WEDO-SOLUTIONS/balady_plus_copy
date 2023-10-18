@@ -3335,7 +3335,7 @@
   "attachment_message_typ": "مرفق واحد من نوع",
   "attachment_message_size": "وبحد اقصي",
 
-  "data_not_have_actions": "لاويوجد إجراء متاح",
+  "data_not_have_actions": "لا يوجد إجراء متاح",
 
 
   "back_licenses_page": "العودة لصفحة  الرخص",
@@ -3366,7 +3366,16 @@
   "submit_application_successfully_cancel_message" : "تم اصدار الفاتورة الخاصة بخدمة الغاء رخصة تجارية",
   "event_location_with_google": "الوصول للفعالية عبر خرائط قوقل" ,
   "ATTACH": "مرفق",
-  "data_not_have_permits": "لاويوجد تصاريح متاح"
+  "data_not_have_permits": "عفوا لا يوجد تصاريح سارية على الرخصة",
+
+  "boardTypeName": "نوع اللوحة ",
+  "boardArea": " مساحة اللوحة ",
+
+  "responses_request": "الردود على طلب",
+
+  "notes_": "الملاحظة",
+
+  "return_order_details": "العودة لتفاصيل الطلب"
 
 
 }

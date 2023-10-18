@@ -349,6 +349,9 @@ class ApiUrl {
   static  String commercialLicenseCancelCalculateFees(int requestId) => '/v1/balady-commercial-services/mobile-cancel-request/$requestId/calculateFees';
   static  String commercialLicenseCancelSubmit(int requestId) => '/v1/balady-commercial-services/mobile/cancel-request/$requestId/submit';
 /////////////////////////////////////////////////////////
+  static  String getAllowedActionsForRequests(int requestId) => '/v1/balady-commercial-services/mobile/request/allowed-actions/$requestId';
+  static  String getRequestCommercialLicenseDetails(int requestId) => '/v1/balady-commercial-services/mobile/request/details/$requestId';
+/////////////////////////////////////////////////////////
   static  String commercialLicenseIsDirectToPay(int requestId) => '/v1/balady-commercial-services/mobile-cancel-request/request/$requestId/is-direct-to-pay';
   static const String  commercialLicenseCancelSubmitRating = '/v1/balady-commercial-services/rating/submit';
   static  String commercialLicenseCancelGetDetailsRequest(int requestId) => '/v1/balady-commercial-services/mobile-cancel-request/request-details/$requestId';

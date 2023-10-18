@@ -4,11 +4,11 @@ import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/r
 import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports.dart';
 import 'package:balady_plus/app/features/commercial_license_cancel/presentation/commercial_license_cancel/mvvm/commercial_license_attachments_view_model.dart';
 import 'package:balady_plus/app/features/commercial_license_cancel/presentation/commercial_license_cancel/mvvm/commercial_license_permits_view_model.dart';
+import 'package:balady_plus/app/features/commercial_license_details/data/models/commercial_licence_details.dart';
 import 'package:balady_plus/app/features/commercial_license_details/presentation/bloc/commercial_license_details_cubit.dart';
 import 'package:balady_plus/app/features/commercial_license_details/presentation/widgets/attachment_show_widget.dart';
 import 'package:balady_plus/app/features/commercial_license_details/presentation/widgets/commercial_license_permits_widget.dart';
 import 'package:balady_plus/app/features/create_compliance/data/models/comliance_request_details_model.dart';
-import 'package:balady_plus/app/features/transaction_inquiry/presentation/core/models/attachment_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -366,6 +366,68 @@ class _CommercialLicenseDetailsBodyState
                                 .contractInfoResponseDto.contractOption)
                             .tr(),
                       ),
+
+                      state.commercialLicenceDetails!.shopInfo.boardsInfo !=
+                              null
+                          ? ListView.builder(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                              itemCount: state.commercialLicenceDetails!.shopInfo.boardsInfo!.length ,
+                              itemBuilder: (_, index) {
+                                BoardsInfo boardsInfo = state
+                                    .commercialLicenceDetails!
+                                    .shopInfo
+                                    .boardsInfo![index];
+                                return Card(
+                                  margin: const EdgeInsets.only(top: 16),
+                                  color: AppColor.primary100Light,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(16.0),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        CustomTextWidget(
+                                          '${'board'.tr()} ${++index}',
+                                          textStyle:
+                                          AppStyle.signInFullTextStyle.copyWith(
+                                            color: AppColor.primary700Light,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 16),
+                                        CustomTextWidget(
+                                          "boardTypeName".tr(),
+                                          textStyle: AppStyle.tagTextStyle,
+                                        ),
+                                        const SizedBox(height: 4),
+                                        CustomTextWidget(
+                                          boardsInfo.typeName,
+                                          textStyle:
+                                          AppStyle.costTextStyle.copyWith(
+                                            color: const Color(0xff52525B),
+                                          ),
+                                        ),
+
+                                        const SizedBox(height: 16),
+                                        CustomTextWidget(
+                                          "permitType".tr(),
+                                          textStyle: AppStyle.tagTextStyle,
+                                        ),
+                                        const SizedBox(height: 4),
+                                        CustomTextWidget(
+                                          boardsInfo.area.toString() +
+                                              'm2'.tr(),
+                                          textStyle:
+                                              AppStyle.costTextStyle.copyWith(
+                                                color: const Color(0xff52525B),
+                                              ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              },
+                            )
+                          : const SizedBox(),
                     ],
                   ),
 

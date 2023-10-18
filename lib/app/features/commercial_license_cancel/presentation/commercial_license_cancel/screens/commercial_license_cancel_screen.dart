@@ -1,17 +1,14 @@
 import 'package:balady_plus/app/core/dependency_injection/injection_container.dart';
 import 'package:balady_plus/app/core/utils/common_functions.dart';
-import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:balady_plus/app/core/utils/constants/app_style.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
 import 'package:balady_plus/app/core/utils/constants/route_names.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/buttons/elevated_button_widgets.dart';
-import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/custom_alert_dialog_widget.dart';
-import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/custom_popups_widgets.dart';
 import 'package:balady_plus/app/features/commercial_license_cancel/presentation/commercial_license_cancel/blocs/commercial_license_cancel/commercial_license_cancel_bloc.dart';
 import 'package:balady_plus/app/features/commercial_license_cancel/presentation/commercial_license_cancel/mvvm/request_attachments_view_model.dart';
 import 'package:balady_plus/app/features/commercial_license_cancel/presentation/commercial_license_cancel/screens/commercial_license_cancel_one_screen.dart';
 import 'package:balady_plus/app/features/commercial_license_cancel/presentation/commercial_license_cancel/screens/commercial_license_cancel_two_screen.dart';
-import 'package:balady_plus/app/features/commercial_license_cancel/presentation/submit_application_successfully_cancel/mvvm/submit_rating_view_model.dart';
+import 'package:balady_plus/app/features/commercial_license_details/presentation/mvvm/commercial_license_reason_cancel_view_model.dart';
 import 'package:balady_plus/app/features/vd/presentation/widgets/details_widgets/details_app_bar_two.dart';
 import 'package:balady_plus/etmam_app/features/_shared_feature_/shared/shared_feature_exports.dart';
 import 'package:flutter/material.dart';
@@ -19,7 +16,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:provider/provider.dart';
-import '../../../../vd/presentation/widgets/details_widgets/details_app_bar.dart';
 
 class CommercialLicenseCancelScreen extends StatefulWidget {
   const CommercialLicenseCancelScreen({Key? key}) : super(key: key);
@@ -53,7 +49,7 @@ class _CommercialLicenseCancelScreenState
           goToNewPage();
           return Future<bool>.value(false);
         } else {
-          return (await showBackDialog()) ?? false;
+          return (await showBackDialog()) ;
         }
       },
       child: MultiProvider(
@@ -62,17 +58,18 @@ class _CommercialLicenseCancelScreenState
             create: (BuildContext context) {
               return RequestAttachmentsViewModel(
                 webService: sl(),
-                requestId: bloc.cancellationRequestResponse.requestId,
+                requestId: bloc.requestId,
               );
             },
           ),
-          // ChangeNotifierProvider(
-          //   create: (BuildContext context) =>
-          //       CommercialLicenseReasonCancelViewModel(
-          //     webService: sl(), licenseId: bloc.licenseId,
-          //         submitterInfo: bloc.submitterInfo,
-          //   ),
-          // ),
+          ChangeNotifierProvider(
+            create: (BuildContext context) =>
+                CommercialLicenseReasonCancelViewModel(
+              webService: sl(),
+              licenseId: 312,
+              submitterInfo: null,
+            ),
+          ),
         ],
         child: MultiBlocProvider(
           providers: [
@@ -123,7 +120,7 @@ class _CommercialLicenseCancelScreenState
                           }
                         },
                         onTapCloseAction: () => showBackDialog(),
-                        requestNum: bloc.cancellationRequestResponse.requestId,
+                        requestNum: bloc.requestId,
                       ),
                       body: PageView.builder(
                         itemCount: pagesList.length,

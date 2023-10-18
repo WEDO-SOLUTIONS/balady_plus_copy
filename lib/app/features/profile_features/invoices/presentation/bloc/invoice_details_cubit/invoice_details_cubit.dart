@@ -19,18 +19,18 @@ class InvoiceDetailsCubit extends Cubit<InvoiceDetailsState> {
     this.getInvoiceDetails,
   ) : super(const InvoiceDetailsState());
 
-  Future<void> getInvoiceDetailsById(String id) async {
+  Future<void> getInvoiceDetailsById(String id,String? crNumber,String? crType) async {
     emit(
       state.copyWith(status: BlocRequestStatus.submissionGetLoading),
     );
-    final unifiedNationalNumber =
-        CommonProperties.selectedDelegator?.unifiedNationalNumber;
-    final identityNumber = CommonProperties.selectedDelegator?.crNumber;
+    final identityNumber =  crNumber ?? CommonProperties.selectedDelegator?.crNumber;
+    final identityTypeId =  crType ?? CommonProperties.selectedDelegator?.crType;
 
     final params = InvoiceDetailsParams(
         invoiceId: id,
-        unifiedNationalNumber: unifiedNationalNumber,
-        identityNumber: identityNumber);
+      identityNumber: identityNumber,
+      identityTypeId: crType,
+    );
     final failureOrSuccess = await getInvoiceDetails(params);
     failureOrSuccess.fold(
       (failure) {
