@@ -65,7 +65,7 @@ class _RequirementsState extends State<Requirements> {
                   style: TextStyle(
                     color: Color(0xFF145E75),
                     fontSize: 17,
-                    fontFamily: 'Arabic UI Display',
+                    fontFamily: 'ArabicUIText',
                     fontWeight: FontWeight.w700,
                   ),
                 ),
@@ -74,7 +74,7 @@ class _RequirementsState extends State<Requirements> {
                   style: TextStyle(
                     color: Color(0xFF52525B),
                     fontSize: 14,
-                    fontFamily: 'Arabic UI Display',
+                    fontFamily: 'ArabicUIText',
                     fontWeight: FontWeight.w700,
                   ),
                 ),

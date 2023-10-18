@@ -18,6 +18,8 @@ class _GeneralProvisionsState extends State<GeneralProvisions> {
   List<ProvisionsModel> data = [];
 
   Future<void> readdata() async {
+    if (data.isNotEmpty) return;
+
     String qa = await rootBundle
         .loadString("assets/compliance_pdf/text/provisions.json");
     var r = json.decode(qa);
@@ -34,7 +36,6 @@ class _GeneralProvisionsState extends State<GeneralProvisions> {
   @override
   void initState() {
     super.initState();
-    readdata();
   }
 
   @override
@@ -60,7 +61,7 @@ class _GeneralProvisionsState extends State<GeneralProvisions> {
                   style: TextStyle(
                     color: Color(0xFF145E75),
                     fontSize: 17,
-                    fontFamily: 'Arabic UI Display',
+                    fontFamily: 'ArabicUIText',
                     fontWeight: FontWeight.w700,
                   ),
                 ),

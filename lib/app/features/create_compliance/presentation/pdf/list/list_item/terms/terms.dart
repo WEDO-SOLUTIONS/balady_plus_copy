@@ -18,6 +18,7 @@ class _TermsAndDefinitionsState extends State<TermsAndDefinitions> {
   List<TermModel> data = [];
 
   Future<void> readdata() async {
+    if (data.isNotEmpty) return;
     String qa =
         await rootBundle.loadString("assets/compliance_pdf/text/defi.json");
     var r = json.decode(qa);
@@ -34,7 +35,6 @@ class _TermsAndDefinitionsState extends State<TermsAndDefinitions> {
   @override
   void initState() {
     super.initState();
-    readdata();
   }
 
   @override
@@ -59,7 +59,7 @@ class _TermsAndDefinitionsState extends State<TermsAndDefinitions> {
                   style: TextStyle(
                     color: Color(0xFF145E75),
                     fontSize: 17,
-                    fontFamily: 'Arabic UI Display',
+                    fontFamily: 'ArabicUIText',
                     fontWeight: FontWeight.w700,
                   ),
                 ),
@@ -68,7 +68,7 @@ class _TermsAndDefinitionsState extends State<TermsAndDefinitions> {
                   style: TextStyle(
                     color: Color(0xFF52525B),
                     fontSize: 14,
-                    fontFamily: 'Arabic UI Display',
+                    fontFamily: 'ArabicUIText',
                     fontWeight: FontWeight.w600,
                   ),
                 ),

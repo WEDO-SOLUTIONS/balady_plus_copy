@@ -1,3 +1,5 @@
+import 'package:balady_plus/app/core/utils/constants/constants.dart';
+
 import '../list/list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -43,7 +45,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                   style: const TextStyle(
                     color: Color(0xFF3F3F46),
                     fontSize: 20,
-                    fontFamily: 'Arabic UI Display',
+                    fontFamily: Constants.appFontType,
                     fontWeight: FontWeight.w700,
                   ),
                 ),

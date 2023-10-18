@@ -147,6 +147,7 @@ class MapViewModel extends BaseViewModel {
   Future<void> selectCategory(
       {SearchCategoryMessage? category, CustomSearchCategory? custom}) async {
     searchController.clear();
+    clearAllCards();
     if (category == selectedCategory.value) {
       _searchOperation?.cancel();
       selectedCategory.value = null;
@@ -405,16 +406,12 @@ class MapViewModel extends BaseViewModel {
     final result = await controller.initialize();
     if (!result.wasInitialized) {
       initialized.value = false;
-
       return false;
     }
-
     _setupListeners();
 
-    // setLocale(const Locale("ar", "US"), TextDirection.ltr);
     await controller.loadStyles(Constants.mapStyle);
     await controller.overrideLocales(["ar-SA"]);
-    // await controller.overrideLocales([localeState.value.locale]);
     await controller.setMarkerOptions(
       MarkerOptionsMessageOld(
         svgAsset: "assets/maps/icons/ic_marker.svg",
@@ -423,51 +420,7 @@ class MapViewModel extends BaseViewModel {
         iconWidth: 24,
       ),
     );
-
     await controller.setZoomRestrictions(min: 5.5);
-
-/*
-    mapObjectManager = await controller.createMapObjectManagerWithClustering(
-      ClusteringMapObjectManager(
-        options: ClusteringMapObjectManagerOptionsMessage(
-          logicalPixel: 40,
-          maxZoom: 16,
-        ),
-        renderCluster: (objectCount) {
-          return SimpleClusterOptionsMessage(
-            icon: MarkerIconMessage(
-              path: "assets/maps/icons/ic_marker.svg",
-              width: 24,
-            ),
-            text: "$objectCount",
-            textStyle: MarkerTextStyleMessage(fontSize: 16),
-          );
-        },
-        onTap: (clusterObject) async {
-          clusterObject.setIcon("assets/maps/icons/ic_marker_red.svg");
-
-          final clusterPosition = await controller.calcPositionForMarkers(
-            clusterObject.markers,
-            CalcPositionOptionsMessage(
-              screenArea: CameraSetPaddingMessage(
-                bottomPadding: 40,
-                leftPadding: 40,
-                topPadding: 40,
-                rightPadding: 40,
-              ),
-            ),
-          );
-          await controller.moveCamera(
-            clusterPosition,
-            1.5,
-            CameraAnimationTypeMessage.default_,
-          );
-        },
-      ),
-    );
-
-
-*/
 
     try {
       final permission = await Permission.location.request();
@@ -493,6 +446,8 @@ class MapViewModel extends BaseViewModel {
           ),
         );
       } else {
+        print("Location EX not granted");
+
         await controller.changeFollowState();
         await controller.setCameraPosition(
           CameraPositionMessage(
@@ -509,6 +464,8 @@ class MapViewModel extends BaseViewModel {
         );
       }
     } catch (ex) {
+      print("Location EX $ex");
+      await controller.onLocationPremissionGranted();
       await controller.changeFollowState();
       await controller.setCameraPosition(
         CameraPositionMessage(

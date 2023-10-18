@@ -11,6 +11,7 @@ import '../../../../core/services/local/navigation_services.dart';
 import '../../../../core/utils/constants/app_colors.dart';
 import '../../../../core/utils/enums/enums.dart';
 import '../../data/entities/success_screen_args.dart';
+import '../buttons/elevated_button_widgets.dart';
 import '../widgets/buttons/custom_buttons_widgets.dart';
 import '../widgets/custom_spaces_widgets.dart';
 import '../widgets/texts/custom_text_widget.dart';
@@ -386,13 +387,11 @@ class SuccessButtons extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             if (pageType == PAGE_TYPE.emtethal && isFawry == true)
-              CustomTextButtonWidget(
-                onPressed: () {
-                  onPressWhiteButton(context, requestId: requestId);
-                },
-                text: getWhiteBtnText(),
-                btnTextSize: 16,
-              ),
+              ElevatedButtonWidget.primaryCustomBorder(
+                  onPressed: () {
+                    onPressWhiteButton(context, requestId: requestId);
+                  },
+                  text: getWhiteBtnText()),
             CustomVerticalSpace(height: 16),
             CustomElevatedButtonWidget(
               onPressed: () {

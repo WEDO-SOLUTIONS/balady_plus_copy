@@ -851,7 +851,7 @@ class AppStyle {
   static const textFieldSuffixTextStyle = TextStyle(
     color: Color(0x7F1A1A1A),
     fontSize: 12,
-    fontFamily: 'Arabic UI Display',
+    fontFamily: 'ArabicUIText',
     fontWeight: FontWeight.w600,
   );
 
