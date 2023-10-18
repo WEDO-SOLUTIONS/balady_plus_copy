@@ -4,6 +4,7 @@ class DelegatorModel extends DelegatorEntity {
   const DelegatorModel({
     super.crNumber,
     super.unifiedNationalNumber,
+    required super.crType,
     required super.delegationSource,
     required super.relationTypeId,
     required super.relationTypeName,
@@ -22,6 +23,7 @@ class DelegatorModel extends DelegatorEntity {
       roleId: map['roleId'] as String? ?? '',
       roleName: map['roleName'] as String? ?? '',
       entityName: map['entityName'] as String? ?? '',
+      crType: map['crType'] as String? ?? '',
     );
   }
 }

@@ -21,7 +21,7 @@ class CommercialLicenseCancelBloc
   final WebService webService;
 
   // final SubmitterInfo submitterInfo;
-  final String crNumber ;
+  final String crNumber , crType;
   final CancellationRequestResponse cancellationRequestResponse;
   ReasonCancel? reasonCancel;
   HijriCalendar? hijriCalendar;
@@ -35,6 +35,7 @@ class CommercialLicenseCancelBloc
   CommercialLicenseCancelBloc({
     required this.webService,
     required this.crNumber,
+    required this.crType,
     required this.cancellationRequestResponse,
     // required this.submitterInfo,
     required this.reasonCancel,
@@ -93,6 +94,7 @@ class CommercialLicenseCancelBloc
       final result = ResponseBodyModel.fromMap(data).data?.result;
       submitResponse = SubmitResponse.fromJson(result);
       submitResponse!.crNumber = crNumber;
+      submitResponse!.crType = crType;
       emitter(
           SubmitCancelRequestSucceededState(submitResponse: submitResponse!));
     } catch (e) {
