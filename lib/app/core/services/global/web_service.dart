@@ -48,13 +48,16 @@ class WebService {
     dio.options.headers = {};
     dio.addSentry();
 
-    dio.interceptors.add(PrettyDioLogger(
-      requestHeader: false,
-      requestBody: false,
-      responseBody: false,
-    ));
+    dio.interceptors.add(
+      PrettyDioLogger(
+        requestHeader: true,
+        requestBody: true,
+        responseBody: true,
+      ),
+    );
     dio.interceptors.add(AppInterceptors());
   }
+
   WebService.newDio({
     required this.dio,
   });
@@ -199,6 +202,7 @@ class AppInterceptors extends Interceptor {
   }
 
   String get languageCode => translator.activeLanguageCode;
+
   bool get mounted => true;
 }
 
