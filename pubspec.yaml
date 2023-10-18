@@ -100,7 +100,7 @@ dependencies:
   # Get current device information
   device_info_plus: ^9.0.0
   # API for querying information about an application package
-  package_info_plus: ^4.0.0
+  package_info_plus: ^4.0.2
   # parses Adobe After Effects animations
   lottie: ^2.2.0
   # Generate Unique ID
@@ -154,6 +154,8 @@ dependencies:
   mapness:
     path: mapness
   google_fonts: ^6.0.0
+  wakelock_plus: ^1.1.3
+  provider: ^6.0.5
 #  provider: ^6.0.5
 
 dev_dependencies:
@@ -181,6 +183,7 @@ flutter:
     - assets/icons/svg/weather/
     - assets/icons/svg/profile/
     - assets/icons/svg/nearby/
+    - assets/icons/svg/routing/
     - assets/icons/svg/vd/
     - assets/icons/svg/qr/
     - assets/icons/svg/dc/

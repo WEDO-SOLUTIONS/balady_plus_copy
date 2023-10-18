@@ -12,7 +12,9 @@ import '../../home_exports.dart' show HomeBottomSheet, HomeMap;
 final GlobalKey<NavigatorState> mapKey = new GlobalKey<NavigatorState>();
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  const HomePage({super.key, required this.hideControls});
+
+  final bool hideControls;
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -49,17 +51,16 @@ class _HomePageState extends State<HomePage> /*with WidgetsBindingObserver*/ {
 
   @override
   Widget build(BuildContext context) {
-    print("home page init build");
-
-    MapViewModel mapViewModel = context.watch<MapViewModel?>()!;
     return Scaffold(
       key: mapKey,
       resizeToAvoidBottomInset: false,
       body: TabPageContainer(
         child: Stack(
           children: [
-            HomeMap(),
-            HomeBottomSheet(),
+            HomeMap(
+              hideControls: widget.hideControls,
+            ),
+            if (!widget.hideControls) const HomeBottomSheet(),
           ],
         ),
       ),
