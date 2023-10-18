@@ -250,6 +250,9 @@ flutter:
     - assets/icons/msr/
     - assets/icons/tsr/
     - assets/images/building/
+    - assets/compliance_pdf/images/
+    - assets/compliance_pdf/text/
+
     # - assets/services/
 
   # An image asset can refer to one or more resolution-specific "variants", see

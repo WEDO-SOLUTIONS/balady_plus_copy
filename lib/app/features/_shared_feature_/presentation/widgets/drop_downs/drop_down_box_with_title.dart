@@ -79,7 +79,7 @@ class DropDownWithTitle extends StatelessWidget {
                     if (showArrow)
                       SvgPicture.asset(
                         IconPath.arrowDown,
-                         color: AppColor.blackModern600Light,
+                        color: AppColor.blackModern600Light,
                         colorBlendMode: BlendMode.srcIn,
                       ),
                   ],

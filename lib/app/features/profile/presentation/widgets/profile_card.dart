@@ -13,11 +13,12 @@ import '../../../entry_point/entry_point_exports.dart' show SsoUserInfo;
 import '../../../entry_point/presentation/cubit/auth_cubit.dart';
 import '../../../home_page/home_exports.dart' show CircleIcon;
 import '../../../profile_features/delegators/delegators_exports.dart'
-    show DelegatorEntity, DelegatorList, DelegatorsCubit;
+    show AgentEntity, DelegatorEntity, DelegatorList, DelegatorsCubit;
 
 class ProfileCard extends StatelessWidget {
   final SsoUserInfo? userInfo;
   final DelegatorEntity? delegator;
+  final AgentEntity? agent;
   final bool selected;
   final bool isListItem;
 
@@ -25,6 +26,7 @@ class ProfileCard extends StatelessWidget {
     super.key,
     this.userInfo,
     this.delegator,
+    this.agent,
     this.selected = false,
     this.isListItem = true,
   });
@@ -32,27 +34,43 @@ class ProfileCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final selected = !isListItem || this.selected;
-    final name =
-        delegator?.entityName ?? userInfo?.getFirstAndLastName() ?? "hi".tr();
-    String type = delegator?.id ?? userInfo?.idNo ?? "in_balady".tr();
-    if (!isListItem && delegator == null && userInfo != null) {
+    final name = (agent?.grantorName ?? delegator?.entityName) ??
+        userInfo?.getFirstAndLastName() ??
+        "hi".tr();
+    String type = (agent?.grantorNumber ?? delegator?.id) ??
+        userInfo?.idNo ??
+        "in_balady".tr();
+    if (!isListItem && delegator == null && agent == null && userInfo != null) {
       // type = "individual_account".tr();
       type = userInfo?.idNo ?? "";
     }
 
     return InkWell(
       onTap: () async {
-        if (userInfo == null && delegator == null) {
+        if (userInfo == null && delegator == null && agent == null) {
           return;
         }
-        print("FFF ${context.read<DelegatorsCubit>().state.delegators}");
-        print("GG");
+
         if (isListItem) {
-          context.read<DelegatorsCubit>().selectDelegator(delegator);
-          context.read<EntryPointCubit>().selectDelegator(delegator);
+          if (delegator != null) {
+            context.read<DelegatorsCubit>().selectDelegator(delegator);
+            context.read<EntryPointCubit>().selectDelegator(delegator);
+          }
+          if (agent != null) {
+            context.read<DelegatorsCubit>().selectAgent(agent);
+            context.read<EntryPointCubit>().selectAgent(agent);
+          }
+          if (agent == null && delegator == null) {
+            context.read<DelegatorsCubit>().selectDelegator(delegator);
+            context.read<EntryPointCubit>().selectDelegator(delegator);
+            context.read<DelegatorsCubit>().selectAgent(agent);
+            context.read<EntryPointCubit>().selectAgent(agent);
+          }
+
           Navigator.of(context).pop();
         } else {
           context.read<DelegatorsCubit>().getDelegators();
+          context.read<DelegatorsCubit>().getAgents();
           await BottomSheetDialog.showDraggableSheet(
             context,
             dialogKeyName: DialogName.delegatorsDialog,
