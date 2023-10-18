@@ -56,6 +56,7 @@ class ServiceCardDescWidget extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 CustomTextWidget(
                   card.description,
@@ -63,18 +64,22 @@ class ServiceCardDescWidget extends StatelessWidget {
                   maxLines: 6,
                 ),
                 const SizedBox(height: 16),
+                (card.fees ?? 1) == -1
+                    ? CustomUnderlineTextdButtonWidget(
+                  onPressed: () {
+                    Navigator.pushNamed(
+                        context, RouteName.calculatorMapRoute);
+                  },
+                  text: card.feesName!,
+                )
+                    : const SizedBox(),
+                const SizedBox(height: 12),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     if (card.fees != null)
                       card.fees == -1
-                          ? CustomUnderlineTextdButtonWidget(
-                              onPressed: () {
-                                Navigator.pushNamed(
-                                    context, RouteName.calculatorMapRoute);
-                              },
-                              text: card.feesName!,
-                            )
+                          ? const SizedBox()
                           : ServiceCardParameter(
                               title: 'fees'.tr(),
                               iconName: IconPath.walletNoFees,
@@ -82,6 +87,13 @@ class ServiceCardDescWidget extends StatelessWidget {
                                   ? "service_card_no_fees".tr()
                                   : card.fees.toString(),
                             ),
+                    if (card.duration.isNotEmpty)
+                      ServiceCardParameter(
+                        title: 'time_serveis'.tr(),
+                        iconName: IconPath.duration,
+                        value: card.duration,
+                        width: 140,
+                      ),
                   ],
                 ),
               ],
