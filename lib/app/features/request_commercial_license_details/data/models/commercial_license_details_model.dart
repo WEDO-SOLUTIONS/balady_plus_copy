@@ -1,4 +1,3 @@
-
 import 'package:intl/intl.dart';
 
 class RequestCommercialLicenseDetailsModel {
@@ -11,14 +10,19 @@ class RequestCommercialLicenseDetailsModel {
   String typeName;
   int licenseTypeId;
   String licenseTypeName;
-  String lastUpdateDate;
+  DateTime lastUpdateDate;
+  int? cancellationReasonId;
+  String? cancellationReasonName;
   LicenseInfo licenseInfo;
   List<AttachmentsInfo>? attachmentsInfo;
   List<RequestNotesInfo>? requestNotesInfo;
+  bool availableCloseDate;
 
   RequestCommercialLicenseDetailsModel({
     required this.requestId,
     required this.statusId,
+    required this.cancellationReasonId,
+    required this.cancellationReasonName,
     required this.statusName,
     required this.subMunicipalityId,
     required this.subMunicipalityName,
@@ -30,6 +34,7 @@ class RequestCommercialLicenseDetailsModel {
     required this.licenseInfo,
     required this.attachmentsInfo,
     required this.requestNotesInfo,
+    required this.availableCloseDate,
   });
 
   factory RequestCommercialLicenseDetailsModel.fromJson(Map<String, dynamic> json) => RequestCommercialLicenseDetailsModel(
@@ -38,12 +43,15 @@ class RequestCommercialLicenseDetailsModel {
     statusName: json["statusName"],
     subMunicipalityId: json["subMunicipalityId"],
     subMunicipalityName: json["subMunicipalityName"],
+    cancellationReasonName: json["cancellationReasonName"],
+    cancellationReasonId: json["cancellationReasonId"],
     typeId: json["typeId"],
     typeName: json["typeName"],
     licenseTypeId: json["licenseTypeId"],
     licenseTypeName: json["licenseTypeName"],
-    lastUpdateDate: json["lastUpdateDate"],
+    lastUpdateDate: DateFormat("yyyy/MM/dd ").parse(json["lastUpdateDate"]),
     licenseInfo: LicenseInfo.fromJson(json["licenseInfo"]),
+    availableCloseDate: json["availableCloseDate"]  ?? false,
     attachmentsInfo: json["attachmentsInfo"] != null ? List<AttachmentsInfo>.from(json["attachmentsInfo"].map((x) => AttachmentsInfo.fromJson(x))) : null,
     requestNotesInfo: json["requestNotesInfo"] != null ?  List<RequestNotesInfo>.from(json["requestNotesInfo"].map((x) => RequestNotesInfo.fromJson(x))) : null,
   );
@@ -106,7 +114,7 @@ class LicenseInfo {
   int licenseId;
   int statusId;
   String statusName;
-  String issueDate;
+  String? issueDate;
   String licenseEndDate;
   String licenseSadadEndDate;
 
@@ -124,18 +132,10 @@ class LicenseInfo {
     statusId: json["statusId"],
     statusName: json["statusName"],
     issueDate: json["issueDate"],
-    licenseEndDate: json["licenseEndDate"],
-    licenseSadadEndDate: json["licenseSadadEndDate"],
+    licenseEndDate: json["licenseEndDate"] ?? '',
+    licenseSadadEndDate: json["licenseSadadEndDate"] ?? '',
   );
 
-  Map<String, dynamic> toJson() => {
-    "licenseId": licenseId,
-    "statusId": statusId,
-    "statusName": statusName,
-    "issueDate": issueDate,
-    "licenseEndDate": licenseEndDate,
-    "licenseSadadEndDate": licenseSadadEndDate,
-  };
 }
 
 class RequestNotesInfo {
@@ -155,9 +155,4 @@ class RequestNotesInfo {
     note: json["note"],
   );
 
-  Map<String, dynamic> toJson() => {
-    "date": date,
-    "id": id,
-    "note": note,
-  };
 }

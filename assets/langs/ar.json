@@ -3344,7 +3344,9 @@
 
   "responses_request": "الردود على طلب",
 
-  "notes_": "الملاحظة"
+  "notes_": "الملاحظة",
+
+  "return_order_details": "العودة لتفاصيل الطلب"
 
 
 }

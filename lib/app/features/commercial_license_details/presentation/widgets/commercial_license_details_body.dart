@@ -370,53 +370,56 @@ class _CommercialLicenseDetailsBodyState
                       state.commercialLicenceDetails!.shopInfo.boardsInfo !=
                               null
                           ? ListView.builder(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                              itemCount: state.commercialLicenceDetails!.shopInfo.boardsInfo!.length ,
                               itemBuilder: (_, index) {
-                                BoardsInfo boardsInfo = state.commercialLicenceDetails!.shopInfo.boardsInfo![index];
+                                BoardsInfo boardsInfo = state
+                                    .commercialLicenceDetails!
+                                    .shopInfo
+                                    .boardsInfo![index];
                                 return Card(
+                                  margin: const EdgeInsets.only(top: 16),
+                                  color: AppColor.primary100Light,
                                   child: Padding(
                                     padding: const EdgeInsets.all(16.0),
                                     child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        Row(
-                                          children: [
-                                            const DrawIconBasedTypeWidget(
-                                              icon: IconPath.documentCopy,
-                                              iconSize: 24,
-                                            ),
-                                            CustomTextWidget(
-                                              'permit'.tr(),
-                                              textStyle:
-                                                  AppStyle.cardTitleTextStle,
-                                            ),
-                                            const SizedBox(width: 2),
-                                            CustomTextWidget(
-                                              '# ${++index}',
-                                              textStyle: AppStyle.dateTextStyle,
-                                            ),
-                                          ],
+                                        CustomTextWidget(
+                                          '${'board'.tr()} ${++index}',
+                                          textStyle:
+                                          AppStyle.signInFullTextStyle.copyWith(
+                                            color: AppColor.primary700Light,
+                                          ),
                                         ),
                                         const SizedBox(height: 16),
                                         CustomTextWidget(
                                           "boardTypeName".tr(),
-                                          textStyle:
-                                          AppStyle.tagTextStyle,
+                                          textStyle: AppStyle.tagTextStyle,
                                         ),
                                         const SizedBox(height: 4),
                                         CustomTextWidget(
                                           boardsInfo.typeName,
-                                          textStyle: AppStyle
-                                              .costTitleTextStyle,
+                                          textStyle:
+                                          AppStyle.costTextStyle.copyWith(
+                                            color: const Color(0xff52525B),
+                                          ),
                                         ),
+
+                                        const SizedBox(height: 16),
                                         CustomTextWidget(
                                           "permitType".tr(),
-                                          textStyle:
-                                          AppStyle.tagTextStyle,
+                                          textStyle: AppStyle.tagTextStyle,
                                         ),
                                         const SizedBox(height: 4),
                                         CustomTextWidget(
-                                          boardsInfo.area.toString() + 'm2'.tr(),
-                                          textStyle: AppStyle
-                                              .costTitleTextStyle,
+                                          boardsInfo.area.toString() +
+                                              'm2'.tr(),
+                                          textStyle:
+                                              AppStyle.costTextStyle.copyWith(
+                                                color: const Color(0xff52525B),
+                                              ),
                                         ),
                                       ],
                                     ),

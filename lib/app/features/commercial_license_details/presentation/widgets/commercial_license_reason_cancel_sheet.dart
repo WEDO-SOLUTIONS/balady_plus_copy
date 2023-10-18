@@ -91,7 +91,7 @@ class CommercialLicenseReasonCancelSheet extends StatelessWidget {
                         webService: sl(),
                         licenseId: provider.licenseId,
                         reasonCancel: provider.reasonCancel!,
-                        submitterInfo: provider.submitterInfo,
+                        submitterInfo: provider.submitterInfo!,
                       ),
                     );
                   } else {

@@ -146,21 +146,21 @@ class RequestsListItem extends StatelessWidget {
                 });
               }
 
-              // else if (request.requestTypeId == 1008 || request.requestMainTypeId == '1003' ) {
-              //   Navigator.pushNamed(
-              //     context,
-              //     RouteName.requestCommercialLicenseDetails,
-              //     arguments: RequestCommercialLicenseDetailsCubit(
-              //       GetRequestCommercialLicenseDetails(
-              //         repository: RequestCommercialLicenseDetailsRepositoryImplementation(
-              //             remoteDataSource:
-              //             RequestCommercialLicenseDetailsRemoteDataSourceImplementation(
-              //                 webService: sl())),
-              //       ),
-              //       request.requestNumber,
-              //     ),
-              //   );
-              // }
+              else if (request.requestTypeId == 1008 ) { //|| request.requestMainTypeId == '1003'
+                Navigator.pushNamed(
+                  context,
+                  RouteName.requestCommercialLicenseDetails,
+                  arguments: RequestCommercialLicenseDetailsCubit(
+                    GetRequestCommercialLicenseDetails(
+                      repository: RequestCommercialLicenseDetailsRepositoryImplementation(
+                          remoteDataSource:
+                          RequestCommercialLicenseDetailsRemoteDataSourceImplementation(
+                              webService: sl())),
+                    ),
+                    request.requestNumber,
+                  ),
+                );
+              }
 
               else {
                 if (request.redirectUrl == null) {

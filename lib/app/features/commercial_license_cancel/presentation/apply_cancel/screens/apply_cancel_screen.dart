@@ -49,7 +49,9 @@ class ApplyCancelScreen extends StatelessWidget {
             "type": ServiceCardsTypes.desc,
             "rate": 0,
             "duration": 0,
-            "fees": 0,
+            "fees": -1,
+            "feesName": "حاسبة الرسوم المعلوماتية",
+            "feesLink":"https://apps.balady.gov.sa/Eservices/FeesCalculator",
             "ar": {
               "title": "وصف الخدمة",
               "description":
@@ -167,7 +169,8 @@ class ApplyCancelScreen extends StatelessWidget {
                               RouteName.commercialLicenseCancel,
                               arguments: CommercialLicenseCancelBloc(
                                 webService: sl(),
-                                cancellationRequestResponse: cancellationRequest,
+                                requestId: cancellationRequest.requestId,
+                                availableCloseDate: cancellationRequest.availableCloseDate,
                                 crNumber: viewModel.submitterInfo.crNumber,
                                 crType: viewModel.submitterInfo.crType,
                                 reasonCancel: viewModel.reasonCancel,

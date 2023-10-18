@@ -75,7 +75,9 @@ class _RequestCommercialLicenseDetailsBodyState
                     ),
                     const SizedBox(width: 4),
                     CustomTextWidget(
-                      requestCommercialLicenseDetails.lastUpdateDate,
+                      requestCommercialLicenseDetails.licenseInfo.issueDate ??
+                          requestCommercialLicenseDetails.lastUpdateDate
+                              .toWrittenDate(),
                       textStyle: AppStyle.dateTextStyle,
                     ),
                     const Spacer(),
@@ -110,93 +112,106 @@ class _RequestCommercialLicenseDetailsBodyState
                           requestCommercialLicenseDetails.requestId.toString(),
                     ),
                     CardParameter(
+                      title: 'request_type'.tr(),
+                      value: requestCommercialLicenseDetails.typeName,
+                    ),
+                    CardParameter(
                       title: 'license_type'.tr(),
-                      value: requestCommercialLicenseDetails
-                          .licenseInfo.statusName,
+                      value: requestCommercialLicenseDetails.licenseTypeName,
                     ),
                     CardParameter(
                       title: 'sub_municipality'.tr(),
-                      value: requestCommercialLicenseDetails.statusName,
+                      value:
+                          requestCommercialLicenseDetails.subMunicipalityName,
                     ),
                     /////////////////////
                     CardParameter(
                       title: 'objection_last_update'.tr(),
-                      value: requestCommercialLicenseDetails.lastUpdateDate,
+                      value: requestCommercialLicenseDetails.lastUpdateDate
+                          .toWrittenDate(),
                     ),
+
+                    requestCommercialLicenseDetails.cancellationReasonName !=
+                            null
+                        ? CardParameter(
+                            title: 'reason_cancellation'.tr(),
+                            value: requestCommercialLicenseDetails
+                                .cancellationReasonName!,
+                          )
+                        : const SizedBox(),
+
+                    requestCommercialLicenseDetails.attachmentsInfo != null
+                        ? ListView.builder(
+                            itemCount: requestCommercialLicenseDetails
+                                .attachmentsInfo!.length,
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemBuilder: (ctx, index) {
+                              return requestCommercialLicenseDetails
+                                          .attachmentsInfo![index].attachUrl !=
+                                      null
+                                  ? AttachmentShowWidget(
+                                      fileName: '',
+                                      name: requestCommercialLicenseDetails
+                                              .attachmentsInfo![index].name ??
+                                          '',
+                                      filePath: requestCommercialLicenseDetails
+                                          .attachmentsInfo![index].attachUrl!,
+                                    )
+                                  : const SizedBox();
+                            },
+                          )
+                        : const SizedBox(),
                   ],
                 ),
-                requestCommercialLicenseDetails.attachmentsInfo != null
-                    ? ListView.builder(
-                        itemCount: requestCommercialLicenseDetails
-                            .attachmentsInfo!.length,
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemBuilder: (ctx, index) {
-                          return requestCommercialLicenseDetails
-                                      .attachmentsInfo![index].attachUrl !=
-                                  null
-                              ? AttachmentShowWidget(
-                                  fileName: '',
-                                  name: requestCommercialLicenseDetails
-                                          .attachmentsInfo![index].name ??
-                                      '',
-                                  filePath: requestCommercialLicenseDetails
-                                      .attachmentsInfo![index].attachUrl!,
-                                )
-                              : const SizedBox();
-                        },
-                      )
-                    : const SizedBox(),
 
                 /////////////////////////////////////////////////
                 /////////////////////////////////////////////////
                 ExpandableCard(
                   title: 'responses_request'.tr(),
-                  icon: IconPath.scannerIcon,
+                  icon: IconPath.notificationStatusIcon,
                   children: [
                     requestCommercialLicenseDetails.requestNotesInfo != null
                         ? ListView.builder(
-                            itemCount: requestCommercialLicenseDetails.requestNotesInfo!.length,
+                            itemCount: requestCommercialLicenseDetails
+                                .requestNotesInfo!.length,
                             shrinkWrap: true,
                             physics: const NeverScrollableScrollPhysics(),
                             itemBuilder: (ctx, index) {
-                              RequestNotesInfo requestNotesInfo = requestCommercialLicenseDetails.requestNotesInfo![index];
-                              return Column(
-                                children: [
-                                  Container(
-                                    child: Column(
+                              RequestNotesInfo requestNotesInfo =
+                                  requestCommercialLicenseDetails
+                                      .requestNotesInfo![index];
+                              return Card(
+                                color: AppColor.primary100Light,
+                                child: Column(
+                                  children: [
+                                    Row(
                                       children: [
-                                        Row(
-                                          children: [
-                                            CustomTextWidget(
-                                              ('notes_').tr(),
-                                              fontSize: 12,
-                                              fontColor: AppColor.primary900Light,
-                                              fontWeight: AppFontWeight.bold,
-                                              textAlign: TextAlign.center,
-                                            ),
-
-                                            CustomTextWidget(
-                                              requestNotesInfo.date.toWrittenDate(),
-                                              fontSize: 12,
-                                              fontColor: AppColor.blackModern500Light,
-                                              fontWeight: AppFontWeight.bold,
-                                              textAlign: TextAlign.center,
-                                            ),
-                                          ],
-                                        ),
-
                                         CustomTextWidget(
-                                          requestNotesInfo.note,
+                                          ('notes_').tr(),
                                           fontSize: 12,
-                                          fontColor: AppColor.blackModern600Light,
-                                          fontWeight: AppFontWeight.regular,
+                                          fontColor: AppColor.primary900Light,
+                                          fontWeight: AppFontWeight.bold,
+                                          textAlign: TextAlign.center,
                                         ),
-
+                                        CustomTextWidget(
+                                          requestNotesInfo.date.toWrittenDate(),
+                                          fontSize: 12,
+                                          fontColor:
+                                              AppColor.blackModern500Light,
+                                          fontWeight: AppFontWeight.bold,
+                                          textAlign: TextAlign.center,
+                                        ),
                                       ],
                                     ),
-                                  ),
-                                ],
+                                    CustomTextWidget(
+                                      requestNotesInfo.note,
+                                      fontSize: 12,
+                                      fontColor: AppColor.blackModern600Light,
+                                      fontWeight: AppFontWeight.regular,
+                                    ),
+                                  ],
+                                ),
                               );
                             },
                           )
