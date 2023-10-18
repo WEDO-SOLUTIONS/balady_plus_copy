@@ -3375,7 +3375,9 @@
 
   "notes_": "الملاحظة",
 
-  "return_order_details": "العودة لتفاصيل الطلب"
+  "return_order_details": "العودة لتفاصيل الطلب",
+
+  "time_serveis": "وقت تنفيذ الخدمة",
 
 
 }
