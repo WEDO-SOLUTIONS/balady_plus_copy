@@ -813,7 +813,7 @@ class SubmitterInfo {
   String submitterType;
   String crNumber;
 
-  // String crType;
+  String crType;
   int submitterIdNumber;
 
   // String submitterBirthDate;
@@ -832,7 +832,7 @@ class SubmitterInfo {
     // required this.entityType,
     required this.submitterType,
     required this.crNumber,
-    // required this.crType,
+    required this.crType,
     required this.submitterIdNumber,
     // required this.submitterBirthDate,
     // required this.mobile,
@@ -850,7 +850,7 @@ class SubmitterInfo {
         // entityType: json["entityType"],
         submitterType: json["submitterType"] ?? '',
         crNumber: json["crNumber"] ?? '',
-        // crType: json["crType"],
+        crType: json["crType"],
         submitterIdNumber: json["submitterIdNumber"] ?? '',
         // submitterBirthDate: json["submitterBirthDate"],
         // mobile: json["mobile"],

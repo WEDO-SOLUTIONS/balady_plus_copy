@@ -1,0 +1,43 @@
+import 'dart:async';
+
+import 'package:balady_plus/app/core/base/base_view_model.dart';
+import 'package:balady_plus/app/core/services/global/web_service.dart';
+import 'package:balady_plus/app/core/services/services_exports.dart';
+import 'package:balady_plus/app/core/utils/constants/apis/api_info.dart';
+import 'package:balady_plus/app/features/_shared_feature_/data/models/response_body_model.dart';
+import 'package:balady_plus/app/features/commercial_license_details/data/models/allowed_actions.dart';
+import 'package:balady_plus/app/features/commercial_license_details/data/models/commercial_licence_details.dart';
+
+class RequestCommercialLicenseActionViewModel extends BaseViewModel {
+  final WebService webService;
+  final int requestId;
+
+  List<AllowedActions> actions = [];
+
+  RequestCommercialLicenseActionViewModel({
+    required this.webService,
+    required this.requestId,
+  }) {
+    getCommercialLicenseAllowedActions();
+  }
+
+  Future<void> getCommercialLicenseAllowedActions() async {
+    try {
+      isLoading = true;
+      notifyListeners();
+      var response =
+          await webService.dio.get(ApiUrl.commercialLicenseAllowedActions);
+      final data = response.data;
+      final result = ResponseBodyModel.fromMap(data).data?.result;
+      actions = result
+          .map<AllowedActions>(
+              (e) => AllowedActions.fromJson(e as Map<String, dynamic>))
+          .toList();
+      // actions = actions;
+    } catch (e) {
+      print(e);
+    }
+    isLoading = false;
+    notifyListeners();
+  }
+}

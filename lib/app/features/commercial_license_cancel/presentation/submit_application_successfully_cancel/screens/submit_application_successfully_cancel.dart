@@ -81,21 +81,9 @@ class SubmitApplicationSuccessfullyCancel extends StatelessWidget {
                         Navigator.of(context).popAndPushNamed(
                           RouteName.invoiceDetails,
                           arguments: [
-                            InvoicesModel(
-                              id: submitResponse.payUrl.toString(),
-                              accountNumber: '',
-                              requestNumber: '',
-                              invoiceStatusId: 0,
-                              invoiceStatusName: '',
-                              invoiceTypeName: '',
-                              requestTypeName: '',
-                              amount: 0,
-                              creationDate: DateTime.now(),
-                              dueDate: DateTime.now(),
-                              sadadDate: DateTime.now(),
-                              updatedDate: DateTime.now(),
-                            ),
+                            submitResponse.payUrl.toString(),
                             submitResponse.crNumber,
+                            submitResponse.crType,
                           ],
                         );
                       },

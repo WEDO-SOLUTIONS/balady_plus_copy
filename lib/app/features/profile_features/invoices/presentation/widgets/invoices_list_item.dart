@@ -96,13 +96,20 @@ class InvoicesListItem extends StatelessWidget {
                 ;
                 context.pushNamedRoute(
                   RouteName.invoiceDetails,
-                  arguments: [invoice,CommonProperties.selectedDelegator?.crNumber],
+                  arguments: [
+                    invoice.id,
+                    CommonProperties.selectedDelegator?.crNumber,
+                    CommonProperties.selectedDelegator?.crType,
+                  ],
                 );
                 return;
               } else if (invoice.redirectUrl != null) {
                 context.pushNamedRoute(
                   RouteName.inappWebview,
-                  arguments: (requestNum: 'invoice'.tr(), url: invoice.redirectUrl),
+                  arguments: (
+                    requestNum: 'invoice'.tr(),
+                    url: invoice.redirectUrl
+                  ),
                 );
                 return;
               }

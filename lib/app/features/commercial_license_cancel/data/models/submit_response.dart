@@ -2,6 +2,7 @@
 class SubmitResponse {
   // String message;
   String crNumber;
+  String crType;
   String? payUrl;
   // String ratingUrl;
   // bool redirectToPay;
@@ -12,6 +13,7 @@ class SubmitResponse {
     // required this.message,
     required this.payUrl,
     required this.crNumber,
+    required this.crType,
     // required this.ratingUrl,
     // required this.redirectToPay,
     required this.requestId,
@@ -20,6 +22,7 @@ class SubmitResponse {
 
   factory SubmitResponse.fromJson(Map<String, dynamic> json) => SubmitResponse(
     crNumber: '',
+    crType: '',
     // message: json["message"] ?? '',
     payUrl: json["payUrl"],
     // ratingUrl: json["ratingUrl"] ?? '',
