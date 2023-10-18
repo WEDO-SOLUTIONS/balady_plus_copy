@@ -718,7 +718,8 @@ class CreateComplianceRemoteDataSourceImpl
         options: Options(headers: {
           ApiHeaders.xFeappId: CommonProperties.appName,
           ApiHeaders.xCorrelationId: CommonFunctions.generateGUID(),
-          "x-sso-session-id": EtmamCommonProperties.CommonProperties.sessionId,
+          ApiHeaders.xSessionId:
+              EtmamCommonProperties.CommonProperties.sessionId,
           "x-fe-deployment-id":
               EtmamCommonProperties.CommonProperties.appVersion,
           "Accept-Language": "ar",
@@ -770,7 +771,7 @@ class CreateComplianceRemoteDataSourceImpl
           options: Options(headers: {
             ApiHeaders.xFeappId: CommonProperties.appName,
             ApiHeaders.xCorrelationId: CommonFunctions.generateGUID(),
-            "x-sso-session-id":
+            ApiHeaders.xSessionId:
                 EtmamCommonProperties.CommonProperties.sessionId,
             "x-fe-deployment-id":
                 EtmamCommonProperties.CommonProperties.appVersion,
