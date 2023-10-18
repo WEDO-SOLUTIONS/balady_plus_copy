@@ -22,7 +22,7 @@ class CommercialLicenceDetails {
   // String notes;
   // String employeeNotes;
   // dynamic clientNotes;
-  LicenseInfo licenseInfo;
+  LicenseInfo? licenseInfo;
   SalamaInfo? salamaInfo;
 
   // dynamic objectionNotesInfo;
@@ -59,10 +59,10 @@ class CommercialLicenceDetails {
   // bool craft;
   // dynamic craftMessage;
   // dynamic contactInfo;
-  ActivityInfo activityInfo;
-  LocationInfo locationInfo;
-  SubmitterInfo submitterInfo;
-  ShopInfo shopInfo;
+  ActivityInfo? activityInfo;
+  LocationInfo? locationInfo;
+  SubmitterInfo? submitterInfo;
+  ShopInfo? shopInfo;
 
   // List<BillsInfo> billsInfo;
   // bool selectLicYears;
@@ -159,7 +159,7 @@ class CommercialLicenceDetails {
         // employeeNotes: json["employeeNotes"],
         // clientNotes: json["clientNotes"],
         licenseInfo: LicenseInfo.fromJson(json["licenseInfo"]),
-        salamaInfo: SalamaInfo.fromJson(json["salamaInfo"]),
+        salamaInfo: json["salamaInfo"] != null ? SalamaInfo.fromJson(json["salamaInfo"]) : null,
         // objectionNotesInfo: json["objectionNotesInfo"],
         // warningMessages: json["warningMessages"],
         // warningInfo: json["warningInfo"],
@@ -194,10 +194,10 @@ class CommercialLicenceDetails {
         // craft: json["craft"],
         // craftMessage: json["craftMessage"],
         // contactInfo: json["contactInfo"],
-        activityInfo: ActivityInfo.fromJson(json["activityInfo"]),
-        locationInfo: LocationInfo.fromJson(json["locationInfo"]),
-        submitterInfo: SubmitterInfo.fromJson(json["submitterInfo"]),
-        shopInfo: ShopInfo.fromJson(json["shopInfo"]),
+        activityInfo: json["activityInfo"] != null ? ActivityInfo.fromJson(json["activityInfo"]) : null,
+        locationInfo: json["locationInfo"] != null ? LocationInfo.fromJson(json["locationInfo"]) : null,
+        submitterInfo: json["submitterInfo"] != null ? SubmitterInfo.fromJson(json["submitterInfo"]) : null,
+        shopInfo: json["shopInfo"] != null ? ShopInfo.fromJson(json["shopInfo"]) : null,
         // billsInfo: List<BillsInfo>.from(json["billsInfo"].map((x) => BillsInfo.fromJson(x))),
         // selectLicYears: json["selectLicYears"],
         // showTillActive: json["showTillActive"],
@@ -234,7 +234,7 @@ class Activity {
 }
 
 class ActivityInfo {
-  MainActivity mainActivity;
+  MainActivity? mainActivity;
   List<AdditionalActivities>? additionalActivities;
 
   // bool foreignInvistor;
@@ -260,7 +260,7 @@ class ActivityInfo {
   });
 
   factory ActivityInfo.fromJson(Map<String, dynamic> json) => ActivityInfo(
-        mainActivity: MainActivity.fromJson(json["mainActivity"]),
+        mainActivity: json["mainActivity"] != null ? MainActivity.fromJson(json["mainActivity"]) : null,
         additionalActivities: json["additionalActivities"] != null
             ? List<AdditionalActivities>.from(json["additionalActivities"]
                 .map((x) => AdditionalActivities.fromJson(x)))

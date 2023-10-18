@@ -90,6 +90,7 @@ class InvoicesListItem extends StatelessWidget {
           ),
           ElevatedButtonWidget.details(
             onPressed: () {
+
               if (invoice.redirectUrl == null && invoice.id == null) {
                 return;
               } else if (invoice.id != null) {
@@ -98,8 +99,8 @@ class InvoicesListItem extends StatelessWidget {
                   RouteName.invoiceDetails,
                   arguments: [
                     invoice.id,
-                    CommonProperties.selectedDelegator?.crNumber,
-                    CommonProperties.selectedDelegator?.crType,
+                    CommonProperties.selectedDelegator?.crNumber ?? '',
+                    CommonProperties.selectedDelegator?.crType ?? '',
                   ],
                 );
                 return;
