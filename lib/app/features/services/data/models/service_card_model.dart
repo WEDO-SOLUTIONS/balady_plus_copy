@@ -30,7 +30,7 @@ class ServiceCardModel extends ServiceCardEntity {
       requirements: json["requirements"] != null
           ? List<String>.from(json["requirements"]).map((e) => e).toList()
           : null,
-      duration: json['duration'] as int,
+      duration: json['duration'],
       flow: json["flow"] != null
           ? List<dynamic>.from(json["flow"])
               .map((e) => ServiceCardFlow.fromMap(e))

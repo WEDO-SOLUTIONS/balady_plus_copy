@@ -395,6 +395,8 @@ class IconPath {
   static const logoutIcon = '${_svgIconPath}logout$_svg';
   static const notificationStatusIcon = '${_svgIconPath}notification_status$_svg';
 
+  static const menuIcon = '${_svgIconPath}menu_icon$_svg';
+
 
 
 }

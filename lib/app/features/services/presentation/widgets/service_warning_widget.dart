@@ -26,7 +26,7 @@ class ServiceWarningWidget extends StatelessWidget {
       builder: (context, state) {
         return Container(
           width: double.infinity,
-          height: state.expandedWarning ? 300 : 160,
+          height: state.expandedWarning ? 380 : 160,
           decoration: const BoxDecoration(
             borderRadius: BorderRadius.only(
               topLeft: Radius.circular(36),
@@ -82,12 +82,17 @@ class ServiceWarningWidget extends StatelessWidget {
                         ],
                       ),
                       const SizedBox(height: 16),
-                      CustomAutoSizeTextWidget(
-                        warning,
-                        textStyle: AppStyle.serviceCardDescriptionTextStyle,
-                        maxLines: 4,
+                      Expanded(
+                        child: SingleChildScrollView(
+                          child: CustomAutoSizeTextWidget(
+                            warning,
+                            textStyle: AppStyle.serviceCardDescriptionTextStyle,
+                            maxLines: 20,
+                          ),
+                        ),
                       ),
                     ],
+                    if (!state.expandedWarning)
                     const Spacer(),
                     ElevatedButtonWidget.startService(
                       onPressed: () => onPress != null ? onPress!() : () {},
