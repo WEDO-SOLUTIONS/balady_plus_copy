@@ -11,6 +11,7 @@ import 'package:balady_plus/app/features/commercial_license/presentation/commerc
 import 'package:balady_plus/app/features/commercial_license_cancel/presentation/commercial_license_cancel/blocs/commercial_license_cancel/commercial_license_cancel_bloc.dart';
 import 'package:balady_plus/app/features/commercial_license_cancel/presentation/commercial_license_cancel/mvvm/request_attachments_view_model.dart';
 import 'package:balady_plus/app/features/commercial_license_details/data/models/reason_cancel.dart';
+import 'package:balady_plus/app/features/commercial_license_details/presentation/mvvm/commercial_license_reason_cancel_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hijri/hijri_calendar.dart';
@@ -47,37 +48,46 @@ class CommercialLicenseCancelOneScreen extends StatelessWidget {
                       return Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          DropDownWithTitle(
-                            title: "reason_cancel".tr(),
-                            selectedValue: bloc.reasonCancel?.text,
-                            status: null,
-                            onRetry: () {
-                              // context.read<ComplianceBloc>().add(
-                              //   const GetMainUsagesEvent(),
-                              // );
-                            },
-                            onTap: () {
-                              // if (state.requestDetails?.usageDisable == true) return;
-                              BottomSheetDialog.showDraggableSheet(
-                                context,
-                                dialogKeyName: DialogName.reasonCancelDialog,
-                                currentRouteName:
-                                RouteName.commercialLicenseApplyCancel,
-                                child: GenericBottomSheetList<ReasonCancel>(
-                                  title: "reason_cancel".tr(),
-                                  items: bloc.cancellationRequestResponse
-                                      .cancellationReasons,
-                                  selectedValue: null,
-                                  onTap: (item) {
-                                    bloc.add(SelectReasonCancel(item));
-                                    Navigator.pop(context);
-                                  },
-                                ),
+                          Consumer<CommercialLicenseReasonCancelViewModel>(
+                            builder: (context, provider, child) {
+                              return !provider.isLoading
+                                  ? DropDownWithTitle(
+                                title: "reason_cancel".tr(),
+                                selectedValue: bloc.reasonCancel?.text,
+                                status: null,
+                                onRetry: () {
+                                  // context.read<ComplianceBloc>().add(
+                                  //   const GetMainUsagesEvent(),
+                                  // );
+                                },
+                                onTap: () {
+                                  // if (state.requestDetails?.usageDisable == true) return;
+                                  BottomSheetDialog.showDraggableSheet(
+                                    context,
+                                    dialogKeyName: DialogName.reasonCancelDialog,
+                                    currentRouteName:
+                                    RouteName.commercialLicenseApplyCancel,
+                                    child: GenericBottomSheetList<ReasonCancel>(
+                                      title: "reason_cancel".tr(),
+                                      items: provider.reasonCancelList,
+                                      selectedValue: null,
+                                      onTap: (item) {
+                                        bloc.add(SelectReasonCancel(item));
+                                        Navigator.pop(context);
+                                      },
+                                    ),
+                                  );
+                                },
+                              )
+                                  : const ShimmerEffectWidget(
+                                height: 55,
+                                borderRadius: 6,
                               );
                             },
                           ),
+
                           const SizedBox(height: 16),
-                          bloc.cancellationRequestResponse.availableCloseDate
+                          bloc.availableCloseDate
                               ? Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [

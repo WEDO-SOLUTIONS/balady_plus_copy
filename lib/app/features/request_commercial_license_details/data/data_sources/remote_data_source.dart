@@ -35,7 +35,6 @@ class RequestCommercialLicenseDetailsRemoteDataSourceImplementation implements R
       );
       final data = response.data;
       final result = ResponseBodyModel.fromMap(data).data?.result;
-      CommercialLicenceDetails da = CommercialLicenceDetails.fromJson(result!);
       return  RequestCommercialLicenseDetailsModel.fromJson(result!);
     } on DioError catch (error) {
       // "DioError $error".errorLog();

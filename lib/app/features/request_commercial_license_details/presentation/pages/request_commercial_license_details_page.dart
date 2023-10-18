@@ -7,11 +7,13 @@ import 'package:balady_plus/app/core/utils/enums/bloc_status.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/dialogs/bottom_sheet_dialogs.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/default_appbar_widget.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/shimmer_effect_widget.dart';
+import 'package:balady_plus/app/features/commercial_license_details/data/models/reason_cancel.dart';
 import 'package:balady_plus/app/features/commercial_license_details/presentation/bloc/commercial_license_details_cubit.dart';
 import 'package:balady_plus/app/features/commercial_license_details/presentation/widgets/commercial_license_action_sheet.dart';
 import 'package:balady_plus/app/features/home_page/presentation/widgets/home_app_bar/circle_icon.dart';
 import 'package:balady_plus/app/features/request_commercial_license_details/presentation/bloc/request_commercial_license_details_cubit.dart';
 import 'package:balady_plus/app/features/request_commercial_license_details/presentation/mvvm/commercial_license_request_action_view_model.dart';
+import 'package:balady_plus/app/features/request_commercial_license_details/presentation/widgets/request_commercial_license_action_sheet.dart';
 import 'package:balady_plus/app/features/request_commercial_license_details/presentation/widgets/request_commercial_license_details_body.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -60,8 +62,13 @@ class RequestCommercialLicenseDetailsPage extends StatelessWidget {
                               RequestCommercialLicenseActionViewModel(
                                 webService: sl(),
                                 requestId: bloc.requestId,
+                                reasonCancel: state.requestCommercialLicenseDetails!.cancellationReasonId != null ? ReasonCancel(
+                                  id: state.requestCommercialLicenseDetails!.cancellationReasonId!,
+                                  text: state.requestCommercialLicenseDetails!.cancellationReasonName!,
+                                ) : null,
+                                  availableCloseDate: state.requestCommercialLicenseDetails!.availableCloseDate
                               ),
-                          child: const CommercialLicenseActionSheet(),
+                          child: const RequestCommercialLicenseActionSheet(),
                         ),
                         isFullHeight: false,
                         height: MediaQuery.of(context).size.height * 0.47,
