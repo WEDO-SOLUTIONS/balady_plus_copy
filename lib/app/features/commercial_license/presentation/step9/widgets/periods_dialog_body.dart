@@ -25,29 +25,29 @@ class PeriodsDialogBody extends StatelessWidget {
               title: "ساعات اليوم",
               action: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 16),
-                child: ElevatedButtonWidget.add(
-                    onPressed: () {
-                      context.popDialog();
-                      onSubmitPeriods(state.periods);
-                    }),
+                child: ElevatedButtonWidget.add(onPressed: () {
+                  context.popDialog();
+                  onSubmitPeriods(state.periods);
+                }),
               ),
               body: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  HorizontalRadioGroup(
-                    currentItem: state.is24Hour
-                        ? RadioItem(id: 1, radioValue: "24 ساعه")
-                        : RadioItem(id: 0, radioValue: "فتره محدده"),
-                    groupName: "نوع الفتره",
-                    items: [
-                      RadioItem(id: 0, radioValue: "فتره محدده"),
-                      RadioItem(id: 1, radioValue: "24 ساعه"),
-                    ],
-                    onChanged: (radio) => context
-                        .read<PeriodsCubit>()
-                        .onChangedPeriodType(is24Hour: radio?.id == 1),
-                  ),
+                  //HorizontalRadioGroup(
+                  //currentItem: state.is24Hour
+                  //     ? RadioItem(id: 1, radioValue: "24 ساعه")
+                  //     : RadioItem(id: 0, radioValue: "فتره محدده"),
+                  //  groupName: "نوع الفتره",
+                  //  items: [
+                  //    RadioItem(id: 0, radioValue: "فتره محدده"),
+                  //   RadioItem(id: 1, radioValue: "24 ساعه"),
+                  //   ],
+                  // onChanged: (radio) => context
+                  //     .read<PeriodsCubit>()
+                  //     .onChangedPeriodType(is24Hour: radio?.id == 1),
+                  //  ),
+
                   if (!state.is24Hour) ...[
                     const Divider(thickness: 2),
                     const SizedBox(height: 24),

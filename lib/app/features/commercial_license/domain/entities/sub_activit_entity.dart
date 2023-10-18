@@ -1,13 +1,18 @@
 import '../../../_shared_feature_/shared_feature_exports.dart';
 
 class SubActivityEntity extends DropDownItem {
-  final String activityName;
-  final int activityId;
-  final int entityType;
+  final int? id;
+  final String? activityName;
+  final int? facilityId;
+  final String? facilityName;
 
   const SubActivityEntity({
-    required this.activityName,
-    required this.activityId,
-    required this.entityType,
-  }) : super(name: activityName ?? '', id: activityId ?? '');
+    this.id,
+    this.activityName,
+    this.facilityId,
+    this.facilityName,
+  }) : super(
+          name: activityName ?? '',
+          id: id ?? '',
+        );
 }

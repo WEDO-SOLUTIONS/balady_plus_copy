@@ -5,6 +5,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/dependency_injection/dependency_injection_exports.dart';
 import '../../../../../core/errors/errors_exports.dart';
+import '../../../../../core/utils/enums/enums.dart';
 import '../../../../../core/utils/utils_exports.dart';
 import '../../../../_shared_feature_/shared_feature_exports.dart';
 import '../../../commercial_license_exports.dart';
@@ -40,5 +41,74 @@ class CrStep4ShopDataCubit extends Cubit<CrStep4ShopDataState> {
     List<CommercialBoardType> selectedBoards = state.selectedBoards ?? [];
     selectedBoards.add(board);
     emit(state.copyWith(selectedBoards: selectedBoards));
+  }
+
+  void updateFields(
+      {final bool? brand,
+      final String? shopName,
+      final String? shopUnitNumber,
+      final String? blockNumber,
+      final int? holesCount,
+      final int? floorCount,
+      final int? noOfCameras,
+      final bool? hasElevator,
+      final bool? existInMall,
+      final int? floorNumber,
+      final bool? isCitizenPledgedToClean}) {
+    state.copyWith(
+        brand: brand,
+        shopName: shopName,
+        shopUnitNumber: shopUnitNumber,
+        blockNumber: blockNumber,
+        holesCount: holesCount,
+        floorCount: floorCount,
+        noOfCameras: noOfCameras,
+        hasElevator: hasElevator,
+        existInMall: existInMall,
+        floorNumber: floorNumber,
+        isCitizenPledgedToClean: isCitizenPledgedToClean);
+  }
+
+  void updateSalama(
+      {final bool? salamaPermitExist,
+      final String? salamaPermitNumber,
+      final String? slamaReportNumber}) {
+    emit(state.copyWith(
+        salamaPermitExist: salamaPermitExist,
+        salamaPermitNumber:
+            salamaPermitNumber != null ? Nullable(salamaPermitNumber) : null,
+        slamaReportNumber: salamaPermitNumber != null
+            ? Nullable((salamaPermitNumber))
+            : null));
+  }
+
+  void updateSubmitterType(CRSubmitterType type) {
+    emit(state.copyWith(
+      crSubmitterType: Nullable(type),
+    ));
+  }
+
+  void updateCRContractType(CRContractType type) {
+    emit(state.copyWith(
+      crContractType: Nullable(type),
+    ));
+  }
+
+  void updateCRContractOption(CRContractOption type) {
+    emit(state.copyWith(
+      crContractOption: Nullable(type),
+    ));
+  }
+
+  void updateContractNumber(String value) {
+    emit(state.copyWith(
+      contractNumber: Nullable(value),
+    ));
+  }
+
+  void updateContractDate(String value) {
+    emit(state.copyWith(
+      contractDate: Nullable(value),
+    ));
   }
 }

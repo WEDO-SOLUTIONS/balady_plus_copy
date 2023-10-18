@@ -1,6 +1,7 @@
 import 'package:balady_plus/app/features/commercial_license/presentation/step4/bloc/cr_step4_shop_data_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../../core/utils/enums/enums.dart';
 import '../../../../_shared_feature_/presentation/widgets/custom_cupertino_drop_down_widget.dart';
 import '../../../../_shared_feature_/shared_feature_exports.dart';
 import '../../../../vd/presentation/widgets/details_widgets/incident_desc_widgets/vd_create_incident_addetional_fields.dart';
@@ -28,14 +29,23 @@ class CRStep4ShopData extends StatelessWidget {
                     const SizedBox(height: 16),
                     YesNoRadioGroupWidget(
                       groupName: 'هل يوجد لديك علامة تجارية ؟',
-                      currentValue: null,
-                      onChanged: (value) {},
+                      currentValue: state.brand,
+                      onChanged: (value) {
+                        context
+                            .read<CrStep4ShopDataCubit>()
+                            .updateFields(brand: value);
+                      },
                     ),
                     CustomTextFieldWidget(
                       label: "اسم المحل",
                       hintText: "ادخل اسم المحل",
                       bottomMargin: 24,
-                      onChanged: (value) {},
+                      initialValue: state.shopName,
+                      onChanged: (value) {
+                        context
+                            .read<CrStep4ShopDataCubit>()
+                            .updateFields(shopName: value);
+                      },
                     ),
                     CustomTextFieldWidget(
                       label: "رقم المحل",
@@ -43,7 +53,11 @@ class CRStep4ShopData extends StatelessWidget {
                       isDigitsOnly: true,
                       keyboardType: TextInputType.number,
                       bottomMargin: 24,
-                      onChanged: (value) {},
+                      onChanged: (value) {
+                        context
+                            .read<CrStep4ShopDataCubit>()
+                            .updateFields(shopName: value);
+                      },
                     ),
                     CustomTextFieldWidget(
                       label: "رقم العقار",
@@ -51,7 +65,12 @@ class CRStep4ShopData extends StatelessWidget {
                       isDigitsOnly: true,
                       keyboardType: TextInputType.number,
                       bottomMargin: 24,
-                      onChanged: (value) {},
+                      initialValue: state.blockNumber,
+                      onChanged: (value) {
+                        context
+                            .read<CrStep4ShopDataCubit>()
+                            .updateFields(blockNumber: value);
+                      },
                     ),
                     CustomTextFieldWidget(
                       label: "عدد الفتحات",
@@ -59,7 +78,12 @@ class CRStep4ShopData extends StatelessWidget {
                       isDigitsOnly: true,
                       keyboardType: TextInputType.number,
                       bottomMargin: 24,
-                      onChanged: (value) {},
+                      initialValue: state.holesCount.toString(),
+                      onChanged: (value) {
+                        context
+                            .read<CrStep4ShopDataCubit>()
+                            .updateFields(holesCount: int.tryParse(value));
+                      },
                     ),
                     CustomTextFieldWidget(
                       label: "عدد الادوار في المحل",
@@ -67,15 +91,25 @@ class CRStep4ShopData extends StatelessWidget {
                       isDigitsOnly: true,
                       keyboardType: TextInputType.number,
                       bottomMargin: 24,
-                      onChanged: (value) {},
+                      initialValue: state.floorCount.toString(),
+                      onChanged: (value) {
+                        context
+                            .read<CrStep4ShopDataCubit>()
+                            .updateFields(floorCount: int.tryParse(value));
+                      },
                     ),
                     CustomTextFieldWidget(
                       label: "عدد الكاميرات في المحل",
                       hintText: "ادخل عدد الكاميرات في المحل",
                       isDigitsOnly: true,
                       keyboardType: TextInputType.number,
+                      initialValue: state.noOfCameras.toString(),
                       bottomMargin: 24,
-                      onChanged: (value) {},
+                      onChanged: (value) {
+                        context
+                            .read<CrStep4ShopDataCubit>()
+                            .updateFields(noOfCameras: int.tryParse(value));
+                      },
                     ),
                     UndertakingWidget(
                       text: "أتعهد على جميع ماتم ذكره اعلاه",
@@ -86,13 +120,21 @@ class CRStep4ShopData extends StatelessWidget {
                     ),
                     YesNoRadioGroupWidget(
                       groupName: 'هل يوجد مصعد في المحل ؟',
-                      currentValue: null,
-                      onChanged: (value) {},
+                      currentValue: state.hasElevator,
+                      onChanged: (value) {
+                        context
+                            .read<CrStep4ShopDataCubit>()
+                            .updateFields(hasElevator: value);
+                      },
                     ),
                     YesNoRadioGroupWidget(
                       groupName: 'هل يقع المحل في مركز تجاري ؟',
-                      currentValue: null,
-                      onChanged: (value) {},
+                      currentValue: state.existInMall,
+                      onChanged: (value) {
+                        context
+                            .read<CrStep4ShopDataCubit>()
+                            .updateFields(existInMall: value);
+                      },
                     ),
                     CustomTapWidgetForLongDialog(
                       items: const [],
@@ -101,55 +143,145 @@ class CRStep4ShopData extends StatelessWidget {
                       marginBottom: 24,
                       onChangeType: (item) {},
                     ),
-                    const CustomTextFieldWidget(
+                    CustomTextFieldWidget(
                       label: "الطابق",
                       hintText: "ادخل الطابق",
                       isDigitsOnly: true,
                       keyboardType: TextInputType.number,
                       bottomMargin: 24,
+                      initialValue: state.floorNumber.toString(),
+                      onChanged: (value) {
+                        context
+                            .read<CrStep4ShopDataCubit>()
+                            .updateFields(floorNumber: int.tryParse(value));
+                      },
                     ),
                     YesNoRadioGroupWidget(
                       groupName: 'هل انت متعاقد مع احدى شركات النظافة ؟',
-                      currentValue: null,
-                      onChanged: (value) {},
+                      currentValue: state.isCitizenPledgedToClean,
+                      onChanged: (value) {
+                        context
+                            .read<CrStep4ShopDataCubit>()
+                            .updateFields(isCitizenPledgedToClean: value);
+                      },
                     ),
                     YesNoRadioGroupWidget(
                       groupName: 'هل لديك تصريح سلامة ؟',
-                      currentValue: null,
-                      onChanged: (value) {},
+                      currentValue: state.salamaPermitExist,
+                      onChanged: (value) {
+                        context
+                            .read<CrStep4ShopDataCubit>()
+                            .updateSalama(salamaPermitExist: value);
+                      },
                     ),
+                    if (state.salamaPermitExist == false)
+                      CustomTextFieldWidget(
+                        label: "رقم التقرير الفني",
+                        hintText: "رقم التقرير الفني",
+                        isDigitsOnly: true,
+                        keyboardType: TextInputType.number,
+                        bottomMargin: 24,
+                        initialValue: state.slamaReportNumber.toString(),
+                        onChanged: (value) {
+                          context
+                              .read<CrStep4ShopDataCubit>()
+                              .updateSalama(slamaReportNumber: value);
+                        },
+                      ),
+                    if (state.salamaPermitExist == true)
+                      CustomTextFieldWidget(
+                        label: "رقم تصريح سلامة",
+                        hintText: "رقم تصريح سلامة",
+                        isDigitsOnly: true,
+                        keyboardType: TextInputType.number,
+                        bottomMargin: 24,
+                        initialValue: state.salamaPermitNumber.toString(),
+                        onChanged: (value) {
+                          context
+                              .read<CrStep4ShopDataCubit>()
+                              .updateSalama(salamaPermitNumber: value);
+                        },
+                      ),
                     HorizontalRadioGroup(
                       groupName: 'صفة المقدم بالنسبة لموقع المحل',
                       currentItem: null,
                       items: [
-                        RadioItem(radioValue: "مالك", id: 1),
-                        RadioItem(radioValue: "مستاجر", id: 0),
+                        RadioItem<CRSubmitterType>(
+                            radioValue: CRSubmitterType.owner,
+                            radioText: "مالك"),
+                        RadioItem<CRSubmitterType>(
+                            radioValue: CRSubmitterType.rental,
+                            radioText: "مستأجر"),
                       ],
-                      onChanged: (value) {},
+                      onChanged: (value) {
+                        context
+                            .read<CrStep4ShopDataCubit>()
+                            .updateSubmitterType(value!);
+                      },
                     ),
-                    HorizontalRadioGroup(
-                      groupName: 'نوع العقد',
-                      currentItem: null,
-                      items: [
-                        RadioItem(radioValue: "عقد تملك المبنى (صك)", id: 1),
-                      ],
-                      onChanged: (value) {},
-                    ),
-                    HorizontalRadioGroup(
-                      groupName: 'طريقة ادخال العقد',
-                      currentItem: null,
-                      items: [
-                        RadioItem(radioValue: "ارفاق ملف", id: 1),
-                        RadioItem(radioValue: "رقم عقد الصك الالكتروني", id: 1),
-                      ],
-                      onChanged: (value) {},
-                    ),
-                    const CustomTextFieldWidget(
-                      label: "رقم عقد التملك",
-                      hintText: "ادخل رقم عقد التملك",
+                    if (state.crSubmitterType == CRSubmitterType.owner)
+                      HorizontalRadioGroup(
+                        groupName: 'نوع العقد',
+                        currentItem: null,
+                        items: [
+                          RadioItem<CRContractType>(
+                              radioText: "عقد تملك المبنى (صك)",
+                              radioValue: CRContractType.deed),
+                        ],
+                        onChanged: (value) {
+                          context
+                              .read<CrStep4ShopDataCubit>()
+                              .updateCRContractType(value!);
+                        },
+                      ),
+                    if (state.crSubmitterType == CRSubmitterType.rental)
+                      HorizontalRadioGroup(
+                        groupName: 'نوع العقد',
+                        currentItem: state.crContractType,
+                        items: [
+                          RadioItem<CRContractType>(
+                              radioText: "عقد الإيجار",
+                              radioValue: CRContractType.ejar),
+                          RadioItem<CRContractType>(
+                              radioText: "عقد استثمار",
+                              radioValue: CRContractType.invest),
+                        ],
+                        onChanged: (value) {
+                          context
+                              .read<CrStep4ShopDataCubit>()
+                              .updateCRContractType(value!);
+                        },
+                      ),
+                    if (state.crContractType == CRContractType.deed)
+                      HorizontalRadioGroup(
+                        groupName: 'طريقة ادخال العقد',
+                        currentItem: null,
+                        items: [
+                          RadioItem<CRContractOption>(
+                              radioText: "ارفاق ملف",
+                              radioValue: CRContractOption.attach),
+                          RadioItem<CRContractOption>(
+                              radioText: "رقم عقد الصك الالكتروني",
+                              radioValue: CRContractOption.service),
+                        ],
+                        onChanged: (value) {
+                          context
+                              .read<CrStep4ShopDataCubit>()
+                              .updateCRContractOption(value!);
+                        },
+                      ),
+                    CustomTextFieldWidget(
+                      label: "رقم عقد التملك (الصك)",
+                      hintText: "رقم عقد التملك (الصك)",
                       isDigitsOnly: true,
                       keyboardType: TextInputType.number,
                       bottomMargin: 24,
+                      initialValue: state.contractNumber,
+                      onChanged: (value) {
+                        context
+                            .read<CrStep4ShopDataCubit>()
+                            .updateContractDate(value);
+                      },
                     ),
                     HijriCalendarAddetionalField(
                       fieldName: 'تاريخ عقد التملك',
@@ -160,8 +292,8 @@ class CRStep4ShopData extends StatelessWidget {
                       groupName: 'اللوحات',
                       currentItem: null,
                       items: [
-                        RadioItem(radioValue: "اضافه عقد لوحه", id: 1),
-                        RadioItem(radioValue: "اضافه بيانات اللوحه", id: 1),
+                        //    RadioItem(radioValue: "اضافه عقد لوحه", id: 1),
+                        //    RadioItem(radioValue: "اضافه بيانات اللوحه", id: 1),
                       ],
                       onChanged: (value) {},
                     ),

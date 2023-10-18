@@ -36,9 +36,12 @@ class SubmitActivityDetailRequest {
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'workerTypeId': workerTypeId,
-      'area': area,
-      'detailedActivityId': detailedActivityId,
-      'additionalActivities': additionalActivities,
+      "mainActivity": {
+        'area': area,
+        'detailedActivityId': detailedActivityId,
+      },
+      'additionalActivities':
+          additionalActivities == null ? [] : additionalActivities,
     };
   }
 

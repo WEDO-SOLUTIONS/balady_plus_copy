@@ -20,6 +20,7 @@ abstract class CrRemoteDataSource {
       {SaveComSubmitterAndOwnerRequestModel? params});
 
   Future<int> saveActivityDetails({SubmitActivityDetailRequest? params});
+
   Future<SaveLocationResponseModel> saveLocationDetails(
       {SaveLocationDataRequest? params});
 }
