@@ -96,7 +96,6 @@ class _QrCodeCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<WalletDetailsBloc, WalletDetailsState>(
       builder: (context, state) {
-        print("QRRRR Code ${state.selectedItem?.qrData ?? ""} ");
         return Container(
           width: MediaQuery.sizeOf(context).width,
           padding: const EdgeInsets.symmetric(vertical: 26, horizontal: 26),

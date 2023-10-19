@@ -41,7 +41,6 @@ class WeatherRemoteDataSourceImpl extends WeatherRemoteDataSource {
         q += "$key=$value&";
       });
       q = q.substring(0, q.length - 1);
-      print(q);
       response = await webService.dio.get(weatherAPI,
           queryParameters: params.toMap(),
           options: Options(headers: {
@@ -114,7 +113,6 @@ class WeatherRemoteDataSourceImpl extends WeatherRemoteDataSource {
         dioError: error,
       );
     } catch (ex) {
-      print("EXEXEX $ex");
       if (ex is ServerException)
         throw ex;
       else {
