@@ -475,15 +475,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.5"
-  flutter_google_places:
-    dependency: "direct main"
-    description:
-      path: "."
-      ref: e104fa94452ec236dfb27cf5ea54fb72f280bc08
-      resolved-ref: e104fa94452ec236dfb27cf5ea54fb72f280bc08
-      url: "https://github.com/fluttercommunity/flutter_google_places"
-    source: git
-    version: "0.3.2"
   flutter_inappwebview:
     dependency: "direct main"
     description:
@@ -630,10 +621,10 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_svg_provider
-      sha256: aad5ab28feb23280962820a4b5db4404777c597f62349b3467b4813974a1cb99
+      sha256: "13d85033c6ae63c8073268f9c5c3c74e5de178224183eaff1d47f08f70c59fcc"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.4"
+    version: "1.0.6"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -716,14 +707,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "11.1.1"
-  google_api_headers:
-    dependency: transitive
+  google_fonts:
+    dependency: "direct main"
     description:
-      name: google_api_headers
-      sha256: ac6f4e27e35c9eb4fbe8ce4ce7380e651d3a7bee3ad4c2ff30e67aaa73f005d3
+      name: google_fonts
+      sha256: f0b8d115a13ecf827013ec9fc883390ccc0e87a96ed5347a3114cac177ef18e8
       url: "https://pub.dev"
     source: hosted
-    version: "1.5.0+1"
+    version: "6.1.0"
   google_maps:
     dependency: transitive
     description:
@@ -772,14 +763,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.5.1"
-  google_maps_webservice:
-    dependency: transitive
-    description:
-      name: google_maps_webservice
-      sha256: d0ae4e4508afd74a3f051565261a3cdbae59db29448f9b6e6beb5674545e1eb7
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.0.20-nullsafety.5"
   hijri:
     dependency: "direct main"
     description:
@@ -816,10 +799,10 @@ packages:
     dependency: transitive
     description:
       name: http
-      sha256: "5895291c13fa8a3bd82e76d5627f69e0d85ca6a30dcac95c4ea19a5d555879c2"
+      sha256: "759d1a329847dd0f39226c688d3e06a6b8679668e350e2891a6474f8b4bb8525"
       url: "https://pub.dev"
     source: hosted
-    version: "0.13.6"
+    version: "1.1.0"
   http_parser:
     dependency: transitive
     description:
@@ -960,10 +943,10 @@ packages:
     dependency: "direct main"
     description:
       name: localize_and_translate
-      sha256: f434319b5039fc816eb8d6bb399211107ac0ad7e6c996bc3b6517f027d820e04
+      sha256: "1bda3672a0dd1bde718d308a34e8e71b2c9f7e7700360d66820d8c761039a828"
       url: "https://pub.dev"
     source: hosted
-    version: "4.1.1"
+    version: "4.1.2-dev"
   logging:
     dependency: transitive
     description:
@@ -1071,10 +1054,10 @@ packages:
     dependency: "direct main"
     description:
       name: package_info_plus
-      sha256: "10259b111176fba5c505b102e3a5b022b51dd97e30522e906d6922c745584745"
+      sha256: "7e76fad405b3e4016cd39d08f455a4eb5199723cf594cd1b8916d47140d93017"
       url: "https://pub.dev"
     source: hosted
-    version: "3.1.2"
+    version: "4.2.0"
   package_info_plus_platform_interface:
     dependency: transitive
     description:

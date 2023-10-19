@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:go_router/go_router.dart';
 
+import '../features/landing/landing_page.dart';
 import 'scaffold_with_nested_navigation.dart';
 part 'app_router.g.dart';
 
@@ -26,7 +27,7 @@ enum AppRoute {
 // ignore: unsupported_provider_value
 GoRouter goRouter(GoRouterRef ref, List<Widget> routes) {
   return GoRouter(
-    initialLocation: '/map',
+    initialLocation: '/landing',
     navigatorKey: _rootNavigatorKey,
     debugLogDiagnostics: true,
     routes: [
@@ -91,10 +92,10 @@ GoRouter goRouter(GoRouterRef ref, List<Widget> routes) {
             navigatorKey: _profileNavigatorKey,
             routes: [
               GoRoute(
-                path: '/profile',
+                path: '/landing',
                 name: AppRoute.profile.name,
                 pageBuilder: (context, state) => NoTransitionPage(
-                  child: routes[4],
+                  child: LandingPage(),
                 ),
                 routes: [],
               ),

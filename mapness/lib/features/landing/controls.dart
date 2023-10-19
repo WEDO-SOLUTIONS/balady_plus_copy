@@ -1,0 +1,207 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:google_fonts/google_fonts.dart';
+
+import 'dashboard_manager.dart';
+
+class MapControls extends ConsumerWidget {
+  const MapControls({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final controlsVisibility = ref.watch(dashboardManagerProvider);
+    return AnimatedSize(
+      curve: Curves.decelerate,
+      duration: const Duration(milliseconds: 1000),
+      reverseDuration: const Duration(milliseconds: 1000),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(
+                    height: 64,
+                  ),
+                  Row(
+                    children: [
+                      MapControl(
+                        SvgPicture.asset(
+                          "assets/icons/svg/ic_control_layers.svg",
+                          semanticsLabel: 'MinApps Screen',
+                          package: "mapness",
+                        ),
+                      ),
+                      const SizedBox(
+                        width: 8,
+                      ),
+                      MapControl(
+                        SvgPicture.asset(
+                          "assets/icons/svg/ic_nav_qibla.svg",
+                          semanticsLabel: 'MinApps Screen',
+                          package: "mapness",
+                        ),
+                      ),
+                      const Spacer(),
+                      MapControl(
+                        Row(
+                          children: [
+                            const Text("53°"),
+                            const SizedBox(
+                              width: 8,
+                            ),
+                            SvgPicture.asset(
+                              "assets/icons/svg/ic_control_temp.svg",
+                              semanticsLabel: 'MinApps Screen',
+                              package: "mapness",
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * .2,
+                  ),
+                  MapControl(
+                    SvgPicture.asset(
+                      "assets/icons/svg/ic_control_zoom_in.svg",
+                      semanticsLabel: 'MinApps Screen',
+                      package: "mapness",
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 8,
+                  ),
+                  MapControl(
+                    SvgPicture.asset(
+                      "assets/icons/svg/ic_control_zoom_out.svg",
+                      semanticsLabel: 'MinApps Screen',
+                      package: "mapness",
+                    ),
+                  ),
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * .1,
+                  ),
+                  MapControl(
+                    SvgPicture.asset(
+                      "assets/icons/svg/ic_control_compass.svg",
+                      semanticsLabel: 'MinApps Screen',
+                      package: "mapness",
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 8,
+                  ),
+                  MapControl(
+                    SvgPicture.asset(
+                      "assets/icons/svg/ic_control_location.svg",
+                      semanticsLabel: 'MinApps Screen',
+                      package: "mapness",
+                    ),
+                  ),
+                  const Spacer(),
+                ],
+              ),
+            ),
+          ),
+          controlsVisibility != BottomSheetState.expanded
+              ? SizedBox(
+                  height: 40,
+                  child: ListView.builder(
+                      reverse: true,
+                      scrollDirection: Axis.horizontal,
+                      itemCount: 10,
+                      itemBuilder: (BuildContext context, int index) {
+                        if (index == 0) {
+                          return Padding(
+                            padding: const EdgeInsets.only(left: 8.0),
+                            child: Container(
+                              decoration: const BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(8),
+                                ),
+                              ),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 14,
+                                vertical: 10,
+                              ),
+                              child: SvgPicture.asset(
+                                "assets/icons/svg/ic_dashboard_fav.svg",
+                                semanticsLabel: 'MinApps Screen',
+                                package: "mapness",
+                              ),
+                            ),
+                          );
+                        }
+                        return Padding(
+                          padding: const EdgeInsets.only(left: 8.0),
+                          child: Container(
+                              decoration: const BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(8),
+                                ),
+                              ),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 8,
+                                vertical: 10,
+                              ),
+                              child: Row(
+                                children: [
+                                  const Icon(Icons.house),
+                                  const SizedBox(
+                                    width: 4,
+                                  ),
+                                  Text(
+                                    '12 دقيقة',
+                                    style: GoogleFonts.notoSansArabic(
+                                      textStyle: const TextStyle(
+                                        fontSize: 12,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              )),
+                        );
+                      }),
+                )
+              : const SizedBox.shrink(),
+          SizedBox(
+            height: MediaQuery.of(context).size.height * .1,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class MapControl extends ConsumerWidget {
+  final Widget content;
+  const MapControl(
+    this.content, {
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final controlsVisibility = ref.watch(dashboardManagerProvider);
+    return controlsVisibility != BottomSheetState.expanded
+        ? Container(
+            decoration: const BoxDecoration(
+              borderRadius: BorderRadius.all(
+                Radius.circular(10),
+              ),
+              color: Colors.white,
+            ),
+            padding: const EdgeInsets.all(10.0),
+            child: content,
+          )
+        : const SizedBox.shrink();
+  }
+}

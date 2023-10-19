@@ -100,7 +100,7 @@ dependencies:
   # Get current device information
   device_info_plus: ^9.0.0
   # API for querying information about an application package
-  package_info_plus: ^3.0.3
+  package_info_plus: ^4.0.0
   # parses Adobe After Effects animations
   lottie: ^2.2.0
   # Generate Unique ID
@@ -133,11 +133,6 @@ dependencies:
   sms_user_consent:
     git:
       url: https://github.com/ctnataman/sms_user_consent
-  flutter_google_places:
-    git:
-      url: https://github.com/fluttercommunity/flutter_google_places
-      #ref: v0.3.2
-      ref: e104fa94452ec236dfb27cf5ea54fb72f280bc08
   flutter_picker: ^2.1.0
   percent_indicator: ^4.2.3
   flutter_staggered_grid_view: ^0.6.0
@@ -155,9 +150,10 @@ dependencies:
   dgis_map:
     path: urbi_map/dgis_map
 
-  # Mapness 
+  # Mapness
   mapness:
     path: mapness
+  google_fonts: ^6.0.0
 #  provider: ^6.0.5
 
 dev_dependencies:
