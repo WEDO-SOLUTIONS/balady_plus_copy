@@ -24,6 +24,7 @@ import '../../license_management_exports.dart'
         ConfirmCancelLicenseDialog,
         HealthRequestDetailsScreenArgs,
         HealthRequestDetailsViewModel;
+import '../dialogs/update_photo_dialog.dart';
 import '../widgets/order_body_section_widget.dart';
 
 class HealthLicenseDetailsScreen extends StatefulWidget {
@@ -57,7 +58,7 @@ class _HealthLicenseDetailsScreenState
                 onPrint: (args.healthRequestDetails?.data?.result?.printable ??
                         false)
                     ? () {
-                        model.printLicense();
+                        model.checkHealthCertificatePhoto();
                       }
                     : null,
                 procedures: () async {
