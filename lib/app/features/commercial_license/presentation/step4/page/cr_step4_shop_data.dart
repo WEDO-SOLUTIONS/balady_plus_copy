@@ -136,26 +136,28 @@ class CRStep4ShopData extends StatelessWidget {
                             .updateFields(existInMall: value);
                       },
                     ),
-                    CustomTapWidgetForLongDialog(
-                      items: const [],
-                      value: null,
-                      label: "المركز التجاري",
-                      marginBottom: 24,
-                      onChangeType: (item) {},
-                    ),
-                    CustomTextFieldWidget(
-                      label: "الطابق",
-                      hintText: "ادخل الطابق",
-                      isDigitsOnly: true,
-                      keyboardType: TextInputType.number,
-                      bottomMargin: 24,
-                      initialValue: state.floorNumber.toString(),
-                      onChanged: (value) {
-                        context
-                            .read<CrStep4ShopDataCubit>()
-                            .updateFields(floorNumber: int.tryParse(value));
-                      },
-                    ),
+                    if (state.existInMall == true) ...[
+                      CustomTapWidgetForLongDialog(
+                        items: const [],
+                        value: null,
+                        label: "المركز التجاري",
+                        marginBottom: 24,
+                        onChangeType: (item) {},
+                      ),
+                      CustomTextFieldWidget(
+                        label: "الطابق",
+                        hintText: "ادخل الطابق",
+                        isDigitsOnly: true,
+                        keyboardType: TextInputType.number,
+                        bottomMargin: 24,
+                        initialValue: state.floorNumber.toString(),
+                        onChanged: (value) {
+                          context
+                              .read<CrStep4ShopDataCubit>()
+                              .updateFields(floorNumber: int.tryParse(value));
+                        },
+                      ),
+                    ],
                     YesNoRadioGroupWidget(
                       groupName: 'هل انت متعاقد مع احدى شركات النظافة ؟',
                       currentValue: state.isCitizenPledgedToClean,

@@ -55,7 +55,7 @@ class CrStep4ShopDataCubit extends Cubit<CrStep4ShopDataState> {
       final bool? existInMall,
       final int? floorNumber,
       final bool? isCitizenPledgedToClean}) {
-    state.copyWith(
+    emit(state.copyWith(
         brand: brand,
         shopName: shopName,
         shopUnitNumber: shopUnitNumber,
@@ -66,7 +66,7 @@ class CrStep4ShopDataCubit extends Cubit<CrStep4ShopDataState> {
         hasElevator: hasElevator,
         existInMall: existInMall,
         floorNumber: floorNumber,
-        isCitizenPledgedToClean: isCitizenPledgedToClean);
+        isCitizenPledgedToClean: isCitizenPledgedToClean));
   }
 
   void updateSalama(
