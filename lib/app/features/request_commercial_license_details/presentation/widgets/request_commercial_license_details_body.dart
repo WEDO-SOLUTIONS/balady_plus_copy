@@ -183,34 +183,41 @@ class _RequestCommercialLicenseDetailsBodyState
                                       .requestNotesInfo![index];
                               return Card(
                                 color: AppColor.primary100Light,
-                                child: Column(
-                                  children: [
-                                    Row(
-                                      children: [
-                                        CustomTextWidget(
-                                          ('notes_').tr(),
-                                          fontSize: 12,
-                                          fontColor: AppColor.primary900Light,
-                                          fontWeight: AppFontWeight.bold,
-                                          textAlign: TextAlign.center,
-                                        ),
-                                        CustomTextWidget(
-                                          requestNotesInfo.date.toWrittenDate(),
-                                          fontSize: 12,
-                                          fontColor:
-                                              AppColor.blackModern500Light,
-                                          fontWeight: AppFontWeight.bold,
-                                          textAlign: TextAlign.center,
-                                        ),
-                                      ],
-                                    ),
-                                    CustomTextWidget(
-                                      requestNotesInfo.note,
-                                      fontSize: 12,
-                                      fontColor: AppColor.blackModern600Light,
-                                      fontWeight: AppFontWeight.regular,
-                                    ),
-                                  ],
+                                margin: const EdgeInsets.only(top: 16),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(12.0),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          CustomTextWidget(
+                                            ('notes_').tr(),
+                                            fontSize: 12,
+                                            fontColor: AppColor.primary900Light,
+                                            fontWeight: AppFontWeight.bold,
+                                            textAlign: TextAlign.center,
+                                          ),
+                                          const Spacer(),
+                                          CustomTextWidget(
+                                            requestNotesInfo.date.toWrittenDate(),
+                                            fontSize: 12,
+                                            fontColor:
+                                                AppColor.blackModern500Light,
+                                            fontWeight: AppFontWeight.bold,
+                                            textAlign: TextAlign.center,
+                                          ),
+                                        ],
+                                      ),
+                                      const SizedBox(height: 16),
+                                      CustomTextWidget(
+                                        requestNotesInfo.note,
+                                        fontSize: 12,
+                                        fontColor: AppColor.blackModern600Light,
+                                        fontWeight: AppFontWeight.regular,
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               );
                             },
