@@ -181,7 +181,6 @@ class _TransactionBodySectionState extends State<TransactionBodySection> {
             customColumnType: [0], value: null),
         selectedTextStyle: const TextStyle(color: AppColor.baladyDarkGreen2),
         onConfirm: (hijri_picker.Picker picker, List value) {
-          //print((picker.adapter as HijriPicker.DateTimePickerAdapter).value);
           var date =
               (picker.adapter as hijri_picker.DateTimePickerAdapter).value;
           setState(() {

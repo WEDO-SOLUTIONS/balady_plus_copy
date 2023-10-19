@@ -97,7 +97,6 @@ class NewMSRDetailsViewModel extends BaseViewModel {
             memo: "",
             id: element.ID ?? ""));
       });
-      print(attachments.length);
       notifyListeners();
       validateForm();
 

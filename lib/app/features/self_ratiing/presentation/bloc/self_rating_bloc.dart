@@ -48,19 +48,15 @@ class SelfRatingBloc extends Bloc<SelfRatingEvent, SelfRatingState> {
     emitter(state.copyWith(status: BlocStatus.loading));
 
     String qa = await rootBundle.loadString("assets/self_rating.json");
-    //print(qa);
+
     var r = json.decode(qa);
-    print(r);
+
     try {
       List<SelfRatingItem>? d = r != null
           ? List<SelfRatingItem>.from(r.map((x) => SelfRatingItem.fromMap(x)))
           : null;
 
       emitter(state.copyWith(items: d, status: BlocStatus.success));
-      print("YYY");
-      print(d);
-    } catch (ex) {
-      print(ex);
-    }
+    } catch (ex) {}
   }
 }

@@ -38,7 +38,6 @@ class CustomerVoiceRepository {
         CommonFunctions.showError(error);
       }
     } catch (ex) {
-      print(ex);
       CommonFunctions.showError(error);
       try {
         Helpers.sendLog(
@@ -69,7 +68,6 @@ class CustomerVoiceRepository {
       if (category != null && category.isNotEmpty)
         "SpecialClassificationType": category
     };
-    //print(queryParms);
 
     String url = ApiUrl.IncidentRetrieveData;
 
@@ -87,7 +85,6 @@ class CustomerVoiceRepository {
         error = ("no_spl_classification_error").tr();
       }
     } catch (ex) {
-      print(ex);
       try {
         String queryString = "?" + Uri(queryParameters: queryParms).query;
 
@@ -133,7 +130,6 @@ class CustomerVoiceRepository {
         error = ("no_spl_classification_error").tr();
       }
     } catch (ex) {
-      print(ex);
       try {
         String queryString = "?" + Uri(queryParameters: queryParms).query;
 
@@ -172,11 +168,9 @@ class CustomerVoiceRepository {
     try {
       SubMainClassification response =
           SubMainClassification.fromMap(json.decode(data));
-      print(splId);
-      print(json.decode(data));
+
       return response;
     } catch (ex) {
-      print(ex);
       try {
         String queryString = "?" + Uri(queryParameters: queryParms).query;
 
@@ -216,7 +210,6 @@ class CustomerVoiceRepository {
           SubMainClassification.fromMap(json.decode(data));
       return response;
     } catch (ex) {
-      print(ex);
       try {
         String queryString = "?" + Uri(queryParameters: queryParms).query;
 
@@ -290,7 +283,6 @@ class CustomerVoiceRepository {
           response.errors != null &&
           response.errors!.isNotEmpty) state = false;
     } catch (ex) {
-      print(ex);
       try {
         //MM
         Helpers.sendLog(
@@ -309,11 +301,9 @@ class CustomerVoiceRepository {
     String url = ApiUrl.IncidentCreate;
 
     final res = await webServices.postPegaRequest(url, body: body);
-    //print(res);
     bool? state = res['state'];
     dynamic data = res['data'];
     String? error = res['error'];
-    //print(data);
     CreateIncidentResult? response;
     try {
       response = CreateIncidentResult.fromJson(json.decode(data));
@@ -323,7 +313,6 @@ class CustomerVoiceRepository {
         Helpers.sendLog(
             url: url, data: data, body: body, errorMsg: ex.toString());
       } catch (ex) {}
-      print(ex);
     }
     return Tuple3<bool?, String?, CreateIncidentResult?>(
         state, error, response);
@@ -335,16 +324,13 @@ class CustomerVoiceRepository {
     String url = ApiUrl.MSRCreate;
 
     final res = await webServices.postPegaRequest(url, body: body);
-    //print(res);
     bool? state = res['state'];
     dynamic data = res['data'];
     String? error = res['error'];
-    //print(data);
     CreateIncidentResult? response;
     try {
       response = CreateIncidentResult.fromJson(json.decode(data));
     } catch (ex) {
-      print(ex);
       try {
         //MM
         Helpers.sendLog(

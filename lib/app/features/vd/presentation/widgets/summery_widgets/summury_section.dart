@@ -35,7 +35,6 @@ class _SummurySectionState extends State<SummurySection> {
   Widget build(BuildContext context) {
     return BlocBuilder<CreateVDBloc, CreateVDState>(
       builder: (context, state) {
-        // print("SummurySection build");
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

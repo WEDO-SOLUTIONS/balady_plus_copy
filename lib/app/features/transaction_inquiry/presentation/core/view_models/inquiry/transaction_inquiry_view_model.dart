@@ -76,8 +76,7 @@ class TransactionInquiryViewModel extends BaseViewModel {
       });
 
       hideLoading();
-      print("Ressssponse");
-      print(body["data"]);
+
       var status = body["state"];
       InquiryTransactionResponse response =
           InquiryTransactionResponse.fromJson(json.decode(body["data"]));
@@ -113,8 +112,6 @@ class TransactionInquiryViewModel extends BaseViewModel {
         return Future.value(false);
       }
     } catch (ex) {
-      print("ex");
-      print(ex);
       hideLoader();
       String msg = ("server_error_1").tr();
       if (body != null && body["error"] != null)

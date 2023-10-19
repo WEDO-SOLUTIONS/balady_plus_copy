@@ -38,7 +38,6 @@ class RetreiveCarDescSection extends StatelessWidget {
                       VdAgreementSection(
                           initalChecked: state.agreement,
                           onChecked: (bool? isAgreed) {
-                            print(isAgreed);
                             context
                                 .read<CreateRetriveCarBloc>()
                                 .add(ChangeAgreementEvent(isagree: isAgreed));

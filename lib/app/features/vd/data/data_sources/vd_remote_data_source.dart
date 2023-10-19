@@ -190,7 +190,6 @@ class VDRemoteDataSourceImpl extends VDRemoteDataSource {
 
       var data =
           response.data["data"]["result"]["specialClassificationDetails"];
-      print(data);
       var parsedResult =
           data != null ? SPLDetailsResponseModel.fromJson(data) : null;
       final decodedResponse = SPLDetailsResponseModel.fromJson(data);
@@ -406,7 +405,6 @@ class VDRemoteDataSourceImpl extends VDRemoteDataSource {
       );
 
       var data = response.data["data"]["result"];
-      print(data);
 
       return data;
     } on DioError catch (error) {
@@ -416,7 +414,6 @@ class VDRemoteDataSourceImpl extends VDRemoteDataSource {
         dioError: error,
       );
     } catch (ex) {
-      print(ex);
       if (ex is ServerException)
         throw ex;
       else {
