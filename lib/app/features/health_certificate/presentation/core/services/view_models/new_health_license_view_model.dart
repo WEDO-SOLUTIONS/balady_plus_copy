@@ -251,6 +251,7 @@ class HealthLicenseViewModel extends BaseViewModel {
     Tuple4<bool?, String?, Uint8List?, String?> response =
         await _rpository.downLoadLicense(id);
     hideLoading();
+    print(response);
     if (response.item3 != null && response.item1 != null && response.item1!) {
       return Tuple2<Uint8List?, String?>(response.item3, response.item4);
     } else {
