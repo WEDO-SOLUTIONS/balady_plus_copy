@@ -19,8 +19,11 @@ import '../../models/health_request_details.dart';
 import '../../models/license_for_health_information_response.dart';
 import '../../models/list_response.dart';
 import '../../models/rating_info_response.dart';
+import '../../models/send_otp_sertificate.dart';
 import '../../models/submit_new_request_response.dart';
+import '../../models/update_photo_response.dart';
 import '../../models/validate_health_certificate_response.dart';
+import '../../models/verify_otp_certificate.dart';
 
 class HealthLicenseRepository {
   final webServices = locator<WebService>();
@@ -563,29 +566,110 @@ class HealthLicenseRepository {
     return Tuple3<bool?, String?, ListResponse?>(state, error, result);
   }
 
-  Future<Tuple3<bool?, String?, CheckUpdatePhotoClientResponse?>>
-      getHealthCenters(String baladiyahID) async {
-    String query = "$baladiyahID";
-
+  Future<Tuple3<bool?, String?, CheckUpdateClientPhoto?>> checkUpdatedPhoto(
+      int requestId) async {
     final body = await webServices.getApigeeRequest(
-        ApiConstants.healthCertificatesCenters,
-        relativePath: query,
+        ApiConstants.updatedPersonalPhoto(requestId),
         autoLogout: false);
     bool state = body['state'];
     dynamic data = body['data'];
-    ListResponse? result;
+    CheckUpdateClientPhoto? result;
     String error =
         body['error'] ?? Helpers.translatingWord("errors_server_error_1");
 
     try {
-      ListResponse response = ListResponse.fromJson(json.decode(data));
+      CheckUpdateClientPhoto response =
+          CheckUpdateClientPhoto.fromJson(json.decode(data));
       result = response;
       if (!state) {
-        error = result.data?.responseMessage ?? error;
+        error = response.data?.responseMessage ?? error;
       }
     } catch (ex) {
       //print(ex);
     }
-    return Tuple3<bool?, String?, ListResponse?>(state, error, result);
+    return Tuple3<bool?, String?, CheckUpdateClientPhoto?>(
+        state, error, result);
+  }
+
+  Future<Tuple3<bool?, String?, SendOtpCertificateResult?>> sendOTPCertificate(
+      String requestId) async {
+    final body = await webServices.postApigeeRequest(
+      ApiConstants.sendOTPCertificate(requestId),
+    );
+    bool state = body['state'];
+    dynamic data = body['data'];
+    SendOtpCertificateResult? result;
+    String error =
+        body['error'] ?? Helpers.translatingWord("errors_server_error_1");
+
+    try {
+      SendOtpCertificate response =
+          SendOtpCertificate.fromJson(json.decode(data));
+      result = response.data?.result;
+      if (!state) {
+        error = response.data?.responseMessage ?? error;
+      }
+    } catch (ex) {
+      //print(ex);
+    }
+    return Tuple3<bool?, String?, SendOtpCertificateResult?>(
+        state, error, result);
+  }
+
+  Future<Tuple3<bool?, String?, bool?>> verifyOTPCertificate(
+      {required String requestId,
+      required String otp,
+      required String otpKey}) async {
+    final body = await webServices.postApigeeRequest(
+        ApiConstants.verifyOTPCertificate(requestId),
+        body: {"otp": otp, "otpKey": otpKey});
+    bool state = body['state'];
+    dynamic data = body['data'];
+    bool? result;
+    String error =
+        body['error'] ?? Helpers.translatingWord("errors_server_error_1");
+
+    try {
+      VerifyOtpCertificate response =
+          VerifyOtpCertificate.fromJson(json.decode(data));
+      result = response.data?.result;
+      if (!state) {
+        error = response.data?.responseMessage ?? error;
+      }
+    } catch (ex) {
+      //print(ex);
+    }
+    return Tuple3<bool?, String?, bool?>(state, error, result);
+  }
+
+  Future<Tuple3<bool?, String?, UpdatePhotoResponse?>> updatePhoto(
+      {required String licenseNo,
+      required String birthDate,
+      required String otpToken,
+      required int versionNo}) async {
+    final body = await webServices
+        .postApigeeRequest(ApiConstants.updateCertificatePhoto, body: {
+      "birthDate": birthDate,
+      "licenseNo": licenseNo,
+      "otpToken": otpToken,
+      "versionNo": versionNo
+    });
+    bool state = body['state'];
+    dynamic data = body['data'];
+    UpdatePhotoResponse? result;
+    String error =
+        body['error'] ?? Helpers.translatingWord("errors_server_error_1");
+
+    try {
+      UpdatePhotoResponse response =
+          UpdatePhotoResponse.fromJson(json.decode(data));
+      result = response;
+      if (!state) {
+        error = response.data?.responseMessage ?? error;
+      }
+    } catch (ex) {
+      //print(ex);
+    }
+    return Tuple3<bool?, String?, UpdatePhotoResponse?>(state, error, result);
   }
 }
