@@ -23,6 +23,9 @@ class DialogName {
   static const healthCertificateRequestActionsDialog =
       '/healthCertificateRequestActionsDialog';
 
+  static const healthCertificateUpdatePhotoActionsDialog =
+      '/healthCertificateUpdatePhotoActionsDialog';
+
   static const buildingComplianceDialog = '/buildingComplianceDialog';
 
   static const selectAppointmentTypeDialog = '/selectAppointmentTypeDialog';
