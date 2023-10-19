@@ -317,7 +317,7 @@ class ElevatedButtonWidget extends _ElevatedButton {
           ),
           btnHeight: 56,
           text: text,
-          onPressed: onPressed,
+          onPressed: (isDisabled ?? false) ? null : onPressed,
         ));
 
   ElevatedButtonWidget.primaryCustom(

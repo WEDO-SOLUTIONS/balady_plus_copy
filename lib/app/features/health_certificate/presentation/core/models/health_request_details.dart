@@ -214,32 +214,32 @@ class Data {
 }
 
 class Result {
-  Result({
-    this.requestId,
-    this.requestTypeId,
-    this.requestTypeName,
-    this.requestStatusId,
-    this.requestStatusName,
-    this.submitterType,
-    this.requestSubmitDate,
-    this.healthCertificateInfo,
-    this.municipalityId,
-    this.municipalityName,
-    this.subMunicipalityId,
-    this.subMunicipalityName,
-    this.ownerInfo,
-    this.submitterInfo,
-    this.comLicenseInfo,
-    this.medicalExamInfo,
-    this.medicalTrainingInfo,
-    this.requestAttachments,
-    this.certificateEntityType,
-    this.notes,
-    this.billInfo,
-    this.validToSubmit,
-    this.x,
-    this.y,
-  });
+  Result(
+      {this.requestId,
+      this.requestTypeId,
+      this.requestTypeName,
+      this.requestStatusId,
+      this.requestStatusName,
+      this.submitterType,
+      this.requestSubmitDate,
+      this.healthCertificateInfo,
+      this.municipalityId,
+      this.municipalityName,
+      this.subMunicipalityId,
+      this.subMunicipalityName,
+      this.ownerInfo,
+      this.submitterInfo,
+      this.comLicenseInfo,
+      this.medicalExamInfo,
+      this.medicalTrainingInfo,
+      this.requestAttachments,
+      this.certificateEntityType,
+      this.notes,
+      this.billInfo,
+      this.validToSubmit,
+      this.x,
+      this.y,
+      this.printable});
 
   int? requestId;
   int? requestTypeId;
@@ -269,50 +269,48 @@ class Result {
   dynamic printUrl;
 
   factory Result.fromJson(Map<String, dynamic> json) => Result(
-        requestId: json["requestId"],
-        requestTypeId: json["requestTypeId"],
-        requestTypeName: json["requestTypeName"],
-        requestStatusId: json["requestStatusId"],
-        requestStatusName: json["requestStatusName"],
-        submitterType: json["submitterType"],
-        requestSubmitDate: json["requestSubmitDate"],
-        healthCertificateInfo: json["healthCertificateInfo"] != null
-            ? HealthCertificateInfo.fromJson(json["healthCertificateInfo"])
-            : null,
-        municipalityId: json["municipalityId"],
-        municipalityName: json["municipalityName"],
-        subMunicipalityId: json["subMunicipalityId"],
-        subMunicipalityName: json["subMunicipalityName"],
-        ownerInfo: json["ownerInfo"] != null
-            ? ErInfo.fromJson(json["ownerInfo"])
-            : null,
-        submitterInfo: json["submitterInfo"] != null
-            ? ErInfo.fromJson(json["submitterInfo"])
-            : null,
-        comLicenseInfo: json["comLicenseInfo"] != null
-            ? ComLicenseInfo.fromJson(json["comLicenseInfo"])
-            : null,
-        medicalExamInfo: json["medicalExamInfo"] != null
-            ? MedicalExamInfo.fromJson(json["medicalExamInfo"])
-            : null,
-        medicalTrainingInfo: json["medicalTrainingInfo"] != null
-            ? MedicalTrainingInfo.fromJson(json["medicalTrainingInfo"])
-            : null,
-        requestAttachments: json["requestAttachments"] != null
-            ? List<RequestAttachment>.from(json["requestAttachments"]
-                .map((x) => RequestAttachment.fromJson(x)))
-            : null,
-        certificateEntityType: json["certificateEntityType"],
-        notes: json["notes"] != null
-            ? List<Note>.from(json["notes"].map((x) => Note.fromJson(x)))
-            : null,
-        validToSubmit: json["validToSubmit"],
-        x: json["x"],
-        y: json["y"],
-        billInfo: json["billInfo"] != null
-            ? BillInfo.fromJson(json["billInfo"])
-            : null,
-      );
+      requestId: json["requestId"],
+      requestTypeId: json["requestTypeId"],
+      requestTypeName: json["requestTypeName"],
+      requestStatusId: json["requestStatusId"],
+      requestStatusName: json["requestStatusName"],
+      submitterType: json["submitterType"],
+      requestSubmitDate: json["requestSubmitDate"],
+      healthCertificateInfo: json["healthCertificateInfo"] != null
+          ? HealthCertificateInfo.fromJson(json["healthCertificateInfo"])
+          : null,
+      municipalityId: json["municipalityId"],
+      municipalityName: json["municipalityName"],
+      subMunicipalityId: json["subMunicipalityId"],
+      subMunicipalityName: json["subMunicipalityName"],
+      ownerInfo:
+          json["ownerInfo"] != null ? ErInfo.fromJson(json["ownerInfo"]) : null,
+      submitterInfo: json["submitterInfo"] != null
+          ? ErInfo.fromJson(json["submitterInfo"])
+          : null,
+      comLicenseInfo: json["comLicenseInfo"] != null
+          ? ComLicenseInfo.fromJson(json["comLicenseInfo"])
+          : null,
+      medicalExamInfo: json["medicalExamInfo"] != null
+          ? MedicalExamInfo.fromJson(json["medicalExamInfo"])
+          : null,
+      medicalTrainingInfo: json["medicalTrainingInfo"] != null
+          ? MedicalTrainingInfo.fromJson(json["medicalTrainingInfo"])
+          : null,
+      requestAttachments: json["requestAttachments"] != null
+          ? List<RequestAttachment>.from(json["requestAttachments"]
+              .map((x) => RequestAttachment.fromJson(x)))
+          : null,
+      certificateEntityType: json["certificateEntityType"],
+      notes: json["notes"] != null
+          ? List<Note>.from(json["notes"].map((x) => Note.fromJson(x)))
+          : null,
+      validToSubmit: json["validToSubmit"],
+      x: json["x"],
+      y: json["y"],
+      billInfo:
+          json["billInfo"] != null ? BillInfo.fromJson(json["billInfo"]) : null,
+      printable: json["printable"]);
 
   Map<String, dynamic> toJson() => {
         "requestId": requestId,
