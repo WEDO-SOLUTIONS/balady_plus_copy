@@ -41,7 +41,6 @@ class ApigeeTokenResponse extends Equatable {
 
       return expiresInDate;
     } catch (ex) {
-      print(ex);
       DateTime expiresInDate = DateTime.now().add(Duration(hours: 1));
       return expiresInDate;
     }

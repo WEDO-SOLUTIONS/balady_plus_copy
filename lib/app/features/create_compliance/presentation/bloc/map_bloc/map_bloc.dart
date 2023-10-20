@@ -112,7 +112,6 @@ class MapBloc extends Bloc<MapEvent, MapState> {
 
   Future<void> _selectLocationEventHandler(
       SelectLocationEvent e, Emitter emitter) async {
-    print("SelectLocationEvent");
     emitter(state.copyWith(status: BlocStatus.loading));
 
     emitter(state.copyWith(
@@ -179,9 +178,7 @@ class MapBloc extends Bloc<MapEvent, MapState> {
           CameraPosition(target: LatLng(lat, lng), zoom: 16.0),
         ),
       );
-    } catch (ex) {
-      print(ex);
-    }
+    } catch (ex) {}
   }
 
   double calculateDistance(lat1, lon1, lat2, lon2) {

@@ -141,7 +141,6 @@ class ComplianceRequestDetailsModel extends ComplianceRequestDetails {
       });
     });
 
-    print("Lngth ${emtithalItems.length} ");
     details.emtithalItems = emtithalItems;
     return details;
   }

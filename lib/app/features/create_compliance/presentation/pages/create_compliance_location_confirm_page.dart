@@ -159,9 +159,7 @@ class _ServiceCardsPageState extends State<CreateComplianceLocationPage> {
                         delegatorsCubit: sl<DelegatorsCubit>(),
                       ),
                     );
-                  } catch (ex) {
-                    print(ex);
-                  }
+                  } catch (ex) {}
                 },
                 child: CircleIcon(
                   icon: IconPath.switchProfileIcon,

@@ -21,7 +21,6 @@ class FourthStepCompliance extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<ComplianceBloc, ComplianceState>(
       builder: (context, state) {
-        print("BUIKL");
         return SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(16.0),

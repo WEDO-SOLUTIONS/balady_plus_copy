@@ -47,9 +47,7 @@ class ComplianceOTPBloc extends Bloc<ComplianceOTPEvent, ComplianceOTPState> {
         });
         smsUserConsent?.requestSms();
       }
-    } catch (ex) {
-      print(ex);
-    }
+    } catch (ex) {}
     emitter(state.copyWith(status: BlocStatus.success));
   }
 }

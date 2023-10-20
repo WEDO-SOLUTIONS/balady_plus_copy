@@ -64,14 +64,9 @@ class _InAppWebViewPageState extends State<InAppWebViewPage> {
                 useShouldOverrideUrlLoading: true,
               ),
             ),
-            onLoadStart: (controller, Uri? url) {
-              //  print("URL WebView: $url");
-              // setState(() {
-              //   this.url = url!.path;
-              // });
-            },
+            onLoadStart: (controller, Uri? url) {},
             onLoadStop: (controller, Uri? url) {
-              /* print("URL WebView: $url");
+              /* 
               if (url?.path.endsWith("/dashboardclient/dashboard") ??
                   false) {
                 Timer(const Duration(milliseconds: 1300), () async {

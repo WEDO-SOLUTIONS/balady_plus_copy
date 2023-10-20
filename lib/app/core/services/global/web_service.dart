@@ -98,7 +98,7 @@ class AppInterceptors extends Interceptor {
       };
       options.headers.addAll(headers);
     }
-    print(options.headers);
+
     if (await networkConnection.isConnected == false) {
       "Request-Rejected because 'Network-Disconnected'".errorLog();
       return handler.reject(NoInternetConnectionException(options));
@@ -137,7 +137,7 @@ class AppInterceptors extends Interceptor {
     }
     options.headers.putIfAbsent("x-channel-id", () => "MOBILE");
     //if (options.headers['Authorization'] == null) {
-    print(options.headers);
+
     return handler.next(options);
   }
 
@@ -145,10 +145,6 @@ class AppInterceptors extends Interceptor {
   void onError(DioError err, ErrorInterceptorHandler handler) {
     "Opps, recieved Error: ${err.response?.statusCode}".errorLog();
     "Opps, recieved Error: ${err.response?.data}".errorLog();
-    print(err);
-
-    print(err.error);
-    print(err.type);
 
     switch (err.type) {
       case DioErrorType.connectionTimeout:

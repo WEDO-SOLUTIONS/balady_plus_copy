@@ -114,7 +114,6 @@ class CreateComplianceRemoteDataSourceImpl
       return ApplyCreateComplianceResponseModel(
           result: ResponseBodyModel.fromMap(data).data?.result);
     } on DioError catch (error) {
-      print(error);
       var errorCode;
       try {
         final decodedResponse =
@@ -131,7 +130,6 @@ class CreateComplianceRemoteDataSourceImpl
         dioError: error,
       );
     } catch (ex) {
-      print(ex);
       if (ex is ServerException)
         throw ex;
       else {
@@ -663,8 +661,6 @@ class CreateComplianceRemoteDataSourceImpl
       {required ComplinaceAttachmentRequest params}) async {
     final mimeType = lookupMimeType(params.attahment.filePath ?? "");
 
-    print(
-        "Upload File ${ApiUrl.complianceAttachment(params.requestId.toString(), params.attahment.id)}");
     final body = await locator<web.WebService>().uploadFileSSO(
       ApiUrl.complianceAttachment(
           params.requestId.toString(), params.attahment.id),
@@ -683,7 +679,6 @@ class CreateComplianceRemoteDataSourceImpl
       } else {
         ResponseBodyModel? r =
             data != null ? ResponseBodyModel.fromMap(json.decode(data)) : null;
-        print("RRRR ${r?.data?.responseMessage}");
         String error = r?.data?.responseMessage ?? "errors_server_error_2".tr();
         throw ServerException(
           error,
@@ -828,15 +823,10 @@ class CreateComplianceRemoteDataSourceImpl
     String error =
         body['error'] ?? Helpers.translatingWord("errors_server_error_1");
     String? contentType = body['Content-Type'];
-    print("COOOOO");
-    print(contentType);
-    print(state);
-    print(body);
-    //  print(data);
+
     try {
       if (state) result = data;
 
-      // print(result);
       if (!state) {
         //   error = result.data?.responseMessage ?? error;
 
@@ -847,9 +837,7 @@ class CreateComplianceRemoteDataSourceImpl
               errorMsg: body.toString() ?? "");
         } catch (ex) {}
       }
-    } catch (ex) {
-      print(ex);
-    }
+    } catch (ex) {}
     return Future.value(result);
   }
 

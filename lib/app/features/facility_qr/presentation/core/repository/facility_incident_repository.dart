@@ -38,7 +38,7 @@ class FacilityIncidentRepository {
           SpecializedClassification.fromMap(json.decode(data));
       return response;
     } catch (ex) {
-      print(ex);
+   
 
       return null;
     }

@@ -69,7 +69,6 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
       response?.accessToken.actionLog();
       return response!;
     } catch (error) {
-      print(error);
       throw ServerException(
         error.toString(),
       );
@@ -93,7 +92,7 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
           ],
         ),
       );
-      //  print(response?.refreshToken);
+
       return response!;
     } on PlatformException catch (error) {
       if (error.toString().contains("invalid_grant")) {
@@ -126,7 +125,6 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
         dioError: error,
       );
     } catch (ex) {
-      print(ex);
       if (ex is ServerException) {
         rethrow;
       } else {
@@ -242,7 +240,6 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
 
       return response!;
     } catch (error) {
-      print(error);
       throw ServerException("", errorCode: error.toString());
     }
   }
@@ -259,7 +256,7 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
       if (response.headers['set-cookie']?.toString() != null) {
         cookie = response.headers['set-cookie'].toString();
       }
-      print(cookie);
+
       return cookie;
     } on DioError catch (error) {
       throw ServerException(
@@ -268,7 +265,6 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
         dioError: error,
       );
     } catch (ex) {
-      print(ex);
       if (ex is ServerException) {
         rethrow;
       } else {
@@ -301,7 +297,7 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
             },
           ),
           data: {"grant_type": "client_credentials"});
-      print("APIGEEEE Response");
+
       ApigeeTokenResponseModel apigeeResponse =
           ApigeeTokenResponseModel.fromMap(response.data);
       return apigeeResponse.toFuture();
@@ -339,18 +335,18 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
 
       /*  final result =
           ApigeeResponseModel<List<TestModel>>.fromMap(data).data?.result;
-      print("Ff $result");
+   
       List<TestModel>? d = result != null
           ? List<TestModel>.from(result.map((x) => TestModel.fromMap(x)))
           : null;
 
-      print(d?.length);*/
+ ;*/
 
       final result = ResponseBodyModel.fromMap(data).data?.result;
       List<TestModel>? d = result != null
           ? List<TestModel>.from(result.map((x) => TestModel.fromMap(x)))
           : null;
-      print(d?.length);
+
       return result.toFuture();
     } on DioError catch (error) {
       error.errorLog();

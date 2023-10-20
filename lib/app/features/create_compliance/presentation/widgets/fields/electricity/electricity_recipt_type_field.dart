@@ -31,7 +31,6 @@ class ElectricityReciptTypeField extends StatelessWidget {
                 );
           },
           onTap: () {
-            print("recipt types ${state.reciptLists}");
             BottomSheetDialog.showDraggableSheet(
               context,
               //  dialogKeyName: DialogName.complianceSubUsagesDialog,

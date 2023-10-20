@@ -32,7 +32,7 @@ class _CompliancePDFHomePageState extends State<CompliancePDFHomePage> {
       String aa = await rootBundle
           .loadString("assets/compliance_pdf/text/provisions.json");
       var B = json.decode(aa);
-      print(B);
+
       {
         List<ProvisionsModel>? model = B != null
             ? List<ProvisionsModel>.from(
