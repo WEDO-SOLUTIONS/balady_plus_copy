@@ -110,13 +110,10 @@ class NotificationService {
   static void cancelAll() => _notifications.cancelAll();
 
   static void configure() async {
-    //print("HEREE");
     try {
       await Firebase.initializeApp();
-    } catch (ex) {
-      //print("EXCCCC $ex");
-    }
-    //print("FIREBAASE");
+    } catch (ex) {}
+
     NotificationSettings settings =
         await FirebaseMessaging.instance.requestPermission(
       alert: true,
@@ -142,16 +139,13 @@ class NotificationService {
     );
 
     FirebaseMessaging.instance.getToken().then((value) {
-      print("Token Firebase $value");
       //Helpers.sendLog(url: "token", data: value);
     });
     // FirebaseMessaging.instance.subscribeToTopic("all").then((value) {});
     FirebaseMessaging.instance
         .getInitialMessage()
         .then((RemoteMessage? message) {
-      if (message != null) {
-        //print(message);
-      }
+      if (message != null) {}
     });
 
     showNotification(Map<String, dynamic> msg) {

@@ -39,7 +39,7 @@ class DaemRepository {
     String url = ApiUrl.DaemRetrieveData;
 
     final body = await webServices.getPegaRequest(url, queryParams: queryParms);
-    print(body);
+
     bool state = body['state'];
     dynamic data = body['data'];
     String error = body['error'] ?? ("errors_server_error_1").tr();
@@ -52,7 +52,6 @@ class DaemRepository {
         error = result.errors![0].message ?? error;
       }
     } catch (ex) {
-      print(ex);
       try {
         Helpers.sendLog(url: url, data: data, errorMsg: ex.toString());
       } catch (ex) {}
@@ -91,7 +90,6 @@ class DaemRepository {
         error = result.errors![0].message ?? error;
       }
     } catch (ex) {
-      print(ex);
       try {
         Helpers.sendLog(url: url, data: data, errorMsg: ex.toString());
       } catch (ex) {}
@@ -131,7 +129,6 @@ class DaemRepository {
         error = result.errors![0].message ?? error;
       }
     } catch (ex) {
-      print(ex);
       try {
         Helpers.sendLog(url: url, data: data, errorMsg: ex.toString());
       } catch (ex) {}
@@ -173,7 +170,6 @@ class DaemRepository {
         error = result.errors![0].message ?? error;
       }
     } catch (ex) {
-      print(ex);
       try {
         Helpers.sendLog(url: url, data: data, errorMsg: ex.toString());
       } catch (ex) {}
@@ -209,7 +205,6 @@ class DaemRepository {
         error = result.errors![0].message ?? error;
       }
     } catch (ex) {
-      print(ex);
       try {
         Helpers.sendLog(url: url, data: data, errorMsg: ex.toString());
       } catch (ex) {}
@@ -248,7 +243,6 @@ class DaemRepository {
         error = result.errors![0].message ?? error;
       }
     } catch (ex) {
-      print(ex);
       try {
         Helpers.sendLog(url: url, data: data, errorMsg: ex.toString());
       } catch (ex) {}
@@ -309,7 +303,6 @@ class DaemRepository {
         }
       }
     } catch (ex) {
-      print(ex);
       try {
         Helpers.sendLog(url: url, data: data, errorMsg: ex.toString());
       } catch (ex) {}
@@ -362,12 +355,11 @@ class DaemRepository {
       };
     }
     String url = ApiUrl.DaemUploadFile;
-    // body.toString().actionLog();
-    print(url);
+
     CommonProperties.token.actionLog();
 
     final res = await webServices.postPegaRequest(url, body: body);
-    print(res);
+
     bool? state = res['state'];
     dynamic data = res['data'];
     String? error = res['error'];
@@ -388,7 +380,6 @@ class DaemRepository {
         } catch (ex) {}
       }
     } catch (ex) {
-      print(ex);
       //MM
       try {
         Helpers.sendLog(
@@ -425,10 +416,9 @@ class DaemRepository {
     try {
       result = DownloadFileResult.fromJson(json.decode(data));
     } catch (ex) {
-      print(ex);
       try {
         String queryString = "?" + Uri(queryParameters: queryParms).query;
-//MM
+
         Helpers.sendLog(
             url: url,
             data: data,

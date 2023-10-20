@@ -349,7 +349,6 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
 
   Future<void> _getReciptTypesHandler(
       GetReciptTypesEvent e, Emitter emitter) async {
-    print("recipt types Calls");
     emitter(state.copyWith(
       reciptTypesStatus: BlocRequestStatus.submissionGetLoading,
     ));
@@ -357,15 +356,11 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
     final failOrSuccess = await _getReciptTypes(NoParams());
 
     failOrSuccess.fold((l) {
-      print("recipt types fail");
-
       emitter(state.copyWith(
         errorMessage: (l as ServerFailure).errorMessage,
         reciptTypesStatus: BlocRequestStatus.submissionGetFailure,
       ));
     }, (r) {
-      print("recipt types successs ${r.items?.length}");
-
       emitter(state.copyWith(
           reciptLists: r,
           reciptTypesStatus: BlocRequestStatus.submissionGetSuccess));
@@ -447,7 +442,6 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
         event.requestId ?? state.requestId.toString());
 
     failOrSuccess.fold((l) {
-      print(l);
       emitter(state.copyWith(
         errorMessage: (l as ServerFailure).errorMessage,
         detailsStatus: BlocRequestStatus.failure,
@@ -548,7 +542,7 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
       certificateBaseType = 1;
     }
     requestId = r?.requestId;
-    print("SETTTTTUP current step save${r?.certificateBaseType}");
+
     emit(state.copyWith(
         requestDetails: r,
         isDraft: true,
@@ -835,9 +829,7 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
 
   Future<void> _goToNextPageHandler(
       GoToNextPageEvent e, Emitter emitter) async {
-    // print("DataLog ${state}");
     if (isLastPage()) {
-      print("HERE");
       add(SubmitComplianceEvent());
     } else if (state.currentStep == 0 && state.benificiaryTypeSelection == 2) {
       add(GetEtmamEntityIdEvent());
@@ -1137,7 +1129,7 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
   Future<void> _changeAgreementHandler(
       ChangeAgreementEvent e, Emitter emitter) async {
     hideKeyboard();
-    print(e.isagree);
+
     emitter(state.copyWith(agreement: e.isagree, errorMessage: ""));
   }
 

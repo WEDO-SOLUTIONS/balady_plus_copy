@@ -263,10 +263,6 @@ class ComplianceState extends Equatable {
       if (documentTypeSelection == 1) {
         if (selectedLicense == null) return false;
       }
-      print(selectedOwnerShip);
-      print(ownershipDate);
-      print(ownershipText);
-      print(ownerShipAgreement);
 
       if (documentTypeSelection == 2) {
         if (selectedOwnerShip == null ||
@@ -382,7 +378,6 @@ class ComplianceState extends Equatable {
     if ((ownershipDate != null && form == null) || form == DateForm.hijri) {
       return ownershipDate!;
     } else {
-      print("DAAAATE $ownershipDate");
       return DateTime.tryParse(ownershipDate ?? "")!.toHijriFormattedDate1();
     }
     return null;

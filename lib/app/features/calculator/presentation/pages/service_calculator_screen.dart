@@ -1962,7 +1962,6 @@ class _ServiceCalculatorScreenState extends BaseState<ServiceCalculatorScreen,
   }
 
   Widget _serviceContentWidget() {
-    print(_selectedActionId);
     if (_selectedActionId == 0) {
       return Column(
         children: <Widget>[
@@ -2027,7 +2026,6 @@ class _ServiceCalculatorScreenState extends BaseState<ServiceCalculatorScreen,
   Widget? DisplayCorrectScenario(int activityId, int actionId) {
     currentActivityId = activityId;
     currentactionId = actionId;
-    print(currentActivityId);
     if (activityId == 1) {
       if (actionId == 1) {
         return S1_1();
@@ -2164,7 +2162,6 @@ class _ServiceCalculatorScreenState extends BaseState<ServiceCalculatorScreen,
   }
 
   bool changeBtnColor(int? activityId, int? actionId) {
-    print("changeBtnColor $activityId $actionId");
     if (activityId == null && actionId == null) return false;
     if (activityId == 1) {
       if (actionId == 1) {
@@ -4486,10 +4483,7 @@ class _ServiceCalculatorScreenState extends BaseState<ServiceCalculatorScreen,
   }
 
   void SubmitData() {
-    print("SubmitData");
     hideKeybaord();
-    print(currentActivityId);
-    print(currentactionId);
     if (currentActivityId == 1) {
       if (currentactionId == 1) {
         presenter?.calculateV03(createProcedureOneRequest());
@@ -4958,7 +4952,6 @@ class _ServiceCalculatorScreenState extends BaseState<ServiceCalculatorScreen,
 
   @override
   void getProceduresListlookupSuccess(List<Procedure>? result) {
-    print("getProceduresListlookupSuccess");
     setState(() {
       List<Procedure>? lookup = result;
       _procedures.clear();
@@ -4980,8 +4973,6 @@ class _ServiceCalculatorScreenState extends BaseState<ServiceCalculatorScreen,
     List<SubActivity>? lookup = result;
     _subActivities.clear();
     _subActivities.addAll(lookup ?? []);
-    // print(currentActivityId);
-    // print(currentactionId);
 
     changeBtnColor(currentActivityId, currentactionId);
   }

@@ -249,9 +249,7 @@ class CommonFunctions {
       dayName = DateFormat('EEEE', CommonFunctions.isAppAR ? 'ar_SA' : 'en_US')
           .format(tempDate)
           .toString();
-    } catch (e) {
-      //print(e);
-    }
+    } catch (e) {}
     return dayName;
   }
 
@@ -264,9 +262,7 @@ class CommonFunctions {
           DateFormat('dd', CommonFunctions.isAppAR ? 'ar_SA' : 'en_US')
               .format(tempDate)
               .toString();
-    } catch (e) {
-      //print(e);
-    }
+    } catch (e) {}
     return replaceArabicNumberWithEnglish(formattedDate);
   }
 
@@ -279,9 +275,7 @@ class CommonFunctions {
           DateFormat('MMMM', CommonFunctions.isAppAR ? 'ar_SA' : 'en_US')
               .format(tempDate)
               .toString();
-    } catch (e) {
-      //print(e);
-    }
+    } catch (e) {}
     return monthName;
   }
 
@@ -292,9 +286,7 @@ class CommonFunctions {
       DateTime tempDate = DateFormat("yyyy/MM/dd").parse(bidEndDate);
       final date = DateTime.now();
       difference = tempDate.difference(date).inDays;
-    } catch (e) {
-      //print(e);
-    }
+    } catch (e) {}
     return difference;
   }
 
@@ -456,8 +448,7 @@ class CommonFunctions {
       String v1UUID = CommonProperties.uuidInstance.v1();
       String v5UUID =
           CommonProperties.uuidInstance.v5(v1UUID, CommonProperties.deviceId);
-      //print("v5UUID");
-      //print(v5UUID);
+
       if (v5UUID.isNotEmpty)
         return v5UUID.replaceAll("-", "");
       else if (v1UUID.isNotEmpty)
@@ -465,8 +456,6 @@ class CommonFunctions {
       else
         return DateTime.now().millisecondsSinceEpoch.toString();
     } catch (ex) {
-      //print("EXXXXXX GUId");
-      //print(ex);
       return DateTime.now().millisecondsSinceEpoch.toString();
     }
   }
@@ -652,9 +641,7 @@ class CommonFunctions {
                 fontSize: 16.0),
             hideCloseButton: true,
             duration: const Duration(seconds: 3));
-      } catch (ex) {
-        print(ex);
-      }
+      } catch (ex) {}
     }
   }
 
@@ -686,9 +673,7 @@ class CommonFunctions {
                 fontSize: 16.0),
             hideCloseButton: true,
             duration: const Duration(seconds: 3));
-      } catch (ex) {
-        //print(ex);
-      }
+      } catch (ex) {}
     }
   }
 
@@ -696,7 +681,7 @@ class CommonFunctions {
     ServiceStatus serviceStatus = await Permission.location.serviceStatus;
     if (serviceStatus != ServiceStatus.disabled) {
       var status = await Permission.location.request();
-      //print(status);
+
       if (status == PermissionStatus.permanentlyDenied) {
         showDialog(
             context: context,
@@ -838,9 +823,7 @@ class CommonFunctions {
         time = time.replaceAll("ص", ("am").tr()).replaceAll("م", ("pm").tr());
       }
       formattedTime = time;
-    } catch (ex) {
-      //print(ex);
-    }
+    } catch (ex) {}
     return replaceArabicNumberWithEnglish(formattedTime);
   }
 
@@ -852,9 +835,7 @@ class CommonFunctions {
       formattedDate = DateFormat.yMMMMd(isAppAR ? 'ar_SA' : 'en_US')
           .format(tempDate)
           .toString();
-    } catch (e) {
-      //print(e);
-    }
+    } catch (e) {}
     return replaceArabicNumberWithEnglish(formattedDate);
   }
 
@@ -946,9 +927,7 @@ class CommonFunctions {
       Sentry.captureEvent(event, withScope: (p) {
         //  p.addAttachment(attachment)
       });
-    } catch (ex) {
-      //print(ex);
-    }
+    } catch (ex) {}
   }
 
   static sendUrbiMapLogs() async {
@@ -983,15 +962,9 @@ class CommonFunctions {
             p0.addAttachment(SentryAttachment.fromUint8List(
                 dGisFiles[i].readAsBytesSync(), dGisFiles[i].path ?? ""));
           },
-        ).then((value) {
-          //print("event sent $value");
-        });
+        ).then((value) {});
       }
-
-      //print("File File  ${dGisFiles.firstOrNull?.path}");
-    } catch (ex) {
-      //print(ex);
-    }
+    } catch (ex) {}
   }
 }
 

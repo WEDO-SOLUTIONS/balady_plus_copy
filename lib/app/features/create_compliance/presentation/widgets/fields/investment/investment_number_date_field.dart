@@ -23,7 +23,6 @@ class InvestmentNumberDateField extends StatelessWidget {
             state.ownershipDate != null ? state.getOwnerShipDate() : null,
         endDate: DateTime.now(),
         onChange: (DateTime time, DateForm form) {
-          print(time.toHijriFormattedDate1());
           context.read<ComplianceBloc>().add(UpdateFieldsEvent(
               form: form, ownershipDate: time.toHijriFormattedDate1()));
         },

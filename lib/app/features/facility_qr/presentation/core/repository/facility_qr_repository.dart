@@ -36,7 +36,6 @@ class FacilityQRRepository {
         CommonFunctions.showError(error);
       }
     } catch (ex) {
-      print(ex);
       CommonFunctions.showError(error);
 
       try {
@@ -70,7 +69,6 @@ class FacilityQRRepository {
       // else
       //   showError(error);
     } catch (ex) {
-      print(ex);
       try {
         Helpers.sendLog(
             url: ApiConstants.QrLicenseUserLatesetRatingItemsUrl,

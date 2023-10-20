@@ -553,9 +553,7 @@ class FacilityQRDetailsViewModel extends BaseViewModel {
   void launchURL(String url) async {
     try {
       await launch(url);
-    } catch (ex) {
-      print(ex);
-    }
+    } catch (ex) {}
   }
 
   String getWhatsUpNumber() {
