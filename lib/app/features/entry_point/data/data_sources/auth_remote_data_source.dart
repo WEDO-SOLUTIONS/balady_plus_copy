@@ -57,12 +57,11 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
           RemoteConfig.ssoClient,
           RemoteConfig.ssoLoginUrl,
           serviceConfiguration: _serviceConfiguration,
-          clientSecret: RemoteConfig.ssoSecret,
+          // clientSecret: RemoteConfig.ssoSecret,
           scopes: [
             'openid',
             'profile',
             'offline_access',
-            'EmployeeAdminstration.Api',
           ],
         ),
       );

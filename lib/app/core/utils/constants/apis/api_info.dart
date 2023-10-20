@@ -258,6 +258,17 @@ class ApiUrl {
   static String saveLocationDetails(int requestId) =>
       "v1/balady-commercial-services/new-request/$requestId/location-details";
 
+  static String investmentContracts(int requestId) =>
+      "v1/balady-commercial-services/gsb/$requestId/investment-contracts";
+
+  static String cleanContracts(int requestId) =>
+      "v1/balady-commercial-services/gsb/$requestId/clean-contracts";
+
+  static String ejarInfo = "v1/balady-commercial-services/ejar/tenancycontract";
+
+  static String deedInfo(int requestId) =>
+      "v1/balady-commercial-services/ejar/tenancycontract";
+
 //! Violations
   static const String violationsStatus =
       "/v1/balady-dashboard/violations/statuses";

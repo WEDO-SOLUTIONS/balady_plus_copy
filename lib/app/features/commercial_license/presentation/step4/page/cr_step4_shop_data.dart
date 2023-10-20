@@ -204,9 +204,9 @@ class CRStep4ShopData extends StatelessWidget {
                               .updateSalama(salamaPermitNumber: value);
                         },
                       ),
-                    HorizontalRadioGroup(
+                    HorizontalRadioGroup<CRSubmitterType>(
                       groupName: 'صفة المقدم بالنسبة لموقع المحل',
-                      currentItem: null,
+                      currentItem: state.crSubmitterType,
                       items: [
                         RadioItem<CRSubmitterType>(
                             radioValue: CRSubmitterType.owner,
@@ -272,24 +272,47 @@ class CRStep4ShopData extends StatelessWidget {
                               .updateCRContractOption(value!);
                         },
                       ),
-                    CustomTextFieldWidget(
-                      label: "رقم عقد التملك (الصك)",
-                      hintText: "رقم عقد التملك (الصك)",
-                      isDigitsOnly: true,
-                      keyboardType: TextInputType.number,
-                      bottomMargin: 24,
-                      initialValue: state.contractNumber,
-                      onChanged: (value) {
-                        context
-                            .read<CrStep4ShopDataCubit>()
-                            .updateContractDate(value);
-                      },
-                    ),
-                    HijriCalendarAddetionalField(
-                      fieldName: 'تاريخ عقد التملك',
-                      isMandatory: true,
-                      onChanged: (value) {},
-                    ),
+                    if (state.crContractType == CRContractType.deed &&
+                        state.crContractOption == CRContractOption.attach) ...[
+                      CustomTextFieldWidget(
+                        label: "رقم عقد التملك (الصك)",
+                        hintText: "رقم عقد التملك (الصك)",
+                        isDigitsOnly: true,
+                        keyboardType: TextInputType.number,
+                        bottomMargin: 24,
+                        initialValue: state.contractNumber,
+                        onChanged: (value) {
+                          context
+                              .read<CrStep4ShopDataCubit>()
+                              .updateContractNumber(value);
+                        },
+                      ),
+                      HijriCalendarAddetionalField(
+                        fieldName: 'تاريخ عقد التملك',
+                        isMandatory: true,
+                        onChanged: (value) {
+                          context
+                              .read<CrStep4ShopDataCubit>()
+                              .updateContractDate(value ?? "");
+                        },
+                      ),
+                    ],
+                    if (state.crContractType == CRContractType.deed &&
+                        state.crContractOption == CRContractOption.service) ...[
+                      CustomTextFieldWidget(
+                        label: "رقم عقد التملك (الصك)",
+                        hintText: "رقم عقد التملك (الصك)",
+                        isDigitsOnly: true,
+                        keyboardType: TextInputType.number,
+                        bottomMargin: 24,
+                        initialValue: state.contractNumber,
+                        onChanged: (value) {
+                          context
+                              .read<CrStep4ShopDataCubit>()
+                              .updateContractNumber(value);
+                        },
+                      ),
+                    ],
                     HorizontalRadioGroup(
                       groupName: 'اللوحات',
                       currentItem: null,
