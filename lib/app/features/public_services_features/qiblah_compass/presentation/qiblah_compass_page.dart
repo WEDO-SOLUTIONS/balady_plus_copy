@@ -206,7 +206,6 @@ class QiblahCompassPageWidget extends StatelessWidget {
         );
 /*  
         final QiblahDirection qiblahDirection = snapshot.data!;
-        print("Direction ${qiblahDirection.direction}");
         return Column(
           children: [
             Expanded(

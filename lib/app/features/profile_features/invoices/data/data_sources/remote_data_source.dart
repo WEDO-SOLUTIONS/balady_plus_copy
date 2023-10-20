@@ -241,8 +241,6 @@ class InvoicesRemoteDataSourceImplementation
         dioError: error,
       );
     } catch (ex) {
-      print(ex);
-      "Catched $ex".errorLog();
       if (ex is ServerException) {
         rethrow;
       } else {

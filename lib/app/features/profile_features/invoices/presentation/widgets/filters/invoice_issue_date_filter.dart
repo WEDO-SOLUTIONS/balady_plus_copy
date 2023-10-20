@@ -22,7 +22,6 @@ class InvoicesIssueDateFilter extends StatelessWidget {
           initialDate: state.selectedInvoiceIssueDate,
           initialDateForm: state.dateFormForIssue ?? DateForm.gregorian,
           onChange: (selectedDate, dateForm) {
-            print("FFDVVD  $dateForm");
             BlocProvider.of<InvoicesBloc>(context).add(
               InvoiceIssueDateSelectedEvent(
                   date: selectedDate, formDate: dateForm),

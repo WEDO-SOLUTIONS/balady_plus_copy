@@ -45,15 +45,11 @@ class FacilityRatingViewModel extends BaseViewModel {
 
     try {
       showLoading();
-    } catch (ex) {
-      print(ex);
-    }
-    print("QWWEE 4444");
+    } catch (ex) {}
 
     try {
       final LatestUserRatingResponse? response =
           await _repositry.getUserLatestRating(licenseId);
-      print("HHJJ");
 
       if (response != null) {
         prevoiusUserRating = response;
@@ -64,23 +60,17 @@ class FacilityRatingViewModel extends BaseViewModel {
         // show Error
         //showError("error3");
       }
-    } catch (ex) {
-      print(ex);
-    }
+    } catch (ex) {}
     hideLoading();
   }
 
   Future<bool> getRatingsData() async {
     if (ratingItems.isNotEmpty) return true;
     try {
-      print("QWWEE 00000");
-
       showLoading();
-      print("QWWEE 23232");
 
       final Tuple3<bool?, String?, LicenseRatingItems?> response =
           await _repositry.getLicenseRatingitems();
-      print("QWWEE 666");
 
       hideLoading();
 
@@ -96,7 +86,6 @@ class FacilityRatingViewModel extends BaseViewModel {
         return false;
       }
     } catch (ex) {
-      print(ex);
       hideLoading();
       return false;
     }
@@ -134,7 +123,6 @@ class FacilityRatingViewModel extends BaseViewModel {
 
     ratingItems.forEach((element) {
       if (element.value == null || element.value == 0) {
-        print("ITEEEEMS  ${element.value}");
         isValid = false;
       }
     });

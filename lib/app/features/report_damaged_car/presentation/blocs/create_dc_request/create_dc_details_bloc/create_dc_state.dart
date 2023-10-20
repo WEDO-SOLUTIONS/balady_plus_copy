@@ -98,8 +98,6 @@ class CreateDCState extends Equatable {
           : null;
 
   bool isNextButtonEnabled() {
-    //  print("agreeement $currentPageValue");
-    // return true;
     if (currentPageValue == 0)
       return gisResponse != null && location != null;
     else if ((currentPageValue == 1)) {

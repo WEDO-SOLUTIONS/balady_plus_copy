@@ -25,10 +25,9 @@ class VeichlesListPage extends StatefulWidget {
 }
 
 class _VeichlesListPageState extends State<VeichlesListPage> {
-
   @override
   Widget build(BuildContext context) {
-   VeichlesListPageParams params =
+    VeichlesListPageParams params =
         ModalRoute.of(context)!.settings.arguments as VeichlesListPageParams;
 
     return BlocProvider(
@@ -72,7 +71,6 @@ class _VeichlesListPageState extends State<VeichlesListPage> {
                                   currentId: state.selectedVehicle?.pyId,
                                   id: state.vehicleItem?[index].pyId,
                                   onChange: (String id) {
-                                    print(id);
                                     context
                                         .read<RetrieveVehiclesBloc>()
                                         .add(SelectViehclesEvent(id: id));

@@ -217,7 +217,6 @@ class _CounterWidgetState extends State<CounterWidget> {
 
   @override
   Widget build(BuildContext context) {
-    print(start);
     return showCounter
         ? ResendCounter(
             start: start,

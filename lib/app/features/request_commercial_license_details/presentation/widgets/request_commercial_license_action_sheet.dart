@@ -47,23 +47,25 @@ class RequestCommercialLicenseActionSheet extends StatelessWidget {
                                       case "cancel":
                                         break;
                                       case "edit":
-                                        try{
-
+                                        try {
                                           Navigator.of(context).pushNamed(
                                             RouteName.commercialLicenseCancel,
-                                            arguments: CommercialLicenseCancelBloc(
+                                            arguments:
+                                                CommercialLicenseCancelBloc(
                                               webService: sl(),
                                               // cancellationRequestResponse: cancellationRequest,
-                                              crNumber: CommonProperties.selectedDelegator!.crNumber!,
-                                              crType: CommonProperties.selectedDelegator!.crType,
-                                              reasonCancel: provider.reasonCancel,
+                                              crNumber: CommonProperties
+                                                  .selectedDelegator!.crNumber!,
+                                              crType: CommonProperties
+                                                  .selectedDelegator!.crType,
+                                              reasonCancel:
+                                                  provider.reasonCancel,
                                               requestId: provider.requestId,
-                                              availableCloseDate: provider.availableCloseDate,
+                                              availableCloseDate:
+                                                  provider.availableCloseDate,
                                             ),
                                           );
-                                        } catch (e) {
-                                          print(e);
-                                        }
+                                        } catch (e) {}
                                         break;
                                     }
                                   },
@@ -72,7 +74,9 @@ class RequestCommercialLicenseActionSheet extends StatelessWidget {
                                     child: Row(
                                       children: [
                                         SvgPicture.asset(
-                                         action.id == 'cancel' ? IconPath.cancelOrder : IconPath.editIcon,
+                                          action.id == 'cancel'
+                                              ? IconPath.cancelOrder
+                                              : IconPath.editIcon,
                                           width: 30,
                                           height: 30,
                                         ),

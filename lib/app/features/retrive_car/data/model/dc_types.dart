@@ -14,7 +14,6 @@ class DCTypes {
       desc: "",
       type: "OnBehalfOfMyself",
       /* onClick: () {
-         print("soon");
         }*/
     ),
     DCTypes(

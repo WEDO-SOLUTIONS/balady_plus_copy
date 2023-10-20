@@ -299,8 +299,6 @@ class HomeMap extends StatelessWidget {
             child: ValueListenableBuilder<DgisObjectIdMessage?>(
               valueListenable: mapViewModel.selectedPointId,
               builder: (_, selectedPoint, __) {
-                print(selectedPoint);
-                print("heree");
                 return selectedPoint == null
                     ? const SizedBox()
                     : GeneralMapCardWidget(

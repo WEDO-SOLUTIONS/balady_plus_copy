@@ -80,11 +80,9 @@ class EventDataSourceImpl extends EventsRemoteDataSource {
 
       var data = response.data;
       final result = ResponseBodyModel.fromMap(data).data?.result;
-      print(result);
 
       return EventsDetailsItemModel.fromJson(result);
     } on DioError catch (error) {
-      print(error);
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,

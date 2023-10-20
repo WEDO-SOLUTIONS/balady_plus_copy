@@ -122,7 +122,6 @@ class ObjectionsBloc extends Bloc<RequestsEvent, RequestsState> {
     });
 
     on<GetRequestStatusesEvent>((event, emit) async {
-      print("GetRequestTypesEvent");
       emit(
         state.copyWith(
           requestStatusesStatus: BlocRequestStatus.submissionGetLoading,
@@ -160,7 +159,6 @@ class ObjectionsBloc extends Bloc<RequestsEvent, RequestsState> {
     });
 
     on<GetRequestTypesEvent>((event, emit) async {
-      print("GetRequestTypesEvent GetRequestTypesEvent");
       emit(
         state.copyWith(
           requestTypesStatus: BlocRequestStatus.submissionGetLoading,
@@ -171,7 +169,6 @@ class ObjectionsBloc extends Bloc<RequestsEvent, RequestsState> {
 
       failureOrSuccess.fold(
         (failure) {
-          print("GetRequestTypesEvent $failure");
           emit(
             state.copyWith(
               requestTypesStatus: BlocRequestStatus.submissionGetFailure,
@@ -180,8 +177,6 @@ class ObjectionsBloc extends Bloc<RequestsEvent, RequestsState> {
           );
         },
         (requestTypes) {
-          print("GetRequestTypesEvent $requestTypes");
-
           emit(
             state.copyWith(
               requestTypesStatus: BlocRequestStatus.submissionGetSuccess,
@@ -240,7 +235,6 @@ class ObjectionsBloc extends Bloc<RequestsEvent, RequestsState> {
           }
         },
         (requestSubTypes) {
-          print("FFFFFF $requestSubTypes");
           emit(
             state.copyWith(
               requestSubTypesStatus: BlocRequestStatus.submissionGetSuccess,

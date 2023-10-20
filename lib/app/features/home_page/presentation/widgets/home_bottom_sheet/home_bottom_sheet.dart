@@ -46,7 +46,6 @@ class HomeBottomSheet extends StatelessWidget {
       return ValueListenableBuilder<bool>(
           valueListenable: mapViewModel.viewHomeBottomSheet,
           builder: (_, visible, child) {
-            print("initial ${mapViewModel.bottomSheetSizeFraction.value}");
             return visible ? child! : const SizedBox();
           },
           child: DraggableSheetCard(
