@@ -1,4 +1,4 @@
-sealed class StoryFrameAction {
+class StoryFrameAction {
   final String title;
   final FrameActionType type;
   final String action;

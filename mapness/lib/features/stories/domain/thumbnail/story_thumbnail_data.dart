@@ -1,11 +1,11 @@
 class StoryThumbnailData {
   final String title;
+  final String storyId;
   final String imageUrl;
   final bool isWatched;
-  final bool isLoading;
 
   StoryThumbnailData({
-    required this.isLoading,
+    required this.storyId,
     required this.title,
     required this.imageUrl,
     required this.isWatched,

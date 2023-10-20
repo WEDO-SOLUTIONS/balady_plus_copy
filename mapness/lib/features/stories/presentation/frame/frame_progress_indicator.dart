@@ -1,16 +1,24 @@
 import 'package:flutter/material.dart';
-import 'package:mapness/features/stories/data/frame/frame_progress_data.dart';
 import 'package:mapness/features/stories/presentation/frame/close_story_button.dart';
 
 class FrameProgressIndicator extends StatelessWidget {
-  final FrameProgressData data;
   final VoidCallback? onClose;
+  final int frameIndex;
+  final int framesLength;
+  final double progress;
 
   const FrameProgressIndicator({
     super.key,
-    required this.data,
     this.onClose,
-  });
+    required this.frameIndex,
+    required this.framesLength,
+    required this.progress,
+  })  : assert(frameIndex >= 0, 'frameIndex must be greater than 0'),
+        assert(framesLength >= 0, 'framesLength must be greater than 0'),
+        assert(progress >= 0, 'progress must be greater than 0'),
+        assert(progress <= 1, 'progress must be less than 1'),
+        assert(frameIndex <= framesLength,
+            'frameIndex must be less than framesLength');
 
   @override
   Widget build(BuildContext context) {
@@ -30,10 +38,12 @@ class FrameProgressIndicator extends StatelessWidget {
               ),
               child: Row(
                 children: List.generate(
-                  data.length,
+                  framesLength,
                   (index) {
-                    if (index == data.currentIndex) return LinearProgressIndicator(value: data.progress);
-                    if (index < data.currentIndex) {
+                    if (index == frameIndex) {
+                      return LinearProgressIndicator(value: progress);
+                    }
+                    if (index < frameIndex) {
                       return const LinearProgressIndicator(value: 1);
                     } else {
                       return const LinearProgressIndicator(value: 0);

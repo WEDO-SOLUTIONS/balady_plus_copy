@@ -1,6 +1,7 @@
 name: mapness
 description: A new Flutter package project.
 version: 0.0.1
+publish_to: 'none'
 
 environment:
   sdk: ">=3.0.3 <4.0.0"
@@ -38,6 +39,10 @@ dependencies:
   provider: ^6.0.5 # todo: refactor
   url_launcher: ^6.1.14
   shimmer: ^3.0.0
+  cube_transition_plus: #  ^2.0.1 # version from pub has bug, use it when PR will be merged
+    git:
+      url: https://github.com/Demezy/cube_transition_plus
+  protobuf: ^3.1.0
 
 dev_dependencies:
   flutter_test:

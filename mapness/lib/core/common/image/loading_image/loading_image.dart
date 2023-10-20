@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 class LoadingImage extends StatefulWidget {
   final String imageUrl;
   final Widget loadingWidget;
+  final BoxFit? fit;
   final VoidCallback? onImageReady;
 
   const LoadingImage({
@@ -12,6 +13,7 @@ class LoadingImage extends StatefulWidget {
     required this.imageUrl,
     this.onImageReady,
     required this.loadingWidget,
+    this.fit,
   }) : super(key: key);
 
   @override
@@ -41,6 +43,6 @@ class _LoadingImageState extends State<LoadingImage> {
     if (isLoading) {
       return widget.loadingWidget;
     }
-    return Image.network(widget.imageUrl, fit: BoxFit.cover);
+    return Image.network(widget.imageUrl, fit: widget.fit);
   }
 }

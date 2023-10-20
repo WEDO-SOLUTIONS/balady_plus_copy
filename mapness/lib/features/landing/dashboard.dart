@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mapness/features/landing/providers/map_controls.dart';
+import 'package:mapness/features/stories/stories_widget.dart';
 
 class Dashboard extends ConsumerStatefulWidget {
   const Dashboard({Key? key}) : super(key: key);
@@ -196,46 +197,7 @@ class _DashboardState extends ConsumerState<Dashboard> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    SizedBox(
-                      height: 120,
-                      child: ListView.builder(
-                          reverse: true,
-                          scrollDirection: Axis.horizontal,
-                          itemCount: 10,
-                          itemBuilder: (BuildContext context, int index) {
-                            return Padding(
-                              padding: const EdgeInsets.only(left: 8.0),
-                              child: Container(
-                                height: 120,
-                                width: 96,
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  border: Border.all(
-                                    color: const Color(0xFF9AA4B9),
-                                    width: 2,
-                                  ),
-                                  borderRadius: const BorderRadius.all(
-                                    Radius.circular(16),
-                                  ),
-                                ),
-                                child: Column(
-                                  children: [
-                                    const Spacer(),
-                                    Text(
-                                      'الملاحة داخل',
-                                      style: GoogleFonts.notoSansArabic(
-                                        textStyle: const TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w500,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            );
-                          }),
-                    ),
+                    const StoriesWidget(),
                     const SizedBox(
                       height: 16,
                     ),

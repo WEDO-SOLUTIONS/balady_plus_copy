@@ -1,51 +1,43 @@
 import 'package:flutter/material.dart';
 
-// class GaurdScreen extends StatelessWidget {
-//   GaurdScreen({super.key});
+class DismissibleOverlay {
+  OverlayEntry? _overlayEntry;
 
-//   OverlayEntry? _story;
+  DismissibleOverlay();
 
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       backgroundColor: const Color(0xFF0F1011),
-//       body: Column(
-//         children: [
-//           SafeArea(
-//             child: ElevatedButton(
-//               onPressed: () {
-//                 Overlay.of(context).insert(story());
-//               },
-//               child: const Text("Story"),
-//             ),
-//           )
-//         ],
-//       ),
-//     );
-//   }
+  void open({required BuildContext context, required Widget widget}) {
+    if (_overlayEntry != null) {
+      close();
+    }
 
-//   void removeEntry() {
-//     _story?.remove();
-//     _story = null;
-//   }
+    _overlayEntry = _wrap(widget);
+    Overlay.of(context).insert(_overlayEntry!);
+  }
 
-//   OverlayEntry story() {
-//     _story = OverlayEntry(
-//       builder: (context) {
-//         return StoryContainer(
-//           onDismiss: () {
-//             removeEntry();
-//           },
-//         );
-//       },
-//     );
-//     return _story!;
-//   }
-// }
+  void close() {
+    _overlayEntry?.remove();
+    _overlayEntry = null;
+  }
 
-class StoryContainer extends StatefulWidget {
+  OverlayEntry _wrap(Widget widget) {
+    return OverlayEntry(
+      builder: (context) => widget,
+    );
+  }
+}
+
+class MyWidgetChild extends StatelessWidget {
+  const MyWidgetChild({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container();
+  }
+}
+
+class DismissibleTransition extends StatefulWidget {
   final Widget child;
-  const StoryContainer({
+  const DismissibleTransition({
     super.key,
     required this.onDismiss,
     required this.child,
@@ -54,10 +46,11 @@ class StoryContainer extends StatefulWidget {
   final void Function() onDismiss;
 
   @override
-  State<StoryContainer> createState() => _StoryContainerState();
+  State<DismissibleTransition> createState() => DismissibleTransitionState();
 }
 
-class _StoryContainerState extends State<StoryContainer> with SingleTickerProviderStateMixin {
+class DismissibleTransitionState extends State<DismissibleTransition>
+    with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _opacityAnimation;
 
@@ -91,12 +84,14 @@ class _StoryContainerState extends State<StoryContainer> with SingleTickerProvid
   Widget build(BuildContext context) {
     return GestureDetector(
       onVerticalDragUpdate: (details) {
-        _controller.value -= details.delta.dy / MediaQuery.of(context).size.height;
+        _controller.value -=
+            details.delta.dy / MediaQuery.of(context).size.height;
       },
       onVerticalDragEnd: (details) {
-        print(details.velocity.pixelsPerSecond.dy);
-        final predictedValue =
-            _controller.value - details.velocity.pixelsPerSecond.dy * 0.25 / MediaQuery.of(context).size.height;
+        final predictedValue = _controller.value -
+            details.velocity.pixelsPerSecond.dy *
+                0.25 /
+                MediaQuery.of(context).size.height;
         if (predictedValue < 0.6) {
           _controller.reverse(from: _controller.value);
         } else {
@@ -111,15 +106,14 @@ class _StoryContainerState extends State<StoryContainer> with SingleTickerProvid
             children: [
               Opacity(
                 opacity: _opacityAnimation.value,
-                child: const ColoredBox(
-                  color: Colors.red,
-                ),
+                child: Container(color: const Color(0xff141414)),
               ),
               Transform(
                 transform: Matrix4.identity()
                   ..translate(
                     0.0,
-                    MediaQuery.of(context).size.height * (1 - _opacityAnimation.value),
+                    MediaQuery.of(context).size.height *
+                        (1 - _opacityAnimation.value),
                     0.0,
                   )
                   ..scale(
@@ -128,9 +122,7 @@ class _StoryContainerState extends State<StoryContainer> with SingleTickerProvid
                     0.8 + 0.2 * _opacityAnimation.value,
                   ),
                 origin: Offset(MediaQuery.of(context).size.width * 0.5, 0),
-                child: SafeArea(
-                  child: child!,
-                ),
+                child: child!,
               ),
             ],
           );

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mapness/features/stories/data/frame/story_frame_data.dart';
+import 'package:mapness/features/stories/domain/frame/story_frame_data.dart';
 
 class StoryFrameContent extends StatelessWidget {
   final StoryFrameData frame;
