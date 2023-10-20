@@ -23,6 +23,16 @@ abstract class CrRemoteDataSource {
 
   Future<SaveLocationResponseModel> saveLocationDetails(
       {SaveLocationDataRequest? params});
+
+  Future<DeedInfoResponseModel> getDeedInfo({DeedInfoRequest? params});
+
+  Future<EjarInfoResponseModel> getEjarInfo({EjarInfoRequest? params});
+
+  Future<CleanContractsResponseModel> getCleanContracts(
+      {CleanContractsRequest? params});
+
+  Future<InvestmentContractResponseModel> getInvestmentContracts(
+      {InvestmentContractRequest? params});
 }
 
 class CrRemoteDataSourceImpl extends CrRemoteDataSource {
@@ -368,6 +378,213 @@ class CrRemoteDataSourceImpl extends CrRemoteDataSource {
       try {
         final decodedResponse =
             ResponseBodyModel<SaveLocationResponseModel>.fromMap(
+          error.response?.data,
+        );
+        errorCode = decodedResponse.data?.responseCode;
+      } catch (ex) {}
+
+      throw ServerException(
+        error.toString(),
+        errorCode: errorCode,
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
+    } catch (ex) {
+      print(ex);
+      if (ex is ServerException)
+        throw ex;
+      else {
+        try {
+          //MM    CommonFunctions.sendExceptionLog(exception: ex, response: response);
+        } catch (ex) {}
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
+      }
+    }
+  }
+
+  @override
+  Future<CleanContractsResponseModel> getCleanContracts(
+      {CleanContractsRequest? params}) async {
+    var response;
+
+    try {
+      response = await webService.dio
+          .post(ApiUrl.cleanContracts(params!.requestId), data: params.toMap());
+
+      var data = response.data["data"]["result"];
+
+      var parsedResult =
+          data != null ? CleanContractsResponseModel.fromJson(data) : null;
+      final decodedResponse =
+          ResponseBodyModel<CleanContractsResponseModel>.fromMap(response.data,
+              parsedResult: parsedResult);
+
+      return decodedResponse.data!.result!.toFuture();
+    } on DioError catch (error) {
+      print(error);
+      var errorCode;
+      try {
+        final decodedResponse =
+            ResponseBodyModel<CleanContractsResponseModel>.fromMap(
+          error.response?.data,
+        );
+        errorCode = decodedResponse.data?.responseCode;
+      } catch (ex) {}
+
+      throw ServerException(
+        error.toString(),
+        errorCode: errorCode,
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
+    } catch (ex) {
+      print(ex);
+      if (ex is ServerException)
+        throw ex;
+      else {
+        try {
+          //MM    CommonFunctions.sendExceptionLog(exception: ex, response: response);
+        } catch (ex) {}
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
+      }
+    }
+  }
+
+  @override
+  Future<DeedInfoResponseModel> getDeedInfo({DeedInfoRequest? params}) async {
+    var response;
+
+    try {
+      response = await webService.dio.get(ApiUrl.deedInfo(params!.hashCode));
+
+      var data = response.data["data"]["result"];
+
+      var parsedResult =
+          data != null ? DeedInfoResponseModel.fromJson(data) : null;
+      final decodedResponse = ResponseBodyModel<DeedInfoResponseModel>.fromMap(
+          response.data,
+          parsedResult: parsedResult);
+
+      return decodedResponse.data!.result!.toFuture();
+    } on DioError catch (error) {
+      print(error);
+      var errorCode;
+      try {
+        final decodedResponse =
+            ResponseBodyModel<DeedInfoResponseModel>.fromMap(
+          error.response?.data,
+        );
+        errorCode = decodedResponse.data?.responseCode;
+      } catch (ex) {}
+
+      throw ServerException(
+        error.toString(),
+        errorCode: errorCode,
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
+    } catch (ex) {
+      print(ex);
+      if (ex is ServerException)
+        throw ex;
+      else {
+        try {
+          //MM    CommonFunctions.sendExceptionLog(exception: ex, response: response);
+        } catch (ex) {}
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
+      }
+    }
+  }
+
+  @override
+  Future<EjarInfoResponseModel> getEjarInfo({EjarInfoRequest? params}) async {
+    var response;
+
+    try {
+      response =
+          await webService.dio.post(ApiUrl.ejarInfo, data: params?.toMap());
+
+      var data = response.data["data"]["result"];
+
+      var parsedResult =
+          data != null ? EjarInfoResponseModel.fromJson(data) : null;
+      final decodedResponse = ResponseBodyModel<EjarInfoResponseModel>.fromMap(
+          response.data,
+          parsedResult: parsedResult);
+
+      return decodedResponse.data!.result!.toFuture();
+    } on DioError catch (error) {
+      print(error);
+      var errorCode;
+      try {
+        final decodedResponse =
+            ResponseBodyModel<EjarInfoResponseModel>.fromMap(
+          error.response?.data,
+        );
+        errorCode = decodedResponse.data?.responseCode;
+      } catch (ex) {}
+
+      throw ServerException(
+        error.toString(),
+        errorCode: errorCode,
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
+    } catch (ex) {
+      print(ex);
+      if (ex is ServerException)
+        throw ex;
+      else {
+        try {
+          //MM    CommonFunctions.sendExceptionLog(exception: ex, response: response);
+        } catch (ex) {}
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
+      }
+    }
+  }
+
+  @override
+  Future<InvestmentContractResponseModel> getInvestmentContracts(
+      {InvestmentContractRequest? params}) async {
+    var response;
+
+    try {
+      response = await webService.dio.get(
+          ApiUrl.investmentContracts(params!.requestId),
+          data: params.toMap());
+
+      var data = response.data["data"]["result"];
+
+      var parsedResult =
+          data != null ? InvestmentContractResponseModel.fromJson(data) : null;
+      final decodedResponse =
+          ResponseBodyModel<InvestmentContractResponseModel>.fromMap(
+              response.data,
+              parsedResult: parsedResult);
+
+      return decodedResponse.data!.result!.toFuture();
+    } on DioError catch (error) {
+      print(error);
+      var errorCode;
+      try {
+        final decodedResponse =
+            ResponseBodyModel<InvestmentContractResponseModel>.fromMap(
           error.response?.data,
         );
         errorCode = decodedResponse.data?.responseCode;

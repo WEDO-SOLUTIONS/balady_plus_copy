@@ -27,4 +27,14 @@ abstract class CrRepository {
 
   Future<Either<Failure, SaveLocationResponseModel>> saveLocationDetails(
       SaveLocationDataRequest? params);
+
+  Future<Either<Failure, DeedInfoResponse>> getDeedInfo(
+      DeedInfoRequest? params);
+
+  Future<Either<Failure, EjarInfoResponse>> getEjarInfo(
+      EjarInfoRequest? params);
+  Future<Either<Failure, CleanContractsResponse>> getCleanContracts(
+      CleanContractsRequest? params);
+  Future<Either<Failure, InvestmentContractResponse>> getInvestmentContracts(
+      InvestmentContractRequest? params);
 }

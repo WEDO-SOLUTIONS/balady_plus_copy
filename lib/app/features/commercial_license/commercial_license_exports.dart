@@ -54,6 +54,16 @@ export 'domain/entities/cr_lookups_entity.dart';
 export 'domain/entities/submit_activity_details_request.dart';
 export 'domain/entities/save_location_data_request.dart';
 export 'domain/entities/save_location_response.dart';
+export 'domain/entities/ejar_info_request.dart';
+export 'domain/entities/ejar_info_response.dart';
+export 'domain/entities/deed_info_request.dart';
+export 'domain/entities/deed_info_response.dart';
+
+export 'domain/entities/investment_contracts_request.dart';
+export 'domain/entities/investment_contracts_response.dart';
+
+export 'domain/entities/clean_contracts_request.dart';
+export 'domain/entities/clean_contracts_response.dart';
 
 // repo
 export 'domain/repositories/cr_repository.dart';
@@ -78,6 +88,10 @@ export 'data/models/sub_activity_model.dart';
 export 'data/models/sub_activity_details_model.dart';
 export 'data/models/cr_lookups_model.dart';
 export 'data/models/save_location_response_model.dart';
+export 'data/models/ejar_info_response_model.dart';
+export 'data/models/deed_info_response_model.dart';
+export 'data/models/investment_contracts_response_model.dart';
+export 'data/models/clean_contracts_response_model.dart';
 
 // repo
 export 'data/repositories/cr_repository_impl.dart';

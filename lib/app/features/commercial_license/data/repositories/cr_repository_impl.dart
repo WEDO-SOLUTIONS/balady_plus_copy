@@ -110,4 +110,53 @@ class CrRepositoryImpl implements CrRepository {
           statusCode: error.statusCode, errorCode: error.errorCode));
     }
   }
+
+  @override
+  Future<Either<Failure, CleanContractsResponse>> getCleanContracts(
+      CleanContractsRequest? params) async {
+    try {
+      final data = await remoteDataSource.getCleanContracts(params: params);
+      return Right(data);
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage,
+          statusCode: error.statusCode, errorCode: error.errorCode));
+    }
+  }
+
+  @override
+  Future<Either<Failure, DeedInfoResponse>> getDeedInfo(
+      DeedInfoRequest? params) async {
+    try {
+      final data = await remoteDataSource.getDeedInfo(params: params);
+      return Right(data);
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage,
+          statusCode: error.statusCode, errorCode: error.errorCode));
+    }
+  }
+
+  @override
+  Future<Either<Failure, EjarInfoResponse>> getEjarInfo(
+      EjarInfoRequest? params) async {
+    try {
+      final data = await remoteDataSource.getEjarInfo(params: params);
+      return Right(data);
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage,
+          statusCode: error.statusCode, errorCode: error.errorCode));
+    }
+  }
+
+  @override
+  Future<Either<Failure, InvestmentContractResponse>> getInvestmentContracts(
+      InvestmentContractRequest? params) async {
+    try {
+      final data =
+          await remoteDataSource.getInvestmentContracts(params: params);
+      return Right(data);
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage,
+          statusCode: error.statusCode, errorCode: error.errorCode));
+    }
+  }
 }
