@@ -59,9 +59,7 @@ class BaseViewModel extends ChangeNotifier {
                 fontSize: 16.0),
             hideCloseButton: true,
             duration: const Duration(seconds: 3));
-      } catch (ex) {
-        // print(ex);
-      }
+      } catch (ex) {}
     }
   }
 

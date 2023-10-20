@@ -53,10 +53,8 @@ class _MapLayersDialogState extends State<MapLayersDialog> {
                           itemBuilder: (ctx, index) {
                             return GestureDetector(
                               onTap: () {
-                                print("on tap");
                                 setState(() {
                                   layerSelected = layers[index];
-                                  print(layerSelected);
                                 });
                                 mapViewModel.selectLayers(layers[index]);
                                 Navigator.of(context).pop();
@@ -88,7 +86,6 @@ class _MapLayersDialogState extends State<MapLayersDialog> {
                                       groupValue: layerSelected,
                                       activeColor: AppColor.primary700Light,
                                       onChanged: (_) {
-                                        print("on tap");
                                         setState(() {
                                           layerSelected = layers[index];
                                         });

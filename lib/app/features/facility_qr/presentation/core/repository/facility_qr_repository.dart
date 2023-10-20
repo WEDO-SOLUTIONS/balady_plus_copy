@@ -97,7 +97,6 @@ class FacilityQRRepository {
         error = result.data?.responseMessage ?? error;
       }
     } catch (ex) {
-      print(ex);
       try {
         Helpers.sendLog(
             url: ApiConstants.QrLicenseRatingItemsUrl,
@@ -131,7 +130,6 @@ class FacilityQRRepository {
       //throw ServerException(error.toString(),
       //     statusCode: error.response?.statusCode);
     } catch (ex) {
-      print(ex);
       try {
         // MM send data
         Helpers.sendLog(

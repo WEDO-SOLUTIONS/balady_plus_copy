@@ -13,7 +13,6 @@ class PreviousNextButtons extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<CreateDCBloc, CreateDCState>(
       builder: (context, state) {
-        print(state);
         bool isButtonDisabled = !state.isNextButtonEnabled();
         bool isLastPage = context.read<CreateDCBloc>().isLastPage();
         return Container(

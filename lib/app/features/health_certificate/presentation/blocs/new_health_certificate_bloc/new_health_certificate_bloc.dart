@@ -45,8 +45,6 @@ class NewHealthCertificateBloc
 
   Future<void> _goToNextPageHandler(
       GoToNextPageEvent e, Emitter emitter) async {
-    //print("next page");
-    print("DataLog ${state}");
     if (isLastPage()) {
     } else {
       if (state.status == BlocStatus.performing) return;

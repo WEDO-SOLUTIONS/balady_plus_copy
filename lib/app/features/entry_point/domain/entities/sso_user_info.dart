@@ -122,7 +122,6 @@ class SsoUserInfo extends Equatable {
   String getHijriBirthDate() {
     String applicantDob = dob ?? "";
     try {
-      //print(applicantDob);
       HijriCalendar hijriCalendar = HijriCalendar();
 
       List<String> date = applicantDob.split("/");
@@ -131,7 +130,6 @@ class SsoUserInfo extends Equatable {
       for (var element in date) {
         dateDivided.add(int.tryParse(element)!);
       }
-      // print(dateDivided);
 
       String hDate = hijriCalendar.gregorianToHijri(
           dateDivided[2], dateDivided[1], dateDivided[0]);

@@ -46,8 +46,6 @@ class IncidentsBloc extends Bloc<IncidentsEvent, IncidentsState> {
 
       failureOrSuccess.fold(
         (failure) {
-          print("failure $failure");
-
           if (failure is NoDataFoundFailure) {
             emit(
               state.copyWith(
@@ -70,7 +68,6 @@ class IncidentsBloc extends Bloc<IncidentsEvent, IncidentsState> {
             return false;
           }).toList();
 
-          print("Succccesss ${requests.incidentRequestList?.length}");
           emit(
             state.copyWith(
               crmRequestsStatus: BlocRequestStatus.submissionGetSuccess,
@@ -100,7 +97,6 @@ class IncidentsBloc extends Bloc<IncidentsEvent, IncidentsState> {
           return true;
         return false;
       }).toList();
-      print(filtredRequest?.length);
       emit(
         state.copyWith(
           crmRequestsStatus: BlocRequestStatus.submissionGetSuccess,

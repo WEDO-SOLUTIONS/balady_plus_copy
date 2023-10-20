@@ -27,12 +27,8 @@ class SearchMapViewModel extends BaseViewModel {
                 .toList(),
           ),
         );
-        print(responseDistance);
       }
-      print(data);
-    } catch (e) {
-      print(e);
-    }
+    } catch (e) {}
   }
 
   List<DistanceRequestMessage> _mapToDistanceRequest(

@@ -32,15 +32,15 @@ class RequestCommercialLicenseActionViewModel extends BaseViewModel {
     try {
       isLoading = true;
       notifyListeners();
-      var response =
-          await webService.dio.get(ApiUrl.getAllowedActionsForRequests(requestId));
+      var response = await webService.dio
+          .get(ApiUrl.getAllowedActionsForRequests(requestId));
       final data = response.data;
       final result = ResponseBodyModel.fromMap(data).data?.result;
-      actions = requestAllowedActionsListFromJson(result).where((element) => element.id == "edit").toList();
+      actions = requestAllowedActionsListFromJson(result)
+          .where((element) => element.id == "edit")
+          .toList();
       // actions = actions;
-    } catch (e) {
-      print(e);
-    }
+    } catch (e) {}
     isLoading = false;
     notifyListeners();
   }

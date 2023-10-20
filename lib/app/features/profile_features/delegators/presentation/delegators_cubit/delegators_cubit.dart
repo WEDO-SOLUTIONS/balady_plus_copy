@@ -98,7 +98,5 @@ class DelegatorsCubit extends Cubit<DelegatorsState> {
         agentStatus: BlocRequestStatus.submissionGetSuccess,
         delegators: [],
         agents: []));
-
-    print("Cleared ${state.delegators}");
   }
 }

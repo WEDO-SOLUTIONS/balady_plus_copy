@@ -199,10 +199,9 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
       );
 
       var data = response.data["data"]?["result"];
-      //  print("GGSSSSSS ${data}");
+
       var parsedResult =
           data != null ? ForceUpdateResponseModel.fromMap(data) : null;
-      //  print("GGSSSSSS ${parsedResult?.versionNumber}");
 
       //final decodedResponse =
       //  ApigeeResponseModel<ForceUpdateResponseModel>.fromMap(response.data,

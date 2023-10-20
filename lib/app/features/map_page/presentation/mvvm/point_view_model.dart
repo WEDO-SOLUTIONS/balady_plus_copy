@@ -26,7 +26,6 @@ class PointViewModel extends BaseViewModel {
 
   Future<void> performSearch() async {
     try {
-      print("performSearch");
       isLoadingData.value = true;
       isLoadingData.notifyListeners();
       try {
@@ -45,16 +44,12 @@ class PointViewModel extends BaseViewModel {
         mapViewModel.selectedPointId.notifyListeners();
       }
       if (dataPoint.value != null) {
-        print(dataPoint.value?.title.toString());
         //getPhotos(dataPoint.value!);
       }
       isLoadingData.value = false;
       isLoadingData.notifyListeners();
       // dataPoint.value = await controller.(point);
-      print(dataPoint);
-    } catch (e) {
-      print(e);
-    }
+    } catch (e) {}
   }
 
   Future<void> getPhotos(DirectoryObjectMessage dataPoint) async {
@@ -69,9 +64,6 @@ class PointViewModel extends BaseViewModel {
           "preview_size": "100x100",
         },
       );
-      print(data);
-    } catch (e) {
-      print(e);
-    }
+    } catch (e) {}
   }
 }

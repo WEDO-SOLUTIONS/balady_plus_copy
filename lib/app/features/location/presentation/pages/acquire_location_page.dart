@@ -35,7 +35,6 @@ class _AcquireLocationPageState extends State<AcquireLocationPage>
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    print(state);
     if (state == AppLifecycleState.inactive ||
         state == AppLifecycleState.paused) {
     } else if (state == AppLifecycleState.resumed) {
@@ -47,12 +46,9 @@ class _AcquireLocationPageState extends State<AcquireLocationPage>
   Widget build(BuildContext context) {
     return BlocConsumer<LocationCubit, LocationState>(
       listener: (context, state) {
-        print(state);
-        print("LISTEN $state");
         if (state.requestsStatus == BlocStatus.success) {
           if (mounted)
             Timer(Duration(seconds: 1), () {
-              print("called 1111");
               final params = sl<BridgeParams>().copyWith(isAuthenticated: true);
               final entryPointBridge = sl<EntryPointBridge>();
               entryPointBridge(params);

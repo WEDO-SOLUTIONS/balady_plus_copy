@@ -138,7 +138,6 @@ class CreateObjectionBloc
         ));
       }, (success) {
         int? index = success.index;
-        print("index $index");
         if (index != null) {
           reasons[index] = ReasonModel(
               notes: reasons[index].notes,
@@ -233,12 +232,9 @@ class CreateObjectionBloc
         errorMessage: serverFailure.errorMessage,
       ));
     }, (success) {
-      print(success);
       emitter(state.copyWith(
         status: BlocStatus.success,
       ));
-
-      print(success);
 
       bool Function(Route<dynamic>) predicate =
           ModalRoute.withName(RouteName.bottomNavigation);

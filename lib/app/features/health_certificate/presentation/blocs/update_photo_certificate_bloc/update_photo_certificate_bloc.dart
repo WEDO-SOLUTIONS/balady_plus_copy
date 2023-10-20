@@ -130,9 +130,7 @@ class UpdatePhotoCertificateCubit extends Cubit<UpdatePhotoCertificateState> {
         });
         smsUserConsent?.requestSms();
       }
-    } catch (ex) {
-      print(ex);
-    }
+    } catch (ex) {}
     emit(state.copyWith(status: BlocStatus.success));
   }
 

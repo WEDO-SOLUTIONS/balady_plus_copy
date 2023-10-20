@@ -44,14 +44,10 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
   }
 
   void setNotifications() {
-    print("setNotifications");
     final isNotificationTurnOff = !state.prayerTimeSettings.contains("1");
     if (isNotificationTurnOff) return NotificationService.cancelAll();
 
     for (var prayer in state.prayersRange) {
-      print(prayer.zuhrId);
-      print(prayer.fajrId);
-
       state.prayerTimeSettings[0] == "1"
           ? NotificationService.showScheduledNotification(
               id: prayer.fajrId,
@@ -151,13 +147,11 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
     emit(state.copyWith(status: BlocRequestStatus.submissionGetLoading));
 
     GISParams? userLocation = CommonProperties.userLocation;
-    print("HEREE 1111");
 
     if (CommonProperties.userLocation == null) {
       LatLng? locaton = await Helpers.getCurrentLocation(
         accuracy: LocationAccuracy.low,
       );
-      print("HEREE $locaton");
 
       userLocation = GISParams(
           x: locaton?.longitude ?? 39.82589070176908,
@@ -170,7 +164,6 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
     } else {
       emit(state.copyWith(userLocationUnkown: false));
     }
-    print("HEREE 666 $userLocation");
 
     final params = PrayerTimesParams(
       latitude: userLocation!.lat,
@@ -187,7 +180,6 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
         ));
       },
       (response) {
-        //print("getPrayerTime success $response");
         emit(state.copyWith(
             status: BlocRequestStatus.submissionGetSuccess,
             prayerTimes: response,
@@ -233,7 +225,6 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
       if (gisFailureOrSuccess.isLeft()) return;
 
       emit(state.copyWith(status: BlocRequestStatus.submissionGetLoading));
-      //print("getPrayerTime 55");
       final params = PrayerTimesParams(
         latitude: latitude,
         longitude: longitude,
@@ -249,7 +240,6 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
           ));
         },
         (response) {
-          //print("getPrayerTime success $response");
           emit(state.copyWith(
               status: BlocRequestStatus.submissionGetSuccess,
               prayerTimes: response,
@@ -262,7 +252,6 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
   }
 
   void updateNextPrayer() {
-    //print("updateNextPrayer");
     if (state.prayerTimesResponse == null) return;
     final now = DateTime.now();
     if (now.isAfter(state.prayerTimesResponse!.isha.dateTime)) {
@@ -279,9 +268,5 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
       emit(state.copyWith(nextPrayer: state.prayerTimesResponse!.fajr));
     }
     final nextPrayerTimeDiff = state.nextPrayer!.dateTime.difference(now);
-    //print("nextPrayerTimeDiff ${state.nextPrayer!.dateTime}");
-    //print("nextPrayerTimeDiff ${now}");
-
-    //print("nextPrayerTimeDiff $nextPrayerTimeDiff");
   }
 }

@@ -341,12 +341,12 @@ class Result {
   }
 
   bool saddadPaied() {
-    print(purchaseDocumentStatus);
+   
     return purchaseDocumentStatus == "Resolved-Completed";
   }
 
   bool saddadExpired() {
-    print(purchaseDocumentStatus);
+
     return purchaseDocumentStatus == "Resolved-Expired";
   }
 
@@ -761,7 +761,7 @@ String getFormattedDateAndTimeV2(String dateStr) {
     String date = DateFormat.yMMMMd(CommonFunctions.isAppAR ? 'ar_SA' : 'en_US')
         .format(dateAndTime!)
         .toString();
-    print(dateAndTime);
+
     String time =
         DateFormat("h:mm a", CommonFunctions.isAppAR ? 'ar_SA' : 'en_US')
             .format(dateAndTime)
@@ -773,7 +773,7 @@ String getFormattedDateAndTimeV2(String dateStr) {
     }
     formmatedDateAndTime = date + "  |  " + time;
   } catch (ex) {
-    print(ex);
+   
   }
   if (CommonFunctions.isAppAR)
     formmatedDateAndTime =

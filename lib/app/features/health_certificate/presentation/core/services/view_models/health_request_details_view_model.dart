@@ -73,7 +73,6 @@ class HealthRequestDetailsViewModel extends BaseViewModel {
   }
 
   Future<DeleteRequestResponse?> deleteHealthRequest() async {
-    print(requestDetails?.data?.result?.requestId);
     DeleteRequestResponse? result = await dataModel
         .deleteHealthRequest(requestDetails?.data?.result?.requestId ?? 0);
 
@@ -134,8 +133,7 @@ class HealthRequestDetailsViewModel extends BaseViewModel {
       List<Uint8List?> res = await Future.wait(requestDetails!
           .data!.result!.requestAttachments!
           .map((e) => dataModel.downloadAttachments(e.attachUrl ?? "")));
-      print(res);
-      print(res.length);
+ 
     }*/
     Tuple2<Uint8List?, String?> res = await dataModel.downloadAttachments(id);
     if (res.item1 != null) showFile(res.item1!, contentType: res.item2);
@@ -152,8 +150,6 @@ class HealthRequestDetailsViewModel extends BaseViewModel {
   }
 
   void showFile(Uint8List bytes, {String? contentType}) async {
-    print("content toye");
-    print(contentType);
     try {
       if (contentType?.toLowerCase().contains("pdf") ?? false) {
         Navigator.push(NavigationService.navigatorKey.currentState!.context,
@@ -170,8 +166,6 @@ class HealthRequestDetailsViewModel extends BaseViewModel {
   }
 
   void openFile(Uint8List bytes, {String? contentType}) async {
-    print("content toye");
-    print(contentType);
     String extension =
         contentType != null ? ("." + contentType.split("/").last) : "";
     try {
@@ -180,13 +174,10 @@ class HealthRequestDetailsViewModel extends BaseViewModel {
         File filetemp = File("$dir/" +
             "${DateTime.now().millisecondsSinceEpoch.toString()}$extension");
         await filetemp.writeAsBytes(bytes);
-        print(filetemp.path);
 
         OpenFile.open(filetemp.path).then((value) {});
       }
-    } catch (ex) {
-      print(ex);
-    }
+    } catch (ex) {}
   }
 
   bool showExamanationData() {

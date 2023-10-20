@@ -18,7 +18,6 @@ class ReplySubmitBtn extends StatelessWidget {
         btnPressed: isButtonDisabled
             ? () {}
             : () {
-                print("HEREE");
                 context
                     .read<ReplyRetrieveVehiclesBloc>()
                     .add(SubmitIncidentEvent());

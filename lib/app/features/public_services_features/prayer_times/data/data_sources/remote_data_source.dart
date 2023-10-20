@@ -81,7 +81,6 @@ class PrayerTimesRemoteDataSourceImplementation
         q += "$key=$value&";
       });
       q = q.substring(0, q.length - 1);
-      print("rrr $q");
       response = await webService.dio.get(ApiUrl.prayerTimesRange,
           queryParameters: params.toMap(),
           options: Options(headers: {
