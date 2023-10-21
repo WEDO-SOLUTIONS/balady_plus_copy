@@ -9,6 +9,7 @@ class SaveLocationDataRequest {
   String? krokiUrl;
   double? latitude;
   double? longitude;
+
   SaveLocationDataRequest({
     this.requestId,
     this.streetCode,
