@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:balady_plus/app/core/utils/constants/remote_config.dart';
-import 'package:balady_plus/app/features/create_compliance/domain/use_cases/get_compliance_gis.dart';
-import 'package:balady_plus/app/features/vd/vd_exports.dart';
+import 'package:balady_plus/app/features/vd/vd_exports.dart'
+    show MapScreenParams, GetGISData, GISParams, GISResponse;
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
@@ -16,9 +16,14 @@ import '../../../../../core/errors/failures.dart';
 import '../../../../../core/services/local/navigation_services.dart';
 import '../../../../../core/utils/common_functions.dart';
 import '../../../../../core/utils/enums/bloc_status.dart';
-import '../../../../transaction_inquiry/customer_voice_exports.dart';
-import '../../../../vd/domain/entities/gis/gis_params.dart';
-import '../../../../vd/domain/entities/map/map_screen_params.dart';
+
+import '../../../commercial_license_exports.dart'
+    show
+        CommercialLicenseBloc,
+        GoToNextPageEvent,
+        SaveLocationDataRequest,
+        SaveLocationDetails;
+import '../../../domain/entities/save_location_response.dart';
 
 part 'map_event.dart';
 part 'map_state.dart';
@@ -26,9 +31,11 @@ part 'map_state.dart';
 class MapBloc extends Bloc<MapEvent, MapState> {
   final GetGISData _getGisData;
   late GoogleMapController mapController;
+  final SaveLocationDetails _saveLocationDetails;
 
   MapBloc({MapScreenParams? params})
       : _getGisData = GetGISData(repository: sl()),
+        _saveLocationDetails = SaveLocationDetails(repository: sl()),
         super(MapState(
             gisResponse: params?.gisResponse,
             location: params?.gisParams,
@@ -40,6 +47,7 @@ class MapBloc extends Bloc<MapEvent, MapState> {
 
     on<GetCurentUserLocationEvent>(_getCurrenttUserLocationHandler);
     on<SelectLocationEvent>(_selectLocationEventHandler);
+    on<SaveLocationDataEvent>(_saveLocationHandler);
   }
 
   Future<void> _getGisDataHandler(GetGISDataEvent e, Emitter emitter) async {
@@ -115,6 +123,32 @@ class MapBloc extends Bloc<MapEvent, MapState> {
     add(GetGISDataEvent(
         params: GISParams(x: e.location.longitude, y: e.location.latitude),
         popPage: false));
+  }
+
+  Future<void> _saveLocationHandler(
+      SaveLocationDataEvent e, Emitter emitter) async {
+    int requestId = sl<CommercialLicenseBloc>().state.requestId!;
+    emitter(state.copyWith(status: BlocStatus.loading));
+
+    final failOrSuccess = await _saveLocationDetails(SaveLocationDataRequest(
+      requestId: requestId,
+      krokiUrl: "111",
+      streetCode: state.gisResponse?.streetCode,
+      subMunicipalityGisCode: state.gisResponse?.municipalityuniquecode,
+      districtCode: state.gisResponse?.Balady_DistrictID,
+      latitude: state.location?.lat,
+      longitude: state.location?.lon,
+    ));
+
+    await failOrSuccess.fold((l) {
+      emitter(state.copyWith(
+          status: BlocStatus.failure,
+          errorMessage: (l as ServerFailure).errorMessage));
+    }, (r) async {
+      sl<CommercialLicenseBloc>().add((const GoToNextPageEvent()));
+
+      emitter(state.copyWith(status: BlocStatus.success, locationResponse: r));
+    });
   }
 
   Future<void> _initMapHandler(InitMapEvent e, Emitter emitter) async {
