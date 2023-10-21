@@ -45,8 +45,9 @@ class CRStep1ApplicantData extends StatelessWidget {
                             ],
                             ReadOnlyField(
                               title: "applicantDesc".tr(),
-                              subTitle:
-                                  state.recordInfo?.crInfo?.getLegalType ?? '',
+                              subTitle: CommonProperties
+                                      .selectedDelegator?.roleName ??
+                                  '',
                             ),
                             ReadOnlyField(
                               title: "crNumber".tr(),
@@ -94,7 +95,8 @@ class CRStep1ApplicantData extends StatelessWidget {
                 onTryAgain: () =>
                     context.read<CrStep1ApplicantDataCubit>().getRecordInfo(),
               ),
-            if (state.recordStatus.isSubmissionLoading)
+            if (state.recordStatus.isSubmissionLoading ||
+                state.status.isSubmissionLoading)
               const CustomCircularLoadingWidget(),
           ],
         );

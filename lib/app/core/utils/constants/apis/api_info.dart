@@ -241,7 +241,7 @@ class ApiUrl {
   static String recordInfo({required String crNumber, required String role}) =>
       'v1/balady-commercial-services/mci/record-Info/$crNumber/$role/1004';
   static const String subActivities =
-      "/v1/balady-commercial-services/activities/by-isic/details/isicCode/1004";
+      "/v1/balady-commercial-services/salama/activities/isicCode/1004";
   static const String subActivityDetails =
       "/v1/balady-commercial-services/activities/";
   static const String addIsicActivities =
@@ -268,6 +268,21 @@ class ApiUrl {
 
   static String deedInfo(int requestId) =>
       "v1/balady-commercial-services/ejar/tenancycontract";
+
+  static String crIssueAttachments(int requestId) =>
+      "v1/balady-commercial-services/request/$requestId/attachments";
+
+  static String crAttachment(int requestId, String fileTypeId) =>
+      '/v1/balady-commercial-services/request/$requestId/attachments/$fileTypeId';
+
+  static String crCalculateFess(int requestId) =>
+      '/v1/balady-commercial-services/new-request/$requestId/calculate-fees';
+
+  static String addBeneficiaryNotes(int requestId) =>
+      'v1/balady-commercial-services/new-request/$requestId/add-beneficiary-notes';
+
+  static String crSubmit(int requestId) =>
+      'v1/balady-commercial-services/new-request/${requestId}/submits';
 
 //! Violations
   static const String violationsStatus =

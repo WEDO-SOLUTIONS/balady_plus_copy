@@ -8,8 +8,20 @@ import '../../../../vd/presentation/widgets/details_widgets/incident_desc_widget
 import '../../../commercial_license_exports.dart';
 import '../../step3/bloc/map_bloc.dart';
 
-class CRStep4ShopData extends StatelessWidget {
+class CRStep4ShopData extends StatefulWidget {
   const CRStep4ShopData({Key? key}) : super(key: key);
+
+  @override
+  State<CRStep4ShopData> createState() => _CRStep4ShopDataState();
+}
+
+class _CRStep4ShopDataState extends State<CRStep4ShopData> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    context.read<CrStep4ShopDataCubit>().initForm();
+  }
 
   @override
   Widget build(BuildContext context) {

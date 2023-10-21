@@ -47,7 +47,8 @@ class CrStep2ActivityDataState extends Equatable {
         subActivityDetails,
         errorMessage,
         totalArea,
-        workerType
+        workerType,
+        status
       ];
 
   CrStep2ActivityDataState copyWith(

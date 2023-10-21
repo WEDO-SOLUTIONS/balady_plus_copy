@@ -1,4 +1,6 @@
 import 'package:balady_plus/app/features/commercial_license/data/models/save_com_submitter_and_owner_request_model.dart';
+import 'package:balady_plus/app/features/commercial_license/domain/entities/cr_attachment_response.dart';
+import 'package:balady_plus/app/features/commercial_license/domain/entities/cr_submit_request.dart';
 import 'package:dartz/dartz.dart' show Either, Left, Right;
 import '../../../../core/errors/errors_exports.dart';
 import '../../../_shared_feature_/shared_feature_exports.dart';
@@ -153,6 +155,66 @@ class CrRepositoryImpl implements CrRepository {
     try {
       final data =
           await remoteDataSource.getInvestmentContracts(params: params);
+      return Right(data);
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage,
+          statusCode: error.statusCode, errorCode: error.errorCode));
+    }
+  }
+
+  @override
+  Future<Either<Failure, CrAttachmentResponse>> getCRAttachments(
+      int? params) async {
+    try {
+      final data = await remoteDataSource.getCRAttachment(params: params);
+      return Right(data);
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage,
+          statusCode: error.statusCode, errorCode: error.errorCode));
+    }
+  }
+
+  @override
+  Future<Either<Failure, bool>> saveAttachment(
+      {required CrAttachmentRequest params}) async {
+    try {
+      final data = await remoteDataSource.saveAttachment(params: params);
+      return Right(data);
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage,
+          statusCode: error.statusCode, errorCode: error.errorCode));
+    }
+  }
+
+  @override
+  Future<Either<Failure, CrCalculateFeesResponse>> crCalculateFee(
+      {required CrCalculateFeesRequest params}) async {
+    try {
+      final data = await remoteDataSource.crCalculateFees(params: params);
+      return Right(data);
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage,
+          statusCode: error.statusCode, errorCode: error.errorCode));
+    }
+  }
+
+  @override
+  Future<Either<Failure, int>> addBeneficiaryNotes(
+      {required CrAddNotesRequest params}) async {
+    try {
+      final data = await remoteDataSource.addBeneficiaryNotes(params: params);
+      return Right(data);
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage,
+          statusCode: error.statusCode, errorCode: error.errorCode));
+    }
+  }
+
+  @override
+  Future<Either<Failure, CrSubmitResponse>> submitCr(
+      {required CrSubmitRequest params}) async {
+    try {
+      final data = await remoteDataSource.submitCr(params: params);
       return Right(data);
     } on ServerException catch (error) {
       return Left(ServerFailure(error.errorMessage,

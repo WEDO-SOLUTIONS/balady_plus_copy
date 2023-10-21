@@ -64,6 +64,11 @@ export 'domain/entities/investment_contracts_response.dart';
 
 export 'domain/entities/clean_contracts_request.dart';
 export 'domain/entities/clean_contracts_response.dart';
+export 'domain/entities/cr_attachment_request.dart';
+export 'domain/entities/cr_calculate_fees_request.dart';
+export 'domain/entities/cr_calculate_fees_response.dart';
+export 'domain/entities/cr_add_notes_request.dart';
+export 'domain/entities/cr_submit_response.dart';
 
 // repo
 export 'domain/repositories/cr_repository.dart';
@@ -92,6 +97,8 @@ export 'data/models/ejar_info_response_model.dart';
 export 'data/models/deed_info_response_model.dart';
 export 'data/models/investment_contracts_response_model.dart';
 export 'data/models/clean_contracts_response_model.dart';
+export 'data/models/cr_calculate_fees_response_model.dart';
+export 'data/models/cr_submit_response_model.dart';
 
 // repo
 export 'data/repositories/cr_repository_impl.dart';

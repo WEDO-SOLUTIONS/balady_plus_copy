@@ -3237,6 +3237,13 @@
 "appointments_cancel_reasons_title":"سبب الإلغاء", 
 "appointments_cancel_reasons_text":"أذكر الأسباب الأخرى", 
 
+"IssueCr":"اصدار رخصة تجاية", 
+"cr_consent_conditions_title":"الاقرار", 
+"cr_consent_conditions_desc":"أقر على صحة المعلومات وأنني اطلعت على إتفاقية خصوصية وسياسة الخدمات الالكترونية والاشتراطات الخاصة بالخدمة", 
+"cr_consent_conditions_check":"أقر وأتعهد على جميع ماتم ذكره اعلاه", 
+
+"cr_consent_conditions_agree":"أوافق", 
+
 
 
 

@@ -3,6 +3,8 @@ import '../../../../core/errors/errors_exports.dart';
 import '../../../_shared_feature_/shared_feature_exports.dart';
 import '../../commercial_license_exports.dart';
 import '../../data/models/save_com_submitter_and_owner_request_model.dart';
+import '../entities/cr_attachment_response.dart';
+import '../entities/cr_submit_request.dart';
 
 abstract class CrRepository {
   Future<Either<Failure, ResponseBodyModel<RecordInfo>>> getRecordInfo(
@@ -37,4 +39,18 @@ abstract class CrRepository {
       CleanContractsRequest? params);
   Future<Either<Failure, InvestmentContractResponse>> getInvestmentContracts(
       InvestmentContractRequest? params);
+
+  Future<Either<Failure, CrAttachmentResponse>> getCRAttachments(int? params);
+
+  Future<Either<Failure, bool>> saveAttachment(
+      {required CrAttachmentRequest params});
+
+  Future<Either<Failure, CrCalculateFeesResponse>> crCalculateFee(
+      {required CrCalculateFeesRequest params});
+
+  Future<Either<Failure, int>> addBeneficiaryNotes(
+      {required CrAddNotesRequest params});
+
+  Future<Either<Failure, CrSubmitResponse>> submitCr(
+      {required CrSubmitRequest params});
 }

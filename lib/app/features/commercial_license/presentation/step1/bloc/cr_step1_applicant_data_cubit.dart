@@ -60,7 +60,7 @@ class CrStep1ApplicantDataCubit extends Cubit<CrStep1ApplicantDataState> {
   }
 
   void saveComSubmitterAndOwner() async {
-    emit(state.copyWith(addIsicActivitiesStatus: BlocStatus.loading));
+    emit(state.copyWith(status: BlocStatus.loading));
     final response = await _saveComSubmitterAndOwner(
         SaveComSubmitterAndOwnerRequestModel(
             crNumber: state.recordInfo?.crNumber,
@@ -69,14 +69,14 @@ class CrStep1ApplicantDataCubit extends Cubit<CrStep1ApplicantDataState> {
 
     response.fold(
         (failure) => emit(state.copyWith(
-              addIsicActivitiesStatus: BlocStatus.failure,
+              status: BlocStatus.failure,
               errorMessage: (failure as ServerFailure).errorMessage,
             )), (success) {
       sl<CommercialLicenseBloc>()
           .add((UpdateRequestFieldEvent(requestId: success)));
 
       sl<CommercialLicenseBloc>().add((const GoToNextPageEvent()));
-      emit(state.copyWith(addIsicActivitiesStatus: BlocStatus.success));
+      emit(state.copyWith(status: BlocStatus.success));
     });
   }
 }

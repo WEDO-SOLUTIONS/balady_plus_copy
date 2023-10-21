@@ -3,19 +3,29 @@ import 'package:balady_plus/app/core/utils/enums/app_font_weights.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/under_testing/custom_enhanced_expansion_panel_widget.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
+import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../core/utils/constants/app_style.dart';
+import '../../../../../core/utils/constants/paths/icon_paths.dart';
 import '../../../../_shared_feature_/presentation/components/bottom_sheets/bottom_sheet_with_actions.dart';
 import '../../../../_shared_feature_/presentation/widgets/draw_line_widget.dart';
 import '../../../../home_page/home_exports.dart';
 import '../../../domain/entities/sub_activity_details_entity.dart';
 
-class CrStep2ConditionsPage extends StatelessWidget {
+class CrStep2ConditionsPage extends StatefulWidget {
   final List<ActivityTerm>? activityTerms;
 
   const CrStep2ConditionsPage({super.key, this.activityTerms});
 
+  @override
+  State<CrStep2ConditionsPage> createState() => _CrStep2ConditionsPageState();
+}
+
+class _CrStep2ConditionsPageState extends State<CrStep2ConditionsPage> {
+  bool isAgree = false;
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -66,16 +76,33 @@ class CrStep2ConditionsPage extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       ListView.builder(
-                          itemCount: activityTerms?.length ?? 0,
+                          itemCount: widget.activityTerms?.length ?? 0,
                           shrinkWrap: true,
                           physics: NeverScrollableScrollPhysics(),
                           itemBuilder: (ctx, index) {
                             return Container(
                               margin: EdgeInsets.only(bottom: 8),
                               child: ExpansionSectionItem(
-                                term: activityTerms![index],
+                                term: widget.activityTerms![index],
                               ),
                             );
+                          }),
+                      FormPledgesSummuryWidget(
+                          title: "cr_consent_conditions_title".tr(),
+                          consent: "cr_consent_conditions_desc".tr(),
+                          consentcheck: "cr_consent_conditions_check".tr(),
+                          currentValue: isAgree,
+                          onChanged: (val) {
+                            setState(() {
+                              isAgree = val;
+                            });
+                          }),
+                      const CustomVerticalSpace(height: 16),
+                      ElevatedButtonWidget.custom(
+                          text: "cr_consent_conditions_agree".tr(),
+                          isDisabled: !isAgree,
+                          onPressed: () {
+                            Navigator.of(context).pop();
                           })
                     ],
                   ),
@@ -146,9 +173,9 @@ class ExpansionSectionItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CustomEnhancedExpansionPanelWidget(
+    return CustomExpansionPanelWidget(
       title: term.sectionName,
-      backgroundColor: AppColor.white,
+      leading: SvgPicture.asset(IconPath.serviceCardDesc),
       children: term.sectionContent?.map((e) {
             return ConditionItem(name: e.label, values: e.value ?? []);
           }).toList() ??

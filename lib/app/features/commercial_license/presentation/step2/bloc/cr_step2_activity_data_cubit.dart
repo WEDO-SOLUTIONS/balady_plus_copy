@@ -25,7 +25,8 @@ class CrStep2ActivityDataCubit extends Cubit<CrStep2ActivityDataState> {
         super(const CrStep2ActivityDataState());
 
   void getSubActivityDetails(SubActivityEntity subActivity) async {
-    emit(state.copyWith(subActivityDetailsStatus: BlocStatus.loading));
+    emit(state.copyWith(
+        subActivityDetailsStatus: BlocStatus.loading, errorMessage: ""));
     final response =
         await _getSubActivityDetails(subActivity.id.toString() ?? '');
     response.fold(
@@ -53,7 +54,8 @@ class CrStep2ActivityDataCubit extends Cubit<CrStep2ActivityDataState> {
     emit(state.copyWith(
         selectedIsicActivity: isicActivity,
         selectedSubActivity: Nullable(null),
-        subActivitiesStatus: BlocStatus.loading));
+        subActivitiesStatus: BlocStatus.loading,
+        errorMessage: ""));
     final response = await _getSubActivities(isicActivity.id ?? '');
     response.fold(
         (failure) => emit(state.copyWith(
@@ -89,18 +91,19 @@ class CrStep2ActivityDataCubit extends Cubit<CrStep2ActivityDataState> {
       emit(state.copyWith(selectedAccommodationType: accommodationTypes));
 
   void updateArea(double? area) {
-    emit(state.copyWith(totalArea: area));
+    emit(state.copyWith(totalArea: area, errorMessage: ""));
   }
 
   void updateWorkerType(WorkersTypes type) {
     print(type);
-    emit(state.copyWith(workerType: type));
+    emit(state.copyWith(workerType: type, errorMessage: ""));
   }
 
   void save() async {
+    print("HHH");
     int requestId = sl<CommercialLicenseBloc>().state.requestId!;
 
-    emit(state.copyWith(status: BlocStatus.loading));
+    emit(state.copyWith(status: BlocStatus.loading, errorMessage: ""));
     final response = await _saveActivityDetails(SubmitActivityDetailRequest(
         requestId: requestId,
         workerTypeId: state.workerType!.index,
