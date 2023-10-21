@@ -1,13 +1,7 @@
 import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:balady_plus/app/core/services/local/helpers.dart';
 import 'package:balady_plus/app/core/utils/common_functions.dart';
-import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
-import 'package:balady_plus/app/core/utils/constants/app_style.dart';
-import 'package:balady_plus/app/features/_shared_feature_/presentation/buttons/elevated_button_widgets.dart';
-import 'package:balady_plus/app/features/_shared_feature_/presentation/buttons/elevated_icon_button_widgets.dart';
-import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import 'package:balady_plus/app/features/create_compliance/presentation/bloc/compliance_bloc.dart';
 import 'package:balady_plus/app/features/create_compliance/presentation/bloc/compliance_event.dart';
 import 'package:balady_plus/app/features/create_compliance/presentation/bloc/compliance_state.dart';
@@ -26,7 +20,6 @@ import '../../../../../core/services/global/web_service.dart';
 import '../../../../../core/services/local/navigation_services.dart';
 import '../../../../../core/utils/constants/remote_config.dart';
 import '../../../../../core/utils/constants/route_names.dart';
-import '../../../../objections/domain/entities/objection_details.dart';
 import '../../../../transaction_inquiry/customer_voice_exports.dart';
 
 class FifthComplianceSubmitStep extends StatelessWidget {
@@ -152,10 +145,13 @@ class AttachmentListWidget extends StatelessWidget {
               path: attachments[index].filePath,
               fileName: attachments[index].fileName,
               onPress: () {
-                if (attachments[index].filePath != null && !attachments[index].filePath!.startsWith("http"))
+                if (attachments[index].filePath != null &&
+                    !attachments[index].filePath!.startsWith("http"))
                   CommonFunctions.openFile(File(attachments[index].filePath!));
-                else if (attachments[index].filePath != null && attachments[index].filePath!.startsWith("http")) {
-                  showFile(attachments[index].filePath ?? "", attachments[index].fileName!);
+                else if (attachments[index].filePath != null &&
+                    attachments[index].filePath!.startsWith("http")) {
+                  showFile(attachments[index].filePath ?? "",
+                      attachments[index].fileName!);
                 }
               },
               hint: attachments[index].hint,
