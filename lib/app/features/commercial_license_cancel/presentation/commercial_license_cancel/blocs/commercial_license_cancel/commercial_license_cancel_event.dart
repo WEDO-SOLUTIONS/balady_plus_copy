@@ -32,7 +32,7 @@ class SelectAcknowledgePledge extends CommercialLicenseEvent {
 
 class SelectHijriCalendar extends CommercialLicenseEvent {
 
-  final HijriCalendar hijriCalendar;
+  final HijriCalendar? hijriCalendar;
 
   const SelectHijriCalendar(this.hijriCalendar);
 }

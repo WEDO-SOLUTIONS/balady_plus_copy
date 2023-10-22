@@ -22,6 +22,7 @@ class CommercialLicenseCancelBloc
 
   // final SubmitterInfo submitterInfo;
   final String crNumber, crType;
+  final String from;
   final bool availableCloseDate;
   final int requestId;
   ReasonCancel? reasonCancel;
@@ -35,6 +36,7 @@ class CommercialLicenseCancelBloc
 
   CommercialLicenseCancelBloc({
     required this.webService,
+    this.from = 'licenses',
     required this.crNumber,
     required this.crType,
     required this.requestId,
@@ -116,7 +118,7 @@ class CommercialLicenseCancelBloc
   Future<void> _selectHijriCalendar(
       SelectHijriCalendar e, Emitter emitter) async {
     hijriCalendar = e.hijriCalendar;
-    controller.text = hijriCalendar.toString();
+    controller.text = hijriCalendar?.toString() ?? '';
     emitter(SelectedHijriCalendar(hijriCalendar: hijriCalendar!));
   }
 

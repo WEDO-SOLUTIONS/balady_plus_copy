@@ -118,8 +118,8 @@ class CommercialLicenseCancelOneScreen extends StatelessWidget {
                                       hideHeader: false,
                                       adapter: hijri_picker
                                           .DateTimePickerAdapter(
-                                        // minValue: HijriCalendar.fromDate(),
-                                        // maxValue: HijriCalendar.fromDate(),
+                                        // minValue: HijriCalendar.fromDate(DateTime.now()),
+                                        maxValue: HijriCalendar.fromDate(DateTime.now()),
                                         customColumnType:
                                         CommonFunctions.isAppAR
                                             ? [2, 1, 0]
@@ -140,11 +140,19 @@ class CommercialLicenseCancelOneScreen extends StatelessWidget {
                                               SelectHijriCalendar(date));
                                         }
                                       },
+                                      cancelText: 'cancel'.tr(),
                                     ).showModal(context);
                                   },
+                                  suffixIcon: IconButton(
+                                    icon: const Icon(Icons.clear),
+                                    onPressed: ()  {
+                                      bloc.add(const SelectHijriCalendar(null));
+                                    },
+                                  ),
                                   controller: bloc.controller,
                                   readOnly: true,
                                   disabledColor: Colors.transparent,
+
                                   onValidate: (date) =>
                                   date?.isNotEmpty ?? false
                                       ? null

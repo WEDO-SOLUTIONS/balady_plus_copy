@@ -50,23 +50,25 @@ class CommercialLicenseDetailsPage extends StatelessWidget {
                   margin: const EdgeInsets.symmetric(vertical: 8),
                   child: InkWell(
                     onTap: () {
-                      BottomSheetDialog.showDraggableSheet(
-                        context,
-                        dialogKeyName: DialogName.commercialLicenseActionSheetDialog,
-                        currentRouteName: RouteName.commercialLicenseDetails,
-                        child: ChangeNotifierProvider(
-                          create: (BuildContext context) =>
-                              CommercialLicenseActionViewModel(
-                                webService: sl(),
-                                licenseId: bloc.commercialLicenseId,
-                                submitterInfo: bloc.state.commercialLicenceDetails!.submitterInfo,
-                                licenseStatusId:  bloc.state.commercialLicenceDetails!.licenseInfo.statusId,
-                              ),
-                          child: const CommercialLicenseActionSheet(),
-                        ),
-                        isFullHeight: false,
-                        height: MediaQuery.of(context).size.height * 0.47,
-                      );
+                      if(bloc.state.commercialLicenceDetails!.submitterInfo != null && bloc.state.commercialLicenceDetails!.licenseInfo != null) {
+                        BottomSheetDialog.showDraggableSheet(
+                          context,
+                          dialogKeyName: DialogName.commercialLicenseActionSheetDialog,
+                          currentRouteName: RouteName.commercialLicenseDetails,
+                          child: ChangeNotifierProvider(
+                            create: (BuildContext context) =>
+                                CommercialLicenseActionViewModel(
+                                  webService: sl(),
+                                  licenseId: bloc.commercialLicenseId,
+                                  submitterInfo: bloc.state.commercialLicenceDetails!.submitterInfo!,
+                                  licenseStatusId:  bloc.state.commercialLicenceDetails!.licenseInfo!.statusId,
+                                ),
+                            child: const CommercialLicenseActionSheet(),
+                          ),
+                          isFullHeight: false,
+                          height: MediaQuery.of(context).size.height * 0.47,
+                        );
+                      }
                     },
                     child: const CircleIcon(
                       backgroundColor: AppColor.primary50Light,

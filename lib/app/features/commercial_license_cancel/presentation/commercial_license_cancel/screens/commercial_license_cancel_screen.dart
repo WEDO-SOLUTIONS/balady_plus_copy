@@ -95,7 +95,7 @@ class _CommercialLicenseCancelScreenState
                     if (state is SubmitCancelRequestSucceededState) {
                       Navigator.of(context).popAndPushNamed(
                         RouteName.submitApplicationSuccessfullyCancel,
-                        arguments: state.submitResponse,
+                        arguments: (bloc.from,state.submitResponse),
                       );
                     }
                     if (state is CommercialLicenseCancelFailureState) {
