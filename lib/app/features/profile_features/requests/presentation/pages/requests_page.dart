@@ -53,7 +53,6 @@ class _RequestsPageState extends State<RequestsPage> {
       create: (context) => sl<RequestsBloc>()..add(GetRequestsEvent()),
       child:
           BlocBuilder<RequestsBloc, RequestsState>(builder: (context, state) {
-        print(state.crmRequestType);
         return Scaffold(
           appBar: DefaultAppBarWidget(
             title: 'requests'.tr(),
@@ -65,7 +64,6 @@ class _RequestsPageState extends State<RequestsPage> {
                         SearchRequestsEvent(query: value),
                       );
                 } else {
-                  print("hhhh");
                   context.read<RequestsBloc>().add(
                         SearchCRMRequestsEvent(query: value),
                       );

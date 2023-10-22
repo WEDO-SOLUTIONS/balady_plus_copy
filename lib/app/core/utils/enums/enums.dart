@@ -72,8 +72,6 @@ enum RequestsType {
 
 enum ATHKAR_CATAGORIES { morning, sleep, evening }
 
-enum ServiceCardsTypes { desc, req, flow }
-
 enum CRSubmitterType { owner, rental }
 
 enum CRContractType {
@@ -94,3 +92,7 @@ enum CRContractOption {
 
   const CRContractOption({required this.name});
 }
+
+enum UserProfileType { Delegator, Agent }
+
+enum ServiceCardsTypes { desc, req, flow, authorInfo }

@@ -65,13 +65,14 @@ class _QiblahWebViewPageState extends State<QiblahWebViewPage> {
                 },
                 initialOptions: InAppWebViewGroupOptions(
                   android: AndroidInAppWebViewOptions(
-                    // useHybridComposition: true,
+                    useHybridComposition: true,
                     geolocationEnabled: true,
                     // safeBrowsingEnabled: false,
                   ),
                   crossPlatform: InAppWebViewOptions(
                     useShouldOverrideUrlLoading: true,
                     javaScriptCanOpenWindowsAutomatically: true,
+
                     //  allowUniversalAccessFromFileURLs: true,
                     //  preferredContentMode: UserPreferredContentMode.MOBILE
                   ),
@@ -125,7 +126,7 @@ class _QiblahWebViewPageState extends State<QiblahWebViewPage> {
                 alignment: Alignment.center,
                 child: ElevatedButtonWidget.add(
                   onPressed: () async {
-                    print("FFFF");
+                  
                     await _controller.evaluateJavascript(
                         source:
                             "document.getElementsByClassName('mat-focus-indicator mat-icon-button mat-button-base')[0].style.display='none'; document.getElementsByClassName('mat-focus-indicator mat-icon-button mat-button-base')[0].style.display='none'; document.getElementsByClassName('mat-fab mat-button-base')[0].style.display='none'; document.getElementsByClassName('expanded')[0].style.display='none'");

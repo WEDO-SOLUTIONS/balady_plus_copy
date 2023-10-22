@@ -31,8 +31,7 @@ class BookMarkBloc extends Bloc<BookMarkEvent, BookMarkState> {
 
   Future<void> _initBookMark(initBookMarkEvent e, Emitter emitter) async {
     QuranBookMarkModel items = await sharedPrefs.getQuranBookMark();
-    print("FFFFFFFF");
-    print(items);
+
     emitter(state.copyWith(items: items));
   }
 

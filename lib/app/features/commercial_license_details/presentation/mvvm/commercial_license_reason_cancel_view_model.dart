@@ -12,7 +12,7 @@ import 'package:balady_plus/app/features/commercial_license_details/data/models/
 class CommercialLicenseReasonCancelViewModel extends BaseViewModel {
   final WebService webService;
   final int licenseId;
-  final SubmitterInfo submitterInfo;
+  final SubmitterInfo? submitterInfo;
   List<ReasonCancel> reasonCancelList = [];
   ReasonCancel? reasonCancel;
 

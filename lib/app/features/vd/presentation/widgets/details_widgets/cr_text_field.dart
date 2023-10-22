@@ -21,6 +21,7 @@ class _CRTextFieldState extends State<CRTextField> {
       builder: (context, state) {
         return TextWithCheckBtn(
           controller: controller,
+          maxLength: 10,
           validate: (String? t) {
             if ((t?.length ?? 0) < 10 || (t?.length ?? 0) > 10) {
               return ("cr_number_error_msg_length").tr();

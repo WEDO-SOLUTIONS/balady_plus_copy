@@ -168,12 +168,9 @@ class AttachmentListWidget extends StatelessWidget {
 
   void showFile(String fileUrl, String fileName) async {
     try {
-      print("HFRR");
       if (fileName.toLowerCase().contains(".png") ||
           fileName.toLowerCase().contains(".jpeg") ||
           fileName.toLowerCase().contains(".jpg")) {
-        //MM
-        print("HEETT");
         NavigationService.navigatorKey.currentState!
             .pushNamed(RouteName.apigeeImageFullScreen, arguments: fileUrl);
       } else {
@@ -197,8 +194,6 @@ class AttachmentListWidget extends StatelessWidget {
           }
         } catch (ex) {
           EasyLoading.dismiss();
-
-          print(ex);
         }
       }
     } catch (ex) {

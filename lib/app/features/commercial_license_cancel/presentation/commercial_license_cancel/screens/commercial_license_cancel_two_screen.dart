@@ -56,11 +56,13 @@ class CommercialLicenseCancelTwoScreen extends StatelessWidget {
                       Column(
                         children: viewModel.attachments
                             .map(
-                              (attachment) => AttachmentShowWidget(
-                                fileName: attachment.fileName ?? '',
-                                name: attachment.name ?? '',
-                                filePath: attachment.attachUrl ?? '',
-                              ),
+                              (attachment) {
+                                return attachment.updatable ?? false ? AttachmentShowWidget(
+                                  fileName: attachment.fileName ?? '',
+                                  name: attachment.name ?? '',
+                                  filePath: attachment.attachUrl ?? '',
+                                ) : const SizedBox();
+                              },
                             )
                             .toList(),
                       ),
@@ -119,6 +121,12 @@ class CommercialLicenseCancelTwoScreen extends StatelessWidget {
               BlocBuilder<CommercialLicenseCancelBloc,
                   CommercialLicenseCancelState>(
                 builder: (context, state) {
+                  if (state is CommercialLicenseCancelLoadingState) {
+                    return const ShimmerEffectWidget(
+                      height: 60,
+                      borderRadius: 8,
+                    );
+                  }
                   return EnhancedCustomElevatedButtonWidget(
                     btnColor: !bloc.acknowledgePledge
                         ? AppColor.black200

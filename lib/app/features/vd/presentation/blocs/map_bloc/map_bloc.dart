@@ -182,9 +182,7 @@ class MapBloc extends Bloc<MapEvent, MapState> {
           CameraPosition(target: LatLng(lat, lng), zoom: 16.0),
         ),
       );
-    } catch (ex) {
-      print(ex);
-    }
+    } catch (ex) {}
   }
 
   double calculateDistance(lat1, lon1, lat2, lon2) {

@@ -75,7 +75,6 @@ class ServiceCalculatorRepository {
               jsonResult.map((x) => IsicActivity.fromJson(x)));
           return new Future.value(regions);
         } catch (error) {
-          print(error);
           // return [];
           throw error;
         }
@@ -85,26 +84,21 @@ class ServiceCalculatorRepository {
   }
 
   Future<List<Item>?> getServicesListlookup() {
-    print("getServicesListlookup");
     return webServices
         .sendGetRequest(
             url: webServices.CALCULATOR_API + _servicesListUrl,
             headers: baladyHeaders,
             apiName: calculatorAPI)
         .then((data) {
-      // print("hhjj");
-      // print(data);
       if (data['state']) {
         try {
-          // print("G");
           final jsonResult = json.decode(data['data']);
-          //  print(jsonResult);
+
           List<Item> regions =
               List<Item>.from(jsonResult.map((x) => Item.fromJson(x)));
-          // print(regions);
+
           return new Future.value(regions);
         } catch (error) {
-          //print(error);
           return [];
         }
       }
@@ -120,18 +114,13 @@ class ServiceCalculatorRepository {
             headers: baladyHeaders,
             apiName: calculatorAPI)
         .then((data) {
-      print(data['state']);
       if (data['state']) {
         try {
-          print("!11111");
           final jsonResult = json.decode(data['data']);
           List<Procedure> regions = List<Procedure>.from(
               jsonResult.map((x) => Procedure.fromJson(x)));
-          print("HERRRRRRE");
           return new Future.value(regions);
         } catch (error) {
-          print("ERROR");
-          print(error);
           //return [];
           throw error;
         }
@@ -177,7 +166,7 @@ class ServiceCalculatorRepository {
         try {
           final jsonResult = json.decode(data['data']);
           DetailedActivity regions = DetailedActivity.fromJson(jsonResult);
-          //print(regions);
+
           return new Future.value(regions);
         } catch (error) {
           //return new Future.value(null);
@@ -222,7 +211,6 @@ class ServiceCalculatorRepository {
           final jsonResult = json.decode(data['data']);
           List<Item> regions =
               List<Item>.from(jsonResult.map((x) => Item.fromJson(x)));
-//print(regions);
           return new Future.value(regions);
         } catch (error) {
           //return [];
@@ -245,7 +233,7 @@ class ServiceCalculatorRepository {
           final jsonResult = json.decode(data['data']);
           List<Municipality> regions = List<Municipality>.from(
               jsonResult.map((x) => Municipality.fromJson(x)));
-//print(regions);
+
           return new Future.value(regions);
         } catch (error) {
           // return [];
@@ -340,21 +328,13 @@ class ServiceCalculatorRepository {
             headers: baladyHeaders,
             apiName: calculatorAPI)
         .then((data) {
-      print("YYY");
-      print(data);
-      print("JJJ");
-      print(data['state']);
-      print("ooohhh");
       if (data['state']) {
         try {
-          print(data);
           final jsonResult = json.decode(data['data']);
           return jsonResult["resultItem"] != null
               ? new Future.value(jsonResult["resultItem"])
               : new Future.value(0);
         } catch (error) {
-          print("catch");
-          print(error);
           return 0;
         }
       }
@@ -364,7 +344,6 @@ class ServiceCalculatorRepository {
 
   Future<CalculateDiggingResponse> calculteDiggingCost(
       CalculateDiggingCost request) {
-    print(request.toJson());
     return webServices
         .sendPostRequest(
             url: webServices.CALCULATOR_API + _calculateDiggingCost,
@@ -422,9 +401,6 @@ class ServiceCalculatorRepository {
 
     bool state = body['state'];
     GisLocationResult? item;
-    // bool IncidentsResult = true;
-//print(_getGIS+"x=${latLng.longitude}&y=${latLng.latitude}&guid=ba2570d8-6778-4048-9916-e234fac1c04b");
-
     if (state == true) {
       try {
         item = GisLocationResult.fromJson(json.decode(body['data']));

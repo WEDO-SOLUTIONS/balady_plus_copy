@@ -168,7 +168,6 @@ class SearchMapWidget extends StatelessWidget {
                                       mapViewModel.selectCategory(
                                           category: category, custom: custom);
                                       searchFocusNode.unfocus();
-                                      print("Changing ctaegory to: $e");
                                     },
                                     child: Padding(
                                       padding: const EdgeInsets.all(4.0),

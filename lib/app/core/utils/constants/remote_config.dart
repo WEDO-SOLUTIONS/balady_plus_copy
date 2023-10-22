@@ -6,6 +6,7 @@ class RemoteConfig {
   static String get gis => _RemoteConfig.gis[env]!;
   static String get apigeeURL => _RemoteConfig.apigeeURL[env]!;
   static String get pegaURL => _RemoteConfig.pegaURL[env]!;
+  static String get webSiteUrl => _RemoteConfig.webSiteUrl[env]!;
 
   static String get hmCode => _RemoteConfig.hmCode[env]!;
   static String get apigeeUsername => _RemoteConfig.apigeeUsername[env]!;
@@ -160,9 +161,9 @@ class _RemoteConfig {
   );
 
   static final webSiteUrl = _initValues<String>(
-    devVal: "https://balady.momra.gov.sa/",
-    stgVal: "https://balady.momra.gov.sa/",
-    prodVal: "https://balady.gov.sa/",
+    devVal: "https://balady.momra.gov.sa",
+    stgVal: "https://balady.momra.gov.sa",
+    prodVal: "https://balady.gov.sa",
   );
 
   static final baladyBaseUrl = _initValues<String>(

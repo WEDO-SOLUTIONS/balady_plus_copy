@@ -49,7 +49,7 @@ class BottomSheetDialog {
           ),
         )) ??
         false;
-    print("dialog closed");
+
     if (currentRouteName != null)
       await FlutterUxcam.tagScreenName(currentRouteName);
 

@@ -147,6 +147,7 @@ class MapViewModel extends BaseViewModel {
   Future<void> selectCategory(
       {SearchCategoryMessage? category, CustomSearchCategory? custom}) async {
     searchController.clear();
+    clearAllCards();
     if (category == selectedCategory.value) {
       _searchOperation?.cancel();
       selectedCategory.value = null;
@@ -298,7 +299,6 @@ class MapViewModel extends BaseViewModel {
       }
 
       searchOnCameraMove = false;
-      print("areaOfInterest: ${data.areaOfInterestPosition}");
       if (data.areaOfInterestPosition != null && moveCamera) {
         await controller.moveCamera(
           data.areaOfInterestPosition!,
@@ -374,10 +374,7 @@ class MapViewModel extends BaseViewModel {
       if (data.firstPage != null) {
         await controller.releasePage(data.firstPage!);
       }
-      print(data);
-    } catch (e) {
-      print(e);
-    }
+    } catch (e) {}
   }
 
   List<DistanceRequestMessage> _mapToDistanceRequest(
@@ -405,16 +402,12 @@ class MapViewModel extends BaseViewModel {
     final result = await controller.initialize();
     if (!result.wasInitialized) {
       initialized.value = false;
-
       return false;
     }
-
     _setupListeners();
 
-    // setLocale(const Locale("ar", "US"), TextDirection.ltr);
     await controller.loadStyles(Constants.mapStyle);
     await controller.overrideLocales(["ar-SA"]);
-    // await controller.overrideLocales([localeState.value.locale]);
     await controller.setMarkerOptions(
       MarkerOptionsMessageOld(
         svgAsset: "assets/maps/icons/ic_marker.svg",
@@ -423,59 +416,12 @@ class MapViewModel extends BaseViewModel {
         iconWidth: 24,
       ),
     );
-
     await controller.setZoomRestrictions(min: 5.5);
-
-/*
-    mapObjectManager = await controller.createMapObjectManagerWithClustering(
-      ClusteringMapObjectManager(
-        options: ClusteringMapObjectManagerOptionsMessage(
-          logicalPixel: 40,
-          maxZoom: 16,
-        ),
-        renderCluster: (objectCount) {
-          return SimpleClusterOptionsMessage(
-            icon: MarkerIconMessage(
-              path: "assets/maps/icons/ic_marker.svg",
-              width: 24,
-            ),
-            text: "$objectCount",
-            textStyle: MarkerTextStyleMessage(fontSize: 16),
-          );
-        },
-        onTap: (clusterObject) async {
-          clusterObject.setIcon("assets/maps/icons/ic_marker_red.svg");
-
-          final clusterPosition = await controller.calcPositionForMarkers(
-            clusterObject.markers,
-            CalcPositionOptionsMessage(
-              screenArea: CameraSetPaddingMessage(
-                bottomPadding: 40,
-                leftPadding: 40,
-                topPadding: 40,
-                rightPadding: 40,
-              ),
-            ),
-          );
-          await controller.moveCamera(
-            clusterPosition,
-            1.5,
-            CameraAnimationTypeMessage.default_,
-          );
-        },
-      ),
-    );
-
-
-*/
 
     try {
       final permission = await Permission.location.request();
-      //print("grfrsdcvdv $permission");
       if (permission.isGranted) {
-        //print("grfrsdcvdv granted");
         await controller.onLocationPremissionGranted();
-        //print("grfrsdcvdv granted 111");
 
         await controller.changeFollowState();
 
@@ -509,6 +455,7 @@ class MapViewModel extends BaseViewModel {
         );
       }
     } catch (ex) {
+      await controller.onLocationPremissionGranted();
       await controller.changeFollowState();
       await controller.setCameraPosition(
         CameraPositionMessage(
@@ -736,9 +683,7 @@ class MapViewModel extends BaseViewModel {
     try {
       final data = event.photoData;
       unawaited(controller.moveCameraToSelectedPanorama());
-    } catch (e) {
-      print(e);
-    }
+    } catch (e) {}
   }
 
   void getLocationAndMoveCamera() async {
@@ -773,8 +718,6 @@ class MapViewModel extends BaseViewModel {
           moveCamera: false,
         );
         // hideLoading1();
-
-        print("Query?");
       }
       _clearDebounce();
       hideLoading1();
@@ -790,7 +733,6 @@ class MapViewModel extends BaseViewModel {
     GISMapLayers? gisLayer = GISMapLayers.values.firstWhereOrNull(
       (element) => element.layerId == layerSelected.value!.id,
     );
-    print("GISMapLayers $gisLayer");
     if (gisLayer == GISMapLayers.cityPlaces)
       return;
     else {
@@ -833,13 +775,11 @@ class MapViewModel extends BaseViewModel {
   }
 
   callEventsSearch() async {
-    //print("search");
     await clearAll();
 
     GISMapLayers? gisLayer = GISMapLayers.values.firstWhereOrNull(
       (element) => element.layerId == 13,
     );
-    print("GISMapLayers $gisLayer");
     showLoading1();
     bottomSheetSize.notifyListeners();
 
@@ -852,7 +792,6 @@ class MapViewModel extends BaseViewModel {
         final markers = r.items
             ?.map(
               (element) {
-                print("HHHHH");
                 if (element.getLocation() != null)
                   return Marker(
                     id: element.id.toString(),
@@ -867,8 +806,6 @@ class MapViewModel extends BaseViewModel {
                       ),
                     ),
                     onTap: () async {
-                      print("on Tap ${layerSelected.value?.id}");
-
                       refreshMap = false;
 
                       refreshView();
@@ -888,7 +825,6 @@ class MapViewModel extends BaseViewModel {
             )
             .whereNotNull()
             .toList();
-        print("YYYY ${markers?[0].options.position.latitude}");
         //await controller.removeAllMarkers();
         await clearAll();
         controller.addMarkers(markers ?? []);
@@ -899,7 +835,6 @@ class MapViewModel extends BaseViewModel {
   }
 
   callResturantsSearch() async {
-    //print("search");
     Layers layer = Layers(
         id: 1,
         name: "مطاعم",
@@ -1120,7 +1055,6 @@ class MapViewModel extends BaseViewModel {
                   SearchCategoryMessage
                       .restaurants) // Temp code for resturant Layers
               {
-                print("GTGGGG");
                 selectedPoint.value = element;
                 selectedResturantPoint.value = element;
                 selectedResturantPoint.notifyListeners();
@@ -1404,9 +1338,7 @@ class MapViewModel extends BaseViewModel {
       layers.value = await layersRepositories.getMinLayers();
       layers.value?.insert(0, cityPlaces);
       layers.notifyListeners();
-    } catch (e) {
-      print(e);
-    }
+    } catch (e) {}
   }
 
   Future clearAll() async {
@@ -1492,15 +1424,10 @@ class MapViewModel extends BaseViewModel {
   void moveCamera() async {
     try {
       final permission = await Permission.location.request();
-      //print("grfrsdcvdv $permission");
       if (permission.isGranted) {
-        //print("grfrsdcvdv granted");
         await controller.onLocationPremissionGranted();
-        //print("grfrsdcvdv granted 111");
       }
-    } catch (ex) {
-      // print(ex);
-    }
+    } catch (ex) {}
     await controller.changeFollowState();
 
     await controller.setCameraPosition(
@@ -1527,13 +1454,10 @@ class MapViewModel extends BaseViewModel {
 
 // To Save the map state when goes to the background.
   void saveMapState() async {
-    print("saveMapState");
     _lastCameraPosition = await controller.getCameraPosition();
   }
 
   void retreiveMapState() {
-    print("retreiveMapState $_lastCameraPosition");
-
     if (_lastCameraPosition != null)
       controller.setCameraPosition(_lastCameraPosition!);
     refreshMap = true;

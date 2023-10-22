@@ -30,7 +30,6 @@ class CrmRequestDetailsModel extends CrmRequestDetails {
       super.comments});
 
   factory CrmRequestDetailsModel.fromJson(Map<String, dynamic> json) {
-    print(json["VehicleInformation"]);
     return CrmRequestDetailsModel(
         auditInformation: json["AuditInformation"] == null
             ? null

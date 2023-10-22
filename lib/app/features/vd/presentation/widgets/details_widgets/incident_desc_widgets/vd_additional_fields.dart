@@ -47,7 +47,6 @@ class _VDAdditionalFieldsSection extends State<VDAdditionalFieldsSection> {
                       itemCount: quetionList.length,
                       physics: NeverScrollableScrollPhysics(),
                       itemBuilder: (ctx, index) {
-                        //   print("quetionList $index");
                         return getAddetionalWidget(
                             fieldType: quetionList[index].fieldType ?? "",
                             fieldName: quetionList[index].getFieldName(),
@@ -97,7 +96,6 @@ class _VDAdditionalFieldsSection extends State<VDAdditionalFieldsSection> {
       List<ValueItem>? valueList,
       int? fieldLength,
       Key? key}) {
-    // print("quetionList $fieldType");
     switch (fieldType) {
       case GeneralKey.Textbox:
         return TextBoxAddetionalField(

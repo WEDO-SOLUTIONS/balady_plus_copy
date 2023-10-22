@@ -22,7 +22,7 @@ class CommercialLicenceDetails {
   // String notes;
   // String employeeNotes;
   // dynamic clientNotes;
-  LicenseInfo licenseInfo;
+  LicenseInfo? licenseInfo;
   SalamaInfo? salamaInfo;
 
   // dynamic objectionNotesInfo;
@@ -59,10 +59,10 @@ class CommercialLicenceDetails {
   // bool craft;
   // dynamic craftMessage;
   // dynamic contactInfo;
-  ActivityInfo activityInfo;
-  LocationInfo locationInfo;
-  SubmitterInfo submitterInfo;
-  ShopInfo shopInfo;
+  ActivityInfo? activityInfo;
+  LocationInfo? locationInfo;
+  SubmitterInfo? submitterInfo;
+  ShopInfo? shopInfo;
 
   // List<BillsInfo> billsInfo;
   // bool selectLicYears;
@@ -159,7 +159,7 @@ class CommercialLicenceDetails {
         // employeeNotes: json["employeeNotes"],
         // clientNotes: json["clientNotes"],
         licenseInfo: LicenseInfo.fromJson(json["licenseInfo"]),
-        salamaInfo: SalamaInfo.fromJson(json["salamaInfo"]),
+        salamaInfo: json["salamaInfo"] != null ? SalamaInfo.fromJson(json["salamaInfo"]) : null,
         // objectionNotesInfo: json["objectionNotesInfo"],
         // warningMessages: json["warningMessages"],
         // warningInfo: json["warningInfo"],
@@ -194,10 +194,10 @@ class CommercialLicenceDetails {
         // craft: json["craft"],
         // craftMessage: json["craftMessage"],
         // contactInfo: json["contactInfo"],
-        activityInfo: ActivityInfo.fromJson(json["activityInfo"]),
-        locationInfo: LocationInfo.fromJson(json["locationInfo"]),
-        submitterInfo: SubmitterInfo.fromJson(json["submitterInfo"]),
-        shopInfo: ShopInfo.fromJson(json["shopInfo"]),
+        activityInfo: json["activityInfo"] != null ? ActivityInfo.fromJson(json["activityInfo"]) : null,
+        locationInfo: json["locationInfo"] != null ? LocationInfo.fromJson(json["locationInfo"]) : null,
+        submitterInfo: json["submitterInfo"] != null ? SubmitterInfo.fromJson(json["submitterInfo"]) : null,
+        shopInfo: json["shopInfo"] != null ? ShopInfo.fromJson(json["shopInfo"]) : null,
         // billsInfo: List<BillsInfo>.from(json["billsInfo"].map((x) => BillsInfo.fromJson(x))),
         // selectLicYears: json["selectLicYears"],
         // showTillActive: json["showTillActive"],
@@ -234,7 +234,7 @@ class Activity {
 }
 
 class ActivityInfo {
-  MainActivity mainActivity;
+  MainActivity? mainActivity;
   List<AdditionalActivities>? additionalActivities;
 
   // bool foreignInvistor;
@@ -260,7 +260,7 @@ class ActivityInfo {
   });
 
   factory ActivityInfo.fromJson(Map<String, dynamic> json) => ActivityInfo(
-        mainActivity: MainActivity.fromJson(json["mainActivity"]),
+        mainActivity: json["mainActivity"] != null ? MainActivity.fromJson(json["mainActivity"]) : null,
         additionalActivities: json["additionalActivities"] != null
             ? List<AdditionalActivities>.from(json["additionalActivities"]
                 .map((x) => AdditionalActivities.fromJson(x)))
@@ -516,8 +516,8 @@ class LocationInfo {
 
   // int districtCode;
   // int streetCode;
-  String latitude;
-  String longitude;
+  String? latitude;
+  String? longitude;
   String mapNo;
   String landNo;
   String streetName;
@@ -558,8 +558,8 @@ class LocationInfo {
         subMunicipalityGisCode: json["subMunicipalityGisCode"] ?? '',
         // districtCode: json["districtCode"],
         // streetCode: json["streetCode"],
-        latitude: json["latitude"] ?? '',
-        longitude: json["longitude"] ?? '',
+        latitude: json["latitude"] ,
+        longitude: json["longitude"],
         mapNo: json["mapNo"] ?? '',
         landNo: json["landNo"] ?? '',
         streetName: json["streetName"] ?? '',
@@ -617,7 +617,7 @@ class ShopInfo {
   String planNumber;
   dynamic salamaBillNumber;
 
-  // List<BoardsInfo> boardsInfo;
+  List<BoardsInfo>? boardsInfo;
   ContractInfoResponseDto contractInfoResponseDto;
 
   // bool showShopOwnership;
@@ -657,7 +657,7 @@ class ShopInfo {
     // required this.landNumber,
     required this.planNumber,
     required this.salamaBillNumber,
-    // required this.boardsInfo,
+    required this.boardsInfo,
     required this.contractInfoResponseDto,
     // required this.showShopOwnership,
     // required this.slamaBillOptions,
@@ -695,7 +695,7 @@ class ShopInfo {
         // landNumber: json["landNumber"],
         planNumber: json["planNumber"] ?? '',
         salamaBillNumber: json["salamaBillNumber"] ?? '',
-        // boardsInfo: List<BoardsInfo>.from(json["boardsInfo"].map((x) => BoardsInfo.fromJson(x))),
+        boardsInfo: json["boardsInfo"] != null ? List<BoardsInfo>.from(json["boardsInfo"].map((x) => BoardsInfo.fromJson(x))) : null,
         contractInfoResponseDto:
             ContractInfoResponseDto.fromJson(json["contractInfoResponseDto"]),
         // showShopOwnership: json["showShopOwnership"],
@@ -718,24 +718,24 @@ class ShopInfo {
       );
 }
 
-// class BoardsInfo {
-//   int typeId;
-//   String typeName;
-//   int area;
-//
-//   BoardsInfo({
-//     required this.typeId,
-//     required this.typeName,
-//     required this.area,
-//   });
-//
-//   factory BoardsInfo.fromJson(Map<String, dynamic> json) => BoardsInfo(
-//     typeId: json["typeId"],
-//     typeName: json["typeName"],
-//     area: json["area"],
-//   );
-//
-// }
+class BoardsInfo {
+  int typeId;
+  String typeName;
+  int area;
+
+  BoardsInfo({
+    required this.typeId,
+    required this.typeName,
+    required this.area,
+  });
+
+  factory BoardsInfo.fromJson(Map<String, dynamic> json) => BoardsInfo(
+    typeId: json["typeId"],
+    typeName: json["typeName"],
+    area: json["area"],
+  );
+
+}
 
 // class CleanContractOptions {
 //   String cleanOption;
@@ -813,7 +813,7 @@ class SubmitterInfo {
   String submitterType;
   String crNumber;
 
-  // String crType;
+  String crType;
   int submitterIdNumber;
 
   // String submitterBirthDate;
@@ -832,7 +832,7 @@ class SubmitterInfo {
     // required this.entityType,
     required this.submitterType,
     required this.crNumber,
-    // required this.crType,
+    required this.crType,
     required this.submitterIdNumber,
     // required this.submitterBirthDate,
     // required this.mobile,
@@ -850,7 +850,7 @@ class SubmitterInfo {
         // entityType: json["entityType"],
         submitterType: json["submitterType"] ?? '',
         crNumber: json["crNumber"] ?? '',
-        // crType: json["crType"],
+        crType: json["crType"],
         submitterIdNumber: json["submitterIdNumber"] ?? '',
         // submitterBirthDate: json["submitterBirthDate"],
         // mobile: json["mobile"],

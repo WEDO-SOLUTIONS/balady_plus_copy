@@ -11,6 +11,7 @@ import '../../../../core/services/local/navigation_services.dart';
 import '../../../../core/utils/constants/app_colors.dart';
 import '../../../../core/utils/enums/enums.dart';
 import '../../data/entities/success_screen_args.dart';
+import '../buttons/elevated_button_widgets.dart';
 import '../widgets/buttons/custom_buttons_widgets.dart';
 import '../widgets/custom_spaces_widgets.dart';
 import '../widgets/texts/custom_text_widget.dart';
@@ -73,6 +74,8 @@ class _SuccessScreenState extends State<SuccessScreen> {
               SuccessButtons(
                 fromHomePage: successScreenArgs.fromHomePage ?? false,
                 pageType: successScreenArgs.type,
+                isFawry: successScreenArgs.isFawry ?? false,
+                requestId: successScreenArgs.idNumber,
               )
             ],
           ),
@@ -364,8 +367,15 @@ class SuccessBody extends StatelessWidget {
 class SuccessButtons extends StatelessWidget {
   final PAGE_TYPE pageType;
   bool fromHomePage;
+  bool isFawry;
+  String? requestId;
 
-  SuccessButtons({Key? key, required this.pageType, this.fromHomePage = false})
+  SuccessButtons(
+      {Key? key,
+      required this.pageType,
+      this.isFawry = false,
+      this.fromHomePage = false,
+      this.requestId})
       : super(key: key);
 
   @override
@@ -376,6 +386,13 @@ class SuccessButtons extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
+            if (pageType == PAGE_TYPE.emtethal && isFawry == true)
+              ElevatedButtonWidget.primaryCustomBorder(
+                  onPressed: () {
+                    onPressWhiteButton(context, requestId: requestId);
+                  },
+                  text: getWhiteBtnText()),
+            CustomVerticalSpace(height: 16),
             CustomElevatedButtonWidget(
               onPressed: () {
                 onPressGreenButton(context);
@@ -384,20 +401,6 @@ class SuccessButtons extends StatelessWidget {
               text: getGreenBtnText(),
               btnHeight: 56,
             ),
-            /*    CustomVerticalSpace(height: 16),
-            if (pageType != PAGE_TYPE.ratingScreen &&
-                pageType != PAGE_TYPE.contactUs &&
-                pageType != PAGE_TYPE.licenseScreen &&
-                pageType != PAGE_TYPE.other)
-              CustomTextButtonWidget(
-                onPressed: () {
-                  onPressWhiteButton(context);
-                },
-                text: getWhiteBtnText(),
-                btnTextSize: 16,
-              )
-         
-         */
           ],
         ),
       ),
@@ -508,7 +511,7 @@ class SuccessButtons extends StatelessWidget {
 
   String getWhiteBtnText() {
     switch (pageType) {
-      case PAGE_TYPE.incidentsScreen:
+      /* case PAGE_TYPE.incidentsScreen:
       case PAGE_TYPE.newVD:
       case PAGE_TYPE.dc:
       case PAGE_TYPE.vhr:
@@ -530,17 +533,23 @@ class SuccessButtons extends StatelessWidget {
       case PAGE_TYPE.visitScreen:
         return ('go_to_visit_list').tr();
 
-      case PAGE_TYPE.objction:
+      case PAGE_TYPE.objction:*/
       case PAGE_TYPE.emtethal:
-        return ('go_to_orders_page').tr();
+        return ('compliance_show_certificate').tr();
 
       default:
         return "";
     }
   }
 
-  void onPressWhiteButton(BuildContext context) {
+  void onPressWhiteButton(BuildContext context, {String? requestId}) {
     switch (pageType) {
+      case PAGE_TYPE.emtethal:
+        Navigator.pushNamed(context, RouteName.complianceDetailsPage,
+            arguments: (requestId, ""));
+        break;
+
+      /*
       case PAGE_TYPE.incidentsScreen:
       case PAGE_TYPE.newVD:
       case PAGE_TYPE.dc:
@@ -600,7 +609,7 @@ class SuccessButtons extends StatelessWidget {
           NavigationService.goBack();
         }*/
         break;
-
+*/
       default:
         /*{
           Helpers.backNavigationToSpecificScreen2(

@@ -11,8 +11,10 @@ class ServiceCardEntity extends Equatable {
   final String description;
   final ServiceCardsTypes? type;
   final num rate;
-  final int duration;
+  final String duration;
   final int? fees;
+  final String? feesName;
+  final String? feesLink;
   final List<String>? requirements;
   final List<ServiceCardFlow>? flow;
 
@@ -23,6 +25,8 @@ class ServiceCardEntity extends Equatable {
       required this.rate,
       required this.duration,
       this.fees,
+      this.feesName,
+      this.feesLink,
       this.type,
       this.requirements,
       this.flow});

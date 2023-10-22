@@ -10,8 +10,6 @@ class IncidentDescSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<CreateVDBloc, CreateVDState>(
       builder: (context, state) {
-        //   print("IncidentDescSection build");
-
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -30,7 +28,6 @@ class IncidentDescSection extends StatelessWidget {
                       /* VdAgreementSection(
                           initalChecked: state.agreement,
                           onChecked: (bool? isAgreed) {
-                            print(isAgreed);
                             context
                                 .read<CreateVDBloc>()
                                 .add(ChangeAgreementEvent(isagree: isAgreed));

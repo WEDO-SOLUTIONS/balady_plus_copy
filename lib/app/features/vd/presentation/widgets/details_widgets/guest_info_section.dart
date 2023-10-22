@@ -21,7 +21,6 @@ class GuestInfoSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<CreateVDBloc, CreateVDState>(
       builder: (context, state) {
-        // print("GuestInfoSection build");
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

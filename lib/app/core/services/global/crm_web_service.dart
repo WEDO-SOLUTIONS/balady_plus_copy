@@ -112,7 +112,6 @@ class AppInterceptors extends Interceptor {
         'Cookie', () => sl<EntryPointCubit>().state.token?.appCookie ?? "");
 
     //if (options.headers['Authorization'] == null) {
-    print(options.headers);
     return handler.next(options);
   }
 
@@ -120,10 +119,6 @@ class AppInterceptors extends Interceptor {
   void onError(DioError err, ErrorInterceptorHandler handler) {
     "Opps, recieved Error: ${err.response?.statusCode}".errorLog();
     "Opps, recieved Error: ${err.response?.data}".errorLog();
-    print(err);
-
-    print(err.error);
-    print(err.type);
 
     switch (err.type) {
       case DioErrorType.connectionTimeout:

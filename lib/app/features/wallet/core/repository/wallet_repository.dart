@@ -23,7 +23,6 @@ class WalletRepository {
         await webServices.getNewApigeeRequest(url, queryParams: queryParms);
     bool state = body['state'];
     dynamic data = body['data'];
-    //print(data);
     String error =
         body['error'] ?? Helpers.translatingWord("errors_server_error_1");
     WalletResponse? result;
@@ -34,7 +33,6 @@ class WalletRepository {
         error = result.data?.responseMessage ?? error;
       }
     } catch (ex) {
-      print(ex);
       try {
         Helpers.sendLog(url: url, data: data, errorMsg: ex.toString());
       } catch (ex) {}
@@ -49,22 +47,16 @@ class WalletRepository {
     final body = await webServices.getNewApigeeRequestWithoutUTF(
         ApiConstants.printWalletLicense,
         relativePath: query);
-    print(query);
     bool state = body['state'];
     dynamic data = body['data'];
     Uint8List? result;
     String error =
         body['error'] ?? Helpers.translatingWord("errors_server_error_1");
     String? contentType = body['Content-Type'];
-    print("COOOOO");
-    print(contentType);
-    print(state);
-    print(body);
-    //  print(data);
+
     try {
       if (state) result = data;
 
-      // print(result);
       if (!state) {
         //   error = result.data?.responseMessage ?? error;
 
@@ -75,9 +67,7 @@ class WalletRepository {
               errorMsg: body.toString() ?? "");
         } catch (ex) {}
       }
-    } catch (ex) {
-      print(ex);
-    }
+    } catch (ex) {}
     return Tuple4<bool?, String?, Uint8List?, String?>(
         state, error, result, contentType);
   }
