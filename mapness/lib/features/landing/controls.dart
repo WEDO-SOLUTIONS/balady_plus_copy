@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:mapness/features/landing/widgets/map_control.dart';
+import 'package:mapness/features/landing/widgets/zoom_control.dart';
 
 import 'dashboard_manager.dart';
 
@@ -67,23 +69,7 @@ class MapControls extends ConsumerWidget {
                   SizedBox(
                     height: MediaQuery.of(context).size.height * .2,
                   ),
-                  MapControl(
-                    SvgPicture.asset(
-                      "assets/icons/svg/ic_control_zoom_in.svg",
-                      semanticsLabel: 'MinApps Screen',
-                      package: "mapness",
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 8,
-                  ),
-                  MapControl(
-                    SvgPicture.asset(
-                      "assets/icons/svg/ic_control_zoom_out.svg",
-                      semanticsLabel: 'MinApps Screen',
-                      package: "mapness",
-                    ),
-                  ),
+                  const ZoomControl(),
                   SizedBox(
                     height: MediaQuery.of(context).size.height * .1,
                   ),
@@ -178,30 +164,5 @@ class MapControls extends ConsumerWidget {
         ],
       ),
     );
-  }
-}
-
-class MapControl extends ConsumerWidget {
-  final Widget content;
-  const MapControl(
-    this.content, {
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final controlsVisibility = ref.watch(dashboardManagerProvider);
-    return controlsVisibility != BottomSheetState.expanded
-        ? Container(
-            decoration: const BoxDecoration(
-              borderRadius: BorderRadius.all(
-                Radius.circular(10),
-              ),
-              color: Colors.white,
-            ),
-            padding: const EdgeInsets.all(10.0),
-            child: content,
-          )
-        : const SizedBox.shrink();
   }
 }

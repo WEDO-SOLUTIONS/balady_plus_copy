@@ -21,6 +21,10 @@ class DgisMapController {
   Stream<ZoomControlEnabledEvent> get zoomControlEnabledEvents =>
       _instance.zoomControlEnabledEvents;
 
+  // Compass bearing
+  Stream<CompassBearingEvent> get compassBearingEvents =>
+      _instance.compassBearingEvents;
+
   /// Location control availability
   Stream<LocationEnabledEvent> get locationEnabledEvents =>
       _instance.locationEnabledEvents;

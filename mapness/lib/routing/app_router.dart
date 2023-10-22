@@ -28,7 +28,7 @@ enum AppRoute {
 GoRouter goRouter(GoRouterRef ref, List<Widget> routes) {
   return GoRouter(
     initialLocation: '/landing',
-    navigatorKey: _rootNavigatorKey,
+    // navigatorKey: _rootNavigatorKey,
     debugLogDiagnostics: true,
     routes: [
       StatefulShellRoute.indexedStack(

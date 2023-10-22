@@ -1,14 +1,16 @@
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/features/map/providers/dgis_controller.dart';
 
-class MapPage extends StatefulWidget {
+class MapPage extends ConsumerStatefulWidget {
   const MapPage({Key? key}) : super(key: key);
 
   @override
-  State<MapPage> createState() => _MapPageState();
+  ConsumerState<MapPage> createState() => _MapPageState();
 }
 
-class _MapPageState extends State<MapPage>
+class _MapPageState extends ConsumerState<MapPage>
     with AutomaticKeepAliveClientMixin, WidgetsBindingObserver {
   int _keyIndex = 0;
   bool _needRefresh = false;
@@ -55,7 +57,7 @@ class _MapPageState extends State<MapPage>
   Widget build(BuildContext context) {
     super.build(context);
 
-    //MapViewModel mapViewModel = context.watch<MapViewModel?>()!;
+    final dgisController = ref.watch(dgisControllerProvider.notifier);
 
     return DgisMap(
       key: ValueKey(_keyIndex),
@@ -72,7 +74,7 @@ class _MapPageState extends State<MapPage>
             bearing: 0,
           ),
         );
-        //await mapViewModel.initialize(controller);
+        dgisController.onMapCreated(controller);
       },
     );
   }
