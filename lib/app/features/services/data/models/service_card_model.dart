@@ -10,6 +10,8 @@ class ServiceCardModel extends ServiceCardEntity {
       required super.rate,
       required super.duration,
       super.fees,
+      super.feesName,
+      super.feesLink,
       super.type,
       super.requirements,
       super.flow});
@@ -20,13 +22,15 @@ class ServiceCardModel extends ServiceCardEntity {
       title: json['title'] as String,
       iconName: json['iconName'] as String,
       fees: json['fees'],
+      feesName: json['feesName'],
+      feesLink: json['feesLink'],
       type: json["type"],
       description: json['description'] as String,
       rate: json['rate'] as num,
       requirements: json["requirements"] != null
           ? List<String>.from(json["requirements"]).map((e) => e).toList()
           : null,
-      duration: json['duration'] as int,
+      duration: json['duration'],
       flow: json["flow"] != null
           ? List<dynamic>.from(json["flow"])
               .map((e) => ServiceCardFlow.fromMap(e))

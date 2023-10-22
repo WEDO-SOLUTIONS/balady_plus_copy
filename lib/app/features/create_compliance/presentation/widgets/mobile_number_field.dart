@@ -24,6 +24,7 @@ class _MobileNumberFieldState extends State<MobileNumberField> {
       builder: (context, state) {
         return TextWithCheckBtn(
           controller: controller,
+          maxLength: 10,
           backgroundColor: Colors.transparent,
           validate: (String? t) {},
           isValidate: state.contactMobileVerified ?? false,

@@ -228,7 +228,6 @@ class LocationInfoSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print("MOOOODEL ${municipality}");
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
@@ -287,7 +286,7 @@ class HealthCentersSection extends StatelessWidget {
                     searchHint: Helpers.translatingWord('city_select'),
                     onSelect: (DropDownItem item) async {
                       bool isSuccess = await model.getCenters(item.id ?? "");
-                      print("is success ${isSuccess}");
+
                       if (isSuccess) {
                         model.dataModel.selectedHealthCentres = null;
                         model.dataModel.selectedCity = ListItem(

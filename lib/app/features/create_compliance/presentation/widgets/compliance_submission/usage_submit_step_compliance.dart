@@ -69,7 +69,7 @@ class UsageSubmissionCompliance extends StatelessWidget {
                           context.read<ComplianceBloc>().add(
                                 GetSubUsagesEvent(item: item),
                               );
-                          print(item);
+
                           Navigator.pop(context);
                         },
                       ),

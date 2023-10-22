@@ -70,7 +70,6 @@ class CurrentWeatherContent extends StatelessWidget {
               if (state.showLocationError ?? false)
                 UnKownWeatherLocation(
                   onTap: () {
-                    print("tab");
                     context.read<WeatherBloc>().add(GetWeatherForLocation());
                   },
                 ),

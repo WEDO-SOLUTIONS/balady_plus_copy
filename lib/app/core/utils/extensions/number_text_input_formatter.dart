@@ -8,7 +8,6 @@ class NumberTextInputFormatter extends TextInputFormatter {
   @override
   TextEditingValue formatEditUpdate(
       TextEditingValue oldValue, TextEditingValue newValue) {
-    print(newValue);
     bool match = RegExp(r'[0-9]').hasMatch(newValue.text);
     onError(match);
     return newValue.copyWith(

@@ -14,7 +14,7 @@ class ComplianceCertificateItemsRequest {
 
 class ComplianceCertificateItem extends Equatable {
   final bool? itemAnswer;
-  final int? itemId;
+  final String? itemId;
 
   const ComplianceCertificateItem({this.itemAnswer, this.itemId});
 

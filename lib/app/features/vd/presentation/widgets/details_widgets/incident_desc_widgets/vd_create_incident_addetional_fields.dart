@@ -98,12 +98,10 @@ class _DropDownListAddetionalFieldState
   void initState() {
     super.initState();
     setCurrentItem();
-    print("initState");
   }
 
   @override
   Widget build(BuildContext context) {
-    print(currentItem?.id);
     return CustomTapWidgetForLongDialog(
       items: getDropDownItems(),
       value: currentItem,
@@ -312,7 +310,6 @@ class _HijriCalendarAddetionalFieldState
             value: selectedDate),
         selectedTextStyle: const TextStyle(color: AppColor.baladyDarkGreen2),
         onConfirm: (hijri_picker.Picker picker, List value) {
-          //print((picker.adapter as HijriPicker.DateTimePickerAdapter).value);
           var date =
               (picker.adapter as hijri_picker.DateTimePickerAdapter).value;
           setState(() {
@@ -410,9 +407,7 @@ class _GorgianCalendarAddetionalFieldState
             customColumnType: CommonFunctions.isAppAR ? [2, 1, 0] : [0, 1, 2],
             value: selectedDate),
         selectedTextStyle: const TextStyle(color: AppColor.baladyDarkGreen2),
-        onCancel: () {
-          //print("Cancell");
-        },
+        onCancel: () {},
         cancelText: ('choose_date').tr(),
         cancelTextStyle: const TextStyle(
           color: AppColor.black,
@@ -421,9 +416,7 @@ class _GorgianCalendarAddetionalFieldState
           fontSize: 15.0,
         ),
         onConfirm: (Picker picker, List value) {
-          //print((picker.adapter as GorgianPicker.DateTimePickerAdapter).value);
           var date = (picker.adapter as DateTimePickerAdapter).value;
-          print(date);
           final DateFormat formatter = DateFormat('yyyy/MM/dd');
           if (date != null) currentValue = formatter.format(date);
 

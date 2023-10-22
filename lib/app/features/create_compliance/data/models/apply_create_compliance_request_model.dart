@@ -10,9 +10,15 @@ class ApplyCreateComplianceRequest extends Equatable {
   String? ownershipDocumentDate;
   String? ownershipDocumentNo;
   int? ownershipDocumentType;
+
   String? ownerIdentity;
   String? ownerIdentityType;
   String? submitterType;
+
+  int? receiptTypeId;
+  bool? paper;
+  String? agencyRequestKey;
+
   ApplyCreateComplianceRequest(
       {this.certificateType,
       this.contactMobile,
@@ -23,31 +29,45 @@ class ApplyCreateComplianceRequest extends Equatable {
       this.ownershipDocumentType,
       this.submitterType,
       this.ownerIdentityType,
-      this.ownerIdentity});
+      this.ownerIdentity,
+      this.receiptTypeId,
+      this.paper,
+      this.agencyRequestKey});
 
   Map<String, dynamic> toMap() {
     return {
+      if (agencyRequestKey != null) "agencyRequestId": agencyRequestKey, //GUID
       "certificateType": certificateType,
       "contactMobile": contactMobile,
       if (licenseNumber != null) "licenseNumber": licenseNumber,
       "submitterThrough": submitterThrough,
-      "submitterType": CommonProperties.selectedDelegator != null
-          ? CommonProperties.selectedDelegator?.getRole()
-          : "HIMSELF",
-      "ownerIdentityType":
-          CommonProperties.selectedDelegator != null ? "CR" : null,
-      "ownerIdentity": CommonProperties.selectedDelegator?.crNumber,
+
+      "submitterType":
+          CommonProperties.getCurrentUserProfile()?.getRole() != null
+              ? CommonProperties.getCurrentUserProfile()?.getRole()
+              : "HIMSELF",
+      //"ownerIdentityType":
+      //    CommonProperties.selectedDelegator != null ? "CR" : null,
+      //  "ownerIdentity": CommonProperties.selectedDelegator?.crNumber,
+
+      if (CommonProperties.selectedDelegator != null)
+        "ownerIdentityType": CommonProperties.getCurrentUserProfile() != null
+            ? CommonProperties.getCurrentUserProfile()!.type
+            : null,
+      if (CommonProperties.selectedDelegator != null)
+        "ownerIdentity": CommonProperties.getCurrentUserProfile()?.id,
       if (ownershipDocumentType != null)
         "ownershipDocInfoDto": {
           "ownershipDocumentDate": ownershipDocumentDate,
           "ownershipDocumentNo": ownershipDocumentNo,
-          "ownershipDocumentType": ownershipDocumentType
-        }
+          "ownershipDocumentType": ownershipDocumentType,
+          if (receiptTypeId != null) "receiptTypeId": receiptTypeId,
+          if (paper != null) "paper": paper
+        },
     };
   }
 
   @override
-  // TODO: implement props
   List<Object?> get props => [
         certificateType,
         contactMobile,
@@ -58,6 +78,8 @@ class ApplyCreateComplianceRequest extends Equatable {
         ownershipDocumentType,
         submitterType,
         ownerIdentityType,
-        ownerIdentity
+        ownerIdentity,
+        paper,
+        receiptTypeId
       ];
 }

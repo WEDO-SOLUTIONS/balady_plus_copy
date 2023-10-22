@@ -4,8 +4,10 @@ import 'dart:typed_data';
 import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports.dart';
 import 'package:balady_plus/app/features/create_compliance/data/models/compliance_engoffice_details_model.dart';
 import 'package:balady_plus/app/features/create_compliance/data/models/complinace_engoffice_response_model.dart';
+import 'package:balady_plus/app/features/create_compliance/data/models/land_subsidy_contract_model.dart';
 import 'package:balady_plus/app/features/create_compliance/data/models/ownership_doc_type_response_model.dart';
 import 'package:balady_plus/app/features/create_compliance/domain/entities/compliance_attachment_request.dart';
+import 'package:balady_plus/app/features/create_compliance/domain/entities/land_subsidy_contract_request.dart';
 import 'package:balady_plus/app/features/create_compliance/domain/entities/verify_otp_request.dart';
 import 'package:dio/dio.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
@@ -23,12 +25,14 @@ import '../../../../core/utils/constants/apis/api_info.dart';
 import '../../../transaction_inquiry/customer_voice_exports.dart';
 import '../../../vd/data/model/create_incident/create_incident_response_model.dart';
 import '../../../vd/domain/entities/gis/gis_params.dart';
+import '../../domain/entities/compliance_deed_info_request.dart';
 import '../../domain/entities/ownership_doc_type_response.dart';
 import '../../domain/entities/send_otp_response.dart';
 import '../models/apply_create_compliance_request_model.dart';
 import '../models/apply_create_compliance_response_model.dart';
 import '../models/comliance_request_details_model.dart';
 import '../models/compliance_certificate_items_request.dart';
+import '../models/compliance_deed_info_model.dart';
 import '../models/compliance_gis_resopnseـmodel.dart';
 import '../models/complinace_licenses_response_model.dart';
 import '../models/save_contract_info_request.dart';
@@ -55,7 +59,7 @@ abstract class CreateComplianceRemoteDataSource {
     ComplianceCertificateItemsRequest params,
   );
 
-  Future<String> submitRequest(
+  Future<(String, bool?)> submitRequest(
     String params,
   );
 
@@ -81,6 +85,12 @@ abstract class CreateComplianceRemoteDataSource {
   Future<Uint8List?> downLoadCertificate({required String params});
   Future<bool?> deleteComplianceRequwst({required String params});
   Future<String?> getEtmamId({required String params});
+
+  Future<ComplinaceLookUpResponseModel> getReciptTypes();
+
+  Future<ComplianceDeedInfoModel> getDeedInfo(ComplianceDeedInfoRequest params);
+  Future<LandSubsidyContractModel> getLandContract(
+      LandSubsidyContractRequest params);
 }
 
 class CreateComplianceRemoteDataSourceImpl
@@ -93,7 +103,6 @@ class CreateComplianceRemoteDataSourceImpl
   Future<ApplyCreateComplianceResponseModel> applyCreateCompliance(
       ApplyCreateComplianceRequest params) async {
     var response;
-
     try {
       response = await webService.dio.post(
         ApiUrl.applyBeneficiaryCompliance,
@@ -105,7 +114,6 @@ class CreateComplianceRemoteDataSourceImpl
       return ApplyCreateComplianceResponseModel(
           result: ResponseBodyModel.fromMap(data).data?.result);
     } on DioError catch (error) {
-      print(error);
       var errorCode;
       try {
         final decodedResponse =
@@ -122,7 +130,6 @@ class CreateComplianceRemoteDataSourceImpl
         dioError: error,
       );
     } catch (ex) {
-      print(ex);
       if (ex is ServerException)
         throw ex;
       else {
@@ -311,7 +318,7 @@ class CreateComplianceRemoteDataSourceImpl
   }
 
   @override
-  Future<String> submitRequest(String params) async {
+  Future<(String, bool?)> submitRequest(String params) async {
     var response;
 
     try {
@@ -322,7 +329,7 @@ class CreateComplianceRemoteDataSourceImpl
 
       final result = ResponseBodyModel.fromMap(data).data?.result;
 
-      return result["message"];
+      return (result["message"] as String, result["isPrintable"] as bool?);
     } on DioError catch (error) {
       var errorCode;
       try {
@@ -398,14 +405,18 @@ class CreateComplianceRemoteDataSourceImpl
     String url = ApiUrl.complianceMyLicenses(
         id: CommonProperties.userInfo?.idNo ?? "", type: "HIMSELF");
 
-    if (CommonProperties.selectedDelegator != null) {
+    if (CommonProperties.getCurrentUserProfile() != null) {
       url = ApiUrl.complianceMyLicenses(
-          id: CommonProperties.selectedDelegator?.crNumber ?? "",
-          type: CommonProperties.selectedDelegator?.getRole() ?? "");
+          id: CommonProperties.getCurrentUserProfile()?.id ?? "",
+          type: CommonProperties.getCurrentUserProfile()?.getRole() ?? "");
     }
 
     try {
-      response = await webService.dio.get(url);
+      response = await webService.dio.get(url,
+          options: Options(
+              headers: (CommonProperties.selectedDelegator != null)
+                  ? {"x-owner-type": CommonProperties.selectedDelegator?.crType}
+                  : {}));
 
       final data = response.data;
 
@@ -650,8 +661,6 @@ class CreateComplianceRemoteDataSourceImpl
       {required ComplinaceAttachmentRequest params}) async {
     final mimeType = lookupMimeType(params.attahment.filePath ?? "");
 
-    print(
-        "Upload File ${ApiUrl.complianceAttachment(params.requestId.toString(), params.attahment.id)}");
     final body = await locator<web.WebService>().uploadFileSSO(
       ApiUrl.complianceAttachment(
           params.requestId.toString(), params.attahment.id),
@@ -668,15 +677,18 @@ class CreateComplianceRemoteDataSourceImpl
       if (state == true) {
         return true;
       } else {
+        ResponseBodyModel? r =
+            data != null ? ResponseBodyModel.fromMap(json.decode(data)) : null;
+        String error = r?.data?.responseMessage ?? "errors_server_error_2".tr();
         throw ServerException(
-          "errors_server_error_2".tr(),
+          error,
           exception: APIException(
             errorMessage: data,
           ),
         );
       }
     } catch (ex) {
-      print(ex);
+      if (ex is ServerException) rethrow;
       try {
         Helpers.sendLog(
             url: ApiUrl.complianceAttachment(
@@ -704,7 +716,8 @@ class CreateComplianceRemoteDataSourceImpl
         options: Options(headers: {
           ApiHeaders.xFeappId: CommonProperties.appName,
           ApiHeaders.xCorrelationId: CommonFunctions.generateGUID(),
-          "x-sso-session-id": EtmamCommonProperties.CommonProperties.sessionId,
+          ApiHeaders.xSessionId:
+              EtmamCommonProperties.CommonProperties.sessionId,
           "x-fe-deployment-id":
               EtmamCommonProperties.CommonProperties.appVersion,
           "Accept-Language": "ar",
@@ -756,7 +769,7 @@ class CreateComplianceRemoteDataSourceImpl
           options: Options(headers: {
             ApiHeaders.xFeappId: CommonProperties.appName,
             ApiHeaders.xCorrelationId: CommonFunctions.generateGUID(),
-            "x-sso-session-id":
+            ApiHeaders.xSessionId:
                 EtmamCommonProperties.CommonProperties.sessionId,
             "x-fe-deployment-id":
                 EtmamCommonProperties.CommonProperties.appVersion,
@@ -810,15 +823,10 @@ class CreateComplianceRemoteDataSourceImpl
     String error =
         body['error'] ?? Helpers.translatingWord("errors_server_error_1");
     String? contentType = body['Content-Type'];
-    print("COOOOO");
-    print(contentType);
-    print(state);
-    print(body);
-    //  print(data);
+
     try {
       if (state) result = data;
 
-      // print(result);
       if (!state) {
         //   error = result.data?.responseMessage ?? error;
 
@@ -829,9 +837,7 @@ class CreateComplianceRemoteDataSourceImpl
               errorMsg: body.toString() ?? "");
         } catch (ex) {}
       }
-    } catch (ex) {
-      print(ex);
-    }
+    } catch (ex) {}
     return Future.value(result);
   }
 
@@ -897,6 +903,131 @@ class CreateComplianceRemoteDataSourceImpl
       final result = ResponseBodyModel.fromMap(data).data?.result;
 
       return result["entities"]["service"]["profiles"]["1130"]["internalId"];
+    } on DioError catch (error) {
+      var errorCode;
+      try {
+        final decodedResponse = ResponseBodyModel.fromMap(
+          error.response?.data,
+        );
+        errorCode = decodedResponse.data?.responseCode;
+      } catch (ex) {}
+
+      throw ServerException(
+        error.toString(),
+        errorCode: errorCode,
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
+    } catch (ex) {
+      if (ex is ServerException)
+        throw ex;
+      else {
+        try {} catch (ex) {}
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
+      }
+    }
+  }
+
+  @override
+  Future<ComplinaceLookUpResponseModel> getReciptTypes() async {
+    var response;
+
+    try {
+      response = await webService.dio.get(ApiUrl.complianceReciptTypes);
+
+      final data = response.data;
+
+      final result = ResponseBodyModel.fromMap(data).data?.result;
+      return ComplinaceLookUpResponseModel.fromJson(result);
+    } on DioError catch (error) {
+      var errorCode;
+      try {
+        final decodedResponse = ResponseBodyModel.fromMap(
+          error.response?.data,
+        );
+        errorCode = decodedResponse.data?.responseCode;
+      } catch (ex) {}
+
+      throw ServerException(
+        error.toString(),
+        errorCode: errorCode,
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
+    } catch (ex) {
+      if (ex is ServerException)
+        throw ex;
+      else {
+        try {} catch (ex) {}
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
+      }
+    }
+  }
+
+  @override
+  Future<ComplianceDeedInfoModel> getDeedInfo(
+      ComplianceDeedInfoRequest params) async {
+    var response;
+
+    try {
+      response = await webService.dio
+          .get(ApiUrl.complianceDeedInfo, queryParameters: params.toMap());
+
+      final data = response.data;
+
+      final result = ResponseBodyModel.fromMap(data).data?.result;
+
+      return ComplianceDeedInfoModel.fromJson(result);
+    } on DioError catch (error) {
+      var errorCode;
+      try {
+        final decodedResponse = ResponseBodyModel.fromMap(
+          error.response?.data,
+        );
+        errorCode = decodedResponse.data?.responseCode;
+      } catch (ex) {}
+
+      throw ServerException(
+        error.toString(),
+        errorCode: errorCode,
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
+    } catch (ex) {
+      if (ex is ServerException)
+        throw ex;
+      else {
+        try {} catch (ex) {}
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
+      }
+    }
+  }
+
+  @override
+  Future<LandSubsidyContractModel> getLandContract(
+      LandSubsidyContractRequest params) async {
+    var response;
+
+    try {
+      response = await webService.dio.get(ApiUrl.complianceLandContract,
+          queryParameters: {if (params.id != null) "id_number": params.id});
+
+      final data = response.data;
+
+      final result = ResponseBodyModel.fromMap(data).data?.result;
+      return LandSubsidyContractModel.fromJson(result);
     } on DioError catch (error) {
       var errorCode;
       try {

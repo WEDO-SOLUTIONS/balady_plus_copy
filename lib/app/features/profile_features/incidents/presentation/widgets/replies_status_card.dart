@@ -203,7 +203,6 @@ class _ReplyRetriveCarDialogState extends State<ReplyRetriveCarDialog> {
           CommonFunctions.showError(state.errorMessage ?? "");
         }
         if (state.status == BlocStatus.success1) {
-          print("HEREEE POP");
           NavigationService.navigatorKey.currentState?.pop();
 
           widget.onComplete();

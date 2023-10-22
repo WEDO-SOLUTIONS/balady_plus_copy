@@ -13,8 +13,6 @@ class ObjectionsNextButtons extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<CreateObjectionBloc, CreateObjectionState>(
       builder: (context, state) {
-        print(state);
-
         bool isButtonDisabled = false;
         bool isLastPage = context.read<CreateObjectionBloc>().isLastPage();
         return Container(

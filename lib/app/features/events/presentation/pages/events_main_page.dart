@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
+import '../../../../core/utils/app_analytics_events.dart';
 import '../../../_shared_feature_/presentation/components/bottom_sheets/bottom_sheet_with_actions.dart';
 import '../../../_shared_feature_/presentation/icons/filter_icon.dart';
 import '../../../profile_features/violations/presentation/widgets/violations_filters_actions.dart';
@@ -17,8 +18,20 @@ import '../bloc/events_event.dart';
 import '../bloc/events_state.dart';
 import '../widgets/events_main_page_widgets/events_filters_actions.dart';
 
-class EventsMainPage extends StatelessWidget {
+class EventsMainPage extends StatefulWidget {
   const EventsMainPage({super.key});
+
+  @override
+  State<EventsMainPage> createState() => _EventsMainPageState();
+}
+
+class _EventsMainPageState extends State<EventsMainPage> {
+  @override
+  void initState() {
+    super.initState();
+
+    CommonFunctions.sendEventToAnalytics(AppEvents.events);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -62,7 +75,7 @@ class EventsMainPage extends StatelessWidget {
                           ),
                         ),
                       );
-                      print("key word ${params?.keyword}");
+
                       if (context.mounted) {
                         context
                             .read<EventsBloc>()

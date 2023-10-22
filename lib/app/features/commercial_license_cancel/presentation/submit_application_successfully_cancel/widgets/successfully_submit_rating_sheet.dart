@@ -1,22 +1,28 @@
+import 'package:balady_plus/app/core/dependency_injection/injection_container.dart';
 import 'package:balady_plus/app/core/services/local/helpers.dart';
-import 'package:balady_plus/app/core/services/local/navigation_services.dart';
 import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:balady_plus/app/core/utils/constants/app_style.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
 import 'package:balady_plus/app/core/utils/constants/route_names.dart';
-import 'package:balady_plus/app/features/_shared_feature_/presentation/components/bottom_sheets/bottom_sheet_with_actions.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports.dart';
+import 'package:balady_plus/app/features/commercial_license_cancel/presentation/submit_application_successfully_cancel/mvvm/submit_rating_view_model.dart';
 import 'package:balady_plus/app/features/home_page/presentation/widgets/home_app_bar/circle_icon.dart';
+import 'package:balady_plus/app/features/request_commercial_license_details/data/data_sources/remote_data_source.dart';
+import 'package:balady_plus/app/features/request_commercial_license_details/data/repositories/repository_implementation.dart';
+import 'package:balady_plus/app/features/request_commercial_license_details/domain/use_cases/get_request_commercial_license_details.dart';
+import 'package:balady_plus/app/features/request_commercial_license_details/presentation/bloc/request_commercial_license_details_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
+import 'package:provider/provider.dart';
 
 class SuccessfullySubmitRatingSheet extends StatelessWidget {
   const SuccessfullySubmitRatingSheet({super.key});
 
   @override
   Widget build(BuildContext context) {
+    SubmitRatingViewModel provider = context.watch<SubmitRatingViewModel>();
     return Padding(
       padding: const EdgeInsets.all(22.0),
       child: Column(
@@ -60,13 +66,30 @@ class SuccessfullySubmitRatingSheet extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           ElevatedButtonWidget.primaryCustom(
-            text: 'return_home_page'.tr(),
+            text: 'return_order_details'.tr(),
             onPressed: () {
               // go to home Page
               // bool Function(Route<dynamic>) predicate =
               // ModalRoute.withName(RouteName.bottomNavigation);
               // NavigationService.navigatorKey.currentState!.popUntil((predicate));
-              Helpers.backNavigationToHomeScreen();
+              // Helpers.backNavigationToHomeScreen();
+              Navigator.of(context).pop();
+              Navigator.pushReplacementNamed(
+                context,
+                RouteName.requestCommercialLicenseDetails,
+                arguments: RequestCommercialLicenseDetailsCubit(
+                  GetRequestCommercialLicenseDetails(
+                    repository:
+                        RequestCommercialLicenseDetailsRepositoryImplementation(
+                      remoteDataSource:
+                          RequestCommercialLicenseDetailsRemoteDataSourceImplementation(
+                        webService: sl(),
+                      ),
+                    ),
+                  ),
+                  provider.submitResponse.requestId,
+                ),
+              );
             },
           ),
           const SizedBox(height: 22),

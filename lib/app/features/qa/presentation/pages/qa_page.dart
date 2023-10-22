@@ -14,6 +14,7 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../_shared_feature_/presentation/under_testing/custom_enhanced_expansion_panel_widget.dart';
 import '../../../_shared_feature_/presentation/widgets/search_text_field_widget.dart';
+import '../../../create_compliance/presentation/pdf/home/home.dart';
 import '../blocs/qa_bloc.dart';
 import '../widgets/qa_ask_more.dart';
 import '../widgets/qa_page_header.dart';
@@ -113,9 +114,17 @@ class _QAPageState extends State<QAPage> {
                                                   recognizer:
                                                       TapGestureRecognizer()
                                                         ..onTap = () {
-                                                          CommonFunctions
+                                                          Navigator.push(
+                                                            context,
+                                                            MaterialPageRoute(
+                                                              builder: (context) =>
+                                                                  const CompliancePDFHomePage(),
+                                                            ),
+                                                          );
+
+                                                          /*   CommonFunctions
                                                               .externalLaunch(
-                                                                  "https://momrah.gov.sa/sites/default/files/2023-03/dlyl-ajraat-shhadt-amtthal-almbany000.pdf");
+                                                                  "https://momrah.gov.sa/sites/default/files/2023-03/dlyl-ajraat-shhadt-amtthal-almbany000.pdf");*/
                                                         },
                                                 ),
                                                 TextSpan(text: '.'),

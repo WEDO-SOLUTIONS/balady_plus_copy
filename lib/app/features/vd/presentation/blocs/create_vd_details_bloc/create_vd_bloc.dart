@@ -201,7 +201,6 @@ class CreateVDBloc extends Bloc<CreateVDEvent, CreateVDState> {
   Future<void> _changeAgreementHandler(
       ChangeAgreementEvent e, Emitter emitter) async {
     hideKeyboard();
-    //print(e.isagree);
     emitter(state.copyWith(agreement: e.isagree, errorMessage: ""));
   }
 
@@ -367,7 +366,6 @@ class CreateVDBloc extends Bloc<CreateVDEvent, CreateVDState> {
       CreateIncidentUnRegisteredEvent e, Emitter emitter) async {
     hideKeyboard();
     emitter(state.copyWith(status: BlocStatus.loading));
-    //print("refrences11111 ${state.otpResponse?.referenceId}");
     CreateIncidentParams params = e.params ??
         CreateIncidentParams(
           firstName: state.firstName,
@@ -434,7 +432,6 @@ class CreateVDBloc extends Bloc<CreateVDEvent, CreateVDState> {
         ));
       }
     }, (success) {
-      //print(success);
       bool Function(Route<dynamic>) predicate =
           ModalRoute.withName(RouteName.bottomNavigation);
       NavigationService.navigatorKey.currentState!.pushNamedAndRemoveUntil(
@@ -471,8 +468,6 @@ class CreateVDBloc extends Bloc<CreateVDEvent, CreateVDState> {
           errorMessage: (failure as ServerFailure).errorMessage,
           selectedSPLIndex: -1));
     }, (success) {
-      //print("succcss");
-      //print(success);
       success.selectedSPLID = e.params.splID;
       emitter(state.copyWith(
         status: BlocStatus.success,
@@ -502,14 +497,12 @@ class CreateVDBloc extends Bloc<CreateVDEvent, CreateVDState> {
     final failureOrSuccess = await _checkCR(state.crNumber ?? "");
 
     failureOrSuccess.fold((failure) {
-      //print(failure);
       emitter(state.copyWith(
         status: BlocStatus.failure,
         errorMessage: (failure as ServerFailure).errorMessage,
         isCrValid: false,
       ));
     }, (success) {
-      //print("succcss");
       emitter(state.copyWith(
         status: success == false ? BlocStatus.failure : BlocStatus.success,
         isCrValid: success ?? false,
@@ -544,7 +537,6 @@ class CreateVDBloc extends Bloc<CreateVDEvent, CreateVDState> {
   }
 
   Future<void> _getOTPHandler(GetOTPEvent e, Emitter emitter) async {
-    //print("GetOTPEvent");
     emitter(state.copyWith(status: BlocStatus.loading));
 
     final failureOrSuccess = await _getOTP(e.params);
@@ -555,7 +547,6 @@ class CreateVDBloc extends Bloc<CreateVDEvent, CreateVDState> {
         errorMessage: (failure as ServerFailure).errorMessage,
       ));
     }, (success) {
-      //print("refrences11111 ${success.referenceId}");
       emitter(state.copyWith(
         status: BlocStatus.success,
         otpResponse: success,
@@ -604,8 +595,6 @@ class CreateVDBloc extends Bloc<CreateVDEvent, CreateVDState> {
 
   Future<void> _goToNextPageHandler(
       GoToNextPageEvent e, Emitter emitter) async {
-    ////print("next page");
-    //print("DataLog ${state}");
     if (isLastPage()) {
     } else {
       if (state.status == BlocStatus.performing) return;
@@ -708,7 +697,6 @@ class CreateVDBloc extends Bloc<CreateVDEvent, CreateVDState> {
   }
 
   Future<bool> _getVDSplListHandler(GetSplListEvent e, Emitter emitter) async {
-    // //print("_getVDSplListHandler");
     if (state.status == BlocStatus.loading) return false;
     if (state.splResponse?.items?.isEmpty ?? true) {
       emitter(state.copyWith(status: BlocStatus.loading));

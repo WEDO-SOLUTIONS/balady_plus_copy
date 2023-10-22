@@ -7,6 +7,7 @@ class SuccessScreenArgs {
   bool? fromHomePage;
   String? municipilaty;
   String? thanksMessage;
+  bool? isFawry;
 
   SuccessScreenArgs(
       {this.idNumber,
@@ -14,5 +15,6 @@ class SuccessScreenArgs {
       this.municipilaty,
       required this.type,
       this.thanksMessage,
+      this.isFawry = false,
       this.fromHomePage = false});
 }

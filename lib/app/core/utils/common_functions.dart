@@ -10,7 +10,7 @@ import 'package:bot_toast/bot_toast.dart';
 import 'package:crypto/crypto.dart';
 import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart' show PlatformFile;
-import 'package:firebase_analytics/firebase_analytics.dart';
+// import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter_bloc/flutter_bloc.dart' show EventTransformer;
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -33,6 +33,7 @@ import 'package:uuid/uuid.dart';
 import '../../features/_shared_feature_/data/entities/file_data_item.dart';
 import '../../features/_shared_feature_/presentation/dialogs/upload_file_dialog.dart';
 import '../../features/entry_point/domain/use_cases/get_cookie.dart';
+import '../../features/profile_features/delegators/domain/entities/user_profile_entity.dart';
 import '../../features/vd/domain/entities/gis/gis_params.dart';
 import '../../features/vd/domain/entities/gis/gis_response.dart';
 import './utils_exports.dart'
@@ -61,12 +62,13 @@ import '../../features/entry_point/domain/entities/sso_user_info.dart'
 import '../../features/entry_point/domain/entities/sso_user_info.dart';
 import '../../features/entry_point/presentation/cubit/auth_cubit.dart';
 import '../../features/profile_features/delegators/delegators_exports.dart'
-    show DelegatorEntity;
+    show AgentEntity, DelegatorEntity;
 import '../dependency_injection/dependency_injection_exports.dart' show sl;
 import '../services/services_exports.dart'
     show AppInterceptors, EntryPointBridge, NavigationService, NoParams;
+import 'enums/enums.dart';
 
-FirebaseAnalytics fbAnalytics = FirebaseAnalytics.instance;
+// FirebaseAnalytics fbAnalytics = FirebaseAnalytics.instance;
 
 var carPlateLettersList = [
   "أ",
@@ -166,7 +168,7 @@ class CommonFunctions {
 
   static void sendEventToAnalytics(String event) {
     try {
-      fbAnalytics.logEvent(name: event);
+      // fbAnalytics.logEvent(name: event);
     } catch (ex) {}
   }
 
@@ -247,9 +249,7 @@ class CommonFunctions {
       dayName = DateFormat('EEEE', CommonFunctions.isAppAR ? 'ar_SA' : 'en_US')
           .format(tempDate)
           .toString();
-    } catch (e) {
-      //print(e);
-    }
+    } catch (e) {}
     return dayName;
   }
 
@@ -262,9 +262,7 @@ class CommonFunctions {
           DateFormat('dd', CommonFunctions.isAppAR ? 'ar_SA' : 'en_US')
               .format(tempDate)
               .toString();
-    } catch (e) {
-      //print(e);
-    }
+    } catch (e) {}
     return replaceArabicNumberWithEnglish(formattedDate);
   }
 
@@ -277,9 +275,7 @@ class CommonFunctions {
           DateFormat('MMMM', CommonFunctions.isAppAR ? 'ar_SA' : 'en_US')
               .format(tempDate)
               .toString();
-    } catch (e) {
-      //print(e);
-    }
+    } catch (e) {}
     return monthName;
   }
 
@@ -290,9 +286,7 @@ class CommonFunctions {
       DateTime tempDate = DateFormat("yyyy/MM/dd").parse(bidEndDate);
       final date = DateTime.now();
       difference = tempDate.difference(date).inDays;
-    } catch (e) {
-      //print(e);
-    }
+    } catch (e) {}
     return difference;
   }
 
@@ -454,8 +448,7 @@ class CommonFunctions {
       String v1UUID = CommonProperties.uuidInstance.v1();
       String v5UUID =
           CommonProperties.uuidInstance.v5(v1UUID, CommonProperties.deviceId);
-      //print("v5UUID");
-      //print(v5UUID);
+
       if (v5UUID.isNotEmpty)
         return v5UUID.replaceAll("-", "");
       else if (v1UUID.isNotEmpty)
@@ -463,8 +456,6 @@ class CommonFunctions {
       else
         return DateTime.now().millisecondsSinceEpoch.toString();
     } catch (ex) {
-      //print("EXXXXXX GUId");
-      //print(ex);
       return DateTime.now().millisecondsSinceEpoch.toString();
     }
   }
@@ -650,9 +641,7 @@ class CommonFunctions {
                 fontSize: 16.0),
             hideCloseButton: true,
             duration: const Duration(seconds: 3));
-      } catch (ex) {
-        print(ex);
-      }
+      } catch (ex) {}
     }
   }
 
@@ -684,9 +673,7 @@ class CommonFunctions {
                 fontSize: 16.0),
             hideCloseButton: true,
             duration: const Duration(seconds: 3));
-      } catch (ex) {
-        //print(ex);
-      }
+      } catch (ex) {}
     }
   }
 
@@ -694,7 +681,7 @@ class CommonFunctions {
     ServiceStatus serviceStatus = await Permission.location.serviceStatus;
     if (serviceStatus != ServiceStatus.disabled) {
       var status = await Permission.location.request();
-      //print(status);
+
       if (status == PermissionStatus.permanentlyDenied) {
         showDialog(
             context: context,
@@ -846,9 +833,7 @@ class CommonFunctions {
         time = time.replaceAll("ص", ("am").tr()).replaceAll("م", ("pm").tr());
       }
       formattedTime = time;
-    } catch (ex) {
-      //print(ex);
-    }
+    } catch (ex) {}
     return replaceArabicNumberWithEnglish(formattedTime);
   }
 
@@ -860,9 +845,7 @@ class CommonFunctions {
       formattedDate = DateFormat.yMMMMd(isAppAR ? 'ar_SA' : 'en_US')
           .format(tempDate)
           .toString();
-    } catch (e) {
-      //print(e);
-    }
+    } catch (e) {}
     return replaceArabicNumberWithEnglish(formattedDate);
   }
 
@@ -954,9 +937,7 @@ class CommonFunctions {
       Sentry.captureEvent(event, withScope: (p) {
         //  p.addAttachment(attachment)
       });
-    } catch (ex) {
-      //print(ex);
-    }
+    } catch (ex) {}
   }
 
   static sendUrbiMapLogs() async {
@@ -991,15 +972,9 @@ class CommonFunctions {
             p0.addAttachment(SentryAttachment.fromUint8List(
                 dGisFiles[i].readAsBytesSync(), dGisFiles[i].path ?? ""));
           },
-        ).then((value) {
-          //print("event sent $value");
-        });
+        ).then((value) {});
       }
-
-      //print("File File  ${dGisFiles.firstOrNull?.path}");
-    } catch (ex) {
-      //print(ex);
-    }
+    } catch (ex) {}
   }
 }
 
@@ -1026,6 +1001,31 @@ class CommonProperties {
   static SsoUserInfo? get userInfo => sl<EntryPointCubit>().state.userInfo;
   static DelegatorEntity? get selectedDelegator =>
       sl<EntryPointCubit>().state.selectedDelegator;
+
+  static AgentEntity? get selectedAgent =>
+      sl<EntryPointCubit>().state.selectedAgent;
+
+  static UserProfileEntity? getCurrentUserProfile() {
+    if (selectedDelegator != null) {
+      return UserProfileEntity(
+          id: selectedDelegator?.crNumber,
+          type: selectedDelegator?.crType,
+          profileType: UserProfileType.Delegator,
+          roleId: selectedDelegator?.roleId,
+          roleName: selectedDelegator?.roleName,
+          name: selectedDelegator?.entityName);
+    } else if (selectedAgent != null) {
+      return UserProfileEntity(
+          id: selectedAgent?.requestId,
+          type: selectedAgent?.grantorTypeId,
+          profileType: UserProfileType.Agent,
+          agencyRequestKey: selectedAgent?.requestId,
+          roleName: selectedAgent?.agencyTypeName,
+          name: selectedAgent?.grantorName);
+    }
+    return null;
+  }
+
   static bool get isLoggedIn => sl<EntryPointCubit>().state.token != null;
   static GISParams? get userLocation => sl<LocationCubit>().state.gisParams;
   static GISResponse? get userLocationGIS =>

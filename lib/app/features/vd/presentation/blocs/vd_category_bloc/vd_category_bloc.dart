@@ -75,14 +75,11 @@ class VDCategoryBloc extends Bloc<VDCategoryEvent, VDCategoryState> {
     final failureOrSuccess = await _getCategories(e.params);
 
     failureOrSuccess.fold((failure) {
-      print("failure $failure");
-
       emitter(state.copyWith(
         vdCategorystatus: BlocStatus.failure,
         errorMessage: (failure as ServerFailure).errorMessage,
       ));
     }, (success) {
-      print("Succcessss ${success.items}");
       emitter(state.copyWith(
         vdCategorystatus: BlocStatus.success,
         //   categories: success.data?.result,

@@ -174,7 +174,6 @@ class MapLayerCard extends StatelessWidget {
           return ValueListenableBuilder<DivisionalChartBoundaries?>(
             valueListenable: mapViewModel.selectedLands,
             builder: (_, selectedPoint, __) {
-              print("Selecteeeed point ${selectedPoint}");
               return selectedPoint == null
                   ? const SizedBox()
                   : LandMapCard(

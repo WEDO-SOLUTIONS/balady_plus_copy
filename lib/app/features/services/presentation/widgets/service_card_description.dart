@@ -1,4 +1,5 @@
 import 'package:balady_plus/app/core/utils/enums/enums.dart';
+import 'package:balady_plus/app/features/services/presentation/widgets/service_cards/service_card_author_info_widget.dart';
 import 'package:balady_plus/app/features/services/presentation/widgets/service_cards/service_card_desc_widget.dart';
 import 'package:balady_plus/app/features/services/presentation/widgets/service_cards/service_card_req_widget.dart';
 import 'package:flutter/material.dart';
@@ -33,6 +34,8 @@ class ServiceCardDescription extends StatelessWidget {
           return const ServiceCardReqWidget();
         if (card.type == ServiceCardsTypes.flow)
           return const ServiceCardFlowWidget();
+        if (card.type == ServiceCardsTypes.authorInfo)
+          return const ServiceCardAuthorInfoWidget();
 
         return Container();
       },

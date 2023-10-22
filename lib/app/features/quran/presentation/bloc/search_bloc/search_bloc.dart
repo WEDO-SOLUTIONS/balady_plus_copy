@@ -30,7 +30,6 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
 
   Future<void> _searchDataHandler(SearchAyaEvent e, Emitter emitter) async {
     List<QuranSearchSuraModel> searchedData = [];
-    print(e.text);
     emitter(state.copyWith(status: BlocStatus.loading));
 
     if (e.text?.isEmpty ?? true) {
@@ -39,7 +38,6 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
         suras.forEach((key2, ayat) {
           ayat.suraAyatNormal.forEach((element) {
             element.forEach((key3, ayah) {
-              print(ayah);
               if (ayah.contains(e.text!)) {
                 searchedData.add(QuranSearchSuraModel(
                     aya: ayah,
@@ -54,7 +52,6 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
         });
       });
     }
-    print(searchedData);
 
     emitter(
         state.copyWith(searchedData: searchedData, status: BlocStatus.success));

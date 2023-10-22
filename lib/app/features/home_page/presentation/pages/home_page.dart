@@ -24,14 +24,13 @@ class _HomePageState extends State<HomePage> /*with WidgetsBindingObserver*/ {
   void dispose() {
     super.dispose();
     //  WidgetsBinding.instance.removeObserver(this);
-    print("home page dispose");
   }
 
   /*@override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
       setState(() {});
-      print("update status");
+
     }
   }*/
 
@@ -45,13 +44,10 @@ class _HomePageState extends State<HomePage> /*with WidgetsBindingObserver*/ {
     });
 
     // WidgetsBinding.instance.addObserver(this);
-    print("home page init State");
   }
 
   @override
   Widget build(BuildContext context) {
-    print("home page init build");
-
     MapViewModel mapViewModel = context.watch<MapViewModel?>()!;
     return Scaffold(
       key: mapKey,

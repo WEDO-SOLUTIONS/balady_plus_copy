@@ -69,6 +69,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     builder: (context, state) {
                       return ProfileCard(
                         isListItem: false,
+                        agent: isLoggedin ? state.selectedAgent : null,
                         delegator: isLoggedin ? state.selectedDelegate : null,
                         userInfo: isLoggedin ? CommonProperties.userInfo : null,
                       );

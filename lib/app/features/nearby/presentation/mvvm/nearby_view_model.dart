@@ -44,17 +44,12 @@ class NearByViewModel extends BaseViewModel {
                 .toList(),
           ),
         );
-        print(responseDistance);
       }
       if (searchResultMessage.value!.firstPage != null) {
-        print("Releasing Page");
         await controller.releasePage(searchResultMessage.value!.firstPage!);
       }
       searchResultMessage.notifyListeners();
-      // print(data);
-    } catch (e) {
-      print(e);
-    }
+    } catch (e) {}
   }
 
   List<DistanceRequestMessage> _mapToDistanceRequest(

@@ -4,11 +4,11 @@ import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/r
 import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports.dart';
 import 'package:balady_plus/app/features/commercial_license_cancel/presentation/commercial_license_cancel/mvvm/commercial_license_attachments_view_model.dart';
 import 'package:balady_plus/app/features/commercial_license_cancel/presentation/commercial_license_cancel/mvvm/commercial_license_permits_view_model.dart';
+import 'package:balady_plus/app/features/commercial_license_details/data/models/commercial_licence_details.dart';
 import 'package:balady_plus/app/features/commercial_license_details/presentation/bloc/commercial_license_details_cubit.dart';
 import 'package:balady_plus/app/features/commercial_license_details/presentation/widgets/attachment_show_widget.dart';
 import 'package:balady_plus/app/features/commercial_license_details/presentation/widgets/commercial_license_permits_widget.dart';
 import 'package:balady_plus/app/features/create_compliance/data/models/comliance_request_details_model.dart';
-import 'package:balady_plus/app/features/transaction_inquiry/presentation/core/models/attachment_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -75,7 +75,7 @@ class _CommercialLicenseDetailsBodyState
                 create: (BuildContext context) {
                   return CommercialLicensePermitsViewModel(
                     webService: sl(),
-                    requestId: commercialLicenceDetails.licenseInfo.licenseId,
+                    requestId: commercialLicenceDetails.licenseInfo!.licenseId,
                   );
                 },
               ),
@@ -106,7 +106,7 @@ class _CommercialLicenseDetailsBodyState
                           child: Row(
                             children: [
                               CustomTextWidget(
-                                commercialLicenceDetails.licenseInfo.statusDesc,
+                                commercialLicenceDetails.licenseInfo!.statusDesc,
                                 textStyle: AppStyle.tagTextStyle,
                               ),
                             ],
@@ -122,12 +122,12 @@ class _CommercialLicenseDetailsBodyState
                     children: [
                       CardParameter(
                         title: 'cr_Number'.tr(),
-                        value: commercialLicenceDetails.submitterInfo.crNumber,
+                        value: commercialLicenceDetails.submitterInfo?.crNumber ?? '',
                       ),
                       CardParameter(
                         title: 'submitterName'.tr(),
                         value: commercialLicenceDetails
-                            .submitterInfo.submitterName,
+                            .submitterInfo!.submitterName ?? '',
                       ),
                       // CardParameter( // from whats
                       //   title: 'applicant_adjective'.tr(),
@@ -136,24 +136,24 @@ class _CommercialLicenseDetailsBodyState
                       CardParameter(
                         title: 'submitterIdNumber'.tr(),
                         value: commercialLicenceDetails
-                            .submitterInfo.submitterIdNumber
-                            .toString(),
+                            .submitterInfo?.submitterIdNumber
+                            .toString() ?? '',
                       ),
                       /////////////////////
                       CardParameter(
                         title: 'isicActivityName'.tr(),
                         value: commercialLicenceDetails
-                            .activityInfo.mainActivity.isicActivityName,
+                            .activityInfo?.mainActivity?.isicActivityName ?? '',
                       ),
                       CardParameter(
                         title: 'detailedActivityName'.tr(),
                         value: commercialLicenceDetails
-                            .activityInfo.mainActivity.detailedActivityName,
+                            .activityInfo!.mainActivity?.detailedActivityName ?? '',
                       ),
                       CardParameter(
                         title: 'facilityType'.tr(),
                         value: commercialLicenceDetails
-                            .activityInfo.mainActivity.facilityName,
+                            .activityInfo!.mainActivity?.facilityName ?? '',
                       ),
                       CardParameter(
                         // from whats
@@ -169,7 +169,7 @@ class _CommercialLicenseDetailsBodyState
                       ),
                     ],
                   ),
-                  commercialLicenceDetails.activityInfo.additionalActivities !=
+                  commercialLicenceDetails.activityInfo!.additionalActivities !=
                           null
                       ? ExpandableCard(
                           title: 'list_additional_activities'.tr(),
@@ -177,7 +177,7 @@ class _CommercialLicenseDetailsBodyState
                           children: [
                             Column(
                               children: commercialLicenceDetails
-                                  .activityInfo.additionalActivities!
+                                  .activityInfo!.additionalActivities!
                                   .map(
                                     (e) => Card(
                                       margin: const EdgeInsets.all(8),
@@ -204,101 +204,108 @@ class _CommercialLicenseDetailsBodyState
                           ],
                         )
                       : const SizedBox(),
-                  ExpandableCard(
+                  commercialLicenceDetails.locationInfo != null ?  ExpandableCard(
                     title: 'locationInfo'.tr(),
                     icon: IconPath.qrLocationIcon,
                     children: [
                       const SizedBox(height: 16),
-                      SizedBox(
-                        height: 250,
-                        child: GoogleMap(
-                          initialCameraPosition: CameraPosition(
-                              target: LatLng(
-                                double.parse(commercialLicenceDetails
-                                    .locationInfo.latitude),
-                                double.parse(commercialLicenceDetails
-                                    .locationInfo.longitude),
-                              ),
-                              zoom: 16),
-                          markers: {
-                            Marker(
-                              markerId: const MarkerId('position'),
-                              position: LatLng(
-                                double.parse(commercialLicenceDetails
-                                    .locationInfo.latitude),
-                                double.parse(commercialLicenceDetails
-                                    .locationInfo.longitude),
+                      commercialLicenceDetails.locationInfo!.latitude != null &&
+                              commercialLicenceDetails.locationInfo!.longitude !=
+                                  null
+                          ? SizedBox(
+                              height: 250,
+                              child: GoogleMap(
+                                initialCameraPosition: CameraPosition(
+                                    target: LatLng(
+                                      double.parse(commercialLicenceDetails
+                                          .locationInfo!.latitude!),
+                                      double.parse(commercialLicenceDetails
+                                          .locationInfo!.longitude!),
+                                    ),
+                                    zoom: 16),
+                                markers: {
+                                  Marker(
+                                    markerId: const MarkerId('position'),
+                                    position: LatLng(
+                                      double.parse(commercialLicenceDetails
+                                          .locationInfo!.latitude!),
+                                      double.parse(commercialLicenceDetails
+                                          .locationInfo!.longitude!),
+                                    ),
+                                  )
+                                },
+                                zoomControlsEnabled: false,
+                                zoomGesturesEnabled: false,
+                                scrollGesturesEnabled: false,
                               ),
                             )
-                          },
-                          zoomControlsEnabled: false,
-                          zoomGesturesEnabled: false,
-                          scrollGesturesEnabled: false,
-                        ),
-                      ),
+                          : const SizedBox(),
                       CardParameter(
                         title: 'region'.tr(),
-                        value: commercialLicenceDetails.locationInfo.regionName,
+                        value: commercialLicenceDetails.locationInfo!.regionName,
                       ),
                       CardParameter(
                         // from whats
                         title: 'municipalityName'.tr(),
                         value: commercialLicenceDetails
-                            .locationInfo.municipalityName,
+                            .locationInfo!.municipalityName,
                       ),
                       CardParameter(
                         // from whats
                         title: 'subMunicipalityName'.tr(),
                         value: commercialLicenceDetails
-                            .locationInfo.subMunicipalityName,
+                            .locationInfo!.subMunicipalityName,
                       ),
                       CardParameter(
                         title: 'district'.tr(),
                         value:
-                            commercialLicenceDetails.locationInfo.districtName,
+                            commercialLicenceDetails.locationInfo!.districtName,
                       ),
                       CardParameter(
                         title: 'street'.tr(),
-                        value: commercialLicenceDetails.locationInfo.streetName,
+                        value: commercialLicenceDetails.locationInfo!.streetName,
                       ),
                       CardParameter(
                         title: 'latitude'.tr(),
-                        value: commercialLicenceDetails.locationInfo.latitude,
+                        value: commercialLicenceDetails.locationInfo!.latitude ??
+                            '',
                       ),
                       CardParameter(
                         title: 'longitude'.tr(),
-                        value: commercialLicenceDetails.locationInfo.longitude,
+                        value:
+                            commercialLicenceDetails.locationInfo!.longitude ??
+                                '',
                       ),
                     ],
-                  ),
-                  ExpandableCard(
+                  ) : const SizedBox(),
+                  commercialLicenceDetails.shopInfo != null ? ExpandableCard(
                     title: 'plaest_data_paintings'.tr(),
                     icon: IconPath.editIcon,
                     children: [
                       CardParameter(
                         title: 'shopName'.tr(),
-                        value: commercialLicenceDetails.shopInfo.shopName,
+                        value: commercialLicenceDetails.shopInfo!.shopName,
                       ),
                       CardParameter(
                         // from whats
                         title: 'shopUnitNumber'.tr(),
-                        value: commercialLicenceDetails.shopInfo.shopUnitNumber
+                        value: commercialLicenceDetails.shopInfo!.shopUnitNumber
                             .toString(),
                       ),
                       CardParameter(
                         title: 'blockNumber'.tr(),
-                        value: commercialLicenceDetails.shopInfo.blockNumber
+                        value: commercialLicenceDetails.shopInfo!.blockNumber
                             .toString(),
                       ),
                       CardParameter(
                         title: 'holesCount'.tr(),
-                        value: commercialLicenceDetails.shopInfo.holesCount
+                        value: commercialLicenceDetails.shopInfo!.holesCount
                             .toString(),
                       ),
                       CardParameter(
                         // from whats
                         title: 'planNumber'.tr(),
-                        value: commercialLicenceDetails.shopInfo.planNumber,
+                        value: commercialLicenceDetails.shopInfo!.planNumber,
                       ),
                       //////////////////////////////////////////
                       // CardParameter(
@@ -308,24 +315,24 @@ class _CommercialLicenseDetailsBodyState
                       //////////////////////////////////////////
                       CardParameter(
                         title: 'floorNumber'.tr(),
-                        value: commercialLicenceDetails.shopInfo.floorNumber
+                        value: commercialLicenceDetails.shopInfo!.floorNumber
                                 ?.toString() ??
                             '',
                       ),
                       CardParameter(
                         title: 'floorCount'.tr(),
-                        value: commercialLicenceDetails.shopInfo.floorCount
+                        value: commercialLicenceDetails.shopInfo!.floorCount
                             .toString(),
                       ),
                       CardParameter(
                         title: 'noOfCameras'.tr(),
-                        value: commercialLicenceDetails.shopInfo.noOfCameras
+                        value: commercialLicenceDetails.shopInfo!.noOfCameras
                             .toString(),
                       ),
                       //////////////////////////////////////////
                       CardParameter(
                         title: 'hasElevator'.tr(),
-                        value: commercialLicenceDetails.shopInfo.hasElevator
+                        value: commercialLicenceDetails.shopInfo!.hasElevator
                             ? 'yes'.tr()
                             : 'no'.tr(),
                       ),
@@ -339,28 +346,90 @@ class _CommercialLicenseDetailsBodyState
                       CardParameter(
                         title: 'slamaReportNumber'.tr(),
                         value: commercialLicenceDetails
-                                .shopInfo.slamaReportNumber
+                                .shopInfo!.slamaReportNumber
                                 ?.toString() ??
                             '',
                       ),
                       CardParameter(
                         title: 'contractType'.tr(),
                         value: commercialLicenceDetails
-                            .shopInfo.contractInfoResponseDto.contractType,
+                            .shopInfo!.contractInfoResponseDto.contractType,
                       ),
                       CardParameter(
                         title: 'contractNumber'.tr(),
                         value: commercialLicenceDetails
-                            .shopInfo.contractInfoResponseDto.contractNumber,
+                            .shopInfo!.contractInfoResponseDto.contractNumber,
                       ),
                       CardParameter(
                         title: 'contractOption'.tr(),
                         value: (commercialLicenceDetails.shopInfo
-                                .contractInfoResponseDto.contractOption)
+                                !.contractInfoResponseDto.contractOption)
                             .tr(),
                       ),
+
+                      state.commercialLicenceDetails!.shopInfo?.boardsInfo !=
+                              null
+                          ? ListView.builder(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                              itemCount: state.commercialLicenceDetails!.shopInfo!.boardsInfo!.length ,
+                              itemBuilder: (_, index) {
+                                BoardsInfo boardsInfo = state
+                                    .commercialLicenceDetails!
+                                    .shopInfo
+                                    !.boardsInfo![index];
+                                return Card(
+                                  margin: const EdgeInsets.only(top: 16),
+                                  color: AppColor.primary100Light,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(16.0),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        CustomTextWidget(
+                                          '${'board'.tr()} ${++index}',
+                                          textStyle:
+                                          AppStyle.signInFullTextStyle.copyWith(
+                                            color: AppColor.primary700Light,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 16),
+                                        CustomTextWidget(
+                                          "boardTypeName".tr(),
+                                          textStyle: AppStyle.tagTextStyle,
+                                        ),
+                                        const SizedBox(height: 4),
+                                        CustomTextWidget(
+                                          boardsInfo.typeName,
+                                          textStyle:
+                                          AppStyle.costTextStyle.copyWith(
+                                            color: const Color(0xff52525B),
+                                          ),
+                                        ),
+
+                                        const SizedBox(height: 16),
+                                        CustomTextWidget(
+                                          "permitType".tr(),
+                                          textStyle: AppStyle.tagTextStyle,
+                                        ),
+                                        const SizedBox(height: 4),
+                                        CustomTextWidget(
+                                          boardsInfo.area.toString() +
+                                              'm2'.tr(),
+                                          textStyle:
+                                              AppStyle.costTextStyle.copyWith(
+                                                color: const Color(0xff52525B),
+                                              ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              },
+                            )
+                          : const SizedBox(),
                     ],
-                  ),
+                  ) : const SizedBox(),
 
                   /////////////////////////////////////////////////
                   Selector<CommercialLicenseAttachmentsViewModel,
@@ -397,13 +466,12 @@ class _CommercialLicenseDetailsBodyState
                   /////////////////////////////////////////////////
                   const CommercialLicensePermitsWidget(),
                   /////////////////////////////////////////////////
-                  ExpandableCard(
+                  commercialLicenceDetails.licenseInfo != null ?  ExpandableCard(
                     title: 'quick_code'.tr(),
                     icon: IconPath.scannerIcon,
                     children: [
                       QrImageView(
-                        data: state.commercialLicenceDetails!.licenseInfo
-                                .qrCodeUrl ??
+                        data: state.commercialLicenceDetails!.licenseInfo!.qrCodeUrl ??
                             "",
                         size: 240,
                       ),
@@ -424,7 +492,7 @@ class _CommercialLicenseDetailsBodyState
                       )
                       //
                     ],
-                  ),
+                  ) : const SizedBox(),
                   /////////////////////////////////////////////////
                   const SizedBox(height: 24),
                 ],

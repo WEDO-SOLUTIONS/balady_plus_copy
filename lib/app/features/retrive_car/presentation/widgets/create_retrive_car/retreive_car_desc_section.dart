@@ -17,8 +17,6 @@ class RetreiveCarDescSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<CreateRetriveCarBloc, CreateRetriveCarState>(
       builder: (context, state) {
-        //   print("IncidentDescSection build");
-
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -38,7 +36,6 @@ class RetreiveCarDescSection extends StatelessWidget {
                       VdAgreementSection(
                           initalChecked: state.agreement,
                           onChecked: (bool? isAgreed) {
-                            print(isAgreed);
                             context
                                 .read<CreateRetriveCarBloc>()
                                 .add(ChangeAgreementEvent(isagree: isAgreed));

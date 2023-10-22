@@ -41,7 +41,6 @@ class PDFComponent extends StatelessWidget {
               ),
               child: GestureDetector(
                 onTap: () {
-                  print("HEEE");
                   context.read<InvestmentDetailsBloc>().add(DownloadFileEvent(
                       fileKey: pdfs?[index].pxLinkedRefTo ?? ""));
                 },
