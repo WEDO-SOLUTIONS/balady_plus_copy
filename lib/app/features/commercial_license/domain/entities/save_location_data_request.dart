@@ -9,36 +9,41 @@ class SaveLocationDataRequest {
   String? krokiUrl;
   double? latitude;
   double? longitude;
+  String? landNo;
+  String? mapNo;
 
-  SaveLocationDataRequest({
-    this.requestId,
-    this.streetCode,
-    this.subMunicipalityGisCode,
-    this.districtCode,
-    this.krokiUrl,
-    this.latitude,
-    this.longitude,
-  });
+  SaveLocationDataRequest(
+      {this.requestId,
+      this.streetCode,
+      this.subMunicipalityGisCode,
+      this.districtCode,
+      this.krokiUrl,
+      this.latitude,
+      this.longitude,
+      this.landNo,
+      this.mapNo});
 
-  SaveLocationDataRequest copyWith({
-    int? requestId,
-    String? streetCode,
-    String? subMunicipalityGisCode,
-    String? districtCode,
-    String? krokiUrl,
-    double? latitude,
-    double? longitude,
-  }) {
+  SaveLocationDataRequest copyWith(
+      {int? requestId,
+      String? streetCode,
+      String? subMunicipalityGisCode,
+      String? districtCode,
+      String? krokiUrl,
+      double? latitude,
+      double? longitude,
+      String? landNo,
+      String? mapNo}) {
     return SaveLocationDataRequest(
-      requestId: requestId ?? this.requestId,
-      streetCode: streetCode ?? this.streetCode,
-      subMunicipalityGisCode:
-          subMunicipalityGisCode ?? this.subMunicipalityGisCode,
-      districtCode: districtCode ?? this.districtCode,
-      krokiUrl: krokiUrl ?? this.krokiUrl,
-      latitude: latitude ?? this.latitude,
-      longitude: longitude ?? this.longitude,
-    );
+        requestId: requestId ?? this.requestId,
+        streetCode: streetCode ?? this.streetCode,
+        subMunicipalityGisCode:
+            subMunicipalityGisCode ?? this.subMunicipalityGisCode,
+        districtCode: districtCode ?? this.districtCode,
+        krokiUrl: krokiUrl ?? this.krokiUrl,
+        latitude: latitude ?? this.latitude,
+        longitude: longitude ?? this.longitude,
+        landNo: landNo ?? this.landNo,
+        mapNo: mapNo ?? this.mapNo);
   }
 
   Map<String, dynamic> toMap() {
@@ -49,6 +54,8 @@ class SaveLocationDataRequest {
       'krokiUrl': krokiUrl,
       'latitude': latitude,
       'longitude': longitude,
+      "mapNo": mapNo,
+      "landNo": landNo
     };
   }
 

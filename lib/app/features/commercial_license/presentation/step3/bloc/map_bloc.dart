@@ -22,13 +22,17 @@ import '../../../commercial_license_exports.dart'
         CommercialLicenseBloc,
         GoToNextPageEvent,
         SaveLocationDataRequest,
-        SaveLocationDetails;
+        SaveLocationDetails,
+        UpdateRequestFieldEvent;
 import '../../../domain/entities/save_location_response.dart';
 
 part 'map_event.dart';
 part 'map_state.dart';
 
 class MapBloc extends Bloc<MapEvent, MapState> {
+  TextEditingController mapNpController = TextEditingController();
+  TextEditingController landNpController = TextEditingController();
+
   final GetGISData _getGisData;
   late GoogleMapController mapController;
   final SaveLocationDetails _saveLocationDetails;
@@ -48,6 +52,7 @@ class MapBloc extends Bloc<MapEvent, MapState> {
     on<GetCurentUserLocationEvent>(_getCurrenttUserLocationHandler);
     on<SelectLocationEvent>(_selectLocationEventHandler);
     on<SaveLocationDataEvent>(_saveLocationHandler);
+    on<UpdateFieldsEvent>(_updateFieldsHandler);
   }
 
   Future<void> _getGisDataHandler(GetGISDataEvent e, Emitter emitter) async {
@@ -68,8 +73,12 @@ class MapBloc extends Bloc<MapEvent, MapState> {
       emitter(state.copyWith(
         status: BlocStatus.success,
         gisResponse: success,
+        landNo: success.parcelNo,
+        mapNo: success.planNo,
         errorMessage: "",
       ));
+      mapNpController.text = success.planNo ?? "";
+      landNpController.text = success.parcelNo ?? "";
 
       if (e.popPage) {
         NavigationService.navigatorKey.currentState?.pop(MapScreenParams(
@@ -131,14 +140,16 @@ class MapBloc extends Bloc<MapEvent, MapState> {
     emitter(state.copyWith(status: BlocStatus.loading));
 
     final failOrSuccess = await _saveLocationDetails(SaveLocationDataRequest(
-      requestId: requestId,
-      krokiUrl: "111",
-      streetCode: state.gisResponse?.streetCode,
-      subMunicipalityGisCode: state.gisResponse?.municipalityuniquecode,
-      districtCode: state.gisResponse?.Balady_DistrictID,
-      latitude: state.location?.lat,
-      longitude: state.location?.lon,
-    ));
+        requestId: requestId,
+        krokiUrl:
+            "https://apiservicesstg.balady.gov.sa/v1/balady-commercial-services/new-request/4517289517/location-details",
+        streetCode: state.gisResponse?.streetCode,
+        subMunicipalityGisCode: state.gisResponse?.municipalityuniquecode,
+        districtCode: state.gisResponse?.Balady_DistrictID,
+        latitude: state.location?.lat,
+        longitude: state.location?.lon,
+        mapNo: state.mapNo,
+        landNo: state.landNo));
 
     await failOrSuccess.fold((l) {
       emitter(state.copyWith(
@@ -148,7 +159,14 @@ class MapBloc extends Bloc<MapEvent, MapState> {
       sl<CommercialLicenseBloc>().add((const GoToNextPageEvent()));
 
       emitter(state.copyWith(status: BlocStatus.success, locationResponse: r));
+      sl<CommercialLicenseBloc>().add((UpdateRequestFieldEvent(
+          saveLocationResponse: r, requestId: requestId)));
     });
+  }
+
+  Future<void> _updateFieldsHandler(
+      UpdateFieldsEvent e, Emitter emitter) async {
+    emitter(state.copyWith(mapNo: e.mapNo, landNo: e.landNo));
   }
 
   Future<void> _initMapHandler(InitMapEvent e, Emitter emitter) async {

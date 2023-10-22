@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 
 import '../../../../core/utils/utils_exports.dart';
 import '../../shared_feature_exports.dart';
@@ -44,14 +45,17 @@ class UndertakingWidget extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 4),
-          CustomTextWidget(
-            desc,
-            fontSize: 12,
+          Html(
+            data: desc,
+            onLinkTap: (url, attributes, element) {
+              CommonFunctions.externalLaunch(url);
+            },
+            /*  fontSize: 12,
             maxLines: null,
             height: 2,
             textAlign: TextAlign.start,
             fontColor: AppColor.blackModern600Light,
-            fontWeight: AppFontWeight.semiBold,
+            fontWeight: AppFontWeight.semiBold,*/
           ),
           const SizedBox(height: 16),
           Container(

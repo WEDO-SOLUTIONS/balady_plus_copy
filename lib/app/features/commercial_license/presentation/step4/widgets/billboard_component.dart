@@ -42,11 +42,13 @@ class BillboardComponent extends StatelessWidget {
             ),
             const SizedBox(height: 14),
             ListView.separated(
-              itemCount: state.boards?.length ?? 0,
+              itemCount: state.selectedBoards?.length ?? 0,
               separatorBuilder: (_, __) => const SizedBox(height: 16),
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
-              itemBuilder: (_, __) => const BillboardCard(),
+              itemBuilder: (_, index) => BillboardCard(
+                type: state.selectedBoards![index],
+              ),
             ),
             const SizedBox(height: 12),
             PlusAddButton(
@@ -54,9 +56,14 @@ class BillboardComponent extends StatelessWidget {
                 onPressed: () {
                   BottomSheetDialog.showDraggableSheet(
                     context,
-                    child: CommercialBoardDialog(),
+                    child: CommercialBoardDialog(
+                      length: state.selectedBoards?.length ?? 0,
+                    ),
                   ).then((value) {
-                    if (value != null) {}
+                    print(value);
+                    if (value != null) {
+                      context.read<CrStep4ShopDataCubit>().addBoard(value);
+                    }
                   });
                 }),
           ],
@@ -67,9 +74,9 @@ class BillboardComponent extends StatelessWidget {
 }
 
 class CommercialBoardDialog extends StatefulWidget {
-  const CommercialBoardDialog({
-    super.key,
-  });
+  final CommercialBoardType? board;
+  final int length;
+  const CommercialBoardDialog({super.key, this.board, required this.length});
 
   @override
   State<CommercialBoardDialog> createState() => _CommercialBoardDialogState();
@@ -89,6 +96,11 @@ class _CommercialBoardDialogState extends State<CommercialBoardDialog> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    board = widget.board;
+    if (board != null) {
+      selectedItem = DropDownItem(id: board?.typeId, name: board?.name ?? "");
+      area = board?.area;
+    }
   }
 
   @override
@@ -98,9 +110,13 @@ class _CommercialBoardDialogState extends State<CommercialBoardDialog> {
       action: Padding(
         padding: const EdgeInsets.symmetric(vertical: 16),
         child: ElevatedButtonWidget.add(onPressed: () {
-          Navigator.pop(
-            context,
-          );
+          board = CommercialBoardType(
+              id: board?.id ?? widget.length,
+              typeId: int.tryParse(selectedItem?.id) ?? 0,
+              name: selectedItem?.name ?? "",
+              area: area);
+
+          Navigator.pop(context, board);
         }),
       ),
       body: Column(
@@ -108,7 +124,7 @@ class _CommercialBoardDialogState extends State<CommercialBoardDialog> {
         children: [
           CustomTapWidgetForLongDialog(
             items: items,
-            value: null,
+            value: selectedItem,
             label: "نوع اللوحة",
             marginBottom: 8,
             onChangeType: (item) {
@@ -121,6 +137,7 @@ class _CommercialBoardDialogState extends State<CommercialBoardDialog> {
             label: "مساحة اللوحة",
             hintText: "ادخل مساحة اللوحة",
             isDigitsOnly: true,
+            initialValue: area.toString(),
             keyboardType: TextInputType.number,
             suffixIcon: const CustomTextWidget(
               "متر  مربع",

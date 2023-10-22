@@ -18,5 +18,7 @@ class GoToPreviousPageEvent extends CommercialLicenseEvent {
 
 class UpdateRequestFieldEvent extends CommercialLicenseEvent {
   final int requestId;
-  const UpdateRequestFieldEvent({required this.requestId});
+  final SaveLocationResponse? saveLocationResponse;
+  const UpdateRequestFieldEvent(
+      {required this.requestId,  this.saveLocationResponse});
 }

@@ -3243,8 +3243,10 @@
 "cr_consent_conditions_check":"أقر وأتعهد على جميع ماتم ذكره اعلاه", 
 
 "cr_consent_conditions_agree":"أوافق", 
-
-
+"cr_select":"اختيار", 
+"cr_selected_done":"تم الاختيار", 
+"cr_investment_type":"نوع العقد",
+"cr_investment_code":"رمز العقد بالأمانة",
 
 
 

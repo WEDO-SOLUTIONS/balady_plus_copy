@@ -10,20 +10,24 @@ import '../../../../../core/utils/utils_exports.dart';
 import '../../../../_shared_feature_/shared_feature_exports.dart';
 import '../../../commercial_license_exports.dart';
 import '../../../domain/entities/commercial_board_type.dart';
+import '../../../domain/entities/save_shop_details_request.dart';
 import '../../../domain/use_cases/get_clean_contracts.dart';
 import '../../../domain/use_cases/get_investment_contracts.dart';
+import '../../../domain/use_cases/save_shop_details.dart';
 import '../../step3/bloc/map_bloc.dart';
-
+import 'package:collection/collection.dart';
 part 'cr_step4_shop_data_state.dart';
 
 class CrStep4ShopDataCubit extends Cubit<CrStep4ShopDataState> {
   final GetAccommodationTypes _getAccommodationTypes;
   final GetCleanContracts _getCleanContracts;
   final GetInvestmentContracts _getInvestmentContracts;
+  final SaveShopDetails _saveShopDetails;
   CrStep4ShopDataCubit()
       : _getAccommodationTypes = GetAccommodationTypes(repository: sl()),
         _getCleanContracts = GetCleanContracts(repository: sl()),
         _getInvestmentContracts = GetInvestmentContracts(repository: sl()),
+        _saveShopDetails = SaveShopDetails(repository: sl()),
         super(CrStep4ShopDataState());
 
   void getAccommodationTypes() async {
@@ -44,9 +48,19 @@ class CrStep4ShopDataCubit extends Cubit<CrStep4ShopDataState> {
       emit(state.copyWith(selectedAccommodationType: accommodationTypes));
 
   void addBoard(CommercialBoardType board) {
+    emit(state.copyWith(status: BlocStatus.loading));
     List<CommercialBoardType> selectedBoards = state.selectedBoards ?? [];
-    selectedBoards.add(board);
-    emit(state.copyWith(selectedBoards: selectedBoards));
+
+    int index = selectedBoards.indexWhere((element) => element.id == board.id);
+    print(index);
+    if (index == -1) {
+      selectedBoards.add(board);
+    } else {
+      selectedBoards[index] = board;
+    }
+    print(selectedBoards.length);
+    emit(state.copyWith(
+        selectedBoards: selectedBoards, status: BlocStatus.success));
   }
 
   void updateFields(
@@ -75,6 +89,12 @@ class CrStep4ShopDataCubit extends Cubit<CrStep4ShopDataState> {
         isCitizenPledgedToClean: isCitizenPledgedToClean));
   }
 
+  void updateIsCitizenPledgedToClean(bool isCitizenPledgedToClean) {
+    emit(state.copyWith(
+        isCitizenPledgedToClean: isCitizenPledgedToClean,
+        cleanContractEndDate: Nullable(null)));
+  }
+
   void updateSalama(
       {final bool? salamaPermitExist,
       final String? salamaPermitNumber,
@@ -91,19 +111,33 @@ class CrStep4ShopDataCubit extends Cubit<CrStep4ShopDataState> {
   void updateSubmitterType(CRSubmitterType type) {
     emit(state.copyWith(
       crSubmitterType: Nullable(type),
+      crContractType: Nullable(null),
+      crContractOption: Nullable(null),
+      contractNumber: Nullable(null),
+      contractDate: Nullable(null),
+      selectedInvestmentContract: Nullable(null),
     ));
   }
 
   void updateCRContractType(CRContractType type) {
     emit(state.copyWith(
       crContractType: Nullable(type),
+      crContractOption: Nullable(null),
+      contractNumber: Nullable(null),
+      contractDate: Nullable(null),
+      selectedInvestmentContract: Nullable(null),
     ));
   }
 
   void updateCRContractOption(CRContractOption type) {
     emit(state.copyWith(
       crContractOption: Nullable(type),
+      contractNumber: Nullable(null),
+      contractDate: Nullable(null),
+      selectedInvestmentContract: Nullable(null),
     ));
+
+    getInvestmentContracts();
   }
 
   void updateContractNumber(String value) {
@@ -115,6 +149,18 @@ class CrStep4ShopDataCubit extends Cubit<CrStep4ShopDataState> {
   void updateContractDate(String value) {
     emit(state.copyWith(
       contractDate: Nullable(value),
+    ));
+  }
+
+  void updateCleanContractDate(String value) {
+    emit(state.copyWith(
+      cleanContractEndDate: Nullable(value),
+    ));
+  }
+
+  void selectInvestmentContract(InvestmentContractItem? item) {
+    emit(state.copyWith(
+      selectedInvestmentContract: Nullable(item),
     ));
   }
 
@@ -136,27 +182,88 @@ class CrStep4ShopDataCubit extends Cubit<CrStep4ShopDataState> {
   }
 
   void getInvestmentContracts() async {
-    int requestId = sl<CommercialLicenseBloc>().state.requestId!;
+    if (state.crContractType == CRContractType.invest &&
+        state.crSubmitterType == CRSubmitterType.rental &&
+        state.crContractOption == CRContractOption.service) {
+      int requestId = sl<CommercialLicenseBloc>().state.requestId!;
 
-    emit(state.copyWith(investmentListStatus: BlocStatus.loading));
-    final response = await _getInvestmentContracts(
-        InvestmentContractRequest(requestId: requestId));
-    response.fold(
-        (failure) => emit(state.copyWith(
-              investmentListStatus: BlocStatus.failure,
-              errorMessage: (failure as ServerFailure).errorMessage,
-            )), (success) {
-      emit(state.copyWith(
-          investmentListStatus: BlocStatus.success,
-          investmentContractResponse: success));
-    });
+      emit(state.copyWith(investmentListStatus: BlocStatus.loading));
+      final response = await _getInvestmentContracts(
+          InvestmentContractRequest(requestId: 4413209184));
+      response.fold(
+          (failure) => emit(state.copyWith(
+                investmentListStatus: BlocStatus.failure,
+                errorMessage: (failure as ServerFailure).errorMessage,
+              )), (success) {
+        emit(state.copyWith(
+            investmentListStatus: BlocStatus.success,
+            investmentContractResponse: success));
+      });
+    }
   }
 
   void initForm() {
-    var context = NavigationService.navigatorKey.currentContext;
+    SaveLocationResponse? res =
+        sl<CommercialLicenseBloc>().state.locationResponse;
+  }
 
-    SaveLocationResponse? res = context?.read<MapBloc>().state.locationResponse;
-    print("DDDDFGGFDF ${res?.maxYears}");
-    print(res?.maxYears);
+  SaveLocationResponse? get saveLocationResponse =>
+      sl<CommercialLicenseBloc>().state.locationResponse;
+
+  String get cameraEndorsmentText =>
+      sl<CommercialLicenseBloc>().state.locationResponse?.endorsementText ?? "";
+
+  void save() async {
+    int requestId = sl<CommercialLicenseBloc>().state.requestId!;
+
+    emit(state.copyWith(status: BlocStatus.loading, errorMessage: ""));
+
+    SaveShopDetailsRequest request = SaveShopDetailsRequest(
+        requestId: requestId,
+        boardsInfo: state.selectedBoards,
+        brand: state.brand,
+        floorNumber: state.floorNumber,
+        hasElevator: state.hasElevator,
+        isCitizenPledgedToClean: state.isCitizenPledgedToClean,
+        shopName: state.shopName,
+        shopUnitNumber: state.shopUnitNumber,
+        holesCount: state.holesCount.toString(),
+        floorCount: state.floorCount.toString(),
+        noOfCameras: state.noOfCameras.toString(),
+        existInMall: state.existInMall,
+        contractDate: CommonFunctions.padHijriDate(state.contractDate ?? ""),
+        contractNumber: state.contractNumber,
+        contractType: state.crContractType?.name,
+        contractOption: state.crContractOption?.name,
+        cleanContractEndDate:
+            CommonFunctions.padHijriDate(state.cleanContractEndDate ?? ""),
+        investmentContractNumber:
+            state.selectedInvestmentContract?.siteContractId,
+        selectedBoardContractOption: "MANUAL");
+    final failOrSuccess = await _saveShopDetails(request);
+
+    failOrSuccess.fold(
+        (failure) => emit(state.copyWith(
+              status: BlocStatus.failure,
+              errorMessage: (failure as ServerFailure).errorMessage,
+            )), (success) {
+      sl<CommercialLicenseBloc>().add((const GoToNextPageEvent()));
+      emit(state.copyWith(status: BlocStatus.success));
+    });
+
+    /* final response = await _saveActivityDetails(SubmitActivityDetailRequest(
+        requestId: requestId,
+        workerTypeId: state.workerType!.index,
+        area: state.totalArea ?? 0,
+        detailedActivityId: state.selectedSubActivity!.id!));
+
+    response.fold(
+        (failure) => emit(state.copyWith(
+              status: BlocStatus.failure,
+              errorMessage: (failure as ServerFailure).errorMessage,
+            )), (success) {
+      sl<CommercialLicenseBloc>().add((const GoToNextPageEvent()));
+      emit(state.copyWith(status: BlocStatus.success));
+    });*/
   }
 }

@@ -71,6 +71,7 @@ class CommercialLicenseBloc
 
   Future<void> _updateRequestIdHandler(
       UpdateRequestFieldEvent e, Emitter emitter) async {
-    emitter(state.copyWith(requestId: e.requestId));
+    emitter(state.copyWith(
+        requestId: e.requestId, locationResponse: e.saveLocationResponse));
   }
 }
