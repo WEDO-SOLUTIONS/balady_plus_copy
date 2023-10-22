@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import '../../commercial_license_exports.dart'
+import '../../renew_commercial_license_exports.dart'
     show CrCalculateFeesResponse, ActivitiesCostDetaile, CostsInfo;
 
 class CrCalculateFeesResponseModel extends CrCalculateFeesResponse {

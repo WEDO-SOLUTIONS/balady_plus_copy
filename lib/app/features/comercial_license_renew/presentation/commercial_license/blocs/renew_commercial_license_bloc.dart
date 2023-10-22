@@ -11,10 +11,10 @@ part 'renew_commercial_license_event.dart';
 part 'renew_commercial_license_state.dart';
 
 class RenewCommercialLicenseBloc
-    extends Bloc<RenewCommercialLicenseEvent, CommercialLicenseState> {
+    extends Bloc<RenewCommercialLicenseEvent, RenewCommercialLicenseState> {
   PageController controller = PageController();
 
-  RenewCommercialLicenseBloc() : super(const CommercialLicenseState()) {
+  RenewCommercialLicenseBloc() : super(const RenewCommercialLicenseState()) {
     on<GoToNextPageEvent>(_goToNextPageHandler);
     on<GoToPreviousPageEvent>(_goToPreviousPageHandler);
   }

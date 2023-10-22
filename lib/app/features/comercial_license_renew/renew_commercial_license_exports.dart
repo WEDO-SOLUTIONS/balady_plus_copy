@@ -1,10 +1,10 @@
 /// Presentation
 
 // blocs
-export 'presentation/commercial_license/blocs/commercial_license_bloc.dart';
+export 'presentation/commercial_license/blocs/renew_commercial_license_bloc.dart';
 
 // Pages
-export 'presentation/commercial_license/screens/commercial_license_screen.dart';
+export 'presentation/commercial_license/screens/renew_commercial_license_screen.dart';
 
 // Widgets
 export 'presentation/commercial_license/widgets/commercial_license_body.dart';
