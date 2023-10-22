@@ -198,7 +198,7 @@ class ApplyCancelScreen extends StatelessWidget {
                               requestId: cancellationRequest.requestId,
                               availableCloseDate: cancellationRequest.availableCloseDate,
                               crNumber: viewModel.submitterInfo.crNumber,
-                              crType: viewModel.submitterInfo.crType,
+                              crType: viewModel.submitterInfo.crType!,
                               reasonCancel: viewModel.reasonCancel,
                             ),
                           );

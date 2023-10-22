@@ -16,8 +16,12 @@ class SubmitApplicationSuccessfullyCancel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    SubmitResponse submitResponse =
-        ModalRoute.of(context)!.settings.arguments as SubmitResponse;
+    (String from, SubmitResponse submitResponse) arguments =
+        ModalRoute.of(context)!.settings.arguments as (
+      String from,
+      SubmitResponse submitResponse
+    );
+    SubmitResponse submitResponse = arguments.$2;
     return WillPopScope(
       onWillPop: () async {
         return Future<bool>.value(false);
@@ -91,7 +95,9 @@ class SubmitApplicationSuccessfullyCancel extends StatelessWidget {
                   : const SizedBox(),
               const SizedBox(height: 16),
               ElevatedButtonWidget.primaryCustom(
-                text: "back_licenses_page".tr(),
+                text: arguments.$1 == "licenses"
+                    ? "back_licenses_page".tr()
+                    : "back_request_page".tr(),
                 onPressed: () {
                   Navigator.of(context).pop();
                   Navigator.of(context).pop();
