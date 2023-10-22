@@ -1,4 +1,4 @@
-part of 'commercial_license_bloc.dart';
+part of 'renew_commercial_license_bloc.dart';
 
 @immutable
 abstract class RenewCommercialLicenseEvent extends Equatable {

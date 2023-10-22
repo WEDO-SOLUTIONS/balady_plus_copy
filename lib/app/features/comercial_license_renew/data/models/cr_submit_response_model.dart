@@ -1,4 +1,4 @@
-import '../../commercial_license_exports.dart' show CrSubmitResponse;
+import '../../renew_commercial_license_exports.dart' show CrSubmitResponse;
 
 class CrSubmitResponseModel extends CrSubmitResponse {
   CrSubmitResponseModel();

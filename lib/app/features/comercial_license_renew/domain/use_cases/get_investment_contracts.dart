@@ -1,7 +1,7 @@
-import 'package:dartz/dartz.dart' show Either;
+/*import 'package:dartz/dartz.dart' show Either;
 import '../../../../core/errors/failures.dart';
 import '../../../../core/services/local/use_case.dart';
-import '../../commercial_license_exports.dart'
+import '../../renew_commercial_license_exports.dart'
     show InvestmentContractRequest, InvestmentContractResponse, CrRepository;
 
 class GetInvestmentContracts
@@ -15,3 +15,4 @@ class GetInvestmentContracts
     return await repository.getInvestmentContracts(params);
   }
 }
+*/
