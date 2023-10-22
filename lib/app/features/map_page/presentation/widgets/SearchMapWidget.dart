@@ -140,9 +140,6 @@ class SearchMapWidget extends StatelessWidget {
                               displayName = e.displayName();
                               category = e;
                             }
-                            print("categoet11 $category");
-                            print(
-                                "categoet ${mapViewModel.selectedCategory.value}");
 
                             final bool isActive = ((mapViewModel
                                             .selectedCategory.value ==

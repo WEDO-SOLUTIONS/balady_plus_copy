@@ -823,6 +823,16 @@ class CommonFunctions {
     return "";
   }
 
+  static String padHijriDate(String? date) {
+    if (date != null && date.isNotEmpty) {
+      String d = mapARNumbersToENNumbers(date ?? "");
+
+      List<String> data = d.split("/");
+      return "${data[0]}/${data[1].padLeft(2, "0")}/${data[2].padLeft(2, "0")}";
+    }
+    return "";
+  }
+
   static String getFormattedTime(String? timeStr,
       {Duration? subtractedDuration}) {
     String formattedTime = "";

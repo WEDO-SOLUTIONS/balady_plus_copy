@@ -5,6 +5,7 @@ import '../../commercial_license_exports.dart';
 import '../../data/models/save_com_submitter_and_owner_request_model.dart';
 import '../entities/cr_attachment_response.dart';
 import '../entities/cr_submit_request.dart';
+import '../entities/save_shop_details_request.dart';
 
 abstract class CrRepository {
   Future<Either<Failure, ResponseBodyModel<RecordInfo>>> getRecordInfo(
@@ -53,4 +54,7 @@ abstract class CrRepository {
 
   Future<Either<Failure, CrSubmitResponse>> submitCr(
       {required CrSubmitRequest params});
+
+  Future<Either<Failure, dynamic>> saveShopDetails(
+      {required SaveShopDetailsRequest params});
 }

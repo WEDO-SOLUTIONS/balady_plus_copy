@@ -102,6 +102,7 @@ class CrStep2ActivityDataCubit extends Cubit<CrStep2ActivityDataState> {
   void save() async {
     print("HHH");
     int requestId = sl<CommercialLicenseBloc>().state.requestId!;
+    print("HHH $requestId");
 
     emit(state.copyWith(status: BlocStatus.loading, errorMessage: ""));
     final response = await _saveActivityDetails(SubmitActivityDetailRequest(
@@ -109,7 +110,7 @@ class CrStep2ActivityDataCubit extends Cubit<CrStep2ActivityDataState> {
         workerTypeId: state.workerType!.index,
         area: state.totalArea ?? 0,
         detailedActivityId: state.selectedSubActivity!.id!));
-
+    print("GGG");
     response.fold(
         (failure) => emit(state.copyWith(
               status: BlocStatus.failure,

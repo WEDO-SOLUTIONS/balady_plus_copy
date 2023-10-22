@@ -76,5 +76,21 @@ enum ServiceCardsTypes { desc, req, flow }
 
 enum CRSubmitterType { owner, rental }
 
-enum CRContractType { deed, invest, ejar }
-enum CRContractOption { attach, service }
+enum CRContractType {
+  deed(name: "DEED"),
+  invest(name: "INVEST"),
+  ejar(name: "EJAR");
+
+  final String name;
+
+  const CRContractType({required this.name});
+}
+
+enum CRContractOption {
+  attach(name: "ATTACH"),
+  service(name: "SERVICE");
+
+  final String name;
+
+  const CRContractOption({required this.name});
+}

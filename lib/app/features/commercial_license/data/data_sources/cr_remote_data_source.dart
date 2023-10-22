@@ -11,6 +11,7 @@ import '../../../../core/services/services_exports.dart';
 import '../../../_shared_feature_/shared_feature_exports.dart';
 import '../../commercial_license_exports.dart';
 import '../../domain/entities/cr_submit_request.dart';
+import '../../domain/entities/save_shop_details_request.dart';
 import '../models/cr_attachment_response_model.dart';
 import '../models/cr_submit_response_model.dart';
 import '../models/save_com_submitter_and_owner_request_model.dart';
@@ -46,6 +47,7 @@ abstract class CrRemoteDataSource {
   Future<CrAttachmentResponseModel> getCRAttachment({int? params});
 
   Future<bool> saveAttachment({required CrAttachmentRequest params});
+  Future<dynamic> saveShopDetails({required SaveShopDetailsRequest params});
 
   Future<CrCalculateFeesResponseModel> crCalculateFees(
       {required CrCalculateFeesRequest params});
@@ -434,7 +436,7 @@ class CrRemoteDataSourceImpl extends CrRemoteDataSource {
       response = await webService.dio
           .post(ApiUrl.cleanContracts(params!.requestId), data: params.toMap());
 
-      var data = response.data["data"]["result"];
+      var data = response.data["data"];
 
       var parsedResult =
           data != null ? CleanContractsResponseModel.fromJson(data) : null;
@@ -588,7 +590,7 @@ class CrRemoteDataSourceImpl extends CrRemoteDataSource {
           ApiUrl.investmentContracts(params!.requestId),
           data: params.toMap());
 
-      var data = response.data["data"]["result"];
+      var data = response.data["data"];
 
       var parsedResult =
           data != null ? InvestmentContractResponseModel.fromJson(data) : null;
@@ -854,6 +856,54 @@ class CrRemoteDataSourceImpl extends CrRemoteDataSource {
       try {
         final decodedResponse =
             ResponseBodyModel<CrCalculateFeesResponseModel>.fromMap(
+          error.response?.data,
+        );
+        errorCode = decodedResponse.data?.responseCode;
+      } catch (ex) {}
+
+      throw ServerException(
+        error.toString(),
+        errorCode: errorCode,
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
+    } catch (ex) {
+      print(ex);
+      if (ex is ServerException)
+        throw ex;
+      else {
+        try {
+          //MM    CommonFunctions.sendExceptionLog(exception: ex, response: response);
+        } catch (ex) {}
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
+      }
+    }
+  }
+
+  @override
+  Future saveShopDetails({required SaveShopDetailsRequest params}) async {
+    var response;
+
+    try {
+      response = await webService.dio.post(
+          ApiUrl.saveShopDetails(
+            params.requestId!,
+          ),
+          data: params.toMap());
+
+      final decodedResponse =
+          ResponseBodyModel<dynamic>.fromMap(response.data, parsedResult: null);
+
+      return null;
+    } on DioError catch (error) {
+      print(error);
+      var errorCode;
+      try {
+        final decodedResponse = ResponseBodyModel<dynamic>.fromMap(
           error.response?.data,
         );
         errorCode = decodedResponse.data?.responseCode;

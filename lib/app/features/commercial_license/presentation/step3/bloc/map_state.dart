@@ -10,6 +10,8 @@ class MapState extends Equatable {
   final bool? readOnly;
   final int? requestNo;
   final SaveLocationResponse? locationResponse;
+  final String? landNo;
+  final String? mapNo;
   MapState(
       {this.status = BlocStatus.initial,
       this.errorMessage,
@@ -19,7 +21,9 @@ class MapState extends Equatable {
       this.isLocationAllowed = true,
       this.readOnly = false,
       this.locationResponse,
-      this.requestNo});
+      this.requestNo,
+      this.landNo,
+      this.mapNo});
 
   MapState copyWith(
       {final BlocStatus? status,
@@ -30,7 +34,9 @@ class MapState extends Equatable {
       final bool? isLocationAllowed,
       final bool? readOnly,
       final int? requestNo,
-      final SaveLocationResponse? locationResponse}) {
+      final SaveLocationResponse? locationResponse,
+      final String? landNo,
+      final String? mapNo}) {
     return MapState(
         status: status ?? this.status,
         errorMessage: errorMessage ?? this.errorMessage,
@@ -40,7 +46,9 @@ class MapState extends Equatable {
         isLocationAllowed: isLocationAllowed ?? this.isLocationAllowed,
         readOnly: readOnly ?? this.readOnly,
         requestNo: requestNo ?? this.requestNo,
-        locationResponse: locationResponse ?? this.locationResponse);
+        locationResponse: locationResponse ?? this.locationResponse,
+        landNo: landNo ?? this.landNo,
+        mapNo: mapNo ?? this.mapNo);
   }
 
   @override
@@ -52,6 +60,8 @@ class MapState extends Equatable {
         isLocationAllowed,
         readOnly,
         requestNo,
-        locationResponse
+        locationResponse,
+        mapNo,
+        landNo
       ];
 }

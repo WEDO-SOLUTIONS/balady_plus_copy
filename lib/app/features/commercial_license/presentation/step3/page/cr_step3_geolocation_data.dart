@@ -72,18 +72,28 @@ class CRStep3GeolocationData extends StatelessWidget {
                         CustomTextFieldWidget(
                           label: "رقم المخطط",
                           hintText: "ادخل رقم المخطط",
+                          controller: context.read<MapBloc>().mapNpController,
                           isDigitsOnly: true,
                           keyboardType: TextInputType.number,
                           bottomMargin: 24,
-                          onChanged: (value) {},
+                          onChanged: (value) {
+                            context
+                                .read<MapBloc>()
+                                .add(UpdateFieldsEvent(mapNo: value));
+                          },
                         ),
                         CustomTextFieldWidget(
                           label: "رقم قطعه الارض",
                           hintText: "ادخل رقم قطعه الارض",
+                          controller: context.read<MapBloc>().landNpController,
                           isDigitsOnly: true,
                           keyboardType: TextInputType.number,
                           bottomMargin: 24,
-                          onChanged: (value) {},
+                          onChanged: (value) {
+                            context
+                                .read<MapBloc>()
+                                .add(UpdateFieldsEvent(landNo: value));
+                          },
                         ),
                       ],
                     ),

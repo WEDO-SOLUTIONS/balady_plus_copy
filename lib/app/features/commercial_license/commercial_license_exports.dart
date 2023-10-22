@@ -34,6 +34,8 @@ export 'presentation/step2/widgets/extra_activity_component.dart';
 export 'presentation/step4/widgets/yes_no_radio_group_widget.dart';
 export 'presentation/step4/widgets/billboard_card.dart';
 export 'presentation/step4/widgets/billboard_component.dart';
+export 'presentation/step4/widgets/investment_contract_card.dart';
+
 export 'presentation/step5/widgets/pick_file_component.dart';
 export 'presentation/step6/widgets/owner_info_card.dart';
 export 'presentation/step7/widgets/manager_info_card.dart';

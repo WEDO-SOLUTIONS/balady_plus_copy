@@ -33,3 +33,9 @@ class SelectLocationEvent extends MapEvent {
 class SaveLocationDataEvent extends MapEvent {
   const SaveLocationDataEvent();
 }
+
+class UpdateFieldsEvent extends MapEvent {
+  final String? mapNo;
+  final String? landNo;
+  const UpdateFieldsEvent({this.mapNo, this.landNo});
+}

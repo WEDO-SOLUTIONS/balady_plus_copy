@@ -1,6 +1,8 @@
 part of 'cr_step4_shop_data_cubit.dart';
 
 class CrStep4ShopDataState extends Equatable {
+  final BlocStatus status;
+
   final BlocStatus accommodationTypesStatus;
   final BlocStatus contractsListStatus;
   final BlocStatus investmentListStatus;
@@ -54,10 +56,12 @@ class CrStep4ShopDataState extends Equatable {
   final InvestmentContractResponse? investmentContractResponse;
   final InvestmentContractItem? selectedInvestmentContract;
 
+  final bool? endorsmentAgreement;
   const CrStep4ShopDataState(
       {this.accommodationTypesStatus = BlocStatus.initial,
       this.contractsListStatus = BlocStatus.initial,
       this.investmentListStatus = BlocStatus.initial,
+      this.status = BlocStatus.initial,
       this.accommodationTypes,
       this.selectedAccommodationType,
       this.errorMessage,
@@ -90,11 +94,13 @@ class CrStep4ShopDataState extends Equatable {
       this.cleanContractsResponse,
       this.selectedCleanContract,
       this.investmentContractResponse,
-      this.selectedInvestmentContract});
+      this.selectedInvestmentContract,
+      this.endorsmentAgreement});
 
   @override
   List<Object?> get props {
     return [
+      status,
       accommodationTypesStatus,
       accommodationTypes,
       selectedAccommodationType,
@@ -133,7 +139,8 @@ class CrStep4ShopDataState extends Equatable {
       selectedCleanContract,
       investmentListStatus,
       investmentContractResponse,
-      selectedInvestmentContract
+      selectedInvestmentContract,
+      endorsmentAgreement
     ];
   }
 
@@ -141,6 +148,7 @@ class CrStep4ShopDataState extends Equatable {
       {BlocStatus? accommodationTypesStatus,
       BlocStatus? contractsListStatus,
       BlocStatus? investmentListStatus,
+      BlocStatus? status,
       List<CrLookupsEntity>? accommodationTypes,
       DropDownItem? selectedAccommodationType,
       String? errorMessage,
@@ -159,7 +167,7 @@ class CrStep4ShopDataState extends Equatable {
       int? floorNumber,
       Nullable<String?>? contractOption,
       Nullable<String?>? ownershipType,
-      String? cleanContractEndDate,
+      Nullable<String?>? cleanContractEndDate,
       bool? salamaPermitExist,
       Nullable<String?>? salamaPermitNumber,
       Nullable<String?>? slamaReportNumber,
@@ -173,8 +181,12 @@ class CrStep4ShopDataState extends Equatable {
       CleanContractsResponse? cleanContractsResponse,
       Nullable<CleanContractItem?>? selectedCleanContract,
       InvestmentContractResponse? investmentContractResponse,
-      Nullable<InvestmentContractItem?>? selectedInvestmentContract}) {
+      Nullable<InvestmentContractItem?>? selectedInvestmentContract,
+      bool? endorsmentAgreement}) {
     return CrStep4ShopDataState(
+        status: status ?? this.status,
+        investmentContractResponse:
+            investmentContractResponse ?? this.investmentContractResponse,
         accommodationTypesStatus:
             accommodationTypesStatus ?? this.accommodationTypesStatus,
         contractsListStatus: contractsListStatus ?? this.contractsListStatus,
@@ -197,7 +209,9 @@ class CrStep4ShopDataState extends Equatable {
         floorNumber: floorNumber ?? this.floorNumber,
         isCitizenPledgedToClean:
             isCitizenPledgedToClean ?? this.isCitizenPledgedToClean,
-        cleanContractEndDate: cleanContractEndDate ?? this.cleanContractEndDate,
+        cleanContractEndDate: cleanContractEndDate == null
+            ? this.cleanContractEndDate
+            : cleanContractEndDate.value,
         salamaPermitExist: salamaPermitExist ?? this.salamaPermitExist,
         salamaPermitNumber: salamaPermitNumber == null
             ? this.salamaPermitNumber
@@ -231,6 +245,7 @@ class CrStep4ShopDataState extends Equatable {
         investmentListStatus: investmentListStatus ?? this.investmentListStatus,
         selectedInvestmentContract: selectedInvestmentContract == null
             ? this.selectedInvestmentContract
-            : selectedInvestmentContract.value);
+            : selectedInvestmentContract.value,
+        endorsmentAgreement: endorsmentAgreement ?? this.endorsmentAgreement);
   }
 }

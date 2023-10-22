@@ -284,6 +284,9 @@ class ApiUrl {
   static String crSubmit(int requestId) =>
       'v1/balady-commercial-services/new-request/${requestId}/submits';
 
+  static String saveShopDetails(int requestId) =>
+      'v1/balady-commercial-services/new-request/$requestId/shop-details';
+
 //! Violations
   static const String violationsStatus =
       "/v1/balady-dashboard/violations/statuses";
