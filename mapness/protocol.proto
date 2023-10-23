@@ -1,0 +1,134 @@
+syntax = "proto3";
+
+package baladi.protocol;
+
+option go_package = "./protocol";
+
+// Base classes
+
+message Timestamp {
+  int64 value = 1;
+}
+
+enum Env {
+  ENV_UNKNOWN = 0;
+  ENV_DEV = 1;
+  ENV_SANDBOX = 2;
+  ENV_PRODUCTION = 3;
+}
+
+enum Error {
+  ERROR_UNKNOWN = 0;
+  ERROR_BAD_REQUEST = 1;
+  ERROR_UNAUTHORIZED = 2;
+  ERROR_NOT_FOUND = 3;
+  ERROR_INTERNAL_SERVER_ERROR = 4;
+}
+
+message Image {
+  string url = 1;
+}
+
+message Point {
+  double latitude = 1; // Y
+  double longitude = 2; // X
+}
+
+// Base requests & responses
+
+message ErrorResponse {
+  message ErrorMessage {
+    Error type = 1;
+    int32 int_code = 2;
+    optional string message = 3;
+    optional string system_message = 4;
+  }
+
+  reserved 1;
+  ErrorMessage error = 2;
+}
+
+message OkResponse {
+  reserved 1;
+  int32 code = 2;
+}
+
+// Stories
+
+message Story {
+  message Preview {
+    Image image = 1;
+    string title = 2;
+  }
+
+  message Frame {
+    message ActionButton {
+      message Call {
+        string phone = 1;
+      }
+
+      message ExternalUrl {
+        string url = 1;
+      }
+
+      message OpenCard {
+        string id = 1;
+      }
+
+      message Deeplink {
+        string url = 1;
+      }
+
+      string title = 1;
+      oneof action {
+        Call call = 2;
+        ExternalUrl external_url = 3;
+        OpenCard open_card = 4;
+        Deeplink deeplink = 5;
+      }
+    }
+
+    Image background = 1;
+    optional string title = 2;
+    optional string description = 3;
+    optional ActionButton action_button = 4;
+    bool is_viewed = 5;
+    int32 duration = 6;
+  }
+
+  string id = 1;
+  Preview preview = 2;
+  repeated Frame frames = 3;
+  bool is_viewed = 4;
+}
+
+message ViewedStoriesRequest {
+  message ViewedStory {
+    message ViewedStoryFrame {
+      int32 index = 1;
+    }
+
+    string id = 1;
+    repeated ViewedStoryFrame frames = 2;
+  }
+
+  reserved 1;
+  repeated ViewedStory stories = 2;
+}
+
+message StoriesResponse {
+  reserved 1;
+  repeated Story stories = 2;
+}
+
+// Happiness Map
+
+message HappinessRequest {
+  message Tag {
+    string name = 1;
+  }
+
+  Point point = 1;
+  bool is_positive = 2;
+  repeated Tag tags = 3;
+}
