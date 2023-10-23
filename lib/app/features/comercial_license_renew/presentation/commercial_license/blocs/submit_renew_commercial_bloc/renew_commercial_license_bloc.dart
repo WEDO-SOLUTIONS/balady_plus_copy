@@ -3,9 +3,13 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 
-import '../../../../../core/services/services_exports.dart';
-import '../../../../../core/utils/utils_exports.dart';
-import '../../../renew_commercial_license_exports.dart';
+import '../../../../../../core/dependency_injection/injection_container.dart';
+import '../../../../../../core/errors/failures.dart';
+import '../../../../../../core/services/services_exports.dart';
+import '../../../../../../core/utils/utils_exports.dart';
+import '../../../../domain/use_cases/get_info_request.dart';
+import '../../../../domain/use_cases/get_renew_years.dart';
+import '../../../../renew_commercial_license_exports.dart';
 
 part 'renew_commercial_license_event.dart';
 part 'renew_commercial_license_state.dart';
@@ -13,10 +17,18 @@ part 'renew_commercial_license_state.dart';
 class RenewCommercialLicenseBloc
     extends Bloc<RenewCommercialLicenseEvent, RenewCommercialLicenseState> {
   PageController controller = PageController();
+  final CalculateRequestInfo _calculateRequestInfo;
+  final GetRenewYears _getRenewYears;
 
-  RenewCommercialLicenseBloc() : super(const RenewCommercialLicenseState()) {
+  RenewCommercialLicenseBloc({required int requestId})
+      : _getRenewYears = GetRenewYears(repository: sl()),
+        _calculateRequestInfo = CalculateRequestInfo(repository: sl()),
+        super(RenewCommercialLicenseState(requestId: requestId)) {
     on<GoToNextPageEvent>(_goToNextPageHandler);
     on<GoToPreviousPageEvent>(_goToPreviousPageHandler);
+
+    on<GetRenewYearsEvent>(_getRenewYearsHandler);
+    on<GetRequestInfoEvent>(_getRequestInfoHandler);
   }
 
   Future<void> _goToNextPageHandler(
@@ -57,6 +69,36 @@ class RenewCommercialLicenseBloc
           status: BlocStatus.success, currentPageValue: prvoiusPage));
     }
     hideKeyboard();
+  }
+
+  Future<void> _getRenewYearsHandler(
+      GetRenewYearsEvent e, Emitter emitter) async {
+    emitter(state.copyWith(status: BlocStatus.loading));
+    final failOrSuccess = await _getRenewYears(state.requestId!);
+
+    failOrSuccess.fold((l) {
+      emitter(state.copyWith(
+          status: BlocStatus.failure,
+          errorMessage: (l as ServerFailure).errorMessage));
+    }, (r) {
+      emitter(state.copyWith(
+          status: BlocStatus.success, renewYears: r.data?.result));
+    });
+  }
+
+  Future<void> _getRequestInfoHandler(
+      GetRequestInfoEvent e, Emitter emitter) async {
+    emitter(state.copyWith(status: BlocStatus.loading));
+    final failOrSuccess = await _getRenewYears(state.requestId!);
+
+    failOrSuccess.fold((l) {
+      emitter(state.copyWith(
+          status: BlocStatus.failure,
+          errorMessage: (l as ServerFailure).errorMessage));
+    }, (r) {
+      emitter(state.copyWith(
+          status: BlocStatus.success, renewYears: r.data?.result));
+    });
   }
 
   bool isLastPage() {

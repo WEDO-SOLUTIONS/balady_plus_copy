@@ -189,12 +189,18 @@ class RouteName {
 
   static const commercialLicenseDetails = '/commercialLicenseDetails';
 
-  // ISSUe
-
+// -------  Commercial License Issue ---------
   static const crMapScreen = '/crMapScreen';
 
   static const requestCommercialLicenseDetails =
       '/requestCommercialLicenseDetails';
+
+// -------  Commercial License Renew ---------
+  static const renewCommercialLicenseStartService =
+      '/renewCommercialLicenseStartService';
+
+  static const renewCommercialLicenseSubmitForm =
+      '/renewCommercialLicenseSubmitForm';
 }
 
 class EtmamRoutesNames {

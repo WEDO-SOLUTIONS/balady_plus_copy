@@ -3,7 +3,6 @@ import '../../../../core/errors/errors_exports.dart';
 import '../../../_shared_feature_/shared_feature_exports.dart';
 import '../../renew_commercial_license_exports.dart';
 import '../entities/cr_attachment_response.dart';
-import '../entities/cr_submit_request.dart';
 
 abstract class RenewCrRepository {
   Future<Either<Failure, DeedInfoResponse>> getDeedInfo(
@@ -24,4 +23,15 @@ abstract class RenewCrRepository {
   Future<Either<Failure, CrCalculateFeesResponse>> crCalculateFee(
       {required CrCalculateFeesRequest params});
 
+  Future<Either<Failure, ResponseBodyModel<bool>>> validateRenewBeforeApply(
+      {required int? params});
+
+  Future<Either<Failure, ResponseBodyModel<int>>> renewApply(
+      {required RenewApplyRequest? params});
+
+  Future<Either<Failure, ResponseBodyModel<List<int>>>> getRenewYears(
+      {required int? params});
+
+  Future<Either<Failure, RenewRequestInfo>> calculateRequestInfo(
+      {required RenewInfoRequest? params});
 }

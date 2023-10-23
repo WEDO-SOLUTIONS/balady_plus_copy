@@ -33,7 +33,7 @@ class WebService {
     }
 
     var requestUrl = baseURL + url + queryString;
-    ////print("url: " + requestUrl);
+    print("url: " + requestUrl);
     Map<String, dynamic> result = {};
     try {
       var headers = {
@@ -47,7 +47,7 @@ class WebService {
         Uri.parse(requestUrl),
         headers: headers,
       );
-      // //print("url response: " + utf8.decode(response.bodyBytes).toString());
+      print("url response: " + utf8.decode(response.bodyBytes).toString());
       if (response.statusCode == HttpStatus.ok) {
         result.putIfAbsent("state", () => true);
         result.putIfAbsent(
@@ -230,7 +230,7 @@ class WebService {
           Uri.parse(requestUrl),
           headers: headers,
         );
-        // print("url response: " + utf8.decode(response.bodyBytes).toString());
+        print("url response: " + utf8.decode(response.bodyBytes).toString());
         if (response.statusCode == HttpStatus.ok) {
           result.putIfAbsent("state", () => true);
           result.putIfAbsent(
@@ -314,7 +314,7 @@ class WebService {
           Uri.decodeQueryComponent(Uri(queryParameters: queryParams).query);
     }
     var requestUrl = baseURL + url + queryString;
-
+    print(requestUrl);
     Map<String, dynamic> result = {};
     try {
       String loginIdentityId = CommonProperties.userInfo?.idNo ?? "";

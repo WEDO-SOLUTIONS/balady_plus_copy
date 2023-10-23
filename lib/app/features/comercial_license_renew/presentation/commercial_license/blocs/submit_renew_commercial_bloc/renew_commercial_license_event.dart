@@ -15,3 +15,11 @@ class GoToNextPageEvent extends RenewCommercialLicenseEvent {
 class GoToPreviousPageEvent extends RenewCommercialLicenseEvent {
   const GoToPreviousPageEvent();
 }
+
+class GetRenewYearsEvent extends RenewCommercialLicenseEvent {
+  const GetRenewYearsEvent();
+}
+
+class GetRequestInfoEvent extends RenewCommercialLicenseEvent {
+  const GetRequestInfoEvent();
+}
