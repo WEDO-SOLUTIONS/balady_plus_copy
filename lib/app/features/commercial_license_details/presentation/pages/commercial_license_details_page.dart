@@ -61,7 +61,6 @@ class CommercialLicenseDetailsPage extends StatelessWidget {
                                   webService: sl(),
                                   licenseId: bloc.commercialLicenseId,
                                   submitterInfo: bloc.state.commercialLicenceDetails!.submitterInfo!,
-                                  licenseStatusId:  bloc.state.commercialLicenceDetails!.licenseInfo!.statusId,
                                 ),
                             child: const CommercialLicenseActionSheet(),
                           ),

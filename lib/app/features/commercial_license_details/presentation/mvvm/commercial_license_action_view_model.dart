@@ -11,7 +11,6 @@ import 'package:balady_plus/app/features/commercial_license_details/data/models/
 class CommercialLicenseActionViewModel extends BaseViewModel {
   final WebService webService;
   final int licenseId;
-  final int licenseStatusId;
   final SubmitterInfo submitterInfo;
 
   List<AllowedActions> actions = [];
@@ -19,7 +18,7 @@ class CommercialLicenseActionViewModel extends BaseViewModel {
   CommercialLicenseActionViewModel({
     required this.webService,
     required this.licenseId,
-    required this.submitterInfo, required this.licenseStatusId,
+    required this.submitterInfo,
   }) {
     getCommercialLicenseAllowedActions();
   }
@@ -29,14 +28,13 @@ class CommercialLicenseActionViewModel extends BaseViewModel {
       isLoading = true;
       notifyListeners();
       var response =
-          await webService.dio.get(ApiUrl.commercialLicenseAllowedActions);
+          await webService.dio.get(ApiUrl.getCommercialLicenseAllowedActions(licenseId));
       final data = response.data;
       final result = ResponseBodyModel.fromMap(data).data?.result;
       actions = result
           .map<AllowedActions>(
               (e) => AllowedActions.fromJson(e as Map<String, dynamic>))
           .toList();
-      actions = actions.where((element) => element.id == 1008 && licenseStatusId != 3).toList();
     } catch (e) {
       print(e);
     }
