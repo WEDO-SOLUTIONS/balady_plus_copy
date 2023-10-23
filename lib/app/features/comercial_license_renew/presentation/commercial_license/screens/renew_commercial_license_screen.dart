@@ -7,10 +7,13 @@ class RenewCommercialLicenseScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    int requestId = ModalRoute.of(context)!.settings.arguments as int;
+
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (context) => RenewCommercialLicenseBloc(),
+          create: (context) => RenewCommercialLicenseBloc(requestId: requestId)
+            ..add(const GetRenewYearsEvent()),
         ),
       ],
       child: const CommercialLicenseBody(),
