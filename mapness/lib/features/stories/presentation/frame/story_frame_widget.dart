@@ -97,7 +97,6 @@ class _StoryFrameWidgetState extends State<StoryFrameWidget>
   }
 
   void imageLoaded() {
-    print("FLAG: image loaded callback");
     setState(() {
       isLoading = false;
       _controller.forward();

@@ -782,6 +782,7 @@ class Story_Frame extends $pb.GeneratedMessage {
     $core.String? description,
     Story_Frame_ActionButton? actionButton,
     $core.bool? isViewed,
+    $core.int? duration,
   }) {
     final $result = create();
     if (background != null) {
@@ -799,6 +800,9 @@ class Story_Frame extends $pb.GeneratedMessage {
     if (isViewed != null) {
       $result.isViewed = isViewed;
     }
+    if (duration != null) {
+      $result.duration = duration;
+    }
     return $result;
   }
   Story_Frame._() : super();
@@ -811,6 +815,7 @@ class Story_Frame extends $pb.GeneratedMessage {
     ..aOS(3, _omitFieldNames ? '' : 'description')
     ..aOM<Story_Frame_ActionButton>(4, _omitFieldNames ? '' : 'actionButton', subBuilder: Story_Frame_ActionButton.create)
     ..aOB(5, _omitFieldNames ? '' : 'isViewed')
+    ..a<$core.int>(6, _omitFieldNames ? '' : 'duration', $pb.PbFieldType.O3)
     ..hasRequiredFields = false
   ;
 
@@ -883,6 +888,15 @@ class Story_Frame extends $pb.GeneratedMessage {
   $core.bool hasIsViewed() => $_has(4);
   @$pb.TagNumber(5)
   void clearIsViewed() => clearField(5);
+
+  @$pb.TagNumber(6)
+  $core.int get duration => $_getIZ(5);
+  @$pb.TagNumber(6)
+  set duration($core.int v) { $_setSignedInt32(5, v); }
+  @$pb.TagNumber(6)
+  $core.bool hasDuration() => $_has(5);
+  @$pb.TagNumber(6)
+  void clearDuration() => clearField(6);
 }
 
 class Story extends $pb.GeneratedMessage {
@@ -1222,11 +1236,15 @@ class HappinessRequest_Tag extends $pb.GeneratedMessage {
 class HappinessRequest extends $pb.GeneratedMessage {
   factory HappinessRequest({
     Point? point,
+    $core.bool? isPositive,
     $core.Iterable<HappinessRequest_Tag>? tags,
   }) {
     final $result = create();
     if (point != null) {
       $result.point = point;
+    }
+    if (isPositive != null) {
+      $result.isPositive = isPositive;
     }
     if (tags != null) {
       $result.tags.addAll(tags);
@@ -1239,7 +1257,8 @@ class HappinessRequest extends $pb.GeneratedMessage {
 
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'HappinessRequest', package: const $pb.PackageName(_omitMessageNames ? '' : 'baladi.protocol'), createEmptyInstance: create)
     ..aOM<Point>(1, _omitFieldNames ? '' : 'point', subBuilder: Point.create)
-    ..pc<HappinessRequest_Tag>(2, _omitFieldNames ? '' : 'tags', $pb.PbFieldType.PM, subBuilder: HappinessRequest_Tag.create)
+    ..aOB(2, _omitFieldNames ? '' : 'isPositive')
+    ..pc<HappinessRequest_Tag>(3, _omitFieldNames ? '' : 'tags', $pb.PbFieldType.PM, subBuilder: HappinessRequest_Tag.create)
     ..hasRequiredFields = false
   ;
 
@@ -1276,7 +1295,16 @@ class HappinessRequest extends $pb.GeneratedMessage {
   Point ensurePoint() => $_ensure(0);
 
   @$pb.TagNumber(2)
-  $core.List<HappinessRequest_Tag> get tags => $_getList(1);
+  $core.bool get isPositive => $_getBF(1);
+  @$pb.TagNumber(2)
+  set isPositive($core.bool v) { $_setBool(1, v); }
+  @$pb.TagNumber(2)
+  $core.bool hasIsPositive() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearIsPositive() => clearField(2);
+
+  @$pb.TagNumber(3)
+  $core.List<HappinessRequest_Tag> get tags => $_getList(2);
 }
 
 

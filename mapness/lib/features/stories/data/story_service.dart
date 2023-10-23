@@ -9,7 +9,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'story_service.g.dart';
 
-@Riverpod(dependencies: [StoriesRepo], keepAlive: true)
+@Riverpod(dependencies: [StoriesRepo])
 class StoryService extends _$StoryService {
   void markStoryReeded(final storyId, int frameIndex) {
     markStoryReeded(storyId, frameIndex);
@@ -49,7 +49,6 @@ class StoryService extends _$StoryService {
         .toList();
 
     return StoryOverallData(
-      frameDuration: 5,
       stories: stories,
       thumbnails: thumnails,
     );

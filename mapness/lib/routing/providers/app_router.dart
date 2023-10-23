@@ -12,8 +12,7 @@ final _rootNavigatorKey = GlobalKey<NavigatorState>();
 final _mapNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'map');
 final _routeNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'route');
 final _cartNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'cart');
-final _dashboardNavigatorKey =
-    GlobalKey<NavigatorState>(debugLabel: 'dashboard');
+final _dashboardNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'dashboard');
 final _profileNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'profile');
 
 enum AppRoute {

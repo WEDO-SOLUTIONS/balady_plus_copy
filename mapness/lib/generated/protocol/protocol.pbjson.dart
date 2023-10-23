@@ -166,6 +166,7 @@ const Story_Frame$json = {
     {'1': 'description', '3': 3, '4': 1, '5': 9, '9': 1, '10': 'description', '17': true},
     {'1': 'action_button', '3': 4, '4': 1, '5': 11, '6': '.baladi.protocol.Story.Frame.ActionButton', '9': 2, '10': 'actionButton', '17': true},
     {'1': 'is_viewed', '3': 5, '4': 1, '5': 8, '10': 'isViewed'},
+    {'1': 'duration', '3': 6, '4': 1, '5': 5, '10': 'duration'},
   ],
   '3': [Story_Frame_ActionButton$json],
   '8': [
@@ -229,21 +230,22 @@ final $typed_data.Uint8List storyDescriptor = $convert.base64Decode(
     'NvbC5TdG9yeS5QcmV2aWV3UgdwcmV2aWV3EjQKBmZyYW1lcxgDIAMoCzIcLmJhbGFkaS5wcm90'
     'b2NvbC5TdG9yeS5GcmFtZVIGZnJhbWVzEhsKCWlzX3ZpZXdlZBgEIAEoCFIIaXNWaWV3ZWQaTQ'
     'oHUHJldmlldxIsCgVpbWFnZRgBIAEoCzIWLmJhbGFkaS5wcm90b2NvbC5JbWFnZVIFaW1hZ2US'
-    'FAoFdGl0bGUYAiABKAlSBXRpdGxlGpAGCgVGcmFtZRI2CgpiYWNrZ3JvdW5kGAEgASgLMhYuYm'
+    'FAoFdGl0bGUYAiABKAlSBXRpdGxlGqwGCgVGcmFtZRI2CgpiYWNrZ3JvdW5kGAEgASgLMhYuYm'
     'FsYWRpLnByb3RvY29sLkltYWdlUgpiYWNrZ3JvdW5kEhkKBXRpdGxlGAIgASgJSABSBXRpdGxl'
     'iAEBEiUKC2Rlc2NyaXB0aW9uGAMgASgJSAFSC2Rlc2NyaXB0aW9uiAEBElMKDWFjdGlvbl9idX'
     'R0b24YBCABKAsyKS5iYWxhZGkucHJvdG9jb2wuU3RvcnkuRnJhbWUuQWN0aW9uQnV0dG9uSAJS'
-    'DGFjdGlvbkJ1dHRvbogBARIbCglpc192aWV3ZWQYBSABKAhSCGlzVmlld2VkGu4DCgxBY3Rpb2'
-    '5CdXR0b24SFAoFdGl0bGUYASABKAlSBXRpdGxlEkQKBGNhbGwYAiABKAsyLi5iYWxhZGkucHJv'
-    'dG9jb2wuU3RvcnkuRnJhbWUuQWN0aW9uQnV0dG9uLkNhbGxIAFIEY2FsbBJaCgxleHRlcm5hbF'
-    '91cmwYAyABKAsyNS5iYWxhZGkucHJvdG9jb2wuU3RvcnkuRnJhbWUuQWN0aW9uQnV0dG9uLkV4'
-    'dGVybmFsVXJsSABSC2V4dGVybmFsVXJsElEKCW9wZW5fY2FyZBgEIAEoCzIyLmJhbGFkaS5wcm'
-    '90b2NvbC5TdG9yeS5GcmFtZS5BY3Rpb25CdXR0b24uT3BlbkNhcmRIAFIIb3BlbkNhcmQSUAoI'
-    'ZGVlcGxpbmsYBSABKAsyMi5iYWxhZGkucHJvdG9jb2wuU3RvcnkuRnJhbWUuQWN0aW9uQnV0dG'
-    '9uLkRlZXBsaW5rSABSCGRlZXBsaW5rGhwKBENhbGwSFAoFcGhvbmUYASABKAlSBXBob25lGh8K'
-    'C0V4dGVybmFsVXJsEhAKA3VybBgBIAEoCVIDdXJsGhoKCE9wZW5DYXJkEg4KAmlkGAEgASgJUg'
-    'JpZBocCghEZWVwbGluaxIQCgN1cmwYASABKAlSA3VybEIICgZhY3Rpb25CCAoGX3RpdGxlQg4K'
-    'DF9kZXNjcmlwdGlvbkIQCg5fYWN0aW9uX2J1dHRvbg==');
+    'DGFjdGlvbkJ1dHRvbogBARIbCglpc192aWV3ZWQYBSABKAhSCGlzVmlld2VkEhoKCGR1cmF0aW'
+    '9uGAYgASgFUghkdXJhdGlvbhruAwoMQWN0aW9uQnV0dG9uEhQKBXRpdGxlGAEgASgJUgV0aXRs'
+    'ZRJECgRjYWxsGAIgASgLMi4uYmFsYWRpLnByb3RvY29sLlN0b3J5LkZyYW1lLkFjdGlvbkJ1dH'
+    'Rvbi5DYWxsSABSBGNhbGwSWgoMZXh0ZXJuYWxfdXJsGAMgASgLMjUuYmFsYWRpLnByb3RvY29s'
+    'LlN0b3J5LkZyYW1lLkFjdGlvbkJ1dHRvbi5FeHRlcm5hbFVybEgAUgtleHRlcm5hbFVybBJRCg'
+    'lvcGVuX2NhcmQYBCABKAsyMi5iYWxhZGkucHJvdG9jb2wuU3RvcnkuRnJhbWUuQWN0aW9uQnV0'
+    'dG9uLk9wZW5DYXJkSABSCG9wZW5DYXJkElAKCGRlZXBsaW5rGAUgASgLMjIuYmFsYWRpLnByb3'
+    'RvY29sLlN0b3J5LkZyYW1lLkFjdGlvbkJ1dHRvbi5EZWVwbGlua0gAUghkZWVwbGluaxocCgRD'
+    'YWxsEhQKBXBob25lGAEgASgJUgVwaG9uZRofCgtFeHRlcm5hbFVybBIQCgN1cmwYASABKAlSA3'
+    'VybBoaCghPcGVuQ2FyZBIOCgJpZBgBIAEoCVICaWQaHAoIRGVlcGxpbmsSEAoDdXJsGAEgASgJ'
+    'UgN1cmxCCAoGYWN0aW9uQggKBl90aXRsZUIOCgxfZGVzY3JpcHRpb25CEAoOX2FjdGlvbl9idX'
+    'R0b24=');
 
 @$core.Deprecated('Use viewedStoriesRequestDescriptor instead')
 const ViewedStoriesRequest$json = {
@@ -304,7 +306,8 @@ const HappinessRequest$json = {
   '1': 'HappinessRequest',
   '2': [
     {'1': 'point', '3': 1, '4': 1, '5': 11, '6': '.baladi.protocol.Point', '10': 'point'},
-    {'1': 'tags', '3': 2, '4': 3, '5': 11, '6': '.baladi.protocol.HappinessRequest.Tag', '10': 'tags'},
+    {'1': 'is_positive', '3': 2, '4': 1, '5': 8, '10': 'isPositive'},
+    {'1': 'tags', '3': 3, '4': 3, '5': 11, '6': '.baladi.protocol.HappinessRequest.Tag', '10': 'tags'},
   ],
   '3': [HappinessRequest_Tag$json],
 };
@@ -320,6 +323,7 @@ const HappinessRequest_Tag$json = {
 /// Descriptor for `HappinessRequest`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List happinessRequestDescriptor = $convert.base64Decode(
     'ChBIYXBwaW5lc3NSZXF1ZXN0EiwKBXBvaW50GAEgASgLMhYuYmFsYWRpLnByb3RvY29sLlBvaW'
-    '50UgVwb2ludBI5CgR0YWdzGAIgAygLMiUuYmFsYWRpLnByb3RvY29sLkhhcHBpbmVzc1JlcXVl'
-    'c3QuVGFnUgR0YWdzGhkKA1RhZxISCgRuYW1lGAEgASgJUgRuYW1l');
+    '50UgVwb2ludBIfCgtpc19wb3NpdGl2ZRgCIAEoCFIKaXNQb3NpdGl2ZRI5CgR0YWdzGAMgAygL'
+    'MiUuYmFsYWRpLnByb3RvY29sLkhhcHBpbmVzc1JlcXVlc3QuVGFnUgR0YWdzGhkKA1RhZxISCg'
+    'RuYW1lGAEgASgJUgRuYW1l');
 

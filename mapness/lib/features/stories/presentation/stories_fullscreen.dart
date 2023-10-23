@@ -26,7 +26,8 @@ class _StoriesFullscreenState extends ConsumerState<StoriesFullscreen> {
   late int initialPage;
 
   void _onChangeStory(int pageIndex, int length) {
-    if (pageIndex == 0 || pageIndex == length + 1) {
+    // if (pageIndex == 0 || pageIndex == length + 1) {
+    if (pageIndex == length) {
       widget.onClose();
     }
   }
@@ -47,10 +48,9 @@ class _StoriesFullscreenState extends ConsumerState<StoriesFullscreen> {
     final index = stories.indexWhere(
       (element) => element.storyId == widget.initialStoryId,
     );
-    print(index);
-    _storyController = PageController(initialPage: 1 + index);
+    _storyController = PageController(initialPage: index + 1);
     setState(() {
-      initialPage = index + 1;
+      initialPage = index; // + 1;
     });
   }
 
@@ -103,19 +103,17 @@ class _StoriesFullscreenState extends ConsumerState<StoriesFullscreen> {
       loading: () => blank,
       data: (storiesData) {
         final stories = storiesData.stories;
-        final duration = storiesData.frameDuration;
 
         return CubePageView(
           onPageChanged: (index) => _onChangeStory(index, stories.length),
           controller: _storyController,
           startPage: initialPage,
           children: [
-            blank,
+            // blank,
             ...stories.map(
               (story) => StoryFramesPlayer(
                 onActionPressed: (action) => onActionPressed(action, context),
                 story: story,
-                duration: duration,
                 onNextStory: _nextStory,
                 onPreviousStory: _previousStory,
                 onClose: widget.onClose,

@@ -22,6 +22,7 @@ extension NetworkStoryFrameMapper on NetworkStoryFrame {
       subtitle: null,
       description: description,
       action: actionButton.toDomain(),
+      duration: duration,
     );
   }
 }

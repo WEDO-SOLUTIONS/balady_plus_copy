@@ -6,8 +6,11 @@ class StoryThumbnailWidget extends StatelessWidget {
   final StoryThumbnailData thumbnail;
   final VoidCallback onPress;
 
-  const StoryThumbnailWidget(
-      {super.key, required this.thumbnail, required this.onPress});
+  const StoryThumbnailWidget({
+    super.key,
+    required this.thumbnail,
+    required this.onPress,
+  });
 
   @override
   Widget build(BuildContext context) {

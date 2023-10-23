@@ -7,7 +7,6 @@ import 'package:mapness/features/stories/presentation/frame/story_frame_widget.d
 
 class StoryFramesPlayer extends ConsumerStatefulWidget {
   final StoryData story;
-  final int duration;
 
   final VoidCallback onNextStory;
   final VoidCallback onPreviousStory;
@@ -19,7 +18,6 @@ class StoryFramesPlayer extends ConsumerStatefulWidget {
     this.onActionPressed,
     super.key,
     required this.story,
-    required this.duration,
     required this.onNextStory,
     required this.onPreviousStory,
     required this.onClose,
@@ -69,15 +67,16 @@ class _StoryFramesPlayerState extends ConsumerState<StoryFramesPlayer> {
   Widget build(BuildContext context) {
     final story = widget.story;
     final frames = story.frames;
+    final currentFrame = frames[currentIndex];
 
     return StoryFrameWidget(
       onActionPressed: widget.onActionPressed,
       key: Key(story.storyId + currentIndex.toString()),
-      frame: frames[currentIndex],
+      frame: currentFrame,
       onClose: widget.onClose,
       onNext: () => _nextPage(story.storyId, currentIndex, frames.length),
       onPrevious: () => _previousPage(story.storyId, currentIndex),
-      duration: widget.duration,
+      duration: currentFrame.duration,
       frameIndex: currentIndex,
       frameLength: frames.length,
     );

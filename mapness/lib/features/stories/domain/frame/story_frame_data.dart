@@ -8,8 +8,10 @@ class StoryFrameData {
   final String? description;
   final bool isWatched;
   final StoryFrameAction? action;
+  final int duration;
 
   const StoryFrameData({
+    required this.duration,
     required this.storyId,
     required this.isWatched,
     required this.title,
@@ -27,6 +29,7 @@ class StoryFrameData {
     String? description,
     bool? isWatched,
     StoryFrameAction? action,
+    int? duration,
   }) {
     return StoryFrameData(
       storyId: storyId ?? this.storyId,
@@ -36,6 +39,7 @@ class StoryFrameData {
       description: description ?? this.description,
       isWatched: isWatched ?? this.isWatched,
       action: action ?? this.action,
+      duration: duration ?? this.duration,
     );
   }
 }
