@@ -236,6 +236,16 @@ abstract class DgisMapPlugin extends PlatformInterface {
 
   Future<void> removePanoramasMarkers();
 
+  Future<void> setRouteParams(RouteEditorRouteParamsMessage params);
+
+  Future<void> hideRoutes();
+
+  Future<void> startNavigation();
+
+  Future<void> startNavigationSimulation();
+
+  Future<void> stopNavigation();
+
   Future<int> overlappedBy(
     GeoRectMessage outerRect,
     GeoRectMessage innerRect,
@@ -261,6 +271,14 @@ abstract class DgisMapPlugin extends PlatformInterface {
 
   Future<void> removeEsriIOLayer();
 
+  Future<void> onCompassClicked();
+
+  Future<void> startFreeRoam();
+
+  Future<void> stopFreeRoam();
+
+  Future<void> toggleSound();
+
   Future<void> onTrafficAndParkingAttached();
 
   Future<void> onTrafficAndParkingDetached();
@@ -272,4 +290,6 @@ abstract class DgisMapPlugin extends PlatformInterface {
   Future<void> setAppearance(MapAppearanceMessage appearance);
 
   Future<void> setZoomRestrictions(double? min, double? max);
+
+  Future<void> setPublicTransportActiveRoute(int routeIndex);
 }
