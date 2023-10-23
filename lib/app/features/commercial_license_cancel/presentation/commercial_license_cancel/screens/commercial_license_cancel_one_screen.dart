@@ -106,8 +106,12 @@ class CommercialLicenseCancelOneScreen extends StatelessWidget {
                                           .copyWith(
                                         color: AppColor.primary900Light,
                                       ),
+                                      cancelTextStyle: AppStyle
+                                          .textButtonStyle
+                                          .copyWith(
+                                        color: AppColor.primary900Light,
+                                      ),
                                       headercolor: AppColor.paleGrey,
-                                      cancel: Container(),
                                       height: 270,
                                       confirmText: 'choose'.tr(),
                                       title: CustomTextWidget(
@@ -143,9 +147,12 @@ class CommercialLicenseCancelOneScreen extends StatelessWidget {
                                       cancelText: 'cancel'.tr(),
                                     ).showModal(context);
                                   },
-                                  suffixIcon: IconButton(
-                                    icon: const Icon(Icons.clear),
-                                    onPressed: ()  {
+                                  suffixIcon: InkWell(
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(6.0),
+                                      child: const Icon(Icons.clear),
+                                    ),
+                                    onTap: ()  {
                                       bloc.add(const SelectHijriCalendar(null));
                                     },
                                   ),
@@ -153,10 +160,11 @@ class CommercialLicenseCancelOneScreen extends StatelessWidget {
                                   readOnly: true,
                                   disabledColor: Colors.transparent,
 
-                                  onValidate: (date) =>
-                                  date?.isNotEmpty ?? false
-                                      ? null
-                                      : "select_date".tr()),
+                                  // onValidate: (date) =>
+                                  // date?.isNotEmpty ?? false
+                                  //     ? null
+                                  //     : "select_date".tr()
+                              ),
                             ],
                           )
                               : const SizedBox(),
