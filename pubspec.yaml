@@ -153,6 +153,7 @@ dependencies:
   # Mapness
   mapness:
     path: mapness
+
   google_fonts: ^6.0.0
   wakelock_plus: ^1.1.3
   provider: ^6.0.5
