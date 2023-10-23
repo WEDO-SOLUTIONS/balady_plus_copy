@@ -12,8 +12,10 @@ class LocationEventHandler {
       _locationFollowController.stream;
 
   final MapApi _api;
-  final _locationEnabledController = StreamController<LocationEnabledEvent>();
-  final _locationFollowController = StreamController<LocationFollowEvent>();
+  final _locationEnabledController =
+      StreamController<LocationEnabledEvent>.broadcast();
+  final _locationFollowController =
+      StreamController<LocationFollowEvent>.broadcast();
 
   void enabledEvent(Map<dynamic, dynamic> map) {
     _locationEnabledController.sink.add(

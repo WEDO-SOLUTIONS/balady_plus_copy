@@ -18,5 +18,7 @@ class DgisController extends _$DgisController {
 
     await controller.loadStyles("assets/maps/styles/common-styles.2gis");
     await controller.overrideLocales(["ar-SA"]);
+    await controller.onLocationPremissionGranted(
+        desiredAccuracy: DesiredAccuracyMessage.high);
   }
 }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'routing/app_router.dart';
+import 'routing/providers/app_router.dart';
 
 class MapnessEntryPoint extends StatelessWidget {
   final List<Widget> navigationRoutes;

@@ -3,15 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:mapness/features/landing/widgets/map_control.dart';
-import 'package:mapness/features/map/providers/map_zoom.dart';
+import 'package:mapness/features/map/providers/zoom_state.dart';
 
 class ZoomControl extends ConsumerWidget {
   const ZoomControl({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final zoomState = ref.watch(mapZoomProvider);
-    final zoomNotifier = ref.watch(mapZoomProvider.notifier);
+    final zoomState = ref.watch(zoomStateProvider);
+    final zoomNotifier = ref.watch(zoomStateProvider.notifier);
 
     return Column(
       children: [
@@ -27,6 +27,8 @@ class ZoomControl extends ConsumerWidget {
               "assets/icons/svg/ic_control_zoom_in.svg",
               semanticsLabel: 'MinApps Screen',
               package: "mapness",
+              width: 24,
+              height: 24,
             ),
             disabled: !zoomState.zoomInEnabled,
           ),

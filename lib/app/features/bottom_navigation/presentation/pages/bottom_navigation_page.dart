@@ -1,4 +1,3 @@
-import 'package:balady_plus/app/features/routing_page/routing_overlay.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart'
     show BlocProvider, MultiBlocProvider;
@@ -7,15 +6,10 @@ import 'package:mapness/entry_point.dart';
 import '../../../../core/dependency_injection/dependency_injection_exports.dart'
     show sl;
 import '../../../../core/services/services_exports.dart' show NavigationService;
-import '../../../../core/utils/utils_exports.dart'
-    show BottomNavBar, CommonFunctions;
-import '../../../home_page/presentation/pages/home_page.dart';
-import '../../../nearby/presentation/pages/nearby_page.dart';
+import '../../../../core/utils/utils_exports.dart' show BottomNavBar;
 import '../../../public_services_features/prayer_times/presentation/cubit/prayer_times_cubit.dart';
-import '../../../services/services_exports.dart'
-    show ServicesCubit, ServicesPage;
-import '../../bottom_navigation_exports.dart'
-    show BottomNavBarCubit, BottomNavBarWidget;
+import '../../../services/services_exports.dart' show ServicesCubit;
+import '../../bottom_navigation_exports.dart' show BottomNavBarCubit;
 
 class BottomNavigationPage extends StatefulWidget {
   const BottomNavigationPage({super.key});
@@ -69,7 +63,6 @@ class _BottomNavigationPageState extends State<BottomNavigationPage> {
             Container(),
             Container(),
             Container(),
-            const HomePage(),
           ],
         ),
       ),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mapness/features/landing/dashboard_manager.dart';
+import 'package:mapness/features/landing/providers/map_controls.dart';
 
 class MapControl extends ConsumerWidget {
   final Widget content;
@@ -13,21 +13,27 @@ class MapControl extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final controlsVisibility = ref.watch(dashboardManagerProvider);
-    return controlsVisibility != BottomSheetState.expanded
-        ? Opacity(
-            opacity: disabled ? 0.5 : 1,
-            child: Container(
-              decoration: const BoxDecoration(
-                borderRadius: BorderRadius.all(
-                  Radius.circular(10),
-                ),
-                color: Colors.white,
-              ),
-              padding: const EdgeInsets.all(10.0),
-              child: content,
-            ),
-          )
-        : const SizedBox.shrink();
+    final sheetState = ref.watch(mapControlsProvider);
+
+    return AnimatedOpacity(
+      opacity: sheetState != MapControlsState.idle ? 0 : (disabled ? 0.5 : 1),
+      duration: const Duration(milliseconds: 250),
+      child: Container(
+        constraints: const BoxConstraints(minWidth: 40),
+        height: 40,
+        decoration: const BoxDecoration(
+          borderRadius: BorderRadius.all(
+            Radius.circular(10),
+          ),
+          color: Colors.white,
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            content,
+          ],
+        ),
+      ),
+    );
   }
 }

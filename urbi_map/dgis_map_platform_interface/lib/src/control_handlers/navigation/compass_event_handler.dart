@@ -8,7 +8,8 @@ class CompassEventHandler {
   Stream<CompassBearingEvent> get compassBearingEvents =>
       _compassBearingController.stream;
 
-  final _compassBearingController = StreamController<CompassBearingEvent>();
+  final _compassBearingController =
+      StreamController<CompassBearingEvent>.broadcast();
 
   void compassBearingChangedEvent(Map<dynamic, dynamic> map) {
     final value = map["value"];
