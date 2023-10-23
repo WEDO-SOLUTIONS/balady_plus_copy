@@ -31,10 +31,7 @@ class CommercialLicenseActionViewModel extends BaseViewModel {
           await webService.dio.get(ApiUrl.getCommercialLicenseAllowedActions(licenseId));
       final data = response.data;
       final result = ResponseBodyModel.fromMap(data).data?.result;
-      actions = result
-          .map<AllowedActions>(
-              (e) => AllowedActions.fromJson(e as Map<String, dynamic>))
-          .toList();
+      actions = allowedActionsListFromJson(result);
     } catch (e) {
       print(e);
     }
