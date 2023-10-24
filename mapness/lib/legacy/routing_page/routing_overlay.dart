@@ -43,6 +43,49 @@ class RoutingOverlay extends ConsumerWidget {
   }
 }
 
+class _RoutingLifecycleWrap extends StatefulWidget {
+  const _RoutingLifecycleWrap({
+    super.key,
+    required this.child,
+    required this.viewModel,
+  });
+
+  final Widget child;
+  final RoutingViewModel viewModel;
+
+  @override
+  State<_RoutingLifecycleWrap> createState() => __RoutingLifecycleWrapState();
+}
+
+class __RoutingLifecycleWrapState extends State<_RoutingLifecycleWrap>
+    with WidgetsBindingObserver {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    WidgetsBinding.instance.removeObserver(this);
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    Future.delayed(const Duration(milliseconds: 500), () {
+      // widget.viewModel.setRouteParams();
+      print("setRouteParams");
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return widget.child;
+  }
+}
+
 class _RoutingOverlay extends StatelessWidget {
   const _RoutingOverlay({super.key});
 
@@ -50,75 +93,78 @@ class _RoutingOverlay extends StatelessWidget {
   Widget build(BuildContext context) {
     final routingViewModel = context.watch<RoutingViewModel>();
 
-    return WillPopScope(
-      onWillPop: routingViewModel.onWillPop,
-      child: Stack(
-        fit: StackFit.expand,
-        children: [
-          ValueListenableBuilder<NavigationState>(
-            valueListenable: routingViewModel.navigationState,
-            builder: (_, state, __) {
-              return Positioned(
-                right: 0,
-                bottom: 0,
-                left: 0,
-                top: 0,
-                child: !state.isRunning
-                    ? const SizedBox.shrink()
-                    : NavControlsView(
-                        controller: routingViewModel.mapController,
-                        isFreeRoam: state.isFreeRoamMode,
-                        onFreeRoamStop:
-                            routingViewModel.onNavigationFreeRoamStop,
-                      ),
-              );
-            },
-          ),
-          AnimatedBuilder(
-              animation: Listenable.merge([
-                routingViewModel.navRoutingStartObjectId,
-                routingViewModel.navRoutingFinishObjectId,
-              ]),
-              builder: (_, __) {
-                return ValueListenableBuilder<NavigationState>(
-                  valueListenable: routingViewModel.navigationState,
-                  builder: (_, state, __) {
-                    return state.isRunning ||
-                            (routingViewModel.navRoutingStartObjectId.value ==
-                                    null &&
-                                routingViewModel
-                                        .navRoutingFinishObjectId.value ==
-                                    null)
-                        ? const SizedBox.shrink()
-                        : ValueListenableBuilder(
-                            valueListenable: routingViewModel.navRoutingType,
-                            builder: (context, routingType, _) =>
-                                const Positioned(
-                              right: 0,
-                              bottom: 0,
-                              left: 0,
-                              top: 0,
-                              child: _RoutingBottomBar(),
-                            ),
-                          );
-                  },
+    return _RoutingLifecycleWrap(
+      viewModel: routingViewModel,
+      child: WillPopScope(
+        onWillPop: routingViewModel.onWillPop,
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            ValueListenableBuilder<NavigationState>(
+              valueListenable: routingViewModel.navigationState,
+              builder: (_, state, __) {
+                return Positioned(
+                  right: 0,
+                  bottom: 0,
+                  left: 0,
+                  top: 0,
+                  child: !state.isRunning
+                      ? const SizedBox.shrink()
+                      : NavControlsView(
+                          controller: routingViewModel.mapController,
+                          isFreeRoam: state.isFreeRoamMode,
+                          onFreeRoamStop:
+                              routingViewModel.onNavigationFreeRoamStop,
+                        ),
                 );
-              }),
-          ValueListenableBuilder<NavigationState>(
-            valueListenable: routingViewModel.navigationState,
-            builder: (_, state, __) {
-              return state.isRunning
-                  ? const SizedBox.shrink()
-                  : Positioned(
-                      left: 0,
-                      top: 0,
-                      child: _RoutingHeader(
-                        routeType: routingViewModel.navRoutingType.value,
-                      ),
-                    );
-            },
-          ),
-        ],
+              },
+            ),
+            AnimatedBuilder(
+                animation: Listenable.merge([
+                  routingViewModel.navRoutingStartObjectId,
+                  routingViewModel.navRoutingFinishObjectId,
+                ]),
+                builder: (_, __) {
+                  return ValueListenableBuilder<NavigationState>(
+                    valueListenable: routingViewModel.navigationState,
+                    builder: (_, state, __) {
+                      return state.isRunning ||
+                              (routingViewModel.navRoutingStartObjectId.value ==
+                                      null &&
+                                  routingViewModel
+                                          .navRoutingFinishObjectId.value ==
+                                      null)
+                          ? const SizedBox.shrink()
+                          : ValueListenableBuilder(
+                              valueListenable: routingViewModel.navRoutingType,
+                              builder: (context, routingType, _) =>
+                                  const Positioned(
+                                right: 0,
+                                bottom: 0,
+                                left: 0,
+                                top: 0,
+                                child: _RoutingBottomBar(),
+                              ),
+                            );
+                    },
+                  );
+                }),
+            ValueListenableBuilder<NavigationState>(
+              valueListenable: routingViewModel.navigationState,
+              builder: (_, state, __) {
+                return state.isRunning
+                    ? const SizedBox.shrink()
+                    : Positioned(
+                        left: 0,
+                        top: 0,
+                        child: _RoutingHeader(
+                          routeType: routingViewModel.navRoutingType.value,
+                        ),
+                      );
+              },
+            ),
+          ],
+        ),
       ),
     );
   }

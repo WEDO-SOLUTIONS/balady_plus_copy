@@ -33,7 +33,7 @@ class _MapPageState extends ConsumerState<MapPage>
     if (_needRefresh && state == AppLifecycleState.resumed) {
       setState(() {
         _needRefresh = false;
-        _keyIndex += 1;
+        // _keyIndex += 1;
       });
     }
 
