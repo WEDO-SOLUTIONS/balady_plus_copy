@@ -177,11 +177,13 @@ class _ServiceCardsPageState extends State<CreateComplianceLocationPage> {
         body: Column(
           children: [
             const Expanded(
-              child: Column(
-                children: [
-                  SizedBox(height: 16),
-                  ServiceCardDescription(),
-                ],
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    SizedBox(height: 16),
+                    ServiceCardDescription(),
+                  ],
+                ),
               ),
             ),
             /* if (service.warning != null)
