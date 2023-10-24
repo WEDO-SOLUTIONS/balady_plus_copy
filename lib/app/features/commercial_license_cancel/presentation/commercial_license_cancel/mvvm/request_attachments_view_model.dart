@@ -50,14 +50,12 @@ class RequestAttachmentsViewModel extends BaseViewModel {
         response: response,
         ex: exception,
       );
-      showError(exception.toString());
     } catch (exception) {
       CommonFunctions.sendEvent(
         dioError: null,
         response: response,
         ex: Exception(exception.toString()),
       );
-      showError(exception.toString());
     }
     isLoading = false;
     notifyListeners();
