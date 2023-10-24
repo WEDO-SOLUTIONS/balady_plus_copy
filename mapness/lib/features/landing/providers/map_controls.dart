@@ -13,5 +13,5 @@ class MapControls extends _$MapControls {
   @override
   MapControlsState build() => MapControlsState.idle;
 
-  void update(MapControlsState bottomSheet) => state = bottomSheet;
+  void update(MapControlsState value) => state = value;
 }

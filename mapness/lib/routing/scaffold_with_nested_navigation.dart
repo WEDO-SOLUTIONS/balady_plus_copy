@@ -44,10 +44,10 @@ class _ScaffoldWithNestedNavigationState
               .read(mapControlsProvider.notifier)
               .update(MapControlsState.navigation);
         } else {
-          ref.read(mapControlsProvider.notifier).update(MapControlsState.idle);
+          ref.watch(mapControlsProvider.notifier).update(MapControlsState.idle);
           try {
-            ref.read(dgisControllerProvider)?.hideRoutes();
-            ref.read(dgisControllerProvider)?.stopNavigation();
+            ref.watch(dgisControllerProvider)?.hideRoutes();
+            ref.watch(dgisControllerProvider)?.stopNavigation();
           } catch (e) {}
         }
         widget.navigationShell.goBranch(
@@ -77,6 +77,7 @@ class ScaffoldWithNavigationBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
+      resizeToAvoidBottomInset: false,
       child: Column(
         children: [
           Expanded(child: body),
