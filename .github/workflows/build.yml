@@ -11,20 +11,20 @@ concurrency:
 on:
   push:
     branches:
-      - 'urbi'
-      - 'urbi-release-*'
+      - "urbi"
+      - "urbi-release-*"
   pull_request:
     types:
       - opened
       - reopened
       - synchronize
     branches:
-      - 'urbi'
+      - "urbi"
     paths-ignore:
-      - '**.md'
-      - 'doc/**'
-      - '.git/'
-      - '.vscode/'
+      - "**.md"
+      - "doc/**"
+      - ".git/"
+      - ".vscode/"
 
 jobs:
   # analyze:
@@ -49,22 +49,22 @@ jobs:
   #       run: |
   #         cd urbi_map/dgis_map_platform_interface
   #         mkdir lib/src/pigeons/
-  #         mkdir ../dgis_map/android/src/main/kotlin/com/dgis/map/map_api 
+  #         mkdir ../dgis_map/android/src/main/kotlin/com/dgis/map/map_api
   #         flutter pub get
   #         flutter pub run pigeon --input pigeons/messages.dart
   #     - name: 🤖🔨 Development setup balady
   #       run: |
   #         flutter pub get
-      # - name: ⚠️ℹ️ Run Dart analysis for app package
-      #   uses: zgosalvez/github-actions-analyze-dart@v2.0.9
-      # - name: ⚠️ℹ️ Run Dart analysis for dgis_map package
-      #   uses: zgosalvez/github-actions-analyze-dart@v2.0.9
-      #   with:
-      #     working-directory: "${{github.workspace}}/urbi_map/dgis_map"
-      # - name: ⚠️ℹ️ Run Dart analysis for dgis_map_platform_interface package
-      #   uses: zgosalvez/github-actions-analyze-dart@v2.0.9
-      #   with:
-      #     working-directory: "${{github.workspace}}/urbi_map/dgis_map_platform_interface"
+  # - name: ⚠️ℹ️ Run Dart analysis for app package
+  #   uses: zgosalvez/github-actions-analyze-dart@v2.0.9
+  # - name: ⚠️ℹ️ Run Dart analysis for dgis_map package
+  #   uses: zgosalvez/github-actions-analyze-dart@v2.0.9
+  #   with:
+  #     working-directory: "${{github.workspace}}/urbi_map/dgis_map"
+  # - name: ⚠️ℹ️ Run Dart analysis for dgis_map_platform_interface package
+  #   uses: zgosalvez/github-actions-analyze-dart@v2.0.9
+  #   with:
+  #     working-directory: "${{github.workspace}}/urbi_map/dgis_map_platform_interface"
 
   build:
     name: Build Android
@@ -77,15 +77,15 @@ jobs:
       - name: ⚙️ Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.10.3'
-          channel: 'stable'
+          flutter-version: "3.10.3"
+          channel: "stable"
           cache: true
       - name: ⚙️ Setup Java
         uses: actions/setup-java@v3
         with:
-          distribution: 'zulu'
+          distribution: "zulu"
           java-version: "12.x"
-          cache: 'gradle'
+          cache: "gradle"
         id: java
       - name: 🤖🔨 Development setup dgis_map_platform_interface
         run: |
@@ -97,6 +97,11 @@ jobs:
       - name: 🤖🔨 Development setup dgis_map
         run: |
           cd urbi_map/dgis_map
+          flutter pub get
+          flutter pub run build_runner build --delete-conflicting-outputs
+      - name: 🤖🔨 Development setup mapness
+        run: |
+          cd mapness
           flutter pub get
           flutter pub run build_runner build --delete-conflicting-outputs
       - name: 🤖🔨 Build Android app
