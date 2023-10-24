@@ -75,6 +75,7 @@ class RoutingViewModel {
 
   @override
   void dispose() {
+    mapController.hideRoutes();
     for (final sub in _subscriptions) {
       unawaited(sub.cancel());
     }

@@ -119,7 +119,10 @@ class _SearchSheetState extends State<_RoutingSearch> {
                               value: startSearch,
                               builder: (context, child) => WillPopScope(
                                 onWillPop: startSearch.onWillPop,
-                                child: const NavSearchField('A'),
+                                child: const NavSearchField(
+                                  'A',
+                                  placeholder: 'From',
+                                ),
                               ),
                             ),
                           ),
@@ -132,7 +135,10 @@ class _SearchSheetState extends State<_RoutingSearch> {
                               value: finishSearch,
                               builder: (context, child) => WillPopScope(
                                 onWillPop: finishSearch.onWillPop,
-                                child: const NavSearchField('B'),
+                                child: const NavSearchField(
+                                  'B',
+                                  placeholder: 'To',
+                                ),
                               ),
                             ),
                           ),

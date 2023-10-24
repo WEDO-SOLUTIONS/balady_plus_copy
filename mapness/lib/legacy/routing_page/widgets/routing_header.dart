@@ -81,13 +81,15 @@ class _RoutingHeaderState extends State<_RoutingHeader>
                                   .index
                                   .toRouteSearchOptionsMessage());
                             },
-                            padding: EdgeInsets.zero,
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 100,
+                            ),
                             controller: _tabController,
                             indicatorPadding: EdgeInsets.zero,
                             labelPadding: EdgeInsets.zero,
                             indicatorSize: TabBarIndicatorSize.label,
                             indicatorColor: Colors.transparent,
-                            isScrollable: true,
+                            // isScrollable: true,
                             tabs: <Widget>[
                               SizedBox(
                                 height: 24,
@@ -103,24 +105,18 @@ class _RoutingHeaderState extends State<_RoutingHeader>
                                   ),
                                 ),
                               ),
-                              Padding(
-                                padding: const EdgeInsets.only(
-                                  left: 32.0,
-                                  right: 16.0,
-                                ),
-                                child: SizedBox(
-                                  height: 24,
-                                  width: 24,
-                                  child: Tab(
-                                    icon: SvgPicture.asset(
-                                      RouteSearchOptionsMessage
-                                          .pedestrian.iconPath,
-                                      height: 24,
-                                      width: 24,
-                                      color: _tabController.index == 1
-                                          ? Colors.white
-                                          : Colors.white54,
-                                    ),
+                              SizedBox(
+                                height: 24,
+                                width: 24,
+                                child: Tab(
+                                  icon: SvgPicture.asset(
+                                    RouteSearchOptionsMessage
+                                        .pedestrian.iconPath,
+                                    height: 24,
+                                    width: 24,
+                                    color: _tabController.index == 1
+                                        ? Colors.white
+                                        : Colors.white54,
                                   ),
                                 ),
                               ),
@@ -128,7 +124,6 @@ class _RoutingHeaderState extends State<_RoutingHeader>
                           ),
                         ),
                       ),
-                      const SizedBox(width: 24),
                     ],
                   ),
                 ),

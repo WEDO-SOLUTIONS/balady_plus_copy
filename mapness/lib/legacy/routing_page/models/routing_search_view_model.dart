@@ -84,7 +84,7 @@ class RoutingSearchViewModel extends SearchViewModel {
 
   void setText(String? value) {
     setTextState = true;
-    searchController.text = value ?? placeholder;
+    searchController.text = value ?? ""; // ?? placeholder;
   }
 
   @override

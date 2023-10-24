@@ -1,9 +1,14 @@
 part of '../routing_overlay.dart';
 
 class NavSearchField extends StatelessWidget {
-  const NavSearchField(this.letter, {super.key});
+  const NavSearchField(
+    this.letter, {
+    required this.placeholder,
+    super.key,
+  });
 
   final String letter;
+  final String placeholder;
 
   @override
   Widget build(BuildContext context) {
@@ -20,12 +25,13 @@ class NavSearchField extends StatelessWidget {
             controller: model.searchController,
             onSubmitted: model.onSubmitTap,
             focusNode: model.searchFocusNode,
-            decoration: const InputDecoration(
-              contentPadding: EdgeInsets.symmetric(
+            decoration: InputDecoration(
+              hintText: placeholder,
+              contentPadding: const EdgeInsets.symmetric(
                 horizontal: 13,
               ),
               isDense: true,
-              suffixIconConstraints: BoxConstraints(
+              suffixIconConstraints: const BoxConstraints(
                 maxHeight: 24,
                 maxWidth: 24,
               ),
