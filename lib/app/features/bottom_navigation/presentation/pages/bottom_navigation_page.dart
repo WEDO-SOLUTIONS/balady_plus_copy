@@ -56,6 +56,7 @@ class _BottomNavigationPageState extends State<BottomNavigationPage> {
         ),
       ],
       child: Scaffold(
+        resizeToAvoidBottomInset: false,
         key: NavigationService.bottomNavKey,
         body: MapnessEntryPoint(
           [

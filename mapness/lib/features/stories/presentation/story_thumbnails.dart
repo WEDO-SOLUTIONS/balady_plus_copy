@@ -24,7 +24,7 @@ class StoryThumbnails extends StatelessWidget {
         return Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const StoryThumbnailLabel(title: 'جديدنا'),
+            // const StoryThumbnailLabel(title: 'جديدنا'),
             SizedBox(
               width: constraints.maxWidth,
               height: min(constraints.maxHeight, 120),
@@ -35,14 +35,18 @@ class StoryThumbnails extends StatelessWidget {
                   itemCount: thumbnails.length,
                   itemBuilder: (context, i) => AnimatedScrollViewItem(
                     child: Padding(
-                      padding: EdgeInsets.only(right: i == 0 ? 16 : 0, left: i == thumbnails.length - 1 ? 16 : 0),
+                      padding: EdgeInsets.only(
+                          right: i == 0 ? 16 : 0,
+                          left: i == thumbnails.length - 1 ? 16 : 0),
                       child: StoryThumbnailWidget(
                         thumbnail: thumbnails[i],
-                        onPress: () => onThumbnailPressed(thumbnails[i].storyId),
+                        onPress: () =>
+                            onThumbnailPressed(thumbnails[i].storyId),
                       ),
                     ),
                   ),
-                  separatorBuilder: (context, index) => const SizedBox(width: 8),
+                  separatorBuilder: (context, index) =>
+                      const SizedBox(width: 8),
                 ),
               ),
             )

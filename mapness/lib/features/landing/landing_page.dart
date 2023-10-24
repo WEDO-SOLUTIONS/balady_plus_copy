@@ -12,16 +12,22 @@ class LandingPage extends ConsumerWidget {
   LandingPage({Key? key}) : super(key: key);
 
   final GlobalKey<LayersSheetState> _layersSheetKey = GlobalKey();
+  final GlobalKey<DashboardState> _dashboardKey = GlobalKey();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final controlsState = ref.watch(mapControlsProvider);
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: Stack(
         children: [
           const MapPage(),
-          if (controlsState != MapControlsState.navigation) const Dashboard(),
+          if (controlsState != MapControlsState.navigation)
+            Dashboard(
+              key: _dashboardKey,
+              dashboardKey: _dashboardKey,
+            ),
           if (controlsState != MapControlsState.navigation)
             controls.MapControls(
               layersState: _layersSheetKey,
