@@ -15,8 +15,8 @@ class EstehkamNumberTextField extends StatelessWidget {
     return BlocBuilder<ComplianceBloc, ComplianceState>(
       builder: (context, state) {
         return CustomTextFieldWithValueWidget(
-          label: "compliance_ownership_text".tr(),
-          hintText: "compliance_ownership_text".tr(),
+          label: "compliance_estehkam_number".tr(),
+          hintText: "compliance_estehkam_number".tr(),
           value: state.ownershipText,
           keyboardType: TextInputType.text,
           inputFormatters: [],

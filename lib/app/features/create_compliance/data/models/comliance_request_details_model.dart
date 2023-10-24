@@ -243,8 +243,16 @@ class LocationResponseInfoDtoModel extends LocationResponseInfoDto {
         mapName: json["mapName"],
         x: json["x"],
         y: json["y"],
-        landNumber: json["landNumber"],
-        landArea: json["landArea"],
+        landNumber: json["landsInfo"] != null
+            ? json["landsInfo"][0] != null
+                ? (json["landsInfo"][0]!["landNumber"]).toString()
+                : null
+            : null,
+        landArea: json["landsInfo"] != null
+            ? json["landsInfo"][0] != null
+                ? (json["landsInfo"][0]!["landArea"]).toString()
+                : null
+            : null,
         isLocationCorrect: json["isLocationCorrect"],
         guid: json["guid"],
       );
