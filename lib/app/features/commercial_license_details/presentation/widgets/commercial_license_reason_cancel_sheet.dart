@@ -78,7 +78,7 @@ class CommercialLicenseReasonCancelSheet extends StatelessWidget {
           const SizedBox(height: 16),
           Consumer<CommercialLicenseReasonCancelViewModel>(
             builder: (context, isLoading, child) {
-              return ElevatedButtonWidget.primaryCustomBorder(
+              return ElevatedButtonWidget.primaryCustom(
                 text: 'start_cancellation_request'.tr(),
                 onPressed: !provider.isLoading
                     ? () async {
@@ -104,7 +104,7 @@ class CommercialLicenseReasonCancelSheet extends StatelessWidget {
             },
           ),
           const SizedBox(height: 16),
-          ElevatedButtonWidget.primaryCustom(
+          ElevatedButtonWidget.primaryCustomBorder(
             text: "undo".tr(),
             onPressed: () {
               Navigator.of(context).pop();
