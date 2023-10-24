@@ -1100,14 +1100,17 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
 
     failOrSuccess.fold((l) {
       emitter(state.copyWith(
-        errorMessage: (l as ServerFailure).errorMessage,
-        status: BlocStatus.failure,
-      ));
+          errorMessage: (l as ServerFailure).errorMessage,
+          status: BlocStatus.failure,
+          showEksanId: (l as ServerFailure).statusCode == 400
+              ? false
+              : state.showEksanId));
     }, (r) {
       emitter(state.copyWith(
           landSubsidyContract: Nullable(r),
           status: BlocStatus.success,
           ownershipDate: Nullable(r.getDate()),
+          showEksanId: true,
           ownershipText: Nullable(r.contractNumber.toString())));
     });
   }

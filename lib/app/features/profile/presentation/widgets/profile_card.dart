@@ -37,13 +37,15 @@ class ProfileCard extends StatelessWidget {
     final name = (agent?.grantorName ?? delegator?.entityName) ??
         userInfo?.getFirstAndLastName() ??
         "hi".tr();
-    String type = (agent?.grantorNumber ?? delegator?.id) ??
+    String type = (agent?.agencyNumber ?? delegator?.id) ??
         userInfo?.idNo ??
         "in_balady".tr();
     if (!isListItem && delegator == null && agent == null && userInfo != null) {
       // type = "individual_account".tr();
       type = userInfo?.idNo ?? "";
     }
+
+    String? agentType = agent?.agencyTypeName;
 
     return InkWell(
       onTap: () async {
@@ -120,14 +122,38 @@ class ProfileCard extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 8),
-                CustomTextWidget(
-                  type,
-                  textStyle: AppStyle.profileTypeTextStyle.copyWith(
-                    color: selected
-                        ? AppColor.blackModern50Light.withOpacity(0.6)
-                        : AppColor.blackModern600Light.withOpacity(0.6),
+                Container(
+                  width: MediaQuery.of(context).size.width - 155,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      CustomTextWidget(
+                        type,
+                        textStyle: AppStyle.profileTypeTextStyle.copyWith(
+                          color: selected
+                              ? AppColor.blackModern50Light.withOpacity(0.6)
+                              : AppColor.blackModern600Light.withOpacity(0.6),
+                        ),
+                      ),
+                      SizedBox(
+                        width: 5,
+                      ),
+                      if (agentType != null)
+                        Flexible(
+                          child: CustomTextWidget(
+                            agentType,
+                            maxLines: 2,
+                            textStyle: AppStyle.profileTypeTextStyle.copyWith(
+                              color: selected
+                                  ? AppColor.blackModern50Light.withOpacity(0.6)
+                                  : AppColor.blackModern600Light
+                                      .withOpacity(0.6),
+                            ),
+                          ),
+                        ),
+                    ],
                   ),
-                ),
+                )
               ],
             ),
             const Spacer(),

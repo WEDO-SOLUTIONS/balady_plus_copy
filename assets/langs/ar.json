@@ -3252,6 +3252,9 @@
 "compliance_land_number":"رقم عقد الإسكان",
 "compliance_land_date":"تاريخ عقد الإسكان",
 
+"compliance_estehkam_number":"رقم حجة الاستحكام",
+"compliance_estehkam_date":"تاريخ حجة الاستحكام",
+
 
 "compliance_investment_number":"رقم  عقد الإستثمار",
 "compliance_investment_number_date": "تاريخ عقد الإستثمار", 
