@@ -3339,6 +3339,7 @@
 
 
   "back_licenses_page": "العودة لصفحة  الرخص",
+  "back_request_page": "العودة لصفحة  الطلبات",
 
 
   "viewـinvoice": "عرض الفاتورة",
@@ -3369,7 +3370,7 @@
   "data_not_have_permits": "عفوا لا يوجد تصاريح سارية على الرخصة",
 
   "boardTypeName": "نوع اللوحة ",
-  "boardArea": " مساحة اللوحة ",
+  "boardArea": "مساحة اللوحة ",
 
   "responses_request": "الردود على طلب",
 
