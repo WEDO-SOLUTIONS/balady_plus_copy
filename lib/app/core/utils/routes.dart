@@ -19,6 +19,7 @@ import 'package:balady_plus/app/features/quran/presentation/pages/quran_bookmark
 import 'package:balady_plus/app/features/quran/quran_exports.dart';
 import 'package:balady_plus/app/features/request_commercial_license_details/presentation/pages/request_commercial_license_details_page.dart';
 import 'package:balady_plus/app/features/weather/presentation/pages/weather_main_page.dart';
+import 'package:balady_plus/app/features/zmzm_points/zmzm_points_exports.dart';
 import 'package:flutter/material.dart'
     show
         AppBar,
@@ -353,7 +354,7 @@ class Routes {
 
         RouteName.quranSearchPage: (context) => QuranSearchPage(),
 
-        RouteName.ZmZmPointsPage: (context) => CommercialLicenseScreen(),
+        RouteName.ZmZmPointsPage: (context) => ZmZmPointsPage(),
         RouteName.createCompliancePage: (context) =>
             CreateComplianceLocationPage(),
 

@@ -559,12 +559,29 @@ class RenewCrRemoteDataSourceImpl extends RenewCrRemoteDataSource {
 
   @override
   Future<ResponseBodyModel<List<int>>> renewYears({int? params}) async {
+    Map<String, dynamic> x = {
+      "statusDetails": {"code": 200, "message": "Ok"},
+      "data": {
+        "responseCode": "1",
+        "responseMessage": "success",
+        "responseId": "02-10720-6474320-1",
+        "result": [1, 2, 3, 4]
+      }
+    };
+
+    List<int>? data = x["data"]["result"];
+
+    final decodedResponse =
+        ResponseBodyModel<List<int>>.fromMap(x, parsedResult: data);
+
+    return decodedResponse.toFuture();
+
     var response;
 
     try {
       response = await webService.dio.get(ApiUrl.renewYears(params!));
 
-      List<int>? data = response.data["data"]["result"].map((x) => x).toList();
+      List<int>? data = response.data["data"]["result"];
 
       final decodedResponse = ResponseBodyModel<List<int>>.fromMap(
           response.data,
@@ -608,6 +625,65 @@ class RenewCrRemoteDataSourceImpl extends RenewCrRemoteDataSource {
   @override
   Future<RenewRequestInfoModel> calculateRequestInfo(
       {RenewInfoRequest? params}) async {
+    Map<String, dynamic> x = {
+      "statusDetails": {"code": 200, "message": "Ok"},
+      "data": {
+        "responseCode": "1",
+        "responseMessage": "success",
+        "responseId": "02-10720-6474320-1",
+        "result": {
+          "cleanContractResponseDto": {
+            "cleanContractEndDate": null,
+            "cleanContractInfo": null,
+            "cleanContractOptions": {
+              "cleanOption": "OPTIONAL",
+              "contractOption": "ATTACH"
+            },
+            "warnings": null,
+            "citizenPledgedToClean": false
+          },
+          "ownershipResponseDto": {
+            "contractOptionsResponseDto": {
+              "ejarOptions": ["ATTACH", "SERVICE"],
+              "deedOptions": ["ATTACH", "SERVICE"],
+              "investOptions": ["ATTACH", "SERVICE"]
+            },
+            "tenancyContractInfo": null,
+            "deedInfoResponse": null,
+            "investmentContractNumber": null,
+            "contractOption": "ATTACH",
+            "contractWarnings": null,
+            "modifyOwnershipWarning":
+                "عزيزي المستفيد في حالة ادخال بيانات اثبات موقع جديدة سيتم الغاء ربط بيانات اثبات الموقع القدمية بالرخصة",
+            "contractType": "EJAR",
+            "contractDownloadUrl":
+                "http://bldtrain.momra.gov.sa/commonapi/attachments/7B008ED62D754CEDA944E0D5F0A91BE8",
+            "contractDate": "1445/06/01",
+            "contractNumber": "123456"
+          },
+          "salamaResponseDto": {
+            "allowedDocuments": ["PERMIT"],
+            "salamaBillOptions": null,
+            "salamaReportOptions": null,
+            "salamaPermitOptions": ["SERVICE"],
+            "salamaPermitNumber": null,
+            "salamaBillNumber": null,
+            "salamaBillReport": null
+          }
+        }
+      }
+    };
+
+    var data = x["data"]?["result"];
+
+    var parsedResult =
+        data != null ? RenewRequestInfoModel.fromJson(data) : null;
+
+    final decodedResponse = ResponseBodyModel<RenewRequestInfoModel>.fromMap(x,
+        parsedResult: parsedResult);
+
+    ///
+    return decodedResponse.data!.result!.toFuture();
     var response;
 
     try {

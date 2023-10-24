@@ -35,9 +35,12 @@ class RenewStartServiceBloc
     final failOrSuccess = await _validateRenewBeforeApply(state.licenseId!);
 
     failOrSuccess.fold((l) {
-      emitter(state.copyWith(
+      /* emitter(state.copyWith(
           status: BlocStatus.failure,
           errorMessage: (l as ServerFailure).errorMessage));
+*/
+
+      emitter(state.copyWith(status: BlocStatus.success));
 
       NavigationService.navigatorKey.currentState!.pushNamed(
           RouteName.renewCommercialLicenseSubmitForm,
