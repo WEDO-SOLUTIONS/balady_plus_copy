@@ -130,7 +130,7 @@ class WebService {
         Uri.parse(requestUrl),
         headers: headers,
       );
-      // //print("url response: " + utf8.decode(response.bodyBytes).toString());
+      print("url response: " + utf8.decode(response.bodyBytes).toString());
       if (response.statusCode == HttpStatus.ok) {
         result.putIfAbsent("state", () => true);
         result.putIfAbsent(
@@ -340,7 +340,7 @@ class WebService {
       if (extraHeadersParams != null) headers.addAll(extraHeadersParams);
       var response =
           await http.post(Uri.parse(requestUrl), body: data, headers: headers);
-      //  print(utf8.decode(response.bodyBytes).toString());
+      print(utf8.decode(response.bodyBytes).toString());
       if (response.statusCode == HttpStatus.ok) {
         result.putIfAbsent("state", () => true);
         result.putIfAbsent(
