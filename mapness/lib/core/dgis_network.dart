@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:mapness/core/uuid_provider.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -14,7 +15,7 @@ class DGisNetwork extends _$DGisNetwork {
       headers: {
         'Content-Type': 'application/protobuf',
         'Accept': 'application/protobuf',
-        'X-Device-ID': '60b5ec03-1038-4a0a-b54f-d8f14108a050',
+        'X-Device-ID': ref.watch(uuidProviderProvider),
       },
     ))
       ..interceptors.add(

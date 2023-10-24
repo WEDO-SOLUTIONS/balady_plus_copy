@@ -5,7 +5,8 @@ part 'map_controls.g.dart';
 enum MapControlsState {
   idle,
   dashboard,
-  navigation;
+  navigation,
+  happinessMap;
 }
 
 @riverpod
