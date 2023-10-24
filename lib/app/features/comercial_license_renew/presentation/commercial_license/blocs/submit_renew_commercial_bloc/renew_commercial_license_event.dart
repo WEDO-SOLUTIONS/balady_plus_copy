@@ -21,5 +21,11 @@ class GetRenewYearsEvent extends RenewCommercialLicenseEvent {
 }
 
 class GetRequestInfoEvent extends RenewCommercialLicenseEvent {
-  const GetRequestInfoEvent();
+  final String? year;
+  const GetRequestInfoEvent({this.year});
+}
+
+class UpdateRenewYearsEvent extends RenewCommercialLicenseEvent {
+  final String year;
+  const UpdateRenewYearsEvent({required this.year});
 }

@@ -1,9 +1,9 @@
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
-import 'package:balady_plus/app/features/commercial_license/commercial_license_exports.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import '../../../../_shared_feature_/presentation/widgets/buttons/custom_buttons_widgets.dart';
+import '../blocs/submit_renew_commercial_bloc/renew_commercial_license_bloc.dart';
 
 class CRPreviousNextButtons extends StatelessWidget {
   const CRPreviousNextButtons({
@@ -17,9 +17,10 @@ class CRPreviousNextButtons extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<CommercialLicenseBloc, CommercialLicenseState>(
+    return BlocBuilder<RenewCommercialLicenseBloc, RenewCommercialLicenseState>(
       builder: (context, state) {
-        bool isLastPage = context.read<CommercialLicenseBloc>().isLastPage();
+        bool isLastPage =
+            context.read<RenewCommercialLicenseBloc>().isLastPage();
         return Container(
           color: Colors.transparent,
           padding:
@@ -34,7 +35,7 @@ class CRPreviousNextButtons extends StatelessWidget {
                     () {
                       if (!isLastPage) {
                         context
-                            .read<CommercialLicenseBloc>()
+                            .read<RenewCommercialLicenseBloc>()
                             .add(const GoToNextPageEvent());
                       } else {
                         // context.read<CommercialLicenseBloc>().add(SubmitIncidentEvent());

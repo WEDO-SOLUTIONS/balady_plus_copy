@@ -93,6 +93,16 @@ enum CRContractOption {
   const CRContractOption({required this.name});
 }
 
+enum CRContractCleanRenewOptions {
+  service(name: "SERVICE"),
+  attach(name: "ATTACH"),
+  payAll(name: "payAll");
+
+  final String name;
+
+  const CRContractCleanRenewOptions({required this.name});
+}
+
 enum UserProfileType { Delegator, Agent }
 
 enum ServiceCardsTypes { desc, req, flow, authorInfo }
