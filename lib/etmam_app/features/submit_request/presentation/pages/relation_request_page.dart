@@ -96,6 +96,7 @@ class _RelationRequestPageState extends State<RelationRequestPage> {
                           subRelations: state.subRelations,
                           orderId: args.orderId,
                           callBack: args.callBack,
+                          inputsRequired: state.relationRespone?.inputsRequired,
                           pageType: args.pageType,
                           releationBloc: BlocProvider.of<RelationBloc>(context),
                           changeProvider: args.changeProvider),

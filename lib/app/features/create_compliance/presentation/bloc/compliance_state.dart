@@ -75,7 +75,7 @@ class ComplianceState extends Equatable {
   final bool? isDeedPaper;
   final ComplianceDeedInfo? deedInfo;
   final LandSubsidyContract? landSubsidyContract;
-
+  final bool? showEksanId;
   PhoneNumberValidation get phoneValidator => contactMobileNumber == null
       ? PhoneNumberValidation.pure()
       : PhoneNumberValidation.dirty(value: contactMobileNumber);
@@ -127,7 +127,8 @@ class ComplianceState extends Equatable {
       this.selectedReciptType,
       this.reciptLists,
       this.deedInfo,
-      this.landSubsidyContract});
+      this.landSubsidyContract,
+      this.showEksanId});
   ComplianceState copyWith(
       {final BlocStatus? status,
       final int? currentStep,
@@ -172,76 +173,77 @@ class ComplianceState extends Equatable {
       final Nullable<ComplinaceLookUpItem?>? selectedReciptType,
       final ComplinaceLookUpResponse? reciptLists,
       final Nullable<ComplianceDeedInfo?>? deedInfo,
-      final Nullable<LandSubsidyContract?>? landSubsidyContract}) {
+      final Nullable<LandSubsidyContract?>? landSubsidyContract,
+      final bool? showEksanId}) {
     return ComplianceState(
-      status: status ?? this.status,
-      contactMobileNumber: contactMobileNumber ?? this.contactMobileNumber,
-      currentStep: currentStep ?? this.currentStep,
-      agreement: agreement ?? this.agreement,
-      benificiaryTypeSelection:
-          benificiaryTypeSelection ?? this.benificiaryTypeSelection,
-      documentTypeSelection:
-          documentTypeSelection ?? this.documentTypeSelection,
-      requestId: requestId ?? this.requestId,
-      requestDetails: requestDetails ?? this.requestDetails,
-      mainUsages: mainUsages ?? this.mainUsages,
-      subUsages: subUsages ?? this.subUsages,
-      ownerShipsTypes: ownerShipsTypes ?? this.ownerShipsTypes,
-      enginnerOfficesStatus:
-          enginnerOfficesStatus ?? this.enginnerOfficesStatus,
-      ownerShipsStatus: ownerShipsStatus ?? this.ownerShipsStatus,
-      mainUsagesStatus: mainUsagesStatus ?? this.mainUsagesStatus,
-      licenseStatus: licenseStatus ?? this.licenseStatus,
-      errorMessage: errorMessage ?? this.errorMessage,
-      selectedMainUsage: selectedMainUsage ?? this.selectedMainUsage,
-      selectedOwnerShip: selectedOwnerShip == null
-          ? this.selectedOwnerShip
-          : selectedOwnerShip.value,
-      selectedSubUsage: selectedSubUsage == null
-          ? this.selectedSubUsage
-          : selectedSubUsage.value,
-      ownershipText:
-          ownershipText == null ? this.ownershipText : ownershipText.value,
-      ownershipDate:
-          ownershipDate == null ? this.ownershipDate : ownershipDate.value,
-      form: form ?? this.form,
-      subUsagesStatus: subUsagesStatus ?? this.subUsagesStatus,
-      licenes: licenes ?? this.licenes,
-      selectedLicense: selectedLicense == null
-          ? this.selectedLicense
-          : selectedLicense.value,
-      detailsStatus: detailsStatus ?? this.detailsStatus,
-      gisResponse: gisResponse ?? this.gisResponse,
-      gisParams: gisParams ?? this.gisParams,
-      attachments: attachments ?? this.attachments,
-      applyRequest: applyRequest ?? this.applyRequest,
-      engOffices: engOffices ?? this.engOffices,
-      selectedEngOffice: selectedEngOffice == null
-          ? this.selectedEngOffice
-          : selectedEngOffice.value,
-      engOfficeDetails: engOfficeDetails == null
-          ? this.engOfficeDetails
-          : engOfficeDetails.value,
-      emtethalAgreement: emtethalAgreement ?? this.emtethalAgreement,
-      ownerShipAgreement: ownerShipAgreement ?? this.ownerShipAgreement,
-      contactMobileVerified: contactMobileVerified == null
-          ? this.contactMobileVerified
-          : contactMobileVerified.value,
-      sendOtpResponse: sendOtpResponse == null
-          ? this.sendOtpResponse
-          : sendOtpResponse.value,
-      isDraft: isDraft ?? this.isDraft,
-      isDeedPaper: isDeedPaper == null ? this.isDeedPaper : isDeedPaper.value,
-      selectedReciptType: selectedReciptType == null
-          ? this.selectedReciptType
-          : selectedReciptType.value,
-      reciptTypesStatus: reciptTypesStatus ?? this.reciptTypesStatus,
-      reciptLists: reciptLists ?? this.reciptLists,
-      deedInfo: deedInfo == null ? this.deedInfo : deedInfo.value,
-      landSubsidyContract: landSubsidyContract == null
-          ? this.landSubsidyContract
-          : landSubsidyContract.value,
-    );
+        status: status ?? this.status,
+        contactMobileNumber: contactMobileNumber ?? this.contactMobileNumber,
+        currentStep: currentStep ?? this.currentStep,
+        agreement: agreement ?? this.agreement,
+        benificiaryTypeSelection:
+            benificiaryTypeSelection ?? this.benificiaryTypeSelection,
+        documentTypeSelection:
+            documentTypeSelection ?? this.documentTypeSelection,
+        requestId: requestId ?? this.requestId,
+        requestDetails: requestDetails ?? this.requestDetails,
+        mainUsages: mainUsages ?? this.mainUsages,
+        subUsages: subUsages ?? this.subUsages,
+        ownerShipsTypes: ownerShipsTypes ?? this.ownerShipsTypes,
+        enginnerOfficesStatus:
+            enginnerOfficesStatus ?? this.enginnerOfficesStatus,
+        ownerShipsStatus: ownerShipsStatus ?? this.ownerShipsStatus,
+        mainUsagesStatus: mainUsagesStatus ?? this.mainUsagesStatus,
+        licenseStatus: licenseStatus ?? this.licenseStatus,
+        errorMessage: errorMessage ?? this.errorMessage,
+        selectedMainUsage: selectedMainUsage ?? this.selectedMainUsage,
+        selectedOwnerShip: selectedOwnerShip == null
+            ? this.selectedOwnerShip
+            : selectedOwnerShip.value,
+        selectedSubUsage: selectedSubUsage == null
+            ? this.selectedSubUsage
+            : selectedSubUsage.value,
+        ownershipText:
+            ownershipText == null ? this.ownershipText : ownershipText.value,
+        ownershipDate:
+            ownershipDate == null ? this.ownershipDate : ownershipDate.value,
+        form: form ?? this.form,
+        subUsagesStatus: subUsagesStatus ?? this.subUsagesStatus,
+        licenes: licenes ?? this.licenes,
+        selectedLicense: selectedLicense == null
+            ? this.selectedLicense
+            : selectedLicense.value,
+        detailsStatus: detailsStatus ?? this.detailsStatus,
+        gisResponse: gisResponse ?? this.gisResponse,
+        gisParams: gisParams ?? this.gisParams,
+        attachments: attachments ?? this.attachments,
+        applyRequest: applyRequest ?? this.applyRequest,
+        engOffices: engOffices ?? this.engOffices,
+        selectedEngOffice: selectedEngOffice == null
+            ? this.selectedEngOffice
+            : selectedEngOffice.value,
+        engOfficeDetails: engOfficeDetails == null
+            ? this.engOfficeDetails
+            : engOfficeDetails.value,
+        emtethalAgreement: emtethalAgreement ?? this.emtethalAgreement,
+        ownerShipAgreement: ownerShipAgreement ?? this.ownerShipAgreement,
+        contactMobileVerified: contactMobileVerified == null
+            ? this.contactMobileVerified
+            : contactMobileVerified.value,
+        sendOtpResponse: sendOtpResponse == null
+            ? this.sendOtpResponse
+            : sendOtpResponse.value,
+        isDraft: isDraft ?? this.isDraft,
+        isDeedPaper: isDeedPaper == null ? this.isDeedPaper : isDeedPaper.value,
+        selectedReciptType: selectedReciptType == null
+            ? this.selectedReciptType
+            : selectedReciptType.value,
+        reciptTypesStatus: reciptTypesStatus ?? this.reciptTypesStatus,
+        reciptLists: reciptLists ?? this.reciptLists,
+        deedInfo: deedInfo == null ? this.deedInfo : deedInfo.value,
+        landSubsidyContract: landSubsidyContract == null
+            ? this.landSubsidyContract
+            : landSubsidyContract.value,
+        showEksanId: showEksanId ?? this.showEksanId);
   }
 
   bool isNextButtonEnabled() {
@@ -285,7 +287,7 @@ class ComplianceState extends Equatable {
           }
         }
 
-        if (selectedOwnerShip?.id == 146) {
+        if (selectedOwnerShip?.id == 146 && showEksanId != false) {
           if (landSubsidyContract?.contractNumber == null) {
             return false;
           }
@@ -330,7 +332,7 @@ class ComplianceState extends Equatable {
       ownershipDateValue = deedInfo?.getDeedDate();
     }
 
-    if (selectedOwnerShip?.id == 146) {
+    if (selectedOwnerShip?.id == 146 && showEksanId != false) {
       ownershipDateValue = landSubsidyContract?.getDate();
       ownershipTextValue = landSubsidyContract?.contractNumber;
     }
@@ -425,6 +427,7 @@ class ComplianceState extends Equatable {
         isDeedPaper,
         selectedReciptType,
         reciptTypesStatus,
-        reciptLists
+        reciptLists,
+        showEksanId
       ];
 }
