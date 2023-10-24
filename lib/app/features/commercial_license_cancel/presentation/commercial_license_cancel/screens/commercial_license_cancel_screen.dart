@@ -49,7 +49,7 @@ class _CommercialLicenseCancelScreenState
           goToNewPage();
           return Future<bool>.value(false);
         } else {
-          return (await showBackDialog()) ;
+          return (await showBackDialog());
         }
       },
       child: MultiProvider(
@@ -66,7 +66,7 @@ class _CommercialLicenseCancelScreenState
             create: (BuildContext context) =>
                 CommercialLicenseReasonCancelViewModel(
               webService: sl(),
-              licenseId: 312,
+              licenseId: 0000,
               submitterInfo: null,
             ),
           ),
@@ -95,7 +95,12 @@ class _CommercialLicenseCancelScreenState
                     if (state is SubmitCancelRequestSucceededState) {
                       Navigator.of(context).popAndPushNamed(
                         RouteName.submitApplicationSuccessfullyCancel,
-                        arguments: (bloc.from,state.submitResponse),
+                        arguments: (
+                          bloc.from,
+                          state.submitResponse,
+                          bloc.saveCancellationReasonResponse!
+                              .calculatorResponse.totalCost,
+                        ),
                       );
                     }
                     if (state is CommercialLicenseCancelFailureState) {

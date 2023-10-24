@@ -3381,7 +3381,11 @@
 
   "return_order_details": "العودة لتفاصيل الطلب",
 
-  "time_serveis": "وقت تنفيذ الخدمة"
+  "time_serveis": "وقت تنفيذ الخدمة",
+
+
+  "application_no_has_been_submitted": "تم تقديم الطلب رقم",
+  "and_issue_invoice_service_amount": "واصدار الفاتورة الخاصة بالخدمة  بمبلغ"
 
 
 }
