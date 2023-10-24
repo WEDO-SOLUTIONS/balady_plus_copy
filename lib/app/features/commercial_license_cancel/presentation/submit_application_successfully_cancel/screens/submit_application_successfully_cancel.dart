@@ -16,10 +16,14 @@ class SubmitApplicationSuccessfullyCancel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    (String from, SubmitResponse submitResponse) arguments =
-        ModalRoute.of(context)!.settings.arguments as (
+    (
       String from,
-      SubmitResponse submitResponse
+      SubmitResponse submitResponse,
+      double totalCost,
+    ) arguments = ModalRoute.of(context)!.settings.arguments as (
+      String from,
+      SubmitResponse submitResponse,
+      double totalCost,
     );
     SubmitResponse submitResponse = arguments.$2;
     return WillPopScope(
@@ -52,10 +56,7 @@ class SubmitApplicationSuccessfullyCancel extends StatelessWidget {
                     // ),
                     const SizedBox(height: 16),
                     CustomAutoSizeTextWidget(
-                      submitResponse.payUrl != null
-                          ? 'submit_application_successfully_cancel_message'
-                              .tr()
-                          : ''.tr(),
+                      '${'application_no_has_been_submitted'.tr()} ${submitResponse.requestId} ${(submitResponse.payUrl?.isNotEmpty ?? false) ? '${'and_issue_invoice_service_amount'.tr()} ${arguments.$3} ${'sar'.tr()}' : ''}',
                       textStyle: AppStyle.serviceListTitleTextStyle,
                       maxLines: 3,
                       textAlign: TextAlign.center,

@@ -58,6 +58,7 @@ class ServiceCardReqWidget extends StatelessWidget {
               children: [
                 ListView.builder(
                     shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
                     itemCount: card.requirements?.length ?? 0,
                     itemBuilder: (ctx, index) {
                       return Column(
@@ -86,7 +87,8 @@ class ServiceCardReqWidget extends StatelessWidget {
                           const CustomVerticalSpace(height: 8),
                         ],
                       );
-                    })
+                    },
+                )
               ],
             )
           ],
