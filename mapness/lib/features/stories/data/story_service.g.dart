@@ -6,7 +6,7 @@ part of 'story_service.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$storyServiceHash() => r'8926b7eb80ae9cbb6321c51c2bb6ddfebb7fe2d8';
+String _$storyServiceHash() => r'aa5de723cf56d9b31953ffb0daa744d7b3dff56b';
 
 /// See also [StoryService].
 @ProviderFor(StoryService)

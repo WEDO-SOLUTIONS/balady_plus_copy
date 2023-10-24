@@ -8,6 +8,7 @@ extension NetworkStoryMapper on NetworkStory {
     return StoryData(
       storyId: id,
       frames: frames.map((e) => e.toDomain(id)).toList(),
+      isViewed: isViewed,
     );
   }
 }

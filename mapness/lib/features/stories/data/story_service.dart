@@ -13,6 +13,13 @@ part 'story_service.g.dart';
 class StoryService extends _$StoryService {
   void markStoryReeded(final storyId, int frameIndex) {
     markStoryReeded(storyId, frameIndex);
+
+    // for (var indexed in (state.valueOrNull?.stories.indexed?? []) ) {
+    //   print("state: ${indexed.$1} ${indexed.$2.isViewed}");
+    // }
+    // print(state.valueOrNull?.thumbnails
+    //     .map((element) => element.isWatched ? 1 : 0)
+    //     .reduce((value, element) => value + element));
     ref.invalidateSelf();
   }
 
@@ -36,7 +43,7 @@ class StoryService extends _$StoryService {
     final StoriesResponse storiesNetwork =
         await ref.watch(storiesRepoProvider.future);
     final stories = storiesNetwork.stories.map((e) => e.toStory()).toList();
-    print(stories.map((e) => e.storyId).toList());
+
     final thumnails = storiesNetwork.stories
         .map(
           (e) => StoryThumbnailData(
@@ -48,9 +55,12 @@ class StoryService extends _$StoryService {
         )
         .toList();
 
-    return StoryOverallData(
-      stories: stories,
-      thumbnails: thumnails,
-    );
+    return StoryOverallData(stories: [
+      ...stories.where((element) => !element.isViewed),
+      ...stories.where((element) => element.isViewed),
+    ], thumbnails: [
+      ...thumnails.where((element) => !element.isWatched),
+      ...thumnails.where((element) => element.isWatched),
+    ]);
   }
 }
