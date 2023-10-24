@@ -36,6 +36,8 @@ import '../fields/deed/deed_type_widget.dart';
 import '../fields/electricity/electricity_number_date_field.dart';
 import '../fields/electricity/electricity_number_text_field.dart';
 import '../fields/electricity/electricity_recipt_type_field.dart';
+import '../fields/eskan/eskan_num_text_field.dart';
+import '../fields/eskan/eskan_number_date_field.dart';
 import '../fields/eskan/eskan_number_text_field.dart';
 import '../fields/estehkam/estehkam_number_date_field.dart';
 import '../fields/estehkam/estehkam_number_text_field.dart';
@@ -262,7 +264,12 @@ class ThirdSubmissionCompliance extends StatelessWidget {
 //عقد اسكان
                   if (state.selectedOwnerShip?.id == 146) ...[
                     CustomVerticalSpace(height: 12),
-                    EskanNumberTextField(),
+                    if (state.showEksanId != false) EskanNumberTextField(),
+                    if (state.showEksanId == false) ...[
+                      EskanNumTextField(),
+                      CustomVerticalSpace(height: 12),
+                      EskanNumberDateField()
+                    ],
                     if (state.landSubsidyContract != null) ...[
 //عقد اسكان
                       CustomVerticalSpace(height: 12),
