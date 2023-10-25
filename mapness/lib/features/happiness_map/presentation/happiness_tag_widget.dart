@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:mapness/core/config/package_config.dart';
+import 'package:mapness/features/happiness_map/domain/happiness_tag.dart';
 
 class HappinessTagWidget extends StatelessWidget {
-  final String tag;
-  final IconData icon;
+  final HappinessTag tag;
   final void Function() onPressed;
   final bool isSelected;
 
   const HappinessTagWidget({
     super.key,
     required this.tag,
-    required this.icon,
     required this.onPressed,
     required this.isSelected,
   });
@@ -35,9 +36,12 @@ class HappinessTagWidget extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Icon(icon),
+              SvgPicture.asset(
+                tag.iconAsset,
+                package: PackageConfig.packageName,
+              ),
               const Spacer(),
-              Text(tag),
+              Text(tag.title),
             ],
           ),
         ),

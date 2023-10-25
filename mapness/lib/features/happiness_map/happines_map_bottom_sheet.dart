@@ -94,7 +94,7 @@ class _DashboardState extends ConsumerState<HappinessBottomSheet> {
                       ),
                     ),
                     const SizedBox(
-                      height: 8,
+                      height: 16,
                     ),
                     Material(
                       color: Colors.transparent,
@@ -127,16 +127,18 @@ class _DashboardState extends ConsumerState<HappinessBottomSheet> {
                               children: [
                                 Expanded(
                                   child: HappinesFeedbackButton(
-                                      type: HappinessFeedback.dislike,
-                                      state: state.feedback,
-                                      onPressed: onButtonTap),
+                                    type: HappinessFeedback.dislike,
+                                    state: state.feedback,
+                                    onPressed: onButtonTap,
+                                  ),
                                 ),
                                 const SizedBox(width: 8),
                                 Expanded(
                                   child: HappinesFeedbackButton(
-                                      type: HappinessFeedback.like,
-                                      state: state.feedback,
-                                      onPressed: onButtonTap),
+                                    type: HappinessFeedback.like,
+                                    state: state.feedback,
+                                    onPressed: onButtonTap,
+                                  ),
                                 ),
                               ],
                             ),

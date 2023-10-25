@@ -1,6 +1,4 @@
-import 'dart:math';
-
-import 'package:flutter/material.dart';
+import 'package:mapness/features/happiness_map/domain/happiness_tag.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'happiness_tags.g.dart';
@@ -24,22 +22,27 @@ class HappinessTags extends _$HappinessTags {
 @riverpod
 class HappinessTagsWithIcons extends _$HappinessTagsWithIcons {
   @override
-  List<(IconData, String)> build() {
+  List<HappinessTag> build() {
     final tags = ref.watch(happinessTagsProvider);
-    final random = Random(42);
-    final icons = [
-      Icons.favorite,
-      Icons.mood,
-      Icons.sentiment_very_satisfied,
-      Icons.sentiment_satisfied,
-      Icons.sentiment_neutral,
-      Icons.sentiment_dissatisfied,
-      Icons.sentiment_very_dissatisfied,
-      Icons.mood_bad,
-      Icons.dangerous,
-      Icons.one_k_outlined,
-      Icons.qr_code_scanner,
+    final data = [
+      ("ic_building.svg", "Buildings"),
+      ("ic_car_side.svg", "Streets"),
+      ("ic_comment-heart.svg", "Comfort"),
+      ("ic_eye.svg", "Visual aesthetic"),
+      ("ic_lightbulb-alt.svg", "Lighting"),
+      ("ic_trash-alt.svg", "Cleanness"),
+      ("ic_trees.svg", "Parks"),
     ];
-    return tags.map((e) => (icons[random.nextInt(icons.length)], e)).toList();
+    // "ic_ellipsis.svg",
+    return tags.indexed.map(
+      (e) {
+        final (path, title) = data[e.$1];
+        return HappinessTag(
+          code: e.$2,
+          iconAsset: "assets/icons/svg/$path",
+          title: title,
+        );
+      },
+    ).toList();
   }
 }
