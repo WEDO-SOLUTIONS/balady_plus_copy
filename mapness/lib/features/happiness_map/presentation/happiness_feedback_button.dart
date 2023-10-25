@@ -37,10 +37,10 @@ class HappinesFeedbackButton extends StatelessWidget {
       /// match
       (HappinessFeedback.like, HappinessFeedback.like) ||
       (HappinessFeedback.dislike, HappinessFeedback.dislike) =>
-        const Color(0xffffffff),
+        Colors.white,
 
       /// not match
-      _ => Colors.white,
+      _ => const Color(0xFF4CA5B4),
     };
 
     return Ink(

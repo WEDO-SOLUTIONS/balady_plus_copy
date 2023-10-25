@@ -146,9 +146,7 @@ class _DashboardState extends ConsumerState<HappinessBottomSheet> {
                               const SizedBox(height: 20),
                               const HappinessTextField(),
                               const SizedBox(height: 16),
-                              HappinessSubmitButton(
-                                onPress: () => onSubmit(),
-                              ),
+                              HappinessSubmitButton(onPress: onSubmit),
                             ]
                           ],
                         ),
