@@ -15,7 +15,6 @@ class RoutingSearchViewModel extends SearchViewModel {
   RoutingSearchViewModel(
     super.controller,
     this._selectedValue, {
-    required this.placeholder,
     required super.onItemSelected,
   }) : super() {
     _selectedValue.addListener(valueChanged);
@@ -25,7 +24,6 @@ class RoutingSearchViewModel extends SearchViewModel {
   final ValueNotifier<ObjectInfoState?> _selectedValue;
   bool setTextState = false;
   String? _selectedAddress;
-  String placeholder;
 
   Future<void> valueChanged() async {
     final objectId = _selectedValue.value;

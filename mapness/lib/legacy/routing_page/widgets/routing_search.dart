@@ -34,7 +34,6 @@ class _SearchSheetState extends State<_RoutingSearch> {
         widget.startObjectId.value = item;
         widget.pointsChanged();
       },
-      placeholder: 'From',
     )..init();
     finishSearch = RoutingSearchViewModel(
       widget.controller,
@@ -44,7 +43,6 @@ class _SearchSheetState extends State<_RoutingSearch> {
         widget.finishObjectId.value = item;
         widget.pointsChanged();
       },
-      placeholder: 'To',
     )..init();
 
     startSearch.cancelControlState.addListener(() {
@@ -121,7 +119,7 @@ class _SearchSheetState extends State<_RoutingSearch> {
                                 onWillPop: startSearch.onWillPop,
                                 child: const NavSearchField(
                                   'A',
-                                  placeholder: 'From',
+                                  placeholder: 'My location',
                                 ),
                               ),
                             ),
