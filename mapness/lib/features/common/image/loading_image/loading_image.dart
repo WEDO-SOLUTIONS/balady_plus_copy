@@ -22,20 +22,32 @@ class LoadingImage extends StatefulWidget {
 
 class _LoadingImageState extends State<LoadingImage> {
   bool isLoading = true;
+  late String imageUrl;
+
+  @override
+  void initState() {
+    super.initState();
+    imageUrl = widget.imageUrl;
+  }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    unawaited(loadImage(context));
+    if (imageUrl != widget.imageUrl || isLoading) {
+      imageUrl = widget.imageUrl;
+      unawaited(loadImage(context));
+    }
   }
 
   Future<void> loadImage(BuildContext context) async {
     /// await for image to be ready
     await precacheImage(NetworkImage(widget.imageUrl), context);
-    setState(() {
-      isLoading = false;
-    });
-    widget.onImageReady?.call();
+    if (context.mounted) {
+      setState(() {
+        isLoading = false;
+      });
+      widget.onImageReady?.call();
+    }
   }
 
   @override
