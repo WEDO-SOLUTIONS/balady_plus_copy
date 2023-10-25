@@ -8,7 +8,7 @@ part 'happiness_repository.g.dart';
 @riverpod
 class HappinessRepository extends _$HappinessRepository {
   Future<void> submitFeedback(HappinessState state) async {
-    final dio = ref.read(dGisNetworkProvider);
+    final dio = await ref.read(dGisNetworkProvider.future);
     final data = HappinessRequest(
       isPositive: state.feedback == HappinessFeedback.like,
       // comment: state.comment,
