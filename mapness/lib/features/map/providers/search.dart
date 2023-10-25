@@ -12,8 +12,6 @@ class Search extends _$Search {
       removeMarkers();
     });
 
-    print("rebuild suka");
-
     return [];
   }
 
@@ -47,8 +45,6 @@ class Search extends _$Search {
     state =
         result?.firstPage?.items.whereType<DirectoryObjectMessage>().toList() ??
             [];
-    print("set state to $state");
-    // ref.invalidateSelf();
   }
 
   Future<void> removeMarkers() async {
