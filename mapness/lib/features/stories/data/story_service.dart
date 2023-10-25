@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:mapness/features/stories/data/stories_repo.dart';
 import 'package:mapness/features/stories/domain/story_overall_data.dart';
@@ -11,20 +12,72 @@ part 'story_service.g.dart';
 
 @Riverpod(dependencies: [StoriesRepo])
 class StoryService extends _$StoryService {
-  void markStoryReeded(final storyId, int frameIndex) {
-    markStoryReeded(storyId, frameIndex);
+  /// collect viewed stories to send single request to server. Contain storyId key and last viewed frame index
+  final _viewedStories = <String, int>{};
 
-    // for (var indexed in (state.valueOrNull?.stories.indexed?? []) ) {
-    //   print("state: ${indexed.$1} ${indexed.$2.isViewed}");
-    // }
-    // print(state.valueOrNull?.thumbnails
-    //     .map((element) => element.isWatched ? 1 : 0)
-    //     .reduce((value, element) => value + element));
-    ref.invalidateSelf();
+  Future<void> markStoryReeded(final storyId, int frameIndex) async {
+    _viewedStories[storyId] = max(frameIndex, _viewedStories[storyId] ?? 0);
+
+    state.whenData((stateData) {
+      final updatedStories = stateData.stories.map(
+        (story) {
+          if (story.storyId != storyId) {
+            return story;
+          }
+
+          final updatedFrames = story.frames.indexed.map(
+            (indexedFrame) {
+              final (index, frame) = indexedFrame;
+              if (index <= frameIndex) {
+                return frame.copyWith(isWatched: true);
+              }
+              return frame;
+            },
+          ).toList();
+
+          return story.copyWith(
+            frames: updatedFrames,
+            isViewed: updatedFrames.last.isWatched,
+          );
+        },
+      ).toList();
+
+      final updatedThumbnails = stateData.thumbnails.map(
+        (thumbnail) {
+          if (thumbnail.storyId != storyId) {
+            return thumbnail;
+          }
+
+          return thumbnail.copyWith(
+            isWatched: updatedStories
+                .firstWhere((element) => element.storyId == storyId)
+                .isViewed,
+          );
+        },
+      ).toList();
+
+      state = AsyncValue.data(
+        stateData.copyWith(
+          stories: updatedStories,
+          thumbnails: updatedThumbnails,
+        ),
+      );
+    });
   }
 
   void refresh() {
     ref.invalidateSelf();
+  }
+
+  /// flush viewed stories to server
+  Future<void> sendViewedStories() async {
+    if (_viewedStories.isEmpty) {
+      return;
+    }
+
+    return ref.read(storiesRepoProvider.notifier).markStoiesReaded(
+          _viewedStories.entries.map((e) => (e.key, e.value)).toList(),
+        );
   }
 
   Future<void> cacheImages(void Function(String url) cacheImage) async {

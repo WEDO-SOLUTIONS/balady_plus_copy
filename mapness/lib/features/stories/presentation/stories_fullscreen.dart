@@ -93,6 +93,12 @@ class _StoriesFullscreenState extends ConsumerState<StoriesFullscreen> {
     }
   }
 
+  Future<void> onClose() async {
+    await ref.read(storyServiceProvider.notifier).sendViewedStories();
+
+    widget.onClose();
+  }
+
   @override
   Widget build(BuildContext context) {
     const blank = SizedBox.shrink();
@@ -116,7 +122,7 @@ class _StoriesFullscreenState extends ConsumerState<StoriesFullscreen> {
                 story: story,
                 onNextStory: _nextStory,
                 onPreviousStory: _previousStory,
-                onClose: widget.onClose,
+                onClose: onClose,
               ),
             ),
             blank,
