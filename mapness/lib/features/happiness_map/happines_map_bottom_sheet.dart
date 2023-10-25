@@ -79,11 +79,7 @@ class _DashboardState extends ConsumerState<HappinessBottomSheet> {
             controller: scrollController,
             padding: EdgeInsets.zero,
             physics: const ClampingScrollPhysics(),
-            children:
-                // true
-                // ? [HappinessBottomSheet()]
-                // :
-                [
+            children: [
               Padding(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
