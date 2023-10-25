@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:mapness/features/common/config/package_config.dart';
-import 'package:mapness/features/happiness_map/domain/happiness_tag.dart';
 
 class HappinessTagWidget extends StatelessWidget {
-  final HappinessTag tag;
+  final String title;
+  final String iconAsset;
   final void Function() onPressed;
   final bool isSelected;
 
   const HappinessTagWidget({
     super.key,
-    required this.tag,
     required this.onPressed,
     required this.isSelected,
+    required this.title,
+    required this.iconAsset,
   });
 
   @override
@@ -35,16 +37,15 @@ class HappinessTagWidget extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SvgPicture.asset(
-                tag.iconAsset,
+                iconAsset,
                 package: PackageConfig.packageName,
               ),
               const Spacer(),
               Text(
-                tag.title,
-                style: const TextStyle(
-                  color: Color(0xFF1D2A36),
+                title,
+                style: GoogleFonts.inter(
+                  color: const Color(0xFF1D2A36),
                   fontSize: 13,
-                  fontFamily: 'TT Commons',
                   fontWeight: FontWeight.w500,
                 ),
               ),

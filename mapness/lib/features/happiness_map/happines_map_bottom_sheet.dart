@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:mapness/features/happiness_map/domain/happiness_feedback.dart';
 import 'package:mapness/features/happiness_map/presentation/close_happiness_button.dart';
 import 'package:mapness/features/happiness_map/presentation/hapiness_tags_grid.dart';
@@ -22,7 +23,7 @@ class HappinessBottomSheet extends ConsumerStatefulWidget {
 class _DashboardState extends ConsumerState<HappinessBottomSheet> {
   late final DraggableScrollableController _draggableScrollableController;
 
-  void onSubmit(WidgetRef ref) {
+  void onSubmit() {
     final happinesManager = ref.read(happinessManagerProvider.notifier);
     happinesManager.submitFeedback();
     widget.onClose();
@@ -106,13 +107,12 @@ class _DashboardState extends ConsumerState<HappinessBottomSheet> {
                           children: [
                             Row(
                               children: [
-                                const Expanded(
+                                Expanded(
                                   child: Text(
                                     "Share your feelings",
-                                    style: TextStyle(
-                                      color: Color(0xFF1D2A36),
+                                    style: GoogleFonts.inter(
+                                      color: const Color(0xFF1D2A36),
                                       fontSize: 19,
-                                      fontFamily: 'Inter',
                                       fontWeight: FontWeight.w600,
                                     ),
                                   ),
@@ -147,7 +147,7 @@ class _DashboardState extends ConsumerState<HappinessBottomSheet> {
                               const HappinessTextField(),
                               const SizedBox(height: 16),
                               HappinessSubmitButton(
-                                onPress: () => onSubmit(ref),
+                                onPress: () => onSubmit(),
                               ),
                             ]
                           ],

@@ -25,7 +25,7 @@ class HappinesFeedbackButton extends StatelessWidget {
       switch ((state, type)) {
         (HappinessFeedback.like, HappinessFeedback.like) => 0xFF52B374,
         (HappinessFeedback.dislike, HappinessFeedback.dislike) => 0xFFD14733,
-        _ => 0xffecf6f7,
+        _ => 0xFFECF6F7,
       },
     );
     final iconAsset = switch (type) {
@@ -40,7 +40,7 @@ class HappinesFeedbackButton extends StatelessWidget {
         const Color(0xffffffff),
 
       /// not match
-      _ => const Color(0xff4CA5B4),
+      _ => Colors.white,
     };
 
     return Ink(

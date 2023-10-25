@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:mapness/features/happiness_map/data/happines_manager.dart';
 
 class HappinessTextField extends ConsumerWidget {
@@ -32,10 +33,9 @@ class HappinessTextField extends ConsumerWidget {
             const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
         focusedBorder: border,
         isDense: true,
-        hintStyle: const TextStyle(
-          color: Color(0x7F1E2A36),
+        hintStyle: GoogleFonts.inter(
+          color: const Color(0x7F1E2A36),
           fontSize: 16,
-          fontFamily: 'Inter',
           fontWeight: FontWeight.w400,
           height: 0.09,
         ),
