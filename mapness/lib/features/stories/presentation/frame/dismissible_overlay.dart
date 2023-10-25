@@ -1,42 +1,8 @@
 import 'package:flutter/material.dart';
 
-class DismissibleOverlay {
-  OverlayEntry? _overlayEntry;
-
-  DismissibleOverlay();
-
-  void open({required BuildContext context, required Widget widget}) {
-    if (_overlayEntry != null) {
-      close();
-    }
-
-    _overlayEntry = _wrap(widget);
-    Overlay.of(context).insert(_overlayEntry!);
-  }
-
-  void close() {
-    _overlayEntry?.remove();
-    _overlayEntry = null;
-  }
-
-  OverlayEntry _wrap(Widget widget) {
-    return OverlayEntry(
-      builder: (context) => widget,
-    );
-  }
-}
-
-class MyWidgetChild extends StatelessWidget {
-  const MyWidgetChild({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container();
-  }
-}
-
 class DismissibleTransition extends StatefulWidget {
   final Widget child;
+
   const DismissibleTransition({
     super.key,
     required this.onDismiss,
