@@ -1,5 +1,7 @@
 import 'package:dgis_map/library.dart';
+import 'package:mapness/features/landing/providers/map_controls.dart';
 import 'package:mapness/features/map/providers/dgis_controller.dart';
+import 'package:mapness/features/map/providers/point_of_interest.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'search.g.dart';
@@ -47,10 +49,16 @@ class Search extends _$Search {
     final dgisController = ref.watch(dgisControllerProvider);
 
     List<Marker> markers = [];
-    for (final markerInfo in result?.itemMarkerInfos ?? []) {
+    for (final markerInfo
+        in (result?.itemMarkerInfos ?? List<ItemMarkerInfoMessage>.empty())) {
       markers.add(
         Marker(
           id: markerInfo?.objectId?.objectId.toString() ?? "invalid",
+          onTap: () {
+            ref
+                .read(mapControlsProvider.notifier)
+                .update(MapControlsStatePoI(markerInfo.objectId!));
+          },
           options: MarkerOptionsMessage(
             position: markerInfo!.geoPoint,
             icon: MarkerIconMessage(

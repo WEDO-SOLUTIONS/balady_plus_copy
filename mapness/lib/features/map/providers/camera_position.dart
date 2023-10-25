@@ -25,6 +25,16 @@ class CameraPosition extends _$CameraPosition {
     return null;
   }
 
+  Future<void> animateTo(CameraPositionMessage position) async {
+    final dgisController = ref.watch(dgisControllerProvider);
+
+    await dgisController?.moveCamera(
+      position,
+      1,
+      CameraAnimationTypeMessage.linear,
+    );
+  }
+
   void _cameraPositionListener(CameraPositionMessage event) async {
     state = event;
   }

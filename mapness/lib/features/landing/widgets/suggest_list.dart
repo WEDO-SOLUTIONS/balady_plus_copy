@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mapness/features/landing/providers/dashboard_controls.dart';
+import 'package:mapness/features/landing/providers/map_controls.dart';
 import 'package:mapness/features/map/providers/search.dart';
 import 'package:mapness/features/map/providers/suggest.dart';
 import 'package:mapness/legacy_features/routing_page/data/directory_object_ext.dart';
@@ -61,7 +62,8 @@ class SuggestItem extends ConsumerWidget {
     } else if (suggest.handler.objectHandler != null) {
       icon = "object";
       tapHandler = () {
-        // todo:
+        ref.watch(mapControlsProvider.notifier).update(
+            MapControlsStatePoI(suggest.handler.objectHandler!.item.id!));
       };
       address = suggest.handler.objectHandler!.item.makeAddress();
     } else if (suggest.handler.performSearchHandler != null) {

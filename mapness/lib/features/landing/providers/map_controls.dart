@@ -36,7 +36,7 @@ class MapControlsStatePoI extends MapControlsState {
   @override
   bool get controlsVisible => false;
 
-  final DgisObjectId objectId;
+  final DgisObjectIdMessage objectId;
 
   MapControlsStatePoI(this.objectId);
 }
