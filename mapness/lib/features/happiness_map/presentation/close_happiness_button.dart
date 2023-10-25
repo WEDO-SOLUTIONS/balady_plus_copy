@@ -13,7 +13,7 @@ class CloseHappinessButton extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(10),
         decoration: BoxDecoration(
-          color: const Color(0xffE7ECF3),
+          color: const Color(0xfff4f4f5),
           borderRadius: BorderRadius.circular(8),
         ),
         child: SvgPicture.asset(
@@ -21,6 +21,10 @@ class CloseHappinessButton extends StatelessWidget {
           height: 16,
           width: 16,
           package: PackageConfig.packageName,
+          colorFilter: const ColorFilter.mode(
+            Color(0xff898e96),
+            BlendMode.srcIn,
+          ),
         ),
       ),
     );

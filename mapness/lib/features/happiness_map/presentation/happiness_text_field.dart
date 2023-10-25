@@ -9,6 +9,11 @@ class HappinessTextField extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final happinessManager = ref.watch(happinessManagerProvider.notifier);
 
+    final border = OutlineInputBorder(
+      borderSide: BorderSide.none,
+      borderRadius: BorderRadius.circular(8),
+    );
+
     return TextField(
       textAlign: TextAlign.end,
       textInputAction: TextInputAction.done,
@@ -16,16 +21,23 @@ class HappinessTextField extends ConsumerWidget {
       onSubmitted: happinessManager.updateComment,
       onChanged: happinessManager.updateComment,
       // focusNode: model.searchFocusNode,
-      decoration: const InputDecoration(
-        contentPadding: EdgeInsets.symmetric(
-          horizontal: 13,
-        ),
+      decoration: InputDecoration(
+        hintText: 'Share your feedback',
+        enabledBorder: border,
+        fillColor: const Color(0xfff4f4f5),
+        filled: true,
+        border: border,
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+        focusedBorder: border,
         isDense: true,
-        suffixIconConstraints: BoxConstraints(
-          maxHeight: 24,
-          maxWidth: 24,
+        hintStyle: const TextStyle(
+          color: Color(0x7F1E2A36),
+          fontSize: 16,
+          fontFamily: 'Inter',
+          fontWeight: FontWeight.w400,
+          height: 0.09,
         ),
-        border: InputBorder.none,
       ),
     );
   }

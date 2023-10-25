@@ -24,10 +24,9 @@ class HappinessSubmitButton extends ConsumerWidget {
             'send feedback',
             style: TextStyle(
               color: Colors.white,
-              fontSize: 18,
-              fontFamily: 'TT Commons',
-              fontWeight: FontWeight.w500,
-              letterSpacing: 0.18,
+              fontSize: 16,
+              fontFamily: 'Inter',
+              fontWeight: FontWeight.w600,
             ),
             textAlign: TextAlign.center,
           ),

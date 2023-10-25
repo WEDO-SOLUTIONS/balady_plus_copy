@@ -15,36 +15,36 @@ class HappinessTagsGrid extends ConsumerWidget {
     final happinessManager = ref.watch(happinessManagerProvider.notifier);
     final happinessState = ref.watch(happinessManagerProvider);
 
-    return Material(
-      child: GridView.count(
-        shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
-        crossAxisCount: 4,
-        crossAxisSpacing: 10,
-        mainAxisSpacing: 10,
-        children: [
-          ...tags.map(
-            (tag) {
-              final isSelected = happinessState.tags.contains(tag.code);
-              return HappinessTagWidget(
-                tag: tag,
-                onPressed: () => isSelected
-                    ? happinessManager.removeTag(tag.code)
-                    : happinessManager.addTag(tag.code),
-                isSelected: isSelected,
-              );
-            },
-          ),
-          HappinessTagWidget(
-            tag: HappinessTag(
-                code: 'UNDEFINED',
-                title: 'Show\nmore',
-                iconAsset: 'assets/icons/svg/ic_ellipsis.svg'),
-            onPressed: () {},
-            isSelected: false,
-          ),
-        ],
-      ),
+    return GridView.count(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      crossAxisCount: 4,
+      crossAxisSpacing: 10,
+      mainAxisSpacing: 10,
+      childAspectRatio: 0.8666666667,
+      padding: EdgeInsets.zero,
+      children: [
+        ...tags.map(
+          (tag) {
+            final isSelected = happinessState.tags.contains(tag.code);
+            return HappinessTagWidget(
+              tag: tag,
+              onPressed: () => isSelected
+                  ? happinessManager.removeTag(tag.code)
+                  : happinessManager.addTag(tag.code),
+              isSelected: isSelected,
+            );
+          },
+        ),
+        HappinessTagWidget(
+          tag: HappinessTag(
+              code: 'UNDEFINED',
+              title: 'Show\nmore',
+              iconAsset: 'assets/icons/svg/ic_ellipsis.svg'),
+          onPressed: () {},
+          isSelected: false,
+        ),
+      ],
     );
   }
 }

@@ -110,12 +110,10 @@ class _DashboardState extends ConsumerState<HappinessBottomSheet> {
                                   child: Text(
                                     "Share your feelings",
                                     style: TextStyle(
-                                      color: Color(0xFF022224),
-                                      fontSize: 22,
-                                      fontFamily: 'TT Commons',
-                                      fontWeight: FontWeight.w500,
-                                      height: 0.06,
-                                      letterSpacing: 0.22,
+                                      color: Color(0xFF1D2A36),
+                                      fontSize: 19,
+                                      fontFamily: 'Inter',
+                                      fontWeight: FontWeight.w600,
                                     ),
                                   ),
                                 ),
@@ -143,13 +141,14 @@ class _DashboardState extends ConsumerState<HappinessBottomSheet> {
                               ],
                             ),
                             if (state.feedback != null) ...[
-                              const SizedBox(height: 16),
+                              const SizedBox(height: 20),
                               const HappinessTagsGrid(),
-                              const SizedBox(height: 16),
+                              const SizedBox(height: 20),
                               const HappinessTextField(),
                               const SizedBox(height: 16),
                               HappinessSubmitButton(
-                                  onPress: () => onSubmit(ref)),
+                                onPress: () => onSubmit(ref),
+                              ),
                             ]
                           ],
                         ),
