@@ -1,45 +1,36 @@
 import 'package:flutter/material.dart' hide CloseButton;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:mapness/features/landing/providers/map_controls.dart';
 import 'package:mapness/features/landing/widgets/close_button.dart';
 
-class LayersSheet extends StatefulWidget {
+class LayersSheet extends ConsumerStatefulWidget {
   const LayersSheet({super.key});
 
   @override
-  State<LayersSheet> createState() => LayersSheetState();
+  ConsumerState<LayersSheet> createState() => LayersSheetState();
 }
 
-class LayersSheetState extends State<LayersSheet> {
+class LayersSheetState extends ConsumerState<LayersSheet> {
   late final DraggableScrollableController _draggableScrollableController;
 
   @override
   void initState() {
     _draggableScrollableController = DraggableScrollableController();
+    _draggableScrollableController.addListener(() {
+      if (_draggableScrollableController.size < .1) {
+        ref.read(mapControlsProvider.notifier).update(MapControlsStateIdle());
+      }
+    });
     super.initState();
-  }
-
-  void expand() {
-    _draggableScrollableController.animateTo(
-      .7,
-      duration: const Duration(milliseconds: 250),
-      curve: Curves.linear,
-    );
-  }
-
-  void collapse() {
-    _draggableScrollableController.animateTo(
-      0,
-      duration: const Duration(milliseconds: 250),
-      curve: Curves.linear,
-    );
   }
 
   @override
   Widget build(BuildContext context) {
     return DraggableScrollableSheet(
       controller: _draggableScrollableController,
-      initialChildSize: 0,
+      initialChildSize: .3,
       minChildSize: 0,
       maxChildSize: .7,
       snapSizes: const [0, .7],
@@ -89,7 +80,11 @@ class LayersSheetState extends State<LayersSheet> {
                           ),
                           const Spacer(),
                           CloseButton(
-                            onTap: collapse,
+                            onTap: () {
+                              ref
+                                  .watch(mapControlsProvider.notifier)
+                                  .update(MapControlsStateIdle());
+                            },
                           ),
                         ],
                       ),

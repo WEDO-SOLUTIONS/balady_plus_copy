@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:mapness/features/landing/layers_sheet.dart';
+import 'package:mapness/features/landing/providers/map_controls.dart';
 
 import 'map_control.dart';
 
-class LayersControl extends StatelessWidget {
+class LayersControl extends ConsumerWidget {
   const LayersControl({
     super.key,
-    required this.layerState,
   });
 
-  final GlobalKey<LayersSheetState> layerState;
-
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return GestureDetector(
       onTap: () {
-        layerState.currentState?.expand();
+        ref
+            .watch(mapControlsProvider.notifier)
+            .update(MapControlsStateLayers());
       },
       child: MapControl(
         SvgPicture.asset(

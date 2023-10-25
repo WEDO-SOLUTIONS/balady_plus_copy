@@ -7,15 +7,15 @@ import 'package:mapness/features/landing/providers/map_controls.dart';
 import 'package:mapness/features/landing/widgets/compass_control.dart';
 import 'package:mapness/features/landing/widgets/follow_control.dart';
 import 'package:mapness/features/landing/widgets/layers_control.dart';
-import 'package:mapness/features/landing/layers_sheet.dart';
+
 import 'package:mapness/features/landing/widgets/map_control.dart';
 import 'package:mapness/features/landing/widgets/traffic_control.dart';
 import 'package:mapness/features/landing/widgets/zoom_control.dart';
 
 class MapControls extends ConsumerWidget {
-  const MapControls({Key? key, required this.layersState}) : super(key: key);
-
-  final GlobalKey<LayersSheetState> layersState;
+  const MapControls({
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -23,7 +23,7 @@ class MapControls extends ConsumerWidget {
     final sheetState = ref.watch(mapControlsProvider);
 
     return IgnorePointer(
-      ignoring: sheetState != MapControlsState.idle,
+      ignoring: sheetState is! MapControlsStateIdle,
       child: SafeArea(
         bottom: false,
         child: Column(
@@ -75,22 +75,22 @@ class MapControls extends ConsumerWidget {
                       ],
                     ),
                     const Spacer(),
-                    Column(
+                    const Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        LayersControl(layerState: layersState),
-                        const SizedBox(
+                        LayersControl(),
+                        SizedBox(
                           height: 8,
                         ),
-                        const TrafficControl(),
-                        const Spacer(),
-                        const ZoomControl(),
-                        const Spacer(),
-                        const CompassControl(),
-                        const SizedBox(
+                        TrafficControl(),
+                        Spacer(),
+                        ZoomControl(),
+                        Spacer(),
+                        CompassControl(),
+                        SizedBox(
                           height: 8,
                         ),
-                        const FollowControl(),
+                        FollowControl(),
                       ],
                     ),
                   ],
@@ -98,7 +98,7 @@ class MapControls extends ConsumerWidget {
               ),
             ),
             AnimatedOpacity(
-              opacity: controlsState == MapControlsState.idle ? 1 : 0,
+              opacity: controlsState is MapControlsStateIdle ? 1 : 0,
               duration: const Duration(milliseconds: 250),
               child: const Directionality(
                 textDirection: TextDirection.rtl,

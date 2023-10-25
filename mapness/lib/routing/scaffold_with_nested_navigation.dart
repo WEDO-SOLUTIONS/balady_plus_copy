@@ -42,9 +42,11 @@ class _ScaffoldWithNestedNavigationState
           index = 2;
           ref
               .read(mapControlsProvider.notifier)
-              .update(MapControlsState.navigation);
+              .update(MapControlsStateNavigation());
         } else {
-          ref.watch(mapControlsProvider.notifier).update(MapControlsState.idle);
+          ref
+              .watch(mapControlsProvider.notifier)
+              .update(MapControlsStateIdle());
           try {
             ref.watch(dgisControllerProvider)?.hideRoutes();
             ref.watch(dgisControllerProvider)?.stopNavigation();

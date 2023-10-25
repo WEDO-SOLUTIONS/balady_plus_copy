@@ -16,7 +16,7 @@ class MapControl extends ConsumerWidget {
     final sheetState = ref.watch(mapControlsProvider);
 
     return AnimatedOpacity(
-      opacity: sheetState != MapControlsState.idle ? 0 : (disabled ? 0.5 : 1),
+      opacity: sheetState is! MapControlsStateIdle ? 0 : (disabled ? 0.5 : 1),
       duration: const Duration(milliseconds: 250),
       child: Container(
         constraints: const BoxConstraints(minWidth: 40),

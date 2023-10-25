@@ -11,16 +11,18 @@ class HappinesControl extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return GestureDetector(
-        onTap: () {
-          ref
-              .read(mapControlsProvider.notifier)
-              .update(MapControlsState.happinessMap);
-        },
-        child: MapControl(
-          SvgPicture.asset("assets/icons/svg/ic_like.svg",
-              package: PackageConfig.packageName,
-              colorFilter:
-                  const ColorFilter.mode(Colors.black, BlendMode.srcIn)),
-        ));
+      onTap: () {
+        ref
+            .read(mapControlsProvider.notifier)
+            .update(MapControlsStateHappinessMap());
+      },
+      child: MapControl(
+        SvgPicture.asset(
+          "assets/icons/svg/ic_like.svg",
+          package: PackageConfig.packageName,
+          colorFilter: const ColorFilter.mode(Colors.black, BlendMode.srcIn),
+        ),
+      ),
+    );
   }
 }

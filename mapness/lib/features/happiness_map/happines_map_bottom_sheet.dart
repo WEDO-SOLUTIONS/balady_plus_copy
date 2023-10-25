@@ -35,11 +35,11 @@ class _DashboardState extends ConsumerState<HappinessBottomSheet> {
       ..addListener(() {
         if (_draggableScrollableController.size > .1) {
           ref.read(mapControlsProvider.notifier).update(
-                MapControlsState.happinessMap,
+                MapControlsStateHappinessMap(),
               );
         } else {
           ref.read(mapControlsProvider.notifier).update(
-                MapControlsState.idle,
+                MapControlsStateIdle(),
               );
         }
       });

@@ -1,18 +1,50 @@
+import 'package:dgis_map/library.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'map_controls.g.dart';
 
-enum MapControlsState {
-  idle,
-  dashboard,
-  navigation,
-  happinessMap;
+sealed class MapControlsState {
+  bool get controlsVisible;
+}
+
+class MapControlsStateIdle extends MapControlsState {
+  @override
+  bool get controlsVisible => true;
+}
+
+class MapControlsStateDashboard extends MapControlsState {
+  @override
+  bool get controlsVisible => true;
+}
+
+class MapControlsStateNavigation extends MapControlsState {
+  @override
+  bool get controlsVisible => false;
+}
+
+class MapControlsStateHappinessMap extends MapControlsState {
+  @override
+  bool get controlsVisible => true;
+}
+
+class MapControlsStateLayers extends MapControlsState {
+  @override
+  bool get controlsVisible => true;
+}
+
+class MapControlsStatePoI extends MapControlsState {
+  @override
+  bool get controlsVisible => false;
+
+  final DgisObjectId objectId;
+
+  MapControlsStatePoI(this.objectId);
 }
 
 @riverpod
 class MapControls extends _$MapControls {
   @override
-  MapControlsState build() => MapControlsState.idle;
+  MapControlsState build() => MapControlsStateIdle();
 
   void update(MapControlsState value) => state = value;
 }

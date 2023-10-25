@@ -34,11 +34,11 @@ class _DashboardState extends ConsumerState<Dashboard> {
       ..addListener(() {
         if (_draggableScrollableController.size > _headerExtent()) {
           ref.watch(mapControlsProvider.notifier).update(
-                MapControlsState.dashboard,
+                MapControlsStateDashboard(),
               );
         } else {
           ref.watch(mapControlsProvider.notifier).update(
-                MapControlsState.idle,
+                MapControlsStateIdle(),
               );
           FocusManager.instance.primaryFocus?.unfocus();
         }

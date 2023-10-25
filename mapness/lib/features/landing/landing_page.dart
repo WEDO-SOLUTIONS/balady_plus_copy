@@ -10,9 +10,7 @@ import 'controls.dart' as controls;
 import 'dashboard.dart';
 
 class LandingPage extends ConsumerWidget {
-  LandingPage({Key? key}) : super(key: key);
-
-  final GlobalKey<LayersSheetState> _layersSheetKey = GlobalKey();
+  const LandingPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -23,28 +21,23 @@ class LandingPage extends ConsumerWidget {
       body: Stack(
         children: [
           const MapPage(),
-          if (controlsState != MapControlsState.navigation)
+          if (controlsState.controlsVisible)
             LayoutBuilder(builder: (context, constraints) {
               return Dashboard(
                 biggestHeight: constraints.biggest.height,
               );
             }),
-          if (controlsState != MapControlsState.navigation)
-            controls.MapControls(
-              layersState: _layersSheetKey,
-            ),
-          if (controlsState != MapControlsState.navigation)
-            LayersSheet(
-              key: _layersSheetKey,
-            ),
-          if (controlsState == MapControlsState.navigation)
-            const RoutingOverlay(),
-          if (controlsState == MapControlsState.happinessMap)
-            HappinessBottomSheet(
-              onClose: () => ref
-                  .read(mapControlsProvider.notifier)
-                  .update(MapControlsState.idle),
-            ),
+          if (controlsState.controlsVisible) const controls.MapControls(),
+          switch (controlsState) {
+            MapControlsStateLayers() => const LayersSheet(),
+            MapControlsStateNavigation() => const RoutingOverlay(),
+            MapControlsStateHappinessMap() => HappinessBottomSheet(
+                onClose: () => ref
+                    .read(mapControlsProvider.notifier)
+                    .update(MapControlsStateIdle()),
+              ),
+            _ => const SizedBox.shrink(),
+          }
         ],
       ),
     );
