@@ -21,7 +21,12 @@ class StoryThumbnailWidget extends StatelessWidget {
         child: Container(
           decoration: ShapeDecoration(
             shape: RoundedRectangleBorder(
-              side: const BorderSide(width: 2, color: Color(0xFF1BA135)),
+              side: BorderSide(
+                width: 2,
+                color: thumbnail.isWatched
+                    ? Colors.transparent
+                    : const Color(0xFF1BA135),
+              ),
               borderRadius: BorderRadius.circular(16),
             ),
           ),

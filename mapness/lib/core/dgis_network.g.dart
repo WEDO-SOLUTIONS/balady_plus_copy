@@ -6,7 +6,7 @@ part of 'dgis_network.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$dGisNetworkHash() => r'0ebaf797417aac1695c881a177724bd83fd0788a';
+String _$dGisNetworkHash() => r'8266af405a30a8b4417ad16ec5bf6c2cc065467b';
 
 /// See also [DGisNetwork].
 @ProviderFor(DGisNetwork)
