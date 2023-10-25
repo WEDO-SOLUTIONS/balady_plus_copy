@@ -94,13 +94,13 @@ class _SearchSheetState extends State<_RoutingSearch> {
                         model.setRouteParams();
                       },
                       elevation: 0,
-                      backgroundColor: const Color(0xFF8BB744),
+                      backgroundColor: const Color(0xFFF2F2F2),
                       child: SizedBox(
                         height: 40,
                         width: 40,
                         child: SvgPicture.asset(
                           'assets/icons/svg/routing/ic_arrow_switch.svg',
-                          color: Colors.white,
+                          color: const Color(0xFF808080),
                         ),
                       ),
                     ),
@@ -223,7 +223,7 @@ class _SearchContent extends StatelessWidget {
                                               Text(
                                                 "You search - ${model.searchController.text} - did not match any results.",
                                                 textAlign: TextAlign.center,
-                                                style: const TextStyle(
+                                                style: GoogleFonts.inter(
                                                   color: Color(0xFF8E8E8E),
                                                   fontSize: 15,
                                                   height: 1.33,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import '../../navigation_dashboard/widgets/mapness_typography.dart';
 
@@ -43,7 +44,7 @@ class WorkingHours extends StatelessWidget {
                 style: MapnessTypography.s,
               ),
               if (compact)
-                const Text(
+                Text(
                   " — ",
                   style: MapnessTypography.s,
                 )
@@ -59,7 +60,7 @@ class WorkingHours extends StatelessWidget {
         if (workingHoursDetails != null)
           Text(
             workingHoursDetails!,
-            style: const TextStyle(
+            style: GoogleFonts.inter(
               fontWeight: FontWeight.w400,
               color: Color(0xff8e8e8e),
               fontSize: 15,

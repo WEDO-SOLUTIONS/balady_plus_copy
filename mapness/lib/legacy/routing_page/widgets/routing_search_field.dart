@@ -79,12 +79,13 @@ class NavSearchField extends StatelessWidget {
                   )
                 : GestureDetector(
                     onTap: model.onCancelTap,
-                    child: const Padding(
-                      padding: EdgeInsetsDirectional.only(start: 6.0, end: 6.0),
+                    child: Padding(
+                      padding: const EdgeInsetsDirectional.only(
+                          start: 6.0, end: 6.0),
                       child: Text(
                         "cancel",
-                        style: TextStyle(
-                          color: Color(0xFF1F4948),
+                        style: GoogleFonts.inter(
+                          color: const Color(0xFF1F4948),
                         ),
                       ),
                     ),

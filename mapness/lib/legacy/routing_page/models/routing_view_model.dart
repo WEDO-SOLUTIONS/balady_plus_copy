@@ -141,6 +141,7 @@ class RoutingViewModel {
     // generalControlsState.value = true;
     unawaited(mapController.stopNavigation());
     unawaited(WakelockPlus.disable());
+    setRouteParams();
     // onRoutingClose();
   }
 

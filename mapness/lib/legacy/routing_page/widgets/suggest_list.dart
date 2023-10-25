@@ -1,6 +1,7 @@
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class SuggestList extends StatelessWidget {
   const SuggestList({
@@ -38,7 +39,7 @@ class SuggestList extends StatelessWidget {
                               items[index].title.text,
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(
+                              style: GoogleFonts.inter(
                                 fontWeight: FontWeight.w400,
                                 fontSize: 15,
                                 height: 1.33,
@@ -48,7 +49,7 @@ class SuggestList extends StatelessWidget {
                               items[index].subtitle.text,
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(
+                              style: GoogleFonts.inter(
                                 fontWeight: FontWeight.w400,
                                 fontSize: 13,
                                 color: Color(0xff929292),

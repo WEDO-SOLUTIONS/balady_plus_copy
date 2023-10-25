@@ -79,7 +79,7 @@ class OnResultBottomSheetState extends State<OnResultBottomSheet> {
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
+                        Text(
                           "You're here!",
                           style: MapnessTypography.l,
                         ),
@@ -103,10 +103,10 @@ class OnResultBottomSheetState extends State<OnResultBottomSheet> {
                             borderRadius:
                                 BorderRadius.all(Radius.circular(12))),
                         padding: const EdgeInsets.all(12),
-                        child: const Row(
+                        child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Icon(Icons.local_parking),
+                            const Icon(Icons.local_parking),
                             Text(
                               'Parking',
                               style: MapnessTypography.m,

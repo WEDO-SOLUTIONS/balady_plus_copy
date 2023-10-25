@@ -218,7 +218,7 @@ class OnRouteSheetState extends State<OnRouteSheet>
                                   text: TextSpan(
                                     text: '${snapshot.data?.arrival_time}\n',
                                     style: MapnessTypography.l,
-                                    children: const <TextSpan>[
+                                    children: <TextSpan>[
                                       TextSpan(
                                         text: 'arrival',
                                         style: MapnessTypography.xs,
@@ -333,20 +333,20 @@ class OnRouteSheetState extends State<OnRouteSheet>
                                       BorderRadius.all(Radius.circular(12)),
                                 ),
                                 padding: const EdgeInsets.all(12),
-                                child: const Row(
+                                child: Row(
                                   children: [
-                                    Icon(
+                                    const Icon(
                                       Icons.route_outlined,
                                     ),
-                                    SizedBox(
+                                    const SizedBox(
                                       width: 12,
                                     ),
                                     Text(
                                       'Viewing a Route',
                                       style: MapnessTypography.m,
                                     ),
-                                    Spacer(),
-                                    Icon(
+                                    const Spacer(),
+                                    const Icon(
                                       Icons.arrow_forward_ios_outlined,
                                     ),
                                   ],

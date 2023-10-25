@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:mapness/legacy/routing_page/widgets/working_hours.dart';
 
 import '../../navigation_dashboard/widgets/mapness_typography.dart';
@@ -35,7 +36,7 @@ class SearchResultList extends StatelessWidget {
                     item.title,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
+                    style: GoogleFonts.inter(
                       fontWeight: FontWeight.w400,
                       fontSize: 15,
                       height: 1.33,
