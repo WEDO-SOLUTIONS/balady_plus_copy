@@ -1,3 +1,6 @@
+import 'dart:math';
+import 'package:balady_plus/app/core/utils/extensions/date_time_extension.dart';
+
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
@@ -8,8 +11,21 @@ import '../../../../../../core/errors/failures.dart';
 import '../../../../../../core/services/services_exports.dart';
 import '../../../../../../core/utils/enums/enums.dart';
 import '../../../../../../core/utils/utils_exports.dart';
+import '../../../../../_shared_feature_/data/entities/success_screen_args.dart';
+import '../../../../../transaction_inquiry/presentation/core/models/attachment_model.dart';
+import '../../../../data/models/renew_request_details.dart';
+import '../../../../domain/entities/cr_attachment_response.dart';
+import '../../../../domain/entities/save_renew_request.dart';
+import '../../../../domain/use_cases/get_clean_contracts.dart';
+import '../../../../domain/use_cases/get_cr_Attacments.dart';
+import '../../../../domain/use_cases/get_ejar_info.dart';
 import '../../../../domain/use_cases/get_info_request.dart';
+import '../../../../domain/use_cases/get_renew_request_details.dart';
 import '../../../../domain/use_cases/get_renew_years.dart';
+import '../../../../domain/use_cases/save_cr_Attacments.dart';
+import '../../../../domain/use_cases/save_request_info.dart';
+import '../../../../domain/use_cases/submit_renew.dart';
+import '../../../../domain/use_cases/submit_renew_Attacments.dart';
 import '../../../../renew_commercial_license_exports.dart';
 
 part 'renew_commercial_license_event.dart';
@@ -20,10 +36,27 @@ class RenewCommercialLicenseBloc
   PageController controller = PageController();
   final CalculateRequestInfo _calculateRequestInfo;
   final GetRenewYears _getRenewYears;
+  final GetEjarInfo _getEjarInfo;
+  final GetCleanContracts _getCleanContracts;
+  final SaveRenewRequestInfo _saveRenewRequestInfo;
+
+  final GetCrAttachments _getCrAttachments;
+  final SaveCrAttachment _saveCrAttachment;
+  final SubmitRenewAttachments _submitRenewAttachments;
+  final GetRenewRequestDetails _renewRequestDetails;
+  final SubmitRenew _submitRenew;
 
   RenewCommercialLicenseBloc({required int requestId})
       : _getRenewYears = GetRenewYears(repository: sl()),
         _calculateRequestInfo = CalculateRequestInfo(repository: sl()),
+        _getEjarInfo = GetEjarInfo(repository: sl()),
+        _getCleanContracts = GetCleanContracts(repository: sl()),
+        _saveRenewRequestInfo = SaveRenewRequestInfo(repository: sl()),
+        _getCrAttachments = GetCrAttachments(repository: sl()),
+        _saveCrAttachment = SaveCrAttachment(repository: sl()),
+        _submitRenewAttachments = SubmitRenewAttachments(repository: sl()),
+        _renewRequestDetails = GetRenewRequestDetails(repository: sl()),
+        _submitRenew = SubmitRenew(repository: sl()),
         super(RenewCommercialLicenseState(requestId: requestId)) {
     on<GoToNextPageEvent>(_goToNextPageHandler);
     on<GoToPreviousPageEvent>(_goToPreviousPageHandler);
@@ -35,8 +68,6 @@ class RenewCommercialLicenseBloc
 
   Future<void> _goToNextPageHandler(
       GoToNextPageEvent e, Emitter emitter) async {
-    //print("next page");
-    print("DataLog ${state}");
     if (isLastPage()) {
     } else {
       if (state.status == BlocStatus.performing) return;
@@ -75,16 +106,18 @@ class RenewCommercialLicenseBloc
 
   Future<void> _getRenewYearsHandler(
       GetRenewYearsEvent e, Emitter emitter) async {
-    emitter(state.copyWith(status: BlocStatus.loading));
+    emitter(state.copyWith(
+        renewYearsStatus: BlocRequestStatus.submissionGetLoading));
     final failOrSuccess = await _getRenewYears(state.requestId!);
 
     failOrSuccess.fold((l) {
       emitter(state.copyWith(
-          status: BlocStatus.failure,
+          renewYearsStatus: BlocRequestStatus.submissionGetFailure,
           errorMessage: (l as ServerFailure).errorMessage));
     }, (r) {
       emitter(state.copyWith(
-          status: BlocStatus.success, renewYears: r.data?.result));
+          renewYearsStatus: BlocRequestStatus.submissionGetSuccess,
+          renewYears: r.data?.result));
     });
   }
 
@@ -108,6 +141,27 @@ class RenewCommercialLicenseBloc
   Future<void> _updateRenewYears(
       UpdateRenewYearsEvent e, Emitter emitter) async {
     emitter(state.copyWith(licensePeriod: int.tryParse(e.year)));
+  }
+
+  Future<void> updateInvestmentContractNumber(String? value) async {
+    emit(state.copyWith(investmentContractNumber: Nullable(value)));
+  }
+
+  Future<void> getEjarInfoHandler() async {
+    emit(state.copyWith(status: BlocStatus.loading, errorMessage: ""));
+    final failOrSuccess =
+        await _getEjarInfo(state.ejarInfoRequst ?? EjarInfoRequest());
+
+    failOrSuccess.fold((l) {
+      emit(state.copyWith(
+          status: BlocStatus.failure,
+          ejarVerified: Nullable(false),
+          errorMessage: (l as ServerFailure).errorMessage));
+    }, (r) {
+      print(r);
+      emit(state.copyWith(
+          status: BlocStatus.success, ejarVerified: Nullable(true)));
+    });
   }
 
   bool isLastPage() {
@@ -135,6 +189,10 @@ class RenewCommercialLicenseBloc
     emit(state.copyWith(
       crContractCleanRenewOptions: Nullable(type),
     ));
+
+    if (type == CRContractCleanRenewOptions.service) {
+      getCleanContracts();
+    }
   }
 
   void updateSubmitterType(CRSubmitterType type) {
@@ -192,8 +250,41 @@ class RenewCommercialLicenseBloc
       selectedInvestmentContract: Nullable(item),
     ));
   }
-  /*
- void getCleanContracts() async {
+
+  void updateTenancyInfo(
+      {String? id, String? tenancyContractNumber, String? versionNumber}) {
+    EjarInfoRequest ejarInfoRequst = state.ejarInfoRequst ?? EjarInfoRequest();
+
+    String nationalId = ejarInfoRequst.nationalId ?? "";
+    String iqamaNumber = ejarInfoRequst.iqamaNumber ?? "";
+
+    if (id?.startsWith("1") ?? false) {
+      nationalId = id!;
+      iqamaNumber = "";
+    }
+    if (id?.startsWith("2") ?? false) {
+      nationalId = "";
+      iqamaNumber = id!;
+    }
+    ejarInfoRequst.copyWith(
+      iqamaNumber: iqamaNumber,
+      nationalId: nationalId,
+      tenancyContractNumber: tenancyContractNumber,
+      versionNumber: versionNumber,
+    );
+
+    state.copyWith(
+        ejarInfoRequst: Nullable(ejarInfoRequst),
+        ejarVerified: Nullable(false));
+  }
+
+  void selectCleanContract(CleanContractItem? item) {
+    emit(state.copyWith(
+      selectedCleanContract: Nullable(item),
+    ));
+  }
+
+  void getCleanContracts() async {
     int requestId = state.requestId!;
 
     emit(state.copyWith(contractsListStatus: BlocStatus.loading));
@@ -206,10 +297,173 @@ class RenewCommercialLicenseBloc
             )), (success) {
       emit(state.copyWith(
           contractsListStatus: BlocStatus.success,
-          cleanContractsResponse: success));
+          cleanContractsResponse: Nullable(success)));
     });
   }
 
+  void saveInfoRequest() async {
+    int requestId = state.requestId!;
+
+    bool? citizenPledgedToClean;
+    if ((state.crContractCleanRenewOptions ==
+            CRContractCleanRenewOptions.attach ||
+        state.crContractCleanRenewOptions ==
+            CRContractCleanRenewOptions.service)) {
+      citizenPledgedToClean = true;
+    }
+
+    if ((state.crContractCleanRenewOptions ==
+        CRContractCleanRenewOptions.payAll)) {
+      citizenPledgedToClean = false;
+    }
+
+    emit(state.copyWith(status: BlocStatus.loading));
+    final response = await _saveRenewRequestInfo(SaveRenewRequest(
+        requestId: requestId,
+        citizenPledgedToClean: citizenPledgedToClean,
+        cleanContractEndDate: state.cleanContractEndDate,
+        cleanContractNumber:
+            state.selectedCleanContract?.unifiedCleanContractNo,
+        contractDate: CommonFunctions.padHijriDate(state.contractDate),
+        contractNumber: state.contractNumber,
+        contractOption: state.crContractOption?.name,
+        contractType: state.crContractType?.name,
+        ejarContractInfo: state.ejarInfoRequst,
+        investmentContractNumber: state.investmentContractNumber,
+        sadadPeriod: state.licensePeriod,
+        salamaBillNumber: state.salamaBillNumber,
+        salamaPermitNumber: state.salamaPermitNumber,
+        salamaReportNumber: state.salamaReportNumber));
+    response.fold(
+        (failure) => emit(state.copyWith(
+              status: BlocStatus.failure,
+              errorMessage: (failure as ServerFailure).errorMessage,
+            )), (success) {
+      emit(state.copyWith(
+        status: BlocStatus.success,
+      ));
+      add(const GoToNextPageEvent());
+    });
+  }
+
+  void getAttachments() async {
+    int requestId = state.requestId!;
+
+    emit(state.copyWith(status: BlocStatus.loading));
+    final response = await _getCrAttachments(requestId);
+    response.fold(
+        (failure) => emit(state.copyWith(
+              status: BlocStatus.failure,
+              errorMessage: (failure as ServerFailure).errorMessage,
+            )), (success) {
+      List<AttachmentData> attachmentData = (success.items ?? [])
+          .map((e) => AttachmentData(
+              id: e.id.toString(),
+              memo: e.name ?? "",
+              title: "${e.name} ${e.allowedFilesExtension}",
+              isRequired: e.isMandatory ?? false,
+              isUploaded: false))
+          .toList();
+
+      emit(state.copyWith(
+          status: BlocStatus.success, attachments: attachmentData));
+    });
+  }
+
+  deleteFile(int index) async {
+    emit(state.copyWith(status: BlocStatus.loading));
+
+    List<AttachmentData> attachments = state.attachments ?? [];
+    attachments[index].base64 = null;
+    attachments[index].fileName = null;
+    attachments[index].filePath = null;
+    attachments[index].isUploaded = false;
+    emit(state.copyWith(status: BlocStatus.success, attachments: attachments));
+  }
+
+  saveFile(
+      {required int index,
+      required String filePath,
+      required String fileName,
+      required String fileBase64}) async {
+    int requestId = state.requestId!;
+
+    emit(state.copyWith(status: BlocStatus.loading));
+
+    final failOrSuccess = await _saveCrAttachment(CrAttachmentRequest(
+        requestId: requestId,
+        data: state.attachments![index].copyWith(
+            fileName: fileName, filePath: filePath, base64: fileBase64)));
+
+    failOrSuccess.fold((l) {
+      emit(state.copyWith(
+        errorMessage: (l as ServerFailure).errorMessage,
+        status: BlocStatus.failure,
+      ));
+    }, (r) {
+      List<AttachmentData> attachments = state.attachments ?? [];
+      attachments[index].base64 = fileBase64;
+      attachments[index].fileName = fileName;
+      attachments[index].filePath = filePath;
+      attachments[index].isUploaded = true;
+      emit(
+          state.copyWith(status: BlocStatus.success, attachments: attachments));
+    });
+  }
+
+  void getRenewRequestDetails() async {
+    int requestId = state.requestId!;
+
+    emit(state.copyWith(requestDetailsStatus: BlocStatus.loading));
+    final response = await _renewRequestDetails(requestId);
+    response.fold(
+        (failure) => emit(state.copyWith(
+              requestDetailsStatus: BlocStatus.failure,
+              errorMessage: (failure as ServerFailure).errorMessage,
+            )), (success) {
+      emit(state.copyWith(
+          requestDetailsStatus: BlocStatus.success,
+          renewRequestDetails: success));
+    });
+  }
+
+  void submitAttachments() async {
+    int requestId = state.requestId!;
+    emit(state.copyWith(status: BlocStatus.loading));
+    final response = await _submitRenewAttachments(requestId);
+    response.fold(
+        (failure) => emit(state.copyWith(
+              status: BlocStatus.failure,
+              errorMessage: (failure as ServerFailure).errorMessage,
+            )), (success) {
+      emit(state.copyWith(status: BlocStatus.success));
+
+      add(const GoToNextPageEvent());
+    });
+  }
+
+  void submitRenew() async {
+    int requestId = state.requestId!;
+    emit(state.copyWith(status: BlocStatus.loading));
+    final response = await _submitRenew(requestId);
+    response.fold(
+        (failure) => emit(state.copyWith(
+              status: BlocStatus.failure,
+              errorMessage: (failure as ServerFailure).errorMessage,
+            )), (success) {
+      emit(state.copyWith(status: BlocStatus.success));
+
+      bool Function(Route<dynamic>) predicate =
+          ModalRoute.withName(RouteName.bottomNavigation);
+      NavigationService.navigatorKey.currentState!.pushNamedAndRemoveUntil(
+          RouteName.successRoute, predicate,
+          arguments: SuccessScreenArgs(
+              type: PAGE_TYPE.renewCommercial,
+              fromHomePage: false,
+              thanksMessage: success.data?.responseMessage));
+    });
+  }
+/*
   void getInvestmentContracts() async {
     if (state.crContractType == CRContractType.invest &&
         state.crSubmitterType == CRSubmitterType.rental &&

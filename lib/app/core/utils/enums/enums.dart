@@ -47,7 +47,7 @@ enum PAGE_TYPE {
   vhr,
   emtethal,
   deleteEmtethal,
-
+renewCommercial,
   other
 }
 
@@ -91,6 +91,26 @@ enum CRContractOption {
   final String name;
 
   const CRContractOption({required this.name});
+}
+
+enum CRRenewCleanOption {
+  optional(name: "OPTIONAL"),
+  cleanContract(name: "CLEAN_CONTRACT"),
+  baladiaSadad(name: "BALADIA_SADAD");
+
+  final String name;
+
+  const CRRenewCleanOption({required this.name});
+}
+
+enum CRRenewCleanContract {
+  attach(name: "ATTACH"),
+  service(name: "SERVICE"),
+  attachService(name: "ATTACH,SERVICE");
+
+  final String name;
+
+  const CRRenewCleanContract({required this.name});
 }
 
 enum CRContractCleanRenewOptions {

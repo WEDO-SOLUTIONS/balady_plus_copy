@@ -2,7 +2,10 @@ part of 'renew_commercial_license_bloc.dart';
 
 class RenewCommercialLicenseState extends Equatable {
   final BlocStatus status;
+  final BlocStatus contractsListStatus;
   final BlocRequestStatus renewYearsStatus;
+  final BlocStatus requestDetailsStatus;
+
   final int currentPageValue;
   final List<Widget> pagesList;
   final int? requestId;
@@ -20,7 +23,8 @@ class RenewCommercialLicenseState extends Equatable {
 
   final String? ownershipType;
 
-  final CRContractCleanRenewOptions? crContractCleanRenewOptions;
+  final CRRenewCleanOption? crRenewCleanOption;
+  final CRRenewCleanContract? crRenewCleanContract;
 
   final CRSubmitterType? crSubmitterType;
   final CRContractType? crContractType;
@@ -29,12 +33,28 @@ class RenewCommercialLicenseState extends Equatable {
   final CleanContractsResponse? cleanContractsResponse;
   final CleanContractItem? selectedCleanContract;
 
+  final CRContractCleanRenewOptions? crContractCleanRenewOptions;
+
   final InvestmentContractResponse? investmentContractResponse;
   final InvestmentContractItem? selectedInvestmentContract;
   final String? cleanContractEndDate;
+  final EjarInfoRequest? ejarInfoRequst;
+  final bool? ejarVerified;
+  final String? investmentContractNumber;
+
+  final int? salamaBillNumber;
+  final int? salamaPermitNumber;
+  final int? salamaReportNumber;
+
+  final CrAttachmentResponse? attachmentResponse;
+  final List<AttachmentData>? attachments;
+  final RenewRequestDetails? renewRequestDetails;
+
   const RenewCommercialLicenseState(
       {this.status = BlocStatus.initial,
+      this.contractsListStatus = BlocStatus.initial,
       this.renewYearsStatus = BlocRequestStatus.initial,
+      this.requestDetailsStatus = BlocStatus.initial,
       this.currentPageValue = 0,
       this.requestId,
       this.renewYears,
@@ -59,8 +79,19 @@ class RenewCommercialLicenseState extends Equatable {
       this.selectedCleanContract,
       this.investmentContractResponse,
       this.selectedInvestmentContract,
+      this.crRenewCleanOption,
+      this.cleanContractEndDate,
+      this.crRenewCleanContract,
       this.crContractCleanRenewOptions,
-      this.cleanContractEndDate});
+      this.ejarInfoRequst,
+      this.ejarVerified,
+      this.investmentContractNumber,
+      this.salamaBillNumber,
+      this.salamaPermitNumber,
+      this.salamaReportNumber,
+      this.attachmentResponse,
+      this.attachments,
+      this.renewRequestDetails});
 
   @override
   List<Object?> get props => [
@@ -86,12 +117,27 @@ class RenewCommercialLicenseState extends Equatable {
         selectedCleanContract,
         investmentContractResponse,
         selectedInvestmentContract,
+        crRenewCleanOption,
+        cleanContractEndDate,
+        crRenewCleanContract,
         crContractCleanRenewOptions,
-        cleanContractEndDate
+        ejarInfoRequst,
+        ejarVerified,
+        investmentContractNumber,
+        contractsListStatus,
+        salamaBillNumber,
+        salamaPermitNumber,
+        salamaReportNumber,
+        attachments,
+        attachmentResponse,
+        renewRequestDetails,
+        requestDetailsStatus
       ];
 
   RenewCommercialLicenseState copyWith(
       {BlocStatus? status,
+      BlocStatus? requestDetailsStatus,
+      BlocStatus? contractsListStatus,
       int? currentPageValue,
       List<Widget>? pagesList,
       int? requestId,
@@ -114,9 +160,22 @@ class RenewCommercialLicenseState extends Equatable {
       Nullable<CleanContractItem?>? selectedCleanContract,
       InvestmentContractResponse? investmentContractResponse,
       Nullable<InvestmentContractItem?>? selectedInvestmentContract,
-      Nullable<CRContractCleanRenewOptions?>? crContractCleanRenewOptions}) {
+      Nullable<CRRenewCleanOption?>? crRenewCleanOption,
+      Nullable<CRRenewCleanContract?>? crRenewCleanContract,
+      Nullable<CRContractCleanRenewOptions?>? crContractCleanRenewOptions,
+      Nullable<EjarInfoRequest?>? ejarInfoRequst,
+      Nullable<bool?>? ejarVerified,
+      Nullable<String?>? investmentContractNumber,
+      final int? salamaBillNumber,
+      final int? salamaPermitNumber,
+      final int? salamaReportNumber,
+      CrAttachmentResponse? attachmentResponse,
+      List<AttachmentData>? attachments,
+      final RenewRequestDetails? renewRequestDetails}) {
     return RenewCommercialLicenseState(
         status: status ?? this.status,
+        renewRequestDetails: renewRequestDetails ?? this.renewRequestDetails,
+        contractsListStatus: contractsListStatus ?? this.contractsListStatus,
         currentPageValue: currentPageValue ?? this.currentPageValue,
         pagesList: pagesList ?? this.pagesList,
         requestId: requestId ?? this.requestId,
@@ -127,15 +186,15 @@ class RenewCommercialLicenseState extends Equatable {
         errorMessage: errorMessage ?? this.errorMessage,
         investmentListStatus: investmentListStatus ?? this.investmentListStatus,
         contractDate:
-            contractDate == null ? this.contractDate : this.contractDate,
+            contractDate == null ? this.contractDate : contractDate.value,
         contractNumber:
-            contractNumber == null ? this.contractNumber : this.contractNumber,
+            contractNumber == null ? this.contractNumber : contractNumber.value,
         contractOption:
-            contractOption == null ? this.contractOption : this.contractOption,
+            contractOption == null ? this.contractOption : contractOption.value,
         contractType:
-            contractType == null ? this.contractType : this.contractType,
+            contractType == null ? this.contractType : contractType.value,
         ownershipType:
-            ownershipType == null ? this.ownershipType : this.ownershipType,
+            ownershipType == null ? this.ownershipType : ownershipType.value,
         crSubmitterType: crSubmitterType == null
             ? this.crSubmitterType
             : crSubmitterType.value,
@@ -158,8 +217,28 @@ class RenewCommercialLicenseState extends Equatable {
         cleanContractEndDate: cleanContractEndDate == null
             ? this.cleanContractEndDate
             : cleanContractEndDate.value,
+        crRenewCleanOption: crRenewCleanOption == null
+            ? this.crRenewCleanOption
+            : crRenewCleanOption.value,
+        crRenewCleanContract: crRenewCleanContract == null
+            ? this.crRenewCleanContract
+            : crRenewCleanContract.value,
         crContractCleanRenewOptions: crContractCleanRenewOptions == null
             ? this.crContractCleanRenewOptions
-            : crContractCleanRenewOptions.value);
+            : crContractCleanRenewOptions.value,
+        ejarInfoRequst:
+            ejarInfoRequst == null ? this.ejarInfoRequst : ejarInfoRequst.value,
+        ejarVerified:
+            ejarVerified == null ? this.ejarVerified : ejarVerified.value,
+        investmentContractNumber: investmentContractNumber == null
+            ? this.investmentContractNumber
+            : investmentContractNumber.value,
+        salamaBillNumber: salamaBillNumber ?? this.salamaBillNumber,
+        salamaPermitNumber: salamaPermitNumber ?? this.salamaPermitNumber,
+        salamaReportNumber: salamaReportNumber ?? this.salamaReportNumber,
+        attachments: attachments ?? this.attachments,
+        attachmentResponse: attachmentResponse ?? this.attachmentResponse,
+        requestDetailsStatus:
+            requestDetailsStatus ?? this.requestDetailsStatus);
   }
 }

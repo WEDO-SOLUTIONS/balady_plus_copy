@@ -1,8 +1,10 @@
 import 'package:dartz/dartz.dart';
 import '../../../../core/errors/errors_exports.dart';
 import '../../../_shared_feature_/shared_feature_exports.dart';
+import '../../data/models/renew_request_details.dart';
 import '../../renew_commercial_license_exports.dart';
 import '../entities/cr_attachment_response.dart';
+import '../entities/save_renew_request.dart';
 
 abstract class RenewCrRepository {
   Future<Either<Failure, DeedInfoResponse>> getDeedInfo(
@@ -19,9 +21,11 @@ abstract class RenewCrRepository {
 
   Future<Either<Failure, bool>> saveAttachment(
       {required CrAttachmentRequest params});
+  Future<Either<Failure, dynamic>> submitRenewAttachments(
+      {required int? params});
 
-  Future<Either<Failure, CrCalculateFeesResponse>> crCalculateFee(
-      {required CrCalculateFeesRequest params});
+  Future<Either<Failure, RenewRequestDetails>> getRequestDetails(
+      {required int params});
 
   Future<Either<Failure, ResponseBodyModel<bool>>> validateRenewBeforeApply(
       {required int? params});
@@ -34,4 +38,10 @@ abstract class RenewCrRepository {
 
   Future<Either<Failure, RenewRequestInfo>> calculateRequestInfo(
       {required RenewInfoRequest? params});
+
+  Future<Either<Failure, RenewRequestInfo>> saveRenewRequestInfo(
+      {required SaveRenewRequest? params});
+
+  Future<Either<Failure, ResponseBodyModel<dynamic>>> submitRenew(
+      {required int params});
 }

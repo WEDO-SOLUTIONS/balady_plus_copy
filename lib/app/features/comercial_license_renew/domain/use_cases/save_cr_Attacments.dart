@@ -1,11 +1,11 @@
-/*import 'package:dartz/dartz.dart' show Either;
+import 'package:dartz/dartz.dart' show Either;
 import '../../../../core/errors/failures.dart';
 import '../../../../core/services/local/use_case.dart';
-import '../../renew_commercial_license_exports.dart' show CrRepository;
+import '../../renew_commercial_license_exports.dart' show RenewCrRepository;
 import '../entities/cr_attachment_request.dart';
 
 class SaveCrAttachment extends UseCase<bool, CrAttachmentRequest> {
-  final CrRepository repository;
+  final RenewCrRepository repository;
 
   SaveCrAttachment({required this.repository});
   @override
@@ -13,4 +13,3 @@ class SaveCrAttachment extends UseCase<bool, CrAttachmentRequest> {
     return await repository.saveAttachment(params: params);
   }
 }
-*/

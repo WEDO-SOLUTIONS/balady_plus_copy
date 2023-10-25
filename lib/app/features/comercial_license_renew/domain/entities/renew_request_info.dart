@@ -1,3 +1,5 @@
+import '../../../../core/utils/enums/enums.dart';
+
 class RenewRequestInfo {
   final CleanContractResponseDto? cleanContractResponseDto;
   final OwnershipResponseDto? ownershipResponseDto;
@@ -8,13 +10,49 @@ class RenewRequestInfo {
     this.ownershipResponseDto,
     this.salamaResponseDto,
   });
+
+  CRRenewCleanOption? getCleanOption() {
+    if (cleanContractResponseDto?.cleanContractOptions?.cleanOption ==
+        "OPTIONAL") {
+      return CRRenewCleanOption.optional;
+    }
+
+    if (cleanContractResponseDto?.cleanContractOptions?.cleanOption ==
+        "CLEAN_CONTRACT") {
+      return CRRenewCleanOption.cleanContract;
+    }
+
+    if (cleanContractResponseDto?.cleanContractOptions?.cleanOption ==
+        "BALADIA_SADAD") {
+      return CRRenewCleanOption.baladiaSadad;
+    }
+    return null;
+  }
+
+  CRRenewCleanContract? getContractOption() {
+    if (cleanContractResponseDto?.cleanContractOptions?.cleanOption ==
+        "SERVICE") {
+      return CRRenewCleanContract.service;
+    }
+
+    if (cleanContractResponseDto?.cleanContractOptions?.cleanOption ==
+        "ATTACH") {
+      return CRRenewCleanContract.attach;
+    }
+
+    if (cleanContractResponseDto?.cleanContractOptions?.cleanOption ==
+        "ATTACH,SERVICE") {
+      return CRRenewCleanContract.attachService;
+    }
+    return null;
+  }
 }
 
 class CleanContractResponseDto {
   final dynamic cleanContractEndDate;
   final dynamic cleanContractInfo;
   final CleanContractOptions? cleanContractOptions;
-  final dynamic warnings;
+  final String? warnings;
   final bool? citizenPledgedToClean;
 
   CleanContractResponseDto({

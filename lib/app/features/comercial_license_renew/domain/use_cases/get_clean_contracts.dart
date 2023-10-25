@@ -1,12 +1,12 @@
-/*import 'package:dartz/dartz.dart' show Either;
+import 'package:dartz/dartz.dart' show Either;
 import '../../../../core/errors/failures.dart';
 import '../../../../core/services/local/use_case.dart';
 import '../../renew_commercial_license_exports.dart'
-    show CleanContractsResponse, CleanContractsRequest, CrRepository;
+    show CleanContractsRequest, CleanContractsResponse, RenewCrRepository;
 
 class GetCleanContracts
     extends UseCase<CleanContractsResponse, CleanContractsRequest> {
-  final CrRepository repository;
+  final RenewCrRepository repository;
 
   GetCleanContracts({required this.repository});
   @override
@@ -15,4 +15,3 @@ class GetCleanContracts
     return await repository.getCleanContracts(params);
   }
 }
-*/
