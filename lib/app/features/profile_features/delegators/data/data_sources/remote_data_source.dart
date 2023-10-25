@@ -84,9 +84,7 @@ class DelegatorsRemoteDataSourceImplementation
           .toList();
     } on DioError catch (error) {
       "DioError $error".errorLog();
-      if (error is NoDataFoundException) {
-        rethrow;
-      }
+
       var errorCode;
       try {
         final decodedResponse = ResponseBodyModel.fromMap(

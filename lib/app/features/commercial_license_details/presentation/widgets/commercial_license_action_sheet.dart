@@ -63,7 +63,7 @@ class CommercialLicenseActionSheet extends StatelessWidget {
                                           height: MediaQuery.of(context)
                                                   .size
                                                   .height *
-                                              0.47,
+                                              0.5,
                                         );
                                         Navigator.of(context).pop();
                                         break;

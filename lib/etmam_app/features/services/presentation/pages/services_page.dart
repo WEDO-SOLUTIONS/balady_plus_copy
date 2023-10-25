@@ -194,6 +194,8 @@ class _ServicesPageState extends State<ServicesPage> {
                                                   subServiceId:
                                                       state.subServiceId,
                                                   relationId: "",
+                                                  inputsRequired:
+                                                      args.inputsRequired,
                                                   subServiceName:
                                                       state.subServiceName,
                                                   subRelations: [],
@@ -237,6 +239,7 @@ class _ServicesPageState extends State<ServicesPage> {
                                           subServiceId: state.subServiceId,
                                           relationId: "",
                                           subServiceName: state.subServiceName,
+                                          inputsRequired: args.inputsRequired,
                                           subRelations: [],
                                           changeProvider: args.changeProvider,
                                           orderId: args.orderId,

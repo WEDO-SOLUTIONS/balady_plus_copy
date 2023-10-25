@@ -17,14 +17,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:provider/provider.dart';
 
-
-
 class CommercialLicenseDetailsPage extends StatelessWidget {
   const CommercialLicenseDetailsPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    CommercialLicenseDetailsCubit  bloc = ModalRoute.of(context)!.settings.arguments as CommercialLicenseDetailsCubit;
+    CommercialLicenseDetailsCubit bloc = ModalRoute.of(context)!
+        .settings
+        .arguments as CommercialLicenseDetailsCubit;
 
     return BlocProvider(
       create: (context) => bloc,
@@ -50,23 +50,29 @@ class CommercialLicenseDetailsPage extends StatelessWidget {
                   margin: const EdgeInsets.symmetric(vertical: 8),
                   child: InkWell(
                     onTap: () {
-                      BottomSheetDialog.showDraggableSheet(
-                        context,
-                        dialogKeyName: DialogName.commercialLicenseActionSheetDialog,
-                        currentRouteName: RouteName.commercialLicenseDetails,
-                        child: ChangeNotifierProvider(
-                          create: (BuildContext context) =>
-                              CommercialLicenseActionViewModel(
-                                webService: sl(),
-                                licenseId: bloc.commercialLicenseId,
-                                submitterInfo: bloc.state.commercialLicenceDetails!.submitterInfo!,
-                                licenseStatusId:  bloc.state.commercialLicenceDetails!.licenseInfo?.statusId ?? 0,
-                              ),
-                          child: const CommercialLicenseActionSheet(),
-                        ),
-                        isFullHeight: false,
-                        height: MediaQuery.of(context).size.height * 0.47,
-                      );
+                      if (bloc.state.commercialLicenceDetails!.submitterInfo !=
+                              null &&
+                          bloc.state.commercialLicenceDetails!.licenseInfo !=
+                              null) {
+                        BottomSheetDialog.showDraggableSheet(
+                          context,
+                          dialogKeyName:
+                              DialogName.commercialLicenseActionSheetDialog,
+                          currentRouteName: RouteName.commercialLicenseDetails,
+                          child: ChangeNotifierProvider(
+                            create: (BuildContext context) =>
+                                CommercialLicenseActionViewModel(
+                              webService: sl(),
+                              licenseId: bloc.commercialLicenseId,
+                              submitterInfo: bloc.state
+                                  .commercialLicenceDetails!.submitterInfo!,
+                            ),
+                            child: const CommercialLicenseActionSheet(),
+                          ),
+                          isFullHeight: false,
+                          height: MediaQuery.of(context).size.height * 0.47,
+                        );
+                      }
                     },
                     child: const CircleIcon(
                       backgroundColor: AppColor.primary50Light,
@@ -81,8 +87,8 @@ class CommercialLicenseDetailsPage extends StatelessWidget {
           ],
         ),
         body: const Padding(
-          padding:  EdgeInsets.all(16),
-          child:  CommercialLicenseDetailsBody(),
+          padding: EdgeInsets.all(16),
+          child: CommercialLicenseDetailsBody(),
         ),
       ),
     );

@@ -70,6 +70,7 @@ class DelegatorsCubit extends Cubit<DelegatorsState> {
 
     failureOrSuccess.fold(
       (failure) {
+        print("failure $failure");
         BlocRequestStatus status = (failure as ServerFailure).errorCode == "2"
             ? BlocRequestStatus.submissionGetSuccess
             : BlocRequestStatus.submissionGetFailure;

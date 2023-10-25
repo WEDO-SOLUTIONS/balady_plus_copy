@@ -17,7 +17,7 @@ class EstehkamNumberDateField extends StatelessWidget {
     return BlocBuilder<ComplianceBloc, ComplianceState>(
         builder: (context, state) {
       return ComplianceDatePicker(
-        title: "compliance_ownership_date".tr(),
+        title: "compliance_estehkam_date".tr(),
         initialDateForm: state.form ?? DateForm.hijri,
         initialDate:
             state.ownershipDate != null ? state.getOwnerShipDate() : null,
