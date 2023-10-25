@@ -13,8 +13,10 @@ class InvoiceDetailsParamsModel extends Equatable {
 
   Map<String, dynamic> toMap() {
     return {
-      if (identityTypeId != null) 'identityTypeId': identityTypeId,
-      if (identityNumber != null) 'identityNumber': identityNumber,
+      if (identityTypeId != null && identityTypeId!.isNotEmpty)
+        'identityTypeId': identityTypeId,
+      if (identityNumber != null && identityNumber!.isNotEmpty)
+        'identityNumber': identityNumber,
       'invoiceId': invoiceId,
     };
   }
