@@ -1,8 +1,10 @@
+import 'package:balady_plus/app/features/comercial_license_renew/domain/entities/save_renew_request.dart';
 import 'package:dartz/dartz.dart' show Either, Left, Right;
 import '../../../../core/errors/errors_exports.dart';
 import '../../../_shared_feature_/data/models/response_body_model.dart';
 import '../../domain/entities/cr_attachment_response.dart';
 import '../../renew_commercial_license_exports.dart';
+import '../models/renew_request_details.dart';
 
 class RenewCrRepositoryImpl implements RenewCrRepository {
   final RenewCrRemoteDataSource remoteDataSource;
@@ -83,10 +85,10 @@ class RenewCrRepositoryImpl implements RenewCrRepository {
   }
 
   @override
-  Future<Either<Failure, CrCalculateFeesResponse>> crCalculateFee(
-      {required CrCalculateFeesRequest params}) async {
+  Future<Either<Failure, RenewRequestDetails>> getRequestDetails(
+      {required int params}) async {
     try {
-      final data = await remoteDataSource.crCalculateFees(params: params);
+      final data = await remoteDataSource.getRequestDetails(params: params);
       return Right(data);
     } on ServerException catch (error) {
       return Left(ServerFailure(error.errorMessage,
@@ -136,6 +138,43 @@ class RenewCrRepositoryImpl implements RenewCrRepository {
       {required RenewInfoRequest? params}) async {
     try {
       final data = await remoteDataSource.calculateRequestInfo(params: params);
+      return Right(data);
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage,
+          statusCode: error.statusCode, errorCode: error.errorCode));
+    }
+  }
+
+  @override
+  Future<Either<Failure, RenewRequestInfo>> saveRenewRequestInfo(
+      {required SaveRenewRequest? params}) async {
+    try {
+      final data = await remoteDataSource.saveRenewRequestInfo(params: params);
+      return Right(data);
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage,
+          statusCode: error.statusCode, errorCode: error.errorCode));
+    }
+  }
+
+  @override
+  Future<Either<Failure, dynamic>> submitRenewAttachments(
+      {required int? params}) async {
+    try {
+      final data =
+          await remoteDataSource.submitRenewAttachments(params: params);
+      return Right(data);
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage,
+          statusCode: error.statusCode, errorCode: error.errorCode));
+    }
+  }
+
+  @override
+  Future<Either<Failure, ResponseBodyModel<dynamic>>> submitRenew(
+      {required int params}) async {
+    try {
+      final data = await remoteDataSource.submitRenew(params: params);
       return Right(data);
     } on ServerException catch (error) {
       return Left(ServerFailure(error.errorMessage,

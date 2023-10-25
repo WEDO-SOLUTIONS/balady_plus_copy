@@ -95,7 +95,7 @@ class DetailsAppBar extends StatelessWidget implements PreferredSizeWidget {
               isRTL: true,
               animationDuration: 0,
               restartAnimation: false,
-              percent: currentStep / (12),
+              percent: currentStep / (pageLength),
               barRadius: const Radius.circular(33),
               backgroundColor: AppColor.primary100Light,
               linearGradient: LinearGradient(colors: [

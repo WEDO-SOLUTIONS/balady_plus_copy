@@ -304,6 +304,9 @@ class ApiUrl {
   static String calculateRequestInfo(int requestId) =>
       'v1/balady-commercial-services/mobile/renew-request/$requestId/calculate-request-info';
 
+  static String saveRenewRequestInfo(int requestId) =>
+      'v1/balady-commercial-services/mobile/renew-request/$requestId/request-info';
+
   static String renewAttachments(int requestId) =>
       'v1/balady-commercial-services/mobile/renew-request/$requestId/attachments';
 
@@ -315,6 +318,9 @@ class ApiUrl {
 
   static String renewSubmit(int requestId) =>
       '/v1/balady-commercial-services/mobile/renew-request/$requestId/submit';
+
+  static String renewRequestDetails(int requestId) =>
+      '/v1/balady-commercial-services/mobile/renew-request/$requestId/request-details';
 
 //! Violations
   static const String violationsStatus =

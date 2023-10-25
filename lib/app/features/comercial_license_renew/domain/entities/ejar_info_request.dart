@@ -17,8 +17,10 @@ class EjarInfoRequest extends Equatable {
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
-      'IqamaNumber': iqamaNumber,
-      'NationalId': nationalId,
+      if (iqamaNumber != null && iqamaNumber!.isNotEmpty)
+        'IqamaNumber': iqamaNumber,
+      if (nationalId != null && nationalId!.isNotEmpty)
+        'NationalId': nationalId,
       'TenancyContractNumber': tenancyContractNumber,
       'VersionNumber': versionNumber,
     };

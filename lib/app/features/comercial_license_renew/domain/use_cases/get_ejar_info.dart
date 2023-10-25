@@ -1,11 +1,11 @@
-/*import 'package:dartz/dartz.dart' show Either;
+import 'package:dartz/dartz.dart' show Either;
 import '../../../../core/errors/failures.dart';
 import '../../../../core/services/local/use_case.dart';
 import '../../renew_commercial_license_exports.dart'
-    show EjarInfoResponse, EjarInfoRequest, CrRepository;
+    show RenewCrRepository, EjarInfoRequest, EjarInfoResponse;
 
 class GetEjarInfo extends UseCase<EjarInfoResponse, EjarInfoRequest> {
-  final CrRepository repository;
+  final RenewCrRepository repository;
 
   GetEjarInfo({required this.repository});
   @override
@@ -13,4 +13,3 @@ class GetEjarInfo extends UseCase<EjarInfoResponse, EjarInfoRequest> {
     return await repository.getEjarInfo(params);
   }
 }
-*/

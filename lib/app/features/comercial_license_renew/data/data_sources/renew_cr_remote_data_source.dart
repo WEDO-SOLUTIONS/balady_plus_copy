@@ -9,6 +9,7 @@ import '../../../../core/errors/errors_exports.dart';
 import '../../../../core/services/local/helpers.dart';
 import '../../../../core/services/services_exports.dart';
 import '../../../_shared_feature_/shared_feature_exports.dart';
+import '../../domain/entities/save_renew_request.dart';
 import '../../renew_commercial_license_exports.dart';
 import '../../domain/entities/cr_submit_request.dart';
 import '../models/clean_contracts_response_model.dart';
@@ -16,6 +17,7 @@ import '../models/cr_attachment_response_model.dart';
 import '../models/cr_submit_response_model.dart';
 import '../../../../core/remote_services/web_service.dart' as web;
 import '../models/investment_contracts_response_model.dart';
+import '../models/renew_request_details.dart';
 import '../models/renew_request_info_model.dart';
 
 abstract class RenewCrRemoteDataSource {
@@ -28,24 +30,27 @@ abstract class RenewCrRemoteDataSource {
   Future<RenewRequestInfoModel> calculateRequestInfo(
       {RenewInfoRequest? params});
 
-  Future<DeedInfoResponseModel> getDeedInfo({DeedInfoRequest? params});
-
   Future<EjarInfoResponseModel> getEjarInfo({EjarInfoRequest? params});
 
   Future<CleanContractsResponseModel> getCleanContracts(
       {CleanContractsRequest? params});
 
-  Future<InvestmentContractResponseModel> getInvestmentContracts(
-      {InvestmentContractRequest? params});
+  Future<dynamic> saveRenewRequestInfo({SaveRenewRequest? params});
+
+  Future<dynamic> submitRenewAttachments({int? params});
 
   Future<CrAttachmentResponseModel> getCRAttachment({int? params});
 
   Future<bool> saveAttachment({required CrAttachmentRequest params});
 
-  Future<CrCalculateFeesResponseModel> crCalculateFees(
-      {required CrCalculateFeesRequest params});
+  Future<RenewRequestDetails> getRequestDetails({required int params});
 
-  Future<CrSubmitResponseModel> submitCr({required CrSubmitRequest params});
+  Future<ResponseBodyModel<dynamic>> submitRenew({required int params});
+
+  Future<DeedInfoResponseModel> getDeedInfo({DeedInfoRequest? params});
+
+  Future<InvestmentContractResponseModel> getInvestmentContracts(
+      {InvestmentContractRequest? params});
 }
 
 class RenewCrRemoteDataSourceImpl extends RenewCrRemoteDataSource {
@@ -59,8 +64,9 @@ class RenewCrRemoteDataSourceImpl extends RenewCrRemoteDataSource {
     var response;
 
     try {
+      //4312216452 test data
       response = await webService.dio
-          .post(ApiUrl.cleanContracts(params!.requestId), data: params.toMap());
+          .get(ApiUrl.cleanContracts(params!.requestId), data: params.toMap());
 
       var data = response.data["data"];
 
@@ -265,7 +271,7 @@ class RenewCrRemoteDataSourceImpl extends RenewCrRemoteDataSource {
     var response;
 
     try {
-      response = await webService.dio.get(ApiUrl.crIssueAttachments(params!));
+      response = await webService.dio.get(ApiUrl.renewAttachments(params!));
 
       var data = response.data["data"];
 
@@ -340,8 +346,7 @@ class RenewCrRemoteDataSourceImpl extends RenewCrRemoteDataSource {
       print(ex);
       try {
         Helpers.sendLog(
-            url: ApiUrl.complianceAttachment(
-                params.requestId.toString(), params.data!.id),
+            url: ApiUrl.uploadAttachments(params.requestId!, params.data!.id),
             data: data,
             errorMsg: ex.toString());
       } catch (ex) {}
@@ -356,32 +361,28 @@ class RenewCrRemoteDataSourceImpl extends RenewCrRemoteDataSource {
   }
 
   @override
-  Future<CrCalculateFeesResponseModel> crCalculateFees(
-      {required CrCalculateFeesRequest params}) async {
+  Future<RenewRequestDetails> getRequestDetails({required int params}) async {
     var response;
 
     try {
-      response = await webService.dio.post(
-          ApiUrl.crCalculateFess(
-            params.requestId!,
-          ),
-          data: params.toMap());
+      response = await webService.dio.get(ApiUrl.renewRequestDetails(
+        params!,
+      ));
 
-      var data = response.data["data"];
+      var data = response.data["data"]["result"];
 
       var parsedResult =
-          data != null ? CrCalculateFeesResponseModel.fromJson(data) : null;
-      final decodedResponse =
-          ResponseBodyModel<CrCalculateFeesResponseModel>.fromMap(response.data,
-              parsedResult: parsedResult);
+          data != null ? RenewRequestDetails.fromJson(data) : null;
+      final decodedResponse = ResponseBodyModel<RenewRequestDetails>.fromMap(
+          response.data,
+          parsedResult: parsedResult);
 
       return decodedResponse.data!.result!.toFuture();
     } on DioError catch (error) {
       print(error);
       var errorCode;
       try {
-        final decodedResponse =
-            ResponseBodyModel<CrCalculateFeesResponseModel>.fromMap(
+        final decodedResponse = ResponseBodyModel<RenewRequestDetails>.fromMap(
           error.response?.data,
         );
         errorCode = decodedResponse.data?.responseCode;
@@ -411,28 +412,23 @@ class RenewCrRemoteDataSourceImpl extends RenewCrRemoteDataSource {
   }
 
   @override
-  Future<CrSubmitResponseModel> submitCr(
-      {required CrSubmitRequest params}) async {
+  Future<ResponseBodyModel<dynamic>> submitRenew({required int params}) async {
     var response;
 
     try {
-      response = await webService.dio.post(
-          ApiUrl.crSubmit(
-            params.requestId!,
-          ),
-          data: params.toMap());
+      response = await webService.dio.post(ApiUrl.renewSubmit(
+        params,
+      ));
 
-      final decodedResponse = ResponseBodyModel<CrSubmitResponseModel>.fromMap(
-          response.data,
-          parsedResult: null);
+      final decodedResponse =
+          ResponseBodyModel<dynamic>.fromMap(response.data, parsedResult: null);
 
-      return decodedResponse.data!.result!.toFuture();
+      return decodedResponse.toFuture();
     } on DioError catch (error) {
       print(error);
       var errorCode;
       try {
-        final decodedResponse =
-            ResponseBodyModel<CrCalculateFeesResponseModel>.fromMap(
+        final decodedResponse = ResponseBodyModel<dynamic>.fromMap(
           error.response?.data,
         );
         errorCode = decodedResponse.data?.responseCode;
@@ -559,7 +555,7 @@ class RenewCrRemoteDataSourceImpl extends RenewCrRemoteDataSource {
 
   @override
   Future<ResponseBodyModel<List<int>>> renewYears({int? params}) async {
-    Map<String, dynamic> x = {
+    /*Map<String, dynamic> x = {
       "statusDetails": {"code": 200, "message": "Ok"},
       "data": {
         "responseCode": "1",
@@ -575,13 +571,17 @@ class RenewCrRemoteDataSourceImpl extends RenewCrRemoteDataSource {
         ResponseBodyModel<List<int>>.fromMap(x, parsedResult: data);
 
     return decodedResponse.toFuture();
-
+*/
     var response;
 
     try {
       response = await webService.dio.get(ApiUrl.renewYears(params!));
-
-      List<int>? data = response.data["data"]["result"];
+      print("HHH");
+      List d = response.data["data"]["result"];
+      List<int> data = [];
+      d!.forEach((element) {
+        data.add(element);
+      });
 
       final decodedResponse = ResponseBodyModel<List<int>>.fromMap(
           response.data,
@@ -625,7 +625,7 @@ class RenewCrRemoteDataSourceImpl extends RenewCrRemoteDataSource {
   @override
   Future<RenewRequestInfoModel> calculateRequestInfo(
       {RenewInfoRequest? params}) async {
-    Map<String, dynamic> x = {
+    /*Map<String, dynamic> x = {
       "statusDetails": {"code": 200, "message": "Ok"},
       "data": {
         "responseCode": "1",
@@ -683,7 +683,7 @@ class RenewCrRemoteDataSourceImpl extends RenewCrRemoteDataSource {
         parsedResult: parsedResult);
 
     ///
-    return decodedResponse.data!.result!.toFuture();
+    return decodedResponse.data!.result!.toFuture();*/
     var response;
 
     try {
@@ -707,6 +707,106 @@ class RenewCrRemoteDataSourceImpl extends RenewCrRemoteDataSource {
       try {
         final decodedResponse =
             ResponseBodyModel<RenewRequestInfoModel>.fromMap(
+          error.response?.data,
+        );
+        errorCode = decodedResponse.data?.responseCode;
+      } catch (ex) {}
+
+      throw ServerException(
+        error.toString(),
+        errorCode: errorCode,
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
+    } catch (ex) {
+      print(ex);
+      if (ex is ServerException)
+        throw ex;
+      else {
+        try {
+          //MM    CommonFunctions.sendExceptionLog(exception: ex, response: response);
+        } catch (ex) {}
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
+      }
+    }
+  }
+
+  @override
+  Future saveRenewRequestInfo({SaveRenewRequest? params}) async {
+    var response;
+
+    try {
+      response = await webService.dio.post(
+          ApiUrl.saveRenewRequestInfo(params!.requestId!),
+          data: params.toMap());
+
+      var data = response.data["data"]["result"];
+
+      // var parsedResult =
+      //     data != null ? RenewRequestInfoModel.fromJson(data) : null;
+
+      final decodedResponse =
+          ResponseBodyModel<dynamic>.fromMap(response.data, parsedResult: null);
+
+      return decodedResponse.data!.result!.toFuture();
+    } on DioError catch (error) {
+      print(error);
+      var errorCode;
+      try {
+        final decodedResponse = ResponseBodyModel<dynamic>.fromMap(
+          error.response?.data,
+        );
+        errorCode = decodedResponse.data?.responseCode;
+      } catch (ex) {}
+
+      throw ServerException(
+        error.toString(),
+        errorCode: errorCode,
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
+    } catch (ex) {
+      print(ex);
+      if (ex is ServerException)
+        throw ex;
+      else {
+        try {
+          //MM    CommonFunctions.sendExceptionLog(exception: ex, response: response);
+        } catch (ex) {}
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
+      }
+    }
+  }
+
+  @override
+  Future submitRenewAttachments({int? params}) async {
+    var response;
+
+    try {
+      response = await webService.dio.post(ApiUrl.saveAttachments(params!));
+
+      var data = response.data["data"]["result"];
+
+      // var parsedResult =
+      //     data != null ? RenewRequestInfoModel.fromJson(data) : null;
+
+      final decodedResponse =
+          ResponseBodyModel<dynamic>.fromMap(response.data, parsedResult: null);
+
+      return decodedResponse.toFuture();
+    } on DioError catch (error) {
+      print(error);
+      var errorCode;
+      try {
+        final decodedResponse = ResponseBodyModel<dynamic>.fromMap(
           error.response?.data,
         );
         errorCode = decodedResponse.data?.responseCode;

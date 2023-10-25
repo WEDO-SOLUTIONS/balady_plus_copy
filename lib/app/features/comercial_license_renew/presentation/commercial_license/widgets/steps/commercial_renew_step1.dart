@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/core/utils/enums/bloc_status.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
@@ -20,12 +21,14 @@ import '../../../../../vd/presentation/widgets/details_widgets/incident_desc_wid
 import '../../../../renew_commercial_license_exports.dart'
     show
         CRPreviousNextButtons,
+        CleanContractItem,
         GetRenewYearsEvent,
         GetRequestInfoEvent,
         InvestmentContractItem,
         RenewCommercialLicenseBloc,
         RenewCommercialLicenseState,
         UpdateRenewYearsEvent;
+import '../clean_contract_card.dart';
 import '../investment_contract_card.dart';
 
 class CommercialRenewStep1 extends StatefulWidget {
@@ -52,7 +55,9 @@ class _CommercialRenewStep1State extends State<CommercialRenewStep1> {
                   children: [
                     DropDownWithTitle(
                       title: "مدة التجديد بالسنوات".tr(),
-                      selectedValue: state.licensePeriod.toString(),
+                      selectedValue: state.licensePeriod != null
+                          ? state.licensePeriod?.toString()
+                          : null,
                       status: state.renewYearsStatus,
                       onRetry: () =>
                           context.read<RenewCommercialLicenseBloc>().add(
@@ -69,7 +74,9 @@ class _CommercialRenewStep1State extends State<CommercialRenewStep1> {
                                     ?.map((e) => e.toString())
                                     .toList() ??
                                 [],
-                            selectedValue: state.licensePeriod.toString(),
+                            selectedValue: state.licensePeriod != null
+                                ? state.licensePeriod?.toString()
+                                : null,
                             onTap: (item) {
                               context
                                   .read<RenewCommercialLicenseBloc>()
@@ -81,20 +88,17 @@ class _CommercialRenewStep1State extends State<CommercialRenewStep1> {
                         );
                       },
                     ),
-
-                    /*  ...[
-                     ReadOnlyField(
-                            title: "نوع المنشاه".tr(),
-                            subTitle: "",
-                            showSpace: false,
-                          ),
-                  ], */
-
-                    NotesWidget(
-                      notes: [],
-                    ),
+                    if (state.info?.ownershipResponseDto
+                            ?.modifyOwnershipWarning !=
+                        null)
+                      NotesWidget(
+                        notes: [
+                          state.info!.ownershipResponseDto!
+                              .modifyOwnershipWarning!
+                        ],
+                      ),
                     HorizontalRadioGroup<CRSubmitterType>(
-                      groupName: 'صفة المقدم بالنسبة لموقع المحل',
+                      groupName: 'صفة صاحب المحل',
                       currentItem: state.crSubmitterType,
                       items: [
                         RadioItem<CRSubmitterType>(
@@ -116,7 +120,7 @@ class _CommercialRenewStep1State extends State<CommercialRenewStep1> {
                         currentItem: state.crContractType,
                         items: [
                           RadioItem<CRContractType>(
-                              radioText: "عقد تملك المبنى (صك)",
+                              radioText: "عقد تملك",
                               radioValue: CRContractType.deed),
                         ],
                         onChanged: (value) {
@@ -128,14 +132,14 @@ class _CommercialRenewStep1State extends State<CommercialRenewStep1> {
                     if (state.crContractType == CRContractType.deed &&
                         state.crSubmitterType == CRSubmitterType.owner)
                       HorizontalRadioGroup<CRContractOption>(
-                        groupName: 'طريقة ادخال العقد',
+                        groupName: 'ارفاق العقد',
                         currentItem: state.crContractOption,
                         items: [
                           RadioItem<CRContractOption>(
-                              radioText: "ارفاق ملف",
+                              radioText: "ارفاق عقد التملك",
                               radioValue: CRContractOption.attach),
                           RadioItem<CRContractOption>(
-                              radioText: "رقم عقد الصك الالكتروني",
+                              radioText: "استخدام رقم عقد الصك الالكتروني",
                               radioValue: CRContractOption.service),
                         ],
                         onChanged: (value) {
@@ -148,8 +152,8 @@ class _CommercialRenewStep1State extends State<CommercialRenewStep1> {
                         state.crSubmitterType == CRSubmitterType.owner &&
                         state.crContractOption == CRContractOption.attach) ...[
                       CustomTextFieldWidget(
-                        label: "رقم عقد التملك (الصك)",
-                        hintText: "رقم عقد التملك (الصك)",
+                        label: "رقم عقد التملك",
+                        hintText: "رقم عقد التملك",
                         isDigitsOnly: true,
                         keyboardType: TextInputType.number,
                         bottomMargin: 24,
@@ -174,8 +178,8 @@ class _CommercialRenewStep1State extends State<CommercialRenewStep1> {
                         state.crSubmitterType == CRSubmitterType.owner &&
                         state.crContractOption == CRContractOption.service) ...[
                       TextWithCheckBtn(
-                        title: "رقم عقد التملك (الصك)",
-                        hint: "رقم عقد التملك (الصك)",
+                        title: "رقم عقد التملك",
+                        hint: "رقم عقد التملك",
                         validate: (String? t) {},
                         controller: _deedServiceController,
                         isValidate: false,
@@ -209,7 +213,7 @@ class _CommercialRenewStep1State extends State<CommercialRenewStep1> {
                     if (state.crContractType == CRContractType.ejar &&
                         state.crSubmitterType == CRSubmitterType.rental)
                       HorizontalRadioGroup<CRContractOption>(
-                        groupName: 'طريقة ادخال العقد',
+                        groupName: 'ارفاق العقد',
                         currentItem: state.crContractOption,
                         items: [
                           RadioItem<CRContractOption>(
@@ -261,7 +265,11 @@ class _CommercialRenewStep1State extends State<CommercialRenewStep1> {
                         keyboardType: TextInputType.number,
                         bottomMargin: 24,
                         initialValue: "",
-                        onChanged: (value) {},
+                        onChanged: (value) {
+                          context
+                              .read<RenewCommercialLicenseBloc>()
+                              .updateTenancyInfo(tenancyContractNumber: value);
+                        },
                       ),
                       CustomTextFieldWidget(
                         label: "رقم النسخة",
@@ -270,7 +278,11 @@ class _CommercialRenewStep1State extends State<CommercialRenewStep1> {
                         keyboardType: TextInputType.number,
                         bottomMargin: 24,
                         initialValue: "",
-                        onChanged: (value) {},
+                        onChanged: (value) {
+                          context
+                              .read<RenewCommercialLicenseBloc>()
+                              .updateTenancyInfo(versionNumber: value);
+                        },
                       ),
                       CustomTextFieldWidget(
                         label: "رقم هوية ممثل المستأجر",
@@ -279,9 +291,17 @@ class _CommercialRenewStep1State extends State<CommercialRenewStep1> {
                         keyboardType: TextInputType.number,
                         bottomMargin: 24,
                         initialValue: "",
-                        onChanged: (value) {},
+                        onChanged: (value) {
+                          context
+                              .read<RenewCommercialLicenseBloc>()
+                              .updateTenancyInfo(id: value);
+                        },
                       ),
-                      ElevatedButtonWidget.verify(onPressed: () {}),
+                      ElevatedButtonWidget.verify(onPressed: () {
+                        context
+                            .read<RenewCommercialLicenseBloc>()
+                            .getEjarInfoHandler();
+                      }),
                       const CustomVerticalSpace(
                         height: 16,
                       )
@@ -307,6 +327,24 @@ class _CommercialRenewStep1State extends State<CommercialRenewStep1> {
                       ),
                     if (state.crContractType == CRContractType.invest &&
                         state.crSubmitterType == CRSubmitterType.rental &&
+                        state.crContractOption == CRContractOption.service) ...[
+                      CustomTextFieldWidget(
+                        label: "رقم عقد الإستثمار",
+                        hintText: "رقم عقد الإستثمار",
+                        isDigitsOnly: true,
+                        keyboardType: TextInputType.number,
+                        bottomMargin: 24,
+                        initialValue: "",
+                        onChanged: (value) {
+                          context
+                              .read<RenewCommercialLicenseBloc>()
+                              .updateInvestmentContractNumber(value);
+                        },
+                      ),
+                    ],
+
+                    /* if (state.crContractType == CRContractType.invest &&
+                        state.crSubmitterType == CRSubmitterType.rental &&
                         state.crContractOption == CRContractOption.service &&
                         state.investmentListStatus.isSubmissionSuccess) ...[
                       ListView.builder(
@@ -325,7 +363,8 @@ class _CommercialRenewStep1State extends State<CommercialRenewStep1> {
                                 },
                                 selected: state.selectedInvestmentContract);
                           }),
-                    ],
+                    ],*/
+
                     VerticalRadioGroup<CRContractCleanRenewOptions>(
                       groupName: 'رسوم وعقود النظافة',
                       currentItem: state.crContractCleanRenewOptions,
@@ -358,10 +397,39 @@ class _CommercialRenewStep1State extends State<CommercialRenewStep1> {
                               .updateCleanContractDate(value ?? "");
                         },
                       ),
+                    if (state.crContractCleanRenewOptions ==
+                            CRContractCleanRenewOptions.service &&
+                        state.contractsListStatus == BlocStatus.success) ...[
+                      ListView.builder(
+                          shrinkWrap: true,
+                          physics: NeverScrollableScrollPhysics(),
+                          itemCount:
+                              state.cleanContractsResponse?.items?.length ?? 0,
+                          itemBuilder: (ctx, index) {
+                            return CleanContractCard(
+                                item:
+                                    state.cleanContractsResponse!.items![index],
+                                onSelect: (CleanContractItem? item) {
+                                  context
+                                      .read<RenewCommercialLicenseBloc>()
+                                      .selectCleanContract(item);
+                                },
+                                selected: state.selectedCleanContract);
+                          }),
+                    ],
+                    if (state.info?.cleanContractResponseDto?.warnings !=
+                            null &&
+                        state.info!.cleanContractResponseDto!.warnings!
+                            .isNotEmpty)
+                      NotesWidget(notes: [
+                        state.info!.cleanContractResponseDto!.warnings!
+                      ]),
                     CRPreviousNextButtons(
                       isBtnDisabled: false,
                       /* onPressed: () {
-
+                        context
+                            .read<RenewCommercialLicenseBloc>()
+                            .saveInfoRequest();
                       },*/
                     ),
                   ],

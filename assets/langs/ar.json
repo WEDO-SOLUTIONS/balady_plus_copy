@@ -3269,6 +3269,9 @@
 "cr_investment_type":"نوع العقد",
 "cr_investment_code":"رمز العقد بالأمانة",
 
+"cr_clean_contract_number":"رقم العقد", 
+"cr_clean_contract_end_date":"تاريخ انتهاء العقد", 
+"cr_clean_contract_municipality":"البلدية", 
 
 
 
