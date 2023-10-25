@@ -18,6 +18,22 @@ final GlobalKey<DismissibleTransitionState> _transitionState = GlobalKey();
 class _StoriesWidgetState extends ConsumerState<StoriesWidget> {
   OverlayEntry? _overlayEntry;
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _precacheFirstFrame();
+  }
+
+  void _precacheFirstFrame() {
+    final storiesAsync = ref.watch(storyServiceProvider);
+    storiesAsync.whenData((data) {
+      for (final story in data.stories) {
+        final firstFrame = story.frames.first;
+        precacheImage(NetworkImage(firstFrame.imageUrl), context);
+      }
+    });
+  }
+
   openStory(BuildContext context, String id) {
     final storyWidget = StoriesFullscreen(
       onClose: () => _transitionState.currentState?.dismiss(),

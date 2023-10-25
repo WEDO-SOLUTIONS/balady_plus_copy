@@ -26,10 +26,27 @@ class _StoriesFullscreenState extends ConsumerState<StoriesFullscreen> {
   late int initialPage;
 
   void _onChangeStory(int pageIndex, int length) {
-    // if (pageIndex == 0 || pageIndex == length + 1) {
+    // precache next and previous stories
+
     if (pageIndex == length) {
       widget.onClose();
     }
+    _precacheStories();
+  }
+
+  Future<void> _precacheStories() async {
+    final storiesAsync = ref.watch(storyServiceProvider);
+
+    storiesAsync.whenData((data) {
+      final nearStories = data.stories.skip(initialPage - 1).take(3);
+      for (final story in nearStories) {
+        final unseenFrames =
+            story.frames.where((element) => element.isWatched == false).take(2);
+        for (final element in unseenFrames) {
+          precacheImage(NetworkImage(element.imageUrl), context);
+        }
+      }
+    });
   }
 
   @override
@@ -41,9 +58,7 @@ class _StoriesFullscreenState extends ConsumerState<StoriesFullscreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    ref.read(storyServiceProvider.notifier).cacheImages((url) {
-      precacheImage(NetworkImage(url), context);
-    });
+    ref.read(storyServiceProvider.notifier);
     final stories = ref.read(storyServiceProvider).value?.stories ?? const [];
     final index = stories.indexWhere(
       (element) => element.storyId == widget.initialStoryId,

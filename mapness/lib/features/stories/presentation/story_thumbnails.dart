@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:mapness/features/common/animated/animated_scroll_view_item.dart';
 import 'package:mapness/features/common/scroll/no_glowing_scroll_behavior.dart';
 import 'package:mapness/features/stories/domain/thumbnail/story_thumbnail_data.dart';
-import 'package:mapness/features/stories/presentation/thumbnails/story_thumbnail_label.dart';
 import 'package:mapness/features/stories/presentation/thumbnails/story_thumbnail_widget.dart';
 
 class StoryThumbnails extends StatelessWidget {

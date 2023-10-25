@@ -80,17 +80,6 @@ class StoryService extends _$StoryService {
         );
   }
 
-  Future<void> cacheImages(void Function(String url) cacheImage) async {
-    await state.whenOrNull(data: (data) async {
-      for (var story in data.stories) {
-        for (var frame
-            in story.frames.where((element) => !element.isWatched).take(4)) {
-          cacheImage(frame.imageUrl);
-        }
-      }
-    });
-  }
-
   @override
   Future<StoryOverallData> build() async {
     final StoriesResponse storiesNetwork =
