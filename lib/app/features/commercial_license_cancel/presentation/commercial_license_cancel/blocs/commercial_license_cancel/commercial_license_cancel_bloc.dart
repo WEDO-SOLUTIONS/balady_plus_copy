@@ -1,10 +1,11 @@
+import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/core/utils/constants/apis/api_info.dart';
 import 'package:balady_plus/app/features/_shared_feature_/data/models/response_body_model.dart';
-import 'package:balady_plus/app/features/commercial_license_cancel/data/models/cancellation_rquest_response.dart';
 import 'package:balady_plus/app/features/commercial_license_cancel/data/models/save_cancellation_reason_response.dart';
 import 'package:balady_plus/app/features/commercial_license_cancel/data/models/submit_response.dart';
 import 'package:balady_plus/app/features/commercial_license_details/data/models/reason_cancel.dart';
 import 'package:bloc/bloc.dart';
+import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:hijri/hijri_calendar.dart';
@@ -20,8 +21,8 @@ class CommercialLicenseCancelBloc
     extends Bloc<CommercialLicenseEvent, CommercialLicenseCancelState> {
   final WebService webService;
 
-  // final SubmitterInfo submitterInfo;
   final String crNumber, crType;
+  final String from;
   final bool availableCloseDate;
   final int requestId;
   ReasonCancel? reasonCancel;
@@ -39,24 +40,20 @@ class CommercialLicenseCancelBloc
     required this.crType,
     required this.requestId,
     required this.availableCloseDate,
-    // required this.submitterInfo,
     required this.reasonCancel,
+    this.from = 'licenses',
   }) : super(const CommercialLicenseCancelState()) {
     on<SubmitFirstPage>(_submitFirstPage);
-
     on<SubmitCancelRequestPage>(_submitCancelRequestPage);
-
     on<SelectReasonCancel>(_selectReasonCancel);
-
     on<SelectAcknowledgePledge>(_selectAcknowledgePledge);
-
     on<SelectHijriCalendar>(_selectHijriCalendar);
-
     on<ShowCostInfo>(_showCostInfo);
   }
 
   Future<void> _submitFirstPage(SubmitFirstPage e, Emitter emitter) async {
     emitter(const CommercialLicenseCancelLoadingState());
+    Response? response;
     try {
       Map<String, dynamic> data = {
         "notes": reasonCancel!.text,
@@ -68,14 +65,28 @@ class CommercialLicenseCancelBloc
         String day = hijriCalendar!.hDay.toString().padLeft(2, '0');
         data['activityCancellationDate'] = "$year/$month/$day";
       }
-      var response = await webService.dio.post(
-          ApiUrl.commercialLicenseCancelSaveCancellationReason(requestId),
-          data: data);
+      response = await webService.dio.post(
+        ApiUrl.commercialLicenseCancelSaveCancellationReason(requestId),
+        data: data,
+      );
       final result = ResponseBodyModel.fromMap(response.data).data?.result;
       saveCancellationReasonResponse =
           SaveCancellationReasonResponse.fromJson(result);
       emitter(const CommercialLicenseCancelSucceededState());
-    } catch (e) {
+    } on Exception catch (exception) {
+      CommonFunctions.sendEvent(
+        dioError: exception is DioException ? exception : null,
+        response: response,
+        ex: exception,
+      );
+      emitter(CommercialLicenseCancelFailureState(e.toString()));
+      return;
+    } catch (exception) {
+      CommonFunctions.sendEvent(
+        dioError: null,
+        response: response,
+        ex: Exception(exception.toString()),
+      );
       emitter(CommercialLicenseCancelFailureState(e.toString()));
       return;
     }
@@ -84,11 +95,11 @@ class CommercialLicenseCancelBloc
   Future<void> _submitCancelRequestPage(
       SubmitCancelRequestPage e, Emitter emitter) async {
     emitter(const CommercialLicenseCancelLoadingState());
+    Response? response;
     try {
-      var response = await webService.dio
-          .post(ApiUrl.commercialLicenseCancelSubmit(requestId), data: {
-        // "sadadPeriod": 0,
-      });
+      response = await webService.dio.post(
+        ApiUrl.commercialLicenseCancelSubmit(requestId),
+      );
       final data = response.data;
       final result = ResponseBodyModel.fromMap(data).data?.result;
       submitResponse = SubmitResponse.fromJson(result);
@@ -96,8 +107,22 @@ class CommercialLicenseCancelBloc
       submitResponse!.crType = crType;
       emitter(
           SubmitCancelRequestSucceededState(submitResponse: submitResponse!));
-    } catch (e) {
+    } on Exception catch (exception) {
+      CommonFunctions.sendEvent(
+        dioError: exception is DioException ? exception : null,
+        response: response,
+        ex: exception,
+      );
       emitter(CommercialLicenseCancelFailureState(e.toString()));
+      return;
+    } catch (exception) {
+      CommonFunctions.sendEvent(
+        dioError: null,
+        response: response,
+        ex: Exception(exception.toString()),
+      );
+      emitter(CommercialLicenseCancelFailureState(e.toString()));
+      return;
     }
   }
 
@@ -116,7 +141,7 @@ class CommercialLicenseCancelBloc
   Future<void> _selectHijriCalendar(
       SelectHijriCalendar e, Emitter emitter) async {
     hijriCalendar = e.hijriCalendar;
-    controller.text = hijriCalendar.toString();
+    controller.text = hijriCalendar?.toString() ?? '';
     emitter(SelectedHijriCalendar(hijriCalendar: hijriCalendar!));
   }
 
@@ -124,21 +149,4 @@ class CommercialLicenseCancelBloc
     showCostInfo = e.showCostInfo;
     emitter(ShowedCostInfo(showCostInfo: showCostInfo));
   }
-
-// Future<void> getCommercialLicenseCancelRequestDetails(int id) async {
-//   try {
-//     var response = await webService.dio.get(
-//         ApiUrl.commercialLicenseCancelGetDetailsRequest(
-//             cancellationRequestResponse.requestId));
-//     final data = response.data;
-//     final result = ResponseBodyModel.fromMap(data).data?.result;
-//     // actions = result
-//     //     .map<AllowedActions>(
-//     //         (e) => AllowedActions.fromJson(e as Map<String, dynamic>)
-//     // ).toList();
-//     // actions = actions.where((element) => element.id == 1008).toList();
-//   } catch (e) {
-//     print(e);
-//   }
-// }
 }

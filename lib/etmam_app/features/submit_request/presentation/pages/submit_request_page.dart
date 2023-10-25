@@ -27,9 +27,11 @@ import '../../../_shared_feature_/shared/shared_feature_exports.dart'
         CustomLoadingWidget,
         CustomStackFooterButtonWidget,
         CustomVerticalSpace,
+        ReloadWidget,
         SectionTitleWidget;
 
 import '../../submit_request_exports.dart' show RelationBloc;
+import '../widgets/submit_request/form_item_widget.dart';
 
 class SubmitRequestPage extends StatefulWidget {
   const SubmitRequestPage({Key? key}) : super(key: key);
@@ -186,8 +188,22 @@ class SubmitRequestBody extends StatelessWidget {
                               CustomVerticalSpace(height: 16)
                             ],
                           ),
-                        )
+                        ),
                       ]),
+
+                    // Form
+                    if (state.formStatus == BlocStatus.failure)
+                      ReloadWidget(onTab: () {
+                        context
+                            .read<SubmitRequestBloc>()
+                            .add(CreateFormEvent());
+                      }),
+
+                    if (state.formStatus == BlocStatus.success &&
+                        state.form != null)
+                      DelgateFormItemWidget(
+                        form: state.form!,
+                      )
                   ],
                 ),
               ),

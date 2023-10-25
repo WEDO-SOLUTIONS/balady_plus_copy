@@ -16,8 +16,16 @@ class SubmitApplicationSuccessfullyCancel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    SubmitResponse submitResponse =
-        ModalRoute.of(context)!.settings.arguments as SubmitResponse;
+    (
+      String from,
+      SubmitResponse submitResponse,
+      double totalCost,
+    ) arguments = ModalRoute.of(context)!.settings.arguments as (
+      String from,
+      SubmitResponse submitResponse,
+      double totalCost,
+    );
+    SubmitResponse submitResponse = arguments.$2;
     return WillPopScope(
       onWillPop: () async {
         return Future<bool>.value(false);
@@ -48,10 +56,7 @@ class SubmitApplicationSuccessfullyCancel extends StatelessWidget {
                     // ),
                     const SizedBox(height: 16),
                     CustomAutoSizeTextWidget(
-                      submitResponse.payUrl != null
-                          ? 'submit_application_successfully_cancel_message'
-                              .tr()
-                          : ''.tr(),
+                      '${'application_no_has_been_submitted'.tr()} ${submitResponse.requestId} ${(submitResponse.payUrl?.isNotEmpty ?? false) ? '${'and_issue_invoice_service_amount'.tr()} ${arguments.$3} ${'sar'.tr()}' : ''}',
                       textStyle: AppStyle.serviceListTitleTextStyle,
                       maxLines: 3,
                       textAlign: TextAlign.center,
@@ -91,7 +96,9 @@ class SubmitApplicationSuccessfullyCancel extends StatelessWidget {
                   : const SizedBox(),
               const SizedBox(height: 16),
               ElevatedButtonWidget.primaryCustom(
-                text: "back_licenses_page".tr(),
+                text: arguments.$1 == "licenses"
+                    ? "back_licenses_page".tr()
+                    : "back_request_page".tr(),
                 onPressed: () {
                   Navigator.of(context).pop();
                   Navigator.of(context).pop();

@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 
 import '../../../vd/domain/entities/gis/gis_params.dart';
+import 'dart:convert' as c;
 
 class ComplianceRequestDetails extends Equatable {
   final int? requestId;
@@ -212,8 +213,16 @@ class LocationResponseInfoDto {
         mapName: json["mapName"],
         x: json["x"],
         y: json["y"],
-        landNumber: json["landNumber"],
-        landArea: json["landArea"],
+        landNumber: json["landsInfo"] != null
+            ? json["landsInfo"].length > 0
+                ? (json["landsInfo"][0]!["landNumber"]).toString()
+                : null
+            : null,
+        landArea: json["landsInfo"] != null
+            ? json["landsInfo"].length > 0
+                ? (json["landsInfo"][0]!["landArea"]).toString()
+                : null
+            : null,
         isLocationCorrect: json["isLocationCorrect"],
         guid: json["guid"],
       );

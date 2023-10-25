@@ -87,6 +87,7 @@ class ServiceCardDescWidget extends StatelessWidget {
                                   ? "service_card_no_fees".tr()
                                   : card.fees.toString(),
                             ),
+                    const SizedBox(width: 12),
                     if (card.duration.isNotEmpty)
                       ServiceCardParameter(
                         title: 'time_serveis'.tr(),

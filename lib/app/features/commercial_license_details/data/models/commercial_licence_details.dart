@@ -3,7 +3,7 @@ import 'package:intl/intl.dart';
 class CommercialLicenceDetails {
   int requestId;
   double mainActivityArea;
-  DateTime creationDate;
+  DateTime? creationDate;
 
   // String entityType;
   // int currentTabId;
@@ -141,11 +141,13 @@ class CommercialLicenceDetails {
       CommercialLicenceDetails(
         requestId: json["requestId"],
         mainActivityArea: ((json["mainActivityArea"] ?? 0.0) + 0.0),
-        creationDate: DateFormat("yyyy/MM/dd ").parse(json["creationDate"]),
+        creationDate: json["creationDate"] != null
+            ? DateFormat("yyyy/MM/dd ").parse(json["creationDate"])
+            : null,
         // entityType: json["entityType"],
         // currentTabId: json["currentTabId"],
         // statusId: json["statusId"],
-        statusName: json["statusName"],
+        statusName: json["statusName"] ?? '',
         // typeId: json["typeId"],
         // typeName: json["typeName"],
         // licensePeriod: json["licensePeriod"],
@@ -158,8 +160,12 @@ class CommercialLicenceDetails {
         // notes: json["notes"],
         // employeeNotes: json["employeeNotes"],
         // clientNotes: json["clientNotes"],
-        licenseInfo: LicenseInfo.fromJson(json["licenseInfo"]),
-        salamaInfo: json["salamaInfo"] != null ? SalamaInfo.fromJson(json["salamaInfo"]) : null,
+        licenseInfo: json["licenseInfo"] != null
+            ? LicenseInfo.fromJson(json["licenseInfo"])
+            : null,
+        salamaInfo: json["salamaInfo"] != null
+            ? SalamaInfo.fromJson(json["salamaInfo"])
+            : null,
         // objectionNotesInfo: json["objectionNotesInfo"],
         // warningMessages: json["warningMessages"],
         // warningInfo: json["warningInfo"],
@@ -194,10 +200,18 @@ class CommercialLicenceDetails {
         // craft: json["craft"],
         // craftMessage: json["craftMessage"],
         // contactInfo: json["contactInfo"],
-        activityInfo: json["activityInfo"] != null ? ActivityInfo.fromJson(json["activityInfo"]) : null,
-        locationInfo: json["locationInfo"] != null ? LocationInfo.fromJson(json["locationInfo"]) : null,
-        submitterInfo: json["submitterInfo"] != null ? SubmitterInfo.fromJson(json["submitterInfo"]) : null,
-        shopInfo: json["shopInfo"] != null ? ShopInfo.fromJson(json["shopInfo"]) : null,
+        activityInfo: json["activityInfo"] != null
+            ? ActivityInfo.fromJson(json["activityInfo"])
+            : null,
+        locationInfo: json["locationInfo"] != null
+            ? LocationInfo.fromJson(json["locationInfo"])
+            : null,
+        submitterInfo: json["submitterInfo"] != null
+            ? SubmitterInfo.fromJson(json["submitterInfo"])
+            : null,
+        shopInfo: json["shopInfo"] != null
+            ? ShopInfo.fromJson(json["shopInfo"])
+            : null,
         // billsInfo: List<BillsInfo>.from(json["billsInfo"].map((x) => BillsInfo.fromJson(x))),
         // selectLicYears: json["selectLicYears"],
         // showTillActive: json["showTillActive"],
@@ -260,7 +274,9 @@ class ActivityInfo {
   });
 
   factory ActivityInfo.fromJson(Map<String, dynamic> json) => ActivityInfo(
-        mainActivity: json["mainActivity"] != null ? MainActivity.fromJson(json["mainActivity"]) : null,
+        mainActivity: json["mainActivity"] != null
+            ? MainActivity.fromJson(json["mainActivity"])
+            : null,
         additionalActivities: json["additionalActivities"] != null
             ? List<AdditionalActivities>.from(json["additionalActivities"]
                 .map((x) => AdditionalActivities.fromJson(x)))
@@ -319,15 +335,15 @@ class MainActivity {
   });
 
   factory MainActivity.fromJson(Map<String, dynamic> json) => MainActivity(
-        detailedActivityId: json["detailedActivityId"],
+        detailedActivityId: json["detailedActivityId"] ?? 0,
         area: ((json["area"] ?? 0.0) + 0.0),
         // unitCount: json["unitCount"],
         // accommodationTypeId: json["accommodationTypeId"],
         // accommodationTypeName: json["accommodationTypeName"],
-        detailedActivityName: json["detailedActivityName"],
+        detailedActivityName: json["detailedActivityName"] ?? '',
         // isicActivityId: json["isicActivityId"],
         // mainActivityId: json["mainActivityId"],
-        isicActivityName: json["isicActivityName"],
+        isicActivityName: json["isicActivityName"] ?? '',
         // minYears: json["minYears"],
         // maxYears: json["maxYears"],
         // removed: json["removed"],
@@ -335,7 +351,7 @@ class MainActivity {
         // minArea: json["minArea"],
         // maxArea: json["maxArea"],
         // facilityId: json["facilityId"],
-        facilityName: json["facilityName"],
+        facilityName: json["facilityName"] ?? '',
       );
 }
 
@@ -498,16 +514,16 @@ class LicenseInfo {
         // licenseSadadEndDate: json["licenseSadadEndDate"],
         // licensePeriod: json["licensePeriod"],
         // sadadPeriod: json["sadadPeriod"],
-        licenseId: json["licenseId"],
-        statusId: json["statusId"],
+        licenseId: json["licenseId"] ?? 0,
+        statusId: json["statusId"] ?? 0,
         // expireInDays: json["expireInDays"],
         // oldLicenseNo: json["oldLicenseNo"],
         // issueDate: json["issueDate"],
         // expired: json["expired"],
         // printUrl: json["printUrl"],
-        qrCodeUrl: json["qrCodeUrl"],
+        qrCodeUrl: json["qrCodeUrl"] ?? '',
         // qrRequestId: json["qrRequestId"],
-        statusDesc: json["statusDesc"],
+        statusDesc: json["statusDesc"] ?? '',
       );
 }
 
@@ -558,7 +574,7 @@ class LocationInfo {
         subMunicipalityGisCode: json["subMunicipalityGisCode"] ?? '',
         // districtCode: json["districtCode"],
         // streetCode: json["streetCode"],
-        latitude: json["latitude"] ,
+        latitude: json["latitude"],
         longitude: json["longitude"],
         mapNo: json["mapNo"] ?? '',
         landNo: json["landNo"] ?? '',
@@ -598,13 +614,13 @@ class SalamaInfo {
 }
 
 class ShopInfo {
-  String shopName;
-  int shopUnitNumber;
-  int holesCount;
+  String? shopName;
+  int? shopUnitNumber;
+  int? holesCount;
 
   // bool existInMall;
   dynamic floorNumber;
-  int floorCount;
+  int? floorCount;
   bool hasElevator;
 
   // bool isCitizenPledgedToClean;
@@ -614,11 +630,11 @@ class ShopInfo {
   // dynamic buildingOwnerIdno;
   // dynamic buildingOwnerName;
   // String landNumber;
-  String planNumber;
+  String? planNumber;
   dynamic salamaBillNumber;
 
   List<BoardsInfo>? boardsInfo;
-  ContractInfoResponseDto contractInfoResponseDto;
+  ContractInfoResponseDto? contractInfoResponseDto;
 
   // bool showShopOwnership;
   // dynamic slamaBillOptions;
@@ -632,13 +648,13 @@ class ShopInfo {
   // bool showActivityCancellationDate;
   // dynamic activityCancellationDate;
   // dynamic mallDto;
-  int blockNumber;
+  int? blockNumber;
 
   // dynamic cancelReasonDto;
   // bool brand;
   // dynamic salamaPermitNumber;
   // bool licenseBrand;
-  int noOfCameras;
+  int? noOfCameras;
 
   ShopInfo({
     required this.shopName,
@@ -695,9 +711,13 @@ class ShopInfo {
         // landNumber: json["landNumber"],
         planNumber: json["planNumber"] ?? '',
         salamaBillNumber: json["salamaBillNumber"] ?? '',
-        boardsInfo: json["boardsInfo"] != null ? List<BoardsInfo>.from(json["boardsInfo"].map((x) => BoardsInfo.fromJson(x))) : null,
-        contractInfoResponseDto:
-            ContractInfoResponseDto.fromJson(json["contractInfoResponseDto"]),
+        boardsInfo: json["boardsInfo"] != null
+            ? List<BoardsInfo>.from(
+                json["boardsInfo"].map((x) => BoardsInfo.fromJson(x)))
+            : null,
+        contractInfoResponseDto: json["contractInfoResponseDto"] != null
+            ? ContractInfoResponseDto.fromJson(json["contractInfoResponseDto"])
+            : null,
         // showShopOwnership: json["showShopOwnership"],
         // slamaBillOptions: json["slamaBillOptions"],
         // cameraBillOptions: json["cameraBillOptions"],
@@ -730,11 +750,10 @@ class BoardsInfo {
   });
 
   factory BoardsInfo.fromJson(Map<String, dynamic> json) => BoardsInfo(
-    typeId: json["typeId"],
-    typeName: json["typeName"],
-    area: json["area"],
-  );
-
+        typeId: json["typeId"] ?? 0,
+        typeName: json["typeName"] ?? '',
+        area: json["area"] ?? 0,
+      );
 }
 
 // class CleanContractOptions {
@@ -813,7 +832,7 @@ class SubmitterInfo {
   String submitterType;
   String crNumber;
 
-  String crType;
+  String? crType;
   int submitterIdNumber;
 
   // String submitterBirthDate;
