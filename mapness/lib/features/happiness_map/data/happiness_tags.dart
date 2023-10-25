@@ -7,15 +7,8 @@ part 'happiness_tags.g.dart';
 class HappinessTags extends _$HappinessTags {
   @override
   List<String> build() {
-    return [
-      "streets",
-      "buildings",
-      "parks",
-      "visual_aesthetic",
-      "cleanness",
-      "lighting",
-      "comfort",
-    ];
+    final tags = ref.watch(happinessTagsWithIconsProvider);
+    return tags.map((e) => e.code).toList();
   }
 }
 
@@ -23,22 +16,21 @@ class HappinessTags extends _$HappinessTags {
 class HappinessTagsWithIcons extends _$HappinessTagsWithIcons {
   @override
   List<HappinessTag> build() {
-    final tags = ref.watch(happinessTagsProvider);
-    final data = [
-      ("ic_building.svg", "Buildings"),
-      ("ic_car_side.svg", "Streets"),
-      ("ic_comment-heart.svg", "Comfort"),
-      ("ic_eye.svg", "Visual aesthetic"),
-      ("ic_lightbulb-alt.svg", "Lighting"),
-      ("ic_trash-alt.svg", "Cleanness"),
-      ("ic_trees.svg", "Parks"),
+    final tags = [
+      ("visual_aesthetic", "ic_eye.svg", "Visual\naesthetic"),
+      ("comfort", "ic_trees.svg", "Parks"),
+      ("streets", "ic_building.svg", "Buildings"),
+      ("buildings", "ic_car_side.svg", "Streets"),
+      ("parks", "ic_comment-heart.svg", "Comfort"),
+      ("cleanness", "ic_lightbulb-alt.svg", "Lighting"),
+      ("lighting", "ic_trash-alt.svg", "Clean"),
     ];
-    // "ic_ellipsis.svg",
-    return tags.indexed.map(
-      (e) {
-        final (path, title) = data[e.$1];
+
+    return tags.map(
+      (tag) {
+        final (code, path, title) = tag;
         return HappinessTag(
-          code: e.$2,
+          code: code,
           iconAsset: "assets/icons/svg/$path",
           title: title,
         );

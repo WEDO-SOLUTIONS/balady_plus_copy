@@ -15,6 +15,7 @@ class HappinessTextField extends ConsumerWidget {
     );
 
     return TextField(
+      enabled: false,
       textAlign: TextAlign.end,
       textInputAction: TextInputAction.done,
       // controller: model.searchController,
