@@ -332,7 +332,8 @@ class RenewCommercialLicenseBloc
     final response = await _saveRenewRequestInfo(SaveRenewRequest(
         requestId: requestId,
         citizenPledgedToClean: citizenPledgedToClean,
-        cleanContractEndDate: state.cleanContractEndDate,
+        cleanContractEndDate:
+            CommonFunctions.padHijriDate(state.cleanContractEndDate),
         cleanContractNumber:
             state.selectedCleanContract?.unifiedCleanContractNo,
         contractDate: CommonFunctions.padHijriDate(state.contractDate),
