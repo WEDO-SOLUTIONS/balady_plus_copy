@@ -7,11 +7,16 @@ part 'dgis_network.g.dart';
 
 @riverpod
 class DGisNetwork extends _$DGisNetwork {
+  // final bool isProduction = false;
+  final bool isProduction = true;
+
   @override
   Dio build() {
     return Dio(BaseOptions(
       responseType: ResponseType.bytes,
-      baseUrl: 'https://staging.baladi.steelhoss.xyz/api/1.0/',
+      baseUrl: isProduction
+          ? 'https://baladi.steelhoss.xyz/api/1.0/'
+          : 'https://staging.baladi.steelhoss.xyz/api/1.0/',
       headers: {
         'Content-Type': 'application/protobuf',
         'Accept': 'application/protobuf',
