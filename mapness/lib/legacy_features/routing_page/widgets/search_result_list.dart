@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:mapness/legacy/routing_page/widgets/working_hours.dart';
+import 'package:mapness/legacy_features/routing_page/widgets/working_hours.dart';
 
 import '../../navigation_dashboard/widgets/mapness_typography.dart';
 import '../data/object_info.dart';

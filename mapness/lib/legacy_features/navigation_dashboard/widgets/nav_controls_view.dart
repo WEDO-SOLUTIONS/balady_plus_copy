@@ -1,7 +1,7 @@
 import 'package:dgis_map/library.dart';
 import 'package:dgis_map/widgets/maneuver_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:mapness/legacy/navigation_dashboard/widgets/sheet_close_button.dart';
+import 'package:mapness/legacy_features/navigation_dashboard/widgets/sheet_close_button.dart';
 import 'package:provider/provider.dart';
 
 import '../dashboard_control.dart';

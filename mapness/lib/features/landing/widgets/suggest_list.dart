@@ -3,15 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:mapness/features/map/providers/suggests.dart';
-import 'package:mapness/legacy/routing_page/data/directory_object_ext.dart';
+import 'package:mapness/features/landing/providers/dashboard_controls.dart';
+import 'package:mapness/features/map/providers/search.dart';
+import 'package:mapness/features/map/providers/suggest.dart';
+import 'package:mapness/legacy_features/routing_page/data/directory_object_ext.dart';
 
 class SuggestList extends ConsumerWidget {
   const SuggestList({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final suggests = ref.watch(suggestsProvider);
+    final suggests = ref.watch(suggestResultsProvider).value ?? [];
 
     return ListView.separated(
       shrinkWrap: true,
@@ -36,7 +38,7 @@ class SuggestList extends ConsumerWidget {
   }
 }
 
-class SuggestItem extends StatelessWidget {
+class SuggestItem extends ConsumerWidget {
   const SuggestItem({
     super.key,
     required this.suggest,
@@ -45,60 +47,80 @@ class SuggestItem extends StatelessWidget {
   final SuggestMessage suggest;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     String icon = "";
     String? address;
+    late void Function() tapHandler;
     if (suggest.handler.incompleteTextHandler != null) {
       icon = "text";
+      tapHandler = () {
+        ref
+            .watch(suggestQueryProvider.notifier)
+            .update(suggest.handler.incompleteTextHandler!.queryText);
+      };
     } else if (suggest.handler.objectHandler != null) {
       icon = "object";
+      tapHandler = () {
+        // todo:
+      };
       address = suggest.handler.objectHandler!.item.makeAddress();
     } else if (suggest.handler.performSearchHandler != null) {
       icon = "search";
+      tapHandler = () {
+        ref
+            .watch(dashboardControlsProvider.notifier)
+            .update(DashboardControlsState.results);
+        ref
+            .watch(searchProvider.notifier)
+            .searchByQuery(suggest.handler.performSearchHandler!.searchQuery);
+      };
     }
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: Row(
-        children: [
-          SvgPicture.asset(
-            "assets/icons/svg/ic_suggest_$icon.svg",
-            semanticsLabel: 'MinApps Screen',
-            package: "mapness",
-          ),
-          const SizedBox(
-            width: 12,
-          ),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.only(left: 16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text.rich(
-                    overflow: TextOverflow.ellipsis,
-                    TextSpan(
-                      children: _buildTitle(),
-                    ),
-                  ),
-                  if (address != null && address.isNotEmpty)
-                    Text(
-                      address,
+    return GestureDetector(
+      onTap: tapHandler,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8.0),
+        child: Row(
+          children: [
+            SvgPicture.asset(
+              "assets/icons/svg/ic_suggest_$icon.svg",
+              semanticsLabel: 'MinApps Screen',
+              package: "mapness",
+            ),
+            const SizedBox(
+              width: 12,
+            ),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.only(left: 16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text.rich(
                       overflow: TextOverflow.ellipsis,
-                      style: GoogleFonts.notoSansArabic(
-                        textStyle: const TextStyle(
-                          fontSize: 16,
-                          height: 1.4,
-                          fontWeight: FontWeight.w500,
-                          color: Color(0x801E2A36),
-                        ),
+                      TextSpan(
+                        children: _buildTitle(),
                       ),
                     ),
-                ],
+                    if (address != null && address.isNotEmpty)
+                      Text(
+                        address,
+                        overflow: TextOverflow.ellipsis,
+                        style: GoogleFonts.notoSansArabic(
+                          textStyle: const TextStyle(
+                            fontSize: 16,
+                            height: 1.4,
+                            fontWeight: FontWeight.w500,
+                            color: Color(0x801E2A36),
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
               ),
-            ),
-          )
-        ],
+            )
+          ],
+        ),
       ),
     );
   }

@@ -4,8 +4,8 @@ import 'dart:math';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:mapness/legacy/navigation_dashboard/widgets/mapness_typography.dart';
-import 'package:mapness/legacy/navigation_dashboard/widgets/measured_widget.dart';
+import 'package:mapness/legacy_features/navigation_dashboard/widgets/mapness_typography.dart';
+import 'package:mapness/legacy_features/navigation_dashboard/widgets/measured_widget.dart';
 import 'package:provider/provider.dart';
 
 import '../routing_page/models/routing_view_model.dart';

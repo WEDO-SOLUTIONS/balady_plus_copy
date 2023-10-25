@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/happiness_map/happines_map_bottom_sheet.dart';
 import 'package:mapness/features/landing/layers_sheet.dart';
 import 'package:mapness/features/landing/providers/map_controls.dart';
-import 'package:mapness/legacy/routing_page/routing_overlay.dart';
+import 'package:mapness/legacy_features/routing_page/routing_overlay.dart';
 
 import '../map/map_page_new.dart';
 import 'controls.dart' as controls;
@@ -13,7 +13,6 @@ class LandingPage extends ConsumerWidget {
   LandingPage({Key? key}) : super(key: key);
 
   final GlobalKey<LayersSheetState> _layersSheetKey = GlobalKey();
-  final GlobalKey<DashboardState> _dashboardKey = GlobalKey();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -27,8 +26,6 @@ class LandingPage extends ConsumerWidget {
           if (controlsState != MapControlsState.navigation)
             LayoutBuilder(builder: (context, constraints) {
               return Dashboard(
-                key: _dashboardKey,
-                dashboardKey: _dashboardKey,
                 biggestHeight: constraints.biggest.height,
               );
             }),

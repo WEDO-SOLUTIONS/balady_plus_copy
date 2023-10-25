@@ -4,8 +4,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:mapness/features/landing/providers/dashboard_controls.dart';
 import 'package:mapness/features/landing/providers/map_controls.dart';
 import 'package:mapness/features/landing/widgets/dashboard_header.dart';
-import 'package:mapness/features/landing/widgets/favorites.dart';
-import 'package:mapness/features/landing/widgets/search_bar.dart';
 import 'package:mapness/features/landing/widgets/search_groups.dart';
 import 'package:mapness/features/landing/widgets/search_results.dart';
 import 'package:mapness/features/landing/widgets/suggest_list.dart';
@@ -14,18 +12,16 @@ import 'package:mapness/features/stories/stories_widget.dart';
 class Dashboard extends ConsumerStatefulWidget {
   const Dashboard({
     super.key,
-    required this.dashboardKey,
     required this.biggestHeight,
   });
 
-  final GlobalKey<DashboardState> dashboardKey;
   final double biggestHeight;
 
   @override
-  ConsumerState<Dashboard> createState() => DashboardState();
+  ConsumerState<Dashboard> createState() => _DashboardState();
 }
 
-class DashboardState extends ConsumerState<Dashboard> {
+class _DashboardState extends ConsumerState<Dashboard> {
   late final DraggableScrollableController _draggableScrollableController;
 
   double _headerExtent() {
@@ -50,7 +46,7 @@ class DashboardState extends ConsumerState<Dashboard> {
     super.initState();
   }
 
-  void expand() {
+  void _expand() {
     _draggableScrollableController.animateTo(
       .9,
       duration: const Duration(milliseconds: 250),
@@ -58,7 +54,7 @@ class DashboardState extends ConsumerState<Dashboard> {
     );
   }
 
-  void collapse({double? to}) {
+  void _collapse({double? to}) {
     _draggableScrollableController.animateTo(
       to ?? _headerExtent(),
       duration: const Duration(milliseconds: 250),
@@ -69,6 +65,21 @@ class DashboardState extends ConsumerState<Dashboard> {
   @override
   Widget build(BuildContext context) {
     final dashboardState = ref.watch(dashboardControlsProvider);
+    ref.listen(dashboardControlsProvider, (previous, next) {
+      switch (next) {
+        case DashboardControlsState.results:
+          _collapse(to: 0.7);
+          break;
+        case DashboardControlsState.idle:
+          _collapse();
+          break;
+        case DashboardControlsState.searching:
+          _expand();
+          break;
+        case DashboardControlsState.suggests:
+          break;
+      }
+    });
 
     return DraggableScrollableSheet(
       controller: _draggableScrollableController,
@@ -96,7 +107,6 @@ class DashboardState extends ConsumerState<Dashboard> {
               slivers: [
                 SliverPersistentHeader(
                   delegate: DashboardHeaderDelegate(
-                    dashboardKey: widget.dashboardKey,
                     dashboardState: dashboardState,
                   ),
                   pinned: true,

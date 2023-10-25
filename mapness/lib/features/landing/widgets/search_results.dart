@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mapness/features/map/providers/search.dart';
-import 'package:mapness/legacy/routing_page/data/directory_object_ext.dart';
+import 'package:mapness/legacy_features/routing_page/data/directory_object_ext.dart';
 
 class SearchResults extends ConsumerWidget {
   const SearchResults({super.key});

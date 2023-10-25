@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:dgis_map/library.dart';
 // import 'package:dgis_map_example/nav/controls/dashboard/dashboard_control.dart';
 import 'package:flutter/material.dart';
-import 'package:mapness/legacy/navigation_dashboard/dashboard_control.dart';
+import 'package:mapness/legacy_features/navigation_dashboard/dashboard_control.dart';
 
 ///
 class NavViewModel {

@@ -5,11 +5,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart' hide Provider;
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mapness/features/map/providers/dgis_controller.dart';
-import 'package:mapness/legacy/routing_page/extensions/number_formatters.dart';
-import 'package:mapness/legacy/routing_page/extensions/route_search_options.dart';
-import 'package:mapness/legacy/routing_page/models/routing_view_model.dart';
-import 'package:mapness/legacy/routing_page/widgets/search_result_list.dart';
-import 'package:mapness/legacy/routing_page/widgets/suggest_list.dart';
+import 'package:mapness/legacy_features/routing_page/extensions/number_formatters.dart';
+import 'package:mapness/legacy_features/routing_page/extensions/route_search_options.dart';
+import 'package:mapness/legacy_features/routing_page/models/routing_view_model.dart';
+import 'package:mapness/legacy_features/routing_page/widgets/search_result_list.dart';
+import 'package:mapness/legacy_features/routing_page/widgets/suggest_list.dart';
 import 'package:provider/provider.dart';
 
 import '../navigation_dashboard/widgets/mapness_typography.dart';

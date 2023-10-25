@@ -4,7 +4,7 @@ import 'package:async/async.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:collection/collection.dart';
-import 'package:mapness/legacy/routing_page/data/directory_object_ext.dart';
+import 'package:mapness/legacy_features/routing_page/data/directory_object_ext.dart';
 
 import '../data/object_info.dart';
 import '../data/object_info_state.dart';

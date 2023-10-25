@@ -15,13 +15,36 @@ class Search extends _$Search {
     return [];
   }
 
-  Future<void> search(String query) async {
+  Future<void> searchByText(String query) async {
     final dgisController = ref.watch(dgisControllerProvider);
 
     final result = await dgisController?.search(
       query,
       sortingType: SortingTypeMessage.byDistance,
     );
+
+    await _handleResult(result);
+  }
+
+  Future<void> searchByQuery(SearchQueryMessage query) async {
+    final dgisController = ref.watch(dgisControllerProvider);
+
+    final result = await dgisController?.searchByQuery(
+      query,
+      sortingType: SortingTypeMessage.byDistance,
+    );
+
+    await _handleResult(result);
+  }
+
+  Future<void> removeMarkers() async {
+    final dgisController = ref.watch(dgisControllerProvider);
+
+    await dgisController?.removeAll();
+  }
+
+  Future<void> _handleResult(SearchResultMessage? result) async {
+    final dgisController = ref.watch(dgisControllerProvider);
 
     List<Marker> markers = [];
     for (final markerInfo in result?.itemMarkerInfos ?? []) {
@@ -45,11 +68,5 @@ class Search extends _$Search {
     state =
         result?.firstPage?.items.whereType<DirectoryObjectMessage>().toList() ??
             [];
-  }
-
-  Future<void> removeMarkers() async {
-    final dgisController = ref.watch(dgisControllerProvider);
-
-    await dgisController?.removeAll();
   }
 }
