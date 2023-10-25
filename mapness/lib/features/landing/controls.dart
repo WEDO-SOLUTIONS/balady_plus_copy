@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:mapness/features/landing/widgets/happines_control.dart';
 import 'package:mapness/features/landing/providers/map_controls.dart';
 import 'package:mapness/features/landing/widgets/compass_control.dart';
 import 'package:mapness/features/landing/widgets/follow_control.dart';
@@ -62,6 +63,10 @@ class MapControls extends ConsumerWidget {
                             ],
                           ),
                         ),
+                      ),
+                      const SizedBox(width: 8),
+                      const MapControl(
+                        HappinesControl(),
                       ),
                     ],
                   ),

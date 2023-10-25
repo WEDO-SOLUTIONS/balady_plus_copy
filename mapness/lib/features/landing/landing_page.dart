@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/features/happiness_map/happines_map_bottom_sheet.dart';
 import 'package:mapness/features/landing/layers_sheet.dart';
 import 'package:mapness/features/landing/providers/map_controls.dart';
 import 'package:mapness/legacy/routing_page/routing_overlay.dart';
@@ -38,6 +39,12 @@ class LandingPage extends ConsumerWidget {
             ),
           if (controlsState == MapControlsState.navigation)
             const RoutingOverlay(),
+          if (controlsState == MapControlsState.happinessMap)
+            HappinessBottomSheet(
+              onClose: () => ref
+                  .read(mapControlsProvider.notifier)
+                  .update(MapControlsState.idle),
+            ),
         ],
       ),
     );
