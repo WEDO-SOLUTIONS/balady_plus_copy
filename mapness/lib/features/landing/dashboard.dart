@@ -15,9 +15,11 @@ class Dashboard extends ConsumerStatefulWidget {
   const Dashboard({
     super.key,
     required this.dashboardKey,
+    required this.biggestHeight,
   });
 
   final GlobalKey<DashboardState> dashboardKey;
+  final double biggestHeight;
 
   @override
   ConsumerState<Dashboard> createState() => DashboardState();
@@ -26,11 +28,15 @@ class Dashboard extends ConsumerStatefulWidget {
 class DashboardState extends ConsumerState<Dashboard> {
   late final DraggableScrollableController _draggableScrollableController;
 
+  double _headerExtent() {
+    return 75 / widget.biggestHeight;
+  }
+
   @override
   void initState() {
     _draggableScrollableController = DraggableScrollableController()
       ..addListener(() {
-        if (_draggableScrollableController.size > .1) {
+        if (_draggableScrollableController.size > _headerExtent()) {
           ref.watch(mapControlsProvider.notifier).update(
                 MapControlsState.dashboard,
               );
@@ -52,9 +58,9 @@ class DashboardState extends ConsumerState<Dashboard> {
     );
   }
 
-  void collapse({double to = .1}) {
+  void collapse({double? to}) {
     _draggableScrollableController.animateTo(
-      to,
+      to ?? _headerExtent(),
       duration: const Duration(milliseconds: 250),
       curve: Curves.linear,
     );
@@ -66,8 +72,8 @@ class DashboardState extends ConsumerState<Dashboard> {
 
     return DraggableScrollableSheet(
       controller: _draggableScrollableController,
-      initialChildSize: .1,
-      minChildSize: .1,
+      initialChildSize: _headerExtent(),
+      minChildSize: _headerExtent(),
       maxChildSize: .9,
       builder: (BuildContext context, ScrollController scrollController) {
         return Directionality(

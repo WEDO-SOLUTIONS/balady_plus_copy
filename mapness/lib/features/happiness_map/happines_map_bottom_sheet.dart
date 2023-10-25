@@ -49,7 +49,11 @@ class _DashboardState extends ConsumerState<HappinessBottomSheet> {
     ref.read(happinessManagerProvider.notifier).onFeedbackPressed(feedback);
     Future.delayed(
       const Duration(milliseconds: 100),
-      () => _draggableScrollableController.jumpTo(.6),
+      () => _draggableScrollableController.animateTo(
+        .7,
+        duration: const Duration(milliseconds: 250),
+        curve: Curves.linear,
+      ),
     );
   }
 
@@ -59,9 +63,9 @@ class _DashboardState extends ConsumerState<HappinessBottomSheet> {
 
     return DraggableScrollableSheet(
       controller: _draggableScrollableController,
-      initialChildSize: .15,
-      minChildSize: .1,
-      maxChildSize: state.feedback == null ? .2 : .6,
+      initialChildSize: .2,
+      minChildSize: .2,
+      maxChildSize: state.feedback == null ? .2 : .7,
       builder: (BuildContext context, ScrollController scrollController) {
         return Container(
           decoration: const BoxDecoration(

@@ -25,10 +25,13 @@ class LandingPage extends ConsumerWidget {
         children: [
           const MapPage(),
           if (controlsState != MapControlsState.navigation)
-            Dashboard(
-              key: _dashboardKey,
-              dashboardKey: _dashboardKey,
-            ),
+            LayoutBuilder(builder: (context, constraints) {
+              return Dashboard(
+                key: _dashboardKey,
+                dashboardKey: _dashboardKey,
+                biggestHeight: constraints.biggest.height,
+              );
+            }),
           if (controlsState != MapControlsState.navigation)
             controls.MapControls(
               layersState: _layersSheetKey,

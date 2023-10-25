@@ -63,7 +63,6 @@ class _BottomNavigationPageState extends State<BottomNavigationPage> {
             Container(),
             Container(),
             Container(),
-            Container(),
           ],
         ),
       ),

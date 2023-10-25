@@ -38,8 +38,8 @@ class _ScaffoldWithNestedNavigationState
       currentIndex: currentTab,
       onDestinationSelected: (int index) {
         currentTab = index;
-        if (index == 2) {
-          index = 4;
+        if (index == 1) {
+          index = 2;
           ref
               .read(mapControlsProvider.notifier)
               .update(MapControlsState.navigation);
@@ -93,14 +93,6 @@ class ScaffoldWithNavigationBar extends StatelessWidget {
               ),
               BottomNavigationBarItem(
                 icon: SvgPicture.asset(
-                  "assets/icons/svg/ic_nav_qibla.svg",
-                  semanticsLabel: 'Qibla Screen',
-                  package: "mapness",
-                ),
-                label: 'المتجر',
-              ),
-              BottomNavigationBarItem(
-                icon: SvgPicture.asset(
                   "assets/icons/svg/ic_nav_route.svg",
                   semanticsLabel: 'Routing Screen',
                   package: "mapness",
@@ -109,19 +101,19 @@ class ScaffoldWithNavigationBar extends StatelessWidget {
               ),
               BottomNavigationBarItem(
                 icon: SvgPicture.asset(
-                  "assets/icons/svg/ic_nav_general.svg",
-                  semanticsLabel: 'General Screen',
-                  package: "mapness",
-                ),
-                label: 'إستكشف',
-              ),
-              BottomNavigationBarItem(
-                icon: SvgPicture.asset(
                   "assets/icons/svg/ic_nav_landing.svg",
                   semanticsLabel: 'MinApps Screen',
                   package: "mapness",
                 ),
                 label: 'الخدمات',
+              ),
+              BottomNavigationBarItem(
+                icon: SvgPicture.asset(
+                  "assets/icons/svg/ic_nav_general.svg",
+                  semanticsLabel: 'General Screen',
+                  package: "mapness",
+                ),
+                label: 'إستكشف',
               ),
             ],
             currentIndex: currentIndex,

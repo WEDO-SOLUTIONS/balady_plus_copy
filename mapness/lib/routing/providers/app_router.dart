@@ -11,8 +11,8 @@ part 'app_router.g.dart';
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
 final _mapNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'map');
 final _routeNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'route');
-final _cartNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'cart');
-final _dashboardNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'dashboard');
+final _dashboardNavigatorKey =
+    GlobalKey<NavigatorState>(debugLabel: 'dashboard');
 final _profileNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'profile');
 
 enum AppRoute {
@@ -63,13 +63,13 @@ GoRouter goRouter(GoRouterRef ref, List<Widget> routes) {
             ],
           ),
           StatefulShellBranch(
-            navigatorKey: _cartNavigatorKey,
+            navigatorKey: _profileNavigatorKey,
             routes: [
               GoRoute(
-                path: '/cart',
-                name: AppRoute.cart.name,
+                path: '/landing',
+                name: AppRoute.profile.name,
                 pageBuilder: (context, state) => NoTransitionPage(
-                  child: routes[2],
+                  child: LandingPage(),
                 ),
                 routes: [],
               ),
@@ -82,20 +82,7 @@ GoRouter goRouter(GoRouterRef ref, List<Widget> routes) {
                 path: '/dashboard',
                 name: AppRoute.dashboard.name,
                 pageBuilder: (context, state) => NoTransitionPage(
-                  child: routes[3],
-                ),
-                routes: [],
-              ),
-            ],
-          ),
-          StatefulShellBranch(
-            navigatorKey: _profileNavigatorKey,
-            routes: [
-              GoRoute(
-                path: '/landing',
-                name: AppRoute.profile.name,
-                pageBuilder: (context, state) => NoTransitionPage(
-                  child: LandingPage(),
+                  child: routes[2],
                 ),
                 routes: [],
               ),
