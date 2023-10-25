@@ -47,7 +47,7 @@ class WebService {
         Uri.parse(requestUrl),
         headers: headers,
       );
-      // //print("url response: " + utf8.decode(response.bodyBytes).toString());
+      print("url response: " + utf8.decode(response.bodyBytes).toString());
       if (response.statusCode == HttpStatus.ok) {
         result.putIfAbsent("state", () => true);
         result.putIfAbsent(

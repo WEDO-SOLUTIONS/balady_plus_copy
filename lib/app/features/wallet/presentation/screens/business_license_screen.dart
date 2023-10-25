@@ -73,9 +73,7 @@ class BusinessLicenseScreen extends StatelessWidget {
                           )
                         : ElevatedButtonWidget.licenseDetails(
                             onPressed: () {
-                              context.read<WalletDetailsBloc>().add(
-                                  ShareWalletItem(
-                                      selectedIetm: state.selectedItem));
+                              context.read<WalletDetailsBloc>().checkPhoto();
                             },
                           ),
                   ),
