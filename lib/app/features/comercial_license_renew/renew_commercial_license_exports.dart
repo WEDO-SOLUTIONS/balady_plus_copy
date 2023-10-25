@@ -21,7 +21,6 @@ export 'presentation/commercial_license/widgets/steps/commercial_renew_step3.dar
 export 'domain/entities/ejar_info_request.dart';
 export 'domain/entities/ejar_info_response.dart';
 export 'domain/entities/deed_info_request.dart';
-export 'domain/entities/deed_info_response.dart';
 
 export 'domain/entities/investment_contracts_request.dart';
 export 'domain/entities/investment_contracts_response.dart';

@@ -20,7 +20,7 @@ class CrStep2ActivityDataCubit extends Cubit<CrStep2ActivityDataState> {
 
   void onSelectSaddadYear(IsicActivity isicActivity) async {}
 
-  void calculate() async {
+  /*void calculate() async {
     print("HHH");
     int requestId = sl<CommercialLicenseBloc>().state.requestId!;
     print("HHH $requestId");
@@ -40,5 +40,5 @@ class CrStep2ActivityDataCubit extends Cubit<CrStep2ActivityDataState> {
       sl<CommercialLicenseBloc>().add((const GoToNextPageEvent()));
       emit(state.copyWith(status: BlocStatus.success));
     });
-  }
+  }*/
 }

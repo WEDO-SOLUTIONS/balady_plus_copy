@@ -64,6 +64,7 @@ class RenewCommercialLicenseBloc
     on<GetRenewYearsEvent>(_getRenewYearsHandler);
     on<GetRequestInfoEvent>(_getRequestInfoHandler);
     on<UpdateRenewYearsEvent>(_updateRenewYears);
+    add(GetRequestInfoEvent());
   }
 
   Future<void> _goToNextPageHandler(
@@ -126,7 +127,7 @@ class RenewCommercialLicenseBloc
     emitter(state.copyWith(
         status: BlocStatus.loading, licensePeriod: int.tryParse(e.year ?? "")));
     final failOrSuccess = await _calculateRequestInfo(RenewInfoRequest(
-        licensePeriod: state.licensePeriod!, requestId: state.requestId!));
+        licensePeriod: state.licensePeriod, requestId: state.requestId!));
 
     failOrSuccess.fold((l) {
       emitter(state.copyWith(
@@ -135,6 +136,7 @@ class RenewCommercialLicenseBloc
     }, (r) {
       print(r);
       emitter(state.copyWith(status: BlocStatus.success, info: r));
+      setUpDraft();
     });
   }
 
@@ -187,72 +189,77 @@ class RenewCommercialLicenseBloc
 
   void updateCleanOptions(CRContractCleanRenewOptions type) {
     emit(state.copyWith(
-      crContractCleanRenewOptions: Nullable(type),
-    ));
+        crContractCleanRenewOptions: Nullable(type), errorMessage: ""));
 
     if (type == CRContractCleanRenewOptions.service) {
       getCleanContracts();
     }
   }
 
+  void updateSalama(
+      {String? salamaReport, String? salamaBill, String? salamaPermit}) {
+    emit(state.copyWith(
+        salamaReportNumber: salamaReport ?? "",
+        salamaPermitNumber: salamaPermit ?? "",
+        salamaBillNumber: salamaBill ?? "",
+        errorMessage: ""));
+  }
+
   void updateSubmitterType(CRSubmitterType type) {
     emit(state.copyWith(
-      crSubmitterType: Nullable(type),
-      crContractType: Nullable(null),
-      crContractOption: Nullable(null),
-      contractNumber: Nullable(null),
-      contractDate: Nullable(null),
-      selectedInvestmentContract: Nullable(null),
-    ));
+        crSubmitterType: Nullable(type),
+        crContractType: Nullable(null),
+        crContractOption: Nullable(null),
+        contractNumber: Nullable(null),
+        contractDate: Nullable(null),
+        selectedInvestmentContract: Nullable(null),
+        errorMessage: ""));
   }
 
   void updateCRContractType(CRContractType type) {
     emit(state.copyWith(
-      crContractType: Nullable(type),
-      crContractOption: Nullable(null),
-      contractNumber: Nullable(null),
-      contractDate: Nullable(null),
-      selectedInvestmentContract: Nullable(null),
-    ));
+        crContractType: Nullable(type),
+        crContractOption: Nullable(null),
+        contractNumber: Nullable(null),
+        contractDate: Nullable(null),
+        selectedInvestmentContract: Nullable(null),
+        errorMessage: ""));
   }
 
   void updateCRContractOption(CRContractOption type) {
     emit(state.copyWith(
-      crContractOption: Nullable(type),
-      contractNumber: Nullable(null),
-      contractDate: Nullable(null),
-      selectedInvestmentContract: Nullable(null),
-    ));
+        crContractOption: Nullable(type),
+        contractNumber: Nullable(null),
+        contractDate: Nullable(null),
+        selectedInvestmentContract: Nullable(null),
+        cleanContractEndDate: Nullable(null),
+        errorMessage: ""));
 
     // getInvestmentContracts();
   }
 
   void updateContractNumber(String value) {
-    emit(state.copyWith(
-      contractNumber: Nullable(value),
-    ));
+    emit(state.copyWith(contractNumber: Nullable(value), errorMessage: ""));
   }
 
   void updateContractDate(String value) {
-    emit(state.copyWith(
-      contractDate: Nullable(value),
-    ));
+    emit(state.copyWith(contractDate: Nullable(value), errorMessage: ""));
   }
 
   void updateCleanContractDate(String value) {
     emit(state.copyWith(
-      cleanContractEndDate: Nullable(value),
-    ));
+        cleanContractEndDate: Nullable(value), errorMessage: ""));
   }
 
   void selectInvestmentContract(InvestmentContractItem? item) {
     emit(state.copyWith(
-      selectedInvestmentContract: Nullable(item),
-    ));
+        selectedInvestmentContract: Nullable(item), errorMessage: ""));
   }
 
   void updateTenancyInfo(
       {String? id, String? tenancyContractNumber, String? versionNumber}) {
+    state.copyWith(status: BlocStatus.loading, errorMessage: "");
+
     EjarInfoRequest ejarInfoRequst = state.ejarInfoRequst ?? EjarInfoRequest();
 
     String nationalId = ejarInfoRequst.nationalId ?? "";
@@ -266,16 +273,19 @@ class RenewCommercialLicenseBloc
       nationalId = "";
       iqamaNumber = id!;
     }
-    ejarInfoRequst.copyWith(
+    ejarInfoRequst = ejarInfoRequst.copyWith(
       iqamaNumber: iqamaNumber,
       nationalId: nationalId,
       tenancyContractNumber: tenancyContractNumber,
       versionNumber: versionNumber,
     );
 
-    state.copyWith(
+    emit(state.copyWith(
+        status: BlocStatus.success,
         ejarInfoRequst: Nullable(ejarInfoRequst),
-        ejarVerified: Nullable(false));
+        ejarVerified: Nullable(false),
+        errorMessage: ""));
+    print(state.ejarInfoRequst?.tenancyContractNumber);
   }
 
   void selectCleanContract(CleanContractItem? item) {
@@ -287,7 +297,8 @@ class RenewCommercialLicenseBloc
   void getCleanContracts() async {
     int requestId = state.requestId!;
 
-    emit(state.copyWith(contractsListStatus: BlocStatus.loading));
+    emit(state.copyWith(
+        contractsListStatus: BlocStatus.loading, errorMessage: ""));
     final response =
         await _getCleanContracts(CleanContractsRequest(requestId: requestId));
     response.fold(
@@ -317,7 +328,7 @@ class RenewCommercialLicenseBloc
       citizenPledgedToClean = false;
     }
 
-    emit(state.copyWith(status: BlocStatus.loading));
+    emit(state.copyWith(status: BlocStatus.loading, errorMessage: ""));
     final response = await _saveRenewRequestInfo(SaveRenewRequest(
         requestId: requestId,
         citizenPledgedToClean: citizenPledgedToClean,
@@ -342,14 +353,15 @@ class RenewCommercialLicenseBloc
       emit(state.copyWith(
         status: BlocStatus.success,
       ));
-      add(const GoToNextPageEvent());
+
+      getAttachments();
     });
   }
 
   void getAttachments() async {
     int requestId = state.requestId!;
 
-    emit(state.copyWith(status: BlocStatus.loading));
+    emit(state.copyWith(status: BlocStatus.loading, errorMessage: ""));
     final response = await _getCrAttachments(requestId);
     response.fold(
         (failure) => emit(state.copyWith(
@@ -362,16 +374,17 @@ class RenewCommercialLicenseBloc
               memo: e.name ?? "",
               title: "${e.name} ${e.allowedFilesExtension}",
               isRequired: e.isMandatory ?? false,
-              isUploaded: false))
+              isUploaded: e.attached ?? false))
           .toList();
 
       emit(state.copyWith(
           status: BlocStatus.success, attachments: attachmentData));
+      add(const GoToNextPageEvent());
     });
   }
 
   deleteFile(int index) async {
-    emit(state.copyWith(status: BlocStatus.loading));
+    emit(state.copyWith(status: BlocStatus.loading, errorMessage: ""));
 
     List<AttachmentData> attachments = state.attachments ?? [];
     attachments[index].base64 = null;
@@ -414,7 +427,8 @@ class RenewCommercialLicenseBloc
   void getRenewRequestDetails() async {
     int requestId = state.requestId!;
 
-    emit(state.copyWith(requestDetailsStatus: BlocStatus.loading));
+    emit(state.copyWith(
+        requestDetailsStatus: BlocStatus.loading, errorMessage: ""));
     final response = await _renewRequestDetails(requestId);
     response.fold(
         (failure) => emit(state.copyWith(
@@ -429,7 +443,7 @@ class RenewCommercialLicenseBloc
 
   void submitAttachments() async {
     int requestId = state.requestId!;
-    emit(state.copyWith(status: BlocStatus.loading));
+    emit(state.copyWith(status: BlocStatus.loading, errorMessage: ""));
     final response = await _submitRenewAttachments(requestId);
     response.fold(
         (failure) => emit(state.copyWith(
@@ -442,9 +456,38 @@ class RenewCommercialLicenseBloc
     });
   }
 
+  void setUpDraft() {
+    bool isEjarVerified = state.info?.ownershipResponseDto?.tenancyContractInfo
+            ?.tenancyContractNumber !=
+        null;
+
+    String id =
+        state.info?.ownershipResponseDto?.tenancyContractInfo?.nationalId ?? "";
+
+    String nationalId = "";
+    String iqamaNumber = "";
+
+    if (id.startsWith("1")) {
+      nationalId = id!;
+      iqamaNumber = "";
+    }
+    if (id.startsWith("2")) {
+      nationalId = "";
+      iqamaNumber = id;
+    }
+
+    EjarInfoRequest? ejar = EjarInfoRequest(
+        iqamaNumber: iqamaNumber,
+        nationalId: nationalId,
+        tenancyContractNumber: state.info?.ownershipResponseDto
+            ?.tenancyContractInfo?.tenancyContractNumber,
+        versionNumber: state
+            .info?.ownershipResponseDto?.tenancyContractInfo?.versionNumber);
+  }
+
   void submitRenew() async {
     int requestId = state.requestId!;
-    emit(state.copyWith(status: BlocStatus.loading));
+    emit(state.copyWith(status: BlocStatus.loading, errorMessage: ""));
     final response = await _submitRenew(requestId);
     response.fold(
         (failure) => emit(state.copyWith(
