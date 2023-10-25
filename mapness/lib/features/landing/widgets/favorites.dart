@@ -5,15 +5,19 @@ import 'package:google_fonts/google_fonts.dart';
 class Favorites extends StatelessWidget {
   const Favorites({
     super.key,
+    required this.background,
+    this.horizontalPadding = 8,
   });
+
+  final Color background;
+  final double horizontalPadding;
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       height: 40,
       child: ListView.builder(
-        // reverse: true,
-        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+        padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
         scrollDirection: Axis.horizontal,
         itemCount: 10,
         itemBuilder: (BuildContext context, int index) {
@@ -24,9 +28,9 @@ class Favorites extends StatelessWidget {
                 right: 8.0,
               ),
               child: Container(
-                decoration: const BoxDecoration(
-                  color: Color(0xFFF1F4F8),
-                  borderRadius: BorderRadius.all(
+                decoration: BoxDecoration(
+                  color: background,
+                  borderRadius: const BorderRadius.all(
                     Radius.circular(8),
                   ),
                 ),
@@ -35,7 +39,7 @@ class Favorites extends StatelessWidget {
                   vertical: 10,
                 ),
                 child: SvgPicture.asset(
-                  "assets/icons/svg/ic_dashboard_fav.svg",
+                  "assets/icons/svg/ic_fav.svg",
                   semanticsLabel: 'MinApps Screen',
                   package: "mapness",
                 ),
@@ -45,22 +49,18 @@ class Favorites extends StatelessWidget {
           return Padding(
             padding: const EdgeInsets.only(left: 8.0),
             child: Container(
-              decoration: const BoxDecoration(
-                color: Color(0xFFF1F4F8),
-                borderRadius: BorderRadius.all(
+              decoration: BoxDecoration(
+                color: background,
+                borderRadius: const BorderRadius.all(
                   Radius.circular(8),
                 ),
               ),
               padding: const EdgeInsets.symmetric(
-                horizontal: 8,
-                vertical: 10,
+                horizontal: 12,
+                vertical: 8,
               ),
               child: Row(
                 children: [
-                  const Icon(Icons.house),
-                  const SizedBox(
-                    width: 4,
-                  ),
                   Text(
                     '12 دقيقة',
                     style: GoogleFonts.notoSansArabic(
@@ -68,6 +68,16 @@ class Favorites extends StatelessWidget {
                         fontSize: 12,
                       ),
                     ),
+                  ),
+                  const SizedBox(
+                    width: 4,
+                  ),
+                  SvgPicture.asset(
+                    index % 2 == 1
+                        ? "assets/icons/svg/ic_fav_home.svg"
+                        : "assets/icons/svg/ic_fav_work.svg",
+                    semanticsLabel: 'MinApps Screen',
+                    package: "mapness",
                   ),
                 ],
               ),

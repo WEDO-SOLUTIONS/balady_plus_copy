@@ -18,7 +18,7 @@ class FollowControl extends ConsumerWidget {
         : Colors.black;
 
     return AnimatedOpacity(
-      opacity: followState.enabled ? 1 : 0,
+      opacity: followState.enabled ? 1 : 1, // fix
       duration: const Duration(milliseconds: 250),
       child: GestureDetector(
         onTap: followNotifier.onFollowTap,

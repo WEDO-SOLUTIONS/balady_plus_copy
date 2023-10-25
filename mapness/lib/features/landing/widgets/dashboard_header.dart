@@ -74,7 +74,10 @@ class DashboardHeader extends ConsumerWidget {
           const SizedBox(
             height: 16,
           ),
-          if (dashboardState == DashboardControlsState.idle) const Favorites(),
+          if (dashboardState == DashboardControlsState.idle)
+            const Favorites(
+              background: Color(0x0D1E2A36),
+            ),
           if (dashboardState == DashboardControlsState.idle)
             const SizedBox(
               height: 16,

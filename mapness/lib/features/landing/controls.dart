@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mapness/features/landing/providers/dashboard_controls.dart';
+import 'package:mapness/features/landing/widgets/favorites.dart';
 import 'package:mapness/features/landing/widgets/happines_control.dart';
 import 'package:mapness/features/landing/providers/map_controls.dart';
 import 'package:mapness/features/landing/widgets/compass_control.dart';
@@ -32,7 +33,12 @@ class MapControls extends ConsumerWidget {
           children: [
             Expanded(
               child: Padding(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.only(
+                  left: 12,
+                  top: 12,
+                  right: 12,
+                  bottom: 16,
+                ),
                 child: Row(
                   children: [
                     Column(
@@ -60,10 +66,10 @@ class MapControls extends ConsumerWidget {
                         const MapControl(
                           HappinesControl(),
                         ),
-                        Spacer(),
+                        const Spacer(),
                         MapControl(
                           SvgPicture.asset(
-                            "assets/icons/svg/ic_control_location.svg",
+                            "assets/icons/svg/ic_controls_qibla.svg",
                             semanticsLabel: 'MinApps Screen',
                             package: "mapness",
                           ),
@@ -79,9 +85,9 @@ class MapControls extends ConsumerWidget {
                           width: 8,
                         ),
                         const TrafficControl(),
-                        Spacer(),
+                        const Spacer(),
                         const ZoomControl(),
-                        Spacer(),
+                        const Spacer(),
                         const CompassControl(),
                         const SizedBox(
                           height: 8,
@@ -94,80 +100,20 @@ class MapControls extends ConsumerWidget {
               ),
             ),
             controlsState == MapControlsState.idle
-                ? Padding(
-                    padding: const EdgeInsets.only(bottom: 12.0),
-                    child: SizedBox(
-                      height: 40,
-                      child: ListView.builder(
-                        reverse: true,
-                        scrollDirection: Axis.horizontal,
-                        itemCount: 10,
-                        itemBuilder: (BuildContext context, int index) {
-                          if (index == 0) {
-                            return Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 8.0),
-                              child: Container(
-                                decoration: const BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(8),
-                                  ),
-                                ),
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 14,
-                                  vertical: 10,
-                                ),
-                                child: SvgPicture.asset(
-                                  "assets/icons/svg/ic_dashboard_fav.svg",
-                                  semanticsLabel: 'MinApps Screen',
-                                  package: "mapness",
-                                ),
-                              ),
-                            );
-                          }
-                          return Padding(
-                            padding: const EdgeInsets.only(left: 8.0),
-                            child: Container(
-                                decoration: const BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(8),
-                                  ),
-                                ),
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 8,
-                                  vertical: 10,
-                                ),
-                                child: Row(
-                                  children: [
-                                    const Icon(Icons.house),
-                                    const SizedBox(
-                                      width: 4,
-                                    ),
-                                    Text(
-                                      '12 دقيقة',
-                                      style: GoogleFonts.notoSansArabic(
-                                        textStyle: const TextStyle(
-                                          fontSize: 12,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                )),
-                          );
-                        },
+                ? const Directionality(
+                    textDirection: TextDirection.rtl,
+                    child: Padding(
+                      padding: EdgeInsets.only(bottom: 12.0),
+                      child: Favorites(
+                        background: Colors.white,
+                        horizontalPadding: 4,
                       ),
                     ),
                   )
                 : const SizedBox.shrink(),
-            Container(
-              color: Colors.red.withOpacity(0.2),
-              height: 75,
+            const SizedBox(
+              height: 74,
             ),
-            // const SizedBox(
-            //   height: 74,
-            // ),
           ],
         ),
       ),
