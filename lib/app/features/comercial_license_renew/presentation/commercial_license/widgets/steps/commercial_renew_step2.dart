@@ -34,8 +34,6 @@ class _CommercialRenewStep2State extends State<CommercialRenewStep2> {
   void initState() {
     // TODO: implement initState
     super.initState();
-
-    context.read<RenewCommercialLicenseBloc>().getAttachments();
   }
 
   @override

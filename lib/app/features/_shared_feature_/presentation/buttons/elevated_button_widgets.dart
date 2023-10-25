@@ -216,7 +216,8 @@ class ElevatedButtonWidget extends _ElevatedButton {
           onPressed: onPressed,
         ));
 
-  ElevatedButtonWidget.verify({required VoidCallback onPressed})
+  ElevatedButtonWidget.verify(
+      {required VoidCallback onPressed, final String? text})
       : super(CustomElevatedButtonWidget(
           btnColor: Colors.transparent,
           btnBorderColor: AppColor.primary900Light,
@@ -226,7 +227,7 @@ class ElevatedButtonWidget extends _ElevatedButton {
             fontSize: 16,
           ),
           btnHeight: 48,
-          text: "verify".tr(),
+          text: text ?? "verify".tr(),
           onPressed: onPressed,
         ));
 

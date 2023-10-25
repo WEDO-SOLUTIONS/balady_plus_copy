@@ -135,12 +135,14 @@ class _CommercialRenewStep1State extends State<CommercialRenewStep1> {
                         groupName: 'ارفاق العقد',
                         currentItem: state.crContractOption,
                         items: [
-                          RadioItem<CRContractOption>(
-                              radioText: "ارفاق عقد التملك",
-                              radioValue: CRContractOption.attach),
-                          RadioItem<CRContractOption>(
-                              radioText: "استخدام رقم عقد الصك الالكتروني",
-                              radioValue: CRContractOption.service),
+                          if (state.showAttachDeed())
+                            RadioItem<CRContractOption>(
+                                radioText: "ارفاق عقد التملك",
+                                radioValue: CRContractOption.attach),
+                          if (state.showServicehDeed())
+                            RadioItem<CRContractOption>(
+                                radioText: "استخدام رقم عقد الصك الالكتروني",
+                                radioValue: CRContractOption.service),
                         ],
                         onChanged: (value) {
                           context
@@ -216,12 +218,14 @@ class _CommercialRenewStep1State extends State<CommercialRenewStep1> {
                         groupName: 'ارفاق العقد',
                         currentItem: state.crContractOption,
                         items: [
-                          RadioItem<CRContractOption>(
-                              radioText: "إرفاق عقد الإيجار",
-                              radioValue: CRContractOption.attach),
-                          RadioItem<CRContractOption>(
-                              radioText: "استخدام رقم عقد الإيجار الالكتروني",
-                              radioValue: CRContractOption.service),
+                          if (state.showAttachEjar())
+                            RadioItem<CRContractOption>(
+                                radioText: "إرفاق عقد الإيجار",
+                                radioValue: CRContractOption.attach),
+                          if (state.showServiceEjar())
+                            RadioItem<CRContractOption>(
+                                radioText: "استخدام رقم عقد الإيجار الالكتروني",
+                                radioValue: CRContractOption.service),
                         ],
                         onChanged: (value) {
                           context
@@ -297,11 +301,15 @@ class _CommercialRenewStep1State extends State<CommercialRenewStep1> {
                               .updateTenancyInfo(id: value);
                         },
                       ),
-                      ElevatedButtonWidget.verify(onPressed: () {
-                        context
-                            .read<RenewCommercialLicenseBloc>()
-                            .getEjarInfoHandler();
-                      }),
+                      ElevatedButtonWidget.verify(
+                          text: (state.ejarVerified ?? false)
+                              ? "done_check".tr()
+                              : "verify".tr(),
+                          onPressed: () {
+                            context
+                                .read<RenewCommercialLicenseBloc>()
+                                .getEjarInfoHandler();
+                          }),
                       const CustomVerticalSpace(
                         height: 16,
                       )
@@ -312,12 +320,15 @@ class _CommercialRenewStep1State extends State<CommercialRenewStep1> {
                         groupName: 'طريقة ادخال العقد',
                         currentItem: state.crContractOption,
                         items: [
-                          RadioItem<CRContractOption>(
-                              radioText: "إرفاق عقد الاستثمار",
-                              radioValue: CRContractOption.attach),
-                          RadioItem<CRContractOption>(
-                              radioText: "استخدام رقم عقد الاستثمار الالكتروني",
-                              radioValue: CRContractOption.service),
+                          if (state.showAttachInvest())
+                            RadioItem<CRContractOption>(
+                                radioText: "إرفاق عقد الاستثمار",
+                                radioValue: CRContractOption.attach),
+                          if (state.showServiceInvest())
+                            RadioItem<CRContractOption>(
+                                radioText:
+                                    "استخدام رقم عقد الاستثمار الالكتروني",
+                                radioValue: CRContractOption.service),
                         ],
                         onChanged: (value) {
                           context
@@ -342,6 +353,13 @@ class _CommercialRenewStep1State extends State<CommercialRenewStep1> {
                         },
                       ),
                     ],
+                    if (state.info?.ownershipResponseDto?.contractWarnings !=
+                            null &&
+                        state.info!.ownershipResponseDto!.contractWarnings!
+                            .isNotEmpty)
+                      NotesWidget(notes: [
+                        state.info!.ownershipResponseDto!.contractWarnings!
+                      ]),
 
                     /* if (state.crContractType == CRContractType.invest &&
                         state.crSubmitterType == CRSubmitterType.rental &&
@@ -424,13 +442,65 @@ class _CommercialRenewStep1State extends State<CommercialRenewStep1> {
                       NotesWidget(notes: [
                         state.info!.cleanContractResponseDto!.warnings!
                       ]),
+                    if (state.showSalamaReport())
+                      CustomTextFieldWidget(
+                        label: "رقم التقرير الفني",
+                        hintText: "رقم التقرير الفني",
+                        isDigitsOnly: true,
+                        keyboardType: TextInputType.number,
+                        bottomMargin: 24,
+                        initialValue: state.salamaReportNumber,
+                        onChanged: (value) {
+                          context
+                              .read<RenewCommercialLicenseBloc>()
+                              .updateSalama(salamaReport: value);
+                        },
+                      ),
+                    if (state.showSalamaReport())
+                      NotesWidget(notes: [
+                        state.info?.salamaResponseDto
+                                ?.salamaReportInstructions ??
+                            ""
+                      ]),
+                    if (state.showSalamaBill())
+                      CustomTextFieldWidget(
+                        label: "شهادة تركيب أدوات الوقاية والحماية من الحريق",
+                        hintText:
+                            "شهادة تركيب أدوات الوقاية والحماية من الحريق",
+                        isDigitsOnly: true,
+                        keyboardType: TextInputType.number,
+                        bottomMargin: 24,
+                        initialValue: state.salamaBillNumber,
+                        onChanged: (value) {
+                          context
+                              .read<RenewCommercialLicenseBloc>()
+                              .updateSalama(salamaBill: value);
+                        },
+                      ),
+                    if (state.showSalamaBill())
+                      NotesWidget(notes: [
+                        state.info?.salamaResponseDto?.salamaBillInstructions ??
+                            ""
+                      ]),
+                    if (state.showSalamaPermit())
+                      CustomTextFieldWidget(
+                        label: "رقم تصريح سلامة",
+                        hintText: "رقم تصريح سلامة",
+                        bottomMargin: 24,
+                        initialValue: state.salamaPermitNumber,
+                        onChanged: (value) {
+                          context
+                              .read<RenewCommercialLicenseBloc>()
+                              .updateSalama(salamaPermit: value);
+                        },
+                      ),
                     CRPreviousNextButtons(
                       isBtnDisabled: false,
-                      /* onPressed: () {
+                      onPressed: () {
                         context
                             .read<RenewCommercialLicenseBloc>()
                             .saveInfoRequest();
-                      },*/
+                      },
                     ),
                   ],
                 );

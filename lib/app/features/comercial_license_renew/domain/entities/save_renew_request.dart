@@ -18,9 +18,9 @@ class SaveRenewRequest extends Equatable {
   final String? investmentContractNumber;
 
   final int? sadadPeriod;
-  final int? salamaBillNumber;
-  final int? salamaReportNumber;
-  final int? salamaPermitNumber;
+  final String? salamaBillNumber;
+  final String? salamaReportNumber;
+  final String? salamaPermitNumber;
 
   Map<String, dynamic> toMap() => {
         "citizenPledgedToClean": citizenPledgedToClean,

@@ -4,17 +4,18 @@ import 'package:balady_plus/app/features/request_commercial_license_details/doma
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-
 part 'request_commercial_license_details_state.dart';
 
-class RequestCommercialLicenseDetailsCubit extends Cubit<RequestCommercialLicenseDetailsState> {
+class RequestCommercialLicenseDetailsCubit
+    extends Cubit<RequestCommercialLicenseDetailsState> {
   final GetRequestCommercialLicenseDetails getRequestCommercialLicenseDetails;
   final int requestId;
+  final int? requestTypeId;
 
   RequestCommercialLicenseDetailsCubit(
-    this.getRequestCommercialLicenseDetails,
-    this.requestId,
-  ) : super(const RequestCommercialLicenseDetailsState()){
+      this.getRequestCommercialLicenseDetails, this.requestId,
+      {this.requestTypeId})
+      : super(const RequestCommercialLicenseDetailsState()) {
     getRequestCommercialLicenseDetailsById(
       requestId,
     );

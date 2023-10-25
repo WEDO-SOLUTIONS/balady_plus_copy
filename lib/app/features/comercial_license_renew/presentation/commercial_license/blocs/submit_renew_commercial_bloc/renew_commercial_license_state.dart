@@ -42,9 +42,9 @@ class RenewCommercialLicenseState extends Equatable {
   final bool? ejarVerified;
   final String? investmentContractNumber;
 
-  final int? salamaBillNumber;
-  final int? salamaPermitNumber;
-  final int? salamaReportNumber;
+  final String? salamaBillNumber;
+  final String? salamaPermitNumber;
+  final String? salamaReportNumber;
 
   final CrAttachmentResponse? attachmentResponse;
   final List<AttachmentData>? attachments;
@@ -166,9 +166,9 @@ class RenewCommercialLicenseState extends Equatable {
       Nullable<EjarInfoRequest?>? ejarInfoRequst,
       Nullable<bool?>? ejarVerified,
       Nullable<String?>? investmentContractNumber,
-      final int? salamaBillNumber,
-      final int? salamaPermitNumber,
-      final int? salamaReportNumber,
+      final String? salamaBillNumber,
+      final String? salamaPermitNumber,
+      final String? salamaReportNumber,
       CrAttachmentResponse? attachmentResponse,
       List<AttachmentData>? attachments,
       final RenewRequestDetails? renewRequestDetails}) {
@@ -240,5 +240,80 @@ class RenewCommercialLicenseState extends Equatable {
         attachmentResponse: attachmentResponse ?? this.attachmentResponse,
         requestDetailsStatus:
             requestDetailsStatus ?? this.requestDetailsStatus);
+  }
+
+  bool showSalamaReport() {
+    if ((info?.salamaResponseDto?.allowedDocuments?.contains("REPORT") ??
+            false) &&
+        (info?.salamaResponseDto?.salamaReportOptions?.contains("SERVICE") ??
+            false)) return true;
+
+    return false;
+  }
+
+  bool showSalamaBill() {
+    if ((info?.salamaResponseDto?.allowedDocuments?.contains("BILL") ??
+            false) &&
+        (info?.salamaResponseDto?.salamaBillOptions?.contains("SERVICE") ??
+            false)) return true;
+
+    return false;
+  }
+
+  bool showSalamaPermit() {
+    if ((info?.salamaResponseDto?.allowedDocuments?.contains("PERMIT") ??
+            false) &&
+        (info?.salamaResponseDto?.salamaPermitOptions?.contains("SERVICE") ??
+            false)) return true;
+
+    return false;
+  }
+
+  bool showAttachDeed() {
+    if ((info?.ownershipResponseDto?.contractOptionsResponseDto?.deedOptions
+            ?.contains("ATTACH") ??
+        false)) return true;
+
+    return false;
+  }
+
+  bool showAttachEjar() {
+    if ((info?.ownershipResponseDto?.contractOptionsResponseDto?.ejarOptions
+            ?.contains("ATTACH") ??
+        false)) return true;
+
+    return false;
+  }
+
+  bool showAttachInvest() {
+    if ((info?.ownershipResponseDto?.contractOptionsResponseDto?.investOptions
+            ?.contains("ATTACH") ??
+        false)) return true;
+
+    return false;
+  }
+
+  bool showServicehDeed() {
+    if ((info?.ownershipResponseDto?.contractOptionsResponseDto?.deedOptions
+            ?.contains("SERVICE") ??
+        false)) return true;
+
+    return false;
+  }
+
+  bool showServiceEjar() {
+    if ((info?.ownershipResponseDto?.contractOptionsResponseDto?.ejarOptions
+            ?.contains("SERVICE") ??
+        false)) return true;
+
+    return false;
+  }
+
+  bool showServiceInvest() {
+    if ((info?.ownershipResponseDto?.contractOptionsResponseDto?.investOptions
+            ?.contains("SERVICE") ??
+        false)) return true;
+
+    return false;
   }
 }

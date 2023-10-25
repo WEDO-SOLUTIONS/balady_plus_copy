@@ -18,7 +18,7 @@ import '../models/cr_submit_response_model.dart';
 import '../../../../core/remote_services/web_service.dart' as web;
 import '../models/investment_contracts_response_model.dart';
 import '../models/renew_request_details.dart';
-import '../models/renew_request_info_model.dart';
+import '../models/renew_request_info_model.dart' hide DeedInfoResponseModel;
 
 abstract class RenewCrRemoteDataSource {
   Future<ResponseBodyModel<bool>> validateRenewBeforeApply({int? params});
