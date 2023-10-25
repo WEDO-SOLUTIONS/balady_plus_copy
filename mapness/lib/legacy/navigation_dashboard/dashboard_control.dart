@@ -50,8 +50,9 @@ class DashboardControl extends StatelessWidget {
             onCollapsePressed: () async =>
                 dashboardControlController.changeStateRouteBottomSheet(),
             onSoundPressed: () async => navViewModel.onSoundTap(),
-            onFinishPressed: () async =>
-                dashboardControlController.showResultBottomSheet(),
+            onFinishPressed: () {
+              routingViewModel.onNavigationFinishClicked();
+            },
           ),
         ),
         Positioned(
@@ -62,7 +63,9 @@ class DashboardControl extends StatelessWidget {
           child: OnResultBottomSheet(
             key: dashboardControlController
                 .sheetKeys[DashboardSheet.onResultSheet],
-            onFinishPressed: routingViewModel.onNavigationFinishClicked,
+            onFinishPressed: () {
+              routingViewModel.onNavigationFinishClicked();
+            },
             onParkingPressed: () {},
             onMarkerPressed: () {},
           ),

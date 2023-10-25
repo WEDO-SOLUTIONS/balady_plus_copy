@@ -192,7 +192,8 @@ class OnRouteSheetState extends State<OnRouteSheet>
                                       ),
                                     ),
                                     child: SvgPicture.asset(
-                                        'assets/icons/svg/routing/ic_menu.svg'),
+                                      'assets/icons/svg/routing/ic_menu.svg',
+                                    ),
                                   ),
                                 ),
                                 const Spacer(

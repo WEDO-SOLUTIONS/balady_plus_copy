@@ -103,12 +103,12 @@ class OnResultBottomSheetState extends State<OnResultBottomSheet> {
                             borderRadius:
                                 BorderRadius.all(Radius.circular(12))),
                         padding: const EdgeInsets.all(12),
-                        child: Row(
+                        child: const Row(
                           mainAxisSize: MainAxisSize.min,
-                          children: const [
+                          children: [
                             Icon(Icons.local_parking),
                             Text(
-                              'Парковки',
+                              'Parking',
                               style: MapnessTypography.m,
                             ),
                           ],
@@ -127,7 +127,7 @@ class OnResultBottomSheetState extends State<OnResultBottomSheet> {
                         ),
                         padding: const EdgeInsets.all(14.0),
                         child: const Center(
-                          child: Text('Завершить поездку'),
+                          child: Text('Complete the trip'),
                         ),
                       ),
                     ),
