@@ -18,12 +18,12 @@ class HappinessTagsWithIcons extends _$HappinessTagsWithIcons {
   List<HappinessTag> build() {
     final tags = [
       ("visual_aesthetic", "ic_eye.svg", "Visual\naesthetic"),
-      ("comfort", "ic_trees.svg", "Parks"),
-      ("streets", "ic_building.svg", "Buildings"),
-      ("buildings", "ic_car_side.svg", "Streets"),
-      ("parks", "ic_comment-heart.svg", "Comfort"),
-      ("cleanness", "ic_lightbulb-alt.svg", "Lighting"),
-      ("lighting", "ic_trash-alt.svg", "Clean"),
+      ("parks", "ic_trees.svg", "Parks"),
+      ("buildings", "ic_building.svg", "Buildings"),
+      ("streets", "ic_car_side.svg", "Streets"),
+      ("comfort", "ic_comment-heart.svg", "Comfort"),
+      ("lighting", "ic_lightbulb-alt.svg", "Lighting"),
+      ("cleanness", "ic_trash-alt.svg", "Clean"),
     ];
 
     return tags.map(
