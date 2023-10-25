@@ -37,7 +37,11 @@ class RoutingOverlay extends ConsumerWidget {
     final dgisController = ref.watch(dgisControllerProvider);
 
     return Provider(
-      create: (context) => RoutingViewModel(dgisController!),
+      create: (context) {
+        dgisController!.changeFollowState();
+
+        return RoutingViewModel(dgisController);
+      },
       child: const _RoutingOverlay(),
     );
   }
