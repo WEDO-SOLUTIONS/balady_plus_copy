@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:mapness/features/landing/providers/dashboard_controls.dart';
 import 'package:mapness/features/landing/widgets/favorites.dart';
 import 'package:mapness/features/landing/widgets/happines_control.dart';
 import 'package:mapness/features/landing/providers/map_controls.dart';
@@ -82,7 +80,7 @@ class MapControls extends ConsumerWidget {
                       children: [
                         LayersControl(layerState: layersState),
                         const SizedBox(
-                          width: 8,
+                          height: 8,
                         ),
                         const TrafficControl(),
                         const Spacer(),
@@ -99,18 +97,20 @@ class MapControls extends ConsumerWidget {
                 ),
               ),
             ),
-            controlsState == MapControlsState.idle
-                ? const Directionality(
-                    textDirection: TextDirection.rtl,
-                    child: Padding(
-                      padding: EdgeInsets.only(bottom: 12.0),
-                      child: Favorites(
-                        background: Colors.white,
-                        horizontalPadding: 4,
-                      ),
-                    ),
-                  )
-                : const SizedBox.shrink(),
+            AnimatedOpacity(
+              opacity: controlsState == MapControlsState.idle ? 1 : 0,
+              duration: const Duration(milliseconds: 250),
+              child: const Directionality(
+                textDirection: TextDirection.rtl,
+                child: Padding(
+                  padding: EdgeInsets.only(bottom: 12.0),
+                  child: Favorites(
+                    background: Colors.white,
+                    horizontalPadding: 4,
+                  ),
+                ),
+              ),
+            ),
             const SizedBox(
               height: 74,
             ),

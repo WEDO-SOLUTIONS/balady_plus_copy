@@ -224,7 +224,8 @@ class _SearchContent extends StatelessWidget {
                                                 "You search - ${model.searchController.text} - did not match any results.",
                                                 textAlign: TextAlign.center,
                                                 style: GoogleFonts.inter(
-                                                  color: Color(0xFF8E8E8E),
+                                                  color:
+                                                      const Color(0xFF8E8E8E),
                                                   fontSize: 15,
                                                   height: 1.33,
                                                 ),

@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:mapness/core/uuid_provider.dart';
+import 'package:mapness/features/common/providers/uuid_provider.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 

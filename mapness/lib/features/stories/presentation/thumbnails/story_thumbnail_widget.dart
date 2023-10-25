@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mapness/core/common/image/loading_image/loading_shimmer_image.dart';
+import 'package:mapness/features/common/image/loading_image/loading_shimmer_image.dart';
 import 'package:mapness/features/stories/domain/thumbnail/story_thumbnail_data.dart';
 
 class StoryThumbnailWidget extends StatelessWidget {

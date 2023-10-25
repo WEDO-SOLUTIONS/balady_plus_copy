@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mapness/core/common/image/loading_image/loading_image.dart';
+import 'package:mapness/features/common/image/loading_image/loading_image.dart';
 import 'package:mapness/features/stories/domain/frame/story_frame_action.dart';
 import 'package:mapness/features/stories/domain/frame/story_frame_data.dart';
 import 'package:mapness/features/stories/presentation/frame/frame_action_button.dart';

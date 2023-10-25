@@ -1,4 +1,4 @@
-import 'package:mapness/core/dgis_network.dart';
+import 'package:mapness/features/common/providers/dgis_network.dart';
 import 'package:mapness/features/happiness_map/domain/happiness_feedback.dart';
 import 'package:mapness/generated/protocol/protocol.pb.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';

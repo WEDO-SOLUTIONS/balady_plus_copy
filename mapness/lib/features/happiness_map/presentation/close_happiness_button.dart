@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:mapness/core/config/package_config.dart';
+import 'package:mapness/features/common/config/package_config.dart';
 
 class CloseHappinessButton extends StatelessWidget {
   final VoidCallback onPressed;
