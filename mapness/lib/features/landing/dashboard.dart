@@ -30,20 +30,28 @@ class _DashboardState extends ConsumerState<Dashboard> {
 
   @override
   void initState() {
+    super.initState();
     _draggableScrollableController = DraggableScrollableController()
       ..addListener(() {
-        if (_draggableScrollableController.size > _headerExtent()) {
-          ref.watch(mapControlsProvider.notifier).update(
-                MapControlsStateDashboard(),
-              );
-        } else {
-          ref.watch(mapControlsProvider.notifier).update(
-                MapControlsStateIdle(),
-              );
-          FocusManager.instance.primaryFocus?.unfocus();
-        }
+        Future.delayed(Duration.zero, () {
+          if (_draggableScrollableController.size > _headerExtent()) {
+            ref.watch(mapControlsProvider.notifier).update(
+                  MapControlsStateDashboard(),
+                );
+          } else {
+            ref.watch(mapControlsProvider.notifier).update(
+                  MapControlsStateIdle(),
+                );
+            FocusManager.instance.primaryFocus?.unfocus();
+          }
+        });
       });
-    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _draggableScrollableController.dispose();
+    super.dispose();
   }
 
   void _expand() {
