@@ -37,4 +37,31 @@ class StoriesRepo extends _$StoriesRepo {
     final response = OkResponse.fromBuffer(rawResponse.data);
     return response;
   }
+
+  Future<void> markStoiesReaded(
+      List<(String storyId, int frameCount)> stories) async {
+    final dio = await readDio;
+
+    final request = ViewedStoriesRequest(
+      stories: stories.map(
+        (story) {
+          final (storyId, frames) = story;
+          return ViewedStoriesRequest_ViewedStory(
+            id: storyId,
+            frames: List.generate(
+              frames + 1,
+              (index) => ViewedStoriesRequest_ViewedStory_ViewedStoryFrame(
+                index: index,
+              ),
+            ),
+          );
+        },
+      ).toList(),
+    );
+
+    dio.post(
+      'stories/viewed',
+      data: request.writeToBuffer(),
+    );
+  }
 }

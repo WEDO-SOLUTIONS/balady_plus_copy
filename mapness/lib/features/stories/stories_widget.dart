@@ -1,10 +1,9 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/stories/data/story_service.dart';
 import 'package:mapness/features/stories/presentation/frame/dismissible_overlay.dart';
-import 'package:mapness/features/stories/presentation/story_refresh_button.dart';
 import 'package:mapness/features/stories/presentation/stories_fullscreen.dart';
+import 'package:mapness/features/stories/presentation/story_refresh_button.dart';
 import 'package:mapness/features/stories/presentation/story_thumbnails.dart';
 
 class StoriesWidget extends ConsumerStatefulWidget {
@@ -18,6 +17,22 @@ final GlobalKey<DismissibleTransitionState> _transitionState = GlobalKey();
 
 class _StoriesWidgetState extends ConsumerState<StoriesWidget> {
   OverlayEntry? _overlayEntry;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _precacheFirstFrame();
+  }
+
+  void _precacheFirstFrame() {
+    final storiesAsync = ref.watch(storyServiceProvider);
+    storiesAsync.whenData((data) {
+      for (final story in data.stories) {
+        final firstFrame = story.frames.first;
+        precacheImage(NetworkImage(firstFrame.imageUrl), context);
+      }
+    });
+  }
 
   openStory(BuildContext context, String id) {
     final storyWidget = StoriesFullscreen(

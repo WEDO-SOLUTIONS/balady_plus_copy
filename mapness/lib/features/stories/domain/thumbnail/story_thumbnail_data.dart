@@ -10,4 +10,18 @@ class StoryThumbnailData {
     required this.imageUrl,
     required this.isWatched,
   });
+
+  StoryThumbnailData copyWith({
+    String? title,
+    String? storyId,
+    String? imageUrl,
+    bool? isWatched,
+  }) {
+    return StoryThumbnailData(
+      title: title ?? this.title,
+      storyId: storyId ?? this.storyId,
+      imageUrl: imageUrl ?? this.imageUrl,
+      isWatched: isWatched ?? this.isWatched,
+    );
+  }
 }

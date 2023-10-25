@@ -9,4 +9,14 @@ class StoryOverallData {
     required this.thumbnails,
     required this.stories,
   });
+
+  StoryOverallData copyWith({
+    List<StoryData>? stories,
+    List<StoryThumbnailData>? thumbnails,
+  }) {
+    return StoryOverallData(
+      stories: stories ?? this.stories,
+      thumbnails: thumbnails ?? this.thumbnails,
+    );
+  }
 }

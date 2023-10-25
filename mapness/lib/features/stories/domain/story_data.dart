@@ -10,4 +10,16 @@ class StoryData {
     required this.storyId,
     required this.frames,
   });
+
+  StoryData copyWith({
+    List<StoryFrameData>? frames,
+    String? storyId,
+    bool? isViewed,
+  }) {
+    return StoryData(
+      frames: frames ?? this.frames,
+      storyId: storyId ?? this.storyId,
+      isViewed: isViewed ?? this.isViewed,
+    );
+  }
 }

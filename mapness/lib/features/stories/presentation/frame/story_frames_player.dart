@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/stories/data/story_service.dart';
@@ -60,6 +62,16 @@ class _StoryFramesPlayerState extends ConsumerState<StoryFramesPlayer> {
     });
     if (pageIndex == 0) {
       widget.onPreviousStory();
+    }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // precache next 2 images
+    final frames = widget.story.frames;
+    for (var i = currentIndex; i < min(frames.length, 2); i++) {
+      precacheImage(NetworkImage(frames[i].imageUrl), context);
     }
   }
 
