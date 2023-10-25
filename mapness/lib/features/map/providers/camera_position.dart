@@ -36,6 +36,7 @@ class CameraPosition extends _$CameraPosition {
   }
 
   void _cameraPositionListener(CameraPositionMessage event) async {
+    print("_cameraPositionListener $event");
     state = event;
   }
 }

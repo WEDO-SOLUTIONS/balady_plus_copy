@@ -1,7 +1,6 @@
 import 'package:dgis_map/library.dart';
 import 'package:mapness/features/landing/providers/map_controls.dart';
 import 'package:mapness/features/map/providers/dgis_controller.dart';
-import 'package:mapness/features/map/providers/point_of_interest.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'search.g.dart';

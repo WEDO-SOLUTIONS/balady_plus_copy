@@ -28,7 +28,7 @@ class _StoriesFullscreenState extends ConsumerState<StoriesFullscreen> {
   void _onChangeStory(int pageIndex, int length) {
     // precache next and previous stories
 
-    if (pageIndex == length) {
+    if (pageIndex == 0) {
       widget.onClose();
     }
     _precacheStories();
@@ -65,7 +65,7 @@ class _StoriesFullscreenState extends ConsumerState<StoriesFullscreen> {
     );
     _storyController = PageController(initialPage: index + 1);
     setState(() {
-      initialPage = index; // + 1;
+      initialPage = index + 1;
     });
   }
 
@@ -130,17 +130,17 @@ class _StoriesFullscreenState extends ConsumerState<StoriesFullscreen> {
           controller: _storyController,
           startPage: initialPage,
           children: [
-            // blank,
-            ...stories.map(
+            blank,
+            ...stories.reversed.map(
               (story) => StoryFramesPlayer(
                 onActionPressed: (action) => onActionPressed(action, context),
                 story: story,
-                onNextStory: _nextStory,
-                onPreviousStory: _previousStory,
+                onNextStory: _previousStory,
+                onPreviousStory: _nextStory,
                 onClose: onClose,
               ),
             ),
-            blank,
+            // blank,
           ],
         );
       },
