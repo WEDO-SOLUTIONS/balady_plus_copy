@@ -23,9 +23,9 @@ class HappinesFeedbackButton extends StatelessWidget {
     };
     final bgColor = Color(
       switch ((state, type)) {
-        (HappinessFeedback.like, HappinessFeedback.like) => 0xff1DB93C,
-        (HappinessFeedback.dislike, HappinessFeedback.dislike) => 0xffff4d4d,
-        _ => 0xfff2f7f8,
+        (HappinessFeedback.like, HappinessFeedback.like) => 0xFF52B374,
+        (HappinessFeedback.dislike, HappinessFeedback.dislike) => 0xFFD14733,
+        _ => 0xFFECF6F7,
       },
     );
     final iconAsset = switch (type) {
@@ -34,16 +34,13 @@ class HappinesFeedbackButton extends StatelessWidget {
     };
 
     final iconColor = switch ((state, type)) {
-      /// not chosen
-      (null, _) => const Color(0xff7D9CBD),
-
       /// match
       (HappinessFeedback.like, HappinessFeedback.like) ||
       (HappinessFeedback.dislike, HappinessFeedback.dislike) =>
-        const Color(0xffffffff),
+        Colors.white,
 
       /// not match
-      _ => const Color(0xff7D9CBD),
+      _ => const Color(0xFF4CA5B4),
     };
 
     return Ink(
@@ -55,16 +52,19 @@ class HappinesFeedbackButton extends StatelessWidget {
         splashColor: splashColor,
         onTap: () => onPressed(type),
         borderRadius: const BorderRadius.all(Radius.circular(10)),
-        child: Padding(
+        child: Container(
+          height: 52,
           padding: const EdgeInsets.symmetric(horizontal: 34, vertical: 10),
-          child: SvgPicture.asset(
-            iconAsset,
-            height: 20,
-            width: 20,
-            package: PackageConfig.packageName,
-            colorFilter: ColorFilter.mode(
-              iconColor,
-              BlendMode.srcIn,
+          child: Center(
+            child: SvgPicture.asset(
+              iconAsset,
+              height: 20,
+              width: 20,
+              package: PackageConfig.packageName,
+              colorFilter: ColorFilter.mode(
+                iconColor,
+                BlendMode.srcIn,
+              ),
             ),
           ),
         ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:mapness/features/happiness_map/domain/happiness_feedback.dart';
 import 'package:mapness/features/happiness_map/presentation/close_happiness_button.dart';
 import 'package:mapness/features/happiness_map/presentation/hapiness_tags_grid.dart';
@@ -22,7 +23,7 @@ class HappinessBottomSheet extends ConsumerStatefulWidget {
 class _DashboardState extends ConsumerState<HappinessBottomSheet> {
   late final DraggableScrollableController _draggableScrollableController;
 
-  void onSubmit(WidgetRef ref) {
+  void onSubmit() {
     final happinesManager = ref.read(happinessManagerProvider.notifier);
     happinesManager.submitFeedback();
     widget.onClose();
@@ -106,16 +107,13 @@ class _DashboardState extends ConsumerState<HappinessBottomSheet> {
                           children: [
                             Row(
                               children: [
-                                const Expanded(
+                                Expanded(
                                   child: Text(
                                     "Share your feelings",
-                                    style: TextStyle(
-                                      color: Color(0xFF022224),
-                                      fontSize: 22,
-                                      fontFamily: 'TT Commons',
-                                      fontWeight: FontWeight.w500,
-                                      height: 0.06,
-                                      letterSpacing: 0.22,
+                                    style: GoogleFonts.inter(
+                                      color: const Color(0xFF1D2A36),
+                                      fontSize: 19,
+                                      fontWeight: FontWeight.w600,
                                     ),
                                   ),
                                 ),
@@ -143,13 +141,12 @@ class _DashboardState extends ConsumerState<HappinessBottomSheet> {
                               ],
                             ),
                             if (state.feedback != null) ...[
-                              const SizedBox(height: 16),
+                              const SizedBox(height: 20),
                               const HappinessTagsGrid(),
-                              const SizedBox(height: 16),
+                              const SizedBox(height: 20),
                               const HappinessTextField(),
                               const SizedBox(height: 16),
-                              HappinessSubmitButton(
-                                  onPress: () => onSubmit(ref)),
+                              HappinessSubmitButton(onPress: onSubmit),
                             ]
                           ],
                         ),

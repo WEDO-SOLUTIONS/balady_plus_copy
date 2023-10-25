@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/happiness_map/data/happiness_tags.dart';
-import 'package:mapness/features/happiness_map/domain/happiness_tag.dart';
 import 'package:mapness/features/happiness_map/presentation/happiness_tag_widget.dart';
 
 import '../data/happines_manager.dart';
@@ -15,36 +14,35 @@ class HappinessTagsGrid extends ConsumerWidget {
     final happinessManager = ref.watch(happinessManagerProvider.notifier);
     final happinessState = ref.watch(happinessManagerProvider);
 
-    return Material(
-      child: GridView.count(
-        shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
-        crossAxisCount: 4,
-        crossAxisSpacing: 10,
-        mainAxisSpacing: 10,
-        children: [
-          ...tags.map(
-            (tag) {
-              final isSelected = happinessState.tags.contains(tag.code);
-              return HappinessTagWidget(
-                tag: tag,
-                onPressed: () => isSelected
-                    ? happinessManager.removeTag(tag.code)
-                    : happinessManager.addTag(tag.code),
-                isSelected: isSelected,
-              );
-            },
-          ),
-          HappinessTagWidget(
-            tag: HappinessTag(
-                code: 'UNDEFINED',
-                title: 'Show\nmore',
-                iconAsset: 'assets/icons/svg/ic_ellipsis.svg'),
-            onPressed: () {},
-            isSelected: false,
-          ),
-        ],
-      ),
+    return GridView.count(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      crossAxisCount: 4,
+      crossAxisSpacing: 10,
+      mainAxisSpacing: 10,
+      childAspectRatio: 78 / 90,
+      padding: EdgeInsets.zero,
+      children: [
+        ...tags.map(
+          (tag) {
+            final isSelected = happinessState.tags.contains(tag.code);
+            return HappinessTagWidget(
+              title: tag.title,
+              iconAsset: tag.iconAsset,
+              onPressed: () => isSelected
+                  ? happinessManager.removeTag(tag.code)
+                  : happinessManager.addTag(tag.code),
+              isSelected: isSelected,
+            );
+          },
+        ),
+        HappinessTagWidget(
+          title: 'Show\nmore',
+          iconAsset: 'assets/icons/svg/ic_ellipsis.svg',
+          onPressed: () {},
+          isSelected: false,
+        ),
+      ],
     );
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class HappinessSubmitButton extends ConsumerWidget {
   final VoidCallback onPress;
@@ -18,16 +19,14 @@ class HappinessSubmitButton extends ConsumerWidget {
       child: InkWell(
         borderRadius: BorderRadius.circular(12),
         onTap: onPress,
-        child: const Padding(
-          padding: EdgeInsets.symmetric(vertical: 12, horizontal: 14),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 14),
           child: Text(
             'send feedback',
-            style: TextStyle(
+            style: GoogleFonts.inter(
               color: Colors.white,
-              fontSize: 18,
-              fontFamily: 'TT Commons',
-              fontWeight: FontWeight.w500,
-              letterSpacing: 0.18,
+              fontSize: 16,
+              fontWeight: FontWeight.w600,
             ),
             textAlign: TextAlign.center,
           ),
