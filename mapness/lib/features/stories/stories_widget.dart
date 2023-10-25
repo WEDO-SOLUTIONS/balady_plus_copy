@@ -26,17 +26,20 @@ class _StoriesWidgetState extends ConsumerState<StoriesWidget> {
     );
 
     _overlayEntry = OverlayEntry(
-      builder: (context) => DismissibleTransition(
-        key: _transitionState,
-        onDismiss: () {
-          _overlayEntry?.remove();
-          _overlayEntry = null;
-        },
-        child: storyWidget,
+      builder: (context) => ProviderScope(
+        parent: ProviderScope.containerOf(context),
+        child: DismissibleTransition(
+          key: _transitionState,
+          onDismiss: () {
+            _overlayEntry?.remove();
+            _overlayEntry = null;
+          },
+          child: storyWidget,
+        ),
       ),
     );
 
-    Overlay.of(context).insert(_overlayEntry!);
+    Overlay.of(context, rootOverlay: true).insert(_overlayEntry!);
   }
 
   @override

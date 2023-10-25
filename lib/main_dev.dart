@@ -1,9 +1,9 @@
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart' show runApp;
 import 'package:flutter_bloc/flutter_bloc.dart' show Bloc;
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:localize_and_translate/localize_and_translate.dart'
     show LocalizedApp;
+import 'package:mapness/entry_point.dart';
 
 import './app/core/services/services_exports.dart' show SimpleBlocObserver;
 import './app/core/utils/utils_exports.dart' show EnvType;
@@ -24,5 +24,5 @@ void main() async {
     ),
   );
 
-  runApp(LocalizedApp(child: const App()));
+  runApp(const MapnessProviderScope(child: LocalizedApp(child: App())));
 }

@@ -3,22 +3,20 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'routing/providers/app_router.dart';
 
-class MapnessEntryPoint extends StatelessWidget {
-  final List<Widget> navigationRoutes;
-  const MapnessEntryPoint(
-    this.navigationRoutes, {
-    super.key,
-  });
+class MapnessProviderScope extends StatelessWidget {
+  const MapnessProviderScope({super.key, required this.child});
+
+  final Widget child;
 
   @override
   Widget build(BuildContext context) {
-    return ProviderScope(child: MapnessRoot(navigationRoutes));
+    return ProviderScope(child: child);
   }
 }
 
-class MapnessRoot extends ConsumerWidget {
+class MapnessEntryPoint extends ConsumerWidget {
   final List<Widget> navigationRoutes;
-  const MapnessRoot(this.navigationRoutes, {super.key});
+  const MapnessEntryPoint(this.navigationRoutes, {super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
