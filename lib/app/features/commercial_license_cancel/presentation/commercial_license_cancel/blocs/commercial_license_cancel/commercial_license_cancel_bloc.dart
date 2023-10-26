@@ -79,7 +79,7 @@ class CommercialLicenseCancelBloc
         response: response,
         ex: exception,
       );
-      emitter(CommercialLicenseCancelFailureState(e.toString()));
+      emitter(CommercialLicenseCancelFailureState(exception.toString()));
       return;
     } catch (exception) {
       CommonFunctions.sendEvent(
@@ -87,7 +87,7 @@ class CommercialLicenseCancelBloc
         response: response,
         ex: Exception(exception.toString()),
       );
-      emitter(CommercialLicenseCancelFailureState(e.toString()));
+      emitter(CommercialLicenseCancelFailureState(exception.toString()));
       return;
     }
   }
@@ -113,7 +113,7 @@ class CommercialLicenseCancelBloc
         response: response,
         ex: exception,
       );
-      emitter(CommercialLicenseCancelFailureState(e.toString()));
+      emitter(CommercialLicenseCancelFailureState(exception.toString()));
       return;
     } catch (exception) {
       CommonFunctions.sendEvent(
@@ -121,7 +121,7 @@ class CommercialLicenseCancelBloc
         response: response,
         ex: Exception(exception.toString()),
       );
-      emitter(CommercialLicenseCancelFailureState(e.toString()));
+      emitter(CommercialLicenseCancelFailureState(exception.toString()));
       return;
     }
   }

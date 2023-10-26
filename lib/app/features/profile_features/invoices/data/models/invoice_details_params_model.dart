@@ -4,11 +4,13 @@ class InvoiceDetailsParamsModel extends Equatable {
   final String invoiceId;
   final String? identityTypeId;
   final String? identityNumber;
+  final String? xSourceApp;
 
   const InvoiceDetailsParamsModel({
     required this.invoiceId,
     this.identityTypeId,
     this.identityNumber,
+    this.xSourceApp,
   });
 
   Map<String, dynamic> toMap() {

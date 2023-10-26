@@ -465,7 +465,7 @@ class _CommercialLicenseDetailsBodyState
                                               ),
                                               const SizedBox(height: 16),
                                               CustomTextWidget(
-                                                "permitType".tr(),
+                                                "boardArea".tr(),
                                                 textStyle:
                                                     AppStyle.tagTextStyle,
                                               ),
