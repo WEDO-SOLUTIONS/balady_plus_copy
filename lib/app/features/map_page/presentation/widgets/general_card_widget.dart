@@ -2,6 +2,7 @@ import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/shimmer_effect_widget.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
+import 'package:balady_plus/app/features/map_page/extensions/contact_info_ext.dart';
 import 'package:balady_plus/app/features/map_page/extensions/week_day_ext.dart';
 import 'package:balady_plus/app/features/map_page/extensions/week_time_interval_ext.dart';
 import 'package:dgis_map/library.dart';
@@ -257,7 +258,7 @@ class GeneralMapCardWidget extends StatelessWidget {
                                               )
                                             ]),
                                         const CustomVerticalSpace(height: 16),
-                                        /* Row(
+                                        Row(
                                           children:
                                               dataPoint?.openingHours?.values
                                                       .where((e) =>
@@ -338,7 +339,22 @@ class GeneralMapCardWidget extends StatelessWidget {
                                                       )
                                                       .toList() ??
                                                   [],
-                                        ),*/
+                                        ),
+                                        const SizedBox(
+                                          height: 20,
+                                        ),
+                                        CustomTextWidget(
+                                          dataPoint?.contactInfos
+                                                  .phoneNumber() ??
+                                              "",
+                                          fontColor:
+                                              AppColor.blackModern800Light,
+                                          fontSize: 16,
+                                          textOverflow: TextOverflow.ellipsis,
+                                          fontWeight: AppFontWeight.bold,
+                                          maxLines: 2,
+                                          textAlign: TextAlign.start,
+                                        ),
                                       ],
                                     ),
                                   ),
