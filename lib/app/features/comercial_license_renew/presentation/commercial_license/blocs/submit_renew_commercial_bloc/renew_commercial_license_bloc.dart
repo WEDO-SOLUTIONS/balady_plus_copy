@@ -139,6 +139,7 @@ class RenewCommercialLicenseBloc
     }, (r) {
       print(r);
       emitter(state.copyWith(status: BlocStatus.success, info: r));
+      setUpData();
       setUpDraft();
     });
   }
@@ -493,6 +494,13 @@ class RenewCommercialLicenseBloc
 
       add(const GoToNextPageEvent());
     });
+  }
+
+  void setUpData() {
+    if (state.cleanOptionBALADIASADAD())
+      emit(state.copyWith(
+          crContractCleanRenewOptions:
+              Nullable(CRContractCleanRenewOptions.payAll)));
   }
 
   void setUpDraft() {
