@@ -535,7 +535,16 @@ class RenewCommercialLicenseBloc
             )), (success) {
       emit(state.copyWith(status: BlocStatus.success));
 
-      bool Function(Route<dynamic>) predicate =
+      NavigationService.navigatorKey.currentState!.popAndPushNamed(
+        RouteName.submitApplicationSuccessfullyCancel,
+        arguments: (
+          "",
+          success.data?.result,
+          state.renewRequestDetails?.calculatorResponse?.totalCost
+        ),
+      );
+    });
+    /* bool Function(Route<dynamic>) predicate =
           ModalRoute.withName(RouteName.bottomNavigation);
       NavigationService.navigatorKey.currentState!.pushNamedAndRemoveUntil(
           RouteName.successRoute, predicate,
@@ -543,7 +552,9 @@ class RenewCommercialLicenseBloc
               type: PAGE_TYPE.renewCommercial,
               fromHomePage: false,
               thanksMessage: success.data?.responseMessage));
-    });
+   
+
+    */
   }
 /*
   void getInvestmentContracts() async {

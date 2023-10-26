@@ -1,6 +1,7 @@
 import 'package:dartz/dartz.dart';
 import '../../../../core/errors/errors_exports.dart';
 import '../../../_shared_feature_/shared_feature_exports.dart';
+import '../../../commercial_license_cancel/data/models/submit_response.dart';
 import '../../data/models/renew_request_details.dart';
 import '../../renew_commercial_license_exports.dart';
 import '../entities/cr_attachment_response.dart';
@@ -42,6 +43,6 @@ abstract class RenewCrRepository {
   Future<Either<Failure, RenewRequestInfo>> saveRenewRequestInfo(
       {required SaveRenewRequest? params});
 
-  Future<Either<Failure, ResponseBodyModel<dynamic>>> submitRenew(
+  Future<Either<Failure, ResponseBodyModel<SubmitResponse>>> submitRenew(
       {required int params});
 }

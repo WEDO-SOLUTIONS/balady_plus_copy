@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/features/comercial_license_renew/presentation/commercial_license/screens/submit_application_successfully_renew.dart';
 import 'package:balady_plus/app/features/comercial_license_renew/renew_commercial_license_exports.dart'
     show RenewStartService, RenewCommercialLicenseScreen;
 import 'package:balady_plus/app/features/commercial_license_cancel/presentation/apply_cancel/screens/apply_cancel_screen.dart';
@@ -556,6 +557,9 @@ class Routes {
 
         RouteName.renewCommercialLicenseSubmitForm: (context) =>
             const RenewCommercialLicenseScreen(),
+
+        RouteName.submitApplicationSuccessfullyRenew: (context) =>
+            const SubmitApplicationSuccessfullyRenew(),
       };
 }
 
