@@ -201,6 +201,10 @@ class RouteName {
 
   static const renewCommercialLicenseSubmitForm =
       '/renewCommercialLicenseSubmitForm';
+
+  static const submitApplicationSuccessfullyRenew =
+      '/submitApplicationSuccessfullyRenew';
+      
 }
 
 class EtmamRoutesNames {

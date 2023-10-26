@@ -9,6 +9,7 @@ import '../../../../core/errors/errors_exports.dart';
 import '../../../../core/services/local/helpers.dart';
 import '../../../../core/services/services_exports.dart';
 import '../../../_shared_feature_/shared_feature_exports.dart';
+import '../../../commercial_license_cancel/data/models/submit_response.dart';
 import '../../domain/entities/save_renew_request.dart';
 import '../../renew_commercial_license_exports.dart';
 import '../../domain/entities/cr_submit_request.dart';
@@ -45,7 +46,7 @@ abstract class RenewCrRemoteDataSource {
 
   Future<RenewRequestDetails> getRequestDetails({required int params});
 
-  Future<ResponseBodyModel<dynamic>> submitRenew({required int params});
+  Future<ResponseBodyModel<SubmitResponse>> submitRenew({required int params});
 
   Future<DeedInfoResponseModel> getDeedInfo({DeedInfoRequest? params});
 
@@ -413,7 +414,8 @@ class RenewCrRemoteDataSourceImpl extends RenewCrRemoteDataSource {
   }
 
   @override
-  Future<ResponseBodyModel<dynamic>> submitRenew({required int params}) async {
+  Future<ResponseBodyModel<SubmitResponse>> submitRenew(
+      {required int params}) async {
     var response;
 
     try {
@@ -421,8 +423,12 @@ class RenewCrRemoteDataSourceImpl extends RenewCrRemoteDataSource {
         params,
       ));
 
-      final decodedResponse =
-          ResponseBodyModel<dynamic>.fromMap(response.data, parsedResult: null);
+      var data = response.data["data"]["result"];
+
+      var parsedResult = data != null ? SubmitResponse.fromJson(data) : null;
+      final decodedResponse = ResponseBodyModel<SubmitResponse>.fromMap(
+          response.data,
+          parsedResult: parsedResult);
 
       return decodedResponse.toFuture();
     } on DioError catch (error) {
