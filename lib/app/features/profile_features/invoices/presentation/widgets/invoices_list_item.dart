@@ -100,6 +100,7 @@ class InvoicesListItem extends StatelessWidget {
                     invoice.id,
                     CommonProperties.selectedDelegator?.crNumber,
                     CommonProperties.selectedDelegator?.crType,
+                    null,
                   ),
                 );
                 return;
