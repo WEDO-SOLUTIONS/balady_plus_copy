@@ -255,6 +255,7 @@ class UsageSubmissionCompliance extends StatelessWidget {
                   ),
                   ListView.builder(
                       shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
                       itemCount: state.requestDetails?.locationResponseInfoDto
                               ?.landsInfo?.landsInfo?.length ??
                           0,
@@ -279,6 +280,7 @@ class UsageSubmissionCompliance extends StatelessWidget {
                                         ?.landsInfo?[index]
                                         .landArea ??
                                     ""),
+                            const CustomVerticalSpace(height: 16),
                           ],
                         );
                       })

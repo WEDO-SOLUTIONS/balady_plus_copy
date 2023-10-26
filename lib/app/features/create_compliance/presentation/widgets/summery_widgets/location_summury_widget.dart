@@ -76,6 +76,7 @@ class LocationSummuryWidget extends StatelessWidget {
                       CustomVerticalSpace(height: 16),
                       ListView.builder(
                           shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
                           itemCount: state
                                   .requestDetails
                                   ?.locationResponseInfoDto
@@ -95,6 +96,7 @@ class LocationSummuryWidget extends StatelessWidget {
                                             ?.landsInfo?[index]
                                             .landNumber ??
                                         ""),
+                                const CustomVerticalSpace(height: 16),
                                 FieldData(
                                     title: "مساحة الارض".tr(),
                                     subTitle: state
@@ -104,6 +106,7 @@ class LocationSummuryWidget extends StatelessWidget {
                                             ?.landsInfo?[index]
                                             .landArea ??
                                         ""),
+                                const CustomVerticalSpace(height: 16),
                               ],
                             );
                           }),
