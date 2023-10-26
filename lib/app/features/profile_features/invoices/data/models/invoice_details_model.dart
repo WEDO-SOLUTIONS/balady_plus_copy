@@ -94,20 +94,20 @@ class DetailModel extends Detail {
     super.feeId,
     super.feeName,
     super.amount,
-    super.municipalityId,
-    super.municipalityName,
-    super.subMunicipalityId,
-    super.subMunicipalityName,
+    // super.municipalityId,
+    // super.municipalityName,
+    // super.subMunicipalityId,
+    // super.subMunicipalityName,
   });
 
   factory DetailModel.fromJson(Map<String, dynamic> json) => DetailModel(
         feeId: json["feeId"],
         feeName: json["feeName"],
         amount: json["amount"]?.toDouble(),
-        municipalityId: json["municipalityId"],
-        municipalityName: json["municipalityName"],
-        subMunicipalityId: json["subMunicipalityId"],
-        subMunicipalityName: json["subMunicipalityName"],
+        // municipalityId: json["municipalityId"],
+        // municipalityName: json["municipalityName"],
+        // subMunicipalityId: json["subMunicipalityId"],
+        // subMunicipalityName: json["subMunicipalityName"],
       );
 }
 
