@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../../core/utils/utils_exports.dart'
     show BlocRequestStatus, CommonProperties;
@@ -36,7 +37,7 @@ class InvoiceDetailsCubit extends Cubit<InvoiceDetailsState> {
       invoiceId: id,
       identityNumber: identityNumber,
       identityTypeId: identityTypeId,
-      xSourceApp:xSourceApp,
+      xSourceApp: xSourceApp,
     );
     final failureOrSuccess = await getInvoiceDetails(params);
     failureOrSuccess.fold(
@@ -44,7 +45,9 @@ class InvoiceDetailsCubit extends Cubit<InvoiceDetailsState> {
         emit(
           state.copyWith(
             status: BlocRequestStatus.submissionGetFailure,
-            errorMessage: failure.toString(),
+            errorMessage: xSourceApp == null
+                ? failure.toString()
+                : 'errorInternalServerError'.tr(),
           ),
         );
       },

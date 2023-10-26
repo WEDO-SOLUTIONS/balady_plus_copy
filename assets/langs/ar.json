@@ -3353,7 +3353,10 @@
 
 
   "application_no_has_been_submitted": "تم تقديم الطلب رقم",
-  "and_issue_invoice_service_amount": "واصدار الفاتورة الخاصة بالخدمة  بمبلغ"
+  "and_issue_invoice_service_amount": "واصدار الفاتورة الخاصة بالخدمة  بمبلغ",
+
+
+  "application_no_has_been_submitted_two": "سيتم إشعاركم برسالة نصية أخرى تحتوي على تفاصيل الفاتورة وآلية السداد ، مع تحيات وزارة الشؤون البلدية والقروية والإسكان"
 
 
 }
