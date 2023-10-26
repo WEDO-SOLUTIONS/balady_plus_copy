@@ -116,7 +116,8 @@ class RenewCrRemoteDataSourceImpl extends RenewCrRemoteDataSource {
     var response;
 
     try {
-      response = await webService.dio.get(ApiUrl.deedInfo(params!.hashCode));
+      response =
+          await webService.dio.get(ApiUrl.deedInfo(), data: params!.toMap());
 
       var data = response.data["data"]["result"];
 

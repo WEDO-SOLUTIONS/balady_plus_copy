@@ -270,8 +270,7 @@ class ApiUrl {
 
   static String ejarInfo = "v1/balady-commercial-services/ejar/tenancycontract";
 
-  static String deedInfo(int requestId) =>
-      "v1/balady-commercial-services/ejar/tenancycontract";
+  static String deedInfo() => "v1/balady-commercial-services/gsb/deed-info";
 
   static String crIssueAttachments(int requestId) =>
       "v1/balady-commercial-services/request/$requestId/attachments";

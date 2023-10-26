@@ -1,11 +1,11 @@
-/*import 'package:dartz/dartz.dart' show Either;
+import 'package:dartz/dartz.dart' show Either;
 import '../../../../core/errors/failures.dart';
 import '../../../../core/services/local/use_case.dart';
 import '../../renew_commercial_license_exports.dart'
-    show DeedInfoResponse, DeedInfoRequest, CrRepository;
+    show DeedInfoResponse, DeedInfoRequest, RenewCrRepository;
 
 class GetDeedInfo extends UseCase<DeedInfoResponse, DeedInfoRequest> {
-  final CrRepository repository;
+  final RenewCrRepository repository;
 
   GetDeedInfo({required this.repository});
   @override
@@ -13,4 +13,3 @@ class GetDeedInfo extends UseCase<DeedInfoResponse, DeedInfoRequest> {
     return await repository.getDeedInfo(params);
   }
 }
-*/

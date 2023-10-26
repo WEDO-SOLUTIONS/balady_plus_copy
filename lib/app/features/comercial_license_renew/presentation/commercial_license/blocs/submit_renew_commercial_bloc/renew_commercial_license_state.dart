@@ -39,7 +39,10 @@ class RenewCommercialLicenseState extends Equatable {
   final InvestmentContractItem? selectedInvestmentContract;
   final String? cleanContractEndDate;
   final EjarInfoRequest? ejarInfoRequst;
+  final DeedInfoRequest? deedInfoRequst;
+
   final bool? ejarVerified;
+  final bool? deedVerified;
   final String? investmentContractNumber;
 
   final String? salamaBillNumber;
@@ -91,7 +94,9 @@ class RenewCommercialLicenseState extends Equatable {
       this.salamaReportNumber,
       this.attachmentResponse,
       this.attachments,
-      this.renewRequestDetails});
+      this.renewRequestDetails,
+      this.deedVerified,
+      this.deedInfoRequst});
 
   @override
   List<Object?> get props => [
@@ -131,7 +136,9 @@ class RenewCommercialLicenseState extends Equatable {
         attachments,
         attachmentResponse,
         renewRequestDetails,
-        requestDetailsStatus
+        requestDetailsStatus,
+        deedVerified,
+        deedInfoRequst,
       ];
 
   RenewCommercialLicenseState copyWith(
@@ -165,13 +172,15 @@ class RenewCommercialLicenseState extends Equatable {
       Nullable<CRContractCleanRenewOptions?>? crContractCleanRenewOptions,
       Nullable<EjarInfoRequest?>? ejarInfoRequst,
       Nullable<bool?>? ejarVerified,
+      Nullable<bool?>? deedVerified,
       Nullable<String?>? investmentContractNumber,
       final String? salamaBillNumber,
       final String? salamaPermitNumber,
       final String? salamaReportNumber,
       CrAttachmentResponse? attachmentResponse,
       List<AttachmentData>? attachments,
-      final RenewRequestDetails? renewRequestDetails}) {
+      final RenewRequestDetails? renewRequestDetails,
+      final DeedInfoRequest? deedInfoRequst}) {
     return RenewCommercialLicenseState(
         status: status ?? this.status,
         renewRequestDetails: renewRequestDetails ?? this.renewRequestDetails,
@@ -238,8 +247,10 @@ class RenewCommercialLicenseState extends Equatable {
         salamaReportNumber: salamaReportNumber ?? this.salamaReportNumber,
         attachments: attachments ?? this.attachments,
         attachmentResponse: attachmentResponse ?? this.attachmentResponse,
-        requestDetailsStatus:
-            requestDetailsStatus ?? this.requestDetailsStatus);
+        requestDetailsStatus: requestDetailsStatus ?? this.requestDetailsStatus,
+        deedVerified:
+            deedVerified == null ? this.deedVerified : deedVerified.value,
+        deedInfoRequst: deedInfoRequst ?? this.deedInfoRequst);
   }
 
   bool showSalamaReport() {
