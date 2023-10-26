@@ -424,16 +424,19 @@ class _CommercialRenewStep1State extends State<CommercialRenewStep1> {
                       groupName: 'رسوم وعقود النظافة',
                       currentItem: state.crContractCleanRenewOptions,
                       items: [
-                        RadioItem<CRContractCleanRenewOptions>(
-                            radioValue: CRContractCleanRenewOptions.service,
-                            radioText:
-                                "التعاقد مع شركات النظافة المؤهلة من الأمانة"),
-                        RadioItem<CRContractCleanRenewOptions>(
-                            radioValue: CRContractCleanRenewOptions.payAll,
-                            radioText: "دفع رسوم جميع النفايات"),
-                        RadioItem<CRContractCleanRenewOptions>(
-                            radioValue: CRContractCleanRenewOptions.attach,
-                            radioText: "عقد نظافة مرفق"),
+                        if (state.cleanContractshowService())
+                          RadioItem<CRContractCleanRenewOptions>(
+                              radioValue: CRContractCleanRenewOptions.service,
+                              radioText:
+                                  "التعاقد مع شركات النظافة المؤهلة من الأمانة"),
+                        if (state.cleanContractshowPayAll())
+                          RadioItem<CRContractCleanRenewOptions>(
+                              radioValue: CRContractCleanRenewOptions.payAll,
+                              radioText: "دفع رسوم جميع النفايات"),
+                        if (state.cleanContractshowAttach())
+                          RadioItem<CRContractCleanRenewOptions>(
+                              radioValue: CRContractCleanRenewOptions.attach,
+                              radioText: "عقد نظافة مرفق"),
                       ],
                       onChanged: (value) {
                         context

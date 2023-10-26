@@ -484,7 +484,7 @@ class CrRemoteDataSourceImpl extends CrRemoteDataSource {
     var response;
 
     try {
-      response = await webService.dio.get(ApiUrl.deedInfo(params!.hashCode));
+      response = await webService.dio.get(ApiUrl.deedInfo());
 
       var data = response.data["data"]["result"];
 

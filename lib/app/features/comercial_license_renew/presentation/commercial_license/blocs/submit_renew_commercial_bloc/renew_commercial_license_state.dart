@@ -327,4 +327,51 @@ class RenewCommercialLicenseState extends Equatable {
 
     return false;
   }
+
+  bool cleanOptionBALADIASADAD() {
+    return info?.cleanContractResponseDto?.cleanContractOptions?.cleanOption ==
+        "BALADIA_SADAD";
+  }
+
+  bool cleanOptionCLEANCONTRACT() {
+    return info?.cleanContractResponseDto?.cleanContractOptions?.cleanOption ==
+        "CLEAN_CONTRACT";
+  }
+
+  bool cleanOptionOPTIONAL() {
+    return info?.cleanContractResponseDto?.cleanContractOptions?.cleanOption ==
+        "OPTIONAL";
+  }
+
+  bool cleanTypeAttach() {
+    return info
+            ?.cleanContractResponseDto?.cleanContractOptions?.contractOption ==
+        "ATTACH";
+  }
+
+  bool cleanTypeService() {
+    return info
+            ?.cleanContractResponseDto?.cleanContractOptions?.contractOption ==
+        "SERVICE";
+  }
+
+  bool cleanTypeATTACHSERVICE() {
+    return info
+            ?.cleanContractResponseDto?.cleanContractOptions?.contractOption ==
+        "ATTACH,SERVICE";
+  }
+
+  bool cleanContractshowPayAll() {
+    return cleanOptionBALADIASADAD() || cleanOptionOPTIONAL();
+  }
+
+  bool cleanContractshowAttach() {
+    return (cleanTypeATTACHSERVICE() || cleanTypeAttach()) &
+        !cleanOptionBALADIASADAD();
+  }
+
+  bool cleanContractshowService() {
+    return (cleanTypeATTACHSERVICE() || cleanTypeService()) &
+        !cleanOptionBALADIASADAD();
+  }
 }
