@@ -1,6 +1,8 @@
+import 'package:balady_plus/app/core/utils/constants/remote_config.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports.dart';
 import 'package:balady_plus/app/features/vd/presentation/widgets/summery_widgets/field_data.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
@@ -741,12 +743,44 @@ class _NoLicenseSection extends State<NoLicenseSection> {
               textAlign: TextAlign.start,
             ),
             Constants.verticalSpaceSmall,
-            CustomTextWidget(
-              Helpers.translatingWord("no_license_issue_error_subtitle"),
-              fontColor: AppColor.black400,
-              fontSize: 13,
-              fontWeight: AppFontWeight.medium,
-              textAlign: TextAlign.start,
+            RichText(
+              text: TextSpan(
+                children: [
+                  TextSpan(
+                      text: "no_license_issue_error_subtitle".tr(),
+                      style: TextStyle(
+                        color: const Color.fromRGBO(153, 153, 153, 1),
+                        fontWeight: FontWeight.w500,
+                        fontFamily: GeneralKey.appFontType,
+                        fontSize: 13,
+                        height: 1.6,
+                      )),
+                  TextSpan(
+                    text: " " + "click_here".tr() + " ",
+                    style: TextStyle(
+                      color: AppColor.primary900Light,
+                      fontFamily: GeneralKey.appFontType,
+                      fontSize: 13,
+                      fontWeight: FontWeight.w500,
+                      decoration: TextDecoration.none,
+                    ),
+                    recognizer: TapGestureRecognizer()
+                      ..onTap = () {
+                        CommonFunctions.openBaladyWebView(
+                            "${RemoteConfig.webSiteUrl}/ar/services/11010");
+                      },
+                  ),
+                  TextSpan(
+                      text: "no_license_issue_error_subtitle2".tr(),
+                      style: TextStyle(
+                        fontFamily: GeneralKey.appFontType,
+                        color: const Color.fromRGBO(153, 153, 153, 1),
+                        fontWeight: FontWeight.w500,
+                        fontSize: 13,
+                        height: 1.6,
+                      )),
+                ],
+              ),
             ),
           ],
         ),
