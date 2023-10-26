@@ -2,6 +2,7 @@ import 'package:balady_plus/app/core/utils/constants/paths/image_paths.dart';
 import 'package:balady_plus/app/core/utils/enums/app_font_weights.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/buttons/elevated_button_widgets.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
+import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/reload_widget.dart';
 import 'package:balady_plus/app/features/home_page/home_exports.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -218,7 +219,18 @@ class _InvoiceDetailBodyState extends State<InvoiceDetailBody> {
                 ),
               );
             }
-            return Container();
+            return Center(
+              child: ReloadWidget(
+                onTab: () {
+                  context.read<InvoiceDetailsCubit>().getInvoiceDetailsById(
+                    widget.invoiceId,
+                    widget.crNumber,
+                    widget.crType,
+                    widget.xSourceApp,
+                  );
+                },
+              ),
+            );
           },
         ),
       ),

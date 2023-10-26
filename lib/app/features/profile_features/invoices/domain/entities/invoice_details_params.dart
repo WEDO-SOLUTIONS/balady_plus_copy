@@ -4,5 +4,5 @@ class InvoiceDetailsParams extends InvoiceDetailsParamsModel {
   const InvoiceDetailsParams(
       {required super.invoiceId,
       super.identityNumber,
-      super.identityTypeId, String? xSourceApp,});
+      super.identityTypeId, super.xSourceApp,});
 }
