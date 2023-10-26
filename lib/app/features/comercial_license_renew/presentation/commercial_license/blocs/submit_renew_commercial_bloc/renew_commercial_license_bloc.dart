@@ -18,6 +18,7 @@ import '../../../../domain/entities/cr_attachment_response.dart';
 import '../../../../domain/entities/save_renew_request.dart';
 import '../../../../domain/use_cases/get_clean_contracts.dart';
 import '../../../../domain/use_cases/get_cr_Attacments.dart';
+import '../../../../domain/use_cases/get_deed_info.dart';
 import '../../../../domain/use_cases/get_ejar_info.dart';
 import '../../../../domain/use_cases/get_info_request.dart';
 import '../../../../domain/use_cases/get_renew_request_details.dart';
@@ -45,6 +46,7 @@ class RenewCommercialLicenseBloc
   final SubmitRenewAttachments _submitRenewAttachments;
   final GetRenewRequestDetails _renewRequestDetails;
   final SubmitRenew _submitRenew;
+  final GetDeedInfo _getDeedInfo;
 
   RenewCommercialLicenseBloc({required int requestId})
       : _getRenewYears = GetRenewYears(repository: sl()),
@@ -57,6 +59,7 @@ class RenewCommercialLicenseBloc
         _submitRenewAttachments = SubmitRenewAttachments(repository: sl()),
         _renewRequestDetails = GetRenewRequestDetails(repository: sl()),
         _submitRenew = SubmitRenew(repository: sl()),
+        _getDeedInfo = GetDeedInfo(repository: sl()),
         super(RenewCommercialLicenseState(requestId: requestId)) {
     on<GoToNextPageEvent>(_goToNextPageHandler);
     on<GoToPreviousPageEvent>(_goToPreviousPageHandler);
@@ -147,6 +150,23 @@ class RenewCommercialLicenseBloc
 
   Future<void> updateInvestmentContractNumber(String? value) async {
     emit(state.copyWith(investmentContractNumber: Nullable(value)));
+  }
+
+  Future<void> getDeedInfoHandler() async {
+    emit(state.copyWith(status: BlocStatus.loading, errorMessage: ""));
+    final failOrSuccess =
+        await _getDeedInfo(state.deedInfoRequst ?? DeedInfoRequest());
+
+    failOrSuccess.fold((l) {
+      emit(state.copyWith(
+          status: BlocStatus.failure,
+          ejarVerified: Nullable(false),
+          errorMessage: (l as ServerFailure).errorMessage));
+    }, (r) {
+      print(r);
+      emit(state.copyWith(
+          status: BlocStatus.success, deedVerified: Nullable(true)));
+    });
   }
 
   Future<void> getEjarInfoHandler() async {
@@ -256,6 +276,23 @@ class RenewCommercialLicenseBloc
         selectedInvestmentContract: Nullable(item), errorMessage: ""));
   }
 
+  void updateDeedInfo({String? ownerId, String? deedNumber}) {
+    state.copyWith(status: BlocStatus.loading, errorMessage: "");
+
+    DeedInfoRequest deedInfoRequst = state.deedInfoRequst ?? DeedInfoRequest();
+
+    deedInfoRequst = deedInfoRequst.copyWith(
+      ownerId: ownerId,
+      deedNumber: deedNumber,
+    );
+
+    emit(state.copyWith(
+        status: BlocStatus.success,
+        deedInfoRequst: deedInfoRequst,
+        deedVerified: Nullable(false),
+        errorMessage: ""));
+  }
+
   void updateTenancyInfo(
       {String? id, String? tenancyContractNumber, String? versionNumber}) {
     state.copyWith(status: BlocStatus.loading, errorMessage: "");
@@ -332,6 +369,7 @@ class RenewCommercialLicenseBloc
     final response = await _saveRenewRequestInfo(SaveRenewRequest(
         requestId: requestId,
         citizenPledgedToClean: citizenPledgedToClean,
+        deedInfoRequest: state.deedInfoRequst,
         cleanContractEndDate:
             CommonFunctions.padHijriDate(state.cleanContractEndDate),
         cleanContractNumber:

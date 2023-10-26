@@ -13,6 +13,7 @@ class SaveRenewRequest extends Equatable {
   final String? contractNumber;
   final String? contractOption;
   final String? contractType;
+  final DeedInfoRequest? deedInfoRequest;
 
   final EjarInfoRequest? ejarContractInfo;
   final String? investmentContractNumber;
@@ -31,11 +32,11 @@ class SaveRenewRequest extends Equatable {
           "contractNumber": contractNumber,
           "contractOption": contractOption,
           "contractType": contractType,
-          /* "deedInfo": {
-            "DeedNumber": "string",
-            "OwnerId": "string",
-            "OwnerIdType": "string"
-        },*/
+          "deedInfo": {
+            "DeedNumber": deedInfoRequest?.deedNumber,
+            "OwnerId": deedInfoRequest?.ownerId,
+            "OwnerIdType": "CR"
+          },
           if (ejarContractInfo != null &&
               ejarContractInfo?.tenancyContractNumber != null)
             "ejarContractInfo": ejarContractInfo?.toMap(),
@@ -52,22 +53,23 @@ class SaveRenewRequest extends Equatable {
         ejarContractInfo,
         sadadPeriod,
         salamaBillNumber,
-        salamaReportNumber
+        salamaReportNumber,
+        deedInfoRequest
       ];
-  SaveRenewRequest({
-    this.requestId,
-    this.citizenPledgedToClean,
-    this.cleanContractEndDate,
-    this.cleanContractNumber,
-    this.contractDate,
-    this.contractNumber,
-    this.contractOption,
-    this.contractType,
-    this.ejarContractInfo,
-    this.investmentContractNumber,
-    this.sadadPeriod,
-    this.salamaBillNumber,
-    this.salamaReportNumber,
-    this.salamaPermitNumber,
-  });
+  SaveRenewRequest(
+      {this.requestId,
+      this.citizenPledgedToClean,
+      this.cleanContractEndDate,
+      this.cleanContractNumber,
+      this.contractDate,
+      this.contractNumber,
+      this.contractOption,
+      this.contractType,
+      this.ejarContractInfo,
+      this.investmentContractNumber,
+      this.sadadPeriod,
+      this.salamaBillNumber,
+      this.salamaReportNumber,
+      this.salamaPermitNumber,
+      this.deedInfoRequest});
 }

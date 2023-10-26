@@ -190,14 +190,48 @@ class _CommercialRenewStep1State extends State<CommercialRenewStep1> {
                         onTextChanged: (value) {
                           context
                               .read<RenewCommercialLicenseBloc>()
-                              .updateContractNumber(value ?? "");
+                              .updateDeedInfo(deedNumber: value);
                         },
                       ),
+                      CustomTextFieldWidget(
+                        label: "رقم الهوية",
+                        hintText: "رقم الهوية",
+                        isDigitsOnly: true,
+                        keyboardType: TextInputType.number,
+                        bottomMargin: 24,
+                        initialValue: state.contractNumber,
+                        onChanged: (value) {
+                          context
+                              .read<RenewCommercialLicenseBloc>()
+                              .updateDeedInfo(ownerId: value);
+                        },
+                      ),
+                      CustomTextFieldWidget(
+                        label: "نوع الهوية",
+                        hintText: "نوع الهوية",
+                        isDigitsOnly: true,
+                        keyboardType: TextInputType.number,
+                        bottomMargin: 24,
+                        enabled: false,
+                        initialValue: "سجل تجاري",
+                        onChanged: (value) {},
+                      ),
+                      ElevatedButtonWidget.verify(
+                          text: (state.deedVerified ?? false)
+                              ? "done_check".tr()
+                              : "verify".tr(),
+                          onPressed: () {
+                            context
+                                .read<RenewCommercialLicenseBloc>()
+                                .getDeedInfoHandler();
+                          }),
+                      const CustomVerticalSpace(
+                        height: 16,
+                      )
                     ],
                     if (state.crSubmitterType == CRSubmitterType.rental)
                       HorizontalRadioGroup(
                         groupName: 'نوع العقد',
-                        currentItem: state.crContractType,
                         items: [
                           RadioItem<CRContractType>(
                               radioText: "عقد الإيجار",
@@ -235,7 +269,8 @@ class _CommercialRenewStep1State extends State<CommercialRenewStep1> {
                       ),
                     if (state.crContractType == CRContractType.ejar &&
                         state.crSubmitterType == CRSubmitterType.rental &&
-                        state.crContractOption == CRContractOption.attach) ...[
+                        state.crContractOption == CRContractOption.attach &&
+                        state.showAttachEjar()) ...[
                       CustomTextFieldWidget(
                         label: "رقم عقد الايجار",
                         hintText: "رقم عقد الايجار",
@@ -261,7 +296,8 @@ class _CommercialRenewStep1State extends State<CommercialRenewStep1> {
                     ],
                     if (state.crContractType == CRContractType.ejar &&
                         state.crSubmitterType == CRSubmitterType.rental &&
-                        state.crContractOption == CRContractOption.service) ...[
+                        state.crContractOption == CRContractOption.service &&
+                        state.showServiceEjar()) ...[
                       CustomTextFieldWidget(
                         label: "رقم العقد",
                         hintText: "رقم العقد",
@@ -338,7 +374,8 @@ class _CommercialRenewStep1State extends State<CommercialRenewStep1> {
                       ),
                     if (state.crContractType == CRContractType.invest &&
                         state.crSubmitterType == CRSubmitterType.rental &&
-                        state.crContractOption == CRContractOption.service) ...[
+                        state.crContractOption == CRContractOption.service &&
+                        state.showServiceInvest()) ...[
                       CustomTextFieldWidget(
                         label: "رقم عقد الإستثمار",
                         hintText: "رقم عقد الإستثمار",
