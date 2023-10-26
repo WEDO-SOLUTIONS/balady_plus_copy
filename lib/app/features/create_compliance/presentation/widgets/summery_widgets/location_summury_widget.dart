@@ -74,17 +74,39 @@ class LocationSummuryWidget extends StatelessWidget {
                                   ?.locationResponseInfoDto?.streetName ??
                               ""),
                       CustomVerticalSpace(height: 16),
-                      FieldData(
-                          title: "رقم قطعة الأرض".tr(),
-                          subTitle: state.requestDetails
-                                  ?.locationResponseInfoDto?.landNumber ??
-                              ""),
-                      CustomVerticalSpace(height: 16),
-                      FieldData(
-                          title: "مساحة الارض".tr(),
-                          subTitle: state.requestDetails
-                                  ?.locationResponseInfoDto?.landArea ??
-                              ""),
+                      ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: state
+                                  .requestDetails
+                                  ?.locationResponseInfoDto
+                                  ?.landsInfo
+                                  ?.landsInfo
+                                  ?.length ??
+                              0,
+                          itemBuilder: (ctx, index) {
+                            return Column(
+                              children: [
+                                FieldData(
+                                    title: "رقم قطعة الأرض".tr(),
+                                    subTitle: state
+                                            .requestDetails
+                                            ?.locationResponseInfoDto
+                                            ?.landsInfo
+                                            ?.landsInfo?[index]
+                                            .landNumber ??
+                                        ""),
+                                FieldData(
+                                    title: "مساحة الارض".tr(),
+                                    subTitle: state
+                                            .requestDetails
+                                            ?.locationResponseInfoDto
+                                            ?.landsInfo
+                                            ?.landsInfo?[index]
+                                            .landArea ??
+                                        ""),
+                              ],
+                            );
+                          }),
                       CustomVerticalSpace(height: 16),
                       /* FieldData(
                           title: "الاحداثي السيني".tr(),

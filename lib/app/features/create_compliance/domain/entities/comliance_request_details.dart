@@ -167,88 +167,35 @@ class LocationResponseInfoDto {
   final dynamic mapName;
   final String? x;
   final String? y;
-  final String? landNumber;
-  final String? landArea;
+  //final String? landNumber;
+  //final String? landArea;
   final dynamic isLocationCorrect;
   final dynamic guid;
+  final LandsInfo? landsInfo;
 
-  LocationResponseInfoDto({
-    this.municipalityId,
-    this.amanahId,
-    this.municipalityName,
-    this.subMunicipalityId,
-    this.baladiaId,
-    this.subMunicipalityName,
-    this.districtId,
-    this.districtName,
-    this.cityId,
-    this.cityName,
-    this.streetId,
-    this.streetName,
-    this.mapNumber,
-    this.mapName,
-    this.x,
-    this.y,
-    this.landNumber,
-    this.landArea,
-    this.isLocationCorrect,
-    this.guid,
-  });
+  LocationResponseInfoDto(
+      {this.municipalityId,
+      this.amanahId,
+      this.municipalityName,
+      this.subMunicipalityId,
+      this.baladiaId,
+      this.subMunicipalityName,
+      this.districtId,
+      this.districtName,
+      this.cityId,
+      this.cityName,
+      this.streetId,
+      this.streetName,
+      this.mapNumber,
+      this.mapName,
+      this.x,
+      this.y,
+      // this.landNumber,
+      //  this.landArea,
+      this.isLocationCorrect,
+      this.guid,
+      this.landsInfo});
 
-  factory LocationResponseInfoDto.fromJson(Map<String, dynamic> json) =>
-      LocationResponseInfoDto(
-        municipalityId: json["municipalityId"],
-        amanahId: json["amanahId"],
-        municipalityName: json["municipalityName"],
-        subMunicipalityId: json["subMunicipalityId"],
-        baladiaId: json["baladiaId"],
-        subMunicipalityName: json["subMunicipalityName"],
-        districtId: json["districtId"],
-        districtName: json["districtName"],
-        cityId: json["cityId"],
-        cityName: json["cityName"],
-        streetId: json["streetId"],
-        streetName: json["streetName"],
-        mapNumber: json["mapNumber"],
-        mapName: json["mapName"],
-        x: json["x"],
-        y: json["y"],
-        landNumber: json["landsInfo"] != null
-            ? json["landsInfo"].length > 0
-                ? (json["landsInfo"][0]!["landNumber"]).toString()
-                : null
-            : null,
-        landArea: json["landsInfo"] != null
-            ? json["landsInfo"].length > 0
-                ? (json["landsInfo"][0]!["landArea"]).toString()
-                : null
-            : null,
-        isLocationCorrect: json["isLocationCorrect"],
-        guid: json["guid"],
-      );
-
-  Map<String, dynamic> toJson() => {
-        "municipalityId": municipalityId,
-        "amanahId": amanahId,
-        "municipalityName": municipalityName,
-        "subMunicipalityId": subMunicipalityId,
-        "baladiaId": baladiaId,
-        "subMunicipalityName": subMunicipalityName,
-        "districtId": districtId,
-        "districtName": districtName,
-        "cityId": cityId,
-        "cityName": cityName,
-        "streetId": streetId,
-        "streetName": streetName,
-        "mapNumber": mapNumber,
-        "mapName": mapName,
-        "x": x,
-        "y": y,
-        "landNumber": landNumber,
-        "landArea": landArea,
-        "isLocationCorrect": isLocationCorrect,
-        "guid": guid,
-      };
   String getFullAddress({
     bool includeStreetName = true,
     bool includeDistrictName = true,
@@ -518,4 +465,22 @@ class SubEmtithalItem {
         "submitterAnswer": submitterAnswer,
         "empAnswer": empAnswer,
       };
+}
+
+class LandsInfo {
+  final List<LandInfo>? landsInfo;
+
+  LandsInfo({
+    this.landsInfo,
+  });
+}
+
+class LandInfo {
+  final String? landNumber;
+  final String? landArea;
+
+  LandInfo({
+    this.landNumber,
+    this.landArea,
+  });
 }

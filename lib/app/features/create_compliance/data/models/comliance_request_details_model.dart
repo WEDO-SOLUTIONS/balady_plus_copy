@@ -107,7 +107,8 @@ class ComplianceRequestDetailsModel extends ComplianceRequestDetails {
           : List<Note>.from(json["notes"]!.map((x) => Note.fromJson(x))),
       locationResponseInfoDto: json["locationResponseInfoDto"] == null
           ? null
-          : LocationResponseInfoDto.fromJson(json["locationResponseInfoDto"]),
+          : LocationResponseInfoDtoModel.fromJson(
+              json["locationResponseInfoDto"]),
       isFawry: json["isFawry"],
       emtithalItems: json["emtithalItems"] == null
           ? []
@@ -202,28 +203,26 @@ class EmtithalItemModel extends EmtithalItem {
 }
 
 class LocationResponseInfoDtoModel extends LocationResponseInfoDto {
-  LocationResponseInfoDtoModel({
-    super.municipalityId,
-    super.amanahId,
-    super.municipalityName,
-    super.subMunicipalityId,
-    super.baladiaId,
-    super.subMunicipalityName,
-    super.districtId,
-    super.districtName,
-    super.cityId,
-    super.cityName,
-    super.streetId,
-    super.streetName,
-    super.mapNumber,
-    super.mapName,
-    super.x,
-    super.y,
-    super.landNumber,
-    super.landArea,
-    super.isLocationCorrect,
-    super.guid,
-  });
+  LocationResponseInfoDtoModel(
+      {super.municipalityId,
+      super.amanahId,
+      super.municipalityName,
+      super.subMunicipalityId,
+      super.baladiaId,
+      super.subMunicipalityName,
+      super.districtId,
+      super.districtName,
+      super.cityId,
+      super.cityName,
+      super.streetId,
+      super.streetName,
+      super.mapNumber,
+      super.mapName,
+      super.x,
+      super.y,
+      super.isLocationCorrect,
+      super.guid,
+      super.landsInfo});
 
   factory LocationResponseInfoDtoModel.fromJson(Map<String, dynamic> json) =>
       LocationResponseInfoDtoModel(
@@ -243,18 +242,35 @@ class LocationResponseInfoDtoModel extends LocationResponseInfoDto {
         mapName: json["mapName"],
         x: json["x"],
         y: json["y"],
-        landNumber: json["landsInfo"] != null
-            ? json["landsInfo"][0] != null
-                ? (json["landsInfo"][0]!["landNumber"]).toString()
-                : null
-            : null,
-        landArea: json["landsInfo"] != null
-            ? json["landsInfo"][0] != null
-                ? (json["landsInfo"][0]!["landArea"]).toString()
-                : null
-            : null,
+        landsInfo:
+            json["landsInfo"] != null ? LandsInfoModel.fromJson(json) : null,
         isLocationCorrect: json["isLocationCorrect"],
         guid: json["guid"],
+      );
+}
+
+class LandsInfoModel extends LandsInfo {
+  LandsInfoModel({
+    super.landsInfo,
+  });
+
+  factory LandsInfoModel.fromJson(Map<String, dynamic> json) => LandsInfoModel(
+        landsInfo: json["landsInfo"] == null
+            ? []
+            : List<LandInfoModel>.from(
+                json["landsInfo"]!.map((x) => LandInfoModel.fromJson(x))),
+      );
+}
+
+class LandInfoModel extends LandInfo {
+  LandInfoModel({
+    super.landNumber,
+    super.landArea,
+  });
+
+  factory LandInfoModel.fromJson(Map<String, dynamic> json) => LandInfoModel(
+        landNumber: json["landNumber"],
+        landArea: json["landArea"],
       );
 }
 

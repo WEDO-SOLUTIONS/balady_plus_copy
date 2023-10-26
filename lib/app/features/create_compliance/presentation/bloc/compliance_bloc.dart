@@ -575,8 +575,10 @@ class ComplianceBloc extends Bloc<ComplianceEvent, ComplianceState> {
                     : null,
                 planName: r?.locationResponseInfoDto?.mapName,
                 planNo: r?.locationResponseInfoDto?.mapNumber,
-                parcelNo: r?.locationResponseInfoDto?.landNumber,
-                area: r?.locationResponseInfoDto?.landArea,
+                parcelNo: r?.locationResponseInfoDto?.landsInfo?.landsInfo
+                    ?.firstOrNull?.landNumber,
+                area: r?.locationResponseInfoDto?.landsInfo?.landsInfo
+                    ?.firstOrNull?.landArea,
                 guid: r?.locationResponseInfoDto?.guid,
                 streetName: r?.locationResponseInfoDto?.guid,
               )
