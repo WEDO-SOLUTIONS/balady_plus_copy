@@ -38,14 +38,16 @@ import '../../invoices_exports.dart'
 
 class InvoiceDetailBody extends StatefulWidget {
   final String invoiceId;
-  final String crNumber;
-  final String crType;
+  final String? crNumber;
+  final String? crType;
+  final String? xSourceApp;
 
   const InvoiceDetailBody({
     super.key,
     required this.invoiceId,
     required this.crNumber,
     required this.crType,
+    this.xSourceApp,
   });
 
   @override
@@ -60,6 +62,7 @@ class _InvoiceDetailBodyState extends State<InvoiceDetailBody> {
           widget.invoiceId,
           widget.crNumber,
           widget.crType,
+          widget.xSourceApp,
         );
   }
 
