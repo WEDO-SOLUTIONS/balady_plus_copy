@@ -34,8 +34,7 @@ class ApplyCancelScreen extends StatelessWidget {
           "title": "الغاء رخصة تجارية",
           "description": "",
           "tag": null,
-          "warning":
-          "يجب أن يتم إلغاء رخصة النشاط التجاري قبل شطب السجل التجاري."
+          "warning": "يجب أن يتم إلغاء رخصة النشاط التجاري قبل شطب السجل التجاري."
               "\n\n"
               "سوف يتم إلغاء الرخصة بشكل آلــي بعد مرور سنة وأكثر من انتهاء الرخصة.\n\n"
               "تأخرك في إلغاء الرخصة يعرضك لدفع رسوم تجديد عند الإلغاء وذلك وفقًــا للائحة التنفيذية لإجراءات التراخيص البلدية 1438 هـ.\n\n"
@@ -47,13 +46,12 @@ class ApplyCancelScreen extends StatelessWidget {
           "title": "الغاء رخصة تجارية",
           "description": "",
           "tag": null,
-          "warning":
-              "يجب أن يتم إلغاء رخصة النشاط التجاري قبل شطب السجل التجاري.\n"
-                  "سوف يتم إلغاء الرخصة بشكل آلــي بعد مرور سنة وأكثر من انتهاء الرخصة.\n"
-                  "تأخرك في إلغاء الرخصة يعرضك لدفع رسوم تجديد عند الإلغاء وذلك وفقًــا للائحة التنفيذية لإجراءات التراخيص البلدية 1438 هـ.\n"
-                  "يمكنك الاطلاع على حاسبة الرسوم المعلوماتية من خلال الرابط.\n"
-                  "https://apps.balady.gov.sa//Eservices/FeesCalculator\n"
-                  "رسوم الإلغاء 20 ريال مع ضرورة أن تكون الرخصة سارية.\n"
+          "warning": "يجب أن يتم إلغاء رخصة النشاط التجاري قبل شطب السجل التجاري.\n"
+              "سوف يتم إلغاء الرخصة بشكل آلــي بعد مرور سنة وأكثر من انتهاء الرخصة.\n"
+              "تأخرك في إلغاء الرخصة يعرضك لدفع رسوم تجديد عند الإلغاء وذلك وفقًــا للائحة التنفيذية لإجراءات التراخيص البلدية 1438 هـ.\n"
+              "يمكنك الاطلاع على حاسبة الرسوم المعلوماتية من خلال الرابط.\n"
+              "https://apps.balady.gov.sa//Eservices/FeesCalculator\n"
+              "رسوم الإلغاء 20 ريال مع ضرورة أن تكون الرخصة سارية.\n"
         },
         "cards": [
           {
@@ -63,7 +61,7 @@ class ApplyCancelScreen extends StatelessWidget {
             "duration": "1 - 10 أيام",
             "fees": -1,
             "feesName": "حاسبة الرسوم المعلوماتية",
-            "feesLink":"https://apps.balady.gov.sa/Eservices/FeesCalculator",
+            "feesLink": "https://apps.balady.gov.sa/Eservices/FeesCalculator",
             "ar": {
               "title": "وصف الخدمة",
               "description":
@@ -101,17 +99,13 @@ class ApplyCancelScreen extends StatelessWidget {
             "ar": {"title": "خطوات التقديم", "description": ""},
             "en": {"title": "", "description": ""}
           },
-
           {
             "iconName": IconPath.warning2,
             "type": ServiceCardsTypes.authorInfo,
             "rate": 0,
             "duration": "",
             "fees": null,
-            "ar": {
-              "title": "الغرامات والجزاءات",
-              "description": "اضغط هنا"
-            },
+            "ar": {"title": "الغرامات والجزاءات", "description": "اضغط هنا"},
             "en": {"title": "Service Description", "description": ""}
           },
         ]
@@ -170,8 +164,6 @@ class ApplyCancelScreen extends StatelessWidget {
                   ),
                 ),
               ),
-
-
               SafeArea(
                 top: false,
                 child: Selector<ApplyCancelViewModel, bool>(
@@ -179,9 +171,9 @@ class ApplyCancelScreen extends StatelessWidget {
                   builder: (BuildContext context, isLoading, Widget? child) {
                     return isLoading
                         ? const ShimmerEffectWidget(
-                      height: 55,
-                      borderRadius: 6,
-                    )
+                            height: 55,
+                            borderRadius: 6,
+                          )
                         : child!;
                   },
                   child: ServiceWarningWidget(
@@ -190,15 +182,16 @@ class ApplyCancelScreen extends StatelessWidget {
                       try {
                         NavigatorState navigator = Navigator.of(context);
                         CancellationRequestResponse? cancellationRequest =
-                        await viewModel
-                            .applyCommercialLicenseCancellation();
+                            await viewModel
+                                .applyCommercialLicenseCancellation();
                         if (cancellationRequest != null) {
                           navigator.popAndPushNamed(
                             RouteName.commercialLicenseCancel,
                             arguments: CommercialLicenseCancelBloc(
                               webService: sl(),
                               requestId: cancellationRequest.requestId,
-                              availableCloseDate: cancellationRequest.availableCloseDate,
+                              availableCloseDate:
+                                  cancellationRequest.availableCloseDate,
                               crNumber: viewModel.submitterInfo.crNumber,
                               crType: viewModel.submitterInfo.crType!,
                               reasonCancel: viewModel.reasonCancel,
