@@ -269,8 +269,10 @@ class LandInfoModel extends LandInfo {
   });
 
   factory LandInfoModel.fromJson(Map<String, dynamic> json) => LandInfoModel(
-        landNumber: json["landNumber"],
-        landArea: json["landArea"],
+        landNumber:
+            json["landNumber"] != null ? json["landNumber"]?.toString() : null,
+        landArea:
+            json["landArea"] != null ? json["landArea"]?.toString() : null,
       );
 }
 
