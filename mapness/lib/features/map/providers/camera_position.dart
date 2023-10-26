@@ -4,11 +4,6 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'camera_position.g.dart';
 
-GeoRectMessage saRect = GeoRectMessage(
-  northEast: GeoPointMessage(latitude: 32.568765, longitude: 56.694472),
-  southWest: GeoPointMessage(latitude: 15.506104, longitude: 32.61185),
-);
-
 @riverpod
 class CameraPosition extends _$CameraPosition {
   @override
@@ -35,8 +30,7 @@ class CameraPosition extends _$CameraPosition {
     );
   }
 
-  void _cameraPositionListener(CameraPositionMessage event) async {
-    print("_cameraPositionListener $event");
+  void _cameraPositionListener(CameraPositionMessage event) {
     state = event;
   }
 }

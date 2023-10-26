@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mapness/features/happiness_map/happines_map_bottom_sheet.dart';
+import 'package:mapness/features/happiness_map/hapiness_overlay.dart';
 import 'package:mapness/features/landing/layers_sheet.dart';
 import 'package:mapness/features/landing/providers/map_controls.dart';
 import 'package:mapness/legacy_features/poi_card/general_card_widget.dart';
@@ -32,11 +32,7 @@ class LandingPage extends ConsumerWidget {
           switch (controlsState) {
             MapControlsStateLayers() => const LayersSheet(),
             MapControlsStateNavigation() => const RoutingOverlay(),
-            MapControlsStateHappinessMap() => HappinessBottomSheet(
-                onClose: () => ref
-                    .read(mapControlsProvider.notifier)
-                    .update(MapControlsStateIdle()),
-              ),
+            MapControlsStateHappinessMap() => HapinessOverlay(),
             MapControlsStatePoI(objectId: final objectId) =>
               GeneralMapCardWidget(objectId),
             _ => const SizedBox.shrink(),

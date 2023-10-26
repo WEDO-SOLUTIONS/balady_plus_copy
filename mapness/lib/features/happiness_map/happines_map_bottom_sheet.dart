@@ -12,9 +12,14 @@ import 'package:mapness/features/landing/providers/map_controls.dart';
 import 'data/happines_manager.dart';
 
 class HappinessBottomSheet extends ConsumerStatefulWidget {
+  const HappinessBottomSheet({
+    required this.onClose,
+    required this.biggestHeight,
+    Key? key,
+  }) : super(key: key);
+
   final VoidCallback onClose;
-  const HappinessBottomSheet({required this.onClose, Key? key})
-      : super(key: key);
+  final double biggestHeight;
 
   @override
   ConsumerState<HappinessBottomSheet> createState() => _DashboardState();
@@ -22,6 +27,8 @@ class HappinessBottomSheet extends ConsumerStatefulWidget {
 
 class _DashboardState extends ConsumerState<HappinessBottomSheet> {
   late final DraggableScrollableController _draggableScrollableController;
+
+  double get _headerExtent => 150 / widget.biggestHeight;
 
   void onSubmit() {
     final happinesManager = ref.read(happinessManagerProvider.notifier);
@@ -31,18 +38,7 @@ class _DashboardState extends ConsumerState<HappinessBottomSheet> {
 
   @override
   void initState() {
-    _draggableScrollableController = DraggableScrollableController()
-      ..addListener(() {
-        if (_draggableScrollableController.size > .1) {
-          ref.read(mapControlsProvider.notifier).update(
-                MapControlsStateHappinessMap(),
-              );
-        } else {
-          ref.read(mapControlsProvider.notifier).update(
-                MapControlsStateIdle(),
-              );
-        }
-      });
+    _draggableScrollableController = DraggableScrollableController();
     super.initState();
   }
 
@@ -64,9 +60,9 @@ class _DashboardState extends ConsumerState<HappinessBottomSheet> {
 
     return DraggableScrollableSheet(
       controller: _draggableScrollableController,
-      initialChildSize: .2,
-      minChildSize: .2,
-      maxChildSize: state.feedback == null ? .2 : .7,
+      initialChildSize: _headerExtent,
+      minChildSize: _headerExtent,
+      maxChildSize: state.feedback == null ? _headerExtent : .7,
       builder: (BuildContext context, ScrollController scrollController) {
         return Container(
           decoration: const BoxDecoration(

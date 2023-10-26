@@ -49,7 +49,6 @@ class DgisController extends _$DgisController {
       await controller.onLocationPremissionGranted(
         desiredAccuracy: DesiredAccuracyMessage.high,
       );
-      await controller.changeFollowState();
     } else {
       await controller.setCameraPosition(
         CameraPositionMessage(
@@ -72,6 +71,10 @@ class DgisController extends _$DgisController {
       },
     );
     await controller.setZoomRestrictions(min: 5.5);
+    Future.delayed(
+      const Duration(milliseconds: 100),
+      () => controller.changeFollowState(),
+    );
   }
 
   void _visibleRectListener(VisibleRectEvent event) async {
