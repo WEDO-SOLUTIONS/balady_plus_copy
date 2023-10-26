@@ -85,11 +85,12 @@ class SubmitApplicationSuccessfullyCancel extends StatelessWidget {
                       onPressed: () async {
                         Navigator.of(context).popAndPushNamed(
                           RouteName.invoiceDetails,
-                          arguments: [
+                          arguments: (
                             submitResponse.payUrl.toString(),
                             submitResponse.crNumber,
                             submitResponse.crType,
-                          ],
+                            "SADAD",
+                          ),
                         );
                       },
                     )

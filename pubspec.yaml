@@ -184,6 +184,10 @@ dependencies:
 #  provider: ^6.0.5
 
 
+  flutter_html:
+
+
+
 dependency_overrides:
   geolocator_android: ^4.2.2
   # flutter compass in pub.dev is not updated
