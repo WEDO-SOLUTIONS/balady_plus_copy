@@ -16,7 +16,7 @@ class CredenceItem extends Equatable {
   final bool? attached;
   final int? credenceTypeId;
   final String? credenceTypeName;
-  final dynamic attachmentUrl;
+  dynamic attachmentUrl;
   final String? letterUrl;
   final bool? approved;
   final dynamic notes;

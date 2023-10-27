@@ -303,7 +303,7 @@ class ApiUrl {
       'v1/balady-commercial-services/credence/request/$requestId';
 
   static String uploadCredences(int requestId, String fileTypeId) =>
-      'v1/balady-commercial-services/upload-credence/request/$fileTypeId/$requestId';
+      '/v1/balady-commercial-services/upload-credence/request/$requestId/$fileTypeId';
 
   static String validateSalamaAttachmentsInfo(int requestId) =>
       'v1/balady-commercial-services/validate-salama-attachments-info/$requestId';

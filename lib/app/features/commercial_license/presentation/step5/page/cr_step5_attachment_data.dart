@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import '../../../../../core/utils/common_functions.dart';
+import '../../../../_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
 import '../../../commercial_license_exports.dart';
 import '../bloc/cr_step5_attachment_data_cubit.dart';
 import 'package:dio/dio.dart';
@@ -18,6 +19,7 @@ import '../../../../../core/services/local/navigation_services.dart';
 import '../../../../../core/utils/constants/remote_config.dart';
 import '../../../../../core/utils/constants/route_names.dart';
 import '../../../../transaction_inquiry/customer_voice_exports.dart';
+import '../widgets/credence_components.dart';
 
 class CRStep5AttachmentData extends StatefulWidget {
   const CRStep5AttachmentData({Key? key}) : super(key: key);
@@ -33,70 +35,82 @@ class _CRStep5AttachmentDataState extends State<CRStep5AttachmentData> {
     super.initState();
 
     context.read<CRStep5AttachmentCubit>().getAttachments();
+    context.read<CRStep5AttachmentCubit>().getCredneces();
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<CRStep5AttachmentCubit, CRStep5AttachmentState>(
       builder: (context, state) {
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        return Stack(
           children: [
-            Expanded(
-              child: SingleChildScrollView(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const CRHeaderDesc(
-                        maxLines: null,
-                        textHeight: 1.5,
-                        header: "بيانات المرفق",
-                        desc:
-                            "امتداد الملفات المسموح بإرفاق jpeg، jpg، png، pdf لا يتعدى حجم الملف 10 ميجابايت",
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const CRHeaderDesc(
+                            maxLines: null,
+                            textHeight: 1.5,
+                            header: "بيانات المرفق",
+                            desc:
+                                "امتداد الملفات المسموح بإرفاق jpeg، jpg، png، pdf لا يتعدى حجم الملف 10 ميجابايت",
+                          ),
+                          const SizedBox(height: 12),
+                          if (state.attachments != null)
+                            AttachmentListWidget(
+                              attachments: state.attachments ?? [],
+                              deleteFile: (int index) {
+                                context
+                                    .read<CRStep5AttachmentCubit>()
+                                    .deleteFile(index);
+                              },
+                              saveFile: (int index, String filePath,
+                                  String fileName, String base64) {
+                                context.read<CRStep5AttachmentCubit>().saveFile(
+                                    index: index,
+                                    fileName: fileName,
+                                    fileBase64: base64,
+                                    filePath: filePath);
+                              },
+                            ),
+                          CustomTextFieldWidget(
+                            label: "ملاحظات المستفيد",
+                            initialValue: state.notes,
+                            maxLines: 10,
+                            onChanged: (String? text) {
+                              context
+                                  .read<CRStep5AttachmentCubit>()
+                                  .updateNotes(text);
+                            },
+                          ),
+                          const SizedBox(
+                            height: 8,
+                          ),
+                          const CredenceComponents(),
+                        ],
                       ),
-                      const SizedBox(height: 12),
-                      if (state.attachments != null)
-                        AttachmentListWidget(
-                          attachments: state.attachments ?? [],
-                          deleteFile: (int index) {
-                            context
-                                .read<CRStep5AttachmentCubit>()
-                                .deleteFile(index);
-                          },
-                          saveFile: (int index, String filePath,
-                              String fileName, String base64) {
-                            context.read<CRStep5AttachmentCubit>().saveFile(
-                                index: index,
-                                fileName: fileName,
-                                fileBase64: base64,
-                                filePath: filePath);
-                          },
-                        ),
-                      SizedBox(
-                        height: 16,
-                      ),
-                      CustomTextFieldWidget(
-                        label: "ملاحظات المستفيد",
-                        initialValue: state.notes,
-                        maxLines: 20,
-                        onChanged: (String? text) {
-                          context
-                              .read<CRStep5AttachmentCubit>()
-                              .updateNotes(text);
-                        },
-                      )
-                    ],
+                    ),
                   ),
                 ),
-              ),
+                CRPreviousNextButtons(
+                    onPressed: () {
+                      context
+                          .read<CRStep5AttachmentCubit>()
+                          .addBeneficiaryNotes();
+                    },
+                    isBtnDisabled: false),
+              ],
             ),
-            CRPreviousNextButtons(
-                onPressed: () {
-                  context.read<CRStep5AttachmentCubit>().addBeneficiaryNotes();
-                },
-                isBtnDisabled: false),
+            if (state.attachmentStatus.isSubmissionLoading ||
+                state.status.isSubmissionLoading ||
+                state.credenceStatus.isSubmissionLoading)
+              const CustomCircularLoadingWidget(),
           ],
         );
       },

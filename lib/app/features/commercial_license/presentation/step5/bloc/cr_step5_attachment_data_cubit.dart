@@ -17,7 +17,10 @@ import '../../../commercial_license_exports.dart'
         CommercialLicenseBloc,
         CrAddNotesRequest,
         CrAttachmentRequest,
+        CredenceItem,
+        GetRequestCredence,
         GoToNextPageEvent,
+        UploadCredence,
         ValidateAprovals,
         ValidateSalamaAttachmentsRequest;
 import '../../../domain/use_cases/get_cr_Attacments.dart';
@@ -31,12 +34,15 @@ class CRStep5AttachmentCubit extends Cubit<CRStep5AttachmentState> {
   final AddBeneficiaryNotes _addBeneficiaryNotes;
   final ValidateAprovals _validateApprovals;
   final ValidateSalamaAttachments _validateSalamaAttachments;
-
+  final GetRequestCredence _getRequestCredence;
+  final UploadCredence _uploadCredence;
   CRStep5AttachmentCubit()
       : _getCrAttachments = GetCrAttachments(repository: sl()),
         _saveCrAttachment = SaveCrAttachment(repository: sl()),
         _addBeneficiaryNotes = AddBeneficiaryNotes(repository: sl()),
         _validateApprovals = ValidateAprovals(repository: sl()),
+        _getRequestCredence = GetRequestCredence(repository: sl()),
+        _uploadCredence = UploadCredence(repository: sl()),
         _validateSalamaAttachments =
             ValidateSalamaAttachments(repository: sl()),
         super(const CRStep5AttachmentState()) {}
@@ -44,11 +50,11 @@ class CRStep5AttachmentCubit extends Cubit<CRStep5AttachmentState> {
   void getAttachments() async {
     int requestId = sl<CommercialLicenseBloc>().state.requestId!;
 
-    emit(state.copyWith(status: BlocStatus.loading));
+    emit(state.copyWith(attachmentStatus: BlocStatus.loading));
     final response = await _getCrAttachments(requestId);
     response.fold(
         (failure) => emit(state.copyWith(
-              status: BlocStatus.failure,
+              attachmentStatus: BlocStatus.failure,
               errorMessage: (failure as ServerFailure).errorMessage,
             )), (success) {
       List<AttachmentData> attachmentData = (success.items ?? [])
@@ -57,11 +63,34 @@ class CRStep5AttachmentCubit extends Cubit<CRStep5AttachmentState> {
               memo: e.name ?? "",
               title: "${e.name} ${e.allowedFilesExtension}",
               isRequired: e.isMandatory ?? false,
-              isUploaded: false))
+              filePath: e.attachUrl,
+              fileName: e.fileName,
+              isUploaded: e.attached ?? false))
           .toList();
 
       emit(state.copyWith(
-          status: BlocStatus.success, attachments: attachmentData));
+          attachmentStatus: BlocStatus.success, attachments: attachmentData));
+    });
+  }
+
+  void getCredneces() async {
+    int requestId = sl<CommercialLicenseBloc>().state.requestId!;
+
+    emit(state.copyWith(
+      credenceStatus: BlocStatus.loading,
+      errorMessage: "",
+    ));
+    final response = await _getRequestCredence(requestId);
+    response.fold(
+        (failure) => emit(state.copyWith(
+              credenceStatus: BlocStatus.failure,
+              errorMessage: (failure as ServerFailure).errorMessage,
+            )), (success) {
+      List<CredenceItem> list = [];
+      list.addAll(success.electronic ?? []);
+      list.addAll(success.manual ?? []);
+
+      emit(state.copyWith(credenceStatus: BlocStatus.success, crdences: list));
     });
   }
 
@@ -83,7 +112,10 @@ class CRStep5AttachmentCubit extends Cubit<CRStep5AttachmentState> {
       required String fileBase64}) async {
     int requestId = sl<CommercialLicenseBloc>().state.requestId!;
 
-    emit(state.copyWith(status: BlocStatus.loading));
+    emit(state.copyWith(
+      status: BlocStatus.loading,
+      errorMessage: "",
+    ));
 
     final failOrSuccess = await _saveCrAttachment(CrAttachmentRequest(
         requestId: requestId,
@@ -113,7 +145,10 @@ class CRStep5AttachmentCubit extends Cubit<CRStep5AttachmentState> {
   void addBeneficiaryNotes() async {
     int requestId = sl<CommercialLicenseBloc>().state.requestId!;
 
-    emit(state.copyWith(status: BlocStatus.loading));
+    emit(state.copyWith(
+      status: BlocStatus.loading,
+      errorMessage: "",
+    ));
     final response = await _addBeneficiaryNotes(
         CrAddNotesRequest(requestId: requestId, notes: state.notes));
     await response.fold(
@@ -150,10 +185,59 @@ class CRStep5AttachmentCubit extends Cubit<CRStep5AttachmentState> {
               status: BlocStatus.failure,
               errorMessage: (failure as ServerFailure).errorMessage,
             )), (success) async {
+      emit(state.copyWith(
+        status: BlocStatus.success,
+        errorMessage: "",
+      ));
       // Go To QR Flow , if validate Approvals = true;
       sl<CommercialLicenseBloc>().add((const GoToNextPageEvent()));
 
       // Go To Calculate Flow if validate Approvals = false
     });
+  }
+
+  void uploadCrednece(FileDataItem item, int index) async {
+    int requestId = sl<CommercialLicenseBloc>().state.requestId!;
+
+    emit(state.copyWith(
+      status: BlocStatus.loading,
+      errorMessage: "",
+    ));
+
+    final failOrSuccess = await _uploadCredence(CrAttachmentRequest(
+        requestId: requestId,
+        data: AttachmentData(
+            id: state.crdences![index].credenceId!.toString(),
+            fileName: item.fileName,
+            filePath: item.filePath,
+            base64: item.fileBase64,
+            memo: item.fileName,
+            title: item.fileName,
+            isRequired: true,
+            isUploaded: false)));
+
+    failOrSuccess.fold((l) {
+      emit(state.copyWith(
+        errorMessage: (l as ServerFailure).errorMessage,
+        status: BlocStatus.failure,
+      ));
+    }, (r) {
+      List<CredenceItem> attachments = state.crdences ?? [];
+      attachments[index].attachmentUrl = item.filePath;
+
+      emit(state.copyWith(status: BlocStatus.success, crdences: attachments));
+    });
+  }
+
+  deleteCredence(int index) async {
+    emit(state.copyWith(
+      status: BlocStatus.loading,
+      errorMessage: "",
+    ));
+
+    List<CredenceItem> attachments = state.crdences ?? [];
+    attachments[index].attachmentUrl = null;
+
+    emit(state.copyWith(status: BlocStatus.success, crdences: attachments));
   }
 }

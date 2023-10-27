@@ -582,6 +582,7 @@ class WebService {
         } catch (ex) {}
       }
     } catch (ex) {
+      print(ex);
       result.putIfAbsent("state", () => false);
       result.putIfAbsent("error", () => ('errors_server_error_2').tr());
       var connectivityResult = await (Connectivity().checkConnectivity());
