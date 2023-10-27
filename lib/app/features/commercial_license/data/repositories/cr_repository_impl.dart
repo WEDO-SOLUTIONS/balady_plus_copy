@@ -234,4 +234,76 @@ class CrRepositoryImpl implements CrRepository {
           statusCode: error.statusCode, errorCode: error.errorCode));
     }
   }
+
+  @override
+  Future<Either<Failure, CleanOptionResponse>> getCleanOptions(
+      {required int params}) async {
+    try {
+      final data = await remoteDataSource.getCleanOptions(params: params);
+      return Right(data!);
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage,
+          statusCode: error.statusCode, errorCode: error.errorCode));
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<String>>> getDeedOptions(
+      {required int params}) async {
+    try {
+      final data = await remoteDataSource.getDeedOptions(params: params);
+      return Right(data!);
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage,
+          statusCode: error.statusCode, errorCode: error.errorCode));
+    }
+  }
+
+  @override
+  Future<Either<Failure, CredenceInfo>> getRequestCredences(
+      {required int params}) async {
+    try {
+      final data = await remoteDataSource.getRequestCredences(params: params);
+      return Right(data!);
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage,
+          statusCode: error.statusCode, errorCode: error.errorCode));
+    }
+  }
+
+  @override
+  Future<Either<Failure, bool>> uploadCredence(
+      {required CrAttachmentRequest params}) async {
+    try {
+      final data = await remoteDataSource.uploadCredence(params: params);
+      return Right(data!);
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage,
+          statusCode: error.statusCode, errorCode: error.errorCode));
+    }
+  }
+
+  @override
+  Future<Either<Failure, bool>> validateApprovals({required int params}) async {
+    try {
+      final data = await remoteDataSource.validateApprovals(params: params);
+      return Right(data!);
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage,
+          statusCode: error.statusCode, errorCode: error.errorCode));
+    }
+  }
+
+  @override
+  Future<Either<Failure, int>> validateSalamaAttachments(
+      {required ValidateSalamaAttachmentsRequest params}) async {
+    try {
+      final data =
+          await remoteDataSource.validateSalamaAttachments(params: params);
+      return Right(data!);
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage,
+          statusCode: error.statusCode, errorCode: error.errorCode));
+    }
+  }
 }

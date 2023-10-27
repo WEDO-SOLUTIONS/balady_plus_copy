@@ -2,6 +2,7 @@ import 'package:balady_plus/app/core/services/local/use_case.dart';
 import 'package:balady_plus/app/core/services/services_exports.dart';
 import 'package:balady_plus/app/core/utils/enums/bloc_status.dart';
 import 'package:balady_plus/app/features/commercial_license/domain/entities/cr_attachment_response.dart';
+import 'package:balady_plus/app/features/commercial_license/domain/use_cases/validate_salama_attachments.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/dependency_injection/dependency_injection_exports.dart';
@@ -11,7 +12,14 @@ import '../../../../_shared_feature_/data/entities/file_data_item.dart';
 import '../../../../_shared_feature_/shared_feature_exports.dart';
 import '../../../../transaction_inquiry/presentation/core/models/attachment_model.dart';
 import '../../../commercial_license_exports.dart'
-    show CommercialLicenseBloc, CrAttachmentRequest;
+    show
+        AddBeneficiaryNotes,
+        CommercialLicenseBloc,
+        CrAddNotesRequest,
+        CrAttachmentRequest,
+        GoToNextPageEvent,
+        ValidateAprovals,
+        ValidateSalamaAttachmentsRequest;
 import '../../../domain/use_cases/get_cr_Attacments.dart';
 import '../../../domain/use_cases/save_cr_Attacments.dart';
 
@@ -20,13 +28,18 @@ part 'cr_step5_attachment_data_state.dart';
 class CRStep5AttachmentCubit extends Cubit<CRStep5AttachmentState> {
   final GetCrAttachments _getCrAttachments;
   final SaveCrAttachment _saveCrAttachment;
+  final AddBeneficiaryNotes _addBeneficiaryNotes;
+  final ValidateAprovals _validateApprovals;
+  final ValidateSalamaAttachments _validateSalamaAttachments;
 
   CRStep5AttachmentCubit()
       : _getCrAttachments = GetCrAttachments(repository: sl()),
         _saveCrAttachment = SaveCrAttachment(repository: sl()),
-        super(CRStep5AttachmentState()) {
-    getAttachments();
-  }
+        _addBeneficiaryNotes = AddBeneficiaryNotes(repository: sl()),
+        _validateApprovals = ValidateAprovals(repository: sl()),
+        _validateSalamaAttachments =
+            ValidateSalamaAttachments(repository: sl()),
+        super(const CRStep5AttachmentState()) {}
 
   void getAttachments() async {
     int requestId = sl<CommercialLicenseBloc>().state.requestId!;
@@ -90,6 +103,57 @@ class CRStep5AttachmentCubit extends Cubit<CRStep5AttachmentState> {
       attachments[index].isUploaded = true;
       emit(
           state.copyWith(status: BlocStatus.success, attachments: attachments));
+    });
+  }
+
+  void updateNotes(String? notes) {
+    emit(state.copyWith(notes: notes));
+  }
+
+  void addBeneficiaryNotes() async {
+    int requestId = sl<CommercialLicenseBloc>().state.requestId!;
+
+    emit(state.copyWith(status: BlocStatus.loading));
+    final response = await _addBeneficiaryNotes(
+        CrAddNotesRequest(requestId: requestId, notes: state.notes));
+    await response.fold(
+        (failure) async => emit(state.copyWith(
+              status: BlocStatus.failure,
+              errorMessage: (failure as ServerFailure).errorMessage,
+            )), (success) async {
+      validateSalamaAttachments();
+    });
+  }
+
+  void validateSalamaAttachments() async {
+    int requestId = sl<CommercialLicenseBloc>().state.requestId!;
+
+    emit(state.copyWith(status: BlocStatus.loading));
+    final response = await _validateSalamaAttachments(
+        ValidateSalamaAttachmentsRequest(requestId: requestId));
+    await response.fold(
+        (failure) async => emit(state.copyWith(
+              status: BlocStatus.failure,
+              errorMessage: (failure as ServerFailure).errorMessage,
+            )), (success) async {
+      validateApprovals();
+    });
+  }
+
+  void validateApprovals() async {
+    int requestId = sl<CommercialLicenseBloc>().state.requestId!;
+
+    emit(state.copyWith(status: BlocStatus.loading));
+    final response = await _validateApprovals(requestId);
+    await response.fold(
+        (failure) async => emit(state.copyWith(
+              status: BlocStatus.failure,
+              errorMessage: (failure as ServerFailure).errorMessage,
+            )), (success) async {
+      // Go To QR Flow , if validate Approvals = true;
+      sl<CommercialLicenseBloc>().add((const GoToNextPageEvent()));
+
+      // Go To Calculate Flow if validate Approvals = false
     });
   }
 }

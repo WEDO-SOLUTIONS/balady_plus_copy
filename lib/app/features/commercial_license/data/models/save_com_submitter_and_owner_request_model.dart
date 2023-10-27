@@ -3,7 +3,7 @@ import 'dart:convert';
 
 class SaveComSubmitterAndOwnerRequestModel {
   String? crNumber;
-  int? entityType;
+  String? entityType;
   int? crType;
 
   SaveComSubmitterAndOwnerRequestModel(
@@ -21,7 +21,8 @@ class SaveComSubmitterAndOwnerRequestModel {
       Map<String, dynamic> map) {
     return SaveComSubmitterAndOwnerRequestModel(
       crNumber: map['crNumber'] != null ? map['crNumber'] as String : null,
-      entityType: map['entityType'] != null ? map['entityType'] as int : null,
+      entityType:
+          map['entityType'] != null ? map['entityType'] as String : null,
       crType: map['crType'] != null ? map['crType'] as int : null,
     );
   }

@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -76,12 +77,26 @@ class _CRStep5AttachmentDataState extends State<CRStep5AttachmentData> {
                       SizedBox(
                         height: 16,
                       ),
+                      CustomTextFieldWidget(
+                        label: "ملاحظات المستفيد",
+                        initialValue: state.notes,
+                        maxLines: 20,
+                        onChanged: (String? text) {
+                          context
+                              .read<CRStep5AttachmentCubit>()
+                              .updateNotes(text);
+                        },
+                      )
                     ],
                   ),
                 ),
               ),
             ),
-            const CRPreviousNextButtons(isBtnDisabled: false),
+            CRPreviousNextButtons(
+                onPressed: () {
+                  context.read<CRStep5AttachmentCubit>().addBeneficiaryNotes();
+                },
+                isBtnDisabled: false),
           ],
         );
       },

@@ -57,4 +57,19 @@ abstract class CrRepository {
 
   Future<Either<Failure, dynamic>> saveShopDetails(
       {required SaveShopDetailsRequest params});
+
+  Future<Either<Failure, CleanOptionResponse>> getCleanOptions(
+      {required int params});
+  Future<Either<Failure, List<String>>> getDeedOptions({required int params});
+
+  Future<Either<Failure, CredenceInfo>> getRequestCredences(
+      {required int params});
+
+  Future<Either<Failure, bool>> uploadCredence(
+      {required CrAttachmentRequest params});
+
+  Future<Either<Failure, bool>> validateApprovals({required int params});
+
+  Future<Either<Failure, int>> validateSalamaAttachments(
+      {required ValidateSalamaAttachmentsRequest params});
 }

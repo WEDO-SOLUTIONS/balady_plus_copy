@@ -12,6 +12,8 @@ import '../../../commercial_license_exports.dart';
 import '../../../domain/entities/commercial_board_type.dart';
 import '../../../domain/entities/save_shop_details_request.dart';
 import '../../../domain/use_cases/get_clean_contracts.dart';
+import '../../../domain/use_cases/get_deed_info.dart';
+import '../../../domain/use_cases/get_ejar_info.dart';
 import '../../../domain/use_cases/get_investment_contracts.dart';
 import '../../../domain/use_cases/save_shop_details.dart';
 import '../../step3/bloc/map_bloc.dart';
@@ -23,11 +25,20 @@ class CrStep4ShopDataCubit extends Cubit<CrStep4ShopDataState> {
   final GetCleanContracts _getCleanContracts;
   final GetInvestmentContracts _getInvestmentContracts;
   final SaveShopDetails _saveShopDetails;
+  final GetCleanOptions _getCleanOptions;
+  final GetDeedOptions _getDeedOptions;
+  final GetEjarInfo _getEjarInfo;
+  final GetDeedInfo _getDeedInfo;
+
   CrStep4ShopDataCubit()
       : _getAccommodationTypes = GetAccommodationTypes(repository: sl()),
         _getCleanContracts = GetCleanContracts(repository: sl()),
         _getInvestmentContracts = GetInvestmentContracts(repository: sl()),
         _saveShopDetails = SaveShopDetails(repository: sl()),
+        _getCleanOptions = GetCleanOptions(repository: sl()),
+        _getDeedOptions = GetDeedOptions(repository: sl()),
+        _getEjarInfo = GetEjarInfo(repository: sl()),
+        _getDeedInfo = GetDeedInfo(repository: sl()),
         super(CrStep4ShopDataState());
 
   void getAccommodationTypes() async {
