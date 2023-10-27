@@ -290,6 +290,24 @@ class ApiUrl {
   static String saveShopDetails(int requestId) =>
       'v1/balady-commercial-services/new-request/$requestId/shop-details';
 
+  static String validateApprovals(int requestId) =>
+      'v1/balady-commercial-services/validate-approvals/request/$requestId';
+
+  static String deedOptions(int requestId) =>
+      'v1/balady-commercial-services/deed-owner-ship-options/$requestId';
+
+  static String cleanOptions(int requestId) =>
+      'v1/balady-commercial-services/clean-options/request/$requestId';
+
+  static String getCredences(int requestId) =>
+      'v1/balady-commercial-services/credence/request/$requestId';
+
+  static String uploadCredences(int requestId, String fileTypeId) =>
+      'v1/balady-commercial-services/upload-credence/request/$fileTypeId/$requestId';
+
+  static String validateSalamaAttachmentsInfo(int requestId) =>
+      'v1/balady-commercial-services/validate-salama-attachments-info/$requestId';
+
 //! Renew Commercial Service
   static String validateBeforeApply(int requestId) =>
       'v1/balady-commercial-services/mobile/renew-request/validate-before-apply/$requestId';

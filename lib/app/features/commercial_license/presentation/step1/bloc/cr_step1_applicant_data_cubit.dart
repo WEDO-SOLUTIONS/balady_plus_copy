@@ -65,7 +65,7 @@ class CrStep1ApplicantDataCubit extends Cubit<CrStep1ApplicantDataState> {
         SaveComSubmitterAndOwnerRequestModel(
             crNumber: state.recordInfo?.crNumber,
             crType: state.recordInfo?.crType,
-            entityType: 0 /*state.recordInfo?.crInfo?.entityType*/));
+            entityType: "SHOP"));
 
     response.fold(
         (failure) => emit(state.copyWith(

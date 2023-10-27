@@ -54,6 +54,18 @@ abstract class CrRemoteDataSource {
   Future<int> addBeneficiaryNotes({required CrAddNotesRequest params});
 
   Future<CrSubmitResponseModel> submitCr({required CrSubmitRequest params});
+
+  Future<CleanOptionResponseModel> getCleanOptions({required int params});
+  Future<List<String>>? getDeedOptions({required int params});
+
+  Future<CredenceInfoModel>? getRequestCredences({required int params});
+
+  Future<bool>? uploadCredence({required CrAttachmentRequest params});
+
+  Future<bool>? validateApprovals({required int params});
+
+  Future<int>? validateSalamaAttachments(
+      {required ValidateSalamaAttachmentsRequest params});
 }
 
 class CrRemoteDataSourceImpl extends CrRemoteDataSource {
@@ -904,6 +916,307 @@ class CrRemoteDataSourceImpl extends CrRemoteDataSource {
       var errorCode;
       try {
         final decodedResponse = ResponseBodyModel<dynamic>.fromMap(
+          error.response?.data,
+        );
+        errorCode = decodedResponse.data?.responseCode;
+      } catch (ex) {}
+
+      throw ServerException(
+        error.toString(),
+        errorCode: errorCode,
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
+    } catch (ex) {
+      print(ex);
+      if (ex is ServerException)
+        throw ex;
+      else {
+        try {
+          //MM    CommonFunctions.sendExceptionLog(exception: ex, response: response);
+        } catch (ex) {}
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
+      }
+    }
+  }
+
+  @override
+  Future<CleanOptionResponseModel> getCleanOptions(
+      {required int params}) async {
+    var response;
+
+    try {
+      response = await webService.dio.post(
+        ApiUrl.cleanOptions(
+          params,
+        ),
+      );
+
+      var data = response.data["data"]["result"];
+
+      var parsedResult =
+          data != null ? CleanOptionResponseModel.fromMap(data) : null;
+      final decodedResponse =
+          ResponseBodyModel<CleanOptionResponseModel>.fromMap(response.data,
+              parsedResult: parsedResult);
+
+      return decodedResponse.data!.result!.toFuture();
+    } on DioError catch (error) {
+      print(error);
+      var errorCode;
+      try {
+        final decodedResponse =
+            ResponseBodyModel<CleanOptionResponseModel>.fromMap(
+          error.response?.data,
+        );
+        errorCode = decodedResponse.data?.responseCode;
+      } catch (ex) {}
+
+      throw ServerException(
+        error.toString(),
+        errorCode: errorCode,
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
+    } catch (ex) {
+      print(ex);
+      if (ex is ServerException)
+        throw ex;
+      else {
+        try {
+          //MM    CommonFunctions.sendExceptionLog(exception: ex, response: response);
+        } catch (ex) {}
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
+      }
+    }
+  }
+
+  @override
+  Future<List<String>>? getDeedOptions({required int params}) async {
+    var response;
+
+    try {
+      response = await webService.dio.post(
+        ApiUrl.deedOptions(
+          params,
+        ),
+      );
+
+      var data = response.data["data"]["result"] as List<String>?;
+
+      final decodedResponse = ResponseBodyModel<List<String>>.fromMap(
+          response.data,
+          parsedResult: data);
+
+      return decodedResponse.data!.result!.toFuture();
+    } on DioError catch (error) {
+      print(error);
+      var errorCode;
+      try {
+        final decodedResponse = ResponseBodyModel<List<String>>.fromMap(
+          error.response?.data,
+        );
+        errorCode = decodedResponse.data?.responseCode;
+      } catch (ex) {}
+
+      throw ServerException(
+        error.toString(),
+        errorCode: errorCode,
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
+    } catch (ex) {
+      print(ex);
+      if (ex is ServerException)
+        throw ex;
+      else {
+        try {
+          //MM    CommonFunctions.sendExceptionLog(exception: ex, response: response);
+        } catch (ex) {}
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
+      }
+    }
+  }
+
+  @override
+  Future<CredenceInfoModel>? getRequestCredences({required int params}) async {
+    var response;
+
+    try {
+      response = await webService.dio.post(ApiUrl.getCredences(params));
+
+      var data = response.data["data"]["result"];
+
+      var parsedResult = data != null ? CredenceInfoModel.fromJson(data) : null;
+      final decodedResponse = ResponseBodyModel<CredenceInfoModel>.fromMap(
+          response.data,
+          parsedResult: parsedResult);
+
+      return decodedResponse.data!.result!.toFuture();
+    } on DioError catch (error) {
+      print(error);
+      var errorCode;
+      try {
+        final decodedResponse = ResponseBodyModel<CredenceInfoModel>.fromMap(
+          error.response?.data,
+        );
+        errorCode = decodedResponse.data?.responseCode;
+      } catch (ex) {}
+
+      throw ServerException(
+        error.toString(),
+        errorCode: errorCode,
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
+    } catch (ex) {
+      print(ex);
+      if (ex is ServerException)
+        throw ex;
+      else {
+        try {
+          //MM    CommonFunctions.sendExceptionLog(exception: ex, response: response);
+        } catch (ex) {}
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
+      }
+    }
+  }
+
+  @override
+  Future<bool>? uploadCredence({required CrAttachmentRequest params}) async {
+    final mimeType = lookupMimeType(params.data?.filePath ?? "");
+
+    final body = await locator<web.WebService>().uploadFileSSO(
+      ApiUrl.uploadCredences(params.requestId!, params.data!.id),
+      base64: base64Decode(params.data?.base64 ?? ""),
+      fileName: params.data?.fileName,
+      mimeType: mimeType,
+    );
+    ;
+    bool state = body['state'];
+    dynamic data = body['data'];
+    String error = body['error'] ?? ("errors_server_error_1").tr();
+
+    try {
+      if (state == true) {
+        return true;
+      } else {
+        throw ServerException(
+          "errors_server_error_2".tr(),
+          exception: APIException(
+            errorMessage: data,
+          ),
+        );
+      }
+    } catch (ex) {
+      print(ex);
+      try {
+        Helpers.sendLog(
+            url: ApiUrl.complianceAttachment(
+                params.requestId.toString(), params.data!.id),
+            data: data,
+            errorMsg: ex.toString());
+      } catch (ex) {}
+
+      throw ServerException(
+        "errors_server_error_2".tr(),
+        exception: APIException(
+          errorMessage: ex.toString(),
+        ),
+      );
+    }
+  }
+
+  @override
+  Future<bool>? validateApprovals({required int params}) async {
+    var response;
+
+    try {
+      response = await webService.dio.post(
+        ApiUrl.validateApprovals(
+          params,
+        ),
+      );
+
+      var data = response.data["data"]["result"];
+
+      final decodedResponse =
+          ResponseBodyModel<bool>.fromMap(response.data, parsedResult: data);
+
+      return decodedResponse.data!.result!.toFuture();
+    } on DioError catch (error) {
+      print(error);
+      var errorCode;
+      try {
+        final decodedResponse = ResponseBodyModel<bool>.fromMap(
+          error.response?.data,
+        );
+        errorCode = decodedResponse.data?.responseCode;
+      } catch (ex) {}
+
+      throw ServerException(
+        error.toString(),
+        errorCode: errorCode,
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
+    } catch (ex) {
+      print(ex);
+      if (ex is ServerException)
+        throw ex;
+      else {
+        try {
+          //MM    CommonFunctions.sendExceptionLog(exception: ex, response: response);
+        } catch (ex) {}
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
+      }
+    }
+  }
+
+  @override
+  Future<int>? validateSalamaAttachments(
+      {required ValidateSalamaAttachmentsRequest params}) async {
+    var response;
+
+    try {
+      response = await webService.dio.post(
+        ApiUrl.validateSalamaAttachmentsInfo(
+          params.requestId!,
+        ),
+        data: params.toMap(),
+      );
+
+      var data = response.data["data"]["result"];
+
+      final decodedResponse =
+          ResponseBodyModel<int>.fromMap(response.data, parsedResult: data);
+
+      return decodedResponse.data!.result!.toFuture();
+    } on DioError catch (error) {
+      print(error);
+      var errorCode;
+      try {
+        final decodedResponse = ResponseBodyModel<bool>.fromMap(
           error.response?.data,
         );
         errorCode = decodedResponse.data?.responseCode;

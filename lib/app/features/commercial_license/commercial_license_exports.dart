@@ -71,6 +71,9 @@ export 'domain/entities/cr_calculate_fees_request.dart';
 export 'domain/entities/cr_calculate_fees_response.dart';
 export 'domain/entities/cr_add_notes_request.dart';
 export 'domain/entities/cr_submit_response.dart';
+export 'domain/entities/credence_response.dart';
+export 'domain/entities/clean_option_response.dart';
+export 'domain/entities/validate_salama_attachments_reuqest.dart';
 
 // repo
 export 'domain/repositories/cr_repository.dart';
@@ -84,6 +87,12 @@ export 'domain/use_cases/add_isic_activities.dart';
 export 'domain/use_cases/get_accommodation_types.dart';
 export 'domain/use_cases/submit_step2.dart';
 export 'domain/use_cases/submit_step3.dart';
+export 'domain/use_cases/upload_credence.dart';
+export 'domain/use_cases/get_request_credence.dart';
+export 'domain/use_cases/get_clean_options.dart';
+export 'domain/use_cases/validate_approvals.dart';
+export 'domain/use_cases/get_deed_options.dart';
+export 'domain/use_cases/add_beneficiary_notes.dart';
 
 /// Data
 // data sources
@@ -101,6 +110,8 @@ export 'data/models/investment_contracts_response_model.dart';
 export 'data/models/clean_contracts_response_model.dart';
 export 'data/models/cr_calculate_fees_response_model.dart';
 export 'data/models/cr_submit_response_model.dart';
+export 'data/models/credence_response_model.dart';
+export 'data/models/clean_option_response_model.dart';
 
 // repo
 export 'data/repositories/cr_repository_impl.dart';
