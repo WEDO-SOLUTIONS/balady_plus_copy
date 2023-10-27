@@ -1055,7 +1055,7 @@ class CrRemoteDataSourceImpl extends CrRemoteDataSource {
     var response;
 
     try {
-      response = await webService.dio.post(ApiUrl.getCredences(params));
+      response = await webService.dio.get(ApiUrl.getCredences(params));
 
       var data = response.data["data"]["result"];
 
@@ -1109,6 +1109,7 @@ class CrRemoteDataSourceImpl extends CrRemoteDataSource {
       mimeType: mimeType,
     );
     ;
+    print(ApiUrl.uploadCredences(params.requestId!, params.data!.id));
     bool state = body['state'];
     dynamic data = body['data'];
     String error = body['error'] ?? ("errors_server_error_1").tr();
@@ -1148,7 +1149,7 @@ class CrRemoteDataSourceImpl extends CrRemoteDataSource {
     var response;
 
     try {
-      response = await webService.dio.post(
+      response = await webService.dio.get(
         ApiUrl.validateApprovals(
           params,
         ),
