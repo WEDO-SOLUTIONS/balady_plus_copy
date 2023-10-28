@@ -47,7 +47,7 @@ enum PAGE_TYPE {
   vhr,
   emtethal,
   deleteEmtethal,
-renewCommercial,
+  renewCommercial,
   other
 }
 
@@ -126,3 +126,5 @@ enum CRContractCleanRenewOptions {
 enum UserProfileType { Delegator, Agent }
 
 enum ServiceCardsTypes { desc, req, flow, authorInfo }
+
+enum QRSiteLocationType { INSIDE_BUILDING, ON_STREET }

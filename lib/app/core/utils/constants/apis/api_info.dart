@@ -318,6 +318,37 @@ class ApiUrl {
   static String fawrySalamaReports(int requestId) =>
       'v1/balady-commercial-services/new-request/$requestId/fawry-salama-reports';
 
+  static String applyCommercialRequest(int requestId) =>
+      'v1/balady-commercial-services/commercial-flow/applies/$requestId';
+
+  static String getQrCodeDetails(int requestId) =>
+      'v1/balady-commercial-services/qr-code-details/$requestId';
+
+  static String saveQrEnterpriseData(int requestId) =>
+      'v1/balady-commercial-services/enterprise-data/$requestId';
+
+  static String saveQrWorkTimesData(int requestId) =>
+      'v1/balady-commercial-services/work-times/$requestId';
+
+  static String saveAddetionalQrData(int requestId) =>
+      'v1/balady-commercial-services/additional/qr-code-details/$requestId';
+
+  static String qrAttachments(int requestId) =>
+      "v1/balady-commercial-services/qr-attachemnts/$requestId";
+
+  static String qrUploadAttachments(int requestId, String fileTypeId) =>
+      '/v1/balady-commercial-services/upload-qr-attachemnts/$requestId/$fileTypeId';
+
+  static String qrSubmit(int requestId) =>
+      'v1/balady-commercial-services/qr-submits/$requestId';
+
+ static String qrLookUp(String params) =>
+      'v1/balady-commercial-services/qr-lookups/$params';
+
+
+
+
+
 //! Renew Commercial Service
   static String validateBeforeApply(int requestId) =>
       'v1/balady-commercial-services/mobile/renew-request/validate-before-apply/$requestId';

@@ -113,5 +113,8 @@ export 'data/models/cr_submit_response_model.dart';
 export 'data/models/credence_response_model.dart';
 export 'data/models/clean_option_response_model.dart';
 
+export 'data/models/qr/addetional_qr_data_request.dart';
+export 'data/models/qr/save_worktimes_request.dart';
+
 // repo
 export 'data/repositories/cr_repository_impl.dart';

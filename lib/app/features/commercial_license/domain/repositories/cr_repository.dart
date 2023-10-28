@@ -2,6 +2,12 @@ import 'package:dartz/dartz.dart';
 import '../../../../core/errors/errors_exports.dart';
 import '../../../_shared_feature_/shared_feature_exports.dart';
 import '../../commercial_license_exports.dart';
+import '../../data/models/cr_attachment_response_model.dart';
+import '../../data/models/qr/apply_commercial_response_model.dart';
+import '../../data/models/qr/qr_details_model.dart';
+import '../../data/models/qr/qr_lookup.dart';
+import '../../data/models/qr/qr_submit_response.dart';
+import '../../data/models/qr/save_enterprise_data_request.dart';
 import '../../data/models/save_com_submitter_and_owner_request_model.dart';
 import '../entities/cr_attachment_response.dart';
 import '../entities/cr_submit_request.dart';
@@ -73,11 +79,31 @@ abstract class CrRepository {
   Future<Either<Failure, int>> validateSalamaAttachments(
       {required ValidateSalamaAttachmentsRequest params});
 
+  Future<Either<Failure, bool>> fawrySalamaReport({required int params});
 
-  Future<Either<Failure, bool>> fawrySalamaReport(
+  Future<Either<Failure, bool>> fawrySalamaBills({required int params});
+
+  Future<Either<Failure, ApplyCommercialResponseModel>> applyCommercialRequest(
       {required int params});
 
-
-  Future<Either<Failure, bool>> fawrySalamaBills(
+  Future<Either<Failure, QrDetailsModel>> getQrCodeDetails(
       {required int params});
+
+  Future<Either<Failure, int>> saveQrEnterpriseData(
+      {required SaveEnterprisDataRequest params});
+
+  Future<Either<Failure, int>> saveQrWorkTimesData(
+      {required SaveWorkTimesRequest params});
+
+  Future<Either<Failure, int>> saveAddetionalQrData(
+      {required AddtionalQrDataRequest params});
+
+  Future<Either<Failure, CrAttachmentResponseModel>> getQrAttachments(
+      {required int params});
+
+  Future<Either<Failure, bool>> uploadQrAttachments(
+      {required CrAttachmentRequest params});
+
+  Future<Either<Failure, QrSubmitResponse>> qrSubmit({required int params});
+  Future<Either<Failure, QrLookUpResponse>> getQrLookUp({required String params});
 }

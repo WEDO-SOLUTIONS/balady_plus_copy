@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
+import 'package:balady_plus/app/features/commercial_license/data/models/qr/apply_commercial_response_model.dart';
 import 'package:dio/dio.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:mime/mime.dart';
@@ -14,8 +15,14 @@ import '../../domain/entities/cr_submit_request.dart';
 import '../../domain/entities/save_shop_details_request.dart';
 import '../models/cr_attachment_response_model.dart';
 import '../models/cr_submit_response_model.dart';
+import '../models/qr/qr_lookup.dart';
 import '../models/save_com_submitter_and_owner_request_model.dart';
 import '../../../../core/remote_services/web_service.dart' as web;
+import '../models/qr/addetional_qr_data_request.dart';
+import '../models/qr/qr_details_model.dart';
+import '../models/qr/save_enterprise_data_request.dart';
+import '../models/qr/save_worktimes_request.dart';
+import '../models/qr/qr_submit_response.dart';
 
 abstract class CrRemoteDataSource {
   Future<ResponseBodyModel<RecordInfoModel>> getRecordInfo(
@@ -69,6 +76,25 @@ abstract class CrRemoteDataSource {
 
   Future<bool>? fawrySalamaReports({required int params});
   Future<bool>? fawrySalamaBills({required int params});
+
+// ! QR Flow
+  Future<ApplyCommercialResponseModel>? applyCommercialRequest(
+      {required int params});
+  Future<QrDetailsModel>? getQrCodeDetails({required int params});
+
+  Future<int>? saveQrEnterpriseData({required SaveEnterprisDataRequest params});
+
+  Future<int>? saveQrWorkTimesData({required SaveWorkTimesRequest params});
+
+  Future<int>? saveAddetionalQrData({required AddtionalQrDataRequest params});
+
+  Future<CrAttachmentResponseModel>? getQrAttachments({required int params});
+
+  Future<bool> uploadQrAttachment({required CrAttachmentRequest params});
+
+  Future<QrSubmitResponse> qrSubmit({required int params});
+
+  Future<QrLookUpResponse> getQrLookUp({required String params});
 }
 
 class CrRemoteDataSourceImpl extends CrRemoteDataSource {
@@ -1324,6 +1350,475 @@ class CrRemoteDataSourceImpl extends CrRemoteDataSource {
       var errorCode;
       try {
         final decodedResponse = ResponseBodyModel<bool>.fromMap(
+          error.response?.data,
+        );
+        errorCode = decodedResponse.data?.responseCode;
+      } catch (ex) {}
+
+      throw ServerException(
+        error.toString(),
+        errorCode: errorCode,
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
+    } catch (ex) {
+      print(ex);
+      if (ex is ServerException)
+        throw ex;
+      else {
+        try {
+          //MM    CommonFunctions.sendExceptionLog(exception: ex, response: response);
+        } catch (ex) {}
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
+      }
+    }
+  }
+
+  @override
+  Future<ApplyCommercialResponseModel>? applyCommercialRequest(
+      {required int params}) async {
+    var response;
+
+    try {
+      response = await webService.dio.post(
+        ApiUrl.applyCommercialRequest(
+          params,
+        ),
+      );
+
+      var data = response.data["data"]["result"];
+
+      var parsedResult =
+          data != null ? ApplyCommercialResponseModel.fromJson(data) : null;
+
+      final decodedResponse =
+          ResponseBodyModel<ApplyCommercialResponseModel>.fromMap(response.data,
+              parsedResult: parsedResult);
+
+      return decodedResponse.data!.result!.toFuture();
+    } on DioError catch (error) {
+      print(error);
+      var errorCode;
+      try {
+        final decodedResponse =
+            ResponseBodyModel<ApplyCommercialResponseModel>.fromMap(
+          error.response?.data,
+        );
+        errorCode = decodedResponse.data?.responseCode;
+      } catch (ex) {}
+
+      throw ServerException(
+        error.toString(),
+        errorCode: errorCode,
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
+    } catch (ex) {
+      print(ex);
+      if (ex is ServerException)
+        throw ex;
+      else {
+        try {
+          //MM    CommonFunctions.sendExceptionLog(exception: ex, response: response);
+        } catch (ex) {}
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
+      }
+    }
+  }
+
+  @override
+  Future<QrDetailsModel>? getQrCodeDetails({required int params}) async {
+    var response;
+
+    try {
+      response = await webService.dio.get(
+        ApiUrl.getQrCodeDetails(
+          params,
+        ),
+      );
+
+      var data = response.data["data"]["result"];
+
+      var parsedResult = data != null ? QrDetailsModel.fromJson(data) : null;
+
+      final decodedResponse = ResponseBodyModel<QrDetailsModel>.fromMap(
+          response.data,
+          parsedResult: parsedResult);
+
+      return decodedResponse.data!.result!.toFuture();
+    } on DioError catch (error) {
+      print(error);
+      var errorCode;
+      try {
+        final decodedResponse = ResponseBodyModel<QrDetailsModel>.fromMap(
+          error.response?.data,
+        );
+        errorCode = decodedResponse.data?.responseCode;
+      } catch (ex) {}
+
+      throw ServerException(
+        error.toString(),
+        errorCode: errorCode,
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
+    } catch (ex) {
+      print(ex);
+      if (ex is ServerException)
+        throw ex;
+      else {
+        try {
+          //MM    CommonFunctions.sendExceptionLog(exception: ex, response: response);
+        } catch (ex) {}
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
+      }
+    }
+  }
+
+  @override
+  Future<int>? saveQrEnterpriseData(
+      {required SaveEnterprisDataRequest params}) async {
+    // TODO: implement saveQrEnterpriseData
+    //{{baseURL}}/
+
+    var response;
+
+    try {
+      response = await webService.dio.post(
+          ApiUrl.saveQrEnterpriseData(
+            params.requestId!,
+          ),
+          data: params.toJson());
+
+      var data = response.data["data"]["result"];
+
+      final decodedResponse =
+          ResponseBodyModel<int>.fromMap(response.data, parsedResult: data);
+
+      return decodedResponse.data!.result!.toFuture();
+    } on DioError catch (error) {
+      print(error);
+      var errorCode;
+      try {
+        final decodedResponse = ResponseBodyModel<int>.fromMap(
+          error.response?.data,
+        );
+        errorCode = decodedResponse.data?.responseCode;
+      } catch (ex) {}
+
+      throw ServerException(
+        error.toString(),
+        errorCode: errorCode,
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
+    } catch (ex) {
+      print(ex);
+      if (ex is ServerException)
+        throw ex;
+      else {
+        try {
+          //MM    CommonFunctions.sendExceptionLog(exception: ex, response: response);
+        } catch (ex) {}
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
+      }
+    }
+  }
+
+  @override
+  Future<int>? saveQrWorkTimesData(
+      {required SaveWorkTimesRequest params}) async {
+    // TODO: implement saveQrWorkTimesData
+
+    var response;
+
+    try {
+      response = await webService.dio.get(
+          ApiUrl.saveQrWorkTimesData(
+            params.requestId!,
+          ),
+          data: params.toJson());
+
+      var data = response.data["data"]["result"];
+
+      final decodedResponse =
+          ResponseBodyModel<int>.fromMap(response.data, parsedResult: data);
+
+      return decodedResponse.data!.result!.toFuture();
+    } on DioError catch (error) {
+      print(error);
+      var errorCode;
+      try {
+        final decodedResponse = ResponseBodyModel<int>.fromMap(
+          error.response?.data,
+        );
+        errorCode = decodedResponse.data?.responseCode;
+      } catch (ex) {}
+
+      throw ServerException(
+        error.toString(),
+        errorCode: errorCode,
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
+    } catch (ex) {
+      print(ex);
+      if (ex is ServerException)
+        throw ex;
+      else {
+        try {
+          //MM    CommonFunctions.sendExceptionLog(exception: ex, response: response);
+        } catch (ex) {}
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
+      }
+    }
+  }
+
+  @override
+  Future<int>? saveAddetionalQrData(
+      {required AddtionalQrDataRequest params}) async {
+    var response;
+
+    try {
+      response = await webService.dio.get(
+          ApiUrl.saveAddetionalQrData(
+            params.requestId!,
+          ),
+          data: params.toJson());
+
+      var data = response.data["data"]["result"];
+
+      final decodedResponse =
+          ResponseBodyModel<int>.fromMap(response.data, parsedResult: data);
+
+      return decodedResponse.data!.result!.toFuture();
+    } on DioError catch (error) {
+      print(error);
+      var errorCode;
+      try {
+        final decodedResponse = ResponseBodyModel<int>.fromMap(
+          error.response?.data,
+        );
+        errorCode = decodedResponse.data?.responseCode;
+      } catch (ex) {}
+
+      throw ServerException(
+        error.toString(),
+        errorCode: errorCode,
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
+    } catch (ex) {
+      print(ex);
+      if (ex is ServerException)
+        throw ex;
+      else {
+        try {
+          //MM    CommonFunctions.sendExceptionLog(exception: ex, response: response);
+        } catch (ex) {}
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
+      }
+    }
+  }
+
+  @override
+  Future<CrAttachmentResponseModel>? getQrAttachments(
+      {required int params}) async {
+    var response;
+
+    try {
+      response = await webService.dio.get(ApiUrl.qrAttachments(params!));
+
+      var data = response.data["data"];
+
+      var parsedResult =
+          data != null ? CrAttachmentResponseModel.fromMap(data) : null;
+      final decodedResponse =
+          ResponseBodyModel<CrAttachmentResponseModel>.fromMap(response.data,
+              parsedResult: parsedResult);
+
+      return decodedResponse.data!.result!.toFuture();
+    } on DioError catch (error) {
+      print(error);
+      var errorCode;
+      try {
+        final decodedResponse =
+            ResponseBodyModel<CrAttachmentResponseModel>.fromMap(
+          error.response?.data,
+        );
+        errorCode = decodedResponse.data?.responseCode;
+      } catch (ex) {}
+
+      throw ServerException(
+        error.toString(),
+        errorCode: errorCode,
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
+    } catch (ex) {
+      print(ex);
+      if (ex is ServerException)
+        throw ex;
+      else {
+        try {
+          //MM    CommonFunctions.sendExceptionLog(exception: ex, response: response);
+        } catch (ex) {}
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
+      }
+    }
+  }
+
+  @override
+  Future<bool> uploadQrAttachment({required CrAttachmentRequest params}) async {
+    final mimeType = lookupMimeType(params.data?.filePath ?? "");
+
+    final body = await locator<web.WebService>().uploadFileSSO(
+      ApiUrl.qrUploadAttachments(params.requestId!, params.data!.id!),
+      base64: base64Decode(params.data?.base64 ?? ""),
+      fileName: params.data?.fileName,
+      mimeType: mimeType,
+    );
+    ;
+    bool state = body['state'];
+    dynamic data = body['data'];
+    String error = body['error'] ?? ("errors_server_error_1").tr();
+
+    try {
+      if (state == true) {
+        return true;
+      } else {
+        throw ServerException(
+          "errors_server_error_2".tr(),
+          exception: APIException(
+            errorMessage: data,
+          ),
+        );
+      }
+    } catch (ex) {
+      print(ex);
+      try {
+        Helpers.sendLog(
+            url: ApiUrl.complianceAttachment(
+                params.requestId.toString(), params.data!.id),
+            data: data,
+            errorMsg: ex.toString());
+      } catch (ex) {}
+
+      throw ServerException(
+        "errors_server_error_2".tr(),
+        exception: APIException(
+          errorMessage: ex.toString(),
+        ),
+      );
+    }
+  }
+
+  @override
+  Future<QrSubmitResponse> qrSubmit({required int params}) async {
+    var response;
+
+    try {
+      response = await webService.dio.post(
+          ApiUrl.qrSubmit(
+            params!,
+          ),
+          data: params.toJson());
+
+      var data = response.data["data"]["result"];
+
+      var parsedResult = data != null ? QrSubmitResponse.fromJson(data) : null;
+
+      final decodedResponse = ResponseBodyModel<QrSubmitResponse>.fromMap(
+          response.data,
+          parsedResult: parsedResult);
+
+      return decodedResponse.data!.result!.toFuture();
+    } on DioError catch (error) {
+      print(error);
+      var errorCode;
+      try {
+        final decodedResponse = ResponseBodyModel<QrSubmitResponse>.fromMap(
+          error.response?.data,
+        );
+        errorCode = decodedResponse.data?.responseCode;
+      } catch (ex) {}
+
+      throw ServerException(
+        error.toString(),
+        errorCode: errorCode,
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
+    } catch (ex) {
+      print(ex);
+      if (ex is ServerException)
+        throw ex;
+      else {
+        try {
+          //MM    CommonFunctions.sendExceptionLog(exception: ex, response: response);
+        } catch (ex) {}
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
+      }
+    }
+  }
+
+  @override
+  Future<QrLookUpResponse> getQrLookUp({required String params}) async {
+    var response;
+
+    try {
+      response = await webService.dio.get(
+          ApiUrl.qrLookUp(
+            params,
+          ),
+          data: params.toJson());
+
+      var data = response.data["data"]["result"];
+
+      var parsedResult = data != null ? QrLookUpResponse.fromJson(data) : null;
+
+      final decodedResponse = ResponseBodyModel<QrLookUpResponse>.fromMap(
+          response.data,
+          parsedResult: parsedResult);
+
+      return decodedResponse.data!.result!.toFuture();
+    } on DioError catch (error) {
+      print(error);
+      var errorCode;
+      try {
+        final decodedResponse = ResponseBodyModel<QrLookUpResponse>.fromMap(
           error.response?.data,
         );
         errorCode = decodedResponse.data?.responseCode;
