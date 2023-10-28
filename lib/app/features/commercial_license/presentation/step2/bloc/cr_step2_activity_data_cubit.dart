@@ -39,14 +39,13 @@ class CrStep2ActivityDataCubit extends Cubit<CrStep2ActivityDataState> {
           subActivityDetailsStatus: BlocStatus.success,
           subActivityDetails: success.data?.result));
 
-      print("STATE ${state.selectedSubActivity}");
-      print("STATE ${success.data?.result}");
-
-      BottomSheetDialog.showDraggableSheet(
-          NavigationService.navigatorKey.currentContext!,
-          child: CrStep2ConditionsPage(
-            activityTerms: success.data?.result?.activityTerms,
-          ));
+      if (state.selectedIsicActivity?.craft == false) {
+        BottomSheetDialog.showDraggableSheet(
+            NavigationService.navigatorKey.currentContext!,
+            child: CrStep2ConditionsPage(
+              activityTerms: success.data?.result?.activityTerms,
+            ));
+      }
     });
   }
 
@@ -100,17 +99,14 @@ class CrStep2ActivityDataCubit extends Cubit<CrStep2ActivityDataState> {
   }
 
   void save() async {
-    print("HHH");
     int requestId = sl<CommercialLicenseBloc>().state.requestId!;
-    print("HHH $requestId");
 
     emit(state.copyWith(status: BlocStatus.loading, errorMessage: ""));
     final response = await _saveActivityDetails(SubmitActivityDetailRequest(
         requestId: requestId,
-        workerTypeId: state.workerType!.index,
+        workerTypeId: state.workerType!.type,
         area: state.totalArea ?? 0,
         detailedActivityId: state.selectedSubActivity!.id!));
-    print("GGG");
     response.fold(
         (failure) => emit(state.copyWith(
               status: BlocStatus.failure,

@@ -3276,6 +3276,9 @@
 "cr_clean_contract_end_date":"تاريخ انتهاء العقد", 
 "cr_clean_contract_municipality":"البلدية", 
 
+"IDENTITY":"الصك صادر بهوية مالك السجل التجاري", 
+"CR":"الصك صادر برقم السجل التجاري", 
+"CR_700":"الصك صادر برقم 700 في السجل التجاري", 
 
 
   "select_cancellation_reason": "حدد سبب الإلغاء",

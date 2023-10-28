@@ -51,6 +51,14 @@ class MapState extends Equatable {
         mapNo: mapNo ?? this.mapNo);
   }
 
+  bool isFormValid() {
+    return gisResponse != null &&
+        landNo != null &&
+        landNo!.isNotEmpty &&
+        mapNo != null &&
+        mapNo!.isNotEmpty;
+  }
+
   @override
   List<Object?> get props => [
         status,

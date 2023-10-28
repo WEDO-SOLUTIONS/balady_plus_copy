@@ -18,7 +18,7 @@ class CleanContractItem extends Equatable {
   final String? shopContractNo;
   final int? shopCrNo;
   final int? isicCode;
-  final int? shopArea;
+  final double? shopArea;
   final String? shopName;
   final String? contractStartDate;
   final String? contractEndDate;

@@ -270,6 +270,10 @@ class ApiUrl {
 
   static String ejarInfo = "v1/balady-commercial-services/ejar/tenancycontract";
 
+  static String deedInfoOwnwerShip(
+          {required int requestId, required String type}) =>
+      "v1/balady-commercial-services/moj/$requestId/deed-info/$type";
+
   static String deedInfo() => "v1/balady-commercial-services/gsb/deed-info";
 
   static String crIssueAttachments(int requestId) =>
@@ -307,6 +311,12 @@ class ApiUrl {
 
   static String validateSalamaAttachmentsInfo(int requestId) =>
       'v1/balady-commercial-services/validate-salama-attachments-info/$requestId';
+
+  static String fawrySalamaBills(int requestId) =>
+      'v1/balady-commercial-services/new-request/$requestId/fawry-salama-bills';
+
+  static String fawrySalamaReports(int requestId) =>
+      'v1/balady-commercial-services/new-request/$requestId/fawry-salama-reports';
 
 //! Renew Commercial Service
   static String validateBeforeApply(int requestId) =>

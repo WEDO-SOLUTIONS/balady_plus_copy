@@ -47,7 +47,7 @@ class CleanContractItemModel extends CleanContractItem {
         shopContractNo: json["ShopContractNo"],
         shopCrNo: json["ShopCRNo"],
         isicCode: json["ISIC_CODE"],
-        shopArea: json["ShopArea"],
+        shopArea: json["ShopArea"]?.toDouble(),
         shopName: json["ShopName"],
         contractStartDate: json["ContractStartDate"],
         contractEndDate: json["ContractEndDate"],

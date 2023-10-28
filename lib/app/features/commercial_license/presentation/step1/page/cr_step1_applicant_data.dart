@@ -11,7 +11,14 @@ class CRStep1ApplicantData extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<CrStep1ApplicantDataCubit, CrStep1ApplicantDataState>(
+    return BlocConsumer<CrStep1ApplicantDataCubit, CrStep1ApplicantDataState>(
+      listener: (context, state) {
+        if (state.recordStatus == BlocStatus.failure ||
+            state.status == BlocStatus.failure ||
+            state.addIsicActivitiesStatus == BlocStatus.failure) {
+          CommonFunctions.showError(state.errorMessage);
+        }
+      },
       builder: (context, state) {
         return Stack(
           children: [

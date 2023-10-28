@@ -6,6 +6,18 @@ class CrStep4ShopDataState extends Equatable {
   final BlocStatus accommodationTypesStatus;
   final BlocStatus contractsListStatus;
   final BlocStatus investmentListStatus;
+  final BlocStatus deedOptionsStatus;
+  final BlocStatus cleanOptionsStatus;
+  final BlocStatus samalaReportFawryStatus;
+  final BlocStatus samalaBillFawryStatus;
+  final SaveLocationResponse? locationResponse;
+
+  final bool? isFawryReport;
+  final bool? isFawryBill;
+
+  final List<String>? deedOptions;
+  final CleanOptionResponse? cleanOptionResponse;
+
   final List<CrLookupsEntity>? accommodationTypes;
   final DropDownItem? selectedAccommodationType;
   final String? errorMessage;
@@ -30,6 +42,7 @@ class CrStep4ShopDataState extends Equatable {
   final bool? salamaPermitExist; //هل لديك تصريح سلامة؟
   final String? salamaPermitNumber; //رقم تصريح سلامة
   final String? slamaReportNumber; //رقم التقرير الفني
+  final String? slamaBillNumber; //رقم الفاتورة الفني
 
   final String? contractDate; //تاريخ عقد التملك او تاريخ انتهاء عقد الايجار
   final String? contractNumber; //رقم عقد التملك (الصك) او رقم عقد الايجار
@@ -57,11 +70,24 @@ class CrStep4ShopDataState extends Equatable {
   final InvestmentContractItem? selectedInvestmentContract;
 
   final bool? endorsmentAgreement;
+
+  final bool? ejarVerified;
+  final bool? deedVerified;
+
+  final EjarInfoRequest? ejarInfoRequst;
+  final DeedInfoRequest? deedInfoRequst;
+
+  final String? deedOption;
   const CrStep4ShopDataState(
       {this.accommodationTypesStatus = BlocStatus.initial,
       this.contractsListStatus = BlocStatus.initial,
       this.investmentListStatus = BlocStatus.initial,
       this.status = BlocStatus.initial,
+      this.deedOptionsStatus = BlocStatus.initial,
+      this.cleanOptionsStatus = BlocStatus.initial,
+      this.samalaReportFawryStatus = BlocStatus.initial,
+      this.samalaBillFawryStatus = BlocStatus.initial,
+      this.locationResponse,
       this.accommodationTypes,
       this.selectedAccommodationType,
       this.errorMessage,
@@ -83,6 +109,7 @@ class CrStep4ShopDataState extends Equatable {
       this.salamaPermitExist,
       this.salamaPermitNumber,
       this.slamaReportNumber,
+      this.slamaBillNumber,
       this.contractDate,
       this.contractNumber,
       this.contractOption,
@@ -95,12 +122,22 @@ class CrStep4ShopDataState extends Equatable {
       this.selectedCleanContract,
       this.investmentContractResponse,
       this.selectedInvestmentContract,
-      this.endorsmentAgreement});
+      this.endorsmentAgreement,
+      this.deedOptions,
+      this.cleanOptionResponse,
+      this.ejarVerified,
+      this.deedVerified,
+      this.isFawryReport,
+      this.isFawryBill,
+      this.ejarInfoRequst,
+      this.deedInfoRequst,
+      this.deedOption});
 
   @override
   List<Object?> get props {
     return [
       status,
+      deedOption,
       accommodationTypesStatus,
       accommodationTypes,
       selectedAccommodationType,
@@ -123,6 +160,7 @@ class CrStep4ShopDataState extends Equatable {
       salamaPermitExist,
       salamaPermitNumber,
       slamaReportNumber,
+      slamaBillNumber,
       contractDate,
       contractNumber,
       contractOption,
@@ -140,7 +178,18 @@ class CrStep4ShopDataState extends Equatable {
       investmentListStatus,
       investmentContractResponse,
       selectedInvestmentContract,
-      endorsmentAgreement
+      endorsmentAgreement,
+      deedOptionsStatus,
+      cleanOptionsStatus,
+      deedOptions,
+      cleanOptionResponse,
+      ejarVerified,
+      deedVerified,
+      isFawryReport,
+      isFawryBill,
+      ejarInfoRequst,
+      deedInfoRequst,
+      locationResponse
     ];
   }
 
@@ -148,6 +197,9 @@ class CrStep4ShopDataState extends Equatable {
       {BlocStatus? accommodationTypesStatus,
       BlocStatus? contractsListStatus,
       BlocStatus? investmentListStatus,
+      List<String>? deedOptions,
+      SaveLocationResponse? locationResponse,
+      CleanOptionResponse? cleanOptionResponse,
       BlocStatus? status,
       List<CrLookupsEntity>? accommodationTypes,
       DropDownItem? selectedAccommodationType,
@@ -171,10 +223,11 @@ class CrStep4ShopDataState extends Equatable {
       bool? salamaPermitExist,
       Nullable<String?>? salamaPermitNumber,
       Nullable<String?>? slamaReportNumber,
+      Nullable<String?>? slamaBillNumber,
       Nullable<String?>? contractDate,
       Nullable<String?>? contractNumber,
       Nullable<String?>? contractType,
-      bool? isCitizenPledgedToClean,
+      Nullable<bool?>? isCitizenPledgedToClean,
       Nullable<CRSubmitterType?>? crSubmitterType,
       Nullable<CRContractType?>? crContractType,
       Nullable<CRContractOption?>? crContractOption,
@@ -182,9 +235,32 @@ class CrStep4ShopDataState extends Equatable {
       Nullable<CleanContractItem?>? selectedCleanContract,
       InvestmentContractResponse? investmentContractResponse,
       Nullable<InvestmentContractItem?>? selectedInvestmentContract,
-      bool? endorsmentAgreement}) {
+      bool? endorsmentAgreement,
+      BlocStatus? deedOptionsStatus,
+      BlocStatus? cleanOptionsStatus,
+      BlocStatus? samalaReportFawryStatus,
+      BlocStatus? samalaBillFawryStatus,
+      Nullable<bool>? ejarVerified,
+      Nullable<bool>? deedVerified,
+      bool? isFawryReport,
+      bool? isFawryBill,
+      EjarInfoRequest? ejarInfoRequst,
+      DeedInfoRequest? deedInfoRequst,
+      String? deedOption}) {
     return CrStep4ShopDataState(
         status: status ?? this.status,
+        ejarVerified:
+            ejarVerified == null ? this.ejarVerified : this.ejarVerified,
+        deedVerified:
+            deedVerified == null ? this.deedVerified : this.deedVerified,
+        samalaReportFawryStatus:
+            samalaReportFawryStatus ?? this.samalaReportFawryStatus,
+        samalaBillFawryStatus:
+            samalaBillFawryStatus ?? this.samalaBillFawryStatus,
+        deedOptionsStatus: deedOptionsStatus ?? this.deedOptionsStatus,
+        cleanOptionsStatus: cleanOptionsStatus ?? this.cleanOptionsStatus,
+        deedOptions: deedOptions ?? this.deedOptions,
+        cleanOptionResponse: cleanOptionResponse ?? this.cleanOptionResponse,
         investmentContractResponse:
             investmentContractResponse ?? this.investmentContractResponse,
         accommodationTypesStatus:
@@ -207,8 +283,9 @@ class CrStep4ShopDataState extends Equatable {
         existInMall: existInMall ?? this.existInMall,
         selectedMall: selectedMall ?? this.selectedMall,
         floorNumber: floorNumber ?? this.floorNumber,
-        isCitizenPledgedToClean:
-            isCitizenPledgedToClean ?? this.isCitizenPledgedToClean,
+        isCitizenPledgedToClean: isCitizenPledgedToClean == null
+            ? this.isCitizenPledgedToClean
+            : isCitizenPledgedToClean.value,
         cleanContractEndDate: cleanContractEndDate == null
             ? this.cleanContractEndDate
             : cleanContractEndDate.value,
@@ -219,6 +296,9 @@ class CrStep4ShopDataState extends Equatable {
         slamaReportNumber: slamaReportNumber == null
             ? this.slamaReportNumber
             : slamaReportNumber.value,
+        slamaBillNumber: slamaBillNumber == null
+            ? this.slamaBillNumber
+            : slamaBillNumber.value,
         contractDate:
             contractDate == null ? this.contractDate : contractDate.value,
         contractNumber:
@@ -246,6 +326,119 @@ class CrStep4ShopDataState extends Equatable {
         selectedInvestmentContract: selectedInvestmentContract == null
             ? this.selectedInvestmentContract
             : selectedInvestmentContract.value,
-        endorsmentAgreement: endorsmentAgreement ?? this.endorsmentAgreement);
+        endorsmentAgreement: endorsmentAgreement ?? this.endorsmentAgreement,
+        isFawryReport: isFawryReport ?? this.isFawryReport,
+        isFawryBill: isFawryBill ?? this.isFawryBill,
+        ejarInfoRequst: ejarInfoRequst ?? this.ejarInfoRequst,
+        deedInfoRequst: deedInfoRequst ?? this.deedInfoRequst,
+        locationResponse: locationResponse ?? this.locationResponse,
+        deedOption: deedOption ?? this.deedOption);
+  }
+
+  bool showSalamaReport() {
+    if (locationResponse?.slamaReportOptions?.contains("SERVICE") ?? false) {
+      return true;
+    }
+
+    return false;
+  }
+
+  bool showSalamaBill() {
+    if (locationResponse?.slamaBillOptions?.contains("SERVICE") ?? false) {
+      return true;
+    }
+    return false;
+  }
+
+  bool showAttachDeed() {
+    if (locationResponse?.contractOptionsResponseDto?.deedOptions
+            ?.contains("ATTACH") ??
+        false) {
+      return true;
+    }
+
+    return false;
+  }
+
+  bool showAttachEjar() {
+    if (locationResponse?.contractOptionsResponseDto?.ejarOptions
+            ?.contains("ATTACH") ??
+        false) {
+      return true;
+    }
+    return false;
+  }
+
+  bool showAttachInvest() {
+    if (locationResponse?.contractOptionsResponseDto?.investOptions
+            ?.contains("ATTACH") ??
+        false) {
+      return true;
+    }
+    return false;
+  }
+
+  bool showServicehDeed() {
+    if (locationResponse?.contractOptionsResponseDto?.deedOptions
+            ?.contains("SERVICE") ??
+        false) {
+      return true;
+    }
+
+    return false;
+  }
+
+  bool showServiceEjar() {
+    if (locationResponse?.contractOptionsResponseDto?.ejarOptions
+            ?.contains("SERVICE") ??
+        false) {
+      return true;
+    }
+    return false;
+  }
+
+  bool showServiceInvest() {
+    if (locationResponse?.contractOptionsResponseDto?.investOptions
+            ?.contains("SERVICE") ??
+        false) {
+      return true;
+    }
+    return false;
+  }
+
+  bool cleanOptionBALADIASADAD() {
+    return cleanOptionResponse?.cleanOption == "BALADIA_SADAD";
+  }
+
+  bool cleanOptionCLEANCONTRACT() {
+    return cleanOptionResponse?.cleanOption == "CLEAN_CONTRACT";
+  }
+
+  bool cleanOptionOPTIONAL() {
+    return cleanOptionResponse?.cleanOption == "OPTIONAL";
+  }
+
+  bool cleanTypeAttach() {
+    return cleanOptionResponse?.contractOption == "ATTACH";
+  }
+
+  bool cleanTypeService() {
+    return cleanOptionResponse?.contractOption == "SERVICE";
+  }
+
+  bool cleanTypeATTACHSERVICE() {
+    return cleanOptionResponse?.contractOption == "ATTACH,SERVICE";
+  }
+
+  bool cleanContractshowPayAll() {
+    return cleanOptionBALADIASADAD() || cleanOptionOPTIONAL();
+  }
+
+  bool cleanContractshowAttach() {
+    return (cleanTypeATTACHSERVICE() || cleanTypeAttach());
+  }
+
+  bool cleanContractshowService() {
+    return (cleanTypeATTACHSERVICE() || cleanTypeService());
   }
 }
