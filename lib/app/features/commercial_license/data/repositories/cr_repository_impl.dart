@@ -1,3 +1,8 @@
+import 'package:balady_plus/app/features/commercial_license/data/models/qr/apply_commercial_response_model.dart';
+import 'package:balady_plus/app/features/commercial_license/data/models/qr/qr_details_model.dart';
+import 'package:balady_plus/app/features/commercial_license/data/models/qr/qr_lookup.dart';
+import 'package:balady_plus/app/features/commercial_license/data/models/qr/qr_submit_response.dart';
+import 'package:balady_plus/app/features/commercial_license/data/models/qr/save_enterprise_data_request.dart';
 import 'package:balady_plus/app/features/commercial_license/data/models/save_com_submitter_and_owner_request_model.dart';
 import 'package:balady_plus/app/features/commercial_license/domain/entities/cr_attachment_response.dart';
 import 'package:balady_plus/app/features/commercial_license/domain/entities/cr_submit_request.dart';
@@ -6,6 +11,7 @@ import 'package:dartz/dartz.dart' show Either, Left, Right;
 import '../../../../core/errors/errors_exports.dart';
 import '../../../_shared_feature_/shared_feature_exports.dart';
 import '../../commercial_license_exports.dart';
+import '../models/cr_attachment_response_model.dart';
 
 class CrRepositoryImpl implements CrRepository {
   final CrRemoteDataSource remoteDataSource;
@@ -323,6 +329,115 @@ class CrRepositoryImpl implements CrRepository {
     try {
       final data = await remoteDataSource.fawrySalamaReports(params: params);
       return Right(data!);
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage,
+          statusCode: error.statusCode, errorCode: error.errorCode));
+    }
+  }
+
+  @override
+  Future<Either<Failure, ApplyCommercialResponseModel>> applyCommercialRequest(
+      {required int params}) async {
+    try {
+      final data =
+          await remoteDataSource.applyCommercialRequest(params: params);
+      return Right(data!);
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage,
+          statusCode: error.statusCode, errorCode: error.errorCode));
+    }
+  }
+
+  @override
+  Future<Either<Failure, CrAttachmentResponseModel>> getQrAttachments(
+      {required int params}) async {
+    try {
+      final data = await remoteDataSource.getQrAttachments(params: params);
+      return Right(data!);
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage,
+          statusCode: error.statusCode, errorCode: error.errorCode));
+    }
+  }
+
+  @override
+  Future<Either<Failure, QrDetailsModel>> getQrCodeDetails(
+      {required int params}) async {
+    try {
+      final data = await remoteDataSource.getQrCodeDetails(params: params);
+      return Right(data!);
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage,
+          statusCode: error.statusCode, errorCode: error.errorCode));
+    }
+  }
+
+  @override
+  Future<Either<Failure, QrSubmitResponse>> qrSubmit(
+      {required int params}) async {
+    try {
+      final data = await remoteDataSource.qrSubmit(params: params);
+      return Right(data!);
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage,
+          statusCode: error.statusCode, errorCode: error.errorCode));
+    }
+  }
+
+  @override
+  Future<Either<Failure, int>> saveAddetionalQrData(
+      {required AddtionalQrDataRequest params}) async {
+    try {
+      final data = await remoteDataSource.saveAddetionalQrData(params: params);
+      return Right(data!);
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage,
+          statusCode: error.statusCode, errorCode: error.errorCode));
+    }
+  }
+
+  @override
+  Future<Either<Failure, int>> saveQrEnterpriseData(
+      {required SaveEnterprisDataRequest params}) async {
+    try {
+      final data = await remoteDataSource.saveQrEnterpriseData(params: params);
+      return Right(data!);
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage,
+          statusCode: error.statusCode, errorCode: error.errorCode));
+    }
+  }
+
+  @override
+  Future<Either<Failure, int>> saveQrWorkTimesData(
+      {required SaveWorkTimesRequest params}) async {
+    try {
+      final data = await remoteDataSource.saveQrWorkTimesData(params: params);
+      return Right(data!);
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage,
+          statusCode: error.statusCode, errorCode: error.errorCode));
+    }
+  }
+
+  @override
+  Future<Either<Failure, bool>> uploadQrAttachments(
+      {required CrAttachmentRequest params}) async {
+    try {
+      final data = await remoteDataSource.uploadQrAttachment(params: params);
+      return Right(data!);
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage,
+          statusCode: error.statusCode, errorCode: error.errorCode));
+    }
+  }
+
+  @override
+  Future<Either<Failure, QrLookUpResponse>> getQrLookUp(
+      {required String params}) async {
+    try {
+      final data = await remoteDataSource.getQrLookUp(params: params);
+      return Right(data);
     } on ServerException catch (error) {
       return Left(ServerFailure(error.errorMessage,
           statusCode: error.statusCode, errorCode: error.errorCode));

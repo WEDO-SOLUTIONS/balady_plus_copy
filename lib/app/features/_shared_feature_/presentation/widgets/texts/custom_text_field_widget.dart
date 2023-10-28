@@ -322,7 +322,7 @@ class CustomTextFieldWidgetWithOptinal extends StatelessWidget {
   final Color labelColor;
   final double labelSize;
   final TextAlign labelTextAlign;
-
+  final bool isDigitsOnly;
   final bool filled;
   final Color fillColor;
   final double borderWidth;
@@ -330,7 +330,7 @@ class CustomTextFieldWidgetWithOptinal extends StatelessWidget {
   final Color borderColor;
   final BORDER_TYPE borderType;
 
-  final TextEditingController controller;
+  final TextEditingController? controller;
   final FocusNode? focusNode;
   final bool autoCorrect;
   final bool readOnly;
@@ -369,6 +369,7 @@ class CustomTextFieldWidgetWithOptinal extends StatelessWidget {
       this.labelColor = AppColor.baladyDarkGreen2,
       this.labelSize = 13.0,
       this.labelTextAlign = TextAlign.start,
+      this.isDigitsOnly = false,
       this.filled = false,
       this.textDirection,
       this.fillColor = Colors.transparent,
@@ -376,7 +377,7 @@ class CustomTextFieldWidgetWithOptinal extends StatelessWidget {
       this.borderRadius = 2.0,
       this.borderColor = AppColor.black200,
       this.borderType = BORDER_TYPE.underline,
-      required this.controller,
+      this.controller,
       this.focusNode,
       this.autoCorrect = true,
       this.readOnly = false,
@@ -457,7 +458,11 @@ class CustomTextFieldWidgetWithOptinal extends StatelessWidget {
                     obscureText: obsecureText,
                     textAlignVertical: textAlignVertical,
                     textInputAction: textInputAction,
-                    inputFormatters: inputFormatter,
+                    inputFormatters: inputFormatter ??
+                        [
+                          if (isDigitsOnly)
+                            FilteringTextInputFormatter.digitsOnly,
+                        ],
                     style: textFieldStyle ??
                         const TextStyle(
                             fontSize: 16.0,
@@ -472,6 +477,7 @@ class CustomTextFieldWidgetWithOptinal extends StatelessWidget {
                       ),
                       // counter: const SizedBox(),
                       hintText: hintText,
+
                       hintStyle: hintStyle ??
                           const TextStyle(
                               fontSize: 16.0,
