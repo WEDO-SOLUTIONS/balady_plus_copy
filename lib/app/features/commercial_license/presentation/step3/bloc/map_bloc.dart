@@ -73,16 +73,19 @@ class MapBloc extends Bloc<MapEvent, MapState> {
       emitter(state.copyWith(
         status: BlocStatus.success,
         gisResponse: success,
-        landNo: success.parcelNo,
-        mapNo: success.planNo,
+        mapNo: success.planNo != "Null" ? success.planNo ?? "" : "",
+        landNo: success.parcelNo != "Null" ? success.parcelNo ?? "" : "",
         errorMessage: "",
       ));
-      mapNpController.text = success.planNo ?? "";
-      landNpController.text = success.parcelNo ?? "";
 
       if (e.popPage) {
-        NavigationService.navigatorKey.currentState?.pop(MapScreenParams(
-            gisParams: e.params, gisResponse: state.gisResponse));
+        mapNpController.text =
+            success.planNo != "Null" ? success.planNo ?? "" : "";
+        landNpController.text =
+            success.parcelNo != "Null" ? success.parcelNo ?? "" : "";
+
+        NavigationService.navigatorKey.currentState
+            ?.pop(MapScreenParams(gisParams: e.params, gisResponse: success));
       }
     });
   }

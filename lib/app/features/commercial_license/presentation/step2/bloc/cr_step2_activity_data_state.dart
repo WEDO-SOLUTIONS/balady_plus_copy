@@ -85,4 +85,12 @@ class CrStep2ActivityDataState extends Equatable {
         totalArea: totalArea ?? this.totalArea,
         workerType: workerType ?? this.workerType);
   }
+
+  bool isFormValid() {
+    return workerType != null &&
+        totalArea != null &&
+        totalArea != 0 &&
+        selectedIsicActivity != null &&
+        selectedSubActivity != null;
+  }
 }

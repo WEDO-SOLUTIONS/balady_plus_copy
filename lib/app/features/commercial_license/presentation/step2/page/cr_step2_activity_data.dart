@@ -138,7 +138,7 @@ class CRStep2ActivityData extends StatelessWidget {
                 ),
               ),
               CRPreviousNextButtons(
-                isBtnDisabled: false,
+                isBtnDisabled: !state.isFormValid(),
                 onPressed: () {
                   context.read<CrStep2ActivityDataCubit>().save();
                 },

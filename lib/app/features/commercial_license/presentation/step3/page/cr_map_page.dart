@@ -34,56 +34,50 @@ class _CRMapScreen extends State<CRMapScreen> {
 
   @override
   Widget build(BuildContext context) {
-    MapScreenParams? params =
-        ModalRoute.of(context)!.settings.arguments as MapScreenParams;
-
     return Scaffold(
         backgroundColor: AppColor.white4,
         appBar: null,
-        body: BlocProvider(
-          create: (context) => MapBloc(params: params),
-          child: BlocConsumer<MapBloc, MapState>(
-            listener: (context, state) {
-              // TODO: implement listener
-              if (state.status == BlocStatus.failure)
-                CommonFunctions.showError(state.errorMessage ?? "");
-            },
-            builder: (context, state) {
-              return Stack(
-                children: [
-                  CRMapView(
-                    showRadius: false,
-                    showSearchPaddingScreen: true,
-                    readOnly: params.readOnly ?? false,
-                  ),
-                  // exit button
-                  Align(
-                    alignment: AlignmentDirectional.topStart,
-                    child: GestureDetector(
-                      onTap: () {
-                        Navigator.of(context).pop();
-                      },
-                      child: Container(
-                        margin: EdgeInsetsDirectional.only(
-                            top: MediaQuery.of(context).padding.top + 5,
-                            start: 12),
-                        child: Image.asset(
-                          widget.closeIcon
-                              ? Constants.imgPath + 'exit@3x.png' //MM
-                              : Constants.imgPath + 'exitBack@3x.png',
-                          height: 38,
-                          width: 38,
-                        ),
+        body: BlocConsumer<MapBloc, MapState>(
+          listener: (context, state) {
+            // TODO: implement listener
+            if (state.status == BlocStatus.failure)
+              CommonFunctions.showError(state.errorMessage ?? "");
+          },
+          builder: (context, state) {
+            return Stack(
+              children: [
+                CRMapView(
+                  showRadius: false,
+                  showSearchPaddingScreen: true,
+                  readOnly: false,
+                ),
+                // exit button
+                Align(
+                  alignment: AlignmentDirectional.topStart,
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: Container(
+                      margin: EdgeInsetsDirectional.only(
+                          top: MediaQuery.of(context).padding.top + 5,
+                          start: 12),
+                      child: Image.asset(
+                        widget.closeIcon
+                            ? Constants.imgPath + 'exit@3x.png' //MM
+                            : Constants.imgPath + 'exitBack@3x.png',
+                        height: 38,
+                        width: 38,
                       ),
                     ),
                   ),
-                  // loading
-                  if (state.status == BlocStatus.loading)
-                    const CustomCircularLoadingWidget()
-                ],
-              );
-            },
-          ),
+                ),
+                // loading
+                if (state.status == BlocStatus.loading)
+                  const CustomCircularLoadingWidget()
+              ],
+            );
+          },
         ));
   }
 }

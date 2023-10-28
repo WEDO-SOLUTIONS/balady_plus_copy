@@ -41,8 +41,8 @@ class SaveShopDetailsRequest {
   String? boardContractNumber;
   String? selectedBoardContractOption;
   List<CommercialBoardType>? boardsInfo;
-  DeedInfoResponse? deedInfo;
-  EjarInfoResponse? ejarContractInfo;
+  DeedInfoRequest? deedInfo;
+  EjarInfoRequest? ejarContractInfo;
   CleanContractItem? cleanContractInfo;
   SaveShopDetailsRequest({
     this.requestId,
@@ -110,10 +110,11 @@ class SaveShopDetailsRequest {
       "contractType": contractType,
       "salamaBillNumber": salamaBillNumber,
       "slamaReportNumber": slamaReportNumber,
-      "deedInfo": {},
-      "ejarContractInfo": {},
+      "deedInfo": deedInfo?.toMap(),
+      if (ejarContractInfo != null &&
+          ejarContractInfo?.tenancyContractNumber != null)
+        "ejarContractInfo": ejarContractInfo?.toMap(),
       "cleanContractNumber": cleanContractNumber,
-      "cleanContractInfo": {},
       "investmentContractNumber": investmentContractNumber,
       "blockNumber": blockNumber,
       "brand": brand,

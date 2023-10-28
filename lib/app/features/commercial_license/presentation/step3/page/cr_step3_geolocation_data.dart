@@ -8,13 +8,23 @@ import '../../../../_shared_feature_/shared_feature_exports.dart';
 import '../../../../vd/domain/entities/map/map_screen_params.dart';
 import '../../../commercial_license_exports.dart';
 import '../bloc/map_bloc.dart';
+import 'cr_map_page.dart';
 
-class CRStep3GeolocationData extends StatelessWidget {
+class CRStep3GeolocationData extends StatefulWidget {
   const CRStep3GeolocationData({Key? key}) : super(key: key);
 
   @override
+  State<CRStep3GeolocationData> createState() => _CRStep3GeolocationDataState();
+}
+
+class _CRStep3GeolocationDataState extends State<CRStep3GeolocationData> {
+  @override
   Widget build(BuildContext context) {
-    return BlocBuilder<MapBloc, MapState>(builder: (context, state) {
+    return BlocConsumer<MapBloc, MapState>(listener: (context, state) {
+      if (state.status == BlocStatus.failure) {
+        CommonFunctions.showError(state.errorMessage ?? "");
+      }
+    }, builder: (context, state) {
       return Stack(
         children: [
           Column(
@@ -33,19 +43,28 @@ class CRStep3GeolocationData extends StatelessWidget {
                             selectedValue: state.gisResponse?.getFullAddress(),
                             title: "الموقع",
                             onTap: () async {
-                              await NavigationService.navigatorKey.currentState!
-                                  .pushNamed(RouteName.crMapScreen,
-                                      arguments: MapScreenParams(
-                                        gisParams: state.location,
-                                        gisResponse: state.gisResponse,
-                                      ))
-                                  .then((value) {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (ctx) {
+                                  return BlocProvider.value(
+                                      value: context.read<MapBloc>(),
+                                      child: CRMapScreen());
+                                }),
+                              ).then((value) {
                                 if (value != null) {
                                   MapScreenParams? params =
                                       value as MapScreenParams;
                                   context.read<MapBloc>().emit(state.copyWith(
                                       gisResponse: params.gisResponse,
-                                      location: params.gisParams));
+                                      location: params.gisParams,
+                                      mapNo:
+                                          params.gisResponse?.planNo != "Null"
+                                              ? params.gisResponse?.planNo ?? ""
+                                              : "",
+                                      landNo: params.gisResponse?.parcelNo !=
+                                              "Null"
+                                          ? params.gisResponse?.parcelNo ?? ""
+                                          : ""));
                                 }
                               });
                             }),
@@ -73,8 +92,16 @@ class CRStep3GeolocationData extends StatelessWidget {
                           label: "رقم المخطط",
                           hintText: "ادخل رقم المخطط",
                           controller: context.read<MapBloc>().mapNpController,
-                          isDigitsOnly: true,
-                          keyboardType: TextInputType.number,
+                          isDigitsOnly: false,
+                          fillColor:
+                              (state.gisResponse?.planNo?.isEmpty ?? true) ||
+                                      state.gisResponse?.planNo == "Null"
+                                  ? Colors.white
+                                  : Colors.transparent,
+                          enabled:
+                              (state.gisResponse?.planNo?.isEmpty ?? true) ||
+                                  state.gisResponse?.planNo == "Null",
+                          keyboardType: TextInputType.text,
                           bottomMargin: 24,
                           onChanged: (value) {
                             context
@@ -86,8 +113,16 @@ class CRStep3GeolocationData extends StatelessWidget {
                           label: "رقم قطعه الارض",
                           hintText: "ادخل رقم قطعه الارض",
                           controller: context.read<MapBloc>().landNpController,
-                          isDigitsOnly: true,
-                          keyboardType: TextInputType.number,
+                          isDigitsOnly: false,
+                          fillColor:
+                              (state.gisResponse?.parcelNo?.isEmpty ?? true) ||
+                                      state.gisResponse?.parcelNo == "Null"
+                                  ? Colors.white
+                                  : Colors.transparent,
+                          enabled:
+                              (state.gisResponse?.parcelNo?.isEmpty ?? true) ||
+                                  state.gisResponse?.parcelNo == "Null",
+                          keyboardType: TextInputType.text,
                           bottomMargin: 24,
                           onChanged: (value) {
                             context
@@ -101,7 +136,7 @@ class CRStep3GeolocationData extends StatelessWidget {
                 ),
               ),
               CRPreviousNextButtons(
-                isBtnDisabled: state.gisResponse == null,
+                isBtnDisabled: !state.isFormValid(),
                 onPressed: () {
                   context.read<MapBloc>().add(const SaveLocationDataEvent());
                 },

@@ -72,4 +72,12 @@ abstract class CrRepository {
 
   Future<Either<Failure, int>> validateSalamaAttachments(
       {required ValidateSalamaAttachmentsRequest params});
+
+
+  Future<Either<Failure, bool>> fawrySalamaReport(
+      {required int params});
+
+
+  Future<Either<Failure, bool>> fawrySalamaBills(
+      {required int params});
 }

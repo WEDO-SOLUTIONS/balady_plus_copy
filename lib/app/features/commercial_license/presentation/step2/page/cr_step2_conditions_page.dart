@@ -151,13 +151,30 @@ class ConditionItem extends StatelessWidget {
             ),
           if ((values?.length ?? 0) > 1)
             ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
                 itemCount: values?.length ?? 0,
                 itemBuilder: (context, index) {
-                  return CustomTextWidget(
-                    values?[index] ?? "",
-                    fontColor: AppColor.blackModern700Light,
-                    fontSize: 14,
-                    fontWeight: AppFontWeight.bold,
+                  return Column(
+                    children: [
+                      Row(
+                        children: [
+                          SvgPicture.asset(IconPath.checked),
+                          const CustomHorizontalSpace(width: 4),
+                          Flexible(
+                            child: CustomTextWidget(
+                              values?[index] ?? "",
+                              fontColor: AppColor.blackModern700Light,
+                              fontSize: 14,
+                              maxLines: 200,
+                              height: 1.4,
+                              fontWeight: AppFontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const CustomVerticalSpace(height: 8)
+                    ],
                   );
                 }),
         ],

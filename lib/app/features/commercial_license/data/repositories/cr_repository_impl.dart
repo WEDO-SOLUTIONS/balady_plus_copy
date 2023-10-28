@@ -306,4 +306,26 @@ class CrRepositoryImpl implements CrRepository {
           statusCode: error.statusCode, errorCode: error.errorCode));
     }
   }
+
+  @override
+  Future<Either<Failure, bool>> fawrySalamaBills({required int params}) async {
+    try {
+      final data = await remoteDataSource.fawrySalamaBills(params: params);
+      return Right(data!);
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage,
+          statusCode: error.statusCode, errorCode: error.errorCode));
+    }
+  }
+
+  @override
+  Future<Either<Failure, bool>> fawrySalamaReport({required int params}) async {
+    try {
+      final data = await remoteDataSource.fawrySalamaReports(params: params);
+      return Right(data!);
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage,
+          statusCode: error.statusCode, errorCode: error.errorCode));
+    }
+  }
 }

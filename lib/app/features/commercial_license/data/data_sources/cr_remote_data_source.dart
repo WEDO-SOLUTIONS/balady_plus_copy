@@ -66,6 +66,9 @@ abstract class CrRemoteDataSource {
 
   Future<int>? validateSalamaAttachments(
       {required ValidateSalamaAttachmentsRequest params});
+
+  Future<bool>? fawrySalamaReports({required int params});
+  Future<bool>? fawrySalamaBills({required int params});
 }
 
 class CrRemoteDataSourceImpl extends CrRemoteDataSource {
@@ -446,7 +449,7 @@ class CrRemoteDataSourceImpl extends CrRemoteDataSource {
 
     try {
       response = await webService.dio
-          .post(ApiUrl.cleanContracts(params!.requestId), data: params.toMap());
+          .get(ApiUrl.cleanContracts(params!.requestId), data: params.toMap());
 
       var data = response.data["data"];
 
@@ -496,7 +499,10 @@ class CrRemoteDataSourceImpl extends CrRemoteDataSource {
     var response;
 
     try {
-      response = await webService.dio.get(ApiUrl.deedInfo());
+      response = await webService.dio.get(
+          ApiUrl.deedInfoOwnwerShip(
+              requestId: params!.requestId, type: params.ownershipType!),
+          options: Options(headers: {"deedNumber": params.deedNumber}));
 
       var data = response.data["data"]["result"];
 
@@ -950,7 +956,7 @@ class CrRemoteDataSourceImpl extends CrRemoteDataSource {
     var response;
 
     try {
-      response = await webService.dio.post(
+      response = await webService.dio.get(
         ApiUrl.cleanOptions(
           params,
         ),
@@ -1004,13 +1010,13 @@ class CrRemoteDataSourceImpl extends CrRemoteDataSource {
     var response;
 
     try {
-      response = await webService.dio.post(
+      response = await webService.dio.get(
         ApiUrl.deedOptions(
           params,
         ),
       );
 
-      var data = response.data["data"]["result"] as List<String>?;
+      List<String> data = response.data["data"]["result"].cast<String>();
 
       final decodedResponse = ResponseBodyModel<List<String>>.fromMap(
           response.data,
@@ -1211,6 +1217,106 @@ class CrRemoteDataSourceImpl extends CrRemoteDataSource {
 
       final decodedResponse =
           ResponseBodyModel<int>.fromMap(response.data, parsedResult: data);
+
+      return decodedResponse.data!.result!.toFuture();
+    } on DioError catch (error) {
+      print(error);
+      var errorCode;
+      try {
+        final decodedResponse = ResponseBodyModel<bool>.fromMap(
+          error.response?.data,
+        );
+        errorCode = decodedResponse.data?.responseCode;
+      } catch (ex) {}
+
+      throw ServerException(
+        error.toString(),
+        errorCode: errorCode,
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
+    } catch (ex) {
+      print(ex);
+      if (ex is ServerException)
+        throw ex;
+      else {
+        try {
+          //MM    CommonFunctions.sendExceptionLog(exception: ex, response: response);
+        } catch (ex) {}
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
+      }
+    }
+  }
+
+  @override
+  Future<bool>? fawrySalamaBills({required int params}) async {
+    var response;
+
+    try {
+      response = await webService.dio.get(
+        ApiUrl.fawrySalamaBills(
+          params,
+        ),
+      );
+
+      var data = response.data["data"]["result"]["IsFawry"];
+
+      final decodedResponse =
+          ResponseBodyModel<bool>.fromMap(response.data, parsedResult: data);
+
+      return decodedResponse.data!.result!.toFuture();
+    } on DioError catch (error) {
+      print(error);
+      var errorCode;
+      try {
+        final decodedResponse = ResponseBodyModel<bool>.fromMap(
+          error.response?.data,
+        );
+        errorCode = decodedResponse.data?.responseCode;
+      } catch (ex) {}
+
+      throw ServerException(
+        error.toString(),
+        errorCode: errorCode,
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
+    } catch (ex) {
+      print(ex);
+      if (ex is ServerException)
+        throw ex;
+      else {
+        try {
+          //MM    CommonFunctions.sendExceptionLog(exception: ex, response: response);
+        } catch (ex) {}
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
+      }
+    }
+  }
+
+  @override
+  Future<bool>? fawrySalamaReports({required int params}) async {
+    var response;
+
+    try {
+      response = await webService.dio.get(
+        ApiUrl.fawrySalamaReports(
+          params,
+        ),
+      );
+
+      var data = response.data["data"]["result"]["IsFawry"];
+
+      final decodedResponse =
+          ResponseBodyModel<bool>.fromMap(response.data, parsedResult: data);
 
       return decodedResponse.data!.result!.toFuture();
     } on DioError catch (error) {
