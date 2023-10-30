@@ -1,4 +1,4 @@
-import 'package:dio/dio.dart' show DioError;
+import 'package:dio/dio.dart' show DioError, Options;
 import 'package:localize_and_translate/localize_and_translate.dart'
     show Translation;
 
@@ -23,11 +23,15 @@ abstract class InvoicesRemoteDataSource {
   Future<List<InvoicesModel>> getInvoices(
     InvoicesParamsModel params,
   );
+
   Future<List<InvoiceStatusModel>> getInvoiceStatuses();
+
   Future<List<InvoiceTypeModel>> getInvoiceTypes();
+
   Future<List<InvoiceSubTypeModel>> getInvoiceSubTypes(
     InvoiceSubTypeParamsModel params,
   );
+
   Future<InvoiceDetailsModel> getInvoiceDetails(
     InvoiceDetailsParamsModel params,
   );
@@ -222,6 +226,13 @@ class InvoicesRemoteDataSourceImplementation
       response = await webService.dio.post(
         ApiUrl.invoiceDetails,
         data: params.toMap(),
+        options: params.xSourceApp != null
+            ? Options(
+                headers: {
+                  "x-source-app": params.xSourceApp,
+                },
+              )
+            : null,
       );
 
       final data = response.data;

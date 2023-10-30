@@ -13,17 +13,26 @@ class InvoiceDetailsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List  arguments = ModalRoute.of(context)!.settings.arguments as List;
-    String  invoiceId = arguments[0];
-    String  crNumber = arguments[1];
-    String  crType = arguments[2];
+    (
+      String payUrl,
+      String? crNumber,
+      String? crType,
+      String? xSourceApp,
+    ) arguments = ModalRoute.of(context)!.settings.arguments as (
+      String payUrl,
+      String? crNumber,
+      String? crType,
+      String? xSourceApp,
+    );
+
 
     return BlocProvider(
       create: (context) => sl<InvoiceDetailsCubit>(),
       child: InvoiceDetailBody(
-        invoiceId: invoiceId,
-        crNumber: crNumber,
-        crType: crType,
+        invoiceId: arguments.$1,
+        crNumber: arguments.$2,
+        crType: arguments.$3,
+        xSourceApp: arguments.$4,
       ),
     );
   }

@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../../core/utils/utils_exports.dart'
     show BlocRequestStatus, CommonProperties;
@@ -19,17 +20,24 @@ class InvoiceDetailsCubit extends Cubit<InvoiceDetailsState> {
     this.getInvoiceDetails,
   ) : super(const InvoiceDetailsState());
 
-  Future<void> getInvoiceDetailsById(String id,String? crNumber,String? crType) async {
+  Future<void> getInvoiceDetailsById(
+    String id,
+    String? crNumber,
+    String? crType,
+    String? xSourceApp,
+  ) async {
     emit(
       state.copyWith(status: BlocRequestStatus.submissionGetLoading),
     );
-    final identityNumber =  crNumber ?? CommonProperties.selectedDelegator?.crNumber;
-    final identityTypeId =  crType ?? CommonProperties.selectedDelegator?.crType;
+    final identityNumber =
+        crNumber ?? CommonProperties.selectedDelegator?.crNumber;
+    final identityTypeId = crType ?? CommonProperties.selectedDelegator?.crType;
 
     final params = InvoiceDetailsParams(
-        invoiceId: id,
+      invoiceId: id,
       identityNumber: identityNumber,
-      identityTypeId: crType,
+      identityTypeId: identityTypeId,
+      xSourceApp: xSourceApp,
     );
     final failureOrSuccess = await getInvoiceDetails(params);
     failureOrSuccess.fold(
@@ -37,7 +45,9 @@ class InvoiceDetailsCubit extends Cubit<InvoiceDetailsState> {
         emit(
           state.copyWith(
             status: BlocRequestStatus.submissionGetFailure,
-            errorMessage: failure.toString(),
+            errorMessage: xSourceApp == null
+                ? failure.toString()
+                : 'errorInternalServerError'.tr(),
           ),
         );
       },
