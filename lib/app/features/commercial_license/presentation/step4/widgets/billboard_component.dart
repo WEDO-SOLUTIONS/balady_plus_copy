@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/utils/utils_exports.dart';
 import '../../../../_shared_feature_/presentation/widgets/custom_cupertino_drop_down_widget.dart';
 import '../../../../_shared_feature_/shared_feature_exports.dart';
 import '../../../commercial_license_exports.dart';
+import '../../../domain/entities/commercial_board_type.dart';
+import '../bloc/cr_step4_shop_data_cubit.dart';
 
 class BillboardComponent extends StatelessWidget {
   const BillboardComponent({
@@ -11,77 +14,143 @@ class BillboardComponent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(top: 32, bottom: 24),
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
-      decoration: const BoxDecoration(
-        borderRadius: BorderRadius.all(Radius.circular(16)),
-        color: AppColor.white,
-      ),
-      child: Column(
-        children: [
-          const Row(
-            children: [
-              CustomSvgIconWidget(
-                IconPath.additionalActivity,
-                iconSize: 20,
-              ),
-              SizedBox(width: 6),
-              CustomTextWidget(
-                "لوحه اعلانيه",
-                fontWeight: AppFontWeight.bold,
-                fontSize: 18,
-                fontColor: AppColor.blackModern600Light,
-              ),
-            ],
-          ),
-          const SizedBox(height: 14),
-          ListView.separated(
-            itemCount: 2,
-            separatorBuilder: (_, __) => const SizedBox(height: 16),
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemBuilder: (_, __) => const BillboardCard(),
-          ),
-          const SizedBox(height: 12),
-          PlusAddButton(
-            text: "اضافه لوحه اعلانيه",
-            onPressed: () => BottomSheetDialog.showDraggableSheet(
-              context,
-              child: BottomSheetWithActions(
-                title: "اضافه لوحه اعلانيه",
-                action: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  child: ElevatedButtonWidget.add(onPressed: () {}),
+    return BlocBuilder<CrStep4ShopDataCubit, CrStep4ShopDataState>(
+        builder: (context, state) {
+      return Container(
+        margin: const EdgeInsets.only(top: 32, bottom: 24),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+        decoration: const BoxDecoration(
+          borderRadius: BorderRadius.all(Radius.circular(16)),
+          color: AppColor.white,
+        ),
+        child: Column(
+          children: [
+            const Row(
+              children: [
+                CustomSvgIconWidget(
+                  IconPath.additionalActivity,
+                  iconSize: 20,
                 ),
-                body: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    CustomTapWidgetForLongDialog(
-                      items: const [],
-                      value: null,
-                      label: "نوع اللوحة",
-                      marginBottom: 8,
-                      onChangeType: (item) {},
-                    ),
-                    CustomTextFieldWidget(
-                      label: "مساحة اللوحة",
-                      hintText: "ادخل مساحة اللوحة",
-                      isDigitsOnly: true,
-                      keyboardType: TextInputType.number,
-                      suffixIcon: const CustomTextWidget(
-                        "متر  مربع",
-                        fontSize: 12,
-                        fontWeight: AppFontWeight.semiBold,
-                        fontColor: AppColor.blackModern400Light,
-                      ),
-                      bottomMargin: 24,
-                      onChanged: (value) {},
-                    ),
-                  ],
+                SizedBox(width: 6),
+                CustomTextWidget(
+                  "اللوحات",
+                  fontWeight: AppFontWeight.bold,
+                  fontSize: 18,
+                  fontColor: AppColor.blackModern600Light,
                 ),
+              ],
+            ),
+            const SizedBox(height: 14),
+            ListView.separated(
+              itemCount: state.selectedBoards?.length ?? 0,
+              separatorBuilder: (_, __) => const SizedBox(height: 16),
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemBuilder: (_, index) => BillboardCard(
+                type: state.selectedBoards![index],
               ),
             ),
+            const SizedBox(height: 12),
+            PlusAddButton(
+                text: "إضافه لوحة",
+                onPressed: () {
+                  BottomSheetDialog.showDraggableSheet(
+                    context,
+                    child: CommercialBoardDialog(
+                      length: state.selectedBoards?.length ?? 0,
+                    ),
+                  ).then((value) {
+                    print(value);
+                    if (value != null) {
+                      context.read<CrStep4ShopDataCubit>().addBoard(value);
+                    }
+                  });
+                }),
+          ],
+        ),
+      );
+    });
+  }
+}
+
+class CommercialBoardDialog extends StatefulWidget {
+  final CommercialBoardType? board;
+  final int length;
+  const CommercialBoardDialog({super.key, this.board, required this.length});
+
+  @override
+  State<CommercialBoardDialog> createState() => _CommercialBoardDialogState();
+}
+
+class _CommercialBoardDialogState extends State<CommercialBoardDialog> {
+  List<DropDownItem> items = [
+    DropDownItem(name: "إرشادية", id: "1"),
+    DropDownItem(name: "إعلانية", id: "2"),
+  ];
+  DropDownItem? selectedItem;
+  double? area;
+
+  CommercialBoardType? board;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    board = widget.board;
+    if (board != null) {
+      selectedItem = DropDownItem(id: board?.typeId, name: board?.name ?? "");
+      area = board?.area;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return BottomSheetWithActions(
+      title: "اضافه لوحه اعلانيه",
+      action: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 16),
+        child: ElevatedButtonWidget.add(onPressed: () {
+          board = CommercialBoardType(
+              id: board?.id ?? widget.length,
+              typeId: int.tryParse(selectedItem?.id) ?? 0,
+              name: selectedItem?.name ?? "",
+              area: area);
+
+          Navigator.pop(context, board);
+        }),
+      ),
+      body: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          CustomTapWidgetForLongDialog(
+            items: items,
+            value: selectedItem,
+            label: "نوع اللوحة",
+            marginBottom: 8,
+            onChangeType: (item) {
+              setState(() {
+                selectedItem = item;
+              });
+            },
+          ),
+          CustomTextFieldWidget(
+            label: "مساحة اللوحة",
+            hintText: "ادخل مساحة اللوحة",
+            isDigitsOnly: true,
+            initialValue: area.toString(),
+            keyboardType: TextInputType.number,
+            suffixIcon: const CustomTextWidget(
+              "متر  مربع",
+              fontSize: 12,
+              fontWeight: AppFontWeight.semiBold,
+              fontColor: AppColor.blackModern400Light,
+            ),
+            bottomMargin: 24,
+            onChanged: (value) {
+              setState(() {
+                area = double.tryParse(value);
+              });
+            },
           ),
         ],
       ),

@@ -185,6 +185,7 @@ dependencies:
 # Map urbi SKD
   dgis_map:
     path: urbi_map/dgis_map
+  flutter_html: ^3.0.0-beta.2
 #  provider: ^6.0.5
 
 

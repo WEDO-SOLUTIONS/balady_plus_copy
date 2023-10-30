@@ -242,16 +242,157 @@ class ApiUrl {
   static const requestDetails =
       'v1/damaged-vehicle-mobile/incident-request-details';
   // CR
-  static const String recordInfo =
-      'v1/balady-commercial-services/mci/record-Info/crNumber/DELEGATOR/1004';
+  static String recordInfo({required String crNumber, required String role}) =>
+      'v1/balady-commercial-services/mci/record-Info/$crNumber/$role/1004';
   static const String subActivities =
-      "/v1/balady-commercial-services/activities/by-isic/details/isicCode/1004";
+      "/v1/balady-commercial-services/salama/activities/isicCode/1004";
   static const String subActivityDetails =
       "/v1/balady-commercial-services/activities/";
   static const String addIsicActivities =
       "/v1/balady-commercial-services/isic-activities/add-cr";
   static const String accommodationTypesCL =
       "/v1/balady-commercial-services/accommodation-types";
+
+  static const String saveComSubmitterAndOwner =
+      "v1/balady-commercial-services/new-request/submitter-owner-details";
+
+  static String saveActivityDetails(int requestId) =>
+      "v1/balady-commercial-services/new-request/$requestId/activity-details";
+
+  static String saveLocationDetails(int requestId) =>
+      "v1/balady-commercial-services/new-request/$requestId/location-details";
+
+  static String investmentContracts(int requestId) =>
+      "v1/balady-commercial-services/gsb/$requestId/investment-contracts";
+
+  static String cleanContracts(int requestId) =>
+      "v1/balady-commercial-services/gsb/$requestId/clean-contracts";
+
+  static String ejarInfo = "v1/balady-commercial-services/ejar/tenancycontract";
+
+  static String deedInfoOwnwerShip(
+          {required int requestId, required String type}) =>
+      "v1/balady-commercial-services/moj/$requestId/deed-info/$type";
+
+  static String deedInfo() => "v1/balady-commercial-services/gsb/deed-info";
+
+  static String crIssueAttachments(int requestId) =>
+      "v1/balady-commercial-services/request/$requestId/attachments";
+
+  static String crAttachment(int requestId, String fileTypeId) =>
+      '/v1/balady-commercial-services/request/$requestId/attachments/$fileTypeId';
+
+  static String crCalculateFess(int requestId) =>
+      '/v1/balady-commercial-services/new-request/$requestId/calculate-fees';
+
+  static String addBeneficiaryNotes(int requestId) =>
+      'v1/balady-commercial-services/new-request/$requestId/add-beneficiary-notes';
+
+  static String crSubmit(int requestId) =>
+      'v1/balady-commercial-services/new-request/${requestId}/submits';
+
+  static String saveShopDetails(int requestId) =>
+      'v1/balady-commercial-services/new-request/$requestId/shop-details';
+
+  static String validateApprovals(int requestId) =>
+      'v1/balady-commercial-services/validate-approvals/request/$requestId';
+
+  static String deedOptions(int requestId) =>
+      'v1/balady-commercial-services/deed-owner-ship-options/$requestId';
+
+  static String cleanOptions(int requestId) =>
+      'v1/balady-commercial-services/clean-options/request/$requestId';
+
+  static String getCredences(int requestId) =>
+      'v1/balady-commercial-services/credence/request/$requestId';
+
+  static String uploadCredences(int requestId, String fileTypeId) =>
+      '/v1/balady-commercial-services/upload-credence/request/$requestId/$fileTypeId';
+
+  static String validateSalamaAttachmentsInfo(int requestId) =>
+      'v1/balady-commercial-services/validate-salama-attachments-info/$requestId';
+
+  static String fawrySalamaBills(int requestId) =>
+      'v1/balady-commercial-services/new-request/$requestId/fawry-salama-bills';
+
+  static String fawrySalamaReports(int requestId) =>
+      'v1/balady-commercial-services/new-request/$requestId/fawry-salama-reports';
+
+  static String applyCommercialRequest(int requestId) =>
+      'v1/balady-commercial-services/commercial-flow/applies/$requestId';
+
+  static String getQrCodeDetails(int requestId) =>
+      'v1/balady-commercial-services/qr-code-details/$requestId';
+
+  static String saveQrEnterpriseData(int requestId) =>
+      'v1/balady-commercial-services/enterprise-data/$requestId';
+
+  static String saveQrWorkTimesData(int requestId) =>
+      'v1/balady-commercial-services/work-times/$requestId';
+
+  static String saveAddetionalQrData(int requestId) =>
+      'v1/balady-commercial-services/additional/qr-code-details/$requestId';
+
+  static String qrAttachments(int requestId) =>
+      "v1/balady-commercial-services/qr-attachemnts/$requestId";
+
+  static String qrUploadAttachments(int requestId, String fileTypeId) =>
+      '/v1/balady-commercial-services/upload-qr-attachemnts/$requestId/$fileTypeId';
+
+  static String qrSubmit(int requestId) =>
+      'v1/balady-commercial-services/qr-submits/$requestId';
+
+  static String qrLookUp(String params) =>
+      'v1/balady-commercial-services/qr-lookups/$params';
+
+  static String addetionalActivites(String params) =>
+      'v1/balady-commercial-services/additional-activities/$params';
+
+  static String addetionalDetailsActivity(
+          String subActivity, String addetioanlActivityId) =>
+      'v1/balady-commercial-services/new-request/additional/activities/$subActivity/$addetioanlActivityId';
+
+  static String mallsList(String params) =>
+      'v1/balady-commercial-services/malls?districtId=$params';
+
+  static String validateSalamaReport(int requestId, String number) =>
+      'v1/balady-commercial-services/request/$requestId/validate-salama-report/$number';
+
+  static String validateSalamaBill(int requestId, String number) =>
+      'v1/balady-commercial-services/request/$requestId/validate-salama-bill/$number';
+
+  static String validateSalamaPermit(int requestId) =>
+      '/v1/balady-commercial-services/validate-salama-permits/$requestId';
+//! Renew Commercial Service
+  static String validateBeforeApply(int requestId) =>
+      'v1/balady-commercial-services/mobile/renew-request/validate-before-apply/$requestId';
+
+  static String renewApply(int requestId) =>
+      'v1/balady-commercial-services/mobile/renew-request/apply/$requestId';
+
+  static String renewYears(int requestId) =>
+      'v1/balady-commercial-services/mobile/renew-request/$requestId/renew-years';
+
+  static String calculateRequestInfo(int requestId) =>
+      'v1/balady-commercial-services/mobile/renew-request/$requestId/calculate-request-info';
+
+  static String saveRenewRequestInfo(int requestId) =>
+      'v1/balady-commercial-services/mobile/renew-request/$requestId/request-info';
+
+  static String renewAttachments(int requestId) =>
+      'v1/balady-commercial-services/mobile/renew-request/$requestId/attachments';
+
+  static String saveAttachments(int requestId) =>
+      'v1/balady-commercial-services/mobile/renew-request/$requestId/save-attachments';
+
+  static String uploadAttachments(int requestId, String fileTypeId) =>
+      '/v1/balady-commercial-services/mobile/renew-request/request/$requestId/attachments/$fileTypeId';
+
+  static String renewSubmit(int requestId) =>
+      '/v1/balady-commercial-services/mobile/renew-request/$requestId/submit';
+
+  static String renewRequestDetails(int requestId) =>
+      '/v1/balady-commercial-services/mobile/renew-request/$requestId/request-details';
 
 //! Violations
   static const String violationsStatus =
@@ -334,30 +475,45 @@ class ApiUrl {
   static const calendarDetails = '/v1/saudi-calendar-services/entries';
 
 // -------  Commercial License Details ---------
-  static  String getCommercialLicenseDetails(int licenseId) => '/v1/balady-commercial-services/licenses/$licenseId';
-  static  String commercialLicensePermits(int licenseId) => '/v1/balady-commercial-services/licenses/permits/$licenseId';
-  static  String getLicenseAttachments(int licenseId) => '/v1/balady-commercial-services/license-attachments/$licenseId';
+  static String getCommercialLicenseDetails(int licenseId) =>
+      '/v1/balady-commercial-services/licenses/$licenseId';
+  static String commercialLicensePermits(int licenseId) =>
+      '/v1/balady-commercial-services/licenses/permits/$licenseId';
+  static String getLicenseAttachments(int licenseId) =>
+      '/v1/balady-commercial-services/license-attachments/$licenseId';
+
 // -------  Commercial License Cancel ---------
-  static  String   getCommercialLicenseAllowedActions(int licenseId) => '/v1/balady-commercial-services/licenses/$licenseId/allowed-actions';
+  static String getCommercialLicenseAllowedActions(int licenseId) =>
+      '/v1/balady-commercial-services/licenses/$licenseId/allowed-actions';
 /////////////////////////////////////////////////////////
-  static const String commercialLicenseCancellationReasons = '/v1/balady-commercial-services/mobile/cancel-reasons';
+  static const String commercialLicenseCancellationReasons =
+      '/v1/balady-commercial-services/mobile/cancel-reasons';
   // static  String commercialLicenseApplyCancel(int licenseId) => '/v1/balady-commercial-services/mobile/cancel-request/apply/$licenseId';
-  static  String commercialLicenseApplyCancel(int licenseId) => '/v1/balady-commercial-services/mobile/cancel-request/apply/$licenseId';
-  static  String commercialLicenseCancelAttachments(int licenseId) => '/v1/balady-commercial-services/mobile/cancel-request/$licenseId/attachments';
-  static  String commercialLicenseCancelUploadAttachments(int requestId,int attachTypeId) => '/v1/balady-commercial-services/mobile/cancel-request/request/$requestId/attachments/$attachTypeId';
-  static  String commercialLicenseCancelSaveCancellationReason(int requestId) => '/v1/balady-commercial-services/mobile/save-cancellation-reason/$requestId';
-  static  String commercialLicenseCancelCalculateFees(int requestId) => '/v1/balady-commercial-services/mobile-cancel-request/$requestId/calculateFees';
-  static  String commercialLicenseCancelSubmit(int requestId) => '/v1/balady-commercial-services/mobile/cancel-request/$requestId/submit';
+  static String commercialLicenseApplyCancel(int licenseId) =>
+      '/v1/balady-commercial-services/mobile/cancel-request/apply/$licenseId';
+  static String commercialLicenseCancelAttachments(int licenseId) =>
+      '/v1/balady-commercial-services/mobile/cancel-request/$licenseId/attachments';
+  static String commercialLicenseCancelUploadAttachments(
+          int requestId, int attachTypeId) =>
+      '/v1/balady-commercial-services/mobile/cancel-request/request/$requestId/attachments/$attachTypeId';
+  static String commercialLicenseCancelSaveCancellationReason(int requestId) =>
+      '/v1/balady-commercial-services/mobile/save-cancellation-reason/$requestId';
+  static String commercialLicenseCancelCalculateFees(int requestId) =>
+      '/v1/balady-commercial-services/mobile-cancel-request/$requestId/calculateFees';
+  static String commercialLicenseCancelSubmit(int requestId) =>
+      '/v1/balady-commercial-services/mobile/cancel-request/$requestId/submit';
 /////////////////////////////////////////////////////////
-  static  String getAllowedActionsForRequests(int requestId) => '/v1/balady-commercial-services/mobile/request/allowed-actions/$requestId';
-  static  String getRequestCommercialLicenseDetails(int requestId) => '/v1/balady-commercial-services/mobile/request/details/$requestId';
+  static String getAllowedActionsForRequests(int requestId) =>
+      '/v1/balady-commercial-services/mobile/request/allowed-actions/$requestId';
+  static String getRequestCommercialLicenseDetails(int requestId) =>
+      '/v1/balady-commercial-services/mobile/request/details/$requestId';
 /////////////////////////////////////////////////////////
-  static  String commercialLicenseIsDirectToPay(int requestId) => '/v1/balady-commercial-services/mobile-cancel-request/request/$requestId/is-direct-to-pay';
-  static const String  commercialLicenseCancelSubmitRating = '/v1/balady-commercial-services/rating/submit';
-  static  String commercialLicenseCancelGetDetailsRequest(int requestId) => '/v1/balady-commercial-services/mobile-cancel-request/request-details/$requestId';
-
-
-
+  static String commercialLicenseIsDirectToPay(int requestId) =>
+      '/v1/balady-commercial-services/mobile-cancel-request/request/$requestId/is-direct-to-pay';
+  static const String commercialLicenseCancelSubmitRating =
+      '/v1/balady-commercial-services/rating/submit';
+  static String commercialLicenseCancelGetDetailsRequest(int requestId) =>
+      '/v1/balady-commercial-services/mobile-cancel-request/request-details/$requestId';
 
   //! POST
 

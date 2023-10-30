@@ -16,7 +16,9 @@ class CheckBoxWithTitle extends StatelessWidget {
       required this.title,
       this.subTitle,
       required this.onChanged,
-      this.initialValue, this.textStyle})
+      this.forceSelection,
+      this.initialValue,
+      this.textStyle})
       : super(key: key);
 
   final String title;
@@ -24,46 +26,47 @@ class CheckBoxWithTitle extends StatelessWidget {
   final Function(bool? value) onChanged;
   final bool? initialValue;
   final TextStyle? textStyle;
+  final bool? forceSelection;
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider<CheckboxCubit>(
       create: (context) => CheckboxCubit(initialValue: initialValue ?? false),
-      child: Builder(
-        builder: (context) {
-          return BlocBuilder<CheckboxCubit, bool>(
-            builder: (context, state) {
-              return Row(
-                children: [
-                  SizedBox(
-                    width: 20,
-                    height: 20,
-                    child: Material(
-                      child: Checkbox(
-                          side: const BorderSide(color: AppColor.blackModern500Light , width: 2),
-                          value: state,
-                          activeColor: AppColor.primary700Light,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(4)),
-                          onChanged: (value){
-                            context.read<CheckboxCubit>().onChanged();
-                            onChanged(value);
-                          }),
-                    ),
+      child: Builder(builder: (context) {
+        return BlocBuilder<CheckboxCubit, bool>(
+          builder: (context, state) {
+            return Row(
+              children: [
+                SizedBox(
+                  width: 20,
+                  height: 20,
+                  child: Material(
+                    child: Checkbox(
+                        side: const BorderSide(
+                            color: AppColor.blackModern500Light, width: 2),
+                        value: forceSelection ?? state,
+                        activeColor: AppColor.primary700Light,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(4)),
+                        onChanged: (value) {
+                          context.read<CheckboxCubit>().onChanged();
+                          onChanged(value);
+                        }),
                   ),
-                  const SizedBox(width: 6),
-                  Flexible(child: CustomTextWidget(
-                    title,
-                    fontSize: 12,
-                    fontWeight: AppFontWeight.semiBold,
-                    fontColor: AppColor.blackModern500Light,
-                  )),
-                ],
-              );
-            },
-          );
-        }
-      ),
+                ),
+                const SizedBox(width: 6),
+                Flexible(
+                    child: CustomTextWidget(
+                  title,
+                  fontSize: 12,
+                  fontWeight: AppFontWeight.semiBold,
+                  fontColor: AppColor.blackModern500Light,
+                )),
+              ],
+            );
+          },
+        );
+      }),
     );
   }
 }

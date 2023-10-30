@@ -5,21 +5,25 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/dependency_injection/dependency_injection_exports.dart';
 import '../../../../../core/errors/errors_exports.dart';
 import '../../../commercial_license_exports.dart';
+import '../../../data/models/save_com_submitter_and_owner_request_model.dart';
 
 part 'cr_step1_applicant_data_state.dart';
 
 class CrStep1ApplicantDataCubit extends Cubit<CrStep1ApplicantDataState> {
   final GetRecordInfo _getRecordInfo;
   final AddIsicActivities _addIsicActivities;
-
+  final SaveComSubmitterAndOwner _saveComSubmitterAndOwner;
+  final CommercialLicenseBloc commercialLicenseBloc;
   CrStep1ApplicantDataCubit()
       : _getRecordInfo = GetRecordInfo(repository: sl()),
         _addIsicActivities = AddIsicActivities(repository: sl()),
+        _saveComSubmitterAndOwner = SaveComSubmitterAndOwner(repository: sl()),
+        commercialLicenseBloc = sl<CommercialLicenseBloc>(),
         super(const CrStep1ApplicantDataState());
 
   void getRecordInfo() async {
     emit(state.copyWith(recordStatus: BlocStatus.loading));
-    final response = await _getRecordInfo("1010709880");
+    final response = await _getRecordInfo(("1234567890", "OWNER_MANAGER"));
 
     /// TODO: UnComment below line
     // final response = await _getRecordInfo(
@@ -50,5 +54,26 @@ class CrStep1ApplicantDataCubit extends Cubit<CrStep1ApplicantDataState> {
             )),
         (success) =>
             emit(state.copyWith(addIsicActivitiesStatus: BlocStatus.success)));
+  }
+
+  void saveComSubmitterAndOwner() async {
+    emit(state.copyWith(status: BlocStatus.loading));
+    final response = await _saveComSubmitterAndOwner(
+        SaveComSubmitterAndOwnerRequestModel(
+            crNumber: state.recordInfo?.crNumber,
+            crType: state.recordInfo?.crType,
+            entityType: "SHOP"));
+
+    response.fold(
+        (failure) => emit(state.copyWith(
+              status: BlocStatus.failure,
+              errorMessage: (failure as ServerFailure).errorMessage,
+            )), (success) {
+      sl<CommercialLicenseBloc>()
+          .add((UpdateRequestFieldEvent(requestId: success)));
+
+      sl<CommercialLicenseBloc>().add((const GoToNextPageEvent()));
+      emit(state.copyWith(status: BlocStatus.success));
+    });
   }
 }

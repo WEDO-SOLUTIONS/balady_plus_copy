@@ -146,7 +146,7 @@ class HealthLicenseRepository {
       ApplyNewHealthRequest response =
           ApplyNewHealthRequest.fromJson(json.decode(data));
       result = response;
-
+      print("HERRRTT");
       if (!state) {
         error = result.data?.responseMessage ?? error;
       }
