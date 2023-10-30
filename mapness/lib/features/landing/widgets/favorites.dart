@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:mapness/features/common/config/package_fonts.dart';
 
 class Favorites extends StatelessWidget {
   const Favorites({
@@ -63,10 +63,8 @@ class Favorites extends StatelessWidget {
                 children: [
                   Text(
                     '12 دقيقة',
-                    style: GoogleFonts.notoSansArabic(
-                      textStyle: const TextStyle(
-                        fontSize: 12,
-                      ),
+                    style: PackageFonts.frutigerArabic(
+                      fontSize: 12,
                     ),
                   ),
                   const SizedBox(

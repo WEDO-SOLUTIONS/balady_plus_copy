@@ -36,14 +36,14 @@ class _ScaffoldWithNestedNavigationState
     return ScaffoldWithNavigationBar(
       body: widget.navigationShell,
       currentIndex: currentTab,
-      onDestinationSelected: (int index) {
-        currentTab = index;
-        if (index == 1) {
-          index = 2;
+      onDestinationSelected: (int selected) {
+        int index = selected;
+        if (index == 2) {
+          index = 3;
           ref
               .read(mapControlsProvider.notifier)
               .update(MapControlsStateNavigation());
-        } else {
+        } else if (currentTab == 2) {
           ref
               .watch(mapControlsProvider.notifier)
               .update(MapControlsStateIdle());
@@ -52,6 +52,7 @@ class _ScaffoldWithNestedNavigationState
             ref.watch(dgisControllerProvider)?.stopNavigation();
           } catch (e) {}
         }
+        currentTab = selected;
         widget.navigationShell.goBranch(
           index,
           // A common pattern when using bottom navigation bars is to support
@@ -78,48 +79,86 @@ class ScaffoldWithNavigationBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    const activeColor = Color(0xFF4CA5B4);
+    const inactiveColor = Color(0x801E2A36);
+
     return CupertinoPageScaffold(
       resizeToAvoidBottomInset: false,
       child: Column(
         children: [
           Expanded(child: body),
-          CupertinoTabBar(
-            items: [
-              BottomNavigationBarItem(
-                icon: SvgPicture.asset(
-                  "assets/icons/svg/ic_nav_profile.svg",
-                  semanticsLabel: 'Profile Screen',
-                  package: "mapness",
+          Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.05),
+                  blurRadius: 5,
+                  offset: const Offset(0, -2),
                 ),
-                label: 'المتجر',
+              ],
+            ),
+            child: Padding(
+              padding: const EdgeInsets.only(top: 3.0),
+              child: CupertinoTabBar(
+                activeColor: activeColor,
+                inactiveColor: inactiveColor,
+                backgroundColor: Colors.white,
+                border: null,
+                items: [
+                  BottomNavigationBarItem(
+                    icon: SvgPicture.asset(
+                      "assets/icons/svg/ic_nav_profile.svg",
+                      semanticsLabel: 'MinApps Screen',
+                      package: "mapness",
+                      colorFilter: ColorFilter.mode(
+                        currentIndex == 0 ? activeColor : inactiveColor,
+                        BlendMode.srcIn,
+                      ),
+                    ),
+                    label: 'المتجر',
+                  ),
+                  BottomNavigationBarItem(
+                    icon: SvgPicture.asset(
+                      "assets/icons/svg/ic_nav_landing.svg",
+                      semanticsLabel: 'MinApps Screen',
+                      package: "mapness",
+                      colorFilter: ColorFilter.mode(
+                        currentIndex == 1 ? activeColor : inactiveColor,
+                        BlendMode.srcIn,
+                      ),
+                    ),
+                    label: 'الخدمات',
+                  ),
+                  BottomNavigationBarItem(
+                    icon: SvgPicture.asset(
+                      "assets/icons/svg/ic_nav_route.svg",
+                      semanticsLabel: 'Routing Screen',
+                      package: "mapness",
+                      colorFilter: ColorFilter.mode(
+                        currentIndex == 2 ? activeColor : inactiveColor,
+                        BlendMode.srcIn,
+                      ),
+                    ),
+                    label: 'رحلتي',
+                  ),
+                  BottomNavigationBarItem(
+                    icon: SvgPicture.asset(
+                      "assets/icons/svg/ic_nav_general.svg",
+                      semanticsLabel: 'General Screen',
+                      package: "mapness",
+                      colorFilter: ColorFilter.mode(
+                        currentIndex == 3 ? activeColor : inactiveColor,
+                        BlendMode.srcIn,
+                      ),
+                    ),
+                    label: 'إستكشف',
+                  ),
+                ],
+                currentIndex: currentIndex,
+                onTap: onDestinationSelected,
               ),
-              BottomNavigationBarItem(
-                icon: SvgPicture.asset(
-                  "assets/icons/svg/ic_nav_route.svg",
-                  semanticsLabel: 'Routing Screen',
-                  package: "mapness",
-                ),
-                label: 'رحلتي',
-              ),
-              BottomNavigationBarItem(
-                icon: SvgPicture.asset(
-                  "assets/icons/svg/ic_nav_landing.svg",
-                  semanticsLabel: 'MinApps Screen',
-                  package: "mapness",
-                ),
-                label: 'الخدمات',
-              ),
-              BottomNavigationBarItem(
-                icon: SvgPicture.asset(
-                  "assets/icons/svg/ic_nav_general.svg",
-                  semanticsLabel: 'General Screen',
-                  package: "mapness",
-                ),
-                label: 'إستكشف',
-              ),
-            ],
-            currentIndex: currentIndex,
-            onTap: onDestinationSelected,
+            ),
           ),
         ],
       ),

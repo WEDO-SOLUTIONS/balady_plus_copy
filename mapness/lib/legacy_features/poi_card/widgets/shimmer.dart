@@ -19,15 +19,14 @@ class ShimmerEffectWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: width ?? MediaQuery.of(context).size.width * 0.9,
       height: height,
       child: Shimmer.fromColors(
         baseColor: Colors.grey[200]!,
         highlightColor: Colors.grey[100]!,
-        child: Card(
+        child: Container(
           margin: margin,
-          elevation: elevation,
-          shape: RoundedRectangleBorder(
+          decoration: BoxDecoration(
+            color: Colors.white,
             borderRadius: BorderRadius.circular(borderRadius),
           ),
         ),

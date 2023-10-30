@@ -10,6 +10,7 @@ import 'package:mapness/features/landing/widgets/layers_control.dart';
 
 import 'package:mapness/features/landing/widgets/map_control.dart';
 import 'package:mapness/features/landing/widgets/traffic_control.dart';
+import 'package:mapness/features/landing/widgets/weather_control.dart';
 import 'package:mapness/features/landing/widgets/zoom_control.dart';
 
 class MapControls extends ConsumerWidget {
@@ -42,35 +43,17 @@ class MapControls extends ConsumerWidget {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        MapControl(
-                          Padding(
-                            padding: const EdgeInsets.all(10),
-                            child: Row(
-                              children: [
-                                const Text("53°"),
-                                const SizedBox(
-                                  width: 8,
-                                ),
-                                SvgPicture.asset(
-                                  "assets/icons/svg/ic_control_temp.svg",
-                                  semanticsLabel: 'MinApps Screen',
-                                  package: "mapness",
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
+                        const WeatherControl(),
                         const SizedBox(height: 8),
-                        const MapControl(
-                          HappinesControl(),
-                        ),
+                        const HappinesControl(),
                         const Spacer(),
                         MapControl(
-                          SvgPicture.asset(
+                          child: SvgPicture.asset(
                             "assets/icons/svg/ic_controls_qibla.svg",
                             semanticsLabel: 'MinApps Screen',
                             package: "mapness",
                           ),
+                          onTap: () {},
                         ),
                       ],
                     ),

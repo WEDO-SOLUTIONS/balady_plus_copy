@@ -45,10 +45,10 @@ class HappinessTagWidget extends StatelessWidget {
                 title,
                 style: GoogleFonts.inter(
                   color: const Color(0xFF1D2A36),
-                  fontSize: 13,
+                  fontSize: 11,
                   fontWeight: FontWeight.w500,
                 ),
-              ),
+              )
             ],
           ),
         ),

@@ -12,18 +12,16 @@ class LayersControl extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return GestureDetector(
+    return MapControl(
       onTap: () {
         ref
             .watch(mapControlsProvider.notifier)
             .update(MapControlsStateLayers());
       },
-      child: MapControl(
-        SvgPicture.asset(
-          "assets/icons/svg/ic_control_layers.svg",
-          semanticsLabel: 'MinApps Screen',
-          package: "mapness",
-        ),
+      child: SvgPicture.asset(
+        "assets/icons/svg/ic_control_layers.svg",
+        semanticsLabel: 'MinApps Screen',
+        package: "mapness",
       ),
     );
   }

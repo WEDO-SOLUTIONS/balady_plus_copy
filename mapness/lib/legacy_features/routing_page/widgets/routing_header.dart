@@ -20,7 +20,7 @@ class _RoutingHeaderState extends State<_RoutingHeader>
   void initState() {
     super.initState();
     _tabController = TabController(
-      length: 4,
+      length: 2,
       vsync: this,
       initialIndex: widget.routeType.indexTab,
     )..addListener(() {

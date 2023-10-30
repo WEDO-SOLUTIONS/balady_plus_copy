@@ -17,16 +17,15 @@ class CompassControl extends ConsumerWidget {
     return AnimatedOpacity(
       opacity: bearingState.bearing == 0 ? 0 : 1,
       duration: const Duration(milliseconds: 250),
-      child: GestureDetector(
+      child: MapControl(
+        borderRadius: BorderRadius.circular(24),
         onTap: bearingNotifier.onCompassTap,
-        child: MapControl(
-          Transform.rotate(
-            angle: bearingState.angle - (150 / 180) * pi,
-            child: SvgPicture.asset(
-              "assets/icons/svg/ic_control_compass.svg",
-              semanticsLabel: 'MinApps Screen',
-              package: "mapness",
-            ),
+        child: Transform.rotate(
+          angle: bearingState.angle - pi,
+          child: SvgPicture.asset(
+            "assets/icons/svg/ic_control_compass.svg",
+            semanticsLabel: 'MinApps Screen',
+            package: "mapness",
           ),
         ),
       ),

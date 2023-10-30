@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart' hide CloseButton;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:mapness/features/common/config/package_fonts.dart';
 import 'package:mapness/features/landing/providers/map_controls.dart';
 import 'package:mapness/features/landing/widgets/close_button.dart';
 
@@ -71,11 +71,9 @@ class LayersSheetState extends ConsumerState<LayersSheet> {
                         children: [
                           Text(
                             "طبقات على الخريطة",
-                            style: GoogleFonts.notoSansArabic(
-                              textStyle: const TextStyle(
-                                fontSize: 22,
-                                fontWeight: FontWeight.w500,
-                              ),
+                            style: PackageFonts.frutigerArabic(
+                              fontSize: 22,
+                              fontWeight: FontWeight.w500,
                             ),
                           ),
                           const Spacer(),
@@ -161,11 +159,9 @@ class FilterRow extends StatelessWidget {
           ),
           Text(
             name,
-            style: GoogleFonts.notoSansArabic(
-              textStyle: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-              ),
+            style: PackageFonts.frutigerArabic(
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
             ),
           ),
         ],

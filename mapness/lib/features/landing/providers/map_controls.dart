@@ -1,4 +1,5 @@
 import 'package:dgis_map/library.dart';
+import 'package:mapness/features/map/providers/dgis_controller.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'map_controls.g.dart';
@@ -44,7 +45,31 @@ class MapControlsStatePoI extends MapControlsState {
 @riverpod
 class MapControls extends _$MapControls {
   @override
-  MapControlsState build() => MapControlsStateIdle();
+  MapControlsState build() {
+    final controller = ref.watch(dgisControllerProvider);
+    final objectTapSubscription =
+        controller?.objectTapEvents.listen(_objectTapListener);
+
+    ref.onDispose(
+      () {
+        objectTapSubscription?.cancel();
+      },
+    );
+
+    return MapControlsStateIdle();
+  }
 
   void update(MapControlsState value) => state = value;
+
+  void _objectTapListener(TapEvent event) {
+    print("_objectTapListener $event");
+    if (event is ObjectTapEvent) {
+      state = MapControlsStatePoI(
+        DgisObjectIdMessage(
+          objectId: event.dgisObjectId.objectId,
+          entranceId: event.dgisObjectId.entranceId,
+        ),
+      );
+    }
+  }
 }

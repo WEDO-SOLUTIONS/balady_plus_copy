@@ -2,7 +2,7 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:mapness/features/common/config/package_fonts.dart';
 import 'package:mapness/features/landing/providers/dashboard_controls.dart';
 import 'package:mapness/features/landing/providers/map_controls.dart';
 import 'package:mapness/features/map/providers/search.dart';
@@ -108,13 +108,11 @@ class SuggestItem extends ConsumerWidget {
                       Text(
                         address,
                         overflow: TextOverflow.ellipsis,
-                        style: GoogleFonts.notoSansArabic(
-                          textStyle: const TextStyle(
-                            fontSize: 16,
-                            height: 1.4,
-                            fontWeight: FontWeight.w500,
-                            color: Color(0x801E2A36),
-                          ),
+                        style: PackageFonts.frutigerArabic(
+                          fontSize: 16,
+                          height: 1.4,
+                          fontWeight: FontWeight.w500,
+                          color: const Color(0x801E2A36),
                         ),
                       ),
                   ],
@@ -137,13 +135,11 @@ class SuggestItem extends ConsumerWidget {
       return [
         TextSpan(
           text: suggest.title.text,
-          style: GoogleFonts.notoSansArabic(
-            textStyle: const TextStyle(
-              fontSize: 16,
-              height: 1.4,
-              fontWeight: FontWeight.w500,
-              color: Color(0x801E2A36),
-            ),
+          style: PackageFonts.frutigerArabic(
+            fontSize: 16,
+            height: 1.4,
+            fontWeight: FontWeight.w500,
+            color: const Color(0x801E2A36),
           ),
         )
       ];
@@ -155,12 +151,10 @@ class SuggestItem extends ConsumerWidget {
           0,
           matchedParts[0].offset,
         ),
-        style: GoogleFonts.notoSansArabic(
-          textStyle: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w500,
-            color: Color(0x801E2A36),
-          ),
+        style: PackageFonts.frutigerArabic(
+          fontSize: 16,
+          fontWeight: FontWeight.w500,
+          color: const Color(0x801E2A36),
         ),
       ),
     );
@@ -172,12 +166,10 @@ class SuggestItem extends ConsumerWidget {
             matchedParts[i].offset,
             matchedParts[i].offset + matchedParts[i].length,
           ),
-          style: GoogleFonts.notoSansArabic(
-            textStyle: const TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
-              color: Color(0xFF1E2A36),
-            ),
+          style: PackageFonts.frutigerArabic(
+            fontSize: 16,
+            fontWeight: FontWeight.w500,
+            color: const Color(0xFF1E2A36),
           ),
         ),
       );
@@ -188,12 +180,10 @@ class SuggestItem extends ConsumerWidget {
               matchedParts[i].offset + matchedParts[i].length,
               matchedParts[i + 1].offset,
             ),
-            style: GoogleFonts.notoSansArabic(
-              textStyle: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-                color: Color(0x801E2A36),
-              ),
+            style: PackageFonts.frutigerArabic(
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
+              color: const Color(0x801E2A36),
             ),
           ),
         );
@@ -205,12 +195,10 @@ class SuggestItem extends ConsumerWidget {
           matchedParts[matchedParts.length - 1].offset +
               matchedParts[matchedParts.length - 1].length,
         ),
-        style: GoogleFonts.notoSansArabic(
-          textStyle: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w500,
-            color: Color(0x801E2A36),
-          ),
+        style: PackageFonts.frutigerArabic(
+          fontSize: 16,
+          fontWeight: FontWeight.w500,
+          color: const Color(0x801E2A36),
         ),
       ),
     );

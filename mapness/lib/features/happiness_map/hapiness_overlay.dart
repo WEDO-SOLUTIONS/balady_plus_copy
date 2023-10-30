@@ -22,11 +22,12 @@ class HapinessOverlay extends ConsumerWidget {
       builder: (context, constraints) => Stack(
         children: [
           AnimatedAlign(
-            alignment: Alignment(
+            alignment: const Alignment(
               0,
-              -48 /
-                  constraints.biggest.height *
-                  (cameraState == CameraState.free ? 1 : 2),
+              -48,
+              // /
+              //     constraints.biggest.height *
+              //     (cameraState == CameraState.free ? 1 : 2),
             ),
             duration: const Duration(milliseconds: 250),
             child: SvgPicture.asset(

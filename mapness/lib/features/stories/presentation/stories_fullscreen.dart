@@ -60,12 +60,13 @@ class _StoriesFullscreenState extends ConsumerState<StoriesFullscreen> {
     super.didChangeDependencies();
     ref.read(storyServiceProvider.notifier);
     final stories = ref.read(storyServiceProvider).value?.stories ?? const [];
-    final index = stories.indexWhere(
-      (element) => element.storyId == widget.initialStoryId,
-    );
-    _storyController = PageController(initialPage: index + 1);
+    final index = stories.length -
+        stories.indexWhere(
+          (element) => element.storyId == widget.initialStoryId,
+        );
+    _storyController = PageController(initialPage: index);
     setState(() {
-      initialPage = index + 1;
+      initialPage = index;
     });
   }
 

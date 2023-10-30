@@ -1,7 +1,7 @@
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:mapness/features/common/config/package_fonts.dart';
 import 'package:mapness/features/landing/providers/map_controls.dart';
 import 'package:mapness/features/map/providers/search.dart';
 import 'package:mapness/legacy_features/routing_page/data/directory_object_ext.dart';
@@ -66,13 +66,11 @@ class SearchResult extends ConsumerWidget {
             Text(
               result.title,
               overflow: TextOverflow.ellipsis,
-              style: GoogleFonts.notoSansArabic(
-                textStyle: const TextStyle(
-                  fontSize: 16,
-                  height: 1.4,
-                  fontWeight: FontWeight.w500,
-                  color: Color(0xFF1E2A36),
-                ),
+              style: PackageFonts.frutigerArabic(
+                fontSize: 16,
+                height: 1.4,
+                fontWeight: FontWeight.w500,
+                color: Color(0xFF1E2A36),
               ),
             ),
             Row(
@@ -81,13 +79,11 @@ class SearchResult extends ConsumerWidget {
                   result.subtitle,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: GoogleFonts.notoSansArabic(
-                    textStyle: const TextStyle(
-                      fontSize: 16,
-                      height: 1.4,
-                      fontWeight: FontWeight.w500,
-                      color: Color(0xB21E2A36),
-                    ),
+                  style: PackageFonts.frutigerArabic(
+                    fontSize: 16,
+                    height: 1.4,
+                    fontWeight: FontWeight.w500,
+                    color: const Color(0xB21E2A36),
                   ),
                 ),
                 const SizedBox(
@@ -97,13 +93,11 @@ class SearchResult extends ConsumerWidget {
                 Text(
                   "1.3 km",
                   overflow: TextOverflow.ellipsis,
-                  style: GoogleFonts.notoSansArabic(
-                    textStyle: const TextStyle(
-                      fontSize: 16,
-                      height: 1.4,
-                      fontWeight: FontWeight.w500,
-                      color: Color(0xB21E2A36),
-                    ),
+                  style: PackageFonts.frutigerArabic(
+                    fontSize: 16,
+                    height: 1.4,
+                    fontWeight: FontWeight.w500,
+                    color: const Color(0xB21E2A36),
                   ),
                 ),
               ],
@@ -115,13 +109,11 @@ class SearchResult extends ConsumerWidget {
               result.makeAddress(),
               maxLines: 5,
               overflow: TextOverflow.ellipsis,
-              style: GoogleFonts.notoSansArabic(
-                textStyle: const TextStyle(
-                  fontSize: 16,
-                  height: 1.4,
-                  fontWeight: FontWeight.w500,
-                  color: Color(0xB21E2A36),
-                ),
+              style: PackageFonts.frutigerArabic(
+                fontSize: 16,
+                height: 1.4,
+                fontWeight: FontWeight.w500,
+                color: Color(0xB21E2A36),
               ),
             ),
           ],

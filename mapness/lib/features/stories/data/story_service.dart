@@ -98,11 +98,11 @@ class StoryService extends _$StoryService {
         .toList();
 
     return StoryOverallData(stories: [
-      ...stories.where((element) => !element.isViewed),
       ...stories.where((element) => element.isViewed),
+      ...stories.where((element) => !element.isViewed),
     ], thumbnails: [
-      ...thumnails.where((element) => !element.isWatched),
       ...thumnails.where((element) => element.isWatched),
+      ...thumnails.where((element) => !element.isWatched),
     ]);
   }
 }

@@ -22,7 +22,7 @@ class HappinessSubmitButton extends ConsumerWidget {
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 14),
           child: Text(
-            'send feedback',
+            'Send feedback',
             style: GoogleFonts.inter(
               color: Colors.white,
               fontSize: 16,

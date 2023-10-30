@@ -20,15 +20,13 @@ class FollowControl extends ConsumerWidget {
     return AnimatedOpacity(
       opacity: followState.enabled ? 1 : 1, // fix
       duration: const Duration(milliseconds: 250),
-      child: GestureDetector(
+      child: MapControl(
         onTap: followNotifier.onFollowTap,
-        child: MapControl(
-          SvgPicture.asset(
-            "assets/icons/svg/ic_control_location.svg",
-            semanticsLabel: 'MinApps Screen',
-            package: "mapness",
-            colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
-          ),
+        child: SvgPicture.asset(
+          "assets/icons/svg/ic_control_location.svg",
+          semanticsLabel: 'MinApps Screen',
+          package: "mapness",
+          colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
         ),
       ),
     );

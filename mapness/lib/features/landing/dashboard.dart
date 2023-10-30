@@ -1,11 +1,18 @@
+import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart' hide SearchBar;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:mapness/features/common/config/package_fonts.dart';
 import 'package:mapness/features/landing/providers/dashboard_controls.dart';
 import 'package:mapness/features/landing/providers/map_controls.dart';
+import 'package:mapness/features/landing/widgets/challenge_card.dart';
 import 'package:mapness/features/landing/widgets/dashboard_header.dart';
+import 'package:mapness/features/landing/widgets/event_card.dart';
+import 'package:mapness/features/landing/widgets/login_card.dart';
+import 'package:mapness/features/landing/widgets/poi_card.dart';
+import 'package:mapness/features/landing/widgets/prayer_card.dart';
 import 'package:mapness/features/landing/widgets/search_groups.dart';
 import 'package:mapness/features/landing/widgets/search_results.dart';
+import 'package:mapness/features/landing/widgets/service_card.dart';
 import 'package:mapness/features/landing/widgets/suggest_list.dart';
 import 'package:mapness/features/stories/stories_widget.dart';
 
@@ -13,9 +20,11 @@ class Dashboard extends ConsumerStatefulWidget {
   const Dashboard({
     super.key,
     required this.biggestHeight,
+    required this.biggestWidth,
   });
 
   final double biggestHeight;
+  final double biggestWidth;
 
   @override
   ConsumerState<Dashboard> createState() => _DashboardState();
@@ -23,6 +32,7 @@ class Dashboard extends ConsumerStatefulWidget {
 
 class _DashboardState extends ConsumerState<Dashboard> {
   late final DraggableScrollableController _draggableScrollableController;
+  late final PageController _pageController;
 
   double _headerExtent() {
     return 75 / widget.biggestHeight;
@@ -31,6 +41,9 @@ class _DashboardState extends ConsumerState<Dashboard> {
   @override
   void initState() {
     super.initState();
+    _pageController = PageController(
+      viewportFraction: (widget.biggestWidth - 32) / widget.biggestWidth,
+    );
     _draggableScrollableController = DraggableScrollableController()
       ..addListener(() {
         Future.delayed(Duration.zero, () {
@@ -138,170 +151,260 @@ class _DashboardState extends ConsumerState<Dashboard> {
                           children: [
                             const StoriesWidget(),
                             const SizedBox(
-                              height: 16,
+                              height: 24,
                             ),
                             Padding(
                               padding: const EdgeInsets.only(
                                 right: 16.0,
                               ),
                               child: Text(
-                                'مثيرة للاهتمام بالنسبة لك',
-                                style: GoogleFonts.notoSansArabic(
-                                  textStyle: const TextStyle(
-                                    fontSize: 24,
-                                    fontWeight: FontWeight.w500,
-                                  ),
+                                'أماكن للزيارة',
+                                style: PackageFonts.frutigerArabic(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w700,
                                 ),
                               ),
                             ),
                             const SizedBox(
-                              height: 8,
+                              height: 16,
                             ),
                             SizedBox(
-                              height: 150,
-                              child: ListView.builder(
-                                  reverse: true,
-                                  scrollDirection: Axis.horizontal,
-                                  itemCount: 10,
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 8,
+                              height: 200,
+                              child: ListView(
+                                scrollDirection: Axis.horizontal,
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 16,
+                                ),
+                                children: [
+                                  PoiCard(
+                                    objectId: DgisObjectIdMessage(
+                                      objectId: 70000001079215988,
+                                      entranceId: 0,
+                                    ),
+                                    title: "Boulevard\nRiyadh City",
+                                    subtitle: "23 كم",
+                                    image:
+                                        "assets/images/poi_boulevard_riyadh_city.png",
                                   ),
-                                  itemBuilder:
-                                      (BuildContext context, int index) {
-                                    return Padding(
-                                      padding: EdgeInsets.only(
-                                        left: 8.0,
-                                        right: index == 9 ? 8 : 0,
-                                      ),
-                                      child: Container(
-                                        height: 150,
-                                        width: 335,
-                                        decoration: const BoxDecoration(
-                                          color: Color(0xFFDDE4EE),
-                                          borderRadius: BorderRadius.all(
-                                            Radius.circular(8),
-                                          ),
-                                        ),
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 24,
-                                          vertical: 20,
-                                        ),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            const Spacer(),
-                                            Text(
-                                              'الأحداث',
-                                              style: GoogleFonts.notoSansArabic(
-                                                textStyle: const TextStyle(
-                                                  fontSize: 20,
-                                                  fontWeight: FontWeight.w500,
-                                                ),
-                                              ),
-                                            ),
-                                            Text(
-                                              'في نوفمبر',
-                                              style: GoogleFonts.notoSansArabic(
-                                                textStyle: const TextStyle(
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.normal,
-                                                  color: Color(0xFF7D9CBD),
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    );
-                                  }),
+                                  const SizedBox(
+                                    width: 8,
+                                  ),
+                                  PoiCard(
+                                    objectId: DgisObjectIdMessage(
+                                      objectId: 70030076256609771,
+                                      entranceId: 0,
+                                    ),
+                                    title: "Kingdom\nCenter",
+                                    subtitle: "5 كم",
+                                    image:
+                                        "assets/images/poi_kingdom_center.png",
+                                  ),
+                                  const SizedBox(
+                                    width: 8,
+                                  ),
+                                  PoiCard(
+                                    objectId: DgisObjectIdMessage(
+                                      objectId: 70030076201501940,
+                                      entranceId: 0,
+                                    ),
+                                    title: "Faisaliya\nTower",
+                                    subtitle: "5 كم",
+                                    image:
+                                        "assets/images/poi_faisaliya_tower.png",
+                                  ),
+                                  const SizedBox(
+                                    width: 8,
+                                  ),
+                                  PoiCard(
+                                    objectId: DgisObjectIdMessage(
+                                      objectId: 70000001079216136,
+                                      entranceId: 0,
+                                    ),
+                                    title: "Masmak\nFortress",
+                                    subtitle: "5 كم",
+                                    image:
+                                        "assets/images/poi_masmak_fortress.png",
+                                  ),
+                                  const SizedBox(
+                                    width: 8,
+                                  ),
+                                  PoiCard(
+                                    objectId: DgisObjectIdMessage(
+                                      objectId: 70030076419526924,
+                                      entranceId: 0,
+                                    ),
+                                    title: "Edge of the\nworld",
+                                    subtitle: "5 كم",
+                                    image:
+                                        "assets/images/poi_edge_of_the_world.png",
+                                  ),
+                                ],
+                              ),
                             ),
                             const SizedBox(
-                              height: 16,
+                              height: 24,
                             ),
                             Padding(
                               padding: const EdgeInsets.only(right: 16.0),
                               child: Text(
-                                'مثيرة للاهتمام بالنسبة لك',
-                                style: GoogleFonts.notoSansArabic(
-                                  textStyle: const TextStyle(
-                                    fontSize: 24,
-                                    fontWeight: FontWeight.w500,
-                                  ),
+                                'الفعاليات',
+                                style: PackageFonts.frutigerArabic(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w700,
                                 ),
                               ),
                             ),
                             const SizedBox(
-                              height: 8,
+                              height: 16,
+                            ),
+                            SizedBox(
+                              height: 200,
+                              child: PageView(
+                                scrollDirection: Axis.horizontal,
+                                controller: _pageController,
+                                children: const [
+                                  Padding(
+                                    padding:
+                                        EdgeInsets.symmetric(horizontal: 4),
+                                    child: EventCard(
+                                      title: "الأحداث",
+                                      subtitle: "25 أكتوبر 21:00",
+                                      image: "assets/images/event_0.png",
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding:
+                                        EdgeInsets.symmetric(horizontal: 4),
+                                    child: EventCard(
+                                      title: "سباق الخيل",
+                                      subtitle: "5 أكتوبر 13:00",
+                                      image: "assets/images/event_1.png",
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding:
+                                        EdgeInsets.symmetric(horizontal: 4),
+                                    child: EventCard(
+                                      title: "معرض الصحة العالمية 2023",
+                                      subtitle: "29-31 أكتوبر",
+                                      image: "assets/images/event_2.png",
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 24,
                             ),
                             Padding(
-                              padding: const EdgeInsets.only(
-                                left: 16.0,
-                                right: 16.0,
-                                bottom: 38,
+                              padding: const EdgeInsets.only(right: 16.0),
+                              child: Text(
+                                'الفعاليات',
+                                style: PackageFonts.frutigerArabic(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w700,
+                                ),
                               ),
-                              child: Container(
-                                height: 200,
-                                decoration: const BoxDecoration(
-                                  color: Color(0xFFDDE4EE),
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(8),
+                            ),
+                            const SizedBox(
+                              height: 16,
+                            ),
+                            const Padding(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 16,
+                              ),
+                              child: PrayerCard(),
+                            ),
+                            const SizedBox(
+                              height: 24,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(right: 16.0),
+                              child: Text(
+                                ' أوقات الصلاة',
+                                style: PackageFonts.frutigerArabic(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 16,
+                            ),
+                            const Padding(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 16,
+                              ),
+                              child: ChallengeCard(),
+                            ),
+                            const SizedBox(
+                              height: 24,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(right: 16.0),
+                              child: Text(
+                                'سجل للحصول على الفرص',
+                                style: PackageFonts.frutigerArabic(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 16,
+                            ),
+                            const Padding(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 16,
+                              ),
+                              child: LoginCard(),
+                            ),
+                            const SizedBox(
+                              height: 24,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(right: 16.0),
+                              child: Text(
+                                "تسجيل الدخول للوصول الى",
+                                style: PackageFonts.frutigerArabic(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 16,
+                            ),
+                            const Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 16.0),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: ServiceCard(
+                                      title: " أتمنى ",
+                                      subtitle: "في نوفمبر",
+                                      image: "assets/images/iwish.png",
+                                    ),
                                   ),
-                                ),
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 24,
-                                  vertical: 20,
-                                ),
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  children: [
-                                    Column(
-                                      children: [
-                                        const Spacer(),
-                                        Text(
-                                          'الأحداث',
-                                          style: GoogleFonts.notoSansArabic(
-                                            fontSize: 20,
-                                            fontWeight: FontWeight.w500,
-                                          ),
-                                        ),
-                                        Text(
-                                          'في نوفمبر',
-                                          style: GoogleFonts.notoSansArabic(
-                                            textStyle: const TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.normal,
-                                              color: Color(0xFF7D9CBD),
-                                            ),
-                                          ),
-                                        ),
-                                      ],
+                                  SizedBox(
+                                    width: 8,
+                                  ),
+                                  Expanded(
+                                    child: ServiceCard(
+                                      title: "صور وارسل",
+                                      subtitle: "في نوفمبر",
+                                      image: "assets/images/snap_send.png",
                                     ),
-                                    const Spacer(),
-                                    Container(
-                                      height: 38,
-                                      width: 114,
-                                      decoration: const BoxDecoration(
-                                        borderRadius: BorderRadius.all(
-                                          Radius.circular(8),
-                                        ),
-                                        color: Color(0xFF7D9CBD),
-                                      ),
-                                      padding: const EdgeInsets.all(10.0),
-                                      child: const Center(
-                                        child: Text("Login"),
-                                      ),
-                                    ),
-                                  ],
-                                ),
+                                  )
+                                ],
                               ),
+                            ),
+                            const SizedBox(
+                              height: 16,
                             ),
                           ],
                         ),
                       ),
-                    const SizedBox(
-                      height: 16,
-                    ),
                   ],
                 ),
               ],

@@ -229,21 +229,29 @@ class GeneralMapCardWidget extends ConsumerWidget {
           ),
         );
       },
-      error: (_) => const Column(
-        children: [
-          Spacer(),
-          ShimmerEffectWidget(
-            height: 120,
-          ),
-        ],
+      error: (_) => const Padding(
+        padding: EdgeInsets.all(12.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Spacer(),
+            ShimmerEffectWidget(
+              height: 120,
+            ),
+          ],
+        ),
       ),
-      loading: (_) => const Column(
-        children: [
-          Spacer(),
-          ShimmerEffectWidget(
-            height: 120,
-          ),
-        ],
+      loading: (_) => const Padding(
+        padding: EdgeInsets.all(12.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Spacer(),
+            ShimmerEffectWidget(
+              height: 120,
+            ),
+          ],
+        ),
       ),
     );
   }

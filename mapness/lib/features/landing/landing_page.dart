@@ -22,17 +22,18 @@ class LandingPage extends ConsumerWidget {
       body: Stack(
         children: [
           const MapPage(),
+          if (controlsState.controlsVisible) const controls.MapControls(),
           if (controlsState.controlsVisible)
             LayoutBuilder(builder: (context, constraints) {
               return Dashboard(
                 biggestHeight: constraints.biggest.height,
+                biggestWidth: constraints.biggest.width,
               );
             }),
-          if (controlsState.controlsVisible) const controls.MapControls(),
           switch (controlsState) {
             MapControlsStateLayers() => const LayersSheet(),
             MapControlsStateNavigation() => const RoutingOverlay(),
-            MapControlsStateHappinessMap() => HapinessOverlay(),
+            MapControlsStateHappinessMap() => const HapinessOverlay(),
             MapControlsStatePoI(objectId: final objectId) =>
               GeneralMapCardWidget(objectId),
             _ => const SizedBox.shrink(),

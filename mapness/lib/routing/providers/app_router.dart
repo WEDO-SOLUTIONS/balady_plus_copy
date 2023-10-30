@@ -8,7 +8,6 @@ import '../scaffold_with_nested_navigation.dart';
 part 'app_router.g.dart';
 
 // private navigators
-final _rootNavigatorKey = GlobalKey<NavigatorState>();
 final _mapNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'map');
 final _routeNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'route');
 final _dashboardNavigatorKey =
@@ -45,7 +44,7 @@ GoRouter goRouter(GoRouterRef ref, List<Widget> routes) {
                 pageBuilder: (context, state) => NoTransitionPage(
                   child: routes[0],
                 ),
-                routes: [],
+                routes: const [],
               ),
             ],
           ),
@@ -58,20 +57,7 @@ GoRouter goRouter(GoRouterRef ref, List<Widget> routes) {
                 pageBuilder: (context, state) => NoTransitionPage(
                   child: routes[1],
                 ),
-                routes: [],
-              ),
-            ],
-          ),
-          StatefulShellBranch(
-            navigatorKey: _profileNavigatorKey,
-            routes: [
-              GoRoute(
-                path: '/landing',
-                name: AppRoute.profile.name,
-                pageBuilder: (context, state) => NoTransitionPage(
-                  child: LandingPage(),
-                ),
-                routes: [],
+                routes: const [],
               ),
             ],
           ),
@@ -84,7 +70,20 @@ GoRouter goRouter(GoRouterRef ref, List<Widget> routes) {
                 pageBuilder: (context, state) => NoTransitionPage(
                   child: routes[2],
                 ),
-                routes: [],
+                routes: const [],
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            navigatorKey: _profileNavigatorKey,
+            routes: [
+              GoRoute(
+                path: '/landing',
+                name: AppRoute.profile.name,
+                pageBuilder: (context, state) => const NoTransitionPage(
+                  child: LandingPage(),
+                ),
+                routes: const [],
               ),
             ],
           ),

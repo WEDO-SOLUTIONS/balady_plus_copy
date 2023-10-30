@@ -1,7 +1,7 @@
 name: mapness
 description: A new Flutter package project.
 version: 0.0.1
-publish_to: 'none'
+publish_to: "none"
 
 environment:
   sdk: ">=3.0.3 <4.0.0"
@@ -64,3 +64,15 @@ flutter:
   assets:
     - assets/
     - assets/icons/svg/
+    - assets/images/
+  fonts:
+    - family: Frutiger LT Arabic
+      fonts:
+        - asset: assets/fonts/FrutigerLTArabic45Light.ttf
+          weight: 300
+        - asset: assets/fonts/FrutigerLTArabic55Roman.ttf
+          weight: 400
+        - asset: assets/fonts/FrutigerLTArabic65Bold.ttf
+          weight: 700
+        - asset: assets/fonts/frutigerltarabic75black.ttf
+          weight: 900

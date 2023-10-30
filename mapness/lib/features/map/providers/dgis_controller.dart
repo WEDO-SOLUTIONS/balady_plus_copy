@@ -64,6 +64,7 @@ class DgisController extends _$DgisController {
         controller.visibleRectEvents.listen(_visibleRectListener);
     final cameraPositionSubscription =
         controller.cameraPositionEvents.listen(_cameraPositionListener);
+
     ref.onDispose(
       () {
         visibleRectSubscription.cancel();

@@ -54,6 +54,9 @@ class SearchHandler(
                     return@onResult
                 }
 
+                result?.success(response.toMessage(null))
+                return@onResult
+
                 thread {
                     try {
                         val url = URL(
