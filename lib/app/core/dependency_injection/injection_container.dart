@@ -69,6 +69,7 @@ import 'features/dc_injection.dart';
 import 'features/events_injection.dart';
 import 'features/objectable_transactions_injection.dart';
 import 'features/objections_injection.dart';
+import 'features/renew_commercial_injection.dart';
 import 'features/retrive_dc_injection.dart';
 
 /// sl -> Service Locator
@@ -123,7 +124,8 @@ void initialize() {
   CRMRequestsInjection.init();
 //? Cr
   CrInjection.init();
-
+//? Renew Commercial
+  RenewCommercialInjection.init();
   //?
   ComplianceInjection.init();
 

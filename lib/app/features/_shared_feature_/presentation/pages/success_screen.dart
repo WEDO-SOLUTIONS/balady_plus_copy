@@ -181,6 +181,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
       case PAGE_TYPE.visitScreen:
         break;
 
+      case PAGE_TYPE.renewCommercial:
       case PAGE_TYPE.other:
         break;
     }
@@ -273,6 +274,7 @@ class SuccessBody extends StatelessWidget {
       case PAGE_TYPE.objction:
       case PAGE_TYPE.emtethal:
       case PAGE_TYPE.deleteEmtethal:
+      case PAGE_TYPE.renewCommercial:
         return "vd_request_submit".tr();
         return ('lbl_thank_you').tr();
       default:
@@ -353,6 +355,7 @@ class SuccessBody extends StatelessWidget {
       case PAGE_TYPE.dc:
       case PAGE_TYPE.vhr:
       case PAGE_TYPE.emtethal:
+      case PAGE_TYPE.renewCommercial:
         return successScreenArgs?.thanksMessage ?? "";
 
       case PAGE_TYPE.other:
@@ -430,6 +433,7 @@ class SuccessButtons extends StatelessWidget {
       case PAGE_TYPE.deleteRequestScreen:
       case PAGE_TYPE.emtethal:
       case PAGE_TYPE.deleteEmtethal:
+      case PAGE_TYPE.renewCommercial:
         return ('go_to_home').tr();
       //   return Helpers.translatingWord('go_back_to_customer_voice_page');
       // case PAGE_TYPE.licenseScreen:
@@ -469,6 +473,7 @@ class SuccessButtons extends StatelessWidget {
       case PAGE_TYPE.deleteEmtethal:
       case PAGE_TYPE.licenseScreen:
       case PAGE_TYPE.deleteRequestScreen:
+      case PAGE_TYPE.renewCommercial:
         {
           Helpers.backNavigationToHomeScreen();
         }

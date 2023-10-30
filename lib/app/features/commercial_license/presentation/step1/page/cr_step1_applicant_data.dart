@@ -11,7 +11,14 @@ class CRStep1ApplicantData extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<CrStep1ApplicantDataCubit, CrStep1ApplicantDataState>(
+    return BlocConsumer<CrStep1ApplicantDataCubit, CrStep1ApplicantDataState>(
+      listener: (context, state) {
+        if (state.recordStatus == BlocStatus.failure ||
+            state.status == BlocStatus.failure ||
+            state.addIsicActivitiesStatus == BlocStatus.failure) {
+          CommonFunctions.showError(state.errorMessage);
+        }
+      },
       builder: (context, state) {
         return Stack(
           children: [
@@ -33,7 +40,7 @@ class CRStep1ApplicantData extends StatelessWidget {
                                     .isNotEmpty) ...[
                               ReadOnlyField(
                                 title: "phone_number".tr(),
-                                subTitle: state.recordInfo?.crInfo?.phoneNo,
+                                subTitle: CommonProperties.userInfo?.getPhone(),
                                 showSpace: false,
                               ),
                               const SizedBox(height: 8),
@@ -45,8 +52,9 @@ class CRStep1ApplicantData extends StatelessWidget {
                             ],
                             ReadOnlyField(
                               title: "applicantDesc".tr(),
-                              subTitle:
-                                  state.recordInfo?.crInfo?.getLegalType ?? '',
+                              subTitle: CommonProperties
+                                      .selectedDelegator?.roleName ??
+                                  '',
                             ),
                             ReadOnlyField(
                               title: "crNumber".tr(),
@@ -82,8 +90,8 @@ class CRStep1ApplicantData extends StatelessWidget {
                                       const IsicActivitiesDialogNotExistInBalady()));
                         } else {
                           context
-                              .read<CommercialLicenseBloc>()
-                              .add(const GoToNextPageEvent());
+                              .read<CrStep1ApplicantDataCubit>()
+                              .saveComSubmitterAndOwner();
                         }
                       }),
                 ],
@@ -94,7 +102,8 @@ class CRStep1ApplicantData extends StatelessWidget {
                 onTryAgain: () =>
                     context.read<CrStep1ApplicantDataCubit>().getRecordInfo(),
               ),
-            if (state.recordStatus.isSubmissionLoading)
+            if (state.recordStatus.isSubmissionLoading ||
+                state.status.isSubmissionLoading)
               const CustomCircularLoadingWidget(),
           ],
         );

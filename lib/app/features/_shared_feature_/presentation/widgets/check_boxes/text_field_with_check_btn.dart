@@ -14,7 +14,7 @@ class TextWithCheckBtn extends StatefulWidget {
   final double bottomViewInsets;
   final Function verify;
   final Function validate;
-  final TextEditingController controller;
+  final TextEditingController? controller;
   final String? errorText;
   final Color? backgroundColor;
   final int? maxLength;
@@ -23,7 +23,7 @@ class TextWithCheckBtn extends StatefulWidget {
   TextWithCheckBtn(
       {required this.title,
       this.hint,
-      required this.controller,
+      this.controller,
       this.textHint,
       this.currentValue,
       required this.onTextChanged,
@@ -46,7 +46,7 @@ class _TextWithCheckBtnState extends State<TextWithCheckBtn> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    widget.controller.text = widget.currentValue ?? "";
+    widget.controller?.text = widget.currentValue ?? "";
   }
 
   @override

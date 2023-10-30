@@ -78,17 +78,16 @@ class SuccessfullySubmitRatingSheet extends StatelessWidget {
                 context,
                 RouteName.requestCommercialLicenseDetails,
                 arguments: RequestCommercialLicenseDetailsCubit(
-                  GetRequestCommercialLicenseDetails(
-                    repository:
-                        RequestCommercialLicenseDetailsRepositoryImplementation(
-                      remoteDataSource:
-                          RequestCommercialLicenseDetailsRemoteDataSourceImplementation(
-                        webService: sl(),
+                    GetRequestCommercialLicenseDetails(
+                      repository:
+                          RequestCommercialLicenseDetailsRepositoryImplementation(
+                        remoteDataSource:
+                            RequestCommercialLicenseDetailsRemoteDataSourceImplementation(
+                          webService: sl(),
+                        ),
                       ),
                     ),
-                  ),
-                  provider.submitResponse.requestId,
-                ),
+                    provider.submitResponse.requestId),
               );
             },
           ),
