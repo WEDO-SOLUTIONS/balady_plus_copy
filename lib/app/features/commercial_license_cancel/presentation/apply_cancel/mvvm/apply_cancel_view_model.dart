@@ -17,7 +17,7 @@ class ApplyCancelViewModel extends BaseViewModel {
   final int licenseId;
   final SubmitterInfo submitterInfo;
   final ReasonCancel reasonCancel;
-
+  String? messageHtml ;
   ApplyCancelViewModel({
     required this.webService,
     required this.licenseId,
@@ -49,7 +49,12 @@ class ApplyCancelViewModel extends BaseViewModel {
         response: response,
         ex: exception,
       );
-      showError(exception.toString());
+      String message = exception.toString();
+      if(message.contains('href')) {
+        messageHtml = message;
+      } else {
+        showError(message);
+      }
     } catch (exception) {
       CommonFunctions.sendEvent(
         dioError: null,

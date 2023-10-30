@@ -70,19 +70,19 @@ class Detail {
   final String? feeId;
   final String? feeName;
   final double? amount;
-  final String? municipalityId;
-  final String? municipalityName;
-  final String? subMunicipalityId;
-  final dynamic subMunicipalityName;
+  // final String? municipalityId;
+  // final String? municipalityName;
+  // final String? subMunicipalityId;
+  // final dynamic subMunicipalityName;
 
   Detail({
     this.feeId,
     this.feeName,
     this.amount,
-    this.municipalityId,
-    this.municipalityName,
-    this.subMunicipalityId,
-    this.subMunicipalityName,
+    // this.municipalityId,
+    // this.municipalityName,
+    // this.subMunicipalityId,
+    // this.subMunicipalityName,
   });
 }
 

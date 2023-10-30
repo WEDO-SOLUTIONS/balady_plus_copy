@@ -56,7 +56,7 @@ class SubmitApplicationSuccessfullyCancel extends StatelessWidget {
                     // ),
                     const SizedBox(height: 16),
                     CustomAutoSizeTextWidget(
-                      '${'application_no_has_been_submitted'.tr()} ${submitResponse.requestId} ${(submitResponse.payUrl?.isNotEmpty ?? false) ? '${'and_issue_invoice_service_amount'.tr()} ${arguments.$3} ${'sar'.tr()}' : ''}',
+                      '${'application_no_has_been_submitted'.tr()} ${submitResponse.requestId} ${(submitResponse.payUrl?.isNotEmpty ?? false) ? '${'and_issue_invoice_service_amount'.tr()} ${arguments.$3} ${'sar'.tr()}' : 'application_no_has_been_submitted_two'.tr()}',
                       textStyle: AppStyle.serviceListTitleTextStyle,
                       maxLines: 3,
                       textAlign: TextAlign.center,
@@ -85,11 +85,12 @@ class SubmitApplicationSuccessfullyCancel extends StatelessWidget {
                       onPressed: () async {
                         Navigator.of(context).popAndPushNamed(
                           RouteName.invoiceDetails,
-                          arguments: [
+                          arguments: (
                             submitResponse.payUrl.toString(),
                             submitResponse.crNumber,
                             submitResponse.crType,
-                          ],
+                            "SADAD",
+                          ),
                         );
                       },
                     )

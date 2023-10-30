@@ -248,7 +248,7 @@ class CommercialLicenseCancelOneScreen extends StatelessWidget {
                                         ),
                                         const SizedBox(height: 6),
                                         CustomTextWidget(
-                                          '${'attachment_message_typ'.tr()} ${attachment.allowedFilesExtension ?? ''} ${'attachment_message_size'.tr()} ${(attachment.maxSize ?? 0) / 1000} MB',
+                                          '${'attachment_message_typ'.tr()} ${attachment.allowedFilesExtension ?? ''} ${'attachment_message_size'.tr()} ${(attachment.maxSize ?? 0) ~/ 1000} MB',
                                           fontColor:
                                               AppColor.blackModern700Light,
                                           fontSize: 16,

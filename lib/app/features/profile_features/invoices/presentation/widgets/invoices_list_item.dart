@@ -90,18 +90,18 @@ class InvoicesListItem extends StatelessWidget {
           ),
           ElevatedButtonWidget.details(
             onPressed: () {
-
               if (invoice.redirectUrl == null && invoice.id == null) {
                 return;
               } else if (invoice.id != null) {
                 ;
                 context.pushNamedRoute(
                   RouteName.invoiceDetails,
-                  arguments: [
+                  arguments: (
                     invoice.id,
-                    CommonProperties.selectedDelegator?.crNumber ?? '',
-                    CommonProperties.selectedDelegator?.crType ?? '',
-                  ],
+                    CommonProperties.selectedDelegator?.crNumber,
+                    CommonProperties.selectedDelegator?.crType,
+                    null,
+                  ),
                 );
                 return;
               } else if (invoice.redirectUrl != null) {

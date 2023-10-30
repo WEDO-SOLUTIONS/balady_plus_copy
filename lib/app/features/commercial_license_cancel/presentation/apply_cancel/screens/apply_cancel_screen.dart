@@ -1,5 +1,4 @@
 import 'package:balady_plus/app/core/dependency_injection/injection_container.dart';
-import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
 import 'package:balady_plus/app/core/utils/constants/route_names.dart';
 import 'package:balady_plus/app/core/utils/enums/enums.dart';
@@ -9,10 +8,12 @@ import 'package:balady_plus/app/features/commercial_license_cancel/data/models/c
 import 'package:balady_plus/app/features/commercial_license_cancel/presentation/apply_cancel/mvvm/apply_cancel_view_model.dart';
 import 'package:balady_plus/app/features/commercial_license_cancel/presentation/commercial_license_cancel/blocs/commercial_license_cancel/commercial_license_cancel_bloc.dart';
 import 'package:balady_plus/app/features/services/services_exports.dart';
-import 'package:dio/dio.dart';
+import 'package:balady_plus/etmam_app/features/_shared_feature_/shared/shared_feature_exports.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ApplyCancelScreen extends StatelessWidget {
   const ApplyCancelScreen({Key? key}) : super(key: key);
@@ -179,29 +180,35 @@ class ApplyCancelScreen extends StatelessWidget {
                   child: ServiceWarningWidget(
                     warning: service.warning ?? "",
                     onPress: () async {
-                      try {
-                        NavigatorState navigator = Navigator.of(context);
-                        CancellationRequestResponse? cancellationRequest =
-                            await viewModel
-                                .applyCommercialLicenseCancellation();
-                        if (cancellationRequest != null) {
-                          navigator.popAndPushNamed(
-                            RouteName.commercialLicenseCancel,
-                            arguments: CommercialLicenseCancelBloc(
-                              webService: sl(),
-                              requestId: cancellationRequest.requestId,
-                              availableCloseDate:
-                                  cancellationRequest.availableCloseDate,
-                              crNumber: viewModel.submitterInfo.crNumber,
-                              crType: viewModel.submitterInfo.crType!,
-                              reasonCancel: viewModel.reasonCancel,
-                            ),
-                          );
-                        }
-                      } on DioError catch (error) {
-                        CommonFunctions.showError(error.toString());
-                      } catch (e) {
-                        CommonFunctions.showError(e.toString());
+                      NavigatorState navigator = Navigator.of(context);
+                      CancellationRequestResponse? cancellationRequest =
+                          await viewModel.applyCommercialLicenseCancellation();
+                      if (cancellationRequest != null) {
+                        navigator.popAndPushNamed(
+                          RouteName.commercialLicenseCancel,
+                          arguments: CommercialLicenseCancelBloc(
+                            webService: sl(),
+                            requestId: cancellationRequest.requestId,
+                            availableCloseDate:
+                                cancellationRequest.availableCloseDate,
+                            crNumber: viewModel.submitterInfo.crNumber,
+                            crType: viewModel.submitterInfo.crType!,
+                            reasonCancel: viewModel.reasonCancel,
+                          ),
+                        );
+                      } else if (viewModel.messageHtml != null) {
+                        showPopUpWidget(
+                          context,
+                          popUpBody: Html(
+                            data: viewModel.messageHtml,
+                            onLinkTap: (String? url,  Map<String, String> attributes, element) {
+                              //open URL in webview, or launch URL in browser, or any other logic here
+                              if(url != null) {
+                                launchUrl(Uri.parse(url));
+                              }
+                            }
+                          ),
+                        );
                       }
                     },
                   ),
