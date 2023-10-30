@@ -6,12 +6,14 @@ import '../../commercial_license_exports.dart';
 import '../../data/models/save_com_submitter_and_owner_request_model.dart';
 import '../entities/cr_submit_request.dart';
 
-class SubmitCR extends UseCase<CrSubmitResponse, CrSubmitRequest> {
+class SubmitCR
+    extends UseCase<ResponseBodyModel<CrSubmitResponse>, CrSubmitRequest> {
   final CrRepository repository;
 
   SubmitCR({required this.repository});
   @override
-  Future<Either<Failure, CrSubmitResponse>> call(CrSubmitRequest params) async {
+  Future<Either<Failure, ResponseBodyModel<CrSubmitResponse>>> call(
+      CrSubmitRequest params) async {
     return await repository.submitCr(params: params);
   }
 }

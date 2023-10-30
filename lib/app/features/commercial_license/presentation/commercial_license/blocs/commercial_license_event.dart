@@ -20,5 +20,10 @@ class UpdateRequestFieldEvent extends CommercialLicenseEvent {
   final int requestId;
   final SaveLocationResponse? saveLocationResponse;
   const UpdateRequestFieldEvent(
-      {required this.requestId,  this.saveLocationResponse});
+      {required this.requestId, this.saveLocationResponse});
+}
+
+class UpdateQrDataEvent extends CommercialLicenseEvent {
+  final ApplyCommercialResponseModel data;
+  const UpdateQrDataEvent({required this.data});
 }

@@ -20,8 +20,8 @@ class CrCalculateFeesResponse {
 
 class ActivitiesCostDetaile {
   final String? refrence;
-  final int? activtyCost;
-  final int? cleaningCost;
+  final double? activtyCost;
+  final double? cleaningCost;
 
   ActivitiesCostDetaile({
     this.refrence,

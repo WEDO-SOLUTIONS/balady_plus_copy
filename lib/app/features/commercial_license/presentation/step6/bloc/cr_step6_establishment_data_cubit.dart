@@ -16,6 +16,7 @@ import '../../../commercial_license_exports.dart'
         CredenceItem,
         GetRequestCredence,
         GoToNextPageEvent,
+        UpdateQrDataEvent,
         UploadCredence,
         ValidateAprovals,
         ValidateSalamaAttachmentsRequest;
@@ -38,7 +39,9 @@ class CRStep6EstablishmentCubit extends Cubit<CRStep6EstablishmentState> {
       : _applyCommercialRequest = ApplyCommercialRequest(repository: sl()),
         _saveQrEnterpriseData = SaveQrEnterpriseData(repository: sl()),
         _getQrLookUp = GetQrLookUp(repository: sl()),
-        super(const CRStep6EstablishmentState()) {}
+        super(CRStep6EstablishmentState(
+            contactInfo: ContactInfo(
+                mobile: CommonProperties.userInfo?.getPhone() ?? ""))) {}
 
   void getPaymentMethods() async {
     if (state.paymentsMethods?.isNotEmpty ?? false) return;
@@ -105,7 +108,7 @@ class CRStep6EstablishmentCubit extends Cubit<CRStep6EstablishmentState> {
   }
 
   void getApplyCommercialRequest() async {
-    if (state.applyResponse != null) return;
+    //if (state.applyResponse != null) return;
     int requestId = sl<CommercialLicenseBloc>().state.requestId!;
     emit(state.copyWith(
       applyStatus: BlocStatus.loading,
@@ -125,33 +128,34 @@ class CRStep6EstablishmentCubit extends Cubit<CRStep6EstablishmentState> {
           contactInfo: r.enterpriseInfo?.contactInfo,
           applyStatus: BlocStatus.success,
           applyResponse: r));
+      sl<CommercialLicenseBloc>().updateQrData(applyCommercialResponse: r);
     });
   }
 
   void updateQRSiteLocationType(QRSiteLocationType value) {
-    emit(state.copyWith(siteLocationType: value));
+    emit(state.copyWith(errorMessage: "", siteLocationType: value));
   }
 
   void updateBuildingNature(QrLookUpItem value) {
-    emit(state.copyWith(selectedBuildingNature: value));
+    emit(state.copyWith(errorMessage: "", selectedBuildingNature: value));
   }
 
   void updateSiteNature(QrLookUpItem value) {
-    emit(state.copyWith(selectedSiteNature: value));
+    emit(state.copyWith(errorMessage: "", selectedSiteNature: value));
   }
 
-  void updateFields({
-    final String? buildingName,
-    final String? buildingUnit,
-    final String? buildingFloor,
-    final String? buildingDirections,
-    final String? siteName,
-    final String? siteDesc,
-    final String? siteLandmark,
-    final String? buildingNumber,
-    final String? addetionalNumber,
-    final String? postalCode,
-  }) {
+  void updateFields(
+      {final String? buildingName,
+      final String? buildingUnit,
+      final String? buildingFloor,
+      final String? buildingDirections,
+      final String? siteName,
+      final String? siteDesc,
+      final String? siteLandmark,
+      final String? buildingNumber,
+      final String? addetionalNumber,
+      final String? postalCode,
+      final bool? paymentMethods}) {
     emit(state.copyWith(
         buildingName: buildingName,
         buildingUnit: buildingUnit,
@@ -162,6 +166,122 @@ class CRStep6EstablishmentCubit extends Cubit<CRStep6EstablishmentState> {
         siteLandmark: siteLandmark,
         buildingNumber: buildingNumber,
         addetionalNumber: addetionalNumber,
-        postalCode: postalCode));
+        postalCode: postalCode,
+        hasPaymentMethods: paymentMethods));
+  }
+
+  void updatePaymentsMethods({required int index, required bool value}) {
+    emit(state.copyWith(status: BlocStatus.loading, errorMessage: ""));
+    List<QrLookUpItem> p = state.paymentsMethods ?? [];
+    p[index].selected = value;
+    emit(state.copyWith(paymentsMethods: p, status: BlocStatus.success));
+  }
+
+  void updateCrOwner({required CrOwner item, required int index}) {
+    emit(
+      state.copyWith(status: BlocStatus.loading, errorMessage: ""),
+    );
+
+    List<CrOwner> items = state.crOwners ?? [];
+    items[index] = item;
+
+    emit(
+      state.copyWith(crOwners: items, status: BlocStatus.success),
+    );
+  }
+
+  void updateContactInfo({
+    final String? mobile,
+    final String? phone,
+    final String? mail,
+    final String? website,
+    final String? twitter,
+    final String? instegram,
+    final String? snapchat,
+    final String? facebook,
+    final String? whatsApp,
+    final String? enterpriseUniqueCode,
+  }) {
+    ContactInfo info = state.contactInfo ?? ContactInfo();
+    info = info.copyWith(
+        mobile: mobile,
+        phone: phone,
+        mail: mail,
+        website: website,
+        twitter: twitter,
+        instegram: instegram,
+        snapchat: snapchat,
+        facebook: facebook,
+        whatsApp: whatsApp,
+        enterpriseUniqueCode: enterpriseUniqueCode);
+
+    emit(state.copyWith(errorMessage: "", contactInfo: info));
+  }
+
+  void updateManagerData({
+    final String? id,
+    final String? birthDate,
+  }) {
+    emit(
+        state.copyWith(errorMessage: "", birthDate: birthDate, nationalId: id));
+  }
+
+  void save() async {
+    int? requestId =
+        sl<CommercialLicenseBloc>().state.applyCommercialResponse?.requestId;
+
+    emit(state.copyWith(status: BlocStatus.loading));
+    NationalAddress nationalAddress = NationalAddress(
+        additionalNumber: state.addetionalNumber,
+        buildingNumber: state.buildingNumber,
+        floorNumber: int.tryParse(state.buildingFloor ?? ""),
+        unitNumber: state.buildingUnit,
+        zipCode: state.postalCode);
+    SaveEnterprisDataRequest request = SaveEnterprisDataRequest(
+        managerBirthDate: CommonFunctions.padHijriDate(state.birthDate),
+        managerIdentityNumber: state.nationalId ?? "",
+        managerNationalityId: null,
+        managerNationalityName: null,
+        managerProfessionalName: null,
+        managerSexName: null,
+        managerSexId: null,
+        requestId: requestId,
+        crOwners: state.crOwners,
+        contactInfo: state.contactInfo,
+        hasPaymentMethods: state.hasPaymentMethods,
+        paymentMethods: (state.paymentsMethods ?? [])
+            .where((element) => element.selected == true)
+            ?.map((e) => PaymentMethod(ename: e.ename, name: e.name, id: e.id))
+            .toList(),
+        qrEnterpriseLocationDto: QrEnterpriseLocationDto(
+          nationalAddress: nationalAddress,
+          siteLocationType: state.siteLocationType?.name,
+          locationInsideBuildingDto:
+              state.siteLocationType == QRSiteLocationType.INSIDE_BUILDING
+                  ? LocationInsideBuildingDto(
+                      accessDirections: state.buildingDirections,
+                      buildingName: state.buildingName,
+                      buildingNatureId: state.selectedBuildingNature?.id)
+                  : null,
+          locationOnStreetDto:
+              state.siteLocationType == QRSiteLocationType.ON_STREET
+                  ? LocationOnStreetDto(
+                      nearestLandmark: state.siteLandmark,
+                      siteDescription: state.siteDesc,
+                      siteNatureId: state.selectedSiteNature?.id)
+                  : null,
+        ));
+
+    final failureOrSuccess = await _saveQrEnterpriseData(request);
+
+    failureOrSuccess.fold((l) {
+      emit(state.copyWith(
+          status: BlocStatus.failure,
+          errorMessage: (l as ServerFailure).errorMessage));
+    }, (r) {
+      emit(state.copyWith(status: BlocStatus.success));
+
+      sl<CommercialLicenseBloc>().add(GoToNextPageEvent());
+    });
   }
 }

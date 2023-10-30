@@ -2,6 +2,8 @@ import 'package:dartz/dartz.dart';
 import '../../../../core/errors/errors_exports.dart';
 import '../../../_shared_feature_/shared_feature_exports.dart';
 import '../../commercial_license_exports.dart';
+import '../../data/models/additional_activity_details_response.dart';
+import '../../data/models/additional_activity_response.dart';
 import '../../data/models/cr_attachment_response_model.dart';
 import '../../data/models/qr/apply_commercial_response_model.dart';
 import '../../data/models/qr/qr_details_model.dart';
@@ -9,9 +11,11 @@ import '../../data/models/qr/qr_lookup.dart';
 import '../../data/models/qr/qr_submit_response.dart';
 import '../../data/models/qr/save_enterprise_data_request.dart';
 import '../../data/models/save_com_submitter_and_owner_request_model.dart';
+import '../entities/addetional_activity_details_request.dart';
 import '../entities/cr_attachment_response.dart';
 import '../entities/cr_submit_request.dart';
 import '../entities/save_shop_details_request.dart';
+import '../entities/verifiy_salama_requst.dart';
 
 abstract class CrRepository {
   Future<Either<Failure, ResponseBodyModel<RecordInfo>>> getRecordInfo(
@@ -58,7 +62,7 @@ abstract class CrRepository {
   Future<Either<Failure, int>> addBeneficiaryNotes(
       {required CrAddNotesRequest params});
 
-  Future<Either<Failure, CrSubmitResponse>> submitCr(
+  Future<Either<Failure, ResponseBodyModel<CrSubmitResponse>>> submitCr(
       {required CrSubmitRequest params});
 
   Future<Either<Failure, dynamic>> saveShopDetails(
@@ -83,6 +87,12 @@ abstract class CrRepository {
 
   Future<Either<Failure, bool>> fawrySalamaBills({required int params});
 
+  Future<Either<Failure, AddetionalActivityResponse>> getAddetionalActivites(
+      {final String subActivityId});
+  Future<Either<Failure, AddetionalActivityDetailsResponse>>
+      getAddetionalDetailsActivites(
+          {final AddetionalActivityDetailsRequest params});
+
   Future<Either<Failure, ApplyCommercialResponseModel>> applyCommercialRequest(
       {required int params});
 
@@ -105,5 +115,15 @@ abstract class CrRepository {
       {required CrAttachmentRequest params});
 
   Future<Either<Failure, QrSubmitResponse>> qrSubmit({required int params});
-  Future<Either<Failure, QrLookUpResponse>> getQrLookUp({required String params});
+  Future<Either<Failure, QrLookUpResponse>> getQrLookUp(
+      {required String params});
+
+  Future<Either<Failure, QrLookUpResponse>> getMalls({required String params});
+
+  Future<Either<Failure, bool>> validateSalamaReport(
+      {required VerifySalamaRequest params});
+  Future<Either<Failure, bool>> validateSalamaBill(
+      {required VerifySalamaRequest params});
+  Future<Either<Failure, bool>> validateSalamaPermit(
+      {required VerifySalamaRequest params});
 }

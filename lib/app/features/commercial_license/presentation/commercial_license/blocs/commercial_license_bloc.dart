@@ -5,7 +5,14 @@ import 'package:meta/meta.dart';
 
 import '../../../../../core/services/services_exports.dart';
 import '../../../../../core/utils/utils_exports.dart';
+import '../../../../vd/domain/entities/gis/gis_params.dart';
+import '../../../../vd/domain/entities/gis/gis_response.dart';
 import '../../../commercial_license_exports.dart';
+import '../../../data/models/qr/apply_commercial_response_model.dart';
+import '../../step11/bloc/cr_step11_attachment_data_cubit.dart';
+import '../../step11/page/cr_step11_attachment_data.dart';
+import '../../step12/page/cr_step12_calculator.dart';
+import '../../step13/page/cr_step13_review.dart';
 
 part 'commercial_license_event.dart';
 part 'commercial_license_state.dart';
@@ -21,6 +28,22 @@ class CommercialLicenseBloc
     on<UpdateRequestFieldEvent>(_updateRequestIdHandler);
   }
 
+  Future<void> goToCalucaltePage() async {
+    if (state.status == BlocStatus.performing) return;
+    int nextPage = 9;
+
+    emit(state.copyWith(
+      status: BlocStatus.performing,
+    ));
+
+    controller.jumpToPage(nextPage);
+
+    emit(
+        state.copyWith(status: BlocStatus.success, currentPageValue: nextPage));
+
+    hideKeyboard();
+  }
+
   Future<void> _goToNextPageHandler(
       GoToNextPageEvent e, Emitter emitter) async {
     //print("next page");
@@ -34,8 +57,7 @@ class CommercialLicenseBloc
         status: BlocStatus.performing,
       ));
 
-      await controller.animateToPage(nextPage,
-          duration: const Duration(milliseconds: 400), curve: Curves.easeIn);
+      controller.jumpToPage(nextPage);
 
       emitter(state.copyWith(
           status: BlocStatus.success, currentPageValue: nextPage));
@@ -53,8 +75,8 @@ class CommercialLicenseBloc
       emitter(state.copyWith(
         status: BlocStatus.performing,
       ));
-      await controller.animateToPage(prvoiusPage,
-          duration: const Duration(milliseconds: 400), curve: Curves.easeIn);
+      controller.jumpToPage(prvoiusPage);
+
       emitter(state.copyWith(
           status: BlocStatus.success, currentPageValue: prvoiusPage));
     }
@@ -73,5 +95,32 @@ class CommercialLicenseBloc
       UpdateRequestFieldEvent e, Emitter emitter) async {
     emitter(state.copyWith(
         requestId: e.requestId, locationResponse: e.saveLocationResponse));
+  }
+
+  Future<void> updateQrData(
+      {ApplyCommercialResponseModel? applyCommercialResponse}) async {
+    print(applyCommercialResponse);
+    emit(state.copyWith(status: BlocStatus.loading));
+
+    emit(state.copyWith(
+        applyCommercialResponse: applyCommercialResponse,
+        status: BlocStatus.success));
+  }
+
+  Future<void> updateCalculatorData(
+      {CrCalculateFeesResponse? crCalculateFeesResponse,
+      String? selectedPeriod}) async {
+    emit(state.copyWith(status: BlocStatus.loading));
+
+    emit(state.copyWith(
+        crCalculateFeesResponse: crCalculateFeesResponse,
+        selectedPeriod: selectedPeriod,
+        status: BlocStatus.success));
+  }
+
+  Future<void> updateGISData({GISResponse? gis}) async {
+    emit(state.copyWith(status: BlocStatus.loading));
+
+    emit(state.copyWith(gisResponse: gis, status: BlocStatus.success));
   }
 }

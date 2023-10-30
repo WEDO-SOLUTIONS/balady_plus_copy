@@ -1,7 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:equatable/equatable.dart';
 
-class ApplyCommercialResponseModel {
+class ApplyCommercialResponseModel extends Equatable {
   final int? requestId;
   final String? requestDate;
   final int? currentTabId;
@@ -96,6 +96,9 @@ class ApplyCommercialResponseModel {
         "qrFlow": qrFlow,
         "redirectToCommercialFlow": redirectToCommercialFlow,
       };
+
+  @override
+  List<Object?> get props => [requestId, requestDate];
 }
 
 class ComLicenseInfo {
@@ -108,7 +111,7 @@ class ComLicenseInfo {
   final dynamic boardsInfo;
   final ActivityInfo? activityInfo;
   final String? entityType;
-  final int? shopArea;
+  final double? shopArea;
   final ShopInfo? shopInfo;
   final dynamic vehicleInfo;
   final LocationInfo? locationInfo;
@@ -147,7 +150,7 @@ class ComLicenseInfo {
             ? null
             : ActivityInfo.fromJson(json["activityInfo"]),
         entityType: json["entityType"],
-        shopArea: json["shopArea"],
+        shopArea: json["shopArea"]?.toDouble(),
         shopInfo: json["shopInfo"] == null
             ? null
             : ShopInfo.fromJson(json["shopInfo"]),
@@ -211,7 +214,7 @@ class MainActivity {
   final String? isicName;
   final int? activityDetailId;
   final String? activityDetailName;
-  final int? area;
+  final double? area;
 
   MainActivity({
     this.sectorId,
@@ -234,7 +237,7 @@ class MainActivity {
         isicName: json["isicName"],
         activityDetailId: json["activityDetailId"],
         activityDetailName: json["activityDetailName"],
-        area: json["area"],
+        area: json["area"]?.toDouble(),
       );
 
   Map<String, dynamic> toJson() => {
@@ -600,7 +603,7 @@ class ContactInfo extends Equatable {
         snapchat: json["snapchat"],
         facebook: json["facebook"],
         whatsApp: json["whatsApp"],
-        enterpriseUniqueCode: json["enterpriseUniqueCode"],
+        enterpriseUniqueCode: json["enterpriseUniqueCode"]?.toString(),
       );
 
   Map<String, dynamic> toJson() => {
@@ -719,10 +722,14 @@ class CrOwner extends Equatable {
         ownerMobileNumber,
         ownerEmail
       ];
+
+  bool get isCompleteData =>
+      (ownerMobileNumber?.isNotEmpty ?? false) &&
+      (ownerEmail?.isNotEmpty ?? false);
 }
 
 class RatingInfo {
-  final int? average;
+  final double? average;
   final int? totalRatingCount;
   final List<RatingItemAverage>? ratingItemAverages;
 
@@ -733,7 +740,7 @@ class RatingInfo {
   });
 
   factory RatingInfo.fromJson(Map<String, dynamic> json) => RatingInfo(
-        average: json["average"],
+        average: json["average"]?.toDouble(),
         totalRatingCount: json["totalRatingCount"],
         ratingItemAverages: json["ratingItemAverages"] == null
             ? []
@@ -755,7 +762,7 @@ class RatingItemAverage {
   final dynamic value;
   final String? name;
   final String? ename;
-  final int? average;
+  final double? average;
 
   RatingItemAverage({
     this.key,
@@ -771,7 +778,7 @@ class RatingItemAverage {
         value: json["value"],
         name: json["name"],
         ename: json["ename"],
-        average: json["average"],
+        average: json["average"]?.toDouble(),
       );
 
   Map<String, dynamic> toJson() => {
@@ -879,21 +886,22 @@ class WorkTimes {
 class WorkingTime {
   final int? dayId;
   final String? dayName;
-  final dynamic openShiftOption;
-  final dynamic firstFromTime;
-  final dynamic firstToTime;
-  final dynamic secondFromTime;
-  final dynamic secondToTime;
+  String? openShiftOption;
+  String? firstFromTime;
+  String? firstToTime;
+  String? secondFromTime;
+  String? secondToTime;
+  bool? isSelected;
 
-  WorkingTime({
-    this.dayId,
-    this.dayName,
-    this.openShiftOption,
-    this.firstFromTime,
-    this.firstToTime,
-    this.secondFromTime,
-    this.secondToTime,
-  });
+  WorkingTime(
+      {this.dayId,
+      this.dayName,
+      this.openShiftOption,
+      this.firstFromTime,
+      this.firstToTime,
+      this.secondFromTime,
+      this.secondToTime,
+      this.isSelected});
 
   factory WorkingTime.fromJson(Map<String, dynamic> json) => WorkingTime(
         dayId: json["dayId"],
@@ -914,4 +922,24 @@ class WorkingTime {
         "secondFromTime": secondFromTime,
         "secondToTime": secondToTime,
       };
+
+  WorkingTime copyWith(
+      {int? dayId,
+      String? dayName,
+      String? openShiftOption,
+      String? firstFromTime,
+      String? firstToTime,
+      String? secondFromTime,
+      String? secondToTime,
+      bool? isSelected}) {
+    return WorkingTime(
+        dayId: dayId ?? this.dayId,
+        dayName: dayName ?? this.dayName,
+        openShiftOption: openShiftOption ?? this.openShiftOption,
+        firstFromTime: firstFromTime ?? this.firstFromTime,
+        firstToTime: firstToTime ?? this.firstToTime,
+        secondFromTime: secondFromTime ?? this.secondFromTime,
+        secondToTime: secondToTime ?? this.secondToTime,
+        isSelected: isSelected ?? this.isSelected);
+  }
 }

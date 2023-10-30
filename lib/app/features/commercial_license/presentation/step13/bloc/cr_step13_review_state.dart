@@ -1,10 +1,10 @@
-part of 'cr_step12_caculator_cubit.dart';
+part of 'cr_step13_review_cubit.dart';
 
-class CrStep12CalculatorState extends Equatable {
+class CrStep13ReviewState extends Equatable {
   final BlocStatus status;
   final String errorMessage;
 
-  const CrStep12CalculatorState({
+  const CrStep13ReviewState({
     this.status = BlocStatus.initial,
     this.errorMessage = '',
   });
@@ -12,11 +12,11 @@ class CrStep12CalculatorState extends Equatable {
   @override
   List<Object?> get props => [errorMessage, status, status];
 
-  CrStep12CalculatorState copyWith({
+  CrStep13ReviewState copyWith({
     BlocStatus? status,
     String? errorMessage,
   }) {
-    return CrStep12CalculatorState(
+    return CrStep13ReviewState(
       status: status ?? this.status,
       errorMessage: errorMessage ?? this.errorMessage,
     );

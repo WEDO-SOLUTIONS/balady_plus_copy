@@ -1,6 +1,7 @@
 import 'package:balady_plus/app/core/services/local/use_case.dart';
 import 'package:balady_plus/app/core/services/services_exports.dart';
 import 'package:balady_plus/app/core/utils/enums/bloc_status.dart';
+import 'package:balady_plus/app/features/commercial_license/domain/entities/verifiy_salama_requst.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/dependency_injection/dependency_injection_exports.dart';
@@ -9,6 +10,7 @@ import '../../../../../core/utils/enums/enums.dart';
 import '../../../../../core/utils/utils_exports.dart';
 import '../../../../_shared_feature_/shared_feature_exports.dart';
 import '../../../commercial_license_exports.dart';
+import '../../../data/models/qr/qr_lookup.dart';
 import '../../../domain/entities/commercial_board_type.dart';
 import '../../../domain/entities/save_shop_details_request.dart';
 import '../../../domain/use_cases/fawry_salama_bills.dart';
@@ -17,7 +19,10 @@ import '../../../domain/use_cases/get_clean_contracts.dart';
 import '../../../domain/use_cases/get_deed_info.dart';
 import '../../../domain/use_cases/get_ejar_info.dart';
 import '../../../domain/use_cases/get_investment_contracts.dart';
+import '../../../domain/use_cases/get_malls.dart';
 import '../../../domain/use_cases/save_shop_details.dart';
+import '../../../domain/use_cases/validate_salama_bill.dart';
+import '../../../domain/use_cases/validate_salama_report.dart';
 import '../../step3/bloc/map_bloc.dart';
 import 'package:collection/collection.dart';
 part 'cr_step4_shop_data_state.dart';
@@ -34,6 +39,10 @@ class CrStep4ShopDataCubit extends Cubit<CrStep4ShopDataState> {
   final GetDeedInfo _getDeedInfo;
   final GetFawrySalamaBills _getFawrySalamaBills;
   final GetFawrySalamaReports _getFawrySalamaReports;
+  final GetMalls _getMalls;
+  final ValidateSalamaPermit _validateSalamaPermit;
+  final ValidateSalamaBill _validateSalamaBill;
+  final ValidateSalamaReport _validateSalamaReport;
 
   CrStep4ShopDataCubit()
       : _getAccommodationTypes = GetAccommodationTypes(repository: sl()),
@@ -46,6 +55,10 @@ class CrStep4ShopDataCubit extends Cubit<CrStep4ShopDataState> {
         _getDeedInfo = GetDeedInfo(repository: sl()),
         _getFawrySalamaReports = GetFawrySalamaReports(repository: sl()),
         _getFawrySalamaBills = GetFawrySalamaBills(repository: sl()),
+        _getMalls = GetMalls(repository: sl()),
+        _validateSalamaPermit = ValidateSalamaPermit(repository: sl()),
+        _validateSalamaBill = ValidateSalamaBill(repository: sl()),
+        _validateSalamaReport = ValidateSalamaReport(repository: sl()),
         super(CrStep4ShopDataState());
 
   void getAccommodationTypes() async {
@@ -90,7 +103,6 @@ class CrStep4ShopDataCubit extends Cubit<CrStep4ShopDataState> {
       final int? floorCount,
       final int? noOfCameras,
       final bool? hasElevator,
-      final bool? existInMall,
       final int? floorNumber,
       final bool? isCitizenPledgedToClean}) {
     emit(state.copyWith(
@@ -103,9 +115,18 @@ class CrStep4ShopDataCubit extends Cubit<CrStep4ShopDataState> {
         floorCount: floorCount,
         noOfCameras: noOfCameras,
         hasElevator: hasElevator,
-        existInMall: existInMall,
         floorNumber: floorNumber,
         isCitizenPledgedToClean: Nullable(isCitizenPledgedToClean)));
+  }
+
+  void updateExistsInMallFields({
+    final bool? existInMall,
+  }) {
+    emit(state.copyWith(
+      errorMessage: "",
+      existInMall: existInMall,
+      selectedMall: Nullable(null),
+    ));
   }
 
   void updateIsCitizenPledgedToClean(bool isCitizenPledgedToClean) {
@@ -229,9 +250,10 @@ class CrStep4ShopDataCubit extends Cubit<CrStep4ShopDataState> {
         state.isCitizenPledgedToClean == true) return;
     int requestId = sl<CommercialLicenseBloc>().state.requestId!;
 
-    emit(state.copyWith(contractsListStatus: BlocStatus.loading));
+    emit(state.copyWith(
+        contractsListStatus: BlocStatus.loading, errorMessage: ""));
     final response =
-        await _getCleanContracts(CleanContractsRequest(requestId: 4312216452));
+        await _getCleanContracts(CleanContractsRequest(requestId: requestId));
     response.fold(
         (failure) => emit(state.copyWith(
               isCitizenPledgedToClean: Nullable(null),
@@ -250,9 +272,10 @@ class CrStep4ShopDataCubit extends Cubit<CrStep4ShopDataState> {
         state.crContractOption == CRContractOption.service) {
       int requestId = sl<CommercialLicenseBloc>().state.requestId!;
 
-      emit(state.copyWith(investmentListStatus: BlocStatus.loading));
+      emit(state.copyWith(
+          investmentListStatus: BlocStatus.loading, errorMessage: ""));
       final response = await _getInvestmentContracts(
-          InvestmentContractRequest(requestId: 4413209184));
+          InvestmentContractRequest(requestId: requestId));
       response.fold(
           (failure) => emit(state.copyWith(
                 investmentListStatus: BlocStatus.failure,
@@ -344,7 +367,8 @@ class CrStep4ShopDataCubit extends Cubit<CrStep4ShopDataState> {
   void salamaReportFawery() async {
     int requestId = sl<CommercialLicenseBloc>().state.requestId!;
 
-    emit(state.copyWith(samalaReportFawryStatus: BlocStatus.loading));
+    emit(state.copyWith(
+        samalaReportFawryStatus: BlocStatus.loading, errorMessage: ""));
     final response = await _getFawrySalamaReports(requestId);
     response.fold(
         (failure) => emit(state.copyWith(
@@ -359,7 +383,8 @@ class CrStep4ShopDataCubit extends Cubit<CrStep4ShopDataState> {
   void salamaBillFawery() async {
     int requestId = sl<CommercialLicenseBloc>().state.requestId!;
 
-    emit(state.copyWith(samalaBillFawryStatus: BlocStatus.loading));
+    emit(state.copyWith(
+        samalaBillFawryStatus: BlocStatus.loading, errorMessage: ""));
     final response = await _getFawrySalamaBills(requestId);
     response.fold(
         (failure) => emit(state.copyWith(
@@ -389,7 +414,8 @@ class CrStep4ShopDataCubit extends Cubit<CrStep4ShopDataState> {
   void getCleanOptions() async {
     int requestId = sl<CommercialLicenseBloc>().state.requestId!;
 
-    emit(state.copyWith(cleanOptionsStatus: BlocStatus.loading));
+    emit(state.copyWith(
+        cleanOptionsStatus: BlocStatus.loading, errorMessage: ""));
     final response = await _getCleanOptions(requestId);
     response.fold(
         (failure) => emit(state.copyWith(
@@ -484,6 +510,7 @@ class CrStep4ShopDataCubit extends Cubit<CrStep4ShopDataState> {
           errorMessage: (l as ServerFailure).errorMessage));
     }, (r) {
       print(r);
+      print("success");
       emit(state.copyWith(
           status: BlocStatus.success, ejarVerified: Nullable(true)));
     });
@@ -491,7 +518,89 @@ class CrStep4ShopDataCubit extends Cubit<CrStep4ShopDataState> {
 
   void selectCleanContract(CleanContractItem? item) {
     emit(state.copyWith(
+      errorMessage: "",
       selectedCleanContract: Nullable(item),
     ));
+  }
+
+  void getMalls() async {
+    String districtId =
+        sl<CommercialLicenseBloc>().state.gisResponse?.Balady_DistrictID ?? "";
+    ;
+
+    emit(state.copyWith(
+      mallsStatus: BlocStatus.loading,
+      errorMessage: "",
+    ));
+
+    final failOrSuccess = await _getMalls(districtId);
+
+    failOrSuccess.fold((l) {
+      emit(state.copyWith(
+        //  errorMessage: (l as ServerFailure).errorMessage,
+        mallsStatus: BlocStatus.failure,
+      ));
+    }, (r) {
+      emit(
+          state.copyWith(mallsStatus: BlocStatus.success, mallsList: r.result));
+    });
+  }
+
+  void updateMall(QrLookUpItem value) {
+    emit(state.copyWith(selectedMall: Nullable(value)));
+  }
+
+  Future<void> verifySalamaPermit() async {
+    int requestId = sl<CommercialLicenseBloc>().state.requestId!;
+    emit(state.copyWith(status: BlocStatus.loading, errorMessage: ""));
+    final failOrSuccess = await _validateSalamaPermit(VerifySalamaRequest(
+        requestId: requestId, number: state.salamaPermitNumber ?? ""));
+
+    failOrSuccess.fold((l) {
+      emit(state.copyWith(
+          status: BlocStatus.failure,
+          isSalamaPermitVerified: Nullable(false),
+          errorMessage: (l as ServerFailure).errorMessage));
+    }, (r) {
+      print(r);
+      emit(state.copyWith(
+          status: BlocStatus.success, isSalamaPermitVerified: Nullable(true)));
+    });
+  }
+
+  Future<void> verifySalamaBill() async {
+    int requestId = sl<CommercialLicenseBloc>().state.requestId!;
+    emit(state.copyWith(status: BlocStatus.loading, errorMessage: ""));
+    final failOrSuccess = await _validateSalamaBill(VerifySalamaRequest(
+        requestId: requestId, number: state.slamaBillNumber ?? ""));
+
+    failOrSuccess.fold((l) {
+      emit(state.copyWith(
+          status: BlocStatus.failure,
+          isSalamaBillVerified: Nullable(false),
+          errorMessage: (l as ServerFailure).errorMessage));
+    }, (r) {
+      print(r);
+      emit(state.copyWith(
+          status: BlocStatus.success, isSalamaBillVerified: Nullable(true)));
+    });
+  }
+
+  Future<void> verifySalamaReport() async {
+    int requestId = sl<CommercialLicenseBloc>().state.requestId!;
+    emit(state.copyWith(status: BlocStatus.loading, errorMessage: ""));
+    final failOrSuccess = await _validateSalamaReport(VerifySalamaRequest(
+        requestId: requestId, number: state.slamaReportNumber ?? ""));
+
+    failOrSuccess.fold((l) {
+      emit(state.copyWith(
+          status: BlocStatus.failure,
+          isSalamaReportVerified: Nullable(false),
+          errorMessage: (l as ServerFailure).errorMessage));
+    }, (r) {
+      print(r);
+      emit(state.copyWith(
+          status: BlocStatus.success, isSalamaReportVerified: Nullable(true)));
+    });
   }
 }

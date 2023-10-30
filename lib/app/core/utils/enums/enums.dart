@@ -127,4 +127,12 @@ enum UserProfileType { Delegator, Agent }
 
 enum ServiceCardsTypes { desc, req, flow, authorInfo }
 
-enum QRSiteLocationType { INSIDE_BUILDING, ON_STREET }
+enum QRSiteLocationType {
+  INSIDE_BUILDING(name: "INSIDE_BUILDING"),
+  ON_STREET(name: "ON_STREET");
+
+  final String name;
+  const QRSiteLocationType({required this.name});
+}
+
+enum QRWorkTimes { SHIFTED, OPEN_24HOUR, CLOSED }

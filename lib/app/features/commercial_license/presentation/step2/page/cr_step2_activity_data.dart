@@ -66,9 +66,9 @@ class CRStep2ActivityData extends StatelessWidget {
                             );
                           },
                         ),
-                        NotesWidget(
-                          notes: ['note1'.tr(), 'note2'.tr()],
-                        ),
+                        // NotesWidget(
+                        //    notes: ['note1'.tr(), 'note2'.tr()],
+                        //   ),
                         BlocBuilder<CrStep2ActivityDataCubit,
                             CrStep2ActivityDataState>(
                           builder: (context, state) {
@@ -91,11 +91,12 @@ class CRStep2ActivityData extends StatelessWidget {
                                 });
                           },
                         ),
-                        NotesWidget(
+                        /*  NotesWidget(
                           notes: [
                             "عزيزي المستفيد, يمكنك الاستعلام عن تفاصيل الأنشطة التجارية واشتراطاتها من خلال زيارتك للرابط التالي:\n الأنشطة التجارية واشتراطاته"
                           ],
-                        ),
+                        ),*/
+                        const CustomVerticalSpace(height: 12),
                         ReadOnlyField(
                           title: "نوع المنشاه".tr(),
                           subTitle: state.selectedSubActivity?.facilityName,
@@ -108,7 +109,7 @@ class CRStep2ActivityData extends StatelessWidget {
                           isDigitsOnly: true,
                           keyboardType: TextInputType.number,
                           suffixIcon: CustomTextWidget(
-                            'square_meter'.tr(),
+                            state.subActivityDetails?.unitDesc ?? "",
                             fontSize: 12,
                             fontWeight: AppFontWeight.semiBold,
                             fontColor: AppColor.blackModern400Light,
@@ -130,8 +131,8 @@ class CRStep2ActivityData extends StatelessWidget {
                           },
                         ),
                         const CustomVerticalSpace(height: 16),
-
-                        //  const ExtraActivityComponent(),
+                        if (state.addetionalActivityItems?.isNotEmpty ?? false)
+                          const ExtraActivityComponent(),
                       ],
                     ),
                   ),

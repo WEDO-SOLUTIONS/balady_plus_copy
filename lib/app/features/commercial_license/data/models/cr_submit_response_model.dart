@@ -1,8 +1,8 @@
 import '../../commercial_license_exports.dart' show CrSubmitResponse;
 
 class CrSubmitResponseModel extends CrSubmitResponse {
-  CrSubmitResponseModel();
+  CrSubmitResponseModel({super.message});
 
   factory CrSubmitResponseModel.fromJson(Map<String, dynamic> json) =>
-      CrSubmitResponseModel();
+      CrSubmitResponseModel(message: json["message"]);
 }

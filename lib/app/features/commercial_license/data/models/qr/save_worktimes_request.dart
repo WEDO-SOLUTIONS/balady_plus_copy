@@ -1,3 +1,5 @@
+import 'apply_commercial_response_model.dart';
+
 class SaveWorkTimesRequest {
   final int? requestId;
   final List<WorkingTime>? workingTimes;
@@ -19,45 +21,5 @@ class SaveWorkTimesRequest {
         "workingTimes": workingTimes == null
             ? []
             : List<dynamic>.from(workingTimes!.map((x) => x.toJson())),
-      };
-}
-
-class WorkingTime {
-  final int? dayId;
-  final String? dayName;
-  final String? firstFromTime;
-  final String? firstToTime;
-  final String? openShiftOption;
-  final String? secondFromTime;
-  final String? secondToTime;
-
-  WorkingTime({
-    this.dayId,
-    this.dayName,
-    this.firstFromTime,
-    this.firstToTime,
-    this.openShiftOption,
-    this.secondFromTime,
-    this.secondToTime,
-  });
-
-  factory WorkingTime.fromJson(Map<String, dynamic> json) => WorkingTime(
-        dayId: json["dayId"],
-        dayName: json["dayName"],
-        firstFromTime: json["firstFromTime"],
-        firstToTime: json["firstToTime"],
-        openShiftOption: json["openShiftOption"],
-        secondFromTime: json["secondFromTime"],
-        secondToTime: json["secondToTime"],
-      );
-
-  Map<String, dynamic> toJson() => {
-        "dayId": dayId,
-        "dayName": dayName,
-        "firstFromTime": firstFromTime,
-        "firstToTime": firstToTime,
-        "openShiftOption": openShiftOption,
-        "secondFromTime": secondFromTime,
-        "secondToTime": secondToTime,
       };
 }
