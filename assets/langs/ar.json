@@ -3263,9 +3263,24 @@
 "compliance_show_certificate": "عرض الشهادة", 
 
 
+"IssueCr":"اصدار رخصة تجاية", 
+"cr_consent_conditions_title":"الاقرار", 
+"cr_consent_conditions_desc":"أقر على صحة المعلومات وأنني اطلعت على إتفاقية خصوصية وسياسة الخدمات الالكترونية والاشتراطات الخاصة بالخدمة", 
+"cr_consent_conditions_check":"أقر وأتعهد على جميع ماتم ذكره اعلاه", 
 
+"cr_consent_conditions_agree":"أوافق", 
+"cr_select":"اختيار", 
+"cr_selected_done":"تم الاختيار", 
+"cr_investment_type":"نوع العقد",
+"cr_investment_code":"رمز العقد بالأمانة",
 
+"cr_clean_contract_number":"رقم العقد", 
+"cr_clean_contract_end_date":"تاريخ انتهاء العقد", 
+"cr_clean_contract_municipality":"البلدية", 
 
+"IDENTITY":"الصك صادر بهوية مالك السجل التجاري", 
+"CR":"الصك صادر برقم السجل التجاري", 
+"CR_700":"الصك صادر برقم 700 في السجل التجاري", 
 
 
   "select_cancellation_reason": "حدد سبب الإلغاء",

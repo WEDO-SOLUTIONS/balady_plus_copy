@@ -36,7 +36,7 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
     //   if (state.allWeatherInfoStatus == BlocStatus.success &&
     //     state.showLocationError == false) return;
 
-    CommonFunctions.checkLocationSettings(
+    /* CommonFunctions.checkLocationSettings(
         NavigationService.navigatorKey!.currentContext!);
 
     emitter(state.copyWith(
@@ -87,14 +87,14 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
           errorMessage: "",
         ));
       });
-    });
+    });*/
 
 /*  ;*/
   }
 
   Future<void> _refreshWeatherForLocation(
       RefreshWeatherForLocation e, Emitter emitter) async {
-    GISParams? location = CommonProperties.userLocation;
+    /* GISParams? location = CommonProperties.userLocation;
 
     if (location == null) {
       LatLng? latlng = await Helpers.getCurrentLocation(
@@ -128,5 +128,7 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
     });
 
 /*  ;*/
+
+*/
   }
 }

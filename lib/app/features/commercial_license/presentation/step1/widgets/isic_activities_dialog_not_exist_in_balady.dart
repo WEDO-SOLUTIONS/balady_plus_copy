@@ -40,7 +40,12 @@ class IsicActivitiesDialogNotExistInBalady extends StatelessWidget {
                           .addIsicActivities()),
                   const SizedBox(height: 16),
                   if (state.isicActivitiesExistInBalady.isNotEmpty)
-                    ElevatedButtonWidget.issuing(onPressed: () {}),
+                    ElevatedButtonWidget.issuing(onPressed: () {
+                      context.popDialog();
+                      context
+                          .read<CrStep1ApplicantDataCubit>()
+                          .saveComSubmitterAndOwner();
+                    }),
                   const SizedBox(height: 16),
                 ],
               ),

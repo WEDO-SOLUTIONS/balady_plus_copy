@@ -1,4 +1,5 @@
 import 'package:balady_plus/app/core/services/local/use_case.dart';
+import 'package:balady_plus/app/core/services/services_exports.dart';
 import 'package:balady_plus/app/core/utils/enums/bloc_status.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -7,6 +8,12 @@ import '../../../../../core/errors/errors_exports.dart';
 import '../../../../../core/utils/utils_exports.dart';
 import '../../../../_shared_feature_/shared_feature_exports.dart';
 import '../../../commercial_license_exports.dart';
+import '../../../data/models/additional_activity_details_response.dart';
+import '../../../data/models/additional_activity_response.dart';
+import '../../../domain/entities/addetional_activity_details_request.dart';
+import '../../../domain/entities/addetional_activity_request.dart';
+import '../../../domain/use_cases/get_additional_activites.dart';
+import '../../../domain/use_cases/get_details_additional_activites.dart';
 
 part 'cr_step2_activity_data_state.dart';
 
@@ -14,43 +21,65 @@ class CrStep2ActivityDataCubit extends Cubit<CrStep2ActivityDataState> {
   final GetSubActivities _getSubActivities;
   final GetAccommodationTypes _getAccommodationTypes;
   final GetSubActivityDetails _getSubActivityDetails;
+  final SaveActivityDetails _saveActivityDetails;
+  final GetAddetionalActivites _getAddetionalActivites;
+  final GetAddetionalDetailsActivites _getAddetionalDetailsActivites;
 
   CrStep2ActivityDataCubit()
       : _getSubActivities = GetSubActivities(repository: sl()),
         _getAccommodationTypes = GetAccommodationTypes(repository: sl()),
         _getSubActivityDetails = GetSubActivityDetails(repository: sl()),
+        _saveActivityDetails = SaveActivityDetails(repository: sl()),
+        _getAddetionalActivites = GetAddetionalActivites(repository: sl()),
+        _getAddetionalDetailsActivites =
+            GetAddetionalDetailsActivites(repository: sl()),
         super(const CrStep2ActivityDataState());
 
-
-  void getSubActivityDetails() async {
-    emit(state.copyWith(subActivityDetailsStatus: BlocStatus.loading));
-    final response = await _getSubActivityDetails(state.selectedSubActivity?.code??'');
+  void getSubActivityDetails(SubActivityEntity subActivity) async {
+    emit(state.copyWith(
+        subActivityDetailsStatus: BlocStatus.loading, errorMessage: ""));
+    final response =
+        await _getSubActivityDetails(subActivity.id.toString() ?? '');
     response.fold(
-            (failure) => emit(state.copyWith(
+        (failure) => emit(state.copyWith(
               subActivityDetailsStatus: BlocStatus.failure,
-          errorMessage: (failure as ServerFailure).errorMessage,
-        )),
-            (success) => emit(state.copyWith(
-                subActivityDetailsStatus: BlocStatus.success,
-            subActivityDetails: success.data?.result)));
+              errorMessage: (failure as ServerFailure).errorMessage,
+            )), (success) {
+      emit(state.copyWith(
+          selectedSubActivity: Nullable(subActivity),
+          subActivityDetailsStatus: BlocStatus.success,
+          subActivityDetails: success.data?.result));
+
+      if (state.selectedIsicActivity?.craft == false) {
+        BottomSheetDialog.showDraggableSheet(
+            NavigationService.navigatorKey.currentContext!,
+            child: CrStep2ConditionsPage(
+              activityTerms: success.data?.result?.activityTerms,
+            ));
+      }
+    });
+    getAddetionalActivites();
   }
 
-  void onSelectIsicActivity(DropDownItem isicActivity) async {
+  void onSelectIsicActivity(IsicActivity isicActivity) async {
     emit(state.copyWith(
         selectedIsicActivity: isicActivity,
         selectedSubActivity: Nullable(null),
-        subActivitiesStatus: BlocStatus.loading));
+        selectedAddetionalList: Nullable([]),
+        addetionalActivityItems: [],
+        addetionalActivityItemDetails: [],
+        subActivitiesStatus: BlocStatus.loading,
+        errorMessage: ""));
     final response = await _getSubActivities(isicActivity.id ?? '');
     response.fold(
         (failure) => emit(state.copyWith(
               subActivitiesStatus: BlocStatus.failure,
               errorMessage: (failure as ServerFailure).errorMessage,
-            )),
-        (success) {
-          emit(state.copyWith(
-            subActivitiesStatus: BlocStatus.success,
-            subActivities: List.from(success)));
-        });
+            )), (success) {
+      emit(state.copyWith(
+          subActivitiesStatus: BlocStatus.success,
+          subActivities: List.from(success)));
+    });
   }
 
   void getAccommodationTypes() async {
@@ -58,21 +87,151 @@ class CrStep2ActivityDataCubit extends Cubit<CrStep2ActivityDataState> {
     final response = await _getAccommodationTypes(NoParams());
     response.fold(
         (failure) => emit(state.copyWith(
-          accommodationTypesStatus: BlocStatus.failure,
+              accommodationTypesStatus: BlocStatus.failure,
               errorMessage: (failure as ServerFailure).errorMessage,
-            )),
-        (success) {
-          emit(state.copyWith(
-              accommodationTypesStatus: BlocStatus.success,
-              accommodationTypes: List.from(success)));
-        });
+            )), (success) {
+      emit(state.copyWith(
+          accommodationTypesStatus: BlocStatus.success,
+          accommodationTypes: List.from(success)));
+    });
   }
 
-  void onSelectSubActivity(DropDownItem subActivity) async {
-    emit(state.copyWith(selectedSubActivity: Nullable(subActivity)));
-    getSubActivityDetails();
+  void onSelectSubActivity(SubActivityEntity subActivity) async {
+    print("onSelectSubActivity $subActivity");
+    getSubActivityDetails(subActivity);
   }
 
   void onAccommodationTypes(DropDownItem accommodationTypes) =>
       emit(state.copyWith(selectedAccommodationType: accommodationTypes));
+
+  void updateArea(double? area) {
+    emit(state.copyWith(totalArea: area, errorMessage: ""));
+  }
+
+  void updateWorkerType(WorkersTypes type) {
+    print(type);
+    emit(state.copyWith(workerType: type, errorMessage: ""));
+  }
+
+  void save() async {
+    int requestId = sl<CommercialLicenseBloc>().state.requestId!;
+
+    emit(state.copyWith(status: BlocStatus.loading, errorMessage: ""));
+    final response = await _saveActivityDetails(SubmitActivityDetailRequest(
+        requestId: requestId,
+        workerTypeId: state.workerType!.type,
+        area: state.totalArea ?? 0,
+        additionalActivities: state.selectedAddetionalList,
+        detailedActivityId: state.selectedSubActivity!.id!));
+    response.fold(
+        (failure) => emit(state.copyWith(
+              status: BlocStatus.failure,
+              errorMessage: (failure as ServerFailure).errorMessage,
+            )), (success) {
+      sl<CommercialLicenseBloc>().add((const GoToNextPageEvent()));
+      emit(state.copyWith(status: BlocStatus.success));
+    });
+  }
+
+  void onSelectAddetionalDetailsActivity(
+      AddetionalActivityItemDetails subActivity) async {
+    emit(state.copyWith(status: BlocStatus.loading, errorMessage: ""));
+    final response =
+        await _getSubActivityDetails(subActivity.activityId.toString() ?? '');
+    response.fold(
+        (failure) => emit(state.copyWith(
+              status: BlocStatus.failure,
+              errorMessage: (failure as ServerFailure).errorMessage,
+            )), (success) {
+      emit(state.copyWith(
+          status: BlocStatus.success,
+          addetionalDetailsItem: Nullable(subActivity),
+          addetionalDetails: Nullable(success.data?.result)));
+
+      if (state.selectedIsicActivity?.craft == false) {
+        BottomSheetDialog.showDraggableSheet(
+            NavigationService.navigatorKey.currentContext!,
+            child: CrStep2ConditionsPage(
+              activityTerms: success.data?.result?.activityTerms,
+            ));
+      }
+    });
+  }
+
+  void addAddetionalItemRequest(double area) {
+    List<AddetionalActivityRequest> selectedAddetionalList =
+        state.selectedAddetionalList ?? [];
+
+    emit(state.copyWith(status: BlocStatus.loading));
+
+    selectedAddetionalList.add(AddetionalActivityRequest(
+        area: area,
+        item: state.addetionalItem,
+        details: state.addetionalDetails,
+        detailsItem: state.addetionalDetailsItem));
+
+    emit(state.copyWith(
+        status: BlocStatus.success,
+        addetionalItem: Nullable(null),
+        addetionalDetails: Nullable(null),
+        addetionalDetailsItem: Nullable(null),
+        selectedAddetionalList: Nullable(selectedAddetionalList)));
+  }
+
+  void onSelectAddetionalActivity(AddetionalActivityItem item) async {
+    emit(state.copyWith(
+        addetionalActivityDetailsListStatus: BlocStatus.loading,
+        errorMessage: ""));
+    final response = await _getAddetionalDetailsActivites(
+        AddetionalActivityDetailsRequest(
+            subActivityId: state.selectedSubActivity!.id.toString(),
+            addetionalActivityId: item.isicCode!));
+    response.fold(
+        (failure) => emit(state.copyWith(
+              addetionalActivityDetailsListStatus: BlocStatus.failure,
+              errorMessage: (failure as ServerFailure).errorMessage,
+            )), (success) {
+      print("Successs $success");
+      emit(state.copyWith(
+          addetionalActivityDetailsListStatus: BlocStatus.success,
+          addetionalItem: Nullable(item),
+          addetionalDetails: Nullable(null),
+          addetionalDetailsItem: Nullable(null),
+          addetionalActivityItemDetails: success.result));
+    });
+  }
+
+  void getAddetionalActivites() async {
+    emit(state.copyWith(
+        additionalActivityListStatus: BlocStatus.loading,
+        errorMessage: "",
+        addetionalItem: Nullable(null),
+        addetionalDetails: Nullable(null),
+        addetionalDetailsItem: Nullable(null),
+        selectedAddetionalList: Nullable(null)));
+    final response = await _getAddetionalActivites(
+        state.selectedSubActivity?.id.toString() ?? "");
+    response.fold(
+        (failure) => emit(state.copyWith(
+              additionalActivityListStatus: BlocStatus.failure,
+              errorMessage: (failure as ServerFailure).errorMessage,
+            )), (success) {
+      emit(state.copyWith(
+          additionalActivityListStatus: BlocStatus.success,
+          addetionalActivityItems: success.result));
+    });
+  }
+
+  void deleteAddetionalActivity(int index) {
+    List<AddetionalActivityRequest> selectedAddetionalList =
+        state.selectedAddetionalList ?? [];
+
+    emit(state.copyWith(status: BlocStatus.loading));
+
+    selectedAddetionalList.removeAt(index);
+
+    emit(state.copyWith(
+        status: BlocStatus.success,
+        selectedAddetionalList: Nullable(selectedAddetionalList)));
+  }
 }

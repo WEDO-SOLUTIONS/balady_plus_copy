@@ -1,11 +1,11 @@
 import 'package:equatable/equatable.dart';
 
-class RadioItem extends Equatable {
-  RadioItem({required this.radioValue, required this.id});
+class RadioItem<T> extends Equatable {
+  RadioItem({required this.radioValue, required this.radioText});
 
-  String radioValue;
-  int id;
+  T radioValue;
+  String radioText;
 
   @override
-  List<Object?> get props => [radioValue, id];
+  List<Object?> get props => [radioValue, radioText];
 }

@@ -47,26 +47,36 @@ class RequestCommercialLicenseActionSheet extends StatelessWidget {
                                       case "cancel":
                                         break;
                                       case "edit":
-                                        try {
-                                          Navigator.of(context).popAndPushNamed(
-                                            RouteName.commercialLicenseCancel,
-                                            arguments:
-                                                CommercialLicenseCancelBloc(
-                                              webService: sl(),
-                                              from: "request",
-                                              // cancellationRequestResponse: cancellationRequest,
-                                              crNumber: CommonProperties
-                                                  .selectedDelegator!.crNumber!,
-                                              crType: CommonProperties
-                                                  .selectedDelegator!.crType,
-                                              reasonCancel:
-                                                  provider.reasonCancel,
-                                              requestId: provider.requestId,
-                                              availableCloseDate:
-                                                  provider.availableCloseDate,
-                                            ),
-                                          );
-                                        } catch (e) {}
+                                        print(provider.requestTypeId);
+                                        if (provider.requestTypeId == 1005) {
+                                          Navigator.of(context).pushNamed(
+                                              RouteName
+                                                  .renewCommercialLicenseSubmitForm,
+                                              arguments: provider.requestId);
+                                        } else {
+                                          try {
+                                            Navigator.of(context)
+                                                .popAndPushNamed(
+                                              RouteName.commercialLicenseCancel,
+                                              arguments:
+                                                  CommercialLicenseCancelBloc(
+                                                webService: sl(),
+                                                from: "request",
+                                                // cancellationRequestResponse: cancellationRequest,
+                                                crNumber: CommonProperties
+                                                    .selectedDelegator!
+                                                    .crNumber!,
+                                                crType: CommonProperties
+                                                    .selectedDelegator!.crType,
+                                                reasonCancel:
+                                                    provider.reasonCancel,
+                                                requestId: provider.requestId,
+                                                availableCloseDate:
+                                                    provider.availableCloseDate,
+                                              ),
+                                            );
+                                          } catch (e) {}
+                                        }
                                         break;
                                     }
                                   },

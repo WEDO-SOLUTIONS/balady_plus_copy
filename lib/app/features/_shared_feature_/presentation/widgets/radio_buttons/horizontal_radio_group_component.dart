@@ -3,12 +3,12 @@ import '../../../../../core/utils/utils_exports.dart';
 import '../../../shared_feature_exports.dart';
 import 'custom_radio_button_widget copy.dart';
 
-class HorizontalRadioGroup extends StatelessWidget {
+class HorizontalRadioGroup<T> extends StatelessWidget {
   final String groupName;
   final bool? isMandatory;
-  final RadioItem? currentItem;
-  final List<RadioItem> items;
-  final Function(RadioItem?) onChanged;
+  final T? currentItem;
+  final List<RadioItem<T>> items;
+  final Function(T?) onChanged;
 
   const HorizontalRadioGroup(
       {Key? key,
@@ -39,12 +39,12 @@ class HorizontalRadioGroup extends StatelessWidget {
                     child: Padding(
                       padding: EdgeInsetsDirectional.only(
                           end: items.last == e ? 0 : 16),
-                      child: CustomRadioButtonEnd<RadioItem>(
-                        title: e.radioValue,
-                        value: e,
+                      child: CustomRadioButtonEnd<T>(
+                        title: e.radioText,
+                        value: e.radioValue,
                         height: 48,
                         currentSelected: currentItem,
-                        onChange: (RadioItem? item) {
+                        onChange: (T? item) {
                           onChanged(item);
                         },
                         endRadio: false,

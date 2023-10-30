@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/core/utils/enums/bloc_status.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/retry_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -15,6 +16,8 @@ class DropDownWithTitle extends StatelessWidget {
   final VoidCallback onTap;
   final bool showArrow;
   final BlocRequestStatus? status;
+  final BlocStatus? blocStatus;
+
   final VoidCallback? onRetry;
 
   const DropDownWithTitle({
@@ -25,13 +28,16 @@ class DropDownWithTitle extends StatelessWidget {
     required this.onTap,
     this.showArrow = true,
     this.status,
+    this.blocStatus,
     this.onRetry,
   });
 
   @override
   Widget build(BuildContext context) {
-    final loading = status == BlocRequestStatus.submissionGetLoading;
-    final retry = status == BlocRequestStatus.submissionGetFailure;
+    final loading = (status == BlocRequestStatus.submissionGetLoading ||
+        blocStatus == BlocStatus.loading);
+    final retry = (status == BlocRequestStatus.submissionGetFailure ||
+        blocStatus == BlocStatus.failure);
 
     return InkWell(
       onTap: () {
