@@ -6,6 +6,7 @@ import '../../../domain/entities/commercial_board_type.dart';
 
 class BillboardCard extends StatelessWidget {
   final CommercialBoardType type;
+
   const BillboardCard({super.key, required this.type});
 
   @override
@@ -20,11 +21,20 @@ class BillboardCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          CustomTextWidget(
-            "نوع اللوحة",
-            fontColor: AppColor.primary700Light,
-            fontSize: 12,
-            fontWeight: AppFontWeight.bold,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              CustomTextWidget(
+                "نوع اللوحة",
+                fontColor: AppColor.primary700Light,
+                fontSize: 12,
+                fontWeight: AppFontWeight.bold,
+              ),
+              CustomIconButtonWidget(
+                icon: Icons.delete,
+                iconColor: AppColor.redBrown,
+              )
+            ],
           ),
           SizedBox(height: 4),
           CustomTextWidget(

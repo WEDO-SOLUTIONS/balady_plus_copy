@@ -2,63 +2,75 @@ import 'package:flutter/material.dart';
 
 import '../../../../../core/utils/utils_exports.dart';
 import '../../../../_shared_feature_/shared_feature_exports.dart';
+import '../../../domain/entities/addetional_activity_request.dart';
 
 class ExtraActivityCard extends StatelessWidget {
-  const ExtraActivityCard({
-    super.key,
-  });
+  final AddetionalActivityRequest item;
+  final Function onDelete;
+  const ExtraActivityCard(
+      {super.key, required this.item, required this.onDelete});
 
   @override
   Widget build(BuildContext context) {
     return Container(
       width: MediaQuery.sizeOf(context).width,
-      padding: const EdgeInsets.symmetric(
-          horizontal: 12, vertical: 24),
-      decoration:  BoxDecoration(
-        borderRadius:
-        const BorderRadius.all(Radius.circular(8)),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 24),
+      decoration: BoxDecoration(
+        borderRadius: const BorderRadius.all(Radius.circular(8)),
         color: AppColor.primary50Light.withOpacity(0.5),
       ),
-      child: const Column(
+      child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          CustomTextWidget(
-            "نشاط ايزيك",
-            fontColor: AppColor.primary700Light,
-            fontSize: 12,
-            fontWeight: AppFontWeight.bold,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const CustomTextWidget(
+                "نشاط ايزيك",
+                fontColor: AppColor.primary700Light,
+                fontSize: 12,
+                fontWeight: AppFontWeight.bold,
+              ),
+              CustomIconButtonWidget(
+                iconColor: AppColor.redBrown,
+                icon: Icons.delete,
+                onPressed: () {
+                  onDelete();
+                },
+              )
+            ],
           ),
-          SizedBox(height: 4),
+          const SizedBox(height: 4),
           CustomTextWidget(
-            "بيع بالتجزئه",
+            item.item?.name ?? "",
             fontColor: AppColor.blackModern600Light,
             fontSize: 16,
             fontWeight: AppFontWeight.semiBold,
           ),
-          SizedBox(height: 16),
-          CustomTextWidget(
+          const SizedBox(height: 16),
+          const CustomTextWidget(
             "النشاط التفصيلي",
             fontColor: AppColor.primary700Light,
             fontSize: 12,
             fontWeight: AppFontWeight.bold,
           ),
-          SizedBox(height: 4),
+          const SizedBox(height: 4),
           CustomTextWidget(
-            "بيع بالتجزئه",
+            item.detailsItem?.name ?? "",
             fontColor: AppColor.blackModern600Light,
             fontSize: 16,
             fontWeight: AppFontWeight.semiBold,
           ),
-          SizedBox(height: 16),
-          CustomTextWidget(
+          const SizedBox(height: 16),
+          const CustomTextWidget(
             "المساحه الكليه للمحل",
             fontColor: AppColor.primary700Light,
             fontSize: 12,
             fontWeight: AppFontWeight.bold,
           ),
-          SizedBox(height: 4),
+          const SizedBox(height: 4),
           CustomTextWidget(
-            "16.0000 متر مربع",
+            item.area.toString() ?? "",
             fontColor: AppColor.blackModern600Light,
             fontSize: 16,
             fontWeight: AppFontWeight.semiBold,

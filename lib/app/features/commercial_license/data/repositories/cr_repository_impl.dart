@@ -1,12 +1,16 @@
+import 'package:balady_plus/app/features/commercial_license/data/models/additional_activity_details_response.dart';
+import 'package:balady_plus/app/features/commercial_license/data/models/additional_activity_response.dart';
 import 'package:balady_plus/app/features/commercial_license/data/models/qr/apply_commercial_response_model.dart';
 import 'package:balady_plus/app/features/commercial_license/data/models/qr/qr_details_model.dart';
 import 'package:balady_plus/app/features/commercial_license/data/models/qr/qr_lookup.dart';
 import 'package:balady_plus/app/features/commercial_license/data/models/qr/qr_submit_response.dart';
 import 'package:balady_plus/app/features/commercial_license/data/models/qr/save_enterprise_data_request.dart';
 import 'package:balady_plus/app/features/commercial_license/data/models/save_com_submitter_and_owner_request_model.dart';
+import 'package:balady_plus/app/features/commercial_license/domain/entities/addetional_activity_details_request.dart';
 import 'package:balady_plus/app/features/commercial_license/domain/entities/cr_attachment_response.dart';
 import 'package:balady_plus/app/features/commercial_license/domain/entities/cr_submit_request.dart';
 import 'package:balady_plus/app/features/commercial_license/domain/entities/save_shop_details_request.dart';
+import 'package:balady_plus/app/features/commercial_license/domain/entities/verifiy_salama_requst.dart';
 import 'package:dartz/dartz.dart' show Either, Left, Right;
 import '../../../../core/errors/errors_exports.dart';
 import '../../../_shared_feature_/shared_feature_exports.dart';
@@ -218,7 +222,7 @@ class CrRepositoryImpl implements CrRepository {
   }
 
   @override
-  Future<Either<Failure, CrSubmitResponse>> submitCr(
+  Future<Either<Failure, ResponseBodyModel<CrSubmitResponse>>> submitCr(
       {required CrSubmitRequest params}) async {
     try {
       final data = await remoteDataSource.submitCr(params: params);
@@ -437,6 +441,81 @@ class CrRepositoryImpl implements CrRepository {
       {required String params}) async {
     try {
       final data = await remoteDataSource.getQrLookUp(params: params);
+      return Right(data);
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage,
+          statusCode: error.statusCode, errorCode: error.errorCode));
+    }
+  }
+
+  @override
+  Future<Either<Failure, AddetionalActivityResponse>> getAddetionalActivites(
+      {String? subActivityId}) async {
+    try {
+      final data = await remoteDataSource.getAddetionalActivites(
+          subActivityId: subActivityId!);
+      return Right(data);
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage,
+          statusCode: error.statusCode, errorCode: error.errorCode));
+    }
+  }
+
+  @override
+  Future<Either<Failure, AddetionalActivityDetailsResponse>>
+      getAddetionalDetailsActivites(
+          {AddetionalActivityDetailsRequest? params}) async {
+    try {
+      final data =
+          await remoteDataSource.getAddetionalDetailsActivites(params: params!);
+      return Right(data);
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage,
+          statusCode: error.statusCode, errorCode: error.errorCode));
+    }
+  }
+
+  @override
+  Future<Either<Failure, QrLookUpResponse>> getMalls(
+      {required String params}) async {
+    try {
+      final data = await remoteDataSource.getMalls(params: params!);
+      return Right(data);
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage,
+          statusCode: error.statusCode, errorCode: error.errorCode));
+    }
+  }
+
+  @override
+  Future<Either<Failure, bool>> validateSalamaBill(
+      {required VerifySalamaRequest params}) async {
+    try {
+      final data = await remoteDataSource.validateSalamaBill(params: params!);
+      return Right(data);
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage,
+          statusCode: error.statusCode, errorCode: error.errorCode));
+    }
+  }
+
+  @override
+  Future<Either<Failure, bool>> validateSalamaPermit(
+      {required VerifySalamaRequest params}) async {
+    try {
+      final data = await remoteDataSource.validateSalamaPermit(params: params!);
+      return Right(data);
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage,
+          statusCode: error.statusCode, errorCode: error.errorCode));
+    }
+  }
+
+  @override
+  Future<Either<Failure, bool>> validateSalamaReport(
+      {required VerifySalamaRequest params}) async {
+    try {
+      final data = await remoteDataSource.validateSalamaReport(params: params!);
       return Right(data);
     } on ServerException catch (error) {
       return Left(ServerFailure(error.errorMessage,

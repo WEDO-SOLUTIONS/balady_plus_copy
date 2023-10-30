@@ -37,38 +37,45 @@ class CRStep6EstablishmentState extends Equatable {
   final String? addetionalNumber;
   final String? postalCode;
 
-  const CRStep6EstablishmentState({
-    this.status = BlocStatus.initial,
-    this.paymentsMethodsStatus = BlocStatus.initial,
-    this.buildingNatureStatus = BlocStatus.initial,
-    this.siteNatureStatus = BlocStatus.initial,
-    this.applyStatus = BlocStatus.initial,
-    this.errorMessage,
-    this.siteLocationType,
-    this.contactInfo,
-    this.crOwners,
-    this.managerInfo,
-    this.selectedPaymentMethods,
-    this.selectedBuildingNature,
-    this.selectedSiteNature,
-    this.nationalAddress,
-    this.locationOnStreetDto,
-    this.locationInsideBuildingDto,
-    this.paymentsMethods,
-    this.siteNature,
-    this.buildingNature,
-    this.applyResponse,
-    this.buildingName,
-    this.buildingUnit,
-    this.buildingFloor,
-    this.buildingDirections,
-    this.siteName,
-    this.siteDesc,
-    this.siteLandmark,
-    this.buildingNumber,
-    this.addetionalNumber,
-    this.postalCode,
-  });
+  final bool? hasPaymentMethods;
+
+  final String? birthDate;
+  final String? nationalId;
+
+  const CRStep6EstablishmentState(
+      {this.status = BlocStatus.initial,
+      this.paymentsMethodsStatus = BlocStatus.initial,
+      this.buildingNatureStatus = BlocStatus.initial,
+      this.siteNatureStatus = BlocStatus.initial,
+      this.applyStatus = BlocStatus.initial,
+      this.errorMessage,
+      this.siteLocationType,
+      this.contactInfo,
+      this.crOwners,
+      this.managerInfo,
+      this.selectedPaymentMethods,
+      this.selectedBuildingNature,
+      this.selectedSiteNature,
+      this.nationalAddress,
+      this.locationOnStreetDto,
+      this.locationInsideBuildingDto,
+      this.paymentsMethods,
+      this.siteNature,
+      this.buildingNature,
+      this.applyResponse,
+      this.buildingName,
+      this.buildingUnit,
+      this.buildingFloor,
+      this.buildingDirections,
+      this.siteName,
+      this.siteDesc,
+      this.siteLandmark,
+      this.buildingNumber,
+      this.addetionalNumber,
+      this.postalCode,
+      this.hasPaymentMethods,
+      this.birthDate,
+      this.nationalId});
 
   @override
   List<Object?> get props {
@@ -102,7 +109,10 @@ class CRStep6EstablishmentState extends Equatable {
       siteLandmark,
       buildingNumber,
       addetionalNumber,
-      postalCode
+      postalCode,
+      hasPaymentMethods,
+      birthDate,
+      nationalId
     ];
   }
 
@@ -136,7 +146,10 @@ class CRStep6EstablishmentState extends Equatable {
       String? siteLandmark,
       String? buildingNumber,
       String? addetionalNumber,
-      String? postalCode}) {
+      String? postalCode,
+      bool? hasPaymentMethods,
+      String? birthDate,
+      String? nationalId}) {
     return CRStep6EstablishmentState(
         status: status ?? this.status,
         siteLocationType: siteLocationType ?? this.siteLocationType,
@@ -170,7 +183,10 @@ class CRStep6EstablishmentState extends Equatable {
         siteLandmark: siteLandmark ?? this.siteLandmark,
         buildingNumber: buildingNumber ?? this.buildingNumber,
         addetionalNumber: addetionalNumber ?? this.addetionalNumber,
-        postalCode: postalCode ?? this.postalCode);
+        postalCode: postalCode ?? this.postalCode,
+        hasPaymentMethods: hasPaymentMethods ?? this.hasPaymentMethods,
+        birthDate: birthDate ?? this.birthDate,
+        nationalId: nationalId ?? this.nationalId);
   }
 
   bool get isLoading =>

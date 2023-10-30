@@ -25,6 +25,7 @@ import '../../../commercial_license_exports.dart'
         ValidateSalamaAttachmentsRequest;
 import '../../../domain/use_cases/get_cr_Attacments.dart';
 import '../../../domain/use_cases/save_cr_Attacments.dart';
+import '../../../domain/use_cases/validate_approvals.dart';
 
 part 'cr_step5_attachment_data_state.dart';
 
@@ -190,7 +191,11 @@ class CRStep5AttachmentCubit extends Cubit<CRStep5AttachmentState> {
         errorMessage: "",
       ));
       // Go To QR Flow , if validate Approvals = true;
-      sl<CommercialLicenseBloc>().add((const GoToNextPageEvent()));
+      if (success == true) {
+        sl<CommercialLicenseBloc>().add((const GoToNextPageEvent()));
+      } else if (success == false) {
+        sl<CommercialLicenseBloc>().goToCalucaltePage();
+      }
 
       // Go To Calculate Flow if validate Approvals = false
     });

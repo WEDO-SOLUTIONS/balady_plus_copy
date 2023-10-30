@@ -1,3 +1,4 @@
 class CrSubmitResponse {
-  CrSubmitResponse();
+  String? message; 
+  CrSubmitResponse({this.message});
 }

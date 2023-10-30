@@ -41,8 +41,8 @@ class ActivitiesCostDetaileModel extends ActivitiesCostDetaile {
   factory ActivitiesCostDetaileModel.fromJson(Map<String, dynamic> json) =>
       ActivitiesCostDetaileModel(
         refrence: json["Refrence"],
-        activtyCost: json["ActivtyCost"],
-        cleaningCost: json["CleaningCost"],
+        activtyCost: json["ActivtyCost"]?.toDouble(),
+        cleaningCost: json["CleaningCost"]?.toDouble(),
       );
 }
 

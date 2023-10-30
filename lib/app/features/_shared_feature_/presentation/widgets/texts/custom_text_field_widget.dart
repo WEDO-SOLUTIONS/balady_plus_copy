@@ -2,6 +2,7 @@ import 'package:balady_plus/app/core/utils/constants/keys/general_keys.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart'
     show FilteringTextInputFormatter, TextInputFormatter;
+import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../core/utils/enums/enums.dart';
 import '../../../../../core/utils/utils_exports.dart'
@@ -72,10 +73,12 @@ class CustomTextFieldWidget extends StatelessWidget {
   final void Function()? onTap;
   final void Function(PointerDownEvent)? onTapOutside;
   final String? Function(String?)? onValidate;
+  final bool showOptional;
 
   const CustomTextFieldWidget(
       {super.key,
       this.enabled = true,
+      this.showOptional = false,
       this.label,
       this.labelStyle,
       this.isRequired = false,
@@ -140,10 +143,23 @@ class CustomTextFieldWidget extends StatelessWidget {
       children: [
         // Label
         // if field is required, then show label beside asterisk e.g. *Username
-        WidgetLabel(
-          isRequired: isRequired,
-          label: label,
-          labelStyle: labelStyle,
+        Row(
+          children: [
+            WidgetLabel(
+              isRequired: isRequired,
+              label: label,
+              labelStyle: labelStyle,
+            ),
+            if (showOptional == true)
+              Text(
+                ('optional').tr(),
+                style: const TextStyle(
+                    color: Color(0xffbabbbb),
+                    fontSize: 13.0,
+                    fontFamily: GeneralKey.appFontType,
+                    fontWeight: FontWeight.bold),
+              ),
+          ],
         ),
         // Field
         TextFormField(
@@ -446,7 +462,7 @@ class CustomTextFieldWidgetWithOptinal extends StatelessWidget {
                   child: TextFormField(
                     controller: controller,
                     textDirection: textDirection,
-                    focusNode: focusNode ?? FocusNode(),
+                    focusNode: focusNode,
                     autocorrect: autoCorrect,
                     autovalidateMode: AutovalidateMode.onUserInteraction,
                     readOnly: readOnly,

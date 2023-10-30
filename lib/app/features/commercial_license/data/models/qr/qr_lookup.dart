@@ -21,12 +21,9 @@ class QrLookUpItem extends Equatable {
   final int? id;
   final String? name;
   final dynamic ename;
+  bool? selected;
 
-  QrLookUpItem({
-    this.id,
-    this.name,
-    this.ename,
-  });
+  QrLookUpItem({this.id, this.name, this.ename, this.selected});
 
   factory QrLookUpItem.fromJson(Map<String, dynamic> json) => QrLookUpItem(
         id: json["id"],
@@ -36,4 +33,6 @@ class QrLookUpItem extends Equatable {
 
   @override
   List<Object?> get props => [id, name, ename];
+
+  String get text => name ?? "";
 }

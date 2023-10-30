@@ -21,7 +21,6 @@ export 'presentation/step7/page/cr_step7_establishment_contact_data.dart';
 export 'presentation/step8/page/cr_step8_employee_data.dart';
 export 'presentation/step9/page/cr_step9_work_times.dart';
 export 'presentation/step10/page/cr_step10_additional_data.dart';
-export 'presentation/step11/page/cr_step11_request_review.dart';
 
 // Widgets
 export 'presentation/commercial_license/widgets/commercial_license_body.dart';
@@ -38,7 +37,7 @@ export 'presentation/step4/widgets/investment_contract_card.dart';
 
 export 'presentation/step5/widgets/pick_file_component.dart';
 export 'presentation/step6/widgets/owner_info_card.dart';
-export 'presentation/step7/widgets/manager_info_card.dart';
+export 'presentation/step6/widgets/manager_info_card.dart';
 export 'presentation/step8/widgets/employee_info_card.dart';
 export 'presentation/step9/widgets/work_time_card.dart';
 export 'presentation/step9/widgets/periods_dialog_body.dart';
@@ -90,7 +89,7 @@ export 'domain/use_cases/submit_step3.dart';
 export 'domain/use_cases/upload_credence.dart';
 export 'domain/use_cases/get_request_credence.dart';
 export 'domain/use_cases/get_clean_options.dart';
-export 'domain/use_cases/validate_approvals.dart';
+export 'domain/use_cases/validate_salama_permit.dart';
 export 'domain/use_cases/get_deed_options.dart';
 export 'domain/use_cases/add_beneficiary_notes.dart';
 

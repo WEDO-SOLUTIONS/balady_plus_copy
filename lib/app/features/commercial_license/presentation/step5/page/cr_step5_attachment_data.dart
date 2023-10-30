@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import '../../../../../core/utils/common_functions.dart';
+import '../../../../../core/utils/enums/bloc_status.dart';
 import '../../../../_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
 import '../../../commercial_license_exports.dart';
 import '../bloc/cr_step5_attachment_data_cubit.dart';
@@ -40,7 +41,12 @@ class _CRStep5AttachmentDataState extends State<CRStep5AttachmentData> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<CRStep5AttachmentCubit, CRStep5AttachmentState>(
+    return BlocConsumer<CRStep5AttachmentCubit, CRStep5AttachmentState>(
+      listener: (context, state) {
+        if (state.status == BlocStatus.failure) {
+          CommonFunctions.showError(state.errorMessage ?? "");
+        }
+      },
       builder: (context, state) {
         return Stack(
           children: [

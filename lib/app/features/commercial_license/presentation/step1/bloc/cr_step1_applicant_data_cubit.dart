@@ -23,10 +23,7 @@ class CrStep1ApplicantDataCubit extends Cubit<CrStep1ApplicantDataState> {
 
   void getRecordInfo() async {
     emit(state.copyWith(recordStatus: BlocStatus.loading));
-    final response = await _getRecordInfo((
-      CommonProperties.selectedDelegator!.crNumber!,
-      CommonProperties.selectedDelegator!.getRole()
-    ));
+    final response = await _getRecordInfo(("1234567890", "OWNER_MANAGER"));
 
     /// TODO: UnComment below line
     // final response = await _getRecordInfo(

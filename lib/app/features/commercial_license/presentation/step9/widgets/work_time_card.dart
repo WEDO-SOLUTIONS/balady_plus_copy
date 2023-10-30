@@ -16,7 +16,6 @@ class WorkTimeCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<WorkTimesCubit, WorkTimesState>(
-      buildWhen: (previous, current) => previous.workTimes != current.workTimes,
       builder: (context, state) {
         return Container(
           padding: const EdgeInsets.all(8),
@@ -40,14 +39,14 @@ class WorkTimeCard extends StatelessWidget {
                             const BorderSide(color: AppColor.primary500Light)),
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(4)),
-                        value: state.workTimes[index].isSelected,
+                        value: state.workingTimes?[index].isSelected ?? false,
                         onChanged: (_) => context
                             .read<WorkTimesCubit>()
                             .onSelectedWorkTime(index),
                       ),
                     ),
                     CustomTextWidget(
-                      state.workTimes[index].weekDay.tr(),
+                      state.workingTimes?[index].dayName ?? "",
                       fontSize: 18,
                       fontWeight: AppFontWeight.bold,
                       fontColor: AppColor.blackModern600Light,
@@ -56,37 +55,82 @@ class WorkTimeCard extends StatelessWidget {
                 ),
               ),
               Expanded(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    if (state.workTimes[index].isSelected &&
-                        state.workTimes[index].periods.isEmpty)
-                      GestureDetector(
-                        onTap: () => BottomSheetDialog.showDraggableSheet(
-                          context,
-                          child: PeriodsDialogBody(
-                            periods: state.workTimes[index].periods,
-                            onSubmitPeriods: (periods) => context
-                                .read<WorkTimesCubit>()
-                                .onAddPeriods(index: index, periods: periods),
-                          ),
-                        ),
-                        child: const CustomTextWidget(
+                child: GestureDetector(
+                  onTap: () {
+                    BottomSheetDialog.showDraggableSheet(
+                      context,
+                      child: PeriodsDialogBody(
+                        currentWorkingTime: state.workingTimes![index]!,
+                        onSubmitPeriods: (periods) => context
+                            .read<WorkTimesCubit>()
+                            .onAddPeriods(
+                                index: index,
+                                periods: periods.$1,
+                                type: periods.$2),
+                      ),
+                    );
+                  },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      if ((state.workingTimes![index].isSelected ?? false) &&
+                          state.workingTimes![index].openShiftOption == null)
+                        const CustomTextWidget(
                           "اضف المواعيد",
                           fontSize: 12,
                           fontWeight: AppFontWeight.bold,
                           fontColor: AppColor.primary700Light,
                         ),
-                      ),
-                    if (state.workTimes[index].isSelected &&
-                        state.workTimes[index].periods.isNotEmpty)
-                      Expanded(
+                      if ((state.workingTimes![index].isSelected ?? false) &&
+                          state.workingTimes![index].openShiftOption !=
+                              null) ...[
+                        Column(
+                          children: [
+                            if (state.workingTimes?[index].firstFromTime !=
+                                null)
+                              CustomTextWidget(
+                                "${state.workingTimes?[index].firstFromTime} - ${state.workingTimes?[index].firstToTime}",
+                                fontWeight: AppFontWeight.medium,
+                                fontSize: 12,
+                                textAlign: TextAlign.end,
+                                fontColor: AppColor.blackModern600Light,
+                              ),
+                            if (state.workingTimes?[index].secondFromTime !=
+                                null) ...[
+                              const SizedBox(height: 8),
+                              CustomTextWidget(
+                                "${state.workingTimes?[index].secondFromTime} - ${state.workingTimes?[index].secondToTime}",
+                                fontWeight: AppFontWeight.medium,
+                                fontSize: 12,
+                                textAlign: TextAlign.end,
+                                fontColor: AppColor.blackModern600Light,
+                              ),
+                            ],
+                          ],
+                        )
+                      ],
+                      if ((state.workingTimes![index].isSelected ?? false) &&
+                          state.workingTimes![index].openShiftOption ==
+                              "OPEN_24HOUR") ...[
+                        Column(
+                          children: [
+                            CustomTextWidget(
+                              "24 ساعه",
+                              fontWeight: AppFontWeight.medium,
+                              fontSize: 12,
+                              textAlign: TextAlign.end,
+                              fontColor: AppColor.blackModern600Light,
+                            ),
+                          ],
+                        )
+                      ],
+
+                      /*   Expanded(
                         child: ListView.separated(
-                          itemCount: state.workTimes[index].periods.length,
+                          itemCount: state.workingTimes[index].periods.length,
                           shrinkWrap: true,
                           physics: const NeverScrollableScrollPhysics(),
-                          separatorBuilder: (_, __) =>
-                              const SizedBox(height: 8),
+                          separatorBuilder: (_, __) => const SizedBox(height: 8),
                           itemBuilder: (_, index2) => CustomTextWidget(
                             "${state.workTimes[index].periods[index2].from.format(context)} - ${state.workTimes[index].periods[index2].to.format(context)}",
                             fontWeight: AppFontWeight.medium,
@@ -95,14 +139,15 @@ class WorkTimeCard extends StatelessWidget {
                             fontColor: AppColor.blackModern600Light,
                           ),
                         ),
-                      ),
-                    const SizedBox(width: 4),
-                    const Icon(
-                      Icons.navigate_next,
-                      size: 24,
-                      color: AppColor.blackModern600Light,
-                    ),
-                  ],
+                      ),*/
+                      const SizedBox(width: 4),
+                      const Icon(
+                        Icons.navigate_next,
+                        size: 24,
+                        color: AppColor.blackModern600Light,
+                      )
+                    ],
+                  ),
                 ),
               ),
             ],

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../core/utils/utils_exports.dart';
 import '../../../../_shared_feature_/shared_feature_exports.dart';
 import '../../../data/models/qr/apply_commercial_response_model.dart';
+import '../dialogs/edit_cr_owner_data_dialog.dart';
 
 class OwnerInfoCard extends StatelessWidget {
   final CrOwner item;
@@ -27,16 +29,51 @@ class OwnerInfoCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              const CustomSvgIconWidget(IconPath.clipboard),
-              const SizedBox(width: 4),
-              Flexible(
-                child: CustomTextWidget(
-                  "مالك $index",
-                  fontColor: AppColor.blackModern600Light,
-                  fontSize: 18,
-                  fontWeight: AppFontWeight.bold,
+              Expanded(
+                child: Row(
+                  children: [
+                    const CustomSvgIconWidget(IconPath.clipboard),
+                    const SizedBox(width: 4),
+                    Flexible(
+                      child: CustomTextWidget(
+                        "مالك ${index + 1}",
+                        fontColor: AppColor.blackModern600Light,
+                        fontSize: 18,
+                        fontWeight: AppFontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(
+                      width: 8,
+                    ),
+                    if (!item.isCompleteData)
+                      CustomTextWidget(
+                        "بيانات غير مكتملة",
+                        fontColor: Color(0xFFCD5D1A),
+                        fontSize: 10,
+                        fontWeight: AppFontWeight.bold,
+                      )
+                  ],
                 ),
               ),
+              CustomIconButtonWidget(
+                icon: Icons.edit,
+                iconColor: AppColor.primary900Light,
+                onPressed: () async {
+                  CrOwner updatedItem =
+                      await BottomSheetDialog.showDraggableSheet(context,
+                          isFullHeight: true,
+                          //   dialogKeyName: DialogName.calculatorEditBoardDialog,
+                          //  currentRouteName: RouteName.calculatorRoute,
+                          child: BottomSheetWithActions(
+                            title: "تعديل بيانات المالك".tr(),
+                            body: EditCrOwnerDataDialog(
+                              item: item,
+                            ),
+                          ));
+
+                  onUpdate(updatedItem);
+                },
+              )
             ],
           ),
           const SizedBox(height: 18),

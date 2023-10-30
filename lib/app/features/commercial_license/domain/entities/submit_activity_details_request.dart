@@ -3,12 +3,14 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 
+import 'addetional_activity_request.dart';
+
 class SubmitActivityDetailRequest {
   int? requestId;
   int workerTypeId;
   double area;
   int detailedActivityId;
-  List<int>? additionalActivities;
+  List<AddetionalActivityRequest>? additionalActivities;
   SubmitActivityDetailRequest({
     this.requestId,
     required this.workerTypeId,
@@ -22,7 +24,7 @@ class SubmitActivityDetailRequest {
     int? workerTypeId,
     double? area,
     int? detailedActivityId,
-    List<int>? additionalActivities,
+    List<AddetionalActivityRequest>? additionalActivities,
   }) {
     return SubmitActivityDetailRequest(
       requestId: requestId ?? this.requestId,
@@ -40,41 +42,15 @@ class SubmitActivityDetailRequest {
         'area': area,
         'detailedActivityId': detailedActivityId,
       },
-      'additionalActivities':
-          additionalActivities == null ? [] : additionalActivities,
+      'additionalActivities': additionalActivities != null
+          ? additionalActivities
+              ?.map((e) => {
+                    "detailedActivityId": e.detailsItem?.activityId,
+                    "area": e.area
+                  })
+              .toList()
+          : [],
     };
-  }
-
-  factory SubmitActivityDetailRequest.fromMap(Map<String, dynamic> map) {
-    return SubmitActivityDetailRequest(
-      workerTypeId: map['workerTypeId'] as int,
-      area: map['area'] as double,
-      detailedActivityId: map['detailedActivityId'] as int,
-      additionalActivities: map['additionalActivities'] != null
-          ? List<int>.from((map['additionalActivities'] as List<int>))
-          : null,
-    );
-  }
-
-  String toJson() => json.encode(toMap());
-
-  factory SubmitActivityDetailRequest.fromJson(String source) =>
-      SubmitActivityDetailRequest.fromMap(
-          json.decode(source) as Map<String, dynamic>);
-
-  @override
-  String toString() {
-    return 'SubmitActivityDetailRequest(workerTypeId: $workerTypeId, area: $area, detailedActivityId: $detailedActivityId, additionalActivities: $additionalActivities)';
-  }
-
-  @override
-  bool operator ==(covariant SubmitActivityDetailRequest other) {
-    if (identical(this, other)) return true;
-
-    return other.workerTypeId == workerTypeId &&
-        other.area == area &&
-        other.detailedActivityId == detailedActivityId &&
-        listEquals(other.additionalActivities, additionalActivities);
   }
 
   @override

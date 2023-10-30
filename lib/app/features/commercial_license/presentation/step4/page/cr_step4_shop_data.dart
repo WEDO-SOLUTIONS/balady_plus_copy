@@ -14,6 +14,7 @@ import '../../../../vd/presentation/widgets/details_widgets/incident_desc_widget
 import '../../../commercial_license_exports.dart';
 import '../../step3/bloc/map_bloc.dart';
 import '../widgets/clean_contract_card.dart';
+import '../widgets/malls_dropDown.dart';
 
 class CRStep4ShopData extends StatefulWidget {
   const CRStep4ShopData({Key? key}) : super(key: key);
@@ -33,6 +34,7 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
     context.read<CrStep4ShopDataCubit>().salamaReportFawery();
     context.read<CrStep4ShopDataCubit>().getDeedOwnerShipsTypes();
     context.read<CrStep4ShopDataCubit>().getCleanOptions();
+    context.read<CrStep4ShopDataCubit>().getMalls();
   }
 
   @override
@@ -112,7 +114,9 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
                           isDigitsOnly: true,
                           keyboardType: TextInputType.number,
                           bottomMargin: 24,
-                          initialValue: state.holesCount.toString(),
+                          initialValue: state.holesCount != null
+                              ? state.holesCount.toString()
+                              : null,
                           onChanged: (value) {
                             context
                                 .read<CrStep4ShopDataCubit>()
@@ -125,7 +129,9 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
                           isDigitsOnly: true,
                           keyboardType: TextInputType.number,
                           bottomMargin: 24,
-                          initialValue: state.floorCount.toString(),
+                          initialValue: state.floorCount != null
+                              ? state.floorCount.toString()
+                              : null,
                           onChanged: (value) {
                             context
                                 .read<CrStep4ShopDataCubit>()
@@ -137,7 +143,9 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
                           hintText: "ادخل عدد الكاميرات في المحل",
                           isDigitsOnly: true,
                           keyboardType: TextInputType.number,
-                          initialValue: state.noOfCameras.toString(),
+                          initialValue: state.noOfCameras != null
+                              ? state.noOfCameras.toString()
+                              : null,
                           bottomMargin: 24,
                           onChanged: (value) {
                             context
@@ -174,24 +182,20 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
                           onChanged: (value) {
                             context
                                 .read<CrStep4ShopDataCubit>()
-                                .updateFields(existInMall: value);
+                                .updateExistsInMallFields(existInMall: value);
                           },
                         ),
                         if (state.existInMall == true) ...[
-                          CustomTapWidgetForLongDialog(
-                            items: const [],
-                            value: null,
-                            label: "المركز التجاري",
-                            marginBottom: 24,
-                            onChangeType: (item) {},
-                          ),
+                          MallsDropDown(),
                           CustomTextFieldWidget(
                             label: "الطابق",
                             hintText: "ادخل الطابق",
                             isDigitsOnly: true,
                             keyboardType: TextInputType.number,
                             bottomMargin: 24,
-                            initialValue: state.floorNumber?.toString() ?? "",
+                            initialValue: state.floorNumber != null
+                                ? state.floorNumber?.toString()
+                                : null,
                             onChanged: (value) {
                               context.read<CrStep4ShopDataCubit>().updateFields(
                                   floorNumber: int.tryParse(value));
@@ -212,7 +216,7 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
                         if (state.isCitizenPledgedToClean == true &&
                             state.cleanContractshowAttach() &&
                             !state.cleanOptionCLEANCONTRACT() &&
-                            !state.cleanContractshowPayAll())
+                            !state.cleanOptionBALADIASADAD())
                           HijriCalendarAddetionalField(
                             fieldName: 'تاريخ انتهاء عقد النظافة',
                             isMandatory: true,
@@ -263,14 +267,18 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
                           ),
                           if (state.isFawryReport == true &&
                               state.salamaPermitExist == false)
-                            CustomTextFieldWidget(
-                              label: "رقم التقرير الفني",
-                              hintText: "رقم التقرير الفني",
-                              isDigitsOnly: true,
-                              keyboardType: TextInputType.number,
-                              bottomMargin: 24,
-                              initialValue: state.slamaReportNumber.toString(),
-                              onChanged: (value) {
+                            TextWithCheckBtn(
+                              title: "رقم التقرير الفني",
+                              hint: "رقم التقرير الفني",
+                              validate: (String? t) {},
+                              isValidate: state.isSalamaReportVerified ?? false,
+                              currentValue: state.slamaReportNumber,
+                              verify: () {
+                                context
+                                    .read<CrStep4ShopDataCubit>()
+                                    .verifySalamaReport();
+                              },
+                              onTextChanged: (value) {
                                 context
                                     .read<CrStep4ShopDataCubit>()
                                     .updateSalamaPermitReport(
@@ -279,14 +287,18 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
                             ),
                           if (state.isFawryBill == true &&
                               state.salamaPermitExist == false)
-                            CustomTextFieldWidget(
-                              label: "رقم الفاتورة الفني",
-                              hintText: "رقم الفاتورة الفني",
-                              isDigitsOnly: true,
-                              keyboardType: TextInputType.number,
-                              bottomMargin: 24,
-                              initialValue: state.slamaBillNumber.toString(),
-                              onChanged: (value) {
+                            TextWithCheckBtn(
+                              title: "رقم الفاتورة الفني",
+                              hint: "رقم الفاتورة الفني",
+                              validate: (String? t) {},
+                              isValidate: state.isSalamaBillVerified ?? false,
+                              currentValue: state.slamaBillNumber,
+                              verify: () {
+                                context
+                                    .read<CrStep4ShopDataCubit>()
+                                    .verifySalamaBill();
+                              },
+                              onTextChanged: (value) {
                                 context
                                     .read<CrStep4ShopDataCubit>()
                                     .updateSalamaPermitBill(
@@ -294,14 +306,18 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
                               },
                             ),
                           if (state.salamaPermitExist == true)
-                            CustomTextFieldWidget(
-                              label: "رقم تصريح سلامة",
-                              hintText: "رقم تصريح سلامة",
-                              isDigitsOnly: true,
-                              keyboardType: TextInputType.number,
-                              bottomMargin: 24,
-                              initialValue: state.salamaPermitNumber.toString(),
-                              onChanged: (value) {
+                            TextWithCheckBtn(
+                              title: "رقم تصريح سلامة",
+                              hint: "رقم تصريح سلامة",
+                              validate: (String? t) {},
+                              isValidate: state.isSalamaPermitVerified ?? false,
+                              currentValue: state.salamaPermitNumber,
+                              verify: () {
+                                context
+                                    .read<CrStep4ShopDataCubit>()
+                                    .verifySalamaPermit();
+                              },
+                              onTextChanged: (value) {
                                 context
                                     .read<CrStep4ShopDataCubit>()
                                     .updateSalamaPermitNumber(

@@ -342,13 +342,27 @@ class ApiUrl {
   static String qrSubmit(int requestId) =>
       'v1/balady-commercial-services/qr-submits/$requestId';
 
- static String qrLookUp(String params) =>
+  static String qrLookUp(String params) =>
       'v1/balady-commercial-services/qr-lookups/$params';
 
+  static String addetionalActivites(String params) =>
+      'v1/balady-commercial-services/additional-activities/$params';
 
+  static String addetionalDetailsActivity(
+          String subActivity, String addetioanlActivityId) =>
+      'v1/balady-commercial-services/new-request/additional/activities/$subActivity/$addetioanlActivityId';
 
+  static String mallsList(String params) =>
+      'v1/balady-commercial-services/malls?districtId=$params';
 
+  static String validateSalamaReport(int requestId, String number) =>
+      'v1/balady-commercial-services/request/$requestId/validate-salama-report/$number';
 
+  static String validateSalamaBill(int requestId, String number) =>
+      'v1/balady-commercial-services/request/$requestId/validate-salama-bill/$number';
+
+  static String validateSalamaPermit(int requestId) =>
+      '/v1/balady-commercial-services/validate-salama-permits/$requestId';
 //! Renew Commercial Service
   static String validateBeforeApply(int requestId) =>
       'v1/balady-commercial-services/mobile/renew-request/validate-before-apply/$requestId';

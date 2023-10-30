@@ -7,8 +7,10 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 
+import '../../../../../core/services/local/navigation_services.dart';
 import '../../../../../core/utils/constants/app_colors.dart';
 import '../../../../../core/utils/constants/constants.dart';
+import '../../../../../core/utils/constants/route_names.dart';
 import '../../../../../core/utils/utils_exports.dart' show IconPath;
 import '../../../../_shared_feature_/presentation/widgets/buttons/custom_buttons_widgets.dart';
 import '../../../../_shared_feature_/shared_feature_exports.dart';
@@ -61,7 +63,13 @@ class DetailsAppBar extends StatelessWidget implements PreferredSizeWidget {
         Padding(
           padding: const EdgeInsetsDirectional.only(end: 10),
           child: InkWell(
-            onTap: () => context.read<CreateVDBloc>().cancelIncident(),
+            onTap: () {
+              FocusManager.instance.primaryFocus?.unfocus();
+              bool Function(Route<dynamic>) predicate =
+                  ModalRoute.withName(RouteName.bottomNavigation);
+              NavigationService.navigatorKey.currentState!
+                  .popUntil((predicate));
+            },
             child: CircleIcon(
               icon: Icons.close,
               iconColor: AppColor.primary600Light,

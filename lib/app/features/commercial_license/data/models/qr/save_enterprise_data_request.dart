@@ -8,7 +8,7 @@ class SaveEnterprisDataRequest {
   final List<EmployeesInfo>? employeesInfo;
   final bool? hasPaymentMethods;
   final String? managerBirthDate;
-  final int? managerIdentityNumber;
+  final String? managerIdentityNumber;
   final String? managerName;
   final int? managerNationalityId;
   final String? managerNationalityName;
