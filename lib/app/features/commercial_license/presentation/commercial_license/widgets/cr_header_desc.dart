@@ -37,7 +37,7 @@ class CRHeaderDesc extends StatelessWidget {
         ),
         const CustomVerticalSpace(height: 8),
         CustomTextWidget(
-          desc ?? "من خلال هذه الخدمة يمكنك البدء بممارسة العمل التجاري",
+          desc ?? "",
           fontColor: AppColor.blackModern500Light,
           fontSize: 14.0,
           maxLines: maxLines,

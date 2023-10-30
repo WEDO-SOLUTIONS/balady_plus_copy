@@ -1,18 +1,19 @@
 import 'package:balady_plus/app/features/commercial_license/commercial_license_exports.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../../core/dependency_injection/injection_container.dart';
+import '../../../../../core/utils/enums/enums.dart';
 import '../../../../../core/utils/utils_exports.dart';
 import '../../../../_shared_feature_/shared_feature_exports.dart';
+import '../../../data/models/qr/apply_commercial_response_model.dart';
 
 class PeriodsDialogBody extends StatelessWidget {
-  const PeriodsDialogBody({
-    super.key,
-    required this.periods,
-    required this.onSubmitPeriods,
-  });
+  PeriodsDialogBody(
+      {super.key, required this.onSubmitPeriods, this.currentWorkingTime});
 
-  final List<PeriodEntity> periods;
-  final Function(List<PeriodEntity>) onSubmitPeriods;
+  final WorkingTime? currentWorkingTime;
+  final List<PeriodEntity> periods = [];
+  final Function((List<PeriodEntity>, QRWorkTimes)) onSubmitPeriods;
 
   @override
   Widget build(BuildContext context) {
@@ -20,33 +21,52 @@ class PeriodsDialogBody extends StatelessWidget {
       create: (context) => PeriodsCubit(periods: List.of(periods)),
       child: BlocBuilder<PeriodsCubit, PeriodsState>(
         builder: (context, state) {
+          bool is24HourAllowed = sl<CommercialLicenseBloc>()
+                  .state
+                  .applyCommercialResponse
+                  ?.comLicenseInfo
+                  ?.has24HourPermit ??
+              false;
           return Builder(builder: (context) {
             return BottomSheetWithActions(
               title: "ساعات اليوم",
               action: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 16),
-                child: ElevatedButtonWidget.add(
-                    onPressed: () {
-                      context.popDialog();
-                      onSubmitPeriods(state.periods);
-                    }),
+                child: ElevatedButtonWidget.add(onPressed: () {
+                  bool isFormValid = false;
+
+                  if (state.type == QRWorkTimes.OPEN_24HOUR)
+                    isFormValid = true;
+                  else if (state.type == QRWorkTimes.SHIFTED) {
+                    if (state.periods.isNotEmpty) {
+                      isFormValid = true;
+                    }
+                  }
+                  if (isFormValid) {
+                    context.popDialog();
+                    onSubmitPeriods((state.periods, state.type!));
+                  }
+                }),
               ),
               body: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  HorizontalRadioGroup(
-                    currentItem: state.is24Hour
-                        ? RadioItem(id: 1, radioValue: "24 ساعه")
-                        : RadioItem(id: 0, radioValue: "فتره محدده"),
+                  HorizontalRadioGroup<QRWorkTimes>(
+                    currentItem: state.type,
                     groupName: "نوع الفتره",
                     items: [
-                      RadioItem(id: 0, radioValue: "فتره محدده"),
-                      RadioItem(id: 1, radioValue: "24 ساعه"),
+                      RadioItem<QRWorkTimes>(
+                          radioValue: QRWorkTimes.SHIFTED,
+                          radioText: "فتره محدده"),
+                      if (is24HourAllowed)
+                        RadioItem<QRWorkTimes>(
+                            radioValue: QRWorkTimes.OPEN_24HOUR,
+                            radioText: "24 ساعه"),
                     ],
                     onChanged: (radio) => context
                         .read<PeriodsCubit>()
-                        .onChangedPeriodType(is24Hour: radio?.id == 1),
+                        .onChangedPeriodType(type: radio!),
                   ),
                   if (!state.is24Hour) ...[
                     const Divider(thickness: 2),
@@ -109,15 +129,16 @@ class PeriodsDialogBody extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 24),
-                    GestureDetector(
-                      onTap: () => context.read<PeriodsCubit>().onAddPeriod(),
-                      child: const CustomTextWidget(
-                        "+ اضافه فتره",
-                        fontSize: 16,
-                        fontWeight: AppFontWeight.bold,
-                        fontColor: AppColor.primary900Light,
+                    if (state.periods.length <= 1)
+                      GestureDetector(
+                        onTap: () => context.read<PeriodsCubit>().onAddPeriod(),
+                        child: const CustomTextWidget(
+                          "+ اضافه فتره",
+                          fontSize: 16,
+                          fontWeight: AppFontWeight.bold,
+                          fontColor: AppColor.primary900Light,
+                        ),
                       ),
-                    ),
                   ],
                 ],
               ),

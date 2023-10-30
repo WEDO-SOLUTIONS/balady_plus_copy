@@ -34,11 +34,11 @@ class ElevatedIconButtonWidget extends _ElevatedIconButton {
         ));
 
   ElevatedIconButtonWidget.download(
-      {required VoidCallback onPressed, String? text})
+      {required VoidCallback onPressed, String? text, double? height})
       : super(CustomElevatedIconButtonWidget(
           text: text ?? "attachFileButton".tr(),
           btnColor: Colors.transparent,
-          btnHeight: 36,
+          btnHeight: height ?? 36,
           btnBorderColor: AppColor.primary800Light,
           textStyle: AppStyle.elevatedButtonStyle.copyWith(
             color: AppColor.primary800Light,

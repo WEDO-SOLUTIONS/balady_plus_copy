@@ -188,7 +188,23 @@ class RouteName {
   static const submitRatingCancelScreen = '/submitRatingCancelScreen';
 
   static const commercialLicenseDetails = '/commercialLicenseDetails';
-  static const requestCommercialLicenseDetails = '/requestCommercialLicenseDetails';
+
+// -------  Commercial License Issue ---------
+  static const crMapScreen = '/crMapScreen';
+
+  static const requestCommercialLicenseDetails =
+      '/requestCommercialLicenseDetails';
+
+// -------  Commercial License Renew ---------
+  static const renewCommercialLicenseStartService =
+      '/renewCommercialLicenseStartService';
+
+  static const renewCommercialLicenseSubmitForm =
+      '/renewCommercialLicenseSubmitForm';
+
+  static const submitApplicationSuccessfullyRenew =
+      '/submitApplicationSuccessfullyRenew';
+      
 }
 
 class EtmamRoutesNames {
