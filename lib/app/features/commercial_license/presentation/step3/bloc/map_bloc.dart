@@ -126,7 +126,7 @@ class MapBloc extends Bloc<MapEvent, MapState> {
   Future<void> _selectLocationEventHandler(
       SelectLocationEvent e, Emitter emitter) async {
     print("SelectLocationEvent");
-    emitter(state.copyWith(status: BlocStatus.loading));
+    emitter(state.copyWith(status: BlocStatus.loading, errorMessage: ""));
 
     emitter(state.copyWith(
         status: BlocStatus.success,
@@ -140,7 +140,7 @@ class MapBloc extends Bloc<MapEvent, MapState> {
   Future<void> _saveLocationHandler(
       SaveLocationDataEvent e, Emitter emitter) async {
     int requestId = sl<CommercialLicenseBloc>().state.requestId!;
-    emitter(state.copyWith(status: BlocStatus.loading));
+    emitter(state.copyWith(status: BlocStatus.loading, errorMessage: ""));
 
     final failOrSuccess = await _saveLocationDetails(SaveLocationDataRequest(
         requestId: requestId,
@@ -168,7 +168,7 @@ class MapBloc extends Bloc<MapEvent, MapState> {
 
   Future<void> _updateFieldsHandler(
       UpdateFieldsEvent e, Emitter emitter) async {
-    emitter(state.copyWith(mapNo: e.mapNo, landNo: e.landNo));
+    emitter(state.copyWith(mapNo: e.mapNo, landNo: e.landNo, errorMessage: ""));
   }
 
   Future<void> _initMapHandler(InitMapEvent e, Emitter emitter) async {

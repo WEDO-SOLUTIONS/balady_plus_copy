@@ -292,7 +292,7 @@ class CrStep4ShopDataCubit extends Cubit<CrStep4ShopDataState> {
     SaveLocationResponse? res =
         sl<CommercialLicenseBloc>().state.locationResponse;
 
-    emit(state.copyWith(locationResponse: res));
+    emit(state.copyWith(locationResponse: res, errorMessage: ""));
   }
 
   SaveLocationResponse? get saveLocationResponse =>
