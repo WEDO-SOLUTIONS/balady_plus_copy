@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mapness/features/common/config/package_fonts.dart';
 import 'package:mapness/features/stories/domain/frame/story_frame_data.dart';
 
 class StoryFrameContent extends StatelessWidget {
@@ -23,10 +24,9 @@ class StoryFrameContent extends StatelessWidget {
               children: [
                 Text(
                   frame.title,
-                  style: const TextStyle(
-                    color: Colors.white,
+                  style: PackageFonts.frutigerArabic(
+                    color: frame.titleStyle?.color ?? Colors.white,
                     fontSize: 28,
-                    fontFamily: 'TheSansArab',
                     fontWeight: FontWeight.w600,
                     letterSpacing: -0.56,
                   ),
@@ -34,10 +34,9 @@ class StoryFrameContent extends StatelessWidget {
                 if (frame.subtitle != null)
                   Text(
                     frame.subtitle!,
-                    style: const TextStyle(
-                      color: Colors.white,
+                    style: PackageFonts.frutigerArabic(
+                      color: frame.titleStyle?.color ?? Colors.white,
                       fontSize: 28,
-                      fontFamily: 'TheSansArab',
                       fontWeight: FontWeight.w600,
                       letterSpacing: -0.56,
                     ),
@@ -46,10 +45,9 @@ class StoryFrameContent extends StatelessWidget {
                 if (frame.description != null)
                   Text(
                     frame.description!,
-                    style: const TextStyle(
-                      color: Colors.white,
+                    style: PackageFonts.frutigerArabic(
+                      color: frame.descriptionStyle?.color ?? Colors.white,
                       fontSize: 16,
-                      fontFamily: 'TheSansArab',
                       fontWeight: FontWeight.w500,
                       letterSpacing: -0.32,
                     ),

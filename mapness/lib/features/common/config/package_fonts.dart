@@ -7,6 +7,7 @@ class PackageFonts {
     FontWeight? fontWeight,
     FontStyle? fontStyle,
     double? height,
+    double? letterSpacing,
   }) =>
       TextStyle(
         color: color,
@@ -14,6 +15,7 @@ class PackageFonts {
         fontWeight: fontWeight,
         fontStyle: fontStyle,
         height: height,
+        letterSpacing: letterSpacing,
         fontFamily: "Frutiger LT Arabic",
       );
 }

@@ -141,8 +141,13 @@ class _StoryFrameWidgetState extends State<StoryFrameWidget>
                 onImageReady: imageLoaded,
                 imageUrl: widget.frame.imageUrl,
                 fit: BoxFit.cover,
-                loadingWidget: const Center(
-                  child: CircularProgressIndicator(),
+                loadingWidget: Container(
+                  color: const Color(0xFFE9E9E9),
+                  child: const Center(
+                    child: CircularProgressIndicator(
+                      color: Colors.black,
+                    ),
+                  ),
                 ),
               ),
             ),
@@ -198,6 +203,8 @@ class _StoryFrameWidgetState extends State<StoryFrameWidget>
                           title: widget.frame.action!.title,
                           onPressed: () =>
                               widget.onActionPressed!(widget.frame.action!),
+                          textStyle: widget.frame.action?.textStyle,
+                          backgroundColor: widget.frame.action?.backgroundColor,
                         ),
                       ),
                   ],

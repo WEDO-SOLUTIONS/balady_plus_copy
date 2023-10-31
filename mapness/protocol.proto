@@ -34,6 +34,26 @@ message Point {
   double longitude = 2; // X
 }
 
+message Color {
+  string hex = 1;
+}
+
+message TextStyle {
+  Color color = 1;
+}
+
+enum FavouriteItemType {
+  FAVOURITE_ITEM_TYPE_UNKNOWN = 0;
+  FAVOURITE_ITEM_TYPE_HOME = 1;
+  FAVOURITE_ITEM_TYPE_WORK = 2;
+  FAVOURITE_ITEM_TYPE_PLACE = 3;
+}
+
+enum EntitySourceType {
+  ENTITY_SOURCE_UNKNOWN = 0;
+  ENTITY_SOURCE_URBI = 1;
+}
+
 // Base requests & responses
 
 message ErrorResponse {
@@ -62,7 +82,17 @@ message Story {
   }
 
   message Frame {
+    message Style {
+      optional TextStyle title = 1;
+      optional TextStyle description = 2;
+    }
+
     message ActionButton {
+      message Style {
+        optional Color background_color = 1;
+        optional TextStyle text_style = 2;
+      }
+
       message Call {
         string phone = 1;
       }
@@ -86,6 +116,8 @@ message Story {
         OpenCard open_card = 4;
         Deeplink deeplink = 5;
       }
+      reserved 6 to 50;
+      Style style = 51;
     }
 
     Image background = 1;
@@ -94,6 +126,7 @@ message Story {
     optional ActionButton action_button = 4;
     bool is_viewed = 5;
     int32 duration = 6;
+    Style style = 7;
   }
 
   string id = 1;
@@ -131,4 +164,61 @@ message HappinessRequest {
   Point point = 1;
   bool is_positive = 2;
   repeated Tag tags = 3;
+}
+
+// Favourites
+
+message FavouriteItemPlace {
+  message Location {
+    Point point = 1;
+  }
+
+  message Entity {
+    EntitySourceType source_type = 1;
+    string id = 2;
+  }
+
+  Location location = 1;
+  optional Entity entity = 2;
+  string title = 3;
+  string subtitle = 4;
+}
+
+message FavouriteItem {
+  string id = 1;
+  FavouriteItemPlace place = 2;
+}
+
+message FavouritesResponse {
+  message Places {
+    optional FavouriteItemPlace home = 1;
+    optional FavouriteItemPlace work = 2;
+  }
+
+  Places places = 1;
+  repeated FavouriteItem items = 2;
+}
+
+message AddFavouriteItemsRequest {
+  message Item {
+    message Entity {
+      EntitySourceType source_type = 1;
+      string id = 2;
+    }
+
+    FavouriteItemType type = 1;
+    Point point = 2;
+    optional Entity entity = 3;
+  }
+
+  repeated Item items = 1;
+}
+
+message DeleteFavouriteItemsRequest {
+  message Item {
+    FavouriteItemType type = 1;
+    optional string id = 2;
+  }
+
+  repeated Item items = 1;
 }

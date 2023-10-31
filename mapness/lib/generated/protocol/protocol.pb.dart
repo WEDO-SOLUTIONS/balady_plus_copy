@@ -182,6 +182,108 @@ class Point extends $pb.GeneratedMessage {
   void clearLongitude() => clearField(2);
 }
 
+class Color extends $pb.GeneratedMessage {
+  factory Color({
+    $core.String? hex,
+  }) {
+    final $result = create();
+    if (hex != null) {
+      $result.hex = hex;
+    }
+    return $result;
+  }
+  Color._() : super();
+  factory Color.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory Color.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'Color', package: const $pb.PackageName(_omitMessageNames ? '' : 'baladi.protocol'), createEmptyInstance: create)
+    ..aOS(1, _omitFieldNames ? '' : 'hex')
+    ..hasRequiredFields = false
+  ;
+
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  Color clone() => Color()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  Color copyWith(void Function(Color) updates) => super.copyWith((message) => updates(message as Color)) as Color;
+
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static Color create() => Color._();
+  Color createEmptyInstance() => create();
+  static $pb.PbList<Color> createRepeated() => $pb.PbList<Color>();
+  @$core.pragma('dart2js:noInline')
+  static Color getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<Color>(create);
+  static Color? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.String get hex => $_getSZ(0);
+  @$pb.TagNumber(1)
+  set hex($core.String v) { $_setString(0, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasHex() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearHex() => clearField(1);
+}
+
+class TextStyle extends $pb.GeneratedMessage {
+  factory TextStyle({
+    Color? color,
+  }) {
+    final $result = create();
+    if (color != null) {
+      $result.color = color;
+    }
+    return $result;
+  }
+  TextStyle._() : super();
+  factory TextStyle.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory TextStyle.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'TextStyle', package: const $pb.PackageName(_omitMessageNames ? '' : 'baladi.protocol'), createEmptyInstance: create)
+    ..aOM<Color>(1, _omitFieldNames ? '' : 'color', subBuilder: Color.create)
+    ..hasRequiredFields = false
+  ;
+
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  TextStyle clone() => TextStyle()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  TextStyle copyWith(void Function(TextStyle) updates) => super.copyWith((message) => updates(message as TextStyle)) as TextStyle;
+
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static TextStyle create() => TextStyle._();
+  TextStyle createEmptyInstance() => create();
+  static $pb.PbList<TextStyle> createRepeated() => $pb.PbList<TextStyle>();
+  @$core.pragma('dart2js:noInline')
+  static TextStyle getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<TextStyle>(create);
+  static TextStyle? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  Color get color => $_getN(0);
+  @$pb.TagNumber(1)
+  set color(Color v) { setField(1, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasColor() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearColor() => clearField(1);
+  @$pb.TagNumber(1)
+  Color ensureColor() => $_ensure(0);
+}
+
 class ErrorResponse_ErrorMessage extends $pb.GeneratedMessage {
   factory ErrorResponse_ErrorMessage({
     Error? type,
@@ -442,6 +544,142 @@ class Story_Preview extends $pb.GeneratedMessage {
   void clearTitle() => clearField(2);
 }
 
+class Story_Frame_Style extends $pb.GeneratedMessage {
+  factory Story_Frame_Style({
+    TextStyle? title,
+    TextStyle? description,
+  }) {
+    final $result = create();
+    if (title != null) {
+      $result.title = title;
+    }
+    if (description != null) {
+      $result.description = description;
+    }
+    return $result;
+  }
+  Story_Frame_Style._() : super();
+  factory Story_Frame_Style.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory Story_Frame_Style.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'Story.Frame.Style', package: const $pb.PackageName(_omitMessageNames ? '' : 'baladi.protocol'), createEmptyInstance: create)
+    ..aOM<TextStyle>(1, _omitFieldNames ? '' : 'title', subBuilder: TextStyle.create)
+    ..aOM<TextStyle>(2, _omitFieldNames ? '' : 'description', subBuilder: TextStyle.create)
+    ..hasRequiredFields = false
+  ;
+
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  Story_Frame_Style clone() => Story_Frame_Style()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  Story_Frame_Style copyWith(void Function(Story_Frame_Style) updates) => super.copyWith((message) => updates(message as Story_Frame_Style)) as Story_Frame_Style;
+
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static Story_Frame_Style create() => Story_Frame_Style._();
+  Story_Frame_Style createEmptyInstance() => create();
+  static $pb.PbList<Story_Frame_Style> createRepeated() => $pb.PbList<Story_Frame_Style>();
+  @$core.pragma('dart2js:noInline')
+  static Story_Frame_Style getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<Story_Frame_Style>(create);
+  static Story_Frame_Style? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  TextStyle get title => $_getN(0);
+  @$pb.TagNumber(1)
+  set title(TextStyle v) { setField(1, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasTitle() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearTitle() => clearField(1);
+  @$pb.TagNumber(1)
+  TextStyle ensureTitle() => $_ensure(0);
+
+  @$pb.TagNumber(2)
+  TextStyle get description => $_getN(1);
+  @$pb.TagNumber(2)
+  set description(TextStyle v) { setField(2, v); }
+  @$pb.TagNumber(2)
+  $core.bool hasDescription() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearDescription() => clearField(2);
+  @$pb.TagNumber(2)
+  TextStyle ensureDescription() => $_ensure(1);
+}
+
+class Story_Frame_ActionButton_Style extends $pb.GeneratedMessage {
+  factory Story_Frame_ActionButton_Style({
+    Color? backgroundColor,
+    TextStyle? textStyle,
+  }) {
+    final $result = create();
+    if (backgroundColor != null) {
+      $result.backgroundColor = backgroundColor;
+    }
+    if (textStyle != null) {
+      $result.textStyle = textStyle;
+    }
+    return $result;
+  }
+  Story_Frame_ActionButton_Style._() : super();
+  factory Story_Frame_ActionButton_Style.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory Story_Frame_ActionButton_Style.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'Story.Frame.ActionButton.Style', package: const $pb.PackageName(_omitMessageNames ? '' : 'baladi.protocol'), createEmptyInstance: create)
+    ..aOM<Color>(1, _omitFieldNames ? '' : 'backgroundColor', subBuilder: Color.create)
+    ..aOM<TextStyle>(2, _omitFieldNames ? '' : 'textStyle', subBuilder: TextStyle.create)
+    ..hasRequiredFields = false
+  ;
+
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  Story_Frame_ActionButton_Style clone() => Story_Frame_ActionButton_Style()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  Story_Frame_ActionButton_Style copyWith(void Function(Story_Frame_ActionButton_Style) updates) => super.copyWith((message) => updates(message as Story_Frame_ActionButton_Style)) as Story_Frame_ActionButton_Style;
+
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static Story_Frame_ActionButton_Style create() => Story_Frame_ActionButton_Style._();
+  Story_Frame_ActionButton_Style createEmptyInstance() => create();
+  static $pb.PbList<Story_Frame_ActionButton_Style> createRepeated() => $pb.PbList<Story_Frame_ActionButton_Style>();
+  @$core.pragma('dart2js:noInline')
+  static Story_Frame_ActionButton_Style getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<Story_Frame_ActionButton_Style>(create);
+  static Story_Frame_ActionButton_Style? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  Color get backgroundColor => $_getN(0);
+  @$pb.TagNumber(1)
+  set backgroundColor(Color v) { setField(1, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasBackgroundColor() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearBackgroundColor() => clearField(1);
+  @$pb.TagNumber(1)
+  Color ensureBackgroundColor() => $_ensure(0);
+
+  @$pb.TagNumber(2)
+  TextStyle get textStyle => $_getN(1);
+  @$pb.TagNumber(2)
+  set textStyle(TextStyle v) { setField(2, v); }
+  @$pb.TagNumber(2)
+  $core.bool hasTextStyle() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearTextStyle() => clearField(2);
+  @$pb.TagNumber(2)
+  TextStyle ensureTextStyle() => $_ensure(1);
+}
+
 class Story_Frame_ActionButton_Call extends $pb.GeneratedMessage {
   factory Story_Frame_ActionButton_Call({
     $core.String? phone,
@@ -657,6 +895,7 @@ class Story_Frame_ActionButton extends $pb.GeneratedMessage {
     Story_Frame_ActionButton_ExternalUrl? externalUrl,
     Story_Frame_ActionButton_OpenCard? openCard,
     Story_Frame_ActionButton_Deeplink? deeplink,
+    Story_Frame_ActionButton_Style? style,
   }) {
     final $result = create();
     if (title != null) {
@@ -673,6 +912,9 @@ class Story_Frame_ActionButton extends $pb.GeneratedMessage {
     }
     if (deeplink != null) {
       $result.deeplink = deeplink;
+    }
+    if (style != null) {
+      $result.style = style;
     }
     return $result;
   }
@@ -694,6 +936,7 @@ class Story_Frame_ActionButton extends $pb.GeneratedMessage {
     ..aOM<Story_Frame_ActionButton_ExternalUrl>(3, _omitFieldNames ? '' : 'externalUrl', subBuilder: Story_Frame_ActionButton_ExternalUrl.create)
     ..aOM<Story_Frame_ActionButton_OpenCard>(4, _omitFieldNames ? '' : 'openCard', subBuilder: Story_Frame_ActionButton_OpenCard.create)
     ..aOM<Story_Frame_ActionButton_Deeplink>(5, _omitFieldNames ? '' : 'deeplink', subBuilder: Story_Frame_ActionButton_Deeplink.create)
+    ..aOM<Story_Frame_ActionButton_Style>(51, _omitFieldNames ? '' : 'style', subBuilder: Story_Frame_ActionButton_Style.create)
     ..hasRequiredFields = false
   ;
 
@@ -773,6 +1016,17 @@ class Story_Frame_ActionButton extends $pb.GeneratedMessage {
   void clearDeeplink() => clearField(5);
   @$pb.TagNumber(5)
   Story_Frame_ActionButton_Deeplink ensureDeeplink() => $_ensure(4);
+
+  @$pb.TagNumber(51)
+  Story_Frame_ActionButton_Style get style => $_getN(5);
+  @$pb.TagNumber(51)
+  set style(Story_Frame_ActionButton_Style v) { setField(51, v); }
+  @$pb.TagNumber(51)
+  $core.bool hasStyle() => $_has(5);
+  @$pb.TagNumber(51)
+  void clearStyle() => clearField(51);
+  @$pb.TagNumber(51)
+  Story_Frame_ActionButton_Style ensureStyle() => $_ensure(5);
 }
 
 class Story_Frame extends $pb.GeneratedMessage {
@@ -783,6 +1037,7 @@ class Story_Frame extends $pb.GeneratedMessage {
     Story_Frame_ActionButton? actionButton,
     $core.bool? isViewed,
     $core.int? duration,
+    Story_Frame_Style? style,
   }) {
     final $result = create();
     if (background != null) {
@@ -803,6 +1058,9 @@ class Story_Frame extends $pb.GeneratedMessage {
     if (duration != null) {
       $result.duration = duration;
     }
+    if (style != null) {
+      $result.style = style;
+    }
     return $result;
   }
   Story_Frame._() : super();
@@ -816,6 +1074,7 @@ class Story_Frame extends $pb.GeneratedMessage {
     ..aOM<Story_Frame_ActionButton>(4, _omitFieldNames ? '' : 'actionButton', subBuilder: Story_Frame_ActionButton.create)
     ..aOB(5, _omitFieldNames ? '' : 'isViewed')
     ..a<$core.int>(6, _omitFieldNames ? '' : 'duration', $pb.PbFieldType.O3)
+    ..aOM<Story_Frame_Style>(7, _omitFieldNames ? '' : 'style', subBuilder: Story_Frame_Style.create)
     ..hasRequiredFields = false
   ;
 
@@ -897,6 +1156,17 @@ class Story_Frame extends $pb.GeneratedMessage {
   $core.bool hasDuration() => $_has(5);
   @$pb.TagNumber(6)
   void clearDuration() => clearField(6);
+
+  @$pb.TagNumber(7)
+  Story_Frame_Style get style => $_getN(6);
+  @$pb.TagNumber(7)
+  set style(Story_Frame_Style v) { setField(7, v); }
+  @$pb.TagNumber(7)
+  $core.bool hasStyle() => $_has(6);
+  @$pb.TagNumber(7)
+  void clearStyle() => clearField(7);
+  @$pb.TagNumber(7)
+  Story_Frame_Style ensureStyle() => $_ensure(6);
 }
 
 class Story extends $pb.GeneratedMessage {
@@ -1305,6 +1575,710 @@ class HappinessRequest extends $pb.GeneratedMessage {
 
   @$pb.TagNumber(3)
   $core.List<HappinessRequest_Tag> get tags => $_getList(2);
+}
+
+class FavouriteItemPlace_Location extends $pb.GeneratedMessage {
+  factory FavouriteItemPlace_Location({
+    Point? point,
+  }) {
+    final $result = create();
+    if (point != null) {
+      $result.point = point;
+    }
+    return $result;
+  }
+  FavouriteItemPlace_Location._() : super();
+  factory FavouriteItemPlace_Location.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory FavouriteItemPlace_Location.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'FavouriteItemPlace.Location', package: const $pb.PackageName(_omitMessageNames ? '' : 'baladi.protocol'), createEmptyInstance: create)
+    ..aOM<Point>(1, _omitFieldNames ? '' : 'point', subBuilder: Point.create)
+    ..hasRequiredFields = false
+  ;
+
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  FavouriteItemPlace_Location clone() => FavouriteItemPlace_Location()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  FavouriteItemPlace_Location copyWith(void Function(FavouriteItemPlace_Location) updates) => super.copyWith((message) => updates(message as FavouriteItemPlace_Location)) as FavouriteItemPlace_Location;
+
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static FavouriteItemPlace_Location create() => FavouriteItemPlace_Location._();
+  FavouriteItemPlace_Location createEmptyInstance() => create();
+  static $pb.PbList<FavouriteItemPlace_Location> createRepeated() => $pb.PbList<FavouriteItemPlace_Location>();
+  @$core.pragma('dart2js:noInline')
+  static FavouriteItemPlace_Location getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<FavouriteItemPlace_Location>(create);
+  static FavouriteItemPlace_Location? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  Point get point => $_getN(0);
+  @$pb.TagNumber(1)
+  set point(Point v) { setField(1, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasPoint() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearPoint() => clearField(1);
+  @$pb.TagNumber(1)
+  Point ensurePoint() => $_ensure(0);
+}
+
+class FavouriteItemPlace_Entity extends $pb.GeneratedMessage {
+  factory FavouriteItemPlace_Entity({
+    EntitySourceType? sourceType,
+    $core.String? id,
+  }) {
+    final $result = create();
+    if (sourceType != null) {
+      $result.sourceType = sourceType;
+    }
+    if (id != null) {
+      $result.id = id;
+    }
+    return $result;
+  }
+  FavouriteItemPlace_Entity._() : super();
+  factory FavouriteItemPlace_Entity.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory FavouriteItemPlace_Entity.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'FavouriteItemPlace.Entity', package: const $pb.PackageName(_omitMessageNames ? '' : 'baladi.protocol'), createEmptyInstance: create)
+    ..e<EntitySourceType>(1, _omitFieldNames ? '' : 'sourceType', $pb.PbFieldType.OE, defaultOrMaker: EntitySourceType.ENTITY_SOURCE_UNKNOWN, valueOf: EntitySourceType.valueOf, enumValues: EntitySourceType.values)
+    ..aOS(2, _omitFieldNames ? '' : 'id')
+    ..hasRequiredFields = false
+  ;
+
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  FavouriteItemPlace_Entity clone() => FavouriteItemPlace_Entity()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  FavouriteItemPlace_Entity copyWith(void Function(FavouriteItemPlace_Entity) updates) => super.copyWith((message) => updates(message as FavouriteItemPlace_Entity)) as FavouriteItemPlace_Entity;
+
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static FavouriteItemPlace_Entity create() => FavouriteItemPlace_Entity._();
+  FavouriteItemPlace_Entity createEmptyInstance() => create();
+  static $pb.PbList<FavouriteItemPlace_Entity> createRepeated() => $pb.PbList<FavouriteItemPlace_Entity>();
+  @$core.pragma('dart2js:noInline')
+  static FavouriteItemPlace_Entity getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<FavouriteItemPlace_Entity>(create);
+  static FavouriteItemPlace_Entity? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  EntitySourceType get sourceType => $_getN(0);
+  @$pb.TagNumber(1)
+  set sourceType(EntitySourceType v) { setField(1, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasSourceType() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearSourceType() => clearField(1);
+
+  @$pb.TagNumber(2)
+  $core.String get id => $_getSZ(1);
+  @$pb.TagNumber(2)
+  set id($core.String v) { $_setString(1, v); }
+  @$pb.TagNumber(2)
+  $core.bool hasId() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearId() => clearField(2);
+}
+
+class FavouriteItemPlace extends $pb.GeneratedMessage {
+  factory FavouriteItemPlace({
+    FavouriteItemPlace_Location? location,
+    FavouriteItemPlace_Entity? entity,
+    $core.String? title,
+    $core.String? subtitle,
+  }) {
+    final $result = create();
+    if (location != null) {
+      $result.location = location;
+    }
+    if (entity != null) {
+      $result.entity = entity;
+    }
+    if (title != null) {
+      $result.title = title;
+    }
+    if (subtitle != null) {
+      $result.subtitle = subtitle;
+    }
+    return $result;
+  }
+  FavouriteItemPlace._() : super();
+  factory FavouriteItemPlace.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory FavouriteItemPlace.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'FavouriteItemPlace', package: const $pb.PackageName(_omitMessageNames ? '' : 'baladi.protocol'), createEmptyInstance: create)
+    ..aOM<FavouriteItemPlace_Location>(1, _omitFieldNames ? '' : 'location', subBuilder: FavouriteItemPlace_Location.create)
+    ..aOM<FavouriteItemPlace_Entity>(2, _omitFieldNames ? '' : 'entity', subBuilder: FavouriteItemPlace_Entity.create)
+    ..aOS(3, _omitFieldNames ? '' : 'title')
+    ..aOS(4, _omitFieldNames ? '' : 'subtitle')
+    ..hasRequiredFields = false
+  ;
+
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  FavouriteItemPlace clone() => FavouriteItemPlace()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  FavouriteItemPlace copyWith(void Function(FavouriteItemPlace) updates) => super.copyWith((message) => updates(message as FavouriteItemPlace)) as FavouriteItemPlace;
+
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static FavouriteItemPlace create() => FavouriteItemPlace._();
+  FavouriteItemPlace createEmptyInstance() => create();
+  static $pb.PbList<FavouriteItemPlace> createRepeated() => $pb.PbList<FavouriteItemPlace>();
+  @$core.pragma('dart2js:noInline')
+  static FavouriteItemPlace getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<FavouriteItemPlace>(create);
+  static FavouriteItemPlace? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  FavouriteItemPlace_Location get location => $_getN(0);
+  @$pb.TagNumber(1)
+  set location(FavouriteItemPlace_Location v) { setField(1, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasLocation() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearLocation() => clearField(1);
+  @$pb.TagNumber(1)
+  FavouriteItemPlace_Location ensureLocation() => $_ensure(0);
+
+  @$pb.TagNumber(2)
+  FavouriteItemPlace_Entity get entity => $_getN(1);
+  @$pb.TagNumber(2)
+  set entity(FavouriteItemPlace_Entity v) { setField(2, v); }
+  @$pb.TagNumber(2)
+  $core.bool hasEntity() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearEntity() => clearField(2);
+  @$pb.TagNumber(2)
+  FavouriteItemPlace_Entity ensureEntity() => $_ensure(1);
+
+  @$pb.TagNumber(3)
+  $core.String get title => $_getSZ(2);
+  @$pb.TagNumber(3)
+  set title($core.String v) { $_setString(2, v); }
+  @$pb.TagNumber(3)
+  $core.bool hasTitle() => $_has(2);
+  @$pb.TagNumber(3)
+  void clearTitle() => clearField(3);
+
+  @$pb.TagNumber(4)
+  $core.String get subtitle => $_getSZ(3);
+  @$pb.TagNumber(4)
+  set subtitle($core.String v) { $_setString(3, v); }
+  @$pb.TagNumber(4)
+  $core.bool hasSubtitle() => $_has(3);
+  @$pb.TagNumber(4)
+  void clearSubtitle() => clearField(4);
+}
+
+class FavouriteItem extends $pb.GeneratedMessage {
+  factory FavouriteItem({
+    $core.String? id,
+    FavouriteItemPlace? place,
+  }) {
+    final $result = create();
+    if (id != null) {
+      $result.id = id;
+    }
+    if (place != null) {
+      $result.place = place;
+    }
+    return $result;
+  }
+  FavouriteItem._() : super();
+  factory FavouriteItem.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory FavouriteItem.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'FavouriteItem', package: const $pb.PackageName(_omitMessageNames ? '' : 'baladi.protocol'), createEmptyInstance: create)
+    ..aOS(1, _omitFieldNames ? '' : 'id')
+    ..aOM<FavouriteItemPlace>(2, _omitFieldNames ? '' : 'place', subBuilder: FavouriteItemPlace.create)
+    ..hasRequiredFields = false
+  ;
+
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  FavouriteItem clone() => FavouriteItem()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  FavouriteItem copyWith(void Function(FavouriteItem) updates) => super.copyWith((message) => updates(message as FavouriteItem)) as FavouriteItem;
+
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static FavouriteItem create() => FavouriteItem._();
+  FavouriteItem createEmptyInstance() => create();
+  static $pb.PbList<FavouriteItem> createRepeated() => $pb.PbList<FavouriteItem>();
+  @$core.pragma('dart2js:noInline')
+  static FavouriteItem getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<FavouriteItem>(create);
+  static FavouriteItem? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.String get id => $_getSZ(0);
+  @$pb.TagNumber(1)
+  set id($core.String v) { $_setString(0, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasId() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearId() => clearField(1);
+
+  @$pb.TagNumber(2)
+  FavouriteItemPlace get place => $_getN(1);
+  @$pb.TagNumber(2)
+  set place(FavouriteItemPlace v) { setField(2, v); }
+  @$pb.TagNumber(2)
+  $core.bool hasPlace() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearPlace() => clearField(2);
+  @$pb.TagNumber(2)
+  FavouriteItemPlace ensurePlace() => $_ensure(1);
+}
+
+class FavouritesResponse_Places extends $pb.GeneratedMessage {
+  factory FavouritesResponse_Places({
+    FavouriteItemPlace? home,
+    FavouriteItemPlace? work,
+  }) {
+    final $result = create();
+    if (home != null) {
+      $result.home = home;
+    }
+    if (work != null) {
+      $result.work = work;
+    }
+    return $result;
+  }
+  FavouritesResponse_Places._() : super();
+  factory FavouritesResponse_Places.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory FavouritesResponse_Places.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'FavouritesResponse.Places', package: const $pb.PackageName(_omitMessageNames ? '' : 'baladi.protocol'), createEmptyInstance: create)
+    ..aOM<FavouriteItemPlace>(1, _omitFieldNames ? '' : 'home', subBuilder: FavouriteItemPlace.create)
+    ..aOM<FavouriteItemPlace>(2, _omitFieldNames ? '' : 'work', subBuilder: FavouriteItemPlace.create)
+    ..hasRequiredFields = false
+  ;
+
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  FavouritesResponse_Places clone() => FavouritesResponse_Places()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  FavouritesResponse_Places copyWith(void Function(FavouritesResponse_Places) updates) => super.copyWith((message) => updates(message as FavouritesResponse_Places)) as FavouritesResponse_Places;
+
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static FavouritesResponse_Places create() => FavouritesResponse_Places._();
+  FavouritesResponse_Places createEmptyInstance() => create();
+  static $pb.PbList<FavouritesResponse_Places> createRepeated() => $pb.PbList<FavouritesResponse_Places>();
+  @$core.pragma('dart2js:noInline')
+  static FavouritesResponse_Places getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<FavouritesResponse_Places>(create);
+  static FavouritesResponse_Places? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  FavouriteItemPlace get home => $_getN(0);
+  @$pb.TagNumber(1)
+  set home(FavouriteItemPlace v) { setField(1, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasHome() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearHome() => clearField(1);
+  @$pb.TagNumber(1)
+  FavouriteItemPlace ensureHome() => $_ensure(0);
+
+  @$pb.TagNumber(2)
+  FavouriteItemPlace get work => $_getN(1);
+  @$pb.TagNumber(2)
+  set work(FavouriteItemPlace v) { setField(2, v); }
+  @$pb.TagNumber(2)
+  $core.bool hasWork() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearWork() => clearField(2);
+  @$pb.TagNumber(2)
+  FavouriteItemPlace ensureWork() => $_ensure(1);
+}
+
+class FavouritesResponse extends $pb.GeneratedMessage {
+  factory FavouritesResponse({
+    FavouritesResponse_Places? places,
+    $core.Iterable<FavouriteItem>? items,
+  }) {
+    final $result = create();
+    if (places != null) {
+      $result.places = places;
+    }
+    if (items != null) {
+      $result.items.addAll(items);
+    }
+    return $result;
+  }
+  FavouritesResponse._() : super();
+  factory FavouritesResponse.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory FavouritesResponse.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'FavouritesResponse', package: const $pb.PackageName(_omitMessageNames ? '' : 'baladi.protocol'), createEmptyInstance: create)
+    ..aOM<FavouritesResponse_Places>(1, _omitFieldNames ? '' : 'places', subBuilder: FavouritesResponse_Places.create)
+    ..pc<FavouriteItem>(2, _omitFieldNames ? '' : 'items', $pb.PbFieldType.PM, subBuilder: FavouriteItem.create)
+    ..hasRequiredFields = false
+  ;
+
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  FavouritesResponse clone() => FavouritesResponse()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  FavouritesResponse copyWith(void Function(FavouritesResponse) updates) => super.copyWith((message) => updates(message as FavouritesResponse)) as FavouritesResponse;
+
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static FavouritesResponse create() => FavouritesResponse._();
+  FavouritesResponse createEmptyInstance() => create();
+  static $pb.PbList<FavouritesResponse> createRepeated() => $pb.PbList<FavouritesResponse>();
+  @$core.pragma('dart2js:noInline')
+  static FavouritesResponse getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<FavouritesResponse>(create);
+  static FavouritesResponse? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  FavouritesResponse_Places get places => $_getN(0);
+  @$pb.TagNumber(1)
+  set places(FavouritesResponse_Places v) { setField(1, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasPlaces() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearPlaces() => clearField(1);
+  @$pb.TagNumber(1)
+  FavouritesResponse_Places ensurePlaces() => $_ensure(0);
+
+  @$pb.TagNumber(2)
+  $core.List<FavouriteItem> get items => $_getList(1);
+}
+
+class AddFavouriteItemsRequest_Item_Entity extends $pb.GeneratedMessage {
+  factory AddFavouriteItemsRequest_Item_Entity({
+    EntitySourceType? sourceType,
+    $core.String? id,
+  }) {
+    final $result = create();
+    if (sourceType != null) {
+      $result.sourceType = sourceType;
+    }
+    if (id != null) {
+      $result.id = id;
+    }
+    return $result;
+  }
+  AddFavouriteItemsRequest_Item_Entity._() : super();
+  factory AddFavouriteItemsRequest_Item_Entity.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory AddFavouriteItemsRequest_Item_Entity.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'AddFavouriteItemsRequest.Item.Entity', package: const $pb.PackageName(_omitMessageNames ? '' : 'baladi.protocol'), createEmptyInstance: create)
+    ..e<EntitySourceType>(1, _omitFieldNames ? '' : 'sourceType', $pb.PbFieldType.OE, defaultOrMaker: EntitySourceType.ENTITY_SOURCE_UNKNOWN, valueOf: EntitySourceType.valueOf, enumValues: EntitySourceType.values)
+    ..aOS(2, _omitFieldNames ? '' : 'id')
+    ..hasRequiredFields = false
+  ;
+
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  AddFavouriteItemsRequest_Item_Entity clone() => AddFavouriteItemsRequest_Item_Entity()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  AddFavouriteItemsRequest_Item_Entity copyWith(void Function(AddFavouriteItemsRequest_Item_Entity) updates) => super.copyWith((message) => updates(message as AddFavouriteItemsRequest_Item_Entity)) as AddFavouriteItemsRequest_Item_Entity;
+
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static AddFavouriteItemsRequest_Item_Entity create() => AddFavouriteItemsRequest_Item_Entity._();
+  AddFavouriteItemsRequest_Item_Entity createEmptyInstance() => create();
+  static $pb.PbList<AddFavouriteItemsRequest_Item_Entity> createRepeated() => $pb.PbList<AddFavouriteItemsRequest_Item_Entity>();
+  @$core.pragma('dart2js:noInline')
+  static AddFavouriteItemsRequest_Item_Entity getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<AddFavouriteItemsRequest_Item_Entity>(create);
+  static AddFavouriteItemsRequest_Item_Entity? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  EntitySourceType get sourceType => $_getN(0);
+  @$pb.TagNumber(1)
+  set sourceType(EntitySourceType v) { setField(1, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasSourceType() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearSourceType() => clearField(1);
+
+  @$pb.TagNumber(2)
+  $core.String get id => $_getSZ(1);
+  @$pb.TagNumber(2)
+  set id($core.String v) { $_setString(1, v); }
+  @$pb.TagNumber(2)
+  $core.bool hasId() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearId() => clearField(2);
+}
+
+class AddFavouriteItemsRequest_Item extends $pb.GeneratedMessage {
+  factory AddFavouriteItemsRequest_Item({
+    FavouriteItemType? type,
+    Point? point,
+    AddFavouriteItemsRequest_Item_Entity? entity,
+  }) {
+    final $result = create();
+    if (type != null) {
+      $result.type = type;
+    }
+    if (point != null) {
+      $result.point = point;
+    }
+    if (entity != null) {
+      $result.entity = entity;
+    }
+    return $result;
+  }
+  AddFavouriteItemsRequest_Item._() : super();
+  factory AddFavouriteItemsRequest_Item.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory AddFavouriteItemsRequest_Item.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'AddFavouriteItemsRequest.Item', package: const $pb.PackageName(_omitMessageNames ? '' : 'baladi.protocol'), createEmptyInstance: create)
+    ..e<FavouriteItemType>(1, _omitFieldNames ? '' : 'type', $pb.PbFieldType.OE, defaultOrMaker: FavouriteItemType.FAVOURITE_ITEM_TYPE_UNKNOWN, valueOf: FavouriteItemType.valueOf, enumValues: FavouriteItemType.values)
+    ..aOM<Point>(2, _omitFieldNames ? '' : 'point', subBuilder: Point.create)
+    ..aOM<AddFavouriteItemsRequest_Item_Entity>(3, _omitFieldNames ? '' : 'entity', subBuilder: AddFavouriteItemsRequest_Item_Entity.create)
+    ..hasRequiredFields = false
+  ;
+
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  AddFavouriteItemsRequest_Item clone() => AddFavouriteItemsRequest_Item()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  AddFavouriteItemsRequest_Item copyWith(void Function(AddFavouriteItemsRequest_Item) updates) => super.copyWith((message) => updates(message as AddFavouriteItemsRequest_Item)) as AddFavouriteItemsRequest_Item;
+
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static AddFavouriteItemsRequest_Item create() => AddFavouriteItemsRequest_Item._();
+  AddFavouriteItemsRequest_Item createEmptyInstance() => create();
+  static $pb.PbList<AddFavouriteItemsRequest_Item> createRepeated() => $pb.PbList<AddFavouriteItemsRequest_Item>();
+  @$core.pragma('dart2js:noInline')
+  static AddFavouriteItemsRequest_Item getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<AddFavouriteItemsRequest_Item>(create);
+  static AddFavouriteItemsRequest_Item? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  FavouriteItemType get type => $_getN(0);
+  @$pb.TagNumber(1)
+  set type(FavouriteItemType v) { setField(1, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasType() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearType() => clearField(1);
+
+  @$pb.TagNumber(2)
+  Point get point => $_getN(1);
+  @$pb.TagNumber(2)
+  set point(Point v) { setField(2, v); }
+  @$pb.TagNumber(2)
+  $core.bool hasPoint() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearPoint() => clearField(2);
+  @$pb.TagNumber(2)
+  Point ensurePoint() => $_ensure(1);
+
+  @$pb.TagNumber(3)
+  AddFavouriteItemsRequest_Item_Entity get entity => $_getN(2);
+  @$pb.TagNumber(3)
+  set entity(AddFavouriteItemsRequest_Item_Entity v) { setField(3, v); }
+  @$pb.TagNumber(3)
+  $core.bool hasEntity() => $_has(2);
+  @$pb.TagNumber(3)
+  void clearEntity() => clearField(3);
+  @$pb.TagNumber(3)
+  AddFavouriteItemsRequest_Item_Entity ensureEntity() => $_ensure(2);
+}
+
+class AddFavouriteItemsRequest extends $pb.GeneratedMessage {
+  factory AddFavouriteItemsRequest({
+    $core.Iterable<AddFavouriteItemsRequest_Item>? items,
+  }) {
+    final $result = create();
+    if (items != null) {
+      $result.items.addAll(items);
+    }
+    return $result;
+  }
+  AddFavouriteItemsRequest._() : super();
+  factory AddFavouriteItemsRequest.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory AddFavouriteItemsRequest.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'AddFavouriteItemsRequest', package: const $pb.PackageName(_omitMessageNames ? '' : 'baladi.protocol'), createEmptyInstance: create)
+    ..pc<AddFavouriteItemsRequest_Item>(1, _omitFieldNames ? '' : 'items', $pb.PbFieldType.PM, subBuilder: AddFavouriteItemsRequest_Item.create)
+    ..hasRequiredFields = false
+  ;
+
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  AddFavouriteItemsRequest clone() => AddFavouriteItemsRequest()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  AddFavouriteItemsRequest copyWith(void Function(AddFavouriteItemsRequest) updates) => super.copyWith((message) => updates(message as AddFavouriteItemsRequest)) as AddFavouriteItemsRequest;
+
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static AddFavouriteItemsRequest create() => AddFavouriteItemsRequest._();
+  AddFavouriteItemsRequest createEmptyInstance() => create();
+  static $pb.PbList<AddFavouriteItemsRequest> createRepeated() => $pb.PbList<AddFavouriteItemsRequest>();
+  @$core.pragma('dart2js:noInline')
+  static AddFavouriteItemsRequest getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<AddFavouriteItemsRequest>(create);
+  static AddFavouriteItemsRequest? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.List<AddFavouriteItemsRequest_Item> get items => $_getList(0);
+}
+
+class DeleteFavouriteItemsRequest_Item extends $pb.GeneratedMessage {
+  factory DeleteFavouriteItemsRequest_Item({
+    FavouriteItemType? type,
+    $core.String? id,
+  }) {
+    final $result = create();
+    if (type != null) {
+      $result.type = type;
+    }
+    if (id != null) {
+      $result.id = id;
+    }
+    return $result;
+  }
+  DeleteFavouriteItemsRequest_Item._() : super();
+  factory DeleteFavouriteItemsRequest_Item.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory DeleteFavouriteItemsRequest_Item.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'DeleteFavouriteItemsRequest.Item', package: const $pb.PackageName(_omitMessageNames ? '' : 'baladi.protocol'), createEmptyInstance: create)
+    ..e<FavouriteItemType>(1, _omitFieldNames ? '' : 'type', $pb.PbFieldType.OE, defaultOrMaker: FavouriteItemType.FAVOURITE_ITEM_TYPE_UNKNOWN, valueOf: FavouriteItemType.valueOf, enumValues: FavouriteItemType.values)
+    ..aOS(2, _omitFieldNames ? '' : 'id')
+    ..hasRequiredFields = false
+  ;
+
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  DeleteFavouriteItemsRequest_Item clone() => DeleteFavouriteItemsRequest_Item()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  DeleteFavouriteItemsRequest_Item copyWith(void Function(DeleteFavouriteItemsRequest_Item) updates) => super.copyWith((message) => updates(message as DeleteFavouriteItemsRequest_Item)) as DeleteFavouriteItemsRequest_Item;
+
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static DeleteFavouriteItemsRequest_Item create() => DeleteFavouriteItemsRequest_Item._();
+  DeleteFavouriteItemsRequest_Item createEmptyInstance() => create();
+  static $pb.PbList<DeleteFavouriteItemsRequest_Item> createRepeated() => $pb.PbList<DeleteFavouriteItemsRequest_Item>();
+  @$core.pragma('dart2js:noInline')
+  static DeleteFavouriteItemsRequest_Item getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<DeleteFavouriteItemsRequest_Item>(create);
+  static DeleteFavouriteItemsRequest_Item? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  FavouriteItemType get type => $_getN(0);
+  @$pb.TagNumber(1)
+  set type(FavouriteItemType v) { setField(1, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasType() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearType() => clearField(1);
+
+  @$pb.TagNumber(2)
+  $core.String get id => $_getSZ(1);
+  @$pb.TagNumber(2)
+  set id($core.String v) { $_setString(1, v); }
+  @$pb.TagNumber(2)
+  $core.bool hasId() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearId() => clearField(2);
+}
+
+class DeleteFavouriteItemsRequest extends $pb.GeneratedMessage {
+  factory DeleteFavouriteItemsRequest({
+    $core.Iterable<DeleteFavouriteItemsRequest_Item>? items,
+  }) {
+    final $result = create();
+    if (items != null) {
+      $result.items.addAll(items);
+    }
+    return $result;
+  }
+  DeleteFavouriteItemsRequest._() : super();
+  factory DeleteFavouriteItemsRequest.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory DeleteFavouriteItemsRequest.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'DeleteFavouriteItemsRequest', package: const $pb.PackageName(_omitMessageNames ? '' : 'baladi.protocol'), createEmptyInstance: create)
+    ..pc<DeleteFavouriteItemsRequest_Item>(1, _omitFieldNames ? '' : 'items', $pb.PbFieldType.PM, subBuilder: DeleteFavouriteItemsRequest_Item.create)
+    ..hasRequiredFields = false
+  ;
+
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  DeleteFavouriteItemsRequest clone() => DeleteFavouriteItemsRequest()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  DeleteFavouriteItemsRequest copyWith(void Function(DeleteFavouriteItemsRequest) updates) => super.copyWith((message) => updates(message as DeleteFavouriteItemsRequest)) as DeleteFavouriteItemsRequest;
+
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static DeleteFavouriteItemsRequest create() => DeleteFavouriteItemsRequest._();
+  DeleteFavouriteItemsRequest createEmptyInstance() => create();
+  static $pb.PbList<DeleteFavouriteItemsRequest> createRepeated() => $pb.PbList<DeleteFavouriteItemsRequest>();
+  @$core.pragma('dart2js:noInline')
+  static DeleteFavouriteItemsRequest getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<DeleteFavouriteItemsRequest>(create);
+  static DeleteFavouriteItemsRequest? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.List<DeleteFavouriteItemsRequest_Item> get items => $_getList(0);
 }
 
 

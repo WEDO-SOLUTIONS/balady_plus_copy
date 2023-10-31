@@ -1,4 +1,5 @@
 import 'package:mapness/features/stories/domain/frame/story_frame_action.dart';
+import 'package:mapness/features/stories/domain/frame/story_text_style.dart';
 
 class StoryFrameData {
   final String storyId;
@@ -6,6 +7,8 @@ class StoryFrameData {
   final String imageUrl;
   final String? subtitle;
   final String? description;
+  final StoryTextStyle? titleStyle;
+  final StoryTextStyle? descriptionStyle;
   final bool isWatched;
   final StoryFrameAction? action;
   final int duration;
@@ -16,6 +19,8 @@ class StoryFrameData {
     required this.isWatched,
     required this.title,
     required this.imageUrl,
+    this.titleStyle,
+    this.descriptionStyle,
     this.subtitle,
     this.description,
     this.action,
@@ -27,6 +32,8 @@ class StoryFrameData {
     String? imageUrl,
     String? subtitle,
     String? description,
+    StoryTextStyle? titleStyle,
+    StoryTextStyle? descriptionStyle,
     bool? isWatched,
     StoryFrameAction? action,
     int? duration,
@@ -37,6 +44,8 @@ class StoryFrameData {
       imageUrl: imageUrl ?? this.imageUrl,
       subtitle: subtitle ?? this.subtitle,
       description: description ?? this.description,
+      titleStyle: titleStyle ?? this.titleStyle,
+      descriptionStyle: descriptionStyle ?? this.descriptionStyle,
       isWatched: isWatched ?? this.isWatched,
       action: action ?? this.action,
       duration: duration ?? this.duration,

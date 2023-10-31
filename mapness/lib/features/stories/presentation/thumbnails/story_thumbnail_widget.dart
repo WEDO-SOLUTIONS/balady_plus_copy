@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mapness/features/common/config/package_fonts.dart';
 import 'package:mapness/features/common/image/loading_image/loading_shimmer_image.dart';
 import 'package:mapness/features/stories/domain/thumbnail/story_thumbnail_data.dart';
 
@@ -71,10 +72,9 @@ class StoryThumbnailWidget extends StatelessWidget {
                   child: Text(
                     thumbnail.title,
                     // TODO: move to theme
-                    style: const TextStyle(
+                    style: PackageFonts.frutigerArabic(
                       color: Colors.white,
                       fontSize: 14,
-                      fontFamily: 'TheSansArab',
                       fontWeight: FontWeight.w600,
                       letterSpacing: -0.22,
                     ),

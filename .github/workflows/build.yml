@@ -120,3 +120,20 @@ jobs:
         with:
           name: app-staging.apk
           path: build/app/outputs/flutter-apk/app-release.apk
+
+  # notify:
+  #   name: Notify
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: send telegram message on push
+  #       uses: appleboy/telegram-action@master
+  #       with:
+  #         to: -4006528048
+  #         token: 6494211382:AAFAgk78N2uia5XFCtHHLnaIupX3EDznzRs
+  #         message: |
+  #           ${{ github.actor }} created commit:
+  #           Commit message: ${{ github.event.commits[0].message }}
+            
+  #           Repository: ${{ github.repository }}
+            
+  #           See changes: https://github.com/${{ github.repository }}/commit/${{github.sha}}

@@ -53,5 +53,39 @@ class Error extends $pb.ProtobufEnum {
   const Error._($core.int v, $core.String n) : super(v, n);
 }
 
+class FavouriteItemType extends $pb.ProtobufEnum {
+  static const FavouriteItemType FAVOURITE_ITEM_TYPE_UNKNOWN = FavouriteItemType._(0, _omitEnumNames ? '' : 'FAVOURITE_ITEM_TYPE_UNKNOWN');
+  static const FavouriteItemType FAVOURITE_ITEM_TYPE_HOME = FavouriteItemType._(1, _omitEnumNames ? '' : 'FAVOURITE_ITEM_TYPE_HOME');
+  static const FavouriteItemType FAVOURITE_ITEM_TYPE_WORK = FavouriteItemType._(2, _omitEnumNames ? '' : 'FAVOURITE_ITEM_TYPE_WORK');
+  static const FavouriteItemType FAVOURITE_ITEM_TYPE_PLACE = FavouriteItemType._(3, _omitEnumNames ? '' : 'FAVOURITE_ITEM_TYPE_PLACE');
+
+  static const $core.List<FavouriteItemType> values = <FavouriteItemType> [
+    FAVOURITE_ITEM_TYPE_UNKNOWN,
+    FAVOURITE_ITEM_TYPE_HOME,
+    FAVOURITE_ITEM_TYPE_WORK,
+    FAVOURITE_ITEM_TYPE_PLACE,
+  ];
+
+  static final $core.Map<$core.int, FavouriteItemType> _byValue = $pb.ProtobufEnum.initByValue(values);
+  static FavouriteItemType? valueOf($core.int value) => _byValue[value];
+
+  const FavouriteItemType._($core.int v, $core.String n) : super(v, n);
+}
+
+class EntitySourceType extends $pb.ProtobufEnum {
+  static const EntitySourceType ENTITY_SOURCE_UNKNOWN = EntitySourceType._(0, _omitEnumNames ? '' : 'ENTITY_SOURCE_UNKNOWN');
+  static const EntitySourceType ENTITY_SOURCE_URBI = EntitySourceType._(1, _omitEnumNames ? '' : 'ENTITY_SOURCE_URBI');
+
+  static const $core.List<EntitySourceType> values = <EntitySourceType> [
+    ENTITY_SOURCE_UNKNOWN,
+    ENTITY_SOURCE_URBI,
+  ];
+
+  static final $core.Map<$core.int, EntitySourceType> _byValue = $pb.ProtobufEnum.initByValue(values);
+  static EntitySourceType? valueOf($core.int value) => _byValue[value];
+
+  const EntitySourceType._($core.int v, $core.String n) : super(v, n);
+}
+
 
 const _omitEnumNames = $core.bool.fromEnvironment('protobuf.omit_enum_names');

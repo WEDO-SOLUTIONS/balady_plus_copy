@@ -1,7 +1,9 @@
 import 'package:cube_transition_plus/cube_transition_plus.dart';
+import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mapness/features/landing/providers/map_controls.dart';
 import 'package:mapness/features/stories/data/story_service.dart';
 import 'package:mapness/features/stories/domain/frame/story_frame_action.dart';
 import 'package:mapness/features/stories/presentation/frame/story_frames_player.dart';
@@ -26,9 +28,7 @@ class _StoriesFullscreenState extends ConsumerState<StoriesFullscreen> {
   late int initialPage;
 
   void _onChangeStory(int pageIndex, int length) {
-    // precache next and previous stories
-
-    if (pageIndex == 0) {
+    if (pageIndex == 0 || pageIndex == length + 1) {
       widget.onClose();
     }
     _precacheStories();
@@ -60,10 +60,10 @@ class _StoriesFullscreenState extends ConsumerState<StoriesFullscreen> {
     super.didChangeDependencies();
     ref.read(storyServiceProvider.notifier);
     final stories = ref.read(storyServiceProvider).value?.stories ?? const [];
-    final index = stories.length -
-        stories.indexWhere(
+    final index = stories.indexWhere(
           (element) => element.storyId == widget.initialStoryId,
-        );
+        ) +
+        1;
     _storyController = PageController(initialPage: index);
     setState(() {
       initialPage = index;
@@ -94,11 +94,19 @@ class _StoriesFullscreenState extends ConsumerState<StoriesFullscreen> {
     switch (action.type) {
       case FrameActionType.openDeepLink:
         if (context.mounted) {
-          context.pushNamed(action.action);
+          // TODO(@Demezy): уточнить формат диплинков
+          // context.pushNamed(action.action);
         }
         break;
       case FrameActionType.openMap:
-        // Handle it
+        final objectId = int.tryParse(action.action);
+        if (objectId != null) {
+          ref.watch(mapControlsProvider.notifier).update(
+                MapControlsStatePoI(
+                  DgisObjectIdMessage(objectId: objectId, entranceId: 0),
+                ),
+              );
+        }
         break;
       case FrameActionType.callPhone:
         launchUrl(Uri.parse('tel:${action.action}'));
@@ -107,11 +115,10 @@ class _StoriesFullscreenState extends ConsumerState<StoriesFullscreen> {
         launchUrl(Uri.parse(action.action));
         break;
     }
+    onClose();
   }
 
   Future<void> onClose() async {
-    await ref.read(storyServiceProvider.notifier).sendViewedStories();
-
     widget.onClose();
   }
 
@@ -132,7 +139,7 @@ class _StoriesFullscreenState extends ConsumerState<StoriesFullscreen> {
           startPage: initialPage,
           children: [
             blank,
-            ...stories.reversed.map(
+            ...stories.map(
               (story) => StoryFramesPlayer(
                 onActionPressed: (action) => onActionPressed(action, context),
                 story: story,
@@ -141,7 +148,7 @@ class _StoriesFullscreenState extends ConsumerState<StoriesFullscreen> {
                 onClose: onClose,
               ),
             ),
-            // blank,
+            blank,
           ],
         );
       },

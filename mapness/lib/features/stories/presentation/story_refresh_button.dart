@@ -9,12 +9,16 @@ class StoryRefreshButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: InkWell(
-        child: Container(
-          padding: const EdgeInsets.all(8),
-          decoration:
-              const BoxDecoration(shape: BoxShape.circle, color: Colors.white),
-          child: const Icon(Icons.refresh),
+      child: Material(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(24),
+        child: InkWell(
+          onTap: onPressed,
+          borderRadius: BorderRadius.circular(24),
+          child: Container(
+            padding: const EdgeInsets.all(8),
+            child: const Icon(Icons.refresh),
+          ),
         ),
       ),
     );

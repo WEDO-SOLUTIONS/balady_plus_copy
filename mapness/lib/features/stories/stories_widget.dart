@@ -1,3 +1,4 @@
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/stories/data/story_service.dart';
@@ -5,6 +6,8 @@ import 'package:mapness/features/stories/presentation/frame/dismissible_overlay.
 import 'package:mapness/features/stories/presentation/stories_fullscreen.dart';
 import 'package:mapness/features/stories/presentation/story_refresh_button.dart';
 import 'package:mapness/features/stories/presentation/story_thumbnails.dart';
+
+import '../common/providers/network_status.dart';
 
 class StoriesWidget extends ConsumerStatefulWidget {
   const StoriesWidget({Key? key}) : super(key: key);
@@ -62,6 +65,12 @@ class _StoriesWidgetState extends ConsumerState<StoriesWidget> {
 
   @override
   Widget build(BuildContext context) {
+    ref.listen(networkStatusProvider, (previous, next) {
+      if (previous == ConnectivityResult.none && next != previous) {
+        ref.read(storyServiceProvider.notifier).refresh();
+      }
+    });
+
     final thumbnails = ref.watch(storyServiceProvider);
 
     return Directionality(
@@ -75,7 +84,9 @@ class _StoriesWidgetState extends ConsumerState<StoriesWidget> {
         ),
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (_, __) => StoryRefreshButton(
-          onPressed: () => ref.read(storyServiceProvider.notifier).refresh(),
+          onPressed: () {
+            ref.read(storyServiceProvider.notifier).refresh();
+          },
         ),
       ),
     );

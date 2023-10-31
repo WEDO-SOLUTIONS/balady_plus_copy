@@ -72,7 +72,7 @@ class DismissibleTransitionState extends State<DismissibleTransition>
             children: [
               Opacity(
                 opacity: _opacityAnimation.value,
-                child: Container(color: const Color(0xff141414)),
+                child: Container(color: const Color(0xff1e2936)),
               ),
               Transform(
                 transform: Matrix4.identity()

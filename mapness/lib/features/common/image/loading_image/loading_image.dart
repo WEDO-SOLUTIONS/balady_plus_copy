@@ -1,8 +1,14 @@
 import 'dart:async';
 
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/features/common/providers/network_status.dart';
+import 'package:mapness/features/stories/presentation/story_refresh_button.dart';
 
-class LoadingImage extends StatefulWidget {
+enum ImageState { loading, loaded, error }
+
+class LoadingImage extends ConsumerStatefulWidget {
   final String imageUrl;
   final Widget loadingWidget;
   final BoxFit? fit;
@@ -17,11 +23,11 @@ class LoadingImage extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<LoadingImage> createState() => _LoadingImageState();
+  ConsumerState<LoadingImage> createState() => _LoadingImageState();
 }
 
-class _LoadingImageState extends State<LoadingImage> {
-  bool isLoading = true;
+class _LoadingImageState extends ConsumerState<LoadingImage> {
+  ImageState state = ImageState.loading;
   late String imageUrl;
 
   @override
@@ -33,7 +39,7 @@ class _LoadingImageState extends State<LoadingImage> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    if (imageUrl != widget.imageUrl || isLoading) {
+    if (imageUrl != widget.imageUrl || state == ImageState.loading) {
       imageUrl = widget.imageUrl;
       unawaited(loadImage(context));
     }
@@ -41,10 +47,21 @@ class _LoadingImageState extends State<LoadingImage> {
 
   Future<void> loadImage(BuildContext context) async {
     /// await for image to be ready
-    await precacheImage(NetworkImage(widget.imageUrl), context);
-    if (context.mounted) {
+    bool failed = false;
+    await precacheImage(
+      NetworkImage(widget.imageUrl),
+      context,
+      onError: (_, __) {
+        failed = true;
+        setState(() {
+          state = ImageState.error;
+        });
+      },
+    );
+
+    if (context.mounted && !failed) {
       setState(() {
-        isLoading = false;
+        state = ImageState.loaded;
       });
       widget.onImageReady?.call();
     }
@@ -52,9 +69,28 @@ class _LoadingImageState extends State<LoadingImage> {
 
   @override
   Widget build(BuildContext context) {
-    if (isLoading) {
-      return widget.loadingWidget;
-    }
-    return Image.network(widget.imageUrl, fit: widget.fit);
+    ref.listen(networkStatusProvider, (previous, next) {
+      if (previous == ConnectivityResult.none && next != previous) {
+        unawaited(loadImage(context));
+      }
+    });
+
+    return switch (state) {
+      ImageState.error => Container(
+          color: const Color(0xFFE9E9E9),
+          child: Center(
+            child: StoryRefreshButton(
+              onPressed: () {
+                loadImage(context);
+              },
+            ),
+          ),
+        ),
+      ImageState.loaded => Image.network(
+          widget.imageUrl,
+          fit: widget.fit,
+        ),
+      ImageState.loading => widget.loadingWidget,
+    };
   }
 }
