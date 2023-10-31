@@ -375,6 +375,18 @@ class CrStep4ShopDataState extends Equatable {
     );
   }
 
+  bool isFormValid() {
+    return (selectedBoards?.isNotEmpty ?? false) &&
+        brand != null &&
+        shopName != null &&
+        shopUnitNumber != null &&
+        blockNumber != null &&
+        holesCount != null &&
+        noOfCameras != null &&
+        hasElevator != null &&
+        floorCount != null;
+  }
+
   bool showSalamaReport() {
     if (locationResponse?.slamaReportOptions?.contains("SERVICE") ?? false) {
       return true;

@@ -10,37 +10,50 @@ class SubmitActivityDetailRequest {
   int workerTypeId;
   double area;
   int detailedActivityId;
+  int? accommodationTypeId;
+  int? unitCount;
   List<AddetionalActivityRequest>? additionalActivities;
-  SubmitActivityDetailRequest({
-    this.requestId,
-    required this.workerTypeId,
-    required this.area,
-    required this.detailedActivityId,
-    this.additionalActivities,
-  });
+  bool? atmFeesPaid;
+  SubmitActivityDetailRequest(
+      {this.requestId,
+      required this.workerTypeId,
+      required this.area,
+      required this.detailedActivityId,
+      this.additionalActivities,
+      this.accommodationTypeId,
+      this.unitCount,
+      this.atmFeesPaid});
 
-  SubmitActivityDetailRequest copyWith({
-    int? requestId,
-    int? workerTypeId,
-    double? area,
-    int? detailedActivityId,
-    List<AddetionalActivityRequest>? additionalActivities,
-  }) {
+  SubmitActivityDetailRequest copyWith(
+      {int? requestId,
+      int? workerTypeId,
+      double? area,
+      int? detailedActivityId,
+      List<AddetionalActivityRequest>? additionalActivities,
+      int? accommodationTypeId,
+      int? unitCount,
+      bool? atmFeesPaid}) {
     return SubmitActivityDetailRequest(
-      requestId: requestId ?? this.requestId,
-      workerTypeId: workerTypeId ?? this.workerTypeId,
-      area: area ?? this.area,
-      detailedActivityId: detailedActivityId ?? this.detailedActivityId,
-      additionalActivities: additionalActivities ?? this.additionalActivities,
-    );
+        requestId: requestId ?? this.requestId,
+        workerTypeId: workerTypeId ?? this.workerTypeId,
+        area: area ?? this.area,
+        detailedActivityId: detailedActivityId ?? this.detailedActivityId,
+        additionalActivities: additionalActivities ?? this.additionalActivities,
+        accommodationTypeId: accommodationTypeId ?? this.accommodationTypeId,
+        unitCount: unitCount ?? this.unitCount,
+        atmFeesPaid: atmFeesPaid ?? this.atmFeesPaid);
   }
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'workerTypeId': workerTypeId,
+      if (atmFeesPaid != null) 'atmFeesPaid': atmFeesPaid,
       "mainActivity": {
         'area': area,
         'detailedActivityId': detailedActivityId,
+        if (accommodationTypeId != null)
+          "accommodationTypeId": accommodationTypeId,
+        if (unitCount != null) "unitCount": unitCount
       },
       'additionalActivities': additionalActivities != null
           ? additionalActivities

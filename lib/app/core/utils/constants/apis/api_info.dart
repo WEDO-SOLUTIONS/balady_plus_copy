@@ -363,6 +363,13 @@ class ApiUrl {
 
   static String validateSalamaPermit(int requestId) =>
       '/v1/balady-commercial-services/validate-salama-permits/$requestId';
+
+
+
+  static String salamaWarningMessage = 
+      '/v1/balady-commercial-services/salama-workflow-warnings';
+
+
 //! Renew Commercial Service
   static String validateBeforeApply(int requestId) =>
       'v1/balady-commercial-services/mobile/renew-request/validate-before-apply/$requestId';

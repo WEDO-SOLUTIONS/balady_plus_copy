@@ -3,10 +3,23 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../vd/presentation/widgets/details_widgets/details_app_bar.dart';
 import '../../../commercial_license_exports.dart';
 
-class CommercialLicenseBody extends StatelessWidget {
+class CommercialLicenseBody extends StatefulWidget {
   const CommercialLicenseBody({
     super.key,
   });
+
+  @override
+  State<CommercialLicenseBody> createState() => _CommercialLicenseBodyState();
+}
+
+class _CommercialLicenseBodyState extends State<CommercialLicenseBody> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    context.read<CommercialLicenseBloc>().initState();
+  }
 
   @override
   Widget build(BuildContext context) {

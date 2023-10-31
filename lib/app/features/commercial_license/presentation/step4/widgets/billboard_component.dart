@@ -137,7 +137,7 @@ class _CommercialBoardDialogState extends State<CommercialBoardDialog> {
             label: "مساحة اللوحة",
             hintText: "ادخل مساحة اللوحة",
             isDigitsOnly: true,
-            initialValue: area.toString(),
+            initialValue: area != null ? area.toString() : null,
             keyboardType: TextInputType.number,
             suffixIcon: const CustomTextWidget(
               "متر  مربع",

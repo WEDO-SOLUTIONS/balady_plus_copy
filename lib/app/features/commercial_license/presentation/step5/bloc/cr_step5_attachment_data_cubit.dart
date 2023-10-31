@@ -140,7 +140,10 @@ class CRStep5AttachmentCubit extends Cubit<CRStep5AttachmentState> {
   }
 
   void updateNotes(String? notes) {
-    emit(state.copyWith(notes: notes));
+    emit(state.copyWith(
+      notes: notes,
+      errorMessage: "",
+    ));
   }
 
   void addBeneficiaryNotes() async {

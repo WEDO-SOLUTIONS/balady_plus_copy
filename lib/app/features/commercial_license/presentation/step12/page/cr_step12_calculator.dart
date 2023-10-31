@@ -64,7 +64,7 @@ class CRStep12CalculatorReview extends StatelessWidget {
                   onPressed: () {
                     context.read<CrStep12SadadCubit>().calculate();
                   },
-                  isBtnDisabled: false),
+                  isBtnDisabled: state.selectedPeriod == null),
             ],
           ),
           if (state.status.isSubmissionLoading)

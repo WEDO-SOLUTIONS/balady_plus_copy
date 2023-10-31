@@ -204,6 +204,9 @@ class RouteName {
 
   static const submitApplicationSuccessfullyRenew =
       '/submitApplicationSuccessfullyRenew';
+
+
+      static const submitApplicationSuccessfullyNew = '/submitApplicationSuccessfullyNew';
       
 }
 

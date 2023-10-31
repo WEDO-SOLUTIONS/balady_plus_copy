@@ -33,7 +33,9 @@ class CrStep2ActivityDataCubit extends Cubit<CrStep2ActivityDataState> {
         _getAddetionalActivites = GetAddetionalActivites(repository: sl()),
         _getAddetionalDetailsActivites =
             GetAddetionalDetailsActivites(repository: sl()),
-        super(const CrStep2ActivityDataState());
+        super(const CrStep2ActivityDataState()) {
+    getAccommodationTypes();
+  }
 
   void getSubActivityDetails(SubActivityEntity subActivity) async {
     emit(state.copyWith(
@@ -48,7 +50,7 @@ class CrStep2ActivityDataCubit extends Cubit<CrStep2ActivityDataState> {
       emit(state.copyWith(
           selectedSubActivity: Nullable(subActivity),
           subActivityDetailsStatus: BlocStatus.success,
-          subActivityDetails: success.data?.result));
+          subActivityDetails: Nullable(success.data?.result)));
 
       if (state.selectedIsicActivity?.craft == false) {
         BottomSheetDialog.showDraggableSheet(
@@ -63,9 +65,9 @@ class CrStep2ActivityDataCubit extends Cubit<CrStep2ActivityDataState> {
 
   void onSelectIsicActivity(IsicActivity isicActivity) async {
     emit(state.copyWith(
-        selectedIsicActivity: isicActivity,
         selectedSubActivity: Nullable(null),
         selectedAddetionalList: Nullable([]),
+        subActivityDetails: Nullable(null),
         addetionalActivityItems: [],
         addetionalActivityItemDetails: [],
         subActivitiesStatus: BlocStatus.loading,
@@ -77,6 +79,7 @@ class CrStep2ActivityDataCubit extends Cubit<CrStep2ActivityDataState> {
               errorMessage: (failure as ServerFailure).errorMessage,
             )), (success) {
       emit(state.copyWith(
+          selectedIsicActivity: isicActivity,
           subActivitiesStatus: BlocStatus.success,
           subActivities: List.from(success)));
     });
@@ -101,7 +104,7 @@ class CrStep2ActivityDataCubit extends Cubit<CrStep2ActivityDataState> {
     getSubActivityDetails(subActivity);
   }
 
-  void onAccommodationTypes(DropDownItem accommodationTypes) =>
+  void onAccommodationTypes(CrLookupsEntity accommodationTypes) =>
       emit(state.copyWith(selectedAccommodationType: accommodationTypes));
 
   void updateArea(double? area) {
@@ -113,6 +116,14 @@ class CrStep2ActivityDataCubit extends Cubit<CrStep2ActivityDataState> {
     emit(state.copyWith(workerType: type, errorMessage: ""));
   }
 
+  void updateUnitCount(String? value) {
+    emit(state.copyWith(unitCount: value, errorMessage: ""));
+  }
+
+  void updateAtmFeesPaid(bool? value) {
+    emit(state.copyWith(atmFeesPaid: value));
+  }
+
   void save() async {
     int requestId = sl<CommercialLicenseBloc>().state.requestId!;
 
@@ -122,7 +133,13 @@ class CrStep2ActivityDataCubit extends Cubit<CrStep2ActivityDataState> {
         workerTypeId: state.workerType!.type,
         area: state.totalArea ?? 0,
         additionalActivities: state.selectedAddetionalList,
-        detailedActivityId: state.selectedSubActivity!.id!));
+        detailedActivityId: state.selectedSubActivity!.id!,
+        atmFeesPaid: state.showAtm() ? state.atmFeesPaid : null,
+        unitCount:
+            state.showHotel() ? int.tryParse(state.unitCount ?? "") : null,
+        accommodationTypeId: state.showHotel()
+            ? state.selectedAccommodationType?.lookupId
+            : null));
     response.fold(
         (failure) => emit(state.copyWith(
               status: BlocStatus.failure,

@@ -123,4 +123,26 @@ class CommercialLicenseBloc
 
     emit(state.copyWith(gisResponse: gis, status: BlocStatus.success));
   }
+
+  void initState() {
+    emit(state.copyWith(
+      status: BlocStatus.initial,
+      currentPageValue: 0,
+      pagesList: const [
+        CRStep1ApplicantData(),
+        CRStep2ActivityData(),
+        CRStep3GeolocationData(),
+        CRStep4ShopData(),
+        CRStep5AttachmentData(),
+        CRStep6EstablishmentData(),
+        //  CRStep7EstablishmentContactData(),
+        //  CRStep8EmployeeData(),
+        CRStep9WorkTimes(),
+        CRStep10AdditionalData(),
+        CRStep11AttachmentData(),
+        CRStep12CalculatorReview(),
+        CRStep13Review(),
+      ],
+    ));
+  }
 }

@@ -38,9 +38,9 @@ class SubActivityModelDetailsModel extends SubActivityDetails {
         nameEn: json["nameEn"],
         maxArea: json["maxArea"]?.toDouble(),
         minArea: json["minArea"]?.toDouble(),
-        mainActivity: json["mainActivityModel"] == null
+        mainActivity: json["mainActivity"] == null
             ? null
-            : MainActivityModel.fromJson(json["mainActivityModel"]),
+            : MainActivityModel.fromJson(json["mainActivity"]),
         isicNumber: json["isicNumber"],
         subActivity: json["subActivityModel"] == null
             ? null

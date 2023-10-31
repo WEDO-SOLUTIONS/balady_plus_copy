@@ -636,7 +636,7 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
                 ),
               ),
               CRPreviousNextButtons(
-                isBtnDisabled: false,
+                isBtnDisabled: !state.isFormValid(),
                 onPressed: () {
                   context.read<CrStep4ShopDataCubit>().save();
                 },

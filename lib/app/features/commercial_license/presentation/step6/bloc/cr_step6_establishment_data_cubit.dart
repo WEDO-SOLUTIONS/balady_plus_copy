@@ -39,9 +39,7 @@ class CRStep6EstablishmentCubit extends Cubit<CRStep6EstablishmentState> {
       : _applyCommercialRequest = ApplyCommercialRequest(repository: sl()),
         _saveQrEnterpriseData = SaveQrEnterpriseData(repository: sl()),
         _getQrLookUp = GetQrLookUp(repository: sl()),
-        super(CRStep6EstablishmentState(
-            contactInfo: ContactInfo(
-                mobile: CommonProperties.userInfo?.getPhone() ?? ""))) {}
+        super(CRStep6EstablishmentState()) {}
 
   void getPaymentMethods() async {
     if (state.paymentsMethods?.isNotEmpty ?? false) return;
@@ -202,7 +200,9 @@ class CRStep6EstablishmentCubit extends Cubit<CRStep6EstablishmentState> {
     final String? whatsApp,
     final String? enterpriseUniqueCode,
   }) {
-    ContactInfo info = state.contactInfo ?? ContactInfo();
+    print("mobole ${CommonProperties.userInfo?.getPhone()}");
+    ContactInfo info = state.contactInfo ??
+        ContactInfo(mobile: CommonProperties.userInfo?.getPhone() ?? "");
     info = info.copyWith(
         mobile: mobile,
         phone: phone,

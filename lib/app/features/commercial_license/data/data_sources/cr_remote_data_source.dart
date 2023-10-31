@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/commercial_license/data/models/qr/apply_commercial_response_model.dart';
+import 'package:balady_plus/app/features/commercial_license/data/models/salama_warning_request.dart';
 import 'package:dio/dio.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:mime/mime.dart';
@@ -112,6 +113,10 @@ abstract class CrRemoteDataSource {
   Future<bool> validateSalamaReport({required VerifySalamaRequest params});
   Future<bool> validateSalamaBill({required VerifySalamaRequest params});
   Future<bool> validateSalamaPermit({required VerifySalamaRequest params});
+
+  Future<String> getWarningMessage({required SalamaWarningRequest params});
+  Future<String> getWarningWorkFlowMessage(
+      {required SalamaWarningRequest params});
 }
 
 class CrRemoteDataSourceImpl extends CrRemoteDataSource {
@@ -2176,5 +2181,61 @@ class CrRemoteDataSourceImpl extends CrRemoteDataSource {
             response: response);
       }
     }
+  }
+
+  @override
+  Future<String> getWarningMessage(
+      {required SalamaWarningRequest params}) async {
+    var response;
+
+    try {
+      response = await webService.dio.post(
+        ApiUrl.salamaWarningMessage,
+      );
+
+      var data = response.data["data"]["result"]["message"];
+
+      final decodedResponse =
+          ResponseBodyModel<String>.fromMap(response.data, parsedResult: data);
+
+      return decodedResponse.data!.result!.toFuture();
+    } on DioError catch (error) {
+      print(error);
+      var errorCode;
+      try {
+        final decodedResponse = ResponseBodyModel<bool>.fromMap(
+          error.response?.data,
+        );
+        errorCode = decodedResponse.data?.responseCode;
+      } catch (ex) {}
+
+      throw ServerException(
+        error.toString(),
+        errorCode: errorCode,
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
+    } catch (ex) {
+      print(ex);
+      if (ex is ServerException)
+        throw ex;
+      else {
+        try {
+          //MM    CommonFunctions.sendExceptionLog(exception: ex, response: response);
+        } catch (ex) {}
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
+      }
+    }
+  }
+
+  @override
+  Future<String> getWarningWorkFlowMessage(
+      {required SalamaWarningRequest params}) {
+    // TODO: implement getWarningWorkFlowMessage
+    throw UnimplementedError();
   }
 }
