@@ -177,9 +177,9 @@ class RenewCommercialLicenseState extends Equatable {
       Nullable<bool?>? ejarVerified,
       Nullable<bool?>? deedVerified,
       Nullable<String?>? investmentContractNumber,
-      final String? salamaBillNumber,
-      final String? salamaPermitNumber,
-      final String? salamaReportNumber,
+      Nullable<String?>? salamaBillNumber,
+      Nullable<String?>? salamaPermitNumber,
+      Nullable<String?>? salamaReportNumber,
       CrAttachmentResponse? attachmentResponse,
       List<AttachmentData>? attachments,
       final RenewRequestDetails? renewRequestDetails,
@@ -247,9 +247,15 @@ class RenewCommercialLicenseState extends Equatable {
         investmentContractNumber: investmentContractNumber == null
             ? this.investmentContractNumber
             : investmentContractNumber.value,
-        salamaBillNumber: salamaBillNumber ?? this.salamaBillNumber,
-        salamaPermitNumber: salamaPermitNumber ?? this.salamaPermitNumber,
-        salamaReportNumber: salamaReportNumber ?? this.salamaReportNumber,
+        salamaBillNumber: salamaBillNumber == null
+            ? this.salamaBillNumber
+            : salamaBillNumber.value,
+        salamaPermitNumber: salamaPermitNumber == null
+            ? this.salamaPermitNumber
+            : salamaPermitNumber.value,
+        salamaReportNumber: salamaReportNumber == null
+            ? this.salamaReportNumber
+            : salamaReportNumber.value,
         attachments: attachments ?? this.attachments,
         attachmentResponse: attachmentResponse ?? this.attachmentResponse,
         requestDetailsStatus: requestDetailsStatus ?? this.requestDetailsStatus,

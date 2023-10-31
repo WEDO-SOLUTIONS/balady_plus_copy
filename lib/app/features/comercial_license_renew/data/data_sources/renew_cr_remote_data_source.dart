@@ -755,14 +755,14 @@ class RenewCrRemoteDataSourceImpl extends RenewCrRemoteDataSource {
           ApiUrl.saveRenewRequestInfo(params!.requestId!),
           data: params.toMap());
 
-      var data = response.data["data"]["result"];
+      // var data = response.data["data"]["result"];
 
       // var parsedResult =
       //     data != null ? RenewRequestInfoModel.fromJson(data) : null;
 
-      final decodedResponse =
-          ResponseBodyModel<dynamic>.fromMap(response.data, parsedResult: data);
-      return decodedResponse.toFuture();
+      // final decodedResponse =
+      //     ResponseBodyModel<dynamic>.fromMap(response.data, parsedResult: null);
+      return ResponseBodyModel();
     } on DioError catch (error) {
       print(error);
       var errorCode;

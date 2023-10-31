@@ -222,9 +222,9 @@ class RenewCommercialLicenseBloc
   void updateSalama(
       {String? salamaReport, String? salamaBill, String? salamaPermit}) {
     emit(state.copyWith(
-        salamaReportNumber: salamaReport ?? "",
-        salamaPermitNumber: salamaPermit ?? "",
-        salamaBillNumber: salamaBill ?? "",
+        salamaReportNumber: Nullable(salamaReport),
+        salamaPermitNumber: Nullable(salamaPermit),
+        salamaBillNumber: Nullable(salamaBill),
         errorMessage: ""));
   }
 

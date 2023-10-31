@@ -54,8 +54,7 @@ class _CommercialRenewStep2State extends State<CommercialRenewStep2> {
                         maxLines: null,
                         textHeight: 1.5,
                         header: "بيانات المرفق",
-                        desc:
-                            "امتداد الملفات المسموح بإرفاق jpeg، jpg، png، pdf لا يتعدى حجم الملف 10 ميجابايت",
+                        desc: "",
                       ),
                       const SizedBox(height: 12),
                       if (state.attachments != null)

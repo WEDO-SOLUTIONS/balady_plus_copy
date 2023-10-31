@@ -60,43 +60,65 @@ class SubmitApplicationSuccessfullyRenew extends StatelessWidget {
                     // ),
                     const SizedBox(height: 16),
                     CustomAutoSizeTextWidget(
-                      submitResponse.message ?? "",
+                      '${'application_no_has_been_submitted'.tr()} ${submitResponse.requestId} ${(submitResponse.payUrl?.isNotEmpty ?? false) ? '${'and_issue_invoice_service_amount'.tr()} ${arguments.$3} ${'sar'.tr()}' : 'application_no_has_been_submitted_two'.tr()}',
                       textStyle: AppStyle.serviceListTitleTextStyle,
                       maxLines: 3,
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 16),
-                    /* CustomTextButtonWidget(
+                    CustomTextButtonWidget(
                       text: 'service_evaluation'.tr(),
                       onPressed: () {
                         Navigator.of(context).popAndPushNamed(
                           RouteName.submitRatingCancelScreen,
                           arguments: SubmitRatingViewModel(
                             webService: sl(),
-                            submitResponse: submitResponse,
+                            submitResponse: SubmitResponse(
+                                payUrl: submitResponse.payUrl,
+                                crNumber: CommonProperties
+                                        .selectedDelegator?.crNumber ??
+                                    "",
+                                crType: CommonProperties
+                                        .selectedDelegator?.crType ??
+                                    "",
+                                requestId: submitResponse.requestId!),
                           ),
                         );
                       },
                       haveUnderline: true,
-                    ),*/
+                    ),
                   ],
                 ),
               ),
               const SizedBox(height: 16),
               submitResponse.payUrl != null
                   ? ElevatedButtonWidget.primaryCustomBorder(
-                      text: 'دفع الفاتورة'.tr(),
+                      text: 'viewـinvoice'.tr(),
                       onPressed: () async {
-                        CommonFunctions.openBaladyWebView(
-                            submitResponse.payUrl);
+                        Navigator.of(context).popAndPushNamed(
+                          RouteName.invoiceDetails,
+                          arguments: (
+                            submitResponse.payUrl.toString(),
+                            crNumber:
+                                CommonProperties.selectedDelegator?.crNumber ??
+                                    "",
+                            crType:
+                                CommonProperties.selectedDelegator?.crType ??
+                                    "",
+                            "SADAD",
+                          ),
+                        );
                       },
                     )
                   : const SizedBox(),
               const SizedBox(height: 16),
               ElevatedButtonWidget.primaryCustom(
-                text: ('go_to_home').tr(),
+                text: arguments.$1 == "licenses"
+                    ? "back_licenses_page".tr()
+                    : "back_request_page".tr(),
                 onPressed: () {
-                  Helpers.backNavigationToHomeScreen();
+                  Navigator.of(context).pop();
+                  Navigator.of(context).pop();
                 },
               ),
               const SizedBox(height: 16),
