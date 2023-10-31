@@ -228,6 +228,15 @@ class RenewCommercialLicenseBloc
         errorMessage: ""));
   }
 
+  void updateSalamaExists(bool? value) {
+    emit(state.copyWith(
+        salamaExists: value,
+        salamaReportNumber: Nullable(null),
+        salamaPermitNumber: Nullable(null),
+        salamaBillNumber: Nullable(null),
+        errorMessage: ""));
+  }
+
   void updateSubmitterType(CRSubmitterType type) {
     emit(state.copyWith(
         crSubmitterType: Nullable(type),

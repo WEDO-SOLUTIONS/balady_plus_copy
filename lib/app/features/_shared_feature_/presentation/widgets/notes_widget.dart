@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/utils/constants/constants.dart';
 import '../../../../core/utils/utils_exports.dart';
 import '../../shared_feature_exports.dart';
+import 'package:flutter_html/flutter_html.dart';
 
 class NotesWidget extends StatelessWidget {
   const NotesWidget({
-    super.key, required this.notes,
+    super.key,
+    required this.notes,
   });
 
   final List<String> notes;
@@ -25,7 +28,7 @@ class NotesWidget extends StatelessWidget {
             itemCount: notes.length,
             physics: const NeverScrollableScrollPhysics(),
             shrinkWrap: true,
-            itemBuilder: (_, index) =>  Row(
+            itemBuilder: (_, index) => Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
@@ -36,14 +39,20 @@ class NotesWidget extends StatelessWidget {
                 ),
                 const SizedBox(width: 6),
                 Flexible(
-                  child: CustomTextWidget(
-                    notes[index],
-                    textAlign: TextAlign.start,
-                    fontSize: 14,
-                    maxLines: null,
-                    height: 1.2,
-                    fontColor: AppColor.primary500Light,
-                    fontWeight: AppFontWeight.semiBold,
+                  child: Html(
+                    data: notes[index],
+                    onLinkTap: (url, attributes, element) {
+                      CommonFunctions.externalLaunch(url);
+                    },
+                    style: {
+                      "body": Style(
+                          fontSize: FontSize(14.0),
+                          fontWeight: FontWeight.w600,
+                          lineHeight: const LineHeight(1.4),
+                          textAlign: TextAlign.start,
+                          color: AppColor.primary500Light,
+                          fontFamily: Constants.appFontType),
+                    },
                   ),
                 ),
               ],

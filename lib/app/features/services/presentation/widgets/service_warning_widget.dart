@@ -26,7 +26,7 @@ class ServiceWarningWidget extends StatelessWidget {
       builder: (context, state) {
         return Container(
           width: double.infinity,
-          height: state.expandedWarning ? 360 : 160,
+          height: state.expandedWarning ? 300 : 160,
           decoration: const BoxDecoration(
             borderRadius: BorderRadius.only(
               topLeft: Radius.circular(36),
@@ -92,8 +92,7 @@ class ServiceWarningWidget extends StatelessWidget {
                         ),
                       ),
                     ],
-                    if (!state.expandedWarning)
-                    const Spacer(),
+                    if (!state.expandedWarning) const Spacer(),
                     ElevatedButtonWidget.startService(
                       onPressed: () => onPress != null ? onPress!() : () {},
                     ),

@@ -18,6 +18,7 @@ import '../../../../../_shared_feature_/presentation/widgets/notes_widget.dart';
 import '../../../../../_shared_feature_/presentation/widgets/radio_buttons/horizontal_radio_group_component.dart';
 import '../../../../../_shared_feature_/presentation/widgets/radio_buttons/vertical_radio_group_component.dart';
 import '../../../../../_shared_feature_/presentation/widgets/texts/custom_text_field_widget.dart';
+import '../../../../../commercial_license/presentation/step4/widgets/yes_no_radio_group_widget.dart';
 import '../../../../../vd/presentation/widgets/details_widgets/incident_desc_widgets/vd_create_incident_addetional_fields.dart';
 import '../../../../renew_commercial_license_exports.dart'
     show
@@ -187,6 +188,7 @@ class _CommercialRenewStep1State extends State<CommercialRenewStep1> {
                       HijriCalendarAddetionalField(
                         fieldName: 'تاريخ عقد التملك',
                         isMandatory: true,
+                        currentVlaue: state.contractDate,
                         onChanged: (value) {
                           context
                               .read<RenewCommercialLicenseBloc>()
@@ -305,6 +307,7 @@ class _CommercialRenewStep1State extends State<CommercialRenewStep1> {
                       ),
                       HijriCalendarAddetionalField(
                         fieldName: "تاريخ انتهاء عقد الايجار",
+                        currentVlaue: state.contractDate,
                         isMandatory: true,
                         onChanged: (value) {
                           context
@@ -501,7 +504,20 @@ class _CommercialRenewStep1State extends State<CommercialRenewStep1> {
                       NotesWidget(notes: [
                         state.info!.cleanContractResponseDto!.warnings!
                       ]),
-                    if (state.showSalamaReport())
+                    if (state.showSalmaExists())
+                      YesNoRadioGroupWidget(
+                        groupName: 'هل لديك تصريح سلامة ؟',
+                        currentValue: state.salamaExists,
+                        onChanged: (value) {
+                          context
+                              .read<RenewCommercialLicenseBloc>()
+                              .updateSalamaExists(value);
+                        },
+                      ),
+                    if ((state.showSalamaReport() &&
+                            !state.showSalmaExists()) ||
+                        (state.showSalamaReport() &&
+                            state.salamaExists == false))
                       CustomTextFieldWidget(
                         label: "رقم التقرير الفني",
                         hintText: "رقم التقرير الفني",
@@ -515,13 +531,17 @@ class _CommercialRenewStep1State extends State<CommercialRenewStep1> {
                               .updateSalama(salamaReport: value);
                         },
                       ),
-                    if (state.showSalamaReport())
+                    if ((state.showSalamaReport() &&
+                            !state.showSalmaExists()) ||
+                        (state.showSalamaReport() &&
+                            state.salamaExists == false))
                       NotesWidget(notes: [
                         state.info?.salamaResponseDto
                                 ?.salamaReportInstructions ??
                             ""
                       ]),
-                    if (state.showSalamaBill())
+                    if ((state.showSalamaBill() && !state.showSalmaExists()) ||
+                        (state.showSalamaBill() && state.salamaExists == false))
                       CustomTextFieldWidget(
                         label: "شهادة تركيب أدوات الوقاية والحماية من الحريق",
                         hintText:
@@ -536,12 +556,16 @@ class _CommercialRenewStep1State extends State<CommercialRenewStep1> {
                               .updateSalama(salamaBill: value);
                         },
                       ),
-                    if (state.showSalamaBill())
+                    if ((state.showSalamaBill() && !state.showSalmaExists()) ||
+                        (state.showSalamaBill() && state.salamaExists == false))
                       NotesWidget(notes: [
                         state.info?.salamaResponseDto?.salamaBillInstructions ??
                             ""
                       ]),
-                    if (state.showSalamaPermit())
+                    if ((state.showSalamaPermit() &&
+                            !state.showSalmaExists()) ||
+                        (state.showSalamaPermit() &&
+                            state.salamaExists == true))
                       CustomTextFieldWidget(
                         label: "رقم تصريح سلامة",
                         hintText: "رقم تصريح سلامة",
