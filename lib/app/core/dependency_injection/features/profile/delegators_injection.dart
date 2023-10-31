@@ -5,6 +5,7 @@ import '../../../../features/profile_features/delegators/delegators_exports.dart
         DelegatorsRemoteDataSourceImplementation,
         DelegatorsRepository,
         DelegatorsRepositoryImplementation,
+        GetAgents,
         GetDelegators;
 
 import '../../dependency_injection_exports.dart' show sl;
@@ -13,6 +14,7 @@ class DelegatorsInjection {
   static void init() {
     //! Use Case
     sl.registerLazySingleton(() => GetDelegators(sl()));
+    sl.registerLazySingleton(() => GetAgents(sl()));
 
     //! Repository
     sl.registerLazySingleton<DelegatorsRepository>(
@@ -28,7 +30,7 @@ class DelegatorsInjection {
 
     //! Cubit
     sl.registerLazySingleton(
-      () => DelegatorsCubit(sl()),
+      () => DelegatorsCubit(sl(), sl()),
     );
   }
 }

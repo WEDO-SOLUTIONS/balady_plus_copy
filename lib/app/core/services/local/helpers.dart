@@ -118,7 +118,6 @@ class Helpers {
 
       return LatLng(position.latitude, position.longitude);
     } catch (ex) {
-      print(ex);
       //    EasyLoading.dismiss();
       geoLocator.Position? position;
       try {
@@ -142,7 +141,6 @@ class Helpers {
 
       return LatLng(position.latitude, position.longitude);
     } catch (ex) {
-      print(ex);
       //    EasyLoading.dismiss();
       geoLocator.Position? position;
       try {
@@ -156,7 +154,7 @@ class Helpers {
 
   static Future<bool> checkPhotosSettings(BuildContext context) async {
     var status = await Permission.photos.request();
-    print(status);
+
     if (status == PermissionStatus.permanentlyDenied) {
       showDialog(
           context: context, builder: (ctx) => const PhotoPermissionDialog());
@@ -353,9 +351,7 @@ class Helpers {
         exceptions: [SentryException(value: url ?? "", type: url)],
       );
       Sentry.captureEvent(event);
-    } catch (ex) {
-      print(ex);
-    }
+    } catch (ex) {}
   }
 
   static String? getDaemValue(String? value) {
@@ -423,12 +419,12 @@ class Helpers {
         Share.shareFiles([filetemp.path]);
       }
     } catch (ex) {
-      print(ex);
+   
     }
   }
 
   static openFileLocal(Uint8List bytes, {String? contentType}) async {
-    print(contentType);
+
     String extension =
         contentType != null ? ("." + contentType.split("/").last) : "";
     try {
@@ -437,11 +433,11 @@ class Helpers {
         File filetemp = File("$dir/" +
             "${DateTime.now().millisecondsSinceEpoch.toString()}$extension");
         await filetemp.writeAsBytes(bytes);
-        //print(filetemp.path);
+        
         OpenFile.open(filetemp.path);
       }
     } catch (ex) {
-      print(ex);
+  
       try {
         sendLog(
             url: "OpenLoocalFile", data: ex.toString(), body: ex.toString());
@@ -479,7 +475,7 @@ class Helpers {
             OpenFile.open(filetemp.path);
           }
         } catch (ex) {
-          print(ex);
+    
         }
       }
     } catch (ex) {}
@@ -508,8 +504,6 @@ class Helpers {
   }*/
 
   static openFile(Uint8List bytes, {String? contentType}) async {
-    print("content toye");
-    print(contentType);
     String extension =
         contentType != null ? ("." + contentType.split("/").last) : "";
     try {
@@ -522,24 +516,19 @@ class Helpers {
         OpenFile.open(filetemp.path);
         //  Share.shareFiles([filetemp.path]);
       }
-    } catch (ex) {
-      print(ex);
-    }
+    } catch (ex) {}
   }
 
   static void backToHome() {
     try {
       CommonFunctions.showError("session_ended_error".tr());
       NavigationService.navigatorKey.currentState!.popUntil((route) {
-        print("route route $route");
         if (route.settings.name == RouteName.bottomNavigation ||
             route.settings.name == null) {
           return true;
         }
         return false;
       });
-    } catch (ex) {
-      print(ex);
-    }
+    } catch (ex) {}
   }
 }
