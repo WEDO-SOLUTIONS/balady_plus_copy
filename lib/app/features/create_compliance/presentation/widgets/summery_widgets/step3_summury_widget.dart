@@ -41,13 +41,50 @@ class Step3SummeryWidget extends StatelessWidget {
                   title: ("compliance_ownership_type").tr(),
                   subTitle: state.selectedOwnerShip?.name),
               CustomVerticalSpace(height: 8),
-              FieldData(
-                  title: ("compliance_ownership_text").tr(),
-                  subTitle: state.ownershipText),
-              CustomVerticalSpace(height: 8),
-              FieldData(
-                  title: ("compliance_ownership_date").tr(),
-                  subTitle: state.ownershipDate),
+              if (state.selectedOwnerShip?.id == 112) ...[
+                // صك
+                FieldData(
+                    title: ("compliance_deed_number_text").tr(),
+                    subTitle: state.ownershipText),
+                CustomVerticalSpace(height: 8),
+                FieldData(
+                    title: ("compliance_deed_number_date").tr(),
+                    subTitle: state.ownershipDate),
+              ],
+              if (state.selectedOwnerShip?.id == 146) ...[
+//عقد اسكان
+                FieldData(
+                    title: ("compliance_land_number").tr(),
+                    subTitle: state.ownershipText),
+                CustomVerticalSpace(height: 8),
+                FieldData(
+                    title: ("compliance_land_date").tr(),
+                    subTitle: state.ownershipDate),
+              ],
+              if (state.selectedOwnerShip?.id == 340) ...[
+                //ايصال كهرباء او مياه
+                FieldData(
+                    title: ("compliance_electricity_type").tr(),
+                    subTitle: state.selectedReciptType?.name),
+                CustomVerticalSpace(height: 8),
+                FieldData(
+                    title: ("compliance_electricity_number").tr(),
+                    subTitle: state.ownershipText),
+                CustomVerticalSpace(height: 8),
+                FieldData(
+                    title: ("compliance_electricity_number_date").tr(),
+                    subTitle: state.ownershipDate),
+              ],
+              if (state.selectedOwnerShip?.id == 664) ...[
+                // عقد استثماري - تخصيص حكومي
+                FieldData(
+                    title: ("compliance_investment_number").tr(),
+                    subTitle: state.ownershipText),
+                CustomVerticalSpace(height: 8),
+                FieldData(
+                    title: ("compliance_investment_number_date").tr(),
+                    subTitle: state.ownershipDate),
+              ],
             ],
           ],
         );
