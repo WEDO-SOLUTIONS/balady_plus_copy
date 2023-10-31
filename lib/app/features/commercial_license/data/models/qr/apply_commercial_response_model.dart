@@ -1,6 +1,8 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:equatable/equatable.dart';
 
+import '../../../../../core/utils/common_functions.dart';
+
 class ApplyCommercialResponseModel extends Equatable {
   final int? requestId;
   final String? requestDate;
@@ -594,7 +596,7 @@ class ContactInfo extends Equatable {
   });
 
   factory ContactInfo.fromJson(Map<String, dynamic> json) => ContactInfo(
-        mobile: json["mobile"],
+        mobile: json["mobile"] ?? CommonProperties.userInfo?.getPhone(),
         phone: json["phone"],
         mail: json["mail"],
         website: json["website"],

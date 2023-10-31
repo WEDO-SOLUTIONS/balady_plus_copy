@@ -128,17 +128,19 @@ class RenewCommercialLicenseBloc
   Future<void> _getRequestInfoHandler(
       GetRequestInfoEvent e, Emitter emitter) async {
     emitter(state.copyWith(
-        status: BlocStatus.loading, licensePeriod: int.tryParse(e.year ?? "")));
+        calculateInfoRequestStatus: BlocStatus.loading,
+        licensePeriod: int.tryParse(e.year ?? "")));
     final failOrSuccess = await _calculateRequestInfo(RenewInfoRequest(
         licensePeriod: state.licensePeriod, requestId: state.requestId!));
 
     failOrSuccess.fold((l) {
       emitter(state.copyWith(
-          status: BlocStatus.failure,
+          calculateInfoRequestStatus: BlocStatus.failure,
           errorMessage: (l as ServerFailure).errorMessage));
     }, (r) {
       print(r);
-      emitter(state.copyWith(status: BlocStatus.success, info: r));
+      emitter(state.copyWith(
+          calculateInfoRequestStatus: BlocStatus.success, info: r));
       setUpData();
       setUpDraft();
     });

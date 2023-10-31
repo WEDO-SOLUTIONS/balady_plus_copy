@@ -155,6 +155,7 @@ class CRStep6EstablishmentCubit extends Cubit<CRStep6EstablishmentState> {
       final String? postalCode,
       final bool? paymentMethods}) {
     emit(state.copyWith(
+        errorMessage: "",
         buildingName: buildingName,
         buildingUnit: buildingUnit,
         buildingFloor: buildingFloor,
@@ -189,7 +190,7 @@ class CRStep6EstablishmentCubit extends Cubit<CRStep6EstablishmentState> {
   }
 
   void updateContactInfo({
-    final String? mobile,
+    String? mobile,
     final String? phone,
     final String? mail,
     final String? website,
@@ -200,11 +201,10 @@ class CRStep6EstablishmentCubit extends Cubit<CRStep6EstablishmentState> {
     final String? whatsApp,
     final String? enterpriseUniqueCode,
   }) {
-    print("mobole ${CommonProperties.userInfo?.getPhone()}");
-    ContactInfo info = state.contactInfo ??
-        ContactInfo(mobile: CommonProperties.userInfo?.getPhone() ?? "");
+    ContactInfo info = state.contactInfo ?? ContactInfo();
+
     info = info.copyWith(
-        mobile: mobile,
+        mobile: CommonProperties.userInfo?.getPhone(),
         phone: phone,
         mail: mail,
         website: website,
