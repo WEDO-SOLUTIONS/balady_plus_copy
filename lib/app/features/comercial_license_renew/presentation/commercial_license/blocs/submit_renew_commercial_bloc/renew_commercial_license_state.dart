@@ -52,6 +52,7 @@ class RenewCommercialLicenseState extends Equatable {
   final CrAttachmentResponse? attachmentResponse;
   final List<AttachmentData>? attachments;
   final RenewRequestDetails? renewRequestDetails;
+  final bool? salamaExists;
 
   const RenewCommercialLicenseState(
       {this.status = BlocStatus.initial,
@@ -65,6 +66,7 @@ class RenewCommercialLicenseState extends Equatable {
       this.licensePeriod,
       this.info,
       this.errorMessage,
+      this.salamaExists,
       this.pagesList = const [
         CommercialRenewStep1(),
         CommercialRenewStep2(),
@@ -140,7 +142,8 @@ class RenewCommercialLicenseState extends Equatable {
         requestDetailsStatus,
         deedVerified,
         deedInfoRequst,
-        calculateInfoRequestStatus
+        calculateInfoRequestStatus,
+        salamaExists
       ];
 
   RenewCommercialLicenseState copyWith(
@@ -183,7 +186,8 @@ class RenewCommercialLicenseState extends Equatable {
       CrAttachmentResponse? attachmentResponse,
       List<AttachmentData>? attachments,
       final RenewRequestDetails? renewRequestDetails,
-      final DeedInfoRequest? deedInfoRequst}) {
+      final DeedInfoRequest? deedInfoRequst,
+      final bool? salamaExists}) {
     return RenewCommercialLicenseState(
         status: status ?? this.status,
         calculateInfoRequestStatus:
@@ -261,7 +265,8 @@ class RenewCommercialLicenseState extends Equatable {
         requestDetailsStatus: requestDetailsStatus ?? this.requestDetailsStatus,
         deedVerified:
             deedVerified == null ? this.deedVerified : deedVerified.value,
-        deedInfoRequst: deedInfoRequst ?? this.deedInfoRequst);
+        deedInfoRequst: deedInfoRequst ?? this.deedInfoRequst,
+        salamaExists: salamaExists ?? this.salamaExists);
   }
 
   bool showSalamaReport() {
@@ -426,5 +431,9 @@ class RenewCommercialLicenseState extends Equatable {
         return "صك تملك";
     }
     return info?.ownershipResponseDto?.contractType ?? "";
+  }
+
+  bool showSalmaExists() {
+    return showSalamaPermit() && (showSalamaReport() || showSalamaBill());
   }
 }
