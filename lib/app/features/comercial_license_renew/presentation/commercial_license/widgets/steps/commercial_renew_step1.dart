@@ -250,6 +250,7 @@ class _CommercialRenewStep1State extends State<CommercialRenewStep1> {
                     if (state.crSubmitterType == CRSubmitterType.rental)
                       HorizontalRadioGroup(
                         groupName: 'نوع العقد',
+                        currentItem: state.crContractType,
                         items: [
                           RadioItem<CRContractType>(
                               radioText: "عقد الإيجار",
