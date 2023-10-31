@@ -331,7 +331,6 @@ class PickerWidgetState<T> extends State<_PickerWidget> {
   // var ref = 0;
   @override
   Widget build(BuildContext context) {
-    // print("picker build ${ref++}");
     if (_wait && picker!.smooth != null && picker!.smooth! > 0) {
       Future.delayed(Duration(milliseconds: picker!.smooth!), () {
         if (!_wait) return;
@@ -797,14 +796,14 @@ class PickerDataAdapter<T> extends PickerAdapter<T> {
           var _o = map[_mapList[j]];
           if (_o is List && _o.isNotEmpty) {
             List<PickerItem<T>> _children = [];
-            //print('add: ${data.runtimeType.toString()}');
+
             data!.add(PickerItem<T>(value: _mapList[j], children: _children));
             _parsePickerDataItem(_o, _children);
           }
         }
       } else if (T == String && !(item is! List)) {
         String _v = item.toString();
-        //print('add: $_v');
+
         data!.add(PickerItem<T>(value: _v as T));
       }
     }
@@ -1320,7 +1319,6 @@ class DateTimePickerAdapter extends PickerAdapter<DateTime> {
 
   @override
   void setColumn(int index) {
-    //print("setColumn index: $index");
     _col = index + 1;
     if (_col < 0) _col = 0;
   }

@@ -182,7 +182,6 @@ class _MapViewState extends State<MapView> {
           LatLng(position.latitude, position.longitude);
       animateCamera(position.latitude, position.longitude);
     } catch (ex) {
-      print(ex);
       EasyLoading.dismiss();
       Position? position;
       try {

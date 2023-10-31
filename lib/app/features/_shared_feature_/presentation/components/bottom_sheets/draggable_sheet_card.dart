@@ -74,7 +74,6 @@ class _DraggableSheetCardState extends State<DraggableSheetCard> {
             mapViewModel.draggableScrollableController.size;
         mapViewModel.bottomSheetSizeFraction.notifyListeners();
 
-        print(mapViewModel.bottomSheetSizeFraction.value);
         if (mapViewModel.draggableScrollableController.size > 0.6) {
           FlutterUxcam.tagScreenName("HomeDialog");
         } else {
