@@ -5,7 +5,7 @@ class RenewCommercialLicenseState extends Equatable {
   final BlocStatus contractsListStatus;
   final BlocRequestStatus renewYearsStatus;
   final BlocStatus requestDetailsStatus;
-
+  final BlocStatus calculateInfoRequestStatus;
   final int currentPageValue;
   final List<Widget> pagesList;
   final int? requestId;
@@ -58,6 +58,7 @@ class RenewCommercialLicenseState extends Equatable {
       this.contractsListStatus = BlocStatus.initial,
       this.renewYearsStatus = BlocRequestStatus.initial,
       this.requestDetailsStatus = BlocStatus.initial,
+      this.calculateInfoRequestStatus = BlocStatus.initial,
       this.currentPageValue = 0,
       this.requestId,
       this.renewYears,
@@ -139,12 +140,14 @@ class RenewCommercialLicenseState extends Equatable {
         requestDetailsStatus,
         deedVerified,
         deedInfoRequst,
+        calculateInfoRequestStatus
       ];
 
   RenewCommercialLicenseState copyWith(
       {BlocStatus? status,
       BlocStatus? requestDetailsStatus,
       BlocStatus? contractsListStatus,
+      BlocStatus? calculateInfoRequestStatus,
       int? currentPageValue,
       List<Widget>? pagesList,
       int? requestId,
@@ -183,6 +186,8 @@ class RenewCommercialLicenseState extends Equatable {
       final DeedInfoRequest? deedInfoRequst}) {
     return RenewCommercialLicenseState(
         status: status ?? this.status,
+        calculateInfoRequestStatus:
+            calculateInfoRequestStatus ?? this.calculateInfoRequestStatus,
         renewRequestDetails: renewRequestDetails ?? this.renewRequestDetails,
         contractsListStatus: contractsListStatus ?? this.contractsListStatus,
         currentPageValue: currentPageValue ?? this.currentPageValue,
@@ -373,5 +378,35 @@ class RenewCommercialLicenseState extends Equatable {
   bool cleanContractshowService() {
     return (cleanTypeATTACHSERVICE() || cleanTypeService()) &
         !cleanOptionBALADIASADAD();
+  }
+
+  bool showDeedService() {
+    return info?.ownershipResponseDto?.contractType == "DEED" &&
+        info?.ownershipResponseDto?.contractOption == "SERVICE";
+  }
+
+  bool showEJARService() {
+    return info?.ownershipResponseDto?.contractType == "EJAR" &&
+        info?.ownershipResponseDto?.contractOption == "SERVICE";
+  }
+
+  bool showDeedAttach() {
+    return info?.ownershipResponseDto?.contractType == "DEED" &&
+        info?.ownershipResponseDto?.contractOption == "ATTACH";
+  }
+
+  bool showEJARAttach() {
+    return info?.ownershipResponseDto?.contractType == "EJAR" &&
+        info?.ownershipResponseDto?.contractOption == "ATTACH";
+  }
+
+  bool showINVESTService() {
+    return info?.ownershipResponseDto?.contractType == "INVEST" &&
+        info?.ownershipResponseDto?.contractOption == "SERVICE";
+  }
+
+  bool showINVESTAttach() {
+    return info?.ownershipResponseDto?.contractType == "INVEST" &&
+        info?.ownershipResponseDto?.contractOption == "ATTACH";
   }
 }

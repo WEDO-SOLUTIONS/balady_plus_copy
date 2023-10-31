@@ -36,6 +36,7 @@ class _CRStep6EstablishmentDataState extends State<CRStep6EstablishmentData> {
     context.read<CRStep6EstablishmentCubit>().getBuildingNature();
     context.read<CRStep6EstablishmentCubit>().getPaymentMethods();
     context.read<CRStep6EstablishmentCubit>().getSiteNature();
+    context.read<CRStep6EstablishmentCubit>().updateContactInfo();
   }
 
   @override
@@ -258,6 +259,7 @@ class _CRStep6EstablishmentDataState extends State<CRStep6EstablishmentData> {
                             label: "رقم الجوال",
                             hintText: "رقم الجوال",
                             isDigitsOnly: true,
+                            enabled: false,
                             keyboardType: TextInputType.number,
                             onValidate: (p0) {},
                             initialValue:

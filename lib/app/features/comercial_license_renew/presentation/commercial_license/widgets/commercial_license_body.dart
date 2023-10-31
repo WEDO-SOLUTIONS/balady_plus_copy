@@ -63,7 +63,8 @@ class CommercialLicenseBody extends StatelessWidget {
                 ),
               ),
             ),
-            if (state.status == BlocStatus.loading)
+            if (state.status == BlocStatus.loading ||
+                state.calculateInfoRequestStatus == BlocStatus.loading)
               CustomCircularLoadingWidget()
           ],
         );

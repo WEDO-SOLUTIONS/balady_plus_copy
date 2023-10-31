@@ -1,4 +1,5 @@
 import 'package:balady_plus/app/core/utils/enums/bloc_status.dart';
+import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
@@ -29,6 +30,7 @@ import '../../../../renew_commercial_license_exports.dart'
         RenewCommercialLicenseState,
         UpdateRenewYearsEvent;
 import '../clean_contract_card.dart';
+import '../contracts_widgets/deed_service_contract.dart';
 import '../investment_contract_card.dart';
 
 class CommercialRenewStep1 extends StatefulWidget {
@@ -53,6 +55,7 @@ class _CommercialRenewStep1State extends State<CommercialRenewStep1> {
               builder: (context, state) {
                 return Column(
                   children: [
+                    DeedServiceContract(),
                     DropDownWithTitle(
                       title: "مدة التجديد بالسنوات".tr(),
                       selectedValue: state.licensePeriod != null
@@ -88,6 +91,14 @@ class _CommercialRenewStep1State extends State<CommercialRenewStep1> {
                         );
                       },
                     ),
+                    if (state.calculateInfoRequestStatus == BlocStatus.failure)
+                      RetryWidget(
+                        onRetry: () {
+                          context
+                              .read<RenewCommercialLicenseBloc>()
+                              .add(const GetRequestInfoEvent());
+                        },
+                      ),
                     if (state.info?.ownershipResponseDto
                             ?.modifyOwnershipWarning !=
                         null)
@@ -535,7 +546,7 @@ class _CommercialRenewStep1State extends State<CommercialRenewStep1> {
                         },
                       ),
                     CRPreviousNextButtons(
-                      isBtnDisabled: false,
+                      isBtnDisabled: state.licensePeriod == null,
                       onPressed: () {
                         context
                             .read<RenewCommercialLicenseBloc>()
