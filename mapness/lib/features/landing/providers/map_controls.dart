@@ -25,7 +25,7 @@ class MapControlsStateNavigation extends MapControlsState {
 
 class MapControlsStateHappinessMap extends MapControlsState {
   @override
-  bool get controlsVisible => true;
+  bool get controlsVisible => false;
 }
 
 class MapControlsStateLayers extends MapControlsState {

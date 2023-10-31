@@ -17,7 +17,8 @@ class HappinessTextField extends ConsumerWidget {
 
     return TextField(
       enabled: false,
-      textAlign: TextAlign.end,
+      textAlign: TextAlign.right,
+      textDirection: TextDirection.rtl,
       textInputAction: TextInputAction.done,
       // controller: model.searchController,
       onSubmitted: happinessManager.updateComment,

@@ -1,4 +1,5 @@
 import 'package:collection/collection.dart';
+import 'package:dgis_map/library.dart';
 import 'package:mapness/features/happiness_map/data/happiness_repository.dart';
 import 'package:mapness/features/happiness_map/domain/happiness_feedback.dart';
 import 'package:mapness/features/map/providers/camera_position.dart';
@@ -33,15 +34,13 @@ class HappinessManager extends _$HappinessManager {
   }
 
   Future<void> submitFeedback() async {
-    final cameraPosition =
-        ref.read(cameraPositionProvider.select((x) => x?.point));
+    var cameraPosition = ref.read(cameraPositionProvider)?.point;
+    cameraPosition ??= GeoPointMessage(latitude: 0, longitude: 0);
 
     updateCoordinates(
-      Coordinates(cameraPosition!.latitude, cameraPosition.longitude),
+      Coordinates(cameraPosition.latitude, cameraPosition.longitude),
     );
-    // print('FLAG: send feedback $_comment');
-    // print('FLAG: feedback ${state.feedback}');
-    // print('FLAG: tags ${state.tags}');
+
     final happinessRepository = ref.read(happinessRepositoryProvider.notifier);
     await happinessRepository.submitFeedback(state);
   }
