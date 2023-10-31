@@ -387,11 +387,14 @@ class RenewCommercialLicenseBloc
         salamaBillNumber: state.salamaBillNumber,
         salamaPermitNumber: state.salamaPermitNumber,
         salamaReportNumber: state.salamaReportNumber));
-    response.fold(
-        (failure) => emit(state.copyWith(
-              status: BlocStatus.failure,
-              errorMessage: (failure as ServerFailure).errorMessage,
-            )), (success) {
+    response.fold((failure) {
+      print(failure);
+      state.copyWith(
+        status: BlocStatus.failure,
+        errorMessage: (failure as ServerFailure).errorMessage,
+      );
+    }, (success) {
+      print(success);
       emit(state.copyWith(
         status: BlocStatus.success,
       ));
@@ -546,7 +549,7 @@ class RenewCommercialLicenseBloc
       emit(state.copyWith(status: BlocStatus.success));
 
       NavigationService.navigatorKey.currentState!.popAndPushNamed(
-        RouteName.submitApplicationSuccessfullyCancel,
+        RouteName.submitApplicationSuccessfullyRenew,
         arguments: (
           "",
           success.data?.result,

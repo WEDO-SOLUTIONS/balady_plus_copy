@@ -90,7 +90,7 @@ class RenewStartService extends StatelessWidget {
           "isImportant": false,
           "action": {"type": "cards", "value": ""},
           "ar": {
-            "title": "الغاء رخصة تجارية",
+            "title": "تجديد رخصة تجارية",
             "description": "",
             "tag": null,
             "warning": "يجب أن يتم إلغاء رخصة النشاط التجاري قبل شطب السجل التجاري."
@@ -102,7 +102,7 @@ class RenewStartService extends StatelessWidget {
                 "رسوم الإلغاء 20 ريال مع ضرورة أن تكون الرخصة سارية.\n"
           },
           "en": {
-            "title": "الغاء رخصة تجارية",
+            "title": "تجديد رخصة تجارية",
             "description": "",
             "tag": null,
             "warning": "يجب أن يتم إلغاء رخصة النشاط التجاري قبل شطب السجل التجاري.\n"

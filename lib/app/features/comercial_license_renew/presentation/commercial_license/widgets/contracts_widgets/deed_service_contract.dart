@@ -19,84 +19,114 @@ class DeedServiceContract extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<RenewCommercialLicenseBloc, RenewCommercialLicenseState>(
       builder: (context, state) {
-        return Container(
-          height: 160,
-          padding: const EdgeInsets.all(16),
-          margin: const EdgeInsets.only(top: 16),
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(16), color: AppColor.white),
-          child: Column(
-            children: [
-              Row(
-                children: [
-                  Expanded(
-                    flex: 2,
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
+        return state.showDeedService()
+            ? Container(
+                height: 160,
+                padding: const EdgeInsets.all(16),
+                margin: const EdgeInsets.only(top: 16),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(16),
+                    color: AppColor.white),
+                child: Column(
+                  children: [
+                    Row(
                       children: [
-                        SvgPicture.asset(IconPath.vdSummuryDesc),
-                        const SizedBox(
-                          width: 8,
-                        ),
-                        Flexible(
-                          child: CustomTextWidget(
-                            "عقد الكتروني",
-                            fontColor: AppColor.blackModern500Light,
-                            fontSize: 16,
-                            maxLines: 2,
-                            fontWeight: AppFontWeight.bold,
+                        Expanded(
+                          flex: 2,
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              SvgPicture.asset(IconPath.vdSummuryDesc),
+                              const SizedBox(
+                                width: 8,
+                              ),
+                              Flexible(
+                                child: CustomTextWidget(
+                                  "عقد الكتروني",
+                                  fontColor: AppColor.blackModern500Light,
+                                  fontSize: 16,
+                                  maxLines: 2,
+                                  fontWeight: AppFontWeight.bold,
+                                ),
+                              )
+                            ],
                           ),
-                        )
+                        ),
                       ],
                     ),
-                  ),
-                ],
-              ),
-              Spacer(),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      CustomTextWidget(
-                        "نوع اثبات الموقع",
-                        fontColor: AppColor.primary900Light,
-                        fontSize: 12,
-                        fontWeight: AppFontWeight.bold,
-                      ),
-                      const CustomVerticalSpace(height: 8),
-                      CustomTextWidget(
-                        "صك التملك",
-                        fontColor: AppColor.blackModern600Light,
-                        fontSize: 14,
-                        fontWeight: AppFontWeight.bold,
-                      ),
-                    ],
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      CustomTextWidget(
-                        "رمز العقد في الأمانه",
-                        fontColor: AppColor.primary900Light,
-                        fontSize: 12,
-                        fontWeight: AppFontWeight.bold,
-                      ),
-                      const CustomVerticalSpace(height: 8),
-                      CustomTextWidget(
-                        "Number",
-                        fontColor: AppColor.blackModern600Light,
-                        fontSize: 14,
-                        fontWeight: AppFontWeight.bold,
-                      ),
-                    ],
-                  ),
-                ],
+                    Spacer(),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            CustomTextWidget(
+                              "نوع اثبات الموقع",
+                              fontColor: AppColor.primary900Light,
+                              fontSize: 12,
+                              fontWeight: AppFontWeight.bold,
+                            ),
+                            const CustomVerticalSpace(height: 8),
+                            CustomTextWidget(
+                              state.getContractName(),
+                              fontColor: AppColor.blackModern600Light,
+                              fontSize: 14,
+                              fontWeight: AppFontWeight.bold,
+                            ),
+                          ],
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            CustomTextWidget(
+                              "رقم عقد التمليك",
+                              fontColor: AppColor.primary900Light,
+                              fontSize: 12,
+                              fontWeight: AppFontWeight.bold,
+                            ),
+                            const CustomVerticalSpace(height: 8),
+                            CustomTextWidget(
+                              state.info?.ownershipResponseDto
+                                      ?.contractNumber ??
+                                  "",
+                              fontColor: AppColor.blackModern600Light,
+                              fontSize: 14,
+                              fontWeight: AppFontWeight.bold,
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 16),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            CustomTextWidget(
+                              "تاريخ عقد التمليك",
+                              fontColor: AppColor.primary900Light,
+                              fontSize: 12,
+                              fontWeight: AppFontWeight.bold,
+                            ),
+                            const CustomVerticalSpace(height: 8),
+                            CustomTextWidget(
+                              state.info?.ownershipResponseDto?.contractDate ??
+                                  "",
+                              fontColor: AppColor.blackModern600Light,
+                              fontSize: 14,
+                              fontWeight: AppFontWeight.bold,
+                            ),
+                          ],
+                        ),
+                      ],
+                    )
+                  ],
+                ),
               )
-            ],
-          ),
-        );
+            : Container();
       },
     );
   }

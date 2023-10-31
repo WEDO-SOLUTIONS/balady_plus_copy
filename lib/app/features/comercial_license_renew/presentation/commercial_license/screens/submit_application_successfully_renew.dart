@@ -11,6 +11,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
+import '../../../../../core/services/local/helpers.dart';
+import '../../../../../core/utils/common_functions.dart';
+import '../../../../commercial_license/data/models/cr_submit_response_model.dart';
+
 class SubmitApplicationSuccessfullyRenew extends StatelessWidget {
   const SubmitApplicationSuccessfullyRenew({Key? key}) : super(key: key);
 
@@ -18,14 +22,14 @@ class SubmitApplicationSuccessfullyRenew extends StatelessWidget {
   Widget build(BuildContext context) {
     (
       String from,
-      SubmitResponse submitResponse,
+      CrSubmitResponseModel submitResponse,
       double totalCost,
     ) arguments = ModalRoute.of(context)!.settings.arguments as (
       String from,
-      SubmitResponse submitResponse,
+      CrSubmitResponseModel submitResponse,
       double totalCost,
     );
-    SubmitResponse submitResponse = arguments.$2;
+    CrSubmitResponseModel submitResponse = arguments.$2;
     return WillPopScope(
       onWillPop: () async {
         return Future<bool>.value(false);
@@ -56,13 +60,13 @@ class SubmitApplicationSuccessfullyRenew extends StatelessWidget {
                     // ),
                     const SizedBox(height: 16),
                     CustomAutoSizeTextWidget(
-                      '${'application_no_has_been_submitted'.tr()} ${submitResponse.requestId} ${(submitResponse.payUrl?.isNotEmpty ?? false) ? '${'and_issue_invoice_service_amount'.tr()} ${arguments.$3} ${'sar'.tr()}' : ''}',
+                      submitResponse.message ?? "",
                       textStyle: AppStyle.serviceListTitleTextStyle,
                       maxLines: 3,
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 16),
-                    CustomTextButtonWidget(
+                    /* CustomTextButtonWidget(
                       text: 'service_evaluation'.tr(),
                       onPressed: () {
                         Navigator.of(context).popAndPushNamed(
@@ -74,34 +78,25 @@ class SubmitApplicationSuccessfullyRenew extends StatelessWidget {
                         );
                       },
                       haveUnderline: true,
-                    ),
+                    ),*/
                   ],
                 ),
               ),
               const SizedBox(height: 16),
               submitResponse.payUrl != null
                   ? ElevatedButtonWidget.primaryCustomBorder(
-                      text: 'viewـinvoice'.tr(),
+                      text: 'دفع الفاتورة'.tr(),
                       onPressed: () async {
-                        Navigator.of(context).popAndPushNamed(
-                          RouteName.invoiceDetails,
-                          arguments: [
-                            submitResponse.payUrl.toString(),
-                            submitResponse.crNumber,
-                            submitResponse.crType,
-                          ],
-                        );
+                        CommonFunctions.openBaladyWebView(
+                            submitResponse.payUrl);
                       },
                     )
                   : const SizedBox(),
               const SizedBox(height: 16),
               ElevatedButtonWidget.primaryCustom(
-                text: arguments.$1 == "licenses"
-                    ? "back_licenses_page".tr()
-                    : "back_request_page".tr(),
+                text: ('go_to_home').tr(),
                 onPressed: () {
-                  Navigator.of(context).pop();
-                  Navigator.of(context).pop();
+                  Helpers.backNavigationToHomeScreen();
                 },
               ),
               const SizedBox(height: 16),

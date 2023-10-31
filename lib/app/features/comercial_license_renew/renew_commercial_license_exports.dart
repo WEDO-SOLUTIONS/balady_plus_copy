@@ -30,7 +30,6 @@ export 'domain/entities/clean_contracts_response.dart';
 export 'domain/entities/cr_attachment_request.dart';
 export 'domain/entities/cr_calculate_fees_request.dart';
 export 'domain/entities/cr_calculate_fees_response.dart';
-export 'domain/entities/cr_submit_response.dart';
 export 'domain/entities/renew_apply_request.dart';
 export 'domain/entities/renew_info_request.dart';
 export 'domain/entities/renew_request_info.dart';
@@ -51,7 +50,6 @@ export 'data/data_sources/renew_cr_remote_data_source.dart';
 export 'data/models/ejar_info_response_model.dart';
 export 'data/models/deed_info_response_model.dart';
 export 'data/models/cr_calculate_fees_response_model.dart';
-export 'data/models/cr_submit_response_model.dart';
 
 // repo
 export 'data/repositories/renew_cr_repository_impl.dart';
