@@ -14,14 +14,16 @@ class TextWithCheckBtn extends StatefulWidget {
   final double bottomViewInsets;
   final Function verify;
   final Function validate;
-  final TextEditingController controller;
+  final TextEditingController? controller;
   final String? errorText;
   final Color? backgroundColor;
+  final int? maxLength;
+  final bool enabled;
 
   TextWithCheckBtn(
       {required this.title,
       this.hint,
-      required this.controller,
+      this.controller,
       this.textHint,
       this.currentValue,
       required this.onTextChanged,
@@ -30,7 +32,9 @@ class TextWithCheckBtn extends StatefulWidget {
       required this.verify,
       this.errorText,
       this.backgroundColor,
-      required this.validate});
+      this.maxLength,
+      required this.validate,
+      this.enabled = true});
   @override
   _TextWithCheckBtnState createState() => _TextWithCheckBtnState();
 }
@@ -42,7 +46,7 @@ class _TextWithCheckBtnState extends State<TextWithCheckBtn> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    widget.controller.text = widget.currentValue ?? "";
+    widget.controller?.text = widget.currentValue ?? "";
   }
 
   @override
@@ -58,12 +62,14 @@ class _TextWithCheckBtnState extends State<TextWithCheckBtn> {
           hintText: widget.hint ?? "",
           errorText: widget.errorText,
           keyboardType: TextInputType.numberWithOptions(signed: false),
-          maxLength: 10,
+          maxLength: widget.maxLength,
           onValidate: (String? t) => widget.validate(t),
+          enabled: widget.enabled,
           onChanged: (value) => {widget.onTextChanged(value)},
         ),
         Padding(
-          padding: const EdgeInsets.only(bottom: 0.0, left: 8),
+          padding: EdgeInsets.only(
+              bottom: 0.0, left: 8, top: widget.maxLength == null ? 20 : 0),
           child: InkWell(
             onTap: widget.isValidate
                 ? null
