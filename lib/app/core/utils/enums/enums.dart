@@ -47,7 +47,7 @@ enum PAGE_TYPE {
   vhr,
   emtethal,
   deleteEmtethal,
-
+  renewCommercial,
   other
 }
 
@@ -72,4 +72,67 @@ enum RequestsType {
 
 enum ATHKAR_CATAGORIES { morning, sleep, evening }
 
-enum ServiceCardsTypes { desc, req, flow }
+enum CRSubmitterType { owner, rental }
+
+enum CRContractType {
+  deed(name: "DEED"),
+  invest(name: "INVEST"),
+  ejar(name: "EJAR");
+
+  final String name;
+
+  const CRContractType({required this.name});
+}
+
+enum CRContractOption {
+  attach(name: "ATTACH"),
+  service(name: "SERVICE");
+
+  final String name;
+
+  const CRContractOption({required this.name});
+}
+
+enum CRRenewCleanOption {
+  optional(name: "OPTIONAL"),
+  cleanContract(name: "CLEAN_CONTRACT"),
+  baladiaSadad(name: "BALADIA_SADAD");
+
+  final String name;
+
+  const CRRenewCleanOption({required this.name});
+}
+
+enum CRRenewCleanContract {
+  attach(name: "ATTACH"),
+  service(name: "SERVICE"),
+  attachService(name: "ATTACH,SERVICE");
+
+  final String name;
+
+  const CRRenewCleanContract({required this.name});
+}
+
+enum CRContractCleanRenewOptions {
+  service(name: "SERVICE"),
+  attach(name: "ATTACH"),
+  payAll(name: "payAll");
+
+  final String name;
+
+  const CRContractCleanRenewOptions({required this.name});
+}
+
+enum UserProfileType { Delegator, Agent }
+
+enum ServiceCardsTypes { desc, req, flow, authorInfo }
+
+enum QRSiteLocationType {
+  INSIDE_BUILDING(name: "INSIDE_BUILDING"),
+  ON_STREET(name: "ON_STREET");
+
+  final String name;
+  const QRSiteLocationType({required this.name});
+}
+
+enum QRWorkTimes { SHIFTED, OPEN_24HOUR, CLOSED }

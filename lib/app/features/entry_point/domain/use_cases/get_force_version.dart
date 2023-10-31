@@ -17,7 +17,6 @@ class GetForceVersion extends UseCase<bool, NoParams> {
         appId: "etmam_mobile", type: CommonProperties.deviceOs ?? "");
     final successsOrFailure = await repository.getForceVersion(params);
     return successsOrFailure.fold((l) => Right(false), (r) {
-      //   print("SUCCCCCCCCESSSSSS ${r}");
       bool showForce = compareVersion(
           CommonProperties.appVersion, r.versionNumber, r.forceUpdate);
       return Right(showForce);

@@ -1,5 +1,9 @@
 enum WorkersTypes {
-  men,
-  women,
-  menWomen,
+  men(type: 1),
+  women(type: 2),
+  menWomen(type: 3);
+
+  const WorkersTypes({required this.type});
+
+  final int type;
 }

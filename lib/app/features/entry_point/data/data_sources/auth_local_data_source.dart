@@ -19,7 +19,6 @@ class EntryPointLocalDataSourceImpl extends EntryPointLocalDataSource {
   @override
   Future<bool> saveAuth(SSOToken params) {
     try {
-      print("saveeeed coookie ${params.appCookie}");
       sharedPrefs.setSSOToken(params.toModel);
       return Future.value(true);
     } catch (error) {
@@ -34,8 +33,6 @@ class EntryPointLocalDataSourceImpl extends EntryPointLocalDataSource {
     try {
       SSOTokenModel? token = sharedPrefs.getSSOToken();
       if (token != null) {
-        print("saveeeed coookie111 ${token.appCookie}");
-
         return Future.value(token);
       } else {
         throw AuthNotFoundedException();
