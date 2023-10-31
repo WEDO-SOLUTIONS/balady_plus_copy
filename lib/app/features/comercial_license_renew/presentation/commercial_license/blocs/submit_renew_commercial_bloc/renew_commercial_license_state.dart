@@ -409,4 +409,16 @@ class RenewCommercialLicenseState extends Equatable {
     return info?.ownershipResponseDto?.contractType == "INVEST" &&
         info?.ownershipResponseDto?.contractOption == "ATTACH";
   }
+
+  String getContractName() {
+    switch (info?.ownershipResponseDto?.contractType) {
+      case "EJAR":
+        return "عقد ايجار";
+      case "INVEST":
+        return "عقد استثمار";
+      case "DEED":
+        return "صك تملك";
+    }
+    return info?.ownershipResponseDto?.contractType ?? "";
+  }
 }

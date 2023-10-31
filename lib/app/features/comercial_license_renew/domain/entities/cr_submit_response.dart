@@ -1,3 +1,0 @@
-class CrSubmitResponse {
-  CrSubmitResponse();
-}

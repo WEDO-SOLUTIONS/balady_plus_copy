@@ -9,13 +9,13 @@ import '../../../../core/errors/errors_exports.dart';
 import '../../../../core/services/local/helpers.dart';
 import '../../../../core/services/services_exports.dart';
 import '../../../_shared_feature_/shared_feature_exports.dart';
+import '../../../commercial_license/data/models/cr_submit_response_model.dart';
 import '../../../commercial_license_cancel/data/models/submit_response.dart';
 import '../../domain/entities/save_renew_request.dart';
 import '../../renew_commercial_license_exports.dart';
 import '../../domain/entities/cr_submit_request.dart';
 import '../models/clean_contracts_response_model.dart';
 import '../models/cr_attachment_response_model.dart';
-import '../models/cr_submit_response_model.dart';
 import '../../../../core/remote_services/web_service.dart' as web;
 import '../models/investment_contracts_response_model.dart';
 import '../models/renew_request_details.dart';
@@ -36,7 +36,8 @@ abstract class RenewCrRemoteDataSource {
   Future<CleanContractsResponseModel> getCleanContracts(
       {CleanContractsRequest? params});
 
-  Future<dynamic> saveRenewRequestInfo({SaveRenewRequest? params});
+  Future<ResponseBodyModel<dynamic>> saveRenewRequestInfo(
+      {SaveRenewRequest? params});
 
   Future<dynamic> submitRenewAttachments({int? params});
 
@@ -46,7 +47,8 @@ abstract class RenewCrRemoteDataSource {
 
   Future<RenewRequestDetails> getRequestDetails({required int params});
 
-  Future<ResponseBodyModel<SubmitResponse>> submitRenew({required int params});
+  Future<ResponseBodyModel<CrSubmitResponseModel>> submitRenew(
+      {required int params});
 
   Future<DeedInfoResponseModel> getDeedInfo({DeedInfoRequest? params});
 
@@ -414,7 +416,7 @@ class RenewCrRemoteDataSourceImpl extends RenewCrRemoteDataSource {
   }
 
   @override
-  Future<ResponseBodyModel<SubmitResponse>> submitRenew(
+  Future<ResponseBodyModel<CrSubmitResponseModel>> submitRenew(
       {required int params}) async {
     var response;
 
@@ -425,8 +427,9 @@ class RenewCrRemoteDataSourceImpl extends RenewCrRemoteDataSource {
 
       var data = response.data["data"]["result"];
 
-      var parsedResult = data != null ? SubmitResponse.fromJson(data) : null;
-      final decodedResponse = ResponseBodyModel<SubmitResponse>.fromMap(
+      var parsedResult =
+          data != null ? CrSubmitResponseModel.fromJson(data) : null;
+      final decodedResponse = ResponseBodyModel<CrSubmitResponseModel>.fromMap(
           response.data,
           parsedResult: parsedResult);
 
@@ -743,7 +746,8 @@ class RenewCrRemoteDataSourceImpl extends RenewCrRemoteDataSource {
   }
 
   @override
-  Future saveRenewRequestInfo({SaveRenewRequest? params}) async {
+  Future<ResponseBodyModel<dynamic>> saveRenewRequestInfo(
+      {SaveRenewRequest? params}) async {
     var response;
 
     try {
@@ -757,9 +761,8 @@ class RenewCrRemoteDataSourceImpl extends RenewCrRemoteDataSource {
       //     data != null ? RenewRequestInfoModel.fromJson(data) : null;
 
       final decodedResponse =
-          ResponseBodyModel<dynamic>.fromMap(response.data, parsedResult: null);
-
-      return decodedResponse.data!.result!.toFuture();
+          ResponseBodyModel<dynamic>.fromMap(response.data, parsedResult: data);
+      return decodedResponse.toFuture();
     } on DioError catch (error) {
       print(error);
       var errorCode;

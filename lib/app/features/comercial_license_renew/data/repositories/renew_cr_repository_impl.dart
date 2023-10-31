@@ -2,6 +2,7 @@ import 'package:balady_plus/app/features/comercial_license_renew/domain/entities
 import 'package:dartz/dartz.dart' show Either, Left, Right;
 import '../../../../core/errors/errors_exports.dart';
 import '../../../_shared_feature_/data/models/response_body_model.dart';
+import '../../../commercial_license/data/models/cr_submit_response_model.dart';
 import '../../../commercial_license_cancel/data/models/submit_response.dart';
 import '../../domain/entities/cr_attachment_response.dart';
 import '../../renew_commercial_license_exports.dart';
@@ -147,7 +148,7 @@ class RenewCrRepositoryImpl implements RenewCrRepository {
   }
 
   @override
-  Future<Either<Failure, RenewRequestInfo>> saveRenewRequestInfo(
+  Future<Either<Failure, ResponseBodyModel<dynamic>>> saveRenewRequestInfo(
       {required SaveRenewRequest? params}) async {
     try {
       final data = await remoteDataSource.saveRenewRequestInfo(params: params);
@@ -172,7 +173,7 @@ class RenewCrRepositoryImpl implements RenewCrRepository {
   }
 
   @override
-  Future<Either<Failure, ResponseBodyModel<SubmitResponse>>> submitRenew(
+  Future<Either<Failure, ResponseBodyModel<CrSubmitResponseModel>>> submitRenew(
       {required int params}) async {
     try {
       final data = await remoteDataSource.submitRenew(params: params);

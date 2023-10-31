@@ -31,6 +31,9 @@ import '../../../../renew_commercial_license_exports.dart'
         UpdateRenewYearsEvent;
 import '../clean_contract_card.dart';
 import '../contracts_widgets/deed_service_contract.dart';
+import '../contracts_widgets/ejar_attachment_contract.dart';
+import '../contracts_widgets/ejar_service_contract.dart';
+import '../contracts_widgets/investment_service_contract.dart';
 import '../investment_contract_card.dart';
 
 class CommercialRenewStep1 extends StatefulWidget {
@@ -56,6 +59,10 @@ class _CommercialRenewStep1State extends State<CommercialRenewStep1> {
                 return Column(
                   children: [
                     DeedServiceContract(),
+                    EjarServiceContract(),
+                    InvestmentServiceContract(),
+                    AttachContract(),
+                    CustomVerticalSpace(height: 16),
                     DropDownWithTitle(
                       title: "مدة التجديد بالسنوات".tr(),
                       selectedValue: state.licensePeriod != null
