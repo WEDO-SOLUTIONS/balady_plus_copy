@@ -21,40 +21,42 @@ class CredenceComponents extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<CRStep5AttachmentCubit, CRStep5AttachmentState>(
         builder: (context, state) {
-      return Builder(builder: (context) {
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const CRHeaderDesc(
-              maxLines: null,
-              textHeight: 1.5,
-              header: "الموافقات",
-              desc: "موافقات الجهات الرسمية",
-            ),
-            const CustomVerticalSpace(height: 16),
-            ListView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: state.crdences?.length ?? 0,
-                itemBuilder: (ctx, index) {
-                  return CredenceItemComponent(
-                    index: index,
-                    item: state.crdences![index],
-                    onDelete: () {
-                      context
-                          .read<CRStep5AttachmentCubit>()
-                          .deleteCredence(index);
-                    },
-                    onUpload: (FileDataItem? item) {
-                      context
-                          .read<CRStep5AttachmentCubit>()
-                          .uploadCrednece(item!, index);
-                    },
-                  );
-                })
-          ],
-        );
-      });
+      return state.crdences != null && state.crdences!.isNotEmpty
+          ? Builder(builder: (context) {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const CRHeaderDesc(
+                    maxLines: null,
+                    textHeight: 1.5,
+                    header: "الموافقات",
+                    desc: "موافقات الجهات الرسمية",
+                  ),
+                  const CustomVerticalSpace(height: 16),
+                  ListView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: state.crdences?.length ?? 0,
+                      itemBuilder: (ctx, index) {
+                        return CredenceItemComponent(
+                          index: index,
+                          item: state.crdences![index],
+                          onDelete: () {
+                            context
+                                .read<CRStep5AttachmentCubit>()
+                                .deleteCredence(index);
+                          },
+                          onUpload: (FileDataItem? item) {
+                            context
+                                .read<CRStep5AttachmentCubit>()
+                                .uploadCrednece(item!, index);
+                          },
+                        );
+                      })
+                ],
+              );
+            })
+          : Container();
     });
   }
 }

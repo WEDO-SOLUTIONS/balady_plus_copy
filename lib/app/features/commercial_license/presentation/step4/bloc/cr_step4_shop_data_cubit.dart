@@ -79,7 +79,7 @@ class CrStep4ShopDataCubit extends Cubit<CrStep4ShopDataState> {
       emit(state.copyWith(selectedAccommodationType: accommodationTypes));
 
   void addBoard(CommercialBoardType board) {
-    emit(state.copyWith(status: BlocStatus.loading));
+    emit(state.copyWith(status: BlocStatus.loading, errorMessage: ""));
     List<CommercialBoardType> selectedBoards = state.selectedBoards ?? [];
 
     int index = selectedBoards.indexWhere((element) => element.id == board.id);

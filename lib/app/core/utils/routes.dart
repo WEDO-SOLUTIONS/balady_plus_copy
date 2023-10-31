@@ -66,6 +66,7 @@ import '../../features/_shared_feature_/presentation/pages/view_apigee_image_scr
 import '../../features/calendar/calendar_exports.dart';
 import '../../features/calendar/presentation/pages/calendar_details_page.dart';
 import '../../features/commercial_license/presentation/step3/page/cr_map_page.dart';
+import '../../features/commercial_license/presentation/submit_application_successfully_new.dart';
 import '../../features/create_compliance/presentation/pages/compliance_details_page.dart';
 import '../../features/create_compliance/presentation/pages/map_page/complinace_map_page.dart';
 import '../../features/create_compliance/presentation/pages/non_compliance_screen.dart';
@@ -560,6 +561,8 @@ class Routes {
 
         RouteName.submitApplicationSuccessfullyRenew: (context) =>
             const SubmitApplicationSuccessfullyRenew(),
+        RouteName.submitApplicationSuccessfullyNew: (context) =>
+            const SubmitApplicationSuccessfullyNew(),
       };
 }
 

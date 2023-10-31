@@ -8,6 +8,8 @@ import '../../../../_shared_feature_/shared_feature_exports.dart';
 import '../../../commercial_license_exports.dart';
 import 'package:collection/collection.dart';
 
+import '../widgets/accomodation_types_drop_down.dart';
+
 class CRStep2ActivityData extends StatelessWidget {
   const CRStep2ActivityData({Key? key}) : super(key: key);
 
@@ -107,9 +109,12 @@ class CRStep2ActivityData extends StatelessWidget {
                           label: 'step2_label4'.tr(),
                           hintText: 'label4_hint'.tr(),
                           isDigitsOnly: true,
+                          initialValue: state.totalArea != null
+                              ? state.totalArea.toString()
+                              : null,
                           keyboardType: TextInputType.number,
                           suffixIcon: CustomTextWidget(
-                            state.subActivityDetails?.unitDesc ?? "",
+                            "متر مربع",
                             fontSize: 12,
                             fontWeight: AppFontWeight.semiBold,
                             fontColor: AppColor.blackModern400Light,
@@ -122,6 +127,70 @@ class CRStep2ActivityData extends StatelessWidget {
                           },
                         ),
 
+                        if (state.showHotel()) ...[
+                          AccomodationDropDownTypes(),
+                          const CustomVerticalSpace(height: 16),
+                          CustomTextFieldWidget(
+                            label: 'عدد الوحدات'.tr(),
+                            hintText: 'عدد الوحدات'.tr(),
+                            isDigitsOnly: true,
+                            initialValue: state.unitCount != null
+                                ? state.unitCount.toString()
+                                : null,
+                            keyboardType: TextInputType.number,
+                            suffixIcon: CustomTextWidget(
+                              "",
+                              fontSize: 12,
+                              fontWeight: AppFontWeight.semiBold,
+                              fontColor: AppColor.blackModern400Light,
+                            ),
+                            bottomMargin: 24,
+                            onChanged: (value) {
+                              context
+                                  .read<CrStep2ActivityDataCubit>()
+                                  .updateUnitCount(value);
+                            },
+                          ),
+                          const CustomVerticalSpace(height: 16),
+                        ],
+                        if (state.showAtm()) ...[
+                          CustomTextWidget(
+                            "هل تم دفع رسوم تأسيس الصراف؟",
+                            fontColor: AppColor.blackModern700Light,
+                            fontSize: 16,
+                            fontWeight: AppFontWeight.bold,
+                          ),
+                          const CustomVerticalSpace(height: 16),
+                          Container(
+                            child:
+                                Row(mainAxisSize: MainAxisSize.min, children: [
+                              Expanded(
+                                child: CheckBoxWithTitle(
+                                  title: "نعم",
+                                  forceSelection: state.atmFeesPaid == true,
+                                  onChanged: (value) {
+                                    context
+                                        .read<CrStep2ActivityDataCubit>()
+                                        .updateAtmFeesPaid(value);
+                                  },
+                                ),
+                              ),
+                              const SizedBox(height: 16),
+                              Expanded(
+                                child: CheckBoxWithTitle(
+                                  forceSelection: state.atmFeesPaid == false,
+                                  title: "لا",
+                                  onChanged: (value) {
+                                    context
+                                        .read<CrStep2ActivityDataCubit>()
+                                        .updateAtmFeesPaid(value);
+                                  },
+                                ),
+                              ),
+                            ]),
+                          ),
+                          const CustomVerticalSpace(height: 16),
+                        ],
                         WorkerTypeComponent(
                           selectedWorkerType: state.workerType,
                           onSelectedType: (type) {

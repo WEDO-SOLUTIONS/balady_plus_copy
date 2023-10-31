@@ -12,9 +12,11 @@ class CrStep2ActivityDataState extends Equatable {
 
   final IsicActivity? selectedIsicActivity;
   final SubActivityEntity? selectedSubActivity;
-  final DropDownItem? selectedAccommodationType;
+  final CrLookupsEntity? selectedAccommodationType;
   final String errorMessage;
   final double? totalArea;
+  final String? unitCount;
+
   final WorkersTypes? workerType;
 
   final List<AddetionalActivityItem>? addetionalActivityItems;
@@ -26,7 +28,7 @@ class CrStep2ActivityDataState extends Equatable {
   final AddetionalActivityItem? addetionalItem;
   final AddetionalActivityItemDetails? addetionalDetailsItem;
   final SubActivityDetails? addetionalDetails;
-
+  final bool? atmFeesPaid;
   const CrStep2ActivityDataState(
       {this.subActivitiesStatus = BlocStatus.initial,
       this.accommodationTypesStatus = BlocStatus.initial,
@@ -35,6 +37,7 @@ class CrStep2ActivityDataState extends Equatable {
       this.addetionalActivityDetailsListStatus = BlocStatus.initial,
       this.addetionalActivityItems,
       this.addetionalActivityItemDetails,
+      this.unitCount,
       this.status = BlocStatus.initial,
       this.selectedIsicActivity,
       this.selectedSubActivity,
@@ -48,7 +51,8 @@ class CrStep2ActivityDataState extends Equatable {
       this.selectedAddetionalList,
       this.addetionalItem,
       this.addetionalDetailsItem,
-      this.addetionalDetails});
+      this.addetionalDetails,
+      this.atmFeesPaid});
 
   @override
   List<Object?> get props => [
@@ -65,36 +69,39 @@ class CrStep2ActivityDataState extends Equatable {
         totalArea,
         workerType,
         status,
+        unitCount,
         addetionalActivityListStatus,
         addetionalActivityDetailsListStatus,
         addetionalItem,
         addetionalDetailsItem,
         addetionalDetails,
+        atmFeesPaid
       ];
 
-  CrStep2ActivityDataState copyWith({
-    BlocStatus? subActivitiesStatus,
-    BlocStatus? accommodationTypesStatus,
-    BlocStatus? subActivityDetailsStatus,
-    BlocStatus? status,
-    List<SubActivityEntity>? subActivities,
-    List<CrLookupsEntity>? accommodationTypes,
-    SubActivityDetails? subActivityDetails,
-    IsicActivity? selectedIsicActivity,
-    Nullable<SubActivityEntity?>? selectedSubActivity,
-    DropDownItem? selectedAccommodationType,
-    String? errorMessage,
-    double? totalArea,
-    WorkersTypes? workerType,
-    List<AddetionalActivityItem>? addetionalActivityItems,
-    List<AddetionalActivityItemDetails>? addetionalActivityItemDetails,
-    BlocStatus? additionalActivityListStatus,
-    BlocStatus? addetionalActivityDetailsListStatus,
-    Nullable<List<AddetionalActivityRequest>?>? selectedAddetionalList,
-    Nullable<AddetionalActivityItem?>? addetionalItem,
-    Nullable<AddetionalActivityItemDetails?>? addetionalDetailsItem,
-    Nullable<SubActivityDetails?>? addetionalDetails,
-  }) {
+  CrStep2ActivityDataState copyWith(
+      {BlocStatus? subActivitiesStatus,
+      BlocStatus? accommodationTypesStatus,
+      BlocStatus? subActivityDetailsStatus,
+      BlocStatus? status,
+      List<SubActivityEntity>? subActivities,
+      List<CrLookupsEntity>? accommodationTypes,
+      Nullable<SubActivityDetails?>? subActivityDetails,
+      IsicActivity? selectedIsicActivity,
+      Nullable<SubActivityEntity?>? selectedSubActivity,
+      CrLookupsEntity? selectedAccommodationType,
+      String? errorMessage,
+      double? totalArea,
+      WorkersTypes? workerType,
+      List<AddetionalActivityItem>? addetionalActivityItems,
+      List<AddetionalActivityItemDetails>? addetionalActivityItemDetails,
+      BlocStatus? additionalActivityListStatus,
+      BlocStatus? addetionalActivityDetailsListStatus,
+      Nullable<List<AddetionalActivityRequest>?>? selectedAddetionalList,
+      Nullable<AddetionalActivityItem?>? addetionalItem,
+      Nullable<AddetionalActivityItemDetails?>? addetionalDetailsItem,
+      Nullable<SubActivityDetails?>? addetionalDetails,
+      String? unitCount,
+      bool? atmFeesPaid}) {
     return CrStep2ActivityDataState(
         status: status ?? this.status,
         subActivitiesStatus: subActivitiesStatus ?? this.subActivitiesStatus,
@@ -104,7 +111,9 @@ class CrStep2ActivityDataState extends Equatable {
             subActivityDetailsStatus ?? this.subActivityDetailsStatus,
         subActivities: subActivities ?? this.subActivities,
         accommodationTypes: accommodationTypes ?? this.accommodationTypes,
-        subActivityDetails: subActivityDetails ?? this.subActivityDetails,
+        subActivityDetails: subActivityDetails == null
+            ? this.subActivityDetails
+            : subActivityDetails.value,
         selectedIsicActivity: selectedIsicActivity ?? this.selectedIsicActivity,
         selectedSubActivity: selectedSubActivity == null
             ? this.selectedSubActivity
@@ -133,7 +142,9 @@ class CrStep2ActivityDataState extends Equatable {
             : addetionalDetailsItem.value,
         addetionalDetails: addetionalDetails == null
             ? this.addetionalDetails
-            : addetionalDetails.value);
+            : addetionalDetails.value,
+        unitCount: unitCount ?? this.unitCount,
+        atmFeesPaid: atmFeesPaid ?? this.atmFeesPaid);
   }
 
   List<AddetionalActivityItem> getAddetionalActivityItems() {
@@ -159,5 +170,13 @@ class CrStep2ActivityDataState extends Equatable {
         totalArea != 0 &&
         selectedIsicActivity != null &&
         selectedSubActivity != null;
+  }
+
+  bool showHotel() {
+    return subActivityDetails?.mainActivity?.id == 24;
+  }
+
+  bool showAtm() {
+    return selectedIsicActivity?.atmActivity == true;
   }
 }

@@ -63,9 +63,8 @@ class _CRStep5AttachmentDataState extends State<CRStep5AttachmentData> {
                           const CRHeaderDesc(
                             maxLines: null,
                             textHeight: 1.5,
-                            header: "بيانات المرفق",
-                            desc:
-                                "امتداد الملفات المسموح بإرفاق jpeg، jpg، png، pdf لا يتعدى حجم الملف 10 ميجابايت",
+                            header: "بيانات المرفقات",
+                            desc: "",
                           ),
                           const SizedBox(height: 12),
                           if (state.attachments != null)
@@ -83,6 +82,17 @@ class _CRStep5AttachmentDataState extends State<CRStep5AttachmentData> {
                                     fileName: fileName,
                                     fileBase64: base64,
                                     filePath: filePath);
+                              },
+                            ),
+                          if (state.attachmentStatus == BlocStatus.failure)
+                            RetryWidget(
+                              onRetry: () {
+                                context
+                                    .read<CRStep5AttachmentCubit>()
+                                    .getAttachments();
+                                context
+                                    .read<CRStep5AttachmentCubit>()
+                                    .getCredneces();
                               },
                             ),
                           CustomTextFieldWidget(

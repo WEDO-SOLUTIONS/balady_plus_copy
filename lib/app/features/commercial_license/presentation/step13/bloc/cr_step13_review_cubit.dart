@@ -41,7 +41,7 @@ class CrStep13ReviewDataCubit extends Cubit<CrStep13ReviewState> {
               )), (success) {
         emit(state.copyWith(status: BlocStatus.success));
 
-        bool Function(Route<dynamic>) predicate =
+        /*    bool Function(Route<dynamic>) predicate =
             ModalRoute.withName(RouteName.bottomNavigation);
         NavigationService.navigatorKey.currentState!.pushNamedAndRemoveUntil(
             RouteName.successRoute, predicate,
@@ -49,6 +49,17 @@ class CrStep13ReviewDataCubit extends Cubit<CrStep13ReviewState> {
                 type: PAGE_TYPE.renewCommercial,
                 fromHomePage: false,
                 thanksMessage: success.data?.result?.message));
+
+                */
+
+        NavigationService.navigatorKey.currentState!.popAndPushNamed(
+          RouteName.submitApplicationSuccessfullyNew,
+          arguments: (
+            "",
+            success.data?.result,
+            sl<CommercialLicenseBloc>().state.crCalculateFeesResponse?.totalCost
+          ),
+        );
       });
     } catch (ex) {
       print(ex);
