@@ -1,10 +1,11 @@
 import 'package:equatable/equatable.dart';
 
 import '../../../vd/domain/entities/gis/gis_params.dart';
+import 'dart:convert' as c;
 
 class ComplianceRequestDetails extends Equatable {
   final int? requestId;
-  final dynamic requestNote;
+  final String? requestNote;
   final String? creationDate;
   final dynamic emtithalCertNumber;
   final dynamic emtithalCertIssueDate;
@@ -40,194 +41,66 @@ class ComplianceRequestDetails extends Equatable {
   final List<Attachment>? beneficaryAttachments;
   final List<Attachment>? officeAttachments;
   final List<Attachment>? requestAttachments;
-  final List<dynamic>? notes;
+  final List<Note>? notes;
   final LocationResponseInfoDto? locationResponseInfoDto;
   final bool? isFawry;
-  final List<EmtithalItem>? emtithalItems;
+  List<EmtithalItem>? emtithalItems;
   final OwnershipDocInfoDto? ownershipDocInfoDto;
   final List<dynamic>? requestOwnersDto;
   final dynamic etmamOrderResponseDto;
   final bool? usageDisable;
+  final List<MainEmtithalItemsDto>? mainEmtithalItemsDto;
 
-  ComplianceRequestDetails({
-    this.requestId,
-    this.requestNote,
-    this.creationDate,
-    this.emtithalCertNumber,
-    this.emtithalCertIssueDate,
-    this.currentTabId,
-    this.typeId,
-    this.typeName,
-    this.statusId,
-    this.statusName,
-    this.submitterThrough,
-    this.submitterType,
-    this.certificateBaseType,
-    this.licenseNumber,
-    this.licenseIssueDate,
-    this.licenseExpiryDate,
-    this.licenseStatusId,
-    this.licenseStatusName,
-    this.licenseDescription,
-    this.oldLicenseNumber,
-    this.issuingMunicipalityName,
-    this.mainUsageCode,
-    this.mainUsageName,
-    this.subUsageCode,
-    this.subUsageName,
-    this.buildArea,
-    this.agentType,
-    this.agentTypeName,
-    this.submitterDto,
-    this.ownerDto,
-    this.designerOfficeId,
-    this.designerOfficeName,
-    this.designerOfficeMobile,
-    this.designerOfficeMail,
-    this.beneficaryAttachments,
-    this.officeAttachments,
-    this.requestAttachments,
-    this.notes,
-    this.locationResponseInfoDto,
-    this.isFawry,
-    this.emtithalItems,
-    this.ownershipDocInfoDto,
-    this.requestOwnersDto,
-    this.etmamOrderResponseDto,
-    this.usageDisable,
-  });
+  ComplianceRequestDetails(
+      {this.requestId,
+      this.requestNote,
+      this.creationDate,
+      this.emtithalCertNumber,
+      this.emtithalCertIssueDate,
+      this.currentTabId,
+      this.typeId,
+      this.typeName,
+      this.statusId,
+      this.statusName,
+      this.submitterThrough,
+      this.submitterType,
+      this.certificateBaseType,
+      this.licenseNumber,
+      this.licenseIssueDate,
+      this.licenseExpiryDate,
+      this.licenseStatusId,
+      this.licenseStatusName,
+      this.licenseDescription,
+      this.oldLicenseNumber,
+      this.issuingMunicipalityName,
+      this.mainUsageCode,
+      this.mainUsageName,
+      this.subUsageCode,
+      this.subUsageName,
+      this.buildArea,
+      this.agentType,
+      this.agentTypeName,
+      this.submitterDto,
+      this.ownerDto,
+      this.designerOfficeId,
+      this.designerOfficeName,
+      this.designerOfficeMobile,
+      this.designerOfficeMail,
+      this.beneficaryAttachments,
+      this.officeAttachments,
+      this.requestAttachments,
+      this.notes,
+      this.locationResponseInfoDto,
+      this.isFawry,
+      this.emtithalItems,
+      this.ownershipDocInfoDto,
+      this.requestOwnersDto,
+      this.etmamOrderResponseDto,
+      this.usageDisable,
+      this.mainEmtithalItemsDto});
 
-  factory ComplianceRequestDetails.fromJson(Map<String, dynamic> json) =>
-      ComplianceRequestDetails(
-        requestId: json["requestId"],
-        requestNote: json["requestNote"],
-        creationDate: json["creationDate"],
-        emtithalCertNumber: json["emtithalCertNumber"],
-        emtithalCertIssueDate: json["emtithalCertIssueDate"],
-        currentTabId: json["currentTabId"],
-        typeId: json["typeId"],
-        typeName: json["typeName"],
-        statusId: json["statusId"],
-        statusName: json["statusName"],
-        submitterThrough: json["submitterThrough"],
-        submitterType: json["submitterType"],
-        certificateBaseType: json["certificateBaseType"],
-        licenseNumber: json["licenseNumber"],
-        licenseIssueDate: json["licenseIssueDate"],
-        licenseExpiryDate: json["licenseExpiryDate"],
-        licenseStatusId: json["licenseStatusId"],
-        licenseStatusName: json["licenseStatusName"],
-        licenseDescription: json["licenseDescription"],
-        oldLicenseNumber: json["oldLicenseNumber"],
-        issuingMunicipalityName: json["issuingMunicipalityName"],
-        mainUsageCode: json["mainUsageCode"],
-        mainUsageName: json["mainUsageName"],
-        subUsageCode: json["subUsageCode"],
-        subUsageName: json["subUsageName"],
-        buildArea: json["buildArea"],
-        agentType: json["agentType"],
-        agentTypeName: json["agentTypeName"],
-        submitterDto: json["submitterDto"] == null
-            ? null
-            : SubmitterDto.fromJson(json["submitterDto"]),
-        ownerDto: json["ownerDto"] == null
-            ? null
-            : OwnerDto.fromJson(json["ownerDto"]),
-        designerOfficeId: json["designerOfficeId"],
-        designerOfficeName: json["designerOfficeName"],
-        designerOfficeMobile: json["designerOfficeMobile"],
-        designerOfficeMail: json["designerOfficeMail"],
-        beneficaryAttachments: json["beneficaryAttachments"] == null
-            ? []
-            : List<Attachment>.from(json["beneficaryAttachments"]!
-                .map((x) => Attachment.fromJson(x))),
-        officeAttachments: json["officeAttachments"] == null
-            ? []
-            : List<Attachment>.from(
-                json["officeAttachments"]!.map((x) => Attachment.fromJson(x))),
-        requestAttachments: json["requestAttachments"] == null
-            ? []
-            : List<Attachment>.from(
-                json["requestAttachments"]!.map((x) => Attachment.fromJson(x))),
-        notes: json["notes"] == null
-            ? []
-            : List<dynamic>.from(json["notes"]!.map((x) => x)),
-        locationResponseInfoDto: json["locationResponseInfoDto"] == null
-            ? null
-            : LocationResponseInfoDto.fromJson(json["locationResponseInfoDto"]),
-        isFawry: json["isFawry"],
-        emtithalItems: json["emtithalItems"] == null
-            ? []
-            : List<EmtithalItem>.from(
-                json["emtithalItems"]!.map((x) => EmtithalItem.fromJson(x))),
-        ownershipDocInfoDto: json["ownershipDocInfoDto"] == null
-            ? null
-            : OwnershipDocInfoDto.fromJson(json["ownershipDocInfoDto"]),
-        requestOwnersDto: json["requestOwnersDto"] == null
-            ? []
-            : List<dynamic>.from(json["requestOwnersDto"]!.map((x) => x)),
-        etmamOrderResponseDto: json["etmamOrderResponseDto"],
-        usageDisable: json["usageDisable"],
-      );
-
-  Map<String, dynamic> toJson() => {
-        "requestId": requestId,
-        "requestNote": requestNote,
-        "creationDate": creationDate,
-        "emtithalCertNumber": emtithalCertNumber,
-        "emtithalCertIssueDate": emtithalCertIssueDate,
-        "currentTabId": currentTabId,
-        "typeId": typeId,
-        "typeName": typeName,
-        "statusId": statusId,
-        "statusName": statusName,
-        "submitterThrough": submitterThrough,
-        "submitterType": submitterType,
-        "certificateBaseType": certificateBaseType,
-        "licenseNumber": licenseNumber,
-        "licenseIssueDate": licenseIssueDate,
-        "licenseExpiryDate": licenseExpiryDate,
-        "licenseStatusId": licenseStatusId,
-        "licenseStatusName": licenseStatusName,
-        "licenseDescription": licenseDescription,
-        "oldLicenseNumber": oldLicenseNumber,
-        "issuingMunicipalityName": issuingMunicipalityName,
-        "mainUsageCode": mainUsageCode,
-        "mainUsageName": mainUsageName,
-        "subUsageCode": subUsageCode,
-        "subUsageName": subUsageName,
-        "buildArea": buildArea,
-        "agentType": agentType,
-        "agentTypeName": agentTypeName,
-        "submitterDto": submitterDto?.toJson(),
-        "ownerDto": ownerDto?.toJson(),
-        "designerOfficeId": designerOfficeId,
-        "designerOfficeName": designerOfficeName,
-        "designerOfficeMobile": designerOfficeMobile,
-        "designerOfficeMail": designerOfficeMail,
-        "beneficaryAttachments": beneficaryAttachments == null
-            ? []
-            : List<dynamic>.from(beneficaryAttachments!.map((x) => x.toJson())),
-        "officeAttachments": officeAttachments == null
-            ? []
-            : List<dynamic>.from(officeAttachments!.map((x) => x.toJson())),
-        "requestAttachments": requestAttachments == null
-            ? []
-            : List<dynamic>.from(requestAttachments!.map((x) => x.toJson())),
-        "notes": notes == null ? [] : List<dynamic>.from(notes!.map((x) => x)),
-        "locationResponseInfoDto": locationResponseInfoDto?.toJson(),
-        "isFawry": isFawry,
-        "emtithalItems": emtithalItems == null
-            ? []
-            : List<dynamic>.from(emtithalItems!.map((x) => x.toJson())),
-        "ownershipDocInfoDto": ownershipDocInfoDto?.toJson(),
-        "requestOwnersDto": requestOwnersDto == null
-            ? []
-            : List<dynamic>.from(requestOwnersDto!.map((x) => x)),
-        "etmamOrderResponseDto": etmamOrderResponseDto,
-        "usageDisable": usageDisable,
-      };
   @override
+  // TODO: implement props
   List<Object?> get props => [];
 }
 
@@ -259,40 +132,10 @@ class Attachment {
     this.attachDescription,
     this.fileName,
   });
-
-  factory Attachment.fromJson(Map<String, dynamic> json) => Attachment(
-        id: json["id"],
-        name: json["name"],
-        allowedFilesExtension: json["allowedFilesExtension"],
-        isMandatory: json["isMandatory"],
-        attached: json["attached"],
-        approved: json["approved"],
-        attachUrl: json["attachUrl"],
-        notes: json["notes"],
-        updatable: json["updatable"],
-        maxSize: json["maxSize"],
-        attachDescription: json["attachDescription"],
-        fileName: json["fileName"],
-      );
-
-  Map<String, dynamic> toJson() => {
-        "id": id,
-        "name": name,
-        "allowedFilesExtension": allowedFilesExtension,
-        "isMandatory": isMandatory,
-        "attached": attached,
-        "approved": approved,
-        "attachUrl": attachUrl,
-        "notes": notes,
-        "updatable": updatable,
-        "maxSize": maxSize,
-        "attachDescription": attachDescription,
-        "fileName": fileName,
-      };
 }
 
 class EmtithalItem {
-  final int? itemId;
+  final String? itemId;
   final String? momItemId;
   final String? itemDesc;
   bool? submitterAnswer;
@@ -305,22 +148,6 @@ class EmtithalItem {
     this.submitterAnswer,
     this.empAnswer,
   });
-
-  factory EmtithalItem.fromJson(Map<String, dynamic> json) => EmtithalItem(
-        itemId: json["itemId"],
-        momItemId: json["momItemId"],
-        itemDesc: json["itemDesc"],
-        submitterAnswer: json["submitterAnswer"],
-        empAnswer: json["empAnswer"],
-      );
-
-  Map<String, dynamic> toJson() => {
-        "itemId": itemId,
-        "momItemId": momItemId,
-        "itemDesc": itemDesc,
-        "submitterAnswer": submitterAnswer,
-        "empAnswer": empAnswer,
-      };
 }
 
 class LocationResponseInfoDto {
@@ -340,80 +167,34 @@ class LocationResponseInfoDto {
   final dynamic mapName;
   final String? x;
   final String? y;
-  final String? landNumber;
-  final String? landArea;
+  //final String? landNumber;
+  //final String? landArea;
   final dynamic isLocationCorrect;
   final dynamic guid;
+  final LandsInfo? landsInfo;
 
-  LocationResponseInfoDto({
-    this.municipalityId,
-    this.amanahId,
-    this.municipalityName,
-    this.subMunicipalityId,
-    this.baladiaId,
-    this.subMunicipalityName,
-    this.districtId,
-    this.districtName,
-    this.cityId,
-    this.cityName,
-    this.streetId,
-    this.streetName,
-    this.mapNumber,
-    this.mapName,
-    this.x,
-    this.y,
-    this.landNumber,
-    this.landArea,
-    this.isLocationCorrect,
-    this.guid,
-  });
-
-  factory LocationResponseInfoDto.fromJson(Map<String, dynamic> json) =>
-      LocationResponseInfoDto(
-        municipalityId: json["municipalityId"],
-        amanahId: json["amanahId"],
-        municipalityName: json["municipalityName"],
-        subMunicipalityId: json["subMunicipalityId"],
-        baladiaId: json["baladiaId"],
-        subMunicipalityName: json["subMunicipalityName"],
-        districtId: json["districtId"],
-        districtName: json["districtName"],
-        cityId: json["cityId"],
-        cityName: json["cityName"],
-        streetId: json["streetId"],
-        streetName: json["streetName"],
-        mapNumber: json["mapNumber"],
-        mapName: json["mapName"],
-        x: json["x"],
-        y: json["y"],
-        landNumber: json["landNumber"],
-        landArea: json["landArea"],
-        isLocationCorrect: json["isLocationCorrect"],
-        guid: json["guid"],
-      );
-
-  Map<String, dynamic> toJson() => {
-        "municipalityId": municipalityId,
-        "amanahId": amanahId,
-        "municipalityName": municipalityName,
-        "subMunicipalityId": subMunicipalityId,
-        "baladiaId": baladiaId,
-        "subMunicipalityName": subMunicipalityName,
-        "districtId": districtId,
-        "districtName": districtName,
-        "cityId": cityId,
-        "cityName": cityName,
-        "streetId": streetId,
-        "streetName": streetName,
-        "mapNumber": mapNumber,
-        "mapName": mapName,
-        "x": x,
-        "y": y,
-        "landNumber": landNumber,
-        "landArea": landArea,
-        "isLocationCorrect": isLocationCorrect,
-        "guid": guid,
-      };
+  LocationResponseInfoDto(
+      {this.municipalityId,
+      this.amanahId,
+      this.municipalityName,
+      this.subMunicipalityId,
+      this.baladiaId,
+      this.subMunicipalityName,
+      this.districtId,
+      this.districtName,
+      this.cityId,
+      this.cityName,
+      this.streetId,
+      this.streetName,
+      this.mapNumber,
+      this.mapName,
+      this.x,
+      this.y,
+      // this.landNumber,
+      //  this.landArea,
+      this.isLocationCorrect,
+      this.guid,
+      this.landsInfo});
 
   String getFullAddress({
     bool includeStreetName = true,
@@ -466,6 +247,34 @@ class LocationResponseInfoDto {
   }
 }
 
+class Note {
+  final String? note;
+  final String? date;
+  final String? statusName;
+  final String? author;
+
+  Note({
+    this.note,
+    this.date,
+    this.statusName,
+    this.author,
+  });
+
+  factory Note.fromJson(Map<String, dynamic> json) => Note(
+        note: json["note"],
+        date: json["date"],
+        statusName: json["statusName"],
+        author: json["author"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "note": note,
+        "date": date,
+        "statusName": statusName,
+        "author": author,
+      };
+}
+
 class OwnerDto {
   final String? identityNumber;
   final int? identityType;
@@ -473,7 +282,7 @@ class OwnerDto {
   final String? ownerName;
   final dynamic agentType;
   final dynamic agencyDto;
-  final bool? specialIqama;
+  final dynamic specialIqama;
 
   OwnerDto({
     this.identityNumber,
@@ -593,4 +402,85 @@ class SubmitterDto {
         "submitterIdentityType": submitterIdentityType,
         "submitterIdentityTypeName": submitterIdentityTypeName,
       };
+}
+
+class MainEmtithalItemsDto {
+  final String? mainItemId;
+  final String? mainItemDesc;
+  final List<SubEmtithalItem>? subEmtithalItems;
+
+  MainEmtithalItemsDto({
+    this.mainItemId,
+    this.mainItemDesc,
+    this.subEmtithalItems,
+  });
+
+  factory MainEmtithalItemsDto.fromJson(Map<String, dynamic> json) =>
+      MainEmtithalItemsDto(
+        mainItemId: json["mainItemId"],
+        mainItemDesc: json["mainItemDesc"],
+        subEmtithalItems: json["subEmtithalItems"] == null
+            ? []
+            : List<SubEmtithalItem>.from(json["subEmtithalItems"]!
+                .map((x) => SubEmtithalItem.fromJson(x))),
+      );
+
+  Map<String, dynamic> toJson() => {
+        "mainItemId": mainItemId,
+        "mainItemDesc": mainItemDesc,
+        "subEmtithalItems": subEmtithalItems == null
+            ? []
+            : List<dynamic>.from(subEmtithalItems!.map((x) => x.toJson())),
+      };
+}
+
+class SubEmtithalItem {
+  final String? itemId;
+  final String? momItemId;
+  final String? itemDesc;
+  final bool? submitterAnswer;
+  final bool? empAnswer;
+
+  SubEmtithalItem({
+    this.itemId,
+    this.momItemId,
+    this.itemDesc,
+    this.submitterAnswer,
+    this.empAnswer,
+  });
+
+  factory SubEmtithalItem.fromJson(Map<String, dynamic> json) =>
+      SubEmtithalItem(
+        itemId: json["itemId"],
+        momItemId: json["momItemId"],
+        itemDesc: json["itemDesc"],
+        submitterAnswer: json["submitterAnswer"],
+        empAnswer: json["empAnswer"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "itemId": itemId,
+        "momItemId": momItemId,
+        "itemDesc": itemDesc,
+        "submitterAnswer": submitterAnswer,
+        "empAnswer": empAnswer,
+      };
+}
+
+class LandsInfo {
+  final List<LandInfo>? landsInfo;
+
+  LandsInfo({
+    this.landsInfo,
+  });
+}
+
+class LandInfo {
+  final String? landNumber;
+  final String? landArea;
+
+  LandInfo({
+    this.landNumber,
+    this.landArea,
+  });
 }

@@ -69,7 +69,7 @@ class UsageSubmissionCompliance extends StatelessWidget {
                           context.read<ComplianceBloc>().add(
                                 GetSubUsagesEvent(item: item),
                               );
-                          print(item);
+
                           Navigator.pop(context);
                         },
                       ),
@@ -253,16 +253,38 @@ class UsageSubmissionCompliance extends StatelessWidget {
                     title: 'بيانات قطع الأراضي'.tr(),
                     subtitle: "",
                   ),
-                  ReadOnlyField(
-                      title: "رقم قطعة الأرض".tr(),
-                      subTitle: state.requestDetails?.locationResponseInfoDto
-                              ?.landNumber ??
-                          ""),
-                  ReadOnlyField(
-                      title: "مساحة الارض".tr(),
-                      subTitle: state.requestDetails?.locationResponseInfoDto
-                              ?.landArea ??
-                          ""),
+                  ListView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: state.requestDetails?.locationResponseInfoDto
+                              ?.landsInfo?.landsInfo?.length ??
+                          0,
+                      itemBuilder: (ctx, index) {
+                        return Column(
+                          children: [
+                            ReadOnlyField(
+                                title: "رقم قطعة الأرض".tr(),
+                                subTitle: state
+                                        .requestDetails
+                                        ?.locationResponseInfoDto
+                                        ?.landsInfo
+                                        ?.landsInfo?[index]
+                                        .landNumber ??
+                                    ""),
+                            ReadOnlyField(
+                                title: "مساحة الارض".tr(),
+                                subTitle: state
+                                        .requestDetails
+                                        ?.locationResponseInfoDto
+                                        ?.landsInfo
+                                        ?.landsInfo?[index]
+                                        .landArea ??
+                                    ""),
+                            const CustomVerticalSpace(height: 16),
+                          ],
+                        );
+                      })
+
                   /*ComplianceSubmitTitle(
                     title: 'الاحداثيات'.tr(),
                     subtitle: "",

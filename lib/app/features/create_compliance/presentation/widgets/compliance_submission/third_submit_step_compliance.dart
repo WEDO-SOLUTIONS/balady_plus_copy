@@ -1,4 +1,5 @@
 import 'package:balady_plus/app/core/utils/constants/app_style.dart';
+import 'package:balady_plus/app/core/utils/enums/enums.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/_shared_feature_/data/entities/custom_expansion_panel.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/buttons/elevated_button_widgets.dart';
@@ -18,15 +19,30 @@ import 'package:balady_plus/app/features/create_compliance/presentation/widgets/
 import '../../../../../core/services/local/navigation_services.dart';
 import '../../../../../core/utils/constants/dialog_names.dart';
 import '../../../../_shared_feature_/presentation/components/bottom_sheets/bottom_sheet_list.dart';
+import '../../../../_shared_feature_/presentation/components/bottom_sheets/generic_bottom_sheet_list.dart';
 import '../../../../_shared_feature_/presentation/dialogs/bottom_sheet_dialogs.dart';
 import '../../../../_shared_feature_/presentation/widgets/drop_downs/drop_down_box_with_title.dart';
 import '../../../../_shared_feature_/presentation/widgets/pickers/filter_date_picker.dart';
 import '../../../../vd/domain/entities/map/map_screen_params.dart';
+import '../../../domain/entities/ownership_doc_type_response.dart';
 import '../../bloc/compliance_bloc.dart';
 import '../bottom_sheet_list.dart';
 import '../compliance_consetnt.dart';
 import '../compliance_date_picker.dart';
 import '../compliance_ownership_field.dart';
+import '../fields/deed/deed_number_date_field.dart';
+import '../fields/deed/deed_number_text_field.dart';
+import '../fields/deed/deed_type_widget.dart';
+import '../fields/electricity/electricity_number_date_field.dart';
+import '../fields/electricity/electricity_number_text_field.dart';
+import '../fields/electricity/electricity_recipt_type_field.dart';
+import '../fields/eskan/eskan_num_text_field.dart';
+import '../fields/eskan/eskan_number_date_field.dart';
+import '../fields/eskan/eskan_number_text_field.dart';
+import '../fields/estehkam/estehkam_number_date_field.dart';
+import '../fields/estehkam/estehkam_number_text_field.dart';
+import '../fields/investment/investment_number_date_field.dart';
+import '../fields/investment/investment_number_text_field.dart';
 import '../license_item_widget.dart';
 
 class ThirdSubmissionCompliance extends StatelessWidget {
@@ -201,31 +217,95 @@ class ThirdSubmissionCompliance extends StatelessWidget {
                           (state.ownerShipsTypes?.items ?? [])
                               .map((e) => e.name ?? "")
                               .toList();
-                      BottomSheetDialog.showDraggableSheet(
-                        context,
-                        dialogKeyName: DialogName.complianceOwnerShipseDialog,
-                        currentRouteName: RouteName.submitCompliancePage,
-                        child: BottomSheetList(
-                          title: "compliance_ownership_type".tr(),
-                          items: items,
-                          selectedValue: state.selectedOwnerShip?.name,
-                          onTap: (item) {
-                            final selectedItem =
-                                (state.ownerShipsTypes?.items ?? [])
-                                    .where((e) => e.name == item)
-                                    .first;
-                            context.read<ComplianceBloc>().add(
-                                  UpdateFieldsEvent(
-                                    selectedOwnerShip: selectedItem,
-                                  ),
-                                );
-                            Navigator.pop(context);
-                          },
-                        ),
-                      );
+                      BottomSheetDialog.showDraggableSheet(context,
+                          dialogKeyName: DialogName.complianceOwnerShipseDialog,
+                          currentRouteName: RouteName.submitCompliancePage,
+                          child: GenericBottomSheetList<ComplinaceLookUpItem>(
+                            title: "compliance_ownership_type".tr(),
+                            items: (state.ownerShipsTypes?.items ?? [])
+                                .where((element) {
+                              if (CommonProperties.getCurrentUserProfile()
+                                          ?.profileType ==
+                                      UserProfileType.Delegator &&
+                                  element.id == 146) {
+                                return false;
+                              }
+                              return true;
+                            }).toList(),
+                            selectedValue: state.selectedOwnerShip,
+                            onTap: (item) {
+                              final selectedItem =
+                                  (state.ownerShipsTypes?.items ?? [])
+                                      .where((e) => e == item)
+                                      .first;
+                              context.read<ComplianceBloc>().add(
+                                    UpdateFieldsEvent(
+                                      selectedOwnerShip: selectedItem,
+                                    ),
+                                  );
+                              Navigator.pop(context);
+                            },
+                          ));
                     },
                   ),
-                  ComplianceOwnerShipField(),
+
+                  // صك
+                  if (state.selectedOwnerShip?.id == 112) ...[
+                    CustomVerticalSpace(height: 12),
+                    DeedTypeWidget(),
+                    CustomVerticalSpace(height: 12),
+                    if (state.isDeedPaper != null) ...[
+                      DeadNumberTextField(),
+                      CustomVerticalSpace(height: 12),
+                      DeedNumberDateField(),
+                    ]
+                  ],
+
+//عقد اسكان
+                  if (state.selectedOwnerShip?.id == 146) ...[
+                    CustomVerticalSpace(height: 12),
+                    if (state.showEksanId != false) EskanNumberTextField(),
+                    if (state.showEksanId == false) ...[
+                      EskanNumTextField(),
+                      CustomVerticalSpace(height: 12),
+                      EskanNumberDateField()
+                    ],
+                    if (state.landSubsidyContract != null) ...[
+//عقد اسكان
+                      CustomVerticalSpace(height: 12),
+                      ReadOnlyField(
+                          title: ("compliance_land_number").tr(),
+                          subTitle: state.landSubsidyContract?.contractNumber),
+                      CustomVerticalSpace(height: 8),
+                      ReadOnlyField(
+                          title: ("compliance_land_date").tr(),
+                          subTitle: state.landSubsidyContract?.getDate()),
+                    ],
+                  ],
+
+//ايصال كهرباء او مياه
+                  if (state.selectedOwnerShip?.id == 340) ...[
+                    ElectricityReciptTypeField(),
+                    CustomVerticalSpace(height: 12),
+                    ElectricityNumberTextField(),
+                    CustomVerticalSpace(height: 12),
+                    ElectricityNumberDateField(),
+                  ],
+
+                  // عقد استثماري - تخصيص حكومي
+                  if (state.selectedOwnerShip?.id == 664) ...[
+                    InvestmentNumberTextField(),
+                    CustomVerticalSpace(height: 12),
+                    InvestmentNumberDateField(),
+                  ],
+// حجة استحكام
+                  if (state.selectedOwnerShip?.id == 690) ...[
+                    EstehkamNumberTextField(),
+                    CustomVerticalSpace(height: 12),
+                    EstehkamNumberDateField()
+                  ],
+
+                  /* ComplianceOwnerShipField(),
                   CustomVerticalSpace(height: 12),
                   ComplianceDatePicker(
                     title: "compliance_ownership_date".tr(),
@@ -239,7 +319,8 @@ class ThirdSubmissionCompliance extends StatelessWidget {
                           form: form,
                           ownershipDate: time.toHijriFormattedDate1()));
                     },
-                  ),
+                  ),*/
+
                   ComplianceConsent(
                     body: "compliance_ownerShip_body".tr(),
                     agreement: state.ownerShipAgreement ?? false,
