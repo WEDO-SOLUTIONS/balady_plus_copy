@@ -123,7 +123,9 @@ class SearchMapWidget extends StatelessWidget {
                             SearchCategoryMessage.parks,
                             SearchCategoryMessage.hospitals,
                             SearchCategoryMessage.schools,
-                            CustomSearchCategory.events
+                            CustomSearchCategory.events,
+                            SearchCategoryMessage.pharmacies,
+                            SearchCategoryMessage.dentalCenters,
                           ].map((e) {
                             SearchCategoryMessage? category;
                             CustomSearchCategory? custom;
@@ -170,7 +172,6 @@ class SearchMapWidget extends StatelessWidget {
                                     onTap: () {
                                       mapViewModel.selectCategory(
                                           category: category, custom: custom);
-                                      searchFocusNode.unfocus();
                                       print("Changing ctaegory to: $e");
                                     },
                                     child: Padding(
