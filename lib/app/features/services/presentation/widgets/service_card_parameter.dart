@@ -8,19 +8,21 @@ class ServiceCardParameter extends StatelessWidget {
   final String title;
   final String iconName;
   final String value;
+  final double width;
 
   const ServiceCardParameter({
     super.key,
     required this.title,
     required this.iconName,
     required this.value,
+    this.width  = 118,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 118,
-      height: 73,
+      width: width,
+      height: 77,
       padding: const EdgeInsets.all(16),
       decoration: const BoxDecoration(
         borderRadius: BorderRadius.all(Radius.circular(10)),

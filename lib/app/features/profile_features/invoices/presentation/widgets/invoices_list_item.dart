@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/features/home_page/home_exports.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -92,15 +93,23 @@ class InvoicesListItem extends StatelessWidget {
               if (invoice.redirectUrl == null && invoice.id == null) {
                 return;
               } else if (invoice.id != null) {
+                ;
                 context.pushNamedRoute(
                   RouteName.invoiceDetails,
-                  arguments: invoice,
+                  arguments: [
+                    invoice.id,
+                    CommonProperties.selectedDelegator?.crNumber,
+                    CommonProperties.selectedDelegator?.crType,
+                  ],
                 );
                 return;
               } else if (invoice.redirectUrl != null) {
                 context.pushNamedRoute(
                   RouteName.inappWebview,
-                  arguments: (requestNum: 'invoice'.tr(), url: invoice.redirectUrl),
+                  arguments: (
+                    requestNum: 'invoice'.tr(),
+                    url: invoice.redirectUrl
+                  ),
                 );
                 return;
               }

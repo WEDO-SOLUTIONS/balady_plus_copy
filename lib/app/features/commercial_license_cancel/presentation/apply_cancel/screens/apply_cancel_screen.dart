@@ -34,26 +34,40 @@ class ApplyCancelScreen extends StatelessWidget {
           "title": "الغاء رخصة تجارية",
           "description": "",
           "tag": null,
-          "warning": ""
+          "warning":
+          "يجب أن يتم إلغاء رخصة النشاط التجاري قبل شطب السجل التجاري."
+              "\n\n"
+              "سوف يتم إلغاء الرخصة بشكل آلــي بعد مرور سنة وأكثر من انتهاء الرخصة.\n\n"
+              "تأخرك في إلغاء الرخصة يعرضك لدفع رسوم تجديد عند الإلغاء وذلك وفقًــا للائحة التنفيذية لإجراءات التراخيص البلدية 1438 هـ.\n\n"
+              "يمكنك الاطلاع على حاسبة الرسوم المعلوماتية من خلال الرابط.\n"
+              "https://apps.balady.gov.sa//Eservices/FeesCalculator\n\n"
+              "رسوم الإلغاء 20 ريال مع ضرورة أن تكون الرخصة سارية.\n"
         },
         "en": {
           "title": "الغاء رخصة تجارية",
           "description": "",
           "tag": null,
           "warning":
-              ". Please renew the license before it expires or cancel it if you do not want to renew it in order to avoid the required delay penalty fees.\n. The license can be renewed 90 days before its expiry date."
+              "يجب أن يتم إلغاء رخصة النشاط التجاري قبل شطب السجل التجاري.\n"
+                  "سوف يتم إلغاء الرخصة بشكل آلــي بعد مرور سنة وأكثر من انتهاء الرخصة.\n"
+                  "تأخرك في إلغاء الرخصة يعرضك لدفع رسوم تجديد عند الإلغاء وذلك وفقًــا للائحة التنفيذية لإجراءات التراخيص البلدية 1438 هـ.\n"
+                  "يمكنك الاطلاع على حاسبة الرسوم المعلوماتية من خلال الرابط.\n"
+                  "https://apps.balady.gov.sa//Eservices/FeesCalculator\n"
+                  "رسوم الإلغاء 20 ريال مع ضرورة أن تكون الرخصة سارية.\n"
         },
         "cards": [
           {
             "iconName": IconPath.serviceCardDesc,
             "type": ServiceCardsTypes.desc,
             "rate": 0,
-            "duration": 0,
-            "fees": 0,
+            "duration": "1 - 10 أيام",
+            "fees": -1,
+            "feesName": "حاسبة الرسوم المعلوماتية",
+            "feesLink":"https://apps.balady.gov.sa/Eservices/FeesCalculator",
             "ar": {
               "title": "وصف الخدمة",
               "description":
-                  "هي خدمة يتم من خلالها إصدار شهادة امتثال للمبنى تفيد بالتزام المبنى بمجموعة من الاشتراطات التي أقرتها وزارة الشؤون البلدية والقروية والإسكان وذلك للحد من مظاهر التشوه البصري في المباني التجارية والسكنية والارتقاء بجودة المشهد الحضري في المدن"
+                  "في مرحلة إنهاء ممارسة العمل التجاري يتوجب على المستفيد إلغاء رخصته التجارية المرتبطة بالمنشأة، ومن خلال هذه الخدمة يمكنك إلغاء الرخصة."
             },
             "en": {"title": "Service Description", "description": ""}
           },
@@ -61,10 +75,9 @@ class ApplyCancelScreen extends StatelessWidget {
             "iconName": IconPath.serviceCardReq,
             "type": ServiceCardsTypes.req,
             "rate": 0,
-            "duration": 0,
+            "duration": "0",
             "requirements": [
-              "يجب أن يكون مقدم الطلب هو المالك للمبنى أو مفوض من مالك المبنى بتفويض إليكتروني ساري وصادر من بلدي.",
-              "يجب أن يكون لدى مقدم الطلب رخصة إنشائية أو صك ملكية."
+              "في حالة أن الإلغاء غير فوري، يتم طلب مرفقات لإثبات إغلاق النشاط.",
             ],
             "ar": {"title": "المتطلبات", "description": ""},
             "en": {"title": "Requirements", "description": ""}
@@ -73,36 +86,34 @@ class ApplyCancelScreen extends StatelessWidget {
             "iconName": IconPath.serviceCardFlow,
             "type": ServiceCardsTypes.flow,
             "rate": 0,
-            "duration": 0,
+            "duration": "0",
             "flow": [
               {
                 "title": "من خلال المستفيد بنفسه (بدون مكتب هندسي)",
                 "steps": [
-                  "تسجيل الدخول عبر تطبيق بلدي.",
-                  "الدخول على خدمة إصدار شهادة امتثال المباني.",
-                  "إدخال بيانات رخصة البناء أو الوثيقة الملكية للمبنى واستكمال كافة البيانات المطلوبة في نموذج طلب إصدار شهادة الامتثال.",
-                  "الإقرار في الطلب باستيفاء عناصر التقييم الخاصة بإصدار شهادة امتثال المباني الواردة في هذا الدليل",
-                  "قيام البلدية بجدولة زيارة للتحقق من البيانات المدخلة",
-                  "موافقة الأمانة/البلدية على الطلب.",
+                  "تحديد سجل المنشأة واختيار الرخصة.",
+                  "استكمال البيانات المطلوبة إن وجدت.",
+                  "دفع الرسوم في حال الإلغاء الفوري أو إرسال الطلب للبلدية في حال أن الإلغاء غير فوري.",
                   "إصدار شهادة امتثال المباني للمبنى.",
                 ]
               },
-              {
-                "title": "من خلال المكتب الهندسي المؤهل",
-                "steps": [
-                  "تسجيل الدخول عبر تطبيق بلدي والدخول على الخدمة.",
-                  "تفويض مكتب هندسي مؤهل لاستكمال إجراءات إصدار شهادة امتثال المباني.",
-                  "قيام المكتب الهندسي المؤهل باستكمال كافة البيانات المطلوبة في نموذج طلب إصدار شهادة الامتثال.",
-                  "قيام المكتب الهندسي المؤهل بالتحقق من استيفاء المبنى لجميع اشتراطات ومتطلبات شهادة امتثال المباني.",
-                  "الإقرار باستيفاء جميع اشتراطات ومتطلبات إصدار شهادة امتثال المباني الواردة في هذا الدليل.",
-                  "يقوم المكتب الهندسي المؤهل باستكمال إجراءات إصدار الشهادة وفق الاجراءات المتبعة في الأمانة/البلدية.",
-                  "إصدار شهادة امتثال المباني من قبل الأمانة/البلدية من خلال المكتب الهندسي المؤهل."
-                ]
-              }
             ],
             "ar": {"title": "خطوات التقديم", "description": ""},
             "en": {"title": "", "description": ""}
-          }
+          },
+
+          {
+            "iconName": IconPath.warning2,
+            "type": ServiceCardsTypes.authorInfo,
+            "rate": 0,
+            "duration": "",
+            "fees": null,
+            "ar": {
+              "title": "الغرامات والجزاءات",
+              "description": "اضغط هنا"
+            },
+            "en": {"title": "Service Description", "description": ""}
+          },
         ]
       },
     );
@@ -157,44 +168,47 @@ class ApplyCancelScreen extends StatelessWidget {
                   ],
                 ),
               ),
+
+
               SafeArea(
                 top: false,
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Selector<ApplyCancelViewModel, bool>(
-                    selector: (context, provider) => provider.isLoading,
-                    builder: (BuildContext context, isLoading, Widget? child) {
-                      return isLoading
-                          ? const ShimmerEffectWidget(
-                              height: 55,
-                              borderRadius: 6,
-                            )
-                          : child!;
-                    },
-                    child: ElevatedButtonWidget.startService(
-                      onPressed: () async {
-                        try {
-                          NavigatorState navigator = Navigator.of(context);
-                          CancellationRequestResponse? cancellationRequest =
-                              await viewModel
-                                  .applyCommercialLicenseCancellation();
-                          if (cancellationRequest != null) {
-                            navigator.popAndPushNamed(
-                              RouteName.commercialLicenseCancel,
-                              arguments: CommercialLicenseCancelBloc(
-                                webService: sl(),
-                                cancellationRequestResponse: cancellationRequest,
-                                reasonCancel: viewModel.reasonCancel,
-                              ),
-                            );
-                          }
-                        } on DioError catch (error) {
-                          CommonFunctions.showError(error.toString());
-                        } catch (e) {
-                          CommonFunctions.showError(e.toString());
+                child: Selector<ApplyCancelViewModel, bool>(
+                  selector: (context, provider) => provider.isLoading,
+                  builder: (BuildContext context, isLoading, Widget? child) {
+                    return isLoading
+                        ? const ShimmerEffectWidget(
+                      height: 55,
+                      borderRadius: 6,
+                    )
+                        : child!;
+                  },
+                  child: ServiceWarningWidget(
+                    warning: service.warning ?? "",
+                    onPress: () async {
+                      try {
+                        NavigatorState navigator = Navigator.of(context);
+                        CancellationRequestResponse? cancellationRequest =
+                        await viewModel
+                            .applyCommercialLicenseCancellation();
+                        if (cancellationRequest != null) {
+                          navigator.popAndPushNamed(
+                            RouteName.commercialLicenseCancel,
+                            arguments: CommercialLicenseCancelBloc(
+                              webService: sl(),
+                              requestId: cancellationRequest.requestId,
+                              availableCloseDate: cancellationRequest.availableCloseDate,
+                              crNumber: viewModel.submitterInfo.crNumber,
+                              crType: viewModel.submitterInfo.crType,
+                              reasonCancel: viewModel.reasonCancel,
+                            ),
+                          );
                         }
-                      },
-                    ),
+                      } on DioError catch (error) {
+                        CommonFunctions.showError(error.toString());
+                      } catch (e) {
+                        CommonFunctions.showError(e.toString());
+                      }
+                    },
                   ),
                 ),
               )

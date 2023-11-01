@@ -4,11 +4,11 @@ import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/r
 import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports.dart';
 import 'package:balady_plus/app/features/commercial_license_cancel/presentation/commercial_license_cancel/mvvm/commercial_license_attachments_view_model.dart';
 import 'package:balady_plus/app/features/commercial_license_cancel/presentation/commercial_license_cancel/mvvm/commercial_license_permits_view_model.dart';
+import 'package:balady_plus/app/features/commercial_license_details/data/models/commercial_licence_details.dart';
 import 'package:balady_plus/app/features/commercial_license_details/presentation/bloc/commercial_license_details_cubit.dart';
 import 'package:balady_plus/app/features/commercial_license_details/presentation/widgets/attachment_show_widget.dart';
 import 'package:balady_plus/app/features/commercial_license_details/presentation/widgets/commercial_license_permits_widget.dart';
 import 'package:balady_plus/app/features/create_compliance/data/models/comliance_request_details_model.dart';
-import 'package:balady_plus/app/features/transaction_inquiry/presentation/core/models/attachment_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -209,33 +209,37 @@ class _CommercialLicenseDetailsBodyState
                     icon: IconPath.qrLocationIcon,
                     children: [
                       const SizedBox(height: 16),
-                      SizedBox(
-                        height: 250,
-                        child: GoogleMap(
-                          initialCameraPosition: CameraPosition(
-                              target: LatLng(
-                                double.parse(commercialLicenceDetails
-                                    .locationInfo.latitude),
-                                double.parse(commercialLicenceDetails
-                                    .locationInfo.longitude),
-                              ),
-                              zoom: 16),
-                          markers: {
-                            Marker(
-                              markerId: const MarkerId('position'),
-                              position: LatLng(
-                                double.parse(commercialLicenceDetails
-                                    .locationInfo.latitude),
-                                double.parse(commercialLicenceDetails
-                                    .locationInfo.longitude),
+                      commercialLicenceDetails.locationInfo.latitude != null &&
+                              commercialLicenceDetails.locationInfo.longitude !=
+                                  null
+                          ? SizedBox(
+                              height: 250,
+                              child: GoogleMap(
+                                initialCameraPosition: CameraPosition(
+                                    target: LatLng(
+                                      double.parse(commercialLicenceDetails
+                                          .locationInfo.latitude!),
+                                      double.parse(commercialLicenceDetails
+                                          .locationInfo.longitude!),
+                                    ),
+                                    zoom: 16),
+                                markers: {
+                                  Marker(
+                                    markerId: const MarkerId('position'),
+                                    position: LatLng(
+                                      double.parse(commercialLicenceDetails
+                                          .locationInfo.latitude!),
+                                      double.parse(commercialLicenceDetails
+                                          .locationInfo.longitude!),
+                                    ),
+                                  )
+                                },
+                                zoomControlsEnabled: false,
+                                zoomGesturesEnabled: false,
+                                scrollGesturesEnabled: false,
                               ),
                             )
-                          },
-                          zoomControlsEnabled: false,
-                          zoomGesturesEnabled: false,
-                          scrollGesturesEnabled: false,
-                        ),
-                      ),
+                          : const SizedBox(),
                       CardParameter(
                         title: 'region'.tr(),
                         value: commercialLicenceDetails.locationInfo.regionName,
@@ -263,11 +267,14 @@ class _CommercialLicenseDetailsBodyState
                       ),
                       CardParameter(
                         title: 'latitude'.tr(),
-                        value: commercialLicenceDetails.locationInfo.latitude,
+                        value: commercialLicenceDetails.locationInfo.latitude ??
+                            '',
                       ),
                       CardParameter(
                         title: 'longitude'.tr(),
-                        value: commercialLicenceDetails.locationInfo.longitude,
+                        value:
+                            commercialLicenceDetails.locationInfo.longitude ??
+                                '',
                       ),
                     ],
                   ),
@@ -359,6 +366,68 @@ class _CommercialLicenseDetailsBodyState
                                 .contractInfoResponseDto.contractOption)
                             .tr(),
                       ),
+
+                      state.commercialLicenceDetails!.shopInfo.boardsInfo !=
+                              null
+                          ? ListView.builder(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                              itemCount: state.commercialLicenceDetails!.shopInfo.boardsInfo!.length ,
+                              itemBuilder: (_, index) {
+                                BoardsInfo boardsInfo = state
+                                    .commercialLicenceDetails!
+                                    .shopInfo
+                                    .boardsInfo![index];
+                                return Card(
+                                  margin: const EdgeInsets.only(top: 16),
+                                  color: AppColor.primary100Light,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(16.0),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        CustomTextWidget(
+                                          '${'board'.tr()} ${++index}',
+                                          textStyle:
+                                          AppStyle.signInFullTextStyle.copyWith(
+                                            color: AppColor.primary700Light,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 16),
+                                        CustomTextWidget(
+                                          "boardTypeName".tr(),
+                                          textStyle: AppStyle.tagTextStyle,
+                                        ),
+                                        const SizedBox(height: 4),
+                                        CustomTextWidget(
+                                          boardsInfo.typeName,
+                                          textStyle:
+                                          AppStyle.costTextStyle.copyWith(
+                                            color: const Color(0xff52525B),
+                                          ),
+                                        ),
+
+                                        const SizedBox(height: 16),
+                                        CustomTextWidget(
+                                          "permitType".tr(),
+                                          textStyle: AppStyle.tagTextStyle,
+                                        ),
+                                        const SizedBox(height: 4),
+                                        CustomTextWidget(
+                                          boardsInfo.area.toString() +
+                                              'm2'.tr(),
+                                          textStyle:
+                                              AppStyle.costTextStyle.copyWith(
+                                                color: const Color(0xff52525B),
+                                              ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              },
+                            )
+                          : const SizedBox(),
                     ],
                   ),
 
@@ -378,9 +447,13 @@ class _CommercialLicenseDetailsBodyState
                                   itemBuilder: (ctx, index) {
                                     return attachments[index].attachUrl != null
                                         ? AttachmentShowWidget(
-                                      fileName: attachments[index].fileName ?? '',
-                                      filePath: attachments[index].attachUrl!,
-                                    )
+                                            fileName:
+                                                attachments[index].fileName ??
+                                                    '',
+                                            name: attachments[index].name ?? '',
+                                            filePath:
+                                                attachments[index].attachUrl!,
+                                          )
                                         : const SizedBox();
                                   },
                                 )
@@ -439,19 +512,19 @@ class _CommercialLicenseDetailsBodyState
     );
   }
 
-  // List<AttachmentData> getNewModelList(List<AttachmentModel> attachments) {
-  //   return attachments
-  //       .map(
-  //         (attachment) => AttachmentData(
-  //           id: attachment.id.toString(),
-  //           memo: "attachment",
-  //           title: attachment.name ?? '',
-  //           fileName: attachment.fileName ?? attachment.name,
-  //           filePath: attachment.attachUrl,
-  //           isRequired: attachment.isMandatory ?? false,
-  //           isUploaded: attachment.updatable ?? false,
-  //         ),
-  //       )
-  //       .toList();
-  // }
+// List<AttachmentData> getNewModelList(List<AttachmentModel> attachments) {
+//   return attachments
+//       .map(
+//         (attachment) => AttachmentData(
+//           id: attachment.id.toString(),
+//           memo: "attachment",
+//           title: attachment.name ?? '',
+//           fileName: attachment.fileName ?? attachment.name,
+//           filePath: attachment.attachUrl,
+//           isRequired: attachment.isMandatory ?? false,
+//           isUploaded: attachment.updatable ?? false,
+//         ),
+//       )
+//       .toList();
+// }
 }

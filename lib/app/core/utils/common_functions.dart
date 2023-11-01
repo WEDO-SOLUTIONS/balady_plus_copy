@@ -10,7 +10,7 @@ import 'package:bot_toast/bot_toast.dart';
 import 'package:crypto/crypto.dart';
 import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart' show PlatformFile;
-import 'package:firebase_analytics/firebase_analytics.dart';
+// import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter_bloc/flutter_bloc.dart' show EventTransformer;
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -68,7 +68,7 @@ import '../services/services_exports.dart'
     show AppInterceptors, EntryPointBridge, NavigationService, NoParams;
 import 'enums/enums.dart';
 
-FirebaseAnalytics fbAnalytics = FirebaseAnalytics.instance;
+// FirebaseAnalytics fbAnalytics = FirebaseAnalytics.instance;
 
 var carPlateLettersList = [
   "أ",
@@ -168,7 +168,7 @@ class CommonFunctions {
 
   static void sendEventToAnalytics(String event) {
     try {
-      fbAnalytics.logEvent(name: event);
+      // fbAnalytics.logEvent(name: event);
     } catch (ex) {}
   }
 
