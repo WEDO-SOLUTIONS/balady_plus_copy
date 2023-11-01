@@ -16,7 +16,7 @@ import '../../../../_shared_feature_/shared_feature_exports.dart';
 import '../../../../home_page/home_exports.dart' show CircleIcon;
 
 class DetailsAppBarTwo extends StatelessWidget implements PreferredSizeWidget {
-  final int requestNum;
+  final int? requestNum;
   final double currentStep;
   final int pageLength;
   final VoidCallback backOnPress;
@@ -28,7 +28,7 @@ class DetailsAppBarTwo extends StatelessWidget implements PreferredSizeWidget {
     required this.backOnPress,
     required this.pageLength,
     required this.onTapCloseAction,
-    required this.requestNum,
+    this.requestNum,
   }) : super(key: key);
 
   @override
@@ -57,25 +57,26 @@ class DetailsAppBarTwo extends StatelessWidget implements PreferredSizeWidget {
                     fontFamily: Constants.appFontType),
                 onPressed: backOnPress,
               ),
-              Expanded(
-                flex: 6,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    CustomTextWidget(
-                      'request'.tr(),
-                      textStyle: AppStyle.radioButtonStyle,
-                    ),
-                    CustomTextWidget(
-                      " #$requestNum",
-                      textStyle: AppStyle.radioButtonStyle.copyWith(
-                        color: AppColor.blackModern500Light,
+              if (requestNum != null)
+                Expanded(
+                  flex: 6,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      CustomTextWidget(
+                        'request'.tr(),
+                        textStyle: AppStyle.radioButtonStyle,
                       ),
-                    ),
-                  ],
+                      CustomTextWidget(
+                        " #$requestNum",
+                        textStyle: AppStyle.radioButtonStyle.copyWith(
+                          color: AppColor.blackModern500Light,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              const Expanded(flex: 2,child: SizedBox())
+              const Expanded(flex: 2, child: SizedBox())
             ],
           ),
         ),
@@ -119,7 +120,7 @@ class DetailsAppBarTwo extends StatelessWidget implements PreferredSizeWidget {
               isRTL: true,
               animationDuration: 0,
               restartAnimation: false,
-              percent: currentStep / (getPageList().length + 1),
+              percent: currentStep / pageLength,
               barRadius: const Radius.circular(33),
               backgroundColor: AppColor.primary100Light,
               linearGradient: LinearGradient(colors: [
