@@ -68,7 +68,7 @@ class WorkerTypeItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Expanded(
       child: GestureDetector(
-        onTap: onTap(workersType),
+        onTap: () => onTap(workersType),
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: 16),
           decoration: BoxDecoration(
@@ -84,6 +84,7 @@ class WorkerTypeItem extends StatelessWidget {
                 ? AppColor.blackModern50Light
                 : AppColor.blackModern600Light,
             fontSize: 14,
+            textAlign: TextAlign.center,
             fontWeight: AppFontWeight.bold,
           ),
         ),
