@@ -48,13 +48,16 @@ class WebService {
     dio.options.headers = {};
     dio.addSentry();
 
-    dio.interceptors.add(PrettyDioLogger(
-      requestHeader: false,
-      requestBody: false,
-      responseBody: false,
-    ));
+    dio.interceptors.add(
+      PrettyDioLogger(
+        requestHeader: true,
+        requestBody: true,
+        responseBody: true,
+      ),
+    );
     dio.interceptors.add(AppInterceptors());
   }
+
   WebService.newDio({
     required this.dio,
   });
@@ -95,6 +98,7 @@ class AppInterceptors extends Interceptor {
       };
       options.headers.addAll(headers);
     }
+
     if (await networkConnection.isConnected == false) {
       "Request-Rejected because 'Network-Disconnected'".errorLog();
       return handler.reject(NoInternetConnectionException(options));
@@ -133,7 +137,7 @@ class AppInterceptors extends Interceptor {
     }
     options.headers.putIfAbsent("x-channel-id", () => "MOBILE");
     //if (options.headers['Authorization'] == null) {
-    print(options.headers);
+
     return handler.next(options);
   }
 
@@ -141,10 +145,6 @@ class AppInterceptors extends Interceptor {
   void onError(DioError err, ErrorInterceptorHandler handler) {
     "Opps, recieved Error: ${err.response?.statusCode}".errorLog();
     "Opps, recieved Error: ${err.response?.data}".errorLog();
-    print(err);
-
-    print(err.error);
-    print(err.type);
 
     switch (err.type) {
       case DioErrorType.connectionTimeout:
@@ -198,6 +198,7 @@ class AppInterceptors extends Interceptor {
   }
 
   String get languageCode => translator.activeLanguageCode;
+
   bool get mounted => true;
 }
 
