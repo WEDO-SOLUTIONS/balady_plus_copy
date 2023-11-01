@@ -491,12 +491,7 @@ class ApiUrl {
 // -------  Commercial License Cancel ---------
   static String getCommercialLicenseAllowedActions(int licenseId) =>
       '/v1/balady-commercial-services/licenses/$licenseId/allowed-actions';
-  static String getCommercialLicenseDetails(int licenseId) =>
-      '/v1/balady-commercial-services/licenses/$licenseId';
-  static String commercialLicensePermits(int licenseId) =>
-      '/v1/balady-commercial-services/licenses/permits/$licenseId';
-  static String getLicenseAttachments(int licenseId) =>
-      '/v1/balady-commercial-services/license-attachments/$licenseId';
+
 // -------  Commercial License Cancel ---------
   static const String commercialLicenseAllowedActions =
       '/v1/balady-commercial-services/mobile/cancel-request/allowed-actions';
@@ -518,17 +513,6 @@ class ApiUrl {
   static String commercialLicenseCancelSubmit(int requestId) =>
       '/v1/balady-commercial-services/mobile/cancel-request/$requestId/submit';
 /////////////////////////////////////////////////////////
-  static String getAllowedActionsForRequests(int requestId) =>
-      '/v1/balady-commercial-services/mobile/request/allowed-actions/$requestId';
-  static String getRequestCommercialLicenseDetails(int requestId) =>
-      '/v1/balady-commercial-services/mobile/request/details/$requestId';
-/////////////////////////////////////////////////////////
-  static String commercialLicenseIsDirectToPay(int requestId) =>
-      '/v1/balady-commercial-services/mobile-cancel-request/request/$requestId/is-direct-to-pay';
-  static const String commercialLicenseCancelSubmitRating =
-      '/v1/balady-commercial-services/rating/submit';
-  static String commercialLicenseCancelGetDetailsRequest(int requestId) =>
-      '/v1/balady-commercial-services/mobile-cancel-request/request-details/$requestId';
   static String getAllowedActionsForRequests(int requestId) =>
       '/v1/balady-commercial-services/mobile/request/allowed-actions/$requestId';
   static String getRequestCommercialLicenseDetails(int requestId) =>
