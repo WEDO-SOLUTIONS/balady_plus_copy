@@ -25,8 +25,8 @@ class CRStep8EmployeeData extends StatelessWidget {
                     groupName: 'بيانات موقع المنشأة',
                     currentItem: null,
                     items: [
-                      RadioItem(radioValue: "داخل مبني", id: 1),
-                      RadioItem(radioValue: "علي الشارع", id: 1),
+                      //    RadioItem(radioValue: "داخل مبني", id: 1),
+                      //    RadioItem(radioValue: "علي الشارع", id: 1),
                     ],
                     onChanged: (value) {},
                   ),

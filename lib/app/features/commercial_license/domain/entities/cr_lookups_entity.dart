@@ -8,4 +8,6 @@ class CrLookupsEntity extends DropDownItem {
     required this.lookupId,
     required this.lookupMame,
   }) : super(name: lookupMame, id: lookupId);
+
+  String? get text => lookupMame;
 }
