@@ -1,6 +1,10 @@
+import 'package:balady_plus/app/core/utils/constants/route_names.dart';
+import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/buttons/custom_buttons_widgets.dart';
+import 'package:balady_plus/etmam_app/features/_shared_feature_/shared/presentation/widgets/custom_buttons_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../../core/utils/constants/app_colors.dart';
 import '../../../../../core/utils/constants/app_style.dart';
@@ -52,6 +56,7 @@ class ServiceCardDescWidget extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 CustomTextWidget(
                   card.description,
@@ -59,16 +64,35 @@ class ServiceCardDescWidget extends StatelessWidget {
                   maxLines: 6,
                 ),
                 const SizedBox(height: 16),
+                (card.fees ?? 1) == -1
+                    ? CustomUnderlineTextdButtonWidget(
+                  onPressed: () {
+                    Navigator.pushNamed(
+                        context, RouteName.calculatorMapRoute);
+                  },
+                  text: card.feesName!,
+                )
+                    : const SizedBox(),
+                const SizedBox(height: 12),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     if (card.fees != null)
+                      card.fees == -1
+                          ? const SizedBox()
+                          : ServiceCardParameter(
+                              title: 'fees'.tr(),
+                              iconName: IconPath.walletNoFees,
+                              value: card.fees == 0
+                                  ? "service_card_no_fees".tr()
+                                  : card.fees.toString(),
+                            ),
+                    if (card.duration.isNotEmpty)
                       ServiceCardParameter(
-                        title: 'fees'.tr(),
-                        iconName: IconPath.walletNoFees,
-                        value: card.fees == 0
-                            ? "service_card_no_fees".tr()
-                            : card.fees.toString(),
+                        title: 'time_serveis'.tr(),
+                        iconName: IconPath.duration,
+                        value: card.duration,
+                        width: 140,
                       ),
                   ],
                 ),

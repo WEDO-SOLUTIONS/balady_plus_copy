@@ -1,6 +1,11 @@
 import 'package:balady_plus/etmam_app/features/_shared_feature_/shared/presentation/widgets/search_widget.dart';
 import 'package:balady_plus/etmam_app/features/on_boarding_cities/on_boarding_cities_exports.dart'
-    show CityBloc, CityState, GetCitiesEvent, SearchForCityEvent;
+    show
+        CityBloc,
+        CityState,
+        GetCitiesEvent,
+        GetMoreCitiesEvent,
+        SearchForCityEvent;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:balady_plus/etmam_app/core/services/services_exports.dart'
@@ -22,6 +27,7 @@ import '../../../../core/utils/utils_exports.dart'
 import '../../../_shared_feature_/shared/shared_feature_exports.dart'
     show
         CityWidget,
+        CustomLoadingWidget,
         CustomPrimaryButton,
         CustomSvgIconWidget,
         CustomTextFieldWidget,
@@ -31,7 +37,6 @@ import '../../../_shared_feature_/shared/shared_feature_exports.dart'
 
 class ChangeCityDialog extends StatefulWidget {
   Function onSelect;
-
   ChangeCityDialog({Key? key, required this.onSelect}) : super(key: key);
 
   @override
@@ -39,77 +44,13 @@ class ChangeCityDialog extends StatefulWidget {
 }
 
 class _ChangeCityDialogState extends State<ChangeCityDialog> {
-  String selectedId = CommonProperties.cityId;
-  int selectedIndex = -1;
-  final TextEditingController _controller = TextEditingController();
-
-  @override
-  void initState() {
-    super.initState();
-    //CommonFunctions.sendEventToAnalytics(AppEvents.ChangeCity);
-  }
-
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<CityBloc, CityState>(
       bloc: sl(),
       builder: (context, state) {
-        return Column(
-          children: [
-            if (state.status == BlocStatus.success) ...[
-              SearchWidget(
-                hint: trans('city_search_hint'),
-                onChange: /* () {},*/
-                    (text) {
-                  sl<CityBloc>().add(SearchForCityEvent(text: text));
-                  setState(() {});
-                },
-              ),
-              const CustomVerticalSpace(height: 24),
-              Expanded(
-                child: (state.searchedItems != null &&
-                        (state.searchedItems?.length ?? 0) > 0)
-                    ? GridView.builder(
-                        shrinkWrap: true,
-                        physics: const BouncingScrollPhysics(),
-                        gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 4, mainAxisExtent: 120),
-                        itemCount: state.searchedItems?.length ?? 0,
-                        itemBuilder: (ctx, index) {
-                          return CityWidget(
-                              cityName: state.searchedItems?[index].name ?? "",
-                              cityIcon:
-                                  state.searchedItems?[index].imageUrl ?? "",
-                              isSelected:
-                                  (state.searchedItems?[index].id ?? "") ==
-                                      selectedId,
-                              btnPressed: () {
-                                selectedId =
-                                    state.searchedItems?[index].id ?? "";
-                                selectedIndex = index;
-                                setState(() {});
-                              });
-                        })
-                    : EmptySearchWidget(),
-              ),
-              const CustomVerticalSpace(height: 15),
-              CustomPrimaryButton(
-                  isBtnDisabled: selectedIndex < 0,
-                  onPressed: () {
-                    widget.onSelect(state.searchedItems?[selectedIndex]);
-                    Navigator.of(context).pop();
-                  },
-                  btnText: trans('choose_city'))
-            ],
-            if (state.status == BlocStatus.failure)
-              ReloadWidget(
-                widgetHeight: 100,
-                onTab: () {
-                  sl<CityBloc>().add(GetCitiesEvent());
-                },
-              ),
-          ],
+        return CityList(
+          onSelect: widget.onSelect,
         );
       },
     );
@@ -119,6 +60,116 @@ class _ChangeCityDialogState extends State<ChangeCityDialog> {
   void dispose() {
     super.dispose();
     sl<CityBloc>().add(SearchForCityEvent(text: ""));
+  }
+}
+
+class CityList extends StatefulWidget {
+  Function onSelect;
+
+  CityList({Key? key, required this.onSelect}) : super(key: key);
+
+  @override
+  State<CityList> createState() => _CityListState();
+}
+
+class _CityListState extends State<CityList> {
+  String selectedId = CommonProperties.cityId;
+  int selectedIndex = -1;
+  final TextEditingController _controller = TextEditingController();
+
+  ScrollController _scrollController = new ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels ==
+          _scrollController.position.maxScrollExtent) {
+        sl<CityBloc>().add(GetMoreCitiesEvent());
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<CityBloc, CityState>(
+        bloc: sl(),
+        builder: (context, state) {
+          return Column(
+            children: [
+              if (state.status == BlocStatus.success ||
+                  state.status == BlocStatus.loadMore ||
+                  state.status == BlocStatus.loadingShimmer) ...[
+                SearchWidget(
+                  hint: trans('city_search_hint'),
+                  onChange: /* () {},*/
+                      (text) {
+                    sl<CityBloc>().add(SearchForCityEvent(text: text));
+                    setState(() {});
+                  },
+                ),
+                const CustomVerticalSpace(height: 24),
+                Expanded(
+                  child: (state.searchedItems != null &&
+                          (state.searchedItems?.length ?? 0) > 0)
+                      ? GridView.builder(
+                          shrinkWrap: true,
+                          physics: const BouncingScrollPhysics(),
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 4, mainAxisExtent: 120),
+                          itemCount: (state.searchedItems?.length ?? 0 + 1),
+                          controller: _scrollController,
+                          itemBuilder: (ctx, index) {
+                            /* if (index >= (state.items?.length ?? 0)) {
+                              if (state.status == BlocStatus.loadMore) {
+                                return const SizedBox(
+                                  height: 50,
+                                  child: Center(child: CustomLoadingWidget()),
+                                );
+                              } else {
+                                return Container(height: 50);
+                              }
+                            }*/
+
+                            return CityWidget(
+                                cityName:
+                                    state.searchedItems?[index].name ?? "",
+                                cityIcon:
+                                    state.searchedItems?[index].imageUrl ?? "",
+                                isSelected:
+                                    (state.searchedItems?[index].id ?? "") ==
+                                        selectedId,
+                                btnPressed: () {
+                                  selectedId =
+                                      state.searchedItems?[index].id ?? "";
+                                  selectedIndex = index;
+                                  setState(() {});
+                                });
+                          })
+                      : EmptySearchWidget(),
+                ),
+                if (state.status == BlocStatus.loadMore) CustomLoadingWidget(),
+                const CustomVerticalSpace(height: 15),
+                CustomPrimaryButton(
+                    isBtnDisabled: selectedIndex < 0,
+                    onPressed: () {
+                      widget.onSelect(state.searchedItems?[selectedIndex]);
+                      Navigator.of(context).pop();
+                    },
+                    btnText: trans('choose_city'))
+              ],
+              if (state.status == BlocStatus.failure)
+                ReloadWidget(
+                  widgetHeight: 100,
+                  onTab: () {
+                    sl<CityBloc>().add(GetCitiesEvent());
+                  },
+                ),
+            ],
+          );
+        });
   }
 }
 

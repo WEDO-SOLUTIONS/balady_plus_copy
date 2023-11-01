@@ -1,4 +1,3 @@
-import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/core/utils/constants/apis/api_info.dart';
 import 'package:balady_plus/app/features/_shared_feature_/data/models/response_body_model.dart';
 import 'package:balady_plus/app/features/commercial_license_cancel/data/models/cancellation_rquest_response.dart';
@@ -22,8 +21,9 @@ class CommercialLicenseCancelBloc
   final WebService webService;
 
   // final SubmitterInfo submitterInfo;
-  // final int licenseId;
-  final CancellationRequestResponse cancellationRequestResponse;
+  final String crNumber, crType;
+  final bool availableCloseDate;
+  final int requestId;
   ReasonCancel? reasonCancel;
   HijriCalendar? hijriCalendar;
   final TextEditingController controller = TextEditingController();
@@ -35,8 +35,10 @@ class CommercialLicenseCancelBloc
 
   CommercialLicenseCancelBloc({
     required this.webService,
-    // required this.licenseId,
-    required this.cancellationRequestResponse,
+    required this.crNumber,
+    required this.crType,
+    required this.requestId,
+    required this.availableCloseDate,
     // required this.submitterInfo,
     required this.reasonCancel,
   }) : super(const CommercialLicenseCancelState()) {
@@ -60,15 +62,14 @@ class CommercialLicenseCancelBloc
         "notes": reasonCancel!.text,
         "reasonId": reasonCancel!.id,
       };
-      if (cancellationRequestResponse.availableCloseDate) {
+      if (availableCloseDate && hijriCalendar != null) {
         String year = hijriCalendar!.hYear.toString();
         String month = hijriCalendar!.hMonth.toString().padLeft(2, '0');
         String day = hijriCalendar!.hDay.toString().padLeft(2, '0');
         data['activityCancellationDate'] = "$year/$month/$day";
       }
       var response = await webService.dio.post(
-          ApiUrl.commercialLicenseCancelSaveCancellationReason(
-              cancellationRequestResponse.requestId),
+          ApiUrl.commercialLicenseCancelSaveCancellationReason(requestId),
           data: data);
       final result = ResponseBodyModel.fromMap(response.data).data?.result;
       saveCancellationReasonResponse =
@@ -84,19 +85,18 @@ class CommercialLicenseCancelBloc
       SubmitCancelRequestPage e, Emitter emitter) async {
     emitter(const CommercialLicenseCancelLoadingState());
     try {
-      var response = await webService.dio.post(
-          ApiUrl.commercialLicenseCancelSubmit(
-              cancellationRequestResponse.requestId),
-          data: {
-            // "sadadPeriod": 0,
-          });
+      var response = await webService.dio
+          .post(ApiUrl.commercialLicenseCancelSubmit(requestId), data: {
+        // "sadadPeriod": 0,
+      });
       final data = response.data;
       final result = ResponseBodyModel.fromMap(data).data?.result;
       submitResponse = SubmitResponse.fromJson(result);
+      submitResponse!.crNumber = crNumber;
+      submitResponse!.crType = crType;
       emitter(
           SubmitCancelRequestSucceededState(submitResponse: submitResponse!));
     } catch (e) {
-      print(e.toString());
       emitter(CommercialLicenseCancelFailureState(e.toString()));
     }
   }

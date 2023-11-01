@@ -1,17 +1,13 @@
 import 'dart:async';
 
 import 'package:balady_plus/app/core/base/base_view_model.dart';
-import 'package:balady_plus/app/core/errors/exceptions.dart';
 import 'package:balady_plus/app/core/services/global/web_service.dart';
 import 'package:balady_plus/app/core/services/services_exports.dart';
 import 'package:balady_plus/app/core/utils/constants/apis/api_info.dart';
-import 'package:balady_plus/app/core/utils/extensions/log.dart';
 import 'package:balady_plus/app/features/_shared_feature_/data/models/response_body_model.dart';
 import 'package:balady_plus/app/features/commercial_license_cancel/data/models/cancellation_rquest_response.dart';
 import 'package:balady_plus/app/features/commercial_license_details/data/models/commercial_licence_details.dart';
 import 'package:balady_plus/app/features/commercial_license_details/data/models/reason_cancel.dart';
-import 'package:dio/dio.dart';
-import 'package:localize_and_translate/localize_and_translate.dart';
 
 class ApplyCancelViewModel extends BaseViewModel {
   final WebService webService;

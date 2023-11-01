@@ -27,10 +27,7 @@ class CityRemoteDataSourceImpl extends CityRemoteDataSource {
     try {
       response = await webService.dio.get(
         ApiUrl.cities,
-        queryParameters: {
-          ApiParams.page_No: 1,
-          // ApiParams.page_Size: 100,
-        },
+        queryParameters: params.toMap(),
       );
 
       var data = response.data["data"]?["result"];
@@ -50,10 +47,17 @@ class CityRemoteDataSourceImpl extends CityRemoteDataSource {
       if (ex is ServerException)
         throw ex;
       else {
+        String? errorCode = "";
         try {
+          final decodedResponse =
+              ApigeeResponseModel<CityResponseModel>.fromMap(response.data,
+                  parsedResult: null);
+          errorCode = decodedResponse.data?.responseCode;
           CommonFunctions.sendExceptionLog(exception: ex, response: response);
         } catch (ex) {}
+
         throw ServerException("errors_server_error_2".tr(),
+            errorCode: errorCode,
             exception: APIException(
               errorMessage: ex.toString(),
             ),

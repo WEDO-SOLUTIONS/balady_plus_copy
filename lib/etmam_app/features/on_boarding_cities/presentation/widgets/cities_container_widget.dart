@@ -4,6 +4,7 @@ import 'package:balady_plus/etmam_app/features/on_boarding_cities/on_boarding_ci
         CityBloc,
         CityState,
         GetCitiesEvent,
+        GetMoreCitiesEvent,
         SearchForCityEvent,
         SelectCityEvent;
 import 'package:flutter/material.dart';
@@ -22,6 +23,7 @@ import '../../../../core/utils/utils_exports.dart'
 import '../../../_shared_feature_/shared/shared_feature_exports.dart'
     show
         CityWidget,
+        CustomLoadingWidget,
         CustomPrimaryButton,
         CustomSvgIconWidget,
         CustomTextFieldWidget,
@@ -42,6 +44,20 @@ class CitiesContainerWidget extends StatefulWidget {
 class _CityContainerWidgetState extends State<CitiesContainerWidget> {
   int selectedIndex = -1;
   final TextEditingController _controller = TextEditingController();
+
+  ScrollController _scrollController = new ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels ==
+          _scrollController.position.maxScrollExtent) {
+        print("max");
+        context.read<CityBloc>().add(GetMoreCitiesEvent());
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -68,7 +84,9 @@ class _CityContainerWidgetState extends State<CitiesContainerWidget> {
                   fontSize: 18,
                   fontWeight: AppFontWeight.w600,
                 ),
-                if (state.status == BlocStatus.success) ...[
+                if (state.status == BlocStatus.success ||
+                    state.status == BlocStatus.loadMore ||
+                    state.status == BlocStatus.loadingShimmer) ...[
                   const CustomVerticalSpace(height: 24),
                   CustomTextFieldWidget(
                     label: "",
@@ -95,12 +113,22 @@ class _CityContainerWidgetState extends State<CitiesContainerWidget> {
                         ? GridView.builder(
                             shrinkWrap: true,
                             padding: const EdgeInsets.only(top: 20, bottom: 5),
-                            physics: const BouncingScrollPhysics(),
+                            //  physics: const BouncingScrollPhysics(),
                             gridDelegate:
                                 const SliverGridDelegateWithFixedCrossAxisCount(
                                     crossAxisCount: 5, mainAxisExtent: 120),
-                            itemCount: state.searchedItems?.length ?? 0,
+                            itemCount: (state.searchedItems?.length ?? 0),
                             itemBuilder: (ctx, index) {
+                              /*if (index >= (state.items?.length ?? 0)) {
+                                if (state.status == BlocStatus.loadMore) {
+                                  return const SizedBox(
+                                    height: 50,
+                                    child: Center(child: CustomLoadingWidget()),
+                                  );
+                                } else {
+                                  return Container(height: 50);
+                                }
+                              }*/
                               return CityWidget(
                                   cityName:
                                       state.searchedItems?[index].name ?? "",
