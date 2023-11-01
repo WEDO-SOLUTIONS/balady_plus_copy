@@ -23,6 +23,9 @@ class DialogName {
   static const healthCertificateRequestActionsDialog =
       '/healthCertificateRequestActionsDialog';
 
+  static const healthCertificateUpdatePhotoActionsDialog =
+      '/healthCertificateUpdatePhotoActionsDialog';
+
   static const buildingComplianceDialog = '/buildingComplianceDialog';
 
   static const selectAppointmentTypeDialog = '/selectAppointmentTypeDialog';
@@ -153,6 +156,7 @@ class DialogName {
 
   static const commercialLicenseActionSheetDialog = '/commercialLicenseActionSheetDialog';
   static const commercialLicenseReasonCancelSheet = '/commercialLicenseReasonCancelSheet';
+  static const requestCommercialLicenseActionSheetDialog = '/requestCommercialLicenseActionSheetDialog';
   // static const reasonCancelDialog = '/reasonCancelDialog';
 
 }
