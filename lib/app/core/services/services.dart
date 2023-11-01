@@ -335,7 +335,7 @@ Map<String, dynamic> servicesConfig = {
         {
           "iconName": "service_description",
           "rate": 5.4,
-          "duration": 5,
+          "duration": "5",
           "ar": {
             "title": "وصف الخدمه",
             "description":
@@ -350,7 +350,7 @@ Map<String, dynamic> servicesConfig = {
         {
           "iconName": "requirements",
           "rate": 5.4,
-          "duration": 5,
+          "duration": "5",
           "ar": {
             "title": "المتطلبات",
             "description":
