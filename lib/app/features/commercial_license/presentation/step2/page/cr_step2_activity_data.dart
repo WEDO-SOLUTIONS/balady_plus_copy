@@ -68,9 +68,6 @@ class CRStep2ActivityData extends StatelessWidget {
                             );
                           },
                         ),
-                        // NotesWidget(
-                        //    notes: ['note1'.tr(), 'note2'.tr()],
-                        //   ),
                         BlocBuilder<CrStep2ActivityDataCubit,
                             CrStep2ActivityDataState>(
                           builder: (context, state) {
@@ -126,7 +123,7 @@ class CRStep2ActivityData extends StatelessWidget {
                                 .updateArea(double.tryParse(value ?? ""));
                           },
                         ),
-
+                        const CustomVerticalSpace(height: 12),
                         if (state.showHotel()) ...[
                           AccomodationDropDownTypes(),
                           const CustomVerticalSpace(height: 16),
@@ -153,6 +150,17 @@ class CRStep2ActivityData extends StatelessWidget {
                           ),
                           const CustomVerticalSpace(height: 16),
                         ],
+                        ReadOnlyField(
+                          title: "مساحة النشاط الرئيسي".tr(),
+                          subTitle: state.getTotalArea().toString(),
+                          showSpace: false,
+                        ),
+                        const CustomVerticalSpace(height: 16),
+                        NotesWidget(
+                          notes: [
+                            '<blockquote >عزيزي المستفيد.. يرجى اختيار النشاط المطابق للنشاط الفعلي للمحل حيث أنه لا يمكن تعديل نشاط الرخصة بعد إصدارها</p><p >عزيزي المستفيد... يمكنك الاستعلام عن تفاصيل الأنشطة واشتراطاتها من خلال زيارتك للرابط التالي: <a href="https://apps.balady.gov.sa//LicenseStandard/Default" target="_blank">الأنشطة التجارية واشتراطاتها</a></p></blockquote>'
+                          ],
+                        ),
                         if (state.showAtm()) ...[
                           CustomTextWidget(
                             "هل تم دفع رسوم تأسيس الصراف؟",
@@ -210,7 +218,10 @@ class CRStep2ActivityData extends StatelessWidget {
               CRPreviousNextButtons(
                 isBtnDisabled: !state.isFormValid(),
                 onPressed: () {
-                  context.read<CrStep2ActivityDataCubit>().save();
+                  print("GG");
+                  context
+                      .read<CrStep2ActivityDataCubit>()
+                      .getSalamaWarningMessage();
                 },
               ),
             ],

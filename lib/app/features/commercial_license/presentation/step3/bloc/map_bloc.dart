@@ -17,6 +17,7 @@ import '../../../../../core/services/local/navigation_services.dart';
 import '../../../../../core/utils/common_functions.dart';
 import '../../../../../core/utils/enums/bloc_status.dart';
 
+import '../../../../municipal_services/municipal_advisor/domain/use_cases/get_gis_image.dart';
 import '../../../commercial_license_exports.dart'
     show
         CommercialLicenseBloc,
@@ -36,16 +37,19 @@ class MapBloc extends Bloc<MapEvent, MapState> {
   final GetGISData _getGisData;
   late GoogleMapController mapController;
   final SaveLocationDetails _saveLocationDetails;
+  final GetGISImage _getGISImage;
 
   MapBloc({MapScreenParams? params})
       : _getGisData = GetGISData(repository: sl()),
         _saveLocationDetails = SaveLocationDetails(repository: sl()),
+        _getGISImage = GetGISImage(sl()),
         super(MapState(
-            gisResponse: params?.gisResponse,
-            location: params?.gisParams,
-            readOnly: params?.readOnly,
-            requestNo: params?.requestNo,
-            userLocation: params?.currentUserLocation)) {
+          gisResponse: params?.gisResponse,
+          location: params?.gisParams,
+          readOnly: params?.readOnly,
+          requestNo: params?.requestNo,
+          userLocation: params?.currentUserLocation,
+        )) {
     on<GetGISDataEvent>(_getGisDataHandler);
     on<InitMapEvent>(_initMapHandler);
 
@@ -64,12 +68,12 @@ class MapBloc extends Bloc<MapEvent, MapState> {
 
     final failureOrSuccess = await _getGisData(e.params);
 
-    failureOrSuccess.fold((failure) {
+    await failureOrSuccess.fold((failure) {
       emitter(state.copyWith(
         status: BlocStatus.failure,
         errorMessage: (failure as ServerFailure).errorMessage,
       ));
-    }, (success) {
+    }, (success) async {
       emitter(state.copyWith(
         status: BlocStatus.success,
         gisResponse: success,
@@ -83,10 +87,32 @@ class MapBloc extends Bloc<MapEvent, MapState> {
             success.planNo != "Null" ? success.planNo ?? "" : "";
         landNpController.text =
             success.parcelNo != "Null" ? success.parcelNo ?? "" : "";
+        String? url = await getImageUrl(e.params);
 
-        NavigationService.navigatorKey.currentState
-            ?.pop(MapScreenParams(gisParams: e.params, gisResponse: success));
+        if (url != null) {
+          success.locationURL = url;
+
+          NavigationService.navigatorKey.currentState
+              ?.pop(MapScreenParams(gisParams: e.params, gisResponse: success));
+        }
       }
+    });
+  }
+
+  Future<String?> getImageUrl(GISParams params) async {
+    emit(state.copyWith(status: BlocStatus.loading, errorMessage: ""));
+
+    final failOrSuccess = await _getGISImage(params);
+
+    return await failOrSuccess.fold((failure) async {
+      emit(state.copyWith(
+        status: BlocStatus.failure,
+        errorMessage: (failure as ServerFailure).errorMessage,
+      ));
+    }, (r) {
+      emit(state.copyWith(status: BlocStatus.success, errorMessage: ""));
+
+      return r;
     });
   }
 

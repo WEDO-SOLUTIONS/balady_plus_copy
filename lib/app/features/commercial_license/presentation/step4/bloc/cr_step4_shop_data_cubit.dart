@@ -94,6 +94,16 @@ class CrStep4ShopDataCubit extends Cubit<CrStep4ShopDataState> {
         selectedBoards: selectedBoards, status: BlocStatus.success));
   }
 
+  void deleteBoard(int index) {
+    emit(state.copyWith(status: BlocStatus.loading, errorMessage: ""));
+    List<CommercialBoardType> selectedBoards = state.selectedBoards ?? [];
+
+    selectedBoards.removeAt(index);
+    print(selectedBoards.length);
+    emit(state.copyWith(
+        selectedBoards: selectedBoards, status: BlocStatus.success));
+  }
+
   void updateFields(
       {final bool? brand,
       final String? shopName,
@@ -536,10 +546,17 @@ class CrStep4ShopDataCubit extends Cubit<CrStep4ShopDataState> {
     final failOrSuccess = await _getMalls(districtId);
 
     failOrSuccess.fold((l) {
-      emit(state.copyWith(
-        //  errorMessage: (l as ServerFailure).errorMessage,
-        mallsStatus: BlocStatus.failure,
-      ));
+      if ((l as ServerFailure).errorCode == "2") {
+        emit(state.copyWith(
+          mallsList: [],
+          mallsStatus: BlocStatus.success,
+        ));
+      } else {
+        emit(state.copyWith(
+          //  errorMessage: (l as ServerFailure).errorMessage,
+          mallsStatus: BlocStatus.failure,
+        ));
+      }
     }, (r) {
       emit(
           state.copyWith(mallsStatus: BlocStatus.success, mallsList: r.result));
@@ -602,5 +619,9 @@ class CrStep4ShopDataCubit extends Cubit<CrStep4ShopDataState> {
       emit(state.copyWith(
           status: BlocStatus.success, isSalamaReportVerified: Nullable(true)));
     });
+  }
+
+  void updateEndorsmentAgreement(bool? value) {
+    emit(state.copyWith(errorMessage: "", endorsmentAgreement: value));
   }
 }

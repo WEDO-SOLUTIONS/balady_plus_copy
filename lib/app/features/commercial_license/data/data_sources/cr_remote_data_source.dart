@@ -2189,11 +2189,12 @@ class CrRemoteDataSourceImpl extends CrRemoteDataSource {
     var response;
 
     try {
-      response = await webService.dio.post(
-        ApiUrl.salamaWarningMessage,
-      );
+      response = await webService.dio
+          .post(ApiUrl.salamaWarningMessage, data: params.toJson());
 
-      var data = response.data["data"]["result"]["message"];
+      var data = response.data["data"]["result"] != null
+          ? response.data["data"]["result"]["message"]
+          : "";
 
       final decodedResponse =
           ResponseBodyModel<String>.fromMap(response.data, parsedResult: data);
@@ -2234,8 +2235,51 @@ class CrRemoteDataSourceImpl extends CrRemoteDataSource {
 
   @override
   Future<String> getWarningWorkFlowMessage(
-      {required SalamaWarningRequest params}) {
-    // TODO: implement getWarningWorkFlowMessage
-    throw UnimplementedError();
+      {required SalamaWarningRequest params}) async {
+    var response;
+
+    try {
+      response = await webService.dio
+          .post(ApiUrl.salamaWarningWorkFlowMessage, data: params.toJson());
+
+      var data = response.data["data"]["result"] != null
+          ? response.data["data"]["result"][0]["workflowName"]
+          : "";
+
+      final decodedResponse =
+          ResponseBodyModel<String>.fromMap(response.data, parsedResult: data);
+
+      return decodedResponse.data!.result!.toFuture();
+    } on DioError catch (error) {
+      print(error);
+      var errorCode;
+      try {
+        final decodedResponse = ResponseBodyModel<bool>.fromMap(
+          error.response?.data,
+        );
+        errorCode = decodedResponse.data?.responseCode;
+      } catch (ex) {}
+
+      throw ServerException(
+        error.toString(),
+        errorCode: errorCode,
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
+    } catch (ex) {
+      print(ex);
+      if (ex is ServerException)
+        throw ex;
+      else {
+        try {
+          //MM    CommonFunctions.sendExceptionLog(exception: ex, response: response);
+        } catch (ex) {}
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
+      }
+    }
   }
 }

@@ -10,27 +10,28 @@ class AddetionalActivityRequest extends Equatable {
   AddetionalActivityItem? item;
   AddetionalActivityItemDetails? detailsItem;
   SubActivityDetails? details;
+  String? faweryMessage;
 
   double? area;
-  AddetionalActivityRequest({
-    this.item,
-    this.detailsItem,
-    this.details,
-    this.area,
-  });
+  AddetionalActivityRequest(
+      {this.item,
+      this.detailsItem,
+      this.details,
+      this.area,
+      this.faweryMessage});
 
-  AddetionalActivityRequest copyWith({
-    AddetionalActivityItem? item,
-    AddetionalActivityItemDetails? detailsItem,
-    SubActivityDetails? details,
-    double? area,
-  }) {
+  AddetionalActivityRequest copyWith(
+      {AddetionalActivityItem? item,
+      AddetionalActivityItemDetails? detailsItem,
+      SubActivityDetails? details,
+      double? area,
+      String? faweryMessage}) {
     return AddetionalActivityRequest(
-      item: item ?? this.item,
-      detailsItem: detailsItem ?? this.detailsItem,
-      details: details ?? this.details,
-      area: area ?? this.area,
-    );
+        item: item ?? this.item,
+        detailsItem: detailsItem ?? this.detailsItem,
+        details: details ?? this.details,
+        area: area ?? this.area,
+        faweryMessage: faweryMessage ?? this.faweryMessage);
   }
 
   @override

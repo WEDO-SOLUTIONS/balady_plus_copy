@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../core/utils/utils_exports.dart';
 import '../../../../_shared_feature_/shared_feature_exports.dart';
@@ -40,7 +41,7 @@ class ExtraActivityCard extends StatelessWidget {
               )
             ],
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: 8),
           CustomTextWidget(
             item.item?.name ?? "",
             fontColor: AppColor.blackModern600Light,
@@ -54,7 +55,7 @@ class ExtraActivityCard extends StatelessWidget {
             fontSize: 12,
             fontWeight: AppFontWeight.bold,
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: 8),
           CustomTextWidget(
             item.detailsItem?.name ?? "",
             fontColor: AppColor.blackModern600Light,
@@ -62,13 +63,27 @@ class ExtraActivityCard extends StatelessWidget {
             fontWeight: AppFontWeight.semiBold,
           ),
           const SizedBox(height: 16),
-          const CustomTextWidget(
-            "المساحه الكليه للمحل",
+          CustomTextWidget(
+            "نوع موافقة الدفاع المدني".tr(),
             fontColor: AppColor.primary700Light,
             fontSize: 12,
             fontWeight: AppFontWeight.bold,
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: 8),
+          CustomTextWidget(
+            item.faweryMessage ?? "",
+            fontColor: AppColor.blackModern600Light,
+            fontSize: 16,
+            fontWeight: AppFontWeight.semiBold,
+          ),
+          const SizedBox(height: 16),
+          CustomTextWidget(
+            "مساحة النشاط".tr(),
+            fontColor: AppColor.primary700Light,
+            fontSize: 12,
+            fontWeight: AppFontWeight.bold,
+          ),
+          const SizedBox(height: 8),
           CustomTextWidget(
             item.area.toString() ?? "",
             fontColor: AppColor.blackModern600Light,

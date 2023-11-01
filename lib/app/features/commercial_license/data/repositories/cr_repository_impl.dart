@@ -5,6 +5,7 @@ import 'package:balady_plus/app/features/commercial_license/data/models/qr/qr_de
 import 'package:balady_plus/app/features/commercial_license/data/models/qr/qr_lookup.dart';
 import 'package:balady_plus/app/features/commercial_license/data/models/qr/qr_submit_response.dart';
 import 'package:balady_plus/app/features/commercial_license/data/models/qr/save_enterprise_data_request.dart';
+import 'package:balady_plus/app/features/commercial_license/data/models/salama_warning_request.dart';
 import 'package:balady_plus/app/features/commercial_license/data/models/save_com_submitter_and_owner_request_model.dart';
 import 'package:balady_plus/app/features/commercial_license/domain/entities/addetional_activity_details_request.dart';
 import 'package:balady_plus/app/features/commercial_license/domain/entities/cr_attachment_response.dart';
@@ -516,6 +517,31 @@ class CrRepositoryImpl implements CrRepository {
       {required VerifySalamaRequest params}) async {
     try {
       final data = await remoteDataSource.validateSalamaReport(params: params!);
+      return Right(data);
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage,
+          statusCode: error.statusCode, errorCode: error.errorCode));
+    }
+  }
+
+  @override
+  Future<Either<Failure, String>> getWarningMessage(
+      {required SalamaWarningRequest params}) async {
+    try {
+      final data = await remoteDataSource.getWarningMessage(params: params);
+      return Right(data);
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage,
+          statusCode: error.statusCode, errorCode: error.errorCode));
+    }
+  }
+
+  @override
+  Future<Either<Failure, String>> getWarningWorkFlowMessage(
+      {required SalamaWarningRequest params}) async {
+    try {
+      final data =
+          await remoteDataSource.getWarningWorkFlowMessage(params: params);
       return Right(data);
     } on ServerException catch (error) {
       return Left(ServerFailure(error.errorMessage,

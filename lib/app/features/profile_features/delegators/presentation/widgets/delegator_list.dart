@@ -158,6 +158,7 @@ class ProfileHeader extends StatelessWidget {
         CustomTextWidget(
           "profile_switch_entity".tr(),
           fontSize: 16,
+          maxLines: 2,
           fontWeight: AppFontWeight.bold,
           textAlign: TextAlign.start,
           fontColor: Color(0xFF27272A),

@@ -6,8 +6,9 @@ import '../../../domain/entities/commercial_board_type.dart';
 
 class BillboardCard extends StatelessWidget {
   final CommercialBoardType type;
+  final Function onDelete;
 
-  const BillboardCard({super.key, required this.type});
+  const BillboardCard({super.key, required this.type, required this.onDelete});
 
   @override
   Widget build(BuildContext context) {
@@ -33,6 +34,9 @@ class BillboardCard extends StatelessWidget {
               CustomIconButtonWidget(
                 icon: Icons.delete,
                 iconColor: AppColor.redBrown,
+                onPressed: () {
+                  onDelete();
+                },
               )
             ],
           ),

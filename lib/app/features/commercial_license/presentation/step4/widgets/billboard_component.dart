@@ -48,6 +48,9 @@ class BillboardComponent extends StatelessWidget {
               physics: const NeverScrollableScrollPhysics(),
               itemBuilder: (_, index) => BillboardCard(
                 type: state.selectedBoards![index],
+                onDelete: () {
+                  context.read<CrStep4ShopDataCubit>().deleteBoard(index);
+                },
               ),
             ),
             const SizedBox(height: 12),

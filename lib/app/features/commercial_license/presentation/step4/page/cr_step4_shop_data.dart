@@ -160,11 +160,13 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
                           UndertakingWidget(
                             text: "أتعهد على جميع ماتم ذكره اعلاه",
                             desc: context
-                                    .read<CrStep4ShopDataCubit>()
-                                    .saveLocationResponse!
-                                    .endorsementText ??
-                                "",
-                            onChange: (value) {},
+                                .read<CrStep4ShopDataCubit>()
+                                .cameraEndorsmentText,
+                            onChange: (value) {
+                              context
+                                  .read<CrStep4ShopDataCubit>()
+                                  .updateEndorsmentAgreement(value);
+                            },
                             initialValue: false,
                           ),
                         YesNoRadioGroupWidget(

@@ -1,5 +1,8 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'dart:convert';
+
 import 'package:equatable/equatable.dart';
+import 'package:flutter/foundation.dart';
 
 import '../../../../../core/utils/common_functions.dart';
 
@@ -15,7 +18,7 @@ class ApplyCommercialResponseModel extends Equatable {
   final ComLicenseInfo? comLicenseInfo;
   final EnterpriseInfo? enterpriseInfo;
   final WorkTimes? workTimes;
-  final Map<String, bool?>? qrCodeAdditionalInfo;
+  final QrCodeAdditionalInfo? qrCodeAdditionalInfo;
   final dynamic attachments;
   final RatingInfo? ratingInfo;
   final dynamic selfSurveyRating;
@@ -65,8 +68,9 @@ class ApplyCommercialResponseModel extends Equatable {
         workTimes: json["workTimes"] == null
             ? null
             : WorkTimes.fromJson(json["workTimes"]),
-        qrCodeAdditionalInfo: Map.from(json["qrCodeAdditionalInfo"]!)
-            .map((k, v) => MapEntry<String, bool?>(k, v)),
+        qrCodeAdditionalInfo: json["qrCodeAdditionalInfo"] != null
+            ? QrCodeAdditionalInfo.fromMap(json["qrCodeAdditionalInfo"])
+            : null,
         attachments: json["attachments"],
         ratingInfo: json["ratingInfo"] == null
             ? null
@@ -89,8 +93,6 @@ class ApplyCommercialResponseModel extends Equatable {
         "comLicenseInfo": comLicenseInfo?.toJson(),
         "enterpriseInfo": enterpriseInfo?.toJson(),
         "workTimes": workTimes?.toJson(),
-        "qrCodeAdditionalInfo": Map.from(qrCodeAdditionalInfo!)
-            .map((k, v) => MapEntry<String, dynamic>(k, v)),
         "attachments": attachments,
         "ratingInfo": ratingInfo?.toJson(),
         "selfSurveyRating": selfSurveyRating,
@@ -660,6 +662,132 @@ class ContactInfo extends Equatable {
         whatsApp,
         enterpriseUniqueCode
       ];
+}
+
+class QrCodeAdditionalInfo extends Equatable {
+  final bool? thereIsOuterInvestablePlace;
+  final bool? serveDisabledPersons;
+  final bool? hasParking;
+  final int? parkingCount;
+  final bool? hasElectronicSale;
+  final bool? hasDelivery;
+  final String? siteDeliveryType;
+  final String? siteDeliveryName;
+  final bool? hasVehicleParking;
+  final String? electAccountNumber;
+  final String? waterAccountNumber;
+  const QrCodeAdditionalInfo({
+    this.thereIsOuterInvestablePlace,
+    this.serveDisabledPersons,
+    this.hasParking,
+    this.parkingCount,
+    this.hasElectronicSale,
+    this.hasDelivery,
+    this.siteDeliveryType,
+    this.siteDeliveryName,
+    this.hasVehicleParking,
+    this.electAccountNumber,
+    this.waterAccountNumber,
+  });
+
+  @override
+  List<Object?> get props {
+    return [
+      thereIsOuterInvestablePlace,
+      serveDisabledPersons,
+      hasParking,
+      parkingCount,
+      hasElectronicSale,
+      hasDelivery,
+      siteDeliveryType,
+      siteDeliveryName,
+      hasVehicleParking,
+      electAccountNumber,
+      waterAccountNumber,
+    ];
+  }
+
+  QrCodeAdditionalInfo copyWith({
+    bool? thereIsOuterInvestablePlace,
+    bool? serveDisabledPersons,
+    bool? hasParking,
+    int? parkingCount,
+    bool? hasElectronicSale,
+    bool? hasDelivery,
+    String? siteDeliveryType,
+    String? siteDeliveryName,
+    bool? hasVehicleParking,
+    String? electAccountNumber,
+    String? waterAccountNumber,
+  }) {
+    return QrCodeAdditionalInfo(
+      thereIsOuterInvestablePlace:
+          thereIsOuterInvestablePlace ?? this.thereIsOuterInvestablePlace,
+      serveDisabledPersons: serveDisabledPersons ?? this.serveDisabledPersons,
+      hasParking: hasParking ?? this.hasParking,
+      parkingCount: parkingCount ?? this.parkingCount,
+      hasElectronicSale: hasElectronicSale ?? this.hasElectronicSale,
+      hasDelivery: hasDelivery ?? this.hasDelivery,
+      siteDeliveryType: siteDeliveryType ?? this.siteDeliveryType,
+      siteDeliveryName: siteDeliveryName ?? this.siteDeliveryName,
+      hasVehicleParking: hasVehicleParking ?? this.hasVehicleParking,
+      electAccountNumber: electAccountNumber ?? this.electAccountNumber,
+      waterAccountNumber: waterAccountNumber ?? this.waterAccountNumber,
+    );
+  }
+
+  Map<String, dynamic> toMap() {
+    return <String, dynamic>{
+      'thereIsOuterInvestablePlace': thereIsOuterInvestablePlace,
+      'serveDisabledPersons': serveDisabledPersons,
+      'hasParking': hasParking,
+      'parkingCount': parkingCount,
+      'hasElectronicSale': hasElectronicSale,
+      'hasDelivery': hasDelivery,
+      'siteDeliveryType': siteDeliveryType,
+      'siteDeliveryName': siteDeliveryName,
+      'hasVehicleParking': hasVehicleParking,
+      'electAccountNumber': electAccountNumber,
+      'waterAccountNumber': waterAccountNumber,
+    };
+  }
+
+  factory QrCodeAdditionalInfo.fromMap(Map<String, dynamic> map) {
+    return QrCodeAdditionalInfo(
+      thereIsOuterInvestablePlace: map['thereIsOuterInvestablePlace'] != null
+          ? map['thereIsOuterInvestablePlace'] as bool
+          : null,
+      serveDisabledPersons: map['serveDisabledPersons'] != null
+          ? map['serveDisabledPersons'] as bool
+          : null,
+      hasParking: map['hasParking'] != null ? map['hasParking'] as bool : null,
+      parkingCount:
+          map['parkingCount'] != null ? map['parkingCount'] as int : null,
+      hasElectronicSale: map['hasElectronicSale'] != null
+          ? map['hasElectronicSale'] as bool
+          : null,
+      hasDelivery:
+          map['hasDelivery'] != null ? map['hasDelivery'] as bool : null,
+      siteDeliveryType: map['siteDeliveryType'] != null
+          ? map['siteDeliveryType'] as String
+          : null,
+      siteDeliveryName: map['siteDeliveryName'] != null
+          ? map['siteDeliveryName'] as String
+          : null,
+      hasVehicleParking: map['hasVehicleParking'] != null
+          ? map['hasVehicleParking'] as bool
+          : null,
+      electAccountNumber: map['electAccountNumber'] != null
+          ? map['electAccountNumber'].toString()
+          : null,
+      waterAccountNumber: map['waterAccountNumber'] != null
+          ? map['waterAccountNumber'].toString()
+          : null,
+    );
+  }
+
+  @override
+  bool get stringify => true;
 }
 
 class CrOwner extends Equatable {
