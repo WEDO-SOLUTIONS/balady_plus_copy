@@ -179,4 +179,14 @@ class CrStep2ActivityDataState extends Equatable {
   bool showAtm() {
     return selectedIsicActivity?.atmActivity == true;
   }
+
+  double getTotalArea() {
+    double total = totalArea ?? 0;
+
+    selectedAddetionalList?.forEach((element) {
+      total -= (element.area ?? 0);
+    });
+
+    return total;
+  }
 }

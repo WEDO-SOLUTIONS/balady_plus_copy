@@ -54,74 +54,88 @@ class _RemoteConfig {
   static final gis = _initValues<String>(
     devVal: "https://gisappstg.momra.gov.sa",
     stgVal: "https://gisappstg.momra.gov.sa",
+    preVal: "https://gisappstg.momra.gov.sa",
     prodVal: "https://gisapps.momra.gov.sa",
   );
   static final hmCode = _initValues<String>(
     devVal: "oxqUHJH1KXD84vP0KYBnyaHDUk5sJ9HkzqPDTice5TABqvfACZaLscG1TjjyPgIT",
     stgVal: "oxqUHJH1KXD84vP0KYBnyaHDUk5sJ9HkzqPDTice5TABqvfACZaLscG1TjjyPgIT",
+    preVal: "oxqUHJH1KXD84vP0KYBnyaHDUk5sJ9HkzqPDTice5TABqvfACZaLscG1TjjyPgIT",
     prodVal: "TU9NUkEgTW9iaWxlIFRlYW0gMjAyMg==",
   );
 
   static final apigeeURL = _initValues<String>(
     devVal: "https://apiservicesstg.balady.gov.sa",
     stgVal: "https://apiservicesstg.balady.gov.sa",
+    preVal: "https://apiservicespp.balady.gov.sa",
     prodVal: "https://apiservices.balady.gov.sa",
   );
   static final pegaURL = _initValues<String>(
     devVal: "https://crmustg.momra.gov.sa",
     stgVal: "https://crmustg.momra.gov.sa",
+    preVal: "https://crmustg.momra.gov.sa",
     prodVal: "https://crm.balady.gov.sa",
   );
 
   static final apigeeUsername = _initValues<String>(
     devVal: "7RmIkhYi6v4M7GUibBrpFdZuo8NsL2CC",
     stgVal: "7RmIkhYi6v4M7GUibBrpFdZuo8NsL2CC",
+    preVal: "7RmIkhYi6v4M7GUibBrpFdZuo8NsL2CC",
     prodVal: "4YxScCXqgTqPUpNqTH8rX1QZZUUzfbtw",
   );
   static final apigeePassword = _initValues<String>(
     devVal: "ak3JXde3KdBB1xbM",
     stgVal: "ak3JXde3KdBB1xbM",
+    preVal: "ak3JXde3KdBB1xbM",
     prodVal: "b4Ocmvf3sNDNDdrs",
   );
   static final ssoUrl = _initValues<String>(
     devVal: "https://ssoappdev.momra.gov.sa",
     stgVal: "https://ssoappdev.momra.gov.sa",
+    preVal: "https://ssoappstg.momra.gov.sa",
     prodVal: "https://ssoapp.balady.gov.sa",
   );
   static final ssoLoginUrl = _initValues<String>(
     devVal: "com.momra.balady://callback",
     stgVal: "com.momra.balady://callback",
+    preVal: "com.momra.balady://callback",
     prodVal: "com.balady://callback",
   );
   static final ssoSecret = _initValues<String>(
     devVal: "secret",
     stgVal: "secret",
+    preVal: "1afa033f369849a2ac6d0d42e713eb82",
     prodVal: "d19e0d31729144d3bff32d5cebbaef63",
   );
   static final ssoLogOutUrl = _initValues<String>(
     devVal: "com.momra.balady://logout",
     stgVal: "com.momra.balady://logout",
+    preVal: "com.momra.balady://logout",
     prodVal: "com.balady://logout",
   );
   static final momraDomain = _initValues<String>(
     devVal: ".momra.gov.sa",
     stgVal: ".momra.gov.sa",
+    preVal: ".momra.gov.sa",
     prodVal: ".balady.gov.sa",
   );
   static final ssoMomraDomain = _initValues<String>(
     devVal: ".ssoappdev.momra.gov.sa",
     stgVal: ".ssoappdev.momra.gov.sa",
+    preVal: ".ssoappstg.momra.gov.sa",
     prodVal: ".ssoapp.balady.gov.sa",
   );
   static final cookieURL = _initValues<String>(
     devVal: "https://baladyapps.momra.gov.sa/",
     stgVal: "https://baladyapps.momra.gov.sa/",
+    preVal: "https://prebaladyapps.momra.gov.sa/",
     prodVal: "https://apps.balady.gov.sa/",
   );
 
   static final ssoClient = _initValues<String>(
     devVal: "balady_mobile_app",
     stgVal: "balady_mobile_app",
+    preVal: "balady_mobile_app",
     prodVal: "balady_mobile_app",
   );
 
@@ -134,71 +148,83 @@ class _RemoteConfig {
   static final marketClass = _initValues<List<String>>(
     devVal: ["CG-14"],
     stgVal: ["CG-14"],
+    preVal: ["CG-14"],
     prodVal: ["CG-6", "CG-9"],
   );
 
   static final regaClass = _initValues<String>(
     devVal: "CG-26",
     stgVal: "CG-26",
+    preVal: "CG-26",
     prodVal: "CG-11",
   );
   static final damagedCarsClass = _initValues<String>(
     devVal: "NSPCL-192",
     stgVal: "NSPCL-192",
+    preVal: "NSPCL-192",
     prodVal: "NSPCL-36",
   );
 
   static final specialConditionOldId = _initValues<String>(
     devVal: "21",
     stgVal: "21",
+    preVal: "21",
     prodVal: "21",
   );
 
   static final specialConditionId = _initValues<String>(
     devVal: "22",
     stgVal: "22",
+    preVal: "22",
     prodVal: "22",
   );
 
   static final webSiteUrl = _initValues<String>(
     devVal: "https://balady.momra.gov.sa",
     stgVal: "https://balady.momra.gov.sa",
+    preVal: "https://prebalady.momra.gov.sa",
     prodVal: "https://balady.gov.sa",
   );
 
   static final baladyBaseUrl = _initValues<String>(
     devVal: "https://baladyapps.momra.gov.sa",
     stgVal: "https://baladyapps.momra.gov.sa",
+    preVal: "https://prebaladyapps.momra.gov.sa",
     prodVal: "https://apps.balady.gov.sa",
   );
 
   static final baladyToken = _initValues<String>(
     devVal: "E48C0CF6386948D5A22D8F4AD46B9CBB",
     stgVal: "E48C0CF6386948D5A22D8F4AD46B9CBB",
+    preVal: "E48C0CF6386948D5A22D8F4AD46B9CBB",
     prodVal: "BEDD09A1277C4E099DEB80D0AEFAA245",
   );
 
   static final xBaladyToken = _initValues<String>(
     devVal: "5EBC1331132E4C55B9726AFFA5D6B6F4",
     stgVal: "5EBC1331132E4C55B9726AFFA5D6B6F4",
+    preVal: "5EBC1331132E4C55B9726AFFA5D6B6F4",
     prodVal: "BE2019B8FECE4DACA5275BE2STGPROD",
   );
 
   static final publicAppointmentShareURL = _initValues<String>(
     devVal: "https://bldtrain.momra.gov.sa/commonapi/apt/",
     stgVal: "https://bldtrain.momra.gov.sa/commonapi/apt/",
+    preVal: "https://bldtrain.momra.gov.sa/commonapi/apt/",
     prodVal: "https://ebalady.momra.gov.sa/commonapi/apt/",
   );
 
   static final publicLicenseShareURL = _initValues<String>(
     devVal: "https://bldtrain.momra.gov.sa/commonapi/clp",
     stgVal: "https://bldtrain.momra.gov.sa/commonapi/clp",
+    preVal: "https://bldtrain.momra.gov.sa/commonapi/clp",
     prodVal: "https://ebalady.momra.gov.sa/commonapi/clp",
   );
 
   static final webCookieHeader = _initValues<String>(
     devVal: "BIGipServerssoappdev.momra.gov.sa.app~ssoappdev.momra.gov.sa_pool",
     stgVal: "BIGipServerssoappdev.momra.gov.sa.app~ssoappdev.momra.gov.sa_pool",
+    preVal: "BIGipServerssoappstg.momra.gov.sa.app~ssoappstg.momra.gov.sa_pool",
     prodVal: "BIGipServerssoapp.balady.gov.sa.app~ssoapp.balady.gov.sa_pool",
   );
 
@@ -219,6 +245,22 @@ class _RemoteConfig {
     "003",
     "005"
   ], stgVal: [
+    "007",
+    "010",
+    "016",
+    "002",
+    "008",
+    "009",
+    "012",
+    "011",
+    "013",
+    "014",
+    "015",
+    "017",
+    "018",
+    "003",
+    "005"
+  ], preVal: [
     "007",
     "010",
     "016",
@@ -255,11 +297,13 @@ class _RemoteConfig {
   static Map<EnvType, T> _initValues<T>({
     dynamic devVal,
     dynamic stgVal,
+    dynamic preVal,
     dynamic prodVal,
   }) =>
       {
         EnvType.dev: devVal,
         EnvType.stg: stgVal,
+        EnvType.pre: preVal,
         EnvType.prod: prodVal,
       };
 }

@@ -10,6 +10,7 @@ import '../../data/models/qr/qr_details_model.dart';
 import '../../data/models/qr/qr_lookup.dart';
 import '../../data/models/qr/qr_submit_response.dart';
 import '../../data/models/qr/save_enterprise_data_request.dart';
+import '../../data/models/salama_warning_request.dart';
 import '../../data/models/save_com_submitter_and_owner_request_model.dart';
 import '../entities/addetional_activity_details_request.dart';
 import '../entities/cr_attachment_response.dart';
@@ -126,4 +127,10 @@ abstract class CrRepository {
       {required VerifySalamaRequest params});
   Future<Either<Failure, bool>> validateSalamaPermit(
       {required VerifySalamaRequest params});
+
+  Future<Either<Failure, String>> getWarningMessage(
+      {required SalamaWarningRequest params});
+
+  Future<Either<Failure, String>> getWarningWorkFlowMessage(
+      {required SalamaWarningRequest params});
 }

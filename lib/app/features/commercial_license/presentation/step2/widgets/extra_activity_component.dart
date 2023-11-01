@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 import '../../../../../core/utils/utils_exports.dart';
 import '../../../../_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
 import '../../../../_shared_feature_/presentation/widgets/custom_cupertino_drop_down_widget.dart';
@@ -58,7 +59,9 @@ class _ExtraActivityComponentState extends State<ExtraActivityComponent> {
                 itemBuilder: (_, i) => ExtraActivityCard(
                   item: state.selectedAddetionalList![i],
                   onDelete: () {
-                    context.read<CrStep2ActivityDataCubit>().deleteAddetionalActivity(i); 
+                    context
+                        .read<CrStep2ActivityDataCubit>()
+                        .deleteAddetionalActivity(i);
                   },
                 ),
               ),
@@ -80,6 +83,14 @@ class _ExtraActivityComponentState extends State<ExtraActivityComponent> {
                                 padding:
                                     const EdgeInsets.symmetric(vertical: 16),
                                 child: ElevatedButtonWidget.add(onPressed: () {
+                                  double? a = double.tryParse(area ?? "") ?? 0;
+
+                                  if (a > state.getTotalArea()) {
+                                    CommonFunctions.showError(
+                                        "مساحة المحل أقل من مجموع مساحات الأنشطة الإضافية");
+                                    return;
+                                  }
+
                                   if (area != null) {
                                     ctx
                                         .read<CrStep2ActivityDataCubit>()
@@ -115,6 +126,7 @@ class _ExtraActivityComponentState extends State<ExtraActivityComponent> {
                                                         i)
                                                 : null;
                                           }),
+                                      const CustomVerticalSpace(height: 12),
                                       CustomTapWidgetForLongDialog(
                                           items: state
                                                   .addetionalActivityItemDetails ??
@@ -139,9 +151,14 @@ class _ExtraActivityComponentState extends State<ExtraActivityComponent> {
                                                         i)
                                                 : null;
                                           }),
+                                      const CustomVerticalSpace(height: 12),
                                       CustomTextFieldWidget(
-                                        label: "المساحه الكليه للمحل",
-                                        hintText: "ادخل المساحه الكليه للمحل",
+                                        label:
+                                            "مساحة النشاط الإضافي من إجمالي المساحة"
+                                                .tr(),
+                                        hintText:
+                                            "مساحة النشاط الإضافي من إجمالي المساحة"
+                                                .tr(),
                                         isDigitsOnly: true,
                                         keyboardType: TextInputType.number,
                                         suffixIcon: const CustomTextWidget(

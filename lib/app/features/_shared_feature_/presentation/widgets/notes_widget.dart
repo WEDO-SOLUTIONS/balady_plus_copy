@@ -42,7 +42,7 @@ class NotesWidget extends StatelessWidget {
                   child: Html(
                     data: notes[index],
                     onLinkTap: (url, attributes, element) {
-                      CommonFunctions.externalLaunch(url);
+                      CommonFunctions.openBaladyWebView(url);
                     },
                     style: {
                       "body": Style(

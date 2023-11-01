@@ -87,67 +87,68 @@ class CrStep4ShopDataState extends Equatable {
   final bool? isSalamaBillVerified;
 
   final bool? isSalamaReportVerified;
+  final bool? cameraAgreement;
 
-  const CrStep4ShopDataState({
-    this.accommodationTypesStatus = BlocStatus.initial,
-    this.contractsListStatus = BlocStatus.initial,
-    this.investmentListStatus = BlocStatus.initial,
-    this.status = BlocStatus.initial,
-    this.deedOptionsStatus = BlocStatus.initial,
-    this.cleanOptionsStatus = BlocStatus.initial,
-    this.samalaReportFawryStatus = BlocStatus.initial,
-    this.samalaBillFawryStatus = BlocStatus.initial,
-    this.mallsStatus = BlocStatus.initial,
-    this.mallsList,
-    this.locationResponse,
-    this.accommodationTypes,
-    this.selectedAccommodationType,
-    this.errorMessage,
-    this.selectedBoards,
-    this.boards,
-    this.brand,
-    this.shopName,
-    this.shopUnitNumber,
-    this.blockNumber,
-    this.holesCount,
-    this.floorCount,
-    this.noOfCameras,
-    this.hasElevator,
-    this.existInMall,
-    this.selectedMall,
-    this.floorNumber,
-    this.isCitizenPledgedToClean,
-    this.cleanContractEndDate,
-    this.salamaPermitExist,
-    this.salamaPermitNumber,
-    this.slamaReportNumber,
-    this.slamaBillNumber,
-    this.contractDate,
-    this.contractNumber,
-    this.contractOption,
-    this.contractType,
-    this.ownershipType,
-    this.crSubmitterType,
-    this.crContractType,
-    this.crContractOption,
-    this.cleanContractsResponse,
-    this.selectedCleanContract,
-    this.investmentContractResponse,
-    this.selectedInvestmentContract,
-    this.endorsmentAgreement,
-    this.deedOptions,
-    this.cleanOptionResponse,
-    this.ejarVerified,
-    this.deedVerified,
-    this.isFawryReport,
-    this.isFawryBill,
-    this.ejarInfoRequst,
-    this.deedInfoRequst,
-    this.deedOption,
-    this.isSalamaPermitVerified,
-    this.isSalamaBillVerified,
-    this.isSalamaReportVerified,
-  });
+  const CrStep4ShopDataState(
+      {this.accommodationTypesStatus = BlocStatus.initial,
+      this.contractsListStatus = BlocStatus.initial,
+      this.investmentListStatus = BlocStatus.initial,
+      this.status = BlocStatus.initial,
+      this.deedOptionsStatus = BlocStatus.initial,
+      this.cleanOptionsStatus = BlocStatus.initial,
+      this.samalaReportFawryStatus = BlocStatus.initial,
+      this.samalaBillFawryStatus = BlocStatus.initial,
+      this.mallsStatus = BlocStatus.initial,
+      this.mallsList,
+      this.locationResponse,
+      this.accommodationTypes,
+      this.selectedAccommodationType,
+      this.errorMessage,
+      this.selectedBoards,
+      this.boards,
+      this.brand,
+      this.shopName,
+      this.shopUnitNumber,
+      this.blockNumber,
+      this.holesCount,
+      this.floorCount,
+      this.noOfCameras,
+      this.hasElevator,
+      this.existInMall,
+      this.selectedMall,
+      this.floorNumber,
+      this.isCitizenPledgedToClean,
+      this.cleanContractEndDate,
+      this.salamaPermitExist,
+      this.salamaPermitNumber,
+      this.slamaReportNumber,
+      this.slamaBillNumber,
+      this.contractDate,
+      this.contractNumber,
+      this.contractOption,
+      this.contractType,
+      this.ownershipType,
+      this.crSubmitterType,
+      this.crContractType,
+      this.crContractOption,
+      this.cleanContractsResponse,
+      this.selectedCleanContract,
+      this.investmentContractResponse,
+      this.selectedInvestmentContract,
+      this.endorsmentAgreement,
+      this.deedOptions,
+      this.cleanOptionResponse,
+      this.ejarVerified,
+      this.deedVerified,
+      this.isFawryReport,
+      this.isFawryBill,
+      this.ejarInfoRequst,
+      this.deedInfoRequst,
+      this.deedOption,
+      this.isSalamaPermitVerified,
+      this.isSalamaBillVerified,
+      this.isSalamaReportVerified,
+      this.cameraAgreement});
 
   @override
   List<Object?> get props {
@@ -211,171 +212,176 @@ class CrStep4ShopDataState extends Equatable {
       isSalamaPermitVerified,
       isSalamaBillVerified,
       isSalamaReportVerified,
+      cameraAgreement
     ];
   }
 
-  CrStep4ShopDataState copyWith({
-    BlocStatus? accommodationTypesStatus,
-    BlocStatus? contractsListStatus,
-    BlocStatus? investmentListStatus,
-    List<String>? deedOptions,
-    SaveLocationResponse? locationResponse,
-    CleanOptionResponse? cleanOptionResponse,
-    BlocStatus? status,
-    List<CrLookupsEntity>? accommodationTypes,
-    DropDownItem? selectedAccommodationType,
-    String? errorMessage,
-    List<CommercialBoardType>? selectedBoards,
-    List<DropDownItem>? boards,
-    bool? brand,
-    String? shopName,
-    String? shopUnitNumber,
-    String? blockNumber,
-    int? holesCount,
-    int? floorCount,
-    int? noOfCameras,
-    bool? hasElevator,
-    bool? existInMall,
-    Nullable<QrLookUpItem?>? selectedMall,
-    int? floorNumber,
-    Nullable<String?>? contractOption,
-    Nullable<String?>? ownershipType,
-    Nullable<String?>? cleanContractEndDate,
-    bool? salamaPermitExist,
-    Nullable<String?>? salamaPermitNumber,
-    Nullable<String?>? slamaReportNumber,
-    Nullable<String?>? slamaBillNumber,
-    Nullable<String?>? contractDate,
-    Nullable<String?>? contractNumber,
-    Nullable<String?>? contractType,
-    Nullable<bool?>? isCitizenPledgedToClean,
-    Nullable<CRSubmitterType?>? crSubmitterType,
-    Nullable<CRContractType?>? crContractType,
-    Nullable<CRContractOption?>? crContractOption,
-    CleanContractsResponse? cleanContractsResponse,
-    Nullable<CleanContractItem?>? selectedCleanContract,
-    InvestmentContractResponse? investmentContractResponse,
-    Nullable<InvestmentContractItem?>? selectedInvestmentContract,
-    bool? endorsmentAgreement,
-    BlocStatus? deedOptionsStatus,
-    BlocStatus? cleanOptionsStatus,
-    BlocStatus? samalaReportFawryStatus,
-    BlocStatus? samalaBillFawryStatus,
-    Nullable<bool>? ejarVerified,
-    Nullable<bool>? deedVerified,
-    bool? isFawryReport,
-    bool? isFawryBill,
-    EjarInfoRequest? ejarInfoRequst,
-    DeedInfoRequest? deedInfoRequst,
-    String? deedOption,
-    List<QrLookUpItem>? mallsList,
-    BlocStatus? mallsStatus,
-    Nullable<bool?>? isSalamaPermitVerified,
-    Nullable<bool?>? isSalamaBillVerified,
-    Nullable<bool?>? isSalamaReportVerified,
-  }) {
+  CrStep4ShopDataState copyWith(
+      {BlocStatus? accommodationTypesStatus,
+      BlocStatus? contractsListStatus,
+      BlocStatus? investmentListStatus,
+      List<String>? deedOptions,
+      SaveLocationResponse? locationResponse,
+      CleanOptionResponse? cleanOptionResponse,
+      BlocStatus? status,
+      List<CrLookupsEntity>? accommodationTypes,
+      DropDownItem? selectedAccommodationType,
+      String? errorMessage,
+      List<CommercialBoardType>? selectedBoards,
+      List<DropDownItem>? boards,
+      bool? brand,
+      String? shopName,
+      String? shopUnitNumber,
+      String? blockNumber,
+      int? holesCount,
+      int? floorCount,
+      int? noOfCameras,
+      bool? hasElevator,
+      bool? existInMall,
+      Nullable<QrLookUpItem?>? selectedMall,
+      int? floorNumber,
+      Nullable<String?>? contractOption,
+      Nullable<String?>? ownershipType,
+      Nullable<String?>? cleanContractEndDate,
+      bool? salamaPermitExist,
+      Nullable<String?>? salamaPermitNumber,
+      Nullable<String?>? slamaReportNumber,
+      Nullable<String?>? slamaBillNumber,
+      Nullable<String?>? contractDate,
+      Nullable<String?>? contractNumber,
+      Nullable<String?>? contractType,
+      Nullable<bool?>? isCitizenPledgedToClean,
+      Nullable<CRSubmitterType?>? crSubmitterType,
+      Nullable<CRContractType?>? crContractType,
+      Nullable<CRContractOption?>? crContractOption,
+      CleanContractsResponse? cleanContractsResponse,
+      Nullable<CleanContractItem?>? selectedCleanContract,
+      InvestmentContractResponse? investmentContractResponse,
+      Nullable<InvestmentContractItem?>? selectedInvestmentContract,
+      bool? endorsmentAgreement,
+      BlocStatus? deedOptionsStatus,
+      BlocStatus? cleanOptionsStatus,
+      BlocStatus? samalaReportFawryStatus,
+      BlocStatus? samalaBillFawryStatus,
+      Nullable<bool>? ejarVerified,
+      Nullable<bool>? deedVerified,
+      bool? isFawryReport,
+      bool? isFawryBill,
+      EjarInfoRequest? ejarInfoRequst,
+      DeedInfoRequest? deedInfoRequst,
+      String? deedOption,
+      List<QrLookUpItem>? mallsList,
+      BlocStatus? mallsStatus,
+      Nullable<bool?>? isSalamaPermitVerified,
+      Nullable<bool?>? isSalamaBillVerified,
+      Nullable<bool?>? isSalamaReportVerified,
+      final bool? cameraAgreement}) {
     return CrStep4ShopDataState(
-      status: status ?? this.status,
-      ejarVerified:
-          ejarVerified == null ? this.ejarVerified : ejarVerified.value,
-      deedVerified:
-          deedVerified == null ? this.deedVerified : deedVerified.value,
-      samalaReportFawryStatus:
-          samalaReportFawryStatus ?? this.samalaReportFawryStatus,
-      samalaBillFawryStatus:
-          samalaBillFawryStatus ?? this.samalaBillFawryStatus,
-      deedOptionsStatus: deedOptionsStatus ?? this.deedOptionsStatus,
-      cleanOptionsStatus: cleanOptionsStatus ?? this.cleanOptionsStatus,
-      deedOptions: deedOptions ?? this.deedOptions,
-      cleanOptionResponse: cleanOptionResponse ?? this.cleanOptionResponse,
-      investmentContractResponse:
-          investmentContractResponse ?? this.investmentContractResponse,
-      accommodationTypesStatus:
-          accommodationTypesStatus ?? this.accommodationTypesStatus,
-      contractsListStatus: contractsListStatus ?? this.contractsListStatus,
-      accommodationTypes: accommodationTypes ?? this.accommodationTypes,
-      selectedAccommodationType:
-          selectedAccommodationType ?? this.selectedAccommodationType,
-      errorMessage: errorMessage ?? this.errorMessage,
-      selectedBoards: selectedBoards ?? this.selectedBoards,
-      boards: boards ?? this.boards,
-      brand: brand ?? this.brand,
-      shopName: shopName ?? this.shopName,
-      shopUnitNumber: shopUnitNumber ?? this.shopUnitNumber,
-      blockNumber: blockNumber ?? this.blockNumber,
-      holesCount: holesCount ?? this.holesCount,
-      floorCount: floorCount ?? this.floorCount,
-      noOfCameras: noOfCameras ?? this.noOfCameras,
-      hasElevator: hasElevator ?? this.hasElevator,
-      existInMall: existInMall ?? this.existInMall,
-      selectedMall:
-          selectedMall == null ? this.selectedMall : this.selectedMall,
-      floorNumber: floorNumber ?? this.floorNumber,
-      isCitizenPledgedToClean: isCitizenPledgedToClean == null
-          ? this.isCitizenPledgedToClean
-          : isCitizenPledgedToClean.value,
-      cleanContractEndDate: cleanContractEndDate == null
-          ? this.cleanContractEndDate
-          : cleanContractEndDate.value,
-      salamaPermitExist: salamaPermitExist ?? this.salamaPermitExist,
-      salamaPermitNumber: salamaPermitNumber == null
-          ? this.salamaPermitNumber
-          : salamaPermitNumber.value,
-      slamaReportNumber: slamaReportNumber == null
-          ? this.slamaReportNumber
-          : slamaReportNumber.value,
-      slamaBillNumber: slamaBillNumber == null
-          ? this.slamaBillNumber
-          : slamaBillNumber.value,
-      contractDate:
-          contractDate == null ? this.contractDate : contractDate.value,
-      contractNumber:
-          contractNumber == null ? this.contractNumber : contractNumber.value,
-      contractOption:
-          contractOption == null ? this.contractOption : contractOption.value,
-      contractType:
-          contractType == null ? this.contractType : contractType.value,
-      ownershipType:
-          ownershipType == null ? this.ownershipType : ownershipType.value,
-      crSubmitterType: crSubmitterType == null
-          ? this.crSubmitterType
-          : crSubmitterType.value,
-      crContractType:
-          crContractType == null ? this.crContractType : crContractType.value,
-      crContractOption: crContractOption == null
-          ? this.crContractOption
-          : crContractOption.value,
-      cleanContractsResponse:
-          cleanContractsResponse ?? this.cleanContractsResponse,
-      selectedCleanContract: selectedCleanContract == null
-          ? this.selectedCleanContract
-          : selectedCleanContract.value,
-      investmentListStatus: investmentListStatus ?? this.investmentListStatus,
-      selectedInvestmentContract: selectedInvestmentContract == null
-          ? this.selectedInvestmentContract
-          : selectedInvestmentContract.value,
-      endorsmentAgreement: endorsmentAgreement ?? this.endorsmentAgreement,
-      isFawryReport: isFawryReport ?? this.isFawryReport,
-      isFawryBill: isFawryBill ?? this.isFawryBill,
-      ejarInfoRequst: ejarInfoRequst ?? this.ejarInfoRequst,
-      deedInfoRequst: deedInfoRequst ?? this.deedInfoRequst,
-      locationResponse: locationResponse ?? this.locationResponse,
-      deedOption: deedOption ?? this.deedOption,
-      mallsList: mallsList ?? this.mallsList,
-      mallsStatus: mallsStatus ?? this.mallsStatus,
-      isSalamaPermitVerified: isSalamaPermitVerified == null
-          ? this.isSalamaPermitVerified
-          : isSalamaPermitVerified.value,
-      isSalamaBillVerified: isSalamaBillVerified == null
-          ? this.isSalamaBillVerified
-          : isSalamaBillVerified.value,
-      isSalamaReportVerified: isSalamaReportVerified == null
-          ? this.isSalamaReportVerified
-          : isSalamaReportVerified.value,
-    );
+        status: status ?? this.status,
+        ejarVerified:
+            ejarVerified == null ? this.ejarVerified : ejarVerified.value,
+        deedVerified:
+            deedVerified == null ? this.deedVerified : deedVerified.value,
+        samalaReportFawryStatus:
+            samalaReportFawryStatus ?? this.samalaReportFawryStatus,
+        samalaBillFawryStatus:
+            samalaBillFawryStatus ?? this.samalaBillFawryStatus,
+        deedOptionsStatus: deedOptionsStatus ?? this.deedOptionsStatus,
+        cleanOptionsStatus: cleanOptionsStatus ?? this.cleanOptionsStatus,
+        deedOptions: deedOptions ?? this.deedOptions,
+        cleanOptionResponse: cleanOptionResponse ?? this.cleanOptionResponse,
+        investmentContractResponse:
+            investmentContractResponse ?? this.investmentContractResponse,
+        accommodationTypesStatus:
+            accommodationTypesStatus ?? this.accommodationTypesStatus,
+        contractsListStatus: contractsListStatus ?? this.contractsListStatus,
+        accommodationTypes: accommodationTypes ?? this.accommodationTypes,
+        selectedAccommodationType:
+            selectedAccommodationType ?? this.selectedAccommodationType,
+        errorMessage: errorMessage ?? this.errorMessage,
+        selectedBoards: selectedBoards ?? this.selectedBoards,
+        boards: boards ?? this.boards,
+        brand: brand ?? this.brand,
+        shopName: shopName ?? this.shopName,
+        shopUnitNumber: shopUnitNumber ?? this.shopUnitNumber,
+        blockNumber: blockNumber ?? this.blockNumber,
+        holesCount: holesCount ?? this.holesCount,
+        floorCount: floorCount ?? this.floorCount,
+        noOfCameras: noOfCameras ?? this.noOfCameras,
+        hasElevator: hasElevator ?? this.hasElevator,
+        existInMall: existInMall ?? this.existInMall,
+        selectedMall:
+            selectedMall == null ? this.selectedMall : this.selectedMall,
+        floorNumber: floorNumber ?? this.floorNumber,
+        isCitizenPledgedToClean: isCitizenPledgedToClean == null
+            ? this.isCitizenPledgedToClean
+            : isCitizenPledgedToClean.value,
+        cleanContractEndDate: cleanContractEndDate == null
+            ? this.cleanContractEndDate
+            : cleanContractEndDate.value,
+        salamaPermitExist: salamaPermitExist ?? this.salamaPermitExist,
+        salamaPermitNumber: salamaPermitNumber == null
+            ? this.salamaPermitNumber
+            : salamaPermitNumber.value,
+        slamaReportNumber: slamaReportNumber == null
+            ? this.slamaReportNumber
+            : slamaReportNumber.value,
+        slamaBillNumber: slamaBillNumber == null
+            ? this.slamaBillNumber
+            : slamaBillNumber.value,
+        contractDate:
+            contractDate == null ? this.contractDate : contractDate.value,
+        contractNumber:
+            contractNumber == null ? this.contractNumber : contractNumber.value,
+        contractOption:
+            contractOption == null ? this.contractOption : contractOption.value,
+        contractType:
+            contractType == null ? this.contractType : contractType.value,
+        ownershipType:
+            ownershipType == null ? this.ownershipType : ownershipType.value,
+        crSubmitterType: crSubmitterType == null
+            ? this.crSubmitterType
+            : crSubmitterType.value,
+        crContractType:
+            crContractType == null ? this.crContractType : crContractType.value,
+        crContractOption: crContractOption == null
+            ? this.crContractOption
+            : crContractOption.value,
+        cleanContractsResponse:
+            cleanContractsResponse ?? this.cleanContractsResponse,
+        selectedCleanContract: selectedCleanContract == null
+            ? this.selectedCleanContract
+            : selectedCleanContract.value,
+        investmentListStatus: investmentListStatus ?? this.investmentListStatus,
+        selectedInvestmentContract: selectedInvestmentContract == null
+            ? this.selectedInvestmentContract
+            : selectedInvestmentContract.value,
+        endorsmentAgreement: endorsmentAgreement ?? this.endorsmentAgreement,
+        isFawryReport: isFawryReport ?? this.isFawryReport,
+        isFawryBill: isFawryBill ?? this.isFawryBill,
+        ejarInfoRequst: ejarInfoRequst ?? this.ejarInfoRequst,
+        deedInfoRequst: deedInfoRequst ?? this.deedInfoRequst,
+        locationResponse: locationResponse ?? this.locationResponse,
+        deedOption: deedOption ?? this.deedOption,
+        mallsList: mallsList ?? this.mallsList,
+        mallsStatus: mallsStatus ?? this.mallsStatus,
+        isSalamaPermitVerified: isSalamaPermitVerified == null
+            ? this.isSalamaPermitVerified
+            : isSalamaPermitVerified.value,
+        isSalamaBillVerified: isSalamaBillVerified == null
+            ? this.isSalamaBillVerified
+            : isSalamaBillVerified.value,
+        isSalamaReportVerified: isSalamaReportVerified == null
+            ? this.isSalamaReportVerified
+            : isSalamaReportVerified.value,
+        cameraAgreement: cameraAgreement ?? this.cameraAgreement);
   }
 
   bool isFormValid() {
+    if (locationResponse?.endorsementText?.isNotEmpty ?? false) {
+      return endorsmentAgreement ?? false;
+    }
+
     return (selectedBoards?.isNotEmpty ?? false) &&
         brand != null &&
         shopName != null &&

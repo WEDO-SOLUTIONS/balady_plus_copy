@@ -2,6 +2,7 @@ import 'package:balady_plus/app/core/services/local/use_case.dart';
 import 'package:balady_plus/app/core/services/services_exports.dart';
 import 'package:balady_plus/app/core/utils/enums/bloc_status.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/dependency_injection/dependency_injection_exports.dart';
 import '../../../../../core/errors/errors_exports.dart';
@@ -10,10 +11,14 @@ import '../../../../_shared_feature_/shared_feature_exports.dart';
 import '../../../commercial_license_exports.dart';
 import '../../../data/models/additional_activity_details_response.dart';
 import '../../../data/models/additional_activity_response.dart';
+import '../../../data/models/salama_warning_request.dart';
 import '../../../domain/entities/addetional_activity_details_request.dart';
 import '../../../domain/entities/addetional_activity_request.dart';
 import '../../../domain/use_cases/get_additional_activites.dart';
 import '../../../domain/use_cases/get_details_additional_activites.dart';
+import '../../../domain/use_cases/get_warning_messsage.dart';
+import '../../../domain/use_cases/get_warning_workflow_messsage.dart';
+import '../page/salama_warning_message.dart';
 
 part 'cr_step2_activity_data_state.dart';
 
@@ -24,6 +29,8 @@ class CrStep2ActivityDataCubit extends Cubit<CrStep2ActivityDataState> {
   final SaveActivityDetails _saveActivityDetails;
   final GetAddetionalActivites _getAddetionalActivites;
   final GetAddetionalDetailsActivites _getAddetionalDetailsActivites;
+  final GetWarningMessage _getWarningMessage;
+  final GetWarningWorkFlowMessage _getWarninFlowMessage;
 
   CrStep2ActivityDataCubit()
       : _getSubActivities = GetSubActivities(repository: sl()),
@@ -33,6 +40,8 @@ class CrStep2ActivityDataCubit extends Cubit<CrStep2ActivityDataState> {
         _getAddetionalActivites = GetAddetionalActivites(repository: sl()),
         _getAddetionalDetailsActivites =
             GetAddetionalDetailsActivites(repository: sl()),
+        _getWarningMessage = GetWarningMessage(repository: sl()),
+        _getWarninFlowMessage = GetWarningWorkFlowMessage(repository: sl()),
         super(const CrStep2ActivityDataState()) {
     getAccommodationTypes();
   }
@@ -175,9 +184,11 @@ class CrStep2ActivityDataCubit extends Cubit<CrStep2ActivityDataState> {
     });
   }
 
-  void addAddetionalItemRequest(double area) {
+  void addAddetionalItemRequest(double area) async {
     List<AddetionalActivityRequest> selectedAddetionalList =
         state.selectedAddetionalList ?? [];
+
+    String message = await getActivitesSalamaWarningMessage(area);
 
     emit(state.copyWith(status: BlocStatus.loading));
 
@@ -185,7 +196,8 @@ class CrStep2ActivityDataCubit extends Cubit<CrStep2ActivityDataState> {
         area: area,
         item: state.addetionalItem,
         details: state.addetionalDetails,
-        detailsItem: state.addetionalDetailsItem));
+        detailsItem: state.addetionalDetailsItem,
+        faweryMessage: message));
 
     emit(state.copyWith(
         status: BlocStatus.success,
@@ -250,5 +262,94 @@ class CrStep2ActivityDataCubit extends Cubit<CrStep2ActivityDataState> {
     emit(state.copyWith(
         status: BlocStatus.success,
         selectedAddetionalList: Nullable(selectedAddetionalList)));
+  }
+
+  void getSalamaWarningMessage() async {
+    print("ff");
+    emit(state.copyWith(status: BlocStatus.loading, errorMessage: ""));
+    print("GGH");
+    try {
+      final response = await _getWarningMessage(SalamaWarningRequest(
+          activities: state.selectedAddetionalList != null
+              ? state.selectedAddetionalList!.map((e) {
+                  return Activity(
+                      activityId: e.detailsItem?.activityId, area: e.area);
+                }).toList()
+              : [],
+          shopArea: state.totalArea,
+          mainActivityId: state.selectedSubActivity?.id ?? 0));
+      response.fold((failure) {
+        print(failure);
+        emit(state.copyWith(
+          status: BlocStatus.failure,
+          errorMessage: (failure as ServerFailure).errorMessage,
+        ));
+      }, (success) {
+        emit(state.copyWith(
+          status: BlocStatus.success,
+        ));
+
+        if (success.isNotEmpty) {
+          BottomSheetDialog.showDraggableSheet(
+              NavigationService.navigatorKey.currentContext!,
+              child: BottomSheetWithActions(
+                title: "تنبيه",
+                action: Row(
+                  children: [
+                    Expanded(
+                      child: ElevatedButtonWidget.primaryCustom(
+                          text: "موافق",
+                          onPressed: () {
+                            NavigationService.goBack();
+
+                            save();
+                          }),
+                    ),
+                    const CustomHorizontalSpace(width: 32),
+                    Expanded(
+                      child: ElevatedButtonWidget.primaryCustomBorder(
+                          text: "الغاء",
+                          onPressed: () {
+                            NavigationService.goBack();
+                          }),
+                    ),
+                  ],
+                ),
+                body: SalamaWarningMessage(
+                  message: success,
+                ),
+              ));
+        } else {
+          save();
+        }
+      });
+    } catch (ex) {
+      print(ex);
+    }
+  }
+
+  Future<String> getActivitesSalamaWarningMessage(double area) async {
+    emit(state.copyWith(status: BlocStatus.loading, errorMessage: ""));
+
+    final response = await _getWarninFlowMessage(SalamaWarningRequest(
+        activities: [
+          Activity(
+              activityId: state.addetionalDetailsItem?.activityId, area: area)
+        ],
+        shopArea: state.totalArea,
+        mainActivityId: state.selectedSubActivity?.id ?? 0));
+    return await response.fold((failure) async {
+      emit(state.copyWith(
+        status: BlocStatus.failure,
+        errorMessage: (failure as ServerFailure).errorMessage,
+      ));
+      return "";
+    }, (success) {
+      emit(state.copyWith(
+        status: BlocStatus.success,
+      ));
+
+      return success;
+    });
   }
 }

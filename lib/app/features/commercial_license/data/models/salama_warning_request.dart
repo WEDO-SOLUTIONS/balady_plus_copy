@@ -1,7 +1,7 @@
 class SalamaWarningRequest {
   final List<Activity>? activities;
   final int? mainActivityId;
-  final int? shopArea;
+  final double? shopArea;
 
   SalamaWarningRequest({
     this.activities,
@@ -30,7 +30,7 @@ class SalamaWarningRequest {
 
 class Activity {
   final int? activityId;
-  final int? area;
+  final double? area;
 
   Activity({
     this.activityId,
