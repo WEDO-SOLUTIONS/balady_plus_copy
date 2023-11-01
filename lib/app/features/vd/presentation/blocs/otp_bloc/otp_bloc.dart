@@ -46,9 +46,7 @@ class OTPBloc extends Bloc<OTPEvent, OTPState> {
         });
         smsUserConsent?.requestSms();
       }
-    } catch (ex) {
-      print(ex);
-    }
+    } catch (ex) {}
     emitter(state.copyWith(status: BlocStatus.success));
   }
 }

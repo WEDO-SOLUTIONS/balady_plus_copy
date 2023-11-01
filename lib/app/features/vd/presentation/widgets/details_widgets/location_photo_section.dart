@@ -17,7 +17,6 @@ class LocationPhotoSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<CreateVDBloc, CreateVDState>(
       builder: (context, state) {
-        // print("LocationPhotoSection build");
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

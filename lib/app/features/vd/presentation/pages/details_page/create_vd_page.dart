@@ -39,7 +39,6 @@ class _CreateVDDetailsPageState extends State<CreateVDDetailsPage> {
           }
         },
         builder: (context, state) {
-          print(state.currentPageValue);
           return WillPopScope(
             onWillPop: () {
               context.read<CreateVDBloc>().add(GoToPreviousPageEvent());
