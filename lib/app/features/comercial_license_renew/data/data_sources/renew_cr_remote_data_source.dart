@@ -803,7 +803,7 @@ class RenewCrRemoteDataSourceImpl extends RenewCrRemoteDataSource {
     try {
       response = await webService.dio.post(ApiUrl.saveAttachments(params!));
 
-      var data = response.data["data"]["result"];
+      // var data = response.data["data"]["result"];
 
       // var parsedResult =
       //     data != null ? RenewRequestInfoModel.fromJson(data) : null;
