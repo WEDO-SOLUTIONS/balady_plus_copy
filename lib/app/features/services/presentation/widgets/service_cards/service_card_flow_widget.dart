@@ -19,14 +19,13 @@ class ServiceCardFlowWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<ServiceCardsCubit, ServiceCardsState>(
-        builder: (context, state) {
-      final card = state.selectedCard;
-      if (card == null) {
-        return const SizedBox();
-      }
+      builder: (context, state) {
+        final card = state.selectedCard;
+        if (card == null) {
+          return const SizedBox();
+        }
 
-      return Expanded(
-        child: Container(
+        return Container(
           margin: const EdgeInsets.all(16),
           padding: const EdgeInsets.all(16),
           decoration: const BoxDecoration(
@@ -40,87 +39,85 @@ class ServiceCardFlowWidget extends StatelessWidget {
             ],
             color: AppColor.blackModern50Light,
           ),
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                Row(
-                  children: [
-                    DrawIconBasedTypeWidget(
-                      icon: card.iconName,
+          child: Column(
+            children: [
+              Row(
+                children: [
+                  DrawIconBasedTypeWidget(
+                    icon: card.iconName,
+                  ),
+                  const SizedBox(width: 4),
+                  CustomTextWidget(
+                    card.title,
+                    textStyle: AppStyle.cardTitleTextStle,
+                  ),
+                ],
+              ),
+              ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: card.flow?.length ?? 0,
+                itemBuilder: (ctx, index) {
+                  return Container(
+                    margin: const EdgeInsets.only(top: 24),
+                    decoration: const BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(16)),
+                      color: AppColor.blackModern50Light,
                     ),
-                    const SizedBox(width: 4),
-                    CustomTextWidget(
-                      card.title,
-                      textStyle: AppStyle.cardTitleTextStle,
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 16),
-                ListView.builder(
-                    shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
-                    itemCount: card.flow?.length ?? 0,
-                    itemBuilder: (ctx, index) {
-                      return Container(
-                        margin: EdgeInsets.only(
-                          bottom: 32,
-                        ),
-                        decoration: const BoxDecoration(
-                          borderRadius: BorderRadius.all(Radius.circular(16)),
-                          color: AppColor.blackModern50Light,
-                        ),
-                        child: CustomEnhancedExpansionPanelWidget(
-                          title: card.flow?[index].title ?? "",
-                          isExpanded: true,
-                          //  leading: SvgPicture.asset(IconPath.serviceCardDesc),
-                          backgroundColor: Color(0x80E6EFEF),
-                          //   leadingWidth: 40,
-                          children: [
-                            ...card.flow![index].steps!
-                                .map((e) => Container(
-                                      margin: const EdgeInsets.only(left: 16),
-                                      padding: const EdgeInsets.all(16),
-                                      // width:
-                                      //     MediaQuery.of(context).size.width * 0.6,
-                                      // height: 100,
-                                      /*  decoration: const BoxDecoration(
+                    child: CustomEnhancedExpansionPanelWidget(
+                      title: card.flow?[index].title ?? "",
+                      isExpanded: true,
+                      //  leading: SvgPicture.asset(IconPath.serviceCardDesc),
+                      backgroundColor: Color(0x80E6EFEF),
+                      //   leadingWidth: 40,
+                      children: [
+                        ...card.flow![index].steps!
+                            .map((e) => Container(
+                                  margin: const EdgeInsets.only(left: 16),
+                                  padding: const EdgeInsets.all(16),
+                                  // width:
+                                  //     MediaQuery.of(context).size.width * 0.6,
+                                  // height: 100,
+                                  /*  decoration: const BoxDecoration(
                                             borderRadius:
                                                 BorderRadius.all(Radius.circular(16)),
                                             color: AppColor.blackModern50Light,
                                           ),*/
-                                      child: Row(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Container(
-                                            height: 3,
-                                            width: 3,
-                                            margin: EdgeInsets.only(top: 8),
-                                            decoration: BoxDecoration(
-                                                color: AppColor.black,
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(3))),
+                                  child: Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Container(
+                                        height: 3,
+                                        width: 3,
+                                        margin: EdgeInsets.only(top: 8),
+                                        decoration: const BoxDecoration(
+                                          color: AppColor.black,
+                                          borderRadius: BorderRadius.all(
+                                            Radius.circular(3),
                                           ),
-                                          CustomHorizontalSpace(width: 8),
-                                          Flexible(
-                                            child: CustomTextWidget(
-                                              e,
-                                              maxLines: 30,
-                                              fontColor:
-                                                  AppColor.blackModern500Light,
-                                              fontSize: 14,
-                                              height: 1.3,
-                                              fontWeight: AppFontWeight.bold,
-                                            ),
-                                          ),
-                                        ],
+                                        ),
                                       ),
-                                    ))
-                                .toList()
-                          ],
-                        ),
+                                      const CustomHorizontalSpace(width: 8),
+                                      Flexible(
+                                        child: CustomTextWidget(
+                                          e,
+                                          maxLines: 30,
+                                          fontColor:
+                                              AppColor.blackModern500Light,
+                                          fontSize: 14,
+                                          height: 1.3,
+                                          fontWeight: AppFontWeight.bold,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ))
+                            .toList()
+                      ],
+                    ),
 
-                        /*    Column(
+                    /*    Column(
                           children: [
                             Row(
                               children: [
@@ -168,13 +165,13 @@ class ServiceCardFlowWidget extends StatelessWidget {
                             )
                           ],
                         ),*/
-                      );
-                    }),
-              ],
-            ),
+                  );
+                },
+              ),
+            ],
           ),
-        ),
-      );
-    });
+        );
+      },
+    );
   }
 }

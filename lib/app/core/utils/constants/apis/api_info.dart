@@ -489,12 +489,9 @@ class ApiUrl {
       '/v1/balady-commercial-services/license-attachments/$licenseId';
 
 // -------  Commercial License Cancel ---------
+
   static String getCommercialLicenseAllowedActions(int licenseId) =>
       '/v1/balady-commercial-services/licenses/$licenseId/allowed-actions';
-
-// -------  Commercial License Cancel ---------
-  static const String commercialLicenseAllowedActions =
-      '/v1/balady-commercial-services/mobile/cancel-request/allowed-actions';
 /////////////////////////////////////////////////////////
   static const String commercialLicenseCancellationReasons =
       '/v1/balady-commercial-services/mobile/cancel-reasons';
