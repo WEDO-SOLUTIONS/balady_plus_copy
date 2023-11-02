@@ -398,9 +398,10 @@ class RenewCommercialLicenseBloc
         salamaReportNumber: state.salamaReportNumber));
     response.fold((failure) {
       print(failure);
-      state.copyWith(
-        status: BlocStatus.failure,
-        errorMessage: (failure as ServerFailure).errorMessage,
+      emit(
+        state.copyWith(
+            status: BlocStatus.failure,
+            errorMessage: (failure as ServerFailure).errorMessage),
       );
     }, (success) {
       print(success);
