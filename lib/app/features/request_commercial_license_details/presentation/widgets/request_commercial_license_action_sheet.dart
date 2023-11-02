@@ -48,11 +48,11 @@ class RequestCommercialLicenseActionSheet extends StatelessWidget {
                                         break;
                                       case "edit":
                                         try{
-
-                                          Navigator.of(context).pushNamed(
+                                          Navigator.of(context).popAndPushNamed(
                                             RouteName.commercialLicenseCancel,
                                             arguments: CommercialLicenseCancelBloc(
                                               webService: sl(),
+                                              from: "request",
                                               // cancellationRequestResponse: cancellationRequest,
                                               crNumber: CommonProperties.selectedDelegator!.crNumber!,
                                               crType: CommonProperties.selectedDelegator!.crType,

@@ -3,10 +3,12 @@ import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:balady_plus/app/core/utils/constants/dialog_names.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
 import 'package:balady_plus/app/core/utils/constants/route_names.dart';
+import 'package:balady_plus/app/core/utils/enums/app_font_weights.dart';
 import 'package:balady_plus/app/core/utils/enums/bloc_status.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/dialogs/bottom_sheet_dialogs.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/default_appbar_widget.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/shimmer_effect_widget.dart';
+import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import 'package:balady_plus/app/features/commercial_license_details/presentation/bloc/commercial_license_details_cubit.dart';
 import 'package:balady_plus/app/features/commercial_license_details/presentation/mvvm/commercial_license_action_view_model.dart';
 import 'package:balady_plus/app/features/commercial_license_details/presentation/widgets/commercial_license_action_sheet.dart';
@@ -29,8 +31,40 @@ class CommercialLicenseDetailsPage extends StatelessWidget {
     return BlocProvider(
       create: (context) => bloc,
       child: Scaffold(
-        appBar: DefaultAppBarWidget(
-          title: '${"businessLicense".tr()} #${bloc.commercialLicenseId}',
+        appBar: AppBar(
+          backgroundColor: AppColor.scaffoldBackground,
+          elevation: 0,
+          shadowColor: AppColor.primary100Light,
+          centerTitle: false,
+          // leadingWidth: showBack == true ? null : 8,
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              CustomTextWidget(
+                "businessLicense".tr(),
+                fontSize: 20,
+                maxLines: 1,
+                textOverflow: TextOverflow.ellipsis,
+                fontWeight: AppFontWeight.bold,
+                fontColor: AppColor.blackModern700Light,
+              ),
+              CustomTextWidget(
+                "#${bloc.commercialLicenseId}",
+                fontSize: 14,
+                maxLines: 1,
+                textOverflow: TextOverflow.ellipsis,
+                fontWeight: AppFontWeight.medium,
+                fontColor: AppColor.blackModern700Light,
+              ),
+            ],
+          ),
+          leading: IconButton(
+            icon: const Icon(
+             Icons.arrow_back_ios,
+              color: AppColor.blackModern900Light,
+            ),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
           actions: [
             BlocBuilder<CommercialLicenseDetailsCubit,
                 CommercialLicenseDetailsState>(
@@ -50,23 +84,24 @@ class CommercialLicenseDetailsPage extends StatelessWidget {
                   margin: const EdgeInsets.symmetric(vertical: 8),
                   child: InkWell(
                     onTap: () {
-                      BottomSheetDialog.showDraggableSheet(
-                        context,
-                        dialogKeyName: DialogName.commercialLicenseActionSheetDialog,
-                        currentRouteName: RouteName.commercialLicenseDetails,
-                        child: ChangeNotifierProvider(
-                          create: (BuildContext context) =>
-                              CommercialLicenseActionViewModel(
-                                webService: sl(),
-                                licenseId: bloc.commercialLicenseId,
-                                submitterInfo: bloc.state.commercialLicenceDetails!.submitterInfo,
-                                licenseStatusId:  bloc.state.commercialLicenceDetails!.licenseInfo.statusId,
-                              ),
-                          child: const CommercialLicenseActionSheet(),
-                        ),
-                        isFullHeight: false,
-                        height: MediaQuery.of(context).size.height * 0.47,
-                      );
+                      if(bloc.state.commercialLicenceDetails!.submitterInfo != null && bloc.state.commercialLicenceDetails!.licenseInfo != null) {
+                        BottomSheetDialog.showDraggableSheet(
+                          context,
+                          dialogKeyName: DialogName.commercialLicenseActionSheetDialog,
+                          currentRouteName: RouteName.commercialLicenseDetails,
+                          child: ChangeNotifierProvider(
+                            create: (BuildContext context) =>
+                                CommercialLicenseActionViewModel(
+                                  webService: sl(),
+                                  licenseId: bloc.commercialLicenseId,
+                                  submitterInfo: bloc.state.commercialLicenceDetails!.submitterInfo!,
+                                ),
+                            child: const CommercialLicenseActionSheet(),
+                          ),
+                          isFullHeight: false,
+                          height: MediaQuery.of(context).size.height * 0.47,
+                        );
+                      }
                     },
                     child: const CircleIcon(
                       backgroundColor: AppColor.primary50Light,

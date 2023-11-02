@@ -1,5 +1,4 @@
 import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
-import 'package:balady_plus/app/core/utils/constants/app_style.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
 import 'package:balady_plus/app/core/utils/enums/app_font_weights.dart';
 import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports.dart';
@@ -7,10 +6,8 @@ import 'package:balady_plus/app/features/commercial_license_cancel/presentation/
 import 'package:balady_plus/app/features/commercial_license_cancel/presentation/commercial_license_cancel/mvvm/request_attachments_view_model.dart';
 import 'package:balady_plus/app/features/commercial_license_cancel/presentation/commercial_license_cancel/widgets/card_cost_info_widget.dart';
 import 'package:balady_plus/app/features/commercial_license_cancel/presentation/commercial_license_cancel/widgets/card_desc_widget.dart';
-import 'package:balady_plus/app/features/commercial_license_cancel/presentation/commercial_license_cancel/widgets/widget_title_invoice.dart';
 import 'package:balady_plus/app/features/commercial_license_details/presentation/widgets/attachment_show_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
@@ -57,7 +54,7 @@ class CommercialLicenseCancelTwoScreen extends StatelessWidget {
                         children: viewModel.attachments
                             .map(
                               (attachment) {
-                                return attachment.updatable ?? false ? AttachmentShowWidget(
+                                return attachment.attachUrl?.isNotEmpty ?? false ? AttachmentShowWidget(
                                   fileName: attachment.fileName ?? '',
                                   name: attachment.name ?? '',
                                   filePath: attachment.attachUrl ?? '',

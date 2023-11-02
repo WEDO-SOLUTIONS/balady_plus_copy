@@ -3,17 +3,17 @@ import 'dart:async';
 import 'package:balady_plus/app/core/base/base_view_model.dart';
 import 'package:balady_plus/app/core/services/global/web_service.dart';
 import 'package:balady_plus/app/core/services/services_exports.dart';
+import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/core/utils/constants/apis/api_info.dart';
 import 'package:balady_plus/app/features/_shared_feature_/data/models/response_body_model.dart';
 import 'package:balady_plus/app/features/create_compliance/data/models/comliance_request_details_model.dart';
-
+import 'package:dio/dio.dart';
 
 class CommercialLicenseAttachmentsViewModel extends BaseViewModel {
   final WebService webService;
 
   List<AttachmentModel> attachments = [];
   final int licenseId;
-
 
   bool fileDone = true;
 
@@ -23,28 +23,39 @@ class CommercialLicenseAttachmentsViewModel extends BaseViewModel {
   }
 
   Future<void> getCommercialLicenseCancelAttachments(int licenseId) async {
+    Response? response;
     try {
       isLoading = true;
       notifyListeners();
-      var response = await webService.dio
-          .get(ApiUrl.getLicenseAttachments(licenseId));
+      response = await webService.dio.get(
+        ApiUrl.getLicenseAttachments(licenseId),
+      );
       final data = response.data;
       final result = ResponseBodyModel.fromMap(data).data?.result;
-      attachments = result
-          .map<AttachmentModel>(
-              (e) {
-                AttachmentModel attachment = AttachmentModel.fromJson(e as Map<String, dynamic>);
-                // if((attachment.isMandatory ?? false) && !(attachment.updatable ?? false)) {
-                //   fileDone = false;
-                // }
-                return attachment;
-              } )
-          .toList();
-    } catch (e) {
-      showError(e.toString());
+      attachments = result.map<AttachmentModel>(
+        (e) {
+          AttachmentModel attachment =
+              AttachmentModel.fromJson(e as Map<String, dynamic>);
+          // if((attachment.isMandatory ?? false) && !(attachment.updatable ?? false)) {
+          //   fileDone = false;
+          // }
+          return attachment;
+        },
+      ).toList();
+    } on Exception catch (exception) {
+      CommonFunctions.sendEvent(
+        dioError: exception is DioException ? exception : null,
+        response: response,
+        ex: exception,
+      );
+    } catch (exception) {
+      CommonFunctions.sendEvent(
+        dioError: null,
+        response: response,
+        ex: Exception(exception.toString()),
+      );
     }
     isLoading = false;
     notifyListeners();
   }
-
 }
