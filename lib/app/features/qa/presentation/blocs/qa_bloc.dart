@@ -25,21 +25,14 @@ class QABloc extends Bloc<QADataEvent, QAState> {
 
   Future<void> _getQaDataHandler(GetQADataEvent e, Emitter emitter) async {
     String qa = await rootBundle.loadString("assets/qa.json");
-    //print(qa);
     var r = json.decode(qa);
-    print(r);
     try {
       List<QAModel>? d = r != null
           ? List<QAModel>.from(r.map((x) => QAModel.fromJson(x)))
           : null;
 
       emitter(state.copyWith(list: d, filtered: d));
-
-      print(d);
-    } catch (ex) {
-      print(ex);
-    }
-    // print(newQAList);
+    } catch (ex) {}
   }
 
   Future<void> _getQaDataSearchedHandler(
@@ -55,11 +48,6 @@ class QABloc extends Bloc<QADataEvent, QAState> {
           [];
 
       emitter(state.copyWith(filtered: d, status: BlocStatus.success));
-
-      print(d);
-    } catch (ex) {
-      print(ex);
-    }
-    // print(newQAList);
+    } catch (ex) {}
   }
 }
