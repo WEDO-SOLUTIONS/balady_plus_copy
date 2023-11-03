@@ -1,4 +1,3 @@
-import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart' show runApp;
 import 'package:flutter_bloc/flutter_bloc.dart' show Bloc;
 import 'package:localize_and_translate/localize_and_translate.dart'
@@ -16,13 +15,7 @@ void main() async {
   // to observe all blocs movements
   Bloc.observer = SimpleBlocObserver();
 
-  await initialiseDGis(
-    logOptions: LogOptionsMessage(
-      systemLevel: LogLevelMessage.verbose,
-      customLevel: LogLevelMessage.verbose,
-      customSink: "BaladyDGis",
-    ),
-  );
+  await setupMapness();
 
   runApp(const MapnessProviderScope(child: LocalizedApp(child: App())));
 }

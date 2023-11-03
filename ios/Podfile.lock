@@ -311,7 +311,7 @@ SPEC CHECKSUMS:
   add_2_calendar: e9d68636aed37fb18e12f5a3d74c2e0589487af0
   AppAuth: aadc4cc25bef2435551896b5bfa9316b42fde656
   camera_avfoundation: 3125e8cd1a4387f6f31c6c63abb8a55892a9eeeb
-  connectivity_plus: 413a8857dd5d9f1c399a39130850d02fe0feaf7e
+  connectivity_plus: bf0076dd84a130856aa636df1c71ccaff908fa1d
   device_info_plus: 7545d84d8d1b896cb16a4ff98c19f07ec4b298ea
   dgis_map: 0e283a26589cc95c6b71ba03241092d0b63ca46e
   DGisMobileSDK: 0727680b61960dcc5a3cfd2f286029322732ab82

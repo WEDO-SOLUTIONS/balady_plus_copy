@@ -38,7 +38,10 @@ class HappinessManager extends _$HappinessManager {
     cameraPosition ??= GeoPointMessage(latitude: 0, longitude: 0);
 
     updateCoordinates(
-      Coordinates(cameraPosition.latitude, cameraPosition.longitude),
+      Coordinates(
+        latitude: cameraPosition.latitude,
+        longitude: cameraPosition.longitude,
+      ),
     );
 
     final happinessRepository = ref.read(happinessRepositoryProvider.notifier);
@@ -49,7 +52,7 @@ class HappinessManager extends _$HappinessManager {
   HappinessState build() {
     return HappinessState(
       feedback: null,
-      coordinates: const Coordinates(0, 0),
+      coordinates: Coordinates.zero,
       tags: [],
       comment: '',
     );

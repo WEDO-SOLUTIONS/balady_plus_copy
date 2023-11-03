@@ -106,10 +106,10 @@ jobs:
           flutter pub run build_runner build --delete-conflicting-outputs
       - name: 🤖🔨 Build Android app
         run: |
-          flutter build apk --target lib/main_dev.dart
+          flutter build apk --target lib/main_dev.dart --dart-define=GIT_BRANCH="$(git rev-parse --abbrev-ref HEAD)" --dart-define=GIT_COMMIT="$(git --no-pager show -s --format='%s')" --dart-define=VENDOR_CONFIG=prod
           mv build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/app-production.apk
           mv ./.github/workflows/staging-vendor-config.jsonx android/app/src/main/assets/vendor-config.jsonx
-          flutter build apk --target lib/main_dev.dart
+          flutter build apk --target lib/main_dev.dart --dart-define=GIT_BRANCH="$(git rev-parse --abbrev-ref HEAD)" --dart-define=GIT_COMMIT="$(git --no-pager show -s --format='%s')" --dart-define=VENDOR_CONFIG=staging
       - name: 🤖🔨 Upload Production apk
         uses: actions/upload-artifact@v3
         with:

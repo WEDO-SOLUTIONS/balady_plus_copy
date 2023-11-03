@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:dgis_map/library.dart';
+import 'package:mapness/features/common/providers/app_language.dart';
+import 'package:mapness/features/common/providers/dark_mode.dart';
 import 'package:mapness/features/common/providers/permissions.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -76,6 +78,16 @@ class DgisController extends _$DgisController {
       const Duration(milliseconds: 100),
       () => controller.changeFollowState(),
     );
+
+    ref.listen(darkModeProvider, (previous, next) {
+      controller.setAppearance(
+          next ? MapAppearanceMessage.night : MapAppearanceMessage.day);
+    });
+    ref.listen(appLanguageProvider, (previous, next) {
+      controller.overrideLocales(
+        next == Language.arabic ? ["ar-SA"] : ["en-US"],
+      );
+    });
   }
 
   void _visibleRectListener(VisibleRectEvent event) async {

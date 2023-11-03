@@ -7,11 +7,11 @@ part 'dgis_network.g.dart';
 
 @riverpod
 class DGisNetwork extends _$DGisNetwork {
-  final bool isProduction = false;
-  // final bool isProduction = true;
+  // final bool isProduction = false;
+  final bool isProduction = true;
 
   @override
-  Future<Dio> build() async {
+  Dio build() {
     return Dio(BaseOptions(
       responseType: ResponseType.bytes,
       baseUrl: isProduction
@@ -20,7 +20,7 @@ class DGisNetwork extends _$DGisNetwork {
       headers: {
         'Content-Type': 'application/protobuf',
         'Accept': 'application/protobuf',
-        'X-Device-ID': await ref.watch(uuidProviderProvider.future),
+        'X-Device-ID': ref.watch(uuidProviderProvider),
       },
     ))
       ..interceptors.add(

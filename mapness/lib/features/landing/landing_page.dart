@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/happiness_map/hapiness_overlay.dart';
 import 'package:mapness/features/landing/layers_sheet.dart';
@@ -17,28 +18,31 @@ class LandingPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final controlsState = ref.watch(mapControlsProvider);
 
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      body: Stack(
-        children: [
-          const MapPage(),
-          if (controlsState.controlsVisible) const controls.MapControls(),
-          if (controlsState.controlsVisible)
-            LayoutBuilder(builder: (context, constraints) {
-              return Dashboard(
-                biggestHeight: constraints.biggest.height,
-                biggestWidth: constraints.biggest.width,
-              );
-            }),
-          switch (controlsState) {
-            MapControlsStateLayers() => const LayersSheet(),
-            MapControlsStateNavigation() => const RoutingOverlay(),
-            MapControlsStateHappinessMap() => const HapinessOverlay(),
-            MapControlsStatePoI(objectId: final objectId) =>
-              GeneralMapCardWidget(objectId),
-            _ => const SizedBox.shrink(),
-          }
-        ],
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle.dark,
+      child: Scaffold(
+        resizeToAvoidBottomInset: false,
+        body: Stack(
+          children: [
+            const MapPage(),
+            if (controlsState.controlsVisible) const controls.MapControls(),
+            if (controlsState.controlsVisible)
+              LayoutBuilder(builder: (context, constraints) {
+                return Dashboard(
+                  biggestHeight: constraints.biggest.height,
+                  biggestWidth: constraints.biggest.width,
+                );
+              }),
+            switch (controlsState) {
+              MapControlsStateLayers() => const LayersSheet(),
+              MapControlsStateNavigation() => const RoutingOverlay(),
+              MapControlsStateHappinessMap() => const HapinessOverlay(),
+              MapControlsStatePoI(objectId: final objectId) =>
+                GeneralMapCardWidget(objectId),
+              _ => const SizedBox.shrink(),
+            }
+          ],
+        ),
       ),
     );
   }

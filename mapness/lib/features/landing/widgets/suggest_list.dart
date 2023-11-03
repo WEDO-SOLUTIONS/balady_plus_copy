@@ -5,6 +5,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/features/common/config/package_fonts.dart';
 import 'package:mapness/features/landing/providers/dashboard_controls.dart';
 import 'package:mapness/features/landing/providers/map_controls.dart';
+import 'package:mapness/features/landing/providers/search_history.dart';
 import 'package:mapness/features/map/providers/search.dart';
 import 'package:mapness/features/map/providers/suggest.dart';
 import 'package:mapness/legacy_features/routing_page/data/directory_object_ext.dart';
@@ -64,6 +65,10 @@ class SuggestItem extends ConsumerWidget {
       tapHandler = () {
         ref.watch(mapControlsProvider.notifier).update(
             MapControlsStatePoI(suggest.handler.objectHandler!.item.id!));
+        ref.watch(searchHistoryProvider.notifier).put(
+              HistoryItem.fromDirectoryObject(
+                  suggest.handler.objectHandler!.item),
+            );
       };
       address = suggest.handler.objectHandler!.item.makeAddress();
     } else if (suggest.handler.performSearchHandler != null) {

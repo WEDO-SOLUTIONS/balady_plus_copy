@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:mapness/features/profile/profile_page.dart';
+import 'package:mapness/features/favourites/favourites.dart';
+import 'package:mapness/features/favourites/favourites_search.dart';
+import 'package:mapness/features/favourites/favourites_search_result.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:go_router/go_router.dart';
 
@@ -13,6 +17,10 @@ final _routeNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'route');
 final _dashboardNavigatorKey =
     GlobalKey<NavigatorState>(debugLabel: 'dashboard');
 final _profileNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'profile');
+final _favouritesNavigatorKey =
+    GlobalKey<NavigatorState>(debugLabel: 'favourites');
+// final _favouritesSearchNavigatorKey =
+//     GlobalKey<NavigatorState>(debugLabel: 'favouritesSearch');
 
 enum AppRoute {
   map,
@@ -20,6 +28,9 @@ enum AppRoute {
   cart,
   dashboard,
   profile,
+  favourites,
+  favouritesSearch,
+  favouritesSearchResult,
 }
 
 @riverpod
@@ -32,27 +43,31 @@ GoRouter goRouter(GoRouterRef ref, List<Widget> routes) {
     routes: [
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) {
+          if (state.fullPath == "/profile") {
+            return navigationShell;
+          }
+
           return ScaffoldWithNestedNavigation(navigationShell: navigationShell);
         },
         branches: [
           StatefulShellBranch(
-            navigatorKey: _mapNavigatorKey,
+            // navigatorKey: _profileNavigatorKey,
             routes: [
               GoRoute(
-                path: '/map',
+                path: '/profile',
                 name: AppRoute.map.name,
-                pageBuilder: (context, state) => NoTransitionPage(
-                  child: routes[0],
+                pageBuilder: (context, state) => const NoTransitionPage(
+                  child: ProfilePage(),
                 ),
                 routes: const [],
               ),
             ],
           ),
           StatefulShellBranch(
-            navigatorKey: _routeNavigatorKey,
+            // navigatorKey: _dashboardNavigatorKey,
             routes: [
               GoRoute(
-                path: '/route',
+                path: '/services',
                 name: AppRoute.route.name,
                 pageBuilder: (context, state) => NoTransitionPage(
                   child: routes[1],
@@ -62,20 +77,20 @@ GoRouter goRouter(GoRouterRef ref, List<Widget> routes) {
             ],
           ),
           StatefulShellBranch(
-            navigatorKey: _dashboardNavigatorKey,
+            // navigatorKey: _routeNavigatorKey,
             routes: [
               GoRoute(
-                path: '/dashboard',
+                path: '/routing',
                 name: AppRoute.dashboard.name,
-                pageBuilder: (context, state) => NoTransitionPage(
-                  child: routes[2],
+                pageBuilder: (context, state) => const NoTransitionPage(
+                  child: SizedBox.shrink(),
                 ),
                 routes: const [],
               ),
             ],
           ),
           StatefulShellBranch(
-            navigatorKey: _profileNavigatorKey,
+            // navigatorKey: _mapNavigatorKey,
             routes: [
               GoRoute(
                 path: '/landing',
@@ -89,7 +104,74 @@ GoRouter goRouter(GoRouterRef ref, List<Widget> routes) {
           ),
         ],
       ),
+
+      StatefulShellRoute.indexedStack(
+        builder: (context, state, navigationShell) {
+          return navigationShell;
+        },
+        branches: [
+          StatefulShellBranch(
+            navigatorKey: _favouritesNavigatorKey,
+            routes: [
+              GoRoute(
+                path: '/favourites',
+                name: AppRoute.favourites.name,
+                pageBuilder: (context, state) => const NoTransitionPage(
+                  child: Favourites(),
+                ),
+                routes: [
+                  GoRoute(
+                    path: 'search',
+                    name: AppRoute.favouritesSearch.name,
+                    pageBuilder: (context, state) => const NoTransitionPage(
+                      child: FavouritesSearch(),
+                    ),
+                    routes: const [],
+                  ),
+                  GoRoute(
+                    path: 'searchResult',
+                    name: AppRoute.favouritesSearchResult.name,
+                    pageBuilder: (context, state) => const NoTransitionPage(
+                      child: FavouritesSearchResult(),
+                    ),
+                    routes: const [],
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ],
+      ),
+      // StatefulShellBranch(
+      //   navigatorKey: _favouritesNavigatorKey,
+      //   routes: [
+      //     GoRoute(
+      //       path: '/favourites',
+      //       name: AppRoute.favourites.name,
+      //       pageBuilder: (context, state) => const NoTransitionPage(
+      //         child: Favourites(),
+      //       ),
+      //       routes: [
+      //         GoRoute(
+      //           path: 'search',
+      //           name: AppRoute.favouritesSearch.name,
+      //           pageBuilder: (context, state) => const NoTransitionPage(
+      //             child: FavouritesSearch(),
+      //           ),
+      //           routes: const [],
+      //         ),
+      //         GoRoute(
+      //           path: 'searchResult',
+      //           name: AppRoute.favouritesSearchResult.name,
+      //           pageBuilder: (context, state) => const NoTransitionPage(
+      //             child: FavouritesSearchResult(),
+      //           ),
+      //           routes: const [],
+      //         ),
+      //       ],
+      //     ),
+      //   ],
+      // ),
     ],
-    //errorBuilder: (context, state) => const NotFoundScreen(),
   );
 }

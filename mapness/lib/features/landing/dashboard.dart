@@ -1,8 +1,9 @@
 import 'package:dgis_map/library.dart';
-import 'package:flutter/material.dart' hide SearchBar;
+import 'package:flutter/material.dart' hide SearchBar, ScrollPosition;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/common/config/package_fonts.dart';
 import 'package:mapness/features/landing/providers/dashboard_controls.dart';
+import 'package:mapness/features/landing/providers/dashboard_scroll.dart';
 import 'package:mapness/features/landing/providers/map_controls.dart';
 import 'package:mapness/features/landing/widgets/challenge_card.dart';
 import 'package:mapness/features/landing/widgets/dashboard_header.dart';
@@ -11,6 +12,7 @@ import 'package:mapness/features/landing/widgets/login_card.dart';
 import 'package:mapness/features/landing/widgets/poi_card.dart';
 import 'package:mapness/features/landing/widgets/prayer_card.dart';
 import 'package:mapness/features/landing/widgets/search_groups.dart';
+import 'package:mapness/features/landing/widgets/search_history.dart';
 import 'package:mapness/features/landing/widgets/search_results.dart';
 import 'package:mapness/features/landing/widgets/service_card.dart';
 import 'package:mapness/features/landing/widgets/suggest_list.dart';
@@ -108,11 +110,21 @@ class _DashboardState extends ConsumerState<Dashboard> {
       minChildSize: _headerExtent(),
       maxChildSize: .9,
       builder: (BuildContext context, ScrollController scrollController) {
+        scrollController.addListener(() {
+          ref.watch(dashboardScrollProvider.notifier).update(
+                ScrollPosition(
+                  max: scrollController.position.maxScrollExtent,
+                  current: scrollController.position.pixels,
+                ),
+              );
+        });
+
         return Directionality(
           textDirection: TextDirection.rtl,
           child: Container(
             decoration: BoxDecoration(
-              color: dashboardState == DashboardControlsState.results
+              color: dashboardState == DashboardControlsState.results ||
+                      dashboardState == DashboardControlsState.searching
                   ? const Color(0xFFF1F4F8)
                   : Colors.white,
               borderRadius: const BorderRadius.only(
@@ -134,8 +146,10 @@ class _DashboardState extends ConsumerState<Dashboard> {
                 ),
                 SliverList.list(
                   children: [
-                    if (dashboardState == DashboardControlsState.searching)
+                    if (dashboardState == DashboardControlsState.searching) ...[
                       const SearchGroups(),
+                      const SearchHistory(),
+                    ],
                     if (dashboardState == DashboardControlsState.suggests)
                       const SuggestList(),
                     if (dashboardState == DashboardControlsState.results)

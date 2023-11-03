@@ -610,6 +610,7 @@ class MarkerOptionsMessage {
     this.anchor,
     required this.text,
     this.textStyle,
+    this.animatedAppearance,
   });
 
   final GeoPointWithElevationMessage position;
@@ -617,6 +618,7 @@ class MarkerOptionsMessage {
   final MarkerAnchorMessage? anchor;
   final String? text;
   final MarkerTextStyleMessage? textStyle;
+  final bool? animatedAppearance;
 }
 
 class MarkerMessage {

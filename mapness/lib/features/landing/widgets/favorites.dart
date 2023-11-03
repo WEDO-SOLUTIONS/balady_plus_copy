@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mapness/features/common/config/package_fonts.dart';
+import 'package:mapness/routing/providers/app_router.dart';
 
 class Favorites extends StatelessWidget {
   const Favorites({
@@ -27,21 +29,24 @@ class Favorites extends StatelessWidget {
                 left: 8.0,
                 right: 8.0,
               ),
-              child: Container(
-                decoration: BoxDecoration(
-                  color: background,
-                  borderRadius: const BorderRadius.all(
-                    Radius.circular(8),
+              child: InkWell(
+                onTap: () => context.goNamed(AppRoute.favourites.name),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: background,
+                    borderRadius: const BorderRadius.all(
+                      Radius.circular(8),
+                    ),
                   ),
-                ),
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 14,
-                  vertical: 10,
-                ),
-                child: SvgPicture.asset(
-                  "assets/icons/svg/ic_fav.svg",
-                  semanticsLabel: 'MinApps Screen',
-                  package: "mapness",
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 14,
+                    vertical: 10,
+                  ),
+                  child: SvgPicture.asset(
+                    "assets/icons/svg/ic_fav.svg",
+                    semanticsLabel: 'MinApps Screen',
+                    package: "mapness",
+                  ),
                 ),
               ),
             );

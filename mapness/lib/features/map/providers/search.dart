@@ -7,6 +7,8 @@ part 'search.g.dart';
 
 @riverpod
 class Search extends _$Search {
+  PageMessage? _currentPage;
+
   @override
   List<DirectoryObjectMessage> build() {
     ref.onDispose(() {
@@ -72,8 +74,42 @@ class Search extends _$Search {
     await removeMarkers();
     await dgisController?.addMarkers(markers);
 
+    _currentPage = result?.firstPage;
+
     state =
-        result?.firstPage?.items.whereType<DirectoryObjectMessage>().toList() ??
-            [];
+        _currentPage?.items.whereType<DirectoryObjectMessage>().toList() ?? [];
+
+    ref.onDispose(() {
+      if (_currentPage != null) {
+        dgisController?.releasePage(_currentPage!);
+      }
+    });
+  }
+
+  Future<bool> fetchNext() async {
+    if (_currentPage == null) {
+      return false;
+    }
+
+    final dgisController = ref.watch(dgisControllerProvider);
+
+    PageMessage? page;
+    try {
+      page = await dgisController?.fetchNextPage(_currentPage!);
+    } catch (e) {
+      return false;
+    }
+
+    if (page == null) {
+      return false;
+    }
+
+    await dgisController?.releasePage(_currentPage!);
+    _currentPage = page;
+    state = [
+      ...state,
+      ...page.items.whereType<DirectoryObjectMessage>().toList(),
+    ];
+    return true;
   }
 }
