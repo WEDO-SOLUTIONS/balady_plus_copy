@@ -145,7 +145,8 @@ class RequestsListItem extends StatelessWidget {
                   }
                 });
               } else if (request.requestTypeId == 1008 ||
-                  request.requestTypeId == 1005) {
+                  request.requestTypeId == 1005 ||
+                  request.requestTypeId == 1004) {
                 //|| request.requestMainTypeId == '1003'
                 Navigator.pushNamed(
                   context,

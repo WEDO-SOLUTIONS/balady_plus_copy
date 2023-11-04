@@ -29,10 +29,6 @@ class CrStep1ApplicantDataCubit extends Cubit<CrStep1ApplicantDataState> {
           CommonProperties.userInfo!.idNo!,
       CommonProperties.selectedDelegator?.getRole() ?? ""
     ));
-
-    /// TODO: UnComment below line
-    // final response = await _getRecordInfo(
-    //     CommonProperties.selectedDelegator?.crNumber ?? "");
     response.fold(
         (failure) => emit(state.copyWith(
               recordStatus: BlocStatus.failure,

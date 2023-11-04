@@ -10,6 +10,7 @@ class CommercialLicenseState extends Equatable {
   final ApplyCommercialResponseModel? applyCommercialResponse;
   final CrCalculateFeesResponse? crCalculateFeesResponse;
   final String? selectedPeriod;
+  final bool? isDraft;
 
   const CommercialLicenseState({
     this.status = BlocStatus.initial,
@@ -20,6 +21,7 @@ class CommercialLicenseState extends Equatable {
     this.crCalculateFeesResponse,
     this.selectedPeriod,
     this.gisResponse,
+    this.isDraft,
     this.pagesList = const [
       CRStep1ApplicantData(),
       CRStep2ActivityData(),
@@ -46,7 +48,8 @@ class CommercialLicenseState extends Equatable {
         locationResponse,
         crCalculateFeesResponse,
         selectedPeriod,
-        gisResponse
+        gisResponse,
+        isDraft
       ];
 
   CommercialLicenseState copyWith(
@@ -58,7 +61,8 @@ class CommercialLicenseState extends Equatable {
       ApplyCommercialResponseModel? applyCommercialResponse,
       CrCalculateFeesResponse? crCalculateFeesResponse,
       String? selectedPeriod,
-      GISResponse? gisResponse}) {
+      GISResponse? gisResponse,
+      bool? isDraft}) {
     return CommercialLicenseState(
         status: status ?? this.status,
         currentPageValue: currentPageValue ?? this.currentPageValue,
@@ -70,6 +74,16 @@ class CommercialLicenseState extends Equatable {
         applyCommercialResponse:
             applyCommercialResponse ?? this.applyCommercialResponse,
         locationResponse: locationResponse ?? this.locationResponse,
-        gisResponse: gisResponse ?? this.gisResponse);
+        gisResponse: gisResponse ?? this.gisResponse,
+        isDraft: isDraft ?? this.isDraft);
+  }
+
+  int? currentRequestIdText() {
+    if (currentPageValue <= 4) return requestId;
+    if (currentPageValue >= 5 && currentPageValue <= 8) {
+      return applyCommercialResponse?.requestId;
+    }
+
+    return requestId;
   }
 }
