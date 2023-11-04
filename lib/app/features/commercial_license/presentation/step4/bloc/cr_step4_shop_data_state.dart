@@ -4,6 +4,8 @@ class CrStep4ShopDataState extends Equatable {
   final BlocStatus status;
 
   final BlocStatus accommodationTypesStatus;
+  final BlocStatus boardContractsStatus;
+
   final BlocStatus contractsListStatus;
   final BlocStatus investmentListStatus;
   final BlocStatus deedOptionsStatus;
@@ -89,10 +91,15 @@ class CrStep4ShopDataState extends Equatable {
   final bool? isSalamaReportVerified;
   final bool? cameraAgreement;
 
+  final String? boardContractSetting;
+  final BoardContractItem? boardContractNumber;
+  final List<BoardContractItem>? boardContractItems;
+
   const CrStep4ShopDataState(
       {this.accommodationTypesStatus = BlocStatus.initial,
       this.contractsListStatus = BlocStatus.initial,
       this.investmentListStatus = BlocStatus.initial,
+      this.boardContractsStatus = BlocStatus.initial,
       this.status = BlocStatus.initial,
       this.deedOptionsStatus = BlocStatus.initial,
       this.cleanOptionsStatus = BlocStatus.initial,
@@ -148,13 +155,17 @@ class CrStep4ShopDataState extends Equatable {
       this.isSalamaPermitVerified,
       this.isSalamaBillVerified,
       this.isSalamaReportVerified,
-      this.cameraAgreement});
+      this.cameraAgreement,
+      this.boardContractSetting,
+      this.boardContractNumber,
+      this.boardContractItems});
 
   @override
   List<Object?> get props {
     return [
       status,
       deedOption,
+      boardContractNumber,
       accommodationTypesStatus,
       accommodationTypes,
       selectedAccommodationType,
@@ -212,7 +223,10 @@ class CrStep4ShopDataState extends Equatable {
       isSalamaPermitVerified,
       isSalamaBillVerified,
       isSalamaReportVerified,
-      cameraAgreement
+      cameraAgreement,
+      boardContractSetting,
+      boardContractsStatus,
+      boardContractItems
     ];
   }
 
@@ -275,7 +289,11 @@ class CrStep4ShopDataState extends Equatable {
       Nullable<bool?>? isSalamaPermitVerified,
       Nullable<bool?>? isSalamaBillVerified,
       Nullable<bool?>? isSalamaReportVerified,
-      final bool? cameraAgreement}) {
+      final bool? cameraAgreement,
+      Nullable<String?>? boardContractSetting,
+      Nullable<BoardContractItem?>? boardContractNumber,
+      BlocStatus? boardContractsStatus,
+      List<BoardContractItem>? boardContractItems}) {
     return CrStep4ShopDataState(
         status: status ?? this.status,
         ejarVerified:
@@ -374,7 +392,15 @@ class CrStep4ShopDataState extends Equatable {
         isSalamaReportVerified: isSalamaReportVerified == null
             ? this.isSalamaReportVerified
             : isSalamaReportVerified.value,
-        cameraAgreement: cameraAgreement ?? this.cameraAgreement);
+        cameraAgreement: cameraAgreement ?? this.cameraAgreement,
+        boardContractSetting: boardContractSetting == null
+            ? this.boardContractSetting
+            : boardContractSetting.value,
+        boardContractNumber: boardContractNumber == null
+            ? this.boardContractNumber
+            : boardContractNumber.value,
+        boardContractsStatus: boardContractsStatus ?? this.boardContractsStatus,
+        boardContractItems: boardContractItems ?? this.boardContractItems);
   }
 
   bool isFormValid() {
@@ -498,5 +524,17 @@ class CrStep4ShopDataState extends Equatable {
 
   bool cleanContractshowService() {
     return (cleanTypeATTACHSERVICE() || cleanTypeService());
+  }
+
+  bool boardContractsOPTINAL() {
+    return locationResponse?.boardContractSetting == "OPTIONAL";
+  }
+
+  bool boardContractsContract() {
+    return locationResponse?.boardContractSetting == "CONTRACT";
+  }
+
+  bool boardContractsMANUAL() {
+    return locationResponse?.boardContractSetting == "MANUAL";
   }
 }

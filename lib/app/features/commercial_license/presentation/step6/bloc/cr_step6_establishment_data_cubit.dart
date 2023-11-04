@@ -1,4 +1,5 @@
 import 'package:balady_plus/app/core/utils/enums/bloc_status.dart';
+import 'package:balady_plus/app/features/commercial_license/domain/entities/citizen_info_params.dart';
 
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -20,11 +21,12 @@ import '../../../commercial_license_exports.dart'
         UploadCredence,
         ValidateAprovals,
         ValidateSalamaAttachmentsRequest;
+import '../../../data/models/citizen_info_model.dart';
 import '../../../data/models/qr/apply_commercial_response_model.dart';
-import '../../../data/models/qr/citizen_info_model.dart';
 import '../../../data/models/qr/qr_lookup.dart';
 import '../../../data/models/qr/save_enterprise_data_request.dart';
 import '../../../domain/use_cases/apply_commercial_request.dart';
+import '../../../domain/use_cases/get_citizen_info.dart';
 import '../../../domain/use_cases/get_qr_lookup.dart';
 import '../../../domain/use_cases/save_qr_enterprise_data.dart';
 
@@ -34,11 +36,13 @@ class CRStep6EstablishmentCubit extends Cubit<CRStep6EstablishmentState> {
   final ApplyCommercialRequest _applyCommercialRequest;
   final SaveQrEnterpriseData _saveQrEnterpriseData;
   final GetQrLookUp _getQrLookUp;
+  final GetCitizenInfo _getCitizenInfo;
 
   CRStep6EstablishmentCubit()
       : _applyCommercialRequest = ApplyCommercialRequest(repository: sl()),
         _saveQrEnterpriseData = SaveQrEnterpriseData(repository: sl()),
         _getQrLookUp = GetQrLookUp(repository: sl()),
+        _getCitizenInfo = GetCitizenInfo(repository: sl()),
         super(CRStep6EstablishmentState()) {}
 
   void getPaymentMethods() async {
@@ -121,6 +125,10 @@ class CRStep6EstablishmentCubit extends Cubit<CRStep6EstablishmentState> {
         applyStatus: BlocStatus.failure,
       ));
     }, (r) {
+      if (state.applyResponse == null &&
+          sl<CommercialLicenseBloc>().state.isDraft == true) {
+        setQrDraftData();
+      }
       emit(state.copyWith(
           crOwners: r.enterpriseInfo?.crOwners,
           contactInfo: r.enterpriseInfo?.contactInfo,
@@ -222,8 +230,11 @@ class CRStep6EstablishmentCubit extends Cubit<CRStep6EstablishmentState> {
     final String? id,
     final String? birthDate,
   }) {
-    emit(
-        state.copyWith(errorMessage: "", birthDate: birthDate, nationalId: id));
+    emit(state.copyWith(
+        errorMessage: "",
+        birthDate: birthDate,
+        nationalId: id,
+        managerInfo: Nullable(null)));
   }
 
   void save() async {
@@ -282,6 +293,43 @@ class CRStep6EstablishmentCubit extends Cubit<CRStep6EstablishmentState> {
       emit(state.copyWith(status: BlocStatus.success));
 
       sl<CommercialLicenseBloc>().add(GoToNextPageEvent());
+    });
+  }
+
+  void setQrDraftData() {
+    QRSiteLocationType? siteLocationType;
+    state.siteLocationType;
+
+    String? siteLocationTypeStr =
+        state.applyResponse?.comLicenseInfo?.locationInfo?.siteLocationType;
+
+    if (siteLocationTypeStr == "INSIDE_BUILDING") {
+      siteLocationType = QRSiteLocationType.INSIDE_BUILDING;
+    } else if (siteLocationTypeStr == "ON_STREET") {
+      siteLocationType = QRSiteLocationType.ON_STREET;
+    }
+
+    emit(state.copyWith(siteLocationType: siteLocationType));
+  }
+
+  void getCizienInfo() async {
+    emit(state.copyWith(
+      status: BlocStatus.loading,
+      errorMessage: "",
+    ));
+
+    final failOrSuccess = await _getCitizenInfo(CitizenInfoParams(
+        id: state.nationalId ?? "",
+        birthdate: CommonFunctions.padHijriDate(state.birthDate ?? "")));
+
+    failOrSuccess.fold((l) {
+      emit(state.copyWith(
+        errorMessage: (l as ServerFailure).errorMessage,
+        status: BlocStatus.failure,
+      ));
+    }, (r) {
+      emit(
+          state.copyWith(status: BlocStatus.success, managerInfo: Nullable(r)));
     });
   }
 }

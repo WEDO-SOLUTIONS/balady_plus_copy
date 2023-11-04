@@ -2,6 +2,7 @@ import 'package:balady_plus/app/core/services/local/use_case.dart';
 import 'package:balady_plus/app/core/services/services_exports.dart';
 import 'package:balady_plus/app/core/utils/enums/bloc_status.dart';
 import 'package:balady_plus/app/features/commercial_license/domain/entities/verifiy_salama_requst.dart';
+import 'package:balady_plus/app/features/commercial_license/domain/use_cases/get_board_contracts.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/dependency_injection/dependency_injection_exports.dart';
@@ -10,6 +11,7 @@ import '../../../../../core/utils/enums/enums.dart';
 import '../../../../../core/utils/utils_exports.dart';
 import '../../../../_shared_feature_/shared_feature_exports.dart';
 import '../../../commercial_license_exports.dart';
+import '../../../data/models/board_contract_response.dart';
 import '../../../data/models/qr/qr_lookup.dart';
 import '../../../domain/entities/commercial_board_type.dart';
 import '../../../domain/entities/save_shop_details_request.dart';
@@ -43,6 +45,7 @@ class CrStep4ShopDataCubit extends Cubit<CrStep4ShopDataState> {
   final ValidateSalamaPermit _validateSalamaPermit;
   final ValidateSalamaBill _validateSalamaBill;
   final ValidateSalamaReport _validateSalamaReport;
+  final GetBoardContracts _getBoardContracts;
 
   CrStep4ShopDataCubit()
       : _getAccommodationTypes = GetAccommodationTypes(repository: sl()),
@@ -59,7 +62,8 @@ class CrStep4ShopDataCubit extends Cubit<CrStep4ShopDataState> {
         _validateSalamaPermit = ValidateSalamaPermit(repository: sl()),
         _validateSalamaBill = ValidateSalamaBill(repository: sl()),
         _validateSalamaReport = ValidateSalamaReport(repository: sl()),
-        super(CrStep4ShopDataState());
+        _getBoardContracts = GetBoardContracts(repository: sl()),
+        super(const CrStep4ShopDataState());
 
   void getAccommodationTypes() async {
     emit(state.copyWith(accommodationTypesStatus: BlocStatus.loading));
@@ -255,6 +259,10 @@ class CrStep4ShopDataCubit extends Cubit<CrStep4ShopDataState> {
     ));
   }
 
+  void selectBoardContractNumber(BoardContractItem boardContractNumber) {
+    emit(state.copyWith(boardContractNumber: Nullable(boardContractNumber)));
+  }
+
   void getCleanContracts() async {
     if (!state.cleanContractshowService() &&
         state.isCitizenPledgedToClean == true) return;
@@ -298,11 +306,39 @@ class CrStep4ShopDataCubit extends Cubit<CrStep4ShopDataState> {
     }
   }
 
+  void getBoardsContracts() async {
+    if (state.boardContractSetting == "CONTRACT") return;
+    int requestId = sl<CommercialLicenseBloc>().state.requestId!;
+
+    emit(state.copyWith(
+        boardContractsStatus: BlocStatus.loading, errorMessage: ""));
+    final response = await _getBoardContracts(requestId);
+    response.fold(
+        (failure) => emit(state.copyWith(
+              boardContractsStatus: BlocStatus.failure,
+              errorMessage: (failure as ServerFailure).errorMessage,
+            )), (success) {
+      emit(state.copyWith(
+          boardContractsStatus: BlocStatus.success,
+          boardContractItems: success.result));
+    });
+  }
+
   void initForm() {
     SaveLocationResponse? res =
         sl<CommercialLicenseBloc>().state.locationResponse;
 
-    emit(state.copyWith(locationResponse: res, errorMessage: ""));
+    if (state.locationResponse != res) {
+      emit(state.copyWith(locationResponse: res, errorMessage: ""));
+
+      if (res?.boardContractSetting == "CONTRACT" ||
+          res?.boardContractSetting == "MANUAL") {
+        emit(state.copyWith(
+            boardContractSetting: Nullable(res?.boardContractSetting)));
+
+        if (res?.boardContractSetting == "CONTRACT") getBoardsContracts();
+      }
+    }
   }
 
   SaveLocationResponse? get saveLocationResponse =>
@@ -346,7 +382,7 @@ class CrStep4ShopDataCubit extends Cubit<CrStep4ShopDataState> {
         deedInfo: state.deedVerified == true ? state.deedInfoRequst : null,
         cleanContractNumber:
             state.selectedCleanContract?.unifiedCleanContractNo.toString(),
-        selectedBoardContractOption: "MANUAL");
+        selectedBoardContractOption: state.boardContractSetting);
     final failOrSuccess = await _saveShopDetails(request);
 
     failOrSuccess.fold(
@@ -623,5 +659,12 @@ class CrStep4ShopDataCubit extends Cubit<CrStep4ShopDataState> {
 
   void updateEndorsmentAgreement(bool? value) {
     emit(state.copyWith(errorMessage: "", endorsmentAgreement: value));
+  }
+
+  void updateBoardContractSetting(String value) {
+    emit(state.copyWith(boardContractSetting: Nullable(value)));
+    if (value == "CONTRACT") {
+      getBoardsContracts();
+    }
   }
 }

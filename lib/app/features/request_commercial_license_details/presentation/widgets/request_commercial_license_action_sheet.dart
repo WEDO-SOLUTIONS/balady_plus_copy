@@ -53,6 +53,11 @@ class RequestCommercialLicenseActionSheet extends StatelessWidget {
                                               RouteName
                                                   .renewCommercialLicenseSubmitForm,
                                               arguments: provider.requestId);
+                                        } else if (provider.requestTypeId ==
+                                            1004) {
+                                          Navigator.of(context).pushNamed(
+                                              RouteName.commercialLicensePage,
+                                              arguments: provider.requestId);
                                         } else {
                                           try {
                                             Navigator.of(context)
