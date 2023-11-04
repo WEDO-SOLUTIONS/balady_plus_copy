@@ -669,11 +669,11 @@ class QrCodeAdditionalInfo extends Equatable {
   final bool? serveDisabledPersons;
   final bool? hasParking;
   final int? parkingCount;
-  final bool? hasElectronicSale;
-  final bool? hasDelivery;
+  final String? hasElectronicSale;
+  final String? hasDelivery;
   final String? siteDeliveryType;
   final String? siteDeliveryName;
-  final bool? hasVehicleParking;
+  final String? hasVehicleParking;
   final String? electAccountNumber;
   final String? waterAccountNumber;
   const QrCodeAdditionalInfo({
@@ -712,11 +712,11 @@ class QrCodeAdditionalInfo extends Equatable {
     bool? serveDisabledPersons,
     bool? hasParking,
     int? parkingCount,
-    bool? hasElectronicSale,
-    bool? hasDelivery,
+    String? hasElectronicSale,
+    String? hasDelivery,
     String? siteDeliveryType,
     String? siteDeliveryName,
-    bool? hasVehicleParking,
+    String? hasVehicleParking,
     String? electAccountNumber,
     String? waterAccountNumber,
   }) {
@@ -764,10 +764,10 @@ class QrCodeAdditionalInfo extends Equatable {
       parkingCount:
           map['parkingCount'] != null ? map['parkingCount'] as int : null,
       hasElectronicSale: map['hasElectronicSale'] != null
-          ? map['hasElectronicSale'] as bool
+          ? map['hasElectronicSale'] as String?
           : null,
       hasDelivery:
-          map['hasDelivery'] != null ? map['hasDelivery'] as bool : null,
+          map['hasDelivery'] != null ? map['hasDelivery'] as String? : null,
       siteDeliveryType: map['siteDeliveryType'] != null
           ? map['siteDeliveryType'] as String
           : null,
@@ -775,7 +775,7 @@ class QrCodeAdditionalInfo extends Equatable {
           ? map['siteDeliveryName'] as String
           : null,
       hasVehicleParking: map['hasVehicleParking'] != null
-          ? map['hasVehicleParking'] as bool
+          ? map['hasVehicleParking'] as String?
           : null,
       electAccountNumber: map['electAccountNumber'] != null
           ? map['electAccountNumber'].toString()

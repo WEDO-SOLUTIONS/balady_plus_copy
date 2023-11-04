@@ -369,6 +369,13 @@ class ApiUrl {
 
   static String salamaWarningWorkFlowMessage =
       '/v1/balady-commercial-services/activities-salama-workflows';
+
+  static String boardContracts(int requestId) =>
+      '/v1/balady-commercial-services/board-contracts/$requestId';
+
+  static String crCitizenInfo =
+      '/v1/balady-commercial-services/moi/citizeninfo';
+
 //! Renew Commercial Service
   static String validateBeforeApply(int requestId) =>
       'v1/balady-commercial-services/mobile/renew-request/validate-before-apply/$requestId';

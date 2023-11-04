@@ -124,10 +124,12 @@ class CommercialLicenseBloc
     emit(state.copyWith(gisResponse: gis, status: BlocStatus.success));
   }
 
-  void initState() {
+  void initState({int? requestId}) {
     emit(state.copyWith(
       status: BlocStatus.initial,
+      isDraft: requestId != null ? true : false,
       currentPageValue: 0,
+      requestId: requestId,
       pagesList: const [
         CRStep1ApplicantData(),
         CRStep2ActivityData(),

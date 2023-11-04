@@ -85,7 +85,12 @@ class _ExtraActivityComponentState extends State<ExtraActivityComponent> {
                                 child: ElevatedButtonWidget.add(onPressed: () {
                                   double? a = double.tryParse(area ?? "") ?? 0;
 
-                                  if (a > state.getTotalArea()) {
+                                  if (a <= 0) {
+                                    CommonFunctions.showError(
+                                        "عفوا مساحة النشاط يجب أن تكون أكبر من الصفر");
+                                    return;
+                                  }
+                                  if (a >= state.getTotalArea()) {
                                     CommonFunctions.showError(
                                         "مساحة المحل أقل من مجموع مساحات الأنشطة الإضافية");
                                     return;

@@ -171,7 +171,9 @@ class MapBloc extends Bloc<MapEvent, MapState> {
     final failOrSuccess = await _saveLocationDetails(SaveLocationDataRequest(
         requestId: requestId,
         krokiUrl: state.gisResponse?.locationURL,
-        streetCode: state.gisResponse?.streetCode ?? "-1",
+        streetCode: (state.gisResponse?.streetCode?.isEmpty ?? true)
+            ? "-1"
+            : state.gisResponse?.streetCode,
         subMunicipalityGisCode: state.gisResponse?.municipalityuniquecode,
         districtCode: state.gisResponse?.Balady_DistrictID,
         latitude: state.location?.lat,

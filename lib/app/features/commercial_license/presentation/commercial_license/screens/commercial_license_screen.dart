@@ -16,6 +16,8 @@ class CommercialLicenseScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    int? requestId = ModalRoute.of(context)!.settings.arguments as int?;
+
     return MultiBlocProvider(
       providers: [
         BlocProvider(
@@ -54,7 +56,9 @@ class CommercialLicenseScreen extends StatelessWidget {
           create: (context) => CrStep13ReviewDataCubit(),
         ),
       ],
-      child: const CommercialLicenseBody(),
+      child: CommercialLicenseBody(
+        requestId: requestId,
+      ),
     );
   }
 }
