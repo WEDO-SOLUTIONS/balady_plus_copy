@@ -42,40 +42,41 @@ class CRStep6EstablishmentState extends Equatable {
   final String? birthDate;
   final String? nationalId;
 
-  const CRStep6EstablishmentState(
-      {this.status = BlocStatus.initial,
-      this.paymentsMethodsStatus = BlocStatus.initial,
-      this.buildingNatureStatus = BlocStatus.initial,
-      this.siteNatureStatus = BlocStatus.initial,
-      this.applyStatus = BlocStatus.initial,
-      this.errorMessage,
-      this.siteLocationType,
-      this.contactInfo,
-      this.crOwners,
-      this.managerInfo,
-      this.selectedPaymentMethods,
-      this.selectedBuildingNature,
-      this.selectedSiteNature,
-      this.nationalAddress,
-      this.locationOnStreetDto,
-      this.locationInsideBuildingDto,
-      this.paymentsMethods,
-      this.siteNature,
-      this.buildingNature,
-      this.applyResponse,
-      this.buildingName,
-      this.buildingUnit,
-      this.buildingFloor,
-      this.buildingDirections,
-      this.siteName,
-      this.siteDesc,
-      this.siteLandmark,
-      this.buildingNumber,
-      this.addetionalNumber,
-      this.postalCode,
-      this.hasPaymentMethods,
-      this.birthDate,
-      this.nationalId});
+  const CRStep6EstablishmentState({
+    this.status = BlocStatus.initial,
+    this.paymentsMethodsStatus = BlocStatus.initial,
+    this.buildingNatureStatus = BlocStatus.initial,
+    this.siteNatureStatus = BlocStatus.initial,
+    this.applyStatus = BlocStatus.initial,
+    this.errorMessage,
+    this.siteLocationType,
+    this.contactInfo,
+    this.crOwners,
+    this.managerInfo,
+    this.selectedPaymentMethods,
+    this.selectedBuildingNature,
+    this.selectedSiteNature,
+    this.nationalAddress,
+    this.locationOnStreetDto,
+    this.locationInsideBuildingDto,
+    this.paymentsMethods,
+    this.siteNature,
+    this.buildingNature,
+    this.applyResponse,
+    this.buildingName,
+    this.buildingUnit,
+    this.buildingFloor,
+    this.buildingDirections,
+    this.siteName,
+    this.siteDesc,
+    this.siteLandmark,
+    this.buildingNumber,
+    this.addetionalNumber,
+    this.postalCode,
+    this.hasPaymentMethods,
+    this.birthDate,
+    this.nationalId,
+  });
 
   @override
   List<Object?> get props {
@@ -121,7 +122,7 @@ class CRStep6EstablishmentState extends Equatable {
       QRSiteLocationType? siteLocationType,
       ContactInfo? contactInfo,
       List<CrOwner>? crOwners,
-      CitizenInfoModel? managerInfo,
+      Nullable<CitizenInfoModel?>? managerInfo,
       List<QrLookUpItem>? selectedPaymentMethods,
       NationalAddress? nationalAddress,
       LocationOnStreetDto? locationOnStreetDto,
@@ -155,7 +156,7 @@ class CRStep6EstablishmentState extends Equatable {
         siteLocationType: siteLocationType ?? this.siteLocationType,
         contactInfo: contactInfo ?? this.contactInfo,
         crOwners: crOwners ?? this.crOwners,
-        managerInfo: managerInfo ?? this.managerInfo,
+        managerInfo: managerInfo == null ? this.managerInfo : managerInfo.value,
         selectedPaymentMethods:
             selectedPaymentMethods ?? this.selectedPaymentMethods,
         nationalAddress: nationalAddress ?? this.nationalAddress,
@@ -187,6 +188,10 @@ class CRStep6EstablishmentState extends Equatable {
         hasPaymentMethods: hasPaymentMethods ?? this.hasPaymentMethods,
         birthDate: birthDate ?? this.birthDate,
         nationalId: nationalId ?? this.nationalId);
+  }
+
+  bool isFormValid() {
+    return managerInfo != null;
   }
 
   bool get isLoading =>

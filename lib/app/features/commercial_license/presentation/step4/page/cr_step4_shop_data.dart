@@ -12,7 +12,9 @@ import '../../../../_shared_feature_/presentation/widgets/radio_buttons/vertical
 import '../../../../_shared_feature_/shared_feature_exports.dart';
 import '../../../../vd/presentation/widgets/details_widgets/incident_desc_widgets/vd_create_incident_addetional_fields.dart';
 import '../../../commercial_license_exports.dart';
+import '../../../data/models/board_contract_response.dart';
 import '../../step3/bloc/map_bloc.dart';
+import '../widgets/board_contract_card.dart';
 import '../widgets/clean_contract_card.dart';
 import '../widgets/malls_dropDown.dart';
 
@@ -462,7 +464,13 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
                             },
                           ),
                         if (state.crContractType == CRContractType.ejar &&
-                            state.crSubmitterType == CRSubmitterType.rental)
+                            state.crSubmitterType ==
+                                CRSubmitterType.rental) ...[
+                          const NotesWidget(
+                            notes: [
+                              '<span class="ui-messages-detail ng-tns-c1-19 ng-star-inserted">عزيزي المستفيد.. يمكنك معرفة الوسطاء العقاريون المعتمدين في شبكة ايجار من خلال الرابط <a target="_balnk" href="https://www.ejar.sa/ar/certified-offices"> اضغط هنا</a> أو تحميل تطبيق وسطاء عقاريون <a target="_balnk" href="https://apps.apple.com/us/app/%D9%88%D8%B3%D8%B7%D8%A7%D8%A1-%D8%B9%D9%82%D8%A7%D8%B1%D9%8A%D9%88%D9%86/id1306579731"> IOS </a> أو <a target="_balnk" href="https://play.google.com/store/apps/details?id=sa.ejar.waset"> Android </a></span>'
+                            ],
+                          ),
                           HorizontalRadioGroup<CRContractOption>(
                             groupName: 'طريقة ادخال العقد',
                             currentItem: state.crContractOption,
@@ -482,7 +490,8 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
                                   .read<CrStep4ShopDataCubit>()
                                   .updateCRContractOption(value!);
                             },
-                          ),
+                          )
+                        ],
                         if (state.crContractType == CRContractType.ejar &&
                             state.crSubmitterType == CRSubmitterType.rental &&
                             state.crContractOption ==
@@ -617,21 +626,55 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
                                 }),
                           ),
                         ],
-                        HorizontalRadioGroup(
+                        HorizontalRadioGroup<String>(
                           groupName: 'اللوحات',
-                          currentItem: null,
+                          currentItem: state.boardContractSetting,
                           items: [
-                            //    RadioItem(radioValue: "اضافه عقد لوحه", id: 1),
-                            //    RadioItem(radioValue: "اضافه بيانات اللوحه", id: 1),
+                            if (state.boardContractsOPTINAL() ||
+                                state.boardContractsContract())
+                              RadioItem<String>(
+                                  radioText: "إضافة عقد لوحتي",
+                                  radioValue: "CONTRACT"),
+                            if (state.boardContractsOPTINAL() ||
+                                state.boardContractsMANUAL())
+                              RadioItem<String>(
+                                  radioText: "إضافة بيانات اللوحات",
+                                  radioValue: "MANUAL"),
                           ],
-                          onChanged: (value) {},
+                          onChanged: (value) {
+                            if (value != null) {
+                              context
+                                  .read<CrStep4ShopDataCubit>()
+                                  .updateBoardContractSetting(value);
+                            }
+                          },
                         ),
-                        const BillboardComponent(),
-                        /*  const NotesWidget(
-                          notes: [
-                            "عزيزي المستفيد, يمكنك الاطلاع على إرشادات اللوحات"
-                          ],
-                        ),*/
+                        if ((state.boardContractSetting == "CONTRACT") &&
+                            (state.boardContractsStatus ==
+                                BlocStatus.success)) ...[
+                          ListView.builder(
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemCount: state.boardContractItems?.length ?? 0,
+                              itemBuilder: (ctx, index) {
+                                return BoardContractCard(
+                                    item: state.boardContractItems![index],
+                                    onSelect: (BoardContractItem? item) {
+                                      context
+                                          .read<CrStep4ShopDataCubit>()
+                                          .selectBoardContractNumber(item!);
+                                    },
+                                    selected: state.boardContractNumber);
+                              }),
+                        ],
+                        if (state.boardContractSetting == "MANUAL") ...[
+                          const BillboardComponent(),
+                          const NotesWidget(
+                            notes: [
+                              '<p class="m-0 ng-star-inserted">عزيزي المستفيد... يمكنك الاطلاع على لائحة استيفاء اشتراطات اللوحات التجارية من خلال زيارة الرابط التالي: <a target="_balnk" href="https://balady.gov.sa/Services/DownloadUserGuide/218">لائحة استيفاء اشتراطات اللوحات التجارية</a></p>'
+                            ],
+                          ),
+                        ]
                       ],
                     ),
                   ),
