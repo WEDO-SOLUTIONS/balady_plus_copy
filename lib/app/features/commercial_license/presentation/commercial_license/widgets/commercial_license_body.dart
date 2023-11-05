@@ -16,31 +16,11 @@ class CommercialLicenseBody extends StatefulWidget {
 class _CommercialLicenseBodyState extends State<CommercialLicenseBody> {
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
 
     context
         .read<CommercialLicenseBloc>()
         .initState(requestId: widget.requestId);
-
-    /*WidgetsBinding.instance.addPostFrameCallback((_) {
-      //   if (widget.requestId != null) {
-      context.read<CommercialLicenseBloc>().controller.jumpTo(2);
-      //  }
-    });*/
-  }
-
-  @override
-  State<CommercialLicenseBody> createState() => _CommercialLicenseBodyState();
-}
-
-class _CommercialLicenseBodyState extends State<CommercialLicenseBody> {
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-
-    context.read<CommercialLicenseBloc>().initState();
   }
 
   @override

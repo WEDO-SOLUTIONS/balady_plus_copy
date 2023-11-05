@@ -285,7 +285,7 @@ class NewAppointmentFirstStepViewModel extends BaseViewModel {
           catetgoryType != null &&
           serviceConfigResponse != null &&
           serviceConfigResponse?.getServiceId() != null) {
-        if (withPreviousTransaction) {
+        if (catetgoryType?.id == "4") {
           if (getTransactionNo.isNotEmpty) {
             isValid = true;
           } else {
