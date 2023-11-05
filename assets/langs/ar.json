@@ -1584,6 +1584,28 @@
   "view_health_centers_list": "استعراض قائمة المراكز الصحية",
   "cancel_order": "إلغاء الطلب",
   "health_center": "المركز الصحي",
+
+
+  "health_data":"تاريخ تقديم الطلب", 
+  "health_data_no":"رقم الطلب", 
+  "health_data_status":"حالة الطلب", 
+
+  "health_owner_data":"بيانات المالك الرئيسية",
+  "health_owner_data_field1":"هوية المالك",
+  "health_owner_data_field2":"اسم المالك / المنشأة",
+  "health_submitter_data":"بيانات مقدم الطلب", 
+  "health_submitter_id":"رقم هوية مقدم الطلب", 
+  "health_submitter_name":"إسم مقدم الطلب", 
+  "health_submitter_mobile":"الجوال", 
+  "health_submitter_mail":"البريد الالكتروني", 
+  "health_cert_data":"معلومات الشهادة الصحية", 
+  "health_cert_no":"رقم الشهادة الصحية", 
+"health_cert_date":"تاريخ الاصدار", 
+"health_cert_end":"تاريخ الانتهاء", 
+"health_cert_lice_statue":"حالة الشهادة", 
+
+
+
   "medical_examination_data": "بيانات التثقيف الصحي",
   "check_code": "كود الفحص",
   "check_date": "تاريخ الفحص",
@@ -1626,6 +1648,16 @@
   "license_info": "معلومات الرخصة",
   "license_info_desc": "تم استرجاع كافة معلومات المنشأة بنجاح، يرجى التأكد من صحتها.",
   "license_name": "اسم الرخصة",
+  "license_shop_name": "اسم المحل",
+  "license_health_number": "رقم الرخصة", 
+  "license_health_municipality": "الامانة", 
+  "license_health_subMunicipality": "البلدية",
+  "license_health_entityName": "اسم المنشآة",
+  "license_health_start_date": "تاريخ بداية الرخصة",
+  "license_health_end_date": "تاريخ نهاية الرخصة",
+  "license_health_activityName": "النشاط التفصيلي",
+
+
   "registered_license": "الرخصة المسجلة",
   "registered_license_info": "تتطلب البلدية الربط مع رخصة محل",
   "license_for_facility": "هل يوجد رخصة محل لموقع العمل ؟",
