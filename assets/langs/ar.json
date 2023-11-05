@@ -1931,6 +1931,8 @@
   "no_in_progress_incidents": "لا توجد بلاغات تحت التنفيذ",
   "no_in_progress_incidents_desc": "لا يوجد أي بلاغ مقدم حالياً، يمكنك تقديم بلاغ جديد",
   "submit_new_incident": "تقديم بلاغ جديد",
+  "submit_incident": "تقديم بلاغ",
+
   "no_appointments": "لم تقم بحجز موعد",
   "no_appointments_desc": "لا يوجد موعد محجوز حالياً، يمكنك حجز موعد جديد",
   "submit_new_appointment": "حجز موعد جديد",

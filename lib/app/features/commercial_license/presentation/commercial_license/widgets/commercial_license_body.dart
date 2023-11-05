@@ -31,6 +31,19 @@ class _CommercialLicenseBodyState extends State<CommercialLicenseBody> {
   }
 
   @override
+  State<CommercialLicenseBody> createState() => _CommercialLicenseBodyState();
+}
+
+class _CommercialLicenseBodyState extends State<CommercialLicenseBody> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    context.read<CommercialLicenseBloc>().initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return BlocBuilder<CommercialLicenseBloc, CommercialLicenseState>(
       builder: (context, state) {
