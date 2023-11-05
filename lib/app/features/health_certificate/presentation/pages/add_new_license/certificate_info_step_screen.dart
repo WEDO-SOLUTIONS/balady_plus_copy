@@ -20,6 +20,7 @@ import '../../../../_shared_feature_/presentation/widgets/custom_popups_widgets.
 
 import '../../../../_shared_feature_/presentation/widgets/radio_buttons/custom_radio_button_widget copy.dart';
 import '../../../../vd/presentation/widgets/vd_header_desc_widget.dart';
+import '../../core/models/license_for_health_information_response.dart';
 import '../../core/models/list_response.dart';
 import '../../core/services/view_models/new_details_health_license_view_model.dart';
 import '../../widgets/new_health_certificate_widgets/previous_next_buttons.dart';
@@ -363,6 +364,13 @@ class _CommercialRegisterSection extends State<CommercialRegisterSection> {
   final TextEditingController _commercialController = TextEditingController();
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _commercialController.text = model.dataModel.crNumber ?? "";
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -569,6 +577,13 @@ class _LicenseNumberSection extends State<LicenseNumberSection> {
   final model = locator<NewDetailsHealthLicenseViewModel>();
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _licenseNoController.text = model.dataModel.licenseNumber ?? "";
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Column(
       children: <Widget>[
@@ -632,16 +647,7 @@ class _LicenseNumberSection extends State<LicenseNumberSection> {
         Visibility(
             visible: model.isLicenseVerified,
             child: LicenseInfoSection(
-              licenseName: model.licenseForHealthInformationResponse?.data
-                      ?.result?.crName ??
-                  "",
-              licenseNumber: model.licenseForHealthInformationResponse?.data
-                      ?.result?.licenseNo
-                      .toString() ??
-                  "",
-              licenseType: model.licenseForHealthInformationResponse?.data
-                      ?.result?.isicName ??
-                  "",
+              license: model.licenseForHealthInformationResponse,
             ))
       ],
     );
@@ -649,16 +655,9 @@ class _LicenseNumberSection extends State<LicenseNumberSection> {
 }
 
 class LicenseInfoSection extends StatelessWidget {
-  final String licenseName;
-  final String licenseNumber;
-  final String licenseType;
+  final LicenseForHealthInformationResponse? license;
 
-  const LicenseInfoSection(
-      {Key? key,
-      required this.licenseName,
-      required this.licenseNumber,
-      required this.licenseType})
-      : super(key: key);
+  const LicenseInfoSection({Key? key, this.license}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -670,15 +669,32 @@ class LicenseInfoSection extends StatelessWidget {
           desc: Helpers.translatingWord('license_info_desc'),
         ),
         ReadOnlyField(
-            title: Helpers.translatingWord("license_name"),
-            subTitle: licenseName),
+            title: Helpers.translatingWord("license_shop_name"),
+            subTitle: license?.data?.result?.shopName),
         ReadOnlyField(
-            title: Helpers.translatingWord(
-                "userLicensesLicenseDetailsLicenseNumberWord"),
-            subTitle: licenseNumber),
+            title: Helpers.translatingWord("license_health_number"),
+            subTitle: license?.data?.result?.crNumber),
+        ReadOnlyField(
+            title: Helpers.translatingWord("license_health_municipality"),
+            subTitle: license?.data?.result?.municipalityName),
+        ReadOnlyField(
+            title: Helpers.translatingWord("license_health_subMunicipality"),
+            subTitle: license?.data?.result?.subMunicipalityName),
+        ReadOnlyField(
+            title: Helpers.translatingWord("license_health_entityName"),
+            subTitle: license?.data?.result?.entityName),
+        ReadOnlyField(
+            title: Helpers.translatingWord("license_health_activityName"),
+            subTitle: license?.data?.result?.activityName),
         ReadOnlyField(
             title: Helpers.translatingWord("isic_activity"),
-            subTitle: licenseType),
+            subTitle: license?.data?.result?.isicName),
+        ReadOnlyField(
+            title: Helpers.translatingWord("license_health_start_date"),
+            subTitle: license?.data?.result?.licenseStartDate),
+        ReadOnlyField(
+            title: Helpers.translatingWord("license_health_end_date"),
+            subTitle: license?.data?.result?.licenseEndDate),
       ],
     );
   }
