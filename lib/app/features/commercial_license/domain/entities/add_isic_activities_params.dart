@@ -16,7 +16,7 @@ class AddIsicActivitiesParams {
   Map<String, dynamic> toJson() => {
         "crActivities": crActivities == null
             ? []
-            : List<IsicActivity>.from(crActivities!.map((x) => x.toJson())),
+            : crActivities!.map((x) => x.toJson()).toList(),
         "crNumber": crNumber,
         "identityNumber": identityNumber,
         "mobileNumber": mobileNumber,

@@ -14,14 +14,14 @@ class UserDataSummuryWidget extends StatelessWidget {
   const UserDataSummuryWidget({super.key});
 
   @override
-  Widget build(BuildContext context) { 
+  Widget build(BuildContext context) {
     return BlocBuilder<CreateObjectionBloc, CreateObjectionState>(
       builder: (context, state) {
         return CustomExpansionPanelWidget(
-          title: ("objection_main_request_data").tr(),
+          title: ("user_data_applicant").tr(),
           leading: SvgPicture.asset(IconPath.vdSummuryUserInfo),
           children: [
-            FieldData( 
+            FieldData(
               title: ("user_data_applicant_id").tr(),
               subTitle: CommonProperties.userInfo?.idNo,
             ),

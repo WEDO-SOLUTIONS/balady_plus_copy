@@ -181,18 +181,21 @@ class CrRemoteDataSourceImpl extends CrRemoteDataSource {
           options: Options(
             headers: {"sid": ""},
           ));
+      print("FHH");
 
       final decodedResponse =
           ResponseBodyModel<bool>.fromMap(response.data, parsedResult: true);
 
       return decodedResponse.data!.result!.toFuture();
     } on DioError catch (error) {
+      print(error);
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
         dioError: error,
       );
     } catch (ex) {
+      print(ex);
       if (ex is ServerException)
         throw ex;
       else {

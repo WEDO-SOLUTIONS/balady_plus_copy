@@ -178,12 +178,13 @@ class CreateObjectionBloc
     CreateObjectionParams params = CreateObjectionParams();
     if (item != null)
       params = CreateObjectionParams(
-          municipalityID: item?.municipalityId,
-          subMunicipalityID: item?.subMunicipalityId,
+          municipalityID: item?.originalMunicipalityId,
+          subMunicipalityID: item?.originalSubMunicipalityId,
           serviceGroupId: item?.applicationId,
           serviceId: item?.serviceId,
           objectionTypeId: item?.objectionTypeId,
-          objectedTransactionId: item?.transactionNumber,
+          objectedTransactionId: item?.transactionId,
+          objectedTransactionDisplayNumber: item?.transactionNumber,
           submitterRole: CommonProperties.selectedDelegator != null
               ? CommonProperties.selectedDelegator?.roleId
               : "001",

@@ -3,12 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
-import '../../../../core/utils/utils_exports.dart' show BlocRequestStatus;
+import '../../../../core/services/local/navigation_services.dart';
+import '../../../../core/utils/utils_exports.dart'
+    show BlocRequestStatus, RouteName;
 import '../../../_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
 import '../../../_shared_feature_/presentation/widgets/need_login_widget.dart';
 import '../../../_shared_feature_/presentation/widgets/reload_widget.dart';
 import '../../../_shared_feature_/shared_feature_exports.dart'
     show MessageDialog, RetryWidget, ShimmerEffectWidget;
+import '../../domain/entities/create_objection_page_params.dart';
 import '../../objections_exports.dart'
     show
         GetRequestsEvent,
@@ -110,7 +113,14 @@ class _RequestsListState extends State<RequestsList> {
                                       "")));
                     },
                     onApply: () {
-                      context.read<ObjectableTransactionBloc>().add(
+                      NavigationService.navigatorKey.currentState!
+                          .pushNamed(RouteName.createObjectionDetails,
+                              arguments: CreateObjectionPageParams(
+                                item: state.requests[index],
+                              ));
+
+                      // Old Behavoiur
+                      /*  context.read<ObjectableTransactionBloc>().add(
                           GetTransactionDetailsEvent(
                               apply: true,
                               params: TransactionDetailsParams(
@@ -119,6 +129,8 @@ class _RequestsListState extends State<RequestsList> {
                                           "13",
                                   id: state.requests[index].transactionNumber ??
                                       "")));
+                 
+                 */
                     },
                   );
                 },

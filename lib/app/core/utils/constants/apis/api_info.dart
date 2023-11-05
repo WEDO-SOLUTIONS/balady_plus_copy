@@ -140,6 +140,9 @@ class ApiUrl {
   static String transactionsRequestDetails(String id) =>
       '/v1/objection-generic-services/applications/$id/objectable-transactions';
 
+  static String cancelObjectionRequest =
+      '/v1/objection-services/objection-request';
+
 //! VD
   static const gis = '/v1/crm/bcg/gis-info';
   static const vdCategories = '/v1/crm/bcg/categories';

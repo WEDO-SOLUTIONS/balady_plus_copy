@@ -13,6 +13,8 @@ class GetTransactionDetailsEvent extends ObjectionDetailsEvent {
   GetTransactionDetailsEvent({required this.params, this.apply = false});
 }
 
+class CancelObjectionEvent extends ObjectionDetailsEvent {}
+
 class GetObjectionDetailsEvent extends ObjectionDetailsEvent {
   final String params;
   GetObjectionDetailsEvent({required this.params});
