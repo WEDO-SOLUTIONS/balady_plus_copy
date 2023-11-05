@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:dgis_map/library.dart';
+import 'package:flutter/material.dart';
 
 extension SearchCategoryData on SearchCategoryMessage {
   String displayName() {
@@ -13,6 +14,8 @@ extension SearchCategoryData on SearchCategoryMessage {
       SearchCategoryMessage.parks => "حدائق",
       SearchCategoryMessage.hospitals => "المستشفيات",
       SearchCategoryMessage.schools => "المدارس",
+      SearchCategoryMessage.pharmacies => "صيدليات",
+      SearchCategoryMessage.dentalCenters => "مراكز الأسنان",
     };
   }
 
@@ -30,6 +33,10 @@ extension SearchCategoryData on SearchCategoryMessage {
         "assets/maps/icons/hospital_category_icon.svg",
       SearchCategoryMessage.schools =>
         "assets/maps/icons/school_category_icon.svg",
+      SearchCategoryMessage.pharmacies =>
+        "assets/maps/icons/hospital_category_icon.svg",
+      SearchCategoryMessage.dentalCenters =>
+        "assets/maps/icons/school_category_icon.svg",
     };
   }
 
@@ -46,6 +53,8 @@ extension SearchCategoryData on SearchCategoryMessage {
         "assets/maps/icons/ic_marker_gardens_parks.svg",
       SearchCategoryMessage.hospitals => "assets/maps/icons/hospital_pin.svg",
       SearchCategoryMessage.schools => "assets/maps/icons/school_pin.svg",
+      SearchCategoryMessage.pharmacies => "assets/maps/icons/hospital_pin.svg",
+      SearchCategoryMessage.dentalCenters => "assets/maps/icons/school_pin.svg",
     };
   }
 
@@ -62,6 +71,10 @@ extension SearchCategoryData on SearchCategoryMessage {
       SearchCategoryMessage.hospitals =>
         "assets/maps/icons/card_icon/hospital.png",
       SearchCategoryMessage.schools => "assets/maps/icons/card_icon/school.png",
+      SearchCategoryMessage.pharmacies =>
+        "assets/maps/icons/card_icon/hospital.png",
+      SearchCategoryMessage.dentalCenters =>
+        "assets/maps/icons/card_icon/school.png",
     };
   }
 
@@ -74,6 +87,8 @@ extension SearchCategoryData on SearchCategoryMessage {
       SearchCategoryMessage.parks => AppColor.secondary200Light,
       SearchCategoryMessage.hospitals => Color(0xff50A99E),
       SearchCategoryMessage.schools => Color(0xff976403),
+      SearchCategoryMessage.dentalCenters => Colors.blue,
+      SearchCategoryMessage.pharmacies => Colors.yellow,
     };
   }
 }
