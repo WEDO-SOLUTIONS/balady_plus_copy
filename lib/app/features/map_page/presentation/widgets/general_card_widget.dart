@@ -2,24 +2,27 @@ import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/shimmer_effect_widget.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
+import 'package:balady_plus/app/features/map_page/extensions/contact_info_ext.dart';
 import 'package:balady_plus/app/features/map_page/extensions/week_day_ext.dart';
 import 'package:balady_plus/app/features/map_page/extensions/week_time_interval_ext.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:provider/provider.dart';
+import '../../../../core/utils/constants/dialog_names.dart';
+import '../../../facility_qr/facility_qr_exports.dart';
+
 import '../../../../core/base/base_view_model.dart';
 import '../../../../core/utils/common_functions.dart';
 import '../../../../core/utils/constants/app_style.dart';
 import 'package:balady_plus/app/features/map_page/extensions/directory_object_ext.dart';
-import '../../../../core/utils/constants/dialog_names.dart';
 import '../../../../core/utils/enums/app_font_weights.dart';
 import '../../../../core/utils/enums/enums.dart';
 import '../../../_shared_feature_/shared_feature_exports.dart';
-import '../../../facility_qr/facility_qr_exports.dart';
 import '../../../home_page/presentation/widgets/home_app_bar/circle_icon.dart';
 import '../../../vd/domain/entities/camera/camera_page_params.dart';
 import '../../../vd/presentation/dialogs/qr_types_dialog.dart';
+
 import '../mvvm/map_view_model.dart';
 import '../mvvm/point_view_model.dart';
 import 'package:collection/collection.dart';
@@ -331,7 +334,7 @@ class GeneralMapCardWidget extends StatelessWidget {
                                               )
                                             ]),
                                         const CustomVerticalSpace(height: 16),
-                                        /* Row(
+                                        Row(
                                           children:
                                               dataPoint?.openingHours?.values
                                                       .where((e) =>
@@ -412,7 +415,22 @@ class GeneralMapCardWidget extends StatelessWidget {
                                                       )
                                                       .toList() ??
                                                   [],
-                                        ),*/
+                                        ),
+                                        const SizedBox(
+                                          height: 20,
+                                        ),
+                                        CustomTextWidget(
+                                          dataPoint?.contactInfos
+                                                  .phoneNumber() ??
+                                              "",
+                                          fontColor:
+                                              AppColor.blackModern800Light,
+                                          fontSize: 16,
+                                          textOverflow: TextOverflow.ellipsis,
+                                          fontWeight: AppFontWeight.bold,
+                                          maxLines: 2,
+                                          textAlign: TextAlign.start,
+                                        ),
                                       ],
                                     ),
                                   ),
