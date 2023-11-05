@@ -40,6 +40,7 @@ class CrStep1ApplicantDataCubit extends Cubit<CrStep1ApplicantDataState> {
   }
 
   void addIsicActivities() async {
+    print("fff");
     emit(state.copyWith(addIsicActivitiesStatus: BlocStatus.loading));
     final response = await _addIsicActivities(AddIsicActivitiesParams(
       crActivities: state.isicActivitiesNotExistInBalady,
@@ -47,7 +48,7 @@ class CrStep1ApplicantDataCubit extends Cubit<CrStep1ApplicantDataState> {
       identityNumber: state.recordInfo?.crInfo?.nationalNumber,
       mobileNumber: state.recordInfo?.crInfo?.phoneNo,
     ));
-
+    print("GG");
     response.fold(
         (failure) => emit(state.copyWith(
               addIsicActivitiesStatus: BlocStatus.failure,
