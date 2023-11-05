@@ -59,7 +59,8 @@ class _AthkarEntityContentState extends State<AthkarEntityContent> {
                       child: Column(
                         children: [
                           CustomTextWidget(
-                            params.athkarEntitiesList[index].content,
+                            params.athkarEntitiesList[index].content ??
+                                params.athkarEntitiesList[index].name,
                             fontColor: Colors.black,
                             maxLines: 2000,
                             height: 1.6,
