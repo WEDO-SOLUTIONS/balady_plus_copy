@@ -620,8 +620,7 @@ class CreateVDBloc extends Bloc<CreateVDEvent, CreateVDState> {
           ));
         }
       } else {
-        await controller.animateToPage(nextPage,
-            duration: Duration(milliseconds: 400), curve: Curves.easeIn);
+        controller.jumpToPage(nextPage);
 
         emitter(state.copyWith(
             status: BlocStatus.success,
@@ -642,8 +641,7 @@ class CreateVDBloc extends Bloc<CreateVDEvent, CreateVDState> {
       emitter(state.copyWith(
         status: BlocStatus.performing,
       ));
-      await controller.animateToPage(prvoiusPage,
-          duration: Duration(milliseconds: 400), curve: Curves.easeIn);
+      controller.jumpToPage(prvoiusPage);
       emitter(state.copyWith(
           status: BlocStatus.success,
           currentPageValue: prvoiusPage,
@@ -715,8 +713,7 @@ class CreateVDBloc extends Bloc<CreateVDEvent, CreateVDState> {
           errorMessage: "",
         ));
 
-        await controller.animateToPage(e.nextPage,
-            duration: Duration(milliseconds: 400), curve: Curves.easeIn);
+        controller.jumpToPage(e.nextPage);
 
         emitter(state.copyWith(
             status: BlocStatus.success, currentPageValue: e.nextPage));
@@ -725,8 +722,7 @@ class CreateVDBloc extends Bloc<CreateVDEvent, CreateVDState> {
         //return navigateToCreateVDPage(e.createVDBloc);
       });
     } else {
-      await controller.animateToPage(e.nextPage,
-          duration: Duration(milliseconds: 400), curve: Curves.easeIn);
+      controller.jumpToPage(e.nextPage);
 
       emitter(state.copyWith(
           status: BlocStatus.success, currentPageValue: e.nextPage));
