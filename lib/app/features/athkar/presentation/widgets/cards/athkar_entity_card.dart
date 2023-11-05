@@ -58,7 +58,7 @@ class _AthkarEntityCardState extends State<AthkarEntityCard> {
             children: [
               Flexible(
                 child: CustomTextWidget(
-                  widget.athkarEntity.name,
+                  widget.athkarEntity.name.replaceAll("\n", " "),
                   fontColor: Colors.black,
                   textOverflow: TextOverflow.ellipsis,
                   maxLines: 1,
