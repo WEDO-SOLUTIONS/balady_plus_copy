@@ -356,13 +356,13 @@ class _CommercialLicenseDetailsBodyState
                                   .toString(),
                             ),
                             //////////////////////////////////////////
-                            CardParameter(
+                            commercialLicenceDetails.shopInfo!.hasElevator != null ?  CardParameter(
                               title: 'hasElevator'.tr(),
                               value:
                                   commercialLicenceDetails.shopInfo!.hasElevator
                                       ? 'yes'.tr()
                                       : 'no'.tr(),
-                            ),
+                            ) : const SizedBox(),
                             CardParameter(
                               title: 'salamaIssueNo'.tr(),
                               value: commercialLicenceDetails
