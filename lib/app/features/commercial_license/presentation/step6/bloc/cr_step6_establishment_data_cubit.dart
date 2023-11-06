@@ -243,11 +243,12 @@ class CRStep6EstablishmentCubit extends Cubit<CRStep6EstablishmentState> {
 
     emit(state.copyWith(status: BlocStatus.loading));
     NationalAddress nationalAddress = NationalAddress(
-        additionalNumber: state.addetionalNumber,
-        buildingNumber: state.buildingNumber,
-        floorNumber: int.tryParse(state.buildingFloor ?? ""),
-        unitNumber: state.buildingUnit,
-        zipCode: state.postalCode);
+      additionalNumber: state.addetionalNumber,
+      buildingNumber: state.buildingNumber,
+      floorNumber: int.tryParse(state.buildingFloor ?? ""),
+      unitNumber: state.buildingUnit,
+      zipCode: state.postalCode,
+    );
     SaveEnterprisDataRequest request = SaveEnterprisDataRequest(
         managerBirthDate: CommonFunctions.padHijriDate(state.birthDate),
         managerIdentityNumber: state.nationalId ?? "",
@@ -277,6 +278,7 @@ class CRStep6EstablishmentCubit extends Cubit<CRStep6EstablishmentState> {
           locationOnStreetDto:
               state.siteLocationType == QRSiteLocationType.ON_STREET
                   ? LocationOnStreetDto(
+                      siteName: state.siteName,
                       nearestLandmark: state.siteLandmark,
                       siteDescription: state.siteDesc,
                       siteNatureId: state.selectedSiteNature?.id)

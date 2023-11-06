@@ -191,7 +191,30 @@ class CRStep6EstablishmentState extends Equatable {
   }
 
   bool isFormValid() {
-    return managerInfo != null;
+    if (managerInfo == null || siteLocationType == null) {
+      return false;
+    }
+
+    if (siteLocationType == QRSiteLocationType.INSIDE_BUILDING) {
+      if ((buildingName?.isEmpty ?? true) ||
+          (buildingUnit?.isEmpty ?? true) ||
+          (buildingFloor?.isEmpty ?? true) ||
+          (buildingDirections?.isEmpty ?? true) ||
+          (selectedBuildingNature == null)) {
+        return false;
+      }
+    }
+
+    if (siteLocationType == QRSiteLocationType.ON_STREET) {
+      if ((siteName?.isEmpty ?? true) ||
+          (siteDesc?.isEmpty ?? true) ||
+          (siteLandmark?.isEmpty ?? true) ||
+          (selectedSiteNature == null)) {
+        return false;
+      }
+    }
+
+    return true;
   }
 
   bool get isLoading =>

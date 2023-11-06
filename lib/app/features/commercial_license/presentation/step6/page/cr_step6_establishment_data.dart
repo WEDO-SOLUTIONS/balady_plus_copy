@@ -92,6 +92,7 @@ class _CRStep6EstablishmentDataState extends State<CRStep6EstablishmentData> {
                               QRSiteLocationType.INSIDE_BUILDING) ...[
                             const QrBuildingNatureDropDown(),
                             CustomTextFieldWidget(
+                              key: const ValueKey("buildingName"),
                               label: "اسم المبني",
                               hintText: "اسم المبني",
                               initialValue: state.buildingName,
@@ -103,6 +104,7 @@ class _CRStep6EstablishmentDataState extends State<CRStep6EstablishmentData> {
                               },
                             ),
                             CustomTextFieldWidget(
+                              key: const ValueKey("buildingUnit"),
                               label: "رقم الوحده",
                               hintText: "رقم الوحده",
                               isDigitsOnly: true,
@@ -116,6 +118,7 @@ class _CRStep6EstablishmentDataState extends State<CRStep6EstablishmentData> {
                               },
                             ),
                             CustomTextFieldWidget(
+                              key: const ValueKey("buildingFloor"),
                               label: "الطابق",
                               hintText: "الطابق",
                               isDigitsOnly: true,
@@ -129,6 +132,7 @@ class _CRStep6EstablishmentDataState extends State<CRStep6EstablishmentData> {
                               },
                             ),
                             CustomTextFieldWidget(
+                              key: const ValueKey("buildingDirections"),
                               label: "ارشادات الوصول من البوابة الرئيسية",
                               maxLines: 3,
                               initialValue: state.buildingDirections,
@@ -144,6 +148,7 @@ class _CRStep6EstablishmentDataState extends State<CRStep6EstablishmentData> {
                               QRSiteLocationType.ON_STREET) ...[
                             const QrSiteNatureDropDown(),
                             CustomTextFieldWidget(
+                              key: const ValueKey("siteName"),
                               label: "اسم الموقع",
                               hintText: "اسم الموقع",
                               initialValue: state.siteName,
@@ -155,6 +160,7 @@ class _CRStep6EstablishmentDataState extends State<CRStep6EstablishmentData> {
                               },
                             ),
                             CustomTextFieldWidget(
+                              key: const ValueKey("siteDesc"),
                               label: "وصف الموقع",
                               hintText: "وصف الموقع",
                               initialValue: state.siteDesc,
@@ -166,6 +172,7 @@ class _CRStep6EstablishmentDataState extends State<CRStep6EstablishmentData> {
                               },
                             ),
                             CustomTextFieldWidget(
+                              key: const ValueKey("siteLandmark"),
                               label: "اقرب معلم بارز",
                               hintText: "اقرب معلم بارز",
                               initialValue: state.siteLandmark,
