@@ -115,9 +115,9 @@ abstract class CrRemoteDataSource {
 
   Future<QrLookUpResponse> getMalls({required String params});
 
-  Future<bool> validateSalamaReport({required VerifySalamaRequest params});
-  Future<bool> validateSalamaBill({required VerifySalamaRequest params});
-  Future<bool> validateSalamaPermit({required VerifySalamaRequest params});
+  Future<dynamic> validateSalamaReport({required VerifySalamaRequest params});
+  Future<dynamic> validateSalamaBill({required VerifySalamaRequest params});
+  Future<dynamic> validateSalamaPermit({required VerifySalamaRequest params});
 
   Future<String> getWarningMessage({required SalamaWarningRequest params});
   Future<String> getWarningWorkFlowMessage(
@@ -2046,7 +2046,8 @@ class CrRemoteDataSourceImpl extends CrRemoteDataSource {
   }
 
   @override
-  Future<bool> validateSalamaBill({required VerifySalamaRequest params}) async {
+  Future<dynamic> validateSalamaBill(
+      {required VerifySalamaRequest params}) async {
     var response;
 
     try {
@@ -2057,14 +2058,14 @@ class CrRemoteDataSourceImpl extends CrRemoteDataSource {
       var data = response.data["data"]["result"];
 
       final decodedResponse =
-          ResponseBodyModel<bool>.fromMap(response.data, parsedResult: data);
+          ResponseBodyModel<dynamic>.fromMap(response.data, parsedResult: data);
 
       return decodedResponse.data!.result!.toFuture();
     } on DioError catch (error) {
       print(error);
       var errorCode;
       try {
-        final decodedResponse = ResponseBodyModel<bool>.fromMap(
+        final decodedResponse = ResponseBodyModel<dynamic>.fromMap(
           error.response?.data,
         );
         errorCode = decodedResponse.data?.responseCode;
@@ -2094,7 +2095,7 @@ class CrRemoteDataSourceImpl extends CrRemoteDataSource {
   }
 
   @override
-  Future<bool> validateSalamaPermit(
+  Future<dynamic> validateSalamaPermit(
       {required VerifySalamaRequest params}) async {
     var response;
 
@@ -2108,14 +2109,14 @@ class CrRemoteDataSourceImpl extends CrRemoteDataSource {
       var data = response.data["data"]["result"];
 
       final decodedResponse =
-          ResponseBodyModel<bool>.fromMap(response.data, parsedResult: data);
+          ResponseBodyModel<dynamic>.fromMap(response.data, parsedResult: data);
 
       return decodedResponse.data!.result!.toFuture();
     } on DioError catch (error) {
       print(error);
       var errorCode;
       try {
-        final decodedResponse = ResponseBodyModel<bool>.fromMap(
+        final decodedResponse = ResponseBodyModel<dynamic>.fromMap(
           error.response?.data,
         );
         errorCode = decodedResponse.data?.responseCode;
@@ -2145,7 +2146,7 @@ class CrRemoteDataSourceImpl extends CrRemoteDataSource {
   }
 
   @override
-  Future<bool> validateSalamaReport(
+  Future<dynamic> validateSalamaReport(
       {required VerifySalamaRequest params}) async {
     var response;
 
@@ -2157,14 +2158,14 @@ class CrRemoteDataSourceImpl extends CrRemoteDataSource {
       var data = response.data["data"]["result"];
 
       final decodedResponse =
-          ResponseBodyModel<bool>.fromMap(response.data, parsedResult: data);
+          ResponseBodyModel<dynamic>.fromMap(response.data, parsedResult: data);
 
       return decodedResponse.data!.result!.toFuture();
     } on DioError catch (error) {
       print(error);
       var errorCode;
       try {
-        final decodedResponse = ResponseBodyModel<bool>.fromMap(
+        final decodedResponse = ResponseBodyModel<dynamic>.fromMap(
           error.response?.data,
         );
         errorCode = decodedResponse.data?.responseCode;

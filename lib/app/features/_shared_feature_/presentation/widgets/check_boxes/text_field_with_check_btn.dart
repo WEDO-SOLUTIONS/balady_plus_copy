@@ -19,6 +19,7 @@ class TextWithCheckBtn extends StatefulWidget {
   final Color? backgroundColor;
   final int? maxLength;
   final bool enabled;
+  final TextInputType? textInputType;
 
   TextWithCheckBtn(
       {required this.title,
@@ -34,7 +35,8 @@ class TextWithCheckBtn extends StatefulWidget {
       this.backgroundColor,
       this.maxLength,
       required this.validate,
-      this.enabled = true});
+      this.enabled = true,
+      this.textInputType});
   @override
   _TextWithCheckBtnState createState() => _TextWithCheckBtnState();
 }
@@ -61,7 +63,8 @@ class _TextWithCheckBtnState extends State<TextWithCheckBtn> {
           focusNode: _focusNode,
           hintText: widget.hint ?? "",
           errorText: widget.errorText,
-          keyboardType: TextInputType.numberWithOptions(signed: false),
+          keyboardType: widget.textInputType ??
+              TextInputType.numberWithOptions(signed: false),
           maxLength: widget.maxLength,
           onValidate: (String? t) => widget.validate(t),
           enabled: widget.enabled,

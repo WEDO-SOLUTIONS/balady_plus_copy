@@ -4,12 +4,12 @@ import '../../../../core/services/local/use_case.dart';
 import '../../commercial_license_exports.dart';
 import '../entities/verifiy_salama_requst.dart';
 
-class ValidateSalamaBill extends UseCase<bool, VerifySalamaRequest> {
+class ValidateSalamaBill extends UseCase<dynamic, VerifySalamaRequest> {
   final CrRepository repository;
 
   ValidateSalamaBill({required this.repository});
   @override
-  Future<Either<Failure, bool>> call(VerifySalamaRequest params) async {
+  Future<Either<Failure, dynamic>> call(VerifySalamaRequest params) async {
     return await repository.validateSalamaBill(params: params);
   }
 }
