@@ -58,6 +58,8 @@ class _BuildingRequirementsDialogState
                 "buildingRequirements_desc".tr(),
                 fontWeight: AppFontWeight.bold,
                 fontSize: 14,
+                maxLines: 3,
+                height: 1.4,
                 textAlign: TextAlign.start,
                 fontColor: AppColor.blackModern600Light,
               ),
@@ -69,7 +71,7 @@ class _BuildingRequirementsDialogState
                 borderRadius: BorderRadius.all(Radius.circular(16)),
                 color: AppColor.white,
               ),
-              child: const Column(
+              child: Column(
                 children: [
                   BuildingReqCard(
                     title:
@@ -165,6 +167,22 @@ class _BuildingRequirementsDialogState
                     imgPath: ImagePath.buildingReq18,
                   ),
                   SizedBox(height: 32),
+                  Container(
+                    height: 60,
+                    padding: EdgeInsets.all(12),
+                    decoration: ShapeDecoration(
+                      color: Color(0x7FE6EFEF),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8)),
+                    ),
+                    child: CustomTextWidget(
+                      "الصور المعروضة توضيحية ولا تحدد شكل المخالفة بشكل خاص",
+                      fontColor: Color(0xFF52525B),
+                      fontSize: 14,
+                      maxLines: 5,
+                      fontWeight: AppFontWeight.bold,
+                    ),
+                  )
                 ],
               ),
             ),

@@ -91,7 +91,9 @@ class _CommercialLicenseDetailsBodyState
                       ),
                       const SizedBox(width: 4),
                       CustomTextWidget(
-                        commercialLicenceDetails.creationDate?.toWrittenDate() ?? '',
+                        commercialLicenceDetails.creationDate
+                                ?.toWrittenDate() ??
+                            '',
                         textStyle: AppStyle.dateTextStyle,
                       ),
                       const Spacer(),
@@ -130,7 +132,7 @@ class _CommercialLicenseDetailsBodyState
                       CardParameter(
                         title: 'submitterName'.tr(),
                         value: commercialLicenceDetails
-                                .submitterInfo!.submitterName,
+                            .submitterInfo!.submitterName,
                       ),
                       // CardParameter( // from whats
                       //   title: 'applicant_adjective'.tr(),
@@ -304,7 +306,8 @@ class _CommercialLicenseDetailsBodyState
                             CardParameter(
                               title: 'shopName'.tr(),
                               value:
-                                  commercialLicenceDetails.shopInfo!.shopName ?? '',
+                                  commercialLicenceDetails.shopInfo!.shopName ??
+                                      '',
                             ),
                             CardParameter(
                               // from whats
@@ -328,7 +331,9 @@ class _CommercialLicenseDetailsBodyState
                             CardParameter(
                               // from whats
                               title: 'planNumber'.tr(),
-                              value: commercialLicenceDetails.shopInfo!.planNumber ?? '',
+                              value: commercialLicenceDetails
+                                      .shopInfo!.planNumber ??
+                                  '',
                             ),
                             //////////////////////////////////////////
                             // CardParameter(
@@ -356,13 +361,16 @@ class _CommercialLicenseDetailsBodyState
                                   .toString(),
                             ),
                             //////////////////////////////////////////
-                            commercialLicenceDetails.shopInfo!.hasElevator != null ?  CardParameter(
-                              title: 'hasElevator'.tr(),
-                              value:
-                                  commercialLicenceDetails.shopInfo!.hasElevator
-                                      ? 'yes'.tr()
-                                      : 'no'.tr(),
-                            ) : const SizedBox(),
+                            commercialLicenceDetails.shopInfo!.hasElevator !=
+                                    null
+                                ? CardParameter(
+                                    title: 'hasElevator'.tr(),
+                                    value: commercialLicenceDetails
+                                            .shopInfo!.hasElevator!
+                                        ? 'yes'.tr()
+                                        : 'no'.tr(),
+                                  )
+                                : const SizedBox(),
                             CardParameter(
                               title: 'salamaIssueNo'.tr(),
                               value: commercialLicenceDetails
