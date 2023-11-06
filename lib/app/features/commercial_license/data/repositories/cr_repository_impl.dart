@@ -492,7 +492,7 @@ class CrRepositoryImpl implements CrRepository {
   }
 
   @override
-  Future<Either<Failure, bool>> validateSalamaBill(
+  Future<Either<Failure, dynamic>> validateSalamaBill(
       {required VerifySalamaRequest params}) async {
     try {
       final data = await remoteDataSource.validateSalamaBill(params: params!);
@@ -504,7 +504,7 @@ class CrRepositoryImpl implements CrRepository {
   }
 
   @override
-  Future<Either<Failure, bool>> validateSalamaPermit(
+  Future<Either<Failure, dynamic>> validateSalamaPermit(
       {required VerifySalamaRequest params}) async {
     try {
       final data = await remoteDataSource.validateSalamaPermit(params: params!);
@@ -516,7 +516,7 @@ class CrRepositoryImpl implements CrRepository {
   }
 
   @override
-  Future<Either<Failure, bool>> validateSalamaReport(
+  Future<Either<Failure, dynamic>> validateSalamaReport(
       {required VerifySalamaRequest params}) async {
     try {
       final data = await remoteDataSource.validateSalamaReport(params: params!);
