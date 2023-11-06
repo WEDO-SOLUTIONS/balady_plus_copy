@@ -184,10 +184,9 @@ class ApplyCancelScreen extends StatelessWidget {
                           arguments: CommercialLicenseCancelBloc(
                             webService: sl(),
                             requestId: cancellationRequest.requestId,
-                            availableCloseDate:
-                                cancellationRequest.availableCloseDate,
+                            availableCloseDate: cancellationRequest.availableCloseDate,
                             crNumber: viewModel.submitterInfo.crNumber,
-                            crType: viewModel.submitterInfo.crType!,
+                            crType: viewModel.submitterInfo.crType,
                             reasonCancel: viewModel.reasonCancel,
                           ),
                         );
