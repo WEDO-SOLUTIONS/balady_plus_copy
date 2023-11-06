@@ -405,14 +405,18 @@ class CrStep4ShopDataState extends Equatable {
 
   bool isFormValid() {
     if (locationResponse?.endorsementText?.isNotEmpty ?? false) {
-      return endorsmentAgreement ?? false;
+      if (endorsmentAgreement == false || endorsmentAgreement == null)
+        return false;
     }
 
-    return (selectedBoards?.isNotEmpty ?? false) &&
-        brand != null &&
-        shopName != null &&
-        shopUnitNumber != null &&
-        blockNumber != null &&
+    if (boardContractSetting == "MANUAL" && (selectedBoards?.isEmpty ?? true)) {
+      return false;
+    }
+
+    return (brand != null) &&
+        (shopName != null && shopName!.isNotEmpty) &&
+        (shopUnitNumber != null && shopUnitNumber!.isNotEmpty) &&
+        (blockNumber != null && blockNumber!.isNotEmpty) &&
         holesCount != null &&
         noOfCameras != null &&
         hasElevator != null &&
