@@ -16,7 +16,7 @@ class UserDataSummuryWidget extends StatelessWidget {
     return BlocBuilder<CreateObjectionBloc, CreateObjectionState>(
       builder: (context, state) {
         return CustomExpansionPanelWidget(
-          title: ("objection_main_request_data").tr(),
+          title: ("user_data_applicant").tr(),
           leading: SvgPicture.asset(IconPath.vdSummuryUserInfo),
           children: [
             FieldData(
