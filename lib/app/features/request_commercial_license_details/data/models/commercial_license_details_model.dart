@@ -85,7 +85,7 @@ class AttachmentsInfo {
 
   factory AttachmentsInfo.fromJson(Map<String, dynamic> json) => AttachmentsInfo(
     id: json["id"],
-    name: json["name"],
+    name: json["name"] ?? '',
     // allowedFilesExtension: json["allowedFilesExtension"],
     // attached: json["attached"],
     // approved: json["approved"],
