@@ -334,7 +334,7 @@ class GeneralMapCardWidget extends StatelessWidget {
                                               )
                                             ]),
                                         const CustomVerticalSpace(height: 16),
-                                        Row(
+                                        /* Row(
                                           children:
                                               dataPoint?.openingHours?.values
                                                       .where((e) =>
@@ -415,22 +415,30 @@ class GeneralMapCardWidget extends StatelessWidget {
                                                       )
                                                       .toList() ??
                                                   [],
-                                        ),
-                                        const SizedBox(
-                                          height: 20,
-                                        ),
-                                        CustomTextWidget(
-                                          dataPoint?.contactInfos
-                                                  .phoneNumber() ??
-                                              "",
-                                          fontColor:
-                                              AppColor.blackModern800Light,
-                                          fontSize: 16,
-                                          textOverflow: TextOverflow.ellipsis,
-                                          fontWeight: AppFontWeight.bold,
-                                          maxLines: 2,
-                                          textAlign: TextAlign.start,
-                                        ),
+                                        ),*/
+
+                                        if ((dataPoint?.contactInfos
+                                                    .phoneNumber() !=
+                                                null) &&
+                                            (dataPoint!.contactInfos
+                                                .phoneNumber()!
+                                                .isNotEmpty)) ...[
+                                          const SizedBox(
+                                            height: 20,
+                                          ),
+                                          CustomTextWidget(
+                                            dataPoint?.contactInfos
+                                                    .phoneNumber() ??
+                                                "",
+                                            fontColor:
+                                                AppColor.blackModern800Light,
+                                            fontSize: 16,
+                                            textOverflow: TextOverflow.ellipsis,
+                                            fontWeight: AppFontWeight.bold,
+                                            maxLines: 2,
+                                            textAlign: TextAlign.start,
+                                          ),
+                                        ]
                                       ],
                                     ),
                                   ),
