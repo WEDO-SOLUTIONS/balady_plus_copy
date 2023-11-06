@@ -61,52 +61,52 @@ class RequestCommercialLicenseDetailsModel {
 class AttachmentsInfo {
   int id;
   String name;
-  String allowedFilesExtension;
-  bool attached;
-  bool approved;
+  // String allowedFilesExtension;
+  // bool attached;
+  // bool approved;
   String? attachUrl;
-  int maxSize;
-  dynamic notes;
-  String attachDescription;
-  String originFileName;
+  // int maxSize;
+  // dynamic notes;
+  // String attachDescription;
+  // String originFileName;
 
   AttachmentsInfo({
     required this.id,
     required this.name,
-    required this.allowedFilesExtension,
-    required this.attached,
-    required this.approved,
+    // required this.allowedFilesExtension,
+    // required this.attached,
+    // required this.approved,
     required this.attachUrl,
-    required this.maxSize,
-    required this.notes,
-    required this.attachDescription,
-    required this.originFileName,
+    // required this.maxSize,
+    // required this.notes,
+    // required this.attachDescription,
+    // required this.originFileName,
   });
 
   factory AttachmentsInfo.fromJson(Map<String, dynamic> json) => AttachmentsInfo(
     id: json["id"],
-    name: json["name"],
-    allowedFilesExtension: json["allowedFilesExtension"],
-    attached: json["attached"],
-    approved: json["approved"],
+    name: json["name"] ?? '',
+    // allowedFilesExtension: json["allowedFilesExtension"],
+    // attached: json["attached"],
+    // approved: json["approved"],
     attachUrl: json["attachUrl"],
-    maxSize: json["maxSize"],
-    notes: json["notes"],
-    attachDescription: json["attachDescription"],
-    originFileName: json["originFileName"],
+    // maxSize: json["maxSize"],
+    // notes: json["notes"],
+    // attachDescription: json["attachDescription"],
+    // originFileName: json["originFileName"],
   );
 
   Map<String, dynamic> toJson() => {
     "id": id,
     "name": name,
-    "allowedFilesExtension": allowedFilesExtension,
-    "attached": attached,
-    "approved": approved,
+    // "allowedFilesExtension": allowedFilesExtension,
+    // "attached": attached,
+    // "approved": approved,
     "attachUrl": attachUrl,
-    "maxSize": maxSize,
-    "notes": notes,
-    "attachDescription": attachDescription,
-    "originFileName": originFileName,
+    // "maxSize": maxSize,
+    // "notes": notes,
+    // "attachDescription": attachDescription,
+    // "originFileName": originFileName,
   };
 }
 
