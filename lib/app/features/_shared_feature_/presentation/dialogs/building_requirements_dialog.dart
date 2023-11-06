@@ -53,18 +53,14 @@ class _BuildingRequirementsDialogState
               title: "buildingRequirements".tr(),
             ),
             const SizedBox(height: 12),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                CustomTextWidget(
-                  "buildingRequirements_desc".tr(),
-                  fontWeight: AppFontWeight.bold,
-                  fontSize: 14,
-                  textAlign: TextAlign.start,
-                  fontColor: AppColor.blackModern600Light,
-                ),
-              ],
+            Flexible(
+              child: CustomTextWidget(
+                "buildingRequirements_desc".tr(),
+                fontWeight: AppFontWeight.bold,
+                fontSize: 14,
+                textAlign: TextAlign.start,
+                fontColor: AppColor.blackModern600Light,
+              ),
             ),
             const SizedBox(height: 12),
             Container(
