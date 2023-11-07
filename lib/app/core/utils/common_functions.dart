@@ -646,6 +646,7 @@ class CommonFunctions {
   }
 
   static void openBaladyWebView(String? url) async {
+    print(url);
     EasyLoading.show();
     GetCookie getCookie = GetCookie(repository: sl());
     final failureOrSuccessForCookie = await getCookie(NoParams());
