@@ -220,32 +220,32 @@ class CommercialLicenceDetails {
       );
 }
 
-class Activity {
-  String isicCode;
-  String isicName;
-  bool existInBalady;
-  bool atmActivity;
-  bool valid;
-  dynamic message;
-
-  Activity({
-    required this.isicCode,
-    required this.isicName,
-    required this.existInBalady,
-    required this.atmActivity,
-    required this.valid,
-    required this.message,
-  });
-
-  factory Activity.fromJson(Map<String, dynamic> json) => Activity(
-        isicCode: json["isicCode"],
-        isicName: json["isicName"],
-        existInBalady: json["existInBalady"],
-        atmActivity: json["atmActivity"],
-        valid: json["valid"],
-        message: json["message"],
-      );
-}
+// class Activity {
+//   String isicCode;
+//   String isicName;
+//   bool existInBalady;
+//   bool atmActivity;
+//   bool valid;
+//   dynamic message;
+//
+//   Activity({
+//     required this.isicCode,
+//     required this.isicName,
+//     required this.existInBalady,
+//     required this.atmActivity,
+//     required this.valid,
+//     required this.message,
+//   });
+//
+//   factory Activity.fromJson(Map<String, dynamic> json) => Activity(
+//     isicCode: json["isicCode"],
+//     isicName: json["isicName"],
+//     existInBalady: json["existInBalady"],
+//     atmActivity: json["atmActivity"],
+//     valid: json["valid"],
+//     message: json["message"],
+//   );
+// }
 
 class ActivityInfo {
   MainActivity? mainActivity;
@@ -355,33 +355,33 @@ class MainActivity {
       );
 }
 
-class ActivitySettingDto {
-  int entityType;
-  int vehicleType;
-  int pathType;
-  bool foodActivity;
-  int ownershipType;
-  int requestFlow;
-
-  ActivitySettingDto({
-    required this.entityType,
-    required this.vehicleType,
-    required this.pathType,
-    required this.foodActivity,
-    required this.ownershipType,
-    required this.requestFlow,
-  });
-
-  factory ActivitySettingDto.fromJson(Map<String, dynamic> json) =>
-      ActivitySettingDto(
-        entityType: json["entityType"],
-        vehicleType: json["vehicleType"],
-        pathType: json["pathType"],
-        foodActivity: json["foodActivity"],
-        ownershipType: json["ownershipType"],
-        requestFlow: json["requestFlow"],
-      );
-}
+// class ActivitySettingDto {
+//   int entityType;
+//   int vehicleType;
+//   int pathType;
+//   bool foodActivity;
+//   int ownershipType;
+//   int requestFlow;
+//
+//   ActivitySettingDto({
+//     required this.entityType,
+//     required this.vehicleType,
+//     required this.pathType,
+//     required this.foodActivity,
+//     required this.ownershipType,
+//     required this.requestFlow,
+//   });
+//
+//   factory ActivitySettingDto.fromJson(Map<String, dynamic> json) =>
+//       ActivitySettingDto(
+//         entityType: json["entityType"],
+//         vehicleType: json["vehicleType"],
+//         pathType: json["pathType"],
+//         foodActivity: json["foodActivity"],
+//         ownershipType: json["ownershipType"],
+//         requestFlow: json["requestFlow"],
+//       );
+// }
 
 class AdditionalActivities {
   String detailedActivityName;
@@ -621,7 +621,7 @@ class ShopInfo {
   // bool existInMall;
   dynamic floorNumber;
   int? floorCount;
-  bool hasElevator;
+  bool? hasElevator;
 
   // bool isCitizenPledgedToClean;
   // dynamic cleanContractEndDate;
@@ -832,7 +832,7 @@ class SubmitterInfo {
   String submitterType;
   String crNumber;
 
-  String? crType;
+  String crType;
   int submitterIdNumber;
 
   // String submitterBirthDate;
@@ -869,7 +869,7 @@ class SubmitterInfo {
         // entityType: json["entityType"],
         submitterType: json["submitterType"] ?? '',
         crNumber: json["crNumber"] ?? '',
-        crType: json["crType"],
+        crType: json["crType"] ?? '',
         submitterIdNumber: json["submitterIdNumber"] ?? '',
         // submitterBirthDate: json["submitterBirthDate"],
         // mobile: json["mobile"],

@@ -33,10 +33,8 @@ extension SearchCategoryData on SearchCategoryMessage {
         "assets/maps/icons/hospital_category_icon.svg",
       SearchCategoryMessage.schools =>
         "assets/maps/icons/school_category_icon.svg",
-      SearchCategoryMessage.pharmacies =>
-        "assets/maps/icons/hospital_category_icon.svg",
-      SearchCategoryMessage.dentalCenters =>
-        "assets/maps/icons/school_category_icon.svg",
+      SearchCategoryMessage.pharmacies => "assets/maps/icons/pahrmacy_poi.svg",
+      SearchCategoryMessage.dentalCenters => "assets/maps/icons/dental_poi.svg",
     };
   }
 
@@ -53,8 +51,8 @@ extension SearchCategoryData on SearchCategoryMessage {
         "assets/maps/icons/ic_marker_gardens_parks.svg",
       SearchCategoryMessage.hospitals => "assets/maps/icons/hospital_pin.svg",
       SearchCategoryMessage.schools => "assets/maps/icons/school_pin.svg",
-      SearchCategoryMessage.pharmacies => "assets/maps/icons/hospital_pin.svg",
-      SearchCategoryMessage.dentalCenters => "assets/maps/icons/school_pin.svg",
+      SearchCategoryMessage.pharmacies => "assets/maps/icons/pharmacy_pin.svg",
+      SearchCategoryMessage.dentalCenters => "assets/maps/icons/dental_pin.svg",
     };
   }
 
@@ -72,9 +70,9 @@ extension SearchCategoryData on SearchCategoryMessage {
         "assets/maps/icons/card_icon/hospital.png",
       SearchCategoryMessage.schools => "assets/maps/icons/card_icon/school.png",
       SearchCategoryMessage.pharmacies =>
-        "assets/maps/icons/card_icon/hospital.png",
+        "assets/maps/icons/card_icon/pharmacy.png",
       SearchCategoryMessage.dentalCenters =>
-        "assets/maps/icons/card_icon/school.png",
+        "assets/maps/icons/card_icon/dental.png",
     };
   }
 
@@ -87,8 +85,8 @@ extension SearchCategoryData on SearchCategoryMessage {
       SearchCategoryMessage.parks => AppColor.secondary200Light,
       SearchCategoryMessage.hospitals => Color(0xff50A99E),
       SearchCategoryMessage.schools => Color(0xff976403),
-      SearchCategoryMessage.dentalCenters => Colors.blue,
-      SearchCategoryMessage.pharmacies => Colors.yellow,
+      SearchCategoryMessage.dentalCenters => Color(0xff036197),
+      SearchCategoryMessage.pharmacies => Color(0xff5F9703),
     };
   }
 }

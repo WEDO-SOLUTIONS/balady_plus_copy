@@ -127,7 +127,7 @@ class ResturantDetailsPage extends StatelessWidget {
                         subTitle: item.getAddress,
                       ),
                       CustomVerticalSpace(height: 32),
-                      /* ElevatedButtonWidget.primaryCustom(
+                      ElevatedButtonWidget.primaryCustom(
                         text: ('submit_incident').tr(),
                         onPressed: () async {
                           double? lat = item.latLng?.latitude;
@@ -153,7 +153,7 @@ class ResturantDetailsPage extends StatelessWidget {
                                         isFromHome: false));
                           }
                         },
-                      ),*/
+                      ),
                       CustomVerticalSpace(height: 16),
                     ]),
               ),

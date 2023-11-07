@@ -1,8 +1,12 @@
+import 'dart:convert';
+
 import 'package:balady_plus/app/core/utils/app_analytics_events.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../core/utils/utils_exports.dart';
+import '../../../create_compliance/presentation/pdf/list/list_item/requir_item/conditions_model.dart';
 import '../../shared_feature_exports.dart';
 import 'dialog_header.dart';
 
@@ -49,18 +53,16 @@ class _BuildingRequirementsDialogState
               title: "buildingRequirements".tr(),
             ),
             const SizedBox(height: 12),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                CustomTextWidget(
-                  "buildingRequirements_desc".tr(),
-                  fontWeight: AppFontWeight.bold,
-                  fontSize: 14,
-                  textAlign: TextAlign.start,
-                  fontColor: AppColor.blackModern600Light,
-                ),
-              ],
+            Flexible(
+              child: CustomTextWidget(
+                "buildingRequirements_desc".tr(),
+                fontWeight: AppFontWeight.bold,
+                fontSize: 14,
+                maxLines: 3,
+                height: 1.4,
+                textAlign: TextAlign.start,
+                fontColor: AppColor.blackModern600Light,
+              ),
             ),
             const SizedBox(height: 12),
             Container(
@@ -69,12 +71,13 @@ class _BuildingRequirementsDialogState
                 borderRadius: BorderRadius.all(Radius.circular(16)),
                 color: AppColor.white,
               ),
-              child: const Column(
+              child: Column(
                 children: [
-                  /* BuildingReqCard(
+                  BuildingReqCard(
                     title:
-                        'تعديل استخدام المواقف المعتمدة في قبو المبنى، بخلاف الترخيص الصادر له من الأمانة/البلدية.',
-                  ),*/
+                        "تعديل استخدام المواقف المعتمدة في قبو  المبنى، وفق الترخيص الصادر له من الأمانة/البلدية",
+                    imgPath: ImagePath.buildingReq4,
+                  ),
                   BuildingReqCard(
                     title:
                         'عدم تنفيذ منحدر للأشخاص ذوي الإعاقة وفق (الدليل المبسط لمعايير الوصول الشامل للمنشآت)',
@@ -87,31 +90,6 @@ class _BuildingRequirementsDialogState
                   ),
                   BuildingReqCard(
                     title:
-                        "وجود وحدات تكييف منفصلة في كامل واجهة المبنى المطل على الشـــارع التجاري",
-                    imgPath: ImagePath.buildingReq3,
-                  ),
-                  BuildingReqCard(
-                    title:
-                        "تعديل استخدام المواقف المعتمدة في قبو  المبنى، وفق الترخيص الصادر له من الأمانة/البلدية",
-                    imgPath: ImagePath.buildingReq4,
-                  ),
-                  BuildingReqCard(
-                    title:
-                        "وجود تمديدات (كهربائية – صحية - ميكانيكية) ظاهرة في كامل واجهة المبنى المطل على الشارع التجاري",
-                    imgPath: ImagePath.buildingReq5,
-                  ),
-                  BuildingReqCard(
-                    title:
-                        "تغطية الشرفات دون الحصول على التراخيص اللازمة من الأمانة/البلدية",
-                    imgPath: ImagePath.buildingReq6,
-                  ),
-                  BuildingReqCard(
-                    title:
-                        "وجود حواجز مشوهه (أشاير حديد / شينكو) على سور الارتداد أو السطح",
-                    imgPath: ImagePath.buildingReq7,
-                  ),
-                  BuildingReqCard(
-                    title:
                         "عدم تغطية خزانات الصرف الصحي بأغطية واقية وسليمة وفق الاشتراطات البلدية",
                     imgPath: ImagePath.buildingReq8,
                   ),
@@ -121,23 +99,28 @@ class _BuildingRequirementsDialogState
                     imgPath: ImagePath.buildingReq9,
                   ),
                   BuildingReqCard(
-                    title:
-                        "وجود ملصقات إعلانية قديمة أو متهالكة على واجهة المبنى",
-                    imgPath: ImagePath.buildingReq10,
+                    title: "وجود أسوار متهالكة أو غير مكتملة",
+                    imgPath: ImagePath.buildingReq13,
                   ),
                   BuildingReqCard(
                     title:
-                        "وجود كتابات مخالفة على كامل واجهة المبنى المطل على الشارع التجاري",
-                    imgPath: ImagePath.buildingReq11,
+                        "وجود حواجز مشوهه (أشاير حديد / شينكو) على سور الارتداد أو السطح",
+                    imgPath: ImagePath.buildingReq7,
+                  ),
+                  BuildingReqCard(
+                    title:
+                        "وجود وحدات تكييف منفصلة في كامل واجهة المبنى المطل على الشـــارع التجاري",
+                    imgPath: ImagePath.buildingReq3,
+                  ),
+                  BuildingReqCard(
+                    title:
+                        "وجود تمديدات (كهربائية – صحية - ميكانيكية) ظاهرة في كامل واجهة المبنى المطل على الشارع التجاري",
+                    imgPath: ImagePath.buildingReq5,
                   ),
                   BuildingReqCard(
                     title:
                         "وجود تشققات أو تلف (دهانات، تكسيات) أو صدأ على المواد المعدنية في كامل واجهة المبنى بإجمالي مساحة تزيد عن متر مربع",
                     imgPath: ImagePath.buildingReq12,
-                  ),
-                  BuildingReqCard(
-                    title: "وجود أسوار متهالكة أو غير مكتملة",
-                    imgPath: ImagePath.buildingReq13,
                   ),
                   BuildingReqCard(
                     title:
@@ -147,6 +130,16 @@ class _BuildingRequirementsDialogState
                   BuildingReqCard(
                     title: "وجود مظلات أو هناجر خارج حدود الملكية",
                     imgPath: ImagePath.buildingReq15,
+                  ),
+                  BuildingReqCard(
+                    title:
+                        "تغطية الشرفات دون الحصول على التراخيص اللازمة من الأمانة/البلدية",
+                    imgPath: ImagePath.buildingReq6,
+                  ),
+                  BuildingReqCard(
+                    title:
+                        "وجود كتابات مخالفة على كامل واجهة المبنى المطل على الشارع التجاري",
+                    imgPath: ImagePath.buildingReq11,
                   ),
                   BuildingReqCard(
                     title:
@@ -160,14 +153,36 @@ class _BuildingRequirementsDialogState
                   ),
                   BuildingReqCard(
                     title:
-                        "وجود مخلفات ومواد بناء تعيق الحركة على الرصيف الخاص بالمبنى",
-                    imgPath: ImagePath.buildingReq18,
-                  ),
-                  BuildingReqCard(
-                    title:
                         "وجود لوحات إعلانية لمحلات تجارية مغلقة بتراخيص غير سارية أو منتهية، أو وجود الأساسات الحديدية لتثبيت اللوحات المزاله",
                     imgPath: ImagePath.buildingReq19,
                   ),
+                  BuildingReqCard(
+                    title:
+                        "وجود ملصقات إعلانية قديمة أو متهالكة على واجهة المبنى",
+                    imgPath: ImagePath.buildingReq10,
+                  ),
+                  BuildingReqCard(
+                    title:
+                        "وجود مخلفات ومواد بناء تعيق الحركة على الرصيف الخاص بالمبنى",
+                    imgPath: ImagePath.buildingReq18,
+                  ),
+                  SizedBox(height: 32),
+                  Container(
+                    height: 60,
+                    padding: EdgeInsets.all(12),
+                    decoration: ShapeDecoration(
+                      color: Color(0x7FE6EFEF),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8)),
+                    ),
+                    child: CustomTextWidget(
+                      "الصور المعروضة توضيحية ولا تحدد شكل المخالفة بشكل خاص",
+                      fontColor: Color(0xFF52525B),
+                      fontSize: 14,
+                      maxLines: 5,
+                      fontWeight: AppFontWeight.bold,
+                    ),
+                  )
                 ],
               ),
             ),
@@ -178,6 +193,20 @@ class _BuildingRequirementsDialogState
     );
   }
 }
+
+/*Future<void> readComplianceData() async {
+  String qa =
+      await rootBundle.loadString("assets/compliance_pdf/text/conditions.json");
+  var r = json.decode(qa);
+  print(r);
+  {
+    List<ConditionsModel>? model = r != null
+        ? List<ConditionsModel>.from(r.map((x) => ConditionsModel.fromMap(x)))
+        : null;
+    data2 = model ?? [];
+    setState(() {});
+  }
+}*/
 
 class BuildingReqCard extends StatelessWidget {
   const BuildingReqCard({
