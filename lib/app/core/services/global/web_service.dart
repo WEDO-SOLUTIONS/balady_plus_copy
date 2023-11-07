@@ -1,6 +1,8 @@
 import 'dart:convert';
 
+import 'package:curl_logger_dio_interceptor/curl_logger_dio_interceptor.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:localize_and_translate/localize_and_translate.dart'
     show translator;
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
@@ -47,6 +49,10 @@ class WebService {
     dio.options.sendTimeout = const Duration(milliseconds: 60000);
     dio.options.headers = {};
     dio.addSentry();
+
+    if (!kReleaseMode) {
+      dio.interceptors.add(CurlLoggerDioInterceptor(printOnSuccess: true));
+    }
 
     dio.interceptors.add(
       PrettyDioLogger(

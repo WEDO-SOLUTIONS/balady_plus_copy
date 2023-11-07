@@ -57,8 +57,8 @@ class ObjectionsDetailsBloc
       ));
 
       CommonFunctions.showSuccess("تم الغاء طلب الإعتراض");
-      GetObjectionDetailsEvent(
-          params: state.details?.objectionRequestNumber ?? "");
+      add(GetObjectionDetailsEvent(
+          params: state.details?.objectionRequestNumber ?? "", refresh: true));
     });
   }
 
@@ -99,11 +99,12 @@ class ObjectionsDetailsBloc
     }, (success) async {
       emitter(state.copyWith(
         status: BlocStatus.success,
+        details: success,
         errorMessage: "",
       ));
-
-      NavigationService.navigatorKey.currentState!
-          .pushNamed(RouteName.objectionsDetailsPage, arguments: success);
+      if (!e.refresh)
+        NavigationService.navigatorKey.currentState!
+            .pushNamed(RouteName.objectionsDetailsPage, arguments: success);
     });
   }
 

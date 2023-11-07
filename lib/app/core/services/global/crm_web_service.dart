@@ -1,7 +1,9 @@
 import 'dart:convert';
 
 import 'package:balady_plus/app/core/utils/constants/remote_config.dart';
+import 'package:curl_logger_dio_interceptor/curl_logger_dio_interceptor.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:localize_and_translate/localize_and_translate.dart'
     show translator;
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
@@ -50,6 +52,10 @@ class CRMWebService {
     dio.options.headers = {};
     dio.addSentry();
     dio.interceptors.add(AppInterceptors());
+
+    if (!kReleaseMode) {
+      dio.interceptors.add(CurlLoggerDioInterceptor(printOnSuccess: true));
+    }
 
     dio.interceptors.add(PrettyDioLogger(
       requestHeader: false,
