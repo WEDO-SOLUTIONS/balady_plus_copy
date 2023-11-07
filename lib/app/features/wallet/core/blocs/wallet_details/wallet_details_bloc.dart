@@ -51,6 +51,24 @@ class WalletDetailsBloc extends Bloc<WalletDetailsEvent, WalletDetailsState> {
     }
   }
 
+  /* Future<bool?>? checkNeedToUpdatePhoto() async {
+    emit(state.copyWith(photoStatus: BlocStatus.loading));
+
+    Tuple3<bool?, String?, CheckUpdateClientPhoto?> result =
+        await locator<HealthLicenseRepository>()
+            .checkUpdatedPhoto(state.selectedItem!.requestId!);
+
+    if (result.item3?.data?.result == true) {
+      emit(state.copyWith(photoStatus: BlocStatus.success));
+    } else if (result.item3?.data?.result == false) {
+      emit(state.copyWith(photoStatus: BlocStatus.success));
+    } else {
+      emit(state.copyWith(photoStatus: BlocStatus.failure));
+    }
+
+    return result.item3?.data?.result;
+  }*/
+
   void checkPhoto() async {
     print("HEREE ${state.selectedItem!.requestId}");
     emit(state.copyWith(status: BlocStatus.download));
