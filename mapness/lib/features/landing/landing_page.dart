@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/features/favourites/providers/favourite_markers.dart';
 import 'package:mapness/features/happiness_map/hapiness_overlay.dart';
 import 'package:mapness/features/landing/layers_sheet.dart';
 import 'package:mapness/features/landing/providers/map_controls.dart';
@@ -17,6 +18,7 @@ class LandingPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final controlsState = ref.watch(mapControlsProvider);
+    ref.watch(favouriteMarkersProvider);
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.dark,

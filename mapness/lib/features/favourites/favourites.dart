@@ -1,11 +1,9 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:mapness/features/common/providers/uuid_provider.dart';
 import 'package:mapness/features/favourites/domain/favourite_item.dart';
 import 'package:mapness/features/favourites/providers/favourite_repository.dart';
 import 'package:mapness/features/favourites/widgets/delete_all/delete_all_content.dart';
@@ -37,8 +35,6 @@ class _FavouritesState extends ConsumerState<Favourites> {
   @override
   Widget build(BuildContext context) {
     final asyncState = ref.watch(favouriteRepositoryProvider);
-    // TODO: inline variable
-    final deleteIcon = DeleteIcon(onPressed: () {});
 
     if (asyncState.isLoading) {
       return Center(child: CircularProgressIndicator());
@@ -49,41 +45,41 @@ class _FavouritesState extends ConsumerState<Favourites> {
     final state = asyncState.requireValue;
 
     return Scaffold(
+      backgroundColor: Colors.white,
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          print(ref.read(uuidProviderProvider));
           ref.read(favouriteRepositoryProvider.notifier).addItem(
                 FavouriteItem(
-                    coordinates: Coordinates.zero,
-                    id: 'id',
-                    subtitle: 'subtitle',
-                    title: 'title',
-                    entity: FavouriteItemEntity(
-                      id: "70030076201324251",
-                      sourceType: EntitySourceType.urbi,
-                    )),
+                  coordinates: Coordinates(
+                    latitude: 24.712301,
+                    longitude: 46.674175,
+                  ),
+                  id: 'id',
+                  subtitle: 'subtitle',
+                  title: 'title',
+                  entity: FavouriteItemEntity(
+                    id: "70030076201324251",
+                    sourceType: EntitySourceType.urbi,
+                  ),
+                ),
               );
         },
       ),
-      appBar: AppBar(
-        backgroundColor: Color(0xfff2f7f8),
-        leadingWidth: 70,
-        leading: TextButton(
-          onPressed: toggleEditing,
-          child: Text(
-            isEditing ? 'Done' : 'Edit',
-            style: GoogleFonts.inter(
-              color: Color(0xFF1D2A36),
-              fontSize: 18,
-              fontWeight: FontWeight.w500,
-              letterSpacing: 0.18,
-            ),
-          ),
-        ),
-        actions: [
-          isEditing
-              ? TextButton(
-                  onPressed: () {
+      body: Directionality(
+        textDirection: TextDirection.rtl,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisSize: MainAxisSize.max,
+          children: [
+            Container(
+              color: Color(0x1242909B),
+              child: SafeArea(
+                bottom: false,
+                child: FavouritesHeader(
+                  isEditing: isEditing,
+                  onEditTap: toggleEditing,
+                  onDoneTap: toggleEditing,
+                  onDeleteAllTap: () {
                     _overlay = OverlayEntry(
                       builder: (_) => DeleteAllContent(
                         onConfirm: () {
@@ -102,33 +98,10 @@ class _FavouritesState extends ConsumerState<Favourites> {
                     );
                     Overlay.of(context, rootOverlay: true).insert(_overlay!);
                   },
-                  child: Text(
-                    'Delete all',
-                    style: GoogleFonts.inter(
-                      color: Color(0xFF1D2A36),
-                      fontSize: 18,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
-                )
-              : IconButton(
-                  onPressed: () {
-                    context.goNamed(AppRoute.profile.name);
-                  },
-                  icon: Icon(
-                    CupertinoIcons.forward,
-                    color: Color(0xff1e2936),
-                  ),
                 ),
-          SizedBox(width: 16)
-        ],
-      ),
-      body: Directionality(
-        textDirection: TextDirection.rtl,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          mainAxisSize: MainAxisSize.max,
-          children: [
+              ),
+            ),
+
             /// head items
             Ink(
               padding: const EdgeInsets.all(16),
@@ -145,7 +118,7 @@ class _FavouritesState extends ConsumerState<Favourites> {
                   SizedBox(height: 8),
                   PinnedPlaceWidget(
                     title: 'Home',
-                    address: '​137, Al Ittihad Road, Al Khabaisi, Deira, Dubai',
+                    address: '137, Al Ittihad Road, Al Khabaisi, Deira, Dubai',
                     iconAsset: 'assets/icons/svg/ic_home.svg',
                     isEditing: isEditing,
                     isAddressHighlighted: false,
@@ -155,7 +128,7 @@ class _FavouritesState extends ConsumerState<Favourites> {
                   ),
                   SizedBox(height: 8),
                   PinnedPlaceWidget(
-                    title: 'Home',
+                    title: 'Work',
                     address: 'Add address',
                     iconAsset: 'assets/icons/svg/ic_case.svg',
                     isEditing: isEditing,
@@ -168,89 +141,98 @@ class _FavouritesState extends ConsumerState<Favourites> {
               ),
             ),
             Expanded(
-              child: Padding(
-                padding: const EdgeInsets.only(
-                  left: 16,
-                  right: 16,
-                  top: 16,
-                ),
-                child: state.items.isEmpty
-                    ? Padding(
-                        padding: EdgeInsets.only(top: 63),
-                        child: EmptyResultWidget(
-                          text:
-                              'To save places and vacancies as favorites, open the card and tap the bookmark icon',
-                        ),
-                      )
-                    :
-
-                    /// items
-                    ListView.separated(
-                        itemCount: state.items.length,
-                        separatorBuilder: (_, __) => const SizedBox(height: 8),
-                        itemBuilder: (_, index) {
-                          final item = state.items[index];
-
-                          /// item
-                          return Dismissible(
-                            onDismissed: (_) => ref
-                                .read(favouriteRepositoryProvider.notifier)
-                                .delete(item),
-                            background: Ink(
-                              padding: const EdgeInsets.all(16),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(8),
-                                color: Color(0xfff4383c),
-                              ),
-                            ),
-                            key: Key(item.id),
-                            child: Container(
-                              padding: const EdgeInsets.all(16),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(8),
-                                color: Colors.white,
-                              ),
-                              child: InkWell(
-                                onTap: () {},
-                                borderRadius: BorderRadius.circular(8),
-                                child: Row(
-                                  children: [
-                                    if (isEditing) deleteIcon,
-                                    if (isEditing) SizedBox(width: 16),
-                                    Expanded(
-                                      child: Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.stretch,
-                                        children: [
-                                          Text(
-                                            item.title,
-                                            style: GoogleFonts.inter(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.w500,
-                                              color: const Color(0xff1e2936),
-                                            ),
-                                          ),
-                                          const SizedBox(height: 4),
-                                          Text(
-                                            item.subtitle,
-                                            style: GoogleFonts.inter(
-                                              fontSize: 14,
-                                              color: const Color(0xff346263),
-                                            ),
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          );
-                        },
+              child: state.items.isEmpty
+                  ? Padding(
+                      padding: const EdgeInsets.only(
+                        left: 16,
+                        right: 16,
+                        top: 63,
                       ),
-              ),
+                      child: EmptyResultWidget(
+                        text:
+                            'To save places and vacancies as favorites, open the card and tap the bookmark icon',
+                      ),
+                    )
+                  :
+
+                  /// items
+                  ListView.separated(
+                      padding: const EdgeInsets.only(
+                        left: 16,
+                        right: 16,
+                        top: 16,
+                      ),
+                      itemCount: state.items.length,
+                      separatorBuilder: (_, __) => const SizedBox(height: 8),
+                      itemBuilder: (_, index) {
+                        final item = state.items[index];
+
+                        /// item
+                        return Dismissible(
+                          onDismissed: (_) => ref
+                              .read(favouriteRepositoryProvider.notifier)
+                              .delete(item),
+                          background: Ink(
+                            padding: const EdgeInsets.all(16),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(8),
+                              color: Color(0xfff4383c),
+                            ),
+                          ),
+                          key: Key(item.id),
+                          child: Container(
+                            padding: const EdgeInsets.all(16),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(8),
+                              color: Colors.white,
+                            ),
+                            child: InkWell(
+                              onTap: () {},
+                              borderRadius: BorderRadius.circular(8),
+                              child: Row(
+                                children: [
+                                  if (isEditing) ...[
+                                    DeleteIcon(
+                                      onPressed: () => ref
+                                          .read(favouriteRepositoryProvider
+                                              .notifier)
+                                          .delete(item),
+                                    ),
+                                    SizedBox(width: 16),
+                                  ],
+                                  Expanded(
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.stretch,
+                                      children: [
+                                        Text(
+                                          item.title,
+                                          style: GoogleFonts.inter(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w500,
+                                            color: const Color(0xff1e2936),
+                                          ),
+                                        ),
+                                        const SizedBox(height: 4),
+                                        Text(
+                                          item.subtitle,
+                                          style: GoogleFonts.inter(
+                                            fontSize: 14,
+                                            color: const Color(0xff346263),
+                                          ),
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
             ),
           ],
         ),

@@ -30,7 +30,7 @@ class Favorites extends StatelessWidget {
                 right: 8.0,
               ),
               child: InkWell(
-                onTap: () => context.goNamed(AppRoute.favourites.name),
+                onTap: () => context.pushNamed(AppRoute.favourites.name),
                 child: Container(
                   decoration: BoxDecoration(
                     color: background,

@@ -30,7 +30,7 @@ class PinnedPlaceWidget extends StatelessWidget {
     return Ink(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(8),
-        color: const Color(0xfff4f4f5),
+        color: isEditing ? const Color(0xfff4f4f5) : const Color(0x1242909B),
       ),
       child: InkWell(
         borderRadius: BorderRadius.circular(8),
@@ -62,8 +62,8 @@ class PinnedPlaceWidget extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                       style: GoogleFonts.inter(
                         color: isAddressHighlighted
-                            ? const Color(0xF2285A5B)
-                            : const Color(0xff898e97),
+                            ? const Color(0xFF4CA5B4)
+                            : const Color(0xF2285A5B),
                         fontSize: 14,
                         fontWeight: FontWeight.w400,
                         letterSpacing: 0.14,
@@ -71,6 +71,9 @@ class PinnedPlaceWidget extends StatelessWidget {
                     ),
                   ],
                 ),
+              ),
+              const SizedBox(
+                width: 14,
               ),
               Container(
                 height: 38,

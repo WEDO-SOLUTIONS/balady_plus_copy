@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:mapness/features/profile/profile_page.dart';
 import 'package:mapness/features/favourites/favourites.dart';
 import 'package:mapness/features/favourites/favourites_search.dart';
-import 'package:mapness/features/favourites/favourites_search_result.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:go_router/go_router.dart';
 
@@ -12,6 +11,7 @@ import '../scaffold_with_nested_navigation.dart';
 part 'app_router.g.dart';
 
 // private navigators
+final _rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
 final _mapNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'map');
 final _routeNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'route');
 final _dashboardNavigatorKey =
@@ -38,10 +38,11 @@ enum AppRoute {
 GoRouter goRouter(GoRouterRef ref, List<Widget> routes) {
   return GoRouter(
     initialLocation: '/landing',
-    // navigatorKey: _rootNavigatorKey,
+    navigatorKey: _rootNavigatorKey,
     debugLogDiagnostics: true,
     routes: [
       StatefulShellRoute.indexedStack(
+        parentNavigatorKey: _rootNavigatorKey,
         builder: (context, state, navigationShell) {
           if (state.fullPath == "/profile") {
             return navigationShell;
@@ -104,74 +105,28 @@ GoRouter goRouter(GoRouterRef ref, List<Widget> routes) {
           ),
         ],
       ),
-
-      StatefulShellRoute.indexedStack(
-        builder: (context, state, navigationShell) {
-          return navigationShell;
-        },
-        branches: [
-          StatefulShellBranch(
-            navigatorKey: _favouritesNavigatorKey,
-            routes: [
-              GoRoute(
-                path: '/favourites',
-                name: AppRoute.favourites.name,
-                pageBuilder: (context, state) => const NoTransitionPage(
-                  child: Favourites(),
-                ),
-                routes: [
-                  GoRoute(
-                    path: 'search',
-                    name: AppRoute.favouritesSearch.name,
-                    pageBuilder: (context, state) => const NoTransitionPage(
-                      child: FavouritesSearch(),
-                    ),
-                    routes: const [],
-                  ),
-                  GoRoute(
-                    path: 'searchResult',
-                    name: AppRoute.favouritesSearchResult.name,
-                    pageBuilder: (context, state) => const NoTransitionPage(
-                      child: FavouritesSearchResult(),
-                    ),
-                    routes: const [],
-                  ),
-                ],
-              ),
-            ],
+      // StatefulShellBranch(
+      //     navigatorKey: _favouritesNavigatorKey,
+      //     routes: [
+      GoRoute(
+        path: '/favourites',
+        name: AppRoute.favourites.name,
+        parentNavigatorKey: _rootNavigatorKey,
+        pageBuilder: (context, state) => const NoTransitionPage(
+          child: Favourites(),
+        ),
+        routes: [
+          GoRoute(
+            path: 'search',
+            parentNavigatorKey: _rootNavigatorKey,
+            name: AppRoute.favouritesSearch.name,
+            pageBuilder: (context, state) => const NoTransitionPage(
+              child: FavouritesSearch(),
+            ),
+            routes: const [],
           ),
         ],
       ),
-      // StatefulShellBranch(
-      //   navigatorKey: _favouritesNavigatorKey,
-      //   routes: [
-      //     GoRoute(
-      //       path: '/favourites',
-      //       name: AppRoute.favourites.name,
-      //       pageBuilder: (context, state) => const NoTransitionPage(
-      //         child: Favourites(),
-      //       ),
-      //       routes: [
-      //         GoRoute(
-      //           path: 'search',
-      //           name: AppRoute.favouritesSearch.name,
-      //           pageBuilder: (context, state) => const NoTransitionPage(
-      //             child: FavouritesSearch(),
-      //           ),
-      //           routes: const [],
-      //         ),
-      //         GoRoute(
-      //           path: 'searchResult',
-      //           name: AppRoute.favouritesSearchResult.name,
-      //           pageBuilder: (context, state) => const NoTransitionPage(
-      //             child: FavouritesSearchResult(),
-      //           ),
-      //           routes: const [],
-      //         ),
-      //       ],
-      //     ),
-      //   ],
-      // ),
     ],
   );
 }

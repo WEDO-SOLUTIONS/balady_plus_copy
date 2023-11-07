@@ -1,42 +1,125 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:mapness/features/common/config/package_config.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/svg.dart';
 
-class FavouriteTextField extends StatelessWidget {
+import '../../../common/config/package_fonts.dart';
+import '../../../map/providers/suggest.dart';
+
+class FavouriteTextField extends ConsumerStatefulWidget {
   const FavouriteTextField({Key? key}) : super(key: key);
 
   @override
+  ConsumerState<FavouriteTextField> createState() => _FavouriteTextFieldState();
+}
+
+class _FavouriteTextFieldState extends ConsumerState<FavouriteTextField> {
+  late TextEditingController _controller;
+  final _searchFocus = FocusNode();
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return TextField(
-      textAlign: TextAlign.right,
-      decoration: InputDecoration(
-          isDense: true,
-          hintStyle: GoogleFonts.inter(
-            color: const Color(0x7F2A578A),
-            fontSize: 16,
-            fontWeight: FontWeight.w400,
-            height: 0.09,
-            letterSpacing: 0.16,
-          ),
-          filled: true,
-          fillColor: Colors.white,
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8),
-            borderSide: BorderSide.none,
-          ),
-          contentPadding:
-              const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
-          hintText: 'Search',
-          suffixIconConstraints:
-              const BoxConstraints(maxHeight: 24, maxWidth: 24 + 8),
-          suffixIcon: Padding(
-            padding: const EdgeInsets.only(right: 8),
-            child: SvgPicture.asset(
-              'assets/icons/svg/ic_suggest_search.svg',
-              package: PackageConfig.packageName,
+    ref.listen(suggestQueryProvider, (previous, next) {
+      if (_controller.text != next) {
+        _controller.text = next;
+      }
+    });
+
+    return Directionality(
+      textDirection: TextDirection.rtl,
+      child: Stack(
+        fit: StackFit.passthrough,
+        children: [
+          SizedBox(
+            height: 40,
+            child: TextField(
+              focusNode: _searchFocus,
+              onChanged: (value) {
+                if (value.isEmpty) {
+                  ref.watch(suggestQueryProvider.notifier).update("");
+                } else {
+                  ref.watch(suggestQueryProvider.notifier).update(value);
+                }
+                setState(() {});
+              },
+              controller: _controller,
+              maxLines: 1,
+              textAlignVertical: TextAlignVertical.center,
+              decoration: InputDecoration(
+                filled: true,
+                // isDense: true,
+                hintText: "Search",
+                fillColor: Colors.white,
+                contentPadding: const EdgeInsets.only(
+                  //   // horizontal: 8,
+                  right: 8,
+                  left: 38,
+                  top: 0,
+                  bottom: 0,
+                ),
+                border: OutlineInputBorder(
+                  borderSide: BorderSide.none,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                prefix: const SizedBox(
+                  width: 28,
+                ),
+              ),
+              cursorHeight: 22,
+              style: PackageFonts.frutigerArabic(
+                fontSize: 16,
+                // height: 22 / 16,
+                fontWeight: FontWeight.w400,
+              ),
             ),
-          )),
+          ),
+          Align(
+            alignment: Alignment.centerRight,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: SvgPicture.asset(
+                "assets/icons/svg/ic_dashboard_search.svg",
+                semanticsLabel: 'MinApps Screen',
+                package: "mapness",
+                colorFilter: const ColorFilter.mode(
+                  Color(0xFF4CA5B4),
+                  BlendMode.srcIn,
+                ),
+              ),
+            ),
+          ),
+          if (_controller.text.isNotEmpty)
+            GestureDetector(
+              onTap: () {
+                _controller.clear();
+                _searchFocus.requestFocus();
+                setState(() {});
+              },
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: SvgPicture.asset(
+                    "assets/icons/svg/ic_search_clear.svg",
+                    semanticsLabel: 'MinApps Screen',
+                    package: "mapness",
+                  ),
+                ),
+              ),
+            )
+        ],
+      ),
     );
   }
 }
