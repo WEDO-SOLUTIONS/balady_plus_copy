@@ -39,8 +39,6 @@ class ApplyCancelScreen extends StatelessWidget {
               "\n\n"
               "سوف يتم إلغاء الرخصة بشكل آلــي بعد مرور سنة وأكثر من انتهاء الرخصة.\n\n"
               "تأخرك في إلغاء الرخصة يعرضك لدفع رسوم تجديد عند الإلغاء وذلك وفقًــا للائحة التنفيذية لإجراءات التراخيص البلدية 1438 هـ.\n\n"
-              "يمكنك الاطلاع على حاسبة الرسوم المعلوماتية من خلال الرابط.\n"
-              "https://apps.balady.gov.sa//Eservices/FeesCalculator\n\n"
               "رسوم الإلغاء 20 ريال مع ضرورة أن تكون الرخصة سارية.\n"
         },
         "en": {
@@ -50,8 +48,6 @@ class ApplyCancelScreen extends StatelessWidget {
           "warning": "يجب أن يتم إلغاء رخصة النشاط التجاري قبل شطب السجل التجاري.\n"
               "سوف يتم إلغاء الرخصة بشكل آلــي بعد مرور سنة وأكثر من انتهاء الرخصة.\n"
               "تأخرك في إلغاء الرخصة يعرضك لدفع رسوم تجديد عند الإلغاء وذلك وفقًــا للائحة التنفيذية لإجراءات التراخيص البلدية 1438 هـ.\n"
-              "يمكنك الاطلاع على حاسبة الرسوم المعلوماتية من خلال الرابط.\n"
-              "https://apps.balady.gov.sa//Eservices/FeesCalculator\n"
               "رسوم الإلغاء 20 ريال مع ضرورة أن تكون الرخصة سارية.\n"
         },
         "cards": [
@@ -88,12 +84,11 @@ class ApplyCancelScreen extends StatelessWidget {
             "duration": "0",
             "flow": [
               {
-                "title": "من خلال المستفيد بنفسه (بدون مكتب هندسي)",
+                "title": "من خلال المستفيد",
                 "steps": [
                   "تحديد سجل المنشأة واختيار الرخصة.",
                   "استكمال البيانات المطلوبة إن وجدت.",
-                  "دفع الرسوم في حال الإلغاء الفوري أو إرسال الطلب للبلدية في حال أن الإلغاء غير فوري.",
-                  "إصدار شهادة امتثال المباني للمبنى.",
+                  "دفع الرسوم في حال الإلغاء الفوري أو إرسال الطلب للبلدية في حال أن الإلغاء غير فوري."
                 ]
               },
             ],
@@ -189,10 +184,9 @@ class ApplyCancelScreen extends StatelessWidget {
                           arguments: CommercialLicenseCancelBloc(
                             webService: sl(),
                             requestId: cancellationRequest.requestId,
-                            availableCloseDate:
-                                cancellationRequest.availableCloseDate,
+                            availableCloseDate: cancellationRequest.availableCloseDate,
                             crNumber: viewModel.submitterInfo.crNumber,
-                            crType: viewModel.submitterInfo.crType!,
+                            crType: viewModel.submitterInfo.crType,
                             reasonCancel: viewModel.reasonCancel,
                           ),
                         );
