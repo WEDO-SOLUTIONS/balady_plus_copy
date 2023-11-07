@@ -66,12 +66,12 @@ class ServiceCardDescWidget extends StatelessWidget {
                 const SizedBox(height: 16),
                 (card.fees ?? 1) == -1
                     ? CustomUnderlineTextdButtonWidget(
-                  onPressed: () {
-                    Navigator.pushNamed(
-                        context, RouteName.calculatorMapRoute);
-                  },
-                  text: card.feesName!,
-                )
+                        onPressed: () {
+                          Navigator.pushNamed(
+                              context, RouteName.calculatorMapRoute);
+                        },
+                        text: card.feesName!,
+                      )
                     : const SizedBox(),
                 const SizedBox(height: 12),
                 Row(
@@ -88,7 +88,7 @@ class ServiceCardDescWidget extends StatelessWidget {
                                   : card.fees.toString(),
                             ),
                     const SizedBox(width: 12),
-                    if (card.duration.isNotEmpty)
+                    if (card.duration.isNotEmpty && card.duration != "0")
                       ServiceCardParameter(
                         title: 'time_serveis'.tr(),
                         iconName: IconPath.duration,
