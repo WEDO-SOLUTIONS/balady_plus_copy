@@ -61,73 +61,75 @@ class _ObjectionsDetailsPageState extends State<ObjectionsDetailsPage> {
                 backgroundColor: AppColor.white2,
                 appBar: DetailsHeader(
                   title: ("objection_details").tr(),
-                  procedures: () async {
-                    await BottomSheetDialog.showDraggableSheet(context,
-                        isFullHeight: false,
-                        height: 250,
-                        //   dialogKeyName: DialogName.appointmentsActionsDialog,
-                        //   currentRouteName: RouteName.appointmentDetailsRoute,
-                        child: BottomSheetWithActions(
-                          title: "actions".tr(),
-                          body: Column(children: [
-                            //   if (appointmentItemInfoLocal?.confirmable ?? false)
-                            GestureDetector(
-                              onTap: () {
-                                BottomSheetDialog.showDraggableSheet(
-                                  NavigationService
-                                      .navigatorKey.currentContext!,
-                                  child: BottomSheetWithActions(
-                                      title: "",
-                                      action: Row(
-                                        children: [
-                                          Expanded(
-                                            child: ElevatedButtonWidget
-                                                .primaryCustom(
-                                                    text: "موافق",
-                                                    onPressed: () {
-                                                      NavigationService
-                                                          .goBack();
-                                                      NavigationService
-                                                          .goBack();
-                                                      context
-                                                          .read<
-                                                              ObjectionsDetailsBloc>()
-                                                          .add(
-                                                              CancelObjectionEvent());
-                                                    }),
-                                          ),
-                                          const CustomHorizontalSpace(
-                                              width: 32),
-                                          Expanded(
-                                            child: ElevatedButtonWidget
-                                                .primaryCustomBorder(
-                                                    text: "الغاء",
-                                                    onPressed: () {
-                                                      NavigationService
-                                                          .goBack();
-                                                    }),
-                                          ),
-                                        ],
-                                      ),
-                                      body: Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          const CustomVerticalSpace(height: 32),
-                                          NotesWidget(notes: [
-                                            "أنت علي وشك حذف طلب, هل أنت متأكد من إلغاء طلب الإعتراض؟"
-                                          ])
-                                        ],
-                                      )),
-                                );
-                              },
-                              child: FieldData(
-                                title: "إلغاء طلب الإعتراض",
-                              ),
-                            ),
-                            CustomVerticalSpace(height: 16),
-                          ]),
-                        ));
-                  },
+                  procedures: state.details?.requestStatusId == "004"
+                      ? () async {
+                          await BottomSheetDialog.showDraggableSheet(context,
+                              isFullHeight: false,
+                              height: 250,
+                              //   dialogKeyName: DialogName.appointmentsActionsDialog,
+                              //   currentRouteName: RouteName.appointmentDetailsRoute,
+                              child: BottomSheetWithActions(
+                                title: "actions".tr(),
+                                body: Column(children: [
+                                  GestureDetector(
+                                    onTap: () {
+                                      BottomSheetDialog.showDraggableSheet(
+                                        NavigationService
+                                            .navigatorKey.currentContext!,
+                                        child: BottomSheetWithActions(
+                                            title: "",
+                                            action: Row(
+                                              children: [
+                                                Expanded(
+                                                  child: ElevatedButtonWidget
+                                                      .primaryCustom(
+                                                          text: "موافق",
+                                                          onPressed: () {
+                                                            NavigationService
+                                                                .goBack();
+                                                            NavigationService
+                                                                .goBack();
+                                                            context
+                                                                .read<
+                                                                    ObjectionsDetailsBloc>()
+                                                                .add(
+                                                                    CancelObjectionEvent());
+                                                          }),
+                                                ),
+                                                const CustomHorizontalSpace(
+                                                    width: 32),
+                                                Expanded(
+                                                  child: ElevatedButtonWidget
+                                                      .primaryCustomBorder(
+                                                          text: "الغاء",
+                                                          onPressed: () {
+                                                            NavigationService
+                                                                .goBack();
+                                                          }),
+                                                ),
+                                              ],
+                                            ),
+                                            body: Column(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                const CustomVerticalSpace(
+                                                    height: 32),
+                                                NotesWidget(notes: [
+                                                  "أنت علي وشك حذف طلب, هل أنت متأكد من إلغاء طلب الإعتراض؟"
+                                                ])
+                                              ],
+                                            )),
+                                      );
+                                    },
+                                    child: FieldData(
+                                      title: "إلغاء طلب الإعتراض",
+                                    ),
+                                  ),
+                                  CustomVerticalSpace(height: 16),
+                                ]),
+                              ));
+                        }
+                      : null,
                 ),
                 body: Padding(
                   padding: const EdgeInsets.all(16.0),
