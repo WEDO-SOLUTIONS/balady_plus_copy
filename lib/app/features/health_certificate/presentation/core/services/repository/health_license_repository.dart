@@ -74,6 +74,16 @@ class HealthLicenseRepository {
       "isNotSaudi": !isSaudi,
       "borderIdentityInfo": null
     });
+    print({
+      "employeeIdentityNumber": userId,
+      "employeeIdentityType": idType,
+      "employeeBirthDate": birthDate,
+      "submitterBirthDate": birthDate,
+      "submitterType": "HIMSELF",
+      "municipalityId": municipalityId,
+      "isNotSaudi": !isSaudi,
+      "borderIdentityInfo": null
+    });
     bool state = body['state'];
     dynamic data = body['data'];
 

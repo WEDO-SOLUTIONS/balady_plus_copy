@@ -10,7 +10,7 @@ import '../../../../../core/utils/utils_exports.dart'
 import '../../../../_shared_feature_/shared_feature_exports.dart';
 
 class AppBarSeachBar extends StatelessWidget implements PreferredSizeWidget {
-  final Debouncer _debouncer = Debouncer(milliseconds: 1000);
+  final Debouncer _debouncer = Debouncer(milliseconds: 500);
   final String? hintText;
   final RequestsType? crmRequestType;
 
