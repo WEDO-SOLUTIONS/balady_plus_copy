@@ -36,7 +36,7 @@ class PersonalData extends StatelessWidget {
           subtitle: "English full name",
         ),
         PersonalDataRow(
-          title: "Arab",
+          title: "Saudi Arabia",
           subtitle: "Nationality",
         ),
       ],
