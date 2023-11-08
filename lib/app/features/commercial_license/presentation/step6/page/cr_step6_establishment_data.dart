@@ -309,6 +309,7 @@ class _CRStep6EstablishmentDataState extends State<CRStep6EstablishmentData> {
                           CustomTextFieldWidget(
                             label: "البريد الالكتروني",
                             hintText: "ادخل البريد الالكتروني",
+                            errorText: state.emailErrorText,
                             initialValue: state.contactInfo?.mail,
                             bottomMargin: 24,
                             onValidate: (p0) {},

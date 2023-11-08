@@ -30,12 +30,12 @@ class CrStep4ShopDataState extends Equatable {
   final String? shopName; //اسم المحل
   final String? shopUnitNumber; //رقم المحل
   final String? blockNumber; //رقم العقار
-  final int? holesCount; //عدد الفتحات
-  final int? floorCount; //عدد الأدوار في المحل
-  final int? noOfCameras; //عدد الكاميرات في المحل
+  final String? holesCount; //عدد الفتحات
+  final String? floorCount; //عدد الأدوار في المحل
+  final String? noOfCameras; //عدد الكاميرات في المحل
   final bool? hasElevator;
   final bool? existInMall;
-  final int? floorNumber; //طابق المول
+  final String? floorNumber; //طابق المول
   final bool?
       isCitizenPledgedToClean; //هل أنت متعاقد مع إحدى شركات النظافة المؤهلة من الامانة وذلك لجمع ونقل النفايات ؟
   final String? cleanContractEndDate; //تاريخ انتهاء عقد النظافة
@@ -247,13 +247,13 @@ class CrStep4ShopDataState extends Equatable {
       String? shopName,
       String? shopUnitNumber,
       String? blockNumber,
-      int? holesCount,
-      int? floorCount,
-      int? noOfCameras,
+      String? holesCount,
+      String? floorCount,
+      String? noOfCameras,
       bool? hasElevator,
       bool? existInMall,
       Nullable<QrLookUpItem?>? selectedMall,
-      int? floorNumber,
+      String? floorNumber,
       Nullable<String?>? contractOption,
       Nullable<String?>? ownershipType,
       Nullable<String?>? cleanContractEndDate,
@@ -413,14 +413,17 @@ class CrStep4ShopDataState extends Equatable {
       return false;
     }
 
+    if ((crContractOption == CRContractOption.service) &&
+        (crContractType == CRContractType.ejar) &&
+        ejarVerified == false) return false;
+
     return (brand != null) &&
         (shopName != null && shopName!.isNotEmpty) &&
         (shopUnitNumber != null && shopUnitNumber!.isNotEmpty) &&
-        (blockNumber != null && blockNumber!.isNotEmpty) &&
-        holesCount != null &&
-        noOfCameras != null &&
+        (holesCount != null && holesCount!.isNotEmpty) &&
+        (noOfCameras != null && noOfCameras!.isNotEmpty) &&
         hasElevator != null &&
-        floorCount != null;
+        (floorCount != null && floorCount!.isNotEmpty);
   }
 
   bool showSalamaReport() {

@@ -1,8 +1,14 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:balady_plus/app/core/utils/enums/app_font_weights.dart';
 import 'package:balady_plus/etmam_app/core/utils/constants/app_config.dart';
 import 'package:balady_plus/etmam_app/features/dynamic_form/dynamic_forms_exports.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../app/core/utils/common_functions.dart';
 import '../../../../../app/features/_shared_feature_/data/entities/file_data_item.dart';
@@ -21,8 +27,9 @@ class BidddingUploadWidget extends StatelessWidget {
         if (state.uploadBidAttachmentResponse == null)
           return ElevatedIconButtonWidget.upload(
             onPressed: () async {
-              FileDataItem? file =
-                  await CommonFunctions.pickFile(context, filesOnly: true);
+              FileDataItem? file = await openFilePicker(
+                  FileType.custom, context,
+                  allowedExtensions: ["pdf"]);
               if (file != null)
                 context
                     .read<BiddingFormBloc>()
@@ -44,5 +51,47 @@ class BidddingUploadWidget extends StatelessWidget {
         return Container();
       },
     );
+  }
+
+  Future<FileDataItem>? openFilePicker(FileType fileType, BuildContext c,
+      {List<String>? allowedExtensions}) async {
+    var file = await FilePicker.platform.pickFiles(
+      type: fileType,
+      allowMultiple: false,
+      allowedExtensions: allowedExtensions != null
+          ? allowedExtensions
+          : fileType == FileType.custom
+              ? ['jpg', 'pdf', 'jpeg', 'png']
+              : null,
+    );
+    try {
+      if (file != null && file.files.isNotEmpty) {
+        String? path = file.files[0].path;
+        if (path != null) {
+          PlatformFile platformFile = file.files.first;
+          if (platformFile.size > 25000000) {
+            CommonFunctions.showError(('file_size_error').tr());
+          } else {
+            String fileName = path.isNotEmpty
+                ? path.split('/').last
+                : ('attachment_name').tr();
+            final fileBytes = await File(path).readAsBytes();
+            String base64File = base64Encode(fileBytes);
+            FileDataItem file = FileDataItem(
+              fileBase64: base64File,
+              fileName: fileName,
+              filePath: path,
+              bytes: fileBytes,
+
+              //  sizeInMB: CommonFunctions.convertBytesToMB(platformFile.size),
+            );
+            return file;
+          }
+        }
+      }
+    } on PlatformException catch (_) {
+      // debugPrint("Unsupported operation" + e.toString());
+    }
+    return Future.value(null);
   }
 }

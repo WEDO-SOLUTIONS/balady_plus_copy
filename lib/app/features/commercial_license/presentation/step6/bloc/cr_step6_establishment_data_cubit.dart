@@ -3,11 +3,14 @@ import 'package:balady_plus/app/features/commercial_license/domain/entities/citi
 
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 import '../../../../../core/dependency_injection/injection_container.dart';
 import '../../../../../core/errors/failures.dart';
 import '../../../../../core/utils/enums/enums.dart';
 import '../../../../../core/utils/utils_exports.dart';
 
+import '../../../../_shared_feature_/data/entities/validators/email_validation.dart';
+import '../../../../_shared_feature_/data/entities/validators/phone_number_validation.dart';
 import '../../../commercial_license_exports.dart'
     show
         AddBeneficiaryNotes,

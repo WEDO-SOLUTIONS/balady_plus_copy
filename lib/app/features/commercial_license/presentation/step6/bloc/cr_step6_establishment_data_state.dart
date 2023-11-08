@@ -42,6 +42,13 @@ class CRStep6EstablishmentState extends Equatable {
   final String? birthDate;
   final String? nationalId;
 
+  EmailValidation get emailValidator => contactInfo?.mail == null
+      ? EmailValidation.pure()
+      : EmailValidation.dirty(email: contactInfo?.mail);
+  String? get emailErrorText => emailValidator.error?.message != null
+      ? (emailValidator.error?.message ?? "").tr()
+      : null;
+
   const CRStep6EstablishmentState({
     this.status = BlocStatus.initial,
     this.paymentsMethodsStatus = BlocStatus.initial,
@@ -191,7 +198,11 @@ class CRStep6EstablishmentState extends Equatable {
   }
 
   bool isFormValid() {
-    if (managerInfo == null || siteLocationType == null) {
+    print(emailValidator);
+    if (managerInfo == null ||
+        siteLocationType == null ||
+        contactInfo?.mail == null ||
+        emailValidator.isNotValid) {
       return false;
     }
 
