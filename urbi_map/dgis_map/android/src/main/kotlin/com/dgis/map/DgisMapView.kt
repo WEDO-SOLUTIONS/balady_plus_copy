@@ -172,6 +172,24 @@ class DgisMapView(
         result.success(null)
     }
 
+    override fun setCameraPadding(
+            cameraPadding: CameraSetPaddingMessage,
+            result: Messages.Result<Void>
+    ) {
+        val map = map ?: kotlin.run {
+            result.error(IllegalArgumentException("Map has not been initialized"))
+            return
+        }
+
+        map.camera.padding = Padding(
+            left = cameraPadding.leftPadding.toInt(),
+            right = cameraPadding.rightPadding.toInt(),
+            bottom = cameraPadding.bottomPadding.toInt(),
+            top = cameraPadding.topPadding.toInt(),
+        )
+        result.success(null)
+    }
+
     override fun moveCamera(
         cameraPosition: CameraPositionMessage,
         duration: Double,

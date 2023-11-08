@@ -4,13 +4,29 @@ import 'package:mapness/features/stories/domain/frame/story_frame_action.dart';
 import 'package:mapness/features/stories/domain/frame/story_frame_data.dart';
 import 'package:mapness/features/stories/domain/frame/story_text_style.dart';
 import 'package:mapness/features/stories/domain/story_data.dart';
+import 'package:mapness/features/stories/domain/thumbnail/story_thumbnail_data.dart';
+
+extension NetworkStoryResponseMapper on NetworkStoriesResponse {
+  List<StoryData> toDomain() {
+    return stories.map((e) => e.toDomain()).toList();
+  }
+}
 
 extension NetworkStoryMapper on NetworkStory {
-  StoryData toStory() {
+  StoryData toDomain() {
     return StoryData(
       storyId: id,
       frames: frames.map((e) => e.toDomain(id)).toList(),
-      isViewed: isViewed,
+      thumbnail: preview.toDomain(),
+    );
+  }
+}
+
+extension NetworkStoryPreviewMapper on NetworkStoryPreview {
+  StoryThumbnailData toDomain() {
+    return StoryThumbnailData(
+      imageUrl: image.url,
+      title: title,
     );
   }
 }

@@ -92,7 +92,7 @@ class RoutingViewModel {
       isFreeRoamMode: false,
     );
 
-    unawaited(mapController.startNavigationSimulation());
+    unawaited(mapController.startNavigation());
     unawaited(WakelockPlus.enable());
   }
 

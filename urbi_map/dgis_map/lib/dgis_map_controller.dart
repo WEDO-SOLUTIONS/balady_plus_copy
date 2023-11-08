@@ -149,6 +149,10 @@ class DgisMapController {
   Future<void> setCameraPosition(CameraPositionMessage cameraPosition) =>
       _instance.setCameraPosition(cameraPosition);
 
+  /// Changes map camera padding immediately without animation.
+  Future<void> setCameraPadding(CameraSetPaddingMessage cameraPadding) =>
+      _instance.setCameraPadding(cameraPadding);
+
   /// Smoothly changes camera positions
   Future<void> moveCamera(CameraPositionMessage cameraPosition, double duration,
           CameraAnimationTypeMessage animationType) =>

@@ -96,6 +96,8 @@ abstract class DgisMapPlugin extends PlatformInterface {
 
   Future<void> setCameraPosition(CameraPositionMessage cameraPosition);
 
+  Future<void> setCameraPadding(CameraSetPaddingMessage cameraPadding);
+
   Future<void> moveCamera(
     CameraPositionMessage cameraPosition,
     double duration,

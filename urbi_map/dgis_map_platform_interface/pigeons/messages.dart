@@ -1192,6 +1192,9 @@ abstract class MapApi {
 
   @async
   void stopFreeRoam();
+
+  @async
+  void setCameraPadding(CameraSetPaddingMessage cameraPadding);
 }
 
 @FlutterApi()

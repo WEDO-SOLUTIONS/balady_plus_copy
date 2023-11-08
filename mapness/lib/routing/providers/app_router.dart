@@ -127,6 +127,13 @@ GoRouter goRouter(GoRouterRef ref, List<Widget> routes) {
           ),
         ],
       ),
+      // TODO(@42): Appeals screen routing
+      // GoRoute(
+      //   path: '/appeals',
+      //   name: AppRoute.appeals.name,
+      //   parentNavigatorKey: _rootNavigatorKey
+      //   pageBuilder: (context, state) => ...,
+      // )
     ],
   );
 }

@@ -151,17 +151,18 @@ class _StoryFrameWidgetState extends State<StoryFrameWidget>
                 ),
               ),
             ),
-            if (!isLoading)
-              SafeArea(
-                child: Stack(
-                  children: [
-                    /// story content
+            SafeArea(
+              child: Stack(
+                children: [
+                  /// story content
+                  if (!isLoading)
                     Padding(
                       padding: const EdgeInsets.only(top: 81),
                       child: StoryFrameContent(frame: widget.frame),
                     ),
 
-                    /// left right click handlers
+                  /// left right click handlers
+                  if (!isLoading)
                     Row(
                       children: [
                         Expanded(
@@ -181,35 +182,36 @@ class _StoryFrameWidgetState extends State<StoryFrameWidget>
                       ],
                     ),
 
-                    /// progress indicator and exit button
-                    AnimatedBuilder(
-                      animation: _progress,
-                      builder: (context, old) => FrameProgressIndicator(
-                        onClose: widget.onClose,
-                        progress: _progress.value,
-                        frameIndex: widget.frameIndex,
-                        framesLength: widget.frameLength,
+                  /// progress indicator and exit button
+                  AnimatedBuilder(
+                    animation: _progress,
+                    builder: (context, old) => FrameProgressIndicator(
+                      onClose: widget.onClose,
+                      progress: _progress.value,
+                      frameIndex: widget.frameIndex,
+                      framesLength: widget.frameLength,
+                    ),
+                  ),
+
+                  /// action button
+                  if (!isLoading &&
+                      widget.frame.action != null &&
+                      widget.onActionPressed != null)
+                    Positioned(
+                      bottom: 24,
+                      left: 16,
+                      right: 16,
+                      child: FrameActionButton(
+                        title: widget.frame.action!.title,
+                        onPressed: () =>
+                            widget.onActionPressed!(widget.frame.action!),
+                        textStyle: widget.frame.action?.textStyle,
+                        backgroundColor: widget.frame.action?.backgroundColor,
                       ),
                     ),
-
-                    /// action button
-                    if (widget.frame.action != null &&
-                        widget.onActionPressed != null)
-                      Positioned(
-                        bottom: 24,
-                        left: 16,
-                        right: 16,
-                        child: FrameActionButton(
-                          title: widget.frame.action!.title,
-                          onPressed: () =>
-                              widget.onActionPressed!(widget.frame.action!),
-                          textStyle: widget.frame.action?.textStyle,
-                          backgroundColor: widget.frame.action?.backgroundColor,
-                        ),
-                      ),
-                  ],
-                ),
-              )
+                ],
+              ),
+            )
           ],
         ),
       ),

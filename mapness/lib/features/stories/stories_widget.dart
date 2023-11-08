@@ -30,7 +30,7 @@ class _StoriesWidgetState extends ConsumerState<StoriesWidget> {
   void _precacheFirstFrame() {
     final storiesAsync = ref.watch(storyServiceProvider);
     storiesAsync.whenData((data) {
-      for (final story in data.stories) {
+      for (final story in data) {
         final firstFrame = story.frames.first;
         precacheImage(NetworkImage(firstFrame.imageUrl), context);
       }
@@ -80,7 +80,7 @@ class _StoriesWidgetState extends ConsumerState<StoriesWidget> {
           onThumbnailPressed: (id) => openStory(context, id),
 
           /// arabic => reversed
-          thumbnails: data.thumbnails.reversed.toList(),
+          stories: data.reversed.toList(),
         ),
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (_, __) => StoryRefreshButton(

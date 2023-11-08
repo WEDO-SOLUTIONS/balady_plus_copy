@@ -32,10 +32,13 @@ class DarkModeCell extends ConsumerWidget {
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Row(
                 children: [
-                  IgnorePointer(
-                    child: CupertinoSwitch(
-                      onChanged: (bool value) {},
-                      value: darkMode,
+                  Directionality(
+                    textDirection: TextDirection.rtl,
+                    child: IgnorePointer(
+                      child: CupertinoSwitch(
+                        onChanged: (bool value) {},
+                        value: darkMode,
+                      ),
                     ),
                   ),
                   const Spacer(),

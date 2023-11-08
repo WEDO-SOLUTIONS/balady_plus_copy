@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:mapness/features/common/config/package_fonts.dart';
 import 'package:mapness/features/common/image/loading_image/loading_shimmer_image.dart';
-import 'package:mapness/features/stories/domain/thumbnail/story_thumbnail_data.dart';
 
 class StoryThumbnailWidget extends StatelessWidget {
-  final StoryThumbnailData thumbnail;
+  final String title;
+  final String imageUrl;
+  final bool isWatched;
   final VoidCallback onPress;
 
   const StoryThumbnailWidget({
     super.key,
-    required this.thumbnail,
     required this.onPress,
+    required this.title,
+    required this.imageUrl,
+    required this.isWatched,
   });
 
   @override
@@ -24,9 +27,7 @@ class StoryThumbnailWidget extends StatelessWidget {
             shape: RoundedRectangleBorder(
               side: BorderSide(
                 width: 2,
-                color: thumbnail.isWatched
-                    ? Colors.transparent
-                    : const Color(0xFF1BA135),
+                color: isWatched ? Colors.transparent : const Color(0xFF1BA135),
               ),
               borderRadius: BorderRadius.circular(16),
             ),
@@ -46,7 +47,7 @@ class StoryThumbnailWidget extends StatelessWidget {
                     borderRadius: BorderRadius.circular(13),
                     child: LoadingShimmerImage(
                       fit: BoxFit.cover,
-                      imageUrl: thumbnail.imageUrl,
+                      imageUrl: imageUrl,
                     ),
                   ),
                 ),
@@ -70,7 +71,7 @@ class StoryThumbnailWidget extends StatelessWidget {
                     color: Color(0x441BA135),
                   ),
                   child: Text(
-                    thumbnail.title,
+                    title,
                     // TODO: move to theme
                     style: PackageFonts.frutigerArabic(
                       color: Colors.white,

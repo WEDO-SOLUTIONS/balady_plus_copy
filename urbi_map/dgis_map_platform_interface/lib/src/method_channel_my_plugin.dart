@@ -291,6 +291,11 @@ class MethodChannelDgisMapPlugin implements DgisMapPlugin, FlutterMapApi {
   }
 
   @override
+  Future<void> setCameraPadding(CameraSetPaddingMessage cameraPadding) {
+    return _api.setCameraPadding(cameraPadding);
+  }
+
+  @override
   Future<void> moveCamera(CameraPositionMessage cameraPosition, double duration,
       CameraAnimationTypeMessage animationType) {
     return _api.moveCamera(cameraPosition, duration, animationType);

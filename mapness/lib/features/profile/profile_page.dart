@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/common/providers/app_language.dart';
+import 'package:mapness/features/common/providers/user_state.dart';
 import 'package:mapness/features/profile/widgets/authorized_profile.dart';
 import 'package:mapness/features/profile/widgets/dark_mode_cell.dart';
 import 'package:mapness/features/profile/widgets/expandable_cell.dart';
@@ -9,6 +10,8 @@ import 'package:mapness/features/profile/widgets/language_picker.dart';
 import 'package:mapness/features/profile/widgets/logout_cell.dart';
 import 'package:mapness/features/profile/widgets/personal_data.dart';
 import 'package:mapness/features/profile/widgets/profile_header.dart';
+import 'package:mapness/features/profile/widgets/unathorized_profile.dart';
+import 'package:mapness/features/profile/widgets/user_state_picker.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
@@ -28,7 +31,13 @@ class ProfilePage extends StatelessWidget {
             const SizedBox(
               height: 6,
             ),
-            const AuthorizedProfile(),
+            Consumer(builder: (context, ref, child) {
+              final userState = ref.watch(userStateProvider);
+
+              return userState == UserState.guest
+                  ? const UnautorizedProfile()
+                  : const AuthorizedProfile();
+            }),
             const SizedBox(
               height: 16,
             ),
@@ -37,6 +46,22 @@ class ProfilePage extends StatelessWidget {
               count: 7,
               icon: "assets/icons/svg/ic_profile_data.svg",
               content: PersonalData(),
+            ),
+            const SizedBox(
+              height: 16,
+            ),
+            Consumer(
+              builder: (context, ref, child) {
+                final userState = ref.watch(userStateProvider);
+
+                return ExpandableCell(
+                  title: "User State (Debug)",
+                  subtitle: userState.name,
+                  count: 3,
+                  icon: "assets/icons/svg/ic_profile_data.svg",
+                  content: const UserStatePicker(),
+                );
+              },
             ),
             const SizedBox(
               height: 16,

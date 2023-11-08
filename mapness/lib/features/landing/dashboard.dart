@@ -2,12 +2,14 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart' hide SearchBar, ScrollPosition;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/common/config/package_fonts.dart';
+import 'package:mapness/features/common/providers/user_state.dart';
 import 'package:mapness/features/landing/providers/dashboard_controls.dart';
 import 'package:mapness/features/landing/providers/dashboard_scroll.dart';
 import 'package:mapness/features/landing/providers/map_controls.dart';
 import 'package:mapness/features/landing/widgets/challenge_card.dart';
 import 'package:mapness/features/landing/widgets/dashboard_header.dart';
 import 'package:mapness/features/landing/widgets/event_card.dart';
+import 'package:mapness/features/landing/widgets/g2b_card.dart';
 import 'package:mapness/features/landing/widgets/login_card.dart';
 import 'package:mapness/features/landing/widgets/poi_card.dart';
 import 'package:mapness/features/landing/widgets/prayer_card.dart';
@@ -103,6 +105,7 @@ class _DashboardState extends ConsumerState<Dashboard> {
           break;
       }
     });
+    final userState = ref.watch(userStateProvider);
 
     return DraggableScrollableSheet(
       controller: _draggableScrollableController,
@@ -413,6 +416,67 @@ class _DashboardState extends ConsumerState<Dashboard> {
                                 ],
                               ),
                             ),
+                            if (userState == UserState.business) ...[
+                              const SizedBox(
+                                height: 24,
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(right: 16.0),
+                                child: Text(
+                                  "مثيرة للاهتمام بالنسبة لك",
+                                  style: PackageFonts.frutigerArabic(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 16,
+                              ),
+                              // Card for 42
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 16.0),
+                                child: G2BCard(
+                                  color: const Color(0xFFE3393D),
+                                  title: "Appeals",
+                                  subtitle: "في نوفمبر",
+                                  onTap: () {
+                                    // TODO(@42): Navigate to Appeals screen
+                                  },
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 16,
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 16.0),
+                                child: G2BCard(
+                                  color: const Color(0xFF4CA5B4),
+                                  title: "Book Appointment",
+                                  subtitle: "في نوفمبر",
+                                  onTap: () {
+                                    // TODO(@42): Navigate to Book Appointment screen
+                                  },
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 16,
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 16.0),
+                                child: G2BCard(
+                                  color: const Color(0xFF1BA136),
+                                  title: "Compliance Certificate",
+                                  subtitle: "في نوفمبر",
+                                  onTap: () {
+                                    // TODO(@42): Navigate to Compliance Certificate screen
+                                  },
+                                ),
+                              ),
+                            ],
                             const SizedBox(
                               height: 16,
                             ),

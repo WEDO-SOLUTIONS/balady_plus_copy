@@ -201,6 +201,24 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         completion(nil)
     }
     
+    func setCameraPaddingCameraPadding(_ cameraPadding: CameraSetPaddingMessage, completion: @escaping (FlutterError?) -> Void) {
+        guard let map = self.map else {
+            completion(FlutterError(
+                code: "IllegalArgumentException",
+                message: "Map was not initialized properly",
+                details: nil
+            ))
+            return
+        }
+        map.camera.padding = Padding(
+            left: cameraPadding.leftPadding.uint32Value,
+            top: cameraPadding.topPadding.uint32Value,
+            right: cameraPadding.rightPadding.uint32Value,
+            bottom: cameraPadding.bottomPadding.uint32Value
+        )
+        completion(nil)
+    }
+    
     func setCameraPositionCameraPosition(
         _ cameraPosition: CameraPositionMessage,
         completion: @escaping (FlutterError?) -> Void
@@ -228,8 +246,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
             ))
             return
         }
-        completion(nil)
-        
+        completion(nil)   
     }
     
     func moveCameraCameraPosition(_ cameraPosition: CameraPositionMessage, duration: NSNumber, animationType: CameraAnimationTypeMessage, completion: @escaping (FlutterError?) -> Void) {

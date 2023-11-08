@@ -2,7 +2,6 @@ import 'package:cube_transition_plus/cube_transition_plus.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:mapness/features/landing/providers/map_controls.dart';
 import 'package:mapness/features/stories/data/story_service.dart';
 import 'package:mapness/features/stories/domain/frame/story_frame_action.dart';
@@ -38,7 +37,7 @@ class _StoriesFullscreenState extends ConsumerState<StoriesFullscreen> {
     final storiesAsync = ref.watch(storyServiceProvider);
 
     storiesAsync.whenData((data) {
-      final nearStories = data.stories.skip(initialPage - 1).take(3);
+      final nearStories = data.skip(initialPage - 1).take(3);
       for (final story in nearStories) {
         final unseenFrames =
             story.frames.where((element) => element.isWatched == false).take(2);
@@ -58,8 +57,7 @@ class _StoriesFullscreenState extends ConsumerState<StoriesFullscreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    ref.read(storyServiceProvider.notifier);
-    final stories = ref.read(storyServiceProvider).value?.stories ?? const [];
+    final stories = ref.read(storyServiceProvider).value ?? const [];
     final index = stories.indexWhere(
           (element) => element.storyId == widget.initialStoryId,
         ) +
@@ -131,7 +129,7 @@ class _StoriesFullscreenState extends ConsumerState<StoriesFullscreen> {
       error: (_, __) => blank,
       loading: () => blank,
       data: (storiesData) {
-        final stories = storiesData.stories;
+        final stories = storiesData;
 
         return CubePageView(
           onPageChanged: (index) => _onChangeStory(index, stories.length),

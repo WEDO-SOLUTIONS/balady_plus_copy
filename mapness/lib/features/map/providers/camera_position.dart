@@ -30,6 +30,12 @@ class CameraPosition extends _$CameraPosition {
     );
   }
 
+  Future<void> setPadding(CameraSetPaddingMessage padding) async {
+    final dgisController = ref.watch(dgisControllerProvider);
+
+    await dgisController?.setCameraPadding(padding);
+  }
+
   void _cameraPositionListener(CameraPositionMessage event) {
     state = event;
   }

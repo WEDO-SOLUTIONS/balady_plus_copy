@@ -1,12 +1,14 @@
 import 'package:mapness/features/stories/domain/frame/story_frame_data.dart';
+import 'package:mapness/features/stories/domain/thumbnail/story_thumbnail_data.dart';
 
 class StoryData {
   final List<StoryFrameData> frames;
   final String storyId;
-  final bool isViewed;
+  bool get isViewed => frames.last.isWatched;
+  final StoryThumbnailData thumbnail;
 
   const StoryData({
-    required this.isViewed,
+    required this.thumbnail,
     required this.storyId,
     required this.frames,
   });
@@ -14,12 +16,12 @@ class StoryData {
   StoryData copyWith({
     List<StoryFrameData>? frames,
     String? storyId,
-    bool? isViewed,
+    StoryThumbnailData? thumbnail,
   }) {
     return StoryData(
       frames: frames ?? this.frames,
       storyId: storyId ?? this.storyId,
-      isViewed: isViewed ?? this.isViewed,
+      thumbnail: thumbnail ?? this.thumbnail,
     );
   }
 }

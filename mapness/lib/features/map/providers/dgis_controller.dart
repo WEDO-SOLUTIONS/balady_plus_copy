@@ -46,6 +46,11 @@ class DgisController extends _$DgisController {
 
     await controller.loadStyles("assets/maps/styles/common-styles.2gis");
     await controller.overrideLocales(["ar-SA"]);
+    controller.setAppearance(
+      ref.read(darkModeProvider)
+          ? MapAppearanceMessage.night
+          : MapAppearanceMessage.day,
+    );
 
     if (locationPermission.isGranted) {
       await controller.onLocationPremissionGranted(
@@ -81,7 +86,8 @@ class DgisController extends _$DgisController {
 
     ref.listen(darkModeProvider, (previous, next) {
       controller.setAppearance(
-          next ? MapAppearanceMessage.night : MapAppearanceMessage.day);
+        next ? MapAppearanceMessage.night : MapAppearanceMessage.day,
+      );
     });
     ref.listen(appLanguageProvider, (previous, next) {
       controller.overrideLocales(
