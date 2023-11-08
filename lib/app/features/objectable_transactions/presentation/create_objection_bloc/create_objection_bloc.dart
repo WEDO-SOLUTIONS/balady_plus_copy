@@ -124,7 +124,7 @@ class CreateObjectionBloc
                 base64: e.file?.fileBase64,
                 filePath: e.file?.filePath,
                 caseId:
-                    "${state.details?.violationId}-${CommonFunctions.generateGUID()}",
+                    "${state.item?.transactionId ?? state.details?.violationId}-${CommonFunctions.generateGUID()}",
                 categoryId: "Objections",
                 index: index))
             : null)

@@ -83,6 +83,17 @@ class _CRStep11AttachmentDataState extends State<CRStep11AttachmentData> {
                                         filePath: filePath);
                               },
                             ),
+                          UndertakingWidget(
+                            text: "أتعهد على جميع ماتم ذكره اعلاه",
+                            desc:
+                                "اقر واتعهد بصحة كافة البيانات التي تم رفعها على موقع بلدي واتحمل كامل المسؤولية القانونية والنظامية في حال تبين خلاف ذلك. كما اتعهد بابلاغ وزارة الشؤون البلدية والقروية في حال طرء اي تغيير على البيانات واتحمل كامل المسؤولية في حال تبين خلاف ذلك.",
+                            onChange: (value) {
+                              context
+                                  .read<CRStep11AttachmentCubit>()
+                                  .updateAgreement(value);
+                            },
+                            initialValue: state.attachmentAgreement ?? false,
+                          ),
                         ],
                       ),
                     ),
@@ -92,7 +103,7 @@ class _CRStep11AttachmentDataState extends State<CRStep11AttachmentData> {
                     onPressed: () {
                       context.read<CRStep11AttachmentCubit>().save();
                     },
-                    isBtnDisabled: false),
+                    isBtnDisabled: state.attachmentAgreement != true),
               ],
             ),
             if (state.attachmentStatus.isSubmissionLoading ||

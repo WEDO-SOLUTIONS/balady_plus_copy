@@ -89,6 +89,7 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
                           label: "رقم المحل",
                           hintText: "ادخل رقم المحل",
                           isDigitsOnly: true,
+                          initialValue: state.shopUnitNumber,
                           keyboardType: TextInputType.number,
                           bottomMargin: 24,
                           onChanged: (value) {
@@ -103,6 +104,7 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
                           isDigitsOnly: true,
                           keyboardType: TextInputType.number,
                           bottomMargin: 24,
+                          showOptional: true,
                           initialValue: state.blockNumber,
                           onChanged: (value) {
                             context
@@ -116,13 +118,11 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
                           isDigitsOnly: true,
                           keyboardType: TextInputType.number,
                           bottomMargin: 24,
-                          initialValue: state.holesCount != null
-                              ? state.holesCount.toString()
-                              : null,
+                          initialValue: state.holesCount,
                           onChanged: (value) {
                             context
                                 .read<CrStep4ShopDataCubit>()
-                                .updateFields(holesCount: int.tryParse(value));
+                                .updateFields(holesCount: value);
                           },
                         ),
                         CustomTextFieldWidget(
@@ -131,13 +131,11 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
                           isDigitsOnly: true,
                           keyboardType: TextInputType.number,
                           bottomMargin: 24,
-                          initialValue: state.floorCount != null
-                              ? state.floorCount.toString()
-                              : null,
+                          initialValue: state.floorCount,
                           onChanged: (value) {
                             context
                                 .read<CrStep4ShopDataCubit>()
-                                .updateFields(floorCount: int.tryParse(value));
+                                .updateFields(floorCount: value);
                           },
                         ),
                         CustomTextFieldWidget(
@@ -145,14 +143,12 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
                           hintText: "ادخل عدد الكاميرات في المحل",
                           isDigitsOnly: true,
                           keyboardType: TextInputType.number,
-                          initialValue: state.noOfCameras != null
-                              ? state.noOfCameras.toString()
-                              : null,
+                          initialValue: state.noOfCameras,
                           bottomMargin: 24,
                           onChanged: (value) {
                             context
                                 .read<CrStep4ShopDataCubit>()
-                                .updateFields(noOfCameras: int.tryParse(value));
+                                .updateFields(noOfCameras: value);
                           },
                         ),
                         if (context
@@ -169,7 +165,7 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
                                   .read<CrStep4ShopDataCubit>()
                                   .updateEndorsmentAgreement(value);
                             },
-                            initialValue: false,
+                            initialValue: state.endorsmentAgreement ?? false,
                           ),
                         YesNoRadioGroupWidget(
                           groupName: 'هل يوجد مصعد في المحل ؟',
@@ -197,12 +193,11 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
                             isDigitsOnly: true,
                             keyboardType: TextInputType.number,
                             bottomMargin: 24,
-                            initialValue: state.floorNumber != null
-                                ? state.floorNumber?.toString()
-                                : null,
+                            initialValue: state.floorNumber,
                             onChanged: (value) {
-                              context.read<CrStep4ShopDataCubit>().updateFields(
-                                  floorNumber: int.tryParse(value));
+                              context
+                                  .read<CrStep4ShopDataCubit>()
+                                  .updateFields(floorNumber: value);
                             },
                           ),
                         ],
@@ -224,6 +219,7 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
                           HijriCalendarAddetionalField(
                             fieldName: 'تاريخ انتهاء عقد النظافة',
                             isMandatory: true,
+                            currentVlaue: state.cleanContractEndDate,
                             onChanged: (value) {
                               context
                                   .read<CrStep4ShopDataCubit>()
@@ -292,8 +288,10 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
                           if (state.isFawryBill == true &&
                               state.salamaPermitExist == false)
                             TextWithCheckBtn(
-                              title: "رقم الفاتورة الفني",
-                              hint: "رقم الفاتورة الفني",
+                              title:
+                                  "شهادة تركيب أدوات الوقاية والحماية من الحريق",
+                              hint:
+                                  "شهادة تركيب أدوات الوقاية والحماية من الحريق",
                               validate: (String? t) {},
                               isValidate: state.isSalamaBillVerified ?? false,
                               currentValue: state.slamaBillNumber,
@@ -328,6 +326,9 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
                                         salamaPermitNumber: value);
                               },
                             ),
+                          const SizedBox(
+                            height: 16,
+                          ),
                         ],
                         HorizontalRadioGroup<CRSubmitterType>(
                           groupName: 'صفة المقدم بالنسبة لموقع المحل',
@@ -415,7 +416,7 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
                                 CRContractOption.service) ...[
                           VerticalRadioGroup<String>(
                             groupName: '',
-                            currentItem: state.deedOption,
+                            currentItem: state.deedInfoRequst?.ownershipType,
                             items: (state.deedOptions ?? []).map((e) {
                               return RadioItem<String>(
                                   radioText: e.tr(), radioValue: e);
@@ -599,6 +600,14 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
                                   .updateCRContractOption(value!);
                             },
                           ),
+                        if (state.crContractType == CRContractType.invest &&
+                            state.crSubmitterType == CRSubmitterType.rental &&
+                            state.crContractOption ==
+                                CRContractOption.attach) ...[
+                          NotesWidget(notes: [
+                            "سيتم توجيه طلب الاصدار الي البلدية لاعتماد الطلب"
+                          ]),
+                        ],
                         if (state.crContractType == CRContractType.invest &&
                             state.crSubmitterType == CRSubmitterType.rental &&
                             state.crContractOption ==
