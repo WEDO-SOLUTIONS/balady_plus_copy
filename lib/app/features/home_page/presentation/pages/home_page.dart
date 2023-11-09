@@ -51,6 +51,9 @@ class _HomePageState extends State<HomePage> /*with WidgetsBindingObserver*/ {
 
   @override
   Widget build(BuildContext context) {
+    print("home page init build");
+
+    MapViewModel mapViewModel = context.watch<MapViewModel?>()!;
     return Scaffold(
       key: mapKey,
       resizeToAvoidBottomInset: false,
