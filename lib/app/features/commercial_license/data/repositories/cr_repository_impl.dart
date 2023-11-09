@@ -2,6 +2,7 @@ import 'package:balady_plus/app/features/commercial_license/data/models/addition
 import 'package:balady_plus/app/features/commercial_license/data/models/additional_activity_response.dart';
 import 'package:balady_plus/app/features/commercial_license/data/models/board_contract_response.dart';
 import 'package:balady_plus/app/features/commercial_license/data/models/citizen_info_model.dart';
+import 'package:balady_plus/app/features/commercial_license/data/models/commercial_request_details_response.dart';
 import 'package:balady_plus/app/features/commercial_license/data/models/qr/apply_commercial_response_model.dart';
 import 'package:balady_plus/app/features/commercial_license/data/models/qr/qr_details_model.dart';
 import 'package:balady_plus/app/features/commercial_license/data/models/qr/qr_lookup.dart';
@@ -569,6 +570,18 @@ class CrRepositoryImpl implements CrRepository {
       {required CitizenInfoParams params}) async {
     try {
       final data = await remoteDataSource.getCizenInfo(params: params);
+      return Right(data);
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage,
+          statusCode: error.statusCode, errorCode: error.errorCode));
+    }
+  }
+
+  @override
+  Future<Either<Failure, CommercialRequestDetailsResponse>> getRequestDetails(
+      {required int params}) async {
+    try {
+      final data = await remoteDataSource.getRequestDetails(params: params);
       return Right(data);
     } on ServerException catch (error) {
       return Left(ServerFailure(error.errorMessage,
