@@ -379,6 +379,9 @@ class ApiUrl {
   static String crCitizenInfo =
       '/v1/balady-commercial-services/moi/citizeninfo';
 
+  static String requestDetailsCommercial(int requestId) =>
+      "/v1/balady-commercial-services/request/$requestId";
+
 //! Renew Commercial Service
   static String validateBeforeApply(int requestId) =>
       'v1/balady-commercial-services/mobile/renew-request/validate-before-apply/$requestId';

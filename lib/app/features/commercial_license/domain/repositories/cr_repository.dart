@@ -6,6 +6,7 @@ import '../../data/models/additional_activity_details_response.dart';
 import '../../data/models/additional_activity_response.dart';
 import '../../data/models/board_contract_response.dart';
 import '../../data/models/citizen_info_model.dart';
+import '../../data/models/commercial_request_details_response.dart';
 import '../../data/models/cr_attachment_response_model.dart';
 import '../../data/models/qr/apply_commercial_response_model.dart';
 import '../../data/models/qr/qr_details_model.dart';
@@ -142,4 +143,6 @@ abstract class CrRepository {
 
   Future<Either<Failure, CitizenInfoModel>> getCizenInfo(
       {required CitizenInfoParams params});
+  Future<Either<Failure, CommercialRequestDetailsResponse>> getRequestDetails(
+      {required int params});
 }
