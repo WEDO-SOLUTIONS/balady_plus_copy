@@ -224,6 +224,7 @@ class WebService {
           "x-channel-id": "MOBILE",
         };
 
+        print(headers);
         if (extraHeadersParams != null) headers.addAll(extraHeadersParams);
 
         var response = await http.get(

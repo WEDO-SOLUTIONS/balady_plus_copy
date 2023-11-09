@@ -45,7 +45,8 @@ class TransactionDetailsModel extends TransactionDetails {
       super.serviceGroupId,
       super.serviceId,
       super.serviceGroupName,
-      super.serviceName});
+      super.serviceName,
+      super.serviceTypeId});
 
   factory TransactionDetailsModel.fromJson(Map<String, dynamic> json) =>
       TransactionDetailsModel(
@@ -71,6 +72,7 @@ class TransactionDetailsModel extends TransactionDetails {
           licenseType: json["LicenseType"],
           violatorType: json["ViolatorType"],
           noOfUnits: json["NoOfUnits"],
+          serviceTypeId: json["ServiceTypeId"],
           isObjectionAllowed: json["IsObjectionAllowed"],
           objectionRequestNumber: json["ObjectionRequestNumber"],
           objectionTypeName: json["ObjectionTypeName"],

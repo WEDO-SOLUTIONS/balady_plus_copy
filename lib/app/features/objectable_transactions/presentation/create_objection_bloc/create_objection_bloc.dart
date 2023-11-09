@@ -184,6 +184,7 @@ class CreateObjectionBloc
           serviceId: item?.serviceId,
           objectionTypeId: item?.objectionTypeId,
           objectedTransactionId: item?.transactionId,
+          serviceTypeId: item?.serviceTypeId,
           objectedTransactionDisplayNumber: item?.transactionNumber,
           submitterRole: CommonProperties.selectedDelegator != null
               ? CommonProperties.selectedDelegator?.roleId
@@ -205,6 +206,7 @@ class CreateObjectionBloc
           subMunicipalityID: details?.subMunicipalityId,
           serviceGroupId: details?.serviceGroupId,
           serviceId: details?.serviceId,
+          serviceTypeId: details?.serviceTypeId,
           objectionTypeId: details?.objectionTypeId,
           objectedTransactionId: details?.violationId,
           submitterRole: CommonProperties.selectedDelegator != null

@@ -7,6 +7,7 @@ class CreateObjectionParams {
   String? serviceId;
   String? municipalityID;
   String? subMunicipalityID;
+  String? serviceTypeId;
 
   String? submitterRole;
   String? commercialRecord;
@@ -27,7 +28,8 @@ class CreateObjectionParams {
       this.submitterRole,
       this.commercialRecord,
       this.facilityUniqueID,
-      this.objectedTransactionDisplayNumber});
+      this.objectedTransactionDisplayNumber,
+      this.serviceTypeId});
   Map<String, dynamic> toMap() {
     return {
       "MainRequestData": {
@@ -35,7 +37,8 @@ class CreateObjectionParams {
         "ServiceGroupId": serviceGroupId,
         "ServiceId": serviceId,
         "MunicipalityID": municipalityID,
-        "SubMunicipalityID": subMunicipalityID
+        "SubMunicipalityID": subMunicipalityID,
+        "ServiceTypeId": serviceTypeId
       },
       "RequestSubmitterData": {
         "SubmitterRole": submitterRole,
