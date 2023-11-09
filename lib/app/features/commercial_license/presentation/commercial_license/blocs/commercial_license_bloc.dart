@@ -98,7 +98,8 @@ class CommercialLicenseBloc
   Future<void> _updateRequestIdHandler(
       UpdateRequestFieldEvent e, Emitter emitter) async {
     emitter(state.copyWith(
-        requestId: e.requestId, locationResponse: e.saveLocationResponse));
+        requestId: e.requestId != null ? Nullable(e.requestId) : null,
+        locationResponse: e.saveLocationResponse));
   }
 
   Future<void> updateQrData(
@@ -138,7 +139,7 @@ class CommercialLicenseBloc
       status: BlocStatus.initial,
       isDraft: requestId != null ? true : false,
       currentPageValue: 0,
-      requestId: requestId,
+      requestId: Nullable(requestId),
       pagesList: const [
         CRStep1ApplicantData(),
         CRStep2ActivityData(),
