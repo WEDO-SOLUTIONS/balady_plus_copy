@@ -125,11 +125,11 @@ abstract class CrRepository {
 
   Future<Either<Failure, QrLookUpResponse>> getMalls({required String params});
 
-  Future<Either<Failure, bool>> validateSalamaReport(
+  Future<Either<Failure, dynamic>> validateSalamaReport(
       {required VerifySalamaRequest params});
-  Future<Either<Failure, bool>> validateSalamaBill(
+  Future<Either<Failure, dynamic>> validateSalamaBill(
       {required VerifySalamaRequest params});
-  Future<Either<Failure, bool>> validateSalamaPermit(
+  Future<Either<Failure, dynamic>> validateSalamaPermit(
       {required VerifySalamaRequest params});
 
   Future<Either<Failure, String>> getWarningMessage(

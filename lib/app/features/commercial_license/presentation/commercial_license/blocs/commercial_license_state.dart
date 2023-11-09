@@ -56,7 +56,7 @@ class CommercialLicenseState extends Equatable {
       {BlocStatus? status,
       int? currentPageValue,
       List<Widget>? pagesList,
-      int? requestId,
+      Nullable<int?>? requestId,
       SaveLocationResponse? locationResponse,
       ApplyCommercialResponseModel? applyCommercialResponse,
       CrCalculateFeesResponse? crCalculateFeesResponse,
@@ -67,7 +67,7 @@ class CommercialLicenseState extends Equatable {
         status: status ?? this.status,
         currentPageValue: currentPageValue ?? this.currentPageValue,
         pagesList: pagesList ?? this.pagesList,
-        requestId: requestId ?? this.requestId,
+        requestId: requestId == null ? this.requestId : requestId.value,
         crCalculateFeesResponse:
             crCalculateFeesResponse ?? this.crCalculateFeesResponse,
         selectedPeriod: selectedPeriod ?? this.selectedPeriod,

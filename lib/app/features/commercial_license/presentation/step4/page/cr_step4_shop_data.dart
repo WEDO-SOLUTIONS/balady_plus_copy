@@ -270,6 +270,7 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
                             TextWithCheckBtn(
                               title: "رقم التقرير الفني",
                               hint: "رقم التقرير الفني",
+                              textInputType: TextInputType.text,
                               validate: (String? t) {},
                               isValidate: state.isSalamaReportVerified ?? false,
                               currentValue: state.slamaReportNumber,
@@ -311,6 +312,7 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
                             TextWithCheckBtn(
                               title: "رقم تصريح سلامة",
                               hint: "رقم تصريح سلامة",
+                              textInputType: TextInputType.text,
                               validate: (String? t) {},
                               isValidate: state.isSalamaPermitVerified ?? false,
                               currentValue: state.salamaPermitNumber,
