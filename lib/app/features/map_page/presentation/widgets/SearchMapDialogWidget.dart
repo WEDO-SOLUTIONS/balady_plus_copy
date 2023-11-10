@@ -32,6 +32,7 @@ class SearchMapDialogWidget extends StatelessWidget {
                         SearchCategoryMessage.parks,
                         SearchCategoryMessage.hospitals,
                         SearchCategoryMessage.schools,
+                        SearchCategoryMessage.hotels,
                         CustomSearchCategory.events
                       ].map(
                         (e) {

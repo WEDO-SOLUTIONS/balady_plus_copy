@@ -130,6 +130,8 @@ extension SearchCategoryMessage {
             return [207]
         case .dentalCenters:
             return [222]
+        case .hotels:
+            return [269]
         }
     }
     
