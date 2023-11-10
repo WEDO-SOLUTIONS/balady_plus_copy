@@ -123,6 +123,7 @@ class SearchMapWidget extends StatelessWidget {
                             CustomSearchCategory.events,
                             SearchCategoryMessage.pharmacies,
                             SearchCategoryMessage.dentalCenters,
+                            SearchCategoryMessage.hotels,
                           ].map((e) {
                             SearchCategoryMessage? category;
                             CustomSearchCategory? custom;

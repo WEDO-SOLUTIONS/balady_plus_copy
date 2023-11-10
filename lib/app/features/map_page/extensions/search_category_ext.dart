@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
@@ -16,6 +14,7 @@ extension SearchCategoryData on SearchCategoryMessage {
       SearchCategoryMessage.schools => "المدارس",
       SearchCategoryMessage.pharmacies => "صيدليات",
       SearchCategoryMessage.dentalCenters => "مراكز الأسنان",
+      SearchCategoryMessage.hotels => "الفنادق والشقق المفروشه",
     };
   }
 
@@ -37,6 +36,8 @@ extension SearchCategoryData on SearchCategoryMessage {
         "assets/maps/icons/hospital_category_icon.svg",
       SearchCategoryMessage.dentalCenters =>
         "assets/maps/icons/school_category_icon.svg",
+      SearchCategoryMessage.hotels =>
+        "assets/maps/icons/school_category_icon.svg",
     };
   }
 
@@ -55,6 +56,7 @@ extension SearchCategoryData on SearchCategoryMessage {
       SearchCategoryMessage.schools => "assets/maps/icons/school_pin.svg",
       SearchCategoryMessage.pharmacies => "assets/maps/icons/hospital_pin.svg",
       SearchCategoryMessage.dentalCenters => "assets/maps/icons/school_pin.svg",
+      SearchCategoryMessage.hotels => "assets/maps/icons/school_pin.svg",
     };
   }
 
@@ -75,20 +77,22 @@ extension SearchCategoryData on SearchCategoryMessage {
         "assets/maps/icons/card_icon/hospital.png",
       SearchCategoryMessage.dentalCenters =>
         "assets/maps/icons/card_icon/school.png",
+      SearchCategoryMessage.hotels => "assets/maps/icons/card_icon/school.png",
     };
   }
 
   Color cardIconColor() {
     return switch (this) {
-      SearchCategoryMessage.mousques => Color(0xFFC8A83A),
-      SearchCategoryMessage.gasStations => Color(0xFF2E88F6),
+      SearchCategoryMessage.mousques => const Color(0xFFC8A83A),
+      SearchCategoryMessage.gasStations => const Color(0xFF2E88F6),
       SearchCategoryMessage.cafe => AppColor.secondary200Light,
-      SearchCategoryMessage.restaurants => Color(0xFFC8A83A),
+      SearchCategoryMessage.restaurants => const Color(0xFFC8A83A),
       SearchCategoryMessage.parks => AppColor.secondary200Light,
-      SearchCategoryMessage.hospitals => Color(0xff50A99E),
-      SearchCategoryMessage.schools => Color(0xff976403),
+      SearchCategoryMessage.hospitals => const Color(0xff50A99E),
+      SearchCategoryMessage.schools => const Color(0xff976403),
       SearchCategoryMessage.dentalCenters => Colors.blue,
       SearchCategoryMessage.pharmacies => Colors.yellow,
+      SearchCategoryMessage.hotels => Colors.yellow,
     };
   }
 }

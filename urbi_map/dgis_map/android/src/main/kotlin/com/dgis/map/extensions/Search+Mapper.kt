@@ -98,6 +98,7 @@ fun SearchCategoryMessage.toRubrics(): List<RubricId> {
         SearchCategoryMessage.SCHOOLS -> listOf(245)
         SearchCategoryMessage.PHARMACIES -> listOf(207)
         SearchCategoryMessage.DENTAL_CENTERS -> listOf(222)
+        SearchCategoryMessage.HOTELS -> listOf(269)
     }
 
     return ids.map {

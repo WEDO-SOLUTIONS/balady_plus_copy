@@ -862,6 +862,7 @@ enum SearchCategoryMessage {
   schools,
   pharmacies,
   dentalCenters,
+  hotels,
 }
 
 class SearchCategoryMessage_ {
