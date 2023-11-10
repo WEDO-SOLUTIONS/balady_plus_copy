@@ -258,7 +258,7 @@ class GeneralMapCardWidget extends StatelessWidget {
                                               )
                                             ]),
                                         const CustomVerticalSpace(height: 16),
-                                        Row(
+                                        /* Row(
                                           children:
                                               dataPoint?.openingHours?.values
                                                       .where((e) =>
@@ -339,7 +339,7 @@ class GeneralMapCardWidget extends StatelessWidget {
                                                       )
                                                       .toList() ??
                                                   [],
-                                        ),
+                                        ),*/
                                         const SizedBox(
                                           height: 20,
                                         ),

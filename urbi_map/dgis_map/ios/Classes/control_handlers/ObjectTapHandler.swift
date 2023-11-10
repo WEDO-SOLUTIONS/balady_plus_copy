@@ -45,6 +45,7 @@ class ObjectTapHandler {
     }
     
     private let map: Map
+    private let routeHandler: RouteHandler?
     private let mapObjectManager: MapObjectManager
     private let panoramasObjectManager: MapObjectManager
     private let imageFactory: IImageFactory
@@ -80,6 +81,7 @@ class ObjectTapHandler {
         panoramasMapObjectManager: MapObjectManager,
         ioObjectManager: MapObjectManager,
         imageFactory: IImageFactory,
+        routeHandler: RouteHandler?,
         eventChannel: DgisStreamHandler,
         registrar: FlutterPluginRegistrar
     ) {
@@ -87,6 +89,7 @@ class ObjectTapHandler {
         self.mapObjectManager = objectManager
         self.panoramasObjectManager = panoramasMapObjectManager
         self.imageFactory = imageFactory
+        self.routeHandler = routeHandler
         self.eventChannel = eventChannel
         self.ioObjectManager = ioObjectManager
         self.objectsQueue = DispatchQueue(
@@ -147,6 +150,9 @@ class ObjectTapHandler {
                     "cluster": cluster.toMap(id: clusterId)
                 ] as [String : Any])
             }
+            return
+        case is RouteMapObject:
+            self.routeHandler?.onRouteTap(tappedObject as! RouteMapObject)
             return
         default:
             self.eventChannel.error(code: Events.objectTapError)
@@ -218,7 +224,7 @@ class ObjectTapHandler {
                 LogicalPixel(value: $0.floatValue)
             } ?? LogicalPixel(value: 0),
             userData: MarkerId(marker.id),
-            animatedAppearance: false
+            animatedAppearance: marker.options.animatedAppearance?.boolValue ?? false
         )
 
         return Marker(options: options)

@@ -447,6 +447,33 @@ class MarkerOptionsMessageOld {
   final double iconWidth;
 }
 
+enum RouteSearchOptionsMessage {
+  car,
+  publicTransport,
+  bicycle,
+  pedestrian,
+  scooter,
+  truck,
+  taxi
+}
+
+class RouteEditorRouteParamsMessage {
+  RouteEditorRouteParamsMessage(
+    this.startPoint,
+    this.finishPoint,
+    // TODO: not yet supported
+    // this.intermediatePoints,
+    this.options,
+  );
+
+  final GeoPointMessage? startPoint;
+  final GeoPointMessage? finishPoint;
+
+  // TODO: not yet supported
+  // final List<RouteSearchPointMessage> intermediatePoints;
+  final RouteSearchOptionsMessage options;
+}
+
 enum DesiredAccuracyMessage { low, medium, high }
 
 class MarkerWithPhotoMessage {
@@ -583,6 +610,7 @@ class MarkerOptionsMessage {
     this.anchor,
     required this.text,
     this.textStyle,
+    this.animatedAppearance,
   });
 
   final GeoPointWithElevationMessage position;
@@ -590,6 +618,7 @@ class MarkerOptionsMessage {
   final MarkerAnchorMessage? anchor;
   final String? text;
   final MarkerTextStyleMessage? textStyle;
+  final bool? animatedAppearance;
 }
 
 class MarkerMessage {
@@ -1116,7 +1145,31 @@ abstract class MapApi {
   bool containsRect(GeoRectMessage outer, GeoRectMessage inner);
 
   @async
+  void setRouteParams(RouteEditorRouteParamsMessage params);
+
+  @async
+  void hideRoutes();
+
+  @async
+  void startNavigation();
+
+  @async
+  void startNavigationSimulation();
+
+  @async
+  void stopNavigation();
+
+  @async
   void setPanoramaMarkerAzimuth(MarkerAzimuthMessage message);
+
+  @async
+  void onCompassClicked();
+
+  @async
+  void setPublicTransportActiveRoute(int routeIndex);
+
+  @async
+  void toggleSound();
 
   @async
   void onTrafficAndParkingAttached();
@@ -1135,6 +1188,15 @@ abstract class MapApi {
 
   @async
   void setZoomRestrictions(double? min, double? max);
+
+  @async
+  void startFreeRoam();
+
+  @async
+  void stopFreeRoam();
+
+  @async
+  void setCameraPadding(CameraSetPaddingMessage cameraPadding);
 }
 
 @FlutterApi()

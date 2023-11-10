@@ -74,6 +74,15 @@ class SearchHandler: NSObject {
                 return
             }
             
+            completion(
+                response.toMessage(
+                    externalIds: nil
+                ),
+                nil
+            )
+            
+            return
+            
             var url = URLComponents(string: twinsApiUrl)!
             url.queryItems = [
                 URLQueryItem(name: "dgis_id", value: String(objectId.objectId)),

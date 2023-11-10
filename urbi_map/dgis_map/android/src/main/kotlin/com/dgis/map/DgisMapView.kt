@@ -53,6 +53,15 @@ class DgisMapView(
     private var objectTapHandler: ObjectTapHandler? = null
     private var visibleRectHandler: VisibleRectHandler? = null
     private var searchHandler: SearchHandler? = null
+    private var routeHandler: RouteHandler? = null
+    private val navigationHandler by unsafeLazy {
+        NavigationHandler(
+            sdkContext = sdkContext,
+            navigationView = mapView.findViewById(R.id.navigationView),
+            eventSink = eventSink,
+        )
+    }
+    private var compassControlHandler: CompassControlHandler? = null
     private var trafficAndParkingControlHandler: TrafficAndParkingControlHandler? = null
 
     /**
@@ -72,12 +81,14 @@ class DgisMapView(
 
     override fun dispose() {
         map?.close()
+        routeHandler?.close()
         zoomControlHandler?.close()
         locationControlHandler?.close()
         indoorControlHandler?.close()
         searchHandler?.close()
         locationSource.deactivate()
         visibleRectHandler?.close()
+        compassControlHandler?.close()
         trafficAndParkingControlHandler?.close()
     }
 
@@ -157,6 +168,24 @@ class DgisMapView(
             zoom = Zoom(cameraPosition.zoom.toFloat()),
             tilt = Tilt(cameraPosition.tilt.toFloat()),
             bearing = Bearing(cameraPosition.bearing)
+        )
+        result.success(null)
+    }
+
+    override fun setCameraPadding(
+            cameraPadding: CameraSetPaddingMessage,
+            result: Messages.Result<Void>
+    ) {
+        val map = map ?: kotlin.run {
+            result.error(IllegalArgumentException("Map has not been initialized"))
+            return
+        }
+
+        map.camera.padding = Padding(
+            left = cameraPadding.leftPadding.toInt(),
+            right = cameraPadding.rightPadding.toInt(),
+            bottom = cameraPadding.bottomPadding.toInt(),
+            top = cameraPadding.topPadding.toInt(),
         )
         result.success(null)
     }
@@ -273,6 +302,7 @@ class DgisMapView(
                     logicalPixel = LogicalPixel(value = 50f),
                     maxZoom = Zoom(value = 18f)
                 ),
+            routeHandler = routeHandler,
             eventSink = eventSink,
             sdkContext = sdkContext,
             api = FlutterMapApi(binaryMessenger)
@@ -491,6 +521,52 @@ class DgisMapView(
         result?.success(null)
     }
 
+    override fun setRouteParams(
+        params: RouteEditorRouteParamsMessage,
+        result: Messages.Result<Void>?
+    ) {
+        routeHandler?.setRouteParams(params);
+        result?.success(null)
+    }
+
+    override fun hideRoutes(result: Messages.Result<Void>?) {
+        routeHandler?.setRoutesVisible(false)
+        result?.success(null)
+    }
+
+    override fun startNavigation(result: Messages.Result<Void>?) {
+        val routeHandler = routeHandler ?: kotlin.run {
+            result?.error(Exception("RouteHandler not initialized"))
+            return
+        }
+        routeHandler.setRoutesVisible(false)
+        navigationHandler.startNavigation(
+            finishPoint = routeHandler.finishPoint,
+            options = routeHandler.options,
+            route = routeHandler.selectedRoute,
+            result = result
+        )
+    }
+
+    override fun startNavigationSimulation(result: Messages.Result<Void>?) {
+        val routeHandler = routeHandler ?: kotlin.run {
+            result?.error(Exception("RouteHandler not initialized"))
+            return
+        }
+        routeHandler.setRoutesVisible(false)
+        navigationHandler.startSimulation(
+            finishPoint = routeHandler.finishPoint,
+            options = routeHandler.options,
+            route = routeHandler.selectedRoute,
+            result = result
+        )
+    }
+
+    override fun stopNavigation(result: Messages.Result<Void>?) {
+        navigationHandler.stopNavigation()
+        result?.success(null)
+    }
+
     override fun addPanoramasMarkers(
         message: AddMarkersWithPhotoMessage,
         result: Messages.Result<Void>?
@@ -571,6 +647,11 @@ class DgisMapView(
         result?.success(null)
     }
 
+    override fun onCompassClicked(result: Messages.Result<Void>?) {
+        compassControlHandler?.onClicked()
+        result?.success(null)
+    }
+
     override fun onTrafficAndParkingAttached(result: Messages.Result<Void>?) {
         trafficAndParkingControlHandler?.onAttachToMap()
         result?.success(null)
@@ -648,6 +729,26 @@ class DgisMapView(
         result?.success(null)
     }
 
+    override fun setPublicTransportActiveRoute(routeIndex: Long, result: Messages.Result<Void>?) {
+        routeHandler?.setActiveRouteIndex(routeIndex)
+        result?.success(null)
+    }
+
+    override fun startFreeRoam(result: Messages.Result<Void>?) {
+        navigationHandler.startFreeRoam()
+        result?.success(null)
+    }
+
+    override fun stopFreeRoam(result: Messages.Result<Void>?) {
+        navigationHandler.stopFreeRoam()
+        result?.success(null)
+    }
+
+    override fun toggleSound(result: Messages.Result<Void>?) {
+        navigationHandler.toggleSounds()
+        result?.success(null)
+    }
+
     private fun onMapReady(map: DgisMap, result: ApiResult<InitializeMessage>) {
         this.map = map
 
@@ -658,6 +759,7 @@ class DgisMapView(
         )
         map.addSource(mapSource)
 
+        routeHandler = RouteHandler(map, sdkContext, eventSink, locationSource)
         zoomControlHandler = ZoomControlHandler(map, eventSink)
         locationControlHandler = LocationControlHandler(map, eventSink)
         indoorControlHandler = IndoorControlHandler(map, eventSink)
@@ -668,6 +770,7 @@ class DgisMapView(
             SearchManager.createOnlineManager(sdkContext),
             locationSource
         )
+        compassControlHandler = CompassControlHandler(map, eventSink)
         trafficAndParkingControlHandler = TrafficAndParkingControlHandler(map, eventSink)
         setupTapHandler()
 

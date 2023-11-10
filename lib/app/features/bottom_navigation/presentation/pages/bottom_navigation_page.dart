@@ -1,19 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart'
     show BlocProvider, MultiBlocProvider;
+import 'package:mapness/entry_point.dart';
 
 import '../../../../core/dependency_injection/dependency_injection_exports.dart'
     show sl;
 import '../../../../core/services/services_exports.dart' show NavigationService;
-import '../../../../core/utils/utils_exports.dart'
-    show BottomNavBar, CommonFunctions;
-import '../../../home_page/presentation/pages/home_page.dart';
-import '../../../nearby/presentation/pages/nearby_page.dart';
+import '../../../../core/utils/utils_exports.dart' show BottomNavBar;
 import '../../../public_services_features/prayer_times/presentation/cubit/prayer_times_cubit.dart';
-import '../../../services/services_exports.dart'
-    show ServicesCubit, ServicesPage;
-import '../../bottom_navigation_exports.dart'
-    show BottomNavBarCubit, BottomNavBarWidget;
+import '../../../services/services_exports.dart' show ServicesCubit;
+import '../../bottom_navigation_exports.dart' show BottomNavBarCubit;
 
 class BottomNavigationPage extends StatefulWidget {
   const BottomNavigationPage({super.key});
@@ -25,6 +21,8 @@ class BottomNavigationPage extends StatefulWidget {
 class _BottomNavigationPageState extends State<BottomNavigationPage> {
   late PageController _pageViewController;
   bool resizeToAvoidBottomInset = false;
+
+  bool navVisible = false;
 
   @override
   void initState() {
@@ -58,31 +56,14 @@ class _BottomNavigationPageState extends State<BottomNavigationPage> {
         ),
       ],
       child: Scaffold(
-        key: NavigationService.bottomNavKey,
         resizeToAvoidBottomInset: resizeToAvoidBottomInset,
-        body: PageView(
-          controller: _pageViewController,
-          physics: const NeverScrollableScrollPhysics(),
-          children: [
-            // Home-Page
-            const HomePage(),
-            // const NearbyPage(),
-            // Services-Page
-            //   Container(),
-            // Activities-Page
+        key: NavigationService.bottomNavKey,
+        body: MapnessEntryPoint(
+          [
             Container(),
-            // Profile-Page
+            Container(),
             Container(),
           ],
-        ),
-        bottomNavigationBar: BottomNavBarWidget(
-          onSelectedBottomNavBar: (index) {
-            _pageViewController.jumpToPage(
-              index,
-            );
-            resizeToAvoidBottomInset = index == 0 ? false : true;
-            setState(() {});
-          },
         ),
       ),
     );

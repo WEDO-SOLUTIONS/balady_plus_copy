@@ -36,6 +36,7 @@ class ObjectTapHandler(
     private val mapObjectManager: MapObjectManager,
     private val panoramasObjectManager: MapObjectManager,
     private val ioObjectManager: MapObjectManager,
+    private val routeHandler: RouteHandler?,
     private val sdkContext: Context,
     private val eventSink: EventSink,
     private val api: FlutterMapApi,
@@ -120,6 +121,9 @@ class ObjectTapHandler(
                 onDgisMapObjectTap(tappedObject, roi)
                 return
             }
+            is RouteMapObject -> {
+                routeHandler?.onRouteTap(tappedObject)
+            }
             is SimpleClusterObject -> {
                 val userData = tappedObject.userData
 
@@ -198,7 +202,7 @@ class ObjectTapHandler(
                 LogicalPixel(it.width.toFloat())
             } ?: LogicalPixel(0f),
             userData = MarkerId(marker.id),
-            animatedAppearance = false,
+            animatedAppearance = marker.options.animatedAppearance ?: false,
         )
 
         return Marker(options)

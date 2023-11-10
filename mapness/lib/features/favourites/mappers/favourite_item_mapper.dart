@@ -1,0 +1,24 @@
+import 'package:mapness/features/favourites/domain/favourite_item.dart';
+import 'package:mapness/features/favourites/mappers/favourite_item_place_entity_mapper.dart';
+import 'package:mapness/features/favourites/mappers/favourite_item_place_mapper.dart';
+import 'package:mapness/features/favourites/mappers/point_mapper.dart';
+import 'package:mapness/generated/protocol/protocol.pb.dart' as proto;
+
+extension FavouriteItemMapper on proto.FavouriteItem {
+  FavouriteItem toDomain() {
+    return FavouriteItem(
+      coordinates: place.location.point.toDomain(),
+      id: id,
+      title: place.title,
+      subtitle: place.subtitle,
+      entity: place.entity.toDomain(),
+    );
+  }
+
+  proto.FavouriteItem fromDomain(FavouriteItem item) {
+    return proto.FavouriteItem(
+      id: item.id,
+      place: FavouriteItemPlaceMapper.fromDomain(item),
+    );
+  }
+}

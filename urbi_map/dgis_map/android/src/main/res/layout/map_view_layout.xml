@@ -2,4 +2,15 @@
 <ru.dgis.sdk.map.MapView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/mapView"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"/>
+    android:layout_height="match_parent">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ru.dgis.sdk.navigation.NavigationView
+            android:id="@+id/navigationView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </FrameLayout>
+</ru.dgis.sdk.map.MapView>
