@@ -126,6 +126,10 @@ extension SearchCategoryMessage {
             return [201]
         case .schools:
             return [245]
+        case .pharmacies:
+            return [207]
+        case .dentalCenters:
+            return [222]
         }
     }
     
