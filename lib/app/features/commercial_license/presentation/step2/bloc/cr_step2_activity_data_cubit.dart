@@ -11,6 +11,8 @@ import '../../../../_shared_feature_/shared_feature_exports.dart';
 import '../../../commercial_license_exports.dart';
 import '../../../data/models/additional_activity_details_response.dart';
 import '../../../data/models/additional_activity_response.dart';
+import '../../../data/models/commercial_request_details_response.dart'
+    hide Activity;
 import '../../../data/models/salama_warning_request.dart';
 import '../../../domain/entities/addetional_activity_details_request.dart';
 import '../../../domain/entities/addetional_activity_request.dart';
@@ -18,8 +20,9 @@ import '../../../domain/use_cases/get_additional_activites.dart';
 import '../../../domain/use_cases/get_details_additional_activites.dart';
 import '../../../domain/use_cases/get_warning_messsage.dart';
 import '../../../domain/use_cases/get_warning_workflow_messsage.dart';
+import '../../step3/widgets/map_widgets/warning_message.dart';
 import '../page/salama_warning_message.dart';
-
+import 'package:collection/collection.dart';
 part 'cr_step2_activity_data_state.dart';
 
 class CrStep2ActivityDataCubit extends Cubit<CrStep2ActivityDataState> {
@@ -68,6 +71,10 @@ class CrStep2ActivityDataCubit extends Cubit<CrStep2ActivityDataState> {
               activityTerms: success.data?.result?.activityTerms,
             ));
       }
+
+      if (state.selectedIsicActivity?.craft == true) {
+        showCraftMessage();
+      }
     });
     getAddetionalActivites();
   }
@@ -109,7 +116,6 @@ class CrStep2ActivityDataCubit extends Cubit<CrStep2ActivityDataState> {
   }
 
   void onSelectSubActivity(SubActivityEntity subActivity) async {
-    print("onSelectSubActivity $subActivity");
     getSubActivityDetails(subActivity);
   }
 
@@ -121,7 +127,6 @@ class CrStep2ActivityDataCubit extends Cubit<CrStep2ActivityDataState> {
   }
 
   void updateWorkerType(WorkersTypes type) {
-    print(type);
     emit(state.copyWith(workerType: type, errorMessage: ""));
   }
 
@@ -181,6 +186,10 @@ class CrStep2ActivityDataCubit extends Cubit<CrStep2ActivityDataState> {
               activityTerms: success.data?.result?.activityTerms,
             ));
       }
+
+      if (state.selectedIsicActivity?.craft == true) {
+        showCraftMessage();
+      }
     });
   }
 
@@ -220,7 +229,6 @@ class CrStep2ActivityDataCubit extends Cubit<CrStep2ActivityDataState> {
               addetionalActivityDetailsListStatus: BlocStatus.failure,
               errorMessage: (failure as ServerFailure).errorMessage,
             )), (success) {
-      print("Successs $success");
       emit(state.copyWith(
           addetionalActivityDetailsListStatus: BlocStatus.success,
           addetionalItem: Nullable(item),
@@ -265,9 +273,7 @@ class CrStep2ActivityDataCubit extends Cubit<CrStep2ActivityDataState> {
   }
 
   void getSalamaWarningMessage() async {
-    print("ff");
     emit(state.copyWith(status: BlocStatus.loading, errorMessage: ""));
-    print("GGH");
     try {
       final response = await _getWarningMessage(SalamaWarningRequest(
           activities: state.selectedAddetionalList != null
@@ -351,5 +357,104 @@ class CrStep2ActivityDataCubit extends Cubit<CrStep2ActivityDataState> {
 
       return success;
     });
+  }
+
+  void showCraftMessage() {
+    BottomSheetDialog.showDraggableSheet(
+        NavigationService.navigatorKey.currentContext!,
+        child: BottomSheetWithActions(
+          title: "تنبيه",
+          action: Row(
+            children: [
+              Expanded(
+                child: ElevatedButtonWidget.primaryCustom(
+                    text: "موافق",
+                    onPressed: () {
+                      NavigationService.goBack();
+                    }),
+              ),
+            ],
+          ),
+          body: WarningMessage(
+              message:
+                  "عزيزي صاحب المنشأة: وجود عامل حرفي مرخص شرط أساسي لإصدار أو تجديد الرخص التجارية لمنشأتك . بادر بترخيص عمالتك حرفيا على منصة بلدي من خلال الرابط التالي https://balady.gov.sa/Services/Terms/?id=328 "),
+        ));
+  }
+
+  void initDraft() async {
+    bool isDraft = sl<CommercialLicenseBloc>().state.isDraft ?? false;
+    bool draftLoaded = state.draftLoaded ?? false;
+    print(isDraft);
+    print(draftLoaded);
+    if (draftLoaded == false && isDraft) {
+      // if (true) {
+      CommercialRequestDetailsResponse? requestData =
+          sl<CommercialLicenseBloc>().state.requestData;
+
+      RecordInfo? recordInfo = sl<CommercialLicenseBloc>().state.recordInfo;
+      print("EEE");
+      WorkersTypes? workerType;
+      bool? atmFeesPaid;
+      IsicActivity? selectedIsicActivity = state.selectedIsicActivity;
+      SubActivityEntity? selectedSubActivity = state.selectedSubActivity;
+      print("HHHH");
+      if (requestData?.activityInfo?.workerTypeId == 1) {
+        workerType = WorkersTypes.men;
+      }
+      if (requestData?.activityInfo?.workerTypeId == 2) {
+        workerType = WorkersTypes.women;
+      }
+      if (requestData?.activityInfo?.workerTypeId == 3) {
+        workerType = WorkersTypes.menWomen;
+      }
+
+      if (requestData?.activityInfo?.atmActivity == true) {
+        atmFeesPaid = requestData?.activityInfo?.atmFeesPaid;
+      }
+
+      if (requestData?.activityInfo?.mainActivity?.isicActivityId != null) {
+        selectedIsicActivity = recordInfo?.crInfo?.activities?.isicActivities
+            ?.firstWhereOrNull((element) =>
+                element.isicCode ==
+                requestData?.activityInfo?.mainActivity?.isicActivityId
+                    .toString());
+
+        final response =
+            await _getSubActivities(selectedIsicActivity?.id ?? '');
+        response.fold(
+            (failure) => emit(state.copyWith(
+                  subActivitiesStatus: BlocStatus.failure,
+                  errorMessage: (failure as ServerFailure).errorMessage,
+                )), (success) {
+          emit(state.copyWith(
+              selectedIsicActivity: selectedIsicActivity,
+              subActivitiesStatus: BlocStatus.success,
+              subActivities: List.from(success)));
+        });
+        print("EEE 555");
+
+        if (requestData?.activityInfo?.mainActivity?.detailedActivityId !=
+            null) {
+          selectedSubActivity = state.subActivities?.firstWhereOrNull(
+              (element) =>
+                  element.id ==
+                  requestData?.activityInfo?.mainActivity?.detailedActivityId);
+
+          if (selectedSubActivity != null) {
+            getSubActivityDetails(selectedSubActivity);
+          }
+        }
+      }
+      emit(state.copyWith(
+          totalArea: requestData?.mainActivityArea?.toDouble(),
+          workerType: workerType,
+          selectedIsicActivity: selectedIsicActivity,
+          atmFeesPaid: atmFeesPaid,
+          draftLoaded: true,
+          draftStatus: BlocStatus.success,
+          selectedSubActivity: Nullable(selectedSubActivity)));
+    } else {
+      emit(state.copyWith(draftStatus: BlocStatus.success));
+    }
   }
 }

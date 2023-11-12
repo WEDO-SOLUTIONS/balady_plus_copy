@@ -144,6 +144,7 @@ class _RemoteConfig {
   static final mapRadius = _initValues<double>(
     devVal: 20000000000000.0,
     stgVal: 2000000000000.0,
+    preVal: 2000.0,
     prodVal: 2000.0,
   );
 

@@ -118,6 +118,7 @@ class RouteName {
   static const ZmZmPointsPage = '/ZmZmPointsPage';
   // ------- CR ---------
   static const commercialLicensePage = '/commercialLicensePage';
+  static const commercialLicenseServicePage = '/commercialLicenseServicePage';
 
   // ------- Wallet ------
   static const walletPage = '/walletPage';

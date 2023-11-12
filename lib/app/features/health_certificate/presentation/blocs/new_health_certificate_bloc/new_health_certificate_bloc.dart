@@ -9,6 +9,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/base/base_view_model.dart';
 import '../../../../../core/services/local/navigation_services.dart';
 import '../../core/services/view_models/new_details_health_license_view_model.dart';
+import '../../core/services/view_models/new_health_license_view_model.dart';
 import '../../pages/add_new_license/certificate_info_step_screen.dart';
 import '../../pages/add_new_license/pledges_step_screen.dart';
 
@@ -47,6 +48,14 @@ class NewHealthCertificateBloc
       GoToNextPageEvent e, Emitter emitter) async {
     if (isLastPage()) {
     } else {
+      if (state.currentPageValue == 0) {
+        final model = locator<HealthLicenseViewModel>();
+
+        List<String>? terms = await model.getTerms();
+        print("terms $terms");
+        if (terms == null) return;
+      }
+
       if (state.status == BlocStatus.performing) return;
       int nextPage = state.currentPageValue + 1;
 

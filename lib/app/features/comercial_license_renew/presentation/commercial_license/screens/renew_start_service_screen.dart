@@ -59,6 +59,19 @@ class RenewStartService extends StatelessWidget {
                     ),
                     SafeArea(
                       top: false,
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: ElevatedButtonWidget.startService(
+                          onPressed: () async {
+                            context
+                                .read<RenewStartServiceBloc>()
+                                .add(const ValidateBeforeApplyEvent());
+                          },
+                        ),
+                      ),
+                    )
+                    /*SafeArea(
+                      top: false,
                       child: ServiceWarningWidget(
                         warning: service.warning ?? "",
                         onPress: () async {
@@ -67,7 +80,7 @@ class RenewStartService extends StatelessWidget {
                               .add(const ValidateBeforeApplyEvent());
                         },
                       ),
-                    )
+                    )*/
                   ],
                 ),
                 if (state.status == BlocStatus.loading)
@@ -93,24 +106,13 @@ class RenewStartService extends StatelessWidget {
             "title": "تجديد رخصة تجارية",
             "description": "",
             "tag": null,
-            "warning": "يجب أن يتم إلغاء رخصة النشاط التجاري قبل شطب السجل التجاري."
-                "\n\n"
-                "سوف يتم إلغاء الرخصة بشكل آلــي بعد مرور سنة وأكثر من انتهاء الرخصة.\n\n"
-                "تأخرك في إلغاء الرخصة يعرضك لدفع رسوم تجديد عند الإلغاء وذلك وفقًــا للائحة التنفيذية لإجراءات التراخيص البلدية 1438 هـ.\n\n"
-                "يمكنك الاطلاع على حاسبة الرسوم المعلوماتية من خلال الرابط.\n"
-                "https://apps.balady.gov.sa//Eservices/FeesCalculator\n\n"
-                "رسوم الإلغاء 20 ريال مع ضرورة أن تكون الرخصة سارية.\n"
+            "warning": ""
           },
           "en": {
             "title": "تجديد رخصة تجارية",
             "description": "",
             "tag": null,
-            "warning": "يجب أن يتم إلغاء رخصة النشاط التجاري قبل شطب السجل التجاري.\n"
-                "سوف يتم إلغاء الرخصة بشكل آلــي بعد مرور سنة وأكثر من انتهاء الرخصة.\n"
-                "تأخرك في إلغاء الرخصة يعرضك لدفع رسوم تجديد عند الإلغاء وذلك وفقًــا للائحة التنفيذية لإجراءات التراخيص البلدية 1438 هـ.\n"
-                "يمكنك الاطلاع على حاسبة الرسوم المعلوماتية من خلال الرابط.\n"
-                "https://apps.balady.gov.sa//Eservices/FeesCalculator\n"
-                "رسوم الإلغاء 20 ريال مع ضرورة أن تكون الرخصة سارية.\n"
+            "warning": null
           },
           "cards": [
             {
@@ -124,7 +126,7 @@ class RenewStartService extends StatelessWidget {
               "ar": {
                 "title": "وصف الخدمة",
                 "description":
-                    "في مرحلة إنهاء ممارسة العمل التجاري يتوجب على المستفيد إلغاء رخصته التجارية المرتبطة بالمنشأة، ومن خلال هذه الخدمة يمكنك إلغاء الرخصة."
+                    "من خلال هذه الخدمة يمكنك تعزيز استمرارية عملك التجاري حيث تمكنك هذه الخدمة من تجديد رخصتك التجارية، كما يمكنك تجديد مع تعديل بيانات الرخصة. وهنالك نوعين من التجديد فوري وغير فوري حسب النشاط وموقع منشأتك."
               },
               "en": {"title": "Service Description", "description": ""}
             },
@@ -134,29 +136,11 @@ class RenewStartService extends StatelessWidget {
               "rate": 0,
               "duration": "0",
               "requirements": [
-                "في حالة أن الإلغاء غير فوري، يتم طلب مرفقات لإثبات إغلاق النشاط.",
+                "عقد الإيجار أو صك الملكية أو عقد الاستثمار للموقع من البلدية أو الجهات الحكومية الأخرى.",
+                "عقد النظافة (اختياري حسب التعاقد ونوع النشاط)."
               ],
               "ar": {"title": "المتطلبات", "description": ""},
               "en": {"title": "Requirements", "description": ""}
-            },
-            {
-              "iconName": IconPath.serviceCardFlow,
-              "type": ServiceCardsTypes.flow,
-              "rate": 0,
-              "duration": "0",
-              "flow": [
-                {
-                  "title": "من خلال المستفيد بنفسه (بدون مكتب هندسي)",
-                  "steps": [
-                    "تحديد سجل المنشأة واختيار الرخصة.",
-                    "استكمال البيانات المطلوبة إن وجدت.",
-                    "دفع الرسوم في حال الإلغاء الفوري أو إرسال الطلب للبلدية في حال أن الإلغاء غير فوري.",
-                    "إصدار شهادة امتثال المباني للمبنى.",
-                  ]
-                },
-              ],
-              "ar": {"title": "خطوات التقديم", "description": ""},
-              "en": {"title": "", "description": ""}
             },
             {
               "iconName": IconPath.warning2,
@@ -164,7 +148,14 @@ class RenewStartService extends StatelessWidget {
               "rate": 0,
               "duration": "",
               "fees": null,
-              "ar": {"title": "الغرامات والجزاءات", "description": "اضغط هنا"},
+              "ar": {
+                "title": "الاشتراطات والغرامات",
+                "description": "متطلبات واشتراطات الخدمة",
+                "descriptionLink": "https://new.balady.gov.sa/ar/node/10855",
+                "feesName": "لائحة الجزاءات عن المخالفات البلدية",
+                "feesLink":
+                    "https://balady.gov.sa/sites/default/files/2023-06/%D8%AC%D8%AF%D9%88%D9%84%20%D8%A7%D9%84%D8%AC%D8%B2%D8%A7%D8%A1%D8%A7%D8%AA%20%D8%B9%D9%86%20%D8%A7%D9%84%D9%85%D8%AE%D8%A7%D9%84%D9%81%D8%A7%D8%AA%20%D8%A7%D9%84%D8%A8%D9%84%D8%AF%D9%8A%D8%A9.pdf",
+              },
               "en": {"title": "Service Description", "description": ""}
             },
           ]

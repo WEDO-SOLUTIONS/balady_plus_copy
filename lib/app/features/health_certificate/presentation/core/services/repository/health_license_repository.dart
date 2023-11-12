@@ -111,6 +111,51 @@ class HealthLicenseRepository {
         state, error, result);
   }
 
+  Future<Tuple3<bool?, String?, List<String>?>> getTerms(
+      String userId,
+      String idType,
+      String birthDate,
+      String municipalityId,
+      bool showAreaNoLicencePermit,
+      {bool isRenew = false}) async {
+    String url = ApiConstants.healthTerms;
+    int requestType = isRenew ? 1303 : 1301;
+    print("HGG");
+    final body = await webServices.getApigeeRequest(url, queryParams: {
+      "birthDate": birthDate,
+      "gisCode": municipalityId,
+      "requestTypeId": requestType.toString(),
+      "showAreaNoLicencePermit": showAreaNoLicencePermit.toString()
+    });
+    print("FFF");
+    print(body);
+    bool state = body['state'];
+    dynamic data = body['data'];
+
+    String error =
+        body['error'] ?? Helpers.translatingWord("errors_server_error_2");
+    List<String>? result;
+    try {
+      if (!state) {
+        error = json.decode(data)?["data"]?["responseMessage"] ?? error;
+      }
+      print("HH");
+      print(json.decode(data)["data"]?["result"]);
+      if (json.decode(data)["data"]?["result"] != null)
+        result = List<String>.from(json.decode(data)["data"]["result"]);
+    } catch (ex) {
+      print(ex);
+      try {
+        Helpers.sendLog(
+          url: url,
+          data: data,
+          errorMsg: ex.toString(),
+        );
+      } catch (ex) {}
+    }
+    return Tuple3<bool?, String?, List<String>?>(state, error, result);
+  }
+
   Future<Tuple3<bool?, String?, ApplyNewHealthRequest?>> applyHealthCertificate(
       String userId,
       String idType,

@@ -9,6 +9,7 @@ import '../../../../../core/utils/utils_exports.dart';
 import '../../../../vd/domain/entities/gis/gis_params.dart';
 import '../../../../vd/domain/entities/gis/gis_response.dart';
 import '../../../commercial_license_exports.dart';
+import '../../../data/models/commercial_request_details_response.dart';
 import '../../../data/models/qr/apply_commercial_response_model.dart';
 import '../../../domain/use_cases/get_commercial_request_response.dart';
 import '../../step11/bloc/cr_step11_attachment_data_cubit.dart';
@@ -129,10 +130,29 @@ class CommercialLicenseBloc
     emit(state.copyWith(gisResponse: gis, status: BlocStatus.success));
   }
 
-/*Future<void> GetCommercialRequestData(){
+  Future<void> updateRecordInfo({RecordInfo? info}) async {
+    emit(state.copyWith(status: BlocStatus.loading));
 
-}
-*/
+    emit(state.copyWith(recordInfo: info, status: BlocStatus.success));
+  }
+
+  Future<void> getCommercialRequestData() async {
+    emit(state.copyWith(
+      detailsStatus: BlocStatus.loading,
+    ));
+
+    final failureOrSuccess = await _getCommercialRequestData(state.requestId!);
+    print("getCommercialRequestData $failureOrSuccess");
+
+    failureOrSuccess.fold((l) {
+      emit(state.copyWith(
+        detailsStatus: BlocStatus.failure,
+      ));
+    }, (r) {
+      emit(state.copyWith(
+          detailsStatus: BlocStatus.success, requestData: Nullable(r)));
+    });
+  }
 
   void initState({int? requestId}) {
     emit(state.copyWith(
@@ -140,6 +160,7 @@ class CommercialLicenseBloc
       isDraft: requestId != null ? true : false,
       currentPageValue: 0,
       requestId: Nullable(requestId),
+      requestData: Nullable(null),
       pagesList: const [
         CRStep1ApplicantData(),
         CRStep2ActivityData(),
@@ -156,5 +177,10 @@ class CommercialLicenseBloc
         CRStep13Review(),
       ],
     ));
+
+    if (requestId != null && state.requestData == null) {
+      print("getCommercialRequestData");
+      getCommercialRequestData();
+    }
   }
 }

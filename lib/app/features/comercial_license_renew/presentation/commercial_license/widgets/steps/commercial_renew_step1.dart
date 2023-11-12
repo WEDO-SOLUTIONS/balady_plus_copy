@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
+import '../../../../../../core/utils/constants/app_colors.dart';
 import '../../../../../../core/utils/enums/enums.dart';
 import '../../../../../_shared_feature_/data/entities/radio_item.dart';
 import '../../../../../_shared_feature_/presentation/buttons/elevated_button_widgets.dart';
@@ -58,7 +59,21 @@ class _CommercialRenewStep1State extends State<CommercialRenewStep1> {
                 RenewCommercialLicenseState>(
               builder: (context, state) {
                 return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    if ((state.showDeedAttach() ||
+                        state.showINVESTAttach() ||
+                        state.showEJARAttach() ||
+                        state.showDeedService() ||
+                        state.showINVESTService() ||
+                        state.showEJARService()))
+                      LabelTextWithOptional(
+                        label: "بيانات اثبات الموقع",
+                        labelColor: AppColor.blackModern700Light,
+                        labelSize: 16,
+                        labelTextAlign: TextAlign.start,
+                        showOptional: false,
+                      ),
                     DeedServiceContract(),
                     EjarServiceContract(),
                     InvestmentServiceContract(),
