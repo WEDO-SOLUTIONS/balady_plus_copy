@@ -94,6 +94,8 @@ class CrStep4ShopDataState extends Equatable {
   final String? boardContractSetting;
   final BoardContractItem? boardContractNumber;
   final List<BoardContractItem>? boardContractItems;
+  final bool? draftLoaded;
+  final BlocStatus draftStatus;
 
   const CrStep4ShopDataState(
       {this.accommodationTypesStatus = BlocStatus.initial,
@@ -158,7 +160,9 @@ class CrStep4ShopDataState extends Equatable {
       this.cameraAgreement,
       this.boardContractSetting,
       this.boardContractNumber,
-      this.boardContractItems});
+      this.boardContractItems,
+      this.draftLoaded,
+      this.draftStatus = BlocStatus.initial});
 
   @override
   List<Object?> get props {
@@ -226,7 +230,9 @@ class CrStep4ShopDataState extends Equatable {
       cameraAgreement,
       boardContractSetting,
       boardContractsStatus,
-      boardContractItems
+      boardContractItems,
+      draftLoaded,
+      draftStatus
     ];
   }
 
@@ -293,7 +299,9 @@ class CrStep4ShopDataState extends Equatable {
       Nullable<String?>? boardContractSetting,
       Nullable<BoardContractItem?>? boardContractNumber,
       BlocStatus? boardContractsStatus,
-      List<BoardContractItem>? boardContractItems}) {
+      List<BoardContractItem>? boardContractItems,
+      bool? draftLoaded,
+      BlocStatus? draftStatus}) {
     return CrStep4ShopDataState(
         status: status ?? this.status,
         ejarVerified:
@@ -329,7 +337,7 @@ class CrStep4ShopDataState extends Equatable {
         hasElevator: hasElevator ?? this.hasElevator,
         existInMall: existInMall ?? this.existInMall,
         selectedMall:
-            selectedMall == null ? this.selectedMall : this.selectedMall,
+            selectedMall == null ? this.selectedMall : selectedMall.value,
         floorNumber: floorNumber ?? this.floorNumber,
         isCitizenPledgedToClean: isCitizenPledgedToClean == null
             ? this.isCitizenPledgedToClean
@@ -400,7 +408,9 @@ class CrStep4ShopDataState extends Equatable {
             ? this.boardContractNumber
             : boardContractNumber.value,
         boardContractsStatus: boardContractsStatus ?? this.boardContractsStatus,
-        boardContractItems: boardContractItems ?? this.boardContractItems);
+        boardContractItems: boardContractItems ?? this.boardContractItems,
+        draftLoaded: draftLoaded ?? this.draftLoaded,
+        draftStatus: draftStatus ?? this.draftStatus);
   }
 
   bool isFormValid() {

@@ -65,6 +65,7 @@ import '../../features/_shared_feature_/presentation/pages/qiblah_webview_page.d
 import '../../features/_shared_feature_/presentation/pages/view_apigee_image_screen.dart';
 import '../../features/calendar/calendar_exports.dart';
 import '../../features/calendar/presentation/pages/calendar_details_page.dart';
+import '../../features/commercial_license/presentation/issue_start_service_screen.dart';
 import '../../features/commercial_license/presentation/step3/page/cr_map_page.dart';
 import '../../features/commercial_license/presentation/submit_application_successfully_new.dart';
 import '../../features/create_compliance/presentation/pages/compliance_details_page.dart';
@@ -415,6 +416,8 @@ class Routes {
         // ------ Commercial License -----
 
         RouteName.commercialLicensePage: (context) => CommercialLicenseScreen(),
+        RouteName.commercialLicenseServicePage: (context) =>
+            IssueStartService(),
 
         // ------ Wallet -----
 

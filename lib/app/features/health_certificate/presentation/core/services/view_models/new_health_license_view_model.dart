@@ -38,6 +38,7 @@ class HealthLicenseViewModel extends BaseViewModel {
   ValidateHealthCertificateResponse? validateHealthCertificateResponse;
 
   List<ListItem> cities = [];
+  List<String>? terms = [];
   List<ListItem> healthCentres = [];
   ListItem? selectedCity;
   ListItem? selectedHealthCentres;
@@ -109,6 +110,40 @@ class HealthLicenseViewModel extends BaseViewModel {
     }
 
     return false;
+  }
+
+  Future<List<String>?> getTerms() async {
+    try {
+      String userId = CommonProperties.userInfo?.idNo ?? "";
+      String idType = CommonProperties.userInfo?.getIdType() ?? "";
+      String birthDate = CommonProperties.userInfo?.getHijriBirthDate() ?? "";
+
+      showLoading();
+      String muncipalityid = gisLocationResult?.MUNICIPALITYUNIQUECODE ?? "";
+      Tuple3<bool?, String?, List<String>?> response =
+          await _rpository.getTerms(
+              userId,
+              idType,
+              birthDate,
+              muncipalityid,
+              noLicenseReason == "2" &&
+                  validateHealthCertificateResponse
+                          ?.data?.result?.showAreaNoLicencePermit ==
+                      true,
+              isRenew: isRenew);
+      hideLoading();
+      terms = response.item3;
+      if (response.item3 != null && response.item1 != null && response.item1!) {
+        terms = response.item3;
+        return response.item3;
+      } else {
+        showError(response.item2 ?? "");
+      }
+
+      return response.item3;
+    } catch (ex) {
+      print(ex);
+    }
   }
 
   Future<ApplyNewHealthRequest?> applyHealthCertificate() async {

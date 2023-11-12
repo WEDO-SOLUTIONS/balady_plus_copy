@@ -14,7 +14,7 @@ String commercialRequestDetailsResponseToJson(
 
 class CommercialRequestDetailsResponse {
   final int? requestId;
-  final int? mainActivityArea;
+  final double? mainActivityArea;
   final String? creationDate;
   final String? entityType;
   final int? currentTabId;
@@ -153,7 +153,7 @@ class CommercialRequestDetailsResponse {
           Map<String, dynamic> json) =>
       CommercialRequestDetailsResponse(
         requestId: json["requestId"],
-        mainActivityArea: json["mainActivityArea"],
+        mainActivityArea: json["mainActivityArea"]?.toDouble(),
         creationDate: json["creationDate"],
         entityType: json["entityType"],
         currentTabId: json["currentTabId"],
@@ -428,7 +428,7 @@ class ActivityInfo {
 
 class MainActivityElement {
   final int? detailedActivityId;
-  final int? area;
+  final double? area;
   final dynamic unitCount;
   final dynamic accommodationTypeId;
   final dynamic accommodationTypeName;
@@ -470,7 +470,7 @@ class MainActivityElement {
   factory MainActivityElement.fromJson(Map<String, dynamic> json) =>
       MainActivityElement(
         detailedActivityId: json["detailedActivityId"],
-        area: json["area"],
+        area: json["area"]?.toDouble(),
         unitCount: json["unitCount"],
         accommodationTypeId: json["accommodationTypeId"],
         accommodationTypeName: json["accommodationTypeName"],
@@ -906,7 +906,7 @@ class ShopInfo {
 class BoardsInfo {
   final int? typeId;
   final String? typeName;
-  final int? area;
+  final double? area;
 
   BoardsInfo({
     this.typeId,
@@ -917,7 +917,7 @@ class BoardsInfo {
   factory BoardsInfo.fromJson(Map<String, dynamic> json) => BoardsInfo(
         typeId: json["typeId"],
         typeName: json["typeName"],
-        area: json["area"],
+        area: json["area"]?.toDouble(),
       );
 
   Map<String, dynamic> toJson() => {

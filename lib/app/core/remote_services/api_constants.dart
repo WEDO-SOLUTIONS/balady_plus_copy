@@ -133,6 +133,8 @@ class ApiConstants {
   static String updateCertificatePhoto =
       '/v2/mobile-health-certificates/update-photo';
 
+  static String healthTerms = '/v2/mobile-health-certificates/terms';
+
 // Cr Info Service
   static const String CrInfoService = '$HelathCertificatesURL/cr-info/';
 

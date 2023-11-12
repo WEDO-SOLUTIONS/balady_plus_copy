@@ -25,6 +25,7 @@ import '../../../commercial_license_exports.dart'
         SaveLocationDataRequest,
         SaveLocationDetails,
         UpdateRequestFieldEvent;
+import '../../../data/models/commercial_request_details_response.dart';
 import '../../../domain/entities/save_location_response.dart';
 
 part 'map_event.dart';
@@ -292,5 +293,44 @@ class MapBloc extends Bloc<MapEvent, MapState> {
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12.0)),
             child: dialog));
+  }
+
+  void initDraft() async {
+    bool isDraft = sl<CommercialLicenseBloc>().state.isDraft ?? false;
+    bool draftLoaded = state.draftLoaded ?? false;
+
+    print(isDraft);
+    print(draftLoaded);
+    if (draftLoaded == false && isDraft) {
+      // if (true) {
+      CommercialRequestDetailsResponse? requestData =
+          sl<CommercialLicenseBloc>().state.requestData;
+
+      double? latitude =
+          double.tryParse(requestData?.locationInfo?.latitude ?? "");
+      double? longitude =
+          double.tryParse(requestData?.locationInfo?.longitude ?? "");
+
+      if (latitude != null && longitude != null) {
+        add(GetGISDataEvent(
+            params: GISParams(x: longitude, y: latitude), popPage: false));
+
+        emit(state.copyWith(
+          draftLoaded: true,
+          draftStatus: BlocStatus.success,
+          location: GISParams(x: longitude, y: latitude),
+          userLocation: GISParams(x: longitude, y: latitude),
+          mapNo: requestData?.locationInfo?.mapNo,
+          landNo: requestData?.locationInfo?.landNo,
+        ));
+
+        mapNpController.text = requestData?.locationInfo?.mapNo ?? "";
+        landNpController.text = requestData?.locationInfo?.landNo ?? "";
+      }
+    } else {
+      emit(state.copyWith(
+        draftStatus: BlocStatus.success,
+      ));
+    }
   }
 }

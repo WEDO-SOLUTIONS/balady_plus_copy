@@ -547,7 +547,10 @@ Map<String, dynamic> servicesConfig = {
       "order": 5,
       "isNew": false,
       "isImportant": false,
-      "action": {"type": "page", "value": RouteName.commercialLicensePage},
+      "action": {
+        "type": "page",
+        "value": RouteName.commercialLicenseServicePage
+      },
       "ar": {"title": "اصدار رخصة تجارية", "description": null, "tag": null},
       "en": {"title": "Zamzam Points", "description": null, "tag": null}
     },
