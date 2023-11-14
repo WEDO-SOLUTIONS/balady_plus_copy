@@ -87,8 +87,11 @@ class EjarServiceContract extends StatelessWidget {
                             ),
                             const CustomVerticalSpace(height: 8),
                             CustomTextWidget(
-                              state.info?.ownershipResponseDto
-                                      ?.contractNumber ??
+                              state
+                                      .info
+                                      ?.ownershipResponseDto
+                                      ?.tenancyContractInfo
+                                      ?.tenancyContractNumber ??
                                   "",
                               fontColor: AppColor.blackModern600Light,
                               fontSize: 14,
@@ -114,7 +117,8 @@ class EjarServiceContract extends StatelessWidget {
                             ),
                             const CustomVerticalSpace(height: 8),
                             CustomTextWidget(
-                              state.info?.ownershipResponseDto?.contractDate ??
+                              state.info?.ownershipResponseDto
+                                      ?.tenancyContractInfo?.contractEndDate ??
                                   "",
                               fontColor: AppColor.blackModern600Light,
                               fontSize: 14,

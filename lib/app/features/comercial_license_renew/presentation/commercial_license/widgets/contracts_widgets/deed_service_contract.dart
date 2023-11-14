@@ -87,8 +87,8 @@ class DeedServiceContract extends StatelessWidget {
                             ),
                             const CustomVerticalSpace(height: 8),
                             CustomTextWidget(
-                              state.info?.ownershipResponseDto
-                                      ?.contractNumber ??
+                              state.info?.ownershipResponseDto?.deedInfoResponse
+                                      ?.deedNumber ??
                                   "",
                               fontColor: AppColor.blackModern600Light,
                               fontSize: 14,
@@ -113,7 +113,8 @@ class DeedServiceContract extends StatelessWidget {
                             ),
                             const CustomVerticalSpace(height: 8),
                             CustomTextWidget(
-                              state.info?.ownershipResponseDto?.contractDate ??
+                              state.info?.ownershipResponseDto?.deedInfoResponse
+                                      ?.deedDate ??
                                   "",
                               fontColor: AppColor.blackModern600Light,
                               fontSize: 14,

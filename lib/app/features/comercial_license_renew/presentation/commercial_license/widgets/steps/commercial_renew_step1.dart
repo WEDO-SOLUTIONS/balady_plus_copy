@@ -214,15 +214,14 @@ class _CommercialRenewStep1State extends State<CommercialRenewStep1> {
                     if (state.crContractType == CRContractType.deed &&
                         state.crSubmitterType == CRSubmitterType.owner &&
                         state.crContractOption == CRContractOption.service) ...[
-                      TextWithCheckBtn(
-                        title: "رقم عقد التملك",
-                        hint: "رقم عقد التملك",
-                        validate: (String? t) {},
-                        controller: _deedServiceController,
-                        isValidate: false,
-                        currentValue: state.contractNumber,
-                        verify: () {},
-                        onTextChanged: (value) {
+                      CustomTextFieldWidget(
+                        label: "رقم عقد التملك",
+                        hintText: "رقم عقد التملك",
+                        isDigitsOnly: true,
+                        keyboardType: TextInputType.number,
+                        bottomMargin: 24,
+                        initialValue: state.contractNumber,
+                        onChanged: (value) {
                           context
                               .read<RenewCommercialLicenseBloc>()
                               .updateDeedInfo(deedNumber: value);
@@ -551,9 +550,11 @@ class _CommercialRenewStep1State extends State<CommercialRenewStep1> {
                         (state.showSalamaReport() &&
                             state.salamaExists == false))
                       NotesWidget(notes: [
-                        state.info?.salamaResponseDto
-                                ?.salamaReportInstructions ??
-                            ""
+                        (state.info?.salamaResponseDto
+                                    ?.salamaReportInstructions ??
+                                "")
+                            .replaceAll("<", "")
+                            .replaceAll(">", "")
                       ]),
                     if ((state.showSalamaBill() && !state.showSalmaExists()) ||
                         (state.showSalamaBill() && state.salamaExists == false))

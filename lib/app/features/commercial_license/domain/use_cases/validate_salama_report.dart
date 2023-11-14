@@ -10,6 +10,6 @@ class ValidateSalamaReport extends UseCase<dynamic, VerifySalamaRequest> {
   ValidateSalamaReport({required this.repository});
   @override
   Future<Either<Failure, dynamic>> call(VerifySalamaRequest params) async {
-    return await repository.validateSalamaPermit(params: params);
+    return await repository.validateSalamaReport(params: params);
   }
 }

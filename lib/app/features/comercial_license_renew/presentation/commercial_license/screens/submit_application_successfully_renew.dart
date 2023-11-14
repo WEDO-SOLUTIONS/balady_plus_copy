@@ -23,11 +23,11 @@ class SubmitApplicationSuccessfullyRenew extends StatelessWidget {
     (
       String from,
       CrSubmitResponseModel submitResponse,
-      double totalCost,
+      double? totalCost,
     ) arguments = ModalRoute.of(context)!.settings.arguments as (
       String from,
       CrSubmitResponseModel submitResponse,
-      double totalCost,
+      double? totalCost,
     );
     CrSubmitResponseModel submitResponse = arguments.$2;
     return WillPopScope(

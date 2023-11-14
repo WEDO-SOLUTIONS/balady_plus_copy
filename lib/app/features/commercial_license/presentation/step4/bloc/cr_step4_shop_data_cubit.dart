@@ -378,6 +378,7 @@ class CrStep4ShopDataCubit extends Cubit<CrStep4ShopDataState> {
         salamaPermitExist: state.salamaPermitExist,
         salamaPermitNumber: state.salamaPermitNumber,
         slamaReportNumber: state.slamaReportNumber,
+        mallId: state.selectedMall?.id,
         ejarContractInfo:
             state.ejarVerified == true ? state.ejarInfoRequst : null,
         deedInfo: state.deedVerified == true ? state.deedInfoRequst : null,
@@ -732,6 +733,20 @@ class CrStep4ShopDataCubit extends Cubit<CrStep4ShopDataState> {
         crSubmitterType = CRSubmitterType.rental;
       }
 
+      List<CommercialBoardType> selectedBoards = state.selectedBoards ?? [];
+
+      if (requestData?.shopInfo?.boardsInfo != null &&
+          requestData!.shopInfo!.boardsInfo!.isNotEmpty) {
+        requestData!.shopInfo!.boardsInfo!.forEachIndexed((i, e) {
+          if (e.typeId != null)
+            selectedBoards.add(CommercialBoardType(
+                id: i,
+                typeId: e.typeId!,
+                name: e.typeName ?? "",
+                area: e.area));
+        });
+      }
+
       emit(state.copyWith(
           draftLoaded: true,
           brand: brand,
@@ -740,6 +755,7 @@ class CrStep4ShopDataCubit extends Cubit<CrStep4ShopDataState> {
           shopName: shopName,
           draftStatus: BlocStatus.success,
           existInMall: existInMall,
+          selectedBoards: selectedBoards,
           hasElevator: hasElevator,
           isCitizenPledgedToClean: Nullable(isCitizenPledgedToClean),
           floorCount: floorCount != null ? floorCount.toString() : null,

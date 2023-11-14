@@ -78,8 +78,16 @@ class MapBloc extends Bloc<MapEvent, MapState> {
       emitter(state.copyWith(
         status: BlocStatus.success,
         gisResponse: success,
-        mapNo: success.planNo != "Null" ? success.planNo ?? "" : "",
-        landNo: success.parcelNo != "Null" ? success.parcelNo ?? "" : "",
+        mapNo: !e.refreshLocation
+            ? success.planNo != "Null"
+                ? success.planNo ?? ""
+                : ""
+            : null,
+        landNo: !e.refreshLocation
+            ? success.parcelNo != "Null"
+                ? success.parcelNo ?? ""
+                : ""
+            : null,
         errorMessage: "",
       ));
 
@@ -313,7 +321,9 @@ class MapBloc extends Bloc<MapEvent, MapState> {
 
       if (latitude != null && longitude != null) {
         add(GetGISDataEvent(
-            params: GISParams(x: longitude, y: latitude), popPage: false));
+            params: GISParams(x: longitude, y: latitude),
+            popPage: false,
+            refreshLocation: true));
 
         emit(state.copyWith(
           draftLoaded: true,
@@ -324,6 +334,7 @@ class MapBloc extends Bloc<MapEvent, MapState> {
           landNo: requestData?.locationInfo?.landNo,
         ));
 
+        print("LANNNND ${requestData?.locationInfo?.landNo}");
         mapNpController.text = requestData?.locationInfo?.mapNo ?? "";
         landNpController.text = requestData?.locationInfo?.landNo ?? "";
       }

@@ -493,6 +493,22 @@ class ApiUrl {
   static const calendarSearch = '/v1/saudi-calendar-services/entries/search';
   static const calendarDetails = '/v1/saudi-calendar-services/entries';
 
+// ! Events
+  static const regulationClauses =
+      '/v1/momtathel-mobile-services/regulation-clauses';
+
+  static const establishmentSizes =
+      '/v1/momtathel-mobile-services/establishment/sizes';
+
+  static const violationsClassifications =
+      '/v1/momtathel-mobile-services/classifications';
+
+  static const violatorLookups =
+      '/v1/momtathel-mobile-services/violator/lookups';
+
+  static const regulationClauseDetails =
+      '/v1/momtathel-mobile-services/regulation-clause/details';
+
 // -------  Commercial License Details ---------
   static String getCommercialLicenseDetails(int licenseId) =>
       '/v1/balady-commercial-services/licenses/$licenseId';

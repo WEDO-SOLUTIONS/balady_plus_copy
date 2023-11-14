@@ -158,6 +158,10 @@ import '../../features/transaction_inquiry/presentation/pages/inquiry/transactio
 import '../../features/transaction_inquiry/presentation/pages/request_service/new_request_service/new_request_service_location_screen.dart';
 import '../../features/transaction_inquiry/presentation/pages/request_service/new_request_service/new_request_service_page.dart';
 import '../../features/vd/vd_exports.dart';
+import '../../features/violation_guide/presentation/pages/approved_violation_page.dart';
+import '../../features/violation_guide/presentation/pages/violation_create_page.dart';
+import '../../features/violation_guide/presentation/pages/violation_guide_select_page.dart';
+import '../../features/violation_guide/presentation/pages/violation_results_page.dart';
 import '../../features/visual_distortion/visual_distoration_exports.dart';
 import '../../features/weather/weather_exports.dart';
 import '../../features/wallet/wallet_exports.dart';
@@ -536,6 +540,18 @@ class Routes {
         RouteName.eventsDetailsPage: (context) => SingleEventDescriptionPage(),
         RouteName.calendarMainPage: (context) => const MainPageCalendar(),
         RouteName.calendarDetailsPage: (context) => const CalendarDetailsPage(),
+
+
+RouteName.violationGuideMainPage: (context) => const ViolationGuideSelectPage(), 
+
+RouteName.violationCreatePage: (context) => const ViolationCreatePage(), 
+
+
+        RouteName.violationResultsPage: (context) =>
+            const ViolationResultsPage(),
+
+        RouteName.violationRegulationDetailsPage: (context) =>
+            const ApprovedViolationPage(),
 //    cubit = ModalRoute.of(context)!.settings.arguments as PrayerTimesCubit;
         // -------  Commercial License Cancel ---------
         RouteName.commercialLicenseApplyCancel: (context) =>

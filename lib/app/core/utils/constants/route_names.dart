@@ -206,9 +206,17 @@ class RouteName {
   static const submitApplicationSuccessfullyRenew =
       '/submitApplicationSuccessfullyRenew';
 
+  static const submitApplicationSuccessfullyNew =
+      '/submitApplicationSuccessfullyNew';
 
-      static const submitApplicationSuccessfullyNew = '/submitApplicationSuccessfullyNew';
-      
+  static const violationResultsPage = '/violationResultsPage';
+
+  static const violationRegulationDetailsPage =
+      '/violationRegulationDetailsPage';
+
+  static const violationGuideMainPage = '/violationGuideMainPage';
+
+  static const violationCreatePage = '/violationCreatePage';
 }
 
 class EtmamRoutesNames {

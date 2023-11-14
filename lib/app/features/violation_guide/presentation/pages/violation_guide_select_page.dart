@@ -1,5 +1,6 @@
 import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
+import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/violation_guide/presentation/pages/violation_create_page.dart';
 import 'package:balady_plus/app/features/violation_guide/presentation/widgets/violation_guide_select_widgets.dart/violation_guide_title.dart';
 import 'package:balady_plus/app/features/violation_guide/presentation/widgets/violation_guide_select_widgets.dart/violation_options_select.dart';
@@ -36,14 +37,10 @@ class ViolationGuideSelectPage extends StatelessWidget {
                 color2: AppColor.lightOrange100,
                 logo: IconPath.magicStar,
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const ViolationCreatePage()),
-                  );
+                  Navigator.pushNamed(context, RouteName.violationCreatePage);
                 },
               ),
-              const SizedBox(
+              /* const SizedBox(
                 height: 16,
               ),
               ViolationSelectOptionsWidget(
@@ -53,7 +50,7 @@ class ViolationGuideSelectPage extends StatelessWidget {
                 subtitle: 'violation_subtitle_select_option2'.tr(),
                 color1: AppColor.secondary400Light,
                 color2: AppColor.blue100,
-              ),
+              ),*/
             ]),
           ),
         ),
