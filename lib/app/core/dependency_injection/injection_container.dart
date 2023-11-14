@@ -71,6 +71,7 @@ import 'features/objectable_transactions_injection.dart';
 import 'features/objections_injection.dart';
 import 'features/renew_commercial_injection.dart';
 import 'features/retrive_dc_injection.dart';
+import 'features/violation_guide_injection.dart';
 
 /// sl -> Service Locator
 final sl = GetIt.instance;
@@ -111,6 +112,9 @@ void initialize() {
   LicensesInjection.init();
   //? Violations
   ViolationsInjection.init();
+
+  //? Violation Guide
+  ViolationGuideInjection.init();
 
 //? Objections
   ObjectionsInjection.init();

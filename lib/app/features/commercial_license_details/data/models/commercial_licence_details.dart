@@ -806,6 +806,10 @@ class ContractInfoResponseDto {
         // contractOptionsResponseDto: ContractOptionsResponseDto.fromJson(json["contractOptionsResponseDto"]),
         // investmentContractNumber: json["investmentContractNumber"],
       );
+
+  /* String getDisplayContractType(){
+
+     }*/
 }
 
 // class ContractOptionsResponseDto {

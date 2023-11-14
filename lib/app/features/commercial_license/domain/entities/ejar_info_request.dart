@@ -26,6 +26,12 @@ class EjarInfoRequest extends Equatable {
     };
   }
 
+  String? getId() {
+    if (nationalId?.isNotEmpty ?? false) return nationalId ?? "";
+
+    if (iqamaNumber?.isNotEmpty ?? false) return iqamaNumber ?? "";
+  }
+
   @override
   List<Object?> get props =>
       [iqamaNumber, nationalId, tenancyContractNumber, versionNumber];

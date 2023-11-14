@@ -146,7 +146,7 @@ class CRStep10AdditionalData extends StatelessWidget {
                             label: "اسم الجهة",
                             hintText: "اسم الجهة",
                             isDigitsOnly: true,
-                            keyboardType: TextInputType.number,
+                            keyboardType: TextInputType.text,
                             bottomMargin: 24,
                             onChanged: (value) {
                               context

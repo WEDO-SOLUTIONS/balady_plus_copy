@@ -3102,6 +3102,10 @@
 "approved_violation_text_1":"ممارسة نشاط دون الحصول على ترخيص بلدي",
 "approved_repeated":"اختر تكرار المخالفة",
 "violation_payment_text":"رسوم الغرامة للمرة الاولى ",
+"violation_payment_text_2":"رسوم الغرامة للمرة الثانية ",
+"violation_payment_text_3":"رسوم الغرامة للمرة الثالثة ",
+"violation_payment_text_4":"رسوم الغرامة للمرة الرابعة ",
+
 "500":"500",
 "action":"الإجراء",
 "warning_done":"يتم التنبيه",

@@ -500,6 +500,17 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
                               },
                             )
                           ],
+                          if (state.showAttachEjar() &&
+                              state.showServiceEjar()) ...[
+                            const NotesWidget(
+                              notes: [
+                                'عزيزي المستفيد .. يمكنكم اضافة عقد ايجار الكتروني أو ارفاق عقد ايجار'
+                              ],
+                            ),
+                            SizedBox(
+                              height: 16,
+                            ),
+                          ],
                           if (state.crContractType == CRContractType.ejar &&
                               state.crSubmitterType == CRSubmitterType.rental &&
                               state.crContractOption ==
@@ -520,6 +531,7 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
                             HijriCalendarAddetionalField(
                               fieldName: "تاريخ انتهاء عقد الايجار",
                               isMandatory: true,
+                              currentVlaue: state.contractDate,
                               onChanged: (value) {
                                 context
                                     .read<CrStep4ShopDataCubit>()
@@ -538,7 +550,8 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
                               isDigitsOnly: true,
                               keyboardType: TextInputType.number,
                               bottomMargin: 24,
-                              initialValue: "",
+                              initialValue:
+                                  state.ejarInfoRequst?.tenancyContractNumber,
                               onChanged: (value) {
                                 context
                                     .read<CrStep4ShopDataCubit>()
@@ -552,7 +565,7 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
                               isDigitsOnly: true,
                               keyboardType: TextInputType.number,
                               bottomMargin: 24,
-                              initialValue: "",
+                              initialValue: state.ejarInfoRequst?.versionNumber,
                               onChanged: (value) {
                                 context
                                     .read<CrStep4ShopDataCubit>()
@@ -565,7 +578,7 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
                               isDigitsOnly: true,
                               keyboardType: TextInputType.number,
                               bottomMargin: 24,
-                              initialValue: "",
+                              initialValue: state.ejarInfoRequst?.getId(),
                               onChanged: (value) {
                                 context
                                     .read<CrStep4ShopDataCubit>()
