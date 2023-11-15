@@ -83,7 +83,7 @@ class _CommercialRenewStep2State extends State<CommercialRenewStep2> {
               ),
             ),
             CRPreviousNextButtons(
-              isBtnDisabled: false,
+              isBtnDisabled: !state.isAttacmentsFormValid(),
               onPressed: () {
                 context.read<RenewCommercialLicenseBloc>().submitAttachments();
               },
@@ -152,7 +152,6 @@ class AttachmentListWidget extends StatelessWidget {
 
   void showFile(String fileUrl, String fileName) async {
     try {
-      print("HFRR");
       if (fileName.toLowerCase().contains(".png") ||
           fileName.toLowerCase().contains(".jpeg") ||
           fileName.toLowerCase().contains(".jpg")) {

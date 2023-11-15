@@ -96,6 +96,7 @@ class CrStep4ShopDataState extends Equatable {
   final List<BoardContractItem>? boardContractItems;
   final bool? draftLoaded;
   final BlocStatus draftStatus;
+  final String? currentDistrctId;
 
   const CrStep4ShopDataState(
       {this.accommodationTypesStatus = BlocStatus.initial,
@@ -162,6 +163,7 @@ class CrStep4ShopDataState extends Equatable {
       this.boardContractNumber,
       this.boardContractItems,
       this.draftLoaded,
+      this.currentDistrctId,
       this.draftStatus = BlocStatus.initial});
 
   @override
@@ -232,7 +234,8 @@ class CrStep4ShopDataState extends Equatable {
       boardContractsStatus,
       boardContractItems,
       draftLoaded,
-      draftStatus
+      draftStatus,
+      currentDistrctId
     ];
   }
 
@@ -301,7 +304,8 @@ class CrStep4ShopDataState extends Equatable {
       BlocStatus? boardContractsStatus,
       List<BoardContractItem>? boardContractItems,
       bool? draftLoaded,
-      BlocStatus? draftStatus}) {
+      BlocStatus? draftStatus,
+      Nullable<String?>? currentDistrctId}) {
     return CrStep4ShopDataState(
         status: status ?? this.status,
         ejarVerified:
@@ -410,7 +414,10 @@ class CrStep4ShopDataState extends Equatable {
         boardContractsStatus: boardContractsStatus ?? this.boardContractsStatus,
         boardContractItems: boardContractItems ?? this.boardContractItems,
         draftLoaded: draftLoaded ?? this.draftLoaded,
-        draftStatus: draftStatus ?? this.draftStatus);
+        draftStatus: draftStatus ?? this.draftStatus,
+        currentDistrctId: currentDistrctId == null
+            ? this.currentDistrctId
+            : currentDistrctId.value);
   }
 
   bool isFormValid() {

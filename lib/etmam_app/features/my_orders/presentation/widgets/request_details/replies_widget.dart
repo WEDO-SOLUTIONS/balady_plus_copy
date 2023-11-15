@@ -39,6 +39,10 @@ class RepliesWidget extends StatelessWidget {
                           0,
                       accepted: state.response?.allReplies?[index].isAccepted ??
                           false,
+                      financialAttachmentId: state
+                          .response?.allReplies?[index].financialAttachmentId,
+                      technicalAttachmentId: state
+                          .response?.allReplies?[index].technicalAttachmentId,
                     );
                   }),
               CustomVerticalSpace(height: 24),

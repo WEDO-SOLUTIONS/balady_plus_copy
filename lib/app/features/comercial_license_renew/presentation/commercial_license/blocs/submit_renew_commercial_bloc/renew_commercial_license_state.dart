@@ -54,6 +54,14 @@ class RenewCommercialLicenseState extends Equatable {
   final RenewRequestDetails? renewRequestDetails;
   final bool? salamaExists;
 
+  Cr700Validation get deedOwnerIdValidator => deedInfoRequst?.ownerId == null
+      ? Cr700Validation.pure()
+      : Cr700Validation.dirty(value: deedInfoRequst?.ownerId);
+  String? get deedOwnerIdValidatorErrorText =>
+      deedOwnerIdValidator.error?.message != null
+          ? (deedOwnerIdValidator.error?.message ?? "").tr()
+          : null;
+
   const RenewCommercialLicenseState(
       {this.status = BlocStatus.initial,
       this.contractsListStatus = BlocStatus.initial,
@@ -428,7 +436,7 @@ class RenewCommercialLicenseState extends Equatable {
       case "INVEST":
         return "عقد استثمار";
       case "DEED":
-        return "صك تملك";
+        return "عقد تملك";
     }
     return info?.ownershipResponseDto?.contractType ?? "";
   }
@@ -436,4 +444,34 @@ class RenewCommercialLicenseState extends Equatable {
   bool showSalmaExists() {
     return showSalamaPermit() && (showSalamaReport() || showSalamaBill());
   }
+
+  bool isFormValid() {
+    if (licensePeriod == null) return false;
+
+    if (crSubmitterType == null) return false;
+
+    if (crContractOption == CRContractOption.service &&
+        crContractType == CRContractType.deed &&
+        deedVerified == false) return false;
+
+    if (crContractOption == CRContractOption.service &&
+        crContractType == CRContractType.ejar &&
+        ejarVerified == false) return false;
+
+    return true;
+  }
+
+  bool isAttacmentsFormValid() {
+    bool isValid = true;
+
+    attachments?.forEach((element) {
+      if (element.isUploaded == false && element.isRequired == true) {
+        isValid = false;
+      }
+    });
+    return isValid;
+  }
+
+  String? getExitingContractNumber() =>
+      info?.cleanContractResponseDto?.cleanContractInfo?.contractNumber;
 }

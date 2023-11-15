@@ -11,7 +11,14 @@ import '../../../../../core/utils/constants/app_color.dart';
 class CostItemWidget extends StatelessWidget {
   final String? cost;
   final String? notes;
-  const CostItemWidget({super.key, this.cost, this.notes});
+  final String? financialAttachmentId;
+  final String? technicalAttachmentId;
+  const CostItemWidget(
+      {super.key,
+      this.cost,
+      this.notes,
+      this.financialAttachmentId,
+      this.technicalAttachmentId});
 
   @override
   Widget build(BuildContext context) {
@@ -41,8 +48,9 @@ class CostItemWidget extends StatelessWidget {
                   onTap: () {
                     BottomSheetDialog.showDraggableSheet(context,
                         child: OfferCostNotesDialog(
-                          notes: notes ?? "",
-                        ),
+                            notes: notes ?? "",
+                            financialAttachmentId: financialAttachmentId,
+                            technicalAttachmentId: technicalAttachmentId),
                         isFullHeight: true);
                   },
                   child: CustomTextWidget(

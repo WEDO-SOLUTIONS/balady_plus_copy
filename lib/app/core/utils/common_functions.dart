@@ -32,6 +32,7 @@ import 'package:uuid/uuid.dart';
 
 import '../../features/_shared_feature_/data/entities/file_data_item.dart';
 import '../../features/_shared_feature_/presentation/dialogs/upload_file_dialog.dart';
+import '../../features/_shared_feature_/presentation/pages/pdf_view.dart';
 import '../../features/entry_point/domain/use_cases/get_cookie.dart';
 import '../../features/profile_features/delegators/domain/entities/user_profile_entity.dart';
 import '../../features/vd/domain/entities/gis/gis_params.dart';
@@ -65,7 +66,12 @@ import '../../features/profile_features/delegators/delegators_exports.dart'
     show AgentEntity, DelegatorEntity;
 import '../dependency_injection/dependency_injection_exports.dart' show sl;
 import '../services/services_exports.dart'
-    show AppInterceptors, EntryPointBridge, NavigationService, NoParams;
+    show
+        AppInterceptors,
+        EntryPointBridge,
+        NavigationService,
+        NoParams,
+        WebService;
 import 'enums/enums.dart';
 
 // FirebaseAnalytics fbAnalytics = FirebaseAnalytics.instance;
@@ -976,6 +982,71 @@ class CommonFunctions {
         ).then((value) {});
       }
     } catch (ex) {}
+  }
+
+  static void showApigeeFile(String fileUrl, String fileName) async {
+    print(fileName);
+    try {
+      if (fileName.toLowerCase().contains(".png") ||
+          fileName.toLowerCase().contains(".jpeg") ||
+          fileName.toLowerCase().contains(".jpg")) {
+        //MM
+        print("HEETT");
+        NavigationService.navigatorKey.currentState!
+            .pushNamed(RouteName.apigeeImageFullScreen, arguments: fileUrl);
+      } else {
+        try {
+          EasyLoading.show();
+          File fileDownloaded = await createFileOfPdfUrl(fileUrl, fileName);
+          EasyLoading.dismiss();
+
+          /*  if (fileName.toLowerCase().contains(".pdf")) {
+            Uint8List bytes = fileDownloaded.readAsBytesSync();
+
+            Navigator.push(
+                NavigationService.navigatorKey.currentContext!,
+                MaterialPageRoute(
+                    builder: (context) => PDFViewer(
+                          file: bytes,
+                          title: fileName,
+                        )));
+          } else {*/
+          OpenFile.open(fileDownloaded.path);
+          //  }
+        } catch (ex) {
+          EasyLoading.dismiss();
+
+          print(ex);
+        }
+      }
+    } catch (ex) {
+      EasyLoading.dismiss();
+    }
+  }
+
+  static Future<File> createFileOfPdfUrl(
+      String fileUrl, String fileName) async {
+    final url = fileUrl;
+    Dio dio = Dio();
+    dio.options.baseUrl = RemoteConfig.apigeeURL;
+    dio.options.connectTimeout = const Duration(milliseconds: 60000);
+
+    dio.options.receiveTimeout = const Duration(milliseconds: 60000);
+
+    dio.options.sendTimeout = const Duration(milliseconds: 60000);
+    dio.addSentry();
+
+    dio.options.responseType = ResponseType.bytes;
+    dio.interceptors.add(AppInterceptors());
+    ;
+    Response r = await WebService(dio: dio).dio.getUri(Uri.parse(url));
+    String extension =
+        r.headers["Content-Type"].toString().split("/")[1].replaceAll("]", "");
+    print(r.headers["Content-Type"]);
+    String dir = (await getTemporaryDirectory()).path;
+    File file = new File('$dir/$fileName.$extension');
+    await file.writeAsBytes(r.data);
+    return file;
   }
 }
 

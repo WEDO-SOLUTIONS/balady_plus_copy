@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 import '../../../../../core/utils/utils_exports.dart';
 import '../../../../_shared_feature_/presentation/widgets/custom_cupertino_drop_down_widget.dart';
 import '../../../../_shared_feature_/shared_feature_exports.dart';
@@ -108,20 +109,34 @@ class _CommercialBoardDialogState extends State<CommercialBoardDialog> {
 
   @override
   Widget build(BuildContext context) {
+    bool isBtnDisabled = area == null || area == 0 || selectedItem == null;
     return BottomSheetWithActions(
       title: "اضافه لوحه اعلانيه",
       action: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 16),
-        child: ElevatedButtonWidget.add(onPressed: () {
-          board = CommercialBoardType(
-              id: board?.id ?? widget.length,
-              typeId: int.tryParse(selectedItem?.id) ?? 0,
-              name: selectedItem?.name ?? "",
-              area: area);
+          padding: const EdgeInsets.symmetric(vertical: 16),
+          child: EnhancedCustomElevatedButtonWidget(
+            btnColor:
+                isBtnDisabled ? AppColor.black200 : AppColor.primary900Light,
+            btnTextColor: isBtnDisabled ? AppColor.black400 : AppColor.white,
+            btnPressed: isBtnDisabled
+                ? () {}
+                : () {
+                    if (area != null) {
+                      board = CommercialBoardType(
+                          id: board?.id ?? widget.length,
+                          typeId: int.tryParse(selectedItem?.id) ?? 0,
+                          name: selectedItem?.name ?? "",
+                          area: area);
 
-          Navigator.pop(context, board);
-        }),
-      ),
+                      Navigator.pop(context, board);
+                    }
+                  },
+            btnRadius: 8,
+            btnText: "add".tr(),
+            btnTextSize: 16,
+            btnTextWeight: AppFontWeight.bold,
+            btnHeight: 56,
+          )),
       body: Column(
         mainAxisSize: MainAxisSize.min,
         children: [

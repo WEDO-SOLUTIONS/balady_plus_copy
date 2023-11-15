@@ -35,7 +35,7 @@ class SaveRenewRequest extends Equatable {
           "deedInfo": {
             "DeedNumber": deedInfoRequest?.deedNumber,
             "OwnerId": deedInfoRequest?.ownerId,
-            "OwnerIdType": "CR"
+            "OwnerIdType": "CR_700"
           },
           if (ejarContractInfo != null &&
               ejarContractInfo?.tenancyContractNumber != null)

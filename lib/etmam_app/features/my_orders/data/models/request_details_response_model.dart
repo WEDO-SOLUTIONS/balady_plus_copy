@@ -70,29 +70,32 @@ class RequestDetailsResponseModel extends RequestDetailsResponse {
 }
 
 class AcceptedOfferModel extends AcceptedOffer {
-  AcceptedOfferModel({
-    super.id,
-    super.number,
-    super.providerId,
-    super.value,
-    super.notes,
-    super.status,
-    super.providerName,
-    super.providerLogo,
-  });
+  AcceptedOfferModel(
+      {super.id,
+      super.number,
+      super.providerId,
+      super.value,
+      super.notes,
+      super.status,
+      super.providerName,
+      super.providerLogo,
+      super.financialAttachmentId,
+      super.technicalAttachmentId});
 
   factory AcceptedOfferModel.fromJson(Map<String, dynamic> json) =>
       AcceptedOfferModel(
-        id: json["id"],
-        number: json["number"],
-        providerId: json["providerId"],
-        value: json["value"],
-        notes: json["notes"],
-        status:
-            json["status"] != null ? StatusModel.fromMap(json["status"]) : null,
-        providerName: json["providerName"],
-        providerLogo: json["providerLogo"],
-      );
+          id: json["id"],
+          number: json["number"],
+          providerId: json["providerId"],
+          value: json["value"],
+          notes: json["notes"],
+          status: json["status"] != null
+              ? StatusModel.fromMap(json["status"])
+              : null,
+          providerName: json["providerName"],
+          providerLogo: json["providerLogo"],
+          financialAttachmentId: json["financialAttachmentId"],
+          technicalAttachmentId: json["technicalAttachmentId"]);
 }
 
 class StatusModel extends Status {

@@ -10,6 +10,7 @@ import '../../../../../core/errors/errors_exports.dart';
 import '../../../../../core/utils/enums/enums.dart';
 import '../../../../../core/utils/utils_exports.dart';
 import '../../../../_shared_feature_/shared_feature_exports.dart';
+import '../../../../vd/domain/entities/gis/gis_response.dart';
 import '../../../commercial_license_exports.dart';
 import '../../../data/models/board_contract_response.dart';
 import '../../../data/models/commercial_request_details_response.dart';
@@ -328,7 +329,7 @@ class CrStep4ShopDataCubit extends Cubit<CrStep4ShopDataState> {
   void initForm() {
     SaveLocationResponse? res =
         sl<CommercialLicenseBloc>().state.locationResponse;
-
+    GISResponse? gisResponse = sl<CommercialLicenseBloc>().state.gisResponse;
     if (state.locationResponse != res) {
       emit(state.copyWith(locationResponse: res, errorMessage: ""));
 
@@ -339,7 +340,19 @@ class CrStep4ShopDataCubit extends Cubit<CrStep4ShopDataState> {
 
         if (res?.boardContractSetting == "CONTRACT") getBoardsContracts();
       }
+
+      if (state.currentDistrctId != gisResponse?.Balady_DistrictID)
+        emit(state.copyWith(
+            selectedMall:
+                state.currentDistrctId != null ? Nullable(null) : null,
+            currentDistrctId: Nullable(gisResponse?.Balady_DistrictID)));
     }
+    print("EXXXXXX ${state.selectedMall}");
+    print("EXXXXXX ${state.currentDistrctId}");
+    print("EXXXXXX ${gisResponse?.Balady_DistrictID}");
+
+    initDraft();
+    print("EXXXXXX ${state.selectedMall}");
   }
 
   SaveLocationResponse? get saveLocationResponse =>
@@ -732,12 +745,28 @@ class CrStep4ShopDataCubit extends Cubit<CrStep4ShopDataState> {
           crContractType == CRContractType.invest) {
         crSubmitterType = CRSubmitterType.rental;
       }
+      QrLookUpItem? selectedMall = state.selectedMall;
+
+      try {
+        print("EXXXXXX {$requestData?.shopInfo?.mallDto}");
+        if (requestData?.shopInfo?.mallDto != null &&
+            requestData?.shopInfo?.mallDto["id"] != null &&
+            requestData?.shopInfo?.mallDto["name"] != null) {
+          selectedMall = QrLookUpItem(
+              name: requestData?.shopInfo?.mallDto["name"].toString(),
+              id: int.tryParse(
+                  requestData?.shopInfo?.mallDto["id"].toString() ?? ""));
+        }
+      } catch (ex) {
+        print("EXXXXXX $ex");
+      }
+      print("EXXXXXX {$selectedMall}");
 
       List<CommercialBoardType> selectedBoards = state.selectedBoards ?? [];
 
       if (requestData?.shopInfo?.boardsInfo != null &&
           requestData!.shopInfo!.boardsInfo!.isNotEmpty) {
-        requestData!.shopInfo!.boardsInfo!.forEachIndexed((i, e) {
+        requestData.shopInfo!.boardsInfo!.forEachIndexed((i, e) {
           if (e.typeId != null)
             selectedBoards.add(CommercialBoardType(
                 id: i,
@@ -750,6 +779,7 @@ class CrStep4ShopDataCubit extends Cubit<CrStep4ShopDataState> {
       emit(state.copyWith(
           draftLoaded: true,
           brand: brand,
+          selectedMall: selectedMall != null ? Nullable(selectedMall) : null,
           shopUnitNumber:
               shopUnitNumber != null ? shopUnitNumber.toString() : null,
           shopName: shopName,

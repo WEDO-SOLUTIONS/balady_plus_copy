@@ -29,62 +29,64 @@ class AttachContract extends StatelessWidget {
                 state.info?.ownershipResponseDto?.contractDownloadUrl != null &&
                 state
                     .info!.ownershipResponseDto!.contractDownloadUrl!.isNotEmpty
-            ? Container(
-                height: 85,
-                padding: const EdgeInsets.all(16),
-                margin: const EdgeInsets.only(top: 16),
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(16),
-                    color: AppColor.white),
-                child: Column(
-                  children: [
-                    Row(
-                      children: [
-                        Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            SvgPicture.asset(IconPath.vdSummuryDesc),
-                            const SizedBox(
-                              width: 8,
-                            ),
-                            CustomTextWidget(
-                              "عقد مرفق",
-                              fontColor: AppColor.blackModern500Light,
-                              fontSize: 16,
-                              maxLines: 2,
-                              fontWeight: AppFontWeight.bold,
-                            )
-                          ],
-                        ),
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: CustomTextWidget(
-                            state.getContractName(),
-                            fontColor: AppColor.primary900Light,
-                            fontSize: 12,
-                            fontWeight: AppFontWeight.bold,
+            ? GestureDetector(
+                onTap: () {
+                  CommonFunctions.showApigeeFile(
+                      state.info?.ownershipResponseDto?.contractDownloadUrl ??
+                          "",
+                      state.info?.ownershipResponseDto?.contractNumber ??
+                          DateTime.now().millisecond.toString());
+                },
+                child: Container(
+                  height: 85,
+                  padding: const EdgeInsets.all(16),
+                  margin: const EdgeInsets.only(top: 16),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(16),
+                      color: AppColor.white),
+                  child: Column(
+                    children: [
+                      Row(
+                        children: [
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              SvgPicture.asset(IconPath.vdSummuryDesc),
+                              const SizedBox(
+                                width: 8,
+                              ),
+                              CustomTextWidget(
+                                "عقد مرفق",
+                                fontColor: AppColor.blackModern500Light,
+                                fontSize: 16,
+                                maxLines: 2,
+                                fontWeight: AppFontWeight.bold,
+                              )
+                            ],
                           ),
-                        ),
-                        SizedBox(
-                          height: 32,
-                        ),
-                        Expanded(
-                            child: GestureDetector(
-                                onTap: () {
-                                  CommonFunctions.externalLaunch(state
-                                      .info
-                                      ?.ownershipResponseDto
-                                      ?.contractDownloadUrl);
-                                },
-                                child: const CustomSvgIconWidget(
-                                    IconPath.receiveSquare,
-                                    iconSize: 14.0))),
-                      ],
-                    ),
-                  ],
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: CustomTextWidget(
+                              state.getContractName(),
+                              fontColor: AppColor.primary900Light,
+                              fontSize: 12,
+                              fontWeight: AppFontWeight.bold,
+                            ),
+                          ),
+                          SizedBox(
+                            height: 32,
+                          ),
+                          Expanded(
+                              child: const CustomSvgIconWidget(
+                                  IconPath.receiveSquare,
+                                  iconSize: 14.0)),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               )
             : Container();

@@ -1,4 +1,5 @@
 import 'package:balady_plus/app/core/utils/enums/bloc_status.dart';
+import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -61,24 +62,6 @@ class _CommercialRenewStep1State extends State<CommercialRenewStep1> {
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    if ((state.showDeedAttach() ||
-                        state.showINVESTAttach() ||
-                        state.showEJARAttach() ||
-                        state.showDeedService() ||
-                        state.showINVESTService() ||
-                        state.showEJARService()))
-                      LabelTextWithOptional(
-                        label: "بيانات اثبات الموقع",
-                        labelColor: AppColor.blackModern700Light,
-                        labelSize: 16,
-                        labelTextAlign: TextAlign.start,
-                        showOptional: false,
-                      ),
-                    DeedServiceContract(),
-                    EjarServiceContract(),
-                    InvestmentServiceContract(),
-                    AttachContract(),
-                    CustomVerticalSpace(height: 16),
                     DropDownWithTitle(
                       title: "مدة التجديد بالسنوات".tr(),
                       selectedValue: state.licensePeriod != null
@@ -131,6 +114,24 @@ class _CommercialRenewStep1State extends State<CommercialRenewStep1> {
                               .modifyOwnershipWarning!
                         ],
                       ),
+                    if ((state.showDeedAttach() ||
+                        state.showINVESTAttach() ||
+                        state.showEJARAttach() ||
+                        state.showDeedService() ||
+                        state.showINVESTService() ||
+                        state.showEJARService()))
+                      LabelTextWithOptional(
+                        label: "بيانات اثبات الموقع",
+                        labelColor: AppColor.blackModern700Light,
+                        labelSize: 16,
+                        labelTextAlign: TextAlign.start,
+                        showOptional: false,
+                      ),
+                    DeedServiceContract(),
+                    EjarServiceContract(),
+                    InvestmentServiceContract(),
+                    AttachContract(),
+                    CustomVerticalSpace(height: 16),
                     HorizontalRadioGroup<CRSubmitterType>(
                       groupName: 'صفة صاحب المحل',
                       currentItem: state.crSubmitterType,
@@ -232,6 +233,7 @@ class _CommercialRenewStep1State extends State<CommercialRenewStep1> {
                         hintText: "رقم الهوية",
                         isDigitsOnly: true,
                         keyboardType: TextInputType.number,
+                        errorText: state.deedOwnerIdValidatorErrorText,
                         bottomMargin: 24,
                         initialValue: state.contractNumber,
                         onChanged: (value) {
@@ -255,9 +257,16 @@ class _CommercialRenewStep1State extends State<CommercialRenewStep1> {
                               ? "done_check".tr()
                               : "verify".tr(),
                           onPressed: () {
-                            context
-                                .read<RenewCommercialLicenseBloc>()
-                                .getDeedInfoHandler();
+                            if (state.deedOwnerIdValidator.isValid)
+                              context
+                                  .read<RenewCommercialLicenseBloc>()
+                                  .getDeedInfoHandler();
+                            else {
+                              CommonFunctions.showError(state
+                                      .deedOwnerIdValidator.error?.message
+                                      .tr() ??
+                                  "");
+                            }
                           }),
                       const CustomVerticalSpace(
                         height: 16,
@@ -340,7 +349,8 @@ class _CommercialRenewStep1State extends State<CommercialRenewStep1> {
                         isDigitsOnly: true,
                         keyboardType: TextInputType.number,
                         bottomMargin: 24,
-                        initialValue: "",
+                        initialValue:
+                            state.ejarInfoRequst?.tenancyContractNumber,
                         onChanged: (value) {
                           context
                               .read<RenewCommercialLicenseBloc>()
@@ -353,7 +363,7 @@ class _CommercialRenewStep1State extends State<CommercialRenewStep1> {
                         isDigitsOnly: true,
                         keyboardType: TextInputType.number,
                         bottomMargin: 24,
-                        initialValue: "",
+                        initialValue: state.ejarInfoRequst?.versionNumber,
                         onChanged: (value) {
                           context
                               .read<RenewCommercialLicenseBloc>()
@@ -366,7 +376,7 @@ class _CommercialRenewStep1State extends State<CommercialRenewStep1> {
                         isDigitsOnly: true,
                         keyboardType: TextInputType.number,
                         bottomMargin: 24,
-                        initialValue: "",
+                        initialValue: state.ejarInfoRequst?.getId(),
                         onChanged: (value) {
                           context
                               .read<RenewCommercialLicenseBloc>()
@@ -415,10 +425,9 @@ class _CommercialRenewStep1State extends State<CommercialRenewStep1> {
                       CustomTextFieldWidget(
                         label: "رقم عقد الإستثمار",
                         hintText: "رقم عقد الإستثمار",
-                        isDigitsOnly: true,
-                        keyboardType: TextInputType.number,
+                        keyboardType: TextInputType.text,
                         bottomMargin: 24,
-                        initialValue: "",
+                        initialValue: state.investmentContractNumber,
                         onChanged: (value) {
                           context
                               .read<RenewCommercialLicenseBloc>()
@@ -594,7 +603,7 @@ class _CommercialRenewStep1State extends State<CommercialRenewStep1> {
                         },
                       ),
                     CRPreviousNextButtons(
-                      isBtnDisabled: state.licensePeriod == null,
+                      isBtnDisabled: !state.isFormValid(),
                       onPressed: () {
                         context
                             .read<RenewCommercialLicenseBloc>()

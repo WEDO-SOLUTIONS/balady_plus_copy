@@ -143,6 +143,23 @@ class RenewStartService extends StatelessWidget {
               "en": {"title": "Requirements", "description": ""}
             },
             {
+              "iconName": IconPath.serviceCardFlow,
+              "type": ServiceCardsTypes.flow,
+              "rate": 0,
+              "duration": "0",
+              "flow": [
+                {
+                  "title": "",
+                  "steps": [
+                    "تحديد سجل المنشأة واختيار الرخصة",
+                    "دفع الرسوم إذا كان النشاط فوري أو إرسال الطلب للبلدية في حال الأنشطة غير الفوري.",
+                  ]
+                },
+              ],
+              "ar": {"title": "خطوات التقديم", "description": ""},
+              "en": {"title": "", "description": ""}
+            },
+            {
               "iconName": IconPath.warning2,
               "type": ServiceCardsTypes.authorInfo,
               "rate": 0,

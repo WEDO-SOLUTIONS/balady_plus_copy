@@ -49,7 +49,7 @@ class _CommercialLicenseBodyState extends State<CommercialLicenseBody> {
                       ModalRoute.withName(RouteName.bottomNavigation);
                   Navigator.of(context).popUntil((predicate));
                 },
-                requestNum: state.currentRequestIdText() ?? null,
+                requestNum: state.requestId,
               ),
               body: PageView.builder(
                 itemCount: state.pagesList.length,

@@ -2067,7 +2067,7 @@ class CrRemoteDataSourceImpl extends CrRemoteDataSource {
       final decodedResponse =
           ResponseBodyModel<dynamic>.fromMap(response.data, parsedResult: data);
 
-      return decodedResponse.data!.result!.toFuture();
+      return decodedResponse.data!.result!;
     } on DioError catch (error) {
       print(error);
       var errorCode;
@@ -2118,7 +2118,7 @@ class CrRemoteDataSourceImpl extends CrRemoteDataSource {
       final decodedResponse =
           ResponseBodyModel<dynamic>.fromMap(response.data, parsedResult: data);
 
-      return decodedResponse.data!.result!.toFuture();
+      return decodedResponse.data!.result!;
     } on DioError catch (error) {
       print(error);
       var errorCode;
@@ -2167,7 +2167,7 @@ class CrRemoteDataSourceImpl extends CrRemoteDataSource {
       final decodedResponse =
           ResponseBodyModel<dynamic>.fromMap(response.data, parsedResult: data);
 
-      return decodedResponse.data!.result!.toFuture();
+      return decodedResponse.data!.result!;
     } on DioError catch (error) {
       print(error);
       var errorCode;

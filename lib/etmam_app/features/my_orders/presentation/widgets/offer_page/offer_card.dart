@@ -38,25 +38,29 @@ class OfferCard extends StatelessWidget {
 
   final double cardHeight;
   final bool isOfferAccepted;
+  final String? financialAttachmentId;
+  final String? technicalAttachmentId;
   final Function onPress;
 
-  const OfferCard({
-    Key? key,
-    required this.providerName,
-    this.providerIcon,
-    this.cardHeight = 300,
-    required this.onAcceptPressed,
-    required this.onCancelPressed,
-    required this.onPress,
-    this.acceptTxt,
-    this.cancelTxt,
-    this.rating,
-    this.value,
-    this.notes,
-    this.showAccept,
-    this.showCancel,
-    this.isOfferAccepted = false,
-  }) : super(key: key);
+  const OfferCard(
+      {Key? key,
+      required this.providerName,
+      this.providerIcon,
+      this.cardHeight = 300,
+      required this.onAcceptPressed,
+      required this.onCancelPressed,
+      required this.onPress,
+      this.acceptTxt,
+      this.cancelTxt,
+      this.rating,
+      this.value,
+      this.notes,
+      this.showAccept,
+      this.showCancel,
+      this.isOfferAccepted = false,
+      this.financialAttachmentId,
+      this.technicalAttachmentId})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -108,9 +112,10 @@ class OfferCard extends StatelessWidget {
                   ),
                   CustomVerticalSpace(height: 16),
                   CostItemWidget(
-                    cost: value,
-                    notes: notes,
-                  ),
+                      cost: value,
+                      notes: notes,
+                      technicalAttachmentId: technicalAttachmentId,
+                      financialAttachmentId: financialAttachmentId),
                   Spacer(),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
