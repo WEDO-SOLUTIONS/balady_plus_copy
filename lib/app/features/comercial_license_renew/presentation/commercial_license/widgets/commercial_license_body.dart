@@ -3,7 +3,7 @@ import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
-import '../../../../vd/presentation/widgets/details_widgets/details_app_bar.dart';
+import '../../../../vd/presentation/widgets/details_widgets/details_app_bar_two.dart';
 import '../../../renew_commercial_license_exports.dart';
 
 class CommercialLicenseBody extends StatelessWidget {
@@ -17,7 +17,8 @@ class CommercialLicenseBody extends StatelessWidget {
         RenewCommercialLicenseState>(
       listener: (context, state) {
         if (state.status == BlocStatus.failure ||
-            state.contractsListStatus == BlocStatus.failure) {
+            state.contractsListStatus == BlocStatus.failure ||
+            state.requestDetailsStatus == BlocStatus.failure) {
           CommonFunctions.showError(state.errorMessage ?? "");
         }
       },
@@ -35,17 +36,19 @@ class CommercialLicenseBody extends StatelessWidget {
                 onTap: () =>
                     context.read<RenewCommercialLicenseBloc>().hideKeyboard(),
                 child: Scaffold(
-                  appBar: FormAppBar(
-                    pageLength: state.pagesList.length,
-                    currentStep: state.currentPageValue + 1,
-                    backOnPress: () => context
-                        .read<RenewCommercialLicenseBloc>()
-                        .add(const GoToPreviousPageEvent()),
-                    onClose: () {
-                      int count = 0;
-                      Navigator.of(context).popUntil((_) => count++ >= 2);
-                    },
-                  ),
+                  appBar: DetailsAppBarTwo(
+                      pageLength: state.pagesList.length,
+                      currentStep: state.currentPageValue + 1,
+                      backOnPress: () => context
+                          .read<RenewCommercialLicenseBloc>()
+                          .add(const GoToPreviousPageEvent()),
+                      onTapCloseAction: () {
+                        FocusManager.instance.primaryFocus?.unfocus();
+                        bool Function(Route<dynamic>) predicate =
+                            ModalRoute.withName(RouteName.bottomNavigation);
+                        Navigator.of(context).popUntil((predicate));
+                      },
+                      requestNum: state.requestId),
                   body: PageView.builder(
                     itemCount: state.pagesList.length,
                     scrollDirection: Axis.vertical,

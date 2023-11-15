@@ -23,7 +23,9 @@
   "passwordMismatchValidation": "كلمة المرور غير متطابقة.",
   "checkboxRequiredValidation": "خانة الاختيار مطلوبة.",
   "phoneNumberStartsValidation": "رقم الهاتف يجب أن يبدأ بـ 05.",
+  "cr700StartsWith7Validation": "رقم الهوية يجب أن يبدأ ب 700", 
   "phoneNumberLengthValidation": "رقم الهاتف يجب أن لا يقل عن 10 أرقام.",
+  "cr700LengthValidation": "رقم الهوية يجب أن لا يقل عن 10 أرقام.",
   "invalidEndDateValidation": "تاريخ النهاية غير صحيح.",
   "readOnlyFieldValidation": "هذا الحقل للقراءة فقط.",
   "selectFileValidation": "من فضلك قم باختيار الملف.",
@@ -617,6 +619,7 @@
   "vd_full_name": "الاسم بالكامل",
   "vd_mobile_number": "رقم الجوال",
   "vd_request_submit": "تم تقديم الطلب بنجاح",
+  "commercial_request_submit":"تم تقديم الطلب رقم {} بنجاح", 
   "lbl_thank_you": "شكراً لك",
   "lbl_thank_you2": "شكراً لتواصلك معنا",
   "lbl_evaluation_thanks_desc": "تم استلام تقييمك بنجاح",
@@ -1005,8 +1008,8 @@
   "services": "الخدمات",
   "total_cost": "التكلفة الاجمالية",
   "sar": "ريال",
-  "click_more_details": "عرض تفاصيل التكلفة",
-  "cost_details": "تفاصيل التكلفة",
+  "click_more_details": "استعراض تفاصيل العرض والتكلفة",
+  "cost_details": "تفاصيل العرض و التكلفة",
   "show_all": "عرض الكل",
   "most_ordered_services": "الخدمات الأكثر طلباً",
   "top_rated_providers": "المكاتب الاعلى تقييماًً",
@@ -1191,6 +1194,10 @@
   "manadatory": "(الزامي) ",
   "office_delegated": "تم تفويض هذا المكتب",
   "bidding_warning_msg": "عزيزي المستفيد،، سوف يتم ارسال طلب عرض أسعار للخدمة المختارة من قبلكم لمزودي الخدمة ويمكنكم استقبال العروض من قبل مزودي الخدمة والمفاضلة بينها واختيار الأنسب",
+"financialAttachmentId":"العرض المالي", 
+"technicalAttachmentId":"العرض الفني", 
+
+
 
   "_Balady": "Balady Texts",
   "appNameWord": "بلدي",
@@ -3362,7 +3369,7 @@
   "salamaBillNumber": "رقم فاتورة أدوات سلامة",
   "contractType": "نوع ملكية المحل",
   "contractNumber": "رقم صك الملكية",
-  "contractOption": "آلية عقد النظافة",
+  "contractOption": "نوع العقد",
 
   "data_attachments":"بيانات المرفقات",
   "permitType": "نوع التصريح",

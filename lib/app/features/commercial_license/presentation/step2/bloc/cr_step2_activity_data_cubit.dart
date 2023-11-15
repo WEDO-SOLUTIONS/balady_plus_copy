@@ -377,7 +377,7 @@ class CrStep2ActivityDataCubit extends Cubit<CrStep2ActivityDataState> {
           ),
           body: WarningMessage(
               message:
-                  "عزيزي صاحب المنشأة: وجود عامل حرفي مرخص شرط أساسي لإصدار أو تجديد الرخص التجارية لمنشأتك . بادر بترخيص عمالتك حرفيا على منصة بلدي من خلال الرابط التالي https://balady.gov.sa/Services/Terms/?id=328 "),
+                  "<p>عزيزي صاحب المنشأة: وجود عامل حرفي مرخص شرط أساسي لإصدار أو تجديد الرخص التجارية لمنشأتك . بادر بترخيص عمالتك حرفيا على منصة بلدي من خلال الرابط التالي <a href='https://balady.gov.sa/Services/Terms/?id=328'>https://balady.gov.sa/Services/Terms/?id=328 </a> </p>"),
         ));
   }
 

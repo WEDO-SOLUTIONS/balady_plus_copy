@@ -4,6 +4,7 @@ import 'package:balady_plus/app/core/utils/extensions/date_time_extension.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:meta/meta.dart';
 
 import '../../../../../../core/dependency_injection/injection_container.dart';
@@ -12,6 +13,8 @@ import '../../../../../../core/services/services_exports.dart';
 import '../../../../../../core/utils/enums/enums.dart';
 import '../../../../../../core/utils/utils_exports.dart';
 import '../../../../../_shared_feature_/data/entities/success_screen_args.dart';
+import '../../../../../_shared_feature_/data/entities/validators/cr_700_validation.dart';
+import '../../../../../_shared_feature_/data/entities/validators/phone_number_validation.dart';
 import '../../../../../transaction_inquiry/presentation/core/models/attachment_model.dart';
 import '../../../../data/models/renew_request_details.dart';
 import '../../../../domain/entities/cr_attachment_response.dart';
@@ -77,9 +80,7 @@ class RenewCommercialLicenseBloc
       if (state.status == BlocStatus.performing) return;
       int nextPage = state.currentPageValue + 1;
 
-      emitter(state.copyWith(
-        status: BlocStatus.performing,
-      ));
+      emitter(state.copyWith(status: BlocStatus.performing, errorMessage: ""));
 
       await controller.animateToPage(nextPage,
           duration: const Duration(milliseconds: 400), curve: Curves.easeIn);
@@ -97,9 +98,7 @@ class RenewCommercialLicenseBloc
     } else {
       if (state.status == BlocStatus.performing) return;
       int prvoiusPage = state.currentPageValue - 1;
-      emitter(state.copyWith(
-        status: BlocStatus.performing,
-      ));
+      emitter(state.copyWith(status: BlocStatus.performing, errorMessage: ""));
       await controller.animateToPage(prvoiusPage,
           duration: const Duration(milliseconds: 400), curve: Curves.easeIn);
       emitter(state.copyWith(
@@ -157,8 +156,9 @@ class RenewCommercialLicenseBloc
 
   Future<void> getDeedInfoHandler() async {
     emit(state.copyWith(status: BlocStatus.loading, errorMessage: ""));
-    final failOrSuccess =
-        await _getDeedInfo(state.deedInfoRequst ?? DeedInfoRequest());
+    final failOrSuccess = await _getDeedInfo(
+        state.deedInfoRequst?.copyWith(ownerIdType: "CR_700") ??
+            DeedInfoRequest());
 
     failOrSuccess.fold((l) {
       emit(state.copyWith(
@@ -377,7 +377,11 @@ class RenewCommercialLicenseBloc
       citizenPledgedToClean = false;
     }
 
+    String? contractNumber =
+        state.info?.cleanContractResponseDto?.cleanContractInfo?.contractNumber;
+
     emit(state.copyWith(status: BlocStatus.loading, errorMessage: ""));
+
     final response = await _saveRenewRequestInfo(SaveRenewRequest(
         requestId: requestId,
         citizenPledgedToClean: citizenPledgedToClean,
@@ -385,7 +389,8 @@ class RenewCommercialLicenseBloc
         cleanContractEndDate:
             CommonFunctions.padHijriDate(state.cleanContractEndDate),
         cleanContractNumber:
-            state.selectedCleanContract?.unifiedCleanContractNo,
+            state.selectedCleanContract?.unifiedCleanContractNo ??
+                int.tryParse(state.getExitingContractNumber() ?? ""),
         contractDate: CommonFunctions.padHijriDate(state.contractDate),
         contractNumber: state.contractNumber,
         contractOption: state.crContractOption?.name,
@@ -425,11 +430,14 @@ class RenewCommercialLicenseBloc
             )), (success) {
       List<AttachmentData> attachmentData = (success.items ?? [])
           .map((e) => AttachmentData(
-              id: e.id.toString(),
-              memo: e.name ?? "",
-              title: "${e.name} ${e.allowedFilesExtension}",
-              isRequired: e.isMandatory ?? false,
-              isUploaded: e.attached ?? false))
+                id: e.id.toString(),
+                memo: e.name ?? "",
+                title: "${e.name} ${e.allowedFilesExtension}",
+                isRequired: e.isMandatory ?? false,
+                isUploaded: e.attached ?? false,
+                filePath: e.attachUrl,
+                fileName: e.fileName,
+              ))
           .toList();
 
       emit(state.copyWith(

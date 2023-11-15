@@ -32,7 +32,7 @@ class QrLookUpItem extends Equatable {
       );
 
   @override
-  List<Object?> get props => [id, name, ename];
+  List<Object?> get props => [id, name];
 
   String get text => name ?? "";
 }

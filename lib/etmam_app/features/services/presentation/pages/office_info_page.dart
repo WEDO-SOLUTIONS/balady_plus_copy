@@ -67,6 +67,13 @@ class _OfficeInfoPageState extends State<OfficeInfoPage> {
                   title: trans('office_website'),
                   value: provider.website,
                 ),
+                const SizedBox(height: 8),
+                InfoCard(
+                  onTap: () => CommonFunctions.launch(provider.website ?? ""),
+                  iconPath: IconPath.websiteIcon,
+                  title: trans('email'),
+                  value: provider.email,
+                ),
                 InfoCard(
                   onTap: () => CommonFunctions.call(provider.mainBranchContact),
                   iconPath: IconPath.call,

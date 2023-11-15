@@ -31,7 +31,7 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    context.read<CrStep4ShopDataCubit>().initDraft();
+
     context.read<CrStep4ShopDataCubit>().initForm();
     context.read<CrStep4ShopDataCubit>().salamaBillFawery();
     context.read<CrStep4ShopDataCubit>().salamaReportFawery();
@@ -336,8 +336,16 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
                               height: 16,
                             ),
                           ],
+                          if (state.crContractType == CRContractType.ejar &&
+                              state.crContractOption ==
+                                  CRContractOption.service)
+                            const NotesWidget(
+                              notes: [
+                                '<span class="ui-messages-detail ng-tns-c1-19 ng-star-inserted">عزيزي المستفيد.. يمكنك معرفة الوسطاء العقاريون المعتمدين في شبكة ايجار من خلال الرابط <a target="_balnk" href="https://www.ejar.sa/ar/certified-offices"> اضغط هنا</a> أو تحميل تطبيق وسطاء عقاريون <a target="_balnk" href="https://apps.apple.com/us/app/%D9%88%D8%B3%D8%B7%D8%A7%D8%A1-%D8%B9%D9%82%D8%A7%D8%B1%D9%8A%D9%88%D9%86/id1306579731"> IOS </a> أو <a target="_balnk" href="https://play.google.com/store/apps/details?id=sa.ejar.waset"> Android </a></span>'
+                              ],
+                            ),
                           HorizontalRadioGroup<CRSubmitterType>(
-                            groupName: 'صفة المقدم بالنسبة لموقع المحل',
+                            groupName: 'نوع مقدم الطلب',
                             currentItem: state.crSubmitterType,
                             items: [
                               RadioItem<CRSubmitterType>(
@@ -476,7 +484,7 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
                                   CRSubmitterType.rental) ...[
                             const NotesWidget(
                               notes: [
-                                '<span class="ui-messages-detail ng-tns-c1-19 ng-star-inserted">عزيزي المستفيد.. يمكنك معرفة الوسطاء العقاريون المعتمدين في شبكة ايجار من خلال الرابط <a target="_balnk" href="https://www.ejar.sa/ar/certified-offices"> اضغط هنا</a> أو تحميل تطبيق وسطاء عقاريون <a target="_balnk" href="https://apps.apple.com/us/app/%D9%88%D8%B3%D8%B7%D8%A7%D8%A1-%D8%B9%D9%82%D8%A7%D8%B1%D9%8A%D9%88%D9%86/id1306579731"> IOS </a> أو <a target="_balnk" href="https://play.google.com/store/apps/details?id=sa.ejar.waset"> Android </a></span>'
+                                'عزيزي المستفيد .. يمكنكم اضافة عقد ايجار الكتروني أو ارفاق عقد ايجار'
                               ],
                             ),
                             HorizontalRadioGroup<CRContractOption>(
@@ -499,17 +507,6 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
                                     .updateCRContractOption(value!);
                               },
                             )
-                          ],
-                          if (state.showAttachEjar() &&
-                              state.showServiceEjar()) ...[
-                            const NotesWidget(
-                              notes: [
-                                'عزيزي المستفيد .. يمكنكم اضافة عقد ايجار الكتروني أو ارفاق عقد ايجار'
-                              ],
-                            ),
-                            SizedBox(
-                              height: 16,
-                            ),
                           ],
                           if (state.crContractType == CRContractType.ejar &&
                               state.crSubmitterType == CRSubmitterType.rental &&

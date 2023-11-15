@@ -100,7 +100,9 @@ class RequestDetailsResponse extends Equatable {
         createdOffersCount: createdOffersCount,
         processedOffersCount: processedOffersCount,
         submittedOffersCount: submittedOffersCount,
-        isAccepted: acceptedOffer?.id != null));
+        isAccepted: acceptedOffer?.id != null,
+        financialAttachmentId: acceptedOffer?.financialAttachmentId,
+        technicalAttachmentId: acceptedOffer?.technicalAttachmentId));
 
     services?.forEach((element) {
       list.add(RequestRepliesModel(
@@ -112,7 +114,9 @@ class RequestDetailsResponse extends Equatable {
           createdOffersCount: element.createdOffersCount,
           processedOffersCount: element.processedOffersCount,
           submittedOffersCount: element.submittedOffersCount,
-          isAccepted: element.acceptedOffer?.id != null));
+          isAccepted: element.acceptedOffer?.id != null,
+          financialAttachmentId: acceptedOffer?.financialAttachmentId,
+          technicalAttachmentId: acceptedOffer?.technicalAttachmentId));
     });
 
     return list;
@@ -123,16 +127,17 @@ class RequestDetailsResponse extends Equatable {
 }
 
 class AcceptedOffer {
-  AcceptedOffer({
-    this.id,
-    this.number,
-    this.providerId,
-    this.value,
-    this.notes,
-    this.status,
-    this.providerName,
-    this.providerLogo,
-  });
+  AcceptedOffer(
+      {this.id,
+      this.number,
+      this.providerId,
+      this.value,
+      this.notes,
+      this.status,
+      this.providerName,
+      this.providerLogo,
+      this.financialAttachmentId,
+      this.technicalAttachmentId});
 
   String? id;
   String? number;
@@ -142,6 +147,8 @@ class AcceptedOffer {
   Status? status;
   String? providerName;
   String? providerLogo;
+  String? financialAttachmentId;
+  String? technicalAttachmentId;
 }
 
 class Status {

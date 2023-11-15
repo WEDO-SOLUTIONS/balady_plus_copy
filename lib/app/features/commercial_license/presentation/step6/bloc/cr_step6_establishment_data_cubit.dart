@@ -2,15 +2,21 @@ import 'package:balady_plus/app/core/utils/enums/bloc_status.dart';
 import 'package:balady_plus/app/features/commercial_license/domain/entities/citizen_info_params.dart';
 
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import '../../../../../core/dependency_injection/injection_container.dart';
 import '../../../../../core/errors/failures.dart';
+import '../../../../../core/services/local/navigation_services.dart';
 import '../../../../../core/utils/enums/enums.dart';
 import '../../../../../core/utils/utils_exports.dart';
 
 import '../../../../_shared_feature_/data/entities/validators/email_validation.dart';
 import '../../../../_shared_feature_/data/entities/validators/phone_number_validation.dart';
+import '../../../../create_compliance/domain/entities/send_otp_response.dart';
+import '../../../../create_compliance/domain/entities/verify_otp_request.dart';
+import '../../../../create_compliance/domain/use_cases/send_otp.dart';
+import '../../../../create_compliance/domain/use_cases/verify_otp.dart';
 import '../../../commercial_license_exports.dart'
     show
         AddBeneficiaryNotes,
@@ -32,6 +38,7 @@ import '../../../domain/use_cases/apply_commercial_request.dart';
 import '../../../domain/use_cases/get_citizen_info.dart';
 import '../../../domain/use_cases/get_qr_lookup.dart';
 import '../../../domain/use_cases/save_qr_enterprise_data.dart';
+import '../page/commercial_otp_screen.dart';
 
 part 'cr_step6_establishment_data_state.dart';
 
@@ -40,13 +47,17 @@ class CRStep6EstablishmentCubit extends Cubit<CRStep6EstablishmentState> {
   final SaveQrEnterpriseData _saveQrEnterpriseData;
   final GetQrLookUp _getQrLookUp;
   final GetCitizenInfo _getCitizenInfo;
-
+  final SendOTP _sendOTP;
+  final VerifyOTP _verifyOTP;
   CRStep6EstablishmentCubit()
       : _applyCommercialRequest = ApplyCommercialRequest(repository: sl()),
         _saveQrEnterpriseData = SaveQrEnterpriseData(repository: sl()),
         _getQrLookUp = GetQrLookUp(repository: sl()),
         _getCitizenInfo = GetCitizenInfo(repository: sl()),
-        super(CRStep6EstablishmentState()) {}
+        _sendOTP = SendOTP(repository: sl()),
+        _verifyOTP = VerifyOTP(repository: sl()),
+        super(CRStep6EstablishmentState(
+            managerMobileNumber: CommonProperties.userInfo?.getPhone())) {}
 
   void getPaymentMethods() async {
     if (state.paymentsMethods?.isNotEmpty ?? false) return;
@@ -132,9 +143,17 @@ class CRStep6EstablishmentCubit extends Cubit<CRStep6EstablishmentState> {
           sl<CommercialLicenseBloc>().state.isDraft == true) {
         setQrDraftData();
       }
+
+      String? managerMobileNumber = r.enterpriseInfo?.contactInfo?.mobile;
+      if (managerMobileNumber != null &&
+          managerMobileNumber.isNotEmpty &&
+          !managerMobileNumber.startsWith("0")) {
+        managerMobileNumber = "0" + managerMobileNumber;
+      }
       emit(state.copyWith(
           crOwners: r.enterpriseInfo?.crOwners,
           contactInfo: r.enterpriseInfo?.contactInfo,
+          managerMobileNumber: managerMobileNumber,
           applyStatus: BlocStatus.success,
           applyResponse: r));
       sl<CommercialLicenseBloc>().updateQrData(applyCommercialResponse: r);
@@ -200,6 +219,13 @@ class CRStep6EstablishmentCubit extends Cubit<CRStep6EstablishmentState> {
     );
   }
 
+  void updateManagerMobileNumber({String? mobile}) {
+    emit(state.copyWith(
+        errorMessage: "",
+        managerMobileNumber: mobile,
+        managerMobileNumberVerified: Nullable(false)));
+  }
+
   void updateContactInfo({
     String? mobile,
     final String? phone,
@@ -262,7 +288,8 @@ class CRStep6EstablishmentCubit extends Cubit<CRStep6EstablishmentState> {
         managerSexId: null,
         requestId: requestId,
         crOwners: state.crOwners,
-        contactInfo: state.contactInfo,
+        contactInfo:
+            state.contactInfo?.copyWith(mobile: state.managerMobileNumber),
         hasPaymentMethods: state.hasPaymentMethods,
         paymentMethods: (state.paymentsMethods ?? [])
             .where((element) => element.selected == true)
@@ -335,6 +362,53 @@ class CRStep6EstablishmentCubit extends Cubit<CRStep6EstablishmentState> {
     }, (r) {
       emit(
           state.copyWith(status: BlocStatus.success, managerInfo: Nullable(r)));
+    });
+  }
+
+  Future<void> sendOTPHandler({bool? showOTPPage}) async {
+    emit(state.copyWith(
+      status: BlocStatus.loading,
+    ));
+
+    final failOrSuccess = await _sendOTP(state.managerMobileNumber ?? "");
+
+    failOrSuccess.fold((l) {
+      emit(state.copyWith(
+        errorMessage: (l as ServerFailure).errorMessage,
+        status: BlocStatus.failure,
+      ));
+    }, (r) {
+      emit(state.copyWith(
+          status: BlocStatus.success, sendOtpResponse: Nullable(r)));
+      if (showOTPPage == true)
+        NavigationService.navigatorKey.currentState?.push(MaterialPageRoute(
+          builder: (context) => BlocProvider.value(
+            value: this,
+            child: CommercialOtpScreen(),
+          ),
+        ));
+    });
+  }
+
+  Future<void> verifyOTPHandler(String otpValue) async {
+    emit(state.copyWith(
+      status: BlocStatus.loading,
+    ));
+
+    final failOrSuccess = await _verifyOTP(VerifyOTPRequest(
+        mobileNumber: state.managerMobileNumber ?? "",
+        token: otpValue,
+        tokenId: state.sendOtpResponse?.tokenId ?? ""));
+
+    failOrSuccess.fold((l) {
+      emit(state.copyWith(
+        errorMessage: (l as ServerFailure).errorMessage,
+        status: BlocStatus.failure,
+      ));
+    }, (r) {
+      emit(state.copyWith(
+          status: BlocStatus.success,
+          managerMobileNumberVerified: Nullable(true)));
     });
   }
 }

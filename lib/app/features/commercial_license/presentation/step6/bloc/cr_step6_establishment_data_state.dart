@@ -42,6 +42,16 @@ class CRStep6EstablishmentState extends Equatable {
   final String? birthDate;
   final String? nationalId;
 
+  final String? managerMobileNumber;
+  final bool? managerMobileNumberVerified;
+  final SendOtpResponse? sendOtpResponse;
+  PhoneNumberValidation get phoneValidator => managerMobileNumber == null
+      ? PhoneNumberValidation.pure()
+      : PhoneNumberValidation.dirty(value: managerMobileNumber);
+  String? get phoneErrorText => phoneValidator.error?.message != null
+      ? (phoneValidator.error?.message ?? "").tr()
+      : null;
+
   EmailValidation get emailValidator => contactInfo?.mail == null
       ? EmailValidation.pure()
       : EmailValidation.dirty(email: contactInfo?.mail);
@@ -49,41 +59,43 @@ class CRStep6EstablishmentState extends Equatable {
       ? (emailValidator.error?.message ?? "").tr()
       : null;
 
-  const CRStep6EstablishmentState({
-    this.status = BlocStatus.initial,
-    this.paymentsMethodsStatus = BlocStatus.initial,
-    this.buildingNatureStatus = BlocStatus.initial,
-    this.siteNatureStatus = BlocStatus.initial,
-    this.applyStatus = BlocStatus.initial,
-    this.errorMessage,
-    this.siteLocationType,
-    this.contactInfo,
-    this.crOwners,
-    this.managerInfo,
-    this.selectedPaymentMethods,
-    this.selectedBuildingNature,
-    this.selectedSiteNature,
-    this.nationalAddress,
-    this.locationOnStreetDto,
-    this.locationInsideBuildingDto,
-    this.paymentsMethods,
-    this.siteNature,
-    this.buildingNature,
-    this.applyResponse,
-    this.buildingName,
-    this.buildingUnit,
-    this.buildingFloor,
-    this.buildingDirections,
-    this.siteName,
-    this.siteDesc,
-    this.siteLandmark,
-    this.buildingNumber,
-    this.addetionalNumber,
-    this.postalCode,
-    this.hasPaymentMethods,
-    this.birthDate,
-    this.nationalId,
-  });
+  const CRStep6EstablishmentState(
+      {this.status = BlocStatus.initial,
+      this.paymentsMethodsStatus = BlocStatus.initial,
+      this.buildingNatureStatus = BlocStatus.initial,
+      this.siteNatureStatus = BlocStatus.initial,
+      this.applyStatus = BlocStatus.initial,
+      this.errorMessage,
+      this.siteLocationType,
+      this.contactInfo,
+      this.crOwners,
+      this.managerInfo,
+      this.selectedPaymentMethods,
+      this.selectedBuildingNature,
+      this.selectedSiteNature,
+      this.nationalAddress,
+      this.locationOnStreetDto,
+      this.locationInsideBuildingDto,
+      this.paymentsMethods,
+      this.siteNature,
+      this.buildingNature,
+      this.applyResponse,
+      this.buildingName,
+      this.buildingUnit,
+      this.buildingFloor,
+      this.buildingDirections,
+      this.siteName,
+      this.siteDesc,
+      this.siteLandmark,
+      this.buildingNumber,
+      this.addetionalNumber,
+      this.postalCode,
+      this.hasPaymentMethods,
+      this.birthDate,
+      this.nationalId,
+      this.managerMobileNumber,
+      this.managerMobileNumberVerified,
+      this.sendOtpResponse});
 
   @override
   List<Object?> get props {
@@ -120,89 +132,105 @@ class CRStep6EstablishmentState extends Equatable {
       postalCode,
       hasPaymentMethods,
       birthDate,
-      nationalId
+      nationalId,
+      managerMobileNumber,
+      managerMobileNumberVerified,
+      sendOtpResponse
     ];
   }
 
-  CRStep6EstablishmentState copyWith(
-      {BlocStatus? status,
-      QRSiteLocationType? siteLocationType,
-      ContactInfo? contactInfo,
-      List<CrOwner>? crOwners,
-      Nullable<CitizenInfoModel?>? managerInfo,
-      List<QrLookUpItem>? selectedPaymentMethods,
-      NationalAddress? nationalAddress,
-      LocationOnStreetDto? locationOnStreetDto,
-      LocationInsideBuildingDto? locationInsideBuildingDto,
-      String? errorMessage,
-      List<QrLookUpItem>? paymentsMethods,
-      List<QrLookUpItem>? siteNature,
-      List<QrLookUpItem>? buildingNature,
-      BlocStatus? paymentsMethodsStatus,
-      BlocStatus? siteNatureStatus,
-      BlocStatus? buildingNatureStatus,
-      ApplyCommercialResponseModel? applyResponse,
-      BlocStatus? applyStatus,
-      QrLookUpItem? selectedBuildingNature,
-      QrLookUpItem? selectedSiteNature,
-      String? buildingName,
-      String? buildingUnit,
-      String? buildingFloor,
-      String? buildingDirections,
-      String? siteName,
-      String? siteDesc,
-      String? siteLandmark,
-      String? buildingNumber,
-      String? addetionalNumber,
-      String? postalCode,
-      bool? hasPaymentMethods,
-      String? birthDate,
-      String? nationalId}) {
+  CRStep6EstablishmentState copyWith({
+    BlocStatus? status,
+    QRSiteLocationType? siteLocationType,
+    ContactInfo? contactInfo,
+    List<CrOwner>? crOwners,
+    Nullable<CitizenInfoModel?>? managerInfo,
+    List<QrLookUpItem>? selectedPaymentMethods,
+    NationalAddress? nationalAddress,
+    LocationOnStreetDto? locationOnStreetDto,
+    LocationInsideBuildingDto? locationInsideBuildingDto,
+    String? errorMessage,
+    List<QrLookUpItem>? paymentsMethods,
+    List<QrLookUpItem>? siteNature,
+    List<QrLookUpItem>? buildingNature,
+    BlocStatus? paymentsMethodsStatus,
+    BlocStatus? siteNatureStatus,
+    BlocStatus? buildingNatureStatus,
+    ApplyCommercialResponseModel? applyResponse,
+    BlocStatus? applyStatus,
+    QrLookUpItem? selectedBuildingNature,
+    QrLookUpItem? selectedSiteNature,
+    String? buildingName,
+    String? buildingUnit,
+    String? buildingFloor,
+    String? buildingDirections,
+    String? siteName,
+    String? siteDesc,
+    String? siteLandmark,
+    String? buildingNumber,
+    String? addetionalNumber,
+    String? postalCode,
+    bool? hasPaymentMethods,
+    String? birthDate,
+    String? nationalId,
+    String? managerMobileNumber,
+    Nullable<bool?>? managerMobileNumberVerified,
+    final Nullable<SendOtpResponse?>? sendOtpResponse,
+  }) {
     return CRStep6EstablishmentState(
-        status: status ?? this.status,
-        siteLocationType: siteLocationType ?? this.siteLocationType,
-        contactInfo: contactInfo ?? this.contactInfo,
-        crOwners: crOwners ?? this.crOwners,
-        managerInfo: managerInfo == null ? this.managerInfo : managerInfo.value,
-        selectedPaymentMethods:
-            selectedPaymentMethods ?? this.selectedPaymentMethods,
-        nationalAddress: nationalAddress ?? this.nationalAddress,
-        locationOnStreetDto: locationOnStreetDto ?? this.locationOnStreetDto,
-        locationInsideBuildingDto:
-            locationInsideBuildingDto ?? this.locationInsideBuildingDto,
-        errorMessage: errorMessage ?? this.errorMessage,
-        paymentsMethods: paymentsMethods ?? this.paymentsMethods,
-        siteNature: siteNature ?? this.siteNature,
-        buildingNature: buildingNature ?? this.buildingNature,
-        paymentsMethodsStatus:
-            paymentsMethodsStatus ?? this.paymentsMethodsStatus,
-        siteNatureStatus: siteNatureStatus ?? this.siteNatureStatus,
-        buildingNatureStatus: buildingNatureStatus ?? this.buildingNatureStatus,
-        applyStatus: applyStatus ?? this.applyStatus,
-        selectedBuildingNature:
-            selectedBuildingNature ?? this.selectedBuildingNature,
-        selectedSiteNature: selectedSiteNature ?? this.selectedSiteNature,
-        buildingName: buildingName ?? this.buildingName,
-        buildingUnit: buildingUnit ?? this.buildingUnit,
-        buildingFloor: buildingFloor ?? this.buildingFloor,
-        buildingDirections: buildingDirections ?? this.buildingDirections,
-        siteName: siteName ?? this.siteName,
-        siteDesc: siteDesc ?? this.siteDesc,
-        siteLandmark: siteLandmark ?? this.siteLandmark,
-        buildingNumber: buildingNumber ?? this.buildingNumber,
-        addetionalNumber: addetionalNumber ?? this.addetionalNumber,
-        postalCode: postalCode ?? this.postalCode,
-        hasPaymentMethods: hasPaymentMethods ?? this.hasPaymentMethods,
-        birthDate: birthDate ?? this.birthDate,
-        nationalId: nationalId ?? this.nationalId);
+      status: status ?? this.status,
+      siteLocationType: siteLocationType ?? this.siteLocationType,
+      contactInfo: contactInfo ?? this.contactInfo,
+      crOwners: crOwners ?? this.crOwners,
+      managerInfo: managerInfo == null ? this.managerInfo : managerInfo.value,
+      selectedPaymentMethods:
+          selectedPaymentMethods ?? this.selectedPaymentMethods,
+      nationalAddress: nationalAddress ?? this.nationalAddress,
+      locationOnStreetDto: locationOnStreetDto ?? this.locationOnStreetDto,
+      locationInsideBuildingDto:
+          locationInsideBuildingDto ?? this.locationInsideBuildingDto,
+      errorMessage: errorMessage ?? this.errorMessage,
+      paymentsMethods: paymentsMethods ?? this.paymentsMethods,
+      siteNature: siteNature ?? this.siteNature,
+      buildingNature: buildingNature ?? this.buildingNature,
+      paymentsMethodsStatus:
+          paymentsMethodsStatus ?? this.paymentsMethodsStatus,
+      siteNatureStatus: siteNatureStatus ?? this.siteNatureStatus,
+      buildingNatureStatus: buildingNatureStatus ?? this.buildingNatureStatus,
+      applyStatus: applyStatus ?? this.applyStatus,
+      selectedBuildingNature:
+          selectedBuildingNature ?? this.selectedBuildingNature,
+      selectedSiteNature: selectedSiteNature ?? this.selectedSiteNature,
+      buildingName: buildingName ?? this.buildingName,
+      buildingUnit: buildingUnit ?? this.buildingUnit,
+      buildingFloor: buildingFloor ?? this.buildingFloor,
+      buildingDirections: buildingDirections ?? this.buildingDirections,
+      siteName: siteName ?? this.siteName,
+      siteDesc: siteDesc ?? this.siteDesc,
+      siteLandmark: siteLandmark ?? this.siteLandmark,
+      buildingNumber: buildingNumber ?? this.buildingNumber,
+      addetionalNumber: addetionalNumber ?? this.addetionalNumber,
+      postalCode: postalCode ?? this.postalCode,
+      hasPaymentMethods: hasPaymentMethods ?? this.hasPaymentMethods,
+      birthDate: birthDate ?? this.birthDate,
+      nationalId: nationalId ?? this.nationalId,
+      managerMobileNumber: managerMobileNumber ?? this.managerMobileNumber,
+      managerMobileNumberVerified: managerMobileNumberVerified == null
+          ? this.managerMobileNumberVerified
+          : managerMobileNumberVerified.value,
+      sendOtpResponse: sendOtpResponse == null
+          ? this.sendOtpResponse
+          : sendOtpResponse.value,
+    );
   }
 
   bool isFormValid() {
-    print(emailValidator);
+    print("managerMobileNumberVerified $managerMobileNumberVerified");
     if (managerInfo == null ||
         siteLocationType == null ||
         contactInfo?.mail == null ||
-        emailValidator.isNotValid) {
+        emailValidator.isNotValid ||
+        managerMobileNumberVerified != true) {
       return false;
     }
 

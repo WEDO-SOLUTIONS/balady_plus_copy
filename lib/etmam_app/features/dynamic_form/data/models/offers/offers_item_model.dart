@@ -14,7 +14,9 @@ class OfferItemModel extends OfferItem {
       super.allowedActions,
       super.providerName,
       super.providerLogo,
-      super.rating});
+      super.rating,
+      super.financialAttachmentId,
+      super.technicalAttachmentId});
 
   factory OfferItemModel.fromJson(Map<String, dynamic> json) => OfferItemModel(
       id: json["id"],
@@ -30,6 +32,8 @@ class OfferItemModel extends OfferItem {
           : null,
       providerName: json["providerName"],
       providerLogo: json["providerLogo"],
+      technicalAttachmentId: json["technicalAttachmentId"],
+      financialAttachmentId: json["financialAttachmentId"],
       rating: json["rating"] != null ? json["rating"].toDouble() : null);
 }
 

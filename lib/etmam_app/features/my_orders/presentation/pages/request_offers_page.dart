@@ -96,6 +96,10 @@ class RequestOffersPage extends StatelessWidget {
                                           AcceptOfferEvent(
                                               id: state.items?[index].id));
                                     },
+                                    technicalAttachmentId: state
+                                        .items?[index].technicalAttachmentId,
+                                    financialAttachmentId: state
+                                        .items?[index].financialAttachmentId,
                                     onCancelPressed: () {
                                       context.read<RequestOfferBloc>().add(
                                           RejectOfferEvent(

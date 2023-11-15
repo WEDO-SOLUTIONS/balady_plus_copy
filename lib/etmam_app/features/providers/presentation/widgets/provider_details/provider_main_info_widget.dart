@@ -132,6 +132,12 @@ class EtmamProviderMainInfo extends StatelessWidget {
               value: state.args.website ?? "",
             ),
             InfoCard(
+              onTap: () => CommonFunctions.launch(state.args.website ?? ""),
+              iconPath: IconPath.websiteIcon,
+              title: "البريد الإلكتروني",
+              value: state.args.email ?? "",
+            ),
+            InfoCard(
               onTap: () => CommonFunctions.call(state.args.mainBranchContact),
               iconPath: IconPath.call,
               title: trans('office_mobile'),

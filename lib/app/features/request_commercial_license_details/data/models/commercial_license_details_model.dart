@@ -10,7 +10,7 @@ class RequestCommercialLicenseDetailsModel {
   String typeName;
   int licenseTypeId;
   String licenseTypeName;
-  DateTime lastUpdateDate;
+  DateTime? lastUpdateDate;
   int? cancellationReasonId;
   String? cancellationReasonName;
   LicenseInfo licenseInfo;
@@ -51,7 +51,9 @@ class RequestCommercialLicenseDetailsModel {
         typeName: json["typeName"],
         licenseTypeId: json["licenseTypeId"],
         licenseTypeName: json["licenseTypeName"],
-        lastUpdateDate: DateFormat("yyyy/MM/dd ").parse(json["lastUpdateDate"]),
+        lastUpdateDate: json["lastUpdateDate"] != null
+            ? DateFormat("yyyy/MM/dd ").parse(json["lastUpdateDate"])
+            : null,
         licenseInfo: LicenseInfo.fromJson(json["licenseInfo"]),
         availableCloseDate: json["availableCloseDate"] ?? false,
         attachmentsInfo: json["attachmentsInfo"] != null
@@ -97,7 +99,7 @@ class AttachmentsInfo {
         // allowedFilesExtension: json["allowedFilesExtension"],
         // attached: json["attached"],
         // approved: json["approved"],
-        attachUrl: json["attachUrl"] ?? '',
+        attachUrl: json["attachUrl"],
         // maxSize: json["maxSize"],
         // notes: json["notes"],
         // attachDescription: json["attachDescription"],

@@ -13,7 +13,9 @@ class OfferItem extends Equatable {
       this.allowedActions,
       this.providerName,
       this.providerLogo,
-      this.rating});
+      this.rating,
+      this.technicalAttachmentId,
+      this.financialAttachmentId});
 
   final String? id;
   final String? number;
@@ -25,6 +27,8 @@ class OfferItem extends Equatable {
   final String? providerName;
   final String? providerLogo;
   final double? rating;
+  final String? financialAttachmentId;
+  final String? technicalAttachmentId;
 
   Action? get getAccept =>
       allowedActions?.firstWhereOrNull((element) => element.id == "accept");

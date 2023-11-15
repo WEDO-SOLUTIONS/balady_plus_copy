@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import '../../../../../core/utils/constants/app_colors.dart';
 import '../../../../../core/utils/enums/enums.dart';
+import '../../../../_shared_feature_/presentation/widgets/check_boxes/text_field_with_check_btn.dart';
 import '../../../../_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
 import '../../../../_shared_feature_/shared_feature_exports.dart';
 import '../../../../vd/presentation/widgets/details_widgets/incident_desc_widgets/vd_create_incident_addetional_fields.dart';
@@ -28,6 +29,8 @@ class CRStep6EstablishmentData extends StatefulWidget {
 }
 
 class _CRStep6EstablishmentDataState extends State<CRStep6EstablishmentData> {
+  final TextEditingController _managerMobileNumberControler =
+      TextEditingController();
   @override
   void initState() {
     // TODO: implement initState
@@ -284,22 +287,29 @@ class _CRStep6EstablishmentDataState extends State<CRStep6EstablishmentData> {
                           const SizedBox(height: 24),
                           if (state.managerInfo != null)
                             const ManagerInfoCard(),
-                          CustomTextFieldWidget(
-                            label: "رقم الجوال",
-                            hintText: "رقم الجوال",
-                            isDigitsOnly: true,
-                            enabled: false,
-                            keyboardType: TextInputType.number,
-                            onValidate: (p0) {},
-                            initialValue: state.contactInfo?.mobile ??
-                                CommonProperties.userInfo?.getPhone() ??
-                                "",
-                            bottomMargin: 24,
-                            onChanged: (String? v) {
+                          TextWithCheckBtn(
+                            maxLength: 10,
+                            backgroundColor: Colors.transparent,
+                            validate: (String? t) {},
+                            controller: _managerMobileNumberControler,
+                            isValidate:
+                                state.managerMobileNumberVerified ?? false,
+                            currentValue: state.managerMobileNumber,
+
+                            onTextChanged: (String text) {
                               context
                                   .read<CRStep6EstablishmentCubit>()
-                                  .updateContactInfo(mobile: v);
+                                  .updateManagerMobileNumber(mobile: text);
                             },
+                            title: ("vd_mobile_number").tr(),
+                            errorText: state.phoneErrorText,
+                            verify: () {
+                              context
+                                  .read<CRStep6EstablishmentCubit>()
+                                  .sendOTPHandler(showOTPPage: true);
+                            },
+                            //currentValue: "ww",
+                            hint: ("vd_mobile_number").tr(),
                           ),
                           const NotesWidget(
                             notes: [

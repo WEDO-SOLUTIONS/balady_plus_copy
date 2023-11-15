@@ -7,9 +7,15 @@ import '../../../../_shared_feature_/shared_feature_exports.dart';
 import '../../../commercial_license_exports.dart';
 import '../bloc/cr_step10_addetional_data_cubit.dart';
 
-class CRStep10AdditionalData extends StatelessWidget {
+class CRStep10AdditionalData extends StatefulWidget {
   const CRStep10AdditionalData({Key? key}) : super(key: key);
 
+  @override
+  State<CRStep10AdditionalData> createState() => _CRStep10AdditionalDataState();
+}
+
+class _CRStep10AdditionalDataState extends State<CRStep10AdditionalData> {
+  final TextEditingController _controller = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<CRStep10AddetionalDataCubit, CRStep10AddetionalState>(
@@ -145,7 +151,7 @@ class CRStep10AdditionalData extends StatelessWidget {
                           CustomTextFieldWidget(
                             label: "اسم الجهة",
                             hintText: "اسم الجهة",
-                            isDigitsOnly: true,
+                            controller: _controller,
                             keyboardType: TextInputType.text,
                             bottomMargin: 24,
                             onChanged: (value) {

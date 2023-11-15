@@ -36,7 +36,7 @@ class AttachmentShowWidget extends StatelessWidget {
         color: const Color(0x80E6EFEF),
       ),
       child: InkWell(
-        onTap: fileName.isNotEmpty ? () => showFile(filePath, fileName) : null,
+        onTap: () => CommonFunctions.showApigeeFile(filePath, fileName),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [

@@ -87,11 +87,11 @@ class _CRStep3GeolocationDataState extends State<CRStep3GeolocationData> {
                           title: "المنطقه",
                         ),
                         ReadOnlyField(
-                          subTitle: state.gisResponse?.adminMunicipalityName,
+                          subTitle: state.gisResponse?.municipalityName,
                           title: "الامانه",
                         ),
                         ReadOnlyField(
-                          subTitle: state.gisResponse?.municipalityName,
+                          subTitle: state.gisResponse?.subMunicipalityName,
                           title: "البلديه",
                         ),
                         ReadOnlyField(

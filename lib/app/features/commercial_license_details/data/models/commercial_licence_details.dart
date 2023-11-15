@@ -810,6 +810,40 @@ class ContractInfoResponseDto {
   /* String getDisplayContractType(){
 
      }*/
+
+  String getDisplayContractTypeName() {
+    switch (contractType) {
+      case "EJAR":
+        return "عقد ايجار";
+      case "INVEST":
+        return "عقد استثمار";
+      case "DEED":
+        return "عقد تملك";
+    }
+    return contractType;
+  }
+
+  String getDisplayCleanContractName() {
+    if (contractType == "EJAR" && contractOption == "ATTACH")
+      return "عقد ايجار مرفق";
+
+    if (contractType == "EJAR" && contractOption == "SERVICE")
+      return "عقد ايجار الكتروني";
+
+    if (contractType == "INVEST" && contractOption == "ATTACH")
+      return "عقد استثمار مرفق";
+
+    if (contractType == "INVEST" && contractOption == "SERVICE")
+      return "عقد استثمار الكتروني";
+
+    if (contractType == "DEED" && contractOption == "ATTACH")
+      return " عقد تملك مرفق";
+
+    if (contractType == "DEED" && contractOption == "SERVICE")
+      return "عقد تملك الكتروني";
+
+    return contractType;
+  }
 }
 
 // class ContractOptionsResponseDto {

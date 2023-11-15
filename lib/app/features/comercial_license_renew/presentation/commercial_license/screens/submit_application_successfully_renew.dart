@@ -99,12 +99,8 @@ class SubmitApplicationSuccessfullyRenew extends StatelessWidget {
                           RouteName.invoiceDetails,
                           arguments: (
                             submitResponse.payUrl.toString(),
-                            crNumber:
-                                CommonProperties.selectedDelegator?.crNumber ??
-                                    "",
-                            crType:
-                                CommonProperties.selectedDelegator?.crType ??
-                                    "",
+                            CommonProperties.selectedDelegator?.crNumber ?? "",
+                            CommonProperties.selectedDelegator?.crType ?? "",
                             "SADAD",
                           ),
                         );

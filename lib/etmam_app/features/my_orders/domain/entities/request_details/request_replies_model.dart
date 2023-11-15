@@ -9,6 +9,9 @@ class RequestRepliesModel extends Equatable {
   final int? createdOffersCount;
   final int? submittedOffersCount;
   final int? processedOffersCount;
+
+  String? financialAttachmentId;
+  String? technicalAttachmentId;
   bool? isAccepted;
 
   RequestRepliesModel(
@@ -20,7 +23,9 @@ class RequestRepliesModel extends Equatable {
       this.processedOffersCount,
       this.submittedOffersCount,
       this.createdOffersCount,
-      this.isAccepted});
+      this.isAccepted,
+      this.financialAttachmentId,
+      this.technicalAttachmentId});
 
   @override
   List<Object?> get props => [requestId, relationId, requestNumber];

@@ -54,4 +54,15 @@ class CRStep5AttachmentState extends Equatable {
         notes: notes ?? this.notes,
         crdences: crdences ?? this.crdences);
   }
+
+  bool isFormValid() {
+    bool isValid = true;
+
+    attachments?.forEach((element) {
+      if (element.isUploaded == false && element.isRequired == true) {
+        isValid = false;
+      }
+    });
+    return isValid;
+  }
 }
