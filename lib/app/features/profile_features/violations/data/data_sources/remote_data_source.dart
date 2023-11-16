@@ -60,8 +60,10 @@ class ViolationsRemoteDataSourceImplementation
     } catch (ex) {
       "Catched $ex".errorLog();
       if (ex is ServerException) {
+        print(ex.toString());
         rethrow;
       } else {
+        print(ex.toString());
         throw ServerException("errors_server_error_2".tr(),
             exception: APIException(
               errorMessage: ex.toString(),

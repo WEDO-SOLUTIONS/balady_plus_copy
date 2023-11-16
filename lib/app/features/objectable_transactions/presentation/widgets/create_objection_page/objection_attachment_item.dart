@@ -135,6 +135,8 @@ class _ObjectionAttachmentItemState extends State<ObjectionAttachmentItem> {
           }
         } catch (ex) {
           EasyLoading.dismiss();
+
+          print(ex);
         }
       }
     } catch (ex) {

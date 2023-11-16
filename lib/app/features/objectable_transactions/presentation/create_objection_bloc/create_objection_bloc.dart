@@ -124,7 +124,7 @@ class CreateObjectionBloc
                 base64: e.file?.fileBase64,
                 filePath: e.file?.filePath,
                 caseId:
-                    "${state.item?.transactionId ?? state.details?.violationId}-${CommonFunctions.generateGUID()}",
+                    "${state.details?.violationId}-${CommonFunctions.generateGUID()}",
                 categoryId: "Objections",
                 index: index))
             : null)
@@ -138,6 +138,7 @@ class CreateObjectionBloc
         ));
       }, (success) {
         int? index = success.index;
+        print("index $index");
         if (index != null) {
           reasons[index] = ReasonModel(
               notes: reasons[index].notes,
@@ -178,14 +179,12 @@ class CreateObjectionBloc
     CreateObjectionParams params = CreateObjectionParams();
     if (item != null)
       params = CreateObjectionParams(
-          municipalityID: item?.originalMunicipalityId,
-          subMunicipalityID: item?.originalSubMunicipalityId,
+          municipalityID: item?.municipalityId,
+          subMunicipalityID: item?.subMunicipalityId,
           serviceGroupId: item?.applicationId,
           serviceId: item?.serviceId,
           objectionTypeId: item?.objectionTypeId,
-          objectedTransactionId: item?.transactionId,
-          serviceTypeId: item?.serviceTypeId,
-          objectedTransactionDisplayNumber: item?.transactionNumber,
+          objectedTransactionId: item?.transactionNumber,
           submitterRole: CommonProperties.selectedDelegator != null
               ? CommonProperties.selectedDelegator?.roleId
               : "001",
@@ -206,7 +205,6 @@ class CreateObjectionBloc
           subMunicipalityID: details?.subMunicipalityId,
           serviceGroupId: details?.serviceGroupId,
           serviceId: details?.serviceId,
-          serviceTypeId: details?.serviceTypeId,
           objectionTypeId: details?.objectionTypeId,
           objectedTransactionId: details?.violationId,
           submitterRole: CommonProperties.selectedDelegator != null
@@ -235,9 +233,12 @@ class CreateObjectionBloc
         errorMessage: serverFailure.errorMessage,
       ));
     }, (success) {
+      print(success);
       emitter(state.copyWith(
         status: BlocStatus.success,
       ));
+
+      print(success);
 
       bool Function(Route<dynamic>) predicate =
           ModalRoute.withName(RouteName.bottomNavigation);

@@ -1,4 +1,3 @@
-import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/vd/presentation/widgets/summery_widgets/field_data.dart';
 import 'package:flutter/material.dart';
 import 'package:collection/collection.dart';
@@ -7,22 +6,15 @@ import 'package:flutter_svg/svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../core/dependency_injection/injection_container.dart';
-import '../../../../core/services/local/navigation_services.dart';
 import '../../../../core/utils/constants/app_colors.dart';
 import '../../../../core/utils/constants/constants.dart';
-import '../../../../core/utils/constants/dialog_names.dart';
 import '../../../../core/utils/constants/paths/icon_paths.dart';
-import '../../../../core/utils/constants/route_names.dart';
 import '../../../../core/utils/enums/bloc_status.dart';
-import '../../../_shared_feature_/presentation/buttons/elevated_button_widgets.dart';
-import '../../../_shared_feature_/presentation/components/bottom_sheets/bottom_sheet_with_actions.dart';
-import '../../../_shared_feature_/presentation/dialogs/bottom_sheet_dialogs.dart';
 import '../../../_shared_feature_/presentation/under_testing/custom_expansion_panel_widget.dart';
 import '../../../_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
 import '../../../_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
 import '../../../_shared_feature_/presentation/widgets/custom_svg_icon_widget.dart';
 import '../../../_shared_feature_/presentation/widgets/details_header.dart';
-import '../../../_shared_feature_/presentation/widgets/notes_widget.dart';
 import '../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import '../../../objections/domain/entities/objection_details.dart';
 import '../../domain/entities/transaction_details_params.dart';
@@ -47,12 +39,7 @@ class _ObjectionsDetailsPageState extends State<ObjectionsDetailsPage> {
 
     return BlocProvider(
       create: (context) => ObjectionsDetailsBloc(details: params),
-      child: BlocConsumer<ObjectionsDetailsBloc, ObjectionDetailsState>(
-        listener: (context, state) {
-          if (state.status == BlocStatus.failure) {
-            CommonFunctions.showError(state.errorMessage ?? "");
-          }
-        },
+      child: BlocBuilder<ObjectionsDetailsBloc, ObjectionDetailsState>(
         buildWhen: (previous, current) => previous.status != current.status,
         builder: (context, state) {
           return Stack(
@@ -61,75 +48,6 @@ class _ObjectionsDetailsPageState extends State<ObjectionsDetailsPage> {
                 backgroundColor: AppColor.white2,
                 appBar: DetailsHeader(
                   title: ("objection_details").tr(),
-                  procedures: state.details?.requestStatusId == "004"
-                      ? () async {
-                          await BottomSheetDialog.showDraggableSheet(context,
-                              isFullHeight: false,
-                              height: 250,
-                              //   dialogKeyName: DialogName.appointmentsActionsDialog,
-                              //   currentRouteName: RouteName.appointmentDetailsRoute,
-                              child: BottomSheetWithActions(
-                                title: "actions".tr(),
-                                body: Column(children: [
-                                  GestureDetector(
-                                    onTap: () {
-                                      BottomSheetDialog.showDraggableSheet(
-                                        NavigationService
-                                            .navigatorKey.currentContext!,
-                                        child: BottomSheetWithActions(
-                                            title: "",
-                                            action: Row(
-                                              children: [
-                                                Expanded(
-                                                  child: ElevatedButtonWidget
-                                                      .primaryCustom(
-                                                          text: "موافق",
-                                                          onPressed: () {
-                                                            NavigationService
-                                                                .goBack();
-                                                            NavigationService
-                                                                .goBack();
-                                                            context
-                                                                .read<
-                                                                    ObjectionsDetailsBloc>()
-                                                                .add(
-                                                                    CancelObjectionEvent());
-                                                          }),
-                                                ),
-                                                const CustomHorizontalSpace(
-                                                    width: 32),
-                                                Expanded(
-                                                  child: ElevatedButtonWidget
-                                                      .primaryCustomBorder(
-                                                          text: "الغاء",
-                                                          onPressed: () {
-                                                            NavigationService
-                                                                .goBack();
-                                                          }),
-                                                ),
-                                              ],
-                                            ),
-                                            body: Column(
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: [
-                                                const CustomVerticalSpace(
-                                                    height: 32),
-                                                NotesWidget(notes: [
-                                                  "أنت علي وشك حذف طلب, هل أنت متأكد من إلغاء طلب الإعتراض؟"
-                                                ])
-                                              ],
-                                            )),
-                                      );
-                                    },
-                                    child: FieldData(
-                                      title: "إلغاء طلب الإعتراض",
-                                    ),
-                                  ),
-                                  CustomVerticalSpace(height: 16),
-                                ]),
-                              ));
-                        }
-                      : null,
                 ),
                 body: Padding(
                   padding: const EdgeInsets.all(16.0),

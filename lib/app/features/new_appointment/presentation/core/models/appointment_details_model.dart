@@ -137,6 +137,7 @@ class AppointmentItemInfo {
   bool? confirmable;
 
   factory AppointmentItemInfo.fromJson(Map<String, dynamic> json) {
+    print(json["uuid"]);
     return AppointmentItemInfo(
         id: json["id"] == null ? null : json["id"],
         municipalityId:

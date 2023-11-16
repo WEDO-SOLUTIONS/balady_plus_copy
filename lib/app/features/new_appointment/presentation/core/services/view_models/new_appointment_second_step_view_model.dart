@@ -68,6 +68,7 @@ class NewAppointmentSecondStepViewModel extends BaseViewModel {
       DateItem? e = availableDatesResponse?.data?.result
           ?.firstWhereOrNull((element) => element.date == dateItem.date);
       if (e != null) {
+        print(e.dayName);
         dataModel.selectedDate = e;
       }
     }

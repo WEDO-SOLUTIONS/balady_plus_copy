@@ -263,14 +263,18 @@ class RequestsRemoteDataSourceImplementation
   Future<UploadFileResponse> uploadFile(
       {required UploadFileParams params}) async {
     var response;
+    print(params.toMap());
     try {
       response = await webService.dio.post(ApiUrl.uploadFile,
           data: params.toMap(), options: Options(headers: {"X-Service-Id": 2}));
+      print(response.data);
 
       var data = response.data["data"]["result"]["Documents"][0]["Document"][0];
-
+      print("hhh");
+      print(data);
       var parsedResult =
           data != null ? UploadFileResponse.fromJson(data) : null;
+      print("hhh");
       parsedResult?.index = params.index;
 
       return parsedResult!.toFuture();

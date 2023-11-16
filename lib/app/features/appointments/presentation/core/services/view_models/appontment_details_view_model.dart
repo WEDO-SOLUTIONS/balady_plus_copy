@@ -114,7 +114,7 @@ class AppointmentDetailsViewModel extends BaseViewModel {
         File filetemp = File("$dir/" +
             "${DateTime.now().millisecondsSinceEpoch.toString()}$extension");
         await filetemp.writeAsBytes(bytes);
-
+        // print(filetemp.path);
         Share.shareFiles([filetemp.path]);
       }
     } catch (ex) {
@@ -123,22 +123,31 @@ class AppointmentDetailsViewModel extends BaseViewModel {
   }
 
   void openFile(Uint8List bytes, {String? contentType}) async {
+    print("content toye");
+    print(contentType);
     String extension =
         contentType != null ? ("." + contentType.split("/").last) : "";
     try {
+      print("appintment hereee");
+
       if (extension.isNotEmpty) {
+        print("appintment $extension");
+
         String dir = (await getTemporaryDirectory()).path;
+        print("appintment $dir");
 
         File filetemp = File("$dir/" +
             "${DateTime.now().millisecondsSinceEpoch.toString()}$extension");
         await filetemp.writeAsBytes(bytes);
-
+        print(filetemp.path);
         OpenFile.open(filetemp.path).then((value) => CommonFunctions.sendEvent(
             dioError: DioException(
                 requestOptions: RequestOptions(baseUrl: "OpenFile")),
             ex: Exception(value)));
       }
-    } catch (ex) {}
+    } catch (ex) {
+      print("appintment $ex");
+    }
   }
 
   Future<CancelAppointmentResponse?> cancelAppointment() async {

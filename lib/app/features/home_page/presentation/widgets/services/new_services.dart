@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../core/base/base_view_model.dart';
-import '../../../../../core/services/local/navigation_services.dart';
 import '../../../../../core/utils/constants/dialog_names.dart';
 import '../../../../../core/utils/utils_exports.dart';
 import '../../../../_shared_feature_/presentation/dialogs/need_login_dialog.dart';
@@ -218,8 +217,8 @@ class NewServices extends StatelessWidget {
                                   bool isSuccess =
                                       await locator<NewAppointmentViewModel>()
                                           .loadInitialData();
-                                  if (isSuccess) {
-                                    /*  await BottomSheetDialog.showDraggableSheet(
+                                  if (isSuccess)
+                                    await BottomSheetDialog.showDraggableSheet(
                                         context,
                                         dialogKeyName: DialogName
                                             .selectAppointmentTypeDialog,
@@ -228,11 +227,7 @@ class NewServices extends StatelessWidget {
                                         child: BottomSheetWithActions(
                                           title: "اختر نوع الموعد".tr(),
                                           body: NewAppointmentDialog(),
-                                        ));*/
-                                    NavigationService.navigatorKey.currentState!
-                                        .pushNamed(RouteName.NewAppointmentPage,
-                                            arguments: false);
-                                  }
+                                        ));
                                 } else {
                                   showDialog(
                                       context: context,
@@ -243,13 +238,6 @@ class NewServices extends StatelessWidget {
                                               await locator<
                                                       NewAppointmentViewModel>()
                                                   .loadInitialData();
-                                              NavigationService
-                                                  .navigatorKey.currentState!
-                                                  .pushNamed(
-                                                      RouteName
-                                                          .NewAppointmentPage,
-                                                      arguments: false);
-                                              /*
                                               await BottomSheetDialog
                                                   .showDraggableSheet(context,
                                                       isFullHeight: false,
@@ -259,7 +247,7 @@ class NewServices extends StatelessWidget {
                                                             .tr(),
                                                         body:
                                                             NewAppointmentDialog(),
-                                                      ));*/
+                                                      ));
                                             }
                                           }));
                                 }
