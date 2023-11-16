@@ -13,8 +13,6 @@ class IncidentDescSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<CreateDCBloc, CreateDCState>(
       builder: (context, state) {
-        //   print("IncidentDescSection build");
-
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

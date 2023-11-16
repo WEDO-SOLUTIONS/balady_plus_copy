@@ -45,7 +45,6 @@ class MarkerMapWidget extends StatelessWidget {
                 child: ValueListenableBuilder<DirectoryObjectMessage?>(
                   valueListenable: pointViewModel.dataPoint,
                   builder: (_, dataPoint, __) {
-                    print(dataPoint);
                     return dataPoint == null
                         ? const SizedBox()
                         : Column(

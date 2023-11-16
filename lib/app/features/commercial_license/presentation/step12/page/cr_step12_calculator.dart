@@ -30,9 +30,13 @@ class CRStep12CalculatorReview extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const CRHeaderDesc(header: "عدد السنوات"),
+                        const NotesWidget(notes: [
+                          "عدد سنوات السداد هي طريقة سداد الرسوم حيث يمكن سداد جميع سنوات الترخيص أو اختيار عدد محدد من السنوات المتاحة",
+                          "تنبيه: لا يمكن تعديل بيانات الطلب أو استرجاع الرسوم عند إصدار الفاتورة إذا كان الخطأ من المستفيد، فضلا التحقق من صحة البيانات قبل إرسال الطلب"
+                        ]),
+                        const CRHeaderDesc(header: "عدد سنوات السداد"),
                         DropDownWithTitle(
-                          title: "عدد السنوات".tr(),
+                          title: "عدد سنوات السداد".tr(),
                           selectedValue: state.selectedPeriod,
                           onRetry: null,
                           onTap: () {
@@ -41,7 +45,7 @@ class CRStep12CalculatorReview extends StatelessWidget {
                               // dialogKeyName: DialogName.objectablePageProductsFilters,
                               // currentRouteName: RouteName.objectableTransactions,
                               child: BottomSheetList(
-                                title: "عدد السنوات".tr(),
+                                title: "عدد سنوات السداد".tr(),
                                 items: state.period ?? [],
                                 selectedValue: state.selectedPeriod,
                                 onTap: (item) {

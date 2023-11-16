@@ -16,7 +16,6 @@ class NotificationsServices {
     // If you're going to use other Firebase services in the background, such as Firestore,
     // make sure you call `initializeApp` before using other Firebase services.
     await Firebase.initializeApp();
-    print('Handling a background message ${message.messageId}');
   }
 
   AndroidNotificationChannel channel = AndroidNotificationChannel(
@@ -69,7 +68,6 @@ class NotificationsServices {
     );
 
     FirebaseMessaging.instance.getToken().then((value) {
-      print(value);
       //Helpers.sendLog(url: "token", data: value);
     });
     // FirebaseMessaging.instance.subscribeToTopic("all").then((value) {});
@@ -77,7 +75,6 @@ class NotificationsServices {
         .getInitialMessage()
         .then((RemoteMessage? message) {
       if (message != null) {
-        print(message);
       }
     });
 
@@ -107,7 +104,6 @@ class NotificationsServices {
     });
 
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      print('A new onMessageOpenedApp event was published!');
     });
   }*/
 }

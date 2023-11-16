@@ -120,7 +120,7 @@ class _CRStep5AttachmentDataState extends State<CRStep5AttachmentData> {
                           .read<CRStep5AttachmentCubit>()
                           .addBeneficiaryNotes();
                     },
-                    isBtnDisabled: false),
+                    isBtnDisabled: !state.isFormValid()),
               ],
             ),
             if (state.attachmentStatus.isSubmissionLoading ||

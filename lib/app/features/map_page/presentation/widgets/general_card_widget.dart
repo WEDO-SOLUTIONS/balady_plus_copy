@@ -162,7 +162,6 @@ class GeneralMapCardWidget extends StatelessWidget {
             return ValueListenableBuilder<DirectoryObjectMessage?>(
                 valueListenable: pointViewModel.dataPoint,
                 builder: (_, dataPoint, __) {
-                  print("is loading $isLoading");
                   return (isLoading ?? false)
                       ? const ShimmerEffectWidget(
                           height: 120,

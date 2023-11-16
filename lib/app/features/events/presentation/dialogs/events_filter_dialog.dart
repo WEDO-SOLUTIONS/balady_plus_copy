@@ -81,7 +81,6 @@ class _EventsFilterDialogState extends State<EventsFilterDialog> {
                 textInputType: TextInputType.text,
                 initialValue: widget.params.keyword,
                 onChanged: (value) {
-                  print(value);
                   keyword = value;
                 },
               ),

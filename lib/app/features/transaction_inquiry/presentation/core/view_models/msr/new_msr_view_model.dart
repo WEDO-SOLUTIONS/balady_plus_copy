@@ -72,7 +72,6 @@ class NewMSRViewModel extends BaseViewModel {
         response.isSuccessfull!) {
       if (checkMuncupality(response)) {
         if (response.adminMunicipalityId != gisLocation?.adminMunicipalityId) {
-          print("HEREEE");
           getSPlList(
               category: type.code,
               snap: false,
@@ -254,7 +253,6 @@ class NewMSRViewModel extends BaseViewModel {
       }
     } catch (ex) {
       // hideLoading();
-      print(ex);
       showError(error);
       return Future.value(false);
     }
@@ -285,7 +283,6 @@ class NewMSRViewModel extends BaseViewModel {
         }
       }
     } catch (ex) {
-      print(ex);
       // hideLoading();
       // showError(trans("server_error_1"));
       return Future.value(false);
@@ -382,7 +379,6 @@ class NewMSRViewModel extends BaseViewModel {
       {bool snap = true,
       bool? select = false,
       bool clearClassificationSelection = false}) {
-    print("navigateToDetails");
     if (clearClassificationSelection) clearClassification();
 
     if (select ?? false) {
@@ -416,8 +412,7 @@ class NewMSRViewModel extends BaseViewModel {
     } else {
       isExcepted = Helpers.checkForExpectedVD(gisResult);
     }
-    print(isAllowed);
-    print(isExcepted);
+
     return isAllowed && !isExcepted;
   }
 

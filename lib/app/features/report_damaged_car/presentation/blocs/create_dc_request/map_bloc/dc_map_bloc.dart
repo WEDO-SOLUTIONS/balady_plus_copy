@@ -195,9 +195,7 @@ class DCMapBloc extends Bloc<DCMapEvent, DCMapState> {
           CameraPosition(target: LatLng(lat, lng), zoom: 16.0),
         ),
       );
-    } catch (ex) {
-      print(ex);
-    }
+    } catch (ex) {}
   }
 
   double calculateDistance(lat1, lon1, lat2, lon2) {

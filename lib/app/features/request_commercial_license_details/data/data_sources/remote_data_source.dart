@@ -9,33 +9,32 @@ import 'package:localize_and_translate/localize_and_translate.dart'
     show Translation;
 
 abstract class RequestCommercialLicenseDetailsRemoteDataSource {
-  Future<RequestCommercialLicenseDetailsModel> getRequestCommercialLicenseDetails(
+  Future<RequestCommercialLicenseDetailsModel>
+      getRequestCommercialLicenseDetails(
     int requestId,
   );
 }
 
-class RequestCommercialLicenseDetailsRemoteDataSourceImplementation implements RequestCommercialLicenseDetailsRemoteDataSource {
+class RequestCommercialLicenseDetailsRemoteDataSourceImplementation
+    implements RequestCommercialLicenseDetailsRemoteDataSource {
   final WebService webService;
 
   RequestCommercialLicenseDetailsRemoteDataSourceImplementation(
       {required this.webService});
 
   @override
-  Future<RequestCommercialLicenseDetailsModel> getRequestCommercialLicenseDetails(
-      int requestId) async {
+  Future<RequestCommercialLicenseDetailsModel>
+      getRequestCommercialLicenseDetails(int requestId) async {
     var response;
     try {
-      response = await webService.dio.get(
-        ApiUrl.getRequestCommercialLicenseDetails(requestId),
-        options: Options(
-          headers: {
-            'x-channel-id': 'mobile',
-          }
-        )
-      );
+      response = await webService.dio
+          .get(ApiUrl.getRequestCommercialLicenseDetails(requestId),
+              options: Options(headers: {
+                'x-channel-id': 'mobile',
+              }));
       final data = response.data;
       final result = ResponseBodyModel.fromMap(data).data?.result;
-      return  RequestCommercialLicenseDetailsModel.fromJson(result!);
+      return RequestCommercialLicenseDetailsModel.fromJson(result!);
     } on DioError catch (error) {
       // "DioError $error".errorLog();
       if (error is NoDataFoundException) {
@@ -47,7 +46,7 @@ class RequestCommercialLicenseDetailsRemoteDataSourceImplementation implements R
         dioError: error,
       );
     } catch (ex) {
-      // "Catched $ex".errorLog();
+      print(ex);
       if (ex is ServerException) {
         rethrow;
       } else {

@@ -20,14 +20,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:provider/provider.dart';
 
-
-
 class RequestCommercialLicenseDetailsPage extends StatelessWidget {
   const RequestCommercialLicenseDetailsPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    RequestCommercialLicenseDetailsCubit  bloc = ModalRoute.of(context)!.settings.arguments as RequestCommercialLicenseDetailsCubit;
+    RequestCommercialLicenseDetailsCubit bloc = ModalRoute.of(context)!
+        .settings
+        .arguments as RequestCommercialLicenseDetailsCubit;
 
     return BlocProvider(
       create: (context) => bloc,
@@ -55,19 +55,32 @@ class RequestCommercialLicenseDetailsPage extends StatelessWidget {
                     onTap: () {
                       BottomSheetDialog.showDraggableSheet(
                         context,
-                        dialogKeyName: DialogName.requestCommercialLicenseActionSheetDialog,
-                        currentRouteName: RouteName.requestCommercialLicenseDetails,
+                        dialogKeyName: DialogName
+                            .requestCommercialLicenseActionSheetDialog,
+                        currentRouteName:
+                            RouteName.requestCommercialLicenseDetails,
                         child: ChangeNotifierProvider(
                           create: (BuildContext context) =>
                               RequestCommercialLicenseActionViewModel(
-                                webService: sl(),
-                                requestId: bloc.requestId,
-                                reasonCancel: state.requestCommercialLicenseDetails!.cancellationReasonId != null ? ReasonCancel(
-                                  id: state.requestCommercialLicenseDetails!.cancellationReasonId!,
-                                  text: state.requestCommercialLicenseDetails!.cancellationReasonName!,
-                                ) : null,
-                                  availableCloseDate: state.requestCommercialLicenseDetails!.availableCloseDate
-                              ),
+                                  webService: sl(),
+                                  requestId: bloc.requestId,
+                                  requestTypeId: bloc.requestTypeId,
+                                  reasonCancel: state
+                                              .requestCommercialLicenseDetails!
+                                              .cancellationReasonId !=
+                                          null
+                                      ? ReasonCancel(
+                                          id: state
+                                              .requestCommercialLicenseDetails!
+                                              .cancellationReasonId!,
+                                          text: state
+                                              .requestCommercialLicenseDetails!
+                                              .cancellationReasonName!,
+                                        )
+                                      : null,
+                                  availableCloseDate: state
+                                      .requestCommercialLicenseDetails!
+                                      .availableCloseDate),
                           child: const RequestCommercialLicenseActionSheet(),
                         ),
                         isFullHeight: false,
@@ -87,8 +100,8 @@ class RequestCommercialLicenseDetailsPage extends StatelessWidget {
           ],
         ),
         body: const Padding(
-          padding:  EdgeInsets.all(16),
-          child:  RequestCommercialLicenseDetailsBody(),
+          padding: EdgeInsets.all(16),
+          child: RequestCommercialLicenseDetailsBody(),
         ),
       ),
     );

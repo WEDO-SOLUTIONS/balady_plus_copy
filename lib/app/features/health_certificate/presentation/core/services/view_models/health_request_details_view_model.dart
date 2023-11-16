@@ -11,18 +11,24 @@ import 'package:tuple/tuple.dart';
 import '../../../../../../core/base/base_view_model.dart';
 import '../../../../../../core/services/local/helpers.dart';
 import '../../../../../../core/services/local/navigation_services.dart';
+import '../../../../../../core/utils/constants/dialog_names.dart';
 import '../../../../../../core/utils/enums/enums.dart';
 import '../../../../../../core/utils/enums/health_certificate.dart';
 import '../../../../../_shared_feature_/data/entities/success_screen_args.dart';
+import '../../../../../_shared_feature_/presentation/dialogs/bottom_sheet_dialogs.dart';
 import '../../../../../_shared_feature_/presentation/pages/pdf_view.dart';
+import '../../../dialogs/update_photo_dialog.dart';
 import '../../models/cancel_health_certificate_response.dart';
+import '../../models/check_update_photo_client.dart';
 import '../../models/delete_request_response.dart';
 import '../../models/health_request_details.dart';
 import '../../models/submit_new_request_response.dart';
+import '../repository/health_license_repository.dart';
 import 'new_health_license_view_model.dart';
 
 class HealthRequestDetailsViewModel extends BaseViewModel {
   final dataModel = locator<HealthLicenseViewModel>();
+  final _rpository = locator<HealthLicenseRepository>();
 
   HealthRequestDetails? requestDetails;
   bool? isDeletable;
@@ -31,8 +37,42 @@ class HealthRequestDetailsViewModel extends BaseViewModel {
   HealthRequestDetailsViewModel(
       {this.requestDetails, this.isDeletable, this.isPrintable});
 
+  void checkHealthCertificatePhoto() async {
+    if (requestDetails?.data?.result?.requestTypeId == 1301 ||
+        requestDetails?.data?.result?.requestTypeId == 1303 ||
+        requestDetails?.data?.result?.requestTypeId == 1308) {
+      showLoading();
+      Tuple3<bool?, String?, CheckUpdateClientPhoto?> result = await _rpository
+          .checkUpdatedPhoto(requestDetails!.data!.result!.requestId!);
+      hideLoading();
+      if (result.item3?.data?.result == true) {
+        printLicense();
+      } else if (result.item3 != null) {
+        if (result.item3?.data?.responseCode == "2") {
+          bool? isUpdated = await BottomSheetDialog.showDraggableSheet(
+              NavigationService.navigatorKey.currentContext!,
+              dialogKeyName:
+                  DialogName.healthCertificateUpdatePhotoActionsDialog,
+              currentRouteName: RouteName.healthLicenseDetailsScreen,
+              child: UpdateHealthCerificatePhotoDialog(
+                onUpdated: () {},
+                requestId: requestDetails?.data?.result?.requestId ?? 0,
+                certificateUUID: requestDetails?.data?.result
+                        ?.healthCertificateInfo?.certificateUuid ??
+                    "",
+              ));
+
+          if (isUpdated == true) printLicense();
+        }
+      } else {
+        showError(result.item2 ?? "");
+      }
+    } else {
+      printLicense();
+    }
+  }
+
   Future<DeleteRequestResponse?> deleteHealthRequest() async {
-    print(requestDetails?.data?.result?.requestId);
     DeleteRequestResponse? result = await dataModel
         .deleteHealthRequest(requestDetails?.data?.result?.requestId ?? 0);
 
@@ -93,8 +133,7 @@ class HealthRequestDetailsViewModel extends BaseViewModel {
       List<Uint8List?> res = await Future.wait(requestDetails!
           .data!.result!.requestAttachments!
           .map((e) => dataModel.downloadAttachments(e.attachUrl ?? "")));
-      print(res);
-      print(res.length);
+ 
     }*/
     Tuple2<Uint8List?, String?> res = await dataModel.downloadAttachments(id);
     if (res.item1 != null) showFile(res.item1!, contentType: res.item2);
@@ -111,8 +150,6 @@ class HealthRequestDetailsViewModel extends BaseViewModel {
   }
 
   void showFile(Uint8List bytes, {String? contentType}) async {
-    print("content toye");
-    print(contentType);
     try {
       if (contentType?.toLowerCase().contains("pdf") ?? false) {
         Navigator.push(NavigationService.navigatorKey.currentState!.context,
@@ -129,8 +166,6 @@ class HealthRequestDetailsViewModel extends BaseViewModel {
   }
 
   void openFile(Uint8List bytes, {String? contentType}) async {
-    print("content toye");
-    print(contentType);
     String extension =
         contentType != null ? ("." + contentType.split("/").last) : "";
     try {
@@ -139,13 +174,10 @@ class HealthRequestDetailsViewModel extends BaseViewModel {
         File filetemp = File("$dir/" +
             "${DateTime.now().millisecondsSinceEpoch.toString()}$extension");
         await filetemp.writeAsBytes(bytes);
-        print(filetemp.path);
 
         OpenFile.open(filetemp.path).then((value) {});
       }
-    } catch (ex) {
-      print(ex);
-    }
+    } catch (ex) {}
   }
 
   bool showExamanationData() {

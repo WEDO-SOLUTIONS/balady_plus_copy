@@ -103,7 +103,6 @@ class _QuranPageState extends State<QuranPage> {
                             context
                                 .read<QuranBloc>()
                                 .add(ChangePageEvent(page: page));
-                            print(state.suras?.length);
                           },
                           itemCount: state.suras?.length ?? 0,
                           itemBuilder: ((context, i) {

@@ -61,7 +61,6 @@ class RetrieveVehiclesState extends Equatable {
       ];
 
   bool isFormValid() {
-    print(type);
     if (type == "Agent") {
       if (agentNumber != null && carOwnerId != null) return true;
     }

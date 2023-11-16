@@ -682,7 +682,6 @@ class MunicipalAdvisorRemoteDataSourceImplementation
   Future<bool> saveActivities(SaveActivitiesParamsModel params) async {
     var response;
     try {
-      print("HEREEEEEEE");
       response = await webService.dio.post(
           '${ApiUrl.saveActivities}/${params.consultationKey}',
           data: params.activitiesIds.toList(),
@@ -1249,7 +1248,7 @@ class MunicipalAdvisorRemoteDataSourceImplementation
         final result = ResponseBodyModel.fromMap(error.response?.data).data;
         errorCode = result?.responseCode;
       } catch (ex) {}
-      print("erroCode $errorCode");
+
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
@@ -1275,7 +1274,7 @@ class MunicipalAdvisorRemoteDataSourceImplementation
       data.toString().successLog();
 
       final result = ResponseBodyModel.fromMap(data).data?.result;
-      print(result);
+
       return result["ImageURL"];
     } on DioError catch (error) {
       "DioError $error".errorLog();
@@ -1285,7 +1284,7 @@ class MunicipalAdvisorRemoteDataSourceImplementation
         final result = ResponseBodyModel.fromMap(error.response?.data).data;
         errorCode = result?.responseCode;
       } catch (ex) {}
-      print("erroCode $errorCode");
+
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,

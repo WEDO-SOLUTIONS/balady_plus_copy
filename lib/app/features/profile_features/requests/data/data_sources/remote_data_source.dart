@@ -105,10 +105,8 @@ class RequestsRemoteDataSourceImplementation
 
       final data = response.data;
       data.toString().successLog();
-      print("result");
 
       final result = ResponseBodyModel.fromMap(data).data?.result;
-      print("result ${result.length}");
       return result
           .map<RequestStatusModel>(
               (e) => RequestStatusModel.fromMap(e as Map<String, dynamic>))

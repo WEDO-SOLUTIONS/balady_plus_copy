@@ -4,11 +4,14 @@ import 'package:balady_plus/app/core/utils/constants/paths/image_paths.dart';
 import 'package:balady_plus/app/core/utils/enums/app_font_weights.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../core/services/local/helpers.dart';
 import '../../../../core/services/local/navigation_services.dart';
 import '../../../../core/utils/constants/app_colors.dart';
+import '../../../../core/utils/constants/constants.dart';
 import '../../../../core/utils/enums/enums.dart';
 import '../../data/entities/success_screen_args.dart';
 import '../buttons/elevated_button_widgets.dart';
@@ -234,10 +237,9 @@ class SuccessBody extends StatelessWidget {
                 height: 20,
               ),
               //MM
-              /*  if (successScreenArgs?.msg != null &&
+              if (successScreenArgs?.msg != null &&
                   successScreenArgs!.msg!.isNotEmpty)
                 CustomHtmlTextWidget(successScreenArgs!.msg!),
-*/
 
               // const CustomVerticalSpace(
               //   height: 48,
@@ -622,5 +624,60 @@ class SuccessButtons extends StatelessWidget {
         }*/
         break;
     }
+  }
+}
+
+class CustomHtmlTextWidget extends StatelessWidget {
+  final String data;
+
+  CustomHtmlTextWidget(
+    this.data, {
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+          borderRadius: const BorderRadius.all(Radius.circular(2)),
+          border: Border.all(color: const Color(0xff6bb21f), width: 1),
+          color: const Color(0xfffafef6)),
+      padding: const EdgeInsetsDirectional.only(
+        start: 16,
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(top: 13.0, bottom: 13),
+            child: SvgPicture.asset(
+                "assets/images/feedbackMessageItemIconPartiallyDetected.svg"),
+          ),
+          Flexible(
+            child: Padding(
+              padding: const EdgeInsets.only(top: 3.0),
+              child: Html(
+                data: data,
+                style: {
+                  "body": Style(
+                      fontSize: FontSize(13.0),
+                      fontWeight: FontWeight.w500,
+                      color: AppColor.black400,
+                      lineHeight: const LineHeight(2),
+                      fontFamily: Constants.appFontType),
+                },
+                onLinkTap: (
+                  url,
+                  _,
+                  __,
+                ) {
+                  CommonFunctions.externalLaunch(url!);
+                },
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }

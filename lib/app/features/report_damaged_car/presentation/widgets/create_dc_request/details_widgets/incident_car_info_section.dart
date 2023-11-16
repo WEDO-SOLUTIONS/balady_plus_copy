@@ -17,8 +17,6 @@ class IncidentCarInfoSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<CreateDCBloc, CreateDCState>(
       builder: (context, state) {
-        //   print("IncidentDescSection build");
-
         return Stack(
           children: [
             Column(

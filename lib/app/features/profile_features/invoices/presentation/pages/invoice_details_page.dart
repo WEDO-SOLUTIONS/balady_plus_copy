@@ -25,7 +25,6 @@ class InvoiceDetailsPage extends StatelessWidget {
       String? xSourceApp,
     );
 
-
     return BlocProvider(
       create: (context) => sl<InvoiceDetailsCubit>(),
       child: InvoiceDetailBody(

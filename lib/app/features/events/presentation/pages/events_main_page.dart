@@ -75,7 +75,7 @@ class _EventsMainPageState extends State<EventsMainPage> {
                           ),
                         ),
                       );
-                      print("key word ${params?.keyword}");
+
                       if (context.mounted) {
                         context
                             .read<EventsBloc>()

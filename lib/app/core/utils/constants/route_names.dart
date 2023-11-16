@@ -118,6 +118,7 @@ class RouteName {
   static const ZmZmPointsPage = '/ZmZmPointsPage';
   // ------- CR ---------
   static const commercialLicensePage = '/commercialLicensePage';
+  static const commercialLicenseServicePage = '/commercialLicenseServicePage';
 
   // ------- Wallet ------
   static const walletPage = '/walletPage';
@@ -188,7 +189,34 @@ class RouteName {
   static const submitRatingCancelScreen = '/submitRatingCancelScreen';
 
   static const commercialLicenseDetails = '/commercialLicenseDetails';
-  static const requestCommercialLicenseDetails = '/requestCommercialLicenseDetails';
+
+// -------  Commercial License Issue ---------
+  static const crMapScreen = '/crMapScreen';
+
+  static const requestCommercialLicenseDetails =
+      '/requestCommercialLicenseDetails';
+
+// -------  Commercial License Renew ---------
+  static const renewCommercialLicenseStartService =
+      '/renewCommercialLicenseStartService';
+
+  static const renewCommercialLicenseSubmitForm =
+      '/renewCommercialLicenseSubmitForm';
+
+  static const submitApplicationSuccessfullyRenew =
+      '/submitApplicationSuccessfullyRenew';
+
+  static const submitApplicationSuccessfullyNew =
+      '/submitApplicationSuccessfullyNew';
+
+  static const violationResultsPage = '/violationResultsPage';
+
+  static const violationRegulationDetailsPage =
+      '/violationRegulationDetailsPage';
+
+  static const violationGuideMainPage = '/violationGuideMainPage';
+
+  static const violationCreatePage = '/violationCreatePage';
 }
 
 class EtmamRoutesNames {

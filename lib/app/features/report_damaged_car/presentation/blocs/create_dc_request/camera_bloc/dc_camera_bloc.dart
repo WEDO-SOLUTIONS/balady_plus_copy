@@ -59,9 +59,7 @@ class DCCameraBloc extends Bloc<DCCameraEvent, DCCameraState> {
           await cameraController?.initialize();
           initializingCamera = false;
           cameraController?.setFlashMode(FlashMode.off);
-        } catch (e) {
-          print("CameraException initState: " + e.toString());
-        }
+        } catch (e) {}
       }
       emit(state.copyWith(
           isFlashOn: false,
@@ -139,7 +137,6 @@ class DCCameraBloc extends Bloc<DCCameraEvent, DCCameraState> {
   }
 
   Future<void> _takePhotoHandler(TakePhoto e, Emitter emitter) async {
-    print("_takePhotoHandler");
     if (state.status == BlocStatus.loading) return;
     try {
       emitter(state.copyWith(status: BlocStatus.loading));
@@ -150,7 +147,7 @@ class DCCameraBloc extends Bloc<DCCameraEvent, DCCameraState> {
         String base64File = base64Encode(fileBytes);
         AttachmentItem item =
             AttachmentItem(base64: base64File, filePath: file?.path);
-        //print("_takePhotoHandler photo ${item}");
+
         emitter(state.copyWith(status: BlocStatus.loading));
 
         List<AttachmentItem> items = state.files ?? [];
@@ -196,9 +193,7 @@ class DCCameraBloc extends Bloc<DCCameraEvent, DCCameraState> {
       await _controller.initialize();
       initializingCamera = false;
       _controller.setFlashMode(FlashMode.off);
-    } on CameraException catch (e) {
-      print("CameraException: " + e.toString());
-    }
+    } on CameraException catch (e) {}
     emitter(state.copyWith(
         status: BlocStatus.success,
         isCameraInitialized: cameraController?.value.isInitialized));
@@ -231,9 +226,7 @@ class DCCameraBloc extends Bloc<DCCameraEvent, DCCameraState> {
           emitter(state.copyWith(isFlashOn: true));
         }
       }
-    } catch (ex) {
-      print(ex);
-    }
+    } catch (ex) {}
   }
 
   Future<void> _onReTakePhotoHandler(
@@ -251,7 +244,7 @@ class DCCameraBloc extends Bloc<DCCameraEvent, DCCameraState> {
 
   Future<bool> _onNavigateToDetailsScreen(
       NavigateToDetailsScreenEvent e, Emitter emitter) async {
-    /*print("_getVDSplListHandler");
+    /*
     if (state.status == BlocStatus.loading) return false;
     if (state.splResponse?.items?.isEmpty ?? true) {
       emitter(state.copyWith(status: BlocStatus.loading));
@@ -304,7 +297,7 @@ class DCCameraBloc extends Bloc<DCCameraEvent, DCCameraState> {
   @override
   Future<void> close() async {
     super.close();
-    //print("closeclose");
+
     cameraController?.dispose();
   }
 }

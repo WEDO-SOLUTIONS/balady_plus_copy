@@ -74,7 +74,6 @@ class SearchBottomViewModel extends BaseViewModel {
       isLoadingData.notifyListeners();
 
       removeSuggestList();
-      print(e);
     }
   }
 
@@ -115,9 +114,7 @@ class SearchBottomViewModel extends BaseViewModel {
     );
     try {
       sharedPrefs.setSuggestResultHistory(suggestResultMessageHistory.value!);
-    } catch (e) {
-      print(e);
-    }
+    } catch (e) {}
     suggestResultMessageHistory.notifyListeners();
   }
 }

@@ -59,8 +59,6 @@ class ZmZmBloc extends Bloc<ZmZmEvent, ZmZmState> {
 
   Future<void> _goToNextPageHandler(
       GoToNextPageEvent e, Emitter emitter) async {
-    //print("next page");
-
     if (state.status == BlocStatus.performing) return;
     int nextPage = state.currentPageValue + 1;
 

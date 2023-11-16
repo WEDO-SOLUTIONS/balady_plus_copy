@@ -19,7 +19,8 @@ class CommercialLicenseActionViewModel extends BaseViewModel {
   CommercialLicenseActionViewModel({
     required this.webService,
     required this.licenseId,
-    required this.submitterInfo, required this.licenseStatusId,
+    required this.submitterInfo,
+    required this.licenseStatusId,
   }) {
     getCommercialLicenseAllowedActions();
   }
@@ -28,18 +29,18 @@ class CommercialLicenseActionViewModel extends BaseViewModel {
     try {
       isLoading = true;
       notifyListeners();
-      var response =
-          await webService.dio.get(ApiUrl.getAllowedActionsForRequests(licenseId));
+      var response = await webService.dio
+          .get(ApiUrl.getAllowedActionsForRequests(licenseId));
       final data = response.data;
       final result = ResponseBodyModel.fromMap(data).data?.result;
       actions = result
           .map<AllowedActions>(
               (e) => AllowedActions.fromJson(e as Map<String, dynamic>))
           .toList();
-      actions = actions.where((element) => element.id == 1008 && licenseStatusId != 3).toList();
-    } catch (e) {
-      print(e);
-    }
+      actions = actions
+          .where((element) => element.id == 1008 && licenseStatusId != 3)
+          .toList();
+    } catch (e) {}
     isLoading = false;
     notifyListeners();
   }

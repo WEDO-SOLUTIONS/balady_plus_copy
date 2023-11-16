@@ -51,14 +51,11 @@ class ReplyRetrieveVehiclesBloc
   Future<void> _submitIncidentHandler(
       SubmitIncidentEvent e, Emitter emitter) async {
     if (state.status == BlocStatus.loading) return;
-    print("HERRTTT 222");
 
     hideKeyboard();
     emitter(state.copyWith(status: BlocStatus.loading));
 
     if (state.file != null && state.file?.id == null) {
-      print("HERRTTT 777");
-
       var failureOrSuccess = await _uploadFile(UploadFileParams(
           attachStream: state.file?.fileBase64,
           filePath: state.file?.filePath));
@@ -80,10 +77,7 @@ class ReplyRetrieveVehiclesBloc
         } else {}
       });
     } else {
-      print("HERRTTT 999");
-
       if (CommonProperties.isLoggedIn) {
-        print("HERRTTT");
         add(CreateIncidentRegisteredEvent());
       } else {}
     }
@@ -107,7 +101,6 @@ class ReplyRetrieveVehiclesBloc
           errorMessage: serverFailure.errorMessage,
         ));
       }, (success) {
-        print(success);
         emitter(state.copyWith(
           status: BlocStatus.success1,
         ));

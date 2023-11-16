@@ -40,12 +40,10 @@ class RequestsRemoteDataSourceImplementation
                 'Bearer ${sl<EntryPointCubit>().state.apigeeToken?.accessToken}'
           }));
 
-      print(response.data);
       final result = DownloadIMSFileResult.fromJson(response.data);
 
       return result;
     } on DioError catch (error) {
-      print(error);
       var errorCode;
 
       throw ServerException(
@@ -55,7 +53,6 @@ class RequestsRemoteDataSourceImplementation
         dioError: error,
       );
     } catch (ex) {
-      print(ex);
       if (ex is ServerException)
         throw ex;
       else {

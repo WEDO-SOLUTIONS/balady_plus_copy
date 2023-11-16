@@ -111,11 +111,9 @@ class CalendarRemoteDataSourceImpl extends CalendarRemoteDataSource {
 
       var data = response.data;
       final result = ResponseBodyModel.fromMap(data).data?.result;
-      print(result);
 
       return CalendarDetailsModel.fromJson(result);
     } on DioError catch (error) {
-      print(error);
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,

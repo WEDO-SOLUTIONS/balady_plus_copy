@@ -29,9 +29,12 @@ class CrStep2ActivityDataState extends Equatable {
   final AddetionalActivityItemDetails? addetionalDetailsItem;
   final SubActivityDetails? addetionalDetails;
   final bool? atmFeesPaid;
+  final bool? draftLoaded;
+  final BlocStatus draftStatus;
   const CrStep2ActivityDataState(
       {this.subActivitiesStatus = BlocStatus.initial,
       this.accommodationTypesStatus = BlocStatus.initial,
+      this.draftStatus = BlocStatus.initial,
       this.subActivityDetailsStatus = BlocStatus.initial,
       this.addetionalActivityListStatus = BlocStatus.initial,
       this.addetionalActivityDetailsListStatus = BlocStatus.initial,
@@ -52,7 +55,8 @@ class CrStep2ActivityDataState extends Equatable {
       this.addetionalItem,
       this.addetionalDetailsItem,
       this.addetionalDetails,
-      this.atmFeesPaid});
+      this.atmFeesPaid,
+      this.draftLoaded});
 
   @override
   List<Object?> get props => [
@@ -75,7 +79,9 @@ class CrStep2ActivityDataState extends Equatable {
         addetionalItem,
         addetionalDetailsItem,
         addetionalDetails,
-        atmFeesPaid
+        atmFeesPaid,
+        draftLoaded,
+        draftStatus
       ];
 
   CrStep2ActivityDataState copyWith(
@@ -83,6 +89,7 @@ class CrStep2ActivityDataState extends Equatable {
       BlocStatus? accommodationTypesStatus,
       BlocStatus? subActivityDetailsStatus,
       BlocStatus? status,
+      BlocStatus? draftStatus,
       List<SubActivityEntity>? subActivities,
       List<CrLookupsEntity>? accommodationTypes,
       Nullable<SubActivityDetails?>? subActivityDetails,
@@ -101,7 +108,8 @@ class CrStep2ActivityDataState extends Equatable {
       Nullable<AddetionalActivityItemDetails?>? addetionalDetailsItem,
       Nullable<SubActivityDetails?>? addetionalDetails,
       String? unitCount,
-      bool? atmFeesPaid}) {
+      bool? atmFeesPaid,
+      bool? draftLoaded}) {
     return CrStep2ActivityDataState(
         status: status ?? this.status,
         subActivitiesStatus: subActivitiesStatus ?? this.subActivitiesStatus,
@@ -144,7 +152,9 @@ class CrStep2ActivityDataState extends Equatable {
             ? this.addetionalDetails
             : addetionalDetails.value,
         unitCount: unitCount ?? this.unitCount,
-        atmFeesPaid: atmFeesPaid ?? this.atmFeesPaid);
+        atmFeesPaid: atmFeesPaid ?? this.atmFeesPaid,
+        draftLoaded: draftLoaded ?? this.draftLoaded,
+        draftStatus: draftStatus ?? this.draftStatus);
   }
 
   List<AddetionalActivityItem> getAddetionalActivityItems() {

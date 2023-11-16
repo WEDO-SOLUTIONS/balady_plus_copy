@@ -147,11 +147,8 @@ class CrmDetailsBloc extends Bloc<CrmDetailsEvent, CrmDetailsState> {
           String dir = (await getTemporaryDirectory()).path;
           File filetemp = File("$dir/" + file.attachName);
           await filetemp.writeAsBytes(bytes);
-          print(filetemp.path);
           OpenFile.open(filetemp.path);
-        } catch (ex) {
-          print(ex);
-        }
+        } catch (ex) {}
       }
     } catch (ex) {}
   }
