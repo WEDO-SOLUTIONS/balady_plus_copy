@@ -412,6 +412,7 @@ class NewAppointmentViewModel extends BaseViewModel {
               fromHomePage: true));
       return response.item3;
     } else {
+      print("gg");
       showError(response.item2 ?? "");
     }
     return null;
@@ -441,6 +442,7 @@ class NewAppointmentViewModel extends BaseViewModel {
 
   Future<bool> uploadFile(Uint8List? attachmentBase64,
       String? attachmentFileName, String? attachmentPath) async {
+    print("uploadFile");
     final mimeType = lookupMimeType(attachmentPath ?? ""); // 'image/jpeg'
 
     showLoading();
@@ -456,6 +458,7 @@ class NewAppointmentViewModel extends BaseViewModel {
           attachmentUuid: attachmentUuid,
           attachmentFileName: attachmentFileName,
           attachmentPath: attachmentPath));
+      //print(attachmentUuid);
       return true;
     } else {
       showError(response.item2 ?? "");
@@ -565,12 +568,15 @@ class NewAppointmentViewModel extends BaseViewModel {
         if ((date.year > 1800 && date.year < 2100) &&
             (now.year > 1800 && now.year < 2100)) {
           int age = now.year - date.year;
+          //print("daaaata $age");
           if (age > 65) {
             isOld = true;
           }
         }
       }
-    } catch (ex) {}
+    } catch (ex) {
+      //print("daaate $ex");
+    }
     isUserOld = isOld;
     return isOld;
   }

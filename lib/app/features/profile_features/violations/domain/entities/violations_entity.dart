@@ -13,7 +13,6 @@ class ViolationsEntity {
   String? licenseNumberBalady;
   String? licenseTypeId;
   String? licenseTypeName;
-  String? serviceTypeId;
   dynamic facilityName;
   String? billStatusName;
   String? billStatusId;
@@ -57,7 +56,6 @@ class ViolationsEntity {
     this.licenseNumberOrOwnerIdentityNumber,
     this.licenseNumberBalady,
     this.licenseTypeId,
-    this.serviceTypeId,
     this.licenseTypeName,
     this.facilityName,
     this.billStatusName,
@@ -98,4 +96,6 @@ class ViolationsEntity {
   String get violationIssueDateStr => violationIssueDate != null
       ? DateFormat.yMd().format(violationIssueDate!)
       : "";
+
+
 }

@@ -63,18 +63,4 @@ class CreateObjectionState extends Equatable {
   bool isFormValid() {
     return true;
   }
-
-  String? get getObjectionTypeName =>
-      item?.objectionTypeName ?? details?.objectionTypeName;
-
-  String? get getServiceGroupName =>
-      item?.applicationName ?? details?.serviceGroupName;
-
-  String? get getServiceName => item?.serviceName ?? details?.serviceName;
-
-  String? get getMunicipalityName =>
-      item?.municipalityName ?? details?.municipalityName;
-
-  String? get getSubMunicipalityName =>
-      item?.subMunicipalityName ?? details?.subMunicipalityName;
 }

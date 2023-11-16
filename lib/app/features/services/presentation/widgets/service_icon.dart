@@ -166,18 +166,15 @@ class ServiceIcon extends StatelessWidget {
           if (CommonProperties.isLoggedIn) {
             bool isSuccess =
                 await locator<NewAppointmentViewModel>().loadInitialData();
-            if (isSuccess) {
-              NavigationService.navigatorKey.currentState!
-                  .pushNamed(RouteName.NewAppointmentPage, arguments: false);
-              /* await BottomSheetDialog.showDraggableSheet(context,
+            if (isSuccess)
+              await BottomSheetDialog.showDraggableSheet(context,
                   dialogKeyName: DialogName.selectAppointmentTypeDialog,
                   currentRouteName: "ServicesPage",
                   isFullHeight: false,
                   child: BottomSheetWithActions(
                     title: "اختر نوع الموعد".tr(),
                     body: NewAppointmentDialog(),
-                  ));*/
-            }
+                  ));
           } else {
             showDialog(
                 context: context,
@@ -186,10 +183,7 @@ class ServiceIcon extends StatelessWidget {
                       if (isSuccess ?? false) {
                         await locator<NewAppointmentViewModel>()
                             .loadInitialData();
-                        NavigationService.navigatorKey.currentState!.pushNamed(
-                            RouteName.NewAppointmentPage,
-                            arguments: false);
-                        /* await BottomSheetDialog.showDraggableSheet(context,
+                        await BottomSheetDialog.showDraggableSheet(context,
                             dialogKeyName:
                                 DialogName.selectAppointmentTypeDialog,
                             currentRouteName: "ServicesPage",
@@ -197,7 +191,7 @@ class ServiceIcon extends StatelessWidget {
                             child: BottomSheetWithActions(
                               title: "اختر نوع الموعد".tr(),
                               body: NewAppointmentDialog(),
-                            ));*/
+                            ));
                       }
                     }));
           }

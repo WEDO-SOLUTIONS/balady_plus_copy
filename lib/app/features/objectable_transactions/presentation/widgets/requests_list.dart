@@ -1,25 +1,20 @@
-import 'package:balady_plus/app/core/utils/constants/remote_config.dart';
 import 'package:balady_plus/app/features/objectable_transactions/domain/entities/transaction_details_params.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
-import '../../../../core/services/local/navigation_services.dart';
-import '../../../../core/utils/utils_exports.dart'
-    show BlocRequestStatus, CommonFunctions, RouteName;
+import '../../../../core/utils/utils_exports.dart' show BlocRequestStatus;
 import '../../../_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
 import '../../../_shared_feature_/presentation/widgets/need_login_widget.dart';
 import '../../../_shared_feature_/presentation/widgets/reload_widget.dart';
 import '../../../_shared_feature_/shared_feature_exports.dart'
     show MessageDialog, RetryWidget, ShimmerEffectWidget;
-import '../../domain/entities/create_objection_page_params.dart';
 import '../../objections_exports.dart'
     show
         GetRequestsEvent,
         GetTransactionDetailsEvent,
         ObjectableTransactionBloc,
         ObjectableTransactionState,
-        ObjectableTransactionsEntity,
         RequestsListItem,
         RequestsListShimmer,
         RequestsLoadMoreEvent;
@@ -104,17 +99,18 @@ class _RequestsListState extends State<RequestsList> {
                   return RequestsListItem(
                     request: state.requests[index],
                     onDetails: () {
-                      openObjectableDetails(context, state.requests[index]);
+                      context.read<ObjectableTransactionBloc>().add(
+                          GetTransactionDetailsEvent(
+                              apply: false,
+                              params: TransactionDetailsParams(
+                                  applicationId:
+                                      state.requests[index].applicationId ??
+                                          "13",
+                                  id: state.requests[index].transactionNumber ??
+                                      "")));
                     },
                     onApply: () {
-                      NavigationService.navigatorKey.currentState!
-                          .pushNamed(RouteName.createObjectionDetails,
-                              arguments: CreateObjectionPageParams(
-                                item: state.requests[index],
-                              ));
-
-                      // Old Behavoiur
-                      /*  context.read<ObjectableTransactionBloc>().add(
+                      context.read<ObjectableTransactionBloc>().add(
                           GetTransactionDetailsEvent(
                               apply: true,
                               params: TransactionDetailsParams(
@@ -123,8 +119,6 @@ class _RequestsListState extends State<RequestsList> {
                                           "13",
                                   id: state.requests[index].transactionNumber ??
                                       "")));
-                 
-                 */
                     },
                   );
                 },
@@ -136,30 +130,6 @@ class _RequestsListState extends State<RequestsList> {
         }
       },
     );
-  }
-
-  void openObjectableDetails(
-      BuildContext context, ObjectableTransactionsEntity item) {
-    String? serviceTypeId = item.serviceTypeId;
-    String? contentTypeId = item.contentTypeId;
-    if (serviceTypeId == "3" || serviceTypeId == "4") {
-      context.read<ObjectableTransactionBloc>().add(GetTransactionDetailsEvent(
-          apply: false,
-          params: TransactionDetailsParams(
-              applicationId: item.applicationId ?? "13",
-              id: item.transactionNumber ?? "")));
-    } else if (serviceTypeId == "1") {
-      if (contentTypeId == "permit") {
-        CommonFunctions.openBaladyWebView(
-            "${RemoteConfig.baladyCommercialUrl}/Permits/PermitsDetails/Index/${item.hashingTransactionNumber}/${item.hashingOriginalServiceId}");
-      } else {
-        CommonFunctions.openBaladyWebView(
-            "${RemoteConfig.baladyBaseUrl}/dashboardclient/requests/details/${item.hashingTransactionNumber}");
-      }
-    } else if (serviceTypeId == "2") {
-      CommonFunctions.openBaladyWebView(
-          "${RemoteConfig.baladyBaseUrl}/dashboardclient/licenses/details/${item.hashingTransactionNumber}");
-    }
   }
 
   @override

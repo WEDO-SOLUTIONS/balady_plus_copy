@@ -113,6 +113,7 @@ class MyAppointmentsViewModel extends BaseViewModel {
               []
           : null;
     } catch (e) {
+      print(e);
       try {
         //MM  Helpers.sendLog(url: "getMyAppointmentsList", errorMsg: e.toString());
       } catch (ex) {}
@@ -135,6 +136,7 @@ class MyAppointmentsViewModel extends BaseViewModel {
               .toList() ??
           [];
     } catch (e) {
+      print(e);
       try {
         //MM  Helpers.sendLog(url: "getMyAppointmentsList", errorMsg: e.toString());
       } catch (ex) {}
@@ -159,6 +161,7 @@ class MyAppointmentsViewModel extends BaseViewModel {
               .toList() ??
           [];
     } catch (e) {
+      print(e);
       return [];
     }
   }

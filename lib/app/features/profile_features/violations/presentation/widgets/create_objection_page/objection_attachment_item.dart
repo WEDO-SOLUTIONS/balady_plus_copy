@@ -110,7 +110,7 @@ class _ObjectionAttachmentItemState extends State<ObjectionAttachmentItem> {
           String dir = (await getTemporaryDirectory()).path;
           File filetemp = File("$dir/" + file.attachName);
           await filetemp.writeAsBytes(bytes);
-      ;*/
+          print(filetemp.path);*/
 
           if (file.fileName?.toLowerCase().contains(".pdf") ?? false) {
             Uint8List bytes = fileDownloaded.readAsBytesSync();
@@ -127,6 +127,8 @@ class _ObjectionAttachmentItemState extends State<ObjectionAttachmentItem> {
           }
         } catch (ex) {
           EasyLoading.dismiss();
+
+          print(ex);
         }
       }
     } catch (ex) {
