@@ -68,9 +68,7 @@ class _RetriveDateState extends State<RetriveDate> {
             customColumnType: CommonFunctions.isAppAR ? [2, 1, 0] : [0, 1, 2],
             value: selectedDate),
         selectedTextStyle: const TextStyle(color: AppColor.baladyDarkGreen2),
-        onCancel: () {
-          //print("Cancell");
-        },
+        onCancel: () {},
         cancelText: ('choose_date').tr(),
         cancelTextStyle: const TextStyle(
           color: AppColor.black,
@@ -79,9 +77,7 @@ class _RetriveDateState extends State<RetriveDate> {
           fontSize: 15.0,
         ),
         onConfirm: (Picker picker, List value) {
-          //print((picker.adapter as GorgianPicker.DateTimePickerAdapter).value);
           var date = (picker.adapter as DateTimePickerAdapter).value;
-          print(date);
           final DateFormat formatter = DateFormat('yyyy/MM/dd');
           if (date != null) {
             String currentValue = formatter.format(date);

@@ -97,9 +97,7 @@ abstract class BaseState<T extends StatefulWidget, P extends BasePresenter<V>,
               fontSize: 16.0),
           hideCloseButton: true,
           duration: const Duration(seconds: 3));
-    } catch (ex) {
-      print(ex);
-    }
+    } catch (ex) {}
   }
 
   @override

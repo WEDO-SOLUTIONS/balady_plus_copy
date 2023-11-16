@@ -52,14 +52,14 @@ class CrStep13ReviewDataCubit extends Cubit<CrStep13ReviewState> {
 
                 */
 
-        /*  NavigationService.navigatorKey.currentState!.popAndPushNamed(
+        NavigationService.navigatorKey.currentState!.popAndPushNamed(
           RouteName.submitApplicationSuccessfullyNew,
           arguments: (
             "",
             success.data?.result,
             sl<CommercialLicenseBloc>().state.crCalculateFeesResponse?.totalCost
           ),
-        );*/
+        );
       });
     } catch (ex) {
       print(ex);

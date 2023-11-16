@@ -424,8 +424,6 @@ class RequestsBloc extends Bloc<RequestsEvent, RequestsState> {
 
       failureOrSuccess.fold(
         (failure) {
-          print("failure $failure");
-
           if (failure is NoDataFoundFailure) {
             emit(
               state.copyWith(
@@ -476,7 +474,6 @@ class RequestsBloc extends Bloc<RequestsEvent, RequestsState> {
             element.getId().contains(event.query)) return true;
         return false;
       }).toList();
-      print(filtredRequest?.length);
       emit(
         state.copyWith(
           crmRequestsStatus: BlocRequestStatus.submissionGetSuccess,

@@ -121,6 +121,20 @@ class ApiConstants {
   static const String healthCertificatesCenters =
       '$HelathCertificatesURL/health-centers/';
 
+  static String updatedPersonalPhoto(int requestId) =>
+      '/v2/mobile-health-certificates/personal/$requestId/photo';
+
+  static String sendOTPCertificate(String requestId) =>
+      '/v2/mobile-health-certificates/certificate/$requestId/send';
+
+  static String verifyOTPCertificate(String requestId) =>
+      '/v2/mobile-health-certificates/certificate/$requestId/verify';
+
+  static String updateCertificatePhoto =
+      '/v2/mobile-health-certificates/update-photo';
+
+  static String healthTerms = '/v2/mobile-health-certificates/terms';
+
 // Cr Info Service
   static const String CrInfoService = '$HelathCertificatesURL/cr-info/';
 

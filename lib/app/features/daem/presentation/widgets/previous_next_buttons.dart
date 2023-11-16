@@ -14,7 +14,6 @@ class PreviousNextButtons extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<NewDaemTicketBloc, NewDaemTicketState>(
       builder: (context, state) {
-        print(state);
         bool isButtonDisabled = !state.isNextButtonEnabled();
         bool isLastPage = context.read<NewDaemTicketBloc>().isLastPage();
         return Container(

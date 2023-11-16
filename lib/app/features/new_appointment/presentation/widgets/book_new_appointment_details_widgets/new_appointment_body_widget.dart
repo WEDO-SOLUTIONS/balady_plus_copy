@@ -120,6 +120,7 @@ class _AppointmentInfoSection extends State<AppointmentInfoSection> {
             items: model.categoriesList,
             value: model.catetgoryType,
             onChangeType: (DropDownItem? item) {
+              print(item);
               if (item != null) model.catetgoryType = item;
               model.validateForm();
             },
@@ -216,30 +217,31 @@ class _AppointmentInfoSection extends State<AppointmentInfoSection> {
             },
           ),*/
         CustomVerticalSpace(height: 16),
-        if (model.withPreviousTransaction)
-          CustomTextFieldWidget(
-            controller: _transactionNoController,
-            focusNode: _transactionNoFocusNode,
-            label: ("bookNewAppointmentServiceNumberFieldLabelWord").tr(),
-            hintText: ("bookNewAppointmentServiceNumberFieldHintWord").tr(),
-            keyboardType: TextInputType.text,
-            textInputAction: TextInputAction.next,
-            fillColor: Colors.transparent,
-            onSubmitted: (_) {
-              FocusScope.of(context).requestFocus(_descFocusNode);
-            },
-            inputFormatters: [new LengthLimitingTextInputFormatter(10)],
-            onValidate: (text) {
-              if (text.toString().isEmpty) {
-                return ('text_field_error').tr();
-              }
-              return null;
-            },
-            onChanged: (text) {
-              model.setTransactionNo = text;
-              model.validateForm();
-            },
-          ),
+        CustomTextFieldWidgetWithOptinal(
+          controller: _transactionNoController,
+          focusNode: _transactionNoFocusNode,
+          label: ("bookNewAppointmentServiceNumberFieldLabelWord").tr(),
+          hintText: ("bookNewAppointmentServiceNumberFieldHintWord").tr(),
+          keyboardType: TextInputType.text,
+          textInputAction: TextInputAction.next,
+          fillColor: Colors.transparent,
+          showOptional:
+              model.catetgoryType?.id != "4" && model.catetgoryType != null,
+          onSaved: (_) {
+            FocusScope.of(context).requestFocus(_descFocusNode);
+          },
+          inputFormatter: [new LengthLimitingTextInputFormatter(10)],
+          validator: (text) {
+            if (text.toString().isEmpty) {
+              return ('text_field_error').tr();
+            }
+            return null;
+          },
+          onChanged: (text) {
+            model.setTransactionNo = text;
+            model.validateForm();
+          },
+        ),
         CustomVerticalSpace(height: 16),
         if (model.serviceConfigResponse?.getDepartmentName() != null)
           FieldData(

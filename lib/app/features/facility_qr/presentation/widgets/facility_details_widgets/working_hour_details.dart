@@ -295,9 +295,7 @@ class _WorkingHourDetailsState extends State<WorkingHourDetails> {
 
         if (toTime.period == DayPeriod.am) to = "$hoursToAS12:$minuteToStr ص";
 
-        print(from);
-        print(to);
-        print(hoursToAS12);
+      
         return "$from - $to";
       }
     }

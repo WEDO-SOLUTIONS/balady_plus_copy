@@ -67,7 +67,8 @@ class SubmitApplicationSuccessfullyNew extends StatelessWidget {
                         IconPath.submitApplicationSuccessfullyCancel),
                     const SizedBox(height: 32),
                     CustomAutoSizeTextWidget(
-                      'vd_request_submit'.tr(),
+                      'commercial_request_submit'.tr().replaceAll(
+                          "{}", submitResponse.requestId.toString()),
                       textStyle: AppStyle.sectionTitleStyle,
                     ),
                     // CustomAutoSizeTextWidget(

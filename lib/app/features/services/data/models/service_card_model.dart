@@ -14,7 +14,8 @@ class ServiceCardModel extends ServiceCardEntity {
       super.feesLink,
       super.type,
       super.requirements,
-      super.flow});
+      super.flow,
+      super.descriptionLink});
 
   factory ServiceCardModel.fromJson(Map<String, dynamic> json) {
     json.addAll(json[translator.activeLanguageCode] as Map<String, dynamic>);
@@ -26,6 +27,7 @@ class ServiceCardModel extends ServiceCardEntity {
       feesLink: json['feesLink'],
       type: json["type"],
       description: json['description'] as String,
+      descriptionLink: json["descriptionLink"],
       rate: json['rate'] as num,
       requirements: json["requirements"] != null
           ? List<String>.from(json["requirements"]).map((e) => e).toList()

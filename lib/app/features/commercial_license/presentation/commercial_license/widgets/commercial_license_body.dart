@@ -6,9 +6,8 @@ import '../../../../vd/presentation/widgets/details_widgets/details_app_bar_two.
 import '../../../commercial_license_exports.dart';
 
 class CommercialLicenseBody extends StatefulWidget {
-  const CommercialLicenseBody({
-    super.key,
-  });
+  final int? requestId;
+  const CommercialLicenseBody({super.key, this.requestId});
 
   @override
   State<CommercialLicenseBody> createState() => _CommercialLicenseBodyState();
@@ -17,10 +16,11 @@ class CommercialLicenseBody extends StatefulWidget {
 class _CommercialLicenseBodyState extends State<CommercialLicenseBody> {
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
 
-    context.read<CommercialLicenseBloc>().initState();
+    context
+        .read<CommercialLicenseBloc>()
+        .initState(requestId: widget.requestId);
   }
 
   @override
@@ -49,7 +49,7 @@ class _CommercialLicenseBodyState extends State<CommercialLicenseBody> {
                       ModalRoute.withName(RouteName.bottomNavigation);
                   Navigator.of(context).popUntil((predicate));
                 },
-                requestNum: state.requestId ?? null,
+                requestNum: state.requestId,
               ),
               body: PageView.builder(
                 itemCount: state.pagesList.length,

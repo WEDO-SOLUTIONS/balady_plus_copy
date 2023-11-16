@@ -152,7 +152,6 @@ class DaemTypeWidget extends StatelessWidget {
 }
 
 String getIcon(String category) {
-  print(category);
   switch (category) {
     case "خدمة الرخص الإنشائية":
       return IconPath.tsr_1;

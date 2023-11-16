@@ -12,6 +12,8 @@ class MapState extends Equatable {
   final SaveLocationResponse? locationResponse;
   final String? landNo;
   final String? mapNo;
+  final bool? draftLoaded;
+  final BlocStatus draftStatus;
   MapState(
       {this.status = BlocStatus.initial,
       this.errorMessage,
@@ -23,7 +25,9 @@ class MapState extends Equatable {
       this.locationResponse,
       this.requestNo,
       this.landNo,
-      this.mapNo});
+      this.mapNo,
+      this.draftLoaded,
+      this.draftStatus = BlocStatus.initial});
 
   MapState copyWith(
       {final BlocStatus? status,
@@ -36,7 +40,9 @@ class MapState extends Equatable {
       final int? requestNo,
       final SaveLocationResponse? locationResponse,
       final String? landNo,
-      final String? mapNo}) {
+      final String? mapNo,
+      final bool? draftLoaded,
+      final BlocStatus? draftStatus}) {
     return MapState(
         status: status ?? this.status,
         errorMessage: errorMessage ?? this.errorMessage,
@@ -48,15 +54,17 @@ class MapState extends Equatable {
         requestNo: requestNo ?? this.requestNo,
         locationResponse: locationResponse ?? this.locationResponse,
         landNo: landNo ?? this.landNo,
-        mapNo: mapNo ?? this.mapNo);
+        mapNo: mapNo ?? this.mapNo,
+        draftLoaded: draftLoaded ?? this.draftLoaded,
+        draftStatus: draftStatus ?? this.draftStatus);
   }
 
   bool isFormValid() {
     return gisResponse != null &&
         landNo != null &&
-        landNo!.isNotEmpty &&
+        landNo!.trim().isNotEmpty &&
         mapNo != null &&
-        mapNo!.isNotEmpty;
+        mapNo!.trim().isNotEmpty;
   }
 
   @override
@@ -70,6 +78,8 @@ class MapState extends Equatable {
         requestNo,
         locationResponse,
         mapNo,
-        landNo
+        landNo,
+        draftLoaded,
+        draftStatus
       ];
 }

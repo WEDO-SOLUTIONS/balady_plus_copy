@@ -17,7 +17,6 @@ class PreviousNextButtons extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<MSRBloc, MSRState>(
       builder: (context, state) {
-        print(state);
         NewMSRDetailsViewModel model =
             Provider.of<NewMSRDetailsViewModel>(context, listen: true);
         bool isButtonDisabled = !model.isFormValid;

@@ -140,6 +140,9 @@ class ApiUrl {
   static String transactionsRequestDetails(String id) =>
       '/v1/objection-generic-services/applications/$id/objectable-transactions';
 
+  static String cancelObjectionRequest =
+      '/v1/objection-services/objection-request';
+
 //! VD
   static const gis = '/v1/crm/bcg/gis-info';
   static const vdCategories = '/v1/crm/bcg/categories';
@@ -369,6 +372,16 @@ class ApiUrl {
 
   static String salamaWarningWorkFlowMessage =
       '/v1/balady-commercial-services/activities-salama-workflows';
+
+  static String boardContracts(int requestId) =>
+      '/v1/balady-commercial-services/board-contracts/$requestId';
+
+  static String crCitizenInfo =
+      '/v1/balady-commercial-services/moi/citizeninfo';
+
+  static String requestDetailsCommercial(int requestId) =>
+      "/v1/balady-commercial-services/request/$requestId";
+
 //! Renew Commercial Service
   static String validateBeforeApply(int requestId) =>
       'v1/balady-commercial-services/mobile/renew-request/validate-before-apply/$requestId';
@@ -480,6 +493,22 @@ class ApiUrl {
   static const calendarSearch = '/v1/saudi-calendar-services/entries/search';
   static const calendarDetails = '/v1/saudi-calendar-services/entries';
 
+// ! Events
+  static const regulationClauses =
+      '/v1/momtathel-mobile-services/regulation-clauses';
+
+  static const establishmentSizes =
+      '/v1/momtathel-mobile-services/establishment/sizes';
+
+  static const violationsClassifications =
+      '/v1/momtathel-mobile-services/classifications';
+
+  static const violatorLookups =
+      '/v1/momtathel-mobile-services/violator/lookups';
+
+  static const regulationClauseDetails =
+      '/v1/momtathel-mobile-services/regulation-clause/details';
+
 // -------  Commercial License Details ---------
   static String getCommercialLicenseDetails(int licenseId) =>
       '/v1/balady-commercial-services/licenses/$licenseId';
@@ -489,7 +518,6 @@ class ApiUrl {
       '/v1/balady-commercial-services/license-attachments/$licenseId';
 
 // -------  Commercial License Cancel ---------
-
   static String getCommercialLicenseAllowedActions(int licenseId) =>
       '/v1/balady-commercial-services/licenses/$licenseId/allowed-actions';
 /////////////////////////////////////////////////////////

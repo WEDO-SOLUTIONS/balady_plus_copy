@@ -142,9 +142,6 @@ class SearchMapWidget extends StatelessWidget {
                               displayName = e.displayName();
                               category = e;
                             }
-                            print("categoet11 $category");
-                            print(
-                                "categoet ${mapViewModel.selectedCategory.value}");
 
                             final bool isActive = ((mapViewModel
                                             .selectedCategory.value ==
@@ -172,7 +169,7 @@ class SearchMapWidget extends StatelessWidget {
                                     onTap: () {
                                       mapViewModel.selectCategory(
                                           category: category, custom: custom);
-                                      print("Changing ctaegory to: $e");
+                                      searchFocusNode.unfocus();
                                     },
                                     child: Padding(
                                       padding: const EdgeInsets.all(4.0),

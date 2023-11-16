@@ -14,23 +14,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
-import '../../../../../core/utils/app_analytics_events.dart';
-import '../../../../../core/utils/common_functions.dart';
 
-class ApplyCancelScreen extends StatefulWidget {
+class ApplyCancelScreen extends StatelessWidget {
   const ApplyCancelScreen({Key? key}) : super(key: key);
-
-  @override
-  State<ApplyCancelScreen> createState() => _ApplyCancelScreenState();
-}
-
-class _ApplyCancelScreenState extends State<ApplyCancelScreen> {
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    CommonFunctions.sendEventToAnalytics(AppEvents.cancelCommercialLicenseOpen);
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -198,8 +184,7 @@ class _ApplyCancelScreenState extends State<ApplyCancelScreen> {
                           arguments: CommercialLicenseCancelBloc(
                             webService: sl(),
                             requestId: cancellationRequest.requestId,
-                            availableCloseDate:
-                                cancellationRequest.availableCloseDate,
+                            availableCloseDate: cancellationRequest.availableCloseDate,
                             crNumber: viewModel.submitterInfo.crNumber,
                             crType: viewModel.submitterInfo.crType,
                             reasonCancel: viewModel.reasonCancel,
@@ -209,14 +194,14 @@ class _ApplyCancelScreenState extends State<ApplyCancelScreen> {
                         showPopUpWidget(
                           context,
                           popUpBody: Html(
-                              data: viewModel.messageHtml,
-                              onLinkTap: (String? url,
-                                  Map<String, String> attributes, element) {
-                                //open URL in webview, or launch URL in browser, or any other logic here
-                                if (url != null) {
-                                  launchUrl(Uri.parse(url));
-                                }
-                              }),
+                            data: viewModel.messageHtml,
+                            onLinkTap: (String? url,  Map<String, String> attributes, element) {
+                              //open URL in webview, or launch URL in browser, or any other logic here
+                              if(url != null) {
+                                launchUrl(Uri.parse(url));
+                              }
+                            }
+                          ),
                         );
                       }
                     },

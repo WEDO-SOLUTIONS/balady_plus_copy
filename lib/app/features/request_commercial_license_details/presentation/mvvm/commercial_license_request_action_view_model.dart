@@ -14,6 +14,7 @@ import 'package:balady_plus/app/features/request_commercial_license_details/data
 class RequestCommercialLicenseActionViewModel extends BaseViewModel {
   final WebService webService;
   final int requestId;
+  final requestTypeId;
   final ReasonCancel? reasonCancel;
   final bool availableCloseDate;
 
@@ -23,6 +24,7 @@ class RequestCommercialLicenseActionViewModel extends BaseViewModel {
     required this.webService,
     required this.requestId,
     required this.reasonCancel,
+    this.requestTypeId,
     required this.availableCloseDate,
   }) {
     getCommercialLicenseAllowedActions();
@@ -32,15 +34,15 @@ class RequestCommercialLicenseActionViewModel extends BaseViewModel {
     try {
       isLoading = true;
       notifyListeners();
-      var response =
-          await webService.dio.get(ApiUrl.getAllowedActionsForRequests(requestId));
+      var response = await webService.dio
+          .get(ApiUrl.getAllowedActionsForRequests(requestId));
       final data = response.data;
       final result = ResponseBodyModel.fromMap(data).data?.result;
-      actions = requestAllowedActionsListFromJson(result).where((element) => element.id == "edit").toList();
+      actions = requestAllowedActionsListFromJson(result)
+          .where((element) => element.id == "edit")
+          .toList();
       // actions = actions;
-    } catch (e) {
-      print(e);
-    }
+    } catch (e) {}
     isLoading = false;
     notifyListeners();
   }

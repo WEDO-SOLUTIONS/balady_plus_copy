@@ -2,6 +2,7 @@ import 'package:balady_plus/app/core/services/local/use_case.dart';
 import 'package:balady_plus/app/core/services/services_exports.dart';
 import 'package:balady_plus/app/core/utils/enums/bloc_status.dart';
 import 'package:balady_plus/app/features/commercial_license/domain/entities/verifiy_salama_requst.dart';
+import 'package:balady_plus/app/features/commercial_license/domain/use_cases/get_board_contracts.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/dependency_injection/dependency_injection_exports.dart';
@@ -9,7 +10,10 @@ import '../../../../../core/errors/errors_exports.dart';
 import '../../../../../core/utils/enums/enums.dart';
 import '../../../../../core/utils/utils_exports.dart';
 import '../../../../_shared_feature_/shared_feature_exports.dart';
+import '../../../../vd/domain/entities/gis/gis_response.dart';
 import '../../../commercial_license_exports.dart';
+import '../../../data/models/board_contract_response.dart';
+import '../../../data/models/commercial_request_details_response.dart';
 import '../../../data/models/qr/qr_lookup.dart';
 import '../../../domain/entities/commercial_board_type.dart';
 import '../../../domain/entities/save_shop_details_request.dart';
@@ -43,6 +47,7 @@ class CrStep4ShopDataCubit extends Cubit<CrStep4ShopDataState> {
   final ValidateSalamaPermit _validateSalamaPermit;
   final ValidateSalamaBill _validateSalamaBill;
   final ValidateSalamaReport _validateSalamaReport;
+  final GetBoardContracts _getBoardContracts;
 
   CrStep4ShopDataCubit()
       : _getAccommodationTypes = GetAccommodationTypes(repository: sl()),
@@ -59,7 +64,8 @@ class CrStep4ShopDataCubit extends Cubit<CrStep4ShopDataState> {
         _validateSalamaPermit = ValidateSalamaPermit(repository: sl()),
         _validateSalamaBill = ValidateSalamaBill(repository: sl()),
         _validateSalamaReport = ValidateSalamaReport(repository: sl()),
-        super(CrStep4ShopDataState());
+        _getBoardContracts = GetBoardContracts(repository: sl()),
+        super(const CrStep4ShopDataState());
 
   void getAccommodationTypes() async {
     emit(state.copyWith(accommodationTypesStatus: BlocStatus.loading));
@@ -109,11 +115,11 @@ class CrStep4ShopDataCubit extends Cubit<CrStep4ShopDataState> {
       final String? shopName,
       final String? shopUnitNumber,
       final String? blockNumber,
-      final int? holesCount,
-      final int? floorCount,
-      final int? noOfCameras,
+      final String? holesCount,
+      final String? floorCount,
+      final String? noOfCameras,
       final bool? hasElevator,
-      final int? floorNumber,
+      final String? floorNumber,
       final bool? isCitizenPledgedToClean}) {
     emit(state.copyWith(
         errorMessage: "",
@@ -255,6 +261,10 @@ class CrStep4ShopDataCubit extends Cubit<CrStep4ShopDataState> {
     ));
   }
 
+  void selectBoardContractNumber(BoardContractItem boardContractNumber) {
+    emit(state.copyWith(boardContractNumber: Nullable(boardContractNumber)));
+  }
+
   void getCleanContracts() async {
     if (!state.cleanContractshowService() &&
         state.isCitizenPledgedToClean == true) return;
@@ -298,11 +308,51 @@ class CrStep4ShopDataCubit extends Cubit<CrStep4ShopDataState> {
     }
   }
 
+  void getBoardsContracts() async {
+    if (state.boardContractSetting == "CONTRACT") return;
+    int requestId = sl<CommercialLicenseBloc>().state.requestId!;
+
+    emit(state.copyWith(
+        boardContractsStatus: BlocStatus.loading, errorMessage: ""));
+    final response = await _getBoardContracts(requestId);
+    response.fold(
+        (failure) => emit(state.copyWith(
+              boardContractsStatus: BlocStatus.failure,
+              errorMessage: (failure as ServerFailure).errorMessage,
+            )), (success) {
+      emit(state.copyWith(
+          boardContractsStatus: BlocStatus.success,
+          boardContractItems: success.result));
+    });
+  }
+
   void initForm() {
     SaveLocationResponse? res =
         sl<CommercialLicenseBloc>().state.locationResponse;
+    GISResponse? gisResponse = sl<CommercialLicenseBloc>().state.gisResponse;
+    if (state.locationResponse != res) {
+      emit(state.copyWith(locationResponse: res, errorMessage: ""));
 
-    emit(state.copyWith(locationResponse: res, errorMessage: ""));
+      if (res?.boardContractSetting == "CONTRACT" ||
+          res?.boardContractSetting == "MANUAL") {
+        emit(state.copyWith(
+            boardContractSetting: Nullable(res?.boardContractSetting)));
+
+        if (res?.boardContractSetting == "CONTRACT") getBoardsContracts();
+      }
+
+      if (state.currentDistrctId != gisResponse?.Balady_DistrictID)
+        emit(state.copyWith(
+            selectedMall:
+                state.currentDistrctId != null ? Nullable(null) : null,
+            currentDistrctId: Nullable(gisResponse?.Balady_DistrictID)));
+    }
+    print("EXXXXXX ${state.selectedMall}");
+    print("EXXXXXX ${state.currentDistrctId}");
+    print("EXXXXXX ${gisResponse?.Balady_DistrictID}");
+
+    initDraft();
+    print("EXXXXXX ${state.selectedMall}");
   }
 
   SaveLocationResponse? get saveLocationResponse =>
@@ -320,14 +370,14 @@ class CrStep4ShopDataCubit extends Cubit<CrStep4ShopDataState> {
         requestId: requestId,
         boardsInfo: state.selectedBoards,
         brand: state.brand,
-        floorNumber: state.floorNumber,
+        floorNumber: int.tryParse(state.floorNumber ?? ""),
         hasElevator: state.hasElevator,
         isCitizenPledgedToClean: state.isCitizenPledgedToClean,
         shopName: state.shopName,
         shopUnitNumber: state.shopUnitNumber,
-        holesCount: state.holesCount.toString(),
-        floorCount: state.floorCount.toString(),
-        noOfCameras: state.noOfCameras.toString(),
+        holesCount: state.holesCount,
+        floorCount: state.floorCount,
+        noOfCameras: state.noOfCameras,
         existInMall: state.existInMall,
         contractDate: CommonFunctions.padHijriDate(state.contractDate ?? ""),
         contractNumber: state.contractNumber,
@@ -341,12 +391,13 @@ class CrStep4ShopDataCubit extends Cubit<CrStep4ShopDataState> {
         salamaPermitExist: state.salamaPermitExist,
         salamaPermitNumber: state.salamaPermitNumber,
         slamaReportNumber: state.slamaReportNumber,
+        mallId: state.selectedMall?.id,
         ejarContractInfo:
             state.ejarVerified == true ? state.ejarInfoRequst : null,
         deedInfo: state.deedVerified == true ? state.deedInfoRequst : null,
         cleanContractNumber:
             state.selectedCleanContract?.unifiedCleanContractNo.toString(),
-        selectedBoardContractOption: "MANUAL");
+        selectedBoardContractOption: state.boardContractSetting);
     final failOrSuccess = await _saveShopDetails(request);
 
     failOrSuccess.fold(
@@ -623,5 +674,141 @@ class CrStep4ShopDataCubit extends Cubit<CrStep4ShopDataState> {
 
   void updateEndorsmentAgreement(bool? value) {
     emit(state.copyWith(errorMessage: "", endorsmentAgreement: value));
+  }
+
+  void updateBoardContractSetting(String value) {
+    emit(state.copyWith(boardContractSetting: Nullable(value)));
+    if (value == "CONTRACT") {
+      getBoardsContracts();
+    }
+  }
+
+  void initDraft() async {
+    bool isDraft = sl<CommercialLicenseBloc>().state.isDraft ?? false;
+    bool draftLoaded = state.draftLoaded ?? false;
+
+    print(isDraft);
+    print(draftLoaded);
+    if (draftLoaded == false && isDraft) {
+      // if (true) {
+      CommercialRequestDetailsResponse? requestData =
+          sl<CommercialLicenseBloc>().state.requestData;
+
+      //   String? boardContractNumber = requestData?.boardContractNumber;
+      //  String? boardContractSetting = requestData?.boardContractSetting;
+      String? selectedBoardContractOption =
+          requestData?.selectedBoardContractOption;
+
+      String? shopName = requestData?.shopInfo?.shopName;
+      int? shopUnitNumber = requestData?.shopInfo?.shopUnitNumber;
+
+      bool? brand = requestData?.shopInfo?.brand;
+      bool? existInMall = requestData?.shopInfo?.existInMall;
+      bool? hasElevator = requestData?.shopInfo?.hasElevator;
+      bool? isCitizenPledgedToClean =
+          requestData?.shopInfo?.isCitizenPledgedToClean;
+      int? floorCount = requestData?.shopInfo?.floorCount;
+      String? blockNumber = requestData?.shopInfo?.blockNumber;
+      int? floorNumber = requestData?.shopInfo?.floorNumber;
+      String? salamaBillNumber = requestData?.shopInfo?.salamaBillNumber;
+      String? salamaPermitNumber = requestData?.shopInfo?.salamaPermitNumber;
+      String? slamaReportNumber = requestData?.shopInfo?.slamaReportNumber;
+
+      int? noOfCameras = requestData?.shopInfo?.noOfCameras;
+
+      int? holesCount = requestData?.shopInfo?.holesCount;
+
+      CRContractOption? crContractOption = state.crContractOption;
+      CRContractType? crContractType = state.crContractType;
+      CRSubmitterType? crSubmitterType = state.crSubmitterType;
+
+      if (requestData?.shopInfo?.contractInfoResponseDto?.contractOption ==
+          "ATTACH") crContractOption = CRContractOption.attach;
+
+      if (requestData?.shopInfo?.contractInfoResponseDto?.contractOption ==
+          "SERVICE") crContractOption = CRContractOption.service;
+
+      if (requestData?.shopInfo?.contractInfoResponseDto?.contractType ==
+          "DEED") crContractType = CRContractType.deed;
+
+      if (requestData?.shopInfo?.contractInfoResponseDto?.contractType ==
+          "EJAR") crContractType = CRContractType.ejar;
+
+      if (requestData?.shopInfo?.contractInfoResponseDto?.contractType ==
+          "INVEST") crContractType = CRContractType.invest;
+
+      if (crContractType == CRContractType.deed) {
+        crSubmitterType = CRSubmitterType.owner;
+      }
+
+      if (crContractType == CRContractType.ejar ||
+          crContractType == CRContractType.invest) {
+        crSubmitterType = CRSubmitterType.rental;
+      }
+      QrLookUpItem? selectedMall = state.selectedMall;
+
+      try {
+        print("EXXXXXX {$requestData?.shopInfo?.mallDto}");
+        if (requestData?.shopInfo?.mallDto != null &&
+            requestData?.shopInfo?.mallDto["id"] != null &&
+            requestData?.shopInfo?.mallDto["name"] != null) {
+          selectedMall = QrLookUpItem(
+              name: requestData?.shopInfo?.mallDto["name"].toString(),
+              id: int.tryParse(
+                  requestData?.shopInfo?.mallDto["id"].toString() ?? ""));
+        }
+      } catch (ex) {
+        print("EXXXXXX $ex");
+      }
+      print("EXXXXXX {$selectedMall}");
+
+      List<CommercialBoardType> selectedBoards = state.selectedBoards ?? [];
+
+      if (requestData?.shopInfo?.boardsInfo != null &&
+          requestData!.shopInfo!.boardsInfo!.isNotEmpty) {
+        requestData.shopInfo!.boardsInfo!.forEachIndexed((i, e) {
+          if (e.typeId != null)
+            selectedBoards.add(CommercialBoardType(
+                id: i,
+                typeId: e.typeId!,
+                name: e.typeName ?? "",
+                area: e.area));
+        });
+      }
+
+      emit(state.copyWith(
+          draftLoaded: true,
+          brand: brand,
+          selectedMall: selectedMall != null ? Nullable(selectedMall) : null,
+          shopUnitNumber:
+              shopUnitNumber != null ? shopUnitNumber.toString() : null,
+          shopName: shopName,
+          draftStatus: BlocStatus.success,
+          existInMall: existInMall,
+          selectedBoards: selectedBoards,
+          hasElevator: hasElevator,
+          isCitizenPledgedToClean: Nullable(isCitizenPledgedToClean),
+          floorCount: floorCount != null ? floorCount.toString() : null,
+          blockNumber: blockNumber != null ? blockNumber.toString() : null,
+          floorNumber: floorNumber != null ? floorNumber.toString() : null,
+          slamaBillNumber: Nullable(salamaBillNumber),
+          salamaPermitNumber: Nullable(salamaPermitNumber),
+          slamaReportNumber: Nullable(slamaReportNumber),
+          endorsmentAgreement: true,
+          contractDate: Nullable(
+              requestData?.shopInfo?.contractInfoResponseDto?.contractDate),
+          contractNumber: Nullable(
+              requestData?.shopInfo?.contractInfoResponseDto?.contractNumber),
+          crContractOption: Nullable(crContractOption),
+          crContractType: Nullable(crContractType),
+          crSubmitterType: Nullable(crSubmitterType),
+          noOfCameras: noOfCameras != null ? noOfCameras.toString() : null,
+          holesCount: holesCount != null ? holesCount.toString() : null,
+          boardContractSetting: Nullable(selectedBoardContractOption)));
+    } else {
+      emit(state.copyWith(
+        draftStatus: BlocStatus.success,
+      ));
+    }
   }
 }

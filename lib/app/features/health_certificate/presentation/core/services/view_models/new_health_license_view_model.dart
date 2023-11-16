@@ -38,6 +38,7 @@ class HealthLicenseViewModel extends BaseViewModel {
   ValidateHealthCertificateResponse? validateHealthCertificateResponse;
 
   List<ListItem> cities = [];
+  List<String>? terms = [];
   List<ListItem> healthCentres = [];
   ListItem? selectedCity;
   ListItem? selectedHealthCentres;
@@ -88,8 +89,7 @@ class HealthLicenseViewModel extends BaseViewModel {
     String idType = CommonProperties.userInfo?.getIdType() ?? "";
     String birthDate = CommonProperties.userInfo?.getHijriBirthDate() ?? "";
     bool isSaudi = userId.startsWith("1");
-    //  print("idTyppppe");
-    // print(idType);
+
     showLoading();
     String muncipalityid = result?.MUNICIPALITYUNIQUECODE ?? "";
     // muncipalityid = "013001002";
@@ -110,6 +110,40 @@ class HealthLicenseViewModel extends BaseViewModel {
     }
 
     return false;
+  }
+
+  Future<List<String>?> getTerms() async {
+    try {
+      String userId = CommonProperties.userInfo?.idNo ?? "";
+      String idType = CommonProperties.userInfo?.getIdType() ?? "";
+      String birthDate = CommonProperties.userInfo?.getHijriBirthDate() ?? "";
+
+      showLoading();
+      String muncipalityid = gisLocationResult?.MUNICIPALITYUNIQUECODE ?? "";
+      Tuple3<bool?, String?, List<String>?> response =
+          await _rpository.getTerms(
+              userId,
+              idType,
+              birthDate,
+              muncipalityid,
+              noLicenseReason == "2" &&
+                  validateHealthCertificateResponse
+                          ?.data?.result?.showAreaNoLicencePermit ==
+                      true,
+              isRenew: isRenew);
+      hideLoading();
+      terms = response.item3;
+      if (response.item3 != null && response.item1 != null && response.item1!) {
+        terms = response.item3;
+        return response.item3;
+      } else {
+        showError(response.item2 ?? "");
+      }
+
+      return response.item3;
+    } catch (ex) {
+      print(ex);
+    }
   }
 
   Future<ApplyNewHealthRequest?> applyHealthCertificate() async {
@@ -251,6 +285,7 @@ class HealthLicenseViewModel extends BaseViewModel {
     Tuple4<bool?, String?, Uint8List?, String?> response =
         await _rpository.downLoadLicense(id);
     hideLoading();
+
     if (response.item3 != null && response.item1 != null && response.item1!) {
       return Tuple2<Uint8List?, String?>(response.item3, response.item4);
     } else {
@@ -323,9 +358,7 @@ class HealthLicenseViewModel extends BaseViewModel {
         response.item1! &&
         response.item3?.data?.result != null &&
         response.item3!.data!.result!.isNotEmpty) {
-      print("HEREEE");
       cities = response.item3?.data?.result ?? [];
-      print(cities.first.name);
 
       return true;
     } else {

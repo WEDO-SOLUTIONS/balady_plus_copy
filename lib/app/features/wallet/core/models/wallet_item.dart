@@ -24,13 +24,15 @@ class WalletItem {
       this.subMunicipilityId,
       this.subMunicipilityName,
       this.typeName,
-      this.qrData});
+      this.qrData,
+      this.requestId});
 
   String? owner;
   dynamic ownerId;
   String? activityName;
   String? marketName;
   //String? municipalityName;
+  int? requestId;
   dynamic locationNumber;
   String? startDateHijri;
   String? endDateHijri;
@@ -67,7 +69,8 @@ class WalletItem {
       subMunicipilityId: json["subMunicipilityId"],
       subMunicipilityName: json["subMunicipilityName"],
       typeName: json["typeName"],
-      qrData: json["qrData"]);
+      qrData: json["qrData"],
+      requestId: json["requestId"]);
 
   Map<String, dynamic> toJson() => {
         "owner": owner,

@@ -41,6 +41,7 @@ class TransactionDetails {
       this.violationRegistrationDate,
       this.violatorId,
       this.invoiceStatus,
+      this.serviceTypeId,
 
       ///
       this.objectionRequestStatusName,
@@ -65,6 +66,7 @@ class TransactionDetails {
   String? facilityName;
   String? licenseType;
   String? violatorType;
+  String? serviceTypeId;
   int? noOfUnits;
   bool? isObjectionAllowed;
   String? objectionRequestNumber;

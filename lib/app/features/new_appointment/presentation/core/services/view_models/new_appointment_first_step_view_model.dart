@@ -136,7 +136,6 @@ class NewAppointmentFirstStepViewModel extends BaseViewModel {
       municipalityType = item;
     }
 
-    print("notify listners");
     notifyListeners();
     validateForm();
     return true;
@@ -286,7 +285,7 @@ class NewAppointmentFirstStepViewModel extends BaseViewModel {
           catetgoryType != null &&
           serviceConfigResponse != null &&
           serviceConfigResponse?.getServiceId() != null) {
-        if (withPreviousTransaction) {
+        if (catetgoryType?.id == "4") {
           if (getTransactionNo.isNotEmpty) {
             isValid = true;
           } else {
@@ -313,15 +312,12 @@ class NewAppointmentFirstStepViewModel extends BaseViewModel {
           getServiceName.isEmpty) {
         isValid = false;
       }*/
-      print("validateForm");
-      print(isValid);
+
       if (isFormValid != isValid) {
         isFormValid = isValid;
         notifyListeners();
       }
-    } catch (ex) {
-      print(ex);
-    }
+    } catch (ex) {}
     notifyListeners();
   }
 
@@ -373,8 +369,6 @@ class NewAppointmentFirstStepViewModel extends BaseViewModel {
 
     setAppointmentTypeItem = null;
     dataModel.appointmentTypeList = null;
-
-    print("REEEEEEEESET");
   }
 
   void resetIfSelectSubClass() {

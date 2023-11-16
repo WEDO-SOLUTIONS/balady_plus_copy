@@ -18,7 +18,6 @@ class PreviousNextButtons extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<NewAppointmentBloc, NewAppointmentState>(
       builder: (context, state) {
-        print(state);
         bool isButtonDisabled = !isFormValid;
         bool isLastPage = context.read<NewAppointmentBloc>().isLastPage();
         return Container(

@@ -22,4 +22,6 @@ abstract class RequestsRepository {
   );
 
   Future<Either<Failure, ObjectionDetails>> getObjectionDetails(String id);
+
+  Future<Either<Failure, bool>> cancelObjection(String id);
 }
