@@ -396,6 +396,17 @@ Map<String, dynamic> servicesConfig = {
         "tag": "Services"
       }
     },
+    {
+      "id": 11,
+      "icon": "violation-guide",
+      "3d_icon": null,
+      "order": 5,
+      "isNew": false,
+      "isImportant": false,
+      "action": {"type": "page", "value": RouteName.violationGuideMainPage},
+      "ar": {"title": "دليل المخالفات", "description": null, "tag": null},
+      "en": {"title": "Zamzam Points", "description": null, "tag": null}
+    },
   ],
   "municipal_services": [
     {
@@ -542,7 +553,7 @@ Map<String, dynamic> servicesConfig = {
     },
     {
       "id": 9,
-      "icon": "self_rating",
+      "icon": "issue-commercial",
       "3d_icon": null,
       "order": 5,
       "isNew": false,
@@ -552,17 +563,6 @@ Map<String, dynamic> servicesConfig = {
         "value": RouteName.commercialLicenseServicePage
       },
       "ar": {"title": "اصدار رخصة تجارية", "description": null, "tag": null},
-      "en": {"title": "Zamzam Points", "description": null, "tag": null}
-    },
-    {
-      "id": 11,
-      "icon": "self_rating",
-      "3d_icon": null,
-      "order": 5,
-      "isNew": false,
-      "isImportant": false,
-      "action": {"type": "page", "value": RouteName.violationGuideMainPage},
-      "ar": {"title": "دليل المخالفات", "description": null, "tag": null},
       "en": {"title": "Zamzam Points", "description": null, "tag": null}
     },
     {

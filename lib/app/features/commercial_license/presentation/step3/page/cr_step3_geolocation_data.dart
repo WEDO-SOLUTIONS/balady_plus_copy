@@ -34,6 +34,7 @@ class _CRStep3GeolocationDataState extends State<CRStep3GeolocationData> {
         CommonFunctions.showError(state.errorMessage ?? "");
       }
     }, builder: (context, state) {
+      print("GGG ${state.draftStatus}");
       return Stack(
         children: [
           Column(

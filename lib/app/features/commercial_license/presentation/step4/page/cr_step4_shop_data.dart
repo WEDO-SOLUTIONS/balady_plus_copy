@@ -65,6 +65,23 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          if (state.samalaBillFawryStatus == BlocStatus.failure)
+                            RetryWidget(
+                              onRetry: () {
+                                context
+                                    .read<CrStep4ShopDataCubit>()
+                                    .salamaBillFawery();
+                              },
+                            ),
+                          if (state.samalaReportFawryStatus ==
+                              BlocStatus.failure)
+                            RetryWidget(
+                              onRetry: () {
+                                context
+                                    .read<CrStep4ShopDataCubit>()
+                                    .salamaReportFawery();
+                              },
+                            ),
                           const CRHeaderDesc(header: "بيانات المحل واللوحات"),
                           const SizedBox(height: 16),
                           YesNoRadioGroupWidget(
@@ -216,7 +233,7 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
                           ),
                           if (state.isCitizenPledgedToClean == true &&
                               state.cleanContractshowAttach() &&
-                              !state.cleanOptionCLEANCONTRACT() &&
+                              // !state.cleanOptionCLEANCONTRACT() &&
                               !state.cleanOptionBALADIASADAD())
                             HijriCalendarAddetionalField(
                               fieldName: 'تاريخ انتهاء عقد النظافة',
@@ -229,9 +246,9 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
                               },
                             ),
                           if (state.isCitizenPledgedToClean == true &&
-                              (state.cleanContractshowService() ||
-                                  state.cleanOptionCLEANCONTRACT() ||
-                                  state.cleanOptionOPTIONAL()) &&
+                              (state.cleanContractshowService() &&
+                                  (state.cleanOptionCLEANCONTRACT() ||
+                                      state.cleanOptionOPTIONAL())) &&
                               state.contractsListStatus ==
                                   BlocStatus.success) ...[
                             ListView.builder(
@@ -716,6 +733,14 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
                   },
                 ),
               ],
+            ),
+          if (state.deedOptionsStatus == BlocStatus.failure ||
+              state.cleanOptionsStatus == BlocStatus.failure)
+            RetryWidget(
+              onRetry: () {
+                context.read<CrStep4ShopDataCubit>().getDeedOwnerShipsTypes();
+                context.read<CrStep4ShopDataCubit>().getCleanOptions();
+              },
             ),
           if (state.status.isSubmissionLoading ||
               state.deedOptionsStatus == BlocStatus.loading ||

@@ -157,6 +157,12 @@ class DialogName {
   static const commercialLicenseActionSheetDialog = '/commercialLicenseActionSheetDialog';
   static const commercialLicenseReasonCancelSheet = '/commercialLicenseReasonCancelSheet';
   static const requestCommercialLicenseActionSheetDialog = '/requestCommercialLicenseActionSheetDialog';
+
+
+    static const notAuthorizedIndivisualDialog = '/notAuthorizedIndivisualDialog';
+
+
+
   // static const reasonCancelDialog = '/reasonCancelDialog';
 
 }
