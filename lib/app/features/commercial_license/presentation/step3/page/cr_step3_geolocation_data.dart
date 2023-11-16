@@ -8,6 +8,7 @@ import '../../../../_shared_feature_/shared_feature_exports.dart';
 import '../../../../vd/domain/entities/map/map_screen_params.dart';
 import '../../../commercial_license_exports.dart';
 import '../bloc/map_bloc.dart';
+import '../widgets/map_widgets/warning_message.dart';
 import 'cr_map_page.dart';
 
 class CRStep3GeolocationData extends StatefulWidget {
@@ -18,6 +19,14 @@ class CRStep3GeolocationData extends StatefulWidget {
 }
 
 class _CRStep3GeolocationDataState extends State<CRStep3GeolocationData> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    context.read<MapBloc>().initDraft();
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<MapBloc, MapState>(listener: (context, state) {
@@ -65,6 +74,11 @@ class _CRStep3GeolocationDataState extends State<CRStep3GeolocationData> {
                                               "Null"
                                           ? params.gisResponse?.parcelNo ?? ""
                                           : ""));
+
+                                  if (params.gisResponse?.municipalityId ==
+                                      "003201") {
+                                    showOlaMessage();
+                                  }
                                 }
                               });
                             }),
@@ -73,11 +87,11 @@ class _CRStep3GeolocationDataState extends State<CRStep3GeolocationData> {
                           title: "المنطقه",
                         ),
                         ReadOnlyField(
-                          subTitle: state.gisResponse?.adminMunicipalityName,
+                          subTitle: state.gisResponse?.municipalityName,
                           title: "الامانه",
                         ),
                         ReadOnlyField(
-                          subTitle: state.gisResponse?.municipalityName,
+                          subTitle: state.gisResponse?.subMunicipalityName,
                           title: "البلديه",
                         ),
                         ReadOnlyField(
@@ -88,48 +102,51 @@ class _CRStep3GeolocationDataState extends State<CRStep3GeolocationData> {
                           subTitle: state.gisResponse?.streetName,
                           title: "الشارع",
                         ),
-                        CustomTextFieldWidget(
-                          label: "رقم المخطط",
-                          hintText: "ادخل رقم المخطط",
-                          controller: context.read<MapBloc>().mapNpController,
-                          isDigitsOnly: false,
-                          fillColor:
-                              (state.gisResponse?.planNo?.isEmpty ?? true) ||
-                                      state.gisResponse?.planNo == "Null"
-                                  ? Colors.white
-                                  : Colors.transparent,
-                          enabled:
-                              (state.gisResponse?.planNo?.isEmpty ?? true) ||
-                                  state.gisResponse?.planNo == "Null",
-                          keyboardType: TextInputType.text,
-                          bottomMargin: 24,
-                          onChanged: (value) {
-                            context
-                                .read<MapBloc>()
-                                .add(UpdateFieldsEvent(mapNo: value));
-                          },
-                        ),
-                        CustomTextFieldWidget(
-                          label: "رقم قطعه الارض",
-                          hintText: "ادخل رقم قطعه الارض",
-                          controller: context.read<MapBloc>().landNpController,
-                          isDigitsOnly: false,
-                          fillColor:
-                              (state.gisResponse?.parcelNo?.isEmpty ?? true) ||
-                                      state.gisResponse?.parcelNo == "Null"
-                                  ? Colors.white
-                                  : Colors.transparent,
-                          enabled:
-                              (state.gisResponse?.parcelNo?.isEmpty ?? true) ||
-                                  state.gisResponse?.parcelNo == "Null",
-                          keyboardType: TextInputType.text,
-                          bottomMargin: 24,
-                          onChanged: (value) {
-                            context
-                                .read<MapBloc>()
-                                .add(UpdateFieldsEvent(landNo: value));
-                          },
-                        ),
+                        if (state.draftStatus == BlocStatus.success) ...[
+                          CustomTextFieldWidget(
+                            label: "رقم المخطط",
+                            hintText: "ادخل رقم المخطط",
+                            controller: context.read<MapBloc>().mapNpController,
+                            isDigitsOnly: false,
+                            fillColor:
+                                (state.gisResponse?.planNo?.isEmpty ?? true) ||
+                                        state.gisResponse?.planNo == "Null"
+                                    ? Colors.white
+                                    : Colors.transparent,
+                            enabled:
+                                (state.gisResponse?.planNo?.isEmpty ?? true) ||
+                                    state.gisResponse?.planNo == "Null",
+                            keyboardType: TextInputType.text,
+                            bottomMargin: 24,
+                            onChanged: (value) {
+                              context
+                                  .read<MapBloc>()
+                                  .add(UpdateFieldsEvent(mapNo: value));
+                            },
+                          ),
+                          CustomTextFieldWidget(
+                            label: "رقم قطعه الارض",
+                            hintText: "ادخل رقم قطعه الارض",
+                            controller:
+                                context.read<MapBloc>().landNpController,
+                            isDigitsOnly: false,
+                            fillColor: (state.gisResponse?.parcelNo?.isEmpty ??
+                                        true) ||
+                                    state.gisResponse?.parcelNo == "Null"
+                                ? Colors.white
+                                : Colors.transparent,
+                            enabled: (state.gisResponse?.parcelNo?.isEmpty ??
+                                    true) ||
+                                state.gisResponse?.parcelNo == "Null",
+                            keyboardType: TextInputType.text,
+                            bottomMargin: 24,
+                            onChanged: (value) {
+                              context
+                                  .read<MapBloc>()
+                                  .add(UpdateFieldsEvent(landNo: value));
+                            },
+                          )
+                        ],
                       ],
                     ),
                   ),
@@ -148,5 +165,28 @@ class _CRStep3GeolocationDataState extends State<CRStep3GeolocationData> {
         ],
       );
     });
+  }
+
+  void showOlaMessage() {
+    BottomSheetDialog.showDraggableSheet(
+        NavigationService.navigatorKey.currentContext!,
+        child: BottomSheetWithActions(
+          title: "تنبيه",
+          action: Row(
+            children: [
+              Expanded(
+                child: ElevatedButtonWidget.primaryCustom(
+                    text: "موافق",
+                    onPressed: () {
+                      NavigationService.goBack();
+                    }),
+              ),
+            ],
+          ),
+          body: WarningMessage(
+            message:
+                " ينبغي على الراغبين بإصدار رخصة تجارية جديدة في محافظة العلا الحصول على موافقة استوديو العلا للتصميم التابع للهيئة الملكية لمحافظة العلا على التصميم الخارجي للواجهات، بما يتوافق مع الإرشادات المعمارية للمناطق الحضرية، الصادر عن الهيئة والتي يمكن معرفة المزيد عنها من خلال حجز موعد مع الاستوديو عبر الموقع الإلكتروني: https://uds.rcu.gov.sa/ ولمزيد من الاستفسارات يمكنكم التواصل مع الهيئة الملكية لمحافظة العلا عبر الرقم 920025852",
+          ),
+        ));
   }
 }

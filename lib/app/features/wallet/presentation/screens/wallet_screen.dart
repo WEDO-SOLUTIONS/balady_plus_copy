@@ -35,7 +35,6 @@ class _WalletScreenState extends State<WalletScreen> {
       child: BlocConsumer<WalletBloc, WalletState>(
         listener: (context, state) {},
         builder: (context, state) {
-          print(state);
           return Scaffold(
             appBar: DefaultAppBarWidget(title: "wallet".tr()),
             body: Stack(

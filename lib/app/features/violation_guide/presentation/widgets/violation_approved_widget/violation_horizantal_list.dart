@@ -15,7 +15,7 @@ class ViolationApprovedHortizantalList extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<ViolationBloc, ViolationState>(
       builder: (context, state) {
-        List<String> numbers = ['0', '1', '2', '3'];
+        List<String> numbers = ['1', '2', '3', '4'];
 
         return Container(
           padding: const EdgeInsets.all(16),
@@ -43,6 +43,8 @@ class ViolationApprovedHortizantalList extends StatelessWidget {
                 scrollDirection: Axis.horizontal,
                 itemBuilder: (context, index) {
                   return Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       GestureDetector(
                         onTap: () {
@@ -53,6 +55,7 @@ class ViolationApprovedHortizantalList extends StatelessWidget {
                         child: Container(
                           width: 72,
                           height: 25,
+                          alignment: Alignment.center,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(4),
                             border: Border.all(

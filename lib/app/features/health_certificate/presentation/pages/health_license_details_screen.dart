@@ -24,6 +24,7 @@ import '../../license_management_exports.dart'
         ConfirmCancelLicenseDialog,
         HealthRequestDetailsScreenArgs,
         HealthRequestDetailsViewModel;
+import '../dialogs/update_photo_dialog.dart';
 import '../widgets/order_body_section_widget.dart';
 
 class HealthLicenseDetailsScreen extends StatefulWidget {
@@ -57,7 +58,7 @@ class _HealthLicenseDetailsScreenState
                 onPrint: (args.healthRequestDetails?.data?.result?.printable ??
                         false)
                     ? () {
-                        model.printLicense();
+                        model.checkHealthCertificatePhoto();
                       }
                     : null,
                 procedures: () async {
@@ -69,17 +70,20 @@ class _HealthLicenseDetailsScreenState
                       child: BottomSheetWithActions(
                         title: "actions".tr(),
                         body: Column(children: [
-                          GestureDetector(
-                            onTap: () {
-                              Navigator.of(context).pushNamed(
-                                  RouteName.newHealthCertificatePage,
-                                  arguments: true);
-                            },
-                            child: FieldData(
-                              title:
-                                  Helpers.translatingWord('renewLicenseWord'),
+                          if (model.requestDetails?.data?.result
+                                  ?.healthCertificateInfo?.statusId !=
+                              3)
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.of(context).pushNamed(
+                                    RouteName.newHealthCertificatePage,
+                                    arguments: true);
+                              },
+                              child: FieldData(
+                                title:
+                                    Helpers.translatingWord('renewLicenseWord'),
+                              ),
                             ),
-                          ),
                           CustomVerticalSpace(height: 16),
                           GestureDetector(
                             onTap: () async {

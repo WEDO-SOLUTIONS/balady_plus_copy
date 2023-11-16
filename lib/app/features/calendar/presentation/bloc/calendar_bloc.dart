@@ -105,7 +105,6 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
             .copyWith(page: (state.searchedParams.page ?? 1) + 1),
         errorMessage: "",
       ));
-      print("search items ${items.length}");
     });
   }
 

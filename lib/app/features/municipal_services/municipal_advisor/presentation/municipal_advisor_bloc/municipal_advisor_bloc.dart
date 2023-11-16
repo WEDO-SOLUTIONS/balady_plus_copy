@@ -126,7 +126,6 @@ class MunicipalAdvisorBloc
         super(const MunicipalAdvisorState()) {
     on<MunicipalAdvisorAddMessageEvent>(
       (event, emit) async {
-        print(event.message);
         emit(
           state.copyWith(
             status: BlocRequestStatus.submissionGetLoading,
@@ -144,7 +143,7 @@ class MunicipalAdvisorBloc
             ],
           ),
         );
-        print("statte topic ${state.topic}");
+
         if (event.step == MunicipalAdvisorSteps.start) {
           add(MunicipalAdvisorGetConsultationKeyEvent());
         } else if (event.step == MunicipalAdvisorSteps.location &&
@@ -1711,7 +1710,6 @@ class MunicipalAdvisorBloc
         failureOrSuccess.fold(
           (failure) {
             dynamic code = (failure as ServerFailure).errorCode;
-            print("erroCode $code");
 
             if (code != "GIS-5")
               emitFailure(emit, failure);

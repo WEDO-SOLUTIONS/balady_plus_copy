@@ -31,6 +31,7 @@ class MallsDropDown extends StatelessWidget {
             child: GenericBottomSheetList<QrLookUpItem>(
               title: "المركز التجاري".tr(),
               items: state.mallsList ?? [],
+              noDataMsg: "لا توجد مراكز متاحة",
               selectedValue: state.selectedMall,
               onTap: (item) {
                 context.read<CrStep4ShopDataCubit>().updateMall(item);

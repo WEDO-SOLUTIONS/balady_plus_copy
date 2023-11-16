@@ -11,25 +11,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
-import '../../../../../core/utils/app_analytics_events.dart';
-import '../../../../../core/utils/common_functions.dart';
-
-class SubmitApplicationSuccessfullyCancel extends StatefulWidget {
+class SubmitApplicationSuccessfullyCancel extends StatelessWidget {
   const SubmitApplicationSuccessfullyCancel({Key? key}) : super(key: key);
-
-  @override
-  State<SubmitApplicationSuccessfullyCancel> createState() =>
-      _SubmitApplicationSuccessfullyCancelState();
-}
-
-class _SubmitApplicationSuccessfullyCancelState
-    extends State<SubmitApplicationSuccessfullyCancel> {
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    CommonFunctions.sendEventToAnalytics(AppEvents.cancelCommercialLicenseOpen);
-  }
 
   @override
   Widget build(BuildContext context) {

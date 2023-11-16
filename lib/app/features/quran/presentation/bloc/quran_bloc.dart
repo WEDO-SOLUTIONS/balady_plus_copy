@@ -71,12 +71,10 @@ class QuranBloc extends Bloc<QuranEvent, QuranState> {
     List<int> bytes = data.buffer.asUint8List();
 
     final archive = ZipDecoder().decodeBytes(bytes);
-    print(archive.files.length);
     try {
       for (final file in archive) {
-        print(file.name);
         final filename = file.name;
-        print(filename);
+
         if (file.isFile) {
           final data = file.content as List<int>;
           final outputFile =
@@ -85,11 +83,7 @@ class QuranBloc extends Bloc<QuranEvent, QuranState> {
           await outputFile.writeAsBytes(data);
         }
       }
-    } catch (ex) {
-      print("qurannn $ex");
-    }
-
-    // print("qurannn ${getImagePath("1")}");
+    } catch (ex) {}
   }
 
   File getImagePath(String pageNumper) {
@@ -106,7 +100,6 @@ class QuranBloc extends Bloc<QuranEvent, QuranState> {
         await rootBundle.loadString("assets/quran/hafs_smart_v8.json");
     await unzipArchive();
     var r = json.decode(quran);
-    //print(r);
     emitter(state.copyWith(status: BlocStatus.success));
 
     List<QuranAyaModel> quranAyat =
@@ -174,9 +167,7 @@ class QuranBloc extends Bloc<QuranEvent, QuranState> {
         quranAyat: quranAyat,
         suraIndex: sura,
         suras: pagesSuras));
-    print("ffgffgd ${state.currentPageValue.toDouble()}");
 
-    print("Run ${state.currentPageValue}");
     controller.jumpToPage(getSuraPageNumber(state.currentPageValue + 1));
 
     add(ChangePageEvent(page: getSuraPageNumber(state.currentPageValue + 1)));
@@ -184,8 +175,6 @@ class QuranBloc extends Bloc<QuranEvent, QuranState> {
 
   Future<void> _goToNextPageHandler(
       GoToNextPageEvent e, Emitter emitter) async {
-    //print("next page");
-
     if (state.status == BlocStatus.performing) return;
     int nextPage = state.currentPageValue + 1;
 
@@ -223,14 +212,12 @@ class QuranBloc extends Bloc<QuranEvent, QuranState> {
   Future<void> _getTitle(ChangePageEvent e, Emitter emitter) async {
     try {
       int currentPage = e.page ?? 0;
-      print("element ${currentPage}");
 
       String suraName = "";
       state.suras?[currentPage + 1]?.values.forEachIndexed((index, element) {
         suraName =
             state.suras?[currentPage + 1]?.values.toList()[index].suraName ??
                 "";
-        print("element ${element.suraName}");
 
         if (element.suraName != suraName) suraName = element.suraName;
         emitter(state.copyWith(

@@ -7,6 +7,8 @@ class RemoteConfig {
   static String get apigeeURL => _RemoteConfig.apigeeURL[env]!;
   static String get pegaURL => _RemoteConfig.pegaURL[env]!;
   static String get webSiteUrl => _RemoteConfig.webSiteUrl[env]!;
+  static String get baladyCommercialUrl =>
+      _RemoteConfig.baladyCommercialUrl[env]!;
 
   static String get hmCode => _RemoteConfig.hmCode[env]!;
   static String get apigeeUsername => _RemoteConfig.apigeeUsername[env]!;
@@ -142,6 +144,7 @@ class _RemoteConfig {
   static final mapRadius = _initValues<double>(
     devVal: 20000000000000.0,
     stgVal: 2000000000000.0,
+    preVal: 2000.0,
     prodVal: 2000.0,
   );
 
@@ -191,6 +194,13 @@ class _RemoteConfig {
     stgVal: "https://baladyapps.momra.gov.sa",
     preVal: "https://prebaladyapps.momra.gov.sa",
     prodVal: "https://apps.balady.gov.sa",
+  );
+
+  static final baladyCommercialUrl = _initValues<String>(
+    devVal: "https://stgcommercial.momra.gov.sa",
+    stgVal: "https://stgcommercial.momra.gov.sa",
+    preVal: "https://commercial.balady.gov.sa",
+    prodVal: "https://commercial.balady.gov.sa",
   );
 
   static final baladyToken = _initValues<String>(

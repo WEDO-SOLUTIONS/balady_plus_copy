@@ -196,7 +196,7 @@ class _ScanImageWidget extends StatelessWidget {
 void checkBarcode(BuildContext context) async {
   final FacilityQRDetailsViewModel viewModel =
       locator<FacilityQRDetailsViewModel>();
-  //print("scanResult: " + scanResult);
+
   // success
   controller.pauseCamera();
   if (scanResult.isNotEmpty) {
@@ -271,7 +271,6 @@ void checkBarcode(BuildContext context) async {
   }
   // fail
   else {
-    print("error qr");
     CommonFunctions.showError(("wrong_qr_code").tr());
     Timer(const Duration(seconds: 3), () async {
       controller.resumeCamera();

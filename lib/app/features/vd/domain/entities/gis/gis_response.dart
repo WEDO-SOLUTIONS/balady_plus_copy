@@ -92,6 +92,42 @@ class GISResponse extends Equatable {
     return address;
   }
 
+  String getEnhancedFullAddress({
+    bool includeStreetName = true,
+    bool includeDistrictName = true,
+    bool includeSubMunicipalityName = true,
+    bool includeMunicipalityName = true,
+  }) {
+    String address = "";
+    var streetName = this.streetName;
+    var districtName = this.districtName;
+    var subMunicipalityName = this.subMunicipalityName;
+    var municipalityName = this.municipalityName;
+
+    if (includeStreetName &&
+        streetName != null &&
+        streetName.toLowerCase() != "null" &&
+        streetName.isNotEmpty) address += "$streetName, ";
+
+    if (includeDistrictName &&
+        districtName != null &&
+        districtName.toLowerCase() != "null" &&
+        districtName.isNotEmpty) address += "$districtName, ";
+
+    if (includeSubMunicipalityName &&
+        subMunicipalityName != null &&
+        subMunicipalityName.toLowerCase() != "null" &&
+        subMunicipalityName.isNotEmpty) address += "$subMunicipalityName, ";
+
+    if (includeMunicipalityName &&
+        municipalityName != null &&
+        municipalityName.isNotEmpty) {
+      address += municipalityName;
+    }
+
+    return address;
+  }
+
   bool isVDExcepted() {
     return vdExcepted ?? false;
   }

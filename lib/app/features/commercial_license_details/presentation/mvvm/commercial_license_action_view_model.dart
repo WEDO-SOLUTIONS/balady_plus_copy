@@ -37,7 +37,7 @@ class CommercialLicenseActionViewModel extends BaseViewModel {
       final result = ResponseBodyModel.fromMap(data).data?.result;
       actions = allowedActionsListFromJson(result);
 
-      actions = actions.where((element) => element.id == 1008).toList();
+      //actions = actions.where((element) => element.id == 1008).toList();
     } on Exception catch (exception) {
       CommonFunctions.sendEvent(
         dioError: exception is DioException ? exception : null,

@@ -156,8 +156,6 @@ class NewInquiryViewModel extends BaseViewModel {
       };
       response = await _repositry.createINQRequest(body);
       hideLoading();
-      print("PPP");
-      // print(response);
       error = response.item2 ?? error;
 
       if (response.item1 == true &&
@@ -192,7 +190,6 @@ class NewInquiryViewModel extends BaseViewModel {
       }
     } catch (ex) {
       hideLoading();
-      print(ex);
       showError(error);
       return Future.value(false);
     }
@@ -215,7 +212,6 @@ class NewInquiryViewModel extends BaseViewModel {
       }
       validateForm();
     }).catchError((error) {
-      print(error);
       hideLoading();
       String msg = ("server_error_1").tr();
 

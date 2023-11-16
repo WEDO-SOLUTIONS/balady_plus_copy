@@ -38,7 +38,6 @@ class InquiryRepository {
         CommonFunctions.showError(error);
       }
     } catch (ex) {
-      print(ex);
       CommonFunctions.showError(error);
       try {
         Helpers.sendLog(
@@ -64,7 +63,6 @@ class InquiryRepository {
       "type": "INQ",
       "SpecialClassificationType": category
     };
-    print(queryParms);
 
     String url = ApiUrl.INQAllSPLClassifications;
 
@@ -82,7 +80,6 @@ class InquiryRepository {
         error = ("spl_classification_error").tr();
       }
     } catch (ex) {
-      print(ex);
       try {
         String queryString = "?" + Uri(queryParameters: queryParms).query;
 
@@ -106,7 +103,6 @@ class InquiryRepository {
         "IqamaID": "${CommonProperties.userInfo!.idNo}",
       "type": "INQ",
     };
-    print(queryParms);
 
     String url = ApiUrl.INQMainClassifications;
 
@@ -124,7 +120,6 @@ class InquiryRepository {
         error = ("main_classification_error").tr();
       }
     } catch (ex) {
-      print(ex);
       try {
         String queryString = "?" + Uri(queryParameters: queryParms).query;
 
@@ -152,7 +147,6 @@ class InquiryRepository {
         "IqamaID": "${CommonProperties.userInfo!.idNo}",
       "type": "INQ",
     };
-    // print(queryParms);
 
     String url = ApiUrl.INQMainClassifications;
 
@@ -170,7 +164,6 @@ class InquiryRepository {
         error = ("main_classification_error").tr();
       }
     } catch (ex) {
-      print(ex);
       // error = error ?? Helpers.translatingWord("errors_server_error_1");
 
       try {
@@ -214,7 +207,6 @@ class InquiryRepository {
           SubMainClassification.fromMap(json.decode(data));
       result = response;
     } catch (ex) {
-      print(ex);
       error = error ?? ("errors_server_error_1").tr();
       try {
         String queryString = "?" + Uri(queryParameters: queryParms).query;
@@ -237,7 +229,6 @@ class InquiryRepository {
         "IqamaID": "${CommonProperties.userInfo!.idNo}",
       "mainClassificationID": mainClassId,
     };
-    // print(queryParms);
 
     String url = ApiUrl.INQSubClassifications;
 
@@ -255,7 +246,6 @@ class InquiryRepository {
         error = ("sub_classification_error").tr();
       }
     } catch (ex) {
-      print(ex);
       try {
         String queryString = "?" + Uri(queryParameters: queryParms).query;
 
@@ -282,7 +272,6 @@ class InquiryRepository {
         "IqamaID": "${CommonProperties.userInfo!.idNo}",
       "subClassificationID": subId,
     };
-    // print(queryParms);
 
     String url = ApiUrl.INQSPLClassifications;
 
@@ -299,9 +288,7 @@ class InquiryRepository {
       if (response.data.isEmpty) {
         error = ("spl_classification_error").tr();
       }
-    } catch (ex) {
-      print(ex);
-    }
+    } catch (ex) {}
     return Tuple3<bool?, String?, ClassificationResponse?>(
         state, error, result);
   }
@@ -312,16 +299,13 @@ class InquiryRepository {
     String url = ApiUrl.INQCreate;
 
     final res = await webServices.postPegaRequest(url, body: body);
-    print(res);
     bool? state = res['state'];
     dynamic data = res['data'];
     String? error = res['error'];
-    //print(data);
     CreateIncidentResult? response;
     try {
       response = CreateIncidentResult.fromJson(json.decode(data));
     } catch (ex) {
-      print(ex);
       try {
         Helpers.sendLog(
             url: url, data: data, body: body, errorMsg: ex.toString());

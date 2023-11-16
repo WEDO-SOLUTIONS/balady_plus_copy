@@ -32,12 +32,8 @@ class InvestmentDetailsBloc
   }
 
   void showFile(DownloadIMSFileResult file) async {
-    print("file ${file.caseId}");
-    print("file ${file}");
-
     try {
       if (file.attachName?.toLowerCase().contains(".pdf") ?? false) {
-        print("file11 ${file.attachName}");
 /*
         Navigator.push(
             NavigationService.navigatorKey.currentContext!,
@@ -61,11 +57,8 @@ class InvestmentDetailsBloc
           String dir = (await getTemporaryDirectory()).path;
           File filetemp = File("$dir/" + (file.attachName ?? ""));
           await filetemp.writeAsBytes(bytes);
-          print(filetemp.path);
           OpenFile.open(filetemp.path);
-        } catch (ex) {
-          print(ex);
-        }
+        } catch (ex) {}
       }
     } catch (ex) {}
   }
@@ -84,7 +77,6 @@ class InvestmentDetailsBloc
       ));
 
       failureOrSuccess.fold((l) {
-        print(l);
         emitter(state.copyWith(
             crmRequestsStatus: BlocRequestStatus.submissionGetFailure,
             errorMessage: ("errors_server_error_1").tr()));

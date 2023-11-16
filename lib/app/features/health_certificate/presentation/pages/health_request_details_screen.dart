@@ -60,7 +60,7 @@ class _HealthRequestDetailsScreenState
                 onPrint: (args.healthRequestDetails?.data?.result?.printable ??
                         false)
                     ? () {
-                        model.printLicense();
+                        model.checkHealthCertificatePhoto();
                       }
                     : null,
                 procedures: (model.requestDetails?.getRequestStatus() ==

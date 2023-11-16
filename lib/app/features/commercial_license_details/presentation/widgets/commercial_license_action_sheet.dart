@@ -1,4 +1,5 @@
 import 'package:balady_plus/app/core/dependency_injection/injection_container.dart';
+import 'package:balady_plus/app/core/services/services_exports.dart';
 import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:balady_plus/app/core/utils/constants/app_style.dart';
 import 'package:balady_plus/app/core/utils/constants/dialog_names.dart';
@@ -51,7 +52,8 @@ class CommercialLicenseActionSheet extends StatelessWidget {
                                             create: (BuildContext context) =>
                                                 CommercialLicenseReasonCancelViewModel(
                                               webService: sl(),
-                                              submitterInfo: provider.submitterInfo,
+                                              submitterInfo:
+                                                  provider.submitterInfo,
                                               licenseId: provider.licenseId,
                                             ),
                                             child:
@@ -63,9 +65,15 @@ class CommercialLicenseActionSheet extends StatelessWidget {
                                                   .height *
                                               0.5,
                                         );
+                                        Navigator.of(context).pop();
+                                        break;
+                                      case 1005:
+                                        Navigator.of(context).pushNamed(
+                                            RouteName
+                                                .renewCommercialLicenseStartService,
+                                            arguments: provider.licenseId);
                                         break;
                                     }
-                                    Navigator.of(context).pop();
                                   },
                                   child: Padding(
                                     padding: const EdgeInsets.all(8.0),

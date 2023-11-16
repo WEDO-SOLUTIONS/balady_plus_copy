@@ -48,13 +48,17 @@
     public static **[] values();
     public static ** valueOf(java.lang.String);
 }
--keepclassmembers class * implements android.os.Parcelable {
-  public static final android.os.Parcelable$Creator CREATOR;
-}
--keepclassmembers class **.R$* {
-    public static <fields>;
-}
-# The support library contains references to newer platform versions.
-# Don't warn about those in case this app is linking against an older
-# platform version.  We know about them, and they are safe.
--dontwarn android.support.**
+
+
+-keep class io.flutter.app.** { *; }
+-keep class io.flutter.plugin.** { *; }
+-keep class io.flutter.util.** { *; }
+-keep class io.flutter.view.** { *; }
+-keep class io.flutter.** { *; }
+-keep class io.flutter.plugins.** { *; }
+
+
+-keepattributes *Annotation*
+
+-dontskipnonpubliclibraryclasses
+-dontskipnonpubliclibraryclassmembers

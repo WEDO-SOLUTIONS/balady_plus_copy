@@ -7,26 +7,29 @@ class CreateObjectionParams {
   String? serviceId;
   String? municipalityID;
   String? subMunicipalityID;
+  String? serviceTypeId;
 
   String? submitterRole;
   String? commercialRecord;
   String? facilityUniqueID;
   String? objectedTransactionId;
+  String? objectedTransactionDisplayNumber;
 
   List<CreateObjectionReasonsParams>? reasons;
 
-  CreateObjectionParams({
-    this.municipalityID,
-    this.objectionTypeId,
-    this.serviceGroupId,
-    this.serviceId,
-    this.subMunicipalityID,
-    this.objectedTransactionId,
-    this.reasons,
-    this.submitterRole,
-    this.commercialRecord,
-    this.facilityUniqueID,
-  });
+  CreateObjectionParams(
+      {this.municipalityID,
+      this.objectionTypeId,
+      this.serviceGroupId,
+      this.serviceId,
+      this.subMunicipalityID,
+      this.objectedTransactionId,
+      this.reasons,
+      this.submitterRole,
+      this.commercialRecord,
+      this.facilityUniqueID,
+      this.objectedTransactionDisplayNumber,
+      this.serviceTypeId});
   Map<String, dynamic> toMap() {
     return {
       "MainRequestData": {
@@ -34,13 +37,15 @@ class CreateObjectionParams {
         "ServiceGroupId": serviceGroupId,
         "ServiceId": serviceId,
         "MunicipalityID": municipalityID,
-        "SubMunicipalityID": subMunicipalityID
+        "SubMunicipalityID": subMunicipalityID,
+        "ServiceTypeId": serviceTypeId
       },
       "RequestSubmitterData": {
         "SubmitterRole": submitterRole,
         if (submitterRole != "001") "CommercialRecord": commercialRecord,
         "FacilityUniqueID": facilityUniqueID,
-        "ObjectedTransactionId": objectedTransactionId
+        "ObjectedTransactionId": objectedTransactionId,
+        "ObjectedTransactionDisplayNumber": objectedTransactionDisplayNumber
       },
       if (reasons != null)
         "ObjectionReasonList": reasons!

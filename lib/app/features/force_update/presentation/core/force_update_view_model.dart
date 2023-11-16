@@ -60,9 +60,7 @@ class ForceUpdateViewModel extends BaseViewModel {
               response.data?.result?.forceUpdate);
         }
       }
-    } catch (ex) {
-      print(ex);
-    }
+    } catch (ex) {}
   }
 
   void compareVersion(

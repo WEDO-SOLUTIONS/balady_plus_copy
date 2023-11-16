@@ -19,7 +19,6 @@ class WebServiceConnections {
   Future<Map<String, dynamic>> sendGetRequest(
       {String? url, Map<String, String>? headers, String? apiName}) async {
     try {
-      //print(url);
       final response = await http.get(Uri.parse(url ?? ""), headers: headers);
       // //print(response.body);
       if (response.statusCode == HttpStatus.ok ||
@@ -31,8 +30,7 @@ class WebServiceConnections {
         m.putIfAbsent("path", () => url);
         m.putIfAbsent('data', () => response.body.toString());
         m.putIfAbsent("RelativePath", () => url);
-        ////print("OOOO");
-        ////print(m);
+
         return m;
       } else {
         Map<String, dynamic> m = new Map();

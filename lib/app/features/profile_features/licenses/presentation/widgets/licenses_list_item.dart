@@ -132,7 +132,6 @@ class LicensesListItem extends StatelessWidget {
               );
             } else {
               if (license.redirectUrl == null) return;
-              print(license.redirectUrl);
 
               EasyLoading.show();
               GetCookie getCookie = GetCookie(repository: sl());

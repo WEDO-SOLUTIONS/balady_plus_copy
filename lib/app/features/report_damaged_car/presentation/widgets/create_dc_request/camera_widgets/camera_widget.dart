@@ -34,12 +34,11 @@ class _CameraWidgetState extends State<CameraWidget>
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    // print("didChangeAppLifecycleState $state");
     if (context.read<DCCameraBloc>().cameraController == null ||
         !context.read<DCCameraBloc>().cameraController!.value.isInitialized) {
       return;
     }
-    print(state);
+
     if (state == AppLifecycleState.inactive ||
         state == AppLifecycleState.paused) {
       context.read<DCCameraBloc>().cameraController?.dispose();
@@ -74,7 +73,6 @@ class _CameraWidgetState extends State<CameraWidget>
                           .add(SetZoomLevelEvent(zoom: state.scaleFactor));
                     },
                     onScaleUpdate: (details) {
-                      print(details);
                       context
                           .read<DCCameraBloc>()
                           .add(UpdateScaleLevelEvent(scale: details.scale));
@@ -95,7 +93,6 @@ class _CameraWidgetState extends State<CameraWidget>
                     .add(SetZoomLevelEvent(zoom: state.scaleFactor));
               },
               onScaleUpdate: (details) {
-                print(details);
                 context
                     .read<DCCameraBloc>()
                     .add(UpdateScaleLevelEvent(scale: details.scale));

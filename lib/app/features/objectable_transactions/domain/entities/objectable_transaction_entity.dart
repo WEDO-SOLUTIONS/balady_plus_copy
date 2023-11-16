@@ -2,42 +2,80 @@ import 'package:equatable/equatable.dart';
 import 'package:intl/intl.dart';
 
 class ObjectableTransactionsEntity extends Equatable {
-  final String? transactionNumber; //
-  final String? applicationId;
-  final String? applicationName;
+ final String? transactionNumber;
+  final DateTime? objectionLastApplyDate;
+  final DateTime? violationIssueDate;
+  final dynamic violationStatusName;
+  final dynamic violationStatusId;
   final String? isAllowedForObjection;
+  final bool? isAllowedObjection;
+  final dynamic createdDate;
+  final DateTime? updatedDate;
   final String? municipalityId;
   final String? municipalityName;
-  final DateTime? objectionLastApplyDate;
-  final String? ownerIdentityNo;
-  final String? ownerIdentityTypeId;
-  final String? ownerIdentityTypeName;
-  final String? serviceId;
-  final String? serviceName;
   final String? subMunicipalityId;
   final String? subMunicipalityName;
-  final DateTime? violationIssueDate;
+  final String? ownerIdentityNo;
+  final dynamic ownerName;
+  final String? ownerIdentityTypeId;
+  final String? ownerIdentityTypeName;
   final String? objectionTypeId;
   final String? objectionTypeName;
+  final String? applicationId;
+  final String? applicationName;
+  final String? serviceId;
+  final String? serviceName;
+  final dynamic actions;
+  final String? hashingTransactionNumber;
+  final String? originalOwnerIdentityTypeId;
+  final String? originalMunicipalityId;
+  final String? originalSubMunicipalityId;
+  final String? serviceTypeId;
+  final String? transactionId;
+  final dynamic contentTypeId;
+  final dynamic contentTypeName;
+  final dynamic originalServiceId;
+  final String? hashingOriginalServiceId;
 
   const ObjectableTransactionsEntity(
-      {this.transactionNumber,
-      this.applicationId,
-      this.applicationName,
-      this.isAllowedForObjection,
-      this.municipalityId,
-      this.municipalityName,
-      this.objectionLastApplyDate,
-      this.ownerIdentityNo,
-      this.ownerIdentityTypeId,
-      this.ownerIdentityTypeName,
-      this.serviceId,
-      this.serviceName,
-      this.subMunicipalityId,
-      this.subMunicipalityName,
-      this.violationIssueDate,
-      this.objectionTypeId,
-      this.objectionTypeName});
+      {
+
+    this.transactionNumber,
+    this.objectionLastApplyDate,
+    this.violationIssueDate,
+    this.violationStatusName,
+    this.violationStatusId,
+    this.isAllowedForObjection,
+    this.isAllowedObjection,
+    this.createdDate,
+    this.updatedDate,
+    this.municipalityId,
+    this.municipalityName,
+    this.subMunicipalityId,
+    this.subMunicipalityName,
+    this.ownerIdentityNo,
+    this.ownerName,
+    this.ownerIdentityTypeId,
+    this.ownerIdentityTypeName,
+    this.objectionTypeId,
+    this.objectionTypeName,
+    this.applicationId,
+    this.applicationName,
+    this.serviceId,
+    this.serviceName,
+    this.actions,
+    this.hashingTransactionNumber,
+    this.originalOwnerIdentityTypeId,
+    this.originalMunicipalityId,
+    this.originalSubMunicipalityId,
+    this.serviceTypeId,
+    this.transactionId,
+    this.contentTypeId,
+    this.contentTypeName,
+    this.originalServiceId,
+    this.hashingOriginalServiceId,
+
+      });
 
   String get objectionLastApplyDateStr => objectionLastApplyDate != null
       ? DateFormat.yMd().format(objectionLastApplyDate!)

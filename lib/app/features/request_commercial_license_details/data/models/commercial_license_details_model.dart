@@ -10,7 +10,7 @@ class RequestCommercialLicenseDetailsModel {
   String typeName;
   int licenseTypeId;
   String licenseTypeName;
-  DateTime lastUpdateDate;
+  DateTime? lastUpdateDate;
   int? cancellationReasonId;
   String? cancellationReasonName;
   LicenseInfo licenseInfo;
@@ -37,25 +37,34 @@ class RequestCommercialLicenseDetailsModel {
     required this.availableCloseDate,
   });
 
-  factory RequestCommercialLicenseDetailsModel.fromJson(Map<String, dynamic> json) => RequestCommercialLicenseDetailsModel(
-    requestId: json["requestId"],
-    statusId: json["statusId"],
-    statusName: json["statusName"],
-    subMunicipalityId: json["subMunicipalityId"],
-    subMunicipalityName: json["subMunicipalityName"],
-    cancellationReasonName: json["cancellationReasonName"],
-    cancellationReasonId: json["cancellationReasonId"],
-    typeId: json["typeId"],
-    typeName: json["typeName"],
-    licenseTypeId: json["licenseTypeId"],
-    licenseTypeName: json["licenseTypeName"],
-    lastUpdateDate: DateFormat("yyyy/MM/dd ").parse(json["lastUpdateDate"]),
-    licenseInfo: LicenseInfo.fromJson(json["licenseInfo"]),
-    availableCloseDate: json["availableCloseDate"]  ?? false,
-    attachmentsInfo: json["attachmentsInfo"] != null ? List<AttachmentsInfo>.from(json["attachmentsInfo"].map((x) => AttachmentsInfo.fromJson(x))) : null,
-    requestNotesInfo: json["requestNotesInfo"] != null ?  List<RequestNotesInfo>.from(json["requestNotesInfo"].map((x) => RequestNotesInfo.fromJson(x))) : null,
-  );
-
+  factory RequestCommercialLicenseDetailsModel.fromJson(
+          Map<String, dynamic> json) =>
+      RequestCommercialLicenseDetailsModel(
+        requestId: json["requestId"],
+        statusId: json["statusId"],
+        statusName: json["statusName"],
+        subMunicipalityId: json["subMunicipalityId"] ?? "",
+        subMunicipalityName: json["subMunicipalityName"] ?? "",
+        cancellationReasonName: json["cancellationReasonName"],
+        cancellationReasonId: json["cancellationReasonId"],
+        typeId: json["typeId"],
+        typeName: json["typeName"],
+        licenseTypeId: json["licenseTypeId"],
+        licenseTypeName: json["licenseTypeName"],
+        lastUpdateDate: json["lastUpdateDate"] != null
+            ? DateFormat("yyyy/MM/dd ").parse(json["lastUpdateDate"])
+            : null,
+        licenseInfo: LicenseInfo.fromJson(json["licenseInfo"]),
+        availableCloseDate: json["availableCloseDate"] ?? false,
+        attachmentsInfo: json["attachmentsInfo"] != null
+            ? List<AttachmentsInfo>.from(
+                json["attachmentsInfo"].map((x) => AttachmentsInfo.fromJson(x)))
+            : null,
+        requestNotesInfo: json["requestNotesInfo"] != null
+            ? List<RequestNotesInfo>.from(json["requestNotesInfo"]
+                .map((x) => RequestNotesInfo.fromJson(x)))
+            : null,
+      );
 }
 
 class AttachmentsInfo {
@@ -83,31 +92,32 @@ class AttachmentsInfo {
     // required this.originFileName,
   });
 
-  factory AttachmentsInfo.fromJson(Map<String, dynamic> json) => AttachmentsInfo(
-    id: json["id"],
-    name: json["name"] ?? '',
-    // allowedFilesExtension: json["allowedFilesExtension"],
-    // attached: json["attached"],
-    // approved: json["approved"],
-    attachUrl: json["attachUrl"],
-    // maxSize: json["maxSize"],
-    // notes: json["notes"],
-    // attachDescription: json["attachDescription"],
-    // originFileName: json["originFileName"],
-  );
+  factory AttachmentsInfo.fromJson(Map<String, dynamic> json) =>
+      AttachmentsInfo(
+        id: json["id"],
+        name: json["name"] ?? '',
+        // allowedFilesExtension: json["allowedFilesExtension"],
+        // attached: json["attached"],
+        // approved: json["approved"],
+        attachUrl: json["attachUrl"],
+        // maxSize: json["maxSize"],
+        // notes: json["notes"],
+        // attachDescription: json["attachDescription"],
+        // originFileName: json["originFileName"],
+      );
 
   Map<String, dynamic> toJson() => {
-    "id": id,
-    "name": name,
-    // "allowedFilesExtension": allowedFilesExtension,
-    // "attached": attached,
-    // "approved": approved,
-    "attachUrl": attachUrl,
-    // "maxSize": maxSize,
-    // "notes": notes,
-    // "attachDescription": attachDescription,
-    // "originFileName": originFileName,
-  };
+        "id": id,
+        "name": name,
+        // "allowedFilesExtension": allowedFilesExtension,
+        // "attached": attached,
+        // "approved": approved,
+        "attachUrl": attachUrl,
+        // "maxSize": maxSize,
+        // "notes": notes,
+        // "attachDescription": attachDescription,
+        // "originFileName": originFileName,
+      };
 }
 
 class LicenseInfo {
@@ -128,14 +138,13 @@ class LicenseInfo {
   });
 
   factory LicenseInfo.fromJson(Map<String, dynamic> json) => LicenseInfo(
-    licenseId: json["licenseId"],
-    statusId: json["statusId"],
-    statusName: json["statusName"],
-    issueDate: json["issueDate"],
-    licenseEndDate: json["licenseEndDate"] ?? '',
-    licenseSadadEndDate: json["licenseSadadEndDate"] ?? '',
-  );
-
+        licenseId: json["licenseId"],
+        statusId: json["statusId"],
+        statusName: json["statusName"],
+        issueDate: json["issueDate"] ?? '',
+        licenseEndDate: json["licenseEndDate"] ?? '',
+        licenseSadadEndDate: json["licenseSadadEndDate"] ?? '',
+      );
 }
 
 class RequestNotesInfo {
@@ -149,10 +158,10 @@ class RequestNotesInfo {
     required this.note,
   });
 
-  factory RequestNotesInfo.fromJson(Map<String, dynamic> json) => RequestNotesInfo(
-    date: DateFormat("yyyy/MM/dd ").parse(json["date"]),
-    id: json["id"],
-    note: json["note"],
-  );
-
+  factory RequestNotesInfo.fromJson(Map<String, dynamic> json) =>
+      RequestNotesInfo(
+        date: DateFormat("yyyy/MM/dd ").parse(json["date"]),
+        id: json["id"],
+        note: json["note"],
+      );
 }

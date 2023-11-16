@@ -36,10 +36,9 @@ class EventRepositoryImpl implements EventRepository {
       {required EventDetailsParams params}) async {
     try {
       final data = await remoteDataSource.getEventDetails(params: params);
-      print(data);
+
       return Right(data);
     } on ServerException catch (error) {
-      print(error);
       return Left(ServerFailure(
         error.errorMessage,
         statusCode: error.statusCode,

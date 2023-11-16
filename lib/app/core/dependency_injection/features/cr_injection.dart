@@ -3,6 +3,8 @@ import '../dependency_injection_exports.dart' show sl;
 
 class CrInjection {
   static void init() {
+    sl.registerLazySingleton(() => CommercialLicenseBloc());
+
     //! Repository
     sl.registerLazySingleton<CrRepository>(
       () => CrRepositoryImpl(

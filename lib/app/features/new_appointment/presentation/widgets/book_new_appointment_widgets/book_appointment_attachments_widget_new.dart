@@ -127,7 +127,7 @@ class BookAppointmentAttachmentsWidgetNew extends StatelessWidget {
 
                   if (image != null) {
                     int imageSize = await image.length();
-                    print(imageSize);
+                  
                     if (imageSize >= 5210000) {
                       print(('file_size_error').tr());
                     } else {

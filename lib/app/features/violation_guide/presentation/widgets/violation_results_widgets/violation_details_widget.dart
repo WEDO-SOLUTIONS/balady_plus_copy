@@ -4,8 +4,11 @@ import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/t
 import 'package:flutter/widgets.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
+import '../../../data/models/regulation_clause_response.dart';
+
 class ViolationDetailsWidget extends StatelessWidget {
-  const ViolationDetailsWidget({super.key});
+  final RegulationClauseItem item;
+  const ViolationDetailsWidget({super.key, required this.item});
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +18,6 @@ class ViolationDetailsWidget extends StatelessWidget {
           height: 14,
         ),
         Container(
-          width: 310,
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(16),
@@ -23,31 +25,46 @@ class ViolationDetailsWidget extends StatelessWidget {
           ),
           child:
               Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-            CustomTextWidget(
-              'violation_approved_text'.tr(),
-              maxLines: 2,
-              textStyle: AppStyle.violationListTitleStyle,
+            Expanded(
+              flex: 2,
+              child: CustomTextWidget(
+                item.regulationClauseText ?? "",
+                maxLines: 10,
+                textStyle: AppStyle.violationListTitleStyle,
+              ),
             ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                CustomTextWidget(
-                  'start_from'.tr(),
-                  textStyle: AppStyle.violationStartFromStyle,
-                ),
-                Row(
-                  children: [
-                    CustomTextWidget(
-                      '10000'.tr(),
-                      textStyle: AppStyle.violationNumberStyle1,
-                    ),
-                    CustomTextWidget(
-                      'riyalperWorker'.tr(),
-                      textStyle: AppStyle.violationRiyalPerWorkerStyle,
-                    ),
-                  ],
-                ),
-              ],
+            SizedBox(
+              width: 16,
+            ),
+            Expanded(
+              flex: 1,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  CustomTextWidget(
+                    'start_from'.tr(),
+                    textStyle: AppStyle.violationStartFromStyle,
+                  ),
+                  Row(
+                    children: [
+                      CustomTextWidget(
+                        item.baseFineAmount ?? "",
+                        textStyle: AppStyle.violationNumberStyle1,
+                      ),
+                      SizedBox(
+                        width: 4,
+                      ),
+                      Flexible(
+                        child: CustomTextWidget(
+                          item.unit ?? "",
+                          maxLines: 2,
+                          textStyle: AppStyle.violationRiyalPerWorkerStyle,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             )
           ]),
         ),

@@ -29,7 +29,6 @@ class _AttachmentViewSectionState extends State<AttachmentViewSection> {
         } else {
           attachmentList = state.requestDetails?.attachmentList ?? [];
         }
-        print("ffffffgg ${attachmentList.length}");
 
         return Visibility(
             visible: attachmentList.isNotEmpty,
