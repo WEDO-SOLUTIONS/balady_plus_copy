@@ -1,8 +1,11 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 // To parse this JSON data, do
 //
 //     final saveLocationResponse = saveLocationResponseFromJson(jsonString);
 
 import 'dart:convert';
+
+import 'package:equatable/equatable.dart';
 
 SaveLocationResponse saveLocationResponseFromJson(String str) =>
     SaveLocationResponse.fromJson(json.decode(str));
@@ -10,7 +13,7 @@ SaveLocationResponse saveLocationResponseFromJson(String str) =>
 String saveLocationResponseToJson(SaveLocationResponse data) =>
     json.encode(data.toJson());
 
-class SaveLocationResponse {
+class SaveLocationResponse extends Equatable {
   final int? requestId;
   final int? minYears;
   final int? maxYears;
@@ -72,6 +75,23 @@ class SaveLocationResponse {
         "boardContractSetting": boardContractSetting,
         "showSalamaPermit": showSalamaPermit,
       };
+
+  @override
+  // TODO: implement props
+  List<Object?> get props {
+    return [
+      requestId,
+      minYears,
+      maxYears,
+      contractOptionsResponseDto,
+      slamaBillOptions,
+      slamaReportOptions,
+      selectLicYears,
+      endorsementText,
+      boardContractSetting,
+      showSalamaPermit,
+    ];
+  }
 }
 
 class ContractOptionsResponseDto {

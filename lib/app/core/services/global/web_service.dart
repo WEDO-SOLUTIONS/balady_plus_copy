@@ -1,6 +1,8 @@
 import 'dart:convert';
 
+import 'package:curl_logger_dio_interceptor/curl_logger_dio_interceptor.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:localize_and_translate/localize_and_translate.dart'
     show translator;
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
@@ -48,10 +50,14 @@ class WebService {
     dio.options.headers = {};
     dio.addSentry();
 
+    if (!kReleaseMode) {
+      dio.interceptors.add(CurlLoggerDioInterceptor(printOnSuccess: true));
+    }
+
     dio.interceptors.add(
       PrettyDioLogger(
-        requestHeader: true,
-        requestBody: true,
+        requestHeader: false,
+        requestBody: false,
         responseBody: true,
       ),
     );
@@ -82,7 +88,11 @@ class AppInterceptors extends Interceptor {
     if (options.uri.toString().toLowerCase().contains("etmamplus-services") ||
         options.uri.toString().toLowerCase().contains("dashboard-services") ||
         options.uri.toString().toLowerCase().contains("mobile-dynamic-forms") ||
-        options.uri.toString().toLowerCase().contains("biddings-services")) {
+        options.uri.toString().toLowerCase().contains("biddings-services") ||
+        options.uri
+            .toString()
+            .toLowerCase()
+            .contains("etmamplus-archiving-services")) {
       var headers = {
         ApiHeaders.xFeappId: EtmamCommonProperties.CommonProperties.appName,
         ApiHeaders.xFeAppVersion:
@@ -143,6 +153,8 @@ class AppInterceptors extends Interceptor {
 
   @override
   void onError(DioError err, ErrorInterceptorHandler handler) {
+    print(err.type);
+    print(err);
     "Opps, recieved Error: ${err.response?.statusCode}".errorLog();
     "Opps, recieved Error: ${err.response?.data}".errorLog();
 

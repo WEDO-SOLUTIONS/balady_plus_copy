@@ -204,7 +204,6 @@ class RequestsRemoteDataSourceImplementation
           }));
 
       final data = response.data;
-      print(data);
       final result = ResponseBodyModel.fromMap(data).data?.result;
       return CrmRequestDetailsModel.fromJson(result);
       return result;
@@ -218,7 +217,6 @@ class RequestsRemoteDataSourceImplementation
         dioError: error,
       );
     } catch (ex) {
-      print("failurefailure $ex");
       if (ex is ServerException)
         throw ex;
       else {

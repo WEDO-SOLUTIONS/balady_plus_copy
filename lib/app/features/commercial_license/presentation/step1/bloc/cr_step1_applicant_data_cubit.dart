@@ -29,18 +29,16 @@ class CrStep1ApplicantDataCubit extends Cubit<CrStep1ApplicantDataState> {
           CommonProperties.userInfo!.idNo!,
       CommonProperties.selectedDelegator?.getRole() ?? ""
     ));
-
-    /// TODO: UnComment below line
-    // final response = await _getRecordInfo(
-    //     CommonProperties.selectedDelegator?.crNumber ?? "");
     response.fold(
         (failure) => emit(state.copyWith(
               recordStatus: BlocStatus.failure,
               errorMessage: (failure as ServerFailure).errorMessage,
-            )),
-        (success) => emit(state.copyWith(
-            recordStatus: BlocStatus.success,
-            recordInfo: success.data?.result)));
+            )), (success) {
+      sl<CommercialLicenseBloc>().updateRecordInfo(info: success.data?.result);
+
+      emit(state.copyWith(
+          recordStatus: BlocStatus.success, recordInfo: success.data?.result));
+    });
   }
 
   void addIsicActivities() async {
@@ -51,7 +49,6 @@ class CrStep1ApplicantDataCubit extends Cubit<CrStep1ApplicantDataState> {
       identityNumber: state.recordInfo?.crInfo?.nationalNumber,
       mobileNumber: state.recordInfo?.crInfo?.phoneNo,
     ));
-
     response.fold(
         (failure) => emit(state.copyWith(
               addIsicActivitiesStatus: BlocStatus.failure,
@@ -67,7 +64,8 @@ class CrStep1ApplicantDataCubit extends Cubit<CrStep1ApplicantDataState> {
         SaveComSubmitterAndOwnerRequestModel(
             crNumber: state.recordInfo?.crNumber,
             crType: state.recordInfo?.crType,
-            entityType: "SHOP"));
+            entityType: "SHOP",
+            requestId: sl<CommercialLicenseBloc>().state.requestId));
 
     response.fold(
         (failure) => emit(state.copyWith(

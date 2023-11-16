@@ -141,7 +141,9 @@ class CommercialLicenceDetails {
       CommercialLicenceDetails(
         requestId: json["requestId"],
         mainActivityArea: ((json["mainActivityArea"] ?? 0.0) + 0.0),
-        creationDate: json["creationDate"] != null ? DateFormat("yyyy/MM/dd ").parse(json["creationDate"]) : null,
+        creationDate: json["creationDate"] != null
+            ? DateFormat("yyyy/MM/dd ").parse(json["creationDate"])
+            : null,
         // entityType: json["entityType"],
         // currentTabId: json["currentTabId"],
         // statusId: json["statusId"],
@@ -158,8 +160,12 @@ class CommercialLicenceDetails {
         // notes: json["notes"],
         // employeeNotes: json["employeeNotes"],
         // clientNotes: json["clientNotes"],
-        licenseInfo: json["licenseInfo"] != null ?  LicenseInfo.fromJson(json["licenseInfo"]) : null,
-        salamaInfo: json["salamaInfo"] != null ? SalamaInfo.fromJson(json["salamaInfo"]) : null,
+        licenseInfo: json["licenseInfo"] != null
+            ? LicenseInfo.fromJson(json["licenseInfo"])
+            : null,
+        salamaInfo: json["salamaInfo"] != null
+            ? SalamaInfo.fromJson(json["salamaInfo"])
+            : null,
         // objectionNotesInfo: json["objectionNotesInfo"],
         // warningMessages: json["warningMessages"],
         // warningInfo: json["warningInfo"],
@@ -194,10 +200,18 @@ class CommercialLicenceDetails {
         // craft: json["craft"],
         // craftMessage: json["craftMessage"],
         // contactInfo: json["contactInfo"],
-        activityInfo: json["activityInfo"] != null ? ActivityInfo.fromJson(json["activityInfo"]) : null,
-        locationInfo: json["locationInfo"] != null ? LocationInfo.fromJson(json["locationInfo"]) : null,
-        submitterInfo: json["submitterInfo"] != null ? SubmitterInfo.fromJson(json["submitterInfo"]) : null,
-        shopInfo: json["shopInfo"] != null ? ShopInfo.fromJson(json["shopInfo"]) : null,
+        activityInfo: json["activityInfo"] != null
+            ? ActivityInfo.fromJson(json["activityInfo"])
+            : null,
+        locationInfo: json["locationInfo"] != null
+            ? LocationInfo.fromJson(json["locationInfo"])
+            : null,
+        submitterInfo: json["submitterInfo"] != null
+            ? SubmitterInfo.fromJson(json["submitterInfo"])
+            : null,
+        shopInfo: json["shopInfo"] != null
+            ? ShopInfo.fromJson(json["shopInfo"])
+            : null,
         // billsInfo: List<BillsInfo>.from(json["billsInfo"].map((x) => BillsInfo.fromJson(x))),
         // selectLicYears: json["selectLicYears"],
         // showTillActive: json["showTillActive"],
@@ -260,20 +274,22 @@ class ActivityInfo {
   });
 
   factory ActivityInfo.fromJson(Map<String, dynamic> json) => ActivityInfo(
-    mainActivity: json["mainActivity"] != null ? MainActivity.fromJson(json["mainActivity"]) : null,
-    additionalActivities: json["additionalActivities"] != null
-        ? List<AdditionalActivities>.from(json["additionalActivities"]
-        .map((x) => AdditionalActivities.fromJson(x)))
-        : null,
-    // foreignInvistor: json["foreignInvistor"],
-    // workerTypeId: json["workerTypeId"],
-    // workerTypeName: json["workerTypeName"],
-    // activityChangeReason: json["activityChangeReason"],
-    // showAtmFeesOption: json["showAtmFeesOption"],
-    // atmFeesPaid: json["atmFeesPaid"],
-    // atmActivity: json["atmActivity"],
-    // inHomogenusActivities: json["inHomogenusActivities"],
-  );
+        mainActivity: json["mainActivity"] != null
+            ? MainActivity.fromJson(json["mainActivity"])
+            : null,
+        additionalActivities: json["additionalActivities"] != null
+            ? List<AdditionalActivities>.from(json["additionalActivities"]
+                .map((x) => AdditionalActivities.fromJson(x)))
+            : null,
+        // foreignInvistor: json["foreignInvistor"],
+        // workerTypeId: json["workerTypeId"],
+        // workerTypeName: json["workerTypeName"],
+        // activityChangeReason: json["activityChangeReason"],
+        // showAtmFeesOption: json["showAtmFeesOption"],
+        // atmFeesPaid: json["atmFeesPaid"],
+        // atmActivity: json["atmActivity"],
+        // inHomogenusActivities: json["inHomogenusActivities"],
+      );
 }
 
 class MainActivity {
@@ -319,24 +335,24 @@ class MainActivity {
   });
 
   factory MainActivity.fromJson(Map<String, dynamic> json) => MainActivity(
-    detailedActivityId: json["detailedActivityId"] ?? 0,
-    area: ((json["area"] ?? 0.0) + 0.0),
-    // unitCount: json["unitCount"],
-    // accommodationTypeId: json["accommodationTypeId"],
-    // accommodationTypeName: json["accommodationTypeName"],
-    detailedActivityName: json["detailedActivityName"] ?? '',
-    // isicActivityId: json["isicActivityId"],
-    // mainActivityId: json["mainActivityId"],
-    isicActivityName: json["isicActivityName"] ?? '',
-    // minYears: json["minYears"],
-    // maxYears: json["maxYears"],
-    // removed: json["removed"],
-    // activitySettingDto: ActivitySettingDto.fromJson(json["activitySettingDto"]),
-    // minArea: json["minArea"],
-    // maxArea: json["maxArea"],
-    // facilityId: json["facilityId"],
-    facilityName: json["facilityName"] ?? '',
-  );
+        detailedActivityId: json["detailedActivityId"] ?? 0,
+        area: ((json["area"] ?? 0.0) + 0.0),
+        // unitCount: json["unitCount"],
+        // accommodationTypeId: json["accommodationTypeId"],
+        // accommodationTypeName: json["accommodationTypeName"],
+        detailedActivityName: json["detailedActivityName"] ?? '',
+        // isicActivityId: json["isicActivityId"],
+        // mainActivityId: json["mainActivityId"],
+        isicActivityName: json["isicActivityName"] ?? '',
+        // minYears: json["minYears"],
+        // maxYears: json["maxYears"],
+        // removed: json["removed"],
+        // activitySettingDto: ActivitySettingDto.fromJson(json["activitySettingDto"]),
+        // minArea: json["minArea"],
+        // maxArea: json["maxArea"],
+        // facilityId: json["facilityId"],
+        facilityName: json["facilityName"] ?? '',
+      );
 }
 
 // class ActivitySettingDto {
@@ -494,21 +510,21 @@ class LicenseInfo {
   });
 
   factory LicenseInfo.fromJson(Map<String, dynamic> json) => LicenseInfo(
-    // licenseEndDate: json["licenseEndDate"],
-    // licenseSadadEndDate: json["licenseSadadEndDate"],
-    // licensePeriod: json["licensePeriod"],
-    // sadadPeriod: json["sadadPeriod"],
-    licenseId: json["licenseId"] ?? 0,
-    statusId: json["statusId"] ?? 0,
-    // expireInDays: json["expireInDays"],
-    // oldLicenseNo: json["oldLicenseNo"],
-    // issueDate: json["issueDate"],
-    // expired: json["expired"],
-    // printUrl: json["printUrl"],
-    qrCodeUrl: json["qrCodeUrl"] ?? '',
-    // qrRequestId: json["qrRequestId"],
-    statusDesc: json["statusDesc"] ?? '',
-  );
+        // licenseEndDate: json["licenseEndDate"],
+        // licenseSadadEndDate: json["licenseSadadEndDate"],
+        // licensePeriod: json["licensePeriod"],
+        // sadadPeriod: json["sadadPeriod"],
+        licenseId: json["licenseId"] ?? 0,
+        statusId: json["statusId"] ?? 0,
+        // expireInDays: json["expireInDays"],
+        // oldLicenseNo: json["oldLicenseNo"],
+        // issueDate: json["issueDate"],
+        // expired: json["expired"],
+        // printUrl: json["printUrl"],
+        qrCodeUrl: json["qrCodeUrl"] ?? '',
+        // qrRequestId: json["qrRequestId"],
+        statusDesc: json["statusDesc"] ?? '',
+      );
 }
 
 class LocationInfo {
@@ -555,24 +571,24 @@ class LocationInfo {
   });
 
   factory LocationInfo.fromJson(Map<String, dynamic> json) => LocationInfo(
-    subMunicipalityGisCode: json["subMunicipalityGisCode"] ?? '',
-    // districtCode: json["districtCode"],
-    // streetCode: json["streetCode"],
-    latitude: json["latitude"]  ,
-    longitude: json["longitude"],
-    mapNo: json["mapNo"] ?? '',
-    landNo: json["landNo"] ?? '',
-    streetName: json["streetName"] ?? '',
-    districtName: json["districtName"] ?? '',
-    subMunicipalityName: json["subMunicipalityName"] ?? '',
-    // municipalityId: json["municipalityId"],
-    municipalityName: json["municipalityName"] ?? '',
-    // subMunicipalityId: json["subMunicipalityId"],
-    // regionId: json["regionId"],
-    regionName: json["regionName"] ?? '',
-    // vehiclePathDesc: json["vehiclePathDesc"],
-    // krokiUrl: json["krokiUrl"],
-  );
+        subMunicipalityGisCode: json["subMunicipalityGisCode"] ?? '',
+        // districtCode: json["districtCode"],
+        // streetCode: json["streetCode"],
+        latitude: json["latitude"],
+        longitude: json["longitude"],
+        mapNo: json["mapNo"] ?? '',
+        landNo: json["landNo"] ?? '',
+        streetName: json["streetName"] ?? '',
+        districtName: json["districtName"] ?? '',
+        subMunicipalityName: json["subMunicipalityName"] ?? '',
+        // municipalityId: json["municipalityId"],
+        municipalityName: json["municipalityName"] ?? '',
+        // subMunicipalityId: json["subMunicipalityId"],
+        // regionId: json["regionId"],
+        regionName: json["regionName"] ?? '',
+        // vehiclePathDesc: json["vehiclePathDesc"],
+        // krokiUrl: json["krokiUrl"],
+      );
 }
 
 class SalamaInfo {
@@ -590,11 +606,11 @@ class SalamaInfo {
   });
 
   factory SalamaInfo.fromJson(Map<String, dynamic> json) => SalamaInfo(
-    // salamaIssueDate: json["salamaIssueDate"],
-    salamaIssueNo: json["salamaIssueNo"],
-    // salamaApprovedCenterId: json["salamaApprovedCenterId"],
-    // salamaApprovedCenterName: json["salamaApprovedCenterName"],
-  );
+        // salamaIssueDate: json["salamaIssueDate"],
+        salamaIssueNo: json["salamaIssueNo"],
+        // salamaApprovedCenterId: json["salamaApprovedCenterId"],
+        // salamaApprovedCenterName: json["salamaApprovedCenterName"],
+      );
 }
 
 class ShopInfo {
@@ -679,43 +695,47 @@ class ShopInfo {
   });
 
   factory ShopInfo.fromJson(Map<String, dynamic> json) => ShopInfo(
-    shopName: json["shopName"] ?? '',
-    shopUnitNumber: json["shopUnitNumber"] ?? 0,
-    holesCount: json["holesCount"] ?? 0,
-    // existInMall: json["existInMall"],
-    floorNumber: json["floorNumber"],
-    floorCount: json["floorCount"] ?? 0,
-    hasElevator: json["hasElevator"],
-    // isCitizenPledgedToClean: json["isCitizenPledgedToClean"],
-    // cleanContractEndDate: json["cleanContractEndDate"],
-    // buildingLicenseDate: json["buildingLicenseDate"],
-    // buildingLicenseNo: json["buildingLicenseNo"],
-    // buildingOwnerIdno: json["buildingOwnerIdno"],
-    // buildingOwnerName: json["buildingOwnerName"],
-    // landNumber: json["landNumber"],
-    planNumber: json["planNumber"] ?? '',
-    salamaBillNumber: json["salamaBillNumber"] ?? '',
-    boardsInfo: json["boardsInfo"] != null ? List<BoardsInfo>.from(json["boardsInfo"].map((x) => BoardsInfo.fromJson(x))) : null,
-    contractInfoResponseDto:
-    json["contractInfoResponseDto"] != null ?  ContractInfoResponseDto.fromJson(json["contractInfoResponseDto"]) : null,
-    // showShopOwnership: json["showShopOwnership"],
-    // slamaBillOptions: json["slamaBillOptions"],
-    // cameraBillOptions: json["cameraBillOptions"],
-    // endorsementText: json["endorsementText"],
-    // slamaReportOptions: json["slamaReportOptions"],
-    slamaReportNumber: json["slamaReportNumber"],
-    // cleanContractInfo: json["cleanContractInfo"],
-    // cleanContractOptions: CleanContractOptions.fromJson(json["cleanContractOptions"]),
-    // showActivityCancellationDate: json["showActivityCancellationDate"],
-    // activityCancellationDate: json["activityCancellationDate"],
-    // mallDto: json["mallDto"],
-    blockNumber: json["blockNumber"] ?? 0,
-    // cancelReasonDto: json["cancelReasonDto"],
-    // brand: json["brand"],
-    // salamaPermitNumber: json["salamaPermitNumber"],
-    // licenseBrand: json["licenseBrand"],
-    noOfCameras: json["noOfCameras"] ?? 0,
-  );
+        shopName: json["shopName"] ?? '',
+        shopUnitNumber: json["shopUnitNumber"] ?? 0,
+        holesCount: json["holesCount"] ?? 0,
+        // existInMall: json["existInMall"],
+        floorNumber: json["floorNumber"],
+        floorCount: json["floorCount"] ?? 0,
+        hasElevator: json["hasElevator"],
+        // isCitizenPledgedToClean: json["isCitizenPledgedToClean"],
+        // cleanContractEndDate: json["cleanContractEndDate"],
+        // buildingLicenseDate: json["buildingLicenseDate"],
+        // buildingLicenseNo: json["buildingLicenseNo"],
+        // buildingOwnerIdno: json["buildingOwnerIdno"],
+        // buildingOwnerName: json["buildingOwnerName"],
+        // landNumber: json["landNumber"],
+        planNumber: json["planNumber"] ?? '',
+        salamaBillNumber: json["salamaBillNumber"] ?? '',
+        boardsInfo: json["boardsInfo"] != null
+            ? List<BoardsInfo>.from(
+                json["boardsInfo"].map((x) => BoardsInfo.fromJson(x)))
+            : null,
+        contractInfoResponseDto: json["contractInfoResponseDto"] != null
+            ? ContractInfoResponseDto.fromJson(json["contractInfoResponseDto"])
+            : null,
+        // showShopOwnership: json["showShopOwnership"],
+        // slamaBillOptions: json["slamaBillOptions"],
+        // cameraBillOptions: json["cameraBillOptions"],
+        // endorsementText: json["endorsementText"],
+        // slamaReportOptions: json["slamaReportOptions"],
+        slamaReportNumber: json["slamaReportNumber"],
+        // cleanContractInfo: json["cleanContractInfo"],
+        // cleanContractOptions: CleanContractOptions.fromJson(json["cleanContractOptions"]),
+        // showActivityCancellationDate: json["showActivityCancellationDate"],
+        // activityCancellationDate: json["activityCancellationDate"],
+        // mallDto: json["mallDto"],
+        blockNumber: json["blockNumber"] ?? 0,
+        // cancelReasonDto: json["cancelReasonDto"],
+        // brand: json["brand"],
+        // salamaPermitNumber: json["salamaPermitNumber"],
+        // licenseBrand: json["licenseBrand"],
+        noOfCameras: json["noOfCameras"] ?? 0,
+      );
 }
 
 class BoardsInfo {
@@ -730,11 +750,10 @@ class BoardsInfo {
   });
 
   factory BoardsInfo.fromJson(Map<String, dynamic> json) => BoardsInfo(
-    typeId: json["typeId"] ?? 0,
-    typeName: json["typeName"] ?? '',
-    area: json["area"] ?? 0,
-  );
-
+        typeId: json["typeId"] ?? 0,
+        typeName: json["typeName"] ?? '',
+        area: json["area"] ?? 0,
+      );
 }
 
 // class CleanContractOptions {
@@ -787,6 +806,44 @@ class ContractInfoResponseDto {
         // contractOptionsResponseDto: ContractOptionsResponseDto.fromJson(json["contractOptionsResponseDto"]),
         // investmentContractNumber: json["investmentContractNumber"],
       );
+
+  /* String getDisplayContractType(){
+
+     }*/
+
+  String getDisplayContractTypeName() {
+    switch (contractType) {
+      case "EJAR":
+        return "عقد ايجار";
+      case "INVEST":
+        return "عقد استثمار";
+      case "DEED":
+        return "عقد تملك";
+    }
+    return contractType;
+  }
+
+  String getDisplayCleanContractName() {
+    if (contractType == "EJAR" && contractOption == "ATTACH")
+      return "عقد ايجار مرفق";
+
+    if (contractType == "EJAR" && contractOption == "SERVICE")
+      return "عقد ايجار الكتروني";
+
+    if (contractType == "INVEST" && contractOption == "ATTACH")
+      return "عقد استثمار مرفق";
+
+    if (contractType == "INVEST" && contractOption == "SERVICE")
+      return "عقد استثمار الكتروني";
+
+    if (contractType == "DEED" && contractOption == "ATTACH")
+      return " عقد تملك مرفق";
+
+    if (contractType == "DEED" && contractOption == "SERVICE")
+      return "عقد تملك الكتروني";
+
+    return contractType;
+  }
 }
 
 // class ContractOptionsResponseDto {
@@ -847,22 +904,22 @@ class SubmitterInfo {
   });
 
   factory SubmitterInfo.fromJson(Map<String, dynamic> json) => SubmitterInfo(
-    // entityType: json["entityType"],
-    submitterType: json["submitterType"] ?? '',
-    crNumber: json["crNumber"] ?? '',
-    crType: json["crType"] ?? '' ,
-    submitterIdNumber: json["submitterIdNumber"] ?? '',
-    // submitterBirthDate: json["submitterBirthDate"],
-    // mobile: json["mobile"],
-    // gender: json["gender"],
-    submitterName: json["submitterName"] ?? '',
-    // entityName: json["entityName"],
-    // crIssueDate: json["crIssueDate"],
-    // crSource: json["crSource"],
-    // genderDesc: json["genderDesc"],
-    // submitterIdType: json["submitterIdType"],
-    // crEntityType: json["crEntityType"],
-  );
+        // entityType: json["entityType"],
+        submitterType: json["submitterType"] ?? '',
+        crNumber: json["crNumber"] ?? '',
+        crType: json["crType"] ?? '',
+        submitterIdNumber: json["submitterIdNumber"] ?? '',
+        // submitterBirthDate: json["submitterBirthDate"],
+        // mobile: json["mobile"],
+        // gender: json["gender"],
+        submitterName: json["submitterName"] ?? '',
+        // entityName: json["entityName"],
+        // crIssueDate: json["crIssueDate"],
+        // crSource: json["crSource"],
+        // genderDesc: json["genderDesc"],
+        // submitterIdType: json["submitterIdType"],
+        // crEntityType: json["crEntityType"],
+      );
 }
 
 // class Warnings {

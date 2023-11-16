@@ -2,9 +2,12 @@ import 'package:balady_plus/app/features/commercial_license/commercial_license_e
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../../core/services/local/helpers.dart';
+import '../../../../../core/services/local/navigation_services.dart';
 import '../../../../../core/utils/utils_exports.dart';
 import '../../../../_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
 import '../../../../_shared_feature_/shared_feature_exports.dart';
+import '../../step3/widgets/map_widgets/warning_message.dart';
 
 class IsicActivitiesDialogNotExistInBalady extends StatelessWidget {
   const IsicActivitiesDialogNotExistInBalady({
@@ -26,6 +29,8 @@ class IsicActivitiesDialogNotExistInBalady extends StatelessWidget {
         if (state.addIsicActivitiesStatus.isSubmissionSuccess) {
           context.popDialog();
           context.popRoute();
+          context.popRoute();
+          context.popRoute();
         }
       },
       builder: (context, state) {
@@ -35,9 +40,7 @@ class IsicActivitiesDialogNotExistInBalady extends StatelessWidget {
               action: Column(
                 children: [
                   ElevatedButtonWidget.sendRequest(
-                      onPressed: () => context
-                          .read<CrStep1ApplicantDataCubit>()
-                          .addIsicActivities()),
+                      onPressed: () => showMessage(context)),
                   const SizedBox(height: 16),
                   if (state.isicActivitiesExistInBalady.isNotEmpty)
                     ElevatedButtonWidget.issuing(onPressed: () {
@@ -170,5 +173,29 @@ class IsicActivitiesDialogNotExistInBalady extends StatelessWidget {
         );
       },
     );
+  }
+
+  void showMessage(BuildContext context) {
+    BottomSheetDialog.showDraggableSheet(
+        NavigationService.navigatorKey.currentContext!,
+        child: BottomSheetWithActions(
+          title: "تنبيه",
+          action: Row(
+            children: [
+              Expanded(
+                child: ElevatedButtonWidget.primaryCustom(
+                    text: "موافق",
+                    onPressed: () {
+                      context
+                          .read<CrStep1ApplicantDataCubit>()
+                          .addIsicActivities();
+                    }),
+              ),
+            ],
+          ),
+          body: WarningMessage(
+              message:
+                  "عزيزي المستفيد... نشاط/أنشطة السجل التجاري غير موجودة في أنشطة وزارة الشئون البلدية والقروية، تم إرسال الطلب إلى الجهة المعنية بالوزارة لإضافتها إلى أنشطة الوزارة وسيتم إبلاغكم برسالة نصية عند إضافة النشاط/الأنشطة"),
+        ));
   }
 }

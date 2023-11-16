@@ -53,6 +53,10 @@ class CRStep11AttachmentCubit extends Cubit<CRStep11AttachmentState> {
     });
   }
 
+  void updateAgreement(bool? value) {
+    emit(state.copyWith(attachmentAgreement: value));
+  }
+
   deleteFile(int index) async {
     emit(state.copyWith(status: BlocStatus.loading));
 

@@ -33,6 +33,10 @@ class OrderBodySectionWidget extends StatelessWidget {
         children: [
           // certificate data
           const _CertificateDataWidget(),
+          const _CertificateOwnerDataWidget(),
+
+          const _CertificateSubmitterDataWidget(),
+          const _CertificateDataDataWidget(),
           // com license info data
           // medical examination data
           if (model.showExamanationData())
@@ -65,27 +69,134 @@ class _CertificateDataWidget extends StatelessWidget {
     HealthRequestDetailsViewModel model =
         Provider.of<HealthRequestDetailsViewModel>(context);
     return CustomExpansionPanelWidget(
-      title: Helpers.translatingWord("health_info"),
+      title: Helpers.translatingWord("health_bill_order"),
       underline: false,
       children: [
         FieldData(
-          title: Helpers.translatingWord("health_fullname"),
-          subTitle: model.requestDetails?.getFullName() ?? "",
+          title: Helpers.translatingWord("health_data"),
+          subTitle: model.requestDetails?.data?.result?.requestSubmitDate,
         ),
         CustomVerticalSpace(height: 8),
         FieldData(
-          title: Helpers.translatingWord("health_mobile"),
-          subTitle: model.requestDetails?.getMobileNumber() ?? "",
+          title: Helpers.translatingWord("health_data_no"),
+          subTitle: model.requestDetails?.getRequestId() ?? "",
         ),
         CustomVerticalSpace(height: 8),
         FieldData(
-          title: Helpers.translatingWord("health_municipality"),
-          subTitle: model.requestDetails?.getMunicipalityName() ?? "",
+          title: Helpers.translatingWord("health_data_status"),
+          subTitle: model.requestDetails?.getRequestStatusName() ?? "",
+        ),
+      ],
+    );
+  }
+}
+
+class _CertificateOwnerDataWidget extends StatelessWidget {
+  const _CertificateOwnerDataWidget({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    HealthRequestDetailsViewModel model =
+        Provider.of<HealthRequestDetailsViewModel>(context);
+    return CustomExpansionPanelWidget(
+      title: Helpers.translatingWord("health_owner_data"),
+      underline: false,
+      children: [
+        FieldData(
+            title: Helpers.translatingWord("health_owner_data_field1"),
+            subTitle: model
+                    .requestDetails?.data?.result?.ownerInfo?.identityNumber
+                    .toString() ??
+                ""),
+        CustomVerticalSpace(height: 8),
+        FieldData(
+          title: Helpers.translatingWord("health_owner_data_field2"),
+          subTitle: model.requestDetails?.data?.result?.ownerInfo?.fullName,
+        ),
+      ],
+    );
+  }
+}
+
+class _CertificateSubmitterDataWidget extends StatelessWidget {
+  const _CertificateSubmitterDataWidget({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    HealthRequestDetailsViewModel model =
+        Provider.of<HealthRequestDetailsViewModel>(context);
+    return CustomExpansionPanelWidget(
+      title: Helpers.translatingWord("health_submitter_data"),
+      underline: false,
+      children: [
+        FieldData(
+          title: Helpers.translatingWord("health_submitter_id"),
+          subTitle: model
+                  .requestDetails?.data?.result?.submitterInfo?.identityNumber
+                  .toString() ??
+              "",
         ),
         CustomVerticalSpace(height: 8),
         FieldData(
-          title: Helpers.translatingWord("health_sub_municipality"),
-          subTitle: model.requestDetails?.getSubMunicipalityName() ?? "",
+          title: Helpers.translatingWord("health_submitter_name"),
+          subTitle: model.requestDetails?.data?.result?.submitterInfo?.fullName,
+        ),
+        CustomVerticalSpace(height: 8),
+        FieldData(
+          title: Helpers.translatingWord("health_submitter_mobile"),
+          subTitle: model.requestDetails?.data?.result?.submitterInfo?.mobile,
+        ),
+        CustomVerticalSpace(height: 8),
+        FieldData(
+          title: Helpers.translatingWord("health_submitter_mail"),
+          subTitle: model.requestDetails?.data?.result?.submitterInfo?.email,
+        ),
+      ],
+    );
+  }
+}
+
+class _CertificateDataDataWidget extends StatelessWidget {
+  const _CertificateDataDataWidget({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    HealthRequestDetailsViewModel model =
+        Provider.of<HealthRequestDetailsViewModel>(context);
+    return CustomExpansionPanelWidget(
+      title: Helpers.translatingWord("health_cert_data"),
+      underline: false,
+      children: [
+        FieldData(
+          title: Helpers.translatingWord("health_cert_no"),
+          subTitle: model.requestDetails?.data?.result?.healthCertificateInfo
+                  ?.certificateId
+                  .toString() ??
+              "",
+        ),
+        CustomVerticalSpace(height: 8),
+        FieldData(
+          title: Helpers.translatingWord("health_cert_date"),
+          subTitle: model
+              .requestDetails?.data?.result?.healthCertificateInfo?.issueDate,
+        ),
+        CustomVerticalSpace(height: 8),
+        FieldData(
+          title: Helpers.translatingWord("health_cert_end"),
+          subTitle: model
+              .requestDetails?.data?.result?.healthCertificateInfo?.expiryDate,
+        ),
+        CustomVerticalSpace(height: 8),
+        FieldData(
+          title: Helpers.translatingWord("health_cert_lice_statue"),
+          subTitle: model
+              .requestDetails?.data?.result?.healthCertificateInfo?.statusName,
         ),
         const _ComLicenseInfoDataWidget(),
         Constants.verticalSpaceMedium,

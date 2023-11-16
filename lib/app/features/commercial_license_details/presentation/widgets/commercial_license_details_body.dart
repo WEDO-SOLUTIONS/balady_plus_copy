@@ -395,9 +395,8 @@ class _CommercialLicenseDetailsBodyState
                                       CardParameter(
                                         title: 'contractType'.tr(),
                                         value: commercialLicenceDetails
-                                            .shopInfo!
-                                            .contractInfoResponseDto!
-                                            .contractType,
+                                            .shopInfo!.contractInfoResponseDto!
+                                            .getDisplayContractTypeName(),
                                       ),
                                       CardParameter(
                                         title: 'contractNumber'.tr(),
@@ -409,10 +408,8 @@ class _CommercialLicenseDetailsBodyState
                                       CardParameter(
                                         title: 'contractOption'.tr(),
                                         value: (commercialLicenceDetails
-                                                .shopInfo!
-                                                .contractInfoResponseDto!
-                                                .contractOption)
-                                            .tr(),
+                                            .shopInfo!.contractInfoResponseDto!
+                                            .getDisplayCleanContractName()),
                                       ),
                                     ],
                                   )

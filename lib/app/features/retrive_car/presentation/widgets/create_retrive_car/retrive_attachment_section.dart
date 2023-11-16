@@ -4,14 +4,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../core/utils/common_functions.dart';
-import '../../../../../core/utils/constants/app_colors.dart';
-import '../../../../../core/utils/constants/constants.dart';
+
 import '../../../../_shared_feature_/data/entities/file_data_item.dart';
 import '../../../../_shared_feature_/presentation/buttons/elevated_icon_button_widgets.dart';
-import '../../../../_shared_feature_/presentation/widgets/buttons/custom_buttons_widgets.dart';
-import '../../../../_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
-import '../../../../_shared_feature_/presentation/widgets/custom_svg_icon_widget.dart';
-import '../../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
+
 import '../../../../objectable_transactions/presentation/widgets/create_objection_page/objection_reason_attachment.dart';
 import '../../blocs/create_retrive_bloc/create_retrive_bloc.dart';
 

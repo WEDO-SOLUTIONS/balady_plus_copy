@@ -13,11 +13,15 @@ import '../../../../core/services/services_exports.dart';
 import '../../../_shared_feature_/shared_feature_exports.dart';
 import '../../commercial_license_exports.dart';
 import '../../domain/entities/addetional_activity_details_request.dart';
+import '../../domain/entities/citizen_info_params.dart';
 import '../../domain/entities/cr_submit_request.dart';
 import '../../domain/entities/save_shop_details_request.dart';
 import '../../domain/entities/verifiy_salama_requst.dart';
 import '../models/additional_activity_details_response.dart';
 import '../models/additional_activity_response.dart';
+import '../models/board_contract_response.dart';
+import '../models/citizen_info_model.dart';
+import '../models/commercial_request_details_response.dart';
 import '../models/cr_attachment_response_model.dart';
 import '../models/cr_submit_response_model.dart';
 import '../models/qr/qr_lookup.dart';
@@ -89,6 +93,8 @@ abstract class CrRemoteDataSource {
   Future<AddetionalActivityDetailsResponse> getAddetionalDetailsActivites(
       {final AddetionalActivityDetailsRequest params});
 
+  Future<BoardContractResponse> getBoardContracts({required int params});
+
 // ! QR Flow
   Future<ApplyCommercialResponseModel>? applyCommercialRequest(
       {required int params});
@@ -110,13 +116,18 @@ abstract class CrRemoteDataSource {
 
   Future<QrLookUpResponse> getMalls({required String params});
 
-  Future<bool> validateSalamaReport({required VerifySalamaRequest params});
-  Future<bool> validateSalamaBill({required VerifySalamaRequest params});
-  Future<bool> validateSalamaPermit({required VerifySalamaRequest params});
+  Future<dynamic> validateSalamaReport({required VerifySalamaRequest params});
+  Future<dynamic> validateSalamaBill({required VerifySalamaRequest params});
+  Future<dynamic> validateSalamaPermit({required VerifySalamaRequest params});
 
   Future<String> getWarningMessage({required SalamaWarningRequest params});
   Future<String> getWarningWorkFlowMessage(
       {required SalamaWarningRequest params});
+
+  Future<CitizenInfoModel> getCizenInfo({required CitizenInfoParams params});
+
+  Future<CommercialRequestDetailsResponse> getRequestDetails(
+      {required int params});
 }
 
 class CrRemoteDataSourceImpl extends CrRemoteDataSource {
@@ -174,18 +185,21 @@ class CrRemoteDataSourceImpl extends CrRemoteDataSource {
           options: Options(
             headers: {"sid": ""},
           ));
+      print("FHH");
 
       final decodedResponse =
           ResponseBodyModel<bool>.fromMap(response.data, parsedResult: true);
 
       return decodedResponse.data!.result!.toFuture();
     } on DioError catch (error) {
+      print(error);
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
         dioError: error,
       );
     } catch (ex) {
+      print(ex);
       if (ex is ServerException)
         throw ex;
       else {
@@ -351,8 +365,11 @@ class CrRemoteDataSourceImpl extends CrRemoteDataSource {
     var response;
 
     try {
-      response = await webService.dio
-          .post(ApiUrl.saveComSubmitterAndOwner, data: params?.toMap());
+      response = await webService.dio.post(ApiUrl.saveComSubmitterAndOwner,
+          data: params?.toMap(),
+          queryParameters: params?.requestId != null
+              ? {"requestId": params!.requestId!}
+              : null);
 
       var data = response.data["data"]?["result"];
 
@@ -2036,7 +2053,8 @@ class CrRemoteDataSourceImpl extends CrRemoteDataSource {
   }
 
   @override
-  Future<bool> validateSalamaBill({required VerifySalamaRequest params}) async {
+  Future<dynamic> validateSalamaBill(
+      {required VerifySalamaRequest params}) async {
     var response;
 
     try {
@@ -2047,14 +2065,14 @@ class CrRemoteDataSourceImpl extends CrRemoteDataSource {
       var data = response.data["data"]["result"];
 
       final decodedResponse =
-          ResponseBodyModel<bool>.fromMap(response.data, parsedResult: data);
+          ResponseBodyModel<dynamic>.fromMap(response.data, parsedResult: data);
 
-      return decodedResponse.data!.result!.toFuture();
+      return decodedResponse.data!.result!;
     } on DioError catch (error) {
       print(error);
       var errorCode;
       try {
-        final decodedResponse = ResponseBodyModel<bool>.fromMap(
+        final decodedResponse = ResponseBodyModel<dynamic>.fromMap(
           error.response?.data,
         );
         errorCode = decodedResponse.data?.responseCode;
@@ -2084,7 +2102,7 @@ class CrRemoteDataSourceImpl extends CrRemoteDataSource {
   }
 
   @override
-  Future<bool> validateSalamaPermit(
+  Future<dynamic> validateSalamaPermit(
       {required VerifySalamaRequest params}) async {
     var response;
 
@@ -2098,14 +2116,14 @@ class CrRemoteDataSourceImpl extends CrRemoteDataSource {
       var data = response.data["data"]["result"];
 
       final decodedResponse =
-          ResponseBodyModel<bool>.fromMap(response.data, parsedResult: data);
+          ResponseBodyModel<dynamic>.fromMap(response.data, parsedResult: data);
 
-      return decodedResponse.data!.result!.toFuture();
+      return decodedResponse.data!.result!;
     } on DioError catch (error) {
       print(error);
       var errorCode;
       try {
-        final decodedResponse = ResponseBodyModel<bool>.fromMap(
+        final decodedResponse = ResponseBodyModel<dynamic>.fromMap(
           error.response?.data,
         );
         errorCode = decodedResponse.data?.responseCode;
@@ -2135,7 +2153,7 @@ class CrRemoteDataSourceImpl extends CrRemoteDataSource {
   }
 
   @override
-  Future<bool> validateSalamaReport(
+  Future<dynamic> validateSalamaReport(
       {required VerifySalamaRequest params}) async {
     var response;
 
@@ -2147,14 +2165,14 @@ class CrRemoteDataSourceImpl extends CrRemoteDataSource {
       var data = response.data["data"]["result"];
 
       final decodedResponse =
-          ResponseBodyModel<bool>.fromMap(response.data, parsedResult: data);
+          ResponseBodyModel<dynamic>.fromMap(response.data, parsedResult: data);
 
-      return decodedResponse.data!.result!.toFuture();
+      return decodedResponse.data!.result!;
     } on DioError catch (error) {
       print(error);
       var errorCode;
       try {
-        final decodedResponse = ResponseBodyModel<bool>.fromMap(
+        final decodedResponse = ResponseBodyModel<dynamic>.fromMap(
           error.response?.data,
         );
         errorCode = decodedResponse.data?.responseCode;
@@ -2193,7 +2211,7 @@ class CrRemoteDataSourceImpl extends CrRemoteDataSource {
           .post(ApiUrl.salamaWarningMessage, data: params.toJson());
 
       var data = response.data["data"]["result"] != null
-          ? response.data["data"]["result"]["message"]
+          ? (response.data["data"]["result"]?["message"] ?? "")
           : "";
 
       final decodedResponse =
@@ -2255,6 +2273,164 @@ class CrRemoteDataSourceImpl extends CrRemoteDataSource {
       var errorCode;
       try {
         final decodedResponse = ResponseBodyModel<bool>.fromMap(
+          error.response?.data,
+        );
+        errorCode = decodedResponse.data?.responseCode;
+      } catch (ex) {}
+
+      throw ServerException(
+        error.toString(),
+        errorCode: errorCode,
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
+    } catch (ex) {
+      print(ex);
+      if (ex is ServerException)
+        throw ex;
+      else {
+        try {
+          //MM    CommonFunctions.sendExceptionLog(exception: ex, response: response);
+        } catch (ex) {}
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
+      }
+    }
+  }
+
+  @override
+  Future<BoardContractResponse> getBoardContracts({required int params}) async {
+    var response;
+
+    try {
+      response = await webService.dio.get(
+        ApiUrl.boardContracts(params),
+      );
+
+      var data = response.data["data"];
+
+      var parsedResult =
+          data != null ? BoardContractResponse.fromJson(data) : null;
+
+      final decodedResponse = ResponseBodyModel<BoardContractResponse>.fromMap(
+          response.data,
+          parsedResult: parsedResult);
+
+      return decodedResponse.data!.result!.toFuture();
+    } on DioError catch (error) {
+      print(error);
+      var errorCode;
+      try {
+        final decodedResponse =
+            ResponseBodyModel<BoardContractResponse>.fromMap(
+          error.response?.data,
+        );
+        errorCode = decodedResponse.data?.responseCode;
+      } catch (ex) {}
+
+      throw ServerException(
+        error.toString(),
+        errorCode: errorCode,
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
+    } catch (ex) {
+      print(ex);
+      if (ex is ServerException)
+        throw ex;
+      else {
+        try {
+          //MM    CommonFunctions.sendExceptionLog(exception: ex, response: response);
+        } catch (ex) {}
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
+      }
+    }
+  }
+
+  @override
+  Future<CitizenInfoModel> getCizenInfo(
+      {required CitizenInfoParams params}) async {
+    var response;
+
+    try {
+      response = await webService.dio
+          .get(ApiUrl.crCitizenInfo, queryParameters: params.toMap());
+
+      var data = response.data["data"]["result"];
+
+      var parsedResult = data != null ? CitizenInfoModel.fromJson(data) : null;
+
+      final decodedResponse = ResponseBodyModel<CitizenInfoModel>.fromMap(
+          response.data,
+          parsedResult: parsedResult);
+
+      return decodedResponse.data!.result!.toFuture();
+    } on DioError catch (error) {
+      print(error);
+      var errorCode;
+      try {
+        final decodedResponse = ResponseBodyModel<CitizenInfoModel>.fromMap(
+          error.response?.data,
+        );
+        errorCode = decodedResponse.data?.responseCode;
+      } catch (ex) {}
+
+      throw ServerException(
+        error.toString(),
+        errorCode: errorCode,
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
+    } catch (ex) {
+      print(ex);
+      if (ex is ServerException)
+        throw ex;
+      else {
+        try {
+          //MM    CommonFunctions.sendExceptionLog(exception: ex, response: response);
+        } catch (ex) {}
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: ex.toString(),
+            ),
+            response: response);
+      }
+    }
+  }
+
+  @override
+  Future<CommercialRequestDetailsResponse> getRequestDetails(
+      {required int params}) async {
+    var response;
+
+    try {
+      response =
+          await webService.dio.get(ApiUrl.requestDetailsCommercial(params));
+
+      var data = response.data["data"]["result"];
+
+      var parsedResult =
+          data != null ? CommercialRequestDetailsResponse.fromJson(data) : null;
+
+      final decodedResponse =
+          ResponseBodyModel<CommercialRequestDetailsResponse>.fromMap(
+              response.data,
+              parsedResult: parsedResult);
+
+      return decodedResponse.data!.result!.toFuture();
+    } on DioError catch (error) {
+      print(error);
+      var errorCode;
+      try {
+        final decodedResponse =
+            ResponseBodyModel<CommercialRequestDetailsResponse>.fromMap(
           error.response?.data,
         );
         errorCode = decodedResponse.data?.responseCode;

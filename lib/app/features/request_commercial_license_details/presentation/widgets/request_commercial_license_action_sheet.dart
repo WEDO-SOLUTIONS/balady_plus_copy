@@ -47,22 +47,40 @@ class RequestCommercialLicenseActionSheet extends StatelessWidget {
                                       case "cancel":
                                         break;
                                       case "edit":
-                                        try{
-                                          Navigator.of(context).popAndPushNamed(
-                                            RouteName.commercialLicenseCancel,
-                                            arguments: CommercialLicenseCancelBloc(
-                                              webService: sl(),
-                                              from: "request",
-                                              // cancellationRequestResponse: cancellationRequest,
-                                              crNumber: CommonProperties.selectedDelegator!.crNumber!,
-                                              crType: CommonProperties.selectedDelegator!.crType,
-                                              reasonCancel: provider.reasonCancel,
-                                              requestId: provider.requestId,
-                                              availableCloseDate: provider.availableCloseDate,
-                                            ),
-                                          );
-                                        } catch (e) {
-                                          print(e);
+                                        print(provider.requestTypeId);
+                                        if (provider.requestTypeId == 1005) {
+                                          Navigator.of(context).pushNamed(
+                                              RouteName
+                                                  .renewCommercialLicenseSubmitForm,
+                                              arguments: provider.requestId);
+                                        } else if (provider.requestTypeId ==
+                                            1004) {
+                                          Navigator.of(context).pushNamed(
+                                              RouteName.commercialLicensePage,
+                                              arguments: provider.requestId);
+                                        } else {
+                                          try {
+                                            Navigator.of(context)
+                                                .popAndPushNamed(
+                                              RouteName.commercialLicenseCancel,
+                                              arguments:
+                                                  CommercialLicenseCancelBloc(
+                                                webService: sl(),
+                                                from: "request",
+                                                // cancellationRequestResponse: cancellationRequest,
+                                                crNumber: CommonProperties
+                                                    .selectedDelegator!
+                                                    .crNumber!,
+                                                crType: CommonProperties
+                                                    .selectedDelegator!.crType,
+                                                reasonCancel:
+                                                    provider.reasonCancel,
+                                                requestId: provider.requestId,
+                                                availableCloseDate:
+                                                    provider.availableCloseDate,
+                                              ),
+                                            );
+                                          } catch (e) {}
                                         }
                                         break;
                                     }
@@ -72,7 +90,9 @@ class RequestCommercialLicenseActionSheet extends StatelessWidget {
                                     child: Row(
                                       children: [
                                         SvgPicture.asset(
-                                         action.id == 'cancel' ? IconPath.cancelOrder : IconPath.editIcon,
+                                          action.id == 'cancel'
+                                              ? IconPath.cancelOrder
+                                              : IconPath.editIcon,
                                           width: 30,
                                           height: 30,
                                         ),

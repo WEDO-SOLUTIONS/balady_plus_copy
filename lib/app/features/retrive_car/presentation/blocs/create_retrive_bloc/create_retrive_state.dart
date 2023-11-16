@@ -59,7 +59,6 @@ class CreateRetriveCarState extends Equatable {
           isValid &&
           date != null) return true;
     }
-    //  print("agreeement $currentPageValue");
     // return true;
     /* if (currentPageValue == 0)
       return gisResponse != null && location != null;

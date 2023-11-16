@@ -4,6 +4,9 @@ import '../../../_shared_feature_/shared_feature_exports.dart';
 import '../../commercial_license_exports.dart';
 import '../../data/models/additional_activity_details_response.dart';
 import '../../data/models/additional_activity_response.dart';
+import '../../data/models/board_contract_response.dart';
+import '../../data/models/citizen_info_model.dart';
+import '../../data/models/commercial_request_details_response.dart';
 import '../../data/models/cr_attachment_response_model.dart';
 import '../../data/models/qr/apply_commercial_response_model.dart';
 import '../../data/models/qr/qr_details_model.dart';
@@ -13,6 +16,7 @@ import '../../data/models/qr/save_enterprise_data_request.dart';
 import '../../data/models/salama_warning_request.dart';
 import '../../data/models/save_com_submitter_and_owner_request_model.dart';
 import '../entities/addetional_activity_details_request.dart';
+import '../entities/citizen_info_params.dart';
 import '../entities/cr_attachment_response.dart';
 import '../entities/cr_submit_request.dart';
 import '../entities/save_shop_details_request.dart';
@@ -121,11 +125,11 @@ abstract class CrRepository {
 
   Future<Either<Failure, QrLookUpResponse>> getMalls({required String params});
 
-  Future<Either<Failure, bool>> validateSalamaReport(
+  Future<Either<Failure, dynamic>> validateSalamaReport(
       {required VerifySalamaRequest params});
-  Future<Either<Failure, bool>> validateSalamaBill(
+  Future<Either<Failure, dynamic>> validateSalamaBill(
       {required VerifySalamaRequest params});
-  Future<Either<Failure, bool>> validateSalamaPermit(
+  Future<Either<Failure, dynamic>> validateSalamaPermit(
       {required VerifySalamaRequest params});
 
   Future<Either<Failure, String>> getWarningMessage(
@@ -133,4 +137,12 @@ abstract class CrRepository {
 
   Future<Either<Failure, String>> getWarningWorkFlowMessage(
       {required SalamaWarningRequest params});
+
+  Future<Either<Failure, BoardContractResponse>> getBoardContracts(
+      {required int params});
+
+  Future<Either<Failure, CitizenInfoModel>> getCizenInfo(
+      {required CitizenInfoParams params});
+  Future<Either<Failure, CommercialRequestDetailsResponse>> getRequestDetails(
+      {required int params});
 }

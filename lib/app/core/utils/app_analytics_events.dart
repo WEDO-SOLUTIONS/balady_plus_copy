@@ -133,4 +133,12 @@ class AppEvents {
 
   static const String cancelCommercialLicenseSuccess =
       "Super_App_Success_Cancel_Commercial_License";
+
+
+
+       static const String renewCommercialLicenseOpen =
+      "Super_App_Open_Renew_Commercial_License";
+
+  static const String renewCommercialLicenseSuccess =
+      "Super_App_Success_Renew_Commercial_License";
 }

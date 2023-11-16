@@ -72,7 +72,6 @@ class LayersRepositories {
         );
       } catch (ex) {}
       try {} catch (ex) {}
-      print(e);
     }
     return null;
   }
@@ -94,9 +93,7 @@ class LayersRepositories {
         return subLayersFromJson(layersType.data['data']['result']
             ['drawingInfo']['renderer']['uniqueValueInfos']);
       }
-    } catch (e) {
-      print(e);
-    }
+    } catch (e) {}
     return null;
   }
 
@@ -110,7 +107,6 @@ class LayersRepositories {
       });
       q = q.substring(0, q.length - 1);
 
-      print(q);
       points = await webService.dio.get(
         '${Constants.mainUrl}/${params.layer.layerId}/query',
         queryParameters: params.toMap(),
@@ -194,7 +190,6 @@ class LayersRepositories {
         );
       } catch (ex) {}
       try {} catch (ex) {}
-      print(e);
     }
     return null;
   }
@@ -238,9 +233,7 @@ class LayersRepositories {
             points.data['data']['result']['features'],
           );
       }
-    } catch (e) {
-      print(e);
-    }
+    } catch (e) {}
     return null;
   }
 
@@ -260,16 +253,12 @@ class LayersRepositories {
               "Bearer ${sl<EntryPointCubit>().state.apigeeToken?.accessToken}",
         }),
       );
-      print(response.data);
 
       InvestmentDetailsResponse? investmentDetailsResponse =
           InvestmentDetailsResponse.fromJson(response.data);
 
-      print(investmentDetailsResponse);
       return investmentDetailsResponse;
-    } catch (ex) {
-      print(ex);
-    }
+    } catch (ex) {}
   }
 
   Future<RentalDetailsResponse?> getTempRentalDetails(
@@ -288,15 +277,11 @@ class LayersRepositories {
               "Bearer ${sl<EntryPointCubit>().state.apigeeToken?.accessToken}",
         }),
       );
-      print(response.data);
 
       RentalDetailsResponse? investmentDetailsResponse =
           RentalDetailsResponse.fromJson(response.data);
 
-      print(investmentDetailsResponse);
       return investmentDetailsResponse;
-    } catch (ex) {
-      print(ex);
-    }
+    } catch (ex) {}
   }
 }

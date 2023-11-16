@@ -21,14 +21,13 @@ class ServiceCalculatorPresenter extends IServviceCalculatorPresenter {
   void getServicesListlookup() {
     // Here I load the data to the view who implements the contract.
     // You Must Explicitly call this function from the view to load data.
-    print("here");
+
     print(getView());
     if (isViewAttached) getView()?.showLoading();
     this._serviceCalculatorRepository.getServicesListlookup().then((value) {
-      print("HHHHH");
       if (isViewAttached) {
         getView()?.hideLoading();
-        print(value);
+
         if (value != null) {
           getView()?.getServicesListlookupSuccess(value);
         } else {
@@ -38,7 +37,6 @@ class ServiceCalculatorPresenter extends IServviceCalculatorPresenter {
         }
       }
     }).catchError((error) {
-      print(error);
       String msg = Helpers.translatingWord("server_error_1");
       if (error is APIException) {
         msg = Helpers.translatingWord("errors_server_error_2");
@@ -54,13 +52,11 @@ class ServiceCalculatorPresenter extends IServviceCalculatorPresenter {
 
   @override
   void getProceduresListlookup(int serviceId) {
-    print("getProceduresListlookup");
     if (isViewAttached) getView()?.showLoading();
     this
         ._serviceCalculatorRepository
         .getProceduresListlookup(serviceId)
         .then((value) {
-      print("jjjjj");
       if (isViewAttached) {
         getView()?.hideLoading();
         if (value != null) {
@@ -72,8 +68,6 @@ class ServiceCalculatorPresenter extends IServviceCalculatorPresenter {
         }
       }
     }).catchError((error) {
-      print("ERRRRRY");
-      print(error);
       String msg = Helpers.translatingWord("server_error_1");
 
       if (error is APIException) {
@@ -145,7 +139,6 @@ class ServiceCalculatorPresenter extends IServviceCalculatorPresenter {
         }
       }
     }).catchError((error) {
-      print(error);
       String msg = Helpers.translatingWord("server_error_1");
 
       if (error is APIException) {
@@ -273,8 +266,6 @@ class ServiceCalculatorPresenter extends IServviceCalculatorPresenter {
         }
       }
     }).catchError((error) {
-      print(error);
-      print("SErvciiies errros");
       String msg = Helpers.translatingWord("server_error_1");
 
       if (error is APIException) {
@@ -359,7 +350,6 @@ class ServiceCalculatorPresenter extends IServviceCalculatorPresenter {
 
   @override
   void calculateV03(CalculateCostV03 request) {
-    print("calculateV03");
     // Here I load the data to the view who implements the contract.
     // You Must Explicitly call this function from the view to load data.
     if (isViewAttached) getView()?.showLoading();
@@ -381,7 +371,6 @@ class ServiceCalculatorPresenter extends IServviceCalculatorPresenter {
         }
       }
     }).catchError((error) {
-      print(error);
       String msg = Helpers.translatingWord("server_error_1");
 
       if (error is APIException) {
@@ -400,16 +389,13 @@ class ServiceCalculatorPresenter extends IServviceCalculatorPresenter {
   void calculateCost(CalculateCost request) {
     // Here I load the data to the view who implements the contract.
     // You Must Explicitly call this function from the view to load data.
-    print("calculateCost");
-    print(request);
+
     if (isViewAttached) getView()?.showLoading();
     this._serviceCalculatorRepository.calculteCost(request).then((value) {
       if (isViewAttached) {
         getView()?.hideLoading();
-        // print(value);
-        // print(value.errorDetails);
+
         if (value.statusCode == 200 && value != null) {
-          print("calculateCostSuccess");
           getView()?.calculateCostSuccess(value);
         } else {
           String error = " ";
@@ -423,7 +409,6 @@ class ServiceCalculatorPresenter extends IServviceCalculatorPresenter {
         }
       }
     }).catchError((error) {
-      print(error);
       String msg = Helpers.translatingWord("server_error_1");
 
       if (error is APIException) {

@@ -71,7 +71,6 @@ class CreateRetriveCarBloc
 
   Future<void> _deleteFileEventHandler(
       DeleteFileEvent e, Emitter emitter) async {
-    print("HERREE");
     emitter(state.copyWith(clearFile: true));
   }
 
@@ -151,7 +150,6 @@ class CreateRetriveCarBloc
         errorMessage: serverFailure.errorMessage,
       ));
     }, (success) {
-      print(success);
       bool Function(Route<dynamic>) predicate =
           ModalRoute.withName(RouteName.bottomNavigation);
 
@@ -213,8 +211,6 @@ class CreateRetriveCarBloc
 
   Future<void> _goToNextPageHandler(
       GoToNextPageEvent e, Emitter emitter) async {
-    //print("next page");
-    print("DataLog ${state}");
     if (isLastPage()) {
     } else {
       if (state.status == BlocStatus.performing) return;

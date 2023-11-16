@@ -15,7 +15,6 @@ class cameraViewWidgetNew extends StatefulWidget {
 class _cameraViewWidgetState extends State<cameraViewWidgetNew> {
   @override
   void initState() {
-    // print("init didChangeAppLifecycleState");
     super.initState();
   }
 

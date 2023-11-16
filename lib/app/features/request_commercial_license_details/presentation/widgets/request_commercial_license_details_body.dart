@@ -76,8 +76,9 @@ class _RequestCommercialLicenseDetailsBodyState
                     const SizedBox(width: 4),
                     CustomTextWidget(
                       requestCommercialLicenseDetails.licenseInfo.issueDate ??
-                          requestCommercialLicenseDetails.lastUpdateDate
-                              .toWrittenDate(),
+                          (requestCommercialLicenseDetails.lastUpdateDate
+                                  ?.toWrittenDate() ??
+                              ""),
                       textStyle: AppStyle.dateTextStyle,
                     ),
                     const Spacer(),
@@ -128,7 +129,8 @@ class _RequestCommercialLicenseDetailsBodyState
                     CardParameter(
                       title: 'objection_last_update'.tr(),
                       value: requestCommercialLicenseDetails.lastUpdateDate
-                          .toWrittenDate(),
+                              ?.toWrittenDate() ??
+                          "",
                     ),
 
                     requestCommercialLicenseDetails.cancellationReasonName !=
@@ -151,7 +153,9 @@ class _RequestCommercialLicenseDetailsBodyState
                                           .attachmentsInfo![index].attachUrl !=
                                       null
                                   ? AttachmentShowWidget(
-                                      fileName: '',
+                                      fileName: requestCommercialLicenseDetails
+                                              .attachmentsInfo![index].name ??
+                                          '',
                                       name: requestCommercialLicenseDetails
                                               .attachmentsInfo![index].name ??
                                           '',
@@ -187,7 +191,8 @@ class _RequestCommercialLicenseDetailsBodyState
                                 child: Padding(
                                   padding: const EdgeInsets.all(12.0),
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Row(
                                         children: [
@@ -200,7 +205,8 @@ class _RequestCommercialLicenseDetailsBodyState
                                           ),
                                           const Spacer(),
                                           CustomTextWidget(
-                                            requestNotesInfo.date.toWrittenDate(),
+                                            requestNotesInfo.date
+                                                .toWrittenDate(),
                                             fontSize: 12,
                                             fontColor:
                                                 AppColor.blackModern500Light,
@@ -213,6 +219,7 @@ class _RequestCommercialLicenseDetailsBodyState
                                       CustomTextWidget(
                                         requestNotesInfo.note,
                                         fontSize: 12,
+                                        maxLines: 100,
                                         fontColor: AppColor.blackModern600Light,
                                         fontWeight: AppFontWeight.regular,
                                       ),

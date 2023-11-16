@@ -136,7 +136,7 @@ class CreateDCBloc extends Bloc<CreateDCEvent, CreateDCState> {
   Future<void> _changeAgreementHandler(
       ChangeAgreementEvent e, Emitter emitter) async {
     hideKeyboard();
-    print(e.isagree);
+
     emitter(state.copyWith(
       agreement: e.isagree,
     ));
@@ -250,8 +250,6 @@ class CreateDCBloc extends Bloc<CreateDCEvent, CreateDCState> {
         ));
       }
     }, (success) {
-      print(success);
-
       bool Function(Route<dynamic>) predicate =
           ModalRoute.withName(RouteName.bottomNavigation);
       NavigationService.navigatorKey.currentState!.pushNamedAndRemoveUntil(
@@ -298,8 +296,6 @@ class CreateDCBloc extends Bloc<CreateDCEvent, CreateDCState> {
 
   Future<void> _goToNextPageHandler(
       GoToNextPageEvent e, Emitter emitter) async {
-    //print("next page");
-    print("DataLog ${state}");
     if (isLastPage()) {
     } else {
       if (state.status == BlocStatus.performing) return;
@@ -368,7 +364,6 @@ class CreateDCBloc extends Bloc<CreateDCEvent, CreateDCState> {
                 gisResponse: state.gisResponse,
                 currentUserLocation: currentLocation))
         .then((value) {
-      print(value);
       if (value != null) {
         MapScreenParams? params = value as MapScreenParams;
         emitter(state.copyWith(

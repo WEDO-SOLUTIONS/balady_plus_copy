@@ -196,9 +196,11 @@ class CRStep5AttachmentCubit extends Cubit<CRStep5AttachmentState> {
       // Go To QR Flow , if validate Approvals = true;
       if (success == true) {
         sl<CommercialLicenseBloc>().add((const GoToNextPageEvent()));
-      } else if (success == false) {
-        sl<CommercialLicenseBloc>().goToCalucaltePage();
       }
+
+      /*else if (success == false) {
+        sl<CommercialLicenseBloc>().goToCalucaltePage();
+      }*/
 
       // Go To Calculate Flow if validate Approvals = false
     });

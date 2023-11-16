@@ -44,8 +44,6 @@ class AlertsModel extends Alerts {
       "instruction": ""
     };
 
-    print(jsonData.isEmpty);
-
     return AlertsModel(
       alert: jsonData.isEmpty
           ? []

@@ -1,5 +1,8 @@
 import 'package:balady_plus/app/features/commercial_license/data/models/additional_activity_details_response.dart';
 import 'package:balady_plus/app/features/commercial_license/data/models/additional_activity_response.dart';
+import 'package:balady_plus/app/features/commercial_license/data/models/board_contract_response.dart';
+import 'package:balady_plus/app/features/commercial_license/data/models/citizen_info_model.dart';
+import 'package:balady_plus/app/features/commercial_license/data/models/commercial_request_details_response.dart';
 import 'package:balady_plus/app/features/commercial_license/data/models/qr/apply_commercial_response_model.dart';
 import 'package:balady_plus/app/features/commercial_license/data/models/qr/qr_details_model.dart';
 import 'package:balady_plus/app/features/commercial_license/data/models/qr/qr_lookup.dart';
@@ -8,6 +11,7 @@ import 'package:balady_plus/app/features/commercial_license/data/models/qr/save_
 import 'package:balady_plus/app/features/commercial_license/data/models/salama_warning_request.dart';
 import 'package:balady_plus/app/features/commercial_license/data/models/save_com_submitter_and_owner_request_model.dart';
 import 'package:balady_plus/app/features/commercial_license/domain/entities/addetional_activity_details_request.dart';
+import 'package:balady_plus/app/features/commercial_license/domain/entities/citizen_info_params.dart';
 import 'package:balady_plus/app/features/commercial_license/domain/entities/cr_attachment_response.dart';
 import 'package:balady_plus/app/features/commercial_license/domain/entities/cr_submit_request.dart';
 import 'package:balady_plus/app/features/commercial_license/domain/entities/save_shop_details_request.dart';
@@ -489,7 +493,7 @@ class CrRepositoryImpl implements CrRepository {
   }
 
   @override
-  Future<Either<Failure, bool>> validateSalamaBill(
+  Future<Either<Failure, dynamic>> validateSalamaBill(
       {required VerifySalamaRequest params}) async {
     try {
       final data = await remoteDataSource.validateSalamaBill(params: params!);
@@ -501,7 +505,7 @@ class CrRepositoryImpl implements CrRepository {
   }
 
   @override
-  Future<Either<Failure, bool>> validateSalamaPermit(
+  Future<Either<Failure, dynamic>> validateSalamaPermit(
       {required VerifySalamaRequest params}) async {
     try {
       final data = await remoteDataSource.validateSalamaPermit(params: params!);
@@ -513,7 +517,7 @@ class CrRepositoryImpl implements CrRepository {
   }
 
   @override
-  Future<Either<Failure, bool>> validateSalamaReport(
+  Future<Either<Failure, dynamic>> validateSalamaReport(
       {required VerifySalamaRequest params}) async {
     try {
       final data = await remoteDataSource.validateSalamaReport(params: params!);
@@ -542,6 +546,42 @@ class CrRepositoryImpl implements CrRepository {
     try {
       final data =
           await remoteDataSource.getWarningWorkFlowMessage(params: params);
+      return Right(data);
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage,
+          statusCode: error.statusCode, errorCode: error.errorCode));
+    }
+  }
+
+  @override
+  Future<Either<Failure, BoardContractResponse>> getBoardContracts(
+      {required int params}) async {
+    try {
+      final data = await remoteDataSource.getBoardContracts(params: params);
+      return Right(data);
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage,
+          statusCode: error.statusCode, errorCode: error.errorCode));
+    }
+  }
+
+  @override
+  Future<Either<Failure, CitizenInfoModel>> getCizenInfo(
+      {required CitizenInfoParams params}) async {
+    try {
+      final data = await remoteDataSource.getCizenInfo(params: params);
+      return Right(data);
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage,
+          statusCode: error.statusCode, errorCode: error.errorCode));
+    }
+  }
+
+  @override
+  Future<Either<Failure, CommercialRequestDetailsResponse>> getRequestDetails(
+      {required int params}) async {
+    try {
+      final data = await remoteDataSource.getRequestDetails(params: params);
       return Right(data);
     } on ServerException catch (error) {
       return Left(ServerFailure(error.errorMessage,

@@ -19,6 +19,7 @@ class NewTermsHealthLicenseViewModel extends BaseViewModel {
       [];
 
   List<String> getTerms() {
+    return dataModel.terms ?? [];
     List<String> combinedterms = [];
     String areaNoLicencePermit = dataModel.validateHealthCertificateResponse
             ?.data?.result?.notPermitLiceTerm ??
