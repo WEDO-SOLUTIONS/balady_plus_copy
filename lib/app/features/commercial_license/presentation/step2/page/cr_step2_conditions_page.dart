@@ -5,10 +5,13 @@ import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/c
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
+import '../../../../../core/utils/common_functions.dart';
 import '../../../../../core/utils/constants/app_style.dart';
+import '../../../../../core/utils/constants/constants.dart';
 import '../../../../../core/utils/constants/paths/icon_paths.dart';
 import '../../../../_shared_feature_/presentation/components/bottom_sheets/bottom_sheet_with_actions.dart';
 import '../../../../_shared_feature_/presentation/widgets/draw_line_widget.dart';
@@ -143,11 +146,19 @@ class ConditionItem extends StatelessWidget {
           if (name != null && name!.isNotEmpty)
             const CustomVerticalSpace(height: 4),
           if ((values?.length ?? 0) <= 1)
-            CustomTextWidget(
-              values?.firstOrNull ?? "",
-              fontColor: AppColor.blackModern700Light,
-              fontSize: 14,
-              fontWeight: AppFontWeight.bold,
+            Html(
+              data: values?.firstOrNull ?? "",
+              style: {
+                "body": Style(
+                    fontSize: FontSize(14.0),
+                    fontWeight: FontWeight.bold,
+                    color: AppColor.blackModern700Light,
+                    // lineHeight: const LineHeight(2),
+                    fontFamily: Constants.appFontType),
+              },
+              onLinkTap: (url, attributes, element) {
+                CommonFunctions.openBaladyWebView(url);
+              },
             ),
           if ((values?.length ?? 0) > 1)
             ListView.builder(
@@ -162,13 +173,19 @@ class ConditionItem extends StatelessWidget {
                           SvgPicture.asset(IconPath.checked),
                           const CustomHorizontalSpace(width: 4),
                           Flexible(
-                            child: CustomTextWidget(
-                              values?[index] ?? "",
-                              fontColor: AppColor.blackModern700Light,
-                              fontSize: 14,
-                              maxLines: 200,
-                              height: 1.4,
-                              fontWeight: AppFontWeight.bold,
+                            child: Html(
+                              data: values?[index] ?? "",
+                              style: {
+                                "body": Style(
+                                    fontSize: FontSize(14.0),
+                                    fontWeight: FontWeight.bold,
+                                    color: AppColor.blackModern700Light,
+                                    //   lineHeight: const LineHeight(2),
+                                    fontFamily: Constants.appFontType),
+                              },
+                              onLinkTap: (url, attributes, element) {
+                                CommonFunctions.openBaladyWebView(url);
+                              },
                             ),
                           ),
                         ],

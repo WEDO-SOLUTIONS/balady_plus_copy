@@ -195,7 +195,7 @@ class RenewCommercialLicenseState extends Equatable {
       List<AttachmentData>? attachments,
       final RenewRequestDetails? renewRequestDetails,
       final DeedInfoRequest? deedInfoRequst,
-      final bool? salamaExists}) {
+      final Nullable<bool?>? salamaExists}) {
     return RenewCommercialLicenseState(
         status: status ?? this.status,
         calculateInfoRequestStatus:
@@ -274,7 +274,8 @@ class RenewCommercialLicenseState extends Equatable {
         deedVerified:
             deedVerified == null ? this.deedVerified : deedVerified.value,
         deedInfoRequst: deedInfoRequst ?? this.deedInfoRequst,
-        salamaExists: salamaExists ?? this.salamaExists);
+        salamaExists:
+            salamaExists == null ? this.salamaExists : salamaExists.value);
   }
 
   bool showSalamaReport() {
@@ -300,6 +301,15 @@ class RenewCommercialLicenseState extends Equatable {
             false) &&
         (info?.salamaResponseDto?.salamaPermitOptions?.contains("SERVICE") ??
             false)) return true;
+
+    return false;
+  }
+
+  bool isOnlyPermit() {
+    if (info?.salamaResponseDto?.allowedDocuments?.contains("PERMIT") == true &&
+        info?.salamaResponseDto?.allowedDocuments?.length == 1) {
+      return true;
+    }
 
     return false;
   }

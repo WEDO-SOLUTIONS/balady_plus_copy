@@ -110,7 +110,8 @@ class RenewCommercialLicenseBloc
   Future<void> _getRenewYearsHandler(
       GetRenewYearsEvent e, Emitter emitter) async {
     emitter(state.copyWith(
-        renewYearsStatus: BlocRequestStatus.submissionGetLoading));
+        renewYearsStatus: BlocRequestStatus.submissionGetLoading,
+        errorMessage: ""));
     final failOrSuccess = await _getRenewYears(state.requestId!);
 
     failOrSuccess.fold((l) {
@@ -127,6 +128,7 @@ class RenewCommercialLicenseBloc
   Future<void> _getRequestInfoHandler(
       GetRequestInfoEvent e, Emitter emitter) async {
     emitter(state.copyWith(
+        errorMessage: "",
         calculateInfoRequestStatus: BlocStatus.loading,
         licensePeriod: int.tryParse(e.year ?? "")));
     final failOrSuccess = await _calculateRequestInfo(RenewInfoRequest(
@@ -230,7 +232,7 @@ class RenewCommercialLicenseBloc
 
   void updateSalamaExists(bool? value) {
     emit(state.copyWith(
-        salamaExists: value,
+        salamaExists: Nullable(value),
         salamaReportNumber: Nullable(null),
         salamaPermitNumber: Nullable(null),
         salamaBillNumber: Nullable(null),
@@ -400,7 +402,8 @@ class RenewCommercialLicenseBloc
         sadadPeriod: state.licensePeriod,
         salamaBillNumber: state.salamaBillNumber,
         salamaPermitNumber: state.salamaPermitNumber,
-        salamaReportNumber: state.salamaReportNumber));
+        salamaReportNumber: state.salamaReportNumber,
+        salamaPermitExist: state.salamaExists == true || state.isOnlyPermit()));
     response.fold((failure) {
       print(failure);
       emit(
@@ -524,6 +527,10 @@ class RenewCommercialLicenseBloc
       emit(state.copyWith(
           crContractCleanRenewOptions:
               Nullable(CRContractCleanRenewOptions.payAll)));
+
+    emit(state.copyWith(
+      salamaExists: Nullable(null),
+    ));
   }
 
   void setUpDraft() {
