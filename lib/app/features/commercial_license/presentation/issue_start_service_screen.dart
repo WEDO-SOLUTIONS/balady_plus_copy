@@ -9,6 +9,7 @@ import 'package:balady_plus/app/features/services/services_exports.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../core/utils/app_analytics_events.dart';
 import '../../../core/utils/constants/dialog_names.dart';
 import '../../_shared_feature_/presentation/dialogs/need_login_dialog.dart';
 import '../../_shared_feature_/presentation/dialogs/not_authorized_indivivisual.dart';
