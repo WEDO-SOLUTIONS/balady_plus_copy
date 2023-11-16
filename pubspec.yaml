@@ -190,6 +190,7 @@ dependencies:
 
   flutter_html:
   curl_logger_dio_interceptor: ^1.0.0
+  
 
 
 
