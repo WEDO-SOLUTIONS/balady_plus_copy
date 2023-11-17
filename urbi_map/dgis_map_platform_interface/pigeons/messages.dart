@@ -921,6 +921,45 @@ class LogOptionsMessage {
   final String? customSink;
 }
 
+class RouteSearchPointMessage {
+  RouteSearchPointMessage(
+      this.coordinates, this.course, this.objectId, this.levelId);
+  final GeoPointMessage coordinates;
+  final BearingMessage? course;
+  final DgisObjectIdMessage objectId;
+  final LevelIdMessage? levelId;
+}
+
+class LevelIdMessage {
+  LevelIdMessage(this.value);
+  final int value;
+}
+
+class BearingMessage {
+  BearingMessage(this.value);
+  final double value;
+}
+
+class BriefRouteInfoSearchPointsMessage {
+  BriefRouteInfoSearchPointsMessage(this.startPoint, this.finishPoint);
+  final RouteSearchPointMessage startPoint;
+  final RouteSearchPointMessage finishPoint;
+}
+
+class BriefRouteInfoMessage {
+  BriefRouteInfoMessage(this.duration, this.extraInfo);
+  final double duration;
+  final BriefExtraRouteInfoMessage extraInfo;
+}
+
+enum BriefExtraRouteInfoMessage {
+  bicycle,
+  car,
+  pedestrian,
+  publicTransport,
+  scooter,
+}
+
 @ConfigurePigeon(
   PigeonOptions(
     dartOut: 'lib/src/pigeons/messages.g.dart',
@@ -1065,6 +1104,9 @@ abstract class MapApi {
   );
 
   @async
+  MapObjectManagerMessage createMapObjectManager();
+
+  @async
   void removeMapObjectManager(MapObjectManagerMessage id);
 
   @async
@@ -1198,6 +1240,12 @@ abstract class MapApi {
 
   @async
   void setCameraPadding(CameraSetPaddingMessage cameraPadding);
+
+  @async
+  List<BriefRouteInfoMessage?> findBriefRouteInfos(
+      RouteSearchOptionsMessage routeSearchOptions,
+      List<BriefRouteInfoSearchPointsMessage> searchPoints);
+
 }
 
 @FlutterApi()

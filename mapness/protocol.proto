@@ -1,13 +1,13 @@
 syntax = "proto3";
 
-package baladi.protocol;
+package balady.protocol;
 
 option go_package = "./protocol";
 
 // Base classes
 
 message Timestamp {
-  int64 value = 1;
+  int64 value = 1; // millis
 }
 
 enum Env {
@@ -54,6 +54,17 @@ enum EntitySourceType {
   ENTITY_SOURCE_URBI = 1;
 }
 
+enum IWishState {
+  IWISH_STATE_UNKNOWN = 0;
+  IWISH_STATE_PLANNED = 1;
+  IWISH_STATE_COMPLETED = 2;
+}
+
+enum IWishCategory {
+  IWISH_CATEGORY_UNKNOWN = 0;
+  IWISH_CATEGORY_JOY_PARKS = 1;
+}
+
 // Base requests & responses
 
 message ErrorResponse {
@@ -88,43 +99,25 @@ message Story {
     }
 
     message ActionButton {
+      message Link {
+        string url = 1;
+      }
+
       message Style {
         optional Color background_color = 1;
         optional TextStyle text_style = 2;
       }
 
-      message Call {
-        string phone = 1;
-      }
-
-      message ExternalUrl {
-        string url = 1;
-      }
-
-      message OpenCard {
-        string id = 1;
-      }
-
-      message Deeplink {
-        string url = 1;
-      }
-
       string title = 1;
-      oneof action {
-        Call call = 2;
-        ExternalUrl external_url = 3;
-        OpenCard open_card = 4;
-        Deeplink deeplink = 5;
-      }
-      reserved 6 to 50;
-      Style style = 51;
+      Link link = 2;
+      Style style = 3;
     }
 
     Image background = 1;
     optional string title = 2;
     optional string description = 3;
     optional ActionButton action_button = 4;
-    bool is_viewed = 5;
+    bool is_viewed = 5; // deprecated
     int32 duration = 6;
     Style style = 7;
   }
@@ -132,21 +125,7 @@ message Story {
   string id = 1;
   Preview preview = 2;
   repeated Frame frames = 3;
-  bool is_viewed = 4;
-}
-
-message ViewedStoriesRequest {
-  message ViewedStory {
-    message ViewedStoryFrame {
-      int32 index = 1;
-    }
-
-    string id = 1;
-    repeated ViewedStoryFrame frames = 2;
-  }
-
-  reserved 1;
-  repeated ViewedStory stories = 2;
+  bool is_viewed = 4; // deprecated
 }
 
 message StoriesResponse {
@@ -164,6 +143,7 @@ message HappinessRequest {
   Point point = 1;
   bool is_positive = 2;
   repeated Tag tags = 3;
+  optional string text = 4;
 }
 
 // Favourites
@@ -221,4 +201,75 @@ message DeleteFavouriteItemsRequest {
   }
 
   repeated Item items = 1;
+}
+
+// iWish
+
+message IWishObjectMarker {
+  message Location {
+    Point point = 1;
+  }
+
+  string id = 1;
+  IWishCategory category = 2;
+  Location location = 3;
+}
+
+message IWishObject {
+  message Location {
+    Point point = 1;
+  }
+
+  message Variant {
+    message Preview {
+      Image image = 1;
+    }
+
+    int32 id = 1;
+    string title = 2;
+    Preview preview = 3;
+    repeated Photo photos = 4;
+  }
+
+  message Voted {
+    int32 variant_index = 1;
+    bool is_feedback_sent = 2;
+  }
+
+  message Photo {
+      Image image = 1;
+  }
+
+  string id = 1;
+  IWishCategory category = 2;
+  IWishState state = 3;
+  Location location = 4;
+  string title = 5;
+  string subtitle = 6;
+  repeated Photo photos = 7;
+  repeated Variant variants = 8;
+  optional int32 selected_variant_id = 9;
+  bool feedback_sent = 10;
+}
+
+message IWishResponse {
+  repeated IWishObjectMarker markers = 1;
+}
+
+message IWishItemResponse {
+  IWishObject object = 1;
+}
+
+message IWishVoteRequest {
+  int32 variant_id = 1;
+}
+
+message IWishFeedbackRequest {
+  message Tag {
+    string name = 1;
+  }
+
+  int32 rating = 1;
+  repeated Tag tags = 2;
+  optional string text = 3;
 }

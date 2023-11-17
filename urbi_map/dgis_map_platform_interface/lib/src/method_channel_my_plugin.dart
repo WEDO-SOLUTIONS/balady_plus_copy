@@ -490,6 +490,12 @@ class MethodChannelDgisMapPlugin implements DgisMapPlugin, FlutterMapApi {
   }
 
   @override
+  Future<MapObjectManagerMessage> createMapObjectManager() async {
+    final result = await _api.createMapObjectManager();
+    return result;
+  }
+
+  @override
   Future<void> removeMapObjectManager(
     MapObjectManagerMessage manager,
   ) {
@@ -779,5 +785,12 @@ class MethodChannelDgisMapPlugin implements DgisMapPlugin, FlutterMapApi {
 
   Future<void> setPublicTransportActiveRoute(int routeIndex) {
     return _api.setPublicTransportActiveRoute(routeIndex);
+  }
+
+  @override
+  Future<List<BriefRouteInfoMessage?>> findBriefRouteInfos(
+      RouteSearchOptionsMessage routeSearchOptions,
+      List<BriefRouteInfoSearchPointsMessage?> searchPoints) {
+    return _api.findBriefRouteInfos(routeSearchOptions, searchPoints);
   }
 }

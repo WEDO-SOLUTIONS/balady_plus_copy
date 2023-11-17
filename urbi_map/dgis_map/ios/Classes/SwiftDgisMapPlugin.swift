@@ -16,8 +16,8 @@ class DgisPluginApi: NSObject, PluginApi {
                 osLogLevel: .warning,
                 customLogLevel: .warning,
                 customSink: nil
-            ) //,
-            // vendorConfigFile: vendorConfigFile
+            ),
+            vendorConfigFile: vendorConfigFile
         )
     }
 }

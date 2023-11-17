@@ -194,6 +194,8 @@ abstract class DgisMapPlugin extends PlatformInterface {
     ClusteringMapObjectManager manager,
   );
 
+  Future<MapObjectManagerMessage> createMapObjectManager();
+
   Future<void> removeMapObjectManager(MapObjectManagerMessage manager);
 
   Future<void> setMapObjectManagerIsVisible(
@@ -294,4 +296,8 @@ abstract class DgisMapPlugin extends PlatformInterface {
   Future<void> setZoomRestrictions(double? min, double? max);
 
   Future<void> setPublicTransportActiveRoute(int routeIndex);
+
+  Future<List<BriefRouteInfoMessage?>> findBriefRouteInfos(
+      RouteSearchOptionsMessage routeSearchOptions,
+      List<BriefRouteInfoSearchPointsMessage?> searchPoints);
 }

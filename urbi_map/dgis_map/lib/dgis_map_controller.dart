@@ -317,6 +317,10 @@ class DgisMapController {
           ClusteringMapObjectManager manager) =>
       _instance.createMapObjectManagerWithClustering(manager);
 
+  /// Creates [MapObjectManagerMessage] without clustering.
+  Future<MapObjectManagerMessage> createMapObjectManager() =>
+      _instance.createMapObjectManager();
+
   /// Removes [MapObjectManagerMessage].
   Future<void> removeMapObjectManager(MapObjectManagerMessage manager) =>
       _instance.removeMapObjectManager(manager);
@@ -481,6 +485,13 @@ class DgisMapController {
 
   Future<void> setPublicTransportActiveRoute(int routeIndex) {
     return _instance.setPublicTransportActiveRoute(routeIndex);
+  }
+
+  Future<List<BriefRouteInfoMessage?>> findBriefRouteInfos(
+    RouteSearchOptionsMessage options,
+    List<BriefRouteInfoSearchPointsMessage?> searchPoints,
+  ) {
+    return _instance.findBriefRouteInfos(options, searchPoints);
   }
 }
 

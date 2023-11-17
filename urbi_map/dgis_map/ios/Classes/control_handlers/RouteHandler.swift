@@ -10,6 +10,7 @@ class RouteHandler {
     private let routeEditor: RouteEditor
     private let routeEditorSource: RouteEditorSource
     private var publicTransportHandler: PublicTransportHandler?
+    private let trafficRouter: TrafficRouter
     
     private let map: Map
     private let eventChannel: DgisStreamHandler
@@ -45,7 +46,8 @@ class RouteHandler {
             context: context, routeEditor: self.routeEditor
         )
         self.positioningService = positioningService
-        
+        self.trafficRouter = TrafficRouter.init(context: context)
+
         self.publicTransportHandler = PublicTransportHandler(eventChannel: eventChannel, routeHandler: self)
         
         cancelable.append(self.routeEditor.routesInfoChannel.sink { [weak self] info in
@@ -227,5 +229,51 @@ class RouteHandler {
         return routeEditor.routesInfo.routes.filter {
             !$0.route.publicTransportTransfers.isEmpty
         }
+    }
+    
+    
+    func findBriefRouteInfosRouteSearchOptions(
+        _ routeSearchOptions: RouteSearchOptions,
+        searchPoints: [BriefRouteInfoSearchPoints],
+        completion: @escaping ([BriefRouteInfoMessage]?, FlutterError?)->Void)
+    {
+
+        self.cancelable.append(trafficRouter.findBriefRouteInfos(
+            searchPoints: searchPoints,
+            routeSearchOptions: routeSearchOptions
+        )
+        .sink(receiveValue: {
+                [weak self] response in
+                guard let self = self else {
+                    completion(
+                        nil,
+                        FlutterError(
+                            code: "Failed to get route information",
+                            message: nil,
+                            details: nil)
+                    )
+                    return
+                }
+            
+            
+            let briefRouteInfoMessages = response.compactMap{v in
+               let result =  v?.toBriefRouteInfoMessage()
+                return result
+            }
+            
+            completion(briefRouteInfoMessages, nil)
+            
+
+        }, failure: { error in
+                completion(
+                    nil,
+                    FlutterError(
+                        code: "FindBriefRouteInfo error",
+                        message: error.description,
+                        details: nil
+                    )
+                )
+            })
+        )
     }
 }

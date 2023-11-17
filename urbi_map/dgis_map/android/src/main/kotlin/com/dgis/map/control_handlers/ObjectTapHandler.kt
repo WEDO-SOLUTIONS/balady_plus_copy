@@ -277,6 +277,20 @@ class ObjectTapHandler(
         }
     }
 
+    fun createMapObjectManager(result: Result<MapObjectManagerMessage>?) {
+        val managerId = UUID.randomUUID().toString()
+        val managerMessage = MapObjectManagerMessage.Builder()
+                .setId(managerId)
+                .build()
+
+        val manager = MapObjectManager(map = this.map)
+
+        mapObjectsExecutorService.submit {
+            this.managers[managerId] = manager
+            result?.success(managerMessage)
+        }
+    }
+
     fun removeMapObjectManager(message: MapObjectManagerMessage, result: Result<Void>?) {
         mapObjectsExecutorService.submit {
             this.managers.remove(message.id).also {

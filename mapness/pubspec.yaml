@@ -50,6 +50,7 @@ dependencies:
   path_provider: ^2.1.1
   expansion_widget: ^0.0.3
   uuid: ^3.0.7
+  carousel_slider: ^4.2.1
 
 dev_dependencies:
   flutter_test:
@@ -65,11 +66,13 @@ dev_dependencies:
   riverpod_lint: 2.1.1
   # import custom_lint too as riverpod_lint depends on it
   custom_lint: 0.5.3
+  go_router_builder: ^2.3.4
 
 flutter:
   assets:
     - assets/
     - assets/icons/svg/
+    - assets/icons/svg/social/
     - assets/images/
     - assets/images_svg/
   fonts:

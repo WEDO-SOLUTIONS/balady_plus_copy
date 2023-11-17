@@ -1,0 +1,48 @@
+import 'dart:io';
+
+import 'package:dio/dio.dart';
+import 'package:mapness/shared/providers/app_language.dart';
+import 'package:mapness/shared/providers/package_info.dart';
+import 'package:mapness/shared/providers/uuid_provider.dart';
+import 'package:pretty_dio_logger/pretty_dio_logger.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part 'dgis_network.g.dart';
+
+@riverpod
+class _DGisNetwork extends _$DGisNetwork {
+  final bool isProduction = false;
+  // final bool isProduction = true;
+
+  @override
+  Dio build() {
+    return Dio(BaseOptions(
+      responseType: ResponseType.bytes,
+      baseUrl: isProduction
+          ? 'https://baladi.steelhoss.xyz/api/1.0/'
+          : 'https://staging.baladi.steelhoss.xyz/api/1.0/',
+      headers: {
+        'Content-Type': 'application/protobuf',
+        'Accept': 'application/protobuf',
+        'X-Device-ID': ref.watch(uuidProviderProvider),
+        'X-Device-Platform': Platform.isIOS ? "ios" : "android",
+        "X-App-Version":
+            ref.watch(packageInfoProvider).value?.version ?? "1.0.0",
+        "X-Locale": ref.watch(appLanguageProvider) == Language.arabic
+            ? "ar_SA"
+            : "en_SA",
+        "X-Language":
+            ref.watch(appLanguageProvider) == Language.arabic ? "ar" : "en",
+      },
+      validateStatus: (status) => status != null && status < 500,
+    ))
+      ..interceptors.add(
+        PrettyDioLogger(
+          /// Since protobufs are just binary files what a purpose to print it
+          responseBody: false,
+        ),
+      );
+  }
+}
+
+final dGisNetworkProvider = _dGisNetworkProvider;

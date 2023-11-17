@@ -7,6 +7,7 @@ import com.dgis.map.map_api.Messages
 import com.dgis.map.map_api.Messages.RouteEditorRouteParamsMessage
 import io.flutter.plugin.common.EventChannel
 import ru.dgis.sdk.Context
+import ru.dgis.sdk.Future
 import ru.dgis.sdk.coordinates.GeoPoint
 import ru.dgis.sdk.geometry.ComplexGeometry
 import ru.dgis.sdk.geometry.PointGeometry
@@ -29,6 +30,7 @@ class RouteHandler(
     private var routeEditorSource: RouteEditorSource
     private var routesEditor: RouteEditor
     private var publicTransportHandler: PublicTransportHandler
+    private var trafficRouter: TrafficRouter
 
     var options: RouteSearchOptions? = null
         private set
@@ -47,6 +49,7 @@ class RouteHandler(
         this.routeEditorSource = RouteEditorSource(
             sdkContext, routesEditor,
         )
+        this.trafficRouter = TrafficRouter(sdkContext)
 
         publicTransportHandler = PublicTransportHandler(eventSink, this)
 
@@ -236,5 +239,10 @@ class RouteHandler(
         return routesEditor.routesInfo.routes.filter {
             !it.route.publicTransportTransfers.isEmpty
         }
+    }
+
+    fun findBriefRouteInfos(searchPoints: List<BriefRouteInfoSearchPoints>,
+                            routeSearchOptions: RouteSearchOptions): Future<List<BriefRouteInfo?>> {
+        return trafficRouter.findBriefRouteInfos(searchPoints,routeSearchOptions)
     }
 }

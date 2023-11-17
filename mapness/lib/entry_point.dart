@@ -1,12 +1,12 @@
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mapness/features/debug_overlay/debug_overlay.dart';
+import 'package:mapness/_features/debug_overlay/debug_overlay.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:mapness/features/landing/providers/search_history.dart';
-import 'package:mapness/features/common/widgets/eager_init_widget.dart';
+import 'package:mapness/_features/common/widgets/eager_init_widget.dart';
+import 'package:mapness/entities/search/models/search_history.dart';
 
-import 'routing/providers/app_router.dart';
+import 'app/router.dart';
 
 class MapnessProviderScope extends StatelessWidget {
   const MapnessProviderScope({super.key, required this.child});
@@ -76,5 +76,7 @@ Future<void> setupMapness() async {
     ),
   );
   await Hive.initFlutter();
-  Hive.registerAdapter(HistoryItemAdapter());
+  Hive.registerAdapter(
+    SearchHistoryItemAdapter(),
+  );
 }

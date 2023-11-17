@@ -565,6 +565,10 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         self.objectTapHandler?.createClusteringMapObjectManager(message, completion: completion)
     }
     
+    func createMapObjectManager(completion: @escaping (MapObjectManagerMessage?, FlutterError?) -> Void) {
+        self.objectTapHandler?.createMapObjectManager(completion: completion)
+    }
+    
     func removeMapObjectManagerId(_ id: MapObjectManagerMessage, completion: @escaping (FlutterError?) -> Void) {
         self.objectTapHandler?.removeMapObjectManager(id, completion: completion)
     }
@@ -929,5 +933,19 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         )
         
         completion(nil)
+    }
+    
+    func findBriefRouteInfosRouteSearchOptions(_ routeSearchOptions: RouteSearchOptionsMessage, searchPoints: [BriefRouteInfoSearchPointsMessage], completion: @escaping ([BriefRouteInfoMessage]?, FlutterError?) -> Void) {
+        
+        let routeSearchOptionsConverted = routeSearchOptions.toRouteSearchOptions()
+        let searchPointsMap = searchPoints.map { point in
+            BriefRouteInfoSearchPoints(
+                startPoint: point.startPoint.toRouteSearchPoint(),
+                finishPoint: point.finishPoint.toRouteSearchPoint()
+            )
+        }
+        
+        routeHandler?.findBriefRouteInfosRouteSearchOptions(routeSearchOptionsConverted, searchPoints: searchPointsMap,completion: completion)
+        
     }
 }

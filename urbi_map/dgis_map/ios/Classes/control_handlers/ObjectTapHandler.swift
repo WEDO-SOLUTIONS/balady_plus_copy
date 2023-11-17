@@ -306,6 +306,18 @@ class ObjectTapHandler {
         }
     }
     
+    func createMapObjectManager(completion: @escaping (MapObjectManagerMessage?, FlutterError?) -> Void) {
+        let managerId = UUID().uuidString
+        let managerMessage = MapObjectManagerMessage.make(withId: managerId)
+        
+        let manager = MapObjectManager(map: self.map)
+        self.objectsQueue.sync {
+            self.managers[managerId] = manager
+            completion(managerMessage, nil)
+        }
+    }
+
+    
     func removeMapObjectManager(_ manager: MapObjectManagerMessage, completion: @escaping (FlutterError?) -> Void) {
         self.objectsQueue.sync {
             if self.managers.removeValue(forKey: manager.id) != nil {

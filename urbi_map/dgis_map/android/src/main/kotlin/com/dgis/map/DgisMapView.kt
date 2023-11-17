@@ -15,6 +15,7 @@ import io.flutter.plugin.platform.PlatformView
 import ru.dgis.sdk.DgisObjectId
 import ru.dgis.sdk.Duration
 import ru.dgis.sdk.File
+import ru.dgis.sdk.NativeException
 import ru.dgis.sdk.coordinates.Bearing
 import ru.dgis.sdk.coordinates.GeoPoint
 import ru.dgis.sdk.coordinates.GeoRect
@@ -462,6 +463,10 @@ class DgisMapView(
         objectTapHandler?.createClusteringMapObjectManager(message, result)
     }
 
+    override fun createMapObjectManager(result: Messages.Result<MapObjectManagerMessage>?) {
+        objectTapHandler?.createMapObjectManager(result)
+    }
+
     override fun removeMapObjectManager(
         id: MapObjectManagerMessage,
         result: Messages.Result<Void>?
@@ -707,9 +712,9 @@ class DgisMapView(
 
     override fun setAppearance(appearance: MapAppearanceMessage, result: Messages.Result<Void>?) {
         when (appearance) {
-            MapAppearanceMessage.DAY -> mapView.setTheme("day", "night")
-            MapAppearanceMessage.NIGHT -> mapView.setTheme("day")
-            MapAppearanceMessage.SYSTEM -> mapView.setTheme("night")
+            MapAppearanceMessage.DAY -> mapView.setTheme("day")
+            MapAppearanceMessage.NIGHT -> mapView.setTheme("night")
+            MapAppearanceMessage.SYSTEM -> mapView.setTheme("day", "night")
         }
 
         result?.success(null)
@@ -780,5 +785,29 @@ class DgisMapView(
                 .setErrorDescription("")
                 .build()
         )
+    }
+    override fun findBriefRouteInfos(routeSearchOptions: RouteSearchOptionsMessage,
+                                     searchPoints: MutableList<BriefRouteInfoSearchPointsMessage>,
+                                     result: Messages.Result<MutableList<BriefRouteInfoMessage>>?) {
+
+        val searchOptions = routeSearchOptions.toRouteSearchOptions()
+        val searchPointsMap = searchPoints.map {
+            it.toSearchPoint()
+        }
+
+        routeHandler?.findBriefRouteInfos(
+                routeSearchOptions = searchOptions,
+                searchPoints = searchPointsMap)?.apply {
+            onResult { res ->
+                val map = res.mapNotNull {
+                    it?.toBriefRouteInfoMessage()
+                }.toMutableList()
+
+                result?.success(map)
+            }
+            onError { error ->
+                result?.error(error)
+            }
+        }
     }
 }
