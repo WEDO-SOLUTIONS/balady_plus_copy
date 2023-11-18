@@ -311,6 +311,9 @@ class MapBloc extends Bloc<MapEvent, MapState> {
     print(draftLoaded);
     if (draftLoaded == false && isDraft) {
       // if (true) {
+      emit(state.copyWith(
+        draftStatus: BlocStatus.success,
+      ));
       CommercialRequestDetailsResponse? requestData =
           sl<CommercialLicenseBloc>().state.requestData;
 

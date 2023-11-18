@@ -9,11 +9,24 @@ import 'package:balady_plus/app/features/services/services_exports.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../../core/utils/app_analytics_events.dart';
 import '../../../../_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
 import '../blocs/renew_start_service_bloc/renew_commercial_license_bloc.dart';
 
-class RenewStartService extends StatelessWidget {
+class RenewStartService extends StatefulWidget {
   const RenewStartService({Key? key}) : super(key: key);
+
+  @override
+  State<RenewStartService> createState() => _RenewStartServiceState();
+}
+
+class _RenewStartServiceState extends State<RenewStartService> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    CommonFunctions.sendEventToAnalytics(AppEvents.renewCommercialLicenseOpen);
+  }
 
   @override
   Widget build(BuildContext context) {

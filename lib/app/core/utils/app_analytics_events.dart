@@ -125,8 +125,24 @@ class AppEvents {
   static const String selfRating = "Super_App_Open_Self_Rating";
   static const String selfRatingSuccess = "Super_App_Open_Self_Rating_success";
 
+  static const String events = "Super_App_Open_Events";
+  static const String calendar = "Super_App_Open_Calendar";
 
+  static const String cancelCommercialLicenseOpen =
+      "Super_App_Open_Cancel_Commercial_License";
 
-    static const String events = "Super_App_Open_Events";
-    static const String calendar = "Super_App_Open_Calendar";
+  static const String cancelCommercialLicenseSuccess =
+      "Super_App_Success_Cancel_Commercial_License";
+
+  static const String renewCommercialLicenseOpen =
+      "Super_App_Open_Renew_Commercial_License";
+
+  static const String renewCommercialLicenseSuccess =
+      "Super_App_Success_Renew_Commercial_License";
+
+  static const String issueCommercialLicenseOpen =
+      "Super_App_Open_Issue_Commercial_License";
+
+  static const String issueCommercialLicenseSuccess =
+      "Super_App_Success_Issue_Commercial_License";
 }

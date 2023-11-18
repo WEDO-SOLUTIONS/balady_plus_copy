@@ -9,8 +9,25 @@ import 'package:balady_plus/app/features/services/services_exports.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class IssueStartService extends StatelessWidget {
+import '../../../core/utils/app_analytics_events.dart';
+import '../../../core/utils/constants/dialog_names.dart';
+import '../../_shared_feature_/presentation/dialogs/need_login_dialog.dart';
+import '../../_shared_feature_/presentation/dialogs/not_authorized_indivivisual.dart';
+
+class IssueStartService extends StatefulWidget {
   const IssueStartService({Key? key}) : super(key: key);
+
+  @override
+  State<IssueStartService> createState() => _IssueStartServiceState();
+}
+
+class _IssueStartServiceState extends State<IssueStartService> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    CommonFunctions.sendEventToAnalytics(AppEvents.issueCommercialLicenseOpen);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -49,9 +66,51 @@ class IssueStartService extends StatelessWidget {
                       padding: const EdgeInsets.all(16.0),
                       child: ElevatedButtonWidget.startService(
                         onPressed: () async {
-                          Navigator.of(context).pushNamed(
-                              RouteName.commercialLicensePage,
-                              arguments: requestId);
+                          if (CommonProperties.isLoggedIn) {
+                            if (CommonProperties.selectedDelegator != null) {
+                              Navigator.of(context).pushNamed(
+                                  RouteName.commercialLicensePage,
+                                  arguments: requestId);
+                            } else {
+                              await BottomSheetDialog.showDraggableSheet(
+                                context,
+                                isFullHeight: false,
+                                dialogKeyName:
+                                    DialogName.notAuthorizedIndivisualDialog,
+                                currentRouteName:
+                                    RouteName.commercialLicenseServicePage,
+                                child: NotAuthorizedIndivisualDialog(),
+                              );
+                            }
+                          } else {
+                            showDialog(
+                                context: context,
+                                builder: (ctx) => NeedLoginDialog(
+                                        onSuccessLogin:
+                                            (bool? isSuccess) async {
+                                      if (isSuccess ?? false) {
+                                        if (CommonProperties
+                                                .selectedDelegator !=
+                                            null) {
+                                          Navigator.of(context).pushNamed(
+                                              RouteName.commercialLicensePage,
+                                              arguments: requestId);
+                                        } else {
+                                          await BottomSheetDialog
+                                              .showDraggableSheet(
+                                            context,
+                                            isFullHeight: false,
+                                            dialogKeyName: DialogName
+                                                .notAuthorizedIndivisualDialog,
+                                            currentRouteName: RouteName
+                                                .commercialLicenseServicePage,
+                                            child:
+                                                NotAuthorizedIndivisualDialog(),
+                                          );
+                                        }
+                                      }
+                                    }));
+                          }
                         },
                       ),
                     ),
