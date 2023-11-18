@@ -11,10 +11,26 @@ import 'package:flutter_svg/svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../core/services/local/helpers.dart';
+import '../../../core/utils/app_analytics_events.dart';
 import '../domain/entities/cr_submit_response.dart';
 
-class SubmitApplicationSuccessfullyNew extends StatelessWidget {
+class SubmitApplicationSuccessfullyNew extends StatefulWidget {
   const SubmitApplicationSuccessfullyNew({Key? key}) : super(key: key);
+
+  @override
+  State<SubmitApplicationSuccessfullyNew> createState() =>
+      _SubmitApplicationSuccessfullyNewState();
+}
+
+class _SubmitApplicationSuccessfullyNewState
+    extends State<SubmitApplicationSuccessfullyNew> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    CommonFunctions.sendEventToAnalytics(
+        AppEvents.issueCommercialLicenseSuccess);
+  }
 
   @override
   Widget build(BuildContext context) {

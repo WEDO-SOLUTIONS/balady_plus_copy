@@ -541,11 +541,10 @@ class Routes {
         RouteName.calendarMainPage: (context) => const MainPageCalendar(),
         RouteName.calendarDetailsPage: (context) => const CalendarDetailsPage(),
 
+        RouteName.violationGuideMainPage: (context) =>
+            const ViolationGuideSelectPage(),
 
-RouteName.violationGuideMainPage: (context) => const ViolationGuideSelectPage(), 
-
-RouteName.violationCreatePage: (context) => const ViolationCreatePage(), 
-
+        RouteName.violationCreatePage: (context) => const ViolationCreatePage(),
 
         RouteName.violationResultsPage: (context) =>
             const ViolationResultsPage(),

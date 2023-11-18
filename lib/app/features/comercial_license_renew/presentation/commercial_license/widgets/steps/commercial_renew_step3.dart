@@ -47,7 +47,7 @@ class _CommercialRenewStep3State extends State<CommercialRenewStep3> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       VdHeaderDesc(
-                        header: ("review_request").tr(),
+                        header: ("lbl_total_price").tr(),
                       ),
                       //  Step1SummeryWidget(),
                       //  CustomVerticalSpace(height: 16),

@@ -65,12 +65,12 @@ class CommercialLicenseCancelTwoScreen extends StatelessWidget {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 16),
-                  CardDescWidget(
-                    icon: IconPath.saveIcon,
-                    title: 'note'.tr(),
-                    description: 'notes_submit_commercial_description'.tr(),
-                  ),
+                  // const SizedBox(height: 16),
+                  // CardDescWidget(
+                  //   icon: IconPath.saveIcon,
+                  //   title: 'note'.tr(),
+                  //   description: 'notes_submit_commercial_description'.tr(),
+                  // ),
                   const SizedBox(height: 16),
                   CardDescWidget(
                     icon: IconPath.saveIcon,
