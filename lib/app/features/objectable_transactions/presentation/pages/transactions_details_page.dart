@@ -42,12 +42,12 @@ class TransactionsDetailsPage extends StatefulWidget {
 class _TransactionsDetailsPageState extends State<TransactionsDetailsPage> {
   @override
   Widget build(BuildContext context) {
-  CreateObjectionPageParams  params =
+    CreateObjectionPageParams params =
         ModalRoute.of(context)!.settings.arguments as CreateObjectionPageParams;
 
     return BlocProvider(
-      create: (context) =>
-          TransactionDetailsBloc(transactionDetails: params.details),
+      create: (context) => TransactionDetailsBloc(
+          transactionDetails: params.details, item: params.item),
       child: BlocBuilder<TransactionDetailsBloc, TransactionDetailsState>(
         builder: (context, state) {
           return Stack(
@@ -490,11 +490,16 @@ class NoObjectionsData extends StatelessWidget {
               CustomVerticalSpace(height: 16),
               if (state.details?.isObjectionAllowed == true)
                 ElevatedButtonWidget.applyObjection(onPressed: () {
-                  NavigationService.navigatorKey.currentState!
-                      .pushNamed(RouteName.createObjectionDetails,
-                          arguments: CreateObjectionPageParams(
-                            details: state.details,
-                          ));
+                  context
+                      .read<TransactionDetailsBloc>()
+                      .add(ValidateObjectionDetailsTransactions());
+
+//Objection Before Validation
+                  /*
+                  NavigationService.navigatorKey.currentState!.pushNamed(
+                      RouteName.createObjectionDetails,
+                      arguments: CreateObjectionPageParams(
+                          details: state.details, item: state.item));*/
                 })
             ]);
       },

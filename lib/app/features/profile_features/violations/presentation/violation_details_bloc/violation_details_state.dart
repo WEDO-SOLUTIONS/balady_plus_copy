@@ -7,42 +7,43 @@ class ViolationDetailsState extends Equatable {
   final GISResponse? gisLocation;
   final BlocStatus gisStatus;
   final BlocStatus objectionsListStatus;
+  final ViolationsEntity? violationsEntity;
 
-  const ViolationDetailsState({
-    this.status = BlocStatus.initial,
-    this.gisStatus = BlocStatus.initial,
-    this.objectionsListStatus = BlocStatus.initial,
-    this.errorMessage,
-    this.gisLocation,
-    this.details,
-  });
+  const ViolationDetailsState(
+      {this.status = BlocStatus.initial,
+      this.gisStatus = BlocStatus.initial,
+      this.objectionsListStatus = BlocStatus.initial,
+      this.errorMessage,
+      this.gisLocation,
+      this.details,
+      this.violationsEntity});
 
   @override
-  List<Object?> get props =>
-      [
+  List<Object?> get props => [
         status,
         errorMessage,
         details,
         gisLocation,
         gisStatus,
         objectionsListStatus,
+        violationsEntity
       ];
 
-  ViolationDetailsState copyWith({
-    BlocStatus? status,
-    String? errorMessage,
-    ViolationDetailsEntity? details,
-    GISResponse? gisLocation,
-    BlocStatus? gisStatus,
-    BlocStatus? objectionsListStatus,
-  }) {
+  ViolationDetailsState copyWith(
+      {BlocStatus? status,
+      String? errorMessage,
+      ViolationDetailsEntity? details,
+      GISResponse? gisLocation,
+      BlocStatus? gisStatus,
+      BlocStatus? objectionsListStatus,
+      ViolationsEntity? violationsEntity}) {
     return ViolationDetailsState(
-      status: status ?? this.status,
-      errorMessage: errorMessage ?? this.errorMessage,
-      details: details ?? this.details,
-      gisLocation: gisLocation ?? this.gisLocation,
-      gisStatus: gisStatus ?? this.gisStatus,
-      objectionsListStatus: objectionsListStatus ?? this.objectionsListStatus,
-    );
+        status: status ?? this.status,
+        errorMessage: errorMessage ?? this.errorMessage,
+        details: details ?? this.details,
+        gisLocation: gisLocation ?? this.gisLocation,
+        gisStatus: gisStatus ?? this.gisStatus,
+        objectionsListStatus: objectionsListStatus ?? this.objectionsListStatus,
+        violationsEntity: violationsEntity ?? this.violationsEntity);
   }
 }

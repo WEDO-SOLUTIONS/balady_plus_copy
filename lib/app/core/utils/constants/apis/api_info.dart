@@ -143,6 +143,10 @@ class ApiUrl {
   static String cancelObjectionRequest =
       '/v1/objection-services/objection-request';
 
+  static String validateObjectionSubmit(
+          String applicationId, String transactionId) =>
+      '/v1/objection-generic-services/applications/$applicationId/transactions/$transactionId/validate';
+
 //! VD
   static const gis = '/v1/crm/bcg/gis-info';
   static const vdCategories = '/v1/crm/bcg/categories';
@@ -549,6 +553,28 @@ class ApiUrl {
       '/v1/balady-commercial-services/rating/submit';
   static String commercialLicenseCancelGetDetailsRequest(int requestId) =>
       '/v1/balady-commercial-services/mobile-cancel-request/request-details/$requestId';
+
+//! Posters Service
+
+  static String getLicensesForPermits(
+          {required String crNumber, required String groupId}) =>
+      "/v1/commercial-promotions-services/licenses/$crNumber/$groupId";
+
+  static String getGroupsItems =
+      "v1/commercial-promotions-services/group-services";
+
+  static String savePoster(String requestId) =>
+      "v1/commercial-promotions-services/posters/$requestId";
+
+  static String getPermitAttachmentTypes(
+          {required String requestId, required String typeId}) =>
+      "v1/commercial-promotions-services/attachments-types/$requestId/$typeId";
+
+  static String getPermitPosterTypes =
+      "v1/commercial-promotions-services/poster-types";
+
+  static String applyPermitGroupLicense =
+      "v1/commercial-promotions-services/group-apply";
 
   //! POST
 

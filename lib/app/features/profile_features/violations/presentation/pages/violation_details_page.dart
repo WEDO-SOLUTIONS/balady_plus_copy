@@ -14,16 +14,17 @@ class ViolationsDetailsPage extends StatefulWidget {
 }
 
 class _ViolationsDetailsPageState extends State<ViolationsDetailsPage> {
-
   @override
   Widget build(BuildContext context) {
-  ViolationsEntity  violationsEntity =
+    ViolationsEntity violationsEntity =
         ModalRoute.of(context)!.settings.arguments as ViolationsEntity;
 
     return BlocProvider(
-      create: (context) => ViolationDetailsBloc()
-        ..add(GetViolationDetailsEvent(
-            params: violationsEntity.hashingViolationNumber ?? '')),
+      create: (context) =>
+          ViolationDetailsBloc(violationsEntity: violationsEntity)
+            ..add(GetViolationDetailsEvent(
+                id: violationsEntity.hashingViolationNumber ?? '',
+                applicationId: violationsEntity.applicationId ?? "")),
       child: Scaffold(
         appBar: DefaultAppBarWidget(
           title: "transaction_details_data".tr(),

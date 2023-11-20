@@ -111,8 +111,11 @@ class TransactionDetails {
   double? get lat => double.tryParse(coordinateX ?? "");
   double? get lon => double.tryParse(coordinateY ?? "");
 
-  bool get notAllowedToObject =>
-      lastDateOfObjection?.isBefore(DateTime.now()) ?? true;
+  bool get notAllowedToObject {
+    return lastDateOfObjection?.isBefore(DateTime(
+            DateTime.now().year, DateTime.now().month, DateTime.now().day)) ??
+        true;
+  }
 
   /*String? get getViolationPenaltyAmount =>
       violationPenaltyAmount?.truncateToDouble() == violationPenaltyAmount

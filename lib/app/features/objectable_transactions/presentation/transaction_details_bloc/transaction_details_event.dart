@@ -23,3 +23,7 @@ class GetGisLocationInfoEvent extends TransactionDetailsEvent {
   final double? lon;
   const GetGisLocationInfoEvent({this.lat, this.lon});
 }
+
+class ValidateObjectionDetailsTransactions extends TransactionDetailsEvent {
+  const ValidateObjectionDetailsTransactions();
+}

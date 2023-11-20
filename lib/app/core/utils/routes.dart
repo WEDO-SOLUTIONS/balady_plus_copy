@@ -75,6 +75,8 @@ import '../../features/create_compliance/presentation/pages/submit_compliance_pa
 import '../../features/events/presentation/pages/events_main_page.dart';
 import '../../features/events/presentation/pages/single_image_page.dart';
 import '../../features/map_page/presentation/pages/resturant_details_page.dart';
+import '../../features/posters/presentation/pages/posters_details_page.dart';
+import '../../features/posters/presentation/pages/posters_start_service_screen.dart';
 import '../../features/qa/presentation/pages/qa_page.dart';
 import '../../features/self_ratiing/presentation/pages/self_rating_main_page.dart';
 import '../../features/self_ratiing/presentation/pages/self_rating_result_page.dart';
@@ -581,6 +583,10 @@ class Routes {
             const SubmitApplicationSuccessfullyRenew(),
         RouteName.submitApplicationSuccessfullyNew: (context) =>
             const SubmitApplicationSuccessfullyNew(),
+
+        // Posters
+        RouteName.postersStartService: (context) => const PostersStartService(),
+        RouteName.postersDetailsPage: (context) => const PostersDetailsPage(),
       };
 }
 

@@ -3,7 +3,12 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/dependency_injection/dependency_injection_exports.dart';
 import '../../../../../core/errors/errors_exports.dart';
+import '../../../../../core/services/local/navigation_services.dart';
+import '../../../../objectable_transactions/domain/entities/create_objection_page_params.dart';
+import '../../../../objectable_transactions/domain/entities/validate_objection_params.dart';
+import '../../../../objectable_transactions/domain/use_cases/validate_objectable_transactions.dart';
 import '../../../../vd/vd_exports.dart';
+import '../../domain/entities/violation_details_params.dart';
 import '../../violations_exports.dart';
 part 'violation_details_event.dart';
 
@@ -14,18 +19,22 @@ class ViolationDetailsBloc
   final GetViolationDetails _getViolationDetails;
   final GetGISData _getGisData;
 
-  ViolationDetailsBloc()
+  final ValidateObjectableTransaction validateObjectableTransaction;
+
+  ViolationDetailsBloc({required ViolationsEntity violationsEntity})
       : _getViolationDetails = GetViolationDetails(repository: sl()),
-       _getGisData = GetGISData(repository: sl()),
-        super(const ViolationDetailsState()) {
+        _getGisData = GetGISData(repository: sl()),
+        validateObjectableTransaction =
+            ValidateObjectableTransaction(repository: sl()),
+        super(ViolationDetailsState(violationsEntity: violationsEntity)) {
     on<ViolationDetailsEvent>((event, emit) {});
 
     on<GetViolationDetailsEvent>(_getViolationDetailsHandler);
 
     on<GetGisLocationInfoEvent>(_getGisDataInfoHandler);
 
+    on<ValidateObjectionDetailsTransactions>(_validateObjectableTransaction);
     add(GetGisLocationInfoEvent());
-
   }
 
   Future<void> _getGisDataInfoHandler(
@@ -56,9 +65,14 @@ class ViolationDetailsBloc
       GetViolationDetailsEvent e, Emitter emitter) async {
     emitter(state.copyWith(status: BlocStatus.loading));
 
-    var failureOrSuccess = await _getViolationDetails(e.params);
+    var failureOrSuccess = await _getViolationDetails(ViolationDetailsParams(
+        id: e.id,
+        applicationId: e.applicationId,
+        identityNumber:
+            CommonProperties.selectedDelegator?.unifiedNationalNumber));
 
     await failureOrSuccess.fold((failure) {
+      print(failure);
       emitter(state.copyWith(
         status: BlocStatus.failure,
         errorMessage: (failure as ServerFailure).errorMessage,
@@ -69,6 +83,36 @@ class ViolationDetailsBloc
         details: success,
         errorMessage: "",
       ));
+    });
+  }
+
+  Future<void> _validateObjectableTransaction(
+      ValidateObjectionDetailsTransactions e, Emitter emitter) async {
+    emitter(state.copyWith(status: BlocStatus.loading));
+
+    var failureOrSuccess = await validateObjectableTransaction(
+        ValidateObjectionParams(
+            applicationId: state.violationsEntity?.applicationId,
+            transactionId: state.violationsEntity?.violationNumber));
+
+    await failureOrSuccess.fold((failure) {
+      emitter(state.copyWith(
+        status: BlocStatus.failure,
+        errorMessage: (failure as ServerFailure).errorMessage,
+      ));
+    }, (success) async {
+      emitter(state.copyWith(
+        status: BlocStatus.success,
+        errorMessage: "",
+      ));
+      if (success) {
+        NavigationService.navigatorKey.currentState!.pushNamed(
+            RouteName.createObjectionDetails,
+            arguments: CreateObjectionPageParams(
+                details: state.details,
+                item:
+                    state.violationsEntity?.getObjectableTransactionsEntity()));
+      }
     });
   }
 }

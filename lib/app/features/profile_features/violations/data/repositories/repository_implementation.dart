@@ -7,8 +7,16 @@ import '../../../../../core/errors/errors_exports.dart'
         NoDataFoundFailure,
         ServerException,
         ServerFailure;
+import '../../domain/entities/violation_details_params.dart';
 import '../../violations_exports.dart'
-    show InvoiceStatusesEntity, ViolationDetailsEntity, ViolationsEntity, ViolationsPrams, ViolationsRemoteDataSource, ViolationsRepository, ViolationsStatusEntity;
+    show
+        InvoiceStatusesEntity,
+        ViolationDetailsEntity,
+        ViolationsEntity,
+        ViolationsPrams,
+        ViolationsRemoteDataSource,
+        ViolationsRepository,
+        ViolationsStatusEntity;
 
 class ViolationsRepositoryImplementation implements ViolationsRepository {
   final ViolationsRemoteDataSource remoteDataSource;
@@ -19,9 +27,9 @@ class ViolationsRepositoryImplementation implements ViolationsRepository {
 
   @override
   Future<Either<Failure, ViolationDetailsEntity>> getViolationDetails(
-      String id) async {
+      ViolationDetailsParams params) async {
     try {
-      final data = await remoteDataSource.getViolationDetails(id);
+      final data = await remoteDataSource.getViolationDetails(params);
       return Right(data);
     } on NoDataFoundException {
       return Left(NoDataFoundFailure());
