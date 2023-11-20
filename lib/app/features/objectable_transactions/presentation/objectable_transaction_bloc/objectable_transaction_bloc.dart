@@ -19,6 +19,8 @@ import '../../../../core/utils/utils_exports.dart'
         SortType;
 import '../../domain/entities/create_objection_page_params.dart';
 import '../../domain/entities/transaction_details_params.dart';
+import '../../domain/entities/validate_objection_params.dart';
+import '../../domain/use_cases/validate_objectable_transactions.dart';
 import '../../objections_exports.dart'
     show
         GetObjectionRequests,
@@ -42,6 +44,7 @@ class ObjectableTransactionBloc
   final GetRequestStatuses getRequestStatuses;
   final GetRequestSubTypes getRequestSubTypes;
   final GetTransactionDetails getTransactionDetails;
+  final ValidateObjectableTransaction validateObjectableTransaction;
 
   ObjectableTransactionBloc()
       : getRequests = GetObjectionRequests(repository: sl()),
@@ -49,6 +52,8 @@ class ObjectableTransactionBloc
         getRequestStatuses = GetRequestStatuses(repository: sl()),
         getRequestSubTypes = GetRequestSubTypes(repository: sl()),
         getTransactionDetails = GetTransactionDetails(repository: sl()),
+        validateObjectableTransaction =
+            ValidateObjectableTransaction(repository: sl()),
         super(const ObjectableTransactionState()) {
     on<GetRequestsEvent>((event, emit) async {
       emit(
@@ -302,6 +307,36 @@ class ObjectableTransactionBloc
     });
 
     on<GetTransactionDetailsEvent>(_getTransactionsDetailsHandler);
+    on<ValidateObjectionTransactions>(_validateObjectableTransaction);
+  }
+
+  Future<void> _validateObjectableTransaction(
+      ValidateObjectionTransactions e, Emitter emitter) async {
+    emitter(
+        state.copyWith(detailsStatus: BlocRequestStatus.submissionGetLoading));
+
+    var failureOrSuccess = await validateObjectableTransaction(
+        ValidateObjectionParams(
+            applicationId: e.params.applicationId,
+            transactionId: e.params.transactionId));
+
+    await failureOrSuccess.fold((failure) {
+      emitter(state.copyWith(
+        detailsStatus: BlocRequestStatus.submissionGetFailure,
+        errorMessage: (failure as ServerFailure).errorMessage,
+      ));
+    }, (success) async {
+      emitter(state.copyWith(
+        detailsStatus: BlocRequestStatus.submissionGetSuccess,
+        errorMessage: "",
+      ));
+      if (success)
+        NavigationService.navigatorKey.currentState!
+            .pushNamed(RouteName.createObjectionDetails,
+                arguments: CreateObjectionPageParams(
+                  item: e.params,
+                ));
+    });
   }
 
   Future<void> _getTransactionsDetailsHandler(
@@ -323,15 +358,15 @@ class ObjectableTransactionBloc
       ));
 
       if (e.apply) {
-        NavigationService.navigatorKey.currentState!
-            .pushNamed(RouteName.createObjectionDetails,
-                arguments: CreateObjectionPageParams(
-                  details: success,
-                ));
+        NavigationService.navigatorKey.currentState!.pushNamed(
+            RouteName.createObjectionDetails,
+            arguments: CreateObjectionPageParams(
+                details: success, item: e.params.item));
       } else {
         NavigationService.navigatorKey.currentState!.pushNamed(
             RouteName.transactionDetailsPage,
-            arguments: CreateObjectionPageParams(details: success));
+            arguments: CreateObjectionPageParams(
+                details: success, item: e.params.item));
       }
     });
   }

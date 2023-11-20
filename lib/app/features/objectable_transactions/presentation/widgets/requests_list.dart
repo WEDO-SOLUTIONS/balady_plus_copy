@@ -22,7 +22,8 @@ import '../../objections_exports.dart'
         ObjectableTransactionsEntity,
         RequestsListItem,
         RequestsListShimmer,
-        RequestsLoadMoreEvent;
+        RequestsLoadMoreEvent,
+        ValidateObjectionTransactions;
 
 class RequestsList extends StatefulWidget {
   const RequestsList({super.key});
@@ -107,11 +108,16 @@ class _RequestsListState extends State<RequestsList> {
                       openObjectableDetails(context, state.requests[index]);
                     },
                     onApply: () {
-                      NavigationService.navigatorKey.currentState!
+                      context.read<ObjectableTransactionBloc>().add(
+                          ValidateObjectionTransactions(
+                              params: state.requests[index]));
+
+                      //Objection Before Validation
+                      /* NavigationService.navigatorKey.currentState!
                           .pushNamed(RouteName.createObjectionDetails,
                               arguments: CreateObjectionPageParams(
                                 item: state.requests[index],
-                              ));
+                              ));*/
 
                       // Old Behavoiur
                       /*  context.read<ObjectableTransactionBloc>().add(
@@ -146,6 +152,7 @@ class _RequestsListState extends State<RequestsList> {
       context.read<ObjectableTransactionBloc>().add(GetTransactionDetailsEvent(
           apply: false,
           params: TransactionDetailsParams(
+              item: item,
               applicationId: item.applicationId ?? "13",
               id: item.transactionNumber ?? "")));
     } else if (serviceTypeId == "1") {

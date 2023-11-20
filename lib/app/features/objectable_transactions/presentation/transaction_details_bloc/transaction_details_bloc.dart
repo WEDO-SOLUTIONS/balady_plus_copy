@@ -12,9 +12,13 @@ import '../../../../core/utils/enums/bloc_status.dart';
 import '../../../vd/domain/entities/gis/gis_params.dart';
 import '../../../vd/domain/entities/gis/gis_response.dart';
 import '../../../vd/domain/use_cases/get_gis_data.dart';
+import '../../domain/entities/create_objection_page_params.dart';
+import '../../domain/entities/objectable_transaction_entity.dart';
 import '../../domain/entities/transaction_details.dart';
+import '../../domain/entities/validate_objection_params.dart';
 import '../../domain/use_cases/get_objection_details.dart';
 import '../../domain/use_cases/get_transaction_details.dart';
+import '../../domain/use_cases/validate_objectable_transactions.dart';
 
 part 'transaction_details_event.dart';
 
@@ -25,16 +29,22 @@ class TransactionDetailsBloc
   final GetObjectionDetails _getObjectionDetails;
   final GetTransactionDetails _getTransactionDetails;
   final GetGISData _getGisData;
+  final ValidateObjectableTransaction validateObjectableTransaction;
 
-  TransactionDetailsBloc({TransactionDetails? transactionDetails})
+  TransactionDetailsBloc(
+      {TransactionDetails? transactionDetails,
+      ObjectableTransactionsEntity? item})
       : _getObjectionDetails = GetObjectionDetails(repository: sl()),
         _getTransactionDetails = GetTransactionDetails(repository: sl()),
         _getGisData = GetGISData(repository: sl()),
-        super(TransactionDetailsState(details: transactionDetails)) {
+        validateObjectableTransaction =
+            ValidateObjectableTransaction(repository: sl()),
+        super(
+            TransactionDetailsState(details: transactionDetails, item: item)) {
     on<TransactionDetailsEvent>((event, emit) {});
     on<GetTransactionDetailsEvent>(_getObjectionDetailsHandler);
     on<GetGisLocationInfoEvent>(_getGisDataInfoHandler);
-
+    on<ValidateObjectionDetailsTransactions>(_validateObjectableTransaction);
     add(GetGisLocationInfoEvent());
   }
 
@@ -83,6 +93,33 @@ class TransactionDetailsBloc
         RouteName.objectionsDetailsPage,
         arguments: success,
       );
+    });
+  }
+
+  Future<void> _validateObjectableTransaction(
+      ValidateObjectionDetailsTransactions e, Emitter emitter) async {
+    emitter(state.copyWith(status: BlocStatus.loading));
+
+    var failureOrSuccess = await validateObjectableTransaction(
+        ValidateObjectionParams(
+            applicationId: state.item?.applicationId,
+            transactionId: state.item?.transactionId));
+
+    await failureOrSuccess.fold((failure) {
+      emitter(state.copyWith(
+        status: BlocStatus.failure,
+        errorMessage: (failure as ServerFailure).errorMessage,
+      ));
+    }, (success) async {
+      emitter(state.copyWith(
+        status: BlocStatus.success,
+        errorMessage: "",
+      ));
+      if (success)
+        NavigationService.navigatorKey.currentState!.pushNamed(
+            RouteName.createObjectionDetails,
+            arguments: CreateObjectionPageParams(
+                details: state.details, item: state.item));
     });
   }
 

@@ -8,10 +8,11 @@ abstract class ViolationDetailsEvent extends Equatable {
 }
 
 class GetViolationDetailsEvent extends ViolationDetailsEvent {
-  final String params;
-  const GetViolationDetailsEvent({required this.params});
+  final String id;
+  final String applicationId;
+  const GetViolationDetailsEvent(
+      {required this.id, required this.applicationId});
 }
-
 
 class GetObjectionDetailsEvent extends ViolationDetailsEvent {
   final String params;
@@ -22,4 +23,8 @@ class GetGisLocationInfoEvent extends ViolationDetailsEvent {
   final double? lat;
   final double? lon;
   const GetGisLocationInfoEvent({this.lat, this.lon});
+}
+
+class ValidateObjectionDetailsTransactions extends ViolationDetailsEvent {
+  const ValidateObjectionDetailsTransactions();
 }

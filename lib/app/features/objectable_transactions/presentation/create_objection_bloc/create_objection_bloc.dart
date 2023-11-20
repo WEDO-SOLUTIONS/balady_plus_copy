@@ -185,7 +185,7 @@ class CreateObjectionBloc
           objectionTypeId: item?.objectionTypeId,
           objectedTransactionId: item?.transactionId,
           serviceTypeId: item?.serviceTypeId,
-          objectedTransactionDisplayNumber: item?.transactionNumber,
+          objectedTransactionDisplayNumber: item?.transactionNumber, //
           submitterRole: CommonProperties.selectedDelegator != null
               ? CommonProperties.selectedDelegator?.roleId
               : "001",

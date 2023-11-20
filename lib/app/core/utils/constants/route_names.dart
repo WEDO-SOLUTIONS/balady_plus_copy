@@ -217,6 +217,11 @@ class RouteName {
   static const violationGuideMainPage = '/violationGuideMainPage';
 
   static const violationCreatePage = '/violationCreatePage';
+
+  // Posters
+
+  static const postersStartService = '/postersStartService';
+  static const postersDetailsPage = '/postersDetailsPage';
 }
 
 class EtmamRoutesNames {

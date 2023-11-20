@@ -28,6 +28,7 @@ import '../../../../_shared_feature_/shared_feature_exports.dart'
         MessageDialog,
         ShimmerEffectWidget;
 import '../../../../objectable_transactions/domain/entities/create_objection_page_params.dart';
+import '../../../../objectable_transactions/domain/entities/objectable_transaction_entity.dart';
 import '../../../../objectable_transactions/presentation/widgets/create_objection_page/objection_attachment_item.dart';
 import '../../../../objections/domain/entities/objection_details.dart';
 import '../../../../vd/presentation/widgets/summery_widgets/field_data.dart';
@@ -444,9 +445,12 @@ class ObjectionsData extends StatelessWidget {
             children: [
               GestureDetector(
                 onTap: () {
-                  context.read<ViolationDetailsBloc>().add(
+                  /* context.read<ViolationDetailsBloc>().add(
                       GetViolationDetailsEvent(
-                          params: state.details?.objectionRequestNumber ?? ""));
+                          id: state.details?.objectionRequestNumber ?? "", 
+                          applicationId: state.details., 
+                          
+                          ));*/
                 },
                 child: FieldData(
                   title: ("transaction_details_objection_number").tr(),
@@ -498,11 +502,18 @@ class NoObjectionsData extends StatelessWidget {
               const CustomVerticalSpace(height: 16),
               if (state.details?.isObjectionAllowed == true)
                 ElevatedButtonWidget.applyObjection(onPressed: () {
-                  NavigationService.navigatorKey.currentState!
-                      .pushNamed(RouteName.createObjectionDetails,
-                          arguments: CreateObjectionPageParams(
-                            details: state.details,
-                          ));
+                  context
+                      .read<ViolationDetailsBloc>()
+                      .add(ValidateObjectionDetailsTransactions());
+                  //Objection Before Validation
+
+/*
+                  NavigationService.navigatorKey.currentState!.pushNamed(
+                      RouteName.createObjectionDetails,
+                      arguments: CreateObjectionPageParams(
+                          details: state.details, 
+                          item: state.violationsEntity
+                              ?.getObjectableTransactionsEntity()));*/
                 })
             ]);
       },

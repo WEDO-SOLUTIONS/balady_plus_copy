@@ -4,6 +4,7 @@ import 'package:balady_plus/app/features/objectable_transactions/domain/entities
 import 'package:balady_plus/app/features/objectable_transactions/domain/entities/transaction_details_params.dart';
 import 'package:balady_plus/app/features/objectable_transactions/domain/entities/upload_file_params.dart';
 import 'package:balady_plus/app/features/objectable_transactions/domain/entities/upload_file_response.dart';
+import 'package:balady_plus/app/features/objectable_transactions/domain/entities/validate_objection_params.dart';
 import 'package:balady_plus/app/features/objections/domain/entities/objection_details.dart';
 import 'package:dartz/dartz.dart';
 
@@ -130,6 +131,19 @@ class RequestsRepositoryImplementation implements RequestsRepository {
       TransactionDetailsParams params) async {
     try {
       final data = await remoteDataSource.getTransactionDetails(params);
+      return Right(data);
+    } on NoDataFoundException {
+      return Left(NoDataFoundFailure());
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage));
+    }
+  }
+
+  @override
+  Future<Either<Failure, bool>> validateObjectableTransaction(
+      ValidateObjectionParams params) async {
+    try {
+      final data = await remoteDataSource.validateObjectableTransaction(params);
       return Right(data);
     } on NoDataFoundException {
       return Left(NoDataFoundFailure());
