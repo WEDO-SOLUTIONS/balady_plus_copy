@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:mapness/shared/providers/app_language.dart';
+import 'package:mapness/shared/providers/dgis_url.dart';
 import 'package:mapness/shared/providers/package_info.dart';
 import 'package:mapness/shared/providers/uuid_provider.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
@@ -11,16 +12,13 @@ part 'dgis_network.g.dart';
 
 @riverpod
 class _DGisNetwork extends _$DGisNetwork {
-  final bool isProduction = false;
-  // final bool isProduction = true;
-
   @override
   Dio build() {
+    final url = ref.watch(dgisUrlProvider);
+
     return Dio(BaseOptions(
       responseType: ResponseType.bytes,
-      baseUrl: isProduction
-          ? 'https://baladi.steelhoss.xyz/api/1.0/'
-          : 'https://staging.baladi.steelhoss.xyz/api/1.0/',
+      baseUrl: url,
       headers: {
         'Content-Type': 'application/protobuf',
         'Accept': 'application/protobuf',

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:mapness/_features/debug_overlay/widgets/debug_server_url.dart';
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/providers/uuid_provider.dart';
 import 'package:mapness/shared/ui/buttons/labeled_elevated_button.dart';
@@ -199,6 +200,7 @@ class _DebugSheetState extends ConsumerState<DebugSheet> {
                         ref.read(uuidProviderProvider.notifier).randomize(),
                     label: 'randomize uuid',
                   ),
+                  const DebugServerUrl(),
                 ],
               ),
             ),
