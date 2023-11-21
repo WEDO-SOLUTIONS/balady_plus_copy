@@ -15,14 +15,15 @@ class CommercialLicenseActionViewModel extends BaseViewModel {
   final WebService webService;
   final int licenseId;
   final SubmitterInfo submitterInfo;
+  CommercialLicenceDetails? commercialLicenceDetails;
 
   List<AllowedActions> actions = [];
 
-  CommercialLicenseActionViewModel({
-    required this.webService,
-    required this.licenseId,
-    required this.submitterInfo,
-  }) {
+  CommercialLicenseActionViewModel(
+      {required this.webService,
+      required this.licenseId,
+      required this.submitterInfo,
+      this.commercialLicenceDetails}) {
     getCommercialLicenseAllowedActions();
   }
 

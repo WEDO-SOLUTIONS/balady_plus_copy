@@ -48,7 +48,12 @@ class _TransactionsDetailsPageState extends State<TransactionsDetailsPage> {
     return BlocProvider(
       create: (context) => TransactionDetailsBloc(
           transactionDetails: params.details, item: params.item),
-      child: BlocBuilder<TransactionDetailsBloc, TransactionDetailsState>(
+      child: BlocConsumer<TransactionDetailsBloc, TransactionDetailsState>(
+        listener: (context, state) {
+          if (state.status == BlocStatus.failure) {
+            CommonFunctions.showError(state.errorMessage ?? "");
+          }
+        },
         builder: (context, state) {
           return Stack(
             children: [

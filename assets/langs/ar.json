@@ -3462,9 +3462,11 @@
 "poster_dim":"أبعاد الملصق", 
 "poster_length":"الطول", 
 "poster_width":"العرض", 
-"poster_area":"المساحه", 
+"poster_area":"المساحه",  
 "poster_cm":"سم", 
-"poster_cm2":"سم٢"
+"poster_cm2":"سم٢", 
+"posters_add":"اضافة ملصق", 
+"permits_for_licenes":"التصاريح المتاحة لهذه الخدمة"
 
 
 

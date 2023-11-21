@@ -3,8 +3,8 @@ import '../../data/models/attachment_resposne_model.dart';
 import '../../data/models/permit_poster_types_response.dart';
 
 class PosterItem {
-  final int? length;
-  final int? width;
+  final double? length;
+  final double? width;
   final String? name;
   final PermitPosterTypeItem? posterType;
   final List<PermitAttachmentItem>? attachedDocuments;

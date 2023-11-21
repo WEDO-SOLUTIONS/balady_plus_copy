@@ -222,6 +222,10 @@ class RouteName {
 
   static const postersStartService = '/postersStartService';
   static const postersDetailsPage = '/postersDetailsPage';
+  static const postersLicenseStartService = '/postersLicenseStartService';
+  static const submitApplicationSuccessfullyPosters =
+      '/submitApplicationSuccessfullyPosters';
+  static const posterReqeuestDetailsPage = '/posterReqeuestDetailsPage';
 }
 
 class EtmamRoutesNames {

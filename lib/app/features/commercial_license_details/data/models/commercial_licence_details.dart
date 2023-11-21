@@ -475,7 +475,7 @@ class AdditionalActivities {
 // }
 
 class LicenseInfo {
-  // String licenseEndDate;
+  String? licenseEndDate;
   // String licenseSadadEndDate;
   // dynamic licensePeriod;
   // dynamic sadadPeriod;
@@ -493,7 +493,7 @@ class LicenseInfo {
   String statusDesc;
 
   LicenseInfo({
-    // required this.licenseEndDate,
+    this.licenseEndDate,
     // required this.licenseSadadEndDate,
     // required this.licensePeriod,
     // required this.sadadPeriod,
@@ -510,7 +510,7 @@ class LicenseInfo {
   });
 
   factory LicenseInfo.fromJson(Map<String, dynamic> json) => LicenseInfo(
-        // licenseEndDate: json["licenseEndDate"],
+        licenseEndDate: json["licenseEndDate"],
         // licenseSadadEndDate: json["licenseSadadEndDate"],
         // licensePeriod: json["licensePeriod"],
         // sadadPeriod: json["sadadPeriod"],

@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -16,49 +17,57 @@ class _PostersDetailsPageState extends State<PostersDetailsPage> {
   @override
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<PostersLicenseBloc, PostersLicenseState>(
-      builder: (context, state) {
-        return WillPopScope(
-          onWillPop: () {
-            context
-                .read<PostersLicenseBloc>()
-                .add(const GoToPreviousPageEvent());
-            return Future<bool>.value(false);
+    return BlocProvider.value(
+        value: ModalRoute.of(context)!.settings.arguments as PostersLicenseBloc,
+        child: BlocConsumer<PostersLicenseBloc, PostersLicenseState>(
+          listener: (context, state) {
+            if (state.status.isSubmissionFailure ||
+                state.detailsStatus.isSubmissionFailure) {
+              CommonFunctions.showError(state.error ?? "");
+            }
           },
-          child: GestureDetector(
-            onTap: () => context.read<PostersLicenseBloc>().hideKeyboard(),
-            child: Scaffold(
-              appBar: DetailsAppBarTwo(
-                pageLength: state.pagesList.length,
-                currentStep: state.currentPageValue + 1,
-                backOnPress: () => context
+          builder: (context, state) {
+            return WillPopScope(
+              onWillPop: () {
+                context
                     .read<PostersLicenseBloc>()
-                    .add(const GoToPreviousPageEvent()),
-                onTapCloseAction: () {
-                  FocusManager.instance.primaryFocus?.unfocus();
-                  bool Function(Route<dynamic>) predicate =
-                      ModalRoute.withName(RouteName.bottomNavigation);
-                  Navigator.of(context).popUntil((predicate));
-                },
-                requestNum: state.requestId,
+                    .add(const GoToPreviousPageEvent());
+                return Future<bool>.value(false);
+              },
+              child: GestureDetector(
+                onTap: () => context.read<PostersLicenseBloc>().hideKeyboard(),
+                child: Scaffold(
+                  appBar: DetailsAppBarTwo(
+                    pageLength: state.pagesList.length,
+                    currentStep: state.currentPageValue + 1,
+                    backOnPress: () => context
+                        .read<PostersLicenseBloc>()
+                        .add(const GoToPreviousPageEvent()),
+                    onTapCloseAction: () {
+                      FocusManager.instance.primaryFocus?.unfocus();
+                      bool Function(Route<dynamic>) predicate =
+                          ModalRoute.withName(RouteName.bottomNavigation);
+                      Navigator.of(context).popUntil((predicate));
+                    },
+                    requestNum: state.requestId,
+                  ),
+                  body: PageView.builder(
+                    itemCount: state.pagesList.length,
+                    scrollDirection: Axis.vertical,
+                    physics: const NeverScrollableScrollPhysics(),
+                    controller: context.read<PostersLicenseBloc>().controller,
+                    itemBuilder: (context, position) {
+                      return AnimatedContainer(
+                        curve: Curves.easeIn,
+                        duration: const Duration(milliseconds: 300),
+                        child: state.pagesList[position],
+                      );
+                    },
+                  ),
+                ),
               ),
-              body: PageView.builder(
-                itemCount: state.pagesList.length,
-                scrollDirection: Axis.vertical,
-                physics: const NeverScrollableScrollPhysics(),
-                controller: context.read<PostersLicenseBloc>().controller,
-                itemBuilder: (context, position) {
-                  return AnimatedContainer(
-                    curve: Curves.easeIn,
-                    duration: const Duration(milliseconds: 300),
-                    child: state.pagesList[position],
-                  );
-                },
-              ),
-            ),
-          ),
-        );
-      },
-    );
+            );
+          },
+        ));
   }
 }

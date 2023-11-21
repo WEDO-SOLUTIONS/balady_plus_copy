@@ -39,4 +39,6 @@ class PermitPosterTypeItem {
         "id": id,
         "name": name,
       };
+
+  String get text => name ?? "";
 }

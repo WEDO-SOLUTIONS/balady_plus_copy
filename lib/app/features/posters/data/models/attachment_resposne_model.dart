@@ -1,3 +1,4 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 class AttachmentResponseModel {
   final List<PermitAttachmentItem>? result;
 
@@ -26,14 +27,23 @@ class PermitAttachmentItem {
   final String? allowedFilesExtension;
   final int? maxSize;
   final bool? mandatory;
+  String? fileName;
+  String? filePath;
+  int? requestId;
+  String? base64;
+  String? key;
 
-  PermitAttachmentItem({
-    this.id,
-    this.name,
-    this.allowedFilesExtension,
-    this.maxSize,
-    this.mandatory,
-  });
+  PermitAttachmentItem(
+      {this.id,
+      this.name,
+      this.allowedFilesExtension,
+      this.maxSize,
+      this.mandatory,
+      this.fileName,
+      this.filePath,
+      this.requestId,
+      this.base64,
+      this.key});
 
   factory PermitAttachmentItem.fromJson(Map<String, dynamic> json) =>
       PermitAttachmentItem(
@@ -51,4 +61,29 @@ class PermitAttachmentItem {
         "maxSize": maxSize,
         "mandatory": mandatory,
       };
+
+  PermitAttachmentItem copyWith(
+      {int? id,
+      String? name,
+      String? allowedFilesExtension,
+      int? maxSize,
+      bool? mandatory,
+      String? fileName,
+      String? filePath,
+      int? requestId,
+      String? base64,
+      String? key}) {
+    return PermitAttachmentItem(
+        id: id ?? this.id,
+        name: name ?? this.name,
+        allowedFilesExtension:
+            allowedFilesExtension ?? this.allowedFilesExtension,
+        maxSize: maxSize ?? this.maxSize,
+        mandatory: mandatory ?? this.mandatory,
+        fileName: fileName ?? this.fileName,
+        filePath: filePath ?? this.filePath,
+        requestId: requestId ?? this.requestId,
+        base64: base64 ?? this.base64,
+        key: key ?? this.key);
+  }
 }

@@ -384,7 +384,6 @@ class RequestsRemoteDataSourceImplementation
   Future<bool> validateObjectableTransaction(
       ValidateObjectionParams params) async {
     var response;
-    return true;
     try {
       response = await webService.dio.get(ApiUrl.validateObjectionSubmit(
           params.applicationId!, params.transactionId!));

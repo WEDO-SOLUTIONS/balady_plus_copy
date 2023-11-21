@@ -108,12 +108,7 @@ class ViolationDetailsModel extends ViolationDetailsEntity {
           objectionCommitteeDecision: json["objectionCommitteeDecision"],
           objectionRequestStatus: json["objectionRequestStatus"],
           objectionRequestNumber: json["objectionRequestNumber"],
-          objectionRequestDate: json["objectionRequestDate"] == null ||
-                  (json["objectionRequestDate"] is String)
-              ? (json["objectionRequestDate"] as String).isEmpty
-                  ? null
-                  : DateFormat("yyyy-MM-dd").parse(json["objectionRequestDate"])
-              : json["objectionRequestDate"],
+          objectionRequestDate: json["objectionRequestDate"],
           coordinateY: json["coordinatE_Y"],
           coordinateX: json["coordinatE_X"],
           // hashingObjectionRequestNumber: json["hashingObjectionRequestNumber"],
