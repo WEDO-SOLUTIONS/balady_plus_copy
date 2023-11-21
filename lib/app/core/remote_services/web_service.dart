@@ -520,6 +520,7 @@ class WebService {
       String? fileName,
       String? mimeType,
       dynamic body,
+      String? key,
       Map<String, String>? fields}) async {
     var data = body != null ? json.encode(body) : null;
 
@@ -537,6 +538,9 @@ class WebService {
       request.headers['authorization'] = 'Bearer ${CommonProperties.token}';
 
       request.headers['x-channel-id'] = "MOBILE";
+      if (key != null) {
+        request.headers['attachmentKey'] = key;
+      }
 
       if (fields != null) {
         request.headers[ApiHeaders.xFeappId] =

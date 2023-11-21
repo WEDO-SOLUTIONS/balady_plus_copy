@@ -5,125 +5,144 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:balady_plus/app/core/utils/constants/app_style.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 
+import '../../../../../core/utils/constants/app_colors.dart';
+
 class PostersLicenseItemWidget extends StatelessWidget {
   final String? licenseNo;
   final String? location;
   final String? status;
   final String? expiryDate;
-  const PostersLicenseItemWidget({
-    Key? key,
-    this.licenseNo,
-    this.location,
-    this.status,
-    this.expiryDate,
-  }) : super(key: key);
+  final Function? onDelete;
+  const PostersLicenseItemWidget(
+      {Key? key,
+      this.licenseNo,
+      this.location,
+      this.status,
+      this.expiryDate,
+      this.onDelete})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
-        padding: const EdgeInsets.symmetric(
-          vertical: 24,
-          horizontal: 16,
+        padding: onDelete != null
+            ? const EdgeInsets.only(bottom: 16, right: 16)
+            : const EdgeInsets.only(bottom: 16, top: 16, right: 16, left: 16),
+        margin: const EdgeInsets.only(bottom: 16),
+        decoration: ShapeDecoration(
+          color: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
         ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            Column(
+            if (onDelete != null)
+              IconButton(
+                icon: Icon(
+                  Icons.delete,
+                  color: AppColor.redBrown,
+                ),
+                onPressed: () {
+                  if (onDelete != null) onDelete!();
+                },
+              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    CustomTextWidget(
-                      'license_no'.tr(),
-                      textStyle: AppStyle.complianceTitleLabelLicenseStyle,
-                    ),
-                    const SizedBox(
-                      height: 4,
-                    ),
-                    CustomTextWidget(
-                      licenseNo ?? "",
-                      textStyle: AppStyle.complianceSubtitleLicenseStyle,
-                    ),
-                  ],
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          CustomTextWidget(
+                            'license_no'.tr(),
+                            textStyle:
+                                AppStyle.complianceTitleLabelLicenseStyle,
+                          ),
+                          const SizedBox(
+                            height: 4,
+                          ),
+                          CustomTextWidget(
+                            licenseNo ?? "",
+                            textStyle: AppStyle.complianceSubtitleLicenseStyle,
+                          ),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 12,
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          CustomTextWidget(
+                            'loaction'.tr(),
+                            textStyle:
+                                AppStyle.complianceTitleLabelLicenseStyle,
+                          ),
+                          const SizedBox(
+                            height: 4,
+                          ),
+                          CustomTextWidget(
+                            location ?? "",
+                            textStyle: AppStyle.complianceSubtitleLicenseStyle,
+                            maxLines: 100,
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
                 const SizedBox(
-                  height: 12,
+                  width: 32,
                 ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    CustomTextWidget(
-                      'license_status'.tr(),
-                      textStyle: AppStyle.complianceTitleLabelLicenseStyle,
-                    ),
-                    const SizedBox(
-                      height: 4,
-                    ),
-                    CustomTextWidget(
-                      status ?? "",
-                      textStyle: AppStyle.complianceSubtitleLicenseStyle,
-                    ),
-                  ],
-                ),
-                const SizedBox(
-                  height: 12,
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    CustomTextWidget(
-                      'loaction'.tr(),
-                      textStyle: AppStyle.complianceTitleLabelLicenseStyle,
-                    ),
-                    const SizedBox(
-                      height: 4,
-                    ),
-                    CustomTextWidget(
-                      location ?? "",
-                      textStyle: AppStyle.complianceSubtitleLicenseStyle,
-                    ),
-                  ],
-                ),
-              ],
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    CustomTextWidget(
-                      'license_status'.tr(),
-                      textStyle: AppStyle.complianceTitleLabelLicenseStyle,
-                    ),
-                    const SizedBox(
-                      height: 4,
-                    ),
-                    CustomTextWidget(
-                      status ?? "",
-                      textStyle: AppStyle.complianceSubtitleLicenseStyle,
-                    ),
-                  ],
-                ),
-                const SizedBox(
-                  height: 12,
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    CustomTextWidget(
-                      'license_end_date'.tr(),
-                      textStyle: AppStyle.complianceTitleLabelLicenseStyle,
-                    ),
-                    const SizedBox(
-                      height: 4,
-                    ),
-                    CustomTextWidget(
-                      expiryDate ?? "",
-                      textStyle: AppStyle.complianceSubtitleLicenseStyle,
-                    ),
-                  ],
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          CustomTextWidget(
+                            'license_status'.tr(),
+                            textStyle:
+                                AppStyle.complianceTitleLabelLicenseStyle,
+                          ),
+                          const SizedBox(
+                            height: 4,
+                          ),
+                          CustomTextWidget(
+                            status ?? "",
+                            textStyle: AppStyle.complianceSubtitleLicenseStyle,
+                          ),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 12,
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          CustomTextWidget(
+                            'license_end_date'.tr(),
+                            textStyle:
+                                AppStyle.complianceTitleLabelLicenseStyle,
+                          ),
+                          const SizedBox(
+                            height: 4,
+                          ),
+                          CustomTextWidget(
+                            expiryDate ?? "",
+                            textStyle: AppStyle.complianceSubtitleLicenseStyle,
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),

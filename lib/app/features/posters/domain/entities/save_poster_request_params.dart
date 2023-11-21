@@ -32,10 +32,10 @@ class SavePosterRequestParams {
 
 class Poster {
   final List<String>? attachedDocuments;
-  final int? length;
+  final double? length;
   final String? name;
   final int? typeId;
-  final int? width;
+  final double? width;
 
   Poster({
     this.attachedDocuments,

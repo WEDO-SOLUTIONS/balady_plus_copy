@@ -60,7 +60,7 @@ class CommercialLicenseDetailsPage extends StatelessWidget {
           ),
           leading: IconButton(
             icon: const Icon(
-             Icons.arrow_back_ios,
+              Icons.arrow_back_ios,
               color: AppColor.blackModern900Light,
             ),
             onPressed: () => Navigator.of(context).pop(),
@@ -96,11 +96,14 @@ class CommercialLicenseDetailsPage extends StatelessWidget {
                           child: ChangeNotifierProvider(
                             create: (BuildContext context) =>
                                 CommercialLicenseActionViewModel(
-                              webService: sl(),
-                              licenseId: bloc.commercialLicenseId,
-                              submitterInfo: bloc.state
-                                  .commercialLicenceDetails!.submitterInfo!,
-                            ),
+                                    webService: sl(),
+                                    licenseId: bloc.commercialLicenseId,
+                                    submitterInfo: bloc
+                                        .state
+                                        .commercialLicenceDetails!
+                                        .submitterInfo!,
+                                    commercialLicenceDetails:
+                                        bloc.state.commercialLicenceDetails!),
                             child: const CommercialLicenseActionSheet(),
                           ),
                           isFullHeight: false,

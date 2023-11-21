@@ -14,6 +14,6 @@ class PermitLicenseRequestParams {
   });
 
   Map<String, dynamic> toMap() {
-    return {"page": page, "size": size};
+    return {"page": 0, "size": 100};
   }
 }

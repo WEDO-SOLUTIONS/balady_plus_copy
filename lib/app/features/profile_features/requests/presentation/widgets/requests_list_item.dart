@@ -162,6 +162,10 @@ class RequestsListItem extends StatelessWidget {
                       request.requestNumber,
                       requestTypeId: request.requestTypeId),
                 );
+              } else if (request.requestTypeId == 1042) {
+                Navigator.pushNamed(
+                    context, RouteName.posterReqeuestDetailsPage,
+                    arguments: request.requestNumber);
               } else {
                 if (request.redirectUrl == null) {
                   if (request.requestTypeId == 50001) {

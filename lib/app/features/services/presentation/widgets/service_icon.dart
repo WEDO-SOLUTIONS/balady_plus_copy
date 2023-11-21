@@ -23,6 +23,8 @@ import '../../../_shared_feature_/shared_feature_exports.dart'
 import '../../../daem/presentation/dialogs/daem_types_dialog.dart';
 import '../../../new_appointment/presentation/core/services/view_models/new_appointment_view_model.dart';
 import '../../../new_appointment/presentation/dialogs/new_appointment_dialog.dart';
+import '../../../posters/presentation/widgets/license_widgets/bottom_sheet_list.dart';
+import '../../../posters/presentation/widgets/types_dialog/commercial_permits_dialog.dart';
 import '../../../public_services_features/prayer_times/presentation/cubit/prayer_times_cubit.dart';
 import '../../../transaction_inquiry/presentation/dialogs/general_inquiries_types_dialog.dart';
 import '../../../transaction_inquiry/presentation/dialogs/new_request_types_dialog.dart';
@@ -43,6 +45,20 @@ class ServiceIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () async {
+        if (service.id == 101) {
+          await BottomSheetDialog.showDraggableSheet(context,
+              isFullHeight: false, height: 300, child: CommercialPermitsDialog(
+            onSelect: (int item) async {
+              await BottomSheetDialog.showDraggableSheet(context,
+                  isFullHeight: true,
+                  child: PermitsLicenseBottomSheetList(
+                    groupId: item,
+                  ));
+            },
+          ));
+          return;
+        }
+
         if (service.id == 1 && service.action.type == ServiceAction.cardsPage) {
           await BottomSheetDialog.showDraggableSheet(context,
               dialogKeyName: DialogName.vdTypesDialog,

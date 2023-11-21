@@ -12,6 +12,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/utils/constants/dialog_names.dart';
 import '../../../_shared_feature_/presentation/dialogs/need_login_dialog.dart';
 import '../../../_shared_feature_/presentation/dialogs/not_authorized_indivivisual.dart';
+import '../blocs/posters_license_bloc.dart';
 
 class PostersStartService extends StatefulWidget {
   const PostersStartService({Key? key}) : super(key: key);
@@ -32,7 +33,8 @@ class _PostersStartServiceState extends State<PostersStartService> {
   Widget build(BuildContext context) {
     ServiceEntity service = model();
 
-    int licenseId = ModalRoute.of(context)!.settings.arguments as int;
+    PostersLicenseBloc? bloc =
+        ModalRoute.of(context)!.settings.arguments as PostersLicenseBloc?;
 
     return MultiBlocProvider(
       providers: [
@@ -68,8 +70,8 @@ class _PostersStartServiceState extends State<PostersStartService> {
                         if (CommonProperties.isLoggedIn) {
                           if (CommonProperties.selectedDelegator != null) {
                             Navigator.of(context).pushNamed(
-                              RouteName.postersDetailsPage,
-                            );
+                                RouteName.postersDetailsPage,
+                                arguments: bloc);
                           } else {
                             await BottomSheetDialog.showDraggableSheet(
                               context,
@@ -89,8 +91,8 @@ class _PostersStartServiceState extends State<PostersStartService> {
                                       if (CommonProperties.selectedDelegator !=
                                           null) {
                                         Navigator.of(context).pushNamed(
-                                          RouteName.postersDetailsPage,
-                                        );
+                                            RouteName.postersDetailsPage,
+                                            arguments: bloc);
                                       } else {
                                         await BottomSheetDialog
                                             .showDraggableSheet(
@@ -140,13 +142,13 @@ class _PostersStartServiceState extends State<PostersStartService> {
           "isImportant": false,
           "action": {"type": "cards", "value": ""},
           "ar": {
-            "title": "تجديد رخصة تجارية",
+            "title": 'تصريح ملصقات دعائية',
             "description": "",
             "tag": null,
             "warning": ""
           },
           "en": {
-            "title": "تجديد رخصة تجارية",
+            "title": 'تصريح ملصقات دعائية',
             "description": "",
             "tag": null,
             "warning": null

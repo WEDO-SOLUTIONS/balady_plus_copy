@@ -1,8 +1,12 @@
 part of 'posters_license_bloc.dart';
 
 class PostersLicenseState extends Equatable {
+  final int? groupId;
   final BlocStatus status;
   final BlocStatus detailsStatus;
+  final BlocStatus posterTypesStatus;
+  final BlocStatus alertsStatus;
+
   final int currentPageValue;
   final List<Widget> pagesList;
   final int? requestId;
@@ -11,13 +15,24 @@ class PostersLicenseState extends Equatable {
   final bool? isDraft;
   final List<PermitsLicensesItem>? permitsLiceses;
   final List<PermitsLicensesItem>? selectedLicenses;
+  final List<PosterItem>? posters;
   final String? startDate;
   final String? duration;
-
+  final List<PermitPosterTypeItem>? posterTypes;
+  final PosterRequestDetailsModel? requestDetails;
+  final List<PermitGroupItem>? permitGroups;
+  final List<PermitAlertItem>? alerts;
+  final int? licenseId;
   const PostersLicenseState({
     this.status = BlocStatus.initial,
     this.detailsStatus = BlocStatus.initial,
+    this.posterTypesStatus = BlocStatus.initial,
+    this.alertsStatus = BlocStatus.initial,
+    this.licenseId,
+    this.groupId,
+    this.posterTypes,
     this.currentPageValue = 0,
+    this.posters,
     this.requestId,
     this.isDraft,
     this.error,
@@ -25,6 +40,9 @@ class PostersLicenseState extends Equatable {
     this.selectedLicenses,
     this.startDate,
     this.duration,
+    this.requestDetails,
+    this.permitGroups,
+    this.alerts,
     this.pagesList = const [
       PostersStep1Page(),
       PostersStep2Page(),
@@ -44,12 +62,23 @@ class PostersLicenseState extends Equatable {
         permitsLiceses,
         selectedLicenses,
         startDate,
-        duration
+        duration,
+        posters,
+        posterTypesStatus,
+        posterTypes,
+        requestDetails,
+        permitGroups,
+        groupId,
+        alertsStatus,
+        alerts,
+        licenseId
       ];
 
   PostersLicenseState copyWith(
       {BlocStatus? status,
+      BlocStatus? posterTypesStatus,
       BlocStatus? detailsStatus,
+      BlocStatus? alertsStatus,
       int? currentPageValue,
       List<Widget>? pagesList,
       Nullable<int?>? requestId,
@@ -57,12 +86,21 @@ class PostersLicenseState extends Equatable {
       bool? isDraft,
       List<PermitsLicensesItem>? permitsLiceses,
       List<PermitsLicensesItem>? selectedLicenses,
+      List<PosterItem>? posters,
       String? error,
       String? startDate,
-      String? duration}) {
+      String? duration,
+      List<PermitPosterTypeItem>? posterTypes,
+      PosterRequestDetailsModel? requestDetails,
+      List<PermitGroupItem>? permitGroups,
+      List<PermitAlertItem>? alerts,
+      int? groupId,
+      int? licenseId}) {
     return PostersLicenseState(
         status: status ?? this.status,
+        alertsStatus: alertsStatus ?? this.alertsStatus,
         detailsStatus: detailsStatus ?? this.detailsStatus,
+        posterTypesStatus: posterTypesStatus ?? this.posterTypesStatus,
         currentPageValue: currentPageValue ?? this.currentPageValue,
         pagesList: pagesList ?? this.pagesList,
         requestId: requestId == null ? this.requestId : requestId.value,
@@ -71,9 +109,45 @@ class PostersLicenseState extends Equatable {
         selectedLicenses: selectedLicenses ?? this.selectedLicenses,
         error: error ?? this.error,
         startDate: startDate ?? this.startDate,
-        duration: duration ?? this.duration);
+        duration: duration ?? this.duration,
+        posters: posters ?? this.posters,
+        posterTypes: posterTypes ?? this.posterTypes,
+        requestDetails: requestDetails ?? this.requestDetails,
+        permitGroups: permitGroups ?? this.permitGroups,
+        groupId: groupId ?? this.groupId,
+        alerts: alerts ?? this.alerts,
+        licenseId: licenseId ?? this.licenseId);
   }
 
-  String getPosterDataDesc() =>
-      "يمكنك اصدار تصاريح للملصقات على واجهة المحل او واجهة الزجاج الخارجي للمحل، اما الملصقات داخل المحل فلا تحتاج الى اصدار تصريح.";
+  String totalPostersArea() {
+    double totalArea = 0;
+    posters?.forEach((e) {
+      totalArea = totalArea + ((e.length ?? 0) * (e.width ?? 0));
+    });
+    return totalArea.toString();
+  }
+
+  String totalPostersCount() {
+    return posters?.length.toString() ?? "";
+  }
+
+  String? ALERT_CALCULATION_DEPENDS_ON_MUNICIPALITY() => alerts
+      ?.firstWhereOrNull((element) =>
+          element.id == "ALERT_CALCULATION_DEPENDS_ON_MUNICIPALITY")
+      ?.name;
+
+  String? ALERT_SERVICE_USAGE_GUIDANCE() => alerts
+      ?.firstWhereOrNull(
+          (element) => element.id == "ALERT_SERVICE_USAGE_GUIDANCE")
+      ?.name;
+
+  bool isStep2Valid() {
+    if (startDate == null ||
+        duration == null ||
+        (duration?.isEmpty ?? true) ||
+        (posters?.length ?? 0) <= 0) {
+      return false;
+    }
+    return true;
+  }
 }
