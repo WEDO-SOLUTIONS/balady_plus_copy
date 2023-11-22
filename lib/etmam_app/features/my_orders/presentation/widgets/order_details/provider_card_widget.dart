@@ -12,7 +12,6 @@ class ProviderCardWidget extends StatelessWidget {
       this.providerName,
       this.providerLogoUrl,
       this.onMoreAction,
-      this.serviceName,
       this.showMoreAction = true,
       this.statusText,
       required this.orderStatus})
@@ -23,76 +22,49 @@ class ProviderCardWidget extends StatelessWidget {
   final bool showMoreAction;
   final String? statusText;
   final OrderStatus orderStatus;
-  final String? serviceName;
 
   @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.all(Radius.circular(8)),
-        color: AppColor.white3.withOpacity(0.5),
-      ),
-      padding: const EdgeInsets.all(12),
+          borderRadius: const BorderRadius.all(Radius.circular(4)),
+          border: Border.all(
+            width: 1,
+            color: Color(0xffe4e4e4),
+          )),
+      padding:
+          EdgeInsetsDirectional.only(start: 16, end: 8, top: 16, bottom: 20),
       child: Column(
         children: [
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              CustomTextWidget(
-                providerName ?? '',
+              EtmamProviderLogoIcon(
+                imageUrl: providerLogoUrl ?? "",
+                imageSize: 38,
+              ),
+              const CustomHorizontalSpace(width: 13),
+              Expanded(
+                  child: CustomTextWidget(
+                providerName ?? "",
                 maxLines: 1,
-                fontSize: 12,
-                fontColor: AppColor.primary900,
+                textOverflow: TextOverflow.ellipsis,
+                fontSize: 16,
                 fontWeight: AppFontWeight.bold,
                 textAlign: TextAlign.start,
-              ),
-              const SizedBox(width: 12),
+              )),
               if (showMoreAction && onMoreAction != null)
-              GestureDetector(
-                onTap: () => onMoreAction!(),
-                child: const CustomSvgIconWidget(
-                  IconPath.settings2,
+                CustomNewIconButtonWidget(
+                  btnPressed: () => onMoreAction!(),
+                  iconSvg: IconPath.moreDots,
                   iconSize: 24,
-                ),
-              ),
+                  // iconColor: AppColorsTheme.primary700,
+                )
             ],
           ),
-          SizedBox(height: 14),
-          Container(
-            padding: const EdgeInsets.all(16),
-            decoration: const BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(16)),
-              color: AppColor.white,
-            ),
-            child: Row(
-              children: [
-                EtmamProviderLogoIcon(
-                  imageUrl: providerLogoUrl ?? "",
-                  imageSize: 58,
-                ),
-                const CustomHorizontalSpace(width: 13),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    CustomTextWidget(
-                      serviceName ?? "",
-                      maxLines: 1,
-                      fontColor: AppColor.black800,
-                      textOverflow: TextOverflow.ellipsis,
-                      fontSize: 14,
-                      fontWeight: AppFontWeight.bold,
-                      textAlign: TextAlign.start,
-                    ),
-                    const SizedBox(height: 12),
-                    ProviderStatusWidget(
-                      orderStatus: orderStatus,
-                      statusText: statusText ?? "",
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
+          ProviderStatusWidget(
+            orderStatus: orderStatus,
+            statusText: statusText ?? "",
+          )
         ],
       ),
     );
@@ -109,9 +81,25 @@ class ProviderStatusWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return StatusTextWidget(
-      orderStatus: orderStatus,
-      text: statusText,
+    return Container(
+      alignment: AlignmentDirectional.centerStart,
+      margin: const EdgeInsetsDirectional.only(start: 43, top: 12),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          CustomTextWidget(trans('etmam_order_status'),
+              textAlign: TextAlign.start,
+              fontColor: AppColor.black400,
+              fontSize: 13,
+              fontWeight: AppFontWeight.bold),
+          CustomVerticalSpace(height: 4),
+          StatusTextWidget(
+            orderStatus: orderStatus,
+            text: statusText,
+          )
+        ],
+      ),
     );
   }
 }

@@ -66,6 +66,7 @@ class ServiceDetailsBloc
                 serviceProviderName: e.params.serviceProviderName,
                 subServiceId: state.subServiceId,
                 relationId: success.data?.result?.id,
+                inputsRequired: success.data?.result?.inputsRequired,
                 subServiceName: state.subServiceName,
                 subRelations: success.data?.result?.subRelations));
       }

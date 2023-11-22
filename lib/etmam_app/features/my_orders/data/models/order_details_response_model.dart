@@ -25,7 +25,8 @@ class OrderDetailsResponseModel extends OrderDetailsResponse {
       super.providerLogoUrl,
       super.serviceName,
       super.actionsOnOrder,
-      super.platformReferenceNumber});
+      super.platformReferenceNumber,
+      super.formId});
 
   factory OrderDetailsResponseModel.fromMap(Map<String, dynamic> json) {
     OrderDetailsResponseModel model = OrderDetailsResponseModel(
@@ -45,6 +46,7 @@ class OrderDetailsResponseModel extends OrderDetailsResponse {
               json["allowedActions"].map((x) => ActionModel.fromMap(x)))
           : null,
       createDate: json["createDate"],
+      formId: json["formId"],
       subOrders: json["subOrders"] != null
           ? List<OrderDetailsResponseModel>.from(json["subOrders"]
               .map((x) => OrderDetailsResponseModel.fromMap(x)))

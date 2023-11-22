@@ -1,6 +1,5 @@
 import 'package:balady_plus/etmam_app/core/dependency_injection/dependency_injection_exports.dart'
     show sl;
-import 'package:balady_plus/app/core/utils/utils_exports.dart' show BlocStatus;
 
 import 'package:balady_plus/etmam_app/features/_shared_feature_/shared/shared_feature_exports.dart'
     show
@@ -17,6 +16,7 @@ import 'package:balady_plus/etmam_app/core/services/services_exports.dart'
     show AppEvents;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../../app/core/utils/enums/bloc_status.dart';
 import '../../../../core/utils/utils_exports.dart'
     show
         AppColor,
@@ -43,7 +43,7 @@ class _CancelOrderDialogState extends State<CancelOrderDialog> {
   @override
   void initState() {
     super.initState();
-    //CommonFunctions.sendEventToAnalytics(AppEvents.CancelOrder);
+    CommonFunctions.sendEventToAnalytics(AppEvents.CancelOrder);
   }
 
   @override

@@ -1,9 +1,8 @@
 import 'package:balady_plus/etmam_app/core/utils/utils_exports.dart' show trans;
+import 'package:balady_plus/etmam_app/features/_shared_feature_/shared/presentation/widgets/custom_text_field_widget.dart';
 import 'package:balady_plus/etmam_app/features/my_orders/presentation/blocs/rating/rating_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../../../../../../app/features/_shared_feature_/presentation/widgets/texts/custom_text_field_widget.dart';
 
 class CommentTextFieldWidget extends StatefulWidget {
   const CommentTextFieldWidget({Key? key}) : super(key: key);
@@ -26,11 +25,12 @@ class _CommentTextFieldWidgetState extends State<CommentTextFieldWidget> {
             hintText: trans('optional_comment_hint'),
             controller: _controller,
             maxLines: 4,
+            contentVerticalPadding: 10,
             spacerSize: 0,
             onChanged: (String text) {
               context.read<RatingBloc>().add(ChangeRatingComment(text: text));
             },
-            onValidate: (_) {},
+            validator: (_) {},
           ),
         );
       },

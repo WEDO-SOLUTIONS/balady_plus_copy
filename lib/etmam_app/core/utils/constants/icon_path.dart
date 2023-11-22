@@ -8,6 +8,7 @@ class IconPath {
   //! SVG Icons
 
   static const appbarBackArrow = '${_svgIconPath}appbar_back_arrow$_svg';
+  static const acceptIcon = '${_pngIconPath}acceptIcon$_svg';
 
   static const arrowBack = '${_svgIconPath}back_icon$_svg';
   static const arrowDown = '${_svgIconPath}arrowDown$_svg';
@@ -59,7 +60,6 @@ class IconPath {
   static const expansionArrowDown = '${_svgIconPath}arrow_down$_svg';
   static const arrowForward2 = '${_svgIconPath}arrow_forward$_svg';
   static const settings2 = '${_svgIconPath}settings2$_svg';
-
 
   // main services logo
   static const constructionIcon = '${_svgIconPath}construction_icon$_svg';
@@ -147,6 +147,10 @@ class IconPath {
   static const otpLogo = '${_svgIconPath}otp_logo$_svg';
   static const baladyOtpLogo = '${_svgIconPath}etmamOTPIcon$_svg';
   static const baladyLogo = '${_svgIconPath}baladylogo$_svg';
+
+  static const delegateBiddingIcon = '${_svgIconPath}acceptOffer$_svg';
+  static const deleteBiddingIcon = '${_svgIconPath}deleteOffer$_svg';
+  static const editBiddingIcon = '${_svgIconPath}editOffer$_svg';
 
   // success icon
   static const successIcon = '${_svgIconPath}success_icon$_svg';

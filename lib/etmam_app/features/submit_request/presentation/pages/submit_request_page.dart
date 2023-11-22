@@ -27,9 +27,11 @@ import '../../../_shared_feature_/shared/shared_feature_exports.dart'
         CustomLoadingWidget,
         CustomStackFooterButtonWidget,
         CustomVerticalSpace,
+        ReloadWidget,
         SectionTitleWidget;
 
 import '../../submit_request_exports.dart' show RelationBloc;
+import '../widgets/submit_request/form_item_widget.dart';
 
 class SubmitRequestPage extends StatefulWidget {
   const SubmitRequestPage({Key? key}) : super(key: key);
@@ -64,8 +66,11 @@ class _SubmitRequestPageState extends State<SubmitRequestPage> {
           return SubmitRequestBloc(
               relationBloc: relationBloc,
               submitRequest: sl(),
+              createBiddingForm: sl(),
               args: args,
-              sendOTP: sl());
+              sendOTP: sl(),
+              getFormFieldData: sl(),
+              validateDynamicForm: sl());
         },
         child: BlocConsumer<SubmitRequestBloc, SubmitRequestState>(
           listener: (context, state) {
@@ -82,15 +87,31 @@ class _SubmitRequestPageState extends State<SubmitRequestPage> {
                 CustomStackFooterButtonWidget(
                   btnText: trans('confirm_order'),
                   onPressed: () {
-                    context.read<SubmitRequestBloc>().add(SubmitEvent(
-                        params: SubmitParams(
-                            cityId: CommonProperties.cityId,
-                            providerId: state.serviceProviderId,
-                            relationId: state.relationId,
-                            changeProvider: state.changeProvider,
-                            pageType: args.pageType,
-                            orderId: state.orderId,
-                            subOrders: state.getSubOrders())));
+                    if (state.form == null) {
+                      context.read<SubmitRequestBloc>().add(SubmitEvent(
+                          params: SubmitParams(
+                              cityId: CommonProperties.cityId,
+                              providerId: state.serviceProviderId,
+                              relationId: state.relationId,
+                              changeProvider: state.changeProvider,
+                              pageType: args.pageType,
+                              orderId: state.orderId,
+                              subOrders: state.getSubOrders(),
+                              formId: state.form?.id,
+                              fields: state.form?.getFieldsRequest())));
+                    } else {
+                      context.read<SubmitRequestBloc>().add(ValidateFormEvent(
+                          params: SubmitParams(
+                              cityId: CommonProperties.cityId,
+                              providerId: state.serviceProviderId,
+                              relationId: state.relationId,
+                              changeProvider: state.changeProvider,
+                              pageType: args.pageType,
+                              orderId: state.orderId,
+                              subOrders: state.getSubOrders(),
+                              formId: state.form?.id,
+                              fields: state.form?.getFieldsRequest())));
+                    }
                   },
                 ),
                 if (state.status == BlocStatus.loading)
@@ -167,8 +188,22 @@ class SubmitRequestBody extends StatelessWidget {
                               CustomVerticalSpace(height: 16)
                             ],
                           ),
-                        )
+                        ),
                       ]),
+
+                    // Form
+                    if (state.formStatus == BlocStatus.failure)
+                      ReloadWidget(onTab: () {
+                        context
+                            .read<SubmitRequestBloc>()
+                            .add(CreateFormEvent());
+                      }),
+
+                    if (state.formStatus == BlocStatus.success &&
+                        state.form != null)
+                      DelgateFormItemWidget(
+                        form: state.form!,
+                      )
                   ],
                 ),
               ),
