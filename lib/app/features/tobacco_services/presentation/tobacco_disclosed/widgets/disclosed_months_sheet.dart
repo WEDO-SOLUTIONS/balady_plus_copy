@@ -210,7 +210,7 @@ class DisclosedMonthsSheet extends StatelessWidget {
                 ),
                 const SizedBox(height: 6),
                 CustomTextWidget(
-                  '${'attachment_message_typ'.tr()} ${'pdf,png،jpg'} ${'attachment_message_size'.tr()} ${(10024) ~/ 1000} MB',
+                  '${'attachment_message_typ'.tr()} ${'xls,xlsx,csv,pdf,png,jpg,jpeg'} ${'attachment_message_size'.tr()} ${(10024) ~/ 1000} MB',
                   fontColor: AppColor.blackModern700Light,
                   fontSize: 16,
                   fontWeight: AppFontWeight.bold,
